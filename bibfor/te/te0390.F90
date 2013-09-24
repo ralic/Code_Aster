@@ -107,9 +107,6 @@ subroutine te0390(option, nomte)
 !
 ! PARAMETRES EN ENTREE
     call jevech('PCOMPOR', 'L', icompo)
-    if (zk16(icompo+3) (1:9) .eq. 'COMP_INCR') then
-        call utmess('F', 'ELEMENTS3_36')
-    endif
     if (zk16(icompo) (1:4) .ne. 'ELAS') then
         call utmess('F', 'ELEMENTS3_85', sk=zk16(icompo))
     endif

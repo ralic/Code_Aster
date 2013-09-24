@@ -270,7 +270,7 @@ RESU0=STAT_NON_LINE(
                         _F(CHARGE=CALGAZ,),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
-                COMP_INCR=_F(
+                COMPORTEMENT=_F(
                 RELATION = 'KIT_THH',
                 RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 RECH_LINEAIRE =_F(METHODE = 'MIXTE',
@@ -330,7 +330,7 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                         _F(CHARGE=CALBAS,),
                         _F(CHARGE=CALTEMP,),
                         _F(CHARGE=CALGAZ,),),
-                COMP_INCR=_F(
+                COMPORTEMENT=_F(
                  RELATION = 'KIT_THH',
                  RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 INCREMENT=_F( LIST_INST = LI,INST_FIN=INST_SANS_RL,
@@ -371,7 +371,7 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                         _F(CHARGE=CALBAS,),
                         _F(CHARGE=CALTEMP,),
                         _F(CHARGE=CALGAZ,),),
-                COMP_INCR=_F(
+                COMPORTEMENT=_F(
                  RELATION = 'KIT_THH',
                  RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 INCREMENT=_F( LIST_INST = LI,

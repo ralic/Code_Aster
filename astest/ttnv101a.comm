@@ -82,7 +82,7 @@ charsec=AFFE_CHAR_THER(MODELE=MODTHER,
 
 RESUSECH=THER_NON_LINE(MODELE=MODTHER,
                        CHAM_MATER=CHMASECH,
-                       COMP_THER_NL=_F(RELATION='SECH_GRANGER',),
+                       COMPORTEMENT=_F(RELATION='SECH_GRANGER',),
                        EVOL_THER_SECH=RESUTHER,
                        EXCIT=_F(CHARGE=charsec,),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=500),

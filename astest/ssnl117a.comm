@@ -133,7 +133,7 @@ U1=STAT_NON_LINE(
                 CHARGE = CHARP)),
                          INCREMENT=_F(
                 LIST_INST = LINST,
-                NUME_INST_FIN = 8),COMP_INCR=(
+                NUME_INST_FIN = 8),COMPORTEMENT=(
                          _F( GROUP_MA = 'BC',  RELATION = 'VMIS_ISOT_LINE',
                              RESI_INTE_RELA = 1.E-6 ),
                          _F( GROUP_MA = ( 'AB',  'CD',), RELATION = 'ELAS', )),

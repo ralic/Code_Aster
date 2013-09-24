@@ -131,7 +131,7 @@ U2=STAT_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
               _F( CHARGE = CH0),
               _F( CHARGE = CH1, FONC_MULT = F1),
               _F( CHARGE = CH2, FONC_MULT = F2)),
-           COMP_INCR=_F( TOUT = 'OUI', RELATION = 'ELAS')
+           COMPORTEMENT=_F( TOUT = 'OUI', RELATION = 'ELAS')
                         )
 
 TEST_RESU(RESU=_F(INST=1.0,
@@ -152,7 +152,7 @@ U3=DYNA_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
               _F( CHARGE = CH0),
               _F( CHARGE = CH1, FONC_MULT = F1),
               _F( CHARGE = CH2, FONC_MULT = F2)),
-           COMP_INCR=_F( TOUT = 'OUI', RELATION = 'ELAS'),
+           COMPORTEMENT=_F( TOUT = 'OUI', RELATION = 'ELAS'),
            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                         )
 

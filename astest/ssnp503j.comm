@@ -1,19 +1,19 @@
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # CONTACT-FROTTANT EN GRANDS GLISSEMENTS
@@ -43,20 +43,20 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOLU'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')));       
+                              MODELISATION='3D')));
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-2.5');
 
 LN2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+6.5');
-  
-FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+
+FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN1));
 
-FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN2));
-                    
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='P1P1',
@@ -73,24 +73,24 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ZONE = (_F(
                                  INTEGRATION   = 'NOEUD',
                                  COULOMB       = 0.5,
-                                 TOLE_PROJ_EXT = 0.1,   
+                                 TOLE_PROJ_EXT = 0.1,
                                  CONTACT_INIT  = 'OUI',
-                                 GLISSIERE     = 'NON',   
+                                 GLISSIERE     = 'NON',
                                  FISS_MAIT     = FISS1,
                                  ALGO_LAGR     = 'VERSION2',
                               ),
                              _F(
                                  INTEGRATION   = 'NOEUD',
                                  COULOMB       = 0.5,
-                                 TOLE_PROJ_EXT = 0.1,   
+                                 TOLE_PROJ_EXT = 0.1,
                                  CONTACT_INIT  = 'OUI',
-                                 GLISSIERE     = 'NON',   
+                                 GLISSIERE     = 'NON',
                                  FISS_MAIT     = FISS2,
                                  ALGO_LAGR     = 'VERSION2',
                               ),
                             )
-                    );  
-                          
+                    );
+
 E=100.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
@@ -108,12 +108,12 @@ DEPZ=0.0
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SINF',DY=DEPY,DZ=0.0),
-                             _F(GROUP_MA='SSUP',DY=-DEPY,DZ=0.0),                        
+                             _F(GROUP_MA='SSUP',DY=-DEPY,DZ=0.0),
                              _F(GROUP_MA=('L1','L2','L3','L4'),
                                 DX=0.0),
                              ),
                    INFO=1);
-                    
+
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SCOTE',
                                DX=DEPX,DZ=DEPZ)),
@@ -152,15 +152,15 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    DDL=('DZ','H1Z'),
                                    COEF_MULT=(1,1),
                                    COEF_IMPO=DEPZ)),
-                    INFO=1);        
+                    INFO=1);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
                     );
-                    
+
 VAR2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
-                    );   
+                    );
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -168,11 +168,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,
-                    CONTACT = CTXFEM,              
-                    EXCIT=(                                  
+                    CONTACT = CTXFEM,
+                    EXCIT=(
                            _F(CHARGE=CH1,FONC_MULT=VAR1),
-                           _F(CHARGE=CH2,FONC_MULT=VAR2)),  
-                    COMP_ELAS=_F(RELATION='ELAS',
+                           _F(CHARGE=CH2,FONC_MULT=VAR2)),
+                    COMPORTEMENT=_F(RELATION='ELAS',
                                  GROUP_MA='VOLU'),
                     INCREMENT=_F(LIST_INST=L_INST),
                     CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
@@ -180,7 +180,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     )),
                     NEWTON=_F(REAC_ITER=1),
                     SOLVEUR=_F(METHODE='MUMPS',
-   
+
                                NPREC=-1),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                     INFO=1);
@@ -215,7 +215,7 @@ VALE_CALC=[
  -21473.605336322,
  -17687.238798778,],
 ]
-        
+
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                          GROUP_NO='NFISSU',
@@ -231,19 +231,19 @@ for i in [1,2,3,4]: #Boucle sur les increments
               IMPR_FONCTION='NON',
               TRI=_F(NOM_PARA=('COOR_X'),
                      ORDRE='CROISSANT'));
-  
+
    for j in [0,1,2,3,4]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
         precision = 1.0E-10
         critere = 'ABSOLU'
       else:
-        precision = 1.0E-2 
+        precision = 1.0E-2
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
                  VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
-                 PRECISION=precision, 
+                 PRECISION=precision,
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=(_F(NOM_PARA='COOR_X',
                            CRIT_COMP='EQ',
@@ -266,13 +266,13 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                    AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D')) 
+                            MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM( MODELE_VISU= MOD_VISU,
                   RESULTAT=UTOT1,
-                  
+
                   INFO =1)
 
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),                     
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 
-FIN();                 
+FIN();

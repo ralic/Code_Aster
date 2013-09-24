@@ -168,7 +168,7 @@ U=STAT_NON_LINE(
                          CARA_ELEM=CARBA,EXCIT=(
                              _F(
                 CHARGE = LIAISON),),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST,

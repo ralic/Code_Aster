@@ -1,19 +1,19 @@
 # TITRE VALIDATION DE LA MODELISATION GVNO + LOI ENDO_CARRE EN 3D
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV220A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
@@ -34,13 +34,13 @@ TEMPS      = DEFI_LIST_REEL( DEBUT=0.,
                              INTERVALLE=(_F(JUSQU_A=t1,
                                             NOMBRE=1,),
                                          _F(JUSQU_A=t2,
-                                            NOMBRE=1,),  
+                                            NOMBRE=1,),
                                          _F(JUSQU_A=t3,
-                                            NOMBRE=1,),      
+                                            NOMBRE=1,),
                                          _F(JUSQU_A=t4,
-                                            NOMBRE=1,),                                                                                                                    
+                                            NOMBRE=1,),
                                          )
-                            )             
+                            )
 
 MATER      = DEFI_MATERIAU( ELAS = _F(E  = 1.0,
                                       NU = 0.,
@@ -74,75 +74,75 @@ MO         = AFFE_MODELE(MAILLAGE=MA,
 
 CH_U1  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'FAC',
-                                         DX        =  1.,     
+                                         DX        =  1.,
                                          )
                         )
-                        
+
 CH_U2  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'DER',
-                                         DX        =  0.,   
-                                         )   
-                        )               
+                                         DX        =  0.,
+                                         )
+                        )
 
 CH_U3  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'DRO',
-                                         DY        =  1. )                                        
-                        ) 
-                         
-                         
+                                         DY        =  1. )
+                        )
+
+
 CH_U4  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'GAU',
-                                         DY        =  0. )                                        
-                        )     
+                                         DY        =  0. )
+                        )
 
 
 CH_U5  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'HAU',
-                                         DZ        =  1. )                                        
-                        )                                                                                                             
-                                             
+                                         DZ        =  1. )
+                        )
+
 CH_U6  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'BAS',
-                                         DZ        =  0. )                                        
-                        )                                              
-                                             
-                                                                                           
+                                         DZ        =  0. )
+                        )
+
+
 
 EVOL   = STAT_NON_LINE( MODELE     = MO,
                         CHAM_MATER = CHMAT,
                         EXCIT      = ( _F( CHARGE       = CH_U1,
                                            FONC_MULT    = COEF),
-                                       _F( CHARGE       = CH_U2),                                
+                                       _F( CHARGE       = CH_U2),
                                        _F( CHARGE       = CH_U3,
                                            FONC_MULT    = COEF),
-                                       _F( CHARGE       = CH_U4),     
+                                       _F( CHARGE       = CH_U4),
                                        _F( CHARGE       = CH_U5,
-                                           FONC_MULT    = COEF), 
-                                       _F( CHARGE       = CH_U6),),                                                                                            
-                        COMP_INCR  =   _F( TOUT           = 'OUI',
+                                           FONC_MULT    = COEF),
+                                       _F( CHARGE       = CH_U6),),
+                        COMPORTEMENT  =   _F( TOUT           = 'OUI',
                                            RELATION       = 'ENDO_CARRE',
-                                          ),                         
+                                          ),
                         NEWTON     =   _F( MATRICE        = 'TANGENTE',
                                            REAC_ITER      = 1,),
                         CONVERGENCE=   _F( RESI_GLOB_RELA = 1.E-6,
                                            ITER_GLOB_MAXI = 50,),
                         INCREMENT  =   _F( LIST_INST      = TEMPS,),
                         AFFICHAGE  =   _F( INFO_RESIDU = 'OUI',)
-                       )                
-   
-                                          
+                       )
+
+
 #***********************************************************************
 #    TEST COMPARAISON AVEC ENDOMMAGEMENT ANALYTIQUE
-#*********************************************************************** 
+#***********************************************************************
 
-                                         
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOEUD='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.10000000000000001,
-                  
+
                   ),
           )
 
@@ -152,7 +152,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOEUD='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.5,
-                  
+
                   ),
           )
 
@@ -162,7 +162,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOEUD='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.69999999999999996,
-                  
+
                   ),
           )
 
@@ -172,7 +172,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOEUD='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.84999999999999998,
-                  
+
                   ),
           )
 

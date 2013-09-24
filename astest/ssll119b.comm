@@ -198,7 +198,7 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
         RES_MZ=STAT_NON_LINE(        MODELE=MODELE,     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLZ),
                                             _F( CHARGE = MORE_MZ),),
-                    COMP_INCR=_F(RELATION=rela,
+                    COMPORTEMENT=_F(RELATION=rela,
                                 GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )
@@ -207,7 +207,7 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLZ),
                                             _F( CHARGE = MORE_MT),
                                             ),
-                    COMP_INCR=_F(RELATION=rela,
+                    COMPORTEMENT=_F(RELATION=rela,
                                  GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )
@@ -216,7 +216,7 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLX),
                                             _F( CHARGE = MORE_MY),
                     ),
-                    COMP_INCR=_F(RELATION=rela,
+                    COMPORTEMENT=_F(RELATION=rela,
                                 GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )
@@ -225,7 +225,7 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLX),
                                             _F( CHARGE = MORE_MFY),
                                             ),
-                    COMP_INCR=_F(RELATION=rela,
+                    COMPORTEMENT=_F(RELATION=rela,
                                 GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )
@@ -234,7 +234,7 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLY),
                                             _F( CHARGE = MORE_MX),
                                             ),
-                    COMP_INCR=_F(RELATION=rela,
+                    COMPORTEMENT=_F(RELATION=rela,
                                 GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )
@@ -243,7 +243,7 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CLY),
                                             _F( CHARGE = MORE_MFZ),
                                             ),
-                    COMP_INCR=_F(RELATION=rela,
+                    COMPORTEMENT=_F(RELATION=rela,
                                 GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )

@@ -81,7 +81,7 @@ NONLIN=STAT_NON_LINE(
                 CARA_ELEM=CARAC_1,
                 EXCIT=_F( CHARGE = CHARGE_1,
                           FONC_MULT = D_FONC),
-                COMP_ELAS=_F( RELATION = 'ELAS',
+                COMPORTEMENT=_F( RELATION = 'ELAS',
                               DEFORMATION = 'GROT_GDEP'),
                 INCREMENT=_F(  LIST_INST = L_INST),
                 NEWTON=_F(  REAC_ITER = 1),

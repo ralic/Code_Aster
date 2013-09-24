@@ -88,7 +88,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE = CH_FO,
                           FONC_MULT = RAMPE),
                       _F(CHARGE = CH_LA)),
-                COMP_INCR=_F(
+                COMPORTEMENT=_F(
                              RELATION = 'VMIS_ISOT_LINE',
                              ITER_INTE_MAXI = 30,
                              RESI_INTE_RELA = 1.E-6

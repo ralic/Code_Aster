@@ -56,7 +56,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 !     PAR DEFAUT, ON RECALCULE LES CONTRAINTES
     calsig='OUI'
 !
-    call getfac('COMP_ELAS', ncelas)
+    call getfac('COMPORTEMENT', ncelas)
 !
     if (ncelas .gt. 0) then
         call getvtx(' ', 'CALCUL_CONTRAINTE', scal=calsig, nbret=ier)

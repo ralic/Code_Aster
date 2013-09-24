@@ -230,7 +230,7 @@ LEDEP=STAT_NON_LINE(
                 CHAM_MATER=MATAF,
                 CARA_ELEM=LACAR,
                 EXCIT=_F(       CHARGE = ZCHM,  ),
-                COMP_INCR=_F(   RELATION = 'GRILLE_ISOT_LINE', ),
+                COMPORTEMENT=_F(   RELATION = 'GRILLE_ISOT_LINE', ),
                 INCREMENT=_F(   LIST_INST = ZLIST,
                                 NUME_INST_FIN = 11,
                 ),

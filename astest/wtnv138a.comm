@@ -179,7 +179,7 @@ U1=STAT_NON_LINE(
                 ), _F(
                 CHARGE = P0,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
                   'VISC_DRUC_PRAG', 'LIQU_SATU',
@@ -253,7 +253,7 @@ U2=STAT_NON_LINE(
                 CHARGE = DEP_V,
                 FONC_MULT = EVOL_DEV,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
                   'VISC_DRUC_PRAG',        'LIQU_SATU',

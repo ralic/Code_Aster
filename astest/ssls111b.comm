@@ -211,7 +211,7 @@ RESU2B=STAT_NON_LINE(  MODELE     = MO2,
                        CARA_ELEM  = EP2,
                        EXCIT=(_F(CHARGE=CL2),
                               _F(CHARGE=CHME2A),),
-                       COMP_INCR  =_F( RELATION = 'ELAS',),
+                       COMPORTEMENT  =_F( RELATION = 'ELAS',),
                        INCREMENT  =_F( LIST_INST = L_INST),
                     )
 

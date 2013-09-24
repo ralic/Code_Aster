@@ -25,7 +25,7 @@ CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',
                     fr="Calcul de l'évolution dynamique d'une structure couplée à un "\
                        "domaine fluide (résolu avec le code Saturne) via YACS",
             UIinfo={"groupes":("Résolution","Dynamique",)},
-         regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS',),),
+
 #IFS
 #=>
          GROUP_MA_IFS     =SIMP(statut='o',typ=grma,max='**'),
@@ -100,9 +100,7 @@ CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',
            ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
          ),
 #-------------------------------------------------------------------
-         COMP_INCR       =C_COMP_INCR(),
-#-------------------------------------------------------------------
-         COMP_ELAS       =C_COMP_ELAS('DYNA_NON_LINE'),
+         COMPORTEMENT       =C_COMPORTEMENT('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
          ETAT_INIT       =FACT(statut='o',

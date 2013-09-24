@@ -84,7 +84,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CHAR0,),
                           _F(CHARGE=CHAR,
                              FONC_MULT=RAMPE1,),),
-                   COMP_INCR=_F(RELATION='BETON_REGLE_PR',
+                   COMPORTEMENT=_F(RELATION='BETON_REGLE_PR',
                                 MAILLE='M1',),
                    INCREMENT=_F(LIST_INST=INST,),
                    NEWTON=_F(REAC_ITER=1,),)

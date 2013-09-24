@@ -150,7 +150,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                  EXCIT=(_F(CHARGE=CH,FONC_MULT = FCT),
                         _F(CHARGE=SYM),
                         ),
-                 COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
+                 COMPORTEMENT=(_F(RELATION='VMIS_ISOT_TRAC',
                                DEFORMATION='PETIT',
                                GROUP_MA='cylind'),
                             _F(RELATION = 'CZM_LIN_REG',
@@ -277,7 +277,7 @@ TEST_RESU(RESU=_F(INST=0.7,
                   VALE_CALC=0.11228396875997,
                   MAILLE='M114',),
           )
-          
+
 TEST_RESU(RESU=_F(INST=0.7,
                   POINT=2,
                   RESULTAT=UP,
@@ -296,7 +296,7 @@ TEST_RESU(RESU=_F(INST=0.7,
                   NOEUD='N103'
                   ),
           )
-          
+
 TEST_RESU(RESU=_F(INST=0.7,
                   RESULTAT=UP,
                   NOM_CHAM='SIEF_NOEU',

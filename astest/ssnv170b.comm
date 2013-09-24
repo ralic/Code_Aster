@@ -83,7 +83,7 @@ U=STAT_NON_LINE(        MODELE=MOMECA,
                                         FONC_MULT = FDEPL
                                         ),
                                ),
-                        COMP_INCR=_F(RELATION = 'VISC_TAHERI',
+                        COMPORTEMENT=_F(RELATION = 'VISC_TAHERI',
                                      ITER_INTE_MAXI = 100),
                         NEWTON=_F(MATRICE = 'TANGENTE', REAC_ITER = 1),
                         INCREMENT=_F(LIST_INST = L_INST),

@@ -116,7 +116,9 @@ subroutine te0239(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
 !
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call utmess('F', 'ELEMENTS2_90')
+       if (zk16(icompo) .ne. 'ELAS') then
+           call utmess('F', 'ELEMENTS2_90')
+       endif
     endif
 !
     if (zk16(icompo+2) (6:10) .eq. '_REAC') then

@@ -18,7 +18,7 @@
 # ======================================================================
 # aslint: disable=W2005
 # Subroutines
-# ------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------
 def Defi_Xmcourbe(X=None,Y=None,FUNCTION=None,courbe=None,legend='X',color=0,mark=0,):
 
   if FUNCTION:
@@ -26,16 +26,16 @@ def Defi_Xmcourbe(X=None,Y=None,FUNCTION=None,courbe=None,legend='X',color=0,mar
   else:
     def_co={'ABSCISSE': X}
     def_co['ORDONNEE'] = Y
-    
+
   def_co['LEGENDE' ] = legend
   def_co['COULEUR' ] = color
   def_co['MARQUEUR'] = mark
-  
+
   try:
     courbe.append(def_co);
   except:
     courbe=[def_co,];
-      
+
   return courbe;
 
 # Fin
@@ -83,7 +83,7 @@ dtemps    =temps_max/npas
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = tarret   , NOMBRE = 5),
                                   _F(JUSQU_A = temps_max, NOMBRE = 5),),);
-                                 
+
 #***********************************************************************
 #    ESSAI TRIAXIAL NON DRAINE CYCLIQUE
 #***********************************************************************
@@ -92,17 +92,17 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
                             PHI      = 33.,
                             ANGDIL   = 27.,
                             COHESION = 1.0E+3,),);
-                            
+
 COEF0=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, 0.,
                            temps_max, 0.,),);
-                          
+
 COEFH=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -PCO,
                            temps_max, -PCO,),);
-                           
+
 COEFV=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -3.*PCO,
@@ -124,7 +124,7 @@ if axe_char=='DX':
   sigm_init=_F(SIXX=-3.*PCO,
                SIYY=-PCO,
                SIZZ=-PCO,)
-               
+
 elif axe_char=='DY':
   sigm_impose=_F(SIYY=COEFV,
                  SIXX=COEFH,
@@ -135,7 +135,7 @@ elif axe_char=='DY':
   sigm_init=_F(SIYY=-3.*PCO,
                SIXX=-PCO,
                SIZZ=-PCO,)
-               
+
 elif axe_char=='DZ':
   sigm_impose=_F(SIZZ=COEFV,
                  SIYY=COEFH,
@@ -162,11 +162,11 @@ elif matr_tang:
                 VALE_PERT_RELA=1.E-10,);
 else:
   comp_incr =_F(RELATION='MOHR_COULOMB',);
-  
+
 DEBUG(SDVERI='NON')
-  
-TAB_SIG=SIMU_POINT_MAT(INFO=2,
-                  COMP_INCR=comp_incr,
+
+TAB_SIG=SIMU_POINT_MAT(INFO=1,
+                  COMPORTEMENT=comp_incr,
                   MATER=SOL,
                   INCREMENT=_F(LIST_INST=TEMPS1,
                                INST_INIT=0.,
@@ -206,19 +206,19 @@ if matr_tang & verif:
 #   tab1 = tabt['MAT_TGTE']
 #   tab2 = tabt['MAT_PERT']
 #   tab3 = tabt['MAT_DIFF']
-# 
+#
 #   tang = np.identity(6);
 #   pert = np.identity(6);
 #   diff = np.identity(6);
-# 
+#
 #   for n,i in enumerate(indi):
 #     tang[i-1,indj[n]-1] = tab1[n]
 #     pert[i-1,indj[n]-1] = tab2[n]
 #     diff[i-1,indj[n]-1] = tab3[n]
-# 
-#   unit=38       
+#
+#   unit=38
 #   Nom_Fichier= 'tb_tangent.dat';
-# 
+#
 #   title ='#\n\
 # #  VALIDATION DE LA LOI DE MOHR-COULOMB\n\
 # #\n\
@@ -232,40 +232,40 @@ if matr_tang & verif:
 # #  3 inconnues:       sigma1, epsi3, dlambda\n\
 # #\n\
 # #    << VALIDATION DE LA MATRICE TANGENTE COHERENTE >>\n'
-# 
+#
 #   DEFI_FICHIER(ACTION='ASSOCIER',
 #               FICHIER='./REPE_OUT/'+Nom_Fichier,
 #               UNITE=unit,);
-#               
+#
 #   file =open('./REPE_OUT/'+Nom_Fichier,'w');
-# 
+#
 #   file.write(title)
 #   title=('\n#\n# INSTANT=%f     EPSI_XY=%e\n#\n' %(tfin,epxy_min))
 #   file.write(title)
-# 
+#
 #   impr ='%12.8e'
-# 
+#
 #   file.write('\n\n MATRICE TANGENTE CALCULEE\n\n');
-# 
+#
 #   np.savetxt(file,tang,impr,);
-# 
+#
 #   file.write('\n\n MATRICE TANGENTE PERTURBEE\n\n');
-# 
+#
 #   np.savetxt(file,pert,impr,);
-# 
+#
 #   impr ='%.5f'
-# 
+#
 #   file.write('\n\n DIFFERENCE\n\n');
-# 
+#
 #   np.savetxt(file,diff,impr,);
-# 
+#
 #   file.close();
-#                   
+#
 #   DEFI_FICHIER(ACTION='LIBERER',
 #                UNITE=unit,);
 
   IMPR_TABLE(TABLE=DIFF_MAT);
-  
+
   TEST_TABLE(NOM_PARA='MAT_DIFF',
              TABLE=DIFF_MAT,
              TYPE_TEST='MAX',
@@ -282,9 +282,9 @@ if matr_tang & verif:
 # ================================================================
 #                            POST-TRAITEMENTS
 # ================================================================
-# 
+#
 # tsigm = TAB_SIG.EXTR_TABLE().values();
-# 
+#
 # epxx = tsigm['EPXX'];
 # epyy = tsigm['EPYY'];
 # epxy = tsigm['EPXY'];
@@ -296,14 +296,14 @@ if matr_tang & verif:
 # epvp = tsigm['V1'];
 # edvp = tsigm['V2'];
 # indi = tsigm['V3'];
-# 
+#
 # # Verif
 # # -------------
 # sig1_calc =list( -2.*PCO+np.sqrt(PCO**2.+np.array(sixy)**2.) )
 # sig3_calc =list( -2.*PCO-np.sqrt(PCO**2.+np.array(sixy)**2.) )
-# 
+#
 # co_sigm,co_epsi,co_vari,= [],[],[],;
-# 
+#
 # # CHAMPS CINEMATIQUES
 # # _____________________________
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
@@ -311,68 +311,68 @@ if matr_tang & verif:
 #         X=epxy, Y=sig1_calc,
 #         legend='SIG1_CALC',
 #         color=1,);
-#         
+#
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         #X=epxy, Y=sixx,
 #         X=epxy, Y=sig3_calc,
 #         legend='SIG3_CALC',
 #         color=2,);
-#         
+#
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epxy, Y=siyy,
 #         legend='SIYY',
 #         color=3,);
-#         
+#
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epxy, Y=sixy,
 #         legend='SIXY',
 #         color=4,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epxy, Y=epxx,
 #         legend='EPXX',
 #         color=1,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epxy, Y=epyy,
 #         legend='EPYY',
 #         color=4,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epxy, Y=epzz,
 #         legend='EPZZ',
 #         color=5,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epxy, Y=epvp,
 #         legend='EPVP',
 #         color=2,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epxy, Y=edvp,
 #         legend='EDVP',
 #         color=3,);
-#         
+#
 # co_vari =Defi_Xmcourbe(courbe=co_vari,
 #         X=epxy, Y=indi,
 #         legend='INDICATEUR PLASTIQUE',
 #         color=1,);
-#         
+#
 # Courbes = [co_sigm,co_epsi,co_vari,];
-#            
+#
 # Nom_Fichier= ['shear_sigm.agr','shear_epsi.agr','shear_vari.agr',];
-#   
+#
 # unit=38
 # for c in range(len(Nom_Fichier)):
-# 
+#
 #   DEFI_FICHIER(ACTION='ASSOCIER',
 #                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
 #                UNITE=unit,);
-#                   
+#
 #   IMPR_FONCTION(FORMAT='XMGRACE',
 #               UNITE=unit,
 #               COURBE=Courbes[c]);
-#                   
+#
 #   DEFI_FICHIER(ACTION='LIBERER',
 #                UNITE=unit,);
 

@@ -273,7 +273,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 CHARGE = P0,
                 FONC_MULT = EVO_DES,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HHM',
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),
                 ITER_INTE_MAXI=300,
@@ -335,7 +335,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = P0,
                 FONC_MULT = EVO_DES1,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HHM',
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),
                 ITER_INTE_MAXI=300,
@@ -395,7 +395,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = P0,
                 FONC_MULT = EVO_DES2,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HHM',
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),
                 ITER_INTE_MAXI=300,
@@ -455,7 +455,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = P0,
                 FONC_MULT = EVO_DES3,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HHM',
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),
                 ITER_INTE_MAXI=300,
@@ -521,7 +521,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = P0,
                 FONC_MULT = EVO_DES4,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HHM',
                 RELATION_KIT = ('BARCELONE','LIQU_GAZ','HYDR_UTIL',),
                 ITER_INTE_MAXI=300,

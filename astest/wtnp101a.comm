@@ -170,7 +170,7 @@ RESU0=STAT_NON_LINE(
                         CHAM_MATER=CHMAT0,
                              EXCIT=_F(
                 CHARGE = CHARHO),
-                         COMP_INCR=_F( PARM_THETA=1.,
+                         COMPORTEMENT=_F( PARM_THETA=1.,
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
                   'ELAS',          'GAZ',

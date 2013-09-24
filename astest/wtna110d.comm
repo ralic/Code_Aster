@@ -278,7 +278,7 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                             VALE=
                                  (
                      SINETAGO0,SINETAGO0,SINETAGO0,
-                     0.0, 0.0, 0.0, 
+                     0.0, 0.0, 0.0,
                      SIPAGO0,SIPAGO0,SIPAGO0,
                      0.0, 0.0, 0.0,
                      0.,0.,0.,0.,
@@ -322,7 +322,7 @@ U2=STAT_NON_LINE(
                                         _F( CHARGE = DEP_FIX, ),
                                         _F( CHARGE = DEP_VAR,FONC_MULT = MSTEP ),
                 ),
-                        COMP_INCR=_F(
+                        COMPORTEMENT=_F(
                          RELATION='KIT_THHM',
                            RELATION_KIT=(
                                 'ELAS_GONF','LIQU_GAZ','HYDR_VGM'),

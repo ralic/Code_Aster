@@ -146,14 +146,14 @@ CHAMDEPL=STAT_NON_LINE(
                 CHARGE = CLF), _F(
                 CHARGE = CLV,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=(_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 GROUP_MA = (
                   'EPROUVET',  )),
-                         COMP_ELAS=_F(
+                         _F(
                 RELATION = 'ELAS',
                 GROUP_MA = (
-                  'PORTEPRO',  )),
+                  'PORTEPRO',  )),),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
@@ -208,17 +208,17 @@ THETA3=CALC_THETA(       MODELE=MO,
 #
 # CALC_G POUR LES INSTANTS 22, 36, 50, 64
 #
-# Ici, la loi de comportement dans CALC_G (ELAS_VMIS_TRAC) 
+# Ici, la loi de comportement dans CALC_G (ELAS_VMIS_TRAC)
 # differe de la loi de
 # comportement de STAT_NON_LINE (VMIS_ISOT_TRAC).
-# Ceci est du au fait que l'on veut calculer G en supposant 
+# Ceci est du au fait que l'on veut calculer G en supposant
 # que le chargement est monotone
-# proportionnel. L'utilisation de la loi VMIS_ISOT_TRAC dans 
+# proportionnel. L'utilisation de la loi VMIS_ISOT_TRAC dans
 # CALC_G aurait conduit a
 # calculer le parametre GTP (voir doc U2.82.03).
 
 G220=CALC_G(        RESULTAT=CHAMDEPL,
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     THETA=_F(THETA=THETA0),
                     NUME_ORDRE=22
               )
@@ -226,105 +226,105 @@ G220=CALC_G(        RESULTAT=CHAMDEPL,
 #
 G360=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA0),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
 G500=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA0),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
 G640=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA0),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 
 #
 G221=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA1),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=22
               )
 
 #
 G361=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA1),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
 G501=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA1),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
 G641=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA1),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 
 #
 G222=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA2),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=22
               )
 
 #
 G362=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA2),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
 G502=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA2),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
 G642=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA2),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 
 #
 G223=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA3),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                   NUME_ORDRE=22
               )
 
 #
 G363=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA3),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
 G503=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA3),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
 G643=CALC_G(        RESULTAT=CHAMDEPL,
                     THETA=_F(THETA=THETA3),
-                    COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 

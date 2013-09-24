@@ -98,7 +98,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
          ),
 
-         COMP_ELAS       =C_COMP_ELAS('MACR_ASPIC_CALC'),
+         COMPORTEMENT    =C_COMPORTEMENT('MACR_ASPIC_CALC'),
 
          THETA_3D        =FACT(statut='f',max='**',
            R_INF           =SIMP(statut='o',typ='R'),

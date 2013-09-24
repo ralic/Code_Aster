@@ -241,7 +241,7 @@ DEFNL=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARA,
                     EXCIT=_F( CHARGE = CHARGT),
-                    COMP_INCR=_F(RELATION='ELAS'),
+                    COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE),
            NEWTON=_F(MATRICE='ELASTIQUE'),
                     );

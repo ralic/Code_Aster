@@ -245,7 +245,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         EXCIT      =_F ( CHARGE       = TR_CS,
                                          FONC_MULT    = COEF,
                                          TYPE_CHARGE  = 'FIXE_CSTE'),
-                        COMP_ELAS  =_F ( RELATION     = 'ELAS',
+                        COMPORTEMENT  =_F ( RELATION     = 'ELAS',
                                          DEFORMATION  = 'PETIT',
                                          TOUT         = 'OUI'    ),
                         INCREMENT  =_F ( LIST_INST    = LINST, ),
@@ -327,7 +327,7 @@ CRIT[2] =   FORMULE(
            VALE=''' 1.5*( DTAUMA + max(0,NORMAX) ) '''
            )
 
-           
+
 #POUR RETROUVER 'DANG_VAN_MODI_AC'
 CRIT[3] =  FORMULE(
            NOM_PARA=('DTAUMA','PHYDRM','NORMOY','EPNMAX', 'EPNMOY'),
@@ -340,49 +340,49 @@ CRIT[3] =  FORMULE(
 
 NPAR = ['DTAUM1','VNM1X', 'VNM1Y', 'VNM1Z','SINMAX1', 'SINMOY1','EPNMAX1', 'EPNMOY1',
          'SIGEQ1','NBRUP1','ENDO1',
-         
+
         'DTAUM2','VNM2X', 'VNM2Y', 'VNM2Z','SINMAX2', 'SINMOY2','EPNMAX2', 'EPNMOY2',
          'SIGEQ2','NBRUP2','ENDO2',
          ]
-CTEST = ['RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','ABSOLU', 'RELATIF', 
+CTEST = ['RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','ABSOLU', 'RELATIF',
          'ABSOLU','RELATIF', 'RELATIF', 'RELATIF',
-         
-         'RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','ABSOLU', 'RELATIF', 
+
+         'RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','ABSOLU', 'RELATIF',
          'ABSOLU','RELATIF', 'RELATIF', 'RELATIF',
          ]
- 
-RESU = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
+
+RESU = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04, 0,
         3.0000000000000E+02, 1.0946000000000E+04 ,9.1356470832402E-05,
-        
-        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0, 
+
+        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04, 0,
         3.0000000000000E+02, 1.0946000000000E+04 ,9.1356470832402E-05,
-# DANG_VAN        
-        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
+# DANG_VAN
+        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04,0,
         2.7500000000000E+02, 1.4903000000000E+04 ,6.7099587679274E-05,
-        
-        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0, 
+
+        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04,0,
         2.7500000000000E+02, 1.4903000000000E+04 ,6.7099587679274E-05,
           ]
 
-RESUF = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
-        5.0000000000000E+01, 0,1.7500000000000E-04, 0,
-        3.0000000000000E+02, 1.6519E+04 ,6.05356E-05, 
-        
-        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0, 
+RESUF = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04, 0,
         3.0000000000000E+02, 1.6519E+04 ,6.05356E-05,
-# DANG_VAN        
-        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
+
+        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0,
+        5.0000000000000E+01, 0,1.7500000000000E-04, 0,
+        3.0000000000000E+02, 1.6519E+04 ,6.05356E-05,
+# DANG_VAN
+        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04,0,
-        2.7500000000000E+02, 2.2822E+04 ,4.381737E-05, 
-        
-        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0, 
+        2.7500000000000E+02, 2.2822E+04 ,4.381737E-05,
+
+        1.50E+02, -7.0710678118655E-01, 7.0710678118655E-01,0,
         5.0000000000000E+01, 0,1.7500000000000E-04,0,
-        2.7500000000000E+02, 2.2822E+04 ,4.381737E-05 
+        2.7500000000000E+02, 2.2822E+04 ,4.381737E-05
           ]
 
 VALE_CALC_1=[150.0,
@@ -474,7 +474,7 @@ VALE_CALC_2=[150.0,
  275.0,
  22738.0,
  4.3980118706997E-05,]
-     
+
 # CALCUL DE LA FATIGUE SUR LES FACE 1, 2 ET 3 DE LA STRUCTURE AUX NOEUDS
 # ----------------------------------------------------------------------
 FANL1 = [None]*8
@@ -491,7 +491,7 @@ for i in range(2) :
                        METHODE       = 'CERCLE_EXACT'
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -500,7 +500,7 @@ for i in range(2) :
                            CHAM_GD=FANL1[i],
                            VALE_CALC=VALE_CALC_1[j+ 22*i],
                            VALE_REFE=RESU[j+ 22*i],
-                           ), 
+                           ),
                 )
 
 ###POUR CRITERE EN FORMULE
@@ -519,7 +519,7 @@ for i in range(2) :
                        COURBE_GRD_VIE  = 'WOHLER',
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -528,7 +528,7 @@ for i in range(2) :
                            CHAM_GD=FANL1[i+2],
                            VALE_CALC=VALE_CALC_1[j+ 22*i],
                            VALE_REFE=RESU[j+ 22*i],
-                           ), 
+                           ),
                 )
 
 ###OPTION 2: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL
@@ -547,7 +547,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -556,7 +556,7 @@ for i in range(2) :
                            CHAM_GD=FANL1[i+4],
                            VALE_CALC=VALE_CALC_1[j+ 22*i],
                            VALE_REFE=RESU[j+ 22*i],
-                           ), 
+                           ),
                 )
 
 ###OPTION 3: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL_F
@@ -575,7 +575,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL_F
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -612,7 +612,7 @@ for i in range(1) :
                              CHAM_GD=FANL2[i],
                              VALE_CALC=VALE_CALC_1[j+ 22*i],
                              VALE_REFE=RESU[j+ 22*i],
-                             ), 
+                             ),
                 )
 
 ###POUR CRITERE EN FORMULE
@@ -631,7 +631,7 @@ for i in range(2) :
                        COURBE_GRD_VIE  = 'WOHLER',
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_ELEM=_F(CRITERE=CTEST[j],
                              REFERENCE='ANALYTIQUE',
                              POINT=3,
@@ -641,7 +641,7 @@ for i in range(2) :
                              CHAM_GD=FANL2[i+2],
                              VALE_CALC=VALE_CALC_1[j+ 22*i],
                              VALE_REFE=RESU[j+ 22*i],
-                             ), 
+                             ),
                 )
 
 ###OPTION 2: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL
@@ -660,7 +660,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_ELEM=_F(CRITERE=CTEST[j],
                              REFERENCE='ANALYTIQUE',
                              POINT=3,
@@ -670,7 +670,7 @@ for i in range(2) :
                              CHAM_GD=FANL2[i+4],
                              VALE_CALC=VALE_CALC_1[j+ 22*i],
                              VALE_REFE=RESU[j+ 22*i],
-                             ), 
+                             ),
                 )
 
 ###OPTION 3: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL_F
@@ -689,7 +689,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL_F
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_ELEM=_F(CRITERE=CTEST[j],
                              REFERENCE='ANALYTIQUE',
                              POINT=3,
@@ -787,7 +787,7 @@ for i in range(1) :
                        METHODE       = 'CERCLE_EXACT'
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -796,7 +796,7 @@ for i in range(1) :
                            CHAM_GD=FALI1[i],
                            VALE_CALC=VALE_CALC_1[j+ 22*i],
                            VALE_REFE=RESU[j+ 22*i],
-                           ), 
+                           ),
                 )
 
 ###POUR CRITERE EN FORMULE
@@ -815,7 +815,7 @@ for i in range(2) :
                        COURBE_GRD_VIE  = 'WOHLER',
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -824,7 +824,7 @@ for i in range(2) :
                            CHAM_GD=FALI1[i+2],
                            VALE_CALC=VALE_CALC_1[j+ 22*i],
                            VALE_REFE=RESU[j+ 22*i],
-                           ), 
+                           ),
                 )
 
 ###OPTION 2: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL
@@ -843,7 +843,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -852,7 +852,7 @@ for i in range(2) :
                            CHAM_GD=FALI1[i+4],
                            VALE_CALC=VALE_CALC_1[j+ 22*i],
                            VALE_REFE=RESU[j+ 22*i],
-                           ), 
+                           ),
                 )
 
 ###OPTION 3: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL_F
@@ -871,7 +871,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL_F
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                            CRITERE=CTEST[j],
                            REFERENCE='ANALYTIQUE',
@@ -908,7 +908,7 @@ for i in range(1) :
                              CHAM_GD=FALI2[i],
                              VALE_CALC=VALE_CALC_1[j+ 22*i],
                              VALE_REFE=RESU[j+ 22*i],
-                             ), 
+                             ),
                 )
 
 ###POUR CRITERE EN FORMULE
@@ -927,7 +927,7 @@ for i in range(2) :
                        COURBE_GRD_VIE  = 'WOHLER',
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_ELEM=_F(CRITERE=CTEST[j],
                              REFERENCE='ANALYTIQUE',
                              POINT=3,
@@ -937,7 +937,7 @@ for i in range(2) :
                              CHAM_GD=FALI2[i+2],
                              VALE_CALC=VALE_CALC_1[j+ 22*i],
                              VALE_REFE=RESU[j+ 22*i],
-                             ), 
+                             ),
                 )
 
 ###OPTION 2: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL
@@ -956,7 +956,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_ELEM=_F(CRITERE=CTEST[j],
                              REFERENCE='ANALYTIQUE',
                              POINT=3,
@@ -966,7 +966,7 @@ for i in range(2) :
                              CHAM_GD=FALI2[i+4],
                              VALE_CALC=VALE_CALC_1[j+ 22*i],
                              VALE_REFE=RESU[j+ 22*i],
-                             ), 
+                             ),
                 )
 
 ###OPTION 3: COURBE_GRD_VIE  = 'FORM_VIE', FORMULE_VIE = WHOL_F
@@ -985,7 +985,7 @@ for i in range(2) :
                        FORMULE_VIE = WHOL_F
                      )
 
-   for j in range(22) :     
+   for j in range(22) :
       TEST_RESU(CHAM_ELEM=_F(CRITERE=CTEST[j],
                              REFERENCE='ANALYTIQUE',
                              POINT=3,
@@ -1023,7 +1023,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_NL,
                         VALE_CALC=529.15026221292,
                         VALE_REFE=529.15026221291998,
-                        ), 
+                        ),
                      _F(
                         REFERENCE='ANALYTIQUE',
                         POINT=3,
@@ -1033,7 +1033,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_NL,
                         VALE_CALC=600.00000000000,
                         VALE_REFE=600.0,
-                        ), 
+                        ),
                      _F(
                         REFERENCE='ANALYTIQUE',
                         POINT=7,
@@ -1043,7 +1043,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_NL,
                         VALE_CALC=529.15026221292,
                         VALE_REFE=529.15026221291998,
-                        ), 
+                        ),
                      _F(
                         REFERENCE='ANALYTIQUE',
                         POINT=7,
@@ -1053,7 +1053,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_NL,
                         VALE_CALC=600.00000000000,
                         VALE_REFE=600.0,
-                        ), 
+                        ),
                      ),
           )
 
@@ -1076,7 +1076,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N1',
                       CHAM_GD=FAT_NLNO,
                       VALE_CALC=529.15026221292,
                       VALE_REFE=529.15026221291998,
-                      ), 
+                      ),
                    _F(NOEUD='N1',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='TRESCA',
@@ -1084,7 +1084,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N1',
                       CHAM_GD=FAT_NLNO,
                       VALE_CALC=600.00000000000,
                       VALE_REFE=600.0,
-                      ), 
+                      ),
                    ),
           )
 
@@ -1110,7 +1110,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_L,
                         VALE_CALC=529.15026221292,
                         VALE_REFE=529.15026221291998,
-                        ), 
+                        ),
                      _F(
                         REFERENCE='ANALYTIQUE',
                         POINT=3,
@@ -1120,7 +1120,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_L,
                         VALE_CALC=600.00000000000,
                         VALE_REFE=600.0,
-                        ), 
+                        ),
                      _F(
                         REFERENCE='ANALYTIQUE',
                         POINT=7,
@@ -1130,7 +1130,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_L,
                         VALE_CALC=529.15026221292,
                         VALE_REFE=529.15026221291998,
-                        ), 
+                        ),
                      _F(
                         REFERENCE='ANALYTIQUE',
                         POINT=7,
@@ -1140,7 +1140,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD=FATI_L,
                         VALE_CALC=600.00000000000,
                         VALE_REFE=600.0,
-                        ), 
+                        ),
                      ),
           )
 
@@ -1163,7 +1163,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N206',
                       CHAM_GD=FAT_LNO,
                       VALE_CALC=529.15026221292,
                       VALE_REFE=529.15026221291998,
-                      ), 
+                      ),
                    _F(NOEUD='N206',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='TRESCA',
@@ -1171,7 +1171,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N206',
                       CHAM_GD=FAT_LNO,
                       VALE_CALC=600.00000000000,
                       VALE_REFE=600.0,
-                      ), 
+                      ),
                    ),
           )
 
@@ -1180,7 +1180,7 @@ CRIT_FAT =   FORMULE(
            NOM_PARA=('DSIGEQ'),
            VALE= ''' 2*DSIGEQ '''
            )
-                              
+
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX POINTS DE GAUSS
 # -----------------------------------------------------------------------
 
@@ -1195,7 +1195,7 @@ FANLVMMA=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       FORMULE_GRDEQ   = CRIT_FAT,
                       COURBE_GRD_VIE  = 'WOHLER',
                     )
-                    
+
 TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
                         POINT=3,
                         NOM_CMP='SIGEQ1',
@@ -1204,7 +1204,7 @@ TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
                         CHAM_GD=FANLVMMA,
                         VALE_CALC=529.15026221292,
                         VALE_REFE=529.15026221291998,
-                        ), 
+                        ),
                      _F(REFERENCE='AUTRE_ASTER',
                         POINT=7,
                         NOM_CMP='SIGEQ1',
@@ -1213,7 +1213,7 @@ TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
                         CHAM_GD=FANLVMMA,
                         VALE_CALC=529.15026221292,
                         VALE_REFE=529.15026221291998,
-                        ), 
+                        ),
                      ),
           )
 
@@ -1238,7 +1238,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                      CHAM_GD=FANLVMNO,
                      VALE_CALC=529.15026221292,
                      VALE_REFE=529.15026221291998,
-                     ), 
+                     ),
           )
 
 FANLVMN1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -1259,7 +1259,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                      CHAM_GD=FANLVMN1,
                      VALE_CALC=529.15026221292,
                      VALE_REFE=529.15026221291998,
-                     ), 
+                     ),
           )
 
 FIN( )

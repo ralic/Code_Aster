@@ -73,7 +73,7 @@ U5=STAT_NON_LINE(
                          CARA_ELEM=CARBA,
                              EXCIT=_F(  CHARGE = CHAR,
                                         FONC_MULT = FONC5),
-                         COMP_INCR=_F(  RELATION = 'VMIS_ASYM_LINE'),
+                         COMPORTEMENT=_F(  RELATION = 'VMIS_ASYM_LINE'),
                          INCREMENT=_F(  LIST_INST = LINST4),
                             NEWTON=_F(  PREDICTION = 'ELASTIQUE',
                                         MATRICE = 'TANGENTE',

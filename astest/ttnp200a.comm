@@ -388,7 +388,7 @@ THL10=CALC_META(reuse=THL10,
                 RESULTAT=THL10,
                 OPTION='META_ELNO',
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),);
 
 #     -  THERMIQUE NON LINEAIRE
@@ -420,7 +420,7 @@ THNL6=CALC_META(reuse=THNL6,
                 CHAM_MATER=CHMATNL,
                 RESULTAT=THNL6,
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT = 'OUI'),
                 OPTION='META_ELNO');
 

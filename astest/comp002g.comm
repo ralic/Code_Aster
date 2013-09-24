@@ -110,7 +110,7 @@ compor='VISC_ISOT_TRAC'
 
 tabresu=TEST_COMPOR(OPTION='MECA',
 
-                   COMP_INCR=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE'),
+                   COMPORTEMENT=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE'),
                    SUPPORT='ELEMENT',
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,

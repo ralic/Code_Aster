@@ -634,7 +634,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 RESULTAT=TEMPE,
                 CHAM_MATER=CHMAT,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
                 OPTION='META_ELNO',);
 
@@ -655,16 +655,16 @@ TEMPE=CALC_META(reuse=TEMPE,
                 CHAM_MATER=CHMAT,
                 ETAT_INIT=_F(EVOL_THER=TEMPE,
                              NUME_INIT=40),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT = 'OUI'),
                 OPTION='META_ELNO',);
-                   
+
 TEMPE=CALC_META(reuse=TEMPE,
                 MODELE=MOTH,
                 RESULTAT=TEMPE,
                 CHAM_MATER=CHMAT,
                 OPTION='DURT_ELNO',);
-                   
+
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=110,

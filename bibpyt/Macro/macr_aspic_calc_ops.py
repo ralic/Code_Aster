@@ -19,7 +19,7 @@
 
 def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
                              FOND_FISS_1,FOND_FISS_2,RESU_THER,AFFE_MATERIAU,EQUILIBRE,
-                             PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_ELAS,ENERGIE,
+                             PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMPORTEMENT,ENERGIE,
                              THETA_3D,OPTION,SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
                              INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE,BORNES ,**args):
   """
@@ -348,12 +348,11 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
      
   motscles['EXCIT'] =mcfex
 #
-  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
-  mcfci.append(  _F(GROUP_MA=NOMNOE,RELATION='ELAS'))
-  motscles['COMP_INCR'] =mcfci
-#
-  if COMP_ELAS!=None :
-    motscles['COMP_ELAS'] =_F(GROUP_MA=GRMAIL[:-2] ,RELATION=COMP_ELAS['RELATION'])
+  if COMPORTEMENT!=None :
+     mcfci=[]  
+     mcfci.append( _F(GROUP_MA=GRMAIL[:-2] ,RELATION=COMPORTEMENT['RELATION']) )
+     mcfci.append( _F(GROUP_MA=NOMNOE,RELATION='ELAS') )
+     motscles['COMPORTEMENT'] =mcfci
 #
   dSolveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
   for i in dSolveur.keys():
@@ -760,8 +759,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
           montit = 'G_THETA AVEC R_INF = '+str(tht3d['R_INF'])+' ET R_SUP = '+str(tht3d['R_SUP'])
           motscles={}
-          if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
-                                                          RELATION = COMP_ELAS['RELATION'],)
+          if COMPORTEMENT!=None:  motscles['COMPORTEMENT']=  _F(TOUT     = 'OUI',
+                                                          RELATION = COMPORTEMENT['RELATION'],)
           __gtheta = CALC_G ( THETA      = _F(THETA=__theta),
                               OPTION     = 'CALC_G_GLOB',
                               RESULTAT   = nomres,
@@ -781,8 +780,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
               __gbil = CALC_G( THETA      = _F(THETA=__theta),
                                RESULTAT   = nomres,
                                TOUT_ORDRE = 'OUI',
-                               COMP_ELAS  =  _F(TOUT     = 'OUI',
-                                                RELATION = COMP_ELAS['RELATION'],),
+                               COMPORTEMENT  =  _F(TOUT     = 'OUI',
+                                                RELATION = COMPORTEMENT['RELATION'],),
                                TITRE    = montit,
                                OPTION   = 'G_MAX_GLOB',
                                BORNES   = mcfact,)
@@ -792,8 +791,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
           montit = 'G AVEC R_INF = '+str(tht3d['R_INF'])+' ET R_SUP = '+str(tht3d['R_SUP'])
           motscles={}
-          if COMP_ELAS!=None:  motscles['COMP_ELAS'    ]=  _F(TOUT     = 'OUI',
-                                                              RELATION = COMP_ELAS['RELATION'],)
+          if COMPORTEMENT!=None:  motscles['COMPORTEMENT'    ]=  _F(TOUT     = 'OUI',
+                                                              RELATION = COMPORTEMENT['RELATION'],)
           if FERME:
                                motscles['LISSAGE']=_F(LISSAGE_THETA= 'LAGRANGE',
                                                       LISSAGE_G= 'LAGRANGE',)
@@ -824,8 +823,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                           R_SUP      = tht3d['R_SUP'],),
                                 RESULTAT   = nomres,
                                 TOUT_ORDRE = 'OUI',
-                                COMP_ELAS  =  _F(TOUT     = 'OUI',
-                                                 RELATION = COMP_ELAS['RELATION'],),
+                                COMPORTEMENT  =  _F(TOUT     = 'OUI',
+                                                 RELATION = COMPORTEMENT['RELATION'],),
                                 TITRE      = montit,
                                 OPTION     = 'G_MAX',**motscles)
               IMPR_TABLE(TABLE = __glbil, )

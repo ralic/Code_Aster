@@ -631,7 +631,7 @@ U2=STAT_NON_LINE(
                   MODELE=MODEL,
               CHAM_MATER=CHMAT_F,
                CARA_ELEM=CARELEM,
-               COMP_INCR=_F(RELATION='ELAS'),
+               COMPORTEMENT=_F(RELATION='ELAS'),
                    EXCIT=_F( CHARGE = CHG1),
                INCREMENT=_F(LIST_INST=LINST,),
                          )

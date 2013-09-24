@@ -110,11 +110,12 @@ def union(args):
 
 def intersection(args):
    """Intersection de N séquences."""
+   args = [i for i in args if i is not None]
    if len(args) < 1:
       return tuple()
    res = list(args[0])
    for seq in args[1:]:
-      if seq is None:
+      if seq in (None, ()):
          continue
       assert type(seq) in (list, tuple), seq
       d = {}.fromkeys(res, 1)

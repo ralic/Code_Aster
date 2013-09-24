@@ -89,7 +89,7 @@ RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
                          _F( CHARGE = CHAR),),
-                      COMP_INCR =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
+                      COMPORTEMENT =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
                                     ITER_INTE_MAXI = 1000),
                       INCREMENT =_F(LIST_INST =L_INST,  ),
                       NEWTON    =_F(

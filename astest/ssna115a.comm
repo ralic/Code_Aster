@@ -177,7 +177,7 @@ EVOL = STAT_NON_LINE(
       _F(CHARGE = FIXE),
       _F(CHARGE = TRACTIOF, FONC_MULT=FCT)
         ),
-         COMP_INCR = (
+         COMPORTEMENT = (
       _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
       _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_EXP'),
        ),
@@ -208,7 +208,7 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
     _F(CHARGE = FIXE),
     _F(CHARGE = TRACTIOF, TYPE_CHARGE = 'FIXE_PILO')
     ),
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
     _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_EXP'),
     ),

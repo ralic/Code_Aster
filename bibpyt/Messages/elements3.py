@@ -230,10 +230,6 @@ cata_msg = {
   calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, déformation : GROT_GDEP
 """),
 
-92 : _(u"""
- les comportements élastiques de type COMP_ELAS ne sont pas disponibles pour la modélisation DKTG.
-"""),
-
 93 : _(u"""
   déformation :  %(k1)s  non implantée sur les éléments COQUE_3D en grandes rotations
   déformation : GROT_GDEP obligatoirement

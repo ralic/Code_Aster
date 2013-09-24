@@ -153,7 +153,7 @@ for k in range(1,nbadap+1):
   RESU[k]=STAT_NON_LINE(MODELE=MODE[k],
                         CHAM_MATER=CHMAT[k],
                         EXCIT=_F(CHARGE=CHAR[k],),
-                        COMP_INCR=_F(RELATION='KIT_HM',
+                        COMPORTEMENT=_F(RELATION='KIT_HM',
                                      RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
                                      PARM_THETA=0.56999999999999995,),
                         INCREMENT=_F(LIST_INST=LI,

@@ -76,7 +76,7 @@ subroutine mtdorc(modelz, compoz, carcri)
 !
     compor = '&&'//nompro//'.COMPOR'
     nbmo1 = 1
-    moclef(1) = 'COMP_INCR'
+    moclef(1) = 'COMPORTEMENT'
 !
     mocles(1) = 'GROUP_MA'
     mocles(2) = 'MAILLE'

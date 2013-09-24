@@ -120,7 +120,7 @@ NONLI=STAT_NON_LINE(
                 FONC_MULT = D_FONC,
                 TYPE_CHARGE = 'SUIV'),
                 ),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
                        CONVERGENCE=_F(

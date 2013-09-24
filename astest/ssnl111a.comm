@@ -427,7 +427,7 @@ U=STAT_NON_LINE(
                         CHAM_MATER=CM,EXCIT=(
                              _F(
                 CHARGE = LIAISON),),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                 TOUT = 'OUI'),
                          INCREMENT=_F(

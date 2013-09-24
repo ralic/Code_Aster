@@ -81,7 +81,7 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
                                  SUBD_PAS      = 10,
                                  SUBD_NIVEAU   = 10),)
 
-U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
+U1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',
                                ALGO_INTE='SPECIFIQUE',
                                ITER_INTE_MAXI=20,
                                RESI_INTE_RELA=1E-8,

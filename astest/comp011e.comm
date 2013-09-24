@@ -83,7 +83,7 @@ compor = 'ENDO_ISOT_BETON'
 Nbvari = 2
 
 tabresu = TEST_COMPOR( MATER      = MATER,
-                       COMP_INCR  = _F(RELATION=compor),
+                       COMPORTEMENT  = _F(RELATION=compor),
                        LIST_MATER = LMAT2,
                        ALPHA      = ALPH,
                        YOUNG      = YOUN,

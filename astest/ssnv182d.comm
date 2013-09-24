@@ -58,12 +58,12 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                CONTACT_INIT = 'OUI',
                                COULOMB      = 1.0,
                                ALGO_CONT    = 'STANDARD',
-                               COEF_CONT    = 100.,    
+                               COEF_CONT    = 100.,
                                ALGO_LAGR    = 'NON',
-                             ), 
+                             ),
                          ),
                    );
-                     
+
 
 E=100.0E6
 nu=0.
@@ -92,10 +92,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(                  
+                   EXCIT=(
                           _F(CHARGE=CH1)),
-                   CONTACT  = CTXFEM,       
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   CONTACT  = CTXFEM,
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='SURF'),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0),
@@ -169,9 +169,9 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MIN',
            TABLE=LAG,)
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
@@ -180,14 +180,14 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN')) 
+                              MODELISATION='C_PLAN'))
 
 RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
- 
+
 IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,
                                             NOM_CHAM='DEPL',
                                             TYPE_CHAM='VECT_3D',
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=2.9E-4,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 ),

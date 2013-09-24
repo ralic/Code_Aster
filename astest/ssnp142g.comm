@@ -1,19 +1,19 @@
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 2D A L'AIDE DES ELEMENTS DE JOINT HYME ET DE LA LOI JOINT_MECA_FROT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT(CODE=_F(NOM='SSNP142G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
@@ -114,7 +114,7 @@ MAT_JHM=DEFI_MATERIAU(
                                      K_T=k_t,
                                      PENA_TANG=ecrouissage,
                                      MU=mu,
-                                     ADHESION=adhe, 
+                                     ADHESION=adhe,
                                      RHO_FLUIDE=1000., #kg/m^3
                                      VISC_FLUIDE=1.E-3, #Pa.s
                                      OUV_MIN=5.E-8 #m
@@ -177,7 +177,7 @@ U_HM=STAT_NON_LINE(MODELE=MO,
                          _F(CHARGE=P_AM_J),
                          _F(CHARGE=P_AV_J),
                           ),
-                  COMP_INCR=(
+                  COMPORTEMENT=(
                              _F(RELATION='JOINT_MECA_FROT',
                                 GROUP_MA='JOINT'),
                              _F(RELATION='ELAS',
@@ -218,7 +218,7 @@ SAUTHM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INST=tfin,
                                GROUP_NO=('JOINT_H'),
                                NOM_CMP='V7'));
-                               
+
 # FLUX HYDRO DANS LE JOINT
 FLUXHM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SAUT_N',
@@ -227,7 +227,7 @@ FLUXHM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INST=tfin,
                                GROUP_NO=('JOINT_H'),
                                NOM_CMP='V15'));
-                               
+
 # CONTRAINTE NORMALE TOTALE DANS LE JOINT
 SNT_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
@@ -305,7 +305,7 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=4.6,),
            )
-           
+
 TEST_TABLE(
            VALE_CALC=-4.2267593243636E-13,
            NOM_PARA='V15',

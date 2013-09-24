@@ -76,11 +76,6 @@ subroutine te0346(option, nomte)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PCARCRI', 'L', icarcr)
 !
-!     SEULEMENT EN COMP_INCR
-    if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call utmess('F', 'ELEMENTS2_90')
-    endif
-!
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte

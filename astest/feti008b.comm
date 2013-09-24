@@ -46,7 +46,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODM,
 CH2=AFFE_CHAR_MECA(MODELE=MODM,
                    DDL_IMPO=(_F(GROUP_NO=('DIRI'),DX=0.0,DY=0.0,),),),
 
-                                   
+
 CH3 = DEFI_CONTACT( MODELE         = MODM,
                     FORMULATION    = 'CONTINUE',
                     ALGO_RESO_CONT = 'NEWTON',
@@ -57,10 +57,10 @@ CH3 = DEFI_CONTACT( MODELE         = MODM,
                                ),
                              _F(GROUP_MA_MAIT='CONTACT3',
                                 GROUP_MA_ESCL='CONTACT4',
-                               )  
+                               )
                        ),
                     );
-                                                       
+
 SDFETI=DEFI_PART_OPS(NOM='SD',
                      MODELE=MODM,
                      INFO=1,
@@ -101,7 +101,7 @@ RESU=STAT_NON_LINE(MODELE=MODM,
                                  ITER_GLOB_ELAS=20,
                                  ITER_GLOB_MAXI=20)),
                  INCREMENT=_F( LIST_INST = INSTNL),
-                 COMP_INCR=(_F(RELATION='ELAS',GROUP_MA = 'STRU'))
+                 COMPORTEMENT=(_F(RELATION='ELAS',GROUP_MA = 'STRU'))
                     )
 
 
@@ -115,7 +115,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N1',
                    NOM_CMP='DX',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=3,
@@ -124,7 +124,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N1',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=3,
@@ -133,7 +133,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N3',
                    NOM_CMP='DX',
                    VALE_CALC=-6.6982574393289999E-07,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=3,
@@ -142,7 +142,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N3',
                    NOM_CMP='DY',
                    VALE_CALC=-1.0337311383402E-06,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=3,
@@ -151,7 +151,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N5',
                    NOM_CMP='DX',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=3,
@@ -160,7 +160,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N5',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=3,
@@ -169,7 +169,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N20',
                    NOM_CMP='DX',
                    VALE_CALC=-1.4121935999999999E-3,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
@@ -178,7 +178,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N20',
                    NOM_CMP='DY',
                    VALE_CALC=-3.8377240000000003E-4,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
@@ -187,7 +187,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N20',
                    NOM_CMP='LAGS_C',
                    VALE_CALC=-68.946802371578002,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N22',
                    NOM_CMP='DX',
                    VALE_CALC=-2.3728679999999999E-4,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
@@ -205,7 +205,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N22',
                    NOM_CMP='DY',
                    VALE_CALC=-7.3395100000000005E-4,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
@@ -214,7 +214,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOEUD='N22',
                    NOM_CMP='LAGS_C',
                    VALE_CALC=-65.492467998547994,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 ),

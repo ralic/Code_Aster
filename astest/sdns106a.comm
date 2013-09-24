@@ -184,7 +184,7 @@ MP2X=DEFI_FONCTION(NOM_PARA='X',
                           11582500.0000000,-154265.625000000,),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
-                   
+
 MP1Y=DEFI_FONCTION(NOM_PARA='X',
                    VALE=(-13640000.0000000,150000.000000000,
                          -10162500.0000000,315290.625000000,
@@ -371,7 +371,7 @@ DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=inst1,),
 RESU1=DYNA_NON_LINE(MODELE=MOD,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARA_ELE,
-                    COMP_INCR=_F(RELATION='GLRC_DAMAGE',
+                    COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',
                                  DEFORMATION='GROT_GDEP',),
                     INCREMENT=_F(LIST_INST=DEFLIST,
                                  PRECISION=1.E-1),

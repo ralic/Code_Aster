@@ -141,7 +141,7 @@ SOLNL=STAT_NON_LINE(
                              _F(
                 CHARGE = CIS,
                 FONC_MULT = COEF_CS)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VISCOCHAB',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 40,

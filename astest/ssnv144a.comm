@@ -527,7 +527,7 @@ COQUE1P=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                ),
                          INCREMENT=_F(
@@ -923,7 +923,7 @@ COQUE1E=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP',
                ),

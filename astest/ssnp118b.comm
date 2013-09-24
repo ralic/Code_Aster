@@ -142,7 +142,7 @@ U_1=STAT_NON_LINE(
     _F(CHARGE = LIAISON),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -169,7 +169,7 @@ STAT_NON_LINE(reuse = U_1,
     ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -193,7 +193,7 @@ U_2=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_2, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -220,7 +220,7 @@ STAT_NON_LINE(reuse = U_2,
     ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -244,7 +244,7 @@ U_3=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_3, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -271,7 +271,7 @@ STAT_NON_LINE(reuse = U_3,
     ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',

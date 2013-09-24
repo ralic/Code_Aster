@@ -43,7 +43,7 @@ R_ELA_ISO = .01      ;   # on desactive le mecanisme isotrope
 
 import pdb
 
-# Pour des raisons de performances, on force SDVERI='NON'. 
+# Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(CODE=_F(NOM='WDNP101A', NIV_PUB_WEB='INTERNET',),
       IGNORE_ALARM='CALCULEL4_9',DEBUG=_F(SDVERI='NON'));
 
@@ -251,7 +251,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                         _F(CHARGE=CHLAT),
                         _F(CHARGE=PES, FONC_MULT=FOC)),
                  ETAT_INIT=_F(SIGM=SIEF),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -326,18 +326,18 @@ for n in range(1,nbcouche-1):
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
-    
+
     t_init=(n+1)*1.E6
     t_fin =(n+2)*1.E6
-    
+
     print ' > t_init =',t_init,' t_fin =',t_fin
-    
+
     FONCH = DEFI_FONCTION(NOM_PARA='INST',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
                           VALE=(t_init, 0.,
                                 t_fin, 1.),);
-                                
+
     MAT1_f=DEFI_MATERIAU(ELAS=_F(E     = YOUNG,
                            NU    = NU,
                            RHO   = RHO,
@@ -367,18 +367,18 @@ for n in range(1,nbcouche-1):
                               MATER=MAT0),
                             _F(GROUP_MA='BAS',
                               MATER=MAT_PAR),),);
-                              
+
     PESHAU=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81,
                                        DIRECTION=(0.0,-1.0,0.0,),
                                        GROUP_MA =list_group_ma[n+1],),);
-                                       
+
     PESBAS=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81,
                                        DIRECTION=(0.0,-1.0,0.0,),
                                        GROUP_MA =list_group_ma[:n+1],),);
 
-                              
+
     # Deplacements lateraux nuls
     CHLAT=AFFE_CHAR_CINE(INFO=1,
                          MODELE=MOD[n],
@@ -389,7 +389,7 @@ for n in range(1,nbcouche-1):
     PHAUT=AFFE_CHAR_CINE(INFO=1,
                          MODELE=MOD[n],
                          MECA_IMPO=_F(GROUP_MA='HA'+str(n+1), PRE1=0.0,),);
-                            
+
     CHPAR=AFFE_CHAR_CINE(MODELE=MOD[n],
                      MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0,),);
 
@@ -533,7 +533,7 @@ for n in range(1,nbcouche-1):
                         _F(CHARGE=CHLAT),
                         _F(CHARGE=PESBAS,),
                         _F(CHARGE=PESHAU, FONC_MULT=FONCH,),),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -582,12 +582,12 @@ for n in range(1,nbcouche-1):
                     CONTRAINTE=('SIGM_ELNO'),
                     VARI_INTERNE=('VARI_ELNO'),
                     RESULTAT=U[n],);
-                    
+
     DETRUIRE(INFO=1,CONCEPT=_F(NOM=(INIVAR,INISIG,INIDEP,DEPL_PJ,FX,FY,
                              CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,
                              CH_DEPL,CH_BID,FONCH,MAT1_f,PESHAU,PESBAS,
                              AFFMAT2),),);
-                             
+
 #    IMPR_RESU(RESU=_F(CHAM_GD=DEP[n]));
 #    IMPR_RESU(RESU=_F(CHAM_GD=VAR[n]));
 #    IMPR_RESU(RESU=_F(CHAM_GD=SIG[n]));
@@ -596,7 +596,7 @@ for n in range(1,nbcouche-1):
 
 DETRUIRE(INFO=1,
          CONCEPT=_F(NOM=(CHLAT,PHAUT,CHPAR,SIEF,),),);
-         
+
 PESA=AFFE_CHAR_MECA(MODELE=MOD[9],
                    PESANTEUR=_F(GRAVITE=9.81,
                                 DIRECTION=(0.0,-1.0,0.0),),);
@@ -617,8 +617,8 @@ CHPAR=AFFE_CHAR_MECA(MODELE=MOD[9],
 # Deplacement horizontal nul a la base
 NORIGID=AFFE_CHAR_MECA(MODELE=MOD[9],
                      DDL_IMPO=_F(GROUP_MA='BAS', DX=0.0,),);
-                     
-# Deplacement horizontal solidaire a la base                    
+
+# Deplacement horizontal solidaire a la base
 BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
                        LIAISON_UNIF=_F(GROUP_NO='BAS', DDL='DX'),);
 
@@ -664,7 +664,7 @@ U9B=STAT_NON_LINE(MODELE=MOD[9],
                         _F(CHARGE=CHPAR),
                         _F(CHARGE=BO_CONH1),
                         _F(CHARGE=PESA,),),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -739,7 +739,7 @@ U9B=STAT_NON_LINE(reuse=U9B,
                         _F(CHARGE=BO_CONH1),
                         _F(CHARGE=PESA,),
                         _F(CHARGE=MONOX, FONC_MULT=ACCELE,),),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -827,7 +827,7 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
                    _F(CHARGE=BO_CONH1),
                    _F(CHARGE=PESA,),
                    _F(CHARGE=MONOX, FONC_MULT=ACCELE,),),
-            COMP_INCR=(_F(RELATION='KIT_HM',
+            COMPORTEMENT=(_F(RELATION='KIT_HM',
                           ITER_INTE_PAS=-10,
                           RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                           GROUP_MA=list_group_ma[0]),
@@ -930,7 +930,7 @@ U9B2=DYNA_NON_LINE(MODELE=MOD[9],
                         _F(CHARGE=BO_CONH1),
                         _F(CHARGE=PESA,),
                         _F(CHARGE=MONOX, FONC_MULT=ACCELE,),),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -994,11 +994,11 @@ ACC_A47X=CALC_FONCTION(LIST_PARA=L_COMB,
 TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
                                   INST_INIT=2.80,
                                   INST_FIN =2.88,),);
-                                  
+
 TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
                                   INST_INIT=3.06,
                                   INST_FIN =3.14,),);
-                                    
+
 TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
                                   INST_INIT=3.47,
                                   INST_FIN =3.55,),);
@@ -1055,8 +1055,8 @@ U9B2=CALC_CHAMP(reuse   = U9B2,
             RESULTAT  = U9B2,
             MODELE    = MOD[9],
             CHAM_MATER= AFFMAT1,);
-            
-U9B2= CALC_CHAMP(reuse    = U9B2,     
+
+U9B2= CALC_CHAMP(reuse    = U9B2,
              RESULTAT  = U9B2,
              CONTRAINTE= ('SIEF_NOEU',),);
 
@@ -1070,7 +1070,7 @@ VITXMIDL=RECU_FONCTION(RESULTAT=U9B2,
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       INTERPOL='LIN',);
-                      
+
 DEPXMIDL=RECU_FONCTION(RESULTAT=U9B2,
                        TITRE='DEPXMIDL',
                        NOM_CHAM='DEPL',
@@ -1125,7 +1125,7 @@ DPRE1MID=CALC_FONCTION(LIST_PARA=L_COMB,
 DSIXYMID=CALC_FONCTION(LIST_PARA=L_COMB,
                        COMB=(_F(FONCTION = SIXYMIDL, COEF = 1. /sixy_ref),
                              _F(FONCTION = SIXYREFE, COEF =-1. /sixy_ref),),);
-                             
+
 ABSDVITX=CALC_FONCTION(ABS=_F(FONCTION =DVITXMID,),);
 
 ABSDDEPX=CALC_FONCTION(ABS=_F(FONCTION =DDEPXMID,),);
@@ -1152,7 +1152,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            PRECISION=.25,
            VALE_REFE=0.,);
-           
+
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            VALE_CALC=0.033085669525587,
@@ -1161,7 +1161,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            PRECISION=.05,
            VALE_REFE=0.,);
-           
+
 TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            VALE_CALC=0.93443835656833,
@@ -1170,7 +1170,7 @@ TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            PRECISION=1.2,
            VALE_REFE=0.,);
-           
+
 TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
            VALE_ABS='OUI',
            VALE_CALC=0.21468704413901,

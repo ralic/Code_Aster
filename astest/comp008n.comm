@@ -17,7 +17,7 @@
 # ======================================================================
 #         TEMPERATURE DANS LES LOIS DE COMPORTEMENT ELASTIQUES
 #
-#         RELATION = 'ROUSS_PR' sous COMP_INCR
+#         RELATION = 'ROUSS_PR' sous COMPORTEMENT
 #
 # CAS-TEST DE REFERENCE : SSNV103A
 #
@@ -170,7 +170,7 @@ TIMP=DEFI_FONCTION(
                        VALE=(  0. , TREF, tmax , Tmax)
                         )
 
-U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,
+U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,
                               PARM_THETA=theta),
                  MATER=MATERI,
                  SUPPORT='POINT',
@@ -257,7 +257,7 @@ for i in range(NCAL):
           list = DEFI_LIST_REEL(DEBUT=timem,
                       INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
 
-          RESU[i]=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,
+          RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,
                                               PARM_THETA=theta),
                                  MATER=MATER[i],
                                  SUPPORT='POINT',
@@ -290,7 +290,7 @@ for i in range(NCAL):
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='VMIS',
-                     VALE_CALC=RESU[i]['VMIS',2],   
+                     VALE_CALC=RESU[i]['VMIS',2],
                      VALE_REFE=U['VMIS',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',
@@ -298,7 +298,7 @@ for i in range(NCAL):
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='TRACE',
-                     VALE_CALC=RESU[i]['TRACE',2],   
+                     VALE_CALC=RESU[i]['TRACE',2],
                      VALE_REFE=U['TRACE',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',
@@ -309,7 +309,7 @@ for i in range(NCAL):
              if U[nomvari,i+2] > epsi :
                 TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA=nomvari,
-                     VALE_CALC=RESU[i][nomvari,2],   
+                     VALE_CALC=RESU[i][nomvari,2],
                      VALE_REFE=U[nomvari,i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',

@@ -268,7 +268,7 @@ U_1=STAT_NON_LINE(
                     TYPE_CHARGE='FIXE_PILO',),
                ),
   ETAT_INIT=_F(DEPL=CHAMNO,VARI=CH_VARI),
-  COMP_INCR=(_F(RELATION='ELAS',
+  COMPORTEMENT=(_F(RELATION='ELAS',
                GROUP_MA='BETON',),
              _F(RELATION='KIT_HM',
                RELATION_KIT=('CZM_LIN_REG','LIQU_SATU','HYDR_UTIL',),

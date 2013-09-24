@@ -233,7 +233,7 @@ LEDEP=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = ZCHM,
                 ),
-                         COMP_INCR=_F(RELATION = 'GRILLE_CINE_LINE'),
+                         COMPORTEMENT=_F(RELATION = 'GRILLE_CINE_LINE'),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
                 NUME_INST_FIN = 11,

@@ -105,7 +105,7 @@ U1=STAT_NON_LINE(MODELE=MO,
                            FONC_MULT=SIGMA_F,),
                         _F(CHARGE=CISAIL,
                            FONC_MULT=TAU_F,),),
-                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                  INCREMENT=_F(LIST_INST=DEFLIST1),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=3,),
@@ -171,7 +171,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
 # LISTE D'INSTANTS REELLEMENT CALCULES DANS LE PREMIER STAT_NON_LINE (POUR INFO)
 INST_C1=RECU_TABLE(CO=U1, NOM_TABLE='PARA_CALC')
 
-# 
+#
 #TUTU.EXTR_TABLE().values['INST']
 
 # IMPRESSION DE LA LISTE D'INSTANTS REELLEMENT CALCULES DANS LE PREMIER STAT_NON_LINE (POUR INFO)
@@ -189,7 +189,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                            FONC_MULT=SIGMA_F,),
                         _F(CHARGE=CISAIL,
                            FONC_MULT=TAU_F,),),
-                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                  INCREMENT=_F(LIST_INST=DEFLIST2),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=3,),

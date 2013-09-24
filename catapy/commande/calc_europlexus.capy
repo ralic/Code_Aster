@@ -54,7 +54,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
 
 
         CHAM_MATER = SIMP(statut='f',typ=cham_mater),
-        COMP_INCR  =C_COMP_INCR('CALC_EUROPLEXUS'),
+        COMPORTEMENT  =C_COMPORTEMENT('CALC_EUROPLEXUS'),
 
         EXCIT      = FACT(statut='o',max='**',
            CHARGE         = SIMP(statut='o',typ=(char_meca,)),

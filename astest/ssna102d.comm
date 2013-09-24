@@ -192,7 +192,7 @@ RESU=STAT_NON_LINE(
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
                                 _F(  CHARGE = LIAI),),
                           CONTACT  = CONT,
-                          COMP_ELAS=_F(  RELATION = 'ELAS'),
+                          COMPORTEMENT=_F(  RELATION = 'ELAS'),
                           NEWTON=_F(  MATRICE = 'ELASTIQUE',REAC_ITER=1),
                           INCREMENT=_F(  LIST_INST = LINST),
                           CONVERGENCE=_F(

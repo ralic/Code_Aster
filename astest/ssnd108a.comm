@@ -126,7 +126,7 @@ for icomp,comp in enumerate(compor) :
 
     resu[icomp]=STAT_NON_LINE(MODELE=modele,CHAM_MATER=mat,
                    EXCIT=_F(CHARGE=clim_tra, FONC_MULT=F_trac,),
-                   COMP_INCR=_F(RELATION=comp[0],DEFORMATION=comp[1],ITER_INTE_MAXI=iterintemaxi),
+                   COMPORTEMENT=_F(RELATION=comp[0],DEFORMATION=comp[1],ITER_INTE_MAXI=iterintemaxi),
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,#PREDICTION='ELASTIQUE',
                    ),
@@ -149,7 +149,7 @@ for icomp,comp in enumerate(compor) :
                            MODELE=modele,CHAM_MATER=mat,
                            EXCIT=(_F(CHARGE=Rota2[icl],TYPE_CHARGE='DIDI',),
                                   _F(CHARGE=ClFixe),),
-                           COMP_INCR=_F(RELATION=comp[0],DEFORMATION=comp[1],
+                           COMPORTEMENT=_F(RELATION=comp[0],DEFORMATION=comp[1],
                                         ITER_INTE_MAXI=iterintemaxi),
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp],),
                            INCREMENT=_F(LIST_INST=DEFLIST2,),
@@ -172,7 +172,7 @@ for icomp,comp in enumerate(compor) :
 
         resu[icomp]=STAT_NON_LINE(reuse = resu[icomp],MODELE=modele,CHAM_MATER=mat,
                            EXCIT=(_F(CHARGE=Trac2[icl],TYPE_CHARGE='DIDI',FONC_MULT=Ftra2[icl]),),
-                           COMP_INCR=_F(RELATION=comp[0], DEFORMATION=comp[1],
+                           COMPORTEMENT=_F(RELATION=comp[0], DEFORMATION=comp[1],
                                         ITER_INTE_MAXI=iterintemaxi),
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp]),
                            INCREMENT=_F(LIST_INST=DEFLIST2,INST_FIN=tfintrac),

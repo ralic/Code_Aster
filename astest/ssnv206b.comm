@@ -128,7 +128,7 @@ U1=STAT_NON_LINE(
                              _F( CHARGE = CHAR_U2,
                                  FONC_MULT = COEF1),
                              _F( CHARGE = DEPL_1)),
-                COMP_INCR=_F( RELATION = 'LETK',
+                COMPORTEMENT=_F( RELATION = 'LETK',
                               ALGO_INTE='NEWTON_PERT',
                               RESI_INTE_RELA=1E-10,
                               ITER_INTE_MAXI = 100,
@@ -227,7 +227,7 @@ U2=STAT_NON_LINE(
                 CHARGE = DEPL_1), _F(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
-                COMP_INCR=_F(
+                COMPORTEMENT=_F(
                              RELATION = 'LETK',
                              ALGO_INTE='NEWTON_PERT',
                              RESI_INTE_RELA=1E-8,

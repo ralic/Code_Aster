@@ -41,17 +41,17 @@ LN=FORMULE(NOM_PARA=('X','Y'),VALE='(Y-10)*cos(THETA)-sin(THETA)*(X-10)');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN));
- 
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P1P1',
-                         INFO=1); 
+                         INFO=1);
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 4,
-                      ITER_FROT_MAXI = 6,                      
+                      ITER_FROT_MAXI = 6,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
@@ -64,9 +64,9 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,                                   
+                               COEF_FROT    = 1000.,
                                ALGO_LAGR    = 'VERSION2',
-                             ), 
+                             ),
                          ),
                    );
 
@@ -106,8 +106,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(
                           _F(CHARGE=CH1,FONC_MULT=RAMPE)),
-                   CONTACT  = CTXFEM,       
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   CONTACT  = CTXFEM,
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='SURF'),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0),
@@ -121,9 +121,9 @@ LAREF=-.05*3./4.
 LA1REF=-1./(3.**.5)
 
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
@@ -132,14 +132,14 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN')) 
+                              MODELISATION='C_PLAN'))
 
 RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
- 
+
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                             GROUP_NO='NFISSU',
                              RESULTAT=RES_XFEM,

@@ -107,7 +107,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=BLOC_DIS,),
                           ),
                    CONTACT = CONT,
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_TPS,),
                    #CONVERGENCE=_F(
                    #RESI_GLOB_MAXI=1.0E-06,

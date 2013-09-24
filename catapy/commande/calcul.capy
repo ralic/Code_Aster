@@ -39,7 +39,6 @@ CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='f',
      INCREMENT       =FACT(statut='o',
           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
           NUME_ORDRE      =SIMP(statut='o',typ='I'),),
-     COMP_INCR       =C_COMP_INCR(),
-     COMP_ELAS       =C_COMP_ELAS('CALCUL'),
+     COMPORTEMENT       =C_COMPORTEMENT('CALCUL'),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 ) ;

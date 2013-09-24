@@ -39,7 +39,7 @@ subroutine ntdcom(evolsc)
     character(len=16) :: comp, motcle, k16bid, nomcmd, tysd
     logical :: lrela, lsech
 !
-    data         motcle / 'COMP_THER_NL' /
+    data         motcle / 'COMPORTEMENT' /
 ! ----------------------------------------------------------------------
 !
 !

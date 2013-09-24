@@ -257,7 +257,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
                  _F(CHARGE=TIMP,), ),
-                 COMP_INCR=_F(RELATION='KIT_HH', PARM_THETA=0.6,
+                 COMPORTEMENT=_F(RELATION='KIT_HH', PARM_THETA=0.6,
                               RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),

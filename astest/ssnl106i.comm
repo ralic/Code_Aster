@@ -141,7 +141,7 @@ REST=DYNA_NON_LINE(
                          ETAT_INIT=_F(ACCE=ACCE0,),
                              EXCIT=_F(
                 CHARGE = CHART,
-                FONC_MULT = FONCT),COMP_INCR=(
+                FONC_MULT = FONCT),COMPORTEMENT=(
                          _F(
                 RELATION = 'MULTIFIBRE',
 

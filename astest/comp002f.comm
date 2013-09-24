@@ -81,7 +81,7 @@ compor='VISC_ISOT_LINE'
 
 tabresu=TEST_COMPOR(OPTION='MECA',
 
-                   COMP_INCR=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE'),
+                   COMPORTEMENT=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE'),
                    SUPPORT='ELEMENT',
                   # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
               NEWTON=_F(REAC_ITER=1),

@@ -107,7 +107,7 @@ def perm_mac3coeur_ops(self, **args):
                               CHAM_MATER  = _AFSCNP1,
                               CARA_ELEM   = _CARANP1,
                               EXCIT       = (_F(CHARGE = _CL_BID,),),
-                              COMP_INCR   =(
+                              COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION='GROT_GDEP',),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),

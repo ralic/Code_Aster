@@ -1,19 +1,19 @@
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT PENTA15
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP162O',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9',),DEBUG=_F(SDVERI='OUI'))
@@ -83,7 +83,7 @@ MA=DEFI_GROUP(reuse =MA,
                               _F(GROUP_MA='G_GAUCHE',
                                 NOM='GAUCHE',),
                                ),);
-                               
+
 #IMPR_RESU(FORMAT  = 'GMSH',RESU=_F(MAILLAGE=MA),UNITE=19)
 
 MO=AFFE_MODELE(
@@ -172,7 +172,7 @@ U_1=STAT_NON_LINE(
     _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
              MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
@@ -382,7 +382,7 @@ U_2=STAT_NON_LINE(
     _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_2),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
              MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
@@ -502,7 +502,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 1.10000000E-07,      
+      VALE_CALC= 1.10000000E-07,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -514,7 +514,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 0.00000000E+00,      
+      VALE_CALC= 0.00000000E+00,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -526,7 +526,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=1.000000000,      
+      VALE_CALC=1.000000000,
       ),
 
     _F(
@@ -538,7 +538,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=0.200000000,      
+      VALE_CALC=0.200000000,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -550,7 +550,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=1.000000000,      
+      VALE_CALC=1.000000000,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -561,7 +561,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=0.060751322,      
+      VALE_CALC=0.060751322,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -573,7 +573,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 2.20000000E-08,      
+      VALE_CALC= 2.20000000E-08,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -584,7 +584,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 1.50000000E-07,      
+      VALE_CALC= 1.50000000E-07,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -596,7 +596,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=-2.53926414E-25,      
+      VALE_CALC=-2.53926414E-25,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -608,7 +608,7 @@ TEST_RESU (
       MAILLE    = 'PRISMDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 0.00000000E+00,      
+      VALE_CALC= 0.00000000E+00,
       ),
     )
   )
@@ -665,7 +665,7 @@ U_3=STAT_NON_LINE(
     _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_3),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
              MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',

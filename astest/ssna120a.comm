@@ -165,7 +165,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                  EXCIT=(_F(CHARGE=CH,FONC_MULT = FCT),
                         _F(CHARGE=SYM),
                         ),
-                 COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
+                 COMPORTEMENT=(_F(RELATION='VMIS_ISOT_TRAC',
                                DEFORMATION='PETIT_REAC',
                                GROUP_MA='cylind'),
                             _F(RELATION = 'CZM_TRA_MIX',
@@ -190,7 +190,7 @@ UP=CALC_CHAMP(reuse =UP,
              FORCE='REAC_NODA');
 
 
-# INTERPOLATION NODALE DES CHAMPS AUX PG  
+# INTERPOLATION NODALE DES CHAMPS AUX PG
 UP=CALC_CHAMP(reuse =UP,
               RESULTAT=UP,
               VARI_INTERNE='VARI_ELNO',
@@ -400,7 +400,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_CALC=9.0998171083362E-03,
                   MAILLE='M114',),
           )
-          
+
 TEST_RESU(RESU=_F(INST=1.0,
                   POINT=2,
                   RESULTAT=UP,
@@ -419,7 +419,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOEUD='NS76'
                   ),
           )
-          
+
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=UP,
                   NOM_CHAM='SIEF_NOEU',

@@ -59,7 +59,7 @@ compor='VMIS_ISOT_PUIS'
 
 tabresu=TEST_COMPOR(OPTION='MECA',
 
-                   COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=50),
+                   COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=50),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
               LIST_NPAS=4*[1] + [1, 5, 25],
@@ -74,7 +74,7 @@ IMPR_TABLE(TABLE=tabresu)
 tabres2=TEST_COMPOR(OPTION='MECA',
                     MODELISATION='C_PLAN',SUPPORT='ELEMENT',
 
-                   COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=50),
+                   COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=50),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
               LIST_NPAS=4*[1] + [1, 5, 25],

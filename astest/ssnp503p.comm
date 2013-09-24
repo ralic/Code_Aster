@@ -181,7 +181,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     EXCIT=(
                            _F(CHARGE=CH1,FONC_MULT=VAR1),
                            _F(CHARGE=CH2,FONC_MULT=VAR2)),
-                    COMP_ELAS=_F(RELATION='ELAS',
+                    COMPORTEMENT=_F(RELATION='ELAS',
                                  GROUP_MA='VOLU'),
                     INCREMENT=_F(LIST_INST=L_INST),
                     CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
@@ -189,7 +189,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     )),
                     NEWTON=_F(REAC_ITER=1),
                     SOLVEUR=_F(METHODE='MUMPS',
-   
+
                                NPREC=-1),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                     INFO=1);
@@ -245,7 +245,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  NOM_PARA='LAGS_C',
                  VALE_CALC=VALE_CALC[i-1][j], VALE_REFE=vale[i-1][j],
                  CRITERE=critere,
-                 PRECISION=precision, 
+                 PRECISION=precision,
                  REFERENCE='AUTRE_ASTER',
                  FILTRE=(_F(NOM_PARA='COOR_X',
                            CRIT_COMP='EQ',

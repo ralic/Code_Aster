@@ -102,7 +102,7 @@ RESU = STAT_NON_LINE (MODELE = MO,
                       EXCIT =(
                          _F( CHARGE = BLOC),
                          _F( CHARGE = PRES),),
-                      COMP_INCR =_F(RELATION ='LEMA_SEUIL',PARM_THETA = 0.5,
+                      COMPORTEMENT =_F(RELATION ='LEMA_SEUIL',PARM_THETA = 0.5,
                                 ITER_INTE_MAXI = 1000),
                       INCREMENT =_F(LIST_INST =L_INST),
                       NEWTON    =_F(

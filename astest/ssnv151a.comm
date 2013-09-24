@@ -224,7 +224,7 @@ SOLNL=STAT_NON_LINE(
                 LIST_INST = LINST,
                 INST_FIN = 1.715),
                         CHAM_MATER=MATBET,
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'BETON_DOUBLE_DP',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 10,
@@ -260,7 +260,7 @@ SOLNL=STAT_NON_LINE( reuse=SOLNL,
                 LIST_INST = LINST,
                 INST_INIT = 1.715),
                         CHAM_MATER=MATBET,
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'BETON_DOUBLE_DP',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 10,

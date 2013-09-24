@@ -600,7 +600,7 @@ subroutine op0100()
                             lnoff, iord, ndeg, thlagr, glagr,&
                             thlag2, milieu, ndimte, pair, exitim,&
                             time, nbpara, linopa, chvite, chacce,&
-                            lmelas, nomcas, calsig, fonoeu)
+                            lmelas, nomcas, calsig, fonoeu, incr)
 !
             else if (option(1:6).eq.'CALC_K'.and.cas.eq.'2D') then
 !

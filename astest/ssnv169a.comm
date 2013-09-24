@@ -153,7 +153,7 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH21),
                    _F(CHARGE = CH22),
                  ),
-       COMP_INCR=_F(
+       COMPORTEMENT=_F(
                  RELATION = 'KIT_DDI',
                  RELATION_KIT=('BETON_UMLV_FP','ENDO_ISOT_BETON'),),
                  INCREMENT=_F(LIST_INST = L_INST,

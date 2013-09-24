@@ -371,7 +371,7 @@ RESU = STAT_NON_LINE (
                              _F(CHARGE=DEPL,FONC_MULT=RAMPE,),
                              _F(CHARGE = POIDS, FONC_MULT = GG),
                            ),
-                      COMP_INCR=comp_incr,
+                      COMPORTEMENT=comp_incr,
                       INCREMENT=_F(LIST_INST=LINST,
                                    PRECISION = 1.E-2,
                                    ),
@@ -390,7 +390,7 @@ GROUPES =  MURS + gr_armature
 
 RESU=CALC_CHAMP(reuse =RESU,RESULTAT=RESU,GROUP_MA=GROUPES,
              FORCE=('FORC_NODA','REAC_NODA',),);
-             
+
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,

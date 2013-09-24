@@ -163,7 +163,7 @@ EVOL = STAT_NON_LINE(
        TYPE_CHARGE = 'FIXE_PILO',
       )
        ),
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
     _F(RELATION = 'CZM_EXP',    GROUP_MA = 'JOINT'  ),
     ),

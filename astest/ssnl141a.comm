@@ -114,7 +114,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 U =STAT_NON_LINE(   MODELE=MODELE,     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = ENCAST),
                                             _F( CHARGE = FORC, FONC_MULT = LINE),),
-                    COMP_INCR=_F(RELATION='MULTIFIBRE',
+                    COMPORTEMENT=_F(RELATION='MULTIFIBRE',
                                 GROUP_MA='POUTRE',),
                     INCREMENT=_F(LIST_INST=LINST,),
                                             )

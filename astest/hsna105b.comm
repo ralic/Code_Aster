@@ -1,19 +1,19 @@
 # TITRE Expansion d'un cylindre creux infini avec prise en compte des dissipations thermiques dues aux deformations mecaniques
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: sebastien.fayolle at edf.fr
 
@@ -57,7 +57,7 @@ ALPHA=DEFI_FONCTION(NOM_PARA='TEMP',
                           10000.0,23.8E-6,),);
 
 LAMBDA=DEFI_FONCTION(NOM_PARA='TEMP',
-                     VALE=(0.0   ,150., 
+                     VALE=(0.0   ,150.,
                            10000.,150.,),);
 
 RHO_CP=DEFI_FONCTION(NOM_PARA='TEMP',
@@ -139,7 +139,7 @@ CH_MEC=AFFE_CHAR_MECA(MODELE=MOD_MEC,
 #L'enchainement des routines est generique et peut etre reutilise tel quel
 #Remarque : En cas de redecoupage de pas de temps en mecanique
 #           il est necessaire de sommer les champs de dissipations ce qui
-#           implique de nombreuses operations sur les champs. Il est 
+#           implique de nombreuses operations sur les champs. Il est
 #           donc preferable de bien choisir sa discretisation temporelle
 #           pour ne pas trop perdre en performance
 
@@ -155,7 +155,7 @@ THER0=THER_NON_LINE(MODELE=MOD_THE,
 NBPAS=len(L_REEL.Valeurs());
 
 for k in range (1,NBPAS):
-#2.1 Premier pas de chargement  
+#2.1 Premier pas de chargement
   if (k==1):
 #2.1.1 Projection du champ de temperature definit sur le maillage thermique
 #      sur le maillage mecanique
@@ -181,7 +181,7 @@ for k in range (1,NBPAS):
                            NEWTON=_F(MATRICE='TANGENTE',
                                      REAC_ITER=1,),
                            CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
-                           COMP_INCR=_F(RELATION=LDC,
+                           COMPORTEMENT=_F(RELATION=LDC,
                                         DEFORMATION='GDEF_LOG',),
                            EXCIT=_F(CHARGE=CH_MEC,
                                     FONC_MULT=Fcond,),);
@@ -202,16 +202,16 @@ for k in range (1,NBPAS):
 
     l_para=RESU_MEC.LIST_VARI_ACCES();
     nb_nu_ord=len(l_para['NUME_ORDRE']);
-    
+
     if (nb_nu_ord==2):
-#2.1.6 Creation d'un champ de variables internes aux points de Gauss par extraction du champ 
+#2.1.6 Creation d'un champ de variables internes aux points de Gauss par extraction du champ
       __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                        OPERATION='EXTR',
                        RESULTAT=RESU_MEC,
                        NOM_CHAM='VARI_ELGA',
                        INST=L_REEL.Valeurs()[k],);
 
-#2.1.7 Creation d'un champ de type source thermique par assemblage 
+#2.1.7 Creation d'un champ de type source thermique par assemblage
 #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
       __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                        OPERATION='ASSE',
@@ -264,7 +264,7 @@ for k in range (1,NBPAS):
                                    TOUT='OUI',),);
 
         DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
-                 INFO=1,);                           
+                 INFO=1,);
 
         __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                            OPERATION='ASSE',
@@ -289,8 +289,8 @@ for k in range (1,NBPAS):
 
       DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
                INFO=1,);
-                 
-#2.1.7 Creation d'un champ de type source thermique par assemblage 
+
+#2.1.7 Creation d'un champ de type source thermique par assemblage
 #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
       __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                        OPERATION='ASSE',
@@ -311,7 +311,7 @@ for k in range (1,NBPAS):
     __source=AFFE_CHAR_THER(MODELE=MOD_THE,
                             SOURCE=_F(SOUR_CALCULEE=__champ),);
 
-#2.1.10 Modification du maillage thermique pour qu'il soit representatif 
+#2.1.10 Modification du maillage thermique pour qu'il soit representatif
 #       de la deformee du maillage mecanique
     MAIL_THE=MODI_MAILLAGE(reuse=MAIL_THE,
                            MAILLAGE=MAIL_THE,
@@ -334,7 +334,7 @@ for k in range (1,NBPAS):
                     NOM_CHAM='TEMP',
                     INST=L_REEL.Valeurs()[k-1],);
 
-#2.1.13 Creation d'un champ representant la temperature au numero d'ordre 1 par extraction                     
+#2.1.13 Creation d'un champ representant la temperature au numero d'ordre 1 par extraction
     __t1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                     OPERATION='EXTR',
                     RESULTAT=RESU_TH,
@@ -355,7 +355,7 @@ for k in range (1,NBPAS):
 
 #2.2 Pas de chargement suivant
   if (k>1) and (k<NBPAS):
-    
+
     DETRUIRE(CONCEPT=_F(NOM=(__ch1,__ch2,__champ,__a,__b,),),
              INFO=1,);
 
@@ -400,7 +400,7 @@ for k in range (1,NBPAS):
                            NEWTON=_F(MATRICE='TANGENTE',
                                      REAC_ITER=1,),
                            CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
-                           COMP_INCR=_F(RELATION=LDC,
+                           COMPORTEMENT=_F(RELATION=LDC,
                                         DEFORMATION='GDEF_LOG',),
                            EXCIT=_F(CHARGE=CH_MEC,
                                     FONC_MULT=Fcond,),);
@@ -427,14 +427,14 @@ for k in range (1,NBPAS):
     dnb_nu_or=nb_nu_ord-nb_nu_orb
 
     if (dnb_nu_or==1):
-#2.2.8 Creation d'un champ de variables internes aux points de Gauss par extraction du champ 
+#2.2.8 Creation d'un champ de variables internes aux points de Gauss par extraction du champ
       __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                        OPERATION='EXTR',
                        RESULTAT=RESU_MEC,
                        NOM_CHAM='VARI_ELGA',
-                       INST=L_REEL.Valeurs()[k],);      
+                       INST=L_REEL.Valeurs()[k],);
 
-#2.2.9 Creation d'un champ de type source thermique par assemblage 
+#2.2.9 Creation d'un champ de type source thermique par assemblage
 #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
       __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                        OPERATION='ASSE',
@@ -488,7 +488,7 @@ for k in range (1,NBPAS):
                                    TOUT='OUI',),);
 
         DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
-                 INFO=1,);                           
+                 INFO=1,);
 
         __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                            OPERATION='ASSE',
@@ -513,8 +513,8 @@ for k in range (1,NBPAS):
 
       DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
                INFO=1,);
-               
-#2.2.9 Creation d'un champ de type source thermique par assemblage 
+
+#2.2.9 Creation d'un champ de type source thermique par assemblage
 #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
       __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                        OPERATION='ASSE',
@@ -538,7 +538,7 @@ for k in range (1,NBPAS):
     __source=AFFE_CHAR_THER(MODELE=MOD_THE,
                             SOURCE=_F(SOUR_CALCULEE=__champ),);
 
-#2.2.12 Modification du maillage thermique pour qu'il soit representatif 
+#2.2.12 Modification du maillage thermique pour qu'il soit representatif
 #       de la deformee du maillage mecanique
     MAIL_THE=MODI_MAILLAGE(reuse=MAIL_THE,
                            MAILLAGE=MAIL_THE,
@@ -565,7 +565,7 @@ for k in range (1,NBPAS):
                       NOM_CHAM='TEMP',
                       INST=L_REEL.Valeurs()[k-1],);
 
-#2.2.15 Creation d'un champ representant la temperature au numero d'ordre k par extraction  
+#2.2.15 Creation d'un champ representant la temperature au numero d'ordre k par extraction
       __t1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                       OPERATION='EXTR',
                       RESULTAT=RESU_TH,

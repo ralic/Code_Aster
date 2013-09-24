@@ -166,7 +166,7 @@ EVOL = STAT_NON_LINE(
     _F(CHARGE = TRACTION,
        TYPE_CHARGE = 'FIXE_PILO',
       )),
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
     _F(RELATION = 'CZM_LIN_REG', GROUP_MA = 'JOINT'  ),
     ),

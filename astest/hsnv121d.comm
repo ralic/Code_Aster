@@ -161,7 +161,7 @@ VT=STAT_NON_LINE(
                         CHAM_MATER=CHP_MATT,EXCIT=(
                              _F(
                 CHARGE = CHR_LIAI), ),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT_REAC'),
                          INCREMENT=_F(
@@ -189,7 +189,7 @@ VT=STAT_NON_LINE( reuse=VT,
                 CHARGE = CHR_TRAC,
                 FONC_MULT = F_CHAR,
                 TYPE_CHARGE = 'DIDI')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT_REAC'),
                          INCREMENT=_F(
@@ -242,7 +242,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.24627495634699,
                    VALE_REFE=0.2475,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.014999999999999999, 
+                   PRECISION=0.014999999999999999,
                    MAILLE='MA1',),
                 ),
           )

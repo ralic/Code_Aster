@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NOM='SSNP110E',NIV_PUB_WEB='INTERNET'),
 #      IGNORE_ALARM=('RUPTURE1_47','RUPTURE1_42'),
       )
 
-# ALARMES EMISES PAR CE TEST : 
+# ALARMES EMISES PAR CE TEST :
 # RUPTURE1_47 : CALC_G SUITE A UN SNL INCREMENTAL
 # RUPTURE1_42 : COMP DIFFERENT ENTRE SNL ET CALC_G
 # CES 2 ALARMES SONT JUSTIFIEES ICI CAR LE CHARGEMENT EST BIEN PROPORTIONNEL,
@@ -101,7 +101,7 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_LINE',
+                       COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_LINE',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -119,7 +119,7 @@ G_0=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
 
 TEST_TABLE(
            VALE_CALC=3.5947962514067,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -128,7 +128,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=14.470868422635,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -137,7 +137,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=32.883208951196004,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -146,7 +146,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=59.422747569594002,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -155,7 +155,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=94.500399710622006,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -164,7 +164,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=134.98261114275999,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -173,7 +173,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=178.95209819448999,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -182,7 +182,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=226.23585323115,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -191,7 +191,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=276.47167518088997,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -200,7 +200,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=329.60677792298998,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -234,7 +234,7 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_TRAC',
+                       COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_TRAC',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -366,7 +366,7 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_PUIS',
+                       COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_PUIS',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -529,7 +529,7 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_TRAC',
+                       COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_TRAC',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -551,7 +551,7 @@ G_0_4=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
 
 TEST_TABLE(
            VALE_CALC=3.5912927278361999,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -560,7 +560,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=14.444141788733001,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -569,7 +569,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=32.761550138719002,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -578,7 +578,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=58.991063873790999,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -587,7 +587,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=93.763266517031994,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -596,7 +596,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=136.1388091366,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -605,7 +605,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=184.03472768248,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -614,7 +614,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=236.3102565378,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -623,7 +623,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=292.38439111913999,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -632,7 +632,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=351.82239283614001,
-           
+
            NOM_PARA='G',
            TABLE=G_0_4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -658,7 +658,7 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_PUIS',
+                       COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_PUIS',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -783,13 +783,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # ======================================================================
 # VALIDATION 2D DE "CALCUL_CONTRAINTE" (TEST INFORMATIQUE)
 
-# CALCUL AVEC UN COMPORTEMENT INCREMENTAL 
+# CALCUL AVEC UN COMPORTEMENT INCREMENTAL
 RESUINCR=STAT_NON_LINE(MODELE=MO,
                        CHAM_MATER=CHMAT5,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_INCR=_F(RELATION = 'VMIS_ISOT_PUIS',
+                       COMPORTEMENT=_F(RELATION = 'VMIS_ISOT_PUIS',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -807,7 +807,7 @@ IMPR_TABLE(TABLE=G_I_I)
 G_I_E=CALC_G(RESULTAT=RESUINCR,
              THETA=_F(THETA = THETA0,
                       SYME='OUI'),
-             COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS'))
+             COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'))
 
 IMPR_TABLE(TABLE=G_I_E)
 
@@ -815,7 +815,7 @@ IMPR_TABLE(TABLE=G_I_E)
 G_I_E2=CALC_G(RESULTAT=RESUINCR,
               THETA=_F(THETA = THETA0,
                        SYME='OUI'),
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS'),
+              COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'),
               CALCUL_CONTRAINTE='NON',)
 
 IMPR_TABLE(TABLE=G_I_E2)

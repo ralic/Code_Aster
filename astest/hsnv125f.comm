@@ -277,7 +277,7 @@ RESU=STAT_NON_LINE(
                                    _F( CHARGE = CHA2,),
                                    _F( CHARGE = CHA4,
                                           )),
-                               COMP_INCR=_F( RELATION = 'VMIS_CINE_LINE' ),
+                               COMPORTEMENT=_F( RELATION = 'VMIS_CINE_LINE' ),
                                   NEWTON=_F(  MATRICE = 'TANGENTE',
                                              REAC_ITER = 1,),
                            RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3,

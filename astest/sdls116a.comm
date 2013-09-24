@@ -121,7 +121,7 @@ RESU1 = DYNA_NON_LINE(
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
-                       COMP_INCR=_F(
+                       COMPORTEMENT=_F(
                                     RELATION ='ELAS',
                                     DEFORMATION='PETIT_REAC'
                                    ),

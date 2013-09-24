@@ -21,7 +21,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
 ! IN MODELE  : LE MODELE
 ! IN NBMO1   : NOMBRE DE MOTS-CLES (1 OU 2) COMP_INCR / COMP_ELAS
-! IN MOCLEF  : LISTE DES MOTS-CLES (COMP_INCR / COMP_ELAS)
+! IN MOCLEF  : MOT-CLE FACTEUR COMPORTEMENT
 ! OUT IRET   : CODE RETOUR
 ! OUT CARCRI : CARTE DECRIVANT LES CRITERES LOCAUX DE CONVERGENCE
 !                     0 : ITER_INTE_MAXI
@@ -64,7 +64,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: noma, k8b, typmcl(2)
-    character(len=16) :: tymatg, comp, algo, mocles(2), moclef(2), crirup
+    character(len=16) :: tymatg, comp, algo, mocles(2), moclef, crirup
     character(len=16) :: texte(3), comcod, method, k16bid, nomcmd
     character(len=19) :: carcri
     character(len=24) :: carcrz
@@ -126,20 +126,19 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
 !     LECTURE DES PARAMETRES DE CONVERGENCE A STOCKER DANS CARCRI
 !     MOTS CLES FACTEUR
-    do 160 i = 1, nbmo1
 !
-        call getfac(moclef(i), nbocc)
+        call getfac(moclef, nbocc)
 !
 !       NOMBRE D'OCCURRENCES
         do 150 k = 1, nbocc
 !
             ncomel=1
 !
-            call reliem(modele, noma, 'NU_MAILLE', moclef(i), k,&
+            call reliem(modele, noma, 'NU_MAILLE', moclef, k,&
                         2, mocles, typmcl, mesmai, nbma)
 !
-            call getvtx(moclef(i), 'ALGO_INTE', iocc=k, scal=algo, nbret=iret)
-            call getvtx(moclef(i), 'RELATION', iocc=k, scal=comp, nbret=n1)
+            call getvtx(moclef, 'ALGO_INTE', iocc=k, scal=algo, nbret=iret)
+            call getvtx(moclef, 'RELATION', iocc=k, scal=comp, nbret=n1)
 !         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
             call lccree(1, comp, comcod)
 !
@@ -149,7 +148,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                 call lctest(comcod, 'ALGO_INTE', algo, irett)
                 if (irett .eq. 0) then
                     if ((comp(1:6).eq.'KIT_HM') .or. (comp(1:7) .eq.'KIT_THM')) then
-                        call nmdoki(moclef(i), modele, comp, k, dimaki,&
+                        call nmdoki(moclef, modele, comp, k, dimaki,&
                                     nbkit, nomkit, nbnvi, ncomel, lcomel,&
                                     numlc, nvmeta)
 ! --- LE COMPORTEMENT MECANIQUE EST STOCKE AU 5EME RANG DE LCOMEL
@@ -189,12 +188,12 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
             call utlcal('NOM_VALE', algo, algor)
 !
 !         RECUP DES DONNEES LIEES A LA CONVERGENCE LOCALE
-            call nmdocv(moclef(i), k, algo, 'RESI_INTE_RELA', resi)
-            call nmdocv(moclef(i), k, algo, 'ITER_INTE_MAXI', iteint)
+            call nmdocv(moclef, k, algo, 'RESI_INTE_RELA', resi)
+            call nmdocv(moclef, k, algo, 'ITER_INTE_MAXI', iteint)
 !
             itepas = 0
-            if (moclef(i) .eq. 'COMP_INCR') then
-                call getvis(moclef(i), 'ITER_INTE_PAS', iocc=k, scal=itepas, nbret=iret)
+            if (moclef .eq. 'COMPORTEMENT') then
+                call getvis(moclef, 'ITER_INTE_PAS', iocc=k, scal=itepas, nbret=iret)
             endif
 !
 !         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
@@ -206,35 +205,35 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
             tsretu=-1.d0
             typtgt = 0
             tymatg=' '
-            if (moclef(i) .eq. 'COMP_INCR') then
-                call getvis(moclef(i), 'ITER_CPLAN_MAXI', iocc=k, scal=itdebo, nbret=iret)
-                call getvr8(moclef(i), 'RESI_CPLAN_MAXI', iocc=k, scal=resid, nbret=iret)
+            if (moclef .eq. 'COMPORTEMENT') then
+                call getvis(moclef, 'ITER_CPLAN_MAXI', iocc=k, scal=itdebo, nbret=iret)
+                call getvr8(moclef, 'RESI_CPLAN_MAXI', iocc=k, scal=resid, nbret=iret)
                 if (iret .ne. 0) then
                     resid=-resid
                 else
-                    call getvr8(moclef(i), 'RESI_CPLAN_RELA', iocc=k, scal=resid, nbret=iret)
+                    call getvr8(moclef, 'RESI_CPLAN_RELA', iocc=k, scal=resid, nbret=iret)
                 endif
-                exits = getexm(moclef(i),'TYPE_MATR_TANG')
+                exits = getexm(moclef,'TYPE_MATR_TANG')
                 if (exits .eq. 1) then
 !               DANS ZR(JVALV+1) ON STOCKE LE TYPE DE MATRICE TGTE
-                    call getvtx(moclef(i), 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=iret)
+                    call getvtx(moclef, 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=iret)
                     if (iret .eq. 0) then
                         typtgt = 0
                     else
                         if (tymatg .eq. 'PERTURBATION') then
                             typtgt = 1
-                            call getvr8(moclef(i), 'VALE_PERT_RELA', iocc=k, scal=pert,&
+                            call getvr8(moclef, 'VALE_PERT_RELA', iocc=k, scal=pert,&
                                         nbret=iret)
                         else if (tymatg.eq.'VERIFICATION') then
                             typtgt = 2
-                            call getvr8(moclef(i), 'VALE_PERT_RELA', iocc=k, scal=pert,&
+                            call getvr8(moclef, 'VALE_PERT_RELA', iocc=k, scal=pert,&
                                         nbret=iret)
                             elseif (tymatg(1:16).eq.'TANGENTE_SECANTE')&
                         then
 !                     MATRICE EVOLUTIVE TANGENTE/SECANTE
-                            call getvr8(moclef(i), 'SEUIL', iocc=k, scal=tseuil, nbret=iret)
-                            call getvr8(moclef(i), 'AMPLITUDE', iocc=k, scal=tsampl, nbret=iret)
-                            call getvr8(moclef(i), 'TAUX_RETOUR', iocc=k, scal=tsretu,&
+                            call getvr8(moclef, 'SEUIL', iocc=k, scal=tseuil, nbret=iret)
+                            call getvr8(moclef, 'AMPLITUDE', iocc=k, scal=tsampl, nbret=iret)
+                            call getvr8(moclef, 'TAUX_RETOUR', iocc=k, scal=tsretu,&
                                         nbret=iret)
                         endif
 !                  VERIF QUE TYMATG EST POSSIBLE POUR COMP
@@ -272,17 +271,17 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
             endif
 !
-            if (moclef(i) .eq. 'COMP_INCR') then
-                call getvr8(moclef(i), 'PARM_THETA', iocc=k, scal=theta, nbret=iret)
-                call getvr8(moclef(i), 'PARM_ALPHA', iocc=k, scal=alpha, nbret=iret)
+            if (moclef .eq. 'COMPORTEMENT') then
+                call getvr8(moclef, 'PARM_THETA', iocc=k, scal=theta, nbret=iret)
+                call getvr8(moclef, 'PARM_ALPHA', iocc=k, scal=alpha, nbret=iret)
             else
                 theta=1.d0
                 alpha=1.d0
             endif
 !         TOLERANCE POUR LE CRITERE DE RADIALITE
-            if (moclef(i) .eq. 'COMP_INCR') then
+            if (moclef .eq. 'COMPORTEMENT') then
                 if (typtgt .eq. 0 .and. tymatg(1:16) .ne. 'TANGENTE_SECANTE') then
-                    call getvr8(moclef(i), 'RESI_RADI_RELA', iocc=k, scal=tolrad, nbret=iret)
+                    call getvr8(moclef, 'RESI_RADI_RELA', iocc=k, scal=tolrad, nbret=iret)
                     if (iret .ne. 0) then
                         tseuil=tolrad
                     else
@@ -291,9 +290,9 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                 endif
             endif
 !         CRIT_RUPT
-            if (moclef(i) .eq. 'COMP_INCR') then
+            if (moclef .eq. 'COMPORTEMENT') then
                 if (typtgt .eq. 0 .and. tymatg(1:16) .ne. 'TANGENTE_SECANTE') then
-                    call getvtx(moclef(i), 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
+                    call getvtx(moclef, 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
                     if (iret .eq. 1) then
 !            VERIF QUE CRIRUP EST POSSIBLE POUR COMP
                         tsampl = 1.d0
@@ -329,7 +328,6 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
 150      continue
 !
-160  end do
 !
 ! FIN ------------------------------------------------------------------
     call jedema()

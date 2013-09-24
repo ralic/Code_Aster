@@ -51,7 +51,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=1.435,
                                     NOMBRE=12,),),);
 
-SOLNL1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='ZMAT',
+SOLNL1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='ZMAT',
                                    NB_VARI=19,
                                    UNITE=33,
                                    DEFORMATION='PETIT',),

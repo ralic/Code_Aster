@@ -114,8 +114,9 @@ subroutine te0407(option, nomte)
 ! - LOIS DE COMPORTEMENT ECRITES EN CONFIGURATION DE REFERENCE
 !                          COMP_ELAS
 !
-        call utmess('F', 'ELEMENTS4_73')
-!
+       if (zk16(icompo).ne.'ELAS') then
+          call utmess('F', 'ELEMENTS4_73')
+       endif
     else
 !
 ! - LOIS DE COMPORTEMENT ECRITE EN CONFIGURATION ACTUELLE

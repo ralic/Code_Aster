@@ -91,7 +91,7 @@ TIMP=DEFI_FONCTION(
                        VALE=(  0. , TREF, 1. , Tmax)
                         )
 
-U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
+U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                  MATER=MATERI,
                  MODELISATION='D_PLAN',
                  SUPPORT='ELEMENT',
@@ -143,7 +143,7 @@ for i in range(NCAL-1):
           list = DEFI_LIST_REEL(DEBUT=timem,
                       INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
 
-          RESU[i]=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
+          RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                                  MATER=LMAT2[i],
                                  SUPPORT='ELEMENT',
                                  MODELISATION='D_PLAN',

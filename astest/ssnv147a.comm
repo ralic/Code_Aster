@@ -93,7 +93,7 @@ REPONSE=STAT_NON_LINE(
 
                 _F( CHARGE = LIAISON),
                 _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
-                  COMP_INCR=_F(
+                  COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
 
                 INCREMENT=_F(
@@ -126,7 +126,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
 
                 _F( CHARGE = LIAISON),
                 _F( CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')),
-                  COMP_INCR=_F(
+                  COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
 
                 INCREMENT=_F(

@@ -1,19 +1,19 @@
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNP133J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT = 'OUI')
@@ -36,28 +36,28 @@ Sc = 2.E5
 
 MA_0 = LIRE_MAILLAGE(FORMAT='MED')
 
-MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI')) 
+MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI'))
 
 # on a modifie les groupes pour le maillage plein
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
        CREA_GROUP_MA = (
           _F(NOM = 'FACE_SUP', GROUP_MA = 'FACESUP'),
-          _F(NOM = 'FACE_INF', GROUP_MA = 'FACEINF'),          
-          _F(NOM = 'MATIERE' , GROUP_MA = 'TOUT'),                  
+          _F(NOM = 'FACE_INF', GROUP_MA = 'FACEINF'),
+          _F(NOM = 'MATIERE' , GROUP_MA = 'TOUT'),
        ),
        CREA_GROUP_NO = (
           _F(NOM = 'P_RIG', GROUP_NO = 'PRIG'),
-          _F(GROUP_MA = 'FACE_SUP'),   
-          _F(GROUP_MA = 'FACE_INF'),                
-          _F(NOM = 'N_INTER',GROUP_NO = 'INTER'),        
-#          _F(NOM = 'N_INF',GROUP_NO = 'NINF'), 
+          _F(GROUP_MA = 'FACE_SUP'),
+          _F(GROUP_MA = 'FACE_INF'),
+          _F(NOM = 'N_INTER',GROUP_NO = 'INTER'),
+#          _F(NOM = 'N_INF',GROUP_NO = 'NINF'),
 #          _F(NOM = 'N_SUP',GROUP_NO = 'NSUP'),
 #           _F(NOM = 'N_INF',
 #              OPTION = 'PLAN',
 #              POINT = (0.,-20.,),
 #              VECT_NORMALE = (0.,1.,),
-#              PRECISION = 0.1,), 
+#              PRECISION = 0.1,),
 #           _F(NOM = 'N_SUP',
 #              OPTION = 'PLAN',
 #              POINT = (0.,20.,),
@@ -68,7 +68,7 @@ MA = DEFI_GROUP(reuse = MA,
              POINT = (0.,0.,),
              VECT_NORMALE = (0.,1.,),
              PRECISION = 0.01,
-             ),               
+             ),
          ),
        );
 # renumerotaion locale pas necessaire
@@ -112,7 +112,7 @@ MA=DEFI_GROUP(reuse=MA,
 # definition du contact : P2P1
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         CONTACT='P2P1',                         
+                         CONTACT='P2P1',
                          );
 
 # on met un algo de type CZM
@@ -122,13 +122,13 @@ CTXFEM = DEFI_CONTACT(
             FROTTEMENT     = 'SANS',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
-                     ORDRE_INT=2,                                   
+                     ORDRE_INT=2,
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_OUV_MIX',
                      ),),);
-                     
+
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
 #--------------------------------------------------------------
@@ -144,7 +144,7 @@ BETON = DEFI_MATERIAU(ELAS      = _F( E              = young,
                                          ),
                          )
 
-# on ajoute le modele enrichi pour la definition du materiau    
+# on ajoute le modele enrichi pour la definition du materiau
 CHMAT = AFFE_MATERIAU(
           MAILLAGE = MA,
           MODELE = MODELEK,
@@ -154,7 +154,7 @@ CHMAT = AFFE_MATERIAU(
           ))
 
 #--------------------------------------------------------------
-# DEFINITION DES CHARGEMENTS 
+# DEFINITION DES CHARGEMENTS
 #--------------------------------------------------------------
 
 # ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
@@ -162,7 +162,7 @@ CHMAT = AFFE_MATERIAU(
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MODELEK,
   DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0)
-  ) 
+  )
 
 # la condition de symetrie change completement
 SYMETRIE = AFFE_CHAR_MECA(
@@ -175,7 +175,7 @@ SYMETRIE = AFFE_CHAR_MECA(
                      COEF_MULT_2 = 1.,
                      COEF_IMPO=0.,),
   )
-    
+
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 # on impose le symetrique sur la face inferieure
 # attention modifier nom du modele
@@ -194,12 +194,12 @@ TRACTION = AFFE_CHAR_MECA(
 # la definition des listes d instants et d'archivage est inchangee
 INSTANTS = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ), 
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ),
                           )
 
 INS_ARCH = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ), 
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ),
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
@@ -219,10 +219,10 @@ EVOL = STAT_NON_LINE(INFO=1,
   EXCIT = (
     _F(CHARGE = RIGIDE),
     _F(CHARGE = SYMETRIE),
-    _F(CHARGE = TRACTION, 
+    _F(CHARGE = TRACTION,
        TYPE_CHARGE = 'FIXE_PILO',
       )),
-  COMP_INCR = (_F(RELATION = 'ELAS'      ,  GROUP_MA = 'MATIERE'),),
+  COMPORTEMENT = (_F(RELATION = 'ELAS'      ,  GROUP_MA = 'MATIERE'),),
   INCREMENT = _F(LIST_INST = DEFLIST,),
   PILOTAGE  = _F (
     TYPE           = 'PRED_ELAS',
@@ -251,7 +251,7 @@ EVOL = STAT_NON_LINE(INFO=1,
   ARCHIVAGE = _F(
     LIST_INST      = INS_ARCH
     )
-  ) 
+  )
 
 #--------------------------------------------------------------
 # POST-TRAITEMENT
@@ -269,7 +269,7 @@ FORCE = POST_RELEVE_T(
                                   RESULTAT   =  EVOL,
                                   NOM_CHAM   = 'FORC_NODA',
                                   GROUP_NO   = 'FACE_SUP',
-                                  
+
                                  ),
                      )
 
@@ -286,7 +286,7 @@ TAB_U = POST_RELEVE_T(
 
 UY = RECU_FONCTION ( TABLE  = TAB_U,
                      PARA_X = 'INST',
-                     PARA_Y = 'DY' 
+                     PARA_Y = 'DY'
                    )
 
 FY = RECU_FONCTION ( TABLE  = FORCE,
@@ -361,7 +361,7 @@ IMPR_FONCTION(
                        )
              )
 
-IMPR_TABLE(TABLE=TAB_U)             
-IMPR_TABLE(TABLE=FORCE)             
+IMPR_TABLE(TABLE=TAB_U)
+IMPR_TABLE(TABLE=FORCE)
 
 FIN()

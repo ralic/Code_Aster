@@ -102,7 +102,7 @@ CAT=DEFI_LIST_REEL(         DEBUT=0.0,INTERVALLE=(
 CALCNL=STAT_NON_LINE(
                 MODELE=MODEL,
                 CHAM_MATER=MATER,
-                COMP_INCR=_F(RELATION = 'VMIS_CINE_LINE'),
+                COMPORTEMENT=_F(RELATION = 'VMIS_CINE_LINE'),
                 INCREMENT=_F(
                             LIST_INST = CAT,
                             NUME_INST_FIN = 26),
@@ -113,7 +113,7 @@ CALCNL=STAT_NON_LINE(
                 EXCIT=(
                              _F(CHARGE = CONDLIM),
                              _F(CHARGE = TRACTION,
-                                FONC_MULT = FOTRAC), 
+                                FONC_MULT = FOTRAC),
                              _F(CHARGE = CISAIL,
                                 FONC_MULT = FOCIS)),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3)
@@ -122,7 +122,7 @@ CALCNL=STAT_NON_LINE(
 CALCNL=STAT_NON_LINE( reuse=CALCNL,
                 MODELE=MODEL,
                 CHAM_MATER=MATER,
-                COMP_INCR=_F(RELATION = 'VMIS_CINE_LINE'),
+                COMPORTEMENT=_F(RELATION = 'VMIS_CINE_LINE'),
                 ETAT_INIT=_F(
                          EVOL_NOLI = CALCNL,
                          NUME_ORDRE = 26),

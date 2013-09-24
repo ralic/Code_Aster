@@ -110,7 +110,7 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
                   CHAM_MATER=CHMAT,
                   CARA_ELEM=CARA,
                   EXCIT=_F(CHARGE=CHARGT,),
-                  COMP_ELAS=_F(RELATION='ELAS',
+                  COMPORTEMENT=_F(RELATION='ELAS',
                                DEFORMATION='GROT_GDEP',),
                   INCREMENT=_F(LIST_INST=linst,),);
 #

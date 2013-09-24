@@ -1,26 +1,26 @@
-#====================================================================== 
+#======================================================================
 #
-# TITRE : VALIDATION DE LA TEMPERATURE DANS LA RELATION = 'VISCOCHAB' 
+# TITRE : VALIDATION DE LA TEMPERATURE DANS LA RELATION = 'VISCOCHAB'
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # CAS-TEST DE REFERENCE : SSNV118B
 #
-#===================================================================== 
+#=====================================================================
 
 
 DEBUT(CODE=_F(NOM='COMP010I',NIV_PUB_WEB='INTERNET'))
@@ -34,12 +34,12 @@ NCAL = 100
 
 ZERO =DEFI_CONSTANTE(VALE=0.0);
 
-# Parametres elastiques 
+# Parametres elastiques
 
 YOUN=DEFI_FONCTION(  NOM_PARA='TEMP',
                      VALE=(T0,   150000.,
                            Tmax, 100000.,)  )
-  
+
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.E-5,
                                          Tmax, 2.0E-5,),);
 
@@ -47,8 +47,8 @@ ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.E-5,
 K_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   25,
                                         Tmax, 40,),);
 
-aphak_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.,      
-                                            Tmax, 1.,),);  
+aphak_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.,
+                                            Tmax, 1.,),);
 
 alphar_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.50,
                                              Tmax, 0.80,),);
@@ -59,14 +59,14 @@ K0_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   60,
 N_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   30,
                                         Tmax, 15,),);
 
-alpha_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.,          
-                                            Tmax, 0.,),);      
+alpha_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.,
+                                            Tmax, 0.,),);
 
 b_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   15,
                                         Tmax, 15,),);
 
-mr_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.,             
-                                         Tmax, 2.,),);         
+mr_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.,
+                                         Tmax, 2.,),);
 
 gamar_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.5E-7,
                                             Tmax, 1.5E-7,),);
@@ -125,7 +125,7 @@ g20_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1500,
 
 ainfi_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.41,
                                             Tmax, 0.56,),);
-    
+
 UN   =DEFI_CONSTANTE(VALE=1.0);
 CENT =DEFI_CONSTANTE(VALE=100.0);
 
@@ -166,8 +166,8 @@ LMAT1  = [None]*(NCAL)
 LMAT2  = [None]*(NCAL)
 time=0.
 tfin=1000.
-for i in range(NCAL):        
-    timem = time     
+for i in range(NCAL):
+    timem = time
     time = timem + tfin/NCAL
     Ti = TREF + time/tfin * (Tmax - TREF)
     Tm = TREF + timem/tfin * (Tmax - TREF)
@@ -209,14 +209,14 @@ compor='VISCOCHAB'
 
 
 tabresu=TEST_COMPOR(MATER=MATER1,
-              COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=200,PARM_THETA=1.,ALGO_INTE='NEWTON_RELI'),
+              COMPORTEMENT=_F(RELATION=compor,ITER_INTE_MAXI=200,PARM_THETA=1.,ALGO_INTE='NEWTON_RELI'),
               LIST_MATER=LMAT1,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=TREF,TEMP_FIN=Tmax,
               NEWTON=_F(REAC_ITER=1),
-              NB_VARI=28,  
+              NB_VARI=28,
               VARI_TEST=('V1','V2','V3','V4','V5'),
               )
 
 IMPR_TABLE(TABLE=tabresu)
 
-                     
+
 FIN()

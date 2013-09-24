@@ -46,5 +46,5 @@ CALC_FORC_NONL=OPER(nom="CALC_FORC_NONL",op= 183,sd_prod=dyna_trans,reentrant='n
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
 
-         COMP_INCR       =C_COMP_INCR(),
+         COMPORTEMENT       =C_COMPORTEMENT(),
 )  ;

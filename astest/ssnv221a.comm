@@ -111,7 +111,7 @@ COEF1 = DEFI_FONCTION( NOM_PARA    = 'INST',
 ZERO  = DEFI_CONSTANTE( VALE =  0.0 )
 
 U1 = SIMU_POINT_MAT( SUPPORT    = 'POINT',
-                     COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',
+                     COMPORTEMENT  = _F( RELATION       = 'DRUCK_PRAGER',
                                       ITER_INTE_MAXI = 20,
                                       RESI_INTE_RELA = 1.E-8,
                                       ITER_INTE_PAS  = -1,

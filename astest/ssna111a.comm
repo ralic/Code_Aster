@@ -106,7 +106,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
                    CONTACT = CONT,
-                   COMP_INCR=(
+                   COMPORTEMENT=(
                               _F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE',
                                 GROUP_MA='GM15',

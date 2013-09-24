@@ -65,7 +65,7 @@ STATNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                              EXCIT=_F(
                 CHARGE = CH1,
                 FONC_MULT = F1),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ARME',
                 MAILLE = 'D1'),
                          INCREMENT=_F(

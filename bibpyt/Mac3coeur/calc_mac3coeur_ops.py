@@ -159,7 +159,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),
                       ETAT_INIT = _F(EVOL_NOLI= _RESU_INI,),AFFICHAGE=_F(INFO_RESIDU='OUI',),
-                      COMP_INCR   =(
+                      COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
@@ -185,7 +185,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),AFFICHAGE=_F(INFO_RESIDU='OUI',),
-                      COMP_INCR   =(
+                      COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
@@ -207,7 +207,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),AFFICHAGE=_F(INFO_RESIDU='OUI',),
-                      COMP_INCR   =(
+                      COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
@@ -229,7 +229,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),AFFICHAGE=_F(INFO_RESIDU='OUI',),
-                      COMP_INCR   =(
+                      COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
@@ -297,7 +297,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _PESANT,  ),
                     _F(CHARGE = _CL_LAME, ),
                     _F(CHARGE = _CL_PER_2,),),
-                              COMP_INCR   =(
+                              COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
@@ -391,7 +391,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _PESANT1,  ),
                                     _F(CHARGE = _DILATP1,  ),
                     _F(CHARGE = _BLOC2,),),
-                              COMP_INCR   =(
+                              COMPORTEMENT   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION = 'GROT_GDEP', ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),

@@ -70,7 +70,7 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CHP,
                               FONC_MULT=F_INST,),
                            _F(CHARGE=CHCL,),),
-                    COMP_INCR=_F(RELATION='ELAS',
+                    COMPORTEMENT=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 

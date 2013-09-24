@@ -103,7 +103,9 @@ MO=AFFE_MODELE(
 # MATERIAU ELASTIQUE
 MAT_CUB=DEFI_MATERIAU(ELAS=_F(
                               E   = young,
-                              NU  = poiss),)
+                              NU  = poiss),
+                      ECRO_LINE=_F(SY=1.E10,D_SIGM_EPSI=0.),
+                      )
 
 
 # MATERIAU JOINT MECANIQUE AVEC FROTTEMENT
@@ -183,10 +185,10 @@ U_F=STAT_NON_LINE(
     _F(CHARGE = PAM_J , ),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
              MAILLE = 'CUBEDEG', ),
-          _F(RELATION = 'ELAS',
+          _F(RELATION = 'VMIS_ISOT_LINE',
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
@@ -387,10 +389,10 @@ U_2=STAT_NON_LINE(
     _F(CHARGE = PAM_J , ),
     _F(CHARGE = TRAC_2, ),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
              MAILLE = 'CUBEDEG', ),
-          _F(RELATION = 'ELAS',
+          _F(RELATION = 'VMIS_ISOT_LINE',
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),

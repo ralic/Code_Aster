@@ -103,7 +103,7 @@ V=STAT_NON_LINE(
                 CHAM_MATER=CHP_MATE,
                 EXCIT=( _F( CHARGE = CHR_PLAN),
                         _F( CHARGE = CHR_ROTA)),
-                COMP_ELAS=_F( RELATION = 'ELAS',
+                COMPORTEMENT=_F( RELATION = 'ELAS',
                               DEFORMATION = 'GROT_GDEP'),
                 INCREMENT=_F(  LIST_INST = INSTANTS,
                                INST_FIN = 1.),
@@ -151,7 +151,7 @@ V=STAT_NON_LINE( reuse=V,
                 FONC_MULT = F_CHAR)),
                          ETAT_INIT=_F(
                 EVOL_NOLI = V),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
@@ -183,7 +183,7 @@ V=STAT_NON_LINE( reuse=V,
                 FONC_MULT = F_CHAR)),
                          ETAT_INIT=_F(
                 EVOL_NOLI = V),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
@@ -302,9 +302,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    NOM_CHAM='REAC_NODA',
                    NOEUD='NO3',
                    NOM_CMP='DX',
-                   VALE_CALC=1.5675922482571,
+                   VALE_CALC=1.5675793185536,
                    VALE_REFE=0.0,
-                   TOLE_MACHINE=1.E-5,             # TODO TOLE_MACHINE
+                   TOLE_MACHINE=2.E-5,             # TODO TOLE_MACHINE
                    CRITERE='ABSOLU',
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.6,),

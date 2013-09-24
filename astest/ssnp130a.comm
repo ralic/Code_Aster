@@ -68,7 +68,7 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHP,FONC_MULT=F_INST,),
                            _F(CHARGE=CHCL,),),
-                    COMP_INCR=_F(RELATION='ELAS',TOUT='OUI',),
+                    COMPORTEMENT=_F(RELATION='ELAS',TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
 DEPLA=CALC_CHAMP(reuse=DEPLA,RESULTAT=DEPLA,INST=1.,ENERGIE=('ETOT_ELEM'))
@@ -89,7 +89,7 @@ RESUD=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHDUAL,FONC_MULT=F_INST,),
                            _F(CHARGE=CHCL,),),
-                    COMP_INCR=_F(RELATION='ELAS',TOUT='OUI',),
+                    COMPORTEMENT=_F(RELATION='ELAS',TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
 RESUD=CALC_ERREUR(reuse =RESUD,

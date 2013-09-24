@@ -1,19 +1,19 @@
 # TITRE BLOC DECOUPE PAR UNE FISSURE VERTICALE SE BRANCHANT ENTRE 2 FISSURES HORIZONTALES AVEC X-FEM
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # double jonction en I, D_PLAN, QUAD4 avec contact
@@ -128,7 +128,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CONTACT=CTXFEM,
                    EXCIT=(_F(CHARGE=CH1),
                           _F(CHARGE=CH2)),
-                   COMP_ELAS=(_F(RELATION='ELAS',
+                   COMPORTEMENT=(_F(RELATION='ELAS',
                                  GROUP_MA='SURF')),
                    NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
                    INCREMENT=_F(LIST_INST=L_INST),
@@ -340,27 +340,27 @@ for i in [1,2,3,4]: #Boucle sur les zones
              TYPE_TEST='MIN',
              VALE_CALC=VALE_CALC[(i-1)*4+0], VALE_REFE=vale[i],
              CRITERE='ABSOLU',
-             PRECISION=preci, 
+             PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MAX',
              VALE_CALC=VALE_CALC[(i-1)*4+1], VALE_REFE=vale[i],
              CRITERE='ABSOLU',
-             PRECISION=preci, 
+             PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MIN',
              VALE_CALC=VALE_CALC[(i-1)*4+2], VALE_REFE=0,
              CRITERE='ABSOLU',
-             PRECISION=preci, 
+             PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MAX',
              VALE_CALC=VALE_CALC[(i-1)*4+3], VALE_REFE=0,
              CRITERE='ABSOLU',
-             PRECISION=preci, 
+             PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
 FIN();

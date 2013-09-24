@@ -92,7 +92,7 @@ RESU=STAT_NON_LINE(MODELE=MODM,
                                      ITER_GLOB_ELAS=20,
                                      ITER_GLOB_MAXI=20)),
                    INCREMENT=_F( LIST_INST = INSTNL),
-                   COMP_INCR=(_F(RELATION='ELAS',GROUP_MA = 'RES',),
+                   COMPORTEMENT=(_F(RELATION='ELAS',GROUP_MA = 'RES',),
                               _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA = 'STRU'))
                                   )
 

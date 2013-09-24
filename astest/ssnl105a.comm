@@ -78,13 +78,15 @@ RESU1=STAT_NON_LINE(
                          INCREMENT=_F(
                 LIST_INST = LISNT,
                 NUME_INST_FIN = 2),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=(
+                         _F(
                 GROUP_MA = ( 'GXXXXXX_CABLE',  ),
                 RELATION = 'CABLE',
                 DEFORMATION = 'GROT_GDEP'),
-                         COMP_INCR=_F(
+                         _F(
                 GROUP_MA = ( 'GXXXXXX_CADRE',  ),
                 RELATION = 'ELAS'),
+                                     ),
                             NEWTON=_F(
                 REAC_ITER = 1),
                        CONVERGENCE=_F(

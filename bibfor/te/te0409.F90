@@ -91,10 +91,6 @@ subroutine te0409(option, nomte)
             call jevech('PCOMPOR', 'L', icompo)
             comp3 = zk16(icompo+3)
 !
-            if (comp3 .eq. 'COMP_ELAS') then
-                call utmess('F', 'ELEMENTS3_92')
-            endif
-!
             if (zk16(icompo+2)(6:10) .eq. '_REAC' .or. zk16(icompo+2) .eq. 'GROT_GDEP') then
                 if (zk16(icompo+2)(6:10) .eq. '_REAC') call utmess('A', 'ELEMENTS2_72')
 !

@@ -107,7 +107,7 @@ BlocBase=AFFE_CHAR_CINE(MODELE=Modele,
 # Phase de resolution proprement dit
 Evol=STAT_NON_LINE(MODELE=Modele,
                    CHAM_MATER=Chmat,
-                   COMP_INCR=_F(RELATION='ELAS',
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,),

@@ -103,7 +103,7 @@ RESU=STAT_NON_LINE(MODELE=MODM,
                                      ITER_GLOB_ELAS=20,
                                      ITER_GLOB_MAXI=20)),
                    INCREMENT=_F( LIST_INST = INSTNL),
-                   COMP_INCR=(
+                   COMPORTEMENT=(
                    _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA = 'STRU')))
 
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),RESULTAT=RESU)

@@ -93,9 +93,9 @@ ACIER2[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
 compor1='ELAS_VMIS_PUIS'
 compor2='ELAS_VMIS_TRAC'
 
-TEST_COMPOR(OPTION='MECA',
-
-              COMP_ELAS=_F(RELATION=compor1,),
+u1=TEST_COMPOR(OPTION='MECA',
+              TEST_TANGENTE='NON',
+              COMPORTEMENT=_F(RELATION=compor1,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
               LIST_NPAS=4*[1] + [1, 5, 25],
@@ -104,9 +104,9 @@ TEST_COMPOR(OPTION='MECA',
               YOUNG=YOUNG,POISSON=POISSON,
               )
 
-TEST_COMPOR(OPTION='MECA',
-
-              COMP_ELAS=_F(RELATION=compor2,),
+u2=TEST_COMPOR(OPTION='MECA',
+              TEST_TANGENTE='NON',
+              COMPORTEMENT=_F(RELATION=compor2,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER2,
               LIST_NPAS=4*[1] + [1, 5, 25],

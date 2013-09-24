@@ -111,7 +111,7 @@ U=STAT_NON_LINE(
                              _F(
                 CHARGE = CH1), _F(
                 CHARGE = CH2)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE'),
                          INCREMENT=_F(
                 LIST_INST = L_INST1),
@@ -135,7 +135,7 @@ U2=STAT_NON_LINE(
                          ETAT_INIT=_F(
                 EVOL_NOLI = U,
                 NUME_ORDRE = 1),
-                         COMP_INCR=_F( PARM_THETA = 0.5,
+                         COMPORTEMENT=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
                          INCREMENT=_F(
@@ -160,7 +160,7 @@ U3=STAT_NON_LINE(
                          ETAT_INIT=_F(
                 EVOL_NOLI = U2,
                 NUME_ORDRE = 15),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE'),
                          INCREMENT=_F(
                 LIST_INST = L_INST3),
@@ -184,7 +184,7 @@ U4=STAT_NON_LINE(
                          ETAT_INIT=_F(
                 EVOL_NOLI = U3,
                 NUME_ORDRE = 1),
-                         COMP_INCR=_F( PARM_THETA = 0.5,
+                         COMPORTEMENT=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
                          INCREMENT=_F(

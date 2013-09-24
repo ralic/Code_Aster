@@ -170,7 +170,7 @@ EVOL = STAT_NON_LINE(
          EXCIT = (
       _F(CHARGE = FIXE),
       _F(CHARGE = TRACTION, FONC_MULT=FCT)),
-         COMP_INCR = (
+         COMPORTEMENT = (
       _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
       _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_TAC_MIX')),
          INCREMENT = _F(
@@ -195,7 +195,7 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
     _F(CHARGE = FIXE),
     _F(CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')
     ),
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
     _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_TAC_MIX'),
     ),
@@ -236,7 +236,7 @@ EVOL = CALC_CHAMP(reuse = EVOL,
                   GROUP_MA='JOINT'
   )
 
-# INTERPOLATION NODALE DES CHAMPS AUX PG  
+# INTERPOLATION NODALE DES CHAMPS AUX PG
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
                 VARI_INTERNE='VARI_ELNO',
@@ -350,7 +350,7 @@ TEST_RESU(RESU=_F(INST=tfinc,
                   VALE_CALC=0.41026334038946,
                   MAILLE='M2380',),
           )
-          
+
 TEST_RESU(RESU=_F(INST=tfinc,
                   POINT=2,
                   RESULTAT=EVOL,
@@ -369,7 +369,7 @@ TEST_RESU(RESU=_F(INST=tfinc,
                   NOEUD='N2'
                   ),
           )
-          
+
 TEST_RESU(RESU=_F(INST=tfinc,
                   RESULTAT=EVOL,
                   NOM_CHAM='SIEF_NOEU',

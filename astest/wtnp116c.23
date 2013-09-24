@@ -104,8 +104,8 @@ FORMI2=AFFE_CHAR_MECA_F(MODELE=MODE2,
 #
 # 3 possibilités pour la résolution :
 # 1. MECA_STATIQUE                  => MS
-# 2. STAT_NON_LINE(COMP_INCR(ELAS)) => SNLCI
-# 3. STAT_NON_LINE(COMP_ELAS(ELAS)) => SNLCE
+# 2. STAT_NON_LINE(COMPORTEMENT(ELAS)) => SNLCI
+# 3. STAT_NON_LINE(COMPORTEMENT(ELAS)) => SNLCE
 #
 
 MATRICE='TANGENTE'
@@ -122,7 +122,7 @@ RESUM1B=STAT_NON_LINE(MODELE=MODE1,
                                _F(CHARGE=PESANT1,),
                                _F(CHARGE=FORMI1,),),
                         NEWTON=_F(MATRICE=MATRICE,),
-                        COMP_INCR=_F(RELATION='ELAS',),
+                        COMPORTEMENT=_F(RELATION='ELAS',),
                         INCREMENT=_F(LIST_INST=LISTINST,),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
                         INFO=1,);
@@ -133,7 +133,7 @@ RESUM1C=STAT_NON_LINE(MODELE=MODE1,
                                _F(CHARGE=PESANT1,),
                                _F(CHARGE=FORMI1,),),
                         NEWTON=_F(MATRICE='ELASTIQUE',),
-                        COMP_ELAS=_F(RELATION='ELAS',),
+                        COMPORTEMENT=_F(RELATION='ELAS',),
                         INCREMENT=_F(LIST_INST=LISTINST,),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
                         INFO=1,);
@@ -147,7 +147,7 @@ RESUM2=STAT_NON_LINE(MODELE=MODE1,
                                _F(CHARGE=PESANT1,),
                                _F(CHARGE=FORMI1,),),
                         NEWTON=_F(MATRICE=MATRICE,),
-                        COMP_INCR=_F(RELATION='DRUCK_PRAGER',),
+                        COMPORTEMENT=_F(RELATION='DRUCK_PRAGER',),
                         INCREMENT=_F(LIST_INST=LISTINST,),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
                         INFO=1,);
@@ -158,7 +158,7 @@ RESUM3=STAT_NON_LINE(MODELE=MODE1,
                                _F(CHARGE=PESANT1,),
                                _F(CHARGE=FORMI1,),),
                         NEWTON=_F(MATRICE=MATRICE,),
-                        COMP_INCR=_F(RELATION='DRUCK_PRAGER',),
+                        COMPORTEMENT=_F(RELATION='DRUCK_PRAGER',),
                         INCREMENT=_F(LIST_INST=LISTINST,),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
                         INFO=1,);
@@ -169,7 +169,7 @@ RESUM4=STAT_NON_LINE(MODELE=MODE2,
                                _F(CHARGE=PESANT1,),
                                _F(CHARGE=FORMI1,),),
                         NEWTON=_F(MATRICE=MATRICE,),
-                        COMP_INCR=_F(RELATION='ENDO_HETEROGENE',),
+                        COMPORTEMENT=_F(RELATION='ENDO_HETEROGENE',),
                         INCREMENT=_F(LIST_INST=LISTINST,),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1E-12,),
                         INFO=1,);

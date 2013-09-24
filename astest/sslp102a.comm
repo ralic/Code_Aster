@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#      
+#
 #
 
 DEBUT(CODE=_F(NOM='SSLP102A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -78,7 +78,7 @@ RESU=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CH,),
                 #FONC_MULT = F),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
@@ -134,26 +134,26 @@ THETA4=CALC_THETA(       MODELE=MO,
 G1=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(THETA=THETA1 ),
-                  COMP_ELAS=_F(
+                  COMPORTEMENT=_F(
                            RELATION = 'ELAS'),
                            );
- 
+
 G2=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(THETA=THETA2 ),
-                  COMP_ELAS=_F(
+                  COMPORTEMENT=_F(
                            RELATION = 'ELAS'),);
 
 G3=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(THETA=THETA3 ),
-                  COMP_ELAS=_F(
+                  COMPORTEMENT=_F(
                            RELATION = 'ELAS'),);
 
 G4=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(THETA=THETA4 ),
-                  COMP_ELAS=_F(
+                  COMPORTEMENT=_F(
                            RELATION = 'ELAS'),);
 
 #--------------------------------------------------------------------
@@ -174,10 +174,10 @@ G4=CALC_G(        RESULTAT=RESU,
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
 
- 
+
 TEST_TABLE(
            VALE_CALC=0.18015297371831,
-           
+
            NOM_PARA='G',
            TABLE=G1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -186,7 +186,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=0.18012031028967,
-           
+
            NOM_PARA='G',
            TABLE=G2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -195,7 +195,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=0.18011043699373,
-           
+
            NOM_PARA='G',
            TABLE=G3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -204,7 +204,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=0.18010917971263,
-           
+
            NOM_PARA='G',
            TABLE=G4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

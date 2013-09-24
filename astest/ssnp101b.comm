@@ -122,7 +122,7 @@ U=STAT_NON_LINE(
                              _F(
                 CHARGE = CH1), _F(
                 CHARGE = CH2)),
-                         COMP_INCR=_F( PARM_THETA = 0.5,
+                         COMPORTEMENT=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
                          INCREMENT=_F(
@@ -228,7 +228,7 @@ U1=STAT_NON_LINE(
                              _F(
                 CHARGE = CH1), _F(
                 CHARGE = CH2)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VISC_TAHERI',
                 ITER_INTE_MAXI = 1000,
                 ITER_INTE_PAS = 10,

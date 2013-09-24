@@ -121,7 +121,7 @@ EVOL=STAT_NON_LINE(
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -146,7 +146,7 @@ EVOL=STAT_NON_LINE( reuse=EVOL,
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',

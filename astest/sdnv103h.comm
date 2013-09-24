@@ -141,7 +141,7 @@ RESU1=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
                    CONTACT = CHCONT,
-                   COMP_INCR=(_F(
+                   COMPORTEMENT=(_F(
                                  RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='SIMO_MIEHE',
                                  TOUT='OUI',),
@@ -327,7 +327,7 @@ RESU2=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
                    CONTACT = CHCONT,
-                   COMP_INCR=(_F(
+                   COMPORTEMENT=(_F(
                                  RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='SIMO_MIEHE',
                                  TOUT='OUI',),

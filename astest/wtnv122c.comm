@@ -178,7 +178,7 @@ U1=STAT_NON_LINE(
                 ), _F(
                 CHARGE = P0,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
                   'ELAS',        'LIQU_SATU',
@@ -214,7 +214,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = P0,
                 )),
                       ETAT_INIT=_F(SIGM=RES1,),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('CAM_CLAY','LIQU_SATU','HYDR_UTIL',),
                 ITER_INTE_MAXI=100,
@@ -273,7 +273,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = DEP_V,
                 FONC_MULT = EVOL_DEV,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('CAM_CLAY','LIQU_SATU','HYDR_UTIL',),
                 ITER_INTE_MAXI=100,

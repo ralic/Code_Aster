@@ -28,8 +28,8 @@ loi = LoiComportement(
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN'),
    deformation    = ('PETIT', 'GROT_GDEP'),
-   nom_varc       = ('TEMP'),
+   nom_varc       = ('TEMP','VIDE'),
    algo_inte         = 'ANALYTIQUE',
    type_matr_tang = None,
-   proprietes     = None,
+   proprietes     = ('COMP_ELAS',),
 )

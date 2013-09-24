@@ -285,8 +285,8 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                           FORMULATION  =SIMP(statut='o',max=1,typ='TXM',into=("DEPLACEMENT","VITESSE",),),),
                      ),
 #
-                     COMP_INCR_IMPL       =C_COMP_INCR(),
-                     COMP_INCR_EXPL       =C_COMP_INCR(),
+                     COMP_INCR_IMPL       =C_COMPORTEMENT(),
+                     COMP_INCR_EXPL       =C_COMPORTEMENT(),
                 regles=(AU_MOINS_UN('COMP_INCR_IMPL','COMP_INCR_EXPL',),
                         PRESENT_PRESENT('COMP_INCR_IMPL','COMP_INCR_EXPL',),),
 #

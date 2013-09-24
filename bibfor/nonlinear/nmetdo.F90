@@ -64,15 +64,15 @@ subroutine nmetdo(sdcriq)
 !
 ! --- INDICATEUR D'ERREUR EN TEMPS -> ON VERIFIE QUE C'EST POSSIBLE
 !
-    call getfac('COMP_INCR', nbocc)
+    call getfac('COMPORTEMENT', nbocc)
 !
     if (nbocc .eq. 0) then
         call utmess('F', 'INDICATEUR_25')
     else
         do 10 iocc = 1, nbocc
-            call getvtx('COMP_INCR', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
+            call getvtx('COMPORTEMENT', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
             if (comp1(1:6) .eq. 'KIT_HM') then
-                call getvtx('COMP_INCR', 'RELATION_KIT', iocc=iocc, nbval=dimaki, vect=comel(1),&
+                call getvtx('COMPORTEMENT', 'RELATION_KIT', iocc=iocc, nbval=dimaki, vect=comel(1),&
                             nbret=n2)
                 if (n2 .eq. 0) then
                     ASSERT(.false.)

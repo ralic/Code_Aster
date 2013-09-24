@@ -207,7 +207,7 @@ for num_calc in range(0,nb_calc1) :
                        EXCIT=(_F(CHARGE=CLIMM[num_calc],),
                               _F(CHARGE=CHM[num_calc],
                                  FONC_MULT=F_INST,),),
-                       COMP_INCR=(_F(RELATION='ELAS',
+                       COMPORTEMENT=(_F(RELATION='ELAS',
                                      TOUT='OUI',), ),
                        INCREMENT=_F(LIST_INST=L_INST),);
 

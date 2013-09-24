@@ -133,7 +133,7 @@ subroutine gverlc(resuco, compor, iord)
 !
 ! SI LE LDC DANS SNL EST COMP_INC, ON EMMET UNE ALAMRE
         if (iadr .gt. 0) then
-            if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
+!!            if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
                 if (zk16(jresv+iadr-1)(1:4) .eq. 'VMIS') then
                     call utmess('A', 'RUPTURE1_47')
                 else
@@ -141,7 +141,7 @@ subroutine gverlc(resuco, compor, iord)
                         call utmess('F', 'RUPTURE1_47')
                     endif
                 endif
-            endif
+!!            endif
         endif
 !
         if (iadc .gt. 0 .and. iadr .gt. 0) then

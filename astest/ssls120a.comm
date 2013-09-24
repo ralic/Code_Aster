@@ -225,7 +225,7 @@ LIST=DEFI_LIST_REEL(DEBUT=0.0,
 ELAS3=STAT_NON_LINE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CARAELE,
-                    COMP_INCR=_F(RELATION='ELAS'),
+                    COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LIST,),
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=PH,),),);

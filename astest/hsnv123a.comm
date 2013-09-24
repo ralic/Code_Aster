@@ -83,7 +83,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 CHAM_MATER=CHMAT,
                 RESULTAT=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
-                COMP_INCR=_F(RELATION='ZIRC',
+                COMPORTEMENT=_F(RELATION='ZIRC',
                              TOUT='OUI'),
                 OPTION='META_ELNO',);
 
@@ -299,7 +299,7 @@ U=STAT_NON_LINE(  MODELE=MO,  CHAM_MATER=CM2,EXCIT=(
            _F( CHARGE = CH_FO,
                   FONC_MULT = FORCE),
            _F( CHARGE = CHARGE),),
-            COMP_INCR=_F( RELATION = 'META_V_IL',
+            COMPORTEMENT=_F( RELATION = 'META_V_IL',
                 RELATION_KIT = ('ZIRC',)),
            INCREMENT=_F( LIST_INST = L_INST),
               NEWTON=_F( MATRICE = 'TANGENTE', REAC_ITER = 1),

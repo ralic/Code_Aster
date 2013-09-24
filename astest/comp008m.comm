@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# TRANSVERSE SOUS COMP_INCR
+# TRANSVERSE SOUS COMPORTEMENT
 # ======================================================================
 #         MATERIAU ISOTROPE TRANSVERSE (avec valeur isotrope)
 # CAS-TEST DE REFERENCE : SSLS101E
@@ -119,7 +119,7 @@ for i in range(NCAL):
 # MACRO pour test thermoplastique
 
 tabresu=TEST_COMPOR(SUPPORT='ELEMENT',
-              MATER=MATERI,COMP_INCR=_F(RELATION=compor),
+              MATER=MATERI,COMPORTEMENT=_F(RELATION=compor),
               LIST_MATER=LMAT2,ALPHA=ALPHA1,YOUNG=YOUN_L,TEMP_INIT=T0,TEMP_FIN=Tmax,
               NEWTON=_F(REAC_ITER=1),
               NB_VARI=0,)

@@ -89,7 +89,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE = CL,),
                           _F(CHARGE = CH,)),
-                   COMP_ELAS=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LINST,),
                   )
 

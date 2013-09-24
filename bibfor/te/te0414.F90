@@ -63,78 +63,77 @@ subroutine te0414(optioz, nomtz)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
 !
-    if (zk16(icompo+3)(1:9) .eq. 'COMP_ELAS') then
-!          ------------------------------------
-!       SEULE RELATION ADMISE : ELAS
-        if (zk16(icompo)(1:5) .ne. 'ELAS ') then
-            call utmess('F', 'ELEMENTS5_46', sk=zk16(icompo))
-        endif
+!   SEULE RELATION HYPER_ELASTIQUE ADMISE : ELAS
+    if (zk16(icompo)(1:5) .eq. 'ELAS_') then
+        call utmess('F', 'ELEMENTS5_46', sk=zk16(icompo))
+    endif
 !
 !
-! ------ HYPER-ELASTICITE
+    if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
 !
-        if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
+!       DEFORMATION DE GREEN
 !
-! --------- DEFORMATION DE GREEN
+        if (zk16(icompo)(1:5) .eq. 'ELAS ') then
+        
+!           HYPER-ELASTICITE
 !
             call vdgnlr(option, nomte)
-!
             goto 9999
 !
         else
-!
-! --------- AUTRES MESURES DE DEFORMATIONS
-!
-            call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
-!
-        endif
-!
-    else if (zk16(icompo+3)(1:9) .eq. 'COMP_INCR') then
-!              ------------------------------------
-!
-        if (zk16(icompo+2) .eq. 'GROT_GDEP') then
-!
-! --------- HYPO-ELASTICITE
+
+!           HYPO-ELASTICITE
 !
             call vdpnlr(option, nomte, codret)
 !
             goto 9999
 !
-        else if (zk16(icompo+2)(6:10) .eq. '_REAC') then
+        endif
+        
+    else if (zk16(icompo+2)(1:5) .eq. 'PETIT') then
+    
+        if (zk16(icompo+2)(6:10) .eq. '_REAC') then
 !
             call utmess('A', 'ELEMENTS3_94')
 !
             do 90 i = 1, nb2-1
-                i1=3*(i-1)
-                i2=6*(i-1)
-                zr(jgeom+i1) = zr(jgeom+i1) +zr(ideplm+i2) +zr(ideplp+ i2)
-                zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(ideplm+i2+1) +zr(ideplp+i2+1)
-                zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(ideplm+i2+2) +zr(ideplp+i2+2)
+               i1=3*(i-1)
+               i2=6*(i-1)
+               zr(jgeom+i1) = zr(jgeom+i1) +zr(ideplm+i2) +zr(ideplp+ i2)
+               zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(ideplm+i2+1) +zr(ideplp+i2+1)
+               zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(ideplm+i2+2) +zr(ideplp+i2+2)
 90          continue
+
         endif
 !
         call vdxnlr(option, nomte, zr(jgeom), matloc, nb1,&
-                    codret)
+                codret)
 !
         if (matric) then
 !
-            call jevech('PMATUUR', 'E', jmatr)
+           call jevech('PMATUUR', 'E', jmatr)
 !
-! --------- MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
+! -----    MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
 !
-            call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
-            call matpgl(nb2, zr(lzr), plg)
+           call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
+           call matpgl(nb2, zr(lzr), plg)
 !
-! --------- OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL
-!           ET STOCKAGE DANS ZR
+! -----    OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL
+!          ET STOCKAGE DANS ZR
 !
-            nddlet = 6*nb1+3
-            call tranlg(nb1, 51, nddlet, plg, matloc,&
-                        zr(jmatr))
+           nddlet = 6*nb1+3
+           call tranlg(nb1, 51, nddlet, plg, matloc,&
+                       zr(jmatr))
+                       
         endif
+    else 
 !
+! ----- AUTRES MESURES DE DEFORMATIONS
+!
+        call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
+        
     endif
-!
+    
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret

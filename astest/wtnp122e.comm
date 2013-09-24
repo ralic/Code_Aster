@@ -1,19 +1,19 @@
 # TITRE - MODELISATION D UN BARREAU SATURE EN GAZ COMPRESSIBLE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
 #    MODELISATION VF DECENTRE MAILLE (VFDM)
@@ -65,22 +65,22 @@ NBDECOUP=100
 
 RESI_GLOB_MAXI = 1.E-12
 
-ITER_GLOB_MAXI = 20 
+ITER_GLOB_MAXI = 20
 #
 #
 #*************************************************************
 # LISTE DES INSTANTS DE CALCULS
 #*************************************************************
 #
-              
+
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=TFINAL,
                                     NOMBRE=NBDECOUP,),),
                      );
-        
+
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
                                 ECHEC=_F(EVENEMENT = 'ERREUR',
-                                         ACTION    = 'ARRET',),)       
+                                         ACTION    = 'ARRET',),)
 #*********************
 # LECTURE DU MAILLAGE
 #*********************
@@ -101,7 +101,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
          _F(GROUP_MA='MGAUCHE',),
          _F(GROUP_MA='TOUT',NOM='NS',CRIT_NOEUD='MILIEU',),
          _F(GROUP_MA='TOUT',NOM='NK',CRIT_NOEUD='CENTRE',)
-       ,),);        
+       ,),);
 
 #*********************************************************
 # MODELE DE CALCUL
@@ -113,7 +113,7 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                            MODELISATION=MODELISA,),
                   );
 
-                                    
+
 
 #*********************************************************
 # DEFINITION DES CARACTERISTIQUES FLUIDES
@@ -134,49 +134,49 @@ DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
 
 VALKINT=1.E-3 /PGREF
 KINT=DEFI_CONSTANTE(VALE=VALKINT,);
-MATERIAU=DEFI_MATERIAU(  
+MATERIAU=DEFI_MATERIAU(
 
-         THM_LIQU=_F(  
+         THM_LIQU=_F(
                RHO = 1000.0,
                 VISC = VISCOLIQ,
        UN_SUR_K=0.,
           D_VISC_TEMP = DVISCOL,),
-         
+
          COMP_THM = 'LIQU_AD_GAZ_VAPE',
-   
+
          THM_AIR_DISS=_F(
                    CP=0.,
                    COEF_HENRY=HENRY,
                    ),
-                   
-         THM_VAPE_GAZ    =_F(                                 
+
+         THM_VAPE_GAZ    =_F(
                    MASS_MOL   = MOLVP,
                    CP         = 1870.,
                    VISC       = VISCOGAZ,
                    D_VISC_TEMP= DVISCOG,
                        ),
-          
+
          THM_GAZ=_F(
                   MASS_MOL    = 0.002,
-       CP=1000.0, 
+       CP=1000.0,
                   VISC        = VISCOGAZ,
                   D_VISC_TEMP = DVISCOG,
-             ), 
-         
+             ),
+
          THM_DIFFU=_F(
             R_GAZ      = 8.315,
             RHO=2200.0,
             BIOT_L  = 1.,
             BIOT_T  = 1.,
             BIOT_N  = 1.,
-#*****SATURATION******            
+#*****SATURATION******
             SATU_PRES  = ZERO,
             D_SATU_PRES= ZERO,
-#*****GRAVITE****** 
+#*****GRAVITE******
             PESA_X     = 0.0,
             PESA_Y     = 0.,
             PESA_Z     = 0.,
-#*****TENSEUR******            
+#*****TENSEUR******
             PERMIN_L   = KINT,
             PERMIN_T   = ZERO,
             PERM_LIQU  = UN,
@@ -184,14 +184,14 @@ MATERIAU=DEFI_MATERIAU(
             PERM_GAZ   = UN,
             D_PERM_SATU_GAZ=ZERO,
             D_PERM_PRES_GAZ=ZERO,
-#*****FICK****** 
+#*****FICK******
             FICKV_T    = ZERO,
             FICKA_T    = ZERO,
             LAMB_TL    = ZERO,
             LAMB_TT    = ZERO,
               ),
-            
-        THM_INIT=_F( 
+
+        THM_INIT=_F(
          TEMP = 303.,
          PRE1 = PCREF,
          PRE2 = PGREF,
@@ -206,8 +206,8 @@ MATERIAU=DEFI_MATERIAU(
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='TOUT',
-                             MATER=MATERIAU,),),);   
-                
+                             MATER=MATERIAU,),),);
+
 #*************************************************************
 # AFFECTATION DE L ETAT INITIAL
 #*************************************************************
@@ -217,7 +217,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 #ESSAI COMPARAISON HDI
 #***********************
 PINIT=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                           _F( GROUP_MA = 'TOUT'  ,
@@ -239,49 +239,49 @@ CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=(
                  _F(TOUT='OUI',PRE1=0.,),
                  _F(GROUP_MA = 'MGAUCHE',PRE2=PRE2G0,),
-                 ), 
-                             
+                 ),
+
        );
-    
+
 #
 #
 #*************************************************************
 #     STAT NON LINE
 #*************************************************************
 #
-        
+
 
 CAL1=STAT_NON_LINE(MODELE=MODELT,
-                 CHAM_MATER=CHMAT, 
-                 
+                 CHAM_MATER=CHMAT,
+
                  EXCIT=( _F(CHARGE=CHIMP,),),
-                 
-                 COMP_INCR=_F(RELATION='KIT_HH',
+
+                 COMPORTEMENT=_F(RELATION='KIT_HH',
                               RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),
                  ),
 
-                INCREMENT=_F(  
+                INCREMENT=_F(
                    LIST_INST = LI,
                      INST_FIN=TFINAL,
                 ),
-                
+
                  ETAT_INIT  = _F ( DEPL = PINIT  ,
                                   ),
-                                               
+
                SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
-                 
+
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
-              
+
                  CONVERGENCE=_F(
                                  RESI_GLOB_MAXI = RESI_GLOB_MAXI,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI,),
-                    
+
                  ARCHIVAGE=_F(LIST_INST     = INST1  ,),
                  );
 
-         
+
 #
 #*************************************************************
 # IMPRESSIONS
@@ -297,13 +297,13 @@ PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
         LIST_INST=L_INST,
         NOM_CMP=('PRE1'),
         OPERATION='EXTRACTION',),);
-       
+
 IMPR_TABLE(TABLE=PR1_BAS,
       PAGINATION = 'INST' ,
       NOM_PARA=('INST','COOR_X','PRE1'),
       TRI   = (_F( NOM_PARA = ('COOR_X' ,),
       ORDRE    = 'CROISSANT',),),);
-    
+
 PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
         GROUP_NO=('NSBAS'),
         RESULTAT=CAL1,
@@ -315,7 +315,7 @@ IMPR_TABLE(TABLE=PR2_BAS,
       PAGINATION = 'INST' ,
       NOM_PARA=('INST','COOR_X','PRE2'),
       TRI   = (_F( NOM_PARA = ('COOR_X' ,),
-      ORDRE    = 'CROISSANT',),),); 
+      ORDRE    = 'CROISSANT',),),);
 
 # NOEUD DU BAS
 TEST_RESU(RESU=_F(NUME_ORDRE=100,

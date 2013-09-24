@@ -109,7 +109,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !-INUTILE ???
-    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
+    call getvid('COMPORTEMENT', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_MAX'
         call utmess('F', 'RUPTURE1_13', sk=valk)

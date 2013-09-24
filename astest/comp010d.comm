@@ -1,7 +1,7 @@
 
 #======================================================================
 #
-# TITRE : VALIDATION DE TEMPERATURE DANS GATT_MONERIE sous COMP_INCR
+# TITRE : VALIDATION DE TEMPERATURE DANS GATT_MONERIE sous COMPORTEMENT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ TIMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
                    VALE=(  0. , T0, 1. , Tmax)
                    )
 
-U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,
+U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,
                             #  ITER_INTE_MAXI=400,
                             #  ITER_INTE_PAS = -90,
                               ),
@@ -152,7 +152,7 @@ for i in range(NCAL):
           list = DEFI_LIST_REEL(DEBUT=timem,
                       INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
 
-          RESU[i]=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,
+          RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,
                                              # ITER_INTE_MAXI= 400,
                                              # ITER_INTE_PAS = -90,
                                               ),
@@ -187,14 +187,14 @@ for i in range(NCAL):
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='VMIS',
-                     VALE_CALC=U['VMIS',i+2],   
+                     VALE_CALC=U['VMIS',i+2],
                      VALE_REFE=U['VMIS',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='TRACE',
-                     VALE_CALC=U['TRACE',i+2],   
+                     VALE_CALC=U['TRACE',i+2],
                      VALE_REFE=U['TRACE',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);
@@ -204,7 +204,7 @@ for i in range(NCAL):
              if U[nomvari,i+1] > epsi :
                 TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA=nomvari,
-                     VALE_CALC=U[nomvari,i+2],   
+                     VALE_CALC=U[nomvari,i+2],
                      VALE_REFE=U[nomvari,i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
                      REFERENCE='AUTRE_ASTER',);

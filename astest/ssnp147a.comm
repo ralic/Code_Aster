@@ -166,7 +166,7 @@ EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
                              _F(CHARGE=LIAISON),
                              _F(CHARGE=CINED,FONC_MULT=RAMPE),
                              _F(CHARGE=CINEG,FONC_MULT=RAMPE),),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_HETEROGENE',
                 DEFORMATION = 'PETIT'),
 

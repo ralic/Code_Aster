@@ -140,7 +140,7 @@ CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CTM,
                 EXCIT=_F(CHARGE=CHMECA,),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=.0001,
                                ITER_GLOB_MAXI=10,),);

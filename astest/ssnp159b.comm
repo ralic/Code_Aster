@@ -1,19 +1,19 @@
 #  TITRE TRACTION PLASTIQUE GRANDES DEFORMATIONS AXI CALCUL DES ENERGIES ELASTIQUES
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,9 +80,9 @@ CHP_MATL=AFFE_MATERIAU(   MAILLAGE=MA,
                           AFFE=_F(  TOUT = 'OUI',
                                     MATER = ACIER,),
                        )
-                       
- ###################################################           
-#CALCUL ET TEST EN PETITES DEFORMATIONS 
+
+ ###################################################
+#CALCUL ET TEST EN PETITES DEFORMATIONS
 PT=STAT_NON_LINE(
                   MODELE=MO,
                   CHAM_MATER=CHP_MATL,
@@ -90,7 +90,7 @@ PT=STAT_NON_LINE(
                         _F(CHARGE = CHR_TRAC,
                            FONC_MULT = F_CHAR,
                            TYPE_CHARGE = 'DIDI')),
-                  COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE',
+                  COMPORTEMENT=_F(RELATION = 'VMIS_ISOT_LINE',
                                DEFORMATION = 'PETIT'),
                   INCREMENT=_F(LIST_INST = L_INST),
                   NEWTON=_F(MATRICE = 'TANGENTE',
@@ -145,7 +145,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.0,),
            )
-           
+
 PT = CALC_CHAMP(reuse=PT,RESULTAT=PT,ENERGIE=('ENEL_ELGA'),)
 
 
@@ -159,7 +159,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-2,),))
 
-###################################################           
+###################################################
 #CALCUL ET TEST AVEC LES DEFORMATIONS GDEF_LOG
 LOG=STAT_NON_LINE(
                   MODELE=MO,
@@ -168,7 +168,7 @@ LOG=STAT_NON_LINE(
                         _F(CHARGE = CHR_TRAC,
                            FONC_MULT = F_CHAR,
                            TYPE_CHARGE = 'DIDI')),
-                  COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE',
+                  COMPORTEMENT=_F(RELATION = 'VMIS_ISOT_LINE',
                                DEFORMATION = 'GDEF_LOG'),
                   INCREMENT=_F(LIST_INST = L_INST),
                   NEWTON=_F(MATRICE = 'TANGENTE',
@@ -238,7 +238,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    PRECISION=1.E-2,),))
 
 
-###################################################           
+###################################################
 #CALCUL ET TEST AVEC LES DEFORMATIONS DE SIMO_MIEHE
 SM=STAT_NON_LINE(
                   MODELE=MO,
@@ -247,7 +247,7 @@ SM=STAT_NON_LINE(
                         _F(CHARGE = CHR_TRAC,
                            FONC_MULT = F_CHAR,
                            TYPE_CHARGE = 'DIDI')),
-                  COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE',
+                  COMPORTEMENT=_F(RELATION = 'VMIS_ISOT_LINE',
                                DEFORMATION = 'SIMO_MIEHE'),
                   INCREMENT=_F(LIST_INST = L_INST),
                   NEWTON=_F(MATRICE = 'TANGENTE',
@@ -302,7 +302,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.0,),
            )
-           
+
 SM = CALC_CHAMP(reuse=SM,RESULTAT=SM,ENERGIE=('ENEL_ELGA'),)
 
 

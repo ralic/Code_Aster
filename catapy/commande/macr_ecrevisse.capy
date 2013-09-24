@@ -246,7 +246,7 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
 
          CONTACT            = SIMP(statut='o',typ=char_contact),
 
-         COMP_INCR          = C_COMP_INCR(),
+         COMPORTEMENT          = C_COMPORTEMENT(),
          NEWTON             = FACT(statut='d',
            REAC_INCR           =SIMP(statut='f',typ='I',defaut= 1 ),
            PREDICTION          =SIMP(statut='f',typ='TXM',into=("DEPL_CALCULE","TANGENTE","ELASTIQUE","EXTRAPOL") ),

@@ -154,7 +154,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 !- RECUPERATION DE L'ETAT INITIAL
     if (incr) then
-        call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
+        call getvid('COMPORTEMENT', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
 !- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
         if (nsig .ne. 0) then
             call chpver('C', chsigi(1:19), 'ELNO', 'SIEF_R', ino1)

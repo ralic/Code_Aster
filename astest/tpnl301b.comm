@@ -174,7 +174,7 @@ THINI=THER_NON_LINE(MODELE=MODELETH,
 
 RESUTHER=THER_NON_LINE(MODELE=MODELETH,
                        CHAM_MATER=CHMATTH,
-                       COMP_THER_NL=_F(RELATION='THER_HYDR',),
+                       COMPORTEMENT=_F(RELATION='THER_HYDR',),
                        EXCIT=_F(CHARGE=CL_THER,),
                        INCREMENT=_F(LIST_INST=LINST,),
                        ETAT_INIT=_F(EVOL_THER=THINI,),);

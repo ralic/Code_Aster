@@ -27,11 +27,11 @@ subroutine nthydr(hydrat)
 !
     hydrat = .false.
 !
-    call getfac('COMP_THER_NL', nbocc)
+    call getfac('COMPORTEMENT', nbocc)
 !
     do 10 i = 1, nbocc
 !
-        call getvtx('COMP_THER_NL', 'RELATION', iocc=i, scal=comp, nbret=n1)
+        call getvtx('COMPORTEMENT', 'RELATION', iocc=i, scal=comp, nbret=n1)
 !
         if (comp(1:9) .eq. 'THER_HYDR') hydrat = .true.
 !

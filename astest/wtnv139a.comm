@@ -1,4 +1,4 @@
-# TITRE   MODELISATION HM D UN PUITS CREUSE INCLINE DANS UNE FORMATION 
+# TITRE   MODELISATION HM D UN PUITS CREUSE INCLINE DANS UNE FORMATION
 #         ISOTROPE TRANSVERSE SATUREE EN EAU
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ AZI = 30.
 INCLI = 60.
 
 ## ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
-# 
+#
 BETA = -INCLI
 ALPHA = AZI
 # Conversion en radian
@@ -42,7 +42,7 @@ VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3)
 
 DVISCOL=DEFI_CONSTANTE(VALE=0.)
 
-# PERMEABILITE INTRINSEQUE 
+# PERMEABILITE INTRINSEQUE
 KINT=DEFI_CONSTANTE(VALE=5.E-20)
 
 # CONDUCTIVITE THERMIQUE
@@ -96,7 +96,7 @@ CBIOTN = 0.898635
 BIOT=[[CBIOTL,0.,0.],[0.,CBIOTL,0.],[0.,0.,CBIOTN]]
 
 
-## POUR INFO PASSAGE DE LA MATRICE DE BIOT - LOCAL - AU REPERE DES CONTRAINTES 
+## POUR INFO PASSAGE DE LA MATRICE DE BIOT - LOCAL - AU REPERE DES CONTRAINTES
 
 IPASS = ln.inv(PASS)
 ITPASS = ln.inv(TPASS)
@@ -131,7 +131,7 @@ PRESREPY = -(SILYY)
 PRESREPX = -(SILXX)
 PRESREPZ = -(SILZZ)
 #***********************************************************************
-#    MAILLAGE 
+#    MAILLAGE
 #***********************************************************************
 MAILIN=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -197,9 +197,9 @@ MAT=DEFI_MATERIAU(
             NU_LT = POISSON,
             NU_LN = POISSON,
             G_LN = 8.88E+9,),
-            COMP_THM = 'LIQU_SATU',                              
+            COMP_THM = 'LIQU_SATU',
         THM_LIQU=_F(
-            RHO = 1000.,  
+            RHO = 1000.,
             UN_SUR_K = 5.E-10,
             VISC = VISCOLIQ,
             D_VISC_TEMP = DVISCOL,),
@@ -213,7 +213,7 @@ MAT=DEFI_MATERIAU(
             PERMIN_L=KINT,
             PERMIN_N=KINT,),
          THM_INIT=_F(PRE1 = 0.,
-                     PORO = 0.14,),); 
+                     PORO = 0.14,),);
 
 #***********************************************************************
 #    LISTE DES INSTANTS DE CALCUL
@@ -224,16 +224,16 @@ T2 =TCONF + 864
 T3 = TCONF + 8640.
 T4 = TCONF + 86400.
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=( _F(JUSQU_A = T1,NOMBRE = 10,), 
+                      INTERVALLE=( _F(JUSQU_A = T1,NOMBRE = 10,),
                                   _F(JUSQU_A = T2,NOMBRE = 10,),
                                   _F(JUSQU_A = T3,NOMBRE = 10,),
                                   _F(JUSQU_A = T4,NOMBRE = 5,)
                                 ),
-                     );                      
+                     );
 
 ##################################################################################################
-#     
-#                         PHASE 1 : INITIALISATION 
+#
+#                         PHASE 1 : INITIALISATION
 #
 ##################################################################################################
 
@@ -243,13 +243,13 @@ PHASE1=AFFE_MODELE(MAILLAGE=MAIL,
                            MODELISATION ='3D_HMS',),);
 #
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=_F(TOUT='OUI',  
+                     AFFE=_F(TOUT='OUI',
                              MATER = MAT,),
                     );
 
 #***********************************************************************
-#        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE 
-#                  DEPLACEMENTS POUR LA PHASE 1 
+#        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE
+#                  DEPLACEMENTS POUR LA PHASE 1
 #***********************************************************************
 
 SIGINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -259,13 +259,13 @@ SIGINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
       NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIYZ','SIXZ',
                'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
                'M11','FH11X','FH11Y','FH11Z',),
-      VALE=(SIEFX,SIEFY,SIEFZ,SIEFXY,SIEFYZ,SIEFXZ, 
+      VALE=(SIEFX,SIEFY,SIEFZ,SIEFXY,SIEFYZ,SIEFXZ,
             SIPXX0,SIPYY0,SIPZZ0,SIPXY0,SIPXZ0,SIPYZ0,
             0.,0.,0.,0.,),),
                          ), );
 
-DEPINIT=CREA_CHAMP(MAILLAGE=MAIL, 
-     OPERATION='AFFE', 
+DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
+     OPERATION='AFFE',
      TYPE_CHAM='NOEU_DEPL_R',
      AFFE=(_F(TOUT='OUI',
               NOM_CMP = 'DX',
@@ -297,7 +297,7 @@ CH_INF2=AFFE_CHAR_CINE(MODELE=PHASE1,
 CH_INF3=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(_F(GROUP_NO='FRONT', PRE1=PLIMP,),),
                                 );
-    
+
 CH_PREY=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA='HAUT', PRES=PRESREPY,),),
                       );
@@ -326,7 +326,7 @@ CH_PAR=AFFE_CHAR_MECA(MODELE=PHASE1,
 CME_PAR=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA=('CAVITE',), PRES=12.E6),),
                       );
-             
+
 #*****************************************************************
 #              CALCUL DES EFFORTS EN PAROI
 #*****************************************************************
@@ -345,7 +345,7 @@ U0=STAT_NON_LINE(MODELE=PHASE1,
    ),
    ETAT_INIT=_F(SIGM=SIGINI,
          DEPL=DEPINIT,),
-   COMP_INCR=_F(RELATION = 'KIT_HM',          
+   COMPORTEMENT=_F(RELATION = 'KIT_HM',
          RELATION_KIT = ('ELAS',
                   'LIQU_SATU',
                   'HYDR_UTIL',),),
@@ -360,7 +360,7 @@ U0=STAT_NON_LINE(MODELE=PHASE1,
 
 #
 # POST TRAITEMENT
-#  
+#
 U0=CALC_CHAMP(reuse=U0,
               RESULTAT=U0,
        INST=T1,
@@ -399,18 +399,18 @@ PRES_MAY=POST_RELEVE_T(ACTION=_F(INTITULE='PRES_MA',
 IMPR_TABLE(TABLE=PRES_MAY,
            NOM_PARA=('COOR_Y','PRE1'),
            FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
-                            VALE=T1, 
+                            VALE=T1,
                             PRECISION=0.0001),),
            TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
            );
 IMPR_TABLE(TABLE=SIG_MAY,
            NOM_PARA=('COOR_Y','SIYY'),
            FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
-                            VALE=T1, 
+                            VALE=T1,
            PRECISION=0.0001),),
            TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
            );
-      
+
 # PRESSION DE PORE
 TEST_RESU(RESU=_F(INST=T1,
                   REFERENCE='NON_DEFINI',

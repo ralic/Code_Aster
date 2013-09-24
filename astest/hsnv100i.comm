@@ -200,7 +200,7 @@ CTM2=AFFE_MATERIAU(
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CTM,
                 EXCIT=_F(CHARGE=CHMECA,),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
@@ -212,7 +212,7 @@ U2=STAT_NON_LINE(
                 CHAM_MATER=CTM2,
                 EXCIT=_F(
                 CHARGE = CHMECA),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -326,7 +326,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    NOEUD='N1',
                    NOM_CMP='EPXX',
                    VALE_CALC=1.9599999061299E-4,
-                   
+
                    CRITERE='RELATIF',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=5,
@@ -335,7 +335,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    NOEUD='N1',
                    NOM_CMP='EPYY',
                    VALE_CALC=-3.9199999081423E-4,
-                   
+
                    CRITERE='RELATIF',
                    MAILLE='M1',),
                 ),
@@ -475,7 +475,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    NOEUD='N1',
                    NOM_CMP='EPXX',
                    VALE_CALC=1.9599999061299E-4,
-                   
+
                    CRITERE='RELATIF',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=5,
@@ -484,7 +484,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    NOEUD='N1',
                    NOM_CMP='EPYY',
                    VALE_CALC=-3.9199999081423E-4,
-                   
+
                    CRITERE='RELATIF',
                    MAILLE='M1',),
                 ),

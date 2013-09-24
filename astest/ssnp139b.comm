@@ -225,7 +225,7 @@ U=STAT_NON_LINE(
                  _F(CHARGE = TRACTION,
                     FONC_MULT = FCT_FAT),
                ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
                 _F(RELATION = loi_vol,  GROUP_MA = ('DCB1','DCB2')),
                 _F(RELATION = loi_czm ,    GROUP_MA = 'DCBJ'),
                 ),

@@ -1,19 +1,19 @@
 # TITRE -    APPARITION/DISPARITION DE PHASE DANS UN ECOULEMENT DIPHASIQUE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #            INJECTION DE GAZ DANS UN BARREAU SATURE EN EAU PURE
 #
@@ -28,8 +28,8 @@ METHODE='VFDM'
 MODELISA = 'D_PLAN_HH2SUDM'
 LOI= 'LIQU_AD_GAZ'
 NOEUD_G='N603'
-   
-   
+
+
 #=============================================================
 #                     DONNEES
 #=============================================================
@@ -115,7 +115,7 @@ HENRY=DEFI_CONSTANTE(VALE=130719.);
 
 KINT=DEFI_CONSTANTE(VALE=5.E-20);
 
-FICKWAR=DEFI_CONSTANTE ( VALE = 0.45E-9); 
+FICKWAR=DEFI_CONSTANTE ( VALE = 0.45E-9);
 FLUGAZ=5.57E-6/(365.*24.*3600.)    #FLUGAZ=1.766E-13KG.M^2.S^-1
 
 #*********************************************************
@@ -123,30 +123,30 @@ FLUGAZ=5.57E-6/(365.*24.*3600.)    #FLUGAZ=1.766E-13KG.M^2.S^-1
 #*********************************************************
 #
 RESI_GLOB_RELA =  1.E-05
-ITER_GLOB_MAXI = 10 
+ITER_GLOB_MAXI = 10
 
 FLUXG = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
            VALE = (
    0.               ,  FLUGAZ ,
-   TINJ             ,  FLUGAZ , 
-#   FINJ             ,  0. , 
-#   TSIM             ,  0. , 
+   TINJ             ,  FLUGAZ ,
+#   FINJ             ,  0. ,
+#   TSIM             ,  0. ,
    ),
             PROL_DROITE ='EXCLU' ,
             PROL_GAUCHE ='EXCLU' );
-            
+
 #================================
 # FICK DANS LE MELANGE LIQUIDE
 #================================
 LI2  = DEFI_LIST_REEL ( DEBUT      = 0.4,
                        INTERVALLE = (
                          _F( JUSQU_A = 0.99999 , NOMBRE = 2000),
-                                    ));   
-                                    
+                                    ));
+
 #================================
 # SATURATION DU LIQUIDE
-#================================   
-FFAS  = FORMULE(NOM_PARA='SAT', VALE='SAT');  
+#================================
+FFAS  = FORMULE(NOM_PARA='SAT', VALE='SAT');
 
 FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS      ,
                            LIST_PARA    =  LI2       ,
@@ -163,40 +163,40 @@ FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS      ,
 #
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
- _F( JUSQU_A = 86400, NOMBRE = 1),                   #DT=1J         
- _F( JUSQU_A = 864000 , NOMBRE = 9 ),                #DT=1J   
- _F( JUSQU_A = T1ANS      , NOMBRE = 10 ),           #DT=0.1 AN 
- _F( JUSQU_A = T10ANS     , NOMBRE = 10 ),           #DT=0.9 AN   
- _F( JUSQU_A = 6.3072E+08 , NOMBRE = 10 ),           #DT=1 AN   
- _F( JUSQU_A = 9.4608E+08 , NOMBRE = 10 ),           #DT=1 AN   
- _F( JUSQU_A = 1.2614E+09 , NOMBRE = 10 ),           #DT=1 AN   
- _F( JUSQU_A = T50ANS     , NOMBRE = 5  ),           #DT=2 AN   
- _F( JUSQU_A = 1.8922E+09 , NOMBRE = 5  ),           #DT=2 AN   
- _F( JUSQU_A = T100ANS    , NOMBRE = 10 ),           #DT=4 AN   
- _F( JUSQU_A = 6.3072E+09 , NOMBRE = 24 ),           #DT=5 AN  
- _F( JUSQU_A = 9.4608E+09 , NOMBRE = 20 ),           #DT=5 AN    
- _F( JUSQU_A = T500ANS    , NOMBRE = 20 ),           #DT=10 AN            
- _F( JUSQU_A = T1000ANS   , NOMBRE = 20 ),           #DT=25 ANS 
- _F( JUSQU_A = T1500ANS   , NOMBRE = 10 ),           #DT=50 ANS 
- _F( JUSQU_A = T2000ANS   , NOMBRE = 5 ),            #DT=100 ANS 
+ _F( JUSQU_A = 86400, NOMBRE = 1),                   #DT=1J
+ _F( JUSQU_A = 864000 , NOMBRE = 9 ),                #DT=1J
+ _F( JUSQU_A = T1ANS      , NOMBRE = 10 ),           #DT=0.1 AN
+ _F( JUSQU_A = T10ANS     , NOMBRE = 10 ),           #DT=0.9 AN
+ _F( JUSQU_A = 6.3072E+08 , NOMBRE = 10 ),           #DT=1 AN
+ _F( JUSQU_A = 9.4608E+08 , NOMBRE = 10 ),           #DT=1 AN
+ _F( JUSQU_A = 1.2614E+09 , NOMBRE = 10 ),           #DT=1 AN
+ _F( JUSQU_A = T50ANS     , NOMBRE = 5  ),           #DT=2 AN
+ _F( JUSQU_A = 1.8922E+09 , NOMBRE = 5  ),           #DT=2 AN
+ _F( JUSQU_A = T100ANS    , NOMBRE = 10 ),           #DT=4 AN
+ _F( JUSQU_A = 6.3072E+09 , NOMBRE = 24 ),           #DT=5 AN
+ _F( JUSQU_A = 9.4608E+09 , NOMBRE = 20 ),           #DT=5 AN
+ _F( JUSQU_A = T500ANS    , NOMBRE = 20 ),           #DT=10 AN
+ _F( JUSQU_A = T1000ANS   , NOMBRE = 20 ),           #DT=25 ANS
+ _F( JUSQU_A = T1500ANS   , NOMBRE = 10 ),           #DT=50 ANS
+ _F( JUSQU_A = T2000ANS   , NOMBRE = 5 ),            #DT=100 ANS
  _F( JUSQU_A = T5000ANS   , NOMBRE = 15 ),           #DT=200 ANS
- _F( JUSQU_A = T8000ANS   , NOMBRE = 10 ),           #DT=300 ANS 
- _F( JUSQU_A = T10_000ANS , NOMBRE = 5 ),            #DT=400 ANS 
- _F( JUSQU_A = T20_000ANS , NOMBRE = 20 ),           #DT=500 ANS  
- _F( JUSQU_A = T40_000ANS , NOMBRE = 32 ),           #DT=625 ANS 
+ _F( JUSQU_A = T8000ANS   , NOMBRE = 10 ),           #DT=300 ANS
+ _F( JUSQU_A = T10_000ANS , NOMBRE = 5 ),            #DT=400 ANS
+ _F( JUSQU_A = T20_000ANS , NOMBRE = 20 ),           #DT=500 ANS
+ _F( JUSQU_A = T40_000ANS , NOMBRE = 32 ),           #DT=625 ANS
  _F( JUSQU_A = T60_000ANS , NOMBRE = 25 ),           #DT=800 ANS
  _F( JUSQU_A = T100_000ANS , NOMBRE = 40 ),          #DT=1000 ANS
- _F( JUSQU_A = T200_000ANS , NOMBRE = 50 ),          #DT=2000 ANS   
- _F( JUSQU_A = T400_000ANS , NOMBRE = 40 ),          #DT=5000 ANS   
+ _F( JUSQU_A = T200_000ANS , NOMBRE = 50 ),          #DT=2000 ANS
+ _F( JUSQU_A = T400_000ANS , NOMBRE = 40 ),          #DT=5000 ANS
  _F( JUSQU_A = T500_000ANS , NOMBRE = 20 ),          #DT=15000 ANS
  _F( JUSQU_A = TMILLION , NOMBRE = 30 ),             #DT=16666 ANS
                      ));
-                     
+
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(ACTION        = 'DECOUPE',
                                          SUBD_METHODE  = 'MANUEL',
                                          SUBD_PAS=5,
-                                         SUBD_PAS_MINI=0.1))                     
+                                         SUBD_PAS_MINI=0.1))
 #=============================================================
 #=============================================================
 #=============================================================
@@ -213,7 +213,7 @@ MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
                     MODI_MAILLE=(
                          _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
                          ))
-   
+
 MAIL=DEFI_GROUP(reuse =MAIL,
         MAILLAGE=MAIL,
         CREA_GROUP_NO=(_F(GROUP_MA='BAS',NOM='NSBAS',CRIT_NOEUD='MILIEU'),
@@ -248,7 +248,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 #*********************************************************
 # MODELE DE CALCUL
 #*********************************************************
-#  
+#
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
@@ -261,26 +261,26 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                               RHO=2670.0,
                               ALPHA=0.),
                     COMP_THM = LOI,
-                      
+
         THM_LIQU=_F(RHO=1000.0,
                     UN_SUR_K=0.,
                     VISC=VISCOLIQ,
                     D_VISC_TEMP=DVISCOL),
-                      
+
         THM_GAZ=_F(MASS_MOL=0.002,
                    CP=1017.0,
                    VISC=VISCOGAZ,
                    D_VISC_TEMP=ZERO),
-                      
+
         THM_VAPE_GAZ=_F(MASS_MOL=0.0001,
                         CP=1900.0,
                         VISC=VISCOGAZ,
                         D_VISC_TEMP=ZERO),
-                     
+
         THM_AIR_DISS=_F(CP=0.0,
                         COEF_HENRY=HENRY,
                         ),
-                      
+
         THM_INIT=_F(TEMP=303.0,
                     PRE1=0.,
                     PRE2=PREF,
@@ -305,7 +305,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                      VG_SATUR  = SATUC,
                      FICKV_T=ZERO,
                      FICKA_T= FICKWAR,
-                     FICKA_S  = FAS   , 
+                     FICKA_S  = FAS   ,
                      LAMB_TL=ZERO,
                      LAMB_TT=ZERO,),);
 #****************************************************************
@@ -325,7 +325,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
-                    AFFE    = ( 
+                    AFFE    = (
                           _F(GROUP_NO='TOUT',
                              NOM_CMP='PRE1',
                              VALE=PC0),
@@ -339,21 +339,21 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
 # AFFECTATION DES CL
 #*************************************************************
 #
-            
+
 CHG = AFFE_CHAR_MECA ( MODELE = MODELE ,
                        FLUX_THM_REP = _F( GROUP_MA  = 'GAUCHE' ,
                                           FLUN_HYDR2 = 1.0 ,
                                         )
                      );
-         
-                     
-                             
+
+
+
 CHIMP = AFFE_CHAR_MECA ( MODELE = MODELE ,
                          DDL_IMPO  = (
                                   _F ( GROUP_MA = 'DROIT',
                                        PRE1   = PC0 ),
                                   _F ( GROUP_MA = 'DROIT',
-                                       PRE2   = 0. ),                
+                                       PRE2   = 0. ),
                                       ),
                        );
 
@@ -373,39 +373,39 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               FONC_MULT = FLUXG ) ,
                            ),
 
-                 COMP_INCR=_F(RELATION='KIT_HH',
+                 COMPORTEMENT=_F(RELATION='KIT_HH',
                               PARM_THETA=1.,
                               PARM_ALPHA=PARM_ALPHA,
                               ITER_INTE_MAXI=5,
                               RELATION_KIT=(LOI,'HYDR_VGM')),
-                              
+
                  ETAT_INIT=_F(DEPL=CHAMNO),
-                 
-                INCREMENT=_F(  
+
+                INCREMENT=_F(
                      LIST_INST = LI,
                      INST_FIN=TFIN,
                 ),
-                              
+
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                           
+
                  CONVERGENCE=_F(
                     RESI_GLOB_RELA=RESI_GLOB_RELA,
                     ITER_GLOB_MAXI=ITER_GLOB_MAXI,
                     ),
-                                
+
                  SOLVEUR=_F(METHODE='MUMPS'),
-                                 
+
                 OBSERVATION=(_F(NOM_CHAM='DEPL',
                                  NOM_CMP=('PRE1','PRE2'),
-                                 PAS_OBSE=1,NOEUD=NOEUD_G)),        
-                 
-                 
+                                 PAS_OBSE=1,NOEUD=NOEUD_G)),
+
+
                  );
-                   
+
 #*************************************************************
 # IMPRESSIONS
-#*************************************************************                                  
+#*************************************************************
 
 
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -415,15 +415,15 @@ PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
          LIST_INST=LISPOST,
          NOM_CMP=('PRE1'),
          OPERATION='EXTRACTION'));
-    
+
 IMPR_TABLE(TABLE=PR1_BAS,
       FORMAT   = 'TABLEAU_CROISE'    ,
       NOM_PARA=('INST','COOR_X','PRE1'),
       TRI   = (_F( NOM_PARA = ('COOR_X' ),
        ORDRE    = 'CROISSANT')));
 
-       
-       
+
+
 PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
          GROUP_NO=('NSBAS'),
          RESULTAT=U0,
@@ -480,7 +480,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PC======================
-#------ NQ182----------------------------      
+#------ NQ182----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -500,7 +500,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PG======================
-#------ NQ182----------------------------      
+#------ NQ182----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -520,7 +520,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PC======================
-#------ N783----------------------------      
+#------ N783----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -540,7 +540,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PG======================
-#------ N783----------------------------      
+#------ N783----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -559,8 +559,8 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                CRITERE='RELATIF',),
        )
 
-#=================PC======================     
-#------ NQ21----------------------------      
+#=================PC======================
+#------ NQ21----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -580,7 +580,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PG======================
-#------ NQ21----------------------------      
+#------ NQ21----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -599,8 +599,8 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
                CRITERE='RELATIF',),
        )
 
-#=================PC====================== 
-# ------ N727----------------------------      
+#=================PC======================
+# ------ N727----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -620,7 +620,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PG======================
-#------ N727----------------------------      
+#------ N727----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -640,7 +640,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PC======================
-#------ NQ25----------------------------      
+#------ NQ25----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',
@@ -660,7 +660,7 @@ TEST_RESU(RESU=_F(INST=3.1536000000E10,
        )
 
 #=================PG======================
-#------ NQ25----------------------------      
+#------ NQ25----------------------------
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                RESULTAT=U0,
                NOM_CHAM='DEPL',

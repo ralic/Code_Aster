@@ -17,7 +17,7 @@
 # ======================================================================
 
 def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,EPSI_INIT,VARI_INIT,NEWTON,CONVERGENCE,
-           MASSIF,ANGLE,COMP_INCR,COMP_ELAS,INFO,ARCHIVAGE,SUPPORT, **args) :
+           MASSIF,ANGLE,COMPORTEMENT,INFO,ARCHIVAGE,SUPPORT, **args) :
 
   """Simulation de la reponse d'un point materiel"""
 
@@ -51,7 +51,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   from Utilitai.Utmess import  UTMESS,MasquerAlarme, RetablirAlarme
   from Noyau.N_types import is_sequence
 
-  # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+  # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
 
 # -- Tests de cohérence
@@ -63,16 +63,13 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   CMP_EPS=['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ']
   CMP_SIG=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
 
-  if COMP_INCR  :
-     lcomp = COMP_INCR.List_F()[0]
-  if COMP_ELAS   :
-     lcomp = COMP_ELAS.List_F()[0]
+  if COMPORTEMENT  :
+     lcomp = COMPORTEMENT.List_F()[0]
 
   if SUPPORT != None :
      if SUPPORT=='ELEMENT':
         itetra=1
   if itetra==0 :
-     if COMP_INCR != None :
         if lcomp['DEFORMATION'] != 'PETIT' :
            if args.has_key('GRAD_IMPOSE'):
               if args['GRAD_IMPOSE'] != None:
@@ -82,11 +79,6 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
               else :
                  itetra=1
                  UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
-     elif COMP_ELAS != None :
-        lcomp = COMP_ELAS.List_F()[0]
-        if lcomp['DEFORMATION'] != 'PETIT' :
-           itetra=1
-           UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
 
 #===============================================================
 # cas ou il n'y a pas d'élement fini : appel à CALC_POINT_MAT
@@ -163,10 +155,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           motscles['CONVERGENCE'] = CONVERGENCE.List_F()
        if MASSIF != None :
           motscles['MASSIF']      = MASSIF.List_F()
-       if COMP_INCR  :
-          motscles['COMP_INCR']   = COMP_INCR.List_F()
-       if COMP_ELAS   :
-          motscles['COMP_ELAS']   = COMP_ELAS.List_F()
+       if COMPORTEMENT  :
+          motscles['COMPORTEMENT']   = COMPORTEMENT.List_F()
 #      -- Deroulement du calcul
        motscles['INCREMENT']      = INCREMENT.List_F()
 
@@ -758,10 +748,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 
 #     -- Deroulement du calcul
       motscles={}
-      if   COMP_INCR  :
-          motscles['COMP_INCR']   = COMP_INCR.List_F()
-      if   COMP_ELAS   :
-          motscles['COMP_ELAS']   = COMP_ELAS.List_F()
+      if   COMPORTEMENT  :
+          motscles['COMPORTEMENT']   = COMPORTEMENT.List_F()
 
       motscles['CONVERGENCE'] = CONVERGENCE.List_F()
 

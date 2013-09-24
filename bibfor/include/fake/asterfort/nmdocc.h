@@ -21,7 +21,7 @@ interface
         character(len=19) :: compor
         character(len=24) :: modele
         integer :: nbmo1
-        character(len=16) :: moclef(2)
+        character(len=16) :: moclef
         character(len=8) :: nomcmp(*)
         integer :: ncmpma
         logical :: meca

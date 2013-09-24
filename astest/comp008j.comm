@@ -123,7 +123,7 @@ for i in range(NCAL):
 # MACRO pour test thermoplastique
 
 tabresu=TEST_COMPOR(SUPPORT='ELEMENT',
-              MATER=MATERI,COMP_INCR=_F(RELATION=compor),
+              MATER=MATERI,COMPORTEMENT=_F(RELATION=compor),
               LIST_MATER=LMAT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=T0,TEMP_FIN=Tmax,NEWTON=_F(REAC_ITER=1),
               NB_VARI=NB_VARI,
               )

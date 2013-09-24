@@ -182,7 +182,7 @@ RESUMECA=STAT_NON_LINE(
                                _F(CHARGE=CLIM,),
                                _F(CHARGE=CH_P,),
                               ),
-                       COMP_INCR=_F(RELATION='BETON_UMLV_FP'),
+                       COMPORTEMENT=_F(RELATION='BETON_UMLV_FP'),
                        INCREMENT=_F(LIST_INST=DEFLIST,
                                    ),
                        NEWTON=_F(PREDICTION = 'ELASTIQUE',MATRICE='TANGENTE',REAC_ITER=1),

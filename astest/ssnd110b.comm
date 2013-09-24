@@ -157,7 +157,7 @@ TIMP=DEFI_FONCTION(
 
 EXPLDD=SIMU_POINT_MAT(INFO=1,
                       MATER=ACIERDD,
-                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                      COMPORTEMENT=(_F(RELATION='MONOCRISTAL',
                                     COMPOR=COMPORDD,
                                     ALGO_INTE='RUNGE_KUTTA',
                                     ITER_INTE_MAXI=100,
@@ -441,7 +441,7 @@ angles=(phi1,phi,phi2)
 
 IMPLDD=SIMU_POINT_MAT(MATER=ACIERDDI,
                       MASSIF=_F(ANGL_EULER=angles),
-                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                      COMPORTEMENT=(_F(RELATION='MONOCRISTAL',
                                     COMPOR=COMPODDI,
                                     ALGO_INTE='NEWTON_PERT',
                                     ITER_INTE_MAXI=100,

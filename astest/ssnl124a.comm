@@ -329,7 +329,7 @@ REST=STAT_NON_LINE(
                         CHAM_MATER=CHMAT,
                         CARA_ELEM = CARA1,
                          EXCIT=_F(CHARGE = CHART,FONC_MULT = FONCT),
-                         COMP_INCR=_F( PARM_THETA = 0.5,
+                         COMPORTEMENT=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE_IRRA',
                 ITER_INTE_MAXI = 150),
                          INCREMENT=_F(

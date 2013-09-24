@@ -136,7 +136,7 @@ LEDEP=STAT_NON_LINE(MODELE=LEMOD,
                     EXCIT=(_F(CHARGE=CLIM,),
                            _F(CHARGE=CHAR,
                               FONC_MULT=FMULT,),),
-                    COMP_INCR=_F(RELATION='ELAS',),
+                    COMPORTEMENT=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=ZLIST,),
                     CONVERGENCE =_F(RESI_GLOB_MAXI=0.1));
 

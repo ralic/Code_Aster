@@ -60,13 +60,13 @@ MA_TMP=DEFI_GROUP(reuse =MA_TMP,
               MAILLAGE=MA_TMP,
               CREA_GROUP_NO=(_F(GROUP_MA='JOINT_H',
                                 OPTION = 'NOEUD_ORDO',
-                                NOM='JOINT_H',),                               
+                                NOM='JOINT_H',),
                              _F(GROUP_MA='JOINT_B',
                                 OPTION = 'NOEUD_ORDO',
                                 NOM='JOINT_B',),
                                ),);
-                               
-# LE NOUVEUA MAILLAGE EST CREE, LA OU LE JOINT EST DEJA MAILLE            
+
+# LE NOUVEUA MAILLAGE EST CREE, LA OU LE JOINT EST DEJA MAILLE
 MA = CREA_MAILLAGE(
   MAILLAGE = MA_TMP,
   CREA_FISS = _F(
@@ -165,7 +165,7 @@ U_F=STAT_NON_LINE(MODELE=MO,
                          _F(CHARGE=PESTER),
                          _F(CHARGE=PAMONT),
                          _F(CHARGE=PAVAL),),
-                  COMP_INCR=(_F(RELATION='JOINT_MECA_FROT',
+                  COMPORTEMENT=(_F(RELATION='JOINT_MECA_FROT',
                                 GROUP_MA='JOINT',),
                              _F(RELATION='ELAS',
                                 GROUP_MA=('TERRE','BARRAGE')),),
@@ -215,7 +215,7 @@ SAUT_X=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INST=tfin,
                                GROUP_NO = ('JOINT_H'),
                                NOM_CMP='DX'));
-                               
+
 # CONTRAINTE NORMALE DANS LE JOINT
 SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
@@ -276,7 +276,7 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=4.6,),
            )
-           
+
 TEST_TABLE(
            VALE_CALC=35316.0,
            NOM_PARA='V18',

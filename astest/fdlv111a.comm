@@ -134,10 +134,10 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 
 ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',);
 
-PRECREL1 = 1.E-7 
+PRECREL1 = 1.E-7
 PRECREL2 = 2.E-5
 PRECABS1 = 3.E-3
-PRECABS2 = 3.5E-1 
+PRECABS2 = 3.5E-1
 
 TEST_TABLE(
            VALE_CALC=1.6174217088701E4,
@@ -239,7 +239,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=1.2,),
            )
 
-# TESTS DE NON REGRESSION SUPPLEMENTAIRES 
+# TESTS DE NON REGRESSION SUPPLEMENTAIRES
 
 TEST_RESU(RESU=_F(NUME_ORDRE=960,
                   RESULTAT=DYN,
@@ -341,7 +341,7 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                         ETAT_INIT=_F(  ACCE = ACCE0,),
                         ENERGIE=_F(),
                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-9),
-                          COMP_INCR=_F( RELATION = 'ELAS',
+                          COMPORTEMENT=_F( RELATION = 'ELAS',
                                   TOUT = 'OUI'),
 #                         SOLVEUR=_F( STOP_SINGULIER = 'NON'),
                          NEWTON=_F(  MATRICE = 'ELASTIQUE',

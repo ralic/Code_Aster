@@ -144,7 +144,7 @@ EVOL = STAT_NON_LINE(
        TYPE_CHARGE = 'FIXE_PILO',
        ),
        ),
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(RELATION = 'ELAS' , GROUP_MA = 'MATIERE'),
     _F(RELATION = 'CZM_EXP_REG' , GROUP_MA = 'JOINT'),
     ),
@@ -161,7 +161,7 @@ EVOL = STAT_NON_LINE(
                    ITER_GLOB_MAXI = 10),
   SOLVEUR    = _F(METHODE = 'MUMPS',
                   NPREC=-1,
-   
+
                   ),
   ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA')
   )

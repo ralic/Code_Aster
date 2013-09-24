@@ -3,7 +3,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                   nnoff, iord, ndeg, thlagr, glagr,&
                   thlag2, milieu, ndimte, pair, extim,&
                   time, nbprup, noprup, chvite, chacce,&
-                  lmelas, nomcas, kcalc, fonoeu)
+                  lmelas, nomcas, kcalc, fonoeu, lincr)
 ! aslint: disable=W1504
     implicit none
 !
@@ -53,7 +53,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=24) :: depla, chfond, mate, compor
     character(len=24) :: chvite, chacce, fonoeu
 !
-    logical :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas
+    logical :: extim, thlagr, glagr, milieu, pair, thlag2, lmelas, lincr
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,8 +148,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !- RECUPERATION DU COMPORTEMENT
 !
-    call getfac('COMP_INCR', incr)
+!    call getfac('COMPORTEMENT', incr)
 !
+    incr=0
+    if (lincr) incr=1
     if (incr .ne. 0 .and. lxfem) then
         call utmess('F', 'RUPTURE1_43')
     endif
@@ -171,7 +173,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !- RECUPERATION DE L'ETAT INITIAL
     if (incr .ne. 0) then
-        call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
+        call getvid('COMPORTEMENT', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
 !- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
         if (nsig .ne. 0) then
             call chpver('C', chsigi, 'ELNO', 'SIEF_R', ino1)

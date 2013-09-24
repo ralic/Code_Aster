@@ -117,7 +117,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                           _F(CHARGE=CHA0,),
                           ),
                    CONTACT  = CHA2,
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);
 

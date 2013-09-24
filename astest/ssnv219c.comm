@@ -368,7 +368,7 @@ for Raff in range(0,Nb_Raffinement):
 #    Phase de resolution proprement dite
    EVOLNOLI=STAT_NON_LINE(MODELE=modl,
                           CHAM_MATER=chmat,
-                          COMP_INCR=_F(RELATION='ELAS',
+                          COMPORTEMENT=_F(RELATION='ELAS',
                                        DEFORMATION='GROT_GDEP',
                                        TOUT='OUI',),
                           INCREMENT=_F(LIST_INST=LINST,),
@@ -516,7 +516,7 @@ BIDONU_S=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U_Surf));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.514698,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.514633,
                         VALE_PARA=1.0,
                         FONCTION=BIDONU_S,
                         ),

@@ -17,10 +17,50 @@
 # person_in_charge: jean-michel.proix@edf.fr
 #
 def C_RELATION( COMMAND ) : 
-    assert COMMAND in ('COMP_INCR','DEFI_COMPOR')
     
-    if COMMAND =='COMP_INCR' :
+    if COMMAND in ('CALC_G','POST_GP',):
                    return (             "ELAS",            #COMMUN#
+                                        "ELAS_VMIS_LINE",
+                                        "ELAS_VMIS_TRAC",
+                                        "ELAS_VMIS_PUIS",
+                                        "ELAS_HYPER",
+                                        "VMIS_CINE_LINE",
+                                        "VMIS_ISOT_LINE",
+                                        "VMIS_ISOT_PUIS",
+                                        "VMIS_ISOT_TRAC",
+                                     )
+    elif COMMAND in ('MACR_ASCOUF_CALC','MACR_ASPIC_CALC',):
+                   return (             "ELAS",           
+                                        "ELAS_VMIS_TRAC",
+                                        "VMIS_ISOT_TRAC",
+                                     )
+    elif COMMAND =='DEFI_COMPOR' :
+                   return (             "ELAS",  #uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
+                                        "BETON_UMLV_FP",
+                                        "BETON_DOUBLE_DP",
+                                        "CORR_ACIER",
+                                        "GRANGER_FP",
+                                        "GRANGER_FP_V",
+                                        "GRANGER_FP_INDT",
+                                        "GRAN_IRRA_LOG",
+                                        "LABORD_1D",
+                                        "MAZARS_GC",
+                                        "VISC_IRRA_LOG",
+                                        "VMIS_CINE_GC",
+                                        "VMIS_CINE_LINE",
+                                        "VMIS_ISOT_CINE",
+                                        "VMIS_ISOT_LINE",
+                                        "VMIS_ISOT_TRAC",
+                                        "VMIS_ISOT_PUIS",
+                                     )
+    else :
+                   return (             "ELAS",            
+                                        "ELAS_VMIS_LINE",
+                                        "ELAS_VMIS_TRAC",
+                                        "ELAS_VMIS_PUIS",
+                                        "ELAS_HYPER",
+                                        "ELAS_POUTRE_GR",
+                                        "CABLE",
                                         "ARME",
                                         "ASSE_CORN",
                                         "BARCELONE",
@@ -165,23 +205,4 @@ def C_RELATION( COMMAND ) :
                                         "ZMAT",
                                         "UMAT",
                                         "MFRONT",
-                                     )
-    elif COMMAND =='DEFI_COMPOR' :
-                   return (             "ELAS",  #uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
-                                        "BETON_UMLV_FP",
-                                        "BETON_DOUBLE_DP",
-                                        "CORR_ACIER",
-                                        "GRANGER_FP",
-                                        "GRANGER_FP_V",
-                                        "GRANGER_FP_INDT",
-                                        "GRAN_IRRA_LOG",
-                                        "LABORD_1D",
-                                        "MAZARS_GC",
-                                        "VISC_IRRA_LOG",
-                                        "VMIS_CINE_GC",
-                                        "VMIS_CINE_LINE",
-                                        "VMIS_ISOT_CINE",
-                                        "VMIS_ISOT_LINE",
-                                        "VMIS_ISOT_TRAC",
-                                        "VMIS_ISOT_PUIS",
                                      )

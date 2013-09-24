@@ -250,7 +250,7 @@ LEDEP=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = ZCHM,
                 ),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_ISOT_LINE',
                 ),
                          INCREMENT=_F(
@@ -277,7 +277,7 @@ LEDEP=STAT_NON_LINE(reuse=LEDEP,
                              EXCIT=_F(
                 CHARGE = ZCHM,
                 ),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_ISOT_LINE',
                 ),
                 ETAT_INIT=_F(EVOL_NOLI=LEDEP),

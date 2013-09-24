@@ -20,7 +20,7 @@ interface
         character(len=24) :: carcrz
         character(len=24) :: modele
         integer :: nbmo1
-        character(len=16) :: moclef(2)
+        character(len=16) :: moclef
         integer :: iret
     end subroutine nmdocr
 end interface

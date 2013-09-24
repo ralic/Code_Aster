@@ -32,5 +32,5 @@ par une courbe de traction analytique (loi en puissance)""",
    nom_varc       = ('TEMP'),
    algo_inte      = 'SECANTE',
    type_matr_tang = None,
-   proprietes     = None,
+   proprietes     = ('COMP_ELAS'),
 )

@@ -82,7 +82,7 @@ SOLNL=STAT_NON_LINE(
                 EXCIT=_F(
                 CHARGE = TR_CS,
                 FONC_MULT = COEF,),
-                COMP_INCR=_F( RELATION = 'VMIS_CIN2_CHAB',),
+                COMPORTEMENT=_F( RELATION = 'VMIS_CIN2_CHAB',),
                 INCREMENT=_F(  LIST_INST = LINST),
                 NEWTON=_F(REAC_ITER = 1),
               )

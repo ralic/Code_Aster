@@ -183,7 +183,7 @@ U=STAT_NON_LINE(
                  _F(CHARGE = SYMETRIE),
                  _F(CHARGE = TRACTION , FONC_MULT = FCT),
                ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
                 _F(RELATION = 'ELAS'      ,  GROUP_MA = ('DCB_1','DCB_2')),
                 _F(RELATION = 'CZM_OUV_MIX', GROUP_MA = 'DCB_J'),
                 ),
@@ -209,7 +209,7 @@ U=STAT_NON_LINE(reuse=U,
                  _F(CHARGE = TRACTION ,
                     TYPE_CHARGE = 'FIXE_PILO'),
                ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
                 _F(RELATION = 'ELAS'      ,  GROUP_MA = ('DCB_1','DCB_2')),
                 _F(RELATION = 'CZM_OUV_MIX', GROUP_MA = 'DCB_J'),
                 ),
@@ -243,7 +243,7 @@ U = CALC_CHAMP(reuse = U,
                GROUP_MA='DCB_1'
   )
 
-# INTERPOLATION NODALE DES CHAMPS AUX PG  
+# INTERPOLATION NODALE DES CHAMPS AUX PG
 U=CALC_CHAMP(reuse =U,
              RESULTAT=U,
              VARI_INTERNE='VARI_ELNO',
@@ -331,7 +331,7 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='INST',
                      VALE=4.0,),
            )
-           
+
 # TESTS DE QUANTITES LOCALES AUX PG
 TEST_RESU(RESU=_F(INST=4.0,
                   POINT=2,
@@ -341,7 +341,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   VALE_CALC=3.2961982132157,
                   MAILLE='M4491',),
           )
-          
+
 TEST_RESU(RESU=_F(INST=4.0,
                   POINT=2,
                   RESULTAT=U,
@@ -361,7 +361,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   NOEUD='N2'
                   ),
           )
-          
+
 TEST_RESU(RESU=_F(INST=4.0,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_NOEU',

@@ -81,7 +81,7 @@ RESU1=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHAR1,
                 FONC_MULT = RAMPE),
-                         COMP_INCR=_F( RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F( RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                        CONVERGENCE=_F(
@@ -116,7 +116,7 @@ RESU2=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHAR2,
                 FONC_MULT = RAMPE),
-                         COMP_INCR=_F( RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F( RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                        CONVERGENCE=_F(

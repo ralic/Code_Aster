@@ -178,7 +178,7 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
 #  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
 #  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
                           ETAT_INIT=_F(  ACCE = ACCE0,),
-                          COMP_INCR=_F( RELATION = 'ELAS',
+                          COMPORTEMENT=_F( RELATION = 'ELAS',
                                   TOUT = 'OUI'),
                          SOLVEUR=_F( STOP_SINGULIER = 'NON',
                                   METHODE = 'LDLT'),

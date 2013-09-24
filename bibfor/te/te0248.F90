@@ -138,10 +138,6 @@ subroutine te0248(optioz, nomtez)
         call jevech('PCONTXR', 'E', icontp)
     endif
 !
-    if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call utmess('F', 'ELEMENTS2_90')
-    endif
-!
 ! --- RECUPERATION DE LA SECTION DE LA BARRE
 !
     a = zr(isect)
@@ -348,7 +344,7 @@ subroutine te0248(optioz, nomtez)
         call jevech('PCOMPOR', 'L', icompo)
         if ((zk16(icompo-1+5)(1:7).ne.'DEBORST') .and. (zk16(icompo)(1: 4).ne.'SANS')) then
             valkm(1) = zk16(icompo)
-            valkm(2) = 'COMP_INCR'
+            valkm(2) = ' '
             call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
         else
 !

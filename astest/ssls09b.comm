@@ -192,7 +192,7 @@ DEF_PESA=STAT_NON_LINE(MODELE=MODELE,
                        EXCIT=(_F(CHARGE=CH_PESA,
                                  FONC_MULT=RAMPE,),
                               _F(CHARGE=CLIM,),),
-                       COMP_ELAS=_F(RELATION='ELAS',),
+                       COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTANTS,),
                        NEWTON=_F(REAC_ITER=1,),);
 

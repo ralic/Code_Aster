@@ -30,9 +30,9 @@ LI1=DEFI_LIST_REEL(DEBUT=0,
                    _F(JUSQU_A=1.E-3,NOMBRE=1),
                    _F(JUSQU_A=0.2,NOMBRE=20,),
                                  ))
-                                 
 
-RESU1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
+
+RESU1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='VMIS_CIN1_CHAB',
                                   ITER_INTE_MAXI=100,),
                      MATER=MATER,
                      INCREMENT=_F(LIST_INST=LI1,),

@@ -103,7 +103,7 @@ MATER=AFFE_MATERIAU(   MAILLAGE=MAYA,
 
 CALCNL=STAT_NON_LINE(   MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F(

@@ -134,7 +134,7 @@ RES1=STAT_NON_LINE(
                 CHAM_MATER=CHMATF,
                 CARA_ELEM=CARAP,
                 EXCIT=_F(CHARGE = CHAMA),
-                COMP_INCR=(
+                COMPORTEMENT=(
                          _F(RELATION = 'MULTIFIBRE',
                             GROUP_MA = 'GOA'),
                          _F(RELATION = 'VMIS_ISOT_LINE',

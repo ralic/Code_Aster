@@ -21,7 +21,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                       +" d'une structure en non linéaire",
                    reentrant='f',
             UIinfo={"groupes":("Résolution","Mécanique",)},
-         regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),),
+
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
@@ -40,9 +40,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                 FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
               ),
 #-------------------------------------------------------------------
-         COMP_INCR       =C_COMP_INCR(),
-#-------------------------------------------------------------------
-         COMP_ELAS       =C_COMP_ELAS('STAT_NON_LINE'),
+         COMPORTEMENT =C_COMPORTEMENT('STAT_NON_LINE'),
 #-------------------------------------------------------------------
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
            ETAT_INIT       =FACT(statut='o',

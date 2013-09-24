@@ -202,7 +202,7 @@ RESU_00=STAT_NON_LINE(MODELE=MODE_00,
                              _F(CHARGE=P_IMP_00,),
                              _F(CHARGE=F_IMP_00,),
                              _F(CHARGE=FLUH_00,),),
-                      COMP_INCR=_F(RELATION='KIT_HM',
+                      COMPORTEMENT=_F(RELATION='KIT_HM',
                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                       INCREMENT=_F(LIST_INST=LISTINST,),);
 #
@@ -400,7 +400,7 @@ RESU_01=STAT_NON_LINE(MODELE=MODE_01,
                              _F(CHARGE=P_IMP_01,),
                              _F(CHARGE=F_IMP_01,),
                              _F(CHARGE=FLUH_01,),),
-                      COMP_INCR=_F(RELATION='KIT_HM',
+                      COMPORTEMENT=_F(RELATION='KIT_HM',
                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                       INCREMENT=_F(LIST_INST=LISTINST,),);
 #

@@ -358,7 +358,7 @@ def CHAR2D(self,POISSON,YOUNG,_tempsar,INFO):
 
 
 
-def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATER,VARI_TEST,INFO,
+def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_TEST,INFO,
                              **args):
  # seule l'option "THER", c'est à dire le test thermomecanique est programmé à ce jour
  # ajouter l'option MECA (tests comp001,002), l'option HYDR, etc..
@@ -373,7 +373,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
 
   # Le concept sortant (de type fonction) est nomme U dans
   # le contexte de la macro
-  if COMP_INCR:
+  if COMPORTEMENT:
      self.DeclareOut('U', self.sd)
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -392,10 +392,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
   IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
 
   motscles={}
-  if   COMP_INCR  :
-      motscles['COMP_INCR']   = COMP_INCR.List_F()
-  if   COMP_ELAS   :
-      motscles['COMP_ELAS']   = COMP_ELAS.List_F()
+  if   COMPORTEMENT  :
+      motscles['COMPORTEMENT']   = COMPORTEMENT.List_F()
+
   motscles['CONVERGENCE'] = CONVERGENCE.List_F()
   motscles['NEWTON']      = NEWTON.List_F()
 
@@ -488,7 +487,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
 
              SXM = SXM *(YOUNG(Ti)/YOUNG(Tm))
              # cas particuliers
-             if COMP_INCR.List_F()[0]['RELATION'] == 'VMIS_CINE_LINE' :
+             if COMPORTEMENT.List_F()[0]['RELATION'] == 'VMIS_CINE_LINE' :
 
                  if args['D_SIGM_EPSI'] != None :
                     D_SIGM_EPSI=args['D_SIGM_EPSI']
@@ -497,14 +496,14 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
 
                  Vim[0:5] = Vim[0:5]*D_SIGM_EPSI(Ti)/D_SIGM_EPSI(Tm)
 
-             if COMP_INCR.List_F()[0]['RELATION']== 'VMIS_ECMI_LINE' :
+             if COMPORTEMENT.List_F()[0]['RELATION']== 'VMIS_ECMI_LINE' :
                  if args['C_PRAG'] != None :
                     C_PRAG=args['C_PRAG']
                  else :
                     raise 'erreur'
                  Vim[2:7] = Vim[2:7]*C_PRAG(Ti)/C_PRAG(Tm)
 
-             if COMP_INCR.List_F()[0]['RELATION']== 'VMIS_ECMI_TRAC' :
+             if COMPORTEMENT.List_F()[0]['RELATION']== 'VMIS_ECMI_TRAC' :
                  if args['C_PRAG'] != None :
                     C_PRAG=args['C_PRAG']
                  else :
@@ -610,7 +609,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           DETRUIRE ( CONCEPT =  _F (NOM =__RES[i]),INFO=1)
 
   elif OPTION=="MECA" :
-
+      TEST_TANGENTE=args['TEST_TANGENTE']
       LIST_NPAS=args['LIST_NPAS']
       YOUNG=args['YOUNG']
       POISSON=args['POISSON']
@@ -638,8 +637,8 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
 
       #parametres vitesse de sollicitation
       t_0 = 1.0
-      if   COMP_INCR  :
-         if COMP_INCR.List_F()[0]['RELATION'][0:4]== 'VISC' :
+      if   COMPORTEMENT  :
+         if COMPORTEMENT.List_F()[0]['RELATION'][0:4]== 'VISC' :
             vitesse = 1.e-5
             t_0 = 5.e-2/(8.0*vitesse)
       # liste d'archivage
@@ -764,8 +763,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
       # Test de la matrice tangente sur le calcul le plus fin
       ###############################################################################
 
-      N = LIST_NPAS[Ncal-1]
-      __Linst=DEFI_LIST_REEL(DEBUT=0.0,
+      if  TEST_TANGENTE=='OUI'  :
+          N = LIST_NPAS[Ncal-1]
+          __Linst=DEFI_LIST_REEL(DEBUT=0.0,
                            INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
                                        _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
                                        _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
@@ -775,42 +775,42 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                        _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
                                        _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
-      if   COMP_INCR  :
-          motscles['COMP_INCR'][0]['TYPE_MATR_TANG'] = 'VERIFICATION'
-          if args['VERI_MATR_OPTION'] is not None :
-              motscles['COMP_INCR'][0]['VALE_PERT_RELA']=args['VERI_MATR_OPTION'].List_F()[0]['VALE_PERT_RELA']
-          __DEFLIS2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = __Linst,),
-                            ECHEC=_F(EVENEMENT    = 'ERREUR',
-                                      ACTION       = 'DECOUPE',
-                                      SUBD_METHODE = 'MANUEL',
-                                     SUBD_PAS=10,
-                                     SUBD_NIVEAU=10,),)
-      #       Resout le pb a deformation imposee
-          DEBUG(SDVERI='NON')
-          U=SIMU_POINT_MAT(INFO=INFO,
-                         MATER      = LIST_MATER[imat],
-                         ARCHIVAGE = _F(LIST_INST = __tempsar),
-                         INCREMENT=_F(LIST_INST=__DEFLIS2,),
-                         **motscles
-                              );
-          DEBUG(SDVERI='OUI')
-          motscles={}
-          if args['VERI_MATR_OPTION'] is not None :
-              motscles['PRECISION']=args['VERI_MATR_OPTION'].List_F()[0]['PRECISION']
-              motscles['PREC_ZERO']=args['VERI_MATR_OPTION'].List_F()[0]['PREC_ZERO']
+          if   COMPORTEMENT  :
+              motscles['COMPORTEMENT'][0]['TYPE_MATR_TANG'] = 'VERIFICATION'
+              if args['VERI_MATR_OPTION'] is not None :
+                  motscles['COMPORTEMENT'][0]['VALE_PERT_RELA']=args['VERI_MATR_OPTION'].List_F()[0]['VALE_PERT_RELA']
+              __DEFLIS2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = __Linst,),
+                                ECHEC=_F(EVENEMENT    = 'ERREUR',
+                                          ACTION       = 'DECOUPE',
+                                          SUBD_METHODE = 'MANUEL',
+                                         SUBD_PAS=10,
+                                         SUBD_NIVEAU=10,),)
+          #       Resout le pb a deformation imposee
+              DEBUG(SDVERI='NON')
+              U=SIMU_POINT_MAT(INFO=INFO,
+                             MATER      = LIST_MATER[imat],
+                             ARCHIVAGE = _F(LIST_INST = __tempsar),
+                             INCREMENT=_F(LIST_INST=__DEFLIS2,),
+                             **motscles
+                                  );
+              DEBUG(SDVERI='OUI')
+              motscles={}
+              if args['VERI_MATR_OPTION'] is not None :
+                  motscles['PRECISION']=args['VERI_MATR_OPTION'].List_F()[0]['PRECISION']
+                  motscles['PREC_ZERO']=args['VERI_MATR_OPTION'].List_F()[0]['PREC_ZERO']
 
-          __DIFFMAT=VERI_MATR_TANG(**motscles)
+              __DIFFMAT=VERI_MATR_TANG(**motscles)
 
-          TEST_TABLE(TABLE=__DIFFMAT,
-                     NOM_PARA='MAT_DIFF',
-                     TYPE_TEST='MAX',
-                     VALE_CALC=0.,
-                     VALE_REFE=0.,
-                     CRITERE='ABSOLU',
-                     TOLE_MACHINE=prec_tgt,
-                     PRECISION=prec_tgt,
-                     REFERENCE='ANALYTIQUE',);
+              TEST_TABLE(TABLE=__DIFFMAT,
+                         NOM_PARA='MAT_DIFF',
+                         TYPE_TEST='MAX',
+                         VALE_CALC=0.,
+                         VALE_REFE=0.,
+                         CRITERE='ABSOLU',
+                         TOLE_MACHINE=prec_tgt,
+                         PRECISION=prec_tgt,
+                         REFERENCE='ANALYTIQUE',);
 
-          if INFO==2 : IMPR_TABLE(TABLE=__DIFFMAT)
+              if INFO==2 : IMPR_TABLE(TABLE=__DIFFMAT)
 
   return ier

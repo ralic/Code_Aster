@@ -209,7 +209,7 @@ SOLEXPL=STAT_NON_LINE(MODELE = TROISD,
                               FONC_MULT=COEF,
                               ),
                           ),
-                    COMP_INCR=(
+                    COMPORTEMENT=(
                                _F(
                                   RELATION='MONOCRISTAL',COMPOR=COMPORDD,
                                   DEFORMATION='SIMO_MIEHE',
@@ -259,7 +259,7 @@ SOLIMPN=STAT_NON_LINE(MODELE = TROISD,
                               FONC_MULT=COEF,
                               ),
                           ),
-                    COMP_INCR=(
+                    COMPORTEMENT=(
                                _F(
                                   RELATION='MONOCRISTAL',COMPOR=COMPORDD,
                                   DEFORMATION='SIMO_MIEHE',
@@ -308,7 +308,7 @@ SOLNL=STAT_NON_LINE(
                     CARA_ELEM = ORIEN,
                     EXCIT=(_F(CHARGE=TRAC,
                               FONC_MULT=COEF,),),
-                    COMP_INCR=(_F(
+                    COMPORTEMENT=(_F(
                                   RELATION='MONOCRISTAL',
                                   COMPOR=COMPORDD,
                                   DEFORMATION='SIMO_MIEHE',

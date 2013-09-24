@@ -81,7 +81,7 @@
 #
 DEBUT(CODE=_F(NOM='sslv135d',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27')),
-               
+
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
@@ -216,7 +216,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         EXCIT      =_F ( CHARGE       = TR_CS,
                                          FONC_MULT    = COEF,
                                          TYPE_CHARGE  = 'FIXE_CSTE'),
-                       COMP_INCR  =_F ( RELATION     = 'VMIS_CINE_LINE',
+                       COMPORTEMENT  =_F ( RELATION     = 'VMIS_CINE_LINE',
                                         DEFORMATION  = 'PETIT',
                                         TOUT         = 'OUI'    ),
                        INCREMENT  =_F ( LIST_INST    = LINST, ),
@@ -340,7 +340,7 @@ CRIT[12] =   FORMULE(
 CRIT[13] =   FORMULE(
            NOM_PARA='DEPSEE',
            VALE= '''DEPSEE'''
-           )           
+           )
 
 RESU = [7.5E-4, 7.625E-4, 200, 0.17333333, 66.66666, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.6742346E-3, 0.00086666666]
 

@@ -1,19 +1,19 @@
 # TITRE  VALIDATION DES FORMULES ETCC DANS DEFI_CABLE_BP
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MODELISATION b : TYPE_RELAX = ETCC_REPRISE
 
@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NOM='SSNV229B',NIV_PUB_WEB='INTERNET'),
 # <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LDC 'SANS'
 # A UNE AUTRE LOI DE COMPORTEMENT
 
-#-----------------------------------------------------------# 
+#-----------------------------------------------------------#
 #-----------------------------------------------------------#
 # VALIDATION DU CALCUL DES TENSIONS PAR METHODE ETCC        #
 # AVEC PRISE EN COMPTE DES PERTES ELASTIQUES                #
@@ -32,8 +32,8 @@ DEBUT(CODE=_F(NOM='SSNV229B',NIV_PUB_WEB='INTERNET'),
 # LONGUEUR     [M]
 # FORCE        [N]
 # PRESSION     [PA]
-#-----------------------------------------------------------# 
-#-----------------------------------------------------------# 
+#-----------------------------------------------------------#
+#-----------------------------------------------------------#
 
 #######################################################################
 ################################## DEFINITION DES PARAMETRES ##########
@@ -85,7 +85,7 @@ mail1 = DEFI_GROUP(reuse    = mail1,
                                    _F(NOM='CAB_EVEN',
                                      UNION=('CAB2', 'CAB4', 'CAB6', 'CAB8', 'CAB10', ),),
                                    _F(NOM='CABLES',
-                                     UNION=('CAB1', 'CAB3', 'CAB5', 'CAB7', 'CAB9', 
+                                     UNION=('CAB1', 'CAB3', 'CAB5', 'CAB7', 'CAB9',
                                        'CAB2', 'CAB4', 'CAB6', 'CAB8', 'CAB10', ),),),
                    CREA_GROUP_NO=( _F(TOUT_GROUP_MA = 'OUI'),),);
 
@@ -107,14 +107,14 @@ aci_h=DEFI_MATERIAU(ELAS=_F(E   = E_cab,
 # Defines the type of equation to solve and the type of elements used for the modelisation of the mesh
 
 mod=AFFE_MODELE(MAILLAGE=mail1,
-                AFFE=(_F(GROUP_MA = ('FUT',),PHENOMENE = 'MECANIQUE', MODELISATION = '3D',), 
-                     _F(GROUP_MA=('CABLES',), PHENOMENE='MECANIQUE', MODELISATION='BARRE',),),);                         
+                AFFE=(_F(GROUP_MA = ('FUT',),PHENOMENE = 'MECANIQUE', MODELISATION = '3D',),
+                     _F(GROUP_MA=('CABLES',), PHENOMENE='MECANIQUE', MODELISATION='BARRE',),),);
 
 # ATTRIBUTING GEOMETRICAL CHARACTERISTICS AND RELATED PROPERTIES TO GROUPS OF ELEMENTS
 
 cara=AFFE_CARA_ELEM(MODELE=mod,
                     BARRE=(_F(GROUP_MA=('CABLES',),
-                              SECTION='GENERALE', 
+                              SECTION='GENERALE',
                               CARA='A',
                               VALE=S_cab),),);
 
@@ -135,10 +135,10 @@ cab_odd0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='
                      _F(GROUP_MA='CAB5', GROUP_NO_ANCRAGE=('CAB5_I','CAB5_F',),),
                      _F(GROUP_MA='CAB7', GROUP_NO_ANCRAGE=('CAB7_I','CAB7_F',),),
                      _F(GROUP_MA='CAB9', GROUP_NO_ANCRAGE=('CAB9_I','CAB9_F',),),),
-                      TYPE_ANCRAGE=('ACTIF','ACTIF'), 
+                      TYPE_ANCRAGE=('ACTIF','ACTIF'),
                       TENSION_INIT=T0,RECUL_ANCRAGE=g_cab,);
 
-cab_eve0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='FUT', 
+cab_eve0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='FUT',
              DEFI_CABLE=(
                 _F(GROUP_MA='CAB2', GROUP_NO_ANCRAGE=('CAB2_I','CAB2_F',),),
                 _F(GROUP_MA='CAB4', GROUP_NO_ANCRAGE=('CAB4_I','CAB4_F',),),
@@ -158,19 +158,19 @@ ch_odd0=AFFE_CHAR_MECA(MODELE=mod,RELA_CINE_BP=_F(CABLE_BP=cab_odd0,SIGM_BPEL='N
 ch_eve0=AFFE_CHAR_MECA(MODELE=mod,RELA_CINE_BP=_F(CABLE_BP=cab_eve0,SIGM_BPEL='NON',RELA_CINE='OUI',),);
 
 
-# DEFINITION DES CONDITIONS LIMITES  
+# DEFINITION DES CONDITIONS LIMITES
 clim=AFFE_CHAR_MECA(MODELE=mod,
                     DDL_IMPO=(
                               _F(GROUP_NO=('ND_BASE','PMY'),
                                 DX=0),
                              _F(GROUP_NO = ('INF',),
-                               DZ = 0,),), 
+                               DZ = 0,),),
                     LIAISON_DDL=(_F(GROUP_NO = ('ND_BASE','PMY',),
                                     DDL = ('DY','DY'),
                                     COEF_MULT=(1.,1.),
                                     COEF_IMPO=0. ),
                                     ));
- 
+
 ########################################################################################################
 ############################################# CALCUL ###################################################
 ########################################################################################################
@@ -179,7 +179,7 @@ clim=AFFE_CHAR_MECA(MODELE=mod,
 res0=CALC_PRECONT(MODELE     = mod,
                 CHAM_MATER = mat,
                 CARA_ELEM  = cara,
-                COMP_INCR=_F(RELATION='ELAS',),
+                COMPORTEMENT=_F(RELATION='ELAS',),
                 EXCIT      = _F(CHARGE = clim,),
                 CABLE_BP=(cab_odd0,),
                 CABLE_BP_INACTIF=(cab_eve0,),
@@ -191,8 +191,8 @@ res0=CALC_PRECONT(reuse=res0,
      MODELE     = mod,
      CHAM_MATER = mat,
      CARA_ELEM  = cara,
-     COMP_INCR=_F(RELATION='ELAS',),  
-     EXCIT      = (_F(CHARGE = clim,), 
+     COMPORTEMENT=_F(RELATION='ELAS',),
+     EXCIT      = (_F(CHARGE = clim,),
                    _F(CHARGE = ch_odd0,),),#  les liaisons cinématiques des câbles déjà mis en tension doivent être inclues comme chargement
      CABLE_BP=cab_eve0,
      INCREMENT=_F(LIST_INST=tps,INST_FIN=2.0,),);
@@ -212,94 +212,94 @@ res0=CALC_CHAMP(reuse      = res0,
 ################################## EXTRACTION DES TENSIONS DANS LES CABLES ######################################
 ########################################################################################################
 
-tensc1= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,       
-                                 INTITULE='N',             
+tensc1= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB1',          
-                                 GROUP_MA='CAB1',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB1',
+                                 GROUP_MA='CAB1',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc2= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc2= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB2',          
-                                 GROUP_MA='CAB2',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB2',
+                                 GROUP_MA='CAB2',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc3= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc3= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB3',          
-                                 GROUP_MA='CAB3',          
-                                 OPERATION = 'EXTRACTION', 
-                                 INST=2.0)) 
-
-tensc4= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
-                                 NOM_CHAM='SIEF_ELNO',
-                                 NOM_CMP='N',
-                                 GROUP_NO='CAB4',          
-                                 GROUP_MA='CAB4',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB3',
+                                 GROUP_MA='CAB3',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc5= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc4= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB5',          
-                                 GROUP_MA='CAB5',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB4',
+                                 GROUP_MA='CAB4',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc6= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc5= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB6',          
-                                 GROUP_MA='CAB6',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB5',
+                                 GROUP_MA='CAB5',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc7= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc6= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB7',          
-                                 GROUP_MA='CAB7',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB6',
+                                 GROUP_MA='CAB6',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc8= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc7= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB8',          
-                                 GROUP_MA='CAB8',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB7',
+                                 GROUP_MA='CAB7',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc9= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc8= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB9',          
-                                 GROUP_MA='CAB9',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB8',
+                                 GROUP_MA='CAB8',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
-tensc10= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,         
-                                 INTITULE='N',             
+tensc9= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='N',
-                                 GROUP_NO='CAB10',          
-                                 GROUP_MA='CAB10',          
-                                 OPERATION = 'EXTRACTION', 
+                                 GROUP_NO='CAB9',
+                                 GROUP_MA='CAB9',
+                                 OPERATION = 'EXTRACTION',
+                                 INST=2.0))
+
+tensc10= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
+                                 INTITULE='N',
+                                 NOM_CHAM='SIEF_ELNO',
+                                 NOM_CMP='N',
+                                 GROUP_NO='CAB10',
+                                 GROUP_MA='CAB10',
+                                 OPERATION = 'EXTRACTION',
                                  INST=2.0))
 
 #################################################################
@@ -332,7 +332,7 @@ tab_eve=RECU_TABLE(CO=cab_eve, NOM_TABLE='CABLE_BP',);
 
 
 # VERIFICATION DES VALEURS OBTENUES
-# A L'EXTREMITE DES CABLES IMPAIRS 
+# A L'EXTREMITE DES CABLES IMPAIRS
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -341,10 +341,10 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=9.289E+06,
            NOM_PARA='TENSION',
            TABLE=tab_odd,
-           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'), 
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'),
                    _F(NOM_PARA='ABSC_CURV', VALE=0.)))
 
-# A LA LIMITE DU RECUL D'ANCRAGE 
+# A LA LIMITE DU RECUL D'ANCRAGE
 # (ATTENTION ABSC_CURV PAS PARFAITEMENT COINCIDENTE)
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -353,10 +353,10 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=10.085E+06,
            NOM_PARA='TENSION',
            TABLE=tab_odd,
-           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'), 
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'),
                    _F(NOM_PARA='ABSC_CURV', VALE=9.200)))
-# AU MILIEU DU CABLE 
-#(AVEC PERTES ELASTIQUES)                  
+# AU MILIEU DU CABLE
+#(AVEC PERTES ELASTIQUES)
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.5E-2,
@@ -364,7 +364,7 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=6.210E+06,
            NOM_PARA='TENSION',
            TABLE=tab_odd,
-           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'), 
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'),
                    _F(NOM_PARA='ABSC_CURV', VALE=64.403)))
 
 # VERIFICATION DES VALEURS OBTENUES
@@ -377,9 +377,9 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=9.289E+06,
            NOM_PARA='TENSION',
            TABLE=tab_eve,
-           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'), 
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'),
                    _F(NOM_PARA='ABSC_CURV', VALE=0.)))
-# A LA LIMITE DU RECUL D'ANCRAGE 
+# A LA LIMITE DU RECUL D'ANCRAGE
 # (ATTENTION ABSC_CURV PAS PARFAITEMENT COINCIDENTE)
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -389,9 +389,9 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=10.085E+06,
            NOM_PARA='TENSION',
            TABLE=tab_eve,
-           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'), 
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'),
                    _F(NOM_PARA='ABSC_CURV', VALE=9.200)))
-# AU MILIEU DU CABLE                   
+# AU MILIEU DU CABLE
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.5E-2,
@@ -399,8 +399,8 @@ TEST_TABLE(CRITERE='RELATIF',
            VALE_REFE=6.210E+06,
            NOM_PARA='TENSION',
            TABLE=tab_eve,
-           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'), 
+           FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'),
                    _F(NOM_PARA='ABSC_CURV', VALE=64.403)))
-                   
+
 
 FIN();

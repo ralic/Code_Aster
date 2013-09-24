@@ -140,7 +140,7 @@ LEDEP=STAT_NON_LINE(
                 CHARGE = ZCHM,
                 FONC_MULT=f_inst
                 ),
-                COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
+                COMPORTEMENT=(_F(GROUP_MA=('GEOB','GEOBB'),
                               RELATION = 'GRILLE_ISOT_LINE'),
                            _F(GROUP_MA=('GEO',),
                               RELATION = 'ELAS',)

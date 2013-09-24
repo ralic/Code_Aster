@@ -98,7 +98,7 @@ REST=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),
-                         COMP_INCR=_F( RELATION = 'MULTIFIBRE',
+                         COMPORTEMENT=_F( RELATION = 'MULTIFIBRE',
                 ITER_INTE_MAXI = 50,
                 RESI_INTE_RELA = 1.E-6 ),
                          INCREMENT=_F(
@@ -118,7 +118,7 @@ REST=STAT_NON_LINE(reuse=REST, ETAT_INIT=_F(EVOL_NOLI=REST),
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),
-                         COMP_INCR=_F( RELATION = 'MULTIFIBRE',
+                         COMPORTEMENT=_F( RELATION = 'MULTIFIBRE',
                 ITER_INTE_MAXI = 50,
                 RESI_INTE_RELA = 1.E-6 ),
                          INCREMENT=_F(
@@ -166,7 +166,7 @@ REST=STAT_NON_LINE(reuse=REST,ETAT_INIT=_F(DEPL=DEPL,SIGM=SIGM,VARI=VARI,STRX=ST
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),
-                         COMP_INCR=_F( RELATION = 'MULTIFIBRE',
+                         COMPORTEMENT=_F( RELATION = 'MULTIFIBRE',
                 ITER_INTE_MAXI = 50,
                 RESI_INTE_RELA = 1.E-6 ),
                          INCREMENT=_F(
@@ -256,7 +256,7 @@ LINSR=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
 
 RESM=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
                              EXCIT=_F(  CHARGE = CHARM, FONC_MULT = FONCM),
-                         COMP_INCR=_F( RELATION = 'MULTIFIBRE',
+                         COMPORTEMENT=_F( RELATION = 'MULTIFIBRE',
                 ITER_INTE_MAXI = 100,
                 RESI_INTE_RELA = 1.E-6),
                          INCREMENT=_F(

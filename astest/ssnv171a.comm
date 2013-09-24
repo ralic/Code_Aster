@@ -51,20 +51,20 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=300,),),);
-                                    
+
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_NIVEAU=10),)
 MONOIMPL=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(RELATION='MONOCRISTAL',COMPOR=COMPOR1,),
+                   COMPORTEMENT=_F(RELATION='MONOCRISTAL',COMPOR=COMPOR1,),
                    MASSIF=_F(ANGL_REP=30.0),
                    NEWTON=_F(REAC_ITER=1,),
-                   MATER = ACIER,  
+                   MATER = ACIER,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );  
+                        );
 
 TEST_TABLE(VALE_CALC=210.0,
            NOM_PARA='SIXX',

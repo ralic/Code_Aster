@@ -23,8 +23,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
                      UIinfo={"groupes":("Résolution",)},
                      fr="Calcul de l'évolution mécanique, en quasi-statique," \
                         " d'un point matériel en non linéaire",
-   COMP_INCR       =C_COMP_INCR(),
-   COMP_ELAS       =C_COMP_ELAS('SIMU_POINT_MAT'),
+   COMPORTEMENT       =C_COMPORTEMENT(),
    MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
 
 ## ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations imposées.

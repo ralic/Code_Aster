@@ -112,7 +112,7 @@ U=STAT_NON_LINE(CHAM_MATER=CM,
                 MODELE=MO,
                 CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                RESI_GLOB_RELA=9.9999999999999995E-07,),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE'),
                 EXCIT=_F(CHARGE=CHARG,),
                 INCREMENT=_F(NUME_INST_FIN=4,
                              LIST_INST=L_INST,),
@@ -319,7 +319,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #--------------------------------------------------
 # POST_ELEM
 #   RICE_TRACEY
-#     LOCAL='OUI', 
+#     LOCAL='OUI',
 #     OPTION='SIGM_ELMOY'
 #     TOUT, GROUP_MA, MAILLE
 
@@ -328,7 +328,7 @@ AOUI_MOY=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
                              TOUT='OUI',
                              OPTION='SIGM_ELMOY',),
-               NUME_ORDRE=(1,2,3,4),              
+               NUME_ORDRE=(1,2,3,4),
               RESULTAT=U,);
 
 
@@ -364,8 +364,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #----------------------
 COUI_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
-                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                                     'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
@@ -384,7 +384,7 @@ TEST_TABLE(
 #--------------------------------------------------
 # POST_ELEM
 #   RICE_TRACEY
-#     LOCAL='OUI', 
+#     LOCAL='OUI',
 #     OPTION='SIGM_ELGA'
 #     TOUT, GROUP_MA, MAILLE
 
@@ -417,8 +417,8 @@ EOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 FOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
-                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                                     'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 
@@ -430,7 +430,7 @@ FOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 # C'EST LA MAILLE (OU SOUS-MAILLE, PT DE GAUSS) QUI DETECTE CE MAX
 # QUI DETERMINE LA VALEUR DU VOLUME EN QUESTION.
 # POUR UNE SITUATION UNIFORME COMME ICI, SI LE MAX NE CHANGE PAS
-# D'UNE CONFIG D'EXECUTION A L'AUTRE (MACHINE ...), SON LIEU DE 
+# D'UNE CONFIG D'EXECUTION A L'AUTRE (MACHINE ...), SON LIEU DE
 # DETECTION VARIE : D'OU RESULTAT VARIABLE.
 
 #--------------------------------------------------
@@ -454,8 +454,8 @@ BNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 CNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
-                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                                     'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
@@ -463,7 +463,7 @@ CNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 #--------------------------------------------------
 # POST_ELEM
 #   RICE_TRACEY
-#     LOCAL='NON', 
+#     LOCAL='NON',
 #     OPTION='SIGM_ELGA'
 #     TOUT, GROUP_MA, MAILLE
 
@@ -487,8 +487,8 @@ ENON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 FNON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
-                                     'M8','M9','M10','M11','M12','M13','M14'),     
+                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                                     'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 

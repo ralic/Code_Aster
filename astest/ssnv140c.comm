@@ -100,7 +100,7 @@ NONLIN=STAT_NON_LINE(  MODELE     = MODELE_1,
                        EXCIT      =_F( CHARGE = CHARGE_1,
                                        FONC_MULT = D_FONC,
                                        TYPE_CHARGE = 'FIXE_CSTE'),
-                       COMP_INCR  =_F( RELATION = 'ELAS',
+                       COMPORTEMENT  =_F( RELATION = 'ELAS',
                                        DEFORMATION = 'GROT_GDEP'),
                        INCREMENT  =_F( LIST_INST = L_INST),
                        CONVERGENCE=_F(

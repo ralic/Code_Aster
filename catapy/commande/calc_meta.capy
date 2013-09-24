@@ -52,7 +52,7 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
           ),
        ),
 
-       COMP_INCR       =FACT(statut='o',max=1,
+       COMPORTEMENT      =FACT(statut='o',max=1,
          RELATION        =SIMP(statut='o',typ='TXM',into=("ACIER","ZIRC",) ),
          ACIER           =SIMP(statut='c',typ='I',defaut=7,into=(7,) ),
          ZIRC            =SIMP(statut='c',typ='I',defaut=4,into=(4,) ),

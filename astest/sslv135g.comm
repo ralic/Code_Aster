@@ -1,19 +1,19 @@
 # TITRE TESTE DE DIRECTION DU PLAN CRITIQUE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(  CODE=_F(  NOM = 'SSLV135G',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
@@ -23,7 +23,7 @@ CUBE = LIRE_MAILLAGE(FORMAT='MED')
 
 CUBE = DEFI_GROUP( reuse = CUBE,
                    ALARME='OUI',
-                   CREA_GROUP_NO = ( 
+                   CREA_GROUP_NO = (
                         _F(GROUP_MA='FACE1',
                            CRIT_NOEUD='TOUS'),
                         _F(GROUP_MA='FACE2',
@@ -81,12 +81,12 @@ TR_CS = AFFE_CHAR_MECA ( MODELE =  TROISD,
                   FORCE_FACE = ( _F( GROUP_MA= 'FACE4', FX=1.),
                                  _F( GROUP_MA= 'FACE1', FY=1.) )
                              );
-              
+
 PHIZ = FORMULE(   NOM_PARA = ('VNM1Z'),
                   VALE = ''' acos(abs(VNM1Z))*180.0/pi ''')
 
 SA = 200.0
-  
+
 ###############################################################
 # CALCULATE ELASTIC FIELD
 
@@ -94,15 +94,15 @@ ACIER = DEFI_MATERIAU  ( ELAS = _F( E = 193000.,
                                     NU = .3,
                                     ALPHA = 0. ),
             )
-                 
+
 MAT   = AFFE_MATERIAU  ( MAILLAGE = CUBE,
                          AFFE = _F ( TOUT = 'OUI',
                                      MATER = ACIER,))
-              
+
 LINST = DEFI_LIST_REEL ( DEBUT =  0.,
                          INTERVALLE =_F (JUSQU_A= 2.0, NOMBRE = 2 )
                           );
-              
+
 NBALP = 23
 ALP   = [NONE]*NBALP
 COEF  = [NONE]*NBALP
@@ -132,7 +132,7 @@ for i in range(NBALP):
                        GROUP_MA =('FACE1_3D','FACE2_3D','FACE3_3D'),
                        CONTRAINTE = ('SIGM_NOEU',),
                        DEFORMATION = ('EPSI_NOEU',),)
-             
+
 ##################################################################
 # CALCULATE ELASTIC-PLASTIC FIELD
 
@@ -141,15 +141,15 @@ ACIER2 = DEFI_MATERIAU  ( ELAS = _F( E = 193000.,
                                     ALPHA = 0. ),
           ECRO_LINE = _F( SY= 208, D_SIGM_EPSI = 50000),
          )
-                 
+
 MAT2   = AFFE_MATERIAU  ( MAILLAGE = CUBE,
                           AFFE = _F ( TOUT = 'OUI',
                                       MATER = ACIER2,))
-              
+
 LINST2 = DEFI_LIST_REEL ( DEBUT =  0.,
                           INTERVALLE = _F (JUSQU_A= 2.0, NOMBRE = 10 )
                           );
-           
+
 NBALP2 = 5
 ALP2   = [NONE]*NBALP2
 COEF2  = [NONE]*NBALP2
@@ -164,14 +164,14 @@ for i in range(NBALP2):
                                              1.,  (ALP2[i]-1)*SA,
                                              2.,  (ALP2[i]+1)*SA,)
                              )
-                                             
+
    SONL[i] = STAT_NON_LINE (  TITRE      = 'TEST BIAXIAL TRACTION-COMPRESSION ALTERNATIVE ELASTIC-PLASTIC',
                               MODELE     = TROISD,
                               CHAM_MATER = MAT2,
                               EXCIT      = _F( CHARGE       = TR_CS,
                                                FONC_MULT    = COEF2[i],
                                                TYPE_CHARGE  = 'FIXE_CSTE'),
-                              COMP_INCR  = _F( RELATION     = 'VMIS_ISOT_LINE',
+                              COMPORTEMENT  = _F( RELATION     = 'VMIS_ISOT_LINE',
                                             DEFORMATION  = 'PETIT',
                                             TOUT         = 'OUI'    ),
                               INCREMENT  = _F( LIST_INST    = LINST2, ),
@@ -181,7 +181,7 @@ for i in range(NBALP2):
                                             SIGM_REFE      = 4.8E-3,
                                              ITER_GLOB_MAXI = 50),
                               SOLVEUR    = _F( METHODE = 'MULT_FRONT'),      )
-                              
+
    SONL[i] = CALC_CHAMP(      reuse = SONL[i],
                               RESULTAT = SONL[i],
                               CONTRAINTE = ('SIGM_ELGA','SIGM_ELNO',),
@@ -208,10 +208,10 @@ WHOL = DEFI_FONCTION( NOM_PARA='SIGM',
                              283.4, 5000,
                              401.4, 1000,
                              487.6, 500,
-                             840.8, 100, 
+                             840.8, 100,
                             1098.9, 50,
                             2156.3, 10,))
-            
+
 ACIERDC  = DEFI_MATERIAU(  ELAS = _F( E = 193000.,
                                      NU = .3,
                                      ALPHA = 0. ),
@@ -221,7 +221,7 @@ ACIERDC  = DEFI_MATERIAU(  ELAS = _F( E = 193000.,
                                               D_VAN_B = 2.0,
                                               COEF_CISA_TRAC = 1.5 )
          )
-                 
+
 MATDC   = AFFE_MATERIAU( MAILLAGE = CUBE,
                          AFFE = _F ( TOUT = 'OUI',
                                      MATER = ACIERDC,))
@@ -240,7 +240,7 @@ for i in range(NBALP):
                            CRITERE       = 'DANG_VAN_MODI_AC',
                            METHODE       = 'CERCLE_EXACT',
                          MAILLAGE      = CUBE,
-                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDC[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
                                         NOEUD = 'N1',
                                         CHAM_GD = FATDC[i],
@@ -252,14 +252,14 @@ for i in range(NBALP):
                                               FORMULE = PHIZ,
                                               NOM_PARA = 'PHIZ',),)
                              )
-   TEST_TABLE(   
+   TEST_TABLE(
             VALE_REFE = 45,
             VALE_CALC = 44.5,
             PRECISION = 0.015,
             REFERENCE = 'ANALYTIQUE',
             NOM_PARA = 'PHIZ',
             TABLE= TABDC[i],)
-     
+
 for i in range(NBALP2):
 
    FATDC2[i] = CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -270,7 +270,7 @@ for i in range(NBALP2):
                            CRITERE       = 'DANG_VAN_MODI_AC',
                            METHODE       = 'CERCLE_EXACT',
                          MAILLAGE      = CUBE,
-                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDC2[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATDC2[i],
@@ -282,8 +282,8 @@ for i in range(NBALP2):
                                              FORMULE = PHIZ,
                                              NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
          VALE_REFE = 45,
          VALE_CALC = 44.5,
          PRECISION = 0.015,
@@ -293,7 +293,7 @@ for i in range(NBALP2):
 
 ##################################################################
 # Test MATAKE_MODI_AC
-            
+
 ACIERMC  = DEFI_MATERIAU ( ELAS = _F( E = 193000.,
                                       NU = .3,
                                       ALPHA = 0. ),
@@ -303,7 +303,7 @@ ACIERMC  = DEFI_MATERIAU ( ELAS = _F( E = 193000.,
                                                 MATAKE_B = 2.0,
                                                 COEF_FLEX_TORS = 1.5 )
                  )
-                 
+
 MATMC   = AFFE_MATERIAU ( MAILLAGE = CUBE,
                           AFFE = _F ( TOUT = 'OUI',
                                       MATER = ACIERMC,))
@@ -323,7 +323,7 @@ for i in range(NBALP):
                            CRITERE       = 'MATAKE_MODI_AC',
                            METHODE       = 'CERCLE_EXACT',
                          MAILLAGE      = CUBE,
-                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMC[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATMC[i],
@@ -335,8 +335,8 @@ for i in range(NBALP):
                                              FORMULE = PHIZ,
                                              NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
          VALE_REFE = 45,
          VALE_CALC = 44.5,
          PRECISION = 0.015,
@@ -344,7 +344,7 @@ for i in range(NBALP):
          NOM_PARA = 'PHIZ',
          TABLE= TABMC[i],)
 
-  
+
 for i in range(NBALP2):
    FATMC2[i] = CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
                            TYPE_CHARGE   = 'PERIODIQUE',
@@ -354,7 +354,7 @@ for i in range(NBALP2):
                            CRITERE       = 'MATAKE_MODI_AC',
                            METHODE       = 'CERCLE_EXACT',
                          MAILLAGE      = CUBE,
-                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),) 
+                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMC2[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATMC2[i],
@@ -366,18 +366,18 @@ for i in range(NBALP2):
                                              FORMULE = PHIZ,
                                              NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
          VALE_REFE = 45,
          VALE_CALC = 44.5,
          PRECISION = 0.015,
          REFERENCE = 'ANALYTIQUE',
          NOM_PARA = 'PHIZ',
          TABLE= TABMC2[i],)
-   
+
 ##################################################################
 # Test DANG_VAN_MODI_AV
-            
+
 ACIERDV  = DEFI_MATERIAU   (    ELAS           = _F(    E         = 193000.,
                                                      NU        = .3,
                                                   ALPHA     = 0. ),
@@ -387,7 +387,7 @@ ACIERDV  = DEFI_MATERIAU   (    ELAS           = _F(    E         = 193000.,
                                                   D_VAN_B  = 2.0,
                                                   COEF_CISA_TRAC = 1.5 )
             )
-                 
+
 MATDV   = AFFE_MATERIAU    (    MAILLAGE = CUBE,
                               AFFE = _F ( TOUT = 'OUI',
                                           MATER = ACIERDV,
@@ -402,7 +402,7 @@ RESUC = [(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.7
          (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
          (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,(43.75, 46.25) ,
          (43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ]
-  
+
 RESUC2 = [(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) , (43.75, 46.25) ,(43.75, 46.25) ,]
 
 for i in range(NBALP):
@@ -414,7 +414,7 @@ for i in range(NBALP):
                           CRITERE       = 'DANG_VAN_MODI_AV',
                           PROJECTION    = 'UN_AXE',
                         MAILLAGE      = CUBE,
-                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)     
+                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDV[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATDV[i],
@@ -426,15 +426,15 @@ for i in range(NBALP):
                                              FORMULE = PHIZ,
                                              NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
       REFERENCE='ANALYTIQUE',
       VALE_REFE= (45, 45),
       PRECISION = 0.03,
       VALE_CALC= RESUC[i],
       NOM_PARA = 'PHIZ',
       TABLE= TABDV[i],)
-  
+
 for i in range(NBALP2):
    FATDV2[i]= CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
                        TYPE_CHARGE   = 'NON_PERIODIQUE',
@@ -444,7 +444,7 @@ for i in range(NBALP2):
                        CRITERE       = 'DANG_VAN_MODI_AV',
                        PROJECTION    = 'UN_AXE',
                      MAILLAGE      = CUBE,
-                     GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+                     GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDV2[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATDV2[i],
@@ -456,15 +456,15 @@ for i in range(NBALP2):
                                             FORMULE = PHIZ,
                                             NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
       REFERENCE='ANALYTIQUE',
       VALE_REFE= (45, 45),
       PRECISION = 0.03,
       VALE_CALC= RESUC2[i],
       NOM_PARA = 'PHIZ',
       TABLE= TABDV[i],)
-   
+
 ###############################################################
 # Test MATAKE_MODI_AV
 
@@ -477,7 +477,7 @@ ACIERMV  = DEFI_MATERIAU   (    ELAS           =_F(  E         = 193000.,
                                                   MATAKE_B  = 2.0,
                                                   COEF_FLEX_TORS = 1.5 )
             )
-                 
+
 MATMV   = AFFE_MATERIAU    (    MAILLAGE    =   CUBE,
                              AFFE        = _F ( TOUT       = 'OUI',
                                                   MATER      = ACIERMV,
@@ -494,7 +494,7 @@ RESUM  = [(45,45), 45.71604807, 46.43120259, 47.14457665, 47.85529654, 48.562508
 RESUC = [(43.75,46.25),46.25,46.5 ,47.25,47.75,48.5 ,49.25,50.0 ,
          50.75,51.25,52.0 ,52.75,53.25,53.75,53.75,56.25,
          56.25,56.5 ,57.0 ,57.75,58.25,58.75,59.5]
-  
+
 RESUM2 = [46.43120259,47.85529654,49.26538279,50.65496622,52.01812172,]
 RESUC2 = [46.5 ,47.75,49.25,50.75,52.0 ,]
 
@@ -507,7 +507,7 @@ for i in range(1, NBALP):
                        CRITERE       = 'MATAKE_MODI_AV',
                        PROJECTION    = 'UN_AXE',
                      MAILLAGE      = CUBE,
-                     GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+                     GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMV[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATMV[i],
@@ -519,8 +519,8 @@ for i in range(1, NBALP):
                                             FORMULE = PHIZ,
                                             NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
       REFERENCE='ANALYTIQUE',
       VALE_REFE= RESUM[i],
       PRECISION = 0.03,
@@ -528,7 +528,7 @@ for i in range(1, NBALP):
       NOM_PARA = 'PHIZ',
       TABLE= TABMV[i],)
 
-   
+
 for i in range(1, NBALP2):
    FATMV2[i]= CALC_FATIGUE(TYPE_CALCUL   = 'FATIGUE_MULTI',
                           TYPE_CHARGE   = 'NON_PERIODIQUE',
@@ -538,7 +538,7 @@ for i in range(1, NBALP2):
                           CRITERE       = 'MATAKE_MODI_AV',
                           PROJECTION    = 'UN_AXE',
                         MAILLAGE      = CUBE,
-                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMV2[i] = POST_RELEVE_T( ACTION=_F( INTITULE='FATIGUE',
                                          NOEUD = 'N1',
                                          CHAM_GD = FATMV2[i],
@@ -550,8 +550,8 @@ for i in range(1, NBALP2):
                                                 FORMULE = PHIZ,
                                                 NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
       REFERENCE='ANALYTIQUE',
       VALE_REFE= RESUM2[i],
       PRECISION = 0.03,
@@ -586,7 +586,7 @@ ACIERF  = DEFI_MATERIAU   (ELAS =_F( E = 193000.,
                                                FATSOC_A = 0.00024,
                                                COEF_CISA_TRAC = 1, )
             )
-                 
+
 MATF   = AFFE_MATERIAU ( MAILLAGE = CUBE,
                          AFFE =_F ( TOUT = 'OUI',
                                     MATER = ACIERF,))
@@ -605,7 +605,7 @@ RESUF  = [(45, 45), 45.34014828, 45.67180774, 45.99482259, 46.30909462, 46.61457
 
 RESUC  = [(43.75, 46.25), 46.25,46.25,46.25,46.25,46.5 ,47.0 ,47.25,
          47.5 ,47.75,48.0 ,48.25,48.5 ,48.75,49.0 ,49.25,
-         49.5 ,49.5 ,49.75,50.0 ,50.25,50.5 ,50.5]   
+         49.5 ,49.5 ,49.75,50.0 ,50.25,50.5 ,50.5]
 
 RESUF2 = [45.67180774,46.30909462,46.91127686,47.47853707,48.0116608,]
 RESUC2 = [46.25,46.25,47.0 ,47.5 ,48.0 ,]
@@ -619,7 +619,7 @@ for i in range(NBALP):
                           CRITERE       = 'FATESOCI_MODI_AV',
                           PROJECTION    = 'UN_AXE',
                         MAILLAGE      = CUBE,
-                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)  
+                        GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABF[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
                               NOEUD = 'N1',
                               CHAM_GD = FATF[i],
@@ -631,8 +631,8 @@ for i in range(NBALP):
                                             FORMULE = PHIZ,
                                             NOM_PARA = 'PHIZ',),)
                              )
-                             
-   TEST_TABLE(   
+
+   TEST_TABLE(
       REFERENCE = 'ANALYTIQUE',
       VALE_REFE = RESUF[i],
       PRECISION = 0.03,
@@ -660,12 +660,12 @@ for i in range(NBALP2):
                         ACTION = ( _F( OPERATION ='OPER',
                                        FORMULE = PHIZ,
                                        NOM_PARA = 'PHIZ',),))
-   TEST_TABLE(   
+   TEST_TABLE(
       REFERENCE = 'ANALYTIQUE',
       VALE_REFE = RESUF2[i],
       PRECISION = 0.03,
       VALE_CALC = RESUC2[i],
       NOM_PARA = 'PHIZ',
       TABLE = TABF2[i],)
-     
+
 FIN()

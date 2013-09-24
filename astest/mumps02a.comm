@@ -45,12 +45,12 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0,  0.0, 1.0,  1.0));
 #  1 : MUMPS (centralise)
 # -------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
-RESU1=STAT_NON_LINE(MODELE=MO,     
+RESU1=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',PCENT_PIVOT=20,
                    RESI_RELA=1.E-8,POSTTRAITEMENTS='AUTO',GESTION_MEMOIRE='AUTO'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
@@ -76,12 +76,12 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
                 ),
           )
 
-RESU11=STAT_NON_LINE(MODELE=MO, 
+RESU11=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
                    RESI_RELA=1E-4,POSTTRAITEMENTS='SANS'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
@@ -107,11 +107,11 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
                 ),
           )
 
-RESU12=STAT_NON_LINE(MODELE=MO,     
+RESU12=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
@@ -137,11 +137,11 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
                 ),
           )
 
-RESU13=STAT_NON_LINE(MODELE=MO,     
+RESU13=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',FILTRAGE_MATRICE=1.E-8),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
@@ -175,7 +175,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                    GESTION_MEMOIRE='AUTO'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
@@ -215,7 +215,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                    GESTION_MEMOIRE='AUTO'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));
@@ -247,13 +247,13 @@ RESU4=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',
                               TYPE_RESOL='SYMGEN',
                               RESI_RELA=1.E-8,
-   
+
                               MATR_DISTRIBUEE='OUI',
                               GESTION_MEMOIRE='AUTO'
                               ),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
-                   COMP_INCR=_F(RELATION='ELAS'),
+                   COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS));

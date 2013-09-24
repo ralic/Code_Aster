@@ -74,7 +74,7 @@ RESU=STAT_NON_LINE(MODELE=MODE,
                    EXCIT=(_F(CHARGE=CHSYME,),
                           _F(CHARGE=CHFORC,
                              FONC_MULT=RAMPE,),),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=DEFLIST,INST_FIN=10.),);
 
 # INTERPOLATION DES CONTRAINTES AUX NOEUDS

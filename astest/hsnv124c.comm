@@ -179,7 +179,7 @@ LIAISON=AFFE_CHAR_MECA(      MODELE=MOMECA,DDL_IMPO=(
 U=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER,
-                     COMP_INCR=_F(  RELATION = 'VMIS_CIN1_CHAB',
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN1_CHAB',
                                     RESI_INTE_RELA = 9.99999999999999955E-7,
                                     ITER_INTE_MAXI = 50,
                                     ITER_INTE_PAS = 0,
@@ -280,7 +280,7 @@ IMPR_TABLE( UNITE = 25, FORMAT='AGRAF',
 U2=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER2,
-                     COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN2_CHAB',
                                     RESI_INTE_RELA = 9.99999999999999955E-7,
                                     ITER_INTE_MAXI = 50,
                                     ITER_INTE_PAS = 0,

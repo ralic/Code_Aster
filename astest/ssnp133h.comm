@@ -172,7 +172,7 @@ EVOL = STAT_NON_LINE(
        ),
        ),
   CONTACT=CTXFEM,
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(RELATION = 'ELAS' , GROUP_MA = 'MATIERE'),
     ),
     INCREMENT = _F(LIST_INST = DEFLIST),

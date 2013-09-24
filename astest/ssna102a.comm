@@ -191,7 +191,7 @@ SOLVEUR=_F(SYME='OUI',),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
                                 _F(  CHARGE = LIAI),),
                           CONTACT  = CONT,
-                          COMP_ELAS=_F(  RELATION = 'ELAS'),
+                          COMPORTEMENT=_F(  RELATION = 'ELAS'),
                           NEWTON=_F(  MATRICE = 'ELASTIQUE'),
                           INCREMENT=_F(  LIST_INST = LINST),
                           CONVERGENCE=_F(
@@ -286,7 +286,7 @@ RESU2=STAT_NON_LINE(
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
                                 _F(  CHARGE = LIAI),),
                           CONTACT  = CONT2,
-                          COMP_ELAS=_F(  RELATION = 'ELAS'),
+                          COMPORTEMENT=_F(  RELATION = 'ELAS'),
                           NEWTON=_F(  MATRICE = 'ELASTIQUE'),
                           INCREMENT=_F(  LIST_INST = LINST),
                           CONVERGENCE=_F(

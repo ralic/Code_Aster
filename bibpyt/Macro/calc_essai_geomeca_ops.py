@@ -20,7 +20,7 @@
 from geomec_utils  import *
 from geomec_essais import *
 
-def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
+def calc_essai_geomeca_ops(self,MATER,COMPORTEMENT,CONVERGENCE,INFO,
                            ESSAI_TD ,
                            ESSAI_TND,
                            ESSAI_CISA_C,
@@ -35,7 +35,7 @@ def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
   self.set_icmd(1)
 
   # Verifs supplementaires des valeurs renseignees pr les MCF ESSAI_*
-  verif_essais(COMP_INCR,ESSAI_TD ,
+  verif_essais(COMPORTEMENT,ESSAI_TD ,
                          ESSAI_TND,
                          ESSAI_CISA_C,
                          ESSAI_TND_C,)
@@ -48,7 +48,7 @@ def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
     
     for iocc,DicoEssai in  enumerate(ESSAI_TD.List_F()):
       str_num = int_2_str(iocc+1,len(ESSAI_TD.List_F()))
-      essai_TD(self,str_num,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO)
+      essai_TD(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
 
   # ---
   # Essai 'TND'
@@ -57,7 +57,7 @@ def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
 
     for iocc,DicoEssai in  enumerate(ESSAI_TND.List_F()):      
       str_num = int_2_str(iocc+1,len(ESSAI_TND.List_F()))
-      essai_TND(self,str_num,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO)
+      essai_TND(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
 
   # ---
   # Essai 'CISA_C'
@@ -66,7 +66,7 @@ def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
 
     for iocc,DicoEssai in  enumerate(ESSAI_CISA_C.List_F()):      
       str_num = int_2_str(iocc+1,len(ESSAI_CISA_C.List_F()))
-      essai_CISA_C(self,str_num,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO)
+      essai_CISA_C(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
 
   # ---
   # Essai 'TND_C'
@@ -75,7 +75,7 @@ def calc_essai_geomeca_ops(self,MATER,COMP_INCR,CONVERGENCE,INFO,
 
     for iocc,DicoEssai in  enumerate(ESSAI_TND_C.List_F()):      
       str_num = int_2_str(iocc+1,len(ESSAI_TND_C.List_F()))
-      essai_TND_C(self,str_num,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO)
+      essai_TND_C(self,str_num,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO)
 
   # ---
   # Essai 'XXX'

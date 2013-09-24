@@ -1,25 +1,25 @@
 # TITRE   APPARITION DISPARITION DE PHASE DANS UN ECOULEMENT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #         DIPHASIQUE : INJECTION DE GAZ AUTOUR D UNE GALERIE
 #         DANS UN DOMAINE SATURE
 #         MODELISATION EF
 #
-#       
+#
 def Pcdesat(PR,SR,n,S) :
       m=1.-1./n
       usn=1./n
@@ -27,7 +27,7 @@ def Pcdesat(PR,SR,n,S) :
       S1=(S-SR)/(1.-SR)
       PC=PR*((S1**(-usm)-1.e0)**(usn))
       return(PC)
-      
+
 DEBUT(CODE=_F(NOM='WTNP123E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #======================================
@@ -36,7 +36,7 @@ DEBUT(CODE=_F(NOM='WTNP123E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 MODELISA = 'D_PLAN_HH2S'
-LOI= 'LIQU_AD_GAZ' 
+LOI= 'LIQU_AD_GAZ'
 NOEUD_G='N6'
 
 
@@ -75,9 +75,9 @@ FLUGAZ=1.76E-11/4.
 FLUXG = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
            VALE = (
    0.               ,  FLUGAZ ,
-   TINJ             ,  FLUGAZ , 
-#   FINJ             ,  0. , 
-#   TSIM             ,  0. , 
+   TINJ             ,  FLUGAZ ,
+#   FINJ             ,  0. ,
+#   TSIM             ,  0. ,
    ),
             PROL_DROITE ='EXCLU' ,
             PROL_GAUCHE ='EXCLU' , );
@@ -141,9 +141,9 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      _F(
                        JUSQU_A=CENTMANS, NOMBRE=50,),
                      _F(
-                      JUSQU_A=CCENTMANS, NOMBRE=50,),       
+                      JUSQU_A=CCENTMANS, NOMBRE=50,),
                      _F(
-                      JUSQU_A=MILLION, NOMBRE=50,),       
+                      JUSQU_A=MILLION, NOMBRE=50,),
                                     ),);
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -185,19 +185,19 @@ IARCHI=DEFI_LIST_REEL(DEBUT=0.0,
                    _F(
                       JUSQU_A=CENTMANS, NOMBRE=5,),
                    _F(
-                      JUSQU_A=CCENTMANS, NOMBRE=5,),       
+                      JUSQU_A=CCENTMANS, NOMBRE=5,),
                    _F(
                       JUSQU_A=MILLION, NOMBRE=5,),
                                     ),);
 #======================================
 #            MAILLAGE
-#======================================                                     
+#======================================
 MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
 
 
 MAIL  = DEFI_GROUP ( reuse    =  MAIL,
-           MAILLAGE    =  MAIL, 
-      CREA_GROUP_MA = ( 
+           MAILLAGE    =  MAIL,
+      CREA_GROUP_MA = (
              _F( NOM  ='BAS'   ,UNION= ('GM21', 'GM22'),),
              _F( NOM = 'GAUCHE',UNION= ('GM19', 'GM18'),),
              _F( NOM = 'SORT'  ,UNION= ('GM26', 'GM27'),),
@@ -221,8 +221,8 @@ LI2  = DEFI_LIST_REEL ( DEBUT      = 0.4,
                        INTERVALLE = (
                          _F( JUSQU_A = 0.99999 , NOMBRE = 2000,),
 
-                                    ),);            
-FICKWAR=DEFI_CONSTANTE ( VALE = 0.45E-9);    # 
+                                    ),);
+FICKWAR=DEFI_CONSTANTE ( VALE = 0.45E-9);    #
 
 FFAS  = FORMULE(NOM_PARA='SAT', VALE='SAT');  # SATURATION DU LIQUIDE
 
@@ -248,79 +248,79 @@ PCINIT2 = PG02 - PEAUINIT2
 #======================================
 #            MATERIAU
 #======================================
-MAT = DEFI_MATERIAU ( ELAS      =_F( 
+MAT = DEFI_MATERIAU ( ELAS      =_F(
    E               = 72.9E6  ,
-   NU              = 0.3     ,                             
-   RHO             = 2670.   ,                               
-   ALPHA           = 1.E-5                             
-                                      ),                      
-                      COMP_THM    =LOI, 
+   NU              = 0.3     ,
+   RHO             = 2670.   ,
+   ALPHA           = 1.E-5
+                                      ),
+                      COMP_THM    =LOI,
 
-                      THM_LIQU    =_F(                                  
-   RHO             =1.E+3     ,   
+                      THM_LIQU    =_F(
+   RHO             =1.E+3     ,
    UN_SUR_K        = 0   ,
-   ALPHA           = 1.048E-4   ,    
-   CP              = 0.      ,   
+   ALPHA           = 1.048E-4   ,
+   CP              = 0.      ,
    VISC            = VISCOLIQ   ,
-   D_VISC_TEMP     = DVISCOL    ,                              
-                                       ),  
-                                                               
-                          THM_GAZ    =_F(                                 
+   D_VISC_TEMP     = DVISCOL    ,
+                                       ),
+
+                          THM_GAZ    =_F(
    MASS_MOL         = 2.E-3    ,
-   CP              = 0.      ,   
-   VISC             = VISCOGAZ  ,                                 
-   D_VISC_TEMP      = ZERO      ,                           
+   CP              = 0.      ,
+   VISC             = VISCOGAZ  ,
+   D_VISC_TEMP      = ZERO      ,
                                          ),
-                                                      
-                      THM_VAPE_GAZ    =_F(                                 
+
+                      THM_VAPE_GAZ    =_F(
    MASS_MOL         = 0.0001    ,
-   CP              = 0.      ,   
-   VISC             = VISCOGAZ  ,                                 
-   D_VISC_TEMP      = ZERO      ,                        
-                                         ),                                                                                                                                             
-                      THM_DIFFU    =_F(                                     
-   R_GAZ            = 8.315     , 
-   RHO              = 1514.     , 
-   CP              = 0.      ,   
-   BIOT_COEF        = 1.        , 
+   CP              = 0.      ,
+   VISC             = VISCOGAZ  ,
+   D_VISC_TEMP      = ZERO      ,
+                                         ),
+                      THM_DIFFU    =_F(
+   R_GAZ            = 8.315     ,
+   RHO              = 1514.     ,
+   CP              = 0.      ,
+   BIOT_COEF        = 1.        ,
    PESA_X           = 0.        ,
    PESA_Y           = 0.        ,
    PESA_Z           = 0.        ,
    PERM_IN          = KINT  ,
-# MODELE DE MVG   
+# MODELE DE MVG
     VG_N            = NCOX     ,
     VG_PR           = PRCOX    ,
     VG_SR           = SRCOX    ,
     VG_SMAX         = SMAXCOX    ,
-    VG_SATUR        = SATUCOX   ,                                                  
-   FICKV_T          = ZERO  , 
+    VG_SATUR        = SATUCOX   ,
+   FICKV_T          = ZERO  ,
    FICKA_T          = FICKWAR,
-   FICKA_S          = FAS   ,                                               
+   FICKA_S          = FAS   ,
    LAMB_T           = ZERO   ,
    LAMB_S           = ZERO      ,
    D_LB_S           = ZERO     ,
-   LAMB_CT          = 1.13      ,                                    
+   LAMB_CT          = 1.13      ,
                                        ),
 
    THM_AIR_DISS=_F(
     CP=0.0,
     COEF_HENRY=HENRY
     ),
-                                                                 
-   THM_INIT    =_F(                                
+
+   THM_INIT    =_F(
    TEMP            =  303.     ,
    PRE1            =  0.      ,
    PRE2            =  PREF    ,
    PORO            =  0.15     ,
-   PRES_VAPE       =  0.001  , 
-                                       ), 
-                                                                                         
-           )  
+   PRES_VAPE       =  0.001  ,
+                                       ),
+
+           )
 #======================================
 # AFFECTATION DE L ETAT INITIAL
 #====================================
 PINIT=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                           _F(TOUT='OUI',
@@ -329,7 +329,7 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                           _F(TOUT='OUI',
                              NOM_CMP='PRE1',
                              VALE=PCINIT2,),
-                             ),);        
+                             ),);
 #======================================
 # AFFECTATION DES MATERIAUX
 #======================================
@@ -338,19 +338,19 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                              MATER=MAT,),),);
 #======================================
 # AFFECTATION DES CL
-#======================================                                  
-CHG = AFFE_CHAR_MECA ( MODELE = MODELT , 
+#======================================
+CHG = AFFE_CHAR_MECA ( MODELE = MODELT ,
                         FLUX_THM_REP = _F( GROUP_MA   = 'TROU' ,
                                           FLUN_HYDR2 = 1.0    ,
                                           FLUN_HYDR1 =  0.      ,
                                           ),)
-                                     
+
 CHIMP = AFFE_CHAR_CINE ( MODELE = MODELT ,
                          MECA_IMPO  = (
                                   _F ( GROUP_MA = 'SORT',
                                        PRE1   = PCINIT2 ,),
                                   _F ( GROUP_MA = 'SORT',
-                                       PRE2   = PGINIT2 ,),                                            
+                                       PRE2   = PGINIT2 ,),
                                       ),
                        );
 #======================================
@@ -363,16 +363,16 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
                           _F( CHARGE   = CHG ,
                               FONC_MULT = FLUXG ) ,
                            ),
-                   COMP_INCR=_F(RELATION='KIT_HH',
+                   COMPORTEMENT=_F(RELATION='KIT_HH',
                                 RELATION_KIT=(LOI,'HYDR_VGC',),
                                 PARM_THETA  = 1. ,
                                 PARM_ALPHA=PARM_ALPHA,),
                    ETAT_INIT=_F(DEPL=PINIT,),
-                   
-                 INCREMENT=_F(  
+
+                 INCREMENT=_F(
                    LIST_INST = LI,
                      INST_FIN=TFIN,),
-                   
+
                    CONVERGENCE=_F(
                       RESI_GLOB_MAXI=1.E-6,
                        ITER_GLOB_MAXI=10,
@@ -380,10 +380,10 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
                  OBSERVATION=(  _F(NOM_CHAM='DEPL',
                                              NOM_CMP=('PRE1','PRE2'),
                                              PAS_OBSE=1,NOEUD=NOEUD_G,),),
-                                                   
+
                    ARCHIVAGE=_F(LIST_INST = IARCHI  ,),);
-                   
-                   
+
+
 
 #========================
 #   LISTE IMPRESSIONS
@@ -391,7 +391,7 @@ CAL1=STAT_NON_LINE(MODELE=MODELT,
 
 L_POST=DEFI_LIST_REEL(VALE=(TFIN,),);
 
-                         
+
 TAB_OBS = RECU_TABLE ( CO = CAL1,
             NOM_TABLE = 'OBSERVATION'
              ) ;
@@ -399,15 +399,15 @@ IMPR_TABLE(TABLE=TAB_OBS,)
 
 
 
-IMPR_TABLE ( TABLE    =  TAB_OBS   , 
+IMPR_TABLE ( TABLE    =  TAB_OBS   ,
      UNITE=82,
-     FORMAT='TABLEAU_CROISE',  
+     FORMAT='TABLEAU_CROISE',
      NOM_PARA = ( 'NOEUD' ,'INST', 'VALE'),
      FILTRE     = (_F( NOM_PARA = 'NOM_CMP',CRIT_COMP        = 'EQ' ,VALE_K='PRE1'),),
      );
-IMPR_TABLE ( TABLE    =  TAB_OBS   , 
+IMPR_TABLE ( TABLE    =  TAB_OBS   ,
      UNITE=83,
-     FORMAT='TABLEAU_CROISE',  
+     FORMAT='TABLEAU_CROISE',
      NOM_PARA = ( 'NOEUD' ,'INST', 'VALE'),
      FILTRE     = (_F( NOM_PARA = 'NOM_CMP',CRIT_COMP        = 'EQ' ,VALE_K='PRE2'),),
      );
@@ -426,7 +426,7 @@ IMPR_TABLE(TABLE=P1DDL,
       UNITE=50,
       TRI   = (_F( NOM_PARA = ('COOR_X' ,),
          ORDRE    = 'CROISSANT',),),);
-             
+
 P2DDL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
            GROUP_NO=('BAS'),
            RESULTAT=CAL1,
@@ -451,7 +451,7 @@ ISO_P=IMPR_RESU(MODELE=MODELT,
          NOM_CHAM    = ('VARI_ELGA',),
         NOM_CMP =('V6',),
         MAILLAGE=MAIL,),);
-        
+
 ISO_SAT=IMPR_RESU(MODELE=MODELT,
         FORMAT='IDEAS',
        UNITE=30,
@@ -470,7 +470,7 @@ TEST_RESU(RESU=_F(RESULTAT=CAL1,
       VALE_REFE=-9.598E+05,
       CRITERE='RELATIF',
       PRECISION=1.E-2,
-      REFERENCE='NON_DEFINI'),);  
+      REFERENCE='NON_DEFINI'),);
 
 TEST_RESU(RESU=_F(RESULTAT=CAL1,
       INST=UNMOIS,
@@ -481,8 +481,8 @@ TEST_RESU(RESU=_F(RESULTAT=CAL1,
       VALE_REFE=4.0207E+04,
       CRITERE='RELATIF',
       PRECISION=1.E-2,
-      REFERENCE='NON_DEFINI'),);  
-      
+      REFERENCE='NON_DEFINI'),);
+
 TEST_RESU(RESU=_F(RESULTAT=CAL1,
       INST=UNMOIS,
       NOM_CHAM='DEPL',
@@ -492,7 +492,7 @@ TEST_RESU(RESU=_F(RESULTAT=CAL1,
       VALE_REFE=-1.E+06,
       CRITERE='RELATIF',
       PRECISION=1.E-2,
-      REFERENCE='NON_DEFINI'),);  
+      REFERENCE='NON_DEFINI'),);
 
 TEST_RESU(RESU=_F(RESULTAT=CAL1,
       INST=UNMOIS,
@@ -503,7 +503,7 @@ TEST_RESU(RESU=_F(RESULTAT=CAL1,
       VALE_CALC=1.42195E-13,
       CRITERE='ABSOLU',
       PRECISION=1.E-2,
-      REFERENCE='NON_DEFINI'),);  
+      REFERENCE='NON_DEFINI'),);
 
 TEST_RESU(RESU=_F(RESULTAT=CAL1,
       INST=UNMOIS,
@@ -514,7 +514,7 @@ TEST_RESU(RESU=_F(RESULTAT=CAL1,
       VALE_CALC=-9.99999E+05,
       CRITERE='RELATIF',
       PRECISION=1.E-2,
-      REFERENCE='NON_DEFINI'),);  
+      REFERENCE='NON_DEFINI'),);
 
 TEST_RESU(RESU=_F(RESULTAT=CAL1,
       INST=UNMOIS,
@@ -525,6 +525,6 @@ TEST_RESU(RESU=_F(RESULTAT=CAL1,
       VALE_CALC=6.93178E-15,
       CRITERE='ABSOLU',
       PRECISION=1.E-2,
-      REFERENCE='NON_DEFINI'),);  
+      REFERENCE='NON_DEFINI'),);
 
-FIN();          
+FIN();

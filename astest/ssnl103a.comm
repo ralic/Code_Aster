@@ -68,7 +68,7 @@ RESU=STAT_NON_LINE(
                              _F(
                 CHARGE = CHA1), _F(
                 CHARGE = CHA2)),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS_POUTRE_GR',
                 DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(

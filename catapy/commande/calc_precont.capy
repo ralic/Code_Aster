@@ -69,5 +69,5 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
            CHARGE          =SIMP(statut='o',typ=char_meca),
          ),
 
-         COMP_INCR       =C_COMP_INCR(),
+         COMPORTEMENT       =C_COMPORTEMENT(),
   )  ;

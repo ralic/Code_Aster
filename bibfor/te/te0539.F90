@@ -195,7 +195,11 @@ subroutine te0539(option, nomte)
         ivarip=1
     endif
 !
-!
+! provisoire. Mieux : utiliser ELAS_INCR
+    if ((zk16(icompo).eq. 'ELAS').and.(zk16(icompo+2).eq.'GROT_GDEP')) then
+         zk16(icompo+3)='COMP_INCR'
+    endif
+
     if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then
 !
 ! - LOIS DE COMPORTEMENT ECRITES EN CONFIGURATION DE REFERENCE

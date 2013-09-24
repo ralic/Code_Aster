@@ -32,7 +32,7 @@ subroutine nmdorc(modelz, compoz, carcri)
 !
 ! ----------------------------------------------------------------------
 !
-! SAISIE ET VERIFICATION DES MOTS CLES COMP_INCR / COMP_ELAS
+! SAISIE ET VERIFICATION DES MOTS CLES COMPORTEMENT / COMP_ELAS
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine nmdorc(modelz, compoz, carcri)
     parameter (dimanv=4)
     parameter (ncmpma=7+dimaki+dimanv)
     character(len=8) :: nomcmp(ncmpma), k8b
-    character(len=16) :: moclef(2), k16bid, nomcmd
+    character(len=16) :: moclef, k16bid, nomcmd
     character(len=19) :: compor
     character(len=24) :: modele
     logical :: criloc, meca
@@ -70,32 +70,23 @@ subroutine nmdorc(modelz, compoz, carcri)
 !
     call getres(k8b, k16bid, nomcmd)
 !
-!     MOCLEF= COMP_INCR / COMP_ELAS SUIVANT LES COMMANDES APPELANTES
-!     CRILOC = EXISTENCE DE CRITÈRES LOCAUX DE CONVERGENCE
+!     MOCLEF= MOT CLE FACTEUR COMPORTEMENT  
+!     CRILOC = EXISTENCE DE CRITERES LOCAUX DE CONVERGENCE
 !     MECA=COMMANDES MECANIQUE
 !
+    moclef = 'COMPORTEMENT    '
+    nbmo1=1
     if (nomcmd(1:13) .eq. 'THER_NON_LINE') then
-        nbmo1 = 1
-        moclef(1) = 'COMP_THER_NL'
+        meca=.false.
     else if (nomcmd(1:9).eq.'LIRE_RESU' .or. nomcmd(1:9).eq.'CREA_RESU') then
-        nbmo1 = 1
-        moclef(1) = 'COMP_INCR'
         meca=.true.
     else if (nomcmd.eq.'CALC_FORC_NONL') then
-        nbmo1 = 1
-        moclef(1) = 'COMP_INCR'
         meca=.true.
         criloc=.false.
     else if (nomcmd(1:6) .eq.'CALC_G') then
-        nbmo1 = 2
-        moclef(1) = 'COMP_INCR'
-        moclef(2) = 'COMP_ELAS'
         meca=.true.
         elseif ((nomcmd(1:13).eq.'STAT_NON_LINE').or. (nomcmd(1:13)&
     .eq.'DYNA_NON_LINE').or. (nomcmd(1:6) .eq.'CALCUL') ) then
-        nbmo1 = 2
-        moclef(1) = 'COMP_INCR'
-        moclef(2) = 'COMP_ELAS'
         meca=.true.
         criloc=.true.
     else

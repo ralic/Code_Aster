@@ -74,7 +74,7 @@ STNL=STAT_NON_LINE(MODELE=MO,
                    EXCIT=_F(CHARGE=CL,
                             FONC_MULT=RAMPE,),
                    CONTACT=CONT,
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=TPS,),
                    SOLVEUR=_F(SYME='OUI',),
                    );

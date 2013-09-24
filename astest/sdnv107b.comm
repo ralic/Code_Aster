@@ -346,7 +346,7 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELB,
                             _F(CHARGE=CHARGEB, ),
                             _F(CHARGE=EXCIMOB,
                                FONC_MULT=EVINT,),),
-                     COMP_INCR=(
+                     COMPORTEMENT=(
                                 _F(
                                   RELATION='VMIS_ISOT_LINE',
                                   GROUP_MA='VOLU3',
@@ -381,7 +381,7 @@ DYTREX0=DYNA_NON_LINE(MODELE=MODELE,
                      EXCIT=(_F(CHARGE=CHARGE, ),
                             _F(CHARGE=EXCIMO,
                                FONC_MULT=EVINT,),),
-                     COMP_INCR=(
+                     COMPORTEMENT=(
                                 _F(
                                   RELATION='ELAS',
                                   GROUP_MA=('VOLU1','VOLU2'),

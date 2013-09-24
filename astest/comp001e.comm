@@ -198,7 +198,7 @@ compor='VMIS_ECMI_TRAC'
 
 tabresu=TEST_COMPOR(OPTION='MECA',
 
-              COMP_INCR=_F(RELATION=compor,),
+              COMPORTEMENT=_F(RELATION=compor,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
               LIST_NPAS=4*[1] + [1, 5, 25],

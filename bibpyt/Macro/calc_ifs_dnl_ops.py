@@ -118,14 +118,12 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
                     'INFO',
                     'TITRE')
 
-# 'COMP_INCR' =C_COMP_INCR() : dans motCleFactTuple ?
   motCleFactTuple= ('EXCIT',
                     'EXCIT_GENE',
                     'SOUS_STRUC',
                     'AMOR_MODAL',
                     'PROJ_MODAL',
-                    'COMP_INCR',
-                    'COMP_ELAS',
+                    'COMPORTEMENT',
                     'ETAT_INIT',
                     'SCHEMA_TEMPS',
                     'NEWTON',

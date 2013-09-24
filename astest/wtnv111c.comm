@@ -147,7 +147,7 @@ MESTAT=STAT_NON_LINE(   MODELE=MODELE,
             SOLVEUR=_F( METHODE = 'LDLT'),
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHAR0),
-                          COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,
+                          COMPORTEMENT=_F( RELATION = 'KIT_THM',PARM_THETA=1.,
                           RELATION_KIT = ('ELAS', 'LIQU_SATU',  'HYDR_UTIL',),
                           ITER_INTE_MAXI = 5),
                           INCREMENT=_F( LIST_INST = LI),
@@ -164,7 +164,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1',
                   NOM_CMP='TEMP',
                   VALE_CALC=0.0,
-                  
+
                   CRITERE='ABSOLU',
                   ),
           )

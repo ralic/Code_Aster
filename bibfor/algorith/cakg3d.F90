@@ -140,7 +140,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     chvref='&&CAKG3D.VARC.REF'
 !
 !     RECUPERATION DU COMPORTEMENT
-    call getfac('COMP_INCR', incr)
+    call getfac('COMPORTEMENT', incr)
     if (incr .ne. 0) then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
         call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
@@ -157,7 +157,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     endif
 !
 !     RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
-    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
+    call getvid('COMPORTEMENT', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_G'
         call utmess('F', 'RUPTURE1_13', sk=valk)

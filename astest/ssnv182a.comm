@@ -41,18 +41,18 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-PENTE*Y-B');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN));
-                    
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P1P1',
                          INFO=1);
-                    
+
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
-                      ITER_FROT_MAXI = 6, 
+                      ITER_FROT_MAXI = 6,
                       ITER_CONT_MAXI = 4,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
@@ -64,9 +64,9 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,                             
+                               COEF_FROT    = 1000.,
                                SEUIL_INIT   = -1.E11,
-                             ), 
+                             ),
                          ),
                    );
 
@@ -114,8 +114,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1),),
-                   CONTACT  =CTXFEM,       
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   CONTACT  =CTXFEM,
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='VOL'),
                    NEWTON=_F(REAC_ITER=1),
                    INCREMENT=_F(LIST_INST=L_INST),
@@ -235,9 +235,9 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MIN',
            TABLE=LAG,)
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        INFO          = 2)
@@ -245,13 +245,13 @@ MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')) 
+                              MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
- 
+
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 

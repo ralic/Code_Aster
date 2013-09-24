@@ -78,7 +78,7 @@ def tolist(x) :
 #-----------------------------------------------------------------------
 
 
-def calc_europlexus_ops(self,EXCIT,COMP_INCR,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FONC_PARASOL=None,
+def calc_europlexus_ops(self,EXCIT,COMPORTEMENT,MODELE=None,CARA_ELEM=None,CHAM_MATER=None,FONC_PARASOL=None,
                              DIME=None,OBSERVATION=None,ARCHIVAGE=None,COURBE=None,
                              CALCUL=None,DOMAINES=None,INTERFACES=None,ETAT_INIT=None,
                              INFO=1,**args):
@@ -149,7 +149,7 @@ def calc_europlexus_ops(self,EXCIT,COMP_INCR,MODELE=None,CARA_ELEM=None,CHAM_MAT
     os.symlink(REPE_OUT, REPE_epx)
 
     # classs Europlexus permettant de faire le chainage avec le Code_Aster
-    EPX = EUROPLEXUS(ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,COMP_INCR,FONC_PARASOL,EXCIT,DIME,
+    EPX = EUROPLEXUS(ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,COMPORTEMENT,FONC_PARASOL,EXCIT,DIME,
                      OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,
                      REPE='REPE_OUT',EXEC=EXEC, INFO=INFO, REPE_epx=REPE_epx,
                      args=args)
@@ -201,7 +201,7 @@ def calc_europlexus_ops(self,EXCIT,COMP_INCR,MODELE=None,CARA_ELEM=None,CHAM_MAT
 
 class EUROPLEXUS:
 
-    def __init__(self,ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,COMP_INCR,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,REPE_epx,args):
+    def __init__(self,ETAT_INIT,MODELE,CARA_ELEM,CHAM_MATER,COMPORTEMENT,FONC_PARASOL,EXCIT,DIME,OBSERVATION,ARCHIVAGE,COURBE,CALCUL,DOMAINES,INTERFACES,REPE,EXEC,INFO,REPE_epx,args):
 
           if debug: print 'args_key %s'%args.keys()
           # Mettre toutes les entrees en attributs
@@ -231,7 +231,7 @@ class EUROPLEXUS:
           self.DOMAINES = DOMAINES
           self.INTERFACES = INTERFACES
           self.INFO = INFO
-          self.COMP_INCR = COMP_INCR
+          self.COMPORTEMENT = COMPORTEMENT
 
           self.REPE_epx = REPE_epx
           self.pwd = os.getcwd()
@@ -1132,7 +1132,7 @@ class EUROPLEXUS:
 
         # Dicionnaire stoquant les relations pour chaque group_ma
         dic_relation = {}
-        for comp in self.COMP_INCR :
+        for comp in self.COMPORTEMENT :
             for gr in comp['GROUP_MA']:
                 if gr in dic_relation: raise Exception('Une relation existe déjà pour le groupe %s' %gr)
                 dic_relation[gr] = comp['RELATION']

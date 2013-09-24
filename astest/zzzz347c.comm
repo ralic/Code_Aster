@@ -119,7 +119,7 @@ EVOLNOLI=STAT_NON_LINE(
                          CARA_ELEM=CARAELEM,
                              EXCIT=_F(
                                     CHARGE = CHARMECA),
-                         COMP_INCR=(_F( RELATION = 'KIT_CG',
+                         COMPORTEMENT=(_F( RELATION = 'KIT_CG',
                                         RELATION_KIT=('ELAS','CABLE_GAINE_FROT'),
                                         DEFORMATION = 'PETIT',
                                         GROUP_MA='CABLE'),

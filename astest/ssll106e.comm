@@ -918,7 +918,7 @@ REST2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CAREL,
                     EXCIT=(_F(CHARGE=CHAR0,),),
-                    COMP_INCR=_F(RELATION='ELAS',),
+                    COMPORTEMENT=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
 CALC_CHAMP(reuse =REST2, RESULTAT=REST2,

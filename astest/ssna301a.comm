@@ -68,7 +68,7 @@ CAT=DEFI_LIST_REEL(    DEBUT=0.0,
 CALCNL=STAT_NON_LINE(
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE'),
                          INCREMENT=_F(
                 LIST_INST = CAT),

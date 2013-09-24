@@ -1,20 +1,20 @@
 # TITRE   PRESSURISATION THERMIQUE D'UNE EPROUVETTE SATUREE NON DRAINE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY 
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                  
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#       
+#
 
 DEBUT(CODE=_F(NOM='WTNA112B', NIV_PUB_WEB='INTERNET'), )
 
@@ -23,15 +23,15 @@ DEBUT(CODE=_F(NOM='WTNA112B', NIV_PUB_WEB='INTERNET'), )
 MA = LIRE_MAILLAGE()
 
 
-MA=DEFI_GROUP( reuse=MA,  MAILLAGE=MA, 
+MA=DEFI_GROUP( reuse=MA,  MAILLAGE=MA,
              CREA_GROUP_MA=_F(NOM='TOUT',TOUT='OUI',)
                    )
-                            
-                           
+
+
 MA = MODI_MAILLAGE( reuse        = MA,
                     MAILLAGE     = MA,
                     ORIE_PEAU_2D = _F( GROUP_MA = ('DROITE','HAUT','BAS'),));
-                             
+
 
 T1= 3600;
 
@@ -39,14 +39,14 @@ T1= 3600;
 
 NORDRE = 10
 
-   
+
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                       _F( JUSQU_A=T1,NOMBRE=NORDRE,),
                              ),
                      );
 
-                     
+
 
 # Affectation du modele de calcul
 
@@ -63,10 +63,10 @@ G = 1140*1.e6;
 
 E0 = 9.*K0*G /(3.*K0+G)
 NU0    = (3.*K0-2.*G) /(6.*K0+2.*G)
-G0 = E0/(2.*(1.+NU0)) 
+G0 = E0/(2.*(1.+NU0))
 #
 # E0 = 3,14 GPa
-# NU = 0.375 
+# NU = 0.375
 RHO = 2390;
 
 
@@ -91,7 +91,7 @@ ZERO=DEFI_CONSTANTE(VALE=0.0,);
 
 # ARGILITE
 BIOTARG = 0.6
-MAT1=DEFI_MATERIAU( 
+MAT1=DEFI_MATERIAU(
 # LE MATERIAU EST ISOTROPE MAIS ON TESTE LES ROUTINES D'ORTHOROPIE
                      ELAS_ORTH=_F(
                              E_L  = E0,
@@ -120,7 +120,7 @@ MAT1=DEFI_MATERIAU(
                                   D_VISC_TEMP=DVISCOL,),
                       THM_INIT=_F(TEMP=273.0,
                                   PRE1=0.0,
-                                  PORO=0.18,                                 
+                                  PORO=0.18,
                                   DEGR_SATU=1.0,),
                       THM_DIFFU=_F(
                                    RHO=2410.0,
@@ -142,54 +142,54 @@ MAT1=DEFI_MATERIAU(
                                    LAMB_C_T=LAMB2,
                                    LAMB_C_L=LAMB2,
                                    ),);
-                               
-                               
+
+
 # affectation du materiaux
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
                              MATER=MAT1,),);
-                             
-                             
-    
+
+
+
  # Definition des conditions aux limites
- 
- 
+
+
  # Condition  de confinement (contrainte totale imposee):
 
-PCONF = 12.E6      
-PINI = 4.E6                            
+PCONF = 12.E6
+PINI = 4.E6
 PRHAUT = AFFE_CHAR_MECA(MODELE   = MODELE,
                        PRES_REP = (
                        _F(GROUP_MA = ('HAUT', 'DROITE'), PRES     = PCONF),
                         ),)
-#                                   
+#
 # CONDITION DE SYMETRIE
 #
-                                   
+
 CLFMEC=AFFE_CHAR_CINE(MODELE=MODELE,
                        MECA_IMPO=(_F(GROUP_MA='BAS',  DY=0.0,),
                                   _F(GROUP_MA='GAUCHE',  DX=0.0,),),);
-                                   
-                           
-                                    
-                                    
+
+
+
+
 #Chargement thermique sur la surface droite et superieur
 
 DTEMP = 40.
 CLFT=AFFE_CHAR_CINE(MODELE=MODELE,
                        MECA_IMPO=_F(GROUP_MA=('HAUT','DROITE'),
                                    TEMP=1.,),);
-                                   
+
 EV_THER=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
                          VALE=( 0.0,  20.,
                                  T1,  20.+DTEMP,),
                        )
 
-                                                                  
 
-                                 
+
+
 
 # Definition de l etat initial en DDL et un champs de Contrainte
 DDL_INIT= CREA_CHAMP(MAILLAGE = MA,
@@ -211,35 +211,35 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                             NOM_CMP=
                                     (
                      'SIXX','SIYY','SIZZ',
-                     'SIXY','SIYZ','SIXZ', 
+                     'SIXY','SIYZ','SIXZ',
                      'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
-                     'M11','FH11X','FH11Y','FH11Z','ENT11',                   
+                     'M11','FH11X','FH11Y','FH11Z','ENT11',
                      'QPRIM','FHTX','FHTY',
                                     ),
                          VALE=
                                  (
                      SIEFF0,SIEFF0,SIEFF0,
                      0.0, 0.0, 0.0,
-                     SIPAG0,SIPAG0,SIPAG0,0.0, 0.0, 0.0, 
+                     SIPAG0,SIPAG0,SIPAG0,0.0, 0.0, 0.0,
                      0.0,0.0,0.0,0.0,ENT1,
                      0.0,0.0,0.0,
                                  ),
                                         ),
                                 ),
                   );
-                  
+
 #
 # ON FAIT TOURNER LE REPERE POUR TESTER L'ANISOTROPIE DANS LE CAS THERMIQUE : LE MILIEU RESTE CEPENDANT ICI ISOTROPE
 #
 #=> ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
-# 
+#
 BETA = -60.
 ALPHA = 30.
 
 ORIREP=AFFE_CARA_ELEM(MODELE=MODELE,
        MASSIF=( _F(GROUP_MA=('TOUT'),
                    ANGL_REP=(ALPHA,BETA),
-                        ),),);                 
+                        ),),);
 # On passe au calcul avec NORDRE CORRESPONDANT A WTNA112A
 
 U0=STAT_NON_LINE(MODELE=MODELE,
@@ -247,9 +247,9 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
                         _F(CHARGE=CLFMEC,),
-                        _F(CHARGE=PRHAUT,),  
+                        _F(CHARGE=PRHAUT,),
                         _F(CHARGE=CLFT,FONC_MULT = EV_THER,),),
-                 COMP_INCR=_F(RELATION='KIT_THM',PARM_THETA=1.,
+                 COMPORTEMENT=_F(RELATION='KIT_THM',PARM_THETA=1.,
                               RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                  INCREMENT=_F(LIST_INST=INST1,
                               INST_FIN=T1,
@@ -259,13 +259,13 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                  ARCHIVAGE  = _F( LIST_INST  = INST1,),
-                       ); 
+                       );
 
 
 
 PREF = PINI + DTEMP*2.25E05
 TEST_RESU(
-           RESU=_F(  RESULTAT = U0,       
+           RESU=_F(  RESULTAT = U0,
              NUME_ORDRE = NORDRE,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
@@ -277,7 +277,7 @@ TEST_RESU(
                   REFERENCE='ANALYTIQUE',)
            )
 TEST_RESU(
-           RESU=_F(  RESULTAT = U0,       
+           RESU=_F(  RESULTAT = U0,
              NUME_ORDRE = NORDRE,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
@@ -288,11 +288,11 @@ TEST_RESU(
              PRECISION = 0.05,
              REFERENCE='ANALYTIQUE',)
            )
-   
+
 # On passe au calcul avec NORDRE PLUS PETIT AFIN DE S'ASSURER QUE L ON CONVERGE VERS LA SOLUTION DE REFERENCE
 NORDR1 = 15
 
-   
+
 INST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                       _F( JUSQU_A=T1,NOMBRE=NORDR1,),
@@ -302,9 +302,9 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
                         _F(CHARGE=CLFMEC,),
-                        _F(CHARGE=PRHAUT,),  
+                        _F(CHARGE=PRHAUT,),
                         _F(CHARGE=CLFT,FONC_MULT = EV_THER,),),
-                 COMP_INCR=_F(RELATION='KIT_THM',PARM_THETA=1.,
+                 COMPORTEMENT=_F(RELATION='KIT_THM',PARM_THETA=1.,
                               RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                  INCREMENT=_F(LIST_INST=INST2,
                               INST_FIN=T1,
@@ -314,9 +314,9 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                  ARCHIVAGE  = _F( LIST_INST  = INST2),
-                       ); 
+                       );
 TEST_RESU(
-           RESU=_F(  RESULTAT = U1, 
+           RESU=_F(  RESULTAT = U1,
              NUME_ORDRE = NORDR1,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
@@ -328,7 +328,7 @@ TEST_RESU(
                   REFERENCE='ANALYTIQUE',)
            )
 TEST_RESU(
-           RESU=_F(  RESULTAT = U1 ,     
+           RESU=_F(  RESULTAT = U1 ,
              NUME_ORDRE = NORDR1,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',

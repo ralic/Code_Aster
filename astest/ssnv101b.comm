@@ -70,10 +70,10 @@ ACIER=DEFI_MATERIAU(
                                             C2_I = C2_I,
                                             G2_0 = 17184.,
                                              ),
-                                             
+
 #                   CIN2_NRAD=_F(
 #                                DELTA1=1.,
-#                                DELTA2=1.,                               
+#                                DELTA2=1.,
 #                                ),
                                              )
 
@@ -111,7 +111,7 @@ SOLNL=STAT_NON_LINE(
                 CHARGE = TR_CS,
                 FONC_MULT = COEF,
                 TYPE_CHARGE = 'FIXE_CSTE'),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RESI_CPLAN_RELA=1.E-4,
                 ALGO_INTE='SECANTE',
                 RELATION = 'VMIS_CIN2_CHAB',

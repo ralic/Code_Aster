@@ -109,7 +109,7 @@ TRAN_DI=DYNA_NON_LINE(
                 EXCIT=_F(  CHARGE = CHARGE),
                 ETAT_INIT=_F(  INST = 0.,
                                DEPL = DEPLINI),
-                COMP_INCR=_F(  RELATION = 'DIS_CHOC',
+                COMPORTEMENT=_F(  RELATION = 'DIS_CHOC',
                            MAILLE = 'EL1'),
                 INCREMENT=_F(  LIST_INST = DEFLIST),
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',

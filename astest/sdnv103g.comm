@@ -55,10 +55,21 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                                  EPSP0=1.0,
                                  TROOM=298.0,
                                  TMELT=1083.,),);
+                                 
+                                 
+# pour ce test, il faut que l'elasticite soit incrementale
+ACIERE=DEFI_MATERIAU(ELAS=_F(E=117.E3,
+                            NU=0.35,
+                            RHO=8.930E-9,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=100.,
+                                 SY=400.E6,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA=('VOL','VOL_RIG',),
-                            MATER=ACIER,),);
+                    AFFE=(
+                    _F(GROUP_MA=('VOL',),MATER=ACIER,),
+                    _F(GROUP_MA=('VOL_RIG',),MATER=ACIERE,),
+                            ));
+
 
 CH=AFFE_CHAR_MECA(MODELE=MODE,
                   DDL_IMPO=(_F(GROUP_MA='RIGID',
@@ -141,16 +152,17 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                                  SUBD_PAS=2,
                                  SUBD_PAS_MINI=1.E-30,),);
 
+# pour ce test, il faut que l'elasticite soit incrementale
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
                    CONTACT = CHCONT,
-                   COMP_INCR=(_F(RELATION='VMIS_JOHN_COOK',
+                   COMPORTEMENT=(_F(RELATION='VMIS_JOHN_COOK',
                                  DEFORMATION='GDEF_LOG',
                                  ALGO_INTE='BRENT',
                                  ITER_INTE_MAXI=30,
                                  TOUT='OUI',),
-                              _F(RELATION='ELAS',
+                              _F(RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='PETIT',
                                  GROUP_MA='VOL_RIG',),),
                    ETAT_INIT=_F(VITE=VIT_0,),
@@ -184,12 +196,12 @@ RESU=DYNA_NON_LINE(reuse = RESU,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
                    CONTACT = CHCONT,
-                   COMP_INCR=(_F(RELATION='VMIS_JOHN_COOK',
+                   COMPORTEMENT=(_F(RELATION='VMIS_JOHN_COOK',
                                  DEFORMATION='GDEF_LOG',
                                  ALGO_INTE='BRENT',
                                  ITER_INTE_MAXI=30,
                                  TOUT='OUI',),
-                              _F(RELATION='ELAS',
+                              _F(RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='PETIT',
                                  GROUP_MA='VOL_RIG',),),
                    ETAT_INIT=_F(EVOL_NOLI=RESU,),

@@ -99,7 +99,7 @@ EVOLNOLI=STAT_NON_LINE(
                 CHAM_MATER=CHMATER,
                 CARA_ELEM=CARAELEM,
                 EXCIT=      _F( CHARGE = CHARMECA),
-                COMP_INCR=  _F( RELATION = 'ELAS',
+                COMPORTEMENT=  _F( RELATION = 'ELAS',
                                 DEFORMATION = 'PETIT',
                                 TOUT = 'OUI'),
                 INCREMENT=  _F( LIST_INST = LINST),

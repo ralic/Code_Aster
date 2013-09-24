@@ -52,7 +52,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
-                      ITER_FROT_MAXI = 6, 
+                      ITER_FROT_MAXI = 6,
                       ITER_CONT_MAXI = 4,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
@@ -65,9 +65,9 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,                             
+                               COEF_FROT    = 1000.,
                                SEUIL_INIT   = -1.E11,
-                             ), 
+                             ),
                          ),
                    );
 
@@ -106,9 +106,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1),),
-                   CONTACT  = CTXFEM, 
-                   NEWTON=_F(REAC_ITER=1),  
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   CONTACT  = CTXFEM,
+                   NEWTON=_F(REAC_ITER=1),
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='VOL'),
                    INCREMENT=_F(LIST_INST=L_INST),
                    SOLVEUR=_F(METHODE='MUMPS'),
@@ -212,7 +212,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));

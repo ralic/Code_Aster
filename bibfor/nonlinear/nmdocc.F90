@@ -22,7 +22,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 ! OUT COMPOR : CARTE DECRIVANT LES PARAMETRES K16 DU COMPORTEMENT
 ! IN MODELE  : LE MODELE
 ! IN NBMO1   : NOMBRE DE MOTS-CLES (1 OU 2) COMP_INCR / COMP_ELAS
-! IN MOCLEF  : LISTE DES MOTS-CLES (COMP_INCR / COMP_ELAS)
+! IN MOCLEF  : MOTS-CLE FACTEUR COMPORTEMENT
 ! IN NCMPMA  : NOMBRE DE CMP DE LA GRANDEUR COMPOR
 ! IN NOMCMP  : NOMS DES CMP DE LA GRANDEUR COMPOR
 ! IN MECA    : COMMANDE MECANIQUE OU PAS
@@ -58,16 +58,16 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 #include "asterfort/utmess.h"
     integer :: icmp, k, jma, nbma, iret, i, n1, jvalv, ncmpma, jncmp
     integer :: nbmo1, nbocc, dimaki, dimanv, nbkit, numlc, nbvari, icpri
-    integer :: nbvarz, nunit, ii, inv, indimp
+    integer :: nbvarz, nunit, ii, inv, indimp, n2
 !    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
 !    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
     parameter (dimanv=4)
     integer :: nbnvi(dimanv), ncomel, nvmeta, nt
     character(len=8) :: noma, typmcl(2), nomcmp(*), sdcomp, tavari
-    character(len=16) :: tymatg, moclef(2), comp, txcp, defo, mocles(2)
+    character(len=16) :: tymatg, moclef, comp, txcp, defo, mocles(2)
     character(len=16) :: texte(2), comcod, lcomel(10), nomkit(dimaki)
-    character(len=16) :: nomsub, nomcmd, comco2, crirup
+    character(len=16) :: nomsub, nomcmd, comco2, crirup, etatini
     character(len=19) :: ces2, compor
     character(len=24) :: mesmai, modele
     character(len=128) :: nomlib
@@ -128,17 +128,16 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 90  end do
 !
 !     MOTS CLES FACTEUR
-    do 160 i = 1, nbmo1
-        call getfac(moclef(i), nbocc)
+        call getfac(moclef, nbocc)
 !
 !       NOMBRE D'OCCURRENCES
         do 150 k = 1, nbocc
 !
-            call getvtx(moclef(i), 'RELATION', iocc=k, scal=comp, nbret=n1)
+            call getvtx(moclef, 'RELATION', iocc=k, scal=comp, nbret=n1)
             ncomel=1
             lcomel(ncomel)=comp
 !
-            call reliem(modele, noma, 'NU_MAILLE', moclef(i), k,&
+            call reliem(modele, noma, 'NU_MAILLE', moclef, k,&
                         2, mocles, typmcl, mesmai, nbma)
 !
 !         VERIFICATIONS DE LA COMPATIBILITE MODELE-COMPORTEMENT
@@ -150,7 +149,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             endif
 !
 !         SAISIE ET VERIFICATION DU TYPE DE DEFORMATION UTILISEE
-            call nmdogd(moclef(i), comp, k, ncomel, lcomel,&
+            call nmdogd(moclef, comp, k, ncomel, lcomel,&
                         defo)
 !
 !         VERIFICATIONS DE LA COMPATIBILITE MODELE-DEFORMATION
@@ -161,7 +160,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             endif
 !
 !         POUR COMPORTEMENTS KIT_
-            call nmdoki(moclef(i), modele, comp, k, dimaki,&
+            call nmdoki(moclef, modele, comp, k, dimaki,&
                         nbkit, nomkit, nbnvi, ncomel, lcomel,&
                         numlc, nvmeta)
 
@@ -184,7 +183,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !
 !         NOMS DES VARIABLES INTERNES
             if (indimp .eq. 1) then
-                call imvari(moclef(i), k, ncomel, lcomel, comcod,&
+                call imvari(moclef, k, ncomel, lcomel, comcod,&
                             nbvari, tavari)
             endif
 !
@@ -206,16 +205,16 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 ! ======================================================================
 !         CAS PARTICULIERS
             tymatg=' '
-            exist = getexm(moclef(i),'TYPE_MATR_TANG')
+            exist = getexm(moclef,'TYPE_MATR_TANG')
             if (exist .eq. 1) then
-                call getvtx(moclef(i), 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=n1)
+                call getvtx(moclef, 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=n1)
                 if (n1 .gt. 0) then
                     if (tymatg .eq. 'TANGENTE_SECANTE') nbvari=nbvari+1
                 endif
             endif
 !         CAS PARTICULIER DE MONOCRISTAL
             if (comp(1:8) .eq. 'MONOCRIS') then
-                call getvid(moclef(i), 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
+                call getvid(moclef, 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
                 call jeveuo(sdcomp//'.CPRI', 'L', icpri)
                 nbvari=zi(icpri-1+3)
                 zk16(jvalv-1+7) = sdcomp
@@ -224,7 +223,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
                     nbvari=nbvari+9+9
                 endif
             else if (comp(1:8).eq.'POLYCRIS') then
-                call getvid(moclef(i), 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
+                call getvid(moclef, 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
                 call jeveuo(sdcomp//'.CPRI', 'L', icpri)
                 nbvari=zi(icpri-1+3)
                 zk16(jvalv-1+7) = sdcomp
@@ -232,9 +231,9 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             endif
 !
 !         STOCKAGE DE VI SI POST_ITER='CRIT_RUPT'
-            if (nomcmd(1:6) .ne. 'CALC_G') then
-                if (moclef(i) .eq. 'COMP_INCR') then
-                    call getvtx(moclef(i), 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
+            if ((nomcmd(1:6) .ne. 'CALC_G').and.(nomcmd(1:4).ne.'THER')) then
+                if (moclef .eq. 'COMPORTEMENT') then
+                    call getvtx(moclef, 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
                     if (iret .eq. 1) then
                         nbvari=nbvari+6
                     endif
@@ -245,9 +244,9 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             if (comp(1:8) .eq. 'MULTIFIB') exipmf=.true.
             if (comp(1:4) .eq. 'ZMAT') then
                 iszmat = .true.
-                call getvis(moclef(i), 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
+                call getvis(moclef, 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
                 nbvari=nbvarz+nbvari
-                call getvis(moclef(i), 'UNITE', iocc=k, scal=nunit, nbret=n1)
+                call getvis(moclef, 'UNITE', iocc=k, scal=nunit, nbret=n1)
                 write (zk16(jvalv-1+7),'(I16)') nunit
             endif
 !         POUR COMPORTEMENT KIT_
@@ -274,10 +273,10 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !         ON STOCKE LA LIB DANS KIT1-KIT8 (128 CARACTERES)
 !         ET LA SUBROUTINE DANS KIT9
             if ((comp.eq.'UMAT') .or. (comp.eq.'MFRONT')) then
-                call getvis(moclef(i), 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
+                call getvis(moclef, 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
                 nbvari=nbvarz+nbvari
-                call getvtx(moclef(i), 'LIBRAIRIE', iocc=k, scal=nomlib, nbret=n1)
-                call getvtx(moclef(i), 'NOM_ROUTINE', iocc=k, scal=nomsub, nbret=n1)
+                call getvtx(moclef, 'LIBRAIRIE', iocc=k, scal=nomlib, nbret=n1)
+                call getvtx(moclef, 'NOM_ROUTINE', iocc=k, scal=nomsub, nbret=n1)
                 do 30 ii = 1, dimaki-1
                     zk16(jvalv-1+ii+7) = nomlib(16*(ii-1)+1:16*ii)
 30              continue
@@ -291,7 +290,34 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             zk16(jvalv-1+1) = comp
             write (zk16(jvalv-1+2),'(I16)') nbvari
             zk16(jvalv-1+3) = defo
-            zk16(jvalv-1+4) = moclef(i)
+!            zk16(jvalv-1+4) = moclef
+            call lctest(comcod, 'PROPRIETES', 'COMP_ELAS', iret)
+            if (iret .eq. 0) then
+               zk16(jvalv-1+4) = 'COMP_INCR'
+            else
+               zk16(jvalv-1+4) = 'COMP_ELAS'
+!              exceptions : sauf dans le cas ETAT_INIT , PETIT_REAC               
+               if ((nomcmd.eq.'STAT_NON_LINE').or.(nomcmd.eq.'DYNA_NON_LINE')) then
+                  call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=etatini, nbret=n1)
+                  call getvid('ETAT_INIT', 'SIGM',      iocc=1, scal=etatini, nbret=n2)
+                  if ((n1.ne.0).or.(n2.ne.0)) then
+                      zk16(jvalv-1+4) = 'COMP_INCR'
+                  endif                      
+               else if ((nomcmd(1:6).eq.'CALC_G')) then
+                  call getvid(moclef, 'SIGM_INIT', iocc=k, scal=etatini, nbret=n1)
+                  if ((n1.ne.0)) then
+                      zk16(jvalv-1+4) = 'COMP_INCR'
+                  endif                      
+               else if ((nomcmd.eq.'CALCUL')) then
+                  call getvid(' ', 'SIGM', iocc=0, scal=etatini, nbret=n1)
+                  if ((n1.ne.0)) then
+                      zk16(jvalv-1+4) = 'COMP_INCR'
+                  endif                      
+               endif                      
+               if (defo.eq.'PETIT_REAC') then
+                   zk16(jvalv-1+4) = 'COMP_INCR'
+               endif                      
+            endif                      
             zk16(jvalv-1+5) = txcp
 !         ON ECRIT NUMLC EN POSITION 6 (CMP XXX1)
             if (comp(1:8) .ne. 'MULTIFIB') then
@@ -309,7 +335,6 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             endif
 !
 150      continue
-160  end do
 !
 ! ======================================================================
 !     SI MULTIFIBRE, ON FUSIONNE AVEC LA CARTE CREEE DANS AFFE_MATERIAU

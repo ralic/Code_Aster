@@ -291,7 +291,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                                      _F ( CHARGE       = TR,
                                           FONC_MULT    = COEFTR,
                                           TYPE_CHARGE  = 'FIXE_CSTE') ),
-                        COMP_ELAS  =_F ( RELATION     = 'ELAS',
+                        COMPORTEMENT  =_F ( RELATION     = 'ELAS',
                                          DEFORMATION  = 'PETIT',
                                          TOUT         = 'OUI'    ),
                         INCREMENT  =_F ( LIST_INST    = LINST, ),
@@ -425,7 +425,7 @@ CRIT[1] =   FORMULE(
            NOM_PARA=('DTAUMA','NORMAX','NORMOY','EPNMAX', 'EPNMOY'),
            VALE=''' 1.5*( DTAUMA + max(0,NORMAX) ) '''
            )
-           
+
 CRIT[2] =  'DANG_VAN_MODI_AV'
 
 #POUR RETROUVER 'DANG_VAN_MODI_AV'
@@ -433,30 +433,30 @@ CRIT[3] =   FORMULE(
            NOM_PARA=('TAUPR_1','TAUPR_2','PHYDR_1','PHYDR_2'),
            VALE=''' 1.5*( abs(TAUPR_1-TAUPR_2)/2.0 + max(0,PHYDR_1, PHYDR_2) ) '''
            )
-           
-# POUR AMPLITUDE CONSTANTE                      
+
+# POUR AMPLITUDE CONSTANTE
 NPAR = ['DTAUM1','VNM1X', 'VNM1Y', 'VNM1Z','SINMAX1', 'SINMOY1','EPNMAX1', 'EPNMOY1',
          'SIGEQ1','NBRUP1','ENDO1',
-         
+
         'DTAUM2','VNM2X', 'VNM2Y', 'VNM2Z','SINMAX2', 'SINMOY2','EPNMAX2', 'EPNMOY2',
          'SIGEQ2','NBRUP2','ENDO2',
          ]
-         
-CTEST = ['RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','RELATIF','ABSOLU',  
+
+CTEST = ['RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','RELATIF','ABSOLU',
          'RELATIF','RELATIF', 'RELATIF', 'RELATIF',
-         
-         'RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','RELATIF', 'RELATIF', 
+
+         'RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','RELATIF', 'RELATIF',
          'RELATIF','RELATIF', 'RELATIF', 'RELATIF',
          ]
-         
+
 ###ATTENTION, ON TESTE SUR DIFFERENTES POINTS
-PO = [ 3,3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3, 7, 7 ] 
+PO = [ 3,3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3, 7, 7 ]
 
 #RESULTAT AU NOUED
 RESU1 = [1.3301710340281E+02, 6.9724586156165E-02, 9.9695561948126E-01, -3.4899496702501E-02,
          2.3572263291963E+01, -2.2206246584495E+00, 0, -3.6273728322300E-05, 2.3488405004216E+02,
          2.5838000000000E+04, 3.8703052983311E-05,
-         
+
          133.02022068351, -0.99116343795529 ,0.069138062261375, 0.11320321376791,
          126.88813125424, 15.86101640678, 6.5005550881352E-04 , 8.125693860169E-05,
          389.86252790662, 33236.0, 3.0088178229408E-05
@@ -466,7 +466,7 @@ RESU1 = [1.3301710340281E+02, 6.9724586156165E-02, 9.9695561948126E-01, -3.48994
 RESU2  =[ 115.58441055223, 0.38933966210247, 0.83783531681782, 0.38268343236509,
           75.746337040908, -6.7193822827149, 0.,-4.2841435488233E-05, 286.9961213897,
          13063.0, 7.6550840649499E-05,
-         
+
          115.40664143561, -0.92433783571776, 0.37342165946579, 0.078459095727845,
          114.89053816203, 6.7967476016341,3.6504123433286E-04, 4.5013408760035E-05,345.44576939647,
          4699.0, 2.1279233434283E-04
@@ -489,7 +489,7 @@ FAMNL1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       INST_CRIT = 'RELATIF',
                     )
 
-for j in range(22): 
+for j in range(22):
    TEST_RESU(CHAM_ELEM=( _F( CHAM_GD = FAMNL1,
                           NOM_CMP = NPAR[j],
                           MAILLE = 'M60',
@@ -498,7 +498,7 @@ for j in range(22):
                           VALE_CALC= RESU1[j], ),
                 )
           )
-          
+
 ###CRITERE EN FORMULE
 FAMNL2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       OPTION        = 'DOMA_ELGA',
@@ -513,7 +513,7 @@ FAMNL2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       COURBE_GRD_VIE  = 'WOHLER',
                     )
 
-for j in range(22): 
+for j in range(22):
    TEST_RESU(CHAM_ELEM=( _F( CHAM_GD = FAMNL2,
                           NOM_CMP = NPAR[j],
                           MAILLE = 'M60',
@@ -523,7 +523,7 @@ for j in range(22):
 
                 )
           )
-          
+
 # CALCUL DE LA FATIGUE SUR LES FACE 1, 2 ET 3 DE LA STRUCTURE AUX NOEUDS
 # ----------------------------------------------------------------------
 #### CRITERE PAR NOM
@@ -540,13 +540,13 @@ FANNL1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        METHODE       = 'CERCLE_EXACT'
                      )
 
-for j in range(22): 
+for j in range(22):
    TEST_RESU(CHAM_NO=( _F( CHAM_GD = FANNL1,
                         NOM_CMP = NPAR[j],
                         NOEUD = 'N214',
                         CRITERE = CTEST[j],
                         VALE_CALC = RESU2[j] ),
-                        ), ) 
+                        ), )
 ###CRITERE EN FORMULE
 FANNL2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        OPTION        = 'DOMA_NOEUD',
@@ -562,21 +562,21 @@ FANNL2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        COURBE_GRD_VIE  = 'WOHLER',
                      )
 
-for j in range(22): 
+for j in range(22):
    TEST_RESU(CHAM_NO=( _F( CHAM_GD = FANNL2,
                         NOM_CMP = NPAR[j],
                         NOEUD = 'N214',
                         CRITERE = CTEST[j],
                         VALE_CALC = RESU2[j] ),
                         ), )
-########################################################################################              
+########################################################################################
 #### CRITERE PAR NOM
 FNLAX = [None]*2
 PROJ = ['UN_AXE','DEUX_AXES']
 NPARA = ['VNM1X','VNM1Y','VNM1Z','ENDO1']
-RESUA  = [0.38537838350012,0.83966474984014,0.38268343236509, 9.2799099716954E-05 ] 
+RESUA  = [0.38537838350012,0.83966474984014,0.38268343236509, 9.2799099716954E-05 ]
 for i in range(2):
-          
+
    FNLAX[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        OPTION        = 'DOMA_NOEUD',
                        TYPE_CHARGE   = 'NON_PERIODIQUE',
@@ -596,7 +596,7 @@ for i in range(2):
                         VALE_CALC = RESUA[j], ),
                 )
           )
-          
+
 ###CRITERE EN FORMULE
 FNLAFOR=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                     OPTION        = 'DOMA_NOEUD',

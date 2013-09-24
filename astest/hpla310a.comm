@@ -340,7 +340,7 @@ SOLVEUR=_F(SYME='OUI',),
                              EXCIT=_F(
                 CHARGE = CH1B),
                 CONTACT = CHCONT,
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
@@ -493,7 +493,7 @@ SOLVEUR=_F(SYME='OUI',),
                              EXCIT=_F(
                 CHARGE = CH2B),
                 CONTACT = CHCONT,
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
@@ -644,7 +644,7 @@ CHDEP3B=STAT_NON_LINE( SOLVEUR=_F(SYME='OUI',),
                        CHAM_MATER=CHMTB3,
                        EXCIT=_F(CHARGE = CH3B),
                                 CONTACT = CHCONT,
-                       COMP_ELAS=_F(RELATION = 'ELAS'),
+                       COMPORTEMENT=_F(RELATION = 'ELAS'),
                        NEWTON=_F(MATRICE = 'ELASTIQUE'),
                        INCREMENT=_F(LIST_INST = L_INST3),
                        CONVERGENCE=_F(ITER_GLOB_MAXI = 7,

@@ -38,7 +38,7 @@ def macr_ecrevisse_ops(self, reuse,
    CONTACT,
    EXCIT_MECA,
    EXCIT_THER,
-   COMP_INCR,
+   COMPORTEMENT,
    NEWTON,
    CONVERGENCE,
    ETAT_INIT,
@@ -90,7 +90,7 @@ def macr_ecrevisse_ops(self, reuse,
     self.DeclareOut('RTHERM',TEMPER)
     self.DeclareOut('MECANIC', self.sd)
 
-    # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+    # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
     MasquerAlarme('COMPOR1_70')
 
     IsPoursuite = False
@@ -119,7 +119,7 @@ def macr_ecrevisse_ops(self, reuse,
     # on ne supprime pas les valeurs None
     dMODELE_ECRE = MODELE_ECRE[0].cree_dict_valeurs(MODELE_ECRE[0].mc_liste)
     dCONVERGENCE_ECREVISSE = CONVERGENCE_ECREVISSE[0].cree_dict_toutes_valeurs()
-    dCOMP_INCR = COMP_INCR[0].cree_dict_toutes_valeurs()
+    dCOMPORTEMENT = COMPORTEMENT[0].cree_dict_toutes_valeurs()
     dNEWTON = NEWTON[0].cree_dict_toutes_valeurs()
     dCONVERGENCE = CONVERGENCE[0].cree_dict_toutes_valeurs()
 
@@ -397,7 +397,7 @@ def macr_ecrevisse_ops(self, reuse,
                    CARA_ELEM   = CARA_ELEM,
                    CONTACT     = CONTACT,
                    EXCIT       = _dEXCIT_MECA,
-                   COMP_INCR   = _F(**dCOMP_INCR),
+                   COMPORTEMENT   = _F(**dCOMPORTEMENT),
                    INCREMENT   = _F(LIST_INST=__pas,
                                     NUME_INST_INIT=nume_ordre,
                                     NUME_INST_FIN=nume_ordre+1,),

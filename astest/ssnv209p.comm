@@ -202,14 +202,14 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
                     CONTACT=CTXFEM,
                     EXCIT=(
-                           
+
                            _F(CHARGE=CHCINE),
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),
                            _F(CHARGE=CHAF,
                               FONC_MULT=RAMPE),
                            ),
-                    COMP_ELAS=_F(RELATION='ELAS',
+                    COMPORTEMENT=_F(RELATION='ELAS',
                                  GROUP_MA='CYLROD'),
                     INCREMENT=_F(LIST_INST=L_INS1,
                                  INST_FIN=1.0),

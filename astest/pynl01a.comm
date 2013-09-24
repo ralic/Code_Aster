@@ -155,7 +155,7 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM',
             INCR_DEPL=DU,
             SIGM=SIGP,
             VARI=VARIP,
-            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
             INFO=2,);
 
 IMPR_TABLE(TABLE=CONT)
@@ -224,7 +224,7 @@ DX=RESOUDRE(MATR=MATAS2,
 PRED=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARGE,),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),);
 
@@ -232,7 +232,7 @@ PRED=STAT_NON_LINE(MODELE=MO,
 CALC=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARGE,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=LIST,),
                    NEWTON=_F(PREDICTION='DEPL_CALCULE',
                              EVOL_NOLI=PRED,),
@@ -395,7 +395,7 @@ CONT=CALCUL(reuse=CONT,
             INCR_DEPL=DU,
             SIGM=SIGP,
             VARI=VARIP,
-            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
             INFO=2,);
 
 
@@ -410,14 +410,14 @@ SIGM3=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
 PRED3=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARGE,),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST2,),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),);
 
 CALC3=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHARGE,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=LIST2,),
                    NEWTON=_F(PREDICTION='DEPL_CALCULE',
                              EVOL_NOLI=PRED3,),
@@ -494,7 +494,7 @@ CONT2=CALCUL(
             INCR_DEPL=DU,
             SIGM=SIGP,
             VARI=VARIP,
-            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
             INFO=2,);
 
 #

@@ -195,7 +195,7 @@ U1=STAT_NON_LINE(
                 ), _F(
                 CHARGE = P0,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 ALGO_INTE='SPECIFIQUE',
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
@@ -277,7 +277,7 @@ U2=STAT_NON_LINE(
                 CHARGE = P0,
                 ),
                 ),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 ALGO_INTE='SPECIFIQUE',
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (

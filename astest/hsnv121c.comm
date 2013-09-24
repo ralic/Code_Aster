@@ -148,7 +148,7 @@ VT=STAT_NON_LINE(
                 CARA_ELEM=CARAC,
                 CHAM_MATER=CHP_MATT,
                 EXCIT=(    _F(  CHARGE = CHR_LIAI), ),
-                COMP_INCR=_F(   RELATION = 'VMIS_ISOT_TRAC',
+                COMPORTEMENT=_F(   RELATION = 'VMIS_ISOT_TRAC',
                                 DEFORMATION = 'PETIT_REAC'),
                 INCREMENT=_F( LIST_INST = L_INST,
                               NUME_INST_FIN = 1),
@@ -171,7 +171,7 @@ VT=STAT_NON_LINE( reuse=VT,
                 CHARGE = CHR_TRAC,
                 FONC_MULT = F_CHAR,
                 TYPE_CHARGE = 'DIDI')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT_REAC'),
                          INCREMENT=_F(

@@ -205,7 +205,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  EXCIT=(
                  _F(CHARGE=FLUTH,),
                                           ),
-                 COMP_INCR=_F(RELATION='KIT_THV',PARM_THETA=0.57,
+                 COMPORTEMENT=_F(RELATION='KIT_THV',PARM_THETA=0.57,
                               RELATION_KIT=('LIQU_VAPE','HYDR_UTIL'),
                               ITER_INTE_MAXI=5,),
                  ETAT_INIT=_F(DEPL=CHAMNO,

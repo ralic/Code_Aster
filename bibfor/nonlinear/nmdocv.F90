@@ -49,8 +49,7 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
     call jemarq()
 !
 !     VERIFICATIONS INITIALES
-    ASSERT(mcfact.eq.'COMP_ELAS'.or. mcfact.eq.'COMP_INCR')
-!
+
     ASSERT(nommc.eq.'RESI_INTE_RELA'.or. nommc.eq.'ITER_INTE_MAXI')
 !
 !     RECUP DES VALEURS

@@ -83,7 +83,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",
          ),
 
 
-         COMP_ELAS       =C_COMP_ELAS('MACR_ASCOUF_CALC'),
+         COMPORTEMENT       =C_COMPORTEMENT('MACR_ASCOUF_CALC'),
 
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR

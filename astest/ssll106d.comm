@@ -120,7 +120,7 @@ U1=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR1,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(  RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F(  RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),
@@ -146,7 +146,7 @@ U2=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR2,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(  RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F(  RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),
@@ -172,7 +172,7 @@ U3=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR3,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F( RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F( RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),
@@ -198,7 +198,7 @@ U4=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR4,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F( RELATION = 'ELAS'),
+                         COMPORTEMENT=_F( RELATION = 'ELAS'),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),
@@ -224,7 +224,7 @@ U5=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR5,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(  RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F(  RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),
@@ -250,7 +250,7 @@ U6=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR6,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F( RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F( RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),
@@ -276,7 +276,7 @@ U7=STAT_NON_LINE(
                 CHARGE = CHAR0), _F(
                 CHARGE = CHAR7,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F( RELATION = 'ELAS', ),
+                         COMPORTEMENT=_F( RELATION = 'ELAS', ),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 2),

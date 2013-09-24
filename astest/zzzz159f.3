@@ -46,7 +46,7 @@ EVOL=STAT_NON_LINE(CHAM_MATER=CHMAT,
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                   RESI_GLOB_RELA=1.E-05,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=INSTANTS,
                                 ),
                    NEWTON=_F(REAC_ITER=1,
@@ -60,20 +60,20 @@ EVOL=CALC_CHAMP(reuse=EVOL,
                MODELE=MO,
                CONTRAINTE='SIEF_ELNO',
                VARI_INTERNE='VARI_ELNO');
-               
+
 REPONSE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                         INTITULE='SIGYY',
                         RESULTAT =EVOL,
                         NOM_CHAM ='SIEF_ELNO',
                         NOM_CMP  = 'SIYY',
                         GROUP_NO = 'A',),);
-                        
+
 REPONSE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                         INTITULE='V1',
                         RESULTAT =EVOL,
                         NOM_CHAM ='VARI_ELNO',
                         NOM_CMP  = 'V1',
                         GROUP_NO = 'A',),);
-                        
+
 
 FIN();

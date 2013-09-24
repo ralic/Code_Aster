@@ -43,9 +43,9 @@ CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
                      reentrant='n',
                      fr="",
                      MATER       = SIMP(statut='o',typ=mater_sdaster),
-                     COMP_INCR   = C_COMP_INCR(),
+                     COMPORTEMENT   = C_COMPORTEMENT(),
                      CONVERGENCE = C_CONVERGENCE(),
-                     regles=(AU_MOINS_UN('COMP_INCR'), # car COMP_INCR est facultatif dans C_COMP_INCR
+                     regles=(AU_MOINS_UN('COMPORTEMENT'), # car COMPORTEMENT est facultatif dans C_COMPORTEMENT
                              AU_MOINS_UN(
                                          'ESSAI_TD'    ,
                                          'ESSAI_TND'   ,

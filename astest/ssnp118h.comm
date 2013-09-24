@@ -126,7 +126,7 @@ U_OUV=STAT_NON_LINE(
     _F(CHARGE = LIAISON),
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_OUV_MIX',
              MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
@@ -159,7 +159,7 @@ STAT_NON_LINE(reuse = U_OUV,
     COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_OUV_MIX',
              MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
@@ -177,7 +177,7 @@ STAT_NON_LINE(reuse = U_OUV,
   ARCHIVAGE  = _F(LIST_INST = L_INST)
   )
 
-# INTERPOLATION NODALE DES CHAMPS AUX PG  
+# INTERPOLATION NODALE DES CHAMPS AUX PG
 U_OUV=CALC_CHAMP(reuse = U_OUV,
                  RESULTAT = U_OUV,
                  VARI_INTERNE='VARI_ELNO',
@@ -205,7 +205,7 @@ U_TAC=STAT_NON_LINE(
     _F(CHARGE = LIAISON),
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_TAC_MIX',
              MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
@@ -238,7 +238,7 @@ STAT_NON_LINE(reuse = U_TAC,
     COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_TAC_MIX',
              MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
@@ -256,7 +256,7 @@ STAT_NON_LINE(reuse = U_TAC,
   ARCHIVAGE  = _F(LIST_INST = L_INST)
   )
 
-# INTERPOLATION NODALE DES CHAMPS AUX PG  
+# INTERPOLATION NODALE DES CHAMPS AUX PG
 U_TAC=CALC_CHAMP(reuse =U_TAC,
                  RESULTAT=U_TAC,
                  VARI_INTERNE='VARI_ELNO',
@@ -379,7 +379,7 @@ TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   VALE_REFE=0.70000300000000004,
                   MAILLE='CUBEDEG',),
           )
-          
+
 # TESTS DES INTERPOLATIONS AUX NOEUDS
 TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   REFERENCE='ANALYTIQUE',
@@ -391,7 +391,7 @@ TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   VALE_REFE=0.34784900000000002,
                   MAILLE='CUBEDEG',),
           )
-          
+
 
 TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   REFERENCE='ANALYTIQUE',

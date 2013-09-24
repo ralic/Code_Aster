@@ -8,9 +8,9 @@ YOUN__=8.0e+04
 
 
 # DSDE__=DEFI_CONSTANTE(VALE=DSDE__,);
-# 
+#
 # SIGY_=DEFI_CONSTANTE(VALE=SIGY__,);
-# 
+#
 # YOUN__=DEFI_CONSTANTE(VALE=YOUN__,);
 
 
@@ -61,7 +61,7 @@ EVOL=STAT_NON_LINE(CHAM_MATER=CHMAT,
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                   RESI_GLOB_RELA=1.E-05,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=INSTANTS,
                                 ),
                    NEWTON=_F(REAC_ITER=1,

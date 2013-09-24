@@ -164,7 +164,7 @@ INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
 RESU=STAT_NON_LINE( MODELE=MOD,
                       CHAM_MATER= CHMAT,
                       CARA_ELEM = CARA_ELE,
-                      COMP_INCR=_F(
+                      COMPORTEMENT=_F(
                                     RELATION = 'GLRC_DAMAGE',
                                     ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=10),
@@ -250,7 +250,7 @@ CARA_EL1=AFFE_CARA_ELEM(MODELE=MOD,
 RESU1=STAT_NON_LINE( MODELE=MOD,
                       CHAM_MATER= CHMAT,
                       CARA_ELEM = CARA_EL1,
-                      COMP_INCR=_F(
+                      COMPORTEMENT=_F(
                                     RELATION = 'GLRC_DAMAGE',
                                     ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=10),

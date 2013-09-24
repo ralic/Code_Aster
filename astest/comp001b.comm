@@ -82,7 +82,7 @@ compor='VMIS_ISOT_TRAC'
 # test 3D
 tabresu=TEST_COMPOR(OPTION='MECA', INFO=1,
 
-              COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
+              COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
               YOUNG=YOUNG,POISSON=POISSON,
@@ -94,7 +94,7 @@ tabresu=TEST_COMPOR(OPTION='MECA', INFO=1,
 # test C_PLAN
 tabres2=TEST_COMPOR(OPTION='MECA', INFO=1,
                     MODELISATION='C_PLAN',SUPPORT='ELEMENT',
-              COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
+              COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
               YOUNG=YOUNG,POISSON=POISSON,

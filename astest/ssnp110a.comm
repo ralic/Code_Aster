@@ -63,7 +63,7 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                        EXCIT=(_F(CHARGE = CL),
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
-                       COMP_ELAS=_F(RELATION = 'ELAS_VMIS_LINE',
+                       COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_LINE',
                                     DEFORMATION = 'PETIT'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
@@ -152,7 +152,7 @@ IMPR_TABLE(TABLE=G_2,);
 # TEST
 TEST_TABLE(
            VALE_CALC=3.2908090218925001,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -161,7 +161,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=13.603188101422001,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -170,7 +170,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=31.970374749379999,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -179,7 +179,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=58.993613915841003,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -188,7 +188,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=91.415076304037001,
-           
+
            NOM_PARA='G',
            TABLE=G_0,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -197,7 +197,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=3.2013930606905001,
-           
+
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -206,7 +206,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=13.237527356542,
-           
+
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -215,7 +215,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=31.227047674314001,
-           
+
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -224,7 +224,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=57.745644672712999,
-           
+
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -233,7 +233,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=89.637167577271995,
-           
+
            NOM_PARA='G',
            TABLE=G_1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -242,7 +242,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=3.2017793873037999,
-           
+
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -251,7 +251,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=13.241393129831,
-           
+
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -260,7 +260,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=31.236316620385001,
-           
+
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -269,7 +269,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=57.767467919559998,
-           
+
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -278,7 +278,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=89.708336760251996,
-           
+
            NOM_PARA='G',
            TABLE=G_2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

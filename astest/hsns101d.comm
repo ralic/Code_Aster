@@ -226,7 +226,7 @@ U2=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER2,
                      CARA_ELEM=CAREL,
-                     COMP_INCR=_F(  RELATION = 'VMIS_ECMI_LINE', ),EXCIT=(
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_ECMI_LINE', ),EXCIT=(
                      _F(
                    CHARGE = LIAISON,
                            ), _F(
@@ -284,7 +284,7 @@ U=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER,
                      CARA_ELEM=CAREL,
-                   COMP_INCR=_F( RELATION = 'VMIS_CINE_LINE',
+                   COMPORTEMENT=_F( RELATION = 'VMIS_CINE_LINE',
                              ),EXCIT=(
                      _F(
                    CHARGE = LIAISON,
@@ -344,7 +344,7 @@ U3=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER3,
                      CARA_ELEM=CAREL,
-                     COMP_INCR=_F(  RELATION = 'VMIS_CIN1_CHAB',
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN1_CHAB',
                              ),EXCIT=(
                      _F(
                    CHARGE = LIAISON,
@@ -403,7 +403,7 @@ U4=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER4,
                      CARA_ELEM=CAREL,
-                     COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN2_CHAB',
                              ),EXCIT=(
                      _F(
                    CHARGE = LIAISON,

@@ -271,7 +271,7 @@ RESU0=STAT_NON_LINE(
 
               ETAT_INIT=_F(DEPL=PINIT),
 
-                COMP_INCR=_F( RELATION = 'KIT_HH',
+                COMPORTEMENT=_F( RELATION = 'KIT_HH',
                               RELATION_KIT = ('LIQU_AD_GAZ','HYDR_VGM'),
                               PARM_ALPHA=PARM_ALPHA),
                 INCREMENT=_F(
@@ -300,7 +300,7 @@ RESU0=STAT_NON_LINE( reuse=RESU0,
 
                 ETAT_INIT=_F(EVOL_NOLI=RESU0),
 
-                COMP_INCR=_F( RELATION = 'KIT_HH',
+                COMPORTEMENT=_F( RELATION = 'KIT_HH',
                               RELATION_KIT = ('LIQU_AD_GAZ','HYDR_VGM'),
                               PARM_ALPHA=PARM_ALPHA),
 

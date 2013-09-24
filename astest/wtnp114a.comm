@@ -127,7 +127,7 @@ U1 = STAT_NON_LINE(
                                     _F( CHARGE    = CALDRO   ),
                                     _F( CHARGE    = CALPRE   ),
                                   ),
-                    COMP_INCR=_F( RELATION = 'KIT_HM',
+                    COMPORTEMENT=_F( RELATION = 'KIT_HM',
                                   RELATION_KIT = ('ELAS',
                                  'LIQU_SATU','HYDR_UTIL',),
                                       RESI_INTE_RELA = 1.E-6,

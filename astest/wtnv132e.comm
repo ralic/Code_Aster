@@ -1,24 +1,24 @@
 # TITRE CONSTRUCTION PAR COUCHES D'UNE COLONNE DE SOL AVEC MODELE DE HUJEUX
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='WTNV132E', NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON'),IGNORE_ALARM='CALCULEL4_9');
-              
+
 # Redimensionnement du probleme hydromecanique
 P0=1.E+7;
 K0=1.E-05;
@@ -156,7 +156,7 @@ Mater_Hujeux =_F(N      = 0.89,
                  RD_CYC  = R_ELA_DEV,
                  RI_CYC  = R_ELA_ISO,
                  DILA    = 1.0);
-                 
+
 MAT1=DEFI_MATERIAU(ELAS=_F(E     = YOUNG,
                            NU    = NU,
                            RHO   = RHO,
@@ -252,7 +252,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                         _F(CHARGE=CHLAT),
                         _F(CHARGE=PES, FONC_MULT=FOC)),
                  ETAT_INIT=_F(SIGM=SIEF),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -350,18 +350,18 @@ for n in range(1,nbcouche-1):
     list_noeu_haut.append(list_no_later_dro[n_couche-1])
 
     print ' > list_noeu_haut    =',list_noeu_haut
-    
+
     t_init=(n+1)*1.E6 /T0
     t_fin =(n+2)*1.E6 /T0
-   
+
     print ' > t_init =',t_init,' t_fin =',t_fin
-   
+
     FONCH = DEFI_FONCTION(NOM_PARA='INST',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
                           VALE=(t_init, 0.,
                                 t_fin, 1.),);
-                                
+
     MAT1_f=DEFI_MATERIAU(ELAS=_F(E     = YOUNG,
                            NU    = NU,
                            RHO   = RHO,
@@ -381,7 +381,7 @@ for n in range(1,nbcouche-1):
                                UN_SUR_K   = INV_K_EAU,
                                VISC       = VISCOLIQ,
                                D_VISC_TEMP= DVISCOL),);
-                               
+
     AFFMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=(_F(GROUP_MA=list_group_ma[n+1],
                               MATER=MAT1_f),
@@ -389,12 +389,12 @@ for n in range(1,nbcouche-1):
                               MATER=MAT1),
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0),),);
- 
+
     PESHAU=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81 /F0,
                                        DIRECTION=(0.0,-1.0,0.0,),
                                        GROUP_MA =list_group_ma[n+1],),);
-                                       
+
     PESBAS=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81 /F0,
                                        DIRECTION=(0.0,-1.0,0.0,),
@@ -509,7 +509,7 @@ for n in range(1,nbcouche-1):
                                CHAM_GD=CH_DEPL,
                                CUMUL='NON',
                                COEF_R=1.0),),);
-                               
+
     INISIG=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_SIEF_R',
                       OPERATION='ASSE',
@@ -549,7 +549,7 @@ for n in range(1,nbcouche-1):
                         _F(CHARGE=PESHAU, FONC_MULT=FONCH,),
                         #_F(CHARGE=PES, FONC_MULT=FOC),
                         ),
-                 COMP_INCR=(_F(RELATION='KIT_HM',
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
@@ -612,7 +612,7 @@ for n in range(1,nbcouche-1):
                                        NOM_CHAM='DEPL',
                                        NOM_CMP=('DY','PRE1'),
                                        OPERATION='EXTRACTION'));
-                                       
+
     if n < nbcouche-2:
       DETRUIRE(INFO=1,CONCEPT=_F(NOM=(INIVAR,INIDEP,INISIG,DEPL_PJ,FX,FY,
                  CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,

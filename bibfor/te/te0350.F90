@@ -135,10 +135,10 @@ subroutine te0350(option, nomte)
 ! - HYPER-ELASTICITE
 !
     if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then
-!
-        call utmess('F', 'ALGORITH10_88')
-!
-    else
+        if (zk16(icompo).ne.'ELAS') then
+            call utmess('F', 'ALGORITH10_88')
+        endif
+    endif
 !
 !
 ! - HYPO-ELASTICITE
@@ -163,8 +163,7 @@ subroutine te0350(option, nomte)
             call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
 !
-    endif
-!
+
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret

@@ -114,7 +114,7 @@ CONTACT  = DEFI_CONTACT(MODELE         = MO,
                         ALGO_RESO_CONT = 'POINT_FIXE',
                         ALGO_RESO_GEOM = 'POINT_FIXE',
                         LISSAGE        = 'OUI',
-                        
+
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT ='FIL_MAI1',
@@ -168,7 +168,7 @@ U=STAT_NON_LINE(MODELE=MO,
                        _F(CHARGE   =DDLIMP,
                           FONC_MULT=DPLY)),
                 CONTACT  = CONTACT,
-                COMP_INCR=_F(RELATION='ELAS',
+                COMPORTEMENT=_F(RELATION='ELAS',
                              TOUT    ='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              #INST_FIN =70.0

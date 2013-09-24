@@ -73,14 +73,14 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
 T_ARCH=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =tarret, NOMBRE =19,),
                                   _F(JUSQU_A =tfin  , NOMBRE =210,),),);
-                                  
+
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS1,),
                        ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION       = 'DECOUPE',
                                  SUBD_METHODE = 'MANUEL',
                                  SUBD_PAS     = 4,
                                  SUBD_NIVEAU  = 10,),);
-                                 
+
 #***********************************************************************
 #    MATERIAU : SOL
 #***********************************************************************
@@ -130,7 +130,7 @@ U0M=STAT_NON_LINE(MODELE=MODELE,
                  EXCIT=(_F(CHARGE = CHAR_U1, FONC_MULT = COEF0),
                         _F(CHARGE = CHAR_U2, FONC_MULT = COEF0),
                         _F(CHARGE = DEPL_1 ,),),
-                 COMP_INCR=_F(RELATION = 'ELAS'),
+                 COMPORTEMENT=_F(RELATION = 'ELAS'),
                  NEWTON=_F(MATRICE = 'ELASTIQUE'),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
                                 ITER_GLOB_MAXI = 20),
@@ -143,7 +143,7 @@ SIG0=CREA_CHAMP(INFO=1,
                 RESULTAT=U0M,
                 NOM_CHAM='SIEF_ELGA',
                 INST=0.0,);
-  
+
 #***********************************************************************
 #    ESSAI TRIAXIAL DRAINE
 #***********************************************************************
@@ -155,7 +155,7 @@ U1=STAT_NON_LINE(INFO=1,MODELE=MODELE,
                            FONC_MULT   = COEF3),
                         _F(CHARGE      = DEPL_1 ,),),
                  ETAT_INIT=_F(SIGM=SIG0,),
-                 COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+                 COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
                  NEWTON=_F(MATRICE = 'TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-4,
@@ -167,7 +167,7 @@ U1=STAT_NON_LINE(INFO=1,MODELE=MODELE,
                  INCREMENT=_F(LIST_INST = DEFLIST,
                               INST_INIT=0.0,
                               INST_FIN =30.));
-  
+
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
@@ -247,7 +247,7 @@ TEST_TABLE(NOM_PARA='SIZZ', TABLE=TAB_SIGM,
            # Reference
            REFERENCE='ANALYTIQUE',
            VALE_REFE=sizz[-1],);
-           
+
 TEST_TABLE(NOM_PARA='V1', TABLE=TAB_VARI,
            FILTRE=_F(NOM_PARA ='INST',
                      VALE     =30.,
@@ -275,11 +275,11 @@ TEST_TABLE(NOM_PARA='V2', TABLE=TAB_VARI,
 # ================================================================
 #                            POST-TRAITEMENTS
 # ================================================================
-# 
+#
 # tsigm = TAB_SIGM.EXTR_TABLE().values();
 # tepsi = TAB_EPSI.EXTR_TABLE().values();
 # tvari = TAB_VARI.EXTR_TABLE().values();
-# 
+#
 # epxx = tepsi['EPXX'];
 # epyy = tepsi['EPYY'];
 # epxy = tepsi['EPXY'];
@@ -291,66 +291,66 @@ TEST_TABLE(NOM_PARA='V2', TABLE=TAB_VARI,
 # epvp = tvari['V1'];
 # edvp = tvari['V2'];
 # indi = tvari['V3'];
-# 
+#
 # co_sigm,co_epsi,co_vari,co_seuil,= [],[],[],[],;
-# 
+#
 # # CHAMPS CINEMATIQUES
 # # _____________________________
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sizz,
 #         legend='SIZZ',
 #         color=1,);
-#         
+#
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sixx,
 #         legend='SIXX',
 #         color=2,);
-#         
+#
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=siyy,
 #         legend='SIYY',
 #         color=3,);
-#         
+#
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sixy,
 #         legend='SIXY',
 #         color=4,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=epxx,
 #         legend='EPXX',
 #         color=1,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=epvp,
 #         legend='EPVP',
 #         color=2,);
-#         
+#
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=edvp,
 #         legend='EDVP',
 #         color=3,);
-#         
+#
 # co_vari=Defi_Xmcourbe(courbe=co_vari,
 #         X=epzz, Y=indi,
 #         legend='INDICATEUR PLASTIQUE',
 #         color=2,);
-#         
+#
 # Courbes = [co_sigm,co_epsi,co_vari,];
-#            
+#
 # Nom_Fichier= ['tria3d_sigm.agr','tria3d_epsi.agr','tria3d_vari.agr',];
-#   
+#
 # unit=38
 # for c in range(len(Nom_Fichier)):
-# 
+#
 #   DEFI_FICHIER(ACTION='ASSOCIER',
 #                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
 #                UNITE=unit,);
-#                   
+#
 #   IMPR_FONCTION(FORMAT='XMGRACE',
 #               UNITE=unit,
 #               COURBE=Courbes[c]);
-#                   
+#
 #   DEFI_FICHIER(ACTION='LIBERER',
 #                UNITE=unit,);
 

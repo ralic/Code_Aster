@@ -150,7 +150,7 @@ LEDEP=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = ZCHM,
                 ),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 ),
                          INCREMENT=_F(

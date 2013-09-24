@@ -162,7 +162,7 @@ lvari=list(avari)
 
 EXPLDD=SIMU_POINT_MAT(INFO=1,
                       MATER=ACIERDD,
-                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                      COMPORTEMENT=(_F(RELATION='MONOCRISTAL',
                                     COMPOR=COMPORDD,
                                     ALGO_INTE='RUNGE_KUTTA',
                                     ITER_INTE_MAXI=100,
@@ -451,7 +451,7 @@ lvari=list(avari)
 
 IMPLDD=SIMU_POINT_MAT(INFO=1,
                       MATER=ACIERDD,
-                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                      COMPORTEMENT=(_F(RELATION='MONOCRISTAL',
                                     COMPOR=COMPODDI,
                                     ITER_INTE_MAXI=100,
                                     TOUT='OUI',),),
@@ -628,7 +628,7 @@ lvari=list(avari)
 
 POLYDD=SIMU_POINT_MAT(INFO=1,
                       MATER=ACIERDD,
-                      COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                      COMPORTEMENT=(_F(RELATION='POLYCRISTAL',
                                     COMPOR=COMPODDP,
                                     ITER_INTE_MAXI=100,
                                     TOUT='OUI',),),

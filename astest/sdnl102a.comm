@@ -130,7 +130,7 @@ RDYNA1=DYNA_NON_LINE(
             _F(CHARGE = FVENTCX, TYPE_CHARGE='SUIV' )
             ),
     INCREMENT  =_F(LIST_INST = RLINST01),
-    COMP_INCR  =_F( GROUP_MA    = ('BARRE'),
+    COMPORTEMENT  =_F( GROUP_MA    = ('BARRE'),
                     RELATION    =  'ELAS',
                     DEFORMATION =  'GROT_GDEP' ),
     CONVERGENCE=_F( ITER_GLOB_MAXI = 20,

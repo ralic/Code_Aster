@@ -119,7 +119,7 @@ UP=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CH,
                 FONC_MULT = F),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F(
@@ -149,7 +149,7 @@ UP2=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CH,
                 FONC_MULT = F),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ECMI_TRAC',
                 DEFORMATION = 'PETIT'),
                          INCREMENT=_F(
@@ -187,7 +187,7 @@ ENER_TO2=POST_ELEM(     RESULTAT=UP2,
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=1.1196472921423,
-           
+
            NOM_PARA='TOTALE',
            TABLE=ENER_TO2,
            FILTRE=_F(NOM_PARA='INST',

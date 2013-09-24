@@ -148,7 +148,7 @@ U_FAT=STAT_NON_LINE(
     _F(CHARGE = LIAISON),
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_FAT_MIX',MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',       MAILLE = 'CUBE'),
           ),

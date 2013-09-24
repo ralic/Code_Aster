@@ -489,7 +489,7 @@ CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
 CALCNL=STAT_NON_LINE(
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_ELAS=_F( RELATION = 'ELAS',
+                         COMPORTEMENT=_F( RELATION = 'ELAS',
                                        DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F( LIST_INST = CAT),
                             NEWTON=_F( MATRICE = 'TANGENTE',

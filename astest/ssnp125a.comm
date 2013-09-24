@@ -148,7 +148,7 @@ try :
                          _F( CHARGE = DEPL_GA,),
                          _F( CHARGE = DEPL_HA,
                              FONC_MULT = COEF,),),
-                 COMP_INCR=_F( RELATION = 'DRUCK_PRAGER'),
+                 COMPORTEMENT=_F( RELATION = 'DRUCK_PRAGER'),
                  INCREMENT=_F( LIST_INST = DEFLIST),
                  NEWTON=_F( MATRICE = 'TANGENTE',
                             REAC_ITER = 1,),

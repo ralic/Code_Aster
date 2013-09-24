@@ -130,7 +130,7 @@ UTOT1x=STAT_NON_LINE(MODELE=MODELEK,
                           _F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),
                           ),
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
@@ -143,7 +143,7 @@ UTOT2x=STAT_NON_LINE(MODELE=MODELEK,
                           _F(CHARGE=CH1,),
                           _F(CHARGE=CH3,),
                           ),
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
@@ -260,12 +260,12 @@ VAL_CALC = [1.2996921883357E+07 ,
             1.2985472462835E+07 ,
             1.2996903040002E+07 ,
             1.2985472462835E+07 ]
-            
+
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[4*i+0], VALE_REFE=1.23E+07,  
+              VALE_CALC=VAL_CALC[4*i+0], VALE_REFE=1.23E+07,
               CRITERE='RELATIF',
               PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
@@ -273,7 +273,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[4*i+1], VALE_REFE=1.23E+07,  
+              VALE_CALC=VAL_CALC[4*i+1], VALE_REFE=1.23E+07,
               CRITERE='RELATIF',
               PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
@@ -281,7 +281,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[4*i+2], VALE_REFE=1.23E+07,  
+              VALE_CALC=VAL_CALC[4*i+2], VALE_REFE=1.23E+07,
               CRITERE='RELATIF',
               PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
@@ -289,7 +289,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[4*i+3], VALE_REFE=1.23E+07,  
+              VALE_CALC=VAL_CALC[4*i+3], VALE_REFE=1.23E+07,
               CRITERE='RELATIF',
               PRECISION=0.06,
               REFERENCE='AUTRE_ASTER',);
@@ -310,7 +310,7 @@ IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(
            VALE_CALC=1.3416086726783E+07,
-           
+
            NOM_PARA='K1',
            TABLE=PK,
            FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -388,7 +388,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    VALE_CALC=3.8871722013805997E-4,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -397,7 +397,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=2.3488575278017998,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -406,7 +406,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    VALE_CALC=2.3103081507324998,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 ),

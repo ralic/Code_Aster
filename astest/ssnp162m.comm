@@ -1,19 +1,19 @@
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT QUAD8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP162M',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9'),DEBUG=_F(SDVERI='OUI'))
@@ -170,7 +170,7 @@ U_1=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -355,7 +355,7 @@ U_2=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_2, ),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
@@ -421,7 +421,7 @@ TEST_RESU(RESU=_F(INST=linst2[2],
                   VALE_REFE=k_t_endo*delta_max_tan,
                   MAILLE='CUBEDEG',),
             )
-                  
+
 # TEST SIGMA_TAN ENDOMAGEMENT PARTIEL (DANS LA ZONE ELASTIQUE)
 # CAS DE FIGURE OU LA LOI TANGENTIELLE INCREMENTALE EST ACTIVEE
 # LA SOLUTION ANALYTIQUE N'EST PLUS TRIVIALE
@@ -430,10 +430,10 @@ TEST_RESU(RESU=_F(INST=linst2[3],
                   RESULTAT=U_2,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
-                  VALE_CALC = 2.0887301627792E+05,     
+                  VALE_CALC = 2.0887301627792E+05,
                   MAILLE='CUBEDEG',),
         )
-        
+
 # TEST VARIABLES INTERNES
 # V1 : SEUIL, PLUS GRANDE NORME DU SAUT
 # V2 : INDICATEUR DE DISSIPATION (0 : NON, 1 : OUI)
@@ -454,7 +454,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 1.10000000E-07,      
+      VALE_CALC= 1.10000000E-07,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -466,7 +466,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 0.00000000E+00,      
+      VALE_CALC= 0.00000000E+00,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -478,7 +478,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=1.000000000,      
+      VALE_CALC=1.000000000,
       ),
 
     _F(
@@ -490,7 +490,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=0.200000000,      
+      VALE_CALC=0.200000000,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -502,7 +502,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=1.000000000,      
+      VALE_CALC=1.000000000,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -513,7 +513,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=0.060751322,      
+      VALE_CALC=0.060751322,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -525,7 +525,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 2.20000000E-08,      
+      VALE_CALC= 2.20000000E-08,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -536,7 +536,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 1.50000000E-07,      
+      VALE_CALC= 1.50000000E-07,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -548,7 +548,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=-2.53926414E-25,      
+      VALE_CALC=-2.53926414E-25,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -560,7 +560,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 0.00000000E+00,      
+      VALE_CALC= 0.00000000E+00,
       ),
     )
   )

@@ -19,7 +19,6 @@
 DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
             fr="Calcul de l'évolution dynamique d'une structure dont le matériau ou la géométrie ont un comportement non linéaire",
             UIinfo={"groupes":("Résolution","Dynamique",)},
-         regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS',)),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          MODE_STAT       =SIMP(statut='f',typ=mode_meca),
@@ -75,9 +74,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
          ),
 #-------------------------------------------------------------------
-         COMP_INCR       =C_COMP_INCR(),
-#-------------------------------------------------------------------
-         COMP_ELAS       =C_COMP_ELAS('DYNA_NON_LINE'),
+         COMPORTEMENT       =C_COMPORTEMENT('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
          ETAT_INIT       =FACT(statut='o',

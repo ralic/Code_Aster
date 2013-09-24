@@ -66,7 +66,7 @@ MEST1=STAT_NON_LINE(MODELE=MOD3D,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D,FONC_MULT=FONC),
                     NEWTON=_F(PREDICTION='TANGENTE'),
-                    COMP_INCR=_F(RELATION='ELAS'),
+                    COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE),);
 
 MACR_ECLA_PG( RESULTAT = CO('MEST_PG'),
@@ -260,7 +260,7 @@ MEST2=STAT_NON_LINE(MODELE=MOD3D,
                     CHAM_MATER=CHMATORT,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D),
-                    COMP_INCR=_F(RELATION='ELAS'),
+                    COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE2),);
 
 CALC_CHAMP(reuse=MEST2,RESULTAT=MEST2,DEFORMATION=('EPSI_ELGA'),ENERGIE=('ENEL_ELGA','ENEL_ELNO'))
@@ -457,7 +457,7 @@ MEST3=STAT_NON_LINE(MODELE=MOD3D,
                     CHAM_MATER=CHM3D2,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D2),
-                    COMP_INCR=_F(RELATION='ELAS'),
+                    COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE2),);
 
 MEST3=CALC_CHAMP(reuse=MEST3,RESULTAT=MEST3,DEFORMATION=('EPSI_ELGA'))

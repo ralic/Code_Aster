@@ -186,7 +186,7 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                               FONC_MULT=COEF,
                               ),
                           ),
-                    COMP_INCR=(
+                    COMPORTEMENT=(
                                _F(RELATION='MONOCRISTAL',
                                   COMPOR=COMPORDD,
                                   DEFORMATION='PETIT',

@@ -57,12 +57,11 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
     call jemarq()
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
-    moclef(1) = 'COMP_INCR'
-    moclef(2) = 'COMP_ELAS'
+    moclef(1) = 'COMPORTEMENT'
 !
-!     NOMBRE MAX D'OCCURENCES DE COMP_ELAS/INCR DANS CALC_G
+!     NOMBRE MAX D'OCCURENCES DE COMPORTEMENT DANS CALC_G
     nbcomp=0
-    do 10 i = 1, 2
+    do 10 i = 1, 1
         call getfac(moclef(i), ntmp)
         nbcomp=max(nbcomp,ntmp)
 10  end do
@@ -75,7 +74,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 !
     if (nbcomp .eq. 0) then
 !
-!       COMP_ELAS/INCR N'EST PAS RENSEIGNE DANS CALC_G ALORS
+!       COMPORTEMENT N'EST PAS RENSEIGNE DANS CALC_G ALORS
 !       ON VA CHERCHE LE COMPORTEMENT ASSOCIE AU RESU (1ER NUME_ORDRE)
         call rsexch(' ', resu, 'COMPORTEMENT', iord0, compor,&
                     ier)
@@ -90,7 +89,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 !
     else
 !
-!       COMP_ELAS/INCR EST RENSEIGNE DANS CALC_G ALORS ON LE PREND
+!       COMPORTEMENT EST RENSEIGNE DANS CALC_G ALORS ON LE PREND
         call nmdorc(modele, compor, k24b)
 !
     endif
@@ -103,7 +102,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 !       C'EST FACILE, ON A IMPOSE COMP_ELAS DONC INCR EST FAUX
         incr = .false.
     else
-!       SOIT COMP_ELAS/INCR EST IMPOSE DANS CALC_G
+!       SOIT COMPORTEMENT EST IMPOSE DANS CALC_G
 !       SOIT ON A PRIS LE COMPOR DE RESU
         call dismoi('F', 'ELAS_INCR', compor, 'CARTE_COMPOR', ibid,&
                     repk, ier)
@@ -120,7 +119,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 !     3) VERIFS
 !     ---------
 !
-!     VERIF COHERENCE (CAS OU COMP_ELAS/INCR EST IMPOSE DANS CALC_G)
+!     VERIF COHERENCE (CAS OU COMPORTEMENT EST IMPOSE DANS CALC_G)
     if (nbcomp .ne. 0) call gverlc(resu, compor, iord0)
 !
 !     X-FEM N'EST PAS ENCORE DEVELOPPE POUR GTP (G EN INCREMENTAL)

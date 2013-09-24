@@ -49,9 +49,18 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                     ECRO_LINE=_F(D_SIGM_EPSI=100.,
                                  SY=400.,),);
 
+# pour ce test, il faut que l'elasticite soit incrementale
+ACIERE=DEFI_MATERIAU(ELAS=_F(E=117.E3,
+                            NU=0.35,
+                            RHO=8.930E-9,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=100.,
+                                 SY=400.E6,),);
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA=('VOL','VOL_RIG',),
-                            MATER=ACIER,),);
+                    AFFE=(
+                    _F(GROUP_MA=('VOL',),MATER=ACIER,),
+                    _F(GROUP_MA=('VOL_RIG',),MATER=ACIERE,),
+                            ));
 
 CH=AFFE_CHAR_MECA(MODELE=MODE,
                   DDL_IMPO=(_F(GROUP_MA='RIGID',
@@ -127,14 +136,15 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
 #  On teste la sous-division du pas de temps
 #  On en profite aussi pour avoir un schema en temps plus adapte
 #
+# pour ce test, il faut que l'elasticite soit incrementale
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
                    CONTACT = CHCONT,
-                   COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',
+                   COMPORTEMENT=(_F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE',
                                 TOUT='OUI',),
-                              _F(RELATION='ELAS',
+                              _F(RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='PETIT',
                                  GROUP_MA='VOL_RIG',),),
                    ETAT_INIT=_F(VITE=VIT_0,),

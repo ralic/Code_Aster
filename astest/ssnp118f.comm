@@ -147,7 +147,7 @@ U_1=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_LIN_REG',
              MAILLE = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
@@ -173,7 +173,7 @@ STAT_NON_LINE(reuse = U_1,
     COEF_MULT = 1,
     ETA_PILO_R_MIN = 0.,
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_LIN_REG',
              MAILLE = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
@@ -198,7 +198,7 @@ U_2=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_2, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_LIN_REG',
              MAILLE = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
@@ -224,7 +224,7 @@ STAT_NON_LINE(reuse = U_2,
     COEF_MULT = 1,
     ETA_PILO_R_MIN = 0.,
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_LIN_REG',
              MAILLE = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
@@ -248,7 +248,7 @@ U_3=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRAC_3, FONC_MULT = FCT),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_LIN_REG',
              MAILLE = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
@@ -274,7 +274,7 @@ STAT_NON_LINE(reuse = U_3,
     COEF_MULT = 1,
     ETA_PILO_R_MIN = 0.,
     ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'CZM_LIN_REG',
              MAILLE = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
@@ -547,8 +547,8 @@ TEST_RESU(RESU=_F(INST=1.4000176,
                   MAILLE='PRISMDEG',),
           )
 
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 
 FIN()

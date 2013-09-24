@@ -242,7 +242,7 @@ for i in range(Ncal):
                                  ),)
    # Resout le pb a deformation imposee
    RESU[i]=SIMU_POINT_MAT(
-                          COMP_INCR   =_F(RELATION=compor,ITER_INTE_MAXI=1500),
+                          COMPORTEMENT   =_F(RELATION=compor,ITER_INTE_MAXI=1500),
                           NEWTON      =_F(MATRICE='TANGENTE',REAC_ITER=1),
                           CONVERGENCE =_F(ITER_GLOB_MAXI=10,),
                           MATER       = ACIER[imat],
@@ -290,7 +290,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEBUG(SDVERI='NON')
 RESU_TGT=SIMU_POINT_MAT(
-                        COMP_INCR=_F(RELATION=compor,
+                        COMPORTEMENT=_F(RELATION=compor,
                                      ITER_INTE_MAXI=100,
                                      TYPE_MATR_TANG='VERIFICATION',
                                      VALE_PERT_RELA=1.E-5,

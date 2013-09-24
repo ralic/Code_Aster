@@ -102,7 +102,7 @@ RESU=STAT_NON_LINE(MODELE=MODM,
                                      ITER_GLOB_ELAS=15,
                                      ITER_GLOB_MAXI=15)),
                    INCREMENT=_F( LIST_INST = INSTNL),
-                   COMP_INCR=(_F(RELATION='ELAS',GROUP_MA = 'POIACR',),
+                   COMPORTEMENT=(_F(RELATION='ELAS',GROUP_MA = 'POIACR',),
                               _F(RELATION='ELAS',GROUP_MA = 'POISCR',),
                               _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA = 'STRU'))
                                   )

@@ -85,8 +85,9 @@ DEBUT(CODE=_F(NOM='FORMA20C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
       PAR_LOT='NON')
 
 # DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,
-                            NU=0.2,),);
+# comportement simulant l'elasticite incrementale
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,),
+                    ECRO_LINE=_F(SY=1.E6,D_SIGM_EPSI=0.));
 
 # DEFINITION DES INSTANTS POUR STAT_NON_LINE
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,
@@ -136,7 +137,7 @@ for num_calc in range(0,nb_calc1) :
                        EXCIT=(_F(CHARGE=CLIM[num_calc],),
                               _F(CHARGE=CH[num_calc],
                                  FONC_MULT=F_INST,),),
-                       COMP_INCR=(_F(RELATION='ELAS',
+                       COMPORTEMENT=(_F(RELATION='VMIS_ISOT_LINE',
                                      TOUT='OUI',), ),
                        INCREMENT=_F(LIST_INST=L_INST),);
 

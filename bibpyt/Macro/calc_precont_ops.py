@@ -21,7 +21,7 @@
 
 def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                 CABLE_BP,CABLE_BP_INACTIF,
-                                COMP_INCR,ETAT_INIT,METHODE,ENERGIE,
+                                COMPORTEMENT,ETAT_INIT,METHODE,ENERGIE,
                                 RECH_LINEAIRE,CONVERGENCE,INCREMENT,SOLVEUR,
                                 INFO,TITRE,**args):
   """
@@ -60,7 +60,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   self.DeclareOut('RES',self.sd)
 
-  # alarme de STAT_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+  # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
 
   # -------------------------------------------------------------
@@ -276,18 +276,18 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     __GROUP_MA_CABLES = __GROUP_MA_A + __GROUP_MA_I
 
 
-    # 1.4 Creation des mots-clés facteurs COMP_INCR
+    # 1.4 Creation des mots-clés facteurs COMPORTEMENT
     # pour étape 2 (dComp_incr0) et étape 3 (dComp_incr1)
     # ------------------------------------------------------
 
     dComp_incr=[]
-    for j in COMP_INCR :
+    for j in COMPORTEMENT :
         dComp_incr.append(j.cree_dict_valeurs(j.mc_liste))
         for i in dComp_incr[-1].keys():
             if dComp_incr[-1][i]==None : del dComp_incr[-1][i]
 
     PARM_THETA=0.
-    for j in range(len(COMP_INCR)) :
+    for j in range(len(COMPORTEMENT)) :
       if dComp_incr[j]['RELATION'] == 'ELAS':
           PARM_THETA=dComp_incr[j]['PARM_THETA']
 
@@ -366,7 +366,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                           CARA_ELEM  = CARA_ELEM,
                           EXCIT      =(_F(CHARGE = _B_CA),
                                         _F(CHARGE = _C_CN),),
-                          COMP_INCR  =dComp_incrElas,
+                          COMPORTEMENT  =dComp_incrElas,
                           INCREMENT  =_F(LIST_INST = __LST0,
                                           PRECISION = __prec),
                           SOLVEUR = dSolveur,
@@ -425,7 +425,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                       MODELE      =MODELE,
                       CARA_ELEM   =CARA_ELEM,
                       CHAM_MATER  = CHAM_MATER,
-                      COMP_INCR=dComp_incr0,
+                      COMPORTEMENT=dComp_incr0,
                       INCREMENT=dIncrement,
                       ETAT_INIT = dEtatInit,
                       METHODE=METHODE,
@@ -458,7 +458,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                       CHAM_MATER = CHAM_MATER,
                       CARA_ELEM  = CARA_ELEM,
 
-                      COMP_INCR=dComp_incr1,
+                      COMPORTEMENT=dComp_incr1,
                       INCREMENT=_F(LIST_INST = __LST,
                                     PRECISION = __prec),
                       METHODE=METHODE,
@@ -629,7 +629,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                       MODELE      =MODELE,
                       CARA_ELEM   =CARA_ELEM,
                       CHAM_MATER  = CHAM_MATER,
-                      COMP_INCR=COMP_INCR,
+                      COMPORTEMENT=COMPORTEMENT,
                       #INCREMENT=INCREMENT,
                       INCREMENT=dIncrement,
                       NEWTON   = _F(REAC_ITER=1),
@@ -651,7 +651,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                       MODELE      =MODELE,
                       CARA_ELEM   =CARA_ELEM,
                       CHAM_MATER  = CHAM_MATER,
-                      COMP_INCR=COMP_INCR,
+                      COMPORTEMENT=COMPORTEMENT,
                       #INCREMENT=INCREMENT,
                       INCREMENT=dIncrement,
                       NEWTON   = _F(REAC_ITER=1),
@@ -671,7 +671,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                       MODELE      =MODELE,
                       CARA_ELEM   =CARA_ELEM,
                       CHAM_MATER  = CHAM_MATER,
-                      COMP_INCR=COMP_INCR,
+                      COMPORTEMENT=COMPORTEMENT,
                       #INCREMENT=INCREMENT,
                       INCREMENT=dIncrement,
                       NEWTON   = _F(REAC_ITER=1),
@@ -690,7 +690,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                         MODELE      =MODELE,
                         CARA_ELEM   =CARA_ELEM,
                         CHAM_MATER  = CHAM_MATER,
-                        COMP_INCR=COMP_INCR,
+                        COMPORTEMENT=COMPORTEMENT,
                         ##INCREMENT=INCREMENT,
                         INCREMENT=_F(LIST_INST = __LST,
                                       PRECISION = __prec),

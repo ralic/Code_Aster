@@ -102,7 +102,7 @@ RESU=STAT_NON_LINE(
                                  ),
                                 ),
                   CONTACT  = CHA2,
-                  COMP_ELAS=_F( RELATION = 'ELAS'),
+                  COMPORTEMENT=_F( RELATION = 'ELAS'),
                   NEWTON=_F(   MATRICE = 'TANGENTE',
                                REAC_ITER = 1,  ),
                   INCREMENT=_F( LIST_INST = L_INST,

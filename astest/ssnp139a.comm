@@ -190,7 +190,7 @@ U=STAT_NON_LINE( INFO=1,
                  _F(CHARGE = TRACTION,
                     FONC_MULT = FCT_MON),
                ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
                 _F(RELATION = loi_vol,  GROUP_MA = ('DCB1','DCB2')),
                 _F(RELATION = loi_czm ,    GROUP_MA = 'DCBJ'),
                 ),
@@ -217,8 +217,8 @@ U = CALC_CHAMP(reuse = U,
                FORCE='FORC_NODA',
                TOUT = 'OUI',
                )
-               
-# INTERPOLATION NODALE DES CHAMPS AUX PG  
+
+# INTERPOLATION NODALE DES CHAMPS AUX PG
 U=CALC_CHAMP(reuse =U,
              RESULTAT=U,
              VARI_INTERNE='VARI_ELNO',
@@ -291,7 +291,7 @@ TEST_RESU(RESU=_F(INST=10,
                   VALE_CALC=3.8705561473718E-03,
                   MAILLE='M9788',),
           )
-          
+
 TEST_RESU(RESU=_F(INST=10,
                   POINT=2,
                   RESULTAT=U,
@@ -300,7 +300,7 @@ TEST_RESU(RESU=_F(INST=10,
                   VALE_CALC=16.693315519188,
                   MAILLE='M9788',),
           )
-          
+
 # TESTS DES EXTRAPOLATIONS NODALES
 TEST_RESU(RESU=_F(INST=10,
                   RESULTAT=U,
@@ -310,7 +310,7 @@ TEST_RESU(RESU=_F(INST=10,
                   NOEUD='N137'
                   ),
           )
-          
+
 TEST_RESU(RESU=_F(INST=10,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_NOEU',

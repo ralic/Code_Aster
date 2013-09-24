@@ -169,7 +169,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     EXCIT=(
                            _F(CHARGE=CHF,FONC_MULT=RAMPE,),
                            _F(CHARGE=CH,),),
-                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE'),
+                    COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE'),
                     INCREMENT=_F(LIST_INST=L_INST),
                     ARCHIVAGE=_F(LIST_INST=L_ARCH),
                     NEWTON=_F(REAC_ITER=1,),

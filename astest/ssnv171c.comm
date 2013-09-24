@@ -49,7 +49,7 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=_F(MONOCRISTAL=COMPORT,
                     LOCALISATION='BETA',
                     DL=0.,
                     DA=0.,);
-                    
+
 CHARGE=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,140.0,),
                    PROL_DROITE='LINEAIRE',
@@ -63,7 +63,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=300,),),);
-                                    
+
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
@@ -71,16 +71,16 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                                  SUBD_NIVEAU=10),)
 
 MONOEXPL=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(RELATION='MONOCRISTAL',
+                   COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPORT,
                                 ALGO_INTE='RUNGE_KUTTA',),
                    MASSIF=_F(ANGL_REP=30.0),
                    ANGLE=0.,
                    NEWTON=_F(PREDICTION='EXTRAPOLE',MATRICE='ELASTIQUE'),
-                   MATER = ACIER,  
+                   MATER = ACIER,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );  
+                        );
 
 # reference : ssnv171a
 
@@ -118,16 +118,16 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 
 POLYEXPL=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(RELATION='POLYCRISTAL',
+                   COMPORTEMENT=_F(RELATION='POLYCRISTAL',
                                 COMPOR=COMPORP,
                                 ALGO_INTE='RUNGE_KUTTA',),
                    MASSIF=_F(ANGL_REP=15.0),
                    ANGLE=0.,
                    NEWTON=_F(PREDICTION='EXTRAPOLE',MATRICE='ELASTIQUE'),
-                   MATER = ACIER,  
+                   MATER = ACIER,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );  
+                        );
 
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',

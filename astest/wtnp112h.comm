@@ -223,7 +223,7 @@ RESU0=STAT_NON_LINE(
                         _F(CHARGE=CALMEC,),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
-                COMP_INCR=_F(
+                COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('ELAS','LIQU_GAZ_ATM','HYDR_UTIL')),
                 INCREMENT=_F(  LIST_INST = DEFLIST,),

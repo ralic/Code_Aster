@@ -32,7 +32,8 @@ MA=DEFI_GROUP(reuse =MA,
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.,
                           NU=0.3,
-                          RHO=1.E-6,),);
+                          RHO=1.E-6,),
+                  ECRO_LINE=_F(SY=1.E10, D_SIGM_EPSI=0.));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -75,7 +76,7 @@ PHASE_1=STAT_NON_LINE(MODELE=MO,
                       EXCIT=(_F(CHARGE=LIAISON,),
                              _F(CHARGE=POIDS,
                                 TYPE_CHARGE='FIXE_PILO',),),
-                      COMP_ELAS=_F(RELATION='ELAS',
+                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                    DEFORMATION='GROT_GDEP',),
                       INCREMENT=_F(LIST_INST=INSTANTS,),
                       NEWTON=_F(MATRICE='TANGENTE',
@@ -85,7 +86,7 @@ PHASE_1=STAT_NON_LINE(MODELE=MO,
                                   ETA_PILO_MAX=1.,
                                   GROUP_NO='A',
                                   NOM_CMP='DY',),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
 
 # ON ETABLIT LA COMPRESSION PAR PILOTAGE
 
@@ -95,7 +96,7 @@ PHASE_2=STAT_NON_LINE(MODELE=MO,
                              _F(CHARGE=POIDS,),
                              _F(CHARGE=COMPRESS,
                                 TYPE_CHARGE='FIXE_PILO',),),
-                      COMP_ELAS=_F(RELATION='ELAS',
+                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                    DEFORMATION='GROT_GDEP',),
                       ETAT_INIT=_F(EVOL_NOLI=PHASE_1,),
                       INCREMENT=_F(LIST_INST=INSTANTS,
@@ -108,7 +109,7 @@ PHASE_2=STAT_NON_LINE(MODELE=MO,
                                   SELECTION='ANGL_INCR_DEPL',
                                   GROUP_NO='POUTRE',
                                   NOM_CMP=('DX','DY',),),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
 
 # VERIFICATION DES ETATS FINALS
 
@@ -116,7 +117,7 @@ VERIF_1=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       EXCIT=(_F(CHARGE=LIAISON,),
                              _F(CHARGE=POIDS,),),
-                      COMP_ELAS=_F(RELATION='ELAS',
+                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                    DEFORMATION='GROT_GDEP',),
                       ETAT_INIT=_F(EVOL_NOLI=PHASE_1,),
                       INCREMENT=_F(LIST_INST=INSTANTS,
@@ -124,7 +125,7 @@ VERIF_1=STAT_NON_LINE(MODELE=MO,
                                    INST_FIN=0.1,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
 
 DEPPHA_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
@@ -177,7 +178,7 @@ VERIF_2=STAT_NON_LINE(MODELE=MO,
                       EXCIT=(_F(CHARGE=LIAISON,),
                              _F(CHARGE=POIDS,),
                              _F(CHARGE=COMPR407,),),
-                      COMP_ELAS=_F(RELATION='ELAS',
+                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                    DEFORMATION='GROT_GDEP',),
                       ETAT_INIT=_F(EVOL_NOLI=PHASE_2,),
                       INCREMENT=_F(LIST_INST=INSTANTS,
@@ -185,7 +186,7 @@ VERIF_2=STAT_NON_LINE(MODELE=MO,
                                    NUME_INST_FIN=1,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
 
 DEPPHA_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
@@ -276,7 +277,7 @@ PHASE_2B=STAT_NON_LINE(MODELE=MO,
                               _F(CHARGE=POIDS,),
                               _F(CHARGE=COMPRESS,
                                  TYPE_CHARGE='FIXE_PILO',),),
-                       COMP_ELAS=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=PHASE_1,),
                        INCREMENT=_F(LIST_INST=INSTANTS,
@@ -290,7 +291,8 @@ PHASE_2B=STAT_NON_LINE(MODELE=MO,
                                    SELECTION='ANGL_INCR_DEPL',
                                    GROUP_NO='POUTRE',
                                    NOM_CMP=('DX','DY',),),
-                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-11,),);
+                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),
+                       );
 
 DEPPHA2B=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',

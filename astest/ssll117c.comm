@@ -110,7 +110,7 @@ U1 = STAT_NON_LINE(
                                         FONC_MULT = COEF     )),
                     SOLVEUR=(_F( METHODE='MUMPS',
    )),
-                    COMP_INCR=(_F(GROUP_MA='ROCHE',
+                    COMPORTEMENT=(_F(GROUP_MA='ROCHE',
                                   RELATION='ELAS'),
                                _F(GROUP_MA='ROCHE_RE',
                                   RELATION='ELAS')),

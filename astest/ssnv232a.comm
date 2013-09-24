@@ -83,7 +83,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                            temps_max, epzz_max,),);
   
 TSIMU=SIMU_POINT_MAT(INFO=2,
-                  COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+                  COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
                   MATER=SOL,
                   INCREMENT=_F(LIST_INST=TEMPS1,
                                INST_INIT=0.,

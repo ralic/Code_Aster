@@ -70,7 +70,7 @@ DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                                  SUBD_NIVEAU=10,),
                         );
 
-IMPL1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='MONOCRISTAL',
+IMPL1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                   COMPOR=CMP_MONO,
                                   #ALGO_INTE='NEWTON_PERT',
                                   ),
@@ -97,7 +97,7 @@ SIG1=RECU_FONCTION(TABLE=REPONSE1,
                    PARA_X='INST',
                    PARA_Y='SIXX',);
 
-EXPL2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='MONOCRISTAL',
+EXPL2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                   COMPOR=CMP_MONO,
                                   ALGO_INTE='RUNGE_KUTTA',),
                      MATER=ACIER,
@@ -121,7 +121,7 @@ SIG2=RECU_FONCTION(TABLE=REPONSE2,
                    PARA_X='INST',
                    PARA_Y='SIXX',);
 
-EXPL3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='POLYCRISTAL',
+EXPL3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='POLYCRISTAL',
                                   COMPOR=CMP_POLY,
                                   ALGO_INTE='RUNGE_KUTTA',),
                      MATER=ACIER,

@@ -506,7 +506,7 @@ CAT2=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
 CALCNL=STAT_NON_LINE(
                             MODELE=MODEL2,
                         CHAM_MATER=MATER2,
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                 DEFORMATION = 'PETIT_REAC'),
                          INCREMENT=_F(

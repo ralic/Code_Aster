@@ -270,4 +270,83 @@ Noms des variables internes :"""),
   Les colonnes ABSCISSE et ORDONNEE d'une TABLE_REF doivent avoir même cardinal et contenir des réels.
 """),
 
+50: _(u"""
+#---------------------------------------------------------------------------------------------------------------------------
+# test pour analyser à l'aide de SIMU_POINT_MAT l'échec d'intégration du comportement sur la maille <%(k1)s>, point <%(i1)d>
+#---------------------------------------------------------------------------------------------------------------------------
+DEBUT()
+# recopier MAT=DEFI_MATERIAU(...)
+
+LIST=DEFI_LIST_REEL(DEBUT= %(r1).15E , INTERVALLE=_F(JUSQU_A= %(r2).15E , NOMBRE=1))
+# liste = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),ECHEC=_F(SUBD_NIVEAU=10,SUBD_PAS=4),)
+"""),
+
+
+51: _(u"""
+%(k1)s=DEFI_FONCTION(NOM_PARA='INST',VALE=( %(r1).15E , %(r2).15E, %(r3).15E,  %(r4).15E))
+"""),
+
+52: _(u"""
+RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
+                      EPSI_IMPOSE=_F(EPXX=EXX, EPYY=EYY,EPZZ=EZZ,EPXY=EXY),                      
+"""),
+
+53: _(u"""
+                      SUPPORT='ELEMENT', MODELISATION='C_PLAN',                      
+"""),
+
+54: _(u"""
+RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
+                      EPSI_IMPOSE=_F(EPXX=EXX, EPYY=EYY,EPZZ=EZZ,EPXY=EXY,EPXZ=EXZ,EPYZ=EYZ),                      
+"""),
+
+55: _(u"""
+                      EPSI_INIT=_F(EPXX= %(r1).15E , EPYY= %(r2).15E,  EPZZ= %(r3).15E,  EPXY= %(r4).15E,  EPXZ= %(r5).15E,  EPYZ= %(r6).15E ),
+"""),
+
+56: _(u"""
+                      SIGM_INIT=_F(SIXX= %(r1).15E , SIYY= %(r2).15E,  SIZZ= %(r3).15E,  SIXY= %(r4).15E,  SIXZ= %(r5).15E,  SIYZ= %(r6).15E ),
+                      VARI_INIT=_F(VALE=(
+"""),
+
+57: _(u"""
+                      %(r1).15E,
+"""),
+
+58: _(u"""
+                      )),
+                      COMP_INCR=_F(RELATION= '%(k1)s', ITER_INTE_MAXI=20,),
+"""),
+
+59: _(u"""
+                      NEWTON=_F(REAC_ITER=1),
+)
+FIN()                      
+"""),
+
+60: _(u"""
+)
+FIN()                      
+"""),
+
+61: _(u"""
+%(k1)s=DEFI_FONCTION(NOM_PARA='INST',VALE=( %(r1).15E, %(r2).15E, %(r3).15E, %(r4).15E))
+"""),
+
+62: _(u"""
+                  AFFE_VARC=(
+"""),
+
+63: _(u"""
+                              _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s,VALE_REF=%(r1).15E),
+"""),
+
+64: _(u"""
+                              _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s),
+"""),
+
+
+65: _(u"""
+                  ),
+"""),
 }

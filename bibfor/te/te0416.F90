@@ -45,46 +45,25 @@ subroutine te0416(option, nomte)
         call fornpd(option, nomte)
         goto 9999
     else
+    
         call jevech('PCOMPOR', 'L', icompo)
+        
+        if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
+        
+!           DEFORMATION DE GREEN
+
+            call forngr(option, nomte)
 !
-        if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then
+            goto 9999
 !
-!------- HYPER-ELASTICITE
-!
-            if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
-!
-!------- DEFORMATION DE GREEN
-!
-                call forngr(option, nomte)
-!
-                goto 9999
-!
-            else
-!
+        else if (zk16(icompo + 2 ) (1:5) .eq. 'PETIT') then
+
+            call fornpd(option, nomte)
+        else
+
 !----------- AUTRES MESURES DE DEFORMATIONS
 !
-                call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
-!
-            endif
-!
-        else if (zk16(icompo+3) (1:9) .eq. 'COMP_INCR') then
-            if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
-!
-!------- DEFORMATION DE GREEN
-!
-                call forngr(option, nomte)
-!
-                goto 9999
-!
-            else
-                call fornpd(option, nomte)
-            endif
-!
-        else
-!
-!
-            call fornpd(option, nomte)
-!
+            call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
 !
         endif
     endif

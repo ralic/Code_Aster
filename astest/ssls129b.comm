@@ -92,7 +92,7 @@ SNL1=STAT_NON_LINE(MODELE=MODELE,
                    CARA_ELEM=CARA_ELE,
                    EXCIT=(_F(CHARGE=CC,),
                           _F(CHARGE=FORCEX,),),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 
@@ -106,7 +106,7 @@ SNL3=STAT_NON_LINE(MODELE=MODELE,
                    CARA_ELEM=CARA_ELE,
                    EXCIT=(_F(CHARGE=CC,),
                           _F(CHARGE=FORCEZ,),),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 

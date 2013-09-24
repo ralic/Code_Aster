@@ -1,30 +1,30 @@
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SDNV107A
 #
 # CALCUL DE LA REPONSE TRANSITOIRE NON-LINEAIRE AVEC DYNA_TRAN_EXPLI
-# D UNE POUTRE EN TRACTION AVEC ECROUISSAGE LINEAIRE CONDENSEE 
+# D UNE POUTRE EN TRACTION AVEC ECROUISSAGE LINEAIRE CONDENSEE
 # DYNAMIQUEMENT SUR BASE DE RITZ PAR SOUS-STRUCTURATION ELEMENTAIRE
 # SOIT SANS MODELE_GENE, MACR_ELEM_DYNA, INTERFACE_DYNA, ETC
 #
 
 DEBUT(  CODE=_F( NOM = 'SDNV107A',NIV_PUB_WEB='INTERNET'), )
-       
+
 #
 
 MAILLA=LIRE_MAILLAGE(FORMAT='MED', )
@@ -35,7 +35,7 @@ MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAILLA,
                 _F(NOM_GROUP_MA='PC1',GROUP_NO='PC1',),
                 _F(NOM_GROUP_MA='PC2',GROUP_NO='PC2',),
                       ),
-                        )                      
+                        )
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -44,7 +44,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                'VOLU1','VOLU2','VOLU3','VOLU',),
                      ),
                     );
-                                                                                                                                                                                                                                                  
+
 MODELE1=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                             AFFE=(
                                _F( GROUP_MA = 'VOLU1',
@@ -55,7 +55,7 @@ MODELE1=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                                    MODELISATION = 'DIS_T'),
                                  ),
                    )
-                                  
+
 MODELE2=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                             AFFE=(
                                _F( GROUP_MA = 'VOLU2',
@@ -66,7 +66,7 @@ MODELE2=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                                    MODELISATION = 'DIS_T'),
                                  ),
                    )
-                   
+
 MODELE3=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                             AFFE=(
                                _F( GROUP_MA = 'VOLU3',
@@ -77,7 +77,7 @@ MODELE3=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                                    MODELISATION = 'DIS_T'),
                                  ),
                    )
-                                      
+
 #
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 4.E11,  NU = 0.,  RHO = 1000.0),
                       ECRO_LINE=_F( D_SIGM_EPSI = 4.E10, SY = 80.E6),
@@ -97,7 +97,7 @@ PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                                         VALE=(0.,),
                                    GROUP_MA = ('PC1',), ),)
                                    )
-                                   
+
 PARAM2=AFFE_CARA_ELEM(  MODELE=MODELE2,
                             DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
@@ -106,7 +106,7 @@ PARAM2=AFFE_CARA_ELEM(  MODELE=MODELE2,
                                         VALE=(0.,),
                                    GROUP_MA = ('PC1','PC2'), ),)
                                    )
-                                   
+
 PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
                             DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
@@ -131,13 +131,13 @@ PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
 CHARGE_1=AFFE_CHAR_MECA(  MODELE=MODELE1,
           DDL_IMPO=(
                _F( GROUP_NO='VOLU1',
-                         DY = 0.0, 
+                         DY = 0.0,
                          DZ = 0.0,
                          ),
                _F( GROUP_NO = 'BASE', DX = 0.0, ),
-               
-               _F( GROUP_NO = ('PC1',), 
-                         DX = 0.0, 
+
+               _F( GROUP_NO = ('PC1',),
+                         DX = 0.0,
                          ),
                    ),
                LIAISON_UNIF=(
@@ -202,11 +202,11 @@ MODES_1=LIRE_RESU(FORMAT='MED',
 CHARGE_2=AFFE_CHAR_MECA(  MODELE=MODELE2,
           DDL_IMPO=(
                _F( GROUP_NO='VOLU2',
-                         DY = 0.0, 
+                         DY = 0.0,
                          DZ = 0.0,
                          ),
                _F( GROUP_NO = ('PC1', 'PC2',),
-                         DX = 0.0, 
+                         DX = 0.0,
                          ),
                    ),
                LIAISON_UNIF=(
@@ -247,8 +247,8 @@ MOD_CAL2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 6))
 
-                              
-                              
+
+
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED',
           UNITE=82,
@@ -272,16 +272,16 @@ MODES_2=LIRE_RESU(FORMAT='MED',
 CHARGE_3=AFFE_CHAR_MECA(  MODELE=MODELE3,
           DDL_IMPO=(
                _F( GROUP_NO='VOLU3',
-                         DY = 0.0, 
+                         DY = 0.0,
                          DZ = 0.0,
                          ),
                _F( GROUP_NO = 'PC2',
-                         DX = 0.0, 
+                         DX = 0.0,
                          ),
                    ),
                LIAISON_UNIF=(
                                _F(GROUP_NO = 'SURF2',DDL=('DX')),
-                               _F(GROUP_NO = 'SURF3',DDL=('DX')),                               
+                               _F(GROUP_NO = 'SURF3',DDL=('DX')),
                                ),
                )
 
@@ -317,51 +317,51 @@ MODES_3=MODE_ITER_SIMULT(     MATR_RIGI=RAID_3,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                               NMAX_FREQ = 6))
 
-                              
-                              
+
+
 #
 #   CALCUL DE LA SOLUTION STATIQUE
 #
 
 MODESTA1=MODE_STATIQUE(  MATR_RIGI=RAID_1,
                      MODE_STAT=_F(
-                     GROUP_NO = 'PC1', 
+                     GROUP_NO = 'PC1',
                      AVEC_CMP = ('DX'),
                                  ))
 
 MODESTA2=MODE_STATIQUE(  MATR_RIGI=RAID_2,
                      MODE_STAT=_F(
-                     GROUP_NO = 'PC1', 
+                     GROUP_NO = 'PC1',
                      AVEC_CMP = ('DX'),
                                  ))
-                                 
+
 MODESTA3=MODE_STATIQUE(  MATR_RIGI=RAID_2,
                      MODE_STAT=_F(
-                     GROUP_NO = 'PC2', 
-                     AVEC_CMP = ('DX'),
-                                 ))                                 
-                                                    
-MODESTA4=MODE_STATIQUE(  MATR_RIGI=RAID_3,
-                     MODE_STAT=_F(
-                     GROUP_NO = 'PC2', 
+                     GROUP_NO = 'PC2',
                      AVEC_CMP = ('DX'),
                                  ))
-                                 
+
+MODESTA4=MODE_STATIQUE(  MATR_RIGI=RAID_3,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'PC2',
+                     AVEC_CMP = ('DX'),
+                                 ))
+
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                             AFFE=_F( GROUP_MA = 'VOLU',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = '3D'))
-                                  
+
 
 #
 MERIME=CALC_MATR_ELEM(      MODELE=MODELE,
                             CHAM_MATER=CHAMAT,
                                OPTION='RIGI_MECA')
-                               
+
 MEMAME=CALC_MATR_ELEM(      MODELE=MODELE,
                             CHAM_MATER=CHAMAT,
                                OPTION='MASS_MECA')
-                               
+
 #
 NUMDDL=NUME_DDL(  MATR_RIGI=MERIME)
 
@@ -372,33 +372,33 @@ RAIDE=ASSE_MATRICE(  MATR_ELEM=MERIME,
 MASSE=ASSE_MATRICE(  MATR_ELEM=MEMAME,
                            NUME_DDL=NUMDDL)
 
-                                      
+
 EXCIMO3=AFFE_CHAR_MECA(MODELE=MODELE3,
                       FORCE_NODALE=_F(GROUP_NO='PC3',
                                       FX=1.E8,),);
-                                       
+
 
 DS1 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                   RESULTAT= MODESTA1, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
-                  
+
 DS2 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                   RESULTAT= MODESTA2, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
-                  
+
 DS3 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                   RESULTAT= MODESTA3, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
-                  
+
 DS4 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                   RESULTAT= MODESTA4, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
-                  
+
 CHS1 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
-                  MAILLAGE=MAILLAGE,  
+                  MAILLAGE=MAILLAGE,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS1, ),
                       _F (TOUT='OUI', CHAM_GD=DS2, ),
                        ),
                   );
 CHS2 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
-                  MAILLAGE=MAILLAGE,  
+                  MAILLAGE=MAILLAGE,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS3, ),
                       _F (TOUT='OUI', CHAM_GD=DS4, ),
@@ -412,7 +412,7 @@ MODESTAA = CREA_RESU (
               _F( CHAM_GD= CHS1, NOM_CAS= 'CAS1'),
               ),
                      );
-                     
+
 MODESTAB = CREA_RESU (
                        OPERATION='AFFE',
                        TYPE_RESU= 'MULT_ELAS', NOM_CHAM='DEPL',
@@ -429,52 +429,52 @@ BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
                                      NMAX_MODE = 999)),
                          LIST_AMOR=L_AMOR,
                          NUME_REF=NUMDDL)
-                                                 
-BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
                     RITZ=( _F( BASE_MODALE=BAMODA),
 #                           _F( MODE_MECA = MODES_3,
                            _F( MODE_INTF = MODES_3,
                                      NMAX_MODE = 999)),
                          NUME_REF=NUMDDL)
-                         
-BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
                     RITZ=( _F( BASE_MODALE=BAMODA),
                            _F( MODE_INTF = MODESTAA,
                                      NMAX_MODE = 999)),
                          NUME_REF=NUMDDL)
 
-                                                
-BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
+
+BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
                    RITZ=( _F( BASE_MODALE=BAMODA),
                           _F( MODE_INTF = MODESTAB,
                                     NMAX_MODE = 999)),
                         NUME_REF=NUMDDL)
-                        
-                                                
+
+
 NDDLGENE = NUME_DDL_GENE( BASE= BAMODA,
                           STOCKAGE= 'PLEIN',)
-                          
+
 #  CALCUL DU MACRO-ELEMENT
 #
 
-                       
+
 RIGIPRO1=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=RAID_1 )
 
 MASSPRO1=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=MASS_1 )
-                                                                                        
+
 RIGIPRO2=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=RAID_2 )
 
 MASSPRO2=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=MASS_2 )
-                            
+
 RIGIPRO3=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=RAID_3 )
 
 MASSPRO3=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
-                            MATR_ASSE=MASS_3 )                            
+                            MATR_ASSE=MASS_3 )
 
 RIGIGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
                                  COEF_R=1.0,),
@@ -482,8 +482,8 @@ RIGIGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
                                  COEF_R=1.0,),
                                 _F(MATR_ASSE=RIGIPRO3,
                                  COEF_R=1.0,),
-                                 ),); 
-                                 
+                                 ),);
+
 MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                 _F(MATR_ASSE=MASSPRO2,
@@ -491,7 +491,7 @@ MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                 _F(MATR_ASSE=MASSPRO3,
                                  COEF_R=1.0,),
                                  ),);
-                                 
+
 RESGEN=MODE_ITER_SIMULT(     MATR_RIGI=RIGIGENE,
                              MATR_MASS=MASSGENE,
                              CALC_FREQ=_F(
@@ -504,7 +504,7 @@ RESMOD=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
                                         )
-                  
+
 MODGLO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = RESMOD,
                                     NMAX_MODE=20),
                               ),
@@ -513,48 +513,48 @@ MODGLO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = RESMOD,
 NUMEMODE=NUME_DDL_GENE(       BASE=MODGLO,
                            STOCKAGE='DIAG',
                            )
-                           
+
 NUMEMOD2=NUME_DDL_GENE(       BASE=MODGLO,
                            STOCKAGE='PLEIN',
                            )
 
 M_PROJ=PROJ_MATR_BASE(            BASE=MODGLO,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                             MATR_ASSE=MASSE)
-                            
 
-RIGPRO1=PROJ_MATR_BASE(  BASE=MODGLO,  
+
+RIGPRO1=PROJ_MATR_BASE(  BASE=MODGLO,
                             NUME_DDL_GENE=NUMEMOD2,
                             MATR_ASSE=RAID_1 )
-                            
-RIGPRO2=PROJ_MATR_BASE(  BASE=MODGLO,  
+
+RIGPRO2=PROJ_MATR_BASE(  BASE=MODGLO,
                             NUME_DDL_GENE=NUMEMOD2,
-                            MATR_ASSE=RAID_2 )                            
-                            
+                            MATR_ASSE=RAID_2 )
+
 RIGGENT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGPRO1,
                                  COEF_R=1.0,),
                                _F(MATR_ASSE=RIGPRO2,
                                  COEF_R=1.0,),
                                  ),);
-                                      
+
 AMOGENT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGGENT,
                                  COEF_R=0.0,),
                                  ),);
-                                 
+
 MERIME3B=CALC_MATR_ELEM(      MODELE=MODELE3,
                             CHAM_MATER=CHAMAT,
                              CARA_ELEM=PARAM3,
                                OPTION='RIGI_MECA')
 
 NUMDDL3B=NUME_DDL(  MATR_RIGI=MERIME3B)
-                                 
+
 
 RESMO2=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NUME_DDL=NUMDDL3B,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
                                         )
-                        
+
 LINSDYN=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=0.014,
                                      NOMBRE=28,),);
@@ -581,7 +581,7 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELE3,
                      EXCIT=(
                             _F(CHARGE=EXCIMO3,
                                FONC_MULT=EVINT,),),
-                     COMP_INCR=(
+                     COMPORTEMENT=(
                                 _F(
                                   RELATION='ELAS',
                                   GROUP_MA='PC2',
@@ -602,13 +602,13 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELE3,
                                    ),
                      );
 
-                                                  
+
 RESUGLO=REST_COND_TRAN(   RESULTAT=DYTREX,
                           BASE_MODALE=MODGLO,
                           TOUT_CHAM='OUI',
                                         )
-                                        
-                                        
+
+
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
                   INST=5.0E-3,
                   RESULTAT=DYTREX,
@@ -676,4 +676,4 @@ TEST_RESU(RESU=_F(GROUP_NO='PC3',
                   PRECISION=0.011,),
           )
 
-FIN( ) 
+FIN( )

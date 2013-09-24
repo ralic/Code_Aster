@@ -1,19 +1,19 @@
 # TITRE - REEQUILIBRAGE CAPILLAIRE D UN BI-MATERIAUX BO-BG (LIQU_AD_GAZ)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #******************************************************************************************
@@ -23,7 +23,7 @@
 #******************************************************************************************
 
 DEBUT(CODE=_F(NOM='WTNP117D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
-       
+
 
 #=============================================================
 #=============================================================
@@ -32,7 +32,7 @@ METHODE='VFDA'
 #=============================================================
 
 MODELISA = 'D_PLAN_HH2SUDA'
-   
+
 #=============================================================
 #                     donnees
 #=============================================================
@@ -63,7 +63,7 @@ CREA_GROUP_NO = (
       _F(GROUP_MA='BAS',NOM='NSBAS',CRIT_NOEUD='MILIEU',),
      ),
      )
-  
+
 #*********************************************************
 #  Modele de calcul
 #*********************************************************
@@ -147,7 +147,7 @@ MATERBO = DEFI_MATERIAU (
   CP=1900.0,
   VISC=VISCOGAZ,
   D_VISC_TEMP=ZERO,),
-  
+
        THM_DIFFU =_F(
    R_GAZ   = 8.315  ,
    RHO     = 1514.  ,
@@ -304,9 +304,9 @@ INST1 = DEFI_LIST_REEL ( DEBUT   = 0.0,
 #
   _F( JUSQU_A = 1000.  , NOMBRE = 30  ,),
   _F( JUSQU_A = 5000.  , NOMBRE = 20  ,),
-  _F( JUSQU_A = 10000.  , NOMBRE = 10  ,), 
-  _F( JUSQU_A = 50000.  , NOMBRE = 30  ,), 
-  _F( JUSQU_A = 100000.  , NOMBRE = 20  ,), 
+  _F( JUSQU_A = 10000.  , NOMBRE = 10  ,),
+  _F( JUSQU_A = 50000.  , NOMBRE = 30  ,),
+  _F( JUSQU_A = 100000.  , NOMBRE = 20  ,),
        ),
         );
 #
@@ -323,13 +323,13 @@ cal1 = STAT_NON_LINE (
          _F( CHARGE  = CH0 ,) ,
           ),
 
-       COMP_INCR =_F(  RELATION  = 'KIT_HH',
+       COMPORTEMENT =_F(  RELATION  = 'KIT_HH',
                        RELATION_KIT = ('LIQU_AD_GAZ', 'HYDR_VGM'),
-                       PARM_THETA  = 1. , 
+                       PARM_THETA  = 1. ,
                        PARM_ALPHA=PARM_ALPHA, ),
 
        INCREMENT  =_F(
-           LIST_INST    = INST1,   
+           LIST_INST    = INST1,
            ),
 
        ETAT_INIT = _F ( DEPL  = CHAM_0   ,
@@ -339,7 +339,7 @@ cal1 = STAT_NON_LINE (
        NEWTON    =_F(
           MATRICE = 'TANGENTE' ,
           REAC_ITER  =  1   , ),
-      
+
        RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
                         ITER_LINE_MAXI=1,),
 

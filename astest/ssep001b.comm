@@ -1,19 +1,19 @@
 # TITRE CHARGE LIMITE SUP - TUBE AVEC SOUS EPAISSEUR
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
@@ -24,16 +24,16 @@
 Sh=98.7;
 # module d'Young
 EE = 200000. ;
-# coefficient de poisson 
+# coefficient de poisson
 nnu  = 0.3 ;
 
 #-------------------------------
 T_FIN=2. ;
 
-#  
+#
 # les elements incompressibles ne marchent qu'avec des elements quadratiques
 # LINE_QUAD est necesaire dans le fichier comm si le maillage produit par salome
-# est lineaire 
+# est lineaire
 
 DEBUT(CODE=_F(NOM='ssep001b', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('MODELISA4_6',))
@@ -57,7 +57,7 @@ MA=DEFI_GROUP(reuse =MA,
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(MODELISATION='3D_INCO',
-                       
+
 GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV'),
                         PHENOMENE='MECANIQUE'),
                      _F(MODELISATION='DIS_TR',
@@ -84,9 +84,9 @@ CHCAR=AFFE_CARA_ELEM(MODELE=MO,
 
 # ----------- CONDITIONS AUX LIMITES -------------------------------
 CH_CL=AFFE_CHAR_MECA(MODELE=MO,
-                    
+
 LIAISON_ELEM=(_F(OPTION='3D_POU',NUME_LAGR='NORMAL',ANGL_MAX=1.0,
-                                     
+
 GROUP_NO_2='P2',GROUP_MA_1='CLGV'),
                                    ),
                      INFO=1,
@@ -112,7 +112,7 @@ PRES=AFFE_CHAR_MECA(MODELE=MO,
                                  PRES=1.0,),);
 
 #----INST_FIN=1.5  NE PERMET PAS D ATTEINDRE LA CHARGE LIMITE- IL EST CHOISI EXPRES POUR LE CAS TEST--
-# --- la convergence devient difficile vers 2.3 : 
+# --- la convergence devient difficile vers 2.3 :
 # --- la gestion de la liste d'instants n'est pas evidente pour un outil metier
 
 L_INST=DEFI_LIST_REEL(DEBUT=0,
@@ -140,8 +140,8 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CH_CL,),
                            _F(CHARGE=CH_CLC,),
                                    _F(CHARGE=PRES,TYPE_CHARGE='FIXE_PILO',),),
-                    COMP_INCR=(_F(RELATION='NORTON_HOFF',
-                                 
+                    COMPORTEMENT=(_F(RELATION='NORTON_HOFF',
+
 GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV'),),
                                        _F(RELATION='ELAS',GROUP_MA='MA_P2',),),
                     INCREMENT=_F(LIST_INST=DEFLIST,INST_FIN=INSTF),

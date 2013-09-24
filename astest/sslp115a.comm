@@ -123,7 +123,7 @@ RESUMECA=STAT_NON_LINE(MODELE=MO,
                        CHAM_MATER=MAMECA,
                        EXCIT=(_F(CHARGE=ENCASTRE,),
                               _F(CHARGE=BLOCFISS,),),
-                       COMP_INCR=_F(RELATION='ELAS',),
+                       COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMECA,),);
 RESUMECA=CALC_CHAMP(reuse=RESUMECA,
                     RESULTAT=RESUMECA,
@@ -153,7 +153,7 @@ SIEFNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
 RESOUVFI=STAT_NON_LINE(MODELE=MO,
                        CHAM_MATER=MAMECA,
                        EXCIT=(_F(CHARGE=ENCASTRE,),),
-                       COMP_INCR=_F(RELATION='ELAS',),
+                       COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMECA,),);
 
 RESOUVFI=CALC_CHAMP(reuse=RESOUVFI,
@@ -203,7 +203,7 @@ MAMECA2=AFFE_MATERIAU(MAILLAGE=MAILMECA,
 RESUINI=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=MAMECA2,
                       EXCIT=(_F(CHARGE=ENCASTRE,),),
-                      COMP_INCR=_F(RELATION='ELAS',),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
                       ETAT_INIT=_F(SIGM=SIEFELGA,),
                       CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-10),
                       INCREMENT=_F(LIST_INST=LIST3),);
@@ -221,7 +221,7 @@ GINGA=CALC_G(THETA=_F(THETA=THETA1,
                       ),
              RESULTAT=RESUINI,
              INST=3,
-             COMP_INCR=_F(RELATION='ELAS',
+             COMPORTEMENT=_F(RELATION='ELAS',
                           SIGM_INIT=SIEFELGA),
              OPTION='CALC_G')
 
@@ -230,7 +230,7 @@ GINNO=CALC_G(THETA=_F(THETA=THETA20,
                       ),
              RESULTAT=RESUINI,
              INST=3,
-             COMP_INCR=_F(RELATION='ELAS',
+             COMPORTEMENT=_F(RELATION='ELAS',
                           SIGM_INIT=SIEFNOEU),
              OPTION='CALC_G')
 
@@ -239,7 +239,7 @@ GINELNO=CALC_G(THETA=_F(THETA=THETAc2,
                         ),
                RESULTAT=RESUINI,
                INST=3,
-               COMP_INCR=_F(RELATION='ELAS',
+               COMPORTEMENT=_F(RELATION='ELAS',
                             SIGM_INIT=SIEFELNO),
                OPTION='CALC_G')
 
@@ -248,7 +248,7 @@ GTHER=CALC_G(THETA=_F(THETA=THETAc2,
                       ),
              RESULTAT=RESOUVFI,
              INST=1,
-             COMP_INCR=_F(RELATION='ELAS',),
+             COMPORTEMENT=_F(RELATION='ELAS',),
              OPTION='CALC_G')
 
 

@@ -2,21 +2,21 @@
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_CIN2_MEMO
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# VISCOPLASTIQUE modele Chaboche avec memoire 
+# VISCOPLASTIQUE modele Chaboche avec memoire
 #......................................................................
 
 
@@ -66,7 +66,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                  G1_0  = Gam1,
                                  G2_0  = Gam2,
                                  ),
-                    MEMO_ECRO=_F( 
+                    MEMO_ECRO=_F(
                                    MU = 10.,
                                    Q_M = Qinf_Pa,
                                    Q_0 = Qzer_Pa,
@@ -86,7 +86,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                     G1_0  = Gam1,
                                     G2_0  = Gam2,
                                  ),
-                    MEMO_ECRO=_F( 
+                    MEMO_ECRO=_F(
                                    MU = 10.,
                                    Q_M = Qinf,
                                    Q_0 = Qzer,
@@ -98,10 +98,10 @@ compor='VISC_CIN2_MEMO'
 
 tabresu=TEST_COMPOR(OPTION='MECA',
 
-                   COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+                   COMPORTEMENT=_F(RELATION=compor,ITER_INTE_MAXI=100),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
-              LIST_NPAS=4*[1] + [1, 5, 25],              
+              LIST_NPAS=4*[1] + [1, 5, 25],
               VARI_TEST=('V1','VMIS','TRACE'),
               LIST_TOLE=4*[1.E-10] + [15.] + [2.] + [1.E-2]+ [1.E-4],
               YOUNG=YOUNG,POISSON=POISSON,

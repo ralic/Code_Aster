@@ -32,5 +32,5 @@ par une courbe de traction affine par morceaux""",
    nom_varc       = ('TEMP'),
    algo_inte         = 'ANALYTIQUE',
    type_matr_tang = None,
-   proprietes     = None,
+   proprietes     = ('COMP_ELAS'),
 )

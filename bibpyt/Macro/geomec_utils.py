@@ -125,7 +125,7 @@ def affiche_infos_essai(str_n_essai,type_essai,val_PRES_CONF,val2):
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
-def verif_essais(COMP_INCR,ESSAI_TD ,
+def verif_essais(COMPORTEMENT,ESSAI_TD ,
                            ESSAI_TND,
                            ESSAI_CISA_C,
                            ESSAI_TND_C,):
@@ -157,7 +157,7 @@ def verif_essais(COMP_INCR,ESSAI_TD ,
               'CAM_CLAY',      
               'CJS',
               'MOHR_COULOMB']
-    nom_rdc = COMP_INCR.List_F()[0]['RELATION']
+    nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
     if not( nom_rdc in RdC_OK ):
       UTMESS('F','COMPOR2_39',valk=(typ_essai,SomListStr(RdC_OK),nom_rdc))
 
@@ -196,7 +196,7 @@ def verif_essais(COMP_INCR,ESSAI_TD ,
               'CAM_CLAY',      
               'CJS',
               'MOHR_COULOMB']
-    nom_rdc = COMP_INCR.List_F()[0]['RELATION']
+    nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
     if not( nom_rdc in RdC_OK ):
       UTMESS('F','COMPOR2_39',valk=(typ_essai,SomListStr(RdC_OK),nom_rdc))
 
@@ -233,7 +233,7 @@ def verif_essais(COMP_INCR,ESSAI_TD ,
     List_essais += ESSAI_CISA_C.List_F()
 
     # Lois de comportement autorisees. (HUJEUX)
-    nom_rdc = COMP_INCR.List_F()[0]['RELATION']
+    nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
     if not( nom_rdc == 'HUJEUX'):
       UTMESS('F','COMPOR2_39',valk=(typ_essai,'HUJEUX',nom_rdc))
     
@@ -275,7 +275,7 @@ def verif_essais(COMP_INCR,ESSAI_TD ,
     List_essais += ESSAI_TND_C.List_F()
 
     # Lois de comportement autorisees. (HUJEUX)
-    nom_rdc = COMP_INCR.List_F()[0]['RELATION']
+    nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
     if not( nom_rdc == 'HUJEUX'):
       UTMESS('F','COMPOR2_39',valk=(typ_essai,'HUJEUX',nom_rdc))
     
@@ -845,7 +845,7 @@ def remplir_tables(self,typ_essai,str_n_essai,DicoEssai,Resu_in):
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
-def Calc_Gs_max(self,EPSI_ELAS,PRES_CONF,MATER,COMP_INCR,CONVERGENCE):
+def Calc_Gs_max(self,EPSI_ELAS,PRES_CONF,MATER,COMPORTEMENT,CONVERGENCE):
   """
   Pour l'essai CISA_C : calcul du module de cisaillement secant max
   (EPSI_ELAS doit etre telle qu'on reste bien dans le domaine elastique)
@@ -875,7 +875,7 @@ def Calc_Gs_max(self,EPSI_ELAS,PRES_CONF,MATER,COMP_INCR,CONVERGENCE):
                           VALE = (0., PRES_CONF, 1., PRES_CONF,),)
 
   __EVOL = SIMU_POINT_MAT(
-           COMP_INCR=COMP_INCR.List_F(),
+           COMPORTEMENT=COMPORTEMENT.List_F(),
            CONVERGENCE=CONVERGENCE.List_F(),
            MATER=MATER,
            INCREMENT=_F(LIST_INST=__DLIST,

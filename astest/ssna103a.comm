@@ -186,7 +186,7 @@ L_INST=DEFI_LIST_REEL(    DEBUT=0.,
 U1=STAT_NON_LINE(
              MODELE=MO,    CHAM_MATER=CM50,EXCIT=(
               _F(  CHARGE = CHARG50),),
-              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              COMPORTEMENT=_F(  RELATION = 'VMIS_ISOT_LINE'),
               NEWTON=_F( REAC_ITER = 1),
               INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
             CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
@@ -197,7 +197,7 @@ U2=STAT_NON_LINE(
                  MODELE=MO,
                  CHAM_MATER=CM100,
                  EXCIT=( _F(  CHARGE = CHARG100),),
-                 COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+                 COMPORTEMENT=_F(  RELATION = 'VMIS_ISOT_LINE'),
                  INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
                  NEWTON=_F( REAC_ITER = 1),
                  CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
@@ -209,7 +209,7 @@ U3=STAT_NON_LINE(
                  CHAM_MATER=CM150,
                  EXCIT=( _F(  CHARGE = CHARG150),),
                  NEWTON=_F( REAC_ITER = 1),
-                 COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+                 COMPORTEMENT=_F(  RELATION = 'VMIS_ISOT_LINE'),
                  INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
                  CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
                                   ITER_GLOB_MAXI = 100)

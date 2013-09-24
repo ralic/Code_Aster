@@ -126,7 +126,7 @@ VT=STAT_NON_LINE(
                         CHAM_MATER=CHP_MATT,EXCIT=(
                              _F(
                 CHARGE = CHR_LIAI),),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
@@ -154,7 +154,7 @@ VT=STAT_NON_LINE( reuse=VT,
                 CHARGE = CHR_TRAC,
                 FONC_MULT = F_CHAR,
                 TYPE_CHARGE = 'DIDI')),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(

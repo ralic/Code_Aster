@@ -73,7 +73,7 @@ EVOL1=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MULT_FRONT'),
                 NUME_INST_FIN = 2),
                 MODELE=MO,EXCIT=(_F(CHARGE = LIAISON),
                 _F(CHARGE = TRACTION,FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -98,7 +98,7 @@ EVOL1=STAT_NON_LINE( reuse=EVOL1, SOLVEUR=_F(METHODE='MULT_FRONT'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -141,7 +141,7 @@ EVOL21=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',RENUM='METIS'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -167,7 +167,7 @@ EVOL21=STAT_NON_LINE( reuse=EVOL21, SOLVEUR=_F(METHODE='MUMPS',RENUM='METIS'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -216,7 +216,7 @@ EVOL22=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',RENUM='SCOTCH'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -242,7 +242,7 @@ EVOL22=STAT_NON_LINE( reuse=EVOL22, SOLVEUR=_F(METHODE='MUMPS',RENUM='SCOTCH'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -291,7 +291,7 @@ EVOL23=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -317,7 +317,7 @@ EVOL23=STAT_NON_LINE( reuse=EVOL23, SOLVEUR=_F(METHODE='MUMPS',FILTRAGE_MATRICE=
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -368,7 +368,7 @@ EVOL3=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -392,7 +392,7 @@ EVOL3=STAT_NON_LINE( reuse=EVOL3, SOLVEUR=_F(METHODE='MUMPS'),
                             MODELE=MO,EXCIT=(
                             _F(CHARGE = LIAISON), _F(CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -440,7 +440,7 @@ EVOL4=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MULT_FRONT'),
                  _F(CHARGE = LIAISON),
                  _F(CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -466,7 +466,7 @@ EVOL4=STAT_NON_LINE( reuse=EVOL4, SOLVEUR=_F(METHODE='MUMPS',
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -515,7 +515,7 @@ EVOL5=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS'),
                  _F(CHARGE = LIAISON),
                  _F(CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -541,7 +541,7 @@ EVOL5=STAT_NON_LINE( reuse=EVOL5, SOLVEUR=_F(METHODE='MUMPS'),
                 CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ENDO_FRAGILE'),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',

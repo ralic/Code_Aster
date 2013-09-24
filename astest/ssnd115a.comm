@@ -1,19 +1,19 @@
 # TITRE test de VISC_MEMO_NRAD sur essai de traction-torsion non proportionnelles
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSND115A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI');
@@ -33,7 +33,7 @@ delta2__=0.0154637840366
 
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
                   CIN2_CHAB=_F(R_0=97.83,
-                               
+
                                R_I=97.830+270.5,
                                B=51.3,
                                C1_I=182392,
@@ -42,10 +42,10 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
                                G2_0=178.7,
                                A_I=0.5818,
                                ),
-                               
+
                   CIN2_NRAD=_F(
                                DELTA1=delta1__,
-                               DELTA2=delta2__,                               
+                               DELTA2=delta2__,
                                ),
                    MEMO_ECRO=_F(
                                   MU = 10.,
@@ -58,7 +58,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
                                UN_SUR_M = 0.),
 
                                );
-                               
+
 
 ncal=1
 typcal= [None]*ncal
@@ -84,7 +84,7 @@ Ncal = ncal
 
 RESU=[None]*Ncal
 
-# liste de calcul, doit etre divisible par 4 (demi-cycles) 
+# liste de calcul, doit etre divisible par 4 (demi-cycles)
 #npas_par_cycle1=360
 npas_par_cycle1=48
 
@@ -96,9 +96,9 @@ deflist=DEFI_LIST_INST(INFO=1,
                          ECHEC=_F(SUBD_NIVEAU=3,
                                   SUBD_PAS=6,
                                   SUBD_PAS_MINI=1.E-08,),
-                         ); 
+                         );
 
-# valeurs de refence                          
+# valeurs de refence
 sxxaref=(398.+413.)/2.
 sxxmref=-5.
 sxxmaxref=sxxmref+sxxaref
@@ -111,27 +111,27 @@ sxyminref=sxymref-sxyaref
 
 for i in range(Ncal):
         RESU[i]=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(RELATION=typcal[i][0],
+                   COMPORTEMENT=_F(RELATION=typcal[i][0],
                                 ITER_INTE_MAXI=50,ITER_INTE_PAS=10,
                                 ALGO_INTE=typcal[i][1]),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
-                   MATER      = ACIER[typcal[i][2]],  
+                   MATER      = ACIER[typcal[i][2]],
                    INCREMENT=_F(LIST_INST=deflist,),
                    EPSI_IMPOSE=_F(EPXX=eps_xx,
                                   EPXY=eps_xy,
                                    ),
-                   NB_VARI_TABLE=2,                
+                   NB_VARI_TABLE=2,
                         );
-                        
+
         #IMPR_TABLE(TABLE=RESU[i]);
-        
-        # test des valeurs extremes 
-                
+
+        # test des valeurs extremes
+
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXX',
-                     VALE_CALC=419.25775958219,   
+                     VALE_CALC=419.25775958219,
                      VALE_REFE=sxxmaxref,
                      PRECISION=0.05,
                      FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MAXI'),
@@ -140,7 +140,7 @@ for i in range(Ncal):
 
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXX',
-                     VALE_CALC=-420.82581821439,   
+                     VALE_CALC=-420.82581821439,
                      VALE_REFE=sxxminref,
                      PRECISION=0.03,
                      FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MINI'),
@@ -148,7 +148,7 @@ for i in range(Ncal):
                      );
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXY',
-                     VALE_CALC=246.84487002456,   
+                     VALE_CALC=246.84487002456,
                      VALE_REFE=sxymaxref,
                      PRECISION=0.06,
                      FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MAXI'),
@@ -157,7 +157,7 @@ for i in range(Ncal):
 
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXY',
-                     VALE_CALC=-245.82990052479,   
+                     VALE_CALC=-245.82990052479,
                      VALE_REFE=sxyminref,
                      PRECISION=0.06,
                      FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MINI'),
@@ -197,7 +197,7 @@ tmixy=[None]*Ncal
 
 #resu=[None]*Ncal
 
-for i in range(Ncal):   
+for i in range(Ncal):
    sigxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN');
    sigxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN');
    sixy3[i]=CALC_FONCTION(COMB=_F(FONCTION=sigxy[i],COEF=sqrt(3.0),) )
@@ -225,7 +225,7 @@ for i in range(Ncal):
                              CRIT_COMP='LE',VALE=tfinder,
                              NOM_PARA='INST',),
                              ),)
-                             
+
    tmaxx[i] = CALC_TABLE(TABLE=tdern[i],
                   ACTION=(
                           _F(OPERATION='FILTRE',
@@ -257,47 +257,47 @@ for i in range(Ncal):
    dico['LEGENDE']=legende[i]
    dico['MARQUEUR']=0
    courbeder1.append(dico)
-   
+
    dico={}
    dico['FONCTION']=sixxd[i]
    dico['LEGENDE']=legende[i]
    dico['MARQUEUR']=0
    courbeder2.append(dico)
-   
+
    dico={}
    dico['FONCTION']=sixyd[i]
    dico['LEGENDE']=legende[i]
    dico['MARQUEUR']=0
    courbeder3.append(dico)
-   
+
    dico={}
    dico['FONC_X']=sigxx[i]
    dico['FONC_Y']=sixy3[i]
    dico['LEGENDE']=legende[i]
    dico['MARQUEUR']=0
    courbes.append(dico)
-   
+
    dico={}
    dico['FONCTION']=sigxx[i]
    dico['LEGENDE']=legende[i]
    dico['MARQUEUR']=0
    courbe1.append(dico)
-   
+
    dico={}
    dico['FONCTION']=sigxy[i]
    dico['LEGENDE']=legende[i]
    dico['MARQUEUR']=0
    courbe2.append(dico)
-   
+
    dic3={}
    dic3['FONCTION']=epsxx[i]
-   dic3['LEGENDE']=legende[i]   
+   dic3['LEGENDE']=legende[i]
    courbe3.append(dic3)
    dic3={}
    dic3['FONCTION']=gamm3[i]
    dic3['LEGENDE']=legende[i]
    courbe3.append(dic3)
-   
+
 
 # tau-sigma
 DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-tout.agr');
@@ -330,7 +330,7 @@ IMPR_FONCTION(
                 COURBE=courbe2,
                 );
 DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
-                
+
 #################dernier cycle
 # tau-sigma
 DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-dernier_cycle.agr');
@@ -364,7 +364,7 @@ IMPR_FONCTION(
 DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
 
 
-                
+
 
 # comparaison chargement resultat
 DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/chargement.agr');

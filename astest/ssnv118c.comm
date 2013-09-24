@@ -118,7 +118,7 @@ SOLNL=STAT_NON_LINE(
                 CHAM_MATER=MAT,
                 EXCIT=_F( CHARGE = COND_LIM,
                           FONC_MULT = COEF_TR),
-                COMP_INCR=_F( RELATION = 'VISCOCHAB',
+                COMPORTEMENT=_F( RELATION = 'VISCOCHAB',
                               DEFORMATION = 'PETIT',
                               ITER_INTE_MAXI = 80,
                               ALGO_INTE = 'RUNGE_KUTTA',

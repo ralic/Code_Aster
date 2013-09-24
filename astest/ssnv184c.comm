@@ -123,7 +123,7 @@ U1=STAT_NON_LINE(
                                      _F( CHARGE       = PR_V,
                                      FONC_MULT    = COEF1),
                                      _F( CHARGE       = DEP_SYM)),
-                  COMP_INCR  = _F( RELATION       = 'HOEK_BROWN',
+                  COMPORTEMENT  = _F( RELATION       = 'HOEK_BROWN',
                                    RESI_INTE_RELA = 1.E-8,
                                    ITER_INTE_MAXI = 100),
                   NEWTON     = _F( MATRICE        = 'TANGENTE',
@@ -183,7 +183,7 @@ U2=STAT_NON_LINE(
                       _F( CHARGE       = DEP_SYM),
                       _F( CHARGE       = DEP_V,
                           FONC_MULT    = COEF2)),
-                        COMP_INCR=_F(
+                        COMPORTEMENT=_F(
                 RELATION = 'HOEK_BROWN',
                 RESI_INTE_RELA = 1.E-8,
                 ITER_INTE_MAXI = 100,

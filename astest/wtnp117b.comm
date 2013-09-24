@@ -296,7 +296,7 @@ cal1 = STAT_NON_LINE (
          _F( CHARGE  = CH0 ,) ,
           ),
 
-       COMP_INCR =_F(  RELATION  = 'KIT_HH',
+       COMPORTEMENT =_F(  RELATION  = 'KIT_HH',
            RELATION_KIT = ('LIQU_VAPE_GAZ', 'HYDR_VGM'),
            PARM_THETA  = 1. ,  ),
 
@@ -327,7 +327,7 @@ cal1 = STAT_NON_LINE (reuse=cal1,
          _F( CHARGE  = CH0 ,) ,
           ),
 
-       COMP_INCR =_F(  RELATION  = 'KIT_HH',
+       COMPORTEMENT =_F(  RELATION  = 'KIT_HH',
            RELATION_KIT = ('LIQU_VAPE_GAZ', 'HYDR_VGM'),
            PARM_THETA  = 1. ,  ),
 
@@ -370,7 +370,7 @@ cal2 = STAT_NON_LINE (
          _F( CHARGE  = CH0 ,) ,
           ),
 
-       COMP_INCR =_F(  RELATION  = 'KIT_HH',
+       COMPORTEMENT =_F(  RELATION  = 'KIT_HH',
            RELATION_KIT = ('LIQU_VAPE_GAZ', 'HYDR_VGM'),
            PARM_THETA  = 1. ,  ),
 
@@ -399,7 +399,7 @@ cal2 = STAT_NON_LINE (reuse=cal2,
          _F( CHARGE  = CH0 ,) ,
           ),
 
-       COMP_INCR =_F(  RELATION  = 'KIT_HH',
+       COMPORTEMENT =_F(  RELATION  = 'KIT_HH',
            RELATION_KIT = ('LIQU_VAPE_GAZ', 'HYDR_VGM'),
            PARM_THETA  = 1. ,  ),
 

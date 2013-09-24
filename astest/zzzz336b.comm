@@ -139,7 +139,7 @@ U_3D=STAT_NON_LINE(MODELE=MOD_3D,
                  CHAM_MATER=CHMA_3D,
                  EXCIT=(_F(CHARGE=CL_3D,),
                                              ),
-                 COMP_INCR=_F(GROUP_MA=('POUTRE',),RELATION='ELAS'),
+                 COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='ELAS'),
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
@@ -230,7 +230,7 @@ U_POU=STAT_NON_LINE(MODELE=MOPOU,
                  CHAM_MATER=CHMA_POU,
                  EXCIT=(_F(CHARGE=CL_POU,),
                                              ),
-                 COMP_INCR=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
+                 COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
@@ -431,7 +431,7 @@ U_POU2=STAT_NON_LINE(MODELE=MOPOU,
                  CHAM_MATER=CHMA_PO2,
                  EXCIT=(_F(CHARGE=CL_POU,),
                                              ),
-                 COMP_INCR=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
+                 COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 

@@ -143,7 +143,7 @@ for i in range(Ncal):
 
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,
+                   COMPORTEMENT=_F(RELATION=compor,
                                 NB_VARI=1,
                                 LIBRAIRIE='libumat1.so',
                                 NOM_ROUTINE='umat_'),
@@ -252,7 +252,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
 DEBUG(SDVERI='NON')
 
 RESU_TGT=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,
+                   COMPORTEMENT=_F(RELATION=compor,
                                 TYPE_MATR_TANG='VERIFICATION',
                                 NB_VARI=1,
                                 VALE_PERT_RELA=1.E-5,

@@ -296,9 +296,6 @@ subroutine te0031(option, nomte)
         call jevech('PDEPLMR', 'L', jdepm)
         call jevech('PDEPLPR', 'L', jdepr)
         call jevech('PCOMPOR', 'L', icompo)
-        if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-            call utmess('F', 'ELEMENTS2_71')
-        endif
         if (lcqhom) then
             call utmess('F', 'ELEMENTS2_75')
         endif

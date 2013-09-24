@@ -107,7 +107,7 @@ CAT=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
 CALCNL=STAT_NON_LINE(
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_INCR=_F( PARM_THETA = 0.5,
+                         COMPORTEMENT=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000,
                 DEFORMATION = 'PETIT'),

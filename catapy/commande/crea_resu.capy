@@ -59,7 +59,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 #
 #  pour ajouter un comportement dans la SD
 #                
-           COMP_INCR     =C_COMP_INCR(),
+           COMPORTEMENT     =C_COMPORTEMENT(),
 #
 #  pour ajouter une charge dans la SD
 #     

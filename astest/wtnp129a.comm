@@ -113,7 +113,7 @@ CHAR=AFFE_CHAR_CINE(MODELE=MODELE,
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
-                    COMP_INCR=_F(RELATION='KIT_HM',
+                    COMPORTEMENT=_F(RELATION='KIT_HM',
                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                     INCREMENT=_F(LIST_INST=LI,),);
 

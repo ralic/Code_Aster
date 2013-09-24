@@ -1,4 +1,3 @@
-
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +19,7 @@ POURSUITE(CODE=_F(NOM='ERREU05A'),
 # ALARME 'SUPERVIS_1' : Pour pouvoir vérifier que le calcul initial
 #                       a bien été interrompu après un pas de temps.
 
-# 1. On vérifie qu'un seul pas de temps est présent dans le concept 'resu'.
+# 1. On verifie qu'un seul pas de temps est présent dans le concept 'resu'.
 l_para = resu.LIST_VARI_ACCES()
 ref = 1
 val = len(l_para['NUME_ORDRE'])
@@ -41,7 +40,7 @@ resu=STAT_NON_LINE(reuse=resu,
                    MODELE=model,
                    CHAM_MATER=chmat,
                    EXCIT=_F(CHARGE=char,),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=inst2),
                    ETAT_INIT=_F(EVOL_NOLI=resu,),)
 

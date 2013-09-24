@@ -90,7 +90,7 @@ try:
    resu=STAT_NON_LINE(MODELE=model,
                       CHAM_MATER=chmat,
                       EXCIT=_F(CHARGE=char,),
-                      COMP_INCR=_F(RELATION='ELAS',),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
                       INCREMENT=_F(LIST_INST=inst),)
 except aster.error:
    # on verifiera l'etat de 'resu' dans la POURSUITE

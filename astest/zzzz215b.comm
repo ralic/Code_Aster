@@ -123,7 +123,7 @@ RESU=STAT_NON_LINE(MODELE=MOSOLIDE,
                    CHAM_MATER=MATER,
                    EXCIT=(_F(CHARGE=CHA_IMPO,),
                           _F(CHARGE=CHA_PROJ,),),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    );
 

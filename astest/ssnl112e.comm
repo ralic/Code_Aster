@@ -130,7 +130,7 @@ LEDEP=STAT_NON_LINE(
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -162,7 +162,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -195,7 +195,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -228,7 +228,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -261,7 +261,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -294,7 +294,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -327,7 +327,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -360,7 +360,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -393,7 +393,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -426,7 +426,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -459,7 +459,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -492,7 +492,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -525,7 +525,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,
@@ -558,7 +558,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                              _F(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO')),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(
                 LIST_INST = LINST1,

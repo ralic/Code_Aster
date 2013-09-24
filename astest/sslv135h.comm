@@ -216,7 +216,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         EXCIT      =_F ( CHARGE       = TR_CS,
                                          FONC_MULT    = COEF,
                                          TYPE_CHARGE  = 'FIXE_CSTE'),
-                       COMP_INCR  =_F ( RELATION     = 'VMIS_CINE_LINE',
+                       COMPORTEMENT =_F ( RELATION     = 'VMIS_CINE_LINE',
                                         DEFORMATION  = 'PETIT',
                                         TOUT         = 'OUI'    ),
                        INCREMENT  =_F ( LIST_INST    = LINST, ),

@@ -93,7 +93,7 @@ RESULT_E=STAT_NON_LINE(CHAM_MATER=CH_MAT_E,
                        MODELE=MOD_E,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=40,
                                       RESI_GLOB_RELA=1.E-06,),
-               COMP_INCR=_F(
+               COMPORTEMENT=_F(
                                     ITER_INTE_MAXI=40,
                                     RELATION='VMIS_ISOT_LINE',),
                        INCREMENT=_F(LIST_INST=LIS_INST,),

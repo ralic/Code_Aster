@@ -82,7 +82,7 @@ REST=STAT_NON_LINE(
                          CARA_ELEM=CAREL,
                              EXCIT=_F(CHARGE = CHART,
                                       FONC_MULT = FONCT),
-                         COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE', ),
+                         COMPORTEMENT=_F( RELATION = 'VMIS_ISOT_LINE', ),
                          INCREMENT=_F( LIST_INST = LINST),
                             NEWTON=_F( REAC_ITER = 1),
               )
@@ -260,7 +260,7 @@ CAREL2=AFFE_CARA_ELEM(   MODELE=MO,
 # DISCRE
 RESM=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL2,
                              EXCIT=_F(  CHARGE = CHARM, FONC_MULT = FONCM),
-                         COMP_INCR=_F( RELATION = 'VMIS_ISOT_LINE',),
+                         COMPORTEMENT=_F( RELATION = 'VMIS_ISOT_LINE',),
                          INCREMENT=_F( LIST_INST = LINSR),
                             NEWTON=_F( REAC_ITER = 1)
               )

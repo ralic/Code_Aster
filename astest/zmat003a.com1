@@ -22,7 +22,7 @@ CALCNL=STAT_NON_LINE(reuse=CALCNL,
                      ETAT_INIT=_F(
                         EVOL_NOLI=CALCNL,
                      ),
-                     COMP_INCR=_F(
+                     COMPORTEMENT=_F(
                 RELATION = 'ZMAT',
                 UNITE = 33,
                 ITER_INTE_MAXI = 1000,

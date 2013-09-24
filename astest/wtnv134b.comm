@@ -234,7 +234,7 @@ coef= b*KW/3./K
 coef=KW
 
 TAB_SIG=SIMU_POINT_MAT(INFO=1,
-                  COMP_INCR=_F(RELATION='HUJEUX',
+                  COMPORTEMENT=_F(RELATION='HUJEUX',
                                ALGO_INTE='SPECIFIQUE',
                                ITER_INTE_MAXI=20,
                                RESI_INTE_RELA=1.E-8,

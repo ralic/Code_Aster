@@ -25,7 +25,7 @@ from geomec_utils import *
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
 
-def essai_TD(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
+def essai_TD(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
   """
   Essai Triaxial Monotone Draine (TD)
   """  
@@ -100,7 +100,7 @@ def essai_TD(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
     # ---
     __EVOL = SIMU_POINT_MAT(
              INFO=INFO,
-             COMP_INCR=COMP_INCR.List_F(),
+             COMPORTEMENT=COMPORTEMENT.List_F(),
              CONVERGENCE=CONVERGENCE.List_F(),
              MATER=MATER,
              INCREMENT=_F(LIST_INST=__DLIST,
@@ -176,7 +176,7 @@ def essai_TD(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
 
-def essai_TND(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
+def essai_TND(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
   """
   Essai Triaxial Monotone Non Draine (TND)
   """  
@@ -252,7 +252,7 @@ def essai_TND(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
     # ---
     __EVOL = SIMU_POINT_MAT(
            INFO=INFO,
-           COMP_INCR=COMP_INCR.List_F(),
+           COMPORTEMENT=COMPORTEMENT.List_F(),
            CONVERGENCE=CONVERGENCE.List_F(),
            MATER=MATER,
            INCREMENT=_F(LIST_INST=__DLIST,
@@ -331,7 +331,7 @@ def essai_TND(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
 
-def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
+def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
   """
   Essai de Cisaillement Cyclique Draine (CISA_C)
   """  
@@ -407,7 +407,7 @@ def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
     # ---
     # Calcul du module de cisaillement secant maximal (elasticite) 
     # ---
-    Gs_max = Calc_Gs_max(self,EPSI_ELAS,PRES_CONF[i],MATER,COMP_INCR,CONVERGENCE)
+    Gs_max = Calc_Gs_max(self,EPSI_ELAS,PRES_CONF[i],MATER,COMPORTEMENT,CONVERGENCE)
 
     # ---
     # Boucle sur les amplitudes de cisaillement EPSI_IMPOSE
@@ -435,7 +435,7 @@ def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
       # ---
       __EVOL = SIMU_POINT_MAT(
                INFO=INFO,
-               COMP_INCR=COMP_INCR.List_F(),
+               COMPORTEMENT=COMPORTEMENT.List_F(),
                CONVERGENCE=CONVERGENCE.List_F(),
                MATER=MATER,
                INCREMENT=_F(LIST_INST=__DLIST,
@@ -548,7 +548,7 @@ def essai_CISA_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
 
-def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
+def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
   """
   Essai Triaxial Non Draine Cyclique Draine (TND_C)
   """  
@@ -577,7 +577,7 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
   K_EAU       = 1./UN_SUR_K
 
   # recuperation du nombre de VI associe a la LdC
-  nom_lc = COMP_INCR.List_F()[0]['RELATION']
+  nom_lc = COMPORTEMENT.List_F()[0]['RELATION']
   num_lc, nb_vari = catalc.get_info(nom_lc)
   assert type(nb_vari) is int and nb_vari>0
 
@@ -717,7 +717,7 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMP_INCR,CONVERGENCE,INFO):
 
           __EVOL = SIMU_POINT_MAT(
                    INFO=INFO,
-                   COMP_INCR=COMP_INCR.List_F(),
+                   COMPORTEMENT=COMPORTEMENT.List_F(),
                    CONVERGENCE=CONVERGENCE.List_F(),
                    MATER=MATER,
                    SUPPORT='POINT',

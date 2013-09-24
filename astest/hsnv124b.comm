@@ -188,7 +188,7 @@ LIAISON=AFFE_CHAR_MECA(      MODELE=MOMECA,DDL_IMPO=(
 U=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER,
-                     COMP_INCR=_F(  RELATION = 'VMIS_CINE_LINE'),EXCIT=(
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_CINE_LINE'),EXCIT=(
                      _F(
                    CHARGE = LIAISON,
                            ), _F(
@@ -255,7 +255,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
 U2=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER2,
-                     COMP_INCR=_F(  RELATION = 'VMIS_ECMI_LINE'),EXCIT=(
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_ECMI_LINE'),EXCIT=(
                      _F(
                    CHARGE = LIAISON,
                            ), _F(
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
 U3=STAT_NON_LINE(
                      MODELE=MOMECA,
                      CHAM_MATER=CHMATER3,
-                     COMP_INCR=_F(  RELATION = 'VMIS_CIN1_CHAB',
+                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN1_CHAB',
                                     RESI_INTE_RELA = 9.99999999999999955E-7,
                                     ITER_INTE_MAXI = 50,
                                     ITER_INTE_PAS = 0,

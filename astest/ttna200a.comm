@@ -388,7 +388,7 @@ THL10=CALC_CHAMP(reuse=THL10,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'),RESULTAT=THL10)
 THL10=CALC_META(reuse=THL10,
                 RESULTAT=THL10,
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT = 'OUI'),
                 OPTION='META_ELNO',);
 
@@ -422,7 +422,7 @@ THNL6=CALC_META(reuse=THNL6,
                 RESULTAT=THNL6,
                 OPTION='META_ELNO',
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT = 'OUI'),);
 
 ENGENDRE_TEST (  CO = (THNL1, THNL6, THL10) )

@@ -97,7 +97,7 @@ CAT=DEFI_LIST_REEL(         DEBUT=0.0,INTERVALLE=(
 CALCNL=STAT_NON_LINE(
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_CINE_LINE'),
                          INCREMENT=_F(
                 LIST_INST = CAT,
@@ -121,7 +121,7 @@ CALCNL=STAT_NON_LINE(
 CALCNL=STAT_NON_LINE( reuse=CALCNL,
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'VMIS_CINE_LINE'),
                          ETAT_INIT=_F(
                 EVOL_NOLI = CALCNL,

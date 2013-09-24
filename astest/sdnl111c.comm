@@ -1,19 +1,19 @@
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # Etude du choc de deux poutres maillees 3D
@@ -41,18 +41,18 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                    ORIE_PEAU_3D=(
                                  _F(GROUP_MA='CNT_POU1',),
                                  _F(GROUP_MA='CNT_POU2',),
-                                  ),)          
-             
+                                  ),)
+
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=7800.,
-                       AMOR_ALPHA=1.E-7, AMOR_BETA=1.E-3,  
+                       AMOR_ALPHA=1.E-7, AMOR_BETA=1.E-3,
                      ),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(
-                          _F(GROUP_MA=('POU1'), 
+                          _F(GROUP_MA=('POU1'),
                              MATER=MATER,),
-                          _F(GROUP_MA=('POU2'), 
+                          _F(GROUP_MA=('POU2'),
                              MATER=MATER,),
                           ),)
 
@@ -66,7 +66,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DZ=0.,),),
                                  )
 
-VITINI=CREA_CHAMP(   OPERATION='AFFE', 
+VITINI=CREA_CHAMP(   OPERATION='AFFE',
                      TYPE_CHAM='NOEU_DEPL_R',
                      MAILLAGE=MAIL,
                      AFFE=(_F( TOUT='OUI',
@@ -101,10 +101,10 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                 EXCIT=(
                        _F(CHARGE=CONDLIM,),
                        ),
-                CONTACT = CONTACT,       
-                ETAT_INIT=_F(VITE= VITINI),       
-                COMP_INCR=_F(RELATION='ELAS',
-                             DEFORMATION='PETIT_REAC',),                
+                CONTACT = CONTACT,
+                ETAT_INIT=_F(VITE= VITINI),
+                COMPORTEMENT=_F(RELATION='ELAS',
+                             DEFORMATION='PETIT_REAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
@@ -176,10 +176,10 @@ RESU2=DYNA_NON_LINE(MODELE=MODELE,
                 EXCIT=(
                        _F(CHARGE=CONDLIM,),
                        ),
-                CONTACT = CONTACT,    
-                ETAT_INIT=_F(VITE= VITINI),       
-                COMP_INCR=_F(RELATION='ELAS',
-                             DEFORMATION='PETIT_REAC',),                
+                CONTACT = CONTACT,
+                ETAT_INIT=_F(VITE= VITINI),
+                COMPORTEMENT=_F(RELATION='ELAS',
+                             DEFORMATION='PETIT_REAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',

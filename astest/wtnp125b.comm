@@ -238,7 +238,7 @@ U_1=STAT_NON_LINE(
                     FONC_MULT = FCT_MON),
                ),
   ETAT_INIT=_F(DEPL=CHAMNO,SIGM=SIGINIT,VARI=CH_VARI),
-  COMP_INCR=(_F(RELATION='KIT_HM',
+  COMPORTEMENT=(_F(RELATION='KIT_HM',
                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
                GROUP_MA=('MASSIF',),),
             _F(RELATION='KIT_HM',

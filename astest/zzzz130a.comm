@@ -150,7 +150,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N7',
 #
 #  On veut que :
 #     STAT_NON_LINE :
-#         COMP_INCR=(_F( GROUP_MA='MASSIF',RELATION = 'CJS'),
+#         COMPORTEMENT=(_F( GROUP_MA='MASSIF',RELATION = 'CJS'),
 #                    _F( GROUP_MA='BETON', RELATION = 'ENDO_FRAGILE'),),
 #
 #     pour la relation de comportement CJS (16 variables internes), on veut affecter :
@@ -186,7 +186,7 @@ CHAR_U1=AFFE_CHAR_MECA( MODELE=MO,
 
 UBID=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CHMAT,
        EXCIT= _F( CHARGE = CHAR_U1,),
-       COMP_INCR=(_F( GROUP_MA='MASSIF',RELATION = 'CJS'),
+       COMPORTEMENT=(_F( GROUP_MA='MASSIF',RELATION = 'CJS'),
                   _F( GROUP_MA='BETON', RELATION = 'ENDO_FRAGILE'),),
        NEWTON=_F(  MATRICE = 'ELASTIQUE'),
        CONVERGENCE=_F( ARRET = 'NON',  # pour continuer sans convergence

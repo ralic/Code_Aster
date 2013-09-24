@@ -31,5 +31,5 @@ loi = LoiComportement(
    nom_varc       = ('TEMP','SECH','HYDR'),
    algo_inte         = 'ANALYTIQUE',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION','IMPLEX'),
-   proprietes     = ' ',
+   proprietes     = ('COMP_ELAS'),
 )

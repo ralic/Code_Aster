@@ -66,7 +66,7 @@ U=STAT_NON_LINE( MODELE=MOMECA,
                  CHAM_MATER=CM,
                  EXCIT=_F(   CHARGE = CHMECA,
                              FONC_MULT = FDEPL),
-                 COMP_INCR=_F(  RELATION = 'VMIS_ECMI_LINE'),
+                 COMPORTEMENT=_F(  RELATION = 'VMIS_ECMI_LINE'),
                  INCREMENT=_F(  LIST_INST = L_INST),
                  CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6)
               )

@@ -189,7 +189,7 @@ TEMPE=CALC_META(reuse =TEMPE,
                 MODELE=MOTH,
                 CHAM_MATER=CHMATT,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
-                COMP_INCR=_F(RELATION='ACIER',),
+                COMPORTEMENT=_F(RELATION='ACIER',),
                 OPTION='META_ELNO',);
 #######################
 
@@ -706,7 +706,7 @@ LISTM=DEFI_LIST_REEL(DEBUT=0.,
 U=STAT_NON_LINE(MODELE=MOMEC,
                 CHAM_MATER=CHMATM,
                 EXCIT=_F(CHARGE=CHMEC,),
-                COMP_INCR=(_F(RELATION='META_P_INL',
+                COMPORTEMENT=(_F(RELATION='META_P_INL',
                               RELATION_KIT='ACIER',
                               DEFORMATION='PETIT',
                               GROUP_MA='SURDGB',),

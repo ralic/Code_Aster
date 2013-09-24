@@ -173,7 +173,7 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH22),
                  ),
        ARCHIVAGE=_F(LIST_INST=L_INST),
-       COMP_INCR=_F(
+       COMPORTEMENT=_F(
                  RELATION = 'KIT_DDI',
                  RELATION_KIT=('BETON_UMLV_FP','MAZARS'),),
                  INCREMENT=_F(LIST_INST = DEFLIST,

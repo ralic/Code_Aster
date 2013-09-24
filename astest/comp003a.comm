@@ -237,7 +237,7 @@ for i in range(Ncal):
 #                                   SUBD_NIVEAU=2,),);
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,
+                   COMPORTEMENT=_F(RELATION=compor,
                                 ITER_INTE_MAXI=100,
                                 RESI_INTE_RELA=1.E-9),
                    ANGLE=angles[i],

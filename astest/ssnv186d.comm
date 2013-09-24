@@ -49,7 +49,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 4,
-                      ITER_FROT_MAXI = 6,                      
+                      ITER_FROT_MAXI = 6,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
@@ -61,9 +61,9 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,                                   
+                               COEF_FROT    = 1000.,
                                ALGO_LAGR    = 'VERSION2',
-                             ), 
+                             ),
                          ),
                    );
 
@@ -98,8 +98,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1),
                           _F(CHARGE=CHF),),
-                   CONTACT  =CTXFEM,       
-                   COMP_ELAS=_F(RELATION='ELAS',
+                   CONTACT  =CTXFEM,
+                   COMPORTEMENT=_F(RELATION='ELAS',
                                 GROUP_MA='VOL'),
                    INCREMENT=_F(LIST_INST=L_INST),
                    SOLVEUR=_F(METHODE='MUMPS'),
@@ -108,9 +108,9 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INFO=1);
 
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        PREF_GROUP_CO = 'NFISSU',
@@ -119,11 +119,11 @@ MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',

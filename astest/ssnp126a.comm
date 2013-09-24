@@ -117,7 +117,7 @@ U=STAT_NON_LINE(
     _F(CHARGE = LIAISON , ),
     _F(CHARGE = TRACTION, FONC_MULT = FC1),
   ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
           _F(RELATION = 'JOINT_BA',
              MAILLE = 'CUBEDEG',
              RESI_INTE_RELA = 1.E-6,

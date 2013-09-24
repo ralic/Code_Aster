@@ -91,7 +91,7 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                          ))
 
 SOLNL=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(
+                   COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
                                 COMPOR=COMPORP,
                                 ALGO_INTE='RUNGE_KUTTA',
@@ -156,7 +156,7 @@ TEST_TABLE(
 # test de FORMAT_TABLE='CMP_LIGNE'
 
 SOLNL2=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(
+                   COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
                                 COMPOR=COMPORP,
                                 ALGO_INTE='RUNGE_KUTTA',

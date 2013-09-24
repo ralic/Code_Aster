@@ -194,7 +194,7 @@ U1=STAT_NON_LINE(           MODELE=MODELE,
                 ), _F(
                 CHARGE = P0,
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 ALGO_INTE='NEWTON_PERT',
                 RELATION = 'KIT_HM',
                 RESI_INTE_RELA=1E-10,
@@ -279,7 +279,7 @@ U2=STAT_NON_LINE(
                 CHARGE = P0,
                 ),
                 ),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 ALGO_INTE='NEWTON_PERT',
                 RESI_INTE_RELA=1E-10,
                 ITER_INTE_MAXI = 100,

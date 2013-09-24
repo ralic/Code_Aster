@@ -76,7 +76,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CHARGE,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=SYMETRIE,),),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=INSTANTS,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(LIST_INST=INSTANTS,),);

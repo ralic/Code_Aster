@@ -148,7 +148,7 @@ RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
                               CARA_ELEM=CAREL,
                                   EXCIT=_F(  CHARGE = CHAR2),
                               INCREMENT=_F(  LIST_INST = L_INST),
-                              COMP_INCR=_F(  RELATION = 'ELAS',
+                              COMPORTEMENT=_F(  RELATION = 'ELAS',
                )
                        )
 

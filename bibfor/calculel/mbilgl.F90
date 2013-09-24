@@ -155,7 +155,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !
-    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
+    call getvid('COMPORTEMENT', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='G_BILI'
         call utmess('F', 'RUPTURE1_13', sk=valk)

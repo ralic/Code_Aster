@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# Pour des raisons de performances, on force SDVERI='NON'. 
+# Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',),
       IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'));
 #
@@ -343,7 +343,7 @@ for k in range(1,NF):
 
     resunl = CALC_FORC_NONL( RESULTAT = EVOL , TOUT_ORDRE = 'OUI'    ,
                         CHAM_MATER=chmat, CARA_ELEM=cara, MODELE=mode,
-                  COMP_INCR = ( _F( RELATION = 'ELAS',
+                  COMPORTEMENT = ( _F( RELATION = 'ELAS',
                                     GROUP_MA = ( 'DAL1' ,
                                      'RESH','RESS','RES0', ),) ,
                                 _F( RELATION = 'DIS_CHOC' ,
@@ -382,7 +382,7 @@ for k in range(1,NF):
 
     resunlt = CALC_FORC_NONL( RESULTAT = EVOLT , TOUT_ORDRE = 'OUI',
                        CHAM_MATER=chmat, CARA_ELEM=cara, MODELE=mode,
-                  COMP_INCR = ( _F( RELATION = 'ELAS',
+                  COMPORTEMENT = ( _F( RELATION = 'ELAS',
                                     GROUP_MA = ( 'DAL1' ,
                                      'RESH','RESS','RES0', ),) ,
                                 _F( RELATION = 'DIS_CHOC' ,

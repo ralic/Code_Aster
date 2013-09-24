@@ -111,7 +111,7 @@ U=STAT_NON_LINE(MODELE=MO,
                        _F(CHARGE=BLOQZ,),
                        _F(CHARGE=DEP_Y_2,),
                        _F(CHARGE=DEP_Z_2,),),
-                COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                COMPORTEMENT=_F(RELATION='ENDO_ORTH_BETON',
                              ITER_INTE_PAS=-5,),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_INIT=0.0,
@@ -131,7 +131,7 @@ U=STAT_NON_LINE(reuse =U,
                        _F(CHARGE=BLOQZ,
                           TYPE_CHARGE='FIXE_CSTE',),
                        _F(CHARGE=DEP_X_2,),),
-                COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                COMPORTEMENT=_F(RELATION='ENDO_ORTH_BETON',
                              ITER_INTE_PAS=-5,),
                 ETAT_INIT=_F(EVOL_NOLI=U,),
                 INCREMENT=_F(LIST_INST=L_INST,
@@ -152,7 +152,7 @@ U=STAT_NON_LINE(reuse =U,
                        _F(CHARGE=BLOQZ,),
                        _F(CHARGE=DEP_X_2,),
                        _F(CHARGE=DEP_Y_2,),),
-                COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                COMPORTEMENT=_F(RELATION='ENDO_ORTH_BETON',
                              ITER_INTE_PAS=-5,),
                 ETAT_INIT=_F(EVOL_NOLI=U,),
                 INCREMENT=_F(LIST_INST=L_INST,
@@ -248,7 +248,7 @@ ENER2 = POST_ELEM( RESULTAT = U, TRAV_EXT = _F(),)
 # On se sert de ENER1 comme reference pour ENER2 :
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=503.91043140283,
-           
+
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -257,7 +257,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=524.44797530353,
-           
+
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -266,7 +266,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=2.4841796608604E5,
-           
+
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',

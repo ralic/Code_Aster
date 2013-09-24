@@ -116,7 +116,7 @@ BlocEscl=AFFE_CHAR_CINE(MODELE=modl,
 
 EVOLNOLI=STAT_NON_LINE(MODELE=modl,
                        CHAM_MATER=chmat,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     TOUT='OUI',),
                        INCREMENT=_F(LIST_INST=LINST,),

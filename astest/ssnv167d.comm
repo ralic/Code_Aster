@@ -70,7 +70,7 @@ SOL = STAT_NON_LINE( MODELE=MO,
                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                      EXCIT=(_F(CHARGE = CHBLO),),
                          CONTACT = CHCO,
-                         COMP_ELAS=_F(RELATION = 'ELAS'),
+                         COMPORTEMENT=_F(RELATION = 'ELAS'),
                          INCREMENT=_F(LIST_INST = LIST,),)
 
 SOL=CALC_CHAMP(reuse =SOL,

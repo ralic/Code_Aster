@@ -1,19 +1,19 @@
 # TITRE : VALIDATION POLYCRISTAL LOI DD_CFC_IRRA
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 DEBUT(CODE=_F(NOM='SSNV194G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),
@@ -75,7 +75,7 @@ ACIERDDi=DEFI_MATERIAU(ELAS=_F(E=E,
                                      H2      = 0.625,
                                      H3      = 0.137,
                                      H4      = 0.122,
-                                     H5      = 0.07,                                       
+                                     H5      = 0.07,
                                      RHO_VOID =1.E3,
                                      PHI_LOOP =5.9E-6,
                                      ##ALP_VOID =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
@@ -85,7 +85,7 @@ ACIERDDi=DEFI_MATERIAU(ELAS=_F(E=E,
                                      RHO_SAT  =RHO_LOOPS*0.,
                                      PHI_SAT  =4.E-2,
                                      XI_IRRA  =1.,
-                                     DZ_IRRA  =1.e7,  
+                                     DZ_IRRA  =1.e7,
                                    ),
                       );
 
@@ -106,7 +106,7 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                      H2      = 0.625,
                                      H3      = 0.137,
                                      H4      = 0.122,
-                                     H5      = 0.07,                                       
+                                     H5      = 0.07,
                                    ),
                       );
 
@@ -128,7 +128,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
 
 #Orientations cristallographiques
 INCLUDE(UNITE=91)
- 
+
 ##chargement
 
 
@@ -152,9 +152,9 @@ nbgr=100
 nb_syst=12
 nvarit=7+nbgr*(6+3*nb_syst+2*nb_syst+6)+1
 
-nvarpargr=3*nb_syst 
+nvarpargr=3*nb_syst
 
-                    
+
 # densites de dislocation initiales : variables internes de 0 a 44
 avari = zeros(nvarit)
 for igr in range(nbgr):
@@ -173,9 +173,9 @@ for igr in range(nbgr):
 
 lvari=list(avari)
 
-                    
+
 SOLNLi=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(
+                   COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
                                 COMPOR=COMPORPi,
                                 ALGO_INTE='RUNGE_KUTTA',
@@ -192,7 +192,7 @@ SOLNLi=SIMU_POINT_MAT(INFO=1,
                    MATER      = ACIERDDi,
 
                    NB_VARI_TABLE=6,
-                   
+
                    VARI_INIT=_F(VALE=lvari,
                                   ),
 
@@ -209,9 +209,9 @@ nbgr=100
 nb_syst=12
 nvarit=7+nbgr*(6+3*nb_syst+6)+1
 
-nvarpargr=3*nb_syst 
+nvarpargr=3*nb_syst
 
-                    
+
 # densites de dislocation initiales : variables internes de 0 a 44
 avari = zeros(nvarit)
 for igr in range(nbgr):
@@ -220,9 +220,9 @@ for igr in range(nbgr):
 
 lvari=list(avari)
 
-                    
+
 SOLNL=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(
+                   COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
                                 COMPOR=COMPORP,
                                 ALGO_INTE='RUNGE_KUTTA',
@@ -239,7 +239,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    MATER      = ACIERDD,
 
                    NB_VARI_TABLE=6,
-                   
+
                    VARI_INIT=_F(VALE=lvari,
                                   ),
 

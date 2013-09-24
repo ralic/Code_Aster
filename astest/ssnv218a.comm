@@ -1,19 +1,19 @@
 # TITRE CALCUL DU PARAMETRE GP DANS LE CAS D'UNE ENTAILLE ELLIPTIQUE EN 3D
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -103,9 +103,9 @@ SIGM3=DEFI_FONCTION(NOM_PARA='EPSI',
 M_TR_M3=DEFI_MATERIAU(ELAS = _F(NU=0.3,
                                 E=223194,),
                       TRACTION = _F(SIGM=SIGM3,),);
-                                                                      
-# 
-# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS 
+
+#
+# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS
 # ----------------------------------------------------------------------
 #
 
@@ -141,10 +141,10 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
                                      DY=0.,),),);
 
 #
-# CHARGEMENT 
+# CHARGEMENT
 # -----------
-# 
-                                                                                                
+#
+
 
 RAMPE_LF=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=( 0.,     0.,
@@ -155,7 +155,7 @@ RAMPE_LF=DEFI_FONCTION(NOM_PARA='INST',
 CHARF=AFFE_CHAR_MECA_F(MODELE=MOD,
                        FORCE_FACE=_F(GROUP_MA='SINF',
                                       FZ = RAMPE_LF,),);
-                
+
 
 nufin = 3
 
@@ -164,7 +164,7 @@ RESX=STAT_NON_LINE(MODELE=MOD,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CHARF,),),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',
                                DEFORMATION='PETIT',
                                GROUP_MA=('VBLOC','SINF'),),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -198,17 +198,17 @@ L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],);
 conv = 1000.**0.5
 kjc1=conv*57.739
 
-gtheta = CALC_G(COMP_ELAS=_F(RESI_INTE_RELA=9.9999999999999995E-07,
+gtheta = CALC_G(COMPORTEMENT=_F(
                              DEFORMATION='PETIT',
                              RELATION='ELAS_VMIS_TRAC',
                              GROUP_MA=('VBLOC','SINF'),
-                             ITER_INTE_MAXI=10,),
+                             ),
                 THETA=_F(R_INF=0.25,
                          R_SUP=0.5,
                          MODULE=1.0,
                          FOND_FISS=FONFISS,),
                          RESULTAT=RESU,
-                         LIST_INST=L_INS_GP,                             
+                         LIST_INST=L_INS_GP,
                   )
 
 tabgp=CALC_GP(RESULTAT=RESU,
@@ -216,7 +216,7 @@ tabgp=CALC_GP(RESULTAT=RESU,
             TRANCHE_3D = (
                           _F(GROUP_MA=l_copeaux1,),
                           _F(GROUP_MA=l_copeaux4,),
-                          ), 
+                          ),
             LIST_INST=L_INS_GP,
             GPMAX     = CO('tab2max'),);
 

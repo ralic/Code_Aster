@@ -174,7 +174,7 @@ RESU0=STAT_NON_LINE(
                 CHARGE = CHARHO),
                              _F(
                 CHARGE = CH_FLU1)),
-                         COMP_INCR=_F( PARM_THETA=1.,
+                         COMPORTEMENT=_F( PARM_THETA=1.,
                 RELATION = 'KIT_HM',
                 ITER_INTE_MAXI = 5,
                 RELATION_KIT = (

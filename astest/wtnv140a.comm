@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NOM='WTNV140A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
 
 
 ## ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
-# 
+#
 BETA = -60.
 ALPHA = 30.
 
@@ -82,7 +82,7 @@ PRESREPY = -(SIGYY)
 PRESREPX = -(SIGXX)
 PRESREPZ = -(SIGZZ)
 #***********************************************************************
-#    MAILLAGE 
+#    MAILLAGE
 #***********************************************************************
 MAILIN=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -137,7 +137,7 @@ VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3)
 
 DVISCOL=DEFI_CONSTANTE(VALE=0.)
 
-# PERMEABILITE INTRINSEQUE 
+# PERMEABILITE INTRINSEQUE
 KINT=DEFI_CONSTANTE(VALE=5.E-20)
 
 
@@ -147,7 +147,7 @@ PLIMP = 0.E6
 
 # COEFFICIENTS DE BIOT REPERE LN
 CBIOTL = 0.6
-CBIOTN = 0.3 
+CBIOTN = 0.3
 
 MAT=DEFI_MATERIAU(
        ELAS_ISTR=_F(
@@ -159,13 +159,13 @@ MAT=DEFI_MATERIAU(
            G_LN = 8.88E+9,
          ),
        COMP_THM = 'LIQU_SATU',
-                              
- THM_LIQU=_F(  
-     RHO = 1000.,  
-     UN_SUR_K = 0.,  
-     VISC = VISCOLIQ,   
+
+ THM_LIQU=_F(
+     RHO = 1000.,
+     UN_SUR_K = 0.,
+     VISC = VISCOLIQ,
      D_VISC_TEMP = DVISCOL,),
-     
+
  THM_DIFFU=_F(
      RHO=2410.,
      BIOT_L=CBIOTL,
@@ -177,19 +177,19 @@ MAT=DEFI_MATERIAU(
      PERMIN_N=KINT,
         ),
 
- THM_INIT=_F(PRE1 = 0.,  
+ THM_INIT=_F(PRE1 = 0.,
              PORO = 0.14,),
-     ); 
+     );
 #***********************************************************************
 #    LISTE DES INSTANTS DE CALCUL
 #***********************************************************************
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 1.,NOMBRE = 10,),),
-                     );                      
+                     );
 
 ##################################################################################################
-#     
+#
 #                         MODELE MECA
 #
 ##################################################################################################
@@ -208,13 +208,13 @@ ORIREP=AFFE_CARA_ELEM(MODELE=MODELEM,
     INFO=2,);
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=_F(TOUT='OUI',  
+                     AFFE=_F(TOUT='OUI',
                      MATER = MAT,),
                     );
 
 #***********************************************************************
-#        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE 
-#                  DEPLACEMENTS POUR LA PHASE 1 
+#        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE
+#                  DEPLACEMENTS POUR LA PHASE 1
 #***********************************************************************
 
 SIGIM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -224,14 +224,14 @@ SIGIM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
       NOM_CMP=('SIXX','SIYY','SIZZ',
             'SIXY','SIYZ','SIXZ',
             ),
-      VALE=(SIEFX,SIEFY,SIEFZ, 
-         SIEFXY,SIEFXZ,SIEFYZ, 
+      VALE=(SIEFX,SIEFY,SIEFZ,
+         SIEFXY,SIEFXZ,SIEFYZ,
          ),),
-                          ), 
+                          ),
                    );
 
-DEPIM=CREA_CHAMP(MAILLAGE=MAIL, 
-     OPERATION='AFFE', 
+DEPIM=CREA_CHAMP(MAILLAGE=MAIL,
+     OPERATION='AFFE',
      TYPE_CHAM='NOEU_DEPL_R',
      AFFE=(_F(TOUT='OUI',
        NOM_CMP = 'DX',
@@ -276,7 +276,7 @@ CH_SYM2=AFFE_CHAR_CINE(MODELE=MODELEM,
                                 ),
                       );
 
-            
+
 #*****************************************************************
 #              CALCUL MECANIQUE
 #*****************************************************************
@@ -292,7 +292,7 @@ UM=STAT_NON_LINE(MODELE=MODELEM,
                        ),
    ETAT_INIT=_F(SIGM=SIGIM,
                    DEPL=DEPIM,),
-   COMP_INCR=_F(RELATION = 'ELAS',          
+   COMPORTEMENT=_F(RELATION = 'ELAS',
          ),
    NEWTON=_F(MATRICE ='TANGENTE',
                            REAC_ITER=1,),
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
           )
 
 ##################################################################################################
-#     
+#
 #                         MEME CALCUL EN THM
 #
 ##################################################################################################
@@ -350,16 +350,16 @@ SIGINI=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
          'SIPXX','SIPYY','SIPZZ',
          'SIPXY','SIPXZ','SIPYZ',
          'M11','FH11X','FH11Y','FH11Z',),
-      VALE=(SIEFX,SIEFY,SIEFZ, 
-            SIEFXY,SIEFXZ,SIEFYZ, 
+      VALE=(SIEFX,SIEFY,SIEFZ,
+            SIEFXY,SIEFXZ,SIEFYZ,
             SIPXX0,SIPYY0,SIPZZ0,
             SIPXY0,SIPXZ0,SIPYZ0,
             0.,0.,0.,0.,),),
-                          ), 
+                          ),
                    );
 
-DEPINIT=CREA_CHAMP(MAILLAGE=MAIL, 
-                   OPERATION='AFFE', 
+DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
+                   OPERATION='AFFE',
                    TYPE_CHAM='NOEU_DEPL_R',
                    AFFE=(_F(TOUT='OUI',
                             NOM_CMP = 'DX',
@@ -399,7 +399,7 @@ U0=STAT_NON_LINE(MODELE=PHASE1,
    ETAT_INIT=_F(
                               SIGM=SIGINI,
          DEPL=DEPINIT,),
-   COMP_INCR=_F(RELATION = 'KIT_HM',          
+   COMPORTEMENT=_F(RELATION = 'KIT_HM',
          RELATION_KIT = ('ELAS',
                   'LIQU_SATU',
                   'HYDR_UTIL',),),

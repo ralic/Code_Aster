@@ -76,7 +76,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=INCOMP,),
                           _F(CHARGE=CH1,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='NORTON_HOFF',),
+                   COMPORTEMENT=_F(RELATION='NORTON_HOFF',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
@@ -103,13 +103,13 @@ RESU=CALC_ERREUR(reuse =RESU,
 
 TEST_TABLE(
            VALE_CALC=13.867505,
-           
+
            NOM_PARA='CHAR_LIMI_SUP',
            TABLE=ECHL,)
 
 TEST_TABLE(
            VALE_CALC=11.556253999999999,
-           
+
            NOM_PARA='CHAR_LIMI_ESTIM',
            TABLE=ECHL,)
 

@@ -47,7 +47,7 @@ RESU=STAT_NON_LINE(
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(
                 CHARGE = CH),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
@@ -214,7 +214,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -263,7 +263,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -312,7 +312,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -361,7 +361,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -410,7 +410,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK5,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -459,7 +459,7 @@ TEST_TABLE(PRECISION=0.050999999999999997,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK6,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -498,7 +498,7 @@ TEST_TABLE(PRECISION=0.050999999999999997,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0E+00,
-           
+
            NOM_PARA='K2',
            TABLE=GK7,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

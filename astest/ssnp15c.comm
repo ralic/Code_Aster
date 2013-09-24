@@ -36,7 +36,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        MODELISATION='DKT',),);
 
 CARAC=AFFE_CARA_ELEM(MODELE=MO,
-                     COQUE=_F(GROUP_MA='TOUT', 
+                     COQUE=_F(GROUP_MA='TOUT',
                      ANGL_REP=(10.0,43.0,),
                               EPAIS=2.0,
                               COQUE_NCOU=2,),);
@@ -109,7 +109,7 @@ U=STAT_NON_LINE(MODELE=MO,
                           FONC_MULT=SIGMA_F,),
                        _F(CHARGE=CISAIL,
                           FONC_MULT=TAU_F,),),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                              RESI_INTE_RELA=1e-08,
                              ITER_INTE_MAXI=30
                              ),

@@ -74,7 +74,7 @@ D_FONC=DEFI_FONCTION(NOM_PARA='INST',
 
 NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
                     MODELE=MO1,
-                    COMP_ELAS=_F(DEFORMATION='GROT_GDEP',
+                    COMPORTEMENT=_F(DEFORMATION='GROT_GDEP',
                                  RELATION='ELAS',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                    RESI_GLOB_RELA=1.E-06,),

@@ -52,7 +52,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          regles=(UN_PARMI('MAILLAGE','MODELE'),),
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
-         COMP_INCR       =C_COMP_INCR(),
+         COMPORTEMENT       =C_COMPORTEMENT(),
          NB_VARI         =SIMP(statut='f',typ='I' ),
 
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,),

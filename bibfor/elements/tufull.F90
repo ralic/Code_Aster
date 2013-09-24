@@ -106,7 +106,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
     call jevech('PCOMPOR', 'L', icompo)
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call utmess('F', 'ELEMENTS2_90')
+        if (zk16(icompo) .ne. 'ELAS') then
+            call utmess('F', 'ELEMENTS2_90')
+        endif
     endif
 !
     call jevech('PNBSP_I', 'L', jnbspi)

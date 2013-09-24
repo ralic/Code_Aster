@@ -103,7 +103,7 @@ try :
                                   FONC_MULT=RAMPE),
                                ),
                         CONTACT  = CONT2,
-                        COMP_INCR=_F(RELATION='ELAS',
+                        COMPORTEMENT=_F(RELATION='ELAS',
                                      DEFORMATION='PETIT'),
                         INCREMENT=_F(LIST_INST=TPS),
                         NEWTON=_F(REAC_INCR=1,

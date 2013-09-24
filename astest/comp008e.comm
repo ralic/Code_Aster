@@ -141,7 +141,7 @@ compor='VISC_ENDO_LEMA'
 
 tabresu=TEST_COMPOR(SUPPORT='ELEMENT',
               MATER=MATERI,
-              COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+              COMPORTEMENT=_F(RELATION=compor,ITER_INTE_MAXI=100),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=LMAT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=T0,TEMP_FIN=Tmax,
               NB_VARI=NB_VARI, INST_FIN=tfin,
@@ -156,7 +156,7 @@ compor='VENDOCHAB'
 
 tabresu2=TEST_COMPOR(SUPPORT='ELEMENT',
               MATER=MATERI,
-              COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+              COMPORTEMENT=_F(RELATION=compor,ITER_INTE_MAXI=100),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=LMAT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=T0,TEMP_FIN=Tmax,
               NB_VARI=NB_VARI, INST_FIN=tfin,

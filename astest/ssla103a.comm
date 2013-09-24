@@ -130,7 +130,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 U=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=_F(CHARGE=CH1,),
-                COMP_INCR=_F(RELATION='ELAS',),
+                COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
@@ -203,11 +203,11 @@ TEST_RESU(RESU=(_F(INST=3600.0,
                 ),
           )
 
-# Resultat avec COMP_ELAS
+# Resultat avec COMPORTEMENT
 U3=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=_F(CHARGE=CH1,),
-                COMP_ELAS=_F(RELATION='ELAS',),
+                COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),

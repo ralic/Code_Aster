@@ -414,7 +414,7 @@ CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CM1,
                 EXCIT=_F(CHARGE=CHMECA,),
-                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                ITER_GLOB_MAXI=10,),);
@@ -478,7 +478,7 @@ TEST_RESU(RESU=(_F(INST=90.0,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=-75.0,
-                   
+
                    CRITERE='RELATIF',
                    MAILLE='M1',),
                 _F(INST=90.0,
@@ -487,7 +487,7 @@ TEST_RESU(RESU=(_F(INST=90.0,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    MAILLE='M1',),
                 _F(INST=90.0,

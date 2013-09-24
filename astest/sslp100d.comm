@@ -236,7 +236,7 @@ U=STAT_NON_LINE(
                         _F( CAS_CHARGE = 'CHF1', TOUT = 'OUI'),
                         _F( CAS_CHARGE = 'CHF2', TOUT = 'OUI'),
                         ),
-            COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
+            COMPORTEMENT=(_F( RELATION='ELAS', TOUT='OUI'),
                        _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
                         ),
             INCREMENT=_F( LIST_INST = LISTIN1),
@@ -278,7 +278,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N15',
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='DX',
                       PRECISION=1.0000000000000001E-05,
-                      
+
                       CHAM_GD=U1,
                       VALE_CALC=0.015366519,
                       VALE_REFE=0.015366519405176001,),
@@ -355,7 +355,7 @@ ACCNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               AFFE=_F(TOUT    = 'OUI',
                       NOM_CMP = ('DX','DY'),
                       VALE    = (0.,0.),),
-              
+
               );
 
 
@@ -372,10 +372,10 @@ U=DYNA_NON_LINE( reuse=U,
                         ),
             ETAT_INIT= _F(EVOL_NOLI=U,
                           ACCE=ACCNUL,
-            
-            
+
+
             ),
-            COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
+            COMPORTEMENT=(_F( RELATION='ELAS', TOUT='OUI'),
                        _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
                         ),
             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
@@ -413,7 +413,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N15',
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='DX',
                       PRECISION=0.050000000000000003,
-                      
+
                       CHAM_GD=U2,
                       VALE_CALC=0.015366519,
                       VALE_REFE=0.015366519405368999,),
@@ -421,7 +421,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N15',
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='DY',
                       PRECISION=0.050000000000000003,
-                      
+
                       CHAM_GD=U2,
                       VALE_CALC=-1.21612037E-03,
                       VALE_REFE=-1.2161203823997E-3,),

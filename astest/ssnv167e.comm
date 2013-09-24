@@ -58,8 +58,8 @@ CHCO=DEFI_CONTACT(MODELE      = MO,
                           ALGO_CONT    = 'GCP',
                           GROUP_MA_MAIT='CONT2',
                           GROUP_MA_ESCL='CONT1',
-                         ),                         
-                       ),  
+                         ),
+                       ),
                   )
 
 LIST=DEFI_LIST_REEL(    DEBUT=0.,
@@ -72,7 +72,7 @@ SOL = STAT_NON_LINE( MODELE=MO,
                      INFO=2,
                      EXCIT=(_F(CHARGE = CHBLO),),
                          CONTACT = CHCO,
-                         COMP_ELAS=_F(RELATION = 'ELAS'),
+                         COMPORTEMENT=_F(RELATION = 'ELAS'),
                          INCREMENT=_F(LIST_INST = LIST,),)
 
 SOL=CALC_CHAMP(reuse =SOL,

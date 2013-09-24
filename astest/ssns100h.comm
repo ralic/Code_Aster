@@ -177,7 +177,7 @@ LEDEP=STAT_NON_LINE(
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -218,7 +218,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -260,7 +260,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -302,7 +302,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -344,7 +344,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -386,7 +386,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -428,7 +428,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -470,7 +470,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -512,7 +512,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -554,7 +554,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -596,7 +596,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -638,7 +638,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -680,7 +680,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(
@@ -722,7 +722,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
                 CHARGE = CH1,
                 TYPE_CHARGE = 'FIXE_PILO',
                 )),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'GRILLE_PINTO_MEN',
                 ),
                          INCREMENT=_F(

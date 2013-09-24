@@ -197,7 +197,7 @@ LISTIME=DEFI_LIST_REEL(VALE=( 0.0, 1.0, ), )
 STATNL1=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT1,
                       CARA_ELEM=CARE,
-                      COMP_INCR=_F(RELATION='ELAS'),
+                      COMPORTEMENT=_F(RELATION='ELAS'),
                       EXCIT=_F( CHARGE = CHDIL),
                       INCREMENT=_F(LIST_INST=LISTIME,),)
 
@@ -224,7 +224,7 @@ DEPLDIL=CALC_CHAMP(reuse=DEPLDIL,RESULTAT=DEPLDIL,
 STATNL2=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMATH1,
                       CARA_ELEM=CARE,
-                      COMP_INCR=_F(RELATION='ELAS'),
+                      COMPORTEMENT=_F(RELATION='ELAS'),
                       EXCIT=_F( CHARGE = CHDIL),
                       INCREMENT=_F(LIST_INST=LISTIME,),);
 
@@ -516,7 +516,7 @@ U=STAT_NON_LINE(           MODELE=MO,
                         CHAM_MATER=CHMAT3,
                          CARA_ELEM=CARE,
                              EXCIT=_F( CHARGE = CHDI3),
-                         COMP_INCR=_F( RELATION = 'GLRC_DM',
+                         COMPORTEMENT=_F( RELATION = 'GLRC_DM',
                                        ITER_INTE_MAXI = 30,
                                        RESI_INTE_RELA = 1.E-8,),
                          INCREMENT=_F( LIST_INST = L_INST),

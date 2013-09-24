@@ -90,7 +90,7 @@ NONLIN=STAT_NON_LINE(       MODELE=MODELE_1,
                              EXCIT=_F(
                 CHARGE = CHARGE_1,
                 FONC_MULT = D_FONC),
-                         COMP_ELAS=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'ELAS',
                 DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
@@ -159,7 +159,7 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   VALE_CALC=-37.44163990925,
                   VALE_REFE=-37.44,
                   CRITERE='RELATIF',
-                  PRECISION=5.0E-3, 
+                  PRECISION=5.0E-3,
                   ),
           )
 
@@ -177,7 +177,7 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   VALE_CALC=-70.449919144321,
                   VALE_REFE=-70.45,
                   CRITERE='RELATIF',
-                  PRECISION=5.0E-3, 
+                  PRECISION=5.0E-3,
                   ),
           )
 
@@ -243,7 +243,7 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   VALE_REFE=-52.27,
                   TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
                   CRITERE='RELATIF',
-                  PRECISION=5.0E-3, 
+                  PRECISION=5.0E-3,
                   ),
           )
 
@@ -263,7 +263,7 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   VALE_REFE=-79.17,
                   TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
                   CRITERE='RELATIF',
-                  PRECISION=5.0E-3, 
+                  PRECISION=5.0E-3,
                   ),
           )
 

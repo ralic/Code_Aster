@@ -158,10 +158,6 @@ cata_msg = {
  ! comportement non trouve !
 """),
 
-71 : _(u"""
- Pour les modélisations DKT, seules les lois de comportement sous COMP_INCR sont autorisées.
-"""),
-
 72 : _(u"""
   -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
      le mot clé COMP_INCR) est déconseillée pour les éléments de type plaque. Les

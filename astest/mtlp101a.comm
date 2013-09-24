@@ -80,7 +80,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 RESULTAT=TEMPE,
                 CHAM_MATER=CHMAT,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
-                COMP_INCR=_F(RELATION='ZIRC',
+                COMPORTEMENT=_F(RELATION='ZIRC',
                              TOUT = 'OUI'),
                 OPTION='META_ELNO',);
 

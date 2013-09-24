@@ -637,7 +637,7 @@ TEMPE=CALC_META(reuse =TEMPE,
                 CHAM_MATER=CHMAT,
                 RESULTAT=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI',),
                 OPTION='META_ELNO',);
 
@@ -666,7 +666,7 @@ TEMPE1=CALC_META(reuse =TEMPE1,
                  RESULTAT=TEMPE1,
                  ETAT_INIT=_F(EVOL_THER=TEMPE1,
                               INST_INIT=200.0,),
-                 COMP_INCR=_F(RELATION='ACIER',
+                 COMPORTEMENT=_F(RELATION='ACIER',
                               TOUT='OUI',),
                  OPTION=('META_ELNO','DURT_ELNO',),);
 

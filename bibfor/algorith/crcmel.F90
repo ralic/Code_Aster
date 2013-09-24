@@ -22,7 +22,7 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
 !     RELATION='ELAS' SUR TOUT LE MAILLAGE
 !
 ! IN   NBMO1  :  NOMBRE DE MOTS CLES FACTEURS (COMP_ELAS / COMP_INCR)
-! IN MOCLEF   :  LISTE DES MOTS-CLES (COMP_INCR / COMP_ELAS)
+! IN MOCLEF   :  MOTS-CLE COMPORTEMENT
 ! OUT COMPOR  :  CARTE DE COMPORTEMENT CREEE
 ! OUT CES2    :  CHAMELEM SIMPLE ISSU DE COMPOR, DEFINIR SUR LES
 !                ELEMENTS QUI CALCULENT FULL_MECA
@@ -48,7 +48,7 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
 #include "asterfort/utmess.h"
     integer :: iret, nbmo1, i, nt, n1, ncmpma, ibid, irepe
     integer :: jncmp, jvalv, icmp, iexi
-    character(len=16) :: moclef(2)
+    character(len=16) :: moclef
     character(len=8) :: nomcmp(ncmpma), noma
     character(len=19) :: compor
     character(len=24) :: modele, ligrel
@@ -85,10 +85,8 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
 20  end do
 !
     nt=0
-    do 10 i = 1, nbmo1
-        call getfac(moclef(i), n1)
-        nt=max(nt,n1)
-10  end do
+    call getfac(moclef, n1)
+    nt=max(nt,n1)
     if (nt .eq. 0) then
 !        UTILISE EN PARTICULIER POUR LA COMMANDE CALC_G :
 !        SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST

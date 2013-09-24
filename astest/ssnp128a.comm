@@ -828,7 +828,7 @@ EVOL = STAT_NON_LINE(
   EXCIT = (
     _F(CHARGE = DEPL_I,FONC_MULT=FCT),
     ),
-  COMP_INCR = (
+  COMPORTEMENT = (
     _F(RELATION = 'ELAS'    , GROUP_MA = 'MATRICE'),
     _F(RELATION = 'CZM_EXP' , GROUP_MA = 'FISS'   ),
     ),

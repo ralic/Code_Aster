@@ -114,7 +114,7 @@ RESU=STAT_NON_LINE (
                                 FONC_MULT=FONC,),
                                _F(CHARGE=FLAT,),),
                    CONTACT    = CHA2,
-                   COMP_ELAS  =_F(
+                   COMPORTEMENT  =_F(
                                 RELATION='ELAS'),
                    NEWTON     =_F(MATRICE='TANGENTE',
                                   REAC_ITER=1,

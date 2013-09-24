@@ -1,5 +1,5 @@
 # person_in_charge: jean-michel.proix at edf.fr
-# TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS_VMIS_TRAC' sous COMP_ELAS
+# TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS_VMIS_TRAC' sous COMPORTEMENT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ TIMP=DEFI_FONCTION(
                        VALE=(  0. , TREF, 1. , 500.)
                         )
 
-U=SIMU_POINT_MAT(COMP_ELAS=_F(RELATION=compor,),
+U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                  MATER=MATERI,
                  SUPPORT='POINT',
                    AFFE_VARC=(
@@ -218,7 +218,7 @@ for i in range(1,NCAL+1):
           list = DEFI_LIST_REEL(DEBUT=timem,
                       INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
 
-          RESU[i]=SIMU_POINT_MAT(COMP_ELAS=_F(RELATION=compor,),
+          RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                                  MATER=MATER[i],
                                  SUPPORT='POINT',
                                  INCREMENT=_F(LIST_INST = list, ),

@@ -429,7 +429,7 @@ MATER_G=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=MAT_G,),
                            ),
                      );
-                     
+
 # -- AFFECTATION DU MATERIAU POUR DHRC --
 
 MATER_D=AFFE_MATERIAU(MAILLAGE=MA,
@@ -563,7 +563,7 @@ RESU_R1=STAT_NON_LINE(MODELE=MO,
                                 FONC_MULT=chf1,),
                              _F(CHARGE=COND_1,
                                 FONC_MULT=chf1,),),
-                      COMP_INCR=(_F(RELATION='ENDO_ISOT_BETON',
+                      COMPORTEMENT=(_F(RELATION='ENDO_ISOT_BETON',
                                     ITER_CPLAN_MAXI=20,
                                     GROUP_MA='DALLE',),
                                  _F(RELATION='GRILLE_ISOT_LINE',
@@ -591,7 +591,7 @@ RESU_D1=STAT_NON_LINE(MODELE=MO_G,
                                 FONC_MULT=chf1,),
                              _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
-                      COMP_INCR=_F(RELATION='DHRC',),
+                      COMPORTEMENT=_F(RELATION='DHRC',),
                       INCREMENT=_F(LIST_INST=DEFLIST,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
@@ -611,7 +611,7 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                                 FONC_MULT=chf1,),
                              _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
-                      COMP_INCR=_F(RELATION='GLRC_DM',),
+                      COMPORTEMENT=_F(RELATION='GLRC_DM',),
                       INCREMENT=_F(LIST_INST=DEFLIST,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
@@ -674,7 +674,7 @@ TMYA6_R1=CALC_TABLE(reuse =TMYA6_R1,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                         
+
 TMYA2_R1=CALC_TABLE(reuse =TMYA2_R1,
                     TABLE=TMYA2_R1,
                     ACTION=(_F(OPERATION='EXTR',
@@ -713,7 +713,7 @@ TMY_R1=CALC_TABLE(TABLE=TMYA2_R1,
                              NOM_PARA=('INST','MY',),),),);
 
 DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R1,TMYA4_R1,TMYA6_R1,),),);
-                             
+
 TRX_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
                                RESULTAT=RESU_R1,

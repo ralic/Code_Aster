@@ -128,7 +128,7 @@ RESU1=STAT_NON_LINE(
                         CHAM_MATER=CHMAT1,
                          CARA_ELEM=CARA1,
                              EXCIT=_F( CHARGE = CHART1,
-                                    FONC_MULT = FONCT1),COMP_INCR=(
+                                    FONC_MULT = FONCT1),COMPORTEMENT=(
                          _F( RELATION = 'MULTIFIBRE',
                                     GROUP_MA = 'POU1',
                                     ITER_INTE_MAXI = 500),
@@ -341,7 +341,7 @@ RESUC=STAT_NON_LINE(
                         CHAM_MATER=CHMAT2,
                          CARA_ELEM=CARA2,
                              EXCIT=_F( CHARGE = CHART2,
-                                    FONC_MULT = FONCT2),COMP_INCR=(
+                                    FONC_MULT = FONCT2),COMPORTEMENT=(
                          _F( RELATION = 'MULTIFIBRE',
                                     ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU4'),

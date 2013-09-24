@@ -97,7 +97,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           ),PROL_DROITE='CONSTANT',);
 
 
-U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
+U1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
                               ALGO_INTE='SPECIFIQUE',
                               RESI_INTE_RELA=1E-8,
                               ITER_INTE_PAS = -5),
@@ -135,7 +135,7 @@ COEF4=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           30,0.0002,
                           50,-0.0002,),PROL_DROITE='CONSTANT',);
 
-U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
+U2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
                               ALGO_INTE='SPECIFIQUE',
                               RESI_INTE_RELA=1E-8,
                               ITER_INTE_PAS = -5),
@@ -173,7 +173,7 @@ COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           30,2.E-5,
                           50,-2.E-5,),PROL_DROITE='CONSTANT',);
 
-U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
+U3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
                               ALGO_INTE='SPECIFIQUE',
                               RESI_INTE_RELA=1E-8,
                               ITER_INTE_PAS = -5),

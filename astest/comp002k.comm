@@ -81,7 +81,7 @@ compor='VMIS_JOHN_COOK'
 
 tabresu=TEST_COMPOR(OPTION='MECA',
 
-                   COMP_INCR=_F(RELATION=compor,DEFORMATION='GDEF_LOG'),
+                   COMPORTEMENT=_F(RELATION=compor,DEFORMATION='GDEF_LOG'),
                    SUPPORT='ELEMENT',
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,

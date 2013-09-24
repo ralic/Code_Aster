@@ -79,7 +79,7 @@ CHMEC1=AFFE_CHAR_MECA( MODELE=MOMEC1,DDL_IMPO=(
 
 U1=STAT_NON_LINE(MODELE=MOMEC1,  CHAM_MATER=CHMAT,
                  EXCIT=_F( CHARGE = CHMEC1),
-                 COMP_INCR=(
+                 COMPORTEMENT=(
                        _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M2','M3')),
                        _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M4','M5')),
                        _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M6')),
@@ -119,7 +119,7 @@ CHMEC2=AFFE_CHAR_MECA( MODELE=MOMEC2,DDL_IMPO=(
 U2_1=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
                  ETAT_INIT=_F( EVOL_NOLI = U1, INST=60.),
                  EXCIT=_F( CHARGE = CHMEC2),
-                 COMP_INCR=(
+                 COMPORTEMENT=(
                        _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M3','M7','M8','M9')),
                        _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M6')),
                        _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M4')),
@@ -140,7 +140,7 @@ V1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='
 U2_2=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
                  ETAT_INIT=_F( DEPL=D1, SIGM=S1, VARI=V1),
                  EXCIT=_F( CHARGE = CHMEC2),
-                 COMP_INCR=(
+                 COMPORTEMENT=(
                        _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M3','M7','M8','M9')),
                        _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M6')),
                        _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M4')),

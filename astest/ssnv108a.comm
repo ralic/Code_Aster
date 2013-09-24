@@ -93,8 +93,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=_F(CHARGE=CH,FONC_MULT = RAMPE),
-                COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),
-#                COMP_ELAS=_F(RELATION='ELAS',),
+                COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
+#                COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
@@ -217,7 +217,7 @@ GLOC1=CALC_G(        THETA=_F(FOND_FISS=FISS1,
                               R_SUP=1.2,),
                      RESULTAT=U,
                      NUME_ORDRE=1,
-                      
+
                      LISSAGE=_F(DEGRE=3),)
 #
 
@@ -226,7 +226,7 @@ GLOC2=CALC_G(        THETA=_F(FOND_FISS=FISS2,
                               R_SUP=2.857,),
                      RESULTAT=U,
                      NUME_ORDRE=1,
-                      
+
                      LISSAGE=_F(DEGRE=3),)
 
 #
@@ -236,7 +236,7 @@ GLOC3=CALC_G(        THETA=_F(FOND_FISS=FISS1,
                               R_SUP=5.2,),
                      RESULTAT=U,
                      NUME_ORDRE=1,
-                      
+
                      LISSAGE=_F(DEGRE=3,))
 
 #----------------------------------------------------------------------
@@ -245,19 +245,19 @@ GLOC3=CALC_G(        THETA=_F(FOND_FISS=FISS1,
 
 TEST_TABLE(
            VALE_CALC=3316.0437477613,
-           
+
            NOM_PARA='G',
            TABLE=G1,)
 
 TEST_TABLE(
            VALE_CALC=3457.1755904832,
-           
+
            NOM_PARA='G',
            TABLE=G2,)
 
 TEST_TABLE(
            VALE_CALC=3449.5796006255,
-           
+
            NOM_PARA='G',
            TABLE=G3,)
 
@@ -267,7 +267,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=42.96782361684,
-           
+
            NOM_PARA='G',
            TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -276,7 +276,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=43.609504168104,
-           
+
            NOM_PARA='G',
            TABLE=GLOC2,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -284,7 +284,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=41.764452822347,           
+           VALE_CALC=41.764452822347,
            NOM_PARA='G',
            TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',

@@ -210,7 +210,7 @@ U=STAT_NON_LINE(
                  _F(CHARGE = SYMETRIE),
                  _F(CHARGE = TRACTION , FONC_MULT = FCT),
                ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
                 _F(RELATION = 'ELAS'      ,  GROUP_MA = ('DCB_1','DCB_2')),
                 _F(RELATION = 'CZM_OUV_MIX', GROUP_MA = ('JOINT_P','JOINT_I'), ),
                 ),
@@ -239,7 +239,7 @@ U=STAT_NON_LINE(reuse=U,
                  _F(CHARGE = TRACTION ,
                     TYPE_CHARGE = 'FIXE_PILO'),
                ),
-  COMP_INCR  = (
+  COMPORTEMENT  = (
                 _F(RELATION = 'ELAS'      ,  GROUP_MA = ('DCB_1','DCB_2')),
                 _F(RELATION = 'CZM_OUV_MIX', GROUP_MA = ('JOINT_P','JOINT_I'), ),
                 ),

@@ -57,14 +57,14 @@ TABTD = CO('TSIMU');
 
 CALC_ESSAI_GEOMECA(INFO=2,
                    MATER=SOL,
-                   COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+                   COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
                    CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
                                   ITER_GLOB_MAXI = 10,
                                   ARRET = 'OUI',),
                    #
                    # Essai triaxial draine
                    ESSAI_TD = _F(PRES_CONF   = PCO,
-                                 EPSI_IMPOSE = epzz_max, 
+                                 EPSI_IMPOSE = epzz_max,
                                  NB_INST     = 300,
                                  TABLE_RESU  = TABTD),);
 

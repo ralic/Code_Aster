@@ -103,7 +103,7 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
 TEMPE=CALC_META(reuse=TEMPE,
                 RESULTAT=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
-                COMP_INCR=_F(RELATION='ACIER',
+                COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
                 OPTION='META_ELNO',);
 
@@ -213,7 +213,7 @@ U=STAT_NON_LINE(
                         CHAM_MATER=CM2,
                              EXCIT=_F(
                 CHARGE = CH_FO),
-                         COMP_INCR=_F(
+                         COMPORTEMENT=_F(
                 RELATION = 'META_P_IL_RE',
                 RELATION_KIT = ('ACIER',)),
                          INCREMENT=_F(

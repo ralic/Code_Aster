@@ -108,7 +108,7 @@ EVOL = STAT_NON_LINE(
           _F(CHARGE = SYMETRIE),
           _F(CHARGE = PRESSION, TYPE_CHARGE = 'FIXE_PILO')
                ),
-  COMP_INCR = _F(RELATION = 'VMIS_ISOT_LINE'),
+  COMPORTEMENT = _F(RELATION = 'VMIS_ISOT_LINE'),
   INCREMENT = _F(
            LIST_INST = DEFLIST,
            NUME_INST_FIN = 1,
@@ -139,7 +139,7 @@ STAT_NON_LINE(reuse = EVOL,
           _F(CHARGE = SYMETRIE),
           _F(CHARGE = PRESSION, TYPE_CHARGE = 'FIXE_PILO')
           ),
-  COMP_INCR = _F(RELATION = 'VMIS_ISOT_LINE'),
+  COMPORTEMENT = _F(RELATION = 'VMIS_ISOT_LINE'),
   INCREMENT = _F(
            LIST_INST = DEFLIST,
            ),

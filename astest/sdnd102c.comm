@@ -136,7 +136,7 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                EXCIT=(_F(  CHARGE = CON_LIM),
                       _F(  CHARGE = CHAM_NO,
                             FONC_MULT= ACCELER1 )),
-               COMP_INCR=(
+               COMPORTEMENT=(
                _F(  RELATION = 'ELAS',
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
@@ -177,7 +177,7 @@ TRAN_DY2=DYNA_NON_LINE(  MODELE=MODELE,
                EXCIT=(_F(  CHARGE = CON_LIM),
                       _F(  CHARGE = CHAM_NO,
                             FONC_MULT= ACCELER1 )),
-               COMP_INCR=(
+               COMPORTEMENT=(
                _F(  RELATION = 'ELAS',
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',

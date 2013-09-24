@@ -24,7 +24,7 @@
 # COMMAND FILE ADDED OCTOBER 2006 BY MK and FV
 
 
-# Pour des raisons de performances, on force SDVERI='NON'. 
+# Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(CODE=_F(NOM='SDNV105c',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'));
@@ -170,17 +170,20 @@ IMPR_RESU(MODELE=MO,
           UNITE=21,
           RESU=_F(MAILLAGE=MA));
 
+# pour ce test, il faut que l'elasticite soit incrementale => VMIS_ISOT_LINE
 Table=DEFI_MATERIAU(ELAS=_F(E=1e+14,
                             NU=0.3,
                             RHO=2500.0,
                             AMOR_ALPHA=0.0016,
-                            AMOR_BETA=0.0));
+                            AMOR_BETA=0.0),
+                    ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.),);
 
 graphite=DEFI_MATERIAU(ELAS=_F(E=600000000000.0,
                                NU=0.2,
                                RHO=1450.0,
                                AMOR_ALPHA=0.0001,
-                               AMOR_BETA=0.0));
+                               AMOR_BETA=0.0),
+                    ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     MODELE=MO,
@@ -254,7 +257,7 @@ CHA_con2=DEFI_CONTACT(MODELE         = MO,
                               COULOMB       = mu_frot,
                       ),
          )
-         
+
 # SELF WEIGHT
 ramp_pes=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(-1.95,0.0,-1.65,1.0,0.0,1.0),
@@ -273,7 +276,7 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,
                             _F(CHARGE=CL_fix_b),
                             _F(CHARGE=CL_fix_t)),
                      CONTACT  = CHA_conp,
-                     COMP_INCR=_F(RELATION='ELAS',
+                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                   DEFORMATION='GROT_GDEP',),
                      INCREMENT=_F(LIST_INST=L_INST_p,
                                   INST_FIN=-0.825),
@@ -330,7 +333,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,
                               _F(CHARGE=ini_lach,
                                  FONC_MULT=ramp_ila)),
                        CONTACT  = CHA_conp,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP'),
                        ETAT_INIT=_F(EVOL_NOLI=u_pesa,
                                     INST=-1.05,
@@ -379,7 +382,7 @@ u_lacher=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                               _F(CHARGE=CL_fix_t),
                               ),
                        CONTACT  =CHA_cont,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP'),
                        ETAT_INIT=_F(DEPL = Ini_depl,
                                     VITE = Ini_vit0),
@@ -403,7 +406,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher, MODELE=MO,
                               _F(CHARGE=CL_fix_t),
                               ),
                        CONTACT  =CHA_cont,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP'),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=0.0025,
@@ -429,7 +432,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                               _F(CHARGE=CL_fix_t),
                               ),
                        CONTACT  =CHA_con2,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=TC1M,
@@ -464,7 +467,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                               _F(CHARGE=CL_fix_t),
                               ),
                        CONTACT  =CHA_con2,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=TC1P,
@@ -494,7 +497,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                               _F(CHARGE=CL_fix_t),
                               ),
                        CONTACT  =CHA_con2,
-                       COMP_INCR=_F(RELATION='ELAS',
+                       COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=TC2M,
@@ -682,7 +685,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.16,
-           
+
            VALE_CALC= 2.33227929E-03,
            VALE_REFE=2.0110000000000002E-3,
            NOM_PARA='DY',
@@ -691,7 +694,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.095000000000000001,
-           
+
            VALE_CALC= 2.33227929E-03,
            VALE_REFE=2.2469999999999999E-3,
            NOM_PARA='DY',

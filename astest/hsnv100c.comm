@@ -75,7 +75,7 @@ MAILLAGE=MAIL,
                       VALE_F = (TIMPVAR,))
                         )
 
-L_INST=DEFI_LIST_REEL( 
+L_INST=DEFI_LIST_REEL(
                        DEBUT=0.,
                        INTERVALLE=( _F( JUSQU_A = 66.666E0,   NOMBRE = 1),
                                     _F( JUSQU_A = 80.000E0,   NOMBRE = 20),
@@ -101,7 +101,7 @@ U=STAT_NON_LINE( MODELE=MOMECA,
                  CHAM_MATER=CM,
                  EXCIT=_F( CHARGE = CHMECA),
                  CARA_ELEM=CAREL,
-                 COMP_INCR=_F(   RELATION = 'VMIS_ISOT_LINE' ),
+                 COMPORTEMENT=_F(   RELATION = 'VMIS_ISOT_LINE' ),
                  INCREMENT=_F(   LIST_INST = L_INST),
                  NEWTON=_F(      REAC_ITER = 1),
                  CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-5,
