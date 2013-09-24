@@ -16,7 +16,7 @@ def configure(self):
     self.add_os_flags('FORINCLUDES', 'INCLUDES')
     self.add_os_flags('FORDEFINES', 'DEFINES')
 
-    for incpath in ('bibfor/include', 'bibfor/include/fake'):
+    for incpath in ('bibfor/include', ):
         paths = self.srcnode.ant_glob(incpath, src=True, dir=True)
         paths = [d.abspath() for d in paths]
         self.env.append_value('INCLUDES', paths)
