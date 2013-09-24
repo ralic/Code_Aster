@@ -112,7 +112,7 @@ subroutine xgecfi(modele, depgeo)
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
         call cescre('V', newges, 'ELEM', noma, 'DCEL_I',&
-                    2, licmp, ibid, -1, - 2)
+                    2, licmp, [ibid], [-1], [-2])
         call jeveuo(newges//'.CESD', 'L', jcesd)
         call jeveuo(newges//'.CESV', 'E', jcesv)
         call jeveuo(newges//'.CESL', 'E', jcesl)

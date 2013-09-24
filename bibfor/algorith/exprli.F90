@@ -116,7 +116,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
     kbid=' '
     call bmrdda(basmod, kbid, nomint, numint, 0,&
-                ibid, nbddl, ordo, ii)
+                [0], nbddl, ordo, ii)
     kbid=' '
     call bmnoin(basmod, kbid, nomint, numint, 0,&
                 ibid, nbnoe)

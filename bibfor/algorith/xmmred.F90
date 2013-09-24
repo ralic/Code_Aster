@@ -66,28 +66,28 @@ subroutine xmmred(ndimg, depdel, depdes, lagcn, depcn,&
 !
 ! --- REDUCTION SUR LES DDLS DE CONTACT
 !
-    call cnsred(depdes, 0, 0, ndimg, ddlc,&
+    call cnsred(depdes, 0, [0], ndimg, ddlc,&
                 'V', lagcn)
 !
 ! --- REDUCTION SUR LES DDLS DE SAUTS
 !
-    if (ndimg .eq. 3) call cnsred(depdes, 0, 0, 2*ndimg, ddls3,&
+    if (ndimg .eq. 3) call cnsred(depdes, 0, [0], 2*ndimg, ddls3,&
                                   'V', depcn)
-    if (ndimg .eq. 2) call cnsred(depdes, 0, 0, 2*ndimg, ddls2,&
+    if (ndimg .eq. 2) call cnsred(depdes, 0, [0], 2*ndimg, ddls2,&
                                   'V', depcn)
 !
 ! --- REDUCTION FORCE DE CONTACT
 !
-    if (ndimg .eq. 2) call cnsred(fconts, 0, 0, 3*ndimg, ddlt2,&
+    if (ndimg .eq. 2) call cnsred(fconts, 0, [0], 3*ndimg, ddlt2,&
                                   'V', fctcn)
-    if (ndimg .eq. 3) call cnsred(fconts, 0, 0, 3*ndimg, ddlt3,&
+    if (ndimg .eq. 3) call cnsred(fconts, 0, [0], 3*ndimg, ddlt3,&
                                   'V', fctcn)
 !
 ! --- REDUCTION FORCE DE FROTTEMENT
 !
-    if (ndimg .eq. 2) call cnsred(ffrots, 0, 0, 3*ndimg, ddlt2,&
+    if (ndimg .eq. 2) call cnsred(ffrots, 0, [0], 3*ndimg, ddlt2,&
                                   'V', ffrocn)
-    if (ndimg .eq. 3) call cnsred(ffrots, 0, 0, 3*ndimg, ddlt3,&
+    if (ndimg .eq. 3) call cnsred(ffrots, 0, [0], 3*ndimg, ddlt3,&
                                   'V', ffrocn)
 !
     call jedema()

@@ -97,18 +97,18 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 !
     if (nbchar .eq. 1) then
         chams0 = zk24(jlich)
-        call cesred(chams0, nbma, listma, nbcmp, nocmp,&
+        call cesred(chams0,nbma,listma,nbcmp,nocmp,&
                     'V', chmome)
     else
 !
         chams0='&&RC36CM.CHAMS0'
         if (autre) then
-            call cesfus(nbchar, zk24(jlich), zl(jlicm), zr(jlicr), cbid,&
+            call cesfus(nbchar, zk24(jlich), zl(jlicm), zr(jlicr), [cbid],&
                         .false., 'V', chams0)
         else
             call cesqua(nbchar, zk24(jlich), zl(jlicm), 'V', chams0)
         endif
-        call cesred(chams0, nbma, listma, nbcmp, nocmp,&
+        call cesred(chams0,nbma,listma,nbcmp,nocmp,&
                     'V', chmome)
         call detrsd('CHAM_ELEM_S', chams0)
     endif

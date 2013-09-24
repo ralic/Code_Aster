@@ -49,7 +49,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/wkvect.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
-    character(len=16) :: forcri 
+    character(len=16) :: forcri
     logical :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------
@@ -410,7 +410,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 ces1 = '&&PAQMAI.SIG_S1'
                 ces2 = '&&PAQMAI.SIG_ORDO'
                 call celces(chsig, 'V', ces1)
-                call cesred(ces1, 0, ibid, 6, lsig,&
+                call cesred(ces1,0,[ibid],6,lsig,&
                             'V', ces2)
                 call jeexin(ces2(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
@@ -430,7 +430,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 ces3 = '&&PAQMAI.EPS_S3'
                 ces4 = '&&PAQMAI.EPS_ORDO'
                 call celces(cheps, 'V', ces3)
-                call cesred(ces3, 0, ibid, 6, leps,&
+                call cesred(ces3,0,[ibid],6,leps,&
                             'V', ces4)
                 call jeexin(ces4(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
@@ -450,7 +450,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 ces5 = '&&PAQMAI.EPSP_S3'
                 ces6 = '&&PAQMAI.EPSP_ORDO'
                 call celces(chepsp, 'V', ces5)
-                call cesred(ces5, 0, ibid, 6, leps,&
+                call cesred(ces5,0,[ibid],6,leps,&
                             'V', ces6)
                 call jeexin(ces5(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
@@ -473,7 +473,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                     ces7 = '&&PAQMAI.EPSPE_S3'
                     ces8 = '&&PAQMAI.EPSPE_ORDO'
                     call celces(cheppe, 'V', ces7)
-                    call cesred(ces7, 0, ibid, 6, leps,&
+                    call cesred(ces7,0,[ibid],6,leps,&
                                 'V', ces8)
                     call jeexin(ces7(1:19)//'.CESV', iret)
                     if (iret .eq. 0) then

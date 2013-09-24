@@ -93,7 +93,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
 ! --- NUMERO ABSOLU DE LA MAILLE
 !
-    call cfnumm(defico, 1, posmai, nummai)
+    call cfnumm(defico, posmai, nummai)
 !
 ! --- NOMBRE DE NOEUDS DE LA MAILLE
 !

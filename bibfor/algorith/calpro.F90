@@ -123,7 +123,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
     call wkvect('&&CALPRO.BASEMO', 'V V R', nbdef*neq, idbase)
     call copmod(basmod, 'DEPL', neq, num, nbdef,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
 !
 !
 ! --- ALLOCATION VECTEUR DE TRAVAIL

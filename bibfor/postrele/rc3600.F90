@@ -103,7 +103,7 @@ subroutine rc3600()
 !
     ncncin = '&&RC3600.CONNECINVERSE  '
     call jeexin(ncncin, ibid)
-    if (ibid .eq. 0) call cncinv(noma, ibid, 0, 'V', ncncin)
+    if (ibid .eq. 0) call cncinv(noma, [ibid], 0, 'V', ncncin)
 !
 !     ------------------------------------------------------------------
 !              RECUPERATION DES CARACTERISTIQUES MATERIAU
@@ -121,7 +121,7 @@ subroutine rc3600()
 !
     if (niv .ge. 2) then
         write(ifm,*)' LE CHAMP ', chcara
-        call cesimp(chcara, ifm, 0, ibid)
+        call cesimp(chcara, ifm, 0, [ibid])
     endif
 !
 !
@@ -135,7 +135,7 @@ subroutine rc3600()
 !
     if (niv .ge. 2) then
         write(ifm,*)' LE CHAMP ', chindi
-        call cesimp(chindi, ifm, 0, ibid)
+        call cesimp(chindi, ifm, 0, [ibid])
     endif
 !
 !     ------------------------------------------------------------------
@@ -179,7 +179,7 @@ subroutine rc3600()
 !
     if (niv .ge. 2) then
         write(ifm,*)' LE CHAMP ', chresu
-        call cesimp(chresu, ifm, 0, ibid)
+        call cesimp(chresu, ifm, 0, [ibid])
     endif
 !
 !

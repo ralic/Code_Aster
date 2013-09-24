@@ -44,6 +44,6 @@ subroutine apnumm(sdappa, defico, posma, numma)
 !
 ! --- REPONSE
 !
-    call cfnumm(defico, 1, posma, numma)
+    call cfnumm(defico, posma, numma)
 !
 end subroutine

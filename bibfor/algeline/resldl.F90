@@ -116,8 +116,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
             if (idvalc .ne. 0) then
                 do 10,k=1,nsecm
                 kdeb=(k-1)*neq+1
-                call csmbgg(lmat, rsolu(kdeb), zr(idvalc), cbid, cbid,&
-                            'R')
+                call csmbgg(lmat, rsolu(kdeb), zr(idvalc), [cbid], [cbid], 'R')
 10              continue
             endif
         endif
@@ -138,8 +137,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
             if (idvalc .ne. 0) then
                 do 20,k=1,nsecm
                 kdeb=(k-1)*neq+1
-                call csmbgg(lmat, rbid, rbid, csolu(kdeb), zc(idvalc),&
-                            'C')
+                call csmbgg(lmat, [rbid], [rbid], csolu(kdeb), zc(idvalc), 'C')
 20              continue
             endif
         endif

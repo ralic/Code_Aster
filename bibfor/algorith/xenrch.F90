@@ -110,7 +110,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XENRCH.CNCINV'
-    call cncinv(noma, ibid, 0, 'V', cnxinv)
+    call cncinv(noma, [ibid], 0, 'V', cnxinv)
 !
     call dismoi('F', 'TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', ibid,&
                 typdis, iret)

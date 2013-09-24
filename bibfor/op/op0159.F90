@@ -146,14 +146,14 @@ subroutine op0159()
     if (type .eq. 'R') then
 !     ----------------------------------------
         if (idvalc .ne. 0) then
-            call csmbgg(lmat, zr(jtrav), zr(idvalc), cbid, cbid,&
+            call csmbgg(lmat, zr(jtrav), zr(idvalc), [cbid], [cbid],&
                         'R')
         endif
 !
     else if (type.eq.'C') then
 !     ----------------------------------------
         if (idvalc .ne. 0) then
-            call csmbgg(lmat, rbid, rbid, zc(jtrav), zc(idvalc),&
+            call csmbgg(lmat, [0.d0], [0.d0], zc(jtrav), zc(idvalc),&
                         'C')
         endif
     endif

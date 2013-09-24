@@ -86,7 +86,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !     EST-CE QUE LA CONNECTIVITE INVERSE A DEJA ETE CALCULEE ?
     call jeexin(ncninv, iexinv)
     if (nbmavo .eq. 0) then
-        if (iexinv .eq. 0) call cncinv(mail, ibid, ibid, 'V', ncninv)
+        if (iexinv .eq. 0) call cncinv(mail, [ibid], 0, 'V', ncninv)
     else
 !        ON FORCE LE CALCUL DE LA CONNECTIVITE INVERSE
         call jedetr(ncninv)

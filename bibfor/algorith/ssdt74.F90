@@ -63,7 +63,7 @@ subroutine ssdt74(nomres, nomcmd)
     integer :: vali(3)
     real(kind=8) :: xlambd, acrit, agene
     real(kind=8) :: valr(2)
-    real(kind=8) :: dt, dts, dtu, dtmax, dtmin, r8b
+    real(kind=8) :: dt, dts, dtu, dtmax, dtmin
     character(len=4) :: k4bid(3)
     character(len=8) :: k8b, kbid, nomres, masgen, riggen, amogen, monmot
     character(len=8) :: basemo, modgen, mastem, amotem, vecgen, resgen, bamo1
@@ -408,9 +408,9 @@ subroutine ssdt74(nomres, nomcmd)
 ! <=
     if (method .eq. 'EULER') then
         call mdeul1(nbpas, dt, neqgen, zr(jpuls), zr(jpul2),&
-                    zr(jmasg), descm, zr(jraig), descr, r8b,&
-                    lamor, zr(jamog), desca, r8b, fbid,&
-                    fbid, typbas, k8b, tinit, zi(jarch),&
+                    zr(jmasg), descm, zr(jraig), descr, [0.d0],&
+                    lamor, zr(jamog), desca, [0.d0], fbid(1),&
+                    fbid(1), typbas, k8b, tinit, zi(jarch),&
                     nbsauv, itemax, prec, xlambd, lflu,&
                     nbchoc, zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
                     nbrede, zr(jrede), zk8(jfond), nbrevi, zr(jrevi),&
@@ -419,7 +419,7 @@ subroutine ssdt74(nomres, nomcmd)
                     zi(jredc), zr(jredd), zi(jrevc), zr(jrevv), zr(jcoefm),&
                     zi(jiadve), zi(jinumo), zi(jidesc), zk8( jnodep), zk8(jnovit),&
                     zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot, 0,&
-                    fbid, fbid, 0.d0, fbid, nbpal,&
+                    fbid, fbid(1), 0.d0, fbid(1), nbpal,&
                     dtsto, vrotat, prdeff, nomres, ntotex,&
                     zr(jpass))
 !
@@ -442,14 +442,14 @@ subroutine ssdt74(nomres, nomcmd)
         call mdruku(method, tinit, tfin, dt, dtmin,&
                     dtmax, nbsauv, nbobjs, neqgen, zr(jpuls),&
                     zr(jpul2), zr(jmasg), descm, zr(jraig), descr,&
-                    r8b, lamor, zr(jamog), desca, r8b,&
-                    fbid, fbid, typbas, k8b, lflu,&
+                    [0.d0], lamor, zr(jamog), desca, [0.d0],&
+                    fbid(1), fbid(1), typbas, k8b, lflu,&
                     nbchoc, zk8(jinti), zi(jranc), zr(jdepl), zr(jparc),&
                     zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
                     zr(jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo),&
                     zi(jidesc), zk8( jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo),&
                     zr(jpsid), monmot, 0, fbid, fbid,&
-                    0.d0, fbid, nbpal, dtsto, vrotat,&
+                    0.d0, fbid(1), nbpal, dtsto, vrotat,&
                     prdeff, nomres, ntotex, masgen, riggen,&
                     amogen)
 !

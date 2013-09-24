@@ -107,7 +107,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
     cnxinv = '&&XTYELE.CNCINV'
-    call cncinv(noma, ibid, 0, 'V', cnxinv)
+    call cncinv(noma, [ibid], 0, 'V', cnxinv)
 !
 !     RECUPERATION DE L'ADRESSE DU TABLEAU DE TRAVAIL
     call jeveuo(trav, 'E', jtab)

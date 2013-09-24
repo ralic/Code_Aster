@@ -123,7 +123,7 @@ subroutine cacoeq(chargz, nomaz)
 !
     coninv = '&&CACOEQ.CONINV'
     noesup = '&&CACOEQ.NOESUP'
-    call cncinv(noma, 0, 0, 'V', coninv)
+    call cncinv(noma, [0], 0, 'V', coninv)
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
 ! --- BOUCLE SUR LES NOEUDS A LIAISONNER

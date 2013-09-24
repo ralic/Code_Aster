@@ -64,7 +64,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iran, iret, ityp, ldcvn, lldein, lldeou
+    integer :: i, iran(1), iret, ityp, ldcvn, lldein, lldeou
     integer :: nbid, neqin, neqout, nuno
 !-----------------------------------------------------------------------
     data ibid/0/
@@ -116,13 +116,13 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
         if (ityp .gt. 0) then
             call cheddl(zi(lldein), neqin, nuno, ityp, iran,&
                         1)
-            if (iran .eq. 0) then
+            if (iran(1) .eq. 0) then
                 erreur=.true.
                 vali (1) = nuno
                 vali (2) = ityp
                 call utmess('A', 'ALGORITH12_63', ni=2, vali=vali)
             else
-                zi(ldcvn+i-1)=iran
+                zi(ldcvn+i-1)=iran(1)
             endif
         endif
 !

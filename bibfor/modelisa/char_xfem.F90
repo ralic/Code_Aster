@@ -72,7 +72,7 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat,&
     if (ier .ne. 0) then
         l_xfem = .true.
         connex_inv = '&&CHXFEM.CNXINV'
-        call cncinv(mesh, ibid, 0, 'V', connex_inv)
+        call cncinv(mesh, [0], 0, 'V', connex_inv)
         ch_xfem_node = '&&CHXFEM.NOXFEM'
         call cnocns(model//'.NOXFEM', 'V', ch_xfem_node)
         ch_xfem_stat = '&&CHXFEM.STAT'

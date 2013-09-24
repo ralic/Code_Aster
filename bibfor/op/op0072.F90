@@ -186,7 +186,7 @@ subroutine op0072()
     call wkvect('&&OP0072.BASEMO', 'V V R', nbmode*neq, idbase)
 !
     if ((typbas(1:9).eq.'MODE_MECA')) then
-!       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER 
+!       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER
 !         - LES DEFORMEES MODALES SONT IDENTIQUES
 !         - 1. MAILLAGE DE REFERENCE POUR LA BASE
         call rsexch('F', basemo, 'DEPL', 1, nomcha,&
@@ -207,7 +207,7 @@ subroutine op0072()
 !
 ! --- CONVERSION DE BASEMO A LA NUMEROTATION NU
     call copmod(basemo, 'DEPL', neq, proch1, nbmode,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
 !
     if (nomtyp(1:4) .eq. 'FORC') then
 !

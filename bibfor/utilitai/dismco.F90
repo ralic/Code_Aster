@@ -74,7 +74,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 !
     call carces(nomob, 'ELEM', ' ', 'V', chtmp,&
                 'A', iret)
-    call cesred(chtmp, 0, 0, 3, lcham,&
+    call cesred(chtmp,0,[0],3,lcham,&
                 'V', chcalc)
     call detrsd('CHAM_ELEM_S', chtmp)
 !

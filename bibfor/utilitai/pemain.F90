@@ -171,7 +171,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                         nbret=nr)
         endif
         if (nt .ne. 0) then
-            call pemica(chelem, mxvale, zr(lvale), 0, ibid,&
+            call pemica(chelem, mxvale, zr(lvale), 0, [ibid],&
                         orig, iorig, icage)
             valk(1) = noma
             valk(2) = 'TOUT'
@@ -217,7 +217,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                     goto 40
                 endif
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
-                call pemica(chelem, mxvale, zr(lvale), 1, nume,&
+                call pemica(chelem, mxvale, zr(lvale), 1, [nume],&
                             orig, iorig, icage)
                 valk(1) = zk8(jma+im-1)
                 call tbajli(resu, nbparr, noparr, ibid, zr(lvale),&

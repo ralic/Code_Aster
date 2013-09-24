@@ -190,7 +190,7 @@ subroutine calimc(chargz)
                     k8b, iret)
         call wkvect('&&CALIMC.BASE', 'V V R', nbmode(1)*neq, idbase)
         call copmod(basemo, 'DEPL', neq, numddl, nbmode(1),&
-                    'R', zr(idbase), cbid)
+                    'R', zr(idbase), [cbid])
         call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
                     nogdsi, ierd)
 !        NOGDSI = 'DEPL_R'

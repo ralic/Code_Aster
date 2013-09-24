@@ -249,12 +249,12 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 30                  continue
                 else if (optcal(2).eq.'NON') then
                     call memoy(chelem, 1, chelem, 3, vr,&
-                               0, ibid)
+                               0, [0])
                     zr(lvale) = vr(1)
                     zr(lvale+2) = vr(2)
                     triax = zr(lvale)
                     call memoy(chelem, 5, chelem, 3, vr,&
-                               0, ibid)
+                               0, [0])
                     zr(lvale+4) = vr(1)
                     lnrsr0 = lnrsr0 + 0.283d0*sign(1.d0,triax)* exp(1.5d0*abs(triax))*zr(lvale+4)
                     zr(lvale+1) = exp(lnrsr0)
@@ -371,12 +371,12 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 60                      continue
                     else if (optcal(2).eq.'NON') then
                         call memoy(chelem, 1, chelem, 3, vr,&
-                                   1, nume)
+                                   1, [nume])
                         zr(lvale) = vr(1)
                         zr(lvale+2) = vr(2)
                         triax = zr(lvale)
                         call memoy(chelem, 5, chelem, 3, vr,&
-                                   1, nume)
+                                   1, [nume])
                         zr(lvale+4) = vr(1)
                         lnrsr0 = lnrsr0 + 0.283d0*sign(1.d0,triax)* exp(1.5d0*abs(triax))*zr(lval&
                                  &e+4)

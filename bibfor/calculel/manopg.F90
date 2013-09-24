@@ -227,7 +227,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     ncpmax=max(ncpmax,zi(jdime-1+ima))
     77 end do
     call cescre('V', mnoga, 'ELEM', ma, 'VARI_R',&
-                -ncpmax, ' ', -1, -1, zi(jdime))
+                -ncpmax, ' ', [-1], [-1], zi(jdime))
 !
 !
 !     3. ALLOCATION D'UN CHAMP MODELE POUR DETERMINER LES FAMILLES

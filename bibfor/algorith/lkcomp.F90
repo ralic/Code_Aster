@@ -135,7 +135,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! =================================================================
 !
     matcst = 'OUI'
-    call lklmat(mod, imate, nbmat, tm, materd,&
+    call lklmat(mod(1), imate, nbmat, tm, materd,&
                 materf, matcst, ndt, ndi, nvi,&
                 indal)
     ASSERT(invi.eq.nvi)

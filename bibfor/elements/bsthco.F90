@@ -318,7 +318,7 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! ---       CALCUL DE LA MATRICE DE COMPORTEMENT  MATC(5,5) :
 !           ----------------------------------------------
-                call matrc2(1, 'TEMP    ', valpar, kappa, matc,&
+                call matrc2(1, 'TEMP    ', [valpar], kappa, matc,&
                             vectt)
 !
 ! ---       CALCUL DES CONTRAINTES THERMIQUES SIGMTH(5) :

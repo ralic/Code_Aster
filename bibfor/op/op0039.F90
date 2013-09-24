@@ -142,7 +142,7 @@ subroutine op0039()
         corrn='&&OP0039.CORRN'
         corrm='&&OP0039.CORRM'
         call rdtmai(noma, nomare, 'V', corrn, corrm,&
-                    'V', 0, 0)
+                    'V', 0, [0])
 !
         do 77, iocc=1,nocc
         call codent(iocc, 'D', k1occ)

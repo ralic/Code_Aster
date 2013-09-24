@@ -219,7 +219,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 40      continue
         call wkvect('&&MODIBA.COEF_MODE', 'V V R', nbmode, lcoef)
 !        --- ON NORMALISE LES DEFORMEES
-        call vpnorm(norm, 'OUI', lmat, neq, nbmode,&
+        call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
                     zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
                     0, 0, zr(lcoef))
 !        --- ON STOCKE LES DEFORMEES

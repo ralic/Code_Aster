@@ -153,7 +153,7 @@ subroutine charci(chcine, mfact, mo, type)
 !       -- SI NOM_CMP EST UTILISE, IL FAUT "REDUIRE" CNS :
         if (nlicmp .gt. 0) then
             cns2='&&CHARCI.CNS2'
-            call cnsred(cns, 0, 0, nlicmp, licmp,&
+            call cnsred(cns, 0, [0], nlicmp, licmp,&
                         'V', cns2)
             call detrsd('CHAM_NO_S', cns)
             call copisd('CHAM_NO_S', 'V', cns2, cns)

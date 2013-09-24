@@ -199,7 +199,7 @@ subroutine regene(nomres, resgen, profno)
         nbmo2=tmod(1)            
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, 'DEPL', neq, profno(1:14), nbmo2,&
-                    'R', zr( idbase), cbid)
+                    'R', zr( idbase), [cbid])
 !
 ! ------ BOUCLE SUR LES MODES A RESTITUER
 !
@@ -272,7 +272,7 @@ subroutine regene(nomres, resgen, profno)
                     k8b, iret)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, 'DEPL', neq, numddl, nbmo2,&
-                    'R', zr(idbase), cbid)
+                    'R', zr(idbase), [cbid])
 !
 !CC ---- RESTITUTION PROPREMENT DITE
 !C

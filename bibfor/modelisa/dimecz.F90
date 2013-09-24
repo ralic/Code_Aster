@@ -147,7 +147,7 @@ subroutine dimecz(char, noma, nzoco, iform)
             nbpt = 0
             do 45 imae = 1, nbmae
                 posmae = imae + jdecme
-                call cfnumm(defico, 1, posmae, nummae)
+                call cfnumm(defico, posmae, nummae)
                 call mmelin(noma, nummae, typint, nnint)
                 nbpt = nbpt + nnint
 45          continue

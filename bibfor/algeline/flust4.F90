@@ -241,7 +241,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         call pacouc(typflu, zr(imaj), zr(iorco), zr(ivabs), zr(icoef),&
                     masg, freq, zr(iamfr), nbm, imasse,&
-                    npv, zr(iwork), zi(iicoq), zr( igeom), rbid,&
+                    npv, zr(iwork), zi(iicoq), zr( igeom), [rbid],&
                     ier)
 !
 !-------6.1.4.CALCUL D'UN CRITERE DE POIDS DES TERMES EXTRADIAGONAUX
@@ -249,7 +249,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         if (nbm .gt. 1) call poibij(npv, zr(ivabs), zr(igeom), zr(lfsvr), nbm,&
                                     zi(iicoq), zr(iorco), zr(icoef), freq, imasse,&
-                                    zr(imaj), rbid)
+                                    zr(imaj), [rbid])
 !     =================================================================
 !
 ! --- 6.2.CAS GENERAL

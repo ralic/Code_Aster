@@ -103,7 +103,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     chams0='&&CHRPNO.CHAMS0'
     chams1='&&CHRPNO.CHAMS1'
     call cnocns(champ1, 'V', chams0)
-    call cnsred(chams0, 0, 0, nbcmp, zk8(jcmp),&
+    call cnsred(chams0, 0, [0], nbcmp, zk8(jcmp),&
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
     call jeveuo(chams1//'.CNSK', 'L', jcnsk)

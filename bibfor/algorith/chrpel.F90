@@ -131,7 +131,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     chams0='&&CHRPEL.CHAMS0'
     chams1='&&CHRPEL.CHAMS1'
     call celces(champ1, 'V', chams0)
-    call cesred(chams0, 0, 0, nbcmp, zk8(jcmp),&
+    call cesred(chams0, 0, [0], nbcmp, zk8(jcmp),&
                 'V', chams1)
     call detrsd('CHAM_ELEM_S', chams0)
     call jeveuo(chams1//'.CESK', 'L', jcesk)

@@ -138,20 +138,20 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 !
         if (ncas .eq. '2D') then
-            call pj2dco('TOUT', moa1, moa2, 0, 0,&
-                        0, 0, geom1, geom2, corres,&
+            call pj2dco('TOUT', moa1, moa2, 0, [0],&
+                        0, [0], geom1, geom2, corres,&
                         ldmax, distma)
         else if (ncas.eq.'3D') then
-            call pj3dco('TOUT', moa1, moa2, 0, 0,&
-                        0, 0, geom1, geom2, corres,&
+            call pj3dco('TOUT', moa1, moa2, 0, [0],&
+                        0, [0], geom1, geom2, corres,&
                         ldmax, distma)
         else if (ncas.eq.'2.5D') then
-            call pj4dco('TOUT', moa1, moa2, 0, 0,&
-                        0, 0, geom1, geom2, corres,&
+            call pj4dco('TOUT', moa1, moa2, 0, [0],&
+                        0, [0], geom1, geom2, corres,&
                         ldmax, distma, ' ')
         else if (ncas.eq.'1.5D') then
-            call pj6dco('TOUT', moa1, moa2, 0, 0,&
-                        0, 0, geom1, geom2, corres,&
+            call pj6dco('TOUT', moa1, moa2, 0, [0],&
+                        0, [0], geom1, geom2, corres,&
                         ldmax, distma)
         else
             ASSERT(.false.)

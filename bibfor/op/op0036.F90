@@ -159,7 +159,7 @@ subroutine op0036()
                 call getvis('LISTE', 'LISTE_I', iocc=iocc, nbval=ni, vect=zi(jtrav1),&
                             nbret=ir)
                 call tbajco(resu, nmpar, 'I', ni, zi(jtrav1),&
-                            rbid, cbid, kbid, 'R', zi(iii))
+                            [0.d0], [cbid], kbid, 'R', zi(iii))
             endif
 !
 !           LISTE DE REELS :
@@ -169,8 +169,8 @@ subroutine op0036()
                 call wkvect(trav, 'V V R', nr, jtrav2)
                 call getvr8('LISTE', 'LISTE_R', iocc=iocc, nbval=nr, vect=zr(jtrav2),&
                             nbret=ir)
-                call tbajco(resu, nmpar, 'R', nr, ibid,&
-                            zr(jtrav2), cbid, kbid, 'R', zi(iii))
+                call tbajco(resu, nmpar, 'R', nr, [0],&
+                            zr(jtrav2), [cbid], kbid, 'R', zi(iii))
             endif
 !
 !           LISTE DE CHAINE DE CARACTERES :
@@ -183,24 +183,24 @@ subroutine op0036()
                     call wkvect(trav, 'V V K8', nk, jtrav3)
                     call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=nk, vect=zk8(jtrav3),&
                                 nbret=ir)
-                    call tbajco(resu, nmpar, 'K8', nk, ibid,&
-                                rbid, cbid, zk8(jtrav3), 'R', zi(iii))
+                    call tbajco(resu, nmpar, 'K8', nk, [0],&
+                                [0.d0], [cbid], zk8(jtrav3), 'R', zi(iii))
 !
 !              CHAINES DE 16 CARACTERES
                 else if (ntyp(2:2).eq.'1') then
                     call wkvect(trav, 'V V K16', nk, jtrav4)
                     call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=nk, vect=zk16(jtrav4),&
                                 nbret=ir)
-                    call tbajco(resu, nmpar, 'K16', nk, ibid,&
-                                rbid, cbid, zk16(jtrav4), 'R', zi(iii))
+                    call tbajco(resu, nmpar, 'K16', nk, [0],&
+                                [0.d0], [cbid], zk16(jtrav4), 'R', zi(iii))
 !
 !              CHAINES DE 24 CARACTERES
                 else if (ntyp(2:2).eq.'2') then
                     call wkvect(trav, 'V V K24', nk, jtrav5)
                     call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=nk, vect=zk24(jtrav5),&
                                 nbret=ir)
-                    call tbajco(resu, nmpar, 'K24', nk, ibid,&
-                                rbid, cbid, zk24(jtrav5), 'R', zi(iii))
+                    call tbajco(resu, nmpar, 'K24', nk, [0],&
+                                [0.d0], [cbid], zk24(jtrav5), 'R', zi(iii))
                 endif
             endif
             call jedetr(trav)
@@ -250,22 +250,22 @@ subroutine op0036()
                 zr(ivcr+i-1)= zr(jvale-1+ndim/3+2*i-1)
                 zr(ivci+i-1)= zr(jvale-1+ndim/3+2*i)
 301          continue
-            call tbajco(resu, nmparc(1), 'R', ndim/3, ibid,&
-                        zr(jvale), cbid, kbid, 'R', -1)
-            call tbajco(resu, nmparc(2), 'R', ndim/3, ibid,&
-                        zr(ivcr), cbid, kbid, 'R', -1)
-            call tbajco(resu, nmparc(3), 'R', ndim/3, ibid,&
-                        zr(ivci), cbid, kbid, 'R', -1)
+            call tbajco(resu, nmparc(1), 'R', ndim/3, [0],&
+                        zr(jvale), [cbid], kbid, 'R', [-1])
+            call tbajco(resu, nmparc(2), 'R', ndim/3, [0],&
+                        zr(ivcr), [cbid], kbid, 'R', [-1])
+            call tbajco(resu, nmparc(3), 'R', ndim/3, [0],&
+                        zr(ivci), [cbid], kbid, 'R', [-1])
             call jedetr(vectcr)
             call jedetr(vectci)
         else
             call tbcrsv(resu, 'G', 2, nmparf, typarr,&
                         ndim/2)
             call tbajpa(resu, 2, nmparf, typarr)
-            call tbajco(resu, nmparf(1), 'R', ndim/2, ibid,&
-                        zr(jvale), cbid, kbid, 'R', -1)
-            call tbajco(resu, nmparf(2), 'R', ndim/2, ibid,&
-                        zr(jvale+ndim/ 2), cbid, kbid, 'R', -1)
+            call tbajco(resu, nmparf(1), 'R', ndim/2, [0],&
+                        zr(jvale), [cbid], kbid, 'R', [-1])
+            call tbajco(resu, nmparf(2), 'R', ndim/2, [0],&
+                        zr(jvale+ndim/ 2), [cbid], kbid, 'R', [-1])
         endif
 !
 !     ==============

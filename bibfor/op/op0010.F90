@@ -242,7 +242,7 @@ subroutine op0010()
 !
 !
     cnxinv = '&&XPRREO.CNCINV'
-    call cncinv(noma, ibid, 0, 'V', cnxinv)
+    call cncinv(noma, [ibid], 0, 'V', cnxinv)
 !
 !     RETRIEVE THE MAXIMUM ADVANCEMENT OF THE CRACK FRONT
     call getvr8(' ', 'DA_MAX', scal=damax, nbret=ibid)
@@ -339,7 +339,7 @@ subroutine op0010()
 !
 !        CREATE THE INVERSE CONNECTIVITY
         ucnxin = '&&OP0010.UCNCINV'
-        call cncinv(unoma, ibid, 0, 'V', ucnxin)
+        call cncinv(unoma, [ibid], 0, 'V', ucnxin)
 !
 !        CREATE A TEMPORARY JEVEUO OBJECT TO STORE THE "CONNECTION"
 !        BETWEEN THE PHYSICAL AND AUXILIARY MESH USED IN THE PROJECTION

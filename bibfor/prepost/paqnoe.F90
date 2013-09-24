@@ -350,7 +350,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 cns1 = '&&PAQNOE.SIG_S1'
                 cns2 = '&&PAQNOE.SIG_ORDO'
                 call cnocns(chsig, 'V', cns1)
-                call cnsred(cns1, 0, ibid, 6, lsig,&
+                call cnsred(cns1, 0, [ibid], 6, lsig,&
                             'V', cns2)
                 call jeexin(cns2(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
@@ -370,7 +370,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 cns3 = '&&PAQNOE.EPS_S3'
                 cns4 = '&&PAQNOE.EPS_ORDO'
                 call cnocns(cheps, 'V', cns3)
-                call cnsred(cns3, 0, ibid, 6, leps,&
+                call cnsred(cns3, 0, [ibid], 6, leps,&
                             'V', cns4)
                 call jeexin(cns4(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
@@ -391,7 +391,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 cns5 = '&&PAQNOE.EPSP_S5'
                 cns6 = '&&PAQNOE.EPSP_ORDO'
                 call cnocns(chepsp, 'V', cns5)
-                call cnsred(cns5, 0, ibid, 6, leps,&
+                call cnsred(cns5, 0, [ibid], 6, leps,&
                             'V', cns6)
                 call jeexin(cns6(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
@@ -415,7 +415,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                     cns7 = '&&PAQNOE.EPSPE_S7'
                     cns8 = '&&PAQNOE.EPSPE_ORDO'
                     call cnocns(cheppe, 'V', cns7)
-                    call cnsred(cns7, 0, ibid, 6, leps,&
+                    call cnsred(cns7, 0, [ibid], 6, leps,&
                                 'V', cns8)
                     call jeexin(cns8(1:19)//'.CNSV', iret)
                     if (iret .eq. 0) then

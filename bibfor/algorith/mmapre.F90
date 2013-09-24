@@ -156,7 +156,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
@@ -198,7 +198,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! --------- NUMEROS DE LA MAILLE MAITRE
 !
                 posmam = entapp
-                call cfnumm(defico, 1, posmam, nummam)
+                call cfnumm(defico, posmam, nummam)
 !
 ! --------- SAUVEGARDE APPARIEMENT
 !

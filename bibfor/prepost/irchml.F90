@@ -220,7 +220,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             call wkvect('&&IRCHML.MAILLE', 'V V I', nbtma, jliste)
             ncncin = '&&IRCHML.CONNECINVERSE  '
             call jeexin(ncncin, n2)
-            if (n2 .eq. 0) call cncinv(nomma, ibid, 0, 'V', ncncin)
+            if (n2 .eq. 0) call cncinv(nomma, [0], 0, 'V', ncncin)
             libre = 1
             call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', jdrvlc)
             call jeveuo(jexnum(ncncin, 1), 'L', jcncin)

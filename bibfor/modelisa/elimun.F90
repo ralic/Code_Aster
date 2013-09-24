@@ -168,7 +168,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
                     cmp = zk8(jcmpg-1+jdecat+icmp-1)
                     call exiscp(cmp, k8bla, nomo, 1, 'NUM',&
-                                k8bla, numno1, exist)
+                                k8bla, [numno1], exist)
                     if (exist(1) .eq. 0) then
                         nb = nb + 1
                     endif

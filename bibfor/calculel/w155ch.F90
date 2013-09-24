@@ -110,7 +110,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     licmp(2)='TUY_NCOU'
     licmp(3)='TUY_NSEC'
     licmp(4)='NBFIBR'
-    call cesred(ces1, nbma, zi(jlima), 4, licmp,&
+    call cesred(ces1,nbma,zi(jlima),4,licmp,&
                 'V', ces2)
     call detrsd('CHAM_ELEM_S', ces1)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
@@ -125,7 +125,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
                     'A', iret)
         ASSERT(iret.eq.0)
         licmp(1)='ANGZZK'
-        call cesred(ces1, nbma, zi(jlima), 1, licmp,&
+        call cesred(ces1,nbma,zi(jlima),1,licmp,&
                     'V', ces5)
         call detrsd('CHAM_ELEM_S', ces1)
         call jeveuo(ces5//'.CESD', 'L', jce5d)
@@ -160,7 +160,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !     4. ALLOCATION ET CALCUL DE CHEXTR :
 !     ------------------------------------
     call cescre('V', ces4, typces, ma, nomgd,&
-                ncmp, zk8(jce3c), zi(jnbpt), -1, -ncmp)
+                ncmp, zk8(jce3c), zi(jnbpt), [-1], [-ncmp])
     call jeveuo(ces4//'.CESD', 'L', jce4d)
     call jeveuo(ces4//'.CESV', 'L', jce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)

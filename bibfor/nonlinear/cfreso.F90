@@ -79,7 +79,7 @@ subroutine cfreso(resoco, ldscon, ndim, nbliac, llf,&
 !
 ! --- RESOLUTION : [-A.C-1.AT].{MU} = {JEU(DEPTOT) - A.DDEPL0}
 !
-    call rldlgg(ldscon, zr(jmu), c16bid, 1)
+    call rldlgg(ldscon, zr(jmu), [c16bid], 1)
     zi(ldscon+2) = neqmax
 !
     call jedema()

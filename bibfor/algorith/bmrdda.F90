@@ -56,7 +56,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
 !
     integer :: nbcpmx, nbddl, nbdif, numint, iret, i, j, nbec, nbcmp, neq, ibid
-    integer :: nunoe, iran, lldesc, ord, nliais, llint3, llint4, llact, llnoe
+    integer :: nunoe, iran(1), lldesc, ord, nliais, llint3, llint4, llact, llnoe
     integer :: lldeeq, nbnoe, inoe
     parameter (nbcpmx=300)
     integer :: idec(nbcpmx), ivddl(nbddl)
@@ -170,7 +170,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
                 if (nbdif .ge. 0) then
                     call cheddl(zi(lldeeq), neq, nunoe, j, iran,&
                                 1)
-                    ivddl(nbddl-nbdif)=iran
+                    ivddl(nbddl-nbdif)=iran(1)
                 endif
             endif
 30      continue

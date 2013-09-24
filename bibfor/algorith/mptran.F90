@@ -321,7 +321,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
             call rscrsd('G', nomres, 'MODE_GENE', nbabs)
             call mdallr(nommes, nomres, nombas, nbmode, nbabs,&
-                        zr(jdep), cbid, zcmplx)
+                        zr(jdep), [cbid], zcmplx)
         endif
 !
     else
@@ -360,7 +360,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
             call rscrsd('G', nomres, 'MODE_GENE', nbabs)
             call mdallr(nommes, nomres, nombas, nbmode, nbabs,&
-                        rbid, zc(jdep), zcmplx)
+                        [0.d0], zc(jdep), zcmplx)
         else
             call utmess('F', 'ALGORITH6_33')
         endif

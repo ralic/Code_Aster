@@ -38,8 +38,8 @@ subroutine te0177(option, nomte)
     integer :: kp, i, j, k, ij, imattt, igeom, imate
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     real(kind=8) :: cel, dfdx(9), dfdy(9), poids, r
-    integer :: icodre
-    complex(kind=8) :: valres
+    integer :: icodre(1)
+    complex(kind=8) :: valres(1)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -50,7 +50,7 @@ subroutine te0177(option, nomte)
 !
     call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres,&
                 icodre, 1)
-    cel = dble( valres )
+    cel = dble( valres(1) )
 !
     do 101 kp = 1, npg
         k = (kp-1)*nno

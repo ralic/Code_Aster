@@ -167,7 +167,7 @@ subroutine rfhge2(harmge)
                     k8b, ie)
         call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
         call copmod(basemo, 'DEPL', neq, nume, nbmode,&
-                    'R', zr( idbase), cbid)
+                    'R', zr( idbase), [cbid])
 !
 ! --- TRAITEMENT D'UN GROUP DE NOEUDS SEUELEMENT
         if (ngn .ne. 0) then

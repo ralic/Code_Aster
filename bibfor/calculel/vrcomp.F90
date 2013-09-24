@@ -126,7 +126,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !
     call carces(compop, 'ELEM', ' ', 'V', coto,&
                 'A', iret)
-    call cesred(coto, 0, 0, 1, 'RELCOM',&
+    call cesred(coto,0,[0],1,'RELCOM',&
                 'V', copp)
     call detrsd('CHAM_ELEM_S', coto)
 !
@@ -178,7 +178,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     if (compom .ne. ' ') then
         call carces(compom, 'ELEM', ' ', 'V', coto,&
                     'A', iret)
-        call cesred(coto, 0, 0, 1, 'RELCOM',&
+        call cesred(coto,0,[0],1,'RELCOM',&
                     'V', copm)
         call detrsd('CHAM_ELEM_S', coto)
 !

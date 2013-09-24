@@ -79,7 +79,7 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
     licmp(2)='RAPPORT'
     licmp(3)='TAILLE'
     call cescre('V', chsing, 'ELEM', nomail, nompaz,&
-                3, licmp, -1, -1, nbr)
+                3, licmp, [-1], [-1], nbr)
 !
 ! 2 - STOCKAGE DANS CHSING DE ALPHA ET RE
 !

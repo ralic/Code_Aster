@@ -80,6 +80,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     character(len=16) :: keywordfact
     integer :: nliai, ndimmo
     real(kind=8) :: dist_mini, dist
+    complex(kind=8) :: cbid
     character(len=8) :: k8bid, model, answer
     integer :: n1, iocc, iret, ibid
     integer :: nbrela, jdnbre
@@ -355,7 +356,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 ! - Fusion des champs et transformation en carte
 !
     if (nbchs .gt. 0) then
-        call chsfus(nbchs, zk16(jlces), zl(jll), zr(jlr), 0.d0,&
+        call chsfus(nbchs, zk16(jlces), zl(jll), zr(jlr), [cbid],&
                     .false., 'V', '&&CAPREC.CES')
         call cescar('&&CAPREC.CES', cabl_sigm, 'G')
     endif

@@ -536,13 +536,13 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                         npgmm, ntypel, npgmax, indpg, numpt,&
                         numord, option, param)
             call cescre('V', chames, typech, nomaas, nomgd,&
-                        ncmprf, zk8(jnocmp), npgma, -1, -ncmprf)
+                        ncmprf, zk8(jnocmp), npgma, [-1], [-ncmprf])
         else if (typech(1:4).eq.'CART') then
             call cescre('V', chames, 'ELEM', nomaas, nomgd,&
-                        ncmprf, zk8(jnocmp), -1, -1, -ncmprf)
+                        ncmprf, zk8(jnocmp), [-1], [-1], [-ncmprf])
         else if (typech(1:4).eq.'ELNO'.or.typech(1:4).eq.'ELEM') then
             call cescre('V', chames, typech, nomaas, nomgd,&
-                        ncmprf, zk8(jnocmp), -1, -1, -ncmprf)
+                        ncmprf, zk8(jnocmp), [-1], [-1], [-ncmprf])
         else
             ASSERT(.false.)
         endif

@@ -110,7 +110,7 @@ subroutine xtopoc(modele)
 !
     do 20 i = 1, 7
         call cescre('V', champ(i), 'ELEM', noma, 'DCEL_I',&
-                    2, licmp, ibid, -1, -2)
+                    2, licmp, [0], [-1], [-2])
         call jeveuo(champ(i)//'.CESD', 'L', jcesd)
         call jeveuo(champ(i)//'.CESV', 'E', jcesv)
         call jeveuo(champ(i)//'.CESL', 'E', jcesl)

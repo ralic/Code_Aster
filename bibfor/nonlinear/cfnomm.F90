@@ -69,7 +69,7 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 !
     if (typent .eq. 'MAIL') then
         posmai = posent
-        call cfnumm(defico, 1, posmai, nummai)
+        call cfnumm(defico, posmai, nummai)
         call jenuno(jexnum(noma//'.NOMMAI', nummai), noment)
 !
     else if (typent.eq.'NOEU') then

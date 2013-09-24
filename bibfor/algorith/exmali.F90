@@ -85,7 +85,7 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
     kbid=' '
     call bmrdda(basmod, kbid, nomint, numint, 0,&
-                ibid, nbddl, ord, ii)
+                [0], nbddl, ord, ii)
     nblig=nbddl
 !
 !----------------ALLOCATION DU VECTEUR DES RANGS DES DDL----------------

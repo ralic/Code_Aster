@@ -161,16 +161,16 @@ subroutine mpjeft(corres)
 !  ELEMENT VOLUMIQUE / ELEMENT SURFACIQUE / ELEMENT LINEIQUE
 !
     if (ncas .eq. 2) then
-        call pj2dco('TOUT', model1, model2, 0, 0,&
-                    0, 0, ' ', ' ', corres,&
+        call pj2dco('TOUT', model1, model2, 0, [0],&
+                    0, [0], ' ', ' ', corres,&
                     .false., rbid)
     else if (ncas.eq.3) then
-        call pj3dco('TOUT', model1, model2, 0, 0,&
-                    0, 0, ' ', ' ', corres,&
+        call pj3dco('TOUT', model1, model2, 0, [0],&
+                    0, [0], ' ', ' ', corres,&
                     .false., rbid)
     else if (ncas.eq.4) then
-        call pj4dco('TOUT', model1, model2, 0, 0,&
-                    0, 0, ' ', ' ', corres,&
+        call pj4dco('TOUT', model1, model2, 0, [0],&
+                    0, [0], ' ', ' ', corres,&
                     .false., rbid, ' ')
     else if (ncas.eq.5) then
         call pj5dco(model1, model2, corres)

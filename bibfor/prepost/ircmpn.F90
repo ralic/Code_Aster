@@ -50,9 +50,9 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !                  CAIMPI(9,I) = TYPE GEOMETRIQUE AU SENS MED
 !                  CAIMPI(10,I) = NOMBRE TOTAL DE MAILLES IDENTIQUES
 !         CAIMPK : CARACTERES POUR CHAQUE IMPRESSION
-!                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
-!                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-!                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
+!                  CAIMPK(1) = NOM DE LA LOCALISATION ASSOCIEE
+!                  CAIMPK(2) = NOM DU PROFIL AU SENS MED
+!                  CAIMPK(3) = NOM DE L'ELEMENT DE STRUCTURE
 !       PROFAS : PROFIL ASTER. C'EST LA LISTE DES NUMEROS ASTER DES
 !                NOEUDS POUR LESQUELS LE CHAMP EST DEFINI
 !
@@ -77,7 +77,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     integer :: profas(nbvato)
 !
     character(len=*) :: nofimd
-    character(len=80) :: caimpk(3, 1)
+    character(len=80) :: caimpk(3)
 !
     logical :: exicmp(nbvato)
 !
@@ -204,13 +204,12 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     caimpi(9,1) = typnoe
 !                  CAIMPI(7,I) = NOMBRE DE MAILLES IDENTIQUES
     caimpi(10,1) = nbvato
-!                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
-    caimpk(1,1) = ednoga
-!                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-    caimpk(2,1) = ednopf
-!                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
-!                                AU SENS MED
-    caimpk(3,1) = ednopf
+!                  CAIMPK(1) = NOM DE LA LOCALISATION ASSOCIEE
+    caimpk(1) = ednoga
+!                  CAIMPK(2) = NOM DU PROFIL AU SENS MED
+    caimpk(2) = ednopf
+!                  CAIMPK(3) = NOM DE L'ELEMENT DE STRUCTURE AU SENS MED
+    caimpk(3) = ednopf
 !
 !GN      WRITE(IFM,*) 'A LA FIN DE 4, CAIMPI :'
 !GN      WRITE(IFM,4000) (CAIMPI(IAUX,1),IAUX = 1 , 7)
@@ -237,11 +236,9 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
         iaux = 0
         call ircmpf(nofimd, nval, profas, noprof)
 !
-        caimpk(2,1) = noprof
+        caimpk(2) = noprof
 !
     endif
-!GN      WRITE(IFM,5000) (CAIMPK(IAUX,1),IAUX = 1 , 2)
-!GN 5000 FORMAT('NLOLOPG = ',A,', NOMPROF = ',A)
 !
 !====
 ! 6. LA FIN

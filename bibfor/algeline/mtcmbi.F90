@@ -58,7 +58,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !-----------------------------------------------------------------------
     integer :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef
     integer :: idebli, iequa, ierd, ifinli, ilig, ind, ival
-    integer :: jrefa, jsmdi, jsmhc, kin, lddl, nbcomb, neq
+    integer :: jrefa, jsmdi, jsmhc, kin, lddl, neq
 !
     real(kind=8) :: coef, zero
 !-----------------------------------------------------------------------
@@ -178,7 +178,6 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !
 !
 !     --- ACTUALISATION DU .CONL ----
-    nbcomb = 1
     if (typmat(1:1) .eq. 'R') then
         typcst = 'R'
         const(1) = 1.d0
@@ -187,7 +186,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
         const(1) = 1.d0
         const(2) = 1.d0
     endif
-    call mtconl(nbcomb, typcst, const, lmat, typmat,&
+    call mtconl(1, typcst, const, [lmat], typmat,&
                 lres)
 !
     call jedetr('&&MTCMBI')

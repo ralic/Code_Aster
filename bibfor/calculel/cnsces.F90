@@ -156,7 +156,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, zk8(jcnsc), zi(jnbpt), zi(jnbsp), -ncmp)
+                ncmp, zk8(jcnsc), zi(jnbpt), zi(jnbsp), [-ncmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', jcesv)

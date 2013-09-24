@@ -188,7 +188,7 @@ subroutine surfc2(char, noma, ifm)
             posmae = jdecme + imae
 !
             call mminfm(posmae, defico, 'NPTM', nptm)
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
             call jenuno(jexnum(mailma, nummae), nommae)
             write (ifm,1080) nommae
 !

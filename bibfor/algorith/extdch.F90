@@ -60,7 +60,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !
 !
     integer :: jcnsv, jcnsl, jcnsd
-    integer :: nbno, ino, ib
+    integer :: nbno, ino
     integer :: jcesd, jcesl, jcesv
     integer :: nbma, ima, ipt, isp, icmp, nbpt, nbsp, nbcmp, iad
     real(kind=8) :: valeur
@@ -117,7 +117,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     if (typch(1:7) .eq. 'CHAM_EL') then
 !
         call celces(dch, 'V', dchs)
-        call cesred(dchs, 0, ib, 1, nocmp,&
+        call cesred(dchs, 0, [0], 1, nocmp,&
                     'V', dchs)
         call jeveuo(dchs//'.CESD', 'L', jcesd)
         call jeveuo(dchs//'.CESL', 'L', jcesl)
@@ -163,7 +163,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     else if (typch.eq.'CHAM_NO') then
 !
         call cnocns(dch, 'V', dchs)
-        call cnsred(dchs, 0, ib, 1, nocmp,&
+        call cnsred(dchs, 0, [0], 1, nocmp,&
                     'V', dchs)
         call jeveuo(dchs//'.CNSV', 'L', jcnsv)
         call jeveuo(dchs//'.CNSL', 'L', jcnsl)

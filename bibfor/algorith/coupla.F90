@@ -33,6 +33,7 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
 ! ---------
 #include "asterfort/coefmo.h"
 #include "asterfort/matini.h"
+
     integer :: np1, nbm, indic
     character(len=8) :: tpfl
     integer :: veci1(*)
@@ -44,13 +45,9 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: i, j
-    real(kind=8) :: xcf, r8b1, r8b2
+    real(kind=8) :: xcf, r8b1(2), r8b2
     complex(kind=8) :: c16b
     logical :: lk
-!
-! ROUTINES EXTERNES
-! -----------------
-!     EXTERNAL     MATINI, COEFMO
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !

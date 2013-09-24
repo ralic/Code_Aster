@@ -65,12 +65,12 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 !
             if (compor(1) .eq. 'ENDO_SCALAIRE') then
                 call piesgv(neps, tau, mat, vim, epsm,&
-                            epsp, epsd, typmod, etamin, etamax,&
+                            epsp, epsd, typmod(1), etamin, etamax,&
                             copilo)
 !
             else if (compor(1).eq.'ENDO_ISOT_BETON') then
                 call pieigv(neps, tau, mat, vim, epsm,&
-                            epsp, epsd, typmod, etamin, etamax,&
+                            epsp, epsd, typmod(1), etamin, etamax,&
                             copilo)
 !
             else

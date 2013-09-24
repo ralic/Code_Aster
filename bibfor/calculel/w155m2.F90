@@ -105,7 +105,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     licmp(2)='TUY_NCOU'
     licmp(3)='TUY_NSEC'
     licmp(4)='NBFIBR'
-    call cesred(ces1, nbma, zi(jlima), 4, licmp,&
+    call cesred(ces1,nbma,zi(jlima),4,licmp,&
                 'V', ces2)
     call detrsd('CHAM_ELEM_S', ces1)
     call jeveuo(ces2//'.CESD', 'L', jce2d)

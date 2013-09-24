@@ -121,7 +121,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 !
     ncncin = '&&CADDLP.CONINV'
     call jeexin(ncncin, ier)
-    if (ier .eq. 0) call cncinv(mesh, ibid, 0, 'V', ncncin)
+    if (ier .eq. 0) call cncinv(mesh, [ibid], 0, 'V', ncncin)
 !
     coef_type = 'REEL'
     ASSERT(vale_type .eq. 'REEL')

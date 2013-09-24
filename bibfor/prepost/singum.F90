@@ -103,7 +103,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     call jeveuo(jexatr(nomail//'.CONNEX', 'LONCUM'), 'L', jconn2)
 !
     cinv = '&&SINGU.CONNECINVERSE   '
-    call cncinv(nomail, 0, 0, 'V', cinv)
+    call cncinv(nomail, [0], 0, 'V', cinv)
     call jeveuo(cinv, 'L', jcinv1)
     call jeveuo(jexatr(cinv, 'LONCUM'), 'L', jcinv2)
 !

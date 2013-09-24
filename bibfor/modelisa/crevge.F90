@@ -110,7 +110,7 @@ subroutine crevge(ligrel, bas1)
 ! --------- CREATION DU POINTEUR DE LONGUEUR DE CONINV ----------------
 !
     coninv='&&CREVGE.CONINV'
-    call cncinv(ma, ibid, 0, 'G', coninv)
+    call cncinv(ma, [ibid], 0, 'G', coninv)
 !
     typmai=ma//'.TYPMAIL'
     connex=ma//'.CONNEX'

@@ -167,7 +167,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                                 numddl, ir)
                 endif
-            endif 
+            endif
             prchno=numddl//'.NUME'
             call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
                         nomgd, ie)
@@ -350,7 +350,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call wkvect('&&TRAN75.BASE', 'V V R', nbmode*neq, idbase)
         if (tousno) then
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
-                        'R', zr(idbase), cbid)
+                        'R', zr(idbase), [cbid])
         else
             do 110 j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
@@ -483,7 +483,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     if (mode .eq. blanc) then
         call refdcp(basemo, nomres)
-    else 
+    else
         call refdaj(' ', nomres, -1, ' ', 'INIT',&
                     ' ', ir)
     endif

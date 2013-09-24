@@ -69,7 +69,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 ! --- CREATION DU CHAM_ELEM_S VIERGE
 !
     call cescre('V', chelex, 'ELEM', noma, 'DCEL_I',&
-                nbcmp, licmp, -1, -1, -nbcmp)
+                nbcmp, licmp, [-1], [-1], [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
 !

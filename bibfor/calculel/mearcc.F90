@@ -100,7 +100,7 @@ subroutine mearcc(option, mo, chin, chout)
 !     CREATION DU CHAMP 2D (OUT) SIMPLE
     chous='&&MEARCC.CHOUT_S'
     call cescre('V', chous, 'ELNO', ma, 'SIEF_R',&
-                nbcmp, comp, -1, -1, -nbcmp)
+                nbcmp, comp, [-1], [-1], [-nbcmp])
 !
     call jeveuo(chous//'.CESV', 'E', jcesv2)
     call jeveuo(chous//'.CESD', 'E', jcesd2)
@@ -163,7 +163,7 @@ subroutine mearcc(option, mo, chin, chout)
 210      continue
 200  end do
 !
-    call cesred(chous, nbma, zi(jma2d), 0, k8b,&
+    call cesred(chous,nbma,zi(jma2d),0,[k8b],&
                 'V', chous)
 !
     call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&

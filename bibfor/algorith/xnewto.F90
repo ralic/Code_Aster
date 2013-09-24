@@ -85,7 +85,7 @@ subroutine xnewto(elp, name, num, nno, ndim,&
                     tabco, jtabls, ipp, ip, delta)
     else if (name.eq. 'XINVAC') then
         call xdelt1(num, ndim, ksi(1), tabco, s,&
-                    delta)
+                    delta(1))
     endif
 !
 ! --- ACTUALISATION

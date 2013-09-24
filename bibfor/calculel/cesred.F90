@@ -181,7 +181,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !        SOIT SUPÉRIEUR A CE QU'IL ETAIT PRECEDEMMENT, ON NE PEUT DONC
 !        PAS UTILISER ZI(JNBCMP) QUI EST LE MIN ==> -NBCMP
         call cescre(base, ces2, typces, ma, nomgd,&
-                    ncmp2, licmp, zi(jnbpt), zi(jnbsp), -nbcmp)
+                    ncmp2, licmp, zi(jnbpt), zi(jnbsp), [-nbcmp])
     else
 !        CHAM_ELEM_S AVEC COMPOSANTES DANS LE MEME ORDRE QUE CES1
         call cescre(base, ces2, typces, ma, nomgd,&

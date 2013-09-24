@@ -399,12 +399,12 @@ subroutine op0041()
 !           CREATE THE "CONNECTION" TABLE BETWEEN THE PHYSICAL MESH AND
 !           THE AUXILIARY GRID
             if (ndim .eq. 2) then
-                call pj2dco('TOUT', noma, maiaux, ibid, ibid,&
-                            ibid, ibid, ' ', ' ', corres,&
+                call pj2dco('TOUT', noma, maiaux, 0, [0],&
+                            0, [0], ' ', ' ', corres,&
                             ldmax, distma)
             else
-                call pj3dco('TOUT', noma, maiaux, ibid, ibid,&
-                            ibid, ibid, ' ', ' ', corres,&
+                call pj3dco('TOUT', noma, maiaux, 0, [0],&
+                            0, [0], ' ', ' ', corres,&
                             ldmax, distma)
             endif
 !

@@ -122,7 +122,7 @@ subroutine mmpoin(noma, defico, newgeo, sdappa)
 ! ------- NUMERO ABSOLU DE LA MAILLE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
 !
 ! ------- NOM DE LA MAILLE
 !

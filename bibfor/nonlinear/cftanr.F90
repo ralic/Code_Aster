@@ -149,7 +149,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         call cfnben(defico, posnoe, 'CONINV', nbma, jdeciv)
         ima = 1
         call cfinvm(defico, jdeciv, ima, posmae)
-        call cfnumm(defico, 1, posmae, nummae)
+        call cfnumm(defico, posmae, nummae)
         call cfnomm(noma, defico, 'MAIL', posmae, nommae)
         call mmelty(noma, nummae, aliase, ibid, ibid)
     endif
@@ -167,7 +167,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         else
             posmam = posenm
         endif
-        call cfnumm(defico, 1, posmam, nummam)
+        call cfnumm(defico, posmam, nummam)
         call cfnomm(noma, defico, 'MAIL', posmam, nommam)
         call mmelty(noma, nummam, aliasm, ibid, ibid)
     endif

@@ -71,7 +71,7 @@ subroutine pmfd02(noma, cesdec)
 !
     if (nbap .eq. 0) then
         call cescre('V', cesdec, 'ELEM', noma, 'NBSP_I',&
-                    1, 'COQ_NCOU', -1, -1, -1)
+                    1, 'COQ_NCOU', [-1], [-1], [-1])
         goto 9999
     endif
 !

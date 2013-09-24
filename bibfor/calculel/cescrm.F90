@@ -96,7 +96,7 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
 !
 ! --- APPEL A CESCRE
     call cescre(base, ces, typces, zk8(jchsk-1+1), nomgd,&
-                ncmpg, zk8(jcmps), zi(j1), zi(j2), -ncmpg)
+                ncmpg, zk8(jcmps), zi(j1), zi(j2), [-ncmpg])
 !
 ! --- MENAGE
     call jedetr(wk1)

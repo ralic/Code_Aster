@@ -115,7 +115,7 @@ subroutine celcel(transf, cel1, base, cel2)
 !       2.2 : ALLOCATION DE CES2 :
 !       ---------------------------------------------------
         call cescre('V', ces2, typces, ma, nomgd,&
-                    -nbvamx, kbid, zi(jnbpt), zi(jnbspt), -nbvamx)
+                    -nbvamx, kbid, zi(jnbpt), zi(jnbspt), [-nbvamx])
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
         call jeveuo(ces2//'.CESV', 'E', jcesv2)

@@ -205,8 +205,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
             else
 !
-                call rvgnoe(mcf, iocc, nmaila, lstnac, 0,&
-                            ibid)
+                call rvgnoe(mcf, iocc, nmaila, lstnac, 0, [ibid])
 !
                 call getvtx(mcf, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
                 call getvtx(mcf, 'MAILLE', iocc=iocc, nbval=0, nbret=n2)
@@ -224,7 +223,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 endif
 !
                 call jeexin(ncncin, n2)
-                if (n2 .eq. 0) call cncinv(nmaila, ibid, 0, 'V', ncncin)
+                if (n2 .eq. 0) call cncinv(nmaila, [ibid], 0, 'V', ncncin)
 !
                 call jelira(lstnac, 'LONMAX', nbnac)
                 call jeveuo(lstnac, 'L', alsnac)

@@ -58,7 +58,7 @@ subroutine xfisco(noma, modelx)
     licmp(2) = 'X2'
 !
     call cescre('V', ces, 'ELEM', noma, 'NEUT_I',&
-                2, licmp, ibid, zi(jnbsp), -2)
+                2, licmp, [ibid], zi(jnbsp), [-2])
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', jcesv)
     call jeveuo(ces//'.CESL', 'E', jcesl)

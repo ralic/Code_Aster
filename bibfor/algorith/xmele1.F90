@@ -213,10 +213,10 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
         if (param .eq. 'PCOHES') then
             call cescre('V', chelsi, 'ELEM', noma, nomgd,&
-                        1, licmp3, -1, zi( jnbsp), -ncmp)
+                        1, licmp3, [-1], zi( jnbsp), [-ncmp])
         else
             call cescre('V', chelsi, 'ELEM', noma, nomgd,&
-                        1, 'X1', -1, zi( jnbsp), -ncmp)
+                        1, 'X1', [-1], zi( jnbsp), [-ncmp])
         endif
 !
 ! --- RAZ VECTEUR DE DIMENSIONNEMENT

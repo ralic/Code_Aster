@@ -263,7 +263,7 @@ subroutine op0191()
                 call celces(champ0, 'V', chams0)
                 call celces(champ1, 'V', chams1)
                 call cesfus(2, chs, lcumu, lcoer, lcoec,&
-                            lcoc, 'V', chafus)
+                            lcoc(1), 'V', chafus)
                 call dismoi('F', 'NOM_LIGREL', champ0, 'CHAM_ELEM', ibid,&
                             ligrel, ibid)
                 call cescel(chafus, ligrel, option, ' ', 'NAN',&

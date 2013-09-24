@@ -288,7 +288,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
     else if (tych2(1:2).eq.'EL') then
         call celces(champ, 'V', chs1)
-        call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
+        call cesred(chs1,nbtrou,zi(jnutro),ncmp,zk8(jlicmp),&
                     'V', chs2)
 !
     else if (tych2.eq.'CART') then
@@ -299,7 +299,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
             call carces(champ, tychr, cesmod, 'V', chs1,&
                         'A', ib)
         endif
-        call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
+        call cesred(chs1,nbtrou,zi(jnutro),ncmp,zk8(jlicmp),&
                     'V', chs2)
 !
     else
@@ -318,7 +318,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !       4.4 FUSION DU CHAMP REDUIT AVEC LE CHAMP RESULTAT :
 !       ----------------------------------------------------
     if (iocc .eq. 1) then
-        call chsfus(1, chs2, .false., coefr, coefc,&
+        call chsfus(1, chs2, [.false.], [coefr], [coefc],&
                     lcoc, 'V', chs3)
     else
         lichs(1) = chs3

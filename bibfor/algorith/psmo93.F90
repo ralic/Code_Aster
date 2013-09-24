@@ -37,7 +37,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, neq, lmatm
-    real(kind=8) :: r8b, zero, un, coef(3), xnorm
+    real(kind=8) ::  coef(3), xnorm
     character(len=8) :: k8b, monaxe
     character(len=14) :: nume
     character(len=16) :: nomcmd
@@ -55,8 +55,6 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
     nbmoad = 0
     nbmoda = 0
-    un=1.d0
-    zero=0.d0
     accuni = .false.
     moauni='&&OP0093.MODE_STAT_ACCU'
     moaimp='&&OP0093.MODE_ACCE_IMPO'
@@ -102,21 +100,21 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
                 if (monaxe(1:1) .eq. 'X') then
                     imod = imod + 1
                     ind = 3 * ( imod - 1 )
-                    zr(jcoef+ind+1-1) = un
-                    zr(jcoef+ind+2-1) = zero
-                    zr(jcoef+ind+3-1) = zero
+                    zr(jcoef+ind+1-1) = 1.d0
+                    zr(jcoef+ind+2-1) = 0.d0
+                    zr(jcoef+ind+3-1) = 0.d0
                 else if (monaxe(1:1).eq.'Y') then
                     imod = imod + 1
                     ind = 3 * ( imod - 1 )
-                    zr(jcoef+ind+1-1) = zero
-                    zr(jcoef+ind+2-1) = un
-                    zr(jcoef+ind+3-1) = zero
+                    zr(jcoef+ind+1-1) = 0.d0
+                    zr(jcoef+ind+2-1) = 1.d0
+                    zr(jcoef+ind+3-1) = 0.d0
                 else if (monaxe(1:1).eq.'Z') then
                     imod = imod + 1
                     ind = 3 * ( imod - 1 )
-                    zr(jcoef+ind+1-1) = zero
-                    zr(jcoef+ind+2-1) = zero
-                    zr(jcoef+ind+3-1) = un
+                    zr(jcoef+ind+1-1) = 0.d0
+                    zr(jcoef+ind+2-1) = 0.d0
+                    zr(jcoef+ind+3-1) = 1.d0
                 endif
 34          continue
             call jedetr('&&OP0093.AXE')
@@ -128,14 +126,14 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
         if (nd .ne. 0) then
             nbacc = nbacc + 1
             accuni = .true.
-            xnorm = zero
+            xnorm = 0.d0
             do 36 id = 1, 3
                 xnorm = xnorm + coef(id)*coef(id)
 36          continue
-            if (xnorm .le. zero) then
+            if (xnorm .le. 0.d0) then
                 call utmess('F', 'ALGELINE2_78')
             endif
-            xnorm = un / sqrt(xnorm)
+            xnorm = 1.d0 / sqrt(xnorm)
             do 38 id = 1, 3
                 coef(id) = coef(id) * xnorm
 38          continue
@@ -156,7 +154,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     if (accuni) then
         call wkvect(moauni, 'V V R', neq*nbmoda, lmoda)
         call modsta('ACCE', raidfa, matpre, solveu, lmatm,&
-                    nume, ibid, zr(jcoef), neq, nbmoda,&
+                    nume, [0], zr(jcoef), neq, nbmoda,&
                     zr(lmoda))
     endif
 !
@@ -168,7 +166,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 24      continue
         call wkvect(moaimp, 'V V R', neq*nbmoad, lmoad)
         call modsta('ACCD', raidfa, matpre, solveu, lmatm,&
-                    nume, zi(lddad), r8b, neq, nbmoad,&
+                    nume, zi(lddad), [0.d0], neq, nbmoad,&
                     zr(lmoad))
     endif
 !

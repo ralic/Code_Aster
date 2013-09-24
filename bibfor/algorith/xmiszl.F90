@@ -123,11 +123,11 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 ! --- REDUCTION CHAM_NO_S SUR LAGS_C/LAG_F1/LAG_F2
 !
-    call cnsred(cns1, nbno, zi(jtab), 1, 'LAGS_C',&
+    call cnsred(cns1, nbno, zi(jtab), 1, ['LAGS_C'],&
                 'V', cns1b)
-    call cnsred(cns1, nbno, zi(jtab), 1, 'LAGS_F1',&
+    call cnsred(cns1, nbno, zi(jtab), 1, ['LAGS_F1'],&
                 'V', cns1d)
-    call cnsred(cns1, nbno, zi(jtab), 1, 'LAGS_F2',&
+    call cnsred(cns1, nbno, zi(jtab), 1, ['LAGS_F2'],&
                 'V', cns1e)
     call jeveuo(cns1b//'.CNSV', 'E', jcns1b)
     call jeveuo(cns1d//'.CNSV', 'E', jcns1d)

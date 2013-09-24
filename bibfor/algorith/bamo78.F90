@@ -170,7 +170,7 @@ subroutine bamo78(nomres, trange, typres)
                 k8bid, iret)
     call wkvect('&&BAMO78.BASE', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
     call dismoi('F', 'NOM_MODELE', numddl, 'NUME_DDL', ibid,&
                 modele, iret)
 !
@@ -395,7 +395,7 @@ subroutine bamo78(nomres, trange, typres)
 !
             call celces(chel1, 'V', ches1)
             call cesfus(nc, chs, lcumu, lcoer, lcoec,&
-                        lcoc, 'V', ches3)
+                        lcoc(1), 'V', ches3)
             call cescel(ches3, ligrel, nosy, ' ', 'OUI',&
                         nncp, 'G', chamel, 'F', ibid)
 !
@@ -418,7 +418,7 @@ subroutine bamo78(nomres, trange, typres)
         chs(1) = ches2
         chs(2) = ches1
         call cesfus(nc, chs, lcumu, lcoer, lcoec,&
-                    lcoc, 'V', ches3)
+                    lcoc(1), 'V', ches3)
         call cescar(ches3, chamel, 'G')
         call rsnoch(nomres, 'COMPORTEMENT', iarc2)
 400  continue

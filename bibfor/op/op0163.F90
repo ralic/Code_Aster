@@ -135,7 +135,7 @@ subroutine op0163()
                 k8b, iret)
     call wkvect('&&OP0163.BASEMO', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
     call wkvect('&&OP0163.DEPLR', 'V V R', nbsto, itresr(1))
     call wkvect('&&OP0163.VITER', 'V V R', nbsto, itresr(2))
     call wkvect('&&OP0163.ACCER', 'V V R', nbsto, itresr(3))

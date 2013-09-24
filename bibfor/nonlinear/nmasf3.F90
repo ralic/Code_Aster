@@ -73,7 +73,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     real(kind=8) :: qplus(72)
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
-    real(kind=8) :: nu, nub, rac2, den, bid
+    real(kind=8) :: nu, nub, rac2, den
     real(kind=8) :: valres(2)
     data h/ 1.d0, 1.d0, -1.d0,-1.d0,-1.d0,-1.d0, 1.d0, 1.d0,&
      &        1.d0,-1.d0, -1.d0, 1.d0,-1.d0, 1.d0, 1.d0,-1.d0,&
@@ -227,7 +227,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
         call cast3d(proj, gam, dh, def, nno,&
                     kpg, nub, nu, d, calbn,&
-                    bn, jac, bid)
+                    bn, jac, [0.d0])
 !
 !    CONTRAINTES DE HOURGLASS
 !

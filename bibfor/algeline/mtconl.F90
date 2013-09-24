@@ -103,7 +103,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                     if (typcst(jcomb) .eq. 'C') then
                         tcst = abs(dcmplx(const(iconst),const(iconst+ 1)))
                         tpcst = 'R'
-                        call mtxcnl(cumul, tpcst, tcst, type, lconl2,&
+                        call mtxcnl(cumul, tpcst, [tcst,0.d0], type, lconl2,&
                                     typrez, lconl1, neq)
                     else
                         call mtxcnl(cumul, typcst(jcomb), const(iconst), type, lconl2,&

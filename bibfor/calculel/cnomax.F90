@@ -59,7 +59,7 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
     cns = '&&CNOMAX.CNS'
     numno = 0
     call cnocns(cno, 'V', cns1)
-    call cnsred(cns1, 0, 0, ncmp, licmp,&
+    call cnsred(cns1, 0, [0], ncmp, licmp,&
                 'V', cns)
 !
     call jeveuo(cns//'.CNSD', 'L', jcnsd)

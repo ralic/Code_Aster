@@ -86,7 +86,6 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! ROUTINES EXTERNES
 ! -----------------
-!     EXTERNAL      COPMOD, DISMOI, GETVID, GETVIS, GETVR8, GETVTX,
 !    &              JEDEMA, JELIRA, JEMARQ, JEVEUO, MDCONF, RSADPA,
 !    &              RSORAC,
 !    &              WKVECT
@@ -249,7 +248,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! 6.4 DEFORMEES MODALES
 !
     call copmod(nombm, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(jbase), c16b)
+                'R', zr(jbase), [c16b])
 !
 ! 6.5 RECUPERATION DE LA VITESSE D'ECOULEMENT DU FLUIDE
 !

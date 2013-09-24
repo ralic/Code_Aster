@@ -113,7 +113,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
 ! --- CREATION DE LA SD ELNO
 !
     call cescre('V', ces, 'ELNO', ma, nomgd,&
-                ncmp1, zk8(jcnsc), ibid, zi(jnbsp), -ncmp1)
+                ncmp1, zk8(jcnsc),[ibid], zi(jnbsp), [-ncmp1])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', jcesv)
@@ -132,7 +132,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
 ! --- ON CREE AUSSI UN CHAMP ELEM QUI CONTIENT LE NOM DES FISS
         ces2 = '&&XCONNO.CES2'
         call cescre('V', ces2, 'ELEM', ma, 'NEUT_K8',&
-                    1, 'Z1', ibid, zi( jnbsp), -1)
+                    1, ['Z1'], [ibid], zi( jnbsp), [-1])
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESV', 'E', jcesv2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)

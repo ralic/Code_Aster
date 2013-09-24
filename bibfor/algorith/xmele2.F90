@@ -116,7 +116,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 ! --- CREATION DU CHAM_ELEM_S
 !
     call cescre('V', chelsi, 'ELEM', noma, 'XCONTAC',&
-                nbcmp, licmp, -1, zi(jnbsp), -nbcmp)
+                nbcmp, licmp, [-1], zi(jnbsp), [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
 !

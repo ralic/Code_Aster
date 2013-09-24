@@ -121,7 +121,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
         call cescre('V', dcel, 'ELEM', ma, 'DCEL_I',&
-                    2, licmp, -1, -1, -2)
+                    2, licmp, [-1], [-1], [-2])
 !
         call jeveuo(dcel//'.CESD', 'E', jcesd)
         call jeveuo(dcel//'.CESL', 'E', jcesl)

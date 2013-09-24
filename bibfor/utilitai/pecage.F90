@@ -149,7 +149,7 @@ subroutine pecage(resu, modele, nbocc)
         valk(2) = '????????'
 !
         if (nt .ne. 0) then
-            call pemica(chelem, mxvale, zr(lvale), 0, ibid,&
+            call pemica(chelem, mxvale, zr(lvale), 0, [ibid],&
                         orig, iorig, icage)
             call pecag2(ndim, nsymx, nsymy, np, xyp,&
                         zr(lvale), valpar)
@@ -205,7 +205,7 @@ subroutine pecage(resu, modele, nbocc)
                     goto 30
                 endif
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
-                call pemica(chelem, mxvale, zr(lvale), 1, nume,&
+                call pemica(chelem, mxvale, zr(lvale), 1, [nume],&
                             orig, iorig, icage)
                 call pecag2(ndim, nsymx, nsymy, np, xyp,&
                             zr(lvale), valpar)

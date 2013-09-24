@@ -198,7 +198,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
         call pacouc(typflu, masg, zr(icodim), vite, zr(ipoids),&
                     zr(imist), freq, zr(iamfr), nbm, igrap,&
-                    npv, zr(iwork), lwork, phie, rbid,&
+                    npv, zr(iwork), lwork, phie, [rbid],&
                     ier)
 !
 !-------5.5.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES

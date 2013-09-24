@@ -163,7 +163,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
     ces2='&&W039C1.CES2'
     call cescre('V', ces2, 'ELEM', ma, 'NEUT_R',&
-                1, 'X1', -1, -1, -1)
+                1, 'X1', [-1], [-1], [-1])
     call jeveuo(ces2//'.CESD', 'L', jcesd)
     call jeveuo(ces2//'.CESV', 'E', jcesv)
     call jeveuo(ces2//'.CESL', 'E', jcesl)

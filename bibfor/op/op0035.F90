@@ -108,14 +108,14 @@ subroutine op0035()
 !             K*255 = 4*K*80 = (1,80)+(81,160)+(161,240)+(241,255)
 !                                 80      80        80        15
 !           5 COLONNES SONT AJOUTÉES A LA LIGNE K DE LA TABLE
-                call tbajco(result, 'NOMFIC1', 'K80', 1, ibid,&
-                            rbid, cbid, kfic( 1: 80), 'A', k)
-                call tbajco(result, 'NOMFIC2', 'K80', 1, ibid,&
-                            rbid, cbid, kfic( 81:160), 'A', k)
-                call tbajco(result, 'NOMFIC3', 'K80', 1, ibid,&
-                            rbid, cbid, kfic(161:240), 'A', k)
-                call tbajco(result, 'NOMFIC4', 'K80', 1, ibid,&
-                            rbid, cbid, kfic(241:255), 'A', k)
+                call tbajco(result, 'NOMFIC1', 'K80', 1, [ibid],&
+                            [rbid], [cbid], kfic( 1: 80), 'A', [k])
+                call tbajco(result, 'NOMFIC2', 'K80', 1, [ibid],&
+                            [rbid], [cbid], kfic( 81:160), 'A', [k])
+                call tbajco(result, 'NOMFIC3', 'K80', 1, [ibid],&
+                            [rbid], [cbid], kfic(161:240), 'A', [k])
+                call tbajco(result, 'NOMFIC4', 'K80', 1, [ibid],&
+                            [rbid], [cbid], kfic(241:255), 'A', [k])
             endif
         endif
 100  end do

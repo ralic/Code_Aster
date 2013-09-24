@@ -105,7 +105,7 @@ subroutine xstan2(crimax, noma, modele)
     call jeveuo(modele//'.MAILLE', 'L', jmail)
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XSTAN2.CNCINV'
-    call cncinv(noma, ibid, 0, 'V', cnxinv)
+    call cncinv(noma, [ibid], 0, 'V', cnxinv)
     noxfem = modele//'.NOXFEM'
     ligrel = modele//'.MODELE'
     cns2 = '&&XCONNO.CNS2'

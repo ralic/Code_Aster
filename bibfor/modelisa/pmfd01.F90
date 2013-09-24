@@ -113,7 +113,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
  4      continue
     endif
     call cescre('V', ces1, 'ELEM', noma, 'NBSP_I',&
-                nbcp, licmp, -1, -1, -nbcp)
+                nbcp, licmp, [-1], [-1], [-nbcp])
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
     call jeveuo(ces1//'.CESV', 'E', jces1v)
@@ -136,8 +136,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     lcoefr(1) = 1.d0
     lcoefr(2) = 1.d0
     ces3 = '&&PMFD01.CES3'
-    call cesfus(2, lichs, lcumul, lcoefr, cbid,&
-                .false., 'V', ces3)
+    call cesfus(2, lichs, lcumul, lcoefr, [cbid], .false., 'V', ces3)
     call detrsd('CHAM_ELEM_S', ces1)
 !
     cel = carele//'.CANBSP'
@@ -161,7 +160,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     licmp(2)='YG'
     licmp(3)='AIRE'
     call cescre('V', ces1, 'ELEM', noma, 'CAFI_R',&
-                3, licmp, -1, zi(jsp), -3)
+                3, licmp, [-1], zi(jsp), [-3])
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
     call jeveuo(ces1//'.CESV', 'E', jces1v)

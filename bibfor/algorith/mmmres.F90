@@ -204,7 +204,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
     call nmchex(veasse, 'VEASSE', 'CNELTC', fcont)
     call cnocns(fcont, 'V', fconts)
-    call cnsred(fconts, 0, 0, ndimg, licnt3,&
+    call cnsred(fconts, 0, [0], ndimg, licnt3,&
                 'V', fctcn)
     call jeveuo(fctcn//'.CNSV', 'L', jcont)
 !
@@ -213,7 +213,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     if (lfrot) then
         call nmchex(veasse, 'VEASSE', 'CNELTF', ffrot)
         call cnocns(ffrot, 'V', ffrots)
-        call cnsred(ffrots, 0, 0, ndimg, licnt3,&
+        call cnsred(ffrots, 0, [0], ndimg, licnt3,&
                     'V', ffrocn)
         call jeveuo(ffrocn//'.CNSV', 'L', jfrot)
     endif

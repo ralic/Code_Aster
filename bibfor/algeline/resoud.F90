@@ -234,9 +234,9 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
         else
             if (type .eq. 'R') then
                 call resldl(solv19, matr19, cine19, 1, zr(jtrav),&
-                            cbid, prepos)
+                            [cbid], prepos)
             else
-                call resldl(solv19, matr19, cine19, 1, rbid,&
+                call resldl(solv19, matr19, cine19, 1, [rbid],&
                             zc(jtrav), prepos)
             endif
         endif

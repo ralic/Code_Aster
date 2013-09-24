@@ -94,7 +94,7 @@ subroutine xfisno(noma, modelx)
 ! --- CREATION DE LA SD ELNO FISSNO
 !
     call cescre('V', ces, 'ELNO', noma, 'NEUT_I',&
-                1, 'X1', ibid, zi(jnbsp2), -1)
+                1, 'X1', [ibid], zi(jnbsp2), [-1])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', jcesv)
@@ -104,7 +104,7 @@ subroutine xfisno(noma, modelx)
 !
     if (lcont) then
         call cescre('V', ces2, 'ELNO', noma, 'NEUT_I',&
-                    1, 'X1', ibid, zi( jnbsp), -1)
+                    1, 'X1', [ibid], zi( jnbsp), [-1])
 !
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESV', 'E', jcesv2)

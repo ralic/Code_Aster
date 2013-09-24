@@ -181,7 +181,7 @@ subroutine macr78(nomres, trange, typres)
                 k8b, iret)
     call wkvect('&&MACR78.BASE', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
     call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n0)
     if (n0 .ne. 0) then
         nbcham = 3

@@ -233,7 +233,7 @@ subroutine rfrgen(trange)
                         k8b, ie)
             call wkvect('&&RFRGEN.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
             call copmod(basemo, 'DEPL', neq, nume, nbmode,&
-                        'R', zr( idbase), cbid)
+                        'R', zr( idbase), [cbid])
 !
             call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
             if (ngn .ne. 0) then

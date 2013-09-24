@@ -190,7 +190,7 @@ subroutine op0162()
     endif
     call wkvect('&&OP0162.BASEMO', 'V V R', nbmodt*neq, idbase)
     call copmod(basemo, 'DEPL', neq, nume, nbmodt,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
 !
 ! --- ALLOCATION VECTEUR DE TRAVAIL
 !

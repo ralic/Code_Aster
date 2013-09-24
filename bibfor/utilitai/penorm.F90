@@ -451,7 +451,7 @@ subroutine penorm(resu, modele)
 !
         call celces(cham1, 'V', chamtm)
         call jeveuo(mesmai, 'L', jma)
-        call cesred(chamtm, nbma, zi(jma), 0, k8b,&
+        call cesred(chamtm,nbma,zi(jma),0,[k8b],&
                     'V', chamtm)
         optio2 ='NORME_L2'
         nopar='PCHAMPG'
@@ -459,7 +459,7 @@ subroutine penorm(resu, modele)
                     nncp, 'V', cham1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chamtm)
 !
-! ----- Compute <CARTE> with informations on Gauss points 
+! ----- Compute <CARTE> with informations on Gauss points
 !
         call calc_coor_elga(ligrel, chgeom, chgaus)
 !

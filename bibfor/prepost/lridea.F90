@@ -398,7 +398,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
             if (nomch(1:4) .eq. 'VARI') nbcmp1 = nbvari
 !
             call cescre('V', chs, tychas, noma, nomgd,&
-                        nbcmp1, licmp, ibid, - 1, -nbcmp1)
+                        nbcmp1, licmp, [ibid], [-1], [-nbcmp1])
         endif
 !
 ! --- LECTURE DU CHAMP NOEUDS

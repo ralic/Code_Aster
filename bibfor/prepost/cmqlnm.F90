@@ -110,7 +110,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 70  end do
 !
 !     CREATION DE LA CONNECTIVITE INVERSE
-    call cncinv(main, 0, 0, 'V', '&&CMQLNM.CONINV')
+    call cncinv(main, [0], 0, 'V', '&&CMQLNM.CONINV')
     call jeveuo('&&CMQLNM.CONINV', 'L', iacnx2)
     call jeveuo(jexatr('&&CMQLNM.CONINV', 'LONCUM'), 'L', ilcnx2)
 !

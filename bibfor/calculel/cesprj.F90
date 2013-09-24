@@ -167,7 +167,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !     -----------------------------
     call detrsd('CHAM_ELEM_S', ces2)
     call cescre(base, ces2, 'ELNO', ma2, nomgd,&
-                ncmpmx, zk8(jce1c), ibid, -1, -ncmpmx)
+                ncmpmx, zk8(jce1c), [ibid], [-1], [-ncmpmx])
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESC', 'L', jce2c)
     call jeveuo(ces2//'.CESV', 'E', jce2v)

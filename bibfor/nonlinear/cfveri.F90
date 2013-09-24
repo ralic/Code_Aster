@@ -190,7 +190,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- MAILLE MAITRE
 !
                 posmam = entapp
-                call cfnumm(defico, 1, posmam, nummam)
+                call cfnumm(defico, posmam, nummam)
 !
 ! --------- NOM DE LA MAILLE MAITRE
 !

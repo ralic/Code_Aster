@@ -41,7 +41,7 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
 !
     if (iret .eq. 0) then
         call cescre('V', chelem, 'ELNO', noma, nomgd,&
-                    nbcmp, nocmp, -1, -1, -nbcmp)
+                    nbcmp, nocmp, [-1], [-1], [-nbcmp])
     endif
 !
     call jeveuo(chelem(1:19)//'.CESD', 'L', jcesd)

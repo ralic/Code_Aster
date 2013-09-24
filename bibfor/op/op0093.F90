@@ -52,7 +52,6 @@ subroutine op0093()
     integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, ierd, nbmodd
     integer :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
     integer :: nbmoda, nbmoin, nbmodi, massfa
-    real(kind=8) :: r8b
     character(len=8) :: k8b, resu, nomma
     character(len=14) :: nume
     character(len=16) :: nomcmd, concep
@@ -165,7 +164,7 @@ subroutine op0093()
 10      continue
         call wkvect(mocb, 'V V R', neq*nbmodd, lmodd)
         call modsta('DEPL', raidfa, matpre, solveu, ibid,&
-                    nume, zi(lddld), r8b, neq, nbmodd,&
+                    nume, zi(lddld), [0.d0], neq, nbmodd,&
                     zr(lmodd))
     endif
 !
@@ -178,7 +177,7 @@ subroutine op0093()
 20      continue
         call wkvect(moatta, 'V V R', neq*nbmodf, lmodf)
         call modsta('FORC', raidfa, matpre, solveu, ibid,&
-                    nume, zi(lddlf), r8b, neq, nbmodf,&
+                    nume, zi(lddlf), [0.d0], neq, nbmodf,&
                     zr(lmodf))
     endif
 !

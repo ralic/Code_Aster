@@ -101,7 +101,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     call jeexin(chams0, iret)
     if (iret .eq. 0) then
         call cescre('V', chams0, 'ELNO', noma, nomgd,&
-                    nbcmp, licmp, -1, -1, -nbcmp)
+                    nbcmp, licmp, [-1], [-1], [-nbcmp])
         chth(iocs) = chams0
     else
         call utmess('F', 'POSTRCCM_19')

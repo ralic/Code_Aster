@@ -74,7 +74,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     integer :: lzi, lzr, nbcou, nbv, nbvari, nddlet, ndimv
 !
     real(kind=8) :: cisail, coef, crf, gxz, gyz, hic, rac2
-    real(kind=8) :: x, zic, zmin
+    real(kind=8) :: x(1), zic, zmin
 !-----------------------------------------------------------------------
     parameter (npge=3)
     real(kind=8) :: ksi3s2

@@ -77,7 +77,7 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
         else
             ndd1 = 4
         endif
-        call cnsred(champs, 0, 0, ndd1, licmp6,&
+        call cnsred(champs, 0, [0], ndd1, licmp6,&
                     'V', champr)
     else if (ndimg.eq.2) then
         if (lctfc) then
@@ -85,7 +85,7 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
         else
             ndd1 = 3
         endif
-        call cnsred(champs, 0, 0, ndd1, licmp4,&
+        call cnsred(champs, 0, [0], ndd1, licmp4,&
                     'V', champr)
     else
         ASSERT(.false.)

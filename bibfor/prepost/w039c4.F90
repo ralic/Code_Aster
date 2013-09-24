@@ -86,7 +86,7 @@ subroutine w039c4(carte, ifi, form)
         chels2='&&W039C4.CHELS2'
         call copisd('CHAM_ELEM_S', 'V', chels1, chels2)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', nugd), 'L', jnocmp)
-        call cesred(chels2, 0, 0, 80, zk8(jnocmp),&
+        call cesred(chels2,0,[0],80,zk8(jnocmp),&
                     'V', chels1)
         call detrsd('CHAM_ELEM_S', chels2)
     endif

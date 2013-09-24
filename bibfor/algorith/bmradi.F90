@@ -60,7 +60,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, iran, iret, j, lldeeq, lldes
+    integer :: i, inoe, iran(1), iret, j, lldeeq, lldes
     integer :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec, ibid
     integer :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
@@ -165,9 +165,8 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) then
-                    call cheddl(zi(lldeeq), neq, nunoe, j, iran,&
-                                1)
-                    ivddl(nbddl-nbdif)=iran
+                    call cheddl(zi(lldeeq), neq, nunoe, j, iran, 1)
+                    ivddl(nbddl-nbdif)=iran(1)
                 endif
             endif
 30      continue

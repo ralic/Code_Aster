@@ -52,7 +52,7 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, i1, i2, i3, i4, i5, i6, ib
+    integer :: i1, i2, i3, i4, i5, i6, ib
     integer :: j1, j2, j3, k, npara
     character(len=16) :: typ2sd
     character(len=19) :: ch, chs, matr
@@ -64,7 +64,6 @@ subroutine imprsd(typesd, nomsd, ific, titre)
     typ2sd = typesd
 !
     ASSERT((ific.ne.0) .and. (ific.le.100))
-    ibid = 0
 !
 !     1. ECRITURE DU TITRE :
 !     ----------------------
@@ -90,7 +89,7 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 !
 !
         if (i1 .gt. 0) call cnsimp(ch, ific)
-        if (i2 .gt. 0) call cesimp(ch, ific, ibid, ibid)
+        if (i2 .gt. 0) call cesimp(ch, ific, 0, [0])
 !
         if (i3 .gt. 0) then
             call cnocns(ch, 'V', chs)
@@ -100,14 +99,14 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 !
         if (i4 .gt. 0) then
             call celces(ch, 'V', chs)
-            call cesimp(chs, ific, ibid, ibid)
+            call cesimp(chs, ific, 0, [0])
             call detrsd('CHAM_ELEM_S', chs)
         endif
 !
         if (i5 .gt. 0) then
             call carces(ch, 'ELEM', ' ', 'V', chs,&
                         'A', ib)
-            call cesimp(chs, ific, ibid, ibid)
+            call cesimp(chs, ific, 0, [0])
             call detrsd('CHAM_ELEM_S', chs)
         endif
 !

@@ -301,7 +301,7 @@ subroutine te0366(option, nomte)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
 !
-            call xtlagf(typmai, ndim, nnc, nne, ddle,&
+            call xtlagf(typmai, ndim, nnc, nne, ddle(1),&
                         nfaes, cface, jdepde, jpcai, ffc,&
                         contac, nfhe, dlagrf)
 !

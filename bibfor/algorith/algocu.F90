@@ -19,7 +19,6 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
 #include "jeveux.h"
 !
@@ -302,7 +301,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
         neqmax = zi(ldscon+2)
         zi(ldscon+2) = nbliac
-        call rldlgg(ldscon, zr(jmu), cbid, 1)
+        call rldlgg(ldscon, zr(jmu), [cbid], 1)
         zi(ldscon+2) = neqmax
 !
 ! --- CALCUL DE DELTA = DELT0 - C-1.AT.MU

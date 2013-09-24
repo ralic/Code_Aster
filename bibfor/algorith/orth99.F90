@@ -152,7 +152,7 @@ subroutine orth99(nomres, ritz)
     neq = zi(llnequ)
     call wkvect('&&ORTH99.BASE', 'V V R', nbmode*neq, idmode)
     call copmod(base, 'DEPL', neq, nu, nbmode,&
-                'R', zr(idmode), cbid)
+                'R', zr(idmode), [cbid])
 !-- FINALEMENT SI, DONC RECOPIE OK
 !
 !-----------------------------------------------------------------------

@@ -507,7 +507,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 do 36 i = 1, nbno
                     iv = 1
                     jd = itbno + i - 1
-                    call crlinu('NOM', mlgnno, 1, ibid, zk8(jd),&
+                    call crlinu('NOM', mlgnno, 1, [ibid], zk8(jd),&
                                 nbmtrd, zi(jdnw), zi(jddi), kk)
                     call affdis(ndim, irep, eta, car(nc), zr(irgno+6*i-6),&
                                 jdc, jdv, ivr, iv, kma,&

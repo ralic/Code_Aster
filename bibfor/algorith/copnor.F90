@@ -101,7 +101,7 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 !
 ! --- MAILLE COURANTE
 !
-    call cfnumm(defico, 1, posmai, nummai)
+    call cfnumm(defico, posmai, nummai)
     call cfnben(defico, posmai, 'CONNEX', nno, jdecno)
     call mmtypm(noma, nummai, nno, alias, ndim)
 !

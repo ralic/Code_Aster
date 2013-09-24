@@ -85,7 +85,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !-----------------------------------------------------------------------
 !
     integer ::  ki, l, jcnrd, jcnrl, jcnrv, ibidno
-    integer :: iret, nbma, adrma, icesd, icesl, icesv  
+    integer :: iret, nbma, adrma, icesd, icesl, icesv
     integer :: inop, nunoe
     integer :: jtypma, ibid
     integer :: icmp, kwork, somnow, cnbno
@@ -142,7 +142,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     if (.not. post) then
 !
-        call cncinv(nommai, ibid, 0, 'V', ncncin)
+        call cncinv(nommai, [0], 0, 'V', ncncin)
         typma = nommai//'.TYPMAIL'
         call jeveuo(typma, 'L', jtypma)
 !

@@ -76,7 +76,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !
     ncncin = '&&OP0104.CONNECINVERSE  '
     call jeexin(ncncin, nci)
-    if (nci .eq. 0) call cncinv(noma, ibid, 0, 'V', ncncin)
+    if (nci .eq. 0) call cncinv(noma, [0], 0, 'V', ncncin)
 !
     call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', adrvlc)
     call jeveuo(jexnum(ncncin, 1), 'L', acncin)

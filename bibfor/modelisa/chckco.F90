@@ -84,7 +84,7 @@ subroutine chckco(char, noma, ndimg)
 !
 ! ----- NUMERO ABSOLU DE LA MAILLE
 !
-        call cfnumm(defico, 1, posma, numma)
+        call cfnumm(defico, posma, numma)
         call jenuno(jexnum(noma//'.NOMMAI', numma ), nomma)
 !
 ! ----- TYPE DE LA MAILLE

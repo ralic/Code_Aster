@@ -80,7 +80,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(2) = 'IZ1'
     nocmp(3) = 'IY2'
     nocmp(4) = 'IZ2'
-    call cesred(ces1, nbma, listma, nbcmp, nocmp,&
+    call cesred(ces1,nbma,listma,nbcmp,nocmp,&
                 'V', ces1)
 !
     call jeveuo(ces1//'.CESD', 'L', jcesd1)
@@ -97,7 +97,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(2) = 'EP1'
     nocmp(3) = 'R2'
     nocmp(4) = 'EP2'
-    call cesred(ces2, nbma, listma, nbcmp, nocmp,&
+    call cesred(ces2,nbma,listma,nbcmp,nocmp,&
                 'V', ces2)
 !
     call jeveuo(ces2//'.CESD', 'L', jcesd2)

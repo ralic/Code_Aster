@@ -114,7 +114,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     endif
     call celces(chelem, 'V', chams0)
     if (nbma .ne. 0) then
-        call cesred(chams0, nbma, zi(jmai), 0, k8b,&
+        call cesred(chams0,nbma,zi(jmai),0,[k8b],&
                     'V', chams0)
     endif
 !

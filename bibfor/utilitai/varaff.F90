@@ -100,7 +100,7 @@ subroutine varaff(noma, gran, base, ceselz)
     ceselm = ceselz
 !     -- REMARQUE : LES CMPS SERONT DANS L'ORDRE V1,V2,...
     call cescre(base, ceselm, 'ELEM', noma, 'VARI_R',&
-                nuvamx, zk8(jlnova), 0, -1, -nuvamx)
+                nuvamx, zk8(jlnova), [0], [-1], [-nuvamx])
 !
     call jeveuo(ceselm//'.CESD', 'L', jcesd)
     call jeveuo(ceselm//'.CESV', 'E', jcesv)

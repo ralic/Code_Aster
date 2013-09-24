@@ -87,7 +87,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     cns2='&&CGNOIV.CNS2'
     call cnocns(cham19, 'V', cns1)
     ncmp=1
-    call cnsred(cns1, 0, 0, ncmp, nocmp,&
+    call cnsred(cns1, 0, [0], ncmp, nocmp,&
                 'V', cns2)
 !
     call jeveuo(cns2//'.CNSK', 'L', jcn2k)

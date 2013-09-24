@@ -281,7 +281,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
         call wkvect('&&TRAN77.BASE', 'V V R', nbmode*neq, idbase)
         if (tousno) then
             call copmod(basemo, typcha, neq, numddl, nbmode,&
-                        'R', zr(idbase), cbid)
+                        'R', zr(idbase), [cbid])
         else
             do 110 j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&

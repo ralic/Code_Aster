@@ -1,4 +1,4 @@
-subroutine cfnumm(defico, nma, posnma, numnma)
+subroutine cfnumm(defico, posnma, numnma)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,10 +23,9 @@ subroutine cfnumm(defico, nma, posnma, numnma)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=24) :: defico
-    integer :: nma
-    integer :: posnma(nma)
-    integer :: numnma(nma)
+    character(len=24), intent(in) :: defico
+    integer, intent(in)  :: posnma
+    integer, intent(out) :: numnma
 !
 ! ----------------------------------------------------------------------
 !
@@ -37,10 +36,9 @@ subroutine cfnumm(defico, nma, posnma, numnma)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  DEFICO : SD DE CONTACT (DEFINITION)
-! IN  NMA    : NOMBRE DE MAILLES
-! IN  POSNMA : INDICE DANS CONTNO DES MAILLES
-! OUT NUMNMA : INDICE ABSOLUS DES MAILLES DANS LE MAILLAGE
+! in  defico : sd de contact (definition)
+! in  posnma : indice dans contno d'une maille
+! out numnma : indice absolu de la maille dans le maillage
 !
 !
 !
@@ -53,17 +51,14 @@ subroutine cfnumm(defico, nma, posnma, numnma)
 !
     call jemarq()
 !
-! --- ACCES SD CONTACT
+! --- acces sd contact
 !
     contma = defico(1:16)//'.MAILCO'
     call jeveuo(contma, 'L', jmaco)
 !
-! --- NUMERO DES MAILLES
+! --- numero de la maille
 !
-    do 10 ima = 1, nma
-        posma = posnma(ima)
-        numnma(ima) = zi(jmaco+posma-1)
-10  end do
+    numnma = zi(jmaco+posnma-1)
 !
     call jedema()
 !

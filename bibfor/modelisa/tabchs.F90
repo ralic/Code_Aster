@@ -316,18 +316,18 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
         if (nbssp .eq. 1) then
             if (typchs .eq. 'ELNO' .or. typchs .eq. 'ELEM') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), - 1, -1, -ncmp)
+                            ncmp, zk24(jcmp), [-1], [-1], [-ncmp])
             else if (typchs.eq.'ELGA') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), zi(jpg), -1, -ncmp)
+                            ncmp, zk24(jcmp), zi(jpg), [-1], [-ncmp])
             endif
         else
             if (typchs .eq. 'ELNO' .or. typchs .eq. 'ELEM') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), - 1, zi(jsp), -ncmp)
+                            ncmp, zk24(jcmp), [-1], zi(jsp), [-ncmp])
             else if (typchs.eq.'ELGA') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), zi(jpg), zi(jsp), -ncmp)
+                            ncmp, zk24(jcmp), zi(jpg), zi(jsp), [-ncmp])
             endif
         endif
 !

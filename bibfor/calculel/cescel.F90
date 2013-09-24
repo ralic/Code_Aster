@@ -283,7 +283,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     licmp(2) = 'NCMP_DYN'
     dcel = '&&CESCEL.DCEL'
     call cescre('V', dcel, 'ELEM', ma, 'DCEL_I',&
-                2, licmp, -1, -1, -2)
+                2, licmp, [-1], [-1], [-2])
     call jeveuo(dcel//'.CESD', 'L', jdceld)
     call jeveuo(dcel//'.CESV', 'E', jdcelv)
     call jeveuo(dcel//'.CESL', 'E', jdcell)

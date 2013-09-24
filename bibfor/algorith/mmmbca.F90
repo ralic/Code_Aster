@@ -92,7 +92,6 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
     integer :: ztabf
     integer :: ifm, niv
     integer :: jdecme, posmae, nummae, nummam, posnoe
@@ -190,7 +189,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
     cnsplu = '&&MMMBCA.CNSPLU'
     call cnocns(depplu, 'V', cnsplu)
     cnscon = '&&MMMBCA.CNSCON'
-    call cnsred(cnsplu, 0, ibid, 1, 'LAGS_C',&
+    call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
                 'V', cnscon)
 !
 ! --- TRANSFORMATION DEPDEL EN CHAM_NO_S ET REDUCTION SUR LES LAGRANGES
@@ -201,10 +200,10 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
     cnsfr2 = '&&MMMBCA.CNSFR2'
     if (lfrot) then
         call cnocns(depdel, 'V', cnsdel)
-        call cnsred(cnsdel, 0, ibid, 1, 'LAGS_F1',&
+        call cnsred(cnsdel, 0, [0], 1, 'LAGS_F1',&
                     'V', cnsfr1)
         if (ndimg .eq. 3) then
-            call cnsred(cnsdel, 0, ibid, 1, 'LAGS_F2',&
+            call cnsred(cnsdel, 0, [0], 1, 'LAGS_F2',&
                         'V', cnsfr2)
         endif
         call vtgpld('ZERO', oldgeo, 1.d0, depdel, 'V',&
@@ -242,7 +241,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
 !
 ! ------- COORDONNNEES DES NOEUDS DE LA MAILLE ESCLAVE
 !

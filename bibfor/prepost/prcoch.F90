@@ -149,7 +149,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     zi(itbma-1+lma) = ima
                 endif
 110          continue
-            call cesred(cesz, nbtrou, zi(itbma), 0, k8bid,&
+            call cesred(cesz,nbtrou,zi(itbma),0,[k8bid],&
                         'V', cesz)
             call jedetr('&&PRCOCH.INDIC_MAILLE')
         endif
@@ -295,7 +295,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     zi(itbma-1+lma) = ino
                 endif
 1100          continue
-            call cnsred(cesz, nbtrou, zi(itbma), 0, k8bid,&
+            call cnsred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
             call jedetr('&&PRCOCH.INDIC_NOEUD')
         endif

@@ -46,7 +46,7 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: i
-    real(kind=8) :: xcf, r8b1, r8b2
+    real(kind=8) :: xcf, r8b1(2), r8b2
     complex(kind=8) :: c16b
     logical :: lk
 !

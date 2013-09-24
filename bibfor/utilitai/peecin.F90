@@ -306,7 +306,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 30      continue
 !
 !        --- ON CALCULE L'ENERGIE TOTALE ---
-        call peenca(chelem, nbpaep, varpep, 0, ibid)
+        call peenca(chelem, nbpaep, varpep, 0, [ibid])
 !
         do 60 iocc = 1, nbocc
             call getvtx(option(1:9), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
@@ -315,7 +315,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&
                         iarg, 0, k8b, ng)
             if (nt .ne. 0) then
-                call peenca(chelem, nbpaep, varpep, 0, ibid)
+                call peenca(chelem, nbpaep, varpep, 0, [ibid])
                 valk(1) = noma
                 valk(2) = 'TOUT'
                 if (nr .ne. 0) then
@@ -375,7 +375,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                         goto 50
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)
-                    call peenca(chelem, nbpaep, varpep, 1, nume)
+                    call peenca(chelem, nbpaep, varpep, 1, [nume])
                     valk(1) = nommai
                     if (nr .ne. 0) then
                         valer(2) = varpep(1)

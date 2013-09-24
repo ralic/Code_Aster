@@ -505,7 +505,7 @@ subroutine op0197()
 !  ---   TOUTES LES BASES DE RESULATS
 !
     call tbfutb(tabout, 'G', nbresu, zk16(itabr), ' ',&
-                ' ', ibid, r8bid, c16b, k8bid)
+                ' ', [ibid], [r8bid], [c16b], k8bid)
 !
 !  ---   TRI DE LA TABLE DES CONTRAINTES DE WEIBULL
 !

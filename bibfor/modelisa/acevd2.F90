@@ -138,7 +138,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
             endif
 ! ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             if (nn .gt. 0) then
-                call crlinu('NOM', mlgnno, nn, ibid, zk24(jdls),&
+                call crlinu('NOM', mlgnno, nn, [0], zk24(jdls),&
                             nbmtrd, zi(jdnw), zi(jddi), kk)
                 if (kk .gt. 0) then
                     call acevtr(noma, nomo, 2, zk24(1), zi(jddi),&

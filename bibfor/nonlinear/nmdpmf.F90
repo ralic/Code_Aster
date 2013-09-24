@@ -79,13 +79,13 @@ subroutine nmdpmf(compor)
                 'A', ibid)
 !     ON ENLEVE LA COMPOSANTE 'DEFORM' DE LA CARTE
     licmp = 'DEFORM'
-    call cesred(chsx, 0, ibid, -1, licmp,&
+    call cesred(chsx,0,[ibid],-1,licmp,&
                 'V', chs(2))
 !
 !     FUSION DES CHAM_ELEM_S + COPIE DANS "COMPOR"
     call detrsd('CARTE', compor)
     call cesfus(2, chs, lcumu, lcoer, lcoec,&
-                lcoc, 'V', chs3)
+                lcoc(1), 'V', chs3)
     call cescar(chs3, compor, 'V')
 !
 !     MENAGE

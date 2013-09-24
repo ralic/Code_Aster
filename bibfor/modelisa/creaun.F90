@@ -153,7 +153,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
                 cmp = zk8(jncmp-1+jdebcp+icmp-1)
 !
                 call exiscp(cmp, k8bla, nomo, 1, 'NUM',&
-                            k8bla, numnd, exist)
+                            k8bla, [numnd], exist)
 !
                 if (exist(1) .eq. 1) then
                     if (niv .ge. 2) then

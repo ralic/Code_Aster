@@ -343,7 +343,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call detrsd('CHAMP_GD', bidon)
             call vtcreb(bidon, nume, 'G', 'R', neq)
             call vecgme(modele, carac, mater, charge, infoch,&
-                        partps, chdepl, bidon, vecgmp, partps,&
+                        partps(1), chdepl, bidon, vecgmp, partps(1),&
                         compor, k24bid, ligrel, chvive)
             call asasve(vecgmp, nume, 'R', vacgmp)
             call ascova('D', vacgmp, fomult, 'INST', time,&

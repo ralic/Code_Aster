@@ -186,8 +186,8 @@ subroutine fornpd(option, nomte)
                     sgmtd(4)=zr(icontm-1+k1+5)
                     sgmtd(5)=zr(icontm-1+k1+6)
 !
-                    call epseff('EFFORI', nb1, x, btild, sgmtd,&
-                                x, wgt, effint)
+                    call epseff('EFFORI', nb1, [0.d0], btild, sgmtd,&
+                                [0.d0], wgt, effint)
 !
                 else if (option.eq.'REFE_FORC_NODA') then
 !
@@ -199,8 +199,8 @@ subroutine fornpd(option, nomte)
 !
                     do 155 i = 1, 5
                         sigtmp(i)=sigref
-                        call epseff('EFFORI', nb1, x, btild, sigtmp,&
-                                    x, wgt, effint)
+                        call epseff('EFFORI', nb1, [0.d0], btild, sigtmp,&
+                                    [0.d0], wgt, effint)
                         sigtmp(i)=0.d0
                         do 156 j = 1, nb1*5
                             ftemp(j) = ftemp(j)+abs(effint(j))

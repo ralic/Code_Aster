@@ -98,7 +98,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: pqx(4), pqy(4), pqz(4)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
-    real(kind=8) :: valres(2), nu, nub, rac2, den, bid
+    real(kind=8) :: valres(2), nu, nub, rac2, den
     integer :: icodre(1)
     character(len=8) :: nomres(2)
     character(len=16) :: optios
@@ -380,7 +380,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !
             call cast3d(proj, gam, dh, def, nno,&
                         kpg, nub, nu, d, calbn,&
-                        bn, jac, bid)
+                        bn, jac, [0.d0])
 !
 !    CONTRAINTES DE HOURGLASS
 !

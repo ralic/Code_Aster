@@ -72,7 +72,7 @@ subroutine op0082()
 !     CALCUL DES GRANDEURS DE LA GRILLE ET VERIFICATION QUE LE MAILLAGE
 !     EN ENTREE PEUT BIEN ETRE UTILISE POUR LA DEFINITION DE LA GRILLE
     cnxinv = '&&OP0082.CNCINV'
-    call cncinv(mail, ibid, 0, 'V', cnxinv)
+    call cncinv(mail, [ibid], 0, 'V', cnxinv)
     vcn=grille//'.GRLI'
     grlr=grille//'.GRLR'
     call xprcnu(mail, cnxinv, 'G', vcn, grlr,&

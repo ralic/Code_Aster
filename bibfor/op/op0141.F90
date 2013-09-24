@@ -252,9 +252,9 @@ subroutine op0141()
         call wkvect('&&OP0141.TEMP3', 'V V C', neq, idvec3)
 !
         call copmod(base1, 'DEPL', neq, nu, nbmod1,&
-                    'C', rbid, zc(idbas1))
+                    'C', [rbid], zc(idbas1))
         call copmod(base2, 'DEPL', neq, nu, nbmod2,&
-                    'C', rbid, zc(idbas2))
+                    'C', [rbid], zc(idbas2))
 !
 ! BOUCLE DE CALCUL DES MACS
         do 30 i = 1, nbmod1
@@ -345,9 +345,9 @@ subroutine op0141()
         call wkvect('&&OP0141.TEMP3', 'V V R', neq, idvec3)
 !
         call copmod(base1, 'DEPL', neq, nu, nbmod1,&
-                    'R', zr(idbas1), cbid)
+                    'R', zr(idbas1), [cbid])
         call copmod(base2, 'DEPL', neq, nu, nbmod2,&
-                    'R', zr(idbas2), cbid)
+                    'R', zr(idbas2), [cbid])
 !
 ! BOUCLE DE CALCUL DES MACS
         do 130 i = 1, nbmod1

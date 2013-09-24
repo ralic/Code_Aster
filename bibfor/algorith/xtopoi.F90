@@ -58,7 +58,7 @@ subroutine xtopoi(noma, modele)
     character(len=19) :: ligrel, chgeom
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
     logical :: debug
-    integer :: ifm, niv, ifmdbg, nivdbg, jnbsp, ibid, ima, nbma, iret
+    integer :: ifm, niv, ifmdbg, nivdbg, jnbsp, ima, nbma, iret
     integer :: jcesd, jcesv, jcesl, iad
     character(len=16) :: option
 !
@@ -96,7 +96,7 @@ subroutine xtopoi(noma, modele)
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
     call cescre('V', heavto, 'ELEM', noma, 'DCEL_I',&
-                2, licmp, ibid, -1, -2)
+                2, licmp, [0], [-1], [-2])
     call jeveuo(heavto//'.CESD', 'L', jcesd)
     call jeveuo(heavto//'.CESV', 'E', jcesv)
     call jeveuo(heavto//'.CESL', 'E', jcesl)

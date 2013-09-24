@@ -346,7 +346,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 10              continue
 !
                 call cescre('V', cesvi2, 'ELGA', maxfem, 'VARI_R',&
-                            -nmaxcm, ' ', zi(jnbpt), -nmaxsp, -nmaxcm)
+                            -nmaxcm, ' ', zi(jnbpt), [-nmaxsp], [-nmaxcm])
             endif
 !
         endif
@@ -377,7 +377,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !         CREATION CHAM_ELEM_S 2 : COMPS2
             call cescre('V', comps2, 'ELEM', maxfem, nomgd,&
-                        nbcmp, zk8( jresc1), ibid, -1, -nbcmp)
+                        nbcmp, zk8( jresc1), [ibid], [-1], [-nbcmp])
 !
         endif
 !

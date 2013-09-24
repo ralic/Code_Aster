@@ -166,7 +166,7 @@ subroutine op0188()
     if (iret .eq. 0) then
 !       ON AIMERAIT LA STOCKER DANS LA BASE GLOBALE AU CAS OU ON EN AIT
 !       ENCORE BESOIN (POUR LA FISSURE SUIVANTE) MAIS ON A PAS LE DROIT
-        call cncinv(ma, ibid, 0, 'V', cnxinv)
+        call cncinv(ma, [ibid], 0, 'V', cnxinv)
     endif
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', adrvlc)
     call jeveuo(jexnum(cnxinv, 1), 'L', acncin)

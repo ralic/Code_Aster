@@ -97,11 +97,10 @@ subroutine vdgnlr(option, nomte)
 !
     integer :: igeom, icontp, imatun, ivectu, ivarip
     integer :: lzi, lzr, jcara
-    integer :: nb1, nb2, nbpar
+    integer :: nb1, nb2
     integer :: iinstm, iinstp, jmate
     real(kind=8) :: valpar, epsthe
     integer :: icodre(1)
-    character(len=8) :: nompar
     character(len=10) :: phenom
 !
 !---- DECLARATIONS PROPRES COQUE_3D NON LINEAIRE
@@ -595,10 +594,7 @@ subroutine vdgnlr(option, nomte)
 !
                 call moytpg('RIGI', intsn, 3, '+', valpar,&
                             iret)
-                nbpar = 1
-                nompar = 'TEMP'
-                call matrc2(nbpar, nompar, valpar, kappa, matc,&
-                            vectt)
+                call matrc2(1, 'TEMP    ', [valpar], kappa, matc, vectt)
 !
 !------------- LA  CONTRAINTE TOTALE  PK2 STILD ( 5 )
 !

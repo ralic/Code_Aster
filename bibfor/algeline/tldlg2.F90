@@ -361,7 +361,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
 !           ! 0    1 !   ! X  !   ! 0     U0  !
 !           !        !   !  R !   !           !
 !
-            call csmbgg(lmatb, zr(lxsol+(krig-1)*neq), zr(lcine+(krig- 1)*neq), cbid, cbid,&
+            call csmbgg(lmatb, zr(lxsol+(krig-1)*neq), zr(lcine+(krig- 1)*neq), [cbid], [cbid],&
                         'R')
 80      continue
 !

@@ -126,7 +126,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
         if (iligd .le. nbtitr) goto 1
     else if (iclass .ne. 3) then
 !CC      DEMON INCORRECT
-        call sndbg(iunifi('MESSAGE'), iclass, ival, rval, cval)
+        call sndbg(iunifi('MESSAGE'), iclass, ival, [rval], cval)
         cgen = ' '
         igen = 0
     else

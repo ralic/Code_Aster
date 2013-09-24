@@ -106,7 +106,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
     cnsplu = '&&REACLM.CNSPLU'
     call cnocns(depplu, 'V', cnsplu)
     cnslbd = '&&REACLM.CNSLBD'
-    call cnsred(cnsplu, 0, ibid, 1, 'LAGS_C',&
+    call cnsred(cnsplu, 0, [ibid], 1, 'LAGS_C',&
                 'V', cnslbd)
 !
 ! --- BOUCLE SUR LES ZONES
@@ -134,7 +134,7 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
 !
 ! ------- INFOS SUR LA MAILLE
 !

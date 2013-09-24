@@ -211,7 +211,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     if (.not. post) then
 !
-        call cncinv(nommai, ibid, 0, 'V', ncncin)
+        call cncinv(nommai, [0], 0, 'V', ncncin)
         typma = nommai//'.TYPMAIL'
         call jeveuo(typma, 'L', jtypma)
     endif

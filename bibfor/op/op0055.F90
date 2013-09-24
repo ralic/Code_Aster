@@ -81,7 +81,7 @@ subroutine op0055()
 ! ---  RECUPERATION DE LA CONNECTIVITE INVERSE
 !
     cnxinv='&&'//nompro//'.CNXINV'
-    call cncinv(noma, ibid, 0, 'V', cnxinv)
+    call cncinv(noma, [ibid], 0, 'V', cnxinv)
 !
 !
 !     ---------------------------------------------------------------

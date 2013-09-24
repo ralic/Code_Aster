@@ -139,7 +139,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         endif
 !
         call celces(lchout(1), 'V', cespoi)
-        call cesred(cespoi, 0, ibid, 1, 'W',&
+        call cesred(cespoi,0,[ibid],1,'W',&
                     'V', cespoi)
 !
     endif

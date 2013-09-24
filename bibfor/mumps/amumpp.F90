@@ -205,13 +205,13 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 if (ltypr) then
                     ASSERT(rouc.eq.'R')
                     do i = 1, nbsol
-                        call csmbgg(lmat, rsolu(n*(i-1)+1), zr(idvalc), cbid, cbid,&
+                        call csmbgg(lmat, rsolu(n*(i-1)+1), zr(idvalc), [cbid], [cbid],&
                                     'R')
                     enddo
                 else
                     ASSERT(rouc.eq.'C')
                     do i = 1, nbsol
-                        call csmbgg(lmat, rbid, rbid, csolu(n*(i-1)+1), zc(idvalc),&
+                        call csmbgg(lmat, [0.d0], [0.d0], csolu(n*(i-1)+1), zc(idvalc),&
                                     'C')
                     enddo
                 endif

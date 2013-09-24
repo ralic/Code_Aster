@@ -109,7 +109,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         else
             call celces(champ, 'V', chtra1)
         endif
-        call cesred(chtra1, 0, ibid, ncmp, nocmp,&
+        call cesred(chtra1,0,[ibid],ncmp,nocmp,&
                     'V', chtra2)
         call jeveuo(chtra2//'.CESD', 'L', jcesd)
         call jeveuo(chtra2//'.CESK', 'L', jcesk)
@@ -141,7 +141,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     else if (docu .eq. 'NOEU') then
 !              ----------------
         call cnocns(champ, 'V', chtra1)
-        call cnsred(chtra1, 0, ibid, ncmp, nocmp,&
+        call cnsred(chtra1, 0, [ibid], ncmp, nocmp,&
                     'V', chtra2)
         call jeveuo(chtra2//'.CNSD', 'L', jcesd)
         call jeveuo(chtra2//'.CNSK', 'L', jcesk)

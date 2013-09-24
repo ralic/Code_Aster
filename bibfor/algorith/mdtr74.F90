@@ -316,7 +316,7 @@ subroutine mdtr74(nomres)
     call wkvect('&&MDTR74.BASEMODE', 'V V R', nbmode*neq, jbase)
 !
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(jbase), cbid)
+                'R', zr(jbase), [cbid])
 !
     do 20 i = 0, nbmode - 1
         omeg2 = abs(zr(jraig+i)/zr(jmasg+i))

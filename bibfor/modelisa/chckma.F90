@@ -84,7 +84,7 @@ subroutine chckma(nomu, dtol)
     call jeveuo(cooval, 'L', jcoor)
 !
     ncncin = '&&CHCKMA.CONNECINVERSE  '
-    call cncinv(nomu, 0, 0, 'V', ncncin)
+    call cncinv(nomu, [0], 0, 'V', ncncin)
     call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', jdrvlc)
     call jeveuo(jexnum(ncncin, 1), 'L', jcncin)
 !

@@ -89,7 +89,7 @@ subroutine diag99(nomres)
                 k8b, ier)
     call wkvect('&&DIAG99.MODE_MECA', 'V V R', nbmode*neq, idmode)
     call copmod(meca, 'DEPL', neq, nu, nbmode,&
-                'R', zr(idmode), cbid)
+                'R', zr(idmode), [cbid])
 !
 !-----------------------------------------------------------------------
 ! --- RECUPERATION DES MODES STATIQUES
@@ -101,7 +101,7 @@ subroutine diag99(nomres)
     call jeveuo(stat//'           .ORDR', 'L', jords)
     call wkvect('&&DIAG99.MODE_STAT', 'V V R', nbstat*neq, idstat)
     call copmod(stat, 'DEPL', neq, nu, nbstat,&
-                'R', zr(idstat), cbid)
+                'R', zr(idstat), [cbid])
 !
 !-----------------------------------------------------------------------
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE MASSE

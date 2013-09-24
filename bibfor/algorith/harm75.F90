@@ -282,7 +282,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 ! CAS DE LA RESTITUTION SUR TOUTE LA STRUCTURE
         if (tousno) then
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
-                        'R', zr(idbase), cbid)
+                        'R', zr(idbase), [cbid])
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
             do 110 j = 1, nbmode

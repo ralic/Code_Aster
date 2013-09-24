@@ -419,7 +419,7 @@ subroutine op0167()
             call utmess('F', 'ALGELINE2_98')
         endif
         call rdtmai(nomain, nomaou, 'G', nomaou//'.CRNO', nomaou// '.CRMA',&
-                    'G', 0, 0)
+                    'G', 0, [0])
 ! ---    VERIFICATIONS DU MAILLAGE
         call chckma(nomaou, 1.0d-03)
         goto 350

@@ -163,7 +163,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, zk8(jnocmp), zi(jnbpt), zi(jnbsp), -ncmp)
+                ncmp, zk8(jnocmp), zi(jnbpt), zi(jnbsp), [-ncmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESC', 'L', jcesc)

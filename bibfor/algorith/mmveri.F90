@@ -153,7 +153,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
             posmae = jdecme + imae
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
@@ -192,7 +192,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- INFO SUR LA MAILLE MAITRE
 !
                 posmam = entapp
-                call cfnumm(defico, 1, posmam, nummam)
+                call cfnumm(defico, posmam, nummam)
                 call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
 !
 ! --------- POSITION DU NOEUD ESCLAVE SI INTEGRATION AUX NOEUDS

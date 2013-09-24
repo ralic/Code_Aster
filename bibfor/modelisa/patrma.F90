@@ -156,7 +156,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
             call wkvect(wcpl, 'V V I', nbntot, idwcpl)
             call wkvect(couple, 'V V I', nbntot, idcopl)
         endif
-        call parotr(nomma, iageom, numa1, nbnott, centre,&
+        call parotr(nomma, iageom, numa1, nbnott(1), centre,&
                     mrot, t, zr(idcoo1))
         dmin = 999999999999.d0
         do 2 j = jdeb, jfin

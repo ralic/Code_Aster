@@ -35,7 +35,7 @@ subroutine vpmain(modele, mate, cara, xmastr, nbpara)
 !     CALCUL DE LA MASSE DU MODELE
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, ibid, nb, i, iorig, icage, nbpara
+    integer :: mxvale, nb, i, iorig, icage, nbpara
     parameter (mxvale=16)
     real(kind=8) :: rbi3(3), zmas(mxvale)
     character(len=8) :: lpain(15), lpaout(5)
@@ -108,7 +108,7 @@ subroutine vpmain(modele, mate, cara, xmastr, nbpara)
     iorig=0
     icage=0
 !
-    call pemica(chelem, mxvale, zmas, 0, ibid,&
+    call pemica(chelem, mxvale, zmas, 0, [0],&
                 rbi3, iorig, icage)
     xmastr=zmas(1)
 !

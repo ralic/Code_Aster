@@ -107,7 +107,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     r = cesr
     nomgdr = nomgdf(1:4)//'_R'
     call cescre('V', r, typces, ma, nomgdr,&
-                ncmp, zk8(jfc), -nptmx, -nspmx, -ncmpmx)
+                ncmp, zk8(jfc), [-nptmx], [-nspmx], [-ncmpmx])
     call jeveuo(r//'.CESK', 'L', jrk)
     call jeveuo(r//'.CESD', 'L', jrd)
     call jeveuo(r//'.CESC', 'L', jrc)

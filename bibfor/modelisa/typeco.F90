@@ -132,7 +132,7 @@ subroutine typeco(char, noma)
             zi(jtypma+ztypm*(posmam-1)+1-1) = 1
             zi(jtypma+ztypm*(posmam-1)+2-1) = indmam
             if (iform .eq. 2) then
-                call cfnumm(defico, 1, posmam, nummam)
+                call cfnumm(defico, posmam, nummam)
                 call mmelty(noma, nummam, alias, ibid, ibid)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
@@ -147,7 +147,7 @@ subroutine typeco(char, noma)
             zi(jtypma+ztypm*(posmae-1)+1-1) = -1
             zi(jtypma+ztypm*(posmae-1)+2-1) = indmae
             if (iform .eq. 2) then
-                call cfnumm(defico, 1, posmae, nummae)
+                call cfnumm(defico, posmae, nummae)
                 call mmelty(noma, nummae, alias, ibid, ibid)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
@@ -167,7 +167,7 @@ subroutine typeco(char, noma)
         do 20 imae = 1, nbmae
             posmae = jdecme + imae
             indmae = indmae + 1
-            call cfnumm(defico, 1, posmae, nummae)
+            call cfnumm(defico, posmae, nummae)
             if (iform .eq. 2) then
                 typint = mminfi(defico,'INTEGRATION',izone )
                 call mmelin(noma, nummae, typint, nptm)

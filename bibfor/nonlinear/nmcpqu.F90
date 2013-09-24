@@ -80,7 +80,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 !
 ! --- REDUCTION SUR COMPOSANTE
 !
-    call cesred(coto, 0, 0, 1, nomcmp,&
+    call cesred(coto,0,[0],1,nomcmp,&
                 'V', copm)
     call detrsd('CHAM_ELEM_S', coto)
 !

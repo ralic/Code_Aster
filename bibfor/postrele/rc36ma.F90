@@ -121,7 +121,7 @@ subroutine rc36ma(nommat, noma)
 !      X30: TEMP_REF
     licmp(1)='MAT1'
     licmp(2)='VREF'
-    call cesred(chsmat, 0, 0, 2, licmp,&
+    call cesred(chsmat,0,[0],2,licmp,&
                 'V', chsma2)
     call detrsd('CHAM_ELEM_S', chsmat)
 !
@@ -158,7 +158,7 @@ subroutine rc36ma(nommat, noma)
     chmata = '&&RC36MA_A.'//k8b
     nocmp(2) = 'E_AMBI'
     call cescre('V', chmata, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, -1, -1, -nbcmp)
+                nbcmp, nocmp, [-1], [-1], [-nbcmp])
     nocmp(2) = 'E'
 !
     call jeveuo(chmata(1:19)//'.CESD', 'L', jcesda)
@@ -175,7 +175,7 @@ subroutine rc36ma(nommat, noma)
     chmatb = '&&RC36MA_B.'//k8b
     nocmp(2) = 'E_AMBI'
     call cescre('V', chmatb, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, -1, -1, -nbcmp)
+                nbcmp, nocmp, [-1], [-1], [-nbcmp])
     nocmp(2) = 'E'
 !
     call jeveuo(chmatb(1:19)//'.CESD', 'L', jcesdb)
@@ -310,7 +310,7 @@ subroutine rc36ma(nommat, noma)
     chmata = '&&RC36MA_A.'//k8b
     nocmp(2) = 'E_AMBI'
     call cescre('V', chmata, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, -1, -1, -nbcmp)
+                nbcmp, nocmp, [-1], [-1], [-nbcmp])
     nocmp(2) = 'E'
 !
     call jeveuo(chmata(1:19)//'.CESD', 'L', jcesda)
@@ -327,7 +327,7 @@ subroutine rc36ma(nommat, noma)
     chmatb = '&&RC36MA_B.'//k8b
     nocmp(2) = 'E_AMBI'
     call cescre('V', chmatb, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, -1, -1, -nbcmp)
+                nbcmp, nocmp, [-1], [-1], [-nbcmp])
     nocmp(2) = 'E'
 !
     call jeveuo(chmatb(1:19)//'.CESD', 'L', jcesdb)

@@ -100,7 +100,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 !
 ! --- NUMERO DE LA MAILLE MAITRE
 !
-    call cfnumm(defico, 1, posmam, nummam)
+    call cfnumm(defico, posmam, nummam)
 !
 ! --- CARACTERISTIQUES DE LA MAILLE MAITRE
 !

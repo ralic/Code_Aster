@@ -267,7 +267,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
             endif
 ! ---       "NOEUD" = TOUS LES NOEUDS TARDIFS DE LA LISTE DE NOEUDS
             if (nn .gt. 0) then
-                call crlinu('NOM', mlgnno, nn, ibid, zk8(jdls2),&
+                call crlinu('NOM', mlgnno, nn, [ibid], zk8(jdls2),&
                             nbmtrd, zi(jdnw), zi(jddi), kk)
                 if (kk .gt. 0) then
                     iv = 1

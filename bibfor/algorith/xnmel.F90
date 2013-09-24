@@ -88,7 +88,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 !..............................................................
 !----------------------------------------------------------------
     character(len=8) :: elrefp, elrese(6), fami(6)
-    real(kind=8) :: he(nfiss), r8bid, coorse(81), rbid, rb
+    real(kind=8) :: he(nfiss), r8bid(3), coorse(81), rbid, rb
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs, idebv, nnops
     integer :: ibid, idecpg, nbsig, ig, ifiss, ibid2
@@ -186,8 +186,8 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                         igeom, he, nfh, ddlc, ddlm,&
                         nnops, nfe, basloc, nnop, npg,&
                         typmod, option, imate, compor, lgpg,&
-                        r8bid, ibid, lsn, lst, idecpg,&
-                        rbid, rb, matuu, ibid2, codret,&
+                        r8bid(3), ibid, lsn, lst, idecpg,&
+                        [0.d0], [0.d0], matuu, ibid2, codret,&
                         nfiss, fisno)
 !
             elseif (option(1:9).eq.'RAPH_MECA' .or. option(1:9)&

@@ -68,7 +68,7 @@ subroutine gverlc(resuco, compor, iord)
 !
     call carces(compor, 'ELEM', ' ', 'V', chtmp,&
                 'A', iret)
-    call cesred(chtmp, 0, 0, 3, lcham,&
+    call cesred(chtmp,0,[0],3,lcham,&
                 'V', chcalc)
     call detrsd('CHAM_ELEM_S', chtmp)
 !
@@ -115,7 +115,7 @@ subroutine gverlc(resuco, compor, iord)
     else
         call carces(compom, 'ELEM', ' ', 'V', chtmp,&
                     'A', iret)
-        call cesred(chtmp, 0, 0, 3, lcham,&
+        call cesred(chtmp,0,[0],3,lcham,&
                     'V', chresu)
         call detrsd('CHAM_ELEM_S', chtmp)
 !

@@ -249,7 +249,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
             call copisd('TABLE', 'V', table(2), table(1))
         else
             call tbfutb('T3', 'V', 2, table, ' ',&
-                        ' ', ibid, rbid, cbid, k8bid)
+                        ' ', [0], [0.d0], [cbid], k8bid)
             call detrsd('TABLE', table(1))
             call copisd('TABLE', 'V', 'T3', table(1))
             call detrsd('TABLE', 'T3')
@@ -282,7 +282,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     call detrsd('TABLE', 'T4')
     call detrsd('TABLE', 'T5')
     call tbfutb('T4', 'V', 2, table, ' ',&
-                ' ', ibid, rbid, cbid, k8bid)
+                ' ', [0], [0.d0], [cbid], k8bid)
     call detrsd('TABLE', table(1))
     call detrsd('TABLE', table(2))
     call copisd('TABLE', 'V', 'T4', table(1))
@@ -290,7 +290,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     call detrsd('TABLE', 'T3')
     call detrsd('TABLE', 'T4')
     call tbfutb('T4', 'V', 2, table, ' ',&
-                ' ', ibid, rbid, cbid, k8bid)
+                ' ', [0], [0.d0], [cbid], k8bid)
 !
     call copisd('TABLE', 'G', 'T4', result)
 !

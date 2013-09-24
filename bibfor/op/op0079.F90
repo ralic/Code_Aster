@@ -197,7 +197,7 @@ subroutine op0079()
 !
     call wkvect('&&OP0072.BASEMO', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, nu, nbmode,&
-                'R', zr(idbase), cbid)
+                'R', zr(idbase), [cbid])
 !
 ! --- BOUCLE SUR LES NUM_ORDR ET LES NOMSY DE LA SD_RESULTAT
 !     ATTENTION : ON NE TRAITE QUE LES NOMSY STOCKABLES DANS

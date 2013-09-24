@@ -676,11 +676,11 @@ subroutine op0037()
                         isign, numddl, zr(lcoef))
         else
             if (lparam) then
-                call vpnorm(norm, 'OUI', lmat, neq, nbmode,&
+                call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
                             zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
                             isign, numddl, zr(lcoef))
             else
-                call vpnorm(norm, 'NON', lmat, neq, nbmode,&
+                call vpnorm(norm, 'NON', lmat(1), neq, nbmode,&
                             zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
                             isign, numddl, zr(lcoef))
             endif

@@ -113,6 +113,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     character(len=8) :: k8b
     character(len=24) :: ntprom, exicmp, ntpror
     character(len=24) :: ntauxi
+    character(len=80) :: caimpk(3)
 !
 !====
 ! 1. PREALABLES
@@ -156,7 +157,6 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
         iaux = 10*nbimpr
         call wkvect(ncaimi, 'V V I', iaux, adcaii)
         iaux = 3*nbimpr
-        call wkvect(ncaimk, 'V V K80', iaux, adcaik)
 !
 !       ON CREE UN TABLEAU QUI PERMET DE DETECTER L'EXISTENCE DE NOEUDS
 !       CENTRE (APPARTENANT AUX MAILLES DE TYPE TRIA7,QUAD9,PENTA18 OU
@@ -221,7 +221,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !
         call ircmpn(nofimd, ncmprf, ncmpve, zi(adnucm), zl(adexic),&
                     nbvato, nbenec, lienec, adsl, zi(adcaii),&
-                    zk80(adcaik), zi(adproa), zi(jnoce))
+                    caimpk, zi(adproa), zi(jnoce))
 !
     else
 !
