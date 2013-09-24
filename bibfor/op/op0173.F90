@@ -1,8 +1,8 @@
 subroutine op0173()
     implicit none
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,19 +17,22 @@ subroutine op0173()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! ----------------------------------------------------------------------
 !
 !     COMMANDE:  EXTR_TABLE
 !
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
+#include "asterfort/copisd.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/putvir.h"
-#include "asterfort/copisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterc/putvir.h"
+#include "asterc/putvrr.h"
+#include "asterfort/tbcopi.h"
 #include "asterfort/tbimfi.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/titre.h"
@@ -106,6 +109,9 @@ subroutine op0173()
     'FONCTION_C' .or. typesd .eq. 'NAPPE_SDASTER' ) then
 !          ------------------------------
         call copisd('FONCTION', 'G', valk, nomres)
+!
+    else if (typesd .eq. 'TABLE_SDASTER') then
+        call tbcopi('G', valk, nomres)
 !
     else if (typesd .eq. 'ENTIER') then
         call putvir(vali)

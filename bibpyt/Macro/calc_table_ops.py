@@ -27,7 +27,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
     from Accas           import _F
     from Noyau.N_types   import force_list
-    from Cata.cata       import table_fonction, table_jeveux
+    from Cata.cata       import table_fonction, table_jeveux, table_container
     from Utilitai.Utmess import UTMESS
     from Utilitai.Table  import merge
     from Utilitai.utils  import get_titre_concept
@@ -40,6 +40,8 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
     self.DeclareOut('tabout', self.sd)
     if self.sd.__class__ == table_fonction:
         typ_tabout = 'TABLE_FONCTION'
+    elif self.sd.__class__ == table_container:
+        typ_tabout = 'TABLE_CONTENEUR'
     else:
         typ_tabout = 'TABLE'
 

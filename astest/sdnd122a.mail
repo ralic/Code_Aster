@@ -1,0 +1,14 @@
+COOR_3D
+N1  0.  0.  0.
+N2  1.  0.  0.
+FINSF
+%
+POI1
+P2 N2
+FINSF
+%
+SEG2
+M1 N1 N2
+FINSF
+%
+FIN

@@ -22,7 +22,8 @@ from SD.sd_table import sd_table, Colonne
 from SD.sd_vect_elem import sd_vect_elem
 from SD.sd_matr_elem import sd_matr_elem
 from SD.sd_cham_elem import sd_cham_elem
-from SD.sd_mode_meca import sd_mode_meca
+#from SD.sd_mode_meca import sd_mode_meca
+from SD.sd_dyna_phys import sd_dyna_phys
 # --------------------------------------------------------------------
 # sd_table contenant les colonnes nommée "NOM_OBJET","TYPE_OBJET",
 # et "NOM_SD"
@@ -62,9 +63,13 @@ class sd_table_container(sd_table):
         # on vérifie le contenu de la colonne NOM_SD
         col1=self.get_column_name('TYPE_OBJET')
         col2=self.get_column_name('NOM_SD')
+        # CARA_CHOC pour MODE_NON_LINE
+        col3=self.get_column_name('CARA_CHOC')
         nbli=col1.data.lonuti
         lnom1=col1.data.get_stripped()
         lnom2=col2.data.get_stripped()
+        if col3 is not None:
+          lnom3=col3.data.get_stripped()
         for k in range(nbli):
           if lnom1[k][:9]=='VECT_ELEM':
              sd5=sd_vect_elem(lnom2[k])
@@ -76,7 +81,11 @@ class sd_table_container(sd_table):
              sd5=sd_cham_elem(lnom2[k])
              sd5.check(checker)
           elif lnom1[k][:11]=='MODE_MECA':
-             sd5=sd_mode_meca(lnom2[k])
+             sd5=sd_dyna_phys(lnom2[k])
              sd5.check(checker)
+             if col3 is not None:
+             # si CARA_CHOC existe, on vérifie que son contenu est une table
+               sdc = sd_table(lnom3[k])
+               sdc.check(checker)
           else:
              assert 0,lnom1[k]

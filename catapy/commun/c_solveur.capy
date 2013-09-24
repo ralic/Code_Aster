@@ -44,6 +44,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                       'MODE_ITER_SIMULT',
                       'MODE_ITER_INV',
                       'MODE_STATIQUE',
+                      'MODE_NON_LINE',
                       'STAT_NON_LINE',
                       'THER_LINEAIRE',
                       'THER_NON_LINE',
@@ -96,6 +97,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                     'MACRO_BASCULE_SCHEMA',
                     'STAT_NON_LINE',
                     'THER_NON_LINE',
+                    'MODE_NON_LINE',
                     ):
       _type = 'NL'
    else:
@@ -211,6 +213,10 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
       _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", )
       if _feti:
          _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", "FETI", )
+
+   if COMMAND =='MODE_NON_LINE':
+      _defaut = "MUMPS"
+      _into = ("MUMPS",)
 
    _MotCleSimples['METHODE'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
 

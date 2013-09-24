@@ -1,0 +1,154 @@
+
+# TITRE CALCUL DE MODE NON-LINEAIRE SYST 2 DDL 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.                                                   
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+m=1.
+beta=1.
+
+DEBUT(CODE=_F(NOM='SDND123A',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F( SDVERI     = 'OUI',),
+     )
+
+MA=LIRE_MAILLAGE(FORMAT='ASTER',);
+
+MO = AFFE_MODELE( MAILLAGE = MA,
+        AFFE = (_F(  GROUP_MA='LIAI', PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),
+                _F(  GROUP_NO='MASSES', PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),)
+                )
+
+CARA_ELE =AFFE_CARA_ELEM(  MODELE=MO,
+                          DISCRET=(_F(  NOEUD = ('N2',  'N3',),
+                                        CARA = 'M_T_D_N',  VALE = m),
+                                   _F(  NOEUD = ('N2',  'N3',),
+                                        CARA = 'K_T_D_N',  VALE = (0.,0.,0.,)),
+                                   _F(  GROUP_MA = 'RAID1',  CARA = 'K_T_D_L',
+                                        VALE = (1., 0., 0.,),  REPERE = 'GLOBAL'),
+                                   _F(  GROUP_MA = 'RAID2',  CARA = 'K_T_D_L',
+                                        VALE = (beta, 0., 0.,),  REPERE = 'GLOBAL'),)
+                         )
+
+CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(_F(  NOEUD='N1', DX = 0., DY = 0., DZ = 0.,),
+                                          _F(  GROUP_NO='TOUT', DY = 0., DZ = 0.,),)
+                  )
+
+Ke=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                  MODELE=MO,
+                  CARA_ELEM=CARA_ELE,);
+
+Me=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                  MODELE=MO,
+                  CARA_ELEM=CARA_ELE,);
+
+NUM=NUME_DDL(MATR_RIGI=Ke,);
+
+K=ASSE_MATRICE(MATR_ELEM=Ke,
+               NUME_DDL=NUM,
+               CHAR_CINE=CDL,);
+
+M=ASSE_MATRICE(MATR_ELEM=Me,
+               NUME_DDL=NUM,
+               CHAR_CINE=CDL,);
+
+hu=33;
+hf=151;
+nbranch=12;
+ndiscr=1;
+
+MODES=MODE_ITER_SIMULT(MATR_RIGI=K,
+                       MATR_MASS=M,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(OPTION = 'BANDE',FREQ = (0.01, 10.,),),
+                       SOLVEUR=_F(METHODE='MUMPS',),
+                      );
+
+MNL = MODE_NON_LINE(MATR_RIGI=K,
+                 MATR_MASS=M,
+                 RESOLUTION=_F(METHODE='EHMAN',
+                            NB_HARM_LINE=hu,
+                            NB_HARM_NONL=hf,
+                            NB_PAS_MAN=ndiscr,
+                            NB_BRANCHE=nbranch,
+                            NB_ORDRE_MAN=20,
+                            PREC_MAN=1.E-14,  # conseil PREC_MAN << NEWTON
+                            PREC_NEWTON=1.E-09,
+                            ITER_NEWTON_MAXI=15),
+                 ETAT_INIT=_F(MODE_LINE = MODES,NUME_ORDRE = 2,
+                              DIR_EVOLUTION=1,),
+                 CHOC=(_F(NOEUD='N2',
+                          OBSTACLE = 'BI_PLAN',
+                          NOM_CMP='DX',
+                          JEU=1.,
+                          RIGI_NOR=30.,
+                          PARA_REGUL=0.005,),
+                      ),
+                 INFO=1,
+                 )
+
+#IMPR_TABLE(TABLE=MNL)
+
+TTTS = CALC_STABILITE(MODE_NON_LINE=MNL, #PRECISION = 1.e-3,
+                     FILTRE=_F( NUME_ORDRE = (9,10,11,),),
+                   )
+
+#IMPR_TABLE(TABLE=TREP)
+
+TTTS =CALC_TABLE(reuse=TTTS,TABLE=TTTS,
+                 ACTION=(
+                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'GT',
+                          VALE=0.2578,),
+                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'LT',
+                          VALE=0.2580,),
+                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'GT',
+                          VALE=1.00,),
+                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'LT',
+                          VALE=1.30,),
+                 ),)
+
+#IMPR_TABLE(TABLE=TTTS)
+
+#calcule sur machine locale
+fs=0.25790528513017497
+es= 1.19767334221795
+
+TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'FREQUENCE',
+           FILTRE=_F(NOM_PARA='STABILITE',
+                     VALE_K='STABLE',),
+             VALE_CALC= fs,
+             TOLE_MACHINE=1.E-02,  # variation du point de controle en fonction de la machine
+             REFERENCE = 'AUTRE_ASTER',
+             VALE_REFE= fs,
+             PRECISION = 1.E-2,
+              )
+
+TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'ENERGIE',
+           FILTRE=_F(NOM_PARA='STABILITE',
+                     VALE_K='STABLE',),
+             VALE_CALC= es,
+             TOLE_MACHINE=1.E-02,  # variation du point de controle en fonction de la machine
+             REFERENCE = 'AUTRE_ASTER',
+             VALE_REFE= es,
+             PRECISION = 1.E-2,
+              )
+
+MODE_20 = REST_MODE_NONL(MODE_NON_LINE=TTTS,
+                     TYPE_RESU = 'MODE_MECA',
+                     NUME_ORDRE = 10,
+                    )
+
+FIN();
+

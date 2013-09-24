@@ -112,4 +112,48 @@ cata_msg = {
 50 : _(u"""Arrêt par échec de l'action <%(k1)s>  pour le traitement de l'évènement <%(k2)s>. """),
 51 : _(u"""Arrêt demandé pour le déclenchement de l'évènement <%(k1)s>. """),
 
+60 : _(u"""
+   Les forces de contact sont mal définies dans le domaine de Fourier.
+
+   Conseil :
+   - Augmenter le nombre d'harmoniques des forces de contact (NB_HARM_NONL).
+"""),
+
+61 : _(u"""
+   Le dernier terme de la série entière est nul. On force le rayon de convergence à 1.
+"""),
+
+62 : _(u"""
+   Correction échouée !!!
+"""),
+
+63 : _(u"""
+   Le nombre d'harmoniques des forces de contact doit être supérieur ou égale au nombre d'harmoniques des autres variables.
+   NB_HARM_NONL >= NB_HARM_LINE
+"""),
+
+64 : _(u"""
+   -----------------------------------------------------------------------
+   ||    Erreur absolue   ||    Erreur relative  || Max. coefficient   ||
+   -----------------------------------------------------------------------
+   || %(r1)19.8e || %(r2)19.8e || %(r3)19.8e ||
+   -----------------------------------------------------------------------
+"""),
+
+65 : _(u"""
+   La solution périodique est stable
+   --------------------------------------------------------------------------
+"""),
+
+66 : _(u"""
+   La solution périodique est instable
+   --------------------------------------------------------------------------
+"""),
+
+67 : _(u"""
+   --------------------- Numéro ordre : %(i1)d -----------------------------------
+"""),
+
+68 : _(u"""Le mot-clé GROUP_NO du mot-clé facteur CHOC ne doit contenir qu'un noeud."""),
+
 }

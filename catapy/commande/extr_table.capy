@@ -34,7 +34,7 @@ EXTR_TABLE=OPER(nom="EXTR_TABLE",
                                      'VECT_ELEM_DEPL_R',
                                      'CHAM_GD_SDASTER', 'CHAM_NO_SDASTER',
                                      'CARTE_SDASTER', 'CHAM_ELEM',
-                                     'MODE_MECA',
+                                     'MODE_MECA','TABLE_SDASTER',
                                      'FONCTION_SDASTER', 'FONCTION_C', 'NAPPE_SDASTER',
                                      'ENTIER', 'REEL'),),
 

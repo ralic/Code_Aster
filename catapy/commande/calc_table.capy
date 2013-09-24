@@ -27,6 +27,8 @@ def calc_table_prod(self, TABLE, ACTION, **kargs):
    # une table_fonction étant une table
    if table_fonction in l_typ:
       return table_fonction
+   elif table_container in l_typ:
+      return table_container
    else:
       return table_sdaster
 
