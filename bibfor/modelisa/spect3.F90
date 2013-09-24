@@ -1,4 +1,4 @@
-function spect3(x, a, b, f, tol,&
+function spect3(x, a, b, func, tol,&
                 coeff, xlc, vitn, defm, rhoe,&
                 nbp, im, jm)
 !-----------------------------------------------------------------------
@@ -22,17 +22,17 @@ function spect3(x, a, b, f, tol,&
     implicit none
 !
 !                                 A
-! DESCRIPTION : CALCULE DINTG2 = S F(X,Y) DY   POUR DINTEG.
+! DESCRIPTION : CALCULE DINTG2 = S func(X,Y) DY   POUR DINTEG.
 ! -----------                     B
 !
 !               (S EST LE SYMBOLE DE L'INTEGRALE).
 !
 !               TOL DONNE LE SEUIL DE CONVERGENCE RELATIVE.
 !
-!               F EST LA FONCTION A INTEGRER.
+!               func EST LA FONCTION A INTEGRER.
 !               ELLE DOIT ETRE DECLAREE EXTERNAL DANS L'APPELANT.
 !               SA SPECIFICATION EST :
-!                        DOUBLE PRECISION FUNCTION F ( X, Y )
+!                        DOUBLE PRECISION FUNCTION func ( X, Y )
 !                        DOUBLE PRECISION X, Y
 !
 !               A ET B DONNENT LES BORNES DE L'INTEGRALE.
@@ -45,19 +45,19 @@ function spect3(x, a, b, f, tol,&
 ! ---------
 #include "jeveux.h"
     interface
-    function f(xx, y, xlc, vitn, rhoe,&
-               defm, nbp, im, jm)
-        integer :: nbp
-        real(kind=8) :: xx
-        real(kind=8) :: y
-        real(kind=8) :: xlc
-        real(kind=8) :: vitn(nbp, *)
-        real(kind=8) :: rhoe(nbp, *)
-        real(kind=8) :: defm(nbp, *)
-        integer :: im
-        integer :: jm
-        real(kind=8) :: f
-    end function f
+        function func(xx, y, xlc, vitn, rhoe,&
+                      defm, nbp, im, jm)
+            integer :: nbp
+            real(kind=8) :: xx
+            real(kind=8) :: y
+            real(kind=8) :: xlc
+            real(kind=8) :: vitn(nbp, *)
+            real(kind=8) :: rhoe(nbp, *)
+            real(kind=8) :: defm(nbp, *)
+            integer :: im
+            integer :: jm
+            real(kind=8) :: func
+        end function func
     end interface
     real(kind=8) :: x, a, b, tol, coeff(*)
     real(kind=8) :: vitn(nbp, *), rhoe(nbp, *), defm(nbp, *)
@@ -83,7 +83,7 @@ function spect3(x, a, b, f, tol,&
 !
     ym = ( a + b ) / 2.0d0
     dy = ( b - a ) / 2.0d0
-    y0 = f ( x, ym ,xlc,vitn,rhoe,defm,nbp,im,jm)
+    y0 = func ( x, ym ,xlc,vitn,rhoe,defm,nbp,im,jm)
     r1 = (y0+y0) * dy
     index = 0
     n1 = 0
@@ -97,7 +97,7 @@ function spect3(x, a, b, f, tol,&
     do 20 i = n2, n1
         index = index + 1
         y = coeff(index) * dy
-        w(i) = f(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + f(x,ym-y,xlc, vitn,rhoe,defm,nbp,im,jm)
+        w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im,jm)
         index = index + 1
         som = som + coeff(index)*w(i)
 20  end do

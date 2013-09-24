@@ -27,8 +27,18 @@ interface
         real(kind=8) :: errmax
         real(kind=8) :: y0(nbeq)
         real(kind=8) :: dy0(nbeq)
-        external rkfct
         real(kind=8) :: resu(2*nbeq)
         integer :: iret
+        interface
+            subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
+                             decoup)
+                integer :: nbeq
+                real(kind=8) :: pp(*)
+                real(kind=8) :: yy0(nbeq)
+                real(kind=8) :: dy0(nbeq)
+                real(kind=8) :: dyy(nbeq)
+                logical :: decoup
+            end subroutine rkfct
+        end interface
     end subroutine rk5adp
 end interface

@@ -1,12 +1,13 @@
-subroutine zerofo(f, x0, xap, epsi, nitmax,&
+subroutine zerofo(func, x0, xap, epsi, nitmax,&
                   solu, iret, n)
 ! aslint: disable=
     implicit none
 !
     interface
-    function f(x)
-        real(kind=8) :: f, x
-    end function f
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
     end interface
     real(kind=8) :: x0, xap, epsi, solu
     integer :: nitmax, iret, n
@@ -30,14 +31,14 @@ subroutine zerofo(f, x0, xap, epsi, nitmax,&
 !
 ! ----------------------------------------------------------------------
 !     BUT:
-!         TROUVER UNE RACINE DE L'EQUATION F(X)=0
-!         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(X0)<0
+!         TROUVER UNE RACINE DE L'EQUATION func(X)=0
+!         ON SUPPOSE QUE LA FONCTION func EST CROISSANTE ET QUE func(X0)<0
 !
 !     IN:
-!         F  : FONCTION DONT ON CHERCHE LE "ZERO"
+!         func  : FONCTION DONT ON CHERCHE LE "ZERO"
 !         X0 : POINT 0
 !         XAP: APPROXIMATION DE LA SOLUTION.
-!        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(F(SOLU))<EPSI
+!        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(func(SOLU))<EPSI
 !      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
 !
 !     OUT:
@@ -56,13 +57,13 @@ subroutine zerofo(f, x0, xap, epsi, nitmax,&
     iret = 1
     n = 1
     x = x0
-    fx = f(x0)
+    fx = func(x0)
     if (abs(fx) .lt. epsi) then
         z=0.d0
         goto 800
     endif
     y = xap
-    fy = f(y)
+    fy = func(y)
 !
 !     DEBUT DES ITERATIONS
 !
@@ -78,7 +79,7 @@ subroutine zerofo(f, x0, xap, epsi, nitmax,&
         endif
 !
         n = n + 1
-        fz = f(z)
+        fz = func(z)
         if (abs(fz) .lt. epsi) goto 800
         if (n .gt. nitmax) goto 999
         if (fz .lt. 0.d0) then
@@ -99,7 +100,7 @@ subroutine zerofo(f, x0, xap, epsi, nitmax,&
         x = y
         fx = fy
         y = z
-        fy = f(z)
+        fy = func(z)
 !
         if (abs(fy) .lt. epsi) goto 800
         if (n .gt. nitmax) goto 999

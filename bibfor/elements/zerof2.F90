@@ -1,4 +1,4 @@
-subroutine zerof2(f, x0, xap, epsi, nitmax,&
+subroutine zerof2(func, x0, xap, epsi, nitmax,&
                   solu, iret, n)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,30 +22,30 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
 !     ARGUMENTS:
 !     ----------
     interface
-        function f(x)
-            real(kind=8) :: f, x
-        end function f
+        function func(x)
+            real(kind=8) :: func, x
+        end function func
     end interface
     real(kind=8) :: x0, xap, epsi, solu
     integer :: nitmax, iret
 ! ----------------------------------------------------------------------
 !     BUT:
-!         TROUVER UNE RACINE DE L'EQUATION F(X)=0
-!         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(X0)<0
+!         TROUVER UNE RACINE DE L'EQUATION func(X)=0
+!         ON SUPPOSE QUE LA FONCTION func EST CROISSANTE ET QUE func(X0)<0
 !         ON EMPLOIE LA METHODE DE SECANTE UTILISEE DANS ZEROFO AVEC
 !          EN PLUS UN "COUP" DE DICHOTOMIE TOUS LES 3 ITERATIONS
-!          POUR FACILITER LA CONVERGENCE SI F EST TRES NON-LINEAIRE
+!          POUR FACILITER LA CONVERGENCE SI func EST TRES NON-LINEAIRE
 !
 !     IN:
-!         F  : FONCTION DONT ON CHERCHE LE "ZERO"
+!         func  : FONCTION DONT ON CHERCHE LE "ZERO"
 !         X0 : POINT 0
 !         XAP: APPROXIMATION DE LA SOLUTION.
-!        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(F(SOLU))<EPSI
+!        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(func(SOLU))<EPSI
 !      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
 !
 !     OUT:
 !         SOLU: VALEUR DE LA RACINE CHERCHEE.
-!         IRET: CODE RETOUR DE LA RECHERCHE DE ZERO DE F(X)=0
+!         IRET: CODE RETOUR DE LA RECHERCHE DE ZERO DE func(X)=0
 !                   IRET=0 => PAS DE PROBLEME
 !                   IRET=1 => ECHEC
 !     N       : NOMBRE D'ITERATIONS REALISEES
@@ -65,9 +65,9 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
 !-----------------------------------------------------------------------
     n = 1
     x = x0
-    fx = f(x0)
+    fx = func(x0)
     y = xap
-    fy = f(y)
+    fy = func(y)
 !
     if (abs(fy) .lt. epsi) then
         z = y
@@ -96,7 +96,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
         endif
 !
         n = n + 1
-        fz = f(z)
+        fz = func(z)
 !
         if (abs(fz) .lt. epsi) goto 90
         ecresd = abs(b-a)
@@ -132,7 +132,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
         x = y
         fx = fy
         y = z
-        fy = f(z)
+        fy = func(z)
 !
 !
         if (abs(fy) .lt. epsi) goto 90
@@ -151,7 +151,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
 99  continue
     do 21 k = 1, 20
         xdbg(k) = xap/(21-k)
-        fdbg(k) = f((xap)/(21-k))
+        fdbg(k) = func((xap)/(21-k))
 21  end do
     vali = n
     valr (1) = x
@@ -168,7 +168,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
 100  continue
     do 22 k = 1, 20
         xdbg(k) = xap/(21-k)
-        fdbg(k) = f((xap)/(21-k))
+        fdbg(k) = func((xap)/(21-k))
 22  end do
     vali = n
     valr (1) = x

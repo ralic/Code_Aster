@@ -16,10 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine zerofo(f, x0, xap, epsi, nitmax,&
+    subroutine zerofo(func, x0, xap, epsi, nitmax,&
                       solu, iret, n)
-        real(kind=8) :: f
-        external f
         real(kind=8) :: x0
         real(kind=8) :: xap
         real(kind=8) :: epsi
@@ -27,5 +25,11 @@ interface
         real(kind=8) :: solu
         integer :: iret
         integer :: n
+        interface
+            function func(x)
+                real(kind=8) :: x
+                real(kind=8) :: func
+            end function
+        end interface
     end subroutine zerofo
 end interface

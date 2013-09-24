@@ -16,10 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine zerofc(f, xmin, xmax, prec, niter,&
+    subroutine zerofc(func, xmin, xmax, prec, niter,&
                       dp, iret, nit)
-        real(kind=8) :: f
-        external f
         real(kind=8) :: xmin
         real(kind=8) :: xmax
         real(kind=8) :: prec
@@ -27,5 +25,11 @@ interface
         real(kind=8) :: dp
         integer :: iret
         integer :: nit
+        interface
+            function func(x)
+                real(kind=8) :: x
+                real(kind=8) :: func
+            end function
+        end interface
     end subroutine zerofc
 end interface

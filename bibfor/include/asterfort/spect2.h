@@ -17,7 +17,7 @@
 !
 interface
     function spect2(a, b, xlc, vitn, rhoe,&
-                    defm, f, tol, ier, r1,&
+                    defm, func, tol, ier, r1,&
                     err, nbp, im, jm)
         integer :: nbp
         real(kind=8) :: a
@@ -26,8 +26,6 @@ interface
         real(kind=8) :: vitn(nbp, *)
         real(kind=8) :: rhoe(nbp, *)
         real(kind=8) :: defm(nbp, *)
-        real(kind=8) :: f
-        external f
         real(kind=8) :: tol
         integer :: ier
         real(kind=8) :: r1
@@ -35,5 +33,20 @@ interface
         integer :: im
         integer :: jm
         real(kind=8) :: spect2
+        interface
+            function func(xx, y, xlc, vitn, rhoe,&
+                          defm, nbp, im, jm)
+                integer :: nbp
+                real(kind=8) :: xx
+                real(kind=8) :: y
+                real(kind=8) :: xlc
+                real(kind=8) :: vitn(nbp, *)
+                real(kind=8) :: rhoe(nbp, *)
+                real(kind=8) :: defm(nbp, *)
+                integer :: im
+                integer :: jm
+                real(kind=8) :: func
+            end function func
+        end interface
     end function spect2
 end interface

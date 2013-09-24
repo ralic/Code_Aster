@@ -1,4 +1,4 @@
-subroutine nmmess(code, dp0, dp1, dp, f,&
+subroutine nmmess(code, dp0, dp1, dp, func,&
                   nit, nitmax, iret)
 !
 ! ======================================================================
@@ -24,9 +24,10 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
 #include "jeveux.h"
 #include "asterfort/tecael.h"
     interface
-        function f(x)
-            real(kind=8) :: f, x
-        end function f
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
     end interface
     integer :: nit, nitmax, iret
     real(kind=8) :: dp0, dp1, dp
@@ -35,21 +36,21 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
 ! ......................................................................
 !    - FONCTION REALISEE: MESSAGE D'ERREUR DETAILLE EN CAS DE NON
 !                         CONVERGENCE DANS LES ROUTINES DE RECHERCHE
-!                         DE ZERO DE F(DP)
+!                         DE ZERO DE func(DP)
 !
 !    - ARGUMENTS:
 !        DONNEES:     CODE    : 'A', 'E' OU 'F' PASSE A U2MESG
 !                     DP0     : DP INITIAL (0 EN GENERAL)
 !                     DP1     : DP MAXI ESTIME
 !                     DP      : DERNIER DP CALCULE
-!                     F       : NOM DE LA FONCTION
+!                     func       : NOM DE LA FONCTION
 !                     NIT     : NOMBRE D'ITERATIONS ATTEINT
 !                     NITMAX  : NOMBRE D'ITERATIONS MAXIMUM
 !                     IRET    : CODE RETOUR DE L'ALGO DE RECHERCHE
 !                               IRET = 0 : OK
 !                               IRET = 1 : ON NE TROUVE PAS DPMAX
 !                               IRET = 2 : NITER INSUFFISANT
-!                               IRET = 3 : F(XMIN) > 0
+!                               IRET = 3 : func(XMIN) > 0
 ! ......................................................................
 !
     character(len=8) :: nomail
@@ -78,15 +79,15 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
     vali (1) = nit
     vali (2) = nitmax
     call utmess(code//'+', 'ALGORITH15_48', sk=valk, ni=2, vali=vali)
-    fp = f(dp)
+    fp = func(dp)
     valr (1) = dp
     valr (2) = fp
     call utmess(code//'+', 'ALGORITH15_49', nr=2, valr=valr)
-    f0 = f(dp0)
+    f0 = func(dp0)
     valr (1) = dp0
     valr (2) = f0
     call utmess(code//'+', 'ALGORITH15_50', nr=2, valr=valr)
-    f1 = f(dp1)
+    f1 = func(dp1)
     valr (1) = dp1
     valr (2) = f1
     call utmess(code//'+', 'ALGORITH15_51', nr=2, valr=valr)
@@ -96,7 +97,7 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
     call utmess(code//'+', 'ALGORITH15_52', si=vali(1))
     do 10 i = 1, nbp
         dpi=dp0+i*(dp1-dp0)/nbp
-        fi = f(dpi)
+        fi = func(dpi)
         valr (1) = dpi
         valr (2) = fi
         call utmess(code//'+', 'ALGORITH15_53', nr=2, valr=valr)

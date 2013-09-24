@@ -3,9 +3,27 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
                   iret)
     implicit none
 #include "asterfort/rk5app.h"
-    integer :: nbeq, nbmax, iret
-    real(kind=8) :: param(*), t0, dt0, y0(nbeq), dy0(nbeq), resu(2*nbeq), errmax
-    external rkfct
+    integer :: nbeq
+    real(kind=8) :: param(*)
+    real(kind=8) :: t0
+    real(kind=8) :: dt0
+    integer :: nbmax
+    real(kind=8) :: errmax
+    real(kind=8) :: y0(nbeq)
+    real(kind=8) :: dy0(nbeq)
+    real(kind=8) :: resu(2*nbeq)
+    integer :: iret
+    interface
+        subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
+                         decoup)
+            integer :: nbeq
+            real(kind=8) :: pp(*)
+            real(kind=8) :: yy0(nbeq)
+            real(kind=8) :: dy0(nbeq)
+            real(kind=8) :: dyy(nbeq)
+            logical :: decoup
+        end subroutine rkfct
+    end interface
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

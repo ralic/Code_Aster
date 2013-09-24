@@ -1,4 +1,4 @@
-subroutine zerofb(f, x1, x2, tol, itmax,&
+subroutine zerofb(func, x1, x2, tol, itmax,&
                   zbrent, iret, iter)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,9 @@ subroutine zerofb(f, x1, x2, tol, itmax,&
 !
 #include "asterc/r8prem.h"
     interface
-    function f(x)
-        real(kind=8) :: f, x
-    end function f
+        function func(x)
+            real(kind=8) :: func, x
+        end function func
     end interface
     integer :: itmax, iter, iret
     real(kind=8) :: zbrent, tol, x1, x2, eps
@@ -33,16 +33,16 @@ subroutine zerofb(f, x1, x2, tol, itmax,&
 !     BUT : TROUVER LE ZERO D'UNE FONCTION SCALAIRE REELLE
 !     AVEC LA METHODE DE BRENT
 !
-!     USING BRENT'S METHOD, FIND THE ROOT OF A FUNCTION F KNOWN TO
+!     USING BRENT'S METHOD, FIND THE ROOT OF A FUNCTION func KNOWN TO
 !     LIE BETWEEN X1 AND X2. THE ROOT, RETURNED AS ZBRENT, WILL BE
 !     REFINED UNTIL ITS ACCURACY IS TOL.
 !     PARAMETERS: MAXIMUM ALLOWED NUMBER OF ITERATIONS
 !
-! IN  F       : FONCTION F
+! IN  func       : FONCTION func
 ! IN  X1, X2  : INTERVELLE DE RECHERCHE
-! IN  TOL     : PRECISION ABSOLUE : LA SOLUTION X EST TELLE QUE F(X)<TOL
+! IN  TOL     : PRECISION ABSOLUE : LA SOLUTION X EST TELLE QUE func(X)<TOL
 ! IN  ITMAX   : NOMBRE D'ITERATIONS MAXIMUM
-! OUT ZBRENT  : ZERO DE F
+! OUT ZBRENT  : ZERO DE func
 ! OUT IRET    : CODE RETOUR : IRET = 0 : OK
 !             :               IRET = 1 : NITER INSUFFISANT OU AUTRE PB
 ! OUT ITER    : NOMBRE D'ITERATIONS EFFECTUEES
@@ -53,8 +53,8 @@ subroutine zerofb(f, x1, x2, tol, itmax,&
     iter=0
     a=x1
     b=x2
-    fa=f(a)
-    fb=f(b)
+    fa=func(a)
+    fb=func(b)
 !
     if (fa .gt. 0.d0 .and. fb .gt. 0.d0 .or. fa .lt. 0.d0 .and. fb .lt. 0.d0) then
 !
@@ -133,7 +133,7 @@ subroutine zerofb(f, x1, x2, tol, itmax,&
         else
             b=b+sign(tol1,xm)
         endif
-        fb=f(b)
+        fb=func(b)
 11  end do
 !
     iret=1

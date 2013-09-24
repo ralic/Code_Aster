@@ -16,15 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function spect3(x, a, b, f, tol,&
+    function spect3(x, a, b, func, tol,&
                     coeff, xlc, vitn, defm, rhoe,&
                     nbp, im, jm)
         integer :: nbp
         real(kind=8) :: x
         real(kind=8) :: a
         real(kind=8) :: b
-        real(kind=8) :: f
-        external f
         real(kind=8) :: tol
         real(kind=8) :: coeff(*)
         real(kind=8) :: xlc
@@ -34,5 +32,20 @@ interface
         integer :: im
         integer :: jm
         real(kind=8) :: spect3
+        interface
+            function func(xx, y, xlc, vitn, rhoe,&
+                          defm, nbp, im, jm)
+                integer :: nbp
+                real(kind=8) :: xx
+                real(kind=8) :: y
+                real(kind=8) :: xlc
+                real(kind=8) :: vitn(nbp, *)
+                real(kind=8) :: rhoe(nbp, *)
+                real(kind=8) :: defm(nbp, *)
+                integer :: im
+                integer :: jm
+                real(kind=8) :: func
+            end function func
+        end interface
     end function spect3
 end interface

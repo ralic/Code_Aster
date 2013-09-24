@@ -23,9 +23,19 @@ interface
         real(kind=8) :: dtemps
         real(kind=8) :: yinit(nbeq)
         real(kind=8) :: dyinit(nbeq)
-        external rkfct
         real(kind=8) :: solu(3*nbeq)
         logical :: decoup
+        interface
+            subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
+                             decoup)
+                integer :: nbeq
+                real(kind=8) :: pp(*)
+                real(kind=8) :: yy0(nbeq)
+                real(kind=8) :: dy0(nbeq)
+                real(kind=8) :: dyy(nbeq)
+                logical :: decoup
+            end subroutine rkfct
+        end interface
     end subroutine rk5app
 end interface
 

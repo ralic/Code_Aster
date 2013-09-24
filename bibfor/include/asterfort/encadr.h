@@ -16,10 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine encadr(f, x1, x2, f1, f2,&
+    subroutine encadr(func, x1, x2, f1, f2,&
                       niter, xmult, iret)
-        real(kind=8) :: f
-        external f
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: f1
@@ -27,5 +25,11 @@ interface
         integer :: niter
         real(kind=8) :: xmult
         integer :: iret
+        interface
+            function func(x)
+                real(kind=8) :: x
+                real(kind=8) :: func
+            end function
+        end interface
     end subroutine encadr
 end interface

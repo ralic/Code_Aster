@@ -1,11 +1,12 @@
-subroutine encadr(f, x1, x2, f1, f2,&
+subroutine encadr(func, x1, x2, f1, f2,&
                   niter, xmult, iret)
     implicit none
 !
     interface
-    function f(x)
-        real(kind=8) :: f, x
-    end function f
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
     end interface
     real(kind=8) :: x1, x2, f1, f2, xmult
     integer :: niter, iret
@@ -30,14 +31,14 @@ subroutine encadr(f, x1, x2, f1, f2,&
 !
 !     DETERMINATION D'UN ENCADREMENT DU ZERO D'UNE FONCTION.
 !
-! IN      F       : FONCTION F
+! IN      func       : FONCTION func
 ! IN      PREC    : PRECISION ABSOLUE :
-!                   LA SOLUTION EST TELLE QUE F(X)<PREC
+!                   LA SOLUTION EST TELLE QUE func(X)<PREC
 ! IN      NITER   : NOMBRE D'ITERATIONS MAXIMUM
 ! IN/OUT  X1      : BORNE A GAUCHE TROUVEE
 ! IN/OUT  X2      : BORNE A DROITE TROUVEE
-! OUT     F1      : VALEUR DE F EN X1
-! OUT     F2      : VALEUR DE F EN X2
+! OUT     F1      : VALEUR DE func EN X1
+! OUT     F2      : VALEUR DE func EN X2
 ! OUT     IRET    : CODE RETOUR : IRET = 0 : OK
 !                                 IRET = 1 : PB
 !
@@ -49,8 +50,8 @@ subroutine encadr(f, x1, x2, f1, f2,&
 !
     if (x1 .eq. x2) goto 9999
 !
-    f1 = f(x1)
-    f2 = f(x2)
+    f1 = func(x1)
+    f2 = func(x2)
     do 10 i = 1, niter
         if (f1*f2 .lt. 0.d0) then
             iret = 0
@@ -58,10 +59,10 @@ subroutine encadr(f, x1, x2, f1, f2,&
         endif
         if (abs(f1) .lt. abs(f2)) then
             x1 = x1 + xmult*(x1-x2)
-            f1 = f(x1)
+            f1 = func(x1)
         else
             x2 = x2 + xmult*(x2-x1)
-            f2 = f(x2)
+            f2 = func(x2)
         endif
 10  end do
 !

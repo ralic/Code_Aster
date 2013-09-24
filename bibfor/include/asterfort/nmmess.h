@@ -16,16 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmmess(code, dp0, dp1, dp, fonc,&
+    subroutine nmmess(code, dp0, dp1, dp, func,&
                       nit, nitmax, iret)
         character(len=1) :: code
         real(kind=8) :: dp0
         real(kind=8) :: dp1
         real(kind=8) :: dp
-        real(kind=8) :: fonc
-        external fonc
         integer :: nit
         integer :: nitmax
         integer :: iret
+        interface
+            function func(x)
+                real(kind=8) :: x
+                real(kind=8) :: func
+            end function
+        end interface
     end subroutine nmmess
 end interface

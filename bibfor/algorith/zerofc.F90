@@ -1,4 +1,4 @@
-subroutine zerofc(f, xmin, xmax, prec, niter,&
+subroutine zerofc(func, xmin, xmax, prec, niter,&
                   dp, iret, nit)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,20 +19,21 @@ subroutine zerofc(f, xmin, xmax, prec, niter,&
     implicit none
 #include "asterfort/zeroco.h"
     interface
-    function f(x)
-        real(kind=8) :: f, x
-    end function f
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
     end interface
     integer :: niter, iret
     real(kind=8) :: xmin, xmax, prec, dp
 ! ----------------------------------------------------------------------
-!     RECHERCHE DU ZERO DE F. ON SAIT QUE VAL0=F(0) < 0 ET F CROISSANTE
+!     RECHERCHE DU ZERO DE func. ON SAIT QUE VAL0=func(0) < 0 ET func CROISSANTE
 !     APPEL A ZEROCO (METHODE DE CORDE)
 !
-! IN  F       : FONCTION F
-! IN  XMIN    : VALEUR DE X POUR LAQUELLE F(X) < 0 (XMIN = 0 EN GENERAL)
-! IN  XMAX    : ESTIMATION DE LA VALEUR DE X POUR LAQUELLE F > 0
-! IN  PREC    : PRECISION ABSOLUE : LA SOLUTION EST TELLE QUE F(DP)<PREC
+! IN  func       : FONCTION func
+! IN  XMIN    : VALEUR DE X POUR LAQUELLE func(X) < 0 (XMIN = 0 EN GENERAL)
+! IN  XMAX    : ESTIMATION DE LA VALEUR DE X POUR LAQUELLE func > 0
+! IN  PREC    : PRECISION ABSOLUE : LA SOLUTION EST TELLE QUE func(DP)<PREC
 ! IN  NITER   : NOMBRE D'ITERATIONS MAXIMUM
 ! OUT DP      : SOLUTION : ACCROISSEMENT DE LA VARIABLE INTERNE P
 ! OUT IRET    : CODE RETOUR : IRET = 0 : OK
@@ -46,9 +47,9 @@ subroutine zerofc(f, xmin, xmax, prec, niter,&
     nit = 0
     iret = 1
     x(1) = xmin
-    y(1) = f(xmin)
+    y(1) = func(xmin)
     x(2) = xmax
-    y(2) = f(xmax)
+    y(2) = func(xmax)
     x(3) = x(1)
     y(3) = y(1)
     x(4) = x(2)
@@ -66,7 +67,7 @@ subroutine zerofc(f, xmin, xmax, prec, niter,&
         call zeroco(x, y)
 !
         dp = x(4)
-        y(4) = f(dp)
+        y(4) = func(dp)
 !
 20  end do
 !

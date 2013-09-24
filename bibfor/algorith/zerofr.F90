@@ -27,8 +27,13 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 #include "asterfort/zerofo.h"
     integer :: intini, itmax, iter, iret
     character(len=*) :: algo
-    real(kind=8) :: solu, tol, x1, x2, func
-    external      func
+    real(kind=8) :: solu, tol, x1, x2
+    interface
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
+    end interface
 !
 ! ----------------------------------------------------------------------
 !     BUT : TROUVER LE ZERO D'UNE FONCTION SCALAIRE REELLE

@@ -1,5 +1,5 @@
 function spect2(a, b, xlc, vitn, rhoe,&
-                defm, f, tol, ier, r1,&
+                defm, func, tol, ier, r1,&
                 err, nbp, im, jm)
 !------------------------------------------------------------------
 ! ======================================================================
@@ -22,21 +22,21 @@ function spect2(a, b, xlc, vitn, rhoe,&
 ! aslint: disable=
     implicit none
 !                                 B  F2(X)
-! DESCRIPTION : CALCULE DINTEG = S  S F(X,Y) DY   DX
+! DESCRIPTION : CALCULE DINTEG = S  S func(X,Y) DY   DX
 ! -----------                     A  F1(X)
 !
 !               (S EST LE SYMBOLE DE L'INTEGRALE).
 !
 !               TOL DONNE LE SEUIL DE CONVERGENCE RELATIVE.
 !
-!               F EST LA FONCTION A INTEGRER.
+!               func EST LA FONCTION A INTEGRER.
 !               ELLE DOIT ETRE DECLAREE EXTERNAL DANS L'APPELANT.
 !               SA SPECIFICATION EST :
-!                        DOUBLE PRECISION FUNCTION F ( X, Y )
+!                        DOUBLE PRECISION FUNCTION func ( X, Y )
 !                        DOUBLE PRECISION X, Y
 !               L'INTEGRALE INTERNE EST EVALUEE PAR LA FONCTION DINTG2.
-!               C'EST DONC DINTG2 QUI APPELLE F ET NON DINTEG.
-!               F EST DONNEE EN ARGUMENT A DINTG2 PAR DINTEG.
+!               C'EST DONC DINTG2 QUI APPELLE func ET NON DINTEG.
+!               func EST DONNEE EN ARGUMENT A DINTG2 PAR DINTEG.
 !
 !               A ET B DONNENT LES BORNES DE L'INTEGRALE EXTERNE.
 !
@@ -62,19 +62,19 @@ function spect2(a, b, xlc, vitn, rhoe,&
 #include "jeveux.h"
 #include "asterfort/spect3.h"
     interface
-    function f(xx, y, xlc, vitn, rhoe,&
-               defm, nbp, im, jm)
-        integer :: nbp
-        real(kind=8) :: xx
-        real(kind=8) :: y
-        real(kind=8) :: xlc
-        real(kind=8) :: vitn(nbp, *)
-        real(kind=8) :: rhoe(nbp, *)
-        real(kind=8) :: defm(nbp, *)
-        integer :: im
-        integer :: jm
-        real(kind=8) :: f
-    end function f
+        function func(xx, y, xlc, vitn, rhoe,&
+                      defm, nbp, im, jm)
+            integer :: nbp
+            real(kind=8) :: xx
+            real(kind=8) :: y
+            real(kind=8) :: xlc
+            real(kind=8) :: vitn(nbp, *)
+            real(kind=8) :: rhoe(nbp, *)
+            real(kind=8) :: defm(nbp, *)
+            integer :: im
+            integer :: jm
+            real(kind=8) :: func
+        end function func
     end interface
     integer :: ier
     real(kind=8) :: vitn(nbp, *), defm(nbp, *), rhoe(nbp, *), a, b, tol, xlc, r1
@@ -336,7 +336,7 @@ function spect2(a, b, xlc, vitn, rhoe,&
 !
     xm = ( a + b ) / 2.0d0
     dx = ( b - a ) / 2.0d0
-    x0 = spect3 ( xm, a,b, f, tol, coeff,xlc,vitn,defm, rhoe,nbp,im,jm )
+    x0 = spect3 ( xm, a,b, func, tol, coeff,xlc,vitn,defm, rhoe,nbp,im,jm )
     r1 = (x0+x0) * dx
     index = 0
     n1 = 0
@@ -350,8 +350,8 @@ function spect2(a, b, xlc, vitn, rhoe,&
     do 20 i = n2, n1
         index = index + 1
         x = coeff(index) * dx
-        w(i) = spect3( xm+x, a, b, f, tol, coeff,xlc,vitn, defm,rhoe, nbp,im,jm ) + spect3( xm-x,&
-               & a, b, f, tol, coeff,xlc,vitn, defm,rhoe,nbp,im,jm )
+        w(i) = spect3( xm+x, a, b, func, tol, coeff,xlc,vitn, defm,rhoe, nbp,im,jm ) + spect3( xm-x,&
+               & a, b, func, tol, coeff,xlc,vitn, defm,rhoe,nbp,im,jm )
         index = index + 1
         som = som + coeff(index)*w(i)
 20  end do

@@ -20,8 +20,6 @@ interface
                       tol, itmax, solu, iret, iter)
         integer :: intini
         character(len=*) :: algo
-        real(kind=8) :: func
-        external func
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: tol
@@ -29,5 +27,11 @@ interface
         real(kind=8) :: solu
         integer :: iret
         integer :: iter
+        interface
+            function func(x)
+                real(kind=8) :: x
+                real(kind=8) :: func
+            end function
+        end interface
     end subroutine zerofr
 end interface
