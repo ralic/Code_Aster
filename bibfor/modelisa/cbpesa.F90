@@ -25,8 +25,11 @@ subroutine cbpesa(char, noma, ndim)
 !
 #include "asterc/getfac.h"
 #include "asterfort/capesa.h"
-    character(len=8) :: char, noma
-    integer :: ipesa, ndim
+    character(len=8), intent(in) :: char
+    character(len=8), intent(in) :: noma
+    integer, intent(in) :: ndim
+!
+    integer :: ipesa
 !-----------------------------------------------------------------------
     call getfac('PESANTEUR', ipesa)
     if (ipesa .ne. 0) then

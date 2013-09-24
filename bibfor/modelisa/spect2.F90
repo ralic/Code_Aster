@@ -61,6 +61,20 @@ function spect2(a, b, xlc, vitn, rhoe,&
 ! ---------
 #include "jeveux.h"
 #include "asterfort/spect3.h"
+    integer :: nbp
+    real(kind=8) :: a
+    real(kind=8) :: b
+    real(kind=8) :: xlc
+    real(kind=8) :: vitn(nbp, *)
+    real(kind=8) :: rhoe(nbp, *)
+    real(kind=8) :: defm(nbp, *)
+    real(kind=8) :: tol
+    integer :: ier
+    real(kind=8) :: r1
+    real(kind=8) :: err
+    integer :: im
+    integer :: jm
+    real(kind=8) :: spect2
     interface
         function func(xx, y, xlc, vitn, rhoe,&
                       defm, nbp, im, jm)
@@ -76,9 +90,6 @@ function spect2(a, b, xlc, vitn, rhoe,&
             real(kind=8) :: func
         end function func
     end interface
-    integer :: ier
-    real(kind=8) :: vitn(nbp, *), defm(nbp, *), rhoe(nbp, *), a, b, tol, xlc, r1
-    real(kind=8) :: err
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -86,14 +97,7 @@ function spect2(a, b, xlc, vitn, rhoe,&
     real(kind=8) :: res, xm, dx, x0, som, x
     real(kind=8) :: w(127), coeff(381)
 !
-! FONCTIONS
-! ---------
-!
 ! DATAS
-! -----
-!-----------------------------------------------------------------------
-    integer :: im, jm, nbp
-    real(kind=8) :: spect2
 !-----------------------------------------------------------------------
     data (coeff(i),i=  1, 20) /&
      &     0.7745966692414834d0  ,    0.5555555555555556d0  ,&
@@ -350,7 +354,7 @@ function spect2(a, b, xlc, vitn, rhoe,&
     do 20 i = n2, n1
         index = index + 1
         x = coeff(index) * dx
-        w(i) = spect3( xm+x, a, b, func, tol, coeff,xlc,vitn, defm,rhoe, nbp,im,jm ) + spect3( xm-x,&
+        w(i) = spect3( xm+x, a, b, func, tol, coeff,xlc,vitn, defm,rhoe, nbp,im,jm ) + spect3(xm-x,&
                & a, b, func, tol, coeff,xlc,vitn, defm,rhoe,nbp,im,jm )
         index = index + 1
         som = som + coeff(index)*w(i)

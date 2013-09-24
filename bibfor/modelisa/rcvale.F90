@@ -30,7 +30,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     integer, intent(in) :: nbpar, nbres
     character(len=*), intent(in) :: phenom
     integer, intent(in) :: iarret
-    character(len=*) :: nommaz
+    character(len=*), intent(in) :: nommaz
     integer, intent(out) :: icodre(nbres)
     character(len=8), intent(in) :: nompar(nbpar), nomres(nbres)
     real(kind=8), intent(in) :: valpar(nbpar)

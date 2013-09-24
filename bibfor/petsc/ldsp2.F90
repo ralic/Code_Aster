@@ -28,9 +28,12 @@ subroutine ldsp2(pc, x1, y, ierr)
     integer :: iret
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: ierr
+! because of conditional (if _HAVE_PETSC) and external types
+! aslint: disable=C1309
     PC :: pc
     Vec :: x1, y
+    PetscInt :: ierr
+!
     PetscScalar :: xx(1)
     PetscOffset :: xidx
 !----------------------------------------------------------------
@@ -51,6 +54,7 @@ subroutine ldsp2(pc, x1, y, ierr)
     ASSERT(ierr.eq.0)
 !
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
+    cbid = dcmplx(0.d0, 0.d0)
     call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid],&
                 ' ', 1, iret, .true.)
 !

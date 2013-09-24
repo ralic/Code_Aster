@@ -21,10 +21,10 @@ interface
                       desc, cret)
         aster_int :: fid
         aster_int :: indice
-        character(len=*) :: maa
+        character(len=64) :: maa
         aster_int :: dim
         aster_int :: type
-        character(len=*) :: desc
+        character(len=200) :: desc
         aster_int :: cret
     end subroutine as_mmhmii
 end interface

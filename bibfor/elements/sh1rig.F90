@@ -161,13 +161,13 @@ subroutine sh1rig(xetemp, para, dsde, option, re)
       if(option.ne.'RIGI_MECA') then
         cmatlo(1,1) = dsde(ip,1,1)
         cmatlo(2,1) = dsde(ip,2,1)
-        cmatlo(4,1) = dsde(ip,4,1)/2.D0
+        cmatlo(4,1) = dsde(ip,4,1)/2.d0
         cmatlo(1,2) = dsde(ip,1,2)
         cmatlo(2,2) = dsde(ip,2,2)
-        cmatlo(4,2) = dsde(ip,4,2)/2.D0
-        cmatlo(1,4) = dsde(ip,1,4)/2.D0
-        cmatlo(2,4) = dsde(ip,2,4)/2.D0
-        cmatlo(4,4) = dsde(ip,4,4)/2.D0
+        cmatlo(4,2) = dsde(ip,4,2)/2.d0
+        cmatlo(1,4) = dsde(ip,1,4)/2.d0
+        cmatlo(2,4) = dsde(ip,2,4)/2.d0
+        cmatlo(4,4) = dsde(ip,4,4)/2.d0
       endif
 !
 ! definition des 3 points  coques

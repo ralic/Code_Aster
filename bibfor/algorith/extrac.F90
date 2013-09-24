@@ -4,9 +4,9 @@ subroutine extrac(interp, prec, crit, nbinst, ti,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    character(*), intent(in) :: interp
+    character(len=*), intent(in) :: interp
     real(kind=8), intent(in) :: prec
-    character(*), intent(in) :: crit
+    character(len=*), intent(in) :: crit
     integer, intent(in) :: nbinst
     real(kind=8), intent(in) :: ti(*)
     real(kind=8), intent(in) :: temps

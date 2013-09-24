@@ -64,9 +64,9 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
     write(unit,*)'IMPRESSION DE LA COLLECTION : ',ob1
 !
     if (lattr) call jeimpa(unit, ob1, ' ')
-    if ((lcont) .and. (acces(1:2).eq.'NO')) call jeprat(unit, ob1, '$$NOM',&
-                                                        'REPERTOIRE DE NOMS' //' DE LA COLLECTIO&
-                                                        &N :'//ob1)
+    if ((lcont) .and. (acces(1:2).eq.'NO')) then
+        call jeprat(unit, ob1, '$$NOM','REPERTOIRE DE NOMS DE LA COLLECTION :'//ob1)
+    endif
 !
 !     -- BOUCLE SUR LES ELEMENTS DE LA COLLECTION :
 !     ---------------------------------------------

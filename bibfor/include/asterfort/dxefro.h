@@ -17,9 +17,9 @@
 !
 interface
     subroutine dxefro(ne, t2iu, edgle, edglc)
-        integer :: ne
-        real(kind=8) :: t2iu(2, 2)
-        real(kind=8) :: edgle(*)
-        real(kind=8) :: edglc(*)
+        integer, intent(in) :: ne
+        real(kind=8), intent(in) :: t2iu(2, 2)
+        real(kind=8), intent(in) :: edgle(*)
+        real(kind=8), intent(out) :: edglc(*)
     end subroutine dxefro
 end interface

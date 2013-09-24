@@ -205,8 +205,8 @@ subroutine coqucf(nomu)
 !
     90 format(' MAILLE_NB  : [ [  CENTRE DE GRAVITE ],',&
      &       '  FONCTION  ,  VALEUR       ]')
-    91 format('''',I7,'_',I1,''' : [ [',3(e18.10,','),'], ''',&
-     &       a,''' ,',E18.10,'],')
+    91 format("'",i7,"_",i1,"' : [ [",3(e18.10,","),"], '",&
+     &       a,"' ,",e18.10,"],")
 !
 9999  continue
     call jedema()

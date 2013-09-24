@@ -34,6 +34,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/asmpi_warn.h"
 #include "asterfort/onerrf.h"
+#include "asterfort/post_op.h"
 #include "asterfort/trabck.h"
     character(len=*) :: typ
     character(len=*) :: idmess

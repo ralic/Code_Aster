@@ -63,7 +63,7 @@ subroutine te0474(option, nomte)
 !        RECUPERATION DES CONTRAINTES DANS ZR(ICONT)
         call jevech('PCONTRR', 'L', icont)
         if (nomshb .eq. 'SHB8') then
-            call r8inir(24*24,0.D0,re,1)
+            call r8inir(24*24,0.d0,re,1)
             do 50 i = 1, 5
                 do 40 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)
@@ -79,7 +79,7 @@ subroutine te0474(option, nomte)
 60              continue
 70          continue
         else if (nomshb.eq.'SHB6') then
-            call r8inir(18*18,0.D0,re6,1)
+            call r8inir(18*18,0.d0,re6,1)
             do 110 i = 1, 5
                 do 100 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)
@@ -97,7 +97,7 @@ subroutine te0474(option, nomte)
 130          continue
 !
         else if (nomshb.eq.'SHB15') then
-            call r8inir(45*45,0.D0,re15,1)
+            call r8inir(45*45,0.d0,re15,1)
             do 170 i = 1, 15
                 do 160 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)
@@ -115,7 +115,7 @@ subroutine te0474(option, nomte)
 190          continue
 !
         else if (nomshb.eq.'SHB20') then
-            call r8inir(60*60,0.D0,re20,1)
+            call r8inir(60*60,0.d0,re20,1)
             do 230 i = 1, 20
                 do 220 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)

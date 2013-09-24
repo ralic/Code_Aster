@@ -117,8 +117,8 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     character(len=8) :: nomprg
-    integer(kind=4) :: numpas, info, nprog, nlu, lenvar
-    parameter (lenvar = 144)
+    integer(kind=4) :: numpas, info, nprog, nlu
+    integer, parameter :: lenvar=144
     character(len=lenvar) :: nomvar
 !
 !

@@ -44,6 +44,19 @@ function spect3(x, a, b, func, tol,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
+    integer :: nbp
+    real(kind=8) :: x
+    real(kind=8) :: a
+    real(kind=8) :: b
+    real(kind=8) :: tol
+    real(kind=8) :: coeff(*)
+    real(kind=8) :: xlc
+    real(kind=8) :: vitn(nbp, *)
+    real(kind=8) :: defm(nbp, *)
+    real(kind=8) :: rhoe(nbp, *)
+    integer :: im
+    integer :: jm
+    real(kind=8) :: spect3
     interface
         function func(xx, y, xlc, vitn, rhoe,&
                       defm, nbp, im, jm)
@@ -59,8 +72,6 @@ function spect3(x, a, b, func, tol,&
             real(kind=8) :: func
         end function func
     end interface
-    real(kind=8) :: x, a, b, tol, coeff(*)
-    real(kind=8) :: vitn(nbp, *), rhoe(nbp, *), defm(nbp, *)
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -70,10 +81,6 @@ function spect3(x, a, b, func, tol,&
 !
 ! *****************    DEBUT DU CODE EXECUTABLE    *********************
 !
-!-----------------------------------------------------------------------
-    integer :: im, jm, nbp
-    real(kind=8) :: spect3, xlc
-!-----------------------------------------------------------------------
     res = 0.0d0
 !
     if (abs(a-b) .lt. 1.0d-30) then
@@ -83,7 +90,7 @@ function spect3(x, a, b, func, tol,&
 !
     ym = ( a + b ) / 2.0d0
     dy = ( b - a ) / 2.0d0
-    y0 = func ( x, ym ,xlc,vitn,rhoe,defm,nbp,im,jm)
+    y0 = func(x, ym ,xlc, vitn, rhoe, defm, nbp, im, jm)
     r1 = (y0+y0) * dy
     index = 0
     n1 = 0
@@ -97,7 +104,8 @@ function spect3(x, a, b, func, tol,&
     do 20 i = n2, n1
         index = index + 1
         y = coeff(index) * dy
-        w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im,jm)
+        w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + &
+               func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im,jm)
         index = index + 1
         som = som + coeff(index)*w(i)
 20  end do

@@ -183,7 +183,7 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
         write(ifr,1000) nommai,-r1,-r2,-r3
 35  end do
 !
-    1000 format(2x,'_F ( MAILLE=''',A8,''',',1x,'CARA= ''K_T_D_L'' , ',&
+    1000 format(2x,'_F ( MAILLE=''',a8,''',',1x,'CARA= ''K_T_D_L'' , ',&
      &      /7x,'VALE=(',1x,3(1x,1pe12.5,','),1x,'),',&
      &      /'   ),')
 !

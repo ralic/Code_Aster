@@ -27,7 +27,7 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 #include "asterfort/lsqpol.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2
-    character :: dir
+    character(len=1) :: dir
     integer :: nlit
     real(kind=8) :: sigb, siga(nlit), hh, om(nlit), rr(nlit), prec, e1, sigma
     integer :: ordlu

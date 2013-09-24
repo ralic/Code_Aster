@@ -17,9 +17,9 @@
 !
 interface
     subroutine jeecra(nomlu, catr, ival, cval)
-        character(len=*) :: nomlu
-        character(len=*) :: catr
-        integer, optional :: ival
-        character(len=*), optional :: cval
+        character(len=*), intent(in) :: nomlu
+        character(len=*), intent(in) :: catr
+        integer, intent(in), optional :: ival
+        character(len=*), intent(in), optional :: cval
     end subroutine jeecra
 end interface

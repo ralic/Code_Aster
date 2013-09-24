@@ -17,9 +17,9 @@
 !
 interface
     subroutine dxsiro(ne, t2iu, tensav, tensap)
-        integer :: ne
-        real(kind=8) :: t2iu(2, 2)
-        real(kind=8) :: tensav(*)
-        real(kind=8) :: tensap(*)
+        integer, intent(in) :: ne
+        real(kind=8), intent(in) :: t2iu(2, 2)
+        real(kind=8), intent(in) :: tensav(*)
+        real(kind=8), intent(out) :: tensap(*)
     end subroutine dxsiro
 end interface

@@ -25,8 +25,8 @@ interface
         integer :: jrtrv
         integer :: jitrv
         integer :: npoin(nbvec)
-        integer :: jvalpoi
-        integer :: jvalord
+        integer :: jvalpo
+        integer :: jvalor
         integer :: npic(nbvec)
         integer :: jpic
         integer :: jordpi

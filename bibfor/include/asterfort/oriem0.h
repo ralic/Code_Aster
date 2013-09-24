@@ -19,16 +19,16 @@ interface
     subroutine oriem0(kdim, type, coor, lino1, nbno1,&
                       lino2, nbno2, lino3, nbno3, ier,&
                       indmai)
-        character(len=2) :: kdim
-        character(len=8) :: type
-        real(kind=8) :: coor(*)
-        integer :: lino1(*)
-        integer :: nbno1
-        integer :: lino2(*)
-        integer :: nbno2
-        integer :: lino3(*)
-        integer :: nbno3
-        integer :: ier
-        integer :: indmai
+        character(len=2), intent(in) :: kdim
+        character(len=8), intent(in) :: type
+        real(kind=8), intent(in) :: coor(*)
+        integer, intent(in) :: lino1(*)
+        integer, intent(in) :: nbno1
+        integer, intent(in) :: lino2(*)
+        integer, intent(in) :: nbno2
+        integer, intent(in) :: lino3(*)
+        integer, intent(in) :: nbno3
+        integer, intent(out) :: ier
+        integer, intent(out) :: indmai
     end subroutine oriem0
 end interface

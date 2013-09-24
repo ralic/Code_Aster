@@ -19,7 +19,7 @@ interface
     subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
                       ncmp, nomcmp,  si, sr, sc, sk,&
                             lnomcmp, vi, vr, vc, vk         )
-        integer :: ncmp
+        integer, intent(in) :: ncmp
         character(len=*), intent(in) :: base
         character(len=*), intent(in) :: nomcar
         character(len=*), intent(in) :: moclez

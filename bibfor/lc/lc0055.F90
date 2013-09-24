@@ -25,7 +25,7 @@ subroutine lc0055(fami, kpg, ksp, ndim, imate,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 
-    character(*) :: fami
+    character(len=*) :: fami
     integer :: kpg
     integer :: ksp
     integer :: ndim

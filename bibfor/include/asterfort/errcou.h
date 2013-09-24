@@ -20,7 +20,8 @@ interface
                       nlu)
         character(len=8) :: nomprg
         integer(kind=4) :: numpas
-        character(len=144) :: nomvar
+        integer, parameter :: lenvar=144
+        character(len=lenvar) :: nomvar
         integer(kind=4) :: info
         integer(kind=4) :: nprog
         integer(kind=4) :: nlu

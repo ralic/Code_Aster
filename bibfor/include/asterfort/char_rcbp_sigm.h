@@ -20,7 +20,7 @@ interface
                           jlr)
         character(len=8), intent(in) :: cabl_prec
     integer, intent(in) :: iocc
-    integer, intent(in) :: nbchs
+    integer, intent(inout) :: nbchs
     integer, intent(in) :: jlces
     integer, intent(in) :: jll
     integer, intent(in) :: jlr

@@ -32,12 +32,14 @@ subroutine ldsp1(pc, ierr)
 #ifdef _HAVE_PETSC
 #include "aster_petsc.h"
 !----------------------------------------------------------------
+!     Variables PETSc
+! because of conditional (if _HAVE_PETSC) and external types
+! aslint: disable=C1309
+    PC :: pc
+    PetscInt :: ierr
+!----------------------------------------------------------------
 !     VARIABLES LOCALES
     integer :: jrefa, iret
-!----------------------------------------------------------------
-!     Variables PETSc
-    PetscInt :: ierr
-    PC :: pc
 !----------------------------------------------------------------
 !
     call jemarq()

@@ -18,6 +18,8 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! because of used in the else block of ifdef
+! aslint: disable=W0302
     implicit none
 #include "aster_types.h"
 #include "asterf.h"

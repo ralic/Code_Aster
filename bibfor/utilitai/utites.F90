@@ -6,9 +6,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcovt.h"
     integer, intent(in) :: nbref
-    character(*), intent(in) :: label1
-    character(*), intent(in) :: label2
-    character(*), intent(in) :: type
+    character(len=*), intent(in) :: label1
+    character(len=*), intent(in) :: label2
+    character(len=*), intent(in) :: type
     integer, intent(in) :: refi(nbref)
     real(kind=8), intent(in) :: refr(nbref)
     complex(kind=8), intent(in) :: refc(nbref)
@@ -16,10 +16,10 @@ subroutine utites(label1, label2, type, nbref, refi,&
     real(kind=8), intent(in) :: valr
     complex(kind=8), intent(in) :: valc
     real(kind=8), intent(in) :: epsi
-    character(*), intent(in) :: crit
+    character(len=*), intent(in) :: crit
     integer, intent(in) :: ific
     logical, intent(in) :: llab
-    character(*), intent(in) :: ssigne
+    character(len=*), intent(in) :: ssigne
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
