@@ -104,12 +104,12 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 !     QNL(COS) = -K*GAMA1*XSK
     call dscal(nd*h, -zr(ivec1-1+ninc-3), zr(iqnl+nd), 1)
     do 10 k = 1, h
-        call dscal(nd, real(k), zr(iqnl-1+k*nd+1), 1)
+        call dscal(nd, dble(k), zr(iqnl-1+k*nd+1), 1)
 10  continue
 ! --- QNL(SIN) =  K*GAMA1*XCK
     call dscal(nd*h, zr(ivec1-1+ninc-3), zr(iqnl+nd*(h+1)), 1)
     do 20 k = 1, h
-        call dscal(nd, real(k), zr(iqnl-1+(k+h)*nd+1), 1)
+        call dscal(nd, dble(k), zr(iqnl-1+(k+h)*nd+1), 1)
 20  continue
 ! --- CREATION DE 2 VECTEURS TEMPORAIRES
     call wkvect('&&MNLQNL.VTEP1', 'V V R', neq*(2*h), ivtp1)
@@ -141,7 +141,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 40  continue
 ! --- QNL = QNL - (K^2)*GAMMA2*VECTEMP3
     do 50 k = 1, h
-        kk=real(k)**2
+        kk=dble(k)**2
         call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(k-1)*nd+1), 1, zr(iqnl-1+k*nd+1),&
                    1)
         call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(h+k-1)*nd+1), 1,&

@@ -98,9 +98,9 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                 if (zi(icdl-1+k) .eq. 0) then
                     i=i+1
                     if (j .le. h) then
-                        coef=real(j)*real(j)
+                        coef=dble(j)*dble(j)
                     else
-                        coef=real(j-h)*real(j-h)
+                        coef=dble(j-h)*dble(j-h)
                     endif
                     q1(j*nd+i)=-coef*temp2((j-1)*neq+k)/zr(iadim+1)
                 endif
@@ -111,8 +111,8 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd,&
         call dscal(nd*h, -1.d0, q1(nd+1), 1)
         call dcopy(nd*h, zr(ivec+nd), 1, q1(nd*(h+1)+1), 1)
         do 50 k = 1, h
-            call dscal(nd, real(k), q1(k*nd+1), 1)
-            call dscal(nd, real(k), q1((h+k)*nd+1), 1)
+            call dscal(nd, dble(k), q1(k*nd+1), 1)
+            call dscal(nd, dble(k), q1((h+k)*nd+1), 1)
 50      continue
     endif
 ! ----------------------------------------------------------------------
