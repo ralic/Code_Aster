@@ -22,8 +22,8 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
     integer :: ivectu, idepl, jpintt, jpmilt
     character(len=*) :: poum
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
-    real(kind=8) :: crit(3), vi(*)
+    character(len=16) :: option, compor(*)
+    real(kind=8) :: crit(*), vi(*), crit2(1), vi2(1), sig2(1)
     real(kind=8) :: lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
 !
@@ -186,8 +186,8 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                         igeom, he, nfh, ddlc, ddlm,&
                         nnops, nfe, basloc, nnop, npg,&
                         typmod, option, imate, compor, lgpg,&
-                        r8bid(3), ibid, lsn, lst, idecpg,&
-                        [0.d0], [0.d0], matuu, ibid2, codret,&
+                        crit2, ibid, lsn, lst, idecpg,&
+                        sig2, vi2, matuu, ibid2, codret,&
                         nfiss, fisno)
 !
             elseif (option(1:9).eq.'RAPH_MECA' .or. option(1:9)&

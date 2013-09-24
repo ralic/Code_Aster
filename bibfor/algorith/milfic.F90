@@ -39,7 +39,7 @@ subroutine milfic(ndim, geom, xg)
 !
 !......................................................................
 !
-    real(kind=8) :: s, s1, xe1, xe
+    real(kind=8) :: s, s1, xe1, xe(1)
     integer :: nno
     character(len=8) :: elp
     parameter     (elp='SE3')
@@ -60,7 +60,7 @@ subroutine milfic(ndim, geom, xg)
 !     ABSCURV(M)=[ABSCURV(A)]/2
     s=s1/2
     call xinvac(elp, ndim, geom, s, xe)
-    ASSERT(xe.ge.-1 .and. xe.le.1)
+    ASSERT(xe(1).ge.-1 .and. xe(1).le.1)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
     call reerel(elp, nno, ndim, geom, xe,&

@@ -46,7 +46,7 @@ subroutine te0542(option, nomte)
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu
     logical :: lbid
-    real(kind=8) :: rbid, sigref, depref
+    real(kind=8) :: rbid, sigref, depref,vect(1)
     character(len=8) :: enr, elref
 ! DEB ------------------------------------------------------------------
 !
@@ -100,7 +100,7 @@ subroutine te0542(option, nomte)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false., lbid,&
-                    option, nomte, rbid, zr(ivectu), ddlm,&
+                    option, nomte, vect, zr(ivectu), ddlm,&
                     nfiss, jfisno)
 !
     else if (option.eq.'REFE_FORC_NODA') then

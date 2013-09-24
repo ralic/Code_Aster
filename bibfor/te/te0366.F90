@@ -71,10 +71,10 @@ subroutine te0366(option, nomte)
     integer :: indnor, ifrott, indco
     integer :: cface(5, 3)
     integer :: jdepde, jdepm, jgeom, jheafa, jheano
-    real(kind=8) :: mmat(n, n), tau1(3), tau2(3), norm(3)
+    real(kind=8) :: mmat(n, n), tau1(3), tau2(3), norm(3), vtmp(n)
     real(kind=8) :: mprojt(3, 3)
     real(kind=8) :: coore(3), coorm(3), coorc(2)
-    real(kind=8) :: ffe(20), ffm(20), ffc(8), dffc(2, 8)
+    real(kind=8) :: ffe(20), ffm(20), ffc(9), dffc(3, 9)
     real(kind=8) :: jacobi, hpg
     character(len=8) :: elrees, elrema, elreco, typmai, typmec
     integer :: inadh, nvit, lact(8), nlact, ninter
@@ -366,7 +366,7 @@ subroutine te0366(option, nomte)
     call xtedd2(ndim, nne, ndeple, nnm, nddl,&
                 option, lesclx, lmaitx, lcontx, zi(jstno),&
                 lact, ddle, ddlm, nfhe, nfhm,&
-                lmulti, zi(jheano), mmat, r8bid)
+                lmulti, zi(jheano), mmat, vtmp)
 !
 ! --- RECOPIE VALEURS FINALES (SYMETRIQUE OU NON)
 !

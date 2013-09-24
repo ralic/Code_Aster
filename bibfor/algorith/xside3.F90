@@ -169,7 +169,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 113          continue
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
-            call xcalfe(he, lsng, lstg, baslog, fe,&
+            call xcalfe(he(1), lsng, lstg, baslog, fe,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE

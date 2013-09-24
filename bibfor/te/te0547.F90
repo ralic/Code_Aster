@@ -68,7 +68,7 @@ subroutine te0547(option, nomte)
     integer :: npg, npgf, nptf, integ, singu
     integer :: ninter, nface, cface(5, 3)
     integer :: lact(8), nlact, ncompv
-    integer :: jdonco, jlsn, jlst, igeom, jptint
+    integer :: jdonco, jlsn, jlst, igeom, jptint, vstnc(1)
     integer :: jaint, jcface, jlonch, jbasec, icopil, ictau
     integer :: idepl0, idepl1, ideplm, iddepl, jcohes, imate
     integer :: nfh, nfiss, contac, jtab(2)
@@ -77,7 +77,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: rela
 !
     real(kind=8) :: cohes, copilo(5), dtau, ffc(8), ffp(27)
-    real(kind=8) :: mat3bd(3, 3), mat6bd(6, 6)
+    real(kind=8) :: mat3bd(3, 3), mat6bd(6, 6), alpha(3), cohes2(3)
     real(kind=8) :: jac, mud(3), mup(3), r3bd(3), ma3bd(3, 3)
     real(kind=8) :: nd(3), r8bid, r6bid(6), rb, r3bid(3)
     real(kind=8) :: rr, rbid, sud(3), sud2d(2), sudd(3), sup(3)
@@ -179,7 +179,7 @@ subroutine te0547(option, nomte)
 ! LISTE DES LAMBDAS ACTIFS
 !
     call xmulco(contac, ddlc, ddlm, jaint, 1,&
-                ibid, ib, lact, .false., lbid,&
+                ibid, vstnc, lact, .false., lbid,&
                 ndim, nfe, nfh, 1, ninter,&
                 nlact, nno, nnol, nnom, nnos,&
                 pla, typma)
@@ -227,19 +227,19 @@ subroutine te0547(option, nomte)
                         singu, rr, ddls, ddlm, supp)
             nvec = 1
             call xmmsa4(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl1), rb, rbid, nfh,&
+                        nvec, zr(idepl1), [0.d0], [0.d0], nfh,&
                         singu, rr, ddls, ddlm, sudd)
 !
             if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
                 job='SAUT_LOC'
                 call xmmsa2(ndim, ipgf, mate, sudd, nd,&
-                            tau1, tau2, rb, job, r8bid,&
-                            rbid, mat6bd, r6bid, mat3bd, r3bid,&
+                            tau1, tau2, cohes2, job, r8bid,&
+                            alpha, mat6bd, r6bid, mat3bd, r3bid,&
                             r3bd, ma3bd, sud)
 !
                 call xmmsa2(ndim, ipgf, mate, supp, nd,&
-                            tau1, tau2, rb, job, r8bid,&
-                            rbid, mat6bd, r6bid, mat3bd, r3bid,&
+                            tau1, tau2, cohes2, job, r8bid,&
+                            alpha, mat6bd, r6bid, mat3bd, r3bid,&
                             r3bd, ma3bd, sup)
 !           APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE
 !           A LA LOI DE COMPORTEMENT
@@ -270,12 +270,12 @@ subroutine te0547(option, nomte)
 !
                 job='SAUT_LOC'
                 call xmmsa5(ndim, ipgf, mate, sudd, r3bid,&
-                            nd, tau1, tau2, rb, job,&
-                            rela, r8bid, mat6bd, r6bid, mat3bd,&
+                            nd, tau1, tau2, cohes2, job,&
+                            rela, alpha, mat6bd, r6bid, mat3bd,&
                             sud, rbid)
                 call xmmsa5(ndim, ipgf, mate, supp, r3bid,&
-                            nd, tau1, tau2, rb, job,&
-                            rela, r8bid, mat6bd, r6bid, mat3bd,&
+                            nd, tau1, tau2, cohes2, job,&
+                            rela, alpha, mat6bd, r6bid, mat3bd,&
                             sup, rbid)
 !
 ! APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE LOI DE COMPORTEMENT

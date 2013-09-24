@@ -23,12 +23,12 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     integer :: nnop, nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
     integer :: lgpg, ndim, nfe, nfh, npg
-    real(kind=8) :: basloc(3*ndim*nnop), coorse(*), crit(3), he(nfiss)
+    real(kind=8) :: basloc(3*ndim*nnop), coorse(*), crit(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
     real(kind=8) :: matuu(*), vi(lgpg, npg)
     character(len=*) :: poum
     character(len=8) :: elrefp, elrese, typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -182,7 +182,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 call xcalf2(he(1), lsng, lstg, baslog, fe,&
                             dgdgl, iret)
             else if (ndim.eq.3) then
-                call xcalfe(he, lsng, lstg, baslog, fe,&
+                call xcalfe(he(1), lsng, lstg, baslog, fe,&
                             dgdgl, iret)
             endif
 !

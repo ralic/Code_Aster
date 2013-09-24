@@ -51,7 +51,7 @@ subroutine te0441(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt
     integer :: ivectu, igeom, irota, ipesa, imate
     integer :: irese, nfiss, jfisno, kpg, spt
-    real(kind=8) :: rbid, fno(81), rho(1), om, omo, coorse(81)
+    real(kind=8) :: rbid, fno(81), rho(1), om, omo, coorse(81), mat(1)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag, famil, poum
     character(len=16) :: phenom
@@ -185,7 +185,7 @@ subroutine te0441(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nnop, nnops, zi(jstno), .false., lbid,&
-                option, nomte, rbid, zr(ivectu), ddlm,&
+                option, nomte, mat, zr(ivectu), ddlm,&
                 nfiss, jfisno)
 !
     call jedema()

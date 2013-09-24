@@ -189,10 +189,10 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             if (ndim .eq. 2) then
-                call xcalf2(he, lsng, lstg, baslog, fe,&
+                call xcalf2(he(1), lsng, lstg, baslog, fe,&
                             dgdgl, iret)
             else if (ndim.eq.3) then
-                call xcalfe(he, lsng, lstg, baslog, fe,&
+                call xcalfe(he(1), lsng, lstg, baslog, fe,&
                             dgdgl, iret)
             endif
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES

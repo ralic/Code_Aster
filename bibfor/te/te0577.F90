@@ -45,7 +45,7 @@ subroutine te0577(option, nomte)
     integer :: ndim, nfh, nfe, ibid, itemp, igeom, nnop, jpintt, imate, itps
     integer :: jstno
     integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, ivectt, nddlno
-    real(kind=8) :: r8bid
+    real(kind=8) :: mat(1)
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------
@@ -97,6 +97,6 @@ subroutine te0577(option, nomte)
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     call xthddl(nfh, nddlno, nnop, zi(jstno), option,&
-                nomte, r8bid, zr(ivectt))
+                nomte, mat, zr(ivectt))
 !
 end subroutine

@@ -73,7 +73,7 @@ subroutine te0367(option, nomte)
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     real(kind=8) :: mprojt(3, 3)
     real(kind=8) :: coore(3), coorm(3), coorc(2)
-    real(kind=8) :: ffe(20), ffm(20), ffc(8), dffc(3, 8)
+    real(kind=8) :: ffe(20), ffm(20), ffc(9), dffc(3, 9)
     real(kind=8) :: jacobi, hpg
     character(len=8) :: elrees, elrema, elreco, typmai, typmec
     integer :: inadh, nvit, lact(8), nlact, ninter
@@ -84,7 +84,7 @@ subroutine te0367(option, nomte)
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrc, dlagrf(2)
     logical :: lfrott, lpenaf, lpenac, lesclx, lmaitx, lcontx
-    real(kind=8) :: vtmp(n)
+    real(kind=8) :: vtmp(n),mmat(336,336)
     integer :: contac, ibid, npte
     integer :: ndeple, ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
@@ -357,7 +357,7 @@ subroutine te0367(option, nomte)
     call xtedd2(ndim, nne, ndeple, nnm, nddl,&
                 option, lesclx, lmaitx, lcontx, zi(jstno),&
                 lact, ddle, ddlm, nfhe, nfhm,&
-                lmulti, zi(jheano), r8bid, vtmp)
+                lmulti, zi(jheano), mmat, vtmp)
 !
 !
 ! --- RECOPIE VALEURS FINALES

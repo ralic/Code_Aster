@@ -18,7 +18,7 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
     integer :: jfisno, nfiss
     integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt
     real(kind=8) :: basloc(*), sigref(*), lsn(nnop), lst(nnop)
-    character(len=16) :: compor(4)
+    character(len=16) :: compor(*)
 !
 !
 ! ======================================================================

@@ -49,7 +49,7 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
     integer :: nfh, nfe, ddlc, ddlm
     integer :: jpintt, jpmilt, idepl, ivectu, ideplp
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
     real(kind=8) :: crit(3), vi(*)
     real(kind=8) :: lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)

@@ -80,7 +80,7 @@ subroutine te0036(option, nomte)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
     real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(6), geomlo(81)
     logical :: lbid, axi
-    real(kind=8) :: rb3, rb4, ksib, ksig, dx, dy, dff(1, 3), seg(3), jac
+    real(kind=8) :: rb3, rb4, ksib, ksig, dx, dy, dff(1, 3), seg(3), jac,mat(1)
     integer :: kk
     data          elrese /'SE2','TR3','SE3','TR3'/
 !
@@ -518,7 +518,7 @@ subroutine te0036(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nnop, nnops, zi(jstno), .false., lbid,&
-                option, nomte, rbid, zr(ires), ddls,&
+                option, nomte, mat, zr(ires), ddls,&
                 nfiss, jfisno)
 !
 !-----------------------------------------------------------------------

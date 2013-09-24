@@ -41,7 +41,7 @@ subroutine te0536(option, nomte)
     integer :: nnos
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
-    real(kind=8) :: r8bid
+    real(kind=8) :: r8bid,vect(1)
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -89,7 +89,7 @@ subroutine te0536(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nno, nnos, zi(jstno), .false., .true.,&
-                option, nomte, zr(imatuu), r8bid, ddlm,&
+                option, nomte, zr(imatuu), vect, ddlm,&
                 nfiss, jfisno)
 !
 !

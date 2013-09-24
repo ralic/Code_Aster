@@ -56,7 +56,7 @@ subroutine te0539(option, nomte)
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     logical :: matsym
-    real(kind=8) :: angmas(7), r8bid, bary(3)
+    real(kind=8) :: angmas(7), r8bid, bary(3),crit(1),sig(1),vi(1)
 !
     ivectu=1
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -141,9 +141,9 @@ subroutine te0539(option, nomte)
         compor(4)=' '
         call xnmel('-', nno, nfh, nfe, ddlc,&
                    ddlm, igeom, typmod, option, zi( imate),&
-                   compor, lgpg, r8bid, jpintt, zi(jcnset),&
+                   compor, lgpg, crit, jpintt, zi(jcnset),&
                    zi(jheavt), zi( jlonch), zr(jbaslo), ibid, zr(jlsn),&
-                   zr(jlst), r8bid, r8bid, zr(imatuu), ibid,&
+                   zr(jlst), sig, vi, zr(imatuu), ibid,&
                    codret, jpmilt, nfiss, jfisno)
 !
 !-------ON MET NE DUR LE FAIT QUE LA MATRICE EST SYMETRIQUE

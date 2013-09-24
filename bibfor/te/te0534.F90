@@ -73,7 +73,7 @@ subroutine te0534(option, nomte)
     real(kind=8) :: vtmp(400), reac, reac12(3), jac
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
-    real(kind=8) :: rr, rbid, cohes(3), rela
+    real(kind=8) :: rr, rbid, cohes(3), rela, mat(1)
     logical :: lbid, lelim
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg
@@ -294,14 +294,14 @@ subroutine te0534(option, nomte)
         call jevech('PSTANO', 'L', jstno)
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false., lbid,&
-                    option, nomte, rbid, zr(ivect), ddlm,&
+                    option, nomte, mat, zr(ivect), ddlm,&
                     nfiss, jfisno)
     endif
 !     SUPPRESSION DES DDLS DE CONTACT
     if (lelim) then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, vstnc, .true., .true.,&
-                    option, nomte, rbid, zr(ivect), ddlm,&
+                    option, nomte, mat, zr(ivect), ddlm,&
                     nfiss, jfisno)
     endif
 !

@@ -58,7 +58,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! TERMES D INTERFACE
 ! -------------------
     integer :: cface(5, 3), contac, ddlc, ddlm, ddls
-    integer :: i, iadzi, iazk24, ib, ibid, ifa, ifiss, igeom, ipgf
+    integer :: i, iadzi, iazk24, vstnc(1), ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface
     integer :: jfisno, jheafa, jheano, jlonch, jlst, jptint, jtab(2)
     integer :: ivectu, lact(8), singu
@@ -155,7 +155,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
         call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
-                    jheano, ib, lact, .false., lbid,&
+                    jheano, vstnc, lact, .false., lbid,&
                     ndim, nfe, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)

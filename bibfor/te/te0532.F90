@@ -59,7 +59,7 @@ subroutine te0532(option, nomte)
     integer :: idepl, jptint, jaint, jcface, jlonch, jgliss
     integer :: ivff, iadzi, iazk24, ibid, jout1, jout2
     integer :: jout3, jmemco, ndim, nfh, ddlc, ddls, ddlm
-    integer :: npg, npgf, incoca, nfe, ninter, nnof
+    integer :: npg, npgf, incoca, nfe, ninter, nnof,vstnc(1)
     integer :: indco, gliss, memco, nface, cface(5, 3)
     integer :: nno, nnos, nnom, nnol, pla(27), lact(8), nlact, nvec
     integer :: contac, jbasec, nddl, nfiss, jfisno
@@ -189,7 +189,7 @@ subroutine te0532(option, nomte)
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
         call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
-                    jheano, ibid, lact, .false., lbid,&
+                    jheano, vstnc, lact, .false., lbid,&
                     ndim, nfe, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)

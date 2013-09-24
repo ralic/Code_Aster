@@ -68,7 +68,7 @@ subroutine te0037(option, nomte)
     integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino
     integer :: ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf
-    real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2)
+    real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2),mat(1)
     real(kind=8) :: rr(2), lst, xg(4), rbid, dfbid(27, 3), r27bid(27), r3bid(3)
     logical :: lbid
     integer :: compt
@@ -359,7 +359,7 @@ subroutine te0037(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nno, nnos, zi(jstno), .false., lbid,&
-                option, nomte, rbid, zr(ires), ddlm,&
+                option, nomte, mat, zr(ires), ddlm,&
                 nfiss, jfisno)
 !
 !
