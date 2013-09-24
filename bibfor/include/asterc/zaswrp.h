@@ -29,7 +29,7 @@ interface
         real(kind=8) :: instam
         real(kind=8) :: instap
         integer :: nvarcm
-        character(*) :: nomvar(*)
+        character(len=*) :: nomvar(*)
         real(kind=8) :: varplu(*)
         real(kind=8) :: varmoi(*)
         real(kind=8) :: varref(*)

@@ -20,7 +20,7 @@ interface
                       matm, mat, sigm, epsm, deps,&
                       epm, sigdv, sigp)
         integer :: ndimsi
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

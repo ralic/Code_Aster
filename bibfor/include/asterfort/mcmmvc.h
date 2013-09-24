@@ -20,7 +20,7 @@ interface
                       vect, xsol, nbvect, vectmp, prepos)
         integer :: nbvect
         integer :: neq
-        character(*) :: cumul
+        character(len=*) :: cumul
         integer :: lmat
         integer :: smdi(*)
         integer(kind=4) :: smhc(*)

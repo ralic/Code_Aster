@@ -19,7 +19,7 @@ interface
     subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                       imate, compor, epsm, deps, vim,&
                       option, sig, vip, dsidep)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

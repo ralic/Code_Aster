@@ -21,7 +21,7 @@ interface
         integer :: n
         real(kind=8) :: vale(n)
         real(kind=8) :: x
-        character(*) :: prolgd
+        character(len=*) :: prolgd
         integer :: i
         real(kind=8) :: epsi
         character(len=1) :: coli

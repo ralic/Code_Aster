@@ -20,11 +20,11 @@ interface
                       nbout, lpaouz, lchouz)
         integer :: nbout
         integer :: nbin
-        character(*) :: optioz
+        character(len=*) :: optioz
         integer :: ifm
-        character(*) :: lpaiz(nbin)
-        character(*) :: lchiz(nbin)
-        character(*) :: lpaouz(nbout)
-        character(*) :: lchouz(nbout)
+        character(len=*) :: lpaiz(nbin)
+        character(len=*) :: lchiz(nbin)
+        character(len=*) :: lpaouz(nbout)
+        character(len=*) :: lchouz(nbout)
     end subroutine dbgcal
 end interface

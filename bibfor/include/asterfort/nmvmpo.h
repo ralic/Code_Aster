@@ -22,10 +22,10 @@ interface
                       d1b, work, rg0, contp, fl,&
                       klv)
         integer :: nc
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: npg
-        character(*) :: option
-        character(*) :: nomte
+        character(len=*) :: option
+        character(len=*) :: nomte
         real(kind=8) :: xl
         integer :: icodma
         real(kind=8) :: sect(*)

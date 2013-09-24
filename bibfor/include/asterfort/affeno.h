@@ -30,7 +30,7 @@ interface
         integer :: desc(*)
         real(kind=8) :: valglo(*)
         character(len=8) :: kvalgl(*)
-        character(*) :: type
+        character(len=*) :: type
         integer :: nec
     end subroutine affeno
 end interface

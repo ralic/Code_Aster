@@ -21,6 +21,6 @@ interface
         character(len=24) :: mate
         character(len=19) :: sddyna
         real(kind=8) :: temps
-        character(*) :: vecelz
+        character(len=*) :: vecelz
     end subroutine veondp
 end interface

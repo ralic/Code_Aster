@@ -18,7 +18,7 @@
 interface
     subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
         character(len=8) :: char
-        character(*) :: ligrmo
+        character(len=*) :: ligrmo
         integer :: ialloc
         character(len=8) :: noma
         character(len=4) :: fonree

@@ -17,6 +17,6 @@
 !
 interface
     subroutine nudlg2(nu)
-        character(*) :: nu
+        character(len=*) :: nu
     end subroutine nudlg2
 end interface

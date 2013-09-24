@@ -17,7 +17,7 @@
 !
 interface
     subroutine ualfcr(mataz, basz)
-        character(*) :: mataz
-        character(*) :: basz
+        character(len=*) :: mataz
+        character(len=*) :: basz
     end subroutine ualfcr
 end interface

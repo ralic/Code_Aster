@@ -17,10 +17,10 @@
 !
 interface
     subroutine dismce(questi, nomobz, repi, repkz, ierd)
-        character(*) :: questi
-        character(*) :: nomobz
+        character(len=*) :: questi
+        character(len=*) :: nomobz
         integer :: repi
-        character(*) :: repkz
+        character(len=*) :: repkz
         integer :: ierd
     end subroutine dismce
 end interface

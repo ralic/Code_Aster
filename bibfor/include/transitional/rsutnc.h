@@ -18,10 +18,10 @@
 interface
     subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
                       nbtrou)
-        character(*) :: nomsd
-        character(*) :: nomsy
+        character(len=*) :: nomsd
+        character(len=*) :: nomsy
         integer :: nbvale
-        character(*) :: tabnom(*)
+        character(len=*) :: tabnom(*)
         integer :: tabord(*)
         integer :: nbtrou
     end subroutine rsutnc

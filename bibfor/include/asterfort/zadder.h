@@ -18,7 +18,7 @@
 interface
     subroutine zadder(uplo, n, alpha, x, incx,&
                       a, lda)
-        character(*) :: uplo
+        character(len=*) :: uplo
         integer :: n
         real(kind=8) :: alpha
         complex(kind=8) :: x(*)

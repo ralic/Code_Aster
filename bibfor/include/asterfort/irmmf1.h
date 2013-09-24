@@ -21,7 +21,7 @@ interface
                       nomtyp, nmatyp, infmed, nivinf, ifm)
         integer :: nbrent
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: typent
         integer :: nbgrou
         character(len=24) :: nomgen(*)

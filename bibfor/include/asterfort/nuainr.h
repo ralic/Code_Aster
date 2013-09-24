@@ -20,7 +20,7 @@ interface
                       nuax1, nual1, nuav1, x2, dref,&
                       val2)
         integer :: nx1
-        character(*) :: method
+        character(len=*) :: method
         integer :: np1
         integer :: nc1
         integer :: ic1

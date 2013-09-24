@@ -17,7 +17,7 @@
 !
 interface
     subroutine irmano(noma, nbma, numai, nbnos, numnos)
-        character(*) :: noma
+        character(len=*) :: noma
         integer :: nbma
         integer :: numai(*)
         integer :: nbnos

@@ -20,7 +20,7 @@ interface
         integer :: nbma
         integer :: nbno
         integer :: lima(*)
-        character(*) :: connez
+        character(len=*) :: connez
         integer :: cmlqdi
     end function cmlqdi
 end interface

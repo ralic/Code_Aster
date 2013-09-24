@@ -22,7 +22,7 @@ interface
                       vim, option, angmas, nwkin, wkin,&
                       sigp, vip, ndsde, dsidep, nwkout,&
                       wkout, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

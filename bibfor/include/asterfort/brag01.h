@@ -21,7 +21,7 @@ interface
                       sechp, tm, tp, tref, epsm,&
                       deps, sigm, vim, option, sigp,&
                       vip, dsidep, devpt, fluor)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

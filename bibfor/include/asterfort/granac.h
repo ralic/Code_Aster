@@ -19,7 +19,7 @@ interface
     subroutine granac(fami, kpg, ksp, icdmat, materi,&
                       compo, irrap, irram, tm, tp,&
                       depsgr)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: icdmat

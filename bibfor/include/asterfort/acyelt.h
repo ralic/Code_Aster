@@ -18,8 +18,8 @@
 interface
     subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
                       ideb, jdeb, x)
-        character(*) :: nmcolz
-        character(*) :: nomobz
+        character(len=*) :: nmcolz
+        character(len=*) :: nomobz
         integer :: nob
         complex(kind=8) :: cmat(*)
         integer :: ndim

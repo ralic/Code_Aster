@@ -17,8 +17,8 @@
 !
 interface
     subroutine crprno(champ, base, nbnoeu, nequa)
-        character(*) :: champ
-        character(*) :: base
+        character(len=*) :: champ
+        character(len=*) :: base
         integer :: nbnoeu
         integer :: nequa
     end subroutine crprno

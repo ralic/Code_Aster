@@ -18,7 +18,7 @@
 interface
     subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
         integer :: ncmp
-        character(*) :: cnoz
+        character(len=*) :: cnoz
         character(len=8) :: licmp(ncmp)
         real(kind=8) :: rmax
         integer :: numno

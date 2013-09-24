@@ -18,7 +18,7 @@
 interface
     subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
                       valmax, ncyc, dommag)
-        character(*) :: method
+        character(len=*) :: method
         character(len=8) :: nommat
         character(len=8) :: nomnap
         character(len=8) :: nomfon

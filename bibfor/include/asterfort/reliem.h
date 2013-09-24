@@ -19,14 +19,14 @@ interface
     subroutine reliem(mo, ma, typem, motfaz, iocc,&
                       nbmocl, limocl, tymocl, litroz, nbtrou)
         integer :: nbmocl
-        character(*) :: mo
+        character(len=*) :: mo
         character(len=8) :: ma
-        character(*) :: typem
-        character(*) :: motfaz
+        character(len=*) :: typem
+        character(len=*) :: motfaz
         integer :: iocc
-        character(*) :: limocl(nbmocl)
-        character(*) :: tymocl(nbmocl)
-        character(*) :: litroz
+        character(len=*) :: limocl(nbmocl)
+        character(len=*) :: tymocl(nbmocl)
+        character(len=*) :: litroz
         integer :: nbtrou
     end subroutine reliem
 end interface

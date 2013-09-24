@@ -20,21 +20,21 @@ interface
                       vc, vk, crit, prec, para,&
                       ctype, vali, valr, valc, valk,&
                       ier)
-        character(*) :: nomta
+        character(len=*) :: nomta
         integer :: npacri
-        character(*) :: lipacr(*)
+        character(len=*) :: lipacr(*)
         integer :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
-        character(*) :: vk(*)
-        character(*) :: crit(*)
+        character(len=*) :: vk(*)
+        character(len=*) :: crit(*)
         real(kind=8) :: prec(*)
-        character(*) :: para
-        character(*) :: ctype
+        character(len=*) :: para
+        character(len=*) :: ctype
         integer :: vali
         real(kind=8) :: valr
         complex(kind=8) :: valc
-        character(*) :: valk
+        character(len=*) :: valk
         integer :: ier
     end subroutine tbliva
 end interface

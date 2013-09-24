@@ -17,10 +17,10 @@
 !
 interface 
     subroutine peritr(resu,modele,cara,nh,nbocc)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: cara
+        character(len=*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: cara
         integer :: nh
         integer :: nbocc
     end subroutine peritr
-end interface 
+end interface

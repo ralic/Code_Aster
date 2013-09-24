@@ -18,8 +18,8 @@
 interface
     subroutine ircmpf(nofimd, nvalty, profil, noprof)
         integer :: nvalty
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: profil(nvalty)
-        character(*) :: noprof
+        character(len=*) :: noprof
     end subroutine ircmpf
 end interface

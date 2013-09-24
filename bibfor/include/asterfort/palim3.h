@@ -18,11 +18,11 @@
 interface
     subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                       nbmst)
-        character(*) :: mcfact
+        character(len=*) :: mcfact
         integer :: iocc
-        character(*) :: nomaz
-        character(*) :: nomvei
-        character(*) :: nomvek
+        character(len=*) :: nomaz
+        character(len=*) :: nomvei
+        character(len=*) :: nomvek
         integer :: nbmst
     end subroutine palim3
 end interface

@@ -18,10 +18,10 @@
 interface
     subroutine moytem(fami, npg, nspg, poum, temp,&
                       iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: npg
         integer :: nspg
-        character(*) :: poum
+        character(len=*) :: poum
         real(kind=8) :: temp
         integer :: iret
     end subroutine moytem

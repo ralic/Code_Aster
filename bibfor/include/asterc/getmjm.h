@@ -18,11 +18,11 @@
 interface
     subroutine getmjm(motfac, iocc, nbval, motcle, type,&
                       nbarg)
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: iocc
         integer :: nbval
-        character(*) :: motcle(*)
-        character(*) :: type(*)
+        character(len=*) :: motcle(*)
+        character(len=*) :: type(*)
         integer :: nbarg
     end subroutine getmjm
 end interface

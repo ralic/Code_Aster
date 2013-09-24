@@ -23,7 +23,7 @@ interface
                       nbgrlo)
         integer :: nbnoeu
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: rangfa
         integer :: carafa(3, *)
         integer :: famnoe(nbnoeu)
@@ -31,15 +31,15 @@ interface
         integer :: jfamma(69)
         integer :: jnumty(69)
         integer :: vaatfa(*)
-        character(*) :: nogrfa(*)
+        character(len=*) :: nogrfa(*)
         integer :: tabaux(*)
-        character(*) :: nomgro
-        character(*) :: numgro
-        character(*) :: nument
+        character(len=*) :: nomgro
+        character(len=*) :: numgro
+        character(len=*) :: nument
         integer :: infmed
         integer :: nivinf
         integer :: ifm
-        character(*) :: vecgrm
+        character(len=*) :: vecgrm
         integer :: nbcgrm
         integer :: nbgrlo
     end subroutine lrmmf3

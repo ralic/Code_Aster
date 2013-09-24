@@ -17,7 +17,7 @@
 !
 interface
     subroutine jelibd(nomlu, ltot)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
         integer :: ltot
     end subroutine jelibd
 end interface

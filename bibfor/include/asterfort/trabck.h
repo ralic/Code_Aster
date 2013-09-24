@@ -17,7 +17,7 @@
 !
 interface
     subroutine trabck(cmess, iexit)
-        character(*) :: cmess
+        character(len=*) :: cmess
         integer(kind=4) :: iexit
     end subroutine trabck
 end interface

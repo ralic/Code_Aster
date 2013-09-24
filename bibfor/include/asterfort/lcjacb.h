@@ -29,7 +29,7 @@ interface
         integer :: nsg
         integer :: nfs
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: loi

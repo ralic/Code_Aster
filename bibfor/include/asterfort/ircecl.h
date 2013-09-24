@@ -30,13 +30,13 @@ interface
         integer :: longr(*)
         integer :: ncmpmx
         complex(kind=8) :: vale(*)
-        character(*) :: nomcmp(*)
-        character(*) :: nomel(*)
-        character(*) :: loc
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: nomel(*)
+        character(len=*) :: loc
         integer :: celd(*)
         integer :: connex(*)
         integer :: point(*)
-        character(*) :: nomnos(*)
+        character(len=*) :: nomnos(*)
         integer :: nbcmpt
         integer :: nucmpu(*)
         integer :: nbnot
@@ -53,7 +53,7 @@ interface
         integer :: ndim
         real(kind=8) :: coor(*)
         character(len=19) :: nolili
-        character(*) :: formr
+        character(len=*) :: formr
         integer :: ncmpv
         integer :: nucmp(*)
     end subroutine ircecl

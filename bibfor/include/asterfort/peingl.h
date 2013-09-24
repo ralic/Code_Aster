@@ -18,12 +18,12 @@
 interface 
     subroutine peingl(resu, modele, mate, cara, nh,&
                       nbocc, motfaz)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: mate
+        character(len=*) :: cara
         integer :: nh
         integer :: nbocc
-        character(*) :: motfaz
+        character(len=*) :: motfaz
     end subroutine peingl
-end interface 
+end interface

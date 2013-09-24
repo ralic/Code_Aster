@@ -20,7 +20,7 @@ interface
                       corr2)
         integer :: ncmp
         character(len=19) :: prchno
-        character(*) :: basz
+        character(len=*) :: basz
         integer :: neq
         integer :: gds
         integer :: corr2(ncmp)

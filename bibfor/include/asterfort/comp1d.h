@@ -19,7 +19,7 @@ interface
     subroutine comp1d(fami, kpg, ksp, option, sigx,&
                       epsx, depx, angmas, vim, vip,&
                       sigxp, etan, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: option

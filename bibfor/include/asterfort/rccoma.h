@@ -18,8 +18,8 @@
 interface
     subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
         integer, intent(in) :: jmat, iarret 
-        character(*), intent(in) :: pheno
-        character(*), intent(out) :: phenom
+        character(len=*), intent(in) :: pheno
+        character(len=*), intent(out) :: phenom
         integer, intent(out) :: icodre
     end subroutine rccoma
 end interface

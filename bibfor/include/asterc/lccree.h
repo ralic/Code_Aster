@@ -18,7 +18,7 @@
 interface
     subroutine lccree(nbkit, lkit, compor)
         integer :: nbkit
-        character(*) :: lkit(*)
-        character(*) :: compor
+        character(len=*) :: lkit(*)
+        character(len=*) :: compor
     end subroutine lccree
 end interface

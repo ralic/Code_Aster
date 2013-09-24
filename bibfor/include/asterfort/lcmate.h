@@ -24,7 +24,7 @@ interface
                       nvi, vind, nfs, nsg, toutms,&
                       nhsr, numhsr, sigd)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: comp(*)

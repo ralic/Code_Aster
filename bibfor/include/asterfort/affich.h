@@ -17,7 +17,7 @@
 !
 interface
     subroutine affich(nomfic, texte)
-        character(*) :: nomfic
-        character(*) :: texte
+        character(len=*) :: nomfic
+        character(len=*) :: texte
     end subroutine affich
 end interface

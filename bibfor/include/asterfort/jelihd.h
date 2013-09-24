@@ -17,8 +17,8 @@
 !
 interface
     subroutine jelihd(nomf, fichdf, clas)
-        character(*) :: nomf
-        character(*) :: fichdf
-        character(*) :: clas
+        character(len=*) :: nomf
+        character(len=*) :: fichdf
+        character(len=*) :: clas
     end subroutine jelihd
 end interface

@@ -21,6 +21,6 @@ interface
         integer :: ic
         integer :: idfic
         integer :: idts
-        character(*) :: ngrp
+        character(len=*) :: ngrp
     end subroutine jjlchd
 end interface

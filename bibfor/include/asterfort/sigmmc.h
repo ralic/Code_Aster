@@ -19,7 +19,7 @@ interface
     subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
                       ipoids, ivf, idfde, xyz, depl,&
                       instan, repere, mater, nharm, sigma)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: nno
         integer :: ndim
         integer :: nbsig

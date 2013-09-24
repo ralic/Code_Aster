@@ -24,41 +24,41 @@ interface
                       base, ch1, ch2, chvari, compor,&
                       chtese, chdese, nopase, typese, chacse,&
                       codret)
-        character(*) :: option
-        character(*) :: modele
-        character(*) :: chdepl
-        character(*) :: chgeom
-        character(*) :: chmate
-        character(*) :: chcara(*)
-        character(*) :: chtemp
-        character(*) :: chtref
-        character(*) :: chtime
-        character(*) :: chnumc
-        character(*) :: chharm
-        character(*) :: chsig
-        character(*) :: cheps
-        character(*) :: chfreq
-        character(*) :: chmass
-        character(*) :: chmeta
-        character(*) :: charge
-        character(*) :: typcoe
+        character(len=*) :: option
+        character(len=*) :: modele
+        character(len=*) :: chdepl
+        character(len=*) :: chgeom
+        character(len=*) :: chmate
+        character(len=*) :: chcara(*)
+        character(len=*) :: chtemp
+        character(len=*) :: chtref
+        character(len=*) :: chtime
+        character(len=*) :: chnumc
+        character(len=*) :: chharm
+        character(len=*) :: chsig
+        character(len=*) :: cheps
+        character(len=*) :: chfreq
+        character(len=*) :: chmass
+        character(len=*) :: chmeta
+        character(len=*) :: charge
+        character(len=*) :: typcoe
         real(kind=8) :: alpha
         complex(kind=8) :: calpha
-        character(*) :: chdynr
-        character(*) :: suropt
-        character(*) :: chelem
-        character(*) :: chelex
-        character(*) :: ligrel
-        character(*) :: base
-        character(*) :: ch1
-        character(*) :: ch2
-        character(*) :: chvari
-        character(*) :: compor
-        character(*) :: chtese
-        character(*) :: chdese
-        character(*) :: nopase
+        character(len=*) :: chdynr
+        character(len=*) :: suropt
+        character(len=*) :: chelem
+        character(len=*) :: chelex
+        character(len=*) :: ligrel
+        character(len=*) :: base
+        character(len=*) :: ch1
+        character(len=*) :: ch2
+        character(len=*) :: chvari
+        character(len=*) :: compor
+        character(len=*) :: chtese
+        character(len=*) :: chdese
+        character(len=*) :: nopase
         integer :: typese
-        character(*) :: chacse
+        character(len=*) :: chacse
         integer :: codret
     end subroutine mecalc
 end interface

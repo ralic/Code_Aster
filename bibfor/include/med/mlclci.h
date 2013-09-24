@@ -22,12 +22,12 @@ interface
                       cret)
         med_int :: fid
         med_int :: it
-        character(*) :: lname
+        character(len=*) :: lname
         med_int :: gtype
         med_int :: sdim
         med_int :: nip
-        character(*) :: giname
-        character(*) :: isname
+        character(len=*) :: giname
+        character(len=*) :: isname
         med_int :: nsmc
         med_int :: sgtype
         med_int :: cret

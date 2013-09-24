@@ -18,7 +18,7 @@
 interface
     subroutine trprec(mcf, iocc, epsi, crit, prec,&
                       crit2)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         real(kind=8) :: epsi
         character(len=8) :: crit

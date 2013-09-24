@@ -17,7 +17,7 @@
 !
 interface
     subroutine crelgt(basez, ligrez)
-        character(*) :: basez
-        character(*) :: ligrez
+        character(len=*) :: basez
+        character(len=*) :: ligrez
     end subroutine crelgt
 end interface

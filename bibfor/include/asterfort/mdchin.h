@@ -18,9 +18,9 @@
 interface
     subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
                       prefix, nbtv, codret)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: idfimd
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: typent
         integer :: typgeo
         character(len=19) :: prefix

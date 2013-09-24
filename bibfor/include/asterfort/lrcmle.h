@@ -20,15 +20,15 @@ interface
                       numord, typent, typgeo, ntvale, nomprf,&
                       codret)
         integer :: idfimd
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: nbcmfi
         integer :: nbvato
         integer :: numpt
         integer :: numord
         integer :: typent
         integer :: typgeo
-        character(*) :: ntvale
-        character(*) :: nomprf
+        character(len=*) :: ntvale
+        character(len=*) :: nomprf
         integer :: codret
     end subroutine lrcmle
 end interface

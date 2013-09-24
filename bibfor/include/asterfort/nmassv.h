@@ -20,8 +20,8 @@ interface
                       compor, numedd, instam, instap, resoco,&
                       resocu, sddyna, sdtime, valinc, comref,&
                       measse, vecelz, vecasz)
-        character(*) :: typvez
-        character(*) :: modelz
+        character(len=*) :: typvez
+        character(len=*) :: modelz
         character(len=19) :: lischa
         character(len=24) :: mate
         character(len=24) :: carele
@@ -36,7 +36,7 @@ interface
         character(len=19) :: valinc(*)
         character(len=24) :: comref
         character(len=19) :: measse(*)
-        character(*) :: vecelz
-        character(*) :: vecasz
+        character(len=*) :: vecelz
+        character(len=*) :: vecasz
     end subroutine nmassv
 end interface

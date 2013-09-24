@@ -19,13 +19,13 @@ interface
     subroutine utlicm(nbcmpv, nomcmp, nomgd, ncmprf, nomcmr,&
                       ncmpve, numcmp, ntncmp, ntucmp)
         integer :: nbcmpv
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         character(len=8) :: nomgd
         integer :: ncmprf
-        character(*) :: nomcmr(*)
+        character(len=*) :: nomcmr(*)
         integer :: ncmpve
-        character(*) :: numcmp
-        character(*) :: ntncmp
-        character(*) :: ntucmp
+        character(len=*) :: numcmp
+        character(len=*) :: ntncmp
+        character(len=*) :: ntucmp
     end subroutine utlicm
 end interface

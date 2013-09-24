@@ -21,16 +21,16 @@ interface
                       nbres, nomres, valres, codret, iarret)
         integer, intent(in) :: nbres
         integer, intent(in) :: nbpar
-        character(*), intent(in) :: fami
+        character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
-        character(*), intent(in) :: poum
+        character(len=*), intent(in) :: poum
         integer, intent(in) :: jmat
-        character(*), intent(in) :: nomat
-        character(*), intent(in) :: phenom
-        character(*), intent(in) :: nompar(nbpar)
+        character(len=*), intent(in) :: nomat
+        character(len=*), intent(in) :: phenom
+        character(len=*), intent(in) :: nompar(nbpar)
         real(kind=8), intent(in) :: valpar(nbpar)
-        character(*), intent(in) :: nomres(nbres)
+        character(len=*), intent(in) :: nomres(nbres)
         real(kind=8), intent(out) :: valres(nbres)
         integer, intent(out) :: codret(nbres)
         integer, intent(in) :: iarret

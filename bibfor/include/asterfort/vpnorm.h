@@ -21,8 +21,8 @@ interface
                       isign, numddl, coef)
         integer :: nbmode
         integer :: neq
-        character(*) :: norm
-        character(*) :: para
+        character(len=*) :: norm
+        character(len=*) :: para
         integer :: lmatr
         integer :: ddlexc(*)
         real(kind=8) :: vecpro(neq, *)

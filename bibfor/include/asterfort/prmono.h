@@ -17,7 +17,7 @@
 !
 interface
     subroutine prmono(champ, ioc, som, nbcmp, nocmp)
-        character(*) :: champ
+        character(len=*) :: champ
         integer :: ioc
         real(kind=8) :: som(1)
         integer :: nbcmp

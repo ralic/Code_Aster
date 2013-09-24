@@ -21,6 +21,6 @@ interface
         integer :: long
         integer :: prec
         real(kind=8) :: valr
-        character(*) :: chaine
+        character(len=*) :: chaine
     end subroutine impfor
 end interface

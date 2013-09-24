@@ -21,7 +21,7 @@ interface
                       nbtmx, nbtm, nutm, elrf)
         integer :: nbtmx
         character(len=2) :: dim
-        character(*) :: mocle
+        character(len=*) :: mocle
         character(len=8) :: moa1
         character(len=8) :: moa2
         integer :: nbma1

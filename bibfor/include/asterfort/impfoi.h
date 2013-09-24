@@ -20,6 +20,6 @@ interface
         integer :: unite
         integer :: long
         integer :: vali
-        character(*) :: chaine
+        character(len=*) :: chaine
     end subroutine impfoi
 end interface

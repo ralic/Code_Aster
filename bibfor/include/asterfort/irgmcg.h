@@ -20,10 +20,10 @@ interface
                       nbordr, coord, connx, point, nobj,&
                       nbel, nbcmpi, nomcmp, lresu, para,&
                       nomaou, versio)
-        character(*) :: chamsy
-        character(*) :: partie
+        character(len=*) :: chamsy
+        character(len=*) :: partie
         integer :: ifi
-        character(*) :: nomcon
+        character(len=*) :: nomcon
         integer :: ordr(*)
         integer :: nbordr
         real(kind=8) :: coord(*)
@@ -32,7 +32,7 @@ interface
         character(len=24) :: nobj(28)
         integer :: nbel(28)
         integer :: nbcmpi
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         logical :: lresu
         real(kind=8) :: para(*)
         character(len=8) :: nomaou

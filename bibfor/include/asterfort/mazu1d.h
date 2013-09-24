@@ -27,6 +27,6 @@ interface
         real(kind=8) :: esout
         real(kind=8) :: sigp
         real(kind=8) :: varp(*)
-        character(*) :: option
+        character(len=*) :: option
     end subroutine mazu1d
 end interface

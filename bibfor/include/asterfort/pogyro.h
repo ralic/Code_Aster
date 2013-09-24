@@ -18,7 +18,7 @@
 interface
     subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
                       nl)
-        character(*) :: nomte
+        character(len=*) :: nomte
         real(kind=8) :: rho
         real(kind=8) :: xnu
         integer :: icdmat

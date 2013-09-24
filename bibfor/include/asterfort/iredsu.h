@@ -17,8 +17,8 @@
 !
 interface
     subroutine iredsu(macr, form, ifc, versio)
-        character(*) :: macr
-        character(*) :: form
+        character(len=*) :: macr
+        character(len=*) :: form
         integer :: ifc
         integer :: versio
     end subroutine iredsu

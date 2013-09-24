@@ -17,6 +17,6 @@
 !
 interface
     subroutine assde2(champ)
-        character(*) :: champ
+        character(len=*) :: champ
     end subroutine assde2
 end interface

@@ -17,10 +17,10 @@
 !
 interface
     subroutine exlima(motfaz, iocc, base, modelz, ligrel)
-        character(*) :: motfaz
+        character(len=*) :: motfaz
         integer :: iocc
-        character(*) :: base
-        character(*) :: modelz
-        character(*) :: ligrel
+        character(len=*) :: base
+        character(len=*) :: modelz
+        character(len=*) :: ligrel
     end subroutine exlima
 end interface

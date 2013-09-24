@@ -17,7 +17,7 @@
 !
 interface
     subroutine cetucr(motfac, model0)
-        character(*) :: motfac
-        character(*) :: model0
+        character(len=*) :: motfac
+        character(len=*) :: model0
     end subroutine cetucr
 end interface

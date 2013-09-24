@@ -17,8 +17,8 @@
 !
 interface
     subroutine gcucon(resul, concep, ier)
-        character(*) :: resul
-        character(*) :: concep
+        character(len=*) :: resul
+        character(len=*) :: concep
         integer :: ier
     end subroutine gcucon
 end interface

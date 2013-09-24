@@ -23,7 +23,7 @@ interface
                       nroimp, chanom, sdcarm)
         integer :: nbvato
         integer :: ncmpve
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: numcmp(ncmpve)
         logical :: exicmp(nbvato)
         integer :: nbmaec

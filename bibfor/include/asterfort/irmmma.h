@@ -21,7 +21,7 @@ interface
                       nomtyp, nnotyp, renumd, nmatyp, infmed,&
                       modnum, nuanom)
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: nbmail
         integer :: connex(*)
         integer :: point(*)

@@ -17,9 +17,9 @@
 !
 interface
     subroutine vtdefs(chpout, chpin, base, typc)
-        character(*) :: chpout
-        character(*) :: chpin
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: chpout
+        character(len=*) :: chpin
+        character(len=*) :: base
+        character(len=*) :: typc
     end subroutine vtdefs
 end interface

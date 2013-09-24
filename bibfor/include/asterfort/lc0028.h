@@ -22,7 +22,7 @@ interface
                       sigp, vip, tampon, typmod, icomp,&
                       nvi, dsidep, codret)
         integer :: nvi
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

@@ -17,7 +17,7 @@
 !
 interface
     subroutine juveca(nom, long)
-        character(*) :: nom
+        character(len=*) :: nom
         integer :: long
     end subroutine juveca
 end interface

@@ -21,6 +21,6 @@ interface
         character(len=16) :: oper
         character(len=8) :: noma
         character(len=4) :: fonree
-        character(*) :: ligrcz
+        character(len=*) :: ligrcz
     end subroutine alligr
 end interface

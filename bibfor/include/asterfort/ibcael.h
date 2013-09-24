@@ -17,6 +17,6 @@
 !
 interface
     subroutine ibcael(type)
-        character(*) :: type
+        character(len=*) :: type
     end subroutine ibcael
 end interface

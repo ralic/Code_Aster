@@ -20,7 +20,7 @@ interface
                       ndim, epsm, sref, sechm, hydrm,&
                       t, lambda, deuxmu, epsthe, kdess,&
                       bendo, gamma, seuil)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

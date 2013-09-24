@@ -19,12 +19,12 @@ interface
     subroutine nmasse(fami, kpg, ksp, poum, icodma,&
                       materi, inst, e, nu, deuxmu,&
                       troisk)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: icodma
-        character(*) :: materi
+        character(len=*) :: materi
         real(kind=8) :: inst
         real(kind=8) :: e
         real(kind=8) :: nu

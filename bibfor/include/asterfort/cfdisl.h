@@ -17,8 +17,8 @@
 !
 interface
     function cfdisl(deficz, questz)
-        character(*) :: deficz
-        character(*) :: questz
+        character(len=*) :: deficz
+        character(len=*) :: questz
         logical :: cfdisl
     end function cfdisl
 end interface

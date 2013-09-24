@@ -18,7 +18,7 @@
 interface
     function isfonc(list_func_acti, func_z)
         integer, intent(in) :: list_func_acti(*)
-        character(*), intent(in) :: func_z
+        character(len=*), intent(in) :: func_z
         logical :: isfonc
     end function isfonc
 end interface

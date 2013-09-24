@@ -19,11 +19,11 @@ interface
     subroutine vpcrea(icond, modes, masse, amor, raide,&
                       nume, ier)
         integer :: icond
-        character(*) :: modes
-        character(*) :: masse
-        character(*) :: amor
-        character(*) :: raide
-        character(*) :: nume
+        character(len=*) :: modes
+        character(len=*) :: masse
+        character(len=*) :: amor
+        character(len=*) :: raide
+        character(len=*) :: nume
         integer :: ier
     end subroutine vpcrea
 end interface

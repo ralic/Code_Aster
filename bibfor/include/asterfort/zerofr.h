@@ -19,7 +19,7 @@ interface
     subroutine zerofr(intini, algo, func, x1, x2,&
                       tol, itmax, solu, iret, iter)
         integer :: intini
-        character(*) :: algo
+        character(len=*) :: algo
         real(kind=8) :: func
         external func
         real(kind=8) :: x1

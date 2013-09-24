@@ -19,7 +19,7 @@ interface
     subroutine matela(icodma, materi, itemp, temp, e,&
                       nu)
         integer :: icodma
-        character(*) :: materi
+        character(len=*) :: materi
         integer :: itemp
         real(kind=8) :: temp
         real(kind=8) :: e

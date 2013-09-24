@@ -18,7 +18,7 @@
 interface
     subroutine foc2in(method, nbpts, var, fon, cste,&
                       res)
-        character(*) :: method
+        character(len=*) :: method
         integer :: nbpts
         real(kind=8) :: var(*)
         real(kind=8) :: fon(*)

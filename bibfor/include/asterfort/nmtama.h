@@ -18,7 +18,7 @@
 interface
     subroutine nmtama(fami, kpg, ksp, imate, instam,&
                       instap, matm, mat)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

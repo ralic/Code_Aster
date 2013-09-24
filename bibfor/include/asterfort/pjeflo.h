@@ -18,7 +18,7 @@
 interface
     subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         integer :: ndim
-        character(*) :: elrefa
+        character(len=*) :: elrefa
         integer :: ipb
         real(kind=8) :: xr2(ndim)
         real(kind=8) :: disprj

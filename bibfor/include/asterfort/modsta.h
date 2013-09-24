@@ -20,12 +20,12 @@ interface
                       nume, iddl, coef, neq, nbmode,&
                       zrmod)
         integer :: neq
-        character(*) :: motcle
-        character(*) :: matfac
-        character(*) :: matpre
-        character(*) :: solveu
+        character(len=*) :: motcle
+        character(len=*) :: matfac
+        character(len=*) :: matpre
+        character(len=*) :: solveu
         integer :: lmatm
-        character(*) :: nume
+        character(len=*) :: nume
         integer :: iddl(*)
         real(kind=8) :: coef(*)
         integer :: nbmode

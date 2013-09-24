@@ -20,7 +20,7 @@ interface
     subroutine as_mmhfnw(fid, maa, fam, n, typent,&
                       typgeo, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: fam(*)
         aster_int :: n
         aster_int :: typent

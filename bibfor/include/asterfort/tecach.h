@@ -19,9 +19,9 @@ interface
     subroutine tecach(stopz, nmparz, louez, iret, nval,&
                       itab, iad, numa)
         integer, intent(in), optional :: nval, numa
-        character(*), intent(in) :: stopz
-        character(*), intent(in) :: nmparz
-        character(*), intent(in) :: louez
+        character(len=*), intent(in) :: stopz
+        character(len=*), intent(in) :: nmparz
+        character(len=*), intent(in) :: louez
         integer, intent(out), optional :: itab(*)
         integer, intent(out), optional :: iad
         integer, intent(out) :: iret

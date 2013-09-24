@@ -19,16 +19,16 @@ interface
     subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                       lresu, nbordr, ordr, nbcmp, nomcmp,&
                       nbmat, nummai, versio, lgmsh, tycha)
-        character(*) :: nomcon
-        character(*) :: partie
+        character(len=*) :: nomcon
+        character(len=*) :: partie
         integer :: ifi
         integer :: nbcham
-        character(*) :: cham(*)
+        character(len=*) :: cham(*)
         logical :: lresu
         integer :: nbordr
         integer :: ordr(*)
         integer :: nbcmp
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         integer :: nbmat
         integer :: nummai(*)
         integer :: versio

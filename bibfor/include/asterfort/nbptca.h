@@ -17,10 +17,10 @@
 !
 interface
     subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
-        character(*) :: ligrel
-        character(*) :: option
-        character(*) :: param
-        character(*) :: obnbpt
-        character(*) :: obnbno
+        character(len=*) :: ligrel
+        character(len=*) :: option
+        character(len=*) :: param
+        character(len=*) :: obnbpt
+        character(len=*) :: obnbno
     end subroutine nbptca
 end interface

@@ -22,10 +22,10 @@ interface
         integer :: iadmi
         integer :: ideci
         integer :: idatoc
-        character(*) :: genri
-        character(*) :: typei
+        character(len=*) :: genri
+        character(len=*) :: typei
         integer :: lt
         integer :: lonoi
-        character(*) :: mess
+        character(len=*) :: mess
     end subroutine jjimpo
 end interface

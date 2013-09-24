@@ -18,8 +18,8 @@
 interface
     subroutine tailsd(nom, nomsd, val, nbval)
         integer :: nbval
-        character(*) :: nom
-        character(*) :: nomsd
+        character(len=*) :: nom
+        character(len=*) :: nomsd
         integer :: val(nbval)
     end subroutine tailsd
 end interface

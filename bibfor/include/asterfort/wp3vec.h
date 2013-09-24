@@ -22,7 +22,7 @@ interface
         integer :: mxresf
         integer :: neq
         character(len=1) :: appr
-        character(*) :: opt
+        character(len=*) :: opt
         integer :: nbfreq
         integer :: nbvect
         complex(kind=8) :: shift

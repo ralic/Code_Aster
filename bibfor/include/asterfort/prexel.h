@@ -21,7 +21,7 @@ interface
                       cmpmin, valmin, maamax, noamax, isamax,&
                       cmamax, vaamax, maamin, noamin, isamin,&
                       cmamin, vaamin)
-        character(*) :: champ
+        character(len=*) :: champ
         integer :: ioc
         character(len=8) :: mamax
         character(len=8) :: nomax

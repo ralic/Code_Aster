@@ -17,9 +17,9 @@
 !
 interface
     subroutine exlim3(motfaz, base, modelz, ligrel)
-        character(*) :: motfaz
-        character(*) :: base
-        character(*) :: modelz
-        character(*) :: ligrel
+        character(len=*) :: motfaz
+        character(len=*) :: base
+        character(len=*) :: modelz
+        character(len=*) :: ligrel
     end subroutine exlim3
 end interface

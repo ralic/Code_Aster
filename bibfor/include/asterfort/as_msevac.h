@@ -20,8 +20,8 @@ interface
     subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
                       cret)
         aster_int :: fid
-        character(*) :: nomest
-        character(*) :: nomatt
+        character(len=*) :: nomest
+        character(len=*) :: nomatt
         aster_int :: tyatmd
         aster_int :: nbrcmp
         aster_int :: cret

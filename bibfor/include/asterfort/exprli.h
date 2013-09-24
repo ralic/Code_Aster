@@ -18,11 +18,11 @@
 interface
     subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
                       ii, ordo)
-        character(*) :: basmdz
-        character(*) :: lintfz
-        character(*) :: nmintz
+        character(len=*) :: basmdz
+        character(len=*) :: lintfz
+        character(len=*) :: nmintz
         integer :: numint
-        character(*) :: famprz
+        character(len=*) :: famprz
         integer :: ii
         integer :: ordo
     end subroutine exprli

@@ -17,6 +17,6 @@
 !
 interface
     subroutine cestas(cesz)
-        character(*) :: cesz
+        character(len=*) :: cesz
     end subroutine cestas
 end interface

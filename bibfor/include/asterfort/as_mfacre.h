@@ -20,8 +20,8 @@ interface
     subroutine as_mfacre(fid, maa, fam, num, ngro,&
                       gro, cret)
         aster_int :: fid
-        character(*) :: maa
-        character(*) :: fam
+        character(len=*) :: maa
+        character(len=*) :: fam
         aster_int :: num
         aster_int :: ngro
         character(len=80) :: gro(*)

@@ -19,9 +19,9 @@ interface
     subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
                       numnoe, nbdif)
         integer :: nbnoi
-        character(*) :: basmdz
-        character(*) :: intfz
-        character(*) :: nmintz
+        character(len=*) :: basmdz
+        character(len=*) :: intfz
+        character(len=*) :: nmintz
         integer :: numint
         integer :: numnoe(nbnoi)
         integer :: nbdif

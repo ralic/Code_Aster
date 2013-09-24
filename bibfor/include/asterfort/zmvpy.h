@@ -19,7 +19,7 @@ interface
     subroutine zmvpy(uplo, n, alpha, a, lda,&
                      x, incx, beta, y, incy)
         integer :: lda
-        character(*) :: uplo
+        character(len=*) :: uplo
         integer :: n
         complex(kind=8) :: alpha
         complex(kind=8) :: a(lda, *)

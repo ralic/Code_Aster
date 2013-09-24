@@ -18,11 +18,11 @@
 interface
     subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
                       chno2)
-        character(*) :: chno1
-        character(*) :: numdd2
+        character(len=*) :: chno1
+        character(len=*) :: numdd2
         integer :: ncorr
-        character(*) :: tcorr(*)
-        character(*) :: base
-        character(*) :: chno2
+        character(len=*) :: tcorr(*)
+        character(len=*) :: base
+        character(len=*) :: chno2
     end subroutine chnucn
 end interface

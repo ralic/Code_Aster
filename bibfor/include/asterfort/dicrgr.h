@@ -20,7 +20,7 @@ interface
                       ulm, dul, sim, varim, pgl,&
                       klv, varip, fono, sip)
         integer :: neq
-        character(*) :: fami
+        character(len=*) :: fami
         character(len=16) :: option
         integer :: nc
         integer :: icodma

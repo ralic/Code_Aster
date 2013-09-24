@@ -20,7 +20,7 @@ interface
     subroutine mfdcsi(fid, fname, it, numdt, numit,&
                       dt, cret)
         med_int :: fid
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: it
         med_int :: numdt
         med_int :: numit

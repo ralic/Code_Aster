@@ -18,12 +18,12 @@
 interface
     subroutine fiintfc(nomfon, nbpu, param, val, iret,&
                        coderr, resu)
-        character(*) :: nomfon
+        character(len=*) :: nomfon
         integer :: nbpu
-        character(*) :: param(*)
+        character(len=*) :: param(*)
         real(kind=8) :: val(*)
         integer :: iret
-        character(*) :: coderr
+        character(len=*) :: coderr
         real(kind=8) :: resu(2)
     end subroutine fiintfc
 end interface

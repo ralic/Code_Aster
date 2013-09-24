@@ -19,11 +19,11 @@ interface
     subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
                       nbexcl, type)
         integer :: nbpas
-        character(*) :: lisins
-        character(*) :: lisarc
+        character(len=*) :: lisins
+        character(len=*) :: lisarc
         integer :: nbarch
         integer :: ich
         integer :: nbexcl
-        character(*) :: type(*)
+        character(len=*) :: type(*)
     end subroutine dyarch
 end interface

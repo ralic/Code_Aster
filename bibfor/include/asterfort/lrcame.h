@@ -22,19 +22,19 @@ interface
                       numpt, numord, inst, crit, prec,&
                       nomgd, ncmprf, jnocmp, chames, codret)
         integer :: nrofic
-        character(*) :: nochmd
-        character(*) :: nomamd
+        character(len=*) :: nochmd
+        character(len=*) :: nomamd
         character(len=8) :: nomaas
         character(len=19) :: ligrel
         character(len=24) :: option
         character(len=8) :: param
-        character(*) :: typech
+        character(len=*) :: typech
         integer :: typen
         integer :: npgma(*)
         integer :: npgmm(*)
         integer :: nbcmpv
-        character(*) :: ncmpva
-        character(*) :: ncmpvm
+        character(len=*) :: ncmpva
+        character(len=*) :: ncmpvm
         integer :: iinst
         integer :: numpt
         integer :: numord

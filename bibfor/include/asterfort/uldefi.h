@@ -19,10 +19,10 @@ interface
     subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
                       autor)
         integer :: unit
-        character(*) :: ficnom
-        character(*) :: ddnom
-        character(*) :: typf
-        character(*) :: acces
-        character(*) :: autor
+        character(len=*) :: ficnom
+        character(len=*) :: ddnom
+        character(len=*) :: typf
+        character(len=*) :: acces
+        character(len=*) :: autor
     end subroutine uldefi
 end interface

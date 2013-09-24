@@ -20,10 +20,10 @@ interface
                       ci, jctab, jcdyn)
         integer :: lonoi
         integer :: ic
-        character(*) :: gi
-        character(*) :: typei
+        character(len=*) :: gi
+        character(len=*) :: typei
         integer :: ltypi
-        character(*) :: ci
+        character(len=*) :: ci
         integer :: jctab
         integer :: jcdyn
     end subroutine jjallt

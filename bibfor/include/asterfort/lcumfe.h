@@ -20,7 +20,7 @@ interface
                       imate, tinstm, tinstp, epstm, depst,&
                       sigm, vim, option, sigp, vip,&
                       dsidpt, proj)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

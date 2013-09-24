@@ -17,9 +17,9 @@
 !
 interface
     subroutine rcpare(nommat, pheno, para, icodre)
-        character(*) :: nommat
-        character(*) :: pheno
-        character(*) :: para
+        character(len=*) :: nommat
+        character(len=*) :: pheno
+        character(len=*) :: para
         integer :: icodre
     end subroutine rcpare
 end interface

@@ -19,7 +19,7 @@ interface
     subroutine lccgad(fami, kpg, ksp, mat, option,&
                       mu, su, glis, dde, vim,&
                       vip, wkin)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mat

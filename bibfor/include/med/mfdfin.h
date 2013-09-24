@@ -20,13 +20,13 @@ interface
     subroutine mfdfin(fid, fname, mname, lmesh, type,&
                       cname, cunit, dtunit, nc, cret)
         med_int :: fid
-        character(*) :: fname
-        character(*) :: mname
+        character(len=*) :: fname
+        character(len=*) :: mname
         med_int :: lmesh
         med_int :: type
-        character(*) :: cname(*)
-        character(*) :: cunit(*)
-        character(*) :: dtunit
+        character(len=*) :: cname(*)
+        character(len=*) :: cunit(*)
+        character(len=*) :: dtunit
         med_int :: nc
         med_int :: cret
     end subroutine mfdfin

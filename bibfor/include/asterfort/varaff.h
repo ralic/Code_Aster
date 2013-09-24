@@ -20,6 +20,6 @@ interface
         character(len=8) :: noma
         character(len=8) :: gran
         character(len=1) :: base
-        character(*) :: ceselz
+        character(len=*) :: ceselz
     end subroutine varaff
 end interface

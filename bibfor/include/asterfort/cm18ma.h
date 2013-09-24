@@ -24,8 +24,8 @@ interface
         integer :: nbno
         integer :: lima(nbma)
         integer :: typema(*)
-        character(*) :: conniz
-        character(*) :: connoz
+        character(len=*) :: conniz
+        character(len=*) :: connoz
         integer :: nofils(3, *)
         integer :: nbtyma
         character(len=8) :: nomast(*)

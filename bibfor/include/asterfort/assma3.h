@@ -82,7 +82,7 @@ interface
         integer :: ilinu
         integer :: idd
         integer :: ellagr
-        character(*) :: exivf
+        character(len=*) :: exivf
         integer :: jdesc
         integer :: jrepe
         integer :: jptvoi

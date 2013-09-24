@@ -17,6 +17,6 @@
 !
 interface
     subroutine iredmi(macr)
-        character(*) :: macr
+        character(len=*) :: macr
     end subroutine iredmi
 end interface

@@ -26,7 +26,7 @@ interface
         real(kind=8) :: dir(*)
         real(kind=8) :: absc(*)
         integer :: nbno
-        character(*) :: format
+        character(len=*) :: format
         integer :: unit
     end subroutine gimpte
 end interface

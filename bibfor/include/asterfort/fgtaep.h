@@ -18,9 +18,9 @@
 interface
     subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
                       epsmax, dom)
-        character(*) :: nommat
-        character(*) :: nomfo1
-        character(*) :: nomnap
+        character(len=*) :: nommat
+        character(len=*) :: nomfo1
+        character(len=*) :: nomnap
         integer :: nbcycl
         real(kind=8) :: epsmin(*)
         real(kind=8) :: epsmax(*)

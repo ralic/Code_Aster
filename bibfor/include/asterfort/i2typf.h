@@ -25,7 +25,7 @@ interface
         real(kind=8) :: y2
         real(kind=8) :: x3
         real(kind=8) :: y3
-        character(*) :: tm
+        character(len=*) :: tm
         logical :: droi
     end subroutine i2typf
 end interface

@@ -18,7 +18,7 @@
 interface
     subroutine pemica(champ, long, vr, nbmail, nummai,&
                       orig, iorig, icage)
-        character(*) :: champ
+        character(len=*) :: champ
         integer :: long
         real(kind=8) :: vr(*)
         integer :: nbmail

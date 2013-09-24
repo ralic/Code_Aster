@@ -19,11 +19,11 @@ interface
     subroutine stock(resu, chs, nocham, ligrel, tychas,&
                      numord, iouf, numode, masgen, amrge,&
                      prchno)
-        character(*) :: resu
-        character(*) :: chs
-        character(*) :: nocham
-        character(*) :: ligrel
-        character(*) :: tychas
+        character(len=*) :: resu
+        character(len=*) :: chs
+        character(len=*) :: nocham
+        character(len=*) :: ligrel
+        character(len=*) :: tychas
         integer :: numord
         real(kind=8) :: iouf
         integer :: numode

@@ -18,12 +18,12 @@
 interface
     subroutine dismoi(arret, questi, nomob, typeco, repi,&
                       repk, ierd)
-        character(*) :: arret
-        character(*) :: questi
-        character(*) :: nomob
-        character(*) :: typeco
+        character(len=*) :: arret
+        character(len=*) :: questi
+        character(len=*) :: nomob
+        character(len=*) :: typeco
         integer :: repi
-        character(*) :: repk
+        character(len=*) :: repk
         integer :: ierd
     end subroutine dismoi
 end interface

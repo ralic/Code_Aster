@@ -17,7 +17,7 @@
 !
 interface
     subroutine numel2(cham, ima, igrel, iel)
-        character(*) :: cham
+        character(len=*) :: cham
         integer :: ima
         integer :: igrel
         integer :: iel

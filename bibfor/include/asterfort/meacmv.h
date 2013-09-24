@@ -20,7 +20,7 @@ interface
                       partps, numedd, assmat, solveu, vecass,&
                       matass, maprec, cnchci, base, compor)
         character(len=24) :: modele
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=24) :: carele
         character(len=24) :: fomult
         character(len=19) :: lischa

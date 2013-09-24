@@ -18,7 +18,7 @@
 interface
     subroutine apsauv(phasez, sdappa, izone, ip, vali,&
                       valr)
-        character(*) :: phasez
+        character(len=*) :: phasez
         character(len=19) :: sdappa
         integer :: izone
         integer :: ip

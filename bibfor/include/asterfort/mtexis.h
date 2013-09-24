@@ -17,7 +17,7 @@
 !
 interface
     subroutine mtexis(mat, ier)
-        character(*) :: mat
+        character(len=*) :: mat
         integer :: ier
     end subroutine mtexis
 end interface

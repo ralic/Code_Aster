@@ -20,7 +20,7 @@ interface
                       ndim, typgeo, refcoo, gscoo, wg,&
                       raux1, raux2, raux3, nolopg, nomasu,&
                       codret)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         character(len=16) :: nomfpg
         integer :: nbnoto
         integer :: nbrepg
@@ -33,8 +33,8 @@ interface
         real(kind=8) :: raux1(*)
         real(kind=8) :: raux2(*)
         real(kind=8) :: raux3(*)
-        character(*) :: nolopg
-        character(*) :: nomasu
+        character(len=*) :: nolopg
+        character(len=*) :: nomasu
         integer :: codret
     end subroutine irmpg1
 end interface

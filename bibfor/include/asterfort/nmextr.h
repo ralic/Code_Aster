@@ -20,7 +20,7 @@ interface
                       nbocc, numreo, ntextr)
         character(len=8) :: noma
         character(len=8) :: nomo
-        character(*) :: sdextz
+        character(len=*) :: sdextz
         character(len=24) :: sdieto
         character(len=16) :: motfac
         integer :: nbocc

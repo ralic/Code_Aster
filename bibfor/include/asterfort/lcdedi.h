@@ -20,7 +20,7 @@ interface
                       materf, tempd, tempf, tref, depst,&
                       epsdt, depsm, epsdm)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: materd(nmat, 2)

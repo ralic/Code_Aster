@@ -21,7 +21,7 @@ interface
                       deps2, sigm2, vim, option, sigp,&
                       vip, dsidep, iret)
         integer :: ndim
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imat

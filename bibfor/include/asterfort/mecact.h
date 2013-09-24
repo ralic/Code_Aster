@@ -20,15 +20,15 @@ interface
                       ncmp, nomcmp,  si, sr, sc, sk,&
                             lnomcmp, vi, vr, vc, vk         )
         integer :: ncmp
-        character(*), intent(in) :: base
-        character(*), intent(in) :: nomcar
-        character(*), intent(in) :: moclez
-        character(*), intent(in) :: nomco
-        character(*), intent(in) :: nomgdz
-        character(*), intent(in), optional :: nomcmp, lnomcmp(ncmp)
+        character(len=*), intent(in) :: base
+        character(len=*), intent(in) :: nomcar
+        character(len=*), intent(in) :: moclez
+        character(len=*), intent(in) :: nomco
+        character(len=*), intent(in) :: nomgdz
+        character(len=*), intent(in), optional :: nomcmp, lnomcmp(ncmp)
         integer, intent(in), optional :: si, vi(ncmp)
         real(kind=8), intent(in), optional :: sr, vr(ncmp)
         complex(kind=8), intent(in), optional :: sc, vc(ncmp)
-        character(*), intent(in), optional :: sk, vk(ncmp)
+        character(len=*), intent(in), optional :: sk, vk(ncmp)
     end subroutine mecact
 end interface

@@ -20,10 +20,10 @@ interface
                       typmod, angmas, imate, compor, crit,&
                       option, eps, sig, vi, dsidep,&
                       codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: ndim
         character(len=8) :: typmod(*)
         real(kind=8) :: angmas(3)

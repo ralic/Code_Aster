@@ -19,7 +19,7 @@ interface
     subroutine lceifa(fami, kpg, ksp, mat, option,&
                       mu, su, deltap, ddedt, vim,&
                       vip, r)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mat

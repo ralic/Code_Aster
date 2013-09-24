@@ -19,18 +19,18 @@ interface
     subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                       liordr, lresu, nbnoec, linoec, nbmaec,&
                       limaec, nomcmp, lvarie, carael)
-        character(*) :: nomcon
+        character(len=*) :: nomcon
         integer :: ifichi
-        character(*) :: nocham
-        character(*) :: novcmp
-        character(*) :: partie
-        character(*) :: liordr
+        character(len=*) :: nocham
+        character(len=*) :: novcmp
+        character(len=*) :: partie
+        character(len=*) :: liordr
         logical :: lresu
         integer :: nbnoec
         integer :: linoec(*)
         integer :: nbmaec
         integer :: limaec(*)
-        character(*) :: nomcmp
+        character(len=*) :: nomcmp
         logical :: lvarie
         character(len=8) :: carael
     end subroutine iremed

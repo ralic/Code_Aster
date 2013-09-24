@@ -21,6 +21,6 @@ interface
         integer :: n
         real(kind=8) :: sx(*)
         integer :: idigit
-        character(*) :: ifmt
+        character(len=*) :: ifmt
     end subroutine dvout
 end interface

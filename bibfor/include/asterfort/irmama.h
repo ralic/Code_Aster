@@ -18,13 +18,13 @@
 interface
     subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
                       nummai, nbmat, noltop)
-        character(*) :: noma
+        character(len=*) :: noma
         integer :: nbma
-        character(*) :: nomai(*)
+        character(len=*) :: nomai(*)
         integer :: nbgr
-        character(*) :: nogrm(*)
-        character(*) :: nummai
+        character(len=*) :: nogrm(*)
+        character(len=*) :: nummai
         integer :: nbmat
-        character(*) :: noltop
+        character(len=*) :: noltop
     end subroutine irmama
 end interface

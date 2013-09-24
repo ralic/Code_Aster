@@ -20,7 +20,7 @@ interface
     subroutine mpfpfi(fid, it, pname, psize, cret)
         med_int :: fid
         med_int :: it
-        character(*) :: pname
+        character(len=*) :: pname
         med_int :: psize
         med_int :: cret
     end subroutine mpfpfi

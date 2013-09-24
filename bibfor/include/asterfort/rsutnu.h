@@ -18,13 +18,13 @@
 interface
     subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                       prec, crit, ier)
-        character(*) :: resu
-        character(*) :: motcle
+        character(len=*) :: resu
+        character(len=*) :: motcle
         integer :: iocc
-        character(*) :: knum
+        character(len=*) :: knum
         integer :: nbordr
         real(kind=8) :: prec
-        character(*) :: crit
+        character(len=*) :: crit
         integer :: ier
     end subroutine rsutnu
 end interface

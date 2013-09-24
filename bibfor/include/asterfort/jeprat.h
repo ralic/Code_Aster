@@ -18,8 +18,8 @@
 interface
     subroutine jeprat(unit, nomlu, cidatr, mess)
         integer :: unit
-        character(*) :: nomlu
-        character(*) :: cidatr
-        character(*) :: mess
+        character(len=*) :: nomlu
+        character(len=*) :: cidatr
+        character(len=*) :: mess
     end subroutine jeprat
 end interface

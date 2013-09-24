@@ -17,7 +17,7 @@
 !
 interface
     subroutine te0248(optioz, nomtez)
-        character(*) :: optioz
-        character(*) :: nomtez
+        character(len=*) :: optioz
+        character(len=*) :: nomtez
     end subroutine te0248
 end interface

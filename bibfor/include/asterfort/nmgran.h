@@ -20,7 +20,7 @@ interface
                       compor, instam, instap, tpmxm, tpmxp,&
                       depst, sigm, vim, option, sigp,&
                       vip, dsidep)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: typmod(*)

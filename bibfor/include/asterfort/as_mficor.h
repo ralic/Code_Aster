@@ -19,7 +19,7 @@
 interface
     subroutine as_mficor(fid, descfi, cret)
         aster_int :: fid
-        character(*) :: descfi
+        character(len=*) :: descfi
         aster_int :: cret
     end subroutine as_mficor
 end interface

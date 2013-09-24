@@ -25,7 +25,7 @@ interface
         aster_int :: ityp
         aster_int :: nbn
         aster_int :: ndim
-        character(*) :: nomasu
+        character(len=*) :: nomasu
         aster_int :: cret
     end subroutine as_mlclci
 end interface

@@ -21,7 +21,7 @@ interface
         integer :: mc
         integer :: mb
         integer :: na
-        character(*) :: raz
+        character(len=*) :: raz
         real(kind=8) :: a(na, na)
         real(kind=8) :: b(na, mb)
         real(kind=8) :: c(na, mc)

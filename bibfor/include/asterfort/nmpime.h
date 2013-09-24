@@ -21,11 +21,11 @@ interface
                       cstpm, vim, effnom, vip, effnop,&
                       klv, fono)
         integer :: ncstpm
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate
-        character(*) :: option
+        character(len=*) :: option
         real(kind=8) :: xlong0
         real(kind=8) :: a
         real(kind=8) :: xlongm

@@ -19,7 +19,7 @@ interface
     subroutine nmiclg(fami, kpg, ksp, option, compor,&
                       imate, epsm, deps, sigm, vim,&
                       sigp, vip, dsde, crildc, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: option

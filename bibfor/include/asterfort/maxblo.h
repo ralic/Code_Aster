@@ -17,7 +17,7 @@
 !
 interface
     subroutine maxblo(nomob, xmax)
-        character(*) :: nomob
+        character(len=*) :: nomob
         real(kind=8) :: xmax
     end subroutine maxblo
 end interface

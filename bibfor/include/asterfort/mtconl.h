@@ -19,10 +19,10 @@ interface
     subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                       lres)
         integer :: nbcomb
-        character(*) :: typcst(*)
+        character(len=*) :: typcst(*)
         real(kind=8) :: const(*)
         integer :: lmat(*)
-        character(*) :: typres
+        character(len=*) :: typres
         integer :: lres
     end subroutine mtconl
 end interface

@@ -17,8 +17,8 @@
 !
 interface
     function indk80(lk80, k80z, rang, nbk80)
-        character(*) :: lk80(*)
-        character(*) :: k80z
+        character(len=*) :: lk80(*)
+        character(len=*) :: k80z
         integer :: rang
         integer :: nbk80
         integer :: indk80

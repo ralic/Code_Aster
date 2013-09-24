@@ -18,7 +18,7 @@
 interface
     subroutine nmvcex(index, comz, chamz)
         character(len=4) :: index
-        character(*) :: comz
-        character(*) :: chamz
+        character(len=*) :: comz
+        character(len=*) :: chamz
     end subroutine nmvcex
 end interface

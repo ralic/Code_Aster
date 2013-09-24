@@ -18,7 +18,7 @@
 interface
     subroutine obgetr(nomstr, nompaz, valr)
         character(len=24) :: nomstr
-        character(*) :: nompaz
+        character(len=*) :: nompaz
         real(kind=8) :: valr
     end subroutine obgetr
 end interface

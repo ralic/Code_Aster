@@ -24,7 +24,7 @@ interface
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=6) :: typmat
-        character(*) :: optasz
+        character(len=*) :: optasz
         character(len=19) :: meelem(8)
         character(len=19) :: matass
     end subroutine nmassm

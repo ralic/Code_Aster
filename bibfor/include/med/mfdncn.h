@@ -19,7 +19,7 @@ interface
 #include "aster_types.h"
     subroutine mfdncn(fid, fname, n, cret)
         med_int :: fid
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: n
         med_int :: cret
     end subroutine mfdncn

@@ -18,8 +18,8 @@
 interface
     subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
         integer :: iocc
-        character(*) :: nomaz
-        character(*) :: lisnoz
+        character(len=*) :: nomaz
+        character(len=*) :: lisnoz
         integer :: nbno
     end subroutine cgnoiv
 end interface

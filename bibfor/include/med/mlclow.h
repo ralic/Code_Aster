@@ -21,7 +21,7 @@ interface
                       swm, nip, ipcoo, wght, giname,&
                       isname, cret)
         med_int :: fid
-        character(*) :: lname
+        character(len=*) :: lname
         med_int :: gtype
         med_int :: sdim
         real(kind=8) :: ecoo(*)
@@ -29,8 +29,8 @@ interface
         med_int :: nip
         real(kind=8) :: ipcoo(*)
         real(kind=8) :: wght(*)
-        character(*) :: giname
-        character(*) :: isname
+        character(len=*) :: giname
+        character(len=*) :: isname
         med_int :: cret
     end subroutine mlclow
 end interface

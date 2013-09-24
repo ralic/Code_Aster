@@ -18,12 +18,12 @@
 interface
     subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
                       licmp, cesmz)
-        character(*) :: basez
-        character(*) :: cesz
-        character(*) :: typcez
-        character(*) :: nomgdz
+        character(len=*) :: basez
+        character(len=*) :: cesz
+        character(len=*) :: typcez
+        character(len=*) :: nomgdz
         integer :: ncmpg
-        character(*) :: licmp(*)
-        character(*) :: cesmz
+        character(len=*) :: licmp(*)
+        character(len=*) :: cesmz
     end subroutine cescrm
 end interface

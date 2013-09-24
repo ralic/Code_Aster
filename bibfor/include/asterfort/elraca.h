@@ -18,7 +18,7 @@
 interface
     subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
                       fapg, nbpg, x, vol)
-        character(*) :: elrefz
+        character(len=*) :: elrefz
         integer :: ndim
         integer :: nno
         integer :: nnos

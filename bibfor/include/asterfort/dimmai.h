@@ -17,7 +17,7 @@
 !
 interface
     subroutine dimmai(typem, dimma)
-        character(*) :: typem
+        character(len=*) :: typem
         integer :: dimma
     end subroutine dimmai
 end interface

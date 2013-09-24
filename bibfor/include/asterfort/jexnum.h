@@ -17,7 +17,7 @@
 !
 interface
     function jexnum(nomc, num)
-        character(*) :: nomc
+        character(len=*) :: nomc
         integer :: num
         character(len=32) :: jexnum
     end function jexnum

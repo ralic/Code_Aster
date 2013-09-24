@@ -18,9 +18,9 @@
 interface
     subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                      nbmail, numail)
-        character(*) :: champa
+        character(len=*) :: champa
         integer :: ncpa
-        character(*) :: champb
+        character(len=*) :: champb
         integer :: ncpb
         real(kind=8) :: vr(2)
         integer :: nbmail

@@ -18,8 +18,8 @@
 interface
     subroutine ceseva(cesf, npara, lpara, cesr)
         integer :: npara
-        character(*) :: cesf
-        character(*) :: lpara(npara)
-        character(*) :: cesr
+        character(len=*) :: cesf
+        character(len=*) :: lpara(npara)
+        character(len=*) :: cesr
     end subroutine ceseva
 end interface

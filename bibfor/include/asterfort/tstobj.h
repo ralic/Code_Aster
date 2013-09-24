@@ -18,8 +18,8 @@
 interface
     subroutine tstobj(ob, perm, resume, sommi, sommr,&
                       lonuti, lonmax, type, iret, ni)
-        character(*) :: ob
-        character(*) :: perm
+        character(len=*) :: ob
+        character(len=*) :: perm
         integer :: resume
         integer :: sommi
         real(kind=8) :: sommr

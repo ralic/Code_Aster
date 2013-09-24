@@ -17,10 +17,10 @@
 !
 interface
     subroutine w039c1(carte, ifi, form, ligrel, titre)
-        character(*) :: carte
+        character(len=*) :: carte
         integer :: ifi
-        character(*) :: form
+        character(len=*) :: form
         character(len=19) :: ligrel
-        character(*) :: titre
+        character(len=*) :: titre
     end subroutine w039c1
 end interface

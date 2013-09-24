@@ -17,6 +17,6 @@
 !
 interface
     subroutine tecart(carte)
-        character(*) :: carte
+        character(len=*) :: carte
     end subroutine tecart
 end interface

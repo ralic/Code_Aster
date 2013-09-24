@@ -21,13 +21,13 @@ interface
                       locname, numco, profil, pflmod, typent,&
                       typgeo, numdt, dt, numo, cret)
         aster_int :: fid
-        character(*) :: cha
+        character(len=*) :: cha
         real(kind=8) :: val(*)
         aster_int :: intlac
         aster_int :: n
-        character(*) :: locname
+        character(len=*) :: locname
         aster_int :: numco
-        character(*) :: profil
+        character(len=*) :: profil
         aster_int :: pflmod
         aster_int :: typent
         aster_int :: typgeo

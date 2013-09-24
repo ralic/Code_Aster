@@ -20,15 +20,15 @@ interface
                       tronc, monoap, nbsup, nsupp, nomsup,&
                       ndir, nordr, nbmode)
         integer :: nbsup
-        character(*) :: knomsy(*)
+        character(len=*) :: knomsy(*)
         integer :: nbopt
-        character(*) :: meca
-        character(*) :: psmo
-        character(*) :: stat
+        character(len=*) :: meca
+        character(len=*) :: psmo
+        character(len=*) :: stat
         logical :: tronc
         logical :: monoap
         integer :: nsupp(*)
-        character(*) :: nomsup(nbsup, *)
+        character(len=*) :: nomsup(nbsup, *)
         integer :: ndir(*)
         integer :: nordr(*)
         integer :: nbmode

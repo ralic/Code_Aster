@@ -18,7 +18,7 @@
 interface
     subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
                       volobs)
-        character(*) :: tabpus
+        character(len=*) :: tabpus
         real(kind=8) :: dinst
         integer :: nbsect
         real(kind=8) :: sect(*)

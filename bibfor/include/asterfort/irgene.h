@@ -21,15 +21,15 @@ interface
                       nbordr, ordr, nbdisc, disc, nume,&
                       lhist)
         integer :: iocc
-        character(*) :: resu
-        character(*) :: form
+        character(len=*) :: resu
+        character(len=*) :: form
         integer :: ifi
         integer :: nbnosy
-        character(*) :: nosy(*)
+        character(len=*) :: nosy(*)
         integer :: nbcmpg
         integer :: cmpg(*)
         integer :: nbpara
-        character(*) :: para(*)
+        character(len=*) :: para(*)
         integer :: nbordr
         integer :: ordr(*)
         integer :: nbdisc

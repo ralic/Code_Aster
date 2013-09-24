@@ -19,9 +19,9 @@ interface
     subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                       nlg, nln, nlj, ier)
         integer :: nbocc
-        character(*) :: nomaz
-        character(*) :: nomoz
-        character(*) :: mcf
+        character(len=*) :: nomaz
+        character(len=*) :: nomoz
+        character(len=*) :: mcf
         integer :: nlm
         integer :: nlg
         integer :: nln

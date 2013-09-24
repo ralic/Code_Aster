@@ -17,8 +17,8 @@
 !
 interface
     subroutine me2zme(modelz, chsigz, vecelz)
-        character(*) :: modelz
-        character(*) :: chsigz
-        character(*) :: vecelz
+        character(len=*) :: modelz
+        character(len=*) :: chsigz
+        character(len=*) :: vecelz
     end subroutine me2zme
 end interface

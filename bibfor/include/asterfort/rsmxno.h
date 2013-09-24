@@ -17,7 +17,7 @@
 !
 interface
     function rsmxno(nomsd)
-        character(*) :: nomsd
+        character(len=*) :: nomsd
         integer :: rsmxno
     end function rsmxno
 end interface

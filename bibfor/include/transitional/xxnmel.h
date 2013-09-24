@@ -30,7 +30,7 @@ interface
         integer :: nfe
         integer :: nfh
         integer :: ndim
-        character(*) :: poum
+        character(len=*) :: poum
         character(len=8) :: elrefp
         character(len=8) :: elrese
         real(kind=8) :: coorse(*)

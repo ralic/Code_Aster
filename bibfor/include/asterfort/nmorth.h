@@ -19,13 +19,13 @@ interface
     subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
                       imate, poum, deps, sigm, option,&
                       angmas, sigp, vip, dsidep)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim
         character(len=16) :: phenom
         integer :: imate
-        character(*) :: poum
+        character(len=*) :: poum
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         character(len=16) :: option

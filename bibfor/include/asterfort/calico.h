@@ -18,9 +18,9 @@
 interface
     subroutine calico(charz, nomaz, nomoz, ndim, iform,&
                       ligret)
-        character(*) :: charz
-        character(*) :: nomaz
-        character(*) :: nomoz
+        character(len=*) :: charz
+        character(len=*) :: nomaz
+        character(len=*) :: nomoz
         integer :: ndim
         integer :: iform
         character(len=19) :: ligret

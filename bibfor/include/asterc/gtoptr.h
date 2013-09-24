@@ -17,7 +17,7 @@
 !
 interface
     subroutine gtoptr(opt, valr, iret)
-        character(*) :: opt
+        character(len=*) :: opt
         real(kind=8) :: valr
         integer :: iret
     end subroutine gtoptr

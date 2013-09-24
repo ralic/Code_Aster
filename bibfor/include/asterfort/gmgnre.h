@@ -25,6 +25,6 @@ interface
         integer :: nbma
         integer :: listno(*)
         integer :: nbno
-        character(*) :: selez
+        character(len=*) :: selez
     end subroutine gmgnre
 end interface

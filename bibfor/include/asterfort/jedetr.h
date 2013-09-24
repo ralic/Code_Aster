@@ -17,6 +17,6 @@
 !
 interface
     subroutine jedetr(nomlu)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
     end subroutine jedetr
 end interface

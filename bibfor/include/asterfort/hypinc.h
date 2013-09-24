@@ -19,10 +19,10 @@ interface
     subroutine hypinc(fami, kpg, ksp, poum, ndim,&
                       typmod, imate, compor, crit, epsm,&
                       deps, sigm, sigp, dsidep, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate

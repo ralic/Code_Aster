@@ -18,11 +18,11 @@
 interface
     subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
                       nbch, acceno)
-        character(*) :: resu
-        character(*) :: motfac
+        character(len=*) :: resu
+        character(len=*) :: motfac
         integer :: iocc
         integer :: dimlis
-        character(*) :: lisch(*)
+        character(len=*) :: lisch(*)
         integer :: nbch
         logical :: acceno
     end subroutine rsutc4

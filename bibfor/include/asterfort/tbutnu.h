@@ -20,9 +20,9 @@ interface
                       prec, crit)
         character(len=16) :: motfac
         integer :: iocc
-        character(*) :: nomjv
+        character(len=*) :: nomjv
         integer :: nbinst
-        character(*) :: nomtab
+        character(len=*) :: nomtab
         real(kind=8) :: prec
         character(len=8) :: crit
     end subroutine tbutnu

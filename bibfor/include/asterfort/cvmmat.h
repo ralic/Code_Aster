@@ -21,7 +21,7 @@ interface
                       ndt, ndi, nr, crit, vim,&
                       nvi, sigd)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: mod

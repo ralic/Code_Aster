@@ -20,7 +20,7 @@ interface
     subroutine as_mpfpfi(fid, indice, pro, n, cret)
         aster_int :: fid
         aster_int :: indice
-        character(*) :: pro
+        character(len=*) :: pro
         aster_int :: n
         aster_int :: cret
     end subroutine as_mpfpfi

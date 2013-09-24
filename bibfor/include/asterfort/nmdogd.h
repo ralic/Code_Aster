@@ -19,7 +19,7 @@ interface
     subroutine nmdogd(moclef, comp, k, ncomel, lcomel,&
                       defo)
         character(len=16) :: moclef
-        character(*) :: comp
+        character(len=*) :: comp
         integer :: k
         integer :: ncomel
         character(len=16) :: lcomel(5)

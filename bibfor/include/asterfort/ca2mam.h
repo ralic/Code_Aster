@@ -18,7 +18,7 @@
 interface
     subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
                       lpaout, num, made)
-        character(*) :: moint
+        character(len=*) :: moint
         character(len=3) :: incr
         character(len=24) :: ligrmo
         character(len=24) :: lchin(2)

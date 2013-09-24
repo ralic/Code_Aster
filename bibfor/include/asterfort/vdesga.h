@@ -19,7 +19,7 @@ interface
     subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
                       nb2, xi, depl, btild, indith,&
                       alpha, tempga, epsiln, sigma, vectt)
-        character(*) :: nomte
+        character(len=*) :: nomte
         integer :: kwgt
         integer :: inte
         integer :: intsn

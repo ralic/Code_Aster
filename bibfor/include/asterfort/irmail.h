@@ -18,7 +18,7 @@
 interface
     subroutine irmail(form, ifi, versio, noma, lmod,&
                       nomo, nive, infmai, formar)
-        character(*) :: form
+        character(len=*) :: form
         integer :: ifi
         integer :: versio
         character(len=8) :: noma

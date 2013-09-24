@@ -18,10 +18,10 @@
 interface
     subroutine cescns(cesz, celfpz, base, cnsz, comp,&
                       cret)
-        character(*) :: cesz
-        character(*) :: celfpz
-        character(*) :: base
-        character(*) :: cnsz
+        character(len=*) :: cesz
+        character(len=*) :: celfpz
+        character(len=*) :: base
+        character(len=*) :: cnsz
         character(len=1) :: comp
         integer :: cret
     end subroutine cescns

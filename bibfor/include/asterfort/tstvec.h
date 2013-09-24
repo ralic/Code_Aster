@@ -18,7 +18,7 @@
 interface
     subroutine tstvec(perm, iad, nlong, type, sommi,&
                       sommr, nbign)
-        character(*) :: perm
+        character(len=*) :: perm
         integer :: iad
         integer :: nlong
         character(len=3) :: type

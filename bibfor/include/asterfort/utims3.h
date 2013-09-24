@@ -17,9 +17,9 @@
 !
 interface
     subroutine utims3(comm, sch1, ipos, base)
-        character(*) :: comm
-        character(*) :: sch1
+        character(len=*) :: comm
+        character(len=*) :: sch1
         integer :: ipos
-        character(*) :: base
+        character(len=*) :: base
     end subroutine utims3
 end interface

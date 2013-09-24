@@ -20,12 +20,12 @@ interface
                       nmat, poum, comp, coefel, coefpl,&
                       typma, ndt, ndi, nr, nvi)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: mod
         integer :: imat
-        character(*) :: poum
+        character(len=*) :: poum
         character(len=16) :: comp(*)
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coefpl(nmat)

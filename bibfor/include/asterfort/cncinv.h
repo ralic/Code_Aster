@@ -21,6 +21,6 @@ interface
         integer :: lima(*)
         integer :: nlima
         character(len=1) :: base
-        character(*) :: nomz
+        character(len=*) :: nomz
     end subroutine cncinv
 end interface

@@ -21,6 +21,6 @@ interface
         character(len=24) :: mate
         character(len=19) :: vitini
         character(len=19) :: sddyna
-        character(*) :: vecelz
+        character(len=*) :: vecelz
     end subroutine veimpd
 end interface

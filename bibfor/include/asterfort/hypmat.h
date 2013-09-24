@@ -18,10 +18,10 @@
 interface
     subroutine hypmat(fami, kpg, ksp, poum, imate,&
                       c10, c01, c20, k)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: imate
         real(kind=8) :: c10
         real(kind=8) :: c01

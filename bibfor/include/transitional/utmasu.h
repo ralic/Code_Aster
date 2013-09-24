@@ -22,7 +22,7 @@ interface
         character(len=2) :: kdim
         integer :: nlima
         integer :: lima(*)
-        character(*) :: nomob1
+        character(len=*) :: nomob1
         real(kind=8) :: coor(*)
         integer :: nbmavo
         integer :: mailvo(*)

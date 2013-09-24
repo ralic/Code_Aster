@@ -20,7 +20,7 @@ interface
         integer :: neq
         integer :: nbnoe
         character(len=14) :: nume
-        character(*) :: lnonoe(nbnoe)
+        character(len=*) :: lnonoe(nbnoe)
         integer :: ivec(neq)
     end subroutine noeddl
 end interface

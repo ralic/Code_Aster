@@ -17,9 +17,9 @@
 !
 interface
     subroutine pjefca(moa1, lima1, iocc, ncas)
-        character(*) :: moa1
-        character(*) :: lima1
+        character(len=*) :: moa1
+        character(len=*) :: lima1
         integer :: iocc
-        character(*) :: ncas
+        character(len=*) :: ncas
     end subroutine pjefca
 end interface

@@ -18,7 +18,7 @@
 interface
     subroutine obgetk(nomstr, nompaz, valk)
         character(len=24) :: nomstr
-        character(*) :: nompaz
-        character(*) :: valk
+        character(len=*) :: nompaz
+        character(len=*) :: valk
     end subroutine obgetk
 end interface

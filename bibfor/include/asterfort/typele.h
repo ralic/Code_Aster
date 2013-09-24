@@ -17,7 +17,7 @@
 !
 interface
     function typele(ligrez, igrel)
-        character(*) :: ligrez
+        character(len=*) :: ligrez
         integer :: igrel
         integer :: typele
     end function typele

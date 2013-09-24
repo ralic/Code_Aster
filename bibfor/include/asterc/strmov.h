@@ -17,7 +17,7 @@
 !
 interface
     subroutine strmov(src, isb, num, dest, idb)
-        character(*) :: src
+        character(len=*) :: src
         integer :: isb
         integer :: num
         integer :: dest(*)

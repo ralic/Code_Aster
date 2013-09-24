@@ -20,8 +20,8 @@ interface
     subroutine as_mmheaw(fid, maa, nom, n, typent,&
                       typgeo, cret)
         aster_int :: fid
-        character(*) :: maa
-        character(*) :: nom(*)
+        character(len=*) :: maa
+        character(len=*) :: nom(*)
         aster_int :: n
         aster_int :: typent
         aster_int :: typgeo

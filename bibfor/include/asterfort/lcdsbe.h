@@ -19,7 +19,7 @@ interface
     subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
                       epstm, depst, vim, option, sig,&
                       vip, dsidpt, proj)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: ndim
         character(len=8) :: typmod(2)
         integer :: imate

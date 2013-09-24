@@ -20,7 +20,7 @@ interface
         integer :: lima1(*)
         integer :: lima2(*)
         integer :: nbma
-        character(*) :: chs1
-        character(*) :: chs2
+        character(len=*) :: chs1
+        character(len=*) :: chs2
     end subroutine cetran
 end interface

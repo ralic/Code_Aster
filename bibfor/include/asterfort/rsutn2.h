@@ -18,11 +18,11 @@
 interface
     subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
                       nbordr)
-        character(*) :: resu
-        character(*) :: nomcha
-        character(*) :: motcle
+        character(len=*) :: resu
+        character(len=*) :: nomcha
+        character(len=*) :: motcle
         integer :: iocc
-        character(*) :: objveu
+        character(len=*) :: objveu
         integer :: nbordr
     end subroutine rsutn2
 end interface

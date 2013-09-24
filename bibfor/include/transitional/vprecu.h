@@ -20,19 +20,19 @@ interface
                       nbpara, nopara, nomvai, nomvar, nomvak,&
                       neq, nbmode, typmod, nbpari, nbparr,&
                       nbpark)
-        character(*) :: modes
-        character(*) :: nomsy
+        character(len=*) :: modes
+        character(len=*) :: nomsy
         integer :: nbvect
         integer :: lposi(*)
-        character(*) :: nomvec
+        character(len=*) :: nomvec
         integer :: nbpara
-        character(*) :: nopara
-        character(*) :: nomvai
-        character(*) :: nomvar
-        character(*) :: nomvak
+        character(len=*) :: nopara
+        character(len=*) :: nomvai
+        character(len=*) :: nomvar
+        character(len=*) :: nomvak
         integer :: neq
         integer :: nbmode
-        character(*) :: typmod
+        character(len=*) :: typmod
         integer :: nbpari
         integer :: nbparr
         integer :: nbpark

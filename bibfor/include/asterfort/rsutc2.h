@@ -17,9 +17,9 @@
 !
 interface
     subroutine rsutc2(typres, nomch, nomgd, typsd)
-        character(*) :: typres
-        character(*) :: nomch
-        character(*) :: nomgd
-        character(*) :: typsd
+        character(len=*) :: typres
+        character(len=*) :: nomch
+        character(len=*) :: nomgd
+        character(len=*) :: typsd
     end subroutine rsutc2
 end interface

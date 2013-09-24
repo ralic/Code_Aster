@@ -20,7 +20,7 @@ interface
         integer :: ifc
         integer :: versio
         integer :: nstat
-        character(*) :: chamno(*)
-        character(*) :: nomsym
+        character(len=*) :: chamno(*)
+        character(len=*) :: nomsym
     end subroutine irmad0
 end interface

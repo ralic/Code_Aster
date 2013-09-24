@@ -19,11 +19,11 @@ interface
     subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
                       base, ces2z)
         integer :: nbma
-        character(*) :: ces1z
+        character(len=*) :: ces1z
         integer :: lima(nbma)
         integer :: nbcmp
-        character(*) :: licmp(*)
-        character(*) :: base
-        character(*) :: ces2z
+        character(len=*) :: licmp(*)
+        character(len=*) :: base
+        character(len=*) :: ces2z
     end subroutine cesred
 end interface

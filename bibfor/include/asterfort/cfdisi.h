@@ -17,8 +17,8 @@
 !
 interface
     function cfdisi(deficz, questz)
-        character(*) :: deficz
-        character(*) :: questz
+        character(len=*) :: deficz
+        character(len=*) :: questz
         integer :: cfdisi
     end function cfdisi
 end interface

@@ -17,8 +17,8 @@
 !
 interface
     subroutine jjlide(nomap, nomlu, itype)
-        character(*) :: nomap
-        character(*) :: nomlu
+        character(len=*) :: nomap
+        character(len=*) :: nomlu
         integer :: itype
     end subroutine jjlide
 end interface

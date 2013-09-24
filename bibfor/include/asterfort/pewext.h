@@ -17,6 +17,6 @@
 !
 interface
     subroutine pewext(resu)
-        character(*) :: resu
+        character(len=*) :: resu
     end subroutine pewext
 end interface

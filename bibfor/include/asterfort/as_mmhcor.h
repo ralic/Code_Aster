@@ -19,7 +19,7 @@
 interface
     subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         real(kind=8) :: coo(*)
         aster_int :: modcoo
         aster_int :: cret

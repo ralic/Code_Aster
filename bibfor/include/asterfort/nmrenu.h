@@ -18,7 +18,7 @@
 interface
     subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
                       resoco, renume)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: fonact(*)
         character(len=24) :: numedd
         character(len=19) :: lischa

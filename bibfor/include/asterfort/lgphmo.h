@@ -18,8 +18,8 @@
 interface
     subroutine lgphmo(ma, ligrel, pheno, modeli)
         character(len=8) :: ma
-        character(*) :: ligrel
-        character(*) :: pheno
-        character(*) :: modeli
+        character(len=*) :: ligrel
+        character(len=*) :: pheno
+        character(len=*) :: modeli
     end subroutine lgphmo
 end interface

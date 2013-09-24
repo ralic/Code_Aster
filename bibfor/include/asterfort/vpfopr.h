@@ -20,7 +20,7 @@ interface
                       omemin, omemax, omeshi, nbfreq, npivot,&
                       omecor, precsh, nbrssa, nblagr, solveu,&
                       det, idet)
-        character(*) :: option
+        character(len=*) :: option
         character(len=16) :: typres
         integer :: lmasse
         integer :: lraide

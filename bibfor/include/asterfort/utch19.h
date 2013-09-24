@@ -19,15 +19,15 @@ interface
     subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
                       nusp, ivari, nocmp, typres, valr,&
                       valc, vali, ier)
-        character(*) :: cham19
-        character(*) :: nomma
-        character(*) :: nomail
-        character(*) :: nonoeu
+        character(len=*) :: cham19
+        character(len=*) :: nomma
+        character(len=*) :: nomail
+        character(len=*) :: nonoeu
         integer :: nupo
         integer :: nusp
         integer :: ivari
-        character(*) :: nocmp
-        character(*) :: typres
+        character(len=*) :: nocmp
+        character(len=*) :: typres
         real(kind=8) :: valr
         complex(kind=8) :: valc
         integer :: vali

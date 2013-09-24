@@ -18,9 +18,9 @@
 interface
     subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
         character(len=8) :: char
-        character(*) :: ligrcz
+        character(len=*) :: ligrcz
         character(len=8) :: noma
-        character(*) :: ligrmz
+        character(len=*) :: ligrmz
         character(len=4) :: fonree
     end subroutine cafono
 end interface

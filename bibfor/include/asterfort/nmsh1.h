@@ -26,7 +26,7 @@ interface
         integer :: npg
         integer :: nno
         integer :: ndim
-        character(*) :: fami
+        character(len=*) :: fami
         character(len=16) :: option
         character(len=8) :: typmod(*)
         character(len=16) :: formal(*)

@@ -17,10 +17,10 @@
 !
 interface
     subroutine cesprj(ces1z, correz, basez, ces2z, iret)
-        character(*) :: ces1z
-        character(*) :: correz
-        character(*) :: basez
-        character(*) :: ces2z
+        character(len=*) :: ces1z
+        character(len=*) :: correz
+        character(len=*) :: basez
+        character(len=*) :: ces2z
         integer :: iret
     end subroutine cesprj
 end interface

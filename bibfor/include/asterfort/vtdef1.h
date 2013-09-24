@@ -17,10 +17,10 @@
 !
 interface
     subroutine vtdef1(chpout, chpin, base, typc, lfeti)
-        character(*) :: chpout
-        character(*) :: chpin
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: chpout
+        character(len=*) :: chpin
+        character(len=*) :: base
+        character(len=*) :: typc
         logical :: lfeti
     end subroutine vtdef1
 end interface

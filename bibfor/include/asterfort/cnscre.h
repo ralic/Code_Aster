@@ -19,10 +19,10 @@ interface
     subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
                       cnsz)
         integer :: ncmp
-        character(*) :: maz
-        character(*) :: nomgdz
-        character(*) :: licmp(ncmp)
-        character(*) :: basez
-        character(*) :: cnsz
+        character(len=*) :: maz
+        character(len=*) :: nomgdz
+        character(len=*) :: licmp(ncmp)
+        character(len=*) :: basez
+        character(len=*) :: cnsz
     end subroutine cnscre
 end interface

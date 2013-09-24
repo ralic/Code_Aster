@@ -17,9 +17,9 @@
 !
 interface
     subroutine nmvcre(modelz, matz, carelz, comrez)
-        character(*) :: modelz
-        character(*) :: matz
-        character(*) :: carelz
-        character(*) :: comrez
+        character(len=*) :: modelz
+        character(len=*) :: matz
+        character(len=*) :: carelz
+        character(len=*) :: comrez
     end subroutine nmvcre
 end interface

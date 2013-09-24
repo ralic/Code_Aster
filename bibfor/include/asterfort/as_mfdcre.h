@@ -20,11 +20,11 @@ interface
     subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
                       unit, ncomp, cret)
         aster_int :: fid
-        character(*) :: cha
-        character(*) :: nomamd
+        character(len=*) :: cha
+        character(len=*) :: nomamd
         aster_int :: type
-        character(*) :: comp(*)
-        character(*) :: unit(*)
+        character(len=*) :: comp(*)
+        character(len=*) :: unit(*)
         aster_int :: ncomp
         aster_int :: cret
     end subroutine as_mfdcre

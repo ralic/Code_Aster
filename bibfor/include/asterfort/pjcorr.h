@@ -20,8 +20,8 @@ interface
                       corres, option, nompar, iret)
         character(len=8) :: nomo2
         character(len=19) :: chbid
-        character(*) :: cns1z
-        character(*) :: ces2z
+        character(len=*) :: cns1z
+        character(len=*) :: ces2z
         character(len=19) :: ligrel
         character(len=16) :: corres
         character(len=16) :: option

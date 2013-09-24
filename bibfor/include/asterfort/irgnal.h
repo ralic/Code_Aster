@@ -28,12 +28,12 @@ interface
         integer :: point(*)
         character(len=8) :: nocmp(nbcmp)
         integer :: numel
-        character(*) :: nobj
+        character(len=*) :: nobj
         integer :: nbel
         integer :: cnsc(*)
         integer :: cnsl(*)
         integer :: cnsv(*)
-        character(*) :: partie
+        character(len=*) :: partie
         integer :: jtype
         integer :: cnsd(*)
     end subroutine irgnal

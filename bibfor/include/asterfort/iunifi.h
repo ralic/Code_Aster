@@ -17,7 +17,7 @@
 !
 interface
     function iunifi(name)
-        character(*) :: name
+        character(len=*) :: name
         integer :: iunifi
     end function iunifi
 end interface

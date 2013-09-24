@@ -18,14 +18,14 @@
 interface
     subroutine vefpme(modele, carele, mate, chargz, infchz,&
                       partps, templu, lvechz, ligrez)
-        character(*) :: modele
-        character(*) :: carele
-        character(*) :: mate
-        character(*) :: chargz
-        character(*) :: infchz
+        character(len=*) :: modele
+        character(len=*) :: carele
+        character(len=*) :: mate
+        character(len=*) :: chargz
+        character(len=*) :: infchz
         real(kind=8) :: partps(*)
-        character(*) :: templu
-        character(*) :: lvechz
-        character(*) :: ligrez
+        character(len=*) :: templu
+        character(len=*) :: lvechz
+        character(len=*) :: ligrez
     end subroutine vefpme
 end interface

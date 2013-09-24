@@ -18,11 +18,11 @@
 interface
     subroutine crlinu(nonu, mlgnno, nbnoe, numnoe, nomnoe,&
                       nbmtrd, jdnw, nummai, kk)
-        character(*) :: nonu
-        character(*) :: mlgnno
+        character(len=*) :: nonu
+        character(len=*) :: mlgnno
         integer :: nbnoe
         integer :: numnoe(*)
-        character(*) :: nomnoe(*)
+        character(len=*) :: nomnoe(*)
         integer :: nbmtrd
         integer :: jdnw(*)
         integer :: nummai(*)

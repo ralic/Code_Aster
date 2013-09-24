@@ -21,8 +21,8 @@ interface
                       tens, versio)
         integer :: ifi
         logical :: lresu
-        character(*) :: nomcon
-        character(*) :: chamsy
+        character(len=*) :: nomcon
+        character(len=*) :: chamsy
         integer :: nbordr
         real(kind=8) :: para(*)
         character(len=8) :: nocmp

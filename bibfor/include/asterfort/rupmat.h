@@ -18,7 +18,7 @@
 interface
     subroutine rupmat(fami, kpg, ksp, imat, vim,&
                       lgpg, e, sigd)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imat

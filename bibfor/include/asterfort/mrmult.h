@@ -18,7 +18,7 @@
 interface
     subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
                       prepos)
-        character(*) :: cumul
+        character(len=*) :: cumul
         integer :: lmat
         real(kind=8) :: vect(*)
         real(kind=8) :: xsol(*)

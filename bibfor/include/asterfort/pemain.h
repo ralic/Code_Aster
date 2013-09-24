@@ -18,12 +18,12 @@
 interface 
     subroutine pemain(resu,modele,mate,cara,nh,&
                       nbocc,deform)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: mate
+        character(len=*) :: cara
         integer :: nh
         integer :: nbocc
-        character(*) :: deform
+        character(len=*) :: deform
     end subroutine pemain
-end interface 
+end interface

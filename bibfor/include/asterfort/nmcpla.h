@@ -23,7 +23,7 @@ interface
                       vinf, ndsde, dsde, nwkout, wkout,&
                       iret)
         integer :: ndsde
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

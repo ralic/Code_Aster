@@ -21,7 +21,7 @@ interface
                       vim, vip, coorot, typmod, instam,&
                       instap)
         integer :: ndim
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mate

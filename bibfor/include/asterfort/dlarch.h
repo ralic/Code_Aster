@@ -25,7 +25,7 @@ interface
         character(len=8) :: result
         integer :: istoc
         integer :: iarchi
-        character(*) :: texte
+        character(len=*) :: texte
         integer :: alarm
         integer :: ifm
         real(kind=8) :: temps

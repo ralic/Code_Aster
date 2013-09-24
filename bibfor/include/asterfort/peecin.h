@@ -18,10 +18,10 @@
 interface
     subroutine peecin(resu, modele, mate, cara, nh,&
                       nbocc)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: mate
+        character(len=*) :: cara
         integer :: nh
         integer :: nbocc
     end subroutine peecin

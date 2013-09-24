@@ -17,7 +17,7 @@
 !
 interface
     subroutine rvmima(nomres, iocc)
-        character(*) :: nomres
+        character(len=*) :: nomres
         integer :: iocc
     end subroutine rvmima
 end interface

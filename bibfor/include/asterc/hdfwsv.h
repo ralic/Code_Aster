@@ -19,11 +19,11 @@ interface
     function hdfwsv(i, knom1, knom2, knom3, j,&
                     itab, k)
         integer :: i
-        character(*) :: knom1
-        character(*) :: knom2
-        character(*) :: knom3
+        character(len=*) :: knom1
+        character(len=*) :: knom2
+        character(len=*) :: knom3
         integer :: j
-        character(*) :: itab(1)
+        character(len=*) :: itab(1)
         integer :: k
         integer :: hdfwsv
     end function hdfwsv

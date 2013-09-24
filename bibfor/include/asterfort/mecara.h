@@ -17,8 +17,8 @@
 !
 interface
     subroutine mecara(cara, exicar, chcara)
-        character(*) :: cara
+        character(len=*) :: cara
         logical :: exicar
-        character(*) :: chcara(18)
+        character(len=*) :: chcara(18)
     end subroutine mecara
 end interface

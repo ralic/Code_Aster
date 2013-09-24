@@ -18,14 +18,14 @@
 interface
     subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                       nncp, basez, celz, kstop, iret)
-        character(*) :: cesz
-        character(*) :: ligrez
-        character(*) :: optini
-        character(*) :: nompaz
-        character(*) :: prolz
+        character(len=*) :: cesz
+        character(len=*) :: ligrez
+        character(len=*) :: optini
+        character(len=*) :: nompaz
+        character(len=*) :: prolz
         integer :: nncp
-        character(*) :: basez
-        character(*) :: celz
+        character(len=*) :: basez
+        character(len=*) :: celz
         character(len=1) :: kstop
         integer :: iret
     end subroutine cescel

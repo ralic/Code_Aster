@@ -17,7 +17,7 @@
 !
 interface
     subroutine jxveuo(cel, itab, inat, jitab)
-        character(*) :: cel
+        character(len=*) :: cel
         integer :: itab(*)
         integer :: inat
         integer :: jitab

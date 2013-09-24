@@ -21,6 +21,6 @@ interface
         integer :: nbmode
         integer :: exclus(*)
         real(kind=8) :: vecp(neq, *)
-        character(*) :: resufk(*)
+        character(len=*) :: resufk(*)
     end subroutine vpnorx
 end interface

@@ -18,13 +18,13 @@
 interface
     subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
                       base, nu, nequa)
-        character(*) :: nuposs
+        character(len=*) :: nuposs
         integer :: nbligr
-        character(*) :: vligr(*)
-        character(*) :: moloc
-        character(*) :: solveu
-        character(*) :: base
-        character(*) :: nu
+        character(len=*) :: vligr(*)
+        character(len=*) :: moloc
+        character(len=*) :: solveu
+        character(len=*) :: base
+        character(len=*) :: nu
         integer :: nequa
     end subroutine numer2
 end interface

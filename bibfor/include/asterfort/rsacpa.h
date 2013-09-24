@@ -18,7 +18,7 @@
 interface
     subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
                       ival, rval, kval, ier)
-        character(*) :: nomsdz
+        character(len=*) :: nomsdz
         integer :: numva
         integer :: icode
         character(len=16) :: nomva

@@ -18,11 +18,11 @@
 interface
     subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                       nbcmp, ityp, entete, lcmp)
-        character(*) :: nomsd
-        character(*) :: titre
-        character(*) :: nomgds
+        character(len=*) :: nomsd
+        character(len=*) :: titre
+        character(len=*) :: nomgds
         integer :: numor
-        character(*) :: fitype
+        character(len=*) :: fitype
         integer :: nbcmp
         integer :: ityp
         character(len=80) :: entete(10)

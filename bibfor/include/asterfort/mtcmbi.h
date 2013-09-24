@@ -17,7 +17,7 @@
 !
 interface
     subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
-        character(*) :: typmat
+        character(len=*) :: typmat
         integer :: lmat
         real(kind=8) :: coef
         complex(kind=8) :: ccoef

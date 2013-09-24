@@ -18,7 +18,7 @@
 interface
     subroutine decod2(rec, irec, ifield, itype, ilu,&
                       rlu, trouve)
-        character(*) :: rec(20)
+        character(len=*) :: rec(20)
         integer :: irec
         integer :: ifield
         integer :: itype

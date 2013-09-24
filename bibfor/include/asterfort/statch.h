@@ -38,6 +38,6 @@ interface
         real(kind=8) :: trepos
         character(len=8) :: noecho(*)
         character(len=8) :: intitu(*)
-        character(*) :: nomres
+        character(len=*) :: nomres
     end subroutine statch
 end interface

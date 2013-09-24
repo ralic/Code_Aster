@@ -32,7 +32,7 @@ interface
         real(kind=8) :: w(0:npg-1)
         real(kind=8) :: b(neps, npg, nddl)
         character(len=16) :: compor(*)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: mat
         real(kind=8) :: angmas(3)
         real(kind=8) :: crit(*)

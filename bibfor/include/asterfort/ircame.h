@@ -27,9 +27,9 @@ interface
         character(len=8) :: typech
         character(len=8) :: modele
         integer :: nbcmp
-        character(*) :: nomcmp(*)
-        character(*) :: etiqcp
-        character(*) :: partie
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: etiqcp
+        character(len=*) :: partie
         integer :: numpt
         real(kind=8) :: instan
         integer :: numord

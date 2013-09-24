@@ -19,7 +19,7 @@ interface
     subroutine lcrolo(fami, kpg, ksp, mate, option,&
                       carcri, fm, df, vim, vip,&
                       taup, dtaudf, iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mate

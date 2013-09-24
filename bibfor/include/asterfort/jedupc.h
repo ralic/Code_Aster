@@ -18,11 +18,11 @@
 interface
     subroutine jedupc(clain, schin, ipos, claout, schout,&
                       dupcol)
-        character(*) :: clain
-        character(*) :: schin
+        character(len=*) :: clain
+        character(len=*) :: schin
         integer :: ipos
-        character(*) :: claout
-        character(*) :: schout
+        character(len=*) :: claout
+        character(len=*) :: schout
         logical :: dupcol
     end subroutine jedupc
 end interface

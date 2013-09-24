@@ -22,7 +22,7 @@ interface
         integer :: nscoma
         integer :: nvoima
         integer :: numa
-        character(*) :: codvoi
+        character(len=*) :: codvoi
         integer :: iarepe
         integer :: iaddvo
         integer :: iadvoi

@@ -17,8 +17,8 @@
 !
 interface
     subroutine jeveut(nomlu, cel, jctab)
-        character(*) :: nomlu
-        character(*) :: cel
+        character(len=*) :: nomlu
+        character(len=*) :: cel
         integer :: jctab
     end subroutine jeveut
 end interface

@@ -19,7 +19,7 @@ interface
     subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                       corfre, ndir, valspe, asyspe)
         integer :: nbmode
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: nbocc
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)

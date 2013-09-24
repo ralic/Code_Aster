@@ -18,7 +18,7 @@
 interface
     subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
                       compor, valinc, cnvcpr)
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: numedd
         character(len=24) :: mate
         character(len=24) :: carele

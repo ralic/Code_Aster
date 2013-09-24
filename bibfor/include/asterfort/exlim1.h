@@ -19,8 +19,8 @@ interface
     subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
         integer :: lismai(*)
         integer :: nbmail
-        character(*) :: modelz
-        character(*) :: basez
-        character(*) :: ligrez
+        character(len=*) :: modelz
+        character(len=*) :: basez
+        character(len=*) :: ligrez
     end subroutine exlim1
 end interface

@@ -17,9 +17,9 @@
 !
 interface
     subroutine crelrl(typcoz, typvaz, basez, lisrez)
-        character(*) :: typcoz
-        character(*) :: typvaz
-        character(*) :: basez
-        character(*) :: lisrez
+        character(len=*) :: typcoz
+        character(len=*) :: typvaz
+        character(len=*) :: basez
+        character(len=*) :: lisrez
     end subroutine crelrl
 end interface

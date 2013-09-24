@@ -19,7 +19,7 @@ interface
     subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
                       ival, rval, nbval, ncheff)
         real(kind=8) :: epsi
-        character(*) :: criter
+        character(len=*) :: criter
         character(len=8) :: nomsd
         character(len=16) :: chpsym
         character(len=2) :: acces

@@ -21,15 +21,15 @@ interface
                       typgeo, iterma, noma, nompro, nomloc,&
                       n, cret)
         aster_int :: fid
-        character(*) :: cha
+        character(len=*) :: cha
         aster_int :: numdt
         aster_int :: numo
         aster_int :: typent
         aster_int :: typgeo
         aster_int :: iterma
-        character(*) :: noma
-        character(*) :: nompro
-        character(*) :: nomloc
+        character(len=*) :: noma
+        character(len=*) :: nompro
+        character(len=*) :: nomloc
         aster_int :: n
         aster_int :: cret
     end subroutine as_mfdonp

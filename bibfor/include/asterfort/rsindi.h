@@ -25,10 +25,10 @@ interface
         integer :: jordr
         integer :: ival
         real(kind=8) :: rval
-        character(*) :: kval
+        character(len=*) :: kval
         complex(kind=8) :: cval
         real(kind=8) :: epsi
-        character(*) :: crit
+        character(len=*) :: crit
         integer :: nbordr
         integer :: nbtrou
         integer :: nutrou(*)

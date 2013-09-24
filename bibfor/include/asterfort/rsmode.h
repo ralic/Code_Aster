@@ -17,6 +17,6 @@
 !
 interface
     subroutine rsmode(resu)
-        character(*) :: resu
+        character(len=*) :: resu
     end subroutine rsmode
 end interface

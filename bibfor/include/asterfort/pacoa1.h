@@ -21,8 +21,8 @@ interface
         integer :: noeud1(*)
         integer :: noeud2(*)
         integer :: lonlis
-        character(*) :: nomaz
-        character(*) :: liso1z
-        character(*) :: liso2z
+        character(len=*) :: nomaz
+        character(len=*) :: liso1z
+        character(len=*) :: liso2z
     end subroutine pacoa1
 end interface

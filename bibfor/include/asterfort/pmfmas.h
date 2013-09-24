@@ -18,8 +18,8 @@
 interface
     subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
                       mlv)
-        character(*) :: nomte
-        character(*) :: option
+        character(len=*) :: nomte
+        character(len=*) :: option
         real(kind=8) :: rhoflu
         integer :: icdmat
         integer :: kanl

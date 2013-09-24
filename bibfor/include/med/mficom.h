@@ -18,7 +18,7 @@
 interface
 #include "aster_types.h"
     subroutine mficom(fname, hdfok, medok, cret)
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: hdfok
         med_int :: medok
         med_int :: cret

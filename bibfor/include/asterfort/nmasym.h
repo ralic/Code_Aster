@@ -20,11 +20,11 @@ interface
                       xlong0, a, tmoins, tplus, dlong0,&
                       effnom, vim, effnop, vip, klv,&
                       fono)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: icodma
-        character(*) :: option
+        character(len=*) :: option
         real(kind=8) :: xlong0
         real(kind=8) :: a
         real(kind=8) :: tmoins

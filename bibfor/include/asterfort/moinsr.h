@@ -23,9 +23,9 @@ interface
         integer :: idil
         integer :: idiich
         integer :: idsuiv
-        character(*) :: nosuiv
+        character(len=*) :: nosuiv
         integer :: idip
-        character(*) :: noip
+        character(len=*) :: noip
         integer :: iilib
         integer :: iimax
     end subroutine moinsr

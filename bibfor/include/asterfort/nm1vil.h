@@ -22,7 +22,7 @@ interface
                       defam, defap, angmas, sigp, vip,&
                       dsidep, iret, compo, nbvalc)
         integer :: nbvalc
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: icdmat

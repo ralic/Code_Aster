@@ -21,7 +21,7 @@ interface
                       dirspe, echspe, nature, nbsupm, nsupp,&
                       knoeu, kvspe, kaspe)
         integer :: nbmode
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: nbocc
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
@@ -35,8 +35,8 @@ interface
         integer :: nature(3, *)
         integer :: nbsupm
         integer :: nsupp(*)
-        character(*) :: knoeu
-        character(*) :: kvspe
-        character(*) :: kaspe
+        character(len=*) :: knoeu
+        character(len=*) :: kvspe
+        character(len=*) :: kaspe
     end subroutine asexc2
 end interface

@@ -19,16 +19,16 @@ interface
     subroutine tbajva(table, nbpara, nompar, vi, livi,&
                       vr, livr, vc, livc, vk,&
                       livk)
-        character(*) :: table
+        character(len=*) :: table
         integer :: nbpara
-        character(*) :: nompar
+        character(len=*) :: nompar
         integer :: vi
         integer :: livi(*)
         real(kind=8) :: vr
         real(kind=8) :: livr(*)
         complex(kind=8) :: vc
         complex(kind=8) :: livc(*)
-        character(*) :: vk
-        character(*) :: livk(*)
+        character(len=*) :: vk
+        character(len=*) :: livk(*)
     end subroutine tbajva
 end interface

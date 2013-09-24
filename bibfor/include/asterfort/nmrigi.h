@@ -20,8 +20,8 @@ interface
                       sddyna, sdstat, sdtime, fonact, iterat,&
                       valinc, solalg, comref, meelem, veelem,&
                       optioz, ldccvg, codere)
-        character(*) :: modelz
-        character(*) :: mate
+        character(len=*) :: modelz
+        character(len=*) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=24) :: carcri
@@ -35,7 +35,7 @@ interface
         character(len=24) :: comref
         character(len=19) :: meelem(*)
         character(len=19) :: veelem(*)
-        character(*) :: optioz
+        character(len=*) :: optioz
         integer :: ldccvg
         character(len=24) :: codere
     end subroutine nmrigi

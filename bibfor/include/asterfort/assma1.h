@@ -17,7 +17,7 @@
 !
 interface
     subroutine assma1(matas, ldist)
-        character(*) :: matas
+        character(len=*) :: matas
         logical :: ldist
     end subroutine assma1
 end interface

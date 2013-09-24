@@ -17,9 +17,9 @@
 !
 interface
     subroutine crsolv(method, renum, solve, bas)
-        character(*) :: method
-        character(*) :: renum
-        character(*) :: solve
-        character(*) :: bas
+        character(len=*) :: method
+        character(len=*) :: renum
+        character(len=*) :: solve
+        character(len=*) :: bas
     end subroutine crsolv
 end interface

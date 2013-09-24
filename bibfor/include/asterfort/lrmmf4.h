@@ -24,9 +24,9 @@ interface
         integer :: carafa(3, nbrfam)
         integer :: nbnoeu
         integer :: nbmail
-        character(*) :: nomgro
-        character(*) :: numgro
-        character(*) :: nument
+        character(len=*) :: nomgro
+        character(len=*) :: numgro
+        character(len=*) :: nument
         character(len=24) :: grpnoe
         character(len=24) :: gpptnn
         character(len=24) :: grpmai

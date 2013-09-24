@@ -20,7 +20,7 @@ interface
         character(len=8) :: modele
         integer :: nchar
         character(len=8) :: lchar(*)
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=19) :: matel
     end subroutine meimme
 end interface

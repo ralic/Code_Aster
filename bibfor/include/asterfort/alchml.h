@@ -18,12 +18,12 @@
 interface
     subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
                       iret, dcelz)
-        character(*) :: ligrez
-        character(*) :: optioz
-        character(*) :: nompaz
-        character(*) :: basz
-        character(*) :: celz
+        character(len=*) :: ligrez
+        character(len=*) :: optioz
+        character(len=*) :: nompaz
+        character(len=*) :: basz
+        character(len=*) :: celz
         integer :: iret
-        character(*) :: dcelz
+        character(len=*) :: dcelz
     end subroutine alchml
 end interface

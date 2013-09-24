@@ -24,7 +24,7 @@ interface
         character(len=19) :: ligrel
         integer :: nfiss
         character(len=19) :: chelem
-        character(*) :: param
-        character(*) :: option
+        character(len=*) :: param
+        character(len=*) :: option
     end subroutine xmele1
 end interface

@@ -17,8 +17,8 @@
 !
 interface
     subroutine tbexlr(nomta, listr, basout)
-        character(*) :: nomta
-        character(*) :: listr
-        character(*) :: basout
+        character(len=*) :: nomta
+        character(len=*) :: listr
+        character(len=*) :: basout
     end subroutine tbexlr
 end interface

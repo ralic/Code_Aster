@@ -20,7 +20,7 @@ interface
     subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
                       dt, cret)
         aster_int :: fid
-        character(*) :: cha
+        character(len=*) :: cha
         aster_int :: ind
         aster_int :: numdt
         aster_int :: numo

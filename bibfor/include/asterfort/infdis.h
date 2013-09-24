@@ -20,6 +20,6 @@ interface
         character(len=4) :: quest
         integer :: ivale
         real(kind=8) :: rvale
-        character(*) :: kvale
+        character(len=*) :: kvale
     end subroutine infdis
 end interface

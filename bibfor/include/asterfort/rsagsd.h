@@ -17,7 +17,7 @@
 !
 interface
     subroutine rsagsd(nomsd, ilong)
-        character(*) :: nomsd
+        character(len=*) :: nomsd
         integer :: ilong
     end subroutine rsagsd
 end interface

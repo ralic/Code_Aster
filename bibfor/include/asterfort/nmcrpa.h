@@ -18,7 +18,7 @@
 interface
     subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
                       dtmin)
-        character(*) :: motfaz
+        character(len=*) :: motfaz
         integer :: iocc
         character(len=24) :: sdlist
         character(len=1) :: base

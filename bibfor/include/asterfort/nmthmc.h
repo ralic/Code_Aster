@@ -19,7 +19,7 @@ interface
     subroutine nmthmc(comp, modelz, moclef, k, comel,&
                       ncomel, nbnvi)
         character(len=16) :: comp
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=16) :: moclef
         integer :: k
         character(len=16) :: comel(*)

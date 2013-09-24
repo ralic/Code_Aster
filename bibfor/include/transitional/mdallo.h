@@ -27,10 +27,10 @@ interface
         integer :: nbrede
         integer :: nbchoc
         character(len=8) :: nomres
-        character(*) :: basemo
-        character(*) :: masgen
-        character(*) :: riggen
-        character(*) :: amogen
+        character(len=*) :: basemo
+        character(len=*) :: masgen
+        character(len=*) :: riggen
+        character(len=*) :: amogen
         integer :: nbmode
         real(kind=8) :: dt
         integer :: nbsauv

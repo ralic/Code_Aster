@@ -19,8 +19,8 @@ interface
     subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                       modele, nbordr, nuordr, nbacc, nomacc,&
                       nbarch, nuarch, nbexcl, chexcl, nbnosy)
-        character(*) :: resu0
-        character(*) :: resu1
+        character(len=*) :: resu0
+        character(len=*) :: resu1
         character(len=16) :: typcon
         logical :: lrest
         character(len=8) :: mailla

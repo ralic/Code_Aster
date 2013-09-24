@@ -22,7 +22,7 @@ interface
                       resocu, comref, valinc, solalg, veelem,&
                       measse, veasse, sddyna)
         character(len=4) :: mode
-        character(*) :: phasez
+        character(len=*) :: phasez
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate

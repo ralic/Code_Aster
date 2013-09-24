@@ -18,6 +18,6 @@
 interface
     subroutine agcart(ngdmxn, chinz)
         integer :: ngdmxn
-        character(*) :: chinz
+        character(len=*) :: chinz
     end subroutine agcart
 end interface

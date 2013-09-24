@@ -18,12 +18,12 @@
 interface
     subroutine verifg(fami, npg, nspg, poum, imate,&
                       compor, ndim, epsth, iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: npg
         integer :: nspg
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: imate
-        character(*) :: compor
+        character(len=*) :: compor
         integer :: ndim
         real(kind=8) :: epsth(*)
         integer :: iret

@@ -22,7 +22,7 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=19) :: lischa
-        character(*) :: numedd
+        character(len=*) :: numedd
         character(len=19) :: vediri
         character(len=19) :: veneum
         character(len=19) :: vevoch

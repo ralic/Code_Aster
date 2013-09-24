@@ -20,7 +20,7 @@ interface
     subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
                       wght, cret)
         med_int :: fid
-        character(*) :: lname
+        character(len=*) :: lname
         med_int :: swm
         real(kind=8) :: ecoo(*)
         real(kind=8) :: ipcoo(*)

@@ -20,11 +20,11 @@ interface
                       coef, basz, chpres)
         integer :: nbcmb
         real(kind=8) :: angle
-        character(*) :: nomch(*)
+        character(len=*) :: nomch(*)
         integer :: nuharm(*)
-        character(*) :: tyharm(*)
+        character(len=*) :: tyharm(*)
         real(kind=8) :: coef(*)
-        character(*) :: basz
-        character(*) :: chpres
+        character(len=*) :: basz
+        character(len=*) :: chpres
     end subroutine refode
 end interface

@@ -22,10 +22,10 @@ interface
                       nbattc, prespr, nbattv, codret)
         aster_int :: idfimd
         aster_int :: imasup
-        character(*) :: nomaes
+        character(len=*) :: nomaes
         aster_int :: nvtymd
         aster_int :: dimest
-        character(*) :: nomasu
+        character(len=*) :: nomasu
         aster_int :: medcel
         aster_int :: nbnosu
         aster_int :: nbmssu

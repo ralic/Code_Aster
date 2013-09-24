@@ -22,7 +22,7 @@ interface
                       numins, fonact, valinc, solalg, veelem,&
                       meelem, measse, maprec, matass, codere,&
                       faccvg, ldccvg)
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor

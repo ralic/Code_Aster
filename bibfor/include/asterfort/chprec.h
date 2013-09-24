@@ -17,6 +17,6 @@
 !
 interface
     subroutine chprec(chou)
-        character(*) :: chou
+        character(len=*) :: chou
     end subroutine chprec
 end interface

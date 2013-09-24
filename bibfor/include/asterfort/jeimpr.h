@@ -18,7 +18,7 @@
 interface
     subroutine jeimpr(unit, clas, cmess)
         integer :: unit
-        character(*) :: clas
-        character(*) :: cmess
+        character(len=*) :: clas
+        character(len=*) :: cmess
     end subroutine jeimpr
 end interface

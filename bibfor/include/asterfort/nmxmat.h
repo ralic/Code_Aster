@@ -23,8 +23,8 @@ interface
                       sdtime, nbmatr, ltypma, loptme, loptma,&
                       lcalme, lassme, lcfint, meelem, measse,&
                       veelem, ldccvg, codere)
-        character(*) :: modelz
-        character(*) :: mate
+        character(len=*) :: modelz
+        character(len=*) :: mate
         character(len=24) :: carele
         character(len=24) :: compor
         character(len=24) :: carcri

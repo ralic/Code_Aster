@@ -17,7 +17,7 @@
 !
 interface
     subroutine utalrm(etat, mess)
-        character(*) :: etat(*)
-        character(*) :: mess(*)
+        character(len=*) :: etat(*)
+        character(len=*) :: mess(*)
     end subroutine utalrm
 end interface

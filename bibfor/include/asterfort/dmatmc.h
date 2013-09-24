@@ -20,11 +20,11 @@ interface
                       igau, isgau, repere, xyzgau, nbsig,&
                       d)
         integer :: nbsig
-        character(*) :: fami
+        character(len=*) :: fami
         character(len=2) :: modeli
         integer :: mater
         real(kind=8) :: instan
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: igau
         integer :: isgau
         real(kind=8) :: repere(7)

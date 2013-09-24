@@ -23,7 +23,7 @@ interface
         character(len=1) :: base
         character(len=24) :: modele
         character(len=24) :: carele
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=24) :: comref
         character(len=24) :: compor
         character(len=24) :: carcri
@@ -34,7 +34,7 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: merigi
         character(len=19) :: vefint
-        character(*) :: optioz
+        character(len=*) :: optioz
         logical :: tabret(0:10)
         character(len=24) :: codere
     end subroutine merimo

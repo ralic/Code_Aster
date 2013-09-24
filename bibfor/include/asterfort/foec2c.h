@@ -23,7 +23,7 @@ interface
         real(kind=8) :: v(3*nbcoup)
         integer :: n1
         integer :: n2
-        character(*) :: nompar
-        character(*) :: nomres
+        character(len=*) :: nompar
+        character(len=*) :: nomres
     end subroutine foec2c
 end interface

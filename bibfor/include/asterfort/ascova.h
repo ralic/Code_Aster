@@ -18,12 +18,12 @@
 interface
     subroutine ascova(detr, vachar, fomulz, npara, vpara,&
                       typres, cnchar)
-        character(*) :: detr
+        character(len=*) :: detr
         character(len=24) :: vachar
-        character(*) :: fomulz
-        character(*) :: npara
+        character(len=*) :: fomulz
+        character(len=*) :: npara
         real(kind=8) :: vpara
-        character(*) :: typres
-        character(*) :: cnchar
+        character(len=*) :: typres
+        character(len=*) :: cnchar
     end subroutine ascova
 end interface

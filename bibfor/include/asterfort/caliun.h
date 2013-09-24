@@ -17,8 +17,8 @@
 !
 interface
     subroutine caliun(charz, nomaz, nomoz)
-        character(*) :: charz
-        character(*) :: nomaz
-        character(*) :: nomoz
+        character(len=*) :: charz
+        character(len=*) :: nomaz
+        character(len=*) :: nomoz
     end subroutine caliun
 end interface

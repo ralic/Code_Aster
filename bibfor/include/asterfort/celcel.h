@@ -17,9 +17,9 @@
 !
 interface
     subroutine celcel(transf, cel1, base, cel2)
-        character(*) :: transf
-        character(*) :: cel1
-        character(*) :: base
-        character(*) :: cel2
+        character(len=*) :: transf
+        character(len=*) :: cel1
+        character(len=*) :: base
+        character(len=*) :: cel2
     end subroutine celcel
 end interface

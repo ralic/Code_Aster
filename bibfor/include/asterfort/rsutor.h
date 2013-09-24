@@ -17,9 +17,9 @@
 !
 interface
     subroutine rsutor(nomsd, champ, nomsym, iordr)
-        character(*) :: nomsd
-        character(*) :: champ
-        character(*) :: nomsym
+        character(len=*) :: nomsd
+        character(len=*) :: champ
+        character(len=*) :: nomsym
         integer :: iordr
     end subroutine rsutor
 end interface

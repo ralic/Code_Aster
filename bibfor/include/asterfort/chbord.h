@@ -18,7 +18,7 @@
 interface
     subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
                       nbmabo)
-        character(*) :: nomo
+        character(len=*) :: nomo
         integer :: nbmail
         integer :: listma(*)
         integer :: mabord(*)

@@ -17,9 +17,9 @@
 !
 interface
     subroutine jelira(nomlu, catr, ival, cval)
-        character(*), intent(in) :: nomlu
-        character(*), intent(in) :: catr
+        character(len=*), intent(in) :: nomlu
+        character(len=*), intent(in) :: catr
         integer, intent(out), optional  :: ival
-        character(*), intent(out), optional :: cval
+        character(len=*), intent(out), optional :: cval
     end subroutine jelira
 end interface

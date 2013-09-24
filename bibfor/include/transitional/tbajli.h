@@ -18,13 +18,13 @@
 interface
     subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                       vc, vk, nume)
-        character(*) :: nomta
+        character(len=*) :: nomta
         integer :: nbpar
-        character(*) :: nompar(*)
+        character(len=*) :: nompar(*)
         integer :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
-        character(*) :: vk(*)
+        character(len=*) :: vk(*)
         integer :: nume
     end subroutine tbajli
 end interface

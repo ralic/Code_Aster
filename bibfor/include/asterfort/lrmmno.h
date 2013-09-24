@@ -20,7 +20,7 @@ interface
                       nomnoe, coordo, coodsc, cooref, ifm,&
                       infmed)
         integer :: fid
-        character(*) :: nomam2
+        character(len=*) :: nomam2
         integer :: ndim
         integer :: nbnoeu
         character(len=8) :: nomu

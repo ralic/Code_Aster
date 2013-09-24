@@ -17,7 +17,7 @@
 !
 interface
     subroutine erglth(champ, inst, niveau, iordr, resuco)
-        character(*) :: champ
+        character(len=*) :: champ
         real(kind=8) :: inst
         integer :: niveau
         integer :: iordr

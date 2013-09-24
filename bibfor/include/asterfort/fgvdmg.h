@@ -24,9 +24,9 @@ interface
         character(len=8) :: nommat
         character(len=8) :: nomnap
         character(len=8) :: nomfon
-        character(*) :: mexpic
-        character(*) :: mcompt
-        character(*) :: mdomag
+        character(len=*) :: mexpic
+        character(len=*) :: mcompt
+        character(len=*) :: mdomag
         integer :: nbord
         integer :: nbpt
         integer :: ntcmp

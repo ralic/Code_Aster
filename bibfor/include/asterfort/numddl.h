@@ -18,9 +18,9 @@
 interface
     subroutine numddl(nu, base, nbmat, tlimat, method)
         integer :: nbmat
-        character(*) :: nu
+        character(len=*) :: nu
         character(len=2) :: base
-        character(*) :: tlimat(*)
-        character(*) :: method
+        character(len=*) :: tlimat(*)
+        character(len=*) :: method
     end subroutine numddl
 end interface

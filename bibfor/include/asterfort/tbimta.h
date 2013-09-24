@@ -17,10 +17,10 @@
 !
 interface
     subroutine tbimta(table, ifr, nparim, lipaim, formar)
-        character(*) :: table
+        character(len=*) :: table
         integer :: ifr
         integer :: nparim
-        character(*) :: lipaim(*)
-        character(*) :: formar
+        character(len=*) :: lipaim(*)
+        character(len=*) :: formar
     end subroutine tbimta
 end interface

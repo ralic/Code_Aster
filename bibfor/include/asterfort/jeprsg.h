@@ -17,7 +17,7 @@
 !
 interface
     subroutine jeprsg(cunit, tgr, info)
-        character(*) :: cunit
+        character(len=*) :: cunit
         real(kind=8) :: tgr
         integer :: info
     end subroutine jeprsg

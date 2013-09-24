@@ -17,10 +17,10 @@
 !
 interface
     subroutine lcroma(fami, kpg, ksp, poum, mate)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: mate
     end subroutine lcroma
 end interface

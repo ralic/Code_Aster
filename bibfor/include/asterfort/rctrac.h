@@ -20,7 +20,7 @@ interface
                       jvale, nbvale, e)
         integer :: jmat
         integer :: ktrac
-        character(*) :: nomcl
+        character(len=*) :: nomcl
         real(kind=8) :: temp
         integer :: jprol
         integer :: jvale

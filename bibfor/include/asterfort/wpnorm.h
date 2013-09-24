@@ -20,8 +20,8 @@ interface
                       ddlexc, vecpro, resufr, coef)
         integer :: nbmode
         integer :: neq
-        character(*) :: norm
-        character(*) :: para
+        character(len=*) :: norm
+        character(len=*) :: para
         integer :: lmatr(*)
         integer :: ddlexc(*)
         complex(kind=8) :: vecpro(neq, *)

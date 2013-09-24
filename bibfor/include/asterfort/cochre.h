@@ -17,7 +17,7 @@
 !
 interface
     subroutine cochre(kchar, nbchar, nbchre, iocc)
-        character(*) :: kchar(*)
+        character(len=*) :: kchar(*)
         integer :: nbchar
         integer :: nbchre
         integer :: iocc

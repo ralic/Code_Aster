@@ -18,7 +18,7 @@
 interface
     subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
                       ndimen, itype)
-        character(*) :: nomte
+        character(len=*) :: nomte
         integer :: symetr
         integer :: nbterm
         integer :: nbnoeu

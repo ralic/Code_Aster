@@ -20,10 +20,10 @@ interface
                       ci, itab, jitab, iadmi, iadyn)
         integer :: lonoi
         integer :: ic
-        character(*) :: genri
-        character(*) :: typei
+        character(len=*) :: genri
+        character(len=*) :: typei
         integer :: lty
-        character(*) :: ci
+        character(len=*) :: ci
         integer :: itab(*)
         integer :: jitab
         integer :: iadmi

@@ -17,10 +17,10 @@
 !
 interface
     subroutine limend(nommaz, salt, nomres, forvie, limit)
-        character(*), intent(in) :: nommaz
+        character(len=*), intent(in) :: nommaz
         real(kind=8), intent(in) :: salt
-        character(*), intent(in) :: nomres
-        character(*), intent(in) :: forvie
+        character(len=*), intent(in) :: nomres
+        character(len=*), intent(in) :: forvie
         logical, intent(out) :: limit
     end subroutine limend
 end interface

@@ -17,7 +17,7 @@
 !
 interface
     subroutine jenonu(nomlu, numo)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
         integer :: numo
     end subroutine jenonu
 end interface

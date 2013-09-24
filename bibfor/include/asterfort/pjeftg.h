@@ -20,7 +20,7 @@ interface
         integer :: igeom
         character(len=24) :: geomi
         character(len=8) :: nomai
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: iocc
     end subroutine pjeftg
 end interface

@@ -19,13 +19,13 @@ interface
     subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                       ndir, comdir, typcdi, glob, prim)
         integer :: neq
-        character(*) :: mome
-        character(*) :: resu
+        character(len=*) :: mome
+        character(len=*) :: resu
         character(len=16) :: nomsy
         real(kind=8) :: repdir(neq, *)
         integer :: ndir(*)
         logical :: comdir
-        character(*) :: typcdi
+        character(len=*) :: typcdi
         logical :: glob
         logical :: prim
     end subroutine asstoc

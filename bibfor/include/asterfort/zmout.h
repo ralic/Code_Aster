@@ -24,6 +24,6 @@ interface
         integer :: n
         complex(kind=8) :: a(lda, *)
         integer :: idigit
-        character(*) :: ifmt
+        character(len=*) :: ifmt
     end subroutine zmout
 end interface

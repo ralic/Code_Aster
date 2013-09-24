@@ -22,7 +22,7 @@ interface
         integer :: mb
         integer :: nb
         integer :: na
-        character(*) :: raz
+        character(len=*) :: raz
         real(kind=8) :: a(na, nb)
         real(kind=8) :: b(nb, mb)
         real(kind=8) :: d(na, md)

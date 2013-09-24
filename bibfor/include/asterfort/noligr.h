@@ -19,16 +19,16 @@ interface
     subroutine noligr(ligrz, igrel, numel, nb, li,&
                       lk, code, irepe, inema, nbno,&
                       typlaz)
-        character(*) :: ligrz
+        character(len=*) :: ligrz
         integer :: igrel
         integer :: numel
         integer :: nb
         integer :: li(*)
-        character(*) :: lk(*)
+        character(len=*) :: lk(*)
         integer :: code
         integer :: irepe
         integer :: inema
         integer :: nbno(*)
-        character(*) :: typlaz
+        character(len=*) :: typlaz
     end subroutine noligr
 end interface

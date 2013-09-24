@@ -18,14 +18,14 @@
 interface
     subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
                       existc, nbcmfi, nmcmfi, codret)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: idfimd
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: nbcmpc
-        character(*) :: nomcmc
+        character(len=*) :: nomcmc
         integer :: existc
         integer :: nbcmfi
-        character(*) :: nmcmfi
+        character(len=*) :: nmcmfi
         integer :: codret
     end subroutine mdexcc
 end interface

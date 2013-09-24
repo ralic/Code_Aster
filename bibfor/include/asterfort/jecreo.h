@@ -17,7 +17,7 @@
 !
 interface
     subroutine jecreo(nomlu, listat)
-        character(*) :: nomlu
-        character(*) :: listat
+        character(len=*) :: nomlu
+        character(len=*) :: listat
     end subroutine jecreo
 end interface

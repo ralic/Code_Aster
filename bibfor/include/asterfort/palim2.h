@@ -18,11 +18,11 @@
 interface
     subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
                       iadr)
-        character(*) :: mcfact
+        character(len=*) :: mcfact
         integer :: iocc
-        character(*) :: nomaz
-        character(*) :: nomvei
-        character(*) :: nomvek
+        character(len=*) :: nomaz
+        character(len=*) :: nomvei
+        character(len=*) :: nomvek
         integer :: iadr
     end subroutine palim2
 end interface

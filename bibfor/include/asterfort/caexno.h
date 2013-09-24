@@ -18,11 +18,11 @@
 interface
     subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
                       iocc)
-        character(*) :: lvavz
-        character(*) :: nomaz
-        character(*) :: motfac
-        character(*) :: mcgrno
-        character(*) :: mcno
+        character(len=*) :: lvavz
+        character(len=*) :: nomaz
+        character(len=*) :: motfac
+        character(len=*) :: mcgrno
+        character(len=*) :: mcno
         integer :: iocc
     end subroutine caexno
 end interface

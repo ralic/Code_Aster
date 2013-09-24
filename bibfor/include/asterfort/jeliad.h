@@ -17,7 +17,7 @@
 !
 interface
     subroutine jeliad(clas, numr, nboct)
-        character(*) :: clas
+        character(len=*) :: clas
         integer :: numr
         integer :: nboct
     end subroutine jeliad

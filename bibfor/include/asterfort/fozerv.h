@@ -17,6 +17,6 @@
 !
 interface
     subroutine fozerv(nomfon)
-        character(*) :: nomfon
+        character(len=*) :: nomfon
     end subroutine fozerv
 end interface

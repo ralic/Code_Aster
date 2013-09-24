@@ -17,8 +17,8 @@
 !
 interface
     function cfdisr(deficz, questz)
-        character(*) :: deficz
-        character(*) :: questz
+        character(len=*) :: deficz
+        character(len=*) :: questz
         real(kind=8) :: cfdisr
     end function cfdisr
 end interface

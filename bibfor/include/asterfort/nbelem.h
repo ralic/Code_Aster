@@ -17,7 +17,7 @@
 !
 interface
     function nbelem(ligrlz, igrel)
-        character(*) :: ligrlz
+        character(len=*) :: ligrlz
         integer :: igrel
         integer :: nbelem
     end function nbelem

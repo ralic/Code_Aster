@@ -19,10 +19,10 @@ interface
     subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                       vr, nbmail, numail)
         integer :: nbcmp
-        character(*) :: typmx
-        character(*) :: champ
-        character(*) :: nocmp
-        character(*) :: lcmp(*)
+        character(len=*) :: typmx
+        character(len=*) :: champ
+        character(len=*) :: nocmp
+        character(len=*) :: lcmp(*)
         real(kind=8) :: vr(*)
         integer :: nbmail
         integer :: numail(*)

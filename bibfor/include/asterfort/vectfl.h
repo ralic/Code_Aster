@@ -18,12 +18,12 @@
 interface
     subroutine vectfl(opt, modele, carele, mate, templu,&
                       instap, ve)
-        character(*) :: opt
-        character(*) :: modele
-        character(*) :: carele
-        character(*) :: mate
-        character(*) :: templu
+        character(len=*) :: opt
+        character(len=*) :: modele
+        character(len=*) :: carele
+        character(len=*) :: mate
+        character(len=*) :: templu
         real(kind=8) :: instap
-        character(*) :: ve
+        character(len=*) :: ve
     end subroutine vectfl
 end interface

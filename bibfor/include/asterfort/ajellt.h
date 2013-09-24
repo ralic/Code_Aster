@@ -18,14 +18,14 @@
 interface
     subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
                       phenoz, modelz, nbno, linoz)
-        character(*) :: ligrez
-        character(*) :: nomaz
+        character(len=*) :: ligrez
+        character(len=*) :: nomaz
         integer :: nbma
-        character(*) :: limaz
-        character(*) :: typelz
-        character(*) :: phenoz
-        character(*) :: modelz
+        character(len=*) :: limaz
+        character(len=*) :: typelz
+        character(len=*) :: phenoz
+        character(len=*) :: modelz
         integer :: nbno
-        character(*) :: linoz
+        character(len=*) :: linoz
     end subroutine ajellt
 end interface

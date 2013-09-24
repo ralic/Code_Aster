@@ -19,10 +19,10 @@ interface
     subroutine nmelru(fami, kpg, ksp, poum, imate,&
                       compor, epseq, p, divu, nonlin,&
                       ener)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: epseq

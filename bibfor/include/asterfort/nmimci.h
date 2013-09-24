@@ -18,7 +18,7 @@
 interface
     subroutine nmimci(sdimpr, typcoz, vali, laffe)
         character(len=24) :: sdimpr
-        character(*) :: typcoz
+        character(len=*) :: typcoz
         integer :: vali
         logical :: laffe
     end subroutine nmimci

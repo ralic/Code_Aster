@@ -20,8 +20,8 @@ interface
                       angs2, nno, nc, pgl, pgl1,&
                       pgl2, fer, fei)
         integer :: itype
-        character(*) :: option
-        character(*) :: nomte
+        character(len=*) :: option
+        character(len=*) :: nomte
         real(kind=8) :: xl
         real(kind=8) :: rad
         real(kind=8) :: angs2

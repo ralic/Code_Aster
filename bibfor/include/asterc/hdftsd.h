@@ -18,7 +18,7 @@
 interface
     function hdftsd(i, knom1, j, k)
         integer :: i
-        character(*) :: knom1
+        character(len=*) :: knom1
         integer :: j
         integer :: k
         integer :: hdftsd

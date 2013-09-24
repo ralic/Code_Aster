@@ -18,13 +18,13 @@
 interface
     subroutine tbacce(nomta, numeli, para, mode, vi,&
                       vr, vc, vk)
-        character(*) :: nomta
+        character(len=*) :: nomta
         integer :: numeli
-        character(*) :: para
-        character(*) :: mode
+        character(len=*) :: para
+        character(len=*) :: mode
         integer :: vi
         real(kind=8) :: vr
         complex(kind=8) :: vc
-        character(*) :: vk
+        character(len=*) :: vk
     end subroutine tbacce
 end interface

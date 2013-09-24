@@ -18,8 +18,8 @@
 interface
     subroutine oblcre(sdlist, typstz, idnpaz, nbstru)
         character(len=24) :: sdlist
-        character(*) :: typstz
-        character(*) :: idnpaz
+        character(len=*) :: typstz
+        character(len=*) :: idnpaz
         integer :: nbstru
     end subroutine oblcre
 end interface

@@ -18,11 +18,11 @@
 interface
     subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
                       repkz)
-        character(*) :: mdgenz
-        character(*) :: nmsstz
+        character(len=*) :: mdgenz
+        character(len=*) :: nmsstz
         integer :: nusst
-        character(*) :: questi
+        character(len=*) :: questi
         integer :: repi
-        character(*) :: repkz
+        character(len=*) :: repkz
     end subroutine mgutdm
 end interface

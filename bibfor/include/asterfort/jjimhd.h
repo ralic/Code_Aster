@@ -20,12 +20,12 @@ interface
                       iadmi, genri, typei, lt, lonoi)
         integer :: idfic
         integer :: inat
-        character(*) :: crnom
-        character(*) :: ngrp
+        character(len=*) :: crnom
+        character(len=*) :: ngrp
         character(len=24) :: kattr(*)
         integer :: iadmi
-        character(*) :: genri
-        character(*) :: typei
+        character(len=*) :: genri
+        character(len=*) :: typei
         integer :: lt
         integer :: lonoi
     end subroutine jjimhd

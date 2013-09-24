@@ -22,7 +22,7 @@ interface
         integer :: nbcmp
         integer :: numgd
         integer :: ioc
-        character(*) :: motcle
+        character(len=*) :: motcle
         integer :: iopt
         integer :: icod(nbec)
     end subroutine defdda

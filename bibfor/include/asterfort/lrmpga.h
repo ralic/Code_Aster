@@ -24,7 +24,7 @@ interface
         integer :: nbma
         integer :: nrofic
         character(len=19) :: ligrel
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: pgmail(nbma)
         integer :: pgmmil(nbma)
         integer :: indpg(ntypel, npgmax)

@@ -18,9 +18,9 @@
 interface
     subroutine rstran(interp, resu, motcle, iocc, kdisc,&
                       krang, nbdisc, ier)
-        character(*) :: interp
+        character(len=*) :: interp
         character(len=19) :: resu
-        character(*) :: motcle
+        character(len=*) :: motcle
         integer :: iocc
         character(len=19) :: kdisc
         character(len=19) :: krang

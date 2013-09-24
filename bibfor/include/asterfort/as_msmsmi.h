@@ -21,9 +21,9 @@ interface
                       typrep, nocomp, unit, cret)
         aster_int :: fid
         aster_int :: iterat
-        character(*) :: nom
+        character(len=*) :: nom
         aster_int :: dim
-        character(*) :: desc
+        character(len=*) :: desc
         aster_int :: typrep
         character(len=16) :: nocomp(3)
         character(len=16) :: unit(3)

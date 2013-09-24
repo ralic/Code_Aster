@@ -18,11 +18,11 @@
 interface
     subroutine tbcrsv(nomta, baseta, nbpar, nompar, typpar,&
                       nblign)
-        character(*) :: nomta
-        character(*) :: baseta
+        character(len=*) :: nomta
+        character(len=*) :: baseta
         integer :: nbpar
-        character(*) :: nompar(*)
-        character(*) :: typpar(*)
+        character(len=*) :: nompar(*)
+        character(len=*) :: typpar(*)
         integer :: nblign
     end subroutine tbcrsv
 end interface

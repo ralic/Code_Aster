@@ -19,7 +19,7 @@ interface
     subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
                       sddisc, sdstat, solalg, valinc, veasse)
         character(len=8) :: noma
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: defico
         character(len=24) :: resoco
         integer :: numins

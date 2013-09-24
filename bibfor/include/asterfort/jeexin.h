@@ -17,7 +17,7 @@
 !
 interface
     subroutine jeexin(nomlu, iret)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
         integer :: iret
     end subroutine jeexin
 end interface

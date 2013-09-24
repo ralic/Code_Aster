@@ -17,8 +17,8 @@
 !
 interface
     subroutine utreno(mcf, mcs, iocc, ma, noeud)
-        character(*) :: mcf
-        character(*) :: mcs
+        character(len=*) :: mcf
+        character(len=*) :: mcs
         integer :: iocc
         character(len=8) :: ma
         character(len=8) :: noeud

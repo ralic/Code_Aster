@@ -22,14 +22,14 @@ interface
         integer :: nin
         character(len=1) :: stop
         character(len=8) :: poux
-        character(*) :: option
-        character(*) :: caraez
-        character(*) :: ligrel
-        character(*) :: lchin(*)
-        character(*) :: lpain(*)
+        character(len=*) :: option
+        character(len=*) :: caraez
+        character(len=*) :: ligrel
+        character(len=*) :: lchin(*)
+        character(len=*) :: lpain(*)
         integer :: nou
-        character(*) :: lchou(*)
-        character(*) :: lpaou(*)
-        character(*) :: base
+        character(len=*) :: lchou(*)
+        character(len=*) :: lpaou(*)
+        character(len=*) :: base
     end subroutine meceuc
 end interface

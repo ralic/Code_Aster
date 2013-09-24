@@ -17,6 +17,6 @@
 !
 interface
     subroutine caimch(chargz)
-        character(*) :: chargz
+        character(len=*) :: chargz
     end subroutine caimch
 end interface

@@ -18,12 +18,12 @@
 interface
     subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                       base, cesb)
-        character(*) :: cesa
-        character(*) :: typces
-        character(*) :: cesmoz
-        character(*) :: mnogaz
-        character(*) :: celfpz
-        character(*) :: base
-        character(*) :: cesb
+        character(len=*) :: cesa
+        character(len=*) :: typces
+        character(len=*) :: cesmoz
+        character(len=*) :: mnogaz
+        character(len=*) :: celfpz
+        character(len=*) :: base
+        character(len=*) :: cesb
     end subroutine cesces
 end interface

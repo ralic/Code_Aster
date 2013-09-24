@@ -17,8 +17,8 @@
 !
 interface
     subroutine ajrefd(resu1, resu2, action)
-        character(*) :: resu1
-        character(*) :: resu2
-        character(*) :: action
+        character(len=*) :: resu1
+        character(len=*) :: resu2
+        character(len=*) :: action
     end subroutine ajrefd
 end interface

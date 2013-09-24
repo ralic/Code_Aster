@@ -17,9 +17,9 @@
 !
 interface
     subroutine reslgn(ligrel, option, erree, erren)
-        character(*) :: ligrel
+        character(len=*) :: ligrel
         character(len=16) :: option
-        character(*) :: erree
-        character(*) :: erren
+        character(len=*) :: erree
+        character(len=*) :: erren
     end subroutine reslgn
 end interface

@@ -23,7 +23,7 @@ interface
         character(len=8) :: nomcha
         character(len=8) :: nomfct
         integer :: nbinfo
-        character(*) :: lisinz(*)
+        character(len=*) :: lisinz(*)
         integer :: ival
     end subroutine liscli
 end interface

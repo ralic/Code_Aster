@@ -26,7 +26,7 @@ interface
         character(len=8) :: result
         integer :: nbordr
         integer :: iarchi
-        character(*) :: texte
+        character(len=*) :: texte
         integer :: ifm
         real(kind=8) :: t0
         logical :: lcrea

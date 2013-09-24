@@ -18,10 +18,10 @@
 interface
     subroutine dmat3d(fami, mater, instan, poum, igau,&
                       isgau, repere, xyzgau, d)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: mater
         real(kind=8) :: instan
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: igau
         integer :: isgau
         real(kind=8) :: repere(7)

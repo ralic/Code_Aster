@@ -17,7 +17,7 @@
 !
 interface
     subroutine cacoeq(chargz, nomaz)
-        character(*) :: chargz
-        character(*) :: nomaz
+        character(len=*) :: chargz
+        character(len=*) :: nomaz
     end subroutine cacoeq
 end interface

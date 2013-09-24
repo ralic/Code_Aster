@@ -20,7 +20,7 @@ interface
                       nbgrno, nomgno, nbgrma, nomgma, prefix,&
                       typgeo, nomtyp, nmatyp, infmed)
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: nbnoeu
         integer :: nbmail
         character(len=8) :: nomast

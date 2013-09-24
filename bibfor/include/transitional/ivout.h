@@ -21,6 +21,6 @@ interface
         integer :: n
         integer :: ix(*)
         integer :: idigit
-        character(*) :: ifmt
+        character(len=*) :: ifmt
     end subroutine ivout
 end interface

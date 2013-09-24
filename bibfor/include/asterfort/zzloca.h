@@ -18,12 +18,12 @@
 interface
     subroutine zzloca(modele, ligrel, matez, sigma, signo,&
                       chvarc, resu)
-        character(*) :: modele
-        character(*) :: ligrel
-        character(*) :: matez
-        character(*) :: sigma
-        character(*) :: signo
-        character(*) :: chvarc
-        character(*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: ligrel
+        character(len=*) :: matez
+        character(len=*) :: sigma
+        character(len=*) :: signo
+        character(len=*) :: chvarc
+        character(len=*) :: resu
     end subroutine zzloca
 end interface

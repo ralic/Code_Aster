@@ -17,8 +17,8 @@
 !
 interface
     subroutine ajlagr(rigid, masse, masinv)
-        character(*) :: rigid
-        character(*) :: masse
-        character(*) :: masinv
+        character(len=*) :: rigid
+        character(len=*) :: masse
+        character(len=*) :: masinv
     end subroutine ajlagr
 end interface

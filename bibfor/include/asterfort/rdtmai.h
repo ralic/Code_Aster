@@ -21,8 +21,8 @@ interface
         character(len=8) :: noma
         character(len=8) :: nomare
         character(len=1) :: base
-        character(*) :: corrn
-        character(*) :: corrm
+        character(len=*) :: corrn
+        character(len=*) :: corrm
         character(len=1) :: bascor
         integer :: nbmal
         integer :: lima(*)

@@ -17,8 +17,8 @@
 !
 interface
     subroutine jedetc(clas, souch, ipos)
-        character(*) :: clas
-        character(*) :: souch
+        character(len=*) :: clas
+        character(len=*) :: souch
         integer :: ipos
     end subroutine jedetc
 end interface

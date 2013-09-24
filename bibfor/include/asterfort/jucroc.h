@@ -17,8 +17,8 @@
 !
 interface
     subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
-        character(*) :: nomc
-        character(*) :: nooc
+        character(len=*) :: nomc
+        character(len=*) :: nooc
         integer :: nuoc
         integer :: dim
         integer :: ldec

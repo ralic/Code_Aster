@@ -19,11 +19,11 @@ interface
     subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
                       lres, ddlexc)
         integer :: nbcomb
-        character(*) :: typcst(*)
+        character(len=*) :: typcst(*)
         real(kind=8) :: const(*)
         integer :: lmat(*)
-        character(*) :: typres
+        character(len=*) :: typres
         integer :: lres
-        character(*) :: ddlexc
+        character(len=*) :: ddlexc
     end subroutine cbval2
 end interface

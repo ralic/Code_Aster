@@ -22,14 +22,14 @@ interface
                       nomcmp, lsup, borsup, linf, borinf,&
                       lmax, lmin, lresu, formr, ncmp,&
                       nucmp, nive)
-        character(*) :: chamel
-        character(*) :: partie
+        character(len=*) :: chamel
+        character(len=*) :: partie
         integer :: ifi
-        character(*) :: form
-        character(*) :: titre
-        character(*) :: loc
-        character(*) :: nomsd
-        character(*) :: nomsym
+        character(len=*) :: form
+        character(len=*) :: titre
+        character(len=*) :: loc
+        character(len=*) :: nomsd
+        character(len=*) :: nomsym
         integer :: numord
         logical :: lcor
         integer :: nbnot
@@ -37,7 +37,7 @@ interface
         integer :: nbmat
         integer :: nummai(*)
         integer :: nbcmp
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         logical :: lsup
         real(kind=8) :: borsup
         logical :: linf
@@ -45,7 +45,7 @@ interface
         logical :: lmax
         logical :: lmin
         logical :: lresu
-        character(*) :: formr
+        character(len=*) :: formr
         integer :: ncmp
         integer :: nucmp(*)
         integer :: nive

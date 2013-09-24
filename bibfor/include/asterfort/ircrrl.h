@@ -28,8 +28,8 @@ interface
         integer :: dg(*)
         integer :: ncmpmx
         real(kind=8) :: vale(*)
-        character(*) :: nomcmp(*)
-        character(*) :: nomnoe(*)
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: nomnoe(*)
         logical :: lcor
         integer :: ndim
         real(kind=8) :: coor(*)
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: borinf
         logical :: lmax
         logical :: lmin
-        character(*) :: formr
+        character(len=*) :: formr
     end subroutine ircrrl
 end interface

@@ -17,9 +17,9 @@
 interface
     subroutine extrac(interp, prec, crit, nbinst, ti,&
                       temps, y, neq, xtract, ier)
-        character(*), intent(in) :: interp
+        character(len=*), intent(in) :: interp
         real(kind=8), intent(in) :: prec
-        character(*), intent(in) :: crit
+        character(len=*), intent(in) :: crit
         integer, intent(in) :: nbinst
         real(kind=8), intent(in) :: ti(*)
         real(kind=8), intent(in) :: temps

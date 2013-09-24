@@ -22,16 +22,16 @@ interface
                       inst, crit, prec, nrofic, option,&
                       param, nbpgma, nbpgmm, codret)
         character(len=19) :: chanom
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         character(len=4) :: typech
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         character(len=8) :: nomaas
         character(len=8) :: nommod
         character(len=8) :: nomgd
         integer :: typent
         integer :: nbcmpv
-        character(*) :: ncmpva
-        character(*) :: ncmpvm
+        character(len=*) :: ncmpva
+        character(len=*) :: ncmpvm
         character(len=3) :: prolz
         integer :: iinst
         integer :: numpt

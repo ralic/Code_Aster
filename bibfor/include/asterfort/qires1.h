@@ -20,7 +20,7 @@ interface
                       lcharp, lchard, ncharp, nchard, chs,&
                       mate, chvois, tabido, chelem)
         character(len=8) :: modele
-        character(*) :: ligrel
+        character(len=*) :: ligrel
         character(len=24) :: chtime
         character(len=24) :: sigmap
         character(len=24) :: sigmad
@@ -29,7 +29,7 @@ interface
         integer :: ncharp
         integer :: nchard
         character(len=24) :: chs
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=24) :: chvois
         integer :: tabido(5)
         character(len=24) :: chelem

@@ -19,8 +19,8 @@ interface
     subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                       noma, fonree, ndim)
         character(len=8) :: char
-        character(*) :: ligrch
-        character(*) :: ligrmo
+        character(len=*) :: ligrch
+        character(len=*) :: ligrmo
         integer :: igrel
         integer :: inema
         character(len=8) :: noma

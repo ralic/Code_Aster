@@ -17,7 +17,7 @@
 !
 interface
     subroutine cnsimp(cnsz, unite)
-        character(*) :: cnsz
+        character(len=*) :: cnsz
         integer :: unite
     end subroutine cnsimp
 end interface

@@ -21,8 +21,8 @@ interface
         integer :: opt
         character(len=19) :: ligrel
         integer :: nout
-        character(*) :: lchout(*)
+        character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
-        character(*) :: fin
+        character(len=*) :: fin
     end subroutine montee
 end interface

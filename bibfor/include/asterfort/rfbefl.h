@@ -17,6 +17,6 @@
 !
 interface
     subroutine rfbefl(base)
-        character(*) :: base
+        character(len=*) :: base
     end subroutine rfbefl
 end interface

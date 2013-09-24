@@ -17,10 +17,10 @@
 !
 interface
     subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
-        character(*) :: modelz
-        character(*) :: matasz
-        character(*) :: deplaz
+        character(len=*) :: modelz
+        character(len=*) :: matasz
+        character(len=*) :: deplaz
         character(len=19) :: lischa
-        character(*) :: vecelz
+        character(len=*) :: vecelz
     end subroutine vebume
 end interface

@@ -18,7 +18,7 @@
 interface
     subroutine nmimcr(sdimpr, typcoz, valr, laffe)
         character(len=24) :: sdimpr
-        character(*) :: typcoz
+        character(len=*) :: typcoz
         real(kind=8) :: valr
         logical :: laffe
     end subroutine nmimcr

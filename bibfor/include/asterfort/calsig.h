@@ -20,7 +20,7 @@ interface
                       comp, vini, x, dtime, epsd,&
                       detot, nmat, coel, sigi)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: ein(6)

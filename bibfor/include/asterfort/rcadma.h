@@ -19,8 +19,8 @@ interface
     subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
                       iarret)
         integer :: jmat
-        character(*) :: phenom
-        character(*) :: nomres
+        character(len=*) :: phenom
+        character(len=*) :: nomres
         integer :: valres
         integer :: icodre
         integer :: iarret

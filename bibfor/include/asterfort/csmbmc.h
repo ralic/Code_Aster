@@ -17,7 +17,7 @@
 !
 interface
     subroutine csmbmc(nommat, neq, vsmb)
-        character(*) :: nommat
+        character(len=*) :: nommat
         integer :: neq
         complex(kind=8) :: vsmb(*)
     end subroutine csmbmc

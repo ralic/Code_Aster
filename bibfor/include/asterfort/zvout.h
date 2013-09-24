@@ -21,6 +21,6 @@ interface
         integer, intent(in) :: n
         complex(kind=8), intent(in) :: cx(*)
         integer, intent(in) :: idigit
-        character(*), intent(in) :: ifmt
+        character(len=*), intent(in) :: ifmt
     end subroutine zvout
 end interface

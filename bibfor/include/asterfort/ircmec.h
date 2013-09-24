@@ -20,9 +20,9 @@ interface
                       instan, numord, val, ncmpve, nbenty,&
                       nbrepg, nvalec, typent, typgeo, codret)
         integer :: idfimd
-        character(*) :: nochmd
-        character(*) :: nomprf
-        character(*) :: nolopg
+        character(len=*) :: nochmd
+        character(len=*) :: nomprf
+        character(len=*) :: nolopg
         integer :: numpt
         real(kind=8) :: instan
         integer :: numord

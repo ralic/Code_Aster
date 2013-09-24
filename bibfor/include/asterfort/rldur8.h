@@ -19,7 +19,7 @@ interface
     subroutine rldur8(nommat, hcol, adia, ablo, neq,&
                       nbbloc, xsol, nbsol)
         integer :: neq
-        character(*) :: nommat
+        character(len=*) :: nommat
         integer :: hcol(*)
         integer :: adia(*)
         integer :: ablo(*)

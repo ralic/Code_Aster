@@ -20,6 +20,6 @@ interface
         character(len=8) :: char
         character(len=8) :: noma
         integer :: ndim
-        character(*) :: ligrmo
+        character(len=*) :: ligrmo
     end subroutine cbpesa
 end interface

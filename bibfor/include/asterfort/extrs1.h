@@ -18,7 +18,7 @@
 interface
     subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
                       nbarch, nuarch, nbexcl, chexcl, nbnosy)
-        character(*) :: resu0
+        character(len=*) :: resu0
         integer :: nbrang
         integer :: nuordr(*)
         integer :: nbpara

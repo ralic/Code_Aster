@@ -21,7 +21,7 @@ interface
                       jeu, coefac, coefaf, lambda, coefff,&
                       dlagrc, dlagrf, dvite, rese, nrese,&
                       vectee)
-        character(*) :: phasez
+        character(len=*) :: phasez
         integer :: ndim
         integer :: nne
         real(kind=8) :: norm(3)

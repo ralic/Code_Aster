@@ -18,8 +18,8 @@
 interface
     function knindi(long, kn, lkn, nbkn)
         integer :: long
-        character(*) :: kn
-        character(*) :: lkn(*)
+        character(len=*) :: kn
+        character(len=*) :: lkn(*)
         integer :: nbkn
         integer :: knindi
     end function knindi

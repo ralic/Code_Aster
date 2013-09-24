@@ -20,7 +20,7 @@ interface
     subroutine mmhcor(fid, name, numdt, numit, swm,&
                       coo, cret)
         med_int :: fid
-        character(*) :: name
+        character(len=*) :: name
         med_int :: numdt
         med_int :: numit
         med_int :: swm

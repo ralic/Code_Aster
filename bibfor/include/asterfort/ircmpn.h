@@ -21,7 +21,7 @@ interface
                       caimpk, profas, innoce)
         integer :: nbvato
         integer :: ncmprf
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: ncmpve
         integer :: numcmp(ncmprf)
         logical :: exicmp(nbvato)

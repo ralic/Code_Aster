@@ -19,7 +19,7 @@ interface
     subroutine zader2(uplo, n, alpha, x, incx,&
                       y, incy, a, lda)
         integer :: lda
-        character(*) :: uplo
+        character(len=*) :: uplo
         integer :: n
         complex(kind=8) :: alpha
         complex(kind=8) :: x(*)

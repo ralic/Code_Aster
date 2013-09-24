@@ -19,7 +19,7 @@ interface
     subroutine impact(nmtab, nbpt, fn, vn, wk3,&
                       offset, t, elapse, nbchoc, fnmaxa,&
                       fnmmoy, fnmety, npari, lpari, valek)
-        character(*) :: nmtab
+        character(len=*) :: nmtab
         integer :: nbpt
         real(kind=8) :: fn(*)
         real(kind=8) :: vn(*)

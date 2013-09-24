@@ -21,10 +21,10 @@ interface
         integer :: ndim
         logical :: nsymx
         logical :: nsymy
-        character(*) :: noma
-        character(*) :: motcle
+        character(len=*) :: noma
+        character(len=*) :: motcle
         integer :: nbmail
-        character(*) :: noment(*)
+        character(len=*) :: noment(*)
         real(kind=8) :: valpar(*)
     end subroutine pecag3
 end interface

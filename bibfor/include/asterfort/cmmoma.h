@@ -17,8 +17,8 @@
 !
 interface
     subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
-        character(*) :: mailla
-        character(*) :: momanu
+        character(len=*) :: mailla
+        character(len=*) :: momanu
         integer :: nbno
         integer :: nbnoaj
     end subroutine cmmoma

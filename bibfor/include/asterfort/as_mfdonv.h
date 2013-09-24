@@ -21,17 +21,17 @@ interface
                       numdt, numo, pit, nompro, stm,&
                       npr, nomloc, nip, n, cret)
         aster_int :: fid
-        character(*) :: cha
+        character(len=*) :: cha
         aster_int :: typent
         aster_int :: typgeo
-        character(*) :: noma
+        character(len=*) :: noma
         aster_int :: numdt
         aster_int :: numo
         aster_int :: pit
-        character(*) :: nompro
+        character(len=*) :: nompro
         aster_int :: stm
         aster_int :: npr
-        character(*) :: nomloc
+        character(len=*) :: nomloc
         aster_int :: nip
         aster_int :: n
         aster_int :: cret

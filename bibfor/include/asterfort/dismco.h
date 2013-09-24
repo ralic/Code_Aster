@@ -17,10 +17,10 @@
 !
 interface
     subroutine dismco(questi, nomob, repi, repk, ierd)
-        character(*) :: questi
-        character(*) :: nomob
+        character(len=*) :: questi
+        character(len=*) :: nomob
         integer :: repi
-        character(*) :: repk
+        character(len=*) :: repk
         integer :: ierd
     end subroutine dismco
 end interface

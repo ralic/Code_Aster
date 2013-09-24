@@ -18,7 +18,7 @@
 interface
     subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
                       rke, lhaigh, rcorr, dom)
-        character(*) :: nommat
+        character(len=*) :: nommat
         integer :: nbcycl
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)

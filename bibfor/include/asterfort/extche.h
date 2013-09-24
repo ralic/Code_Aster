@@ -27,7 +27,7 @@ interface
         integer :: nbc
         character(len=6) :: indic
         character(len=19) :: nssche
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         integer :: nbnac
         integer :: nnoeud(*)

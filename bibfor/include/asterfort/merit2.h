@@ -20,7 +20,7 @@ interface
                       matel, prefch, numero, base)
         character(len=8) :: modele
         integer :: nchar
-        character(*) :: lchar(*)
+        character(len=*) :: lchar(*)
         character(len=8) :: cara
         character(len=24) :: time
         character(len=19) :: matel

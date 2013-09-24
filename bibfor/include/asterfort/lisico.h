@@ -17,7 +17,7 @@
 !
 interface
     function lisico(genchz, codcha)
-        character(*) :: genchz
+        character(len=*) :: genchz
         integer :: codcha
         logical :: lisico
     end function lisico

@@ -17,9 +17,9 @@
 !
 interface
     subroutine celver(celz, typver, arret, iret)
-        character(*) :: celz
-        character(*) :: typver
-        character(*) :: arret
+        character(len=*) :: celz
+        character(len=*) :: typver
+        character(len=*) :: arret
         integer :: iret
     end subroutine celver
 end interface

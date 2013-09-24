@@ -17,10 +17,10 @@
 !
 interface
     subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
-        character(*) :: mofaz
+        character(len=*) :: mofaz
         integer :: iocc
-        character(*) :: nomaz
-        character(*) :: lisnoz
+        character(len=*) :: nomaz
+        character(len=*) :: lisnoz
         integer :: nbno
     end subroutine cgnoxf
 end interface

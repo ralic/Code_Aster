@@ -18,11 +18,11 @@
 interface
     subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
                       numcmp, nbcmp)
-        character(*) :: nomgd
-        character(*) :: mcfac
+        character(len=*) :: nomgd
+        character(len=*) :: mcfac
         integer :: iocc
         integer :: dim
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         integer :: numcmp(*)
         integer :: nbcmp
     end subroutine utcmp2

@@ -17,6 +17,6 @@
 !
 interface
     subroutine lxcaps(chaine)
-        character(*) :: chaine
+        character(len=*) :: chaine
     end subroutine lxcaps
 end interface

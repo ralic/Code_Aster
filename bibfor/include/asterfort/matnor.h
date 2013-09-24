@@ -20,11 +20,11 @@ interface
                       poum, coefel, coefpl, ndt, nvi,&
                       nr)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imat
-        character(*) :: poum
+        character(len=*) :: poum
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coefpl(nmat)
         integer :: ndt

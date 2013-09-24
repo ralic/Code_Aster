@@ -29,17 +29,17 @@ interface
         integer :: longr(*)
         integer :: ncmpmx
         real(kind=8) :: vale(*)
-        character(*) :: nomgd
-        character(*) :: nomcmp(*)
-        character(*) :: titr
-        character(*) :: nomel(*)
-        character(*) :: loc
+        character(len=*) :: nomgd
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: titr
+        character(len=*) :: nomel(*)
+        character(len=*) :: loc
         integer :: celd(*)
         integer :: nbnoma(*)
         integer :: permut(maxnod, *)
         integer :: typma(*)
-        character(*) :: nomsd
-        character(*) :: nomsym
+        character(len=*) :: nomsd
+        character(len=*) :: nomsym
         integer :: ir
         integer :: nbmat
         integer :: nummai(*)
@@ -48,6 +48,6 @@ interface
         integer :: nucmp(*)
         integer :: nbcmp
         integer :: ncmps(*)
-        character(*) :: nocmpl(*)
+        character(len=*) :: nocmpl(*)
     end subroutine ircers
 end interface

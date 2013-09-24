@@ -21,6 +21,6 @@ interface
         character(len=8) :: noma
         integer :: ipesa
         integer :: ndim
-        character(*) :: ligrmo
+        character(len=*) :: ligrmo
     end subroutine capesa
 end interface

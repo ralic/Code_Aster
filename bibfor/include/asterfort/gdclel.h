@@ -18,7 +18,7 @@
 interface
     subroutine gdclel(fami, kpg, ksp, poum, imate,&
                       young, nu)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=1) :: poum

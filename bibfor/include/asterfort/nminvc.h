@@ -20,7 +20,7 @@ interface
                       sdtime, sddisc, sddyna, valinc, solalg,&
                       lischa, comref, resoco, resocu, numedd,&
                       fonact, parcon, veelem, veasse, measse)
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor

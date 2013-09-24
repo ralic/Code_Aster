@@ -19,7 +19,7 @@
 interface
     subroutine as_mfiope(fid, nom, acces, cret)
         aster_int :: fid
-        character(*) :: nom
+        character(len=*) :: nom
         aster_int :: acces
         aster_int :: cret
     end subroutine as_mfiope

@@ -17,8 +17,8 @@
 !
 interface
     function zerosd(typesd, sd)
-        character(*) :: typesd
-        character(*) :: sd
+        character(len=*) :: typesd
+        character(len=*) :: sd
         logical :: zerosd
     end function zerosd
 end interface

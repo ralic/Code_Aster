@@ -21,6 +21,6 @@ interface
         character(len=19) :: sddyna
         real(kind=8) :: instam
         real(kind=8) :: instap
-        character(*) :: vecasz
+        character(len=*) :: vecasz
     end subroutine nmviss
 end interface

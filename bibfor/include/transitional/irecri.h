@@ -23,22 +23,22 @@ interface
                       nbmat, nummai, nbcmp, nomcmp, lsup,&
                       borsup, linf, borinf, lmax, lmin,&
                       formr, nive, versio)
-        character(*) :: nomcon
-        character(*) :: form
+        character(len=*) :: nomcon
+        character(len=*) :: form
         integer :: ifi
-        character(*) :: titre
+        character(len=*) :: titre
         logical :: lgmsh
         integer :: nbcham
-        character(*) :: cham(*)
-        character(*) :: partie
+        character(len=*) :: cham(*)
+        character(len=*) :: partie
         integer :: nbpara
-        character(*) :: para(*)
+        character(len=*) :: para(*)
         integer :: nbordr
         integer :: ordr(*)
         logical :: lresu
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: iocc
-        character(*) :: cecr
+        character(len=*) :: cecr
         character(len=8) :: tycha
         logical :: lcor
         integer :: nbnot
@@ -46,14 +46,14 @@ interface
         integer :: nbmat
         integer :: nummai(*)
         integer :: nbcmp
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         logical :: lsup
         real(kind=8) :: borsup
         logical :: linf
         real(kind=8) :: borinf
         logical :: lmax
         logical :: lmin
-        character(*) :: formr
+        character(len=*) :: formr
         integer :: nive
         integer :: versio
     end subroutine irecri

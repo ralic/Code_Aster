@@ -17,9 +17,9 @@
 !
 interface 
     subroutine pecapo(resu,modele,cara,nh)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: cara
+        character(len=*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: cara
         integer :: nh
     end subroutine pecapo
-end interface 
+end interface

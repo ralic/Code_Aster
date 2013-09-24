@@ -18,11 +18,11 @@
 interface
     subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
                       icode)
-        character(*) :: kstop
-        character(*) :: nomsd
-        character(*) :: nomsy
+        character(len=*) :: kstop
+        character(len=*) :: nomsd
+        character(len=*) :: nomsy
         integer :: iordr
-        character(*) :: chextr
+        character(len=*) :: chextr
         integer :: icode
     end subroutine rsexch
 end interface

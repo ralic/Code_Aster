@@ -17,7 +17,7 @@
 !
 interface
     subroutine imppiv(nu, ieq)
-        character(*) :: nu
+        character(len=*) :: nu
         integer :: ieq
     end subroutine imppiv
 end interface

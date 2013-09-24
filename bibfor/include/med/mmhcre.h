@@ -21,16 +21,16 @@ interface
                       desc, dtunit, stype, atype, aname,&
                       aunit, cret)
         med_int :: fid
-        character(*) :: name
+        character(len=*) :: name
         med_int :: sdim
         med_int :: mdim
         med_int :: mtype
-        character(*) :: desc
-        character(*) :: dtunit
+        character(len=*) :: desc
+        character(len=*) :: dtunit
         med_int :: stype
         med_int :: atype
-        character(*) :: aname(3)
-        character(*) :: aunit(3)
+        character(len=*) :: aname(3)
+        character(len=*) :: aunit(3)
         med_int :: cret
     end subroutine mmhcre
 end interface

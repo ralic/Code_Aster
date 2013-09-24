@@ -17,8 +17,8 @@
 !
 interface
     subroutine uttcpu(nommes, action, nomlon)
-        character(*) :: nommes
-        character(*) :: action
-        character(*) :: nomlon
+        character(len=*) :: nommes
+        character(len=*) :: action
+        character(len=*) :: nomlon
     end subroutine uttcpu
 end interface

@@ -17,6 +17,6 @@
 !
 interface
     subroutine jecroc(nomlu)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
     end subroutine jecroc
 end interface

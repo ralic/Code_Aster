@@ -17,8 +17,8 @@
 !
 interface
     subroutine celfpg(celz, nomobj, iret)
-        character(*) :: celz
-        character(*) :: nomobj
+        character(len=*) :: celz
+        character(len=*) :: nomobj
         integer :: iret
     end subroutine celfpg
 end interface

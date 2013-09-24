@@ -18,8 +18,8 @@
 interface
     subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
                       poipg)
-        character(*) :: elrefz
-        character(*) :: fapz
+        character(len=*) :: elrefz
+        character(len=*) :: fapz
         integer :: ndim
         integer :: nbpg
         real(kind=8) :: coopg(*)

@@ -22,13 +22,13 @@ interface
                       cret)
         med_int :: fid
         med_int :: it
-        character(*) :: fname
-        character(*) :: mname
+        character(len=*) :: fname
+        character(len=*) :: mname
         med_int :: lmesh
         med_int :: type
-        character(*) :: cname(*)
-        character(*) :: cunit(*)
-        character(*) :: dtunit
+        character(len=*) :: cname(*)
+        character(len=*) :: cunit(*)
+        character(len=*) :: dtunit
         med_int :: nc
         med_int :: cret
     end subroutine mfdfdi

@@ -19,7 +19,7 @@ interface
     subroutine lceiou(fami, kpg, ksp, mat, option,&
                       mu, su, de, ddedt, vim,&
                       vip, r)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mat

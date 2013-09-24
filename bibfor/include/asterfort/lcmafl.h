@@ -21,10 +21,10 @@ interface
                       itbint, nfs, nsg, hsri, nbsys)
         integer :: nsg
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         character(len=16) :: nmater
         integer :: imat
         character(len=16) :: necoul

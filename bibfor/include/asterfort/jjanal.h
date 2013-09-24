@@ -17,10 +17,10 @@
 !
 interface
     subroutine jjanal(condlu, nval, nvalo, lval, cval)
-        character(*) :: condlu
+        character(len=*) :: condlu
         integer :: nval
         integer :: nvalo
         integer :: lval(*)
-        character(*) :: cval(*)
+        character(len=*) :: cval(*)
     end subroutine jjanal
 end interface

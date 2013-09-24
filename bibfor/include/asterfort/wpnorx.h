@@ -21,6 +21,6 @@ interface
         integer :: nbmode
         integer :: exclus(*)
         complex(kind=8) :: vecp(neq, nbmode)
-        character(*) :: resufk(*)
+        character(len=*) :: resufk(*)
     end subroutine wpnorx
 end interface

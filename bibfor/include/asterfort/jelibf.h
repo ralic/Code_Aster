@@ -17,8 +17,8 @@
 !
 interface
     subroutine jelibf(cond, clas, info)
-        character(*) :: cond
-        character(*) :: clas
+        character(len=*) :: cond
+        character(len=*) :: clas
         integer :: info
     end subroutine jelibf
 end interface

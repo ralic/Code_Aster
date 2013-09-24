@@ -24,7 +24,7 @@ interface
         real(kind=8) :: jacob
         integer :: ndim
         integer :: nno
-        character(*) :: phenoz
+        character(len=*) :: phenoz
         real(kind=8) :: btdb(81, 81)
     end subroutine btdbmc
 end interface

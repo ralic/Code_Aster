@@ -23,10 +23,10 @@ interface
         character(len=19) :: max
         character(len=19) :: may
         character(len=19) :: maz
-        character(*) :: model
+        character(len=*) :: model
         character(len=19) :: vesto
-        character(*) :: modmec
-        character(*) :: chamno
+        character(len=*) :: modmec
+        character(len=*) :: chamno
         character(len=14) :: num
         logical :: vrai
         integer :: i

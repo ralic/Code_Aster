@@ -17,7 +17,7 @@
 !
 interface
     subroutine caliel(fonrez, chargz)
-        character(*) :: fonrez
-        character(*) :: chargz
+        character(len=*) :: fonrez
+        character(len=*) :: chargz
     end subroutine caliel
 end interface

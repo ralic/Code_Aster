@@ -18,7 +18,7 @@
 interface
     subroutine jeimpo(unit, nomlu, mess)
         integer :: unit
-        character(*) :: nomlu
-        character(*) :: mess
+        character(len=*) :: nomlu
+        character(len=*) :: mess
     end subroutine jeimpo
 end interface

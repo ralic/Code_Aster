@@ -17,7 +17,7 @@
 !
 interface
     subroutine te0152(option, nomte)
-        character(*) :: option
-        character(*) :: nomte
+        character(len=*) :: option
+        character(len=*) :: nomte
     end subroutine te0152
 end interface

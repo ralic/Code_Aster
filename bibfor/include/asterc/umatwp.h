@@ -24,8 +24,8 @@ interface
                       props, nprops, coords, drot, pnewdt,&
                       celent, dfgrd0, dfgrd1, noel, npt,&
                       layer, kspt, kstep, kinc)
-        character(*) :: nomlib
-        character(*) :: nomsub
+        character(len=*) :: nomlib
+        character(len=*) :: nomsub
         real(kind=8) :: stress(*)
         real(kind=8) :: statev(*)
         real(kind=8) :: ddsdde(*)
@@ -44,7 +44,7 @@ interface
         real(kind=8) :: dtemp
         real(kind=8) :: predef(*)
         real(kind=8) :: dpred(*)
-        character(*) :: cmname
+        character(len=*) :: cmname
         integer :: ndi
         integer :: nshr
         integer :: ntens

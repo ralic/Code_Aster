@@ -20,8 +20,8 @@ interface
                       exitim, time, matel, nh)
         character(len=8) :: modele
         integer :: nchar
-        character(*) :: lchar(*)
-        character(*) :: mate
+        character(len=*) :: lchar(*)
+        character(len=*) :: mate
         character(len=8) :: cara
         logical :: exitim
         real(kind=8) :: time

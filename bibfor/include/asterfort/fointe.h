@@ -18,10 +18,10 @@
 interface
     subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                       resu, ier)
-        character(*), intent(in) :: codmes
-        character(*), intent(in) :: nomf
+        character(len=*), intent(in) :: codmes
+        character(len=*), intent(in) :: nomf
         integer, intent(in) :: nbpu
-        character(*), intent(in) :: nompu(*)
+        character(len=*), intent(in) :: nompu(*)
         real(kind=8), intent(in) :: valpu(*)
         real(kind=8), intent(out) :: resu
         integer, intent(out) :: ier

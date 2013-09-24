@@ -17,7 +17,7 @@
 !
 interface
     subroutine peair1(modele, nbma, lisma, aire, long)
-        character(*) :: modele
+        character(len=*) :: modele
         integer :: nbma
         integer :: lisma(*)
         real(kind=8) :: aire

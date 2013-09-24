@@ -17,9 +17,9 @@
 !
 interface
     subroutine alcart(base, chinz, maz, nomgdz)
-        character(*) :: base
-        character(*) :: chinz
-        character(*) :: maz
-        character(*) :: nomgdz
+        character(len=*) :: base
+        character(len=*) :: chinz
+        character(len=*) :: maz
+        character(len=*) :: nomgdz
     end subroutine alcart
 end interface

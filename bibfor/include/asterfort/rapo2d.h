@@ -17,10 +17,10 @@
 !
 interface
     subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
-        character(*) :: numdlz
+        character(len=*) :: numdlz
         integer :: iocc
-        character(*) :: fonrez
-        character(*) :: lisrez
-        character(*) :: chargz
+        character(len=*) :: fonrez
+        character(len=*) :: lisrez
+        character(len=*) :: chargz
     end subroutine rapo2d
 end interface

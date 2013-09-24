@@ -20,8 +20,8 @@ interface
     subroutine as_mmhear(fid, maa, nom, typent, typgeo,&
                       cret)
         aster_int :: fid
-        character(*) :: maa
-        character(*) :: nom(*)
+        character(len=*) :: maa
+        character(len=*) :: nom(*)
         aster_int :: typent
         aster_int :: typgeo
         aster_int :: cret

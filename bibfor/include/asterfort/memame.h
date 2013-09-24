@@ -19,16 +19,16 @@ interface
     subroutine memame(option, modele, nchar, lchar, mate,&
                       carele, exitim, instan, compor, matelz,&
                       base)
-        character(*) :: option
-        character(*) :: modele
+        character(len=*) :: option
+        character(len=*) :: modele
         integer :: nchar
         character(len=8) :: lchar(*)
-        character(*) :: mate
-        character(*) :: carele
+        character(len=*) :: mate
+        character(len=*) :: carele
         logical :: exitim
         real(kind=8) :: instan
-        character(*) :: compor
-        character(*) :: matelz
+        character(len=*) :: compor
+        character(len=*) :: matelz
         character(len=1) :: base
     end subroutine memame
 end interface

@@ -17,10 +17,10 @@
 !
 interface
     subroutine foimpr(nomf, impr, iul, ind, fonins)
-        character(*) :: nomf
+        character(len=*) :: nomf
         integer :: impr
         integer :: iul
         integer :: ind
-        character(*) :: fonins
+        character(len=*) :: fonins
     end subroutine foimpr
 end interface

@@ -18,7 +18,7 @@
 interface
     subroutine focoat(nomfon, nbfon, nopara, noresu, interp,&
                       prolgd)
-        character(*) :: nomfon(*)
+        character(len=*) :: nomfon(*)
         integer :: nbfon
         character(len=16) :: nopara
         character(len=16) :: noresu

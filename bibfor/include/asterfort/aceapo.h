@@ -24,7 +24,7 @@ interface
         integer :: lmax
         integer :: npoutr
         integer :: nbocc
-        character(*) :: mclf
+        character(len=*) :: mclf
         integer :: nbepo
         integer :: ntyele(*)
         integer :: ivr(*)

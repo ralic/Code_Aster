@@ -23,9 +23,9 @@ interface
         integer :: lonli1
         integer :: lonli2
         real(kind=8) :: dmin0
-        character(*) :: nomaz
-        character(*) :: liso1z
-        character(*) :: liso2z
+        character(len=*) :: nomaz
+        character(len=*) :: liso1z
+        character(len=*) :: liso2z
         integer :: lonlis
     end subroutine pacoa3
 end interface

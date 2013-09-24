@@ -18,7 +18,7 @@
 interface
     subroutine prccm3(nommat, para, sm, sn, sp,&
                       ke, salt, nadm)
-        character(*) :: nommat
+        character(len=*) :: nommat
         real(kind=8) :: para(*)
         real(kind=8) :: sm
         real(kind=8) :: sn

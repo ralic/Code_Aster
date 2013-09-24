@@ -17,7 +17,7 @@
 !
 interface
     subroutine rsrusd(nomsd, iordr)
-        character(*) :: nomsd
+        character(len=*) :: nomsd
         integer :: iordr
     end subroutine rsrusd
 end interface

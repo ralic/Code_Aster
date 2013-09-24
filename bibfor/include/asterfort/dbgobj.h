@@ -17,9 +17,9 @@
 !
 interface
     subroutine dbgobj(ojbz, perm, iunit, mess)
-        character(*) :: ojbz
-        character(*) :: perm
+        character(len=*) :: ojbz
+        character(len=*) :: perm
         integer :: iunit
-        character(*) :: mess
+        character(len=*) :: mess
     end subroutine dbgobj
 end interface

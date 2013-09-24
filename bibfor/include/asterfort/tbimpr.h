@@ -18,12 +18,12 @@
 interface
     subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
                       nparpg, formar)
-        character(*) :: table
-        character(*) :: formaz
+        character(len=*) :: table
+        character(len=*) :: formaz
         integer :: ifr
         integer :: nparim
-        character(*) :: lipaim(*)
+        character(len=*) :: lipaim(*)
         integer :: nparpg
-        character(*) :: formar
+        character(len=*) :: formar
     end subroutine tbimpr
 end interface

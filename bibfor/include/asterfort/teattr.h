@@ -17,10 +17,10 @@
 !
 interface
     subroutine teattr(typel, kstop, noattr, vattr, iret)
-        character(*) :: typel
-        character(*) :: kstop
-        character(*) :: noattr
-        character(*) :: vattr
+        character(len=*) :: typel
+        character(len=*) :: kstop
+        character(len=*) :: noattr
+        character(len=*) :: vattr
         integer :: iret
     end subroutine teattr
 end interface

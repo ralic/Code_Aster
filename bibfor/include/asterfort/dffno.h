@@ -17,7 +17,7 @@
 !
 interface
     subroutine dffno(elrefe, ndim, nno, nnos, dff)
-        character(*) :: elrefe
+        character(len=*) :: elrefe
         integer :: ndim
         integer :: nno
         integer :: nnos

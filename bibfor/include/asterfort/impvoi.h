@@ -17,7 +17,7 @@
 !
 interface
     subroutine impvoi(texte, nbma, iaddvo, iadvoi)
-        character(*) :: texte
+        character(len=*) :: texte
         integer :: nbma
         integer :: iaddvo
         integer :: iadvoi

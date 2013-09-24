@@ -29,7 +29,7 @@ interface
         integer :: nbfreq
         integer :: resufi(mxresf, *)
         real(kind=8) :: resufr(mxresf, *)
-        character(*) :: resufk(mxresf, *)
+        character(len=*) :: resufk(mxresf, *)
         complex(kind=8) :: vecpro(neq, *)
         character(len=19) :: solveu
     end subroutine wp1inv

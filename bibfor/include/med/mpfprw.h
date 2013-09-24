@@ -19,7 +19,7 @@ interface
 #include "aster_types.h"
     subroutine mpfprw(fid, pname, psize, profil, cret)
         med_int :: fid
-        character(*) :: pname
+        character(len=*) :: pname
         med_int :: psize
         med_int :: profil(*)
         med_int :: cret

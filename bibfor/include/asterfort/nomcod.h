@@ -17,7 +17,7 @@
 !
 interface
     subroutine nomcod(nom, num, ic, nc)
-        character(*) :: nom
+        character(len=*) :: nom
         integer :: num
         integer :: ic
         integer :: nc

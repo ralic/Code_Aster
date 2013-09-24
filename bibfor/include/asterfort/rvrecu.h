@@ -17,9 +17,9 @@
 !
 interface
     subroutine rvrecu(mcf, iocc, champ, nomvec)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
-        character(*) :: champ
-        character(*) :: nomvec
+        character(len=*) :: champ
+        character(len=*) :: nomvec
     end subroutine rvrecu
 end interface

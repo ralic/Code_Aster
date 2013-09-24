@@ -24,7 +24,7 @@ interface
         integer :: nbno
         integer :: nbma
         integer :: lima(*)
-        character(*) :: connez
+        character(len=*) :: connez
         integer :: typema(*)
         integer :: milieu(2, mxar, nbno)
         integer :: nomima(12, nbma)

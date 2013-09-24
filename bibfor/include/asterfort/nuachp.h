@@ -17,8 +17,8 @@
 !
 interface
     subroutine nuachp(nuage, lno, chpt)
-        character(*) :: nuage
-        character(*) :: lno
-        character(*) :: chpt
+        character(len=*) :: nuage
+        character(len=*) :: lno
+        character(len=*) :: chpt
     end subroutine nuachp
 end interface

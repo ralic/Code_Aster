@@ -30,7 +30,7 @@ interface
         integer :: adsd
         integer :: adsl
         integer :: adsk
-        character(*) :: partie
+        character(len=*) :: partie
         integer :: tymast
         integer :: modnum(69)
         integer :: nuanom(69, *)

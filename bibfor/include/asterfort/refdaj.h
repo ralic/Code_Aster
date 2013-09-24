@@ -19,9 +19,9 @@ interface
     subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
         character(len=1) :: arret
         character(len=8) :: result
-        character(*) :: numer
-        character(*) :: typre
-        character(*) :: conre(3)
+        character(len=*) :: numer
+        character(len=*) :: typre
+        character(len=*) :: conre(3)
         integer      :: nbordr
         integer      :: codret
     end subroutine refdaj

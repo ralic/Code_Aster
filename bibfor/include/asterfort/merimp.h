@@ -22,7 +22,7 @@ interface
         integer :: nbin
         character(len=24) :: modele
         character(len=24) :: carele
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=24) :: comref
         character(len=24) :: compor
         character(len=24) :: carcri

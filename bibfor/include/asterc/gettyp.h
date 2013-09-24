@@ -17,8 +17,8 @@
 !
 interface
     subroutine gettyp(typast, nbval, txval)
-        character(*) :: typast
+        character(len=*) :: typast
         integer :: nbval
-        character(*) :: txval(*)
+        character(len=*) :: txval(*)
     end subroutine gettyp
 end interface

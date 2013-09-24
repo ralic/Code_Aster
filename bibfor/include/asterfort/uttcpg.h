@@ -17,7 +17,7 @@
 !
 interface
     subroutine uttcpg(action, typimp)
-        character(*) :: action
-        character(*) :: typimp
+        character(len=*) :: action
+        character(len=*) :: typimp
     end subroutine uttcpg
 end interface

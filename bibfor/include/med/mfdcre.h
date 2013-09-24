@@ -20,13 +20,13 @@ interface
     subroutine mfdcre(fid, fname, ftype, ncomp, cname,&
                       cunit, dtunit, mname, cret)
         med_int :: fid
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: ftype
         med_int :: ncomp
-        character(*) :: cname(*)
-        character(*) :: cunit(*)
-        character(*) :: dtunit
-        character(*) :: mname
+        character(len=*) :: cname(*)
+        character(len=*) :: cunit(*)
+        character(len=*) :: dtunit
+        character(len=*) :: mname
         med_int :: cret
     end subroutine mfdcre
 end interface

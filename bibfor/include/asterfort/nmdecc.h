@@ -21,7 +21,7 @@ interface
                       retdec)
         character(len=24) :: nomlis
         logical :: linfo
-        character(*) :: optdez
+        character(len=*) :: optdez
         real(kind=8) :: deltat
         real(kind=8) :: instam
         real(kind=8) :: ratio

@@ -27,7 +27,7 @@ interface
         character(len=4) :: mod45
         integer :: defo
         real(kind=8) :: parmet(*)
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=19) :: sddisc

@@ -18,10 +18,10 @@
 interface
     subroutine jeinif(sti, sto, nomf, clas, nrep,&
                       nbloc, lbloc)
-        character(*) :: sti
-        character(*) :: sto
-        character(*) :: nomf
-        character(*) :: clas
+        character(len=*) :: sti
+        character(len=*) :: sto
+        character(len=*) :: nomf
+        character(len=*) :: clas
         integer :: nrep
         integer :: nbloc
         integer :: lbloc

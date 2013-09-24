@@ -18,12 +18,12 @@
 interface
     subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
                       kpar, ier)
-        character(*) :: nomsd
+        character(len=*) :: nomsd
         integer :: iordr
-        character(*) :: nompar
+        character(len=*) :: nompar
         integer :: ipar
         real(kind=8) :: rpar
-        character(*) :: kpar
+        character(len=*) :: kpar
         integer :: ier
     end subroutine rsvpar
 end interface

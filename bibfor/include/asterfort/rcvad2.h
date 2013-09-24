@@ -20,12 +20,12 @@ interface
                       phenom, nbres, nomres, valres, devres,&
                       icodre)
         integer :: nbres
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: jmat
-        character(*) :: phenom
+        character(len=*) :: phenom
         character(len=8) :: nomres(nbres)
         real(kind=8) :: valres(nbres)
         real(kind=8) :: devres(nbres)

@@ -17,7 +17,7 @@
 !
 interface
     function jxhcod(chain, lrep)
-        character(*) :: chain
+        character(len=*) :: chain
         integer :: lrep
         integer :: jxhcod
     end function jxhcod

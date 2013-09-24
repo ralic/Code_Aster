@@ -22,7 +22,7 @@ interface
         integer :: lgpg
         integer :: npg
         integer :: ndim
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: imat
         character(len=16) :: option
         character(len=16) :: compor(*)

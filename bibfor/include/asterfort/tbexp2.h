@@ -17,7 +17,7 @@
 !
 interface
     subroutine tbexp2(nomta, para)
-        character(*) :: nomta
-        character(*) :: para
+        character(len=*) :: nomta
+        character(len=*) :: para
     end subroutine tbexp2
 end interface

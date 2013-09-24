@@ -17,6 +17,6 @@
 !
 interface
     subroutine jelibe(nomlu)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
     end subroutine jelibe
 end interface

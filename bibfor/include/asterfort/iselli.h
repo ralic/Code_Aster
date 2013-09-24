@@ -17,7 +17,7 @@
 !
 interface
     function iselli(elrefz)
-        character(*) :: elrefz
+        character(len=*) :: elrefz
         logical :: iselli
     end function iselli
 end interface

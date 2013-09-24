@@ -17,6 +17,6 @@
 !
 interface
     subroutine enlird(dateur)
-        character(*) :: dateur
+        character(len=*) :: dateur
     end subroutine enlird
 end interface

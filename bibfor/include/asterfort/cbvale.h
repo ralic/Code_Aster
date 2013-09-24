@@ -19,12 +19,12 @@ interface
     subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
                       lres, ddlexc, matd)
         integer :: nbcomb
-        character(*) :: typcst(*)
+        character(len=*) :: typcst(*)
         real(kind=8) :: const(*)
         integer :: lmat(*)
-        character(*) :: typres
+        character(len=*) :: typres
         integer :: lres
-        character(*) :: ddlexc
+        character(len=*) :: ddlexc
         logical :: matd
     end subroutine cbvale
 end interface

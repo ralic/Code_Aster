@@ -19,10 +19,10 @@ interface
     subroutine utimob(unit, obin, nivo, lattr, lcont,&
                       xous)
         integer :: unit
-        character(*) :: obin
+        character(len=*) :: obin
         integer :: nivo
         logical :: lattr
         logical :: lcont
-        character(*) :: xous
+        character(len=*) :: xous
     end subroutine utimob
 end interface

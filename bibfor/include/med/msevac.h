@@ -20,8 +20,8 @@ interface
     subroutine msevac(fid, mname, aname, atype, anc,&
                       cret)
         med_int :: fid
-        character(*) :: mname
-        character(*) :: aname
+        character(len=*) :: mname
+        character(len=*) :: aname
         med_int :: atype
         med_int :: anc
         med_int :: cret

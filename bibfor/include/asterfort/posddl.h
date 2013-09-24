@@ -18,10 +18,10 @@
 interface
     subroutine posddl(type, resu, noeud, cmp, nunoe,&
                       nuddl)
-        character(*) :: type
-        character(*) :: resu
-        character(*) :: noeud
-        character(*) :: cmp
+        character(len=*) :: type
+        character(len=*) :: resu
+        character(len=*) :: noeud
+        character(len=*) :: cmp
         integer :: nunoe
         integer :: nuddl
     end subroutine posddl

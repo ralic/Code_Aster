@@ -20,13 +20,13 @@ interface
     subroutine msmcre(fid, maa, sdim, mdim, des,&
                       atype, aname, aunit, cret)
         med_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         med_int :: sdim
         med_int :: mdim
-        character(*) :: des
+        character(len=*) :: des
         med_int :: atype
-        character(*) :: aname(3)
-        character(*) :: aunit(3)
+        character(len=*) :: aname(3)
+        character(len=*) :: aunit(3)
         med_int :: cret
     end subroutine msmcre
 end interface

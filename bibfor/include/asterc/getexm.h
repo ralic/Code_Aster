@@ -17,8 +17,8 @@
 !
 interface
     function getexm(motfac, motcle)
-        character(*) :: motfac
-        character(*) :: motcle
+        character(len=*) :: motfac
+        character(len=*) :: motcle
         integer :: getexm
     end function getexm
 end interface

@@ -20,9 +20,9 @@ interface
                       lasse, nbmatr, ltypma, loptme, loptma,&
                       lcalme, lassme)
         character(len=4) :: oper
-        character(*) :: typmaz
-        character(*) :: optcaz
-        character(*) :: optasz
+        character(len=*) :: typmaz
+        character(len=*) :: optcaz
+        character(len=*) :: optasz
         logical :: lcalc
         logical :: lasse
         integer :: nbmatr

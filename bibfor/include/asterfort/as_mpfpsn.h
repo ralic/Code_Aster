@@ -19,7 +19,7 @@
 interface
     subroutine as_mpfpsn(fid, pro, nbval, cret)
         aster_int :: fid
-        character(*) :: pro
+        character(len=*) :: pro
         aster_int :: nbval
         aster_int :: cret
     end subroutine as_mpfpsn

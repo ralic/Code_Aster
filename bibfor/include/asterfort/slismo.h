@@ -17,8 +17,8 @@
 !
 interface
     subroutine slismo(stolcz, stomoz, basz)
-        character(*) :: stolcz
-        character(*) :: stomoz
-        character(*) :: basz
+        character(len=*) :: stolcz
+        character(len=*) :: stomoz
+        character(len=*) :: basz
     end subroutine slismo
 end interface

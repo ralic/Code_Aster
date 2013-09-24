@@ -17,7 +17,7 @@
 !
 interface
     subroutine cormgi(basez, ligrez)
-        character(*) :: basez
-        character(*) :: ligrez
+        character(len=*) :: basez
+        character(len=*) :: ligrez
     end subroutine cormgi
 end interface

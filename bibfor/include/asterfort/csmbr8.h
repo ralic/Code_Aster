@@ -18,7 +18,7 @@
 interface
     subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
                       vsmb)
-        character(*) :: nommat
+        character(len=*) :: nommat
         integer :: ccll(*)
         integer :: ccii(*)
         integer :: neq

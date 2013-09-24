@@ -22,10 +22,10 @@ interface
                       ncatt, ap, nvatt, cret)
         med_int :: fid
         med_int :: it
-        character(*) :: mname
+        character(len=*) :: mname
         med_int :: mgtype
         med_int :: mdim
-        character(*) :: smname
+        character(len=*) :: smname
         med_int :: setype
         med_int :: snnode
         med_int :: sncell

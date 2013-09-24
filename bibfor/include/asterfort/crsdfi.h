@@ -17,8 +17,8 @@
 !
 interface
     subroutine crsdfi(linoch, nbnoch, noidez)
-        character(*) :: linoch(1)
+        character(len=*) :: linoch(1)
         integer :: nbnoch
-        character(*) :: noidez
+        character(len=*) :: noidez
     end subroutine crsdfi
 end interface

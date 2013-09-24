@@ -17,9 +17,9 @@
 !
 interface
     subroutine vtcrem(chamno, matass, base, typc)
-        character(*) :: chamno
-        character(*) :: matass
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: chamno
+        character(len=*) :: matass
+        character(len=*) :: base
+        character(len=*) :: typc
     end subroutine vtcrem
 end interface

@@ -20,7 +20,7 @@ interface
         character(len=19) :: sdappa
         character(len=24) :: defico
         integer :: posnom
-        character(*) :: questz
+        character(len=*) :: questz
         integer :: vali
     end subroutine apninv
 end interface

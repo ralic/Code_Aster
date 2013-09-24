@@ -18,12 +18,12 @@
 interface
     subroutine crchno(champ, prno, gran, noma, base,&
                       typc, nbnoeu, lonval)
-        character(*) :: champ
-        character(*) :: prno
-        character(*) :: gran
-        character(*) :: noma
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: champ
+        character(len=*) :: prno
+        character(len=*) :: gran
+        character(len=*) :: noma
+        character(len=*) :: base
+        character(len=*) :: typc
         integer :: nbnoeu
         integer :: lonval
     end subroutine crchno

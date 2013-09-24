@@ -17,10 +17,10 @@
 !
 interface
     subroutine jepreg(cunit, clas, numerg, cmess, info)
-        character(*) :: cunit
-        character(*) :: clas
+        character(len=*) :: cunit
+        character(len=*) :: clas
         integer :: numerg
-        character(*) :: cmess
+        character(len=*) :: cmess
         integer :: info
     end subroutine jepreg
 end interface

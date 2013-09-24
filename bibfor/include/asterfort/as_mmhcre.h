@@ -20,11 +20,11 @@ interface
     subroutine as_mmhcre(fid, nom, dim, type, desc,&
                       descdt, typrep, nocomp, unit, cret)
         aster_int :: fid
-        character(*) :: nom
+        character(len=*) :: nom
         aster_int :: dim
         aster_int :: type
-        character(*) :: desc
-        character(*) :: descdt
+        character(len=*) :: desc
+        character(len=*) :: descdt
         aster_int :: typrep
         character(len=16) :: nocomp(3)
         character(len=16) :: unit(3)

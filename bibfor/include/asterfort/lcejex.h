@@ -20,7 +20,7 @@ interface
                       option, am, da, sigma, dsidep,&
                       vim, vip)
         integer :: ndim
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mate

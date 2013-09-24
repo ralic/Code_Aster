@@ -20,7 +20,7 @@ interface
                       y)
         integer :: m
         integer :: n
-        character(*) :: cumul
+        character(len=*) :: cumul
         real(kind=8) :: a(n, m)
         real(kind=8) :: x(m)
         real(kind=8) :: y(n)

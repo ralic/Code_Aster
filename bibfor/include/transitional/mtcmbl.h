@@ -19,12 +19,12 @@ interface
     subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
                       ddlexc, numedd, elim)
         integer :: nbcomb
-        character(*) :: typcst(nbcomb)
+        character(len=*) :: typcst(nbcomb)
         real(kind=8) :: const(*)
-        character(*) :: limat(nbcomb)
-        character(*) :: matrez
-        character(*) :: ddlexc
-        character(*) :: numedd
+        character(len=*) :: limat(nbcomb)
+        character(len=*) :: matrez
+        character(len=*) :: ddlexc
+        character(len=*) :: numedd
         character(len=5) :: elim
     end subroutine mtcmbl
 end interface

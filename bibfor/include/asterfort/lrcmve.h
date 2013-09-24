@@ -25,24 +25,24 @@ interface
         integer :: nbma
         integer :: npgmax
         integer :: ntypel
-        character(*) :: ntvale
+        character(len=*) :: ntvale
         integer :: nmatyp
         integer :: nbnoma
-        character(*) :: ntproa
+        character(len=*) :: ntproa
         integer :: lgproa
         integer :: ncmprf
-        character(*) :: nomcmr(*)
+        character(len=*) :: nomcmr(*)
         integer :: indpg(ntypel, npgmax)
         integer :: nbcmfi
-        character(*) :: nmcmfi
+        character(len=*) :: nmcmfi
         integer :: nbcmpv
-        character(*) :: ncmpvm
-        character(*) :: numcmp
+        character(len=*) :: ncmpvm
+        character(len=*) :: numcmp
         integer :: jnumma
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: npgma(nbma)
         integer :: npgmm(nbma)
-        character(*) :: typech
+        character(len=*) :: typech
         integer :: nutyma
         integer :: adsl
         integer :: adsv

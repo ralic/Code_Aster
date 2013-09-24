@@ -19,7 +19,7 @@ interface
     subroutine ethdst(fami, nno, ndim, nbsig, npg,&
                       ipoids, ivf, idfde, xyz, depl,&
                       instan, repere, mater, option, enthth)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: nno
         integer :: ndim
         integer :: nbsig

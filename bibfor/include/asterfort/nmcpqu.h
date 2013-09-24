@@ -18,8 +18,8 @@
 interface
     subroutine nmcpqu(compor, nomcmz, nompaz, exist)
         character(len=19) :: compor
-        character(*) :: nomcmz
-        character(*) :: nompaz
+        character(len=*) :: nomcmz
+        character(len=*) :: nompaz
         logical :: exist
     end subroutine nmcpqu
 end interface

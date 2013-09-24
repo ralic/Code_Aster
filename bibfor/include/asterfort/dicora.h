@@ -18,8 +18,8 @@
 interface
     subroutine dicora(option, nomte, ndim, nbt, nno,&
                       nc, ulm, dul, pgl, iret)
-        character(*) :: option
-        character(*) :: nomte
+        character(len=*) :: option
+        character(len=*) :: nomte
         integer :: ndim
         integer :: nbt
         integer :: nno

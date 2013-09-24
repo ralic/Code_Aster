@@ -19,7 +19,7 @@
 interface
     subroutine as_mfdncn(fid, cha, n, cret)
         aster_int :: fid
-        character(*) :: cha
+        character(len=*) :: cha
         aster_int :: n
         aster_int :: cret
     end subroutine as_mfdncn

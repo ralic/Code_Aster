@@ -18,14 +18,14 @@
 interface
     subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
                       trepos, nbclas, nomres, loptio)
-        character(*) :: trange
+        character(len=*) :: trange
         integer :: nbbloc
         real(kind=8) :: tdebut
         real(kind=8) :: tfin
         real(kind=8) :: offset
         real(kind=8) :: trepos
         integer :: nbclas
-        character(*) :: nomres
+        character(len=*) :: nomres
         logical :: loptio
     end subroutine pochoc
 end interface

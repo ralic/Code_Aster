@@ -20,6 +20,6 @@ interface
         integer, intent(in) :: nbres
         integer, intent(in) :: iarret
         integer, intent(in) :: icodre(nbres)
-        character(*), intent(in) :: nomres(nbres)
+        character(len=*), intent(in) :: nomres(nbres)
     end subroutine rcvals
 end interface

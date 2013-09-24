@@ -17,7 +17,7 @@
 !
 interface
     function jevtbl(questi)
-        character(*) :: questi
+        character(len=*) :: questi
         real(kind=8) :: jevtbl
     end function jevtbl
 end interface

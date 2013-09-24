@@ -18,9 +18,9 @@
 interface
     subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
                       ndim, codret)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: idfimd
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: option
         logical :: existm
         integer :: ndim

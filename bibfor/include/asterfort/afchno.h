@@ -19,17 +19,17 @@ interface
     subroutine afchno(chamn, base, gran, noma, nbnoeu,&
                       nbcpno, desc, lonval, typval, rval,&
                       cval, kval)
-        character(*) :: chamn
-        character(*) :: base
-        character(*) :: gran
-        character(*) :: noma
+        character(len=*) :: chamn
+        character(len=*) :: base
+        character(len=*) :: gran
+        character(len=*) :: noma
         integer :: nbnoeu
         integer :: nbcpno(*)
         integer :: desc(*)
         integer :: lonval
-        character(*) :: typval
+        character(len=*) :: typval
         real(kind=8) :: rval(*)
         complex(kind=8) :: cval(*)
-        character(*) :: kval(*)
+        character(len=*) :: kval(*)
     end subroutine afchno
 end interface

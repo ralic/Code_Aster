@@ -21,7 +21,7 @@ interface
                       epsm, deps, sigm, vim, option,&
                       sigp, vip, tampon, typmod, icomp,&
                       nvi, numlc, dsidep, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

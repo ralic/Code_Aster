@@ -17,8 +17,8 @@
 !
 interface
     subroutine resvoi(moz, maz, chvoiz)
-        character(*) :: moz
-        character(*) :: maz
-        character(*) :: chvoiz
+        character(len=*) :: moz
+        character(len=*) :: maz
+        character(len=*) :: chvoiz
     end subroutine resvoi
 end interface

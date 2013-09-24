@@ -23,7 +23,7 @@ interface
                       typech, nomamd, nomtyp, modnum, nuanom,&
                       codret)
         integer :: nbimpr
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         character(len=64) :: nochmd
         integer :: existc
         integer :: ncmprf
@@ -34,16 +34,16 @@ interface
         integer :: adsv
         integer :: adsl
         integer :: adsk
-        character(*) :: partie
+        character(len=*) :: partie
         integer :: ncmpve
         character(len=24) :: ntlcmp
         character(len=24) :: ntncmp
         character(len=24) :: ntucmp
         character(len=24) :: ntproa
         integer :: caimpi(10, nbimpr)
-        character(*) :: caimpk(3, nbimpr)
+        character(len=*) :: caimpk(3, nbimpr)
         character(len=8) :: typech
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         character(len=8) :: nomtyp(*)
         integer :: modnum(69)
         integer :: nuanom(69, *)

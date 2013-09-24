@@ -18,8 +18,8 @@
 interface
     subroutine elref4(elrz, famil, ndim, nno, nnos,&
                       npg, ipoids, ivf, idfde, jgano)
-        character(*) :: elrz
-        character(*) :: famil
+        character(len=*) :: elrz
+        character(len=*) :: famil
         integer :: ndim
         integer :: nno
         integer :: nnos

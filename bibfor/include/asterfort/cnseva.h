@@ -18,8 +18,8 @@
 interface
     subroutine cnseva(cnsf, npara, lpara, cnsr)
         integer :: npara
-        character(*) :: cnsf
-        character(*) :: lpara(npara)
-        character(*) :: cnsr
+        character(len=*) :: cnsf
+        character(len=*) :: lpara(npara)
+        character(len=*) :: cnsr
     end subroutine cnseva
 end interface

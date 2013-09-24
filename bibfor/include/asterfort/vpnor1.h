@@ -19,7 +19,7 @@ interface
     subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
                       isign, numddl, coef)
         integer :: neq
-        character(*) :: norm
+        character(len=*) :: norm
         integer :: nbmode
         integer :: ddlexc(*)
         real(kind=8) :: vecpro(neq, *)

@@ -17,6 +17,6 @@
 !
 interface
     subroutine cargeo(mailla)
-        character(*) :: mailla
+        character(len=*) :: mailla
     end subroutine cargeo
 end interface

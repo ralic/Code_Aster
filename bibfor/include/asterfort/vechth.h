@@ -18,13 +18,13 @@
 interface
     subroutine vechth(modelz, chargz, infocz, carelz, matez,&
                       instz, chtnz, vecelz)
-        character(*) :: modelz
-        character(*) :: chargz
-        character(*) :: infocz
-        character(*) :: carelz
-        character(*) :: matez
-        character(*) :: instz
-        character(*) :: chtnz
-        character(*) :: vecelz
+        character(len=*) :: modelz
+        character(len=*) :: chargz
+        character(len=*) :: infocz
+        character(len=*) :: carelz
+        character(len=*) :: matez
+        character(len=*) :: instz
+        character(len=*) :: chtnz
+        character(len=*) :: vecelz
     end subroutine vechth
 end interface

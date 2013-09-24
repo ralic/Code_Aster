@@ -17,9 +17,9 @@
 !
 interface
     subroutine cnsprm(cns1z, basez, cns2z, iret)
-        character(*) :: cns1z
-        character(*) :: basez
-        character(*) :: cns2z
+        character(len=*) :: cns1z
+        character(len=*) :: basez
+        character(len=*) :: cns2z
         integer :: iret
     end subroutine cnsprm
 end interface

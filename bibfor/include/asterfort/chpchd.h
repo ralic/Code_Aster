@@ -18,11 +18,11 @@
 interface
     subroutine chpchd(chin, type, celmod, prol0, base,&
                       chou)
-        character(*) :: chin
-        character(*) :: type
-        character(*) :: celmod
+        character(len=*) :: chin
+        character(len=*) :: type
+        character(len=*) :: celmod
         character(len=3) :: prol0
-        character(*) :: base
-        character(*) :: chou
+        character(len=*) :: base
+        character(len=*) :: chou
     end subroutine chpchd
 end interface

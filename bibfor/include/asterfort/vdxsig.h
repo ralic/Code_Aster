@@ -19,7 +19,7 @@ interface
     subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                       sigmpg, effgt)
         character(len=16) :: nomte
-        character(*) :: option
+        character(len=*) :: option
         real(kind=8) :: xi(3, 9)
         integer :: nb1
         integer :: npgsr

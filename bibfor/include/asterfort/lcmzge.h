@@ -19,7 +19,7 @@ interface
     subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
                       imate, epstm, depst, vim, option,&
                       sig, vip, dsidpt, proj)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

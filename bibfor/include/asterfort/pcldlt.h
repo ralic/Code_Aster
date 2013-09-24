@@ -17,9 +17,9 @@
 !
 interface
     subroutine pcldlt(matf, mat, niremp, bas)
-        character(*) :: matf
-        character(*) :: mat
+        character(len=*) :: matf
+        character(len=*) :: mat
         integer :: niremp
-        character(*) :: bas
+        character(len=*) :: bas
     end subroutine pcldlt
 end interface

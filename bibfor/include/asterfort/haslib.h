@@ -17,7 +17,7 @@
 !
 interface
     subroutine haslib(libraz, iret)
-        character(*) :: libraz
+        character(len=*) :: libraz
         integer :: iret
     end subroutine haslib
 end interface

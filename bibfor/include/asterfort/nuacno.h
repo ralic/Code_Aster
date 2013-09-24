@@ -17,8 +17,8 @@
 !
 interface
     subroutine nuacno(nuage, lno, chno)
-        character(*) :: nuage
-        character(*) :: lno
-        character(*) :: chno
+        character(len=*) :: nuage
+        character(len=*) :: lno
+        character(len=*) :: chno
     end subroutine nuacno
 end interface

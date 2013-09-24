@@ -20,7 +20,7 @@ interface
                       nb, det, iret)
         integer :: nb
         integer :: dim
-        character(*) :: cara
+        character(len=*) :: cara
         real(kind=8) :: a(dim, dim)
         real(kind=8) :: b(dim, nb)
         integer :: nordre

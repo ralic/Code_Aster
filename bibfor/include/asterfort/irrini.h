@@ -20,7 +20,7 @@ interface
                       mod, nmat, materf, yd, deps,&
                       dy)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: typess

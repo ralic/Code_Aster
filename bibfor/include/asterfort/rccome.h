@@ -17,9 +17,9 @@
 !
 interface
     subroutine rccome(nommat, pheno, phenom, icodre)
-        character(*), intent(in) :: nommat
-        character(*), intent(in) :: pheno
-        character(*), intent(out) :: phenom
+        character(len=*), intent(in) :: nommat
+        character(len=*), intent(in) :: pheno
+        character(len=*), intent(out) :: phenom
         integer, intent(out) :: icodre
     end subroutine rccome
 end interface

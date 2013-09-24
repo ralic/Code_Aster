@@ -20,12 +20,12 @@ interface
                       materi, e, sigm, epsm, deps,&
                       vim, sigp, vip, dsde, crildc,&
                       codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: option
         integer :: imate
-        character(*) :: materi
+        character(len=*) :: materi
         real(kind=8) :: e
         real(kind=8) :: sigm
         real(kind=8) :: epsm

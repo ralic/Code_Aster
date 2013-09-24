@@ -17,8 +17,8 @@
 !
 interface
     subroutine rsnume(resu, nomsy, nu)
-        character(*) :: resu
-        character(*) :: nomsy
-        character(*) :: nu
+        character(len=*) :: resu
+        character(len=*) :: nomsy
+        character(len=*) :: nu
     end subroutine rsnume
 end interface

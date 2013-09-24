@@ -24,7 +24,7 @@ interface
         integer :: neq
         integer :: nbsup
         character(len=16) :: nomsy
-        character(*) :: psmo
+        character(len=*) :: psmo
         logical :: monoap
         logical :: muapde
         integer :: nsupp(*)
@@ -32,7 +32,7 @@ interface
         real(kind=8) :: vecmod(neq, *)
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: spectr(*)
-        character(*) :: nomsup(nbsup, *)
+        character(len=*) :: nomsup(nbsup, *)
         real(kind=8) :: reasup(nbsup, nbmode, *)
         real(kind=8) :: recmor(nbsup, neq, *)
         real(kind=8) :: recmop(nbsup, neq, *)

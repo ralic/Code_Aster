@@ -17,8 +17,8 @@
 !
 interface
     subroutine cnsdot(cns1z, cns2z, pscal, ier)
-        character(*) :: cns1z
-        character(*) :: cns2z
+        character(len=*) :: cns1z
+        character(len=*) :: cns2z
         real(kind=8) :: pscal
         integer :: ier
     end subroutine cnsdot

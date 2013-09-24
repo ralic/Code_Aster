@@ -17,10 +17,10 @@
 !
 interface
     subroutine meriac(modelz, nchar, lchar, mate, matelz)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: nchar
         character(len=8) :: lchar(*)
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=19) :: matelz
     end subroutine meriac
 end interface

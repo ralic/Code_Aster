@@ -17,9 +17,9 @@
 !
 interface
     subroutine imprsd(typesd, nomsd, ific, titre)
-        character(*) :: typesd
-        character(*) :: nomsd
+        character(len=*) :: typesd
+        character(len=*) :: nomsd
         integer :: ific
-        character(*) :: titre
+        character(len=*) :: titre
     end subroutine imprsd
 end interface

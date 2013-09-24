@@ -27,7 +27,7 @@ interface
         character(len=19) :: chsol
         integer :: niter
         real(kind=8) :: epsi
-        character(*) :: criter
+        character(len=*) :: criter
         real(kind=8) :: testco
         integer :: nbreor
         character(len=24) :: tyreor

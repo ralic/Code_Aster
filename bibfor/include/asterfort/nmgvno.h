@@ -27,7 +27,7 @@ interface
         integer :: nno2
         integer :: nno1
         integer :: ndim
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: iw
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)

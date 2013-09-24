@@ -18,15 +18,15 @@
 interface
     subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                       typpar, vi, vr, vc, vk)
-        character(*) :: tabout
-        character(*) :: basout
+        character(len=*) :: tabout
+        character(len=*) :: basout
         integer :: ntab
-        character(*) :: ltabin(*)
-        character(*) :: para
-        character(*) :: typpar
+        character(len=*) :: ltabin(*)
+        character(len=*) :: para
+        character(len=*) :: typpar
         integer :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
-        character(*) :: vk(*)
+        character(len=*) :: vk(*)
     end subroutine tbfutb
 end interface

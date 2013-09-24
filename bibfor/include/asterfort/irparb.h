@@ -17,10 +17,10 @@
 !
 interface
     subroutine irparb(resu, nbin, parin, nomjv, nbout)
-        character(*) :: resu
+        character(len=*) :: resu
         integer :: nbin
-        character(*) :: parin(*)
-        character(*) :: nomjv
+        character(len=*) :: parin(*)
+        character(len=*) :: nomjv
         integer :: nbout
     end subroutine irparb
 end interface

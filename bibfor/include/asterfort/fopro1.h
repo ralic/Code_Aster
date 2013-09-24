@@ -17,9 +17,9 @@
 !
 interface
     subroutine fopro1(vec, i, prolgd, interp)
-        character(*) :: vec(*)
+        character(len=*) :: vec(*)
         integer :: i
-        character(*) :: prolgd
-        character(*) :: interp
+        character(len=*) :: prolgd
+        character(len=*) :: interp
     end subroutine fopro1
 end interface

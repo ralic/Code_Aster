@@ -17,6 +17,6 @@
 !
 interface
     subroutine cesver(cesz)
-        character(*) :: cesz
+        character(len=*) :: cesz
     end subroutine cesver
 end interface

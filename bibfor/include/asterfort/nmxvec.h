@@ -21,7 +21,7 @@ interface
                       solalg, lischa, comref, resoco, resocu,&
                       numedd, parcon, veelem, veasse, measse,&
                       nbvect, ltypve, lcalve, loptve, lassve)
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor

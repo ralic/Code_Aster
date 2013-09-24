@@ -21,10 +21,10 @@ interface
                       unit, nseqca, cret)
         aster_int :: fid
         aster_int :: ind
-        character(*) :: cha
+        character(len=*) :: cha
         aster_int :: type
-        character(*) :: comp(*)
-        character(*) :: unit(*)
+        character(len=*) :: comp(*)
+        character(len=*) :: unit(*)
         aster_int :: nseqca
         aster_int :: cret
     end subroutine as_mfdfdi

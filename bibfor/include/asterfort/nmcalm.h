@@ -21,17 +21,17 @@ interface
                       solalg, optmaz, base, meelem, defico,&
                       resoco, matele)
         character(len=6) :: typmat
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=19) :: lischa
-        character(*) :: mate
-        character(*) :: carele
+        character(len=*) :: mate
+        character(len=*) :: carele
         character(len=24) :: compor
         real(kind=8) :: instam
         real(kind=8) :: instap
         character(len=24) :: carcri
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
-        character(*) :: optmaz
+        character(len=*) :: optmaz
         character(len=1) :: base
         character(len=19) :: meelem(*)
         character(len=24) :: defico

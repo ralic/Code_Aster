@@ -17,8 +17,8 @@
 !
 interface
     subroutine rscopi(base, sd1, sd2)
-        character(*) :: base
-        character(*) :: sd1
-        character(*) :: sd2
+        character(len=*) :: base
+        character(len=*) :: sd1
+        character(len=*) :: sd2
     end subroutine rscopi
 end interface

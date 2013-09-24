@@ -27,16 +27,16 @@ interface
         integer :: dg(*)
         integer :: ncmpmx
         real(kind=8) :: vale(*)
-        character(*) :: nomcmp(*)
-        character(*) :: titr
-        character(*) :: nomnoe(*)
-        character(*) :: nomsd
-        character(*) :: nomsym
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: titr
+        character(len=*) :: nomnoe(*)
+        character(len=*) :: nomsd
+        character(len=*) :: nomsym
         integer :: ir
         integer :: numnoe(*)
         logical :: lmasu
         integer :: nbcmp
         integer :: ncmps(*)
-        character(*) :: nocmpl(*)
+        character(len=*) :: nocmpl(*)
     end subroutine irdrsr
 end interface

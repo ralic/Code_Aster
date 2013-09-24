@@ -17,6 +17,6 @@
 !
 interface
     subroutine rfmge1(modgen)
-        character(*) :: modgen
+        character(len=*) :: modgen
     end subroutine rfmge1
 end interface

@@ -18,15 +18,15 @@
 interface
     subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                       exitim, time, matelz, nh, basez)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: nchar
-        character(*) :: lchar(*)
-        character(*) :: mate
-        character(*) :: caraz
+        character(len=*) :: lchar(*)
+        character(len=*) :: mate
+        character(len=*) :: caraz
         logical :: exitim
         real(kind=8) :: time
-        character(*) :: matelz
+        character(len=*) :: matelz
         integer :: nh
-        character(*) :: basez
+        character(len=*) :: basez
     end subroutine me2mme
 end interface

@@ -19,9 +19,9 @@ interface
     subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                       depmoi, depdel, instam, compor, carcri,&
                       mesuiv)
-        character(*) :: modelz
-        character(*) :: carelz
-        character(*) :: mate
+        character(len=*) :: modelz
+        character(len=*) :: carelz
+        character(len=*) :: mate
         character(len=19) :: lischa
         real(kind=8) :: instap
         character(len=19) :: depmoi

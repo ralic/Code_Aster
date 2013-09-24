@@ -29,9 +29,9 @@ interface
         integer :: nbgrma
         integer :: jnogma
         integer :: jlggma
-        character(*) :: nomgro
-        character(*) :: numgro
-        character(*) :: nument
+        character(len=*) :: nomgro
+        character(len=*) :: numgro
+        character(len=*) :: nument
         integer :: nbfam
     end subroutine lrmgrp
 end interface

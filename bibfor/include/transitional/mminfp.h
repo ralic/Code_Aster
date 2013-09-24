@@ -20,7 +20,7 @@ interface
                       lrep)
         integer :: izone
         character(len=24) :: defico
-        character(*) :: questz
+        character(len=*) :: questz
         integer :: irep(*)
         real(kind=8) :: rrep(*)
         logical :: lrep(*)

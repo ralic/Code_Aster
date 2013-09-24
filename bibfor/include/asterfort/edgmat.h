@@ -20,7 +20,7 @@ interface
                       zalpha, temp, dt, mum, mu,&
                       troikm, troisk, alpham, alphap, ani,&
                       m, n, gamma)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imat

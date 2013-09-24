@@ -17,8 +17,8 @@
 !
 interface
     subroutine modexi(modelz, nomodz, iexi)
-        character(*) :: modelz
-        character(*) :: nomodz
+        character(len=*) :: modelz
+        character(len=*) :: nomodz
         integer :: iexi
     end subroutine modexi
 end interface

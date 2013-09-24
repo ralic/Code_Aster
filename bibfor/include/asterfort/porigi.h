@@ -17,7 +17,7 @@
 !
 interface
     subroutine porigi(nomte, e, xnu, klv)
-        character(*) :: nomte
+        character(len=*) :: nomte
         real(kind=8) :: e
         real(kind=8) :: xnu
         real(kind=8) :: klv(*)

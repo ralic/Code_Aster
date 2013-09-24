@@ -17,7 +17,7 @@
 !
 interface
     subroutine mechti(noma, inst, deltat, theta, chtime)
-        character(*) :: noma
+        character(len=*) :: noma
         real(kind=8) :: inst
         real(kind=8) :: deltat
         real(kind=8) :: theta

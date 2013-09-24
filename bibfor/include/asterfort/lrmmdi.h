@@ -20,7 +20,7 @@ interface
                       nmatyp, nbnoeu, nbmail, nbnoma, descfi,&
                       adapma)
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: typgeo(*)
         character(len=8) :: nomtyp(*)
         integer :: nnotyp(*)
@@ -28,7 +28,7 @@ interface
         integer :: nbnoeu
         integer :: nbmail
         integer :: nbnoma
-        character(*) :: descfi
-        character(*) :: adapma
+        character(len=*) :: descfi
+        character(len=*) :: adapma
     end subroutine lrmmdi
 end interface

@@ -28,16 +28,16 @@ interface
         integer :: longr(*)
         integer :: ncmpmx
         complex(kind=8) :: vale(*)
-        character(*) :: nomcmp(*)
-        character(*) :: titr
-        character(*) :: nomel(*)
-        character(*) :: loc
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: titr
+        character(len=*) :: nomel(*)
+        character(len=*) :: loc
         integer :: celd(*)
         integer :: nbnoma(*)
         integer :: permut(maxnod, *)
         integer :: typma(*)
-        character(*) :: nomsd
-        character(*) :: nomsym
+        character(len=*) :: nomsd
+        character(len=*) :: nomsym
         integer :: ir
         integer :: nbmat
         integer :: nummai(*)

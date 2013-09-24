@@ -18,7 +18,7 @@
 interface
     subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
                       iret, impr, ifmump, prepos, pcentp)
-        character(*) :: action
+        character(len=*) :: action
         integer :: kxmps
         real(kind=8) :: rsolu(*)
         character(len=19) :: vcine

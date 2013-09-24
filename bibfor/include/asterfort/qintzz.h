@@ -18,13 +18,13 @@
 interface
     subroutine qintzz(modele, ligrel, matez, sigmap, sigmad,&
                       signop, signod, resu)
-        character(*) :: modele
-        character(*) :: ligrel
-        character(*) :: matez
-        character(*) :: sigmap
-        character(*) :: sigmad
-        character(*) :: signop
-        character(*) :: signod
-        character(*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: ligrel
+        character(len=*) :: matez
+        character(len=*) :: sigmap
+        character(len=*) :: sigmad
+        character(len=*) :: signop
+        character(len=*) :: signod
+        character(len=*) :: resu
     end subroutine qintzz
 end interface

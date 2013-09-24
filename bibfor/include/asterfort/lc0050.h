@@ -25,7 +25,7 @@ interface
         integer :: nwkout
         integer :: nwkin
         integer :: nvi
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

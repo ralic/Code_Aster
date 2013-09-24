@@ -19,7 +19,7 @@ interface
     subroutine imprel(titre, nbterm, coef, lisddl, lisno,&
                       beta)
         integer :: nbterm
-        character(*) :: titre
+        character(len=*) :: titre
         real(kind=8) :: coef(nbterm)
         character(len=8) :: lisddl(nbterm)
         character(len=8) :: lisno(nbterm)

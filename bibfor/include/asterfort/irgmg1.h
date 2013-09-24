@@ -25,7 +25,7 @@ interface
         integer :: tabd(*)
         integer :: tabl(*)
         integer :: tabv(*)
-        character(*) :: partie
+        character(len=*) :: partie
         integer :: jtype
         integer :: nbno
         integer :: icmp

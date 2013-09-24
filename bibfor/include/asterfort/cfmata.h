@@ -22,9 +22,9 @@ interface
         integer :: neq
         integer :: nbliai
         integer :: nmult
-        character(*) :: numedz
-        character(*) :: matelz
-        character(*) :: numecz
-        character(*) :: matriz
+        character(len=*) :: numedz
+        character(len=*) :: matelz
+        character(len=*) :: numecz
+        character(len=*) :: matriz
     end subroutine cfmata
 end interface

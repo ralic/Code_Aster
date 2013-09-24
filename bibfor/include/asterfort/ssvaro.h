@@ -19,7 +19,7 @@ interface
     subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
                       iadm1, iadm2)
         real(kind=8) :: l(6, 6)
-        character(*) :: sens
+        character(len=*) :: sens
         logical :: matrix
         character(len=4) :: typnoe
         character(len=8) :: nomacr

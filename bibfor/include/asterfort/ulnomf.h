@@ -17,9 +17,9 @@
 !
 interface
     function ulnomf(nomfic, kacc, typef)
-        character(*) :: nomfic
-        character(*) :: kacc
-        character(*) :: typef
+        character(len=*) :: nomfic
+        character(len=*) :: kacc
+        character(len=*) :: typef
         integer :: ulnomf
     end function ulnomf
 end interface

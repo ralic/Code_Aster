@@ -24,8 +24,8 @@ interface
         character(len=24) :: gma2
         real(kind=8) :: tran(3)
         real(kind=8) :: prec
-        character(*) :: lima1
-        character(*) :: lima2
+        character(len=*) :: lima1
+        character(len=*) :: lima2
         integer :: linoeu(*)
     end subroutine crpcvg
 end interface

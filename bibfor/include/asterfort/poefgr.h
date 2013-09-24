@@ -18,7 +18,7 @@
 interface
     subroutine poefgr(nomte, klc, mater, e, xnu,&
                       rho, effo)
-        character(*) :: nomte
+        character(len=*) :: nomte
         real(kind=8) :: klc(12, 12)
         integer :: mater
         real(kind=8) :: e

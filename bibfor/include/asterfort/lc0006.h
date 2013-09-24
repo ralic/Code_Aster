@@ -24,7 +24,7 @@ interface
                       dsidep, nwkout, wkout, codret)
         integer :: nwkout
         integer :: nwkin
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

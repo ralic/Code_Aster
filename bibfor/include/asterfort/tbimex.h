@@ -18,11 +18,11 @@
 interface
     subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                       formar)
-        character(*) :: table
+        character(len=*) :: table
         integer :: ifr
         integer :: nparim
-        character(*) :: lipaim(*)
-        character(*) :: formaz
-        character(*) :: formar
+        character(len=*) :: lipaim(*)
+        character(len=*) :: formaz
+        character(len=*) :: formar
     end subroutine tbimex
 end interface

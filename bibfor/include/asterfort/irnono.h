@@ -19,14 +19,14 @@ interface
     subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
                       nogrn, numno, nbnot, indno, noltop)
         integer :: nbnoe
-        character(*) :: noma
+        character(len=*) :: noma
         integer :: nbno
-        character(*) :: nonoe(*)
+        character(len=*) :: nonoe(*)
         integer :: nbgr
-        character(*) :: nogrn(*)
-        character(*) :: numno
+        character(len=*) :: nogrn(*)
+        character(len=*) :: numno
         integer :: nbnot
         integer :: indno(nbnoe)
-        character(*) :: noltop
+        character(len=*) :: noltop
     end subroutine irnono
 end interface

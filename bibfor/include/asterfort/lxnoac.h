@@ -17,7 +17,7 @@
 !
 interface
     subroutine lxnoac(chin, chout)
-        character(*) :: chin
-        character(*) :: chout
+        character(len=*) :: chin
+        character(len=*) :: chout
     end subroutine lxnoac
 end interface

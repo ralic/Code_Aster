@@ -20,10 +20,10 @@ interface
                       base, cns2z)
         integer :: nbcmp
         integer :: nbno
-        character(*) :: cns1z
+        character(len=*) :: cns1z
         integer :: lino(nbno)
-        character(*) :: licmp(nbcmp)
-        character(*) :: base
-        character(*) :: cns2z
+        character(len=*) :: licmp(nbcmp)
+        character(len=*) :: base
+        character(len=*) :: cns2z
     end subroutine cnsred
 end interface

@@ -18,8 +18,8 @@
 interface
     subroutine cnonua(nx, chno, lno, nuage)
         integer :: nx
-        character(*) :: chno
-        character(*) :: lno
-        character(*) :: nuage
+        character(len=*) :: chno
+        character(len=*) :: lno
+        character(len=*) :: nuage
     end subroutine cnonua
 end interface

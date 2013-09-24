@@ -18,13 +18,13 @@
 interface
     subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
                       itype, tjv, ttyp, sjv, styp)
-        character(*), intent(in) :: nomsd
+        character(len=*), intent(in) :: nomsd
         character(len=1), intent(in) :: cel
         integer, intent(in) :: npara
-        character(*), intent(in) :: lpara(*)
+        character(len=*), intent(in) :: lpara(*)
         integer, intent(in) :: iordr
         integer, intent(in) :: itype
         integer, intent(out), optional :: tjv(*), sjv
-        character(*), intent(out), optional :: styp, ttyp(*)
+        character(len=*), intent(out), optional :: styp, ttyp(*)
     end subroutine rsadpa
 end interface

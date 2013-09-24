@@ -19,17 +19,17 @@ interface
     subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
                       chtnz, compoz, tpchiz, tpchfz, chhyz,&
                       vecelz, veceiz)
-        character(*) :: optioz
-        character(*) :: modelz
-        character(*) :: carelz
-        character(*) :: matcdz
-        character(*) :: instz
-        character(*) :: chtnz
-        character(*) :: compoz
-        character(*) :: tpchiz
-        character(*) :: tpchfz
-        character(*) :: chhyz
-        character(*) :: vecelz
-        character(*) :: veceiz
+        character(len=*) :: optioz
+        character(len=*) :: modelz
+        character(len=*) :: carelz
+        character(len=*) :: matcdz
+        character(len=*) :: instz
+        character(len=*) :: chtnz
+        character(len=*) :: compoz
+        character(len=*) :: tpchiz
+        character(len=*) :: tpchfz
+        character(len=*) :: chhyz
+        character(len=*) :: vecelz
+        character(len=*) :: veceiz
     end subroutine vetnth
 end interface

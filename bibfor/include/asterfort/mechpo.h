@@ -19,16 +19,16 @@ interface
     subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
                       suropt, lpain, lchin, nbopt, typcoe,&
                       alpha, calpha)
-        character(*) :: souche
-        character(*) :: charge
-        character(*) :: modele
-        character(*) :: chdep2
-        character(*) :: chdynr
-        character(*) :: suropt
-        character(*) :: lpain(*)
-        character(*) :: lchin(*)
+        character(len=*) :: souche
+        character(len=*) :: charge
+        character(len=*) :: modele
+        character(len=*) :: chdep2
+        character(len=*) :: chdynr
+        character(len=*) :: suropt
+        character(len=*) :: lpain(*)
+        character(len=*) :: lchin(*)
         integer :: nbopt
-        character(*) :: typcoe
+        character(len=*) :: typcoe
         real(kind=8) :: alpha
         complex(kind=8) :: calpha
     end subroutine mechpo

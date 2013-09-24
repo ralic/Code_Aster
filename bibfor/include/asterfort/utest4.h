@@ -21,9 +21,9 @@ interface
                       lign2, crit, ific, nbcmp, nocmp,&
                       llab, ssigne)
         integer :: nbref
-        character(*) :: chamgd
+        character(len=*) :: chamgd
         character(len=8) :: typtes
-        character(*) :: typres
+        character(len=*) :: typres
         character(len=16) :: tbtxt(2)
         integer :: refi(nbref)
         real(kind=8) :: refr(nbref)
@@ -31,11 +31,11 @@ interface
         real(kind=8) :: epsi
         character(len=200) :: lign1
         character(len=200) :: lign2
-        character(*) :: crit
+        character(len=*) :: crit
         integer :: ific
         integer :: nbcmp
         character(len=8) :: nocmp(*)
         logical :: llab
-        character(*) :: ssigne
+        character(len=*) :: ssigne
     end subroutine utest4
 end interface

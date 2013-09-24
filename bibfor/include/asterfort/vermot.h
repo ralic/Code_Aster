@@ -20,7 +20,7 @@ interface
                       irteti)
         integer :: icl
         integer :: iv
-        character(*) :: cv
+        character(len=*) :: cv
         character(len=14) :: cnl
         integer :: ier
         integer :: irteti

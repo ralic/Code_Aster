@@ -18,9 +18,9 @@
 interface
     subroutine zxtrac(interp, prec, crit, nbinst, ti,&
                       temps, y, neq, xtract, ier)
-        character(*) :: interp
+        character(len=*) :: interp
         real(kind=8) :: prec
-        character(*) :: crit
+        character(len=*) :: crit
         integer :: nbinst
         real(kind=8) :: ti(*)
         real(kind=8) :: temps

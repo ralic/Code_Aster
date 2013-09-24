@@ -18,6 +18,6 @@
 interface
     subroutine ibbase(ier, fichdf)
         integer :: ier
-        character(*) :: fichdf
+        character(len=*) :: fichdf
     end subroutine ibbase
 end interface

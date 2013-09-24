@@ -19,7 +19,7 @@ interface
     subroutine putcon(nomres, nbind, ind, valr, vali,&
                       num, ier)
         integer :: nbind
-        character(*) :: nomres
+        character(len=*) :: nomres
         integer :: ind(nbind)
         real(kind=8) :: valr(nbind)
         real(kind=8) :: vali(nbind)

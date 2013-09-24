@@ -18,7 +18,7 @@
 interface
     subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
                       neq, nbbloc, ildeb, ilfin, eps)
-        character(*) :: nommat
+        character(len=*) :: nommat
         integer :: hcol(*)
         integer :: adia(*)
         integer :: ablo(*)

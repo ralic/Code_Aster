@@ -24,6 +24,6 @@ interface
         character(len=24) :: carele
         character(len=19) :: depmoi
         real(kind=8) :: parcon(*)
-        character(*) :: vecelz
+        character(len=*) :: vecelz
     end subroutine nmrefe
 end interface

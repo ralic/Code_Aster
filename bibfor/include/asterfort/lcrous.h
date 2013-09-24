@@ -22,7 +22,7 @@ interface
                       dt, sigf, vinf, irtet)
         integer :: nvi
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: toler

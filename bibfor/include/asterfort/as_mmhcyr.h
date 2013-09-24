@@ -20,7 +20,7 @@ interface
     subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
                       typent, typgeo, typcon, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: conn(*)
         aster_int :: csize
         aster_int :: switch

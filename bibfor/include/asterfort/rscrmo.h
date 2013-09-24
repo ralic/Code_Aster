@@ -18,7 +18,7 @@
 interface
     subroutine rscrmo(iocc, nomsd, nomjv)
         integer :: iocc
-        character(*) :: nomsd
-        character(*) :: nomjv
+        character(len=*) :: nomsd
+        character(len=*) :: nomjv
     end subroutine rscrmo
 end interface

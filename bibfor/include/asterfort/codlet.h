@@ -18,7 +18,7 @@
 interface
     subroutine codlet(entier, cadre, chaine)
         integer :: entier
-        character(*) :: cadre
-        character(*) :: chaine
+        character(len=*) :: cadre
+        character(len=*) :: chaine
     end subroutine codlet
 end interface

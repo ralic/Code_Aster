@@ -17,10 +17,10 @@
 !
 interface
     subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
-        character(*) :: mofaz
+        character(len=*) :: mofaz
         integer :: iocc
-        character(*) :: nomaz
-        character(*) :: lismaz
+        character(len=*) :: nomaz
+        character(len=*) :: lismaz
         integer :: nbma
     end subroutine cgmaba
 end interface

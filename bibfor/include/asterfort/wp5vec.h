@@ -20,7 +20,7 @@ interface
                       vecp, mxresf, resufi, resufr, vauc)
         integer :: mxresf
         integer :: neq
-        character(*) :: opt
+        character(len=*) :: opt
         integer :: nbfreq
         integer :: nbvect
         complex(kind=8) :: vp(*)

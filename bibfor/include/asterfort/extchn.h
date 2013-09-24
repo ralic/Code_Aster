@@ -26,7 +26,7 @@ interface
         integer :: nbc
         character(len=6) :: indic
         character(len=19) :: nsschn
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
     end subroutine extchn
 end interface

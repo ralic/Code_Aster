@@ -19,7 +19,7 @@ interface
     subroutine smevol(temper, modelz, mate, compor, option,&
                       phasin, numpha)
         character(len=8) :: temper
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: compor
         character(len=16) :: option

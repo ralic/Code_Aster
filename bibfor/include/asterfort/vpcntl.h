@@ -23,8 +23,8 @@ interface
                       nbrssa, precsh)
         integer :: nfreq
         character(len=1) :: cty
-        character(*) :: mode
-        character(*) :: option
+        character(len=*) :: mode
+        character(len=*) :: option
         real(kind=8) :: omemin
         real(kind=8) :: omemax
         real(kind=8) :: seuil
@@ -38,7 +38,7 @@ interface
         real(kind=8) :: freq(nfreq)
         real(kind=8) :: err(nfreq)
         real(kind=8) :: charge(nfreq)
-        character(*) :: typres
+        character(len=*) :: typres
         integer :: nblagr
         character(len=19) :: solveu
         integer :: nbrssa

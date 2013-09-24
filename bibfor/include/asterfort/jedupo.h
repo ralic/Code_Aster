@@ -17,9 +17,9 @@
 !
 interface
     subroutine jedupo(schin, claout, schout, dupcol)
-        character(*) :: schin
-        character(*) :: claout
-        character(*) :: schout
+        character(len=*) :: schin
+        character(len=*) :: claout
+        character(len=*) :: schout
         logical :: dupcol
     end subroutine jedupo
 end interface

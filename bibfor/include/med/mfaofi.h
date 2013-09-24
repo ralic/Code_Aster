@@ -20,14 +20,14 @@ interface
     subroutine mfaofi(fid, maa, it, fam, attnum,&
                       attval, attdes, num, gro, cret)
         med_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         med_int :: it
-        character(*) :: fam
+        character(len=*) :: fam
         med_int :: attnum(*)
         med_int :: attval(*)
-        character(*) :: attdes(*)
+        character(len=*) :: attdes(*)
         med_int :: num
-        character(*) :: gro(*)
+        character(len=*) :: gro(*)
         med_int :: cret
     end subroutine mfaofi
 end interface

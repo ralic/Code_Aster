@@ -19,7 +19,7 @@ interface
     subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
                       nbimpr, caimpi, caimpk, sdcarm)
         integer :: nbimpr
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         character(len=19) :: chanom
         character(len=8) :: typech
         character(len=8) :: nomaas

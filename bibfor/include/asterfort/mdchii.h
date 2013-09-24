@@ -19,7 +19,7 @@ interface
     subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
                       nbtv, codret)
         integer :: idfimd
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: typent
         integer :: typgeo
         character(len=19) :: prefix

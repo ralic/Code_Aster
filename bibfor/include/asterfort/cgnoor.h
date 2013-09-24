@@ -21,12 +21,12 @@ interface
                       ndextr, typm, vecori)
         character(len=24) :: mafour
         character(len=8) :: nomail
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: iocc
         integer :: nbmc
         character(len=16) :: motcle(*)
         character(len=16) :: typmcl(*)
-        character(*) :: typlig
+        character(len=*) :: typlig
         integer :: nbma
         character(len=8) :: ndorig
         character(len=8) :: ndextr

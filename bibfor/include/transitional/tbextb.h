@@ -19,18 +19,18 @@ interface
     subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                       lcrpa, vi, vr, vc, vk,&
                       lprec, lcrit, iret)
-        character(*) :: tabin
-        character(*) :: basout
-        character(*) :: tabout
+        character(len=*) :: tabin
+        character(len=*) :: basout
+        character(len=*) :: tabout
         integer :: npacri
-        character(*) :: lipacr(*)
-        character(*) :: lcrpa(*)
+        character(len=*) :: lipacr(*)
+        character(len=*) :: lcrpa(*)
         integer :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
-        character(*) :: vk(*)
+        character(len=*) :: vk(*)
         real(kind=8) :: lprec(*)
-        character(*) :: lcrit(*)
+        character(len=*) :: lcrit(*)
         integer :: iret
     end subroutine tbextb
 end interface

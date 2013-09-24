@@ -18,11 +18,11 @@
 interface
     subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
                       ndim)
-        character(*) :: coniz
+        character(len=*) :: coniz
         integer :: iocc
-        character(*) :: motfaz
-        character(*) :: nomaz
-        character(*) :: conrz
+        character(len=*) :: motfaz
+        character(len=*) :: nomaz
+        character(len=*) :: conrz
         integer :: ndim
     end subroutine pacoje
 end interface

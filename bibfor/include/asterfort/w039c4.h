@@ -17,8 +17,8 @@
 !
 interface
     subroutine w039c4(carte, ifi, form)
-        character(*) :: carte
+        character(len=*) :: carte
         integer :: ifi
-        character(*) :: form
+        character(len=*) :: form
     end subroutine w039c4
 end interface

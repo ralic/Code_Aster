@@ -18,10 +18,10 @@
 interface
     subroutine d1macp(fami, mater, instan, poum, kpg,&
                       ksp, repere, d1)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: mater
         real(kind=8) :: instan
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: kpg
         integer :: ksp
         real(kind=8) :: repere(7)

@@ -17,9 +17,9 @@
 !
 interface
     subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
-        character(*) :: nomsd
-        character(*) :: nopara
-        character(*) :: nomobj
+        character(len=*) :: nomsd
+        character(len=*) :: nopara
+        character(len=*) :: nomobj
         integer :: jadd
         integer :: nbval
     end subroutine rslipa

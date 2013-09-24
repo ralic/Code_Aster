@@ -18,11 +18,11 @@
 interface
     subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                       nbtrou)
-        character(*) :: champz
+        character(len=*) :: champz
         integer :: ncmp
         character(len=8) :: nocmp(*)
-        character(*) :: typemz
-        character(*) :: litroz
+        character(len=*) :: typemz
+        character(len=*) :: litroz
         integer :: nbtrou
     end subroutine utmach
 end interface

@@ -19,14 +19,14 @@ interface
     subroutine rsorac(nomsd, acces, ival, rval, kval,&
                       cval, epsi, crit, nutrou, ndim,&
                       nbtrou)
-        character(*), intent(in) :: nomsd
-        character(*), intent(in) :: acces
+        character(len=*), intent(in) :: nomsd
+        character(len=*), intent(in) :: acces
         integer, intent(in) :: ival
         real(kind=8), intent(in) :: rval
-        character(*), intent(in) :: kval
+        character(len=*), intent(in) :: kval
         complex(kind=8), intent(in) :: cval
         real(kind=8), intent(in) :: epsi
-        character(*), intent(in) :: crit
+        character(len=*), intent(in) :: crit
         integer, intent(out) :: nutrou(*)
         integer, intent(in) :: ndim
         integer, intent(out) :: nbtrou

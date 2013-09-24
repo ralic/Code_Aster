@@ -19,10 +19,10 @@ interface
     subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
                       typmod, imate, compor, crit, option,&
                       eps, sig, vi, dsidep, energi)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate

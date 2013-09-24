@@ -18,12 +18,12 @@
 interface
     subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                       lisnoz, lonlis)
-        character(*) :: motfaz
-        character(*) :: moclez
-        character(*) :: nomaz
-        character(*) :: listyz
+        character(len=*) :: motfaz
+        character(len=*) :: moclez
+        character(len=*) :: nomaz
+        character(len=*) :: listyz
         integer :: iocc
-        character(*) :: lisnoz
+        character(len=*) :: lisnoz
         integer :: lonlis
     end subroutine pamano
 end interface

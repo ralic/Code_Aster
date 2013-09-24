@@ -22,7 +22,7 @@ interface
                       sigd, vind, opt, nwkin, wkin,&
                       sigf, vinf, ndsde, dsde, nwkout,&
                       wkout, iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

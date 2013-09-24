@@ -17,6 +17,6 @@
 !
 interface
     subroutine rcveri(tablz)
-        character(*) :: tablz
+        character(len=*) :: tablz
     end subroutine rcveri
 end interface

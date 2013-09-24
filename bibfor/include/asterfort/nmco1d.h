@@ -19,7 +19,7 @@ interface
     subroutine nmco1d(fami, kpg, ksp, imate, compor,&
                       option, epsm, deps, angmas, sigm,&
                       vim, sigp, vip, dsidep, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

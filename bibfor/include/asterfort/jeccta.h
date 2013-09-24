@@ -17,6 +17,6 @@
 !
 interface
     subroutine jeccta(colle1)
-        character(*) :: colle1
+        character(len=*) :: colle1
     end subroutine jeccta
 end interface

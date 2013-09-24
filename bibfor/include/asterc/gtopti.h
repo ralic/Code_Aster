@@ -17,7 +17,7 @@
 !
 interface
     subroutine gtopti(opt, vali, iret)
-        character(*) :: opt
+        character(len=*) :: opt
         integer :: vali
         integer :: iret
     end subroutine gtopti

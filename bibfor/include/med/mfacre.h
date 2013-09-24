@@ -20,11 +20,11 @@ interface
     subroutine mfacre(fid, name, fname, fnum, ngro,&
                       gname, cret)
         med_int :: fid
-        character(*) :: name
-        character(*) :: fname
+        character(len=*) :: name
+        character(len=*) :: fname
         med_int :: fnum
         med_int :: ngro
-        character(*) :: gname(*)
+        character(len=*) :: gname(*)
         med_int :: cret
     end subroutine mfacre
 end interface

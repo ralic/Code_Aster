@@ -19,7 +19,7 @@ interface
     subroutine rvpost(mcf, iocc, dim, i1, i2,&
                       ncheff, xnomcp, nresu, nch19, nlsmac,&
                       nlsnac, nomtab, xnovar)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         character(len=2) :: dim
         integer :: i1

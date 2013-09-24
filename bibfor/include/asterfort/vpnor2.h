@@ -17,7 +17,7 @@
 !
 interface
     subroutine vpnor2(nomcon, nbmode, numord, coef)
-        character(*) :: nomcon
+        character(len=*) :: nomcon
         integer :: nbmode
         integer :: numord(*)
         real(kind=8) :: coef(*)

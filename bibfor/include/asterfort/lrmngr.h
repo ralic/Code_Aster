@@ -25,7 +25,7 @@ interface
         integer :: jnogrp
         integer :: jlggrp
         integer :: nbnufa
-        character(*) :: nomjng
-        character(*) :: nomjlg
+        character(len=*) :: nomjng
+        character(len=*) :: nomjlg
     end subroutine lrmngr
 end interface

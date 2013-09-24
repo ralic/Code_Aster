@@ -28,13 +28,13 @@ interface
         integer :: dg(*)
         integer :: ncmpmx
         real(kind=8) :: vale(*)
-        character(*) :: nomgd
-        character(*) :: ncmpgd(*)
-        character(*) :: nomsym
+        character(len=*) :: nomgd
+        character(len=*) :: ncmpgd(*)
+        character(len=*) :: nomsym
         integer :: numnoe(*)
         logical :: lresu
         integer :: nbcput
-        character(*) :: ncmput(*)
+        character(len=*) :: ncmput(*)
         integer :: nive
     end subroutine irdeca
 end interface

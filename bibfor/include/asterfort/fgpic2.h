@@ -18,7 +18,7 @@
 interface
     subroutine fgpic2(method, rtrv, point, npoint, pic,&
                       npic)
-        character(*) :: method
+        character(len=*) :: method
         real(kind=8) :: rtrv(*)
         real(kind=8) :: point(*)
         integer :: npoint

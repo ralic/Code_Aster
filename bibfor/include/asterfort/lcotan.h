@@ -32,7 +32,7 @@ interface
         real(kind=8) :: angmas(3)
         character(len=7) :: etatd
         character(len=7) :: etatf
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: loi

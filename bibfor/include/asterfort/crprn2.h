@@ -17,8 +17,8 @@
 !
 interface
     subroutine crprn2(pfchno, base, nbnoeu, nequa, nec)
-        character(*) :: pfchno
-        character(*) :: base
+        character(len=*) :: pfchno
+        character(len=*) :: base
         integer :: nbnoeu
         integer :: nequa
         integer :: nec

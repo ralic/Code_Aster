@@ -20,14 +20,14 @@ interface
                       ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
                       lienec, adsd, adsl, nomaas, modele,&
                       typgeo, nomtyp, ntproa, chanom, sdcarm)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         character(len=8) :: typech
         integer :: nbimpr
         character(len=24) :: ncaimi
         character(len=24) :: ncaimk
         integer :: ncmprf
         integer :: ncmpve
-        character(*) :: ntlcmp
+        character(len=*) :: ntlcmp
         integer :: nbvato
         integer :: nbenec
         integer :: lienec(*)
@@ -37,7 +37,7 @@ interface
         character(len=8) :: modele
         integer :: typgeo(*)
         character(len=8) :: nomtyp(*)
-        character(*) :: ntproa
+        character(len=*) :: ntproa
         character(len=19) :: chanom
         character(len=8) :: sdcarm
     end subroutine ircmpr

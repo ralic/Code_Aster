@@ -22,7 +22,7 @@ interface
         integer :: nbloc
         integer :: lgbloc(*)
         integer :: adinit(lonmat)
-        character(*) :: nommat
+        character(len=*) :: nommat
         character(len=24) :: factol
         character(len=24) :: factou
         integer :: typsym

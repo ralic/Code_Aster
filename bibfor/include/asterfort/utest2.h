@@ -21,22 +21,22 @@ interface
                       refr, refc, typres, epsi, crit,&
                       ific, llab, ssigne)
         integer :: nbref
-        character(*) :: cham19
-        character(*) :: nomail
-        character(*) :: nonoeu
+        character(len=*) :: cham19
+        character(len=*) :: nomail
+        character(len=*) :: nonoeu
         integer :: nupo
         integer :: nusp
         integer :: ivari
-        character(*) :: nocmp
+        character(len=*) :: nocmp
         character(len=16) :: tbtxt(2)
         integer :: refi(nbref)
         real(kind=8) :: refr(nbref)
         complex(kind=8) :: refc(nbref)
-        character(*) :: typres
+        character(len=*) :: typres
         real(kind=8) :: epsi
-        character(*) :: crit
+        character(len=*) :: crit
         integer :: ific
         logical :: llab
-        character(*) :: ssigne
+        character(len=*) :: ssigne
     end subroutine utest2
 end interface

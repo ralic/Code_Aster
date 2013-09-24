@@ -23,7 +23,7 @@ interface
         integer :: lima(*)
         integer :: nlima
         character(len=1) :: base
-        character(*) :: nomz
+        character(len=*) :: nomz
         integer :: nbmavo
         integer :: mailvo(*)
     end subroutine utmavo

@@ -19,10 +19,10 @@ interface
     subroutine epstmc(fami, ndim, instan, poum, igau,&
                       isgau, xyzgau, repere, mater, option,&
                       epsth)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: ndim
         real(kind=8) :: instan
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: igau
         integer :: isgau
         real(kind=8) :: xyzgau(3)

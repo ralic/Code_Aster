@@ -17,9 +17,9 @@
 !
 interface
     subroutine mtdefs(matout, matin, base, typc)
-        character(*) :: matout
-        character(*) :: matin
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: matout
+        character(len=*) :: matin
+        character(len=*) :: base
+        character(len=*) :: typc
     end subroutine mtdefs
 end interface

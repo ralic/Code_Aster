@@ -19,9 +19,9 @@ interface
     subroutine rcvarc(arret, novrc, poum, fami, kpg,&
                       ksp, valvrc, iret)
         character(len=1), intent(in) :: arret
-        character(*), intent(in) :: novrc
-        character(*), intent(in) :: poum
-        character(*), intent(in) :: fami
+        character(len=*), intent(in) :: novrc
+        character(len=*), intent(in) :: poum
+        character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
         real(kind=8), intent(out) :: valvrc

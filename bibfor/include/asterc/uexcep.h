@@ -19,9 +19,9 @@ interface
     subroutine uexcep(nexc, idmess, nk, valk, ni,&
                       vali, nr, valr)
         integer :: nexc
-        character(*) :: idmess
+        character(len=*) :: idmess
         integer :: nk
-        character(*) :: valk(*)
+        character(len=*) :: valk(*)
         integer :: ni
         integer :: vali(*)
         integer :: nr

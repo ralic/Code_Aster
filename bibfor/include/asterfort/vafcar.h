@@ -20,9 +20,9 @@ interface
                       nco, nca, nba, nma, ngb,&
                       nmb, nutyel, ntyele, car, ncar,&
                       ivr, kioc, ier)
-        character(*) :: tpgz
-        character(*) :: mclfz
-        character(*) :: nmobjz
+        character(len=*) :: tpgz
+        character(len=*) :: mclfz
+        character(len=*) :: nmobjz
         integer :: npo
         integer :: ndi
         integer :: nco
@@ -33,7 +33,7 @@ interface
         integer :: nmb
         integer :: nutyel
         integer :: ntyele(*)
-        character(*) :: car(*)
+        character(len=*) :: car(*)
         integer :: ncar
         integer :: ivr(*)
         character(len=6) :: kioc

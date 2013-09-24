@@ -16,7 +16,7 @@
 !
 interface
     subroutine asmpi_comm_jev(optmpi, nomjev)
-        character(*) :: optmpi
+        character(len=*) :: optmpi
         character(len=24) :: nomjev
     end subroutine asmpi_comm_jev
 end interface

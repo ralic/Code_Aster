@@ -19,7 +19,7 @@ interface
     subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
                       imate, deps, sigm, option, sigp,&
                       vip, dsidep, iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

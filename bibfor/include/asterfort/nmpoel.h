@@ -20,7 +20,7 @@ interface
                       nc, pgl, pgl1, pgl2, ugl,&
                       epsthe, e, em, effm, fl,&
                       effl, angs2, rad)
-        character(*) :: nomte
+        character(len=*) :: nomte
         integer :: npg
         real(kind=8) :: klv(*)
         real(kind=8) :: xl

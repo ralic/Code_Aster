@@ -19,11 +19,11 @@ interface
     subroutine titre1(st, nomobj, base, nbtitr, titdon,&
                       lgdon, formr)
         character(len=1) :: st
-        character(*) :: nomobj
-        character(*) :: base
+        character(len=*) :: nomobj
+        character(len=*) :: base
         integer :: nbtitr
-        character(*) :: titdon(*)
+        character(len=*) :: titdon(*)
         integer :: lgdon(*)
-        character(*) :: formr
+        character(len=*) :: formr
     end subroutine titre1
 end interface

@@ -19,16 +19,16 @@ interface
     subroutine merime(modelz, nchar, lchar, mate, carelz,&
                       exitim, time, compoz, matelz, nh,&
                       basz)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: nchar
-        character(*) :: lchar(*)
-        character(*) :: mate
-        character(*) :: carelz
+        character(len=*) :: lchar(*)
+        character(len=*) :: mate
+        character(len=*) :: carelz
         logical :: exitim
         real(kind=8) :: time
-        character(*) :: compoz
-        character(*) :: matelz
+        character(len=*) :: compoz
+        character(len=*) :: matelz
         integer :: nh
-        character(*) :: basz
+        character(len=*) :: basz
     end subroutine merime
 end interface

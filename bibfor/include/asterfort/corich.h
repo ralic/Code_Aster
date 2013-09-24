@@ -17,8 +17,8 @@
 !
 interface
     subroutine corich(action, champ, ichin, ichout)
-        character(*) :: action
-        character(*) :: champ
+        character(len=*) :: action
+        character(len=*) :: champ
         integer :: ichin
         integer :: ichout
     end subroutine corich

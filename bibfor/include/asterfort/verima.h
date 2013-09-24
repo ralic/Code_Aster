@@ -18,8 +18,8 @@
 interface
     subroutine verima(nomz, limanz, lonlim, typz)
         integer :: lonlim
-        character(*) :: nomz
-        character(*) :: limanz(lonlim)
-        character(*) :: typz
+        character(len=*) :: nomz
+        character(len=*) :: limanz(lonlim)
+        character(len=*) :: typz
     end subroutine verima
 end interface

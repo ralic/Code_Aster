@@ -17,8 +17,8 @@
 !
 interface
     subroutine rcver1(phenoz, tablz, tably)
-        character(*) :: phenoz
-        character(*) :: tablz
-        character(*) :: tably
+        character(len=*) :: phenoz
+        character(len=*) :: tablz
+        character(len=*) :: tably
     end subroutine rcver1
 end interface

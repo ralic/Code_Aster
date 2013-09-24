@@ -20,7 +20,7 @@ interface
                      compor, instam, instap, epsm, deps,&
                      vim, option, sig, vip, dsidep,&
                      codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

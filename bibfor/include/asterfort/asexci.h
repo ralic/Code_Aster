@@ -20,7 +20,7 @@ interface
                       impr, ndir, monoap, muapde, kspect,&
                       kasysp, nbsup, nsupp, knoeu)
         integer :: nbmode
-        character(*) :: masse
+        character(len=*) :: masse
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: amort(*)
         logical :: corfre
@@ -28,10 +28,10 @@ interface
         integer :: ndir(*)
         logical :: monoap
         logical :: muapde
-        character(*) :: kspect
-        character(*) :: kasysp
+        character(len=*) :: kspect
+        character(len=*) :: kasysp
         integer :: nbsup
         integer :: nsupp(*)
-        character(*) :: knoeu
+        character(len=*) :: knoeu
     end subroutine asexci
 end interface

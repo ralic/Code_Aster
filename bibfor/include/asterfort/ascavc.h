@@ -21,8 +21,8 @@ interface
         character(len=24) :: lchar
         character(len=24) :: infcha
         character(len=24) :: fomult
-        character(*) :: numedd
+        character(len=*) :: numedd
         real(kind=8) :: inst
-        character(*) :: vci
+        character(len=*) :: vci
     end subroutine ascavc
 end interface

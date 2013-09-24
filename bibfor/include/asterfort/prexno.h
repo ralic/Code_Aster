@@ -19,7 +19,7 @@ interface
     subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
                       nomin, cmpmin, valmin, noamax, cmamax,&
                       vaamax, noamin, cmamin, vaamin)
-        character(*) :: champ
+        character(len=*) :: champ
         integer :: ioc
         character(len=8) :: nomax
         character(len=8) :: cmpmax

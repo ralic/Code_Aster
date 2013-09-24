@@ -17,7 +17,7 @@
 !
 interface
     function hdfcrf(knom)
-        character(*) :: knom
+        character(len=*) :: knom
         integer :: hdfcrf
     end function hdfcrf
 end interface

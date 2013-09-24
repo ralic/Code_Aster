@@ -21,7 +21,7 @@ interface
                       parcon, instam, instap, valinc, solalg,&
                       sddyna, option, vecele)
         character(len=6) :: typvec
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=19) :: lischa
         character(len=24) :: mate
         character(len=24) :: carele

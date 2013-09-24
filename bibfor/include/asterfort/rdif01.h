@@ -27,7 +27,7 @@ interface
         integer :: nmat
         integer :: nvi
         integer :: nsg
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: comp(*)

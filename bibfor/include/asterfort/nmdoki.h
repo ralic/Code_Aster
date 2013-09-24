@@ -21,7 +21,7 @@ interface
                       numlc, nbvari)
         integer :: dimaki
         character(len=16) :: moclef
-        character(*) :: modele
+        character(len=*) :: modele
         character(len=16) :: comp
         integer :: k
         integer :: nbkit

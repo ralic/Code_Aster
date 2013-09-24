@@ -19,8 +19,8 @@ interface
     subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
                       csolu, prepos)
         character(len=19) :: solveu
-        character(*) :: nommat
-        character(*) :: vcine
+        character(len=*) :: nommat
+        character(len=*) :: vcine
         integer :: nsecm
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)

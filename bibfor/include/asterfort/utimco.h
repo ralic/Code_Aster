@@ -18,7 +18,7 @@
 interface
     subroutine utimco(unit, obin, nivo, lattr, lcont)
         integer :: unit
-        character(*) :: obin
+        character(len=*) :: obin
         integer :: nivo
         logical :: lattr
         logical :: lcont

@@ -20,9 +20,9 @@ interface
                       nbfor, nbdef, tydef, inord)
         integer :: nbdef
         integer :: nbfor
-        character(*) :: nmresz
-        character(*) :: numrfz
-        character(*) :: raildz
+        character(len=*) :: nmresz
+        character(len=*) :: numrfz
+        character(len=*) :: raildz
         integer :: lddl(nbfor, nbdef)
         character(len=16) :: nocmp(nbdef)
         character(len=16) :: tydef

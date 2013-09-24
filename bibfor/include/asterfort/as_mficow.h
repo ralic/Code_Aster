@@ -19,7 +19,7 @@
 interface
     subroutine as_mficow(fid, des, cret)
         aster_int :: fid
-        character(*) :: des
+        character(len=*) :: des
         aster_int :: cret
     end subroutine as_mficow
 end interface

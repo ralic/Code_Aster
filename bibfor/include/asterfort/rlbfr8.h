@@ -18,7 +18,7 @@
 interface
     subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
         integer :: neq
-        character(*) :: nommat
+        character(len=*) :: nommat
         real(kind=8) :: xsol(neq, *)
         integer :: nbsm
         integer :: typsym

@@ -19,7 +19,7 @@
 interface
     subroutine as_mfaona(fid, maa, ind, n, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: ind
         aster_int :: n
         aster_int :: cret

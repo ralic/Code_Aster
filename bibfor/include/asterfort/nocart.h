@@ -18,14 +18,14 @@
           interface
             subroutine nocart(carte,code,ncmp,groupma,mode,nma,limano,  &
                               limanu,ligrel)
-              character(*), intent(in) :: carte
+              character(len=*), intent(in) :: carte
               integer, intent(in) :: code
               integer, intent(in) :: ncmp
-              character(*) ,optional, intent(in) :: groupma
-              character(*) ,optional, intent(in) :: mode
+              character(len=*) ,optional, intent(in) :: groupma
+              character(len=*) ,optional, intent(in) :: mode
               integer ,optional, intent(in) :: nma
-              character(*) ,optional, intent(in) :: limano(*)
+              character(len=*) ,optional, intent(in) :: limano(*)
               integer ,optional, intent(in) :: limanu(*)
-              character(*) ,optional, intent(in) :: ligrel
+              character(len=*) ,optional, intent(in) :: ligrel
             end subroutine nocart
           end interface

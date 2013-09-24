@@ -17,7 +17,7 @@
 !
 interface
     subroutine chlici(chaine, long)
-        character(*) :: chaine
+        character(len=*) :: chaine
         integer :: long
     end subroutine chlici
 end interface

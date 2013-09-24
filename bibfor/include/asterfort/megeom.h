@@ -17,7 +17,7 @@
 !
 interface
     subroutine megeom(modelz, chgeoz)
-        character(*) :: modelz
-        character(*) :: chgeoz
+        character(len=*) :: modelz
+        character(len=*) :: chgeoz
     end subroutine megeom
 end interface

@@ -18,14 +18,14 @@
 interface
     subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
                       ltpsz, solvez, compor, matasz)
-        character(*) :: modelz
-        character(*) :: fomulz
-        character(*) :: lischz
-        character(*) :: mate
-        character(*) :: caraz
-        character(*) :: ltpsz
-        character(*) :: solvez
+        character(len=*) :: modelz
+        character(len=*) :: fomulz
+        character(len=*) :: lischz
+        character(len=*) :: mate
+        character(len=*) :: caraz
+        character(len=*) :: ltpsz
+        character(len=*) :: solvez
         character(len=24) :: compor
-        character(*) :: matasz
+        character(len=*) :: matasz
     end subroutine mestat
 end interface

@@ -18,11 +18,11 @@
 interface
     subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                       lonlis)
-        character(*) :: motfaz
-        character(*) :: chargz
+        character(len=*) :: motfaz
+        character(len=*) :: chargz
         integer :: iocc
         integer :: indmot
-        character(*) :: lisnoz
+        character(len=*) :: lisnoz
         integer :: lonlis
     end subroutine malin1
 end interface

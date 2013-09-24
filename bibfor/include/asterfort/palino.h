@@ -18,11 +18,11 @@
 interface
     subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc,&
                       noml)
-        character(*) :: nomaz
-        character(*) :: mcfact
-        character(*) :: mcgrno
-        character(*) :: mcno
+        character(len=*) :: nomaz
+        character(len=*) :: mcfact
+        character(len=*) :: mcgrno
+        character(len=*) :: mcno
         integer :: iocc
-        character(*) :: noml
+        character(len=*) :: noml
     end subroutine palino
 end interface

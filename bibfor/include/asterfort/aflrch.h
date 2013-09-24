@@ -17,7 +17,7 @@
 !
 interface
     subroutine aflrch(lisrez, chargz)
-        character(*) :: lisrez
-        character(*) :: chargz
+        character(len=*) :: lisrez
+        character(len=*) :: chargz
     end subroutine aflrch
 end interface

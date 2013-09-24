@@ -17,7 +17,7 @@
 !
 interface
     function lxlgut(chaine)
-        character(*) :: chaine
+        character(len=*) :: chaine
         integer :: lxlgut
     end function lxlgut
 end interface

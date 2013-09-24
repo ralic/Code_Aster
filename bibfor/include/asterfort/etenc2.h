@@ -17,7 +17,7 @@
 !
 interface
     subroutine etenc2(cartz, iret)
-        character(*) :: cartz
+        character(len=*) :: cartz
         integer :: iret
     end subroutine etenc2
 end interface

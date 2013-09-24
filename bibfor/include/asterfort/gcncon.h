@@ -18,6 +18,6 @@
 interface
     subroutine gcncon(type, result)
         character(len=1) :: type
-        character(*) :: result
+        character(len=*) :: result
     end subroutine gcncon
 end interface

@@ -20,7 +20,7 @@ interface
                       dtdm, dfdm, tgdm, poids, c1,&
                       c2, c3, cs, th, coef,&
                       rho, puls, axi, g)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kp
         integer :: imate
         real(kind=8) :: dudm(3, 4)

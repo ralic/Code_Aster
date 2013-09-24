@@ -19,17 +19,17 @@ interface
     subroutine meamme(optioz, modele, nchar, lchar, mate,&
                       cara, exitim, time, base, merigi,&
                       memass, meamor)
-        character(*) :: optioz
-        character(*) :: modele
+        character(len=*) :: optioz
+        character(len=*) :: modele
         integer :: nchar
         character(len=8) :: lchar(*)
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: mate
+        character(len=*) :: cara
         logical :: exitim
         real(kind=8) :: time
         character(len=1) :: base
-        character(*) :: merigi
-        character(*) :: memass
-        character(*) :: meamor
+        character(len=*) :: merigi
+        character(len=*) :: memass
+        character(len=*) :: meamor
     end subroutine meamme
 end interface

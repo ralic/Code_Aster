@@ -21,6 +21,6 @@ interface
         integer :: iclass
         integer :: ival
         real(kind=8) :: rval(*)
-        character(*) :: kval
+        character(len=*) :: kval
     end subroutine sndbg
 end interface

@@ -17,9 +17,9 @@
 !
 interface
     subroutine jjalty(typei, ltypi, cel, inatb, jctab)
-        character(*) :: typei
+        character(len=*) :: typei
         integer :: ltypi
-        character(*) :: cel
+        character(len=*) :: cel
         integer :: inatb
         integer :: jctab
     end subroutine jjalty

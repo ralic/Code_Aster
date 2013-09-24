@@ -17,7 +17,7 @@
 !
 interface
     subroutine detrsd(typesd, nomsd)
-        character(*) :: typesd
-        character(*) :: nomsd
+        character(len=*) :: typesd
+        character(len=*) :: nomsd
     end subroutine detrsd
 end interface

@@ -17,6 +17,6 @@
 !
 interface
     subroutine vtzero(chamna)
-        character(*) :: chamna
+        character(len=*) :: chamna
     end subroutine vtzero
 end interface

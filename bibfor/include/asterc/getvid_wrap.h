@@ -18,12 +18,12 @@
 interface
     subroutine getvid_wrap(motfac, motcle, iocc, iarg, mxval,&
                            idval, nbval)
-        character(*) :: motfac
-        character(*) :: motcle
+        character(len=*) :: motfac
+        character(len=*) :: motcle
         integer :: iocc
         integer :: iarg
         integer :: mxval
-        character(*) :: idval(*)
+        character(len=*) :: idval(*)
         integer :: nbval
     end subroutine getvid_wrap
 end interface

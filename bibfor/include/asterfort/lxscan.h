@@ -18,11 +18,11 @@
 interface
     subroutine lxscan(chin, ideb, iclass, ival, rval,&
                       cval)
-        character(*) :: chin
+        character(len=*) :: chin
         integer :: ideb
         integer :: iclass
         integer :: ival
         real(kind=8) :: rval
-        character(*) :: cval
+        character(len=*) :: cval
     end subroutine lxscan
 end interface

@@ -19,8 +19,8 @@ interface
     subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
                       ivec)
         integer :: neq
-        character(*) :: typesd
-        character(*) :: num
+        character(len=*) :: typesd
+        character(len=*) :: num
         integer :: nbcmp
         character(len=8) :: lnocmp(*)
         integer :: ivec(neq, *)

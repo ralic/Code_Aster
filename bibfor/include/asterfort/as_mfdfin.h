@@ -20,8 +20,8 @@ interface
     subroutine as_mfdfin(fid, cha, ma, n, cunit,&
                       cname, cret)
         aster_int :: fid
-        character(*) :: cha
-        character(*) :: ma
+        character(len=*) :: cha
+        character(len=*) :: ma
         aster_int :: n
         character(len=16) :: cunit(*)
         character(len=16) :: cname(*)

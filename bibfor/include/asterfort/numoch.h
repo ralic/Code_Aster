@@ -20,6 +20,6 @@ interface
         character(len=24) :: tlimat(*)
         integer :: nbmat
         character(len=1) :: base
-        character(*) :: lmoch
+        character(len=*) :: lmoch
     end subroutine numoch
 end interface

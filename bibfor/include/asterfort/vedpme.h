@@ -21,6 +21,6 @@ interface
         character(len=24) :: charge
         character(len=24) :: infcha
         real(kind=8) :: instap
-        character(*) :: lvediz
+        character(len=*) :: lvediz
     end subroutine vedpme
 end interface

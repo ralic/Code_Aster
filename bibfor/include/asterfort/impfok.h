@@ -17,7 +17,7 @@
 !
 interface
     subroutine impfok(messag, long, unite)
-        character(*) :: messag
+        character(len=*) :: messag
         integer :: long
         integer :: unite
     end subroutine impfok

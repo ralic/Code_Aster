@@ -17,6 +17,6 @@
 !
 interface
     subroutine masyns(matas)
-        character(*) :: matas
+        character(len=*) :: matas
     end subroutine masyns
 end interface

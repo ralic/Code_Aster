@@ -17,9 +17,9 @@
 !
 interface
     subroutine mtdsc2(matas, objet, eoul, adress)
-        character(*) :: matas
-        character(*) :: objet
-        character(*) :: eoul
+        character(len=*) :: matas
+        character(len=*) :: objet
+        character(len=*) :: eoul
         integer :: adress
     end subroutine mtdsc2
 end interface

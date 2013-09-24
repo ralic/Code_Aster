@@ -17,6 +17,6 @@
 !
 interface
     subroutine rfhge2(harmge)
-        character(*) :: harmge
+        character(len=*) :: harmge
     end subroutine rfhge2
 end interface

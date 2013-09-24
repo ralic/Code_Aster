@@ -17,8 +17,8 @@
 !
 interface
     subroutine nmvcd2(indez, chmat, exivc, exiref)
-        character(*) :: indez
-        character(*) :: chmat
+        character(len=*) :: indez
+        character(len=*) :: chmat
         logical :: exivc
         logical :: exiref
     end subroutine nmvcd2

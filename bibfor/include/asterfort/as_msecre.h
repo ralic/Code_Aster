@@ -20,9 +20,9 @@ interface
     subroutine as_msecre(fid, nomes, dim, nomms, tycell,&
                       tygems, tygees, cret)
         aster_int :: fid
-        character(*) :: nomes
+        character(len=*) :: nomes
         aster_int :: dim
-        character(*) :: nomms
+        character(len=*) :: nomms
         aster_int :: tycell
         aster_int :: tygems
         aster_int :: tygees

@@ -21,7 +21,7 @@ interface
         aster_int :: fid
         aster_int :: pflval(*)
         aster_int :: n
-        character(*) :: pro
+        character(len=*) :: pro
         aster_int :: cret
     end subroutine as_mpfprr
 end interface

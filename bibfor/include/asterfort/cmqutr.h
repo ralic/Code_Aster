@@ -18,7 +18,7 @@
 interface
     subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                       prefix, ndinit)
-        character(*) :: basz
+        character(len=*) :: basz
         character(len=8) :: nomain
         character(len=8) :: nomaou
         integer :: nbma

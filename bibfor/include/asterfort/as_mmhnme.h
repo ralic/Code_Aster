@@ -20,7 +20,7 @@ interface
     subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
                       typcon, n, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: quoi
         aster_int :: typent
         aster_int :: typgeo

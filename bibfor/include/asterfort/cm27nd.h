@@ -25,7 +25,7 @@ interface
         integer :: nbma
         integer :: lima(*)
         integer :: typema(*)
-        character(*) :: connez
+        character(len=*) :: connez
         character(len=8) :: prefix
         integer :: ndinit
         integer :: nomipe(8, nbnomi)

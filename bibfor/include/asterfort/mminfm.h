@@ -19,7 +19,7 @@ interface
     subroutine mminfm(posmae, defico, questz, irep)
         integer :: posmae
         character(len=24) :: defico
-        character(*) :: questz
+        character(len=*) :: questz
         integer :: irep
     end subroutine mminfm
 end interface

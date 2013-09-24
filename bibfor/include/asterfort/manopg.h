@@ -17,9 +17,9 @@
 !
 interface
     subroutine manopg(ligrez, optioz, paramz, mnogaz)
-        character(*) :: ligrez
-        character(*) :: optioz
-        character(*) :: paramz
-        character(*) :: mnogaz
+        character(len=*) :: ligrez
+        character(len=*) :: optioz
+        character(len=*) :: paramz
+        character(len=*) :: mnogaz
     end subroutine manopg
 end interface

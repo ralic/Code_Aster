@@ -20,15 +20,15 @@ interface
                       typent, nbcmpv, ncmpva, ncmpvm, iinst,&
                       numpt, numord, inst, crit, prec,&
                       nrofic, codret)
-        character(*) :: chanom
-        character(*) :: nochmd
-        character(*) :: nomamd
+        character(len=*) :: chanom
+        character(len=*) :: nochmd
+        character(len=*) :: nomamd
         character(len=8) :: nomaas
         character(len=8) :: nomgd
         integer :: typent
         integer :: nbcmpv
-        character(*) :: ncmpva
-        character(*) :: ncmpvm
+        character(len=*) :: ncmpva
+        character(len=*) :: ncmpvm
         integer :: iinst
         integer :: numpt
         integer :: numord

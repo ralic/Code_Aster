@@ -17,9 +17,9 @@
 !
 interface
     subroutine smosli(stomoz, stolcz, basz, rtbloc)
-        character(*) :: stomoz
-        character(*) :: stolcz
-        character(*) :: basz
+        character(len=*) :: stomoz
+        character(len=*) :: stolcz
+        character(len=*) :: basz
         real(kind=8) :: rtbloc
     end subroutine smosli
 end interface

@@ -18,7 +18,7 @@
 interface
     subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
                       linoeu)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         character(len=8) :: nmaila
         character(len=24) :: nlstnd

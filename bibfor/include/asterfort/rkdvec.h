@@ -21,7 +21,7 @@ interface
                       nmat, sigi, dvin)
         integer :: nmat
         integer :: nvi
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imat

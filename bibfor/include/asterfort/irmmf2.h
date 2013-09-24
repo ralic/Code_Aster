@@ -23,7 +23,7 @@ interface
         integer :: nbgrou
         integer :: nbrent
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: typent
         character(len=24) :: nomgen(*)
         integer :: nbec
@@ -35,7 +35,7 @@ interface
         integer :: nufaen(nbrent)
         integer :: nufacr(nbrent)
         character(len=80) :: nogrfa(nbgrou)
-        character(*) :: nofaex(*)
+        character(len=*) :: nofaex(*)
         integer :: tabaux(*)
         integer :: infmed
         integer :: nivinf

@@ -17,7 +17,7 @@
 !
 interface
     subroutine caliag(fonrez, chargz)
-        character(*) :: fonrez
-        character(*) :: chargz
+        character(len=*) :: fonrez
+        character(len=*) :: chargz
     end subroutine caliag
 end interface

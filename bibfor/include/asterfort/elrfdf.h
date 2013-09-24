@@ -18,7 +18,7 @@
 interface
     subroutine elrfdf(elrefz, x, dimd, dff, nno,&
                       ndim)
-        character(*) :: elrefz
+        character(len=*) :: elrefz
         real(kind=8) :: x(*)
         integer :: dimd
         real(kind=8) :: dff(3, *)

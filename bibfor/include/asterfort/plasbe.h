@@ -20,7 +20,7 @@ interface
                       crit, epsdt, depst, sigd, vind,&
                       opt, elgeom, sigf, vinf, dsde,&
                       icomp, nvi, irteti)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: typmod(*)

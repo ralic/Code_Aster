@@ -17,8 +17,8 @@
 !
 interface
     function cudisi(deficz, questz)
-        character(*) :: deficz
-        character(*) :: questz
+        character(len=*) :: deficz
+        character(len=*) :: questz
         integer :: cudisi
     end function cudisi
 end interface

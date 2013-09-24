@@ -26,7 +26,7 @@ interface
         integer :: neq
         integer :: nbsup
         logical :: monoap
-        character(*) :: typcmo
+        character(len=*) :: typcmo
         integer :: nsupp(*)
         real(kind=8) :: repmo1(nbsup, neq, *)
         real(kind=8) :: repmo2(nbsup, neq, *)

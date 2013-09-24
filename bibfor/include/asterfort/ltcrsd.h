@@ -17,7 +17,7 @@
 !
 interface
     subroutine ltcrsd(litab, base)
-        character(*) :: litab
-        character(*) :: base
+        character(len=*) :: litab
+        character(len=*) :: base
     end subroutine ltcrsd
 end interface

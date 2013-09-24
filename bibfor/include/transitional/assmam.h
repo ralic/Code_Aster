@@ -18,12 +18,12 @@
 interface
     subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                       nu, motcle, itysca)
-        character(*) :: base
-        character(*) :: matas
+        character(len=*) :: base
+        character(len=*) :: matas
         integer :: nbmat
-        character(*) :: tlimat(*)
+        character(len=*) :: tlimat(*)
         real(kind=8) :: licoef(*)
-        character(*) :: nu
+        character(len=*) :: nu
         character(len=4) :: motcle
         integer :: itysca
     end subroutine assmam

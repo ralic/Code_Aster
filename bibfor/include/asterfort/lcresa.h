@@ -24,7 +24,7 @@ interface
         integer :: nvi
         integer :: nr
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: typmod

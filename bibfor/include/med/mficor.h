@@ -19,7 +19,7 @@ interface
 #include "aster_types.h"
     subroutine mficor(fid, cmt, cret)
         med_int :: fid
-        character(*) :: cmt
+        character(len=*) :: cmt
         med_int :: cret
     end subroutine mficor
 end interface

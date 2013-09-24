@@ -19,15 +19,15 @@ interface
     subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
                       nbacc, chacc, nbchca, chamca, nbk16,&
                       nive)
-        character(*) :: nomcom
+        character(len=*) :: nomcom
         integer :: ifi
         integer :: nbordr
         integer :: iocc
         integer :: ordr(*)
         integer :: nbacc
-        character(*) :: chacc(*)
+        character(len=*) :: chacc(*)
         integer :: nbchca
-        character(*) :: chamca(*)
+        character(len=*) :: chamca(*)
         integer :: nbk16
         integer :: nive
     end subroutine irpaca

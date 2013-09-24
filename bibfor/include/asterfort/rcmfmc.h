@@ -17,7 +17,7 @@
 !
 interface
     subroutine rcmfmc(chmatz, chmacz)
-        character(*) :: chmatz
-        character(*) :: chmacz
+        character(len=*) :: chmatz
+        character(len=*) :: chmacz
     end subroutine rcmfmc
 end interface

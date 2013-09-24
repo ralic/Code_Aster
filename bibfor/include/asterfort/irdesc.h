@@ -28,11 +28,11 @@ interface
         integer :: dg(*)
         integer :: ncmpmx
         complex(kind=8) :: vale(*)
-        character(*) :: nomcmp(*)
-        character(*) :: titr
-        character(*) :: nomnoe(*)
-        character(*) :: nomsd
-        character(*) :: nomsym
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: titr
+        character(len=*) :: nomnoe(*)
+        character(len=*) :: nomsd
+        character(len=*) :: nomsym
         integer :: ir
         integer :: numnoe(*)
         logical :: lmasu

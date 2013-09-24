@@ -22,7 +22,7 @@ interface
                       iret)
         integer :: nmat
         integer :: nvi
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: comp(*)

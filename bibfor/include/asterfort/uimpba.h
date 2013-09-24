@@ -17,7 +17,7 @@
 !
 interface
     subroutine uimpba(clas, iunmes)
-        character(*) :: clas
+        character(len=*) :: clas
         integer :: iunmes
     end subroutine uimpba
 end interface

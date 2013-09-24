@@ -19,7 +19,7 @@ interface
     subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
                       mater, sig, vin, seuil)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imat

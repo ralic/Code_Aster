@@ -22,11 +22,11 @@ interface
         integer :: ioccur
         character(len=8) :: leresu
         logical :: lresul
-        character(*) :: nchsym
-        character(*) :: nnuord
-        character(*) :: nlicmp
-        character(*) :: novcmp
-        character(*) :: nnopar
+        character(len=*) :: nchsym
+        character(len=*) :: nnuord
+        character(len=*) :: nlicmp
+        character(len=*) :: novcmp
+        character(len=*) :: nnopar
         integer :: nbnosy
         integer :: nbordr
         integer :: nbrcmp

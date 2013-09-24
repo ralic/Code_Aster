@@ -18,8 +18,8 @@
 interface
     subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                       nbbloq, nblagr, nbliai)
-        character(*) :: choixz
-        character(*) :: numez
+        character(len=*) :: choixz
+        character(len=*) :: numez
         integer :: neq
         integer :: tabddl(*)
         integer :: nbacti

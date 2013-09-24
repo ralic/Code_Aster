@@ -18,12 +18,12 @@
 interface
     subroutine irccmp(typ, gd, ncmpmx, nomcgd, nbcmp,&
                       nomcmp, nbcmpt, jcmp)
-        character(*) :: typ
-        character(*) :: gd
+        character(len=*) :: typ
+        character(len=*) :: gd
         integer :: ncmpmx
-        character(*) :: nomcgd(*)
+        character(len=*) :: nomcgd(*)
         integer :: nbcmp
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         integer :: nbcmpt
         integer :: jcmp
     end subroutine irccmp

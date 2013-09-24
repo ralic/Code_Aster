@@ -19,17 +19,17 @@ interface
     subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                       chsecm, chsolu, base, rsolu, csolu,&
                       criter, prepos, istop, iret)
-        character(*) :: matass
-        character(*) :: matpre
-        character(*) :: solveu
-        character(*) :: chcine
+        character(len=*) :: matass
+        character(len=*) :: matpre
+        character(len=*) :: solveu
+        character(len=*) :: chcine
         integer :: nsecm
-        character(*) :: chsecm
-        character(*) :: chsolu
-        character(*) :: base
+        character(len=*) :: chsecm
+        character(len=*) :: chsolu
+        character(len=*) :: base
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
-        character(*) :: criter
+        character(len=*) :: criter
         logical :: prepos
         integer :: istop
         integer :: iret

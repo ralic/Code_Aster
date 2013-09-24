@@ -18,15 +18,15 @@
 interface
     subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
                       proldr, prolga, istop, base, ier)
-        character(*) :: nomsd
-        character(*) :: nomch
-        character(*) :: acces
+        character(len=*) :: nomsd
+        character(len=*) :: nomch
+        character(len=*) :: acces
         real(kind=8) :: rval
-        character(*) :: chextr
-        character(*) :: proldr
-        character(*) :: prolga
+        character(len=*) :: chextr
+        character(len=*) :: proldr
+        character(len=*) :: prolga
         integer :: istop
-        character(*) :: base
+        character(len=*) :: base
         integer :: ier
     end subroutine rsinch
 end interface

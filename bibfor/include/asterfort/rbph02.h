@@ -21,7 +21,7 @@ interface
                       objve4)
         character(len=8) :: mailla
         character(len=14) :: numddl
-        character(*) :: chamno
+        character(len=*) :: chamno
         character(len=8) :: nomgd
         integer :: neq
         integer :: nbnoeu

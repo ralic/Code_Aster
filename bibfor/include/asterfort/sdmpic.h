@@ -17,7 +17,7 @@
 !
 interface
     subroutine sdmpic(typesd, nomsd)
-        character(*) :: typesd
-        character(*) :: nomsd
+        character(len=*) :: typesd
+        character(len=*) :: nomsd
     end subroutine sdmpic
 end interface

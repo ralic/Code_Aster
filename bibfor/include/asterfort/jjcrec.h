@@ -20,8 +20,8 @@ interface
                       iadmi)
         integer :: icl
         integer :: ida
-        character(*) :: genri
-        character(*) :: typei
+        character(len=*) :: genri
+        character(len=*) :: typei
         integer :: nb
         integer :: iadmi
     end subroutine jjcrec

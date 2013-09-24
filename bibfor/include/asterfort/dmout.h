@@ -24,6 +24,6 @@ interface
         integer :: n
         real(kind=8) :: a(lda, *)
         integer :: idigit
-        character(*) :: ifmt
+        character(len=*) :: ifmt
     end subroutine dmout
 end interface

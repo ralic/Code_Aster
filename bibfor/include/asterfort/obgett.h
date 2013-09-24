@@ -18,6 +18,6 @@
 interface
     subroutine obgett(nomstr, typesz)
         character(len=24) :: nomstr
-        character(*) :: typesz
+        character(len=*) :: typesz
     end subroutine obgett
 end interface

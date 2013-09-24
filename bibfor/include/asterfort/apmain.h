@@ -18,7 +18,7 @@
 interface
     subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                       iret)
-        character(*) :: action
+        character(len=*) :: action
         integer :: kptsc
         real(kind=8) :: rsolu(*)
         character(len=19) :: vcine

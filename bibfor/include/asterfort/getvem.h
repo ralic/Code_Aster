@@ -18,14 +18,14 @@
 interface
     subroutine getvem(noma, typent, motfac, motcle, iocc,&
                       iarg, mxval, vk, nbval)
-        character(*) :: noma
-        character(*) :: typent
-        character(*) :: motfac
-        character(*) :: motcle
+        character(len=*) :: noma
+        character(len=*) :: typent
+        character(len=*) :: motfac
+        character(len=*) :: motcle
         integer :: iocc
         integer :: iarg
         integer :: mxval
-        character(*) :: vk(*)
+        character(len=*) :: vk(*)
         integer :: nbval
     end subroutine getvem
 end interface

@@ -17,8 +17,8 @@
 !
 interface
     subroutine celces(celz, basez, cesz)
-        character(*) :: celz
-        character(*) :: basez
-        character(*) :: cesz
+        character(len=*) :: celz
+        character(len=*) :: basez
+        character(len=*) :: cesz
     end subroutine celces
 end interface

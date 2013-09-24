@@ -19,9 +19,9 @@ interface
     subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
                       nnos, npg, ipoids, jcoopg, ivf,&
                       idfde, jdfd2, jgano)
-        character(*) :: elrz
-        character(*) :: nomtz
-        character(*) :: famiz
+        character(len=*) :: elrz
+        character(len=*) :: nomtz
+        character(len=*) :: famiz
         integer :: ndim
         integer :: nno
         integer :: nnos

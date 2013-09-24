@@ -18,9 +18,9 @@
 interface
     subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
                       codret)
-        character(*) :: modelz
-        character(*) :: chmatz
-        character(*) :: carelz
+        character(len=*) :: modelz
+        character(len=*) :: chmatz
+        character(len=*) :: carelz
         real(kind=8) :: inst
         character(len=19) :: chvarc
         character(len=2) :: codret

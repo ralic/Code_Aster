@@ -21,13 +21,13 @@ interface
                       desc, atype, aname, aunit, cret)
         med_int :: fid
         med_int :: it
-        character(*) :: name
+        character(len=*) :: name
         med_int :: sdim
         med_int :: mdim
-        character(*) :: desc
+        character(len=*) :: desc
         med_int :: atype
-        character(*) :: aname(3)
-        character(*) :: aunit(3)
+        character(len=*) :: aname(3)
+        character(len=*) :: aunit(3)
         med_int :: cret
     end subroutine msmsmi
 end interface

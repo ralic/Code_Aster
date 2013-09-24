@@ -19,7 +19,7 @@ interface
     subroutine nmmatr(phasez, fonact, lischa, solveu, numedd,&
                       sddyna, numins, defico, resoco, meelem,&
                       measse, matass)
-        character(*) :: phasez
+        character(len=*) :: phasez
         integer :: fonact(*)
         character(len=19) :: lischa
         character(len=19) :: solveu

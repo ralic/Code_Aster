@@ -17,8 +17,8 @@
 !
 interface
     subroutine jevech(nmparz, louez, itab)
-        character(*) :: nmparz
-        character(*) :: louez
+        character(len=*) :: nmparz
+        character(len=*) :: louez
         integer :: itab
     end subroutine jevech
 end interface

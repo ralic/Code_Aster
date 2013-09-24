@@ -18,8 +18,8 @@
 interface
     subroutine crenua(nuage, nomgd, np, nx, nc,&
                       lnual)
-        character(*) :: nuage
-        character(*) :: nomgd
+        character(len=*) :: nuage
+        character(len=*) :: nomgd
         integer :: np
         integer :: nx
         integer :: nc

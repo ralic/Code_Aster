@@ -18,8 +18,8 @@
 interface
     subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
                       coor, iret)
-        character(*) :: mcfac
-        character(*) :: mocle(3)
+        character(len=*) :: mcfac
+        character(len=*) :: mocle(3)
         integer :: iocc
         character(len=8) :: nomail
         integer :: ndim

@@ -17,10 +17,10 @@
 !
 interface
     subroutine vtcreb(champz, numedz, basez, typcz, neq)
-        character(*) :: champz
-        character(*) :: numedz
-        character(*) :: basez
-        character(*) :: typcz
+        character(len=*) :: champz
+        character(len=*) :: numedz
+        character(len=*) :: basez
+        character(len=*) :: typcz
         integer :: neq
     end subroutine vtcreb
 end interface

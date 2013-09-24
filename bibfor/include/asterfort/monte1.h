@@ -21,7 +21,7 @@ interface
         integer :: opt
         integer :: te2
         integer :: nout
-        character(*) :: lchout(*)
+        character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
         integer :: igr2
     end subroutine monte1

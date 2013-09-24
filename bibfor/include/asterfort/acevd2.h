@@ -19,7 +19,7 @@ interface
     subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
         character(len=8) :: noma
         character(len=8) :: nomo
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: lmax
         integer :: nbocc
     end subroutine acevd2

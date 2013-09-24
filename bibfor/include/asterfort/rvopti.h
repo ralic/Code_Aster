@@ -18,7 +18,7 @@
 interface
     subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
                       option)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         character(len=19) :: nch19
         character(len=8) :: nomgd

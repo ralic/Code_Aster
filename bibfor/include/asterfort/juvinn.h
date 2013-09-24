@@ -17,6 +17,6 @@
 !
 interface
     subroutine juvinn(ojb)
-        character(*) :: ojb
+        character(len=*) :: ojb
     end subroutine juvinn
 end interface

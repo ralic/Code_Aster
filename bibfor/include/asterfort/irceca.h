@@ -26,16 +26,16 @@ interface
         integer :: longr(*)
         integer :: ncmpmx
         real(kind=8) :: vale(*)
-        character(*) :: nomgd
-        character(*) :: ncmpgd(*)
+        character(len=*) :: nomgd
+        character(len=*) :: ncmpgd(*)
         integer :: celd(*)
         integer :: nbnoma(*)
         integer :: typma(*)
-        character(*) :: nomsym
+        character(len=*) :: nomsym
         integer :: nbmat
         logical :: lresu
         integer :: nbcput
-        character(*) :: ncmput(*)
+        character(len=*) :: ncmput(*)
         integer :: imodl
         integer :: ncmpv
         integer :: nucmpv(*)

@@ -18,11 +18,11 @@
 interface
     subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
                       nummat, prec, ch19)
-        character(*) :: chmatz
+        character(len=*) :: chmatz
         integer :: imate
-        character(*) :: nommaz
+        character(len=*) :: nommaz
         real(kind=8) :: tdef
-        character(*) :: noparz
+        character(len=*) :: noparz
         integer :: nummat
         real(kind=8) :: prec
         character(len=19) :: ch19

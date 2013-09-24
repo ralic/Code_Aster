@@ -17,7 +17,7 @@
 !
 interface
     subroutine mtmchc(matas, action)
-        character(*) :: matas
-        character(*) :: action
+        character(len=*) :: matas
+        character(len=*) :: action
     end subroutine mtmchc
 end interface

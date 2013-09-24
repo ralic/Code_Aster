@@ -17,6 +17,6 @@
 !
 interface
     subroutine jeundf(obj)
-        character(*) :: obj
+        character(len=*) :: obj
     end subroutine jeundf
 end interface

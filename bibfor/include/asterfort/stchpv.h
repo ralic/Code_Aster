@@ -37,6 +37,6 @@ interface
         real(kind=8) :: offset
         character(len=8) :: noecho(*)
         character(len=8) :: intitu(*)
-        character(*) :: nomres
+        character(len=*) :: nomres
     end subroutine stchpv
 end interface

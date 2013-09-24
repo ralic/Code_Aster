@@ -17,6 +17,6 @@
 !
 interface
     subroutine rftabl(tabres)
-        character(*) :: tabres
+        character(len=*) :: tabres
     end subroutine rftabl
 end interface

@@ -19,14 +19,14 @@ interface
     subroutine atasmo(neq, az, apddl, apptr, numedz,&
                       ataz, basez, nblia, nmul, numatz)
         integer :: neq
-        character(*) :: az
+        character(len=*) :: az
         integer :: apddl(*)
         integer :: apptr(*)
-        character(*) :: numedz
-        character(*) :: ataz
-        character(*) :: basez
+        character(len=*) :: numedz
+        character(len=*) :: ataz
+        character(len=*) :: basez
         integer :: nblia
         integer :: nmul
-        character(*) :: numatz
+        character(len=*) :: numatz
     end subroutine atasmo
 end interface

@@ -20,13 +20,13 @@ interface
                       licmp, cnocmp, basez, prof, cnoz)
         integer :: ncmpz
         integer :: nbnoz
-        character(*) :: maz
-        character(*) :: nomgdz
+        character(len=*) :: maz
+        character(len=*) :: nomgdz
         integer :: linoe(nbnoz)
-        character(*) :: licmp(ncmpz)
+        character(len=*) :: licmp(ncmpz)
         integer :: cnocmp(nbnoz*ncmpz)
-        character(*) :: basez
-        character(*) :: prof
-        character(*) :: cnoz
+        character(len=*) :: basez
+        character(len=*) :: prof
+        character(len=*) :: cnoz
     end subroutine cnocre
 end interface

@@ -24,7 +24,7 @@ interface
         integer :: nb
         integer :: np
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: materd(nmat, 2)

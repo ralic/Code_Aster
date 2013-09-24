@@ -20,7 +20,7 @@ interface
         character(len=8) :: carele
         character(len=8) :: modele
         integer :: ifi
-        character(*) :: form
+        character(len=*) :: form
         character(len=80) :: titre
     end subroutine w039c3
 end interface

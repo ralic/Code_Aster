@@ -24,10 +24,10 @@ interface
         real(kind=8) :: coord(*)
         integer :: connex(*)
         integer :: point(*)
-        character(*) :: njvmai
+        character(len=*) :: njvmai
         integer :: nbmai
         integer :: cnsv(*)
-        character(*) :: partie
+        character(len=*) :: partie
         integer :: jtype
         integer :: cnsd(*)
     end subroutine irgnte

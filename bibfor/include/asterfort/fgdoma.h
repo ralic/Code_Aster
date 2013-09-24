@@ -17,7 +17,7 @@
 !
 interface
     subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
-        character(*) :: nommat
+        character(len=*) :: nommat
         integer :: nbcycl
         real(kind=8) :: epsmin(*)
         real(kind=8) :: epsmax(*)

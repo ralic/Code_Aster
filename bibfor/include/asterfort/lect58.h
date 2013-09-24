@@ -20,16 +20,16 @@ interface
                       listr8, listis, precis, crit, epsi,&
                       linoch, nbnoch)
         integer :: ideas
-        character(*) :: nomres
-        character(*) :: mail
-        character(*) :: typres
-        character(*) :: acces
-        character(*) :: listr8
-        character(*) :: listis
+        character(len=*) :: nomres
+        character(len=*) :: mail
+        character(len=*) :: typres
+        character(len=*) :: acces
+        character(len=*) :: listr8
+        character(len=*) :: listis
         integer :: precis
-        character(*) :: crit
+        character(len=*) :: crit
         real(kind=8) :: epsi
-        character(*) :: linoch(*)
+        character(len=*) :: linoch(*)
         integer :: nbnoch
     end subroutine lect58
 end interface

@@ -19,7 +19,7 @@ interface
     subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                       numsiq, pj, mj, seisme, mse,&
                       snij)
-        character(*) :: typz
+        character(len=*) :: typz
         character(len=4) :: lieu
         integer :: numsip
         real(kind=8) :: pi

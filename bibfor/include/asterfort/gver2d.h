@@ -20,7 +20,7 @@ interface
                       rinf, rsup, module)
         character(len=8) :: noma
         integer :: nocc
-        character(*) :: motfaz
+        character(len=*) :: motfaz
         character(len=24) :: nomno
         character(len=8) :: noeud
         real(kind=8) :: rinf

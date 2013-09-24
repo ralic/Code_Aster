@@ -21,15 +21,15 @@ interface
                       gtype, it, mname, dpname, dlname,&
                       n, cret)
         med_int :: fid
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: numdt
         med_int :: numit
         med_int :: etype
         med_int :: gtype
         med_int :: it
-        character(*) :: mname
-        character(*) :: dpname
-        character(*) :: dlname
+        character(len=*) :: mname
+        character(len=*) :: dpname
+        character(len=*) :: dlname
         med_int :: n
         med_int :: cret
     end subroutine mfdonp

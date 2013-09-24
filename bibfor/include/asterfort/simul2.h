@@ -18,13 +18,13 @@
 interface
     subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                       dir, nomnoe, nbno)
-        character(*) :: resu
-        character(*) :: nomcmd
-        character(*) :: masse
-        character(*) :: modsta
+        character(len=*) :: resu
+        character(len=*) :: nomcmd
+        character(len=*) :: masse
+        character(len=*) :: modsta
         integer :: nbdir
         real(kind=8) :: dir(*)
-        character(*) :: nomnoe(*)
+        character(len=*) :: nomnoe(*)
         integer :: nbno
     end subroutine simul2
 end interface

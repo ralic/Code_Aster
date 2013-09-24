@@ -20,8 +20,8 @@ interface
                       nbres, nomres, valres, icodre, iarret)
         integer, intent(in) :: nbres
         integer, intent(in) :: nbpar
-        character(*), intent(in) :: nommaz
-        character(*), intent(in) :: phenom
+        character(len=*), intent(in) :: nommaz
+        character(len=*), intent(in) :: phenom
         character(len=8), intent(in) :: nompar(nbpar)
         real(kind=8), intent(in) :: valpar(nbpar)
         character(len=8), intent(in) :: nomres(nbres)

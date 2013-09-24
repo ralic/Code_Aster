@@ -20,7 +20,7 @@ interface
                       imate, xlong0, a, tmoins, tplus,&
                       dlong0, effnom, vim, effnop, vip,&
                       klv, fono, epsm, crildc, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: option

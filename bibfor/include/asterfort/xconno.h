@@ -21,8 +21,8 @@ interface
         character(len=8) :: mox
         character(len=11) :: chfis
         character(len=1) :: base
-        character(*) :: opt
-        character(*) :: param
+        character(len=*) :: opt
+        character(len=*) :: param
         character(len=19) :: chglo
     end subroutine xconno
 end interface

@@ -18,13 +18,13 @@
 interface
     subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
                       timez, chtnz, vecelz)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: nchar
-        character(*) :: lchar(*)
-        character(*) :: matez
-        character(*) :: caraz
-        character(*) :: timez
-        character(*) :: chtnz
-        character(*) :: vecelz
+        character(len=*) :: lchar(*)
+        character(len=*) :: matez
+        character(len=*) :: caraz
+        character(len=*) :: timez
+        character(len=*) :: chtnz
+        character(len=*) :: vecelz
     end subroutine me2mth
 end interface

@@ -20,19 +20,19 @@ interface
                       listrz, listiz, precis, crit, epsi,&
                       acces, mfich, noma, ligrez, nbvari)
         character(len=8) :: resu
-        character(*) :: typres
-        character(*) :: linoch(*)
+        character(len=*) :: typres
+        character(len=*) :: linoch(*)
         integer :: nbnoch
-        character(*) :: nomcmd
-        character(*) :: listrz
-        character(*) :: listiz
+        character(len=*) :: nomcmd
+        character(len=*) :: listrz
+        character(len=*) :: listiz
         integer :: precis
-        character(*) :: crit
+        character(len=*) :: crit
         real(kind=8) :: epsi
-        character(*) :: acces
+        character(len=*) :: acces
         integer :: mfich
         character(len=8) :: noma
-        character(*) :: ligrez
+        character(len=*) :: ligrez
         integer :: nbvari
     end subroutine lridea
 end interface

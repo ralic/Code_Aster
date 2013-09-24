@@ -17,7 +17,7 @@
 !
 interface
     subroutine caldbg(inout, ncham, lcham, lparam)
-        character(*) :: inout
+        character(len=*) :: inout
         integer :: ncham
         character(len=19) :: lcham(*)
         character(len=8) :: lparam(*)

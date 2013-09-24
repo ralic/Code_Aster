@@ -17,6 +17,6 @@
 !
 interface
     subroutine lxmins(chaine)
-        character(*) :: chaine
+        character(len=*) :: chaine
     end subroutine lxmins
 end interface

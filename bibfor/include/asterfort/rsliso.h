@@ -18,7 +18,7 @@
 interface
     subroutine rsliso(fami, kpg, ksp, poum, imat,&
                       p, rp, drdp)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=1) :: poum

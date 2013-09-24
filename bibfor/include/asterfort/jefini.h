@@ -17,6 +17,6 @@
 !
 interface
     subroutine jefini(cond)
-        character(*) :: cond
+        character(len=*) :: cond
     end subroutine jefini
 end interface

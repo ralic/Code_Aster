@@ -17,8 +17,8 @@
 !
 interface
     subroutine focste(nomfon, nomres, rval, base)
-        character(*) :: nomfon
-        character(*) :: nomres
+        character(len=*) :: nomfon
+        character(len=*) :: nomres
         real(kind=8) :: rval
         character(len=1) :: base
     end subroutine focste

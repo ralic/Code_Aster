@@ -20,7 +20,7 @@ interface
                       compor, epsm, deps, vim, option,&
                       sig, vip, dsidep)
         integer :: neps
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

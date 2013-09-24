@@ -17,9 +17,9 @@
 !
 interface
     subroutine vpmain(modele, mate, cara, xmastr, nbpara)
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: modele
+        character(len=*) :: mate
+        character(len=*) :: cara
         real(kind=8) :: xmastr
         integer :: nbpara
     end subroutine vpmain

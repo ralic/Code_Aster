@@ -21,7 +21,7 @@ interface
                       itemax, precvg, sig, vip, dsidep,&
                       iret)
         integer :: neps
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: typmod(*)

@@ -18,8 +18,8 @@
 interface
     subroutine chpnua(nx, chpt, lno, nuage)
         integer :: nx
-        character(*) :: chpt
-        character(*) :: lno
-        character(*) :: nuage
+        character(len=*) :: chpt
+        character(len=*) :: lno
+        character(len=*) :: nuage
     end subroutine chpnua
 end interface

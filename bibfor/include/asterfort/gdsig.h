@@ -19,7 +19,7 @@ interface
     subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
                      rot0, rotk, granc, imate, gn,&
                      gm, pn, pm)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: x0pg(3)

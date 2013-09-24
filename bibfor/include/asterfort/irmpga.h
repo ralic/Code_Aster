@@ -20,7 +20,7 @@ interface
                       caimpi, caimpk, modnum, nuanom, sdcarm,&
                       codret)
         integer :: nbimpr
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         character(len=19) :: chanom
         character(len=8) :: typech
         character(len=8) :: nomtyp(*)

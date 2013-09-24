@@ -21,13 +21,13 @@ interface
                       gtype, stm, pname, swm, cs,&
                       val, cret)
         med_int :: fid
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: numdt
         med_int :: numit
         med_int :: etype
         med_int :: gtype
         med_int :: stm
-        character(*) :: pname
+        character(len=*) :: pname
         med_int :: swm
         med_int :: cs
         real(kind=8) :: val(*)

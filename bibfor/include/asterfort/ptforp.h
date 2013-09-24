@@ -21,8 +21,8 @@ interface
                       nc, pgl, pgl1, pgl2, fer,&
                       fei)
         integer :: itype
-        character(*) :: option
-        character(*) :: nomte
+        character(len=*) :: option
+        character(len=*) :: nomte
         real(kind=8) :: a
         real(kind=8) :: a2
         real(kind=8) :: xl

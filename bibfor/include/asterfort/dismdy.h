@@ -17,9 +17,9 @@
 !
 interface
     subroutine dismdy(questi, nomobz, repi, repkz, ierd)
-        character(*) :: questi
-        character(*) :: nomobz
-        character(*) :: repkz
+        character(len=*) :: questi
+        character(len=*) :: nomobz
+        character(len=*) :: repkz
         integer      :: repi
         integer      :: ierd
     end subroutine dismdy

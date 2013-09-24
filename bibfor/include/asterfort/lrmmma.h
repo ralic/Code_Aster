@@ -21,7 +21,7 @@ interface
                       nommai, connex, typmai, prefix, infmed,&
                       modnum, numnoa)
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: nbmail
         integer :: nbnoma
         integer :: nbtyp

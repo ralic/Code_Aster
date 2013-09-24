@@ -17,9 +17,9 @@
 !
 interface
     subroutine cesvar(carele, compor, ligrel, dcel)
-        character(*) :: carele
-        character(*) :: compor
-        character(*) :: ligrel
-        character(*) :: dcel
+        character(len=*) :: carele
+        character(len=*) :: compor
+        character(len=*) :: ligrel
+        character(len=*) :: dcel
     end subroutine cesvar
 end interface

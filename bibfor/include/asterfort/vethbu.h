@@ -19,7 +19,7 @@ interface
     subroutine vethbu(modele, matasz, charge, infcha, carele,&
                       mate, chtni, vebtem)
         character(len=24) :: modele
-        character(*) :: matasz
+        character(len=*) :: matasz
         character(len=24) :: charge
         character(len=24) :: infcha
         character(len=24) :: carele

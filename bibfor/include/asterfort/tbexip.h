@@ -17,9 +17,9 @@
 !
 interface
     subroutine tbexip(nomta, para, exist, typpar)
-        character(*) :: nomta
-        character(*) :: para
+        character(len=*) :: nomta
+        character(len=*) :: para
         logical :: exist
-        character(*) :: typpar
+        character(len=*) :: typpar
     end subroutine tbexip
 end interface

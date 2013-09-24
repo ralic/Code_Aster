@@ -23,8 +23,8 @@ interface
         integer :: nbgf
         integer :: typent
         integer :: numfam
-        character(*) :: nomfam
-        character(*) :: nogrf(nbgf)
+        character(len=*) :: nomfam
+        character(len=*) :: nogrf(nbgf)
         integer :: valatt(nbaf)
         integer :: nbnofa
         integer :: nbelfa

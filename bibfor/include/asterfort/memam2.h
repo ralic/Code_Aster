@@ -19,18 +19,18 @@ interface
     subroutine memam2(option, modele, nchar, lchar, mate,&
                       cara, compor, exitim, time, chacce,&
                       vecel, basez, ligrez)
-        character(*) :: option
-        character(*) :: modele
+        character(len=*) :: option
+        character(len=*) :: modele
         integer :: nchar
         character(len=8) :: lchar(*)
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: mate
+        character(len=*) :: cara
         character(len=24) :: compor
         logical :: exitim
         real(kind=8) :: time
-        character(*) :: chacce
-        character(*) :: vecel
-        character(*) :: basez
-        character(*) :: ligrez
+        character(len=*) :: chacce
+        character(len=*) :: vecel
+        character(len=*) :: basez
+        character(len=*) :: ligrez
     end subroutine memam2
 end interface

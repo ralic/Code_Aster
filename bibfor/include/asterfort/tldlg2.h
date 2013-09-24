@@ -21,8 +21,8 @@ interface
         integer :: lmat
         integer :: nprec
         integer :: nmrig
-        character(*) :: vemrig
-        character(*) :: feti
-        character(*) :: veinpn
+        character(len=*) :: vemrig
+        character(len=*) :: feti
+        character(len=*) :: veinpn
     end subroutine tldlg2
 end interface

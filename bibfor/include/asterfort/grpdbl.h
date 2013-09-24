@@ -17,7 +17,7 @@
 !
 interface
     subroutine grpdbl(maz, typgz)
-        character(*) :: maz
-        character(*) :: typgz
+        character(len=*) :: maz
+        character(len=*) :: typgz
     end subroutine grpdbl
 end interface

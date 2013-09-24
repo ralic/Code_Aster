@@ -17,7 +17,7 @@
 !
 interface
     subroutine matrc(nomte, nno, kcis, matc, vectt)
-        character(*) :: nomte
+        character(len=*) :: nomte
         integer :: nno
         real(kind=8) :: kcis
         real(kind=8) :: matc(5, 5)

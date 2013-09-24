@@ -19,11 +19,11 @@ interface
     subroutine utflmd(mailla, limail, nbmail, dim, typmai,&
                       nbtrou, litrou)
         character(len=8) :: mailla
-        character(*) :: limail
+        character(len=*) :: limail
         integer :: nbmail
         integer :: dim
-        character(*) :: typmai
+        character(len=*) :: typmai
         integer :: nbtrou
-        character(*) :: litrou
+        character(len=*) :: litrou
     end subroutine utflmd
 end interface

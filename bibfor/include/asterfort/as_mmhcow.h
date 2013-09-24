@@ -20,7 +20,7 @@ interface
     subroutine as_mmhcow(fid, maa, coo, modcoo, n,&
                       cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         real(kind=8) :: coo(*)
         aster_int :: modcoo
         aster_int :: n

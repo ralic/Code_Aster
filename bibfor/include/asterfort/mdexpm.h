@@ -18,9 +18,9 @@
 interface
     subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
                       codret)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: idfimd
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         logical :: existm
         integer :: ndim
         integer :: codret

@@ -18,14 +18,14 @@
 interface
     subroutine merith(modelz, nchar, lchar, mate, caraz,&
                       timez, matelz, nh, basez)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: nchar
-        character(*) :: lchar(*)
-        character(*) :: mate
-        character(*) :: caraz
-        character(*) :: timez
-        character(*) :: matelz
+        character(len=*) :: lchar(*)
+        character(len=*) :: mate
+        character(len=*) :: caraz
+        character(len=*) :: timez
+        character(len=*) :: matelz
         integer :: nh
-        character(*) :: basez
+        character(len=*) :: basez
     end subroutine merith
 end interface

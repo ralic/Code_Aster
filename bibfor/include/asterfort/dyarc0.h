@@ -18,11 +18,11 @@
 interface
     subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                       lichex)
-        character(*) :: resuz
+        character(len=*) :: resuz
         integer :: nbnosy
         integer :: nbarch
-        character(*) :: lisarc
+        character(len=*) :: lisarc
         integer :: nbchex
-        character(*) :: lichex
+        character(len=*) :: lichex
     end subroutine dyarc0
 end interface

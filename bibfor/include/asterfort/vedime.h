@@ -22,7 +22,7 @@ interface
         character(len=24) :: charge
         character(len=24) :: infcha
         real(kind=8) :: instap
-        character(*) :: typres
-        character(*) :: vecelz
+        character(len=*) :: typres
+        character(len=*) :: vecelz
     end subroutine vedime
 end interface

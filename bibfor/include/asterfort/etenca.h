@@ -17,8 +17,8 @@
 !
 interface
     subroutine etenca(chinz, ligrlz, iret)
-        character(*) :: chinz
-        character(*) :: ligrlz
+        character(len=*) :: chinz
+        character(len=*) :: ligrlz
         integer :: iret
     end subroutine etenca
 end interface

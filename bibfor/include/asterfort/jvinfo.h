@@ -17,7 +17,7 @@
 !
 interface
     function jvinfo(kactio, info)
-        character(*) :: kactio
+        character(len=*) :: kactio
         integer :: info
         integer :: jvinfo
     end function jvinfo

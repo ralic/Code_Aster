@@ -29,9 +29,9 @@ interface
         complex(kind=8) :: refc(nbref)
         character(len=1) :: typres
         real(kind=8) :: epsi
-        character(*) :: crit
+        character(len=*) :: crit
         integer :: ific
         logical :: llab
-        character(*) :: ssigne
+        character(len=*) :: ssigne
     end subroutine utestr
 end interface

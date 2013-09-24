@@ -22,7 +22,7 @@ interface
                       acc, f, df, sig0, eps0,&
                       mexpo, dt, phi, phip, rigeq,&
                       rigm, p, overfl)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=16) :: loi

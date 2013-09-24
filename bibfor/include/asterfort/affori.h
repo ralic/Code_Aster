@@ -20,9 +20,9 @@ interface
                       jdno, jdco, ivr, nutyma, ntseg,&
                       carori, nco, ier)
         integer :: nco
-        character(*) :: typ
-        character(*) :: nomt
-        character(*) :: cara
+        character(len=*) :: typ
+        character(len=*) :: nomt
+        character(len=*) :: cara
         real(kind=8) :: val(6)
         integer :: jad
         integer :: jdno
@@ -30,7 +30,7 @@ interface
         integer :: ivr(*)
         integer :: nutyma
         integer :: ntseg
-        character(*) :: carori(nco)
+        character(len=*) :: carori(nco)
         integer :: ier
     end subroutine affori
 end interface

@@ -18,9 +18,9 @@
 interface
     subroutine foec1f(iuni, nomf, vec, nbcoup, verif)
         integer :: iuni
-        character(*) :: nomf
-        character(*) :: vec(*)
+        character(len=*) :: nomf
+        character(len=*) :: vec(*)
         integer :: nbcoup
-        character(*) :: verif
+        character(len=*) :: verif
     end subroutine foec1f
 end interface

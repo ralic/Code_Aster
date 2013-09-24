@@ -27,9 +27,9 @@ interface
         aster_int :: ngauss
         real(kind=8) :: gscoo(*)
         real(kind=8) :: wg(*)
-        character(*) :: locname
+        character(len=*) :: locname
         aster_int :: ndim
-        character(*) :: nomasu
+        character(len=*) :: nomasu
         aster_int :: cret
     end subroutine as_mlclow
 end interface

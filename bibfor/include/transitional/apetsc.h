@@ -18,11 +18,11 @@
 interface
     subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
                       nbsol, istop, iret)
-        character(*) :: action
-        character(*) :: solvez
-        character(*) :: matasz
+        character(len=*) :: action
+        character(len=*) :: solvez
+        character(len=*) :: matasz
         real(kind=8) :: rsolu(*)
-        character(*) :: vcinez
+        character(len=*) :: vcinez
         integer :: nbsol
         integer :: istop
         integer :: iret

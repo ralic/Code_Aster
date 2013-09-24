@@ -24,7 +24,7 @@ interface
         integer :: icl
         integer :: iv
         real(kind=8) :: rv
-        character(*) :: cv
+        character(len=*) :: cv
         character(len=14) :: cnl
         character(len=8) :: mcl(nbm)
         integer :: nume

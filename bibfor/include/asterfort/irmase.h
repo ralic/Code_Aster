@@ -18,12 +18,12 @@
 interface
     subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
                       sdcarm, nomase)
-        character(*) :: nofimd
-        character(*) :: typsec
+        character(len=*) :: nofimd
+        character(len=*) :: typsec
         integer :: nbrcou
         integer :: nbsect
         integer :: nummai
         character(len=8) :: sdcarm
-        character(*) :: nomase
+        character(len=*) :: nomase
     end subroutine irmase
 end interface

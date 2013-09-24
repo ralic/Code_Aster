@@ -17,8 +17,8 @@
 !
 interface
     subroutine utremt(mot, liste, nbval, place)
-        character(*) :: mot
-        character(*) :: liste(*)
+        character(len=*) :: mot
+        character(len=*) :: liste(*)
         integer :: nbval
         integer :: place
     end subroutine utremt

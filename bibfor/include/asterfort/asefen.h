@@ -24,11 +24,11 @@ interface
         logical :: muapde
         character(len=16) :: nomsy
         integer :: id
-        character(*) :: stat
+        character(len=*) :: stat
         integer :: ndir(*)
         integer :: nsupp(*)
-        character(*) :: masse
-        character(*) :: nomsup(nbsup, *)
+        character(len=*) :: masse
+        character(len=*) :: nomsup(nbsup, *)
         real(kind=8) :: depsup(nbsup, *)
         real(kind=8) :: recmod(nbsup, neq, *)
         integer :: nintra

@@ -18,14 +18,14 @@
 interface 
     subroutine peweib(resu, modele, mate, cara, chmat,&
                       nh, nbocc, iresu, nomcmd)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
+        character(len=*) :: resu
+        character(len=*) :: modele
+        character(len=*) :: mate
+        character(len=*) :: cara
         character(len=8) :: chmat
         integer :: nh
         integer :: nbocc
         integer :: iresu
-        character(*) :: nomcmd
+        character(len=*) :: nomcmd
     end subroutine peweib
-end interface 
+end interface

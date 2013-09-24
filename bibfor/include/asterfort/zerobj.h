@@ -17,7 +17,7 @@
 !
 interface
     function zerobj(obj)
-        character(*) :: obj
+        character(len=*) :: obj
         logical :: zerobj
     end function zerobj
 end interface

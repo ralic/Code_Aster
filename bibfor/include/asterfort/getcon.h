@@ -18,7 +18,7 @@
 interface
     subroutine getcon(nomres, iob, ishf, ilng, ctype,&
                       lcon, iadvar, nomob)
-        character(*) :: nomres
+        character(len=*) :: nomres
         integer :: iob
         integer :: ishf
         integer :: ilng

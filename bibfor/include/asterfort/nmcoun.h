@@ -23,7 +23,7 @@ interface
         character(len=8) :: noma
         integer :: fonact(*)
         character(len=19) :: solveu
-        character(*) :: numedz
+        character(len=*) :: numedz
         character(len=19) :: matass
         character(len=24) :: defico
         character(len=24) :: resoco

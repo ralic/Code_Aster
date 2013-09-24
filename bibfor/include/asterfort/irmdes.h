@@ -18,7 +18,7 @@
 interface
     subroutine irmdes(idfimd, titre, nbtitr, infmed)
         integer :: idfimd
-        character(*) :: titre(*)
+        character(len=*) :: titre(*)
         integer :: nbtitr
         integer :: infmed
     end subroutine irmdes

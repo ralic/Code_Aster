@@ -19,7 +19,7 @@ interface
     subroutine lcvali(fami, kpg, ksp, imate, compor,&
                       ndim, epsm, deps, instam, instap,&
                       codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

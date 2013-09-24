@@ -19,7 +19,7 @@
 interface
     subroutine as_mfanfa(fid, maa, n, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: n
         aster_int :: cret
     end subroutine as_mfanfa

@@ -17,7 +17,7 @@
 !
 interface
     subroutine rsinfo(nomcon, ifi)
-        character(*) :: nomcon
+        character(len=*) :: nomcon
         integer :: ifi
     end subroutine rsinfo
 end interface

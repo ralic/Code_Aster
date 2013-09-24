@@ -17,7 +17,7 @@
 !
 interface
     subroutine contex(nomop, nompar)
-        character(*) :: nomop
-        character(*) :: nompar
+        character(len=*) :: nomop
+        character(len=*) :: nompar
     end subroutine contex
 end interface

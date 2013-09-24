@@ -20,7 +20,7 @@ interface
                       syt, etc, ett, cr, tmoins,&
                       tplus, icodma, sigm, deps, vim,&
                       sig, vip, dsdem, dsdep)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: e

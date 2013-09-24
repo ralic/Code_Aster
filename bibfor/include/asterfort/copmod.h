@@ -21,8 +21,8 @@ interface
         integer :: nbmode
         integer :: neq
         character(len=8) :: basemo
-        character(*) :: champ
-        character(*) :: numer
+        character(len=*) :: champ
+        character(len=*) :: numer
         character(len=1) :: typc
         real(kind=8) :: bmodr(neq*nbmode)
         complex(kind=8) :: bmodz(neq*nbmode)

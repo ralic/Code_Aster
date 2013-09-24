@@ -29,10 +29,10 @@ interface
         integer :: nbobjs
         character(len=4) :: nom4rk
         integer :: nbsaui
-        character(*) :: basemo
-        character(*) :: masgen
-        character(*) :: riggen
-        character(*) :: amogen
+        character(len=*) :: basemo
+        character(len=*) :: masgen
+        character(len=*) :: riggen
+        character(len=*) :: amogen
         integer :: neqgen
         real(kind=8) :: dt
         character(len=8) :: noecho(nbchoc, *)

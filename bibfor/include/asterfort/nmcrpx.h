@@ -17,8 +17,8 @@
 !
 interface
     subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
-        character(*) :: motfaz
-        character(*) :: motpaz
+        character(len=*) :: motfaz
+        character(len=*) :: motpaz
         integer :: iocc
         character(len=19) :: nomsd
         character(len=1) :: base

@@ -18,15 +18,15 @@
 interface
     subroutine tbajco(nomta, para, type, nbval, vi,&
                       vr, vc, vk, action, llign)
-        character(*) :: nomta
-        character(*) :: para
-        character(*) :: type
+        character(len=*) :: nomta
+        character(len=*) :: para
+        character(len=*) :: type
         integer :: nbval
         integer :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
-        character(*) :: vk(*)
-        character(*) :: action
+        character(len=*) :: vk(*)
+        character(len=*) :: action
         integer :: llign(*)
     end subroutine tbajco
 end interface

@@ -22,8 +22,8 @@ interface
         integer :: niveau
         logical :: lattr
         logical :: lcont
-        character(*) :: sch1
+        character(len=*) :: sch1
         integer :: ipos
-        character(*) :: base
+        character(len=*) :: base
     end subroutine utimsd
 end interface

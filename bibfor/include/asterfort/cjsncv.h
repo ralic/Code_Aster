@@ -22,7 +22,7 @@ interface
         integer :: nvi
         integer :: ndt
         integer :: nitimp
-        character(*) :: roucjs
+        character(len=*) :: roucjs
         integer :: iter
         integer :: umess
         real(kind=8) :: erimp(nitimp, 3)

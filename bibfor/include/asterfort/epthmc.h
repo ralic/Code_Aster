@@ -19,7 +19,7 @@ interface
     subroutine epthmc(fami, nno, ndim, nbsig, npg,&
                       ni, xyz, repere, instan, mater,&
                       option, epsith)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: nno
         integer :: ndim
         integer :: nbsig

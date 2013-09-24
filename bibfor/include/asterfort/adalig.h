@@ -17,6 +17,6 @@
 !
 interface
     subroutine adalig(ligrz)
-        character(*) :: ligrz
+        character(len=*) :: ligrz
     end subroutine adalig
 end interface

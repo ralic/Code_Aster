@@ -25,7 +25,7 @@ interface
         character(len=8) :: intf2
         character(len=24) :: geom1
         character(len=24) :: geom2
-        character(*) :: limail
+        character(len=*) :: limail
         integer :: nmga1
     end subroutine geolis
 end interface

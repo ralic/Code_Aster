@@ -24,7 +24,7 @@ interface
         character(len=19) :: resu
         character(len=24) :: nomcha
         character(len=8) :: lieu
-        character(*) :: nomlie
+        character(len=*) :: nomlie
         character(len=8) :: modele
         integer :: ichagd
         character(len=19) :: chpost

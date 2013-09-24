@@ -17,6 +17,6 @@
 !
 interface
     subroutine cmdgma(mailla)
-        character(*) :: mailla
+        character(len=*) :: mailla
     end subroutine cmdgma
 end interface

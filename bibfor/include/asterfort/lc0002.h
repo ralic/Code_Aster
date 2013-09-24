@@ -24,7 +24,7 @@ interface
         integer :: ndsde
         integer :: nsig
         integer :: neps
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

@@ -24,8 +24,8 @@ interface
         integer :: lgpg
         integer :: npg
         integer :: nno
-        character(*) :: fami
-        character(*) :: poum
+        character(len=*) :: fami
+        character(len=*) :: poum
         integer :: ipoids
         integer :: ivf
         integer :: idfde

@@ -18,7 +18,7 @@
 interface
     subroutine chveno(fonree, noma, nomo)
         character(len=4) :: fonree
-        character(*) :: noma
-        character(*) :: nomo
+        character(len=*) :: noma
+        character(len=*) :: nomo
     end subroutine chveno
 end interface

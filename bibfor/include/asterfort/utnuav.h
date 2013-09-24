@@ -17,9 +17,9 @@
 !
 interface
     subroutine utnuav(noma, k, iocc, lno)
-        character(*) :: noma
+        character(len=*) :: noma
         integer :: k
         integer :: iocc
-        character(*) :: lno
+        character(len=*) :: lno
     end subroutine utnuav
 end interface

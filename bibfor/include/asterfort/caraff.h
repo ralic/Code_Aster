@@ -20,6 +20,6 @@ interface
         character(len=8) :: noma
         character(len=8) :: gran
         character(len=1) :: base
-        character(*) :: cartz
+        character(len=*) :: cartz
     end subroutine caraff
 end interface

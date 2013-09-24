@@ -18,12 +18,12 @@
 interface
     subroutine acedat(motfac, in, npara, sec, exp,&
                       tab, car)
-        character(*) :: motfac
+        character(len=*) :: motfac
         integer :: in
         integer :: npara(*)
-        character(*) :: sec(*)
-        character(*) :: exp(*)
-        character(*) :: tab(*)
-        character(*) :: car(*)
+        character(len=*) :: sec(*)
+        character(len=*) :: exp(*)
+        character(len=*) :: tab(*)
+        character(len=*) :: car(*)
     end subroutine acedat
 end interface

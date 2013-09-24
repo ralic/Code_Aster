@@ -22,9 +22,9 @@ interface
         character(len=19) :: sddisc
         character(len=4) :: typque
         integer :: iocc
-        character(*) :: quest
+        character(len=*) :: quest
         real(kind=8) :: valr
         integer :: vali
-        character(*) :: valk
+        character(len=*) :: valk
     end subroutine utdidt
 end interface

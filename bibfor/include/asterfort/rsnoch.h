@@ -17,8 +17,8 @@
 !
 interface
     subroutine rsnoch(nomsd, nomsy, iordr)
-        character(*) :: nomsd
-        character(*) :: nomsy
+        character(len=*) :: nomsd
+        character(len=*) :: nomsy
         integer :: iordr
     end subroutine rsnoch
 end interface

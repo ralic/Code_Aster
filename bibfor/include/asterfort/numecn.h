@@ -17,8 +17,8 @@
 !
 interface
     subroutine numecn(modele, champ, nume)
-        character(*) :: modele
-        character(*) :: champ
-        character(*) :: nume
+        character(len=*) :: modele
+        character(len=*) :: champ
+        character(len=*) :: nume
     end subroutine numecn
 end interface

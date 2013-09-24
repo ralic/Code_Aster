@@ -18,13 +18,13 @@
 interface
     subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
                       ncmpg, licmp, npg, nspt, ncmp)
-        character(*) :: basez
-        character(*) :: cesz
-        character(*) :: typcez
-        character(*) :: maz
-        character(*) :: nomgdz
+        character(len=*) :: basez
+        character(len=*) :: cesz
+        character(len=*) :: typcez
+        character(len=*) :: maz
+        character(len=*) :: nomgdz
         integer :: ncmpg
-        character(*) :: licmp(*)
+        character(len=*) :: licmp(*)
         integer :: npg(*)
         integer :: nspt(*)
         integer :: ncmp(*)

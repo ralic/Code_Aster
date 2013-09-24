@@ -19,7 +19,7 @@ interface
     subroutine zmulmv(trans, m, n, alpha, a,&
                       lda, x, incx, beta, y,&
                       incy)
-        character(*) :: trans
+        character(len=*) :: trans
         integer :: m
         integer :: n
         complex(kind=8) :: alpha

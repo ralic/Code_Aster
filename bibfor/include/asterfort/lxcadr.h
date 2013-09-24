@@ -17,6 +17,6 @@
 !
 interface
     subroutine lxcadr(chaine)
-        character(*) :: chaine
+        character(len=*) :: chaine
     end subroutine lxcadr
 end interface

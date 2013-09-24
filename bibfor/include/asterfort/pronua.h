@@ -17,8 +17,8 @@
 !
 interface
     subroutine pronua(method, nuag1, nuag2)
-        character(*) :: method
-        character(*) :: nuag1
-        character(*) :: nuag2
+        character(len=*) :: method
+        character(len=*) :: nuag1
+        character(len=*) :: nuag2
     end subroutine pronua
 end interface

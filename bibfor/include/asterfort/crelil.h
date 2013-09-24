@@ -22,12 +22,12 @@ interface
         character(len=1) :: kstop
         integer :: nbmat
         integer :: ilimat
-        character(*) :: lili
+        character(len=*) :: lili
         character(len=1) :: base
-        character(*) :: nomma
-        character(*) :: pref
+        character(len=*) :: nomma
+        character(len=*) :: pref
         integer :: gd
-        character(*) :: mailla
+        character(len=*) :: mailla
         integer :: nec
         integer :: ncmp
         integer :: ilimo

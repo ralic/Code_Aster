@@ -19,7 +19,7 @@ interface
     subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                       imate, sigm, deps, vim, sigp,&
                       vip, dsidep, crildc, codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

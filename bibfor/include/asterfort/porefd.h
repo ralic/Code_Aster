@@ -17,9 +17,9 @@
 !
 interface
     subroutine porefd(trange, noeu, cmp, nomrez)
-        character(*) :: trange
-        character(*) :: noeu
-        character(*) :: cmp
-        character(*) :: nomrez
+        character(len=*) :: trange
+        character(len=*) :: noeu
+        character(len=*) :: cmp
+        character(len=*) :: nomrez
     end subroutine porefd
 end interface

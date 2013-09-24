@@ -18,7 +18,7 @@
 interface
     subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
         integer :: neq
-        character(*) :: nommat
+        character(len=*) :: nommat
         complex(kind=8) :: cxsol(neq, *)
         integer :: nbsol
         integer :: typsym

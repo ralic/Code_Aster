@@ -17,8 +17,8 @@
 !
 interface
     subroutine pcmump(matasz, solvez, iretz)
-        character(*) :: matasz
-        character(*) :: solvez
+        character(len=*) :: matasz
+        character(len=*) :: solvez
         integer :: iretz
     end subroutine pcmump
 end interface

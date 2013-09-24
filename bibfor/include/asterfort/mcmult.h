@@ -18,7 +18,7 @@
 interface
     subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
                       prepos)
-        character(*) :: cumul
+        character(len=*) :: cumul
         integer :: lmat
         complex(kind=8) :: vect(*)
         complex(kind=8) :: xsol(*)

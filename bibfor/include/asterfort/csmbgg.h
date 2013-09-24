@@ -23,6 +23,6 @@ interface
         real(kind=8) :: vcine(*)
         complex(kind=8) :: cvsmb(*)
         complex(kind=8) :: cvcine(*)
-        character(*) :: type
+        character(len=*) :: type
     end subroutine csmbgg
 end interface

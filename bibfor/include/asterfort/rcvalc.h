@@ -20,8 +20,8 @@ interface
                       icodre, iarret)
         integer :: nbres
         integer :: jmat
-        character(*) :: phenom
-        character(*) :: nomres(nbres)
+        character(len=*) :: phenom
+        character(len=*) :: nomres(nbres)
         complex(kind=8) :: valres(nbres)
         integer :: icodre(nbres)
         integer :: iarret

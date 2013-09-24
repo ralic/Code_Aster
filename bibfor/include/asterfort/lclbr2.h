@@ -19,7 +19,7 @@ interface
     subroutine lclbr2(fami, kpg, ksp, imate, compor,&
                       ndim, epsm, t, e, sigmt,&
                       sigmc, epsic, compn, gamma)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

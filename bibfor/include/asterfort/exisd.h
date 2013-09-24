@@ -17,8 +17,8 @@
 !
 interface
     subroutine exisd(typesd, nomsd, iret)
-        character(*) :: typesd
-        character(*) :: nomsd
+        character(len=*) :: typesd
+        character(len=*) :: nomsd
         integer :: iret
     end subroutine exisd
 end interface

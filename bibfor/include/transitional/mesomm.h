@@ -18,7 +18,7 @@
 interface
     subroutine mesomm(champ, long, vi, vr, vc,&
                       nbmail, numail)
-        character(*) :: champ
+        character(len=*) :: champ
         integer :: long
         integer :: vi(*)
         real(kind=8) :: vr(*)

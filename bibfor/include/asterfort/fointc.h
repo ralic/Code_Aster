@@ -18,10 +18,10 @@
 interface
     subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
                       resure, resuim, ier)
-        character(*) :: codmes
-        character(*) :: nomf
+        character(len=*) :: codmes
+        character(len=*) :: nomf
         integer :: nbpu
-        character(*) :: nompu(*)
+        character(len=*) :: nompu(*)
         real(kind=8) :: valpu(*)
         real(kind=8) :: resure
         real(kind=8) :: resuim

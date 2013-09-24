@@ -20,7 +20,7 @@ interface
     subroutine mmhcow(fid, name, numdt, numit, dt,&
                       swm, n, coo, cret)
         med_int :: fid
-        character(*) :: name
+        character(len=*) :: name
         med_int :: numdt
         med_int :: numit
         real(kind=8) :: dt

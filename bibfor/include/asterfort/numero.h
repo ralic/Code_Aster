@@ -18,11 +18,11 @@
 interface
     subroutine numero(nuposs, modelz, infchz, solveu, base,&
                       nu)
-        character(*) :: nuposs
-        character(*) :: modelz
-        character(*) :: infchz
-        character(*) :: solveu
+        character(len=*) :: nuposs
+        character(len=*) :: modelz
+        character(len=*) :: infchz
+        character(len=*) :: solveu
         character(len=2) :: base
-        character(*) :: nu
+        character(len=*) :: nu
     end subroutine numero
 end interface

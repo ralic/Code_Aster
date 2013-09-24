@@ -18,7 +18,7 @@
 interface
     subroutine apinfi(sdappa, questz, ip, vali)
         character(len=19) :: sdappa
-        character(*) :: questz
+        character(len=*) :: questz
         integer :: ip
         integer :: vali
     end subroutine apinfi

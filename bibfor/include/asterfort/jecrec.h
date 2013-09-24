@@ -18,11 +18,11 @@
 interface
     subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
                       nmax)
-        character(*) :: nomlu
-        character(*) :: listat
-        character(*) :: accelu
-        character(*) :: stoclu
-        character(*) :: longlu
+        character(len=*) :: nomlu
+        character(len=*) :: listat
+        character(len=*) :: accelu
+        character(len=*) :: stoclu
+        character(len=*) :: longlu
         integer :: nmax
     end subroutine jecrec
 end interface

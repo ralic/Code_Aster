@@ -22,13 +22,13 @@ interface
         integer :: nou
         integer :: nin
         character(len=1) :: stop
-        character(*) :: optio
-        character(*) :: ligrlz
-        character(*) :: lchin(*)
-        character(*) :: lpain(*)
-        character(*) :: lchou(*)
-        character(*) :: lpaou(*)
-        character(*) :: base
-        character(*) :: mpic
+        character(len=*) :: optio
+        character(len=*) :: ligrlz
+        character(len=*) :: lchin(*)
+        character(len=*) :: lpain(*)
+        character(len=*) :: lchou(*)
+        character(len=*) :: lpaou(*)
+        character(len=*) :: base
+        character(len=*) :: mpic
     end subroutine calcul
 end interface

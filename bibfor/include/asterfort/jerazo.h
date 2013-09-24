@@ -17,7 +17,7 @@
 !
 interface
     subroutine jerazo(nomlu, ni, i1)
-        character(*) :: nomlu
+        character(len=*) :: nomlu
         integer :: ni
         integer :: i1
     end subroutine jerazo

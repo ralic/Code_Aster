@@ -17,8 +17,8 @@
 !
 interface
     subroutine cescar(cesz, cartz, basz)
-        character(*) :: cesz
-        character(*) :: cartz
-        character(*) :: basz
+        character(len=*) :: cesz
+        character(len=*) :: cartz
+        character(len=*) :: basz
     end subroutine cescar
 end interface

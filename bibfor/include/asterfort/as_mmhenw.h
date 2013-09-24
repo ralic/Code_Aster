@@ -20,7 +20,7 @@ interface
     subroutine as_mmhenw(fid, maa, num, n, typent,&
                       typgeo, cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: num(*)
         aster_int :: n
         aster_int :: typent

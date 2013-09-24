@@ -18,9 +18,9 @@
 interface
     subroutine ulopen(unit, fichie, name, acces, autor)
         integer :: unit
-        character(*) :: fichie
-        character(*) :: name
-        character(*) :: acces
-        character(*) :: autor
+        character(len=*) :: fichie
+        character(len=*) :: name
+        character(len=*) :: acces
+        character(len=*) :: autor
     end subroutine ulopen
 end interface

@@ -21,7 +21,7 @@ interface
         character(len=8) :: modele
         character(len=24) :: mate
         character(len=8) :: cara
-        character(*) :: kcha
+        character(len=*) :: kcha
         integer :: ncha
         character(len=4) :: ctyp
         character(len=8) :: result

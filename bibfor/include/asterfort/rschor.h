@@ -17,10 +17,10 @@
 !
 interface
     subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
-        character(*) :: noresz
-        character(*) :: nomsyz
+        character(len=*) :: noresz
+        character(len=*) :: nomsyz
         integer :: nbordr
-        character(*) :: tabord
+        character(len=*) :: tabord
         integer :: codret
     end subroutine rschor
 end interface

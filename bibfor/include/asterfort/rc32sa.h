@@ -19,7 +19,7 @@ interface
     subroutine rc32sa(typz, nommat, mati, matj, snpq,&
                       spij, typeke, spmeca, spther, kemeca,&
                       kether, saltij, sm, fuij)
-        character(*) :: typz
+        character(len=*) :: typz
         character(len=8) :: nommat
         real(kind=8) :: mati(*)
         real(kind=8) :: matj(*)

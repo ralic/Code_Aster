@@ -20,8 +20,8 @@ interface
                       n2)
         integer :: m
         integer :: f
-        character(*) :: conec
-        character(*) :: type
+        character(len=*) :: conec
+        character(len=*) :: type
         integer :: n1
         integer :: n2
     end subroutine i2extf

@@ -17,7 +17,7 @@
 !
 interface
     subroutine conlag(matasz, cond)
-        character(*) :: matasz
+        character(len=*) :: matasz
         real(kind=8) :: cond
     end subroutine conlag
 end interface

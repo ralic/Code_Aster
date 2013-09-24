@@ -18,15 +18,15 @@
 interface
     subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                       vc, vk, lprec, lcrit, nume)
-        character(*) :: tabin
+        character(len=*) :: tabin
         integer :: npacri
-        character(*) :: lipacr(*)
+        character(len=*) :: lipacr(*)
         integer :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
-        character(*) :: vk(*)
+        character(len=*) :: vk(*)
         real(kind=8) :: lprec(*)
-        character(*) :: lcrit(*)
+        character(len=*) :: lcrit(*)
         integer :: nume
     end subroutine tbnuli
 end interface

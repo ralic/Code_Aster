@@ -17,8 +17,8 @@
 !
 interface
     subroutine crsmsp(solvbz, matasz, pcpiv)
-        character(*) :: solvbz
-        character(*) :: matasz
+        character(len=*) :: solvbz
+        character(len=*) :: matasz
         integer :: pcpiv
     end subroutine crsmsp
 end interface

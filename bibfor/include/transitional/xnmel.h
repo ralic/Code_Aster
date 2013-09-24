@@ -24,7 +24,7 @@ interface
                      codret, jpmilt, nfiss, jfisno)
         integer :: nfiss
         integer :: nnop
-        character(*) :: poum
+        character(len=*) :: poum
         integer :: nfh
         integer :: nfe
         integer :: ddlc

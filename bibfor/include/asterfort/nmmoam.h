@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmmoam(sdammz, nbmoda)
-        character(*) :: sdammz
+        character(len=*) :: sdammz
         integer :: nbmoda
     end subroutine nmmoam
 end interface

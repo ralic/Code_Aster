@@ -18,7 +18,7 @@
 interface
     subroutine ulposi(unit, posi, ierr)
         integer :: unit
-        character(*) :: posi
+        character(len=*) :: posi
         integer :: ierr
     end subroutine ulposi
 end interface

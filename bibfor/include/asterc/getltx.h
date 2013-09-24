@@ -18,8 +18,8 @@
 interface
     subroutine getltx(motfac, motcle, iocc, iarg, mxval,&
                       isval, nbval)
-        character(*) :: motfac
-        character(*) :: motcle
+        character(len=*) :: motfac
+        character(len=*) :: motcle
         integer :: iocc
         integer :: iarg
         integer :: mxval

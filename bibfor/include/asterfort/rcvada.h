@@ -20,7 +20,7 @@ interface
                       valres, devres, icodre)
         integer :: nbres
         integer :: jmat
-        character(*) :: phenom
+        character(len=*) :: phenom
         real(kind=8) :: temp
         character(len=8) :: nomres(nbres)
         real(kind=8) :: valres(nbres)

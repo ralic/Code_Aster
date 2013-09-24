@@ -17,8 +17,8 @@
 !
 interface
     subroutine focstc(nomfon, nomres, rval, ival, base)
-        character(*) :: nomfon
-        character(*) :: nomres
+        character(len=*) :: nomfon
+        character(len=*) :: nomres
         real(kind=8) :: rval
         real(kind=8) :: ival
         character(len=1) :: base

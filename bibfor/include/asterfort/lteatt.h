@@ -17,9 +17,9 @@
 !
 interface
     function lteatt(typel, noattr, vattr)
-        character(*) :: typel
-        character(*) :: noattr
-        character(*) :: vattr
+        character(len=*) :: typel
+        character(len=*) :: noattr
+        character(len=*) :: vattr
         logical :: lteatt
     end function lteatt
 end interface

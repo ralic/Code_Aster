@@ -17,8 +17,8 @@
 !
 interface
     subroutine liimpr(noml, impr, fichie)
-        character(*) :: noml
+        character(len=*) :: noml
         integer :: impr
-        character(*) :: fichie
+        character(len=*) :: fichie
     end subroutine liimpr
 end interface

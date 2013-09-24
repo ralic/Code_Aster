@@ -24,8 +24,8 @@ interface
         real(kind=8) :: tps(6)
         integer :: nbchar
         character(len=8) :: char
-        character(*) :: mate
-        character(*) :: solvez
+        character(len=*) :: mate
+        character(len=*) :: solvez
         character(len=8) :: ma
         character(len=14) :: nu
     end subroutine rigflu

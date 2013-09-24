@@ -39,11 +39,11 @@ interface
         integer :: nbpari
         integer :: nbparr
         integer :: nbpark
-        character(*) :: nopara(*)
+        character(len=*) :: nopara(*)
         character(len=4) :: mod45
         integer :: resui(*)
         real(kind=8) :: resur(*)
-        character(*) :: resuk(*)
+        character(len=*) :: resuk(*)
         character(len=1) :: ktyp
         logical :: lcomod
         integer :: icom1

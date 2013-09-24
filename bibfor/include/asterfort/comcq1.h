@@ -21,7 +21,7 @@ interface
                       deps, tempm, tempp, sigm, vim,&
                       option, angmas, sigp, vip, dsde,&
                       codret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mod

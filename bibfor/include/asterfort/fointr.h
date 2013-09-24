@@ -18,8 +18,8 @@
 interface
     subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                       nbres, varres, fonres, ier)
-        character(*) :: nomfon
-        character(*) :: chprol(*)
+        character(len=*) :: nomfon
+        character(len=*) :: chprol(*)
         integer :: nbvar
         real(kind=8) :: var(*)
         real(kind=8) :: fon(*)

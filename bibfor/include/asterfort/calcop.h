@@ -20,7 +20,7 @@ interface
                       nbordr, lischa, ncharg, chtype, typesd,&
                       codret)
         character(len=16) :: option
-        character(*) :: lisopt
+        character(len=*) :: lisopt
         character(len=8) :: resuin
         character(len=8) :: resuou
         character(len=19) :: lisord

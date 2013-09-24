@@ -18,7 +18,7 @@
 interface
     subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
                       reffin, reffou, ceffin, ceffou)
-        character(*) :: sens
+        character(len=*) :: sens
         real(kind=8) :: excen
         integer :: nbpoin
         integer :: nbcmp

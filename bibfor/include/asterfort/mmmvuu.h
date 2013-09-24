@@ -21,7 +21,7 @@ interface
                       ffm, jacobi, jeu, coefac, coefaf,&
                       lambda, coefff, dlagrc, dlagrf, dvite,&
                       rese, nrese, vectee, vectmm)
-        character(*) :: phasez
+        character(len=*) :: phasez
         integer :: ndim
         integer :: nne
         integer :: nnm

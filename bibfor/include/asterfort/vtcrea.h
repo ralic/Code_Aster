@@ -17,10 +17,10 @@
 !
 interface
     subroutine vtcrea(champ, crefe, base, typc, neq)
-        character(*) :: champ
+        character(len=*) :: champ
         character(len=24) :: crefe(*)
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: base
+        character(len=*) :: typc
         integer :: neq
     end subroutine vtcrea
 end interface

@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmcrsd(typesd, nomsd)
-        character(*) :: typesd
-        character(*) :: nomsd
+        character(len=*) :: typesd
+        character(len=*) :: nomsd
     end subroutine nmcrsd
 end interface

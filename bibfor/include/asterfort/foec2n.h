@@ -20,9 +20,9 @@ interface
                       impr)
         integer :: nbfonc
         integer :: iuni
-        character(*) :: vecpro(*)
+        character(len=*) :: vecpro(*)
         real(kind=8) :: valpar(nbfonc)
-        character(*) :: chval
+        character(len=*) :: chval
         integer :: impr
     end subroutine foec2n
 end interface

@@ -18,7 +18,7 @@
 interface
     subroutine appari(sdappa, questz, vali)
         character(len=19) :: sdappa
-        character(*) :: questz
+        character(len=*) :: questz
         integer :: vali
     end subroutine appari
 end interface

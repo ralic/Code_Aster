@@ -18,8 +18,8 @@
 interface
     subroutine nmvcaf(index, chainz, exicha, comz)
         character(len=4) :: index
-        character(*) :: chainz
+        character(len=*) :: chainz
         logical :: exicha
-        character(*) :: comz
+        character(len=*) :: comz
     end subroutine nmvcaf
 end interface

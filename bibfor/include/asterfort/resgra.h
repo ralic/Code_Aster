@@ -19,9 +19,9 @@ interface
     subroutine resgra(mat, matf, vcine, niter, epsi,&
                       criter, nsecm, rsolu, solveu, istop,&
                       iret)
-        character(*) :: mat
-        character(*) :: matf
-        character(*) :: vcine
+        character(len=*) :: mat
+        character(len=*) :: matf
+        character(len=*) :: vcine
         integer :: niter
         real(kind=8) :: epsi
         character(len=19) :: criter

@@ -17,9 +17,9 @@
 !
 interface
     subroutine dcapno(resuz, typchz, iord, chavaz)
-        character(*) :: resuz
-        character(*) :: typchz
+        character(len=*) :: resuz
+        character(len=*) :: typchz
         integer :: iord
-        character(*) :: chavaz
+        character(len=*) :: chavaz
     end subroutine dcapno
 end interface

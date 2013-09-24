@@ -18,7 +18,7 @@
 interface
     subroutine vecink(n, s, x)
         integer :: n
-        character(*) :: s
-        character(*) :: x(n)
+        character(len=*) :: s
+        character(len=*) :: x(n)
     end subroutine vecink
 end interface

@@ -17,7 +17,7 @@
 !
 interface
     subroutine jevete(nomobj, code, iad)
-        character(*) :: nomobj
+        character(len=*) :: nomobj
         character(len=1) :: code
         integer :: iad
     end subroutine jevete

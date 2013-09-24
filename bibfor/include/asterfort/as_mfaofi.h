@@ -21,15 +21,15 @@ interface
                       attid, attval, attdes, natt, gro,&
                       cret)
         aster_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         aster_int :: ind
-        character(*) :: fam
+        character(len=*) :: fam
         aster_int :: num
         aster_int :: attid(*)
         aster_int :: attval(*)
-        character(*) :: attdes(*)
+        character(len=*) :: attdes(*)
         aster_int :: natt
-        character(*) :: gro(*)
+        character(len=*) :: gro(*)
         aster_int :: cret
     end subroutine as_mfaofi
 end interface

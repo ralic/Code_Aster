@@ -21,7 +21,7 @@ interface
                       typgeo, nomtyp, nmatyp, prefix, infmed,&
                       vecgrm, nbcgrm)
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: nbnoeu
         integer :: nbmail
         character(len=24) :: grpnoe

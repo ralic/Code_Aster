@@ -23,29 +23,29 @@ interface
                       amort, spectr, asspec, nomsup, reasup,&
                       depsup, tcosup, corfre, f1gup, f2gup)
         integer :: nbsup
-        character(*) :: resu
-        character(*) :: masse
-        character(*) :: mome
-        character(*) :: psmo
-        character(*) :: stat
+        character(len=*) :: resu
+        character(len=*) :: masse
+        character(len=*) :: mome
+        character(len=*) :: psmo
+        character(len=*) :: stat
         integer :: nbmode
         integer :: neq
         integer :: nordr(*)
-        character(*) :: knomsy(*)
+        character(len=*) :: knomsy(*)
         integer :: nbopt
         integer :: ndir(*)
         logical :: monoap
         logical :: muapde
         integer :: nsupp(*)
-        character(*) :: typcmo
+        character(len=*) :: typcmo
         real(kind=8) :: temps
         logical :: comdir
-        character(*) :: typcdi
+        character(len=*) :: typcdi
         logical :: tronc
         real(kind=8) :: amort(*)
         real(kind=8) :: spectr(*)
         real(kind=8) :: asspec(*)
-        character(*) :: nomsup(*)
+        character(len=*) :: nomsup(*)
         real(kind=8) :: reasup(*)
         real(kind=8) :: depsup(*)
         integer :: tcosup(*)

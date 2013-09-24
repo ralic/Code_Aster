@@ -25,7 +25,7 @@ interface
         integer :: lgpg
         integer :: npg
         integer :: nno
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: ipoids
         integer :: ivf
         real(kind=8) :: vff(*)

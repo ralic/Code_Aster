@@ -17,8 +17,8 @@
 !
 interface
     subroutine wkvect(nom, carac, dim, ldec)
-        character(*) :: nom
-        character(*) :: carac
+        character(len=*) :: nom
+        character(len=*) :: carac
         integer :: dim
         integer :: ldec
     end subroutine wkvect

@@ -22,12 +22,12 @@ interface
         integer :: lmasse
         integer :: lamor
         integer :: lraide
-        character(*) :: appr
+        character(len=*) :: appr
         real(kind=8) :: fmin
         complex(kind=8) :: sigma
-        character(*) :: matopa
-        character(*) :: matpsc
-        character(*) :: raide
+        character(len=*) :: matopa
+        character(len=*) :: matpsc
+        character(len=*) :: raide
         logical :: lqz
         character(len=19) :: solveu
     end subroutine wpfopr

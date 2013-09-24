@@ -17,6 +17,6 @@
 !
 interface
     subroutine redetr(matelz)
-        character(*) :: matelz
+        character(len=*) :: matelz
     end subroutine redetr
 end interface

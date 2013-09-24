@@ -26,7 +26,7 @@ interface
         integer :: icl
         integer :: iv
         real(kind=8) :: rv
-        character(*) :: cv
+        character(len=*) :: cv
         integer :: deblig
     end subroutine lirtet
 end interface

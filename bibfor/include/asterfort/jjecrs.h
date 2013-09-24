@@ -22,7 +22,7 @@ interface
         integer :: iclas
         integer :: idos
         integer :: idco
-        character(*) :: cus
+        character(len=*) :: cus
         integer :: jmarq(2)
     end subroutine jjecrs
 end interface

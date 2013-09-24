@@ -18,8 +18,8 @@
 interface
     subroutine rcvarp(arret, novrc, poum, valvrc, iret)
         character(len=1) :: arret
-        character(*) :: novrc
-        character(*) :: poum
+        character(len=*) :: novrc
+        character(len=*) :: poum
         real(kind=8) :: valvrc
         integer :: iret
     end subroutine rcvarp

@@ -19,7 +19,7 @@ interface
 #include "aster_types.h"
     subroutine mfiope(fid, name, access, cret)
         med_int :: fid
-        character(*) :: name
+        character(len=*) :: name
         med_int :: access
         med_int :: cret
     end subroutine mfiope

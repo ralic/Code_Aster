@@ -21,17 +21,17 @@ interface
                       gtype, mname, pit, stm, pname,&
                       psize, lname, nip, n, cret)
         med_int :: fid
-        character(*) :: fname
+        character(len=*) :: fname
         med_int :: numdt
         med_int :: numit
         med_int :: etype
         med_int :: gtype
-        character(*) :: mname
+        character(len=*) :: mname
         med_int :: pit
         med_int :: stm
-        character(*) :: pname
+        character(len=*) :: pname
         med_int :: psize
-        character(*) :: lname
+        character(len=*) :: lname
         med_int :: nip
         med_int :: n
         med_int :: cret

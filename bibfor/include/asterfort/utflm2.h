@@ -22,7 +22,7 @@ interface
         character(len=8) :: mailla
         integer :: tabmai(nbma)
         integer :: dim
-        character(*) :: typmai
+        character(len=*) :: typmai
         integer :: nbtrou
         integer :: tatrou(nbma)
     end subroutine utflm2

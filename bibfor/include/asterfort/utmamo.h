@@ -19,6 +19,6 @@ interface
     subroutine utmamo(modele, nbtrou, litrou)
         character(len=8) :: modele
         integer :: nbtrou
-        character(*) :: litrou
+        character(len=*) :: litrou
     end subroutine utmamo
 end interface

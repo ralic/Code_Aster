@@ -17,8 +17,8 @@
 !
 interface
     subroutine imptou(base, tous, mess)
-        character(*) :: base
-        character(*) :: tous
-        character(*) :: mess
+        character(len=*) :: base
+        character(len=*) :: tous
+        character(len=*) :: mess
     end subroutine imptou
 end interface

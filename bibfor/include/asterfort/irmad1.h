@@ -29,9 +29,9 @@ interface
         integer :: ncmpmx
         integer :: itype
         integer :: nstat
-        character(*) :: chamno(*)
-        character(*) :: nomcmp(*)
-        character(*) :: nomsym
+        character(len=*) :: chamno(*)
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: nomsym
         integer :: numnoe(*)
     end subroutine irmad1
 end interface

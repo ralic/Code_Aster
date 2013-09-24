@@ -20,11 +20,11 @@ interface
                       nomtab, iocc, xnovar, ncheff, i1,&
                       ioc, isd)
         real(kind=8) :: t(*)
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         integer :: nbcp
         integer :: nbco
         integer :: nbsp
-        character(*) :: nomtab
+        character(len=*) :: nomtab
         integer :: iocc
         character(len=24) :: xnovar
         character(len=16) :: ncheff

@@ -17,9 +17,9 @@
 !
 interface
     subroutine pjngch(cham1z, cham2z, corres, base)
-        character(*) :: cham1z
-        character(*) :: cham2z
-        character(*) :: corres
-        character(*) :: base
+        character(len=*) :: cham1z
+        character(len=*) :: cham2z
+        character(len=*) :: corres
+        character(len=*) :: base
     end subroutine pjngch
 end interface

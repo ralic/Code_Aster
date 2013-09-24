@@ -17,7 +17,7 @@
 !
 interface
     subroutine editgd(chinz, ncmp, gd, nedit, dg)
-        character(*) :: chinz
+        character(len=*) :: chinz
         integer :: ncmp
         integer :: gd
         integer :: nedit

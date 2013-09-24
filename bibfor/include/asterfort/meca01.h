@@ -20,7 +20,7 @@ interface
                       kcha, ctyp, tbgrca, resuco, resuc1,&
                       leres1, noma, modele, ligrmo, mate,&
                       cara, chvarc, codret)
-        character(*) :: optio0
+        character(len=*) :: optio0
         integer :: nbordr
         integer :: jordr
         integer :: nchar

@@ -19,7 +19,7 @@ interface
     subroutine nmcham(fami, kpg, ksp, imate, compor,&
                       matel, mat, nbvar, memo, visc,&
                       idelta, coef)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate

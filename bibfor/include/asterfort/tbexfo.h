@@ -18,12 +18,12 @@
 interface
     subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
                       prolgd, basfon)
-        character(*) :: nomta
-        character(*) :: parax
-        character(*) :: paray
-        character(*) :: nomfo
-        character(*) :: interp
-        character(*) :: prolgd
-        character(*) :: basfon
+        character(len=*) :: nomta
+        character(len=*) :: parax
+        character(len=*) :: paray
+        character(len=*) :: nomfo
+        character(len=*) :: interp
+        character(len=*) :: prolgd
+        character(len=*) :: basfon
     end subroutine tbexfo
 end interface

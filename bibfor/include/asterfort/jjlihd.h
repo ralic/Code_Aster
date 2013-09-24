@@ -22,8 +22,8 @@ interface
         integer :: idts
         integer :: nbval
         integer :: lonoi
-        character(*) :: genri
-        character(*) :: typei
+        character(len=*) :: genri
+        character(len=*) :: typei
         integer :: ltypi
         integer :: ic
         integer :: ido

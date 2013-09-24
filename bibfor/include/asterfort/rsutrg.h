@@ -17,7 +17,7 @@
 !
 interface
     subroutine rsutrg(nomsd, iordr, irang, nbordr)
-        character(*) :: nomsd
+        character(len=*) :: nomsd
         integer :: iordr
         integer :: irang
         integer :: nbordr

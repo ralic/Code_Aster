@@ -26,7 +26,7 @@ interface
         integer :: nbpari
         integer :: nfreqb
         integer :: neq
-        character(*) :: optiom
+        character(len=*) :: optiom
         integer :: lraide
         integer :: lmasse
         integer :: ldynam
@@ -38,7 +38,7 @@ interface
         real(kind=8) :: vec(neq, *)
         integer :: resufi(nfreqb, nbpari)
         real(kind=8) :: resufr(nfreqb, nbparr)
-        character(*) :: resufk(nfreqb, nbpark)
+        character(len=*) :: resufk(nfreqb, nbpark)
         integer :: nbrssa
         character(len=16) :: typres
         character(len=16) :: optiof

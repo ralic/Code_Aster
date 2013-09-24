@@ -18,8 +18,8 @@
 interface
     subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                       axez, nbnac, nnoeud)
-        character(*) :: chelez
-        character(*) :: nomjv
+        character(len=*) :: chelez
+        character(len=*) :: nomjv
         integer :: nbel
         integer :: numail(*)
         real(kind=8) :: orig(3)

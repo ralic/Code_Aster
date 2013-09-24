@@ -17,8 +17,8 @@
 !
 interface
     subroutine getres(result, concep, nomcmd)
-        character(*) :: result
-        character(*) :: concep
-        character(*) :: nomcmd
+        character(len=*) :: result
+        character(len=*) :: concep
+        character(len=*) :: nomcmd
     end subroutine getres
 end interface

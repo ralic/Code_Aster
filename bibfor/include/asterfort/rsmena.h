@@ -17,6 +17,6 @@
 !
 interface
     subroutine rsmena(resu)
-        character(*) :: resu
+        character(len=*) :: resu
     end subroutine rsmena
 end interface

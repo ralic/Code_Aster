@@ -19,14 +19,14 @@ interface
     subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
                       infcha, cumul, base, itysca, mataz)
         integer :: nbmat
-        character(*) :: tlimat(*)
-        character(*) :: licoef
-        character(*) :: nu
-        character(*) :: solveu
-        character(*) :: infcha
+        character(len=*) :: tlimat(*)
+        character(len=*) :: licoef
+        character(len=*) :: nu
+        character(len=*) :: solveu
+        character(len=*) :: infcha
         character(len=4) :: cumul
-        character(*) :: base
+        character(len=*) :: base
         integer :: itysca
-        character(*) :: mataz
+        character(len=*) :: mataz
     end subroutine asmatr
 end interface

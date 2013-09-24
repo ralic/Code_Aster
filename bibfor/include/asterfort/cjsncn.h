@@ -22,7 +22,7 @@ interface
         integer :: nvi
         integer :: ndt
         integer :: essmax
-        character(*) :: roucjs
+        character(len=*) :: roucjs
         integer :: umess
         real(kind=8) :: relax(essmax)
         real(kind=8) :: rotagd(essmax)

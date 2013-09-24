@@ -19,19 +19,19 @@ interface
     subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
                       nbcmpc, nomcmc, nbvato, typent, typgeo,&
                       existc, nbcmfi, nmcmfi, nbval, codret)
-        character(*) :: nofimd
+        character(len=*) :: nofimd
         integer :: idfimd
-        character(*) :: nochmd
+        character(len=*) :: nochmd
         integer :: numpt
         integer :: numord
         integer :: nbcmpc
-        character(*) :: nomcmc
+        character(len=*) :: nomcmc
         integer :: nbvato
         integer :: typent
         integer :: typgeo
         integer :: existc
         integer :: nbcmfi
-        character(*) :: nmcmfi
+        character(len=*) :: nmcmfi
         integer :: nbval
         integer :: codret
     end subroutine mdexch

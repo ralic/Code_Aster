@@ -20,7 +20,7 @@ interface
                       nbatmx, infmed, nivinf, ifm)
         integer :: nbrfam
         integer :: fid
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: carafa(3, nbrfam)
         integer :: nbgrmx
         integer :: nbatmx

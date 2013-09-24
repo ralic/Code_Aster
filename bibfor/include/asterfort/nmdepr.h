@@ -18,12 +18,12 @@
 interface
     subroutine nmdepr(modele, ligrel, carele, charge, icha,&
                       instan, resufv)
-        character(*) :: modele
-        character(*) :: ligrel
-        character(*) :: carele
-        character(*) :: charge
+        character(len=*) :: modele
+        character(len=*) :: ligrel
+        character(len=*) :: carele
+        character(len=*) :: charge
         integer :: icha
         real(kind=8) :: instan
-        character(*) :: resufv(3)
+        character(len=*) :: resufv(3)
     end subroutine nmdepr
 end interface

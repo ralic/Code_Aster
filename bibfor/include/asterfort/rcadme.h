@@ -18,9 +18,9 @@
 interface
     subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
                       iarret)
-        character(*) :: nommaz
-        character(*) :: phenom
-        character(*) :: nomres
+        character(len=*) :: nommaz
+        character(len=*) :: phenom
+        character(len=*) :: nomres
         integer :: valres(*)
         integer :: icodre
         integer :: iarret

@@ -18,11 +18,11 @@
 interface
     subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                       cesz)
-        character(*) :: cnsz
-        character(*) :: typces
-        character(*) :: cesmoz
-        character(*) :: mnogaz
-        character(*) :: base
-        character(*) :: cesz
+        character(len=*) :: cnsz
+        character(len=*) :: typces
+        character(len=*) :: cesmoz
+        character(len=*) :: mnogaz
+        character(len=*) :: base
+        character(len=*) :: cesz
     end subroutine cnsces
 end interface

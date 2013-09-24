@@ -17,6 +17,6 @@
 !
 interface
     subroutine calyrc(chargz)
-        character(*) :: chargz
+        character(len=*) :: chargz
     end subroutine calyrc
 end interface

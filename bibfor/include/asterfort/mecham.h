@@ -18,13 +18,13 @@
 interface
     subroutine mecham(option, modele, cara, nh, chgeoz,&
                       chcara, chharz, iret)
-        character(*) :: option
-        character(*) :: modele
-        character(*) :: cara
+        character(len=*) :: option
+        character(len=*) :: modele
+        character(len=*) :: cara
         integer :: nh
-        character(*) :: chgeoz
-        character(*) :: chcara(*)
-        character(*) :: chharz
+        character(len=*) :: chgeoz
+        character(len=*) :: chcara(*)
+        character(len=*) :: chharz
         integer :: iret
     end subroutine mecham
 end interface

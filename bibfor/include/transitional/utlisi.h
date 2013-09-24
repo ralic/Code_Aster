@@ -18,7 +18,7 @@
 interface
     subroutine utlisi(motcle, a, na, b, nb,&
                       c, nc, ntrou)
-        character(*) :: motcle
+        character(len=*) :: motcle
         integer :: a(*)
         integer :: na
         integer :: b(*)

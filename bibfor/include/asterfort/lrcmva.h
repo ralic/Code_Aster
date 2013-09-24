@@ -19,18 +19,18 @@ interface
     subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
                       nomcmr, nbcmfi, nmcmfi, nbcmpv, ncmpvm,&
                       numcmp, nochmd, adsl, adsv, codret)
-        character(*) :: ntvale
+        character(len=*) :: ntvale
         integer :: nbvato
-        character(*) :: ntproa
+        character(len=*) :: ntproa
         integer :: lgproa
         integer :: ncmprf
-        character(*) :: nomcmr(*)
+        character(len=*) :: nomcmr(*)
         integer :: nbcmfi
-        character(*) :: nmcmfi
+        character(len=*) :: nmcmfi
         integer :: nbcmpv
-        character(*) :: ncmpvm
-        character(*) :: numcmp
-        character(*) :: nochmd
+        character(len=*) :: ncmpvm
+        character(len=*) :: numcmp
+        character(len=*) :: nochmd
         integer :: adsl
         integer :: adsv
         integer :: codret

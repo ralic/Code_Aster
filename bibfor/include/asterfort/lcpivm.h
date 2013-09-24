@@ -20,7 +20,7 @@ interface
                       carcri, instam, instap, fm, df,&
                       vim, option, taup, vip, dtaudf,&
                       iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: mate

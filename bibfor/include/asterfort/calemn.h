@@ -18,12 +18,12 @@
 interface
     subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
                       lisi2z, lonli2)
-        character(*) :: motfaz
-        character(*) :: nomaz
+        character(len=*) :: motfaz
+        character(len=*) :: nomaz
         integer :: iocc
-        character(*) :: lisi1z
+        character(len=*) :: lisi1z
         integer :: lonli1
-        character(*) :: lisi2z
+        character(len=*) :: lisi2z
         integer :: lonli2
     end subroutine calemn
 end interface

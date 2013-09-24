@@ -29,8 +29,8 @@ interface
         character(len=8) :: nomgd
         integer :: typent
         integer :: nbcmpv
-        character(*) :: ncmpva
-        character(*) :: ncmpvm
+        character(len=*) :: ncmpva
+        character(len=*) :: ncmpvm
         character(len=3) :: prolz
         integer :: iinst
         integer :: numpt

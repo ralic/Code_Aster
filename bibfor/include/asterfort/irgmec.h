@@ -27,7 +27,7 @@ interface
         integer :: tabd(*)
         integer :: tabl(*)
         integer :: tabv(*)
-        character(*) :: partie
+        character(len=*) :: partie
         integer :: jtype
         integer :: nbno
         integer :: listno(*)
@@ -36,8 +36,8 @@ interface
         logical :: iwri
         integer :: iadmax
         integer :: ordr(nbord2)
-        character(*) :: chamsy
-        character(*) :: nomcon
+        character(len=*) :: chamsy
+        character(len=*) :: nomcon
         logical :: lresu
     end subroutine irgmec
 end interface

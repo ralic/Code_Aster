@@ -17,7 +17,7 @@
 !
 interface
     subroutine gettco(nomobj, typobj)
-        character(*) :: nomobj
-        character(*) :: typobj
+        character(len=*) :: nomobj
+        character(len=*) :: typobj
     end subroutine gettco
 end interface

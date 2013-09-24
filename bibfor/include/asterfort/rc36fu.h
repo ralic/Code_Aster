@@ -22,7 +22,7 @@ interface
         integer :: nocc(*)
         integer :: situ(*)
         real(kind=8) :: saltij(*)
-        character(*) :: nommat
+        character(len=*) :: nommat
         real(kind=8) :: ug
         real(kind=8) :: factus(*)
     end subroutine rc36fu

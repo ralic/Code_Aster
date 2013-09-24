@@ -18,12 +18,12 @@
 interface
     subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                       ligrel, infobl)
-        character(*) :: nu
+        character(len=*) :: nu
         integer :: ieq
-        character(*) :: nomno
-        character(*) :: nomcmp
-        character(*) :: tyddl
-        character(*) :: ligrel
-        character(*) :: infobl
+        character(len=*) :: nomno
+        character(len=*) :: nomcmp
+        character(len=*) :: tyddl
+        character(len=*) :: ligrel
+        character(len=*) :: infobl
     end subroutine rgndas
 end interface

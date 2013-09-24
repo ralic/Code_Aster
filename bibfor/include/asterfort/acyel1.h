@@ -22,8 +22,8 @@ interface
         integer :: ndim
         integer :: nbcol
         integer :: nblig
-        character(*) :: nmcolz
-        character(*) :: nomobz
+        character(len=*) :: nmcolz
+        character(len=*) :: nomobz
         integer :: nobl
         integer :: nobc
         logical :: okpart

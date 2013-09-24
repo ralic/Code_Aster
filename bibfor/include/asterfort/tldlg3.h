@@ -19,8 +19,8 @@ interface
     subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                       ilfin, ndigit, ndeci, isingu, npvneg,&
                       iret, solvop)
-        character(*) :: metrez
-        character(*) :: renum
+        character(len=*) :: metrez
+        character(len=*) :: renum
         integer :: istop
         integer :: lmat
         integer :: ildeb

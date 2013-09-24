@@ -17,10 +17,10 @@
 !
 interface
     subroutine meamac(modelz, ncha, lcha, mate, matelz)
-        character(*) :: modelz
+        character(len=*) :: modelz
         integer :: ncha
         character(len=8) :: lcha(*)
-        character(*) :: mate
-        character(*) :: matelz
+        character(len=*) :: mate
+        character(len=*) :: matelz
     end subroutine meamac
 end interface

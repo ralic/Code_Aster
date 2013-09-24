@@ -17,10 +17,10 @@
 !
 interface
     subroutine ver152(option, moflui, moint, n12, model)
-        character(*) :: option
-        character(*) :: moflui
-        character(*) :: moint
+        character(len=*) :: option
+        character(len=*) :: moflui
+        character(len=*) :: moint
         integer :: n12
-        character(*) :: model
+        character(len=*) :: model
     end subroutine ver152
 end interface

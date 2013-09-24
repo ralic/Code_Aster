@@ -17,7 +17,7 @@
 !
 interface
     subroutine cesimp(cesz, unite, nbmat, nummai)
-        character(*) :: cesz
+        character(len=*) :: cesz
         integer :: unite
         integer :: nbmat
         integer :: nummai(*)

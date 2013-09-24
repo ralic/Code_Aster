@@ -20,7 +20,7 @@ interface
                       option, compor, imate, sigm, deps,&
                       vim, vip, sig, dsidep, proj,&
                       iret)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: typmod(*)

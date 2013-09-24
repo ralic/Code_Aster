@@ -34,7 +34,7 @@ interface
         real(kind=8) :: dtde(6, 6)
         real(kind=8) :: sigm(2*ndim)
         logical :: cplan
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: mate
         real(kind=8) :: instp
         real(kind=8) :: angmas(*)

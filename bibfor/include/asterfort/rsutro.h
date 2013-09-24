@@ -17,7 +17,7 @@
 !
 interface
     subroutine rsutro(nomsd, iordg, iordr, ierr)
-        character(*) :: nomsd
+        character(len=*) :: nomsd
         integer :: iordg
         integer :: iordr
         integer :: ierr

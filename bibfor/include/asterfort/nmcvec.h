@@ -19,8 +19,8 @@ interface
     subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
                       nbvect, ltypve, loptve, lcalve, lassve)
         character(len=4) :: oper
-        character(*) :: typvez
-        character(*) :: optioz
+        character(len=*) :: typvez
+        character(len=*) :: optioz
         logical :: lcalc
         logical :: lasse
         integer :: nbvect

@@ -17,8 +17,8 @@
 !
 interface
     subroutine ltnotb(litab, nomtab, nomsd)
-        character(*) :: litab
-        character(*) :: nomtab
-        character(*) :: nomsd
+        character(len=*) :: litab
+        character(len=*) :: nomtab
+        character(len=*) :: nomsd
     end subroutine ltnotb
 end interface

@@ -17,7 +17,7 @@
 !
 interface
     subroutine lcalgo(compor, algo)
-        character(*) :: compor
-        character(*) :: algo
+        character(len=*) :: compor
+        character(len=*) :: algo
     end subroutine lcalgo
 end interface

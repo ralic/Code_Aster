@@ -17,7 +17,7 @@
 !
 interface
     subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
-        character(*) :: genein
+        character(len=*) :: genein
         integer :: ifi
         integer :: nbcmpg
         integer :: cmpg(*)

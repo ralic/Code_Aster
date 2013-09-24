@@ -19,7 +19,7 @@ interface
     function hdfrsv(i, j, itab, iconv)
         integer :: i
         integer :: j
-        character(*) :: itab(*)
+        character(len=*) :: itab(*)
         integer :: iconv
         integer :: hdfrsv
     end function hdfrsv

@@ -17,7 +17,7 @@
 !
 interface
     subroutine jevecd(nompar, jad, valdef)
-        character(*) :: nompar
+        character(len=*) :: nompar
         integer :: jad
         real(kind=8) :: valdef
     end subroutine jevecd

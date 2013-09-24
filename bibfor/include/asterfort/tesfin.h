@@ -19,7 +19,7 @@ interface
     subroutine tesfin(icl, iv, cv, irteti)
         integer :: icl
         integer :: iv
-        character(*) :: cv
+        character(len=*) :: cv
         integer :: irteti
     end subroutine tesfin
 end interface

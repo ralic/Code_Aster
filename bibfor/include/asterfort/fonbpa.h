@@ -18,11 +18,11 @@
 interface
     subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
                       nompf)
-        character(*) :: nomf
-        character(*) :: vec(*)
-        character(*) :: typfon
+        character(len=*) :: nomf
+        character(len=*) :: vec(*)
+        character(len=*) :: typfon
         integer :: mxpf
         integer :: nbpf
-        character(*) :: nompf(*)
+        character(len=*) :: nompf(*)
     end subroutine fonbpa
 end interface

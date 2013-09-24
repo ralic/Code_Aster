@@ -17,9 +17,9 @@
 !
 interface
     subroutine memver(action, prec, arret, titre)
-        character(*) :: action
+        character(len=*) :: action
         real(kind=8) :: prec
-        character(*) :: arret
-        character(*) :: titre
+        character(len=*) :: arret
+        character(len=*) :: titre
     end subroutine memver
 end interface

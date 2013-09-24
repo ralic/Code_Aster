@@ -23,9 +23,9 @@ interface
         logical :: lendo
         character(len=19) :: sdnume
         real(kind=8) :: coef
-        character(*) :: incmoz
-        character(*) :: ddincz
-        character(*) :: incplz
+        character(len=*) :: incmoz
+        character(len=*) :: ddincz
+        character(len=*) :: incplz
         integer :: ordre
     end subroutine nmmaji
 end interface

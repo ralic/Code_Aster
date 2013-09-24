@@ -24,7 +24,7 @@ interface
         integer :: nori
         integer :: next
         real(kind=8) :: coor(*)
-        character(*) :: crit
+        character(len=*) :: crit
         real(kind=8) :: prec
         integer :: iera
         integer :: ier

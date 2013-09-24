@@ -23,7 +23,7 @@ interface
                       defico, resoco, valinc, solalg, veelem,&
                       meelem, measse, veasse, maprec, matass,&
                       codere, faccvg, ldccvg, sdnume)
-        character(*) :: modelz
+        character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: compor

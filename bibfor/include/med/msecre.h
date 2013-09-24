@@ -20,9 +20,9 @@ interface
     subroutine msecre(fid, mname, mdim, smname, setype,&
                       sgtype, etype, cret)
         med_int :: fid
-        character(*) :: mname
+        character(len=*) :: mname
         med_int :: mdim
-        character(*) :: smname
+        character(len=*) :: smname
         med_int :: setype
         med_int :: sgtype
         med_int :: etype

@@ -18,7 +18,7 @@
 interface
     subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
         character(len=8) :: nomgd
-        character(*) :: mcfac
+        character(len=*) :: mcfac
         integer :: iocc
         character(len=8) :: nomcmp
         integer :: ivari

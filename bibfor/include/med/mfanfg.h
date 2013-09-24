@@ -19,7 +19,7 @@ interface
 #include "aster_types.h"
     subroutine mfanfg(fid, maa, it, n, cret)
         med_int :: fid
-        character(*) :: maa
+        character(len=*) :: maa
         med_int :: it
         med_int :: n
         med_int :: cret

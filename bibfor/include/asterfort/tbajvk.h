@@ -17,10 +17,10 @@
 !
 interface
     subroutine tbajvk(table, nbpara, nompar, vk, livk)
-        character(*) :: table
+        character(len=*) :: table
         integer :: nbpara
-        character(*) :: nompar
-        character(*) :: vk
-        character(*) :: livk(*)
+        character(len=*) :: nompar
+        character(len=*) :: vk
+        character(len=*) :: livk(*)
     end subroutine tbajvk
 end interface

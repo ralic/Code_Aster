@@ -19,7 +19,7 @@ interface
     subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                       nbcpc, nlscpc, nomojb, repere, option,&
                       quant, codir, dir, iret)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         character(len=19) :: nch19
         integer :: gd

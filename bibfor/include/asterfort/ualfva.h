@@ -17,7 +17,7 @@
 !
 interface
     subroutine ualfva(mataz, basz)
-        character(*) :: mataz
-        character(*) :: basz
+        character(len=*) :: mataz
+        character(len=*) :: basz
     end subroutine ualfva
 end interface

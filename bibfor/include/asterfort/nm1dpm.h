@@ -21,11 +21,11 @@ interface
                       deps, vip, sigp, dsde)
         integer :: ncstpm
         integer :: nvar
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate
-        character(*) :: option
+        character(len=*) :: option
         real(kind=8) :: cstpm(ncstpm)
         real(kind=8) :: sigm
         real(kind=8) :: vim(nvar)

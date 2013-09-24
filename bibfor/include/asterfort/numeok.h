@@ -18,13 +18,13 @@
 interface
     subroutine numeok(acces, ilu, rlu, listrz, listiz,&
                       precis, crit, epsi, astock)
-        character(*) :: acces
+        character(len=*) :: acces
         integer :: ilu
         real(kind=8) :: rlu
-        character(*) :: listrz
-        character(*) :: listiz
+        character(len=*) :: listrz
+        character(len=*) :: listiz
         integer :: precis
-        character(*) :: crit
+        character(len=*) :: crit
         real(kind=8) :: epsi
         logical :: astock
     end subroutine numeok

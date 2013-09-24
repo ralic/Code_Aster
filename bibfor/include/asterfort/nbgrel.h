@@ -17,7 +17,7 @@
 !
 interface
     function nbgrel(ligrlz)
-        character(*) :: ligrlz
+        character(len=*) :: ligrlz
         integer :: nbgrel
     end function nbgrel
 end interface

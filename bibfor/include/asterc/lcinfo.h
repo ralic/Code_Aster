@@ -17,7 +17,7 @@
 !
 interface
     subroutine lcinfo(compor, numlc, nbvari)
-        character(*) :: compor
+        character(len=*) :: compor
         integer :: numlc
         integer :: nbvari
     end subroutine lcinfo

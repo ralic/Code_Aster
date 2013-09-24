@@ -26,7 +26,7 @@ interface
         logical :: monoap
         logical :: muapde
         integer :: id
-        character(*) :: nume
+        character(len=*) :: nume
         real(kind=8) :: vecmod(neq, *)
         real(kind=8) :: parmod(nbmode, *)
         real(kind=8) :: spectr(*)

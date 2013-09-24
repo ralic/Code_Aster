@@ -17,8 +17,8 @@
 !
 interface
     subroutine vrcom2(compop, varmoi, ligrep)
-        character(*) :: compop
-        character(*) :: varmoi
-        character(*) :: ligrep
+        character(len=*) :: compop
+        character(len=*) :: varmoi
+        character(len=*) :: ligrep
     end subroutine vrcom2
 end interface

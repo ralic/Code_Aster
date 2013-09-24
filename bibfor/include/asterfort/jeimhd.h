@@ -17,7 +17,7 @@
 !
 interface
     subroutine jeimhd(fichdf, clas)
-        character(*) :: fichdf
-        character(*) :: clas
+        character(len=*) :: fichdf
+        character(len=*) :: clas
     end subroutine jeimhd
 end interface

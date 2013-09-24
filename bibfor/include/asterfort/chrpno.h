@@ -17,10 +17,10 @@
 !
 interface
     subroutine chrpno(champ1, repere, nbcmp, icham, type)
-        character(*) :: champ1
-        character(*) :: repere
+        character(len=*) :: champ1
+        character(len=*) :: repere
         integer :: nbcmp
         integer :: icham
-        character(*) :: type
+        character(len=*) :: type
     end subroutine chrpno
 end interface

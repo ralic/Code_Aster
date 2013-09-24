@@ -18,7 +18,7 @@
 interface
     function mminfi(defico, questz, izone)
         character(len=24) :: defico
-        character(*) :: questz
+        character(len=*) :: questz
         integer :: izone
         integer :: mminfi
     end function mminfi

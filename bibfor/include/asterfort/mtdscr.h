@@ -17,6 +17,6 @@
 !
 interface
     subroutine mtdscr(nommat)
-        character(*) :: nommat
+        character(len=*) :: nommat
     end subroutine mtdscr
 end interface

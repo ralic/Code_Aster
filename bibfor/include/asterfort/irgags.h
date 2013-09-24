@@ -19,12 +19,12 @@ interface
     subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
                       nbcmps, nomgds, ipcmps)
         integer :: ncmpmx
-        character(*) :: nomcmp(*)
-        character(*) :: nomsym
+        character(len=*) :: nomcmp(*)
+        character(len=*) :: nomsym
         integer :: nbchs
-        character(*) :: nomchs(*)
+        character(len=*) :: nomchs(*)
         integer :: nbcmps(*)
-        character(*) :: nomgds(*)
+        character(len=*) :: nomgds(*)
         integer :: ipcmps(*)
     end subroutine irgags
 end interface

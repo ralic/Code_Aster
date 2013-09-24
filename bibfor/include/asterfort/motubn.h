@@ -17,7 +17,7 @@
 !
 interface
     subroutine motubn(tabpus, dinst, nbsect)
-        character(*) :: tabpus
+        character(len=*) :: tabpus
         real(kind=8) :: dinst
         integer :: nbsect
     end subroutine motubn

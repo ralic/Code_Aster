@@ -17,7 +17,7 @@
 !
 interface
     subroutine detlsp(matasz, solvez)
-        character(*) :: matasz
-        character(*) :: solvez
+        character(len=*) :: matasz
+        character(len=*) :: solvez
     end subroutine detlsp
 end interface

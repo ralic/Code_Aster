@@ -18,8 +18,8 @@
 interface
     subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
                       lpain, lpaout, num, maa)
-        character(*) :: moint
-        character(*) :: mate
+        character(len=*) :: moint
+        character(len=*) :: mate
         character(len=1) :: dir
         character(len=24) :: ligrmo
         character(len=24) :: lchin(1)

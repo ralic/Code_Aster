@@ -17,10 +17,10 @@
 !
 interface
     subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
-        character(*) :: ligrez
-        character(*) :: molocz
-        character(*) :: basez
-        character(*) :: prnmz
-        character(*) :: prnsz
+        character(len=*) :: ligrez
+        character(len=*) :: molocz
+        character(len=*) :: basez
+        character(len=*) :: prnmz
+        character(len=*) :: prnsz
     end subroutine creprn
 end interface

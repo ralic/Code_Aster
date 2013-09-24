@@ -21,9 +21,9 @@ interface
         integer :: iopt
         character(len=19) :: ligrel
         integer :: nout
-        character(*) :: lchout(*)
+        character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
-        character(*) :: base
+        character(len=*) :: base
         logical :: ldist
         logical :: lfeti
     end subroutine alrslt

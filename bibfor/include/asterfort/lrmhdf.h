@@ -19,7 +19,7 @@ interface
     subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
                       infmed, nbnoeu, nbmail, nbcoor, vecgrm,&
                       nbcgrm)
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         character(len=8) :: nomu
         integer :: ifm
         integer :: nrofic

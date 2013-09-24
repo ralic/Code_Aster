@@ -25,7 +25,7 @@ interface
         character(len=14) :: num
         character(len=14) :: nu
         character(len=8) :: ma
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=8) :: moint
         integer :: ndble
         integer :: icor(2)

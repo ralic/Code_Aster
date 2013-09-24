@@ -17,10 +17,10 @@
 !
 interface
     subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
-        character(*) :: matas
+        character(len=*) :: matas
         integer :: nbchc
-        character(*) :: lchci(*)
-        character(*) :: nomnu
+        character(len=*) :: lchci(*)
+        character(len=*) :: nomnu
         character(len=4) :: cumul
     end subroutine asschc
 end interface

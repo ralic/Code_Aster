@@ -18,9 +18,9 @@
 interface
     subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                       lstnac, iret)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
-        character(*) :: nchpt
+        character(len=*) :: nchpt
         character(len=24) :: lstcmp
         character(len=24) :: lstmac
         character(len=24) :: lstnac

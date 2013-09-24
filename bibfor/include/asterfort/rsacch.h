@@ -18,7 +18,7 @@
 interface
     subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
                       nbcmp, liscmp)
-        character(*) :: nomsdz
+        character(len=*) :: nomsdz
         integer :: numch
         character(len=16) :: nomch
         integer :: nbord

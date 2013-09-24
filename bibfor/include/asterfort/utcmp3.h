@@ -18,7 +18,7 @@
 interface
     subroutine utcmp3(nbcmp, nomcmp, numcmp)
         integer :: nbcmp
-        character(*) :: nomcmp(*)
+        character(len=*) :: nomcmp(*)
         integer :: numcmp(*)
     end subroutine utcmp3
 end interface

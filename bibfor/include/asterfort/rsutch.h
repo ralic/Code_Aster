@@ -17,10 +17,10 @@
 !
 interface
     subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
-        character(*) :: nomsd
-        character(*) :: nomsy
+        character(len=*) :: nomsd
+        character(len=*) :: nomsy
         integer :: iordr
-        character(*) :: nomcha
+        character(len=*) :: nomcha
         logical :: lverif
     end subroutine rsutch
 end interface

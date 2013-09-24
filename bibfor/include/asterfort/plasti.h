@@ -21,7 +21,7 @@ interface
                       tempf, tref, epsdt, depst, sigd,&
                       vind, opt, angmas, sigf, vinf,&
                       dsde, icomp, nvi, tampon, irteti)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         character(len=8) :: typmod(*)

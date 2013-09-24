@@ -19,15 +19,15 @@ interface
     subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
                       typaff, quant, option, rep, nomtab,&
                       xnovar, ncheff, i1, isd)
-        character(*) :: mcf
+        character(len=*) :: mcf
         integer :: iocc
         character(len=24) :: sdlieu
         character(len=19) :: sdeval
         character(len=24) :: sdmail
         character(len=1) :: typaff
-        character(*) :: quant
-        character(*) :: option
-        character(*) :: rep
+        character(len=*) :: quant
+        character(len=*) :: option
+        character(len=*) :: rep
         character(len=19) :: nomtab
         character(len=24) :: xnovar
         character(len=16) :: ncheff

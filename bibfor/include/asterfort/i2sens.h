@@ -22,7 +22,7 @@ interface
         integer :: nbrma2
         integer :: chemin(nbrma2)
         integer :: limail(nbrma)
-        character(*) :: connex
-        character(*) :: typmai
+        character(len=*) :: connex
+        character(len=*) :: typmai
     end subroutine i2sens
 end interface

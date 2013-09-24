@@ -22,7 +22,7 @@ interface
         character(len=8) :: nomaou
         integer :: nbmat
         integer :: nummai(*)
-        character(*) :: basz
+        character(len=*) :: basz
         character(len=24) :: nobj(28)
         integer :: nbel(28)
         integer :: versio

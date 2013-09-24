@@ -17,6 +17,6 @@
 !
 interface
     subroutine asmchc(matas)
-        character(*) :: matas
+        character(len=*) :: matas
     end subroutine asmchc
 end interface

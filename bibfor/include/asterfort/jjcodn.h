@@ -19,10 +19,10 @@ interface
     function jjcodn(icre, nomrep, nomec, irep, crep,&
                     nmax, nuti)
         integer :: icre
-        character(*) :: nomrep
-        character(*) :: nomec
+        character(len=*) :: nomrep
+        character(len=*) :: nomec
         integer :: irep(*)
-        character(*) :: crep(*)
+        character(len=*) :: crep(*)
         integer :: nmax
         integer :: nuti
         integer :: jjcodn

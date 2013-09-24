@@ -17,7 +17,7 @@
 !
 interface
     subroutine infdbg(optioz, ifm, niv)
-        character(*) :: optioz
+        character(len=*) :: optioz
         integer :: ifm
         integer :: niv
     end subroutine infdbg

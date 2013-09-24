@@ -18,7 +18,7 @@
 interface
     subroutine obpara(nomstr, nompaz, indice, typpar)
         character(len=24) :: nomstr
-        character(*) :: nompaz
+        character(len=*) :: nompaz
         integer :: indice
         character(len=1) :: typpar
     end subroutine obpara

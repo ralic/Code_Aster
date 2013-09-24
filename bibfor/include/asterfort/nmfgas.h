@@ -21,7 +21,7 @@ interface
                       tmoins, tplus, xlong0, a, coeffl,&
                       irram, irrap, kls, flc, effnoc,&
                       pp)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: npg
         integer :: icodma
         real(kind=8) :: pgl(3, 3)

@@ -17,10 +17,10 @@
 !
 interface
     subroutine vtcrec(champ, chmod, base, typc, neq)
-        character(*) :: champ
-        character(*) :: chmod
-        character(*) :: base
-        character(*) :: typc
+        character(len=*) :: champ
+        character(len=*) :: chmod
+        character(len=*) :: base
+        character(len=*) :: typc
         integer :: neq
     end subroutine vtcrec
 end interface

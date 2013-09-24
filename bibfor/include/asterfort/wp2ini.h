@@ -31,7 +31,7 @@ interface
         complex(kind=8) :: sigma
         real(kind=8) :: xh(*)
         real(kind=8) :: xb(*)
-        character(*) :: optiof
+        character(len=*) :: optiof
         real(kind=8) :: prorto
         integer :: nborto
         integer :: nbvect

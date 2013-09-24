@@ -18,7 +18,7 @@
 interface
     function ndynlo(sddyna, chainz)
         character(len=19) :: sddyna
-        character(*) :: chainz
+        character(len=*) :: chainz
         logical :: ndynlo
     end function ndynlo
 end interface

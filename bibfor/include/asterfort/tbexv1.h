@@ -18,11 +18,11 @@
 interface
     subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
                       typval)
-        character(*) :: nomta
-        character(*) :: para
-        character(*) :: nomobj
-        character(*) :: basobj
+        character(len=*) :: nomta
+        character(len=*) :: para
+        character(len=*) :: nomobj
+        character(len=*) :: basobj
         integer :: nbval
-        character(*) :: typval
+        character(len=*) :: typval
     end subroutine tbexv1
 end interface

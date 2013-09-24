@@ -23,8 +23,8 @@ interface
         integer :: lraide
         real(kind=8) :: fmin
         complex(kind=8) :: sigma
-        character(*) :: matopa
-        character(*) :: raide
+        character(len=*) :: matopa
+        character(len=*) :: raide
         logical :: lqz
         character(len=19) :: solveu
     end subroutine wpfopc

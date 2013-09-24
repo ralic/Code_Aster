@@ -17,6 +17,6 @@
 !
 interface
     subroutine rfinte(ispec)
-        character(*) :: ispec
+        character(len=*) :: ispec
     end subroutine rfinte
 end interface

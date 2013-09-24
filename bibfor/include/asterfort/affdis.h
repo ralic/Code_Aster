@@ -23,7 +23,7 @@ interface
         integer :: ndim
         integer :: irep
         real(kind=8) :: eta
-        character(*) :: car
+        character(len=*) :: car
         real(kind=8) :: val(*)
         integer :: jdc(3)
         integer :: jdv(3)

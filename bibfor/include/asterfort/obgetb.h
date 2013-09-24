@@ -18,7 +18,7 @@
 interface
     subroutine obgetb(nomstr, nompaz, vall)
         character(len=24) :: nomstr
-        character(*) :: nompaz
+        character(len=*) :: nompaz
         logical :: vall
     end subroutine obgetb
 end interface

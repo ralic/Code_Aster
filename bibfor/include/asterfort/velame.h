@@ -20,7 +20,7 @@ interface
         character(len=24) :: modele
         character(len=24) :: charge
         character(len=24) :: infcha
-        character(*) :: depmoz
-        character(*) :: vecelz
+        character(len=*) :: depmoz
+        character(len=*) :: vecelz
     end subroutine velame
 end interface

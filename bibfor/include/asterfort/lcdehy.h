@@ -19,7 +19,7 @@ interface
     subroutine lcdehy(fami, kpg, ksp, nmat, materd,&
                       materf, depsm, epsdm)
         integer :: nmat
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         real(kind=8) :: materd(nmat, 2)

@@ -18,8 +18,8 @@
 interface
     subroutine ssvalm(statut, option, mo, ma, isma,&
                       jresl, nbvel)
-        character(*) :: statut
-        character(*) :: option
+        character(len=*) :: statut
+        character(len=*) :: option
         character(len=8) :: mo
         character(len=8) :: ma
         integer :: isma

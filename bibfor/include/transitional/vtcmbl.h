@@ -19,11 +19,11 @@ interface
     subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
                       typres, chpres)
         integer :: nbcmb
-        character(*) :: typcst(*)
+        character(len=*) :: typcst(*)
         real(kind=8) :: const(*)
-        character(*) :: typech(*)
-        character(*) :: nomch(*)
-        character(*) :: typres
-        character(*) :: chpres
+        character(len=*) :: typech(*)
+        character(len=*) :: nomch(*)
+        character(len=*) :: typres
+        character(len=*) :: chpres
     end subroutine vtcmbl
 end interface

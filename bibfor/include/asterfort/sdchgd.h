@@ -17,7 +17,7 @@
 !
 interface
     subroutine sdchgd(champ, tysca)
-        character(*) :: champ
-        character(*) :: tysca
+        character(len=*) :: champ
+        character(len=*) :: tysca
     end subroutine sdchgd
 end interface

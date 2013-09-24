@@ -17,6 +17,6 @@
 !
 interface
     subroutine caveis(chargz)
-        character(*) :: chargz
+        character(len=*) :: chargz
     end subroutine caveis
 end interface

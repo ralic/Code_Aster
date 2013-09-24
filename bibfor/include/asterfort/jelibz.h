@@ -17,6 +17,6 @@
 !
 interface
     subroutine jelibz(clas)
-        character(*) :: clas
+        character(len=*) :: clas
     end subroutine jelibz
 end interface

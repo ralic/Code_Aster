@@ -22,7 +22,7 @@ interface
                       compor)
         character(len=8) :: result
         character(len=24) :: modele
-        character(*) :: mate
+        character(len=*) :: mate
         character(len=24) :: carele
         character(len=24) :: fomult
         character(len=19) :: lischa

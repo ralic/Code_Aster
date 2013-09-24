@@ -18,14 +18,14 @@
 interface
     subroutine calflu(chamno, modele, mate, nu, vectas,&
                       nd, nr, nv, opt)
-        character(*) :: chamno
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: nu
-        character(*) :: vectas
+        character(len=*) :: chamno
+        character(len=*) :: modele
+        character(len=*) :: mate
+        character(len=*) :: nu
+        character(len=*) :: vectas
         integer :: nd
         integer :: nr
         integer :: nv
-        character(*) :: opt
+        character(len=*) :: opt
     end subroutine calflu
 end interface

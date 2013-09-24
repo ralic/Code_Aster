@@ -18,8 +18,8 @@
 interface
     subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                       dom)
-        character(*) :: nommat
-        character(*) :: nomnap
+        character(len=*) :: nommat
+        character(len=*) :: nomnap
         integer :: nbcycl
         real(kind=8) :: epsmin(*)
         real(kind=8) :: epsmax(*)

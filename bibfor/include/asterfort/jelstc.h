@@ -18,11 +18,11 @@
 interface
     subroutine jelstc(clas, souch, ipos, maxval, klst,&
                       nbval)
-        character(*) :: clas
-        character(*) :: souch
+        character(len=*) :: clas
+        character(len=*) :: souch
         integer :: ipos
         integer :: maxval
-        character(*) :: klst(*)
+        character(len=*) :: klst(*)
         integer :: nbval
     end subroutine jelstc
 end interface

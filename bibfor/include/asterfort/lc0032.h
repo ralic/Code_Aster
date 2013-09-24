@@ -23,7 +23,7 @@ interface
                       tref, tampon, typmod, icomp, nvi,&
                       dsidep, codret)
         integer :: neps
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim

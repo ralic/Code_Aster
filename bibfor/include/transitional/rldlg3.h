@@ -17,7 +17,7 @@
 !
 interface
     subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
-        character(*) :: metres
+        character(len=*) :: metres
         integer :: lmat
         real(kind=8) :: xsol(*)
         complex(kind=8) :: cxsol(*)

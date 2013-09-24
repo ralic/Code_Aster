@@ -17,6 +17,6 @@
 !
 interface
     subroutine calimc(chargz)
-        character(*) :: chargz
+        character(len=*) :: chargz
     end subroutine calimc
 end interface

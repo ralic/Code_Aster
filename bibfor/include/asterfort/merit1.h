@@ -21,8 +21,8 @@ interface
                       base)
         character(len=8) :: modele
         integer :: nchar
-        character(*) :: lchar(*)
-        character(*) :: mate
+        character(len=*) :: lchar(*)
+        character(len=*) :: mate
         character(len=8) :: cara
         character(len=24) :: time
         character(len=19) :: matel

@@ -24,7 +24,7 @@ interface
         integer :: icom2
         integer :: resui(*)
         real(kind=8) :: resur(*)
-        character(*) :: resuk(*)
+        character(len=*) :: resuk(*)
         integer :: nbpari
         integer :: nbparr
         integer :: nbpark

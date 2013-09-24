@@ -20,8 +20,8 @@ interface
                       chextr, option, iret)
         integer :: i1
         integer :: i2
-        character(*) :: nomsd
-        character(*) :: nomsy
+        character(len=*) :: nomsd
+        character(len=*) :: nomsy
         integer :: iordr
         character(len=24) :: chextr
         character(len=16) :: option

@@ -19,10 +19,10 @@ interface
     subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
                       nomnoe)
         integer :: idfimd
-        character(*) :: nomamd
+        character(len=*) :: nomamd
         integer :: ndim
         integer :: nbnoeu
         real(kind=8) :: coordo(*)
-        character(*) :: nomnoe(*)
+        character(len=*) :: nomnoe(*)
     end subroutine irmmno
 end interface

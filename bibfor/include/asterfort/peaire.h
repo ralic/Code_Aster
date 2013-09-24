@@ -17,8 +17,8 @@
 !
 interface
     subroutine peaire(resu, modele, nbocc)
-        character(*) :: resu
-        character(*) :: modele
+        character(len=*) :: resu
+        character(len=*) :: modele
         integer :: nbocc
     end subroutine peaire
 end interface

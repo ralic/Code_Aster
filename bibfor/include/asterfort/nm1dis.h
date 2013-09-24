@@ -19,7 +19,7 @@ interface
     subroutine nm1dis(fami, kpg, ksp, imate, em,&
                       ep, sigm, deps, vim, option,&
                       compor, materi, sigp, vip, dsde)
-        character(*) :: fami
+        character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: imate
@@ -30,7 +30,7 @@ interface
         real(kind=8) :: vim(*)
         character(len=16) :: option
         character(len=16) :: compor(*)
-        character(*) :: materi
+        character(len=*) :: materi
         real(kind=8) :: sigp
         real(kind=8) :: vip(*)
         real(kind=8) :: dsde
