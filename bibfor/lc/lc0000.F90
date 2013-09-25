@@ -261,753 +261,645 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
 !
-    goto (101,102,103,104,105,106,107,108,109,110,111,112,113,114,&
-     &       115,116,117,118,119,120,121,122,123,124,125,126,127,128,&
-     &       129,130,131,132,133,134,135,136,137,138,139,140,141,142,&
-     &       143,144,145,146,147,148,149,150,151,152,153,154,155,156,&
-     &       157,158,159,160,161,162,163,164,165,166,167,168,169,170,&
-     &       171,172,173,174,175,176,177,178,179,180,181,182,183,184,&
-     &       185,186,187,188,189,190,191,192,193,194,195,196,197,198,&
-     &       199,200) numlc
-    goto 9991
+    select case (numlc)
 !
-101  continue
+    case (1)
 !     ELAS
-    call lc0001(fami, kpg, ksp, ndim, imate,&
-                neps, deps, nsig, sigm, option,&
-                angmas, sigp, vip, typmod, ndsde,&
-                dsidep, codret)
-    goto 9992
-102  continue
+        call lc0001(fami, kpg, ksp, ndim, imate,&
+                    neps, deps, nsig, sigm, option,&
+                    angmas, sigp, vip, typmod, ndsde,&
+                    dsidep, codret)
+    case (2)
 !     VMIS_ISOT_XXX, VISC_ISOT_XXX
-    call lc0002(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, nsig, sigm, vim,&
-                option, sigp, vip, typmod, ndsde,&
-                dsidep, codret)
-    goto 9992
-103  continue
+        call lc0002(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, sigp, vip, typmod, ndsde,&
+                    dsidep, codret)
+    case (3)
 !     VMIS_CINE_LINE, VMIS_ECMI_XXXX
-    call lc0003(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-104  continue
+        call lc0003(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (4)
 !     VMIS_CINX_CHAB/MEMO VISC_CINX_CHAB/MEMO,
-    call lc0004(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-105  continue
+        call lc0004(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (5)
 !     ENDO_FRAGILE+GRAD_EPSI
-    call lc0005(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkout, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-106  continue
+        call lc0005(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkout, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (6)
 !     ENDO_ISOT_BETON
-    call lc0006(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, nsig, sigm, vim,&
-                option, angmas, sigp, vip, nwkin,&
-                wkin, typmod, icomp, nvi, ndsde,&
-                dsidep, nwkout, wkout, codret)
-    goto 9992
-107  continue
+        call lc0006(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, angmas, sigp, vip, nwkin,&
+                    wkin, typmod, icomp, nvi, ndsde,&
+                    dsidep, nwkout, wkout, codret)
+    case (7)
 !     ENDO_ORTH_BETON
-    call lc0007(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-108  continue
+        call lc0007(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (8)
 !     MAZARS
-    call lc0008(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkout, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-109  continue
+        call lc0008(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkout, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (9)
 !     BETON_REGLE_PR
-    call lc0009(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-110  continue
+        call lc0009(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (10)
 !     CZM_EXP_REG
-    call lc0010(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-111  continue
+        call lc0010(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (11)
 !     CZM_LIN_REG
-    call lc0011(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-112  continue
+        call lc0011(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (12)
 !     CZM_EXP
-    call lc0012(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-113  continue
+        call lc0012(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (13)
 !     JOINT_BA
-    call lc0013(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-114  continue
+        call lc0013(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (14)
 !     ROUSSELIER
-    call lc0014(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-115  continue
+        call lc0014(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (15)
 !     META_XXX
-    call lc0015(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-116  continue
+        call lc0015(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (16)
 !     DRUCK_PRAGER
-    call lc0016(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkout, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-117  continue
+        call lc0016(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkout, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (17)
 !     NORTON_HOFF
-    call lc0017(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-118  continue
+        call lc0017(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (18)
 !     VISC_TAHERI
-    call lc0018(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-119  continue
+        call lc0018(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (19)
 !     ELAS_HYPER
-    call lc0019(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-120  continue
-    call lc0020(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-121  continue
-    call lc0021(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-122  continue
-    call lc0022(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-123  continue
-    call lc0023(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-124  continue
-    call lc0024(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-125  continue
+        call lc0019(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (20)
+        call lc0020(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (21)
+        call lc0021(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (22)
+        call lc0022(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (23)
+        call lc0023(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (24)
+        call lc0024(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (25)
 !     KIT_DDI : NE PAS UTILISER COMME EXEMPLE
-    call lc0025(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, cp,&
-                epsm, deps, sigm, vim, option,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, numlc, dsidep, codret)
-    goto 9992
-126  continue
-    call lc0026(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-127  continue
-    call lc0027(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-128  continue
-    call lc0028(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-129  continue
-    call lc0029(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-130  continue
+        call lc0025(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, cp,&
+                    epsm, deps, sigm, vim, option,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, numlc, dsidep, codret)
+    case (26)
+        call lc0026(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (27)
+        call lc0027(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (28)
+        call lc0028(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (29)
+        call lc0029(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (30)
 !     TEMPD,TEMPF,TREF pour PLASTI, CAR APPEL POSSIBLE EN THM
 !     NE PAS UTILISER COMME EXEMPLE
-    call lc0030(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, tempd, tempf, tref,&
-                wkin, typmod, icomp, nvi, dsidep,&
-                codret)
-    goto 9992
-131  continue
-    call lc0031(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, sigm, vim, option,&
-                angmas, sigp, vip, wkin, typmod,&
-                icomp, nvi, dsidep, codret)
-    goto 9992
-132  continue
+        call lc0030(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, tempd, tempf, tref,&
+                    wkin, typmod, icomp, nvi, dsidep,&
+                    codret)
+    case (31)
+        call lc0031(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, sigm, vim, option,&
+                    angmas, sigp, vip, wkin, typmod,&
+                    icomp, nvi, dsidep, codret)
+    case (32)
 !     TEMPD,TEMPF,TREF pour PLASTI, CAR APPEL POSSIBLE EN THM
 !     NE PAS UTILISER COMME EXEMPLE
-    call lc0032(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, sigm, vim, option,&
-                angmas, sigp, vip, tempd, tempf,&
-                tref, wkin, typmod, icomp, nvi,&
-                dsidep, codret)
-    goto 9992
-133  continue
+        call lc0032(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, sigm, vim, option,&
+                    angmas, sigp, vip, tempd, tempf,&
+                    tref, wkin, typmod, icomp, nvi,&
+                    dsidep, codret)
+    case (33)
 !     TEMPD,TEMPF,TREF pour PLASTI, CAR APPEL POSSIBLE EN THM
 !     NE PAS UTILISER COMME EXEMPLE
-    call lc0033(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, tempd, tempf, tref,&
-                wkin, typmod, icomp, nvi, dsidep,&
-                codret)
-    goto 9992
-134  continue
-    call lc0034(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-135  continue
-    call lc0035(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-136  continue
-    call lc0036(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-137  continue
-    call lc0037(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, sigm, vim, option,&
-                angmas, sigp, vip, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-138  continue
-    call lc0038(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-139  continue
-    call lc0039(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-140  continue
-    call lc0040(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-141  continue
-    call lc0041(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-142  continue
-    call lc0042(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-143  continue
-    call lc0043(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-144  continue
-    call lc0044(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-145  continue
-    call lc0045(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-146  continue
+        call lc0033(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, tempd, tempf, tref,&
+                    wkin, typmod, icomp, nvi, dsidep,&
+                    codret)
+    case (34)
+        call lc0034(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (35)
+        call lc0035(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (36)
+        call lc0036(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (37)
+        call lc0037(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, sigm, vim, option,&
+                    angmas, sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (38)
+        call lc0038(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (39)
+        call lc0039(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (40)
+        call lc0040(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (41)
+        call lc0041(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (42)
+        call lc0042(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (43)
+        call lc0043(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (44)
+        call lc0044(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (45)
+        call lc0045(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (46)
 !     ENDO_SCALAIRE
-    call lc0046(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, neps,&
-                epsm, deps, nsig, sigm, vim,&
-                option, angmas, sigp, vip, nwkin,&
-                wkin, typmod, icomp, nvi, ndsde,&
-                dsidep, nwkout, wkout, codret)
-    goto 9992
-147  continue
+        call lc0046(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, angmas, sigp, vip, nwkin,&
+                    wkin, typmod, icomp, nvi, ndsde,&
+                    dsidep, nwkout, wkout, codret)
+    case (47)
 !     ENDO_HETEROGENE
-    call lc0047(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, wkout, typmod,&
-                icomp, nvi, dsidep, codret)
-    goto 9992
-148  continue
-    call lc0048(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-149  continue
-    call lc0049(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-150  continue
+        call lc0047(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, wkout, typmod,&
+                    icomp, nvi, dsidep, codret)
+    case (48)
+        call lc0048(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (49)
+        call lc0049(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (50)
 !     UMAT et MFRONT
-    call lc0050(fami, kpg, ksp, ndim, typmod,&
-                imate, compor, crit, instam, instap,&
-                neps, epsm, deps, nsig, sigm,&
-                nvi, vim, option, angmas, nwkin,&
-                wkin, icomp, sigp, vip, ndsde,&
-                dsidep, nwkout, wkout, codret)
-    goto 9992
-151  continue
-    call lc0051(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-152  continue
-    call lc0052(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-153  continue
+        call lc0050(fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, crit, instam, instap,&
+                    neps, epsm, deps, nsig, sigm,&
+                    nvi, vim, option, angmas, nwkin,&
+                    wkin, icomp, sigp, vip, ndsde,&
+                    dsidep, nwkout, wkout, codret)
+    case (51)
+        call lc0051(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (52)
+        call lc0052(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (53)
 !     ENDO_CARRE
-    call lc0053(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-154  continue
-    call lc0054(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-155  continue
-    call lc0055(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-156  continue
-    call lc0056(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-157  continue
-    call lc0057(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-158  continue
-    call lc0058(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-159  continue
-    call lc0059(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-160  continue
-    call lc0060(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-161  continue
-    call lc0061(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-162  continue
-    call lc0062(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-163  continue
-    call lc0063(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-164  continue
-    call lc0064(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-165  continue
-    call lc0065(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-166  continue
-    call lc0066(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-167  continue
-    call lc0067(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-168  continue
-    call lc0068(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-169  continue
-    call lc0069(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-170  continue
-    call lc0070(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-171  continue
-    call lc0071(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-172  continue
-    call lc0072(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-173  continue
-    call lc0073(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-174  continue
-    call lc0074(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-175  continue
-    call lc0075(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-176  continue
-    call lc0076(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-177  continue
-    call lc0077(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-178  continue
-    call lc0078(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-179  continue
-    call lc0079(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-180  continue
-    call lc0080(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-181  continue
-    call lc0081(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-182  continue
-    call lc0082(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-183  continue
-    call lc0083(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-184  continue
-    call lc0084(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-185  continue
-    call lc0085(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-186  continue
-    call lc0086(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-187  continue
-    call lc0087(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-188  continue
-    call lc0088(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-189  continue
-    call lc0089(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-190  continue
-    call lc0090(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-191  continue
-    call lc0091(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-192  continue
-    call lc0092(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-193  continue
-    call lc0093(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-194  continue
-    call lc0094(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-195  continue
-    call lc0095(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-196  continue
-    call lc0096(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-197  continue
-    call lc0097(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-198  continue
-    call lc0098(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-199  continue
-    call lc0099(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-200  continue
-    call lc0100(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
-                deps, sigm, vim, option, angmas,&
-                sigp, vip, wkin, typmod, icomp,&
-                nvi, dsidep, codret)
-    goto 9992
-9991  continue
-    call utmess('F', 'COMPOR1_43', si=numlc)
+        call lc0053(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (54)
+        call lc0054(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (55)
+        call lc0055(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (56)
+        call lc0056(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (57)
+        call lc0057(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (58)
+        call lc0058(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (59)
+        call lc0059(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (60)
+        call lc0060(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (61)
+        call lc0061(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (62)
+        call lc0062(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (63)
+        call lc0063(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (64)
+        call lc0064(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (65)
+        call lc0065(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (66)
+        call lc0066(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (67)
+        call lc0067(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (68)
+        call lc0068(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (69)
+        call lc0069(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (70)
+        call lc0070(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (71)
+        call lc0071(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (72)
+        call lc0072(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (73)
+        call lc0073(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (74)
+        call lc0074(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (75)
+        call lc0075(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (76)
+        call lc0076(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (77)
+        call lc0077(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (78)
+        call lc0078(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (79)
+        call lc0079(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (80)
+        call lc0080(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (81)
+        call lc0081(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (82)
+        call lc0082(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (83)
+        call lc0083(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (84)
+        call lc0084(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (85)
+        call lc0085(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (86)
+        call lc0086(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (87)
+        call lc0087(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (88)
+        call lc0088(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (89)
+        call lc0089(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (90)
+        call lc0090(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (91)
+        call lc0091(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (92)
+        call lc0092(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (93)
+        call lc0093(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (94)
+        call lc0094(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (95)
+        call lc0095(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (96)
+        call lc0096(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (97)
+        call lc0097(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (98)
+        call lc0098(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (99)
+        call lc0099(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (100)
+        call lc0100(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case default
+        call utmess('F', 'COMPOR1_43', si=numlc)
+    end select
 !
-9992  continue
 end subroutine

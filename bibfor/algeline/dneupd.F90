@@ -329,7 +329,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1501,W1504
+! aslint: disable=W1304,W1504
     implicit none
 !
 !     %-----------------------------%
@@ -603,7 +603,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
         reord = .false.
         ktrord = 0
-        do 10 j = 0, ncv-1
+        do j = 0, ncv-1
             select(j+1) = .false.
             if (which .eq. 'LM') then
                 if (dlapy2(workl(irr+j), workl(iri+j)) .ge. thres) then
@@ -638,7 +638,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             endif
             if (j+1 .gt. nconv) reord = ( select(j+1) .or. reord )
             if (select(j+1)) ktrord = ktrord + 1
-10      continue
+        end do
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, ktrord, ndigit, '_NEUPD: NUMBER OF SPECIFIED EIGENVALUES')
@@ -755,7 +755,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         call dlacpy('A', n, nconv, v, ldv,&
                     z, ldz)
 !
-        do 20 j = 1, nconv
+        do j = 1, nconv
 !
 !           %---------------------------------------------------%
 !           | PERFORM BOTH A COLUMN AND ROW SCALING IF THE      |
@@ -771,7 +771,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 call dscal(nconv, -one, workl(iuptri+(j-1)*ldq), 1)
             endif
 !
-20      continue
+        end do
 !
         if (howmny .eq. 'A') then
 !
@@ -780,13 +780,13 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           | LOCATED IN WORKL(IUPTRI,LDQ).              |
 !           %--------------------------------------------%
 !
-            do 30 j = 1, ncv
+            do j = 1, ncv
                 if (j .le. nconv) then
                     select(j) = .true.
                 else
                     select(j) = .false.
                 endif
-30          continue
+            end do
 !
             call ftrevc('R', 'S', select, ncv, workl(iuptri),&
                         ldq, vl, 1, workl(invsub), ldq,&
@@ -806,7 +806,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !           %------------------------------------------------%
 !
             iconj = 0
-            do 40 j = 1, nconv
+            do j = 1, nconv
 !
                 if (workl(iheigi+j-1) .eq. zero) then
 !
@@ -841,14 +841,14 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
                 endif
 !
-40          continue
+            end do
 !
             call dgemv('T', ncv, nconv, one, workl(invsub),&
                        ldq, workl(ihbds), 1, zero, workev,&
                        1)
 !
             iconj = 0
-            do 45 j = 1, nconv
+            do j = 1, nconv
                 if (workl(iheigi+j-1) .ne. zero) then
 !
 !                 %-------------------------------------------%
@@ -865,7 +865,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                         iconj = 0
                     endif
                 endif
-45          continue
+            end do
 !
             if (msglvl .gt. 2) then
                 call dcopy(ncv, workl(invsub+ncv-1), ldq, workl(ihbds), 1)
@@ -950,7 +950,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
             if (rvec) call dscal(ncv, rnorm, workl(ihbds), 1)
 !
-            do 50 k = 1, ncv
+            do k = 1, ncv
                 temp = dlapy2( workl(iheigr+k-1), workl(iheigi+k-1) )
 !
                 if (temp * temp .le. eps) then
@@ -968,17 +968,17 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                 else
                     workl(ihbds+k-1) = abs( workl(ihbds+k-1) ) / temp / temp
                 endif
-50          continue
+            end do
 !
         else if (type .eq. 'REALPT') then
 !
-            do 60 k = 1, ncv
-60          continue
+            do k = 1, ncv
+            end do
 !
         else if (type .eq. 'IMAGPT') then
 !
-            do 70 k = 1, ncv
-70          continue
+            do k = 1, ncv
+            end do
 !
         endif
 !
@@ -994,7 +994,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
         if (type .eq. 'SHIFTI') then
 !
-            do 80 k = 1, ncv
+            do k = 1, ncv
                 temp = dlapy2( workl(iheigr+k-1), workl(iheigi+k-1) )
                 if (temp * temp .le. eps) then
                     workl(iheigr+k-1) = workl(iheigr+k-1) / eps + sigmar
@@ -1014,7 +1014,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
                     workl(iheigi+k-1) = -workl(iheigi+k-1 ) / temp / temp + sigmai
                 endif
 !
-80          continue
+            end do
 !
             call dcopy(nconv, workl(iheigr), 1, dr, 1)
             call dcopy(nconv, workl(iheigi), 1, di, 1)
@@ -1061,7 +1061,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !        %------------------------------------------------%
 !
         iconj = 0
-        do 110 j = 1, nconv
+        do j = 1, nconv
             if (workl(iheigi+j-1) .eq. zero) then
                 if (abs(workl(iheigr+j-1)) .le. eps) then
                     workev(j) = workl(invsub+(j-1)*ldq+ncv-1) / eps
@@ -1119,7 +1119,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
             else
                 iconj = 0
             endif
-110      continue
+        end do
 !
 !        %---------------------------------------%
 !        | PERFORM A RANK ONE UPDATE TO Z AND    |
@@ -1131,7 +1131,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
 !
     endif
 !
-9000  continue
+9000 continue
 !
     call matfpe(1)
 !

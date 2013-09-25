@@ -85,7 +85,7 @@ subroutine flaexc(wantq, n, t, ldt, q,&
 !
 ! ASTER INFORMATION
 ! 14/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
-!            REMPLACEMENT DE 3 RETURN PAR GOTO 1000,
+!            REMPLACEMENT DE 3 RETURN PAR GOTO 999,
 !            REMPLACEMENT DE DLAMCH PAR R8PREM, R8MIEM ET ISBAEM,
 !            MODIFICATION DES APPELS BLAS (ROUTINE ASTER BL...),
 !            IMPLICIT NONE.
@@ -140,8 +140,8 @@ subroutine flaexc(wantq, n, t, ldt, q,&
 !
 !     QUICK RETURN IF POSSIBLE
 !
-    if (n .eq. 0 .or. n1 .eq. 0 .or. n2 .eq. 0) goto 1000
-    if (j1+n1 .gt. n) goto 1000
+    if (n .eq. 0 .or. n1 .eq. 0 .or. n2 .eq. 0) goto 999
+    if (j1+n1 .gt. n) goto 999
 !
     j2 = j1 + 1
     j3 = j1 + 2
@@ -207,166 +207,162 @@ subroutine flaexc(wantq, n, t, ldt, q,&
 !        SWAP THE ADJACENT DIAGONAL BLOCKS.
 !
         k = n1 + n1 + n2 - 3
-        goto ( 10, 20, 30 )k
 !
-10      continue
+        select case (k)
+        case (1)
 !
-!        N1 = 1, N2 = 2: GENERATE ELEMENTARY REFLECTOR H SO THAT:
+!           N1 = 1, N2 = 2: GENERATE ELEMENTARY REFLECTOR H SO THAT:
 !
-!        ( SCALE, X11, X12 ) H = ( 0, 0, * )
+!           ( SCALE, X11, X12 ) H = ( 0, 0, * )
 !
-        u( 1 ) = scale
-        u( 2 ) = x( 1, 1 )
-        u( 3 ) = x( 1, 2 )
-        call flarfg(3, u( 3 ), u, 1, tau)
-        u( 3 ) = one
-        t11 = t( j1, j1 )
+            u( 1 ) = scale
+            u( 2 ) = x( 1, 1 )
+            u( 3 ) = x( 1, 2 )
+            call flarfg(3, u( 3 ), u, 1, tau)
+            u( 3 ) = one
+            t11 = t( j1, j1 )
 !
-!        PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
+!           PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 !
-        call dlarfx('L', 3, 3, u, tau,&
-                    d, ldd, work)
-        call dlarfx('R', 3, 3, u, tau,&
-                    d, ldd, work)
+            call dlarfx('L', 3, 3, u, tau,&
+                        d, ldd, work)
+            call dlarfx('R', 3, 3, u, tau,&
+                        d, ldd, work)
 !
-!        TEST WHETHER TO REJECT SWAP.
+!           TEST WHETHER TO REJECT SWAP.
 !
-        if (max( abs( d( 3, 1 ) ), abs( d( 3, 2 ) ), abs( d( 3, 3 )-t11 ) ) .gt. thresh) &
-        goto 50
+            if (max( abs( d( 3, 1 ) ), abs( d( 3, 2 ) ), abs( d( 3, 3 )-t11 ) ) .gt. thresh) &
+            goto 50
 !
-!        ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
+!           ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
-        call dlarfx('L', 3, n-j1+1, u, tau,&
-                    t( j1, j1 ), ldt, work)
-        call dlarfx('R', j2, 3, u, tau,&
-                    t( 1, j1 ), ldt, work)
+            call dlarfx('L', 3, n-j1+1, u, tau,&
+                        t( j1, j1 ), ldt, work)
+            call dlarfx('R', j2, 3, u, tau,&
+                        t( 1, j1 ), ldt, work)
 !
-        t( j3, j1 ) = zero
-        t( j3, j2 ) = zero
-        t( j3, j3 ) = t11
+            t( j3, j1 ) = zero
+            t( j3, j2 ) = zero
+            t( j3, j3 ) = t11
 !
-        if (wantq) then
+            if (wantq) then
 !
-!           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
+!               ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-            call dlarfx('R', n, 3, u, tau,&
-                        q( 1, j1 ), ldq, work)
-        endif
-        goto 40
+                call dlarfx('R', n, 3, u, tau,&
+                            q( 1, j1 ), ldq, work)
+            endif
 !
-20      continue
+        case (2)
+!           N1 = 2, N2 = 1: GENERATE ELEMENTARY REFLECTOR H SO THAT:
 !
-!        N1 = 2, N2 = 1: GENERATE ELEMENTARY REFLECTOR H SO THAT:
+!           H (  -X11 ) = ( * )
+!             (  -X21 ) = ( 0 )
+!             ( SCALE ) = ( 0 )
 !
-!        H (  -X11 ) = ( * )
-!          (  -X21 ) = ( 0 )
-!          ( SCALE ) = ( 0 )
+            u( 1 ) = -x( 1, 1 )
+            u( 2 ) = -x( 2, 1 )
+            u( 3 ) = scale
+            call flarfg(3, u( 1 ), u( 2 ), 1, tau)
+            u( 1 ) = one
+            t33 = t( j3, j3 )
 !
-        u( 1 ) = -x( 1, 1 )
-        u( 2 ) = -x( 2, 1 )
-        u( 3 ) = scale
-        call flarfg(3, u( 1 ), u( 2 ), 1, tau)
-        u( 1 ) = one
-        t33 = t( j3, j3 )
+!            PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 !
-!        PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
+            call dlarfx('L', 3, 3, u, tau,&
+                        d, ldd, work)
+            call dlarfx('R', 3, 3, u, tau,&
+                        d, ldd, work)
 !
-        call dlarfx('L', 3, 3, u, tau,&
-                    d, ldd, work)
-        call dlarfx('R', 3, 3, u, tau,&
-                    d, ldd, work)
+!            TEST WHETHER TO REJECT SWAP.
 !
-!        TEST WHETHER TO REJECT SWAP.
+            if (max( abs( d( 2, 1 ) ), abs( d( 3, 1 ) ), abs( d( 1, 1 )-t33 ) ) .gt. thresh) &
+            goto 50
 !
-        if (max( abs( d( 2, 1 ) ), abs( d( 3, 1 ) ), abs( d( 1, 1 )-t33 ) ) .gt. thresh) &
-        goto 50
+!            ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
-!        ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
+            call dlarfx('R', j3, 3, u, tau,&
+                        t( 1, j1 ), ldt, work)
+            call dlarfx('L', 3, n-j1, u, tau,&
+                        t( j1, j2 ), ldt, work)
 !
-        call dlarfx('R', j3, 3, u, tau,&
-                    t( 1, j1 ), ldt, work)
-        call dlarfx('L', 3, n-j1, u, tau,&
-                    t( j1, j2 ), ldt, work)
+            t( j1, j1 ) = t33
+            t( j2, j1 ) = zero
+            t( j3, j1 ) = zero
 !
-        t( j1, j1 ) = t33
-        t( j2, j1 ) = zero
-        t( j3, j1 ) = zero
+            if (wantq) then
 !
-        if (wantq) then
+!               ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-!           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
+                call dlarfx('R', n, 3, u, tau,&
+                            q( 1, j1 ), ldq, work)
+            endif
 !
-            call dlarfx('R', n, 3, u, tau,&
-                        q( 1, j1 ), ldq, work)
-        endif
-        goto 40
+        case (3)
 !
-30      continue
+!            N1 = 2, N2 = 2: GENERATE ELEMENTARY REFLECTORS H(1) AND H(2) SO
+!            THAT:
 !
-!        N1 = 2, N2 = 2: GENERATE ELEMENTARY REFLECTORS H(1) AND H(2) SO
-!        THAT:
+!            H(2) H(1) (  -X11  -X12 ) = (  *  * )
+!                      (  -X21  -X22 )   (  0  * )
+!                      ( SCALE    0  )   (  0  0 )
+!                      (    0  SCALE )   (  0  0 )
 !
-!        H(2) H(1) (  -X11  -X12 ) = (  *  * )
-!                  (  -X21  -X22 )   (  0  * )
-!                  ( SCALE    0  )   (  0  0 )
-!                  (    0  SCALE )   (  0  0 )
+            u1( 1 ) = -x( 1, 1 )
+            u1( 2 ) = -x( 2, 1 )
+            u1( 3 ) = scale
+            call flarfg(3, u1( 1 ), u1( 2 ), 1, tau1)
+            u1( 1 ) = one
 !
-        u1( 1 ) = -x( 1, 1 )
-        u1( 2 ) = -x( 2, 1 )
-        u1( 3 ) = scale
-        call flarfg(3, u1( 1 ), u1( 2 ), 1, tau1)
-        u1( 1 ) = one
+            temp = -tau1*( x( 1, 2 )+u1( 2 )*x( 2, 2 ) )
+            u2( 1 ) = -temp*u1( 2 ) - x( 2, 2 )
+            u2( 2 ) = -temp*u1( 3 )
+            u2( 3 ) = scale
+            call flarfg(3, u2( 1 ), u2( 2 ), 1, tau2)
+            u2( 1 ) = one
 !
-        temp = -tau1*( x( 1, 2 )+u1( 2 )*x( 2, 2 ) )
-        u2( 1 ) = -temp*u1( 2 ) - x( 2, 2 )
-        u2( 2 ) = -temp*u1( 3 )
-        u2( 3 ) = scale
-        call flarfg(3, u2( 1 ), u2( 2 ), 1, tau2)
-        u2( 1 ) = one
+!            PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 !
-!        PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
+            call dlarfx('L', 3, 4, u1, tau1,&
+                        d, ldd, work)
+            call dlarfx('R', 4, 3, u1, tau1,&
+                        d, ldd, work)
+            call dlarfx('L', 3, 4, u2, tau2,&
+                        d( 2, 1 ), ldd, work)
+            call dlarfx('R', 4, 3, u2, tau2,&
+                        d( 1, 2 ), ldd, work)
 !
-        call dlarfx('L', 3, 4, u1, tau1,&
-                    d, ldd, work)
-        call dlarfx('R', 4, 3, u1, tau1,&
-                    d, ldd, work)
-        call dlarfx('L', 3, 4, u2, tau2,&
-                    d( 2, 1 ), ldd, work)
-        call dlarfx('R', 4, 3, u2, tau2,&
-                    d( 1, 2 ), ldd, work)
+!            TEST WHETHER TO REJECT SWAP.
 !
-!        TEST WHETHER TO REJECT SWAP.
+            if (max(abs(d(3,1)), abs(d(3,2)), abs(d(4,1)), abs(d(4,2))) .gt. thresh) goto 50
 !
-        if (max( abs( d( 3, 1 ) ), abs( d( 3, 2 ) ), abs( d( 4, 1 ) ), abs( d( 4, 2 ) ) ) .gt.&
-            thresh) goto 50
+!            ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
-!        ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
+            call dlarfx('L', 3, n-j1+1, u1, tau1,&
+                        t( j1, j1 ), ldt, work)
+            call dlarfx('R', j4, 3, u1, tau1,&
+                        t( 1, j1 ), ldt, work)
+            call dlarfx('L', 3, n-j1+1, u2, tau2,&
+                        t( j2, j1 ), ldt, work)
+            call dlarfx('R', j4, 3, u2, tau2,&
+                        t( 1, j2 ), ldt, work)
 !
-        call dlarfx('L', 3, n-j1+1, u1, tau1,&
-                    t( j1, j1 ), ldt, work)
-        call dlarfx('R', j4, 3, u1, tau1,&
-                    t( 1, j1 ), ldt, work)
-        call dlarfx('L', 3, n-j1+1, u2, tau2,&
-                    t( j2, j1 ), ldt, work)
-        call dlarfx('R', j4, 3, u2, tau2,&
-                    t( 1, j2 ), ldt, work)
+            t( j3, j1 ) = zero
+            t( j3, j2 ) = zero
+            t( j4, j1 ) = zero
+            t( j4, j2 ) = zero
 !
-        t( j3, j1 ) = zero
-        t( j3, j2 ) = zero
-        t( j4, j1 ) = zero
-        t( j4, j2 ) = zero
+            if (wantq) then
 !
-        if (wantq) then
+!               ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-!           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
+                call dlarfx('R', n, 3, u1, tau1,&
+                            q( 1, j1 ), ldq, work)
+                call dlarfx('R', n, 3, u2, tau2,&
+                            q( 1, j2 ), ldq, work)
+            endif
 !
-            call dlarfx('R', n, 3, u1, tau1,&
-                        q( 1, j1 ), ldq, work)
-            call dlarfx('R', n, 3, u2, tau2,&
-                        q( 1, j2 ), ldq, work)
-        endif
-!
-40      continue
+        end select
 !
         if (n2 .eq. 2) then
 !
@@ -399,13 +395,13 @@ subroutine flaexc(wantq, n, t, ldt, q,&
         endif
 !
     endif
-    goto 1000
+    goto 999
 !
 !     EXIT WITH INFO = 1 IF SWAP WAS REJECTED.
 !
-50  continue
+ 50 continue
     info = 1
-1000  continue
+999 continue
 !
     call matfpe(1)
 !

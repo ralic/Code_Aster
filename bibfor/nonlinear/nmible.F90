@@ -20,7 +20,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -74,7 +74,7 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
     call jemarq()
 !
     if (niveau .eq. 0) then
-        goto 9999
+        goto 999
     endif
 !
 ! --- PAS D'ACTIVATION DES OPTIONS *_INIT (FAIT DANS MMAPIN)
@@ -93,61 +93,60 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
     lboucg = isfonc(fonact,'BOUCLE_EXT_GEOM')
     lboucc = isfonc(fonact,'BOUCLE_EXT_CONT')
 !
-! --- BRANCHEMENT
-!
-    goto (101,102,103) niveau
-!
 ! --- NIVEAU: 3   BOUCLE GEOMETRIE
 !
-103  continue
+    if (niveau .ge. 3) then
 !
 ! --- ECRITURE NUMERO ITERATION
 !
-    call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true.)
+        call nmimci(sdimpr, 'BOUC_GEOM', mmitgo, .true.)
 !
 ! --- NOUVELLE ITERATION DE GEOMETRIE
 !
-    if (lboucg) then
-        niveau = 3
-        if (lappa) then
-            call nmctcg(modele, noma, defico, resoco, loptin,&
-                        sdstat, sdtime, numedd)
+        if (lboucg) then
+            niveau = 3
+            if (lappa) then
+                call nmctcg(modele, noma, defico, resoco, loptin,&
+                            sdstat, sdtime, numedd)
+            endif
         endif
-    endif
 !
 ! --- PREMIERE ITERATION DE FROTTEMENT
 !
-    call mmbouc(resoco, 'FROT', 'INIT', mmitfr)
-    call mmbouc(resoco, 'FROT', 'INCR', mmitfr)
-    call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true.)
+        call mmbouc(resoco, 'FROT', 'INIT', mmitfr)
+        call mmbouc(resoco, 'FROT', 'INCR', mmitfr)
+        call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true.)
+    endif
 !
 ! --- NIVEAU: 2   BOUCLE SEUILS DE FROTTEMENT
 !
-102  continue
+    if (niveau .ge. 2) then
 !
 ! --- NOUVELLE ITERATION DE FROTTEMENT
 !
-    if (lboucf) then
-        niveau = 2
-    endif
+        if (lboucf) then
+            niveau = 2
+        endif
 !
 ! --- PREMIERE ITERATION DE CONTACT
 !
-    call mmbouc(resoco, 'CONT', 'INIT', mmitca)
-    call mmbouc(resoco, 'CONT', 'INCR', mmitca)
-    call nmimci(sdimpr, 'BOUC_CONT', mmitca, .true.)
+        call mmbouc(resoco, 'CONT', 'INIT', mmitca)
+        call mmbouc(resoco, 'CONT', 'INCR', mmitca)
+        call nmimci(sdimpr, 'BOUC_CONT', mmitca, .true.)
+    endif
 !
 ! --- NIVEAU: 1   BOUCLE CONTACT
 !
-101  continue
+    if (niveau .ge. 1) then
 !
 ! --- NOUVELLE ITERATION DE CONTACT
 !
-    if (lboucc) then
-        niveau = 1
+        if (lboucc) then
+            niveau = 1
+        endif
     endif
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

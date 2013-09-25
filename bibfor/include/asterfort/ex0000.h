@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +16,6 @@
 !
 interface
     subroutine ex0000(nuoper)
-        integer :: nuoper
+        integer, intent(in) :: nuoper
     end subroutine ex0000
 end interface

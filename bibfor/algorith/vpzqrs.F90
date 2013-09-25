@@ -37,7 +37,6 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !
 ! --- DECLARATIONS
 !
-! aslint: disable=W1501
     implicit none
 !
 ! ARGUMENTS
@@ -70,7 +69,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !======================================================================
 !      VERIFICATION DES DONNEES D ENTREE
 !======================================================================
-    do 40 i = 1, n
+    do i = 1, n
         if (loc(i)) then
             j = j + 1
         endif
@@ -83,9 +82,10 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
         if (((loc(i)) .and. (.not. loc(i+1))) .or. ((.not. loc(i)) .and. (loc(i+1)))) then
             goto 60
         endif
-20      continue
+ 20     continue
         conj2 = .not. conj2
-40  end do
+ 40     continue
+    end do
     if (j .le. m) then
         goto 80
     endif
@@ -93,22 +93,22 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 ! --- ERREUR : TAILLE DU TABLEAU LOC(TRUE) SUPERIEURE A M
 !
     ifail = 1
-    goto 9999
+    goto 999
 !
 ! --- ERREUR : VALEURS PROPRES COMPLEXES MAL SELECTIONNEES
 !
-60  continue
+ 60 continue
     ifail = 2
-    goto 9999
+    goto 999
 !
 !=======================================================================
 !     BOUCLE SUR LES N VALEURS PROPRES DE LA MATRICE HH
 !=======================================================================
-80  continue
+ 80 continue
     luk = 0
     is = 1
 !
-    do 9000 k = 1, n
+    do k = 1, n
 !
 ! === TEST PUIS CALCUL SUR LES MODES SELECTIONNES
         if (loc(k)) then
@@ -119,29 +119,29 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
             if (luk .lt. k) then
                 n1 = n - 1
                 if (k .le. n1) then
-                    do 100 luk = k, n1
+                    do luk = k, n1
                         luk1 = luk + 1
                         if (hh(luk1,luk) .eq. 0.0d0) then
                             goto 120
                         endif
-100                  continue
+                    end do
                 endif
                 luk = n
-120              continue
+120             continue
                 rnorm = 0.0d0
                 m1 = 1
-                do 160 i = 1, luk
+                do i = 1, luk
                     x = 0.0d0
                     if (m1 .le. luk) then
-                        do 140 j = m1, luk
+                        do j = m1, luk
                             x = x + abs(hh(i,j))
-140                      continue
+                        end do
                     endif
                     if (x .gt. rnorm) then
                         rnorm = x
                     endif
                     m1 = i
-160              continue
+                end do
 !
 !======================================================================
 ! -2- REMPLACEMENT PAR EPS3 DU PIVOT NUL DANS LA DECOMPOSITION
@@ -156,9 +156,9 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 ! -3- TEST SUR LA NORME DE LA SOUS-MATRICE DE DIMENSION LUK*LUK
 !======================================================================
             if (rnorm .eq. 0.0d0) then
-                do 300 i = 1, n
+                do i = 1, n
                     zvps(i,is) = 0.0d0
-300              continue
+                end do
                 zvps(k,is) = 1.0d0
                 is = is + 1
                 goto 9000
@@ -170,18 +170,18 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 ! -4- PERTURBATION DE LA VALEUR PROPRE SI ELLE EST PROCHE
 !     D UNE AUTRE VALEUR PROPRE
 !======================================================================
-400          continue
+400         continue
             i = k
             k1 = k - 1
             if (k1 .ge. 1) then
-                do 420 ii = 1, k1
+                do ii = 1, k1
                     i = i - 1
                     if ((loc(i)) .and. (abs(valpr(i)-rrlam).lt.eps3) .and.&
                         (abs(valpi(i)-rilam).lt.eps3)) then
                         rrlam = rrlam +eps3
                         goto 400
                     endif
-420              continue
+                end do
             endif
             valpr(k) = rrlam
 !
@@ -190,16 +190,16 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !     ET DU VECTEUR REEL INITIAL U
 !======================================================================
             m1 = 1
-            do 520 i = 1, luk
+            do i = 1, luk
                 if (m1 .le. luk) then
-                    do 500 j = m1, luk
+                    do j = m1, luk
                         b(i,j) = hh(i,j)
-500                  continue
+                    end do
                 endif
                 b(i,i) = b(i,i) - rrlam
                 m1 = i
                 u(i) = eps3
-520          continue
+            end do
             its = 0
 !
 !======================================================================
@@ -214,29 +214,29 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !======================================================================
 ! -7- TRANSFORMATIONS ET DECOMPOSITION
 !======================================================================
-                    do 760 i = 2, luk
+                    do i = 2, luk
                         m1 = i - 1
                         if (abs(b(i,m1)) .le. abs(b(m1,m1))) then
                             goto 720
                         endif
                         if (m1 .le. luk) then
-                            do 700 j = m1, luk
+                            do j = m1, luk
                                 y = b(i,j)
                                 b(i,j) = b(m1,j)
                                 b(m1,j) = y
-700                          continue
+                            end do
                         endif
-720                      continue
+720                     continue
                         if (b(m1,m1) .eq. 0.0d0) then
                             b(m1,m1) = eps3
                         endif
                         x = b(i,m1)/b(m1,m1)
                         if (x .ne. 0.0d0) then
-                            do 740 j = i, luk
+                            do j = i, luk
                                 b(i,j) = b(i,j) - x*b(m1,j)
-740                          continue
+                            end do
                         endif
-760                  continue
+                    end do
                 endif
 !
 !======================================================================
@@ -249,19 +249,19 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !======================================================================
 ! -9- VECTEUR REEL INITIAL U
 !======================================================================
-900              continue
+900             continue
                 i = luk + 1
-                do 940 ii = 1, luk
+                do ii = 1, luk
                     i = i - 1
                     y = u(i)
                     i1 = i + 1
                     if (i1 .le. luk) then
-                        do 920 j = i1, luk
+                        do j = i1, luk
                             y = y - b(i,j)*u(j)
-920                      continue
+                        end do
                     endif
                     u(i) = y/b(i,i)
-940              continue
+                end do
 !
 !======================================================================
 ! -10- CALCUL DE LA NORME
@@ -269,14 +269,14 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                 its = its + 1
                 rnorm = 0.0d0
                 rnormv = 0.0d0
-                do 1000 i = 1, luk
+                do i = 1, luk
                     x = abs(u(i))
                     if (rnormv .lt. x) then
                         rnormv = x
                         j = i
                     endif
                     rnorm = rnorm + x
-1000              continue
+                end do
 !
 !======================================================================
 ! -11- VECTEUR PROPRE REEL
@@ -285,9 +285,9 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 ! --- ON CONSERVE LE VECTEUR CALCULE SI LA NORME EST SUPERIEURE A ACCRTL
                     x = 1.0d0/u(j)
                     if (luk .ge. 1) then
-                        do 1100 i = 1, luk
+                        do i = 1, luk
                             zvps(i,is) = u(i)*x
-1100                      continue
+                        end do
                     endif
                     j = luk + 1
                     goto 1140
@@ -297,20 +297,20 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                     xeps3 = eps3/(xluk + 1.0d0)
                     u(1) = eps3
                     if (n .ge. 2) then
-                        do 1120 i = 2, n
+                        do i = 2, n
                             u(i)=xeps3
-1120                      continue
+                        end do
                     endif
                     u(luk-its+1)=u(luk-its+1) - eps3*xluk
                     goto 900
                 endif
 ! --- MISE A ZERO DU VECTEUR PROPRE
                 j = 1
-1140              continue
+1140             continue
                 if (j .le. n) then
-                    do 1160 i = j, n
+                    do i = j, n
                         zvps(i,is) = 0.0d0
-1160                  continue
+                    end do
                 endif
                 is = is + 1
                 goto 9000
@@ -324,9 +324,9 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !    AVEC PARTIE IMAGINAIRE POSITIVE
 !***********************************************************************
             else if (rilam.gt.0.0d0) then
-                do 610 i = 1, luk
+                do i = 1, luk
                     v(i) = 0.0d0
-610              continue
+                end do
 !
 !======================================================================
 ! -7-  DECOMPOSITION TRIANGULAIRE
@@ -335,13 +335,13 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                 luk2 = luk + 2
                 i = luk + 3
                 if (luk2 .ge. 4) then
-                    do 710 ii = 4, luk2
+                    do ii = 4, luk2
                         i = i - 1
                         b(i,1) = 0.0d0
-710                  continue
+                    end do
                 endif
                 if (luk .ge. 2) then
-                    do 770 i = 2, luk
+                    do i = 2, luk
                         m1 = i - 1
                         w = b(i,m1)
                         i1 = i + 1
@@ -351,14 +351,14 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                             y = b(i1,m1)/w
                             b(m1,m1) = w
                             b(i1,m1) = 0.0d0
-                            do 730 j = i, luk
+                            do j = i, luk
                                 w = b(i,j)
                                 b(i,j) = b(m1,j) - x*w
                                 b(m1,j) = w
                                 j2 = j + 2
                                 b(j2,i) = b(j2,m1) - y*w
                                 b(j2,m1) = 0.0d0
-730                          continue
+                            end do
                             i2 = i + 2
                             b(i2,m1) = -rilam
                             b(i,i) = b(i,i) - y*rilam
@@ -373,14 +373,15 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                         w = w/x
                         x = b(m1,m1)*w
                         y = -b(i1,m1)*w
-                        do 750 j = i, luk
+                        do j = i, luk
                             j2 = j + 2
                             b(i,j) = b(i,j) - x*b(m1,j) + y*b(j2,m1)
                             b(j2,i) = -x*b(j2,m1) - y*b(m1,j)
-750                      continue
+                        end do
                         i2 = i + 2
                         b(i2,i) = b(i2,i) - rilam
-770                  continue
+770                     continue
+                    end do
                 endif
 !
 !======================================================================
@@ -393,19 +394,19 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
 !======================================================================
 ! -9- VECTEURS INITIAUX U ET V
 !======================================================================
-910              continue
+910             continue
                 if (luk .ge. 1) then
                     i = luk + 1
-                    do 950 ii = 1, luk
+                    do ii = 1, luk
                         i = i - 1
                         x = u(i)
                         y = v(i)
                         i1 = i + 1
                         if (i1 .le. luk) then
-                            do 930 j = i1, luk
+                            do j = i1, luk
                                 x = x - b(i,j)*u(j) + b(j+2,i)*v(j)
                                 y = y - b(i,j)*v(j) - b(j+2,i)*u(j)
-930                          continue
+                            end do
                         endif
                         if (abs(b(i,i)) .gt. abs(b(i+2,i))) then
                             h = b(i+2,i)/b(i,i)
@@ -418,7 +419,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                             u(i) = (y + h*x)*a
                             v(i) = (h*y - x)*a
                         endif
-950                  continue
+                    end do
                 endif
 !
 !======================================================================
@@ -428,7 +429,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                 rnorm = 0.0d0
                 rnormv = 0.0d0
                 if (luk .ge. 1) then
-                    do 1010 i = 1, luk
+                    do i = 1, luk
                         zr = abs(u(i))
                         zi = abs(v(i))
                         if (zi .gt. zr) then
@@ -447,7 +448,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                             j = i
                         endif
                         rnorm = rnorm + x
-1010                  continue
+                    end do
                 endif
                 m1 = is + 1
 !
@@ -459,7 +460,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                     x = u(j)
                     y = v(j)
                     if (luk .ge. 1) then
-                        do 1110 i = 1, luk
+                        do i = 1, luk
                             if (abs(x) .gt. abs(y)) then
                                 h = y/x
                                 a = 1.0d0/(h*y + x)
@@ -471,7 +472,7 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                                 zvps(i,is) = (v(i) + h*u(i))*a
                                 zvps(i,m) = (h*v(i) - u(i))*a
                             endif
-1110                      continue
+                        end do
                     endif
                     j = luk + 1
                     goto 1170
@@ -481,32 +482,33 @@ subroutine vpzqrs(n, m, hh, ih, loc,&
                     xeps3 = eps3/(xluk + 1.0d0)
                     u(1) = eps3
                     if (n .ge. 2) then
-                        do 1130 i = 2, n
+                        do i = 2, n
                             u(i)=xeps3
-1130                      continue
+                        end do
                     endif
                     u(luk-its+1)=u(luk-its+1) - eps3*xluk
                     if (luk .ge. 1) then
-                        do 1150 i = 1, luk
+                        do i = 1, luk
                             v(i) = 0.0d0
-1150                      continue
+                        end do
                     endif
                     goto 910
                 endif
 ! --- MISE A ZERO DU VECTEUR PROPRE
                 j = 1
-1170              continue
+1170             continue
                 if (j .le. n) then
-                    do 1190 i = j, n
+                    do i = j, n
                         zvps(i,is) = 0.0d0
                         zvps(i,m1) = 0.0d0
-1190                  continue
+                    end do
                 endif
                 is = is + 2
             endif
         endif
 !
-9000  end do
+9000     continue
+    end do
 !
-9999  continue
+999 continue
 end subroutine

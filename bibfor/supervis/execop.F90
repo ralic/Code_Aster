@@ -28,7 +28,6 @@ subroutine execop()
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/ex0000.h"
-#include "asterfort/ex0100.h"
 #include "asterfort/foint0.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jermxd.h"
@@ -49,7 +48,7 @@ subroutine execop()
     integer :: nuoper, nuop2, imaav, imaap
     real(kind=8) :: tpres, rval(12)
     character(len=6) :: nommar
-    character(len=8) ::  k8tab(7)
+    character(len=8) :: k8tab(7)
     integer :: iret, iret2
 !     ------------------------------------------------------------------
 !
@@ -115,10 +114,8 @@ subroutine execop()
     if (nuoper .lt. 0) then
         nuop2 = abs(nuoper)
         call opsexe(nuop2)
-    else if (nuoper.lt. 100) then
-        call ex0000(nuoper)
     else if (nuoper.lt. 200) then
-        call ex0100(nuoper)
+        call ex0000(nuoper)
     else if (nuoper.ne.9999) then
         call utmess('E', 'SUPERVIS_61', si=nuoper)
     endif

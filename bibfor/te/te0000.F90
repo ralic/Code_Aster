@@ -650,7 +650,7 @@ subroutine te0000(numc, opt, te)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: iret, jparal, numc2, numc3
+    integer :: iret, jparal
     logical :: lparal
     character(len=16) :: nomte, nomopt
     character(len=8) :: k8bid
@@ -670,1935 +670,1219 @@ subroutine te0000(numc, opt, te)
     nomte = zk16(ianote-1+te)
     nomopt = zk16(ianoop-1+opt)
 !
-    numc2= (numc-1)/100
-    numc3= numc-numc2*100
+    do iel = 1, nbelgr
+        if (lparal) then
+            if (.not.zl(jparal-1+iel)) goto 999
+        endif
+        capoiz=0
+        select case (numc)
+        case (1)
+            call te0001(nomopt, nomte)
+        case (2)
+            call te0002(nomopt, nomte)
+        case (3)
+            call te0003(nomopt, nomte)
+        case (4)
+            call te0004(nomopt, nomte)
+        case (5)
+            call te0005(nomopt, nomte)
+        case (6)
+            call te0006(nomopt, nomte)
+        case (7)
+            call te0007(nomopt, nomte)
+        case (8)
+            call te0008(nomopt, nomte)
+        case (9)
+            call te0009(nomopt, nomte)
+        case (10)
+            call te0010(nomopt, nomte)
+        case (11)
+            call te0011(nomopt, nomte)
+        case (12)
+            call te0012(nomopt, nomte)
+        case (13)
+            call te0013(nomopt, nomte)
+        case (14)
+            call te0014(nomopt, nomte)
+        case (15)
+            call te0015(nomopt, nomte)
+        case (16)
+            call te0016(nomopt, nomte)
+        case (17)
+            call te0017(nomopt, nomte)
+        case (18)
+            call te0018(nomopt, nomte)
+        case (19)
+            call te0019(nomopt, nomte)
+        case (20)
+            call te0020(nomopt, nomte)
+        case (21)
+            call te0021(nomopt, nomte)
+        case (22)
+            call te0022(nomopt, nomte)
+        case (23)
+            call te0023(nomopt, nomte)
+        case (24)
+            call te0024(nomopt, nomte)
+        case (25)
+            call te0025(nomopt, nomte)
+        case (26)
+            call te0026(nomopt, nomte)
+        case (27)
+            call te0027(nomopt, nomte)
+        case (28)
+            call te0028(nomopt, nomte)
+        case (29)
+            call te0029(nomopt, nomte)
+        case (30)
+            call te0030(nomopt, nomte)
+        case (31)
+            call te0031(nomopt, nomte)
+        case (32)
+            call te0032(nomopt, nomte)
+        case (33)
+            call te0033(nomopt, nomte)
+        case (34)
+            call te0034(nomopt, nomte)
+        case (35)
+            call te0035(nomopt, nomte)
+        case (36)
+            call te0036(nomopt, nomte)
+        case (37)
+            call te0037(nomopt, nomte)
+        case (38)
+            call te0038(nomopt, nomte)
+        case (39)
+            call te0039(nomopt, nomte)
+        case (40)
+            call te0040(nomopt, nomte)
+        case (41)
+            call te0041(nomopt, nomte)
+        case (42)
+            call te0042(nomopt, nomte)
+        case (43)
+            call te0043(nomopt, nomte)
+        case (44)
+            call te0044(nomopt, nomte)
+        case (45)
+            call te0045(nomopt, nomte)
+        case (46)
+            call te0046(nomopt, nomte)
+        case (47)
+            call te0047(nomopt, nomte)
+        case (48)
+            call te0048(nomopt, nomte)
+        case (49)
+            call te0049(nomopt, nomte)
+        case (50)
+            call te0050(nomopt, nomte)
+        case (51)
+            call te0051(nomopt, nomte)
+        case (52)
+            call te0052(nomopt, nomte)
+        case (53)
+            call te0053(nomopt, nomte)
+        case (54)
+            call te0054(nomopt, nomte)
+        case (55)
+            call te0055(nomopt, nomte)
+        case (56)
+            call te0056(nomopt, nomte)
+        case (57)
+            call te0057(nomopt, nomte)
+        case (58)
+            call te0058(nomopt, nomte)
+        case (59)
+            call te0059(nomopt, nomte)
+        case (60)
+            call te0060(nomopt, nomte)
+        case (61)
+            call te0061(nomopt, nomte)
+        case (62)
+            call te0062(nomopt, nomte)
+        case (63)
+            call te0063(nomopt, nomte)
+        case (64)
+            call te0064(nomopt, nomte)
+        case (65)
+            call te0065(nomopt, nomte)
+        case (66)
+            call te0066(nomopt, nomte)
+        case (67)
+            call te0067(nomopt, nomte)
+        case (68)
+            call te0068(nomopt, nomte)
+        case (69)
+            call te0069(nomopt, nomte)
+        case (70)
+            call te0070(nomopt, nomte)
+        case (71)
+            call te0071(nomopt, nomte)
+        case (72)
+            call te0072(nomopt, nomte)
+        case (73)
+            call te0073(nomopt, nomte)
+        case (74)
+            call te0074(nomopt, nomte)
+        case (75)
+            call te0075(nomopt, nomte)
+        case (76)
+            call te0076(nomopt, nomte)
+        case (77)
+            call te0077(nomopt, nomte)
+        case (78)
+            call te0078(nomopt, nomte)
+        case (79)
+            call te0079(nomopt, nomte)
+        case (80)
+            call te0080(nomopt, nomte)
+        case (81)
+            call te0081(nomopt, nomte)
+        case (82)
+            call te0082(nomopt, nomte)
+        case (83)
+            call te0083(nomopt, nomte)
+        case (84)
+            call te0084(nomopt, nomte)
+        case (85)
+            call te0085(nomopt, nomte)
+        case (86)
+            call te0086(nomopt, nomte)
+        case (87)
+            call te0087(nomopt, nomte)
+        case (88)
+            call te0088(nomopt, nomte)
+        case (89)
+            call te0089(nomopt, nomte)
+        case (90)
+            call te0090(nomopt, nomte)
+        case (91)
+            call te0091(nomopt, nomte)
+        case (92)
+            call te0092(nomopt, nomte)
+        case (93)
+            call te0093(nomopt, nomte)
+        case (94)
+            call te0094(nomopt, nomte)
+        case (95)
+            call te0095(nomopt, nomte)
+        case (96)
+            call te0096(nomopt, nomte)
+        case (97)
+            call te0097(nomopt, nomte)
+        case (98)
+            call te0098(nomopt, nomte)
+        case (99)
+            call te0099(nomopt, nomte)
+        case (100)
+            call te0100(nomopt, nomte)
+        case (101)
+            call te0101(nomopt, nomte)
+        case (102)
+            call te0102(nomopt, nomte)
+        case (103)
+            call te0103(nomopt, nomte)
+        case (104)
+            call te0104(nomopt, nomte)
+        case (105)
+            call te0105(nomopt, nomte)
+        case (106)
+            call te0106(nomopt, nomte)
+        case (107)
+            call te0107(nomopt, nomte)
+        case (108)
+            call te0108(nomopt, nomte)
+        case (109)
+            call te0109(nomopt, nomte)
+        case (110)
+            call te0110(nomopt, nomte)
+        case (111)
+            call te0111(nomopt, nomte)
+        case (112)
+            call te0112(nomopt, nomte)
+        case (113)
+            call te0113(nomopt, nomte)
+        case (114)
+            call te0114(nomopt, nomte)
+        case (115)
+            call te0115(nomopt, nomte)
+        case (116)
+            call te0116(nomopt, nomte)
+        case (117)
+            call te0117(nomopt, nomte)
+        case (118)
+            call te0118(nomopt, nomte)
+        case (119)
+            call te0119(nomopt, nomte)
+        case (120)
+            call te0120(nomopt, nomte)
+        case (121)
+            call te0121(nomopt, nomte)
+        case (122)
+            call te0122(nomopt, nomte)
+        case (123)
+            call te0123(nomopt, nomte)
+        case (124)
+            call te0124(nomopt, nomte)
+        case (125)
+            call te0125(nomopt, nomte)
+        case (126)
+            call te0126(nomopt, nomte)
+        case (127)
+            call te0127(nomopt, nomte)
+        case (128)
+            call te0128(nomopt, nomte)
+        case (129)
+            call te0129(nomopt, nomte)
+        case (130)
+            call te0130(nomopt, nomte)
+        case (131)
+            call te0131(nomopt, nomte)
+        case (132)
+            call te0132(nomopt, nomte)
+        case (133)
+            call te0133(nomopt, nomte)
+        case (134)
+            call te0134(nomopt, nomte)
+        case (135)
+            call te0135(nomopt, nomte)
+        case (136)
+            call te0136(nomopt, nomte)
+        case (137)
+            call te0137(nomopt, nomte)
+        case (138)
+            call te0138(nomopt, nomte)
+        case (139)
+            call te0139(nomopt, nomte)
+        case (140)
+            call te0140(nomopt, nomte)
+        case (141)
+            call te0141(nomopt, nomte)
+        case (142)
+            call te0142(nomopt, nomte)
+        case (143)
+            call te0143(nomopt, nomte)
+        case (144)
+            call te0144(nomopt, nomte)
+        case (145)
+            call te0145(nomopt, nomte)
+        case (146)
+            call te0146(nomopt, nomte)
+        case (147)
+            call te0147(nomopt, nomte)
+        case (148)
+            call te0148(nomopt, nomte)
+        case (149)
+            call te0149(nomopt, nomte)
+        case (150)
+            call te0150(nomopt, nomte)
+        case (151)
+            call te0151(nomopt, nomte)
+        case (152)
+            call te0152(nomopt, nomte)
+        case (153)
+            call te0153(nomopt, nomte)
+        case (154)
+            call te0154(nomopt, nomte)
+        case (155)
+            call te0155(nomopt, nomte)
+        case (156)
+            call te0156(nomopt, nomte)
+        case (157)
+            call te0157(nomopt, nomte)
+        case (158)
+            call te0158(nomopt, nomte)
+        case (159)
+            call te0159(nomopt, nomte)
+        case (160)
+            call te0160(nomopt, nomte)
+        case (161)
+            call te0161(nomopt, nomte)
+        case (162)
+            call te0162(nomopt, nomte)
+        case (163)
+            call te0163(nomopt, nomte)
+        case (164)
+            call te0164(nomopt, nomte)
+        case (165)
+            call te0165(nomopt, nomte)
+        case (166)
+            call te0166(nomopt, nomte)
+        case (167)
+            call te0167(nomopt, nomte)
+        case (168)
+            call te0168(nomopt, nomte)
+        case (169)
+            call te0169(nomopt, nomte)
+        case (170)
+            call te0170(nomopt, nomte)
+        case (171)
+            call te0171(nomopt, nomte)
+        case (172)
+            call te0172(nomopt, nomte)
+        case (173)
+            call te0173(nomopt, nomte)
+        case (174)
+            call te0174(nomopt, nomte)
+        case (175)
+            call te0175(nomopt, nomte)
+        case (176)
+            call te0176(nomopt, nomte)
+        case (177)
+            call te0177(nomopt, nomte)
+        case (178)
+            call te0178(nomopt, nomte)
+        case (179)
+            call te0179(nomopt, nomte)
+        case (180)
+            call te0180(nomopt, nomte)
+        case (181)
+            call te0181(nomopt, nomte)
+        case (182)
+            call te0182(nomopt, nomte)
+        case (183)
+            call te0183(nomopt, nomte)
+        case (184)
+            call te0184(nomopt, nomte)
+        case (185)
+            call te0185(nomopt, nomte)
+        case (186)
+            call te0186(nomopt, nomte)
+        case (187)
+            call te0187(nomopt, nomte)
+        case (188)
+            call te0188(nomopt, nomte)
+        case (189)
+            call te0189(nomopt, nomte)
+        case (190)
+            call te0190(nomopt, nomte)
+        case (191)
+            call te0191(nomopt, nomte)
+        case (192)
+            call te0192(nomopt, nomte)
+        case (193)
+            call te0193(nomopt, nomte)
+        case (194)
+            call te0194(nomopt, nomte)
+        case (195)
+            call te0195(nomopt, nomte)
+        case (196)
+            call te0196(nomopt, nomte)
+        case (197)
+            call te0197(nomopt, nomte)
+        case (198)
+            call te0198(nomopt, nomte)
+        case (199)
+            call te0199(nomopt, nomte)
+        case (200)
+            call te0200(nomopt, nomte)
+        case (201)
+            call te0201(nomopt, nomte)
+        case (202)
+            call te0202(nomopt, nomte)
+        case (203)
+            call te0203(nomopt, nomte)
+        case (204)
+            call te0204(nomopt, nomte)
+        case (205)
+            call te0205(nomopt, nomte)
+        case (206)
+            call te0206(nomopt, nomte)
+        case (207)
+            call te0207(nomopt, nomte)
+        case (208)
+            call te0208(nomopt, nomte)
+        case (209)
+            call te0209(nomopt, nomte)
+        case (210)
+            call te0210(nomopt, nomte)
+        case (211)
+            call te0211(nomopt, nomte)
+        case (212)
+            call te0212(nomopt, nomte)
+        case (213)
+            call te0213(nomopt, nomte)
+        case (214)
+            call te0214(nomopt, nomte)
+        case (215)
+            call te0215(nomopt, nomte)
+        case (216)
+            call te0216(nomopt, nomte)
+        case (217)
+            call te0217(nomopt, nomte)
+        case (218)
+            call te0218(nomopt, nomte)
+        case (219)
+            call te0219(nomopt, nomte)
+        case (220)
+            call te0220(nomopt, nomte)
+        case (221)
+            call te0221(nomopt, nomte)
+        case (222)
+            call te0222(nomopt, nomte)
+        case (223)
+            call te0223(nomopt, nomte)
+        case (224)
+            call te0224(nomopt, nomte)
+        case (225)
+            call te0225(nomopt, nomte)
+        case (226)
+            call te0226(nomopt, nomte)
+        case (227)
+            call te0227(nomopt, nomte)
+        case (228)
+            call te0228(nomopt, nomte)
+        case (229)
+            call te0229(nomopt, nomte)
+        case (230)
+            call te0230(nomopt, nomte)
+        case (231)
+            call te0231(nomopt, nomte)
+        case (232)
+            call te0232(nomopt, nomte)
+        case (233)
+            call te0233(nomopt, nomte)
+        case (234)
+            call te0234(nomopt, nomte)
+        case (235)
+            call te0235(nomopt, nomte)
+        case (236)
+            call te0236(nomopt, nomte)
+        case (237)
+            call te0237(nomopt, nomte)
+        case (238)
+            call te0238(nomopt, nomte)
+        case (239)
+            call te0239(nomopt, nomte)
+        case (240)
+            call te0240(nomopt, nomte)
+        case (241)
+            call te0241(nomopt, nomte)
+        case (242)
+            call te0242(nomopt, nomte)
+        case (243)
+            call te0243(nomopt, nomte)
+        case (244)
+            call te0244(nomopt, nomte)
+        case (245)
+            call te0245(nomopt, nomte)
+        case (246)
+            call te0246(nomopt, nomte)
+        case (247)
+            call te0247(nomopt, nomte)
+        case (248)
+            call te0248(nomopt, nomte)
+        case (249)
+            call te0249(nomopt, nomte)
+        case (250)
+            call te0250(nomopt, nomte)
+        case (251)
+            call te0251(nomopt, nomte)
+        case (252)
+            call te0252(nomopt, nomte)
+        case (253)
+            call te0253(nomopt, nomte)
+        case (254)
+            call te0254(nomopt, nomte)
+        case (255)
+            call te0255(nomopt, nomte)
+        case (256)
+            call te0256(nomopt, nomte)
+        case (257)
+            call te0257(nomopt, nomte)
+        case (258)
+            call te0258(nomopt, nomte)
+        case (259)
+            call te0259(nomopt, nomte)
+        case (260)
+            call te0260(nomopt, nomte)
+        case (261)
+            call te0261(nomopt, nomte)
+        case (262)
+            call te0262(nomopt, nomte)
+        case (263)
+            call te0263(nomopt, nomte)
+        case (264)
+            call te0264(nomopt, nomte)
+        case (265)
+            call te0265(nomopt, nomte)
+        case (266)
+            call te0266(nomopt, nomte)
+        case (267)
+            call te0267(nomopt, nomte)
+        case (268)
+            call te0268(nomopt, nomte)
+        case (269)
+            call te0269(nomopt, nomte)
+        case (270)
+            call te0270(nomopt, nomte)
+        case (271)
+            call te0271(nomopt, nomte)
+        case (272)
+            call te0272(nomopt, nomte)
+        case (273)
+            call te0273(nomopt, nomte)
+        case (274)
+            call te0274(nomopt, nomte)
+        case (275)
+            call te0275(nomopt, nomte)
+        case (276)
+            call te0276(nomopt, nomte)
+        case (277)
+            call te0277(nomopt, nomte)
+        case (278)
+            call te0278(nomopt, nomte)
+        case (279)
+            call te0279(nomopt, nomte)
+        case (280)
+            call te0280(nomopt, nomte)
+        case (281)
+            call te0281(nomopt, nomte)
+        case (282)
+            call te0282(nomopt, nomte)
+        case (283)
+            call te0283(nomopt, nomte)
+        case (284)
+            call te0284(nomopt, nomte)
+        case (285)
+            call te0285(nomopt, nomte)
+        case (286)
+            call te0286(nomopt, nomte)
+        case (287)
+            call te0287(nomopt, nomte)
+        case (288)
+            call te0288(nomopt, nomte)
+        case (289)
+            call te0289(nomopt, nomte)
+        case (290)
+            call te0290(nomopt, nomte)
+        case (291)
+            call te0291(nomopt, nomte)
+        case (292)
+            call te0292(nomopt, nomte)
+        case (293)
+            call te0293(nomopt, nomte)
+        case (294)
+            call te0294(nomopt, nomte)
+        case (295)
+            call te0295(nomopt, nomte)
+        case (296)
+            call te0296(nomopt, nomte)
+        case (297)
+            call te0297(nomopt, nomte)
+        case (298)
+            call te0298(nomopt, nomte)
+        case (299)
+            call te0299(nomopt, nomte)
+        case (300)
+            call te0300(nomopt, nomte)
+        case (301)
+            call te0301(nomopt, nomte)
+        case (302)
+            call te0302(nomopt, nomte)
+        case (303)
+            call te0303(nomopt, nomte)
+        case (304)
+            call te0304(nomopt, nomte)
+        case (305)
+            call te0305(nomopt, nomte)
+        case (306)
+            call te0306(nomopt, nomte)
+        case (307)
+            call te0307(nomopt, nomte)
+        case (308)
+            call te0308(nomopt, nomte)
+        case (309)
+            call te0309(nomopt, nomte)
+        case (310)
+            call te0310(nomopt, nomte)
+        case (311)
+            call te0311(nomopt, nomte)
+        case (312)
+            call te0312(nomopt, nomte)
+        case (313)
+            call te0313(nomopt, nomte)
+        case (314)
+            call te0314(nomopt, nomte)
+        case (315)
+            call te0315(nomopt, nomte)
+        case (316)
+            call te0316(nomopt, nomte)
+        case (317)
+            call te0317(nomopt, nomte)
+        case (318)
+            call te0318(nomopt, nomte)
+        case (319)
+            call te0319(nomopt, nomte)
+        case (320)
+            call te0320(nomopt, nomte)
+        case (321)
+            call te0321(nomopt, nomte)
+        case (322)
+            call te0322(nomopt, nomte)
+        case (323)
+            call te0323(nomopt, nomte)
+        case (324)
+            call te0324(nomopt, nomte)
+        case (325)
+            call te0325(nomopt, nomte)
+        case (326)
+            call te0326(nomopt, nomte)
+        case (327)
+            call te0327(nomopt, nomte)
+        case (328)
+            call te0328(nomopt, nomte)
+        case (329)
+            call te0329(nomopt, nomte)
+        case (330)
+            call te0330(nomopt, nomte)
+        case (331)
+            call te0331(nomopt, nomte)
+        case (332)
+            call te0332(nomopt, nomte)
+        case (333)
+            call te0333(nomopt, nomte)
+        case (334)
+            call te0334(nomopt, nomte)
+        case (335)
+            call te0335(nomopt, nomte)
+        case (336)
+            call te0336(nomopt, nomte)
+        case (337)
+            call te0337(nomopt, nomte)
+        case (338)
+            call te0338(nomopt, nomte)
+        case (339)
+            call te0339(nomopt, nomte)
+        case (340)
+            call te0340(nomopt, nomte)
+        case (341)
+            call te0341(nomopt, nomte)
+        case (342)
+            call te0342(nomopt, nomte)
+        case (343)
+            call te0343(nomopt, nomte)
+        case (344)
+            call te0344(nomopt, nomte)
+        case (345)
+            call te0345(nomopt, nomte)
+        case (346)
+            call te0346(nomopt, nomte)
+        case (347)
+            call te0347(nomopt, nomte)
+        case (348)
+            call te0348(nomopt, nomte)
+        case (349)
+            call te0349(nomopt, nomte)
+        case (350)
+            call te0350(nomopt, nomte)
+        case (351)
+            call te0351(nomopt, nomte)
+        case (352)
+            call te0352(nomopt, nomte)
+        case (353)
+            call te0353(nomopt, nomte)
+        case (354)
+            call te0354(nomopt, nomte)
+        case (355)
+            call te0355(nomopt, nomte)
+        case (356)
+            call te0356(nomopt, nomte)
+        case (357)
+            call te0357(nomopt, nomte)
+        case (358)
+            call te0358(nomopt, nomte)
+        case (359)
+            call te0359(nomopt, nomte)
+        case (360)
+            call te0360(nomopt, nomte)
+        case (361)
+            call te0361(nomopt, nomte)
+        case (362)
+            call te0362(nomopt, nomte)
+        case (363)
+            call te0363(nomopt, nomte)
+        case (364)
+            call te0364(nomopt, nomte)
+        case (365)
+            call te0365(nomopt, nomte)
+        case (366)
+            call te0366(nomopt, nomte)
+        case (367)
+            call te0367(nomopt, nomte)
+        case (368)
+            call te0368(nomopt, nomte)
+        case (369)
+            call te0369(nomopt, nomte)
+        case (370)
+            call te0370(nomopt, nomte)
+        case (371)
+            call te0371(nomopt, nomte)
+        case (372)
+            call te0372(nomopt, nomte)
+        case (373)
+            call te0373(nomopt, nomte)
+        case (374)
+            call te0374(nomopt, nomte)
+        case (375)
+            call te0375(nomopt, nomte)
+        case (376)
+            call te0376(nomopt, nomte)
+        case (377)
+            call te0377(nomopt, nomte)
+        case (378)
+            call te0378(nomopt, nomte)
+        case (379)
+            call te0379(nomopt, nomte)
+        case (380)
+            call te0380(nomopt, nomte)
+        case (381)
+            call te0381(nomopt, nomte)
+        case (382)
+            call te0382(nomopt, nomte)
+        case (383)
+            call te0383(nomopt, nomte)
+        case (384)
+            call te0384(nomopt, nomte)
+        case (385)
+            call te0385(nomopt, nomte)
+        case (386)
+            call te0386(nomopt, nomte)
+        case (387)
+            call te0387(nomopt, nomte)
+        case (388)
+            call te0388(nomopt, nomte)
+        case (389)
+            call te0389(nomopt, nomte)
+        case (390)
+            call te0390(nomopt, nomte)
+        case (391)
+            call te0391(nomopt, nomte)
+        case (392)
+            call te0392(nomopt, nomte)
+        case (393)
+            call te0393(nomopt, nomte)
+        case (394)
+            call te0394(nomopt, nomte)
+        case (395)
+            call te0395(nomopt, nomte)
+        case (396)
+            call te0396(nomopt, nomte)
+        case (397)
+            call te0397(nomopt, nomte)
+        case (398)
+            call te0398(nomopt, nomte)
+        case (399)
+            call te0399(nomopt, nomte)
+        case (400)
+            call te0400(nomopt, nomte)
+        case (401)
+            call te0401(nomopt, nomte)
+        case (402)
+            call te0402(nomopt, nomte)
+        case (403)
+            call te0403(nomopt, nomte)
+        case (404)
+            call te0404(nomopt, nomte)
+        case (405)
+            call te0405(nomopt, nomte)
+        case (406)
+            call te0406(nomopt, nomte)
+        case (407)
+            call te0407(nomopt, nomte)
+        case (408)
+            call te0408(nomopt, nomte)
+        case (409)
+            call te0409(nomopt, nomte)
+        case (410)
+            call te0410(nomopt, nomte)
+        case (411)
+            call te0411(nomopt, nomte)
+        case (412)
+            call te0412(nomopt, nomte)
+        case (413)
+            call te0413(nomopt, nomte)
+        case (414)
+            call te0414(nomopt, nomte)
+        case (415)
+            call te0415(nomopt, nomte)
+        case (416)
+            call te0416(nomopt, nomte)
+        case (417)
+            call te0417(nomopt, nomte)
+        case (418)
+            call te0418(nomopt, nomte)
+        case (419)
+            call te0419(nomopt, nomte)
+        case (420)
+            call te0420(nomopt, nomte)
+        case (421)
+            call te0421(nomopt, nomte)
+        case (422)
+            call te0422(nomopt, nomte)
+        case (423)
+            call te0423(nomopt, nomte)
+        case (424)
+            call te0424(nomopt, nomte)
+        case (425)
+            call te0425(nomopt, nomte)
+        case (426)
+            call te0426(nomopt, nomte)
+        case (427)
+            call te0427(nomopt, nomte)
+        case (428)
+            call te0428(nomopt, nomte)
+        case (429)
+            call te0429(nomopt, nomte)
+        case (430)
+            call te0430(nomopt, nomte)
+        case (431)
+            call te0431(nomopt, nomte)
+        case (432)
+            call te0432(nomopt, nomte)
+        case (433)
+            call te0433(nomopt, nomte)
+        case (434)
+            call te0434(nomopt, nomte)
+        case (435)
+            call te0435(nomopt, nomte)
+        case (436)
+            call te0436(nomopt, nomte)
+        case (437)
+            call te0437(nomopt, nomte)
+        case (438)
+            call te0438(nomopt, nomte)
+        case (439)
+            call te0439(nomopt, nomte)
+        case (440)
+            call te0440(nomopt, nomte)
+        case (441)
+            call te0441(nomopt, nomte)
+        case (442)
+            call te0442(nomopt, nomte)
+        case (443)
+            call te0443(nomopt, nomte)
+        case (444)
+            call te0444(nomopt, nomte)
+        case (445)
+            call te0445(nomopt, nomte)
+        case (446)
+            call te0446(nomopt, nomte)
+        case (447)
+            call te0447(nomopt, nomte)
+        case (448)
+            call te0448(nomopt, nomte)
+        case (449)
+            call te0449(nomopt, nomte)
+        case (450)
+            call te0450(nomopt, nomte)
+        case (451)
+            call te0451(nomopt, nomte)
+        case (452)
+            call te0452(nomopt, nomte)
+        case (453)
+            call te0453(nomopt, nomte)
+        case (454)
+            call te0454(nomopt, nomte)
+        case (455)
+            call te0455(nomopt, nomte)
+        case (456)
+            call te0456(nomopt, nomte)
+        case (457)
+            call te0457(nomopt, nomte)
+        case (458)
+            call te0458(nomopt, nomte)
+        case (459)
+            call te0459(nomopt, nomte)
+        case (460)
+            call te0460(nomopt, nomte)
+        case (461)
+            call te0461(nomopt, nomte)
+        case (462)
+            call te0462(nomopt, nomte)
+        case (463)
+            call te0463(nomopt, nomte)
+        case (464)
+            call te0464(nomopt, nomte)
+        case (465)
+            call te0465(nomopt, nomte)
+        case (466)
+            call te0466(nomopt, nomte)
+        case (467)
+            call te0467(nomopt, nomte)
+        case (468)
+            call te0468(nomopt, nomte)
+        case (469)
+            call te0469(nomopt, nomte)
+        case (470)
+            call te0470(nomopt, nomte)
+        case (471)
+            call te0471(nomopt, nomte)
+        case (472)
+            call te0472(nomopt, nomte)
+        case (473)
+            call te0473(nomopt, nomte)
+        case (474)
+            call te0474(nomopt, nomte)
+        case (475)
+            call te0475(nomopt, nomte)
+        case (476)
+            call te0476(nomopt, nomte)
+        case (477)
+            call te0477(nomopt, nomte)
+        case (478)
+            call te0478(nomopt, nomte)
+        case (479)
+            call te0479(nomopt, nomte)
+        case (480)
+            call te0480(nomopt, nomte)
+        case (481)
+            call te0481(nomopt, nomte)
+        case (482)
+            call te0482(nomopt, nomte)
+        case (483)
+            call te0483(nomopt, nomte)
+        case (484)
+            call te0484(nomopt, nomte)
+        case (485)
+            call te0485(nomopt, nomte)
+        case (486)
+            call te0486(nomopt, nomte)
+        case (487)
+            call te0487(nomopt, nomte)
+        case (488)
+            call te0488(nomopt, nomte)
+        case (489)
+            call te0489(nomopt, nomte)
+        case (490)
+            call te0490(nomopt, nomte)
+        case (491)
+            call te0491(nomopt, nomte)
+        case (492)
+            call te0492(nomopt, nomte)
+        case (493)
+            call te0493(nomopt, nomte)
+        case (494)
+            call te0494(nomopt, nomte)
+        case (495)
+            call te0495(nomopt, nomte)
+        case (496)
+            call te0496(nomopt, nomte)
+        case (497)
+            call te0497(nomopt, nomte)
+        case (498)
+            call te0498(nomopt, nomte)
+        case (499)
+            call te0499(nomopt, nomte)
+        case (500)
+            call te0500(nomopt, nomte)
+        case (501)
+            call te0501(nomopt, nomte)
+        case (502)
+            call te0502(nomopt, nomte)
+        case (503)
+            call te0503(nomopt, nomte)
+        case (504)
+            call te0504(nomopt, nomte)
+        case (505)
+            call te0505(nomopt, nomte)
+        case (506)
+            call te0506(nomopt, nomte)
+        case (507)
+            call te0507(nomopt, nomte)
+        case (508)
+            call te0508(nomopt, nomte)
+        case (509)
+            call te0509(nomopt, nomte)
+        case (510)
+            call te0510(nomopt, nomte)
+        case (511)
+            call te0511(nomopt, nomte)
+        case (512)
+            call te0512(nomopt, nomte)
+        case (513)
+            call te0513(nomopt, nomte)
+        case (514)
+            call te0514(nomopt, nomte)
+        case (515)
+            call te0515(nomopt, nomte)
+        case (516)
+            call te0516(nomopt, nomte)
+        case (517)
+            call te0517(nomopt, nomte)
+        case (518)
+            call te0518(nomopt, nomte)
+        case (519)
+            call te0519(nomopt, nomte)
+        case (520)
+            call te0520(nomopt, nomte)
+        case (521)
+            call te0521(nomopt, nomte)
+        case (522)
+            call te0522(nomopt, nomte)
+        case (523)
+            call te0523(nomopt, nomte)
+        case (524)
+            call te0524(nomopt, nomte)
+        case (525)
+            call te0525(nomopt, nomte)
+        case (526)
+            call te0526(nomopt, nomte)
+        case (527)
+            call te0527(nomopt, nomte)
+        case (528)
+            call te0528(nomopt, nomte)
+        case (529)
+            call te0529(nomopt, nomte)
+        case (530)
+            call te0530(nomopt, nomte)
+        case (531)
+            call te0531(nomopt, nomte)
+        case (532)
+            call te0532(nomopt, nomte)
+        case (533)
+            call te0533(nomopt, nomte)
+        case (534)
+            call te0534(nomopt, nomte)
+        case (535)
+            call te0535(nomopt, nomte)
+        case (536)
+            call te0536(nomopt, nomte)
+        case (537)
+            call te0537(nomopt, nomte)
+        case (538)
+            call te0538(nomopt, nomte)
+        case (539)
+            call te0539(nomopt, nomte)
+        case (540)
+            call te0540(nomopt, nomte)
+        case (541)
+            call te0541(nomopt, nomte)
+        case (542)
+            call te0542(nomopt, nomte)
+        case (543)
+            call te0543(nomopt, nomte)
+        case (544)
+            call te0544(nomopt, nomte)
+        case (545)
+            call te0545(nomopt, nomte)
+        case (546)
+            call te0546(nomopt, nomte)
+        case (547)
+            call te0547(nomopt, nomte)
+        case (548)
+            call te0548(nomopt, nomte)
+        case (549)
+            call te0549(nomopt, nomte)
+        case (550)
+            call te0550(nomopt, nomte)
+        case (551)
+            call te0551(nomopt, nomte)
+        case (552)
+            call te0552(nomopt, nomte)
+        case (553)
+            call te0553(nomopt, nomte)
+        case (554)
+            call te0554(nomopt, nomte)
+        case (555)
+            call te0555(nomopt, nomte)
+        case (556)
+            call te0556(nomopt, nomte)
+        case (557)
+            call te0557(nomopt, nomte)
+        case (558)
+            call te0558(nomopt, nomte)
+        case (559)
+            call te0559(nomopt, nomte)
+        case (560)
+            call te0560(nomopt, nomte)
+        case (561)
+            call te0561(nomopt, nomte)
+        case (562)
+            call te0562(nomopt, nomte)
+        case (563)
+            call te0563(nomopt, nomte)
+        case (564)
+            call te0564(nomopt, nomte)
+        case (565)
+            call te0565(nomopt, nomte)
+        case (566)
+            call te0566(nomopt, nomte)
+        case (567)
+            call te0567(nomopt, nomte)
+        case (568)
+            call te0568(nomopt, nomte)
+        case (569)
+            call te0569(nomopt, nomte)
+        case (570)
+            call te0570(nomopt, nomte)
+        case (571)
+            call te0571(nomopt, nomte)
+        case (572)
+            call te0572(nomopt, nomte)
+        case (573)
+            call te0573(nomopt, nomte)
+        case (574)
+            call te0574(nomopt, nomte)
+        case (575)
+            call te0575(nomopt, nomte)
+        case (576)
+            call te0576(nomopt, nomte)
+        case (577)
+            call te0577(nomopt, nomte)
+        case (578)
+            call te0578(nomopt, nomte)
+        case (579)
+            call te0579(nomopt, nomte)
+        case (580)
+            call te0580(nomopt, nomte)
+        case (581)
+            call te0581(nomopt, nomte)
+        case (582)
+            call te0582(nomopt, nomte)
+        case (583)
+            call te0583(nomopt, nomte)
+        case (584)
+            call te0584(nomopt, nomte)
+        case (585)
+            call te0585(nomopt, nomte)
+        case (586)
+            call te0586(nomopt, nomte)
+        case (587)
+            call te0587(nomopt, nomte)
+        case (588)
+            call te0588(nomopt, nomte)
+        case (589)
+            call te0589(nomopt, nomte)
+        case (590)
+            call te0590(nomopt, nomte)
+        case (591)
+            call te0591(nomopt, nomte)
+        case (592)
+            call te0592(nomopt, nomte)
+        case (593)
+            call te0593(nomopt, nomte)
+        case (594)
+            call te0594(nomopt, nomte)
+        case (595)
+            call te0595(nomopt, nomte)
+        case (596)
+            call te0596(nomopt, nomte)
+        case (597)
+            call te0597(nomopt, nomte)
+        case (598)
+            call te0598(nomopt, nomte)
+        case (599)
+            call te0599(nomopt, nomte)
+        case (600)
+            call te0600(nomopt, nomte)
+        case default
+            call codent(numc, 'D', k8bid)
+            call utmess('F', 'CALCULEL4_91', 1, k8bid)
+        end select
+    end do
 !
-    numc2= numc2+1
-    goto (9991,9992,9993,9994,9995,9996) numc2
-    goto 9998
-!
-!
-!     -- TE0001 --> TE0100
-!     --------------------
-9991  continue
-    do 1, iel=1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) goto 1
-    endif
-    capoiz=0
-    goto (101,102,103,104,105,106,107,108,109,110,111,112,113,114,&
-        115,116,117,118,119,120,121,122,123,124,125,126,127,128,&
-        129,130,131,132,133,134,135,136,137,138,139,140,141,142,&
-        143,144,145,146,147,148,149,150,151,152,153,154,155,156,&
-        157,158,159,160,161,162,163,164,165,166,167,168,169,170,&
-        171,172,173,174,175,176,177,178,179,180,181,182,183,184,&
-        185,186,187,188,189,190,191,192,193,194,195,196,197,198,&
-        199,200) numc3
-101  continue
-    call te0001(nomopt, nomte)
-    goto 1
-102  continue
-    call te0002(nomopt, nomte)
-    goto 1
-103  continue
-    call te0003(nomopt, nomte)
-    goto 1
-104  continue
-    call te0004(nomopt, nomte)
-    goto 1
-105  continue
-    call te0005(nomopt, nomte)
-    goto 1
-106  continue
-    call te0006(nomopt, nomte)
-    goto 1
-107  continue
-    call te0007(nomopt, nomte)
-    goto 1
-108  continue
-    call te0008(nomopt, nomte)
-    goto 1
-109  continue
-    call te0009(nomopt, nomte)
-    goto 1
-110  continue
-    call te0010(nomopt, nomte)
-    goto 1
-111  continue
-    call te0011(nomopt, nomte)
-    goto 1
-112  continue
-    call te0012(nomopt, nomte)
-    goto 1
-113  continue
-    call te0013(nomopt, nomte)
-    goto 1
-114  continue
-    call te0014(nomopt, nomte)
-    goto 1
-115  continue
-    call te0015(nomopt, nomte)
-    goto 1
-116  continue
-    call te0016(nomopt, nomte)
-    goto 1
-117  continue
-    call te0017(nomopt, nomte)
-    goto 1
-118  continue
-    call te0018(nomopt, nomte)
-    goto 1
-119  continue
-    call te0019(nomopt, nomte)
-    goto 1
-120  continue
-    call te0020(nomopt, nomte)
-    goto 1
-121  continue
-    call te0021(nomopt, nomte)
-    goto 1
-122  continue
-    call te0022(nomopt, nomte)
-    goto 1
-123  continue
-    call te0023(nomopt, nomte)
-    goto 1
-124  continue
-    call te0024(nomopt, nomte)
-    goto 1
-125  continue
-    call te0025(nomopt, nomte)
-    goto 1
-126  continue
-    call te0026(nomopt, nomte)
-    goto 1
-127  continue
-    call te0027(nomopt, nomte)
-    goto 1
-128  continue
-    call te0028(nomopt, nomte)
-    goto 1
-129  continue
-    call te0029(nomopt, nomte)
-    goto 1
-130  continue
-    call te0030(nomopt, nomte)
-    goto 1
-131  continue
-    call te0031(nomopt, nomte)
-    goto 1
-132  continue
-    call te0032(nomopt, nomte)
-    goto 1
-133  continue
-    call te0033(nomopt, nomte)
-    goto 1
-134  continue
-    call te0034(nomopt, nomte)
-    goto 1
-135  continue
-    call te0035(nomopt, nomte)
-    goto 1
-136  continue
-    call te0036(nomopt, nomte)
-    goto 1
-137  continue
-    call te0037(nomopt, nomte)
-    goto 1
-138  continue
-    call te0038(nomopt, nomte)
-    goto 1
-139  continue
-    call te0039(nomopt, nomte)
-    goto 1
-140  continue
-    call te0040(nomopt, nomte)
-    goto 1
-141  continue
-    call te0041(nomopt, nomte)
-    goto 1
-142  continue
-    call te0042(nomopt, nomte)
-    goto 1
-143  continue
-    call te0043(nomopt, nomte)
-    goto 1
-144  continue
-    call te0044(nomopt, nomte)
-    goto 1
-145  continue
-    call te0045(nomopt, nomte)
-    goto 1
-146  continue
-    call te0046(nomopt, nomte)
-    goto 1
-147  continue
-    call te0047(nomopt, nomte)
-    goto 1
-148  continue
-    call te0048(nomopt, nomte)
-    goto 1
-149  continue
-    call te0049(nomopt, nomte)
-    goto 1
-150  continue
-    call te0050(nomopt, nomte)
-    goto 1
-151  continue
-    call te0051(nomopt, nomte)
-    goto 1
-152  continue
-    call te0052(nomopt, nomte)
-    goto 1
-153  continue
-    call te0053(nomopt, nomte)
-    goto 1
-154  continue
-    call te0054(nomopt, nomte)
-    goto 1
-155  continue
-    call te0055(nomopt, nomte)
-    goto 1
-156  continue
-    call te0056(nomopt, nomte)
-    goto 1
-157  continue
-    call te0057(nomopt, nomte)
-    goto 1
-158  continue
-    call te0058(nomopt, nomte)
-    goto 1
-159  continue
-    call te0059(nomopt, nomte)
-    goto 1
-160  continue
-    call te0060(nomopt, nomte)
-    goto 1
-161  continue
-    call te0061(nomopt, nomte)
-    goto 1
-162  continue
-    call te0062(nomopt, nomte)
-    goto 1
-163  continue
-    call te0063(nomopt, nomte)
-    goto 1
-164  continue
-    call te0064(nomopt, nomte)
-    goto 1
-165  continue
-    call te0065(nomopt, nomte)
-    goto 1
-166  continue
-    call te0066(nomopt, nomte)
-    goto 1
-167  continue
-    call te0067(nomopt, nomte)
-    goto 1
-168  continue
-    call te0068(nomopt, nomte)
-    goto 1
-169  continue
-    call te0069(nomopt, nomte)
-    goto 1
-170  continue
-    call te0070(nomopt, nomte)
-    goto 1
-171  continue
-    call te0071(nomopt, nomte)
-    goto 1
-172  continue
-    call te0072(nomopt, nomte)
-    goto 1
-173  continue
-    call te0073(nomopt, nomte)
-    goto 1
-174  continue
-    call te0074(nomopt, nomte)
-    goto 1
-175  continue
-    call te0075(nomopt, nomte)
-    goto 1
-176  continue
-    call te0076(nomopt, nomte)
-    goto 1
-177  continue
-    call te0077(nomopt, nomte)
-    goto 1
-178  continue
-    call te0078(nomopt, nomte)
-    goto 1
-179  continue
-    call te0079(nomopt, nomte)
-    goto 1
-180  continue
-    call te0080(nomopt, nomte)
-    goto 1
-181  continue
-    call te0081(nomopt, nomte)
-    goto 1
-182  continue
-    call te0082(nomopt, nomte)
-    goto 1
-183  continue
-    call te0083(nomopt, nomte)
-    goto 1
-184  continue
-    call te0084(nomopt, nomte)
-    goto 1
-185  continue
-    call te0085(nomopt, nomte)
-    goto 1
-186  continue
-    call te0086(nomopt, nomte)
-    goto 1
-187  continue
-    call te0087(nomopt, nomte)
-    goto 1
-188  continue
-    call te0088(nomopt, nomte)
-    goto 1
-189  continue
-    call te0089(nomopt, nomte)
-    goto 1
-190  continue
-    call te0090(nomopt, nomte)
-    goto 1
-191  continue
-    call te0091(nomopt, nomte)
-    goto 1
-192  continue
-    call te0092(nomopt, nomte)
-    goto 1
-193  continue
-    call te0093(nomopt, nomte)
-    goto 1
-194  continue
-    call te0094(nomopt, nomte)
-    goto 1
-195  continue
-    call te0095(nomopt, nomte)
-    goto 1
-196  continue
-    call te0096(nomopt, nomte)
-    goto 1
-197  continue
-    call te0097(nomopt, nomte)
-    goto 1
-198  continue
-    call te0098(nomopt, nomte)
-    goto 1
-199  continue
-    call te0099(nomopt, nomte)
-    goto 1
-200  continue
-    call te0100(nomopt, nomte)
-!
-    goto 1
-    1 end do
-    goto 9999
-!
-!     -- TE0101 --> TE0200
-!     --------------------
-9992  continue
-    do 2, iel=1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) goto 2
-    endif
-    capoiz=0
-    goto (201,202,203,204,205,206,207,208,209,210,211,212,213,214,&
-        215,216,217,218,219,220,221,222,223,224,225,226,227,228,&
-        229,230,231,232,233,234,235,236,237,238,239,240,241,242,&
-        243,244,245,246,247,248,249,250,251,252,253,254,255,256,&
-        257,258,259,260,261,262,263,264,265,266,267,268,269,270,&
-        271,272,273,274,275,276,277,278,279,280,281,282,283,284,&
-        285,286,287,288,289,290,291,292,293,294,295,296,297,298,&
-        299,300) numc3
-201  continue
-    call te0101(nomopt, nomte)
-    goto 2
-202  continue
-    call te0102(nomopt, nomte)
-    goto 2
-203  continue
-    call te0103(nomopt, nomte)
-    goto 2
-204  continue
-    call te0104(nomopt, nomte)
-    goto 2
-205  continue
-    call te0105(nomopt, nomte)
-    goto 2
-206  continue
-    call te0106(nomopt, nomte)
-    goto 2
-207  continue
-    call te0107(nomopt, nomte)
-    goto 2
-208  continue
-    call te0108(nomopt, nomte)
-    goto 2
-209  continue
-    call te0109(nomopt, nomte)
-    goto 2
-210  continue
-    call te0110(nomopt, nomte)
-    goto 2
-211  continue
-    call te0111(nomopt, nomte)
-    goto 2
-212  continue
-    call te0112(nomopt, nomte)
-    goto 2
-213  continue
-    call te0113(nomopt, nomte)
-    goto 2
-214  continue
-    call te0114(nomopt, nomte)
-    goto 2
-215  continue
-    call te0115(nomopt, nomte)
-    goto 2
-216  continue
-    call te0116(nomopt, nomte)
-    goto 2
-217  continue
-    call te0117(nomopt, nomte)
-    goto 2
-218  continue
-    call te0118(nomopt, nomte)
-    goto 2
-219  continue
-    call te0119(nomopt, nomte)
-    goto 2
-220  continue
-    call te0120(nomopt, nomte)
-    goto 2
-221  continue
-    call te0121(nomopt, nomte)
-    goto 2
-222  continue
-    call te0122(nomopt, nomte)
-    goto 2
-223  continue
-    call te0123(nomopt, nomte)
-    goto 2
-224  continue
-    call te0124(nomopt, nomte)
-    goto 2
-225  continue
-    call te0125(nomopt, nomte)
-    goto 2
-226  continue
-    call te0126(nomopt, nomte)
-    goto 2
-227  continue
-    call te0127(nomopt, nomte)
-    goto 2
-228  continue
-    call te0128(nomopt, nomte)
-    goto 2
-229  continue
-    call te0129(nomopt, nomte)
-    goto 2
-230  continue
-    call te0130(nomopt, nomte)
-    goto 2
-231  continue
-    call te0131(nomopt, nomte)
-    goto 2
-232  continue
-    call te0132(nomopt, nomte)
-    goto 2
-233  continue
-    call te0133(nomopt, nomte)
-    goto 2
-234  continue
-    call te0134(nomopt, nomte)
-    goto 2
-235  continue
-    call te0135(nomopt, nomte)
-    goto 2
-236  continue
-    call te0136(nomopt, nomte)
-    goto 2
-237  continue
-    call te0137(nomopt, nomte)
-    goto 2
-238  continue
-    call te0138(nomopt, nomte)
-    goto 2
-239  continue
-    call te0139(nomopt, nomte)
-    goto 2
-240  continue
-    call te0140(nomopt, nomte)
-    goto 2
-241  continue
-    call te0141(nomopt, nomte)
-    goto 2
-242  continue
-    call te0142(nomopt, nomte)
-    goto 2
-243  continue
-    call te0143(nomopt, nomte)
-    goto 2
-244  continue
-    call te0144(nomopt, nomte)
-    goto 2
-245  continue
-    call te0145(nomopt, nomte)
-    goto 2
-246  continue
-    call te0146(nomopt, nomte)
-    goto 2
-247  continue
-    call te0147(nomopt, nomte)
-    goto 2
-248  continue
-    call te0148(nomopt, nomte)
-    goto 2
-249  continue
-    call te0149(nomopt, nomte)
-    goto 2
-250  continue
-    call te0150(nomopt, nomte)
-    goto 2
-251  continue
-    call te0151(nomopt, nomte)
-    goto 2
-252  continue
-    call te0152(nomopt, nomte)
-    goto 2
-253  continue
-    call te0153(nomopt, nomte)
-    goto 2
-254  continue
-    call te0154(nomopt, nomte)
-    goto 2
-255  continue
-    call te0155(nomopt, nomte)
-    goto 2
-256  continue
-    call te0156(nomopt, nomte)
-    goto 2
-257  continue
-    call te0157(nomopt, nomte)
-    goto 2
-258  continue
-    call te0158(nomopt, nomte)
-    goto 2
-259  continue
-    call te0159(nomopt, nomte)
-    goto 2
-260  continue
-    call te0160(nomopt, nomte)
-    goto 2
-261  continue
-    call te0161(nomopt, nomte)
-    goto 2
-262  continue
-    call te0162(nomopt, nomte)
-    goto 2
-263  continue
-    call te0163(nomopt, nomte)
-    goto 2
-264  continue
-    call te0164(nomopt, nomte)
-    goto 2
-265  continue
-    call te0165(nomopt, nomte)
-    goto 2
-266  continue
-    call te0166(nomopt, nomte)
-    goto 2
-267  continue
-    call te0167(nomopt, nomte)
-    goto 2
-268  continue
-    call te0168(nomopt, nomte)
-    goto 2
-269  continue
-    call te0169(nomopt, nomte)
-    goto 2
-270  continue
-    call te0170(nomopt, nomte)
-    goto 2
-271  continue
-    call te0171(nomopt, nomte)
-    goto 2
-272  continue
-    call te0172(nomopt, nomte)
-    goto 2
-273  continue
-    call te0173(nomopt, nomte)
-    goto 2
-274  continue
-    call te0174(nomopt, nomte)
-    goto 2
-275  continue
-    call te0175(nomopt, nomte)
-    goto 2
-276  continue
-    call te0176(nomopt, nomte)
-    goto 2
-277  continue
-    call te0177(nomopt, nomte)
-    goto 2
-278  continue
-    call te0178(nomopt, nomte)
-    goto 2
-279  continue
-    call te0179(nomopt, nomte)
-    goto 2
-280  continue
-    call te0180(nomopt, nomte)
-    goto 2
-281  continue
-    call te0181(nomopt, nomte)
-    goto 2
-282  continue
-    call te0182(nomopt, nomte)
-    goto 2
-283  continue
-    call te0183(nomopt, nomte)
-    goto 2
-284  continue
-    call te0184(nomopt, nomte)
-    goto 2
-285  continue
-    call te0185(nomopt, nomte)
-    goto 2
-286  continue
-    call te0186(nomopt, nomte)
-    goto 2
-287  continue
-    call te0187(nomopt, nomte)
-    goto 2
-288  continue
-    call te0188(nomopt, nomte)
-    goto 2
-289  continue
-    call te0189(nomopt, nomte)
-    goto 2
-290  continue
-    call te0190(nomopt, nomte)
-    goto 2
-291  continue
-    call te0191(nomopt, nomte)
-    goto 2
-292  continue
-    call te0192(nomopt, nomte)
-    goto 2
-293  continue
-    call te0193(nomopt, nomte)
-    goto 2
-294  continue
-    call te0194(nomopt, nomte)
-    goto 2
-295  continue
-    call te0195(nomopt, nomte)
-    goto 2
-296  continue
-    call te0196(nomopt, nomte)
-    goto 2
-297  continue
-    call te0197(nomopt, nomte)
-    goto 2
-298  continue
-    call te0198(nomopt, nomte)
-    goto 2
-299  continue
-    call te0199(nomopt, nomte)
-    goto 2
-300  continue
-    call te0200(nomopt, nomte)
-    goto 2
-    2 end do
-    goto 9999
-!
-!     -- TE0201 --> TE0300
-!     --------------------
-9993  continue
-    do 3, iel=1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) goto 3
-    endif
-    capoiz=0
-    goto (301,302,303,304,305,306,307,308,309,310,311,312,313,314,&
-        315,316,317,318,319,320,321,322,323,324,325,326,327,328,&
-        329,330,331,332,333,334,335,336,337,338,339,340,341,342,&
-        343,344,345,346,347,348,349,350,351,352,353,354,355,356,&
-        357,358,359,360,361,362,363,364,365,366,367,368,369,370,&
-        371,372,373,374,375,376,377,378,379,380,381,382,383,384,&
-        385,386,387,388,389,390,391,392,393,394,395,396,397,398,&
-        399,400) numc3
-301  continue
-    call te0201(nomopt, nomte)
-    goto 3
-302  continue
-    call te0202(nomopt, nomte)
-    goto 3
-303  continue
-    call te0203(nomopt, nomte)
-    goto 3
-304  continue
-    call te0204(nomopt, nomte)
-    goto 3
-305  continue
-    call te0205(nomopt, nomte)
-    goto 3
-306  continue
-    call te0206(nomopt, nomte)
-    goto 3
-307  continue
-    call te0207(nomopt, nomte)
-    goto 3
-308  continue
-    call te0208(nomopt, nomte)
-    goto 3
-309  continue
-    call te0209(nomopt, nomte)
-    goto 3
-310  continue
-    call te0210(nomopt, nomte)
-    goto 3
-311  continue
-    call te0211(nomopt, nomte)
-    goto 3
-312  continue
-    call te0212(nomopt, nomte)
-    goto 3
-313  continue
-    call te0213(nomopt, nomte)
-    goto 3
-314  continue
-    call te0214(nomopt, nomte)
-    goto 3
-315  continue
-    call te0215(nomopt, nomte)
-    goto 3
-316  continue
-    call te0216(nomopt, nomte)
-    goto 3
-317  continue
-    call te0217(nomopt, nomte)
-    goto 3
-318  continue
-    call te0218(nomopt, nomte)
-    goto 3
-319  continue
-    call te0219(nomopt, nomte)
-    goto 3
-320  continue
-    call te0220(nomopt, nomte)
-    goto 3
-321  continue
-    call te0221(nomopt, nomte)
-    goto 3
-322  continue
-    call te0222(nomopt, nomte)
-    goto 3
-323  continue
-    call te0223(nomopt, nomte)
-    goto 3
-324  continue
-    call te0224(nomopt, nomte)
-    goto 3
-325  continue
-    call te0225(nomopt, nomte)
-    goto 3
-326  continue
-    call te0226(nomopt, nomte)
-    goto 3
-327  continue
-    call te0227(nomopt, nomte)
-    goto 3
-328  continue
-    call te0228(nomopt, nomte)
-    goto 3
-329  continue
-    call te0229(nomopt, nomte)
-    goto 3
-330  continue
-    call te0230(nomopt, nomte)
-    goto 3
-331  continue
-    call te0231(nomopt, nomte)
-    goto 3
-332  continue
-    call te0232(nomopt, nomte)
-    goto 3
-333  continue
-    call te0233(nomopt, nomte)
-    goto 3
-334  continue
-    call te0234(nomopt, nomte)
-    goto 3
-335  continue
-    call te0235(nomopt, nomte)
-    goto 3
-336  continue
-    call te0236(nomopt, nomte)
-    goto 3
-337  continue
-    call te0237(nomopt, nomte)
-    goto 3
-338  continue
-    call te0238(nomopt, nomte)
-    goto 3
-339  continue
-    call te0239(nomopt, nomte)
-    goto 3
-340  continue
-    call te0240(nomopt, nomte)
-    goto 3
-341  continue
-    call te0241(nomopt, nomte)
-    goto 3
-342  continue
-    call te0242(nomopt, nomte)
-    goto 3
-343  continue
-    call te0243(nomopt, nomte)
-    goto 3
-344  continue
-    call te0244(nomopt, nomte)
-    goto 3
-345  continue
-    call te0245(nomopt, nomte)
-    goto 3
-346  continue
-    call te0246(nomopt, nomte)
-    goto 3
-347  continue
-    call te0247(nomopt, nomte)
-    goto 3
-348  continue
-    call te0248(nomopt, nomte)
-    goto 3
-349  continue
-    call te0249(nomopt, nomte)
-    goto 3
-350  continue
-    call te0250(nomopt, nomte)
-    goto 3
-351  continue
-    call te0251(nomopt, nomte)
-    goto 3
-352  continue
-    call te0252(nomopt, nomte)
-    goto 3
-353  continue
-    call te0253(nomopt, nomte)
-    goto 3
-354  continue
-    call te0254(nomopt, nomte)
-    goto 3
-355  continue
-    call te0255(nomopt, nomte)
-    goto 3
-356  continue
-    call te0256(nomopt, nomte)
-    goto 3
-357  continue
-    call te0257(nomopt, nomte)
-    goto 3
-358  continue
-    call te0258(nomopt, nomte)
-    goto 3
-359  continue
-    call te0259(nomopt, nomte)
-    goto 3
-360  continue
-    call te0260(nomopt, nomte)
-    goto 3
-361  continue
-    call te0261(nomopt, nomte)
-    goto 3
-362  continue
-    call te0262(nomopt, nomte)
-    goto 3
-363  continue
-    call te0263(nomopt, nomte)
-    goto 3
-364  continue
-    call te0264(nomopt, nomte)
-    goto 3
-365  continue
-    call te0265(nomopt, nomte)
-    goto 3
-366  continue
-    call te0266(nomopt, nomte)
-    goto 3
-367  continue
-    call te0267(nomopt, nomte)
-    goto 3
-368  continue
-    call te0268(nomopt, nomte)
-    goto 3
-369  continue
-    call te0269(nomopt, nomte)
-    goto 3
-370  continue
-    call te0270(nomopt, nomte)
-    goto 3
-371  continue
-    call te0271(nomopt, nomte)
-    goto 3
-372  continue
-    call te0272(nomopt, nomte)
-    goto 3
-373  continue
-    call te0273(nomopt, nomte)
-    goto 3
-374  continue
-    call te0274(nomopt, nomte)
-    goto 3
-375  continue
-    call te0275(nomopt, nomte)
-    goto 3
-376  continue
-    call te0276(nomopt, nomte)
-    goto 3
-377  continue
-    call te0277(nomopt, nomte)
-    goto 3
-378  continue
-    call te0278(nomopt, nomte)
-    goto 3
-379  continue
-    call te0279(nomopt, nomte)
-    goto 3
-380  continue
-    call te0280(nomopt, nomte)
-    goto 3
-381  continue
-    call te0281(nomopt, nomte)
-    goto 3
-382  continue
-    call te0282(nomopt, nomte)
-    goto 3
-383  continue
-    call te0283(nomopt, nomte)
-    goto 3
-384  continue
-    call te0284(nomopt, nomte)
-    goto 3
-385  continue
-    call te0285(nomopt, nomte)
-    goto 3
-386  continue
-    call te0286(nomopt, nomte)
-    goto 3
-387  continue
-    call te0287(nomopt, nomte)
-    goto 3
-388  continue
-    call te0288(nomopt, nomte)
-    goto 3
-389  continue
-    call te0289(nomopt, nomte)
-    goto 3
-390  continue
-    call te0290(nomopt, nomte)
-    goto 3
-391  continue
-    call te0291(nomopt, nomte)
-    goto 3
-392  continue
-    call te0292(nomopt, nomte)
-    goto 3
-393  continue
-    call te0293(nomopt, nomte)
-    goto 3
-394  continue
-    call te0294(nomopt, nomte)
-    goto 3
-395  continue
-    call te0295(nomopt, nomte)
-    goto 3
-396  continue
-    call te0296(nomopt, nomte)
-    goto 3
-397  continue
-    call te0297(nomopt, nomte)
-    goto 3
-398  continue
-    call te0298(nomopt, nomte)
-    goto 3
-399  continue
-    call te0299(nomopt, nomte)
-    goto 3
-400  continue
-    call te0300(nomopt, nomte)
-    goto 3
-    3 end do
-    goto 9999
-!
-!     -- TE0301 --> TE0400
-!     --------------------
-9994  continue
-    do 4, iel=1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) goto 4
-    endif
-    capoiz=0
-    goto (401,402,403,404,405,406,407,408,409,410,411,412,413,414,&
-        415,416,417,418,419,420,421,422,423,424,425,426,427,428,&
-        429,430,431,432,433,434,435,436,437,438,439,440,441,442,&
-        443,444,445,446,447,448,449,450,451,452,453,454,455,456,&
-        457,458,459,460,461,462,463,464,465,466,467,468,469,470,&
-        471,472,473,474,475,476,477,478,479,480,481,482,483,484,&
-        485,486,487,488,489,490,491,492,493,494,495,496,497,498,&
-        499,500) numc3
-401  continue
-    call te0301(nomopt, nomte)
-    goto 4
-402  continue
-    call te0302(nomopt, nomte)
-    goto 4
-403  continue
-    call te0303(nomopt, nomte)
-    goto 4
-404  continue
-    call te0304(nomopt, nomte)
-    goto 4
-405  continue
-    call te0305(nomopt, nomte)
-    goto 4
-406  continue
-    call te0306(nomopt, nomte)
-    goto 4
-407  continue
-    call te0307(nomopt, nomte)
-    goto 4
-408  continue
-    call te0308(nomopt, nomte)
-    goto 4
-409  continue
-    call te0309(nomopt, nomte)
-    goto 4
-410  continue
-    call te0310(nomopt, nomte)
-    goto 4
-411  continue
-    call te0311(nomopt, nomte)
-    goto 4
-412  continue
-    call te0312(nomopt, nomte)
-    goto 4
-413  continue
-    call te0313(nomopt, nomte)
-    goto 4
-414  continue
-    call te0314(nomopt, nomte)
-    goto 4
-415  continue
-    call te0315(nomopt, nomte)
-    goto 4
-416  continue
-    call te0316(nomopt, nomte)
-    goto 4
-417  continue
-    call te0317(nomopt, nomte)
-    goto 4
-418  continue
-    call te0318(nomopt, nomte)
-    goto 4
-419  continue
-    call te0319(nomopt, nomte)
-    goto 4
-420  continue
-    call te0320(nomopt, nomte)
-    goto 4
-421  continue
-    call te0321(nomopt, nomte)
-    goto 4
-422  continue
-    call te0322(nomopt, nomte)
-    goto 4
-423  continue
-    call te0323(nomopt, nomte)
-    goto 4
-424  continue
-    call te0324(nomopt, nomte)
-    goto 4
-425  continue
-    call te0325(nomopt, nomte)
-    goto 4
-426  continue
-    call te0326(nomopt, nomte)
-    goto 4
-427  continue
-    call te0327(nomopt, nomte)
-    goto 4
-428  continue
-    call te0328(nomopt, nomte)
-    goto 4
-429  continue
-    call te0329(nomopt, nomte)
-    goto 4
-430  continue
-    call te0330(nomopt, nomte)
-    goto 4
-431  continue
-    call te0331(nomopt, nomte)
-    goto 4
-432  continue
-    call te0332(nomopt, nomte)
-    goto 4
-433  continue
-    call te0333(nomopt, nomte)
-    goto 4
-434  continue
-    call te0334(nomopt, nomte)
-    goto 4
-435  continue
-    call te0335(nomopt, nomte)
-    goto 4
-436  continue
-    call te0336(nomopt, nomte)
-    goto 4
-437  continue
-    call te0337(nomopt, nomte)
-    goto 4
-438  continue
-    call te0338(nomopt, nomte)
-    goto 4
-439  continue
-    call te0339(nomopt, nomte)
-    goto 4
-440  continue
-    call te0340(nomopt, nomte)
-    goto 4
-441  continue
-    call te0341(nomopt, nomte)
-    goto 4
-442  continue
-    call te0342(nomopt, nomte)
-    goto 4
-443  continue
-    call te0343(nomopt, nomte)
-    goto 4
-444  continue
-    call te0344(nomopt, nomte)
-    goto 4
-445  continue
-    call te0345(nomopt, nomte)
-    goto 4
-446  continue
-    call te0346(nomopt, nomte)
-    goto 4
-447  continue
-    call te0347(nomopt, nomte)
-    goto 4
-448  continue
-    call te0348(nomopt, nomte)
-    goto 4
-449  continue
-    call te0349(nomopt, nomte)
-    goto 4
-450  continue
-    call te0350(nomopt, nomte)
-    goto 4
-451  continue
-    call te0351(nomopt, nomte)
-    goto 4
-452  continue
-    call te0352(nomopt, nomte)
-    goto 4
-453  continue
-    call te0353(nomopt, nomte)
-    goto 4
-454  continue
-    call te0354(nomopt, nomte)
-    goto 4
-455  continue
-    call te0355(nomopt, nomte)
-    goto 4
-456  continue
-    call te0356(nomopt, nomte)
-    goto 4
-457  continue
-    call te0357(nomopt, nomte)
-    goto 4
-458  continue
-    call te0358(nomopt, nomte)
-    goto 4
-459  continue
-    call te0359(nomopt, nomte)
-    goto 4
-460  continue
-    call te0360(nomopt, nomte)
-    goto 4
-461  continue
-    call te0361(nomopt, nomte)
-    goto 4
-462  continue
-    call te0362(nomopt, nomte)
-    goto 4
-463  continue
-    call te0363(nomopt, nomte)
-    goto 4
-464  continue
-    call te0364(nomopt, nomte)
-    goto 4
-465  continue
-    call te0365(nomopt, nomte)
-    goto 4
-466  continue
-    call te0366(nomopt, nomte)
-    goto 4
-467  continue
-    call te0367(nomopt, nomte)
-    goto 4
-468  continue
-    call te0368(nomopt, nomte)
-    goto 4
-469  continue
-    call te0369(nomopt, nomte)
-    goto 4
-470  continue
-    call te0370(nomopt, nomte)
-    goto 4
-471  continue
-    call te0371(nomopt, nomte)
-    goto 4
-472  continue
-    call te0372(nomopt, nomte)
-    goto 4
-473  continue
-    call te0373(nomopt, nomte)
-    goto 4
-474  continue
-    call te0374(nomopt, nomte)
-    goto 4
-475  continue
-    call te0375(nomopt, nomte)
-    goto 4
-476  continue
-    call te0376(nomopt, nomte)
-    goto 4
-477  continue
-    call te0377(nomopt, nomte)
-    goto 4
-478  continue
-    call te0378(nomopt, nomte)
-    goto 4
-479  continue
-    call te0379(nomopt, nomte)
-    goto 4
-480  continue
-    call te0380(nomopt, nomte)
-    goto 4
-481  continue
-    call te0381(nomopt, nomte)
-    goto 4
-482  continue
-    call te0382(nomopt, nomte)
-    goto 4
-483  continue
-    call te0383(nomopt, nomte)
-    goto 4
-484  continue
-    call te0384(nomopt, nomte)
-    goto 4
-485  continue
-    call te0385(nomopt, nomte)
-    goto 4
-486  continue
-    call te0386(nomopt, nomte)
-    goto 4
-487  continue
-    call te0387(nomopt, nomte)
-    goto 4
-488  continue
-    call te0388(nomopt, nomte)
-    goto 4
-489  continue
-    call te0389(nomopt, nomte)
-    goto 4
-490  continue
-    call te0390(nomopt, nomte)
-    goto 4
-491  continue
-    call te0391(nomopt, nomte)
-    goto 4
-492  continue
-    call te0392(nomopt, nomte)
-    goto 4
-493  continue
-    call te0393(nomopt, nomte)
-    goto 4
-494  continue
-    call te0394(nomopt, nomte)
-    goto 4
-495  continue
-    call te0395(nomopt, nomte)
-    goto 4
-496  continue
-    call te0396(nomopt, nomte)
-    goto 4
-497  continue
-    call te0397(nomopt, nomte)
-    goto 4
-498  continue
-    call te0398(nomopt, nomte)
-    goto 4
-499  continue
-    call te0399(nomopt, nomte)
-    goto 4
-500  continue
-    call te0400(nomopt, nomte)
-    goto 4
-    4 end do
-    goto 9999
-!
-!
-!     -- TE0401 --> TE0500
-!     --------------------
-9995  continue
-    do 5, iel=1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) goto 5
-    endif
-    capoiz=0
-    goto (501,502,503,504,505,506,507,508,509,510,511,512,513,514,&
-        515,516,517,518,519,520,521,522,523,524,525,526,527,528,&
-        529,530,531,532,533,534,535,536,537,538,539,540,541,542,&
-        543,544,545,546,547,548,549,550,551,552,553,554,555,556,&
-        557,558,559,560,561,562,563,564,565,566,567,568,569,570,&
-        571,572,573,574,575,576,577,578,579,580,581,582,583,584,&
-        585,586,587,588,589,590,591,592,593,594,595,596,597,598,&
-        599,600) numc3
-501  continue
-    call te0401(nomopt, nomte)
-    goto 5
-502  continue
-    call te0402(nomopt, nomte)
-    goto 5
-503  continue
-    call te0403(nomopt, nomte)
-    goto 5
-504  continue
-    call te0404(nomopt, nomte)
-    goto 5
-505  continue
-    call te0405(nomopt, nomte)
-    goto 5
-506  continue
-    call te0406(nomopt, nomte)
-    goto 5
-507  continue
-    call te0407(nomopt, nomte)
-    goto 5
-508  continue
-    call te0408(nomopt, nomte)
-    goto 5
-509  continue
-    call te0409(nomopt, nomte)
-    goto 5
-510  continue
-    call te0410(nomopt, nomte)
-    goto 5
-511  continue
-    call te0411(nomopt, nomte)
-    goto 5
-512  continue
-    call te0412(nomopt, nomte)
-    goto 5
-513  continue
-    call te0413(nomopt, nomte)
-    goto 5
-514  continue
-    call te0414(nomopt, nomte)
-    goto 5
-515  continue
-    call te0415(nomopt, nomte)
-    goto 5
-516  continue
-    call te0416(nomopt, nomte)
-    goto 5
-517  continue
-    call te0417(nomopt, nomte)
-    goto 5
-518  continue
-    call te0418(nomopt, nomte)
-    goto 5
-519  continue
-    call te0419(nomopt, nomte)
-    goto 5
-520  continue
-    call te0420(nomopt, nomte)
-    goto 5
-521  continue
-    call te0421(nomopt, nomte)
-    goto 5
-522  continue
-    call te0422(nomopt, nomte)
-    goto 5
-523  continue
-    call te0423(nomopt, nomte)
-    goto 5
-524  continue
-    call te0424(nomopt, nomte)
-    goto 5
-525  continue
-    call te0425(nomopt, nomte)
-    goto 5
-526  continue
-    call te0426(nomopt, nomte)
-    goto 5
-527  continue
-    call te0427(nomopt, nomte)
-    goto 5
-528  continue
-    call te0428(nomopt, nomte)
-    goto 5
-529  continue
-    call te0429(nomopt, nomte)
-    goto 5
-530  continue
-    call te0430(nomopt, nomte)
-    goto 5
-531  continue
-    call te0431(nomopt, nomte)
-    goto 5
-532  continue
-    call te0432(nomopt, nomte)
-    goto 5
-533  continue
-    call te0433(nomopt, nomte)
-    goto 5
-534  continue
-    call te0434(nomopt, nomte)
-    goto 5
-535  continue
-    call te0435(nomopt, nomte)
-    goto 5
-536  continue
-    call te0436(nomopt, nomte)
-    goto 5
-537  continue
-    call te0437(nomopt, nomte)
-    goto 5
-538  continue
-    call te0438(nomopt, nomte)
-    goto 5
-539  continue
-    call te0439(nomopt, nomte)
-    goto 5
-540  continue
-    call te0440(nomopt, nomte)
-    goto 5
-541  continue
-    call te0441(nomopt, nomte)
-    goto 5
-542  continue
-    call te0442(nomopt, nomte)
-    goto 5
-543  continue
-    call te0443(nomopt, nomte)
-    goto 5
-544  continue
-    call te0444(nomopt, nomte)
-    goto 5
-545  continue
-    call te0445(nomopt, nomte)
-    goto 5
-546  continue
-    call te0446(nomopt, nomte)
-    goto 5
-547  continue
-    call te0447(nomopt, nomte)
-    goto 5
-548  continue
-    call te0448(nomopt, nomte)
-    goto 5
-549  continue
-    call te0449(nomopt, nomte)
-    goto 5
-550  continue
-    call te0450(nomopt, nomte)
-    goto 5
-551  continue
-    call te0451(nomopt, nomte)
-    goto 5
-552  continue
-    call te0452(nomopt, nomte)
-    goto 5
-553  continue
-    call te0453(nomopt, nomte)
-    goto 5
-554  continue
-    call te0454(nomopt, nomte)
-    goto 5
-555  continue
-    call te0455(nomopt, nomte)
-    goto 5
-556  continue
-    call te0456(nomopt, nomte)
-    goto 5
-557  continue
-    call te0457(nomopt, nomte)
-    goto 5
-558  continue
-    call te0458(nomopt, nomte)
-    goto 5
-559  continue
-    call te0459(nomopt, nomte)
-    goto 5
-560  continue
-    call te0460(nomopt, nomte)
-    goto 5
-561  continue
-    call te0461(nomopt, nomte)
-    goto 5
-562  continue
-    call te0462(nomopt, nomte)
-    goto 5
-563  continue
-    call te0463(nomopt, nomte)
-    goto 5
-564  continue
-    call te0464(nomopt, nomte)
-    goto 5
-565  continue
-    call te0465(nomopt, nomte)
-    goto 5
-566  continue
-    call te0466(nomopt, nomte)
-    goto 5
-567  continue
-    call te0467(nomopt, nomte)
-    goto 5
-568  continue
-    call te0468(nomopt, nomte)
-    goto 5
-569  continue
-    call te0469(nomopt, nomte)
-    goto 5
-570  continue
-    call te0470(nomopt, nomte)
-    goto 5
-571  continue
-    call te0471(nomopt, nomte)
-    goto 5
-572  continue
-    call te0472(nomopt, nomte)
-    goto 5
-573  continue
-    call te0473(nomopt, nomte)
-    goto 5
-574  continue
-    call te0474(nomopt, nomte)
-    goto 5
-575  continue
-    call te0475(nomopt, nomte)
-    goto 5
-576  continue
-    call te0476(nomopt, nomte)
-    goto 5
-577  continue
-    call te0477(nomopt, nomte)
-    goto 5
-578  continue
-    call te0478(nomopt, nomte)
-    goto 5
-579  continue
-    call te0479(nomopt, nomte)
-    goto 5
-580  continue
-    call te0480(nomopt, nomte)
-    goto 5
-581  continue
-    call te0481(nomopt, nomte)
-    goto 5
-582  continue
-    call te0482(nomopt, nomte)
-    goto 5
-583  continue
-    call te0483(nomopt, nomte)
-    goto 5
-584  continue
-    call te0484(nomopt, nomte)
-    goto 5
-585  continue
-    call te0485(nomopt, nomte)
-    goto 5
-586  continue
-    call te0486(nomopt, nomte)
-    goto 5
-587  continue
-    call te0487(nomopt, nomte)
-    goto 5
-588  continue
-    call te0488(nomopt, nomte)
-    goto 5
-589  continue
-    call te0489(nomopt, nomte)
-    goto 5
-590  continue
-    call te0490(nomopt, nomte)
-    goto 5
-591  continue
-    call te0491(nomopt, nomte)
-    goto 5
-592  continue
-    call te0492(nomopt, nomte)
-    goto 5
-593  continue
-    call te0493(nomopt, nomte)
-    goto 5
-594  continue
-    call te0494(nomopt, nomte)
-    goto 5
-595  continue
-    call te0495(nomopt, nomte)
-    goto 5
-596  continue
-    call te0496(nomopt, nomte)
-    goto 5
-597  continue
-    call te0497(nomopt, nomte)
-    goto 5
-598  continue
-    call te0498(nomopt, nomte)
-    goto 5
-599  continue
-    call te0499(nomopt, nomte)
-    goto 5
-600  continue
-    call te0500(nomopt, nomte)
-    goto 5
-    5 end do
-    goto 9999
-!
-!
-!     -- TE0501 --> TE0600
-!     --------------------
-9996  continue
-    do 6, iel=1,nbelgr
-    if (lparal) then
-        if (.not.zl(jparal-1+iel)) goto 6
-    endif
-    capoiz=0
-    goto (601,602,603,604,605,606,607,608,609,610,611,612,613,614,&
-        615,616,617,618,619,620,621,622,623,624,625,626,627,628,&
-        629,630,631,632,633,634,635,636,637,638,639,640,641,642,&
-        643,644,645,646,647,648,649,650,651,652,653,654,655,656,&
-        657,658,659,660,661,662,663,664,665,666,667,668,669,670,&
-        671,672,673,674,675,676,677,678,679,680,681,682,683,684,&
-        685,686,687,688,689,690,691,692,693,694,695,696,697,698,&
-        699,700) numc3
-601  continue
-    call te0501(nomopt, nomte)
-    goto 6
-602  continue
-    call te0502(nomopt, nomte)
-    goto 6
-603  continue
-    call te0503(nomopt, nomte)
-    goto 6
-604  continue
-    call te0504(nomopt, nomte)
-    goto 6
-605  continue
-    call te0505(nomopt, nomte)
-    goto 6
-606  continue
-    call te0506(nomopt, nomte)
-    goto 6
-607  continue
-    call te0507(nomopt, nomte)
-    goto 6
-608  continue
-    call te0508(nomopt, nomte)
-    goto 6
-609  continue
-    call te0509(nomopt, nomte)
-    goto 6
-610  continue
-    call te0510(nomopt, nomte)
-    goto 6
-611  continue
-    call te0511(nomopt, nomte)
-    goto 6
-612  continue
-    call te0512(nomopt, nomte)
-    goto 6
-613  continue
-    call te0513(nomopt, nomte)
-    goto 6
-614  continue
-    call te0514(nomopt, nomte)
-    goto 6
-615  continue
-    call te0515(nomopt, nomte)
-    goto 6
-616  continue
-    call te0516(nomopt, nomte)
-    goto 6
-617  continue
-    call te0517(nomopt, nomte)
-    goto 6
-618  continue
-    call te0518(nomopt, nomte)
-    goto 6
-619  continue
-    call te0519(nomopt, nomte)
-    goto 6
-620  continue
-    call te0520(nomopt, nomte)
-    goto 6
-621  continue
-    call te0521(nomopt, nomte)
-    goto 6
-622  continue
-    call te0522(nomopt, nomte)
-    goto 6
-623  continue
-    call te0523(nomopt, nomte)
-    goto 6
-624  continue
-    call te0524(nomopt, nomte)
-    goto 6
-625  continue
-    call te0525(nomopt, nomte)
-    goto 6
-626  continue
-    call te0526(nomopt, nomte)
-    goto 6
-627  continue
-    call te0527(nomopt, nomte)
-    goto 6
-628  continue
-    call te0528(nomopt, nomte)
-    goto 6
-629  continue
-    call te0529(nomopt, nomte)
-    goto 6
-630  continue
-    call te0530(nomopt, nomte)
-    goto 6
-631  continue
-    call te0531(nomopt, nomte)
-    goto 6
-632  continue
-    call te0532(nomopt, nomte)
-    goto 6
-633  continue
-    call te0533(nomopt, nomte)
-    goto 6
-634  continue
-    call te0534(nomopt, nomte)
-    goto 6
-635  continue
-    call te0535(nomopt, nomte)
-    goto 6
-636  continue
-    call te0536(nomopt, nomte)
-    goto 6
-637  continue
-    call te0537(nomopt, nomte)
-    goto 6
-638  continue
-    call te0538(nomopt, nomte)
-    goto 6
-639  continue
-    call te0539(nomopt, nomte)
-    goto 6
-640  continue
-    call te0540(nomopt, nomte)
-    goto 6
-641  continue
-    call te0541(nomopt, nomte)
-    goto 6
-642  continue
-    call te0542(nomopt, nomte)
-    goto 6
-643  continue
-    call te0543(nomopt, nomte)
-    goto 6
-644  continue
-    call te0544(nomopt, nomte)
-    goto 6
-645  continue
-    call te0545(nomopt, nomte)
-    goto 6
-646  continue
-    call te0546(nomopt, nomte)
-    goto 6
-647  continue
-    call te0547(nomopt, nomte)
-    goto 6
-648  continue
-    call te0548(nomopt, nomte)
-    goto 6
-649  continue
-    call te0549(nomopt, nomte)
-    goto 6
-650  continue
-    call te0550(nomopt, nomte)
-    goto 6
-651  continue
-    call te0551(nomopt, nomte)
-    goto 6
-652  continue
-    call te0552(nomopt, nomte)
-    goto 6
-653  continue
-    call te0553(nomopt, nomte)
-    goto 6
-654  continue
-    call te0554(nomopt, nomte)
-    goto 6
-655  continue
-    call te0555(nomopt, nomte)
-    goto 6
-656  continue
-    call te0556(nomopt, nomte)
-    goto 6
-657  continue
-    call te0557(nomopt, nomte)
-    goto 6
-658  continue
-    call te0558(nomopt, nomte)
-    goto 6
-659  continue
-    call te0559(nomopt, nomte)
-    goto 6
-660  continue
-    call te0560(nomopt, nomte)
-    goto 6
-661  continue
-    call te0561(nomopt, nomte)
-    goto 6
-662  continue
-    call te0562(nomopt, nomte)
-    goto 6
-663  continue
-    call te0563(nomopt, nomte)
-    goto 6
-664  continue
-    call te0564(nomopt, nomte)
-    goto 6
-665  continue
-    call te0565(nomopt, nomte)
-    goto 6
-666  continue
-    call te0566(nomopt, nomte)
-    goto 6
-667  continue
-    call te0567(nomopt, nomte)
-    goto 6
-668  continue
-    call te0568(nomopt, nomte)
-    goto 6
-669  continue
-    call te0569(nomopt, nomte)
-    goto 6
-670  continue
-    call te0570(nomopt, nomte)
-    goto 6
-671  continue
-    call te0571(nomopt, nomte)
-    goto 6
-672  continue
-    call te0572(nomopt, nomte)
-    goto 6
-673  continue
-    call te0573(nomopt, nomte)
-    goto 6
-674  continue
-    call te0574(nomopt, nomte)
-    goto 6
-675  continue
-    call te0575(nomopt, nomte)
-    goto 6
-676  continue
-    call te0576(nomopt, nomte)
-    goto 6
-677  continue
-    call te0577(nomopt, nomte)
-    goto 6
-678  continue
-    call te0578(nomopt, nomte)
-    goto 6
-679  continue
-    call te0579(nomopt, nomte)
-    goto 6
-680  continue
-    call te0580(nomopt, nomte)
-    goto 6
-681  continue
-    call te0581(nomopt, nomte)
-    goto 6
-682  continue
-    call te0582(nomopt, nomte)
-    goto 6
-683  continue
-    call te0583(nomopt, nomte)
-    goto 6
-684  continue
-    call te0584(nomopt, nomte)
-    goto 6
-685  continue
-    call te0585(nomopt, nomte)
-    goto 6
-686  continue
-    call te0586(nomopt, nomte)
-    goto 6
-687  continue
-    call te0587(nomopt, nomte)
-    goto 6
-688  continue
-    call te0588(nomopt, nomte)
-    goto 6
-689  continue
-    call te0589(nomopt, nomte)
-    goto 6
-690  continue
-    call te0590(nomopt, nomte)
-    goto 6
-691  continue
-    call te0591(nomopt, nomte)
-    goto 6
-692  continue
-    call te0592(nomopt, nomte)
-    goto 6
-693  continue
-    call te0593(nomopt, nomte)
-    goto 6
-694  continue
-    call te0594(nomopt, nomte)
-    goto 6
-695  continue
-    call te0595(nomopt, nomte)
-    goto 6
-696  continue
-    call te0596(nomopt, nomte)
-    goto 6
-697  continue
-    call te0597(nomopt, nomte)
-    goto 6
-698  continue
-    call te0598(nomopt, nomte)
-    goto 6
-699  continue
-    call te0599(nomopt, nomte)
-    goto 6
-700  continue
-    call te0600(nomopt, nomte)
-    goto 6
-    6 end do
-    goto 9999
-!
-!
-9998  continue
-    call codent(numc, 'D', k8bid)
-    call utmess('F', 'CALCULEL4_91', sk=k8bid)
-9999  continue
+999 continue
     call uttcpu('CPU.CALC.3', 'FIN', ' ')
+!
 end subroutine

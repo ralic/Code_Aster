@@ -218,17 +218,21 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
                 sigf, vinf, ndsde, dsde, icomp,&
                 nvi, nwkout, wkout, codret)
 !
-    if (codret .gt. 0) goto (1,2), codret
+    if (codret .eq. 1) then
+        goto 1
+    else if (codret .eq. 2) then
+        goto 2
+    endif
 !
 ! -->   IPAL > 0 --> REDECOUPAGE IMPOSE DU PAS DE TEMPS
 ! -->   REDECOUPAGE IMPOSE ==>  RETURN DANS PLASTI APRES RECHERCHE
 !       DES CARACTERISTIQUES DU MATERIAU A (T) ET (T+DT)
-    if (ipal .le. 0) goto 9999
+    if (ipal .le. 0) goto 999
     if (icomp .eq. -1) icomp = 0
 !
 ! --    CAS DE NON CONVERGENCE LOCALE / REDECOUPAGE DU PAS DE TEMPS
 !
- 1  continue
+  1 continue
 !
     if (npal .eq. 0) then
         goto 2
@@ -246,7 +250,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
     if (icomp .ge. 1) npal = 2 * npal
     icomp = icomp + 1
 !
-    do 124 k = 1, npal
+    do k = 1, npal
 ! --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
         if (k .eq. 1) then
             td = instam
@@ -282,18 +286,22 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
                     sigf, vinf, ndsde, dsdelo, icomp,&
                     nvi, nwkout, wkout, codret)
 !
-        if (codret .gt. 0) goto (1,2), codret
+        if (codret .eq. 1) then
+            goto 1
+        else if (codret .eq. 2) then
+            goto 2
+        endif
 !
         if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
             call lcprsm(1.d0/npal, dsdelo, dsdelo)
             call lcsoma(dsde, dsdelo, dsde)
         endif
 !
-124  continue
-    goto 9999
+    end do
+    goto 999
 !
- 2  continue
-    goto 9999
+  2 continue
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

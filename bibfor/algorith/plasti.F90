@@ -196,7 +196,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 ! --> REDECOUPAGE IMPOSE
     if (icomp .eq. -1 .and. opt .ne. 'RIGI_MECA_TANG') then
         irteti = 0
-        goto 9999
+        goto 999
     endif
 !
 !     ----------------------------------------------------------------
@@ -242,7 +242,11 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
                         irtet, theta, vp, vecp, seuil,&
                         devg, devgii, drdy, tampon, crit)
 !
-            if (irtet .gt. 0) goto (1,2), irtet
+            if (irtet .eq. 1) then
+                goto 1
+            else if (irtet .eq. 2) then
+                goto 2
+            endif
         else
 ! --        PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
             etatf = 'ELASTIC'
@@ -285,15 +289,15 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !       ----------------------------------------------------------------
 !
     irteti = 0
-    goto 9999
- 1  continue
+    goto 999
+  1 continue
     irteti = 1
-    goto 9999
+    goto 999
 !
- 2  continue
+  2 continue
     irteti = 2
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 !
 end subroutine

@@ -134,7 +134,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
     call hbcalc(seuil2, gnp, dgnp, nbmat, materf,&
                 i1e, sigeqe, vp, etanp, vh,&
                 vg, parame, derive, incrg)
- 2  continue
+  2 continue
     gnp = gnp + incrg
     dgnp = dgnp + incrg
 ! ======================================================================
@@ -198,8 +198,8 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
             call utmess('F', 'ALGORITH4_61')
         endif
     endif
-100  continue
-    if (iteri .ge. 1) goto (1),iteri
+100 continue
+    if (iteri .eq. 1) goto 1
 ! ======================================================================
     etap = etanp
     call hbmajs(dg, nbmat, materf, se, i1e,&
@@ -209,9 +209,9 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
     vip(3) = plas
 ! ======================================================================
     irtet = 0
-    goto 9999
- 1  continue
+    goto 999
+  1 continue
     irtet = 1
-9999  continue
+999 continue
 ! ======================================================================
 end subroutine

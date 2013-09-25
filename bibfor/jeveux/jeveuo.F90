@@ -72,51 +72,52 @@ subroutine jeveuo(nomlu, cel, jctab)
     call jjvern(noml32, icre, iret)
     inat = iret
     inatb = iret
-    goto ( 10 , 20 , 30 ) ,iret+1
-10  continue
+    select case (iret)
 ! ----   IRET = 0
-    call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
-    goto 100
-20  continue
+    case (0)
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
+!
 ! ----   IRET = 1
-    genri = genr( jgenr(iclaos) + idatos )
-    typei = type( jtype(iclaos) + idatos )
-    ltypi = ltyp( jltyp(iclaos) + idatos )
-    if (genri .eq. 'N') then
-        call utmess('F', 'JEVEUX1_20', sk=noml32)
-    endif
-    goto 100
-30  continue
-! ----   IRET = 2
-    call jjallc(iclaco, idatco, cel, ibacol)
-    ixiadd = iszon ( jiszon + ibacol + idiadd )
-    ixdeso = iszon ( jiszon + ibacol + iddeso )
-    if (noml8 .eq. '$$XATR  ') then
-        ixlono = numatr
-        iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
-        genri = genr ( jgenr(iclaco) + ixlono )
-        ltypi = ltyp ( jltyp(iclaco) + ixlono )
-        lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
-        call jxlocs(zi, genri, ltypi, lonoi, iblono,&
-                    .false., jctab)
-        goto 1000
-    else
-        if (noml8 .ne. '        ') then
-            inat = 3
-            call jjcroc(noml8, icre)
-!            ------ CAS D'UN OBJET DE COLLECTION  ------
-            if (ixiadd .ne. 0) inatb = 3
-        else
-            if (ixiadd .ne. 0) then
-!            ----------- COLLECTION DISPERSEE
-                call utmess('F', 'JEVEUX1_21', sk=noml32)
-            endif
+    case (1)
+        genri = genr( jgenr(iclaos) + idatos )
+        typei = type( jtype(iclaos) + idatos )
+        ltypi = ltyp( jltyp(iclaos) + idatos )
+        if (genri .eq. 'N') then
+            call utmess('F', 'JEVEUX1_20', sk=noml32)
         endif
-        genri = genr( jgenr(iclaco) + ixdeso )
-        typei = type( jtype(iclaco) + ixdeso )
-        ltypi = ltyp( jltyp(iclaco) + ixdeso )
-    endif
-100  continue
+! ----   IRET = 2
+    case (2)
+        call jjallc(iclaco, idatco, cel, ibacol)
+        ixiadd = iszon ( jiszon + ibacol + idiadd )
+        ixdeso = iszon ( jiszon + ibacol + iddeso )
+        if (noml8 .eq. '$$XATR  ') then
+            ixlono = numatr
+            iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
+            genri = genr ( jgenr(iclaco) + ixlono )
+            ltypi = ltyp ( jltyp(iclaco) + ixlono )
+            lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
+            call jxlocs(zi, genri, ltypi, lonoi, iblono,&
+                        .false., jctab)
+            goto 1000
+        else
+            if (noml8 .ne. '        ') then
+                inat = 3
+                call jjcroc(noml8, icre)
+!            ------ CAS D'UN OBJET DE COLLECTION  ------
+                if (ixiadd .ne. 0) inatb = 3
+            else
+                if (ixiadd .ne. 0) then
+!            ----------- COLLECTION DISPERSEE
+                    call utmess('F', 'JEVEUX1_21', sk=noml32)
+                endif
+            endif
+            genri = genr( jgenr(iclaco) + ixdeso )
+            typei = type( jtype(iclaco) + ixdeso )
+            ltypi = ltyp( jltyp(iclaco) + ixdeso )
+        endif
+!
+    end select
+!
     call jjalty(typei, ltypi, cel, inatb, jctab)
     if (inat .eq. 3 .and. ixiadd .eq. 0) then
         ixlono = iszon ( jiszon + ibacol + idlono )
@@ -132,5 +133,5 @@ subroutine jeveuo(nomlu, cel, jctab)
             jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)
         endif
     endif
-1000  continue
+1000 continue
 end subroutine

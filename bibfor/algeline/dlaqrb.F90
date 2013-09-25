@@ -124,7 +124,6 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 !     %------------------%
@@ -199,9 +198,9 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !     | THE SCHUR VECTORS FOR ACCUMULATION.         |
 !     %---------------------------------------------%
 !
-    do 5 j = 1, n-1
+    do j = 1, n-1
         z(j) = zero
- 5  end do
+    end do
     z(n) = one
 !
     nh = ihi - ilo + 1
@@ -228,13 +227,13 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
     if (wantt) then
         i1 = 1
         i2 = n
-        do 8 i = 1, i2-2
+        do i = 1, i2-2
             h(i1+i+1,i) = zero
- 8      continue
+        end do
     else
-        do 9 i = 1, ihi-ilo-1
+        do i = 1, ihi-ilo-1
             h(ilo+i+1,ilo+i-1) = zero
- 9      continue
+        end do
     endif
 !
 !     %---------------------------------------------------%
@@ -252,7 +251,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !     ------------------------------------------------------------------
 !
     i = ihi
-10  continue
+ 10 continue
     l = ilo
     if (i .lt. ilo) goto 150
 !
@@ -262,18 +261,18 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !     | SUBDIAGONAL ELEMENT HAS BECOME NEGLIGIBLE.                   |
 !     %--------------------------------------------------------------%
 !
-    do 130 its = 0, itn
+    do its = 0, itn
 !
 !        %----------------------------------------------%
 !        | LOOK FOR A SINGLE SMALL SUBDIAGONAL ELEMENT. |
 !        %----------------------------------------------%
 !
-        do 20 k = i, l + 1, -1
+        do k = i, l + 1, -1
             tst1 = abs( h( k-1, k-1 ) ) + abs( h( k, k ) )
             if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h( l, l ), ldh, work)
             if (abs( h( k, k-1 ) ) .le. max( ulp*tst1, smlnum )) goto 30
-20      continue
-30      continue
+        end do
+ 30     continue
         l = k
         if (l .gt. ilo) then
 !
@@ -327,7 +326,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !        | LOOK FOR TWO CONSECUTIVE SMALL SUBDIAGONAL ELEMENTS |
 !        %-----------------------------------------------------%
 !
-        do 40 m = i - 2, l, -1
+        do m = i - 2, l, -1
 !
 !           %---------------------------------------------------------%
 !           | DETERMINE THE EFFECT OF STARTING THE DOUBLE-SHIFT QR    |
@@ -356,14 +355,14 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
             h10 = h( m, m-1 )
             tst1 = abs( v1 )*( abs( h00 )+abs( h11 )+abs( h22 ) )
             if (abs( h10 )*( abs( v2 )+abs( v3 ) ) .le. ulp*tst1) goto 50
-40      continue
-50      continue
+        end do
+ 50     continue
 !
 !        %----------------------%
 !        | DOUBLE-SHIFT QR STEP |
 !        %----------------------%
 !
-        do 120 k = m, i - 1
+        do k = m, i - 1
 !
 !           ------------------------------------------------------------
 !           THE FIRST ITERATION OF THIS LOOP DETERMINES A REFLECTION G
@@ -397,24 +396,24 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !              | THE MATRIX IN COLUMNS K TO I2.                 |
 !              %------------------------------------------------%
 !
-                do 60 j = k, i2
+                do j = k, i2
                     sum = h( k, j ) + v2*h( k+1, j ) + v3*h( k+2, j )
                     h( k, j ) = h( k, j ) - sum*t1
                     h( k+1, j ) = h( k+1, j ) - sum*t2
                     h( k+2, j ) = h( k+2, j ) - sum*t3
-60              continue
+                end do
 !
 !              %----------------------------------------------------%
 !              | APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF |
 !              | THE MATRIX IN ROWS I1 TO MIN(K+3,I).               |
 !              %----------------------------------------------------%
 !
-                do 70 j = i1, min( k+3, i )
+                do j = i1, min( k+3, i )
                     sum = h( j, k ) + v2*h( j, k+1 ) + v3*h( j, k+2 )
                     h( j, k ) = h( j, k ) - sum*t1
                     h( j, k+1 ) = h( j, k+1 ) - sum*t2
                     h( j, k+2 ) = h( j, k+2 ) - sum*t3
-70              continue
+                end do
 !
 !              %----------------------------------%
 !              | ACCUMULATE TRANSFORMATIONS FOR Z |
@@ -432,22 +431,22 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !              | THE MATRIX IN COLUMNS K TO I2.                 |
 !              %------------------------------------------------%
 !
-                do 90 j = k, i2
+                do j = k, i2
                     sum = h( k, j ) + v2*h( k+1, j )
                     h( k, j ) = h( k, j ) - sum*t1
                     h( k+1, j ) = h( k+1, j ) - sum*t2
-90              continue
+                end do
 !
 !              %----------------------------------------------------%
 !              | APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF |
 !              | THE MATRIX IN ROWS I1 TO MIN(K+3,I).               |
 !              %----------------------------------------------------%
 !
-                do 100 j = i1, i
+                do j = i1, i
                     sum = h( j, k ) + v2*h( j, k+1 )
                     h( j, k ) = h( j, k ) - sum*t1
                     h( j, k+1 ) = h( j, k+1 ) - sum*t2
-100              continue
+                end do
 !
 !              %----------------------------------%
 !              | ACCUMULATE TRANSFORMATIONS FOR Z |
@@ -457,9 +456,9 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
                 z( k ) = z( k ) - sum*t1
                 z( k+1 ) = z( k+1 ) - sum*t2
             endif
-120      continue
+        end do
 !
-130  end do
+    end do
 !
 !     %-------------------------------------------------------%
 !     | FAILURE TO CONVERGE IN REMAINING NUMBER OF ITERATIONS |
@@ -468,7 +467,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
     info = i
     goto 1000
 !
-140  continue
+140 continue
 !
     if (l .eq. i) then
 !
@@ -518,8 +517,8 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
     i = l - 1
     goto 10
 !
-150  continue
-1000  continue
+150 continue
+1000 continue
 !
     call matfpe(1)
 !

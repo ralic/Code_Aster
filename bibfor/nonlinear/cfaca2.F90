@@ -20,10 +20,8 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/caladu.h"
 #include "asterfort/cftyli.h"
 #include "asterfort/jedema.h"
@@ -33,6 +31,7 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbliai, nbliac, llf, llf1, llf2
     integer :: spliai, indfac
     integer :: ndim, nesmax
@@ -125,185 +124,26 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 !
     call wkvect(ouvert, 'V V L', nbbloc, jouv)
     if (ndim .eq. 3) then
-        do 100 iliac = 1, spliai
+        do iliac = 1, spliai
             if (zk8(jtypl-1+iliac) .eq. typef0) then
                 deklag = deklag + 1
             endif
-100      continue
+        end do
     endif
 ! ======================================================================
 ! --- CALCUL DE -A.C-1.AT (REDUITE AUX LIAISONS ACTIVES) ---------------
 ! --- (STOCKAGE DE LA MOITIE PAR SYMETRIE) -----------------------------
 ! ======================================================================
     indfac = min(indfac, spliai+deklag+1)
-    do 210 iliac = spliai+1, nbliac + llf + llf1 + llf2
+    do iliac = spliai+1, nbliac + llf + llf1 + llf2
         lliac = zi(jliac-1+iliac)
         call cftyli(resoco, iliac, posit)
-        goto (1000, 2000, 4000, 5000) posit
+        select case (posit)
 ! ======================================================================
 ! --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
 ! ======================================================================
-1000      continue
-        call jeveuo(jexnum(cm1a, lliac), 'L', jcm1a)
-        ii = zi(jscib-1+iliac+deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if (ii .gt. 1) then
-                call jelibe(jexnum(macont//'.UALF', (ii-1)))
-                zl(jouv-2+ii)=.false.
-            endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
-        do 10 jj = 1, iliac
-            lljac = zi(jliac-1+jj)
-            jdecal = zi(japptr+lljac-1)
-            nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
-            jva = jva + 1
-            zr(jva) = 0.0d0
-            call cftyli(resoco, jj, posit)
-            goto (1100, 1200, 1300, 1400) posit
-! ======================================================================
-! --- LIAISON DE CONTACT -----------------------------------------------
-! ======================================================================
-1100          continue
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 10
-! ======================================================================
-! --- LIAISON DE FROTTEMENT --------------------------------------------
-! ======================================================================
-1200          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-! ======================================================================
-! --- DANS LE CAS 3D ---------------------------------------------------
-! ======================================================================
-            if (ndim .eq. 3) then
-                jva = jva + 1
-                zr(jva) = 0.0d0
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jcm1a), val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            endif
-            goto 10
-! ======================================================================
-! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
-! ======================================================================
-1300          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 10
-! ======================================================================
-! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
-! ======================================================================
-1400          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), zr(jcm1a),&
-                        val)
-! ======================================================================
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-10      continue
-        call jelibe(jexnum(cm1a, lliac))
-        goto 210
-! ======================================================================
-! --- AJOUT D'UNE LIAISON DE FROTTEMENT --------------------------------
-! ======================================================================
-2000      continue
-        call jeveuo(jexnum(cm1a, lliac+nbliai), 'L', jcm1a)
-        ii = zi(jscib-1+iliac+deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if (ii .gt. 1) then
-                call jelibe(jexnum(macont//'.UALF', (ii-1)))
-                zl(jouv-2+ii)=.false.
-            endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
-        do 20 jj = 1, iliac - 1
-            lljac = zi(jliac-1+jj)
-            jdecal = zi(japptr+lljac-1)
-            nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
-            jva = jva + 1
-            zr(jva) = 0.0d0
-            call cftyli(resoco, jj, posit)
-            goto (2100, 2200, 2300, 2400) posit
-! ======================================================================
-! --- LIAISON DE CONTACT -----------------------------------------------
-! ======================================================================
-2100          continue
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 20
-! ======================================================================
-! --- LIAISON DE FROTTEMENT --------------------------------------------
-! ======================================================================
-2200          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-! ======================================================================
-! --- DANS LE CAS 3D ---------------------------------------------------
-! ======================================================================
-            if (ndim .eq. 3) then
-                jva = jva + 1
-                zr(jva) = 0.0d0
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jcm1a), val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            endif
-            goto 20
-! ======================================================================
-! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
-! ======================================================================
-2300          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 20
-! ======================================================================
-! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
-! ======================================================================
-2400          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), zr(jcm1a),&
-                        val)
-! ======================================================================
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-20      continue
-        lljac = zi(jliac-1+iliac)
-        jdecal = zi(japptr+lljac-1)
-        nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
-        jva = jva + 1
-        zr(jva) = 0.0d0
-        call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jcm1a),&
-                    val)
-        zr(jva) = zr(jva) - val
-        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-        call jelibe(jexnum(cm1a, lliac+nbliai))
-        if (ndim .eq. 3) then
-! ======================================================================
-! --- DANS LE CAS 3D ---------------------------------------------------
-! ======================================================================
-            call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'L', jcm1a)
-            deklag = deklag + 1
+        case (1)
+            call jeveuo(jexnum(cm1a, lliac), 'L', jcm1a)
             ii = zi(jscib-1+iliac+deklag)
             dercol=zi(jscbl+ii-1)
             bloc=dercol*(dercol+1)/2
@@ -316,215 +156,363 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
                 zl(jouv-1+ii)=.true.
             endif
             jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
-            do 30 jj = 1, iliac
+            do jj = 1, iliac
                 lljac = zi(jliac-1+jj)
                 jdecal = zi(japptr+lljac-1)
                 nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
                 jva = jva + 1
                 zr(jva) = 0.0d0
                 call cftyli(resoco, jj, posit)
-                goto (3100, 3200, 3300, 3400) posit
+                select case (posit)
 ! ======================================================================
 ! --- LIAISON DE CONTACT -----------------------------------------------
 ! ======================================================================
-3100              continue
-                call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                            val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-                goto 30
+                case (1)
+                    call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT --------------------------------------------
 ! ======================================================================
-3200              continue
-                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                            val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                case (2)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- DANS LE CAS 3D ---------------------------------------------------
 ! ======================================================================
-                jva = jva + 1
-                zr(jva) = 0.0d0
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jcm1a), val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-                goto 30
+                    if (ndim .eq. 3) then
+                        jva = jva + 1
+                        zr(jva) = 0.0d0
+                        call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                    zr(jcm1a), val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                    endif
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
 ! ======================================================================
-3300              continue
-                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                            val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-                goto 30
+                case (3)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
 ! ======================================================================
-3400              continue
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jcm1a), val)
+                case (4)
+                    call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                zr(jcm1a), val)
 ! ======================================================================
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-30          continue
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                end select
+            end do
+            call jelibe(jexnum(cm1a, lliac))
+! ======================================================================
+! --- AJOUT D'UNE LIAISON DE FROTTEMENT --------------------------------
+! ======================================================================
+        case (2)
+            call jeveuo(jexnum(cm1a, lliac+nbliai), 'L', jcm1a)
+            ii = zi(jscib-1+iliac+deklag)
+            dercol=zi(jscbl+ii-1)
+            bloc=dercol*(dercol+1)/2
+            if (.not.zl(jouv-1+ii)) then
+                if (ii .gt. 1) then
+                    call jelibe(jexnum(macont//'.UALF', (ii-1)))
+                    zl(jouv-2+ii)=.false.
+                endif
+                call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                zl(jouv-1+ii)=.true.
+            endif
+            jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
+            do jj = 1, iliac - 1
+                lljac = zi(jliac-1+jj)
+                jdecal = zi(japptr+lljac-1)
+                nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
+                jva = jva + 1
+                zr(jva) = 0.0d0
+                call cftyli(resoco, jj, posit)
+                select case (posit)
+! ======================================================================
+! --- LIAISON DE CONTACT -----------------------------------------------
+! ======================================================================
+                case (1)
+                    call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- LIAISON DE FROTTEMENT --------------------------------------------
+! ======================================================================
+                case (2)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- DANS LE CAS 3D ---------------------------------------------------
+! ======================================================================
+                    if (ndim .eq. 3) then
+                        jva = jva + 1
+                        zr(jva) = 0.0d0
+                        call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                    zr(jcm1a), val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                    endif
+! ======================================================================
+! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
+! ======================================================================
+                case (3)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
+! ======================================================================
+                case (4)
+                    call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                zr(jcm1a), val)
+! ======================================================================
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                end select
+            end do
+            lljac = zi(jliac-1+iliac)
+            jdecal = zi(japptr+lljac-1)
+            nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
+            jva = jva + 1
+            zr(jva) = 0.0d0
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jcm1a),&
+                        val)
+            zr(jva) = zr(jva) - val
+            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+            call jelibe(jexnum(cm1a, lliac+nbliai))
+            if (ndim .eq. 3) then
+! ======================================================================
+! --- DANS LE CAS 3D ---------------------------------------------------
+! ======================================================================
+                call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'L', jcm1a)
+                deklag = deklag + 1
+                ii = zi(jscib-1+iliac+deklag)
+                dercol=zi(jscbl+ii-1)
+                bloc=dercol*(dercol+1)/2
+                if (.not.zl(jouv-1+ii)) then
+                    if (ii .gt. 1) then
+                        call jelibe(jexnum(macont//'.UALF', (ii-1)))
+                        zl(jouv-2+ii)=.false.
+                    endif
+                    call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                    zl(jouv-1+ii)=.true.
+                endif
+                jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
+                do jj = 1, iliac
+                    lljac = zi(jliac-1+jj)
+                    jdecal = zi(japptr+lljac-1)
+                    nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
+                    jva = jva + 1
+                    zr(jva) = 0.0d0
+                    call cftyli(resoco, jj, posit)
+                    select case (posit)
+! ======================================================================
+! --- LIAISON DE CONTACT -----------------------------------------------
+! ======================================================================
+                    case (1)
+!
+                        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                    val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- LIAISON DE FROTTEMENT --------------------------------------------
+! ======================================================================
+                    case (2)
+                        call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                    val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- DANS LE CAS 3D ---------------------------------------------------
+! ======================================================================
+                        jva = jva + 1
+                        zr(jva) = 0.0d0
+                        call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                    zr(jcm1a), val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
+! ======================================================================
+                    case (3)
+                        call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                    val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+! ======================================================================
+! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
+! ======================================================================
+                    case (4)
+                        call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                    zr(jcm1a), val)
+! ======================================================================
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                    end select
+                end do
 !            DEKLAG = DEKLAG + 1
-            call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
-        endif
-        goto 210
+                call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
+            endif
 ! ======================================================================
 ! --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA PREMIERE ------------
 ! --- DIRECTION UNIQUEMENT ---------------------------------------------
 ! ======================================================================
-4000      continue
-        call jeveuo(jexnum(cm1a, lliac+nbliai), 'L', jcm1a)
-        ii = zi(jscib-1+iliac+deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if (ii .gt. 1) then
-                call jelibe(jexnum(macont//'.UALF', (ii-1)))
-                zl(jouv-2+ii)=.false.
+        case (3)
+            call jeveuo(jexnum(cm1a, lliac+nbliai), 'L', jcm1a)
+            ii = zi(jscib-1+iliac+deklag)
+            dercol=zi(jscbl+ii-1)
+            bloc=dercol*(dercol+1)/2
+            if (.not.zl(jouv-1+ii)) then
+                if (ii .gt. 1) then
+                    call jelibe(jexnum(macont//'.UALF', (ii-1)))
+                    zl(jouv-2+ii)=.false.
+                endif
+                call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                zl(jouv-1+ii)=.true.
             endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
-        do 40 jj = 1, iliac
-            lljac = zi(jliac-1+jj)
-            jdecal = zi(japptr+lljac-1)
-            nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
-            jva = jva + 1
-            zr(jva) = 0.0d0
-            call cftyli(resoco, jj, posit)
-            goto (4100, 4200, 4300, 4400) posit
+            jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
+            do jj = 1, iliac
+                lljac = zi(jliac-1+jj)
+                jdecal = zi(japptr+lljac-1)
+                nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
+                jva = jva + 1
+                zr(jva) = 0.0d0
+                call cftyli(resoco, jj, posit)
+                select case (posit)
 ! ======================================================================
 ! --- LIAISON DE CONTACT -----------------------------------------------
 ! ======================================================================
-4100          continue
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 40
+                case (1)
+                    call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT --------------------------------------------
 ! ======================================================================
-4200          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                case (2)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- DANS LE CAS 3D ---------------------------------------------------
 ! ======================================================================
-            if (ndim .eq. 3) then
-                jva = jva + 1
-                zr(jva) = 0.0d0
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jcm1a), val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            endif
-            goto 40
+                    if (ndim .eq. 3) then
+                        jva = jva + 1
+                        zr(jva) = 0.0d0
+                        call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                    zr(jcm1a), val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                    endif
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
 ! ======================================================================
-4300          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 40
+                case (3)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
 ! ======================================================================
-4400          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), zr(jcm1a),&
-                        val)
+                case (4)
+                    call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                zr(jcm1a), val)
 ! ======================================================================
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-40      continue
-        call jelibe(jexnum(cm1a, lliac+nbliai))
-        goto 210
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                end select
+            end do
+            call jelibe(jexnum(cm1a, lliac+nbliai))
 ! ======================================================================
 ! --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
 ! ======================================================================
-5000      continue
-        call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'L', jcm1a)
-        ii = zi(jscib-1+iliac+deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if (ii .gt. 1) then
-                call jelibe(jexnum(macont//'.UALF', (ii-1)))
-                zl(jouv-2+ii)=.false.
+        case (4)
+            call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'L', jcm1a)
+            ii = zi(jscib-1+iliac+deklag)
+            dercol=zi(jscbl+ii-1)
+            bloc=dercol*(dercol+1)/2
+            if (.not.zl(jouv-1+ii)) then
+                if (ii .gt. 1) then
+                    call jelibe(jexnum(macont//'.UALF', (ii-1)))
+                    zl(jouv-2+ii)=.false.
+                endif
+                call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                zl(jouv-1+ii)=.true.
             endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
-        do 50 jj = 1, iliac
-            lljac = zi(jliac-1+jj)
-            jdecal = zi(japptr+lljac-1)
-            nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
-            jva = jva + 1
-            zr(jva) = 0.0d0
-            call cftyli(resoco, jj, posit)
-            goto (5100, 5200, 5300, 5400) posit
+            jva = jvale-1 + (iliac+deklag-1)*(iliac+deklag)/2-bloc
+            do jj = 1, iliac
+                lljac = zi(jliac-1+jj)
+                jdecal = zi(japptr+lljac-1)
+                nbddl = zi(japptr+lljac) - zi(japptr+lljac-1)
+                jva = jva + 1
+                zr(jva) = 0.0d0
+                call cftyli(resoco, jj, posit)
+                select case (posit)
 ! ======================================================================
 ! --- LIAISON DE CONTACT -----------------------------------------------
 ! ======================================================================
-5100          continue
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 50
+                case (1)
+                    call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT --------------------------------------------
 ! ======================================================================
-5200          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                case (2)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- DANS LE CAS 3D ---------------------------------------------------
 ! ======================================================================
-            if (ndim .eq. 3) then
-                jva = jva + 1
-                zr(jva) = 0.0d0
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jcm1a), val)
-                zr(jva) = zr(jva) - val
-                if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            endif
-            goto 50
+                    if (ndim .eq. 3) then
+                        jva = jva + 1
+                        zr(jva) = 0.0d0
+                        call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                    zr(jcm1a), val)
+                        zr(jva) = zr(jva) - val
+                        if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                    endif
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT SUIVANT LA PREMIERE DIRECTION --------------
 ! ======================================================================
-5300          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
-                        val)
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-            goto 50
+                case (3)
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jcm1a),&
+                                val)
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
 ! ======================================================================
 ! --- LIAISON DE FROTTEMENT SUIVANT LA SECONDE DIRECTION ---------------
 ! ======================================================================
-5400          continue
-            call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), zr(jcm1a),&
-                        val)
+                case (4)
+                    call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                                zr(jcm1a), val)
 ! ======================================================================
-            zr(jva) = zr(jva) - val
-            if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-50      continue
-        call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
-210  end do
+                    zr(jva) = zr(jva) - val
+                    if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
+                end select
+            end do
+            call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
+        end select
+    end do
 !
 ! ======================================================================
     spliai = nbliac + llf + llf1 + llf2

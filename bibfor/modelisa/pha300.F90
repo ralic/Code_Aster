@@ -40,194 +40,180 @@ subroutine pha300(ifoi, ptf, phase)
 !-----------------------------------------------------------------------
     pi = r8pi()
 !
-    goto (12,13,23,14,24,34,15,25,35,45,16,26,36,46,56) ifoi
+    select case (ifoi)
 !
-12  continue
-    phase = pi
-    goto 100
-!
-13  continue
-    if (ptf .le. 70.d0) then
+    case (1)
         phase = pi
-    else if (ptf.gt.70.d0 .and. ptf.le.130.d0) then
-        phase = -2.d0*pi/3.d0
-    else
+!
+    case (2)
+        if (ptf .le. 70.d0) then
+            phase = pi
+        else if (ptf.gt.70.d0 .and. ptf.le.130.d0) then
+            phase = -2.d0*pi/3.d0
+        else
+            phase = pi
+        endif
+!
+    case (3)
+        if (ptf .le. 55.d0) then
+            phase = 0.d0
+        else if (ptf.gt.55.d0 .and. ptf.le.75.d0) then
+            phase = pi/4.d0
+        else if (ptf.gt.75.d0 .and. ptf.le.90.d0) then
+            phase = 2.d0*pi/3.d0
+        else if (ptf.gt.90.d0 .and. ptf.le.115.d0) then
+            phase = 5.d0*pi/6.d0
+        else if (ptf.gt.115.d0 .and. ptf.le.130.d0) then
+            phase = 2.d0*pi/3.d0
+        else
+            phase = pi/2.d0
+        endif
+!
+    case (4)
+        if (ptf .le. 30.d0) then
+            phase = pi
+        else if (ptf.gt.30.d0 .and. ptf.le.50.d0) then
+            phase = 0.d0
+        else if (ptf.gt.50.d0 .and. ptf.le.65.d0) then
+            phase = pi/3.d0
+        else if (ptf.gt.65.d0 .and. ptf.le.80.d0) then
+            phase = 0.d0
+        else if (ptf.gt.80.d0 .and. ptf.le.110.d0) then
+            phase = 2.d0*pi/3.d0
+        else if (ptf.gt.110.d0 .and. ptf.le.130.d0) then
+            phase = pi/3.d0
+        else
+            phase = 0.d0
+        endif
+!
+    case (5)
+        if (ptf .le. 30.d0) then
+            phase = 0.d0
+        else if (ptf.gt.30.d0 .and. ptf.le.50.d0) then
+            phase = pi
+        else if (ptf.gt.50.d0 .and. ptf.le.65.d0) then
+            phase = -pi/2.d0
+        else if (ptf.gt.65.d0 .and. ptf.le.80.d0) then
+            phase = pi
+        else if (ptf.gt.80.d0 .and. ptf.le.110.d0) then
+            phase = 0.d0
+        else
+            phase = -pi/2.d0
+        endif
+!
+    case (6)
+        if (ptf .le. 30.d0) then
+            phase = 0.d0
+        else
+            phase = pi
+        endif
+!
+    case (7)
+        if (ptf .le. 5.d0) then
+            phase = pi
+        else if (ptf.gt.5.d0 .and. ptf.le.105.d0) then
+            phase = 0.d0
+        else
+            phase = pi
+        endif
+!
+    case (8)
+        if (ptf .le. 110.d0) then
+            phase = pi
+        else if (ptf.gt.110.d0 .and. ptf.le.125.d0) then
+            phase = -pi/2.d0
+        else
+            phase = -pi/4.d0
+        endif
+!
+    case (9)
+        if (ptf .le. 50.d0) then
+            phase = pi
+        else if (ptf.gt.50.d0 .and. ptf.le.125.d0) then
+            phase = pi/3.d0
+        else
+            phase = -2.d0*pi/3.d0
+        endif
+!
+    case (10)
+        if (ptf .le. 10.d0) then
+            phase = -pi/2.d0
+        else if (ptf.gt.10.d0 .and. ptf.le.20.d0) then
+            phase = 0.d0
+        else if (ptf.gt.20.d0 .and. ptf.le.25.d0) then
+            phase = -pi/2.d0
+        else if (ptf.gt.25.d0 .and. ptf.le.110.d0) then
+            phase = pi
+        else if (ptf.gt.110.d0 .and. ptf.le.125.d0) then
+            phase = 2.d0*pi/3.d0
+        else
+            phase = pi/2.d0
+        endif
+!
+    case (11)
         phase = pi
-    endif
-    goto 100
 !
-23  continue
-    if (ptf .le. 55.d0) then
-        phase = 0.d0
-    else if (ptf.gt.55.d0 .and. ptf.le.75.d0) then
-        phase = pi/4.d0
-    else if (ptf.gt.75.d0 .and. ptf.le.90.d0) then
-        phase = 2.d0*pi/3.d0
-    else if (ptf.gt.90.d0 .and. ptf.le.115.d0) then
-        phase = 5.d0*pi/6.d0
-    else if (ptf.gt.115.d0 .and. ptf.le.130.d0) then
-        phase = 2.d0*pi/3.d0
-    else
-        phase = pi/2.d0
-    endif
-    goto 100
+    case (12)
+        if (ptf .le. 35.d0) then
+            phase = 0.d0
+        else if (ptf.gt.35.d0 .and. ptf.le.45.d0) then
+            phase = -pi/2.d0
+        else if (ptf.gt.45.d0 .and. ptf.le.55.d0) then
+            phase = 0.d0
+        else if (ptf.gt.55.d0 .and. ptf.le.65.d0) then
+            phase = -pi/4.d0
+        else if (ptf.gt.65.d0 .and. ptf.le.75.d0) then
+            phase = pi/12.d0
+        else if (ptf.gt.75.d0 .and. ptf.le.90.d0) then
+            phase = 0.d0
+        else if (ptf.gt.90.d0 .and. ptf.le.105.d0) then
+            phase = -pi/6.d0
+        else if (ptf.gt.105.d0 .and. ptf.le.115.d0) then
+            phase = -2.d0*pi/3.d0
+        else if (ptf.gt.115.d0 .and. ptf.le.125.d0) then
+            phase = pi/6.d0
+        else
+            phase = pi/4.d0
+        endif
 !
-14  continue
-    if (ptf .le. 30.d0) then
-        phase = pi
-    else if (ptf.gt.30.d0 .and. ptf.le.50.d0) then
-        phase = 0.d0
-    else if (ptf.gt.50.d0 .and. ptf.le.65.d0) then
-        phase = pi/3.d0
-    else if (ptf.gt.65.d0 .and. ptf.le.80.d0) then
-        phase = 0.d0
-    else if (ptf.gt.80.d0 .and. ptf.le.110.d0) then
-        phase = 2.d0*pi/3.d0
-    else if (ptf.gt.110.d0 .and. ptf.le.130.d0) then
-        phase = pi/3.d0
-    else
-        phase = 0.d0
-    endif
-    goto 100
+    case (13)
+        if (ptf .le. 30.d0) then
+            phase = 0.d0
+        else if (ptf.gt.30.d0 .and. ptf.le.45.d0) then
+            phase = pi
+        else if (ptf.gt.45.d0 .and. ptf.le.50.d0) then
+            phase = pi/4.d0
+        else if (ptf.gt.50.d0 .and. ptf.le.60.d0) then
+            phase = -pi/2.d0
+        else if (ptf.gt.60.d0 .and. ptf.le.90.d0) then
+            phase = pi/8.d0
+        else if (ptf.gt.90.d0 .and. ptf.le.110.d0) then
+            phase = pi/4.d0
+        else if (ptf.gt.110.d0 .and. ptf.le.130.d0) then
+            phase = 0.d0
+        else
+            phase = -pi/6.d0
+        endif
 !
-24  continue
-    if (ptf .le. 30.d0) then
-        phase = 0.d0
-    else if (ptf.gt.30.d0 .and. ptf.le.50.d0) then
-        phase = pi
-    else if (ptf.gt.50.d0 .and. ptf.le.65.d0) then
-        phase = -pi/2.d0
-    else if (ptf.gt.65.d0 .and. ptf.le.80.d0) then
-        phase = pi
-    else if (ptf.gt.80.d0 .and. ptf.le.110.d0) then
-        phase = 0.d0
-    else
-        phase = -pi/2.d0
-    endif
-    goto 100
+    case (14)
+        if (ptf .le. 45.d0) then
+            phase = 0.d0
+        else if (ptf.gt.45.d0 .and. ptf.le.55.d0) then
+            phase = pi/4.d0
+        else if (ptf.gt.55.d0 .and. ptf.le.80.d0) then
+            phase = 0.d0
+        else if (ptf.gt.80.d0 .and. ptf.le.90.d0) then
+            phase = pi/3.d0
+        else
+            phase = pi
+        endif
 !
-34  continue
-    if (ptf .le. 30.d0) then
-        phase = 0.d0
-    else
-        phase = pi
-    endif
-    goto 100
+    case (15)
+        if (ptf .le. 95.d0) then
+            phase = pi
+        else
+            phase = 7.d0*pi/12.d0
+        endif
 !
-15  continue
-    if (ptf .le. 5.d0) then
-        phase = pi
-    else if (ptf.gt.5.d0 .and. ptf.le.105.d0) then
-        phase = 0.d0
-    else
-        phase = pi
-    endif
-    goto 100
-!
-25  continue
-    if (ptf .le. 110.d0) then
-        phase = pi
-    else if (ptf.gt.110.d0 .and. ptf.le.125.d0) then
-        phase = -pi/2.d0
-    else
-        phase = -pi/4.d0
-    endif
-    goto 100
-!
-35  continue
-    if (ptf .le. 50.d0) then
-        phase = pi
-    else if (ptf.gt.50.d0 .and. ptf.le.125.d0) then
-        phase = pi/3.d0
-    else
-        phase = -2.d0*pi/3.d0
-    endif
-    goto 100
-!
-45  continue
-    if (ptf .le. 10.d0) then
-        phase = -pi/2.d0
-    else if (ptf.gt.10.d0 .and. ptf.le.20.d0) then
-        phase = 0.d0
-    else if (ptf.gt.20.d0 .and. ptf.le.25.d0) then
-        phase = -pi/2.d0
-    else if (ptf.gt.25.d0 .and. ptf.le.110.d0) then
-        phase = pi
-    else if (ptf.gt.110.d0 .and. ptf.le.125.d0) then
-        phase = 2.d0*pi/3.d0
-    else
-        phase = pi/2.d0
-    endif
-    goto 100
-!
-16  continue
-    phase = pi
-    goto 100
-!
-26  continue
-    if (ptf .le. 35.d0) then
-        phase = 0.d0
-    else if (ptf.gt.35.d0 .and. ptf.le.45.d0) then
-        phase = -pi/2.d0
-    else if (ptf.gt.45.d0 .and. ptf.le.55.d0) then
-        phase = 0.d0
-    else if (ptf.gt.55.d0 .and. ptf.le.65.d0) then
-        phase = -pi/4.d0
-    else if (ptf.gt.65.d0 .and. ptf.le.75.d0) then
-        phase = pi/12.d0
-    else if (ptf.gt.75.d0 .and. ptf.le.90.d0) then
-        phase = 0.d0
-    else if (ptf.gt.90.d0 .and. ptf.le.105.d0) then
-        phase = -pi/6.d0
-    else if (ptf.gt.105.d0 .and. ptf.le.115.d0) then
-        phase = -2.d0*pi/3.d0
-    else if (ptf.gt.115.d0 .and. ptf.le.125.d0) then
-        phase = pi/6.d0
-    else
-        phase = pi/4.d0
-    endif
-    goto 100
-!
-36  continue
-    if (ptf .le. 30.d0) then
-        phase = 0.d0
-    else if (ptf.gt.30.d0 .and. ptf.le.45.d0) then
-        phase = pi
-    else if (ptf.gt.45.d0 .and. ptf.le.50.d0) then
-        phase = pi/4.d0
-    else if (ptf.gt.50.d0 .and. ptf.le.60.d0) then
-        phase = -pi/2.d0
-    else if (ptf.gt.60.d0 .and. ptf.le.90.d0) then
-        phase = pi/8.d0
-    else if (ptf.gt.90.d0 .and. ptf.le.110.d0) then
-        phase = pi/4.d0
-    else if (ptf.gt.110.d0 .and. ptf.le.130.d0) then
-        phase = 0.d0
-    else
-        phase = -pi/6.d0
-    endif
-    goto 100
-!
-46  continue
-    if (ptf .le. 45.d0) then
-        phase = 0.d0
-    else if (ptf.gt.45.d0 .and. ptf.le.55.d0) then
-        phase = pi/4.d0
-    else if (ptf.gt.55.d0 .and. ptf.le.80.d0) then
-        phase = 0.d0
-    else if (ptf.gt.80.d0 .and. ptf.le.90.d0) then
-        phase = pi/3.d0
-    else
-        phase = pi
-    endif
-    goto 100
-!
-56  continue
-    if (ptf .le. 95.d0) then
-        phase = pi
-    else
-        phase = 7.d0*pi/12.d0
-    endif
-!
-100  continue
+    end select
 end subroutine

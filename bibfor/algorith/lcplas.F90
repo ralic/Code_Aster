@@ -7,7 +7,7 @@ subroutine lcplas(fami, kpg, ksp, loi, toler,&
                   codret, theta, vp, vecp, seuil,&
                   devg, devgii, drdy, tampon, crit)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 !     ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,24 +134,28 @@ subroutine lcplas(fami, kpg, ksp, loi, toler,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, sigf, vinf, icomp,&
                     irtet, drdy, tampon, crit)
-        if (irtet .gt. 0) goto (1,2), irtet
+        if (irtet .eq. 1) then
+            goto 1
+        else if (irtet .eq. 2) then
+            goto 2
+        endif
 !
     endif
 !
 !     CONVERGENCE OK
 !
     codret = 0
-    goto 9999
+    goto 999
 !
- 1  continue
+  1 continue
 !
 !     PB INTEGRATION ou ITMAX ATTEINT : redecoupage local puis global
     codret = 1
-    goto 9999
+    goto 999
 !
- 2  continue
+  2 continue
 !     ITMAX ATTEINT : redecoupage du pas de temps global
     codret = 2
 !
-9999  continue
+999 continue
 end subroutine

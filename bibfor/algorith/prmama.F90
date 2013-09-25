@@ -81,82 +81,77 @@ subroutine prmama(iprod, amat, na, na1, na2,&
 !
     ier = 0
     zero = 0.0d0
-    goto (100,200,300,400) iprod
+    select case (iprod)
 !
 !---- C = A * B
 !
-100  continue
-    if (na2 .ne. nb1) ier = 1
-    if (nc1 .ne. na1 .or. nc2 .ne. nb2) ier = ier + 2
-    if (ier .ne. 0) goto 999
+    case (1)
+        if (na2 .ne. nb1) ier = 1
+        if (nc1 .ne. na1 .or. nc2 .ne. nb2) ier = ier + 2
+        if (ier .ne. 0) goto 999
 !
-    do 110 j = 1, nb2
-        do 120 i = 1, na1
-            ctemp = zero
-            do 130 k = 1, nb1
-                ctemp = ctemp + amat(i,k) * bmat(k,j)
-130          continue
-            cmat(i,j) = ctemp
-120      continue
-110  end do
-!
-    goto 999
+        do j = 1, nb2
+            do i = 1, na1
+                ctemp = zero
+                do k = 1, nb1
+                    ctemp = ctemp + amat(i,k) * bmat(k,j)
+                end do
+                cmat(i,j) = ctemp
+            end do
+        end do
 !
 !              T
 !---- C = A * B
 !
-200  continue
-    if (na2 .ne. nb2) ier = 1
-    if (nc1 .ne. na1 .or. nc2 .ne. nb1) ier = ier + 2
-    if (ier .ne. 0) goto 999
+    case (2)
+        if (na2 .ne. nb2) ier = 1
+        if (nc1 .ne. na1 .or. nc2 .ne. nb1) ier = ier + 2
+        if (ier .ne. 0) goto 999
 !
-    do 210 j = 1, nb1
-        do 220 i = 1, na1
-            ctemp = zero
-            do 230 k = 1, nb2
-                ctemp = ctemp + amat(i,k) * bmat(j,k)
-230          continue
-            cmat(i,j) = ctemp
-220      continue
-210  end do
-!
-    goto 999
+        do j = 1, nb1
+            do i = 1, na1
+                ctemp = zero
+                do k = 1, nb2
+                    ctemp = ctemp + amat(i,k) * bmat(j,k)
+                end do
+                cmat(i,j) = ctemp
+            end do
+        end do
 !
 !          T
 !---- C = A * B
 !
-300  continue
-    if (na1 .ne. nb1) ier = 1
-    if (nc1 .ne. na2 .or. nc2 .ne. nb2) ier = ier + 2
-    if (ier .ne. 0) goto 999
+    case (3)
+        if (na1 .ne. nb1) ier = 1
+        if (nc1 .ne. na2 .or. nc2 .ne. nb2) ier = ier + 2
+        if (ier .ne. 0) goto 999
 !
-    do 310 j = 1, nb2
-        do 320 i = 1, na2
-            cmat(i,j) = ddot(nb1,amat(1,i),1,bmat(1,j),1)
-320      continue
-310  end do
-!
-    goto 999
+        do j = 1, nb2
+            do i = 1, na2
+                cmat(i,j) = ddot(nb1,amat(1,i),1,bmat(1,j),1)
+            end do
+        end do
 !
 !          T   T
 !---- C = A * B
 !
-400  continue
-    if (na1 .ne. nb2) ier = 1
-    if (nc1 .ne. na2 .or. nc2 .ne. nb1) ier = ier + 2
-    if (ier .ne. 0) goto 999
+    case (4)
+        if (na1 .ne. nb2) ier = 1
+        if (nc1 .ne. na2 .or. nc2 .ne. nb1) ier = ier + 2
+        if (ier .ne. 0) goto 999
 !
-    do 410 j = 1, nb1
-        do 420 i = 1, na2
-            ctemp = zero
-            do 430 k = 1, nb2
-                ctemp = ctemp + amat(k,i) * bmat(j,k)
-430          continue
-            cmat(i,j) = ctemp
-420      continue
-410  end do
+        do j = 1, nb1
+            do i = 1, na2
+                ctemp = zero
+                do k = 1, nb2
+                    ctemp = ctemp + amat(k,i) * bmat(j,k)
+                end do
+                cmat(i,j) = ctemp
+            end do
+        end do
 !
-999  continue
+    end select
+999 continue
 !
 ! --- FIN DE PRMAMA.
 end subroutine

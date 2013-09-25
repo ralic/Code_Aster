@@ -72,9 +72,9 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
 !
 ! - ITEM = MOT CLE TYPE GROUPE ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         if (i .eq. 1) then
             grp = grn
             num = numn
@@ -83,10 +83,11 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
             num = numm
         endif
         goto 10
- 4  continue
+  4     continue
+    end do
     goto 3
 !
-10  continue
+ 10 continue
     call jeveuo(grp, 'E', iadg)
 !
 ! ----- LIRE ITEM SUIVANT =  NOM DU GROUPE ?
@@ -100,12 +101,20 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
         nomg(1:iv) = cv(1:iv)
         call tesfin(icl, iv, cv, irtet)
         ASSERT(irtet.eq.0)
-        if (irtet .gt. 0) goto (7,8), irtet
+        if (irtet .eq. 1) then
+            goto 7
+        else if (irtet .eq. 2) then
+            goto 8
+        endif
     else
 !
 ! -----   STOCKAGE PREMIER NOM DE NOEUD / MAILLE OU FIN APRES L'ENTETE
         call tesfin(icl, iv, cv, irtet)
-        if (irtet .gt. 0) goto (7,8), irtet
+        if (irtet .eq. 1) then
+            goto 7
+        else if (irtet .eq. 2) then
+            goto 8
+        endif
         nom = b8
         nom(1:iv) = cv(1:iv)
         zk8(iadg+num) = nom
@@ -113,7 +122,7 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     endif
 !
 ! ----- STOCKAGE DES NOMS DES NOEUDS OU MAILLES DU GROUPE
- 6  continue
+  6 continue
 !
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 2)
@@ -122,7 +131,11 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
 ! ----- ITEM = MOT  CLE FIN  OU FINSF ?
     if (deblig .eq. 1) then
         call tesfin(icl, iv, cv, irtet)
-        if (irtet .gt. 0) goto (7,8), irtet
+        if (irtet .eq. 1) then
+            goto 7
+        else if (irtet .eq. 2) then
+            goto 8
+        endif
     endif
 !
 ! ----- STOCKAGE DES NOEUDS OU MAILLES DU GROUPE
@@ -137,15 +150,15 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     goto 6
 !
 ! ----- SORTIE EN FIN OU FINSF
- 7  continue
+  7 continue
     ifn = 0
     goto 9
- 8  continue
+  8 continue
     ifn = 1
 !
 !
 ! ----- CREATION ET DIMENSIONNEMENT DE L OBJET GRP.NOM_DU_GROUPE
- 9  continue
+  9 continue
 !
     if (i .eq. 1) then
         nbitem = num - numn
@@ -172,19 +185,19 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     if (ifn .eq. 0) goto 1
     if (ifn .eq. 1) goto 2
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
+    goto 999
 !
 !       FINSF
- 2  continue
+  2 continue
     irteti = 2
-    goto 9999
+    goto 999
 !
- 3  continue
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

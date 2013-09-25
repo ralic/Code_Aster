@@ -110,20 +110,30 @@ subroutine flacon(n, v, x, isgn, est,&
 !     .. EXECUTABLE STATEMENTS ..
 !
     if (kase .eq. 0) then
-        do 10 i = 1, n
+        do i = 1, n
             x( i ) = one / dble( n )
-10      continue
+        end do
         kase = 1
         jump = 1
         goto 1000
     endif
 !
-    goto ( 20, 40, 70, 110, 140 )jump
+    if (jump .eq. 1) then
+        goto 20
+    else if (jump .eq. 2) then
+        goto 40
+    else if (jump .eq. 3) then
+        goto 70
+    else if (jump .eq. 4) then
+        goto 110
+    else if (jump .eq. 5) then
+        goto 140
+    endif
 !
 !     ................ ENTRY   (JUMP = 1)
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY A*X.
 !
-20  continue
+ 20 continue
     if (n .eq. 1) then
         v( 1 ) = x( 1 )
         est = abs( v( 1 ) )
@@ -132,10 +142,10 @@ subroutine flacon(n, v, x, isgn, est,&
     endif
     est = ldasum( n, x, 1 )
 !
-    do 30 i = 1, n
+    do i = 1, n
         x( i ) = sign( one, x( i ) )
         isgn( i ) = nint( x( i ) )
-30  end do
+    end do
     kase = 2
     jump = 2
     goto 1000
@@ -143,16 +153,16 @@ subroutine flacon(n, v, x, isgn, est,&
 !     ................ ENTRY   (JUMP = 2)
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
 !
-40  continue
+ 40 continue
     j = idamax( n, x, 1 )
     iter = 2
 !
 !     MAIN LOOP - ITERATIONS 2,3,...,ITMAX.
 !
-50  continue
-    do 60 i = 1, n
+ 50 continue
+    do i = 1, n
         x( i ) = zero
-60  end do
+    end do
     x( j ) = one
     kase = 1
     jump = 3
@@ -161,24 +171,24 @@ subroutine flacon(n, v, x, isgn, est,&
 !     ................ ENTRY   (JUMP = 3)
 !     X HAS BEEN OVERWRITTEN BY A*X.
 !
-70  continue
+ 70 continue
     call dcopy(n, x, 1, v, 1)
     estold = est
     est = ldasum( n, v, 1 )
-    do 80 i = 1, n
+    do i = 1, n
         if (nint( sign( one, x( i ) ) ) .ne. isgn( i )) goto 90
-80  end do
+    end do
 !     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
     goto 120
 !
-90  continue
+ 90 continue
 !     TEST FOR CYCLING.
     if (est .le. estold) goto 120
 !
-    do 100 i = 1, n
+    do i = 1, n
         x( i ) = sign( one, x( i ) )
         isgn( i ) = nint( x( i ) )
-100  end do
+    end do
     kase = 2
     jump = 4
     goto 1000
@@ -186,7 +196,7 @@ subroutine flacon(n, v, x, isgn, est,&
 !     ................ ENTRY   (JUMP = 4)
 !     X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
 !
-110  continue
+110 continue
     jlast = j
     j = idamax( n, x, 1 )
     if (( x( jlast ).ne.abs( x( j ) ) ) .and. ( iter.lt.itmax )) then
@@ -196,12 +206,12 @@ subroutine flacon(n, v, x, isgn, est,&
 !
 !     ITERATION COMPLETE.  FINAL STAGE.
 !
-120  continue
+120 continue
     altsgn = one
-    do 130 i = 1, n
+    do i = 1, n
         x( i ) = altsgn*( one+dble( i-1 ) / dble( n-1 ) )
         altsgn = -altsgn
-130  end do
+    end do
     kase = 1
     jump = 5
     goto 1000
@@ -209,16 +219,16 @@ subroutine flacon(n, v, x, isgn, est,&
 !     ................ ENTRY   (JUMP = 5)
 !     X HAS BEEN OVERWRITTEN BY A*X.
 !
-140  continue
+140 continue
     temp = two*( ldasum( n, x, 1 ) / dble( 3*n ) )
     if (temp .gt. est) then
         call dcopy(n, x, 1, v, 1)
         est = temp
     endif
 !
-150  continue
+150 continue
     kase = 0
-1000  continue
+1000 continue
 !
 !     END OF FLACON
 !

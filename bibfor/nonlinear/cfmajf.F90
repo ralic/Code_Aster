@@ -18,9 +18,8 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cfmajm.h"
 #include "asterfort/cftyli.h"
 #include "asterfort/jedema.h"
@@ -29,6 +28,7 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "blas/daxpy.h"
+!
     character(len=24) :: resoco
     integer :: neq, ndim
     integer :: nbliai, nbliac
@@ -96,56 +96,54 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
 !
 ! --- CALCUL DE DDEPL0 = DDEPL0 - C-1.AT.MU
 !
-    do 10 iliac = 1, nbliac + llf + llf1 + llf2
+    do iliac = 1, nbliac + llf + llf1 + llf2
         iliai = zi(jliac-1+iliac)
         call cftyli(resoco, iliac, posit)
-        goto (1000,2000,3000,4000) posit
+        select case (posit)
 !
 ! ----- LIAISON DE CONTACT
 !
-1000      continue
-        posnbl = posnbl + 1
-        call jeveuo(jexnum(cm1a, iliai), 'L', jcm1a)
-        call daxpy(neq, -zr(jmu-1+posnbl), zr(jcm1a), 1, zr(jddelt),&
-                   1)
-        call jelibe(jexnum(cm1a, iliai))
-        goto 10
+        case (1)
+            posnbl = posnbl + 1
+            call jeveuo(jexnum(cm1a, iliai), 'L', jcm1a)
+            call daxpy(neq, -zr(jmu-1+posnbl), zr(jcm1a), 1, zr(jddelt),&
+                       1)
+            call jelibe(jexnum(cm1a, iliai))
 !
 ! ----- LIAISON DE FROTTEMENT - 2D OU 3D DANS LES DEUX DIRECTIONS
 !
-2000      continue
-        poslf0 = poslf0 + 1
-        call jeveuo(jexnum(cm1a, iliai+nbliai), 'L', jcm1a)
-        call daxpy(neq, -zr(jmu-1+poslf0), zr(jcm1a), 1, zr(jddelt),&
-                   1)
-        call jelibe(jexnum(cm1a, iliai+nbliai))
-        if (ndim .eq. 3) then
-            call jeveuo(jexnum(cm1a, iliai+(ndim-1)*nbliai), 'L', jcm1a)
-            call daxpy(neq, -zr(jmu-1+poslf0+llf), zr(jcm1a), 1, zr(jddelt),&
+        case (2)
+            poslf0 = poslf0 + 1
+            call jeveuo(jexnum(cm1a, iliai+nbliai), 'L', jcm1a)
+            call daxpy(neq, -zr(jmu-1+poslf0), zr(jcm1a), 1, zr(jddelt),&
                        1)
-            call jelibe(jexnum(cm1a, iliai+(ndim-1)*nbliai))
-        endif
-        goto 10
+            call jelibe(jexnum(cm1a, iliai+nbliai))
+            if (ndim .eq. 3) then
+                call jeveuo(jexnum(cm1a, iliai+(ndim-1)*nbliai), 'L', jcm1a)
+                call daxpy(neq, -zr(jmu-1+poslf0+llf), zr(jcm1a), 1, zr(jddelt),&
+                           1)
+                call jelibe(jexnum(cm1a, iliai+(ndim-1)*nbliai))
+            endif
 !
 ! ----- LIAISON DE FROTTEMENT - 3D PREMIERE DIRECTION
 !
-3000      continue
-        poslf1 = poslf1 + 1
-        call jeveuo(jexnum(cm1a, iliai+nbliai), 'L', jcm1a)
-        call daxpy(neq, -zr(jmu-1+poslf1), zr(jcm1a), 1, zr(jddelt),&
-                   1)
-        call jelibe(jexnum(cm1a, iliai+nbliai))
-        goto 10
+        case (3)
+            poslf1 = poslf1 + 1
+            call jeveuo(jexnum(cm1a, iliai+nbliai), 'L', jcm1a)
+            call daxpy(neq, -zr(jmu-1+poslf1), zr(jcm1a), 1, zr(jddelt),&
+                       1)
+            call jelibe(jexnum(cm1a, iliai+nbliai))
 !
 ! ----- LIAISON DE FROTTEMENT - 3D SECONDE DIRECTION
 !
-4000      continue
-        poslf2 = poslf2 + 1
-        call jeveuo(jexnum(cm1a, iliai+(ndim-1)*nbliai), 'L', jcm1a)
-        call daxpy(neq, -zr(jmu-1+poslf2), zr(jcm1a), 1, zr(jddelt),&
-                   1)
-        call jelibe(jexnum(cm1a, iliai+(ndim-1)*nbliai))
-10  end do
+        case (4)
+            poslf2 = poslf2 + 1
+            call jeveuo(jexnum(cm1a, iliai+(ndim-1)*nbliai), 'L', jcm1a)
+            call daxpy(neq, -zr(jmu-1+poslf2), zr(jcm1a), 1, zr(jddelt),&
+                       1)
+            call jelibe(jexnum(cm1a, iliai+(ndim-1)*nbliai))
+        end select
+    end do
 !
     call jedema()
 !

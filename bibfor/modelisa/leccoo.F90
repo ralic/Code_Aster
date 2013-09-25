@@ -45,6 +45,7 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
 #include "asterfort/vernmb.h"
+    integer :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig
@@ -55,7 +56,7 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
     character(len=24) :: valk(3), nom
 !-----------------------------------------------------------------------
     integer :: i, icl, ier, ifl, ifm, ilec, inom
-    integer :: irtet, irteti, iv, j, nbg, nbm
+    integer :: irtet, irteti, iv, j, nbg
     integer :: numtcl
 !-----------------------------------------------------------------------
     irteti = 0
@@ -64,19 +65,20 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
 !
 ! ----- ITEM = MOT CLE  TYPE COORDONNEES ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         numtcl = i
         goto 5
- 4  continue
+  4     continue
+    end do
     goto 3
 !
 ! - VERIFICATION DE COMPATIBILITE DES DECLARATIONS DE DIMENSIONS
 !
- 5  continue
+  5 continue
     if (nbg .ge. 1) write(ifm,*)' ----- LECCOO'
-    do 6 j = 1, nbm
+    do j = 1, nbm
         if (dim(j) .ne. 0 .and. j .ne. i) then
             valk(1) = cnl
             valk(2) = mcl(i)
@@ -85,7 +87,7 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
             ier = 1
             goto 2
         endif
- 6  continue
+    end do
 !
 ! - LECTURE DE L'ENTETE
 !
@@ -98,32 +100,36 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
 !
 ! - LIRE ITEM SUIVANT
 !
- 7  continue
+  7 continue
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 1)
     if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
                     ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
- 9  continue
+  9 continue
 !
 ! - ITEM EN DEBUT DE LIGNE ?
 !
     call verdbl(deblig, cnl, ier, irtet)
-    if (irtet .gt. 0) goto (2), irtet
+    if (irtet .eq. 1) goto 2
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
 !
     call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (1,2), irtet
+    if (irtet .eq. 1) then
+        goto 1
+    else if (irtet .eq. 2) then
+        goto 2
+    endif
 !
 ! - ITEM = MOT ? > LECTURE NOM DU NOEUD
 !
     call vermot(icl, iv, cv, cnl, ier,&
                 irtet)
-    if (irtet .gt. 0) goto (2), irtet
+    if (irtet .eq. 1) goto 2
 !
 ! - LECTURE DES COORDONNEES
 !
-    do 8 i = 1, numtcl
+    do i = 1, numtcl
 !
 ! - LIRE ITEM SUIVANT
 !
@@ -135,26 +141,26 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
 ! - ITEM = NOMBRE ?
 !
         call vernmb(icl, cnl, ier, irtet)
-        if (irtet .gt. 0) goto (2), irtet
+        if (irtet .eq. 1) goto 2
 !
 ! - INCREMENTATION DU NB TOTAL DE COORDONNEES LUES
 !
         nbt(numtcl) = nbt(numtcl) + 1
 !
- 8  continue
+    end do
     dim(numtcl) = dim(numtcl) + 1
 !
     goto 7
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

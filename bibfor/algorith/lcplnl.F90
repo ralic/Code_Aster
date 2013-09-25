@@ -121,7 +121,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !
     common /tdim/   ndt  , ndi
 !
-    integer ::  intg, codret
+    integer :: intg, codret
 !
     integer :: nbcomm(nmat, 3), verjac, nfs, nsg
     real(kind=8) :: pgl(3, 3), epstr(6)
@@ -187,7 +187,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     typess = -1
     intg = 0
 !
- 2  continue
+  2 continue
 !
     call r8inir(nr, 0.d0, r, 1)
     call r8inir(ndt+nvi, 0.d0, ddy, 1)
@@ -212,7 +212,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !
     iter = 0
 !
- 1  continue
+  1 continue
 !
 !     ITERATIONS DE NEWTON
     iter = iter + 1
@@ -308,7 +308,13 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !          = 2 RE-INTEGRATION
 !          = 3 REDECOUPAGE DU PAS DE TEMPS
 !
-    if (iret .gt. 0) goto (1,2,3), iret
+    if (iret .eq. 1) then
+        goto 1
+    else if (iret .eq. 2) then
+        goto 2
+    else if (iret .eq. 3) then
+        goto 3
+    endif
 !
 !     CONVERGENCE > INCREMENTATION DE  YF = YD + DY
     call lcsovn(ndt+nvi, yd, dy, yf)
@@ -332,12 +338,12 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !
 !     CONVERGENCE
     codret = 0
-    goto 9999
+    goto 999
 !
- 3  continue
+  3 continue
 !     NON CV, OU PB => REDECOUPAGE (LOCAL OU GLOBAL) DU PAS DE TEMPS
     codret = 1
 !
-9999  continue
+999 continue
 !
 end subroutine

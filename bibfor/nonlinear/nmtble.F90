@@ -112,71 +112,72 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
     mmcvgo = .false.
     instan = diinst(sddisc,numins)
 !
-    goto (101,102,103) niveau
-!
 ! --- NIVEAU: 1   BOUCLE CONTRAINTES ACTIVES
 !
-101  continue
+    if (niveau .le. 1) then
 !
 ! --- EVALUATION STATUTS DU CONTACT
 !
-    if (lboucc) then
-        niveau = 1
-        call nmtime(sdtime, 'INI', 'CTCC_CONT')
-        call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call nmctcc(noma, modele, mate, sddyna, sdimpr,&
-                    sderro, defico, resoco, valinc, solalg,&
-                    mmcvca, instan)
-        call nmtime(sdtime, 'END', 'CTCC_CONT')
-        call nmrinc(sdstat, 'CTCC_CONT')
+        if (lboucc) then
+            niveau = 1
+            call nmtime(sdtime, 'INI', 'CTCC_CONT')
+            call nmtime(sdtime, 'RUN', 'CTCC_CONT')
+            call nmctcc(noma, modele, mate, sddyna, sdimpr,&
+                        sderro, defico, resoco, valinc, solalg,&
+                        mmcvca, instan)
+            call nmtime(sdtime, 'END', 'CTCC_CONT')
+            call nmrinc(sdstat, 'CTCC_CONT')
 !
 ! ----- ON CONTINUE LA BOUCLE
 !
-        if (.not.mmcvca) then
-            niveau = 1
-            goto 999
+            if (.not.mmcvca) then
+                niveau = 1
+                goto 999
+            endif
         endif
     endif
 !
 ! --- NIVEAU: 2   BOUCLE SEUILS DE FROTTEMENT
 !
-102  continue
+    if (niveau .le. 2) then
 !
 ! --- CALCUL SEUILS DE FROTTEMENT
 !
-    if (lboucf) then
-        niveau = 2
-        call nmtime(sdtime, 'INI', 'CTCC_FROT')
-        call nmtime(sdtime, 'RUN', 'CTCC_FROT')
-        call nmctcf(noma, modele, sdimpr, sderro, defico,&
-                    resoco, valinc, mmcvfr)
-        call nmtime(sdtime, 'END', 'CTCC_FROT')
-        call nmrinc(sdstat, 'CTCC_FROT')
+        if (lboucf) then
+            niveau = 2
+            call nmtime(sdtime, 'INI', 'CTCC_FROT')
+            call nmtime(sdtime, 'RUN', 'CTCC_FROT')
+            call nmctcf(noma, modele, sdimpr, sderro, defico,&
+                        resoco, valinc, mmcvfr)
+            call nmtime(sdtime, 'END', 'CTCC_FROT')
+            call nmrinc(sdstat, 'CTCC_FROT')
 !
 ! ----- ON CONTINUE LA BOUCLE
 !
-        if (.not.mmcvfr) then
-            niveau = 2
-            goto 999
+            if (.not.mmcvfr) then
+                niveau = 2
+                goto 999
+            endif
         endif
     endif
 !
 ! --- NIVEAU: 3   BOUCLE GEOMETRIE
 !
-103  continue
+    if (niveau .le. 3) then
 !
 ! --- CALCUL SEUILS DE GEOMETRIE
 !
-    if (lboucg) then
-        niveau = 3
-        call nmctgo(noma, sdimpr, sderro, defico, resoco,&
-                    valinc, mmcvgo)
+        if (lboucg) then
+            niveau = 3
+            call nmctgo(noma, sdimpr, sderro, defico, resoco,&
+                        valinc, mmcvgo)
 !
 ! ----- ON CONTINUE LA BOUCLE
 !
-        if (.not.mmcvgo) then
-            niveau = 3
-            goto 999
+            if (.not.mmcvgo) then
+                niveau = 3
+                goto 999
+            endif
         endif
     endif
 !

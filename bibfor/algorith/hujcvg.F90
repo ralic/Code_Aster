@@ -19,7 +19,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-! aslint: disable=W1306,W1501
+! aslint: disable=W1306
     implicit none
 !     ----------------------------------------------------------------
 !     CRITERE DE CONVERGENCE SUR SOLUTION PROPOSEE PAR NEWTON
@@ -55,9 +55,10 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcnrvn.h"
 #include "asterfort/lcsovn.h"
+    integer :: nvi, nr, nmat
     real(kind=8) :: mater(nmat, 2), vind(nvi), vinf(nvi), vins(nvi)
     real(kind=8) :: yd(nr), dy(nr), r(nr), toler, ye(nr)
-    integer :: nvi, nr, indi(7), iter, iret, itmax, intg, nmat
+    integer :: indi(7), iter, iret, itmax, intg
     logical :: bnews(3), mtrac, lreli
 !
     integer :: nbmeca, nbmect, ndt, k, i, j, msup(2), resi, imin, ndi
@@ -86,12 +87,12 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- DETERMINATION DU NOMBRE DE MECANISMES POTENTIELLEMENT ACTIFS
     nbmeca = 0
     nbmect = 0
-    do 10 k = 1, 7
+    do k = 1, 7
         if (indi(k) .gt. 0) then
             nbmect = nbmect + 1
             if (indi(k) .le. 8) nbmeca = nbmeca + 1
         endif
-10  end do
+    end do
 !
 ! --- MISE A L'ECHELLE DES CONTRAINTES ET VARIABLES CONTENUES DANS YF
 ! --- SIGMA * E0, R * E0/PREF
@@ -102,16 +103,16 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     call lceqvn(nr, yf, yft)
     call lceqvn(nr, ye, yet)
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         ydt(i) = yd(i)*e0
         yft(i) = yf(i)*e0
         yet(i) = ye(i)*e0
-20  end do
-    do 30 i = 1, nbmeca
+    end do
+    do i = 1, nbmeca
         ydt(ndt+1+i) = yd(ndt+1+i)*e0/abs(pref)
         yft(ndt+1+i) = yf(ndt+1+i)*e0/abs(pref)
         yet(ndt+1+i) = ye(ndt+1+i)*e0/abs(pref)
-30  end do
+    end do
 ! --- CONTROLE DU NIVEAU DE CONVERGENCE ATTEINT
     call lcnrvn(nr, r, err)
 !
@@ -148,21 +149,21 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                     goto 999
                 endif
             else
-                do 40 i = 1, 3
+                do i = 1, 3
                     call hujprj(i, yft, dev, pf, qf)
                     if (((pf+rtrac-ptrac)/abs(pref)) .ge. -r8prem()) then
-                        do 50 j = 1, nbmeca
+                        do j = 1, nbmeca
                             if ((indi(j).eq.i) .or. (indi(j).eq.(i+4))) then
                                 tracti = .true.
                                 goto 999
                             endif
-50                      continue
+                        end do
                     endif
                     if (abs(pf) .gt. e0*1.d1) then
                         iret = 3
                         goto 999
                     endif
-40              continue
+                end do
             endif
             goto 1000
         endif
@@ -179,7 +180,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         endif
     endif
 !
-60  continue
+ 60 continue
 ! ---------------------------------------
 ! --- CONTROLE DE LA SOLUTION OBTENUE ---
 ! ---------------------------------------
@@ -187,13 +188,13 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! ---- VERIFICATION DES MULTIPLICATEURS PLASTIQUES
 ! -------------------------------------------------
     maxi = toler
-    do 70 k = 1, nbmect
+    do k = 1, nbmect
         if (yft(ndt+1+nbmeca+k) .gt. maxi) maxi = yft(ndt+1+nbmeca+k)
-70  end do
+    end do
 !
     negtra = .false.
 !
-    do 80 k = 1, nbmect
+    do k = 1, nbmect
         ratio = yft(ndt+1+nbmeca+k)/maxi
         if (ratio .lt. (-toler)) then
             if (indi(k) .gt. 8) then
@@ -206,7 +207,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 negtra = .true.
             endif
         endif
-80  end do
+    end do
 !
 ! -------------------------------------------------------
 ! ---> MECANISME DE TRACTION
@@ -227,14 +228,14 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !     NE PRESENTENT PAS DE TRACTION
 ! -------------------------------------------------------
     noconv = .false.
-    do 90 i = 1, ndi
+    do i = 1, ndi
         call hujprj(i, yft, dev, pf, qf)
         if (((pf+rtrac-ptrac)/abs(pref)) .gt. zero) then
             noconv=.true.
             bnews(i) = .false.
             iret = 2
         endif
-90  end do
+    end do
 !
 ! -------------------------------------------------------
 ! --- SI TRACTION DETECTEE ET NON CONVERGENCE, ON IMPOSE
@@ -242,28 +243,28 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! -------------------------------------------------------
     if ((noconv) .and. (nbmect.ne.nbmeca)) then
         noconv=.false.
-        do 100 i = 1, 3
+        do i = 1, 3
             vind(23+i) = zero
             vind(27+i) = zero
             vind(5+4*i) = zero
             vind(6+4*i) = zero
             vind(7+4*i) = zero
             vind(8+4*i) = zero
-100      continue
-        do 110 i = 1, ndi
+        end do
+        do i = 1, ndi
             dy(i) = -yd(i)-deux*rtrac/e0
             dy(ndi+i) = -yd(i)
-110      continue
-        do 120 i = 1, nbmeca+nbmect+1
+        end do
+        do i = 1, nbmeca+nbmect+1
             dy(ndt+i) = zero
-120      continue
+        end do
         call lceqvn(nvi, vind, vinf)
         iret = 0
     endif
 !
     goto 1000
 !
-999  continue
+999 continue
 ! -----------------------------------------------
 ! --- NOMBRE DE TENTATIVES DE RELANCE DEPASSE ---
 ! -----------------------------------------------
@@ -272,20 +273,20 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- UN MECANISME DE TRACTION : ETAT INIT = SIGD, VINS
         iret = 3
         noconv = .true.
-        do 130 i = 1, ndi
+        do i = 1, ndi
             call hujprj(i, ydt, dev, pf, qf)
             if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
                 noconv=.false.
                 iret = 0
             endif
-130      continue
+        end do
         if (.not.noconv) then
 ! --- EN POSANT NOCONV = .TRUE., ON CONDUIT L'ALGORITHME PRESENT
 ! --- A IMPOSER UN ETAT DE CONTRAINTES ISOTROPE COMMUN
 ! --- AUX 3 SEUILS PLASTIQUES DE TRACTION
-            do 140 i = 1, nr
+            do i = 1, nr
                 dy(i) = zero
-140          continue
+            end do
             call lceqvn(nvi, vins, vind)
             call lceqvn(nvi, vins, vinf)
             iret = 0
@@ -296,29 +297,29 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- ETAT DE CONTRAINTES ISOTROPE
 ! -------------------------------------------------------
             impose = .false.
-            do 150 i = 1, ndi
+            do i = 1, ndi
                 call hujprj(i, yft, dev, pf, qf)
                 if ((abs(pf-ptrac)/abs(pref)) .lt. cinq*rtrac/abs(pref)) then
                     impose = .true.
                 endif
-150          continue
+            end do
             if (impose) then
                 noconv = .false.
-                do 160 i = 1, 3
+                do i = 1, 3
                     vind(23+i) = zero
                     vind(27+i) = zero
                     vind(5+4*i) = zero
                     vind(6+4*i) = zero
                     vind(7+4*i) = zero
                     vind(8+4*i) = zero
-160              continue
-                do 170 i = 1, ndi
+                end do
+                do i = 1, ndi
                     dy(i) = -yd(i)-deux*rtrac/e0
                     dy(ndi+i) = -yd(ndi+i)
-170              continue
-                do 180 i = 1, nbmeca+nbmect+1
+                end do
+                do i = 1, nbmeca+nbmect+1
                     dy(ndt+i) = zero
-180              continue
+                end do
                 call lceqvn(nvi, vind, vinf)
                 iret = 0
             endif
@@ -335,34 +336,34 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     msup(1) = 0
     msup(2) = 0
     jj = 0
-    do 200 i = 5, 8
+    do i = 5, 8
         if ((vind(23+i).ne.vins(23+i)) .and. (vind(23+i).eq.zero)) then
             jj = jj+1
             msup(jj) = i
         endif
-200  end do
+    end do
 !
 ! --- EXISTE-T-IL UN PB DE TANGENCE ENTRE MECANISMES
-    do 210 k = 1, 4
+    do k = 1, 4
         prox(k) = .false.
         proxc(k) = .false.
-210  end do
+    end do
 !
-    do 215 i = 1, 22
+    do i = 1, 22
         matert(i,1) = mater(i,1)
         matert(i,2) = mater(i,2)
-215  end do
+    end do
 !
-    do 220 k = 1, nbmeca
+    do k = 1, nbmeca
         if ((indi(k).gt.4) .and. (indi(k).lt.8)) then
             kk = indi(k)-4
             call hujpxd(indi(k), matert, yft, vind, prox(kk),&
                         proxc(kk))
         endif
-220  end do
+    end do
 !
     probt = .false.
-    do 230 i = 1, 3
+    do i = 1, 3
         prob(i) = zero
         if (prox(i)) then
             prob(i) = un
@@ -371,11 +372,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             prob(i) = deux
             probt = .true.
         endif
-230  continue
+    end do
 !
     if (probt) then
         call lceqvn(nvi, vins, vind)
-        do 240 i = 1, 3
+        do i = 1, 3
             if (prob(i) .eq. un) then
                 vind(i+4) = mater(18,2)
                 vind(23+i) = un
@@ -392,16 +393,16 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             else if (prob(i).eq.deux) then
                 vind(27+i) = zero
             endif
-240      continue
+        end do
         iret = 0
         probt = .false.
 !
 ! --- MECANISME CYCLIQUE A DESACTIVE
 ! --- ET DEJA DESACTIVE ANTERIEUREMENT
         if (jj .ne. 0) then
-            do 250 i = 1, jj
+            do i = 1, jj
                 vind(23+msup(i)) = zero
-250          continue
+            end do
         endif
 !
         call lceqvn(nvi, vind, vinf)
@@ -412,7 +413,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     if (tracti) then
         call lceqvn(nvi, vins, vind)
         modif = .false.
-        do 260 i = 1, nbmect
+        do i = 1, nbmect
             if (yet(ndt+1+nbmeca+i) .eq. zero) then
                 modif = .true.
                 if (indi(i) .le. 8) then
@@ -431,17 +432,17 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                     neglam(indi(i)-8) = .true.
                 endif
             endif
-260      continue
+        end do
 !
-        do 270 i = 1, nbmect
+        do i = 1, nbmect
             if (indi(i) .eq. 8) then
                 vind(23+indi(i)) = zero
                 modif = .true.
             endif
-270      continue
+        end do
 !
         mtrac = .false.
-        do 280 i = 1, 3
+        do i = 1, 3
 ! --- ON NE DOIT PAS REACTIVE UN MECANISME DE TRACTION QUI DONNE
 !     COMME PREDICTEUR UN MULTIPLICATEUR PLASTIQUE NEGATIF
             if (.not.neglam(i)) then
@@ -454,7 +455,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                     if(.not.modif)mtrac = .true.
                 endif
             endif
-280      continue
+        end do
         call lceqvn(nvi, vind, vinf)
         iret = 2
         goto 1000
@@ -465,18 +466,18 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !-----------------------------------------------------------
     maxi = zero
     resi = 0
-    do 290 i = 1, nr
+    do i = 1, nr
         if (abs(r(i)) .gt. maxi) then
             maxi = abs(r(i))
             resi = i
         endif
-290  end do
+    end do
     cycl = .false.
-    do 300 i = 1, nbmeca
+    do i = 1, nbmeca
         if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi(i)) .eq.mater(18,2))) then
             cycl = .true.
         endif
-300  end do
+    end do
 !
 ! ---------------------------------------------------------------
 ! --- SI RESIDU LOCAL MAXI PORTE PAR RDEV_CYC => MECANISME RETIRE
@@ -489,19 +490,19 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             call lceqvn(nvi, vins, vind)
             vind(23+indi(resi)) = zero
             if (jj .ne. 0) then
-                do 310 i = 1, jj
+                do i = 1, jj
                     vind(23+msup(i)) = zero
-310              continue
+                end do
             endif
 !
 ! --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT
 !     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ?
-            do 320 i = 1, nbmeca
+            do i = 1, nbmeca
                 if ((indi(i).gt.4) .and. (indi(i).lt.8) .and.&
                     (((maxi- abs(r(7+i)))/toler).lt.toler) .and. (i.ne.resi)) then
                     vind(23+indi(i)) = zero
                 endif
-320          continue
+            end do
 !
             iret = 2
             call lceqvn(nvi, vind, vinf)
@@ -517,11 +518,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !
     if (cycl) then
         call lceqvn(nvi, vins, vind)
-        do 330 i = 1, nbmeca
+        do i = 1, nbmeca
             if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi( i)).eq.mater(18,2))) then
                 vind(23+indi(i)) = zero
             endif
-330      continue
+        end do
         iret = 2
         call lceqvn(nvi, vind, vinf)
         goto 1000
@@ -534,11 +535,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     if (nbmect .ne. nbmeca) then
         call lceqvn(nvi, vins, vind)
         iret = 2
-        do 340 i = nbmeca+1, nbmect
+        do i = nbmeca+1, nbmect
             if (yet(ndt+1+nbmeca+i) .eq. zero) then
                 bnews(indi(i)-8) = .true.
             endif
-340      continue
+        end do
         call lceqvn(nvi, vind, vinf)
         goto 1000
     endif
@@ -551,7 +552,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     euler = .true.
     lamin = 1.d2
     imin = 0
-    do 350 i = 1, nbmeca
+    do i = 1, nbmeca
         if (yet(ndt+1+nbmeca+i) .eq. zero) then
             if ((indi(i).gt.4) .and. (indi(i).lt.9)) then
                 vind(indi(i)+23) = 0
@@ -569,15 +570,15 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             lamin = yet(ndt+1+nbmeca+i)
             imin = i
         endif
-350  end do
+    end do
 !
     if (.not.euler) then
 ! --- MECANISME CYCLIQUE A DESACTIVE
 ! --- ET DEJA DESACTIVE ANTERIEUREMENT
         if (jj .ne. 0) then
-            do 360 i = 1, jj
+            do i = 1, jj
                 vind(23+msup(i)) = zero
-360          continue
+            end do
         endif
 !
         call lceqvn(nvi, vind, vinf)
@@ -598,7 +599,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- DERNIER ESSAI: VALEUR DES CONTRAINTES PRE, DURANT ET POST
 ! ---------------------------------------------------------------
     ltry = .false.
-    do 370 i = 1, ndi
+    do i = 1, ndi
         call hujprj(i, yd, dev, pf, qf)
         if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
             bnews(i) = .false.
@@ -614,7 +615,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             bnews(i) = .false.
             ltry = .true.
         endif
-370  end do
+    end do
 !
     if (ltry) then
         call lceqvn(nvi, vind, vinf)
@@ -624,5 +625,5 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         iret = 3
     endif
 !
-1000  continue
+1000 continue
 end subroutine

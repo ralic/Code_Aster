@@ -2,7 +2,6 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
                   numvir, numfon, nvit, nbeta, nbptff,&
                   radimp, radtor, damax, noma, locdom)
 !
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
@@ -133,26 +132,26 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     call wkvect('&&XPRVIR.NUM_FON_VIRPR', 'V V I', (2*numfon), nfvpr)
 !
 !     ON INITIALISE LES FONDS DE FISSURE ACTUEL
-    do 1 i = 1, (4*nbptff)
+    do i = 1, (4*nbptff)
         zr(cfv+i-1)=zr(jfonf+i-1)
         zr(cfvpr+i-1)=zr(jfonf+i-1)
- 1  end do
-    do 2 i = 1, 6*(nbptff)
+    end do
+    do i = 1, 6*(nbptff)
         zr(bfv+i-1)=zr(jbasef+i-1)
         zr(bfvpr+i-1)=zr(jbasef+i-1)
- 2  end do
-    do 3 i = 1, (nbptff)
+    end do
+    do i = 1, (nbptff)
         zr(vfv+i-1)=zr(jvit+i-1)
         zr(vfvpr+i-1)=zr(jvit+i-1)
- 3  end do
-    do 4 i = 1, (nbptff)
+    end do
+    do i = 1, (nbptff)
         zr(afv+i-1)=zr(jbeta+i-1)
         zr(afvpr+i-1)=zr(jbeta+i-1)
- 4  end do
-    do 5 i = 1, (2*numfon)
+    end do
+    do i = 1, (2*numfon)
         zi(nfv+i-1)=zi(jfmult+i-1)
         zi(nfvpr+i-1)=zi(jfmult+i-1)
- 5  end do
+    end do
     if (niv .ge. 1) then
         write(ifm,*) ' '
         write(ifm,*) 'COORDONNEES DES POINTS VIRTUELS'
@@ -168,53 +167,53 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
             write(ifm,*) '------------------------------------------'
         endif
 !
-        do 10 k = 1, (numfon-1)
+        do k = 1, (numfon-1)
 !         ON REPERE LE DERNIER POINT DU Kieme FOND
             npoin=zi(nfv-1+2*k)
 !
 !         COORDONNEES DES 2 DERNIERS POINTS DU FOND
 !         ET DES 2 PREMIERS POINTS DU FOND SUIVANT
-            do 20 i = 1, 3
+            do i = 1, 3
                 pi(i)=zr(cfvpr-1+4*(npoin-2)+i)
                 pj(i)=zr(cfvpr-1+4*(npoin-1)+i)
                 pk(i)=zr(cfvpr-1+4*(npoin)+i)
                 pl(i)=zr(cfvpr-1+4*(npoin+1)+i)
-20          continue
+            end do
 !
 !         CALCUL DES VECTEURS IJ ET KL
-            do 30 i = 1, 3
+            do i = 1, 3
                 pij(i)=pj(i)-pi(i)
                 pkl(i)=pl(i)-pk(i)
-30          continue
+            end do
 !
 !         CALCUL DES NORMES DES VECTEURS IJ ET KL
             normij=sqrt(pij(1)**2+pij(2)**2+pij(3)**2)
             normkl=sqrt(pkl(1)**2+pkl(2)**2+pkl(3)**2)
 !         ON NORME LES VECTEURS PIJ et PKL
-            do 40 i = 1, 3
+            do i = 1, 3
                 pij(i)=pij(i)/normij
                 pkl(i)=pkl(i)/normkl
-40          continue
+            end do
 !
             if (locdom) then
 !         LE RAYON D'ACTUALISATION DES LEVEL SETS A BIEN ETE DEFINI
                 if (radimp .gt. 0.d0) then
-                    do 50 i = 1, 3
+                    do i = 1, 3
                         p1(i)=pj(i)+radimp*pij(i)
                         p2(i)=pk(i)-radimp*pkl(i)
-50                  continue
+                    end do
                 else
-                    do 60 i = 1, 3
+                    do i = 1, 3
                         p1(i)=pj(i)+radtor*pij(i)
                         p2(i)=pk(i)-radtor*pkl(i)
-60                  continue
+                    end do
                 endif
             else
 !         SINON ON UTILISE L'AVANCEMENT MAXIMAL DE LA FISSURE
-                do 70 i = 1, 3
+                do i = 1, 3
                     p1(i)=pj(i)+7*damax*pij(i)
                     p2(i)=pk(i)-7*damax*pkl(i)
-70              continue
+                end do
             endif
 !
 !         DISTANCE ENTRE LES FRONTS DE FISSURES
@@ -230,15 +229,15 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !         SI LA DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
             if (normj1 .gt. (normjk/3.d0)) then
                 normj1=normjk/3.d0
-                do 80 i = 1, 3
+                do i = 1, 3
                     p1(i)=pj(i)+(normj1*pij(i))
-80              continue
+                end do
             endif
             if (normk2 .gt. (normjk/3.d0)) then
                 normk2=normjk/3.d0
-                do 81 i = 1, 3
+                do i = 1, 3
                     p2(i)=pk(i)-(normk2*pkl(i))
-81              continue
+                end do
             endif
 !
 !         ON S'ASSURE QUE LA VITESSE DES POINTS VIRTUELS EST POSITIVE
@@ -257,16 +256,16 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !         RAPPROCHE LES POINTS
             if (abs(v1) .lt. abs(2.d0*vj/3.d0) .or. (abs(v1).gt. abs(( 4.d0*vj/3.d0)))) then
                 normj1=abs(vj/(3.d0*dv1))
-                do 90 i = 1, 3
+                do i = 1, 3
                     p1(i)=pj(i)+(pij(i)*normj1)
-90              continue
+                end do
                 v1=vj+(dv1*normj1)
             endif
             if ((abs(v2).lt.abs(2.d0*vk/3.d0)) .or. (abs(v2).gt. abs(4.d0*vk/3.d0))) then
                 normk2=abs(vk/(3.d0*dv2))
-                do 100 i = 1, 3
+                do i = 1, 3
                     p2(i)=pk(i)-(pkl(i)*normk2)
-100              continue
+                end do
                 v2=vk-(dv2*normk2)
             endif
 !
@@ -285,26 +284,26 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !         POUR LE POINT 1
             if ((a1.gt.(1.51d0)) .or. (a1.lt.(-1.51d0))) then
                 normj1=(1.51d0-abs(ai))/abs(da1)
-                do 110 i = 1, 3
+                do i = 1, 3
                     p1(i)=pj(i)+(pij(i)*normj1)
-110              continue
+                end do
                 v1=vj+(dv1*normj1)
                 a1=aj+da1*normj1
             endif
 !         POUR LE POINT 2
             if ((a2.gt.(1.51d0)) .or. (a2.lt.(-1.51d0))) then
                 normk2=(1.51d0-abs(al))/abs(da2)
-                do 120 i = 1, 3
+                do i = 1, 3
                     p2(i)=pk(i)-(pkl(i)*normk2)
-120              continue
+                end do
                 v2=vk-(dv2*normk2)
                 a2=ak-da2*normk2
             endif
 !         ON REMPLIT LE VECTEUR CONTENANT LES COORDONNEES DU FRONT
-            do 130 i = 1, 3
+            do i = 1, 3
                 zr(cfv-1+4*npoin+i)=p1(i)
                 zr(cfv-1+4*(npoin+1)+i)=p2(i)
-130          continue
+            end do
 !
 !         IMPRESSION DES COORDONNEES DES POINTS VIRTUELS
 !         INTERIEURS EN INFO>0
@@ -323,65 +322,65 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
             zr(cfv-1+4*(npoin+1)+4)=(zr(cfvpr-1+4*(npoin)+4)+ zr(&
             cfvpr-1+4*(npoin+1)+4))/2.d0
 !
-            do 140 i = (npoin+1), nbptff
-                do 150 j = 1, 4
+            do i = (npoin+1), nbptff
+                do j = 1, 4
                     zr(cfv-1+4*(i+1)+j)=zr(cfvpr-1+4*(i-1)+j)
-150              continue
-140          continue
+                end do
+            end do
 !
 !         ON ECRIT LES VITESSES DANS LES EMPLACEMENTS RESERVES
             zr(vfv+npoin)=v1
             zr(vfv+npoin+1)=v2
-            do 170 i = (npoin+1), nbptff
+            do i = (npoin+1), nbptff
                 zr(vfv+(i+1))=zr(vfvpr+(i-1))
-170          continue
+            end do
 !
 !         ON ECRIE LES VECTEURS DE LA BASE LOCALE DANS LES
 !         EMPLACEMENTS RESERVES
-            do 180 j = 1, 6
+            do j = 1, 6
                 zr(bfv-1+6*npoin+j)=zr(bfvpr-1+6*(npoin-1)+j)
                 zr(bfv-1+6*(npoin+1)+j)=zr(bfvpr-1+6*(npoin)+j)
-                do 190 i = (npoin+1), nbptff
+                do i = (npoin+1), nbptff
                     zr(bfv+6*(i+1)+j)=zr(bfvpr+6*(i-1)+j)
-190              continue
-180          continue
+                end do
+            end do
 !
 !         ON ECRIT LES ANGLES DE PROPAGATION DANS EMPLACEMENTS
 !         RESERVES
-            do 200 i = (npoin+1), nbptff
+            do i = (npoin+1), nbptff
                 zr(afv+(i+1))=zr(afvpr+(i-1))
-200          continue
+            end do
 !
 !         REACTUALISATION DE LA FISSURE PRECEDENTE
 !         REACTUALISATION DES COORDONNEES
-            do 210 i = 1, 4*(nbptff+2)
+            do i = 1, 4*(nbptff+2)
                 zr(cfvpr+i-1)=zr(cfv+i-1)
-210          continue
+            end do
 !         REACTUALISATION DE LA BASE LOCALE
-            do 220 i = 1, 6*(nbptff+2)
+            do i = 1, 6*(nbptff+2)
                 zr(bfvpr+i-1)=zr(bfv+i-1)
-220          continue
+            end do
 !         REACTUALISATION DE LA VITESSE DE PROPAGATION
-            do 230 i = 1, (nbptff+2)
+            do i = 1, (nbptff+2)
                 zr(vfvpr+i-1)=zr(vfv+i-1)
-230          continue
+            end do
 !         REACTUALISATION DES ANGLES DE PROPAGATION
-            do 240 i = 1, (nbptff+2)
+            do i = 1, (nbptff+2)
                 zr(afvpr+i-1)=zr(afv+i-1)
-240          continue
+            end do
 !         REACTUALISATION DU NOMBRE DE POINTS DU FOND
             nbptff=nbptff+2
 !         REACTUALISATION DU VECTEUR FONDMULT
             zi(nfv+2*k-1)=zi(nfvpr+2*k-1)+1
             zi(nfv+2*k)=zi(nfvpr+2*k)+1
-            do 250 i = (2*(k+1)), (2*numfon)
+            do i = (2*(k+1)), (2*numfon)
                 zi(nfv+i-1)=zi(nfvpr+i-1)+2
-250          continue
-            do 260 i = 1, (2*numfon)
+            end do
+            do i = 1, (2*numfon)
                 zi(nfvpr+i-1)=zi(nfv+i-1)
-260          continue
+            end do
 !
-10      continue
+        end do
 !
     endif
 !
@@ -390,49 +389,49 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !
 !     COORDONNEES DES 2 PREMIERS ET DES
 !     2 DERNIERS POINTS DU FOND DE FISSURE
-    do 270 i = 1, 3
+    do i = 1, 3
         pi(i)=zr(cfvpr-1+i)
         pj(i)=zr(cfvpr-1+4+i)
         pk(i)=zr(cfvpr-1+4*(nbptff-2)+i)
         pl(i)=zr(cfvpr-1+4*(nbptff-1)+i)
-270  end do
+    end do
 !
 !     CALCUL DES VECTEURS IJ ET KL
-    do 280 i = 1, 3
+    do i = 1, 3
         pij(i)=pj(i)-pi(i)
         pkl(i)=pl(i)-pk(i)
-280  end do
+    end do
 !
 !     CALCUL DES NORMES DES VECTEURS IJ ET KL
     normij=sqrt(pij(1)**2+pij(2)**2+pij(3)**2)
     normkl=sqrt(pkl(1)**2+pkl(2)**2+pkl(3)**2)
 !
 !     ON NORME LES VECTEURS PIJ ET PKL
-    do 290 i = 1, 3
+    do i = 1, 3
         pij(i)=pij(i)/normij
         pkl(i)=pkl(i)/normkl
-290  end do
+    end do
 !
 !     CALCUL DES POINTS VIRTUELS A GAUCHE ET A DROITE
     if (locdom) then
 !       LE RAYON D'ACTUALISATION DES LEVEL SETS A BIEN ETE DEFINI
         if (radimp .gt. 0.d0) then
-            do 300 i = 1, 3
+            do i = 1, 3
                 p1(i) = pi(i)-radimp*pij(i)
                 p2(i) = pl(i)+radimp*pkl(i)
-300          continue
+            end do
         else
-            do 310 i = 1, 3
+            do i = 1, 3
                 p1(i) = pi(i)-radtor*pij(i)
                 p2(i) = pl(i)+radtor*pkl(i)
-310          continue
+            end do
         endif
     else
 !     SINON ON UTILISE L'AVANCEMENT MAXIMAL DE LA FISSURE
-        do 320 i = 1, 3
+        do i = 1, 3
             p1(i) = pi(i)-7*damax*pij(i)
             p2(i) = pl(i)+7*damax*pkl(i)
-320      continue
+        end do
     endif
 !
 !     DISTANCE ENTRE LE PREMIER ET LE DERNIER FOND DE FISSURE
@@ -445,9 +444,9 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
     if (normj1 .gt. (normjk/3.d0)) then
         normj1=normjk/3.d0
-        do 330 i = 1, 3
+        do i = 1, 3
             p1(i)=pi(i)-(normj1*pij(i))
-330      continue
+        end do
     endif
 !
 !     DISTANCE ENTRE LES POINTS 2 ET K
@@ -455,9 +454,9 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     SI DISTANCE EST TROP GRANDE ON RAPPROCHE LE POINT VIRTUEL
     if (normk2 .gt. (normjk/3.d0)) then
         normk2=normjk/3.d0
-        do 340 i = 1, 3
+        do i = 1, 3
             p2(i)=pl(i)+(normk2*pkl(i))
-340      continue
+        end do
     endif
 !
 !     CALCUL DE LA VITESSE AUX POINTS VIRTUELS
@@ -474,16 +473,16 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     NI TROP GRANDE NI TROP PETITE
     if ((abs(v1).lt.abs(1.d0*vi/3.d0)) .or. (abs(v1).gt.abs( 5.d0*vi/3.d0))) then
         normj1=abs(2.d0*vi/(3.d0*dv1))
-        do 350 i = 1, 3
+        do i = 1, 3
             p1(i)=pi(i)-(pij(i)*normj1)
-350      continue
+        end do
         v1=vi-(dv1*normj1)
     endif
     if ((abs(v2).lt.abs(1.d0*vl/3.d0)) .or. (abs(v2).gt.abs(5.d0 *vl/3.d0))) then
         normk2=abs(2.d0*vl/(3.d0*dv2))
-        do 360 i = 1, 3
+        do i = 1, 3
             p2(i)=pl(i)+(pkl(i)*normk2)
-360      continue
+        end do
         v2=vl+(dv2*normk2)
     endif
     ai=zr(afvpr)
@@ -500,17 +499,17 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     LE POINT VIRTUEL DU FRONT PHYSIQUE
     if ((a1.gt.(1.51d0)) .or. (a1.lt.(-1.51d0))) then
         normj1=(1.51d0-abs(ai))/abs(da1)
-        do 370 i = 1, 3
+        do i = 1, 3
             p1(i)=pi(i)-(pij(i)*normj1)
-370      continue
+        end do
         v1=vi-(dv1*normj1)
         a1=ai-da1*normj1
     endif
     if ((a2.gt.(1.51d0)) .or. (a2.lt.(-1.51d0))) then
         normk2=(1.51d0-abs(al))/abs(da2)
-        do 380 i = 1, 3
+        do i = 1, 3
             p2(i)=pl(i)+(pkl(i)*normk2)
-380      continue
+        end do
         v2=vl+(dv2*normk2)
         a2=al+da2*normk2
     endif
@@ -527,41 +526,41 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     endif
 !
 !     ON RENTRE LES NOUVEAUX POINTS VIRTUELS
-    do 390 i = 1, 3
+    do i = 1, 3
         zr(cfv-1+i)=p1(i)
-390  end do
+    end do
     zr(cfv-1+4)=-100.d0
-    do 400 i = 1, 3
+    do i = 1, 3
         zr(cfv-1+4*(1+nbptff)+i)=p2(i)
-400  end do
+    end do
     zr(cfv-1+4*(1+nbptff)+4)=100.d0
 !
 !     ON RENTRE LES VITESSES DE LA FISSURE AU POINT VIRTUEL
     zr(vfv)=v1
     zr(vfv+1+nbptff)=v2
 !     ON RENTRE LA BASE LOCALE ET L'ANGLE DE PROPAGATION
-    do 420 j = 1, 6
+    do j = 1, 6
         zr(bfv-1+j)=zr(bfvpr-1+j)
         zr(bfv-1+6*(1+nbptff)+j)=zr(bfvpr-1+6*(nbptff-1)+j)
-420  end do
+    end do
     zr(afv)=ai-da1*normj1
     zr(afv+nbptff+1)=al+da2*normk2
 !     On copie les coordonnes,  du front physique dans
 !     l emplacememt dans les emplacements reserves au
 !     front virtuel
-    do 430 i = 1, nbptff
-        do 440 j = 1, 4
+    do i = 1, nbptff
+        do j = 1, 4
             zr(cfv-1+4*i+j)=zr(cfvpr-1+4*(i-1)+j)
-440      continue
-        do 450,j=1,6
-        zr(bfv-1+6*i+j)=zr(bfvpr-1+6*(i-1)+j)
-450      continue
+        end do
+        do j = 1, 6
+            zr(bfv-1+6*i+j)=zr(bfvpr-1+6*(i-1)+j)
+        end do
         zr(vfv+i)=zr(vfvpr+i-1)
         zr(afv+i)=zr(afvpr+i-1)
-430  end do
-    do 460 i = 1, (2*numfon-1)
+    end do
+    do i = 1, (2*numfon-1)
         zi(nfv+i)=1+zi(nfv+i)
-460  end do
+    end do
     zi(nfv+2*(numfon-1)+1)=1+zi(nfv+2*(numfon-1)+1)
     nbptff=nbptff+2
 !

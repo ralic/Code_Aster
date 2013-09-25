@@ -83,59 +83,58 @@ subroutine lcrotg(indice, dp, e, dtaudf)
                 r8bid, r8bid, r8bid, pm+dp, rp,&
                 drdp, aire, r8bid, r8bid)
     tre = e(1)+e(2)+e(3)
-    goto (100,200,600) (indice+1)
+    select case (indice)
 !
 !
 ! 4.1 - CAS ELASTIQUE
 !
-100  continue
-    do 110 ij = 1, 6
-        dedetr(ij,ij) = 1.d0
-110  end do
-    goto 1000
+    case (0)
+        do ij = 1, 6
+            dedetr(ij,ij) = 1.d0
+        end do
 !
 !
 !
 ! 4.2 CAS PLASTIQUE
 !
-200  continue
+    case (1)
 !
 ! 4.2.1 - DERIVEE DE DVE PAR RAPPORT A DVETR ET DP
 ! DVE = DVE(DVETR - DP)
 ! DDVE/DDVETR = A1 ET DDVE/DDP = A2
 !
-    al = 1.d0-3.d0/2.d0*dp/eqetr
-    do 205 ij = 1, 6
-        a2(ij) = -1.5d0*dvetr(ij)/eqetr
-205  end do
-    do 210 ij = 1, 6
-        do 220 kl = 1, 6
-            a1(ij,kl) = 2.d0/3.d0*(1-al)*a2(ij)*a2(kl)
-220      continue
-        a1(ij,ij) = a1(ij,ij) + al
-210  end do
+        al = 1.d0-3.d0/2.d0*dp/eqetr
+        do ij = 1, 6
+            a2(ij) = -1.5d0*dvetr(ij)/eqetr
+        end do
+        do ij = 1, 6
+            do kl = 1, 6
+                a1(ij,kl) = 2.d0/3.d0*(1-al)*a2(ij)*a2(kl)
+            end do
+            a1(ij,ij) = a1(ij,ij) + al
+        end do
 !
 !
 ! 4.2.2 - DERIVEE DE TRE PAR RAPPORT A TRETR, DP ET FCD
 ! TRE = TRE(TRETR - DP)
 ! DTRE/DTRETR = AL1, DTRE/DP = AL2, DTRE/DFCF = BE1
 !
-    al0 = exp(-unk*tre/sig1)*exp(-cother/sig1)
-    al1 = 1.d0/(1.d0+fcd*unk*dp*al0/sig1)
-    al2 = fcd*al0*al1
-    be1 = dp*al0*al1
+        al0 = exp(-unk*tre/sig1)*exp(-cother/sig1)
+        al1 = 1.d0/(1.d0+fcd*unk*dp*al0/sig1)
+        al2 = fcd*al0*al1
+        be1 = dp*al0*al1
 !
 !
 ! 4.2.3 - DERIVEE DE DP PAR RAPPORT A DVETR ET TRETR
 ! DP = DP(DVETR - TRETR)
 ! DDP/DDVETR = A3, DDP/DTRETR = AL4, DDP/DFCD = BE2
 !
-    al3 = 1.d0/(3.d0*mu+drdp+fcd*unk*al2*al0)
-    al4 = -unk*al2*al3
-    do 300 ij = 1, 6
-        a3(ij) = -deuxmu*al3*a2(ij)
-300  end do
-    be2 = al3*(sig1*al0-unk*fcd*al0*be1)
+        al3 = 1.d0/(3.d0*mu+drdp+fcd*unk*al2*al0)
+        al4 = -unk*al2*al3
+        do ij = 1, 6
+            a3(ij) = -deuxmu*al3*a2(ij)
+        end do
+        be2 = al3*(sig1*al0-unk*fcd*al0*be1)
 !
 !
 ! 4.2.4 - DERIVEE DE E PAR RAPPORT A DVETR, TRETR ET FCD
@@ -143,30 +142,29 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 ! E = E(DVETR - TRETR)
 ! DE/DDVETR = DDVETR, DE/DTRETR = DTRETR, DE/DFCD = DEDFCD
 !
-    do 400 ij = 1, 6
-        do 410 kl = 1, 6
-            ddvetr(ij,kl) = a1(ij,kl) + (a2(ij)+al2/3.d0*kr(ij))*a3( kl)
-410      continue
-        dtretr(ij) = al1*kr(ij)/3.d0 + al4*(a2(ij)+al2/3.d0*kr(ij))
-        dedfcd(ij) = be1/3.d0*kr(ij) + be2*(a2(ij)+al2/3.d0*kr(ij))
-400  end do
+        do ij = 1, 6
+            do kl = 1, 6
+                ddvetr(ij,kl) = a1(ij,kl) + (a2(ij)+al2/3.d0*kr(ij))*a3( kl)
+            end do
+            dtretr(ij) = al1*kr(ij)/3.d0 + al4*(a2(ij)+al2/3.d0*kr(ij))
+            dedfcd(ij) = be1/3.d0*kr(ij) + be2*(a2(ij)+al2/3.d0*kr(ij))
+        end do
 !
 !
 ! 4.2.5 - DERIVEE DE E PAR RAPPORT A ETR = DEDETR
 !
-    do 500 ij = 1, 6
-        do 510 kl = 1, 6
-            dedetr(ij,kl)=ddvetr(ij,kl)+(dtretr(ij)-al/3.d0*kr(ij))*&
+        do ij = 1, 6
+            do kl = 1, 6
+                dedetr(ij,kl)=ddvetr(ij,kl)+(dtretr(ij)-al/3.d0*kr(ij))*&
             kr(kl)
-510      continue
-500  end do
-    goto 1000
+            end do
+        end do
 !
 !
 !
 ! 4.3 CAS SINGULIER
 !
-600  continue
+    case (2)
 !
 ! 4.3.1 - DERIVEE DE DVE PAR RAPPORT A DVETR, DP ET DFCD
 ! DVE = DVE(DVETR - DP)=0.D0
@@ -176,50 +174,50 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 ! TRE = TRE(TRETR - DP)
 ! DTRE/DTRETR = AL1, DTRE/DP = AL2 ET DTRE/DFCD = BE1
 !
-    al0 = exp(-unk*tre/sig1)*exp(-cother/sig1)
-    al1 = 1.d0/(1.d0+fcd*unk*dp*al0/sig1)
-    al2 = fcd*al0*al1
-    be1 = dp*al0*al1
+        al0 = exp(-unk*tre/sig1)*exp(-cother/sig1)
+        al1 = 1.d0/(1.d0+fcd*unk*dp*al0/sig1)
+        al2 = fcd*al0*al1
+        be1 = dp*al0*al1
 !
 !
 ! 4.3.3 - DERIVEE DE DP PAR RAPPORT A DVETR, TRETR ET DFCD
 ! DP = DP(DVETR - TRETR)
 ! DDP/DDVETR = 0.D0, DDP/DTRETR = AL4 ET DDP/DFCD = BE2
 !
-    al3 = 1.d0/(drdp+al0*al2*fcd*unk)
-    al4 = -unk*al2*al3
-    be2 = al3*(sig1*al0-unk*fcd*al0*be1)
+        al3 = 1.d0/(drdp+al0*al2*fcd*unk)
+        al4 = -unk*al2*al3
+        be2 = al3*(sig1*al0-unk*fcd*al0*be1)
 !
 !
 ! 4.3.4 - DERIVEE DE E PAR RAPPORT A ETR ET FCD
 !  DE/DETR = DEDETR, DE/DFCD = DEDFCD
 !
-    do 605 ij = 1, 6
-        do 610 kl = 1, 6
-            dedetr(ij,kl)= (al1+al2*al4)/3.d0*kr(ij)*kr(kl)
-610      continue
-        dedfcd(ij) = (be1+al2*be2)/3.d0*kr(ij)
-605  end do
+        do ij = 1, 6
+            do kl = 1, 6
+                dedetr(ij,kl)= (al1+al2*al4)/3.d0*kr(ij)*kr(kl)
+            end do
+            dedfcd(ij) = (be1+al2*be2)/3.d0*kr(ij)
+        end do
 !
 !
 !
 ! 2 - COMPOSITION DES DERIVATIONS :
 !     DTAUDF = DTAUDE * (DEDETR * DETRDF + DEDJ * DJDF)
 !
-1000  continue
-    do 1100 ij = 1, 6
-        do 1110 k = 1, 3
-            do 1120 l = 1, 3
+    end select
+    do ij = 1, 6
+        do k = 1, 3
+            do l = 1, 3
                 sum = 0
-                do 1130 pq = 1, 6
-                    do 1140 rs = 1, 6
+                do pq = 1, 6
+                    do rs = 1, 6
                         sum = sum + dtaude(ij,pq)*dedetr(pq,rs)* detrdf(rs,k,l)
-1140                  continue
+                    end do
                     sum = sum + dtaude(ij,pq)*dedfcd(pq)*dfcddj*djdf( k,l)
-1130              continue
+                end do
                 dtaudf(ij,k,l) = sum
-1120          continue
-1110      continue
-1100  end do
+            end do
+        end do
+    end do
 !
 end subroutine

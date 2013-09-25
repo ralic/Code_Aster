@@ -106,9 +106,9 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     data   rinfin / 1.d75   /
 !     ------------------------------------------------------------------
 !     FONCTIONS INTRINSEQUES
-#define classe(carext)   ichar(class(ichar(carext)))
-#define num(carext)      ichar(carext)-ichar('0')
-#define lclass(kclass)   min(kclass,mxcla1)
+#define classe(carext) ichar(class(ichar(carext)))
+#define num(carext) ichar(carext)-ichar('0')
+#define lclass(kclass) min(kclass,mxcla1)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
@@ -120,7 +120,7 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     isigne = 0
     expneg = .true.
 !
- 1  continue
+ 10 continue
     kdeb = kdeb + 1
     if (kdeb .le. lgmax) then
         carext = chin(kdeb:kdeb)
@@ -130,126 +130,108 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     endif
     ietat = neweta(kclass,ietat)
 !
-!        ------------------ EXECUTION DE L'ACTION ASSOCIEE -------------
-    goto (10,20,30,40,50,60,70,80,90,100,110,120,130) ietat
+!   ------------------ EXECUTION DE L'ACTION ASSOCIEE -------------
+    select case (ietat)
+    case (1)
+!       --- ELIMINATION DES BLANCS ---
+        ideb = ideb+1
+    case (2)
+!       --- NUMERIQUE : SIGNE ---
+        nbeneg = carext.eq.'-'
+        isigne = 1
+    case (3)
+!       --- NUMERIQUE : PARTIE ENTIERE ---
+!       TEST VALEURE ENTIERE < MAX_INT
+        nival=ival*10
+        inival=nival/10
+        if (inival .ne. ival) then
+!           ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
+101         continue
+            kdeb = kdeb+1
+            if (kdeb .le. lgmax) then
+                carext = chin(kdeb:kdeb)
+                kclass = lclass(classe(carext))
+                if (kclass .le. mxclas .and. kclass .ne. clbl) goto 101
+            endif
+            ival = kdeb-ideb
+            cval = chin(ideb:kdeb-1)
+            write (serr,*) 'VALEUR ENTIERE TROP GRANDE   ( MAX = ', ismaem(),')'
+            goto 102
+        endif
+        ival = ival*10 + num(carext)
+102     continue
+    case (4)
+!           --- NUMERIQUE : POINT DECIMAL ---
+        iexp = 0
+        xndec = 1.0d0
+        xdec = 0.d0
+    case (5)
+!           --- NUMERIQUE : PARTIE DECIMALE ---
+        xndec = xndec * 10
+        xdec = xdec + dble(num(carext)) / xndec
+    case (6)
+!           --- NUMERIQUE : EXPOSANT RENCONTRE  ---
+        expneg = .false.
+    case (7)
+!           --- NUMERIQUE : SIGNE DE L'EXPOSANT ---
+        expneg = carext.eq.'-'
+    case (8)
+!           --- NUMERIQUE : MODIFICATION DE L'EXPOSANT ---
+        iexp = iexp*10 + num(carext)
+    case (9)
+!           --- NUMERIQUE : POINT DECIMAL ---
+        iexp = 0
+        xndec = 1.0d0
+        xdec = 0.d0
+    case (10)
+!           --- CHAINE : SAISIE DU TEXTE ---
+        ival = ival + 1
+        cval(ival:ival) = carext
+    case (11)
+!           --- CHAINE : QUOTE FINAL OU DOUBLE QUOTE ---
+        continue
+    case (12)
+!           --- IDENT : SAISIE DE L'IDENTIFICATEUR ---
+        ival = ival + 1
+        cval(ival:ival) = carext
+    case (13)
+!           --- NUMERIQUE : POINT DECIMAL EN PREMIERE POSITION ---
+        iexp = 0
+        xndec = 1.0d0
+        xdec = 0.d0
+    case default
+        goto 20
+    end select
+    goto 10
+!
+ 20 continue
     ilire = - ietat / 10
     iclass = mod(-ietat,10)
-!CCC     ICLASS = -IETAT + 10*ILIRE
-    goto (1000,1001,1002,1003,1004,1005,1006,1007) iclass+1
-!
-!           --- ELIMINATION DES BLANCS ---
-10  continue
-    ideb = ideb+1
-    goto 1
-!
-!           --- NUMERIQUE : SIGNE ---
-20  continue
-    nbeneg = carext.eq.'-'
-    isigne = 1
-    goto 1
-!
-!           --- NUMERIQUE : PARTIE ENTIERE ---
-30  continue
-!           TEST VALEURE ENTIERE < MAX_INT
-    nival=ival*10
-    inival=nival/10
-    if (inival .ne. ival) then
-!              ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
-777      continue
-        kdeb = kdeb+1
-        if (kdeb .le. lgmax) then
-            carext = chin(kdeb:kdeb)
-            kclass = lclass(classe(carext))
-            if (kclass .le. mxclas .and. kclass .ne. clbl) goto 777
-        endif
-        ival = kdeb-ideb
-        cval = chin(ideb:kdeb-1)
-        write (serr,*) 'VALEUR ENTIERE TROP GRANDE   ( MAX = ',&
-     &              ismaem(),')'
-        goto 9999
-    endif
-    ival = ival*10 + num(carext)
-    goto 1
-!
-!           --- NUMERIQUE : POINT DECIMAL ---
-40  continue
-    iexp = 0
-    xndec = 1.0d0
-    xdec = 0.d0
-    goto 1
-!
-!           --- NUMERIQUE : PARTIE DECIMALE ---
-50  continue
-    xndec = xndec * 10
-    xdec = xdec + dble(num(carext)) / xndec
-    goto 1
-!
-!           --- NUMERIQUE : EXPOSANT RENCONTRE  ---
-60  continue
-    expneg = .false.
-    goto 1
-!
-!           --- NUMERIQUE : SIGNE DE L'EXPOSANT ---
-70  continue
-    expneg = carext.eq.'-'
-    goto 1
-!
-!           --- NUMERIQUE : MODIFICATION DE L'EXPOSANT ---
-80  continue
-    iexp = iexp*10 + num(carext)
-    goto 1
-!
-!           --- CHAINE : QUOTE INITIAL ---
-90  continue
-    goto 1
-!
-!           --- CHAINE : SAISIE DU TEXTE ---
-100  continue
-    ival = ival + 1
-    cval(ival:ival) = carext
-    goto 1
-!
-!           --- CHAINE : QUOTE FINAL OU DOUBLE QUOTE ---
-110  continue
-    goto 1
-!
-!           --- IDENT : SAISIE DE L'IDENTIFICATEUR ---
-120  continue
-    ival = ival + 1
-    cval(ival:ival) = carext
-    goto 1
-!
-!           --- NUMERIQUE : POINT DECIMAL EN PREMIERE POSITION ---
-130  continue
-    iexp = 0
-    xndec = 1.0d0
-    xdec = 0.d0
-    goto 1
-!     ---------------- SORTIE DE L'AUTOMATE ----------------------------
-!
-!
-!        --- UNE ERREUR A ETE DETECTEE ---
-1000  continue
-!           ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
-999  continue
+    select case (iclass + 1)
+case (1)
+!    --- UNE ERREUR A ETE DETECTEE ---
+!       ON AVANCE JUSQU'A TROUVER UN BLANC, UN DELIMITEUR OU EOR
+201 continue
     kdeb = kdeb+1
     if (kdeb .le. lgmax) then
         carext = chin(kdeb:kdeb)
         kclass = lclass(classe(carext))
-        if (kclass .le. mxclas .and. kclass .ne. clbl) goto 999
+        if (kclass .le. mxclas .and. kclass .ne. clbl) then
+            goto 201
+        endif
     endif
     ival = kdeb-ideb
     cval = chin(ideb:kdeb-1)
-    goto 9999
-!
-!        --- UN ENTIER A ETE RECONNU ---
-1001  continue
-    if (nbeneg) ival = -ival
-    goto 9999
-!
-!        --- UN REEL A ETE RECONNU ---
-1002  continue
-    if (expneg) iexp = -iexp
+case (2)
+!    --- UN ENTIER A ETE RECONNU ---
+    if (nbeneg) then
+        ival = -ival
+    endif
+case (3)
+!    --- UN REEL A ETE RECONNU ---
+    if (expneg) then
+        iexp = -iexp
+    endif
     rval = dble(ival) + xdec
     if (iexp .lt. minexp) then
         rval = 0
@@ -261,33 +243,29 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
         rval = rval * (10.d0**iexp)
     endif
     iclass = 2
-    if (nbeneg) rval = -rval
-!           REMISE A ZERO DE IVAL POUR EVITER CERTAINES REMANENCES
+    if (nbeneg) then
+        rval = -rval
+    endif
+!       REMISE A ZERO DE IVAL POUR EVITER CERTAINES REMANENCES
     ival=0
-    goto 9999
-!
-!        --- UN IDENTIFICATEUR A ETE RECONNU ---
-1003  continue
-    goto 9999
-!
-!        --- UN TEXTE A ETE RECONNU ---
-1004  continue
-    goto 9999
-!
-!        --- UN SEPARATEUR A ETE RECONNU ---
-1005  continue
+case (4)
+!    --- UN IDENTIFICATEUR A ETE RECONNU ---
+    continue
+case (5)
+!    --- UN TEXTE A ETE RECONNU ---
+    continue
+case (6)
+!    --- UN SEPARATEUR A ETE RECONNU ---
     ival = 1
     cval = carext
-    if (ilire .eq. 1) kdeb = kdeb+1
-    goto 9999
-!
-!        --- UNE FIN DE LIGNE A ETE RECONNUE ---
-1006  continue
+    if (ilire .eq. 1) then
+        kdeb = kdeb+1
+    endif
+case (7)
+!    --- UNE FIN DE LIGNE A ETE RECONNUE ---
     iclass = -1
-    goto 9999
-!
-!        --- UN + OU UN - ISOLE A ETE TROUVE ---
-1007  continue
+case (8)
+!    --- UN + OU UN - ISOLE A ETE TROUVE ---
     if (nbeneg) then
         carext = '-'
     else
@@ -295,11 +273,10 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     endif
     ival = 1
     cval = carext
-!           --- EN FAIT IL FAUT TRAITER AU NIVEAU SUPERIEUR ---
+!       --- EN FAIT IL FAUT TRAITER AU NIVEAU SUPERIEUR ---
     iclass = 5
-    goto 9999
+end select
 !
-!     ----- SORTIE ---------------------
-9999  continue
     ideb = kdeb
+!
 end subroutine

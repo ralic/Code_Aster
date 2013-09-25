@@ -48,6 +48,7 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 #include "asterfort/utmess.h"
 !
     integer :: deblig
+    integer :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm), nomn
     character(len=14) :: cnl
@@ -56,7 +57,7 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, icl, idec, ifl, iret
-    integer :: irtet, irteti, iv, nbm, num, numtcl
+    integer :: irtet, irteti, iv, num, numtcl
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -65,15 +66,16 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 !
 ! - ITEM = MOTS CLES  TYPE COORDONNEES ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         numtcl = i
         goto 5
- 4  continue
+  4     continue
+    end do
     goto 3
 !
- 5  continue
+  5 continue
     call jeveuo(coo, 'E', iad)
 !
 ! - LECTURE DE L'ENTETE
@@ -85,15 +87,19 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 !
 ! - LIRE ITEM SUIVANT =  NOM DU NOEUD ?
 !
- 7  continue
+  7 continue
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 2)
- 9  continue
+  9 continue
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
 !
     call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (1,2), irtet
+    if (irtet .eq. 1) then
+        goto 1
+    else if (irtet .eq. 2) then
+        goto 2
+    endif
 !
 ! - CREATION DE NOM_DU_NOEUD DANS LE REPERTOIRE NOMNOE
 !
@@ -114,31 +120,31 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 !
 ! - STOCKAGE DES  COORDONNEES DU NOEUD
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         zr(idec+i-1) = 0.d0
-10  continue
+    end do
 !
-    do 6 i = 1, numtcl
+    do i = 1, numtcl
         call liritm(ifl, icl, iv, rv, cv,&
                     cnl, deblig, 2)
         if(icl.eq.1)rv = iv
         zr(idec+i-1) = rv
- 6  continue
+    end do
 !
 ! - NOEUD SUIVANT
 !
     goto 7
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

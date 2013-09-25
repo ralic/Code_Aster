@@ -40,6 +40,7 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
+    integer :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), deblig
@@ -51,7 +52,7 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
     save b24
 !-----------------------------------------------------------------------
     integer :: i, icl, ifl, ifm, irtet, irteti
-    integer :: iv, nbg, nbm, numtcl
+    integer :: iv, nbg, numtcl
 !-----------------------------------------------------------------------
     data b24        /'                        '/
     irteti = 0
@@ -60,26 +61,31 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
 !
 ! ----- ITEM = MOT CLE TYPE  DEBUG ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         numtcl = i
         goto 5
- 4  continue
+  4     continue
+    end do
     goto 3
 !
 ! ----- LECTURE DES NOMS D OBJETS A DUMPER ?
 !
- 5  continue
+  5 continue
     write(ifm,*)' ----- LECDBG'
- 6  continue
+  6 continue
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 1)
     write(ifm,*)'       LIRITM : ICL = ',icl,&
      &  ' IV = ',iv,' RV = ',rv,' CV(1:8) = ',cv(1:8),' DEBLIG =',deblig
     if (deblig .eq. 1) then
         call tesfin(icl, iv, cv, irtet)
-        if (irtet .gt. 0) goto (1,2), irtet
+        if (irtet .eq. 1) then
+            goto 1
+        else if (irtet .eq. 2) then
+            goto 2
+        endif
     endif
 !
 ! - MOT CLE DUMP
@@ -110,15 +116,15 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
         goto 6
     endif
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

@@ -2,7 +2,6 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                   pfree, nv, next, last, head,&
                   elen, degree, ncmpa, w, iovflo)
 ! person_in_charge: olivier.boiteau at edf.fr
-! aslint: disable=W1501
     implicit none
 !
 !---------------------------------------------------------------
@@ -491,20 +490,20 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
     mem = pfree - 1
     maxmem = mem
 !
-    do 10 i = 1, n
+    do i = 1, n
         last (i) = 0
         head (i) = 0
         nv (i) = 1
         w (i) = 1
         elen (i) = 0
         degree (i) = len (i)
-10  continue
+    end do
 !
 !       ----------------------------------------------------------------
 !       INITIALIZE DEGREE LISTS AND ELIMINATE ROWS WITH NO OFF-DIAG. NZ.
 !       ----------------------------------------------------------------
 !
-    do 20 i = 1, n
+    do i = 1, n
 !
         deg = degree (i)
 !
@@ -533,13 +532,13 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
         endif
 !
-20  continue
+    end do
 !
 !=======================================================================
 !  WHILE (SELECTING PIVOTS) DO
 !=======================================================================
 !
-30  continue
+ 30 continue
     if (nel .lt. n) then
 !
 !=======================================================================
@@ -550,11 +549,11 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          FIND NEXT SUPERVARIABLE FOR ELIMINATION
 !          -------------------------------------------------------------
 !
-        do 40 deg = mindeg, n
+        do deg = mindeg, n
             me = head (deg)
             if (me .gt. 0) goto 50
-40      continue
-50      continue
+        end do
+ 50     continue
         mindeg = deg
 !
 !          -------------------------------------------------------------
@@ -602,7 +601,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
             pme1 = pe (me)
             pme2 = pme1 - 1
 !
-            do 60 p = pme1, pme1 + len (me) - 1
+            do p = pme1, pme1 + len (me) - 1
                 i = iw (p)
                 nvi = nv (i)
                 if (nvi .gt. 0) then
@@ -633,7 +632,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     endif
 !
                 endif
-60          continue
+            end do
 !             THIS ELEMENT TAKES NO NEW MEMORY IN IW:
             newmem = 0
 !
@@ -647,7 +646,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
             pme1 = pfree
             slenme = len (me) - elenme
 !
-            do 120 knt1 = 1, elenme + 1
+            do knt1 = 1, elenme + 1
 !
                 if (knt1 .gt. elenme) then
 !                   SEARCH THE SUPERVARIABLES IN ME.
@@ -669,7 +668,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                ALL THE SUPERVARIABLES IN THE LIST.
 !                -------------------------------------------------------
 !
-                do 110 knt2 = 1, ln
+                do knt2 = 1, ln
                     i = iw (pj)
                     pj = pj + 1
                     nvi = nv (i)
@@ -701,13 +700,13 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                             ncmpa = ncmpa + 1
 !                         STORE FIRST ITEM IN PE
 !                         SET FIRST ENTRY TO -ITEM
-                            do 70 j = 1, n
+                            do j = 1, n
                                 pn = pe (j)
                                 if (pn .gt. 0) then
                                     pe (j) = iw (pn)
                                     iw (pn) = -j
                                 endif
-70                          continue
+                            end do
 !
 !                         PSRC/PDST POINT TO SOURCE/DESTINATION
                             pdst = 1
@@ -715,7 +714,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                             pend = pme1 - 1
 !
 !                         WHILE LOOP:
-80                          continue
+ 80                         continue
                             if (psrc .le. pend) then
 !                            SEARCH FOR NEXT NEGATIVE ENTRY
                                 j = -iw (psrc)
@@ -726,10 +725,10 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                                     pdst = pdst + 1
 !                               COPY FROM SOURCE TO DESTINATION
                                     lenj = len (j)
-                                    do 90 knt3 = 0, lenj - 2
+                                    do knt3 = 0, lenj - 2
                                         iw (pdst + knt3) = iw (psrc +&
                                         knt3)
-90                                  continue
+                                    end do
                                     pdst = pdst + lenj - 1
                                     psrc = psrc + lenj - 1
                                 endif
@@ -738,10 +737,10 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
 !                         MOVE THE NEW PARTIALLY-CONSTRUCTED ELEMENT
                             p1 = pdst
-                            do 100 psrc = pme1, pfree - 1
+                            do psrc = pme1, pfree - 1
                                 iw (pdst) = iw (psrc)
                                 pdst = pdst + 1
-100                          continue
+                            end do
                             pme1 = p1
                             pfree = pdst
                             pj = pe (e)
@@ -774,7 +773,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                         endif
 !
                     endif
-110              continue
+                end do
 !
                 if (e .ne. me) then
 !                   SET TREE POINTER AND FLAG TO INDICATE ELEMENT E IS
@@ -782,7 +781,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     pe (e) = -me
                     w (e) = 0
                 endif
-120          continue
+            end do
 !
             pme2 = pfree - 1
 !             THIS ELEMENT TAKES NEWMEM NEW MEMORY IN IW (POSSIBLY ZERO)
@@ -806,9 +805,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          -------------------------------------------------------------
 !
         if (wflg .ge. wbig) then
-            do 130 x = 1, n
+            do x = 1, n
                 if (w (x) .ne. 0) w (x) = 1
-130          continue
+            end do
             wflg = 2
         endif
 !
@@ -829,14 +828,14 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          ZERO, THEN THE ELEMENT E WILL BE ABSORBED IN SCAN 2.
 !          -------------------------------------------------------------
 !
-        do 150 pme = pme1, pme2
+        do pme = pme1, pme2
             i = iw (pme)
             eln = elen (i)
             if (eln .gt. 0) then
 !                NOTE THAT NV (I) HAS BEEN NEGATED TO DENOTE I IN LME:
                 nvi = -nv (i)
                 wnvi = wflg - nvi
-                do 140 p = pe (i), pe (i) + eln - 1
+                do p = pe (i), pe (i) + eln - 1
                     e = iw (p)
                     we = w (e)
                     if (we .ge. wflg) then
@@ -848,9 +847,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                         we = degree (e) + wnvi
                     endif
                     w (e) = we
-140              continue
+                end do
             endif
-150      continue
+        end do
 !
 !=======================================================================
 !  DEGREE UPDATE AND ELEMENT ABSORPTION
@@ -863,7 +862,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          SUPERVARIABLES IN I.  PLACE I IN HASH LIST.
 !          -------------------------------------------------------------
 !
-        do 180 pme = pme1, pme2
+        do pme = pme1, pme2
             i = iw (pme)
             p1 = pe (i)
             p2 = p1 + elen (i) - 1
@@ -876,7 +875,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             ----------------------------------------------------------
 !
 !             UMFPACK/MA38-STYLE APPROXIMATE DEGREE:
-            do 160 p = p1, p2
+            do p = p1, p2
                 e = iw (p)
                 we = w (e)
                 if (we .ne. 0) then
@@ -886,7 +885,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     pn = pn + 1
                     hash = hash + e
                 endif
-160          continue
+            end do
 !
 !             COUNT THE NUMBER OF ELEMENTS IN I (INCLUDING ME):
             elen (i) = pn - p1 + 1
@@ -896,7 +895,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             ----------------------------------------------------------
 !
             p3 = pn
-            do 170 p = p2 + 1, p1 + len (i) - 1
+            do p = p2 + 1, p1 + len (i) - 1
                 j = iw (p)
                 nvj = nv (j)
                 if (nvj .gt. 0) then
@@ -907,7 +906,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     pn = pn + 1
                     hash = hash + j
                 endif
-170          continue
+            end do
 !
 !             ----------------------------------------------------------
 !             UPDATE THE DEGREE AND CHECK FOR MASS ELIMINATION
@@ -973,7 +972,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                 endif
                 last (i) = hash
             endif
-180      continue
+        end do
 !
         degree (me) = degme
 !
@@ -986,9 +985,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
 !          MAKE SURE THAT WFLG+N DOES NOT CAUSE INTEGER OVERFLOW
         if (wflg .ge. wbig) then
-            do 190 x = 1, n
+            do x = 1, n
                 if (w (x) .ne. 0) w (x) = 1
-190          continue
+            end do
             wflg = 2
         endif
 !          AT THIS POINT, W (1..N) .LT. WFLG HOLDS
@@ -997,7 +996,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !  SUPERVARIABLE DETECTION
 !=======================================================================
 !
-        do 250 pme = pme1, pme2
+        do pme = pme1, pme2
             i = iw (pme)
             if (nv (i) .lt. 0) then
 !                I IS A PRINCIPAL VARIABLE IN LME
@@ -1024,7 +1023,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                 if (i .eq. 0) goto 250
 !
 !                WHILE LOOP:
-200              continue
+200             continue
                 if (next (i) .ne. 0) then
 !
 !                   ----------------------------------------------------
@@ -1036,9 +1035,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     ln = len (i)
                     eln = elen (i)
 !                   DO NOT FLAG THE FIRST ELEMENT IN THE LIST (ME)
-                    do 210 p = pe (i) + 1, pe (i) + ln - 1
+                    do p = pe (i) + 1, pe (i) + ln - 1
                         w (iw (p)) = wflg
-210                  continue
+                    end do
 !
 !                   ----------------------------------------------------
 !                   SCAN EVERY OTHER ENTRY J FOLLOWING I IN BUCKET
@@ -1048,7 +1047,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     j = next (i)
 !
 !                   WHILE LOOP:
-220                  continue
+220                 continue
                     if (j .ne. 0) then
 !
 !                      -------------------------------------------------
@@ -1064,12 +1063,12 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                             goto 240
                         endif
 !                      DO NOT FLAG THE FIRST ELEMENT IN THE LIST (ME)
-                        do 230 p = pe (j) + 1, pe (j) + ln - 1
+                        do p = pe (j) + 1, pe (j) + ln - 1
                             if (w (iw (p)) .ne. wflg) then
 !                            AN ENTRY (IW(P)) IS IN J BUT NOT IN I
                                 goto 240
                             endif
-230                      continue
+                        end do
 !
 !                      -------------------------------------------------
 !                      FOUND IT!  J CAN BE ABSORBED INTO I
@@ -1088,7 +1087,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                         goto 220
 !
 !                      -------------------------------------------------
-240                      continue
+240                     continue
 !                      J CANNOT BE ABSORBED INTO I
 !                      -------------------------------------------------
 !
@@ -1107,7 +1106,8 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     if (i .ne. 0) goto 200
                 endif
             endif
-250      continue
+250         continue
+        end do
 !
 !=======================================================================
 !  RESTORE DEGREE LISTS AND REMOVE NONPRINCIPAL SUPERVAR. FROM ELEMENT
@@ -1115,7 +1115,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
         p = pme1
         nleft = n - nel
-        do 260 pme = pme1, pme2
+        do pme = pme1, pme2
             i = iw (pme)
             nvi = -nv (i)
             if (nvi .gt. 0) then
@@ -1153,7 +1153,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                 iw (p) = i
                 p = p + 1
             endif
-260      continue
+        end do
 !
 !=======================================================================
 !  FINALIZE THE NEW ELEMENT
@@ -1199,7 +1199,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !       ----------------------------------------------------------------
 !
 !
-    do 290 i = 1, n
+    do i = 1, n
         if (elen (i) .eq. 0) then
 !
 !             ----------------------------------------------------------
@@ -1211,7 +1211,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
             j = -pe (i)
 !             WHILE (J IS A VARIABLE) DO:
-270          continue
+270         continue
             if (elen (j) .ge. 0) then
                 j = -pe (j)
                 goto 270
@@ -1233,7 +1233,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
             j = i
 !             WHILE (J IS A VARIABLE) DO:
-280          continue
+280         continue
             if (elen (j) .ge. 0) then
                 jnext = -pe (j)
                 pe (j) = -e
@@ -1248,18 +1248,18 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             LEAVE ELEN (E) NEGATIVE, SO WE KNOW IT IS AN ELEMENT
             elen (e) = -k
         endif
-290  continue
+    end do
 !
 !       ----------------------------------------------------------------
 !       RESET THE INVERSE PERMUTATION (ELEN (1..N)) TO BE POSITIVE,
 !       AND COMPUTE THE PERMUTATION (LAST (1..N)).
 !       ----------------------------------------------------------------
 !
-    do 300 i = 1, n
+    do i = 1, n
         k = abs (elen (i))
         last (k) = i
         elen (i) = k
-300  continue
+    end do
 !
 !=======================================================================
 !  RETURN THE MEMORY USAGE IN IW

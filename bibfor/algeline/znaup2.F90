@@ -187,7 +187,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 !     %----------------------------------------------------%
@@ -407,7 +407,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !     |                                                              |
 !     %--------------------------------------------------------------%
 !
-1000  continue
+1000 continue
 !
     iter = iter + 1
 !
@@ -434,7 +434,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !        %-----------------------------------------------------------%
 !
     ido = 0
-20  continue
+ 20 continue
     update = .true.
 !
     call znaitr(ido, bmat, n, nev, np,&
@@ -523,12 +523,12 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !
     nconv = 0
 !
-    do 25 i = 1, nev
+    do i = 1, nev
         rtemp = max( eps23, dlapy2 ( dble (ritz(np+i)), dimag (ritz( np+i)) ) )
         if (dlapy2 (dble (bounds(np+i)),dimag (bounds(np+i))) .le. tol*rtemp) then
             nconv = nconv + 1
         endif
-25  continue
+    end do
 !
     if (msglvl .gt. 2) then
         kp(1) = nev
@@ -551,12 +551,12 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !        %---------------------------------------------------------%
 !
     nptemp = np
-    do 30 j = 1, nptemp
+    do j = 1, nptemp
         if (bounds(j) .eq. zero) then
             np = np - 1
             nev = nev + 1
         endif
-30  continue
+    end do
 !
     if ((nconv .ge. nev0) .or. (iter .gt. mxiter) .or. (np .eq. 0)) then
 !
@@ -602,10 +602,10 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !           | BY 1 / MAX(EPS23, MAGNITUDE OF THE RITZ VALUE).  |
 !           %--------------------------------------------------%
 !
-        do 35 j = 1, nev0
+        do j = 1, nev0
             rtemp = max( eps23, dlapy2 ( dble (ritz(j)), dimag (ritz( j)) ) )
             bounds(j) = bounds(j)/rtemp
-35      continue
+        end do
 !
 !           %---------------------------------------------------%
 !           | SORT THE RITZ VALUES ACCORDING TO THE SCALED RITZ |
@@ -622,10 +622,10 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !           | VALUE.                                       |
 !           %----------------------------------------------%
 !
-        do 40 j = 1, nev0
+        do j = 1, nev0
             rtemp = max( eps23, dlapy2 ( dble (ritz(j)), dimag (ritz( j)) ) )
             bounds(j) = bounds(j)*rtemp
-40      continue
+        end do
 !
 !           %-----------------------------------------------%
 !           | SORT THE CONVERGED RITZ VALUES AGAIN SO THAT  |
@@ -706,7 +706,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
         ido = 3
         goto 9000
     endif
-50  continue
+ 50 continue
     ushift = .false.
 !
     if (ishift .ne. 1) then
@@ -761,7 +761,7 @@ subroutine znaup2(ido, bmat, n, which, nev,&
         call zcopy(n, resid, 1, workd, 1)
     endif
 !
-100  continue
+100 continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -792,15 +792,15 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !     |                                                               |
 !     %---------------------------------------------------------------%
 !
-1100  continue
+1100 continue
 !
     mxiter = iter
     nev = nconv
 !
-1200  continue
+1200 continue
     ido = 99
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !     %---------------%

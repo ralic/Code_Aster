@@ -166,9 +166,9 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! =====================================================================
     call lcprmv(hookf, deps, sigeb)
     call lcsove(sigeb, sigm, sige)
-    do 5 ii = 1, ndi
+    do ii = 1, ndi
         sige(ii) = sige(ii)+sipp
- 5  end do
+    end do
     call lcdevi(sige, se)
 !      CALL PSCAL(NDT,SE,SE,SEQ)
     call lcprsc(se, se, seq)
@@ -212,7 +212,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
             call hbcalc(seuil, gnp, dgnp, nbmat, materf,&
                         i1e, sigeqe, vp, etanp, vh,&
                         vg, parame, derive, incrg)
- 2          continue
+  2         continue
             gnp = gnp + incrg
             dgnp = dgnp + incrg
 ! ======================================================================
@@ -267,17 +267,17 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
                 iteri = 1
                 goto 100
             endif
-100          continue
-            if (iteri .ge. 1) goto (1),iteri
+100         continue
+            if (iteri .eq. 1) goto 1
 ! ======================================================================
             gp = gnp
             etap = etanp
             call hbmajs(dg, nbmat, materf, se, i1e,&
                         sigeqe, etap, sigp)
 ! ---------- IL FAUT RENVOYER LES CONTRAINTES EFFECTIVES ---------------
-            do 17 ii = 1, ndi
+            do ii = 1, ndi
                 sigp(ii) = sigp(ii)-sipp
-17          continue
+            end do
             vip(1) = vim(1) + dg
             vip(2) = vim(2) + trois*etap*dg/(etap+un)
             vip(3) = plas
@@ -289,13 +289,13 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
             endif
         else
             plas = 0.0d0
-            do 30 ii = 1, ndt
+            do ii = 1, ndt
                 sigp(ii) = sige(ii)
-30          continue
+            end do
 ! ---------- IL FAUT RENVOYER LES CONTRAINTES EFFECTIVES ---------------
-            do 31 ii = 1, ndi
+            do ii = 1, ndi
                 sigp(ii) = sigp(ii) - sipp
-31          continue
+            end do
             gp = gm
             etap = etam
             vip(1) = vim(1)
@@ -326,12 +326,12 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
         endif
         if (vi .eq. 0) then
             call lceqma(hookf, dsidep)
-            do 19 ii = 1, ndi
+            do ii = 1, ndi
                 dsdsip(ii) = 1.0d0
-19          continue
-            do 18 ii = ndi+1, 6
+            end do
+            do ii = ndi+1, 6
                 dsdsip(ii) = 0.0d0
-18          continue
+            end do
         else
             if (gam .lt. grup) then
                 detadg = 6.0d0*(pphi1-pphi0)*pi*cos(parame(4)*pi) / (grup*(trois+sin(parame(4)*pi&
@@ -356,22 +356,22 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! --- ON A CALCULE LA DERIVEE DES CONTRAINTES TOTALES, ET ON RENVOIE ---
 ! --- CELLE DES CONTRRAINTES EFFECTIVES --------------------------------
 ! ======================================================================
-        do 32 ii = 1, ndi
+        do ii = 1, ndi
             dsdsip(ii) = dsdsip(ii)-1.0d0
-32      continue
+        end do
 ! ======================================================================
 ! --- CALCUL DE LA DERIVEE DES CONTRAINTES TOTALES PAR RAPPORT A P1,P2 -
 ! ======================================================================
-        do 33 ii = 1, ndt
+        do ii = 1, ndt
             dsidp1(ii) = dsdsip(ii)*dspdp1
             dsidp2(ii) = dsdsip(ii)*dspdp2
-33      continue
+        end do
     endif
 ! ======================================================================
     iret = 0
-    goto 9999
- 1  continue
+    goto 999
+  1 continue
     iret = 1
-9999  continue
+999 continue
 ! ======================================================================
 end subroutine

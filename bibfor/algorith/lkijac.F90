@@ -18,8 +18,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-! aslint: disable=W1306,W1501
-    implicit   none
+! aslint: disable=W1306
+    implicit none
 !     --------------------------------------------------------------
 !     CALCUL DU JACOBIEN DE LETK = DRDY(DY)
 !     IN  MOD    :  TYPE DE MODELISATION
@@ -111,17 +111,17 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
 ! ------------------------------------------------------------------
-    do 10 i = 1, ndt
+    do i = 1, ndt
         sigft(i) = -yf(i)
         depst(i) = -deps(i)
-10  end do
+    end do
 ! ------------------------------------------------------------------
 ! --- VARIABLES LOCALES TEMPORAIRES
 ! ------------------------------------------------------------------
     call lcinma(zero, mident)
-    do 20 i = 1, ndt
+    do i = 1, ndt
         mident(i,i) = un
-20  end do
+    end do
 !
     varv = 0
     devgii = zero
@@ -167,9 +167,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
                     depsv, dgamv, retcom)
     else
         dgamv = zero
-        do 30 i = 1, ndt
+        do i = 1, ndt
             depsv(i) = zero
-30      continue
+        end do
         seuilv = zero
         ucriv = zero
     endif
@@ -216,9 +216,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         call lkcaln(devsig, bprimp, vecnp, retcom)
         call lkcalg(dfdsp, vecnp, gp, devgii)
 ! --- CALCUL DEFORMATION ELASTIQUE
-        do 40 i = 1, ndt
+        do i = 1, ndt
             depse(i) = depst(i)-yf(ndt+1)*gp(i)-depsv(i)
-40      continue
+        end do
 ! --- CALCUL DE DGP/DSIGMA
         call lkdgds(nmat, materf, paraep, varpl, devsig,&
                     i1, valp, ds2hds, vecnp, dfdsp,&
@@ -237,9 +237,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
                     valp, paraep, vint(1), derpar, dndxip)
 ! --- PAS DE PLASTICITE A GERER
     else
-        do 50 i = 1, ndt
+        do i = 1, ndt
             depse(i) = depst(i)-depsv(i)
-50      continue
+        end do
         call lcinma(zero, hnldgp)
         call lcinma(zero, dgpds)
         call lcinve(zero, dfdsp)
@@ -259,24 +259,24 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     mue = materf(4,1)
     ke = materf(5,1)
     call lcinma(zero, hook)
-    do 110 i = 1, ndi
-        do 120 j = 1, ndi
+    do i = 1, ndi
+        do j = 1, ndi
             hook(i,j) = ke - deux*mue/trois
-120      continue
-110  end do
+        end do
+    end do
 !
-    do 130 i = 1, ndt
+    do i = 1, ndt
         hook(i,i) = hook(i,i) + deux*mue
-130  end do
+    end do
 ! --- INCREMENT CONTRAINTE "ELASTIQUE"
     call lcprmv(hook, depse, dsige)
 ! --- PRODUIT TENSORIEL DSIGE X VECTEUR(IDENTITE) (=1 1 1 0 0 0)
     patm = materf(1,2)
     nelas = materf(2,2)
     call lcinve(zero, vident)
-    do 150 i = 1, ndi
+    do i = 1, ndi
         vident(i) = nelas/trois/patm*(i1/(trois*patm))**(nelas-un)
-150  end do
+    end do
     call lcprte(dsige, vident, dhokds)
 ! --- CALCUL DE DFV/DSIGMA
     call lkvarv(vint(3), nmat, materf, paravi)
@@ -304,23 +304,23 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     call lcprmv(dsdenl, gv, hnlgv)
     call lcprte(hnlgv, dphvds, hnldfg)
 ! --- ASSEMBLAGE FINAL
-    do 160 i = 1, ndt
-        do 170 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             drdy(i,j) = -(mident(i,j)-dhokds(i,j)+hnldgp(i,j) +hnldgv( i,j)*dt+hnldfg(i,j)*dt)/mu
-170      continue
-160  end do
+        end do
+    end do
 ! ------------------------------------------------------------------
 ! --- I.2 CALCUL DE DR1DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
     if (vinf(7) .eq. zero) then
-        do 175 i = 1, ndt
+        do i = 1, ndt
             drdy(i,ndt+1) = zero
-175      continue
+        end do
     else
         call lcprmv(dsdenl, gp, vetemp)
-        do 180 i = 1, ndt
+        do i = 1, ndt
             drdy(i,ndt+1) = vetemp(i)/mu
-180      continue
+        end do
     endif
 ! ------------------------------------------------------------------
 ! --- I.3 CALCUL DE DR1DY3 -> Y3 = XIP
@@ -330,15 +330,15 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     call lcprsc(dfsdxp, vecnp, term1)
     call lcprsc(dfdsp, dndxip, term2)
     call lcprsc(dfdsp, vecnp, term3)
-    do 190 i = 1, ndt
+    do i = 1, ndt
         dgpdxi(i) = dfsdxp(i)-term1*vecnp(i)-term2*vecnp(i) -term3* dndxip(i)
-190  end do
+    end do
 ! --- ASSEMBLAGE FINAL --- DR1DY3 = DSDENL*DLAMBD*DGPDXI
     call lcprmv(dsdenl, dgpdxi, dr1dy3)
     call lcprsv(dlambd, dr1dy3, dr1dy4)
-    do 200 i = 1, ndt
+    do i = 1, ndt
         drdy(i,ndt+2) = dr1dy4(i)/mu
-200  end do
+    end do
 ! ------------------------------------------------------------------
 ! --- I.4 CALCUL DE DR1DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
@@ -356,9 +356,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         call lcprsc(dfsdxv, vecnv, term1)
         call lcprsc(dfvdsi, dndxiv, term2)
         call lcprsc(dfvdsi, vecnv, term3)
-        do 210 i = 1, ndt
+        do i = 1, ndt
             dgvdxi(i) = dfsdxv(i)-term1*vecnv(i)-term2*vecnv(i) -term3*dndxiv(i)
-210      continue
+        end do
 ! --- CALCUL DE D(PHIV)/DXIV =
         call lkdfdx(nmat, materf, ucriv, i1, devsig,&
                     paravi, varavi, dpadxv, dfdxiv)
@@ -368,13 +368,13 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         call lcprsv(phiv, dgvdxi, phdgdx)
         call lcsove(dphdxg, phdgdx, vetemp)
         call lcprmv(dsdenl, vetemp, dr1dy4)
-        do 220 i = 1, ndt
+        do i = 1, ndt
             drdy(i,ndt+3)= dr1dy4(i)/mu*dt
-220      continue
+        end do
     else
-        do 230 i = 1, ndt
+        do i = 1, ndt
             drdy(i,ndt+3)= zero
-230      continue
+        end do
     endif
 ! ##################################################################
 ! --- CALCUL DE DR2/DY
@@ -384,9 +384,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- II.1 CALCUL DE DR2DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
-        do 240 i = 1, ndt
+        do i = 1, ndt
             drdy(ndt+1,i) = zero
-240      continue
+        end do
 ! ------------------------------------------------------------------
 ! --- II.2 CALCUL DE DR2DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
@@ -399,9 +399,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- II.1 CALCUL DE DR2DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
-        do 250 i = 1, ndt
+        do i = 1, ndt
             drdy(ndt+1,i) = -dfdsp(i)/mu
-250      continue
+        end do
 ! ------------------------------------------------------------------
 ! --- II.2 CALCUL DE DR2DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
@@ -426,9 +426,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- CONSTRUCTION DE KRONECKER
     call lcinve(zero, kron)
-    do 300 i = 1, ndi
+    do i = 1, ndi
         kron(i) = un
-300  end do
+    end do
 ! --- CONSTRUCTION DE DS/DSIGMA
     unstro = un / trois
     call lcprte(kron, kron, kron2)
@@ -443,28 +443,28 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     call lcinve(zero, dgivds)
     call lcinve(zero, dgipds)
     if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
-        do 310 i = 1, ndt
-            do 320 j = 1, ndt
+        do i = 1, ndt
+            do j = 1, ndt
                 dgivds(i) = dgivds(i)+devgv(j)/devgiv*dgtvds(j,i)
                 dgipds(i) = dgipds(i)+devgp(j)/devgii*dgtpds(j,i)
-320          continue
-310      continue
+            end do
+        end do
     else
-        do 330 i = 1, ndt
-            do 340 j = 1, ndt
+        do i = 1, ndt
+            do j = 1, ndt
                 dgivds(i) = dgivds(i)+devgv(j)/devgiv*dgtvds(j,i)
-340          continue
-330      continue
+            end do
+        end do
     endif
     if (varv .eq. 0) then
-        do 350 i = 1, ndt
+        do i = 1, ndt
             drdy(ndt+2,i) = dlambd*sqrt(deux/trois)*dgipds(i)
-350      continue
+        end do
     else
-        do 360 i = 1, ndt
+        do i = 1, ndt
             drdy(ndt+2,i) = sqrt(deux/trois)*(dlambd*dgipds(i)+ (dphvds(i)*devgiv+phiv*dgivds(i))&
                             &*dt)
-360      continue
+        end do
     endif
 ! ------------------------------------------------------------------
 ! --- III.2 CALCUL DE DR3DY2 -> Y2 = DLAMBDA
@@ -506,9 +506,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- IV.1 CALCUL DE DR4DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
-        do 400 i = 1, ndt
+        do i = 1, ndt
             drdy(ndt+3,i) = (dphvds(i)*devgiv+phiv*dgivds(i)) *sqrt( deux/trois )*dt
-400      continue
+        end do
 ! ------------------------------------------------------------------
 ! --- IV.2 CALCUL DE DR4DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
@@ -525,9 +525,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- IV.1 CALCUL DE DR4DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
-        do 410 i = 1, ndt
+        do i = 1, ndt
             drdy(ndt+3,i) = zero
-410      continue
+        end do
 ! ------------------------------------------------------------------
 ! --- IV.2 CALCUL DE DR4DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------

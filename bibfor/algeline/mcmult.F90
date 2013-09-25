@@ -75,27 +75,25 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !
 !
 !     SELON REEL OU COMPLEXE :
-    goto (10,20)zi(lmat+3)
+    if (zi(lmat+3) .eq. 1) then
 !
-    call utmess('F', 'ALGELINE_66')
+        call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
+        call mcmmvr(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
+                    vect, xsol, nbvect, zc(jvtemp), prepo2)
 !
+    else if (zi(lmat+3) .eq. 2) then
 !
-10  continue
-!     MATRICE REELLE
-    call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
-    call mcmmvr(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
-                vect, xsol, nbvect, zc(jvtemp), prepo2)
-    goto 30
-!
-!
-20  continue
 !     MATRICE COMPLEXE
-    call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
-    call mcmmvc(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
-                vect, xsol, nbvect, zc(jvtemp), prepo2)
+        call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
+        call mcmmvc(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
+                    vect, xsol, nbvect, zc(jvtemp), prepo2)
 !
+    else
 !
-30  continue
+        call utmess('F', 'ALGELINE_66')
+!
+    endif
+!
     call jedetr('&&MCMULT.VECTMP')
     call jedema()
 end subroutine

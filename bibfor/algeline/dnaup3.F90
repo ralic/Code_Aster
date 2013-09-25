@@ -213,7 +213,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 !     %-----------------------------%
@@ -430,7 +430,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !     |                                                              |
 !     %--------------------------------------------------------------%
 !
-1000  continue
+1000 continue
 !
     iter = iter + 1
     if (msglvl .gt. 0) then
@@ -455,7 +455,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !        %-----------------------------------------------------------%
 !
     ido = 0
-20  continue
+ 20 continue
     update = .true.
     call dnaitr(ido, bmat, n, nev, np,&
                 resid, rnorm, v, ldv, h,&
@@ -509,14 +509,14 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
     endif
 !
     if (nsta .ne. 0) then
-        do 80 k = 1, nev
+        do k = 1, nev
             if (ritzr(k) .lt. 0.d0) then
                 etat = 1
             endif
             if (beta .lt. abs(ritzr(k))) then
                 beta = abs(ritzr(k))
             endif
-80      continue
+        end do
 !
         write (ifm,9050)
         write (ifm,*) 'NIV_REDEM : ',redem
@@ -596,12 +596,12 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !        %---------------------------------------------------------%
 !
     nptemp = np
-    do 30 j = 1, nptemp
+    do j = 1, nptemp
         if (bounds(j) .eq. zero) then
             np = np - 1
             nev = nev + 1
         endif
-30  continue
+    end do
 !
     if ((nconv .ge. numcnv) .or. (iter .gt. mxiter) .or. (np .eq. 0)) then
 !
@@ -669,10 +669,10 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !           | BY 1 / MAX(EPS23,MAGNITUDE OF THE RITZ VALUE).   |
 !           %--------------------------------------------------%
 !
-        do 35 j = 1, nev0
+        do j = 1, nev0
             temp = max(eps23,dlapy2(ritzr(j), ritzi(j)))
             bounds(j) = bounds(j)/temp
-35      continue
+        end do
 !
 !           %----------------------------------------------------%
 !           | SORT THE RITZ VALUES ACCORDING TO THE SCALED RITZ  |
@@ -690,10 +690,10 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !           | VALUE.                                       |
 !           %----------------------------------------------%
 !
-        do 40 j = 1, nev0
+        do j = 1, nev0
             temp = max(eps23, dlapy2(ritzr(j), ritzi(j)))
             bounds(j) = bounds(j)*temp
-40      continue
+        end do
 !
 !           %------------------------------------------------%
 !           | SORT THE CONVERGED RITZ VALUES AGAIN SO THAT   |
@@ -783,7 +783,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         goto 9000
     endif
 !
-50  continue
+ 50 continue
 !
 !        %------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION,   |
@@ -846,7 +846,7 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
         call dcopy(n, resid, 1, workd, 1)
     endif
 !
-100  continue
+100 continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION, |
@@ -876,17 +876,17 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !     |                                                               |
 !     %---------------------------------------------------------------%
 !
-1100  continue
+1100 continue
 !
     mxiter = iter
     nev = numcnv
 !
-1200  continue
+1200 continue
     ido = 99
 !
     9050 format (72(' '))
 !
-9000  continue
+9000 continue
 !
     call matfpe(1)
 !

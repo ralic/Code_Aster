@@ -155,7 +155,6 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
@@ -314,12 +313,12 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
             cmax = zero
             icmax = 0
 !
-            do 10 j = 1, 4
+            do j = 1, 4
                 if (abs( crv( j ) ) .gt. cmax) then
                     cmax = abs( crv( j ) )
                     icmax = j
                 endif
-10          continue
+            end do
 !
 !           IF NORM(C) < SMINI, USE SMINI*IDENTITY.
 !
@@ -405,12 +404,12 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
             civ(3) = ci(1,2)
             civ(4) = ci(2,2)
 !
-            do 20 j = 1, 4
+            do j = 1, 4
                 if (abs( crv( j ) )+abs( civ( j ) ) .gt. cmax) then
                     cmax = abs( crv( j ) ) + abs( civ( j ) )
                     icmax = j
                 endif
-20          continue
+            end do
 !
 !           IF NORM(C) < SMINI, USE SMINI*IDENTITY.
 !
@@ -540,7 +539,7 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
         endif
     endif
 !
-1000  continue
+1000 continue
 !
     call matfpe(1)
 !

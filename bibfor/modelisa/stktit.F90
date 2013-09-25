@@ -41,6 +41,7 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 #include "asterfort/lxscan.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
+    integer :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     character(len=14) :: cnl
@@ -51,7 +52,7 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 !
 !-----------------------------------------------------------------------
     integer :: iad, icl, ideb, ifl, irtet, irteti, iv
-    integer :: nbm, nlt
+    integer :: nlt
 !-----------------------------------------------------------------------
     call jemarq()
     irteti = 0
@@ -59,7 +60,7 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 ! - ITEM = MOT CLE TYPE TITRE ?
 !
     call tesmcl(icl, iv, cv, mcl(1), irtet)
-    if (irtet .gt. 0) goto (3), irtet
+    if (irtet .eq. 1) goto 3
 !
 ! - OUI > REQUETE EN ECRITURE POUR OBJET TITRE
 !
@@ -67,7 +68,7 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 !
 ! - LIRE LIGNE SUIVANTE
 !
- 4  continue
+  4 continue
     call lirlig(ifl, cnl, lig, 2)
 !
 ! - LIRE PREMIER ITEM DE LA LIGNE
@@ -79,7 +80,11 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
 !
     call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (1,2), irtet
+    if (irtet .eq. 1) then
+        goto 1
+    else if (irtet .eq. 2) then
+        goto 2
+    endif
 !
 ! - STOCKAGE DE LA LIGNE NLT
 !
@@ -93,16 +98,16 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 !
     goto 4
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

@@ -20,7 +20,7 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfimp2.h"
@@ -137,11 +137,11 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! --- ATTENTION CE N'EST PAS NECESSAIREMENT LE CAS DU VECTEUR SUPLLF
 ! ======================================================================
     nbini = 1
-    do 10 iliac = 1, nbliac
+    do iliac = 1, nbliac
         lambda = zr(jmu-1+iliac)
         if (lambda .lt. 0.0d0) then
             dekln = dekln + 1
-            do 20 jj = nbini, nbliac + llf + llf1 + llf2
+            do jj = nbini, nbliac + llf + llf1 + llf2
                 if (zk8(jtypl-1+jj) .eq. typec0) then
                     deklag = deklag + 1
                     if (deklag .eq. iliac) then
@@ -152,7 +152,7 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
                         compt0 = 0
                         compt1 = 0
                         compt2 = 0
-                        do 30 kk = 1, nbliac + llf + llf1 + llf2
+                        do kk = 1, nbliac + llf + llf1 + llf2
                             lljac = zi(jliac-1+kk)
                             if (zk8(jtypl-1+kk) .eq. typec0) then
                                 goto 30
@@ -167,65 +167,61 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
                                 posit = 4
                             endif
                             if (lljac .eq. lliac) then
-                                goto (1000, 2000, 3000, 4000) posit
-! ======================================================================
-! --- CAS IMPOSSIBLE
-! ======================================================================
-1000                              continue
-                                ASSERT(.false.)
+                                ASSERT(posit > 1 .and. posit <= 4)
+                                select case (posit)
 ! ======================================================================
 ! --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D
 ! --- OU CAS GENERAL EN 2D
 ! ======================================================================
-2000                              continue
-                                deklf0 = deklf0 + 1
-                                zi(jsplf0-1+deklf0) = compt0
-                                goto 10
+                                case (2)
+                                    deklf0 = deklf0 + 1
+                                    zi(jsplf0-1+deklf0) = compt0
 ! ======================================================================
 ! --- CAS DU FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION
 ! ======================================================================
-3000                              continue
-                                do 3100 ll = 0, deklf1-1
-                                    if (compt1 .gt. zi(jsplf1-1+deklf1- ll)) then
-                                        deklf1 = deklf1 + 1
-                                        do 3200 mm = deklf1 - ll, deklf1
-                                            zi(jsplf1-1+mm) = zi(jsplf1-1+ mm-1 )
-3200                                      continue
-                                        zi(jsplf1-1+deklf1-ll-1) =&
+                                case (3)
+                                    do ll = 0, deklf1-1
+                                        if (compt1 .gt. zi(jsplf1-1+deklf1- ll)) then
+                                            deklf1 = deklf1 + 1
+                                            do mm = deklf1 - ll, deklf1
+                                                zi(jsplf1-1+mm) = zi(jsplf1-1+ mm-1 )
+                                            end do
+                                            zi(jsplf1-1+deklf1-ll-1) =&
                                         compt1
-                                        goto 10
-                                    endif
-3100                              continue
-                                deklf1 = deklf1 + 1
-                                zi(jsplf1-1+deklf1) = compt1
-                                goto 10
+                                            goto 10
+                                        endif
+                                    end do
+                                    deklf1 = deklf1 + 1
+                                    zi(jsplf1-1+deklf1) = compt1
 ! ======================================================================
 ! --- CAS DU FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION
 ! ======================================================================
-4000                              continue
-                                do 4100 ll = 0, deklf2-1
-                                    if (compt2 .gt. zi(jsplf2-1+deklf2- ll)) then
-                                        deklf2 = deklf2 + 1
-                                        do 4200 mm = deklf2 - ll, deklf2
-                                            zi(jsplf2-1+mm) = zi(jsplf2-1+ mm-1 )
-4200                                      continue
-                                        zi(jsplf2-1+deklf2-ll-1) =&
+                                case (4)
+                                    do ll = 0, deklf2-1
+                                        if (compt2 .gt. zi(jsplf2-1+deklf2- ll)) then
+                                            deklf2 = deklf2 + 1
+                                            do mm = deklf2 - ll, deklf2
+                                                zi(jsplf2-1+mm) = zi(jsplf2-1+ mm-1 )
+                                            end do
+                                            zi(jsplf2-1+deklf2-ll-1) =&
                                         compt2
-                                        goto 10
-                                    endif
-4100                              continue
-                                deklf2 = deklf2 + 1
-                                zi(jsplf2-1+deklf2) = compt2
-                                goto 10
+                                            goto 10
+                                        endif
+                                    end do
+                                    deklf2 = deklf2 + 1
+                                    zi(jsplf2-1+deklf2) = compt2
+                                end select
 ! ======================================================================
                             endif
-30                      continue
+ 30                         continue
+                        end do
                         goto 10
                     endif
                 endif
-20          continue
+            end do
         endif
-10  end do
+ 10     continue
+    end do
     if (dekln .eq. 0) then
         goto 999
     endif
@@ -234,21 +230,21 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! --- DE CONTACT ET DE FROTTEMENT ADHERENT
 ! ======================================================================
     jsto = zi(jspnbl) - 1
-    do 100 iliac = 1, dekln-1
+    do iliac = 1, dekln-1
         idebut = jsto + 1
         ifin = idebut+zi(jspnbl-1+iliac+1)-zi(jspnbl-1+iliac)-1-1
-        do 110 jj = idebut, ifin
+        do jj = idebut, ifin
             jsto = jsto + 1
             zr(jmu-1+jsto) = zr(jmu-1+jj+iliac)
-110      continue
-100  end do
+        end do
+    end do
     idebut = jsto + 1
     ifin = nbliac - dekln
-    do 120 jj = idebut, ifin
+    do jj = idebut, ifin
         jsto = jsto + 1
         zr(jmu-1+jsto) = zr(jmu-1+jj+dekln)
-120  end do
-    do 111 jj = 1, dekln
+    end do
+    do jj = 1, dekln
         iliac = dekln - jj + 1
         posit = zi(jsplia-1+iliac)
         lliac = zi(jliac -1+posit)
@@ -258,7 +254,7 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
                     lliac, typec0)
         call cfimp2(defico, resoco, noma, lliac, typec0,&
                     'NEG')
-111  end do
+    end do
 ! ======================================================================
 ! --- MISE A JOUR DE MU POUR LE FROTTEMENT
 ! ======================================================================
@@ -266,49 +262,49 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
     if (llf .ne. 0) then
         if (deklf0 .ne. 0) then
-            do 200 iliac = 1, zi(jsplf0-1+1) - 1
+            do iliac = 1, zi(jsplf0-1+1) - 1
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr(jmu-1+nbliac+dekln+iliac)
-200          continue
-            do 210 iliac = 1, deklf0 - 1
+            end do
+            do iliac = 1, deklf0 - 1
                 idebut = jsto + 1
                 ifin = idebut + zi(jsplf0-1+iliac+1) - zi(jsplf0-1+ iliac) - 1 - 1
-                do 220 jj = idebut, ifin
+                do jj = idebut, ifin
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+dekln+jj+iliac)
-220              continue
-210          continue
+                end do
+            end do
         endif
         idebut = jsto + 1
         ifin = nbliac + llf
-        do 230 jj = idebut, ifin
+        do jj = idebut, ifin
             jsto = jsto + 1
             zr(jmu-1+jsto) = zr(jmu-1+dekln+deklf0+jj)
-230      continue
+        end do
 ! ======================================================================
 ! --- CAS DE LA SECONDE DIRECTION EN 3D
 ! ======================================================================
         if (ndim .eq. 3) then
             if (deklf0 .ne. 0) then
-                do 240 iliac = 1, zi(jsplf0-1+1) - 1
+                do iliac = 1, zi(jsplf0-1+1) - 1
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+nbliac+dekln+llf+deklf0+ iliac)
-240              continue
-                do 250 iliac = 1, deklf0 - 1
+                end do
+                do iliac = 1, deklf0 - 1
                     idebut = jsto + 1
                     ifin = idebut + zi(jsplf0-1+iliac+1) - zi(jsplf0- 1+iliac) - 1 - 1
-                    do 260 jj = idebut, ifin
+                    do jj = idebut, ifin
                         jsto = jsto + 1
                         zr(jmu-1+jsto) = zr(jmu-1+dekln+deklf0+jj)
-260                  continue
-250              continue
+                    end do
+                end do
             endif
             idebut = jsto + 1
             ifin = nbliac + (ndim-1)*llf
-            do 270 jj = idebut, ifin
+            do jj = idebut, ifin
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+jj)
-270          continue
+            end do
         endif
     endif
 ! ======================================================================
@@ -316,53 +312,53 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
     if (llf1 .ne. 0) then
         if (deklf1 .ne. 0) then
-            do 300 iliac = 1, zi(jsplf1-1+1) - 1
+            do iliac = 1, zi(jsplf1-1+1) - 1
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr( jmu-1+nbliac+dekln+(ndim-1)*(llf+ deklf0)+iliac )
-300          continue
-            do 310 iliac = 1, deklf1 - 1
+            end do
+            do iliac = 1, deklf1 - 1
                 idebut = zi(jsplf1-1+iliac )
                 ifin = zi(jsplf1-1+iliac+1) - 1
-                do 320 jj = idebut, ifin
+                do jj = idebut, ifin
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+ jj)
-320              continue
-310          continue
+                end do
+            end do
         endif
         idebut = jsto + 1
         ifin = nbliac + (ndim-1)*llf + llf1
-        do 330 jj = idebut, ifin
+        do jj = idebut, ifin
             jsto = jsto + 1
             zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+deklf1+jj)
-330      continue
+        end do
     endif
 ! ======================================================================
 ! --- FROTTEMENT ADHERENT DE TYPE LLF2
 ! ======================================================================
     if (llf2 .ne. 0) then
         if (deklf2 .ne. 0) then
-            do 400 iliac = 1, zi(jsplf2-1+1) - 1
+            do iliac = 1, zi(jsplf2-1+1) - 1
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr(jmu-1+nbliac+dekln+(ndim-1)*(llf+ deklf0)+llf1+deklf1+iliac)
-400          continue
-            do 410 iliac = 1, deklf2 - 1
+            end do
+            do iliac = 1, deklf2 - 1
                 idebut = zi(jsplf2-1+iliac )
                 ifin = zi(jsplf2-1+iliac+1) - 1
-                do 420 jj = idebut, ifin
+                do jj = idebut, ifin
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+ deklf1+jj)
-420              continue
-410          continue
+                end do
+            end do
         endif
         idebut = jsto + 1
         ifin = nbliac + (ndim-1)*llf + llf1 + llf2
-        do 430 jj = idebut, ifin
+        do jj = idebut, ifin
             jsto = jsto + 1
             zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+deklf1+ deklf2+jj)
-430      continue
+        end do
     endif
 ! ======================================================================
-999  continue
+999 continue
 !
     nbpren = dekln
 ! ======================================================================

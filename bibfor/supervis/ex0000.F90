@@ -101,9 +101,108 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0097.h"
 #include "asterfort/op0098.h"
 #include "asterfort/op0099.h"
+#include "asterfort/op0100.h"
+#include "asterfort/op0101.h"
+#include "asterfort/op0102.h"
+#include "asterfort/op0103.h"
+#include "asterfort/op0104.h"
+#include "asterfort/op0105.h"
+#include "asterfort/op0106.h"
+#include "asterfort/op0107.h"
+#include "asterfort/op0108.h"
+#include "asterfort/op0109.h"
+#include "asterfort/op0110.h"
+#include "asterfort/op0111.h"
+#include "asterfort/op0112.h"
+#include "asterfort/op0113.h"
+#include "asterfort/op0114.h"
+#include "asterfort/op0115.h"
+#include "asterfort/op0116.h"
+#include "asterfort/op0117.h"
+#include "asterfort/op0118.h"
+#include "asterfort/op0119.h"
+#include "asterfort/op0120.h"
+#include "asterfort/op0121.h"
+#include "asterfort/op0122.h"
+#include "asterfort/op0123.h"
+#include "asterfort/op0124.h"
+#include "asterfort/op0125.h"
+#include "asterfort/op0126.h"
+#include "asterfort/op0127.h"
+#include "asterfort/op0128.h"
+#include "asterfort/op0129.h"
+#include "asterfort/op0130.h"
+#include "asterfort/op0131.h"
+#include "asterfort/op0132.h"
+#include "asterfort/op0133.h"
+#include "asterfort/op0134.h"
+#include "asterfort/op0135.h"
+#include "asterfort/op0136.h"
+#include "asterfort/op0137.h"
+#include "asterfort/op0138.h"
+#include "asterfort/op0139.h"
+#include "asterfort/op0140.h"
+#include "asterfort/op0141.h"
+#include "asterfort/op0142.h"
+#include "asterfort/op0143.h"
+#include "asterfort/op0144.h"
+#include "asterfort/op0145.h"
+#include "asterfort/op0146.h"
+#include "asterfort/op0147.h"
+#include "asterfort/op0148.h"
+#include "asterfort/op0149.h"
+#include "asterfort/op0150.h"
+#include "asterfort/op0151.h"
+#include "asterfort/op0152.h"
+#include "asterfort/op0153.h"
+#include "asterfort/op0154.h"
+#include "asterfort/op0155.h"
+#include "asterfort/op0156.h"
+#include "asterfort/op0157.h"
+#include "asterfort/op0158.h"
+#include "asterfort/op0159.h"
+#include "asterfort/op0160.h"
+#include "asterfort/op0161.h"
+#include "asterfort/op0162.h"
+#include "asterfort/op0163.h"
+#include "asterfort/op0164.h"
+#include "asterfort/op0165.h"
+#include "asterfort/op0166.h"
+#include "asterfort/op0167.h"
+#include "asterfort/op0168.h"
+#include "asterfort/op0169.h"
+#include "asterfort/op0170.h"
+#include "asterfort/op0171.h"
+#include "asterfort/op0172.h"
+#include "asterfort/op0173.h"
+#include "asterfort/op0174.h"
+#include "asterfort/op0175.h"
+#include "asterfort/op0176.h"
+#include "asterfort/op0177.h"
+#include "asterfort/op0178.h"
+#include "asterfort/op0179.h"
+#include "asterfort/op0180.h"
+#include "asterfort/op0181.h"
+#include "asterfort/op0182.h"
+#include "asterfort/op0183.h"
+#include "asterfort/op0184.h"
+#include "asterfort/op0185.h"
+#include "asterfort/op0186.h"
+#include "asterfort/op0187.h"
+#include "asterfort/op0188.h"
+#include "asterfort/op0189.h"
+#include "asterfort/op0190.h"
+#include "asterfort/op0191.h"
+#include "asterfort/op0192.h"
+#include "asterfort/op0193.h"
+#include "asterfort/op0194.h"
+#include "asterfort/op0195.h"
+#include "asterfort/op0196.h"
+#include "asterfort/op0197.h"
+#include "asterfort/op0198.h"
+#include "asterfort/op0199.h"
 #include "asterfort/utmess.h"
-    integer :: nuoper
-!     ------------------------------------------------------------------
+    integer, intent(in) :: nuoper
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,329 +219,421 @@ subroutine ex0000(nuoper)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     EXECUTION DES OPERATEURS NUMEROTES DE 0 A 99
+!     EXECUTION DES OPERATEURS (NUMEROTES DE 0 A 199)
 !     ------------------------------------------------------------------
 !     EXECUTION OU VERIFICATION DE SYNTAXE
     integer :: iveri, iret
     integer :: vali
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    call gtopti('verif', iveri, iret)
-    if (iveri .ne. 0) goto 9999
 !
-    goto ( 01, 02, 03, 04, 05, 06, 07, 08, 09 , 10,&
-     &       11, 12, 13, 14, 15, 16, 17, 18, 19 , 20,&
-     &       21, 22, 23, 24, 25, 26, 27, 28, 29 , 30,&
-     &       31, 32, 33, 34, 35, 36, 37, 38, 39 , 40,&
-     &       41, 42, 43, 44, 45, 46, 47, 48, 49 , 50,&
-     &       51, 52, 53, 54, 55, 56, 57, 58, 59 , 60,&
-     &       61, 62, 63, 64, 65, 66, 67, 68, 69 , 70,&
-     &       71, 72, 73, 74, 75, 76, 77, 78, 79 , 80,&
-     &       81, 82, 83, 84, 85, 86, 87, 88, 89 , 90,&
-     &       91, 92, 93, 94, 95, 96, 97, 98, 99 ,100 ) nuoper - 0000 + 1
-!     ------------------------------------------------------------------
-    vali = nuoper
-    call utmess('E', 'SUPERVIS_50', si=vali)
-    goto 9999
-!     ------------------------------------------------------------------
- 1  continue
-    call op0000()
-    goto 9999
- 2  continue
-    call op0001()
-    goto 9999
- 3  continue
-    call op0002()
-    goto 9999
- 4  continue
-    call op0003()
-    goto 9999
- 5  continue
-    call op0004()
-    goto 9999
- 6  continue
-    call op0005()
-    goto 9999
- 7  continue
-    call op0006()
-    goto 9999
- 8  continue
-    call op0007()
-    goto 9999
- 9  continue
-    call op0008()
-    goto 9999
-10  continue
-    call op0009()
-    goto 9999
-11  continue
-    call op0010()
-    goto 9999
-12  continue
-    call op0011()
-    goto 9999
-13  continue
-    call op0012()
-    goto 9999
-14  continue
-    call op0013()
-    goto 9999
-15  continue
-    call op0014()
-    goto 9999
-16  continue
-    call op0015()
-    goto 9999
-17  continue
-    call op0016()
-    goto 9999
-18  continue
-    call op0017()
-    goto 9999
-19  continue
-    call op0018()
-    goto 9999
-20  continue
-    call op0019()
-    goto 9999
-21  continue
-    call op0020()
-    goto 9999
-22  continue
-    call op0021()
-    goto 9999
-23  continue
-    call op0022()
-    goto 9999
-24  continue
-    call op0023()
-    goto 9999
-25  continue
-    call op0024()
-    goto 9999
-26  continue
-    call op0025()
-    goto 9999
-27  continue
-    call op0026()
-    goto 9999
-28  continue
-    call op0027()
-    goto 9999
-29  continue
-    call op0028()
-    goto 9999
-30  continue
-    call op0029()
-    goto 9999
-31  continue
-    call op0030()
-    goto 9999
-32  continue
-    call op0031()
-    goto 9999
-33  continue
-    call op0032()
-    goto 9999
-34  continue
-    call op0033()
-    goto 9999
-35  continue
-    call op0034()
-    goto 9999
-36  continue
-    call op0035()
-    goto 9999
-37  continue
-    call op0036()
-    goto 9999
-38  continue
-    call op0037()
-    goto 9999
-39  continue
-    call op0038()
-    goto 9999
-40  continue
-    call op0039()
-    goto 9999
-41  continue
-    call op0040()
-    goto 9999
-42  continue
-    call op0041()
-    goto 9999
-43  continue
-    call op0042()
-    goto 9999
-44  continue
-    call op0043()
-    goto 9999
-45  continue
-    call op0044()
-    goto 9999
-46  continue
-    call op0045()
-    goto 9999
-47  continue
-    call op0046()
-    goto 9999
-48  continue
-    call op0047()
-    goto 9999
-49  continue
-    call op0048()
-    goto 9999
-50  continue
-    call op0049()
-    goto 9999
-51  continue
-    call op0050()
-    goto 9999
-52  continue
-    call op0051()
-    goto 9999
-53  continue
-    call op0052()
-    goto 9999
-54  continue
-    call op0053()
-    goto 9999
-55  continue
-    call op0054()
-    goto 9999
-56  continue
-    call op0055()
-    goto 9999
-57  continue
-    call op0056()
-    goto 9999
-58  continue
-    call op0057()
-    goto 9999
-59  continue
-    call op0058()
-    goto 9999
-60  continue
-    call op0059()
-    goto 9999
-61  continue
-    call op0060()
-    goto 9999
-62  continue
-    call op0061()
-    goto 9999
-63  continue
-    call op0062()
-    goto 9999
-64  continue
-    call op0063()
-    goto 9999
-65  continue
-    call op0064()
-    goto 9999
-66  continue
-    call op0065()
-    goto 9999
-67  continue
-    call op0066()
-    goto 9999
-68  continue
-    call op0067()
-    goto 9999
-69  continue
-    call op0068()
-    goto 9999
-70  continue
-    call op0069()
-    goto 9999
-71  continue
-    call op0070()
-    goto 9999
-72  continue
-    call op0071()
-    goto 9999
-73  continue
-    call op0072()
-    goto 9999
-74  continue
-    call op0073()
-    goto 9999
-75  continue
-    call op0074()
-    goto 9999
-76  continue
-    call op0075()
-    goto 9999
-77  continue
-    call op0076()
-    goto 9999
-78  continue
-    call op0077()
-    goto 9999
-79  continue
-    call op0078()
-    goto 9999
-80  continue
-    call op0079()
-    goto 9999
-81  continue
-    call op0080()
-    goto 9999
-82  continue
-    call op0081()
-    goto 9999
-83  continue
-    call op0082()
-    goto 9999
-84  continue
-    call op0083()
-    goto 9999
-85  continue
-    call op0084()
-    goto 9999
-86  continue
-    call op0085()
-    goto 9999
-87  continue
-    call op0086()
-    goto 9999
-88  continue
-    call op0087()
-    goto 9999
-89  continue
-    call op0088()
-    goto 9999
-90  continue
-    call op0089()
-    goto 9999
-91  continue
-    call op0090()
-    goto 9999
-92  continue
-    call op0091()
-    goto 9999
-93  continue
-    call op0092()
-    goto 9999
-94  continue
-    call op0093()
-    goto 9999
-95  continue
-    call op0094()
-    goto 9999
-96  continue
-    call op0095()
-    goto 9999
-97  continue
-    call op0096()
-    goto 9999
-98  continue
-    call op0097()
-    goto 9999
-99  continue
-    call op0098()
-    goto 9999
-100  continue
-    call op0099()
-9999  continue
+    call gtopti('verif', iveri, iret)
+    if (iveri .ne. 0) goto 999
+!
+    select case (nuoper)
+    case (0)
+        call op0000()
+    case (1)
+        call op0001()
+    case (2)
+        call op0002()
+    case (3)
+        call op0003()
+    case (4)
+        call op0004()
+    case (5)
+        call op0005()
+    case (6)
+        call op0006()
+    case (7)
+        call op0007()
+    case (8)
+        call op0008()
+    case (9)
+        call op0009()
+    case (10)
+        call op0010()
+    case (11)
+        call op0011()
+    case (12)
+        call op0012()
+    case (13)
+        call op0013()
+    case (14)
+        call op0014()
+    case (15)
+        call op0015()
+    case (16)
+        call op0016()
+    case (17)
+        call op0017()
+    case (18)
+        call op0018()
+    case (19)
+        call op0019()
+    case (20)
+        call op0020()
+    case (21)
+        call op0021()
+    case (22)
+        call op0022()
+    case (23)
+        call op0023()
+    case (24)
+        call op0024()
+    case (25)
+        call op0025()
+    case (26)
+        call op0026()
+    case (27)
+        call op0027()
+    case (28)
+        call op0028()
+    case (29)
+        call op0029()
+    case (30)
+        call op0030()
+    case (31)
+        call op0031()
+    case (32)
+        call op0032()
+    case (33)
+        call op0033()
+    case (34)
+        call op0034()
+    case (35)
+        call op0035()
+    case (36)
+        call op0036()
+    case (37)
+        call op0037()
+    case (38)
+        call op0038()
+    case (39)
+        call op0039()
+    case (40)
+        call op0040()
+    case (41)
+        call op0041()
+    case (42)
+        call op0042()
+    case (43)
+        call op0043()
+    case (44)
+        call op0044()
+    case (45)
+        call op0045()
+    case (46)
+        call op0046()
+    case (47)
+        call op0047()
+    case (48)
+        call op0048()
+    case (49)
+        call op0049()
+    case (50)
+        call op0050()
+    case (51)
+        call op0051()
+    case (52)
+        call op0052()
+    case (53)
+        call op0053()
+    case (54)
+        call op0054()
+    case (55)
+        call op0055()
+    case (56)
+        call op0056()
+    case (57)
+        call op0057()
+    case (58)
+        call op0058()
+    case (59)
+        call op0059()
+    case (60)
+        call op0060()
+    case (61)
+        call op0061()
+    case (62)
+        call op0062()
+    case (63)
+        call op0063()
+    case (64)
+        call op0064()
+    case (65)
+        call op0065()
+    case (66)
+        call op0066()
+    case (67)
+        call op0067()
+    case (68)
+        call op0068()
+    case (69)
+        call op0069()
+    case (70)
+        call op0070()
+    case (71)
+        call op0071()
+    case (72)
+        call op0072()
+    case (73)
+        call op0073()
+    case (74)
+        call op0074()
+    case (75)
+        call op0075()
+    case (76)
+        call op0076()
+    case (77)
+        call op0077()
+    case (78)
+        call op0078()
+    case (79)
+        call op0079()
+    case (80)
+        call op0080()
+    case (81)
+        call op0081()
+    case (82)
+        call op0082()
+    case (83)
+        call op0083()
+    case (84)
+        call op0084()
+    case (85)
+        call op0085()
+    case (86)
+        call op0086()
+    case (87)
+        call op0087()
+    case (88)
+        call op0088()
+    case (89)
+        call op0089()
+    case (90)
+        call op0090()
+    case (91)
+        call op0091()
+    case (92)
+        call op0092()
+    case (93)
+        call op0093()
+    case (94)
+        call op0094()
+    case (95)
+        call op0095()
+    case (96)
+        call op0096()
+    case (97)
+        call op0097()
+    case (98)
+        call op0098()
+    case (99)
+        call op0099()
+    case (100)
+        call op0100()
+    case (101)
+        call op0101()
+    case (102)
+        call op0102()
+    case (103)
+        call op0103()
+    case (104)
+        call op0104()
+    case (105)
+        call op0105()
+    case (106)
+        call op0106()
+    case (107)
+        call op0107()
+    case (108)
+        call op0108()
+    case (109)
+        call op0109()
+    case (110)
+        call op0110()
+    case (111)
+        call op0111()
+    case (112)
+        call op0112()
+    case (113)
+        call op0113()
+    case (114)
+        call op0114()
+    case (115)
+        call op0115()
+    case (116)
+        call op0116()
+    case (117)
+        call op0117()
+    case (118)
+        call op0118()
+    case (119)
+        call op0119()
+    case (120)
+        call op0120()
+    case (121)
+        call op0121()
+    case (122)
+        call op0122()
+    case (123)
+        call op0123()
+    case (124)
+        call op0124()
+    case (125)
+        call op0125()
+    case (126)
+        call op0126()
+    case (127)
+        call op0127()
+    case (128)
+        call op0128()
+    case (129)
+        call op0129()
+    case (130)
+        call op0130()
+    case (131)
+        call op0131()
+    case (132)
+        call op0132()
+    case (133)
+        call op0133()
+    case (134)
+        call op0134()
+    case (135)
+        call op0135()
+    case (136)
+        call op0136()
+    case (137)
+        call op0137()
+    case (138)
+        call op0138()
+    case (139)
+        call op0139()
+    case (140)
+        call op0140()
+    case (141)
+        call op0141()
+    case (142)
+        call op0142()
+    case (143)
+        call op0143()
+    case (144)
+        call op0144()
+    case (145)
+        call op0145()
+    case (146)
+        call op0146()
+    case (147)
+        call op0147()
+    case (148)
+        call op0148()
+    case (149)
+        call op0149()
+    case (150)
+        call op0150()
+    case (151)
+        call op0151()
+    case (152)
+        call op0152()
+    case (153)
+        call op0153()
+    case (154)
+        call op0154()
+    case (155)
+        call op0155()
+    case (156)
+        call op0156()
+    case (157)
+        call op0157()
+    case (158)
+        call op0158()
+    case (159)
+        call op0159()
+    case (160)
+        call op0160()
+    case (161)
+        call op0161()
+    case (162)
+        call op0162()
+    case (163)
+        call op0163()
+    case (164)
+        call op0164()
+    case (165)
+        call op0165()
+    case (166)
+        call op0166()
+    case (167)
+        call op0167()
+    case (168)
+        call op0168()
+    case (169)
+        call op0169()
+    case (170)
+        call op0170()
+    case (171)
+        call op0171()
+    case (172)
+        call op0172()
+    case (173)
+        call op0173()
+    case (174)
+        call op0174()
+    case (175)
+        call op0175()
+    case (176)
+        call op0176()
+    case (177)
+        call op0177()
+    case (178)
+        call op0178()
+    case (179)
+        call op0179()
+    case (180)
+        call op0180()
+    case (181)
+        call op0181()
+    case (182)
+        call op0182()
+    case (183)
+        call op0183()
+    case (184)
+        call op0184()
+    case (185)
+        call op0185()
+    case (186)
+        call op0186()
+    case (187)
+        call op0187()
+    case (188)
+        call op0188()
+    case (189)
+        call op0189()
+    case (190)
+        call op0190()
+    case (191)
+        call op0191()
+    case (192)
+        call op0192()
+    case (193)
+        call op0193()
+    case (194)
+        call op0194()
+    case (195)
+        call op0195()
+    case (196)
+        call op0196()
+    case (197)
+        call op0197()
+    case (198)
+        call op0198()
+    case (199)
+        call op0199()
+    case default
+        vali = nuoper
+        call utmess('E', 'SUPERVIS_50', si=vali)
+    end select
+!
+999 continue
+!
 end subroutine

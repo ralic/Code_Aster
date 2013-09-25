@@ -20,9 +20,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfimp2.h"
 #include "asterfort/cftabl.h"
@@ -35,6 +34,7 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ndim
     integer :: indic
     integer :: nbliac, llf, llf1, llf2
@@ -131,162 +131,204 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! --- SUR L'ENSEMBLE DES LIAISONS EN CONTACT ET ADHERENTES
 ! ======================================================================
     btotal = nbliac + llf + llf1 + llf2 - 1
-    do 90 kk1 = 0, btotal
+    do kk1 = 0, btotal
         iliac = btotal + 1 - kk1
         lliac = zi(jliac-1+iliac)
         call cftyli(resoco, iliac, posit)
-        goto (1000, 2000, 3000, 4000) posit
-1000      continue
+        select case (posit)
+        case (1)
 ! ======================================================================
 ! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE CONTACT
 ! ======================================================================
-        ii = zi(iscib-1+iliac+llf0-deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
-                call jelibe(jexnum(macont//'.UALF', (ii+1)))
-                zl(jouv+ii)=.false.
+            ii = zi(iscib-1+iliac+llf0-deklag)
+            dercol=zi(jscbl+ii-1)
+            bloc=dercol*(dercol+1)/2
+            if (.not.zl(jouv-1+ii)) then
+                if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
+                    call jelibe(jexnum(macont//'.UALF', (ii+1)))
+                    zl(jouv+ii)=.false.
+                endif
+                call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                zl(jouv-1+ii)=.true.
             endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
-        do 10 kk2 = 1, iliac + llf0 - deklag
-            jva = jva + 1
-            if (abs(zr(jva)) .lt. copmax) then
-                pivot = 1
-            else
+            jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
+            do kk2 = 1, iliac + llf0 - deklag
+                jva = jva + 1
+                if (abs(zr(jva)) .lt. copmax) then
+                    pivot = 1
+                else
 ! ======================================================================
 ! --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 ! ======================================================================
-                pivot = 0
-                goto 90
-            endif
-10      continue
+                    pivot = 0
+                    goto 90
+                endif
+            end do
 ! ======================================================================
 ! --- ON INCREMENTE LE VECTEUR DES LIAISONS OTEES LIOT
 ! ======================================================================
-        zi(jliot+4*nbliai) = zi(jliot+4*nbliai) + 1
-        note = zi(jliot+4*nbliai)
-        zi(jliot-1+note) = lliac
+            zi(jliot+4*nbliai) = zi(jliot+4*nbliai) + 1
+            note = zi(jliot+4*nbliai)
+            zi(jliot-1+note) = lliac
 ! ======================================================================
 ! --- MISE A JOUR DU VECTEUR DES LIAISONS DE CONTACT
 ! ======================================================================
-        call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                    llf1, llf2, resoco, typesp, iliac,&
-                    lliac, typec0)
-        call cfimp2(defico, resoco, noma, lliac, typec0,&
-                    'PIV')
-        goto 100
-2000      continue
+            call cftabl(indic, nbliac, ajliai, spliai, llf,&
+                        llf1, llf2, resoco, typesp, iliac,&
+                        lliac, typec0)
+            call cfimp2(defico, resoco, noma, lliac, typec0,&
+                        'PIV')
+            goto 100
+        case (2)
 ! ======================================================================
 ! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
 ! --- (DANS LE CAS GENERAL EN 2D/SUIVANT LES DEUX DIRECTIONS EN 3D)
 ! ======================================================================
-        if (ndim .eq. 3) then
-            deklag = deklag + 1
-            ii = zi(iscib-1+iliac+llf0-deklag)
-            dercol=zi(jscbl+ii-1)
-            bloc=dercol*(dercol+1)/2
-            if (.not.zl(jouv-1+ii)) then
-                if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
-                    call jelibe(jexnum(macont//'.UALF', (ii+1)))
-                    zl(jouv+ii)=.false.
+            if (ndim .eq. 3) then
+                deklag = deklag + 1
+                ii = zi(iscib-1+iliac+llf0-deklag)
+                dercol=zi(jscbl+ii-1)
+                bloc=dercol*(dercol+1)/2
+                if (.not.zl(jouv-1+ii)) then
+                    if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
+                        call jelibe(jexnum(macont//'.UALF', (ii+1)))
+                        zl(jouv+ii)=.false.
+                    endif
+                    call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                    zl(jouv-1+ii)=.true.
                 endif
-                call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-                zl(jouv-1+ii)=.true.
-            endif
-            jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-&
+                jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-&
             bloc
-            do 20 kk2 = 1, iliac + llf0 - deklag
-                jva = jva + 1
-                if (abs(zr(jva)) .lt. copmax) then
-                    pivot = 1
-                else
+                do kk2 = 1, iliac + llf0 - deklag
+                    jva = jva + 1
+                    if (abs(zr(jva)) .lt. copmax) then
+                        pivot = 1
+                    else
 ! ======================================================================
 ! --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 ! ======================================================================
-                    pivot = 0
-                endif
-20          continue
-            do 30 kk2 = 1, iliac + llf0 - deklag + 1
-                jva = jva + 1
-                if (abs(zr(jva)) .lt. copmax) then
-                    pivot2 = 1
-                else
+                        pivot = 0
+                    endif
+                end do
+                do kk2 = 1, iliac + llf0 - deklag + 1
+                    jva = jva + 1
+                    if (abs(zr(jva)) .lt. copmax) then
+                        pivot2 = 1
+                    else
 ! ======================================================================
 ! --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 ! ======================================================================
-                    pivot2 = 0
-                endif
-30          continue
-            if (pivot .eq. 0) then
-                if (pivot2 .eq. 0) then
+                        pivot2 = 0
+                    endif
+                end do
+                if (pivot .eq. 0) then
+                    if (pivot2 .eq. 0) then
 ! ======================================================================
 ! --- PAS D'ELIMINATION DE PIVOT
 ! ======================================================================
-                    goto 90
-                else
+                        goto 90
+                    else
 ! ======================================================================
 ! --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION
 ! ======================================================================
-                    zi(jliot+4*nbliai+3) = zi(jliot+4*nbliai+3) + 1
-                    note2 = zi(jliot+4*nbliai+3)
-                    zi(jliot-1+note2+3*nbliai) = lliac
+                        zi(jliot+4*nbliai+3) = zi(jliot+4*nbliai+3) + 1
+                        note2 = zi(jliot+4*nbliai+3)
+                        zi(jliot-1+note2+3*nbliai) = lliac
 ! ======================================================================
 ! --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 ! --- ON SUPPRIME LA DOUBLE (F0), ON AJOUTE LA F1 -> LA F2 EST SUPPRIMEE
 ! ======================================================================
-                    call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                                llf1, llf2, resoco, typesp, iliac,&
-                                lliac, typef0)
-                    posit = nbliac + llf + llf1 + llf2 + 1
-                    call cftabl(ibid, nbliac, ajliai, spliai, llf,&
-                                llf1, llf2, resoco, typeaj, posit,&
-                                lliac, typef1)
-                    call cfimp2(defico, resoco, noma, lliac, typef2,&
-                                'PIV')
-                    goto 100
-                endif
-            else
-                if (pivot2 .eq. 0) then
+                        call cftabl(indic, nbliac, ajliai, spliai, llf,&
+                                    llf1, llf2, resoco, typesp, iliac,&
+                                    lliac, typef0)
+                        posit = nbliac + llf + llf1 + llf2 + 1
+                        call cftabl(ibid, nbliac, ajliai, spliai, llf,&
+                                    llf1, llf2, resoco, typeaj, posit,&
+                                    lliac, typef1)
+                        call cfimp2(defico, resoco, noma, lliac, typef2,&
+                                    'PIV')
+                        goto 100
+                    endif
+                else
+                    if (pivot2 .eq. 0) then
 ! ======================================================================
 ! --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION
 ! ======================================================================
-                    zi(jliot+4*nbliai+2) = zi(jliot+4*nbliai+2) + 1
-                    note1 = zi(jliot+4*nbliai+2)
-                    zi(jliot-1+note1+2*nbliai) = lliac
+                        zi(jliot+4*nbliai+2) = zi(jliot+4*nbliai+2) + 1
+                        note1 = zi(jliot+4*nbliai+2)
+                        zi(jliot-1+note1+2*nbliai) = lliac
 ! ======================================================================
 ! --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT ----------------
 ! ======================================================================
-                    call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                                llf1, llf2, resoco, typesp, iliac,&
-                                lliac, typef0)
-                    posit = nbliac + llf + llf1 + llf2 + 1
-                    call cftabl(ibid, nbliac, ajliai, spliai, llf,&
-                                llf1, llf2, resoco, typeaj, posit,&
-                                lliac, typef2)
-                    call cfimp2(defico, resoco, noma, lliac, typef1,&
-                                'PIV')
-                    goto 100
-                else
+                        call cftabl(indic, nbliac, ajliai, spliai, llf,&
+                                    llf1, llf2, resoco, typesp, iliac,&
+                                    lliac, typef0)
+                        posit = nbliac + llf + llf1 + llf2 + 1
+                        call cftabl(ibid, nbliac, ajliai, spliai, llf,&
+                                    llf1, llf2, resoco, typeaj, posit,&
+                                    lliac, typef2)
+                        call cfimp2(defico, resoco, noma, lliac, typef1,&
+                                    'PIV')
+                        goto 100
+                    else
 ! ======================================================================
 ! --- ELIMINATION DU PIVOT NUL SUIVANT LES DEUX DIRECTIONS
 ! ======================================================================
-                    zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
-                    note12 = zi(jliot+4*nbliai+1)
-                    zi(jliot-1+note12+nbliai) = lliac
+                        zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
+                        note12 = zi(jliot+4*nbliai+1)
+                        zi(jliot-1+note12+nbliai) = lliac
 ! ======================================================================
 ! --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 ! ======================================================================
-                    call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                                llf1, llf2, resoco, typesp, iliac,&
-                                lliac, typef0)
-                    goto 100
+                        call cftabl(indic, nbliac, ajliai, spliai, llf,&
+                                    llf1, llf2, resoco, typesp, iliac,&
+                                    lliac, typef0)
+                        goto 100
+                    endif
                 endif
+            else
+                ii = zi(iscib-1+iliac+llf0-deklag)
+                dercol=zi(jscbl+ii-1)
+                bloc=dercol*(dercol+1)/2
+                if (.not.zl(jouv-1+ii)) then
+                    if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
+                        call jelibe(jexnum(macont//'.UALF', (ii+1)))
+                        zl(jouv+ii)=.false.
+                    endif
+                    call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                    zl(jouv-1+ii)=.true.
+                endif
+                jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
+                do kk2 = 1, iliac + llf0 - deklag
+                    jva = jva + 1
+                    if (abs(zr(jva)) .lt. copmax) then
+                        pivot = 1
+                    else
+! ======================================================================
+! --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
+! ======================================================================
+                        pivot = 0
+                        goto 90
+                    endif
+                end do
+                zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
+                note12 = zi(jliot+4*nbliai+1)
+                zi(jliot-1+note12+nbliai) = lliac
+! ======================================================================
+! --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
+! ======================================================================
+                call cftabl(indic, nbliac, ajliai, spliai, llf,&
+                            llf1, llf2, resoco, typesp, iliac,&
+                            lliac, typef0)
+                call cfimp2(defico, resoco, noma, lliac, 'F3',&
+                            'PIV')
+                goto 100
             endif
-        else
+        case (3)
+! ======================================================================
+! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
+! --- SUIVANT LA PREMIERE DIRECTION EN 3D
+! ======================================================================
             ii = zi(iscib-1+iliac+llf0-deklag)
             dercol=zi(jscbl+ii-1)
             bloc=dercol*(dercol+1)/2
@@ -298,9 +340,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
                 call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
                 zl(jouv-1+ii)=.true.
             endif
-            jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-&
-            bloc
-            do 40 kk2 = 1, iliac + llf0 - deklag
+            jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
+            do kk2 = 1, iliac + llf0 - deklag
                 jva = jva + 1
                 if (abs(zr(jva)) .lt. copmax) then
                     pivot = 1
@@ -311,7 +352,7 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
                     pivot = 0
                     goto 90
                 endif
-40          continue
+            end do
             zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
             note12 = zi(jliot+4*nbliai+1)
             zi(jliot-1+note12+nbliai) = lliac
@@ -320,97 +361,57 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! ======================================================================
             call cftabl(indic, nbliac, ajliai, spliai, llf,&
                         llf1, llf2, resoco, typesp, iliac,&
-                        lliac, typef0)
-            call cfimp2(defico, resoco, noma, lliac, 'F3',&
+                        lliac, typef1)
+            call cfimp2(defico, resoco, noma, lliac, typef1,&
                         'PIV')
             goto 100
-        endif
-3000      continue
-! ======================================================================
-! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
-! --- SUIVANT LA PREMIERE DIRECTION EN 3D
-! ======================================================================
-        ii = zi(iscib-1+iliac+llf0-deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
-                call jelibe(jexnum(macont//'.UALF', (ii+1)))
-                zl(jouv+ii)=.false.
-            endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
-        do 50 kk2 = 1, iliac + llf0 - deklag
-            jva = jva + 1
-            if (abs(zr(jva)) .lt. copmax) then
-                pivot = 1
-            else
-! ======================================================================
-! --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
-! ======================================================================
-                pivot = 0
-                goto 90
-            endif
-50      continue
-        zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
-        note12 = zi(jliot+4*nbliai+1)
-        zi(jliot-1+note12+nbliai) = lliac
-! ======================================================================
-! --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
-! ======================================================================
-        call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                    llf1, llf2, resoco, typesp, iliac,&
-                    lliac, typef1)
-        call cfimp2(defico, resoco, noma, lliac, typef1,&
-                    'PIV')
-        goto 100
-4000      continue
+        case (4)
 ! ======================================================================
 ! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
 ! --- SUIVANT LA SECONDE DIRECTION EN 3D
 ! ======================================================================
-        ii = zi(iscib-1+iliac+llf0-deklag)
-        dercol=zi(jscbl+ii-1)
-        bloc=dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
-            if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
-                call jelibe(jexnum(macont//'.UALF', (ii+1)))
-                zl(jouv+ii)=.false.
+            ii = zi(iscib-1+iliac+llf0-deklag)
+            dercol=zi(jscbl+ii-1)
+            bloc=dercol*(dercol+1)/2
+            if (.not.zl(jouv-1+ii)) then
+                if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
+                    call jelibe(jexnum(macont//'.UALF', (ii+1)))
+                    zl(jouv+ii)=.false.
+                endif
+                call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
+                zl(jouv-1+ii)=.true.
             endif
-            call jeveuo(jexnum(macont//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
-        do 60 kk2 = 1, iliac + llf0 - deklag
-            jva = jva + 1
-            if (abs(zr(jva)) .lt. copmax) then
-                pivot = 1
-            else
+            jva=jvale-1+(iliac+llf0-deklag-1)*(iliac+llf0-deklag)/2-bloc
+            do kk2 = 1, iliac + llf0 - deklag
+                jva = jva + 1
+                if (abs(zr(jva)) .lt. copmax) then
+                    pivot = 1
+                else
 ! ======================================================================
 ! --- PAS DE PIVOT NUL A OTER, ON PASSE A LA LIAISON SUIVANTE
 ! ======================================================================
-                pivot = 0
-                goto 90
-            endif
-60      continue
-        zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
-        note12 = zi(jliot+4*nbliai+1)
-        zi(jliot-1+note12+nbliai) = lliac
+                    pivot = 0
+                    goto 90
+                endif
+            end do
+            zi(jliot+4*nbliai+1) = zi(jliot+4*nbliai+1) + 1
+            note12 = zi(jliot+4*nbliai+1)
+            zi(jliot-1+note12+nbliai) = lliac
 ! ======================================================================
 ! --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT
 ! ======================================================================
-        call cftabl(indic, nbliac, ajliai, spliai, llf,&
-                    llf1, llf2, resoco, typesp, iliac,&
-                    lliac, typef2)
-        call cfimp2(defico, resoco, noma, lliac, typef2,&
-                    'PIV')
-        goto 100
+            call cftabl(indic, nbliac, ajliai, spliai, llf,&
+                        llf1, llf2, resoco, typesp, iliac,&
+                        lliac, typef2)
+            call cfimp2(defico, resoco, noma, lliac, typef2,&
+                        'PIV')
+            goto 100
+        end select
 ! ======================================================================
-90  end do
+ 90     continue
+    end do
 ! ======================================================================
-100  continue
+100 continue
 ! ======================================================================
     call jedetr(ouvert)
     call jedema()

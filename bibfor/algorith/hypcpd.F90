@@ -20,7 +20,6 @@ subroutine hypcpd(c11, c22, c33, c12, k,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit none
     real(kind=8) :: c11, c22, c33, c12
     real(kind=8) :: k
@@ -561,5 +560,5 @@ subroutine hypcpd(c11, c22, c33, c12, k,&
      &            32.d0/9.d0*c20*t45*t34*t5*t13+128.d0/9.d0*t54*t1*t14+&
      &            16.d0/3.d0*t54*t1*t18*c33+4.d0*k/t7*t36-&
      &            4.d0*t68/t69/t66*t5*t13-4.d0*t68/t66*c33
-10  continue
+ 10 continue
 end subroutine

@@ -39,6 +39,7 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
+    integer :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: deblig
@@ -50,7 +51,7 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
 !
 !-----------------------------------------------------------------------
     integer :: i, icl, ier, ifl, ifm, irtet, irteti
-    integer :: iv, nbg, nbm
+    integer :: iv, nbg
 !-----------------------------------------------------------------------
     irteti = 0
     ifm = iunifi('MESSAGE')
@@ -58,11 +59,12 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
 !
 ! -     ITEM = MOT CLE INTERFACE OU AUTRE ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         goto 6
- 4  continue
+  4     continue
+    end do
 !
 ! -     MOT CLE NON RECONNU
 !
@@ -78,13 +80,13 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
 ! -     MOT CLE INTERFACE RECONNU
 !       ON SORT PAR FIN OU FINSF OU FIN DE FICHIER
 !
- 6  continue
+  6 continue
     nom = cv(1:iv)
     valk(1) = cnl
     valk(2) = nom
     call utmess('I', 'MODELISA4_82', nk=2, valk=valk)
 !
- 5  continue
+  5 continue
     deblig = -1
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 1)
@@ -94,16 +96,20 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
 ! -     ITEM = MOT  CLE FIN  OU FINSF ?
 !
     call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (1,2), irtet
+    if (irtet .eq. 1) then
+        goto 1
+    else if (irtet .eq. 2) then
+        goto 2
+    endif
 !
     goto 5
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

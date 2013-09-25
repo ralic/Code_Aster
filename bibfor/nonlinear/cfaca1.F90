@@ -20,9 +20,8 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calatm.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cftyli.h"
@@ -34,6 +33,7 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nmrldb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: defico, resoco
     character(len=19) :: solveu
     integer :: nbliai, nbliac, llf, llf1, llf2
@@ -150,67 +150,65 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
         call wkvect('&&CFACA1.VECT', ' V V I ', llf, jtmpv)
     endif
 !
-    do 10 ipas = 1, npast
+    do ipas = 1, npast
         lg = lgbloc
         if (npast .ne. npas .and. (ipas.eq.npast)) lg = nrest
 !
-        do 40 kk = 1, neq*lg
+        do kk = 1, neq*lg
             zr(tampon-1+kk) = 0.0d0
-40      continue
+        end do
 !
-        do 20 il = 1, lg
+        do il = 1, lg
             iliac = lgbloc* (ipas-1) + il + ajliai
             lliac = zi(jliac+iliac-1)
             jdecal = zi(japptr+lliac-1)
             nbddl = zi(japptr+lliac) - zi(japptr+lliac-1)
             call cftyli(resoco, iliac, posit)
-            goto (1000, 2000, 3000, 4000) posit
+            select case (posit)
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
-1000          continue
+            case (1)
 !
 ! --- CALCUL DE LA COLONNE AT POUR LA LIAISON ACTIVE LLIAC EN CONTACT
 !
-            call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+ jdecal),&
-                        zr(tampon+neq*(il-1)))
-            goto 20
+                call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+ jdecal),&
+                            zr(tampon+neq*(il-1)))
 !
 ! --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LES DEUX DIRECTIONS
 !
-2000          continue
+            case (2)
 !
 ! --- PREMIERE DIRECTION
 !
 ! --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT
 !
-            llf3d = llf3d + 1
-            zi(jtmpv -1 +llf3d) = lliac
-            call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal), zi(japddl+ jdecal),&
-                        zr(tampon+neq*(il-1)))
-            goto 20
+                llf3d = llf3d + 1
+                zi(jtmpv -1 +llf3d) = lliac
+                call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal), zi(japddl+ jdecal),&
+                            zr(tampon+neq*(il-1)))
 !
 ! --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 1ERE DIRECTION
 !
-3000          continue
+            case (3)
 !
 ! --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT
 !
-            call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal), zi(japddl+ jdecal),&
-                        zr(tampon+neq*(il-1)))
-            goto 20
+                call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal), zi(japddl+ jdecal),&
+                            zr(tampon+neq*(il-1)))
 !
 ! --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 2NDE DIRECTION
 !
-4000          continue
+            case (4)
 !
 ! --- SECONDE DIRECTION
 !
 ! --- CALCUL DE LA COLONNE AT POUR LA SECONDE DIRECTION DE FROTTEMENT
 !
-            call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                        zr(tampon+neq*(il-1)))
-20      continue
+                call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
+                            zr(tampon+neq*(il-1)))
+            end select
+        end do
 !
 ! --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
 !
@@ -218,52 +216,50 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 !
 ! --- RECOPIE
 !
-        do 50 il = 1, lg
+        do il = 1, lg
             iliac = lgbloc* (ipas-1) + il + ajliai
             lliac = zi(jliac+iliac-1)
             call cftyli(resoco, iliac, posit)
-            goto (1100, 2100, 3100, 4100) posit
+            select case (posit)
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
-1100          continue
-            call jeveuo(jexnum(cm1a, lliac), 'E', jcm1a)
-            do 60 kk = 1, neq
-                zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
-60          continue
-            call jelibe(jexnum(cm1a, lliac))
-            goto 50
+            case (1)
+                call jeveuo(jexnum(cm1a, lliac), 'E', jcm1a)
+                do kk = 1, neq
+                    zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
+                end do
+                call jelibe(jexnum(cm1a, lliac))
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
-2100          continue
-            call jeveuo(jexnum(cm1a, lliac+nbliai), 'E', jcm1a)
-            do 160 kk = 1, neq
-                zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
-160          continue
-            call jelibe(jexnum(cm1a, lliac+nbliai))
-            goto 50
+            case (2)
+                call jeveuo(jexnum(cm1a, lliac+nbliai), 'E', jcm1a)
+                do kk = 1, neq
+                    zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
+                end do
+                call jelibe(jexnum(cm1a, lliac+nbliai))
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
-3100          continue
-            call jeveuo(jexnum(cm1a, lliac+nbliai), 'E', jcm1a)
-            do 260 kk = 1, neq
-                zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
-260          continue
-            call jelibe(jexnum(cm1a, lliac+nbliai))
-            goto 50
+            case (3)
+                call jeveuo(jexnum(cm1a, lliac+nbliai), 'E', jcm1a)
+                do kk = 1, neq
+                    zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
+                end do
+                call jelibe(jexnum(cm1a, lliac+nbliai))
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
-4100          continue
-            call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'E', jcm1a)
-            do 360 kk = 1, neq
-                zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
-360          continue
-            call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
-50      continue
-10  end do
+            case (4)
+                call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'E', jcm1a)
+                do kk = 1, neq
+                    zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
+                end do
+                call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
+            end select
+        end do
+    end do
 !
 ! --- CAS DU FROTTEMENT SUIVANT LA SECONDE DIRECTION EN 3D
 !
@@ -278,15 +274,15 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
             npast = npas
         endif
 !
-        do 80 ipas = 1, npast
+        do ipas = 1, npast
             lg = lgbloc
             if (npast .ne. npas .and. (ipas.eq.npast)) lg = nrest
 !
-            do 90 kk = 1, neq*lg
+            do kk = 1, neq*lg
                 zr(tampon-1+kk) = 0.0d0
-90          continue
+            end do
 !
-            do 100 il = 1, lg
+            do il = 1, lg
                 iliac = lgbloc*(ipas-1) + il
                 lliac = zi(jtmpv -1 +iliac)
 !
@@ -298,23 +294,23 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
                 nbddl = zi(japptr+lliac) - zi(japptr+lliac-1)
                 call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
                             zr(tampon+neq*(il-1)))
-100          continue
+            end do
 !
 ! --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
 !
             call nmrldb(solveu, lmat, zr(tampon), lg, cncin0)
 !
 ! --- RECOPIE
-            do 110 il = 1, lg
+            do il = 1, lg
                 iliac = lgbloc*(ipas-1) + il
                 lliac = zi(jtmpv -1 +iliac)
                 call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'E', jcm1a)
-                do 120 kk = 1, neq
+                do kk = 1, neq
                     zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
-120              continue
+                end do
                 call jelibe(jexnum(cm1a, lliac+(ndim-1)*nbliai))
-110          continue
-80      continue
+            end do
+        end do
     endif
     ajliai = nbliac + llf + llf1 + llf2
 !

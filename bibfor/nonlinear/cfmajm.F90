@@ -18,7 +18,7 @@ subroutine cfmajm(resoco, ndim, nbliac, llf, llf1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cftyli.h"
 #include "asterfort/jedema.h"
@@ -79,48 +79,46 @@ subroutine cfmajm(resoco, ndim, nbliac, llf, llf1,&
 ! --- RECOPIE DES VALEURS DANS UN VECTEUR TEMPORAITE
 !
     call wkvect('&&CFMAJM.ORDO', 'V V R', dimmaj, jmajmu)
-    do 20 iliac = 1, dimmaj
+    do iliac = 1, dimmaj
         zr(jmajmu-1+iliac) = zr(jmu-1+iliac)
-20  end do
+    end do
 !
 ! --- ECRIT LES LIAISONS DANS L'ORDRE: NBLIAC, LLF, LLF1, LLF2
 !
-    do 10 iliac = 1, nbliac + llf + llf1 + llf2
+    do iliac = 1, nbliac + llf + llf1 + llf2
         posmu = posmu + 1
         call cftyli(resoco, iliac, posit)
-        goto (1000,2000,3000,4000) posit
+        select case (posit)
 !
 ! ----- LIAISON DE CONTACT
 !
-1000      continue
-        posnbl = posnbl + 1
-        zr(jmu-1+posnbl) = zr(jmajmu-1+posmu)
-        goto 10
+        case (1)
+            posnbl = posnbl + 1
+            zr(jmu-1+posnbl) = zr(jmajmu-1+posmu)
 !
 ! ----- LIAISON DE FROTTEMENT - 2D OU 3D DANS LES DEUX DIRECTIONS
 !
-2000      continue
-        poslf0 = poslf0 + 1
-        zr(jmu-1+poslf0) = zr(jmajmu-1+posmu)
-        if (ndim .eq. 3) then
-            posmu = posmu + 1
-            zr(jmu-1+poslf0+llf) = zr(jmajmu-1+posmu)
-        endif
-        goto 10
+        case (2)
+            poslf0 = poslf0 + 1
+            zr(jmu-1+poslf0) = zr(jmajmu-1+posmu)
+            if (ndim .eq. 3) then
+                posmu = posmu + 1
+                zr(jmu-1+poslf0+llf) = zr(jmajmu-1+posmu)
+            endif
 !
 ! ----- LIAISON DE FROTTEMENT - 3D PREMIERE DIRECTION
 !
-3000      continue
-        poslf1 = poslf1 + 1
-        zr(jmu-1+poslf1) = zr(jmajmu-1+posmu)
-        goto 10
+        case (3)
+            poslf1 = poslf1 + 1
+            zr(jmu-1+poslf1) = zr(jmajmu-1+posmu)
 !
 ! ----- LIAISON DE FROTTEMENT - 3D SECONDE DIRECTION
 !
-4000      continue
-        poslf2 = poslf2 + 1
-        zr(jmu-1+poslf2) = zr(jmajmu-1+posmu)
-10  end do
+        case (4)
+            poslf2 = poslf2 + 1
+            zr(jmu-1+poslf2) = zr(jmajmu-1+posmu)
+        end select
+    end do
 !
     call jedetr('&&CFMAJM.ORDO')
     call jedema()

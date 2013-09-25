@@ -44,6 +44,7 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
 #include "asterfort/tesmcl.h"
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
+    integer :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig
@@ -53,7 +54,7 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
     integer :: fmt(nbm)
 !-----------------------------------------------------------------------
     integer :: i, icl, ier, ifl, ifm, ilec, inom
-    integer :: irtet, irteti, iv, nbg, nbm, numtcl
+    integer :: irtet, irteti, iv, nbg, numtcl
 !
 !-----------------------------------------------------------------------
     irteti = 0
@@ -62,17 +63,18 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
 !
 ! ----- ITEM = MOT CLE TYPE  MAILLE ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         numtcl = i
         goto 7
- 4  continue
+  4     continue
+    end do
     goto 3
 !
 ! - LIRE ITEM SUIVANT
 !
- 7  continue
+  7 continue
     if (nbg .ge. 1) write(ifm,*)' ----- LECMAI'
 !
 ! - LECTURE DE L'ENTETE
@@ -83,32 +85,36 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
     call lirtet(ifl, ilec, inom, cnl, nom,&
                 icl, iv, rv, cv, deblig)
     goto 9
- 5  continue
+  5 continue
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 1)
     if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
                     ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
- 9  continue
+  9 continue
 !
 ! - ITEM EN DEBUT DE LIGNE ?
 !
     call verdbl(deblig, cnl, ier, irtet)
-    if (irtet .gt. 0) goto (2), irtet
+    if (irtet .eq. 1) goto 2
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
 !
     call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (1,2), irtet
+    if (irtet .eq. 1) then
+        goto 1
+    else if (irtet .eq. 2) then
+        goto 2
+    endif
 !
 ! - ITEM = MOT (# FIN OU FINSF) = NOM DE LA MAILLE ?
 !
     call vermot(icl, iv, cv, cnl, ier,&
                 irtet)
-    if (irtet .gt. 0) goto (2), irtet
+    if (irtet .eq. 1) goto 2
 !
 ! ---- LECTURE DES NOMS DES NOEUDS DE LA MAILLE
 !
-    do 6 i = 1, fmt(numtcl)
+    do i = 1, fmt(numtcl)
 !
 ! - LIRE ITEM SUIVANT
 !
@@ -121,25 +127,25 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
 !
         call vermot(icl, iv, cv, cnl, ier,&
                     irtet)
-        if (irtet .gt. 0) goto (2), irtet
+        if (irtet .eq. 1) goto 2
 !
 ! - INCREMENTATION DU NB TOTAL DE NOEUDS LUS
 !
         nbt(numtcl) = nbt(numtcl) + 1
- 6  continue
+    end do
 !
     dim(numtcl) = dim(numtcl) + 1
     goto 5
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

@@ -26,7 +26,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !      ATTENTION : UTILISATION DES SUBROUTINES
 !     ZERO,MATMAT...
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 #include "asterfort/brindz.h"
 #include "asterfort/brtail.h"
@@ -121,14 +121,14 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
     call matini(3, 3, zz, x33)
     e1=1.d0/mt
-    do 10 i = 1, 3
+    do i = 1, 3
         if (bt3(i) .gt. 0.d0) then
             x33(i,i)=((mt*bt3(i))**e1)*sut
         else
             x33(i,i)=0.d0
         endif
 !      SEUIL3(I)=X33(I,I)
-10  end do
+    end do
 !     PASSAGE DES CONTRAINTES SEUILS EN BASE FIXE
     call utbtab('ZERO', 3, 3, x33, bt033t,&
                 trav, sut33)
@@ -143,11 +143,11 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
 !     CONTRAINTES EFFECTIVES PRINCIPALES ET MATRICE DE
 !       PASSAGE à LA BASE PRINCIPALE
-    do 20 i = 1, 3
-        do 30 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             x33(i,j)=sige33(i,j)
-30      continue
-20  end do
+        end do
+    end do
 !      DIAGONALISATION ET VALEURS PROPRES PAR LA METHODE DE JACOBI
     call brvp33(x33, sige3, vse33)
 !
@@ -161,19 +161,19 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
 !      DECOMPOSITION DES CONTRAINTES
 !        PRINCIPALES EN PARTIE POSITIVE ET NéGATIVE
-    do 40 i = 1, 3
+    do i = 1, 3
         sget3(i)=0.5d0*(sige3(i)+abs(sige3(i)))
         sgec3(i)=0.5d0*(sige3(i)-abs(sige3(i)))
-40  end do
+    end do
 !
 !     MISE A JOUR DES INDICES DE FISSURATION DE TRACTION
 !     LA MISE A JOUR SE FAIT SUR LES CONTRAINTES SEUILS
 !     VALEUR PRINCIPALES DES SEUILS ACTUELS
-    do 50 i = 1, 3
-        do 60 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             x33(i,j)=sut33(i,j)
-60      continue
-50  end do
+        end do
+    end do
 !     EXPRESSION DES CONTRAINTES SEUILS DE TRACTION DANS
 !       LA BASE PRINCIPALE DES CONTRAINTES EFFECTIVES ACTUELLES
     call utbtab('ZERO', 3, 3, x33, vse33,&
@@ -188,7 +188,7 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
     endif
 !
 !    ACTUALISATION DES CONTRAINTES SEUILS(ECOULEMENT/CRITERE DE RANKINE)
-    do 70 i = 1, 3
+    do i = 1, 3
         if (local) then
 !        ON TESTE LA LOCALISATION SUR LES CONTRAINTES EFFECTIVES ISSUES
 !        DU CHARGEMENT EXTéRIEUR (SEULE CAUSE POSSIBLE DE LOCALISATION)
@@ -205,14 +205,14 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !       LA CONFORMITé AVEC LE CALCUL DES CONTRAINTES APPARENTES
             sget3(i)=sget3(i)+bw*pw+bch*pch
         endif
-        do 80 j = 1, 3
+        do j = 1, 3
             if (i .eq. j) then
                 y33(i,i)=max(y133(i,i),sget3(i))
             else
                 y33(i,j)=y133(i,j)
             endif
-80      continue
-70  end do
+        end do
+    end do
 !      PRINT*,'CONTRAINTES SEUILS EN BASE PRINCIPALE'
 !      CALL AFFICHE33(Y33)
 !
@@ -227,31 +227,31 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
     call transp(vbt33, 3, 3, 3, vbt33t,&
                 3)
     call matini(3, 3, zz, x33)
-    do 90 i = 1, 3
+    do i = 1, 3
         if (sut3(i) .gt. 0.d0) then
             bt3(i)=e1*((sut3(i)/sut)**mt)
         else
             bt3(i)=0.d0
         endif
 !       PRINT*,'BT3(',I,')=',BT3(I),'DS ENDO'
-90  end do
+    end do
 !
 !     RETOUR DES INDICES DE FISSURATION EN BASE FIXE POUR LE
 !       STOCKAGE EN VECTEUR6
     call matini(3, 3, zz, x33)
     call matini(3, 3, zz, dt33)
-    do 100 i = 1, 3
+    do i = 1, 3
         x33(i,i)=bt3(i)
         dt33(i,i)=1.d0-exp(-bt3(i))
-100  end do
+    end do
     call utbtab('ZERO', 3, 3, x33, vbt33t,&
                 trav, bt33)
     call utbtab('ZERO', 3, 3, dt33, vbt33t,&
                 trav, dt33f)
-    do 110 i = 1, 3
+    do i = 1, 3
         bt6(i)=bt33(i,i)
         dt6(i)=dt33f(i,i)
-110  end do
+    end do
     bt6(4)=bt33(1,2)
     bt6(5)=bt33(1,3)
     bt6(6)=bt33(2,3)
@@ -264,14 +264,14 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !       BASE FIXE SI STOCKAGE NECESSAIRE (VERSION ASTER)
     if (aster) then
         call matini(3, 3, zz, x33)
-        do 120 i = 1, 3
+        do i = 1, 3
             x33(i,i)=sut3(i)
-120      continue
+        end do
         call utbtab('ZERO', 3, 3, x33, vbt33t,&
                     trav, sut33)
-        do 130 i = 1, 3
+        do i = 1, 3
             sut6(i)=sut33(i,i)
-130      continue
+        end do
         sut6(4)=sut33(1,2)
         sut6(5)=sut33(1,3)
         sut6(6)=sut33(2,3)
@@ -309,24 +309,24 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
     s33(3,3) = (t5 + t6 + t10 - t8 + t2) * t12
 !
 !     CALCUL DE LA MATRICE D ENDOMMAGEMENT DT66
-    do 140 i = 1, 6
-        do 150 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             dt66(i,j)=0.d0
-150      continue
-140  end do
-    do 160 i = 1, 3
-        do 170 j = 1, 3
+        end do
+    end do
+    do i = 1, 3
+        do j = 1, 3
             if (i .eq. j) then
                 dt66(i,j)=1.d0-s33(i,j)
             else
                 dt66(i,j)=-s33(i,j)
             endif
-170      continue
-160  end do
-    do 180 i = 4, 6
+        end do
+    end do
+    do i = 4, 6
         call brindz(i, k, l)
         dt66(i,i)=1.d0-exp(-bt3(k)-bt3(l))
-180  end do
+    end do
 !
 !
 !     **** CAS DE L ENDOMMAGEMENT ISOTROPE DE COMPRESSION ***********
@@ -360,12 +360,12 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
                 xc=yc
 !         ACTUALISATION DES CONTRAINTES EFFECTIVES EN ZONE DE
 !           LOCALISATION SUIVANT LE RAPPORT D HOMOTHETIE
-                do 190 i = 1, 3
+                do i = 1, 3
 !          CAS DES CONTRAINTES DE COMPRESSION
 !            (LOCALISATION EN COMPRESSION ISOTROPE)
                     sgec3(i)=rh*(sgec3(i)-bw*pw-bch*pch)+(bw*pw+bch*&
                     pch)
-190              continue
+                end do
 !         ESTIMATION DE L ENDOMMAGEMENT DE COMPRESSION APRES HOMOTHETIE
 !         DES CONTRAINTES DUES AU CHARGEMENT EXT
                 xj2=(sgec3(1)-sgec3(2))**2+(sgec3(1)-sgec3(3))**2&
@@ -403,36 +403,36 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !     PASSAGE DES CONTRAINTES PRINCIPALES DE
 !       TRACTION ACTUALISEES EN BASE ENDO TRACT
     call matini(3, 3, zz, x33)
-    do 200 i = 1, 3
+    do i = 1, 3
         x33(i,i)=sget3(i)
-200  end do
+    end do
     call utbtab('ZERO', 3, 3, x33, vse33t,&
                 trav, sget33)
 !     PASSAGE EN BASE PRIN ENDO TRAC
     call matini(3, 3, zz, x33)
     call utbtab('ZERO', 3, 3, sget33, vbt33,&
                 trav, x33)
-    do 210 i = 1, 6
+    do i = 1, 6
         call brindz(i, j, k)
         siget6(i)=x33(j,k)
-210  end do
+    end do
 !
 !     PASSAGE DES CONTRAINTES PRINCIPALES DE COMPRESSION
 !       ACTUALISEES EN BASE ENDO TRACT
     call matini(3, 3, zz, x33)
-    do 220 i = 1, 3
+    do i = 1, 3
         x33(i,i)=sgec3(i)
-220  end do
+    end do
     call utbtab('ZERO', 3, 3, x33, vse33t,&
                 trav, sgec33)
 !     PASSAGE EN BASE PRIN ENDO TRAC
     call matini(3, 3, zz, x33)
     call utbtab('ZERO', 3, 3, sgec33, vbt33,&
                 trav, x33)
-    do 230 i = 1, 6
+    do i = 1, 6
         call brindz(i, j, k)
         sigec6(i)=x33(j,k)
-230  end do
+    end do
 !
 !
 !     *** CONTRAINTES APPARENTES ********************************
@@ -465,9 +465,9 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
 !     CALCUL DES CONTRAINTES APPARENTES DE TRACTION EN
 !       BASE PRINCIPALE D ENDOMMAGEMENT
-    do 240 i = 1, 6
+    do i = 1, 6
         sigat6(i)=0.d0
-        do 250 j = 1, 6
+        do j = 1, 6
             if (j .eq. i) then
 !        ON EST SUR LA DIAGONALE
                 if (i .le. 3) then
@@ -498,16 +498,16 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !          LES CONTRAINTES HOR DIAGONALE
                 sigat6(i)=sigat6(i)-dt66(i,j)*siget6(j)
             endif
-250      continue
+        end do
 !      PASSAGE A LA CONTRAINTE SUIVANTE
-240  end do
+    end do
 !
 !      CALCUL DES CONTRAINTES APPARENTES  TOTALES EN
 !        BASE PRINCIPALE D ENDOMMAGEMENT
 !      (COUPLAGE AVEC L ENDOMMAGEMENT DE COMPRESSION ET
 !        PRISE EN COMPTE DES PRESSIONS
 !        HYDRIQUES POUR LES CONTRAINTES NORMALES EFFECTIVES NEGATIVE)
-    do 260 i = 1, 6
+    do i = 1, 6
         if ((sigec6(i).lt.0.d0) .and. (i.le.3)) then
 !        LA CONTRAINTE EFFECTIVE NORMALE DANS LA
 !          DIRECTION I EST NEGATIVE : ON RAJOUTE LA PRESSION
@@ -523,23 +523,23 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !          ET ENDO DE COMP ISOTROPE
             siga6(i)=(1.d0-dc0)*(sigat6(i)+sigec6(i))
         endif
-260  end do
+    end do
 !
 !     RETOUR DES CONTRAINTES APPARENTES EN BASE FIXE
     call matini(3, 3, zz, x33)
-    do 270 i = 1, 6
+    do i = 1, 6
         call brindz(i, j, k)
         x33(j,k)=siga6(i)
         if (j .ne. k) then
             x33(k,j)=x33(j,k)
         endif
-270  end do
+    end do
     call utbtab('ZERO', 3, 3, x33, vbt33t,&
                 trav, siga33)
-    do 280 i = 1, 6
+    do i = 1, 6
         call brindz(i, j, k)
         siga6(i)=siga33(j,k)
-280  end do
+    end do
 !
 !
 end subroutine

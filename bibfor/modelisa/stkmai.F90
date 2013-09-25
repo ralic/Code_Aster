@@ -71,16 +71,17 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 !
 ! - ITEM = MOT CLE  TYPE MAILLE ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         numtcl = i
         goto 5
- 4  continue
+  4     continue
+    end do
     goto 3
 !
 !
- 5  continue
+  5 continue
     call jeveuo(cnx, 'E', iadc)
     call jeveuo(typ, 'E', iadt)
 !
@@ -93,15 +94,19 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 !
 ! - LIRE ITEM SUIVANT = NOM DE MAILLE ?
 !
- 7  continue
+  7 continue
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 2)
- 9  continue
+  9 continue
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
 !
     call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (1,2), irtet
+    if (irtet .eq. 1) then
+        goto 1
+    else if (irtet .eq. 2) then
+        goto 2
+    endif
 !
 ! - CREATION DE CONXV.NOM_DE_MAILLE ET TYPMAIL.NOM_DE_MAILLE
 !
@@ -120,7 +125,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 !
     zi(iadt+nume) = numtcl
 !
-    do 6 i = 1, fmt(numtcl)
+    do i = 1, fmt(numtcl)
         call liritm(ifl, icl, iv, rv, cv,&
                     cnl, deblig, 2)
         nom = b8
@@ -131,7 +136,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 ! - INCREMENTATION DU NB DE NOEUDS LUS
 !
         numn = numn + 1
- 6  continue
+    end do
 !
 ! - INCREMENTATION DU NB D ELEMENTS LUS
 !
@@ -141,16 +146,16 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 !
     goto 7
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

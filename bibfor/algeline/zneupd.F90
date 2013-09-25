@@ -294,7 +294,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1501,W1504
+! aslint: disable=W1304,W1504
     implicit none
 !
 !     %-----------------------------%
@@ -535,10 +535,10 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !        | THESE WILL BE USED TO MARK THE SELECT ARRAY LATER |
 !        %---------------------------------------------------%
 !
-        do 10 j = 1, ncv
+        do j = 1, ncv
             workl(bounds+j-1) = j
             select(j) = .false.
-10      continue
+        end do
 !
 !        %-------------------------------------%
 !        | SELECT THE WANTED RITZ VALUES.      |
@@ -568,7 +568,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !        %-----------------------------------------------------%
 !
         numcnv = 0
-        do 11 j = 1, ncv
+        do j = 1, ncv
             rtemp = max( eps23, dlapy2 (dble (workl(irz+ncv-j)), dimag (workl(irz+ncv-j))) )
             jj = nint(dble(workl(bounds + ncv - j)))
             if (numcnv .lt. nconv .and.&
@@ -577,7 +577,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
                 numcnv = numcnv + 1
                 if (jj .gt. nev) reord = .true.
             endif
-11      continue
+        end do
 !
 !        %-----------------------------------------------------------%
 !        | CHECK THE COUNT (NUMCNV) OF CONVERGED RITZ VALUES WITH    |
@@ -700,7 +700,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
         call zlacpy('A', n, nconv, v, ldv,&
                     z, ldz)
 !
-        do 20 j = 1, nconv
+        do j = 1, nconv
 !
 !           %---------------------------------------------------%
 !           | PERFORM BOTH A COLUMN AND ROW SCALING IF THE      |
@@ -716,7 +716,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
                 call zscal(nconv, -one, workl(iuptri+(j-1)*ldq), 1)
             endif
 !
-20      continue
+        end do
 !
         if (howmny .eq. 'A') then
 !
@@ -725,13 +725,13 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !           | LOCATED IN WORKL(IUPTRI,LDQ).              |
 !           %--------------------------------------------%
 !
-            do 30 j = 1, ncv
+            do j = 1, ncv
                 if (j .le. nconv) then
                     select(j) = .true.
                 else
                     select(j) = .false.
                 endif
-30          continue
+            end do
 !
             call gtrevc('R', 'S', select, ncv, workl(iuptri),&
                         ldq, vl, 1, workl(invsub), ldq,&
@@ -750,7 +750,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !           | MAGNITUDE 1.                                   |
 !           %------------------------------------------------%
 !
-            do 40 j = 1, nconv
+            do j = 1, nconv
                 rtemp = dznrm2 (ncv, workl(invsub+(j-1)*ldq), 1)
                 rtemp = dble (one) / rtemp
                 call zdscal(ncv, rtemp, workl(invsub+(j-1)*ldq), 1)
@@ -765,7 +765,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !                 %------------------------------------------%
 !
                 workev(j) = zdotc ( j, workl(ihbds), 1, workl(invsub+( j-1)*ldq), 1)
-40          continue
+            end do
 !
             if (msglvl .gt. 2) then
                 call zcopy(nconv, workl(invsub+ncv-1), ldq, workl( ihbds), 1)
@@ -826,7 +826,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
         if (rvec) call zscal(ncv, rnorm, workl(ihbds), 1)
 !
-        do 50 k = 1, ncv
+        do k = 1, ncv
             temp = workl(iheig+k-1)
             if (abs(temp * temp) .le. eps) then
                 if (msglvl .gt. 0) then
@@ -843,7 +843,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
             else
                 workl(ihbds+k-1) = workl(ihbds+k-1) / temp / temp
             endif
-50      continue
+        end do
 !
     endif
 !
@@ -856,9 +856,9 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !     %-----------------------------------------------------------%
 !
     if (type .eq. 'SHIFTI') then
-        do 60 k = 1, nconv
+        do k = 1, nconv
             d(k) = one / workl(iheig+k-1) + sigma
-60      continue
+        end do
     endif
 !
     if (type .ne. 'REGULR' .and. msglvl .gt. 1) then
@@ -887,11 +887,11 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !        | WHERE H S = S THETA.                           |
 !        %------------------------------------------------%
 !
-        do 100 j = 1, nconv
+        do j = 1, nconv
             if (workl(iheig+j-1) .ne. zero) then
                 workev(j) = workl(invsub+(j-1)*ldq+ncv-1) / workl( iheig+j-1)
             endif
-100      continue
+        end do
 !
 !        %---------------------------------------%
 !        | PERFORM A RANK ONE UPDATE TO Z AND    |
@@ -903,7 +903,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !
     endif
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !

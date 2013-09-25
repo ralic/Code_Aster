@@ -19,7 +19,7 @@ subroutine cfaduf(resoco, ndim, nbliai, nbliac, llf,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cftyli.h"
 #include "asterfort/jedema.h"
@@ -85,51 +85,49 @@ subroutine cfaduf(resoco, ndim, nbliai, nbliac, llf,&
 !
 ! --- ON MET {JEU(DEPTOT)} - [A].{DDEPL0} DANS MU
 !
-    do 10 iliac = 1, btotal
+    do iliac = 1, btotal
 !
 ! ----- TYPE DE LA LIAISON
 !
         iliai = zi(jliac-1+iliac)
         call cftyli(resoco, iliac, type0)
 !
-        goto (1000,2000,3000,4000) type0
+        select case (type0)
 !
 ! ----- CALCUL DE MU_C
 !
-1000      continue
-        jeuini = zr(jjeux+3*(iliai-1)+1-1)
-        zr(jmu+iliac+deklag-1) = jeuini
-        goto 10
+        case (1)
+            jeuini = zr(jjeux+3*(iliai-1)+1-1)
+            zr(jmu+iliac+deklag-1) = jeuini
 !
 ! ----- CALCUL DE MU_A - 2D OU 3D DANS LES DEUX DIRECTIONS
 ! ----- DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-2000      continue
-        jexini = zr(jjeux+3*(iliai-1)+2-1)
-        zr(jmu+iliac+deklag-1) = - jexini
-        if (ndim .eq. 3) then
-            jeyini = zr(jjeux+3*(iliai-1)+3-1)
-            deklag = deklag + 1
-            zr(jmu+iliac+deklag-1) = - jeyini
-        endif
-        goto 10
+        case (2)
+            jexini = zr(jjeux+3*(iliai-1)+2-1)
+            zr(jmu+iliac+deklag-1) = - jexini
+            if (ndim .eq. 3) then
+                jeyini = zr(jjeux+3*(iliai-1)+3-1)
+                deklag = deklag + 1
+                zr(jmu+iliac+deklag-1) = - jeyini
+            endif
 !
 ! ----- CALCUL DE MU_A 3D - 3D PREMIERE DIRECTION
 ! ----- DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-3000      continue
-        jexini = zr(jjeux+3*(iliai-1)+2-1)
-        zr(jmu+iliac+deklag-1) = - jexini
-        goto 10
+        case (3)
+            jexini = zr(jjeux+3*(iliai-1)+2-1)
+            zr(jmu+iliac+deklag-1) = - jexini
 !
 ! ----- CALCUL DE MU_A 3D - 3D SECONDE DIRECTION
 ! ----- DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-4000      continue
-        jeyini = zr(jjeux+3*(iliai-1)+3-1)
-        zr(jmu+iliac+deklag-1) = - jeyini
+        case (4)
+            jeyini = zr(jjeux+3*(iliai-1)+3-1)
+            zr(jmu+iliac+deklag-1) = - jeyini
 !
-10  continue
+        end select
+    end do
 !
     call jedema()
 end subroutine

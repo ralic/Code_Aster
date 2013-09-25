@@ -64,18 +64,19 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
 !
 ! ----- ITEM = MOT CLE TYPE  GROUPE ?
 !
-    do 4 i = 1, nbm
+    do i = 1, nbm
         call tesmcl(icl, iv, cv, mcl(i), irtet)
-        if (irtet .gt. 0) goto (4), irtet
+        if (irtet .eq. 1) goto 4
         numtcl = i
         nbtav = nbt(numtcl)
         goto 5
- 4  continue
+  4     continue
+    end do
     goto 3
 !
 ! ----- LIRE ITEM SUIVANT ( = NOM DU GROUPE ?)
 !
- 5  continue
+  5 continue
     inom=1
     ilec=1
     deblig=0
@@ -89,50 +90,62 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
         if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
                         ' CV(1:24) = ', cv(1:24), ' DEBLIG =', deblig
         call verdbl(deblig, cnl, ier, irtet)
-        if (irtet .gt. 0) goto (2), irtet
+        if (irtet .eq. 1) goto 2
         call tesfin(icl, iv, cv, irtet)
-        if (irtet .gt. 0) goto (7,8), irtet
+        if (irtet .eq. 1) then
+            goto 7
+        else if (irtet .eq. 2) then
+            goto 8
+        endif
         call vermot(icl, iv, cv, cnl, ier,&
                     irtet)
-        if (irtet .gt. 0) goto (2), irtet
+        if (irtet .eq. 1) goto 2
         nom = cv(1:iv)
     else
 !
 ! -----    LECTURE PREMIER NOM DE NOEUD / MAILLE OU FIN APRES L'ENTETE
 !
         call tesfin(icl, iv, cv, irtet)
-        if (irtet .gt. 0) goto (7,8), irtet
+        if (irtet .eq. 1) then
+            goto 7
+        else if (irtet .eq. 2) then
+            goto 8
+        endif
         call vermot(icl, iv, cv, cnl, ier,&
                     irtet)
-        if (irtet .gt. 0) goto (2), irtet
+        if (irtet .eq. 1) goto 2
         nbt(numtcl) = nbt(numtcl) + 1
     endif
 !
 ! ----- LECTURE DES NOMS DE NOEUDS OU MAILLES DU GROUPE
 !
- 6  continue
+  6 continue
     call liritm(ifl, icl, iv, rv, cv,&
                 cnl, deblig, 1)
     if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
                     ' CV(1:24) = ', cv(1:24), ' DEBLIG =', deblig
 !
     if (deblig .eq. 1) call tesfin(icl, iv, cv, irtet)
-    if (irtet .gt. 0) goto (7,8), irtet
+    if (irtet .eq. 1) then
+        goto 7
+    else if (irtet .eq. 2) then
+        goto 8
+    endif
 !
     call vermot(icl, iv, cv, cnl, ier,&
                 irtet)
-    if (irtet .gt. 0) goto (2), irtet
+    if (irtet .eq. 1) goto 2
 !
     nbt(numtcl) = nbt(numtcl) + 1
     goto 6
 !
- 7  continue
+  7 continue
     ifn = 0
     goto 9
- 8  continue
+  8 continue
     ifn = 1
 !
- 9  continue
+  9 continue
     if ((nbtav-nbt(numtcl)) .eq. 0) then
         valk(1) = cnl
         valk(2) = nom
@@ -147,15 +160,15 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
     if (ifn .eq. 0) goto 1
     if (ifn .eq. 1) goto 2
 !
- 1  continue
+  1 continue
     irteti = 1
-    goto 9999
- 2  continue
+    goto 999
+  2 continue
     irteti = 2
-    goto 9999
- 3  continue
+    goto 999
+  3 continue
     irteti = 0
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine
