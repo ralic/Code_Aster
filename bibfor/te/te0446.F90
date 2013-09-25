@@ -57,22 +57,23 @@ subroutine te0446(option, nomte)
     real(kind=8) :: alpha, beta, t2ev(4), t2ve(4), c, s
     logical :: reactu
 !
+    if (option.eq.'FORC_NODA') then
+!
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+        call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
-    call jevech('PGEOMER', 'L', igeom)
+        call jevech('PGEOMER', 'L', igeom)
 !
-    if (nno .eq. 3) then
-        call dxtpgl(zr(igeom), pgl)
-    else if (nno.eq.4) then
-        call dxqpgl(zr(igeom), pgl, 'S', iret)
-    endif
+        if (nno .eq. 3) then
+            call dxtpgl(zr(igeom), pgl)
+        else if (nno.eq.4) then
+            call dxqpgl(zr(igeom), pgl, 'S', iret)
+        endif
 !
-    call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
+        call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-    if (option.eq.'FORC_NODA') then
         call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icompo)
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES
