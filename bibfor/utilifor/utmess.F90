@@ -68,7 +68,13 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     real(kind=8), pointer :: ptrr(:)
     character(len=256) :: ufname
 !
-    ASSERT(.not. present(num_except) .or. typ == 'Z')
+    ASSERT(ENSEMBLE2(nk,valk))
+    ASSERT(ENSEMBLE2(ni,vali))
+    ASSERT(ENSEMBLE2(nr,valr))
+    ASSERT(EXCLUS2(valk,sk))
+    ASSERT(EXCLUS2(vali,si))
+    ASSERT(EXCLUS2(valr,sr))
+    ASSERT(absent(num_except) .or. typ == 'Z')
     if (present(num_except)) then
         nexcep = num_except
     endif
@@ -76,8 +82,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     unk = 1
     uvk(1) = ' '
     use_valk = .false.
-    if (present(sk) .or. present(valk) .or. present(nk)) then
-        ASSERT(present(sk) .neqv. (present(valk) .and. present(nk)))
+    if (AU_MOINS_UN2(sk,valk)) then
         if (present(nk)) then
             unk = nk
             use_valk = .true.
@@ -90,8 +95,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     uni = 1
     uvi(1) = 0
     ptri => uvi(1:1)
-    if (present(si) .or. present(vali) .or. present(ni)) then
-        ASSERT(present(si) .neqv. (present(vali) .and. present(ni)))
+    if (AU_MOINS_UN2(si,vali)) then
         if (present(ni)) then
             uni = ni
             ptri => vali(1:ni)
@@ -105,8 +109,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     unr = 1
     uvr(1) = 0.d0
     ptrr => uvr(1:1)
-    if (present(sr) .or. present(valr) .or. present(nr)) then
-        ASSERT(present(sr) .neqv. (present(valr) .and. present(nr)))
+    if (AU_MOINS_UN2(sr,valr)) then
         if (present(nr)) then
             unr = nr
             ptrr => valr(1:nr)

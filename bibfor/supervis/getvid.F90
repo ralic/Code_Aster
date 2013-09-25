@@ -44,7 +44,8 @@ subroutine getvid(motfac, motcle, iocc, nbval, vect,&
     endif
     ASSERT(motfac == ' ' .or. uioc > 0)
 !   vect + nbval
-    ASSERT(present(nbret) .or. (present(scal) .neqv. (present(vect) .and. present(nbval))) )
+    ASSERT(AU_MOINS_UN3(nbret,scal,vect))
+    ASSERT(EXCLUS2(vect,scal))
     if (present(nbval)) then
         umax = nbval
     else

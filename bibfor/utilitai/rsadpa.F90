@@ -128,23 +128,23 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 !
     end do
 !    
+    ASSERT(EXCLUS2(tjv,sjv))
     if ( present(tjv) ) then
-        ASSERT (.not. present(sjv))
         do i=1,npara  
             tjv(i)=ljeveu(i)
         end do
     else if ( present(sjv) ) then
         sjv=ljeveu(1)
     endif
+    ASSERT(EXCLUS2(ttyp,styp))
     if ( itype .gt. 0 ) then
-            if ( present(ttyp) ) then
-                ASSERT (.not. present(styp))
-                do i=1,npara  
-                    ttyp(i)=ctype(i)
-                end do
-            else if ( present(styp) ) then  
-                styp=ctype(1)
-            endif 
+        if ( present(ttyp) ) then
+            do i=1,npara  
+                ttyp(i)=ctype(i)
+            end do
+        else if ( present(styp) ) then  
+            styp=ctype(1)
+        endif 
     endif 
 !
 end subroutine

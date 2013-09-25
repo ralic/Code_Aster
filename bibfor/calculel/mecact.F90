@@ -88,18 +88,24 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     call jemarq()
 ! 
 !   DETERMINATION DU TYPE DE CARTE A AFFECTER 
-    if (present(si) .or. present(vi)) then
+    ASSERT(EXCLUS2(si,vi))
+    ASSERT(EXCLUS2(sr,vr))
+    ASSERT(EXCLUS2(sc,vc))
+    ASSERT(EXCLUS2(sk,vk))
+    if (UN_PARMI2(si,vi)) then
         j=1
-    else if (present(sr) .or. present(vr)) then
+    else if (UN_PARMI2(sr,vr)) then
         j=2
-    else if (present(sc) .or. present(vc)) then   
+    else if (UN_PARMI2(sc,vc)) then   
         j=3
     else
-        j=4    
+        ASSERT(UN_PARMI2(sk,vk))
+        j=4
     endif    
 !
 !   AFFECTATION DES VARIABLES LOCALES EN FONCTION DES ARGUMENTS  
-    if ( ncmp .gt. 1 ) then 
+    if ( ncmp .gt. 1 ) then
+        ASSERT(UN_PARMI4(vi,vr,vc,vk))
         do i=1,ncmp 
             licmp(i)=lnomcmp(i)
         end do       
@@ -122,6 +128,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
              end do               
         end select       
     else
+        ASSERT(UN_PARMI4(si,sr,sc,sk))
         licmp(1) = nomcmp
         select case (j) 
         case (1)
