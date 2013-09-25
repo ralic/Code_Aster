@@ -22,10 +22,15 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VISC_CIN2_MEMO',
-   doc = """Loi élasto-visco-plastique de Chaboche à 2 variables cinématiques et effet de memoire""",
+   doc = """Loi élasto-visco-plastique de Chaboche à 2 variables cinématiques et
+   effet de memoire""",
    num_lc         = 4,
    nb_vari        = 28,
-   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY', 'ALPHA2XZ', 'ALPHA2YZ','ECROISOT','MEMOECRO','KSIXX','KSIYY','KSIZZ','KSIXY','KSIXZ','KSIYZ','EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY',
+                     'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY',
+                     'ALPHA2XZ', 'ALPHA2YZ','ECROISOT','MEMOECRO','KSIXX','KSIYY','KSIZZ',
+                     'KSIXY','KSIXZ','KSIYZ','EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ',
+                     'EPSPYZ'),
    mc_mater       = ('ELAS','CIN2_CHAB','LEMAITRE','MEMO_ECRO'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),

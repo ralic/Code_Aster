@@ -102,6 +102,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     Mat :: a
     KSP :: ksp
 !----------------------------------------------------------------
+    cbid = dcmplx(0.d0, 0.d0)
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
@@ -183,7 +184,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             call jeveuo(vcine//'.VALE', 'L', idvalc)
             call jelira(vcine//'.VALE', 'TYPE', cval=rouc)
             ASSERT(rouc.eq.'R')
-            call csmbgg(lmat, rsolu, zr(idvalc), cbid, cbid,&
+            call csmbgg(lmat, rsolu, zr(idvalc), [cbid], [cbid],&
                         'R')
         endif
 !

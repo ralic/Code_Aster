@@ -22,13 +22,21 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VISC_MEMO_NRAD',
-   doc = """Loi élasto-visco-plastique de J.L.Chaboche à 2 variables cinématiques qui rend compte du comportement cyclique en élasto-plasticité
-   avec 2 tenseurs d'écrouissage cinématique non linéaire, un écrouissage isotrope non linéaire, un effet d'écrouissage sur les variables
-   tensorielles de rappel, un effet de mémoire du plus grand écrouissage, et prise en compte de la non proportionnalité du chargement.
-   Toutes les constantes du matériau peuvent éventuellement dépendre de la température.""",
+   doc = """Loi élasto-visco-plastique de J.L.Chaboche à 2 variables cinématiques
+   qui rend compte du comportement cyclique en élasto-plasticité avec 2 tenseurs
+   d'écrouissage cinématique non linéaire, un écrouissage isotrope non linéaire,
+   un effet d'écrouissage sur les variables tensorielles de rappel, un effet de
+   mémoire du plus grand écrouissage, et prise en compte de la non proportionnalité 
+   du chargement.
+   Toutes les constantes du matériau peuvent éventuellement dépendre de la
+   température.""",
    num_lc         = 4,
    nb_vari        = 28,
-   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY', 'ALPHA2XZ', 'ALPHA2YZ','ECROISOT','MEMOECRO','KSIXX','KSIYY','KSIZZ','KSIXY','KSIXZ','KSIYZ','EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY',
+                     'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY',
+                     'ALPHA2XZ', 'ALPHA2YZ','ECROISOT','MEMOECRO','KSIXX','KSIYY','KSIZZ',
+                     'KSIXY','KSIXZ','KSIYZ','EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ',
+                     'EPSPYZ'),
    mc_mater       = ('ELAS','CIN2_CHAB','LEMAITRE','MEMO_ECRO','CIN2_NRAD'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),

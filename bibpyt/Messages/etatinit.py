@@ -30,15 +30,20 @@ cata_msg = {
 """),
 
 3 : _(u"""
- L'instant spécifié sous ETAT_INIT/INST n'est pas trouvé dans la structure de données résultat de nom <%(k1)s>.
+ L'instant spécifié sous ETAT_INIT/INST n'est pas trouvé dans la structure de données
+ résultat de nom <%(k1)s>.
 """),
 
 4 : _(u"""
- Il y a plusieurs instants dans la structure de données résultat de nom <%(k1)s> qui correspondent à celui spécifié sous ETAT_INIT/INIT.
+ Il y a plusieurs instants dans la structure de données résultat de nom <%(k1)s> qui
+ correspondent à celui spécifié sous ETAT_INIT/INIT.
 """),
 
 5 : _(u"""
- A l'instant initial, tous les termes du bilan d'énergie sont nuls bien qu'un état initial non vierge soit renseigné. Le bilan d'énergie indique la variation des différents termes d'énergie entre deux instants de calcul consécutifs ainsi que leur variation totale entre l'instant courant et l'instant initial.
+ A l'instant initial, tous les termes du bilan d'énergie sont nuls bien qu'un état
+ initial non vierge soit renseigné. Le bilan d'énergie indique la variation des différents
+ termes d'énergie entre deux instants de calcul consécutifs ainsi que leur variation
+ totale entre l'instant courant et l'instant initial.
 """),
 
 10 : _(u"""
@@ -55,7 +60,8 @@ cata_msg = {
 
 31 : _(u"""  Le champ <%(k1)s> est initialisé a zéro"""),
 
-32 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""),
+32 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de données
+résultats de nom <%(k2)s>"""),
 
 33 : _(u"""  Le champ <%(k1)s> est lu dans ETAT_INIT, par un champ donné explicitement"""),
 
@@ -67,10 +73,12 @@ cata_msg = {
   Le champ <%(k1)s> est d'un type inconnu.
 """),
 
-51 : _(u"""  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On le convertit automatiquement"""),
+51 : _(u"""  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>.
+On le convertit automatiquement"""),
 
 52 : _(u"""
-  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>. On ne sait pas le convertir automatiquement
+  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>.
+  On ne sait pas le convertir automatiquement
 """),
 
 }

@@ -346,7 +346,10 @@ class TensorUnitTest(unittest.TestCase):
       self.assertEqual(TensorModule.grad(self.U), Tensor(N.array([[[3*X**2,0,0 ],[0,3*Y**2,0 ],[0,0,3*Z**2 ]], [[sympy.cos(X),0,0 ],[0,sympy.cos(Y),0 ],[0,0,sympy.cos(Z) ]], [[sympy.exp(X),0,0 ],[0,sympy.exp(Y),0 ], [0,0,sympy.exp(Z) ]]])))
 
    def testGradSym(self):
-      self.assertEqual(TensorModule.gradsym(self.U),Tensor(N.array([[[3*X**2,0.5*sympy.cos(X),0.5*sympy.exp(X)],[0,1.5*Y**2,0],[0,0,1.5*Z**2]],[[0.5*sympy.cos(X),0,0],[1.5*Y**2,sympy.cos(Y),0.5*sympy.exp(Y)],[0,0,0.5*sympy.cos(Z)]],[[0.5*sympy.exp(X),0,0],[0,0.5*sympy.exp(Y),0],[1.5*Z**2,0.5*sympy.cos(Z),sympy.exp(Z)]]])))
+      self.assertEqual(TensorModule.gradsym(self.U),
+        Tensor(N.array([[[3*X**2,0.5*sympy.cos(X),0.5*sympy.exp(X)],[0,1.5*Y**2,0],[0,0,1.5*Z**2]],
+                        [[0.5*sympy.cos(X),0,0],[1.5*Y**2,sympy.cos(Y),0.5*sympy.exp(Y)],[0,0,0.5*sympy.cos(Z)]],
+                        [[0.5*sympy.exp(X),0,0],[0,0.5*sympy.exp(Y),0],[1.5*Z**2,0.5*sympy.cos(Z),sympy.exp(Z)]]])))
 
    def testLaplacien(self):
       self.assertEqual(TensorModule.laplacien(self.U), Tensor(N.array([[6*X,6*Y,6*Z ], [-sympy.sin(X),-sympy.sin(Y),-sympy.sin(Z) ], [sympy.exp(X),sympy.exp(Y),sympy.exp(Z) ]])  ))
@@ -383,7 +386,10 @@ class TensorUnitTest(unittest.TestCase):
                                   [   0.,         166.66666667,   0.,       ],
                                   [   0.,           0.,         233.33333333]]]])  )
 
-      self.assertEqual(TensO4Sym.produitDoubleContracte(self.U), Tensor(N.array([[200.000000000000*sympy.sin(Y) + 400.000000000000*X**3 + 200.000000000000*sympy.exp(Z), 66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,133.333333330000*Z**3 + 133.333333330000*sympy.exp(X) ], [66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,233.333333330000*sympy.sin(Y) + 200.000000000000*X**3 + 166.666666670000*sympy.exp(Z),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y) ], [133.333333330000*Z**3 + 133.333333330000*sympy.exp(X),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y),       166.666666670000*sympy.sin(Y) + 200.000000000000*X**3 + 233.333333330000*sympy.exp(Z) ]])  ))
+      self.assertEqual(TensO4Sym.produitDoubleContracte(self.U),
+        Tensor(N.array([[200.000000000000*sympy.sin(Y) + 400.000000000000*X**3 + 200.000000000000*sympy.exp(Z), 66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,133.333333330000*Z**3 + 133.333333330000*sympy.exp(X) ],
+                        [66.6666666700000*sympy.sin(X) + 66.6666666700000*Y**3,233.333333330000*sympy.sin(Y) + 200.000000000000*X**3 + 166.666666670000*sympy.exp(Z),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y) ],
+                        [133.333333330000*Z**3 + 133.333333330000*sympy.exp(X),       66.6666666700000*sympy.sin(Z) + 66.6666666700000*sympy.exp(Y),       166.666666670000*sympy.sin(Y) + 200.000000000000*X**3 + 233.333333330000*sympy.exp(Z) ]])  ))
 
    def testproduitSimpleContracte(self):
       self.assertEqual(self.U.produitSimpleContracte(Tensor(N.array([-1,0,0]))), Tensor(N.array([-X**3,-Y**3,-Z**3])))
