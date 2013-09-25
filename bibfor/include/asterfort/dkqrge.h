@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine te0428(option, nomte)
-        character(len=16) :: option
+interface 
+    subroutine dkqrge(nomte, xyzl, pgl, rig)
         character(len=16) :: nomte
-    end subroutine te0428
-end interface
+        real(kind=8) :: xyzl(3, *)
+        real(kind=8) :: pgl(*)
+        real(kind=8) :: rig(*)
+    end subroutine dkqrge
+end interface 

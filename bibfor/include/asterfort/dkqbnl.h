@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine te0428(option, nomte)
-        character(len=16) :: option
-        character(len=16) :: nomte
-    end subroutine te0428
-end interface
+interface 
+    subroutine dkqbnl(qsi, eta, jacob, bnl)
+        real(kind=8) :: qsi
+        real(kind=8) :: eta
+        real(kind=8) :: jacob(*)
+        real(kind=8) :: bnl(2, 12)
+    end subroutine dkqbnl
+end interface 

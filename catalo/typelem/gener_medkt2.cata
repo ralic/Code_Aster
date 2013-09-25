@@ -32,6 +32,7 @@ ENTETE__ ELEMENT__ MEDSQU4          MAILLE__ QUAD4
    OPTION__   FULL_MECA      -1
    OPTION__   RAPH_MECA      -1
    OPTION__   RIGI_MECA_TANG -1
+   OPTION__   RIGI_MECA_GE   -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
    OPTION__   COOR_ELGA_MATER-1
@@ -43,6 +44,7 @@ ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3
    OPTION__   FULL_MECA      -1
    OPTION__   RAPH_MECA      -1
    OPTION__   RIGI_MECA_TANG -1
+   OPTION__   RIGI_MECA_GE   -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
    OPTION__   COOR_ELGA_MATER-1
@@ -54,6 +56,7 @@ ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4
    OPTION__   FULL_MECA      -1
    OPTION__   RAPH_MECA      -1
    OPTION__   RIGI_MECA_TANG -1
+   OPTION__   RIGI_MECA_GE   -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
    OPTION__   COOR_ELGA_MATER-1
@@ -65,6 +68,7 @@ ENTETE__ ELEMENT__ MET3TR3          MAILLE__ TRIA3
    OPTION__   FULL_MECA      -1
    OPTION__   RAPH_MECA      -1
    OPTION__   RIGI_MECA_TANG -1
+   OPTION__   RIGI_MECA_GE   -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
    OPTION__   COOR_ELGA_MATER-1
@@ -138,6 +142,8 @@ MODE_LOCAL__
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
+    EEFGEGA  = SIEF_R   ELGA__ RIGI    (NXX      NYY      NXY      MXX      MYY      MXY
+                                        QX       QY       )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -334,7 +340,8 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCMR
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_GE        -1    IN__    OUT__    XXXXXX   XXXXXX
+    RIGI_MECA_GE        428   IN__   CCACOQU  PCACOQU  ECONTPG  PCONTRR  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
+                              OUT__  MMATUUR  PMATUUR
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__    OUT__    XXXXXX   XXXXXX
