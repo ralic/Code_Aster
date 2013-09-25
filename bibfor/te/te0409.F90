@@ -1,5 +1,5 @@
 subroutine te0409(option, nomte)
-!     ----------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,6 +16,8 @@ subroutine te0409(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: sebastien.fayolle at edf.fr
+!
     implicit none
 !
 #include "jeveux.h"
@@ -32,11 +34,13 @@ subroutine te0409(option, nomte)
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
+!
     character(len=16) :: option, nomte
 !
+! ---------------------------------------------------------------------
 !   CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE POUR LA MODELISATION DKTG
 !   ET LA MODELISATION Q4GG
-!     -----------------------------------------------------------------
+! ---------------------------------------------------------------------
 !                            TRIANGLE  QUADRANGLE
 !        KIRCHOFF  (MINCE)      DKT       DKQ
 !
@@ -44,8 +48,7 @@ subroutine te0409(option, nomte)
 !
 !        OPTIONS     RIGI_MECA       RIGI_MECA_TANG
 !                    FULL_MECA       RAPH_MECA
-!
-! person_in_charge: sebastien.fayolle at edf.fr
+! ---------------------------------------------------------------------
 !
     logical :: lrgm, resi, rigi
 !

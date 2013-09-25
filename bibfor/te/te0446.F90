@@ -91,19 +91,11 @@ subroutine te0446(option, nomte)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
-!
-        if (zk16(icompo)(1:7) .eq. 'GLRC_DM') then
-            do ipg=1, npg
-                icontm=jtab(1)+8*(ipg-1)
-                call dcopy(8, zr(icontm), 1, effgt(8*(ipg-1)+1), 1)
-            end do
-        else
-            do ipg=1, npg
-                icontm=jtab(1)+8*(ipg-1)
-                call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
-            end do
-            call dxefro(npg, t2ve, effort, effgt)
-        endif
+        do ipg=1, npg
+            icontm=jtab(1)+8*(ipg-1)
+            call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
+        end do
+        call dxefro(npg, t2ve, effort, effgt)
 !
         reactu = .false.
         if (iretc .eq. 0) then

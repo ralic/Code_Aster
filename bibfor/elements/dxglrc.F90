@@ -1,6 +1,5 @@
 subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, codret)
-    implicit none
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,59 +16,10 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-!     CALCUL LES OPTIONS NON LINEAIRES POUR L'ELEMENT DE PLAQUE DKTG
-!     TOUTES LES ENTREES ET LES SORTIES SONT DANS LE REPERE LOCAL.
-!
-!     IN  OPTION : OPTION NON LINEAIRE A CALCULER
-!                'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
-!     IN  XYZL : COORDONNEES DES NOEUDS DANS LE REPERE LOCAL
-!     IN  UL : DEPLACEMENT A L'INSTANT T "-"
-!     IN  DUL : INCREMENT DE DEPLACEMENT
-!     IN  PGL : MATRICE DE PASSAGE
-!                DU REPERE GLOBAL AU REPERE LOCAL ELEMENT
-!     IN  CRIT : CRITERES DE CONVERGENCE LOCAUX
-!                (1) = NB ITERATIONS MAXI A CONVERGENCE
-!                      (ITER_INTE_MAXI == ITECREL)
-!                (2) = TYPE DE JACOBIEN A T+DT
-!                      (TYPE_MATR_COMP == MACOMP)
-!                      0 = EN VITESSE     >SYMETRIQUE
-!                      1 = EN INCREMENTAL >NON-SYMETRIQUE
-!                (3) = VALEUR TOLERANCE DE CONVERGENCE
-!                      (RESI_INTE_RELA == RESCREL)
-!                (5) = NOMBRE D'INCREMENTS POUR LE
-!                      REDECOUPAGE LOCAL DU PAS DE TEMPS
-!                      (ITER_INTE_PAS  == ITEDEC)
-!                       -1,0,1 = PAS DE REDECOUPAGE
-!                       N = NOMBRE DE PALIERS
-!                (6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
-!                      COMPORTEMENT (ALGO_INTE)
-!     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
-!                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
-!     OUT BTSIG : DIV (SIGMA)
-!                    SI 'FULL_MECA' OU 'RAPH_MECA'
-!     OUt CODRET : CODE RETOUR DE L'INTEGRATION INTEGRATION DU
-!                  0 => PAS DE PROBLEME
-!                  1 => ABSENCE DE CONVERGENCE
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
+    implicit none
 !
-! --------- VARIABLES LOCALES :
-!  -- GENERALITES :
-!  ----------------
-!  CMPS DE DEPLACEMENT :
-!   - MEMBRANE : DX(N1), DY(N1), DX(N2), ..., DY(NNO)
-!   - FLEXION  : DZ(N1), BETAX(N1), BETAY(N1), DZ(N2), ..., BETAY(NNO)
-!  CMPS DE DEFORMATION COQUE :
-!   - MEMBRANE : EPSIXX,EPSIYY,2*EPSIXY
-!   - FLEXION  : KHIXX,KHIYY,2*KHIXY
-!  CMPS D' EFFORTS COQUE :
-!   - MEMBRANE : NXX,NYY,NXY
-!   - FLEXION  : MXX,MYY,MXY
-!   - CISAILLEMENT : QX , QY
-! --------------------------------------------------------------------
-!            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
-!            NC :    NOMBRE DE COTES DE L'ELEMENT
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -104,6 +54,65 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
 #include "asterfort/utmess.h"
+!
+    integer :: codret
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4)
+    real(kind=8) :: ul(6, 4), dul(6, 4), crit(*)
+    real(kind=8) :: ktan((6*4)*(6*4+1)/2), btsig(6, 4)
+    character(len=16) :: option, nomte, compor(*)
+!
+! ---------------------------------------------------------------------
+!
+!     CALCUL LES OPTIONS NON LINEAIRES POUR L'ELEMENT DE PLAQUE DKTG
+!     TOUTES LES ENTREES ET LES SORTIES SONT DANS LE REPERE LOCAL.
+!
+!     IN  OPTION : OPTION NON LINEAIRE A CALCULER
+!                'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
+!     IN  XYZL : COORDONNEES DES NOEUDS DANS LE REPERE LOCAL
+!     IN  UL : DEPLACEMENT A L'INSTANT T "-"
+!     IN  DUL : INCREMENT DE DEPLACEMENT
+!     IN  PGL : MATRICE DE PASSAGE
+!                DU REPERE GLOBAL AU REPERE LOCAL ELEMENT
+!     IN  CRIT : CRITERES DE CONVERGENCE LOCAUX
+!                (1) = NB ITERATIONS MAXI A CONVERGENCE
+!                      (ITER_INTE_MAXI == ITECREL)
+!                (2) = TYPE DE JACOBIEN A T+DT
+!                      (TYPE_MATR_COMP == MACOMP)
+!                      0 = EN VITESSE     >SYMETRIQUE
+!                      1 = EN INCREMENTAL >NON-SYMETRIQUE
+!                (3) = VALEUR TOLERANCE DE CONVERGENCE
+!                      (RESI_INTE_RELA == RESCREL)
+!                (5) = NOMBRE D'INCREMENTS POUR LE
+!                      REDECOUPAGE LOCAL DU PAS DE TEMPS
+!                      (ITER_INTE_PAS  == ITEDEC)
+!                       -1,0,1 = PAS DE REDECOUPAGE
+!                       N = NOMBRE DE PALIERS
+!                (6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
+!                      COMPORTEMENT (ALGO_INTE)
+!     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
+!                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
+!     OUT BTSIG : DIV (SIGMA)
+!                    SI 'FULL_MECA' OU 'RAPH_MECA'
+!     OUt CODRET : CODE RETOUR DE L'INTEGRATION INTEGRATION DU
+!                  0 => PAS DE PROBLEME
+!                  1 => ABSENCE DE CONVERGENCE
+!
+! --------- VARIABLES LOCALES :
+!  -- GENERALITES :
+!  ----------------
+!  CMPS DE DEPLACEMENT :
+!   - MEMBRANE : DX(N1), DY(N1), DX(N2), ..., DY(NNO)
+!   - FLEXION  : DZ(N1), BETAX(N1), BETAY(N1), DZ(N2), ..., BETAY(NNO)
+!  CMPS DE DEFORMATION COQUE :
+!   - MEMBRANE : EPSIXX,EPSIYY,2*EPSIXY
+!   - FLEXION  : KHIXX,KHIYY,2*KHIXY
+!  CMPS D' EFFORTS COQUE :
+!   - MEMBRANE : NXX,NYY,NXY
+!   - FLEXION  : MXX,MYY,MXY
+!   - CISAILLEMENT : QX , QY
+! --------------------------------------------------------------------
+!            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
+!            NC :    NOMBRE DE COTES DE L'ELEMENT
 !
     real(kind=8) :: poids
 !            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
@@ -157,11 +166,10 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 !
     logical :: t3g, q4g
     logical :: leul, lrgm
-    logical :: lbid, vecteu, matric
+    logical :: lbid, resi, rigi
     logical :: q4gg
     logical :: coupmf, ther
 !
-    integer :: codret
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx
     integer :: idfd2, jgano
     integer :: imate, iret, icontm, ivarim
@@ -172,8 +180,6 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
     integer :: icara, jtab(7), nbsig
     integer :: multic
 !
-    real(kind=8) :: xyzl(3, 4), ktan((6*4)*(6*4+1)/2), btsig(6, 4)
-    real(kind=8) :: ul(6, 4), dul(6, 4), pgl(3, 3), crit(*)
     real(kind=8) :: delas(6, 6), dsidep(6, 6)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
     real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth,win(1),wout(1)
@@ -192,7 +198,6 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
     real(kind=8) :: matr(50), sigm(8), alfmc, tmoy, tgra
 !
     character(len=8) :: k8bid
-    character(len=16) :: option, nomte, compor(*)
     character(len=24) :: valk(2)
 !
     codret = 0
@@ -217,8 +222,8 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
         nbsig = 8
     endif
 !
-    vecteu = ((option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA'))
-    matric = ((option.eq.'FULL_MECA') .or. (option(1:9).eq.'RIGI_MECA'))
+    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
+    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
     lrgm = option.eq.'RIGI_MECA     '
 !
     call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
@@ -243,7 +248,7 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
         icontm=1
     endif
 !
-    if (vecteu) then
+    if (resi) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PVARIPR', 'E', ivarip)
     else
@@ -263,14 +268,14 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 !
 !     MISES A ZERO :
 !
-    if (matric) then
+    if (rigi) then
         call r8inir((3*nno)*(3*nno), 0.d0, flexi, 1)
         call r8inir((3*nno)*(3*nno), 0.d0, flex,  1)
         call r8inir((2*nno)*(2*nno), 0.d0, memb,  1)
         call r8inir((2*nno)*(3*nno), 0.d0, mefl,  1)
     endif
 !
-    if (vecteu) then
+    if (resi) then
         call r8inir(6*nno, 0.d0, btsig, 1)
         call r8inir(   32, 0.d0, effint, 1)
         call r8inir(   32, 0.d0, efforp, 1)
@@ -550,7 +555,7 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 !
             call r8inir(36, 0.d0, dsidep, 1)
             call dhrc_lc(epsm, deps, ecr, pgl, option, sig, ecrp, a0, b0, c0,&
-                        aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu, crit, codret, dsidep)
+                         aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu, crit, codret, dsidep)
 !
         else if (compor(1)(1:7).eq. 'KIT_DDI') then
 !     ENDOMMAGEMENT PLUS PLASTICITE
@@ -577,7 +582,7 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 !
 !     EFFORTS RESULTANTS (N ET M)
 !
-        if (vecteu) then
+        if (resi) then
             do i = 1, 3
                 n(i) = sig(i)
                 m(i) = sig(i+3)
@@ -588,15 +593,15 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
         endif
 !
 !     CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
-        if (matric) then
+        if (rigi) then
             l = 0
 !
             do i = 1, 3
                 do j = 1, 3
                     l = l + 1
-                    dm(l) = dm(l) + poids*dsidep(j,i)
+                    dm(l) = dm(l)  + poids*dsidep(j,i)
                     dmf(l)= dmf(l) + poids*dsidep(j,i+3)
-                    df(l) = df(l) + poids*dsidep(j+3,i+3)
+                    df(l) = df(l)  + poids*dsidep(j+3,i+3)
                 end do
             end do
         endif
@@ -611,9 +616,9 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 !     CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 !
 !     BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
-        if (vecteu) then
+        if (resi) then
             do k = 1, 3
-                effint((ipg-1)*8+k) = n(k)
+                effint((ipg-1)*8+k)   = n(k)
                 effint((ipg-1)*8+3+k) = m(k)
             end do
 !
@@ -646,9 +651,9 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
 !
 !     KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
 !                   + BCT*DC*BC
-        if (matric) then
+        if (rigi) then
 !     MEMBRANE :
-            call utbtab('CUMU', 3, 2*nno, dm, bm, work, memb)
+            call utbtab('CUMUL', 3, 2*nno, dm, bm, work, memb)
 !
 !     FLEXION :
             call utbtab('CUMUL', 3, 3*nno, df, bf, work, flex)
@@ -665,25 +670,18 @@ subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, 
     end do
 !
     if (.not.lrgm) then
-        if (compor(1)(1:7) .eq. 'GLRC_DM') then
-            do i = 1, nbcon*npg
-                zr(icontp-1+i) = effint(i)
-            end do
-        else
-!
 ! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !     DU REPERE INTRINSEQUE AU REPERE LOCAL
 !     STOCKAGE DES EFFORTS GENERALISES
 !
-            call dxefro(npg, t2iu, effint, efforp)
-            do i = 1, nbcon*npg
-                zr(icontp-1+i) = efforp(i)
-            end do
-        endif
+        call dxefro(npg, t2iu, effint, efforp)
+        do i = 1, nbcon*npg
+            zr(icontp-1+i) = efforp(i)
+        end do
     endif
 !
 !     ACCUMULATION DES SOUS MATRICES DANS KTAN :
-    if (matric) then
+    if (rigi) then
         if (t3g) then
             call dxtloc(flex, memb, mefl, ctor, ktan)
         else if(q4g) then
