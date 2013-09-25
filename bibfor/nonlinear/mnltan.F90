@@ -74,6 +74,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     integer :: i, itang, iret, ib
     real(kind=8) :: vecplu(ninc), norme
+    complex(kind=8) cbid
 !
     call jemarq()
 !    call jxveri(' ', ' ')
@@ -106,7 +107,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! --- ON RESOUD TANGENTE=DRDV\[0 ... 0 1]
 ! ----------------------------------------------------------------------
     call resoud(matdrv, '', '', '', 1,&
-                '', '', 'v', zr(ib), 0,&
+                '', '', 'v', zr(ib), [cbid],&
                 '', .false., 0, iret)
     call dcopy(ninc, zr(ib), 1, zr(itang), 1)
 ! ----------------------------------------------------------------------

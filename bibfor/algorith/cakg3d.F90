@@ -107,9 +107,9 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
     integer :: nnoff, num, incr, nres
     integer :: ndeg, ierd, init, livi(nbmxpa)
-    integer :: iadgki, iadabs, ifm, niv
+    integer :: iadgki, iadabs, ifm, niv, vi(8)
     real(kind=8) :: gkthi(8), time, livr(nbmxpa)
-    complex(kind=8) :: cbid, livc(nbmxpa)
+    complex(kind=8) :: cbid, livc(nbmxpa), vc(8)
     logical :: lfonc
     character(len=2) :: codret
     character(len=8) :: resu
@@ -318,8 +318,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
                     'OUI')
 !
 !       FAIRE LA "SOMME" D'UN CHAM_ELEM
-        call mesomm(chgthi, 8, ibid, gkthi, cbid,&
-                    0, ibid)
+        call mesomm(chgthi, 8,vr=gkthi)
 !
 !       SYMETRIE DU CHARGEMENT
         if (symech .eq. 'NON') then

@@ -31,7 +31,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 #include "asterfort/mminfi.h"
     character(len=24) :: defico
     integer :: posmae
-    integer :: ndexfr, izone
+    integer :: ndexfr(1), izone
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 ! IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
 ! IN  IZONE  : NUMEOR DE LA ZONE DE CONTACT
 ! IN  POSMAE : NUMERO DE LA MAILLE ESCLAVE
-! OUT NDEXFR : ENTIER CODE DES NOEUDS EXCLUS
+! OUT ndexfr(1) : ENTIER CODE DES NOEUDS EXCLUS
 !
 !
 !
@@ -64,7 +64,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 ! --- INITIALISATIONS
 !
     nbexfr = 0
-    ndexfr = 0
+    ndexfr(1) = 0
     do ino = 1, 10
         ndexcl(ino) = 0
     end do
@@ -113,7 +113,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
         else
             ASSERT(.false.)
         endif
-        call iscode(ndexcl, ndexfr, 10)
+        call iscode(ndexcl, ndexfr(1), 10)
     endif
 !
     call jedema()

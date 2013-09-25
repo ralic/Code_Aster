@@ -109,7 +109,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     ec1=zi(jdesc-1+3+2*ngdmax+nbec*(imate-1)+1)
     k=0
     do 777, kk=1,30
-    if (exisdg(ec1,kk)) k=k+1
+    if (exisdg([ec1],kk)) k=k+1
     777 end do
     if (zk8(jvale+ncmp*(imate-1)+k-2) .ne. 'TREF=>') then
         call utmess('F', 'CALCULEL6_56', sk=chmat)

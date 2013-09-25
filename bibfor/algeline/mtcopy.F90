@@ -87,11 +87,10 @@ subroutine mtcopy(matin, matout, ier)
             zi(lmatou+15) = 0
             zi(lmatou+16) = 0
         endif
-!
-        un = 1.d0
+
 !
 ! --- RECOPIE DU .VALE ET DE .CCID, .CCLL, .CCVA
-        call mtcmbl(1, 'R', un, nmatin, nmatou,&
+        call mtcmbl(1, 'R', [1.d0], nmatin, nmatou,&
                     nomddl, ' ', 'ELIM=')
     endif
 !

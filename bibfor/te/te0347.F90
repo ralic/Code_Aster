@@ -183,7 +183,7 @@ subroutine te0347(option, nomte)
 !
 !              THERMIQUE A T+
                 call moytem(fami, npg, 1, '+', temp,&
-                            iret)
+                            iret(1))
                 nomres(1) = 'E'
                 nomres(2) = 'NU'
                 call rcvalb(fami, 1, 1, '+', zi(imate),&

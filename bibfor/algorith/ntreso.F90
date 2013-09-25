@@ -82,7 +82,7 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 !
 ! 2 ==> RESOLUTION AVEC VEC2ND COMME SECOND MEMBRE
     call resoud(matass, maprec, solveu, cnchci, 0,&
-                vec2nd, chsol, 'V', r8bid, c16bid,&
+                vec2nd, chsol, 'V', [0.d0], [c16bid],&
                 criter, .true., 0, iret)
 !
 ! 3. ==> SAUVEGARDE DE LA SOLUTION

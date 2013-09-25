@@ -68,7 +68,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     character(len=24) :: geom2
     logical :: lrota
     complex(kind=8) :: c16bid
-    real(kind=8) :: vale_real, r8bid, mrota(3, 3)
+    real(kind=8) :: vale_real, mrota(3, 3)
     complex(kind=8) :: coef_cplx_unit
     real(kind=8) :: coef_real_unit
     integer :: jlino, jcoor, jprnm, jgeom2, jnom
@@ -134,8 +134,8 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
             if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index)) then
                 vale_real = zr(jgeom2-1+3*(i_no-1)+i_cmp) - &
                             zr(jcoor -1+3*(i_no-1)+i_cmp)
-                call afrela(coef_real_unit, coef_cplx_unit, cmp_name, nomnoe_m, 0,&
-                            r8bid, 1, vale_real, c16bid, ' ',&
+                call afrela([coef_real_unit], [coef_cplx_unit], cmp_name, nomnoe_m, [0],&
+                            [0.d0], 1, vale_real, c16bid, ' ',&
                             'REEL', 'REEL', type_lagr, 0.d0, lisrel)
             endif
         end do

@@ -1,5 +1,5 @@
 subroutine mesomm(champ, long, vi, vr, vc,&
-                  nbmail, numail)
+                  nbma, linuma)
     implicit none
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -20,9 +20,12 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 #include "asterfort/utmess.h"
 !
     character(len=*) :: champ
-    integer :: long, vi(*), nbmail, numail(*)
-    real(kind=8) :: vr(*)
-    complex(kind=8) :: vc(*)
+    integer ,        intent(in)           :: long
+    integer ,        intent(in), optional :: nbma
+    integer ,        intent(in), optional :: linuma(*)
+    integer ,        intent(out), optional :: vi(*)
+    real(kind=8) ,   intent(out), optional :: vr(*)
+    complex(kind=8), intent(out), optional :: vc(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,31 +44,34 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-!     BUT :  FAIRE LA "SOMME" D'UN CHAM_ELEM (OU D'UN RESUELEM)
-!                  OU D'UNE PARTIE D'UN CHAM_ELEM
-!            (NOTION D'INTEGRALE DU CHAMP SUR LE MODELE)
-!            LA SEULE CONTRAINTE EST QUE TOUS LES TYPE_ELEMENT DU LIGREL
-!            CONNAISSENT LA GRANDEUR AVEC LA MEME LONGUEUR CUMULEE :
+!     but :  faire la "somme" d'un cham_elem (ou d'un resuelem)
+!                  ou d'une partie d'un cham_elem
+!            (notion d'integrale du champ sur le modele)
+!            la seule contrainte est que tous les type_element du ligrel
+!            connaissent la grandeur avec la meme longueur cumulee :
 !
-!            L'EXEMPLE SUIVANT SERA TRAITE PAR LA ROUTINE, ALORS QUE
-!            SA SIGNIFICATION EST PROBABLEMENT DOUTEUSE ...
-!              TRI3 :  E 2 IDEN 3 ....
-!              SEG2 :  E 3 IDEN 2 ....
-!              POI1 :  E 6 IDEN 1 ....
+!            l'exemple suivant sera traite par la routine, alors que
+!            sa signification est probablement douteuse ...
+!              tri3 :  e 2 iden 3 ....
+!              seg2 :  e 3 iden 2 ....
+!              poi1 :  e 6 iden 1 ....
 !
-! IN  : CHAMP  :  NOM DU CHAMP A SOMMER
-! IN  : LONG   :  LONGUEUR DES VECTEURS VI VR OU VC
-! IN  : NBMAIL :  = 0   , CALCUL SUR TOUT LE CHAM_ELEM
-!                 SINON , CALCUL SUR UNE PARTIE DU CHAM_ELEM
-! IN  : NUMAIL :  NUMERO DES MAILLES
-! OUT : VI     :  VECTEUR CONTENANT LA "SOMME" DU CHAMP SI LA GRANDEUR
-!                 EST ENTIERE.
-! OUT : VR     :  VECTEUR CONTENANT LA "SOMME" DU CHAMP SI LA GRANDEUR
-!                 EST REELLE.
-! OUT : VC     :  VECTEUR CONTENANT LA "SOMME" DU CHAMP SI LA GRANDEUR
-!                 EST COMPLEXE.
+! in  : champ  :  nom du champ a sommer
+! in  : long   :  longueur des vecteurs vi vr ou vc
+!
+! in  : nbma   :  longueur de la liste linuma
+! in  : linuma :  liste des numeros des mailles
+! -- Si nbma et linuma ne sont pas fournis, on calcule sur TOUS les elements.
+!
+! out : vi     :  vecteur contenant la "somme" du champ si la grandeur
+!                 est entiere.
+! out : vr     :  vecteur contenant la "somme" du champ si la grandeur
+!                 est reelle.
+! out : vc     :  vecteur contenant la "somme" du champ si la grandeur
+!                 est complexe.
+!
 ! ----------------------------------------------------------------------
-!     ------------------------------------------------------------------
+!
     integer :: longt, ncmpel, mode, j, igd
     real(kind=8) :: rzero
     character(len=4) :: typch, kmpic
@@ -73,12 +79,17 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     character(len=19) :: champ2, ligrel
     logical :: first
     integer :: i, iacelk, iavale, ibid, icoef, idecgr, iel, ier1, ier2
-    integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi
+    integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
 !
     call jemarq()
 !
     champ2 = champ
     rzero = 0.0d0
+    if (present(nbma)) then
+       nbmail=nbma
+    else
+       nbmail=0
+    endif
 !
 !
 !     1- ON CALCULE : TYPCH,LIGREL,IGD ET SCAL :
@@ -107,8 +118,18 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !
     igd = zi(jceld-1+1)
     scal = scalai(igd)
-!
-!
+
+    if (scal(1:1).eq.'R') then
+       ASSERT(present(vr))
+    elseif (scal(1:1).eq.'C') then
+       ASSERT(present(vc))
+    elseif (scal(1:1).eq.'I') then
+       ASSERT(present(vi))
+    else
+       ASSERT(.false.)
+    endif
+
+
 !     2- ON VERIFIE LES LONGUEURS:
 !     ----------------------------
     first = .true.
@@ -150,14 +171,14 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     if (typch .eq. 'CHML') then
 !        -- (CAS DES CHAM_ELEM):
         call jeveuo(champ2//'.CELV', 'L', iavale)
-        if (nbmail .le. 0) then
-            do 50,j = 1,nbgr
+        if (nbmail .eq. 0) then
+            do 50 j = 1,nbgr
             mode = zi(jceld-1+zi(jceld-1+4+j)+2)
             if (mode .eq. 0) goto 50
             nel = nbelem(ligrel,j)
             idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
-            do 40,k = 1,nel
-            do 30,i = 1,longt
+            do 40 k = 1,nel
+            do 30 i = 1,longt
             if (scal(1:1) .eq. 'I') then
                 vi(i) = vi(i) + zi(iavale-1+idecgr+ (k-1)* longt+i-1)
             else if (scal(1:1).eq.'R') then
@@ -179,7 +200,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                     idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
                     do 70 k = 1, nel
                         iel = zi(jligr+inum+k-1)
-                        if (iel .ne. numail(im)) goto 70
+                        if (iel .ne. linuma(im)) goto 70
                         do 60 i = 1, longt
                             if (scal(1:1) .eq. 'I') then
                                 vi(i) = vi(i) + zi(iavale-1+idecgr+ ( k-1)*longt+i-1)
@@ -239,7 +260,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                     numel1 = numel1 + nel
                     do 140 k = 1, nel
                         iel = zi(jligr+inum+k-1)
-                        if (iel .ne. numail(im)) goto 140
+                        if (iel .ne. linuma(im)) goto 140
                         do 130 i = 1, longt
                             if (scal(1:1) .eq. 'I') then
                                 vi(i) = vi(i) + zi(iavale+ (k-1)* ncmpel-1+i)

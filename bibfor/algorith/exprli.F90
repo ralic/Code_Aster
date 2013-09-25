@@ -118,8 +118,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     call bmrdda(basmod, kbid, nomint, numint, 0,&
                 [0], nbddl, ordo, ii)
     kbid=' '
-    call bmnoin(basmod, kbid, nomint, numint, 0,&
-                ibid, nbnoe)
+    call bmnoin(basmod, kbid, nomint, numint, 0, [0], nbnoe)
 !
 !-------ALLOCATION DU MINI PROFNO LIAISON INTERFACE COURANTE------------
 !

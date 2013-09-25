@@ -189,7 +189,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             else
                 ASSERT(.false.)
             endif
-            call assvec('V', chamno, 1, '&&ASVEPR           .RELR', 1.d0,&
+            call assvec('V', chamno, 1, '&&ASVEPR           .RELR', [1.d0],&
                         numedd, ' ', 'ZERO', ityprs)
         endif
 !

@@ -44,7 +44,8 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 #include "asterfort/utmess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp
-    real(kind=8) :: repere(7), xyzgau(1), d1(nbsig, 1), instan
+    integer :: mater, nbsig
+    real(kind=8) :: repere(7), xyzgau(*), d1(nbsig, 1), instan
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -52,7 +53,6 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 ! ----  CAS MASSIF 3D ET FOURIER
 !       ------------------------
 !-----------------------------------------------------------------------
-    integer :: mater, nbsig
 !-----------------------------------------------------------------------
     if (lteatt(' ','DIM_TOPO_MAILLE','3') .or. lteatt(' ','FOURIER','OUI')) then
 !

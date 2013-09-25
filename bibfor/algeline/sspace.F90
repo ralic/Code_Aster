@@ -187,7 +187,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
             zr(ivect+kk-1) = vect(kk,jj)*lprod(kk)
 100      continue
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, zr(ivect), cbid,&
+                    k19bid, k19bid, kbid, zr(ivect), [cbid],&
                     criter, .false., 0, iret)
         do 120 ll = jj, nbvec
             art = 0.d0

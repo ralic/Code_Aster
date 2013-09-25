@@ -56,7 +56,7 @@ subroutine pofape()
     integer :: tspaq, k, jrwork, nbcmp, ordini
 !
     real(kind=8) :: rbid, phmax, cissio, sphere, pcorr, val(2), vmax, vmin
-    real(kind=8) :: domage, rcrit, vresu(24), resu(7), valpar(35)
+    real(kind=8) :: domage(1), rcrit, vresu(24), resu(7), valpar(35)
     complex(kind=8) :: cbid
     logical :: lhaigh, lke, post, fordef, plcicr
     logical :: crsigm, crepst, crepse, crepsp, plcr2
@@ -410,13 +410,13 @@ subroutine pofape()
             do 47 i = 24, 35
                 if (paract(i) .eq. 1) plcr2 = .true.
 47          continue
-            
+
             if (plcr2) then
                 do 48 i = 1, 3
                     call tbajli(result, 1, nomppf(i+44), ibid, vresu(i+1),&
                                 cbid, k8b, ilign)
 !
-48              continue 
+48              continue
 
                 do 49 i = 24, 35
                     if (paract(i) .eq. 1) then
@@ -424,10 +424,10 @@ subroutine pofape()
                                     cbid, k8b, ilign)
                     endif
 49             continue
-               
+
             endif
 
-            
+
 ! POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
            if (paract(2) .eq. 1) then
                call tbajli(result, 1, nomppf(11), ibid, valpar(2),&
@@ -548,17 +548,17 @@ subroutine pofape()
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)
             if (icodwo .eq. 0) then
-                call fgdowh(nommat, nbc, vmin, vmax, lke,&
-                            rbid, lhaigh, rbid, domage)
+                call fgdowh(nommat, nbc, [vmin], [vmax], lke,&
+                            [0.d0], lhaigh, [0.d0], domage)
             else if (icodba .eq. 0) then
-                call fgdoba(nommat, nbc, vmin, vmax, lke,&
-                            rbid, lhaigh, rbid, domage)
+                call fgdoba(nommat, nbc, [vmin], [vmax], lke,&
+                            [0.d0], lhaigh, [0.d0], domage)
             else if (icodhs .eq. 0) then
-                call fgdohs(nommat, nbc, vmin, vmax, lke,&
-                            rbid, lhaigh, rbid, domage)
+                call fgdohs(nommat, nbc, [vmin], [vmax], lke,&
+                            [0.d0], lhaigh, [0.d0], domage)
             endif
 !
-            call tbajli(result, 1, nomppf(8), ibid, domage,&
+            call tbajli(result, 1, nomppf(8), ibid, domage(1),&
                         cbid, k8b, ilign)
 !
         else if (kdomm .eq. ' ') then

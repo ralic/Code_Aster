@@ -168,7 +168,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     zk24(jrefn-1+1)=ma
     zk24(jrefn-1+2)='DEPL_R'
 !
-    call assvec('V', vecass, 1, lisvec, 1.d0,&
+    call assvec('V', vecass, 1, lisvec, [1.d0],&
                 nu14, ' ', 'ZERO', 1)
     call detrsd('NUME_DDL', nu14)
 !

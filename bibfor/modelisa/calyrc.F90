@@ -232,7 +232,7 @@ subroutine calyrc(chargz)
 !
             norien = 0
             call orilma(noma, ndim, zi(idmai3), nbma3, norien,&
-                        ntrait, lreori, nul, ibid)
+                        ntrait, lreori, 0, [0])
             if (norien .ne. 0) then
                 call utmess('F', 'MODELISA3_19')
             endif

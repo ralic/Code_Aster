@@ -20,6 +20,6 @@ interface
         character(len=24) :: defico
         integer :: izone
         integer :: posmae
-        integer :: ndexfr
+        integer :: ndexfr(1)
     end subroutine mmssfr
 end interface

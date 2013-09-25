@@ -290,7 +290,7 @@ subroutine penorm(resu, modele)
                 call rsorac(resuco, 'INST', 0, zr(jin+inum-1), k8b,&
                             c16b, prec, crit, tord, nbordr,&
                             iret)
-                numo=tord(1)            
+                numo=tord(1)
             endif
             call getvtx('NORME', 'NOM_CHAM', iocc=1, scal=nomcha, nbret=iret)
             if (iret .eq. 0) then
@@ -470,8 +470,7 @@ subroutine penorm(resu, modele)
 !
 !      -- 4.8 SOMMATION DE LA NORME SUR LES ELEMENTS DESIRES --
 !
-        call mesomm(field_resu, 1, ibid, vnorm, c16b,&
-                    0, ibid)
+        call mesomm(field_resu, 1, vr=vnorm)
 !
 !      -- 4.9 ON REMPLIT LA TABLE --
 !

@@ -132,7 +132,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
         call nmelcv('CONT', modele, defico, resoco, mate,&
                     depmoi, depdel, vitmoi, vitplu, accmoi,&
                     veeltc)
-        call assvec('V', cneltc, 1, veeltc, 1.d0,&
+        call assvec('V', cneltc, 1, veeltc, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
         call nmtime(sdtime, 'END', 'CTCC_VECT')
         call nmrinc(sdstat, 'CTCC_VECT')
@@ -149,7 +149,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
         call nmelcv('FROT', modele, defico, resoco, mate,&
                     depmoi, depdel, vitmoi, vitplu, accmoi,&
                     veeltf)
-        call assvec('V', cneltf, 1, veeltf, 1.d0,&
+        call assvec('V', cneltf, 1, veeltf, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
         call nmtime(sdtime, 'END', 'CTCC_VECT')
         call nmrinc(sdstat, 'CTCC_VECT')

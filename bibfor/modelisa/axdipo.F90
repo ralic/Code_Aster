@@ -185,15 +185,15 @@ subroutine axdipo(noma, caelem, modele, iaxe)
             icode = zi(idesc-1+3+2*iasmax+nbec*(ias-1)+1)
             irana = 0
             do 41 icmp = 1, ialpha
-                if (exisdg(icode,icmp)) irana = irana + 1
+                if (exisdg([icode],icmp)) irana = irana + 1
 41          continue
             iranb = 0
             do 42 icmp = 1, ibeta
-                if (exisdg(icode,icmp)) iranb = iranb + 1
+                if (exisdg([icode],icmp)) iranb = iranb + 1
 42          continue
             irang = 0
             do 43 icmp = 1, igamma
-                if (exisdg(icode,icmp)) irang = irang + 1
+                if (exisdg([icode],icmp)) irang = irang + 1
 43          continue
             ntrouv = (irana.eq.0).or.(iranb.eq.0).or.(irang.eq.0)
             if (ntrouv) then

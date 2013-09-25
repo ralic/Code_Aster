@@ -54,7 +54,7 @@ subroutine lisimp(lischa, ifm)
     integer :: ichar, nbchar, ibid
     character(len=8) :: charge, typech, nomfct, k8bid
     character(len=16) :: typapp, typfct
-    integer :: genrec, tabcod(30)
+    integer :: genrec(1), tabcod(30)
     character(len=24) :: lisgen, nomlis, gencha
     integer :: jlisg, nbgenr(2), igenr, iposit(2)
     character(len=13) :: prefob
@@ -90,14 +90,14 @@ subroutine lisimp(lischa, ifm)
         call lislch(lischa, ichar, charge)
         call lisltc(lischa, ichar, typech)
         call lislta(lischa, ichar, typapp)
-        call lislco(lischa, ichar, genrec)
+        call lislco(lischa, ichar, genrec(1))
         call lisltf(lischa, ichar, typfct)
         call lisllc(lischa, ichar, prefob)
         write(6,*) 'CHARGE NUMERO : ',ichar
         write(6,*) '  * NOM DE LA CHARGE                  : ',charge
         write(6,*) '  * TYPE DE LA CHARGE                 : ',typech
         write(6,*) '  * TYPE D APPLICATION                : ',typapp
-        write(6,*) '  * CODE DE LA CHARGE                 : ',genrec
+        write(6,*) '  * CODE DE LA CHARGE                 : ',genrec(1)
         write(6,*) '  * PREFIXE DE L''OBJET DE LA CHARGE   : ',prefob
         write(6,*) '  * FONCTION MULTIPLICATRICE:'
         write(6,*) '  ** TYPE                : ',typfct
@@ -125,7 +125,7 @@ subroutine lisimp(lischa, ifm)
 ! ------- POSITION ENTIER CODE POUR CE GENRE
 !
             call lisdef('POSG', gencha, ibid, k8bid, iposit)
-            call isdeco(genrec, tabcod, 30)
+            call isdeco([genrec], tabcod, 30)
             if (tabcod(iposit(1)) .eq. 1) then
 !
 ! --------- GENRE PRESENT DANS CETTE CHARGE

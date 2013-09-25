@@ -211,7 +211,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 ! --- DU=K-1*(AT.DIRECH)
 !
     call resoud(matass, k19bla, solveu, cncin0, 0,&
-                secmbr, ddelt, 'V', r8bid, c16bid,&
+                secmbr, ddelt, 'V', [0.d0], [c16bid],&
                 k19bla, .true., 0, iret)
     call jeveuo(ddelt(1:19)//'.VALE', 'E', jddelt)
 !

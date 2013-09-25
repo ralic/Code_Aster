@@ -631,8 +631,8 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
     if (info .eq. 2) info = 3
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, mxiter, ndigit, '_NAUPD: NUMBER OF UPDATE ITERATIONS TAKEN')
-        call ivout(logfil, 1, np, ndigit, '_NAUPD: NUMBER OF WANTED "CONVERGED" RITZ VALUES')
+        call ivout(logfil, 1, [mxiter], ndigit, '_NAUPD: NUMBER OF UPDATE ITERATIONS TAKEN')
+        call ivout(logfil, 1, [np], ndigit, '_NAUPD: NUMBER OF WANTED "CONVERGED" RITZ VALUES')
         call dvout(logfil, np, workl(ritzr), ndigit,&
                    '_NAUPD: REAL PART OF THE FINAL RITZ VALUES')
         call dvout(logfil, np, workl(ritzi), ndigit,&

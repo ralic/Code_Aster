@@ -212,7 +212,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afrela(coefr, coefc, ddl, name_node, ndim,&
+                call afrela([coefr], [coefc], ddl, name_node, [ndim],&
                             direct, 1, val_r, val_c, val_f,&
                             typcoe, vale_type, typlag, 0.d0, lisrel)
             enddo

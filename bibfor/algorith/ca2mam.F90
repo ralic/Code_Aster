@@ -92,8 +92,7 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 !
     made = 'MA'//incr
 !
-    call assmam('V', made, 1, matel, 1.d0,&
-                num, 'ZERO', 1)
+    call assmam('V', made, 1, matel, [1.d0], num, 'ZERO', 1)
 !
 !
     nu19=num

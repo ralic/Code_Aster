@@ -149,7 +149,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
         matpre='&&OP0099.MATPRE'
         solveu='&&OP0099.SOLVEUR'
         call resoud(raildl, matpre, solveu, ' ', 1,&
-                    ' ', ' ', ' ', zr(ltcham), cbid,&
+                    ' ', ' ', ' ', zr(ltcham), [cbid],&
                     ' ', .true., 0, iret)
 !
 ! ----- CONVERSION NUMEROTATION

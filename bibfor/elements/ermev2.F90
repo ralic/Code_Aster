@@ -8,7 +8,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
 #include "asterfort/lteatt.h"
     integer :: nno, igeom, nbcmp
     integer :: poiaxi
-    real(kind=8) :: ff(nno), dfdx(9), dfdy(9), poids, dsx, dsy, norme, sig(*)
+    real(kind=8) :: ff(nno), dfdx(nno), dfdy(nno), poids, dsx, dsy, norme, sig(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

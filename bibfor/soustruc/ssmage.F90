@@ -114,7 +114,7 @@ subroutine ssmage(nomu, option)
 !
 !        -- ASSEMBLAGE:
     if (option .eq. 'MASS_MECA') then
-        call assmam('G', matas, 1, matel, 1.0d0,&
+        call assmam('G', matas, 1, matel, [1.d0],&
                     nu, 'ZERO', 1)
 !       -- IL FAUT COMPLETER LA MATRICE SI LES CALCULS SONT DISTRIBUES:
         call sdmpic('MATR_ASSE', matas)

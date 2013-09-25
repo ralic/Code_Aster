@@ -229,7 +229,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
         zr(jdirec+3* (iterm-1)+2) = 0.0d0
 30  end do
 !
-    call afrela(zr(jcmur), cbid, zk8(jddl), zk8(jnomno), zi(jdime),&
+    call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                 zr(jdirec), nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !
@@ -242,7 +242,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
         zr(jdirec+3* (iterm-1)+2) = 0.0d0
 40  end do
 !
-    call afrela(zr(jcmur), cbid, zk8(jddl), zk8(jnomno), zi(jdime),&
+    call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                 zr(jdirec), nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !
@@ -255,7 +255,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
         zr(jdirec+3* (iterm-1)+2) = 1.0d0
 50  end do
 !
-    call afrela(zr(jcmur), cbid, zk8(jddl), zk8(jnomno), zi(jdime),&
+    call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                 zr(jdirec), nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !

@@ -78,9 +78,9 @@ subroutine te0036(option, nomte)
     real(kind=8) :: y(3), xg(4), rbid, fe(4), xe(2), lsng, lstg, rg, tg
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
-    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(6), geomlo(81)
+    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(6), geomlo(81),mat(1)
     logical :: lbid, axi
-    real(kind=8) :: rb3, rb4, ksib, ksig, dx, dy, dff(1, 3), seg(3), jac,mat(1)
+    real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
     integer :: kk
     data          elrese /'SE2','TR3','SE3','TR3'/
 !
@@ -314,7 +314,7 @@ subroutine te0036(option, nomte)
             else if (ndime.eq.1) then
                 kk = (kpg-1)*nno
                 call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorlo, rb1,&
-                            rb2, poids, rb3, rb4)
+                            rb2(1), poids, rb3, rb4)
             endif
 !
 !         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
@@ -333,10 +333,10 @@ subroutine te0036(option, nomte)
 !           COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
                 call reereg('S', elref, nno, seg, gloc,&
                             ndime, ksig, ibid)
-!           CALL ELRFDF(ELREF,KSIG,NDIME*NNO,DFF1,IB1,IB2)
-                dff(1,1) = ksig-5.d-1
-                dff(1,2) = ksig+5.d-1
-                dff(1,3) = -2*ksig
+!
+                dff(1,1) = ksig(1)-5.d-1
+                dff(1,2) = ksig(1)+5.d-1
+                dff(1,3) = -2*ksig(1)
                 dx=0.d0
                 dy=0.d0
                 do 212 i = 1, nno

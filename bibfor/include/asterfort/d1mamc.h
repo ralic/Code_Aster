@@ -26,7 +26,7 @@ interface
         integer :: kpg
         integer :: ksp
         real(kind=8) :: repere(7)
-        real(kind=8) :: xyzgau(1)
+        real(kind=8) :: xyzgau(*)
         real(kind=8) :: d1(nbsig, 1)
     end subroutine d1mamc
 end interface

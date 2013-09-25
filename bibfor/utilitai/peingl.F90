@@ -372,7 +372,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---        ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---        QUI EST RELCOM A BIEN ETE AFFECTEE
 !
-                    if (.not.exisdg(dg,1)) then
+                    if (.not.exisdg([dg],1)) then
                         call utmess('F', 'UTILITAI2_63')
                     endif
 ! ---        RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
@@ -524,10 +524,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---     SOMME_DOMAINE((1 - PSI(EPS)/OMEGA(EPS,VARI)).DV
 ! ---     LA SECONDE INTEGRALE CALCULEE EST LE VOLUME :
 !         -------------------------------------------
-                    call mesomm(lchout(1), 1, ibid, work(1), c16b,&
-                                0, ibid)
-                    call mesomm(lchout(2), 1, ibid, work(2), c16b,&
-                                0, ibid)
+                    call mesomm(lchout(1), 1, vr=work(1))
+                    call mesomm(lchout(2), 1, vr=work(2))
 !
                     indic1 = work(1)
                     volume = work(2)
@@ -552,14 +550,11 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---          SUR LE MODELE :
 !              -------------
                     if (motfac .eq. 'ENER_TOTALE') then
-                        call mesomm(lchout(1), 1, ibid, work(1), c16b,&
-                                    0, ibid)
+                        call mesomm(lchout(1), 1, vr=work(1))
                     else if (motfac.eq.'ENER_DISS') then
-                        call mesomm(lchout(1), 3, ibid, work(1), c16b,&
-                                    0, ibid)
+                        call mesomm(lchout(1), 3, vr=work(1))
                     else
-                        call mesomm(lchout(1), 5, ibid, work(1), c16b,&
-                                    0, ibid)
+                        call mesomm(lchout(1), 5, vr=work(1))
                     endif
 ! ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 ! ---  L ENERGIE TOTAL
@@ -625,10 +620,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---      SOMME_DOMAINE((1 - PSI(EPS)/OMEGA(EPS,VARI)).DV
 ! ---      LA SECONDE INTEGRALE CALCULEE EST LE VOLUME :
 !          -------------------------------------------
-                        call mesomm(lchout(1), 1, ibid, work(1), c16b,&
-                                    nbma, zi(jad))
-                        call mesomm(lchout(2), 1, ibid, work(2), c16b,&
-                                    nbma, zi(jad))
+                        call mesomm(lchout(1), 1, vr=work(1), nbma=nbma, linuma=zi(jad))
+                        call mesomm(lchout(2), 1, vr=work(2), nbma=nbma, linuma=zi(jad))
 !
                         indic1 = work(1)
                         volume = work(2)
@@ -652,14 +645,11 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---          SUR LE MODELE :
 !              -------------
                         if (motfac .eq. 'ENER_TOTALE') then
-                            call mesomm(lchout(1), 1, ibid, work(1), c16b,&
-                                        nbma, zi(jad))
+                            call mesomm(lchout(1), 1, vr=work(1), nbma=nbma, linuma=zi(jad))
                         else if (motfac.eq.'ENER_DISS') then
-                            call mesomm(lchout(1), 3, ibid, work(1), c16b,&
-                                        nbma, zi(jad))
+                            call mesomm(lchout(1), 3, vr=work(1), nbma=nbma, linuma=zi(jad))
                         else
-                            call mesomm(lchout(1), 5, ibid, work, c16b,&
-                                        nbma, zi(jad))
+                            call mesomm(lchout(1), 5, vr=work, nbma=nbma, linuma=zi(jad))
                         endif
 !
 ! ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
@@ -730,10 +720,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---      SOMME_DOMAINE((1 - PSI(EPS)/OMEGA(EPS,VARI)).DV
 ! ---      LA SECONDE INTEGRALE CALCULEE EST LE VOLUME :
 !          -------------------------------------------
-                        call mesomm(lchout(1), 1, ibid, work(1), c16b,&
-                                    1, nume)
-                        call mesomm(lchout(2), 1, ibid, work(2), c16b,&
-                                    1, nume)
+                        call mesomm(lchout(1), 1, vr=work(1), nbma=1, linuma=[nume])
+                        call mesomm(lchout(2), 1, vr=work(2), nbma=1, linuma=[nume])
 !
                         indic1 = work(1)
                         volume = work(2)
@@ -757,14 +745,11 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---          SUR LE MODELE :
 !              -------------
                         if (motfac .eq. 'ENER_TOTALE') then
-                            call mesomm(lchout(1), 1, ibid, work(1), c16b,&
-                                        1, nume)
+                            call mesomm(lchout(1), 1, vr=work(1), nbma=1, linuma=[nume])
                         else if (motfac.eq.'ENER_DISS') then
-                            call mesomm(lchout(1), 3, ibid, work(1), c16b,&
-                                        1, nume)
+                            call mesomm(lchout(1), 3, vr=work(1), nbma=1, linuma=[nume])
                         else
-                            call mesomm(lchout(1), 5, ibid, work, c16b,&
-                                        1, nume)
+                            call mesomm(lchout(1), 5, vr=work, nbma=1, linuma=[nume])
                         endif
 !
                         if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt( 1:4).ne.'ELAS') .and.&

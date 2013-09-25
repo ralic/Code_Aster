@@ -147,7 +147,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     xivmax = materf(20,2)
     xippic = materf(18,2)
 ! --- CONSTRUCTION TENSEUR ELASTIQUE NON LINEAIRE DSDENL
-    call lkelas(ndi, ndt, mod, nmat, materf,&
+    call lkelas(ndi, ndt, nmat, materf,&
                 depst, sigft, dsdenl, kk, mu)
 ! ------------------------------------------------------------------
 ! --- A) - BUT : CALCUL DE LA DEFORMATION VISQUEUSE -DEPSV- ET DU

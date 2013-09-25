@@ -76,14 +76,14 @@ subroutine w039c3(carele, modele, ifi, form, titre)
 !
         call irceme(ifi, nommed, chrel1, typech, modele,&
                     0, nomcmp, ' ', ' ', 0,&
-                    0.d0, 0, 0, 0, sdcarm,&
+                    0.d0, 0, 0, [0], sdcarm,&
                     iret)
         ASSERT(iret.eq.0)
 !
         nommed=chrel2
         call irceme(ifi, nommed, chrel2, typech, modele,&
                     0, nomcmp, ' ', ' ', 0,&
-                    0.d0, 0, 0, 0, sdcarm,&
+                    0.d0, 0, 0, [0], sdcarm,&
                     iret)
         ASSERT(iret.eq.0)
 !
@@ -92,7 +92,7 @@ subroutine w039c3(carele, modele, ifi, form, titre)
         if (l3d) then
             call irceme(ifi, nommed, chrel3, typech, modele,&
                         0, nomcmp, ' ', ' ', 0,&
-                        0.d0, 0, 0, 0, sdcarm,&
+                        0.d0, 0, 0, [0], sdcarm,&
                         iret)
             ASSERT(iret.eq.0)
         endif

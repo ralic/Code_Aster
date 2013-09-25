@@ -11,6 +11,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
     integer :: iorsto(*), iredst(*), saredi(*), irevst(*), sarevi(*)
     integer :: ichost(*)
     real(kind=8) :: depgen(*), vitgen(*), accgen(*), depsto(*), vitsto(*)
+    integer :: nbchoc
     real(kind=8) :: saucho(nbchoc, *), saured(*), dredst(*), saurev(*)
     real(kind=8) :: drevst(*), passto(*), accsto(*), temsto(*), fchost(*)
     real(kind=8) :: dchost(*), vchost(*)
@@ -39,7 +40,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
 !
 !-----------------------------------------------------------------------
     integer :: ic, ind, ipas, ird, irv, isto1, isto2, ibid, ndec, nbscho
-    integer :: isto3, isto4, nbchoc, nbmode, nbrede, nbrevi
+    integer :: isto3, isto4, nbmode, nbrede, nbrevi
     character(len=4) :: typcal, kbid
     real(kind=8) :: dt, t
     complex(kind=8) :: cbid
@@ -48,10 +49,11 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
 !
 ! --- ENREGISTREMENT DES DONNES OBLIGATOIRES
 !
+    cbid=dcmplx(0.d0,0.d0)
     call mdarch(isto1, ipas, t, dt, nbmode,&
-                typcal, ibid, kbid, depgen, vitgen,&
-                accgen, depsto, vitsto, accsto, cbid,&
-                cbid, cbid, cbid, cbid, cbid,&
+                typcal, 0, [kbid], depgen, vitgen,&
+                accgen, depsto, vitsto, accsto, [cbid],&
+                [cbid], [cbid], [cbid], [cbid], [cbid],&
                 passto, iorsto, temsto)
 !
 !

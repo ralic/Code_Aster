@@ -125,7 +125,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                 'OUI')
     call jedetr('&&RAPOTU           .RELR')
     call reajre('&&RAPOTU', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', 1.d0,&
+    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
     valech = 'CH_DEPL_3          .VALE'
     nbcoef = 1
@@ -164,7 +164,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                     'OUI')
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(1), 'V')
-        call assvec('V', 'CH_DEPL_1', 1, '&&RAPOTU           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_1', 1, '&&RAPOTU           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_1          .VALE'
 !
@@ -196,7 +196,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(2), 'V')
-        call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
@@ -230,7 +230,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(3), 'V')
-        call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_3          .VALE'
         idec = 0

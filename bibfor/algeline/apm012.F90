@@ -172,7 +172,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 !
 !   --- BUILDING OF M-1*K AND STORE IN ZC(IMATA)
         call resoud(mas19, k19b, solveu, k19b, nk,&
-                    k19b, k19b, 'V', zr(imata0), cbid,&
+                    k19b, k19b, 'V', zr(imata0), [cbid],&
                     ' ', .false., 0, iret)
         call wkvect('&&APM012.MATRICE.A', 'V V C', nk2, imata)
         do 41 i = 1, nk2

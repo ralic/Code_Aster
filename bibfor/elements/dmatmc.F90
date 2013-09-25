@@ -51,7 +51,7 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
     character(len=*) :: fami, poum
     character(len=2) :: modeli
     integer :: mater, nbsig, igau, isgau
-    real(kind=8) :: repere(7), xyzgau(1), d(nbsig, 1), instan
+    real(kind=8) :: repere(7), xyzgau(3), d(nbsig, 1), instan
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

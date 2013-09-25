@@ -371,8 +371,8 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     %--------------------------------------%
 !
     if (msglvl .gt. 2) then
-        call dvout(logfil, 1, rnorm0, ndigit, '_GETV0: RE-ORTHONALIZATION ; RNORM0 IS')
-        call dvout(logfil, 1, rnorm, ndigit, '_GETV0: RE-ORTHONALIZATION ; RNORM IS')
+        call dvout(logfil, 1, [rnorm0], ndigit, '_GETV0: RE-ORTHONALIZATION ; RNORM0 IS')
+        call dvout(logfil, 1, [rnorm], ndigit, '_GETV0: RE-ORTHONALIZATION ; RNORM IS')
     endif
 !
     if (rnorm .gt. alpha*rnorm0) goto 50
@@ -402,7 +402,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 50  continue
 !
     if (msglvl .gt. 0) then
-        call dvout(logfil, 1, rnorm, ndigit,&
+        call dvout(logfil, 1, [rnorm], ndigit,&
                    '_GETV0: B-NORM OF INITIAL / RESTARTED STARTING VECTOR')
     endif
     if (msglvl .gt. 2) then

@@ -148,8 +148,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
         call calcul('S', option, ligrel, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, 'V',&
                     'OUI')
-        call mesomm(lchout(1), 10, ibid, cara_geom, c16dummy,&
-                    0, ibid)
+        call mesomm(lchout(1), 10, vr=cara_geom)
         call detrsd('LIGREL', ligrel)
 !
 ! ----- Multiplicative ratio of pressure

@@ -85,7 +85,7 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
     u1(i) = u1(i) + sigma*u3(i) + u2(i)
     10 end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
-                k19bid, k19bid, kbid, rbid, u1,&
+                k19bid, k19bid, kbid, [0.d0], u1,&
                 criter, .false., 0, iret)
     do 20, i = 1, n, 1
     zh(i) = - u1(i)

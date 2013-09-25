@@ -108,7 +108,7 @@ subroutine op0176()
     call rsorac(resuin, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, tord, 1,&
                 ibid)
-    nbordr=tord(1)            
+    nbordr=tord(1)
     call wkvect('&&'//nompro//'.NUME_ORDRE', 'V V I', nbordr, jordr)
     call rsorac(resuin, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
@@ -174,7 +174,7 @@ subroutine op0176()
     call rsorac(resuou, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, tord, 1,&
                 ibid)
-    nbordr=tord(1)            
+    nbordr=tord(1)
     call rsorac(resuou, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
@@ -185,8 +185,8 @@ subroutine op0176()
     call irecri(resuou, form, iul, k8b, lbid,&
                 izero, tabid, ' ', nbpara, zk16(jpa),&
                 nbordr, zi(jordr), true, 'RESU', 1,&
-                cecr, k8b, fals, izero, ibid,&
-                izero, ibid, izero, k8b, fals,&
+                cecr, k8b, fals, 0, [0],&
+                0, [0], izero, k8b, fals,&
                 r8b, fals, r8b, fals, fals,&
                 formar, nive, versio)
 !

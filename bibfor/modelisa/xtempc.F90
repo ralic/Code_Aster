@@ -52,7 +52,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     character(len=4) :: typval
     complex(kind=8) :: cbid
     integer :: nrel, ifiss, jstano, ibid, ier, nbno, ino, istan, ndim(1)
-    real(kind=8) :: rbid, betar, coefr(1)
+    real(kind=8) :: betar, coefr(1)
 !
     data ddlh /'H1'/
     data ddle /'E1'/
@@ -102,25 +102,25 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
 !           MISE A ZERO DDL HEAVISIDE
                 if (istan .eq. 1) then
-                    call afrela(coefr, cbid, ddlh, nomnoe, ndim,&
-                                rbid, 1, betar, cbid, betaf,&
+                    call afrela(coefr, [cbid], ddlh, nomnoe, ndim,&
+                                [0.d0], 1, betar, cbid, betaf,&
                                 'REEL', typval, '12', 0.d0, lisrel)
                     nrel = nrel + 1
 !
 !           MISE A ZERO DDL CRACK-TIP
                 else if (istan.eq.2) then
-                    call afrela(coefr, cbid, ddle, nomnoe, ndim,&
-                                rbid, 1, betar, cbid, betaf,&
+                    call afrela(coefr, [cbid], ddle, nomnoe, ndim,&
+                                [0.d0], 1, betar, cbid, betaf,&
                                 'REEL', typval, '12', 0.d0, lisrel)
                     nrel = nrel + 1
 !
 !           MISE A ZERO DDLS HEAVISIDE ET CRACK-TIP
                 else if (istan.eq.3) then
-                    call afrela(coefr, cbid, ddlh, nomnoe, ndim,&
-                                rbid, 1, betar, cbid, betaf,&
+                    call afrela(coefr, [cbid], ddlh, nomnoe, ndim,&
+                                [0.d0], 1, betar, cbid, betaf,&
                                 'REEL', typval, '12', 0.d0, lisrel)
-                    call afrela(coefr, cbid, ddle, nomnoe, ndim,&
-                                rbid, 1, betar, cbid, betaf,&
+                    call afrela(coefr, [cbid], ddle, nomnoe, ndim,&
+                                [0.d0], 1, betar, cbid, betaf,&
                                 'REEL', typval, '12', 0.d0, lisrel)
                     nrel = nrel + 2
                 else

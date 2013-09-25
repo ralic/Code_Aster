@@ -323,7 +323,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !       -- REMARQUE : ON N'A PAS BESOIN D'UTILISER MRCONL CAR
 !          LES DDLS DUALISES SONT MIS A 0. (ALPHA*0=0 !)
-        call rldlg3(metres, lmatb, zr(lxsol), cbid, nmrig)
+        call rldlg3(metres, lmatb, zr(lxsol), [cbid], nmrig)
     endif
     call detrsd('MATR_ASSE', nomb19)
 !

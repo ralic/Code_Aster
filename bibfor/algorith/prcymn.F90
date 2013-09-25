@@ -302,7 +302,7 @@ subroutine prcymn(nomres, soumat, repmat)
 !
             iran=zi(ltexd+j-1)
             xx=zr(ltvec+iran-1)
-            call amppr(zr(ltcdp), nbddr, nbmod, xx, 1,&
+            call amppr(zr(ltcdp), nbddr, nbmod, [xx], 1,&
                        1, j, i)
 81      continue
         call jelibe(chamva)
@@ -330,7 +330,7 @@ subroutine prcymn(nomres, soumat, repmat)
 !
             iran=zi(ltexg+j-1)
             xx=zr(ltvec+iran-1)
-            call amppr(zr(ltcgp), nbddr, nbmod, xx, 1,&
+            call amppr(zr(ltcgp), nbddr, nbmod, [xx], 1,&
                        1, j, i)
 91      continue
         call jelibe(chamva)
@@ -364,7 +364,7 @@ subroutine prcymn(nomres, soumat, repmat)
 !
                 iran=zi(ltexa+j-1)
                 xx=zr(ltvec+iran-1)
-                call amppr(zr(ltcap), nbdax, nbmod, xx, 1,&
+                call amppr(zr(ltcap), nbdax, nbmod, [xx], 1,&
                            1, j, i)
 101          continue
             call jelibe(chamva)

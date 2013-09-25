@@ -28,7 +28,7 @@ interface
         integer :: igau
         integer :: isgau
         real(kind=8) :: repere(7)
-        real(kind=8) :: xyzgau(1)
+        real(kind=8) :: xyzgau(3)
         real(kind=8) :: d(nbsig, 1)
     end subroutine dmatmc
 end interface

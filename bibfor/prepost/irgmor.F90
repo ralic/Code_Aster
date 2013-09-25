@@ -9,7 +9,7 @@ subroutine irgmor(tord, vers)
     parameter (ntyele = 28)
     parameter (neletr =  8)
 !
-    integer :: tord(ntyele)
+    integer :: tord(neletr)
     integer :: vers
 !     ------------------------------------------------------------------
 ! ======================================================================

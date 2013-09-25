@@ -10,7 +10,7 @@ subroutine xprcfl(model, lcmin)
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
 #include "asterfort/memaxm.h"
-    real(kind=8) :: lcmin
+    real(kind=8) :: lcmin, lcmin1(1)
     character(len=8) :: model
 !
 ! ======================================================================
@@ -75,7 +75,8 @@ subroutine xprcfl(model, lcmin)
 !
 !   ON VA CHERCHER LE MINIMUM DE CELLC SUR LES ELEMENTS -->  LCMIN
     call memaxm('MIN', cellc, 'X1', 1, 'X1',&
-                lcmin, 0, ibid)
+                lcmin1, 0, [0])
+    lcmin=lcmin1(1)
     call jedetr(cellc)
 !
     write(ifm,*)'   LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE: ',&

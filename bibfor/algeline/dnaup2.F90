@@ -407,7 +407,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
     iter = iter + 1
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, iter, ndigit, '_NAUP2: **** START OF MAJOR ITERATION NUMBER ****')
+        call ivout(logfil, 1, [iter], ndigit, '_NAUP2: **** START OF MAJOR ITERATION NUMBER ****')
     endif
 !
 !        %-----------------------------------------------------------%
@@ -418,9 +418,9 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
     np = kplusp - nev
     if (msglvl .gt. 1) then
-        call ivout(logfil, 1, nev, ndigit,&
+        call ivout(logfil, 1, [nev], ndigit,&
                    '_NAUP2: THE LENGTH OF THE CURRENT ARNOLDI FACTORIZATION')
-        call ivout(logfil, 1, np, ndigit, '_NAUP2: EXTEND THE ARNOLDI FACTORIZATION BY')
+        call ivout(logfil, 1, [np], ndigit, '_NAUP2: EXTEND THE ARNOLDI FACTORIZATION BY')
     endif
 !
 !        %-----------------------------------------------------------%
@@ -461,7 +461,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     update = .false.
 !
     if (msglvl .gt. 1) then
-        call dvout(logfil, 1, rnorm, ndigit, '_NAUP2: CORRESPONDING B-NORM OF THE RESIDUAL')
+        call dvout(logfil, 1, [rnorm], ndigit, '_NAUP2: CORRESPONDING B-NORM OF THE RESIDUAL')
     endif
 !
 !        %--------------------------------------------------------%
@@ -698,7 +698,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     endif
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, nconv, ndigit,&
+        call ivout(logfil, 1, [nconv], ndigit,&
                    '_NAUP2: NO. OF "CONVERGED" RITZ VALUES AT THIS ITER.')
         if (msglvl .gt. 1) then
             kp(1) = nev
@@ -748,7 +748,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     endif
 !
     if (msglvl .gt. 2) then
-        call ivout(logfil, 1, np, ndigit, '_NAUP2: THE NUMBER OF SHIFTS TO APPLY ')
+        call ivout(logfil, 1, [np], ndigit, '_NAUP2: THE NUMBER OF SHIFTS TO APPLY ')
         call dvout(logfil, np, ritzr, ndigit, '_NAUP2: REAL PART OF THE SHIFTS')
         call dvout(logfil, np, ritzi, ndigit, '_NAUP2: IMAGINARY PART OF THE SHIFTS')
         if (ishift .eq. 1) call dvout(logfil, np, bounds, ndigit,&
@@ -805,7 +805,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     cnorm = .false.
 !
     if (msglvl .gt. 2) then
-        call dvout(logfil, 1, rnorm, ndigit,&
+        call dvout(logfil, 1, [rnorm], ndigit,&
                    '_NAUP2: B-NORM OF RESIDUAL FOR COMPRESSED FACTORIZATION')
         call dmout(logfil, nev, nev, h, ldh,&
                    ndigit, '_NAUP2: COMPRESSED UPPER HESSENBERG MATRIX H')

@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
+          interface
             subroutine assma3(lmasym,lmesym,tt,igr,iel,c1,rang,jnueq,   &
      &jnumsd,jresl,jrsvi,nbvel,nnoe,ldist,ldgrel,ilima,jadli,jadne,jprn1&
      &,jprn2,jnulo1,jnulo2,jposd1,jposd2,admodl,lcmodl,mode,nec,nmxcmp, &
@@ -60,11 +60,11 @@
               integer :: jvalm(2)
               integer :: ilinu
               integer :: ellagr
-              character(*) :: exivf
+              character(len=*) :: exivf
               integer :: jdesc
               integer :: jrepe
               integer :: jptvoi
               integer :: jelvoi
               character(len=16) :: codvoi
             end subroutine assma3
-          end interface 
+          end interface

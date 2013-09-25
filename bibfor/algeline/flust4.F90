@@ -85,7 +85,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
     integer :: iorco, iv, ivabs, ivcpr, iwork, jmod
     integer :: kec, lfact, lfsgm, lfsvi, lfsvk, lfsvr, lmasg
     integer :: lwork, n1, nt, numod
-    real(kind=8) :: cf0, fi, hmoy, pi, rbid, s0
+    real(kind=8) :: cf0, fi, hmoy, pi, s0
     real(kind=8) :: u0
 !-----------------------------------------------------------------------
     call jemarq()
@@ -241,7 +241,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         call pacouc(typflu, zr(imaj), zr(iorco), zr(ivabs), zr(icoef),&
                     masg, freq, zr(iamfr), nbm, imasse,&
-                    npv, zr(iwork), zi(iicoq), zr( igeom), [rbid],&
+                    npv, zr(iwork), zi(iicoq), zr( igeom), [0.d0],&
                     ier)
 !
 !-------6.1.4.CALCUL D'UN CRITERE DE POIDS DES TERMES EXTRADIAGONAUX
@@ -249,7 +249,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         if (nbm .gt. 1) call poibij(npv, zr(ivabs), zr(igeom), zr(lfsvr), nbm,&
                                     zi(iicoq), zr(iorco), zr(icoef), freq, imasse,&
-                                    zr(imaj), [rbid])
+                                    zr(imaj), [0.d0])
 !     =================================================================
 !
 ! --- 6.2.CAS GENERAL
@@ -316,7 +316,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
         calcul(2)=.false.
         call fluimp(4, nivpar, nivdef, melflu, typflu,&
                     nuor, freq, zr( ifreqi), nbm, vite,&
-                    npv, carac, calcul, rbid)
+                    npv, carac, calcul, [0.d0])
     endif
 !
 ! --- MENAGE

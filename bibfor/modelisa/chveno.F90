@@ -257,7 +257,7 @@ subroutine chveno(fonree, noma, nomo)
 218                              continue
                                 call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
                                 call orilma(nomma, ndim, zi(jbor), nbmabo, norie1,&
-                                            ntrait, reorie, zero, ibid)
+                                            ntrait, reorie, 0, [0])
                                 call jedetr('&&CHVENO.PRIN')
                                 call jedetr('&&CHVENO.BORD')
                             endif
@@ -343,7 +343,7 @@ subroutine chveno(fonree, noma, nomo)
 220                          continue
                             call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
                             call orilma(nomma, ndim, zi(jbor), nbmabo, norie1,&
-                                        ntrait, reorie, zero, ibid)
+                                        ntrait, reorie, 0, [0])
                             call jedetr('&&CHVENO.PRIN')
                             call jedetr('&&CHVENO.BORD')
                         endif

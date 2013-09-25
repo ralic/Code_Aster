@@ -59,7 +59,6 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     character(len=8) :: type
     character(len=16) :: metres
     character(len=19) :: vci19, solveu
-    real(kind=8) :: rbid
     complex(kind=8) :: cbid
     integer :: k, kdeb, idvalc, lmat, neq, nimpo, islvk
 !     ------------------------------------------------------------------
@@ -120,7 +119,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
 10              continue
             endif
         endif
-        call rldlg3(metres, lmat, rsolu, cbid, nsecm)
+        call rldlg3(metres, lmat, rsolu, [cbid], nsecm)
         if (prepos) then
 !         MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
             call mrconl('MULT', lmat, 0, 'R', rsolu,&
@@ -137,11 +136,11 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
             if (idvalc .ne. 0) then
                 do 20,k=1,nsecm
                 kdeb=(k-1)*neq+1
-                call csmbgg(lmat, [rbid], [rbid], csolu(kdeb), zc(idvalc), 'C')
+                call csmbgg(lmat, [0.d0], [0.d0], csolu(kdeb), zc(idvalc), 'C')
 20              continue
             endif
         endif
-        call rldlg3(metres, lmat, rbid, csolu, nsecm)
+        call rldlg3(metres, lmat, [0.d0], csolu, nsecm)
         if (prepos) then
 !         MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
             call mcconl('MULT', lmat, 0, 'C', csolu,&

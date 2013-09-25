@@ -534,7 +534,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !----ON RESOUT L EQUATION DE LAPLACE
 !
     call resoud(ma, maprec, solveu, ' ', 0,&
-                chflu, chsol, 'V', rbid, cbid,&
+                chflu, chsol, 'V', [0.d0], [cbid],&
                 criter, .true., 0, iret)
     call jedupc('V', chsol(1:19), 1, 'V', chflu(1:19),&
                 .false.)

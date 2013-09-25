@@ -189,8 +189,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! --- SOMMATION DES INTEGRALES PRECEDENTES SUR LA SECTION DE LA POUTRE
 ! --- (I.E. CALCUL DE SOMME_SECTION_POUTRE(PHI.DS)) :
 !     ---------------------------------------------
-    call mesomm(lchout(1), 9, ibid, work, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 9, vr=work)
     ct = deux*work(1)
 !
     if (ngi .ne. 0) then

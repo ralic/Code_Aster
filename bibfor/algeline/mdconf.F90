@@ -278,7 +278,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                         k8b, ire)
 !
             call extmod(base, numddl, nuor, nbm, vecr3,&
-                        neq, lnoe, idep, 1)
+                        neq, lnoe, [idep], 1)
 !
         endif
 !

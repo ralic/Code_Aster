@@ -61,7 +61,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !-----------------------------------------------------------------------
     integer :: ib, ibid, id, ier, im, in, inum
     integer :: iordr(1), iret, irt, irt1, irt2, is, nbmode
-    integer :: nbopt, nbtrou, ns
+    integer :: nbopt, nbtrou, ns,tabord(1)
     real(kind=8) :: r8b, rb
 !-----------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
@@ -168,7 +168,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
         endif
         if (nomsy(1:4) .eq. 'VITE') goto 20
         if (nomsy(1:4) .eq. 'ACCE') goto 20
-        call rsutnc(meca, nomsy, 0, k8b, ibid,&
+        call rsutnc(meca, nomsy, 0, k8b, tabord,&
                     nbtrou)
         if (nbtrou .eq. 0) then
             ier = ier + 1
@@ -190,7 +190,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
             endif
 22      continue
         if (tronc) then
-            call rsutnc(psmo, nomsy, 0, k8b, ibid,&
+            call rsutnc(psmo, nomsy, 0, k8b, tabord,&
                         nbtrou)
             if (nbtrou .eq. 0) then
                 ier = ier + 1
@@ -200,7 +200,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
             endif
         endif
         if (( .not.monoap ) .and. (ns.ne.0)) then
-            call rsutnc(stat, nomsy, 0, k8b, ibid,&
+            call rsutnc(stat, nomsy, 0, k8b, tabord,&
                         nbtrou)
             if (nbtrou .eq. 0) then
                 ier = ier + 1

@@ -393,8 +393,8 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 1000 continue
 !
     if (msglvl .gt. 1) then
-        call ivout(logfil, 1, j, ndigit, '_NAITR: GENERATING ARNOLDI VECTOR NUMBER')
-        call dvout(logfil, 1, rnorm, ndigit, '_NAITR: B-NORM OF THE CURRENT RESIDUAL IS')
+        call ivout(logfil, 1, [j], ndigit, '_NAITR: GENERATING ARNOLDI VECTOR NUMBER')
+        call dvout(logfil, 1, [rnorm], ndigit, '_NAITR: B-NORM OF THE CURRENT RESIDUAL IS')
     endif
 !
 !        %---------------------------------------------------%
@@ -413,7 +413,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !           %---------------------------------------------------%
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, j, ndigit, '_NAITR: ****** RESTART AT STEP ******')
+        call ivout(logfil, 1, [j], ndigit, '_NAITR: ****** RESTART AT STEP ******')
     endif
 !
 !           %---------------------------------------------%
@@ -718,7 +718,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
     endif
 !
     if (msglvl .gt. 0 .and. iter .gt. 0) then
-        call ivout(logfil, 1, j, ndigit, '_NAITR: ITERATIVE REFINEMENT FOR ARNOLDI RESIDUAL')
+        call ivout(logfil, 1, [j], ndigit, '_NAITR: ITERATIVE REFINEMENT FOR ARNOLDI RESIDUAL')
         if (msglvl .gt. 2) then
             xtemp(1) = rnorm
             xtemp(2) = rnorm1

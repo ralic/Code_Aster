@@ -70,9 +70,11 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/wkvect.h"
 #include "asterfort/zechlo.h"
 !
-    integer :: nin, nou
-    character(len=*) :: base, optio
-    character(len=*) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrlz, mpic
+    character(len=1), intent(in) :: stop
+    integer, intent(in) :: nin
+    integer, intent(in) :: nou
+    character(len=*), intent(in) :: base, optio
+    character(len=*), intent(in) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrlz, mpic
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !        STOP   :  /'S' : ON S'ARRETE SI AUCUN ELEMENT FINI DU LIGREL
@@ -121,7 +123,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel
     character(len=24) :: valk(2)
-    character(len=1) :: stop
     integer :: iachii, iachik, iachix, iadsgd, ibid, nbproc, jparal
     integer :: ialiel, iamaco, iamloc, iamsco, ianoop, ianote, iaobtr
     integer :: iaopds, iaopmo, iaopno, iaoppa, iaoptt, ima, rang, ifm

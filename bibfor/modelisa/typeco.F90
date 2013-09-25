@@ -62,7 +62,7 @@ subroutine typeco(char, noma)
     integer :: posmam, posmae, nummae, nummam
     integer :: indmae, indmam
     integer :: ino, ima, posno, posma, ibid
-    integer :: ndexfr, typint, nptm
+    integer :: ndexfr(1), typint, nptm
     character(len=24) :: defico
     character(len=8) :: alias, nommae, nommam
 !
@@ -171,15 +171,15 @@ subroutine typeco(char, noma)
             if (iform .eq. 2) then
                 typint = mminfi(defico,'INTEGRATION',izone )
                 call mmelin(noma, nummae, typint, nptm)
-                call mmssfr(defico, izone, posmae, ndexfr)
+                call mmssfr(defico, izone, posmae, ndexfr(1))
             else
                 nptm = 0
-                ndexfr = 0
+                ndexfr(1) = 0
             endif
             zi(jmaesc+zmaes*(indmae-1)+1-1) = posmae
             zi(jmaesc+zmaes*(indmae-1)+2-1) = izone
             zi(jmaesc+zmaes*(indmae-1)+3-1) = nptm
-            zi(jmaesc+zmaes*(indmae-1)+4-1) = ndexfr
+            zi(jmaesc+zmaes*(indmae-1)+4-1) = ndexfr(1)
 20      continue
 30  end do
 !

@@ -349,8 +349,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
             call getvr8(motcl3, 'COEF_MULT', iocc=inum, scal=coesym, nbret=n1)
 !
             if (nt .ne. 0) then
-                call mesomm(chelem, mxvale, ibid, zr(lvale), c16b,&
-                            0, ibid)
+                call mesomm(chelem, mxvale, vr=zr(lvale))
                 probaw = coesym*zr(lvale)
                 sigmaw = probaw* (sref**mref)
                 probaw = 1.0d0 - exp(-probaw)
@@ -390,8 +389,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         goto 50
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
-                    call mesomm(chelem, mxvale, ibid, zr(lvale), c16b,&
-                                nbma, zi(jad))
+                    call mesomm(chelem, mxvale, vr=zr(lvale), nbma=nbma, linuma=zi(jad))
                     sigmaw = coesym*zr(lvale)* (sref**mref)
                     probaw = sigmaw/ (sref**mref)
                     probaw = 1.0d0 - exp(-probaw)
@@ -427,8 +425,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         goto 60
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)
-                    call mesomm(chelem, mxvale, ibid, zr(lvale), c16b,&
-                                1, nume)
+                    call mesomm(chelem, mxvale, vr=zr(lvale), nbma=1, linuma=[nume])
                     probaw = coesym*zr(lvale)
                     sigmaw = probaw* (sref**mref)
                     probaw = 1.0d0 - exp(-probaw)

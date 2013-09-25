@@ -525,7 +525,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
                     c16b, r8b, k8b, tmod, 1,&
                     nbtrou)
-        nbmode=tmod(1)            
+        nbmode=tmod(1)
         call wkvect('&&OP0093.ECRITURE.RES', 'V V I', nbmode, lres)
         call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
                     c16b, r8b, k8b, zi(lres), nbmode,&
@@ -545,8 +545,8 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         call irecri(resu, 'RESULTAT', iul, k8b, lbid,&
                     ibid, k8b, ' ', nbpar, zk16(jpara),&
                     nbmode, zi(lres), .true., k8b, ibid,&
-                    'T', k8b, .false., ibid, ibid,&
-                    ibid, ibid, ibid, k8b, .false.,&
+                    'T', k8b, .false., ibid, [0],&
+                    ibid, [0], ibid, k8b, .false.,&
                     r8b, .false., r8b, .false., .false.,&
                     formar, nive, versio)
     endif

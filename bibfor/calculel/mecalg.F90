@@ -93,7 +93,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     integer :: ibid, iret, nres, numfon, livi(nbmxpa)
     integer :: nchin, nsig, ino1, ino2, inga
-    real(kind=8) :: g, livr(nbmxpa)
+    real(kind=8) :: g(1), livr(nbmxpa)
     complex(kind=8) :: cbid, livc(nbmxpa)
     logical :: lfonc, lxfem
     character(len=8) :: resu, lpain(50), lpaout(2), k8b, resuco
@@ -117,7 +117,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     option = optioz
 !
 !     INITIALISATIONS
-    g = 0.d0
+    g(1) = 0.d0
     nsig=0
     inga=0
     ch1d2d = '&&MECALG.1D2D'
@@ -357,10 +357,9 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !
-    call mesomm(lchout(1), 1, ibid, g, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 1, vr=g(1))
     if (symech .ne. 'NON') then
-        g = 2.d0*g
+        g(1) = 2.d0*g(1)
     endif
 !
 !- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
@@ -379,7 +378,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
 !
-    call tbajvr(result, nbprup, 'G', g, livr)
+    call tbajvr(result, nbprup, 'G', g(1), livr)
     call tbajli(result, nbprup, noprup, livi, livr,&
                 livc, livk, 0)
 !

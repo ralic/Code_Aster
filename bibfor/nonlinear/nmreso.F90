@@ -115,7 +115,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 ! --- INVERSION DE LA PARTIE FIXE
 !
     call resoud(matass, maprec, solveu, cncine, 0,&
-                cndonn, depso1, 'V', r8bid, c16bid,&
+                cndonn, depso1, 'V', [0.d0], [c16bid],&
                 crgc, .true., -9999, rescvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
@@ -126,7 +126,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
     if (lpilo) then
         call resoud(matass, maprec, solveu, cncine, 0,&
-                    cnpilo, depso2, 'V', r8bid, c16bid,&
+                    cnpilo, depso2, 'V', [0.d0], [c16bid],&
                     crgc, .true., -9999, rescvg)
         if (rescvg .eq. 1) goto 9999
     endif

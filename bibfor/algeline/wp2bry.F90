@@ -109,7 +109,7 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
 30      continue
 !
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, u4, cbid,&
+                    k19bid, k19bid, kbid, u4, [cbid],&
                     criter, .false., 0, iret)
         call mrmult('ZERO', lamor, u4, zh, 1,&
                     .false.)

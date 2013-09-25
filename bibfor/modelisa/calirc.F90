@@ -430,7 +430,7 @@ subroutine calirc(chargz)
                                 idim-1)
 70                          continue
 80                      continue
-                        call afrela(zr(idcoef), cbid, zk8(idnomd), zk8( idnomn), zi(idimen),&
+                        call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8( idnomn), zi(idimen),&
                                     zr(idirec), nno1+1, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
                     else
@@ -445,7 +445,7 @@ subroutine calirc(chargz)
                             do 90,ino1=1,nno1+1
                             zk8(idnomd-1+ino1)=cmp
 90                          continue
-                            call afrela(zr(idcoef), cbid, zk8( idnomd), zk8(idnomn), zi(idimen),&
+                            call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn), zi(idimen),&
                                         zr( idirec), nno1+1, beta, betac, kbeta,&
                                         typcoe, fonree, typlag, 1.d-6, lisrel)
                             call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
@@ -469,7 +469,7 @@ subroutine calirc(chargz)
                             do 110,ino1=1,nno1+1
                             zk8(idnomd-1+ino1)=cmp
 110                          continue
-                            call afrela(zr(idcoef), cbid, zk8( idnomd), zk8(idnomn), zi(idimen),&
+                            call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn), zi(idimen),&
                                         zr( idirec), nno1+1, beta, betac, kbeta,&
                                         typcoe, fonree, typlag, 1.d-6, lisrel)
                             call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
@@ -560,7 +560,7 @@ subroutine calirc(chargz)
                                 normal(idim)
 210                          continue
 220                      continue
-                        call afrela(zr(idcoef), cbid, zk8(idnomd), zk8( idnomn), zi(idimen),&
+                        call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8( idnomn), zi(idimen),&
                                     zr(idirec), nno1+1, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
                     else
@@ -579,7 +579,7 @@ subroutine calirc(chargz)
                             zk8(idnomd+kk-1)=cmp
                             zr(idcoef+kk-1)=-mrota(kk,k)
 240                      continue
-                        call afrela(zr(idcoef), cbid, zk8(idnomd), zk8(idnomn), zi(idimen),&
+                        call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
                                     zr(idirec), nno1+ ndim, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
                         call imprel(motfac, nno1+ndim, zr(idcoef), zk8(idnomd), zk8(idnomn),&
@@ -628,7 +628,7 @@ subroutine calirc(chargz)
                 do 280,ino1=1,nno1+1
                 zk8(idnomd-1+ino1)=cmp
 280              continue
-                call afrela(zr(idcoef), cbid, zk8(idnomd), zk8(idnomn), zi(idimen),&
+                call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
                             zr(idirec), nno1+1, beta, betac, kbeta,&
                             typcoe, fonree, typlag, 1.d-6, lisrel)
                 call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&

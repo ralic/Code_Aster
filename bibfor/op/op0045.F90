@@ -318,7 +318,7 @@ subroutine op0045()
         call ajlagr(masse0, raide0, raide)
 !       - SUPPRESSION DES LAGRANGES DE LA RAIDEUR
         call mtdefs(masse, masse0, 'V', ' ')
-        call mtcmbl(1, 'R', 1.d0, masse0, masse,&
+        call mtcmbl(1, 'R', [1.d0], masse0, masse,&
                     'LAGR', ' ', 'ELIM=')
     else
         call getvid(' ', matra, scal=raide, nbret=l)

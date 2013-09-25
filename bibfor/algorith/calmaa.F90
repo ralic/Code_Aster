@@ -88,7 +88,7 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
 !
     maa = '&&CA.AA'//dir
 !
-    call assmam('V', maa, 1, matel, 1.d0,&
+    call assmam('V', maa, 1, matel, [1.d0],&
                 num, 'ZERO', 1)
 !
     call jedema()

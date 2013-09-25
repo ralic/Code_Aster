@@ -211,7 +211,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! =================================================================
 ! --- PREDICTION ELASTIQUE ----------------------------------------
 ! =================================================================
-    call lkelas(ndi, ndt, mod, nbmat, materd,&
+    call lkelas(ndi, ndt, nbmat, materd,&
                 depsth, sigml, de, kk, mu)
 !
     iel = i1ml + trois*kk*dvml
@@ -548,7 +548,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! --- TERMES DE L OPERATEUR TANGENT -------------------------------
 ! =================================================================
     if (option(11:14) .eq. 'ELAS') then
-        call lkelas(ndi, ndt, mod, nbmat, materd,&
+        call lkelas(ndi, ndt, nbmat, materd,&
                     depsth, sigml, de, kk, mu)
         call lceqma(de, dside)
     endif
@@ -568,7 +568,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
             endif
         endif
         call r8inir(6*6, 0.d0, dside, 1)
-        call lkelas(ndi, ndt, mod, nbmat, materd,&
+        call lkelas(ndi, ndt, nbmat, materd,&
                     depsth, sigml, de, kk, mu)
 !
         if (matr .eq. 0) then

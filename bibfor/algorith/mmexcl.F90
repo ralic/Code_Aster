@@ -119,7 +119,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
     zr(jtabf+ztabf*(iptc-1)+19) = 0.d0
 !     -- SEULS LES 9 PREMIERS NOEUDS EXISTENT DANS LA MAILLE
     if (iptm .le. 9) then
-        call isdeco(ndexfr, lnexfr, 9)
+        call isdeco([ndexfr], lnexfr, 9)
         if (lnexfr(iptm) .eq. 1) then
             lexfro = .true.
             zr(jtabf+ztabf*(iptc-1)+19) = ndexfr

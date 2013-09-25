@@ -42,7 +42,7 @@ subroutine abscvl(ndim, tabar, xg, s)
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: xgg, a, b, ksider
-    real(kind=8) :: tabelt(3), xe
+    real(kind=8) :: tabelt(3), xe(1)
     integer :: iret, k
     character(len=8) :: elp
 !
@@ -100,13 +100,13 @@ subroutine abscvl(ndim, tabar, xg, s)
     elp='SE3'
 !
 !     CALCUL COORDONNEES DE REF (ETA) DE XGG SUR L'ARETE
-    call reereg('S', elp, 3, tabelt, xgg,&
+    call reereg('S', elp, 3, tabelt, [xgg],&
                 1, xe, iret)
-    ASSERT(xe.ge.-1 .and. xe.le.1)
+    ASSERT(xe(1).ge.-1 .and. xe(1).le.1)
 !
 !     CALCUL ABSCISSE CURVILIGNE (S) DE XGG
 !     ---L'ORIGINE EST LE 1ER PT DE COORSG---
-    call abscvf(ndim, tabar, xe, s)
+    call abscvf(ndim, tabar, xe(1), s)
 !
     call jedema()
 end subroutine

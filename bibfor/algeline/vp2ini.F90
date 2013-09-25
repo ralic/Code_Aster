@@ -161,7 +161,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)*zr(irdiak+ieq-1)
 70  end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
-                k19bid, k19bid, kbid, zr(lx), cbid,&
+                k19bid, k19bid, kbid, zr(lx), [cbid],&
                 criter, .false., 0, iret)
     do 80 ieq = 1, neq
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)
@@ -177,7 +177,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         vect(ieq,ivecd) = zr(lmx+ieq-1)*ddlexc(ieq)
 90  end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
-                k19bid, k19bid, kbid, vect(1, ivecd), cbid,&
+                k19bid, k19bid, kbid, vect(1, ivecd), [cbid],&
                 criter, .false., 0, iret)
 !
 !     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
@@ -232,7 +232,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
             vect(ieq,ivecp1) = zr(lmx+ieq-1)*ddlexc(ieq)
 140      continue
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, vect(1, ivecp1), cbid,&
+                    k19bid, k19bid, kbid, vect(1, ivecp1), [cbid],&
                     criter, .false., 0, iret)
 !
         if (ivecm1 .eq. (ivecd-1)) then

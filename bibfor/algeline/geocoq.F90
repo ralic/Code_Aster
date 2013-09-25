@@ -226,7 +226,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqi-1)+1)
     iranv = 0
     do 50 icmp = 1, irang
-        if (exisdg(icode,icmp)) iranv = iranv + 1
+        if (exisdg([icode],icmp)) iranv = iranv + 1
 50  end do
     if (iranv .eq. 0) then
         call utmess('F', 'ALGELINE_58')
@@ -241,7 +241,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqx-1)+1)
     iranv = 0
     do 51 icmp = 1, irang
-        if (exisdg(icode,icmp)) iranv = iranv + 1
+        if (exisdg([icode],icmp)) iranv = iranv + 1
 51  end do
     if (iranv .eq. 0) then
         call utmess('F', 'ALGELINE_60')

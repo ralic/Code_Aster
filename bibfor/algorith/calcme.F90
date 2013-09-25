@@ -81,7 +81,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     character(len=8) :: ncra1(nelas), fami, poum
     integer :: icodre(nresma)
     real(kind=8) :: dsdeme(6, 6), dsdeme12 (6, 12)
-    real(kind=8) :: r8bid, angma1(3), angmas(7), ang2(3), depstr(6)
+    real(kind=8) :: angma1(3), angmas(7), ang2(3), depstr(6)
     real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=16) :: complg(3)
     logical :: cp, yapre2
@@ -242,10 +242,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         call redece('RIGI', 1, 1, ndim, typmod,&
                     imate, complg, crit, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angmas, 1, r8bid,&
+                    vintm, option, angmas, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
                     congep(adcome), vintp, 36, dsdeme, 1,&
-                    r8bid, retcom)
+                    [0.d0], retcom)
 !
     endif
 ! --- End
@@ -261,10 +261,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         call redece('RIGI', 1, 1, ndim, typmod,&
                     imate, complg, crit, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, r8bid,&
+                    vintm, option, angma1, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
                     congep(adcome), vintp, 36, dsdeme, 1,&
-                    r8bid, retcom)
+                    [0.d0], retcom)
     endif
     if (meca .eq. 'HOEK_BROWN_EFF') then
         complg(1) = 'HOEK_BROWN_EFF'
@@ -277,10 +277,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         call redece('RIGI', 1, 1, ndim, typmod,&
                     imate, complg, crit, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, r8bid,&
+                    vintm, option, angma1, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
                     congep(adcome), vintp, 36, dsdeme, 1,&
-                    r8bid, retcom)
+                    [0.d0], retcom)
     endif
     if (meca .eq. 'DRUCK_PRAGER' .or. meca .eq. 'DRUCK_PRAG_N_A') then
         mectru = .true.
@@ -300,10 +300,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         call redece('RIGI', 1, 1, ndim, typmod,&
                     imate, complg, crit, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, r8bid,&
+                    vintm, option, angma1, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
                     congep(adcome), vintp, 36, dsdeme, 1,&
-                    r8bid, retcom)
+                    [0.d0], retcom)
     endif
     if (mectru) then
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then

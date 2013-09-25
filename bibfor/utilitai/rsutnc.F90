@@ -10,9 +10,12 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-    integer :: nbvale, tabord(*), nbtrou
-    character(len=*) :: nomsd, nomsy, tabnom(*)
-! ----------------------------------------------------------------------
+        character(len=*), intent(in) :: nomsd
+        character(len=*), intent(in) :: nomsy
+        integer, intent(in) :: nbvale
+        character(len=*), intent(out) :: tabnom(*)
+        integer, intent(out) :: tabord(*)
+        integer, intent(out) :: nbtrou
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

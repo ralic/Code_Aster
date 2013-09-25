@@ -178,8 +178,8 @@ subroutine zngets(ishift, which, kev, np, ritz,&
 !
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, kev, ndigit, '_NGETS: KEV IS')
-        call ivout(logfil, 1, np, ndigit, '_NGETS: NP IS')
+        call ivout(logfil, 1, [kev], ndigit, '_NGETS: KEV IS')
+        call ivout(logfil, 1, [np], ndigit, '_NGETS: NP IS')
         call zvout(logfil, kev+np, ritz, ndigit, '_NGETS: EIGENVALUES OF CURRENT H MATRIX ')
         call zvout(logfil, kev+np, bounds, ndigit,&
                    '_NGETS: RITZ ESTIMATES OF THE CURRENT KEV+NP RITZ VALUES')

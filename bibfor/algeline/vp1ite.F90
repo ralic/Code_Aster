@@ -11,9 +11,10 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 #include "asterfort/resoud.h"
 #include "asterfort/vpmort.h"
 #include "asterfort/vpstur.h"
+    integer :: neq
     real(kind=8) :: x(neq, 1), mx(neq, *), err, x0(neq)
     real(kind=8) :: valp
-    integer :: place, iexcl(*), imode, neq, mxiter, iter
+    integer :: place, iexcl(*), imode, mxiter, iter
     integer :: lmasse, lraide, ldynam
     character(len=19) :: solveu
 !     ----------------------- ------------------------------------------
@@ -104,7 +105,7 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 !
 !        --- RESOLUTION DE (K-W.M) X = (M).X ---
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, x(1, imode), cbid,&
+                    k19bid, k19bid, kbid, x(1, imode), [cbid],&
                     criter, .false., 0, iret)
 !
 !        --- ORTHOGONALISATION EN CAS DE MODES MULTIPLES  ---

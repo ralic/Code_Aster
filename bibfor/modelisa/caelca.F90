@@ -370,7 +370,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
     iranv = 0
     do icmp = 1, irana1
-        if (exisdg(icode,icmp)) iranv = iranv + 1
+        if (exisdg([icode],icmp)) iranv = iranv + 1
     end do
     if (iranv .eq. 0) then
         write(k3mai,'(I3)') numail
@@ -408,7 +408,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
         iranv = 0
         do 70 icmp = 1, irana1
-            if (exisdg(icode,icmp)) iranv = iranv + 1
+            if (exisdg([icode],icmp)) iranv = iranv + 1
 70      continue
         if (iranv .eq. 0) then
             write(k3mai,'(I3)') numail

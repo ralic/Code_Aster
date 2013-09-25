@@ -118,7 +118,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
         limam(1) = masse
         limam(2) = rigid
         nbmat = 2
-        call mtcmbl(nbmat, typcsm, coemam, limam, masse,&
+        call mtcmbl(nbmat, typcsm, [coemam], limam, masse,&
                     nomddl, ' ', 'ELIM=')
     endif
 !
@@ -135,7 +135,7 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 !
 ! --- ASSEMBLAGE
 !
-    call mtcmbl(nbmat, typcst, coemat, limat, matass,&
+    call mtcmbl(nbmat, typcst, [coemat], limat, matass,&
                 nomddl, ' ', 'ELIM=')
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES

@@ -84,6 +84,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
     character(len=8)  :: cmp(6)
     character(len=24) :: magrno, manono, grno
     real(kind=8) :: orig(3)
+    complex(kind=8) cbid
 !
     call jemarq()
 !
@@ -173,10 +174,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
             noeud(1) = zk8(inoe-1+k)
         else
             call getvtx('CHOC', 'GROUP_NO', iocc=k, scal=grno, nbret=ier)
-            if(ier.eq.1) then    
-                call dismoi('F', 'NOM_MAILLA', matm, 'MATR_ASSE', iarg, mailla, ier)            
+            if(ier.eq.1) then
+                call dismoi('F', 'NOM_MAILLA', matm, 'MATR_ASSE', iarg, mailla, ier)
                 magrno = mailla//'.GROUPENO'
-                manono = mailla//'.NOMNOE'        
+                manono = mailla//'.NOMNOE'
                 call jelira(jexnom(magrno, grno), 'LONUTI', ier, kvide)
                 call jeveuo(jexnom(magrno, grno), 'L', ldgn)
                 call jenuno(jexnum(manono, zi(ldgn)), noeud(1))
@@ -261,7 +262,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
     zr(iei-1+pdlmax)=1.d0
     call preres(' ', 'V', ier, '', matk, ier2, 0)
     call resoud(matk, ' ', ' ', ' ', 1,&
-            ' ', ' ', 'V', zr(iei), 0,&
+            ' ', ' ', 'V', zr(iei), [cbid],&
             ' ', .false., 0, ier)
     zr(iadim-1+1)=1.d0/zr(iei-1+pdlmax)
 ! --- ON RECUPERE MUi (POUR ADIMENSIONNE LA MATRICE DE MASSE)
@@ -270,7 +271,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
         call dscal(neq, 0.d0, zr(iei), 1)
         zr(iei-1+pdlmax)=1.d0
         call resoud(matm, ' ', ' ', ' ', 1,&
-                ' ', ' ', 'V', zr(iei), 0,&
+                ' ', ' ', 'V', zr(iei), [cbid],&
                 ' ', .false., 0, ier)
         zr(iadim-1+2)=1.d0/zr(iei-1+pdlmax)
     else

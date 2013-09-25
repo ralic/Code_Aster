@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
+          interface
             subroutine vtdef1(chpout,chpin,base,typc)
-              character(*) :: chpout
-              character(*) :: chpin
-              character(*) :: base
-              character(*) :: typc
+              character(len=*) :: chpout
+              character(len=*) :: chpin
+              character(len=*) :: base
+              character(len=*) :: typc
             end subroutine vtdef1
-          end interface 
+          end interface

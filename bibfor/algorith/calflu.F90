@@ -52,7 +52,7 @@ subroutine calflu(chamno, modele, mate, nu, vectas,&
 !     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA
 !                       NUMEROTATION NU DU MODELE THERMIQUE ---
 !
-    call assvec('V', vectas, 1, ve(1:19), 1.0d0,&
+    call assvec('V', vectas, 1, ve(1:19), [1.d0],&
                 nu, ' ', 'ZERO', 1)
     call jedetr(ve)
 !

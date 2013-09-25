@@ -134,7 +134,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
         call resoud(matass, maprec, solveu, cnchci, 0,&
-                    vtempp, chsol, 'V', rbid, cbid,&
+                    vtempp, chsol, 'V', [0.d0], [cbid],&
                     criter, .true., 0, iret)
 !
 ! --- RECOPIE DANS VTEMPM DU CHAMP SOLUTION CHSOL
@@ -158,7 +158,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
         call resoud(matass, maprec, solveu, cnchci, 0,&
-                    vtempp, chsol, 'V', rbid, cbid,&
+                    vtempp, chsol, 'V', [0.d0], [cbid],&
                     criter, .true., 0, iret)
 !
 ! --- RECOPIE DANS VTEMPM DU CHAMP SOLUTION CHSOL

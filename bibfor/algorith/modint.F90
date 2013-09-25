@@ -235,7 +235,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
             call mrmult('ZERO', lmatma, zr(lvtemp), zr(lvtmp2), 1,&
                         .true.)
             call resoud(imped, ' ', solveu, ' ', 1,&
-                        ' ', ' ', ' ', zr(lvtmp2), cbid,&
+                        ' ', ' ', ' ', zr(lvtmp2), [cbid],&
                         ' ', .true., 0, iret)
             do 120 j1 = 1, k1-1
                 norm=ddot(6*nnoint,zr(lvtmp2),1, zr(lkryl+(j1-1)*6*&
@@ -340,7 +340,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call dismoi('F', 'SOLVEUR', raide, 'MATR_ASSE', ibid,&
                 solveu, ibid)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry,&
-                ' ', ' ', ' ', zr(lmakry), cbid,&
+                ' ', ' ', ' ', zr(lmakry), [cbid],&
                 ' ', .true., 0, iret)
 !
 !---------------------------------------------C

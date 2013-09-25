@@ -158,7 +158,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
         if (tych .eq. 'RESL') then
             call jedetr('&&ASASVE           .RELR')
             call reajre('&&ASASVE', resuel, 'V')
-            call assvec('V', chamno, 1, '&&ASASVE           .RELR', 1.0d0,&
+            call assvec('V', chamno, 1, '&&ASASVE           .RELR', [1.d0],&
                         numedd, ' ', 'ZERO', ityp)
 !
 !

@@ -51,7 +51,7 @@ subroutine te0441(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt
     integer :: ivectu, igeom, irota, ipesa, imate
     integer :: irese, nfiss, jfisno, kpg, spt
-    real(kind=8) :: rbid, fno(81), rho(1), om, omo, coorse(81), mat(1)
+    real(kind=8) :: fno(81), rho(1), om, omo, coorse(81), mat(1)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag, famil, poum
     character(len=16) :: phenom
@@ -110,7 +110,7 @@ subroutine te0441(option, nomte)
     spt=1
     poum='+'
     call rcvalb(famil, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 1, ' ', [rbid],&
+                ' ', phenom, 1, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !     CALCUL DE L'EFFORT VOLUMIQUE AUX NOEUDS DE L'ELEMENT PARENT : FNO
     call vecini(ndim*nnop, 0.d0, fno)

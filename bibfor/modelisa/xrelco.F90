@@ -57,7 +57,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
     parameter  (nbddl=12)
     character(len=8) :: ddlc(nbddl)
 !
-    real(kind=8) :: rbid, betar, coefr(6)
+    real(kind=8) :: betar, coefr(6)
     integer :: ier, jlis1, ndime(8), neq, i, jlis2, iret
     integer :: nuno(8), ndim, j
     character(len=8) :: noeud(8), k8bid, ddl(8)
@@ -122,8 +122,8 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
                 ddl(1) = ddlc(3*(zi(jlis2-1+2*(i-1)+1)-1)+j)
                 ddl(2) = ddlc(3*(zi(jlis2-1+2*(i-1)+2)-1)+j)
             endif
-            call afrela(coefr, cbid, ddl, noeud, ndime,&
-                        rbid, 2, betar, cbid, k8bid,&
+            call afrela(coefr, [cbid], ddl, noeud, ndime,&
+                        [0.d0], 2, betar, cbid, k8bid,&
                         'REEL', 'REEL', '12', 0.d0, lisrel)
             nrel = nrel + 1
 20      continue

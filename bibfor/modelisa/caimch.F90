@@ -75,7 +75,7 @@ subroutine caimch(chargz)
     integer :: idnoeu, idvale, iequa, ier, ino, inocmp, iocc
     integer :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
     integer :: nequa, nliai, nucmp
-    real(kind=8) :: rbid, vale, zero
+    real(kind=8) :: vale, zero
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -273,7 +273,7 @@ subroutine caimch(chargz)
 ! ---       AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !
                 call afrela(zr(idcoer+k-1), zc(idcoec+k-1), zk8(idddl+k- 1), zk8(idnoeu+k-1),&
-                            zi(idimen+k-1), rbid, 1, beta, betac,&
+                            zi(idimen+k-1), [0.d0], 1, beta, betac,&
                             betaf, typcoe, typval, typlag, 0.d0,&
                             lisrel)
             endif

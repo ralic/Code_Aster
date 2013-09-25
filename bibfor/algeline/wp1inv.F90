@@ -19,6 +19,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
     integer :: lmasse, lamor, lraide, nitf, nbfreq, neq
+    integer :: mxresf
     integer :: resufi(mxresf, *)
     complex(kind=8) :: vecpro(neq, *)
     real(kind=8) :: tolf, resufr(mxresf, *)
@@ -60,7 +61,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: icomb, ieq, imode, iter, jter, lacc1, lacc2
-    integer :: ldynam, lyn, mxresf
+    integer :: ldynam, lyn
     real(kind=8) :: dseed, err, err2
     integer :: iret
 !-----------------------------------------------------------------------
@@ -160,7 +161,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !           --- RESOLUTION ---
             call resoud(matass, k19bid, solveu, chcine, 1,&
-                        k19bid, k19bid, kbid, rbid, zc(lacc2),&
+                        k19bid, k19bid, kbid, [0.d0], zc(lacc2),&
                         criter, .false., 0, iret)
 !
 !CC         --- ORTHOGONALISATION DU VECTEUR AVEC LES PRECEDENTS ---

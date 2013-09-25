@@ -161,7 +161,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
 !           FIMPO : DEFORMEE STATIQUE (K-1*N)
                 call resoud(marig, ' ', ' ', ' ', 1,&
-                            ' ', ' ', ' ', fimpo, cbid,&
+                            ' ', ' ', ' ', fimpo, [cbid],&
                             ' ', .true., 0, iret)
 !           NORMX : NORME K-1*N
                 normx=ddot(neq,fimpo,1,fimpo,1)

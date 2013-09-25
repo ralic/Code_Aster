@@ -12,7 +12,7 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
     complex(kind=8) :: depgec(*), vitgec(*), accgec(*), depstc(*), vitstc(*)
     complex(kind=8) :: accstc(*)
     character(len=4) :: typcal
-    character(len=4) :: nomsym(3)
+    character(len=4) :: nomsym(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

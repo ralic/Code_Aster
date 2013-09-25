@@ -62,7 +62,7 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DE RIGIDITE ELASTIQUE NON LINEAIRE
 ! --------------------------------------------------------------------
-    call lkelas(ndi, ndt, mod, nmat, materd,&
+    call lkelas(ndi, ndt, nmat, materd,&
                 depst, sigdt, dsde, kk, mu)
 !
 ! --------------------------------------------------------------------

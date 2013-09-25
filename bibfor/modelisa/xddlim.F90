@@ -74,7 +74,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     integer :: ialino, nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
     integer :: jconx1, jconx2, idnoma, iad, fisno(4)
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
-    real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, rbid, lsn2
+    real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2
     character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), axes(3), noma
     character(len=19) :: ch1, ch2, ch3, ch4
     complex(kind=8) :: cbid, valimc
@@ -314,8 +314,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
             endif
         endif
         nterm = i
-        call afrela(coef, cbid, ddl, noeud, dimens,&
-                    rbid, nterm, valimr, valimc, valimf,&
+        call afrela(coef, [cbid], ddl, noeud, dimens,&
+                    [0.d0], nterm, valimr, valimc, valimf,&
                     'REEL', fonree, '12', 0.d0, lisrel)
 !
 10  end do

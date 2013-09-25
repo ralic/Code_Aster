@@ -42,14 +42,14 @@ function mminfr(defico, questz, izone)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
-    real(kind=8) :: rrep
-    logical :: lbid
+    integer :: ibid(1)
+    real(kind=8) :: rrep(1)
+    logical :: lbid(1)
 !
 ! ----------------------------------------------------------------------
 !
-    rrep = 0.d0
+    rrep(1) = 0.d0
     call mminfp(izone, defico, questz, ibid, rrep,&
                 lbid)
-    mminfr = rrep
+    mminfr = rrep(1)
 end function

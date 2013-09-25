@@ -108,7 +108,7 @@ subroutine op0015()
 !
 !     -- APPEL A LA ROUTINE RESOUD :
     call resoud(matr, matf, solve2, vcine, 0,&
-                secmbr, xsol, 'G', rbid, cbid,&
+                secmbr, xsol, 'G', [0.d0], [cbid],&
                 ' ', .true., 0, iret)
 !
     if (metres .ne. 'MUMPS' .and. metres .ne. 'PETSC') then

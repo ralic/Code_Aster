@@ -188,8 +188,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
 !
 ! --- PASSAGE A UNE VALEUR GLOBALE EN ESPACE
 !
-    call mesomm(lchout(1), 1, ibid, somme, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 1, vr=somme)
 !
 ! --- INDICATEUR D'ERREUR LOCAL EN TEMPS / GLOBAL EN ESPACE
 !

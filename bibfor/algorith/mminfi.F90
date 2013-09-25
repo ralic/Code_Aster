@@ -42,13 +42,12 @@ function mminfi(defico, questz, izone)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: irep
-    real(kind=8) :: r8bid
-    logical :: lbid
+    integer :: irep(1)
+    real(kind=8) :: r8bid(1)
+    logical :: lbid(1)
 !
 ! ----------------------------------------------------------------------
 !
-    call mminfp(izone, defico, questz, irep, r8bid,&
-                lbid)
-    mminfi = irep
+    call mminfp(izone, defico, questz, irep, r8bid, lbid)
+    mminfi = irep(1)
 end function

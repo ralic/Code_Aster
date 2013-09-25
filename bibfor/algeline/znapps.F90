@@ -290,7 +290,7 @@ subroutine znapps(n, kev, np, shift, v,&
         sigma(1) = shift(jj)
 !
         if (msglvl .gt. 2) then
-            call ivout(logfil, 1, jj, ndigit, '_NAPPS: SHIFT NUMBER.')
+            call ivout(logfil, 1, [jj], ndigit, '_NAPPS: SHIFT NUMBER.')
             call zvout(logfil, 1, sigma, ndigit, '_NAPPS: VALUE OF THE SHIFT ')
         endif
 !
@@ -310,9 +310,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !
             if (abs(dble(h(i+1,i))) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
-                    call ivout(logfil, 1, i, ndigit,&
+                    call ivout(logfil, 1, [i], ndigit,&
                                '_NAPPS: MATRIX SPLITTING AT ROW/COLUMN NO.')
-                    call ivout(logfil, 1, jj, ndigit,&
+                    call ivout(logfil, 1, [jj], ndigit,&
                                '_NAPPS: MATRIX SPLITTING WITH SHIFT NUMBER.')
                     call zvout(logfil, 1, h(i+1, i), ndigit, '_NAPPS: OFF DIAGONAL ELEMENT.')
                 endif
@@ -325,8 +325,8 @@ subroutine znapps(n, kev, np, shift, v,&
 40      continue
 !
         if (msglvl .gt. 2) then
-            call ivout(logfil, 1, istart, ndigit, '_NAPPS: START OF CURRENT BLOCK ')
-            call ivout(logfil, 1, iend, ndigit, '_NAPPS: END OF CURRENT BLOCK ')
+            call ivout(logfil, 1, [istart], ndigit, '_NAPPS: START OF CURRENT BLOCK ')
+            call ivout(logfil, 1, [iend], ndigit, '_NAPPS: END OF CURRENT BLOCK ')
         endif
 !
 !        %------------------------------------------------%
@@ -497,7 +497,7 @@ subroutine znapps(n, kev, np, shift, v,&
     if (msglvl .gt. 1) then
         call zvout(logfil, 1, q(kplusp, kev), ndigit, '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')
         call zvout(logfil, 1, h(kev+1, kev), ndigit, '_NAPPS: BETAK = E_(KEV+1)T*H*E_(KEV)')
-        call ivout(logfil, 1, kev, ndigit, '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
+        call ivout(logfil, 1, [kev], ndigit, '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
         if (msglvl .gt. 2) then
             call zmout(logfil, kev, kev, h, ldh,&
                        ndigit, '_NAPPS: UPDATED HESSENBERG MATRIX H FOR NEXT ITERATION')

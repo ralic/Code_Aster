@@ -43,7 +43,7 @@ subroutine mmmtex(ndexfr, ndim, nnl, nne, nnm,&
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 ! IN  NNL    : NOMBRE DE NOEUDS DE LAGRANGE
 ! IN  NBCPS  : NOMBRE DE COMPOSANTES/NOEUD DES LAGR_C+LAGR_F
-! IN  NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
+! IN  ndexfr : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
 ! OUT MATRFF : MATRICE ELEMENTAIRE LAGR_F/LAGR_F
 ! OUT MATRFE : MATRICE ELEMENTAIRE LAGR_F/DEPL_E
 ! OUT MATRFM : MATRICE ELEMENTAIRE LAGR_F/DEPL_M
@@ -61,7 +61,7 @@ subroutine mmmtex(ndexfr, ndim, nnl, nne, nnm,&
 ! --- MODIFICATION DES TERMES SI EXCLUSION DIRECTION FROTT. SANS_NO_FR
 !
     if (ndexfr .ne. 0) then
-        call isdeco(ndexfr, ndexcl, 10)
+        call isdeco([ndexfr], ndexcl, 10)
         call mmmte2(ndim, nnl, nne, nnm, nbcpf,&
                     ndexcl, matrff, matrfe, matrfm, matref,&
                     matrmf)

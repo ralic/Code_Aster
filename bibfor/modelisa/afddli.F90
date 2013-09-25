@@ -157,8 +157,8 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
         ASSERT(cmp_acti(i_cmp).le.1)
         ASSERT(cmp_acti(i_cmp).ge.0)
         if (cmp_acti(i_cmp) .eq. 1) then
-            call afrela(coef_real_unit, coef_cplx_unit, cmp_name(i_cmp)(1:8), node_name,&
-                        repe_type, repe_defi, 1, vale_real(i_cmp), vale_cplx(i_cmp),&
+            call afrela([coef_real_unit], [coef_cplx_unit], cmp_name(i_cmp)(1:8), node_name,&
+                        [repe_type], repe_defi, 1, vale_real(i_cmp), vale_cplx(i_cmp),&
                         vale_func(i_cmp), coef_type, vale_type, lagr_type, 0.d0,&
                         list_rela)
         endif

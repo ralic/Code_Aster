@@ -624,8 +624,8 @@ subroutine znaupd(ido, bmat, n, which, nev,&
     if (info .eq. 2) info = 3
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, mxiter, ndigit, '_NAUPD: NUMBER OF UPDATE ITERATIONS TAKEN')
-        call ivout(logfil, 1, np, ndigit, '_NAUPD: NUMBER OF WANTED "CONVERGED" RITZ VALUES')
+        call ivout(logfil, 1, [mxiter], ndigit, '_NAUPD: NUMBER OF UPDATE ITERATIONS TAKEN')
+        call ivout(logfil, 1, [np], ndigit, '_NAUPD: NUMBER OF WANTED "CONVERGED" RITZ VALUES')
         call zvout(logfil, np, workl(ritz), ndigit, '_NAUPD: THE FINAL RITZ VALUES')
         call zvout(logfil, np, workl(bounds), ndigit, '_NAUPD: ASSOCIATED RITZ ESTIMATES')
     endif

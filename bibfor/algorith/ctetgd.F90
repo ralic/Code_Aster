@@ -230,7 +230,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
                     if (idecd(k) .gt. 0) then
                         ilocj=ilocj+1
                         x=tet0(j,k)
-                        call amppr(teta, nbddr, nbddr, x, 1,&
+                        call amppr(teta, nbddr, nbddr, [x], 1,&
                                    1, nbdcou+ iloci, nbdcou+ilocj)
                     endif
 70              continue

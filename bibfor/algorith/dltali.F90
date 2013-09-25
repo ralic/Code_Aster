@@ -167,7 +167,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 !                                       ..          .
 !
         call resoud(matrei, maprei, solveu, cine, 0,&
-                    force1, chsol, 'V', rbid, cbid,&
+                    force1, chsol, 'V', [0.d0], [cbid],&
                     criter, .true., 0, iret)
 !
 ! 5.4. ==> SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL

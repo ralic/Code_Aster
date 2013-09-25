@@ -244,7 +244,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
         endif
 !
 ! - CALCUL DE ALPHA ET DE TREPST
-        call tanbul(option, ndim, g, mate, compor,&
+        call tanbul(option, ndim, g, mate, compor(1),&
                     resi, .false., alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY

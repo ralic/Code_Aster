@@ -51,7 +51,7 @@ subroutine cal2m(chamno, phibar, modele, mate, nu,&
 !     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA
 !                       NUMEROTATION NU DU MODELE THERMIQUE ---
 !
-    call assvec('V', vecas2, 1, ve2, 1.0d0,&
+    call assvec('V', vecas2, 1, ve2, [1.d0],&
                 nu, ' ', 'ZERO', 1)
     call jedetr(ve2)
 !

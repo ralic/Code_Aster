@@ -135,7 +135,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
         end do
 !
 ! - CALCUL DE ALPHA
-        call tanbul(option, ndim, g, mate, compor, .false., .false., alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor(1), .false., .false., alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U
         do na = 1, nno1

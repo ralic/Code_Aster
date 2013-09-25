@@ -345,7 +345,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
             dg = zi(jprnm-1+ (ino-1)*nbec+1)
             do 42 j = 4, 6
                 icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-                if (.not. exisdg(dg,icmp(j))) then
+                if (.not. exisdg([dg],icmp(j))) then
                     valk(1) = zk8(ilisno+i-1)
                     valk(2) = cmp(j)
                     call utmess('F', 'MODELISA6_32', nk=2, valk=valk)
@@ -359,7 +359,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
             dg = zi(jprnm-1+ (ino-1)*nbec+1)
             do 40 j = 4, 6
                 icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-                if (exisdg(dg,icmp(j))) then
+                if (exisdg([dg],icmp(j))) then
                     valk(1) = zk8(ilisno+i-1)
                     valk(2) = cmp(j)
                     call utmess('F', 'MODELISA6_44', nk=2, valk=valk)
@@ -374,7 +374,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     dg = zi(jprnm-1+ (numnop-1)*nbec+1)
     do 60 j = 1, 6
         icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-        if (.not.exisdg(dg,icmp(j))) then
+        if (.not.exisdg([dg],icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
             call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
@@ -403,8 +403,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !     SOMMATION DES QUANTITES GEOMETRIQUES ELEMENTAIRES
 !     DANS LE VECTEUR &&RAPO3D.INERTIE_RACCORD :
 !     SEULES LES 10 PREMIERES VALEURS SERONT UTILISEES
-    call mesomm(lchout(1), 16, ibid, zr(idiner), cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 16, vr=zr(idiner))
 !
     s = zr(idiner+1-1)
     ax = zr(idiner+2-1)
@@ -457,8 +456,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 !     RECUPERATION DES VECTEURS TANGENTS ORTHONORMES DU 1ER ELEMENT
     if (option .eq. 'PLAQ_POUT_ORTH') then
-        call mesomm(lchout(1), 16, ibid, zr(idiner), cbid,&
-                    1, zi(jlisma))
+        call mesomm(lchout(1), 16, vr=zr(idiner), nbma=1, linuma=zi(jlisma))
         vtang(1) = zr(idiner+11-1)
         vtang(2) = zr(idiner+12-1)
         vtang(3) = zr(idiner+13-1)
@@ -530,14 +528,14 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !     ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
     call jedetr('&&RAPO3D           .RELR')
     call reajre('&&RAPO3D', lchout(1), 'V')
-    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO3D           .RELR', un,&
+    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO3D           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
 !
 ! --- -----------------------------------------------------------------
 !     ASSEMBLAGE DE LCHOUT(2) DANS LE CHAMNO DE NOM 'CH_DEPL_2'
     call jedetr('&&RAPO3D           .RELR')
     call reajre('&&RAPO3D', lchout(2), 'V')
-    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO3D           .RELR', un,&
+    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO3D           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
 !
     vale1 = 'CH_DEPL_1          .VALE'

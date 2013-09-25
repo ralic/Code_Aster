@@ -120,7 +120,7 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     coefr(idec+3)=+(coef1*mat33(3,3))/epais
     30 end do
 !
-    call afrela(coefr, cbid, ddl, noeud, dimens,&
+    call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&
                 typcoe, fonree, typlag, 1.d-6, lisrel)
     call imprel('LIAISON_MAIL-COQUE_MASSIF', nbterm, coefr, ddl, noeud,&
@@ -174,7 +174,7 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     coefr(idec+3)=-(coef1*mat33(3,2))/epais
     50 end do
 !
-    call afrela(coefr, cbid, ddl, noeud, dimens,&
+    call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&
                 typcoe, fonree, typlag, 1.d-6, lisrel)
     call imprel('LIAISON_MAIL-COQUE_MASSIF', nbterm, coefr, ddl, noeud,&

@@ -42,14 +42,14 @@ function mminfl(defico, questz, izone)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
-    real(kind=8) :: r8bid
-    logical :: lrep
+    integer :: ibid(1)
+    real(kind=8) :: r8bid(1)
+    logical :: lrep(1)
 !
 ! ----------------------------------------------------------------------
 !
-    lrep = .false.
+    lrep(1) = .false.
     call mminfp(izone, defico, questz, ibid, r8bid,&
                 lrep)
-    mminfl = lrep
+    mminfl = lrep(1)
 end function

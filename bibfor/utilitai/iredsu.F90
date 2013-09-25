@@ -198,9 +198,9 @@ subroutine iredsu(macr, form, ifc, versio)
             titre = 'MODE DYNAMIQUE'
             call irecri(basemo, form, ifc, titre, lbid,&
                         1, 'DEPL', ' ', iero, k8b,&
-                        1, iord, .true., b, iero,&
-                        cecr, k8b, f, iero, ibid,&
-                        iero, ibid, iero, k8b, f,&
+                        1, [iord], .true., b, iero,&
+                        cecr, k8b, f, 0, [0],&
+                        0, [0], iero, k8b, f,&
                         zero, f, zero, f, f,&
                         formar, nive, versio)
         endif

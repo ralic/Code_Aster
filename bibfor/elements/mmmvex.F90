@@ -50,7 +50,7 @@ subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
 ! --- MODIFICATION DES TERMES SI EXCLUSION DIRECTION FROTT. SANS_NO_FR
 !
     if (ndexfr .ne. 0) then
-        call isdeco(ndexfr, ndexcl, 10)
+        call isdeco([ndexfr], ndexcl, 10)
         do 30 i = 1, nnl
             if (ndexcl(i) .eq. 1) then
                 do 40 l = 1, nbcpf

@@ -91,7 +91,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
         call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
                     cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
-        nbmode=tmod(1)            
+        nbmode=tmod(1)
         call dismoi('F', 'NOM_MAILLA', nomcha(1:19), 'CHAM_NO', ibid,&
                     mailla, ierd)
         call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
@@ -129,7 +129,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
         call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
                     cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
-        nbmode=tmod(1)            
+        nbmode=tmod(1)
 !
         call wkvect('&&OP0152.PHI1', 'V V K24', nbmode, iphi1)
         call wkvect('&&OP0152.PHI2', 'V V K24', nbmode, iphi2)
@@ -157,7 +157,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 !
             call resoud(ma, maprec, solveu, ' ', 0,&
-                        vecso1, chsol, 'V', rbid, cbid,&
+                        vecso1, chsol, 'V', [0.d0], [cbid],&
                         criter, .true., 0, iret)
             call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
                         .false.)
@@ -178,7 +178,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
                            vecso2, nbdesc, nbrefe, nbvale)
 !
                 call resoud(ma, maprec, solveu, ' ', 0,&
-                            vecso2, chsol, 'V', rbid, cbid,&
+                            vecso2, chsol, 'V', [0.d0], [cbid],&
                             criter, .true., 0, iret)
                 call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19),&
                             .false.)
@@ -222,7 +222,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !-------------- RESOLUTION  DU LAPLACIEN EN 2D OU 3D-------------
 !
                 call resoud(ma, maprec, solveu, ' ', 0,&
-                            vecso1, chsol, 'V', rbid, cbid,&
+                            vecso1, chsol, 'V', [0.d0], [cbid],&
                             criter, .true., 0, iret)
                 call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
                             .false.)
@@ -241,7 +241,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
                     call cal2m(chamno, phib24, moflui, mate, nu,&
                                vecso2, nbdesc, nbrefe, nbvale)
                     call resoud(ma, maprec, solveu, ' ', 0,&
-                                vecso2, chsol, 'V', rbid, cbid,&
+                                vecso2, chsol, 'V', [0.d0], [cbid],&
                                 criter, .true., 0, iret)
                     call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19),&
                                 .false.)

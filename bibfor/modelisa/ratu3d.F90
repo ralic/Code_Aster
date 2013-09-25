@@ -72,8 +72,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                 'OUI')
 !
     call wkvect('&&RATU3D.RAYON_RACCORD', 'V V R', 1, irayo)
-    call mesomm(lchout(1), 1, ibid, zr(irayo), cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 1, vr=zr(irayo))
     rayon = zr(irayo+1-1)/sectio
 !
 !
@@ -135,7 +134,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                 'OUI')
     call jedetr('&&RATU3D           .RELR')
     call reajre('&&RATU3D', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', 1.d0,&
+    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
     valech = 'CH_DEPL_3          .VALE'
     nbcoef = 1
@@ -177,7 +176,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(1), 'V')
-        call assvec('V', 'CH_DEPL_1', 1, '&&RATU3D           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_1', 1, '&&RATU3D           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_1          .VALE'
         idec = 0
@@ -195,7 +194,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(4), 'V')
-        call assvec('V', 'CH_DEPL_4', 1, '&&RATU3D           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_4', 1, '&&RATU3D           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_4          .VALE'
         idec = 0
@@ -212,7 +211,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(2), 'V')
-        call assvec('V', 'CH_DEPL_2', 1, '&&RATU3D           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_2', 1, '&&RATU3D           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
@@ -229,7 +228,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(5), 'V')
-        call assvec('V', 'CH_DEPL_5', 1, '&&RATU3D           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_5', 1, '&&RATU3D           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_5          .VALE'
         idec = 0
@@ -248,7 +247,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(3), 'V')
-        call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_3          .VALE'
         idec = 0
@@ -279,7 +278,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(6), 'V')
-        call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', 1.d0,&
+        call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0],&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_6          .VALE'
         idec = 0

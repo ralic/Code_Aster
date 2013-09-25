@@ -122,7 +122,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !====
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
-                vecass, chsol, 'V', rbid, cbid,&
+                vecass, chsol, 'V', [0.d0], [cbid],&
                 criter, .true., 0, iret)
 !
 ! 5.1. ==> NETTOYAGE DU CHAMP CINEMATIQUE CNCHCI QUI EST RECREE A

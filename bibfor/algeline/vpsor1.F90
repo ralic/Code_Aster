@@ -253,7 +253,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 25      continue
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, vaux, cbid,&
+                    k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
         do 30 j = 1, nbeq
             workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
@@ -265,7 +265,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
             vaux(j) = workd(ipntr(1)+j-1) * ddlexc(j)
 35      continue
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, vaux, cbid,&
+                    k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
         do 40 j = 1, nbeq
@@ -295,7 +295,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 45      continue
 ! X <- (OP)*X
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, vaux, cbid,&
+                    k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
         do 50 j = 1, nbeq

@@ -56,7 +56,7 @@ subroutine nmrldb(solveu, lmat, resu, nbsm, cncine)
     matr = zk24(zi(lmat+1))
 !
     call resoud(matr, ' ', solveu, cncine, nbsm,&
-                ' ', ' ', 'V', resu, c16bid,&
+                ' ', ' ', 'V', resu, [c16bid],&
                 ' ', .true., 0, iret)
 !
     call jedema()

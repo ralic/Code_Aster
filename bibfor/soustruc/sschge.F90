@@ -135,7 +135,7 @@ subroutine sschge(nomacr)
     call ss2mm2(nomo, vecel, nomcas)
 !
 !        -- ASSEMBLAGE:
-    call assvec('V', vecas, 1, vecel, 1.0d0,&
+    call assvec('V', vecas, 1, vecel, [1.d0],&
                 nu, vprof, 'ZERO', 1)
 !
 !       -- RECOPIE DE VECAS.VALE DANS .LICA(1:NDDLT) :

@@ -66,7 +66,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     integer :: ibid, init, niv, ifm
     integer :: nchin, livi(nbmxpa)
 !
-    real(kind=8) :: g, livr(nbmxpa)
+    real(kind=8) :: g(1), livr(nbmxpa)
 !
     complex(kind=8) :: cbid, livc(nbmxpa)
 !
@@ -220,16 +220,15 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 !
 !  SOMMATION DES FIC ET G ELEMENTAIRES
 !
-    call mesomm(lchout(1), 1, ibid, g, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 1, vr=g(1))
 !
-    if (symech .ne. 'NON') g = 2.d0*g
+    if (symech .ne. 'NON') g(1) = 2.d0*g(1)
 !
 ! IMPRESSION DE G ET ECRITURE DANS LA TABLE RESU
 !
     call tbajvi(result, nbprup, 'NUME_CMP_I', indi, livi)
     call tbajvi(result, nbprup, 'NUME_CMP_J', indj, livi)
-    call tbajvr(result, nbprup, 'G_BILIN', g, livr)
+    call tbajvr(result, nbprup, 'G_BILIN', g(1), livr)
     call tbajli(result, nbprup, noprup, livi, livr,&
                 livc, livk, 0)
 !

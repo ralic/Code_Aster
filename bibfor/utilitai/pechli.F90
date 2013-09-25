@@ -170,14 +170,13 @@ subroutine pechli(resu, modele, mate)
 !       CHLIM(2) : CHAR_LIMI_ESTIM
 !       CHLIM(3) : MAX UTILE AU CALCUL DE CHAR_LIMI_ESTIM
 !
-        call mesomm(lchout(1), 3, ibid, chlim, c16b,&
-                    0, ibid)
+        call mesomm(lchout(1), 3, vr=chlim)
 !
         chli(1) = 'CHLI1'
         chli(2) = 'CHLI2'
         chli(3) = 'CHLI3'
         call memaxm('MAX', lchout(1), 'CHLI3', 3, chli,&
-                    chmax, 0, ibid)
+                    chmax, 0, [0])
 !
 !      CALCUL DU CHARGEMENT PERMANENT SI NECESSAIRE
         if (chrcst) then

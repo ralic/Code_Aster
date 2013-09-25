@@ -80,6 +80,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
     character(len=14) :: xru, xtang, xtemp
     integer :: iru, itang, ivect, cptr, iret, itemp, inddl, ifres
     real(kind=8) :: eps, normr, normc
+    complex(kind=8) cbid
 !
     ifres = iunifi ('MESSAGE')
 !
@@ -140,7 +141,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                     nd, nchoc, h, hf)
 ! ---   ON RESOUD LE SYSTEME LINEAIRE (DRDV\XTANG)
         call resoud(matdrv, ' ', ' ', ' ', 1,&
-                    ' ', ' ', 'V', zr(iru), 0,&
+                    ' ', ' ', 'V', zr(iru), [cbid],&
                     ' ', .false., 0, iret)
 ! ---   ON AJOUTE AU VECTEUR SOLUTION
         call daxpy(ninc, -1.d0, zr(iru), 1, zr(itemp),&

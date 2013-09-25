@@ -59,11 +59,11 @@ subroutine milfic(ndim, geom, xg)
 ! --- COORDONNEES DU POINT DANS L'ELEMENT DE REFERENCE
 !     ABSCURV(M)=[ABSCURV(A)]/2
     s=s1/2
-    call xinvac(elp, ndim, geom, s, xe)
+    call xinvac(elp, ndim, geom, s, xe(1))
     ASSERT(xe(1).ge.-1 .and. xe(1).le.1)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elp, nno, ndim, geom, xe,&
+    call reerel(elp, nno, ndim, geom, xe(1),&
                 xg)
 !
     call jedema()

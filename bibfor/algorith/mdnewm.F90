@@ -266,7 +266,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !     --- CONDITIONS INITIALES ---
     call mdinit(basemo, nbmode, 0, zr(jdepl), zr(jvite),&
-                r8b, iret, tinit)
+                [0.d0], iret, tinit)
     if (iret .ne. 0) goto 9999
 !
 !     --- FORCES EXTERIEURES ---
@@ -285,9 +285,9 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     tarchi = tinit
 !
     call mdarch(isto1, 0, tinit, dt, nbmode,&
-                'TRAN', ibid, k4bid, zr(jdepl), zr(jvite),&
-                zr(jacce), depsto, vitsto, accsto, cbid,&
-                cbid, cbid, cbid, cbid, cbid,&
+                'TRAN', 0, [k4bid], zr(jdepl), zr(jvite),&
+                zr(jacce), depsto, vitsto, accsto, [cbid],&
+                [cbid], [cbid], [cbid], [cbid], [cbid],&
                 passto, iorsto, temsto)
 !
     temps = tinit + dt
@@ -397,9 +397,9 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                 tarchi = temps
 !
                 call mdarch(isto1, iarchi, temps, dt, nbmode,&
-                            'TRAN', ibid, k4bid, zr(jdepl), zr(jvite),&
-                            zr(jacce), depsto, vitsto, accsto, cbid,&
-                            cbid, cbid, cbid, cbid, cbid,&
+                            'TRAN', 0, [k4bid], zr(jdepl), zr(jvite),&
+                            zr(jacce), depsto, vitsto, accsto, [cbid],&
+                            [cbid], [cbid], [cbid], [cbid], [cbid],&
                             passto, iorsto, temsto)
 !
             endif

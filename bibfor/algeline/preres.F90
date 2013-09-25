@@ -77,7 +77,6 @@ subroutine preres(solvez, base, iret, matpre, matass,&
     integer :: idbgav, ifm, niv, islvk, ibid
     integer :: islvi, lmat, nprec, ndeci, isingu, niremp
     integer :: ifcpu, istopz, iretgc
-    real(kind=8) :: rbid
     character(len=24) :: metres, k24b, opt, precon
     character(len=19) :: matas, maprec, matas1, solveu
     character(len=8) :: renum, kmpic, kmatd
@@ -155,9 +154,9 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !                         PETSC                            C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             else if (metres.eq.'PETSC') then
-                call apetsc('DETR_MAT', ' ', matas, rbid, ' ',&
+                call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
                             0, ibid, iret)
-                call apetsc('PRERES', solveu, matas, rbid, ' ',&
+                call apetsc('PRERES', solveu, matas, [0.d0], ' ',&
                             0, ibid, iret)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

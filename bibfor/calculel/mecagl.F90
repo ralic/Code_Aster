@@ -110,7 +110,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
     integer :: ndeg, ierd, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
-    real(kind=8) :: gthi, livr(nbmxpa), xl
+    real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: cbid, livc(nbmxpa)
     logical :: fonc, lxfem
     character(len=2) :: codret
@@ -378,9 +378,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         call calcul('S', opti, ligrmo, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
-        call mesomm(chgthi, 1, ibid, gthi, cbid,&
-                    0, ibid)
-        zr(iadrg+i-1) = gthi
+        call mesomm(chgthi, 1, vr=gthi(1))
+        zr(iadrg+i-1) = gthi(1)
 20  continue
 !
 !- CALCUL DE G(S) SUR LE FOND DE FISSURE PAR 4 METHODES

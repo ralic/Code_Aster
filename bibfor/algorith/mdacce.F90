@@ -127,7 +127,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
         ASSERT(descm.ne.0)
         matr = zk24(zi(descm+1))(1:19)
         call resoud(matr, ' ', ' ', ' ', 1,&
-                    ' ', ' ', ' ', accgen, cbid,&
+                    ' ', ' ', ' ', accgen, [cbid],&
                     ' ', .true., 0, iret)
     endif
 !

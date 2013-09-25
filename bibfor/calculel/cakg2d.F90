@@ -381,8 +381,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
 !  SOMMATION DES FIC ET G ELEMENTAIRES
 !
-    call mesomm(lchout(1), 5, ibid, fic, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 5, vr=fic)
 !
     do 20 i = 1, 5
         zr(ific+i-1) = fic(i)

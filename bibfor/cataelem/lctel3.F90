@@ -88,9 +88,9 @@ subroutine lctel3()
 !
     do 2, k=1,nbdg
     dg=zi(iamolo-1+4+k)
-    if (exisdg(dg,ix)) zi(iadige-1+ite)=max(1,zi(iadige-1+ite) )
-    if (exisdg(dg,iy)) zi(iadige-1+ite)=max(2,zi(iadige-1+ite) )
-    if (exisdg(dg,iz)) zi(iadige-1+ite)=max(3,zi(iadige-1+ite) )
+    if (exisdg([dg],ix)) zi(iadige-1+ite)=max(1,zi(iadige-1+ite) )
+    if (exisdg([dg],iy)) zi(iadige-1+ite)=max(2,zi(iadige-1+ite) )
+    if (exisdg([dg],iz)) zi(iadige-1+ite)=max(3,zi(iadige-1+ite) )
  2  continue
  1  continue
 !

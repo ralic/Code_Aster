@@ -163,7 +163,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---     QUI EST RELCOM A BIEN ETE AFFECTEE
 !
-                    ASSERT(exisdg(dg, 1))
+                    ASSERT(exisdg([dg], 1))
 ! ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
                     compt = zk16(ivale+idebgd+3-1)
                     if (compt .ne. deform) goto 130

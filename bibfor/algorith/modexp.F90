@@ -342,7 +342,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
                 ibid, 1)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod,&
-                ' ', ' ', ' ', zr(lmodet), cbid,&
+                ' ', ' ', ' ', zr(lmodet), [cbid],&
                 ' ', .true., 0, iret)
 !
 !------------C

@@ -243,7 +243,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
             if (nt .ne. 0) then
                 if (optcal(2) .eq. 'OUI') then
                     call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
-                                vr, 0, ibid)
+                                vr, 0, [0])
                     do 30 kk = 1, mxvale
                         zr(lvale+kk-1) = vr(kk)
 30                  continue
@@ -365,7 +365,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     call jenonu(jexnom(mlgnma, nommai), nume)
                     if (optcal(2) .eq. 'OUI') then
                         call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
-                                    vr, 1, nume)
+                                    vr, 1, [nume])
                         do 60 kk = 1, mxvale
                             zr(lvale+kk-1) = vr(kk)
 60                      continue

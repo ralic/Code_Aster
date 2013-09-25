@@ -52,7 +52,7 @@ subroutine mmcyc2(resoco, iptc, nompt, indco, indfr)
     character(len=24) :: cyclis, cycnbr, cyctyp, cycpoi
     integer :: jcylis, jcynbr, jcytyp, jcypoi
     integer :: statut(30)
-    integer :: longcy, ccycle, ncycle, tcycle, icycl
+    integer :: longcy, ccycle(1), ncycle, tcycle, icycl
     character(len=16) :: lcycle
     logical :: detect
 !
@@ -78,9 +78,9 @@ subroutine mmcyc2(resoco, iptc, nompt, indco, indfr)
 !
 ! --- ETAT PRECEDENT
 !
-    ccycle = zi(jcylis-1+4*(iptc-1)+2)
+    ccycle(1) = zi(jcylis-1+4*(iptc-1)+2)
     ncycle = zi(jcynbr-1+4*(iptc-1)+2)
-    call isdeco(ccycle, statut, 30)
+    call isdeco(ccycle(1), statut, 30)
 !
 ! --- PAS DE CONTACT: FIN DU CYCLE DIRECTEMENT
 !
@@ -96,14 +96,14 @@ subroutine mmcyc2(resoco, iptc, nompt, indco, indfr)
 !
     ncycle = ncycle + 1
     statut(ncycle) = indfr
-    call iscode(statut, ccycle, 30)
+    call iscode(statut, ccycle(1), 30)
 !
 ! --- DETECTION D'UN CYCLE
 !
     tcycle = 0
     lcycle = ' '
     if (ncycle .eq. longcy) then
-        detect = iscycl(ccycle,longcy)
+        detect = iscycl(ccycle(1),longcy)
         if (detect) then
             tcycle = 1
             lcycle = nompt
@@ -116,17 +116,17 @@ subroutine mmcyc2(resoco, iptc, nompt, indco, indfr)
 ! --- REINITIALISATION DU CYCLE
 !
     if (ncycle .eq. longcy) then
-        call isdeco(ccycle, statut, 30)
+        call isdeco(ccycle(1), statut, 30)
         do 10 icycl = 1, longcy-1
             statut(icycl) = statut(icycl+1)
 10      continue
-        call iscode(statut, ccycle, 30)
+        call iscode(statut, ccycle(1), 30)
         ncycle = longcy - 1
     endif
 !
 ! --- SAUVEGARDE DU CYCLE
 !
-    zi(jcylis-1+4*(iptc-1)+2) = ccycle
+    zi(jcylis-1+4*(iptc-1)+2) = ccycle(1)
     zi(jcynbr-1+4*(iptc-1)+2) = ncycle
 !
 99  continue

@@ -504,10 +504,10 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         do 65 j = 1, nbmod
             xprod= ddot(neq,zr(ltvec1),1,zr(ltveca+(j-1)*neq),1)
-            call amppr(zr(ldk0ij), nbmod, nbddr, xprod, 1,&
+            call amppr(zr(ldk0ij), nbmod, nbddr, [xprod], 1,&
                        1, j, i)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltveca+(j-1)*neq),1)
-            call amppr(zr(ldm0ij), nbmod, nbddr, xprod, 1,&
+            call amppr(zr(ldm0ij), nbmod, nbddr, [xprod], 1,&
                        1, j, i)
 65      continue
 !
@@ -525,10 +525,10 @@ subroutine prcycb(nomres, soumat, repmat)
         if (nbdax .gt. 0) then
             do 75 j = 1, nbdax
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltvecd+(j-1)*neq),1)
-                call amppr(zr(ldk0aj), nbdax, nbddr, xprod, 1,&
+                call amppr(zr(ldk0aj), nbdax, nbddr, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltvecd+(j-1)*neq),1)
-                call amppr(zr(ldm0aj), nbdax, nbddr, xprod, 1,&
+                call amppr(zr(ldm0aj), nbdax, nbddr, [xprod], 1,&
                            1, j, i)
 75          continue
         endif
@@ -582,20 +582,20 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ----- CALCUL TERME DIAGONAL
 !
         xprod= ddot(neq,zr(ltvec1),1,zr(ltvecc+(i-1)*neq),1)
-        call amppr(zr(ltkgg), nbdga, nbdga, xprod, 1,&
+        call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                    1, i, i)
         xprod= ddot(neq,zr(ltvec3),1,zr(ltvecc+(i-1)*neq),1)
-        call amppr(zr(ltmgg), nbdga, nbdga, xprod, 1,&
+        call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                    1, i, i)
 !
 ! ----- MULTIPLICATION PAR MODES PROPRES
 !
         do 85 j = 1, nbmod
             xprod= ddot(neq,zr(ltvec1),1,zr(ltveca+(j-1)*neq),1)
-            call amppr(zr(ltkig), nbmod, nbdga, xprod, 1,&
+            call amppr(zr(ltkig), nbmod, nbdga, [xprod], 1,&
                        1, j, i)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltveca+(j-1)*neq),1)
-            call amppr(zr(ltmig), nbmod, nbdga, xprod, 1,&
+            call amppr(zr(ltmig), nbmod, nbdga, [xprod], 1,&
                        1, j, i)
 85      continue
 !
@@ -603,10 +603,10 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         do 90 j = 1, nbddr
             xprod= ddot(neq,zr(ltvec1),1,zr(ltvecb+(j-1)*neq),1)
-            call amppr(zr(ltkdg), nbddr, nbddr, xprod, 1,&
+            call amppr(zr(ltkdg), nbddr, nbddr, [xprod], 1,&
                        1, j, i)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltvecb+(j-1)*neq),1)
-            call amppr(zr(ltmdg), nbddr, nbddr, xprod, 1,&
+            call amppr(zr(ltmdg), nbddr, nbddr, [xprod], 1,&
                        1, j, i)
 90      continue
 !
@@ -614,14 +614,14 @@ subroutine prcycb(nomres, soumat, repmat)
 !
         do 100 j = 1, i-1
             xprod= ddot(neq,zr(ltvec1),1,zr(ltvecc+(j-1)*neq),1)
-            call amppr(zr(ltkgg), nbdga, nbdga, xprod, 1,&
+            call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                        1, j, i)
-            call amppr(zr(ltkgg), nbdga, nbdga, xprod, 1,&
+            call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                        1, i, j)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltvecc+(j-1)*neq),1)
-            call amppr(zr(ltmgg), nbdga, nbdga, xprod, 1,&
+            call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                        1, j, i)
-            call amppr(zr(ltmgg), nbdga, nbdga, xprod, 1,&
+            call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                        1, i, j)
 100      continue
 !
@@ -630,10 +630,10 @@ subroutine prcycb(nomres, soumat, repmat)
         if (nbdax .gt. 0) then
             do 105 j = 1, nbdax
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltvecd+(j-1)*neq),1)
-                call amppr(zr(ltkag), nbdax, nbdga, xprod, 1,&
+                call amppr(zr(ltkag), nbdax, nbdga, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltvecd+(j-1)*neq),1)
-                call amppr(zr(ltmag), nbdax, nbdga, xprod, 1,&
+                call amppr(zr(ltmag), nbdax, nbdga, [xprod], 1,&
                            1, j, i)
 105          continue
         endif
@@ -770,10 +770,10 @@ subroutine prcycb(nomres, soumat, repmat)
 !
             do 220 j = 1, nbmod
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltveca+(j-1)*neq),1)
-                call amppr(zr(ltkia), nbmod, nbdax, xprod, 1,&
+                call amppr(zr(ltkia), nbmod, nbdax, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltveca+(j-1)*neq),1)
-                call amppr(zr(ltmia), nbmod, nbdax, xprod, 1,&
+                call amppr(zr(ltmia), nbmod, nbdax, [xprod], 1,&
                            1, j, i)
 220          continue
 !
@@ -781,10 +781,10 @@ subroutine prcycb(nomres, soumat, repmat)
 !
             do 230 j = 1, nbdax
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltvecd+(j-1)*neq),1)
-                call amppr(zr(ltkaa), nbdax, nbdax, xprod, 1,&
+                call amppr(zr(ltkaa), nbdax, nbdax, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltvecd+(j-1)*neq),1)
-                call amppr(zr(ltmaa), nbdax, nbdax, xprod, 1,&
+                call amppr(zr(ltmaa), nbdax, nbdax, [xprod], 1,&
                            1, j, i)
 230          continue
 210      continue

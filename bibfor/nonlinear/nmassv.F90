@@ -148,7 +148,7 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! --- FORCES NODALES
 !
     if (typvec .eq. 'CNFNOD') then
-        call assvec('V', vecass, 1, vecele, 1.d0,&
+        call assvec('V', vecass, 1, vecele, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
 !
 ! --- DEPLACEMENTS DIRICHLET FIXE
@@ -161,13 +161,13 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! --- DEPLACEMENTS DIRICHLET DIFFERENTIEL
 !
     else if (typvec.eq.'CNDIDI') then
-        call assvec('V', vecass, 1, vecele, 1.d0,&
+        call assvec('V', vecass, 1, vecele, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
 !
 ! --- DEPLACEMENTS DIRICHLET PILOTE
 !
     else if (typvec.eq.'CNDIPI') then
-        call assvec('V', vecass, 1, vecele, 1.d0,&
+        call assvec('V', vecass, 1, vecele, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
 !
 ! --- FORCES DE LAPLACE
@@ -233,13 +233,13 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE INITIALES
 !
     else if (typvec.eq.'CNVCF1') then
-        call assvec('V', vecass, 1, vecele, 1.d0,&
+        call assvec('V', vecass, 1, vecele, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
 !
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE COURANTES
 !
     else if (typvec.eq.'CNVCF0') then
-        call assvec('V', vecass, 1, vecele, 1.d0,&
+        call assvec('V', vecass, 1, vecele, [1.d0],&
                     numedd, ' ', 'ZERO', 1)
 !
 ! --- CONDITIONS DE DIRICHLET VIA AFFE_CHAR_CINE (PAS DE VECT_ELEM)

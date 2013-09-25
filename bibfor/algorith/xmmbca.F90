@@ -64,7 +64,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: ibid, sinco, nbma
+    integer :: ibid, sinco(1), nbma
     integer :: jfiss
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
@@ -213,15 +213,14 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
                     nbout, lpaout, lchout)
     endif
 !
-! --- ON FAIT SINCO = SOMME DES CICOCA SUR LES ÉLTS DU LIGRMO
+! --- ON FAIT sinco(1) = SOMME DES CICOCA SUR LES ÉLTS DU LIGRMO
 !
-    call mesomm(cicoca, 1, sinco, rbid, cbid,&
-                0, ibid)
+    call mesomm(cicoca, 1, vi=sinco(1))
 !
-! --- SI SINCO EST STRICTEMENT POSITIF, ALORS ON A EU UN CODE RETOUR
+! --- SI sinco(1) EST STRICTEMENT POSITIF, ALORS ON A EU UN CODE RETOUR
 ! --- SUPERIEUR A ZERO SUR UN ELEMENT ET DONC ON A PAS CONVERGÉ
 !
-    if (sinco .gt. 0) then
+    if (sinco(1) .gt. 0) then
         mmcvca = .false.
     else
         mmcvca = .true.

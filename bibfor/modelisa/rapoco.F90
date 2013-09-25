@@ -367,7 +367,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         dg = zi(jprnm-1+ (ino-1)*nbec+1)
         do 40 j = 4, 6
             icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-            if (.not.exisdg(dg,icmp(j))) then
+            if (.not.exisdg([dg],icmp(j))) then
                 valk(1) = zk8(ilisno+i-1)
                 valk(2) = cmp(j)
                 call utmess('F', 'MODELISA6_54', nk=2, valk=valk)
@@ -381,7 +381,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     dg = zi(jprnm-1+ (numnop-1)*nbec+1)
     do 60 j = 1, 6
         icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-        if (.not.exisdg(dg,icmp(j))) then
+        if (.not.exisdg([dg],icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
             call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
@@ -414,8 +414,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- SOMMATION DES QUANTITES GEOMETRIQUES ELEMENTAIRES
 ! --- DANS LE VECTEUR &&RAPOCO.INERTIE_RACCORD :
 !     ----------------------------------------
-    call mesomm(lchout(1), 10, ibid, zr(idiner), cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 10, vr=zr(idiner))
 !
     s = zr(idiner+1-1)
     ax = zr(idiner+2-1)
@@ -537,7 +536,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !     ---------------------------------------------------------
     call jedetr('&&RAPOCO           .RELR')
     call reajre('&&RAPOCO', lchout(1), 'V')
-    call assvec('V', '&&RAPOCO.CH_DEPL_01', 1, '&&RAPOCO           .RELR', un,&
+    call assvec('V', '&&RAPOCO.CH_DEPL_01', 1, '&&RAPOCO           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
 !
     vale1 = '&&RAPOCO.CH_DEPL_01.VALE'
@@ -549,7 +548,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call jedetr('&&RAPOCO           .RELR')
     call reajre('&&RAPOCO', lchout(2), 'V')
 !
-    call assvec('V', '&&RAPOCO.CH_DEPL_02', 1, '&&RAPOCO           .RELR', un,&
+    call assvec('V', '&&RAPOCO.CH_DEPL_02', 1, '&&RAPOCO           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
 !
     vale2 = '&&RAPOCO.CH_DEPL_02.VALE'

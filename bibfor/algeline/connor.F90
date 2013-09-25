@@ -152,7 +152,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !     EXTRACTION DE LA COMPOSANTE SELON LA DIRECTION DE L ECOULEMENT DES
 !     DIFFERENTS MODES
     call extmod(base, numddl, nuor, nbm, mode,&
-                neq, lnoe, idep, 1)
+                neq, lnoe, [idep], 1)
 !
 !     EXTRACTION DES COMPOSANTES DE TRANSLATION DES  DIFFERENTS MODES
     call extmod(base, numddl, nuor, nbm, modetr,&

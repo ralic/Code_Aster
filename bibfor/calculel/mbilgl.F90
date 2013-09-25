@@ -102,7 +102,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     integer :: iadrno, iadgi, iadabs, ifm, niv
     integer :: iord, livi(nbmxpa)
 !
-    real(kind=8) :: gthi, livr(nbmxpa), xl
+    real(kind=8) :: gthi(1), livr(nbmxpa), xl
 !
     complex(kind=8) :: cbid, livc(nbmxpa)
 !
@@ -110,7 +110,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=2) :: codret
     character(len=8) :: lpain(25), lpaout(1)
     character(len=16) :: opti, livk(nbmxpa), valk
-    character(len=24) :: ligrmo, chgeom, chgthi
+    character(len=24) :: ligrmo, chgeom, chgthi(1)
     character(len=19) :: vrcmoi, vrcplu
     character(len=24) :: chvref
     character(len=24) :: lchin(25), lchout(1), chthet, chtimu, chtimv
@@ -224,9 +224,9 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
     do 20 i = 1, ndimte
         chthet = zk24(jresu+i-1)
-        call codent(i, 'G', chgthi)
+        call codent(i, 'G', chgthi(1))
         lpaout(1) = 'PGTHETA'
-        lchout(1) = chgthi
+        lchout(1) = chgthi(1)
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
         lpain(2) = 'PDEPLAU'
@@ -287,9 +287,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         call calcul('S', opti, ligrmo, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
-        call mesomm(chgthi, 1, ibid, gthi, cbid,&
-                    0, ibid)
-        zr(iadrg+i-1) = gthi
+        call mesomm(chgthi(1), 1, vr=gthi(1))
+        zr(iadrg+i-1) = gthi(1)
 20  continue
 !
 ! ABSCISSE CURVILIGNE

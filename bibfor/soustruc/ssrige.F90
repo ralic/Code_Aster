@@ -100,7 +100,7 @@ subroutine ssrige(nomu)
     call smosli(nu//'.SMOS', nu//'.SLCS', 'G', rtbloc)
 !
 !        -- ASSEMBLAGE:
-    call assmam('G', matas, 1, matel, 1.0d0,&
+    call assmam('G', matas, 1, matel, [1.d0],&
                 nu, 'ZERO', 1)
 !     -- IL FAUT COMPLETER LA MATRICE SI LES CALCULS SONT DISTRIBUES:
     call sdmpic('MATR_ASSE', matas)

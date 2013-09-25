@@ -71,7 +71,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     real(kind=8) :: r1, rbid
     real(kind=8) :: dt
     character(len=1) :: ktyp
-    character(len=4) :: grande, k4bid, nomsym(3)
+    character(len=4) :: grande, k4bid(3), nomsym(3)
     character(len=8) :: k8b
     character(len=8) :: masgen, riggen, amogen, basemo
     character(len=16) :: typout
@@ -242,13 +242,14 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             k8b = '        '
 !
 !           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
+            nbsym = 0
             call mdallo(resou(1:8), basemo, masgen, riggen, amogen,&
                         nbmode, dt, nbsauv, 0, k8b,&
                         k8b, 0, k8b, 0, k8b,&
                         jdeps, jvits, jaccs, jpass, jordr,&
                         jinst, jfcho, jdcho, jvcho, jicho,&
                         jredc, jredd, jrevc, jrevv, 'EULER           ',&
-                        ibid, k4bid, 'TRAN', 'GLOB')
+                        nbsym, k4bid, 'TRAN', 'GLOB')
 !
 !           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
             call wkvect('&&ECRESU.DEPL', 'V V R', neq, lvals)
@@ -282,8 +283,8 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !              --- ARCHIVER LES RESULTATS POUR L'INSTANT EN COURS
                 call mdarnl(isto1, iarchi, zr(ltps+j), dt, neq,&
                             zr(lvals), zr(lvalv), zr(lvala), isto2, 0,&
-                            0.d0, 0, isto3, 0, 0.d0,&
-                            0, isto4, 0, 0.d0, 0,&
+                            [0.d0], 0, isto3, 0, [0.d0],&
+                            [0], isto4, 0, [0.d0], [0],&
                             zr(jdeps), zr(jvits), zr(jaccs), zr( jpass), zi(jordr),&
                             zr(jinst), zr(jfcho), zr(jdcho), zr( jvcho), zi(jicho),&
                             zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevv))
@@ -387,11 +388,11 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 nomsym(3) = 'ACCE'
 !
 !              --- ARCHIVER LES RESULTATS POUR LA FREQUENCE EN COURS
-                call mdarch(isto1, iarchi, zr(ltps+j), rbid, neq,&
-                            'HARM', nbsym, nomsym, rbid, rbid,&
-                            rbid, rbid, rbid, rbid, zc(lvals),&
+                call mdarch(isto1, iarchi, zr(ltps+j), 0.d0, neq,&
+                            'HARM', nbsym, nomsym, [0.d0], [0.d0],&
+                            [0.d0], [0.d0], [0.d0], [0.d0], zc(lvals),&
                             zc(lvalv), zc(lvala), zc(jdeps), zc(jvits), zc(jaccs),&
-                            rbid, zi(jordr), zr(jfreq))
+                            [0.d0], zi(jordr), zr(jfreq))
 21          continue
         else
 !           --- SI LE RESULTAT HARM_GENE N'EST PAS UN NOUVEAU CONCEPT,

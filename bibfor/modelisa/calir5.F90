@@ -128,7 +128,7 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
 50  continue
     ASSERT(idec.eq.nbterm+1)
 !
-    call afrela(coefr, cbid, ddl, noeud, dimens,&
+    call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&
                 typcoe, fonree, typlag, 1.d-6, lisrel)
     call imprel('LIAISON_MAIL-MASSIF_COQUE', nbterm, coefr, ddl, noeud,&

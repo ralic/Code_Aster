@@ -87,7 +87,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
 !           RANG DANS LA CARTE
             iranv = 0
             do 40 ll = 1, irang
-                if (exisdg(icode,ll)) iranv = iranv + 1
+                if (exisdg([icode],ll)) iranv = iranv + 1
 40          continue
 !           ON MET A ZERO SI INEXISTANT
             if (iranv .eq. 0) then

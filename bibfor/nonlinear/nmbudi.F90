@@ -72,7 +72,7 @@ subroutine nmbudi(modele, numedd, lischa, veclag, vebudi,&
 !
 ! --- ASSEMBLAGE <CNBUDI>
 !
-    call assvec('V', cnbudi, 1, vebudi, 1.d0,&
+    call assvec('V', cnbudi, 1, vebudi, [1.d0],&
                 numedd, ' ', 'ZERO', 1)
 !
     if (niv .ge. 2) then

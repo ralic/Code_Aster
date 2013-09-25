@@ -124,8 +124,7 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
     call mgutdm(nomres, sst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
     kbid=' '
-    call bmnoin(basmod, kbid, intf, ibid, 0,&
-                ibid, nbnoe)
+    call bmnoin(basmod, kbid, intf, ibid, 0, [0], nbnoe)
 !
     kbid=' '
 !

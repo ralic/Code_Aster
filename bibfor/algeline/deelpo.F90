@@ -130,11 +130,11 @@ subroutine deelpo(caelem, noma, numail, phie)
     icode = zi(icad-1+3+2*iasmax+nbec*(iasbon-1)+1)
     iranv1 = 0
     do 61 icmp = 1, irang1
-        if (exisdg(icode,icmp)) iranv1 = iranv1 + 1
+        if (exisdg([icode],icmp)) iranv1 = iranv1 + 1
 61  end do
     iranv2 = 0
     do 62 icmp = 1, irang2
-        if (exisdg(icode,icmp)) iranv2 = iranv2 + 1
+        if (exisdg([icode],icmp)) iranv2 = iranv2 + 1
 62  end do
     if (iranv1 .eq. 0 .or. iranv2 .eq. 0) then
         call utmess('F', 'ALGELINE_36')

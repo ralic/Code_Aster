@@ -140,7 +140,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
     character(len=8) :: paraf(nbtyth), parar(nbtyth), parac(nbtyth)
     character(len=6) :: typlig(nbtyth)
 !
-    integer :: indxch, iret, genrec, ibid, iposit, nbch, i, itypob
+    integer :: indxch, iret, genrec(1), ibid, iposit, nbch, i, itypob
     character(len=16) :: option, typeco
     character(len=24) :: typcha, gencha, nomobj, parcha, genold, motcle
     character(len=8) :: charge, typech, lpain, nomgd
@@ -328,8 +328,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! --- IDENTIFICATION DES GENRES D'UNE CHARGE
 ! ----------------------------------------------------------------------
     if (oper .eq. 'IDGE') then
-        genrec = 0
-        call isdeco(genrec, tabcod, 30)
+        genrec(1) = 0
+        call isdeco(genrec(1), tabcod, 30)
         prefob = optkz
         charge = prefob(1:8)
 !
@@ -399,8 +399,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----- CODAGE DE L'ENTIER
 !
-        call iscode(tabcod, genrec, 30)
-        vali(1) = genrec
+        call iscode(tabcod, genrec(1), 30)
+        vali(1) = genrec(1)
 ! ----------------------------------------------------------------------
 ! --- IDENTIFICATION DES MOTS-CLEFS D'UNE CHARGE
 ! ----------------------------------------------------------------------
@@ -491,8 +491,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----- DECODAGE DES GENRES
 !
-        genrec = opti
-        call isdeco(genrec, tabcod, 30)
+        genrec(1) = opti
+        call isdeco(genrec(1), tabcod, 30)
 !
 ! ----- DETECTION VECT_ASSE_CHAR
 !

@@ -15,20 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine calcul(stop, optio, ligrlz, nin, lchin,&
-                      lpain, nou, lchou, lpaou, base,&
-                      mpic)
-        integer :: nou
-        integer :: nin
-        character(len=1) :: stop
-        character(len=*) :: optio
-        character(len=*) :: ligrlz
-        character(len=*) :: lchin(*)
-        character(len=*) :: lpain(*)
-        character(len=*) :: lchou(*)
-        character(len=*) :: lpaou(*)
-        character(len=*) :: base
-        character(len=*) :: mpic
-    end subroutine calcul
-end interface
+          interface 
+            subroutine calcul(stop,optio,ligrlz,nin,lchin,lpain,nou,    &
+     &lchou,lpaou,base,mpic)
+              integer, intent(in) :: nou
+              integer, intent(in) :: nin
+              character(len=1), intent(in) :: stop
+              character(len=*), intent(in) :: optio
+              character(len=*), intent(in) :: ligrlz
+              character(len=*), intent(in) :: lchin(*)
+              character(len=*), intent(in) :: lpain(*)
+              character(len=*), intent(in) :: lchou(*)
+              character(len=*), intent(in) :: lpaou(*)
+              character(len=*), intent(in) :: base
+              character(len=*), intent(in) :: mpic
+            end subroutine calcul
+          end interface 

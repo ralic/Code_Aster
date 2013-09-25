@@ -201,7 +201,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
                     if (ideca(k) .gt. 0) then
                         ilocj=ilocj+1
                         x=tet0(j,k)
-                        call amppr(teta, nbdax, nbdax, x, 1,&
+                        call amppr(teta, nbdax, nbdax, [x], 1,&
                                    1, nbdcou+ iloci, nbdcou+ilocj)
                     endif
 70              continue

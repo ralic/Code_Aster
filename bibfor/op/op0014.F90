@@ -227,9 +227,9 @@ subroutine op0014()
         else
             ASSERT(.false.)
         endif
-        call apetsc('DETR_MAT', ' ', mfac, rbid, ' ',&
+        call apetsc('DETR_MAT', ' ', mfac, [0.d0], ' ',&
                     0, ibid, iret)
-        call apetsc('PRERES', solveu, mfac, rbid, ' ',&
+        call apetsc('PRERES', solveu, mfac, [0.d0], ' ',&
                     0, ibid, iret)
         iret=0
         goto 9999

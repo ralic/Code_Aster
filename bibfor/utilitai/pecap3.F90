@@ -164,8 +164,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
 ! --- SOMMATION DES INTEGRALES PRECEDENTES SUR LA SECTION DE LA POUTRE
 ! --- (I.E. CALCUL DE SOMME_SECTION_POUTRE(OMEGA**2.DS)) :
 !     --------------------------------------------------
-    call mesomm(lchout(1), 9, ibid, work, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 9, vr=work)
     iomega = work(1)
 !
     call detrsd('CHAMP_GD', '&&PECAP3.INTEG')

@@ -64,7 +64,6 @@ subroutine detrsd(typesd, nomsd)
 !     RESULTAT:
 !     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CES CONCEPTS.
 ! ----------------------------------------------------------------------
-    real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !
     integer :: iret, iad, long, i, nbch, jrelr, ibid, nbsd, ifets, ilimpi, idd
@@ -357,10 +356,10 @@ subroutine detrsd(typesd, nomsd)
             call dismoi('F', 'METH_RESO', matas, 'MATR_ASSE', ibid,&
                         metres, ibid)
             if (metres .eq. 'MUMPS') then
-                call amumph('DETR_MAT', ' ', matas, [rbid], [cbid],&
+                call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid],&
                             ' ', 0, ibid, lbid)
             else if (metres.eq.'PETSC') then
-                call apetsc('DETR_MAT', ' ', matas, rbid, ' ',&
+                call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
                             0, ibid, iret)
             endif
 !

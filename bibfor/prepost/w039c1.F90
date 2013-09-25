@@ -200,7 +200,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
         sdcarm=' '
         call irceme(ifi, nommed, cel2, typech, modele,&
                     0, ' ', ' ', ' ', 0,&
-                    0.d0, 0, 0, 0, sdcarm,&
+                    0.d0, 0, 0, [0], sdcarm,&
                     iret)
         ASSERT(iret.eq.0)
 !

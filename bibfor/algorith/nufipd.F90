@@ -232,7 +232,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
         endif
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor,&
+        call tanbul(option, ndim, g, mate, compor(1),&
                     resi, mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE

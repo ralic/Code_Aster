@@ -115,7 +115,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
     xippic = materf(18,2)
 !
 ! --- CONSTRUCTION TENSEUR ELASTIQUE NON LINEAIRE DSDENL
-    call lkelas(ndi, ndt, typmod, nmat, materf,&
+    call lkelas(ndi, ndt, nmat, materf,&
                 depst, sigft, dsdenl, kk, mu)
 !
 ! ----------------------------------------------------------------------

@@ -90,6 +90,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 !      PARAMETER ( NEXTR = 3 )
     real(kind=8) :: alpha(nextr), ratio(nextr), ecar(nextr-1)
     real(kind=8) :: nratio, necar, ac, nudom
+    complex(kind=8) cbid
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -143,7 +144,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         zr(ifpnl-1+ninc)=0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
         call resoud(matdrv, '', '', '', 1,&
-                    '', '', 'v', zr(ifpnl), 0,&
+                    '', '', 'v', zr(ifpnl), [cbid],&
                     '', .false., 0, iret)
         call dcopy(ninc, zr(ifpnl), 1, zr(iups+p*ninc), 1)
 10  continue

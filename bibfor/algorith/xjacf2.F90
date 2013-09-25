@@ -68,7 +68,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: xg, a(3), b(3), ab(3), ksig1, ksig2(3), ksib
+    real(kind=8) :: xg, a(3), b(3), ab(3), ksig1(1), ksig2(3), ksib
     real(kind=8) :: ff(27), seg(3)
     real(kind=8) :: grlt(3), normab, norme, norm2, ps
     integer :: ndimf, nbnomx, nnoc, nnos, nn
@@ -162,18 +162,18 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 30  end do
 !
 ! --- COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
-    call reereg('S', elc, nnof, seg, xg,&
+    call reereg('S', elc, nnof, seg, [xg],&
                 ndimf, ksig1, ibid)
 !
 ! --- COORDONNEES REELLES 2D DU POINT DE GAUSS
-    ksig2(1)=ksig1
+    ksig2(1)=ksig1(1)
     ksig2(2)=0.d0
     call reerel(elc, nnof, ndim, coor2d, ksig2,&
                 g)
 !
 ! --- CONSTRUCTION DE LA BASE AU POINT DE GAUSS
 !     CALCUL DES FF DE LA FACETTE EN CE POINT DE GAUSS
-    call elrfvf(elc, [ksig1], nbnomx, ff, ibid)
+    call elrfvf(elc, ksig1, nbnomx, ff, ibid)
 !
     do 40 j = 1, ndim
         do 41 k = 1, nnof

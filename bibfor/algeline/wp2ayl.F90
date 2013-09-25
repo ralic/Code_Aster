@@ -94,7 +94,7 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
         v(i) = dcmplx(u1(i)) + sigma*dcmplx(u3(i)) + dcmplx(u2(i))
 10      continue
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, rbid, v,&
+                    k19bid, k19bid, kbid, [0.d0], v,&
                     criter, .false., 0, iret)
         if (appr .eq. 'R') then
             do 20, i = 1, n, 1
@@ -112,7 +112,7 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
         u4(i) = u1(i) + sr*u3(i) + u2(i)
 30      continue
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, u4, cbid,&
+                    k19bid, k19bid, kbid, u4, [cbid],&
                     criter, .false., 0, iret)
         do 31, i = 1, n, 1
         zh(i) = -u4(i)

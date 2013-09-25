@@ -38,7 +38,7 @@ function rgcmpg(icode, irgcmp)
 !
     irgval = 0
     do 100 icmp = 1, irgcmp
-        if (exisdg(icode,icmp)) irgval = irgval + 1
+        if (exisdg([icode],icmp)) irgval = irgval + 1
 100  end do
 !     SORTIE
     rgcmpg = irgval

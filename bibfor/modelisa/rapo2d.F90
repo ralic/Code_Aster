@@ -311,8 +311,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 !     SOMMATION DES QUANTITES GEOMETRIQUES ELEMENTAIRES
 !     DANS LE VECTEUR &&RAPO2D.INERTIE_RACCORD :
-    call mesomm(lchout(1), 6, ibid, zr(idiner), cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 6, vr=zr(idiner))
 !
     s = zr(idiner+1-1)
     ax = zr(idiner+2-1)
@@ -387,14 +386,14 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !     ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
     call jedetr('&&RAPO2D           .RELR')
     call reajre('&&RAPO2D', lchout(1), 'V')
-    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO2D           .RELR', un,&
+    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO2D           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
 !
 ! --- -----------------------------------------------------------------
 !     ASSEMBLAGE DE LCHOUT(2) DANS LE CHAMNO DE NOM 'CH_DEPL_2'
     call jedetr('&&RAPO2D           .RELR')
     call reajre('&&RAPO2D', lchout(2), 'V')
-    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO2D           .RELR', un,&
+    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO2D           .RELR', [1.d0],&
                 numddl, ' ', 'ZERO', 1)
 !
     vale1 = 'CH_DEPL_1          .VALE'

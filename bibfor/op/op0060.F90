@@ -305,7 +305,7 @@ subroutine op0060()
         call rsorac(result, 'LONUTI', 0, r8bid, k8bid,&
                     c16bid, r8bid, 'ABSOLU', tmod, 1,&
                     ibid)
-        nbold=tmod(1)            
+        nbold=tmod(1)
         call rsagsd(result, nbfreq+nbold)
     endif
 !
@@ -438,7 +438,7 @@ subroutine op0060()
 !
         call zcopy(neq, zc(lsecmb), 1, zc(jsecmb), 1)
         call resoud(dynam, maprec, solveu, vezero, 0,&
-                    secmbr, soluti, 'V', r8bid, c16bid,&
+                    secmbr, soluti, 'V', [0.d0], [c16bid],&
                     crgc, .true., 0, iret)
         call jeveuo(soluti(1:19)//'.VALE', 'L', jsolut)
         call zcopy(neq, zc(jsolut), 1, zc(lsecmb), 1)
@@ -522,11 +522,11 @@ subroutine op0060()
                 endif
 !
 140          continue
-            call mdarch(isto1, ifreq-1, freq, r8bid, neq,&
-                        typcal, nbsym, nomsym, r8bid, r8bid,&
-                        r8bid, r8bid, r8bid, r8bid, zc(ldgec),&
+            call mdarch(isto1, ifreq-1, freq, 0.d0, neq,&
+                        typcal, nbsym, nomsym, [0.d0], [0.d0],&
+                        [0.d0], [0.d0], [0.d0], [0.d0], zc(ldgec),&
                         zc( lvgec), zc(lagec), zc(jdepl), zc(jvite), zc(jacce),&
-                        r8bid, zi( jordr), zr(jfreq))
+                        [0.d0], zi( jordr), zr(jfreq))
             isto1=isto1+1
         endif
 !

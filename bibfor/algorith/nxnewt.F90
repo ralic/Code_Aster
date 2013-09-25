@@ -185,7 +185,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
-                vtempp, chsol, 'V', rbid, cbid,&
+                vtempp, chsol, 'V', [0.d0], [cbid],&
                 criter, .true., 0, iret)
 !
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL,

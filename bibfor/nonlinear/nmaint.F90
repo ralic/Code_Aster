@@ -98,7 +98,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call assvec(base, cnfint, 1, vefint, 1.d0,&
+    call assvec(base, cnfint, 1, vefint, [1.d0],&
                 numedd, ' ', 'ZERO', 1)
 !
     lendo = isfonc(fonact,'ENDO_NO')

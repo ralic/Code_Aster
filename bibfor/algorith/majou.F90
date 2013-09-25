@@ -297,7 +297,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !
         call jeveuo(chflu//'.VALE', 'E', jchflu)
         call resoud(ma, ' ', solveu, ' ', 1,&
-                    ' ', ' ', ' ', zr(jchflu), cbid,&
+                    ' ', ' ', ' ', zr(jchflu), [cbid],&
                     ' ', .true., 0, iret)
 !
 !

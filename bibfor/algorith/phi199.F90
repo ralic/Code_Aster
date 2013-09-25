@@ -101,7 +101,7 @@ subroutine phi199(model, mate, ma, nu, num,&
         call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
                     cbid, rbid, 'ABSOLU', tmod, 1,&
                     ibid)
-        nbmode=tmod(1)            
+        nbmode=tmod(1)
         call rsexch('F', modmec, 'DEPL', 1, nomcha,&
                     iret)
         call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
@@ -133,7 +133,7 @@ subroutine phi199(model, mate, ma, nu, num,&
         call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
                     cbid, rbid, 'ABSOLU', tmod, 1,&
                     ibid)
-        nbmode=tmod(1)            
+        nbmode=tmod(1)
 !
         call wkvect('&&OP0199.PHI1', 'V V K24', 1, iphi1)
 !
@@ -205,7 +205,7 @@ subroutine phi199(model, mate, ma, nu, num,&
                     call rsorac(modsta, 'NOEUD_CMP', ibid, rbid, acces,&
                                 c16b, epsi, crit, tmod, 1,&
                                 nbtrou)
-                    iordr=tmod(1)            
+                    iordr=tmod(1)
                     if (nbtrou .ne. 1) then
                         ier = ier + 1
                         valk (1) = acces(1:8)
@@ -259,7 +259,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 !------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 !
         call resoud(ma, maprec, solveu, ' ', 0,&
-                    vecso1, chsol, 'V', rbid, cbid,&
+                    vecso1, chsol, 'V', [0.d0], [cbid],&
                     criter, .true., 0, iret)
         call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
                     .false.)

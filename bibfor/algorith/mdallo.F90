@@ -70,7 +70,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     integer :: nbsauv, nbstoc, j1refe, nbsym, inom
     character(len=8) :: numgen, blanc
     character(len=5) :: attrib
-    character(len=4) :: typcal, nomsym(3), sauve
+    character(len=4) :: typcal, nomsym(*), sauve
     character(len=3) :: typsau
     character(len=12) :: bl11pt
     character(len=24) :: matric(3)

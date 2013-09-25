@@ -1,5 +1,4 @@
 subroutine vtaxpy(alpha, chamna, chamnb)
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +27,7 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -39,7 +39,7 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     real(kind=8) :: alpha
 !
 !
-    integer :: nbsd, ilimpi, ifetc1, ifetc2, idd, neq, ival1, ival2, iret1
+    integer :: nbsd, ilimpi, ifetc1, ifetc2, idd, neq1, neq2, ival1, ival2, iret1
     integer :: iret2
     character(len=24) :: kval1, kval2, chamn1, chamn2
 !
@@ -51,8 +51,10 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     kval2=chamn2(1:19)//'.VALE'
     call jeveuo(kval1, 'L', ival1)
     call jeveuo(kval2, 'E', ival2)
-    call jelira(kval2, 'LONMAX', neq)
-    call daxpy(neq, alpha, zr(ival1), 1, zr(ival2), 1)
+    call jelira(kval1, 'LONMAX', neq1)
+    call jelira(kval2, 'LONMAX', neq2)
+    ASSERT(neq1.eq.neq2)
+    call daxpy(neq2, alpha, zr(ival1), 1, zr(ival2), 1)
 
 
     call jedema()

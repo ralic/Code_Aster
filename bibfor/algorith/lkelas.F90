@@ -1,4 +1,4 @@
-subroutine lkelas(ndi, ndt, mod, nmat, mater,&
+subroutine lkelas(ndi, ndt,nmat, mater,&
                   deps, sigd, de, k, mu)
     implicit none
 #include "asterfort/r8inir.h"
@@ -7,7 +7,6 @@ subroutine lkelas(ndi, ndt, mod, nmat, mater,&
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: sigd(6)
     real(kind=8) :: deps(6), de(6, 6), mu, k
-    character(len=8) :: mod
 ! =================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +30,6 @@ subroutine lkelas(ndi, ndt, mod, nmat, mater,&
 !       MATRICE  HYPOELASTIQUE
 !       IN  NDI    :  DIMENSION DE L ESPACE
 !           NDT    :  2* NDI POUR LE CALCUL TENSORIEL
-!           MOD    :  MODELISATION
 !           NMAT   :  DIMENSION MATER
 !           MATER :  COEFFICIENTS MATERIAU
 !           DEPS   :  INCREMENT DE DEFORMATION

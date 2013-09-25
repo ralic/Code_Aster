@@ -150,7 +150,7 @@ subroutine sinoz1(modele, sigma, signo)
     do 20 i = 1, nbcmp
         call jeveuo(vect(i) (1:19)//'.VALE', 'E', jvect)
         call resoud('&&MASSAS', matpre, solveu, k19bid, 1,&
-                    k19bid, k19bid, k1bid, zr(jvect), cbid,&
+                    k19bid, k19bid, k1bid, zr(jvect), [cbid],&
                     criter, .true., 0, iret)
 20  end do
 !

@@ -68,7 +68,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !     ------------------------------------------------------------------
     integer :: ibid, id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
     integer :: jddl2, jdgn, jgrn, jnoe, lvale, nba, nbb, n1, nbbd, nbl, nbliai
-    integer :: nbocc, nbtrou, ngr, nno, nt, vali(2)
+    integer :: nbocc, nbtrou, ngr, nno, nt, vali(2),tabord(1)
     character(len=4) :: ctyp, dir(3)
     character(len=8) :: k8b, noma, noeu, nomcmp(3)
     character(len=15) :: motfac
@@ -115,8 +115,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !
 !     --- VERIFICATION DE L'OPTION "REAC_NODA" ---
     nomsy = 'REAC_NODA'
-    call rsutnc(meca, nomsy, 0, k8b, ibid,&
-                nbtrou)
+    call rsutnc(meca, nomsy, 0, k8b, tabord, nbtrou)
     if (nbtrou .eq. 0) then
         ier = ier + 1
         valk(1) = meca

@@ -222,8 +222,8 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
     endif
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, kev, ndigit, '_NGETS: KEV IS')
-        call ivout(logfil, 1, np, ndigit, '_NGETS: NP IS')
+        call ivout(logfil, 1, [kev], ndigit, '_NGETS: KEV IS')
+        call ivout(logfil, 1, [np], ndigit, '_NGETS: NP IS')
         call dvout(logfil, kev+np, ritzr, ndigit,&
                    '_NGETS: EIGENVALUES OF CURRENT H MATRIX -- REAL PART')
         call dvout(logfil, kev+np, ritzi, ndigit,&

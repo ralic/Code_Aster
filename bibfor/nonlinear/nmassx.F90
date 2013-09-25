@@ -156,7 +156,7 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 !
 ! --- ASSEMBLAGE DES REACTIONS D'APPUI
 !
-    call assvec('V', cndiri, 1, vediri, 1.d0,&
+    call assvec('V', cndiri, 1, vediri, [1.d0],&
                 numedd, ' ', 'ZERO', 1)
 !
     call nmtime(sdtime, 'END', 'SECO_MEMB')
@@ -170,7 +170,7 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call assvec('V', cnfint, 1, vefint, 1.d0,&
+    call assvec('V', cnfint, 1, vefint, [1.d0],&
                 numedd, ' ', 'ZERO', 1)
 !
 ! --- CHARGEMENTS DONNES

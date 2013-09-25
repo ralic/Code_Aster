@@ -114,7 +114,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !
 !       JUSTE POUR CALCULER LES FF
         call reere3(elrefp, nnop, igeom, xg, depl0,&
-                    .false., ndim, he, ibid, ibid,&
+                    .false., ndim, he, [0], 0,&
                     ddlh, nfe, ddlt, fe, dgdgl,&
                     'NON', xe, ff, dfdi, f,&
                     eps, grad)
@@ -145,7 +145,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
         call reere3(elrefp, nnop, igeom, xg, depl0,&
-                    .false., ndim, he, ibid, ibid,&
+                    .false., ndim, he, [0], 0,&
                     ddlh, nfe, ddlt, fe, dgdgl,&
                     'DFF', xe, ff, dfdi, f,&
                     eps, grad)

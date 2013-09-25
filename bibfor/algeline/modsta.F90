@@ -119,7 +119,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
                     zr(jddr+ila1-1) = un
                     zr(jddr+ila2-1) = un
                     call resoud(matfac, matpre, solveu, ' ', 1,&
-                                ' ', ' ', ' ', zr(jddr), cbid,&
+                                ' ', ' ', ' ', zr(jddr), [cbid],&
                                 ' ', .true., 0, iret)
                     call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1,&
                                 .true.)
@@ -132,7 +132,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
 !     --- RESOLUTION ---
     if (imod .gt. 0) then
         call resoud(matfac, matpre, solveu, ' ', imod,&
-                    ' ', ' ', ' ', zrmod, cbid,&
+                    ' ', ' ', ' ', zrmod, [cbid],&
                     ' ', .true., 0, iret)
     endif
     call jedema()

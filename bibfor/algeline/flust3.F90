@@ -531,7 +531,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         calcul(2)=.false.
         call fluimp(3, nivpar, nivdef, melflu, typflu,&
                     nuor, freq, zr(ifreqi), nbm, vite,&
-                    npv, carac, calcul, rbid)
+                    npv, carac, calcul, [0.d0])
     endif
 !
 !

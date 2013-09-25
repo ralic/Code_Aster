@@ -15,14 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
+          interface
             subroutine alrslt(iopt,ligrel,nout,lchout,lpaout,base,ldist)
               integer :: iopt
               character(len=19) :: ligrel
               integer :: nout
-              character(*) :: lchout(*)
+              character(len=*) :: lchout(*)
               character(len=8) :: lpaout(*)
-              character(*) :: base
+              character(len=*) :: base
               logical :: ldist
             end subroutine alrslt
-          end interface 
+          end interface

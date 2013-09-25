@@ -392,7 +392,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
 !====
     call resoud(matres, maprec, solveu, cine, 0,&
-                force1, chsol, 'V', rbid, cbid,&
+                force1, chsol, 'V', [0.d0], [cbid],&
                 criter, .true., 0, iret)
     call copisd('CHAMP_GD', 'V', chsol(1:19), force1(1:19))
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)

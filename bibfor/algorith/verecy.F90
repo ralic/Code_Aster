@@ -82,10 +82,10 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !
     kbid=' '
     call bmnoin(' ', intf, kbid, numd, 0,&
-                ibid, nbd)
+                [0], nbd)
     kbid=' '
     call bmnoin(' ', intf, kbid, numg, 0,&
-                ibid, nbg)
+                [0], nbg)
 !
 !
     if (nbg .ne. nbd) then

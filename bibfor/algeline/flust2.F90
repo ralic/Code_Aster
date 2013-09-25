@@ -90,7 +90,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
     integer :: iamfr, icodim, icoupl, ier, ifreqi, igrap, imist
     integer :: imod, ind, ipoids, iv, iwork, lfact, lfsic
     integer :: lmasg, lwork(1), n1, nt, numod
-    real(kind=8) :: fi, phid, phie(1), pi, rbid, vlim
+    real(kind=8) :: fi, phid, phie(1), pi, vlim, vecr5(1)
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -191,14 +191,14 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
         call mdconf(typflu, base, noma, nbm, ibid,&
                     nuor, 0, igrap, lwork, masg,&
-                    zr(icodim), zr(ipoids), phie, rbid)
+                    zr(icodim), zr(ipoids), phie, vecr5)
 !
 !
 !-------5.4.CALCUL DES PARAMETRES MODAUX SOUS ECOULEMENT
 !
         call pacouc(typflu, masg, zr(icodim), vite, zr(ipoids),&
                     zr(imist), freq, zr(iamfr), nbm, igrap,&
-                    npv, zr(iwork), lwork, phie, [rbid],&
+                    npv, zr(iwork), lwork, phie, [0.d0],&
                     ier)
 !
 !-------5.5.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES
@@ -211,7 +211,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
             calcul(2)=.false.
             call fluimp(2, nivpar, nivdef, melflu, typflu,&
                         nuor, freq, zr(ifreqi), nbm, vite,&
-                        npv, carac, calcul, rbid)
+                        npv, carac, calcul, [0.d0])
         endif
 !
 !

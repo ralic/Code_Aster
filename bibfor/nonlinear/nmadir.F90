@@ -87,7 +87,7 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 !
 ! --- ASSEMBLAGE DES REACTIONS D'APPUI
 !
-    call assvec(base, cndiri, 1, vediri, 1.d0,&
+    call assvec(base, cndiri, 1, vediri, [1.d0],&
                 numedd, ' ', 'ZERO', 1)
 !
 ! --- CONTRIBUTIONS DU CONTACT

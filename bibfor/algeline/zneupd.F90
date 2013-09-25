@@ -587,8 +587,8 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !        %-----------------------------------------------------------%
 !
         if (msglvl .gt. 2) then
-            call ivout(logfil, 1, numcnv, ndigit, '_NEUPD: NUMBER OF SPECIFIED EIGENVALUES')
-            call ivout(logfil, 1, nconv, ndigit, '_NEUPD: NUMBER OF "CONVERGED" EIGENVALUES')
+            call ivout(logfil, 1, [numcnv], ndigit, '_NEUPD: NUMBER OF SPECIFIED EIGENVALUES')
+            call ivout(logfil, 1, [nconv], ndigit, '_NEUPD: NUMBER OF "CONVERGED" EIGENVALUES')
         endif
 !
         if (numcnv .ne. nconv) then

@@ -921,7 +921,7 @@ subroutine mdtr74(nomres)
         call wkvect('&&MDITMI.DEPL_0', 'V V R8', nbmode, jdep0)
         call wkvect('&&MDITMI.VITE_0', 'V V R8', nbmode, jvit0)
         call mdinit(nombm, nbmode, 0, zr(jdep0), zr(jvit0),&
-                    r8b, iret, tinit)
+                    [0.d0], iret, tinit)
         if (iret .ne. 0) goto 120
 !
 ! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE

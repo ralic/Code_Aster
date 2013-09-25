@@ -40,7 +40,7 @@ subroutine fin999()
 ! --- FERMETURE DE PETSC
 !
 #ifdef _HAVE_PETSC
-    call apetsc('FIN', ' ', ' ', r8b, ' ',&
+    call apetsc('FIN', ' ', ' ', [0.d0], ' ',&
                 0, 0, iret)
 #endif
 !

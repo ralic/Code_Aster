@@ -577,7 +577,7 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         endif
 !
         if (msglvl .gt. 2) then
-            call dvout(logfil, 1, thres, ndigit,&
+            call dvout(logfil, 1, [thres], ndigit,&
                        '_NEUPD: THRESHOLD EIGENVALUE USED FOR RE-ORDERING')
         endif
 !
@@ -641,8 +641,8 @@ subroutine dneupd(rvec, howmny, select, dr, di,&
         end do
 !
         if (msglvl .gt. 2) then
-            call ivout(logfil, 1, ktrord, ndigit, '_NEUPD: NUMBER OF SPECIFIED EIGENVALUES')
-            call ivout(logfil, 1, nconv, ndigit, '_NEUPD: NUMBER OF "CONVERGED" EIGENVALUES')
+            call ivout(logfil, 1, [ktrord], ndigit, '_NEUPD: NUMBER OF SPECIFIED EIGENVALUES')
+            call ivout(logfil, 1, [nconv], ndigit, '_NEUPD: NUMBER OF "CONVERGED" EIGENVALUES')
         endif
 !
 !        %-----------------------------------------------------------%

@@ -231,8 +231,7 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
 ! ---   WORK(3) = SOMME_SECTION((D(PSI_Z)/DY**2 + D(PSI_Z)/DZ**2).DS)
 ! ---   WORK(4) = SOMME_SECTION((D(PSI_Y)/DY**2 + D(PSI_Y)/DZ**2).DS)
 !       ------------------------------------------------------------
-    call mesomm(lchout(1), 9, ibid, work, cbid,&
-                0, ibid)
+    call mesomm(lchout(1), 9, vr=work)
     ey = work(1)/iy
     ez = work(2)/iz
     ay = work(4)*s/iz/iz
