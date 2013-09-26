@@ -114,7 +114,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     integer :: isto4, jrevr, jrevi
     integer :: nbpas, nbrede, nbrevi, nbsauv, nbscho, ndt
 !
-    real(kind=8) :: deux, dt, dt1, dt2, dt3, dt4, dt5, r8b(1)
+    real(kind=8) :: deux, dt, dt1, dt2, dt3, dt4, dt5
     real(kind=8) :: dt6, g1, g2, g3, g4, quatre, six
     real(kind=8) :: tarchi, temps, tinit, x1, x2, zero
 !-----------------------------------------------------------------------
@@ -213,15 +213,14 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
     call mdfnli(nbmode, zr(jdep2), zr(jvit2), zr(jbid1), zr(jfex2),&
-                r8b, r8b, r8b, r8b, nbchoc,&
-                logcho, dplmod, parcho, noecho, zr(jchor),&
-                nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                tinit, nofdep, nofvit, nofacc, nbexci,&
-                psidel, monmot, 0, fbid, fbid,&
-                0.d0, k8b, 0, 0, 0.d0,&
-                0.d0, 0.d0, typal, finpal, cnpal,&
-                prdeff, r8b2, fsauv)
+                nbchoc, logcho, dplmod, parcho, noecho,&
+                zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                zi(jrevi), tinit, nofdep, nofvit, nofacc,&
+                nbexci, psidel, monmot, 0, fbid,&
+                fbid, 0.d0, k8b, 0, 0,&
+                0.d0, 0.d0, 0.d0, typal, finpal,&
+                cnpal, prdeff, r8b2, fsauv)
 !
 !     --- INITIALISATION DE L'ALGORITHME ---
     do 100 im = 0, nbmod1
@@ -286,15 +285,14 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
         call mdfnli(nbmode, zr(jdep3), zr(jvit3), zr(jbid1), zr(jfex3),&
-                    r8b, r8b, r8b, r8b, nbchoc,&
-                    logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                    temps, nofdep, nofvit, nofacc, nbexci,&
-                    psidel, monmot, 0, fbid, fbid,&
-                    0.d0, k8b, 0, 0, 0.d0,&
-                    0.d0, 0.d0, typal, finpal, cnpal,&
-                    prdeff, r8b2, fsauv)
+                    nbchoc, logcho, dplmod, parcho, noecho,&
+                    zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                    zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                    zi(jrevi), temps, nofdep, nofvit, nofacc,&
+                    nbexci, psidel, monmot, 0, fbid,&
+                    fbid, 0.d0, k8b, 0, 0,&
+                    0.d0, 0.d0, 0.d0, typal, finpal,&
+                    cnpal, prdeff, r8b2, fsauv)
 !
         do 34 im = 0, nbmod1
             im1 = im + 1
@@ -324,15 +322,14 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
         endif
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
         call mdfnli(nbmode, zr(jdep4), zr(jvit4), zr(jbid1), zr(jfex4),&
-                    r8b, r8b, r8b, r8b, nbchoc,&
-                    logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                    temps, nofdep, nofvit, nofacc, nbexci,&
-                    psidel, monmot, 0, fbid, fbid,&
-                    0.d0, k8b, 0, 0, 0.d0,&
-                    0.d0, 0.d0, typal, finpal, cnpal,&
-                    prdeff, r8b2, fsauv)
+                    nbchoc, logcho, dplmod, parcho, noecho,&
+                    zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                    zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                    zi(jrevi), temps, nofdep, nofvit, nofacc,&
+                    nbexci, psidel, monmot, 0, fbid,&
+                    fbid, 0.d0, k8b, 0, 0,&
+                    0.d0, 0.d0, 0.d0, typal, finpal,&
+                    cnpal, prdeff, r8b2, fsauv)
 !
 !
         do 36 im = 0, nbmod1

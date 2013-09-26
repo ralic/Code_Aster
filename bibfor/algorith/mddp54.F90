@@ -1,19 +1,19 @@
 subroutine mddp54(neqgen, depl, vite, acce, fext,&
-                  dt, dtsto, lflu, nbexci, idescf,&
-                  nomfon, coefm, liad, inumor, nbchoc,&
-                  logcho, dplmod, parcho, noecho, saucho,&
-                  nbrede, dplred, fonred, saured, saredi,&
-                  nbrevi, dplrev, fonrev, saurev, sarevi,&
-                  nofdep, nofvit, nofacc, psidel, monmot,&
-                  nbrfis, fk, dfk, angini, foncp,&
-                  nbpal, vrotat, typal, finpal, cnpal,&
-                  prdeff, conv, fsauv, typbas, pulsa2,&
-                  masgen, descmm, riggen, descmr, lamor,&
-                  descma, work1, temps, tol, depli,&
-                  vitei, erde, ervi, kde, kvi,&
-                  fonca, foncv, istep, rigy, amgy,&
-                  nbconv, nbmxcv, vitvar, gyogen, rgygen,&
-                  amogen, errt)
+                  dt, dtsto, nbexci, idescf, nomfon,&
+                  coefm, liad, inumor, nbchoc, logcho,&
+                  dplmod, parcho, noecho, saucho, nbrede,&
+                  dplred, fonred, saured, saredi, nbrevi,&
+                  dplrev, fonrev, saurev, sarevi, nofdep,&
+                  nofvit, nofacc, psidel, monmot, nbrfis,&
+                  fk, dfk, angini, foncp, nbpal,&
+                  vrotat, typal, finpal, cnpal, prdeff,&
+                  conv, fsauv, typbas, pulsa2, masgen,&
+                  descmm, riggen, descmr, lamor, descma,&
+                  work1, temps, tol, depli, vitei,&
+                  erde, ervi, kde, kvi, fonca,&
+                  foncv, istep, rigy, amgy, nbconv,&
+                  nbmxcv, vitvar, gyogen, rgygen, amogen,&
+                  errt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,11 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     character(len=8) :: fonrev(*), nofdep(*), nofvit(*), nofacc(*), monmot
     character(len=8) :: fk(2), dfk(2), foncp, fonca, foncv, vitvar
 !
-    logical :: lamor, lflu, prdeff
+    logical :: lamor, prdeff
     real(kind=8) :: cdp(7), zero, teval, dt, coefm(*), dplmod(nbchoc, neqgen, *)
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
     real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd
-    real(kind=8) :: errv, edp1, edp2, edp3, edp4, edp5, edp6, edp7, r8bid, r8b(1)
+    real(kind=8) :: errv, edp1, edp2, edp3, edp4, edp5, edp6, edp7, r8bid
     real(kind=8) :: psidel(*), conv, skd, skv, tol, temps, adp(6, 6), arot
     real(kind=8) :: fsauv(palmax, 3), vrot, gyogen(*), rgygen(*), amogen(*)
     real(kind=8) :: saucho(*), saured(*), saurev(*), work1(*), amgy(*), rigy(*), depl(*)
@@ -168,36 +168,30 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
                         fext)
         endif
 !
-        if (lflu) then
-            call utmess('F', 'ALGORITH5_21')
-        else
-!
 !        CALCUL CLASSIQUE FORCES NON-LINEAIRES ET ACCELERATIONS
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-            call mdfnli(neqgen, depl, vite, acce, fext,&
-                        r8b, r8b, r8b, r8b, nbchoc,&
-                        logcho, dplmod, parcho, noecho, saucho,&
-                        nbrede, dplred, fonred, saured, saredi,&
-                        nbrevi, dplrev, fonrev, saurev, sarevi,&
-                        teval, nofdep, nofvit, nofacc, nbexci,&
-                        psidel, monmot, nbrfis, fk, dfk,&
-                        angini, foncp, (istep+1), nbpal, dt,&
-                        dtsto, vrotat, typal, finpal, cnpal,&
-                        prdeff, conv, fsauv)
-            if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-                call utmess('F', 'EDYOS_46')
-            else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
-                nbconv = nbconv + 1
-            endif
+        call mdfnli(neqgen, depl, vite, acce, fext,&
+                    nbchoc, logcho, dplmod, parcho, noecho,&
+                    saucho, nbrede, dplred, fonred, saured,&
+                    saredi, nbrevi, dplrev, fonrev, saurev,&
+                    sarevi, teval, nofdep, nofvit, nofacc,&
+                    nbexci, psidel, monmot, nbrfis, fk,&
+                    dfk, angini, foncp, (istep+1), nbpal,&
+                    dt, dtsto, vrotat, typal, finpal,&
+                    cnpal, prdeff, conv, fsauv)
+        if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
+            call utmess('F', 'EDYOS_46')
+        else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
+            nbconv = nbconv + 1
+        endif
 !
 !        --- ACCELERATIONS GENERALISEES ---
 !
-            call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
-                        riggen, descmr, fext, lamor, amgy,&
-                        descma, work1, depl, vite, acce)
+        call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
+                    riggen, descmr, fext, lamor, amgy,&
+                    descma, work1, depl, vite, acce)
 !
-        endif
 ! FIN DE LA BOUCLE SUR LES ETAGES DE RUNGE-KUTTA
 10  end do
 !

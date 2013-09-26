@@ -20,9 +20,8 @@ interface
                       masgen, descmm, riggen, descmr, rgygen,&
                       lamor, amogen, descma, gyogen, foncv,&
                       fonca, typbas, basemo, tinit, iparch,&
-                      nbsauv, itemax, prec, xlambd, lflu,&
-                      nbchoc, logcho, dplmod, parcho, noecho,&
-                      nbrede, dplred, fonred, nbrevi,&
+                      nbsauv, nbchoc, logcho, dplmod, parcho,&
+                      noecho, nbrede, dplred, fonred, nbrevi,&
                       dplrev, fonrev, depsto, vitsto, accsto,&
                       iorsto, temsto, fchost, dchost, vchost,&
                       ichost, iredst, dredst, irevst, drevst,&
@@ -53,10 +52,6 @@ interface
         real(kind=8) :: tinit
         integer :: iparch(*)
         integer :: nbsauv
-        integer :: itemax
-        real(kind=8) :: prec
-        real(kind=8) :: xlambd
-        logical :: lflu
         integer :: logcho(nbchoc, *)
         real(kind=8) :: dplmod(nbchoc, neqgen, *)
         real(kind=8) :: parcho(*)

@@ -79,12 +79,6 @@ On arrête tout.
 Le déterminant de la matrice à inverser est nul.
 """),
 
-21 : _(u"""
-La prise en compte de LAME FLUIDE n'est pas disponible pour les schémas
-d'intégration de Runge-Kutta. 
-"""),
-
-
 22 : _(u"""
 La matrice masse est singulière.
 """),

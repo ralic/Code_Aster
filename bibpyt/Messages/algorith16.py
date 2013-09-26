@@ -72,12 +72,6 @@ cata_msg = {
  optimisée : %(r1)f
 """),
 
-11 : _(u"""
- le nombre max d'itérations  %(i1)d  est atteint sans converger
- le résidu relatif final est  : %(r1)f
-
-"""),
-
 12 : _(u"""
  le nombre d'amortissements réduits est trop grand
  le nombre de modes retenus vaut  %(i1)d

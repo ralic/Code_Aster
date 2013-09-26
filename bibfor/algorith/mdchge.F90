@@ -1,6 +1,6 @@
 subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
-                  masgen, amogen, lflu, nbnli, noecho,&
-                  logcho, parcho, intitu, ddlcho, ier)
+                  masgen, amogen, nbnli, noecho, parcho,&
+                  intitu, ddlcho, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -21,9 +21,8 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 #include "asterfort/utnono.h"
 #include "asterfort/vechbn.h"
 !
-    integer :: nbnli, iamor, imode, ier, logcho(nbnli, *), ddlcho(*)
+    integer :: nbnli, iamor, imode, ier, ddlcho(*)
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
-    logical :: lflu
     character(len=8) :: noecho(nbnli, *), intitu(*)
     character(len=14) :: numddl
     character(len=16) :: typnum
@@ -55,10 +54,8 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 ! IN  : PULSAT : PULSATIONS DES MODES
 ! IN  : MASGEN : MASSES GENERALISEES DES MODES
 ! IN  : AMOGEN : MATRICE DES AMORTISSEMENTS GENERALISES
-! IN  : LFLU   : LOGIQUE INDIQUANT LA PRESENCE DE LAME FLUIDE
 ! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM)
 ! OUT : NOECHO : NOEUD DE CHOC (VOIR MDCHOC)
-! OUT : LOGCHO : LOGIQUE CHOC (VOIR MDCHOC)
 ! OUT : PARCHO : PARAMETRE DE CHOC (VOIR MDCHOC)
 ! OUT : INTITU : INTITULE DE CHOC
 ! OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
@@ -194,15 +191,6 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
         call getvr8(motfac, 'COULOMB_DYNA', iocc=i, scal=parcho(i, 6), nbret=n1)
         call getvr8(motfac, 'COULOMB_STAT', iocc=i, scal=parcho(i, 7), nbret=n1)
         call getvr8(motfac, 'AMOR_TAN', iocc=i, scal=ctang, nbret=n1)
-        call getvtx(motfac, 'LAME_FLUIDE', iocc=i, scal=kbid, nbret=n1)
-        if (kbid(1:3) .eq. 'OUI') then
-            lflu = .true.
-            logcho(i,2) = 1
-            call getvr8(motfac, 'ALPHA   ', iocc=i, scal=parcho(i, 32), nbret=n1)
-            call getvr8(motfac, 'BETA    ', iocc=i, scal=parcho(i, 33), nbret=n1)
-            call getvr8(motfac, 'CHI     ', iocc=i, scal=parcho(i, 34), nbret=n1)
-            call getvr8(motfac, 'DELTA   ', iocc=i, scal=parcho(i, 35), nbret=n1)
-        endif
 !
         call getvid(motfac, 'OBSTACLE', iocc=i, scal=noecho(i, 9), nbret=n1)
 !

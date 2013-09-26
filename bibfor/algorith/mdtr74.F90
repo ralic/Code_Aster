@@ -84,10 +84,10 @@ subroutine mdtr74(nomres)
     character(len=24) :: numk24, numm24, numc24, lisins, nomnoe, typeba
     character(len=24) :: valk(3)
     character(len=19) :: marig
-    logical :: lamor, lflu
+    logical :: lamor
     integer :: itypfl, nexcit, nexcir, ntotex
     integer :: vali(3), jvec, jvecr, j1
-    real(kind=8) :: xlambd, acrit, agene
+    real(kind=8) :: acrit, agene
     real(kind=8) :: valr(3)
     real(kind=8) :: dt, dts, dtu, dtmax, dtmin
     real(kind=8) :: rad
@@ -119,7 +119,7 @@ subroutine mdtr74(nomres)
     integer :: ie, ier, ifimp, ifm, ig, iindic, im
     integer :: indic, ioc, iparch, iptcho, ire, iret, irfimp
     integer :: ng1, ng2, nng1, nng0, nng2, jrefag, jscdeg, jgyog, jrgyg
-    integer :: isoupl, itemax, itrans, itrloc, ivchoc, iveci1, ivecr1
+    integer :: isoupl, itrans, itrloc, ivchoc, iveci1, ivecr1
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
     integer :: jamo2, jamog, jarch, jbase, jbasf, jcodim, jcoefm
     integer :: jdcho, jdep0, jdepl, jdeps, jdesc, jdfk
@@ -137,7 +137,7 @@ subroutine mdtr74(nomres)
     integer :: nbrede, nbrevi, nbsauv, nbsism, nbstoc, nbstok
     integer :: nbstom, neq, ngr, nm, nmp, nr
     integer :: nterm, nts, numvif, nv, nbobjs
-    real(kind=8) :: crit, deux, dtarch, eps, omeg2, prec
+    real(kind=8) :: crit, deux, dtarch, eps, omeg2
     real(kind=8) :: seuil, tfexm, tfin, tinit, ts, vgap
     cbid = dcmplx(0.d0, 0.d0)
 !
@@ -176,13 +176,9 @@ subroutine mdtr74(nomres)
     rad = r8dgrd()
     nbobjs=1
     lamor = .false.
-    lflu = .false.
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
-    call getvis('PARA_LAME_FLUI', 'NMAX_ITER', iocc=1, scal=itemax, nbret=n1)
-    call getvr8('PARA_LAME_FLUI', 'RESI_RELA', iocc=1, scal=prec, nbret=n1)
-    call getvr8('PARA_LAME_FLUI', 'LAMBDA', iocc=1, scal=xlambd, nbret=n1)
     call getfac('EXCIT', nexcit)
     call getfac('EXCIT_RESU', nexcir)
 !
@@ -652,8 +648,7 @@ subroutine mdtr74(nomres)
                     nbpal, zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
                     zk8(jinti), zr(jpsdel), zr(jpsid), numddl, nbmode,&
                     zr(jpuls), zr(jmasg), lamor, zr(jamog), zr(jbase),&
-                    neq, nbexit, info, lflu, monmot,&
-                    iret)
+                    neq, nbexit, info, monmot, iret)
         if (iret .ne. 0) goto 120
         call getfac('VERI_CHOC', ivchoc)
         if (ivchoc .ne. 0) then
@@ -847,47 +842,44 @@ subroutine mdtr74(nomres)
                     zr(jmasg), ibid, zr(jraig), ibid, zr(jrgyg),&
                     lamor, zr(jamog), ibid, zr(jgyog), foncv,&
                     fonca, typbas, basemo, tinit, zi(jarch),&
-                    nbsauv, itemax, prec, xlambd, lflu,&
-                    nbnli, zi(jranc), zr(jdepl), zr(jparc), zk8( jnoec),&
-                    nbrede, zr(jrede), zk8(jfond), nbrevi, zr( jrevi),&
-                    zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs), zi(jordr),&
-                    zr( jinst), zr(jfcho), zr(jdcho), zr(jvcho), zi(jicho),&
-                    zi(jredc), zr( jredd), zi(jrevc), zr(jrevv), zr(jcoefm),&
-                    zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep), zk8(jnovit),&
-                    zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot, nbrfis,&
-                    fk, dfk, angini, foncp, nbpal,&
-                    dtsto, vrotat, prdeff, nomres, ntotex,&
-                    zr(jpass))
+                    nbsauv, nbnli, zi(jranc), zr(jdepl), zr(jparc),&
+                    zk8( jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
+                    zr( jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
+                    zi(jordr), zr( jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
+                    zi(jicho), zi(jredc), zr( jredd), zi(jrevc), zr(jrevv),&
+                    zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
+                    zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
+                    nbrfis, fk, dfk, angini, foncp,&
+                    nbpal, dtsto, vrotat, prdeff, nomres,&
+                    ntotex, zr(jpass))
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&
                     dtmax, nbsauv, nbobjs, nbmode, zr(jpuls),&
                     zr(jpul2), zr(jmasg), ibid, zr(jraig), ibid,&
                     zr( jrgyg), lamor, zr(jamog), ibid, zr(jgyog),&
-                    foncv, fonca, typbas, basemo, lflu,&
-                    nbnli, zk8(jinti), zi(jranc), zr(jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
-                    zr( jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo),&
-                    zi( jidesc), zk8(jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo),&
-                    zr( jpsid), monmot, nbrfis, fk, dfk,&
-                    angini, foncp, nbpal, dtsto, vrotat,&
-                    prdeff, nomres, ntotex, masgen, riggen,&
-                    amogen)
+                    foncv, fonca, typbas, basemo, nbnli,&
+                    zk8(jinti), zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
+                    nbrede, zr(jrede), zk8(jfond), nbrevi, zr( jrevi),&
+                    zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo), zi( jidesc),&
+                    zk8(jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr( jpsid),&
+                    monmot, nbrfis, fk, dfk, angini,&
+                    foncp, nbpal, dtsto, vrotat, prdeff,&
+                    nomres, ntotex, masgen, riggen, amogen)
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, nbmode, zr(jpuls), zr(jpul2),&
                     zr(jmasg), ibid, zr(jraig), ibid, lamor,&
                     zr(jamog), ibid, typbas, basemo, tinit,&
-                    tfin, dtarch, nbsauv, itemax, prec,&
-                    xlambd, lflu, nbnli, zi( jranc), zr(jdepl),&
-                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
-                    nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps), zr( jvits),&
-                    zr(jaccs), zr(jpass), zi(jordr), zr(jinst), zr(jfcho),&
-                    zr( jdcho), zr(jvcho), zi(jicho), zi(jredc), zr(jredd),&
-                    zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
-                    zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
-                    nbpal, dtsto, vrotat, prdeff, method,&
-                    nomres, ntotex, zi(jrevc), zr(jrevv))
+                    tfin, dtarch, nbsauv, nbnli, zi( jranc),&
+                    zr(jdepl), zr(jparc), zk8(jnoec), nbrede, zr(jrede),&
+                    zk8(jfond), nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps),&
+                    zr( jvits), zr(jaccs), zr(jpass), zi(jordr), zr(jinst),&
+                    zr(jfcho), zr( jdcho), zr(jvcho), zi(jicho), zi(jredc),&
+                    zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
+                    zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
+                    monmot, nbpal, dtsto, vrotat, prdeff,&
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
     else if (method.eq.'NEWMARK') then
         call mdnewm(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
                     zr(jmasg), zr(jraig), zr(jrgyg), lamor, zr(jamog),&

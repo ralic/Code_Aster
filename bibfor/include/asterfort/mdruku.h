@@ -20,15 +20,14 @@ interface
                       dtmax, nbsauv, nbobjs, neqgen, pulsat,&
                       pulsa2, masgen, descmm, riggen, descmr,&
                       rgygen, lamor, amogen, descma, gyogen,&
-                      foncv, fonca, typbas, basemo, lflu,&
-                      nbchoc, intitu, logcho, dplmod, parcho,&
-                      noecho, nbrede, dplred, fonred,&
-                      nbrevi, dplrev, fonrev, coefm, liad,&
-                      inumor, idescf, nofdep, nofvit, nofacc,&
-                      nomfon, psidel, monmot, nbrfis, fk,&
-                      dfk, angini, foncp, nbpal, dtsto,&
-                      vrotat, prdeff, nomres, nbexci, nommas,&
-                      nomrig, nomamo)
+                      foncv, fonca, typbas, basemo, nbchoc,&
+                      intitu, logcho, dplmod, parcho, noecho,&
+                      nbrede, dplred, fonred, nbrevi, dplrev,&
+                      fonrev, coefm, liad, inumor, idescf,&
+                      nofdep, nofvit, nofacc, nomfon, psidel,&
+                      monmot, nbrfis, fk, dfk, angini,&
+                      foncp, nbpal, dtsto, vrotat, prdeff,&
+                      nomres, nbexci, nommas, nomrig, nomamo)
         integer :: nbchoc
         integer :: neqgen
         character(len=16) :: method
@@ -54,7 +53,6 @@ interface
         character(len=8) :: fonca
         character(len=16) :: typbas
         character(len=8) :: basemo
-        logical :: lflu
         character(len=8) :: intitu
         integer :: logcho(nbchoc, *)
         real(kind=8) :: dplmod(nbchoc, neqgen, *)

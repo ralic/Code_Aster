@@ -19,9 +19,8 @@ interface
     subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                       masgen, descm, riggen, descr, lamor,&
                       amogen, desca, typbas, basemo, tinit,&
-                      tfin, dtarch, nbsauv, itemax, prec,&
-                      xlambd, lflu, nbchoc, logcho, dplmod,&
-                      parcho, noecho, nbrede, dplred, &
+                      tfin, dtarch, nbsauv, nbchoc, logcho,&
+                      dplmod, parcho, noecho, nbrede, dplred,&
                       fonred, nbrevi, dplrev, fonrev, depsto,&
                       vitsto, accsto, passto, iorsto, temsto,&
                       fchost, dchost, vchost, ichost, iredst,&
@@ -48,10 +47,6 @@ interface
         real(kind=8) :: tfin
         real(kind=8) :: dtarch
         integer :: nbsauv
-        integer :: itemax
-        real(kind=8) :: prec
-        real(kind=8) :: xlambd
-        logical :: lflu
         integer :: logcho(nbchoc, *)
         real(kind=8) :: dplmod(nbchoc, neqgen, *)
         real(kind=8) :: parcho(*)

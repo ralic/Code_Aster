@@ -17,12 +17,12 @@
 !
 interface
     subroutine mdbs32(neqgen, depl, vite, acce, fext,&
-                      dt, dtsto, lflu, nbexci, idescf,&
-                      nomfon, coefm, liad, inumor, nbchoc,&
-                      logcho, dplmod, parcho, noecho, saucho,&
-                      nbrede, dplred, fonred, saured,saredi,& 
-                      nbrevi, dplrev, fonrev, saurev, sarevi, &
-                      nofdep, nofvit, nofacc, psidel, monmot, nbrfis,&
+                      dt, dtsto, nbexci, idescf, nomfon,&
+                      coefm, liad, inumor, nbchoc, logcho,&
+                      dplmod, parcho, noecho, saucho, nbrede,&
+                      dplred, fonred, saured, saredi, nbrevi,&
+                      dplrev, fonrev, saurev, sarevi,  nofdep,&
+                      nofvit, nofacc, psidel, monmot, nbrfis,&
                       fk, dfk, angini, foncp, nbpal,&
                       vrotat, typal, finpal, cnpal, prdeff,&
                       conv, fsauv, typbas, pulsa2, masgen,&
@@ -40,7 +40,6 @@ interface
         real(kind=8) :: fext(*)
         real(kind=8) :: dt
         real(kind=8) :: dtsto
-        logical :: lflu
         integer :: nbexci
         integer :: idescf(*)
         character(len=8) :: nomfon(*)

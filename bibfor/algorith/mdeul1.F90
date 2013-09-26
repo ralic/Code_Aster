@@ -2,17 +2,16 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   masgen, descmm, riggen, descmr, rgygen,&
                   lamor, amogen, descma, gyogen, foncv,&
                   fonca, typbas, basemo, tinit, iparch,&
-                  nbsauv, itemax, prec, xlambd, lflu,&
-                  nbchoc, logcho, dplmod, parcho, noecho,&
-                  nbrede, dplred, fonred, nbrevi, dplrev,&
-                  fonrev, depsto, vitsto, accsto, iorsto,&
-                  temsto, fchost, dchost, vchost, ichost,&
-                  iredst, dredst, irevst, drevst, coefm,&
-                  liad, inumor, idescf, nofdep, nofvit,&
-                  nofacc, nomfon, psidel, monmot, nbrfis,&
-                  fk, dfk, angini, foncp, nbpal,&
-                  dtsto, vrotat, prdeff, nomres, nbexci,&
-                  passto)
+                  nbsauv, nbchoc, logcho, dplmod, parcho,&
+                  noecho, nbrede, dplred, fonred, nbrevi,&
+                  dplrev, fonrev, depsto, vitsto, accsto,&
+                  iorsto, temsto, fchost, dchost, vchost,&
+                  ichost, iredst, dredst, irevst, drevst,&
+                  coefm, liad, inumor, idescf, nofdep,&
+                  nofvit, nofacc, nomfon, psidel, monmot,&
+                  nbrfis, fk, dfk, angini, foncp,&
+                  nbpal, dtsto, vrotat, prdeff, nomres,&
+                  nbexci, passto)
 !
 ! aslint: disable=W1504
     implicit none
@@ -43,18 +42,18 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     integer :: nbchoc, neqgen
-    integer :: iorsto(*), iredst(*), itemax, descmm, descmr, descma, iparch(*)
+    integer :: iorsto(*), iredst(*), descmm, descmr, descma, iparch(*)
     integer :: logcho(nbchoc, *), ichost(*), ibid, irevst(*)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
     real(kind=8) :: gyogen(*), rgygen(*), parcho(*), depsto(*)
     real(kind=8) :: vitsto(*), accsto(*), temsto(*), fchost(*), dchost(*)
-    real(kind=8) :: vchost(*), dredst(*), drevst(*), prec
+    real(kind=8) :: vchost(*), dredst(*), drevst(*)
     real(kind=8) :: dplmod(nbchoc, neqgen, *), dplred(*), dplrev(*), passto(*)
     real(kind=8) :: dt, dtsto, vrotat, angini
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*)
     character(len=8) :: nomres, monmot
     character(len=16) :: typbas
-    logical :: lamor, lflu, prdeff
+    logical :: lamor, prdeff
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)
@@ -80,7 +79,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     ALGORITHME EULER D'ORDRE 1 OPTION LAME FLUIDE
+!     ALGORITHME EULER D'ORDRE 1
 !     ------------------------------------------------------------------
 ! IN  : NBPAS  : NOMBRE DE PAS
 ! IN  : DT     : PAS DE TEMPS
@@ -103,12 +102,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 ! IN  : TINIT  : TEMPS INITIAL
 ! IN  : IPARCH : VECTEUR DES PAS D'ARCHIVAGE
 ! IN  : NBSAUV : NOMBRE DE PAS ARCHIVE
-! IN  : ITEMAX : NOMBRE D'ITERATIONS MAXIMUM POUR TROUVER L'ACCELERATION
-! IN  : PREC   : RESIDU RELATIF POUR TESTER LA CONVERGENCE DE L'ACCE.
-! IN  : XLAMBD : MULTIPLICATEUR POUR RENDRE CONTRACTANTES LES ITERATIONS
-! IN  : LFLU   : LOGIQUE INDIQUANT LA PRESENCE DE FORCES DE LAME FLUIDE
 ! IN  : NBCHOC : NOMBRE DE NOEUDS DE CHOC
-! IN  : LOGCHO : INDICATEUR D'ADHERENCE ET DE FORCE FLUIDE
+! IN  : LOGCHO : INDICATEUR D'ADHERENCE
 ! IN  : DPLMOD : TABLEAU DES DEPL MODAUX AUX NOEUDS DE CHOC
 ! IN  : PARCHO : TABLEAU DES PARAMETRES DE CHOC
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
@@ -138,14 +133,14 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
     integer :: palmax
 !-----------------------------------------------------------------------
-    integer :: i, iarchi, icho, ifor, im, iret, isto1, ier, ind
-    integer :: isto2, isto3, iter, jacce, jaccgi, jamogi, jchor
-    integer :: jdepl, jfext, jfexti, jm, jmass, jphi2, jpuls
+    integer :: i, iarchi, ifor, im, iret, isto1, ier, ind
+    integer :: isto2, isto3, jacce, jchor
+    integer :: jdepl, jfext, jm, jmass
     integer :: jredi, jredr, jtra1, jvint, jvite, n100
     integer :: nbexci, nbmod1, nbpas, nbrede, nbrevi, nbsauv, nbscho
     integer :: ndt, jamgy, jrigy, jrevr, jrevi, isto4
-    real(kind=8) :: deux, r8bid1, tarchi, r8b(1)
-    real(kind=8) :: temps, tinit, xlambd, xnorm, xref, xx, zero
+    real(kind=8) :: deux, r8bid1, tarchi
+    real(kind=8) :: temps, tinit, zero
 !
 !-----------------------------------------------------------------------
     parameter (palmax=20)
@@ -242,37 +237,6 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     else
         call wkvect('&&MDEUL1.MASS', 'V V R8', neqgen, jmass)
         call dcopy(neqgen, masgen, 1, zr(jmass), 1)
-        if (nbchoc .ne. 0) then
-            if (lflu) then
-!
-!     CALCUL DE LA MATRICE DIAGONALE POUR LES NOEUDS DE LAME FLUIDE
-!
-                call wkvect('&&MDEUL1.PHI2', 'V V R8', neqgen*nbchoc, jphi2)
-!
-!     CALCUL DES MATRICES M' PAR NOEUD DE CHOC FLUIDE
-!
-                do 51 icho = 1, nbchoc
-                    do 51 im = 1, neqgen
-                        zr(jphi2+im-1+(icho-1)*neqgen) = 0.d0
-                        if (logcho(icho,2) .eq. 1) then
-                            if (noecho(icho,9)(1:2) .eq. 'BI') then
-                                do 52 jm = 1, 3
-                                    xx = dplmod(icho,im,jm) - dplmod( icho,im,jm+3)
-                                    zr(jphi2+im-1+(icho-1)*neqgen) =&
-                                    zr(jphi2+im-1+(icho-1)*neqgen) +&
-                                    xlambd*xx**2
-52                              continue
-                            else
-                                do 50 jm = 1, 3
-                                    zr(jphi2+im-1+(icho-1)*neqgen) =&
-                                    zr(jphi2+im-1+(icho-1)*neqgen) +&
-                                    xlambd*dplmod(icho,im,jm)**2
-50                              continue
-                            endif
-                        endif
-51                  continue
-            endif
-        endif
     endif
 !
 !     --- VECTEURS DE TRAVAIL ---
@@ -282,14 +246,6 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     call wkvect('&&MDEUL1.ACCE', 'V V R8', neqgen, jacce)
     call wkvect('&&MDEUL1.TRA1', 'V V R8', neqgen, jtra1)
     call wkvect('&&MDEUL1.FEXT', 'V V R8', neqgen, jfext)
-    if (lflu) then
-        call wkvect('&&MDEUL1.FEXTI', 'V V R8', neqgen, jfexti)
-        call wkvect('&&MDEUL1.ACCGENI', 'V V R8', neqgen, jaccgi)
-        call wkvect('&&MDEUL1.PULSAI', 'V V R8', neqgen, jpuls)
-        call wkvect('&&MDEUL1.AMOGEI', 'V V R8', neqgen, jamogi)
-        call dcopy(neqgen, pulsa2, 1, zr(jpuls), 1)
-        call dcopy(neqgen, amogen, 1, zr(jamogi), 1)
-    endif
     if (nbchoc .ne. 0 .and. nbpal .eq. 0) then
 !      IF (NBCHOC.NE.0  ) THEN
         call wkvect('&&MDEUL1.SCHOR', 'V V R8', nbchoc*14, jchor)
@@ -323,82 +279,50 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                     zr(jfext))
     endif
 !
-    if (lflu) then
-!
-!
-!     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
-!         CAS DES FORCES DE LAME FLUIDE
-!
-        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                    zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
-                    logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                    tinit, nofdep, nofvit, nofacc, nbexci,&
-                    psidel, monmot, nbrfis, fk, dfk,&
-                    angini, foncp, 1, 0, dt,&
-                    dtsto, vrotat, typal, finpal, cnpal,&
-                    prdeff, conv, fsauv)
-        if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-            call utmess('F', 'EDYOS_46')
-        else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
-            nbconv = nbconv + 1
-        endif
-!
-!
-!     --- ACCELERATIONS GENERALISEES INITIALES ---
-!
-        call mdacce(typbas, neqgen, zr(jpuls), zr(jmass), descmm,&
-                    riggen, descmr, zr(jfext), lamor, zr(jamogi),&
-                    descma, zr(jtra1), zr(jdepl), zr(jvite), zr(jacce))
-    else
-!
 !   COUPLAGE AVEC EDYOS
 !
-        if (nbpal .gt. 0) then
-            cpal='C_PAL'
+    if (nbpal .gt. 0) then
+        cpal='C_PAL'
 !     RECUPERATION DES DONNEES SUR LES PALIERS
 !     -------------------------------------------------
-            call jeveuo(cpal, 'L', iadrk)
-            do 21 iapp = 1, nbpal
-                fsauv(iapp,1)= 0.d0
-                fsauv(iapp,2)= 0.d0
-                fsauv(iapp,3)= 0.d0
-                typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
-                finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
-                cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
-21          continue
-        endif
+        call jeveuo(cpal, 'L', iadrk)
+        do 21 iapp = 1, nbpal
+            fsauv(iapp,1)= 0.d0
+            fsauv(iapp,2)= 0.d0
+            fsauv(iapp,3)= 0.d0
+            typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
+            finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
+            cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
+21      continue
+    endif
 !  FIN COUPLAGE AVEC EDYOS
 !
 !       CAS CLASSIQUE
 !
-        if (nbpal .ne. 0) nbchoc = 0
-        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                    masgen, r8b, pulsa2, zr(jamgy), nbchoc,&
-                    logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                    tinit, nofdep, nofvit, nofacc, nbexci,&
-                    psidel, monmot, nbrfis, fk, dfk,&
-                    angini, foncp, 1, nbpal, dt,&
-                    dtsto, vrotat, typal, finpal, cnpal,&
-                    prdeff, conv, fsauv)
+    if (nbpal .ne. 0) nbchoc = 0
+    call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+                nbchoc, logcho, dplmod, parcho, noecho,&
+                zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                zi(jrevi), tinit, nofdep, nofvit, nofacc,&
+                nbexci, psidel, monmot, nbrfis, fk,&
+                dfk, angini, foncp, 1, nbpal,&
+                dt, dtsto, vrotat, typal, finpal,&
+                cnpal, prdeff, conv, fsauv)
 !
-        if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-            call utmess('F', 'EDYOS_46')
-        else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
-            nbconv = nbconv + 1
-        endif
+    if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
+        call utmess('F', 'EDYOS_46')
+    else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
+        nbconv = nbconv + 1
+    endif
 !
 !
 !     --- ACCELERATIONS GENERALISEES INITIALES ---
 !
-        call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
-                    riggen, descmr, zr(jfext), lamor, zr(jamgy),&
-                    descma, zr(jtra1), zr(jdepl), zr(jvite), zr(jacce))
+    call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
+                riggen, descmr, zr(jfext), lamor, zr(jamgy),&
+                descma, zr(jtra1), zr(jdepl), zr(jvite), zr(jacce))
 !
-    endif
 !
 !     --- ARCHIVAGE DONNEES INITIALES ---
 !
@@ -475,96 +399,31 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                         zr(jfext))
         endif
 !
-        if (lflu) then
-!        ------------------------------------------------------
-!        ITERATIONS IMPLICITES POUR OBTENIR L'ACCELERATION DANS
-!        LE CAS DE FORCE DE LAME FLUIDE
-!        ------------------------------------------------------
-            xnorm = 0.d0
-            xref = 0.d0
-            do 5 iter = 1, itemax
-!
-!           REMISE A JOUR DE LA MASSE, PULSATION CARRE
-!           DE L'AMORTISSEMENT MODAL ET DE LA FORCE EXT
-!
-                call dcopy(neqgen, masgen, 1, zr(jmass), 1)
-                call dcopy(neqgen, pulsa2, 1, zr(jpuls), 1)
-                call dcopy(neqgen, amogen, 1, zr(jamogi), 1)
-                call dcopy(neqgen, zr(jfext), 1, zr(jfexti), 1)
-!
-!         --- CONTRIBUTION DES FORCES NON LINEAIRES ---
-!
-                call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfexti),&
-                            zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
-                            logcho, dplmod, parcho, noecho, zr(jchor),&
-                            nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                            nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                            temps, nofdep, nofvit, nofacc, nbexci,&
-                            psidel, monmot, nbrfis, fk, dfk,&
-                            angini, foncp, (i+1), nbpal, dt,&
-                            dtsto, vrotat, typal, finpal, cnpal,&
-                            prdeff, conv, fsauv)
-!
-                if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-                    call utmess('F', 'EDYOS_46')
-                else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
-                    nbconv = nbconv + 1
-                endif
-!
-!           --- ACCELERATIONS GENERALISEES ---
-!
-                call mdacce(typbas, neqgen, zr(jpuls), zr(jmass), descmm,&
-                            riggen, descmr, zr(jfexti), lamor, zr(jamogi),&
-                            descma, zr(jtra1), zr(jdepl), zr(jvite), zr(jaccgi))
-                xnorm = 0.d0
-                xref = 0.d0
-                do 15 im = 1, neqgen
-                    xnorm = xnorm + (zr(jaccgi+im-1)-zr(jacce+im-1))** 2
-                    xref = xref + zr(jaccgi+im-1)**2
-15              continue
-                call dcopy(neqgen, zr(jaccgi), 1, zr(jacce), 1)
-!           TEST DE CONVERGENCE
-                if (xnorm .le. prec*xref) goto 25
- 5          continue
-!
-!        NON CONVERGENCE
-!
-            vali (1) = itemax
-            valr (1) = xnorm/xref
-            call utmess('F', 'ALGORITH16_11', si=vali(1), sr=valr(1))
-!
-25          continue
-        else
-!
 !        CALCUL CLASSIQUE FORCES NON-LINEAIRES ET ACCELERATIONS
-!
 !
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-            call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                        r8b, r8b, r8b, r8b, nbchoc,&
-                        logcho, dplmod, parcho, noecho, zr(jchor),&
-                        nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                        nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                        temps, nofdep, nofvit, nofacc, nbexci,&
-                        psidel, monmot, nbrfis, fk, dfk,&
-                        angini, foncp, (i+1), nbpal, dt,&
-                        dtsto, vrotat, typal, finpal, cnpal,&
-                        prdeff, conv, fsauv)
+        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+                    nbchoc, logcho, dplmod, parcho, noecho,&
+                    zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                    zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                    zi(jrevi), temps, nofdep, nofvit, nofacc,&
+                    nbexci, psidel, monmot, nbrfis, fk,&
+                    dfk, angini, foncp, (i+1), nbpal,&
+                    dt, dtsto, vrotat, typal, finpal,&
+                    cnpal, prdeff, conv, fsauv)
 !
-            if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-                call utmess('F', 'EDYOS_46')
-            else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
-                nbconv = nbconv + 1
-            endif
+        if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
+            call utmess('F', 'EDYOS_46')
+        else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
+            nbconv = nbconv + 1
+        endif
 !
 !        --- ACCELERATIONS GENERALISEES ---
 !
-            call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
-                        riggen, descmr, zr(jfext), lamor, zr(jamgy),&
-                        descma, zr(jtra1), zr( jdepl), zr(jvite), zr(jacce))
-!
-        endif
+        call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
+                    riggen, descmr, zr(jfext), lamor, zr(jamgy),&
+                    descma, zr(jtra1), zr( jdepl), zr(jvite), zr(jacce))
 !
 !        --- ARCHIVAGE ---
 !
@@ -624,13 +483,6 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     call jedetr('&&MDEUL1.TRA1')
     call jedetr('&&MDEUL1.FEXT')
     call jedetr('&&MDEUL1.MASS')
-    if (lflu) then
-        call jedetr('&&MDEUL1.FEXTI')
-        call jedetr('&&MDEUL1.ACCGENI')
-        call jedetr('&&MDEUL1.PULSAI')
-        call jedetr('&&MDEUL1.AMOGEI')
-        call jedetr('&&MDEUL1.PHI2')
-    endif
     if (nbchoc .ne. 0) then
         call jedetr('&&MDEUL1.SCHOR')
     endif

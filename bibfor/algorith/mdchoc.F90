@@ -2,8 +2,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                   nbpal, logcho, dplmod, parcho, noecho,&
                   intitu, ps1del, ps2del, numddl, nbmode,&
                   pulsat, masgen, lamor, amogen, bmodal,&
-                  neq, nexcit, info, lflu, monmot,&
-                  ier)
+                  neq, nexcit, info, monmot, ier)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
@@ -26,7 +25,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     real(kind=8) :: ps1del(neq, nexcit), ps2del(nbnli, nexcit, *)
     character(len=8) :: noecho(nbnli, *), intitu(*), monmot
     character(len=14) :: numddl
-    logical :: lamor, lflu
+    logical :: lamor
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +51,6 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! IN  : NBFLAM : NOMBRE DE CHOCS AVEC FLAMBEMENT
 ! IN  : NBPAL : NOMBRE DE PALIERS (COUPLAGE EDYOS)
 ! OUT : LOGCHO : LOGIQUE CHOC: LOGCHO(I,1) = SI ADHERENCE OU NON
-!                              LOGCHO(I,2) = SI FORCE FLUIDE OU NON
-!                              LOGCHO(I,3) = SI CHOC SEC + LAME FLUIDE
 !                              LOGCHO(I,4) = SI DISPO ANTI S OU NON
 !                              LOGCHO(I,5) = SI FLAMBEMENT OU NON
 ! OUT : DPLMOD : DEPL MODAUX AUX NOEUDS DE CHOC APRES ORIENTATION
@@ -143,7 +140,6 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! IN  : NEQ    : NOMBRE D'EQUATIONS
 ! IN  : NEXCIT : NOMBRE D'EXCITATIONS
 ! IN  : INFO   : NIVEAU D'IMPRESSION
-! OUT : LFLU   : LOGIQUE INDIQUANT LA PRESENCE DE LAME FLUIDE
 ! OUT : IER    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
@@ -161,7 +157,6 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !
     ier = 0
     un = 1.d0
-    lflu = .false.
     numero = ' '
     mdgene = ' '
     call gettco(numddl, typnum)
@@ -206,17 +201,17 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     if (typnum .eq. 'NUME_DDL_SDASTER') then
 !         ----------------------------
         call mdchst(numddl, typnum, imode, iamor, pulsat,&
-                    masgen, amogen, lflu, nbnli, nbpal,&
-                    noecho, nbrfis, logcho, parcho, intitu,&
-                    zi(jddl), ier)
+                    masgen, amogen, nbnli, nbpal, noecho,&
+                    nbrfis, logcho, parcho, intitu, zi(jddl),&
+                    ier)
 !
 ! --- CALCUL PAR SOUS-STRUCTURATION
 !
     else if (typnum(1:13).eq.'NUME_DDL_GENE') then
 !             ------------------------------
         call mdchge(numddl, typnum, imode, iamor, pulsat,&
-                    masgen, amogen, lflu, nbnli, noecho,&
-                    logcho, parcho, intitu, zi(jddl), ier)
+                    masgen, amogen, nbnli, noecho, parcho,&
+                    intitu, zi(jddl), ier)
 !
     endif
 !

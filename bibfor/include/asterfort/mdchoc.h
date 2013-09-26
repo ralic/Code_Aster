@@ -20,8 +20,7 @@ interface
                       nbpal, logcho, dplmod, parcho, noecho,&
                       intitu, ps1del, ps2del, numddl, nbmode,&
                       pulsat, masgen, lamor, amogen, bmodal,&
-                      neq, nexcit, info, lflu, monmot,&
-                      ier)
+                      neq, nexcit, info, monmot, ier)
         integer :: nexcit
         integer :: neq
         integer :: nbmode
@@ -45,7 +44,6 @@ interface
         real(kind=8) :: amogen(*)
         real(kind=8) :: bmodal(neq, *)
         integer :: info
-        logical :: lflu
         character(len=8) :: monmot
         integer :: ier
     end subroutine mdchoc

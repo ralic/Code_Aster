@@ -396,11 +396,4 @@ cata_msg = {
 
 """),
 
-99 : _(u"""
- le nombre maximum d'itérations  %(i1)d  est atteint sans converger
- le résidu relatif final est  : %(r1)f
- l instant de calcul vaut     : %(r2)f
-
-"""),
-
 }

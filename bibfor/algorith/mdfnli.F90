@@ -1,13 +1,12 @@
 subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
-                  masgen, phicar, pulsa2, amogen, nbchoc,&
-                  logcho, dplmod, parcho, noecho, saucho,&
-                  nbrede, dplred, fonred, saured, saredi,&
-                  nbrevi, dplrev, fonrev, saurev, sarevi,&
-                  temps , nofdep, nofvit, nofacc, nbexci, psidel,&
-                  monmot, nbrfis, fk    , dfk   , angini,&
-                  foncp , numpas, nbpal , dt    , dtsto ,&
-                  vrotat, typal , finpal, cnpal , prdeff,&
-                  conv  , fsauv)
+                  nbchoc, logcho, dplmod, parcho, noecho,&
+                  saucho, nbrede, dplred, fonred, saured,&
+                  saredi, nbrevi, dplrev, fonrev, saurev,&
+                  sarevi, temps, nofdep, nofvit, nofacc,&
+                  nbexci, psidel, monmot, nbrfis, fk,&
+                  dfk, angini, foncp, numpas, nbpal,&
+                  dt, dtsto, vrotat, typal, finpal,&
+                  cnpal, prdeff, conv, fsauv)
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/mdfcho.h"
@@ -19,8 +18,8 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
     integer :: nbpal, nbchoc
     integer :: numpas
     real(kind=8) :: dt, dtsto, vrotat, conv, angini
-    real(kind=8) :: depgen(*), vitgen(*), fexgen(*), masgen(*)
-    real(kind=8) :: phicar(*), pulsa2(*), amogen(*), parcho(*), saucho(*)
+    real(kind=8) :: depgen(*), vitgen(*), fexgen(*)
+    real(kind=8) :: parcho(*), saucho(*)
     real(kind=8) :: saured(*), dplrev(*), dplred(*), saurev(*)
     real(kind=8) :: accgen(*), dplmod(nbchoc, nbmode, *)
     real(kind=8) :: temps, psidel(nbchoc, nbexci, *)
@@ -95,11 +94,12 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 ! ----------------------------------------------------------------------
 !
 !     --- FORCES NON-LINEAIRES DE TYPE CHOC ---
-    if (nbchoc .ne. 0 .and. nbrfis .eq. 0) call mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
-                                                       masgen, phicar, pulsa2, amogen, nbchoc,&
-                                                       logcho, dplmod, parcho, noecho, saucho,&
-                                                       temps, nofdep, nofvit, nofacc, nbexci,&
-                                                       psidel, monmot)
+    if (nbchoc .ne. 0 .and. nbrfis .eq. 0) then 
+        call mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
+                    nbchoc, logcho, dplmod, parcho, noecho,&
+                    saucho, temps, nofdep, nofvit, nofacc,&
+                    nbexci, psidel, monmot)
+    endif
 !
 !     --- NON-LINEARITE DE TYPE RELA_EFFO_DEPL ---
     if (nbrede .ne. 0) call mdfred(nbmode, depgen, fexgen, nbrede, dplred,&

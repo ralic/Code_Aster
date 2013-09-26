@@ -2,15 +2,14 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                   dtmax, nbsauv, nbobjs, neqgen, pulsat,&
                   pulsa2, masgen, descmm, riggen, descmr,&
                   rgygen, lamor, amogen, descma, gyogen,&
-                  foncv, fonca, typbas, basemo, lflu,&
-                  nbchoc, intitu, logcho, dplmod, parcho,&
-                  noecho, nbrede, dplred, fonred, nbrevi,&
-                  dplrev, fonrev, coefm, liad, inumor,&
-                  idescf, nofdep, nofvit, nofacc, nomfon,&
-                  psidel, monmot, nbrfis, fk, dfk,&
-                  angini, foncp, nbpal, dtsto, vrotat,&
-                  prdeff, nomres, nbexci, nommas, nomrig,&
-                  nomamo)
+                  foncv, fonca, typbas, basemo, nbchoc,&
+                  intitu, logcho, dplmod, parcho, noecho,&
+                  nbrede, dplred, fonred, nbrevi, dplrev,&
+                  fonrev, coefm, liad, inumor, idescf,&
+                  nofdep, nofvit, nofacc, nomfon, psidel,&
+                  monmot, nbrfis, fk, dfk, angini,&
+                  foncp, nbpal, dtsto, vrotat, prdeff,&
+                  nomres, nbexci, nommas, nomrig, nomamo)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,10 +71,10 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
     real(kind=8) :: parcho(*), dplrev(*), dplred(*), rgygen(*)
     real(kind=8) :: dplmod(nbchoc, neqgen, *), gyogen(*), dt, dt2, dtsto, tfin
-    real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1, r8b(1)
+    real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1
     real(kind=8) :: temps, coefm(*), psidel(*), deux, pow, fsauv(palmax, 3)
     real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol
-    logical :: lamor, lflu, prdeff, adapt, flagdt
+    logical :: lamor, prdeff, adapt, flagdt
     character(len=3) :: finpal(palmax)
     character(len=4) :: intk, nomsym(3)
     character(len=6) :: typal(palmax)
@@ -132,10 +131,6 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !  COUPLAGE EDYOS : NOMBRE MAXIMAL DE TENTATIVES DE REPRISE DES DONNEES
 !  PRECEDENTES EN CAS DE NON-CONVERGENCE EDYOS :
     nbmxcv = 10
-!     PAS DE LAME FLUIDE POUR LE SCHEMA RUNGE-KUTTA
-    if (lflu) then
-        call utmess('F', 'ALGORITH5_21')
-    endif
 !
     do 111 iapp = 1, palmax
         typal(iapp)='      '
@@ -200,8 +195,6 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     else
         call wkvect('&&RUKUT.MASS', 'V V R8', neqgen, jmass)
         call dcopy(neqgen, masgen, 1, zr(jmass), 1)
-!       ICI IL FAUT NORMALEMENT TRAITER LE CAS DE LAME FLUIDE
-!       MAIS IL N'EST PAS PREVU DANS RUNGE-KUTTA
     endif
 !
 !     --- PARAMETRES DU SCHEMA ADAPTATIF ---
@@ -286,15 +279,14 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
     if (nbpal .ne. 0) nbchoc = 0
     call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                masgen, r8b, pulsa2, zr(jamgy), nbchoc,&
-                logcho, dplmod, parcho, noecho, zr(jchor),&
-                nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                tinit, nofdep, nofvit, nofacc, nbexci,&
-                psidel, monmot, nbrfis, fk, dfk,&
-                angini, foncp, 1, nbpal, dt,&
-                dtsto, vrotat, typal, finpal, cnpal,&
-                prdeff, conv, fsauv)
+                nbchoc, logcho, dplmod, parcho, noecho,&
+                zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                zi(jrevi), tinit, nofdep, nofvit, nofacc,&
+                nbexci, psidel, monmot, nbrfis, fk,&
+                dfk, angini, foncp, 1, nbpal,&
+                dt, dtsto, vrotat, typal, finpal,&
+                cnpal, prdeff, conv, fsauv)
     if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
         call utmess('F', 'EDYOS_46')
     else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -348,38 +340,38 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 ! ESTIMATION DE L'ETAT ET DE L'ERREUR A L'INSTANT SUIVANT
         if (method(13:14) .eq. '54') then
             call mddp54(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                        dt, dtsto, lflu, nbexci, idescf,&
-                        nomfon, coefm, liad, inumor, nbchoc,&
-                        logcho, dplmod, parcho, noecho, zr(jchor),&
-                        nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                        nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                        nofdep, nofvit, nofacc, psidel, monmot,&
-                        nbrfis, fk, dfk, angini, foncp,&
-                        nbpal, vrotat, typal, finpal, cnpal,&
-                        prdeff, conv, fsauv, typbas, pulsa2,&
-                        masgen, descmm, riggen, descmr, lamor,&
-                        descma, zr(jtra1), temps, tol, zr(jdepi),&
-                        zr(jviti), zr(jerde), zr(jervi), zr(jkde), zr(jkvi),&
-                        fonca, foncv, iarchi, zr(jrigy), zr(jamgy),&
-                        nbconv, nbmxcv, vitvar, gyogen, rgygen,&
-                        amogen, errt)
+                        dt, dtsto, nbexci, idescf, nomfon,&
+                        coefm, liad, inumor, nbchoc, logcho,&
+                        dplmod, parcho, noecho, zr(jchor), nbrede,&
+                        dplred, fonred, zr(jredr), zi(jredi), nbrevi,&
+                        dplrev, fonrev, zr(jrevr), zi(jrevi), nofdep,&
+                        nofvit, nofacc, psidel, monmot, nbrfis,&
+                        fk, dfk, angini, foncp, nbpal,&
+                        vrotat, typal, finpal, cnpal, prdeff,&
+                        conv, fsauv, typbas, pulsa2, masgen,&
+                        descmm, riggen, descmr, lamor, descma,&
+                        zr(jtra1), temps, tol, zr(jdepi), zr(jviti),&
+                        zr(jerde), zr(jervi), zr(jkde), zr(jkvi), fonca,&
+                        foncv, iarchi, zr(jrigy), zr(jamgy), nbconv,&
+                        nbmxcv, vitvar, gyogen, rgygen, amogen,&
+                        errt)
         else if (method(13:14).eq.'32') then
             call mdbs32(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                        dt, dtsto, lflu, nbexci, idescf,&
-                        nomfon, coefm, liad, inumor, nbchoc,&
-                        logcho, dplmod, parcho, noecho, zr(jchor),&
-                        nbrede, dplred, fonred, zr(jredr), zi(jredi),&
-                        nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                        nofdep, nofvit, nofacc, psidel, monmot,&
-                        nbrfis, fk, dfk, angini, foncp,&
-                        nbpal, vrotat, typal, finpal, cnpal,&
-                        prdeff, conv, fsauv, typbas, pulsa2,&
-                        masgen, descmm, riggen, descmr, lamor,&
-                        descma, zr(jtra1), temps, tol, zr(jdepi),&
-                        zr(jviti), zr(jerde), zr(jervi), zr(jkde), zr(jkvi),&
-                        fonca, foncv, iarchi, zr(jrigy), zr(jamgy),&
-                        nbconv, nbmxcv, vitvar, gyogen, rgygen,&
-                        amogen, errt)
+                        dt, dtsto, nbexci, idescf, nomfon,&
+                        coefm, liad, inumor, nbchoc, logcho,&
+                        dplmod, parcho, noecho, zr(jchor), nbrede,&
+                        dplred, fonred, zr(jredr), zi(jredi), nbrevi,&
+                        dplrev, fonrev, zr(jrevr), zi(jrevi), nofdep,&
+                        nofvit, nofacc, psidel, monmot, nbrfis,&
+                        fk, dfk, angini, foncp, nbpal,&
+                        vrotat, typal, finpal, cnpal, prdeff,&
+                        conv, fsauv, typbas, pulsa2, masgen,&
+                        descmm, riggen, descmr, lamor, descma,&
+                        zr(jtra1), temps, tol, zr(jdepi), zr(jviti),&
+                        zr(jerde), zr(jervi), zr(jkde), zr(jkvi), fonca,&
+                        foncv, iarchi, zr(jrigy), zr(jamgy), nbconv,&
+                        nbmxcv, vitvar, gyogen, rgygen, amogen,&
+                        errt)
         endif
 !
 !     ON PASSE A L'INSTANT SUIVANT OU ON ADAPTE LE PAS?

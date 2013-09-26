@@ -1,7 +1,7 @@
 subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
-                  masgen, amogen, lflu, nbnli, nbpal,&
-                  noecho, nbrfis, logcho, parcho, intitu,&
-                  ddlcho, ier)
+                  masgen, amogen, nbnli, nbpal, noecho,&
+                  nbrfis, logcho, parcho, intitu, ddlcho,&
+                  ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -32,7 +32,6 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 !
     integer :: nbnli, iamor, imode, ier, logcho(nbnli, *), ddlcho(*), nbrfis
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
-    logical :: lflu
     character(len=8) :: noecho(nbnli, *), intitu(*)
     character(len=14) :: numddl
     character(len=16) :: typnum, typfro
@@ -64,7 +63,6 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! IN  : PULSAT : PULSATIONS DES MODES
 ! IN  : MASGEN : MASSES GENERALISEES DES MODES
 ! IN  : AMOGEN : MATRICE DES AMORTISSEMENTS GENERALISES
-! IN  : LFLU   : LOGIQUE INDIQUANT LA PRESENCE DE LAME FLUIDE
 ! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM)
 ! OUT : NOECHO : NOEUD DE CHOC (VOIR MDCHOC)
 ! OUT : LOGCHO : LOGIQUE CHOC (VOIR MDCHOC)
@@ -306,15 +304,6 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                                 nbret=n1)
                 endif
                 call getvr8(motfac, 'AMOR_TAN', iocc=ioc, scal=ctang, nbret=namtan)
-                call getvtx(motfac, 'LAME_FLUIDE', iocc=ioc, scal=kbid, nbret=n1)
-                if (kbid(1:3) .eq. 'OUI') then
-                    lflu=.true.
-                    logcho(iliai,2)=1
-                    call getvr8('CHOC', 'ALPHA   ', iocc=ioc, scal=parcho(iliai, 32), nbret=n1)
-                    call getvr8('CHOC', 'BETA    ', iocc=ioc, scal=parcho(iliai, 33), nbret=n1)
-                    call getvr8('CHOC', 'CHI     ', iocc=ioc, scal=parcho(iliai, 34), nbret=n1)
-                    call getvr8('CHOC', 'DELTA   ', iocc=ioc, scal=parcho(iliai, 35), nbret=n1)
-                endif
                 call getvid(motfac, 'OBSTACLE', iocc=ioc, scal=noecho( iliai, 9), nbret=n1)
                 call tbliva(noecho(iliai, 9), 1, 'LIEU', ibid, r8bid,&
                             cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&

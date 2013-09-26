@@ -1,9 +1,8 @@
 subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
-                  masgen, phicar, pulsa2, amogen, nbchoc,&
-                  logcho, dplmod, parcho, noecho, saucho,&
-                  temps, nofdep, nofvit, nofacc, nbexci,&
-                  psidel, nonmot)
-! aslint: disable=W1306,W1504
+                  nbchoc, logcho, dplmod, parcho, noecho,&
+                  saucho, temps, nofdep, nofvit, nofacc,&
+                  nbexci, psidel, nonmot)
+! aslint: disable=W1306
     implicit none
 #include "asterfort/distno.h"
 #include "asterfort/fnorm.h"
@@ -12,17 +11,14 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 #include "asterfort/gloloc.h"
 #include "asterfort/locglo.h"
 #include "asterfort/mdfdas.h"
-#include "asterfort/mdfflu.h"
 #include "asterfort/mdflam.h"
 #include "asterfort/mdmasf.h"
-#include "asterfort/ponder.h"
 #include "asterfort/togene.h"
 #include "asterfort/tophy3.h"
 #include "asterfort/tophys.h"
     integer :: nbchoc, nbmode, logcho(nbchoc, *)
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*), accgen(*)
-    real(kind=8) :: parcho(nbchoc, *), saucho(nbchoc, *), masgen(*), phicar(*)
-    real(kind=8) :: pulsa2(*), amogen(*)
+    real(kind=8) :: parcho(nbchoc, *), saucho(nbchoc, *)
     real(kind=8) :: dplmod(nbchoc, nbmode, *)
     character(len=8) :: noecho(nbchoc, *)
     character(len=8) :: nonmot
@@ -54,10 +50,6 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 ! IN  : VITGEN : VITESSES GENERALISEES
 ! IN  : ACCGEN : ACCELERATIONS GENERALISEES
 ! VAR : FEXGEN : FORCES GENERALISEES
-! VAR : MASGEN : MASSES GENERALISEES (VAR SI LAME FLUIDE)
-! VAR : PULSA2 : CARRES DES PULSATIONS (VAR SI LAME FLUIDE)
-! VAR : AMOGEN : AMORTISSEMENT GENERALISES
-! IN  : NBCHOC : NOMBRE DE NOEUDS DE CHOC
 ! VAR : LOGCHO : INDICATEUR D'ADHERENCE ET DE FORCE FLUIDE ET DE
 !                PRESENCE D UN DISPOSITIF ANTI SISMIQUE
 ! IN  : DPLMOD : TABLEAU DES DEPL MODAUX AUX NOEUDS DE CHOC
@@ -76,7 +68,7 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
     real(kind=8) :: knorm, ktang, deploc(6), depglo(6), flocal(3), fgloba(3)
     real(kind=8) :: vitglo(6), vitloc(6), orig(3), origob(3), accglo(6)
     real(kind=8) :: accloc(6), ftange(2), vtang(2), ddeplo(3), oldft(2)
-    real(kind=8) :: oldxl(3), oldvt(2), pond, signe(2), fdispo
+    real(kind=8) :: oldxl(3), oldvt(2), signe(2), fdispo
 !     ------------------------------------------------------------------
     integer :: iex, i, j
     character(len=8) :: nompar
@@ -293,128 +285,8 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
         call distno(deploc, signe, noecho(i, 9), xjeu, dist1,&
                     dist2, dnorm, cost, sint)
 !
-        if (logcho(i,2) .eq. 1) then
 !
-!        --- CAS LAME FLUIDE ---
-!
-            if (dnorm .gt. zero) then
-!
-!              --- CALCUL DE LA FORCE FLUIDE REPERE LOCAL ---
-                call mdfflu(dnorm, vnorm, anorm, vitloc, accloc,&
-                            cost, sint, coefa, coefb, coefc,&
-                            coefd, ffluid, flocal)
-!
-!               --- MISE A JOUR COUCHE LIMITE ET INDIC CHOC SEC ---
-!
-                if (logcho(i,3) .eq. 1) then
-                    if (dnorm .ge. cl) then
-                        logcho(i,3) = 0
-                        parcho(i,36) = zero
-                        cl = zero
-                    endif
-                else
-                    cl = ffluid/knorm
-                    if (dnorm .le. cl) then
-                        logcho(i,3)=1
-                        parcho(i,36)=cl
-                    endif
-                endif
-!
-                call ponder(dnorm, cl, pond)
-!
-!               --- PONDERATION ---
-                flocal(1) = flocal(1) * pond
-                flocal(2) = flocal(2) * pond
-                flocal(3) = flocal(3) * pond
-                ffluid = ffluid * pond
-!
-!
-!               --- PASSAGE DE LA FORCE DANS LE REPERE GLOBAL ---
-                call locglo(flocal, sina, cosa, sinb, cosb,&
-                            sing, cosg, fgloba)
-!
-!               --- PASSAGE A LA FORCE GENERALISEE NOEUD_1 ---
-                call togene(i, 0, dplmod, nbchoc, nbmode,&
-                            fgloba(1), fgloba(2), fgloba(3), fexgen)
-!               --- LA FORCE OPPOSEE SUR NOEUD_2 ---
-                if (noecho(i,9)(1:2) .eq. 'BI') then
-                    call togene(i, 3, dplmod, nbchoc, nbmode,&
-                                -fgloba(1), - fgloba(2), -fgloba(3), fexgen)
-                endif
-                call mdmasf(i, dnorm, masgen, nbmode, phicar,&
-                            fexgen, accgen, pulsa2, amogen, coefa*pond)
-!
-            else
-                ffluid = zero
-            endif
-!
-!
-            if (dnorm .le. cl) then
-!
-!           --- CALCUL DE LA FORCE NORMALE REPERE LOCAL ---
-                call fnorm(dnorm-cl, vitloc, knorm, cnorm, cost,&
-                           sint, fn, flocal, vnorm)
-!
-!
-                call ponder(dnorm, cl, pond)
-!
-!           --- PONDERATION ---
-                flocal(1) = flocal(1)*(1.d0-pond)
-                flocal(2) = flocal(2)*(1.d0-pond)
-                flocal(3) = flocal(3)*(1.d0-pond)
-                fn = fn *(1.d0-pond)
-!
-!
-                if ((( cfrots .ne. zero ).or.( cfrotd .ne. zero )) .and. (dnorm .le. zero )) then
-                    oldft(1) = parcho(i,26)
-                    oldft(2) = parcho(i,27)
-                    oldxl(1) = parcho(i,23)
-                    oldxl(2) = parcho(i,24)
-                    oldxl(3) = parcho(i,25)
-                    oldvt(1) = parcho(i,28)
-                    oldvt(2) = parcho(i,29)
-                    call ftang(fn, ddeplo, vitloc, cfrotd, cfrots,&
-                               ktang, ctang, logcho(i, 1), oldvt, oldft,&
-                               oldxl, cost, sint, ftange, flocal,&
-                               vtang)
-                    parcho(i,26) = oldft(1)
-                    parcho(i,27) = oldft(2)
-                    parcho(i,23) = oldxl(1)
-                    parcho(i,24) = oldxl(2)
-                    parcho(i,25) = oldxl(3)
-                    parcho(i,28) = oldvt(1)
-                    parcho(i,29) = oldvt(2)
-                endif
-!
-!           --- PASSAGE DE LA FORCE DANS LE REPERE GLOBAL ---
-                call locglo(flocal, sina, cosa, sinb, cosb,&
-                            sing, cosg, fgloba)
-!
-!           --- PASSAGE A LA FORCE GENERALISEE NOEUD_1 ---
-                call togene(i, 0, dplmod, nbchoc, nbmode,&
-                            fgloba(1), fgloba(2), fgloba(3), fexgen)
-!           --- LA FORCE OPPOSEE SUR NOEUD_2 ---
-                if (noecho(i,9)(1:2) .eq. 'BI') then
-                    call togene(i, 3, dplmod, nbchoc, nbmode,&
-                                -fgloba(1), - fgloba(2), -fgloba(3), fexgen)
-                endif
-!
-            else
-                fn = zero
-            endif
-!
-            parcho(i,23) = ddeplo(1)
-            parcho(i,24) = ddeplo(2)
-            parcho(i,25) = ddeplo(3)
-            parcho(i,26) = zero
-            parcho(i,27) = zero
-            logcho(i,1) = 0
-!
-!        DE FACON PROVISOIRE ON STOCKE FFLUID DANS FN POUR VISU
-!
-            fn = ffluid +fn
-!
-        else if (logcho(i,4).eq.1) then
+        if (logcho(i,4).eq.1) then
 !
 !        --- CAS DISPOSITIF ANTI SISMIQUE ----
 !

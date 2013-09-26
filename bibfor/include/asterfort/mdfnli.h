@@ -17,15 +17,14 @@
 !
 interface
     subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
-                      masgen, phicar, pulsa2, amogen, nbchoc,&
-                      logcho, dplmod, parcho, noecho, saucho,&
-                      nbrede, dplred, fonred, saured, saredi,&
-                      nbrevi, dplrev, fonrev, saurev, sarevi,&
-                      temps , nofdep, nofvit, nofacc, nbexci, psidel,&
-                      monmot, nbrfis, fk    , dfk   , angini,&
-                      foncp , numpas, nbpal , dt    , dtsto ,&
-                      vrotat, typal , finpal, cnpal , prdeff,&
-                      conv  , fsauv)
+                      nbchoc, logcho, dplmod, parcho, noecho,&
+                      saucho, nbrede, dplred, fonred, saured,&
+                      saredi, nbrevi, dplrev, fonrev, saurev,&
+                      sarevi, temps, nofdep, nofvit, nofacc,&
+                      nbexci, psidel, monmot, nbrfis, fk,&
+                      dfk, angini, foncp, numpas, nbpal,&
+                      dt, dtsto, vrotat, typal, finpal,&
+                      cnpal, prdeff, conv, fsauv)
         integer :: nbexci
         integer :: nbchoc
         integer :: nbmode
@@ -33,10 +32,6 @@ interface
         real(kind=8) :: vitgen(*)
         real(kind=8) :: accgen(*)
         real(kind=8) :: fexgen(*)
-        real(kind=8) :: masgen(*)
-        real(kind=8) :: phicar(*)
-        real(kind=8) :: pulsa2(*)
-        real(kind=8) :: amogen(*)
         integer :: logcho(*)
         real(kind=8) :: dplmod(nbchoc, nbmode, *)
         real(kind=8) :: parcho(*)
