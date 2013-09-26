@@ -67,17 +67,17 @@ NU = 0.22;
 EGF = 7.3E10;
 NUF = 0.24;
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                          NU=NU,
-                          RHO=2500.0,
-                          AMOR_ALPHA=alpha,
-                          AMOR_BETA=0.0,),
-                  GLRC_DM =_F(GAMMA_T = 0.02,
-                              GAMMA_F = 0.05,
-                              NYT     = 4.7E5,
-                              MYF     = 1.6E4,
-                              EF      = EGF,
-                              NUF     = NUF,),);
+MAT=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                               NU_M=NU,
+                               E_F=EGF,
+                               NU_F=NUF,
+                               RHO=2500.0,
+                               AMOR_ALPHA=alpha,
+                               AMOR_BETA=0.0,),
+                  GLRC_DM=_F(GAMMA_T = 0.02,
+                             GAMMA_F = 0.05,
+                             NYT     = 4.7E5,
+                             MYF     = 1.6E4,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=MAT,),),);

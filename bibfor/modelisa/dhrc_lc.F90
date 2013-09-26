@@ -24,6 +24,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"
@@ -57,7 +58,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     character(len=16) :: option
 ! ----------------------------------------------------------------------
 !
-!      LOI GLOBALE POUR LES PLAQUES/COQUES DKT - GLRC_CC
+!      LOI GLOBALE POUR LES PLAQUES/COQUES DKTG - DHRC
 !
 ! IN:
 !       A0     : RAIDEUR ELASTIQUE (D=0)
@@ -102,7 +103,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     integer :: k, kdmax, indi(6), indip(6), nbact, l, i, iret, kd, kd2
 !
     integer :: ntest, jcara
-    integer(kind=4) :: info
+    blas_int :: info
     real(kind=8) :: wr(6), wi(6), work(18), vl(1), vr(1)
 !
     real(kind=8) :: eps(8)

@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
+    subroutine dxefgi(nomte, pgl, epsini, sigt)
         character(len=16) :: nomte
-        real(kind=8) :: xyzl(3, 1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: epsini(6)
         real(kind=8) :: sigt(1)

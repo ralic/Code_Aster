@@ -17,6 +17,7 @@ subroutine te0185(option, nomte)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+! aslint: disable=W0104
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -147,9 +148,8 @@ subroutine te0185(option, nomte)
         else if (cmod.eq.'DTG'.or.cmod.eq.'Q4S') then
 !         -- DKTG, Q4GG
             call ef0409(nomte)
-        else if (cmod.eq.'DKT'.or.cmod.eq.'DST'.or.cmod.eq.'Q4G') then
-!         -- DKT, DST, Q4G
-            if (cmod .eq. 'DST' .or. cmod .eq. 'Q4G') ASSERT(.false.)
+        else if (cmod.eq.'DKT') then
+!         -- DKT
             call ef0031(nomte)
         else if (cmod.eq.'DTR') then
 !         -- DIS_TR

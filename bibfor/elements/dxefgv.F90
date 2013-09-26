@@ -1,5 +1,4 @@
-subroutine dxefgv(nomte, option, xyzl, pgl, depl,&
-                  effgt)
+subroutine dxefgv(nomte, option, xyzl, pgl, depl, effgt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +60,7 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl,&
 !
     opti16=option
 !
-    call dxefgm(nomte, opti16, xyzl, pgl, depl,&
-                effgt)
+    call dxefgm(nomte, opti16, xyzl, pgl, depl, effgt)
 !
 ! --- CALCUL DES EFFORTS GENERALISES D'ORIGINE THERMIQUE
 ! --- AUX POINTS DE CALCUL
@@ -86,8 +84,8 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl,&
 ! --- CALCUL DES EFFORTS GENERALISES 'VRAIS'
 ! --- AUX POINTS DE CALCUL
 !     --------------------
-    do 10 i = 1, 32
+    do i = 1, 32
         effgt(i) = effgt(i) - sigth(i)
-10  end do
+    end do
 !
 end subroutine

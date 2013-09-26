@@ -16,7 +16,6 @@ subroutine maglrc(zimat, matr, delas, ecr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -35,6 +34,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     character(len=8) :: nomres(15)
     character(len=16) :: phenom
 !
+    r8b = 0.d0
     call r8inir(6*6, 0.0d0, delas, 1)
     phenom = 'GLRC_DAMAGE'
     if (phenom .ne. 'GLRC_DAMAGE') then
@@ -45,10 +45,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     call jevech('PCACOQU', 'L', jcoqu)
     epais = zr(jcoqu)
     nomres(1) = 'EPAIS'
-    r8b = 0.d0
-    call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 1, nomres, valres, codres,&
-                1)
+    call rcvala(zimat, ' ', phenom, 0, ' ', [r8b], 1, nomres, valres, codres, 1)
     if (valres(1) .ne. epais) then
         valres(2) = epais
         call utmess('F', 'ELEMENTS5_42', nr=2, valr=valres)
@@ -58,12 +55,10 @@ subroutine maglrc(zimat, matr, delas, ecr)
 !     ATTENTION PARAMETRES EQUIVALENTS EN FLEXION
 !     EF ET NUEF
 !
-    nomres(1) = 'E'
-    nomres(2) = 'NU'
+    nomres(1) = 'E_F'
+    nomres(2) = 'NU_F'
 !
-    call rcvala(zimat, ' ', 'ELAS            ', 0, ' ',&
-                [r8b], 2, nomres, valres, codres,&
-                1)
+    call rcvala(zimat, ' ', 'ELAS_GLRC       ', 0, ' ', [r8b], 2, nomres, valres, codres, 1)
     matr(6) = valres(1)
     matr(7) = valres(2)
 !
@@ -71,20 +66,18 @@ subroutine maglrc(zimat, matr, delas, ecr)
 !
 !     MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT
 !
-    nomres(1) = 'BN11'
-    nomres(2) = 'BN12'
-    nomres(3) = 'BN22'
-    nomres(4) = 'BN33'
-    nomres(5) = 'BT1'
-    nomres(6) = 'BT2'
-    nomres(7) = 'BM11'
-    nomres(8) = 'BM12'
-    nomres(9) = 'BM22'
+    nomres(1)  = 'BN11'
+    nomres(2)  = 'BN12'
+    nomres(3)  = 'BN22'
+    nomres(4)  = 'BN33'
+    nomres(5)  = 'BT1'
+    nomres(6)  = 'BT2'
+    nomres(7)  = 'BM11'
+    nomres(8)  = 'BM12'
+    nomres(9)  = 'BM22'
     nomres(10) = 'BM33'
 !
-    call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 10, nomres, valres, codres,&
-                1)
+    call rcvala(zimat, ' ', phenom, 0, ' ', [r8b], 10, nomres, valres, codres, 1)
 !
     matr(1) = 1.0d0
     matr(2) = valres(1)
@@ -107,9 +100,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(4) = 'QP2'
     nomres(5) = 'GAMMA'
 !
-    call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 5, nomres, valres, codres,&
-                1)
+    call rcvala(zimat, ' ', phenom, 0, ' ', [r8b], 5, nomres, valres, codres, 1)
 !
     matr(8) = valres(1)
     matr(9) = valres(2)
@@ -126,9 +117,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(5) = 'C2N2'
     nomres(6) = 'C2N3'
 !
-    call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 6, nomres, valres, codres,&
-                1)
+    call rcvala(zimat, ' ', phenom, 0, ' ', [r8b], 6, nomres, valres, codres, 1)
 !
     matr(16) = valres(1)
     matr(17) = valres(2)
@@ -146,9 +135,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(5) = 'C2M2'
     nomres(6) = 'C2M3'
 !
-    call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 6, nomres, valres, codres,&
-                1)
+    call rcvala(zimat, ' ', phenom, 0, ' ', [r8b], 6, nomres, valres, codres, 1)
 !
     matr(19) = valres(1)
     matr(20) = valres(2)

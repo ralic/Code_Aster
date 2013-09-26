@@ -1,7 +1,5 @@
-subroutine parglr(nlit, elb, ea, nua, liner,&
-                  omx, omy, rx, ry, hh,&
-                  bn11, bn12, bn22, bn33, bm11,&
-                  bm12, bm22, bc11, bc22)
+subroutine parglr(nlit, elb, ea, nua, liner, omx, omy, rx, ry, hh,&
+                  bn11, bn12, bn22, bn33, bm11, bm12, bm22, bc11, bc22)
     implicit   none
     integer :: nlit
     real(kind=8) :: elb(*), ea(*), nua(*), liner(*), omx(*), omy(*), rx(*)
@@ -46,26 +44,24 @@ subroutine parglr(nlit, elb, ea, nua, liner,&
     er2oy=0.d0
     ner2o=0.d0
     er2oo=0.d0
-    do 33, ii=1,nlit
-    eox=eox+ea(ii)*omx(ii)/(1.d0-nua(ii)**2)
-    eoy=eoy+ea(ii)*omy(ii)/(1.d0-nua(ii)**2)
-    neo=neo+nua(ii)*ea(ii)*(omx(ii)+omy(ii))/2.d0/(1.d0-nua(ii)**&
-        2)
-    eoo=eoo+liner(ii)*ea(ii) *(omx(ii)+omy(ii))/2.d0/(1.d0+nua(ii)&
-        )/2.d0
-    erox=erox+ea(ii)*rx(ii)*omx(ii)/(1.d0-nua(ii)**2)
-    eroy=eroy+ea(ii)*ry(ii)*omy(ii)/(1.d0-nua(ii)**2)
-    nero=nero+nua(ii)*ea(ii) *(rx(ii)+ry(ii))/2.d0 *(omx(ii)+omy(&
-        ii))/2.d0/(1.d0-nua(ii)**2)
-    eroo=eroo+liner(ii)*ea(ii) *(rx(ii)+ry(ii))/2.d0 *(omx(ii)+&
-        omy(ii))/2.d0/(1.d0+nua(ii))/2.d0
-    er2ox=er2ox+ea(ii)*rx(ii)**2*omx(ii)/(1.d0-nua(ii)**2)
-    er2oy=er2oy+ea(ii)*ry(ii)**2*omy(ii)/(1.d0-nua(ii)**2)
-    ner2o=ner2o+nua(ii)*ea(ii) *((rx(ii)+ry(ii))/2.d0)**2 *(omx(&
-        ii)+omy(ii))/2.d0/(1.d0-nua(ii)**2)
-    er2oo=er2oo+liner(ii)*ea(ii) *((rx(ii)+ry(ii))/2.d0)**2&
-        *(omx(ii)+omy(ii))/2.d0/(1.d0+nua(ii))/2.d0
-    33 end do
+!
+    do ii = 1, nlit
+        eox=eox+ea(ii)*omx(ii)/(1.d0-nua(ii)**2)
+        eoy=eoy+ea(ii)*omy(ii)/(1.d0-nua(ii)**2)
+        neo=neo+nua(ii)*ea(ii)*(omx(ii)+omy(ii))/2.d0/(1.d0-nua(ii)**2)
+        eoo=eoo+liner(ii)*ea(ii) *(omx(ii)+omy(ii))/2.d0/(1.d0+nua(ii))/2.d0
+        erox=erox+ea(ii)*rx(ii)*omx(ii)/(1.d0-nua(ii)**2)
+        eroy=eroy+ea(ii)*ry(ii)*omy(ii)/(1.d0-nua(ii)**2)
+        nero=nero+nua(ii)*ea(ii) *(rx(ii)+ry(ii))/2.d0 *(omx(ii)+omy(ii))/2.d0/(1.d0-nua(ii)**2)
+        eroo=eroo+liner(ii)*ea(ii) *(rx(ii)+ry(ii))/2.d0 *(omx(ii)+omy(ii))/2.d0/(1.d0+nua(ii))/2.d0
+        er2ox=er2ox+ea(ii)*rx(ii)**2*omx(ii)/(1.d0-nua(ii)**2)
+        er2oy=er2oy+ea(ii)*ry(ii)**2*omy(ii)/(1.d0-nua(ii)**2)
+        ner2o=ner2o+nua(ii)*ea(ii) *((rx(ii)+ry(ii))/2.d0)**2&
+            *(omx(ii)+omy(ii))/2.d0/(1.d0-nua(ii)**2)
+        er2oo=er2oo+liner(ii)*ea(ii) *((rx(ii)+ry(ii))/2.d0)**2&
+            *(omx(ii)+omy(ii))/2.d0/(1.d0+nua(ii))/2.d0
+    end do
+!
     bn11=    esn * hh       + eox
     bn12=nub*esn * hh       + neo
     bn22=    esn * hh       + eoy

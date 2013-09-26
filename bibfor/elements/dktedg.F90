@@ -1,5 +1,4 @@
-subroutine dktedg(xyzl, option, pgl, depl, edgl,&
-                  multic)
+subroutine dktedg(xyzl, option, pgl, depl, edgl, multic)
     implicit   none
 #include "jeveux.h"
 #include "asterfort/dktbf.h"
@@ -43,27 +42,21 @@ subroutine dktedg(xyzl, option, pgl, depl, edgl,&
     real(kind=8) :: dmc(3, 2)
     real(kind=8) :: hft2(2, 6), dfc(3, 2), bf(3, 9), bm(3, 6)
     real(kind=8) :: bdm(3), bdf(3), dcis(2), vf(3), vm(3), vt(2)
-    real(kind=8) :: vfm(3), vmf(3), distn
+    real(kind=8) :: vfm(3), vmf(3)
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
     logical :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, icoopg, ivf, idfdx,&
-                    idfd2, jgano)
+        call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
         ne = npg
         fami='RIGI'
     else if (option(6:9).eq.'ELNO') then
-        call elref5(' ', 'NOEU', ndim, nno, nnos,&
-                    npg, ipoids, icoopg, ivf, idfdx,&
-                    idfd2, jgano)
+        call elref5(' ', 'NOEU', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
         ne = nno
         fami='NOEU'
     endif
-!
-    distn = 0.d0
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
@@ -71,99 +64,97 @@ subroutine dktedg(xyzl, option, pgl, depl, edgl,&
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
     call gtria3(xyzl, carat3)
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-    call dxmate(fami, df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
-    do 20 j = 1, 3
-        do 10 i = 1, 2
+    do j = 1, 3
+        do i = 1, 2
             depm(i+2* (j-1)) = depl(i+6*(j-1))
-10      continue
+        end do
         depf(1+3* (j-1)) = depl(1+2+6*(j-1))
         depf(2+3* (j-1)) = depl(3+2+6*(j-1))
         depf(3+3* (j-1)) = -depl(2+2+6*(j-1))
-20  end do
+    end do
 !     ------ CALCUL DE LA MATRICE BM -----------------------------------
     call dxtbm(carat3(9), bm)
-    do 30 k = 1, 3
+    do k = 1, 3
         bdm(k) = 0.d0
-30  end do
-    do 50 i = 1, 3
-        do 40 j = 1, 6
+    end do
+    do i = 1, 3
+        do j = 1, 6
             bdm(i) = bdm(i) + bm(i,j)*depm(j)
-40      continue
-50  end do
+        end do
+    end do
 !     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
     call dsxhft(df, carat3(9), hft2)
 !     ------ VT = HFT2.TKT.DEPF ---------------------------------------
     call dkttxy(carat3(16), carat3(13), hft2, depf, vt)
     if (option(1:4) .eq. 'DEGE') then
-        do 110 ie = 1, ne
+        do ie = 1, ne
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
             eta = zr(icoopg-1+ndim*(ie-1)+2)
 !           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
             call dktbf(qsi, eta, carat3, bf)
-            do 70 k = 1, 3
+            do k = 1, 3
                 bdf(k) = 0.d0
-70          continue
-            do 90 i = 1, 3
-                do 80 j = 1, 9
+            end do
+            do i = 1, 3
+                do j = 1, 9
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-80              continue
-90          continue
+                end do
+            end do
 !           ------ DCIS = DCI.VT --------------------------------------
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
             dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
-            do 100 i = 1, 3
-                edgl(i+8* (ie-1)) = bdm(i) + distn*bdf(i)
+            do i = 1, 3
+                edgl(i+8* (ie-1)) = bdm(i)
                 edgl(i+3+8* (ie-1)) = bdf(i)
-100          continue
+            end do
 !           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
             edgl(3+8* (ie-1)) = edgl(3+8* (ie-1))/2.d0
             edgl(6+8* (ie-1)) = edgl(6+8* (ie-1))/2.d0
             edgl(7+8* (ie-1)) = dcis(1)/2.d0
             edgl(8+8* (ie-1)) = dcis(2)/2.d0
-110      continue
+        end do
     else
-        do 120 k = 1, 3
+        do k = 1, 3
             vm(k) = 0.d0
             vfm(k) = 0.d0
-120      continue
-        do 140 i = 1, 3
-            do 130 j = 1, 3
+        end do
+        do i = 1, 3
+            do j = 1, 3
                 vm(i) = vm(i) + dm(i,j)*bdm(j)
                 vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
-130          continue
-140      continue
-        do 250 ie = 1, ne
+            end do
+        end do
+        do ie = 1, ne
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
             eta = zr(icoopg-1+ndim*(ie-1)+2)
 !           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
             call dktbf(qsi, eta, carat3, bf)
-            do 150 k = 1, 3
+            do k = 1, 3
                 bdf(k) = 0.d0
                 vf(k) = 0.d0
                 vmf(k) = 0.d0
-150          continue
+            end do
 !           ------ VF = DF.BF.DEPF , VMF = DMF.BF.DEPF ----------------
-            do 170 i = 1, 3
-                do 160 j = 1, 9
+            do i = 1, 3
+                do j = 1, 9
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-160              continue
-170          continue
-            do 230 i = 1, 3
-                do 220 j = 1, 3
+                end do
+            end do
+            do i = 1, 3
+                do j = 1, 3
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
-220              continue
-230          continue
-            do 240 i = 1, 3
+                end do
+            end do
+            do i = 1, 3
                 edgl(i+ 8*(ie-1)) = vm(i) + vmf(i)
                 edgl(i+3+8*(ie-1)) = vf(i) + vfm(i)
-240          continue
+            end do
             edgl(7+8*(ie-1)) = vt(1)
             edgl(8+8*(ie-1)) = vt(2)
-250      continue
+        end do
     endif
 !
 end subroutine

@@ -1,5 +1,6 @@
 subroutine te0546(option, nomte)
     implicit none
+! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
@@ -24,7 +25,7 @@ subroutine te0546(option, nomte)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-!     BUT: CALCUL DES OPTIONS SIGM_ELA ET EFGE_ELGA
+!     BUT: CALCUL DES OPTIONS SIGM_ELGA ET EFGE_ELGA
 !          POUR TOUS LES ELEMENTS
 !.......................................................................
 !
@@ -47,7 +48,6 @@ subroutine te0546(option, nomte)
         ASSERT(.false.)
     endif
 !
-!
 !     -- VERIFICATIONS DE COHERENCE :
 !     --------------------------------
     nbpg=itab1(3)
@@ -66,20 +66,18 @@ subroutine te0546(option, nomte)
     ASSERT(itab1(6).le.1)
     ASSERT(itab2(6).le.1)
 !
-!
 !     -- RECOPIE DES VALEURS :
 !     --------------------------
     jin=itab1(1)
     jout=itab2(1)
     ico=0
-    do 1, kpg=1,nbpg
-    do 2, ksp=1,nbsp
-    do 3, kcmp=1,nbcmp
-    ico=ico+1
-    zr(jout-1+ico)=zr(jin-1+ico)
- 3  continue
- 2  continue
-    1 end do
-!
+    do kpg = 1, nbpg
+        do ksp = 1, nbsp
+            do kcmp = 1, nbcmp
+                ico=ico+1
+                zr(jout-1+ico)=zr(jin-1+ico)
+            end do
+        end do
+    end do
 !
 end subroutine

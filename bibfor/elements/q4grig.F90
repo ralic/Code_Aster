@@ -1,5 +1,4 @@
-subroutine q4grig(nomte, xyzl, option, pgl, rig,&
-                  ener)
+subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
     implicit none
 #include "jeveux.h"
 #include "asterfort/bsthpl.h"
@@ -47,7 +46,7 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
 !     OUT RIG    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
-    integer :: int, multic
+    integer :: multic
     real(kind=8) :: wgt, depl(24)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
@@ -73,9 +72,7 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
 !
     zero = 0.0d0
     enerth = zero
@@ -96,9 +93,7 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !
@@ -106,9 +101,9 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
     call r8inir(64, zero, memb, 1)
     call r8inir(96, zero, mefl, 1)
 !
-    do 80 int = 1, npg
-        qsi = zr(icoopg-1+ndim*(int-1)+1)
-        eta = zr(icoopg-1+ndim*(int-1)+2)
+    do i = 1, npg
+        qsi = zr(icoopg-1+ndim*(i-1)+1)
+        eta = zr(icoopg-1+ndim*(i-1)+2)
 !        ---------------------------------------------------------------
 !        CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN FLEXION
 !        ---------------------------------------------------------------
@@ -117,52 +112,46 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
 !        ---- CALCUL DE LA MATRICE BF ----------------------------------
         call dsqbfb(qsi, eta, jacob(2), bf)
 !        ---- CALCUL DU PRODUIT BFT.DF.BF ------------------------------
-        call utbtab('ZERO', 3, 12, df, bf,&
-                    xab1, kf)
+        call utbtab('ZERO', 3, 12, df, bf, xab1, kf)
 !        ---- CALCUL DE LA MATRICE BC ----------------------------------
         call q4gbc(qsi, eta, jacob(2), caraq4, bc)
 !        ---- CALCUL DU PRODUIT BCT.DC.BC -----------------------------
-        call utbtab('ZERO', 2, 12, dc, bc,&
-                    xab2, kc)
+        call utbtab('ZERO', 2, 12, dc, bc, xab2, kc)
 !        ----- CALCUL DU PRODUIT BFT.DFC.BC ----------------------
-        call utdtab('ZERO', 3, 2, 12, 12,&
-                    dfc, bc, bf, xab4, kfc)
+        call utdtab('ZERO', 3, 2, 12, 12, dfc, bc, bf, xab4, kfc)
 !        ----- CALCUL DE LA SOMME KF + KC = FLEXI ----------------------
-        do 40 k = 1, 144
+        do k = 1, 144
             flexi(k) = kf(k) + kc(k) + kfc(k)
-40      continue
-        wgt = zr(ipoids+int-1)*jacob(1)
-        do 50 k = 1, 144
+        end do
+        wgt = zr(ipoids+i-1)*jacob(1)
+        do k = 1, 144
             flex(k) = flex(k) + flexi(k)*wgt
-50      continue
+        end do
 !        ---------------------------------------------------------------
 !        CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 !        ---------------------------------------------------------------
 !        ----- CALCUL DE LA MATRICE BM ---------------------------------
         call dxqbm(qsi, eta, jacob(2), bm)
 !        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
-        call utbtab('ZERO', 3, 8, dm, bm,&
-                    xab3, membi)
+        call utbtab('ZERO', 3, 8, dm, bm, xab3, membi)
 !        ----- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE ------------
-        do 60 k = 1, 64
+        do k = 1, 64
             memb(k) = memb(k) + membi(k)*wgt
-60      continue
+        end do
 !        ----- CALCUL DU PRODUIT BMT.DMC.BC ----------------------
-        call utdtab('ZERO', 3, 2, 12, 8,&
-                    dmc, bc, bm, xab4, kmc)
+        call utdtab('ZERO', 3, 2, 12, 8, dmc, bc, bm, xab4, kmc)
 !
         if (coupmf) then
 !           ------------------------------------------------------------
 !           CALCUL DES MATRICES DE COUPLAGE MEMBRANE/FLEXION
 !           ------------------------------------------------------------
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
-            call utctab('ZERO', 3, 12, 8, dmf,&
-                        bf, bm, xab1, mefli)
-            do 70 k = 1, 96
+            call utctab('ZERO', 3, 12, 8, dmf, bf, bm, xab1, mefli)
+            do k = 1, 96
                 mefl(k) = mefl(k) + (mefli(k)+kmc(k))*wgt
-70          continue
+            end do
         endif
-80  end do
+    end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxqloc(flex, memb, mefl, ctor, rig)
@@ -170,13 +159,12 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
-        call dxqloe(flex, memb, mefl, ctor, coupmf,&
-                    depl, ener)
+        call dxqloe(flex, memb, mefl, ctor, coupmf, depl, ener)
         call bsthpl(nomte(1:8), bsigth, indith)
         if (indith) then
-            do 90 i = 1, 24
+            do i = 1, 24
                 enerth = enerth + depl(i)*bsigth(i)
-90          continue
+            end do
             ener(1) = ener(1) - enerth
         endif
     endif

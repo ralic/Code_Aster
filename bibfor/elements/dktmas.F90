@@ -1,5 +1,4 @@
-subroutine dktmas(xyzl, option, pgl, mas, ener,&
-                  multic)
+subroutine dktmas(xyzl, option, pgl, mas, ener)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -48,7 +47,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
 !     OUT ENER   : TERMES POUR ENER_CIN (ECIN_ELEM)
 !     ------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: i, j, k, i1, i2, i3, int, multic, jcoqu, jdepg, m1, m2, m3
+    integer :: i, j, k, i1, i2, i3, jcoqu, jdepg, m1, m2, m3
     integer :: jvitg, iret
     real(kind=8) :: detj, wgt, wkt(9), depl(18), nfx(9), nfy(9), nmi(3)
     real(kind=8) :: vite(18)
@@ -60,9 +59,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
     logical :: exce, iner
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
 !
     zero = 0.0d0
     un = 1.0d0
@@ -126,10 +123,10 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
-    do 40 int = 1, npg
+    do i = 1, npg
 !
-        qsi = zr(icoopg-1+ndim*(int-1)+1)
-        eta = zr(icoopg-1+ndim*(int-1)+2)
+        qsi = zr(icoopg-1+ndim*(i-1)+1)
+        eta = zr(icoopg-1+ndim*(i-1)+2)
 !
 !===========================================================
 ! ---  CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE  =
@@ -142,16 +139,16 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION W
 ! ---   EST EGALE A RHO_E = RHO*EPAIS :
 !       -----------------------------
-        wgt = zr(ipoids+int-1)*detj*roe
+        wgt = zr(ipoids+i-1)*detj*roe
 !
 ! ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 ! ---   DUE AUX SEULS TERMES DE LA FLECHE W :
 !       -----------------------------------
-        do 50 i = 1, 9
-            do 60 j = 1, 9
-                flex(i,j) = flex(i,j) + wkt(i)*wkt(j)*wgt
-60          continue
-50      continue
+        do k = 1, 9
+            do j = 1, 9
+                flex(k,j) = flex(k,j) + wkt(k)*wkt(j)*wgt
+            end do
+        end do
 !
 ! ---   CALCUL DES FONCTIONS D'INTERPOLATION DES ROTATIONS :
 !       --------------------------------------------------
@@ -160,15 +157,15 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 ! ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
 !       ----------------------------------------------------
-        wgtf = zr(ipoids+int-1)*detj*(rof+excent*excent*roe)
+        wgtf = zr(ipoids+i-1)*detj*(rof+excent*excent*roe)
 !
 ! ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 !       -------------------------------------------------------
-        do 70 i = 1, 9
-            do 80 j = 1, 9
-                flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
-80          continue
-70      continue
+        do k = 1, 9
+            do j = 1, 9
+                flex(k,j) = flex(k,j)+(nfx(k)*nfx(j)+nfy(k)*nfy(j))* wgtf
+            end do
+        end do
 !
 !====================================================================
 ! ---  CAS OU L'ELEMENT EST EXCENTRE                                =
@@ -185,23 +182,23 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
 ! ---     DE LA MASSE VOLUMIQUE
 ! ---     RHO_MF = D*EPAIS*RHO
 !         --------------------
-            wgtmf = zr(ipoids+int-1)*detj*excent*roe
+            wgtmf = zr(ipoids+i-1)*detj*excent*roe
 !
 ! ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA :
 !         ------------------------------------------
-            do 90 k = 1, 3
-                do 100 j = 1, 9
+            do k = 1, 3
+                do j = 1, 9
                     i1 = 2*(k-1)+1
                     i2 = i1 +1
                     mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
                     mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
-100              continue
-90          continue
+                end do
+            end do
         endif
 !
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
-40  end do
+    end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !
@@ -217,8 +214,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
         wgt = carat3(8)*roe
         wgtf= carat3(8)*rof
         call utpslg(3, 6, pgl, masloc, masglo)
-        call dialum(3, 6, 18, wgt, masglo,&
-                    mas)
+        call dialum(3, 6, 18, wgt, masglo, mas)
 !
     else if (option.eq.'MASS_MECA_EXPLI') then
         call dxtloc(flex, memb, mefl, ctor, masloc)
@@ -232,7 +228,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
         if (coef2 .gt. coef1) then
             coef1 = coef2
         endif
-        do 210 j = 1, nno
+        do j = 1, nno
             k = 6*(j-1) + 1
             m2 = 6*(j-1) + 2
             m3 = 6*(j-1) + 3
@@ -252,7 +248,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
             mas(i1) = mas(m1)*coef1
             mas(i2) = mas(i1)
             mas(i3) = mas(i1)
-210      continue
+        end do
 !
     else if (option.eq.'ECIN_ELEM') then
         stopz='ONO'
@@ -260,14 +256,12 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(3, 6, pgl, zr(jvitg), vite)
-            call dxtloe(flex, memb, mefl, ctor, .false.,&
-                        vite, ener)
+            call dxtloe(flex, memb, mefl, ctor, .false., vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(3, 6, pgl, zr(jdepg), depl)
-                call dxtloe(flex, memb, mefl, ctor, .false.,&
-                            depl, ener)
+                call dxtloe(flex, memb, mefl, ctor, .false., depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             endif

@@ -24,6 +24,7 @@ subroutine te0033(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/q4gedg.h"
 #include "asterfort/q4gsie.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/t3gedg.h"
@@ -60,13 +61,13 @@ subroutine te0033(option, nomte)
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !     ------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i, iret, jcara, vali(2)
+    integer :: iret, jcara, vali(2)
     integer :: jdepg, jeffg, jgeom, jmate, jsigm
     integer :: np, multic
     integer :: jnbspi, nbcou, icou
     integer :: icodre(1), kpg, spt
 !
-    real(kind=8) :: zero, epi(1), epais, eptot, alpha, beta
+    real(kind=8) :: epi(1), epais, eptot, alpha, beta
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid=0.d0, valr(2)
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32), effpg(32)
@@ -87,26 +88,20 @@ subroutine te0033(option, nomte)
     else
         fami = 'RIGI'
     endif
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', fami, ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
-    if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. option .ne. 'DEGE_ELNO'&
-        .and. option .ne. 'DEGE_ELGA') then
-!C OPTION DE CALCUL INVALIDE
+    if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. &
+        option .ne. 'DEGE_ELNO' .and. option .ne. 'DEGE_ELGA') then
+! OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
     endif
 !
     dkg = .false.
-!
     if ((nomte.eq.'MEDKTG3') .or. (nomte.eq.'MEDKQG4')) then
         dkg = .true.
     endif
 !
-    zero = 0.0d0
-!
-    do 10 i = 1, 32
-        effgt(i) = zero
-10  end do
+    call r8inir(32, 0.d0, effgt, 1)
 !
     call jevech('PGEOMER', 'L', jgeom)
 !
@@ -133,8 +128,7 @@ subroutine te0033(option, nomte)
             kpg=1
             spt=1
             poum='+'
-            call rcvalb(famil, kpg, spt, poum, zi(jmate),&
-                        ' ', 'ELAS_COQMU', 0, ' ', [r8bid],&
+            call rcvalb(famil, kpg, spt, poum, zi(jmate), ' ', 'ELAS_COQMU', 0, ' ', [r8bid],&
                         1, nomres, epi, icodre(1), 0)
             if (icodre(1) .eq. 0) then
                 eptot=eptot+epi(1)
@@ -171,9 +165,8 @@ subroutine te0033(option, nomte)
 !
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                c, s)
+    beta  = zr(jcara+2) * r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
     call jevech('PDEPLAR', 'L', jdepg)
     call utpvgl(nno, 6, pgl, zr(jdepg), depl)
@@ -192,24 +185,18 @@ subroutine te0033(option, nomte)
             endif
         endif
 !
-        if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+        if (nomte .eq. 'MEDKTR3') then
+            call dktsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MEDSTR3') then
-            call dstsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
-            call dkqsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call dstsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
+        else if (nomte.eq.'MEDKQU4') then
+            call dkqsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MEDSQU4') then
-            call dsqsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call dsqsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MEQ4QU4') then
-            call q4gsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call q4gsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MET3TR3') then
-            call t3gsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call t3gsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else
 ! TYPE D ELEMENT INVALIDE
             ASSERT(.false.)
@@ -235,24 +222,18 @@ subroutine te0033(option, nomte)
                 call utmess('F', 'ELEMENTS_46')
             endif
         endif
-        if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+        if (nomte .eq. 'MEDKTR3') then
+            call dktsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MEDSTR3') then
-            call dstsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
-            call dkqsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call dstsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
+        else if (nomte.eq.'MEDKQU4') then
+            call dkqsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MEDSQU4') then
-            call dsqsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call dsqsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MEQ4QU4') then
-            call q4gsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call q4gsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         else if (nomte.eq.'MET3TR3') then
-            call t3gsie(option, fami, xyzl, pgl, depl,&
-                        nbcou, zr(jsigm))
+            call t3gsie(option, fami, xyzl, pgl, depl, nbcou, zr(jsigm))
         endif
         call dxsiro(np*nbcou*3, t2iu, zr(jsigm), zr(jsigm))
 !     ----------------------------
@@ -260,8 +241,7 @@ subroutine te0033(option, nomte)
         call jevech('PDEFOGR', 'E', jeffg)
 !
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, option, pgl, depl, effgt,&
-                        multic)
+            call dktedg(xyzl, option, pgl, depl, effgt, multic)
         else if (nomte.eq.'MEDSTR3') then
             call dstedg(xyzl, option, pgl, depl, effgt)
         else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
@@ -282,8 +262,7 @@ subroutine te0033(option, nomte)
         call jevech('PDEFOPG', 'E', jeffg)
 !
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, option, pgl, depl, effpg,&
-                        multic)
+            call dktedg(xyzl, option, pgl, depl, effpg, multic)
         else if (nomte.eq.'MEDSTR3') then
             call dstedg(xyzl, option, pgl, depl, effpg)
         else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
@@ -302,8 +281,7 @@ subroutine te0033(option, nomte)
 !
     if (option .eq. 'SIEF_ELGA') then
 ! ---    PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
-        call cosiro(nomte, 'PCONTRR', 'E', 'IU', 'G',&
-                    jsigm, 'S')
+        call cosiro(nomte, 'PCONTRR', 'E', 'IU', 'G', jsigm, 'S')
     endif
 !
 end subroutine

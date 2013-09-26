@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
+    subroutine dxglrc(nomte, option, compor, xyzl, ul,&
                       dul, btsig, ktan, pgl, crit,&
                       codret)
         character(len=16) :: nomte
-        character(len=16) :: opt
+        character(len=16) :: option
         character(len=16) :: compor(*)
         real(kind=8) :: xyzl(3, 4)
         real(kind=8) :: ul(6, 4)

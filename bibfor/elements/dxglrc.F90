@@ -1,6 +1,4 @@
-subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
-                  dul, btsig, ktan, pgl, crit,&
-                  codret)
+subroutine dxglrc(nomte, option, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, codret)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -23,7 +21,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !     CALCUL LES OPTIONS NON LINEAIRES POUR L'ELEMENT DE PLAQUE DKTG
 !     TOUTES LES ENTREES ET LES SORTIES SONT DANS LE REPERE LOCAL.
 !
-!     IN  OPT : OPTION NON LINEAIRE A CALCULER
+!     IN  OPTION : OPTION NON LINEAIRE A CALCULER
 !                'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
 !     IN  XYZL : COORDONNEES DES NOEUDS DANS LE REPERE LOCAL
 !     IN  UL : DEPLACEMENT A L'INSTANT T "-"
@@ -157,6 +155,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), c, s
 !
+    logical :: t3g, q4g
     logical :: leul, lrgm
     logical :: lbid, vecteu, matric
     logical :: q4gg
@@ -193,30 +192,42 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     real(kind=8) :: matr(50), sigm(8), alfmc, tmoy, tgra
 !
     character(len=8) :: k8bid
-    character(len=16) :: opt, nomte, compor(*)
-    character(len=24) :: valk
+    character(len=16) :: option, nomte, compor(*)
+    character(len=24) :: valk(2)
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
     codret = 0
+    nbsig  = 6
+    q4gg   = .false.
+    t3g    = .false.
+    q4g    = .false.
+    leul   = .false.
 !
-    nbsig = 6
-    q4gg = .false.
-    call r8inir(8, 0.d0, sig, 1)
-    call r8inir(8, 0.d0, dsig, 1)
+    if (nomte(1:8) .eq. 'MEDKTG3 ' .or. nomte(1:8) .eq. 'MET3GG3 ') then
+        t3g = .true.
+    else if(nomte(1:8).eq.'MEDKQG4 ' .or. nomte(1:8).eq.'MEQ4GG4 ') then
+        q4g = .true.
+    else
+        valk(1) = nomte
+        valk(2) = option
+        call utmess('F', 'CALCULEL3_27', nk=2, valk=valk)
+    endif
+!
     if (nomte(1:8) .eq. 'MEQ4GG4 ' .or. nomte(1:8) .eq. 'MET3GG3 ') then
         q4gg = .true.
         nbsig = 8
     endif
 !
-    vecteu = ((opt.eq.'FULL_MECA') .or. (opt.eq.'RAPH_MECA'))
-    matric = ((opt.eq.'FULL_MECA') .or. (opt(1:9).eq.'RIGI_MECA'))
-    lrgm = opt.eq.'RIGI_MECA     '
+    vecteu = ((option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA'))
+    matric = ((option.eq.'FULL_MECA') .or. (option(1:9).eq.'RIGI_MECA'))
+    lrgm = option.eq.'RIGI_MECA     '
+!
+    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+!
+    call r8inir(8, 0.d0, sig, 1)
+    call r8inir(8, 0.d0, dsig, 1)
 !
     call jevech('PMATERC', 'L', imate)
-!
-    leul = .false.
+    call jevech('PCACOQU', 'L', icacoq)
 !
     if (.not. lrgm) then
         call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
@@ -231,8 +242,6 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
         icompo=1
         icontm=1
     endif
-!
-    call jevech('PCACOQU', 'L', icacoq)
 !
     if (vecteu) then
         call jevech('PCONTPR', 'E', icontp)
@@ -255,34 +264,35 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !     MISES A ZERO :
 !
     if (matric) then
-        call r8inir((3*nno)* (3*nno), 0.d0, flexi, 1)
-        call r8inir((3*nno)* (3*nno), 0.d0, flex, 1)
-        call r8inir((2*nno)* (2*nno), 0.d0, memb, 1)
-        call r8inir((2*nno)* (3*nno), 0.d0, mefl, 1)
+        call r8inir((3*nno)*(3*nno), 0.d0, flexi, 1)
+        call r8inir((3*nno)*(3*nno), 0.d0, flex,  1)
+        call r8inir((2*nno)*(2*nno), 0.d0, memb,  1)
+        call r8inir((2*nno)*(3*nno), 0.d0, mefl,  1)
     endif
 !
     if (vecteu) then
         call r8inir(6*nno, 0.d0, btsig, 1)
-        call r8inir(32, 0.d0, effint, 1)
-        call r8inir(32, 0.d0, efforp, 1)
+        call r8inir(   32, 0.d0, effint, 1)
+        call r8inir(   32, 0.d0, efforp, 1)
     endif
 !
-    call r8inir(36, 0.d0, delas, 1)
+    call r8inir(36, 0.d0,  delas, 1)
     call r8inir(32, 0.d0, sigmam, 1)
     call r8inir(32, 0.d0, efform, 1)
+!
 !     PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 !
     do ino = 1, nno
-        um(1,ino) = ul(1,ino)
-        um(2,ino) = ul(2,ino)
-        uf(1,ino) = ul(3,ino)
-        uf(2,ino) = ul(5,ino)
-        uf(3,ino) = -ul(4,ino)
+        um(1,ino)  =  ul(1,ino)
+        um(2,ino)  =  ul(2,ino)
+        uf(1,ino)  =  ul(3,ino)
+        uf(2,ino)  =  ul(5,ino)
+        uf(3,ino)  = -ul(4,ino)
         dum(1,ino) = dul(1,ino)
         dum(2,ino) = dul(2,ino)
         duf(1,ino) = dul(3,ino)
         duf(2,ino) = dul(5,ino)
-        duf(3,ino) = -dul(4,ino)
+        duf(3,ino) =-dul(4,ino)
     end do
 !
 !     INTEGRATION SUR LA SURFACE DE L'ELEMENT:
@@ -310,9 +320,8 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !
         call jevech('PCACOQU', 'L', icara)
         alpha = zr(icara+1) * r8dgrd()
-        beta = zr(icara+2) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                    c, s)
+        beta  = zr(icara+2) * r8dgrd()
+        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 ! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !     DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
@@ -327,13 +336,13 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !
     do ipg = 1, npg
         call r8inir(24, 0.d0, ecrp, 1)
-        call r8inir(3, 0.d0, n, 1)
-        call r8inir(3, 0.d0, m, 1)
-        call r8inir(2, 0.d0, q, 1)
-        call r8inir(9, 0.d0, df, 1)
-        call r8inir(9, 0.d0, dm, 1)
-        call r8inir(9, 0.d0, dmf, 1)
-        call r8inir(4, 0.d0, dc, 1)
+        call r8inir( 3, 0.d0, n   , 1)
+        call r8inir( 3, 0.d0, m   , 1)
+        call r8inir( 2, 0.d0, q   , 1)
+        call r8inir( 9, 0.d0, df  , 1)
+        call r8inir( 9, 0.d0, dm  , 1)
+        call r8inir( 9, 0.d0, dmf , 1)
+        call r8inir( 4, 0.d0, dc  , 1)
 !
         qsi = zr(icoopg-1+ndim*(ipg-1)+1)
         eta = zr(icoopg-1+ndim*(ipg-1)+2)
@@ -363,19 +372,13 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
             poids = carat3(8)
         endif
 !
-        call pmrvec('ZERO', 3, 2*nno, bm, um,&
-                    eps)
-        call pmrvec('ZERO', 3, 2*nno, bm, dum,&
-                    deps)
-        call pmrvec('ZERO', 3, 3*nno, bf, uf,&
-                    khi)
-        call pmrvec('ZERO', 3, 3*nno, bf, duf,&
-                    dkhi)
+        call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
+        call pmrvec('ZERO', 3, 2*nno, bm, dum, deps)
+        call pmrvec('ZERO', 3, 3*nno, bf, uf, khi)
+        call pmrvec('ZERO', 3, 3*nno, bf, duf, dkhi)
         if (q4gg) then
-            call pmrvec('ZERO', 2, 3*nno, bc, uf,&
-                        gam)
-            call pmrvec('ZERO', 2, 3*nno, bc, duf,&
-                        dgam)
+            call pmrvec('ZERO', 2, 3*nno, bc, uf, gam)
+            call pmrvec('ZERO', 2, 3*nno, bc, duf, dgam)
         endif
 !
         call jevech('PCACOQU', 'L', icara)
@@ -403,32 +406,29 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
             end do
         endif
 !
-        do i = 1, 50
-            matr(i) = 0.0d0
-        end do
+        call r8inir(50, 0.d0, matr, 1)
 !
         if (.not. lrgm) then
             do i = 1, 3
-                epst(i) = eps(i) + deps(i)
-                epst(3 + i) = khi(i) + dkhi(i)
-                deps(3 + i) = dkhi(i)
+                epst(i)   = eps(i) + deps(i)
+                epst(i+3) = khi(i) + dkhi(i)
+                deps(i+3) = dkhi(i)
             end do
 !
             do i = 1, 3
-                epsm(i) = eps(i)
+                epsm(i)   = eps(i)
                 epsm(i+3) = khi(i)
             end do
 !
             do i = 1, nbsig
-                sig(i) = efform(icpg + i)
+                sig(i)  = efform(icpg + i)
                 sigm(i) = sig(i)
             end do
         endif
 !
         if (compor(1)(1:4) .eq. 'ELAS') then
-            call dxmate('RIGI', dff, dmm, dmff, dcc,&
-                        dci, dmc, dfc, nno, pgl,&
-                        multic, coupmf, t2iu, t2ui, t1ve)
+            call dxmate('RIGI', dff, dmm, dmff, dcc, dci, dmc, dfc, nno, pgl, multic, coupmf,&
+                        t2iu, t2ui, t1ve)
             call r8inir(36, 0.d0, dsidep, 1)
 ! -- MEMBRANE
             dsidep(1,1) = dmm(1)
@@ -480,13 +480,12 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !   AIRE DE SURFACE APPARTENANT AU POINT DE G.
             surfgp = poids
 !
-            call glrcmm(zi(imate), matr, ep, surfgp, pgl,&
-                        epst, deps, dsig, ecr, delas,&
+            call glrcmm(zi(imate), matr, ep, surfgp, pgl, epst, deps, dsig, ecr, delas,&
                         dsidep, crit, codret)
 !
             do i = 1, 3
-                dsig(i) = dsig(i) * ep
-                dsig(3 + i) = dsig(3 + i) * ep*ep / 6.d0
+                dsig(i)   = dsig(i)*ep
+                dsig(3+i) = dsig(3+i)*ep*ep/6.d0
             end do
 !
             do i = 1, nbvar
@@ -509,36 +508,30 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
                 end do
             endif
 !
-            call crgdm(zi(imate), compor(1), lambda, deuxmu, lamf,&
-                       deumuf, gt, gc, gf, seuil,&
-                       alphaf, alfmc, ep, lrgm, ipg,&
-                       ther, tref, dtmoy, dtgra, tmoy,&
-                       tgra, alphat)
+            call crgdm(zi(imate), compor(1), lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,&
+                       alphaf, alfmc, ep, lrgm, ipg, ther, tref, dtmoy, dtgra, tmoy, tgra, alphat)
 !
 !     CALCUL DE LA DEFORMATION THERMIQUE
             if (ther) then
                 epsth = alphat * (tmoy-tref)
                 khith = alphat * tgra
                 do i = 1, 2
-                    epsm(i) = epsm(i) - epsth
+                    epsm(i)   = epsm(i)   - epsth
                     epsm(i+3) = epsm(i+3) - khith
                 end do
                 depsth = alphat * dtmoy
                 dkhith = alphat * dtgra
                 do i = 1, 2
-                    deps(i) = deps(i) - depsth
+                    deps(i)   = deps(i)   - depsth
                     deps(i+3) = deps(i+3) - dkhith
                 end do
             endif
 !
-!
 !     ENDOMMAGEMENT SEULEMENT
 !
             call r8inir(36, 0.d0, dsidep, 1)
-            call lcgldm(epsm, deps, ecr, opt, sig,&
-                        ecrp, dsidep, lambda, deuxmu, lamf,&
-                        deumuf, gt, gc, gf, seuil,&
-                        alphaf, alfmc, crit, codret)
+            call lcgldm(epsm, deps, ecr, option, sig, ecrp, dsidep, lambda, deuxmu, lamf, deumuf,&
+                        gt, gc, gf, seuil, alphaf, alfmc, crit, codret)
 !
         else if (compor(1)(1:4).eq. 'DHRC') then
 !
@@ -550,18 +543,14 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
                 end do
             endif
 !
-            call dhrc_recup_mate(zi(imate), compor(1), ep, a0, b0,&
-                                 c0, aa_t, ga_t, ab_, gb_,&
-                                 ac_, gc_, aa_c, ga_c, cstseu)
+            call dhrc_recup_mate(zi(imate), compor(1), ep, a0, b0, c0,&
+                                    aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu)
 !
 !     ENDOMMAGEMENT COUPLÉ PLASTICITÉ
 !
             call r8inir(36, 0.d0, dsidep, 1)
-            call dhrc_lc(epsm, deps, ecr, pgl, opt,&
-                         sig, ecrp, a0, b0, c0,&
-                         aa_t, ga_t, ab_, gb_, ac_,&
-                         gc_, aa_c, ga_c, cstseu, crit,&
-                         codret, dsidep)
+            call dhrc_lc(epsm, deps, ecr, pgl, option, sig, ecrp, a0, b0, c0,&
+                        aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu, crit, codret, dsidep)
 !
         else if (compor(1)(1:7).eq. 'KIT_DDI') then
 !     ENDOMMAGEMENT PLUS PLASTICITE
@@ -572,15 +561,12 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
                 end do
             endif
 !
-            call nmcoup('RIGI', ipg, 1, 3, k8bid,&
-                        zi(imate), compor, lbid, crit, r8bid,&
-                        r8bid, 6, epsm, deps, 6,&
-                        sigm, ecr, opt, 1, win,&
-                        sig, ecrp, 36, dsidep, 1,&
-                        wout, codret)
+            call nmcoup('RIGI', ipg, 1, 3, k8bid, zi(imate), compor, lbid, crit, r8bid,&
+                        r8bid, 6, epsm, deps, 6, sigm, ecr, option, 1, win,&
+                        sig, ecrp, 36, dsidep, 1, wout, codret)
         else
-            valk = compor(1)
-            call utmess('F', 'ELEMENTS4_79', sk=valk)
+            valk(1) = compor(1)
+            call utmess('F', 'ELEMENTS4_79', nk=1, valk=valk)
         endif
 !
         if (.not. lrgm) then
@@ -662,21 +648,17 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !                   + BCT*DC*BC
         if (matric) then
 !     MEMBRANE :
-            call utbtab('CUMU', 3, 2*nno, dm, bm,&
-                        work, memb)
+            call utbtab('CUMU', 3, 2*nno, dm, bm, work, memb)
 !
 !     FLEXION :
-            call utbtab('CUMUL', 3, 3*nno, df, bf,&
-                        work, flex)
+            call utbtab('CUMUL', 3, 3*nno, df, bf, work, flex)
 !
 !     CISAILLEMENT:
             if (q4gg) then
-                call utbtab('CUMUL', 2, 3*nno, dc, bc,&
-                            work, flex)
+                call utbtab('CUMUL', 2, 3*nno, dc, bc, work, flex)
             endif
 !     COUPLAGE:
-            call utctab('CUMUL', 3, 3*nno, 2*nno, dmf,&
-                        bf, bm, work, mefl)
+            call utctab('CUMUL', 3, 3*nno, 2*nno, dmf, bf, bm, work, mefl)
         endif
 !
 !     FIN BOUCLE SUR LES POINTS DE GAUSS
@@ -702,12 +684,9 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !
 !     ACCUMULATION DES SOUS MATRICES DANS KTAN :
     if (matric) then
-        if (nomte(1:8) .eq. 'MEDKTG3 ' .or. nomte(1:8) .eq. 'MET3GG3 ') then
-!
+        if (t3g) then
             call dxtloc(flex, memb, mefl, ctor, ktan)
-!
-            else if(nomte(1:8).eq.'MEDKQG4 ' .or.&
-     &          nomte(1:8).eq.'MEQ4GG4 ') then
+        else if(q4g) then
             call dxqloc(flex, memb, mefl, ctor, ktan)
         endif
     endif

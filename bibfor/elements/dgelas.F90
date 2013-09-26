@@ -1,5 +1,4 @@
-subroutine dgelas(eb, nub, h, b, a,&
-                  em, num, ef, nuf, icisai)
+subroutine dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
 !
     implicit   none
 !

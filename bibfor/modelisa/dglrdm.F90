@@ -96,13 +96,13 @@ subroutine dglrdm()
     real(kind=8) :: h, np, emaxm, emaxf
     real(kind=8) :: pendt, pendf, nyc, gt, gf, gc
     real(kind=8) :: num, nuf, em, ef, nyt, dxd, myf, dxp, drp, mp, rho, drd
-    real(kind=8) :: pelast, pelasf, amora, amorb, rhob, rhoa, alpha, beta
+    real(kind=8) :: pelast, pelasf, amora, amorb, amorh, rhob, rhoa, alpha, beta, hyst
     real(kind=8) :: omx(3*na), omy(3*na)
     real(kind=8) :: rx(3*na), ry(3*na)
-    real(kind=8) :: valres(5), r8b
+    real(kind=8) :: valres(6), r8b
 !
-    integer :: icodr2(5)
-    character(len=8) :: mater, k8b, compr, nomres(5)
+    integer :: icodr2(6)
+    character(len=8) :: mater, k8b, compr, nomres(6)
     character(len=19) :: mendom
     character(len=19) :: cisail, pente
     character(len=16) :: type, nomcmd, fichie
@@ -140,11 +140,11 @@ subroutine dglrdm()
     nomres(3) = 'RHO'
     nomres(4) = 'AMOR_ALP'
     nomres(5) = 'AMOR_BET'
+    nomres(6) = 'AMOR_HYS'
     k8b = ' '
     call getvr8('BETON', 'EPAIS', iocc=1, scal=h, nbret=ibid)
     r8b = 0.d0
-    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
-                5, nomres, valres, icodr2, 0)
+    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b], 6, nomres, valres, icodr2, 0)
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
         call utmess('A', 'ALGORITH6_8')
     endif
@@ -163,10 +163,14 @@ subroutine dglrdm()
     else
         amorb = valres(5)
     endif
+    if (icodr2(6) .ne. 0) then
+        amorh = 0.0d0
+    else
+        amorh = valres(6)
+    endif
 !
     nomres(1) = 'SYT'
-    call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, [r8b],&
-                1, nomres, valres, icodr2, 0)
+    call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, [r8b], 1, nomres, valres, icodr2, 0)
     if (icodr2(1) .ne. 0) then
         call utmess('A', 'ALGORITH6_9')
     endif
@@ -199,8 +203,7 @@ subroutine dglrdm()
     nomres(3) = 'RHO'
 !          NOMRES(4) = 'AMOR_ALPHA'
 !          NOMRES(5) = 'AMOR_BETA'
-    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
-                3, nomres, valres, icodr2, 0)
+    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b], 3, nomres, valres, icodr2, 0)
 !
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
         call utmess('A', 'ALGORITH6_10')
@@ -230,23 +233,23 @@ subroutine dglrdm()
 !
     call getvr8('NAPPE', 'OMX', iocc=ilit, scal=omx(ilit), nbret=ibid)
     call getvr8('NAPPE', 'OMY', iocc=ilit, scal=omy(ilit), nbret=ibid)
-    call getvr8('NAPPE', 'RX', iocc=ilit, scal=rx(ilit), nbret=ibid)
-    call getvr8('NAPPE', 'RY', iocc=ilit, scal=ry(ilit), nbret=ibid)
+    call getvr8('NAPPE', 'RX',  iocc=ilit, scal=rx(ilit),  nbret=ibid)
+    call getvr8('NAPPE', 'RY',  iocc=ilit, scal=ry(ilit),  nbret=ibid)
     if ((omx(ilit) .ne. omy(ilit)) .or. (rx(ilit) .ne. ry(ilit))) then
         call utmess('A', 'ALGORITH6_6')
     endif
-! Mise en coh�rence avec GLRC_DAMAGE
-! D�veloppement fait pour -0.5<RX<0.5
-! or pour la coh�rence avec GLRC_DAMAGE
+! Mise en cohérence avec GLRC_DAMAGE
+! Développement fait pour -0.5<RX<0.5
+! or pour la cohérence avec GLRC_DAMAGE
 ! on se met dans le cas -1<RX<1
 ! pour repasser dans les conditions initiale on multiplie RX par 1/2
     rx(ilit)=rx(ilit)*0.5d0
     ry(ilit)=ry(ilit)*0.5d0
-! Fin mise en coh�rence avec GLRC_DAMAGE
+! Fin mise en cohérence avec GLRC_DAMAGE
 !
     b=ea(ilit)*(omx(ilit)+omy(ilit))
 ! B1=B1+EA(ILIT)*(RX(ILIT)+RY(ILIT))/2.*(OMX(ILIT)+OMY(ILIT))
-! B1 = 0 du � la sym�trie de la plaque
+! B1 = 0 du à la symétrie de la plaque
     b1=0.d0
     a=ea(ilit)*(omx(ilit)+omy(ilit))*((rx(ilit)+ry(ilit))/2.d0)**2
 ! 10     CONTINUE
@@ -259,6 +262,9 @@ subroutine dglrdm()
     if (iret .eq. 0) then
         rho=rhob + rhoa/h*2.d0*(omx(1)+omy(1))
     endif
+    alpha = 0.d0
+    beta  = 0.d0
+    hyst  = 0.d0
     call getvr8(' ', 'AMOR_ALPHA', scal=alpha, nbret=ibid1)
     if (ibid1 .eq. 0) then
         alpha=amora
@@ -267,6 +273,10 @@ subroutine dglrdm()
     if (ibid1 .eq. 0) then
         beta=amorb
     endif
+    call getvr8(' ', 'AMOR_HYST', scal=hyst, nbret=ibid1)
+    if (ibid1 .eq. 0) then
+        hyst=amorh
+    endif
 !
 ! RECUPERATION DES MOTS CLES "CISAIL", "METHODE_ENDO" et "PENTE"
     call getvtx(' ', 'PENTE', scal=pente, nbret=ibid1)
@@ -274,7 +284,7 @@ subroutine dglrdm()
         ipente = 3
 ! - RECUPERATION DE LA DEFORMATION MAXIMALE EN MEMBRANE (EPSI_MAX_M)
 ! - RECUPERATION DE LA DEFORMATION MAXIMALE EN FLEXION (COUR_MAX_F)
-        call getvr8(' ', 'EPSI_MEMB', scal=emaxm, nbret=ibid1)
+        call getvr8(' ', 'EPSI_MEMB',  scal=emaxm, nbret=ibid1)
         call getvr8(' ', 'KAPPA_FLEX', scal=emaxf, nbret=ibid1)
     else if (pente .eq. 'PLAS_ACIER') then
         if (sya(ilit) .le. 0.d0) then
@@ -302,98 +312,88 @@ subroutine dglrdm()
     endif
 ! - CALCUL DES PARAMETRES ELASTIQUE HOMOGENEISES EM,NUM,EF,NUF
     call getres(mater, type, nomcmd)
-    call dgelas(eb, nub, h, b, a,&
-                em, num, ef, nuf, icisai)
+    call dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
 ! - DETERMINATION DES POINTS DE FISSURATION (DXD,NYT) ET (DRD,MYF)
 !   ET DES PENTES ELASTIQUES
-    call dgseui(em, num, ef, nuf, eb,&
-                nub, sytb, h, icisai, nyt,&
-                nyc, dxd, myf, drd, pelast,&
+    call dgseui(em, num, ef, nuf, eb, nub, sytb, h, icisai, nyt, nyc, dxd, myf, drd, pelast,&
                 pelasf, icompr)
 ! - DETERMINATION DES PENTES POST ELASTIQUE
-    call dgplas(ea, sya, eb, nub, sytb,&
-                num, nuf, a, b1, b,&
-                nyt, myf, dxd, drd, h,&
-                ipente, icisai, emaxm, emaxf, nnap,&
-                rx, ry, np, dxp, pendt,&
-                drp, mp, pendf)
+    call dgplas(ea, sya, eb, nub, sytb, num, nuf, a, b1, b, nyt, myf, dxd, drd, h,&
+                ipente, icisai, emaxm, emaxf, nnap, rx, ry, np, dxp, pendt, drp, mp, pendf)
 ! - DETERMINATION DES PARAMETRES D ENDOMMAGEMENT
-    call dgendo(em, ef, h, nyt, nyc,&
-                num, nuf, pendt, pelast, pendf,&
-                pelasf, iendo, icisai, icompr, gt,&
-                gf, gc, ipente, np, dxp)
+    call dgendo(em, ef, h, nyt, nyc, num, nuf, pendt, pelast, pendf,&
+                pelasf, iendo, icisai, icompr, gt, gf, gc, ipente, np, dxp)
 !-----REMPLISSAGE DU MATERIAU
     call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K16', 2, jlm)
     zk16(jlm ) = 'GLRC_DM         '
-    zk16(jlm+1) = 'ELAS            '
+    zk16(jlm+1) = 'ELAS_GLRC       '
 !---------ELASTIQUE---------------
-    lonobj = 5
-    call wkvect(mater//'.ELAS      .VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.ELAS      .VALK', 'LONUTI', lonobj)
-    call wkvect(mater//'.ELAS      .VALR', 'G V R', lonobj, jmelr)
-    call jeecra(mater//'.ELAS      .VALR', 'LONUTI', lonobj)
-    call wkvect(mater//'.ELAS      .VALC', 'G V C', lonobj, jmelc)
-    call jeecra(mater//'.ELAS      .VALC', 'LONUTI', 0)
-    zk8(jmelk ) = 'E       '
+    lonobj = 8
+    call wkvect(mater//'.ELAS_GLRC .VALK', 'G V K8', 2*lonobj, jmelk)
+    call jeecra(mater//'.ELAS_GLRC .VALK', 'LONUTI',   lonobj)
+    call wkvect(mater//'.ELAS_GLRC .VALR', 'G V R',    lonobj, jmelr)
+    call jeecra(mater//'.ELAS_GLRC .VALR', 'LONUTI',   lonobj)
+    call wkvect(mater//'.ELAS_GLRC .VALC', 'G V C',    lonobj, jmelc)
+    call jeecra(mater//'.ELAS_GLRC .VALC', 'LONUTI',   0)
+    zk8(jmelk ) = 'E_M     '
     zr(jmelr ) = em
-    zk8(jmelk+1) = 'NU      '
+    zk8(jmelk+1) = 'NU_M    '
     zr(jmelr+1 ) = num
-    zk8(jmelk+2) = 'RHO     '
-    zr(jmelr+2 ) = rho
-    if (amora .gt. 0.0d0) then
-        zk8(jmelk+3) = 'AMOR_ALP'
-        zr(jmelr+3 ) = alpha
+    zk8(jmelk+2 ) = 'E_F     '
+    zr(jmelr+2 ) = ef
+    zk8(jmelk+3) = 'NU_F    '
+    zr(jmelr+3 ) = nuf
+    zk8(jmelk+4) = 'RHO     '
+    zr(jmelr+4 ) = rho
+    if (alpha .gt. 0.0d0) then
+        zk8(jmelk+5) = 'AMOR_ALP'
+        zr(jmelr+5 ) = alpha
     endif
-    if (amorb .gt. 0.0d0) then
-        zk8(jmelk+4) = 'AMOR_BET'
-        zr(jmelr+4 ) = beta
+    if (beta .gt. 0.0d0) then
+        zk8(jmelk+6) = 'AMOR_BET'
+        zr(jmelr+6 ) = beta
+    endif
+    if (hyst .gt. 0.0d0) then
+        zk8(jmelk+7) = 'AMOR_HYS'
+        zr(jmelr+7 ) = hyst
     endif
 !---------GLRC_DM---------------
-    lonobj = 10
+    lonobj = 8
     call wkvect(mater//'.GLRC_DM   .VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.GLRC_DM   .VALK', 'LONUTI', lonobj, ' ')
-    call wkvect(mater//'.GLRC_DM   .VALR', 'G V R', lonobj, jmelr)
-    call jeecra(mater//'.GLRC_DM   .VALR', 'LONUTI', lonobj, ' ')
-    call wkvect(mater//'.GLRC_DM   .VALC', 'G V C', lonobj, jmelc)
-    call jeecra(mater//'.GLRC_DM   .VALC', 'LONUTI', 0, ' ')
-    zk8(jmelk ) = 'EF      '
-    zr(jmelr ) = ef
-    zk8(jmelk+1) = 'NUF     '
-    zr(jmelr+1 ) = nuf
-    zk8(jmelk+2) = 'EPAIS   '
-    zr(jmelr+2) = h
-    zk8(jmelk+3) = 'GAMMA_T '
-    zr(jmelr+3 ) = gt
-    zk8(jmelk+4) = 'GAMMA_F '
-    zr(jmelr+4 ) = gf
-    zk8(jmelk+5) = 'GAMMA_C '
-    zr(jmelr+5 ) = gc
-    zk8(jmelk+6) = 'NYT     '
-    zr(jmelr+6 ) = nyt
-    zk8(jmelk+7) = 'MYF     '
-    zr(jmelr+7 ) = myf
-    zk8(jmelk+8) = 'NYC     '
-    zr(jmelr+8 ) = nyc
-    zk8(jmelk+9) = 'ALPHA_C '
-    zr(jmelr+9 ) = 1.d0
+    call jeecra(mater//'.GLRC_DM   .VALK', 'LONUTI',   lonobj, ' ')
+    call wkvect(mater//'.GLRC_DM   .VALR', 'G V R',    lonobj, jmelr)
+    call jeecra(mater//'.GLRC_DM   .VALR', 'LONUTI',   lonobj, ' ')
+    call wkvect(mater//'.GLRC_DM   .VALC', 'G V C',    lonobj, jmelc)
+    call jeecra(mater//'.GLRC_DM   .VALC', 'LONUTI',   0,      ' ')
+    zk8(jmelk)   = 'GAMMA_T '
+    zr(jmelr )   = gt
+    zk8(jmelk+1) = 'GAMMA_F '
+    zr(jmelr+1 ) = gf
+    zk8(jmelk+2) = 'GAMMA_C '
+    zr(jmelr+2 ) = gc
+    zk8(jmelk+3) = 'NYT     '
+    zr(jmelr+3 ) = nyt
+    zk8(jmelk+4) = 'MYF     '
+    zr(jmelr+4 ) = myf
+    zk8(jmelk+5) = 'NYC     '
+    zr(jmelr+5 ) = nyc
+    zk8(jmelk+6) = 'ALPHA_C '
+    zr(jmelr+6 ) = 1.d0
+    zk8(jmelk+7) = 'EPAIS   '
+    zr(jmelr+7 ) = h
 !---------IMPRESSION-------------
     if (nimpr .gt. 0) then
-        write (ifr,*)
-        write (ifr,*)
         write (ifr,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DM :'
         write (ifr,*) 'PENTE = :',pente
         write (ifr,*) 'METHODE_ENDO = :',mendom
         write (ifr,*) 'CISAILLEMENT = :',cisail
-        write (ifr,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON',&
-        ' EFFECTIFS EN MEMBRANE:'
-        write (ifr,*) 'EM =  :',em
-        write (ifr,*) 'NUM =  :',num
-        write (ifr,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON',&
-        ' EFFECTIFS EN FLEXION:'
-        write (ifr,*) 'EF =  :',ef
-        write (ifr,*) 'NUF =  :',nuf
-        write (ifr,*) 'LIMITES ELASTIQUES EN TRACTION, FLEXION ET',&
-        ' COMPRESSION :'
+        write (ifr,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN MEMBRANE:'
+        write (ifr,*) 'E_M =  :',em
+        write (ifr,*) 'NU_M =  :',num
+        write (ifr,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN FLEXION:'
+        write (ifr,*) 'E_F =  :',ef
+        write (ifr,*) 'NU_F =  :',nuf
+        write (ifr,*) 'LIMITES ELASTIQUES EN TRACTION, FLEXION ET COMPRESSION :'
         write (ifr,*) 'NYT =   :',nyt
         write (ifr,*) 'MYF =   :',myf
         write (ifr,*) 'NYC =   :',nyc
@@ -402,6 +402,14 @@ subroutine dglrdm()
         write (ifr,*) 'GAMMA_F = ',gf
         write (ifr,*) 'GAMMA_C = ',gc
         write (ifr,*) 'ALPHA_C= ',1.d0
+        write (ifr,*) 'MASSE VOLUMIQUE:'
+        write (ifr,*) 'RHO = ',rho
+        if (alpha .gt. 0.0d0 .or. beta .gt. 0.0d0 .or. hyst .gt. 0.0d0) then
+            write (ifr,*) 'PARAMETRES D AMORTISSEMENT:'
+            write (ifr,*) 'AMOR_ALPHA:',alpha
+            write (ifr,*) 'AMOR_BETA:',beta
+            write (ifr,*) 'AMOR_HYST:',hyst
+        endif
     endif
     call jedema()
 end subroutine

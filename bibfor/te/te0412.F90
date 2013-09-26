@@ -118,9 +118,7 @@ subroutine te0412(option, nomte)
         call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnoel,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
 !
@@ -159,18 +157,16 @@ subroutine te0412(option, nomte)
 !
         lkit = zk16(icompo)(1:7).eq.'KIT_DDI'
 !
-        if (zk16(icompo)(1:4) .eq. 'ELAS' .or. zk16(icompo)(1:4) .eq. 'ENDO' .or.&
-            zk16(icompo)(1:6) .eq. 'MAZARS' .or. zk16( icompo)(1:7) .eq. 'GLRC_DM' .or.&
-            zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE' .or.&
-            (lkit .and. zk16(icompo+7)(1:7) .eq.'GLRC_DM' )) then
-!
+        if (zk16(icompo)(1:4)  .eq. 'ELAS'   .or. zk16(icompo)(1:4) .eq. 'ENDO'    .or.&
+            zk16(icompo)(1:6)  .eq. 'MAZARS' .or. zk16(icompo)(1:7) .eq. 'GLRC_DM' .or.&
+            zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE' .or. &
+           (lkit .and. zk16(icompo+7)(1:7) .eq.'GLRC_DM')) then
 !
             if (option .eq. 'ENEL_ELGA') then
                 call jevech('PDEPLAR', 'L', jdepm)
                 if (.not.dkg) then
 ! ---     PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-                    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
-                                icontp, 'S')
+                    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', icontp, 'S')
                 else
                     call jevech('PCONTRR', 'L', icontp)
                 endif
@@ -178,8 +174,7 @@ subroutine te0412(option, nomte)
                 call jevech('PDEPLR', 'L', jdepm)
                 if (.not.dkg) then
 ! ---     PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-                    call cosiro(nomte, 'PCONTPR', 'L', 'UI', 'G',&
-                                icontp, 'S')
+                    call cosiro(nomte, 'PCONTPR', 'L', 'UI', 'G', icontp, 'S')
                 else
                     call jevech('PCONTPR', 'L', icontp)
                 endif
@@ -187,10 +182,7 @@ subroutine te0412(option, nomte)
 !
 !
             if (dkg .and.&
-                (&
-                lkit .or. zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE' .or. zk16(icompo)(1:4) .eq.&
-                'ELAS'&
-                )) then
+          (lkit .or. zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE' .or. zk16(icompo)(1:4) .eq. 'ELAS')) then
                 if (option .eq. 'ENEL_ELGA') then
                     call jevech('PVARIGR', 'L', jvari)
                 else if (option.eq.'ENEL_ELEM') then
@@ -227,16 +219,14 @@ subroutine te0412(option, nomte)
                 call jevech('PCACOQU', 'L', jcara)
                 alpha = zr(jcara+1) * r8dgrd()
                 beta = zr(jcara+2) * r8dgrd()
-                call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                            c, s)
+                call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
 !
                 call dxefro(npg, t2ui, effort, effint)
             else
-                call dxeffi(option, nomte, pgl, zr(icontp), nbsig,&
-                            effint)
+                call dxeffi(option, nomte, pgl, zr(icontp), nbsig, effint)
             endif
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
@@ -267,10 +257,8 @@ subroutine te0412(option, nomte)
 !
 !         -- CALCUL DE EPS, KHI :
 !         -----------------------------------
-                    call pmrvec('ZERO', 3, 2*nnoel, bm, um,&
-                                eps)
-                    call pmrvec('ZERO', 3, 3*nnoel, bf, uf,&
-                                khi)
+                    call pmrvec('ZERO', 3, 2*nnoel, bm, um, eps)
+                    call pmrvec('ZERO', 3, 3*nnoel, bf, uf, khi)
 !
                     if (zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE') then
                         read (zk16(icompo-1+2),'(I16)') nbvar
@@ -298,8 +286,8 @@ subroutine te0412(option, nomte)
                     end do
 !
                     do jsig = 1, nbsm
-                        enelm(ipg) = enelm(ipg) + 0.5d0*nmm(jsig)*eps( jsig)
-                        enelf(ipg) = enelf(ipg) + 0.5d0*mff(jsig)*khi( jsig)
+                        enelm(ipg) = enelm(ipg) + 0.5d0*nmm(jsig)*eps(jsig)
+                        enelf(ipg) = enelf(ipg) + 0.5d0*mff(jsig)*khi(jsig)
                     end do
                     enelt(ipg) = enelm(ipg) + enelf(ipg)
 !
@@ -323,16 +311,14 @@ subroutine te0412(option, nomte)
 !
         call utpvgl(nno, 6, pgl, zr(jdepm), ul)
 !
-        call dxmate('RIGI', df, dm, dmf, dc,&
-                    dci, dmc, dfc, nno, pgl,&
-                    multic, coupmf, t2iu, t2ui, t1ve)
+        call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf,&
+                    t2iu, t2ui, t1ve)
 !
 !     -- CALCUL DES DEFORMATIONS GENERALISEES AUX POINTS DE GAUSS
 !     -----------------------------------------------------------
         optio2='DEGE_ELGA'
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, optio2, pgl, ul, degpg,&
-                        multic)
+            call dktedg(xyzl, optio2, pgl, ul, degpg, multic)
         else if (nomte.eq.'MEDSTR3') then
             call dstedg(xyzl, optio2, pgl, ul, degpg)
         else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
@@ -378,12 +364,9 @@ subroutine te0412(option, nomte)
                 eps(3) = eps(3)*2.d0
                 khi(3) = khi(3)*2.d0
 !
-                call pmrvec('ZERO', 3, 3, dm, eps,&
-                            dmeps)
-                call pmrvec('ZERO', 3, 3, df, khi,&
-                            dfkhi)
-                call pmrvec('ZERO', 2, 2, dc, gam,&
-                            dcgam)
+                call pmrvec('ZERO', 3, 3, dm, eps, dmeps)
+                call pmrvec('ZERO', 3, 3, df, khi, dfkhi)
+                call pmrvec('ZERO', 2, 2, dc, gam, dcgam)
 !
                 do isig = 1, nbsm
                     enelm(ipg) = enelm(ipg) + 0.5d0*eps(isig)*dmeps( isig)
@@ -396,10 +379,8 @@ subroutine te0412(option, nomte)
 ! --- COUPLAGE MEMBRANE - FLEXION (ELAS_COQUE)
 !
                 if (coupmf) then
-                    call pmrvec('ZERO', 3, 3, dmf, eps,&
-                                dmeps)
-                    call pmrvec('ZERO', 3, 3, dmf, khi,&
-                                dfkhi)
+                    call pmrvec('ZERO', 3, 3, dmf, eps, dmeps)
+                    call pmrvec('ZERO', 3, 3, dmf, khi, dfkhi)
 !
                     do isig = 1, nbsm
                         enemf(ipg)= enemf(ipg)+0.5d0*(eps(isig)*dfkhi(isig)+ khi(isig)*dmeps(isig))

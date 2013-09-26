@@ -1,5 +1,6 @@
 subroutine te0513(option, nomte)
     implicit none
+! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -85,39 +86,39 @@ subroutine te0513(option, nomte)
     if (option .eq. 'CARA_SECT_POUT3') then
         call jevech('PCASECT', 'E', isect)
 !
-        do 20 i = 1, 10
-            zr(isect+i-1) = 0.0d0
-20      continue
+        do i = 1, 10
+            zr(isect+i-1) = zero
+        end do
 !
     else if (option.eq.'CARA_SECT_POUT4') then
         call jevech('PORIGIN', 'L', iorig)
         call jevech('PVECTU1', 'E', ivect1)
         call jevech('PVECTU2', 'E', ivect2)
 !
-        do 30 i = 1, nddlno*nno
+        do i = 1, nddlno*nno
             zr(ivect1+i-1) = zero
             zr(ivect2+i-1) = zero
-30      continue
+        end do
 !
     endif
 !
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
-    do 40 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 50 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
-50      continue
-40  end do
+        end do
+    end do
 !
 !    ---------------------------
 !--- - OPTION : CARA_SECT_POUT3-
 !    ---------------------------
     if (option .eq. 'CARA_SECT_POUT3') then
 !     BOUCLE SUR LES POINTS DE GAUSS
-        do 60 ipg = 1, npg1
+        do ipg = 1, npg1
             kdec = (ipg-1)*nno*ndim
             ldec = (ipg-1)*nno
             nx = 0.0d0
@@ -125,15 +126,15 @@ subroutine te0513(option, nomte)
             nz = 0.0d0
 !
 !           CALCUL DE LA NORMALE AU POINT DE GAUSS IPG
-            do 70 i = 1, nno
+            do i = 1, nno
                 idec = idfdx+kdec+(i-1)*ndim
-                do 75 j = 1, nno
+                do j = 1, nno
                     jdec = idfdy+kdec+(j-1)*ndim
                     nx = nx + zr(idec)*zr(jdec)*sx(i,j)
                     ny = ny + zr(idec)*zr(jdec)*sy(i,j)
                     nz = nz + zr(idec)*zr(jdec)*sz(i,j)
-75              continue
-70          continue
+                end do
+            end do
 !
 !           LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE
             jac = sqrt (nx*nx + ny*ny + nz*nz)
@@ -142,12 +143,12 @@ subroutine te0513(option, nomte)
             axgau = zero
             aygau = zero
             azgau = zero
-            do 80 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 3*(ino-1) -1
                 axgau = axgau + zr(ivf+ldec+ino-1) * zr(i+1)
                 aygau = aygau + zr(ivf+ldec+ino-1) * zr(i+2)
                 azgau = azgau + zr(ivf+ldec+ino-1) * zr(i+3)
-80          continue
+            end do
 !
 !---        CALCUL DE  AXX, AYY, AZZ, AXY, AXZ, AYZ
 !---        = SOMME(X*X.DS, Y*Y.DS, Z*Z.DS, X*Y.DS, X*Z.DS, Y*Z.DS)
@@ -155,12 +156,12 @@ subroutine te0513(option, nomte)
             ygau = zero
             zgau = zero
 !
-            do 90 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 3*(ino-1) -1
                 xgau = xgau + zr(ivf+ldec+ino-1) * zr(i+1)
                 ygau = ygau + zr(ivf+ldec+ino-1) * zr(i+2)
                 zgau = zgau + zr(ivf+ldec+ino-1) * zr(i+3)
-90          continue
+            end do
 !
             axxgau = xgau * xgau
             ayygau = ygau * ygau
@@ -189,8 +190,7 @@ subroutine te0513(option, nomte)
             zr(isect+9-1) = zr(isect+9-1) + axzgau*sigau
 !           AYZ
             zr(isect+10-1) = zr(isect+10-1) + ayzgau*sigau
-!
-60      continue
+        end do
 !---     FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
         i = igeom - 1
 !        ARETE 1
@@ -222,54 +222,53 @@ subroutine te0513(option, nomte)
 !    ---------------------------
     else if (option.eq.'CARA_SECT_POUT4') then
 !        BOUCLE SUR LES POINTS DE GAUSS
-        do 100 ipg = 1, npg1
+        do ipg = 1, npg1
             kdec = (ipg-1)*nno*ndim
             ldec = (ipg-1)*nno
             nx = 0.0d0
             ny = 0.0d0
             nz = 0.0d0
 !           CALCUL DE LA NORMALE AU POINT DE GAUSS IPG
-            do 110 i = 1, nno
+            do i = 1, nno
                 idec = idfdx+kdec+(i-1)*ndim
-                do 115 j = 1, nno
+                do j = 1, nno
                     jdec = idfdy+kdec+(j-1)*ndim
                     nx = nx + zr(idec)*zr(jdec)*sx(i,j)
                     ny = ny + zr(idec)*zr(jdec)*sy(i,j)
                     nz = nz + zr(idec)*zr(jdec)*sz(i,j)
-115              continue
-110          continue
+                end do
+            end do
 !
 !           LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE
             jac = sqrt (nx*nx + ny*ny + nz*nz)
             sigau = zr(ipoids+ipg-1)*jac
 !           VECT1(I) = SOMME(NI.DS, 0, 0, 0, 0, 0)
-            do 120 ino = 1, nno
+            do ino = 1, nno
                 i = ivect1+nddlno*(ino-1)
                 zr(i) = zr(i) + zr(ivf+ldec+ino-1)*sigau
-120          continue
+            end do
 !
 !           VECT2(I) = SOMME(X*NI.DS, Y*NI.DS, Z*NI.DS, 0, 0, 0)
             xgau = zero
             ygau = zero
             zgau = zero
 !
-            do 130 ino = 1, nno
+            do  ino = 1, nno
                 i = igeom + 3*(ino-1) -1
                 j = ivf+ldec+ino-1
                 xgau = xgau + zr(j) * zr(i+1)
                 ygau = ygau + zr(j) * zr(i+2)
                 zgau = zgau + zr(j) * zr(i+3)
-130          continue
+            end do
 !
-            do 140 ino = 1, nno
+            do ino = 1, nno
                 i = ivect2+nddlno*(ino-1)-1
                 j = ivf+ldec+ino-1
                 zr(i+1) = zr(i+1) + zr(j)*(xgau-zr(iorig+1-1))*sigau
                 zr(i+2) = zr(i+2) + zr(j)*(ygau-zr(iorig+2-1))*sigau
                 zr(i+3) = zr(i+3) + zr(j)*(zgau-zr(iorig+3-1))*sigau
-140          continue
-!
-100      continue
+            end do
+        end do
 !---  FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !---   ET FIN DE L'OPTION 'CARA_SECT_POUT4'
     endif

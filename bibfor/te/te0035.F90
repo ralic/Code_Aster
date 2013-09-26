@@ -43,8 +43,7 @@ subroutine te0035(option, nomte)
     real(kind=8) :: bsigma(24), sigt(32)
 ! ----------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcaco)
@@ -83,7 +82,7 @@ subroutine te0035(option, nomte)
         epsini(5) = zr(idefi+5-1)
         epsini(6) = zr(idefi+6-1)
 !
-        call dxefgi(nomte, xyzl, pgl, epsini, sigt)
+        call dxefgi(nomte, pgl, epsini, sigt)
 !
     endif
 !
@@ -94,8 +93,8 @@ subroutine te0035(option, nomte)
 !
 ! --- AFFECTATION DU VECTEUR DES FORCES ELEMENTAIRES EN SORTIE DU TE
 !     --------------------------------------------------------------
-    do 20 i = 1, nno*6
+    do i = 1, nno*6
         zr(jvecg+i-1) = bsigma(i)
-20  end do
+    end do
 !
 end subroutine

@@ -19,9 +19,11 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+! aslint: disable=W0104
 #include "asterc/r8miem.h"
 #include "asterfort/matini.h"
 #include "asterfort/radial.h"
+#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
@@ -65,6 +67,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     integer :: ndimsi
     integer :: icodre(3)
     character(len=8) :: nomres(3), materi
+    character(len=10) :: phenom
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
     integer :: iret, k, l
@@ -76,30 +79,33 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 !
 ! MISE AU FORMAT DES CONTRAINTES DE RAPPEL
     ndimsi = ndim*2
-    do 10 k = 4, ndimsi
+    do k = 4, ndimsi
         vim(k) = vim(k)*rac2
- 10 end do
-!
+    end do
 !
     materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
                 materi, 'ELAS', iret, epsth=epsthe)
 !
-!
 ! LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)
-    nomres(1)='E'
-    nomres(2)='NU'
+!    RCCOMA POUR GERER KIT_DDI (GLRC+VMIS_ISOT)
+    call rccoma(imate, 'ELAS', 1, phenom, icodre(1))
+    if (phenom .eq. 'ELAS') then
+        nomres(1)='E'
+        nomres(2)='NU'
+    else if (phenom .eq. 'ELAS_GLRC') then
+        nomres(1)='E_M'
+        nomres(2)='NU_M'
+    endif
     nomres(3)='ALPHA'
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate, ' ', phenom, 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     em = valres(1)
     num = valres(2)
     deumum = em/(1.d0+num)
     troikm = em/(1.d0-2.d0*num)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', phenom, 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     e = valres(1)
     nu = valres(2)
@@ -109,10 +115,10 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 !
 ! LECTURE DES CARACTERISTIQUES D'ECROUISSAGE
 !
-    nomres(1)='D_SIGM_EPSI'
+!     nomres(1)='D_SIGM_EPSI'
+    nomres(1)='D_SIGM_E'
     nomres(2)='SY'
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     dsdem=valres(1)
     if ((em-dsdem) .lt. r8miem()) then
@@ -123,10 +129,10 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
         cm = 2.d0/3.d0*dsdem/(1.d0-dsdem/em)
     endif
 !
-    nomres(1)='D_SIGM_EPSI'
+!     nomres(1)='D_SIGM_EPSI'
+    nomres(1)='D_SIGM_E'
     nomres(2)='SY'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     dsde=valres(1)
     sigy=valres(2)
@@ -139,22 +145,22 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     endif
 !
 ! CALCUL DES CONTRAINTES ELASTIQUES
-    do 110 k = 1, 3
+    do k = 1, 3
         depsth(k) = deps(k) -epsthe
         depsth(k+3) = deps(k+3)
-110 end do
+    end do
     epsmo = (depsth(1)+depsth(2)+depsth(3))/3.d0
-    do 115 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) - epsmo * kron(k)
-115 end do
+    end do
     sigmo = (sigm(1)+sigm(2)+sigm(3))/3.d0
     sieleq = 0.d0
-    do 114 k = 1, ndimsi
+    do k = 1, ndimsi
         sigdv(k) = sigm(k) - sigmo*kron(k)
         sigdv(k) = deuxmu/deumum*sigdv(k)
         sigel(k) = sigdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + (sigel(k)-c/cm*vim(k))**2
-114 end do
+    end do
     sigmo = troisk/troikm * sigmo
     sieleq = sqrt(1.5d0*sieleq)
     seuil = sieleq - sigy
@@ -176,54 +182,54 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
             a2 = (c /(deuxmu+c))*(seuil/sieleq)
         endif
         plasti=vip(7)
-        do 160 k = 1, ndimsi
+        do k = 1, ndimsi
             sigdv(k) = sigel(k) - a1*(sigel(k)-vim(k)*c/cm)
             sigp(k) = sigdv(k) + (sigmo + troisk*epsmo)*kron(k)
             vip(k) = vim(k)*c/cm + a2*(sigel(k)-vim(k)*c/cm)
-160     continue
+        end do
     endif
 !
 ! CALCUL DE LA RIGIDITE TANGENTE
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
         call matini(6, 6, 0.d0, dsidep)
-        do 120 k = 1, 6
+        do k = 1, 6
             dsidep(k,k) = deuxmu
-120     continue
+        end do
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-            do 174 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigdv(k) = sigdv(k) - vim(k)*c/cm
-174         continue
+            end do
         else
-            do 175 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigdv(k) = sigdv(k) - vip(k)
-175         continue
+            end do
         endif
         sigeps = 0.d0
-        do 170 k = 1, ndimsi
+        do k = 1, ndimsi
             sigeps = sigeps + sigdv(k)*depsdv(k)
-170     continue
+        end do
         a1 = 1.d0/(1.d0+1.5d0*(deuxmu+c)*dp/sigy)
         a2 = (1.d0+1.5d0*c*dp/sigy)*a1
         if (plasti .ge. 0.5d0 .and. sigeps .ge. 0.d0) then
             coef = -1.5d0*(deuxmu/sigy)**2 / (deuxmu+c) * a1
-            do 135 k = 1, ndimsi
-                do 135 l = 1, ndimsi
+            do k = 1, ndimsi
+                do l = 1, ndimsi
                     dsidep(k,l) = a2 * dsidep(k,l) + coef*sigdv(k)* sigdv(l)
-135             continue
+                end do
+            end do
             lambda = lambda + deuxmu**2*a1*dp/sigy/2.d0
         endif
-        do 130 k = 1, 3
-            do 131 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = dsidep(k,l) + lambda
-131         continue
-130     continue
+            end do
+        end do
     endif
 !
     iret=0
     if (option(1:9) .ne. 'RIGI_MECA') then
         if (crit(10) .gt. 0.d0) then
-            call radial(ndimsi, sigm, sigp, vim(7), vip(7),&
-                        1, vim(1), vip(1), radi)
+            call radial(ndimsi, sigm, sigp, vim(7), vip(7), 1, vim(1), vip(1), radi)
             if (radi .gt. crit(10)) then
                 iret=2
             endif
@@ -231,13 +237,13 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     endif
 !
 ! MISE AU FORMAT DES CONTRAINTES DE RAPPEL
-    do 20 k = 4, ndimsi
+    do k = 4, ndimsi
         vim(k) = vim(k)/rac2
- 20 end do
+    end do
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        do 30 k = 4, ndimsi
+        do k = 4, ndimsi
             vip(k) = vip(k)/rac2
- 30     continue
+        end do
     endif
 !
 ! FIN ------------------------------------------------------------------

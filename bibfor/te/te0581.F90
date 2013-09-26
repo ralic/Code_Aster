@@ -76,13 +76,12 @@ subroutine te0581(option, nomte)
     nbcmp=jtab3(2)/nbpt
     ASSERT(jtab3(2).eq.nbcmp*nbpt)
 !
-    do 20 j1 = 1, nbpt
-        do 21 j2 = 1, nbsp
-            do 22 j3 = 1, nbcmp
+    do j1 = 1, nbpt
+        do j2 = 1, nbsp
+            do j3 = 1, nbcmp
                 v1= zr(jtab1(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)
                 if (nbsp .eq. nbsp2) then
-                    v2= zr(jtab2(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-&
-                    1)
+                    v2= zr(jtab2(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)
                 else
                     ASSERT(nbsp2.eq.1)
                     v2= zr(jtab2(1)+(j1-1)*nbcmp+j3-1)
@@ -91,10 +90,9 @@ subroutine te0581(option, nomte)
 !              LES ELEMENTS DE BARRE ET LES ELEMENTS CABLE_GAINE
 !              (CABLES DE PRECONTRAINTE) :
                 if (v2 .ne. 0.d0) ASSERT(nomte.eq.'MECA_BARRE'.or. nomte.eq.'MECGSEG3')
-                zr(jtab3(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)=v1+&
-                v2
-22          continue
-21      continue
-20  end do
+                zr(jtab3(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)=v1+v2
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -20,30 +20,28 @@
 #---------------------------------------------------------------------
 #
 DEBUT(CODE=_F(NOM='SSLS118S',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-#
-# Carateristiques de la dalle
-
-EP = 0.1;            # Epaisseur
-AX = 0.;             # Taux de ferraillage
-AY = 0.;             # Taux de ferraillage
-EZ = 0.038;          # Distance grille/surface moyenne de la dalle
-EZ = 0.5*EP - EZ     # Enrobage
-# R0 = EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport
+EP=0.1;            # Epaisseur
+AX=0.;             # Taux de ferraillage
+AY=0.;             # Taux de ferraillage
+EZ=0.038;          # Distance grille/surface moyenne de la dalle
+EZ=0.5*EP - EZ     # Enrobage
+# R0=EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport
                      # au feuillet moyen
-R0 = 0.1             # Valeur Bidon
+R0=0.1  # Valeur Bidon
 
 # Caracteristiques du beton
 
-EB  = 25.;    # Module d'Young
-NUB = 0.25;
+EB=25.;    # Module d'Young
+NUB=0.25;
 
 # Caracteristiques de l'acier (armatures)
 
-E  = 25.;     # Module d'Young
-NU = 0.25;    # Coefficient de poisson
+E=25.;    # Module d'Young
+NU=0.25;   # Coefficient de poisson
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
-MA=DEFI_GROUP(reuse =MA,
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED');
+
+MA=DEFI_GROUP(reuse=MA,
               CREA_GROUP_MA=_F(TOUT='OUI',
                                NOM='TOUT',),
               MAILLAGE=MA,
@@ -60,114 +58,80 @@ CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=_F(ANGL_REP=(0.0,0.0),
                                 GROUP_MA='TOUT',
                                 EPAIS=0.1,),);
-CPRAG  = 0.
-GAM    = 0.0
+CPRAG=0.
+GAM=0.0
 
-CPRG   = CPRAG
-MF     = 1.0E16
-QP     = 0.15E0
+CPRG=CPRAG
+MF=1.0E16
+QP=0.15E0
 
-MAT_B=DEFI_MATERIAU(
-                           ELAS = _F(
-                                      E    =  EB,
-                                      NU   =  NUB,
-                                      RHO    = 2500.0,
-                                     ),
-                           BETON_ECRO_LINE = _F(
-                                      D_SIGM_EPSI = 0.0,
-                                      SYT   =  4.4E6,
-                                      SYC    = -52.5E6,
-                                     ),
-                          );
+MAT_B=DEFI_MATERIAU(ELAS=_F(E=EB,
+                            NU=NUB,
+                            RHO=2500.0,),
+                    BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                       SYT=4.4E6,
+                                       SYC=-52.5E6,),);
 
-MAT_A=DEFI_MATERIAU(
-                           ELAS = _F(
-                                      E    =  E,
-                                      NU   =  NU,
-                                     ),
-                           ECRO_LINE = _F(
-                                      D_SIGM_EPSI = 0.0,
-                                      SY   =  5.E8,
-                                     ),
-                          );
-MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
-                        BETON = _F(
-                          MATER = MAT_B,
-                          EPAIS = EP,
-                          GAMMA = GAM,
-                          QP1 = QP,
-                          QP2 = QP,
+MAT_A=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=NU,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                 SY=5.E8,),);
 
-                          C1N1 = CPRG,C1N2 = CPRG,C1N3 = CPRG,
-                          C2N1 = CPRG,C2N2 = CPRG,C2N3 = CPRG,
-                          C1M1 = CPRG,C1M2 = CPRG,C1M3 = CPRG,
-                          C2M1 = CPRG,C2M2 = CPRG,C2M3 = CPRG,
-                         ),
-                        NAPPE = (_F(
-                          MATER = MAT_A,
-                          OMX = AX,
-                          OMY = AY,
-                          RX = R0,
-                          RY = R0,
-                         ),_F(
-                          MATER = MAT_A,
-                          OMX = AX,
-                          OMY = AY,
-                          RX = -R0,
-                          RY = -R0,
-                         )),
-                         INFO=2,
-                                             );
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=NU,),);
+
+#MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
+              #BETON=_F(MATER=MAT_B,
+                       #EPAIS=EP,
+                       #GAMMA=GAM,
+                       #QP1=QP,
+                       #QP2=QP,
+                       #C1N1=CPRG,C1N2=CPRG,C1N3=CPRG,
+                       #C2N1=CPRG,C2N2=CPRG,C2N3=CPRG,
+                       #C1M1=CPRG,C1M2=CPRG,C1M3=CPRG,
+                       #C2M1=CPRG,C2M2=CPRG,C2M3=CPRG,),
+              #NAPPE=(_F(MATER=MAT_A,
+                        #OMX=AX,
+                        #OMY=AY,
+                        #RX=R0,
+                        #RY=R0,),
+                     #_F(MATER=MAT_A,
+                        #OMX=AX,
+                        #OMY=AY,
+                        #RX=-R0,
+                        #RY=-R0,),),
+              #INFO=2,);
+
 
 CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
                                TOUT='OUI',),
                        MAILLAGE=MA,);
 PO=1.0
-P = FORMULE(NOM_PARA=('X','Y'),VALE='PO*sin(pi*X)*sin(pi*Y)''');
-CHA_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(DZ=0.0,
-                                  GROUP_NO='AB',
-                                  DRY=0.0,),
-                               _F(DX=0.0,
-                                  GROUP_NO='BC',
-                                  DRY=0.0,),
-                               _F(DY=0.0,
-                                  GROUP_NO='CD',
-                                  DRX=0.0,),
-                               _F(DZ=0.0,
-                                  GROUP_NO='DA',
-                                  DRX=0.0,),),
-                     MODELE=MO,
-                     FORCE_ARETE=(_F(MY=0.0,
-                                     GROUP_MA='AB',),
-                                  _F(MY=0.0,
-                                     GROUP_MA='CD',),
-                                  _F(MX=0.0,
-                                     GROUP_MA='BC',),
-                                  _F(MX=0.0,
-                                     GROUP_MA='DA',),),);
-CHA=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
+P=FORMULE(NOM_PARA=('X','Y'),VALE='PO*sin(pi*X)*sin(pi*Y)''');
+
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_NO='O',
+                                DX=0.0,
                                 DY=0.0,
-                                GROUP_NO='O',
-                                DRZ=0.0,
                                 DRX=0.0,
-                                DRY=0.0,),
-                             _F(DZ=0.0,
+                                DRY=0.0,
+                                DRZ=0.0,),
+                             _F(GROUP_NO='AB',
                                 DX=0.0,
-                                GROUP_NO='AB',
+                                DZ=0.0,
                                 DRY=0.0,),
-                             _F(DZ=0.0,
+                             _F(GROUP_NO='BC',
                                 DY=0.0,
-                                GROUP_NO='BC',
+                                DZ=0.0,
                                 DRX=0.0,),
-                             _F(DZ=0.0,
+                             _F(GROUP_NO='CD',
                                 DX=0.0,
-                                GROUP_NO='CD',
+                                DZ=0.0,
                                 DRY=0.0,),
-                             _F(DZ=0.0,
+                             _F(GROUP_NO='DA',
                                 DY=0.0,
-                                GROUP_NO='DA',
+                                DZ=0.0,
                                 DRX=0.0,),),
-                   MODELE=MO,
                    FORCE_ARETE=(_F(MY=0.0,
                                    GROUP_MA='AB',),
                                 _F(MY=0.0,
@@ -176,28 +140,26 @@ CHA=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                    GROUP_MA='BC',),
                                 _F(MX=0.0,
                                    GROUP_MA='DA',),),);
+
 CHA_P=AFFE_CHAR_MECA_F(MODELE=MO,
                        FORCE_COQUE=_F(PRES=P,
                                       GROUP_MA='MAIL1',),);
 
-INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
-                          _F(JUSQU_A = 1.,NOMBRE = 1),
-                      ),);
+INST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=1.,NOMBRE=1),),);
 
-RESU=STAT_NON_LINE( MODELE=MO,
-                      CHAM_MATER= CHAM_MAT,
-                      CARA_ELEM = CAR_ELE,
-                      COMPORTEMENT=_F(RELATION = 'ELAS',),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=10),
-                      INCREMENT=_F( LIST_INST = INST,
-                                    PRECISION =1.E-1),
-                       EXCIT=(_F(CHARGE=CHA,),
-                              _F(CHARGE=CHA_P,),)
-                     );
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHAM_MAT,
+                   CARA_ELEM=CAR_ELE,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                   INCREMENT=_F(LIST_INST=INST,
+                                PRECISION=1.E-1),
+                   EXCIT=(_F(CHARGE=CHA,),
+                          _F(CHARGE=CHA_P,),),);
 
-
-EFF=CALC_CHAMP(RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'))
-
+EFF=CALC_CHAMP(RESULTAT=RESU,
+               CONTRAINTE='EFGE_ELNO',);
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='O',

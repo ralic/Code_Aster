@@ -65,9 +65,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
      &   / 3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62/
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
 !
     zero = 0.0d0
     unquar = 0.25d0
@@ -98,12 +96,12 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !
 ! --- INITIALISATIONS :
 !     ---------------
-    do 10 k = 1, 96
+    do k = 1, 96
         mefl(k,1) = zero
-10  end do
-    do 20 k = 1, 144
+    end do
+    do k = 1, 144
         flex(k,1) = zero
-20  end do
+    end do
 !
 !======================================
 ! ---  CALCUL DE LA MATRICE DE MASSE  =
@@ -114,23 +112,23 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !=====================================================================
 !
     coefm = caraq4(21) * roe / neuf
-    do 30 k = 1, 64
+    do k = 1, 64
         amemb(k) = zero
-30  end do
-    do 40 k = 1, 8
+    end do
+    do k = 1, 8
         amemb(ii(k)) = un
         amemb(jj(k)) = unquar
-40  end do
-    do 50 k = 1, 16
+    end do
+    do k = 1, 16
         amemb(ll(k)) = undemi
-50  end do
-    do 60 k = 1, 64
+    end do
+    do k = 1, 64
         memb(k,1) = coefm * amemb(k)
-60  end do
+    end do
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
-    do 70 int = 1, npg
+    do int = 1, npg
         qsi = zr(icoopg-1+ndim*(int-1)+1)
         eta = zr(icoopg-1+ndim*(int-1)+2)
 !
@@ -157,11 +155,11 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 ! ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 ! ---   DUE AUX SEULS TERMES DE LA FLECHE W :
 !       -----------------------------------
-        do 80 i = 1, 12
-            do 90 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flex(i,j) = flex(i,j) + wkq(i) * wkq(j) * wgt
-90          continue
-80      continue
+            end do
+        end do
 !
 ! ---   CALCUL DES FONCTIONS D'INTERPOLATION DES ROTATIONS :
 !       --------------------------------------------------
@@ -174,11 +172,11 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !
 ! ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 !       -------------------------------------------------------
-        do 100 i = 1, 12
-            do 110 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
-110          continue
-100      continue
+            end do
+        end do
 !
 !====================================================================
 ! ---  CAS OU L'ELEMENT EST EXCENTRE                                =
@@ -202,19 +200,18 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !
 ! ---     TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA :
 !         ------------------------------------------
-            do 120 k = 1, 4
+            do k = 1, 4
                 i1 = 2*(k-1)+1
                 i2 = i1 +1
-                do 130 j = 1, 12
+                do j = 1, 12
                     mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
                     mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
-130              continue
-120          continue
-!
+                end do
+            end do
         endif
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
-70  end do
+    end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !
@@ -225,13 +222,11 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     if (( option .eq. 'MASS_MECA' ) .or. (option.eq.'M_GAMMA')) then
         call dxqloc(flex, memb, mefl, ctor, mas)
 !
-        else if (option.eq.'MASS_MECA_DIAG' .or.&
-     &         option.eq.'MASS_MECA_EXPLI' ) then
+        else if (option.eq.'MASS_MECA_DIAG' .or. option.eq.'MASS_MECA_EXPLI' ) then
         call dxqloc(flex, memb, mefl, ctor, masloc)
         wgt = caraq4(21) * roe
         call utpslg(4, 6, pgl, masloc, masglo)
-        call dialum(4, 6, 24, wgt, masglo,&
-                    mas)
+        call dialum(4, 6, 24, wgt, masglo, mas)
 !
     else if (option .eq. 'ECIN_ELEM') then
         stopz='ONO'
@@ -239,14 +234,12 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(4, 6, pgl, zr(jvitg), vite)
-            call dxqloe(flex, memb, mefl, ctor, .false.,&
-                        vite, ener)
+            call dxqloe(flex, memb, mefl, ctor, .false., vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(4, 6, pgl, zr(jdepg), depl)
-                call dxqloe(flex, memb, mefl, ctor, .false.,&
-                            depl, ener)
+                call dxqloe(flex, memb, mefl, ctor, .false., depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
             endif

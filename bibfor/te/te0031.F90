@@ -108,6 +108,7 @@ subroutine te0031(option, nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
+    r8bid=0.d0
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdx, jgano)
 !
@@ -227,8 +228,7 @@ subroutine te0031(option, nomte)
     option.eq.'ECIN_ELEM') then
 !     ------------------------------------------
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MET3TR3') then
-            call dktmas(xyzl, option, pgl, matloc, ener,&
-                        multic)
+            call dktmas(xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEDSTR3') then
             call dstmas(xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEDKQU4') then

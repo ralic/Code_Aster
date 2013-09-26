@@ -22,39 +22,37 @@
 #  DETAILS : MODELISATION Q4GG
 #            Mailles TRIA3
 
-
 DEBUT(CODE=_F(NOM='SSLS127C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # Carateristiques de la dalle
 
-EP = 0.12;         # Epaisseur
-AX = 7.854E-4;     # Taux de ferraillage
-AY = 7.854E-4;     # Taux de ferraillage
-EZ = 0.038;        # Distance grille/surface moyenne de la dalle
-EZ = 0.5*EP - EZ   # Enrobage
-R0 = EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport
+EP=0.12;         # Epaisseur
+AX=7.854E-4;     # Taux de ferraillage
+AY=7.854E-4;     # Taux de ferraillage
+EZ=0.038;        # Distance grille/surface moyenne de la dalle
+EZ=0.5*EP - EZ   # Enrobage
+R0=EZ/(0.5*EP)   # Distance normalisee du ferraillage par rapport
                    # au feuillet moyen
 
 # Caracteristiques du beton
 
-EB  = 35700.E6;    # Module d'Young
-NUB = 0.22;        # Coefficient de poisson vaut 0.22, mais pour un modele
+EB=35700.E6;    # Module d'Young
+NUB=0.22;        # Coefficient de poisson vaut 0.22, mais pour un modele
                    # poutre on impose NUB=0.
 
 # Caracteristiques de l'acier (armatures)
 
-E  = 210000.E6;    # Module d'Young
-NU = 0.3;          # Coefficient de poisson
+E=210000.E6;    # Module d'Young
+NU=0.3;          # Coefficient de poisson
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
-MAIL=DEFI_GROUP(reuse =MAIL,
+MAIL=DEFI_GROUP(reuse=MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='LCONTY',),
                                _F(GROUP_MA='LCONTX',),
                                _F(GROUP_MA='LSYMY',),
-                               _F(GROUP_MA='LSYMX',),
-                            ),);
+                               _F(GROUP_MA='LSYMX',),),);
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
@@ -65,66 +63,25 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                       VECT_NORM=(0.,0.,1.),
-                                      GROUP_NO='A1',),
-                   );
+                                      GROUP_NO='A1',),);
 
-CPRAG  = 0.
-GAM  = 0.
+MF=1.0E16
+QP=0.15E0
 
-CPRG  = CPRAG
-MF     = 1.0E16
-QP     = 0.15E0
+MAT_B=DEFI_MATERIAU(ELAS=_F(E=EB,
+                            NU=NUB,
+                            RHO=2500.0,),
+                    BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                       SYT=4.4E6,
+                                       SYC=-52.5E6,),);
 
-MAT_B=DEFI_MATERIAU(
-                           ELAS = _F(
-                                      E    =  EB,
-                                      NU   =  NUB,
-                                      RHO    = 2500.0,
-                                     ),
-                           BETON_ECRO_LINE = _F(
-                                      D_SIGM_EPSI = 0.0,
-                                      SYT   =  4.4E6,
-                                      SYC    = -52.5E6,
-                                     ),
-                          );
-MAT_A=DEFI_MATERIAU(
-                           ELAS = _F(
-                                      E    =  E,
-                                      NU   =  NU,
-                                     ),
-                           ECRO_LINE = _F(
-                                      D_SIGM_EPSI = 0.0,
-                                      SY   =  5.E8,
-                                     ),
-                          );
-MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
-                        BETON = _F(
-                          MATER = MAT_B,
-                          EPAIS = EP,
-                          GAMMA = GAM,
-                          QP1 = QP,
-                          QP2 = QP,
-                          C1N1 = CPRG,C1N2 = CPRG,C1N3 = CPRG,
-                          C2N1 = CPRG,C2N2 = CPRG,C2N3 = CPRG,
-                          C1M1 = CPRG,C1M2 = CPRG,C1M3 = CPRG,
-                          C2M1 = CPRG,C2M2 = CPRG,C2M3 = CPRG,
-                         ),
-                        NAPPE = (_F(
-                          MATER = MAT_A,
-                          OMX = AX,
-                          OMY = AY,
-                          RX = R0,
-                          RY = R0,
-                         ),_F(
-                          MATER = MAT_A,
-                          OMX = AX,
-                          OMY = AY,
-                          RX = -R0,
-                          RY = -R0,
-                         )),
-                         INFO=2,
-                                             );
+MAT_A=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=NU,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                 SY=5.E8,),);
 
+MAT=DEFI_MATERIAU(ELAS=_F(E=36860844810.0362,
+                          NU=0.213684859379880,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
@@ -152,28 +109,27 @@ PRES=AFFE_CHAR_MECA(MODELE=MOD,
 CH_FO=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0, 0.0,1.0, 1.0),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',
-                    );
+                     PROL_GAUCHE='LINEAIRE',);
 
-INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
-                          _F(JUSQU_A = 1.,NOMBRE = 2),
-                      ),);
+INST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=1.,NOMBRE=2),),);
 
-RESU=STAT_NON_LINE( MODELE=MOD,
-                      CHAM_MATER= CHMAT,
-                      CARA_ELEM = CARA_ELE,
-                      COMPORTEMENT=_F(
-                                    RELATION = 'ELAS',
-                                    ),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=10),
-                      INCREMENT=_F( LIST_INST = INST,
-                                    PRECISION =1.E-1),
-                      EXCIT=(   _F( CHARGE = COND_LIM,),
-                                _F( CHARGE = PRES,
-                                    FONC_MULT = CH_FO,),
-                     ),);
+RESU=STAT_NON_LINE(MODELE=MOD,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA_ELE,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                   INCREMENT=_F(LIST_INST=INST,
+                                PRECISION=1.E-1),
+                   EXCIT=(_F(CHARGE=COND_LIM,),
+                          _F(CHARGE=PRES,
+                             FONC_MULT=CH_FO,),),);
 
-RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=RESU)
+RESU=CALC_CHAMP(reuse=RESU,
+                CONTRAINTE=('EFGE_ELNO','EFGE_ELGA'),
+                VARI_INTERNE=('VARI_ELNO'),
+                DEFORMATION=('DEGE_ELNO'),
+                RESULTAT=RESU,);
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -185,8 +141,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_CALC= 8.17438404E-05,
                   VALE_REFE=6.9259999999999998E-05,
                   CRITERE='RELATIF',
-                  PRECISION=0.20000000000000001,),
-          )
+                  PRECISION=0.20000000000000001,),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_NO='A1',
@@ -198,8 +153,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_REFE=1550.0,
                   CRITERE='RELATIF',
                   PRECISION=0.045,
-                  MAILLE='M266',),
-          )
+                  MAILLE='M266',),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_NO='A1',
@@ -211,8 +165,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_REFE=1550.0,
                   CRITERE='RELATIF',
                   PRECISION=0.045,
-                  MAILLE='M266',),
-          )
+                  MAILLE='M266',),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_NO='A1',
@@ -224,8 +177,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_REFE=2.1929999999999999E-4,
                   CRITERE='RELATIF',
                   PRECISION=0.03,
-                  MAILLE='M266',),
-          )
+                  MAILLE='M266',),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_NO='A1',
@@ -237,31 +189,29 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_REFE=2.1929999999999999E-4,
                   CRITERE='RELATIF',
                   PRECISION=0.030,
-                  MAILLE='M266',),
-          )
+                  MAILLE='M266',),);
+
 CARA_EL1=AFFE_CARA_ELEM(MODELE=MOD,
                         COQUE=_F(GROUP_MA='MESH',
                                  EPAIS=EP,
                                  ANGL_REP=(33.,12.),),);
 
-RESU1=STAT_NON_LINE( MODELE=MOD,
-                      CHAM_MATER= CHMAT,
-                      CARA_ELEM = CARA_EL1,
-                      COMPORTEMENT=_F(
-                                    RELATION = 'ELAS',
-                                    ),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=10),
-                      INCREMENT=_F( LIST_INST = INST,
-                                    PRECISION =1.E-1),
-                      EXCIT=(   _F( CHARGE = COND_LIM,),
-                                _F( CHARGE = PRES,
-                                    FONC_MULT = CH_FO,),
-                     ),);
+RESU1=STAT_NON_LINE(MODELE=MOD,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARA_EL1,
+                    COMPORTEMENT=_F(RELATION='ELAS',),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+                    INCREMENT=_F(LIST_INST=INST,
+                                 PRECISION=1.E-1),
+                    EXCIT=(_F(CHARGE=COND_LIM,),
+                           _F(CHARGE=PRES,
+                              FONC_MULT=CH_FO,),),);
 
-RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELNO','EFGE_ELGA'),
-                           VARI_INTERNE=('VARI_ELNO'),
-                           DEFORMATION=('DEGE_ELNO','DEGE_ELGA'),
-                           RESULTAT=RESU1)
+RESU1=CALC_CHAMP(reuse=RESU1,
+                 CONTRAINTE=('EFGE_ELNO','EFGE_ELGA'),
+                 VARI_INTERNE=('VARI_ELNO'),
+                 DEFORMATION=('DEGE_ELNO','DEGE_ELGA'),
+                 RESULTAT=RESU1)
 
 
 TEST_RESU(RESU=(

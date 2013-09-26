@@ -3,6 +3,7 @@ subroutine dxefnt(nomte, pgl, sigt)
 #include "jeveux.h"
 #include "asterfort/dxmath.h"
 #include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -50,7 +51,7 @@ subroutine dxefnt(nomte, pgl, sigt)
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, indith, ino, iret1, iret2, iret3, iret4
+    integer :: indith, ino, iret1, iret2, iret3, iret4
     integer :: jcara, jmate, nno
     real(kind=8) :: coe1, coe2, epais, somire, tref, zero
 !-----------------------------------------------------------------------
@@ -60,28 +61,24 @@ subroutine dxefnt(nomte, pgl, sigt)
     iret3 = 0
     iret4 = 0
 !
-    do 10 i = 1, 32
-        sigt(i) = zero
-10  end do
+    call r8inir(32, 0.d0, sigt, 1)
 !
 !     -- S'IL N'Y A PAS DE TEMPERATURE, IL N'Y A RIEN A CALCULER :
-    call rcvarc(' ', 'TEMP', '+', 'NOEU', 1,&
-                1, rbid, iret4)
+    call rcvarc(' ', 'TEMP', '+', 'NOEU', 1, 1, rbid, iret4)
     if (iret4 .ne. 0) goto 30
 !
 !
 !
     call jevech('PNBSP_I', 'L', jcou)
     nbcou=zi(jcou)
-    call rcvarc(' ', 'TEMP', 'REF', 'NOEU', 1,&
-                1, tref, iret1)
+    call rcvarc(' ', 'TEMP', 'REF', 'NOEU', 1, 1, tref, iret1)
 !
 !
-    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or. nomte .eq. 'MEDKTG3 ' .or.&
-        nomte .eq. 'MET3TR3 ') then
+    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 '&
+   .or. nomte .eq. 'MEDKTG3 ' .or. nomte .eq. 'MET3TR3 ') then
         nno = 3
-        else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDKQG4 ' .or.&
-    nomte.eq.'MEDSQU4 ' .or. nomte.eq.'MEQ4QU4 ') then
+    else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDKQG4 ' .or.&
+             nomte.eq.'MEDSQU4 ' .or. nomte.eq.'MEQ4QU4 ') then
         nno = 4
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
@@ -93,19 +90,17 @@ subroutine dxefnt(nomte, pgl, sigt)
 ! ON RECUPERE LA TEMPERATURE INFERIEURE, SUPERIEURE ET DANS LA FIBRE
 ! MOYENNE
     imoy=(3*nbcou+1)/2
-    do 42 ino = 1, nno
-        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
-                    imoy, tmoy(ino), iret4)
-        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
-                    nbcou*3, tsup(ino), iret3)
-        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
-                    1, tinf(ino), iret2)
-42  end do
+    do ino = 1, nno
+        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino, imoy, tmoy(ino), iret4)
+        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino, nbcou*3, tsup(ino), iret3)
+        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino, 1, tinf(ino), iret2)
+    end do
 !
     call jevech('PMATERC', 'L', jmate)
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
-    if ((phenom.eq.'ELAS') .or. (phenom.eq.'ELAS_COQUE') .or. (phenom.eq.'ELAS_COQMU')) then
+    if ((phenom.eq.'ELAS')       .or. (phenom.eq.'ELAS_COQUE')&
+   .or. (phenom.eq.'ELAS_COQMU') .or. (phenom.eq.'ELAS_GLRC') ) then
 !
 ! --- RECUPERATION DE L'EPAISSEUR DE LA COQUE
 !     --------------------------
@@ -116,20 +111,18 @@ subroutine dxefnt(nomte, pgl, sigt)
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 ! --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 !     ----------------------------------------------------
-        call dxmath('NOEU', epais, df, dm, dmf,&
-                    pgl, multic, indith, t2iu, t2ui,&
-                    t1ve, nno)
-        if (indith .eq. -1) goto 30
+        call dxmath('NOEU', epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1ve, nno)
+        if (indith .ne. -1) then
 !
-        somire = iret2+iret3+iret4
-        if (somire .eq. 0) then
-            if (iret1 .eq. 1) then
-                call utmess('F', 'CALCULEL_31')
-            else
+            somire = iret2+iret3+iret4
+            if (somire .eq. 0) then
+                if (iret1 .eq. 1) then
+                    call utmess('F', 'CALCULEL_31')
+                else
 !
 ! --- BOUCLE SUR LES NOEUDS
 !     ---------------------
-                do 20 ino = 1, nno
+                    do ino = 1, nno
 !
 !  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
 !  --      LAQUELLE LA TEMPERATURE EST PARABOLIQUE DANS L'EPAISSEUR.
@@ -137,22 +130,19 @@ subroutine dxefnt(nomte, pgl, sigt)
 !  --      CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
 !  --      SONT LES RESULTATS DE LA ROUTINE DXMATH.
 !          ----------------------------------------
-                    coe1 = (tsup(ino)+tinf(ino)+4.d0*tmoy(ino))/6.d0 - tref
-                    coe2 = (tsup(ino)-tinf(ino))/epais
+                        coe1 = (tsup(ino)+tinf(ino)+4.d0*tmoy(ino))/6.d0 - tref
+                        coe2 = (tsup(ino)-tinf(ino))/epais
 !
-                    sigt(1+8* (ino-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
-                    sigt(2+8* (ino-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
-                    sigt(3+8* (ino-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
-                    sigt(4+8* (ino-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
-                    sigt(5+8* (ino-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
-                    sigt(6+8* (ino-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
-20              continue
-!
+                        sigt(1+8* (ino-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
+                        sigt(2+8* (ino-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
+                        sigt(3+8* (ino-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
+                        sigt(4+8* (ino-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
+                        sigt(5+8* (ino-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
+                        sigt(6+8* (ino-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
+                    end do
+                endif
             endif
         endif
-!
     endif
-!
 30  continue
-!
 end subroutine

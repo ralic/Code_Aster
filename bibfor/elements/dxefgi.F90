@@ -1,4 +1,4 @@
-subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
+subroutine dxefgi(nomte, pgl, epsini, sigt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 #include "asterfort/utmess.h"
 !
     character(len=16) :: nomte
-    real(kind=8) :: xyzl(3, 1), pgl(3, 3)
+    real(kind=8) :: pgl(3, 3)
     real(kind=8) :: epsini(6)
     real(kind=8) :: sigt(1)
 !     ------------------------------------------------------------------
@@ -33,8 +33,6 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 ! --- COMPTE LES DEFORMATIONS INITIALES DE CISAILLEMENT TRANSVERSE.
 !     ------------------------------------------------------------------
 !     IN  NOMTE        : NOM DU TYPE D'ELEMENT
-!     IN  XYZL(3,NNO)  : COORDONNEES DES CONNECTIVITES DE L'ELEMENT
-!                        DANS LE REPERE LOCAL DE L'ELEMENT
 !     IN  PGL(3,3)     : MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE
 !                        LOCAL
 !     IN  EPSINI(6)    : DEFORMATIONS INITIALES CONSTANTES SUR L'ELEMENT
@@ -56,17 +54,18 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 !-----------------------------------------------------------------------
     zero = 0.0d0
 !
-    do 10 i = 1, 32
+    do i = 1, 32
         sigt(i) = zero
-10  end do
+    end do
 !
-    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or. nomte .eq. 'MEDKTG3 ') then
+    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or.&
+        nomte .eq. 'MEDKTG3 ') then
 !
         npg = 3
         nno = 3
 !
-        else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDSQU4 ' .or.&
-    nomte.eq.'MEQ4QU4 ' .or. nomte.eq.'MEDKQG4 ') then
+    else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDSQU4 ' .or.&
+             nomte.eq.'MEQ4QU4 ' .or. nomte.eq.'MEDKQG4 ') then
         npg = 4
         nno = 4
 !
@@ -94,7 +93,7 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !     -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
         sigt(1+8* (igau-1)) = dm(1,1)*epxx + dm(1,2)*epyy + dm(1,3)* epxy
         sigt(2+8* (igau-1)) = dm(2,1)*epxx + dm(2,2)*epyy + dm(2,3)* epxy
@@ -106,6 +105,6 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 !
         sigt(7+8* (igau-1)) = zero
         sigt(8+8* (igau-1)) = zero
-20  end do
+    end do
 !
 end subroutine

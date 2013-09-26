@@ -124,14 +124,14 @@ EGF = 38700000000.0;
 NUF = 0.17;
 
 
-MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                            NU=0.18,),
+MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                 NU_M=0.18,
+                                 E_F=EGF,
+                                 NU_F=NUF,),
                     GLRC_DM=_F(GAMMA_T=0.02,
                                GAMMA_F=0.32,
                                NYT=3.7E5,
-                               MYF=9.0E3,
-                               EF=EGF,
-                               NUF=NUF,),);
+                               MYF=9.0E3,),);
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='DALLE_G',
@@ -207,20 +207,24 @@ COND_2_F=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=_F(GROUP_MA='A2A4',
                                     DRY=DR0,),);
 
-chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+chf1=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.,0.,
                          t1,1.,
                          t2,-1.,
-                         t3,0.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         t3,0.,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 
-chf2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                         (t1 / 2.0),1.,
-                         (t2 / 2.0),-1.,
-                         (t3 / 2.0),0.,
-                         ((t1 / 2.0) + (t3 / 2.0)),1.,
-                         ((t2 / 2.0) + (t3 / 2.0)),-1.,
-                         ((t3 / 2.0) + (t3 / 2.0)),0.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+chf2=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.,0.,
+                        (t1 / 2.0),1.,
+                        (t2 / 2.0),-1.,
+                        (t3 / 2.0),0.,
+                        ((t1 / 2.0) + (t3 / 2.0)),1.,
+                        ((t2 / 2.0) + (t3 / 2.0)),-1.,
+                        ((t3 / 2.0) + (t3 / 2.0)),0.,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=t3,
@@ -253,8 +257,10 @@ RESU_R1=STAT_NON_LINE(MODELE=MO,
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),);
 
-RESU_R1=CALC_CHAMP(reuse =RESU_R1,RESULTAT=RESU_R1,PRECISION=1.E-3,
-             FORCE=('FORC_NODA',),)
+RESU_R1=CALC_CHAMP(reuse=RESU_R1,
+                   RESULTAT=RESU_R1,
+                   PRECISION=1.E-3,
+                   FORCE=('FORC_NODA',),)
 
 RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATER,
@@ -270,49 +276,43 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),);
 
-
-RESU_G1=CALC_CHAMP(reuse =RESU_G1,RESULTAT=RESU_G1,PRECISION=1.E-3,
-             FORCE=('FORC_NODA',),
-             VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
-             )
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,
+                   RESULTAT=RESU_G1,
+                   PRECISION=1.E-3,
+                   FORCE=('FORC_NODA',),
+                   VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),);
 
 # ---------------------POST-TRAITEMENT--------------------------
 
 TFXA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A4FX',
-                                 RESULTAT=RESU_R1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A4',
-                                 NOM_CMP='DX',),
-                               ),);
-
+                                  INTITULE='A4FX',
+                                  RESULTAT=RESU_R1,
+                                  NOM_CHAM='FORC_NODA',
+                                  GROUP_NO='A4',
+                                  NOM_CMP='DX',),),);
 
 TFXA4_R1=CALC_TABLE(reuse =TFXA4_R1,
-               TABLE=TFXA4_R1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
+                    TABLE=TFXA4_R1,
+                    ACTION=(_F(OPERATION='FILTRE',
+                               NOM_PARA='NUME_ORDRE',
+                               CRIT_COMP='GT',
+                               VALE=0,),),);
 
 
 
 TFXA4_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A4FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A4',
-                                 NOM_CMP='DX',),),);
+                                  INTITULE='A4FX',
+                                  RESULTAT=RESU_G1,
+                                  NOM_CHAM='FORC_NODA',
+                                  GROUP_NO='A4',
+                                  NOM_CMP='DX',),),);
 
 TFXA4_G1=CALC_TABLE(reuse =TFXA4_G1,
                TABLE=TFXA4_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
+               ACTION=(_F(OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
+                          VALE    = 0,),),);
 
 TFXA2_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A2FX',
@@ -1856,4 +1856,131 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=3.5,),
            )
 
+
+#----- TEST DU COMPORTEMENT ELAS_GLRC -----
+
+MAT_G_E=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                   NU_M=0.18,
+                                   E_F=EGF,
+                                   NU_F=NUF,),
+                      GLRC_DM=_F(GAMMA_T=0.02,
+                                 GAMMA_F=0.32,
+                                 NYT=1.0E30,
+                                 MYF=1.0E30,),);
+
+MATERE=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=(_F(GROUP_MA='DALLE_G',
+                              MATER=MAT_G_E,),),);
+
+RESU_G3=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATERE,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0,
+                                FONC_MULT=chf1,),
+                             _F(CHARGE=COND_1,
+                                FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION='GLRC_DM',
+                                   RESI_INTE_RELA=1e-16,),
+                      INCREMENT=_F(LIST_INST=DEFLIST,
+                                   INST_FIN=t1,),
+                      NEWTON=_F(REAC_ITER=1,),);
+
+TRESU_G3=CREA_TABLE(RESU=_F(RESULTAT=RESU_G3,
+                            NOM_CHAM='SIEF_ELGA',
+                            INST=t1,
+                            TOUT_CMP='OUI',
+                            TOUT='OUI',),);
+
+IMPR_TABLE(TABLE=TRESU_G3,);
+
+RESU_G4=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATERE,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0,
+                                FONC_MULT=chf1,),
+                             _F(CHARGE=COND_1,
+                                FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
+                      INCREMENT=_F(LIST_INST=DEFLIST,
+                                   INST_FIN=t1,),
+                      NEWTON=_F(REAC_ITER=1,),);
+
+TRESU_G4=CREA_TABLE(RESU=_F(RESULTAT=RESU_G4,
+                            NOM_CHAM='SIEF_ELGA',
+                            INST=t1,
+                            TOUT_CMP='OUI',
+                            TOUT='OUI',),);
+
+RESU_G5=MECA_STATIQUE(MODELE=MO_G,
+                      CHAM_MATER=MATERE,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0,),
+                             _F(CHARGE=COND_1,),),);
+
+TRESU_G5=CREA_TABLE(RESU=_F(RESULTAT=RESU_G5,
+                            NOM_CHAM='SIEF_ELGA',
+                            TOUT_CMP='OUI',
+                            TOUT='OUI',),);
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=7.14000E+05,
+           NOM_PARA='NXX',
+           TABLE=TRESU_G3,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='COOR_X',
+                      VALE=8.33333E-01,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=9.16667E-01,),),);
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=7.14000E+05,
+           NOM_PARA='NXX',
+           TABLE=TRESU_G4,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='COOR_X',
+                      VALE=8.33333E-01,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=9.16667E-01,),),);
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=7.14000E+05,
+           NOM_PARA='NXX',
+           TABLE=TRESU_G5,
+           FILTRE=(_F(NOM_PARA='COOR_X',
+                      VALE=8.33333E-01,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=9.16667E-01,),),);
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.93500E+04,
+           NOM_PARA='MXX',
+           TABLE=TRESU_G3,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='COOR_X',
+                      VALE=8.33333E-01,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=9.16667E-01,),),);
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.93500E+04,
+           NOM_PARA='MXX',
+           TABLE=TRESU_G4,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=1.0,),
+                   _F(NOM_PARA='COOR_X',
+                      VALE=8.33333E-01,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=9.16667E-01,),),);
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=1.93500E+04,
+           NOM_PARA='MXX',
+           TABLE=TRESU_G5,
+           FILTRE=(_F(NOM_PARA='COOR_X',
+                      VALE=8.33333E-01,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=9.16667E-01,),),);
 FIN();

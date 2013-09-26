@@ -39,8 +39,8 @@ MAT_G_RA=DEFI_GLRC(RELATION='GLRC_DM',
                              RY=0.8,),),
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_RA.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_RA.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_RA.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_RA.ELAS_GLRC .VALR");
 
 TAB_G_RA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
@@ -53,7 +53,7 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_RA,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(
@@ -61,7 +61,23 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_RA,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_RA,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_RA,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(
@@ -99,22 +115,6 @@ TAB_G_RA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_R=valres,),),);
 
 #TESTE LE CALCUL DES PARAMETRES SPECIFIQUE A GLRC_DM
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_RA,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_RA,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
            VALE_REFE=0.10000000000000001,
@@ -189,8 +189,8 @@ MAT_G_PA=DEFI_GLRC(RELATION='GLRC_DM',
                    AMOR_BETA=4.0,
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_PA.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_PA.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_PA.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_PA.ELAS_GLRC .VALR");
 TAB_G_PA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
@@ -202,7 +202,7 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_PA,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(
@@ -210,7 +210,23 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_PA,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_PA,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_PA,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -248,22 +264,6 @@ TAB_G_PA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
                               LISTE_R=valres,),),);
-
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_PA,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_PA,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
@@ -338,8 +338,8 @@ MAT_G_UT=DEFI_GLRC(RELATION='GLRC_DM',
                    KAPPA_FLEX=0.03,
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_UT.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_UT.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_UT.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_UT.ELAS_GLRC .VALR");
 TAB_G_UT=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
@@ -351,7 +351,7 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_UT,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(
@@ -359,7 +359,23 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_UT,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_UT,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_UT,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -397,22 +413,6 @@ TAB_G_UT=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
                               LISTE_R=valres,),),);
-
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_UT,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_UT,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
@@ -485,8 +485,8 @@ MAT_G_NA=DEFI_GLRC(RELATION='GLRC_DM',
                    METHODE_ENDO='ENDO_NAISS',
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_NA.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_NA.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_NA.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_NA.ELAS_GLRC .VALR");
 TAB_G_NA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
@@ -498,7 +498,7 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_NA,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(
@@ -506,7 +506,23 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_NA,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_NA,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_NA,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -544,22 +560,6 @@ TAB_G_NA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
                               LISTE_R=valres,),),);
-
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_NA,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_NA,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
@@ -632,8 +632,8 @@ MAT_G_LI=DEFI_GLRC(RELATION='GLRC_DM',
                    METHODE_ENDO='ENDO_LIM',
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_LI.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_LI.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_LI.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_LI.ELAS_GLRC .VALR");
 TAB_G_LI=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
@@ -645,7 +645,7 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_LI,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(
@@ -653,7 +653,23 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_LI,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_LI,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_LI,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -691,22 +707,6 @@ TAB_G_LI=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
                               LISTE_R=valres,),),);
-
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_LI,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_LI,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
@@ -779,8 +779,8 @@ MAT_G_CI=DEFI_GLRC(RELATION='GLRC_DM',
                    CISAIL='OUI',
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_CI.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_CI.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_CI.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_CI.ELAS_GLRC .VALR");
 
 TAB_G_CI=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
@@ -794,7 +794,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_CI,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -803,7 +803,23 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_CI,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_CI,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_CI,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -844,22 +860,6 @@ TAB_G_CI=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_R=valres,),),);
 
 #TESTE LE CALCUL DES PARAMETRES SPECIFIQUE A GLRC_DM
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_CI,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_CI,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
            VALE_REFE=0.10000000000000001,
@@ -932,8 +932,8 @@ MAT_G_CO=DEFI_GLRC(RELATION='GLRC_DM',
                    NYC=2.16067e+06,
                    INFO=2,);
 
-nomres=aster.getvectjev("MAT_G_CO.ELAS      .VALK");
-valres=aster.getvectjev("MAT_G_CO.ELAS      .VALR");
+nomres=aster.getvectjev("MAT_G_CO.ELAS_GLRC .VALK");
+valres=aster.getvectjev("MAT_G_CO.ELAS_GLRC .VALR");
 
 TAB_G_CO=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
@@ -946,7 +946,7 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_CO,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='E',),
+                     VALE_K='E_M',),
            )
 
 TEST_TABLE(
@@ -954,7 +954,23 @@ TEST_TABLE(
            NOM_PARA='VAL_PARA',
            TABLE=TAB_G_CO,
            FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NU',),
+                     VALE_K='NU_M',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.8659819824196E+10,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_CO,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='E_F',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.16912420588888,
+           NOM_PARA='VAL_PARA',
+           TABLE=TAB_G_CO,
+           FILTRE=_F(NOM_PARA='NOM_PARA',
+                     VALE_K='NU_F',),
            )
 
 TEST_TABLE(
@@ -992,22 +1008,6 @@ TAB_G_CO=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_R=valres,),),);
 
 #TESTE LE CALCUL DES PARAMETRES SPECIFIQUE A GLRC_DM
-TEST_TABLE(
-           VALE_CALC=3.8659819824196E+10,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_CO,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='EF',),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.16912420588888,
-           NOM_PARA='VAL_PARA',
-           TABLE=TAB_G_CO,
-           FILTRE=_F(NOM_PARA='NOM_PARA',
-                     VALE_K='NUF',),
-           )
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.10000000000000,
            VALE_REFE=0.10000000000000001,

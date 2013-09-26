@@ -1,6 +1,4 @@
-subroutine dxmath(fami, epais, df, dm, dmf,&
-                  pgl, multic, indith, t2iu, t2ui,&
-                  t1ve, npg)
+subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1ve, npg)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -55,9 +53,10 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
     real(kind=8) :: s, c
     real(kind=8) :: alphat
     real(kind=8) :: alpha, beta
+    real(kind=8) :: em, ef, num, nuf
     real(kind=8) :: deux
     integer :: icodre(56)
-    character(len=3) :: num
+    character(len=3) :: nume
     character(len=8) :: nomres(56), nompar
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
@@ -83,8 +82,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS_COQMU') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                    c, s)
+        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -98,21 +96,26 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
         t1ve(6) = t1ve(7) + t1ve(7)
         t1ve(9) = t1ve(1) - t1ve(4)
         nbv = 56
-        do 10 i = 1, nbv
-            call codent(i, 'G', num)
-            nomres(i) = 'HOM_'//num
-10      continue
+        do i = 1, nbv
+            call codent(i, 'G', nume)
+            nomres(i) = 'HOM_'//nume
+        end do
 !
     else if (phenom.eq.'ELAS') then
         nbv = 3
         nomres(1) = 'E'
         nomres(2) = 'NU'
         nomres(3) = 'ALPHA'
-!
+    else if (phenom.eq.'ELAS_GLRC') then
+        nbv = 5
+        nomres(1) = 'E_M'
+        nomres(2) = 'NU_M'
+        nomres(3) = 'E_F'
+        nomres(4) = 'NU_F'
+        nomres(5) = 'ALPHA'
     else if (phenom.eq.'ELAS_COQUE') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                    c, s)
+        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -128,12 +131,10 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
         t1ve(9) = t1ve(1) - t1ve(4)
 !
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, 0, ' ', [0.0d0],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, 0, ' ', [0.0d0],&
                     1, 'MEMB_L  ', valres(1), icodre, 0)
         if (icodre(1) .eq. 1) then
-            call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                        ' ', phenom, 0, ' ', [0.0d0],&
+            call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, 0, ' ', [0.0d0],&
                         1, 'M_LLLL  ', valres(1), icodre, 0)
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'ELEMENTS_41')
@@ -202,8 +203,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 !
     npgh=3
-    call moytem(fami, npg, npgh, '+', valpar,&
-                iret)
+    call moytem(fami, npg, npgh, '+', valpar, iret)
     nbpar = 1
     nompar = 'TEMP'
 !===============================================================
@@ -213,12 +213,10 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !
         multic = 0
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
-                    1, nomres(3), valres(3), icodre(3), 0)
+                    ' ', phenom, nbpar, nompar, [valpar], 1, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
             indith = -1
             goto 90
@@ -243,25 +241,77 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !      --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
 !      --- ET REACTUALISATION DE LA MATRICE DE FLEXION       --------
 !      --- DANS LE CAS D'UN EXCENTREMENT                     --------
-        do 50 i = 1, 3
-            do 50 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 dmf(i,j) = excent*dm(i,j)
                 df (i,j) = df(i,j) + excent*excent*dm(i,j)
-50          continue
+            end do
+        end do
+    else if (phenom .eq. 'ELAS_GLRC') then
+!        ------ MATERIAU ISOTROPE ------------------------------------
 !
-!        ---------------------------------------------------------------
+        multic = 0
+!
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+                    2, nomres, valres, icodre, 1)
+!
+        em = valres(1)
+        num = valres(2)
+!
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+                    3, nomres(3), valres(3), icodre(3), 0)
+        if ((icodre(5).ne.0) .or. (valres(5).eq.0.d0)) then
+            indith = -1
+            goto 90
+        endif
+!
+        if (icodre(3) .eq. 0) then
+            ef = valres(3)
+        else
+            ef = em
+        endif
+!
+        if (icodre(4) .eq. 0) then
+            nuf = valres(4)
+        else
+            nuf = num
+        endif
+!
+        alphat = valres(5)
+        em = em*alphat
+        ef = ef*alphat
+!
+!      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
+        cdf = ef*epais*epais*epais/12.d0/ (1.d0-nuf*nuf)
+        df(1,1) = cdf
+        df(1,2) = cdf*nuf
+        df(2,1) = df(1,2)
+        df(2,2) = df(1,1)
+!      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
+        cdm = em*em/ (1.d0-num*num)
+        dm(1,1) = cdm
+        dm(1,2) = cdm*num
+        dm(2,1) = dm(1,2)
+        dm(2,2) = dm(1,1)
+!      --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
+!      --- ET REACTUALISATION DE LA MATRICE DE FLEXION       --------
+!      --- DANS LE CAS D'UN EXCENTREMENT                     --------
+        do i = 1, 3
+            do j = 1, 3
+                dmf(i,j) = excent*dm(i,j)
+                df (i,j) = df(i,j) + excent*excent*dm(i,j)
+            end do
+        end do
     else if (phenom.eq.'ELAS_COQUE') then
         multic = 0
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
         if (elasco .eq. 1) then
             indalf = 11
         else if (elasco.eq.2) then
             indalf = 34
         endif
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(indalf), valres(indalf), icodre(indalf), 0)
         if ((icodre(indalf).ne.0) .or. (valres(indalf).eq.0.d0)) then
             indith = -1
@@ -318,28 +368,24 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !        --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
 !        --- REACTUALISATION DE LA MATRICE DE FLEXION          --------
 !        --- DANS LE CAS D'UN EXCENTREMENT                     --------
-        do 60 i = 1, 3
-            do 60 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 df(i,j) = df(i,j)+deux*excent*dmf(i,j)+excent*excent* dm(i,j)
                 dmf(i,j)= dmf(i,j) + excent*dm(i,j)
-60          continue
+            end do
+        end do
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 !
-        call utbtab('ZERO', 3, 3, dm, t1ve,&
-                    xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve,&
-                    xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve,&
-                    xab1, dmf)
+        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
 !
     else if (phenom.eq.'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(19), valres(19), icodre(19), 0)
         epais = valres(19)
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
                     27, nomres(30), valres(30), icodre(30), 0)
         dm(1,1) = valres(30)
         dm(1,2) = valres(31)
@@ -372,27 +418,25 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !        --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
 !        --- REACTUALISATION DE LA MATRICE DE FLEXION          --------
 !        --- DANS LE CAS D'UN EXCENTREMENT                     --------
-        do 70 i = 1, 3
-            do 70 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 df(i,j) = df(i,j)+deux*excent*dmf(i,j)+excent*excent* dm(i,j)
                 dmf(i,j)= dmf(i,j) + excent*dm(i,j)
-70          continue
+            end do
+        end do
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 !
-        call utbtab('ZERO', 3, 3, dm, t1ve,&
-                    xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve,&
-                    xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve,&
-                    xab1, dmf)
+        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
 !
         multic = 1
 !
     endif
 !
-    do 80 k = 1, 9
+    do k = 1, 9
         if (abs(dmf(k,1)) .gt. 1.d-10) multic = 2
-80  end do
+    end do
 !
 90  continue
 end subroutine

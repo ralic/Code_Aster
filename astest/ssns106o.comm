@@ -61,58 +61,38 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       VECT_NORM=(0.,0.,1.,),
                                       GROUP_NO='A1',),);
 
-MA=CREA_MAILLAGE(MAILLAGE=MAIL,
-                 CREA_GROUP_MA=(_F(NOM='ACIER2L',
-                                   GROUP_MA='DALLE',
-                                   PREF_MAILLE='A2L',),
-                                _F(NOM='ACIER1T',
-                                   GROUP_MA='DALLE',
-                                   PREF_MAILLE='A1T',),
-                                _F(NOM='ACIER2T',
-                                   GROUP_MA='DALLE',
-                                   PREF_MAILLE='A2T',),
-                                _F(NOM='ACIER1L',
-                                   GROUP_MA='DALLE',
-                                   PREF_MAILLE='A1L',),
-                                _F(NOM='DALLE_G',
-                                   GROUP_MA='DALLE',
-                                   PREF_MAILLE='G',),),);
-
-
-MO_G=AFFE_MODELE(MAILLAGE=MA,
+MO_G=AFFE_MODELE(MAILLAGE=MAIL,
                  INFO=1,
-                 AFFE=_F(GROUP_MA='DALLE_G',
+                 AFFE=_F(GROUP_MA='DALLE',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKTG',),);
 
 EGM = 35620000000.0;
 EGF = 38700000000.0;
 
-MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                            NU=0.18, ALPHA = 1.E-5),
+MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                 NU_M=0.18,
+                                 E_F=EGF,
+                                 NU_F=0.17,
+                                 ALPHA = 1.E-5),
                     GLRC_DM=_F(GAMMA_T=0.02,
                                GAMMA_F=0.32,
                                NYT=3.7E5,
-                               MYF=9.0E3,
-                               EF=EGF,
-                               NUF=0.17,),);
+                               MYF=9.0E3,),);
 
-TEMP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+TEMP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
                    AFFE=_F( TOUT='OUI',
                             NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-#                            VALE=   (    0.   ,  0. ,    0.   ), ), )
                             VALE=   (    10.   ,  10. ,    10.   ), ), )
 
-TEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+TEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
                    AFFE=_F( TOUT='OUI',
                             NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-#                            VALE=   (    -20.   ,  -20. ,    -20.   ), ), )
                             VALE=   (    -10.   ,  -10. ,    -10.   ), ), )
 
-TEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+TEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
                    AFFE=_F( TOUT='OUI',
                             NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-#                            VALE=   (   20.   , 20. ,   20.   ), ), )
                             VALE=   (   30.   , 30. ,   30.   ), ), )
 
 TEMPLI=CREA_RESU( OPERATION='AFFE',
@@ -147,23 +127,20 @@ TEMPLI2=CREA_RESU( OPERATION='AFFE',
                              INST=4.0,      ),
                              ), );
 
-MATER=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA='DALLE_G',
+MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_MA='DALLE',
                              MATER=MAT_G,),
                     AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=(10.,)),)
 
-MATER2=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA='DALLE_G',
+MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_MA='DALLE',
                              MATER=MAT_G,),
                     AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI2,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=(10.,)),)
 
-COEF_DRZ = 1e-10;
-
-
 CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
-                      COQUE=_F(GROUP_MA='DALLE_G',
+                      COQUE=_F(GROUP_MA='DALLE',
                                EPAIS=EP,
                                ANGL_REP=(0.0,0.0,),
                                INER_ROTA='OUI',),);
@@ -215,8 +192,7 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
                              _F(CHARGE=COND_1G,
-                                FONC_MULT=chf1,),
-                             ),
+                                FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='GLRC_DM',
                                    ITER_INTE_MAXI=30,),
                       INCREMENT=_F(LIST_INST=lisnt1,

@@ -1,5 +1,6 @@
 subroutine te0423(option, nomte)
     implicit  none
+! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefg2.h"
@@ -27,7 +28,8 @@ subroutine te0423(option, nomte)
 ! ======================================================================
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          POUR LES ELEMENTS DKTG
+!                          POUR LES ELEMENTS DE PLAQUE GENERALISEE
+!                          DKTG, DKQG, T3GG, Q4GG
 !                          OPTIONS : 'CHAR_MECA_TEMP_R'
 !
 !    - ARGUMENTS:
@@ -40,8 +42,7 @@ subroutine te0423(option, nomte)
     real(kind=8) :: bsigma(24), sigt(32)
 ! ----------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcaco)
@@ -61,14 +62,11 @@ subroutine te0423(option, nomte)
 !     ---------------------
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
 !
-!
 ! --- CALCUL DES EFFORTS GENERALISES D'ORIGINE THERMIQUE
 ! --- AUX POINTS D'INTEGRATION
 !     ------------------------
 !
     call dxefg2(pgl, sigt)
-!
-!
 !
 ! --- CALCUL DES EFFORTS INTERNES D'ORIGINE THERMIQUE
 ! --- (I.E. SOMME_VOL(BT_SIG))
@@ -77,8 +75,8 @@ subroutine te0423(option, nomte)
 !
 ! --- AFFECTATION DU VECTEUR DES FORCES ELEMENTAIRES EN SORTIE DU TE
 !     --------------------------------------------------------------
-    do 20 i = 1, nno*6
+    do i = 1, nno*6
         zr(jvecg+i-1) = bsigma(i)
-20  end do
+    end do
 !
 end subroutine

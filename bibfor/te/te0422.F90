@@ -10,6 +10,7 @@ subroutine te0422(option, nomte)
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 !
@@ -39,7 +40,7 @@ subroutine te0422(option, nomte)
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !     ------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i, jcara, iret
+    integer :: jcara, iret
     integer :: jdepg, jeffg, jgeom
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), alpha, beta
@@ -53,14 +54,11 @@ subroutine te0422(option, nomte)
 !
     fami = 'RIGI'
 !
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', fami, ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
     if (option .ne. 'SIEF_ELGA') ASSERT(.false.)
 !
-    do 10 i = 1, 32
-        effgt(i) = 0.d0
-10  end do
+    call r8inir(32, 0.d0, effgt, 1)
 !
     call jevech('PGEOMER', 'L', jgeom)
 !
@@ -74,17 +72,15 @@ subroutine te0422(option, nomte)
 !
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                c, s)
+    beta  = zr(jcara+2) * r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
     call jevech('PDEPLAR', 'L', jdepg)
     call utpvgl(nno, 6, pgl, zr(jdepg), depl)
 !
 ! --- CALCUL DES EFFORTS GENERALISES AUX POINTS DE CALCUL
     call jevech('PCONTRR', 'E', jeffg)
-    call dxefgv(nomte, option, xyzl, pgl, depl,&
-                effgt)
+    call dxefgv(nomte, option, xyzl, pgl, depl, effgt)
 !
     call dxefro(npg, t2iu, effgt, zr(jeffg))
 !

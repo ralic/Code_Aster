@@ -47,7 +47,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, i, int, jcoqu, jdepg
+    integer :: multic, i, jcoqu, jdepg
     real(kind=8) :: wgt
     real(kind=8) :: df(9), dm(9), dmf(9), dc(4), dci(4)
     real(kind=8) :: df2(9), dm2(9), dmf2(9)
@@ -59,9 +59,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
 !
     un = 1.0d0
     enerth = 0.0d0
@@ -80,44 +78,39 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !
-    do 10 int = 1, npg
-        qsi = zr(icoopg-1+ndim*(int-1)+1)
-        eta = zr(icoopg-1+ndim*(int-1)+2)
+    do i = 1, npg
+        qsi = zr(icoopg-1+ndim*(i-1)+1)
+        eta = zr(icoopg-1+ndim*(i-1)+2)
 !        ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE --------------------
         call jquad4(xyzl, qsi, eta, jacob)
-        wgt = zr(ipoids+int-1)*jacob(1)
+        wgt = zr(ipoids+i-1)*jacob(1)
 !
 !        -- FLEXION :
         call dkqbf(qsi, eta, jacob(2), caraq4, bf)
 !        ----- CALCUL DU PRODUIT BFT.DF.BF -----------------------------
         call dcopy(9, df, 1, df2, 1)
         call dscal(9, wgt, df2, 1)
-        call utbtab('CUMU', 3, 12, df2, bf,&
-                    xab1, flex)
+        call utbtab('CUMU', 3, 12, df2, bf, xab1, flex)
 !
 !        -- MEMBRANE :
         call dxqbm(qsi, eta, jacob(2), bm)
 !        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
         call dcopy(9, dm, 1, dm2, 1)
         call dscal(9, wgt, dm2, 1)
-        call utbtab('CUMU', 3, 8, dm2, bm,&
-                    xab1, memb)
+        call utbtab('CUMU', 3, 8, dm2, bm, xab1, memb)
 !
 !        -- COUPLAGE :
         if (coupmf .or. exce) then
 !           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
             call dcopy(9, dmf, 1, dmf2, 1)
             call dscal(9, wgt, dmf2, 1)
-            call utctab('CUMU', 3, 12, 8, dmf2,&
-                        bf, bm, xab1, mefl)
+            call utctab('CUMU', 3, 12, 8, dmf2, bf, bm, xab1, mefl)
         endif
-10  end do
+    end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxqloc(flex, memb, mefl, ctor, rig)
@@ -125,13 +118,12 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
-        call dxqloe(flex, memb, mefl, ctor, coupmf,&
-                    depl, ener)
+        call dxqloe(flex, memb, mefl, ctor, coupmf, depl, ener)
         call bsthpl(nomte(1:8), bsigth, indith)
         if (indith) then
-            do 20 i = 1, 24
+            do i = 1, 24
                 enerth = enerth + depl(i)*bsigth(i)
-20          continue
+            end do
             ener(1) = ener(1) - enerth
         endif
     endif

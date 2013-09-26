@@ -89,11 +89,6 @@ subroutine te0446(option, nomte)
 ! --- D'INTEGRATION DU REPERE LOCAL
         call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
 !
-        do ipg=1, npg
-            icontm=jtab(1)+8*(ipg-1)
-            call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
-        end do
-!
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
 !
@@ -103,6 +98,10 @@ subroutine te0446(option, nomte)
                 call dcopy(8, zr(icontm), 1, effgt(8*(ipg-1)+1), 1)
             end do
         else
+            do ipg=1, npg
+                icontm=jtab(1)+8*(ipg-1)
+                call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
+            end do
             call dxefro(npg, t2ve, effort, effgt)
         endif
 !

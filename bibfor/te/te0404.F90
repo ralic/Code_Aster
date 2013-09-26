@@ -25,6 +25,7 @@ subroutine te0404(option, nomte)
 !
 !
     implicit none
+! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqpgl.h"
@@ -41,7 +42,7 @@ subroutine te0404(option, nomte)
     character(len=4) :: fami
     integer :: icodre(1)
     integer :: codres(2)
-    character(len=2) :: nomres(2)
+    character(len=8) :: nomres(2)
     character(len=8) :: cnd
     character(len=16) :: phenom
     integer :: icour, imate, igeom, nd, ndim, nno, nnos, npg
@@ -75,8 +76,8 @@ subroutine te0404(option, nomte)
            )**2&
            )
 !
-    do 10 i = 1, nnos-1
-        do 20 j = i+1, nnos
+    do i = 1, nnos-1
+        do j = i+1, nnos
 !
             xi = zr(igeom-1+nd*(i-1)+1)
             yi = zr(igeom-1+nd*(i-1)+2)
@@ -95,8 +96,8 @@ subroutine te0404(option, nomte)
             distij = sqrt((xj-xi)**2+(yj-yi)**2+(zj-zii)**2)
             if ((distij.le.dmin) .and. (distij.ne.0)) dmin = distij
 !
-20      continue
-10  end do
+        end do
+    end do
 !
 !     RECUPERATION DU MODULE D'YOUNG ET DE LA MASSE VOLUMIQUE
     call jevech('PMATERC', 'L', imate)
@@ -106,6 +107,14 @@ subroutine te0404(option, nomte)
         nomres(2) = 'NU'
         call rcvalb(fami, 1, 1, '+', zi(imate),&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
+                    2, nomres, valres, codres, 1)
+        e = valres(1)
+        nu = valres(2)
+    else if (phenom .eq. 'ELAS_GLRC') then
+        nomres(1) = 'E_M'
+        nomres(2) = 'NU_M'
+        call rcvalb(fami, 1, 1, '+', zi(imate),&
+                    ' ', 'ELAS_GLRC', 0, ' ', [0.d0],&
                     2, nomres, valres, codres, 1)
         e = valres(1)
         nu = valres(2)

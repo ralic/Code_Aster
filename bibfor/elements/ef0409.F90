@@ -17,7 +17,7 @@ subroutine ef0409(nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     CALCUL DE EFGE_ELNO
+!     CALCUL DE EFGE_ELNO EN NON LINEAIRE
 !     ------------------------------------------------------------------
     implicit none
 !
@@ -28,9 +28,9 @@ subroutine ef0409(nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
-    character(len=16) :: nomte
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
+    character(len=16) :: nomte
 !
     integer :: nnos, ipoids, ivf, idfdx, jgano, jtab(7), icompo, ipg, npg
     integer :: ichn, icontm, nno, igeom, ndim, iret

@@ -103,8 +103,8 @@ subroutine te0050(option, nomte)
     call jevech('PMATERC', 'L', imate)
     mater=zi(imate)
     call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
-    if(.not.(phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ORTH'&
-        .or. phenom .eq. 'ELAS_COQMU')) then
+    if(.not.(phenom .eq. 'ELAS'       .or. phenom .eq. 'ELAS_ORTH'&
+        .or. phenom .eq. 'ELAS_COQMU' .or. phenom .eq. 'ELAS_GLRC')) then
         call utmess('F', 'MODELISA10_3', sk=phenom)
     endif
 !

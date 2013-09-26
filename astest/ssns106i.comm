@@ -134,15 +134,15 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                     INFO=1,);
 
 #BETON GLRC_DM
-MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                            NU=0.18,),
+MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                 NU_M=0.18,
+                                 E_F=EGF,
+                                 NU_F=0.17,),
                     GLRC_DM=_F(GAMMA_T=0.06,
                                GAMMA_C=0.8,
                                GAMMA_F=0.45,
                                NYT=3.7E5,
-                               MYF=9.E3,
-                               EF=EGF,
-                               NUF=0.17,),);
+                               MYF=9.E3,),);
 
 
 #BETON DHRC

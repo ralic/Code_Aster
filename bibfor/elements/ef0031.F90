@@ -46,12 +46,10 @@ subroutine ef0031(nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
-                ibid, 'S')
+    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', ibid, 'S')
 !
     call jevech('PGEOMER', 'L', jgeom)
     if (nno .eq. 3) then
@@ -66,14 +64,12 @@ subroutine ef0031(nomte)
     call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
     call jevech('PCONTRR', 'L', icontp)
     ind=8
-    call dxeffi('EFGE_ELNO', nomte, pgl, zr(icontp), ind,&
-                effint)
+    call dxeffi('EFGE_ELNO', nomte, pgl, zr(icontp), ind, effint)
 !
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                c, s)
+    beta  = zr(jcara+2) * r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
     call dxefro(npg, t2iu, effint, effgt)
     call jevech('PEFFORR', 'E', ichn)

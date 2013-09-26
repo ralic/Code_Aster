@@ -68,8 +68,6 @@ subroutine te0146(option, nomte)
     integer :: typcmb, ino, icmp, iret, k
     integer :: iadzi, iazk24
 !
-!
-!
     call tecael(iadzi, iazk24)
 !
     call jevech('PCACOQU', 'L', jepais)
@@ -87,13 +85,12 @@ subroutine te0146(option, nomte)
 !
 !       -- CALCUL DE LA CONTRAINTE MOYENNE :
 !       ----------------------------------------------
-    do 1, icmp=1,8
-    effrts(icmp) = 0.d0
-    do 2, ino=1,nno
-    effrts(icmp) = effrts(icmp) + zr(jefge-1+(ino-1)*8+icmp)/ nno
- 2  continue
- 1  continue
-!
+    do icmp = 1, 8
+        effrts(icmp) = 0.d0
+        do ino = 1, nno
+            effrts(icmp) = effrts(icmp) + zr(jefge-1+(ino-1)*8+icmp)/nno
+        end do
+    end do
 !
 !       -- RECUPERATION DES DONNEES DE L'UTILISATEUR :
 !       ----------------------------------------------
@@ -106,23 +103,21 @@ subroutine te0146(option, nomte)
     sigbet=zr(jfer1-1+5)
     piva  =zr(jfer1-1+6)
     pivb  =zr(jfer1-1+7)
-    ea = zr(jfer1-1+8)
-!
+    ea    =zr(jfer1-1+8)
 !
 !       -- CALCUL PROPREMENT DIT :
 !       --------------------------
     sigmbe=0.d0
     epsibe=0.d0
-    do 10, k=1,5
-    dnsits(k)=0.d0
-10  continue
+    do k = 1, 5
+        dnsits(k)=0.d0
+    end do
     call clcplq(ht, enrobg, typcmb, piva, pivb,&
                 ea, cequi, sigaci, sigbet, effrts,&
                 dnsits, sigmbe, epsibe, ierr)
     if (ierr .gt. 0) then
         call utmess('F', 'CALCULEL_72', si=ierr)
     endif
-!
 !
 !       -- stockage des resultats :
 !       --------------------------

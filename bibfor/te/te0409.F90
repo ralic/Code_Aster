@@ -25,6 +25,9 @@ subroutine te0409(option, nomte)
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
@@ -44,13 +47,13 @@ subroutine te0409(option, nomte)
 !
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    logical :: lrgm
+    logical :: lrgm, resi, rigi
 !
     integer :: nnos, ipoids, ivf, idfdx, jgano
     integer :: codret, ideplm, ideplp
     integer :: icompo, i, i1, i2, ivectu, npg
     integer :: jcret
-    integer :: nno, igeom, imatuu
+    integer :: nno, igeom, imatuu, imate
     integer :: ndim, iret, icarcr
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
@@ -69,8 +72,16 @@ subroutine te0409(option, nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    if (.not.(nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3'&
+         .or. nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEQ4GG4')) then
+        call utmess('F', 'ELEMENTS2_74', sk=nomte)
+    endif
+!
+! - OPTION
+    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
+    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+!
+    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -82,8 +93,8 @@ subroutine te0409(option, nomte)
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
-        'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA') then
+    if (option.eq.'FULL_MECA'      .or. option.eq.'RAPH_MECA' .or.&
+        option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
 !
         lrgm = option.eq.'RIGI_MECA       '
 !
@@ -99,7 +110,7 @@ subroutine te0409(option, nomte)
                 do i = 1, nno
                     i1 = 3* (i-1)
                     i2 = 6* (i-1)
-                    zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr(ideplp+i2)
+                    zr(igeom+i1)   = zr(igeom+i1)   + zr(ideplm+i2)   + zr(ideplp+i2)
                     zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
                     zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
                 end do
@@ -117,48 +128,31 @@ subroutine te0409(option, nomte)
             call utpvgl(nno, 6, pgl, zr(ideplp), dul)
             call jevech('PCARCRI', 'L', icarcr)
         else
-            comp3 = 'COMP_INCR       '
-            compor= 'GLRC_DM         '
-            if (nomte .eq. 'MEQ4GG4' .or. nomte .eq. 'MET3GG3') then
-                compor = 'ELAS            '
-            endif
+            call tecach('NNN', 'PMATERC', 'L', iret, iad=imate)
+            call rccoma(zi(imate), 'ELAS', 1, compor, iret)
             icarcr=1
         endif
 !
-        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3' .or. nomte .eq. 'MEDKQG4' .or.&
-            nomte .eq. 'MEQ4GG4') then
-            if (lrgm) then
-                call dxglrc(nomte, option, compor, xyzl, uml,&
-                            dul, vecloc, matloc, pgl, zr(icarcr),&
-                            codret)
-            else
-                call dxglrc(nomte, option, zk16(icompo), xyzl, uml,&
-                            dul, vecloc, matloc, pgl, zr(icarcr),&
-                            codret)
-            endif
+        if (lrgm) then
+            call dxglrc(nomte, option, compor, xyzl, uml, dul, vecloc, matloc, pgl,&
+                        zr(icarcr), codret)
         else
-            call utmess('F', 'ELEMENTS2_74', sk=nomte)
+            call dxglrc(nomte, option, zk16(icompo), xyzl, uml, dul, vecloc, matloc, pgl,&
+                        zr(icarcr), codret)
         endif
 !
-        if (option .eq. 'FULL_MECA') then
-            call jevech('PMATUUR', 'E', imatuu)
-            call jevech('PVECTUR', 'E', ivectu)
-            call utpslg(nno, 6, pgl, matloc, zr(imatuu))
-            call utpvlg(nno, 6, pgl, vecloc, zr(ivectu))
-        else if (option.eq.'RAPH_MECA') then
+        if (resi) then
             call jevech('PVECTUR', 'E', ivectu)
             call utpvlg(nno, 6, pgl, vecloc, zr(ivectu))
-        else if (option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
+!
+            call jevech('PCODRET', 'E', jcret)
+            zi(jcret) = codret
+        endif
+        if (rigi) then
             call jevech('PMATUUR', 'E', imatuu)
             call utpslg(nno, 6, pgl, matloc, zr(imatuu))
         endif
     else
         ASSERT(.false.)
     endif
-!
-    if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
-        call jevech('PCODRET', 'E', jcret)
-        zi(jcret) = codret
-    endif
-!
 end subroutine

@@ -53,9 +53,7 @@ subroutine dxefgt(pgl, sigt)
     real(kind=8) :: coe1, coe2, epais, tref
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elref5(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', fami, ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
 !
     call r8inir(32, 0.d0, sigt, 1)
 !
@@ -72,42 +70,36 @@ subroutine dxefgt(pgl, sigt)
     call jevech('PCACOQU', 'L', jcara)
     epais = zr(jcara)
 !
-    call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
-                1, tref, iret1)
+    call rcvarc(' ', 'TEMP', 'REF', fami, 1, 1, tref, iret1)
 !
 !
 ! --- CALCUL DES COEFFICIENTS THERMOELASTIQUES DE FLEXION,
 ! --- MEMBRANE, MEMBRANE-FLEXION
 !     ----------------------------------------------------
 !
-    call dxmath('RIGI', epais, df, dm, dmf,&
-                pgl, multic, indith, t2iu, t2ui,&
-                t1ve, npg)
-    if (indith .eq. -1) goto 30
+    call dxmath('RIGI', epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1ve, npg)
+    if (indith .ne. -1) then
 !
-    call jevech('PNBSP_I', 'L', jcou)
-    nbcou=zi(jcou)
-    ipg=(3*nbcou+1)/2
-    npgh=3
+        call jevech('PNBSP_I', 'L', jcou)
+        nbcou=zi(jcou)
+        ipg=(3*nbcou+1)/2
+        npgh=3
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !     -----------------------------------
-    do 20 igau = 1, npg
+        do igau = 1, npg
 !
 !  --      TEMPERATURES SUR LES FEUILLETS MOYEN, SUPERIEUR ET INFERIEUR
 !  --      AU POINT D'INTEGRATION COURANT
 !          ------------------------------
-        call rcvarc(' ', 'TEMP', '+', fami, igau,&
-                    ipg, tmoypg, iret2)
-        call rcvarc(' ', 'TEMP', '+', fami, igau,&
-                    1, tinfpg, iret3)
-        call rcvarc(' ', 'TEMP', '+', fami, igau,&
-                    npgh*nbcou, tsuppg, iret4)
-        somire = iret2+iret3+iret4
-        if (somire .eq. 0) then
-            if (iret1 .eq. 1) then
-                call utmess('F', 'CALCULEL_31')
-            else
+            call rcvarc(' ', 'TEMP', '+', fami, igau, ipg, tmoypg, iret2)
+            call rcvarc(' ', 'TEMP', '+', fami, igau, 1, tinfpg, iret3)
+            call rcvarc(' ', 'TEMP', '+', fami, igau, npgh*nbcou, tsuppg, iret4)
+            somire = iret2+iret3+iret4
+            if (somire .eq. 0) then
+                if (iret1 .eq. 1) then
+                    call utmess('F', 'CALCULEL_31')
+                else
 !
 !  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
 !  --      LAQUELLE LA TEMPERATURE EST PARABOLIQUE DANS L'EPAISSEUR.
@@ -115,19 +107,17 @@ subroutine dxefgt(pgl, sigt)
 !  --      CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
 !  --      SONT LES RESULTATS DE LA ROUTINE DXMATH.
 !          ----------------------------------------
-                coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0 - tref
-                coe2 = (tsuppg-tinfpg)/epais
+                    coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0 - tref
+                    coe2 = (tsuppg-tinfpg)/epais
 !
-                sigt(1+8* (igau-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
-                sigt(2+8* (igau-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
-                sigt(3+8* (igau-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
-                sigt(4+8* (igau-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
-                sigt(5+8* (igau-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
-                sigt(6+8* (igau-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
+                    sigt(1+8* (igau-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
+                    sigt(2+8* (igau-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
+                    sigt(3+8* (igau-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
+                    sigt(4+8* (igau-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
+                    sigt(5+8* (igau-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
+                    sigt(6+8* (igau-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
+                endif
             endif
-        endif
-20  end do
-!
-30  continue
-!
+        end do
+    endif
 end subroutine

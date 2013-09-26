@@ -45,9 +45,7 @@ subroutine dxroep(rho, epais)
         nomres(1) = 'HOM_19'
         nomres(2) = 'HOM_20'
         nbv = 2
-        call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                    [r8bid], nbv, nomres, valres, icodre,&
-                    1)
+        call rcvala(zi(jmate), ' ', phenom, 0, ' ', [r8bid], nbv, nomres, valres, icodre, 1)
         epais = valres(1)
         rho = valres(2)
         if (rho .eq. r8maem()) then
@@ -58,13 +56,12 @@ subroutine dxroep(rho, epais)
             call utmess('F', 'ELEMENTS4_81', nk=2, valk=valk)
         endif
 !
-        elseif ( phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_COQUE' .or.&
-    phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
+    elseif (phenom .eq. 'ELAS'      .or. phenom .eq. 'ELAS_COQUE' .or.&
+            phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH'  .or.&
+            phenom .eq. 'ELAS_GLRC') then
         nomres(1) = 'RHO'
         nbv = 1
-        call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                    [r8bid], nbv, nomres, valres, icodre,&
-                    1)
+        call rcvala(zi(jmate), ' ', phenom, 0, ' ', [r8bid], nbv, nomres, valres, icodre, 1)
         rho = valres(1)
         call jevech('PCACOQU', 'L', jcoqu)
         epais = zr(jcoqu)

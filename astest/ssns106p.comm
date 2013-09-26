@@ -124,15 +124,15 @@ EGF = 38700000000.0;
 
 NUF = 0.17;
 
-
-MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                            NU=0.18,ALPHA = 1.E-5),
+MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                 NU_M=0.18,
+                                 E_F=EGF,
+                                 NU_F=NUF,
+                                 ALPHA = 1.E-5),
                     GLRC_DM=_F(GAMMA_T=0.02,
                                GAMMA_F=0.32,
                                NYT=3.7E5,
-                               MYF=9.0E3,
-                               EF=EGF,
-                               NUF=NUF,),);
+                               MYF=9.0E3,),);
 
 TEMP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
@@ -504,7 +504,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.58196111312300,
+           VALE_CALC=0.58196338178927,
            NOM_PARA='D2',
            TABLE=TD_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -905,7 +905,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.58196111312300,
+           VALE_CALC=0.58196338178927,
            NOM_PARA='D2',
            TABLE=TD_3,
            FILTRE=_F(NOM_PARA='INST',

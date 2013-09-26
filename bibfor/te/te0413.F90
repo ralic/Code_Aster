@@ -114,7 +114,7 @@ subroutine te0413(option, nomte)
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 !      ===================================
-        do 20 ipg = 1, npg
+        do ipg = 1, npg
 !
             qsi = zr(icoopg-1+ndim*(ipg-1)+1)
             eta = zr(icoopg-1+ndim*(ipg-1)+2)
@@ -137,14 +137,11 @@ subroutine te0413(option, nomte)
 !        ==========================================================
             if ((option.eq.'DISS_ELGA') .or. (option.eq.'DISS_ELEM')) then
 !
-                disse(ipg) = (zr( jvari-1 + (ipg-1)*nbvar + 1) + zr(jvari-1 + (ipg-1)*nbvar + 2 )&
-                             )*seuil
-!
+                disse(ipg)=(zr(jvari-1+(ipg-1)*nbvar+1)+zr(jvari-1+(ipg-1)*nbvar+2))*seuil
                 dse = dse + disse(ipg)*poids
 !
             endif
-!
-20      end do
+        end do
 !
 ! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
 ! ---- ELASTIQUE EN SORTIE
@@ -158,16 +155,15 @@ subroutine te0413(option, nomte)
 ! --- OPTIONS DISS_ELGA
 !     ==============================
         if (option .eq. 'DISS_ELGA') then
-            do 100 ipg = 1, npg
+            do ipg = 1, npg
                 zr(idener-1+(ipg-1)*1 +1) = disse(ipg)
-100          continue
+            end do
 !
 ! --- OPTION DISS_ELEM
 !     ================
         else if (option.eq.'DISS_ELEM') then
             zr(idener-1+1) = dse
         endif
-!
     else
 !      RELATION NON PROGRAMMEE
         valk(1) = option

@@ -123,8 +123,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
 EGM = 35700000000.0;
 
 
-MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                            NU=0.18,),
+MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                 NU_M=0.18,),
                     ECRO_LINE=_F(D_SIGM_EPSI=(EGM * 0.1),
                                  SY=4.5E6,),
                     GLRC_DM=_F(GAMMA_T=0.1,

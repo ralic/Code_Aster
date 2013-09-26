@@ -125,14 +125,14 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
 EGM = 35620000000.0;
 EGF = 38700000000.0;
 
-MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
-                            NU=0.18,),
+MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
+                                 NU_M=0.18,
+                                 E_F=EGF,
+                                 NU_F=0.17,),
                     GLRC_DM=_F(GAMMA_T=0.02,
                                GAMMA_F=0.32,
                                NYT=3.7E5,
-                               MYF=9.0E3,
-                               EF=EGF,
-                               NUF=0.17,),);
+                               MYF=9.0E3,),);
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='DALLE_G',

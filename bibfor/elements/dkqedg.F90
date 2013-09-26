@@ -51,15 +51,11 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, icoopg, ivf, idfdx,&
-                    idfd2, jgano)
+        call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
         ne = npg
         fami='RIGI'
     else if (option(6:9).eq.'ELNO') then
-        call elref5(' ', 'NOEU', ndim, nno, nnos,&
-                    npg, ipoids, icoopg, ivf, idfdx,&
-                    idfd2, jgano)
+        call elref5(' ', 'NOEU', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
         ne = nno
         fami='NOEU'
     endif
@@ -70,21 +66,19 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-    call dxmate(fami, df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+    call dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
-    do 20 j = 1, 4
-        do 10 i = 1, 2
-            depm(i+2* (j-1)) = depl(i+6* (j-1))
-10      continue
-        depf(1+3* (j-1)) = depl(1+2+6* (j-1))
-        depf(2+3* (j-1)) = depl(3+2+6* (j-1))
-        depf(3+3* (j-1)) = -depl(2+2+6* (j-1))
-20  end do
+    do j = 1, 4
+        do i = 1, 2
+            depm(i+2* (j-1)) = depl(i+6*(j-1))
+        end do
+        depf(1+3* (j-1)) = depl(1+2+6*(j-1))
+        depf(2+3* (j-1)) = depl(3+2+6*(j-1))
+        depf(3+3* (j-1)) = -depl(2+2+6*(j-1))
+    end do
 !
     if (option(1:4) .eq. 'DEGE') then
-        do 80 ie = 1, ne
+        do ie = 1, ne
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
             eta = zr(icoopg-1+ndim*(ie-1)+2)
 !           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
@@ -94,36 +88,35 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !           ----- CALCUL DES MATRICES BM ET BF AU POINT QSI ETA -------
             call dxqbm(qsi, eta, jacob(2), bm)
             call dkqbf(qsi, eta, jacob(2), caraq4, bf)
-            do 30 k = 1, 3
+            do k = 1, 3
                 bdf(k) = 0.d0
                 bdm(k) = 0.d0
-30          continue
-            do 60 i = 1, 3
-                do 40 j = 1, 12
+            end do
+            do i = 1, 3
+                do j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-40              continue
-                do 50 j = 1, 8
+                end do
+                do j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
-50              continue
-60          continue
+                end do
+            end do
 !           ------ VT = HFT2.TKQ.DEPF ---------------------------------
-            call dkqtxy(qsi, eta, hft2, depf, caraq4(13),&
-                        caraq4(9), vt)
+            call dkqtxy(qsi, eta, hft2, depf, caraq4(13), caraq4(9), vt)
 !           ------ DCIS = DCI.VT --------------------------------------
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
             dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
-            do 70 i = 1, 3
+            do i = 1, 3
                 edgl(i+8* (ie-1)) = bdm(i)
                 edgl(i+3+8* (ie-1)) = bdf(i)
-70          continue
+            end do
 !           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
             edgl(3+8* (ie-1)) = edgl(3+8* (ie-1))/2.d0
             edgl(6+8* (ie-1)) = edgl(6+8* (ie-1))/2.d0
             edgl(7+8* (ie-1)) = dcis(1)/2.d0
             edgl(8+8* (ie-1)) = dcis(2)/2.d0
-80      continue
+        end do
     else
-        do 160 ie = 1, ne
+        do ie = 1, ne
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
             eta = zr(icoopg-1+ndim*(ie-1)+2)
 !           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
@@ -133,42 +126,41 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !           ----- CALCUL DES MATRICES BM ET BF AU POINT QSI ETA --------
             call dxqbm(qsi, eta, jacob(2), bm)
             call dkqbf(qsi, eta, jacob(2), caraq4, bf)
-            do 90 k = 1, 3
+            do k = 1, 3
                 bdf(k) = 0.d0
                 bdm(k) = 0.d0
                 vf(k) = 0.d0
                 vm(k) = 0.d0
                 vfm(k) = 0.d0
                 vmf(k) = 0.d0
-90          continue
+            end do
 !           ------ VF = DF.BF.DEPF , VFM = DMF.BM.DEPM ----------------
 !           ------ VM = DM.BM.DEPM , VMF = DMF.BF.DEPF ----------------
-            do 120 i = 1, 3
-                do 100 j = 1, 12
+            do i = 1, 3
+                do j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-100              continue
-                do 110 j = 1, 8
+                end do
+                do j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
-110              continue
-120          continue
-            do 140 i = 1, 3
-                do 130 j = 1, 3
+                end do
+            end do
+            do i = 1, 3
+                do j = 1, 3
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
-                    vm(i) = vm(i) + dm(i,j)*bdm(j)
+                    vm(i)  = vm(i)  + dm(i,j)*bdm(j)
                     vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
-130              continue
-140          continue
+                end do
+            end do
 !           ------ VT = HFT2.TKQ.DEPF ---------------------------------
-            call dkqtxy(qsi, eta, hft2, depf, caraq4(13),&
-                        caraq4(9), vt)
-            do 150 i = 1, 3
-                edgl(i+8* (ie-1)) = vm(i) + vmf(i)
-                edgl(i+3+8* (ie-1)) = vf(i) + vfm(i)
-150          continue
-            edgl(7+8* (ie-1)) = vt(1)
-            edgl(8+8* (ie-1)) = vt(2)
-160      continue
+            call dkqtxy(qsi, eta, hft2, depf, caraq4(13), caraq4(9), vt)
+            do i = 1, 3
+                edgl(i+ 8*(ie-1)) = vm(i) + vmf(i)
+                edgl(i+3+8*(ie-1)) = vf(i) + vfm(i)
+            end do
+            edgl(7+8*(ie-1)) = vt(1)
+            edgl(8+8*(ie-1)) = vt(2)
+        end do
     endif
 !
 end subroutine
