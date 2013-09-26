@@ -19,8 +19,9 @@
 
 cata_msg = {
 
-
-
+3 : _(u"""
+On ne sait pas calculer l'option AMOR_MECA pour une élasticité de type %(k1)s
+"""),
 
 4 : _(u"""
 Les mailles affectées à la modélisation TUYAU ne semblent pas former des lignes continues.

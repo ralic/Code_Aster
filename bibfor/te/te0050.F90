@@ -16,12 +16,15 @@ subroutine te0050(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -50,6 +53,7 @@ subroutine te0050(option, nomte)
 !
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres), nompar(nbpar)
+    character(len=10) :: phenom
 !
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
@@ -60,7 +64,6 @@ subroutine te0050(option, nomte)
     ins=0
     irns=0
     if (option .eq. 'AMOR_MECA') then
-!        CALL TECACH('NNO','PRIGIEL','L',1,IBID,INS)
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
             call tecach('ONN', 'PMATUUR', 'E', iret, nval=5,&
@@ -85,18 +88,25 @@ subroutine te0050(option, nomte)
                 itab=idgeo)
     igeom=idgeo(1)
     idimge=idgeo(2)/nno
+!
     ASSERT(idimge.eq.2 .or. idimge.eq.3)
+!
     npara=idimge
-    do 5, k=1,idimge
-    vxyz=0.d0
-    do 50 ino = 1, nno
-        vxyz=vxyz+zr(igeom + idimge*(ino-1) +k -1)
-50  continue
-    valpar(k)=vxyz/nno
-    5 end do
+    do k = 1, idimge
+        vxyz = 0.d0
+        do ino = 1, nno
+            vxyz = vxyz+zr(igeom + idimge*(ino-1) +k -1)
+        end do
+        valpar(k) = vxyz/nno
+    end do
 !
     call jevech('PMATERC', 'L', imate)
     mater=zi(imate)
+    call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
+    if(.not.(phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ORTH'&
+        .or. phenom .eq. 'ELAS_COQMU')) then
+        call utmess('F', 'MODELISA10_3', sk=phenom)
+    endif
 !
     if (ins .eq. 0) then
         call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2,&
@@ -107,7 +117,6 @@ subroutine te0050(option, nomte)
                     itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     endif
-!
 !
 !     -- RECUPERATION DES COEFFICIENTS FONCTIONS DE LA GEOMETRIE :
 !     -------------------------------------------------------------
@@ -124,26 +133,22 @@ subroutine te0050(option, nomte)
             ASSERT(idmass(2).eq. nbddl*(nbddl+1)/2)
         endif
 !
-        nomres(1)='AMOR_ALPHA'
-        nomres(2)='AMOR_BETA'
+!         nomres(1)='AMOR_ALPHA'
+!         nomres(2)='AMOR_BETA'
+        nomres(1)='AMOR_ALP'
+        nomres(2)='AMOR_BET'
         valres(1) = 0.d0
         valres(2) = 0.d0
-        call rcvalb('RIGI', 1, 1, '+', mater,&
-                    ' ', 'ELAS', npara, nompar, valpar,&
-                    2, nomres, valres, icodre, 0)
+        call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 2,&
+                    nomres, valres, icodre, 0)
 !
     else if (option.eq.'RIGI_MECA_HYST') then
 !     ------------------------------------------
-        nomres(1)='AMOR_HYST'
+!         nomres(1)='AMOR_HYST'
+        nomres(1)='AMOR_HYS'
         valres(1) = 0.d0
-        call rcvalb('RIGI', 1, 1, '+', mater,&
-                    ' ', 'ELAS', npara, nompar, valpar,&
-                    1, nomres, valres, icodre, 0)
-        if (icodre(1) .ne. 0) then
-            call rcvalb('RIGI', 1, 1, '+', mater,&
-                        ' ', 'ELAS_ORTH', npara, nompar, valpar,&
-                        1, nomres, valres, icodre, 0)
-        endif
+        call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 1,&
+                    nomres, valres, icodre, 0)
     else
         ASSERT(.false.)
     endif
@@ -158,35 +163,31 @@ subroutine te0050(option, nomte)
         imass= idmass(1)
 !
         if (ins .eq. 0 .or. irns .ne. 0) then
-            do 1 i = 1, nbval
+            do i = 1, nbval
                 if (irigi .ne. 0) then
-                    zr(iresu-1+i)=alpha*zr(irigi-1+i)+beta*zr(imass-1+&
-                    i)
+                    zr(iresu-1+i)=alpha*zr(irigi-1+i)+beta*zr(imass-1+i)
                 else
                     zr(iresu-1+i)=beta*zr(imass-1+i)
                 endif
- 1          continue
+            end do
         else
 !     Cas non symetrique
-            do 3 i = 1, nbddl
+            do i = 1, nbddl
                 kns = (i-1)*nbddl
-                do 4 j = 1, nbddl
+                do j = 1, nbddl
                     if (j .le. i) then
                         ks = (i-1)*i/2+j
                     else
                         ks = (j-1)*j/2+i
                     endif
-                    zr(iresu-1+kns+j)=alpha*zr(irigi-1+kns+j) +beta*&
-                    zr(imass-1+ks)
- 4              continue
- 3          continue
+                    zr(iresu-1+kns+j)=alpha*zr(irigi-1+kns+j) +beta* zr(imass-1+ks)
+                end do
+            end do
         endif
     else if (option.eq.'RIGI_MECA_HYST') then
         eta = valres(1)
-        do 2 i = 1, nbval
+        do i = 1, nbval
             zc(iresu-1+i)=dcmplx(zr(irigi-1+i),eta*zr(irigi-1+i))
- 2      continue
+        end do
     endif
-!
-!
 end subroutine
