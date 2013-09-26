@@ -93,7 +93,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
     call wkvect(xdep2, 'V V R', 2*h+1, idep2)
     call wkvect('&&MNLBHF.TEP2', 'V V R', 2*h+1, itep2)
     call wkvect(xtemp, 'V V R', ninc, itemp)
-    nt = int(2**int(dlog(2.d0*real(3*hf)+1.d0)/dlog(2.d0)+1.d0))
+    nt = int(2**int(dlog(2.d0*dble(3*hf)+1.d0)/dlog(2.d0)+1.d0))
     neqs=0
     err=0.d0
     do 20 i = 1, nchoc

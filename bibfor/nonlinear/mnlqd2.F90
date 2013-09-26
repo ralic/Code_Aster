@@ -101,18 +101,18 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 if (ih .le. h) then
-                    coef=real(ih)*real(ih)
+                    coef=dble(ih)*dble(ih)
                 else
-                    coef=real(ih-h)*real(ih-h)
+                    coef=dble(ih-h)*dble(ih-h)
                 endif
                 q1(ih*nd+i)=-zr(ivec-1+ninc-2)*coef*temp2(k)/zr(iadim+&
                 1)
             endif
 20      continue
         if (ih .le. h) then
-            q1((h+ih)*nd+iddl)=real(ih)*zr(ivec-1+ninc-3)
+            q1((h+ih)*nd+iddl)=dble(ih)*zr(ivec-1+ninc-3)
         else
-            q1((ih-h)*nd+iddl)=-real(ih)*zr(ivec-1+ninc-3)
+            q1((ih-h)*nd+iddl)=-dble(ih)*zr(ivec-1+ninc-3)
         endif
     endif
 ! ----------------------------------------------------------------------

@@ -232,8 +232,8 @@ subroutine op0061()
                 nchoc, h, hf, xut1)
     call dcopy(ninc, zr(iut1), 1, zr(iutj), 1)
     call getvis('ETAT_INIT', 'DIR_EVOLUTION', iocc=1, scal=prodsci)
-    prodsc=real(prodsci)
-    if (prodsc .le. 0) then
+    prodsc=dble(prodsci)
+    if (prodsc .le. 0.d0) then
         call dscal(ninc, -1.d0, zr(iut1), 1)
     endif
 ! ----------------------------------------------------------------------
@@ -289,7 +289,7 @@ subroutine op0061()
 ! ---       DIRECTION DE LA CONTINUATION (TANGENTE DE V(A))
             call dscal(ninc, 0.d0, zr(iutj), 1)
             do 101 p = 1, ordman
-                ap=real(p)*(amax**(p-1))
+                ap=dble(p)*(amax**(p-1))
                 call daxpy(ninc, ap, zr(iups+p*ninc), 1, zr(iutj),&
                            1)
 101          continue
