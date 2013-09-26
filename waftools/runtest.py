@@ -28,7 +28,7 @@ def runtest(self):
     toolargs = []
     if opts.exectool == 'debugger':
         toolargs.append('--debugger')
-    if opts.exectool == 'env':
+    elif opts.exectool == 'env':
         toolargs.append('--run_params=actions=make_env')
     elif opts.exectool is not None:
         toolargs.append('--exectool=%s' % opts.exectool)
