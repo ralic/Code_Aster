@@ -394,7 +394,7 @@ N_POIN_0 = 1024
 DF       = (F_FIN-F_INIT)/(N_POIN_0-1) 
 
 T_FIN  = 1./DF
-T_ETAB = 1.
+T_ETAB = 0.85
 T_PAS  = 1.E-5
 T_INI  = 0.
 
@@ -527,10 +527,15 @@ DYNATRA=CALC_CHAMP(  CONTRAINTE=('SIPO_ELNO'),
                           TOUT_ORDRE='OUI'   )
 
 WOHL=DEFI_FONCTION(  NOM_PARA='SIGM',
-                     VALE=( 138.000000,    1000000.000000,  ),
-                     INTERPOL='LIN',
+                     VALE=( 1.0E6 , 1.E11,       # 1MPa -> 1E11 Cycles
+                            5.0E6 , 1.E8,
+                           20.0E6 , 1.E6,
+                           50.0E6 , 1.E5,
+                          200.0E6 , 1.E2,
+                          400.0E6 , 1.E0),      # 400MPa -> 1 Cycle
+                     INTERPOL=('LIN','LOG'),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE'  )
+                     PROL_GAUCHE='CONSTANT'  )
 
 MATFAT=DEFI_MATERIAU(  FATIGUE=_F(   WOHLER = WOHL)  )
 
@@ -592,9 +597,9 @@ T_04_001=POST_FATIGUE(CHARGEMENT='UNIAXIAL',
 
 IMPR_TABLE(  TABLE=T_04_001 )
 
-# LES VALEURS DE NON-REGRESSION SONT PAR RAPPORT A LA 11.2.18
+# LES VALEURS DE NON-REGRESSION SONT PAR RAPPORT A LA 12.0.13
 
-TEST_TABLE(VALE_CALC=2.7E-05,
+TEST_TABLE(VALE_CALC=1.3099577514E-05,
            NOM_PARA='DOMM_CUMU',
            TABLE=T_04_001,
            )
