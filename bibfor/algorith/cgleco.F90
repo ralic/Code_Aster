@@ -50,21 +50,21 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 ! ======================================================================
 !
     integer :: nbcomp, ntmp, ier, i, ibid
-    character(len=16) :: moclef(2)
+    character(len=16) :: moclef
     character(len=24) :: k24b, repk
     logical :: limpel
 !
     call jemarq()
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
-    moclef(1) = 'COMPORTEMENT'
+    moclef = 'COMPORTEMENT'
 !
 !     NOMBRE MAX D'OCCURENCES DE COMPORTEMENT DANS CALC_G
     nbcomp=0
-    do 10 i = 1, 1
-        call getfac(moclef(i), ntmp)
-        nbcomp=max(nbcomp,ntmp)
-10  end do
+
+    call getfac(moclef, ntmp)
+    nbcomp=max(nbcomp,ntmp)
+
 !
     limpel=.false.
 !
