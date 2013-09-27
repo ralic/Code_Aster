@@ -438,26 +438,31 @@ def peakm(p,TSM, w2, DSP) :
 # -----------------------------------------------------------------
 
  # conversion DSP en SRO par formule de Rice
-def DSP2SRO(f_in, xig, TSM) :
+def DSP2SRO(f_in, xig, TSM, liste_freq, ideb=2) :
     # ---------------------------------------------
-    # IN  : f_in: DSP   function of frequency (rad/s)
+    # IN  : f_in: DSP   function of frequency (rad/s), amortissement xig, duree pase forte TSM, 
+    #       liste_freq: liste de freq SRO (Hz)
     # OUT : f_out: SRO  function of frequency (Hz), meme norme que DSP
     # ---------------------------------------------
       para_dsp=f_in.para
-      vale_freq=f_in.vale_x
-      vale_dsp_in=f_in.vale_y
-      vale_sro=[0.0]
 
-      w=NP.array(vale_freq)
+      vale_dsp_in=f_in.vale_y
+      vale_sro=[]
+      vale_freq=f_in.vale_x
+
+#      w=NP.array(vale_freq)
       vale_freq2=vale_freq**2
 
-      for w_0 in vale_freq[1:]:
-  
-         vale_dsp_rep=vale_dsp_in/((w_0**2-vale_freq2)**2+4.*xig**2*w_0**2*vale_freq2)
-         npeakm ,m0i =peakm( 0.5,  TSM,  vale_freq, vale_dsp_rep)  
-         vale_sro.append(w_0**2*npeakm*sqrt(m0i) )
+      for f_0 in liste_freq:
+         if f_0 == 0.0:
+            vale_sro.append(0.0 )
+         else:
+            w_0=f_0*2.*pi
+            vale_dsp_rep=vale_dsp_in/((w_0**2-vale_freq2)**2+4.*xig**2*w_0**2*vale_freq2)
+            npeakm ,m0i =peakm( 0.5,  TSM,  vale_freq, vale_dsp_rep)  
+            vale_sro.append(w_0**ideb*npeakm*sqrt(m0i) )
 #
-      f_out = t_fonction(vale_freq/2./pi, vale_sro, para=para_dsp)
+      f_out = t_fonction(liste_freq, vale_sro, para=para_dsp)
       return f_out
 
 
@@ -484,8 +489,8 @@ def iter_SRO(f_dsp, f_sro, amort, TS) :
       ii=0
       while ii < Niter:
          ii=ii+1
-         f_sroi = DSP2SRO(f_dsp, amort, TS)
-         valesro=f_sroi.evalfonc(freq_dsp/2./pi).vale_y
+         f_sroi = DSP2SRO(f_dsp, amort, TS, freq_sro)
+         valesro=f_sroi.vale_y
         #  calcul de la correction des DSP
          nz=NP.nonzero(valesro)
          factm=NP.ones(nbvale)
@@ -517,12 +522,13 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
    METHODE_SRO=SRO_args['METHODE_SRO']
    INFO=SRO_args['INFO']
 
+#  #  dsp initiale
    para_dsp=f_dsp.para
    freq_dsp=f_dsp.vale_x
    vale_dsp=f_dsp.vale_y
    nbfreq2=len(freq_dsp)
    nbfreq=2*nbfreq2
-   #  sro cible
+#  #  sro cible
    freq_sro=freq_dsp/2./pi
    vale_sro_ref=f_sro.evalfonc(freq_sro).vale_y
    #  fonction de modulation 
@@ -715,17 +721,16 @@ def median_values(listes):
 
 
 # conversion SRO en DSP equivalente par formule de Vanmarcke
-def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
+def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN, LIST_FREQ=None) :
    # ---------------------------------------------
    #  f_in : SRO cible, frequency given in (Hz)
    #  f_out: DSP compatible avec SRO, frequency list lw in (rad/s)
    # ---------------------------------------------
       wmax=FCOUP*2.*pi
 
-      fmin=max(FMIN,0.01)
+      fmin=max(FMIN,0.05)
       wmin=fmin*2.*pi
-#      wmin=1.001
-      dw=PAS*2.*pi   
+#      wmin=1.001 
       para_dsp = {
          'INTERPOL' : ['LIN','LIN'],
          'NOM_PARA'    : 'FREQ',
@@ -733,26 +738,38 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
          'PROL_GAUCHE' : 'EXCLU', 'NOM_RESU'   : 'ACCE'}
 
       freq0=0.0
+      freqi=freq0
       DSP =[0.0]
       lw =[freq0]
+      lf =[freq0]
       lsro=[0.0]
-      n=0
-      freqi=freq0
 
-      Sa_min=float(f_in.evalfonc([fmin]).vale_y*NORME)
-      nupi=peak(0.5,  TSM, fmin ,  AMORT)
-      DSP_min=Sa_min**2*2.*AMORT/(wmin*nupi**2)
-      dsp_p= DSP_min/ wmin   
+      
+
+#      Sa_min=float(f_in.evalfonc([fmin]).vale_y*NORME)
+#      nupi=peak(0.5,  TSM, fmin ,  AMORT)
+#      DSP_min=Sa_min**2*2.*AMORT/(wmin*nupi**2)
+#      dsp_p= DSP_min/ wmin   
+      ii=0
 
       while freqi<wmax:
-         freqi=freqi+dw  
-    
+
+         if PAS!=None:
+            freqi=freqi+PAS*2.*pi 
+         else:
+            if ii<len(LIST_FREQ):
+               freqi=LIST_FREQ[ii]*2.*pi
+               ii=ii+1
+            else:
+               freqi=wmax
+
          if freqi <= wmin:
+            assert freqi > 0.0
             fi=freqi/2./pi
-            valsro=float(f_in.evalfonc([fi]).vale_y*NORME)
+#            valsro=float(f_in.evalfonc([fi]).vale_y*NORME)
 #            lsro.append(valsro)
             lsro.append(0.0)
-            valg = freqi*dsp_p
+#            valg = freqi*dsp_p
             DSP.append( 0.0)
 
          else:
@@ -769,13 +786,13 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
             DSP.append(valg)
 
          lw.append(freqi)
-         n=n+1
+         lf.append(freqi/2./pi)
 
-      lf=[valef/2./pi  for valef in lw]
+
       f_out = t_fonction(lw, DSP, para=para_dsp)
 #     iteration sans simulation: formule de rice
       f_iter_sro_ref = t_fonction(lf, lsro, para=para_dsp)  # sro for   frequency list lw (rad/s), physical units (not g)
-      f_dsp=iter_SRO(f_out,f_iter_sro_ref, AMORT, TSM)
+      f_dsp=iter_SRO(f_out,f_iter_sro_ref, AMORT, TSM )
 
       if FCORNER> 0.0:  
          f_out=dsp_filtre_CP(f_dsp,FCORNER) 

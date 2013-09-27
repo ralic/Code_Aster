@@ -240,11 +240,11 @@ Remontée d'erreur (pour aider à l'analyse) :
 """),
 
 34 : _(u"""
-   SPEC_OSCI, le type de la fonction doit être ACCE.
+   SPEC_OSCI, le type de la fonction doit être ACCE ou DSP.
 """),
 
 35 : _(u"""
-   SPEC_OSCI, seule la méthode NIGAM est codée.
+   SPEC_OSCI, il faut choisir METHODE='RICE' pour une DSP.
 """),
 
 36 : _(u"""

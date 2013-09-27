@@ -374,36 +374,76 @@ TEST_TABLE(CRITERE='ABSOLU',
 ##--------------------------------------------------------
 # ------------------ TEST DSP ----------------------------
 FCOUP = 60.
-SRO_7 = [0.0001, 0.0, 0.2, 9.75E-3, 0.51, 6.45E-2, 4.58, 5.74E-1, 14.0, 5.74E-1, 40., 2.5E-1, 60., 2.5E-1]
+TSM = 10.
+FMAX=60.
+
+SRO_7 = [ 0.2, 9.75E-3, 0.51, 6.45E-2, 4.58, 5.74E-1, 14.0, 5.74E-1, 40., 2.5E-1, 60., 2.5E-1]
+
+SRO_EUR=DEFI_FONCTION(NOM_PARA='FREQ',
+                  VALE=SRO_7,
+                  #INTERPOL='LOG',
+                  PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+
 amort = 0.07
-T = 10.
 
 import numpy as NP
 from math import pi
+SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                          VALE=(0.1000,  0.0080,
+                                0.1333,  0.0127,0.2000, 0.0245,0.2500, 0.0303, 0.3333,  0.0414,0.5000, 0.0666,
+                                0.6667, 0.0922,1.0000,  0.1415,1.3333,  0.1843,2.0000,  0.2650, 2.5000,  0.3033, 3.3333,
+                                0.3430, 4.0000,  0.3647,5.0000, 0.3916,6.6667, 0.3807,10.0000, 0.3183,12.5000, 0.2648,20.0000, 
+                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  100.0000, 0.1593,
+) )
+amortn = 0.05
 
-sro=DEFI_FONCTION(NOM_PARA='FREQ',
-                  VALE=SRO_7,
-                  #INTERPOL='LOG',
-                  PROL_DROITE='CONSTANT',
-                  PROL_GAUCHE='CONSTANT',);
+L_FREQ = DEFI_LIST_REEL(DEBUT=0.1,
+              INTERVALLE=(_F(JUSQU_A=5.0, PAS=0.1,), _F(JUSQU_A=10., PAS=0.5,),
+                           _F(JUSQU_A=20.0, PAS=1.0,), _F(JUSQU_A=50.0, PAS=2.0,),
+                           _F(JUSQU_A=60.0, PAS=2.0,),
+                        ) );
 
 
-FR_DSP = CALC_FONCTION(DSP=_F(FONCTION=sro,
-          FREQ=NP.arange(0., FCOUP, 1./4./pi),
+
+NGA_DSP = CALC_FONCTION(DSP=_F(FONCTION=SRO_NGA,
+          LIST_FREQ = L_FREQ ,
+          FREQ_COUP=FCOUP, AMOR_REDUIT=amortn,
+          DUREE=TSM, NORME=9.81,
+          FRACT=0.5,),
+          INTERPOL='LIN',)
+
+EUR_DSP = CALC_FONCTION(DSP=_F(FONCTION=SRO_EUR,
+          FREQ_PAS = 0.1 ,
           FREQ_COUP=FCOUP, AMOR_REDUIT=amort,
-          DUREE=T, NORME=10.,
+          DUREE=TSM, NORME=9.81,
           FRACT=0.5,),
           INTERPOL='LIN',)
 
 
-F_DSP = CALC_FONCTION(COMB_C=(_F(FONCTION=FR_DSP,
+SRON = CALC_FONCTION( SPEC_OSCI=_F(  FONCTION =NGA_DSP, DUREE=TSM, NATURE_FONC     ='DSP',
+                            NATURE = 'ACCE', METHODE='RICE', AMOR_REDUIT =  amortn ,
+                            NORME = 9.81, LIST_FREQ = L_FREQ ,))
+
+SROE = CALC_FONCTION( SPEC_OSCI=_F(  FONCTION =EUR_DSP, DUREE=TSM, NATURE_FONC     ='DSP',
+                            NATURE = 'ACCE', METHODE='RICE', AMOR_REDUIT =  amort ,
+                            NORME = 9.81, LIST_FREQ = L_FREQ ,))
+
+
+F_DSP = CALC_FONCTION(COMB_C=(_F(FONCTION=EUR_DSP,
          COEF_C = 1.+0.j), ),)
 
-#
+##
 #IMPR_FONCTION(UNITE=29,
 #              FORMAT='XMGRACE',
-#              COURBE=_F(FONCTION=FR_DSP,),)
+#              COURBE=_F(FONCTION=NGA_DSP,),)
+##
 #
+#IMPR_FONCTION(UNITE=30,
+#              FORMAT='XMGRACE',ECHELLE_X ='LOG', ECHELLE_Y ='LOG', 
+#              COURBE=(_F(FONCTION=SRO_EUR,MARQUEUR =0,LEGENDE = 'SRO EUR '),_F(FONCTION=SRO_NGA,MARQUEUR =0,LEGENDE = 'SRO NGA '),
+#                       _F(FONCTION=SRON,MARQUEUR =0,LEGENDE = 'DSP2SRO NGA'), _F(FONCTION=SROE,MARQUEUR =0,LEGENDE = 'DSP2SRO EUR'),
+#                              ),            )
+
 #
 DEF_SPEC=DEFI_INTE_SPEC(DIMENSION=1,
                         PAR_FONCTION=_F(NUME_ORDRE_I=1,
@@ -422,23 +462,22 @@ FTRAJ=RECU_FONCTION(TABLE=TRAJ,
                    NOM_PARA_TABL='FONCTION',
                    FILTRE=_F(NOM_PARA='NUME_ORDRE', VALE_I=1,),);
 
-RMS=INFO_FONCTION(RMS=_F(FONCTION=FTRAJ,),);
-ECT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FTRAJ,),);
+RMS=INFO_FONCTION(RMS=_F(FONCTION=FTRAJ,),INFO=2);
+ECT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FTRAJ,),INFO=2);
+
 #  
 #
 #
 ##------------TESTS--------------------------------------------
-sigma=0.799
+sigma=7.91845E-01
 m0=0.6394
 m1=34.19
 m2=2841.8
 frapp=10.61
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.E-3,
-           VALE_CALC=0.79933977334511,
-           VALE_REFE=0.799,
+TEST_TABLE(CRITERE='RELATIF',           
+            REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-3,VALE_REFE=sigma,
+           VALE_CALC=0.79191046259888,
            NOM_PARA='ECART',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -449,7 +488,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=10.614111866259,
+           VALE_CALC=9.8569009086324,
            NOM_PARA='FREQ_APPAR',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -460,7 +499,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.63894407325141,
+           VALE_CALC=0.62712218077357,
            NOM_PARA='LAMBDA_00',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -471,7 +510,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=34.188045722244,
+           VALE_CALC=31.316044161346,
            NOM_PARA='LAMBDA_01',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -482,7 +521,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=2841.7764034474,
+           VALE_CALC=2405.4297592059,
            NOM_PARA='LAMBDA_02',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -492,23 +531,35 @@ TEST_TABLE(CRITERE='RELATIF',
                    ),
            )
 
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.E-3,
-           VALE_CALC=0.79926650857909,
-           VALE_REFE=0.799,
+TEST_TABLE( REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-3 ,  VALE_REFE= sigma,       
+           VALE_CALC=0.79184501086193,
            NOM_PARA='ECART_TYPE',
            TABLE=ECT,)
 
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=1.E-3,
-           VALE_CALC=0.79926651304616,
-           VALE_REFE=0.799,
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-3 ,VALE_REFE= sigma,  
+           VALE_CALC=0.79184501506711,
            NOM_PARA='RMS',
            TABLE=RMS,)
 
-#
+
+
+TEST_FONCTION(VALEUR=(   _F(VALE_CALC=0.31839631, VALE_REFE=0.3183,                           
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.0),
+                         FONCTION=SRON, REFERENCE='AUTRE_ASTER',),
+
+                        _F(VALE_CALC=0.19069752   ,   VALE_REFE=0.20346056    ,                          
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         FONCTION=SRON, REFERENCE='AUTRE_ASTER',PRECISION=0.1 ,),
+
+                        _F(VALE_CALC= 0.26478773  ,  VALE_REFE=0.2650  ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 2.0),
+                         FONCTION=SRON, REFERENCE='AUTRE_ASTER',),
+                         ),)
+
 # FIN VALIDATION DSP
 ##--------------------------------------------------------
 
 #
 FIN()
+

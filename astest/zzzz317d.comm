@@ -46,7 +46,7 @@ L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
                            _F(JUSQU_A=60.0, PAS=1.0,),
                         ) );
 
-
+L_FREQ2 = DEFI_LIST_REEL(DEBUT=0.05, INTERVALLE=(_F(JUSQU_A=0.1, PAS=0.01,),_F(JUSQU_A=60.0, PAS=0.01,),) );
 
 amor=0.05
 TSM=10.00
@@ -68,7 +68,9 @@ fc=0.05
 ACCE1a=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=200000,
               PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,FREQ_FILTRE=fc,
-              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT     =amor,FREQ_PAS=0.01, METHODE='HARMO'),
+              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT=amor, METHODE='HARMO',
+                                         LIST_FREQ = L_FREQ2, #FREQ_PAS=0.01,
+),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
 
@@ -136,7 +138,7 @@ ACCE1b=GENE_ACCE_SEISME( INFO =2,
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
 
-FONC1b=RECU_FONCTION(  TABLE=ACCE1a,
+FONC1b=RECU_FONCTION(  TABLE=ACCE1b,
                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1), NOM_PARA_TABL='FONCTION',)
 
 SRO1bn=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1b, LIST_FREQ = L_FREQ, METHODE='NIGAM',

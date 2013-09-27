@@ -169,7 +169,6 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    if SPECTRE !=None:
       spec_osci = SPECTRE['SPEC_OSCI']
       amo  =SPECTRE['AMOR_REDUIT'] 
-      SPEC_PAS   =SPECTRE['FREQ_PAS'] 
       norme_sro=NORME       
       l_freq, sro_ref = spec_osci.Valeurs()
 
@@ -186,14 +185,12 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       if FREQ_COUP> l_freq[-1]:
          sro_ref.append(ZPA )
          l_freq.append(FREQ_COUP)
-      if F_MIN> 0.0:
-         l_freq.insert(0, 0.0)
-         sro_ref.insert(0, 0.0)
+#      if F_MIN> 0.0:
+#         l_freq.insert(0, 0.0)
+#         sro_ref.insert(0, 0.0)
 
       f_spec = t_fonction(l_freq, sro_ref, para=para_dsp)
-
-      SRO_args={'TSM':DUREE, 'FCOUP': FREQ_COUP,'NORME':norme_sro,'AMORT':amo, 'PAS': SPEC_PAS,'FCORNER':F_CORNER,'FMIN':F_MIN }
-
+      SRO_args={'TSM':DUREE, 'FCOUP': FREQ_COUP,'NORME':norme_sro,'AMORT':amo, 'FCORNER':F_CORNER,'FMIN':F_MIN }
 
 #  ------------------------------------------------------------------
 #  ECHANTILLONNAGE
@@ -232,17 +229,21 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    l_w2=l_w2[0:NB_POIN/2]  
        
    if INFO==2:
-      print  'FREQUENCE DE COUPURE =',FREQ_COUP ,'Hz     NB_POIN =', NB_POIN ,'Hz     FREQ_PAS =', DW/2./pi, 'Hz'
+      print  'FREQUENCE DE COUPURE =',FREQ_COUP ,'Hz     NB_POIN =', NB_POIN ,'Hz     PAS DE FREQUENCE =', DW/2./pi, 'Hz'
       print  'PAS DE TEMPS =',DT,  '     INTERVALLE DE TEMPS =',TT
       print  'FREQ_FILTRE  =', F_CORNER,  'Hz' 
    assert  NB_POIN==nbfreq
    assert len(l_temps)==NB_POIN   
    assert len(l_w)==NB_POIN      
 
-   if SPECTRE !=None and SPEC_PAS == None :
-      SPEC_PAS   =DW/2./pi
-      SRO_args['PAS']=SPEC_PAS
-
+   if SPECTRE!=None:
+      if SPECTRE['LIST_FREQ']!=None:
+         L_FREQ=SPECTRE['LIST_FREQ'].Valeurs()
+         assert L_FREQ[0]>0.0, "LIST_FREQ: il faut des valeurs >0.0"
+         SRO_args['LIST_FREQ']=L_FREQ
+         SRO_args['PAS']=None
+      elif SPECTRE['FREQ_PAS']!=None:  SRO_args['PAS']=SPECTRE['FREQ_PAS'] 
+      else:  SRO_args['PAS']=DW/2./pi
 
 #     ----------------------------------------------------------------- 
 #          MODULATION   GAMMA et JH, constant
@@ -350,8 +351,6 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    f_mod=t_fonction(l_temps,fqt,para=para_modul )
 
 
-
-
 ##     ----------------------------------------------------------------- 
 ##     CONSTRUCTION DSP  
 ##     -----------------------------------------------------------------
@@ -368,7 +367,6 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
 
       elif FREQ_PENTE != None  :  
             KT_args={'FCORNER':F_CORNER, 'W0':wg, 'Xi0':amo ,'WPENTE':wn, 'TYPE_DSP': 'KT'}
-
 
 
    if SPECTRE !=None :

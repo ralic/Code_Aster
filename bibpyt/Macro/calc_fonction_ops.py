@@ -35,7 +35,7 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe
-from Utilitai.gauss_process  import  ACCE2SRO
+from Utilitai.gauss_process  import  ACCE2SRO,  DSP2SRO, SRO2DSP
 
 from Utilitai.Utmess import  UTMESS
 from Macro.defi_inte_spec_ops import tocomplex
@@ -438,8 +438,10 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
         # check
         if abs(kw['NORME']) < 1.E-10:
             UTMESS('S', 'FONCT0_33')
-        if kw['NATURE_FONC'] != 'ACCE':
+        if kw['NATURE_FONC'] != 'ACCE' and kw['NATURE_FONC'] != 'DSP':
             UTMESS('S', 'FONCT0_34')
+        if kw['NATURE_FONC'] == 'DSP':
+            if kw['METHODE'] != 'RICE': UTMESS('S', 'FONCT0_35')
 
     def _run(self):
         """SPEC_OSCI"""
@@ -473,7 +475,17 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
         else:
             ideb = 2
 
-        if kw['METHODE'] == 'NIGAM':
+        if kw['METHODE'] == 'RICE':
+           # appel à DSP2SRO
+           if kw['NATURE_FONC'] != 'DSP':
+              UTMESS('S', 'FONCT0_35')
+           deuxpi=2.*math.pi
+           f_dsp=t_fonction(f_in.vale_x*deuxpi, f_in.vale_y/deuxpi, f_in.para)
+           for iamor in l_amor:
+               spectr = DSP2SRO(f_dsp, iamor, kw['DUREE'],l_freq, ideb)
+               vale_y = spectr.vale_y / kw['NORME']
+               l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+        elif kw['METHODE'] == 'NIGAM':
         # appel à SPEC_OSCI
            print 'amor, norme', l_amor, kw['NORME']
            spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
@@ -488,63 +500,42 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
                spectr = ACCE2SRO(f_in, iamor, l_freq,ideb)
                vale_y = spectr.vale_y / kw['NORME']
                l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
-        else:
-            UTMESS('S', 'FONCT0_35')
 
         self.resu = t_nappe(vale_para, l_fonc_f, para)
 
 class CalcFonction_DSP(CalcFonctionOper):
-    """DSP"""
-    def _run(self):
-        """DSP"""
-        f_in = self._lf[0]
+    """DSP"""    
+    def _build_data(self):
+        """Read keywords to build the data"""
+        CalcFonctionOper._build_list_fonc(self)
         kw = self.kw
-        deuxpi = 2. * math.pi
-        wmin = 1.001
-        wcoup = deuxpi * kw['FREQ_COUP']
-        duree = kw['DUREE']
-        ksi = kw['AMOR_REDUIT']
-        pesanteur = kw['NORME']
-        fract = kw['FRACT']
-        if kw['LIST_FREQ'] != None:
+    def _run(self):
+        import aster_fonctions
+        """DSP""" 
+        kw = self.kw
+        f_in = self._lf[0]
+        vale_freq=f_in.vale_x 
+        vale_sro=f_in.vale_y
+        f_in=t_fonction(NP.insert(vale_freq, 0, 0.0), NP.insert(vale_sro,0,0.0) , para=f_in.para)       
+        deuxpi =2.*math.pi
+        F_MIN=f_in.vale_x[0]
+        FREQ_COUP = deuxpi * kw['FREQ_COUP']
+        SRO_args={'TSM':kw['DUREE'], 'FCOUP':FREQ_COUP, 'NORME':kw['NORME'], 'AMORT':kw['AMOR_REDUIT'],'FCORNER':0.0, 'FMIN':F_MIN,}
+        if kw['FREQ_PAS'] != None:
+ #             FREQ_COUP = deuxpi * kw['FREQ_COUP']
+            l_freq =None 
+            SRO_args['PAS']= kw['FREQ_PAS']
+        elif kw['LIST_FREQ'] != None:
             l_freq = kw['LIST_FREQ'].Valeurs()
-        elif kw['FREQ'] != None:
-            l_freq = kw['FREQ']
-        else:
-            l_freq = f_in.vale_x
-        sro = f_in.evalfonc(l_freq) * pesanteur
-        self.ctxt.f = sro.nom
-        assert 0. < fract < 1., 'invalid value for FRACT'
-        assert 0. < ksi < 1., 'invalid value for AMOR_REDUIT'
-        def coefn(wn, T, p):
-            vo = wn / (2. * math.pi)
-            return vo * T / ( -math.log(p) )
-        def peak2(p, T, wn, ksi):
-            delta = math.sqrt(4. * ksi / math.pi)
-            deuxn = 2. * coefn(wn, T, p)
-            sexp = - math.pow(delta, 1.2) * math.sqrt(math.pi * math.log(deuxn))
-            return 2. * math.log( deuxn * ( 1. - math.exp(sexp)) )
+            assert l_freq[0]>0.0, "LIST_FREQ: il faut des valeurs >0.0"
+            SRO_args['LIST_FREQ']=l_freq
+            SRO_args['PAS']=None
 
-        valw = sro.vale_x * deuxpi
-        nbfreq = len(valw)
-        valg = NP.zeros(nbfreq)
-        zpa = f_in.vale_y[-1]
-        for n in range(nbfreq):
-            wn = valw[n]
-            if wn <= wmin:
-                valg[n] = 0.0
-            else:
-                valsro = sro.vale_y[n]
-                if wn > wcoup:
-                    valsro = zpa
-                npi2 = peak2(fract, duree, wn, ksi)
-                v1 = 1. / (wn * (math.pi / (2. * ksi) - 2.))
-                v2 = (valsro**2) / npi2
-                Gw = t_fonction(valw, valg, para=f_in.para)
-                v3 = 2. * Gw.trapeze(0.0)(wn)
-                valg[n] = max([v1 * (v2 - v3), 0.])
-        valf = valw / deuxpi
-        self.resu = t_fonction(valf, valg * deuxpi, para=f_in.para)
+        print 'SRO_args', SRO_args
+        f_dsp, f_sro_ref=SRO2DSP(f_in, **SRO_args ) 
+        self.resu = t_fonction(f_dsp.vale_x/deuxpi, f_dsp.vale_y * deuxpi, para=f_in.para)
+
+
 
 class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
     """LISS_ENVELOP"""
