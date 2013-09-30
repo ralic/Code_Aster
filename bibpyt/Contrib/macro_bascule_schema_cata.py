@@ -285,10 +285,10 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                           FORMULATION  =SIMP(statut='o',max=1,typ='TXM',into=("DEPLACEMENT","VITESSE",),),),
                      ),
 #
-                     COMP_INCR_IMPL       =C_COMPORTEMENT(),
-                     COMP_INCR_EXPL       =C_COMPORTEMENT(),
-                regles=(AU_MOINS_UN('COMP_INCR_IMPL','COMP_INCR_EXPL',),
-                        PRESENT_PRESENT('COMP_INCR_IMPL','COMP_INCR_EXPL',),),
+                     COMPORTEMENT_IMPL       =C_COMPORTEMENT(),
+                     COMPORTEMENT_EXPL       =C_COMPORTEMENT(),
+                regles=(AU_MOINS_UN('COMPORTEMENT_IMPL','COMPORTEMENT_EXPL',),
+                        PRESENT_PRESENT('COMPORTEMENT_IMPL','COMPORTEMENT_EXPL',),),
 #
                      LIST_INST_BASCULE          =SIMP(statut='o',typ=listr8_sdaster),
                      SCHEMA_INIT         =SIMP(statut='o',typ='TXM',into=("IMPLICITE","EXPLICITE")),

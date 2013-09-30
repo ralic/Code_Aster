@@ -19,7 +19,7 @@
 def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
                         INCR_IMPL,INCR_EXPL,
                         SCHEMA_TEMPS_IMPL,SCHEMA_TEMPS_EXPL,SCHEMA_TEMPS_EQUI,
-                        COMP_INCR_IMPL,COMP_INCR_EXPL,CONVERGENCE,
+                        COMPORTEMENT_IMPL,COMPORTEMENT_EXPL,CONVERGENCE,
                         EXCIT,NEWTON,ETAT_INIT,LIST_INST_BASCULE,SCHEMA_INIT,EQUILIBRAGE,
                         SOLVEUR,ARCHIVAGE,OBSERVATION,ENERGIE,**args):
   ier=0
@@ -53,13 +53,13 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
           if dexct[-1][i]==None : del dexct[-1][i]
   #
   dComp_incri=[]
-  for j in COMP_INCR_IMPL :
+  for j in COMPORTEMENT_IMPL :
       dComp_incri.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dComp_incri[-1].keys():
           if dComp_incri[-1][i]==None : del dComp_incri[-1][i]
   #
   dComp_incre=[]
-  for j in COMP_INCR_EXPL :
+  for j in COMPORTEMENT_EXPL :
       dComp_incre.append(j.cree_dict_valeurs(j.mc_liste))
       for i in dComp_incre[-1].keys():
           if dComp_incre[-1][i]==None : del dComp_incre[-1][i]
@@ -162,7 +162,7 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
   #
   #
 
-  # alarme de DYNA_NON_LINE si les mot-cles de COMP_INCR sont renseignes a tort
+  # alarme de DYNA_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
   MasquerAlarme('COMPOR1_70')
 
   if SCHEMA_INIT=='IMPLICITE':
