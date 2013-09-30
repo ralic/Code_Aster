@@ -198,7 +198,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
          )
 
     else:
-        mcfact = FACT(statut='f',min=1,max='**',  #COMMUN#
+        mcfact = FACT(statut='o',min=1,max='**',  #COMMUN#
 
            RELATION  = SIMP( statut='o',typ='TXM',defaut="ELAS",into=('ELAS','GLRC_DAMAGE')),
            GROUP_MA  = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),

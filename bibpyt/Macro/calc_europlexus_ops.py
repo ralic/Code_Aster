@@ -1130,7 +1130,7 @@ class EUROPLEXUS:
         affe_mater = self.recupere_structure(self.CHAM_MATER,'AFFE')
         affe_mater = self.setlist(affe_mater)
 
-        # Dicionnaire stoquant les relations pour chaque group_ma
+        # Dicionnaire stockant les relations pour chaque group_ma
         dic_relation = {}
         for comp in self.COMPORTEMENT :
             for gr in comp['GROUP_MA']:
