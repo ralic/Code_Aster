@@ -1,0 +1,31 @@
+COOR_3D
+N1  -1.0   -1.0   0.0
+N2   1.0   -1.0   0.0
+N3   1.0    1.0   0.0
+N4  -1.0    1.0   0.0
+N5   0.0   -1.0   0.0
+N6   1.0    0.0   0.0
+N7   0.0    1.0   0.0
+N8  -1.0    0.0   0.0
+N9   0.0    0.0   0.0
+FINSF
+
+
+QUAD9
+M1    N1 N2 N3 N4  N5 N6 N7 N8  N9
+FINSF
+SEG3
+M2  N1 N2 N5
+FINSF
+SEG3
+M3  N4 N1 N8
+FINSF
+GROUP_MA
+N1N2
+M2
+FINSF
+GROUP_MA
+N1N4
+M3
+FINSF
+FIN

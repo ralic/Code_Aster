@@ -35,6 +35,7 @@ subroutine fcesnd(nomte, ind, xi1, xi2, xi3,&
     real(kind=8) :: ey26, ey27, f1, ftild1, ftild2, ftild3, ftild4
     real(kind=8) :: ftild5, gam2, gam3, gam4, gam5, gam6, gam7
     real(kind=8) :: xi12, xi22, xi32, xi33, xi34
+    real(kind=8) :: alf1, bet1, gam1, del1
 !-----------------------------------------------------------------------
 !
     if (( nomte(1:8) .eq. 'MEC3QU9H' .or. nomte(1:8) .eq. 'MEGRC3Q9' ) .and. (char.eq.'LI')) then
@@ -243,6 +244,10 @@ subroutine fcesnd(nomte, ind, xi1, xi2, xi3,&
             2)
 !
             f1=(xi1-b)*(xi2-b)*(xi1-a)*(xi2-a)/c
+            alf1=-0.204545454545450d0
+            bet1= 22.4415584415586
+            gam1= -0.788961038961030
+            del1= -90.2045454545460
 !
             alf2=-9.734528142543403d-02
             bet2= 0.292035844276301d0
@@ -358,7 +363,7 @@ subroutine fcesnd(nomte, ind, xi1, xi2, xi3,&
                 ey27*xi22) *ftild5
 !
             else if (ind.eq.0) then
-                vf(1)=f1
+               vf(1)=alf1+bet1*xi1*xi2+gam1*(xi12+xi22)+del1*xi12*xi22
                 vf(2)=alf2+bet2*xi1+gam2*xi2+del2*xi1*xi2+ex22*xi12+&
                 ey22*xi22
                 vf(3)=alf3+bet3*xi1+gam3*xi2+del3*xi1*xi2+ex23*xi12+&

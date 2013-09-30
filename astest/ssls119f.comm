@@ -88,12 +88,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  REFERENCE='AUTRE_ASTER',
-                  VALE_REFE=0.1252,
                   VALE_CALC=0.13156307282039,
-                  PRECISION=6.0E-02,
+                  TOLE_MACHINE=1.0000000000000001E-05,
                   CRITERE='RELATIF',
                   ),
           )
 
-FIN()
+FIN();

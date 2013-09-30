@@ -176,40 +176,6 @@ CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
 DEGE=CALC_CHAMP(RESULTAT=RESU,DEFORMATION=('DEGE_ELNO','DEGE_ELGA'))
 
 #IMPR_RESU(RESU=_F(RESULTAT=DEGE,NOM_CHAM='DEGE_ELGA',MAILLE='M132'))
-#IMPR_RESU(RESU=_F(RESULTAT=DEGE,NOM_CHAM='DEGE_ELNO',MAILLE='M132'))
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='O',
-                   MAILLE ='M132',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEGE,
-                   NOM_CHAM='DEGE_ELNO',
-                   NOM_CMP='KXX',
-                   VALE_CALC=-11.182473649538,
-                   VALE_REFE=-11.39863316,
-                   PRECISION= 0.02),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='O',
-                   MAILLE ='M132',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEGE,
-                   NOM_CHAM='DEGE_ELNO',
-                   NOM_CMP='KYY',
-                   VALE_CALC=-11.482437225333,
-                   VALE_REFE=-11.39863316,
-                   PRECISION= 0.015),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='O',
-                   MAILLE ='M132',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEGE,
-                   NOM_CHAM='DEGE_ELNO',
-                   NOM_CMP='KXY',
-                   VALE_CALC=0.022667143284266,
-                   VALE_REFE=0.,
-                   PRECISION= 0.03,
-                   CRITERE='ABSOLU'),
-               ))
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

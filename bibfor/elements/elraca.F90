@@ -847,7 +847,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG4'
-        fapg(5) = 'FPG9'
+        fapg(5) = 'FPG9'        
         fapg(6) = 'FPG9COQ'
 !
         xin(1) = -1.d0

@@ -16,13 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
-                      deggt)
-        character(len=16) :: nomte
-        integer :: nb2
-        integer :: npgsn
-        real(kind=8) :: xr(*)
-        real(kind=8) :: deggtg(8, *)
-        real(kind=8) :: deggt(8, 9)
-    end subroutine vddege
+    subroutine matrq9(mat)
+        real(kind=8) :: mat(9,9)
+    end subroutine matrq9
 end interface

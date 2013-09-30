@@ -404,7 +404,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
         zr(lzr-1+115) = xpg(13)
         zr(lzr-1+116) = xpg(15)
         zr(lzr-1+117) = xpg(17)
-!
+
         zr(lzr-1+118) = xpg(2)
         zr(lzr-1+119) = xpg(4)
         zr(lzr-1+120) = xpg(6)
@@ -439,7 +439,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            do 22 ino = 1, 8
+            do 22 ino = 1,8
                 zr(lzr-1+135+ll+ino) = ff(ino)
                 zr(lzr-1+207+ll+ino) = dff(1,ino)
                 zr(lzr-1+279+ll+ino) = dff(2,ino)
@@ -462,7 +462,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU9', x, 18, dff, nno,&
                         ndim)
             ll = 9* (l-1)
-            do 23 ino = 1, 9
+            do 23 ino = 1,9
                 zr(lzr-1+ 351 + ll + ino) = ff(ino)
                 zr(lzr-1+ 387 + ll + ino) = dff(1,ino)
                 zr(lzr-1+ 423 + ll + ino) = dff(2,ino)
@@ -482,7 +482,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU9', x, 18, dff, nno,&
                         ndim)
             ll = 9* (l-1)
-            do 24 ino = 1, 9
+            do 24 ino = 1,9
                 zr(lzr-1+ 459 + ll + ino) = ff(ino)
                 zr(lzr-1+ 540 + ll + ino) = dff(1,ino)
                 zr(lzr-1+ 621 + ll + ino) = dff(2,ino)
@@ -534,7 +534,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
         zr(lzr-1+817) = 0.d0
         zr(lzr-1+818) = -1.d0
         zr(lzr-1+819) = 0.d0
-!
+
         zr(lzr-1+820) = -1.d0
         zr(lzr-1+821) = -1.d0
         zr(lzr-1+822) = 1.d0
@@ -556,7 +556,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            do 25 ino = 1, 8
+            do 25 ino = 1,8
                 zr(lzr-1+ 828 + ll + ino) = dff(1,ino)
                 zr(lzr-1+ 900 + ll + ino) = dff(2,ino)
 25          continue
@@ -989,6 +989,28 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !
         call fcepai(zr(lzr))
 !
+!
+!
+!     DEFINITION DES 7 FONCTIONS D'INTERPOLATION QUI PERMETTENT
+!     D'EXTRAPOLER
+!     LES DEFORMATIONS GENERALISEES AUX NOEUDS A PARTIR DE
+!     LEURS VALEURS AUX POINTS DE HAMMER
+!
+        xi3 = 0.d0
+        do 360 l = 1, 7
+            i1 = 810 + l
+            i2 = 810 + 9 + l
+            xi1 = zr(lzr-1+i1)
+            xi2 = zr(lzr-1+i2)
+            call fcesnd(elrefe, 0, xi1, xi2, xi3,&
+                        'NL', vfesnd)
+            ll = 7* (l-1)
+            do 370 k = 1, 7
+                i3 = 1600 + ll + k
+                zr(lzr-1+i3) = vfesnd(k)
+370          continue
+360      continue
+
     endif
 !
 350  continue

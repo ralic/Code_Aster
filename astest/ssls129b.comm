@@ -181,10 +181,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=SNL1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=5.4362194082538E-03,
+                  VALE_CALC= 5.4362194082538E-03,
                   VALE_REFE=5.6766753846415E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -193,18 +193,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=SNL1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=5.6615073881321E-03,
+                  VALE_CALC= 5.6615073881321E-03,
                   VALE_REFE=5.837493523202E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 # FORCES NODALES
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-09,
-           VALE_CALC=-2.0E+03,
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC=-2.000000000E+03,
            VALE_REFE=-2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
            NOM_PARA='RESULT_X',
            TABLE=PSNL1,
            FILTRE=_F(NOM_PARA='INTITULE',
@@ -212,9 +213,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-09,
-           VALE_CALC= 2.0E+03,
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC= 2.000000000E+03,
            VALE_REFE=2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
            NOM_PARA='RESULT_X',
            TABLE=PSNL1,
            FILTRE=_F(NOM_PARA='INTITULE',
@@ -232,7 +234,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=23.872326803936,
                   VALE_REFE=25.033163955199999,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -244,7 +246,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=23.898621975296,
                   VALE_REFE=25.022855492800002,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 # TEST SUR LE RESULTAT STAT_NON_LINE 3
@@ -261,7 +263,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-6.0850602463027,
                   VALE_REFE=-6.2097302104193997,
                   CRITERE='RELATIF',
-                  PRECISION=0.025,),
+                  PRECISION=0.025000000000000001,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -273,15 +275,16 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-6.0824716448581,
                   VALE_REFE=-6.2082328310698003,
                   CRITERE='RELATIF',
-                  PRECISION=0.025,),
+                  PRECISION=0.025000000000000001,),
           )
 
 # FORCES NODALES
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-09,
-           VALE_CALC= 2.0E+03,
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC= 2.000000001E+03,
            VALE_REFE=2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
            NOM_PARA='RESULT_Z',
            TABLE=PSNL3,
            FILTRE=_F(NOM_PARA='INTITULE',
@@ -289,9 +292,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-09,
-           VALE_CALC=-2.0E+03,
+           PRECISION=1.0000000000000001E-09,
+           VALE_CALC=-2.000000000E+03,
            VALE_REFE=-2000.0,
+           TOLE_MACHINE=1.0000000000000001E-09,
            NOM_PARA='RESULT_Z',
            TABLE=PSNL3,
            FILTRE=_F(NOM_PARA='INTITULE',
@@ -309,7 +313,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-880.80633671096,
                    VALE_REFE=-952.57716945200002,
                    CRITERE='RELATIF',
-                   PRECISION=0.09,),
+                   PRECISION=0.089999999999999997,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='D',
                    REFERENCE='AUTRE_ASTER',
@@ -319,7 +323,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-878.17708247344,
                    VALE_REFE=-953.72746189500003,
                    CRITERE='RELATIF',
-                   PRECISION=0.1,),
+                   PRECISION=0.10000000000000001,),
                 ),
           )
 
@@ -398,7 +402,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 5.4365131962836E-03,
                   VALE_REFE=5.6766753846415E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -410,13 +414,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 5.6618371797358E-03,
                   VALE_REFE=5.837493523202E-3,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 # FORCES NODALES
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-05,
+           PRECISION=1.0000000000000001E-05,
            VALE_CALC=-1.99999935E+03,
            VALE_REFE=-2000.0,
            NOM_PARA='RESULT_X',
@@ -426,7 +430,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-05,
+           PRECISION=1.0000000000000001E-05,
            VALE_CALC= 2.00000344E+03,
            VALE_REFE=2000.0,
            NOM_PARA='RESULT_X',
@@ -446,7 +450,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=23.876913032893,
                   VALE_REFE=25.033163955199999,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -458,7 +462,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=23.902655578807,
                   VALE_REFE=25.022855492800002,
                   CRITERE='RELATIF',
-                  PRECISION=0.05,),
+                  PRECISION=0.050000000000000003,),
           )
 
 # TEST SUR LE RESULTAT STAT_NON_LINE 3
@@ -475,7 +479,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-6.0861231890332,
                   VALE_REFE=-6.2097302104193997,
                   CRITERE='RELATIF',
-                  PRECISION=0.025,),
+                  PRECISION=0.025000000000000001,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -487,13 +491,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-6.0835219717735,
                   VALE_REFE=-6.2082328310698003,
                   CRITERE='RELATIF',
-                  PRECISION=0.025,),
+                  PRECISION=0.025000000000000001,),
           )
 
 # FORCES NODALES
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-05,
+           PRECISION=1.0000000000000001E-05,
            VALE_CALC= 1.99999814E+03,
            VALE_REFE=2000.0,
            NOM_PARA='RESULT_Z',
@@ -503,8 +507,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-05,
-           VALE_CALC=-2.0E+03,
+           PRECISION=1.0000000000000001E-05,
+           VALE_CALC=-2.00000073E+03,
            VALE_REFE=-2000.0,
            NOM_PARA='RESULT_Z',
            TABLE=PSL3,
@@ -526,7 +530,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-880.94540120161,
                    VALE_REFE=-952.57716945200002,
                    CRITERE='RELATIF',
-                   PRECISION=0.09,),
+                   PRECISION=0.089999999999999997,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='D',
                    REFERENCE='AUTRE_ASTER',
@@ -536,7 +540,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-878.49918373716,
                    VALE_REFE=-953.72746189500003,
                    CRITERE='RELATIF',
-                   PRECISION=0.1,),
+                   PRECISION=0.10000000000000001,),
                 ),
           )
 

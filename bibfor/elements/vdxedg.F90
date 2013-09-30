@@ -74,7 +74,7 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
     nb2  =zi(lzi-1+2)
     npgsr=zi(lzi-1+3)
     npgsn=zi(lzi-1+4)
-!
+
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
     call jevech('PCACOQU', 'L', jcara)
@@ -131,15 +131,15 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
             epsim(i)=zero
             do 20 k = 1, 5*nb1+2
                 epsim(i)=epsim(i)+btild1(i,k)*depl(k)
-20          end do
-10      end do
+20          continue
+10      continue
 !
         do 30 i = 1, 5
             epsif(i)=zero
             do 40 k = 1, 5*nb1+2
                 epsif(i)=epsif(i)+btild(i,k)*depl(k)
-40          end do
-30      end do
+40          continue
+30      continue
         epsif(1)=epsif(1)/epais
         epsif(2)=epsif(2)/epais
         epsif(3)=epsif(3)/epais
@@ -163,7 +163,7 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
 !
 200  continue
     if (option(1:9) .eq. 'DEGE_ELNO') then
-        call vddege(nomte, nb1, npgsr, zr(lzr), edgpg,&
+        call vddege(nomte, nb2, npgsn, zr(lzr), edgpg,&
                     effgt)
     endif
 !
@@ -181,6 +181,6 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
                 zr(lzr+2000+k-1) = vectt(i,j)
 130          continue
 120      continue
-110  end do
+110  continue
 !
 end subroutine
