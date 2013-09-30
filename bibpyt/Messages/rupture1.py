@@ -251,8 +251,8 @@ hypothèses.
 Le calcul de G avec une modélisation X-FEM n'est pas possible avec une loi de comportement
 élastoplastique.
 --> Risques & conseils :
-Remplacer si possible le comportement élastoplastique (COMP_INCR) par un comportement
-élastique non linéaire (COMP_ELAS).
+Remplacer si possible le comportement élastoplastique par un comportement
+élastique non linéaire.
 """),
 
 44: _(u"""
@@ -288,9 +288,9 @@ maximale, type de lissage, ...).
 47: _(u"""
 Vous demandez un calcul de G en post-traitement d'un calcul élastoplastique. Ceci n'est valable que 
 si votre CHARGEMENT est MONOTONE PROPORTIONNEL.
-Si tel est le cas, renseignez, dans CALC_G, l'option COMP_ELAS, RELATION = ELAS_VMIS_XXX pour un calcul de G.
+Si tel est le cas, renseignez, dans CALC_G, RELATION = ELAS_VMIS_XXX pour un calcul de G.
 Si votre chargement n'est pas monotone proportionnel, il faut renseigner, dans CALC_G, 
-l'option COMP_INCR, RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
+RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
 """),
 
 

@@ -26,12 +26,12 @@ cata_msg = {
 
 
 2 : _(u"""
-  -> GROT_GDEP n'est pas disponible avec COMP_ELAS.
-  -> Conseils : Utilisez COMP_INCR.
+  -> GROT_GDEP n'est pas disponible pour un comportement élastique non linéaire.
+  -> Conseils : Utilisez un comportement élastique linéaire.
 """),
 
 5 : _(u"""
-  -> Avec GROT_GDEP + COMP_INCR, la modélisation axisymétrique n'est pas disponible.
+  -> Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible.
 """),
 
 6 : _(u"""

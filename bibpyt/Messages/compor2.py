@@ -58,12 +58,12 @@ cata_msg={
 
 9 : _(u"""
 Les déformations deviennent trop grandes : <%(r1)E>
-=> GROT_GDEP sous COMP_INCR n'est plus valide.
+=> GROT_GDEP sous COMPORTEMENT n'est plus valide.
 
-Pour un calcul en grandes déformation sous COMP_INCR
+Pour un calcul en grandes déformations
 il faut utiliser GDEF_HYPO_ELAS ou SIMO_MIEHE.
 
-Pour un calcul hyper-élastique, utiliser COMP_ELAS.
+Pour un calcul hyper-élastique, utiliser ELAS_HYPER.
 """),
 
 
@@ -202,7 +202,7 @@ Noms des variables internes :"""),
   CALC_ESSAI_GEOMECA : 
   Les seules lois de comportement autorisées pour <%(k1)s> sont les lois de sol suivantes :
   --> %(k2)s
-  Or vous avez renseigné <RELATION='%(k3)s'> pour le mot clef facteur <COMP_INCR>.
+  Or vous avez renseigné <RELATION='%(k3)s'> pour le mot clef facteur <COMPORTEMENT>.
 """),
 
 40: _(u"""
@@ -315,7 +315,7 @@ RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
 
 58: _(u"""
                       )),
-                      COMP_INCR=_F(RELATION= '%(k1)s', ITER_INTE_MAXI=20,),
+                      COMPORTEMENT=_F(RELATION= '%(k1)s', ITER_INTE_MAXI=20,),
 """),
 
 59: _(u"""

@@ -203,8 +203,8 @@ cata_msg = {
 """),
 
 88 : _(u"""
- COMP_ELAS non implanté
-"""),
+ le seul comportement élastique valide est ELAS
+ """),
 
 90 : _(u"""
  la définition de la température est obligatoire

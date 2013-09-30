@@ -60,7 +60,7 @@ instant trouvé dans la SD résultat %(k1)s.
 
 8 : _(u"""
   Les modélisations THM n'ont de sens qu'en petites déformations.
-  Choisissez COMP_INCR/DEFORMATION='PETIT'.
+  Choisissez COMPORTEMENT/DEFORMATION='PETIT'.
 """),
 
 9 : _(u"""

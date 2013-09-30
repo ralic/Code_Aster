@@ -96,7 +96,7 @@ cata_msg = {
 """),
 
 36 : _(u"""
- COMP_INCR non valide
+ COMPORTEMENT non valide
 """),
 
 37 : _(u"""
@@ -150,7 +150,7 @@ cata_msg = {
 """),
 
 54 : _(u"""
-  la réactualisation de la géométrie (déformation : PETIT_REAC sous le mot clé COMP_INCR) est déconseillée pour les éléments de coque_1d.
+  la réactualisation de la géométrie (déformation : PETIT_REAC) est déconseillée pour les éléments de coque_1d.
 """),
 
 55 : _(u"""
@@ -236,8 +236,7 @@ cata_msg = {
 """),
 
 94 : _(u"""
-  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
-     le mot clé COMP_INCR) est déconseillée pour les éléments COQUE_3D.
+  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est déconseillée pour les éléments COQUE_3D.
   -> Risque & Conseil :
      Le calcul des déformations à l'aide de PETIT_REAC n'est qu'une
      approximation des hypothèses des grands déplacements. Elle nécessite

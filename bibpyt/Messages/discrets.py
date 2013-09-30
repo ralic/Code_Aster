@@ -71,7 +71,7 @@ Pour information :
 """),
 
 8 : _(u"""
-Pour les discrets, avec COMP_ELAS le seul comportement valide est ELAS.
+Pour les discrets, le seul comportement élastique valide est ELAS.
 
 Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>

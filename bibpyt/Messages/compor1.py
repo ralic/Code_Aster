@@ -235,10 +235,10 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 45: _(u"""
- Le type d'algorithme d'intégration choisi : <%(k1)s> (sous COMP_INCR/%(k2)s) est incompatible avec le comportement <%(k3)s>.
+ Le type d'algorithme d'intégration choisi : <%(k1)s> (sous COMPORTEMENT/%(k2)s) est incompatible avec le comportement <%(k3)s>.
 
 Conseil :
-Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme par défaut.
+Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algorithme par défaut.
 """),
 
 46: _(u"""
@@ -261,7 +261,7 @@ Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorith
 
 50: _(u"""
  Aucun comportement n'est défini sur la maille <%(k1)s>. Code_Aster a défini par défaut
-  COMP_INCR='ELAS', DEFORMATION='PETIT'.
+  COMPORTEMENT='ELAS', DEFORMATION='PETIT'.
 """),
 
 52: _(u"""

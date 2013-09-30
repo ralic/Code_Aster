@@ -24,7 +24,7 @@ cata_msg = {
  Le calcul linéaire n'est pas possible.
 
  Conseil :  Il est possible de faire ce même calcul avec STAT_NON_LINE en précisant sous
-            COMP_INCR/RELATION='MULTIFIBRE'
+            COMPORTEMENT/RELATION='MULTIFIBRE'
 """),
 
 25 : _(u"""

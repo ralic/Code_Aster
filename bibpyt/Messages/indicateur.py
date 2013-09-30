@@ -104,7 +104,7 @@ Vous n'utilisez pas une modélisation HM saturée élastique.
 
 
 25: _(u"""
-Il faut renseigner le mot-clef COMP_INCR avec ELAS et LIQU_SATU pour calculer l'indicateur d'erreur temporelle.
+Il faut renseigner le mot-clef RELATION=ELAS et LIQU_SATU pour calculer l'indicateur d'erreur temporelle.
 """),
 
 28 : _(u"""

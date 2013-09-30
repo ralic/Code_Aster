@@ -508,7 +508,7 @@ Erreur utilisateur :
 86: _(u"""
  La carte de COMPORTEMENT est absente.
  Votre résultat a peut-être été produit par LIRE_RESU ou CREA_RESU.
- Si votre résultat a été produit par LIRE_RESU, il faut renseigner le mot-clé COMP_INCR.
+ Si votre résultat a été produit par LIRE_RESU, il faut renseigner le mot-clé COMPORTEMENT.
 """),
 
 88: _(u"""

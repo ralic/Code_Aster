@@ -41,7 +41,7 @@ cata_msg = {
 """),
 14 : _(u"""
   Vous utilisez un élément de type multifibre <%(k1)s>.
-  Il faut que sous COMP_INCR le mot clef RELATION='MULTIFIBRE'.
+  Il faut que sous COMPORTEMENT le mot clef RELATION='MULTIFIBRE'.
 """),
 
 31 : _(u"""
@@ -180,7 +180,7 @@ Le module de Young est nul.
 """),
 
 73 : _(u"""
-   élément MECA_HEXS8:COMP_ELAS non implanté, utiliser COMP_INCR RELATION='ELAS'
+   élément MECA_HEXS8: élasticité non linéaire non programmée.
 """),
 
 74 : _(u"""

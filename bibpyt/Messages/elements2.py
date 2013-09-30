@@ -155,9 +155,8 @@ cata_msg = {
 """),
 
 72 : _(u"""
-  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
-     le mot clé COMP_INCR) est déconseillée pour les éléments de type plaque. Les
-     grandes rotations ne sont pas modélisées correctement.
+  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est déconseillée pour les éléments de type plaque. 
+     Les grandes rotations ne sont pas modélisées correctement.
   -> Risque & Conseil :
      En présence de grands déplacements et grandes rotations, il est préférable
      d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GROT_GDEP'
@@ -196,7 +195,7 @@ cata_msg = {
 """),
 
 90 : _(u"""
- COMP_ELAS non valide
+ le seul comportement élastique valide est ELAS
 """),
 
 }

@@ -326,7 +326,7 @@ cata_msg={
 """),
 
 48: _(u"""
-     Le calcul de G avec X-FEM est impossible avec COMP_INCR.
+     Le calcul de G avec X-FEM est impossible avec un comportement incrémental.
 """),
 
 49: _(u"""

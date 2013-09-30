@@ -84,7 +84,7 @@ le mot-clé %(k2)s est obligatoire dans AFFE_CARA_ELEM.
 19 : _(u"""Le type de charge %(k1)s n'est pas pris en compte par CALC_EUROPLEXUS'
 """),
 20 : _(u"""Les groupes de mailles auxquels le matériau %(k1)s est affecté n'ont pas tous la même relation.
-           Voir mot-clé COMP_INCR.
+           Voir mot-clé COMPORTEMENT.
 """),
 
 21 : _(u"""On ne trouve pas les caractéristiques élastiques du matériau %(k1)s.
