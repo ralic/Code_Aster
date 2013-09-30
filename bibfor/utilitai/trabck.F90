@@ -38,7 +38,7 @@ subroutine trabck(cmess, iexit)
 #elif HAVE_BACKTRACE == 1
     call backtrace
 #else
-!   ON NE PEUT PAS APPELER U2MESS (RECURSIVITE)
+!   ON NE PEUT PAS APPELER UTMESS (RECURSIVITE)
     write(6,*) 'Traceback is not provided by the compiler'
     dummy = len(cmess) + iexit
 #endif

@@ -75,7 +75,6 @@ subroutine w039c4(carte, ifi, form)
     chels1='&&W039C4.CHELS1'
     call carces(cart1, 'ELEM', ' ', 'V', chels1,&
                 'A', iret)
-!     CALL IMPRSD('CHAMP',CHELS1,6,'AJACOT CHELS1')
 !
 !     -- LE FORMAT MED REFUSE DE TRAITER PLUS DE 80 CMPS :
     call jelira(jexnum('&CATA.GD.NOMCMP', nugd), 'LONMAX', n1)

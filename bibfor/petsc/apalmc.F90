@@ -54,15 +54,16 @@ subroutine apalmc(kptsc)
     character(len=19) :: nomat, nosolv
     character(len=16) :: idxo, idxd
     character(len=14) :: nonu
-    character(len=4) :: kbid
 !
     parameter   (idxo  ='&&APALLC.IDXO___')
     parameter   (idxd  ='&&APALLC.IDXD___')
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: bs, low, high, neq, ierr
-    Vec :: tmp
+    PetscInt :: low, high, ierr
+    integer ::  neq, bs
+    Vec :: vtmp
+    Mat :: a
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
@@ -95,18 +96,18 @@ subroutine apalmc(kptsc)
 !
 !     ON EST OBLIGE DE PASSER PAR UN VECTEUR TEMPORAIRE CONSTRUIT
 !     PAR MORCEAUX POUR OBTENIR LE BON DECOUPAGE PAR BLOC
-    call VecCreate(mpicou, tmp, ierr)
+    call VecCreate(mpicou, vtmp, ierr)
     ASSERT(ierr.eq.0)
-    call VecSetBlockSize(tmp, bs, ierr)
+    call VecSetBlockSize(vtmp, bs, ierr)
     ASSERT(ierr.eq.0)
-    call VecSetSizes(tmp, PETSC_DECIDE, neq, ierr)
+    call VecSetSizes(vtmp, PETSC_DECIDE, neq, ierr)
     ASSERT(ierr.eq.0)
-    call VecSetType(tmp, VECMPI, ierr)
+    call VecSetType(vtmp, VECMPI, ierr)
     ASSERT(ierr.eq.0)
 !
-    call VecGetOwnershipRange(tmp, low, high, ierr)
+    call VecGetOwnershipRange(vtmp, low, high, ierr)
     ASSERT(ierr.eq.0)
-    call VecDestroy(tmp, ierr)
+    call VecDestroy(vtmp, ierr)
     ASSERT(ierr.eq.0)
 !
 !     NB DE LIGNES QUE L'ON STOCKE LOCALEMENT
@@ -169,28 +170,29 @@ subroutine apalmc(kptsc)
         end do
     end do
 !
-    call MatCreate(mpicou, ap(kptsc), ierr)
+    call MatCreate(mpicou, a, ierr)
     ASSERT(ierr.eq.0)
-    call MatSetSizes(ap(kptsc), nblloc, nblloc, neq, neq,&
+    call MatSetSizes(a, nblloc, nblloc, neq, neq,&
                      ierr)
     ASSERT(ierr.eq.0)
     if (nbproc .eq. 1) then
-        call MatSetType(ap(kptsc), MATSEQAIJ, ierr)
+        call MatSetType(a, MATSEQAIJ, ierr)
         ASSERT(ierr.eq.0)
-        call MatSEQAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd), ierr)
+        call MatSEQAIJSetPreallocation(a, int(PETSC_NULL_INTEGER), zi4( jidxd), ierr)
         ASSERT(ierr.eq.0)
     else
-        call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
+        call MatSetType(a, MATMPIAIJ, ierr)
         ASSERT(ierr.eq.0)
-        call MatMPIAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd),&
-                                       PETSC_NULL_INTEGER, zi4(jidxo), ierr)
+        call MatMPIAIJSetPreallocation(a, int(PETSC_NULL_INTEGER), zi4( jidxd),&
+                                       int(PETSC_NULL_INTEGER), zi4(jidxo), ierr)
         ASSERT(ierr.eq.0)
     endif
 !
 !     AVEC PETSc <= 3.2
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI, NE PAS DEPLACER
-    call MatSetBlockSize(ap(kptsc), bs, ierr)
+    call MatSetBlockSize(a, bs, ierr)
     ASSERT(ierr.eq.0)
+    ap(kptsc)=a
 !
 !     ON N'OUBLIE PAS DE DETRUIRE LES TABLEAUX
 !     APRES AVOIR ALLOUE CORRECTEMENT

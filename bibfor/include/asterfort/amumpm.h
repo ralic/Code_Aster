@@ -24,7 +24,7 @@ interface
         character(len=24) :: kmonit(12)
         character(len=14) :: impr
         integer :: ifmump
-        character(len=4) :: klag2
+        character(len=5) :: klag2
         character(len=1) :: type
         logical :: lmd
         real(kind=8) :: epsmat

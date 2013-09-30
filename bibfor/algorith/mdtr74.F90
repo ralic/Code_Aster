@@ -237,7 +237,7 @@ subroutine mdtr74(nomres)
     marig = '&&MDTR74.RIGI'
     call copisd('MATR_ASSE', 'V', rigass, marig)
     call jeexin(marig//'.REFA', ier)
-    if (ier .eq. 0) call wkvect(marig//'.REFA', 'V V K24', 11, jrefa)
+    if (ier .eq. 0) call wkvect(marig//'.REFA', 'V V K24', 20, jrefa)
     call jeveuo(marig//'.REFA', 'E', jrefa)
     zk24(jrefa-1+7)='&&OP0074.SOLVEUR'
 !

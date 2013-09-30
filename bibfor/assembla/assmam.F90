@@ -387,7 +387,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !         -- CREATION ET REMPLISSAGE DE .REFA
 !         -------------------------------------
-    call wkvect(mat19//'.REFA', base1//' V K24', 11, jrefa)
+    call wkvect(mat19//'.REFA', base1//' V K24', 20, jrefa)
     zk24(jrefa-1+1)=ma
     zk24(jrefa-1+2)=nu14
     zk24(jrefa-1+8)='ASSE'

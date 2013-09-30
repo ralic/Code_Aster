@@ -74,7 +74,7 @@ subroutine crsolv(method, renum, solve, bas)
     endif
     if (method .eq. 'MUMPS') then
         zk24(islvk-1+3) = 'AUTO'
-        zk24(islvk-1+6) = 'OUI'
+        zk24(islvk-1+6) = 'LAGR2'
     else
         zk24(islvk-1+3) = 'XXXX'
         zk24(islvk-1+6) = 'XXXX'
@@ -87,6 +87,7 @@ subroutine crsolv(method, renum, solve, bas)
     zk24(islvk-1+10) = 'XXXX'
     zk24(islvk-1+11) = 'XXXX'
     zk24(islvk-1+12) = 'XXXX'
+    zk24(islvk-1+13) = 'NON'
 !
     zr(islvr-1+1) = epsmat
     zr(islvr-1+2) = resire

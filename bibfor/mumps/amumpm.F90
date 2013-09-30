@@ -28,7 +28,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! IN  KMONIT :  K24   : VECTEUR DE NOMS DES OBJ JEVEUX
 ! IN  IMPR   :  K14   : FLAG POUR IMPRESSION MATRICE
 ! IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
-! IN  KLAG2  :   K4   : PARAMETRE DE SOLVEUR/ELIM_LAGR2
+! IN  KLAG2  :   K5   : PARAMETRE DE SOLVEUR/ELIM_LAGR
 ! IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 ! IN  LMD    :  LOG   : LOGIQUE PRECISANT SI ON EST EN MATR_DISTRIBUEE
 ! IN  EPSMAT :   R8   : SEUIL DE FILTRAGE DES TERMES DE LA MATRICE
@@ -64,7 +64,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     logical :: ldist, lmd, lpreco
     real(kind=8) :: epsmat
     character(len=1) :: type
-    character(len=4) :: klag2
+    character(len=5) :: klag2
     character(len=8) :: ktypr
     character(len=14) :: impr
     character(len=24) :: kmonit(12)
@@ -206,19 +206,19 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! --- CALCUL DE N
         n=nsmdi
 !
-! --- GESTION ELIM_LAGR2
-! --- on a essaye une basule automatique elim_lagr2='oui'/'non'
-! --- en fonction de la proportion de lagranges. en fait, 'oui'
-! --- OFFRE LA PLUPART DU TEMPS LE MEILLEUR COMPROMIS:
-! ---     CPU x MEMOIRE x QUALITE --> ON NE PROGRAMME PAS DE
-! --- bascule, on laisse 'oui' par defaut (pour l'instant)
-        select case(klag2(1:3))
-        case('OUI')
-        eli2lg=.true.
-        case('NON')
-        eli2lg=.false.
+! --- GESTION ELIM_LAGR='LAGR2'
+! --- on a essaye une basule automatique ELIM_LAGR='LAGR2'/'NON'
+! --- en fonction de la proportion de lagranges. en fait, 'LAGR2'
+! --- offre la plupart du temps le meilleur compromis:
+! ---     cpu x memoire x qualite --> on ne programme pas de
+! --- bascule, on laisse 'LAGR2' par defaut (pour l'instant)
+        select case(klag2(1:5))
+        case('LAGR2')
+            eli2lg=.true.
+        case('OUI','NON','XXXX')
+            eli2lg=.false.
         case default
-        ASSERT(.false.)
+            ASSERT(.false.)
         end select
 !
 ! --- CALCUL DE NZ2

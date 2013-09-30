@@ -1,6 +1,5 @@
 subroutine op0164()
     implicit none
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -259,7 +258,7 @@ subroutine op0164()
         zc(iaconl+i-1) = dcmplx(1.0d0,0.0d0)
  10 end do
 !
-    call wkvect(resu//'.REFA', 'G V K24', 11, jrefa)
+    call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
     zk24(jrefa-1+1) = basemo
     zk24(jrefa-1+2) = nugene

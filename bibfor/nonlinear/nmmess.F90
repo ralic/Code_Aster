@@ -39,7 +39,7 @@ subroutine nmmess(code, dp0, dp1, dp, func,&
 !                         DE ZERO DE func(DP)
 !
 !    - ARGUMENTS:
-!        DONNEES:     CODE    : 'A', 'E' OU 'F' PASSE A U2MESG
+!        DONNEES:     CODE    : 'A', 'E' OU 'F' PASSE A UTMESG
 !                     DP0     : DP INITIAL (0 EN GENERAL)
 !                     DP1     : DP MAXI ESTIME
 !                     DP      : DERNIER DP CALCULE

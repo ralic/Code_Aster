@@ -39,7 +39,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES:
-!       MESSAGE:U2MESS,U2MESG.
+!       MESSAGE:UTMESS,UTMESG.
 !       JEVEUX:JEMARQ,JEDEMA,JEDETR,MEGEOM,DISMOI,EXISD,ETENCA.
 !       ELEMENTS FINIS:CALCUL,RESVOI.
 !

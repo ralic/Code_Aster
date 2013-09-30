@@ -55,7 +55,7 @@ subroutine op0014()
 #include "asterfort/uttcpu.h"
 #include "asterfort/vrrefe.h"
     character(len=3) :: kstop
-    character(len=4) :: klag2
+    character(len=5) :: klag2
     character(len=24) :: valk(2)
     character(len=8) :: matass, matfac, type, ktypr, ktyps, precon, mixpre
     character(len=12) :: kooc
@@ -164,7 +164,9 @@ subroutine op0014()
         call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
         call getvtx(' ', 'TYPE_RESOL', scal=ktypr, nbret=ibid)
         call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps, nbret=ibid)
-        call getvtx(' ', 'ELIM_LAGR2', scal=klag2, nbret=ibid)
+        call getvtx(' ', 'ELIM_LAGR', scal=klag2, nbret=ibid)
+        ASSERT(klag2.eq.'NON' .or. klag2.eq.'LAGR2')
+
         call getvtx(' ', 'GESTION_MEMOIRE', scal=kooc, nbret=ibid)
         call jeveuo(solveu//'.SLVI', 'E', jslvi)
         call jeveuo(solveu//'.SLVK', 'E', jslvk)

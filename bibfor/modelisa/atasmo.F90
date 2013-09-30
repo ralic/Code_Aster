@@ -238,7 +238,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     6. OBJETS: MATR_ASSE.REFA ET MATR_ASSE.CONL:
 !     --------------------------------------------------
     krefa = ata//'.REFA'
-    call wkvect(krefa, base//' V K24', 11, jrefa)
+    call wkvect(krefa, base//' V K24', 20, jrefa)
     call dismoi('NOM_MAILLA', numedd, 'NUME_DDL', repk=ma)
     zk24(jrefa-1+1) = ma
     zk24(jrefa-1+2) = numddl

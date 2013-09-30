@@ -531,12 +531,12 @@ subroutine acmata(nbordr, kwork,&
 !          CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
 !      &               VALE,ICODRE,0)
 !          IF (ICODRE .EQ. 1) THEN
-!             CALL U2MESS('F','PREPOST_11')
+!             CALL UTMESS('F','PREPOST_11')
 !          ENDIF
 !          CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
 !      &               VALNU,ICODRE,0)
 !          IF (ICODRE .EQ. 1) THEN
-!             CALL U2MESS('F','PREPOST_12')
+!             CALL UTMESS('F','PREPOST_12')
 !          ENDIF
 !          C1 = (1+VALNU)/VALE
 !          C2 = VALNU/VALE

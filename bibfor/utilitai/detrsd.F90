@@ -15,6 +15,7 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/elg_gest_common.h"
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -68,7 +69,7 @@ subroutine detrsd(typesd, nomsd)
 !
     integer :: iret, iad, long, i, nbch, jrelr, ibid
     integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
-    integer :: jltns
+    integer :: jltns, iexi, jrefa
     character(len=8) :: metres, k8
     character(len=12) :: vge
     character(len=14) :: nu, com
@@ -351,9 +352,19 @@ subroutine detrsd(typesd, nomsd)
 !     ---------------------------------------
         matas = nomsd
 !
+!       -- DESTRUCTION DE L'EVENTUELLE MATRICE RéDUITE (ELIM_LAGR) :
+        call jeexin(matas//'.REFA', iexi)
+        if (iexi .gt. 0) then
+            call jeveuo(matas//'.REFA', 'L', jrefa)
+            if (zk24(jrefa-1+19) .ne. ' ') then
+                call detrs2('MATR_ASSE', zk24(jrefa-1+19)(1:19))
+            endif
+        endif
+!
 !       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
-        call jeexin(matas//'.REFA', iret)
-        if (iret .gt. 0) then
+!          et des matrices PETSC liées à ELIM_LAGR='OUI'
+        call jeexin(matas//'.REFA', iexi)
+        if (iexi .gt. 0) then
             call dismoi('METH_RESO', matas, 'MATR_ASSE', repk=metres)
             if (metres .eq. 'MUMPS') then
                 call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid],&
@@ -362,7 +373,7 @@ subroutine detrsd(typesd, nomsd)
                 call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
                             0, ibid, iret)
             endif
-!
+            call elg_gest_common('EFFACE', ' ', matas, ' ')
         endif
 !
         call jedetr(matas//'.CCID')

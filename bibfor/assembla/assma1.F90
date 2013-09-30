@@ -123,6 +123,7 @@ subroutine assma1(matas, ldist)
     else
         rcoef=0.5d0*(rmin+rmax)
     endif
+!   RCOEF=1.D0
 !
 ! ---------------------------------------------------------------
     call wkvect(mat19//'.CONL', base1//' V R', ng, jconl)

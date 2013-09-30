@@ -58,7 +58,8 @@ subroutine appcpr(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: fill, ierr
+    PetscInt :: ierr
+    integer :: fill
     PetscReal :: fillp
     Mat :: a
     KSP :: ksp
@@ -188,14 +189,10 @@ subroutine appcpr(kptsc)
     if (precon .eq. 'ML' .or. precon .eq. 'BOOMER') then
         call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',&
                     ier=iret)
-        if (iret .eq. 0) then
-            if (exilag .eq. 'OUI') then
-                call utmess('F', 'PETSC_17')
-            endif
-        endif
         call apbloc(nomat, nosolv, tbloc)
         if (tbloc .le. 0) then
-            call utmess('F', 'PETSC_18')
+            call utmess('A', 'PETSC_18')
+            tbloc=1
         endif
     endif
 !

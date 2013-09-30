@@ -134,7 +134,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 !       EXIST = DEUX*I1D - PA * (PA /COEF /N)**(UN-N)
 !
 !       IF (EXIST .LE. ZERO) THEN
-!         IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_13')
+!         IF (DEBUG) CALL UTMESS ('A', 'COMPOR1_13')
 !         X(4)  = ZERO
 !         THETA = ZERO
 !         GOTO 50

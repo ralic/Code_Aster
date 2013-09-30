@@ -82,7 +82,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES :
-!       MESSAGE     : U2MESK
+!       MESSAGE     : UTMESK
 !       UTILITAIRES : FOINTE
 !     FONCTION INTRINSEQUE : SQRT
 !   -------------------------------------------------------------------

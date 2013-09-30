@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine preres(solvez, base, iret, matpre, matass,&
+    subroutine preres(solveu, base, iret, matpre, matass,&
                       npvneg, istop)
-        character(len=*) :: solvez
+        character(len=*) :: solveu
         character(len=1) :: base
         integer :: iret
         character(len=*) :: matpre

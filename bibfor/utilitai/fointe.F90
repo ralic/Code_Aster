@@ -42,7 +42,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 ! ======================================================================
 !     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 !     ------------------------------------------------------------------
-! IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A U2MESS, U2MESK
+! IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A UTMESS, UTMESK
 ! IN  NOMF   : NOM DE LA FONCTION OU DE LA NAPPE
 ! IN  NBPU   : NOMBRE DE PARAMETRES DANS NOMPU ET VALPU
 ! IN  NOMPU  : NOMS DES PARAMETRES "UTILISATEUR"

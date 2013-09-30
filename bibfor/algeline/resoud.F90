@@ -1,6 +1,31 @@
 subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                   chsecm, chsolu, base, rsolu, csolu,&
                   criter, prepos, istop, iret)
+    implicit none
+#   include "jeveux.h"
+!-----------------------------------------------------------------------
+#   include "asterfort/assert.h"
+#   include "asterfort/copisd.h"
+#   include "asterfort/dismoi.h"
+#   include "asterfort/elg_kellag.h"
+#   include "asterfort/elg_calc_solu.h"
+#   include "asterfort/jedema.h"
+#   include "asterfort/jedetr.h"
+#   include "asterfort/jelira.h"
+#   include "asterfort/jemarq.h"
+#   include "asterfort/jeveuo.h"
+#   include "asterfort/resou1.h"
+#   include "asterfort/elg_resoud.h"
+#   include "asterfort/uttcpu.h"
+
+    character(len=*) :: matass, matpre, solveu, chcine
+    integer :: nsecm
+    character(len=*) :: chsecm, chsolu, base
+    real(kind=8) :: rsolu(*)
+    complex(kind=8) :: csolu(*)
+    character(len=*) :: criter
+    logical :: prepos
+    integer :: istop, iret
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,244 +88,41 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !                       / 0 : OK (PAR DEFAUT POUR SOLVEURS DIRECTS)
 !                       / 1 : ECHEC (NOMBRE MAX. D'ITERATIONS ATTEINT)
 !-----------------------------------------------------------------------
-    implicit none
-!
-#include "jeveux.h"
-#include "asterc/cheksd.h"
-#include "asterfort/amumph.h"
-#include "asterfort/apetsc.h"
-#include "asterfort/assert.h"
-#include "asterfort/dbgobj.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jacopo.h"
-#include "asterfort/jedbg2.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mtdscr.h"
-#include "asterfort/resgra.h"
-#include "asterfort/resldl.h"
-#include "asterfort/utmess.h"
-#include "asterfort/uttcpu.h"
-#include "asterfort/vtdefs.h"
-#include "asterfort/wkvect.h"
-    character(len=*) :: matass, matpre, solveu, chcine
-    integer :: nsecm
-    character(len=*) :: chsecm, chsolu, base
-    real(kind=8) :: rsolu(*)
-    complex(kind=8) :: csolu(*)
-    character(len=*) :: criter
-    logical :: prepos
-    integer :: istop, iret
-!-----------------------------------------------------------------------
-!
-    integer :: ibid, ifm, niv
-    character(len=3) :: kmpic, type, typ1
-    character(len=19) :: matr19, mpre19, solv19, cine19
-    character(len=19) :: secm19, csol19, crit19
-    character(len=24) :: metres
-!
-    integer :: jslvk, jslvr, jslvi, idbgav, neq, neq1, ier, niter, lmat, jvals
-    integer :: jtrav, jval2, imd, jrefa, istopz
-    real(kind=8) :: epsi
-    complex(kind=8) :: cbid
-    logical :: dbg
-    character(len=1) :: ftype(2)
-    cbid = dcmplx(0.d0, 0.d0)
-    data         ftype/'R','C'/
+! cette routine est une surcouche de la routine resou1.
+! elle est necessaire pour traiter le cas elim_lagr='oui'
 ! ----------------------------------------------------------------------
-    dbg=.false.
+    integer :: ibid, jslvk1, jsolu1, jsolu2, n1, jsecm, jrefa1, nsecmb
+    character(len=19) :: matas1, matas2, secm19, solve1, solve2, solu19
+    character(len=3) :: kellag, kbid
+    character(len=24) :: solu2
+! ----------------------------------------------------------------------
 !
     call jemarq()
-    call infniv(ifm, niv)
-    call jedbg2(idbgav, 0)
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
+    matas1=matass
+    solve1=solveu
+
+
+!   1. CALCUL DE KELLAG :
+!   -------------------------------------
+    call elg_kellag(matas1, solve1, kellag)
 !
-    matr19 = matass
-    mpre19 = matpre
-    solv19 = solveu
-    cine19 = chcine
-    secm19 = chsecm
-    csol19 = chsolu
-    crit19 = criter
 !
-    ASSERT(matr19.ne.' ')
-    call dismoi('MPI_COMPLET', matr19, 'MATR_ASSE', repk=kmpic)
-!
-    if (solv19 .eq. ' ') call dismoi('SOLVEUR', matr19, 'MATR_ASSE', repk=solv19)
-    call jeveuo(solv19//'.SLVK', 'L', jslvk)
-    call jeveuo(solv19//'.SLVR', 'L', jslvr)
-    call jeveuo(solv19//'.SLVI', 'L', jslvi)
-    metres = zk24(jslvk)
-    ASSERT(metres.ne.' ')
-    if (kmpic .eq. 'NON') ASSERT(metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
-!
-!     VERIFICATIONS ET INITIALISATIONS
-    ASSERT((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))
-    if (istop .eq. -9999) then
-        istopz = zi(jslvi-1+8)
+!   2. SI ELIM_LAGR /= 'OUI', ON APPELLE SIMPLEMENT RESOU1 :
+!   --------------------------------------------------------
+    if (.not.(kellag.eq.'OUI')) then
+        call resou1(matas1, matpre, solve1, chcine, nsecm,&
+                    chsecm, chsolu, base, rsolu, csolu,&
+                    criter, prepos, istop, iret)
     else
-        istopz = istop
+        call elg_resoud(matas1, chcine, nsecm,&
+                    chsecm, chsolu, base, rsolu, csolu,&
+                    criter, prepos, istop, iret)
     endif
-    iret = 0
-!
-    call mtdscr(matr19)
-    call jeveuo(matr19//'.&INT', 'L', lmat)
-    neq=zi(lmat+2)
-    type=ftype(zi(lmat+3))
-!
-    ASSERT(nsecm.ge.0)
-    call jeveuo(matr19//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
-        imd=1
-    else
-        imd=0
-    endif
-    if (nsecm .eq. 0) then
-        ASSERT(secm19.ne.' ')
-        ASSERT(csol19.ne.' ')
-        if (csol19 .ne. secm19) then
-            call detrsd('CHAMP_GD', csol19)
-            call vtdefs(csol19, secm19, base, ' ')
-        endif
-!
-        call jelira(secm19//'.VALE', 'LONMAX', neq1)
-        call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
-        if ((neq1.ne.neq) .and. (imd.eq.0)) then
-            call utmess('F', 'FACTOR_67')
-        endif
-        if (typ1 .ne. type) then
-            call utmess('F', 'FACTOR_68')
-        endif
-!
-        call jeveuo(secm19//'.VALE', 'L', jval2)
-        if (imd .eq. 0) then
-            call wkvect('&&RESOUD.TRAV', 'V V '//type, neq, jtrav)
-            call jacopo(neq, type, jval2, jtrav)
-        else
-            call wkvect('&&RESOUD.TRAV', 'V V '//type, neq1, jtrav)
-            call jacopo(neq1, type, jval2, jtrav)
-        endif
-!
-    else
-        ASSERT(secm19.eq.' ')
-        ASSERT(csol19.eq.' ')
-    endif
-!
-    if (cine19 .ne. ' ') then
-        call jelira(cine19//'.VALE', 'TYPE', cval=typ1)
-        ASSERT(typ1.eq.type)
-    endif
-!
-!
-!
-!
-!
-    if (dbg) then
-        call cheksd(matr19, 'SD_MATR_ASSE', ier)
-        if (nsecm .eq. 0) call dbgobj(secm19//'.VALE', 'OUI', 6, '&&RESOUD 2ND MEMBRE')
-        call dbgobj(cine19//'.VALE', 'OUI', 6, '&&RESOUD CINE19')
-        call dbgobj(matr19//'.VALM', 'OUI', 6, '&&RESOUD MATR.VALM')
-        call dbgobj(matr19//'.VALF', 'OUI', 6, '&&RESOUD MATR.VALF')
-        call dbgobj(matr19//'.CONL', 'OUI', 6, '&&RESOUD MATR.CONL')
-        call dbgobj(matr19//'.CCVA', 'OUI', 6, '&&RESOUD MATR.CCVA')
-    endif
-!
-!
-!
-!
-    if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
-!     ----------------------------------------------------
-        if (nsecm .gt. 0) then
-            call resldl(solv19, matr19, cine19, nsecm, rsolu,&
-                        csolu, prepos)
-        else
-            if (type .eq. 'R') then
-                call resldl(solv19, matr19, cine19, 1, zr(jtrav),&
-                            [cbid], prepos)
-            else
-                call resldl(solv19, matr19, cine19, 1, [0.d0],&
-                            zc(jtrav), prepos)
-            endif
-        endif
-!
-!
-!
-    else if (metres.eq.'MUMPS') then
-!     ----------------------------------------------------
-        if (nsecm .gt. 0) then
-            call amumph('RESOUD', solv19, matr19, rsolu, csolu,&
-                        cine19, nsecm, iret, prepos)
-        else
-            if (type .eq. 'R') then
-                call amumph('RESOUD', solv19, matr19, zr(jtrav), [cbid],&
-                            cine19, 1, iret, prepos)
-            else
-                call amumph('RESOUD', solv19, matr19, [0.d0], zc(jtrav),&
-                            cine19, 1, iret, prepos)
-            endif
-        endif
-        ASSERT(iret.eq.0)
-!
-!
-!
-    else if (metres.eq.'GCPC') then
-!     ----------------------------------
-        niter = zi(jslvi-1+2)
-        epsi = zr(jslvr-1+2)
-        ASSERT(type.eq.'R')
-        if (nsecm .gt. 0) then
-            call resgra(matr19, mpre19, cine19, niter, epsi,&
-                        crit19, nsecm, rsolu, solv19, istopz,&
-                        iret)
-        else
-            call resgra(matr19, mpre19, cine19, niter, epsi,&
-                        crit19, 1, zr(jtrav), solv19, istopz,&
-                        iret)
-        endif
-!
-!
-!
-    else if (metres.eq.'PETSC') then
-!     ----------------------------------
-        ASSERT(type.eq.'R')
-        if (nsecm .gt. 0) then
-            call apetsc('RESOUD', solv19, matr19, rsolu, cine19,&
-                        nsecm, istopz, iret)
-        else
-            call apetsc('RESOUD', solv19, matr19, zr(jtrav), cine19,&
-                        1, istopz, iret)
-        endif
-!
-    else
-        call utmess('F', 'ALGELINE3_44', sk=metres)
-    endif
-!
-!
-!     -- RECOPIE DANS LE CHAMP SOLUTION S'IL Y A LIEU :
-    if (nsecm .eq. 0) then
-        call jeveuo(csol19//'.VALE', 'E', jvals)
-        if (imd .eq. 0) then
-            call jacopo(neq, type, jtrav, jvals)
-        else
-            call jacopo(neq1, type, jtrav, jvals)
-        endif
-    endif
-    call jedetr('&&RESOUD.TRAV')
-!
-!
-!
-!
-    if (dbg .and. (nsecm.eq.0)) call dbgobj(csol19//'.VALE', 'OUI', 6, '&&RESOUD SOLU')
-!
-!
+
+
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
-    call jedbg2(ibid, idbgav)
     call jedema()
 end subroutine

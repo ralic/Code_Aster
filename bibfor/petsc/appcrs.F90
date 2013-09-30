@@ -54,13 +54,13 @@ subroutine appcrs(kptsc, lmd)
     character(len=24) :: precon
     character(len=19) :: nomat, nosolv
     character(len=14) :: nonu
-    character(len=4) :: kbid
 !
     real(kind=8) :: fillin
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: fill, ierr, neq, ndprop
+    PetscInt :: ierr
+    integer :: fill, neq, ndprop
     PetscReal :: fillp
     Mat :: a
     KSP :: ksp, kspp
@@ -130,7 +130,7 @@ subroutine appcrs(kptsc, lmd)
 !-----------------------------------------------------------------------
     else if (precon.eq.'LDLT_SP') then
 !        CREATION SOLVEUR BIDON SIMPLE PRECISION
-        spsomu = zk24(jslvk-1+3)
+        spsomu = zk24(jslvk-1+3)(1:19)
         call crsmsp(spsomu, nomat, 0)
 !        CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
         if (lmd) then
@@ -145,7 +145,7 @@ subroutine appcrs(kptsc, lmd)
             end do
 !
             ASSERT(xlocal.eq.0)
-            call VecCreateMPI(mpicou, ndprop, neq, xlocal, ierr)
+            call VecCreateMPI(mpicou, to_petsc_int(ndprop), neq, xlocal, ierr)
         else
             call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
             neq=nsmdi

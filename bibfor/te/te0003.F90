@@ -26,7 +26,7 @@ subroutine te0003(option, nomte)
 ! IN NOMTE  : NOM DU TYPE D'ELEMENT
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES:
-!       MESSAGE:INFNIV,U2MESS,U2MESG.
+!       MESSAGE:INFNIV,UTMESS,UTMESG.
 !       JEVEUX:JEMARQ,JEDEMA,JEVETE,JEVEUO,JELIRA,JENUNO.
 !       CHAMP LOCAUX:JEVECH,TECACH.
 !       ENVIMA:R8PREM,R8MIEM.

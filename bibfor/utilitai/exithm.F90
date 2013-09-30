@@ -37,7 +37,7 @@ subroutine exithm(modele, yathm, perman)
 !
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES :
-!       MESSAGE     : U2MESK
+!       MESSAGE     : UTMESK
 !       UTILITAIRES : DISMOI
 !   -------------------------------------------------------------------
     implicit none

@@ -47,9 +47,9 @@ subroutine cresol(solveu)
 ! ----------------------------------------------------------------------
 !
     integer :: zslvk, zslvr, zslvi
-    integer :: istop, nsolve, ibid, nprec, islvk, islvr, islvi
+    integer :: istop, nsolve, ibid, nprec, islvk, islvr, islvi, n1
     real(kind=8) :: epsmat
-    character(len=3) :: syme, mixpre, kmd
+    character(len=3) :: syme, mixpre, kmd, kellag
     character(len=8) :: kstop, modele
     character(len=8) :: partit
     character(len=16) :: method, nomsol
@@ -166,7 +166,19 @@ subroutine cresol(solveu)
     else
         ASSERT(.false.)
     endif
+
 !
+!   --  ELIM_LAGR='OUI' ? :
+!   -----------------------
+    if (getexm(nomsol,'ELIM_LAGR') .eq. 1) then
+        call getvtx(nomsol, 'ELIM_LAGR', iocc=1, scal=kellag, nbret=n1)
+        if (n1.eq.1) then
+            if (kellag.ne.'OUI') kellag='NON'
+        else
+            kellag='NON'
+        endif
+        zk24(islvk-1+13) = kellag
+    endif
 !
  10 continue
 !

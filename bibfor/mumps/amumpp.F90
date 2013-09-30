@@ -346,7 +346,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
             if (eli2lg) then
 !           -- PRISE EN COMPTE DES LAGRANGES "2" :
-!           -- EN SORTIE DE RESOLUTION AVEC ELIM_LAGR2 ON A :
+!           -- EN SORTIE DE RESOLUTION AVEC ELIM_LAGR='LAGR2' ON A :
 !           -- LAGR1 = LAGR1 + LAGR2, ON DOIT RECTIFIER CELA :
 !           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
 !           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON

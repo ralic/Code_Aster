@@ -80,7 +80,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
-    character(len=4) :: etam, klag2
+    character(len=5) :: etam, klag2
     character(len=8) :: ktypr
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
@@ -128,7 +128,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 ! --- POUR "ELIMINER" LE 2EME LAGRANGE :
 ! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
     klag2=zk24(jslvk-1+6)
-    lbis=klag2(1:3).eq.'OUI'
+    lbis=klag2(1:5).eq.'LAGR2'
 !
 ! --- TRES PROBABLEMENT COMMANDE FACTORISER (POSTTRAITEMENTS
 ! --- INITIALISE A 'XXXX'). ON NE DETRUIRA RIEN A L'ISSU DE LA
@@ -203,7 +203,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
         if (zi(jslvi-1+5) .eq. 1) then
             select case(kvers)
             case('4.10.0')
-! --- ON DEBRANCHE ELIM_LAGR2='NON' CAR CELA FAUSSE LA VALEUR DU DETER
+! --- ON DEBRANCHE ELIM_LAGR='LAGR2' CAR CELA FAUSSE LA VALEUR DU DETER
 ! --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
             if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
                 call utmess('I', 'FACTOR_88')

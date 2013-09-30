@@ -57,7 +57,7 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
         zr(iaconl+i-1) = 1.0d0
 10  end do
 !
-    call wkvect(matrge//'.REFA', 'G V K24', 11, jrefa)
+    call wkvect(matrge//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
     zk24(jrefa-1+1) = base
     zk24(jrefa-1+2) = nomnum

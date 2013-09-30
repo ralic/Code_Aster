@@ -135,7 +135,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !     2. CREATION DE MATFAC.REFA
 !     ---------------------------
     call jedetr(matfac//'.REFA')
-    call wkvect(matfac//'.REFA', base//' V K24 ', 11, jrefaf)
+    call wkvect(matfac//'.REFA', base//' V K24 ', 20, jrefaf)
     zk24(jrefaf-1+11)='MPI_COMPLET'
     zk24(jrefaf-1+1) = ma
     zk24(jrefaf-1+2) = nuf

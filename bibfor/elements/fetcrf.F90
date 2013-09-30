@@ -128,12 +128,14 @@ subroutine fetcrf(sdpart1)
     nomfci=sdpart//'.FCFI'
     nomfcm=sdpart//'.FCFM'
     nomfcn=sdpart//'.FCFN'
+
+    ligrch=' '
 !     RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
     call getvid(' ', 'MODELE', scal=nomo, nbret=nbvm)
 !
 !     LIGREL DU MODELE
     ligrmo = nomo(1:8)//'.MODELE'
-!     NBCHAR: NBRE DE CHARGE
+!   -- nbchar: nbre de charge (max)
     call getfac('EXCIT', nbchar)
 !     VECTEURS TEMPORAIRES DES CHARGES
     if (nbchar .gt. 0) then
@@ -759,7 +761,7 @@ subroutine fetcrf(sdpart1)
 ! BOUCLE 8 CALCUL MAILLES TARDIVES DE TOUTES LES CHARGES
 !***********************************************************************
 !
-    if (nbchar .ge. 1) then
+    if (nbchar.ge. 1) then
 !       TABLE TEMPORAIRE : 2xNB CHARGE PAR SD
         call wkvect('&&FETCRF.L_2CHA_SD', 'V V I', nbsd*2*nbchar, isdlch)
 !       LISTE TEMPORAIRE : NB MAILLES TARDIVES PAR CHARGE

@@ -51,7 +51,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     character(len=19) :: nomob, solveu, prno
     integer :: jrefa, jslvk, jprno, jdeeq
     character(len=8) :: kbid, nomgd
-    character(len=7) :: typmat
+    character(len=2) :: typmat
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, nec, ieq, neq
     integer :: ialime, nblime, nbddl, nbddlc, numno
@@ -71,7 +71,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         call dismnu('NOM_GD', zk24(jrefa-1+2)(1:14), repi, repk, ierd)
 !
     else if (questi.eq.'TYPE_MATRICE') then
-        typmat=zk24(jrefa-1+9)
+        typmat=zk24(jrefa-1+9)(1:2)
         if (typmat .eq. 'MS') then
             repk='SYMETRI'
         else if (typmat.eq.'MR') then
@@ -115,8 +115,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         nbddl = zi(jprno-1+2)
         do 100 ieq = 2, neq
             numno = zi(jdeeq-1+(ieq -1)* 2 +1)
-            nbddlc = zi(jprno-1+(numno-1)*(2+nec)+2)
-            if (nbddlc .ne. nbddl) then
+            nbddlc=-1
+            if (numno .gt. 0) then
+                nbddlc = zi(jprno-1+(numno-1)*(2+nec)+2)
+            endif
+!
+            if ((nbddlc.ne.nbddl) .and. (numno .gt. 0)) then
                 repi = -1
                 goto 200
             endif

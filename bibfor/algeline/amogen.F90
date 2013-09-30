@@ -115,7 +115,7 @@ subroutine amogen(mat19)
     call jeecra(mat19//'.VALM', 'LONMAX', m)
     call wkvect(mat19//'.LIME', 'G V K24', 1, ialime)
     call wkvect(mat19//'.CONL', 'G V R', n, iaconl)
-    call wkvect(mat19//'.REFA', 'G V K24', 11, jrefa2)
+    call wkvect(mat19//'.REFA', 'G V K24', 20, jrefa2)
     zk24(jrefa2-1+11)='MPI_COMPLET'
     zk24(jrefa2-1+1) = zk24(jrefa-1+1)
     zk24(jrefa2-1+2) = zk24(jrefa-1+2)
@@ -164,7 +164,7 @@ subroutine amogen(mat19)
     rk=kmin/kmax
     if (abs(rk) .ge. valmin) then
         call utmess('A', 'PREPOST4_20')
-!         CALL U2MESS('F','PREPOST4_21')
+!         CALL UTMESS('F','PREPOST4_21')
     endif
     call jedetr('&&AMORMA.AMORTI')
     call jedema()

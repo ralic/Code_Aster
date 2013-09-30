@@ -109,8 +109,10 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
         call jeexin(nomob//'.NSLV', iret)
         if (iret .gt. 0) then
             call jeveuo(nomob//'.NSLV', 'L', jnslv)
-            call jeveuo(zk24(jnslv)(1:19)//'.SLVK', 'L', jslvk)
-            repk=zk24(jslvk-1+1)
+            if (zk24(jnslv) .ne. ' ') then
+                call jeveuo(zk24(jnslv)(1:19)//'.SLVK', 'L', jslvk)
+                repk=zk24(jslvk-1+1)
+            endif
         endif
 !
     else if (questi.eq.'RENUM_RESO') then
@@ -118,8 +120,10 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
         call jeexin(nomob//'.NSLV', iret)
         if (iret .gt. 0) then
             call jeveuo(nomob//'.NSLV', 'L', jnslv)
-            call jeveuo(zk24(jnslv)(1:19)//'.SLVK', 'L', jslvk)
-            repk=zk24(jslvk-1+4)
+            if (zk24(jnslv) .ne. ' ') then
+                call jeveuo(zk24(jnslv)(1:19)//'.SLVK', 'L', jslvk)
+                repk=zk24(jslvk-1+4)
+            endif
         endif
 !
     else

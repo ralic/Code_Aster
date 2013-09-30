@@ -418,7 +418,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             call utnono(' ', mailla, 'NOEUD', cnpal(ipal), nomno1,&
                         iret)
             if (iret .eq. 10) then
-!            CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
+!            CALL UTMESK('F','ELEMENTS_67',1,NOMGR2)
                 nomno1 = cnpal(ipal)(1:8)
             else if (iret.eq.1) then
                 valk (1) = cnpal(ipal)

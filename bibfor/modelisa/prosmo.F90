@@ -343,7 +343,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     kconl = matres//'.CONL'
     call jeexin(krefa, ier)
     if (ier .eq. 0) then
-        call wkvect(krefa, base//' V K24', 11, jrefa)
+        call wkvect(krefa, base//' V K24', 20, jrefa)
 !
     else
         call jeveuo(krefa, 'E', jrefa)

@@ -28,6 +28,6 @@ subroutine dimmai(typem, dimma)
     else
 !  POUR DES CONDITIONS AUX LIMITES PONCTUELLES
         dimma=0
-!        CALL U2MESG('F','VOLUFINI_1',1,TYPEM(1:4),0,0,0,0.D0)
+!        CALL UTMESG('F','VOLUFINI_1',1,TYPEM(1:4),0,0,0,0.D0)
     endif
 end subroutine

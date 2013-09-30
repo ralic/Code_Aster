@@ -228,7 +228,7 @@ subroutine cfcrma(neqmat, noma, resoco)
 !
 ! --- CREATION .REFA
 !
-    call wkvect(macont(1:19)//'.REFA', 'V V K24', 11, jrefa)
+    call wkvect(macont(1:19)//'.REFA', 'V V K24', 20, jrefa)
     zk24(jrefa-1+11) = 'MPI_COMPLET'
     zk24(jrefa-1+1) = noma
     zk24(jrefa-1+2) = resoco(1:14)

@@ -84,7 +84,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     zk24(jslvk-1+4) = 'AUTO'
 !     SYME
     zk24(jslvk-1+5) = syme
-!     ELIM_LAGR2
+!     ELIM_LAGR
     zk24(jslvk-1+6) = 'NON'
 !     MIXER_PRECISION
     zk24(jslvk-1+7) = 'OUI'

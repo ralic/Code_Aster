@@ -52,7 +52,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
     call jemarq()
 !
-    call wkvect(nomres//'           .REFA', 'G V K24', 11, jrefa)
+    call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
     nomsto=nugene//'.SLCS'
 !

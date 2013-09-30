@@ -52,7 +52,7 @@ subroutine mdveri()
         call utmess('E', 'ALGORITH5_67')
     endif
 !     IF (NAGEN.EQ.0 .AND. NARED.EQ.0 .AND. METHOD(1:4).EQ.'ITMI') THEN
-!        CALL U2MESS('E','ALGORITH5_68')
+!        CALL UTMESS('E','ALGORITH5_68')
 !     ENDIF
 !
     if (method(1:4) .eq. 'ITMI') then

@@ -48,13 +48,13 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     integer :: jprddl, nloc, nglo, ndprop, jcoll, jindic, jvaleu, numglo
     mpi_int :: mpicou
 !
-    character(len=4) :: kbid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, bs, i, neq, ierr
+    PetscInt :: low, high, ierr
+    integer :: bs, i, neq
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     mpi_int :: mrank, msize
@@ -68,7 +68,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     nosolv = nosols(kptsc)
     nonu = nonus(kptsc)
 !
-!     -- TAILLE DES BLOCS
+!     -- TAILLE DES BLOCS (nombre de ddls par noeud)
     call apbloc(nomat, nosolv, tbloc)
     bs = abs(tbloc)
 !
@@ -93,7 +93,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, bs, ierr)
         ASSERT(ierr.eq.0)
-        call VecSetSizes(b, ndprop, nglo, ierr)
+        call VecSetSizes(b, to_petsc_int(ndprop), nglo, ierr)
         ASSERT(ierr.eq.0)
         call VecSetType(b, VECMPI, ierr)
         ASSERT(ierr.eq.0)
@@ -113,10 +113,12 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         ASSERT(ierr.eq.0)
         call VecAssemblyEnd(b, ierr)
         ASSERT(ierr.eq.0)
+!
     else
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
         neq=nsmdi
 !
+!       -- allocation de b :
         call VecCreate(mpicou, b, ierr)
         ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, bs, ierr)
@@ -126,18 +128,22 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         call VecSetType(b, VECMPI, ierr)
         ASSERT(ierr.eq.0)
 !
+!
+!       -- calcul de b=RSOLU :
+!       ------------------------------------------------
         call VecGetOwnershipRange(b, low, high, ierr)
-        ASSERT(ierr.eq.0)
         call VecGetArray(b, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
 !
         do i = 1, high-low
             xx(xidx+i)=rsolu(low+i)
         end do
-!
         call VecRestoreArray(b, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
+!
+!
     endif
+!
 !
     call jedema()
 !

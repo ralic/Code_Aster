@@ -59,7 +59,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     integer :: monit(12), jnumsd, n1, vali(2), compt
     integer :: jmail, nbma, islvk, islvr, islvi
     real(kind=8) :: eps
-    character(len=4) :: klag2
+    character(len=5) :: klag2
     character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
     character(len=12) :: kooc
     character(len=19) :: k19b
@@ -214,7 +214,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 !
     call getvtx(motfac, 'RENUM', iocc=1, scal=ktyprn, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'ELIM_LAGR2', iocc=1, scal=klag2, nbret=ibid)
+    call getvtx(motfac, 'ELIM_LAGR', iocc=1, scal=klag2, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
     eps=-1.d0

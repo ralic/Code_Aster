@@ -42,11 +42,10 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
-    integer :: nbproc, iaux, numglo, ibid, lmat
+    integer :: nbproc, iaux, numglo, lmat
 !
     character(len=14) :: nonu
     character(len=19) :: nomat
-    complex(kind=8) :: cbid
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -118,7 +117,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
         call VecScatterDestroy(ctx, ierr)
         ASSERT(ierr.eq.0)
 !
-!       -- RECOPIE DE DANS RSOLU
+!       -- RECOPIE DE XX DANS RSOLU
         call VecGetArray(xgth, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)

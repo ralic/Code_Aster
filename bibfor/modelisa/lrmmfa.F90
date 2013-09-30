@@ -163,7 +163,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !      AUTANT QU'IL Y AIT UN PROBLEME...
 !      IF ( CODRET.NE.0 ) THEN
 !        SAUX08='mmhfnr'
-!        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+!        CALL UTMESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 !      ENDIF
 !
 !
@@ -182,7 +182,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !         AUTANT QU'IL Y AIT UN PROBLEME...
 !          IF ( CODRET.NE.0 ) THEN
 !            SAUX08='mmhfnr'
-!            CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+!            CALL UTMESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 !          ENDIF
 !
         endif

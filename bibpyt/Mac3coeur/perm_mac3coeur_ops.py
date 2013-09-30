@@ -115,7 +115,7 @@ def perm_mac3coeur_ops(self, **args):
                                     _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA ='MAINTIEN',DEFORMATION='PETIT',),),
                               INCREMENT   = _F(LIST_INST = _timep1, NUME_INST_FIN = 1,),
                               NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
-                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
+                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR='NON',PCENT_PIVOT=80,),
                               )
 
     for nom in _coeurp1.nameAC.keys() :

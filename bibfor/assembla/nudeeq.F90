@@ -47,7 +47,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !     NU14 : NOM D'UN NUME_DDL
 !     NEQ    : NOMBRE D'EQUATIONS (OU DE DDL) DU PROF_CHNO
 !     GDS    : NUMERO DE LA GRANDEUR SIMPLE ASSOCIEE AU CHAMP.
-!     IDDLAG : ADRESSE DE L'OBJET DSCLAG CREE LOCALEMENT DANS NUEFFE
+!     IDDLAG : ADRESSE DE L'OBJET DSCLAG (VOIR NUEFFE)
 !
 !     OUT:
 !     NU14 EST COMPLETE DE L'OBJET ".NUME.DEEQ" V(I) DIM=2*NEQ
@@ -89,6 +89,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
     character(len=8) ::  ma, nono, nocmp
     character(len=19) :: numeqa
     character(len=24) :: valk(2)
+    character(len=1) :: k1bid
 !
 !
 !
@@ -178,7 +179,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !     -- ON VERIFIE QUE LES DDLS BLOQUES NE SONT PAS BLOQUES
 !        PLUSIEURS FOIS (ON NE REGARDE QUE LES 10 1ERES CMPS):
 !     -------------------------------------------------------
-    call wkvect('&&NUEFFE.LNOBLOQ', 'V V I', nbnm*10, jlblq)
+    call wkvect('&&NUDEEQ.LNOBLOQ', 'V V I', nbnm*10, jlblq)
     do 40 ieq = 1, neq
         nuno = zi(jdeeq-1+2* (ieq-1)+1)
         nucmp = zi(jdeeq-1+2* (ieq-1)+2)
@@ -203,7 +204,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
  50     continue
  60 end do
     ASSERT(ier.le.0)
-    call jedetr('&&NUEFFE.LNOBLOQ')
+    call jedetr('&&NUDEEQ.LNOBLOQ')
 !
 !
     call jedema()

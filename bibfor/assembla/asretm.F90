@@ -88,7 +88,7 @@ subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
         endif
         goto 11
     endif
-!     IF (ICOEFL.EQ.0 )  CALL U2MESS('F','MODELISA_67')
+!     IF (ICOEFL.EQ.0 )  CALL UTMESS('F','MODELISA_67')
 !
 !
 20  continue

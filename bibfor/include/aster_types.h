@@ -41,4 +41,6 @@
 #define blas_int        integer(kind=blas_int_kind)
 #define to_blas_int(a)  int(a, BLAS_INT_SIZE)
 !
+#define to_petsc_int(a) int(a, 4)
+!
 #endif

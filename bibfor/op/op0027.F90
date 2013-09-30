@@ -109,7 +109,7 @@ subroutine op0027()
                 zr(iaconl+i-1) = 1.0d0
 10          continue
 !
-            call wkvect(nomres//'           .REFA', 'G V K24', 11, jrefa2)
+            call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa2)
             zk24(jrefa2-1+11)='MPI_COMPLET'
             zk24(jrefa2-1+1) = zk24(jrefa1-1+1)
             zk24(jrefa2-1+2) = zk24(jrefa1-1+2)

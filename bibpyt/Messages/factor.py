@@ -328,7 +328,7 @@ Conseils :
   Pour améliorer la qualité de la solution vous pouvez activez les options de pré et
   post-traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
   de qualité RESI_RELA ou, si vous avez beaucoup de Lagrange (>10%% de la taille du problème),
-  désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON').
+  désactivez l'option ELIM_LAGR='LAGR2' (ELIM_LAGR='NON').
   Sinon, contactez l'équipe de développement.
 """),
 
@@ -507,9 +507,9 @@ Solveur MUMPS :
 88: _(u"""
 Solveur MUMPS :
   Un opérateur a demandé à MUMPS de calculer un déterminant. Pour ne pas fausser ce calcul on a
-  débranché automatiquement l'option SOLVEUR/ELIM_LAGR2.
+  débranché automatiquement l'option SOLVEUR/ELIM_LAGR : 'LAGR2' -> 'NON'
 Attention :
-  Cette nouvelle valeur SOLVEUR/ELIM_LAGR2 devient la valeur par défaut pour les
+  Cette nouvelle valeur de SOLVEUR/ELIM_LAGR devient la valeur par défaut pour les
   futures résolutions de systèmes linéaires avec MUMPS dans cet opérateur.
 
 """),

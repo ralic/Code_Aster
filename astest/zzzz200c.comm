@@ -440,8 +440,7 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL )
 #---------------------------------------------
 
 MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                   SOLVEUR=_F(METHODE='MUMPS',ELIM_LAGR2='NON',
-   RENUM='PORD', NPREC=9, PCENT_PIVOT=120),INFO=1,
+                   SOLVEUR=_F(METHODE='MUMPS', RENUM='PORD', NPREC=9, PCENT_PIVOT=120),
                    CALC_FREQ=_F( NMAX_FREQ = 6 ),
                          )
 

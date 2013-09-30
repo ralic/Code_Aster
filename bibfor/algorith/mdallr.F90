@@ -62,7 +62,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
     call jemarq()
 !
     lrefe = .true.
-    nugene = resu2//'.NUGENE'
+    nugene = resu2//'.NUGEN'
     matgen = '&&MDALMA'
 !
 ! CREATION DE LA NUMEROTATION GENERALISE SUPPORT
@@ -70,7 +70,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
     call crnslv(nugene, 'LDLT', 'SANS', 'G')
 !
 ! CREATION DE LA MATRICE GENERALISE SUPPORT
-    call wkvect(matgen//'           .REFA', 'V V K24', 11, jrefa)
+    call wkvect(matgen//'           .REFA', 'V V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
     zk24(jrefa-1+1)=basemo
     zk24(jrefa-1+2)=nugene

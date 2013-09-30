@@ -1,0 +1,10 @@
+COOR_2D
+N1 0. 0.
+N2 1. 0.
+N3 0. 1.
+FINSF
+
+TRIA3
+      M1 N1 N2 N3
+FINSF
+FIN

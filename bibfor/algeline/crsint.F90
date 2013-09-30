@@ -35,25 +35,25 @@ subroutine crsint(solveu)
     integer :: islvk, islvr, islvi
 !----------------------------------------------------------------------
     call jemarq()
-    zslvk = sdsolv('ZSLVK')
+    zslvk =  sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
     zslvi = sdsolv('ZSLVI')
-    call wkvect(solveu//'.SLVK', 'V V K24', zslvk, islvk)
+    call wkvect(solveu//'.SLVK','V V K24', zslvk, islvk)
     call wkvect(solveu//'.SLVR', 'V V R', zslvr, islvr)
     call wkvect(solveu//'.SLVI', 'V V I', zslvi, islvi)
 !
-    zk24(islvk-1+1) = 'MUMPS                   '
-    zk24(islvk-1+2) = 'AUTO                    '
-    zk24(islvk-1+3) = 'AUTO                    '
-    zk24(islvk-1+4) = 'AUTO                    '
-    zk24(islvk-1+5) = 'NON                     '
-    zk24(islvk-1+6) = 'OUI                     '
-    zk24(islvk-1+7) = 'NON                     '
-    zk24(islvk-1+8) = 'NON                     '
-    zk24(islvk-1+9) = 'IN_CORE                 '
-    zk24(islvk-1+10) = 'NON                     '
-    zk24(islvk-1+11) = 'AUTO                    '
-    zk24(islvk-1+12) = 'XXXX                    '
+    zk24(islvk-1+1) = 'MUMPS'
+    zk24(islvk-1+2) = 'AUTO'
+    zk24(islvk-1+3) = 'AUTO'
+    zk24(islvk-1+4) = 'AUTO'
+    zk24(islvk-1+5) = 'NON'
+    zk24(islvk-1+6) = 'LAGR2'
+    zk24(islvk-1+7) = 'NON'
+    zk24(islvk-1+8) = 'NON'
+    zk24(islvk-1+9) = 'IN_CORE'
+    zk24(islvk-1+10) = 'NON'
+    zk24(islvk-1+11) = 'AUTO'
+    zk24(islvk-1+12) = 'XXXX'
 !
     zr(islvr-1+1) = -1.d0
     zr(islvr-1+2) = -1.d0

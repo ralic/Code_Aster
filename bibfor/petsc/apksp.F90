@@ -38,60 +38,63 @@ subroutine apksp(kptsc)
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: jslvk, jslvr, jslvi
-    integer :: nmaxit, ifm, niv
+    integer :: jslvk,jslvr,jslvi
+    integer :: nmaxit,ifm,niv
 !
-    character(len=24) :: algo
-    character(len=19) :: nomat, nosolv
-    character(len=14) :: nonu
+    character(len=24)  :: algo
+    character(len=19)  :: nomat,nosolv
+    character(len=14)  :: nonu
 !
-    real(kind=8) :: resire
+    real(kind=8)  :: resire
 !
+!----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: maxits, ierr
-    PetscReal :: rtol, atol, dtol
+    PetscInt :: ierr
+    integer :: maxits
+    PetscReal :: rtol,atol,dtol
     Mat :: a
     KSP :: ksp
+!=================================================================
     call jemarq()
-!
-    call infniv(ifm, niv)
-!
+
+    call infniv(ifm,niv)
+
 !     -- LECTURE DU COMMUN
-    nomat = nomats(kptsc)
+    nomat  = nomats(kptsc)
     nosolv = nosols(kptsc)
-    nonu = nonus(kptsc)
-    a = ap(kptsc)
-    ksp = kp(kptsc)
-!
-    call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-    call jeveuo(nosolv//'.SLVR', 'L', jslvr)
-    call jeveuo(nosolv//'.SLVI', 'L', jslvi)
-    algo = zk24(jslvk-1+6)
+    nonu   =  nonus(kptsc)
+    a      =     ap(kptsc)
+    ksp    =     kp(kptsc)
+
+    call jeveuo(nosolv//'.SLVK','L',jslvk)
+    call jeveuo(nosolv//'.SLVR','L',jslvr)
+    call jeveuo(nosolv//'.SLVI','L',jslvi)
+    algo   = zk24(jslvk-1+6)
     resire = zr(jslvr-1+2)
     nmaxit = zi(jslvi-1+2)
-!
+
 !     -- choix de l'algo KSP :
 !     ------------------------
-    if (algo .eq. 'CG') then
-        call KSPSetType(ksp, KSPCG, ierr)
+    if (algo.eq.'CG') then
+        call KSPSetType(ksp,KSPCG,ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'CR') then
-        call KSPSetType(ksp, KSPCR, ierr)
+    elseif (algo.eq.'CR') then
+        call KSPSetType(ksp,KSPCR,ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'GMRES') then
-        call KSPSetType(ksp, KSPGMRES, ierr)
+    elseif (algo.eq.'GMRES') then
+        call KSPSetType(ksp,KSPGMRES,ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'GCR') then
-        call KSPSetType(ksp, KSPGCR, ierr)
+    elseif (algo.eq.'GCR') then
+        call KSPSetType(ksp,KSPGCR,ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'BCGS') then
-        call KSPSetType(ksp, KSPBCGS, ierr)
+    elseif (algo.eq.'BCGS') then
+        call KSPSetType(ksp,KSPBCGS,ierr)
         ASSERT(ierr.eq.0)
     else
         ASSERT(.false.)
     endif
     ASSERT(ierr.eq.0)
-!
+
 !     -- paramètres numériques :
 !     --------------------------
 !
@@ -117,7 +120,7 @@ subroutine apksp(kptsc)
                            PETSC_NULL_FUNCTION, ierr)
         ASSERT(ierr.eq.0)
     endif
-!
+
     call jedema()
 !
 #endif

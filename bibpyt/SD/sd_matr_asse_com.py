@@ -22,13 +22,14 @@ from SD.sd_titre import sd_titre
 from SD.sd_maillage import sd_maillage
 from SD.sd_nume_ddl import sd_nume_ddl
 from SD.sd_matr_cine import sd_matr_cine
+from SD.sd_solveur import sd_solveur
 
 
 class sd_matr_asse_com(sd_titre):
 #-----------------------------
     nomj = SDNom(fin=19)
 
-    REFA = AsVK24(lonmax=11,)
+    REFA = AsVK24(lonmax=20,)
     VALM = AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'))
     UALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R')))
     VALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R')))
@@ -62,4 +63,14 @@ class sd_matr_asse_com(sd_titre):
             assert self.VALM.nmaxoc == 1 , (refa,self.VALM.nmaxoc)
         elif refa[8]=='MR' :
             assert self.VALM.nmaxoc == 2 , (refa,self.VALM.nmaxoc)
+
         assert refa[10] in ('MPI_COMPLET','MPI_INCOMPLET') , refa
+
+        # refa[18] : nom de la matrice "fille" (ELIM_LAGR='OUI') :
+        if len (refa[18]) > 0 :
+            sd2=sd_matr_asse(refa[18]) ; sd2.check(checker)
+        # refa[19] : nom de la matrice "mere" (ELIM_LAGR='OUI') :
+        if len (refa[19]) > 0 :
+            # J. Pellet ne comprend pas pourquoi ca plante le test zzzz351a :
+            #sd2=sd_matr_asse(refa[19]) ; sd2.check(checker)
+            pass

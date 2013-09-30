@@ -51,7 +51,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
 ! In  resu   : name of result
 ! In  model  : name of model
 ! In  mate   : name of material field
-! In  iord0  : first NUME_ORDRE in result 
+! In  iord0  : first NUME_ORDRE in result
 ! In  typfis : object to describe crack
 !               'FONDFISS'/'FISSURE'/'THETA'
 ! Out compor : name of COMPOR <CARTE>
@@ -79,7 +79,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
     l_etat_init = .false.
 !
 ! - How many COMPORTEMENT in CALC_G ?
-! 
+!
     call getfac(keywordfact, nbcomp)
 !
 ! - Get or create COMPOR <CARTE>

@@ -115,7 +115,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !
         if (recurs .eq. 1234567890) then
             recurs = 1234567891
-!          ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
+!          ON EST DEJA PASSE PAR UTMESG... SANS EN ETRE SORTI
             call utprin('F', 0, 'CATAMESS_55', 0, valk,&
                         0, vali, 0, valr, fname)
 !          ON NE FAIT PLUS RIEN ET ON SORT DE LA ROUTINE

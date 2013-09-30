@@ -148,9 +148,11 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _singu  = True
    _rcmk   = True
    _resol  = True
+   _cmodal = False
 
 #  Avec les solveurs modaux STOP_SINGULIER n'existe pas, de plus RCMK n'est pas disponible
    if COMMAND in ('INFO_MODE','MODE_ITER_INV','MODE_ITER_SIMULT'):
+      _cmodal= True
       _singu = False
       _rcmk  = False
 #     Dans INFO_MODE on ne fait que factoriser
@@ -242,14 +244,24 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocMU['RENUM'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("AMD", "AMF", "PORD", "METIS", "QAMD", "SCOTCH", "AUTO", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
-
 #  NPREC
    _BlocMF['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
    _BlocLD['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
    _BlocMU['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
+#  ELIM_LAGR
 
+   if not _cmodal :
+      _BlocPE['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
+      _BlocMF['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
+      _BlocLD['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
+      _BlocMU['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="LAGR2" , into=("OUI", "NON", "LAGR2"), )
+   else :
+      _BlocMU['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="LAGR2" , into=("NON", "LAGR2"), )
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
 #  STOP_SINGULIER
    _into = ("OUI", "NON", )
    _defaut = "OUI"
@@ -278,10 +290,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    if _resol:
       _BlocMU['POSTTRAITEMENTS'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("SANS", "AUTO", "FORCE", ), )
-
-# ----------------------------------------------------------------------------------------------------------------------------------
-
-   _BlocMU['ELIM_LAGR2'     ] = SIMP(statut='f', typ='TXM', defaut="OUI" , into=("OUI", "NON"), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 

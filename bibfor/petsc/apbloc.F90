@@ -43,6 +43,7 @@ subroutine apbloc(matass, solveu, tbloc)
     character(len=4) :: kbid
     character(len=24) :: precon
     integer :: ierd, jslvk
+    logical :: leliml
 !
 !----------------------------------------------------------------
     call jemarq()
@@ -52,11 +53,16 @@ subroutine apbloc(matass, solveu, tbloc)
 !     -- PRECONDITIONNEUR UTILISE
     call jeveuo(solveu//'.SLVK', 'L', jslvk)
     precon = zk24(jslvk-1+2)
+    leliml = zk24(jslvk-1+13)(1:3).eq.'OUI'
 !
     if ((precon.ne.'ML') .and. (precon.ne.'BOOMER')) then
         tbloc = 1
     endif
 !
+!   -- Si ELIM_LAGR='OUI', comme on va eliminer certains ddls,
+!      il n'est pas sur que tbloc soit valide
+    if (leliml) tbloc=1
+
     call jedema()
 !
 #endif

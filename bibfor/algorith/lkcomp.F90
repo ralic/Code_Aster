@@ -235,7 +235,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
         call lkcriv(xivm, iel, sel, vinm, nbmat,&
                     materd, ucrivm, seuivm)
 !
-!           IF (UCRIVM.LT.ZERO)  CALL U2MESS('F','COMPOR1_27')
+!           IF (UCRIVM.LT.ZERO)  CALL UTMESS('F','COMPOR1_27')
 !
 !---- VARV : EN DESSOUS DU CRITERE VISQUEUX MAX : CONTRACTANCE: VARV=0
 !---- VARV : AU DESSUS DU CRITERE VISQUEUX MAX  : DILATANCE:    VARV=1
@@ -283,7 +283,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !                GOTO 1000
 !
 !                  ELSE
-!                CALL U2MESS('F','COMPOR1_28')
+!                CALL UTMESS('F','COMPOR1_28')
 !
 !           ENDIF
 !
@@ -534,7 +534,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !           CALL LKCRIP( IPL,SPL,VINP,NBMAT,MATERD,UCRIPL,
 !     &                  SEUIPL)
 !           IF (UCRIPL  .LT. ZERO) THEN
-!       CALL U2MESS('A','COMPOR1_28')
+!       CALL UTMESS('A','COMPOR1_28')
 !           write (6,*) 'COND 4 UCRIPL ',UCRIPL
 !           RETCOM = 1
 !           GOTO 1000

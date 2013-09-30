@@ -24,7 +24,7 @@ subroutine te0500(option, nomte)
 ! IN NOMTE  : NOM DU TYPE D'ELEMENT
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES :
-!       MESSAGE              : U2MESS,U2MESK.
+!       MESSAGE              : UTMESS,UTMESK.
 !       JEVEUX               : JEMARQ,JEDEMA.
 !       CHAMPS LOCAUX        : JEVECH,TECACH,TECAEL.
 !       ENVIMA               : R8MIEM.

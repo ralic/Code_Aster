@@ -28,7 +28,7 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    integer :: repi, ierd
+    integer :: repi, ierd, n1
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -90,13 +90,19 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------
 !       QUESTION POURRIE !!
 !       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
+        call jelira(nomob//'.LILI', 'NOMUTI', n1)
+        if (n1 .lt. 2) goto 98
+!
         call jenuno(jexnum(nomob//'.LILI', 2), noligr)
-        if (noligr(1:8) .eq. 'LIAISONS') then
-            repk = questi
-            ierd = 1
-        else
-            call dismlg(questi, noligr, repi, repk, ierd)
-        endif
+        if (noligr(1:8) .eq. 'LIAISONS') goto 98
+!
+        call dismlg(questi, noligr, repi, repk, ierd)
+        goto 99
+!
+98      continue
+        repk= ' '
+        ierd=1
+99      continue
 !
 !
     else

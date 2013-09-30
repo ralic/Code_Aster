@@ -2,19 +2,19 @@
 # TITRE ANALYSE MODALE D'UNE PLAQUE APPUYEE SUR SES COINS : SOUS-STRUCTURATION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT(CODE=_F(NOM='SDLS122A', NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='NON'));
@@ -22,20 +22,20 @@ DEBUT(CODE=_F(NOM='SDLS122A', NIV_PUB_WEB='INTERNET'),
 PRE_IDEAS(UNITE_MAILLAGE=20,
           UNITE_IDEAS=19,
           );
-          
+
 PRE_IDEAS(UNITE_MAILLAGE=30,
           UNITE_IDEAS=29,
-          );         
+          );
 
 PRE_IDEAS(UNITE_MAILLAGE=40,
           UNITE_IDEAS=39,
-          );         
+          );
 
-#-- ON CHERCHE ICI A CALCULER DE 2 FACONS DIFFERENTES LES MODES D'UNE PLAQUE 
+#-- ON CHERCHE ICI A CALCULER DE 2 FACONS DIFFERENTES LES MODES D'UNE PLAQUE
 #-- D'ACIER RECTANGULAIRE DE 2m x 1m x 1cm APPUYEE SUR SES 4 COINS. ON COMPARE
 #-- UNE METHODE DE SOUS STRUCTURATION DYNAMIQUE, EN CONSIDERANT 2 PLAQUES CARREES,
 #-- MAILLEES AVEC DES FINESSES DIFFERENTES (15x15 ELEMENTS POUR LA PREMIERE, 14x14
-#-- POUR LA SECONDE) ET UNE METHODE DIRECTE S'APPUYANT SUR UN MAILLAGE FIN DE LA 
+#-- POUR LA SECONDE) ET UNE METHODE DIRECTE S'APPUYANT SUR UN MAILLAGE FIN DE LA
 #-- PLAQUE COMPRENANT 20x40 ELEMENTS
 
 
@@ -69,7 +69,7 @@ MODELE3=AFFE_MODELE(MAILLAGE=MAILLA3,
                     AFFE=_F( GROUP_MA = 'RECT',
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'DKT'),);
-                             
+
 #-- DEFINITION DU MATERIAU
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
 
@@ -79,12 +79,12 @@ CHAMAT1=AFFE_MATERIAU(  MAILLAGE=MAILLA1,
                                     MATER = MATER))
 CHAMAT2=AFFE_MATERIAU(  MAILLAGE=MAILLA2,
                        AFFE=_F( GROUP_MA = 'CARRE2',
-                                    MATER = MATER))   
+                                    MATER = MATER))
 
 CHAMAT3=AFFE_MATERIAU(  MAILLAGE=MAILLA3,
                        AFFE=_F( GROUP_MA = 'RECT',
-                                    MATER = MATER))   
-                                                                     
+                                    MATER = MATER))
+
 #-- DEFINITION DES CARACTERISTIQUES GEOMETRIQUES
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                             COQUE=_F( EPAIS = 0.01,
@@ -95,11 +95,11 @@ PARAM2=AFFE_CARA_ELEM(  MODELE=MODELE2,
 PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
                             COQUE=_F( EPAIS = 0.01,
                                    GROUP_MA = 'RECT'))
-                                   
-#-- DEFINITION DES CONDITIONS AUX LIMITES                                   
+
+#-- DEFINITION DES CONDITIONS AUX LIMITES
 CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE1,
                         DDL_IMPO=(
-                                  _F( GROUP_NO = 'BC1', 
+                                  _F( GROUP_NO = 'BC1',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,),
@@ -115,7 +115,7 @@ CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE1,
 
 CHARGE_2=AFFE_CHAR_MECA(MODELE=MODELE2,
                         DDL_IMPO=(
-                                  _F( GROUP_NO = 'BC2', 
+                                  _F( GROUP_NO = 'BC2',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,),
@@ -127,9 +127,9 @@ CHARGE_2=AFFE_CHAR_MECA(MODELE=MODELE2,
                                       DRY = 0.0,
                                       DRZ = 0.0),
                                    ),)
-                                   
+
 CHARGE_3=AFFE_CHAR_MECA(MODELE=MODELE3,
-                        DDL_IMPO=(_F( GROUP_NO = 'BC', 
+                        DDL_IMPO=(_F( GROUP_NO = 'BC',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,),
@@ -143,7 +143,7 @@ ASSEMBLAGE(MODELE=MODELE1,
                 MATR_ASSE=(_F(  MATRICE = CO("RAID1"),  OPTION = 'RIGI_MECA'),
                            _F(  MATRICE = CO("MASS1"),  OPTION = 'MASS_MECA'))
                  )
-                 
+
 ASSEMBLAGE(MODELE=MODELE2,
                 CARA_ELEM=PARAM2,
                 NUME_DDL=CO("NUME2"),
@@ -162,14 +162,14 @@ ASSEMBLAGE(MODELE=MODELE3,
                            _F(  MATRICE = CO("MASS3"),  OPTION = 'MASS_MECA'))
                  )
 
-#-- CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE              
+#-- CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE
 MODES_1=MODE_ITER_SIMULT(MATR_RIGI=RAID1,
                          MATR_MASS=MASS1,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=1,),
                          SOLVEUR=_F(RENUM='AUTO',
-                                      METHODE='MUMPS',),             
+                                      METHODE='MUMPS',),
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
@@ -179,7 +179,7 @@ MODES_2=MODE_ITER_SIMULT(MATR_RIGI=RAID2,
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=1,),
                          SOLVEUR=_F(RENUM='AUTO',
-                                      METHODE='MUMPS',),                                       
+                                      METHODE='MUMPS',),
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
@@ -189,7 +189,7 @@ MODES_3=MODE_ITER_SIMULT(MATR_RIGI=RAID3,
                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                       NMAX_FREQ=5,),
                          SOLVEUR=_F(RENUM='AUTO',
-                                      METHODE='MUMPS',),                                       
+                                      METHODE='MUMPS',),
                          VERI_MODE=_F(STOP_ERREUR='NON',
                                       STURM='NON',),);
 
@@ -263,7 +263,7 @@ BAMO1_CL=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_1,
                        INTERF_DYNA=LINT1_CL,
                        NUME_REF=NUME1,
                        );
-                       
+
 BAMO2_CL=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_2,
                                 NMAX_MODE=1,),
                              _F(MODE_INTF=MODESTA2,
@@ -282,7 +282,7 @@ MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL,
                       MATR_RIGI=RAID2,
                       MATR_MASS=MASS2,);
 
-#--  ASSEMBLAGE DU MODELE GENERALISE                     
+#--  ASSEMBLAGE DU MODELE GENERALISE
 ASSE_ELEM_SSD(RESU_ASSE_SSD = _F(MODELE = CO('MODEGE'),
                                  NUME_DDL_GENE = CO('NUMEGE'),
                                  RIGI_GENE = CO('RIGGEN'),
@@ -377,7 +377,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #--   TOUT='OUI'. IL EST PREFERABLE D'INDIQUER lES GROUPES DE MAILLE
 #--   SUR LESQUELS ON RESTITUE. C'EST PLUS EFFICACE, ET LE RESULTAT
 #--   EST MOINS GROS
-           
+
 #-- CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'CARRE1',
@@ -387,14 +387,14 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                                 GROUP_MA = 'CARRE2',
                                 ))
                                 )
-                                
+
 #-- RESTITUTION SUR MAILLAGE SQUELETTE
 MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        SQUELETTE=SQUEL,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI')
 
-#-- CALCUL DES TRAVAUX ET DES CORRECTIONS ASSOCIEES 
+#-- CALCUL DES TRAVAUX ET DES CORRECTIONS ASSOCIEES
 CALC_ENR=CALC_CORR_SSD(MODELE_GENE=MODEGE,
                      RESU_GENE=RESGEN,
                      SHIFT=1.,
@@ -431,7 +431,7 @@ S1_LIBRE=EXTR_TABLE(TABLE=CALC_ENR,
                               VALE_K='CARRE1',),
                             _F(NOM_PARA='INTERF',
                               VALE_K='LIBRE',),),);
-                              
+
 S1_ENCAS=EXTR_TABLE(TABLE=CALC_ENR,
                     TYPE_RESU='MODE_MECA',
                     NOM_PARA='NOM_SD',
@@ -456,56 +456,56 @@ S2_ENCAS=EXTR_TABLE(TABLE=CALC_ENR,
                               VALE_K='CARRE2',),
                             _F(NOM_PARA='INTERF',
                               VALE_K='ENCAS',),),);
-                              
-#-- ENRICHISSEMENTS DES BASES MODALES 
+
+#-- ENRICHISSEMENTS DES BASES MODALES
 #--
 #--            /!\ /!\ /!\ ATTENTION /!\ /!\ /!\
-#-- IL FAUT FAIRE ATTENTION DE TRAITER D'UNE PART LES MODES A INTERFACE 
+#-- IL FAUT FAIRE ATTENTION DE TRAITER D'UNE PART LES MODES A INTERFACE
 #-- LIBRE, ET, DE L'AUTRE, LES MODES A INTERFACE FIXE POUR ASSURER UN
 #-- BON RECOLLEMENT AUX INTERFACES. ON ORTHONORMALISE D'ABORD UNE FAMILLE,
 #-- PUIS L'AUTRE, ET ON CONCATENE LES DEUX BASES.
 
-#-- ORTHONORMALISATION DES FAMILLES DES VECTEURS A INTERFACE LIBRE                                         
+#-- ORTHONORMALISATION DES FAMILLES DES VECTEURS A INTERFACE LIBRE
 LIB_S1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODESTA1,
                                 NMAX_MODE=6,),
                              _F(MODE_INTF=S1_LIBRE,
                                 NMAX_MODE=4,),
-                              ), 
+                              ),
                         INTERF_DYNA=LINT1_CL,
                         NUME_REF=NUME1,
                         ORTHO='OUI',
                         MATRICE=MASS1,
                         );
-                        
+
 LIB_S2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODESTA2,
                                 NMAX_MODE=6,),
                              _F(MODE_INTF=S2_LIBRE,
                                 NMAX_MODE=4,),
-                              ), 
+                              ),
                         INTERF_DYNA=LINT2_CL,
                         NUME_REF=NUME2,
                         ORTHO='OUI',
                         MATRICE=MASS2,
                         );
 
-                        
-#-- ORTHONORMALISATION DES FAMILLES DES VECTEURS A INTERFACE FIXE                        
+
+#-- ORTHONORMALISATION DES FAMILLES DES VECTEURS A INTERFACE FIXE
 ENC_S1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_1,
                                 NMAX_MODE=999,),
                              _F(MODE_INTF=S1_ENCAS,
                                 NMAX_MODE=999,),
-                              ), 
+                              ),
                         INTERF_DYNA=LINT1_CL,
                         NUME_REF=NUME1,
                         ORTHO='OUI',
                         MATRICE=MASS1,
                         );
-                        
+
 ENC_S2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_2,
                                 NMAX_MODE=999,),
                              _F(MODE_INTF=S2_ENCAS,
                                 NMAX_MODE=999,),
-                              ), 
+                              ),
                         INTERF_DYNA=LINT2_CL,
                         NUME_REF=NUME2,
                         ORTHO='OUI',
@@ -517,18 +517,18 @@ BAMO_S1=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=LIB_S1,
                                 NMAX_MODE=999,),
                              _F(MODE_INTF=ENC_S1,
                                 NMAX_MODE=999,),
-                              ), 
+                              ),
                         INTERF_DYNA=LINT1_CL,
                         NUME_REF=NUME1,
                         );
 
-                        
-                              
+
+
 BAMO_S2=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=LIB_S2,
                                   NMAX_MODE=999,),
                              _F(MODE_INTF=ENC_S2,
                                 NMAX_MODE=999,),
-                              ), 
+                              ),
                         INTERF_DYNA=LINT2_CL,
                         NUME_REF=NUME2,
                         );
@@ -536,13 +536,13 @@ BAMO_S2=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=LIB_S2,
 #-- CONSTRUCTION DES NOUVEAUX MACROS ELEMENTS
 MACR1=MACR_ELEM_DYNA(BASE_MODALE=BAMO_S1,
                       MATR_RIGI=RAID1,
-                      MATR_MASS=MASS1,);                      
+                      MATR_MASS=MASS1,);
 
 MACR2=MACR_ELEM_DYNA(BASE_MODALE=BAMO_S2,
                       MATR_RIGI=RAID2,
                       MATR_MASS=MASS2,);
-                      
-#-- DEFINITION D'UN NOUVEAU MODELE GENERALISE  / ANCIENNE SYNTAXE 
+
+#-- DEFINITION D'UN NOUVEAU MODELE GENERALISE  / ANCIENNE SYNTAXE
 #--               ALTERNATIVE A ASSE_ELEM_SSD
 MODEGE2=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
                                        MACR_ELEM_DYNA=MACR1,
@@ -555,9 +555,9 @@ MODEGE2=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
                                     ),
                         LIAISON=(_F(SOUS_STRUC_1='SS1',INTERFACE_1='INTF1',
                                     SOUS_STRUC_2='SS2',INTERFACE_2='INTF2',
-                                    
+
                                     GROUP_MA_MAIT_2='CARRE2',
-                                    
+
                                     OPTION='REDUIT',),
                                  ),
                         VERIF=_F(STOP_ERREUR='OUI',),);
@@ -600,7 +600,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=5.8056600720645,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-5,          # TODO TOLE_MACHINE
+                   TOLE_MACHINE=4.E-5,          # TODO TOLE_MACHINE  4.e-5 pour Calibre7
                    PRECISION=5.1E-3,),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
@@ -627,7 +627,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=32.421556089455,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-5,          # TODO TOLE_MACHINE
+                   TOLE_MACHINE=4.E-5,          # TODO TOLE_MACHINE   4.e-5 pour Calibre7
                    PRECISION=5.1E-3,),
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
@@ -636,10 +636,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=39.844576402654,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-5,          # TODO TOLE_MACHINE
+                   TOLE_MACHINE=4.E-5,          # TODO TOLE_MACHINE  4.e-5 pour calibre7
                    PRECISION=0.051,),
                 ),
           )
 
-#-- TESTER EGALEMENT UN DIMINUTION DE LA VALEUR DES INDICATEURS                        
+#-- TESTER EGALEMENT UN DIMINUTION DE LA VALEUR DES INDICATEURS
 FIN();

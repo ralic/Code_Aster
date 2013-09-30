@@ -62,7 +62,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     integer :: ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, k, ismde
 
 ! ----------------------------------------------------------------------
-! --- RECUPERATION DES PARAMETRES ET CREATION DU SOLVEUR 
+! --- RECUPERATION DES PARAMETRES ET CREATION DU SOLVEUR
 ! ----------------------------------------------------------------------
     solveu=numdrv//'.SOLV'
     call cresol(solveu)
@@ -133,7 +133,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! --- CREATION DU MATR_ASSE_GENE ASSOCIEE A LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
 ! --- REFA
-    call wkvect(matdrv//'.REFA', 'V V K24', 11, mrefa)
+    call wkvect(matdrv//'.REFA', 'V V K24', 20, mrefa)
     zk24(mrefa-1+1)=''
     zk24(mrefa-1+2)=numdrv
     zk24(mrefa-1+3)=''

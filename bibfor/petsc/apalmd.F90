@@ -48,17 +48,15 @@ subroutine apalmd(kptsc)
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc, jnbjoi, nbjoin, jnequ, jnequl, jnugll
-    integer :: nsmdi, nsmhc, nz, tbloc, nblloc, jprddl, nloc, nglo, jcoll
+    integer :: nsmdi, nsmhc, nz, tbloc, jprddl, nloc, nglo, jcoll
     integer :: jsmdi, jsmhc, jidxd, jidxo, ndprop, procol, jidxdc, jidxoc
-    integer :: i, k, ilig, jcol, nbo, nbd, nzdeb, nzfin, jcolg, iligl, jaux
+    integer :: k, nzdeb, nzfin, jcolg, iligl, jaux
     integer :: prolig, iligg, iaux, numpro, jjoint, jvaleu, numloc
-    integer :: lgenvo, numglo, ibid, comple
+    integer :: lgenvo, numglo,  comple
     mpi_int :: mpicou
 !
-    real(kind=8) :: rbid
 !
-    character(len=4) :: kbid, chnbjo
-    character(len=8) :: k8bid
+    character(len=4) :: chnbjo
     character(len=14) :: nonu
     character(len=16) :: idxo, idxd, idxoc, idxdc
     character(len=19) :: nomat, nosolv
@@ -71,7 +69,8 @@ subroutine apalmd(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: bs, low, high, neql, neqg, ierr
+    PetscInt :: low, high, ierr
+    integer :: neql, neqg, bs
     Vec :: tmp
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
@@ -116,7 +115,7 @@ subroutine apalmd(kptsc)
         procol = zi(jprddl-1+jcoll)
         if (procol .eq. rang) ndprop = ndprop+1
     end do
-    call VecCreateMPI(mpicou, ndprop, neqg, tmp, ierr)
+    call VecCreateMPI(mpicou, to_petsc_int(ndprop), neqg, tmp, ierr)
     ASSERT(ierr.eq.0)
     call VecGetOwnershipRange(tmp, low, high, ierr)
     ASSERT(ierr.eq.0)
@@ -246,8 +245,8 @@ subroutine apalmd(kptsc)
     ASSERT(ierr.eq.0)
     call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
     ASSERT(ierr.eq.0)
-    call MatMPIAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd), PETSC_NULL_INTEGER,&
-                                   zi4(jidxo), ierr)
+    call MatMPIAIJSetPreallocation(ap(kptsc), int(PETSC_NULL_INTEGER), zi4(jidxd),&
+                                   int(PETSC_NULL_INTEGER), zi4(jidxo), ierr)
     ASSERT(ierr.eq.0)
     call MatSetBlockSize(ap(kptsc), bs, ierr)
     ASSERT(ierr.eq.0)

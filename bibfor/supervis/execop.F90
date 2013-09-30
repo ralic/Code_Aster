@@ -68,7 +68,6 @@ subroutine execop()
     call foint0()
 !
 !     -- ON INITIALISATION DES COMPTEURS DE TEMPS :
-    call uttcpg('INIT', ' ')
 !
 !     -- ON MET A JOUR LE COMMON INF001 :
     nivuti = 1
@@ -143,7 +142,6 @@ subroutine execop()
 !
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
-    call uttcpg('IMPR', 'CUMU')
 !
     call post_op()
 !

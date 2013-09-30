@@ -34,6 +34,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/apsolu.h"
 #include "asterfort/apvsmb.h"
 #include "asterfort/assert.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infniv.h"
@@ -74,8 +75,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ
+    integer :: ifm, niv, ierd, nmaxit, ptserr
     integer :: lmat, idvalc, jslvi, jslvk, jslvr
+    mpi_int :: rang, nbproc
     mpi_int :: mpicou
 !
     character(len=24) :: precon
@@ -86,18 +88,15 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     real(kind=8) :: divtol, resipc
     complex(kind=8) :: cbid
 !
-    logical :: lmd
-!
+    logical :: lmd, dbg
 !
 !----------------------------------------------------------------
 !     Variables PETSc
 !
-    PetscInt :: ierr, neq, i
-    PetscInt :: maxits
+    PetscInt :: ierr, n1, n2, its, maxits
     PetscReal :: rtol, atol, dtol
     Vec :: r
     PetscScalar :: ires, fres
-    VecScatter :: ctx
     KSPConvergedReason :: indic
     Mat :: a
     KSP :: ksp
@@ -111,6 +110,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     call matfpe(-1)
 !
     call infniv(ifm, niv)
+    call asmpi_info(rank=rang, size=nbproc)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)
@@ -118,7 +118,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     nonu = nonus(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', jslvk)
+    precon = zk24(jslvk-1+2)
     lmd = zk24(jslvk-1+10)(1:3).eq.'OUI'
+!
 !
     if (action .eq. 'PRERES') then
 !     ----------------------------
@@ -188,8 +190,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                         'R')
         endif
 !
-!        2.2 CREATION DU VECTEUR PETSc :
-!        -------------------------------
+!        2.2 CREATION DU VECTEUR SECOND MEMBRE PETSc :
+!        ---------------------------------------------
 !
         call apvsmb(kptsc, lmd, rsolu)
 !
@@ -210,6 +212,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         ASSERT(ierr.eq.0)
         call KSPSolve(ksp, b, x, ierr)
 !
+        dbg=.false.
+!
 !        2.5 DIAGNOSTIC :
 !        ----------------
 !
@@ -221,6 +225,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        ANALYSE DE LA CONVERGENCE DU KSP
         call KSPGetConvergedReason(ksp, indic, ierr)
         ASSERT(ierr.eq.0)
+        call KSPGetIterationNumber(ksp, its, ierr)
+!
 !
 !        ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
 !        EN CAS DE DIVERGENCE
@@ -229,8 +235,6 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                                   ierr)
             ASSERT(ierr.eq.0)
 !           -- PRECONDITIONNEUR UTILISE
-            call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-            precon = zk24(jslvk-1+2)
             if (indic .eq. KSP_DIVERGED_ITS) then
 !              NOMBRE MAX D'ITERATIONS
                 if ((istop.eq.0) .or. (precon.ne.'LDLT_SP')) then
@@ -277,7 +281,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             call VecDuplicate(x, r, ierr)
             ASSERT(ierr.eq.0)
 !           r = Ax
-            call MatMult(a, x, r, ierr)
+            call MatMult(ap(kptsc), x, r, ierr)
             ASSERT(ierr.eq.0)
 !           r = b - Ax
             call VecAYPX(r, -1.d0, b, ierr)
@@ -303,8 +307,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
 !        2.6 RECOPIE DE LA SOLUTION :
 !        ----------------------------
-!
         call apsolu(kptsc, lmd, rsolu)
+!
 !
 !         2.7 NETTOYAGE PETSc (VECTEURS) :
 !         --------------------------------
@@ -317,13 +321,11 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         ASSERT(ierr.eq.0)
 !
 !        -- PRECONDITIONNEUR UTILISE
-        call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-        precon = zk24(jslvk-1+2)
 !
 !        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
         if (precon .eq. 'LDLT_SP') then
 !           MENAGE
-            spsomu = zk24(jslvk-1+3)
+            spsomu = zk24(jslvk-1+3)(1:19)
             call detrsd('SOLVEUR', spsomu)
             spsomu = ' '
 !
@@ -370,8 +372,6 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         kp(kptsc) = 0
 !
 !        -- PRECONDITIONNEUR UTILISE
-        call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-        precon = zk24(jslvk-1+2)
 !
         if (precon .eq. 'LDLT_SP') then
 !           MENAGE

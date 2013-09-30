@@ -370,7 +370,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     endif
 !
 !        --- SI GESTION_MEMOIRE='AUTO'
-!        --- PARAMETRES POUR LA GESTION DE PCENT_PIVOT/ELIM_LAGR2
+!        --- PARAMETRES POUR LA GESTION DE PCENT_PIVOT/ELIM_LAGR='LAGR2'
 !        --- PCENTP(1) --> NBRE TENTATIVES DE FACTO.
 !        --- PCENTP(2) --> TERME MULTIPLICATIF DE PCENT_PIVOT ENTRE DEUX
 !            TENTATIVES DE FACTO.:

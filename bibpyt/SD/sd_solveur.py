@@ -20,7 +20,7 @@ from SD import *
 
 class sd_solveur(AsBase):
     nomj = SDNom(fin=19)
-    SLVK = AsVK24(SDNom(debut=19), lonmax=12, )
+    SLVK = AsVK24(SDNom(debut=19), lonmax=13, )
     SLVR = AsVR  (SDNom(debut=19), lonmax=4 , )
     SLVI = AsVI  (SDNom(debut=19), lonmax=8 , )
 
@@ -29,14 +29,15 @@ class sd_solveur(AsBase):
     #---------------------------------------------
         slvk = self.SLVK.get_stripped()
         method=slvk[0]
+        assert slvk[12] in ('OUI','NON','')
         if method == 'MUMPS' :
             assert slvk[1] in ('AUTO', 'SANS')
             assert slvk[2] in ('NONSYM', 'SYMGEN', 'SYMDEF', 'AUTO')
             assert slvk[3] in ('AMD','AMF','PORD','METIS','QAMD','AUTO','SCOTCH')
             assert slvk[4] in ('OUI', 'NON')
-            assert slvk[5] in ('OUI', 'NON')
-            assert slvk[6] in ('OUI', 'NON','XXXX')
-            assert slvk[7] in ('OUI', 'NON','XXXX')
+            assert slvk[5] in ('LAGR2', 'NON',), slvk
+            assert slvk[6] in ('OUI', 'NON', 'XXXX')
+            assert slvk[7] in ('OUI', 'NON', 'XXXX')
             assert slvk[8] in ('IN_CORE', 'OUT_OF_CORE', 'AUTO', 'EVAL','XXXX')
             assert slvk[9] in ('OUI', 'NON','XXXX')
             assert slvk[10] in ('SANS', 'AUTO', 'FORCE','XXXX')
@@ -88,4 +89,4 @@ class sd_solveur(AsBase):
             assert slvk[10] in ('XXXX')
             assert slvk[11] in ('XXXX')
         else :
-            pass
+            assert False, method

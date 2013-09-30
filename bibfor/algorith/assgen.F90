@@ -104,7 +104,7 @@ subroutine assgen(nomres, option, nugene)
     prgene=nugene//'.NUME'
     stolci=nugene//'.SLCS'
 !
-    call wkvect(nomres//'           .REFA', 'G V K24', 11, jrefa)
+    call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
     zk24(jrefa-1+1)=' '
     zk24(jrefa-1+2)=nugene

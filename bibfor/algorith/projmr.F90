@@ -92,7 +92,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
         zr(iaconl+i-1)=1.0d0
 10  end do
 !
-    call wkvect(resu//'.REFA', 'G V K24', 11, jrefa)
+    call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
     zk24(jrefa-1+1)=basemo
     zk24(jrefa-1+2)=nugene

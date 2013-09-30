@@ -116,7 +116,7 @@ COEF  = DEFI_FONCTION( NOM_PARA    = 'INST',
                        PROL_DROITE = 'CONSTANT');
 
 U1 = STAT_NON_LINE(SOLVEUR=(_F( METHODE='MUMPS',
-                             PRETRAITEMENTS='SANS',ELIM_LAGR2='NON')),
+                             PRETRAITEMENTS='SANS',ELIM_LAGR='NON')),
                     MODELE      = MODELE,
                     CHAM_MATER  = CHMAT,
                     EXCIT       = ( _F( CHARGE    = CHCI     ),

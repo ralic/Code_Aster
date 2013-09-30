@@ -69,7 +69,7 @@ subroutine lrmdes(fid, nbltit, descfi, titre)
 !     POUR CERTAINES ROUTINES MED CODRET = -1 N'EST PAS UN PROBLEME
 !      IF ( CODRET.NE.0 ) THEN
 !        SAUX08='mficor'
-!        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+!        CALL UTMESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 !      ENDIF
 !
 !====

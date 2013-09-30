@@ -47,14 +47,13 @@ subroutine apmamd(kptsc)
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
     integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
-    integer :: k, iligl, jcoll, nzdeb, nzfin, nuno1, nucmp1, nuno2, nbproc
-    integer :: iterm, jterm, jcolg, iligg, jnugll, nucmp2, procol, jprddl
+    integer :: k, iligl, jcoll, nzdeb, nzfin, nbproc
+    integer :: iterm, jterm, jcolg, iligg, jnugll, procol, jprddl
     integer :: jnequ, nloc, nglo, prolig, rang, jnequl
 !
     character(len=19) :: nomat, nosolv
     character(len=16) :: idxi1, idxi2, trans1, trans2
     character(len=14) :: nonu
-    character(len=4) :: kbid
 !
     logical :: lmnsy
 !
@@ -155,9 +154,9 @@ subroutine apmamd(kptsc)
                 zi4(jdxi1+iterm-1)=iligg-1
             endif
         end do
-        call MatSetValues(a, jterm, zi4(jdxi2), 1, jcolg-1,&
+        call MatSetValues(a, jterm, zi4(jdxi2), 1, [int(jcolg-1,4)],&
                           zr(jdval2), ADD_VALUES, ierr)
-        call MatSetValues(a, 1, jcolg-1, iterm, zi4(jdxi1),&
+        call MatSetValues(a, 1, [int(jcolg-1,4)], iterm, zi4(jdxi1),&
                           zr(jdval1), ADD_VALUES, ierr)
         iterm=0
         jterm=0

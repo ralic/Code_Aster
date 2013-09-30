@@ -40,7 +40,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 ! IN  VTEMP   : CHAMP DE LA TEMPERATURE A L'INSTANT PRECEDENT
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES:
-!       MESSAGE:U2MESS, U2MESI, U2MESK, U2MESG
+!       MESSAGE:UTMESS, UTMESI, UTMESK, UTMESG
 !       JEVEUX:JEMARQ,JEVEUO,JEDETR,JELIRA.
 !       MANIP SD: MECACT.
 !       DIRICHLET: VEDITH,ASCAVC

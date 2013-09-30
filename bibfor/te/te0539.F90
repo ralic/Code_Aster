@@ -275,7 +275,7 @@ subroutine te0539(option, nomte)
 !
 !       ELSE
 !
-!        CALL U2MESS('F','ELEMENTS4_23')
+!        CALL UTMESS('F','ELEMENTS4_23')
 !
 !
 ! PARTIE 2D

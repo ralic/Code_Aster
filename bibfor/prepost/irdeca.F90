@@ -75,7 +75,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
 !-----------------------------------------------------------------------
     call jemarq()
 !
-!      IF (NCMPMX.GT.180) CALL U2MESS('F','PREPOST2_18')
+!      IF (NCMPMX.GT.180) CALL UTMESS('F','PREPOST2_18')
     call wkvect('&&IRDECA.LTABL', 'V V L', ncmpmx, iltabl)
 !
     if (.not.lresu) then

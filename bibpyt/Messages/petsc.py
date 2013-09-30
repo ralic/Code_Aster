@@ -131,15 +131,15 @@ Solveur PETSc :
   Conseil : utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
 """),
 
-17 : _(u"""
-Solveur PETSc :
-  La matrice du système linéaire comporte des multiplicateurs de Lagrange.
-  Les préconditionneurs 'ML' et 'BOOMER' ne supportent pas ce type de matrice.
 
-  Conseils :
-  - utilisez la commande AFFE_CHAR_CINE pour imposer des conditions aux limites
-  - utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
-"""),
+
+
+
+
+
+
+
+
 
 18 : _(u"""
 Solveur PETSc :

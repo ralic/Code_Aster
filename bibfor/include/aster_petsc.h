@@ -26,6 +26,7 @@
 #   include "finclude/petscdmda.h"
 #   include "finclude/petscis.h"
 #   include "finclude/petscviewer.h"
+#   include "petsc_interfaces.h"
 
 !----------------------------------------------------------------
 !   spetsc : common pour les instances PETSC
