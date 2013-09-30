@@ -99,8 +99,8 @@ def assemblage_ops(self,MODELE,CHAM_MATER,CARA_ELEM,CHARGE,MATR_ASSE,VECT_ASSE,
               motscles['RIGI_MECA']   =rigel
               motscles['MASS_MECA']   =masel
         if CHARGE     != None:
-           if option[0:9] not in ('MASS_THER','RIGI_GEOM'):
-                               motscles['CHARGE']      =CHARGE
+           if option[0:9] != 'RIGI_GEOM':
+              motscles['CHARGE'] = CHARGE
         if CHAM_MATER != None and option != 'RIGI_GEOM' : motscles['CHAM_MATER']  =CHAM_MATER
         if CARA_ELEM  != None: motscles['CARA_ELEM']   =CARA_ELEM
         if INST       != None: motscles['INST']        =INST

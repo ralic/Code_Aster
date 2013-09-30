@@ -45,7 +45,6 @@ subroutine op0009()
 #include "asterfort/meimme.h"
 #include "asterfort/memaac.h"
 #include "asterfort/memame.h"
-#include "asterfort/memath.h"
 #include "asterfort/meonme.h"
 #include "asterfort/meriac.h"
 #include "asterfort/merifs.h"
@@ -172,12 +171,6 @@ subroutine op0009()
                     ncmp=6, lnomcmp=nomcmp, vr=tps)
         call merith(modele, ncha, zk8(icha), mate, cara,&
                     time2, matel, nh, base)
-!
-    else if (suropt.eq.'MASS_THER') then
-        call mecact('V', time2, 'MODELE', modele//'.MODELE', 'INST_R',&
-                    ncmp=6, lnomcmp=nomcmp, vr=tps)
-        call memath(suropt, modele, mate, cara, time2,&
-                    matel)
 !
     else if (suropt.eq.'RIGI_ACOU') then
         call meriac(modele, ncha, zk8(icha), mate, matel)

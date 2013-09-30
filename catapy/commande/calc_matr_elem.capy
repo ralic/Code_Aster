@@ -30,7 +30,6 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "AMOR_MECA_ABSO"   : return matr_elem_depl_r
   if OPTION == "RIGI_MECA_HYST"   : return matr_elem_depl_c
   if OPTION == "RIGI_THER"        : return matr_elem_temp_r
-  if OPTION == "MASS_THER"        : return matr_elem_temp_r
   if OPTION == "MASS_MECA_DIAG"   : return matr_elem_depl_r
   if OPTION == "RIGI_ACOU"        : return matr_elem_pres_c
   if OPTION == "MASS_ACOU"        : return matr_elem_pres_c
@@ -43,7 +42,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
 
          OPTION          =SIMP(statut='o',typ='TXM',
                                into=("RIGI_MECA","MASS_MECA","RIGI_GEOM",
-                                     "AMOR_MECA","RIGI_THER","MASS_THER","IMPE_MECA",
+                                     "AMOR_MECA","RIGI_THER","IMPE_MECA",
                                      "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
                                      "RIGI_ROTA","MECA_GYRO","RIGI_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
                                      "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST") ),
@@ -125,12 +124,6 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
            MODE_FOURIER      =SIMP(statut='f',typ='I',defaut= 0 ),
            CHARGE            =SIMP(statut='f',typ=char_ther,validators=NoRepeat(),max='**' ),
-         ),
-
-         b_mass_ther       =BLOC(condition = "OPTION=='MASS_THER'",
-           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
-           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
-           CHARGE            =SIMP(statut='f',typ=char_ther ,validators=NoRepeat(),max='**' ),
          ),
 
          b_rigi_acou       =BLOC(condition = "OPTION=='RIGI_ACOU'",

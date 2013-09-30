@@ -150,34 +150,4 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N9',
                    ),
           )
 
-#--------------------------------------------------------------------------
-# TEST DE L'OPTION MASS_THER SOUS LA COMMANDE CALC_MATR_ELEM
-
-
-MASSTHER=CALC_MATR_ELEM( MODELE=MOTH,
-                       CHAM_MATER=CHMAT,
-                       OPTION='MASS_THER', )
-
-TEST_RESU(OBJET=_F(
-                   VALE_CALC=0.92222222222222,
-                   NOM='MASSTHER.ME001     .RESL',),
-          )
-
-
-#--------------------------------------------------------------------------
-# TEST (INFORMATIQUE SEULEMENT) DE L'OPTION MASS_THER SOUS LA COMMANDE ASSEMBLAGE
-
-ASSEMBLAGE( MODELE=MOTH,
-            CHARGE=CHTH,
-            CHAM_MATER=CHMAT,
-            NUME_DDL=CO("NUM"),
-            MATR_ASSE=(
-                       _F(MATRICE=CO("MTH_ASS"),
-                          OPTION='MASS_THER'),
-                       _F(MATRICE=CO("KTH_ASS"),
-                          OPTION='RIGI_THER'),
-                       )
-)
-
-
 FIN()
