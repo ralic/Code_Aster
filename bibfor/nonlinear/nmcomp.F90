@@ -189,9 +189,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
                     ndim, epsm, deps, instam, instap,&
                     codret)
     elseif (codret .eq. 1) then
-        call lcidbg(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
-                  neps, epsm, deps, nsig, sigm,&
-                  vim, option, angmas)
+        call lcidbg(fami,kpg,ksp,typmod,compor,crit,instam,instap,&
+                    neps,epsm,deps,nsig,sigm,vim,option)
     endif
 end subroutine

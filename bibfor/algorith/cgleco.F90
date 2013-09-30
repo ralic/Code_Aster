@@ -49,7 +49,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 !     INCR   : .TRUE. SI COMPORTEMENT INCREMENTAL
 ! ======================================================================
 !
-    integer :: nbcomp, ntmp, ier, i, ibid
+    integer :: nbcomp, ntmp, ier, ibid
     character(len=16) :: moclef
     character(len=24) :: k24b, repk
     logical :: limpel

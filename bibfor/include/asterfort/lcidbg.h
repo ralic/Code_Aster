@@ -16,16 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcidbg(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
+    subroutine lcidbg(fami, kpg, ksp, typmod,&
+                  compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm,&
-                  vim, option, angmas)
+                  vim, option)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        integer :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
@@ -37,6 +35,5 @@ interface
         real(kind=8) :: sigm(*)
         real(kind=8) :: vim(*)
         character(len=16) :: option
-        real(kind=8) :: angmas(*)
     end subroutine lcidbg
 end interface

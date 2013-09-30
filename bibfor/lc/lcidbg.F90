@@ -1,7 +1,5 @@
-subroutine lcidbg(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
-                  neps, epsm, deps, nsig, sigm,&
-                  vim, option, angmas)
+subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
+                  neps, epsm, deps, nsig, sigm, vim, option)
     implicit none
     
 #include "jeveux.h"
@@ -9,14 +7,18 @@ subroutine lcidbg(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/utmess.h"
 #include "asterfort/tecael.h"
 #include "asterfort/rcvarc.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/codree.h"
+#include "asterfort/utlcal.h"
 
-    integer :: imate, kpg, ksp, ndim, neps, nsig, iv, nbvari, iadzi, iazk24
-    integer :: nval,nimp, nbcvrc, jvcnom, ier, nbvrc, iref(10), ier2
+    integer :: kpg, ksp, neps, nsig, iv, nbvari, iadzi, iazk24
+    integer :: nval,nimp, nbcvrc, jvcnom, ier, nbvrc, iref(10), ier2, nl1
     character(len=*) ::  fami
     character(len=8) ::  typmod(*),nomail,novrc,nomvrc(10)
-    character(len=16) :: compor(*), option
-    real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig), epsp(neps), vrcm(10),vrcp(10), valvrc
-    real(kind=8) :: crit(*), angmas(*), lvalr(20), vref(10)
+    character(len=16)::  compor(*), option, algo
+    character(len=64)::  file
+    real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig), epsp(neps)
+    real(kind=8) :: crit(*), lvalr(20), vref(10), vrcm(10),vrcp(10), valvrc
     real(kind=8) :: instam, instap,rac2
     common /caii14/nbcvrc,jvcnom
     data nimp / 0/
@@ -148,55 +150,79 @@ subroutine lcidbg(fami, kpg, ksp, ndim, typmod,&
     
     lvalr(1)=instam
     lvalr(2)=instap
-    
-    call utmess('I','COMPOR2_50',sk=nomail,si=kpg, nr=2, valr=lvalr)
-    call utmess('I','COMPOR2_51',sk='EXX', nr=4, valr=[instam,epsm(1),instap,epsp(1)])
-    call utmess('I','COMPOR2_51',sk='EYY', nr=4, valr=[instam,epsm(2),instap,epsp(2)])
-    call utmess('I','COMPOR2_51',sk='EZZ', nr=4, valr=[instam,epsm(3),instap,epsp(3)])
-    call utmess('I','COMPOR2_51',sk='EXY', nr=4, valr=[instam,epsm(4),instap,epsp(4)])
+    file='REPE_OUT/simu_point_mat_'//nomail
+!   longueur de la chaine    
+    nl1 = lxlgut(file)
+    file=file(1:nl1)//'_inst_'
+    call codree(instap, 'E', file(nl1+7:64))
+
+    call utmess('I','COMPOR2_50',sk=nomail,si=kpg, nr=2, valr=lvalr,fname=file)
+    call utmess('I','COMPOR2_51',sk='EXX', nr=4, valr=[instam,epsm(1),instap,epsp(1)],fname=file)
+    call utmess('I','COMPOR2_51',sk='EYY', nr=4, valr=[instam,epsm(2),instap,epsp(2)],fname=file)
+    call utmess('I','COMPOR2_51',sk='EZZ', nr=4, valr=[instam,epsm(3),instap,epsp(3)],fname=file)
+    call utmess('I','COMPOR2_51',sk='EXY', nr=4, valr=[instam,epsm(4),instap,epsp(4)],fname=file)
     if (nval.eq.3) then
-       call utmess('I','COMPOR2_51',sk='EXZ', nr=4, valr=[instam,epsm(5),instap,epsp(5)])
-       call utmess('I','COMPOR2_51',sk='EYZ', nr=4, valr=[instam,epsm(6),instap,epsp(6)])
+       call utmess('I','COMPOR2_51',sk='EXZ', nr=4, valr=[instam,epsm(5),instap,epsp(5)],fname=file)
+       call utmess('I','COMPOR2_51',sk='EYZ', nr=4, valr=[instam,epsm(6),instap,epsp(6)],fname=file)
     endif
     
     if (nbvrc .gt. 0) then
        do iv=1,nbvrc
-          call utmess('I','COMPOR2_61',sk=nomvrc(iv), nr=4, valr=[instam,vrcm(iv),instap,vrcp(iv)])
+          call utmess('I','COMPOR2_61',sk=nomvrc(iv), nr=4, &
+                      valr=[instam,vrcm(iv),instap,vrcp(iv)],fname=file)
        end do
     endif
 
     if (nval.eq.1) then
-       call utmess('I','COMPOR2_52')
-       call utmess('I','COMPOR2_53')
+       call utmess('I','COMPOR2_52',fname=file)
+       call utmess('I','COMPOR2_53',fname=file)
     endif
     if (nval.eq.2) then
-       call utmess('I','COMPOR2_52')
+       call utmess('I','COMPOR2_52',fname=file)
     endif
     if (nval.eq.3) then
-       call utmess('I','COMPOR2_54')
+       call utmess('I','COMPOR2_54',fname=file)
     endif
 
-    call utmess('I','COMPOR2_55',nr=6, valr=epsm)
-    call utmess('I','COMPOR2_56',nr=6, valr=sigm)
+    call utmess('I','COMPOR2_55',nr=6, valr=epsm,fname=file)
+    call utmess('I','COMPOR2_56',nr=6, valr=sigm,fname=file)
     do iv=1,nbvari
-       call utmess('I','COMPOR2_57',nr=1, valr=vim(iv))
+       call utmess('I','COMPOR2_57',nr=1, valr=vim(iv),fname=file)
     enddo
-    call utmess('I','COMPOR2_58',sk=compor(1))
+    call utmess('I','COMPOR2_66',fname=file)
+    
+    call utmess('I','COMPOR2_58',sk=compor(1),fname=file)
+    
+    if ((compor(1).eq.'MONOCRISTAL').or.compor(1).eq.'POLYCRISTAL') then
+        call utmess('I','COMPOR2_67',sk=compor(7),fname=file)
+    endif
+    
+    call utlcal('VALE_NOM', algo, crit(6))   
+     
+    call utmess('I','COMPOR2_68',si=int(crit(1)), sr=crit(3), sk=algo, fname=file)
+
+    call utmess('I','COMPOR2_69',si=int(crit(5)), sr=crit(4), fname=file)
+    
+    call utmess('I','COMPOR2_70',sk=compor(3), fname=file)
+    
+    call utmess('I','COMPOR2_65',fname=file)
+    
     if (nbvrc.gt.0) then
-       call utmess('I','COMPOR2_62')
+       call utmess('I','COMPOR2_62',fname=file)
        do iv=1,nbvrc
           if (iref(iv)==1) then
-              call utmess('I','COMPOR2_63',nk=2,valk=[nomvrc(iv),nomvrc(iv)],sr=vref(iv))
+              call utmess('I','COMPOR2_63',nk=2,valk=[nomvrc(iv),nomvrc(iv)],sr=vref(iv),&
+                          fname=file)
           else
-              call utmess('I','COMPOR2_64',nk=2,valk=[nomvrc(iv),nomvrc(iv)])
+              call utmess('I','COMPOR2_64',nk=2,valk=[nomvrc(iv),nomvrc(iv)],fname=file)
           endif
        end do
-       call utmess('I','COMPOR2_65')
+       call utmess('I','COMPOR2_65',fname=file)
     endif
     if (option(1:4).eq. 'FULL') then
-       call utmess('I','COMPOR2_59')
+       call utmess('I','COMPOR2_59',fname=file)
     else
-       call utmess('I','COMPOR2_60')
+       call utmess('I','COMPOR2_60',fname=file)
     endif
     
 9999  continue

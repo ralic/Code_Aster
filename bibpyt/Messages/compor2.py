@@ -275,7 +275,7 @@ Noms des variables internes :"""),
 # test pour analyser à l'aide de SIMU_POINT_MAT l'échec d'intégration du comportement sur la maille <%(k1)s>, point <%(i1)d>
 #---------------------------------------------------------------------------------------------------------------------------
 DEBUT()
-# recopier MAT=DEFI_MATERIAU(...)
+# recopier MAT=DEFI_MATERIAU(...), DEFI_COMPOR(...),...
 
 LIST=DEFI_LIST_REEL(DEBUT= %(r1).15E , INTERVALLE=_F(JUSQU_A= %(r2).15E , NOMBRE=1))
 # liste = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),ECHEC=_F(SUBD_NIVEAU=10,SUBD_PAS=4),)
@@ -314,8 +314,7 @@ RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
 """),
 
 58: _(u"""
-                      )),
-                      COMPORTEMENT=_F(RELATION= '%(k1)s', ITER_INTE_MAXI=20,),
+                      COMPORTEMENT=_F(RELATION= '%(k1)s', 
 """),
 
 59: _(u"""
@@ -348,6 +347,26 @@ FIN()
 
 65: _(u"""
                   ),
+"""),
+
+66: _(u"""
+                      )),
+"""),
+
+67: _(u"""
+                      COMPOR=%(k1)s,
+"""),
+
+68: _(u"""
+                      ITER_INTE_MAXI=%(i1)d, RESI_INTE_RELA=%(r1).15E, ALGO_INTE='%(k1)s',
+"""),
+
+69: _(u"""
+                      ITER_INTE_PAS=%(i1)d, PARM_THETA=%(r1).15E,
+"""),
+
+70: _(u"""
+                      DEFORMATION='%(k1)s',
 """),
 
 }
