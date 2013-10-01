@@ -134,8 +134,8 @@ U_1=STAT_NON_LINE(MODELE=MO,
                                INST_FIN=tfin,),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=900,
-                                 RESI_GLOB_RELA=1E-5),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                 RESI_GLOB_RELA=1E-7),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = L_ARCH,),
                   );
@@ -214,7 +214,7 @@ SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.06,
-           VALE_CALC=6.02102542E-07,
+           VALE_CALC=6.0216969071511E-07,
            VALE_REFE=6.38E-07,
            NOM_PARA='V7',
            TABLE=VAR_AP,
@@ -224,7 +224,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.07,
-           VALE_CALC= 2.00318942E-06,
+           VALE_CALC=2.0034219978413E-06,
            VALE_REFE=2.14E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
@@ -234,7 +234,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.07,
-           VALE_CALC=3.62260622E-06,
+           VALE_CALC=3.623043194984E-06,
            VALE_REFE=3.88E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
@@ -245,7 +245,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 ################ TESTS NON REGRESSION ###########################
 
 TEST_TABLE(
-           VALE_CALC=6.0210257736746E-07,
+           VALE_CALC=6.0216969071511E-07,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -253,7 +253,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.5210150480789E-07,
+           VALE_CALC=6.5216934530265E-07,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -261,7 +261,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-49998.927440427,
+           VALE_CALC=-49999.993992624,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -269,7 +269,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.7435131720485E-06,
+           VALE_CALC=1.7437136727606E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -277,7 +277,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.7935099677834E-06,
+           VALE_CALC=1.7937126459967E-06,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -285,7 +285,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-49996.795734891,
+           VALE_CALC=-49999.983091977,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -293,7 +293,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.8907287773465E-06,
+           VALE_CALC=3.8912008801596E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -301,7 +301,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.9407212325226E-06,
+           VALE_CALC=3.9411984752447E-06,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -309,7 +309,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-49992.455176062,
+           VALE_CALC=-49999.962560156,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',

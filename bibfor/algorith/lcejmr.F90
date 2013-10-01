@@ -480,9 +480,12 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! CALCUL DE LA MATRICE TANGENTE MECA (POUR KTAN U U)
 !-----------------------------------
 !
+    rigart=1.d-8
 ! MATRICE TANGENTE DE CONTACT FERME
     if (a(1) .le. 0.d0) then
         dsidep(1,1) = rc
+        ! POUR LE JOINT CLAVE LA MATRICE DE RIGIDITE NORMALE EST ZERO
+        if ((prescl.ge.0.d0).and.(doset.gt.0.d0)) dsidep(1,1) = rigart*r0
         do 38 i = 2, ndim
             dsidep(i,i) = rt0
 38      continue
@@ -509,7 +512,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! DANS LE CAS OU L'ELEMENT EST TOTALEMENT CASSE ON INTRODUIT UNE
 ! RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
 ! LA CONVERGENCE
-    rigart=1.d-8
+
     if (cass .eq. 2) dsidep(1,1) = rigart*r0
 !
     if (abs(rt) .lt. rigart) then
