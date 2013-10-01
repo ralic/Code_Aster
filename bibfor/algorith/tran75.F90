@@ -93,7 +93,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     integer :: jnodep, jnovit, jnume, jpsdel, jvec, linst, llcha
     integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbdir, nbexci, nbinsg, nbinst
-    integer :: nbmode, nbnoeu, ncmp, neq, nfonct
+    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0
     complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     data blanc    /'        '/
@@ -101,6 +101,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     data nomcmp   /'DX      ','DY      ','DZ      ',&
      &               'DRX     ','DRY     ','DRZ     '/
 !     ------------------------------------------------------------------
+    cbid = dcmplx(0.d0, 0.d0)
     call jemarq()
     mode = basemo
     trange = nomin
@@ -328,6 +329,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     call jeveuo(trange//'.DISC', 'L', idinsg)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&TRAN75.VECTGENE', 'V V R', nbmode, idvecg)
+    neq0 = neq
     do 210 ich = 1, nbcham
         leffor=.true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or.&
@@ -346,7 +348,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
             nomcha(20:24)='.CELV'
         endif
 !
-        if (leffor) call jelira(nomcha, 'LONMAX', neq)
+        if (leffor) then 
+            call jelira(nomcha, 'LONMAX', neq)
+        else 
+            neq = neq0
+        endif
+!
         call wkvect('&&TRAN75.BASE', 'V V R', nbmode*neq, idbase)
         if (tousno) then
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
