@@ -267,7 +267,7 @@ GRANDEUR_SIMPLE__
        ou SEG4
        GAMMA3 : 3eme angle nautique pour le 3eme noeud d'une maille SEG3
        ou SEG4
-       ALPHA4 : 1er angle nautique pour le 4eme noeud d'une maille SEG4
+       ALPHA4 : 1er  angle nautique pour le 4eme noeud d'une maille SEG4
        BETA4 :  2eme angle nautique pour le 4eme noeud d'une maille SEG4
        GAMMA4 : 3eme angle nautique pour le 4eme noeud d'une maille SEG4
        ICOUDE :

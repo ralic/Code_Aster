@@ -406,20 +406,20 @@ def imprime_ojb(file,capy):
     # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
     xxut1=False
     if xxut1 :
-        nomfic="/local00/home/lvabhhts/U/liCMP.txt"
+        nomfic="/local00/home/B27918/U/CATA_liCMP.txt"
         impr_CMP(nomfic,capy) # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM   GRANDEUR  CMP )
     if xxut1 :
-        nomfic="/local00/home/lvabhhts/U/param_options.txt"
+        nomfic="/local00/home/B27918/U/CATA_param_options.txt"
         # le fichier produit est moins gros que liCMP mais surtout il contient les paramètres RESL
         impr_param_options(nomfic,capy) # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)
     if xxut1 :
-        nomfic="/local00/home/lvabhhts/U/PbOptions.txt"
+        nomfic="/local00/home/B27918/U/CATA_PbOptions.txt"
         PbOptions(nomfic,capy) # pour imprimer le nom des parametres inutilises des options
     if xxut1 :
-        nomfic="/local00/home/lvabhhts/U/nomte_nomtm.txt"
+        nomfic="/local00/home/B27918/U/CATA_nomte_nomtm.txt"
         nomte_nomtm(nomfic,capy) # pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
     if xxut1 :
-        nomfic="/local00/home/lvabhhts/U/numte_lnomte.txt"
+        nomfic="/local00/home/B27918/U/CATA_numte_lnomte.txt"
         numte_lnomte(nomfic,capy) # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
     #=========================================================================================
 
