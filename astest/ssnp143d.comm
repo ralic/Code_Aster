@@ -1,0 +1,424 @@
+# TITRE VALIDATION DU SCIAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP143D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
+
+######## PARAMETRES #############
+tfin   = 3
+nbpas  = tfin
+nbarch = tfin
+
+# PARAMETRES MECANIQUES DES PLOTS (VALEURS TESTS)
+young = 3.E12
+poiss = 0.
+rho_b = 2400
+ap    = 9.81
+h     = 10.
+long_barrage =10.
+
+# PARAMETRES DES JOINTS (VALEURS TESTS)
+k_n    = 1.E12
+k_t    = 2*k_n
+# JOINT RUPTURE
+sig_m  = 3.E6
+alpha  = 1.
+penrup = 0.2
+beta   = 0.8
+# JOINT FROTTEMENT
+mu=0.35
+adhe=1000.
+ecrouissage=k_t*0.1
+# OTHER
+av_sci = 1
+i_sci = 2.0
+ap_sci = tfin
+eps    = 1.E-5
+delta_x= sig_m/k_n
+delta_sci = delta_x/3.
+
+# SCIAGE EN FONCTION DU TEMPS
+sci_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_sci-eps,-1 , i_sci,1. , i_sci+eps,-1 ,  tfin,-1.));
+# SCIAGE EN FONCTION DE L'ESPACE
+sci_y = FORMULE(NOM_PARA=('Y',),VALE='delta_sci');
+# SCIAGE FONCTION DU TEMPS ET DE L'ESPACE
+fonc_sci = FORMULE(NOM_PARA=('Y','INST'),VALE='sci_y(Y)*sci_ins(INST)');
+
+##################################
+
+MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+
+  CREA_GROUP_MA = (
+      _F(NOM = 'JOINT',    GROUP_MA = 'G_3D_72'),
+      _F(NOM = 'BARRAGE',  GROUP_MA = 'G_3D_73'),
+      _F(NOM = 'FONDATIO', GROUP_MA = 'G_2D_74'),
+      _F(NOM = 'JOINT_G',  GROUP_MA = 'G_1D_75'),
+      _F(NOM = 'JOINT_D',  GROUP_MA = 'G_1D_76'),
+
+          ),
+  CREA_GROUP_NO = (
+      _F(NOM = 'JOINT_G', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_G'),
+      _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),
+          ),
+    );
+
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                   INFO=1)
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               INFO=1,
+               AFFE=(_F(GROUP_MA=('BARRAGE',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA='JOINT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D_JOINT',),),);
+
+
+
+# MATERIAU DES PLOTS
+MATPLO=DEFI_MATERIAU(ELAS=_F(
+                              E   = young,
+                              NU  = poiss,
+                              RHO = rho_b),)
+
+# MATERIAU JOINT MECANIQUE AVEC RUPTURE
+MATJOI=DEFI_MATERIAU(
+                  JOINT_MECA_RUPT=_F(K_N=k_n,
+                                     K_T=k_t,
+                                     SIGM_MAX=sig_m,
+                                     PENA_RUPTURE=penrup,
+                                     ALPHA=alpha,
+                                     PENA_CONTACT = beta,
+                                     SCIAGE=fonc_sci,
+                          ),)
+
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=(
+                      _F(GROUP_MA='BARRAGE',MATER = MATPLO),
+                      _F(GROUP_MA='JOINT',  MATER = MATJOI))
+                 );
+
+
+# MATERIAU JOINT MECANIQUE AVEC FROTTEMENT
+MAT_JF=DEFI_MATERIAU(
+                  JOINT_MECA_FROT=_F(K_N=k_n,
+                                     K_T=k_t,
+                                     PENA_TANG=ecrouissage,
+                                     MU=mu,
+                                     ADHESION=adhe,
+                                     SCIAGE=fonc_sci,
+                                ),);
+CM_JF=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=(
+                      _F(GROUP_MA='BARRAGE',MATER = MATPLO),
+                      _F(GROUP_MA='JOINT',  MATER = MAT_JF))
+                 );
+
+
+
+
+# CONDITION AUX LIMITES 
+CL_GAUCH=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO=('ENCAST_G',),DX=delta_x,DY=0.0, DZ=0.0),);
+# CONDITION AUX LIMITES 
+CL_DROIT=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO=('ENCAST_D',),DX=0.0,    DY=0.0, DZ=0.0),);
+
+
+# CREATION DE LISTE D'INSTANT
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),);
+
+# CALCUL JOINT_MECA_RUPT
+U_1=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CM,
+                  EXCIT=(_F(CHARGE=CL_GAUCH),
+                         _F(CHARGE=CL_DROIT),),
+                  COMPORTEMENT=(_F(RELATION='JOINT_MECA_RUPT',
+                                GROUP_MA='JOINT',),
+                             _F(RELATION='ELAS',
+                                GROUP_MA=('BARRAGE')),),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=tfin,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                 RESI_GLOB_RELA=1E-7),
+                  SOLVEUR=_F(METHODE='MUMPS',),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                  ARCHIVAGE = _F(LIST_INST = L_ARCH,),
+                  );
+
+
+############# POST TRAITEMENT #################
+
+U_1=CALC_CHAMP(reuse =U_1,
+              RESULTAT=U_1,
+              VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
+              CONTRAINTE=('SIEF_ELNO','SIEF_NOEU'),
+              GROUP_MA='JOINT');
+
+# AVANT SCIAGE
+################
+
+# OUVERTURE ET VARIABLE INTERNE DE SCIAGE
+VAR_AV1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=av_sci,
+                               GROUP_NO='JOINT_D',
+                               NOM_CMP=('V7','V10'),),);
+
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIG_AV1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=av_sci,
+                               GROUP_NO = 'JOINT_D',
+                               NOM_CMP=('SIGN')),);
+
+
+# APRES SCIAGE
+################
+
+# OUVERTURE ET VARIABLE INTERNE DE SCIAGE
+VAR_AP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO='JOINT_G',
+                               NOM_CMP=('V7','V10')),);
+
+
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIG_AP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO = 'JOINT_G',
+                               NOM_CMP=('SIGN')),);
+
+
+
+################### TESTS ANALYTIQUE ####################
+
+# TEST AVANT SCIAGE
+sigma_avant = -delta_x / (1./(beta*k_n) + long_barrage/young)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-6.5459306131355E+05,
+           VALE_REFE=sigma_avant,
+           NOM_PARA ='SIGN',
+           TABLE=SIG_AV1,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=5.0,),
+           )
+
+delta_avant = sigma_avant / (beta*k_n)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-8.1824132664194E-07,
+           VALE_REFE=delta_avant,
+           NOM_PARA='V7',
+           TABLE=VAR_AV1,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+# TEST APRES SCIAGE
+sigma_apres = -(delta_x-delta_sci) / (1./(beta*k_n) + long_barrage/young)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-4.3639537420904E+05,
+           VALE_REFE=sigma_apres,
+           NOM_PARA ='SIGN',
+           TABLE=SIG_AP1,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=5.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-1.E-06,
+           VALE_REFE=-delta_sci,
+           NOM_PARA='V10',
+           TABLE=VAR_AP1,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.0,),
+           )
+
+delta_apres = sigma_apres / (beta*k_n) - delta_sci
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-1.5454942177613E-06,
+           VALE_REFE=delta_apres,
+           NOM_PARA='V7',
+           TABLE=VAR_AP1,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+
+# CALCUL JOINT_MECA_RUPT
+U_JF=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CM_JF,
+                  EXCIT=(_F(CHARGE=CL_GAUCH),
+                         _F(CHARGE=CL_DROIT),),
+                  COMPORTEMENT=(_F(RELATION='JOINT_MECA_FROT',
+                                GROUP_MA='JOINT',),
+                             _F(RELATION='ELAS',
+                                GROUP_MA=('BARRAGE')),),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=tfin,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                 RESI_GLOB_RELA=1E-7),
+                  SOLVEUR=_F(METHODE='MUMPS',),
+                  ARCHIVAGE = _F(LIST_INST = L_ARCH,),
+                  );
+
+
+############# POST TRAITEMENT #################
+
+U_JF=CALC_CHAMP(reuse =U_JF,
+              RESULTAT=U_JF,
+              VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
+              CONTRAINTE=('SIEF_ELNO','SIEF_NOEU'),
+              GROUP_MA='JOINT');
+
+# AVANT SCIAGE
+################
+
+# OUVERTURE ET VARIABLE INTERNE DE SCIAGE
+VAR_AV2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_JF,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=av_sci,
+                               GROUP_NO='JOINT_D',
+                               NOM_CMP=('V7','V10'),),);
+
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIG_AV2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_JF,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=av_sci,
+                               GROUP_NO = 'JOINT_D',
+                               NOM_CMP=('SIGN')),);
+
+
+# APRES SCIAGE
+################
+
+# OUVERTURE ET VARIABLE INTERNE DE SCIAGE
+VAR_AP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_JF,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO='JOINT_G',
+                               NOM_CMP=('V7','V10')),);
+
+
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIG_AP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_JF,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO = 'JOINT_G',
+                               NOM_CMP=('SIGN')),);
+
+
+################### TESTS ANALYTIQUE ####################
+
+# TEST AVANT SCIAGE
+sigma_avant = -delta_x / (1./k_n + long_barrage/young)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-6.9236095084237E+05,
+           VALE_REFE=sigma_avant,
+           NOM_PARA ='SIGN',
+           TABLE=SIG_AV2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=5.0,),
+           )
+
+delta_avant = sigma_avant / k_n
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-6.9236095084237E-07,
+           VALE_REFE=delta_avant,
+           NOM_PARA='V7',
+           TABLE=VAR_AV2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+# TEST APRES SCIAGE
+sigma_apres = -(delta_x-delta_sci) / (1./k_n + long_barrage/young)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-4.6157396722825E+05,
+           VALE_REFE=sigma_apres,
+           NOM_PARA ='SIGN',
+           TABLE=SIG_AP2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=5.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-1.E-06,
+           VALE_REFE=-delta_sci,
+           NOM_PARA='V10',
+           TABLE=VAR_AP2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.0,),
+           )
+
+delta_apres = sigma_apres / k_n - delta_sci
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=-1.4615739672282E-06,
+           VALE_REFE=delta_apres,
+           NOM_PARA='V7',
+           TABLE=VAR_AP2,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+FIN()

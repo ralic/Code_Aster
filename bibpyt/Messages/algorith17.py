@@ -75,7 +75,7 @@ cata_msg={
 """),
 
 14 : _(u"""
-  Les mots clés PRES_FLUIDE et PRES_CLAVAGE sont incompatibles avec les modélisations xxx_JOINT_HYME
+  Les mots clés PRES_FLUIDE et PRES_CLAVAGE/SCIAGE sont incompatibles avec les modélisations xxx_JOINT_HYME
 """),
 
 15 : _(u"""

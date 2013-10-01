@@ -55,7 +55,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
-    parameter (nbpa=9)
+    parameter (nbpa=10)
     integer :: cod(nbpa)
     integer :: i, j, n, ifplas, kronec, ifouv
     real(kind=8) :: kn, kt, kappa, mu, adhe, a(ndim), plasti(ndim), dplas(ndim)
@@ -63,7 +63,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: abstau, tau(ndim), coefd, coefhd, r8bid
     real(kind=8) :: inst, valpar(ndim+1), rhof, visf, amin, presfl, presg
     real(kind=8) :: gp(ndim-1), gploc(ndim), gpglo(ndim), fhloc(ndim)
-    real(kind=8) :: fhglo(ndim)
+    real(kind=8) :: fhglo(ndim), doset, oset, sciage
     real(kind=8) :: invrot(ndim, ndim), rigart
     character(len=8) :: nom(nbpa), nompar(ndim+1)
     character(len=1) :: poum
@@ -93,6 +93,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     nom(7) = 'RHO_FLUIDE'
     nom(8) = 'VISC_FLUIDE'
     nom(9) = 'OUV_MIN'
+    nom(10) ='SCIAGE'   
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
@@ -150,6 +151,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     endif
 !
 ! RECUPERATION DE LA PRESS FLUIDE IMPOSEE (FCT DE L'ESPACE ET DU TEMPS)
+!
     call rcvalb(fami, kpg, ksp, poum, mate,&
                 ' ', 'JOINT_MECA_FROT', ndim+1, nompar, valpar,&
                 1, nom(6), val(6), cod(6), 0)
@@ -157,6 +159,18 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
         presfl = val(6)
     else
         presfl = 0.d0
+    endif
+!
+! RECUPERATION DE LA TAILLE DE SCIE = SCIAGE (FONCTION DE L'ESPACE ET DU TEMPS)
+!
+    call rcvalb(fami, kpg, ksp, poum, mate,&
+                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar,&
+                1, nom(10), val(10), cod(10), 0)
+!
+    if (cod(10) .eq. 0) then
+        sciage = val(10)
+    else
+        sciage = 0.d0
     endif
 !
 ! RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
@@ -183,6 +197,10 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! EN FONCTION DE LA MODELISATION MECA PUR OU HYDRO MECA
 !
     if (ifhyme) then
+!       POUR LE CALCUL HYDRO => PAS DE SCIAGE
+        if (cod(10) .eq. 0) then
+            call utmess('F', 'ALGORITH17_14')
+        endif
 !       POUR LE CALCUL HYDRO => PAS DE PRES_FLUIDE
         if ((cod(6).eq.0)) then
             call utmess('F', 'ALGORITH17_14')
@@ -209,6 +227,19 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !     A=A+DA
     if (resi) call daxpy(ndim, 1.d0, deps, 1, a,&
                          1)
+
+! DANS LE CAS DU SCIAGE
+! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
+!-----------------------
+! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
+    doset = 0.d0
+    sciage = sciage - max(0.,epsm(1))
+    if (sciage.gt.0.d0) doset = doset - sciage
+    oset = vim(10) + doset
+!
+! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
+    a(1) = a(1) - oset
+
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
     if (ifhyme) then
@@ -319,7 +350,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !
 ! ACTUALISATION DES VARIABLES INTERNES
 !   V1 :  LE DEPLACEMENT PLASTIQUE CUMULE (SANS ORIENTATION) LAMBDA:
-!            LAMBDA NE PEUX QU'AUGMENTER
+!            LAMBDA NE PEUT QU'AUGMENTER
 !   V2 : INDICATEUR DE PLASTIFICATION (0 : NON, 1 : OUI)
 !   V3-V4 :  VECTEUR DE DEPLACEMENT TANG PAR RAPPORT AU POINT DE DEPART
 !                        (INDIQUE LA POSITION D'EQUILIBRE ACTUELLE)
@@ -327,7 +358,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !                         (CONTRAINTE TANGENTIEL EST MIS A ZERO)
 !   V6    : MODULE DE LA CONTRAINTE TANGENTE
 !   V7 A V9 : VALEURS DU SAUT
-!   V10 : PAS UTILISEE DANS CETTE LOI
+!   V10 : EPAISSEUR DU JOINT
 !   V11 : CONTRAINTE MECANIQUE NORMALE (SANS PRESSION DE FLUIDE)
 !   V12 A V14 : COMPOSANTES DU GRAD DE PRESSION DANS LE REPERE GLOBAL
 !   V15 A V17 : COMPOSANTES DU FLUX HYDRO DANS LE REPERE GLOBAL
@@ -345,12 +376,15 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
         vip(6) = vip(6)+sigma(i)**2
         vip(6)=sqrt(vip(6))
 37  end do
-    vip(7) = a(1)
+    vip(7) = a(1) + oset
     do 38 i = 2, ndim
         vip(i+6)=a(i)
 38  end do
 !
-    vip(10) = 0.d0
+!     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE SCIAGE
+!     LE SCIAGE FAIT DIMINUER L'EPAISSEUR DU JOINT
+!     => OSET EST DECROISSANT (SCIAGE)
+    vip(10) = oset
 !
 !     VISUALISATION DES FLUX, DES GRAD DE PRESSION ET DE LA PRESSION
 !     DANS LE REPERE GLOBAL

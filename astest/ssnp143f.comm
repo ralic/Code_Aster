@@ -1,0 +1,325 @@
+# TITRE VALIDATION DU SCIAGE EN 3D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP143F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
+
+######## PARAMETRES #############
+tfin   = 3
+nbpas  = tfin
+nbarch = tfin
+
+# PARAMETRES MECANIQUES DES PLOTS (VALEURS TESTS)
+young = 3.E12
+poiss = 0.25
+rho_b = 2400
+ap    = 9.81
+h     = 10.
+
+# PARAMETRES DES JOINTS (VALEURS TESTS)
+k_n    = 1.E12
+sig_m  = 3.E6
+alpha  = 1.
+penrup = 0.2
+av_sci = 1
+i_sci = 2.0
+ap_sci = tfin
+eps    = 1.E-5
+delta_sci= sig_m/k_n/100.
+
+# SCIAGE EN FONCTION DU TEMPS
+sci_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_sci-eps,-1 , i_sci,1. , i_sci+eps,-1 ,  tfin,-1.));
+# SCIAGE EN FONCTION DE L'ESPACE
+sci_y = FORMULE(NOM_PARA=('Y',),VALE='delta_sci');
+# SCIAGE FONCTION DU TEMPS ET DE L'ESPACE
+fonc_sci = FORMULE(NOM_PARA=('Y','INST'),VALE='sci_y(Y)*sci_ins(INST)');
+
+##################################
+
+MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+
+  CREA_GROUP_MA = (
+      _F(NOM = 'JOINT',    GROUP_MA = 'G_3D_72'),
+      _F(NOM = 'BARRAGE',  GROUP_MA = 'G_3D_73'),
+      _F(NOM = 'FONDATIO', GROUP_MA = 'G_2D_74'),
+      _F(NOM = 'JOINT_G',  GROUP_MA = 'G_1D_75'),
+      _F(NOM = 'JOINT_D',  GROUP_MA = 'G_1D_76'),
+
+          ),
+  CREA_GROUP_NO = (
+      _F(NOM = 'JOINT_G', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_G'),
+      _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),
+          ),
+    );
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                   INFO=1)
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               INFO=1,
+               AFFE=(_F(GROUP_MA=('BARRAGE',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA='JOINT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D_JOINT',),),);
+
+
+
+# MATERIAU DES PLOTS
+MATPLO=DEFI_MATERIAU(ELAS=_F(
+                              E   = young,
+                              NU  = poiss,
+                              RHO = rho_b),)
+
+# MATERIAU JOINT
+MATJOI=DEFI_MATERIAU(
+                  JOINT_MECA_RUPT=_F(K_N=k_n,
+                                     K_T=k_n,
+                                     SIGM_MAX=sig_m,
+                                     PENA_RUPTURE=penrup,
+                                     ALPHA=alpha,
+                                     SCIAGE=fonc_sci,
+                          ),)
+
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=(
+                      _F(GROUP_MA='BARRAGE',MATER = MATPLO),
+                      _F(GROUP_MA='JOINT',  MATER = MATJOI))
+                 );
+
+# CONDITION AUX LIMITES SUR LA TERRE
+CL_TER=AFFE_CHAR_MECA(MODELE=MO,
+                       FACE_IMPO=_F(GROUP_MA=('FONDATIO',),DX=0.0, DY=0.0, DZ=0.0),);
+
+# CHAMPS DE PESANTEUR
+CH_PES = AFFE_CHAR_MECA(
+  MODELE = MO,
+  FORCE_INTERNE = (_F(GROUP_MA=('BARRAGE',),FX=0.0, FY=-rho_b*ap, FZ=0.0)));
+
+# CREATION DE LISTE D'INSTANT
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),);
+
+# CALCUL
+U_1=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CM,
+                  EXCIT=(_F(CHARGE=CL_TER),
+                         _F(CHARGE=CH_PES),),
+                  COMPORTEMENT=(_F(RELATION='JOINT_MECA_RUPT',
+                                GROUP_MA='JOINT',),
+                             _F(RELATION='ELAS',
+                                GROUP_MA=('BARRAGE')),),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=tfin,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                 RESI_GLOB_RELA=1E-7),
+                  SOLVEUR=_F(METHODE='MUMPS',),
+                  ARCHIVAGE = _F(LIST_INST = L_ARCH,),
+                  );
+
+
+############# POST TRAITEMENT #################
+
+U_1=CALC_CHAMP(reuse =U_1,
+              RESULTAT=U_1,
+              VARI_INTERNE=('VARI_ELNO'),
+              GROUP_MA='JOINT');
+
+U_1=CALC_CHAMP(reuse =U_1,
+              RESULTAT=U_1,
+              CONTRAINTE=('SIEF_ELNO'),
+              GROUP_MA='JOINT');
+
+
+U_1=CALC_CHAMP(reuse =U_1,
+              RESULTAT=U_1,
+              VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
+              GROUP_MA='JOINT');
+
+
+# AVANT SCIAGE
+################
+
+# OUVERTURE ET VARIABLE INTERNE DE SCIAGE
+VAR_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=av_sci,
+                               GROUP_NO='JOINT_D',
+                               NOM_CMP=('V7','V10'),),);
+
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=av_sci,
+                               GROUP_NO = 'JOINT_D',
+                               NOM_CMP=('SIGN')),);
+
+
+# APRES SCIAGE
+################
+
+# OUVERTURE ET VARIABLE INTERNE DE SCIAGE
+VAR_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO='JOINT_G',
+                               NOM_CMP=('V7','V10')),);
+
+
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO = 'JOINT_G',
+                               NOM_CMP=('SIGN')),);
+
+# CONTRAINTE TANGENTIEL DANS LE JOINT
+SIGT_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_1,
+                               NOM_CHAM='SIEF_NOEU',
+                               INST=ap_sci,
+                               GROUP_NO = 'JOINT_G',
+                               NOM_CMP=('SITX','SITY')),);
+
+################ TESTS NON REGRESSION ###########################
+
+TEST_TABLE(
+           VALE_CALC=-4.1479689602778E-08,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-3.0E-08,
+           NOM_PARA='V10',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-11479.689602778,
+           NOM_PARA='SIGN',
+           TABLE=SIG_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-17.337717157187,
+           NOM_PARA='SITX',
+           TABLE=SIGT_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-18.400640910886,
+           NOM_PARA='SITY',
+           TABLE=SIGT_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=2.0,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-2.2953275756308E-08,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-3.0E-08,
+           NOM_PARA='V10',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=64.005644489058,
+           NOM_PARA='SITX',
+           TABLE=SIGT_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=12.971636104022,
+           NOM_PARA='SITY',
+           TABLE=SIGT_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=4.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.1903458801704E-08,
+           NOM_PARA='V7',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-2.7421587056694E-08,
+           NOM_PARA='V10',
+           TABLE=VAR_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=2.9121187107297,
+           NOM_PARA='SITX',
+           TABLE=SIGT_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )           
+
+TEST_TABLE(
+           VALE_CALC=-51.222271201817,
+           NOM_PARA='SITY',
+           TABLE=SIGT_AP,
+           FILTRE=_F(NOM_PARA='COOR_Y',
+                     VALE=8.5,),
+           )           
+          
+FIN()

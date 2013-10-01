@@ -56,13 +56,13 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
-    parameter (nbpa=11)
+    parameter (nbpa=12)
     integer :: cod(nbpa)
     integer :: i, n, diss, cass
-    real(kind=8) :: sc, lc, lct, k0, val(nbpa), presfl, presg, prescl, tmp
+    real(kind=8) :: sc, lc, lct, k0, val(nbpa), presfl, presg, prescl, sciage, tmp
     real(kind=8) :: gp(ndim-1), gploc(ndim), gpglo(ndim), fhloc(ndim)
     real(kind=8) :: fhglo(ndim)
-    real(kind=8) :: a(ndim), da(ndim), ka, kap, r0, rc, alpha, beta, rk, ra, rt
+    real(kind=8) :: a(ndim), da(ndim), ka, r0, rc, alpha, beta, rk, ra, rt
     real(kind=8) :: rt0, r8bid
     real(kind=8) :: oset, doset, inst, valpar(ndim+1), rhof, visf, amin
     real(kind=8) :: invrot(ndim, ndim), rigart
@@ -115,6 +115,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     nom(9) = 'RHO_FLUIDE'
     nom(10) ='VISC_FLUIDE'
     nom(11) ='OUV_MIN'
+    nom(12) ='SCIAGE'   
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
@@ -167,7 +168,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         valpar(4)= coorot(3)
     endif
 !
-! RECUPERATION DE LA PRESS FLUIDE ET DE CLAVAGE (MODELISATION MECA PURE)
+! RECUPERATION DE LA PRESS FLUIDE, CLAVAGE ET SCIAGE (MODELISATION MECA PURE)
 !-----------------------------------------------------------------------
 ! RECUPERATION DE LA PRESS FLUIDE (FONCTION DE L'ESPACE ET DU TEMPS)
     call rcvalb(fami, kpg, ksp, poum, mate,&
@@ -191,6 +192,18 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         prescl = -1.d0
     endif
 !
+! RECUPERATION DE LA TAILLE DE SCIE = SCIAGE (FONCTION DE L'ESPACE ET DU TEMPS)
+    call rcvalb(fami, kpg, ksp, poum, mate,&
+                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar,&
+                1, nom(12), val(12), cod(12), 0)
+!
+    if (cod(12) .eq. 0) then
+        sciage = val(12)
+    else
+        sciage = 0.d0
+    endif
+!
+
 ! RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
 !--------------------------------------------------------------------
     call rcvalb(fami, kpg, ksp, poum, mate,&
@@ -218,6 +231,10 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         if (cod(8) .eq. 0) then
             call utmess('F', 'ALGORITH17_14')
         endif
+!       POUR LE CALCUL HYDRO => PAS DE SCIAGE
+        if (cod(12) .eq. 0) then
+            call utmess('F', 'ALGORITH17_14')
+        endif
 !       POUR LE CALCUL HYDRO => PAS DE PRES_FLUIDE
         if (cod(7) .eq. 0) then
             call utmess('F', 'ALGORITH17_14')
@@ -233,21 +250,26 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         endif
     endif
 !
-! DANS LE CAS DU CLAVAGE
-!-----------------------
+! INITIALISATION DU SEUIL D'ENDOMMAGEMENT ACTUEL
+    ka = max(k0,vim(1))
+!
+! DANS LE CAS DU CLAVAGE/SCIAGE
 ! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
-    doset = a(1) + prescl/(beta*r0)
-    if ((prescl.lt.0.d0) .or. (doset.lt.0.d0)) then
-        oset = vim(10)
-    else
-        oset = vim(10) + doset
-    endif
+!-----------------------
+! CLAVAGE
+! EPAISSEUR DE JOINT NE PEUT QUE AUGMENTER; DOSET > 0
+    doset = 0.d0
+    if (prescl.ge.0.d0) doset = max (0.d0, a(1) + prescl/(beta*r0) )
+! SCIAGE
+! LE JOINT EST ENDOMMAGE PAR LE SCIAGE
+    if (sciage.gt.0.d0) ka = lc
+! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
+    sciage = sciage - max(0.,epsm(1))
+    if (sciage.gt.0.d0) doset = doset - sciage
+    oset = vim(10) + doset
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
     a(1) = a(1) - oset
-!
-! INITIALISATION DU SEUIL D'ENDOMMAGEMENT ACTUEL
-    ka = max(k0,vim(1))
 !
 ! CALCUL DES PENTES
 !------------------
@@ -317,7 +339,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 20  end do
 !
 !    CONTRAINTE DE FISSURATION NORMALE
-    if ((a(1).ge.lc) .or. (ka.gt.lc)) then
+    if ((a(1).ge.lc) .or. (ka.ge.lc)) then
         diss = 0
         cass = 2
     else
@@ -354,18 +376,17 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! V5 : INDICATEUR D'ENDOMMAGEMENT TANGENTIEL (0:SAIN, 1:ENDOM, 2:CASSE)
 ! V6 : POURCENTAGE D'ENDOMMAGEMENT TANGENTIEL
 ! V7 A V9 : VALEURS DU SAUT DANS LE REPERE LOCAL
-! V10: EPAISSEUR DU JOINT CLAVE
+! V10: EPAISSEUR DU JOINT
 ! V11 : CONTRAINTE MECANIQUE NORMALE (SANS INFLUENCE PRESSION DE FLUIDE)
 ! V12 A V14 : COMPOSANTES DU GRADIENT DE PRESSION DANS LE REPERE GLOBAL
 ! V15 A V17 : COMPOSANTES DU FLUX HYDRO DANS LE REPERE GLOBAL
 ! V18 : PRESSION DE FLUIDE IMPOSEE OU CALCULEE ET INTERPOLEE (EN HYME)
 !
-    kap = max(ka,a(1))
-    vip(1) = kap
+    vip(1) = max(ka,a(1))
     vip(2) = diss
     vip(3) = cass
     if (lc .ne. 0.d0) then
-        tmp = max(0.d0, (kap - val(2)/val(1)) / (lc - val(2)/val(1)) )
+        tmp = max(0.d0, (vip(1) - val(2)/val(1)) / (lc - val(2)/val(1)) )
         vip(4) = min(1.d0,tmp)
     else
         vip(4) = 1.d0
@@ -382,14 +403,12 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         vip(9) = 0.d0
     endif
 !
-!     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 DANS LE CAS DE CLAVAGE
-!     LE CLAVAGE NE FAIT QU'AUGMENTER L'EPAISSEUR DU JOINT
-!     => OSET EST CROISSANT
-    if ((prescl.lt.0.d0) .or. (doset.lt.0.d0)) then
-        vip(10) = vim(10)
-    else
-        vip(10) = vim(10) + doset
-    endif
+!     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE CLAVAGE/SCIAGE
+!     LE CLAVAGE FAIT AUGMENTER L'EPAISSEUR DU JOINT
+!     => OSET EST CROISSANT (CLAVAGE)
+!     LE SCIAGE FAIT DIMINUER L'EPAISSEUR DU JOINT
+!     => OSET EST DECROISSANT (SCIAGE)
+    vip(10) = oset
 !
 !     FLUX, GRAD DE PRESSION ET PRESSION DANS LE REPERE GLOBAL
     if (ifhyme) then
@@ -481,44 +500,43 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !-----------------------------------
 !
     rigart=1.d-8
-! MATRICE TANGENTE DE CONTACT FERME
+!   MATRICE TANGENTE DE CONTACT FERME
     if (a(1) .le. 0.d0) then
         dsidep(1,1) = rc
         ! POUR LE JOINT CLAVE LA MATRICE DE RIGIDITE NORMALE EST ZERO
         if ((prescl.ge.0.d0).and.(doset.gt.0.d0)) dsidep(1,1) = rigart*r0
-        do 38 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i) = rt0
-38      continue
-        goto 9999
-    endif
-!
-! MATRICE TANGENTE DE CONTACT OUVERT
-!  (IL FAUT NOTER QUE DANS LA SUITE A(1)>0)
-!
-! MATRICE TANGENTE DE FISSURATION
-    if ((diss.eq.0) .or. elas) then
-        dsidep(1,1) = rk
+        end do
     else
-        if (lc .ne. 0.d0) dsidep(1,1) = -sc/lc
-    endif
 !
-    do 40 i = 2, ndim
-        dsidep(i,i) = rt
-        if ((lct.ne.0.d0) .and. (a(1).lt.lct)) then
-            dsidep(i,1) = -da(i)*rt0/lct
+!   MATRICE TANGENTE DE CONTACT OUVERT
+!   (NOTER QUE DANS LA SUITE A(1)>0)
+!
+!       MATRICE TANGENTE DE FISSURATION
+        if ((diss.eq.0) .or. elas) then
+           dsidep(1,1) = rk
+        else
+           if (lc .ne. 0.d0) dsidep(1,1) = -sc/lc
         endif
-40  end do
 !
-! DANS LE CAS OU L'ELEMENT EST TOTALEMENT CASSE ON INTRODUIT UNE
-! RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
-! LA CONVERGENCE
-
-    if (cass .eq. 2) dsidep(1,1) = rigart*r0
+        do i = 2, ndim
+           dsidep(i,i) = rt
+           if ((lct.ne.0.d0) .and. (a(1).lt.lct)) then
+              dsidep(i,1) = -da(i)*rt0/lct
+           endif
+        end do
 !
-    if (abs(rt) .lt. rigart) then
-        do 39 i = 2, ndim
-            dsidep(i,i) = rigart*rt0
-39      continue
+!       DANS LE CAS OU L'ELEMENT EST TOTALEMENT CASSE ON INTRODUIT UNE
+!       RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
+!       LA CONVERGENCE
+        if (cass .eq. 2) dsidep(1,1) = rigart*r0
+!
+        if (abs(rt) .lt. rigart) then
+           do i = 2, ndim
+              dsidep(i,i) = rigart*rt0
+           end do
+        endif
     endif
 !
 9999  continue
