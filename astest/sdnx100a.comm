@@ -1,0 +1,255 @@
+# TITRE CALCUL MISS_3D CODE_ASTER DANS UN BATIMENT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDNX100A',NIV_PUB_WEB='INTERNET'));
+#
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='RADIER',),);
+
+STICKMOD=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=(_F(GROUP_MA='BK',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='POU_D_T',),
+                           _F(GROUP_MA='MASSES',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='DIS_TR',),
+                           _F(GROUP_MA='RADIER',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='DST',),),);
+# ------------------------------------------------------------------
+#  DEFINITION DES MATERIAUX
+#
+
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=4.E10,
+                          NU=0.17647058800000001,
+                          RHO=0.0,
+                          ALPHA=0.0,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(GROUP_MA=('MASSES','RADIER','BK1','BK2','BK3','BK4','BK5','BK6'),
+                               MATER=MAT,),);
+#
+#-------------------------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
+#
+
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=STICKMOD,
+                        POUTRE=(_F(GROUP_MA='BK1',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT'),
+                                   VALE=(156.0,11635.0,14648.0,2.25,1.79,17000.0,0.0,0.0,1.0,1.0,1.0),),
+                                _F(GROUP_MA='BK2',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT'),
+                                   VALE=(154.0,11469.0,15063.0,2.1699999999999999,1.8600000000000001,17000.0,0.0,0.0,1.0,1.0,1.0),),
+                                _F(GROUP_MA='BK3',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT'),
+                                   VALE=(204.0,13291.0,16398.0,2.6499999999999999,1.6100000000000001,17000.0,0.0,0.0,1.0,1.0,1.0),),
+                                _F(GROUP_MA='BK4',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT'),
+                                   VALE=(200.0,13292.0,16091.0,2.6000000000000001,1.6299999999999999,17000.0,0.0,0.0,1.0,1.0,1.0),),
+                                _F(GROUP_MA='BK5',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT'),
+                                   VALE=(200.0,13292.0,16091.0,2.6000000000000001,1.6299999999999999,17000.0,0.0,0.0,1.0,1.0,1.0),),
+                                _F(GROUP_MA='BK6',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT'),
+                                   VALE=(83.0,7637.0,10921.0,2.96,1.51,17000.0,0.0,0.0,1.0,1.0,1.0),),),
+                        COQUE=_F(GROUP_MA='RADIER',
+                                 EPAIS=1.E-2,),
+                        DISCRET=(_F(GROUP_MA='MAS_BK1',
+                                    CARA='M_TR_D_N',
+                                    VALE=(6892000.0,399200000.0,530000000.0,929300000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK1',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK2',
+                                    CARA='M_TR_D_N',
+                                    VALE=(6179000.0,300010000.0,398340000.0,698350000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK2',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK3',
+                                    CARA='M_TR_D_N',
+                                    VALE=(6610000.0,382910000.0,508410000.0,891320000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK3',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK4',
+                                    CARA='M_TR_D_N',
+                                    VALE=(4540000.0,262700000.0,341190000.0,611590000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK4',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK5',
+                                    CARA='M_TR_D_N',
+                                    VALE=(4226000.0,272610000.0,325000000.0,569800000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK5',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK6',
+                                    CARA='M_TR_D_N',
+                                    VALE=(4706000.0,272610000.0,361960000.0,634570000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK6',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK7',
+                                    CARA='M_TR_D_N',
+                                    VALE=(2401000.0,139010000.0,184570000.0,323680000.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                 _F(GROUP_MA='MAS_BK7',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0),),),);
+#*****************************************************************
+#
+#      DEFINITION DES CONDITIONS AUX LIMITES
+#
+#
+
+
+CONDLIM=AFFE_CHAR_MECA(MODELE=STICKMOD,
+                       DDL_IMPO=_F(GROUP_NO='CENT_RAD',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                       LIAISON_SOLIDE=_F(GROUP_NO=('CENT_RAD','RADIER'),),);
+#*****************************************************************
+#
+#   CALCUL DE LA MASSE ET DE L INERTIE DE LA STRUCTURE
+#
+#
+
+
+MASSE=POST_ELEM(MODELE=STICKMOD,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CARA_ELE,
+                INFO=1,
+                MASS_INER=(_F(TOUT='OUI',),
+                            _F( GROUP_MA=('BK','MASSES','RADIER'),),));
+#
+#*****************************************************************
+#                    RESOLUTION DU PROBLEME MODAL
+#
+#        CALCULS ELEMENTAIRES DES MATRICES DE MASSE ET DE RAIDEUR
+#        NUMEROTATION DES INCONNUES DU PROBLEME
+#        ASSEMBLAGE DES MATRICES DE MASSE ET DE RAIDEUR
+#
+#
+#
+
+
+ASSEMBLAGE(MODELE=STICKMOD,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CARA_ELE,
+                CHARGE=CONDLIM,
+                NUME_DDL=CO('NUMEROTA'),
+                MATR_ASSE=(_F(MATRICE=CO('MATRRIGI'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATRMASS'),
+                              OPTION='MASS_MECA',),),);
+#
+#   CALCUL DES MODES PROPRES
+#
+#
+
+
+
+MODE=MACRO_MODE_MECA(MATR_RIGI=MATRRIGI,
+                     MATR_MASS=MATRMASS,
+                     CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,20.0,30.0,40.0,),),
+                     IMPRESSION=_F(),);
+
+#
+# CALCUL DE LA REPARTITION DE L ENERGIE POTENTIELLE DANS LA STRUCTURE
+#
+#
+
+
+# EPOT=POST_ELEM(MODELE=STICKMOD,
+#                CHAM_MATER=CHAMPMAT,
+#                CARA_ELEM=CARA_ELE,
+#                RESULTAT=MODE,
+#                ENER_POT=(_F(TOUT='OUI',),
+#                           _F( GROUP_MA=('MASSES','BK'),),));
+#
+#
+# CALCUL DU MACRO-ELEMENT DYNAMIQUE :
+#---------------------------------------------
+#
+
+
+INTERDYN=DEFI_INTERF_DYNA(NUME_DDL=NUMEROTA,
+                          INTERFACE=_F(NOM='DROITE',
+                                       TYPE='CRAIGB',
+                                       GROUP_NO='CENT_RAD',),);
+
+BAMO=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERDYN,
+                                   MODE_MECA=MODE,
+                                   NMAX_MODE=30,),);
+
+#
+#-----------------------------
+#
+#    DEFI_FONCTION : UL 33
+#    ACCELEROGRAMME : LBEW
+#    (LONG BEACH NORTH SOUTH)
+#
+#-----------------------------
+#
+#    DEFI_FONCTION : UL 34
+#    ACCELEROGRAMME : LBNS
+#    (LONG BEACH EAST WEST)
+#
+
+
+
+INCLUDE(UNITE=33,);
+
+INCLUDE(UNITE=34,);
+
+#
+#  ACCELEROGRAMMES NORMES A 0.1G
+#
+#
+#
+
+
+ACCELERX=CALC_FONCTION(COMB=_F(FONCTION=LBNS,
+                               COEF=1.5,),);
+
+ACCELERY=CALC_FONCTION(COMB=_F(FONCTION=LBEW,
+                               COEF=1.5,),);
+#
+#
+# PRE-TRAITEMENT DE MISS3D:
+#--------------------------
+# MAILLAGE ET IMPEDANCES D INTERFACE
+#
+#
+
+FIN()

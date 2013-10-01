@@ -1,0 +1,37 @@
+#
+#-----------------------------------------------------------------------
+#              AFFECTATION DES MATERIAUX AUX ELEMENTS
+#-----------------------------------------------------------------------
+#
+#
+MATERB=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA=('SRADIER'),
+                             MATER=BETARML,),
+                          _F(GROUP_MA=('TOP'),
+                             MATER=BETARM00,),
+                          _F(GROUP_MA=('FACELAT2'),
+                             MATER=BETARM00,),),);                  
+#
+#-----------------------------------------------------------------------
+#             AFFECTATION DES ELEMENTS-FINIS SUR LE MODELE
+#-----------------------------------------------------------------------
+#
+#
+ELEMB=AFFE_CARA_ELEM(MODELE=MODELE,
+                       RIGI_PARASOL=_F(VALE=(5.40000000000E11,5.40000000000E11,6.E11,6.50000000000000E14,6.50000000000000E14,1.090000000000000E15,),
+                                       COEF_GROUP=1.0,
+                                       CARA=('K_TR_D_N',),
+                                       GROUP_MA='SRADIER',
+                                       GROUP_MA_POI1='RADIER',
+                                       GROUP_NO_CENTRE='PO'),
+                       COQUE=(_F(COQUE_NCOU=1,
+                                 COEF_RIGI_DRZ=1.0000000000000001E-05,
+                                 MODI_METRIQUE='NON',
+                                 GROUP_MA=('SRADIER',),
+                                 EPAIS=5.0),
+                           _F(GROUP_MA=('FACELAT2',),
+                              EPAIS=1.3,),
+                           _F(GROUP_MA=('TOP'),
+                              EPAIS=2.5,),),
+                       INFO=1,
+                       );

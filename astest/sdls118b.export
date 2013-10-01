@@ -1,0 +1,13 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm sdls118b.comm D 1
+F mmed sdls118b.mmed D 20
+F libr sdls118b.32 D 32
+F libr sdls118b.33 D 33
+F libr sdls118b.34 D 34
+F libr sdls118b.35 D 35

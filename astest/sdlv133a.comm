@@ -1,0 +1,320 @@
+# TITRE RESOLUTION HARMONIQUE CYLINDRE DE SOL EN PARTIE MODELISE MISS3D
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SDLV133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+
+MAILLAGE = LIRE_MAILLAGE(FORMAT='MED', ) ;
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                CREA_GROUP_NO=_F(GROUP_MA=('SBASE',),
+                                ),
+               );
+
+MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
+          AFFE=(
+          _F( GROUP_MA=('VOLUM'),PHENOMENE= 'MECANIQUE',
+                         MODELISATION= '3D' ),
+                ),
+                        ) ;
+#
+
+mat1      = DEFI_MATERIAU( ELAS=_F( E= 5.419008E+8 , RHO= 2000.,
+                                    AMOR_HYST = 0.1,
+                                    NU= 0.2  )    ) ;
+
+
+champmat = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
+              AFFE=(
+              _F( GROUP_MA= 'VOLUM' , MATER= mat1 ),
+              )
+                           ) ;
+#
+# La structure est encastree a l interface
+#-----------------------------------------
+cond_lim = AFFE_CHAR_MECA( MODELE= MODELE,
+                       DDL_IMPO=_F( GROUP_NO = ('SBASE'),
+                                  DX = 0., DY= 0., DZ= 0.,
+                                  ),
+                                             ) ;
+#
+# Calcul des matrices et vecteurs elementaires=
+#----------------------------------------------
+rigi_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA',
+                             CHAM_MATER= champmat ,
+                             CHARGE= cond_lim                      ) ;
+righ_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA_HYST',
+                             CHAM_MATER= champmat ,
+                             RIGI_MECA= rigi_ele,
+                             CHARGE= cond_lim                      ) ;
+mass_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'MASS_MECA',
+                             CHAM_MATER= champmat ,
+                             CHARGE= cond_lim                      ) ;
+
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, );
+#
+# Assemblage des matrices et vecteurs=
+#-------------------------------------
+rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl ) ;
+rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl ) ;
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
+
+#
+# CALCUL DES MODES =
+#---------------------------------------------
+
+# MASSTOT=POST_ELEM(MODELE=MODELE,
+#                   CHAM_MATER= champmat ,
+#                   TITRE='MASSES',
+#                   MASS_INER=(_F(TOUT='OUI',),
+#                               _F( GROUP_MA=('VOLUM',),),
+#                                ),
+#                   );
+# 
+# IMPR_TABLE(TABLE=MASSTOT,);
+
+
+mode =MACRO_MODE_MECA(MATR_RIGI=rigidite,
+                      MATR_MASS=masse,
+                      CALC_FREQ=_F(FREQ=(0.1,70.,100.,125.,150.,
+                                         170., 185., 
+                                          ),
+                                  ),
+                      FILTRE_MODE=_F(SEUIL=0.0003,),
+                      IMPRESSION=_F(),);
+
+
+
+#
+FO1 = DEFI_FONCTION ( NOM_PARA= 'FREQ',
+         VALE= ( 0., 1., 100., 1., ) );
+
+
+
+MODESTA1=MODE_STATIQUE(  MATR_RIGI=rigidite,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'SBASE',
+                     AVEC_CMP = ('DX','DY','DZ'),
+                                 ))
+
+bamo=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = mode,NMAX_MODE = 1999),
+                              _F( MODE_INTF = MODESTA1,
+                                     NMAX_MODE = 1999)),
+                         NUME_REF=nume_ddl)
+
+
+mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,
+                    MATR_RIGI=rigidite,
+                    MATR_MASS=masse,);
+
+
+nddlgen = NUME_DDL_GENE( BASE= bamo,
+                          STOCKAGE= 'PLEIN',);
+
+rigigen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=rigidite );
+
+massgen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=masse );
+
+RIGIGENC=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=rigihyst );
+
+
+TABSOL = DEFI_SOL_MISS(
+    TITRE="SOL MOU",
+    MATERIAU=(
+        _F(E=5.419008E+08,  NU=0.2, RHO=2.e3, AMOR_HYST=0.10),
+        _F(E=4.320000E+08,  NU=0.2, RHO=2.e3, AMOR_HYST=0.10),
+    ),
+    COUCHE=(
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.25, NUME_MATE=1, RECEPTEUR="OUI",),
+        _F(EPAIS=10.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(SUBSTRATUM="OUI", NUME_MATE=1,),
+    ),
+    INFO=2,
+)
+
+CALC_MISS(
+    TYPE_RESU='FICHIER',
+    TABLE_SOL=TABSOL,
+    MACR_ELEM_DYNA=mael,
+    AMOR_REDUIT=(0.05,),
+    GROUP_MA_INTERF='SBASE',
+
+    UNITE_IMPR_ASTER=26,
+    UNITE_RESU_IMPE=38,
+    UNITE_RESU_FORC=28,
+    VERSION='V6.6',
+    PARAMETRE=_F(
+        FREQ_MIN=21.0,
+        FREQ_MAX=42.,
+        FREQ_PAS=21.0,
+        Z0=0.,
+        TYPE='BINAIRE',
+        DREF=1.,
+        ALGO = 'REGU',
+        OFFSET_MAX=10,
+        OFFSET_NB=200,
+    ),
+    INFO=2,
+)
+
+
+DEFI_FICHIER(ACTION='LIBERER', UNITE=38, );
+DEFI_FICHIER(ACTION='LIBERER', UNITE=28, );
+
+NF = 3
+impe=[None]*NF
+rito=[None]*NF
+fosi=[None]*NF
+
+for k in range(1,NF):
+
+
+  impe[k] = LIRE_IMPE_MISS(BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                       UNITE_RESU_IMPE=38, FREQ_EXTR=0.+21.0*k,
+                       TYPE='BINAIRE',
+                          );
+
+
+  rito[k]=COMB_MATR_ASSE(COMB_C=(
+                                _F(MATR_ASSE=impe[k],
+                                 COEF_C=1.0+0.j,),
+                                _F(MATR_ASSE=RIGIGENC,
+                                 COEF_C=1.0+0.j,),
+                                 ),
+                                 SANS_CMP='LAGR',
+                                 );
+
+  fosi[k] = LIRE_FORC_MISS(BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DX',NOM_CHAM='DEPL',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.+21.0*k,);
+
+  if k==1:
+    dyge = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                          MATR_MASS = massgen,
+                          MATR_RIGI = rito[k],
+                          SOLVEUR=_F( METHODE='LDLT', ),
+                          FREQ = 0.+21.0*k,
+                          EXCIT =_F ( VECT_ASSE_GENE = fosi[k],
+                                      COEF_MULT= 1.,
+                                  ),
+                        );
+  else:
+    dyge = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                          reuse=dyge, RESULTAT=dyge,
+                          MATR_MASS = massgen,
+                          MATR_RIGI = rito[k],
+                          SOLVEUR=_F( METHODE='LDLT', ),
+                          FREQ = 0.+21.0*k,
+                          EXCIT =_F ( VECT_ASSE_GENE = fosi[k],
+                                      COEF_MULT= 1.,
+                                  ),
+                        );
+  if k<(NF-1):
+    DETRUIRE(CONCEPT=_F(NOM=impe[k]),);
+    DETRUIRE(CONCEPT=_F(NOM=rito[k]),);
+    DETRUIRE(CONCEPT=_F(NOM=fosi[k]),);
+
+
+FDTHX = RECU_FONCTION ( RESU_GENE = dyge,
+           NOM_CHAM = 'DEPL',
+           GROUP_NO = 'PH',
+           NOM_CMP = 'DX');
+
+MFDTHX = CALC_FONCTION(EXTRACTION = _F(FONCTION = FDTHX,
+                                       PARTIE = 'MODULE'),);
+
+FDTMX = RECU_FONCTION ( RESU_GENE = dyge,
+           NOM_CHAM = 'DEPL',
+           GROUP_NO = 'PM',
+           NOM_CMP = 'DX');
+
+MFDTMX = CALC_FONCTION(EXTRACTION = _F(FONCTION = FDTMX,
+                                       PARTIE = 'MODULE'),);
+
+FDTBX = RECU_FONCTION ( RESU_GENE = dyge,
+           NOM_CHAM = 'DEPL',
+           GROUP_NO = 'PB',
+           NOM_CMP = 'DX');
+
+MFDTBX = CALC_FONCTION(EXTRACTION = _F(FONCTION = FDTBX,
+                                       PARTIE = 'MODULE'),);
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.99323329,
+                         VALE_REFE=1.0,
+                         CRITERE='RELATIF',
+                         VALE_PARA=21.0,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=1.E-2,
+                         FONCTION=MFDTHX,),
+                      _F(VALE_CALC=0.70344131,
+                         VALE_REFE=0.71024500000000002,
+                         CRITERE='RELATIF',
+                         VALE_PARA=21.0,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=1.E-2,
+                         FONCTION=MFDTMX,),
+                      _F(VALE_CALC=0.08149860,
+                         VALE_REFE=0.078350600000000006,
+                         CRITERE='RELATIF',
+                         VALE_PARA=21.0,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=0.050000000000000003,
+                         FONCTION=MFDTBX,),
+                      _F(VALE_CALC=0.98116923,
+                         VALE_REFE=1.0,
+                         CRITERE='RELATIF',
+                         VALE_PARA=42.0,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=2.E-2,
+                         FONCTION=MFDTHX,),
+                      _F(VALE_CALC=0.0817222,
+                         VALE_REFE=0.078350600000000006,
+                         CRITERE='RELATIF',
+                         VALE_PARA=42.0,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=0.050000000000000003,
+                         FONCTION=MFDTMX,),
+                      _F(VALE_CALC=1.010285,
+                         VALE_REFE=1.01214,
+                         CRITERE='RELATIF',
+                         VALE_PARA=42.0,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=0.5E-2,
+                         FONCTION=MFDTBX,),
+                      ),
+              )
+
+FIN( );

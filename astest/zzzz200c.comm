@@ -1,0 +1,526 @@
+# TITRE VALIDATION DE RIGI_PARASOL AVEC DES COQUE_3D
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# CAS TEST A UTILISER SUR 2 PROC EN MPI
+# IL MET EN EXERGUE UN PB DE TEST DE STURM SI ON UTILISE LE SOLVEUR
+# LINEAIRE MUMPS + METIS EN PARALLELE
+# D'AUTRE PART, SUR CE CAS MUMPS A BESOIN D'UN SURPLUS DE MEMOIRE
+# PARTICULIEREMENT IMPORTANT ().
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'ZZZZ200C',NIV_PUB_WEB='INTERNET'),
+IGNORE_ALARM=('MODELISA4_9','CALCULEL4_24'),DEBUG=_F(SDVERI='OUI'))
+#
+# LES MAILLES APLATIES SONT DUES AUX ELEMENTS DISCRETS DE TYPE SEG2 DONT LES
+# NOEUDS SONT CONFONDUS
+#
+
+
+MAIL0=LIRE_MAILLAGE(FORMAT='MED')
+
+MAIL1 = CREA_MAILLAGE(MAILLAGE=MAIL0,
+                  MODI_MAILLE=(
+                              _F(OPTION='TRIA6_7',
+                                    GROUP_MA='TRIANG'),
+                              _F(OPTION='QUAD8_9',
+                                    GROUP_MA='QUADRA'),
+                              ),
+                     )
+
+MAIL1=DEFI_GROUP(reuse =MAIL1,
+                    MAILLAGE=MAIL1,
+                    CREA_GROUP_NO=_F(GROUP_MA=('SRADIER')));
+
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAIL1,
+                  CREA_POI1 =_F(NOM_GROUP_MA = 'PRADIER',
+                                GROUP_NO = 'SRADIER'),
+                     )
+
+STICKMOD=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+                      _F(  GROUP_MA = 'POU_D_T',PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'POU_D_T'),
+                           _F(  GROUP_MA = 'MASSES',  PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'DIS_TR'),
+                           _F(  GROUP_MA = 'LIAI_NOE',PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'DIS_TR'),
+                           _F(  GROUP_MA = 'SRADIER',PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'COQUE_3D'),
+                           _F(  GROUP_MA = 'PRADIER',PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'DIS_TR')
+                           )
+                        )
+
+# ----------------------------------------------------------------------
+#  DEFINITION DES MATERIAUX
+
+MAT_1=DEFI_MATERIAU(  ELAS=_F(
+                         E = 4.000000000E+10,NU = 1.494252874E-01,
+                         AMOR_ALPHA = 4.5E-4, AMOR_BETA = 7.,
+                         RHO = 0.000000000E+00,ALPHA = 0.000000000E+00) )
+
+MAT_2=DEFI_MATERIAU(  ELAS=_F(
+                         E = 4.000000000E+10,NU = 1.494252874E-01,
+                         AMOR_ALPHA = 4.5E-4, AMOR_BETA = 7.,
+                         RHO = 2.500000000E+03,ALPHA = 0.000000000E+00) )
+
+MAT_3=DEFI_MATERIAU(  ELAS=_F(
+                         E = 4.000000000E+10,NU = 1.494252874E-01,
+                         AMOR_ALPHA = 4.5E-4, AMOR_BETA = 7.,
+                         RHO = 2.500000000E-01,ALPHA = 0.000000000E+00) )
+
+
+CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,  AFFE=(
+                          _F(  GROUP_MA = 'MAT_1',     MATER = MAT_1),
+                          _F(  GROUP_MA = 'MAT_2',     MATER = MAT_2),
+                          _F(  GROUP_MA = 'SRADIER',   MATER = MAT_3),
+                          # LES AFFECTATIONS CI-DESSOUS NE SONT PAS UTILES CAR E201 ET E301
+                          # APPARTIENNENT AU GROUP_MA 'MAT_1'.
+                          # MAIS ELLES SERVENT A LA VALIDATION DE IMPR_RESU/CONCEPT/CHAM_MATER
+                          _F(  MAILLE=('E201','E301'), MATER = MAT_1),
+                          _F(  MAILLE=('E201'),       MATER = MAT_1),
+                          ))
+
+#
+# ----------------------------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
+
+CARA_ELE=AFFE_CARA_ELEM( MODELE=STICKMOD,
+         COQUE=_F( GROUP_MA = 'SRADIER', EPAIS = 0.001,
+                   COEF_RIGI_DRZ = 0.001),
+         POUTRE=(
+          _F(  GROUP_MA = 'SEC_1',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 2.035000000E+03, 3.294890000E+05, 3.294890000E+05,
+                      1.110000000E+00, 1.110000000E+00, 1.000000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_2',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 8.700000000E+01, 2.756900000E+04, 2.756900000E+04,
+                      2.000000000E+00, 2.000000000E+00, 1.000000000E+07,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_3',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 1.696000000E+02, 4.294200000E+04, 4.294200000E+04,
+                      2.000000000E+00, 2.000000000E+00, 1.000000000E+07,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_4',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 9.400000000E+01, 1.250000000E+04, 1.250000000E+04,
+                      7.705000000E+01, 7.705000000E+01, 1.000000000E+07,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_5',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 4.852000000E+01, 6.522400000E+03, 6.142000000E+03,
+                      5.720000000E+00, 3.540000000E+00, 1.000000000E+06,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_6',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 4.852000000E+01, 6.522400000E+03, 6.142000000E+03,
+                      6.800000000E+00, 3.950000000E+00, 1.000000000E+06,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_7',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 2.328000000E+02, 1.095800000E+04, 2.128000000E+04,
+                      4.950000000E+00, 1.870000000E+00, 1.000000000E+07,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_8',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 2.277000000E+02, 2.300000000E+04, 2.107900000E+04,
+                      4.550000000E+00, 3.340000000E+00, 1.000000000E+07,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_9',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 1.490000000E+01, 1.900000000E+02, 1.500000000E+02,
+                      1.860000000E+00, 1.770000000E+00, 1.000000000E+05,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_10',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 1.430000000E+01, 1.200000000E+02, 1.170000000E+02,
+                      3.570000000E+00, 2.200000000E+00, 1.000000000E+05,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_11',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 5.348000000E+01, 5.486000000E+02, 5.486000000E+02,
+                      7.640000000E+01, 7.640000000E+01, 1.000000000E+05,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_12',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 5.348000000E+01, 5.486000000E+02, 4.253000000E+02,
+                      1.720000000E+00, 1.060000000E+00, 1.000000000E+05,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_13',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 4.521000000E+01, 3.261000000E+02, 3.261000000E+02,
+                      1.370000000E+00, 1.370000000E+00, 1.000000000E+05,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00)),
+          _F(  GROUP_MA = 'SEC_14',
+             SECTION = 'GENERALE',
+              CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
+                     'EZ', 'EY', 'RY', 'RZ', 'RT'),
+              VALE = ( 4.000000000E+01, 5.934000000E+02, 1.000000000E+00,
+                      2.080000000E+00, 1.000000000E+03, 1.000000000E+05,
+                      0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 1.000000000E+00))),
+        DISCRET=(
+# ON CARACTERISE LES NOEUDS COMPOSANT LE RADIER PAR DES MASSES NULLES POUR EVITER
+# L ALARME
+         _F(GROUP_MA='PRADIER',CARA='M_TR_D_N',
+             VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.)),
+  #
+          _F( MAILLE = ('MAS1','MAS2','MAS3','MAS4','MAS5','MAS6','MAS7','MAS8','MAS9','MAS10',
+                        'MAS11','MAS12','MAS13','MAS14','MAS15','MAS16','MAS17','MAS18','MAS19','MAS20',
+                        'MAS21','MAS22','MAS23','MAS24','MAS25','MAS26','MAS27'),
+              CARA = 'K_TR_D_N',
+              VALE = (0.0,0.0,0.0,0.,0.0,0.0)),
+
+                  #MASSES ET INERTIES LOCALISEES
+          _F(  MAILLE = 'MAS1',     CARA = 'M_TR_D_N',
+              VALE = ( 7.885000000E+06, 1.283000000E+09, 1.283000000E+09,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS2',     CARA = 'M_TR_D_N',
+              VALE = ( 9.768000000E+06, 1.484000000E+09, 1.484000000E+09,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS3',     CARA = 'M_TR_D_N',
+              VALE = ( 2.827000000E+06, 9.359000000E+08, 9.359000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS4',     CARA = 'M_TR_D_N',
+              VALE = ( 2.827000000E+06, 9.359000000E+08, 9.359000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS5',     CARA = 'M_TR_D_N',
+              VALE = ( 1.921000000E+06, 6.176000000E+08, 6.176000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS6',     CARA = 'M_TR_D_N',
+              VALE = ( 2.175000000E+06, 7.074000000E+08, 7.074000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS7',     CARA = 'M_TR_D_N',
+              VALE = ( 2.729000000E+06, 9.008000000E+08, 9.008000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS8',     CARA = 'M_TR_D_N',
+              VALE = ( 4.020000000E+06, 9.107000000E+08, 9.107000000E+08,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS9',     CARA = 'M_TR_D_N',
+              VALE = ( 3.554000000E+06, 8.840000000E+08, 8.840000000E+08,
+                      1.768000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS10',    CARA = 'M_TR_D_N',
+              VALE = ( 1.000000000E+00, 1.000000000E+00, 1.000000000E+00,
+                      2.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS11',    CARA = 'M_TR_D_N',
+              VALE = ( 2.098000000E+06, 5.200000000E+08, 5.200000000E+08,
+                      1.040000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS12',    CARA = 'M_TR_D_N',
+              VALE = ( 5.246000000E+06, 1.393000000E+09, 1.393000000E+09,
+                      2.786000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS13',    CARA = 'M_TR_D_N',
+              VALE = ( 5.858000000E+06, 1.525000000E+09, 1.525000000E+09,
+                      3.050000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS14',    CARA = 'M_TR_D_N',
+              VALE = ( 6.810000000E+06, 1.740000000E+09, 1.740000000E+09,
+                      3.480000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS15',    CARA = 'M_TR_D_N',
+              VALE = ( 1.000000000E+07, 2.020000000E+09, 2.020000000E+09,
+                      4.040000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS16',    CARA = 'M_TR_D_N',
+              VALE = ( 3.000000000E+05, 3.120000000E+07, 2.690000000E+07,
+                      5.810000000E+07, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS17',    CARA = 'M_TR_D_N',
+              VALE = ( 2.750000000E+05, 5.700000000E+06, 3.500000000E+06,
+                      9.200000000E+06, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS18',    CARA = 'M_TR_D_N',
+              VALE = ( 2.960000000E+06, 4.340000000E+08, 4.260000000E+08,
+                      8.600000000E+08, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS19',    CARA = 'M_TR_D_N',
+              VALE = ( 1.130000000E+06, 3.620000000E+07, 3.190000000E+07,
+                      6.810000000E+07, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS20',    CARA = 'M_TR_D_N',
+              VALE = ( 4.230000000E+06, 5.360000000E+08, 5.560000000E+08,
+                      1.091000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS21',    CARA = 'M_TR_D_N',
+              VALE = ( 3.260000000E+06, 5.390000000E+07, 6.750000000E+07,
+                      1.214000000E+08, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS22',    CARA = 'M_TR_D_N',
+              VALE = ( 4.930000000E+06, 5.500000000E+08, 5.280000000E+08,
+                      1.078000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS23',    CARA = 'M_TR_D_N',
+              VALE = ( 1.890000000E+06, 1.700000000E+08, 1.000000000E+00,
+                      1.700000000E+08, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS24',    CARA = 'M_TR_D_N',
+              VALE = ( 6.980000000E+06, 9.130000000E+08, 6.930000000E+08,
+                      1.606000000E+09, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS25',    CARA = 'M_TR_D_N',
+              VALE = ( 3.800000000E+05, 1.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS26',    CARA = 'M_TR_D_N',
+              VALE = ( 2.700000000E+05, 1.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          _F(  MAILLE = 'MAS27',    CARA = 'M_TR_D_N',
+              VALE = ( 1.000000000E+05, 1.000000000E+00, 1.000000000E+00,
+                      1.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00, 0.000000000E+00, 0.000000000E+00,
+                      0.000000000E+00)),
+          # FIN DES CARACTERISTIQUES DES MASSES
+
+            # LIAISONS SIMPLES NOEUD-NOEUD
+
+          _F(  GROUP_MA = 'RLN_1',    CARA = 'K_TR_D_L',
+            VALE = ( 1.000000000E+00, 1.320000000E+10, 7.080000000E+08,
+                   1.424000000E+10, 1.000000000E+00, 1.000000000E+13),
+                  REPERE = 'GLOBAL'),
+          _F(  GROUP_MA = 'RLN_2',    CARA = 'K_TR_D_L',
+            VALE = ( 7.800000000E+10, 1.040000000E+11, 6.160000000E+09,
+                   1.632000000E+11, 5.560000000E+10, 1.000000000E+14),
+                  REPERE = 'GLOBAL'),
+          _F(  GROUP_MA = 'RLN_3',    CARA = 'K_TR_D_L',
+            VALE = ( 1.692000000E+11, 1.840000000E+11, 1.872000000E+10,
+                   7.600000000E+11, 1.800000000E+11, 1.000000000E+14),
+                  REPERE = 'GLOBAL'),
+          _F(  GROUP_MA = 'RLN_4',    CARA = 'K_TR_D_L',
+            VALE = ( 0.000000000E+00, 2.000000000E+11, 5.872000000E+10,
+                   4.039000000E+12, 0.000000000E+00, 1.000000000E+14),
+                  REPERE = 'GLOBAL'),
+          _F(  GROUP_MA = 'RLN_5',    CARA = 'K_TR_D_L',
+            VALE = ( 1.900000000E+11, 1.900000000E+11, 2.000000000E+09,
+                   5.000000000E+11, 5.000000000E+11, 1.000000000E+14),
+                  REPERE = 'GLOBAL')),
+  RIGI_PARASOL=_F(
+     GROUP_MA = 'SRADIER', GROUP_MA_POI1 = 'PRADIER',
+     COEF_GROUP = 1., GROUP_NO_CENTRE = 'P1',
+      CARA = ( 'K_TR_D_N'),
+      VALE = (  6.295000000E+11, 6.295000000E+11, 6.864000000E+11,
+                     3.188000000E+14, 3.188000000E+14, 3.2E14))
+
+                )
+
+#
+# LA STRUCTURE EST RIGIDIFIEE A L INTERFACE
+#------------------------------------------
+
+COND_LIM=AFFE_CHAR_MECA(  MODELE=STICKMOD,
+                   LIAISON_SOLIDE=(
+                     _F(  GROUP_NO = ('SRADIER'))),
+                   LIAISON_UNIF=(
+                     _F( GROUP_MA = 'RLN_4',  DDL = 'DX'),
+                     _F( GROUP_MA = 'RLN_4',  DDL = 'DRY'))
+                                             )
+
+#
+# CALCUL DE LA MASSE ET INERTIES DE LA STRUCTURE -----------------------
+
+MASSESTR=POST_ELEM(  MODELE=STICKMOD,
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                        MASS_INER=_F(  TOUT = 'OUI') )
+
+#
+
+
+# ----------------------------------------------------------------------
+
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=STICKMOD,  OPTION='RIGI_MECA',
+                        CHARGE=COND_LIM,
+                        CHAM_MATER=CHAMPMAT,  CARA_ELEM=CARA_ELE )
+
+MASS_ELE=CALC_MATR_ELEM( MODELE=STICKMOD,  OPTION='MASS_MECA',
+                        CHARGE=COND_LIM,
+                        CHAM_MATER=CHAMPMAT,  CARA_ELEM=CARA_ELE )
+
+#
+
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUMEDDL )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL )
+
+#
+# CALCUL DES MODES :
+#---------------------------------------------
+
+MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
+                   SOLVEUR=_F(METHODE='MUMPS',ELIM_LAGR2='NON',
+   RENUM='PORD', NPREC=9, PCENT_PIVOT=120),INFO=1,
+                   CALC_FREQ=_F( NMAX_FREQ = 6 ),
+                         )
+
+
+
+MODE=NORM_MODE(reuse=MODE,  MODE=MODE,    NORME='TRAN_ROTA')
+
+# VALEUR DE REFERENCE : VALEURS OBTENUES EN VERSION 3.06.26
+# AVEC DES DST POUR SRADIER
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=3.9586801208097,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=3.966709899096,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=4.7815570842035,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=4.7831038837354,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=7.0797461439277,
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   RESULTAT=MODE,
+                   VALE_CALC=7.5517168786511,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+# Validation de IMPR_RESU/ CONCEPT :
+#-----------------------------------------
+
+CHARG1=AFFE_CHAR_MECA(MODELE=STICKMOD,
+                  PESANTEUR=(
+                    _F(GRAVITE=9.81,  DIRECTION=(0.0,0.0,-1.0), GROUP_MA = 'SRADIER' ),
+                  ))
+
+# validation de la fiche 20343 :
+IMPR_RESU( FORMAT='MED', UNITE=78,
+           CONCEPT=(
+             _F(CHAM_MATER = CHAMPMAT),
+             _F(CARA_ELEM  = CARA_ELE),
+             _F(CHARGE     = CHARG1),
+           ))
+
+
+IMPR_RESU( FORMAT='RESULTAT', UNITE=79,
+           CONCEPT=(
+             _F(CHAM_MATER = CHAMPMAT),
+             _F(CARA_ELEM  = CARA_ELE),
+             _F(CHARGE     = CHARG1),
+           ))
+
+# pour fiche 18076 (couverture routine dismcr.f) :
+IMPR_RESU( FORMAT='MED', UNITE=77,
+           CONCEPT=(
+             _F(CARA_ELEM  = CARA_ELE),
+           ))
+
+
+FIN( )

@@ -1,0 +1,16 @@
+TITR
+SOL STRATIFIE
+MATERIAU 4
+RO       E        NU         BETA     ETA
+2150   4480.E06    0.40       0.08     0.
+2070   1421.E06    0.45       0.114    0.
+2150   1305.E06    0.45       0.16     0.
+2400   6000.E06    0.45       0.06     0.
+COUCHE 3
+43.9    MATE 1 RECEP
+31      MATE 2 
+38.5    MATE 3 
+SUBS    MATE 4
+SOURCE 1 3D
+FORCE HORIZ POSI 1
+

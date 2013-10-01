@@ -1,0 +1,26 @@
+#
+# ----------------------------------------------------------------------
+# DEFINITION DES GROUPES DE MAILLES POUR LE CALCUL DES ENERGIES
+# ----------------------------------------------------------------------
+#
+#
+#
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='ST_B_ARM',
+                                  UNION=
+                                  ('SRADIER','TOP','FACELAT2',),),),);
+
+#
+#-----------------------------------------------------------------------
+#               AFFECTATION DES ELEMENTS FINIS AU MODELE 
+#-----------------------------------------------------------------------
+#
+#
+#
+
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA=('ST_B_ARM'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),),);

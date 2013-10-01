@@ -1,0 +1,20 @@
+#
+#-----------------------------------------------------------------------
+#             AFFECTATION DES ELEMENTS-FINIS SUR LE MODELE
+#-----------------------------------------------------------------------
+#
+#
+ELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                    COQUE=(_F(GROUP_MA=('SRADIER'),
+                              EPAIS=5.0,),
+                           _F(GROUP_MA=('FACELAT2',),
+                              EPAIS=1.3,),
+                           _F(GROUP_MA=('TOP'),
+                              EPAIS=2.5,),),
+                     DISCRET=(
+                             _F(GROUP_MA='RADIER', CARA='K_TR_D_N',
+                                VALE=(0.,0.,0.,0.,0.,0.,),),
+                             _F(GROUP_MA='RADIER', CARA='M_TR_D_N',
+                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                                ),);
+

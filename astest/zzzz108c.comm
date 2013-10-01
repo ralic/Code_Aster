@@ -1,0 +1,331 @@
+# TITRE TEST DES POINTS DE CONTROLE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ108C',
+              NIV_PUB_WEB='INTERNET',),)
+
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',)
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL0,
+                       CREA_POI1=_F(NOM_GROUP_MA='PC',
+                                    GROUP_NO=('PC1','PC2','PC3',),),)
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='SHAUT',),)
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA='SHAUT',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DST',),
+                         _F(GROUP_MA='PC',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),)
+
+mat1=DEFI_MATERIAU(ELAS=_F(E=7.00E+7,
+                           NU=0.4,
+                           RHO=2400.,
+                           AMOR_HYST=0.1,),)
+
+champmat=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(GROUP_MA='SHAUT',
+                               MATER=mat1,),)
+
+caraele=AFFE_CARA_ELEM(MODELE=MODELE,
+                       COQUE=_F(GROUP_MA='SHAUT',
+                                EPAIS=0.001,),
+                       DISCRET=(_F(CARA='M_T_D_N',
+                                   GROUP_MA='PC',
+                                   VALE=0.,),
+                                _F(CARA='K_T_D_N',
+                                   GROUP_MA='PC',
+                                   VALE=(0.,0.,0.,),),),)
+
+# La structure est encastree a l interface
+#-----------------------------------------
+
+cond_lim=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='SHAUT',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),
+                                  _F(GROUP_NO=('PC1','PC2','PC3',),
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),),)
+
+cond_li2=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='PH',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,
+                                     DRX=0.,
+                                     DRY=0.,
+                                     DRZ=0.,),
+                                  _F(GROUP_NO=('PC1','PC2','PC3',),
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),),)
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=champmat,
+           CARA_ELEM=caraele,
+           CHARGE=cond_lim,
+           NUME_DDL=CO('nume_ddl'),
+           SOLVEUR=_F(METHODE='MULT_FRONT',
+                      RENUM='METIS',),
+           MATR_ASSE=(_F(MATRICE=CO('rigidite'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('masse'),
+                         OPTION='MASS_MECA',),),)
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=champmat,
+           CARA_ELEM=caraele,
+           CHARGE=cond_li2,
+           NUME_DDL=CO('nume_dd2'),
+           SOLVEUR=_F(METHODE='MULT_FRONT',
+                      RENUM='METIS',),
+           MATR_ASSE=(_F(MATRICE=CO('rigid2'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('masse2'),
+                         OPTION='MASS_MECA',),),)
+
+# CALCUL DES MODES
+#-----------------
+
+mode=MODE_ITER_SIMULT(PREC_SOREN=1.0,
+                      NMAX_ITER_SOREN=100,
+                      MATR_RIGI=rigid2,
+                      MATR_MASS=masse2,
+#                      CALC_FREQ=_F(NMAX_FREQ=1,),
+                      CALC_FREQ=_F(OPTION='BANDE',FREQ=(-0.1,0.1,),),
+                      )
+
+fo1=DEFI_FONCTION(
+                  NOM_PARA='FREQ',
+                  VALE=(0.,1.,
+                        100.,1.,
+                        ),)
+
+mod_sta=MODE_STATIQUE(MATR_RIGI=rigidite,
+                      MODE_STAT=_F(GROUP_NO='SHAUT',
+                                   AVEC_CMP=('DX','DY','DZ',),),)
+
+bamo=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=mode,
+                               NMAX_MODE=0,),
+                            _F(NMAX_MODE=999,
+                               MODE_INTF=mod_sta,),),
+                      NUME_REF=nume_ddl,)
+
+mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,
+                    MATR_RIGI=rigidite,
+                    MATR_MASS=masse,)
+
+tabsol=DEFI_SOL_MISS(MATERIAU=(_F(E=7.00E+07,
+                                  NU=0.4,
+                                  RHO=2400,
+                                  AMOR_HYST=0.10,),
+                               _F(E=7.02E+07,
+                                  NU=0.4,
+                                  RHO=2400,
+                                  AMOR_HYST=0.10,),),
+                     COUCHE=(_F(EPAIS=12.5,
+                                RECEPTEUR='OUI',
+                                SOURCE='OUI',
+                                NUME_MATE=1,),
+                             _F(EPAIS=12.5,
+                                RECEPTEUR='OUI',
+                                SOURCE='OUI',
+                                NUME_MATE=1,),
+                             _F(EPAIS=10.,
+                                RECEPTEUR='OUI',
+                                SOURCE='OUI',
+                                NUME_MATE=1,),
+                             _F(SUBSTRATUM='OUI',
+                                NUME_MATE=1,),),
+                     TITRE='SOL MOU',)
+
+tfin = 4.0
+df = 1.0 / tfin
+fmax = 50.0
+pas1 = 1.0E-2
+omega = 31.416
+
+ltps=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=tfin,
+                                  PAS=pas1,),)
+
+fonsin = FORMULE(NOM_PARA='INST',
+                 VALE='sin(omega*INST) ')
+
+accsin=CALC_FONC_INTERP(FONCTION=fonsin,
+                        NOM_PARA='INST',
+                        NOM_RESU='EVOL',
+                        LIST_PARA=ltps)
+
+tabctr = CALC_MISS(TYPE_RESU='TABLE_CONTROL',
+                   PROJET='ZZZZ108C',
+                   TABLE_SOL=tabsol,
+                   MACR_ELEM_DYNA=mael,
+                   GROUP_MA_INTERF='SHAUT',
+                   GROUP_MA_CONTROL='PC',
+                   PARAMETRE=_F(FREQ_MIN=df,
+                                FREQ_MAX=fmax,
+                                FREQ_PAS=df,
+                                Z0=0.0,
+                                SURF='OUI',
+                                ALGO='DEPL',
+                                OFFSET_MAX=60,
+                                OFFSET_NB=600,),
+                   ACCE_Z=accsin,
+                   INST_FIN=tfin,
+                   PAS_INST=pas1,
+                   NORME=9.81,
+                   AMOR_SPEC_OSCI=(0.02, 0.05, 0.07),
+)
+
+ftx1 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_X',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC1'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
+
+ftz1 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_Z',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC1'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
+
+ftz2 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_Z',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC2'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
+
+ftz3 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_Z',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC3'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
+
+TEST_FONCTION(VALEUR=_F(
+    FONCTION=ftx1,
+    NOM_PARA='FREQ',
+    VALE_PARA=5.0,
+    VALE_CALC_C=9.95035E-01 - 9.95046E-02j,
+))
+
+TEST_FONCTION(VALEUR=_F(
+    FONCTION=ftz3,
+    NOM_PARA='FREQ',
+    VALE_PARA=50.0,
+    VALE_CALC_C=2.43119E+00 - 5.10146E-01j,
+))
+
+acce_z1 = EXTR_TABLE(TABLE     = tabctr,
+                     TYPE_RESU = 'FONCTION_SDASTER',
+                     NOM_PARA  = 'FONC_Z',
+                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                                  VALE_K   = 'PC1'),
+                             _F(NOM_PARA   = 'NOM_CHAM',
+                                  VALE_K   = 'ACCE'),
+                             _F(NOM_PARA   = 'NOM_PARA',
+                                  VALE_K   = 'INST'),),)
+
+acce_z2 = EXTR_TABLE(TABLE     = tabctr,
+                     TYPE_RESU = 'FONCTION_SDASTER',
+                     NOM_PARA  = 'FONC_Z',
+                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                                  VALE_K   = 'PC2'),
+                             _F(NOM_PARA   = 'NOM_CHAM',
+                                  VALE_K   = 'ACCE'),
+                             _F(NOM_PARA   = 'NOM_PARA',
+                                  VALE_K   = 'INST'),),)
+
+acce_z3 = EXTR_TABLE(TABLE     = tabctr,
+                     TYPE_RESU = 'FONCTION_SDASTER',
+                     NOM_PARA  = 'FONC_Z',
+                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                                  VALE_K   = 'PC3'),
+                             _F(NOM_PARA   = 'NOM_CHAM',
+                                  VALE_K   = 'ACCE'),
+                             _F(NOM_PARA   = 'NOM_PARA',
+                                  VALE_K   = 'INST'),),)
+
+# solution AUTRE_ASTER est obtenue avec zzzz108b
+# sans DIRE_ONDE et en retirant EXCIT_SOL en X et Y
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.99503686,
+                         VALE_REFE=1.0,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.05,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.e-2,
+                         FONCTION=acce_z1,),
+                      _F(VALE_CALC=0.077163903,
+                         VALE_REFE=0.0781346,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.20,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=2.e-2,
+                         FONCTION=acce_z2,),
+                      _F(VALE_CALC=-1.0069431,
+                         VALE_REFE=-1.01214,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.05,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.e-2,
+                         FONCTION=acce_z3,),
+                      ),
+              )
+
+IMPR_TABLE(TABLE=tabctr,)
+
+IMPR_FONCTION(COURBE=(_F(FONCTION=ftz1),
+                      _F(FONCTION=ftz2),
+                      _F(FONCTION=ftz3),),)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONCTION=acce_z1,),
+                      _F(FONCTION=acce_z2,),
+                      _F(FONCTION=acce_z3,),),)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=77,
+              COURBE=(_F(FONCTION=ftz1,),
+                      _F(FONCTION=ftz2,),
+                      _F(FONCTION=ftz3,),),)
+
+FIN()

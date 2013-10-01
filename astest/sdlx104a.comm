@@ -1,0 +1,531 @@
+# TITRE CALCUL MISS_3D CODE_ASTER METHODE REDUCTION MODALE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDLX104A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+# DEFINITION DU MODELE
+INCLUDE(UNITE=11,);
+# DEFINITION ET AFFECTATION DES MATERIAUX
+INCLUDE(UNITE=12,);
+# AFFECTATION DES CARACTERISTIQUES
+INCLUDE(UNITE=13,);
+# AFFECTATION DES MATERIAUX A MASSE NULLE EN DEHORS DE LA FONDATION
+# ET DE CARACTERISTIQUES DE RAIDEUR REPARTIE EQUIVALENTE A LA
+# FONDATION RIGIDE
+INCLUDE(UNITE=14,);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA=('SRADIER'),),);
+
+CH_CLDYN=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=_F(GROUP_NO=('SRADIER'),
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,),);
+
+RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CHARGE=CH_CLDYN,
+                        CHAM_MATER=MATER,
+                        CARA_ELEM = ELEM);
+
+MASELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                       MODELE=MODELE,
+                       CHARGE=CH_CLDYN,
+                        CHAM_MATER=MATER,
+                       CARA_ELEM = ELEM);
+
+NUM_DYN=NUME_DDL(MATR_RIGI=RIGIELEM,);
+
+MATMASS=ASSE_MATRICE(MATR_ELEM=MASELEM,
+                     NUME_DDL=NUM_DYN,);
+
+MATRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
+                     NUME_DDL=NUM_DYN,);
+
+#
+#
+# ----------------------------------------------------------
+# calcul des modes propres par bandes successives
+# ----------------------------------------------------------
+#
+#
+#
+MOD_DYN = MACRO_MODE_MECA( MATR_RIGI= MATRIGI, MATR_MASS= MATMASS,
+                        CALC_FREQ =_F(
+                        FREQ =(0.1, 4., 7., 8.,     
+                                ),
+                                   ),
+                        VERI_MODE=_F(STURM='LOCAL'),
+                        FILTRE_MODE=_F( ),
+                        IMPRESSION=_F( ),
+                         );
+
+
+
+STARIELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=MATERB,
+                        CARA_ELEM = ELEMB);
+
+STAMAELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=MATERB,
+                        CARA_ELEM = ELEMB);
+
+NUM_STA=NUME_DDL(MATR_RIGI=STARIELE,);
+
+MASSETAT=ASSE_MATRICE(MATR_ELEM=STAMAELE,
+                      NUME_DDL=NUM_STA,);
+
+RIGISTAT=ASSE_MATRICE(MATR_ELEM=STARIELE,
+                      NUME_DDL=NUM_STA,);
+# ----------------------------------------------------------
+# calcul des modes de fondation sur tapis de ressorts
+# ----------------------------------------------------------
+#
+MOD_STA=MODE_ITER_SIMULT(MATR_RIGI=RIGISTAT,
+                         MATR_MASS=MASSETAT,
+                         CALC_FREQ=_F(NMAX_FREQ=40),
+                        );
+
+
+BASMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MOD_DYN,),
+                             _F(NMAX_MODE=40,
+                                MODE_INTF=MOD_STA,),),
+                       NUME_REF=NUM_DYN,);
+#
+#
+
+
+MAEL=MACR_ELEM_DYNA(BASE_MODALE=BASMO,
+                    MATR_RIGI=MATRIGI,
+                    MATR_MASS=MATMASS,
+                    );
+#-----------------------------
+#
+#    DEFI_FONCTION : UL 31
+#    ACCELEROGRAMME : ACC1.C2
+#
+#-----------------------------
+#
+#    DEFI_FONCTION : UL 32
+#    ACCELEROGRAMME : ACC2.C2
+#
+#-----------------------------
+#
+#    DEFI_FONCTION : UL 33
+#    ACCELEROGRAMME : ACC3.C2
+#
+#
+listinst = DEFI_LIST_REEL(DEBUT=0.0,
+             INTERVALLE=_F(JUSQU_A=10.23, PAS=0.01),
+                          );
+
+INCLUDE(UNITE=31,);
+#
+#
+
+
+ACCE_X=CALC_FONCTION(COMB=_F(FONCTION=ACCE1,
+                             COEF=9.8100000000000005,),
+                     LIST_PARA=listinst);
+#
+#
+#
+
+
+INCLUDE(UNITE=32,);
+#
+#
+
+
+ACCE_Y=CALC_FONCTION(COMB=_F(FONCTION=ACCE2,
+                             COEF=9.8100000000000005,),
+                     LIST_PARA=listinst);
+#
+#
+#
+
+
+INCLUDE(UNITE=33,);
+#
+#
+
+
+ACCE_Z=CALC_FONCTION(COMB=_F(FONCTION=ACCE3,
+                             COEF=6.54,),
+                     LIST_PARA=listinst);
+
+
+#
+# PRE-TRAITEMENT DE MISS3D:
+#--------------------------
+# MAILLAGE ET IMPEDANCES D INTERFACE
+#
+#
+
+l_amor = (0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.050000000000000000,
+                                                   0.050000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.050000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.070000000000000000,0.070000000000000000,0.070000000000000000,
+                                                   0.050000000000000000,0.050000000000000000,0.070000000000000000,)
+
+#
+
+#
+# TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
+#---------------------------------------
+#
+#
+df=1./10.24 ;
+fmax = 257./10.24 ;
+# dfc = 1./20.48 ;
+# fmaxc = 513./20.48 ;
+dfc = 0.2 ;
+fmaxc = 8. ;
+fmaxc = 6. ;
+
+
+tabsol = DEFI_SOL_MISS(
+    TITRE="SOL STRATIFIE",
+    MATERIAU=(
+        _F(E=4.480000E+09,  NU=0.40, RHO=2.15e3, AMOR_HYST=0.08),
+        _F(E=1.421000E+09,  NU=0.45, RHO=2.07e3, AMOR_HYST=0.114),
+        _F(E=1.305000E+09,  NU=0.45, RHO=2.15e3, AMOR_HYST=0.16),
+        _F(E=6.000000E+09,  NU=0.45, RHO=2.40e3, AMOR_HYST=0.06),
+    ),
+    COUCHE=(
+        _F(EPAIS=43.9, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=31.0, NUME_MATE=2,),
+        _F(EPAIS=38.5, NUME_MATE=3,),
+        _F(SUBSTRATUM="OUI", NUME_MATE=4,),
+    ),
+    INFO=2,
+);
+
+CALC_MISS(
+    TYPE_RESU='FICHIER',
+    TABLE_SOL=tabsol,
+    MACR_ELEM_DYNA=MAEL,
+    AMOR_REDUIT=l_amor,
+    GROUP_MA_INTERF=('SRADIER'),
+    UNITE_RESU_IMPE=38,
+    UNITE_RESU_FORC=28,
+
+    VERSION='V6.6',
+    PARAMETRE=_F(
+        FREQ_MIN=dfc,
+        FREQ_MAX=fmaxc,
+        FREQ_PAS=dfc,
+        TYPE='BINAIRE',
+        Z0= -11.60,
+        SURF='OUI',
+        ALGO = 'DEPL',
+        OFFSET_MAX=110,
+        OFFSET_NB=400,
+        #SPEC_MAX=0.12,
+        #SPEC_NB=16384,
+    ),
+    INFO=1,
+)
+
+
+nddlgen = NUME_DDL_GENE( BASE= BASMO,
+                          STOCKAGE= 'PLEIN',);
+
+rigigen=PROJ_MATR_BASE(  BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=MATRIGI );
+
+massgen=PROJ_MATR_BASE(  BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=MATMASS );
+
+
+DEFI_FICHIER(ACTION='LIBERER', UNITE=38, );
+DEFI_FICHIER(ACTION='LIBERER', UNITE=28, );
+
+NF = 258
+
+impe=[None]*NF
+rito=[None]*NF
+fosx=[None]*NF
+fosy=[None]*NF
+fosz=[None]*NF
+
+XFF=CALC_FONCTION( FFT=_F( FONCTION = ACCE_X, METHODE='COMPLET',) );
+YFF=CALC_FONCTION( FFT=_F( FONCTION = ACCE_Y, METHODE='COMPLET',) );
+ZFF=CALC_FONCTION( FFT=_F( FONCTION = ACCE_Z, METHODE='COMPLET',) );
+
+
+impe0 = LIRE_IMPE_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       UNITE_RESU_IMPE=38, FREQ_EXTR=0.,
+                       TYPE='BINAIRE',
+                          );
+
+rito0=COMB_MATR_ASSE(COMB_C=(
+                             _F(MATR_ASSE=impe0,
+                                COEF_C=1.0+0.j,),
+                             _F(MATR_ASSE=rigigen,
+                                COEF_C=1.0+0.j,),
+                             ),
+                                 SANS_CMP='LAGR',
+                                 );
+
+fosx0 = LIRE_FORC_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DX',NOM_CHAM='ACCE',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.,);
+
+fosy0 = LIRE_FORC_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DY',NOM_CHAM='ACCE',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.,);
+
+fosz0 = LIRE_FORC_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DZ',NOM_CHAM='ACCE',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.,);
+
+dyge = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                          MATR_MASS = massgen,
+                          MATR_RIGI = rito0,
+                          SOLVEUR=_F( METHODE='LDLT', ),
+                          FREQ = 0.,
+                          AMOR_MODAL=_F(AMOR_REDUIT= (0.07,0.07,0.07,
+                                        0.07,0.07,0.05,
+                                        0.05,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.05,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.05,0.05,0.07,),),
+                          EXCIT =(
+                                  _F ( VECT_ASSE_GENE = fosx0,
+                                       FONC_MULT_C= XFF,),
+                                  _F ( VECT_ASSE_GENE = fosy0,
+                                       FONC_MULT_C= YFF,),
+                                  _F ( VECT_ASSE_GENE = fosz0,
+                                       FONC_MULT_C= ZFF,),
+                                  ),
+                        );
+
+for k in range(1,NF):
+
+
+  impe[k] = LIRE_IMPE_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       UNITE_RESU_IMPE=38, FREQ_EXTR=0.+df*k,
+                       TYPE='BINAIRE',
+                          );
+
+
+  rito[k]=COMB_MATR_ASSE(COMB_C=(
+                                _F(MATR_ASSE=impe[k],
+                                 COEF_C=1.0+0.j,),
+                                _F(MATR_ASSE=rigigen,
+                                 COEF_C=1.0+0.j,),
+                                 ),
+                                 SANS_CMP='LAGR',
+                                 );
+
+  fosx[k] = LIRE_FORC_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DX',NOM_CHAM='ACCE',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.+df*k,);
+
+  fosy[k] = LIRE_FORC_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DY',NOM_CHAM='ACCE',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.+df*k,);
+
+  fosz[k] = LIRE_FORC_MISS(BASE=BASMO,  NUME_DDL_GENE=nddlgen,
+                       NOM_CMP='DZ',NOM_CHAM='ACCE',
+                       UNITE_RESU_FORC=28, FREQ_EXTR=0.+df*k,);
+
+  if k>204:
+
+    dyge = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                          reuse=dyge, RESULTAT=dyge,
+                          MATR_MASS = massgen,
+                          MATR_RIGI = rito[k],
+                          SOLVEUR=_F( METHODE='LDLT', ),
+                          FREQ = 0.+df*k,
+                          AMOR_MODAL=_F(AMOR_REDUIT= (0.07,0.07,0.07,
+                                        0.07,0.07,0.05,
+                                        0.05,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.05,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.05,0.05,0.07,),),
+                          EXCIT =(
+                                  _F ( VECT_ASSE_GENE = fosx[k],
+                                       COEF_MULT_C= 0.+0j,),
+                                  _F ( VECT_ASSE_GENE = fosy[k],
+                                       COEF_MULT_C= 0.+0j,),
+                                  _F ( VECT_ASSE_GENE = fosz[k],
+                                       COEF_MULT_C= 0.+0j,),
+                                  ),
+                        );
+
+  else:
+
+    dyge = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                          reuse=dyge, RESULTAT=dyge,
+                          MATR_MASS = massgen,
+                          MATR_RIGI = rito[k],
+                          SOLVEUR=_F( METHODE='LDLT', ),
+                          FREQ = 0.+df*k,
+                          AMOR_MODAL=_F(AMOR_REDUIT= (0.07,0.07,0.07,
+                                        0.07,0.07,0.05,
+                                        0.05,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.05,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.07,0.07,0.07,0.07,0.07,0.07,
+                                        0.05,0.05,0.07,),),
+                          EXCIT =(
+                                  _F ( VECT_ASSE_GENE = fosx[k],
+                                       FONC_MULT_C= XFF,),
+                                  _F ( VECT_ASSE_GENE = fosy[k],
+                                       FONC_MULT_C= YFF,),
+                                  _F ( VECT_ASSE_GENE = fosz[k],
+                                       FONC_MULT_C= ZFF,),
+                                  ),
+                        );
+
+
+  if k<(NF-1):
+     DETRUIRE(CONCEPT=_F(NOM=impe[k]),);
+     DETRUIRE(CONCEPT=_F(NOM=rito[k]),);
+     DETRUIRE(CONCEPT=_F(NOM=fosx[k]),);
+     DETRUIRE(CONCEPT=_F(NOM=fosy[k]),);
+     DETRUIRE(CONCEPT=_F(NOM=fosz[k]),);
+
+
+
+
+RESUGENE = REST_SPEC_TEMP(RESU_GENE = dyge ,
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          #NOM_CHAM = 'ACCE'  );
+                          TOUT_CHAM = 'OUI'  );
+
+
+
+L_FREQ = (3.525, 4.10, 
+          4.70, 5.75, 7.625,  
+          );
+
+L_AMOR_S = (0.040,);
+
+TAB=MACR_SPECTRE(
+        MAILLAGE  = MAIL,
+        PLANCHER  = (_F(NOM = 'SOMMET',
+                        GROUP_NO = ('GTOP1',),
+                        ),),
+        NOM_CHAM = 'ACCE',
+        CALCUL = 'ABSOLU',
+        AMOR_SPEC = L_AMOR_S,
+        FREQ = L_FREQ,
+        NORME = 9.81,
+        RESU=(_F(RESU_GENE = RESUGENE,),),
+                );
+
+
+
+
+TEST_TABLE(VALE_CALC=0.41040617799339,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=3.525,),
+           )
+
+TEST_TABLE(VALE_CALC=0.42293268426702,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=4.1,),
+           )
+
+TEST_TABLE(VALE_CALC=0.29380551718496,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=4.7,),
+           )
+
+TEST_TABLE(VALE_CALC=0.29304335802367,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=5.75,),
+           )
+
+TEST_TABLE(VALE_CALC=0.36233510789174,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=7.625,),
+           )
+
+
+FIN();

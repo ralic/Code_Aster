@@ -1,0 +1,324 @@
+# TITRE INTERACTION STRUCTURE-SOL-STRUCTURE ENTRE BATIMENTS ENTERRES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDLX103A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MAIL1=LIRE_MAILLAGE(UNITE=23,FORMAT='MED',)
+
+MAIL2=LIRE_MAILLAGE(FORMAT='MED',)
+
+MAILLAGE=ASSE_MAILLAGE(MAILLAGE_1=MAIL1,
+                       MAILLAGE_2=MAIL2,
+                       OPERATION ='SOUS_STR',)
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA=('SBAS','SBAS1','SBAS2')),
+                    )
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA='POU_D_T',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),
+                         _F(GROUP_MA='MASSES',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),
+                         _F(GROUP_MA='SBAS',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DST',),),)
+# FIN DE DEFINITION DU MODELE.
+#
+# ----------------------------------------------------------------------
+#  DEFINITION DES MATERIAUX
+#  DEFINITION DES MATERIAUX "UTILISATEURS"
+
+MAT_1=DEFI_MATERIAU(ELAS=_F(E=31000000000.0,
+                            NU=0.16,
+                            RHO=0.0,
+                            ALPHA=0.0,),)
+#
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=(_F(GROUP_MA='MAT_1',
+                                MATER=MAT_1,),
+                             _F(GROUP_MA='SBAS',
+                                MATER=MAT_1,),),)
+#
+# ----------------------------------------------------------------------
+#       CONDITIONS LIMITES
+
+CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='ENCASTRE',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                       LIAISON_SOLIDE=(_F(GROUP_NO=('PA0','SBAS1',),),
+                                       _F(GROUP_NO=('PB0','SBAS2',),),
+                                      ),
+                      )
+# FIN CONDITIONS LIMITES
+#
+#
+# AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
+                        POUTRE=(_F(GROUP_MA='SEC_1',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT',),
+                                   VALE=(59.5,341.33,341.33,1./0.93,1./0.93,682.7,0.0,0.0,1.0,1.0,1.0,),),
+                                _F(GROUP_MA='SEC_2',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT',),
+                                   VALE=(8.28,39.51,54.77,2.94,1.47,94.3,0.0,0.0,1.0,1.0,1.0,),),
+                                _F(GROUP_MA='SEC_3',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT',),
+                                   VALE=(63.19,341.33,341.33,1./0.99,1./0.99,682.7,0.0,0.0,1.0,1.0,1.0,),),
+                                _F(GROUP_MA='SEC_4',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT',),
+                                   VALE=(19.78,148.34,149.14,2.13,2.11,297.5,0.0,0.0,1.0,1.0,1.0,),),
+                                _F(GROUP_MA='SEC_5',
+                                   SECTION='GENERALE',
+                                   CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT',),
+                                   VALE=(64.0,341.33,341.33,1.0,1.0,682.7,0.0,0.0,1.0,1.0,1.0,),),
+                                ),
+                        COQUE=_F(GROUP_MA='SBAS',
+                                 ANGL_REP=(45.,45.,),
+                                 EPAIS=0.001,),
+                        DISCRET=(_F(MAILLE=('MASA1','MBSA1',),
+                                    CARA='M_TR_D_N',
+                                    VALE=(79250.0,410720.0,482340.0,893060.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA1','MBSA1',),
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA2','MBSA2',),
+                                    CARA='M_TR_D_N',
+                                    VALE=(104090.0,574750.0,694040.0,1268790.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA2','MBSA2',),
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA3','MBSA3',),
+                                    CARA='M_TR_D_N',
+                                    VALE=(156710.0,1020850.0,1071220.0,2092070.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA3','MBSA3',),
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA4','MBSA4',),
+                                    CARA='M_TR_D_N',
+                                    VALE=(316970.0,1846700.0,1844020.0,3690720.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 _F(MAILLE=('MASA4','MBSA4',),
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                                 ),);
+# FIN DE AFFE_CARA_ELEM  ------------
+#
+# MASSES ET INERTIES DE LA STRUCTURE
+
+MASSE_TO=POST_ELEM(MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   CARA_ELEM=CARA_ELE,
+                   MASS_INER=(_F(TOUT='OUI',),
+                                _F(GROUP_MA=('MASSES','POU_D_T',),),))
+#
+
+IMPR_TABLE(TABLE=MASSE_TO,)
+#
+# MATRICE DE RIGIDITE ELEMENTAIRE
+
+RIGI_ELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CON_LIM,)
+#
+# NUMEROTATION DES DDL
+
+NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE,)
+#
+# MATRICE DE RIGIDITE GLOBALE
+
+RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGI_ELE,
+                      NUME_DDL=NUMEDDL,)
+#
+# MATRICE DE MASSE ELEMENTAIRE
+
+MASS_ELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CON_LIM,)
+#
+# MATRICE DE MASSE GLOBALE
+
+MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
+                   NUME_DDL=NUMEDDL,)
+#
+# MODE MECANIQUE
+
+MODE=MACRO_MODE_MECA(MATR_RIGI=RIGIDITE,
+                     MATR_MASS=MASSE,
+                     CALC_FREQ=_F(FREQ=(1.0,600.0,),),
+                     IMPRESSION=_F(),)
+
+
+INTERDYN=DEFI_INTERF_DYNA(NUME_DDL=NUMEDDL,
+                          INTERFACE=_F(NOM='DROITE',
+                                       TYPE='CRAIGB',
+                                       GROUP_NO='ENCASTRE',),)
+
+BAMO=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERDYN,
+                                   MODE_MECA=MODE,
+                                   NMAX_MODE=999,),)
+
+MAEL=MACR_ELEM_DYNA(BASE_MODALE=BAMO,)
+
+FO1=DEFI_FONCTION(NOM_PARA='FREQ',
+                  VALE=(0.0,1.0,100.0,1.0,),)
+
+CHA1=AFFE_CHAR_MECA(MODELE=MODELE,
+                    FORCE_NODALE=_F(NOEUD='NA1',
+                                    FX=10000.0,),)
+
+VEC1_ELE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                        CHARGE=CHA1,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=CARA_ELE,)
+
+VECAS1=ASSE_VECTEUR(VECT_ELEM=VEC1_ELE,
+                    NUME_DDL=NUMEDDL,)
+#
+
+CHA2=AFFE_CHAR_MECA(MODELE=MODELE,
+                    FORCE_NODALE=_F(NOEUD='NA1',
+                                    FY=10000.0,),)
+
+VEC2_ELE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                        CHARGE=CHA2,
+                        CHAM_MATER=CHAMPMAT,
+                        CARA_ELEM=CARA_ELE,)
+
+VECAS2=ASSE_VECTEUR(VECT_ELEM=VEC2_ELE,
+                    NUME_DDL=NUMEDDL,)
+
+TBSOL = DEFI_SOL_MISS(
+   TITRE="SOL DU TEST NUPEC",
+   MATERIAU=(
+      _F(E=1.1788e8,  NU=0.386, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=1.9027e8,  NU=0.279, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=2.0700e8,  NU=0.265, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=2.2419e8,  NU=0.251, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=2.4867e8,  NU=0.272, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=9.7776e7,  NU=0.120, RHO=1.94e3, AMOR_HYST=0.10),
+      _F(E=6.1493e8,  NU=0.371, RHO=1.94e3, AMOR_HYST=0.10),
+      _F(E=1.0151e9,  NU=0.415, RHO=1.94e3, AMOR_HYST=0.04),
+      _F(E=1.019e10,  NU=0.386, RHO=2.21e3, AMOR_HYST=0.04),
+      _F(E=1.501e10,  NU=0.343, RHO=2.21e3, AMOR_HYST=0.04),
+   ),
+   COUCHE=(
+      _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI",),
+      _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+      _F(EPAIS=0.5, NUME_MATE=2, RECEPTEUR="OUI",),
+      _F(EPAIS=0.5, NUME_MATE=2, RECEPTEUR="OUI", SOURCE="OUI"),
+      _F(EPAIS=0.5, NUME_MATE=3, RECEPTEUR="OUI",),
+      _F(EPAIS=0.5, NUME_MATE=3, RECEPTEUR="OUI", SOURCE="OUI"),
+      _F(EPAIS=0.5, NUME_MATE=4, RECEPTEUR="OUI",),
+      _F(EPAIS=0.5, NUME_MATE=4, RECEPTEUR="OUI", SOURCE="OUI"),
+      _F(EPAIS=0.5, NUME_MATE=5, RECEPTEUR="OUI",),
+      _F(EPAIS=0.5, NUME_MATE=5, RECEPTEUR="OUI", SOURCE="OUI"),
+      _F(EPAIS=0.5, NUME_MATE=6, RECEPTEUR="OUI", SOURCE="OUI"),
+      _F(EPAIS=2.5, NUME_MATE=7,),
+      _F(EPAIS=3.0, NUME_MATE=8,),
+      _F(EPAIS=14., NUME_MATE=9,),
+      _F(SUBSTRATUM="OUI", NUME_MATE=10,),
+   ),
+   INFO=2,
+)
+
+# TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
+#---------------------------------------
+
+dyge=CALC_MISS(
+    TABLE_SOL=TBSOL,
+    TYPE_RESU='HARM_GENE',
+    MACR_ELEM_DYNA=MAEL,
+    BASE_MODALE=BAMO,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    AMOR_REDUIT=0.01,
+    GROUP_MA_INTERF='SBAS',
+    MODELE=MODELE,
+    PROJET = 'SDLX103A',
+    EXCIT_HARMO=(
+        _F(VECT_ASSE=VECAS2,
+           COEF_MULT=1.,),
+    ),
+    PARAMETRE=_F(
+        LIST_FREQ = (12.25, 12.50, 12.75),
+        TYPE='BINAIRE',
+        Z0= 5.0,
+        DREF=1.0,
+        ALGO = 'REGU',
+        OFFSET_MAX=20,
+        OFFSET_NB=200,
+    ),
+    INFO=1,
+)
+
+DYA1=RECU_FONCTION(RESU_GENE=dyge,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='NA1',)
+
+MDYA1=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYA1,
+                                  PARTIE='MODULE',),)
+
+DYB1=RECU_FONCTION(RESU_GENE=dyge,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='NB1',)
+
+MDYB1=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYB1,
+                                  PARTIE='MODULE',),)
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.90667593706e-05,
+                         VALE_REFE=2.9122999999999999E-05,
+                         VALE_PARA=12.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=3.0000000000000001E-3,
+                         FONCTION=MDYA1,
+                         ),
+                      _F(VALE_CALC=2.90667593706e-05,
+                         VALE_REFE=2.7583E-05,
+                         VALE_PARA=12.5,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=0.059999999999999998,
+                         FONCTION=MDYA1,),
+                      _F(VALE_CALC=1.92656665974e-05,
+                         VALE_REFE=1.8048000000000001E-05,
+                         VALE_PARA=12.5,
+                         REFERENCE='SOURCE_EXTERNE',
+                         PRECISION=0.070000000000000007,
+                         FONCTION=MDYB1,),
+                      ),
+              )
+
+FIN( )

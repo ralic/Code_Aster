@@ -1,0 +1,10 @@
+P time_limit 240
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist R 
+
+F comm zzzz200b.comm D 1
+F comm zzzz200b.com1 D 1
+F mmed zzzz200b.mmed D 20

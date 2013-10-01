@@ -1,0 +1,839 @@
+# TITRE IMPEDANCES DE SOL SOUS FONDATION RECTANGULAIRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SDLX106A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+
+MAILLAGE = LIRE_MAILLAGE(FORMAT='MED') ;
+#
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                CREA_GROUP_NO=_F(GROUP_MA=('SBASE','SEXTER'),
+                                ),
+               );
+
+MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
+          AFFE=(
+                _F(GROUP_NO='PB',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR'),
+                _F(GROUP_MA='VOLUM',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D'),
+                _F(GROUP_MA='SEXTER',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D_ABSO'),
+                ),
+                        ) ;
+#
+
+mat1      = DEFI_MATERIAU( ELAS=_F( E= 4.13E+9 , RHO= 2420.,
+                                    AMOR_HYST = 0.1,
+                                    NU= 0.333  )    ) ;
+
+
+champmat = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
+              AFFE=(
+              _F( GROUP_MA= 'VOLUM' , MATER= mat1 ),
+              _F( GROUP_MA= 'SEXTER' , MATER= mat1 ),
+              )
+                           ) ;
+#
+# La structure est liaisonnee a l interface SBASE
+#-----------------------------------------
+cond_lim = AFFE_CHAR_MECA( MODELE= MODELE,
+                       LIAISON_SOLIDE=(_F(GROUP_NO=('SBASE')),
+                                      ),
+                                             ) ;
+
+charge1 = AFFE_CHAR_MECA( MODELE= MODELE,
+                       FORCE_NODALE=_F(GROUP_NO='PB', FX=1.E6),
+                                             ) ;
+charge2 = AFFE_CHAR_MECA( MODELE= MODELE,
+                       FORCE_NODALE=_F(GROUP_NO='PB', FY=1.E6),
+                                             ) ;
+charge3 = AFFE_CHAR_MECA( MODELE= MODELE,
+                       FORCE_NODALE=_F(GROUP_NO='PB', FZ=1.E6),
+                                             ) ;
+charge4 = AFFE_CHAR_MECA( MODELE= MODELE,
+                       FORCE_NODALE=_F(GROUP_NO='PB', MX=1.E6),
+                                             ) ;
+charge5 = AFFE_CHAR_MECA( MODELE= MODELE,
+                       FORCE_NODALE=_F(GROUP_NO='PB', MY=1.E6),
+                                             ) ;
+charge6 = AFFE_CHAR_MECA( MODELE= MODELE,
+                       FORCE_NODALE=_F(GROUP_NO='PB', MZ=1.E6),
+                                             ) ;
+
+caraele = AFFE_CARA_ELEM( MODELE=MODELE,
+                        DISCRET=(
+                                 _F(GROUP_NO='PB',
+                                    CARA='M_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)),
+                                 _F(GROUP_NO='PB',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
+                                 _F(GROUP_NO='PB',
+                                    CARA='A_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
+                                  ),
+                         );
+
+# FIN DE AFFE_CARA_ELEM  ------------
+#
+# Calcul des matrices et vecteurs elementaires=
+#----------------------------------------------
+rigi_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= cond_lim                      ) ;
+
+righ_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA_HYST',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             RIGI_MECA= rigi_ele,
+                             CHARGE= cond_lim                      ) ;
+
+mass_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'MASS_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= cond_lim                      ) ;
+
+
+amor_ele = CALC_MATR_ELEM( MODELE=MODELE,
+                             OPTION='AMOR_MECA',
+                             CHAM_MATER= champmat,
+                             CARA_ELEM= caraele,
+                             RIGI_MECA = rigi_ele,
+                             MASS_MECA = mass_ele,
+                             CHARGE= cond_lim
+                            );
+
+vectele1=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= charge1
+                            );
+vectele2=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= charge2
+                            );
+vectele3=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= charge3
+                            );
+vectele4=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= charge4
+                            );
+vectele5=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= charge5
+                            );
+vectele6=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmat ,
+                             CARA_ELEM= caraele,
+                             CHARGE= charge6
+                            );
+
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele,METHODE='MUMPS' );
+
+#
+# Assemblage des matrices et vecteurs=
+#-------------------------------------
+rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl ) ;
+
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
+
+amort    = ASSE_MATRICE( MATR_ELEM= amor_ele , NUME_DDL= nume_ddl ) ;
+
+vecas1   = ASSE_VECTEUR( VECT_ELEM= vectele1 , NUME_DDL= nume_ddl ) ;
+vecas2   = ASSE_VECTEUR( VECT_ELEM= vectele2 , NUME_DDL= nume_ddl ) ;
+vecas3   = ASSE_VECTEUR( VECT_ELEM= vectele3 , NUME_DDL= nume_ddl ) ;
+vecas4   = ASSE_VECTEUR( VECT_ELEM= vectele4 , NUME_DDL= nume_ddl ) ;
+vecas5   = ASSE_VECTEUR( VECT_ELEM= vectele5 , NUME_DDL= nume_ddl ) ;
+vecas6   = ASSE_VECTEUR( VECT_ELEM= vectele6 , NUME_DDL= nume_ddl ) ;
+
+#
+# CALCUL DES REPONSES
+#---------------------------------------------
+l_freq = DEFI_LIST_REEL(DEBUT = 8.5,
+                        INTERVALLE = _F(JUSQU_A = 25.5,
+                                        PAS = 17.,
+                                       ),
+                        );
+
+repot = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                          MODELE= MODELE,
+                          MATR_MASS = masse,
+                          MATR_RIGI = rigihyst,
+                          MATR_AMOR = amort,
+                          LIST_FREQ = l_freq,
+                          SOLVEUR=_F( METHODE='MUMPS'),
+                          EXCIT =(
+                                 _F ( VECT_ASSE = vecas1,
+                                      COEF_MULT= 1.),
+                                 _F ( VECT_ASSE = vecas2,
+                                      COEF_MULT= 1.),
+                                 _F ( VECT_ASSE = vecas3,
+                                      COEF_MULT= 1.),
+                                  ),
+                        );
+
+repor = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                          MODELE= MODELE,
+                          MATR_MASS = masse,
+                          MATR_RIGI = rigihyst,
+                          MATR_AMOR = amort,
+                          LIST_FREQ = l_freq,
+                          SOLVEUR=_F( METHODE='MUMPS'),
+                          EXCIT =(
+                                 _F ( VECT_ASSE = vecas4,
+                                      COEF_MULT= 1.),
+                                 _F ( VECT_ASSE = vecas5,
+                                      COEF_MULT= 1.),
+                                 _F ( VECT_ASSE = vecas6,
+                                      COEF_MULT= 1.),
+                                  ),
+                        );
+
+
+# Extraction des deplacements
+
+U11 = RECU_FONCTION ( RESULTAT = repot,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+
+U51 = RECU_FONCTION ( RESULTAT = repot,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+
+U22 = RECU_FONCTION ( RESULTAT = repot,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+
+U42 = RECU_FONCTION ( RESULTAT = repot,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+
+U33 = RECU_FONCTION ( RESULTAT = repot,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DZ');
+
+U24 = RECU_FONCTION ( RESULTAT = repor,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+
+U44 = RECU_FONCTION ( RESULTAT = repor,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+
+U15 = RECU_FONCTION ( RESULTAT = repor,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+
+U55 = RECU_FONCTION ( RESULTAT = repor,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+
+U66 = RECU_FONCTION ( RESULTAT = repor,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRZ');
+
+
+
+
+MODELEB = AFFE_MODELE( MAILLAGE= MAILLAGE,
+          AFFE=(
+                _F(GROUP_MA='SBASE',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DST'),
+                ),
+                        ) ;
+
+MODELE2 = AFFE_MODELE( MAILLAGE= MAILLAGE,
+          AFFE=(
+                _F(GROUP_NO='PB2',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR'),
+                _F(GROUP_MA='RESSORT',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR'),
+                _F(GROUP_MA='SBASE',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DST'),
+                ),
+                        ) ;
+#
+
+
+
+champmab = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
+              AFFE=(
+              _F( GROUP_MA= 'SBASE' , MATER= mat1 ),
+              )
+                           ) ;
+#
+# La structure est encastree a l interface
+#-----------------------------------------
+cond_lib = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       DDL_IMPO=(
+                                _F(GROUP_NO='PB',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0),
+                                 ),
+                       LIAISON_SOLIDE=(_F(GROUP_NO=('SBASE')),
+                                      ),
+                                             ) ;
+
+
+cond_li2 = AFFE_CHAR_MECA( MODELE= MODELE2,
+                       DDL_IMPO=(
+                                _F(GROUP_NO='PB',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0),
+                                _F(GROUP_NO='PB2',
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0),
+                                 ),
+                       LIAISON_SOLIDE=(_F(GROUP_NO=('SBASE')),
+                                      ),
+                                             ) ;
+
+caraeleb = AFFE_CARA_ELEM( MODELE=MODELEB,
+                        COQUE=_F(GROUP_MA='SBASE',
+                                 ANGL_REP=(45.,45.),
+                                 EPAIS=0.00001),
+                                 );
+
+caraele2 = AFFE_CARA_ELEM( MODELE=MODELE2,
+                        COQUE=_F(GROUP_MA='SBASE',
+                                 ANGL_REP=(45.,45.),
+                                 EPAIS=0.00001),
+                        DISCRET=(
+                                 _F(GROUP_NO='PB2',
+                                    CARA='M_TR_D_N',
+                                    VALE=(0.01,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0)),
+                                 _F(GROUP_NO='PB2',
+                                    CARA='K_TR_D_N',
+                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
+                                 _F(GROUP_MA='RESSORT',
+                                    CARA='K_TR_D_L',
+                                    VALE=(1.0E12,1.0E12,1.0E12,1.0E12,1.0E12,1.0E12)),
+                                 ));
+
+# FIN DE AFFE_CARA_ELEM  ------------
+#
+# Calcul des matrices et vecteurs elementaires=
+#----------------------------------------------
+rigi_elb = CALC_MATR_ELEM( MODELE= MODELEB , OPTION= 'RIGI_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= cond_lib                      ) ;
+
+mass_elb = CALC_MATR_ELEM( MODELE= MODELEB , OPTION= 'MASS_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= cond_lib                      ) ;
+
+
+nume_ddb = NUME_DDL( MATR_RIGI= rigi_elb);
+
+
+rigi_el2 = CALC_MATR_ELEM( MODELE= MODELE2 , OPTION= 'RIGI_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraele2,
+                             CHARGE= cond_li2                      ) ;
+
+mass_el2 = CALC_MATR_ELEM( MODELE= MODELE2 , OPTION= 'MASS_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraele2,
+                             CHARGE= cond_li2                      ) ;
+
+
+nume_dd2 = NUME_DDL( MATR_RIGI= rigi_el2);
+
+#
+# Assemblage des matrices et vecteurs=
+#-------------------------------------
+rigidb = ASSE_MATRICE( MATR_ELEM= rigi_elb , NUME_DDL= nume_ddb ) ;
+
+masseb = ASSE_MATRICE( MATR_ELEM= mass_elb , NUME_DDL= nume_ddb ) ;
+
+rigid2 = ASSE_MATRICE( MATR_ELEM= rigi_el2 , NUME_DDL= nume_dd2 ) ;
+
+masse2 = ASSE_MATRICE( MATR_ELEM= mass_el2 , NUME_DDL= nume_dd2 ) ;
+
+#
+# CALCUL DES MODES =
+#---------------------------------------------
+
+
+
+mode =MODE_ITER_SIMULT(MATR_RIGI=rigid2,
+                       MATR_MASS=masse2,
+                       CALC_FREQ=_F(
+                                    NMAX_FREQ = 1
+                                  ),
+                     );
+
+
+
+MODESTA1=MODE_STATIQUE(  MATR_RIGI=rigidb,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'PB',
+                     AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
+                                 )
+                      );
+
+bamo=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = mode, NMAX_MODE = 0),
+                              _F( MODE_INTF = MODESTA1,
+                                     NMAX_MODE = 1999)),
+                         NUME_REF=nume_ddb)
+
+
+mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,
+                    MATR_RIGI=rigidb,
+                    MATR_MASS=masseb);
+#
+
+
+TABSOL = DEFI_SOL_MISS(
+    TITRE="SOL HOMOGENE 800 M/S",
+    MATERIAU=(
+        _F(E=4.13E+09,  NU=0.3333, RHO=2420., AMOR_HYST=0.10),
+        _F(E=4.13E+09,  NU=0.3333, RHO=2420., AMOR_HYST=0.10),
+    ),
+    COUCHE=(
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI"),
+        _F(EPAIS=10., NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(SUBSTRATUM="OUI", NUME_MATE=2),
+    ),
+    INFO=2,
+)
+
+CALC_MISS(
+    TYPE_RESU='FICHIER',
+    TABLE_SOL=TABSOL,
+    MACR_ELEM_DYNA=mael,
+    AMOR_REDUIT=(0.05),
+    GROUP_MA_INTERF='SBASE',
+
+    UNITE_IMPR_ASTER=26,
+    UNITE_RESU_IMPE=38,
+    VERSION='V6.6',
+    PARAMETRE=_F(
+        FREQ_MIN=8.5,
+        FREQ_MAX=25.5,
+        FREQ_PAS=17.0,
+        Z0=0.,
+        DREF=2.,
+        ALGO = 'REGU',
+        OFFSET_MAX=30,
+        OFFSET_NB=200,
+    ),
+)
+
+
+charge1b = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       FORCE_NODALE=_F(GROUP_NO='PB', FX=1.E6),
+                                             ) ;
+charge2b = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       FORCE_NODALE=_F(GROUP_NO='PB', FY=1.E6),
+                                             ) ;
+charge3b = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       FORCE_NODALE=_F(GROUP_NO='PB', FZ=1.E6),
+                                             ) ;
+charge4b = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       FORCE_NODALE=_F(GROUP_NO='PB', MX=1.E6),
+                                             ) ;
+charge5b = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       FORCE_NODALE=_F(GROUP_NO='PB', MY=1.E6),
+                                             ) ;
+charge6b = AFFE_CHAR_MECA( MODELE= MODELEB,
+                       FORCE_NODALE=_F(GROUP_NO='PB', MZ=1.E6),
+                                             ) ;
+
+vectel1b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= charge1b
+                            );
+vectel2b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= charge2b
+                            );
+vectel3b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= charge3b
+                            );
+vectel4b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= charge4b
+                            );
+vectel5b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= charge5b
+                            );
+vectel6b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                             CHAM_MATER= champmab ,
+                             CARA_ELEM= caraeleb,
+                             CHARGE= charge6b
+                            );
+vecas1b   = ASSE_VECTEUR( VECT_ELEM= vectel1b , NUME_DDL= nume_ddb ) ;
+vecas2b   = ASSE_VECTEUR( VECT_ELEM= vectel2b , NUME_DDL= nume_ddb ) ;
+vecas3b   = ASSE_VECTEUR( VECT_ELEM= vectel3b , NUME_DDL= nume_ddb ) ;
+vecas4b   = ASSE_VECTEUR( VECT_ELEM= vectel4b , NUME_DDL= nume_ddb ) ;
+vecas5b   = ASSE_VECTEUR( VECT_ELEM= vectel5b , NUME_DDL= nume_ddb ) ;
+vecas6b   = ASSE_VECTEUR( VECT_ELEM= vectel6b , NUME_DDL= nume_ddb ) ;
+
+nddlgen = NUME_DDL_GENE( BASE= bamo,
+                          STOCKAGE= 'PLEIN');
+
+rigigen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=rigidb );
+
+massgen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=masseb );
+
+vecge1b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            VECT_ASSE=vecas1b );
+
+vecge2b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            VECT_ASSE=vecas2b );
+
+vecge3b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            VECT_ASSE=vecas3b );
+
+vecge4b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            VECT_ASSE=vecas4b );
+
+vecge5b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            VECT_ASSE=vecas5b );
+
+vecge6b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            VECT_ASSE=vecas6b );
+
+NF = 3
+impe=[None]*NF
+rito=[None]*NF
+
+for k in range(1,NF):
+
+
+  impe[k] = LIRE_IMPE_MISS(BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                       UNITE_RESU_IMPE=38, FREQ_EXTR=-8.5+17.*k,
+                       # TYPE='BINAIRE',
+                          );
+
+
+  rito[k]=COMB_MATR_ASSE(COMB_C=(
+                                _F(MATR_ASSE=impe[k],
+                                 COEF_C=1.0+0.j),
+                                _F(MATR_ASSE=rigigen,
+                                 COEF_C=1.0+0.j),
+                                 ),
+                                 SANS_CMP='LAGR',
+                                 );
+
+
+  if k==1:
+    dyget = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                           MATR_MASS = massgen,
+                           MATR_RIGI = rito[k],
+                           FREQ = -8.5+17.*k,
+                           EXCIT =(
+                                   _F ( VECT_ASSE_GENE = vecge1b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge2b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge3b,
+                                        COEF_MULT= 1.),
+                                  ),
+                        );
+
+    dyger = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                           MATR_MASS = massgen,
+                           MATR_RIGI = rito[k],
+                           FREQ = -8.5+17.*k,
+                           EXCIT =(
+                                   _F ( VECT_ASSE_GENE = vecge4b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge5b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge6b,
+                                        COEF_MULT= 1.),
+                                  ),
+                        );
+  else:
+    dyget = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                           reuse=dyget, RESULTAT=dyget,
+                           MATR_MASS = massgen,
+                           MATR_RIGI = rito[k],
+                           FREQ = -8.5+17.*k,
+                           EXCIT =(
+                                   _F ( VECT_ASSE_GENE = vecge1b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge2b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge3b,
+                                        COEF_MULT= 1.),
+                                  ),
+                        );
+
+    dyger = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
+                           reuse=dyger, RESULTAT=dyger,
+                           MATR_MASS = massgen,
+                           MATR_RIGI = rito[k],
+                           FREQ = -8.5+17.*k,
+                           EXCIT =(
+                                   _F ( VECT_ASSE_GENE = vecge4b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge5b,
+                                        COEF_MULT= 1.),
+                                   _F ( VECT_ASSE_GENE = vecge6b,
+                                        COEF_MULT= 1.),
+                                  ),
+                        );
+
+# Extraction des deplacements
+
+U11b = RECU_FONCTION ( RESU_GENE = dyget,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+
+U51b = RECU_FONCTION ( RESU_GENE = dyget,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+
+U22b = RECU_FONCTION ( RESU_GENE = dyget,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+
+U42b = RECU_FONCTION ( RESU_GENE = dyget,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+
+U33b = RECU_FONCTION ( RESU_GENE = dyget,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DZ');
+
+U24b = RECU_FONCTION ( RESU_GENE = dyger,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+
+U44b= RECU_FONCTION ( RESU_GENE = dyger,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+
+U15b = RECU_FONCTION ( RESU_GENE = dyger,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+
+U55b = RECU_FONCTION ( RESU_GENE = dyger,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+
+U66b = RECU_FONCTION ( RESU_GENE = dyger,
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRZ');
+
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(4.405562E-06-3.103320E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U11,
+                         ),
+                      _F(VALE_CALC_C=(9.786317E-07-2.972870E-06j),
+                         VALE_PARA=25.5,
+                         FONCTION=U11,
+                         ),
+                      _F(VALE_CALC_C=(4.174931E-06-2.920876E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U22,
+                         ),
+                      _F(VALE_CALC_C=(1.042063E-06-2.641335E-06j),
+                         VALE_PARA=25.5,
+                         FONCTION=U22,
+                         ),
+                      _F(VALE_CALC_C=(3.670733E-06-3.539087E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U33,
+                         ),
+                      _F(VALE_CALC_C=(5.687622E-07-2.420604E-06j),
+                         VALE_PARA=25.5,
+                         FONCTION=U33,
+                         ),
+                      _F(VALE_CALC_C=(6.997733E-08-1.411643E-08j),
+                         VALE_PARA=8.5,
+                         FONCTION=U44,
+                         ),
+                      _F(VALE_CALC_C=(4.736895E-08-4.387128E-08j),
+                         VALE_PARA=25.5,
+                         FONCTION=U44,
+                         ),
+                      _F(VALE_CALC_C=(3.938570E-08-1.105361E-08j),
+                         VALE_PARA=8.5,
+                         FONCTION=U55,
+                         ),
+                      _F(VALE_CALC_C=(1.757004E-08-2.782686E-08j),
+                         VALE_PARA=25.5,
+                         FONCTION=U55,
+                         ),
+                      _F(VALE_CALC_C=(3.058106E-08-6.790613E-09j),
+                         VALE_PARA=8.5,
+                         FONCTION=U66,
+                         ),
+                      _F(VALE_CALC_C=(1.627885E-08-2.253177E-08j),
+                         VALE_PARA=25.5,
+                         FONCTION=U66,
+                         ),
+                      _F(VALE_CALC_C=(4.405562E-06-3.103320E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U11,),
+                      _F(VALE_CALC_C=(9.786317E-07-2.972870E-06j),
+                         VALE_PARA=25.5,
+                         FONCTION=U11,),
+                      _F(VALE_CALC_C=(4.174931E-06-2.920876E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U22,),
+                      _F(VALE_CALC_C=(1.042063E-06-2.641335E-06j),
+                         VALE_PARA=25.5,
+                         FONCTION=U22,),
+                      _F(VALE_CALC_C=(3.670733E-06-3.539087E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U33,),
+                      _F(VALE_CALC_C=(5.687622E-07-2.420604E-06j),
+                         VALE_PARA=25.5,
+                         FONCTION=U33,),
+                      _F(VALE_CALC_C=(6.997733E-08-1.411643E-08j),
+                         VALE_PARA=8.5,
+                         FONCTION=U44,),
+                      _F(VALE_CALC_C=(4.736895E-08-4.387128E-08j),
+                         VALE_PARA=25.5,
+                         FONCTION=U44,),
+                      _F(VALE_CALC_C=(3.938570E-08-1.105361E-08j),
+                         VALE_PARA=8.5,
+                         FONCTION=U55,),
+                      _F(VALE_CALC_C=(1.757004E-08-2.782686E-08j),
+                         VALE_PARA=25.5,
+                         FONCTION=U55,),
+                      _F(VALE_CALC_C=(3.058106E-08-6.790613E-09j),
+                         VALE_PARA=8.5,
+                         FONCTION=U66,),
+                      _F(VALE_CALC_C=(1.627885E-08-2.253177E-08j),
+                         VALE_PARA=25.5,
+                         FONCTION=U66,),
+                      _F(VALE_CALC_C=(4.632526E-06-3.394104E-06j),
+                         VALE_PARA=8.5,
+                         FONCTION=U11b,
+                         ),
+                      _F(VALE_CALC_C=(1.285915E-06-3.033641E-06j),
+                         VALE_REFE_C=(1.2679e-06-3.0363699999999999e-06j),
+                         VALE_PARA=25.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=7.0000000000000001E-3,
+                         FONCTION=U11b,
+                         ),
+                      _F(VALE_CALC_C=(4.453964E-06-3.277664E-06j),
+                         VALE_REFE_C=(4.3731200000000002e-06-3.2521199999999999e-06j),
+                         VALE_PARA=8.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.0000000000000001E-2,
+                         FONCTION=U22b,
+                         ),
+                      _F(VALE_CALC_C=(1.470245E-06-2.861827E-06j),
+                         VALE_REFE_C=(1.42056e-06-2.8334599999999998e-06j),
+                         VALE_PARA=25.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.0000000000000001E-2,
+                         FONCTION=U22b,
+                         ),
+                      _F(VALE_CALC_C=(4.430979E-06-4.265302E-06j),
+                         VALE_REFE_C=(4.3761999999999997e-06-4.2431799999999998e-06j),
+                         VALE_PARA=8.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.0000000000000001E-2,
+                         FONCTION=U33b,
+                         ),
+                      _F(VALE_CALC_C=(6.930745E-07-2.828017E-06j),
+                         VALE_REFE_C=(6.76519e-07-2.7819500000000001e-06j),
+                         VALE_PARA=25.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=2.0000000000000001E-2,
+                         FONCTION=U33b,
+                         ),
+                      _F(VALE_CALC_C=(9.294350E-08-2.224868E-08j),
+                         VALE_REFE_C=(8.6984700000000005e-08-2.1394700000000001e-08j),
+                         VALE_PARA=8.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=7.0000000000000001E-2,
+                         FONCTION=U44b,
+                         ),
+                      _F(VALE_CALC_C=(6.478414E-08-5.654999E-08j),
+                         VALE_REFE_C=(6.0249699999999997e-08-5.3456300000000002e-08j),
+                         VALE_PARA=25.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=7.0000000000000001E-2,
+                         FONCTION=U44b,
+                         ),
+                      _F(VALE_CALC_C=(4.919719E-08-1.493903E-08j),
+                         VALE_REFE_C=(4.7512799999999999e-08-1.46293e-08j),
+                         VALE_PARA=8.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=4.0000000000000001E-2,
+                         FONCTION=U55b,
+                         ),
+                      _F(VALE_CALC_C=(2.170861E-08-3.327587E-08j),
+                         VALE_REFE_C=(2.0890399999999999e-08-3.2082899999999998e-08j),
+                         VALE_PARA=25.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=4.0000000000000001E-2,
+                         FONCTION=U55b,
+                         ),
+                      _F(VALE_CALC_C=(3.250773E-08-7.328843E-09j),
+                         VALE_REFE_C=(3.2398100000000002e-08-7.3298799999999999e-09j),
+                         VALE_PARA=8.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=8.0000000000000001E-3,
+                         FONCTION=U66b,
+                         ),
+                      _F(VALE_CALC_C=(1.925126E-08-2.209978E-08j),
+                         VALE_REFE_C=(1.9198300000000001e-08-2.22916e-08j),
+                         VALE_PARA=25.5,
+                         REFERENCE='NON_DEFINI',
+                         PRECISION=8.0000000000000001E-3,
+                         FONCTION=U66b,
+                         ),
+                      ),
+              )
+
+FIN( );

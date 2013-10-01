@@ -1,0 +1,520 @@
+# TITRE RADIER CIRCULAIRE RIGIDE : VARIABILITE SPATIALE ET FONDATION QUELCONQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDLS118C', NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),);
+
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL0,
+                     CREA_POI1=(_F(NOM_GROUP_MA='P3',
+                                  GROUP_NO=('P3',),),
+                                _F(NOM_GROUP_MA='PRADIER',
+                                  GROUP_MA=('RADIER',),),
+                               ),
+                      );
+                      
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='RADIER',),);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(GROUP_MA='L1',),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_NORM_COQUE=_F(GROUP_MA='RADIER',
+                                          VECT_NORM=(0,0,-1,),
+                                          GROUP_NO='P3',),);
+
+STICKMOD=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(  _F(GROUP_MA='RADIER',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DST',),
+                           _F(GROUP_MA='PRADIER',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),
+                            ),);
+
+# ----------------------------------------------------------------------
+#  DEFINITION DES MATERIAUX
+
+MAT_0= DEFI_MATERIAU( ELAS=_F( E=4.000000000E+10,
+                            NU=1.494252874E-01,
+                            RHO=0.000000000E+00,
+                            ALPHA=0.000000000E+00,),);
+                            
+MAT_1=DEFI_MATERIAU(ELAS=_F(E=4.000000000E+10,
+                            NU=1.494252874E-01,
+                            RHO=2.00000000E+03,
+                            ALPHA=0.000000000E+00,),);
+
+MAT_2=DEFI_MATERIAU(ELAS=_F(E=4.000000000E+10,
+                            NU=1.494252874E-01,
+                            RHO=1.00000000E+00,
+                            ALPHA=0.000000000E+00,),);
+
+CHAMPMA0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=(_F(GROUP_MA='RADIER',
+                              MATER=MAT_0,),),);
+                              
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=(_F(GROUP_MA='RADIER',
+                              MATER=MAT_1,),),);
+                              
+CHAMPMA2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=(_F(GROUP_MA='RADIER',
+                              MATER=MAT_2,),),);
+
+# ----------------------------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
+
+CARA_EL2=AFFE_CARA_ELEM( MODELE=STICKMOD,
+          COQUE=_F( GROUP_MA = 'RADIER', EPAIS = 0.001),
+          DISCRET=(
+                   _F(CARA='K_TR_D_N',
+                      GROUP_MA=('PRADIER'),
+                      VALE=(0.,0.,0.,0.,0.,0.,),),
+                   _F(CARA='M_TR_D_N',
+                      GROUP_MA=('PRADIER'),
+                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+                   ),
+             );
+             
+CARA_EL0=AFFE_CARA_ELEM( MODELE=STICKMOD,
+          COQUE=_F( GROUP_MA = 'RADIER', EPAIS = 1.),
+          DISCRET=(
+                   _F(CARA='K_TR_D_N',
+                      GROUP_MA=('PRADIER'),
+                      VALE=(0.,0.,0.,0.,0.,0.,),),
+                   _F(CARA='M_TR_D_N',
+                      GROUP_MA=('PRADIER'),
+                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+                   ),
+          RIGI_PARASOL=_F(VALE=(6.36E10,6.36E10,8.02E10,
+                                2.07E13,2.06E13,2.70E13,),
+                                       UNITE=8,
+                                       COEF_GROUP=1.0,
+                                       CARA=('K_TR_D_N',),
+                                       GROUP_MA='RADIER',
+                                       GROUP_MA_POI1='PRADIER',
+                                       GROUP_NO_CENTRE='P3'), 
+
+             );
+
+# LA STRUCTURE EST RIGIDIFIEE A L INTERFACE
+#------------------------------------------
+cond_li0 = AFFE_CHAR_MECA( MODELE=STICKMOD,
+                     DDL_IMPO=(
+                              _F(GROUP_NO='P3',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),
+                               ),
+                     LIAISON_SOLIDE=(_F(GROUP_NO=('RADIER'),),
+                                    ),
+                                           );
+
+cond_li2 = AFFE_CHAR_MECA( MODELE=STICKMOD,
+                      DDL_IMPO=(
+                              _F(GROUP_NO='L1',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),),
+
+                                    );
+
+
+# mode =MODE_ITER_SIMULT
+# CALCUL DE LA MASSE ET INERTIES DE LA STRUCTURE -----------------------
+
+MASSESTR=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                 MODELE=STICKMOD,
+                 CHAM_MATER=CHAMPMA2,
+                 CARA_ELEM=CARA_EL0,);
+#
+# ----------------------------------------------------------------------
+
+RIGI_EL0=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=STICKMOD,
+                      CHAM_MATER=CHAMPMA1,
+                      CARA_ELEM=CARA_EL0,
+                      #CHARGE=cond_li0 ,
+                      );
+
+MASS_EL0=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=STICKMOD,
+                      CHAM_MATER=CHAMPMA1,
+                      CARA_ELEM=CARA_EL0,
+                      #CHARGE=cond_li0 ,
+                      );
+#
+
+NUME_DD0=NUME_DDL(MATR_RIGI=RIGI_EL0,);
+
+RIGI_EL1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=STICKMOD,
+                      CHAM_MATER=CHAMPMA0,
+                      CARA_ELEM=CARA_EL2,
+                      #CHARGE=cond_li0 ,
+                      );
+
+MASS_EL1=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=STICKMOD,
+                      CHAM_MATER=CHAMPMA0,
+                      CARA_ELEM=CARA_EL2,
+                      #CHARGE=cond_li0 ,
+                      );
+
+# -------------------
+
+RIGI_EL2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=STICKMOD,
+                      CHAM_MATER=CHAMPMA2,
+                      CARA_ELEM=CARA_EL2,
+                      CHARGE=cond_li2,);
+
+MASS_EL2=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                      MODELE=STICKMOD,
+                      CHAM_MATER=CHAMPMA2,
+                      CARA_ELEM=CARA_EL2,
+                      CHARGE=cond_li2,);
+#
+
+NUME_DD2=NUME_DDL(MATR_RIGI=RIGI_EL2,);
+
+# Assemblage des matrices et vecteurs=
+#-------------------------------------
+rigid0 = ASSE_MATRICE( MATR_ELEM= RIGI_EL0, NUME_DDL= NUME_DD0) ;
+
+masse0 = ASSE_MATRICE( MATR_ELEM= MASS_EL0, NUME_DDL= NUME_DD0) ;
+
+rigid1 = ASSE_MATRICE( MATR_ELEM= RIGI_EL1, NUME_DDL= NUME_DD0) ;
+
+masse1 = ASSE_MATRICE( MATR_ELEM= MASS_EL1, NUME_DDL= NUME_DD0) ;
+
+rigid2 = ASSE_MATRICE( MATR_ELEM=  RIGI_EL2, NUME_DDL= NUME_DD2 ) ;
+
+masse2 = ASSE_MATRICE( MATR_ELEM=  MASS_EL2, NUME_DDL= NUME_DD2 ) ;
+
+
+#---------------------------------------------
+# CALCUL DU MACRO-ELEMENT DYNAMIQUE :
+#---------------------------------------------
+
+
+MODE =MODE_ITER_SIMULT(MATR_RIGI=rigid2,
+                     MATR_MASS=masse2,
+                     CALC_FREQ=_F(
+                                  NMAX_FREQ = 1
+                                ),
+                   );
+                   
+MODESTA1=MODE_ITER_SIMULT(MATR_RIGI=rigid0,
+                         MATR_MASS=masse0,
+                         CALC_FREQ=_F(NMAX_FREQ=40),
+                        );
+
+BAMO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODE, NMAX_MODE = 0),
+                            _F( MODE_INTF = MODESTA1,
+                                   NMAX_MODE = 1999)),
+                       NUME_REF=NUME_DD0)
+
+MAEL=MACR_ELEM_DYNA(BASE_MODALE=BAMO,
+                  MATR_RIGI=rigid1,
+                  MATR_MASS=masse1);
+
+NDDLGEN=NUME_DDL_GENE(BASE=BAMO,
+                    STOCKAGE='PLEIN',);
+
+RIGIGEN=PROJ_MATR_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     MATR_ASSE=rigid1,);
+
+MASSGEN=PROJ_MATR_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     MATR_ASSE=masse1,);
+
+
+AMORT=COMB_MATR_ASSE(CALC_AMOR_GENE=_F(MASS_GENE = MASSGEN,
+                                       RIGI_GENE = RIGIGEN ,
+                                       AMOR_REDUIT= (0.0,0.0,0.0,0.0,0.0,0.0,),
+                                       ),);
+
+# # TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
+# #---------------------------------------
+# #
+df=30.0
+fmin=30.
+NF = 3
+fmax=fmin+NF*df
+
+tabsol=DEFI_SOL_MISS(
+    TITRE="SOL HOMOGENE",
+    MATERIAU=(
+        _F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
+        _F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
+    ),
+    COUCHE=(
+        _F(EPAIS=40, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI",),
+        _F(SUBSTRATUM="OUI", NUME_MATE=2,),
+    ),
+    INFO=2,
+)
+
+CALC_MISS(
+    TYPE_RESU='FICHIER',
+    TABLE_SOL=tabsol,
+    MACR_ELEM_DYNA=MAEL,
+    GROUP_MA_INTERF='RADIER',
+    UNITE_IMPR_ASTER=31,
+    UNITE_RESU_IMPE=32,
+    UNITE_RESU_FORC=33,
+    PROJET='SDLS118C',
+    VERSION='V6.6',
+    PARAMETRE=_F(
+        FREQ_MIN=fmin,
+        FREQ_MAX=fmax,
+        FREQ_PAS=df,
+        Z0= 0.,
+        TYPE='ASCII',
+        SURF='OUI',
+        DREF=10,
+        ALGO='DEPL',
+        OFFSET_MAX=60,
+        OFFSET_NB=400,
+    ),
+    INFO=2,
+)
+
+DEFI_FICHIER(ACTION='LIBERER',
+           UNITE=32,);
+
+DEFI_FICHIER(ACTION='LIBERER',
+           UNITE=33,);
+
+
+#------------------------------------------------------
+#------------------------------------------------------
+#ALPHA=0.0
+RESU1X = DYNA_ISS_VARI(
+                       FREQ_INIT  =fmin, NB_FREQ  = NF, FREQ_PAS = df ,
+                       NOM_CMP =  'DX' ,  PRECISION  =  0.999 ,
+                       INTERF =_F(
+                                GROUP_NO_INTERF='RADIER',
+                                MODE_INTERF ='QUELCONQUE',),
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                                  VITE_ONDE = 600. ,
+                                  PARA_ALPHA =0.0,),
+                       UNITE_RESU_IMPE = 32,
+                       MATR_GENE = _F(
+                                 MATR_MASS = MASSGEN,
+                                 MATR_RIGI = RIGIGEN,
+                                 MATR_AMOR = AMORT,
+                           ),
+                       INFO   =2 ,);
+RESU1Z = DYNA_ISS_VARI(
+                       FREQ_INIT  =fmin, NB_FREQ  = NF, FREQ_PAS = df ,
+                       NOM_CMP =  'DZ' ,  PRECISION  =  0.999 ,
+                       INTERF =_F(
+                                GROUP_NO_INTERF='RADIER',
+                                MODE_INTERF ='QUELCONQUE',),
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                                  VITE_ONDE = 600. ,
+                                  PARA_ALPHA =0.0,),
+                       UNITE_RESU_IMPE = 32,
+#                        UNITE_RESU_FORC = 33,
+                       MATR_GENE = _F(
+                                 MATR_MASS = MASSGEN,
+                                 MATR_RIGI = RIGIGEN,
+                                 MATR_AMOR = AMORT,
+                           ),
+                       INFO   =1 ,);
+
+#------------------------------------------------------
+#ALPHA=0.5
+RESU2X = DYNA_ISS_VARI(
+                       FREQ_INIT  =fmin, NB_FREQ  = NF, FREQ_PAS = df ,
+                       NOM_CMP =  'DX' ,  PRECISION  =  0.999 ,
+                       INTERF =_F(
+                                GROUP_NO_INTERF='RADIER',
+                                MODE_INTERF ='QUELCONQUE',),
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                                  VITE_ONDE = 600. ,
+                                  PARA_ALPHA =0.5,),
+                       UNITE_RESU_IMPE = 32,
+                       MATR_GENE = _F(
+                                 MATR_MASS = MASSGEN,
+                                 MATR_RIGI = RIGIGEN,
+                                 MATR_AMOR = AMORT,
+                           ),
+                       INFO   =1 ,);
+RESU2Z = DYNA_ISS_VARI(
+                       FREQ_INIT  =fmin, NB_FREQ  = NF, FREQ_PAS = df ,
+                       NOM_CMP =  'DZ' ,  PRECISION  =  0.999 ,
+                       INTERF =_F(
+                                GROUP_NO_INTERF='RADIER',
+                                MODE_INTERF ='QUELCONQUE',),
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                                  VITE_ONDE = 600. ,
+                                  PARA_ALPHA =0.5,),
+                       UNITE_RESU_IMPE = 32,
+#                        UNITE_RESU_FORC = 33,
+                       MATR_GENE = _F(
+                                 MATR_MASS = MASSGEN,
+                                 MATR_RIGI = RIGIGEN,
+                                 MATR_AMOR = AMORT,
+                           ),
+                       INFO   =1 ,);
+                       
+# test sur base physique (resultat analytique)
+#----------------------------------------------------------
+RN11XB=REST_SPEC_PHYS( MODE_MECA=BAMO,
+                     TOUT_ORDRE = 'OUI',
+                     INTE_SPEC_GENE = RESU2X,
+                     NOM_CHAM='DEPL',
+                     NOEUD=( 'N11'  ),
+                     NOM_CMP=('DX', ),
+                     OPTION='TOUT_TOUT'   );
+
+RN11ZB=REST_SPEC_PHYS( MODE_MECA=BAMO,
+                     TOUT_ORDRE = 'OUI',
+                     INTE_SPEC_GENE = RESU2Z,
+                     NOM_CHAM='DEPL',
+                     NOEUD=( 'N11'  ),
+                     NOM_CMP=('DZ', ),
+                     OPTION='TOUT_TOUT'   );
+
+REP1=RECU_FONCTION(    INTE_SPEC=RN11XB,
+                    NOEUD_I = 'N11',
+                    NOM_CMP_I = 'DX',
+                      )
+REP2=RECU_FONCTION(    INTE_SPEC=RN11ZB,
+                    NOEUD_I = 'N11',
+                    NOM_CMP_I = 'DZ',
+                      )
+
+
+# EXTRACTIONS ET TESTS:
+#----------------------
+# Referencek Mita & Luco
+#frequence reduite  a0=w*R/c; R=20m, c=600m/s
+
+# w=30. a0=1.0
+# reference: valx=0.732,valz= 0.730
+
+TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1,
+                            VALE_PARA = 30., 
+                            VALE_REFE =0.732, VALE_CALC =0.76703746,
+                            CRITERE = 'RELATIF', 
+                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            REFERENCE = 'SOURCE_EXTERNE',),),)
+TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
+                            VALE_PARA = 30., 
+                            VALE_REFE =0.730, VALE_CALC =0.76995630,
+                            CRITERE = 'RELATIF', 
+                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3,  
+                            REFERENCE = 'SOURCE_EXTERNE',),),)
+
+# w=60. a0=2.0
+# reference: valx=0.402,valz= 0.416
+
+TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1,
+                            VALE_PARA = 60., 
+                            VALE_REFE =0.402, VALE_CALC =0.43663,
+                            CRITERE = 'RELATIF', 
+                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            REFERENCE = 'SOURCE_EXTERNE',),),)
+TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
+                            VALE_PARA = 60., 
+                            VALE_REFE =0.416, VALE_CALC =0.43823,
+                            CRITERE = 'RELATIF', 
+                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            REFERENCE = 'SOURCE_EXTERNE',),),)
+
+# w=90. a0=3.0
+# reference: valx=0.251,valz= 0.270
+
+TEST_FONCTION(VALEUR=( _F(  FONCTION = REP1,
+                            VALE_PARA = 90., 
+                            VALE_REFE =0.251, VALE_CALC =0.25146,
+                            CRITERE = 'RELATIF', 
+                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            REFERENCE = 'SOURCE_EXTERNE',),),)
+TEST_FONCTION(VALEUR=( _F(  FONCTION = REP2,
+                            VALE_PARA = 90., 
+                            VALE_REFE =0.270, VALE_CALC =0.25250,
+                            CRITERE = 'RELATIF', 
+                            PRECISION=1.E-01, TOLE_MACHINE=1.e-3, 
+                            REFERENCE = 'SOURCE_EXTERNE',),),)
+
+# test sur base physique (resultat analytique)
+#----------------------------------------------------------
+RN11X=REST_SPEC_PHYS( MODE_MECA=BAMO,
+                     TOUT_ORDRE = 'OUI',
+                     INTE_SPEC_GENE = RESU1X,
+                     NOM_CHAM='DEPL',
+                     NOEUD=( 'N11'  ),
+                     NOM_CMP=('DX', ),
+                     OPTION='TOUT_TOUT'   );
+
+RN11Z=REST_SPEC_PHYS( MODE_MECA=BAMO,
+                     TOUT_ORDRE = 'OUI',
+                     INTE_SPEC_GENE = RESU1Z,
+                     NOM_CHAM='DEPL',
+                     NOEUD=( 'N11'  ),
+                     NOM_CMP=('DZ', ),
+                     OPTION='TOUT_TOUT'   );
+
+REP3=RECU_FONCTION(    INTE_SPEC=RN11X,
+                    NOEUD_I = 'N11',
+                    NOM_CMP_I = 'DX',
+                      )
+REP4=RECU_FONCTION(    INTE_SPEC=RN11Z,
+                    NOEUD_I = 'N11',
+                    NOM_CMP_I = 'DZ',
+                      )
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.0,
+                         VALE_REFE=1.0,
+                         CRITERE='RELATIF',
+                         VALE_PARA=30.0,
+                         REFERENCE='ANALYTIQUE',
+                         TOLE_MACHINE=1.e-2,
+                         PRECISION=1.e-2,
+                         FONCTION=REP3,),
+                      _F(VALE_CALC=1.0,
+                         VALE_REFE=1.0,
+                         CRITERE='RELATIF',
+                         VALE_PARA=30.0,
+                         REFERENCE='ANALYTIQUE',
+                         TOLE_MACHINE=1.e-2,
+                         PRECISION=1.e-2,
+                         FONCTION=REP4,),
+                      ),
+              )
+
+FIN();

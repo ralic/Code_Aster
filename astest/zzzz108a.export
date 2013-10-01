@@ -1,0 +1,16 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist R 
+
+F comm zzzz108a.comm D 1
+F mmed zzzz108a.mmed D 20
+F libr zzzz108a.11 D 11
+F libr zzzz108a.21 D 21
+F libr zzzz108a.22 D 22
+F libr zzzz108a.24 D 24
+F libr zzzz108a.27 D 27
+F libr zzzz108a.28 D 28
+F libr zzzz108a.29 D 29
