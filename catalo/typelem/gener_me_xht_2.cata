@@ -69,34 +69,29 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    COOR_ELGA           488   IN__   NGEOMER  PGEOMER OUT__  EGGEOP_R PCOORPG
-    CHAR_MECA_FF2D3D    36    IN__   CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO
+    CHAR_MECA_FF2D3D  36  IN__  E36NEUI  PCNSETO  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
+                                E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E9NEUTR  PPINTTO  
+                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR2D3D    36    IN__   EFORCNO  PFR2D3D  NGEOMER  PGEOMER  E9NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO
+    CHAR_MECA_FR2D3D  36  IN__  E36NEUI  PCNSETO  EFORCNO  PFR2D3D  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
+                                E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E9NEUTR  PPINTTO  
+                                STANO_I  PSTANO   
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_F    36    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO
+    CHAR_MECA_PRES_F  36  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  
+                                N1NEUT_R PLSN     N1NEUT_R PLST     E9NEUTR  PPINTTO  CPRESSF  PPRESSF  
+                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E9NEUTR  PPINTTO  E36NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
+    CHAR_MECA_PRES_R  36  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  
+                                N1NEUT_R PLSN     N1NEUT_R PLST     E9NEUTR  PPINTTO  EPRESNO  PPRESSR  
                                      STANO_I  PSTANO
                               OUT__  MVECTUR  PVECTUR
+    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  
+    FULL_MECA         99  IN__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
+                          OUT__ MVECTUR  PVECTUR  
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E9NEUTR  PPINTTO  E36NEUI  PCNSETO   E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA
-    TOU_INI_ELNO        99    IN__
-                              OUT__  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
+                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  E9NEUTR  PPINTTO  
     TOU_INI_ELEM        99    IN__
                               OUT__  CPRES_R  PPRES_R
-    FULL_MECA           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
-                              OUT__  MVECTUR  PVECTUR
-
-
-
-
-
-
+    TOU_INI_ELNO      99  IN__  
+                          OUT__ ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  EPRESNO  PPRES_R  

@@ -44,8 +44,8 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FLUX_F    -1    IN__   CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                                     DDL_MECA PDEPLMR  CCAMASS  PCAMASS
-                              OUT__  MVECTUR  PVECTUR 
-    CHAR_MECA_FLUX_R    314   IN__   EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR                                     
+    CHAR_MECA_FLUX_F  -1  IN__  CCAMASS  PCAMASS  DDL_MECA PDEPLMR  CFLUXF   PFLUXF   NGEOMER  PGEOMER  
+                                CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_FLUX_R 314  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  

@@ -135,7 +135,7 @@ class ERREUR:
         try :
             x=liste.index(element)
         except ValueError:
-            self.mess(code,str(element)+" n'appartient pas à la liste: "+str(liste))
+            self.mess(code,str(element)+" n'appartient pas à  la liste: "+str(liste))
 
 
     def veri_pas_doublon(self,code,liste):
@@ -144,14 +144,25 @@ class ERREUR:
             if x.has_key(e) : self.mess(code,e +" apparait plusieurs fois dans la liste: "+str(liste))
             x[e]=0
 
+    def veri_pas_doublon_lpara(self,code,liste):
+        # verifier qu'un parametre n'apparait pas plus d'une fois dans une liste de couples [(modloc, param)]
+        x= {}
+        assert(len(liste) % 2 == 0) , liste
+        np=len(liste)/2
+        for k in range(np) :
+            param=liste[2*k+1]
+            if x.has_key(param) : self.mess(code,"Le paramètre "+ param +
+                                  " apparait plusieurs fois dans la liste: "+str(liste))
+            x[param]=0
+
     def veri_long_chaine(self,code,chaine,n):
         if len(chaine) > n :
-            self.mess(code,chaine +' est une chaine de caractères trop longue (>'+str(n)+').\n' 
+            self.mess(code,chaine +' est une chaine de caractères trop longue (>'+str(n)+').\n'
                       'Stockés en utf-8, certains caractères accentués peuvent compter double.')
 
     def veri_new_key(self,code,nom,dico):
         if dico.has_key(nom):
-            self.mess(code,'le nom: ' + nom + ' est déjà défini.')
+            self.mess(code,'le nom: ' + nom + ' est déjà  défini.')
             return 1
         else:
             return 0
@@ -225,19 +236,19 @@ def chaine(var,long,cadre='G'):
 
 
 def cree_os(dicobj,nom,tsca,long):
-    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà déclaré:"+nom)
+    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà  déclaré:"+nom)
     o1= JV_SIMPLE(nom,tsca,long)
     dicobj[nom]=o1
     return o1
 
 def cree_pn(dicobj,nom,tsca):
-    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà déclaré:"+nom)
+    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà  déclaré:"+nom)
     o1= JV_PNOM(nom,tsca)
     dicobj[nom]=o1
     return o1
 
 def cree_co(dicobj,nom,tsca,tsca_pn,contig,acces,longv):
-    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà déclaré:"+nom)
+    if dicobj.has_key(nom):  ERR.mess('F', "Erreur objet déjà  déclaré:"+nom)
     o1= JV_COLLEC(nom,tsca,tsca_pn,contig,acces,longv)
     dicobj[nom]=o1
     return o1
@@ -269,7 +280,7 @@ class JV_COLLEC:
     def cree_oc(self,nom,long):
         oc1=JV_SIMPLE(nom,self.tsca,long)
         num=self.pn.jenonu(nom,'COOL')
-        if num > 0 : ERR.mess('F', "Erreur : nom existant déjà: "+nom+" dans: "+self.nom)
+        if num > 0 : ERR.mess('F', "Erreur : nom existant déjà : "+nom+" dans: "+self.nom)
         if self.longv >0 and long != self.longv : ERR.mess('F', "Erreur : longueur incorrecte: "+
                                                   str(long)+" pour: "+self.nom)
         self.objs.append(oc1)
@@ -314,7 +325,7 @@ class JV_COLLEC:
             elif self.tsca[0] == "I":
                 for val in oc1.valeurs: file.write(chaine(val,12,'D')+"\n")
             else:
-                ERR.mess('F', "Erreur : programmation à ajouter ...")
+                ERR.mess('F', "Erreur : programmation à  ajouter ...")
 
 
 
@@ -364,7 +375,7 @@ class JV_SIMPLE:
         elif self.tsca[0] == "I":
             for val in self.valeurs: file.write(chaine(val,12,'D')+"\n")
         else:
-            ERR.mess('F', "Erreur : programmation à ajouter ...")
+            ERR.mess('F', "Erreur : programmation à  ajouter ...")
 
 
 class JV_PNOM:
@@ -382,7 +393,7 @@ class JV_PNOM:
         self.nomuti=0
 
     def jenonu(self,nom,stop='PAS_COOL'):
-    # rend le numéro (num de 1 à n) d'un nom dans un pointeur de noms.
+    # rend le numéro (num de 1 à  n) d'un nom dans un pointeur de noms.
     # num est < 0 si le nom a été ajouté au pointeur.
         if type(nom) != type("a"):  ERR.mess('F', "Erreur : on attend nom=chaine.")
         ERR.veri_long_chaine('E',nom,int(self.tsca[1:3]))
@@ -400,9 +411,9 @@ class JV_PNOM:
 
     def ajout_nom(self,nom):
     # ajoute un nom dans un pointeur de noms.
-    # s'arrete en erreur fatale si le nom existe déjà
+    # s'arrete en erreur fatale si le nom existe déjà 
         if self.dico.has_key(nom) :
-            ERR.mess('F', "Erreur: le nom: "+nom+" existe déjà dans: "+self.nom)
+            ERR.mess('F', "Erreur: le nom: "+nom+" existe déjà  dans: "+self.nom)
         else:
             indice=self.nomuti+1
             self.nomuti=indice
@@ -443,7 +454,7 @@ def read_capy(nomfic):
 
 def surch_capy(capy1,capy2):
 #==================================
-#   ajouter/remplacer  capy2 à capy1
+#   ajouter/remplacer  capy2 à  capy1
 #   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
 
     if capy2 is None : return 0
@@ -546,7 +557,7 @@ def cata_split(nomfic,prefix,nblig):
 
 def concat_capy(capy1,capy2):
 #==================================
-#   ajouter  capy2 à capy1
+#   ajouter  capy2 à  capy1
 #   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
 
     if capy2 is None : return 0
@@ -601,7 +612,7 @@ def detruire_cata(capy,unigest) :
     u"""détruire dans un objet 'capy' les catalogues indiqués dans le fichier
     unigest
 
-    :capy: objet capy à modifier
+    :capy: objet capy à  modifier
     :unigest: nom du fichier unigest
     """
     if not unigest or not os.path.isfile(os.path.abspath(unigest)):

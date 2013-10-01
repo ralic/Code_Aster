@@ -327,26 +327,24 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    RIGI_CONT           366   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
-                                     CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF  STANO_I  PSTANO
-                                     STANO_I  PHEAVFA  PLALA_I  PHEAVNO
-                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    RIGI_FROT           366   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
-                                     CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF  STANO_I  PSTANO
-                                     STANO_I  PHEAVFA  PLALA_I  PHEAVNO
-                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    CHAR_MECA_CONT      367   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
-                                     CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF  STANO_I  PSTANO
-                                     STANO_I  PHEAVFA  PLALA_I  PHEAVNO
+    CHAR_MECA_CONT   367  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FROT      367   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
-                                     CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF  STANO_I  PSTANO
+    CHAR_MECA_FROT   367  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                          OUT__ MVECTUR  PVECTUR  
+    RIGI_CONT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                          OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
+    RIGI_FROT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                          OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
+    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM   
+                          OUT__ MMATUUR  PSYM     
+    XCVBCA           363  IN__  CCONAI   PCAR_AI  CCONPT   PCAR_PT  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  
                                      STANO_I  PHEAVFA  PLALA_I  PHEAVNO
-                              OUT__  MVECTUR  PVECTUR
-    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM
-    XCVBCA              363   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
-                                     CCONAI   PCAR_AI  STANO_I  PHEAVFA  PLALA_I  PHEAVNO
                               OUT__  I3NEUT_I PINDCOO
-
-
-

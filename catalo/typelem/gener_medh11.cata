@@ -47,17 +47,17 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FLUX_F    472   IN__   CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FLUX_R    472   IN__   EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_F    472   IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_R    472   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                              OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           467   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG                              
-    FLHN_ELGA           468   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
-                              OUT__  EFLHN    PFLHN                              
-    RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
-                         OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FLUX_F 472  IN__  CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_FLUX_R 472  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_PRES_F 472  IN__  NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_PRES_R 472  IN__  NGEOMER  PGEOMER  EPRESNO  PPRESSR  
+                          OUT__ MVECTUR  PVECTUR  
+    COOR_ELGA        467  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  
+    FLHN_ELGA        468  IN__  NSIEF_R  PCONTR   NGEOMER  PGEOMER  
+                          OUT__ EFLHN    PFLHN    
+    RIGI_MECA         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   

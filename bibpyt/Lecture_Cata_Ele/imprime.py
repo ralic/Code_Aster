@@ -934,6 +934,8 @@ def imprime_ojb(file,capy):
                 noop=opt[0];numte=int(opt[1]);nbin=len(opt[2])/2;nbou=len(opt[3])/2
                 ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
                 ERR.contexte("  rubrique: OPTION__ : "+noop,"AJOUT")
+                ERR.veri_pas_doublon_lpara('E',opt[2])
+                ERR.veri_pas_doublon_lpara('E',opt[3])
 
                 if dico_opt_te.has_key(noop) :
                     ERR.mess('E',"L'option: "+noop+" est définie plusieurs fois pour le TYPE_ELEMENT: "+note)

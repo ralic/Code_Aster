@@ -46,8 +46,8 @@ MATRICE__
     MMATTTR = MTEM_R DDL_THER DDL_THER
 
 OPTION__
-    RIGI_THER           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
-                              OUT__  MMATTTR  PMATTTR
-    TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO   E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA
-                                     E4NEUTR  PPMILTO
+    RIGI_THER         99  IN__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
+                          OUT__ MMATTTR  PMATTTR  
+    TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
+                          OUT__ E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  E6NEUTR  PPINTTO  
+                                E4NEUTR  PPMILTO  

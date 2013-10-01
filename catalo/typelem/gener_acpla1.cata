@@ -38,9 +38,9 @@ MATRICE__
     MMATTTC = MPRE_C DDL_ACOU DDL_ACOU
 
 OPTION__
-    AMOR_ACOU           178   IN__   NGEOMER  PGEOMER  CIMPEDC  PIMPEDC  CMATERC  PMATERC
-                              OUT__  MMATTTC  PMATTTC
-    CHAR_ACOU_VNOR_C    179   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EVITENC  PVITENC
-                              OUT__  MVECTTC  PVECTTC
-    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG                              
+    AMOR_ACOU        178  IN__  NGEOMER  PGEOMER  CIMPEDC  PIMPEDC  CMATERC  PMATERC  
+                          OUT__ MMATTTC  PMATTTC  
+    CHAR_ACOU_VNOR_C 179  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  EVITENC  PVITENC  
+                          OUT__ MVECTTC  PVECTTC  
+    COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  

@@ -43,13 +43,13 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
-    RIGI_MECA           427   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
-                              OUT__  MMATUNS  PMATUNS
-    CHAR_MECA_PESA_R    427   IN__   NGEOMER  PGEOMER
-                              OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG
-    NORME_L2            563   IN__   EGGEOP_R PCOORPG  EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR
-                                     EMNEUT_I PCALCI
-                              OUT__  ENORME   PNORME
+    CHAR_MECA_PESA_R 427  IN__  NGEOMER  PGEOMER  
+                          OUT__ MVECTUR  PVECTUR  
+    COOR_ELGA        479  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  
+    NORME_L2         563  IN__  EMNEUT_I PCALCI   EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR   EGGEOP_R PCOORPG  
+                          OUT__ ENORME   PNORME   
+    RIGI_MECA        427  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
+                          OUT__ MMATUNS  PMATUNS  
+    VERI_JACOBIEN    328  IN__  NGEOMER  PGEOMER  
+                          OUT__ ECODRET  PCODRET  

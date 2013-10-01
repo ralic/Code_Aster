@@ -50,15 +50,15 @@ MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC 
 
 OPTION__
-    MECA_BTLA_R         2     IN__   MDDLMUR  PDDLMUR  DDL_MECA PLAGRAR
-                              OUT__  MVECTUR  PVECTUR
-    MECA_BU_R           2     IN__   DDL_MECA PDDLIMR  MDDLMUR  PDDLMUR  MALPHAR  PALPHAR
-                              OUT__  MVECTUR  PVECTUR
-    MECA_DDLI_C         2     IN__   MDDLIMC  PDDLIMC
-                              OUT__  MVECTUC  PVECTUC
-    MECA_DDLI_F         2     IN__   MDDLIMF  PDDLIMF  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    MECA_DDLI_R         2     IN__   MDDLIMR  PDDLIMR
-                              OUT__  MVECTUR  PVECTUR
-    MECA_DDLM_R         2     IN__   MDDLMUR  PDDLMUR
-                              OUT__  MMATUUR  PMATUUR
+    MECA_BTLA_R        2  IN__  MDDLMUR  PDDLMUR  DDL_MECA PLAGRAR  
+                          OUT__ MVECTUR  PVECTUR  
+    MECA_BU_R          2  IN__  MALPHAR  PALPHAR  DDL_MECA PDDLIMR  MDDLMUR  PDDLMUR  
+                          OUT__ MVECTUR  PVECTUR  
+    MECA_DDLI_C        2  IN__  MDDLIMC  PDDLIMC  
+                          OUT__ MVECTUC  PVECTUC  
+    MECA_DDLI_F        2  IN__  MDDLIMF  PDDLIMF  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    MECA_DDLI_R        2  IN__  MDDLIMR  PDDLIMR  
+                          OUT__ MVECTUR  PVECTUR  
+    MECA_DDLM_R        2  IN__  MDDLMUR  PDDLMUR  
+                          OUT__ MMATUUR  PMATUUR  

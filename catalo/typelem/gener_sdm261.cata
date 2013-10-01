@@ -39,10 +39,9 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FLUX_F    472   IN__   CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FLUX_R    472   IN__   EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-
-    RIGI_MECA           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_FLUX_F 472  IN__  CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_FLUX_R 472  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    RIGI_MECA         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   

@@ -48,5 +48,5 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    TOU_INI_ELEM        99    IN__
-                              OUT__  ENEU1_R PNEU1_R
+    TOU_INI_ELEM      99  IN__  
+                          OUT__ ENEU1_R  PNEU1_R  

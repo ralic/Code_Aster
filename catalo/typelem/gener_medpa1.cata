@@ -40,33 +40,36 @@ VECTEUR__
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
+%------------------------
+% MASS_INER         G. Devesa affirme que MASS_INER ne concerne pas cet element
+%------------------------
 OPTION__
-    AMOR_MECA           553   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
-                              OUT__  MMATUUR  PMATUUR
-    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENEL_ELEM           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    IMPE_ABSO           -1    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PVITPLU
-                              OUT__  MVECTUR  PVECTUR
-    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-  % MASS_INER         G. Devesa affirme que MASS_INER ne concerne pas cet element
-    ONDE_PLAN           499   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CONDPLA  PONDPLA CONDPLR  PONDPLR  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    WEIBULL             -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    AMOR_MECA        553  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
+                          OUT__ MMATUUR  PMATUUR  
+    CARA_GEOM         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    CHAR_LIMITE       -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  
+    ECIN_ELEM         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    ENEL_ELEM         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    ENER_TOTALE       -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    EPOT_ELEM         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    IMPE_ABSO         -1  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PVITPLU  
+                          OUT__ MVECTUR  PVECTUR  
+    INDIC_ENER        -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    INDIC_SEUIL       -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    ONDE_PLAN        499  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CONDPLA  PONDPLA  CONDPLR  PONDPLR  
+                                CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    RICE_TRACEY       -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    WEIBULL           -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   

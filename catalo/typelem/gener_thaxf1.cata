@@ -42,29 +42,29 @@ MATRICE__
     MMATTTR = MTEM_R DDL_THER DDL_THER
 
 OPTION__
-    CHAR_THER_FLUN_F    272   IN__   CFLUXNF  PFLUXNF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTTR  PVECTTR
-    CHAR_THER_FLUN_R    271   IN__   CFLUXNR  PFLUXNR  NGEOMER  PGEOMER
-                              OUT__  MVECTTR  PVECTTR
-    CHAR_THER_FLUX_F    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_THER_TEXT_F    270   IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                                     CT_EXTF  PT_EXTF
-                              OUT__  MVECTTR  PVECTTR
-    CHAR_THER_TEXT_R    269   IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                                     ET_EXTR  PT_EXTR
-                              OUT__  MVECTTR  PVECTTR
-    COOR_ELGA           478   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG                              
-    FLUX_FLUI_X         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    FLUX_FLUI_Y         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    RESI_THER_COEH_F    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    RESI_THER_COEH_R    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    RIGI_THER_COEH_F    268   IN__   CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MMATTTR  PMATTTR
-    RIGI_THER_COEH_R    267   IN__   CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MMATTTR  PMATTTR
+    CHAR_THER_FLUN_F 272  IN__  CFLUXNF  PFLUXNF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTTR  PVECTTR  
+    CHAR_THER_FLUN_R 271  IN__  CFLUXNR  PFLUXNR  NGEOMER  PGEOMER  
+                          OUT__ MVECTTR  PVECTTR  
+    CHAR_THER_FLUX_F  -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    CHAR_THER_TEXT_F 270  IN__  CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
+                                CT_EXTF  PT_EXTF  
+                          OUT__ MVECTTR  PVECTTR  
+    CHAR_THER_TEXT_R 269  IN__  CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
+                                ET_EXTR  PT_EXTR  
+                          OUT__ MVECTTR  PVECTTR  
+    COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  
+    FLUX_FLUI_X       -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    FLUX_FLUI_Y       -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    RESI_THER_COEH_F  -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    RESI_THER_COEH_R  -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    RIGI_THER_COEH_F 268  IN__  CCOEFHF  PCOEFHF  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MMATTTR  PMATTTR  
+    RIGI_THER_COEH_R 267  IN__  CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MMATTTR  PMATTTR  

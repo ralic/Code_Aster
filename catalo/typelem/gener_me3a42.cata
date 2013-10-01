@@ -61,23 +61,23 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FLUX_F    466   IN__   CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FLUX_R    466   IN__   EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR2D3D    466   IN__   EFORCNO  PFR2D3D  NGEOMER  PGEOMER
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_F    466   IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
-                              OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_R    466   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                              OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG
-    FLHN_ELGA           493   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
-                              OUT__  EFLHN    PFLHN
-    NORME_L2            -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    RIGI_MECA           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    SIRO_ELEM           411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
-                              OUT__  EPJSIGM  PPJSIGM
+    CHAR_MECA_FLUX_F 466  IN__  CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_FLUX_R 466  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_FR2D3D 466  IN__  EFORCNO  PFR2D3D  NGEOMER  PGEOMER  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_PRES_F 466  IN__  NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  
+                          OUT__ MVECTUR  PVECTUR  
+    CHAR_MECA_PRES_R 466  IN__  NGEOMER  PGEOMER  EPRESNO  PPRESSR  
+                          OUT__ MVECTUR  PVECTUR  
+    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
+                          OUT__ EGGEOP_R PCOORPG  
+    FLHN_ELGA        493  IN__  NSIEF_R  PCONTR   NGEOMER  PGEOMER  
+                          OUT__ EFLHN    PFLHN    
+    NORME_L2          -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    RIGI_MECA         -1  IN__  XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX   
+    SIRO_ELEM        411  IN__  NGEOMER  PGEOMER  ECONTNO  PSIG3D   
+                          OUT__ EPJSIGM  PPJSIGM  
