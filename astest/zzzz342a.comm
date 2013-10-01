@@ -122,6 +122,7 @@ IN_NH_NU=STAT_NON_LINE(MODELE=MODE,
                       COMPORTEMENT=_F(RELATION='ELAS_HYPER',
                                    DEFORMATION='GROT_GDEP',),
                       NEWTON=_F(REAC_ITER=1,),
+                      ETAT_INIT=_F(SIGM=SIGMINI0),
                       CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
                       INCREMENT=_F(LIST_INST=TPS,),);
 

@@ -102,12 +102,21 @@ RESU_HK=CALC_CHAMP(reuse =RESU_HK,
 
 # HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN INCREMENTAL (A PARTIR DE K)
 
+SIGMINI0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                    OPERATION='AFFE',
+                    MODELE=MODE,
+                    PROL_ZERO='OUI',
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP=('SIXX',),
+                            VALE=0.));
+
 IN_NH_K=STAT_NON_LINE(MODELE=MODE,
                       CHAM_MATER=CHNHK_K,
                       EXCIT=_F(CHARGE=CHAR,FONC_MULT=RAMPE,),
                       COMPORTEMENT=_F(RELATION='ELAS_HYPER',
                                    DEFORMATION='GROT_GDEP',),
                       NEWTON=_F(REAC_ITER=1,),
+                      ETAT_INIT=_F(SIGM=SIGMINI0),
                       CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
                       INCREMENT=_F(LIST_INST=TPS,),);
 
@@ -123,6 +132,7 @@ IN_NH_NU=STAT_NON_LINE(MODELE=MODE,
                       COMPORTEMENT=_F(RELATION='ELAS_HYPER',
                                    DEFORMATION='GROT_GDEP',),
                       NEWTON=_F(REAC_ITER=1,),
+                      ETAT_INIT=_F(SIGM=SIGMINI0),
                       CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
                       INCREMENT=_F(LIST_INST=TPS,),);
 
