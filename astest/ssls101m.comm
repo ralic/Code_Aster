@@ -50,9 +50,14 @@ CARELEM=AFFE_CARA_ELEM(  MODELE=MODEL,
                          COQUE=_F(  GROUP_MA = 'DBCE', COQUE_NCOU=9,
                                     EPAIS = T,  ANGL_REP = (0., 0.,)))
 
+P2=DEFI_CONSTANTE(VALE=0.)
+
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL, INFO=1,
                PRES_REP=_F(GROUP_MA='ADE2',   PRES =  P),
                FORCE_COQUE=_F(GROUP_MA='DBCE', PRES = P))
+
+CHARGE2=AFFE_CHAR_MECA_F(  MODELE=MODEL, INFO=1,
+               PRES_REP=_F(GROUP_MA='DBCE',   PRES =  P2))
 
 #
 # ON RAJOUTE UNE CHARGE SUIVEUSE NULLE POUR VERIFIER QUE LES DKT
@@ -64,6 +69,8 @@ PRSUIV=AFFE_CHAR_MECA(  MODELE=MODEL, INFO=1,
                          _F(GROUP_MA='DBCE', PRES = 0.),
                      ),)
 
+PRSUIV2=AFFE_CHAR_MECA_F(  MODELE=MODEL, INFO=1,
+               PRES_REP=_F(GROUP_MA='DBCE',   PRES =  P2))
 
 # 1er calcul avec TYPE_RACCORD='COQUE_MASSIF' :
 #------------------------------------------------
@@ -94,7 +101,9 @@ INTERVALLE=(_F(JUSQU_A=1,  NOMBRE=1,),
 # a CALC_CHAMP de pouvoir calculer VARI_NOEU
 RESU1=STAT_NON_LINE( MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM,
           EXCIT=(_F(CHARGE = CHARGE),
+                 _F(CHARGE = CHARGE2),
                  _F(CHARGE = PRSUIV, TYPE_CHARGE='SUIV'),
+                 _F(CHARGE = PRSUIV2, TYPE_CHARGE='SUIV'),
                  _F(CHARGE = RACCOR1),
                  _F(CHARGE = BLOQ1)),
           INCREMENT=_F(LIST_INST=LINST,),COMPORTEMENT=_F(RELATION='ELAS',))
