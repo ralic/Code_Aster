@@ -46,7 +46,7 @@ subroutine te0542(option, nomte)
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu
     logical :: lbid
-    real(kind=8) :: rbid, sigref, depref,vect(1)
+    real(kind=8) :: sigref, depref, vect(1)
     character(len=8) :: enr, elref
 ! DEB ------------------------------------------------------------------
 !

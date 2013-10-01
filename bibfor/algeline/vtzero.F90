@@ -34,24 +34,23 @@ subroutine vtzero(chamna)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nbsd, ilimpi, ifetc, idd, neq, ival, i, neq1, iret
+    integer :: neq, ival, i, neq1
     character(len=24) :: kval, chamn
-    logical :: iddok
 !
 ! CORPS DU PROGRAMME
     call jemarq()
     chamn=chamna
 !
-
+!
     kval=chamn(1:19)//'.VALE'
     call jeveuo(kval, 'E', ival)
     call jelira(kval, 'LONMAX', neq)
     neq1=neq-1
-    do 10 i = 0, neq1
+    do i = 0, neq1
         zr(ival+i)=0.d0
-10  continue
-
-
+    end do
+!
+!
 !
     call jedema()
 end subroutine

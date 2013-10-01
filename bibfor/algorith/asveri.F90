@@ -61,7 +61,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !-----------------------------------------------------------------------
     integer :: ib, ibid, id, ier, im, in, inum
     integer :: iordr(1), iret, irt, irt1, irt2, is, nbmode
-    integer :: nbopt, nbtrou, ns,tabord(1)
+    integer :: nbopt, nbtrou, ns, tabord(1)
     real(kind=8) :: r8b, rb
 !-----------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
@@ -76,7 +76,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !     --- VERIFICATION DES CHAMPS DONNES ---
     if (monoap) then
         if (tronc) then
-            do 10 id = 1, 3
+            do id = 1, 3
                 if (ndir(id) .eq. 1) then
                     call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id),&
                                 cbid, r8b, k8b, iordr, 1,&
@@ -99,12 +99,13 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                         call utmess('E', 'ALGORITH12_13', nk=3, valk=valk)
                     endif
                 endif
-10          continue
+ 10             continue
+            end do
         endif
     else
-        do 12 id = 1, 3
+        do id = 1, 3
             if (ndir(id) .eq. 1) then
-                do 14 is = 1, nsupp(id)
+                do is = 1, nsupp(id)
                     noeu = nomsup(is,id)
                     cmp = nomcmp(id)
                     monacc = noeu//cmp
@@ -129,7 +130,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             valk (3) = monpar
                             call utmess('E', 'ALGORITH12_15', nk=3, valk=valk)
                         endif
-16                      continue
+ 16                     continue
                     endif
                     if (tronc) then
                         call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc,&
@@ -153,13 +154,14 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             call utmess('E', 'ALGORITH12_13', nk=3, valk=valk)
                         endif
                     endif
-14              continue
+ 14                 continue
+                end do
             endif
-12      continue
+        end do
     endif
 !
 !     --- VERIFICATION DES OPTIONS DE CALCUL ---
-    do 20 in = 1, nbopt
+    do in = 1, nbopt
         nomsy = knomsy(in)
         if (nomsy(1:4) .eq. 'VITE' .and. .not.monoap) then
             valk (1) = nomsy
@@ -177,7 +179,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
             call utmess('E', 'ALGORITH12_7', nk=2, valk=valk)
             goto 20
         endif
-        do 22 im = 1, nbmode
+        do im = 1, nbmode
             call rsexch(' ', meca, nomsy, nordr(im), chext2,&
                         iret)
             if (iret .ne. 0) then
@@ -188,7 +190,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 vali = inum
                 call utmess('E', 'ALGORITH12_20', nk=2, valk=valk, si=vali)
             endif
-22      continue
+        end do
         if (tronc) then
             call rsutnc(psmo, nomsy, 0, k8b, tabord,&
                         nbtrou)
@@ -209,10 +211,11 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 call utmess('E', 'ALGORITH12_22', nk=2, valk=valk)
             endif
         endif
-20  end do
+ 20     continue
+    end do
 !
 !     --- ON VERIFIE QUE LES CHAM_NOS ET CHAM_ELEMS SONT IDENTIQUES ---
-    do 30 in = 1, nbopt
+    do in = 1, nbopt
         nomsy = knomsy(in)
         if (nomsy(1:4) .eq. 'VITE') goto 30
         if (nomsy(1:4) .eq. 'ACCE') goto 30
@@ -224,7 +227,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                     ctyp, iret)
 !
 !        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
-        do 32 im = 2, nbmode
+        do im = 2, nbmode
             call rsexch('F', meca, nomsy, nordr(im), chext2,&
                         iret)
             if (ctyp(1:2) .eq. 'NO') then
@@ -240,10 +243,10 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 valk(2) = chext2
                 call utmess('E', 'ALGORITH_35', nk=2, valk=valk)
             endif
-32      continue
+        end do
         if (monoap) then
             if (tronc) then
-                do 34 id = 1, 3
+                do id = 1, 3
                     if (ndir(id) .eq. 1) then
                         call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces( id),&
                                     cbid, r8b, k8b, iordr, 1,&
@@ -266,13 +269,13 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             endif
                         endif
                     endif
-34              continue
+                end do
             endif
         else
 !
-            do 36 id = 1, 3
+            do id = 1, 3
                 if (ndir(id) .eq. 1) then
-                    do 38 is = 1, nsupp(id)
+                    do is = 1, nsupp(id)
                         noeu = nomsup(is,id)
                         cmp = nomcmp(id)
                         monacc = noeu//cmp
@@ -320,11 +323,12 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                 endif
                             endif
                         endif
-38                  continue
+                    end do
                 endif
-36          continue
+            end do
         endif
-30  end do
+ 30     continue
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'ALGORITH_25')

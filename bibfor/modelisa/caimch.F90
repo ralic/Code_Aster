@@ -116,7 +116,7 @@ subroutine caimch(chargz)
 !
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR CHAMNO_IMPO :
 !     -------------------------------------------------------
-    do 20 iocc = 1, nliai
+    do iocc = 1, nliai
 !
 ! ---   ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
 ! ---   APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
@@ -242,7 +242,7 @@ subroutine caimch(chargz)
 !
 ! ---   BOUCLE SUR LES TERMES DU CHAM_NO
 !
-        do 10 iequa = 1, nequa
+        do iequa = 1, nequa
 !
 ! ---     INO  : NUMERO DU NOEUD INO CORRESPONDANT AU DDL IEQUA
 !
@@ -278,7 +278,7 @@ subroutine caimch(chargz)
                             lisrel)
             endif
 !
-10      continue
+        end do
 !
         nbterm = k
 !
@@ -291,7 +291,7 @@ subroutine caimch(chargz)
         call jedetr('&&CAIMCH.DIRECT')
         call jedetr('&&CAIMCH.DIME')
 !
-20  end do
+    end do
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
@@ -301,7 +301,7 @@ subroutine caimch(chargz)
 !     ------
     call jedetr(lisrel)
 !
-30  continue
+ 30 continue
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

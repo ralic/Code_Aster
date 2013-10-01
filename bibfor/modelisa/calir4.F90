@@ -3,13 +3,13 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
                   jcocf2, jconu2, ideca2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/base3n.h"
 #include "asterfort/imprel.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+!
     character(len=19) :: lisrel
     character(len=8) :: nono2, noma
     integer :: ino2, jconb1, jcocf1, jconu1, ideca1
@@ -49,6 +49,7 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     character(len=8) :: kbeta, noeud(165), ddl(165), nono1
     integer :: dimens(165), nbterm
     integer :: n1, n2, ino1, nuno1, k, idec
+    cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
 !
     beta=0.0d0
@@ -69,9 +70,9 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     call base3n(v1, mat33)
 !
 !
-    do 10,k=1,nbterm
-    dimens(k)=0
-    10 end do
+    do k = 1, nbterm
+        dimens(k)=0
+    end do
 !
 !
 !     -- CALCUL DES COEFFICIENTS DE LA RELATION DR2=... :
@@ -87,38 +88,38 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     coefr(3)=-1.d0*mat33(3,2)
 !
 !     -- NOEUDS DE LA 1ERE MAILLE (CORRE1) :
-    do 20,ino1=1,n1
-    nuno1=zi(jconu1+ideca1-1+ino1)
-    coef1=zr(jcocf1+ideca1-1+ino1)
-    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-    idec=3+3*(ino1-1)
-    noeud(idec+1)=nono1
-    noeud(idec+2)=nono1
-    noeud(idec+3)=nono1
-    ddl(idec+1)='DX'
-    ddl(idec+2)='DY'
-    ddl(idec+3)='DZ'
-    coefr(idec+1)=-(coef1*mat33(1,3))/epais
-    coefr(idec+2)=-(coef1*mat33(2,3))/epais
-    coefr(idec+3)=-(coef1*mat33(3,3))/epais
-    20 end do
+    do ino1 = 1, n1
+        nuno1=zi(jconu1+ideca1-1+ino1)
+        coef1=zr(jcocf1+ideca1-1+ino1)
+        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+        idec=3+3*(ino1-1)
+        noeud(idec+1)=nono1
+        noeud(idec+2)=nono1
+        noeud(idec+3)=nono1
+        ddl(idec+1)='DX'
+        ddl(idec+2)='DY'
+        ddl(idec+3)='DZ'
+        coefr(idec+1)=-(coef1*mat33(1,3))/epais
+        coefr(idec+2)=-(coef1*mat33(2,3))/epais
+        coefr(idec+3)=-(coef1*mat33(3,3))/epais
+    end do
 !
 !     -- NOEUDS DE LA 2EME MAILLE (CORRE2) :
-    do 30,ino1=1,n2
-    nuno1=zi(jconu2+ideca2-1+ino1)
-    coef1=zr(jcocf2+ideca2-1+ino1)
-    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-    idec=3+3*(n1+ino1-1)
-    noeud(idec+1)=nono1
-    noeud(idec+2)=nono1
-    noeud(idec+3)=nono1
-    ddl(idec+1)='DX'
-    ddl(idec+2)='DY'
-    ddl(idec+3)='DZ'
-    coefr(idec+1)=+(coef1*mat33(1,3))/epais
-    coefr(idec+2)=+(coef1*mat33(2,3))/epais
-    coefr(idec+3)=+(coef1*mat33(3,3))/epais
-    30 end do
+    do ino1 = 1, n2
+        nuno1=zi(jconu2+ideca2-1+ino1)
+        coef1=zr(jcocf2+ideca2-1+ino1)
+        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+        idec=3+3*(n1+ino1-1)
+        noeud(idec+1)=nono1
+        noeud(idec+2)=nono1
+        noeud(idec+3)=nono1
+        ddl(idec+1)='DX'
+        ddl(idec+2)='DY'
+        ddl(idec+3)='DZ'
+        coefr(idec+1)=+(coef1*mat33(1,3))/epais
+        coefr(idec+2)=+(coef1*mat33(2,3))/epais
+        coefr(idec+3)=+(coef1*mat33(3,3))/epais
+    end do
 !
     call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&
@@ -141,38 +142,38 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     coefr(3)=-1.d0*mat33(3,3)
 !
 !     -- NOEUDS DE LA 1ERE MAILLE (CORRE1) :
-    do 40,ino1=1,n1
-    nuno1=zi(jconu1+ideca1-1+ino1)
-    coef1=zr(jcocf1+ideca1-1+ino1)
-    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-    idec=3+3*(ino1-1)
-    noeud(idec+1)=nono1
-    noeud(idec+2)=nono1
-    noeud(idec+3)=nono1
-    ddl(idec+1)='DX'
-    ddl(idec+2)='DY'
-    ddl(idec+3)='DZ'
-    coefr(idec+1)=+(coef1*mat33(1,2))/epais
-    coefr(idec+2)=+(coef1*mat33(2,2))/epais
-    coefr(idec+3)=+(coef1*mat33(3,2))/epais
-    40 end do
+    do ino1 = 1, n1
+        nuno1=zi(jconu1+ideca1-1+ino1)
+        coef1=zr(jcocf1+ideca1-1+ino1)
+        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+        idec=3+3*(ino1-1)
+        noeud(idec+1)=nono1
+        noeud(idec+2)=nono1
+        noeud(idec+3)=nono1
+        ddl(idec+1)='DX'
+        ddl(idec+2)='DY'
+        ddl(idec+3)='DZ'
+        coefr(idec+1)=+(coef1*mat33(1,2))/epais
+        coefr(idec+2)=+(coef1*mat33(2,2))/epais
+        coefr(idec+3)=+(coef1*mat33(3,2))/epais
+    end do
 !
 !     -- NOEUDS DE LA 2EME MAILLE (CORRE2) :
-    do 50,ino1=1,n2
-    nuno1=zi(jconu2+ideca2-1+ino1)
-    coef1=zr(jcocf2+ideca2-1+ino1)
-    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-    idec=3+3*(n1+ino1-1)
-    noeud(idec+1)=nono1
-    noeud(idec+2)=nono1
-    noeud(idec+3)=nono1
-    ddl(idec+1)='DX'
-    ddl(idec+2)='DY'
-    ddl(idec+3)='DZ'
-    coefr(idec+1)=-(coef1*mat33(1,2))/epais
-    coefr(idec+2)=-(coef1*mat33(2,2))/epais
-    coefr(idec+3)=-(coef1*mat33(3,2))/epais
-    50 end do
+    do ino1 = 1, n2
+        nuno1=zi(jconu2+ideca2-1+ino1)
+        coef1=zr(jcocf2+ideca2-1+ino1)
+        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+        idec=3+3*(n1+ino1-1)
+        noeud(idec+1)=nono1
+        noeud(idec+2)=nono1
+        noeud(idec+3)=nono1
+        ddl(idec+1)='DX'
+        ddl(idec+2)='DY'
+        ddl(idec+3)='DZ'
+        coefr(idec+1)=-(coef1*mat33(1,2))/epais
+        coefr(idec+2)=-(coef1*mat33(2,2))/epais
+        coefr(idec+3)=-(coef1*mat33(3,2))/epais
+    end do
 !
     call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&

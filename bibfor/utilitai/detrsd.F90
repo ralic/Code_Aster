@@ -66,8 +66,8 @@ subroutine detrsd(typesd, nomsd)
 ! ----------------------------------------------------------------------
     complex(kind=8) :: cbid
 !
-    integer :: iret, iad, long, i, nbch, jrelr, ibid, nbsd, ifets, ilimpi, idd
-    integer :: ifetm, ifetn, ifetc, ityobj, inomsd, nblg, nbpa, nblp, n1
+    integer :: iret, iad, long, i, nbch, jrelr, ibid
+    integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
     integer :: jltns
     character(len=8) :: metres, k8
     character(len=12) :: vge
@@ -75,8 +75,9 @@ subroutine detrsd(typesd, nomsd)
     character(len=16) :: typ2sd, corres
     character(len=19) :: champ, matas, table, solveu, fnc, resu
     character(len=19) :: ligrel, nuage, ligret, mltf, stock, k19, matel, liste
-    character(len=24) :: k24b, typobj, knomsd
+    character(len=24) :: typobj, knomsd
     logical :: lbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -239,9 +240,9 @@ subroutine detrsd(typesd, nomsd)
         if (iret .eq. 0) goto 70
         call jeveuo(k19//'.LTNS', 'L', jltns)
         call jelira(k19//'.LTNS', 'LONMAX', n1)
-        do 1, i=1,n1
-        call detrs2('TABLE', zk24(jltns-1+i))
- 1      continue
+        do i = 1, n1
+            call detrs2('TABLE', zk24(jltns-1+i))
+        end do
         call jedetr(k19//'.LTNS')
         call jedetr(k19//'.LTNT')
 !
@@ -299,27 +300,27 @@ subroutine detrsd(typesd, nomsd)
             call jeveuo(table//'.TBLP', 'L', iad)
             call jelira(table//'.TBLP', 'LONMAX', long)
             nblp=long/nbpa
-            do 25,i = 1,nbpa
-            if (zk24(iad+nblp*(i-1))(1:10) .eq. 'TYPE_OBJET') then
-                typobj=zk24(iad+nblp*(i-1)+3-1)
-            else if (zk24(iad+nblp*(i-1))(1:6).eq.'NOM_SD') then
-                knomsd=zk24(iad+nblp*(i-1)+3-1)
-            endif
-25          continue
+            do i = 1, nbpa
+                if (zk24(iad+nblp*(i-1))(1:10) .eq. 'TYPE_OBJET') then
+                    typobj=zk24(iad+nblp*(i-1)+3-1)
+                else if (zk24(iad+nblp*(i-1))(1:6).eq.'NOM_SD') then
+                    knomsd=zk24(iad+nblp*(i-1)+3-1)
+                endif
+            end do
             call jeveuo(typobj, 'L', ityobj)
             call jeveuo(knomsd, 'L', inomsd)
-            do 26,i = 1,nblg
-            if (zk16(ityobj+i-1)(1:9) .eq. 'MATR_ELEM') then
-                call detrs2('MATR_ELEM', zk24(inomsd+i-1))
-            else if (zk16(ityobj+i-1)(1:9).eq.'VECT_ELEM') then
-                call detrs2('VECT_ELEM', zk24(inomsd+i-1))
-            else if (zk16(ityobj+i-1)(1:9).eq.'CHAM_ELEM') then
-                call detrs2('CHAM_ELEM', zk24(inomsd+i-1))
-            endif
-26          continue
-            do 27,i = 1,long
-            call jedetr(zk24(iad-1+i))
-27          continue
+            do i = 1, nblg
+                if (zk16(ityobj+i-1)(1:9) .eq. 'MATR_ELEM') then
+                    call detrs2('MATR_ELEM', zk24(inomsd+i-1))
+                else if (zk16(ityobj+i-1)(1:9).eq.'VECT_ELEM') then
+                    call detrs2('VECT_ELEM', zk24(inomsd+i-1))
+                else if (zk16(ityobj+i-1)(1:9).eq.'CHAM_ELEM') then
+                    call detrs2('CHAM_ELEM', zk24(inomsd+i-1))
+                endif
+            end do
+            do i = 1, long
+                call jedetr(zk24(iad-1+i))
+            end do
             call jedetr(table//'.TBLP')
             call jedetr(table//'.TBNP')
             call jedetr(table//'.TBBA')
@@ -335,9 +336,9 @@ subroutine detrsd(typesd, nomsd)
         if (iret .ne. 0) then
             call jeveuo(table//'.TBLP', 'L', iad)
             call jelira(table//'.TBLP', 'LONMAX', long)
-            do 20,i = 1,long
-            call jedetr(zk24(iad-1+i))
-20          continue
+            do i = 1, long
+                call jedetr(zk24(iad-1+i))
+            end do
             call jedetr(table//'.TBLP')
             call jedetr(table//'.TBNP')
             call jedetr(table//'.TBBA')
@@ -387,7 +388,7 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.DESC')
         call jedetr(k19//'.REFE')
         call jedetr(k19//'.VALE')
-
+!
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CARTE') then
 !     ----------------------------------
@@ -562,11 +563,11 @@ subroutine detrsd(typesd, nomsd)
         if (iret .le. 0) goto 61
         call jelira(matel//'.RELR', 'LONUTI', nbch)
         if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', jrelr)
-        do 60,i = 1,nbch
-        champ=zk24(jrelr-1+i)(1:19)
-        call assde1(champ)
-60      continue
-61      continue
+        do i = 1, nbch
+            champ=zk24(jrelr-1+i)(1:19)
+            call assde1(champ)
+        end do
+ 61     continue
         call jedetr(matel//'.RELR')
         call jedetr(matel//'.RELC')
         call jedetr(matel//'.RECC')
@@ -614,6 +615,6 @@ subroutine detrsd(typesd, nomsd)
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
-70  continue
+ 70 continue
     call jedema()
 end subroutine

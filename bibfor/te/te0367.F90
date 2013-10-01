@@ -80,11 +80,11 @@ subroutine te0367(option, nomte)
     real(kind=8) :: geopi(9), dvitet(3)
     real(kind=8) :: coefff, coefcr, coeffr, coeffp
     real(kind=8) :: coefcp
-    real(kind=8) :: rre, rrm, jeu, r8bid
+    real(kind=8) :: rre, rrm, jeu
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrc, dlagrf(2)
     logical :: lfrott, lpenaf, lpenac, lesclx, lmaitx, lcontx
-    real(kind=8) :: vtmp(n),mmat(336,336)
+    real(kind=8) :: vtmp(n), mmat(336, 336)
     integer :: contac, ibid, npte
     integer :: ndeple, ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
@@ -362,9 +362,9 @@ subroutine te0367(option, nomte)
 !
 ! --- RECOPIE VALEURS FINALES
 !
-    do 250 i = 1, nddl
+    do i = 1, nddl
         zr(ivect-1+i)=vtmp(i)
-250  end do
+    end do
 !
     call jedema()
 end subroutine

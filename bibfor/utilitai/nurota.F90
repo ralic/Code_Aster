@@ -20,7 +20,6 @@ subroutine nurota(numedd, compor, sdnuro)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -39,6 +38,7 @@ subroutine nurota(numedd, compor, sdnuro)
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: numedd, compor
     character(len=24) :: sdnuro
 !
@@ -146,14 +146,14 @@ subroutine nurota(numedd, compor, sdnuro)
 !
     nbgr = nbgrel(ligrmo)
     noliel = ligrmo//'.LIEL'
-    do 140 igr = 1, nbgr
+    do igr = 1, nbgr
         te = typele(ligrmo,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
         if (nomte .eq. 'MECA_POU_D_T_GD' .or. nomte .eq. 'MEC3TR7H' .or. nomte .eq.&
             'MEC3QU9H') then
             nbelgr = nbelem(ligrmo,igr)
             call jeveuo(jexnum(noliel, igr), 'L', liel)
-            do 130 iel = 1, nbelgr
+            do iel = 1, nbelgr
                 ima = zi(liel-1+iel)
                 if (zi(iptma+ima-1) .ne. 0) then
                     igd = zi(iptma+ima-1)
@@ -170,22 +170,23 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ---     RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
                     call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
                     call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
-                    do 20 ino = 1, nbno
+                    do ino = 1, nbno
                         zi(itrav+zi(iconex+ino-1)-1) = 1
-20                  continue
+                    end do
                 endif
-130          continue
+130             continue
+            end do
         endif
-140  end do
+    end do
 !
 ! --- NOMBRE DE NOEUDS EN GRANDES ROTATIONS
 !
     nbnoc = 0
-    do 30 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         if (zi(itrav+ino-1) .eq. 1) then
             nbnoc = nbnoc + 1
         endif
-30  end do
+    end do
 !
 ! --- AFFICHAGE
 !
@@ -202,7 +203,7 @@ subroutine nurota(numedd, compor, sdnuro)
     if (nbnoc .gt. 0) then
         call wkvect(sdnuro, 'V V I', nequa, indro)
     else
-        goto 9999
+        goto 999
     endif
 !
     nomgd = 'DEPL_R'
@@ -228,11 +229,12 @@ subroutine nurota(numedd, compor, sdnuro)
 !
     call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
-    do 40 i = 1, nlili
+    do i = 1, nlili
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
-40  end do
+ 40     continue
+    end do
     ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
@@ -245,7 +247,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! --- DES NOEUDS EN GRANDES ROTATIONS                             ---
 !
     inoc = 0
-    do 50 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         if (zi(itrav+ino-1) .eq. 0) goto 50
         inoc = inoc + 1
 ! ---  IVAL  : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -254,28 +256,29 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ---  IADG  : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
         iadg = iaprno+(ino-1)*(nec+2)+3-1
 !
-        do 60 i = idrz-2, idrz
+        do i = idrz-2, idrz
             if (.not.exisdg(zi(iadg),i)) then
                 ASSERT(.false.)
             endif
-60      continue
+        end do
         ico = 0
-        do 70 i = 1, idrz-3
+        do i = 1, idrz-3
             if (exisdg(zi(iadg),i)) then
                 ico = ico + 1
             endif
-70      continue
+        end do
 !
         zi(indro-1+ival-1+ico+1) = 1
         zi(indro-1+ival-1+ico+2) = 1
         zi(indro-1+ival-1+ico+3) = 1
 !
-50  end do
+ 50     continue
+    end do
 !
 ! --- MENAGE
     call jedetr('&&NUROTA.NOEUDS.GR')
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

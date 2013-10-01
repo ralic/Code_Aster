@@ -64,15 +64,15 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iret, i, nbtu, jltn1, jltn2, idd, nbsd, ilimpi
+    integer :: iret, i, nbtu, jltn1, jltn2
     character(len=1) :: bas2
     character(len=8) :: k81, k82
     character(len=12) :: k121, k122
     character(len=14) :: com1, com2, nu1, nu2
     character(len=16) :: typ2sd, corr1, corr2
     character(len=19) :: ch1, ch2, sdr1, k191, k192
-    character(len=24) :: masfe1, masfe2, x1, x2
-    integer :: ifetm1, ifetm2, j1, iexi
+    character(len=24) :: x1, x2
+    integer :: j1, iexi
 !
 !
 ! DEB-------------------------------------------------------------------
@@ -360,7 +360,7 @@ subroutine copisd(typesd, base, sd1, sd2)
             call jeveuo(k191//'.LTNS', 'L', jltn1)
             call jeveuo(k192//'.LTNS', 'E', jltn2)
             k192(1:8) = k192
-            do 10 i = 1, nbtu
+            do i = 1, nbtu
                 k191 = zk24(jltn1+i-1)(1:19)
                 k192(9:19) = k191(9:19)
                 call exisd('TABLE', k191, iret)
@@ -370,7 +370,7 @@ subroutine copisd(typesd, base, sd1, sd2)
                     call utmess('F', 'UTILITAI_41', sk=k191)
                 endif
                 zk24(jltn2+i-1) = k192
-10          continue
+            end do
         endif
 !
 ! ----------------------------------------------------------------------

@@ -86,7 +86,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     logical :: test1, test2, test3
     integer :: nbvale, nbrefe, nbdesc, ibid, isst, iadrp
     integer :: i, iad(2), iad3d(3), icor(2), ndble
-    real(kind=8) :: rbid, tgeom(6), tmin, epsi, const(2)
+    real(kind=8) :: tgeom(6), tmin, epsi, const(2)
     real(kind=8) :: tailmi, norm1, norm2, ca(3), sa(3)
     real(kind=8) :: val(2), val3d(3), tol
     character(len=1) :: typech(2), typcst(2), base
@@ -107,6 +107,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     integer :: inomcr, inomcv, inueq, iprn, iref, iret, ival
     integer :: ivaleu, k, nbchad, nbchar, nbchav, nbnoe, ncmp
     integer :: nec
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data maprec   /'&&OP0152.MAPREC'/
     data chsol    /'&&OP0152.SOLUTION'/
@@ -173,13 +174,13 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
 !
 !
-    do 21 ichav = 1, nbchav
+    do ichav = 1, nbchav
         zr(ival+ichav-1)=0.0d0
-21  continue
+    end do
 !
 ! ROTATION DU CHAMNO PROPREMENT DITE
 !
-    do 22 inoe = 1, nbnoe
+    do inoe = 1, nbnoe
 !
         ivaleu = zi(iprn-1+ (inoe-1)* (nec+2)+1)
         ncmp = zi(iprn-1+ (inoe-1)* (nec+2)+2)
@@ -196,7 +197,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
             if (test1 .and. test2) then
 !
-                do 221 i = 1, ncmp
+                do i = 1, ncmp
 !
                     if (i .le. 2) then
 !
@@ -214,7 +215,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
                     endif
 !
-221              continue
+                end do
 !
 ! C EST LA ROTATION LIMITEE AU 2D
 !
@@ -230,10 +231,10 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
             else
 !
-                do 222 i = 1, ncmp
+                do i = 1, ncmp
                     iaut=zi(inueq-1+ivaleu+i-1)
                     zr(ival-1+iaut+i-1)=0.0d0
-222              continue
+                end do
 !
             endif
 !
@@ -244,7 +245,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
             test3 = exisdg(zi(iadg),3)
 !
             if (test1 .and. test2 .and. test3) then
-                do 223 i = 1, ncmp
+                do i = 1, ncmp
 !
                     if (i .le. 3) then
 !
@@ -269,7 +270,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
                     endif
 !
-223              continue
+                end do
 !
 !
                 zr(ival-1+iad3d(1))=ca(3)*ca(1)*val3d(1)+ val3d(2)*(&
@@ -295,24 +296,25 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
             else
 !
-                do 224 i = 1, ncmp
+                do i = 1, ncmp
                     iaut=zi(inueq-1+ivaleu+i-1)
                     zr(ival-1+iaut+i-1)=0.0d0
-224              continue
+                end do
 !
             endif
         endif
 !
-22  continue
+ 22     continue
+    end do
 !
 !
-    do 23 ichar = 1, nbchar
+    do ichar = 1, nbchar
         zk24(iref+ichar-1)= zk24(inomcr+ichar-1)
-23  continue
+    end do
 !
-    do 24 ichad = 1, nbchad
+    do ichad = 1, nbchad
         zi(idsc+ichad-1)= zi(inomcd+ichad-1)
-24  continue
+    end do
 !
 !
 !

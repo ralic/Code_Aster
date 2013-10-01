@@ -17,7 +17,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calatm.h"
 #include "asterfort/jedema.h"
@@ -60,9 +60,9 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
     character(len=19) :: ddeplc, ddelt
     integer :: jddepc, jddelt
     complex(kind=8) :: c16bid
-    real(kind=8) :: r8bid
     character(len=19) :: k19bla
     integer :: iret
+    c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,12 +101,12 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 ! ----- CALCUL DU SECOND MEMBRE
 !
         call r8inir(neq, 0.d0, zr(jsecmb), 1)
-        do 10 iliai = 1, nbliai
+        do iliai = 1, nbliai
             jdecal = zi(japptr+iliai-1)
             nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
             call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
                         zr(jsecmb))
-10      continue
+        end do
 !
 ! ----- RESOLUTION
 !

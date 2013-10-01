@@ -72,6 +72,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     integer :: nbch1, nbch2, neqch1, neqch2
     integer :: jefloc, jrfimp, jnormx, jnormy, ja, jw, ju, jv
     real(kind=8) :: mmax, mmin, scond, eps
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !
 !      SEUIL=1.D0
@@ -102,10 +103,10 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     call wkvect('&&CRICHO.V', 'V V R', neqch1, jv)
 !
     if (nbchoc .gt. 0) then
-        do 20 i = 1, nbchoc
+        do i = 1, nbchoc
             jm=1
             if (noecho(i,9)(1:2) .eq. 'BI') jm=2
-            do 21 jj = 1, jm
+            do jj = 1, jm
                 icolc = icolc+1
                 ct=0.d0
                 cef=0.d0
@@ -117,9 +118,9 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 endif
 !     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
                 call utmess('I', 'VIDE_1')
-                do 11 k = 1, neq
+                do k = 1, neq
                     fimpo(k)=0.d0
-11              continue
+                end do
                 call posddl('NUME_DDL', noecho(i, ic+2), noecho(i, ic), 'DX', nunoe,&
                             iddlx)
                 call posddl('NUME_DDL', noecho(i, ic+2), noecho(i, ic), 'DY', nunoe,&
@@ -151,10 +152,10 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                     zi(jslvi-1+3)=istoav
                     if (iret .eq. 2) then
                         call utmess('A', 'SOUSTRUC_7')
-                        goto 9999
+                        goto 999
                     else if (iret.eq.1) then
                         call utmess('A', 'SOUSTRUC_8')
-                        goto 9999
+                        goto 999
                     endif
                     ifac=1
                 endif
@@ -167,21 +168,21 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 normx=ddot(neq,fimpo,1,fimpo,1)
                 zr(jnormx-1+icolc)=normx
 !           RFIMPOX : K-1*N (SAUVEGARDE DEFORMEE STATIQUE)
-                do 41 k = 1, neq
+                do k = 1, neq
                     zr(jrfimp-1+k+neq*(icolc-1))=fimpo(k)
-41              continue
+                end do
 !
 !     CALCUL DE SOUP : TN*K-1*N
                 soup = parcho(i,45)*fimpo(iddlx)
                 soup = soup + parcho(i,46)*fimpo(iddly)
                 soup = soup + parcho(i,47)*fimpo(iddlz)
-                do 12 k = 1, neq
+                do k = 1, neq
                     fimpo(k)=0.d0
-12              continue
+                end do
                 fimpo(iddlx)=parcho(i,45)
                 fimpo(iddly)=parcho(i,46)
                 fimpo(iddlz)=parcho(i,47)
-                do 22 j = 1, nbmode
+                do j = 1, nbmode
                     if (riggen(j) .le. 0.d0) then
                         usr=0.d0
                     else
@@ -212,20 +213,20 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                     ct=ct+trlocj
                     zr(jefloc-1+j)=cc
                     cef = cef + cc
-22              continue
+                end do
                 parcho(i,48+jj-1)=ct
 !            IF (CT.NE.0.D0) SEUIL=MIN(SEUIL,CT)
 !
                 if (info .ge. 2) then
 !      ON ORDONNE SELON LES SOUPLESSES DECROISSANTES
                     call mdtrib(indic, soupl, nbmode)
-                    do 32 j = 1, nbmode
+                    do j = 1, nbmode
                         vali = indic(j)
                         valr (1) = trloc(indic(j))
                         valr (2) = soupl(indic(j))
                         valr (3) = zr(jefloc-1+indic(j))
                         call utmess('I', 'SOUSTRUC_93', si=vali, nr=3, valr=valr)
-32                  continue
+                    end do
                 endif
                 valk = noecho(i,ic)
                 valr (1) = ct
@@ -238,9 +239,9 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 tx = soup*ct*parcho(i,2)
                 valr (1) = tx
                 call utmess('I', 'SOUSTRUC_96', sr=valr(1))
-21          continue
+            end do
 !
-20      continue
+        end do
 !
         if (info .ge. 2) then
             call utmess('I', 'VIDE_1')
@@ -251,25 +252,25 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 ! LA MATRICE A CONTIENT LES DEFORMEES STATIQUES
 ! ICOLC : NB DE CHOC A CONSIDERER
             n = icolc
-            do 80 k = 1, neq
-                do 82 ia = 1, icolc
+            do k = 1, neq
+                do ia = 1, icolc
                     if (zr(jnormx-1+ia) .gt. eps) then
                         zr(ja-1+k+neq*(ia-1)) = zr(jrfimp-1+k+neq*(ia- 1))/sqrt(zr(jnormx-1+ia))
                     else
                         zr(ja-1+k+neq*(ia-1)) = 0.d0
                     endif
-82              continue
-80          continue
+                end do
+            end do
 !
             call calsvd(nm, m, n, zr(ja), zr(jw),&
                         matuv, zr(ju), matuv, zr( jv), ierr)
-            if (ierr .ne. 0) goto 9999
+            if (ierr .ne. 0) goto 999
             mmax = 0.d0
             mmin = 1.d10
-            do 83 ia = 1, n
+            do ia = 1, n
                 mmax = max(mmax,zr(jw-1+ia))
                 mmin = min(mmin,zr(jw-1+ia))
-83          continue
+            end do
 ! CONDITIONNEMENT
             if (mmin .le. eps) then
                 valr (1) = mmin
@@ -281,36 +282,36 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
             valr (1) = scond
             call utmess('I', 'SOUSTRUC_99', sr=valr(1))
-            do 51 jj = 1, nbmode
+            do jj = 1, nbmode
                 zr(jnormy-1+jj)=ddot(neq,bmodal(1,jj),1,bmodal(1,jj),&
                 1)
-51          continue
+            end do
 !
             n = icolc+1
-            do 42 j = 1, nbmode
+            do j = 1, nbmode
 !
 ! LA MATRICE A CONTIENT LES DEFORMEES STATIQUES ET MODE
-                do 60 k = 1, neq
-                    do 62 ia = 1, icolc
+                do k = 1, neq
+                    do ia = 1, icolc
                         if (zr(jnormx-1+ia) .gt. eps) then
                             zr(ja-1+k+neq*(ia-1)) = zr(&
                                                     jrfimp-1+k+neq* (ia-1))/sqrt(zr(jnormx-1+ia))
                         else
                             zr(ja-1+k+neq*(ia-1)) = 0.d0
                         endif
-62                  continue
+                    end do
                     zr(ja-1+k+neq*(icolc+1-1)) = bmodal(k,j)/sqrt(zr( jnormy-1+j))
-60              continue
+                end do
 !
                 call calsvd(nm, m, n, zr(ja), zr(jw),&
                             matuv, zr(ju), matuv, zr(jv), ierr)
-                if (ierr .ne. 0) goto 9999
+                if (ierr .ne. 0) goto 999
                 mmax = 0.d0
                 mmin = 1.d10
-                do 53 ia = 1, n
+                do ia = 1, n
                     mmax = max(mmax,zr(jw-1+ia))
                     mmin = min(mmin,zr(jw-1+ia))
-53              continue
+                end do
 ! CONDITIONNEMENT
                 if (mmin .le. eps) then
                     vali = j
@@ -325,15 +326,15 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 zr(jefloc-1+j) = zr(jefloc-1+j)/scond
 !
                 indic(j)=j
-42          continue
+            end do
 !
 !      ON ORDONNE SELON LA PARTICIPATION DECROISSANTE
             call mdtrib(indic, zr(jefloc), nbmode)
-            do 72 j = 1, nbmode
+            do j = 1, nbmode
                 vali = indic(j)
                 valr (1) = zr(jefloc-1+indic(j))
                 call utmess('I', 'SOUSTRUC2_2', si=vali, sr=valr(1))
-72          continue
+            end do
 !
             call utmess('I', 'VIDE_1')
         endif
@@ -341,7 +342,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
     endif
 !
-9999  continue
+999 continue
 !
 ! --- MENAGE
 !

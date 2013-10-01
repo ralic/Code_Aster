@@ -157,25 +157,25 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 !     --- ON NORMALISE LE VECTEUR ---
         xnorm = 0.d0
-        do 10 i = 1, nbdir
+        do i = 1, nbdir
             xnorm = xnorm + depl(i) * depl(i)
-10      continue
+        end do
         xnorm = sqrt(xnorm)
         if (xnorm .lt. 0.d0) then
             call utmess('F', 'ALGORITH9_81')
         endif
-        do 12 i = 1, nbdir
+        do i = 1, nbdir
             depl(i) = depl(i) / xnorm
-12      continue
+        end do
 !
         call jeveuo(nomcha(1:19)//'.VALE', 'E', jvec)
         call wkvect('&&PHI199.DDL', 'V V I', neq*nbdir, jddl)
         call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
                     zi(jddl))
 !
-        do 21 in = 0, neq-1
+        do in = 0, neq-1
             zr(jvec+in) = 0.d0
-21      continue
+        end do
 !
 !     --- ON RECUPERE LES MODES STATIQUES ---
 !
@@ -194,10 +194,10 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 !     --- ON BOUCLE SUR LES NOEUDS ---
 !
-        do 25 id = 1, nbdir
+        do id = 1, nbdir
             xd = depl(id)
             if (abs(xd) .gt. epsi) then
-                do 26 in = 1, nbno
+                do in = 1, nbno
                     acces(1:8 ) = zk8(idno+in-1)
                     acces(9:16) = tabcmp(id)
 !
@@ -227,26 +227,27 @@ subroutine phi199(model, mate, ma, nu, num,&
                                 iret)
                     call jeveuo(chamno//'.VALE', 'L', idmst)
 !
-                    do 27 i = 0, neq-1
+                    do i = 0, neq-1
                         zr(jvec+i) = zr(jvec+i) - zi(jddl+(id-1)*neq+ i)*xd*zr(idmst+i)
-27                  continue
+                    end do
                     call jelibe(chamno//'.VALE')
-26              continue
+ 26                 continue
+                end do
             endif
-25      continue
+        end do
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_24')
         endif
 !
         goto 42
 !
-41      continue
-        do 23 i = 1, nbdir
-            do 24 in = 0, neq-1
+ 41     continue
+        do i = 1, nbdir
+            do in = 0, neq-1
                 zr(jvec+in) = zr(jvec+in) - zi(jddl+(i-1)*neq+in)* depl(i)
-24          continue
-23      continue
-42      continue
+            end do
+        end do
+ 42     continue
 !
         nomcha = nomcha(1:19)
         vecso1 = '&&OP0199.VECSOL1'

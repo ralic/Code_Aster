@@ -92,7 +92,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6), fe(4), baslog(3*ndim)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: rbid, rbid4(4), rbid10(10), rbid33(3, 3), rbid1(1)
+    real(kind=8) :: rbid, rbid33(3, 3), rbid1(1)
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop), dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r, ur
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3), deplb1(3, 27), deplb2(3, 27)
@@ -139,20 +139,20 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 zr(igeom), typmod, compor, ndim, dfdib,&
                 deplb1, deplb2, elgeom)
 !
-    do 178 n = 1, nnop
+    do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
-178  end do
+    end do
 !-----------------------------------------------------------------------
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
-    do 1000 kpg = 1, npg
+    do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 100 i = 1, ndim
-            do 101 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*( n-1)+i)
-101          continue
-100      continue
+            end do
+        end do
 !
 !             JUSTE POUR CALCULER LES FF
         call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
@@ -167,13 +167,13 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
             call vecini(3*ndim, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 110 n = 1, nnop
+            do n = 1, nnop
                 lsng = lsng + lsn(n) * ff(n)
                 lstg = lstg + lst(n) * ff(n)
-                do 111 i = 1, 3*ndim
+                do i = 1, 3*ndim
                     baslog(i) = baslog(i) + basloc(3*ndim*(n-1)+i) * ff(n)
-111              continue
-110          continue
+                end do
+            end do
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             if (ndim .eq. 2) then
@@ -193,18 +193,18 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         if (axi) then
             r = 0.d0
             ur = 0.d0
-            do 120 n = 1, nnop
+            do n = 1, nnop
                 r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
                 ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
-                do 121 ig = 1, nfh
+                do ig = 1, nfh
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1)
-121              continue
-                do 122 ig = 1, nfe
+                end do
+                do ig = 1, nfe
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
 !
-122              continue
+                end do
 !
-120          continue
+            end do
 !
             ASSERT(r.gt.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
@@ -230,9 +230,9 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
-        do 130 n = 1, nnop
+        do n = 1, nnop
 !         FONCTIONS DE FORME CLASSIQUES
-            do 131 i = 1, ndim
+            do i = 1, ndim
                 def(1,n,i) = f(i,1)*dfdi(n,1)
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
@@ -242,7 +242,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                     def(5,n,i) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1)) /rac2
                     def(6,n,i) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2)) /rac2
                 endif
-131          continue
+            end do
 !
 !       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
@@ -250,26 +250,26 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
             endif
 !
 !         ENRICHISSEMENT PAR HEAVYSIDE
-            do 132 ig = 1, nfh
-                do 133 i = 1, ndim
+            do ig = 1, nfh
+                do i = 1, ndim
                     cpt=ndim*(1+ig-1)+i
-                    do 134 m = 1, 2*ndim
+                    do m = 1, 2*ndim
                         def(m,n,cpt) = def(m,n,i) * he(fisno(n,ig))
-134                  continue
+                    end do
                     if (ndim .eq. 2) then
                         def(3,n,cpt) = 0.d0
                     endif
-133              continue
+                end do
 !
 !  ATTENTION:TERME DE CORRECTION (3,3) AXI SUR LE DDL 1+NDIM*IG
                 if (axi) then
                     def(3,n,(1+ndim*ig)) = f(3,3) * ff(n)/r * he( fisno(n,ig))
                 endif
 !
-132          continue
+            end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do 135 ig = 1, nfe
-                do 136 i = 1, ndim
+            do ig = 1, nfe
+                do i = 1, ndim
                     cpt = ndim*(1+nfh+ig-1)+i
                     def(1,n,cpt) = f(i,1) * (dfdi(n,1) * fe(ig) + ff( n)*dgdgl(ig,1))
 !
@@ -292,17 +292,17 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                                        &fdi(n,3)*fe(ig)+ ff(n)*dgdgl(ig,3))&
                                        )/rac2
                     endif
-136              continue
+                end do
 !
 !   ATTENTION:TERME DE CORRECTION (3,3) AXI LE DDL 1+NDIM*(NFH+IG)
                 if (axi) then
                     def(3,n,(1+ndim*(nfh+ig))) = f(3,3)* ff(n)/r * fe( ig)
                 endif
-135          continue
+            end do
 !
             ASSERT(cpt.eq.ddld)
 !
-130      continue
+        end do
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ON ENVOIE DFDM2D OU DFDM3D AVEC LES COORD DU SS-ELT
@@ -321,8 +321,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
         if (( option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' ) .and.&
             grdepl) then
-            do 140 n = 1, nnop
-                do 141 m = 1, n
+            do n = 1, nnop
+                do m = 1, n
                     pff(1,n,m) = dfdi(n,1)*dfdi(m,1)
                     pff(2,n,m) = dfdi(n,2)*dfdi(m,2)
                     pff(3,n,m) = 0.d0
@@ -335,8 +335,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                         pff(6,n,m)=(dfdi(n,2)*dfdi(m,3)+dfdi(n,3)*&
                         dfdi(m,2))/rac2
                     endif
-141              continue
-140          continue
+                end do
+            end do
         endif
 !
 !
@@ -345,12 +345,12 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !      CALL NMCPEL('RIGI',KPG,1,POUM,NDIM,TYPMOD,ANGMAS,IMATE,COMPOR,
 !   &               CRIT,OPTION,EPS,SIGMA,VI(1,KPG),DSIDEP,CODRET)
 !
-        do 150 m = 1, 3
+        do m = 1, 3
             sign(m) = sigm(m,kpg)
-150      continue
-        do 160 m = 4, 2*ndim
+        end do
+        do m = 4, 2*ndim
             sign(m) = sigm(m,kpg)*rac2
-160      continue
+        end do
 !
         call r8inir(6, 0.0d0, sigma, 1)
         call nmcomp('XFEM', idecpg+kpg, 1, ndim, typmod,&
@@ -364,19 +364,19 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA') then
 !
-            do 170 n = 1, nnop
+            do n = 1, nnop
                 nn=dec(n)
 !
-                do 171 i = 1, ddld
+                do i = 1, ddld
                     kkd = (nn+i-1) * (nn+i) /2
-                    do 172 kl = 1, 2*ndim
+                    do kl = 1, 2*ndim
                         sigp(kl) = 0.d0
-                        do 173 l = 1, 2*ndim
+                        do l = 1, 2*ndim
                             sigp(kl) = sigp(kl)+def(l,n,i)*dsidep(l, kl)
-173                      continue
-172                  continue
-                    do 174 j = 1, ddld
-                        do 175 m = 1, n
+                        end do
+                    end do
+                    do j = 1, ddld
+                        do m = 1, n
                             mn=dec(m)
 !
                             if (m .eq. n) then
@@ -389,9 +389,9 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                             tmp1 = 0.d0
                             if (grdepl .and. i .eq. j) then
                                 tmp1 = 0.d0
-                                do 176 l = 1, 2*ndim
+                                do l = 1, 2*ndim
                                     tmp1 = tmp1+pff(l,n,m)*sigma(l)
-176                              continue
+                                end do
 !
 !                  TERME DE CORRECTION AXISYMETRIQUE
 !                    IF (AXI .AND. I.EQ.1) THEN
@@ -402,19 +402,19 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2=0.d0
-                            do 177 l = 1, 2*ndim
+                            do l = 1, 2*ndim
                                 tmp2=tmp2+sigp(l)*def(l,m,j)
-177                          continue
+                            end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (j .le. j1) then
                                 matuu(kkd+mn+j) = matuu(kkd+mn+j) + ( tmp1+tmp2)*jac
                             endif
 !
-175                      continue
-174                  continue
-171              continue
-170          continue
+                        end do
+                    end do
+                end do
+            end do
         endif
 !
 !
@@ -422,15 +422,15 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
 !
-            do 180 n = 1, nnop
+            do n = 1, nnop
                 nn=dec(n)
-                do 181 i = 1, ddld
-                    do 182 l = 1, 2*ndim
+                do i = 1, ddld
+                    do l = 1, 2*ndim
                         zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + def(l,&
                         n,i)*sigma(l)*jac
-182                  continue
-181              continue
-180          continue
+                    end do
+                end do
+            end do
 !
             if (grdepl) then
 !           CONVERSION LAGRANGE -> CAUCHY
@@ -440,9 +440,9 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                     detf = detf - f(2,3)*(f(1,1)*f(3,2)-f(3,1)*f(1,2)) + f(1,3)*(f(2,1)*f(3,2)-f(&
                            &3,1)*f(2,2))
                 endif
-                do 190 i = 1, 2*ndim
+                do i = 1, 2*ndim
                     sig(i,kpg) = 0.d0
-                    do 191 l = 1, 2*ndim
+                    do l = 1, 2*ndim
                         ftf = (&
                               f(&
                               indi(i), indi(l))*f(indj(i), indj(l)) + f(indi(i),&
@@ -450,20 +450,20 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                               )*rind(l&
                               )
                         sig(i,kpg) = sig(i,kpg) + ftf*sigma(l)
-191                  continue
+                    end do
                     sig(i,kpg) = sig(i,kpg)/detf
-190              continue
+                end do
             else
 !           SIMPLE CORRECTION DES CONTRAINTES
-                do 200 l = 1, 3
+                do l = 1, 3
                     sig(l,kpg) = sigma(l)
-200              continue
-                do 210 l = 4, 2*ndim
+                end do
+                do l = 4, 2*ndim
                     sig(l,kpg) = sigma(l)/rac2
-210              continue
+                end do
             endif
         endif
 !
-1000  end do
+    end do
 !
 end subroutine

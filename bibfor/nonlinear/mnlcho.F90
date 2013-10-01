@@ -1,5 +1,6 @@
-subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
-                  h, hf, parcho, adime, ninc, tabchoc,lcine)
+subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
+                  nchoc, h, hf, parcho, adime,&
+                  ninc, tabchoc, lcine)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,24 +42,19 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "blas/dscal.h"
-#include "blas/ddot.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
@@ -67,10 +63,15 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
 #include "asterfort/resoud.h"
 #include "asterfort/tbexve.h"
 #include "asterfort/wkvect.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     logical :: reprise, lcine
-    integer :: imat(2), nd, nchoc, h, hf, ninc,iei2
+    integer :: imat(2), nd, nchoc, h, hf, ninc, iei2
     character(len=14) :: numedd, xcdl, parcho, adime
-    character(len=8)  :: tabchoc
+    character(len=8) :: tabchoc
 !
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
@@ -79,12 +80,13 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
     integer :: j, iarg, nunoe, iadim, pdlmax, neq, iei, ier2, i, ityp, iorig
     integer :: ineqs, incmp, inoe, icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
-    character(len=8)  :: tchoc, kvide, typval, mailla
-    character(len=8)  :: noeud(2)
-    character(len=8)  :: cmp(6)
+    character(len=8) :: tchoc, kvide, typval, mailla
+    character(len=8) :: noeud(2)
+    character(len=8) :: cmp(6)
     character(len=24) :: magrno, manono, grno
     real(kind=8) :: orig(3)
-    complex(kind=8) cbid
+    complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
 !
@@ -98,23 +100,33 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
         origx = '&&ORIG_X'
         origy = '&&ORIG_Y'
         origz = '&&ORIG_Z'
-        call tbexve(tabchoc,'TYPE_CHOC',parcho//'.TYPE','V',nchoc,typval)
-        call tbexve(tabchoc,'NOEUD_CHOC',parcho//'.NOEU','V',nchoc,typval)
-        call tbexve(tabchoc,'NOM_CMP_1',nomcmp1,'V',nchoc,typval)
-        call tbexve(tabchoc,'NOM_CMP_2',nomcmp2,'V',nchoc,typval)
-        call tbexve(tabchoc,'RIGI_NOR',parcho//'.RAID','V',nchoc,typval)
-        call tbexve(tabchoc,'PARA_REGUL',parcho//'.REG','V',nchoc,typval)
-        call tbexve(tabchoc,'JEU',parcho//'.JEU','V',nchoc,typval)
-        call tbexve(tabchoc,'ORIG_OBST_X',origx,'V',nchoc,typval)
-        call tbexve(tabchoc,'ORIG_OBST_Y',origy,'V',nchoc,typval)
-        call tbexve(tabchoc,'ORIG_OBST_Z',origz,'V',nchoc,typval)
+        call tbexve(tabchoc, 'TYPE_CHOC', parcho//'.TYPE', 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'NOEUD_CHOC', parcho//'.NOEU', 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'NOM_CMP_1', nomcmp1, 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'NOM_CMP_2', nomcmp2, 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'RIGI_NOR', parcho//'.RAID', 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'PARA_REGUL', parcho//'.REG', 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'JEU', parcho//'.JEU', 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'ORIG_OBST_X', origx, 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'ORIG_OBST_Y', origy, 'V', nchoc,&
+                    typval)
+        call tbexve(tabchoc, 'ORIG_OBST_Z', origz, 'V', nchoc,&
+                    typval)
         call jeveuo(nomcmp1, 'L', icmp1)
         call jeveuo(nomcmp2, 'L', icmp2)
         call jeveuo(origx, 'L', iorigx)
         call jeveuo(origy, 'L', iorigy)
         call jeveuo(origz, 'L', iorigz)
     endif
-
+!
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CHAMPS DE PARCHO A REMPLIR
 ! ----------------------------------------------------------------------
@@ -139,7 +151,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
 ! ----------------------------------------------------------------------
 ! --- BOUCLE SUR LE NOMBRE DE NOEUD DE CHOC
 ! ----------------------------------------------------------------------
-    do 10 k = 1, nchoc
+    do k = 1, nchoc
 ! --- RECUPERATION DU TYPE DE CHOC DU NOEUD
         if (reprise) then
             tchoc = zk8(ityp-1+k)
@@ -174,8 +186,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
             noeud(1) = zk8(inoe-1+k)
         else
             call getvtx('CHOC', 'GROUP_NO', iocc=k, scal=grno, nbret=ier)
-            if(ier.eq.1) then
-                call dismoi('F', 'NOM_MAILLA', matm, 'MATR_ASSE', iarg, mailla, ier)
+            if (ier .eq. 1) then
+                call dismoi('F', 'NOM_MAILLA', matm, 'MATR_ASSE', iarg,&
+                            mailla, ier)
                 magrno = mailla//'.GROUPENO'
                 manono = mailla//'.NOMNOE'
                 call jelira(jexnom(magrno, grno), 'LONUTI', ier, kvide)
@@ -188,7 +201,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
         zk8(inoe-1+k)=noeud(1)
 ! --- RECUPERATION DU NOM DE LA COMPOSANTE DU NOEUD
         if (reprise) then
-            if (tchoc(1:6).eq.'CERCLE') then
+            if (tchoc(1:6) .eq. 'CERCLE') then
                 ier = 2
                 cmp(1) = zk8(icmp1-1+k)
                 cmp(2) = zk8(icmp2-1+k)
@@ -197,13 +210,14 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
                 cmp(1) = zk8(icmp1-1+k)
             endif
         else
-            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=zi(incmp-1+k), vect=cmp, nbret=ier)
+            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=zi(incmp-1+k), vect=cmp,&
+                        nbret=ier)
         endif
-        do 13 i = 1, ier
+        do i = 1, ier
             zk8(icmp-1+2*(k-1)+i) = cmp(i)
-13      continue
+        end do
 !
-        do 11 i = 1, zi(incmp-1+k)
+        do i = 1, zi(incmp-1+k)
             if (tchoc(1:7) .eq. 'CERCLE') then
                 if (cmp(i) .eq. 'DX') then
                     zr(iorig-1+3*(k-1)+i)=orig(1)
@@ -214,16 +228,17 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
                 endif
             endif
 ! --- RECUPERATION DU NUMERO D'EQUATION DU NOEUD A LA BONNE COMPOSANTE
-            call posddl('NUME_DDL', numedd, noeud(1), cmp(i), nunoe, pddl)
+            call posddl('NUME_DDL', numedd, noeud(1), cmp(i), nunoe,&
+                        pddl)
 ! --- RECUPERATION DE LA POSITION DU NOEUD DANS LA MATRICE AVEC DDLS ACTIFS
             ind=0
-            do 20 j = 1, pddl
+            do j = 1, pddl
                 if (zi(iind-1+j) .eq. 0) then
                     ind=ind+1
                 endif
-20          continue
+            end do
             zi(inddl-1+6*(k-1)+i)=ind
-11      continue
+        end do
         if (.not. reprise) then
 ! --- JE RECUPERE LA VALEUR DU JEU ENTRE LE NOEUD ET LA BUTEE
             call getvr8('CHOC', 'JEU', iocc=k, scal=zr(ijeu-1+k))
@@ -238,7 +253,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
             zi(idmax)=zi(inddl-1+k)
             pdlmax=pddl
         endif
-10  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CHAMPS DE ADIME (POUR L'ADIMENSIONNEMENT)
 ! ----------------------------------------------------------------------
@@ -260,29 +275,32 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, nchoc,&
 ! ------------------------------------------------------------------
 ! --- ON RECUPERE KUi (POUR ADIMENSIONNE LA MATRICE DE RAIDEUR)
     zr(iei-1+pdlmax)=1.d0
-    call preres(' ', 'V', ier, '', matk, ier2, 0)
+    call preres(' ', 'V', ier, '', matk,&
+                ier2, 0)
     call resoud(matk, ' ', ' ', ' ', 1,&
-            ' ', ' ', 'V', zr(iei), [cbid],&
-            ' ', .false., 0, ier)
+                ' ', ' ', 'V', zr(iei), [cbid],&
+                ' ', .false., 0, ier)
     zr(iadim-1+1)=1.d0/zr(iei-1+pdlmax)
 ! --- ON RECUPERE MUi (POUR ADIMENSIONNE LA MATRICE DE MASSE)
     if (lcine) then
-        call preres(' ', 'V', ier, '', matm, ier2, 0)
+        call preres(' ', 'V', ier, '', matm,&
+                    ier2, 0)
         call dscal(neq, 0.d0, zr(iei), 1)
         zr(iei-1+pdlmax)=1.d0
         call resoud(matm, ' ', ' ', ' ', 1,&
-                ' ', ' ', 'V', zr(iei), [cbid],&
-                ' ', .false., 0, ier)
+                    ' ', ' ', 'V', zr(iei), [cbid],&
+                    ' ', .false., 0, ier)
         zr(iadim-1+2)=1.d0/zr(iei-1+pdlmax)
     else
-        do 30 k = 1,neq
+        do k = 1, neq
             zr(iei-1+k)=1.d0
-30      continue
+        end do
         call wkvect('&&MNLCHO.EI2', 'V V R', neq, iei2)
 !        call mrmult('ZERO', imat(1), zr(iei), zr(iei2), 1, .true.)
 !        zr(iadim-1+1)=ddot(neq,zr(iei),1,zr(iei2),1)
         call dscal(neq, 0.d0, zr(iei2), 1)
-        call mrmult('ZERO', imat(2), zr(iei), zr(iei2), 1, .true.)
+        call mrmult('ZERO', imat(2), zr(iei), zr(iei2), 1,&
+                    .true.)
         zr(iadim-1+2)=ddot(neq,zr(iei),1,zr(iei2),1)
     endif
 ! --- ON RECUPERE OMEGA (POUR ADIMENSIONNE LE TEMPS)

@@ -135,6 +135,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     common /debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+    cbid = dcmplx(0.d0, 0.d0)
 !------------------------------------------------------------------
 ! INITIALISATION POUR ARPACK
 !
@@ -173,7 +174,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !------------------------------------------------------------------
 ! BOUCLE PRINCIPALE
 !
-20  continue
+ 20 continue
 !
 ! CALCUL DES VALEURS PROPRES DE (OP)
     call dnaupd(ido, bmat, nbeq, which, nfreq,&
@@ -227,29 +228,29 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! 1/ CALCUL D'UN ELT. INITIAL X REPONDANT AU C.I. DE LAGRANGE
 ! 2/ CALCUL DE Y = (OP)* X AVEC DDL CINEMATIQUEMENT BLOQUES
 ! X <- X*DDL_LAGRANGE
-        do 25 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = workd(ipntr(1)+j-1) * ddllag(j)
-25      continue
+        end do
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
-        do 30 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
-30      continue
+        end do
 ! X <- (OP)*(X*DDL_BLOQUE)
         call mrmult('ZERO', lmasse, workd(ipntr(1)), vaux, 1,&
                     .false.)
-        do 35 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = vaux(j) * ddlexc(j)
-35      continue
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
-        do 40 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)
-40      continue
+        end do
         goto 20
 !
     else if (ido .eq. 1) then
@@ -258,24 +259,24 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! X <- (B)*X*DDL_BLOQUE
         call mrmult('ZERO', lmasse, workd(ipntr(3)), vaux, 1,&
                     .false.)
-        do 45 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = vaux(j) * ddlexc(j)
-45      continue
+        end do
 ! X <- (OP)*X
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
-        do 50 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)
-50      continue
+        end do
         goto 20
 !
     else if (ido .eq. 2) then
 ! X <- X*DDL_BLOQUE  (PRODUIT SCALAIRE= L2)
-        do 55 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1)=workd(ipntr(1)+j-1)*ddlexc(j)
-55      continue
+        end do
 ! RETOUR VERS DNAUPD
         goto 20
 !
@@ -319,7 +320,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 !
 ! VERIFICATIONS DES VALEURS PROPRES
-    do 60 j = 1, nconv
+    do j = 1, nconv
         varaux = abs(dsor(j,2))
         if (varaux .gt. omecor) then
             vali (1) = j
@@ -333,13 +334,13 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
             valr(2) = dsor(j,2)
             call utmess('I', 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
         endif
-60  end do
+    end do
 !
 ! REMISE EN FORMES DES MODES PROPRES SELON FORMAT OP0045
-    do 65 i = 1, nconv
+    do i = 1, nconv
         dsor(i,1) = dsor(i,1) - sigmar
         dsor(i,2) = dsor(i,2) - sigmai
-65  end do
+    end do
 !
 ! TRI DES MODES PROPRES PAR RAPPORT AU NCONV DSOR(I)
     call vpordo(1, 0, nconv, dsor, vect,&
@@ -347,7 +348,8 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! RE-ORTHONORMALISATION SUIVANT IGS PAR RAPPORT A B
     call vpgsmm(nbeq, nconv, vect, alpha, lmasse,&
-                1, vaux, ddlexc, workv, dsor, omecor)
+                1, vaux, ddlexc, workv, dsor,&
+                omecor)
 !
 ! FIN DE VPSORN
 !

@@ -90,6 +90,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     integer :: iret
 !     -----------------------------------------------------------------
     character(len=24) :: work(4)
+    cbid = dcmplx(0.d0, 0.d0)
     data work(1)/'&&VP2INI.VECTEUR_INITIAL'/
     data work(2)/'&&VP2INI.VECTEUR_MX     '/
     data work(3)/'&&VP2INI.VECTEURS_KX    '/
@@ -117,7 +118,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     ivecd = 1
 !
     ivecd = ivecd + nstoc
-    do 30 isto = 1, nstoc
+    do isto = 1, nstoc
         alpha(isto) = 1.d0/omeshi
         alpha(isto) = -alpha(isto)
         beta(isto) = 0.d0
@@ -125,47 +126,47 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         call mrmult('ZERO', ldynam, vect(1, isto), zr(lkxsto), 1,&
                     .false.)
         xikxi = 0.d0
-        do 10 ieq = 1, neq
+        do ieq = 1, neq
             xikxi = xikxi + vect(ieq,isto)*zr(lkxsto+ieq-1)
-10      continue
+        end do
         signes(isto) = sign(1.d0,xikxi)
         coef = 1.d0/sqrt(abs(xikxi))
-        do 20 ieq = 1, neq
+        do ieq = 1, neq
             vect(ieq,isto) = coef*vect(ieq,isto)
             zr(lkxsto+ieq-1) = coef*zr(lkxsto+ieq-1)
-20      continue
+        end do
 !
         if (isto .ne. 1) then
             call vplcor(ldynam, neq, nbvect, nborto, prorto,&
                         signes, vect, isto, zr(lkx), zr(lx))
         endif
         alpha(isto) = signes(isto)*alpha(isto)
-30  end do
+    end do
 !
 !
 !
     call mtdsc2(zk24(zi(ldynam+1)), 'SMDI', 'L', jsmdi)
     vale(1:19) = zk24(zi(ldynam+1))
     call jeveuo(jexnum(vale, 1), 'L', iaa)
-    do 40 jj = 1, neq
+    do jj = 1, neq
         zr(irdiak+jj-1) = zr(iaa+zi(jsmdi+jj-1)-1)
-40  continue
+    end do
     call jelibe(jexnum(vale, 1))
 !
 !     --- VECTEUR INITIAL : ALEATOIRE ---
 !
-60  continue
+ 60 continue
     dseed = 123457.d0*ivecd
     call ggubs(dseed, neq, zr(lx))
-    do 70 ieq = 1, neq
+    do ieq = 1, neq
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)*zr(irdiak+ieq-1)
-70  end do
+    end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
                 k19bid, k19bid, kbid, zr(lx), [cbid],&
                 criter, .false., 0, iret)
-    do 80 ieq = 1, neq
+    do ieq = 1, neq
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)
-80  end do
+    end do
 !
 !     --- CALCUL DE (LDYNAM**-1)*MASSE * X0 ---
 !
@@ -173,9 +174,9 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
     call mrmult('ZERO', lmasse, zr(lx), zr(lmx), 1,&
                 .false.)
-    do 90 ieq = 1, neq
+    do ieq = 1, neq
         vect(ieq,ivecd) = zr(lmx+ieq-1)*ddlexc(ieq)
-90  end do
+    end do
     call resoud(matass, k19bid, solveu, chcine, 1,&
                 k19bid, k19bid, kbid, vect(1, ivecd), [cbid],&
                 criter, .false., 0, iret)
@@ -185,15 +186,15 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     call mrmult('ZERO', ldynam, vect(1, ivecd), zr(lkx1), 1,&
                 .false.)
     xikxi = 0.d0
-    do 100 ieq = 1, neq
+    do ieq = 1, neq
         xikxi = xikxi + vect(ieq,ivecd)*zr(lkx1+ieq-1)
-100  end do
+    end do
     signes(ivecd) = sign(1.d0,xikxi)
     coef = 1.d0/sqrt(abs(xikxi))
-    do 110 ieq = 1, neq
+    do ieq = 1, neq
         vect(ieq,ivecd) = coef*vect(ieq,ivecd)
         zr(lkx1+ieq-1) = coef*zr(lkx1+ieq-1)
-110  end do
+    end do
 !
     if (ivecd .gt. 1) then
         call vplcor(ldynam, neq, nbvect, nborto, prorto,&
@@ -206,9 +207,9 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     call mrmult('ZERO', lmasse, vect(1, ivecd), zr(lx), 1,&
                 .false.)
     ai = 0.d0
-    do 120 ieq = 1, neq
+    do ieq = 1, neq
         ai = ai + vect(ieq,ivecd)*zr(lx+ieq-1)
-120  end do
+    end do
     alpha(ivecd) = ai
     beta(ivecd) = 0.d0
 !
@@ -216,7 +217,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !     -------------- CALCUL DES AUTRES VECTEURS DE LANCZOS ------------
 !     -----------------------------------------------------------------
 !
-    do 220 ivec = ivecd, nbvect - 1
+    do ivec = ivecd, nbvect - 1
 !
         ivecp1 = ivec + 1
         ivecm1 = ivec - 1
@@ -225,29 +226,29 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         call mrmult('ZERO', lmasse, vect(1, ivec), zr(lmx), 1,&
                     .false.)
         ai = 0.d0
-        do 130 ieq = 1, neq
+        do ieq = 1, neq
             ai = ai + vect(ieq,ivec)*zr(lmx+ieq-1)
-130      continue
-        do 140 ieq = 1, neq
+        end do
+        do ieq = 1, neq
             vect(ieq,ivecp1) = zr(lmx+ieq-1)*ddlexc(ieq)
-140      continue
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vect(1, ivecp1), [cbid],&
                     criter, .false., 0, iret)
 !
         if (ivecm1 .eq. (ivecd-1)) then
-            do 150 ieq = 1, neq
+            do ieq = 1, neq
                 vect(ieq,ivecp1) = vect(ieq,ivecp1) - ai*signes(ivec)* vect(ieq,ivec)
-150          continue
+            end do
         else
             bi = 0.d0
-            do 160 ieq = 1, neq
+            do ieq = 1, neq
                 bi = bi + vect(ieq,ivecm1)*zr(lmx+ieq-1)
-160          continue
-            do 170 ieq = 1, neq
+            end do
+            do ieq = 1, neq
                 vect(ieq,ivecp1) = vect(ieq,ivecp1) - ai*signes(ivec)* vect(ieq,ivec) - bi*signes&
                                    &(ivecm1)*vect(ieq,ivecm1)
-170          continue
+            end do
         endif
 !
 !         --- K-NORMALISATION DU VECTEUR IVECP1 ---
@@ -255,15 +256,15 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
         call mrmult('ZERO', ldynam, vect(1, ivecp1), zr(lkxp1), 1,&
                     .false.)
         xikxi = 0.d0
-        do 180 ieq = 1, neq
+        do ieq = 1, neq
             xikxi = xikxi + vect(ieq,ivecp1)*zr(lkxp1+ieq-1)
-180      continue
+        end do
         signes(ivecp1) = sign(1.d0,xikxi)
         coef = 1.d0/sqrt(abs(xikxi))
-        do 190 ieq = 1, neq
+        do ieq = 1, neq
             vect(ieq,ivecp1) = coef*vect(ieq,ivecp1)
             zr(lkxp1+ieq-1) = coef*zr(lkxp1+ieq-1)
-190      continue
+        end do
 !
 !         --- K-REORTHOGONALISATION COMPLETE DU VECTEUR IVECP1
 !
@@ -273,15 +274,15 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
 !         --- CALCUL DE ALPHA ET BETA ---
 !
-        do 210 jvec = ivec, ivecp1
+        do jvec = ivec, ivecp1
             call mrmult('ZERO', lmasse, vect(1, ivecp1), zr(lx), 1,&
                         .false.)
             xjkxi = 0.d0
-            do 200 ieq = 1, neq
+            do ieq = 1, neq
                 xjkxi = xjkxi + vect(ieq,jvec)*zr(lx+ieq-1)
-200          continue
+            end do
             if (jvec .eq. ivec) beta(ivecp1) = xjkxi
-210      continue
+        end do
         alpha(ivecp1) = xjkxi
         if (abs(beta(ivecp1)) .le. (prsudg*abs(alpha(ivecp1)))) then
             ivecd = ivecp1
@@ -291,7 +292,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
             goto 60
         endif
 !
-220  end do
+    end do
 !
 !     -----------------------------------------------------------------
 !     --------------- DESTRUCTION DES ZONES DE TRAVAIL ----------------

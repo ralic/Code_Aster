@@ -20,11 +20,11 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 #include "asterfort/utmess.h"
 !
     character(len=*) :: champ
-    integer ,        intent(in)           :: long
-    integer ,        intent(in), optional :: nbma
-    integer ,        intent(in), optional :: linuma(*)
-    integer ,        intent(out), optional :: vi(*)
-    real(kind=8) ,   intent(out), optional :: vr(*)
+    integer, intent(in) :: long
+    integer, intent(in), optional :: nbma
+    integer, intent(in), optional :: linuma(*)
+    integer, intent(out), optional :: vi(*)
+    real(kind=8), intent(out), optional :: vr(*)
     complex(kind=8), intent(out), optional :: vc(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -86,9 +86,9 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     champ2 = champ
     rzero = 0.0d0
     if (present(nbma)) then
-       nbmail=nbma
+        nbmail=nbma
     else
-       nbmail=0
+        nbmail=0
     endif
 !
 !
@@ -118,53 +118,54 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !
     igd = zi(jceld-1+1)
     scal = scalai(igd)
-
-    if (scal(1:1).eq.'R') then
-       ASSERT(present(vr))
-    elseif (scal(1:1).eq.'C') then
-       ASSERT(present(vc))
-    elseif (scal(1:1).eq.'I') then
-       ASSERT(present(vi))
+!
+    if (scal(1:1) .eq. 'R') then
+        ASSERT(present(vr))
+    else if (scal(1:1).eq.'C') then
+        ASSERT(present(vc))
+    else if (scal(1:1).eq.'I') then
+        ASSERT(present(vi))
     else
-       ASSERT(.false.)
+        ASSERT(.false.)
     endif
-
-
+!
+!
 !     2- ON VERIFIE LES LONGUEURS:
 !     ----------------------------
     first = .true.
     nbgr = nbgrel(ligrel)
-    do 10,j = 1,nbgr
-    mode = zi(jceld-1+zi(jceld-1+4+j)+2)
-    if (mode .eq. 0) goto 10
-    ncmpel = digdel(mode)
-    icoef = max(1,zi(jceld-1+4))
-    ncmpel = ncmpel*icoef
-    if (first) then
-        longt = ncmpel
-    else
-        if (longt .ne. ncmpel) then
-            call utmess('F', 'CALCULEL3_54')
+    do j = 1, nbgr
+        mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+        if (mode .eq. 0) goto 10
+        ncmpel = digdel(mode)
+        icoef = max(1,zi(jceld-1+4))
+        ncmpel = ncmpel*icoef
+        if (first) then
+            longt = ncmpel
+        else
+            if (longt .ne. ncmpel) then
+                call utmess('F', 'CALCULEL3_54')
+            endif
         endif
-    endif
-    first = .false.
-    10 end do
+        first = .false.
+ 10     continue
+    end do
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
 !     ------------------------------------
     ASSERT(longt.le.long)
 !
-    do 20,i = 1,long
-    if (scal(1:1) .eq. 'I') then
-        vi(i) = 0
-    else if (scal(1:1).eq.'R') then
-        vr(i) = rzero
-    else if (scal(1:1).eq.'C') then
-        vc(i) = dcmplx(rzero,rzero)
-    else
-        call utmess('F', 'CALCULEL3_74', sk=scal)
-    endif
-    20 end do
+    do i = 1, long
+        if (scal(1:1) .eq. 'I') then
+            vi(i) = 0
+        else if (scal(1:1).eq.'R') then
+            vr(i) = rzero
+        else if (scal(1:1).eq.'C') then
+            vc(i) = dcmplx(rzero,rzero)
+        else
+            call utmess('F', 'CALCULEL3_74', sk=scal)
+        endif
+    end do
 !
 !        -- ON CUMULE :
 !        --------------
@@ -172,36 +173,37 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !        -- (CAS DES CHAM_ELEM):
         call jeveuo(champ2//'.CELV', 'L', iavale)
         if (nbmail .eq. 0) then
-            do 50 j = 1,nbgr
-            mode = zi(jceld-1+zi(jceld-1+4+j)+2)
-            if (mode .eq. 0) goto 50
-            nel = nbelem(ligrel,j)
-            idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
-            do 40 k = 1,nel
-            do 30 i = 1,longt
-            if (scal(1:1) .eq. 'I') then
-                vi(i) = vi(i) + zi(iavale-1+idecgr+ (k-1)* longt+i-1)
-            else if (scal(1:1).eq.'R') then
-                vr(i) = vr(i) + zr(iavale-1+idecgr+ (k-1)* longt+i-1)
-            else if (scal(1:1).eq.'C') then
-                vc(i) = vc(i) + zc(iavale-1+idecgr+ (k-1)* longt+i-1)
-            endif
-30          continue
-40          continue
-50          continue
+            do j = 1, nbgr
+                mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+                if (mode .eq. 0) goto 50
+                nel = nbelem(ligrel,j)
+                idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
+                do k = 1, nel
+                    do i = 1, longt
+                        if (scal(1:1) .eq. 'I') then
+                            vi(i) = vi(i) + zi(iavale-1+idecgr+ (k-1)* longt+i-1)
+                        else if (scal(1:1).eq.'R') then
+                            vr(i) = vr(i) + zr(iavale-1+idecgr+ (k-1)* longt+i-1)
+                        else if (scal(1:1).eq.'C') then
+                            vc(i) = vc(i) + zc(iavale-1+idecgr+ (k-1)* longt+i-1)
+                        endif
+                    end do
+                end do
+ 50             continue
+            end do
         else
             call jeveuo(ligrel//'.LIEL', 'L', jligr)
-            do 90 im = 1, nbmail
+            do im = 1, nbmail
                 inum = 0
-                do 80 j = 1, nbgr
+                do j = 1, nbgr
                     mode = zi(jceld-1+zi(jceld-1+4+j)+2)
                     if (mode .eq. 0) goto 79
                     nel = nbelem(ligrel,j)
                     idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
-                    do 70 k = 1, nel
+                    do k = 1, nel
                         iel = zi(jligr+inum+k-1)
                         if (iel .ne. linuma(im)) goto 70
-                        do 60 i = 1, longt
+                        do i = 1, longt
                             if (scal(1:1) .eq. 'I') then
                                 vi(i) = vi(i) + zi(iavale-1+idecgr+ ( k-1)*longt+i-1)
                             else if (scal(1:1).eq.'R') then
@@ -209,47 +211,50 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                             else if (scal(1:1).eq.'C') then
                                 vc(i) = vc(i) + zc(iavale-1+idecgr+ ( k-1)*longt+i-1)
                             endif
-60                      continue
+                        end do
                         goto 90
-70                  continue
-79                  continue
+ 70                     continue
+                    end do
+ 79                 continue
                     inum = inum + nel + 1
-80              continue
-90          continue
+                end do
+ 90             continue
+            end do
         endif
 !
     else if (typch.eq.'RESL') then
 !        -- (CAS DES RESUELEM):
         if (nbmail .le. 0) then
             numel1 = 0
-            do 120,j = 1,nbgr
-            mode = zi(jceld-1+zi(jceld-1+4+j)+2)
-            if (mode .eq. 0) goto 120
-            call jaexin(jexnum(champ2//'.RESL', j), iexi)
-            if (iexi .eq. 0) goto 120
-            call jeveuo(jexnum(champ2//'.RESL', j), 'L', iavale)
-            ncmpel = digdel(mode)
-            nel = nbelem(ligrel,j)
-            numel1 = numel1 + nel
-            do 110,k = 1,nel
-            do 100,i = 1,longt
-            if (scal(1:1) .eq. 'I') then
-                vi(i) = vi(i) + zi(iavale+ (k-1)*ncmpel-1+ i)
-            else if (scal(1:1).eq.'R') then
-                vr(i) = vr(i) + zr(iavale+ (k-1)*ncmpel-1+ i)
-            else if (scal(1:1).eq.'C') then
-                vc(i) = vc(i) + zc(iavale+ (k-1)*ncmpel-1+ i)
-            endif
-100          continue
-110          continue
-            call jelibe(jexnum(champ2//'.RESL', j))
-120          continue
+            do j = 1, nbgr
+                mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+                if (mode .eq. 0) goto 120
+                call jaexin(jexnum(champ2//'.RESL', j), iexi)
+                if (iexi .eq. 0) goto 120
+                call jeveuo(jexnum(champ2//'.RESL', j), 'L', iavale)
+                ncmpel = digdel(mode)
+                nel = nbelem(ligrel,j)
+                numel1 = numel1 + nel
+                do k = 1, nel
+                    do i = 1, longt
+                        if (scal(1:1) .eq. 'I') then
+                            vi(i) = vi(i) + zi(iavale+ (k-1)*ncmpel-1+ i)
+                        else if (scal(1:1).eq.'R') then
+                            vr(i) = vr(i) + zr(iavale+ (k-1)*ncmpel-1+ i)
+                        else if (scal(1:1).eq.'C') then
+                            vc(i) = vc(i) + zc(iavale+ (k-1)*ncmpel-1+ i)
+                        endif
+                    end do
+                end do
+                call jelibe(jexnum(champ2//'.RESL', j))
+120             continue
+            end do
         else
             call jeveuo(ligrel//'.LIEL', 'L', jligr)
-            do 160 im = 1, nbmail
+            do im = 1, nbmail
                 inum = 0
                 numel1 = 0
-                do 150 j = 1, nbgr
+                do j = 1, nbgr
                     mode = zi(jceld-1+zi(jceld-1+4+j)+2)
                     if (mode .eq. 0) goto 149
                     call jaexin(jexnum(champ2//'.RESL', j), iexi)
@@ -258,10 +263,10 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                     ncmpel = digdel(mode)
                     nel = nbelem(ligrel,j)
                     numel1 = numel1 + nel
-                    do 140 k = 1, nel
+                    do k = 1, nel
                         iel = zi(jligr+inum+k-1)
                         if (iel .ne. linuma(im)) goto 140
-                        do 130 i = 1, longt
+                        do i = 1, longt
                             if (scal(1:1) .eq. 'I') then
                                 vi(i) = vi(i) + zi(iavale+ (k-1)* ncmpel-1+i)
                             else if (scal(1:1).eq.'R') then
@@ -269,14 +274,17 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                             else if (scal(1:1).eq.'C') then
                                 vc(i) = vc(i) + zc(iavale+ (k-1)* ncmpel-1+i)
                             endif
-130                      continue
+                        end do
                         call jelibe(jexnum(champ2//'.RESL', j))
                         goto 160
-140                  continue
-149                  continue
+140                     continue
+                    end do
+149                 continue
                     inum = inum + nel + 1
-150              continue
-160          continue
+150                 continue
+                end do
+160             continue
+            end do
         endif
 !
     endif

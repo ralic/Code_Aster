@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,13 +14,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine fetccn(chamn1,chamn2,chamn3,chamn4,typcum,chamnr)
-              character(len=19) :: chamn1
-              character(len=19) :: chamn2
-              character(len=19) :: chamn3
-              character(len=19) :: chamn4
-              integer :: typcum
-              character(len=19) :: chamnr
-            end subroutine fetccn
-          end interface 
+interface 
+    subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
+                      chamnr)
+        character(len=19) :: chamn1
+        character(len=19) :: chamn2
+        character(len=19) :: chamn3
+        character(len=19) :: chamn4
+        integer :: typcum
+        character(len=19) :: chamnr
+    end subroutine fetccn
+end interface 

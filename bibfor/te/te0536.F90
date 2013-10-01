@@ -41,7 +41,7 @@ subroutine te0536(option, nomte)
     integer :: nnos
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
-    real(kind=8) :: r8bid,vect(1)
+    real(kind=8) :: vect(1)
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS

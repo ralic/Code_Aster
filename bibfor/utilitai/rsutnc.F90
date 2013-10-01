@@ -2,7 +2,6 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
                   nbtrou)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -10,12 +9,13 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-        character(len=*), intent(in) :: nomsd
-        character(len=*), intent(in) :: nomsy
-        integer, intent(in) :: nbvale
-        character(len=*), intent(out) :: tabnom(*)
-        integer, intent(out) :: tabord(*)
-        integer, intent(out) :: nbtrou
+!
+    character(len=*), intent(in) :: nomsd
+    character(len=*), intent(in) :: nomsy
+    integer, intent(in) :: nbvale
+    character(len=*), intent(out) :: tabnom(*)
+    integer, intent(out) :: tabord(*)
+    integer, intent(out) :: nbtrou
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
     call jenonu(jexnom(nomd2//'.DESC', noms2), ibid)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'L', jtach)
     itrou = 0
-    do 10 i = 0, nbordr - 1
+    do i = 0, nbordr - 1
         chextr = zk24(jtach+i)
         if (chextr .ne. ' ') then
             nbtrou = nbtrou + 1
@@ -76,9 +76,10 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
                 tabnom(itrou) = chextr
             endif
         endif
-10  end do
+ 10     continue
+    end do
     if (nbtrou .gt. nbvale) nbtrou = -nbtrou
 !
-20  continue
+ 20 continue
     call jedema()
 end subroutine

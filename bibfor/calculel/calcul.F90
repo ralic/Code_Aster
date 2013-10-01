@@ -146,7 +146,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !   -- FONCTIONS FORMULES :
 !   NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-#   define numail(igr,iel) zi(ialiel-1+zi(illiel-1+igr)-1+iel)
+# define numail(igr,iel) zi(ialiel-1+zi(illiel-1+igr)-1+iel)
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -196,8 +196,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call getvli(cas)
     iuncod = iunifi('CODE')
     if (iuncod .gt. 0) call getres(k8bid, k16bid, cmde)
-
-
+!
+!
 !
 !     -- CAS D'UN CALCUL "DISTRIBUE" :
 !     -- CALCUL DE LDIST :
@@ -213,7 +213,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call dismoi('F', 'PARTITION', ligrel, 'LIGREL', ibid,&
                 partit, ibid)
     call jeexin(partit//'.PRTK', iret)
-    if (iret.ne.0)  then
+    if (iret .ne. 0) then
         ldist=.true.
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
@@ -241,25 +241,25 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     afaire=0
     ier=0
     nbgr=nbgrel(ligrel)
-    do 30,j=1,nbgr
-    nute=typele(ligrel,j)
-    call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
-    nomtm=zk8(jtypma-1+nute)
-    numc=nucalc(opt,nute,0)
+    do j = 1, nbgr
+        nute=typele(ligrel,j)
+        call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
+        nomtm=zk8(jtypma-1+nute)
+        numc=nucalc(opt,nute,0)
 !
 !        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
-    if (numc .lt. 0) then
-        valk(1)=nomte
-        valk(2)=option
-        if (numc .eq. -1) then
-            call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
-        else
-            ASSERT(.false.)
+        if (numc .lt. 0) then
+            valk(1)=nomte
+            valk(2)=option
+            if (numc .eq. -1) then
+                call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
+            else
+                ASSERT(.false.)
+            endif
         endif
-    endif
 !
-    afaire=max(afaire,numc)
-    30 end do
+        afaire=max(afaire,numc)
+    end do
     ASSERT(ier.le.0)
     if (afaire .eq. 0) then
         if (stop .eq. 'S') then
@@ -280,50 +280,54 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     nou3=zi(iaopds-1+3)
 !
     nin2=0
-    do 50,i=1,nin
-    nompar=lpain(i)
-    ipar=indik8(zk8(iaoppa),nompar,1,nin3)
-    if (ipar .gt. 0) then
-        do 40,j=1,nbgr
-        nute=typele(ligrel,j)
-        ipar=inpara(opt,nute,'IN ',nompar)
+    do i = 1, nin
+        nompar=lpain(i)
+        ipar=indik8(zk8(iaoppa),nompar,1,nin3)
+        if (ipar .gt. 0) then
+            do j = 1, nbgr
+                nute=typele(ligrel,j)
+                ipar=inpara(opt,nute,'IN ',nompar)
 !
-        if (ipar .eq. 0) goto 40
-        call exisd('CHAMP_GD', lchin(i), iret)
-        if (iret .eq. 0) goto 40
-        nin2=nin2+1
-        lpain2(nin2)=lpain(i)
-        lchin2(nin2)=lchin(i)
-        goto 50
+                if (ipar .eq. 0) goto 40
+                call exisd('CHAMP_GD', lchin(i), iret)
+                if (iret .eq. 0) goto 40
+                nin2=nin2+1
+                lpain2(nin2)=lpain(i)
+                lchin2(nin2)=lchin(i)
+                goto 50
 !
-40      continue
-    endif
-    50 end do
+ 40             continue
+            end do
+        endif
+ 50     continue
+    end do
 !
 !     -- VERIF PAS DE DOUBLONS DANS LPAIN2 :
     call kndoub(8, lpain2, nin2, iret)
     ASSERT(iret.eq.0)
 !
     nou2=0
-    do 70,i=1,nou
-    nompar=lpaou(i)
-    ipar=indik8(zk8(iaoppa+nin3),nompar,1,nou3)
-    if (ipar .gt. 0) then
-        do 60,j=1,nbgr
-        nute=typele(ligrel,j)
-        ipar=inpara(opt,nute,'OUT',nompar)
+    do i = 1, nou
+        nompar=lpaou(i)
+        ipar=indik8(zk8(iaoppa+nin3),nompar,1,nou3)
+        if (ipar .gt. 0) then
+            do j = 1, nbgr
+                nute=typele(ligrel,j)
+                ipar=inpara(opt,nute,'OUT',nompar)
 !
-        if (ipar .eq. 0) goto 60
-        nou2=nou2+1
-        lpaou2(nou2)=lpaou(i)
-        lchou2(nou2)=lchou(i)
+                if (ipar .eq. 0) goto 60
+                nou2=nou2+1
+                lpaou2(nou2)=lpaou(i)
+                lchou2(nou2)=lchou(i)
 !           -- ON INTERDIT LA CREATION DU CHAMP ' ' :
-        ASSERT(lchou2(nou2).ne.' ')
-        goto 70
+                ASSERT(lchou2(nou2).ne.' ')
+                goto 70
 !
-60      continue
-    endif
-    70 end do
+ 60             continue
+            end do
+        endif
+ 70     continue
+    end do
 !     -- VERIF PAS DE DOUBLONS DANS LPAOU2 :
     call kndoub(8, lpaou2, nou2, iret)
     ASSERT(iret.eq.0)
@@ -349,7 +353,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !     6- BOUCLE SUR LES GREL :
 !     -------------------------------------------------
-    do 100 igr = 1, nbgr
+    do igr = 1, nbgr
 !
 !       -- SI PARALLELISME='GROUP_ELEM' : ON PEUT PARFOIS TOUT "SAUTER"
         if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 100
@@ -383,7 +387,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !         -- LE VECTEUR AUXILIAIRE '&CALCUL.PARALLELE'
             if (ldist) then
                 call wkvect('&CALCUL.PARALLELE', 'V V L', nbelgr, jparal)
-                do 80 iel = 1, nbelgr
+                do iel = 1, nbelgr
                     ima=numail(igr,iel)
                     if (ldist) then
                         if (.not.ldgrel) then
@@ -401,7 +405,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                             zl(jparal-1+iel)=.true.
                         endif
                     endif
-80              continue
+                end do
             endif
 !
 !         6.1 INITIALISATION DES TYPE_ELEM :
@@ -445,7 +449,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
             call jedetr('&CALCUL.PARALLELE')
         endif
-100  end do
+100     continue
+    end do
 !     ---FIN BOUCLE IGR
 !
 !     7- APRES BOUCLE SUR LES GREL :
@@ -457,23 +462,23 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     8- ON "COMPLETE" LES CHAM_ELEM "OUT" SI NECESSAIRE :
 !     ----------------------------------------------------
     if (mpic .eq. 'OUI' .and. ldist) then
-        do 111,i=1,nou2
-        call dismoi('F', 'TYPE_CHAMP', lchou2(i), 'CHAMP', ibid,&
-                    tych, ibid)
-        if (tych(1:2) .eq. 'EL') call sdmpic('CHAM_ELEM', lchou2(i))
-111      continue
+        do i = 1, nou2
+            call dismoi('F', 'TYPE_CHAMP', lchou2(i), 'CHAMP', ibid,&
+                        tych, ibid)
+            if (tych(1:2) .eq. 'EL') call sdmpic('CHAM_ELEM', lchou2(i))
+        end do
     endif
 !
     if (dbg) call caldbg('OUTF', nou2, lchou2, lpaou2)
 !
-120  continue
+120 continue
 !
 !
 !     9- ON DETRUIT LES OBJETS VOLATILES CREES PAR CALCUL:
 !     ----------------------------------------------------
-    do 110,i=1,nbobtr
-    call jedetr(zk24(iaobtr-1+i))
-    110 end do
+    do i = 1, nbobtr
+        call jedetr(zk24(iaobtr-1+i))
+    end do
     call jedetr('&&CALCUL.OBJETS_TRAV')
     iactif=0
 !

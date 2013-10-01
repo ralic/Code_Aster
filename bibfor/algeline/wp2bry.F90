@@ -4,9 +4,9 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
                   solveu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/mrmult.h"
 #include "asterfort/resoud.h"
+!
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*), sr
     real(kind=8) :: si2
     integer :: ldrf, lmasse, lamor, lraide, n
@@ -59,6 +59,7 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
     character(len=1) :: kbid
     character(len=19) :: k19bid, matass, chcine, criter
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !     -----------------------------------------------------------------
 ! INIT. OBJETS ASTER
 !-----------------------------------------------------------------------
@@ -76,9 +77,9 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
                         .false.)
             call mrmult('ZERO', lmasse, yb, zb, 1,&
                         .false.)
-            do 10, i = 1, n, 1
-            zb(i) = -zb(i)
-10          continue
+            do i = 1, n, 1
+                zb(i) = -zb(i)
+            end do
 !
         else
 !           --- DECALAGE NON NUL ---
@@ -90,10 +91,10 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
                         .false.)
             call mrmult('ZERO', lraide, yh, u4, 1,&
                         .false.)
-            do 20, i = 1, n, 1
-            zh(i) = u4(i) + sr*(u1(i) + u3(i))
-            zb(i) = -u3(i) + sr* u2(i)
-20          continue
+            do i = 1, n, 1
+                zh(i) = u4(i) + sr*(u1(i) + u3(i))
+                zb(i) = -u3(i) + sr* u2(i)
+            end do
         endif
 !
     else
@@ -104,9 +105,9 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
                     .false.)
         call mrmult('ZERO', lmasse, yh, u3, 1,&
                     .false.)
-        do 30, i = 1, n, 1
-        u4(i) = u1(i) + sr*u3(i) + u2(i)
-30      continue
+        do i = 1, n, 1
+            u4(i) = u1(i) + sr*u3(i) + u2(i)
+        end do
 !
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, u4, [cbid],&
@@ -116,10 +117,10 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
         call mrmult('ZERO', lmasse, u4, zb, 1,&
                     .false.)
 !
-        do 31, i = 1, n, 1
-        zh(i) = si2*(zh(i) - u3(i) + sr*zb(i)) + sr*(u1(i) + u2(i) )
-        zb(i) = si2* zb(i) + sr*u3(i) - u2(i)
-31      continue
+        do i = 1, n, 1
+            zh(i) = si2*(zh(i) - u3(i) + sr*zb(i)) + sr*(u1(i) + u2(i) )
+            zb(i) = si2* zb(i) + sr*u3(i) - u2(i)
+        end do
         call mrmult('CUMU', lraide, yh, zh, 1,&
                     .false.)
     endif

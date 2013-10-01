@@ -1,7 +1,6 @@
 subroutine w039c1(carte, ifi, form, ligrel, titre)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescre.h"
@@ -23,6 +22,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 #include "asterfort/w039c2.h"
 #include "asterfort/w039c4.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form
     integer :: ifi
@@ -65,7 +65,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     -- SI LA CARTE N'EXISTE PAS, IL N'Y A RIEN A FAIRE :
 !     -----------------------------------------------------
     call exisd('CARTE', carte, iexi)
-    if (iexi .eq. 0) goto 9999
+    if (iexi .eq. 0) goto 999
 !
 !
     ifm=6
@@ -99,7 +99,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !        ON L'IMPRIME AVEC SES VALEURS REELLES. C'EST PLUS JOLI !
     if (form .eq. 'MED' .and. tsca .eq. 'R') then
         call w039c4(carte, ifi, form)
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -111,40 +111,42 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     ----------------------------------------------------------------
     call wkvect('&&W039C1.ZONES', 'V V I', ngedit, jzones)
     nuzone=0
-    do 30,kgedit=1,ngedit
-    izone=kgedit
+    do kgedit = 1, ngedit
+        izone=kgedit
 !       -- ON REGARDE SI LES VALEURS DE IZONE N'ONT PAS DEJA ETE VUES
 !          POUR KZONE < IZONE :
-    do 20,kzone=1,izone-1
-    do 10,kcmp=1,ncmpmx
-    dec1=ncmpmx*(kzone-1)+kcmp
-    dec2=ncmpmx*(izone-1)+kcmp
-    if (tsca .eq. 'K8') then
-        if (zk8(jvale-1+dec1) .ne. zk8(jvale-1+dec2)) goto 20
-    else if (tsca.eq.'K16') then
-        if (zk16(jvale-1+dec1) .ne. zk16(jvale-1+dec2)) goto 20
-    else if (tsca.eq.'K24') then
-        if (zk24(jvale-1+dec1) .ne. zk24(jvale-1+dec2)) goto 20
-    else if (tsca.eq.'I') then
-        if (zi(jvale-1+dec1) .ne. zi(jvale-1+dec2)) goto 20
-    else if (tsca.eq.'R') then
-        if (zr(jvale-1+dec1) .ne. zr(jvale-1+dec2)) goto 20
-    else if (tsca.eq.'C') then
-        if (zc(jvale-1+dec1) .ne. zc(jvale-1+dec2)) goto 20
-    else
-        ASSERT(.false.)
-    endif
-10  continue
+        do kzone = 1, izone-1
+            do kcmp = 1, ncmpmx
+                dec1=ncmpmx*(kzone-1)+kcmp
+                dec2=ncmpmx*(izone-1)+kcmp
+                if (tsca .eq. 'K8') then
+                    if (zk8(jvale-1+dec1) .ne. zk8(jvale-1+dec2)) goto 20
+                else if (tsca.eq.'K16') then
+                    if (zk16(jvale-1+dec1) .ne. zk16(jvale-1+dec2)) goto 20
+                else if (tsca.eq.'K24') then
+                    if (zk24(jvale-1+dec1) .ne. zk24(jvale-1+dec2)) goto 20
+                else if (tsca.eq.'I') then
+                    if (zi(jvale-1+dec1) .ne. zi(jvale-1+dec2)) goto 20
+                else if (tsca.eq.'R') then
+                    if (zr(jvale-1+dec1) .ne. zr(jvale-1+dec2)) goto 20
+                else if (tsca.eq.'C') then
+                    if (zc(jvale-1+dec1) .ne. zc(jvale-1+dec2)) goto 20
+                else
+                    ASSERT(.false.)
+                endif
+            end do
 !         -- IZONE == KZONE :
-    zi(jzones-1+izone)=zi(jzones-1+kzone)
-    goto 30
+            zi(jzones-1+izone)=zi(jzones-1+kzone)
+            goto 30
 !
-20  continue
-    nuzone=nuzone+1
-    zi(jzones-1+izone)=nuzone
-    call w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
-                ifr)
-    30 end do
+ 20         continue
+        end do
+        nuzone=nuzone+1
+        zi(jzones-1+izone)=nuzone
+        call w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
+                    ifr)
+ 30     continue
+    end do
 !
 !
 !
@@ -167,18 +169,18 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     call jeveuo(ces2//'.CESD', 'L', jcesd)
     call jeveuo(ces2//'.CESV', 'E', jcesv)
     call jeveuo(ces2//'.CESL', 'E', jcesl)
-    do 40,ima=1,nbma
-    izone=zi(jptma-1+ima)
-    if (izone .gt. 0) then
-        nuzone=zi(jzones-1+izone)
-        ASSERT(nuzone.gt.0)
-        call cesexi('C', jcesd, jcesl, ima, 1,&
-                    1, 1, iad)
-        ASSERT(iad.le.0)
-        zl(jcesl-1-iad)=.true.
-        zr(jcesv-1-iad)=dble(nuzone)
-    endif
-    40 end do
+    do ima = 1, nbma
+        izone=zi(jptma-1+ima)
+        if (izone .gt. 0) then
+            nuzone=zi(jzones-1+izone)
+            ASSERT(nuzone.gt.0)
+            call cesexi('C', jcesd, jcesl, ima, 1,&
+                        1, 1, iad)
+            ASSERT(iad.le.0)
+            zl(jcesl-1-iad)=.true.
+            zr(jcesv-1-iad)=dble(nuzone)
+        endif
+    end do
 !
 !
 !     -- TRANSFORMATION DE CES2 EN CEL2 (CHAM_ELEM/ELEM) :
@@ -217,6 +219,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     call jedetr('&&W039C1.ZONES')
 !
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

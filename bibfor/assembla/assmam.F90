@@ -118,7 +118,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: ibid, iconx1, iconx2, idbgav
     integer :: jlres, jprn1, jprn2, jresl, jrsvi
     integer :: iel, ier, ierd, ifm, igr
-    integer :: jfnusd, ilima, ilimat, ilimo, ilinu
+    integer :: ilima, ilimat, ilimo, ilinu
     integer :: imat, jnumsd, iresu
     integer :: iret, itbloc
     integer :: jrefa, jsmde, jsmdi, jsmhc, jvalm(2)
@@ -355,10 +355,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !     -- RECOPIE DE LA LISTE DES MATR_ELEM DANS 1 OBJET JEVEUX
     call wkvect(matdev//'.LIME', base1//' V K24 ', nbmat, ilimat)
-    do 20 i = 1, nbmat
+    do i = 1, nbmat
         zk24(ilimat+i-1)=tlimat(i)
         if (dbg .and. tlimat(i) .ne. ' ') call cheksd(tlimat(i), 'SD_MATR_ELEM', iret)
-20  end do
+    end do
 !
 !
 !
@@ -426,14 +426,14 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                     nblc)
 !
         call jeecra(mat19//'.VALM', 'LONMAX', itbloc)
-        do 30 i = 1, nblc
+        do i = 1, nblc
             call jecroc(jexnum(mat19//'.VALM', i))
-30      continue
+        end do
     else
         if (.not.cumul) then
-            do 40 i = 1, nblc
+            do i = 1, nblc
                 call jerazo(jexnum(mat19//'.VALM', i), itbloc, 1)
-40          continue
+            end do
         endif
     endif
 !
@@ -453,7 +453,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !         3. BOUCLE SUR LES MATR_ELEM
 !         =============================
-    do 90 imat = 1, nbmat
+    do imat = 1, nbmat
         c1=licoef(imat)
         matel=zk24(ilimat+imat-1)(1:19)
         call dismoi('F', 'NOM_MODELE', matel, 'MATR_ELEM', ibid,&
@@ -488,7 +488,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !           BOUCLE SUR LES RESU_ELEM
 !           ==========================
-        do 70 iresu = 1, nbresu
+        do iresu = 1, nbresu
             resu=zk24(jlres+iresu-1)(1:19)
             call jeexin(resu//'.DESC', ier)
             if (ier .eq. 0) goto 70
@@ -541,7 +541,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !                   -- BOUCLE SUR LES GRELS DU LIGREL
 !                   ==================================
-            do 60 igr = 1, zzngel(ilima)
+            do igr = 1, zzngel(ilima)
                 if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 60
 !
 !                       -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
@@ -566,7 +566,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !                           BOUCLE SUR LES ELEMENTS DU GREL
 !                           ================================
-                    do 50 iel = 1, nel
+                    do iel = 1, nel
                         call assma3(lmasym, lmesym, tt, igr, iel,&
                                     c1, rang, jnueq, jnumsd, jresl,&
                                     jrsvi, nbvel, nnoe, ldist, ldgrel,&
@@ -576,14 +576,15 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                                     jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
                                     lgtmp2, jvalm, ilinu, ellagr, exivf,&
                                     jdesc, jrepe, jptvoi, jelvoi, codvoi)
-50                  continue
+                    end do
                     call jelibe(jexnum(resu//'.RESL', igr))
                 endif
-60          continue
-70      continue
-80      continue
-90  continue
-100  continue
+ 60             continue
+            end do
+ 70         continue
+        end do
+ 80     continue
+    end do
 !
 !
 !         -- MISE A JOUR DE REFA(4)
@@ -594,7 +595,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         if (zk24(jrefa-1+4) .ne. optio2) zk24(jrefa-1+4)='&&MELANGE'
     endif
 !
-110  continue
 !
 !
 !
@@ -610,10 +610,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     if (.not.lmasym) then
 !           -- ON AFFECTE AUX TERMES DIAGONAUX DU BLOC INFERIEUR
 !              LES VALEURS DES TERMES DIAGONAUX DU BLOC SUPERIEUR
-        do 120 ieq = 1, nequ
+        do ieq = 1, nequ
             idia=zi(jsmdi+ieq-1)
             zr(jvalm(2)+idia-1)=zr(jvalm(1)+idia-1)
-120      continue
+        end do
     endif
 !
 !         -- IL FAUT COMMUNIQUER ELLAGR ENTRE LES PROCS :

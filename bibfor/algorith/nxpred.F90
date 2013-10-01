@@ -64,6 +64,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
     character(len=24) :: vebuem, vabuem, cnvabt, cnvabu
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !
     data typres        /'R'/
     data chsol         /'&&NXPRED.SOLUTION'/
@@ -126,10 +127,10 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
                     typres, cnvabu)
         call jeveuo(cnvabu(1:19)//'.VALE', 'L', jbuem)
 !
-        do 130 k = 1, lonch
+        do k = 1, lonch
             zr(jtempp+k-1) = zr(j2nd+k-1) - zr(jvare+k-1) + zr(jdirp+ k-1) - zr(jbtla+k-1)- zr(jb&
                              &uem+k-1)
-130      end do
+        end do
 !
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
@@ -141,9 +142,9 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !
         call copisd('CHAMP_GD', 'V', chsol, vtempm(1:19))
         call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
-        do 140 k = 1, lonch
+        do k = 1, lonch
             zr(jtempm+k-1) = zr(jtempm+k-1) + zr(jtemp+k-1)
-140      end do
+        end do
 !
     else
 !
@@ -151,9 +152,9 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !  INITIALISATION POUR LE PREMIER PAS, CALCUL TRANSITOIRE, PAS COURANT
 !=======================================================================
 !
-        do 150 k = 1, lonch
+        do k = 1, lonch
             zr(jtempp+k-1) = zr(j2ni+k-1) + zr(jdirp+k-1)
-150      end do
+        end do
 !
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !

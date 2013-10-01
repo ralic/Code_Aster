@@ -619,9 +619,9 @@ subroutine op0045()
 !     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
 !     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
 ! --- CF COMMENTAIRES PLUS LOIN SUR MATOPA/MATPSC.
-    if (metres(1:5).eq.'MUMPS') then
-        if ((lc).and.(lkr).and.(appr(1:1).eq.'R')) then
-            if (zi(islvi-1+6).lt.0) then
+    if (metres(1:5) .eq. 'MUMPS') then
+        if ((lc) .and. (lkr) .and. (appr(1:1).eq.'R')) then
+            if (zi(islvi-1+6) .lt. 0) then
 ! --- PB INITIALISATION DE LA SD_SOLVEUR
                 ASSERT(.false.)
             else
@@ -1130,21 +1130,21 @@ subroutine op0045()
                         omecor)
             if (typres .eq. 'DYNAMIQUE') call vpordi(1, 0, nconv, zr( lresur+mxresf), zr(lvec),&
                                                      neq, zi(lresui))
-            do 37 imet = 1, nconv
+            do imet = 1, nconv
                 zi(lresui-1+ mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
                 if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = 'SORENSEN'
-37          continue
+            end do
             if (typres .ne. 'DYNAMIQUE') then
                 call vpordo(0, 0, nconv, zr(lresur+mxresf), zr(lvec),&
                             neq)
-                do 38 imet = 1, nconv
+                do imet = 1, nconv
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
                     zi(lresui-1+imet) = imet
-38              continue
+                end do
             endif
             else if ((method(1:8).eq.'SORENSEN').and.(lns.or..not.lkr))&
         then
@@ -1164,11 +1164,11 @@ subroutine op0045()
             call vpbosc(typres, nconv, nconv, sigma, zc(ldsor),&
                         nfreq+1, vpinf, vpmax, precdc, method,&
                         omecor)
-            do 377 imet = 1, nconv
+            do imet = 1, nconv
                 zi(lresui-1+ mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zk24(lresuk-1+ mxresf+imet) = 'SORENSEN'
-377          continue
+            end do
 !
         else if (lqz.and.lkr.and.(.not.lns)) then
 !     ------------------------------------------------------------------
@@ -1188,21 +1188,21 @@ subroutine op0045()
                         omecor)
             if (typres .eq. 'DYNAMIQUE') call vpordi(1, 0, nconv, zr( lresur+mxresf), zr(lvec),&
                                                      neq, zi(lresui))
-            do 125 imet = 1, nconv
+            do imet = 1, nconv
                 zi(lresui-1+ mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
                 if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = typeqz
-125          continue
+            end do
             if (typres .ne. 'DYNAMIQUE') then
                 call vpordo(0, 0, nconv, zr(lresur+mxresf), zr(lvec),&
                             neq)
-                do 126 imet = 1, nconv
+                do imet = 1, nconv
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
                     zi(lresui-1+imet) = imet
-126              continue
+                end do
             endif
 !
         else if (lqz.and.((.not.lkr).or.lns)) then
@@ -1226,11 +1226,11 @@ subroutine op0045()
                         nfreq, vpinf, vpmax, precdc, method,&
                         omecor)
 !
-            do 127 imet = 1, nconv
+            do imet = 1, nconv
                 zi(lresui-1+ mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zk24(lresuk-1+ mxresf+imet) = typeqz
-127          continue
+            end do
 !
         else if (method(1:6).eq.'JACOBI') then
 !     ------------------------------------------------------------------
@@ -1249,7 +1249,7 @@ subroutine op0045()
             if (typres .eq. 'DYNAMIQUE') call vpordi(1, 0, nfreq, zr( lresur+mxresf), zr(lvec),&
                                                      neq, zi(lresui))
 !
-            do 30 imet = 1, nfreq
+            do imet = 1, nfreq
                 zi(lresui-1+2*mxresf+imet) = nitbat
                 zi(lresui-1+4*mxresf+imet) = nitjac
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
@@ -1257,14 +1257,14 @@ subroutine op0045()
                 if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = 'BATHE_WILSON'
-30          continue
+            end do
             if (typres .ne. 'DYNAMIQUE') then
                 call vpordo(0, 0, nfreq, zr(lresur+mxresf), zr(lvec),&
                             neq)
-                do 31 imet = 1, nfreq
+                do imet = 1, nfreq
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
                     zi(lresui-1+imet) = imet
-31              continue
+                end do
             endif
 !
         else if (method(1:8).eq.'TRI_DIAG') then
@@ -1276,9 +1276,9 @@ subroutine op0045()
                 call utmess('A', 'ALGELINE2_72')
             endif
             if (nstoc .ne. 0) then
-                do 26 i = 1, neq * nstoc
+                do i = 1, neq * nstoc
                     zr(lvec + i - 1) = zr(lxrig + i -1)
-26              continue
+                end do
             endif
             call vp2ini(lmtpsc, lmasse, lmatra, neq, nbvect,&
                         nborto, prorto, zi(lprod), zi(lddl), zr(ldiagr),&
@@ -1294,21 +1294,21 @@ subroutine op0045()
                         omecor)
             if (typres .eq. 'DYNAMIQUE') call vpordi(1, 0, nfreq, zr( lresur+mxresf), zr(lvec),&
                                                      neq, zi(lresui))
-            do 32 imet = 1, nfreq
+            do imet = 1, nfreq
                 zi(lresui-1+ mxresf+imet) = nitqrm
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
                 if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+ mxresf+imet) = 'LANCZOS'
-32          continue
+            end do
             if (typres .ne. 'DYNAMIQUE') then
                 call vpordo(0, 0, nfreq, zr(lresur+mxresf), zr(lvec),&
                             neq)
-                do 33 imet = 1, nfreq
+                do imet = 1, nfreq
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
                     zi(lresui-1+imet) = imet
-33              continue
+                end do
             endif
         endif
 !
@@ -1339,11 +1339,11 @@ subroutine op0045()
                         sigma, zr(iadx), zr(iady), zr(iadz), 2*nbvect,&
                         zr(lsurdr), zr(ldiagr), zc(lvec), mxresf, zi(lresui),&
                         zr(lresur), zi(lprod), omecor)
-            do 36 imet = 1, nfreq
+            do imet = 1, nfreq
                 zi(lresui-1+mxresf+imet) = nitqrm
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zk24(lresuk-1+mxresf+imet) = 'LANCZOS'
-36          continue
+            end do
 !
         else if (lqz) then
 !     ------------------------------------------------------------------
@@ -1360,11 +1360,11 @@ subroutine op0045()
             call wp4vec(nfreq, nconv, neq, sigma, zc(lvalpr),&
                         zc(lvec), mxresf, zi(lresui), zr(lresur), zi(lprod),&
                         zc(lauc), omecor)
-            do 578 imet = 1, nfreq
+            do imet = 1, nfreq
                 zi(lresui-1+mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zk24(lresuk-1+mxresf+imet) = typeqz
-578          continue
+            end do
         else if (method(1:8).eq.'SORENSEN') then
             if (lkr) then
                 if ((appr.eq.'R') .or. (appr.eq.'I')) then
@@ -1399,11 +1399,11 @@ subroutine op0045()
                                 zc( lvec), mxresf, zi(lresui), zr(lresur), zi(lprod),&
                                 zc( lauc), omecor)
                 endif
-                do 378 imet = 1, nfreq
+                do imet = 1, nfreq
                     zi(lresui-1+mxresf+imet) = izero
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
                     zk24(lresuk-1+mxresf+imet) = 'SORENSEN'
-378              continue
+                end do
             else
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB QUADRATIQUE COMPLEXE SYM  --------
@@ -1419,11 +1419,11 @@ subroutine op0045()
                 nfreq = nconv / 2
                 call wp5vec(optiof, nfreq, nconv, neq, zc(ldsor),&
                             zc(lvec), mxresf, zi(lresui), zr(lresur), zc(lauc))
-                do 379 imet = 1, nfreq
+                do imet = 1, nfreq
                     zi(lresui-1+mxresf+imet) = izero
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
                     zk24(lresuk-1+mxresf+imet) = 'SORENSEN'
-379              continue
+                end do
             endif
         endif
     endif
@@ -1440,10 +1440,10 @@ subroutine op0045()
     mfreq = nconv
     if (optiof .eq. 'BANDE') then
         if (lc .or. lns .or. .not.lkr) ASSERT(.false.)
-        do 110 ifreq = mfreq - 1, 0
+        do ifreq = mfreq - 1, 0
             if (zr(lresur+mxresf+ifreq) .gt. omemax .or. zr(lresur+ mxresf+ifreq) .lt. omemin) &
             nconv = nconv - 1
-110      continue
+        end do
         if (mfreq .ne. nconv) then
             call utmess('I', 'ALGELINE2_17')
         endif
@@ -1565,12 +1565,12 @@ subroutine op0045()
     if (flage) then
         call utmess('F', 'ALGELINE5_75')
     endif
-999  continue
+999 continue
 !
 !
 !     ------------------------------------------------------------------
 !
-888  continue
+888 continue
 !     --- DESTRUCTION DE LA MATRICE DYNAMIQUE RESTANTE (VRAI MATPSC DIS
 !     SOSSIEE DE MATOPA OU MATPSC POINTANT SUR MATOPA D'OU LA RECONSTRUC
 !     TION DE NOM CI-DESSOUS

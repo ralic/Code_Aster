@@ -37,7 +37,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in)  :: noma
+    character(len=8), intent(in) :: noma
     character(len=19), intent(in) :: ligrmo
     integer, intent(in) :: nb_node
     character(len=24), intent(in) :: list_node
@@ -114,26 +114,25 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
 !
 ! - Apply transformation
 !
-    call calirg(noma, nb_node, list_node, tran, cent, &
+    call calirg(noma, nb_node, list_node, tran, cent,&
                 l_angl_naut, angl_naut, geom2, lrota, mrota)
     ASSERT(.not.lrota)
     call jeveuo(geom2, 'L', jgeom2)
 !
 ! - Loop on nodes
 !
-    do i_no = 1,nb_node
+    do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
 !
 ! ----- Relation DU(M) = 0
 !
         do i_cmp = 1, 3
-            cmp_name  = nomcmp(i_cmp)
+            cmp_name = nomcmp(i_cmp)
             cmp_index = indik8(zk8(jnom), cmp_name, 1, nbcmp)
             ASSERT(cmp_index.gt.0)
             if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index)) then
-                vale_real = zr(jgeom2-1+3*(i_no-1)+i_cmp) - &
-                            zr(jcoor -1+3*(i_no-1)+i_cmp)
+                vale_real = zr(jgeom2-1+3*(i_no-1)+i_cmp) - zr(jcoor -1+3*(i_no-1)+i_cmp)
                 call afrela([coef_real_unit], [coef_cplx_unit], cmp_name, nomnoe_m, [0],&
                             [0.d0], 1, vale_real, c16bid, ' ',&
                             'REEL', 'REEL', type_lagr, 0.d0, lisrel)

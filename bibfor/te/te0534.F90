@@ -73,7 +73,7 @@ subroutine te0534(option, nomte)
     real(kind=8) :: vtmp(400), reac, reac12(3), jac
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
-    real(kind=8) :: rr, rbid, cohes(3), rela, mat(1)
+    real(kind=8) :: rr, cohes(3), rela, mat(1)
     logical :: lbid, lelim
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg
@@ -85,9 +85,9 @@ subroutine te0534(option, nomte)
 !
 ! --- INITIALISATIONS
 !
-    do 5 i = 1, 8
+    do i = 1, 8
         lact(i) = 0
- 5  end do
+    end do
     call vecini(27, 0.d0, ffp)
     rr = 0.d0
     ncomph = 0
@@ -110,9 +110,9 @@ subroutine te0534(option, nomte)
         call confac(typma, ibid2, ibid, fac, nbf)
     endif
 !
-    do 40 j = 1, nddl
+    do j = 1, nddl
         vtmp(j)=0.d0
-40  end do
+    end do
 !
 ! --- ROUTINE SPECIFIQUE P2P1
 !
@@ -164,15 +164,15 @@ subroutine te0534(option, nomte)
     ncompc = jtab(2)
 !
 !     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
-    do 30 i = 1, max(1, nfh)*nnos
+    do i = 1, max(1, nfh)*nnos
         vstnc(i) = 1
-30  end do
+    end do
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
 !
 !
 ! --- BOUCLE SUR LES FISSURES
 !
-    do 90 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 ! --- RECUPERATION DIVERSES DONNEES CONTACT
 !
@@ -205,11 +205,11 @@ subroutine te0534(option, nomte)
 !
 ! --- BOUCLE SUR LES FACETTES
 !
-        do 100 ifa = 1, nface
+        do ifa = 1, nface
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !
-            do 110 ipgf = 1, npgf
+            do ipgf = 1, npgf
 !
 ! --- RECUPERATION DES STATUTS POUR LE POINT DE GAUSS
 !
@@ -217,9 +217,9 @@ subroutine te0534(option, nomte)
                 indco = zi(jindco-1+nbspg+isspg)
                 if (algofr .ne. 0) seuil = zr(jseuil-1+nbspg+isspg)
                 if (algocr .eq. 3) then
-                    do 2 i = 1, ncompv
+                    do i = 1, ncompv
                         cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
- 2                  continue
+                    end do
                 endif
 !
 ! --- PREPARATION DU CALCUL
@@ -269,26 +269,26 @@ subroutine te0534(option, nomte)
                 endif
 !
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
-110          continue
+            end do
 !
 ! --- FIN DE BOUCLE SUR LES FACETTES
-100      continue
+        end do
 ! --- FIN BOUCLE SUR LES FISSURES
         nbspg = nbspg + nspfis
-91      continue
+ 91     continue
         jbasec = jbasec + ncompb
         jptint = jptint + ncompp
         jaint = jaint + ncompa
         jcface = jcface + ncompc
-90  end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     COPIE DES CHAMPS DE SORTIES ET FIN
 !-----------------------------------------------------------------------
 !
-    do 900 i = 1, nddl
+    do i = 1, nddl
         zr(ivect-1+i)=vtmp(i)
-900  end do
+    end do
 !     SUPPRESSION DES DDLS DE DEPLACEMENT SEULEMENT POUR LES XHTC
     if (nfh .ne. 0) then
         call jevech('PSTANO', 'L', jstno)

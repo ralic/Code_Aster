@@ -131,7 +131,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         call jeveuo(ddlcb, 'L', lddld)
         call jeveuo(mocb, 'L', lmodd)
 !
-        do 50 ieq = 1, neq
+        do ieq = 1, neq
             if (zi(lddld+ieq-1) .eq. 1) then
                 imode = imode + 1
 !              --- LE VECTEUR ---
@@ -148,9 +148,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 vale(20:24) = '.VALE'
                 call jeveuo(vale, 'E', lvale)
                 ind = neq*(imode-1)
-                do 52 ie = 0, neq-1
+                do ie = 0, neq-1
                     zr(lvale+ie) = zr(lmodd+ind+ie)
-52              continue
+                end do
                 call jelibe(vale)
                 call rsnoch(resu, 'DEPL', imode)
 !              --- LES PARAMETRES ---
@@ -184,7 +184,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                             0, sjv=ltype, styp=k8b)
                 zr(ltype) = zero
             endif
-50      continue
+        end do
     endif
 !--
 !-- MODES D'ATTACHE
@@ -193,7 +193,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         imodf = 0
         call jeveuo(ddlmn, 'L', lddlf)
         call jeveuo(moatta, 'L', lmodf)
-        do 60 ieq = 1, neq
+        do ieq = 1, neq
             if (zi(lddlf+ieq-1) .eq. 1) then
                 imode = imode + 1
                 imodf = imodf + 1
@@ -212,9 +212,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 vale(20:24) = '.VALE'
                 call jeveuo(vale, 'E', lvale)
                 ind = neq*(imodf-1)
-                do 62 ie = 0, neq-1
+                do ie = 0, neq-1
                     zr(lvale+ie) = zr(lmodf+ind+ie)
-62              continue
+                end do
                 call jelibe(vale)
                 call rsnoch(resu, 'DEPL', imode)
 !
@@ -249,7 +249,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                             0, sjv=ltype, styp=k8b)
                 zr(ltype) = zero
             endif
-60      continue
+        end do
     endif
 !--
 !-- MODES A ACCELERATION UNIFORME
@@ -258,7 +258,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         imoad = 0
         call jeveuo(moaimp, 'L', lmoad)
         call jeveuo(ddlac, 'L', lddad)
-        do 66 ieq = 1, neq
+        do ieq = 1, neq
             if (zi(lddad+ieq-1) .eq. 1) then
                 imode = imode + 1
                 imoad = imoad + 1
@@ -277,9 +277,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 vale(20:24) = '.VALE'
                 call jeveuo(vale, 'E', lvale)
                 ind = neq*(imoad-1)
-                do 68 ie = 0, neq-1
+                do ie = 0, neq-1
                     zr(lvale+ie) = zr(lmoad+ind+ie)
-68              continue
+                end do
                 call jelibe(vale)
                 call rsnoch(resu, 'DEPL', imode)
 !
@@ -314,7 +314,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                             0, sjv=ltype, styp=k8b)
                 zr(ltype) = zero
             endif
-66      continue
+        end do
     endif
 !--
 !-- MODES A ACCELERATION IMPOSEE
@@ -323,7 +323,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
         call jeveuo(moauni, 'L', lmoda)
         imoda = 0
-        do 70 i = 1, nbpsmo
+        do i = 1, nbpsmo
             direct = .false.
             call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
             if (na .ne. 0) then
@@ -332,7 +332,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=nnaxe, vect=zk8( jaxe),&
                             nbret=na)
                 ifin = 0
-                do 72 ia = 1, nnaxe
+                do ia = 1, nnaxe
                     monaxe = zk8(jaxe+ia-1)
                     if (monaxe(1:1) .eq. 'X') then
                         ifin = ifin + 1
@@ -353,7 +353,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                         coef(2) = zero
                         coef(3) = un
                     endif
-72              continue
+                end do
                 call jedetr('&&OP0093.AXE')
             else
                 call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=3, vect=coef,&
@@ -361,13 +361,13 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 if (na .ne. 0) then
 !              --- ON NORME LA DIRECTION ---
                     xnorm = zero
-                    do 80 id = 1, 3
+                    do id = 1, 3
                         xnorm = xnorm + coef(id)*coef(id)
-80                  continue
+                    end do
                     xnorm = un / sqrt(xnorm)
-                    do 82 id = 1, 3
+                    do id = 1, 3
                         coef(id) = coef(id) * xnorm
-82                  continue
+                    end do
                     call getvtx('PSEUDO_MODE', 'NOM_DIR', iocc=i, scal=nomdir, nbret=nnd)
                     direct = .true.
                     ifin = 1
@@ -375,7 +375,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                     goto 70
                 endif
             endif
-            do 74 im = 1, ifin
+            do im = 1, ifin
                 imode = imode + 1
                 imoda = imoda + 1
 !
@@ -393,9 +393,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 vale(20:24) = '.VALE'
                 call jeveuo(vale, 'E', lvale)
                 ind = neq*(imoda-1)
-                do 76 ie = 0, neq-1
+                do ie = 0, neq-1
                     zr(lvale+ie) = zr(lmoda+ind+ie)
-76              continue
+                end do
                 call jelibe(vale)
                 call rsnoch(resu, 'DEPL', imode)
 !
@@ -451,8 +451,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call rsadpa(resu, 'E', 1, 'CARAELEM', imode,&
                             0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = carael
-74          continue
-70      continue
+            end do
+ 70         continue
+        end do
     endif
 !--
 !-- MODES D'INTERFACE
@@ -461,7 +462,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         call jeveuo(mointf, 'L', lmodd)
         call jeveuo(vefreq, 'L', lfreq)
 !
-        do 90 ieq = 1, nbmodi
+        do ieq = 1, nbmodi
             imode = imode + 1
 !
 !              --- LE VECTEUR ---
@@ -478,9 +479,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
             vale(20:24) = '.VALE'
             call jeveuo(vale, 'E', lvale)
             ind = neq*(imode-1)
-            do 100 ie = 0, neq-1
+            do ie = 0, neq-1
                 zr(lvale+ie) = zr(lmodd+ind+ie)
-100          continue
+            end do
             call jelibe(vale)
             call rsnoch(resu, 'DEPL', imode)
 !
@@ -514,7 +515,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                         0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = carael
 !
-90      continue
+        end do
     endif
 !
     call titre()

@@ -39,7 +39,6 @@ subroutine vtdefs(chpout, chpin, base, typc)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/jedema.h"
@@ -49,12 +48,12 @@ subroutine vtdefs(chpout, chpin, base, typc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/vtdef1.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chpout, chpin, base, typc
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ibid, ifetc, nbsd, idd, kfetc, ilimpi, iret
+    integer :: ibid
     character(len=4) :: tych
-    character(len=8) :: k8bid
     character(len=19) :: ch19, arg1, arg2
 !
 !-----------------------------------------------------------------------
@@ -63,8 +62,9 @@ subroutine vtdefs(chpout, chpin, base, typc)
     call jemarq()
     ch19 = chpin
 !
-    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid, tych, ier)
-
+    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid,&
+                tych, ier)
+!
     arg1=chpout
     arg2=chpin
     call vtdef1(arg1, arg2, base, typc)

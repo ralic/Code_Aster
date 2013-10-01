@@ -124,7 +124,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !     ------------------------
     if (numa .gt. 0) then
 !
-        do 10 k1 = 1, nnoe
+        do k1 = 1, nnoe
             n1=zzconx(numa,k1)
             iad1=zzprno(1,n1,1)
             call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
@@ -133,7 +133,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
             ASSERT(nddl1.le.nmxcmp)
             zi(jnulo1-1+2*(k1-1)+1)=iad1
             zi(jnulo1-1+2*(k1-1)+2)=nddl1
-10      continue
+        end do
 !
 !
 !
@@ -161,7 +161,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
         endif
 !
 !
-        do 60 k1 = 1, nnoe
+        do k1 = 1, nnoe
 !         N1 : INDICE DU NOEUDS DS LE .NEMA DU LIGREL
 !              DE CHARGE GLOBAL OU LOCAL
             n1=zznema(ilima,numa,k1)
@@ -187,7 +187,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !
             zi(jnulo1-1+2*(k1-1)+1)=iad1
             zi(jnulo1-1+2*(k1-1)+2)=nddl1
-60      continue
+        end do
     endif
 !
 !
@@ -197,7 +197,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !        POUR NOTER OU ILS DOIVENT ETRE RECOPIES
 !     -----------------------------------------------------------
 !
-    do 100 k1 = 1, nnoe
+    do k1 = 1, nnoe
         iad1=numlo1(k1,1)
         nddl1=numlo1(k1,2)
         if (lmesym) then
@@ -205,21 +205,21 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
         else
             nk2=nnoe
         endif
-        do 90 i1 = 1, nddl1
-            do 80 k2 = 1, nk2
+        do i1 = 1, nddl1
+            do k2 = 1, nk2
                 iad2=numlo1(k2,1)
                 nddl2=numlo1(k2,2)
                 if (lmesym .and. (k2.eq.k1)) nddl2=i1
-                do 70 i2 = 1, nddl2
+                do i2 = 1, nddl2
                     iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
                     iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
                     nbi1=nbi1+1
                     ti1(nbi1)=iad11
                     ti2(nbi1)=iad21
-70              continue
-80          continue
-90      continue
-100  end do
+                end do
+            end do
+        end do
+    end do
     ASSERT(nbi1.le.nbi1mx)
     call asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                 jsmdi, nbi1, ti1, ti2)
@@ -234,42 +234,42 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
                     jptvoi, jelvoi, nbvois, livois, tyvois,&
                     nbnovo, nbsoco, lisoco)
         ASSERT(nbvois.le.30)
-        do 101, kvois=1,nbvois
-        numav=livois(kvois)
-        nnov =nbnovo(kvois)
-        igr2=zi(jrepe-1+2*(numav-1)+1)
-        mode2=zi(jdesc+igr2+1)
+        do kvois = 1, nbvois
+            numav=livois(kvois)
+            nnov =nbnovo(kvois)
+            igr2=zi(jrepe-1+2*(numav-1)+1)
+            mode2=zi(jdesc+igr2+1)
 !
-        do 102 k2 = 1, nnov
-            n2=zzconx(numav,k2)
-            iad2=zzprno(1,n2,1)
-            call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
-                        mode2, nec, ncmp, n2, k2,&
-                        nddl2, zi(jposd2-1+nmxcmp*(k2-1)+1))
-            ASSERT(nddl2.le.nmxcmp)
-            zi(jnulo2-1+2*(k2-1)+1)=iad2
-            zi(jnulo2-1+2*(k2-1)+2)=nddl2
-102      continue
+            do k2 = 1, nnov
+                n2=zzconx(numav,k2)
+                iad2=zzprno(1,n2,1)
+                call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
+                            mode2, nec, ncmp, n2, k2,&
+                            nddl2, zi(jposd2-1+nmxcmp*(k2-1)+1))
+                ASSERT(nddl2.le.nmxcmp)
+                zi(jnulo2-1+2*(k2-1)+1)=iad2
+                zi(jnulo2-1+2*(k2-1)+2)=nddl2
+            end do
 !
 !
-        do 103 k1 = 1, nnoe
-            iad1=numlo1(k1,1)
-            nddl1=numlo1(k1,2)
-            do 93 i1 = 1, nddl1
-                do 83 k2 = 1, nnov
-                    iad2=numlo2(k2,1)
-                    nddl2=numlo2(k2,2)
-                    do 73 i2 = 1, nddl2
-                        iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
-                        iad21=zi(jnueq-1+iad2+posdd2(k2,i2)-1)
-                        call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
-                                    jsmdi, iad11, iad21)
-73                  continue
-83              continue
-93          continue
-103      continue
+            do k1 = 1, nnoe
+                iad1=numlo1(k1,1)
+                nddl1=numlo1(k1,2)
+                do i1 = 1, nddl1
+                    do k2 = 1, nnov
+                        iad2=numlo2(k2,1)
+                        nddl2=numlo2(k2,2)
+                        do i2 = 1, nddl2
+                            iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
+                            iad21=zi(jnueq-1+iad2+posdd2(k2,i2)-1)
+                            call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
+                                        jsmdi, iad11, iad21)
+                        end do
+                    end do
+                end do
+            end do
 !
-101      continue
+        end do
     endif
 !
 !
@@ -286,5 +286,5 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
     call ascopr(lmasym, lmesym, tt, jtmp2, nbterm,&
                 jresl+decael, c1, jvalm)
 !
-110  continue
+110 continue
 end subroutine

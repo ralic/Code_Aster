@@ -94,7 +94,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     integer :: ibid, iret, nres, numfon, livi(nbmxpa)
     integer :: nchin, nsig, ino1, ino2, inga
     real(kind=8) :: g(1), livr(nbmxpa)
-    complex(kind=8) :: cbid, livc(nbmxpa)
+    complex(kind=8) :: livc(nbmxpa)
     logical :: lfonc, lxfem
     character(len=8) :: resu, lpain(50), lpaout(2), k8b, resuco
     character(len=8) :: fiss

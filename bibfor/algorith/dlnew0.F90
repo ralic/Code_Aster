@@ -115,7 +115,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     integer :: istoc, iarchi, ifm, imat(3), nchar, nveca, liad(*)
     integer :: iforc2, archiv, nbtyar, mltap(nbexci)
 !
-    real(kind=8) :: depla(neq), vitea(neq), accea(neq), rbid, dep0(*), vit0(*)
+    real(kind=8) :: depla(neq), vitea(neq), accea(neq), dep0(*), vit0(*)
     real(kind=8) :: acc0(*), fexte(*), famor(*), fliai(*), depl1(neq)
     real(kind=8) :: vite1(neq), acce1(neq), psdel(neq), fammo(neq), fimpe(neq)
     real(kind=8) :: fonde(neq), vien(neq), vite(neq), vita1(neq), a0, a2, a3
@@ -188,7 +188,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
     if (lmodst) then
 !
-        do 22 iexci = 1, nbexci
+        do iexci = 1, nbexci
 !
             if (mltap(iexci) .eq. 1) then
                 call fointe('F ', nodepl(iexci), 1, ['INST'], [temps],&
@@ -197,14 +197,14 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                             coefv, ieq)
                 call fointe('F ', noacce(iexci), 1, ['INST'], [temps],&
                             coefa, ieq)
-                do 221 ieq = 1, neq
+                do ieq = 1, neq
                     depla(ieq) = depla(ieq) + psdel(ieq)*coefd
                     vitea(ieq) = vitea(ieq) + psdel(ieq)*coefv
                     accea(ieq) = accea(ieq) + psdel(ieq)*coefa
-221              continue
+                end do
             endif
 !
-22      continue
+        end do
 !
     endif
 !
@@ -217,7 +217,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     if (lmodst) then
         do 32 , ieq = 1,neq
         vien(ieq) = vitea(ieq)
-32      continue
+ 32     continue
     endif
     if (limped) then
         call fimped(modele, mate, numedd, neq, vitini,&
@@ -234,7 +234,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         if (lmodst) then
             do 33 , ieq = 1,neq
             vita1(ieq) = vit0(ieq) + vitea(ieq)
-33          continue
+ 33         continue
             call fmodam(neq, vita1, valmod, basmod, fammo)
         else
             call fmodam(neq, vit0, valmod, basmod, fammo)
@@ -254,36 +254,36 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     if (nondp .ne. 0) then
         do 43 , ieq = 1,neq
         zr(iforc1+ieq-1) = zr(iforc1+ieq-1) - fonde(ieq)
-43      continue
+ 43     continue
     endif
     if (ener) then
-        do 433, ieq =1,neq
-        fexte(ieq)=fexte(ieq+neq)
-        fexte(ieq+neq)=zr(iforc1+ieq-1)
-433      continue
+        do ieq = 1, neq
+            fexte(ieq)=fexte(ieq+neq)
+            fexte(ieq+neq)=zr(iforc1+ieq-1)
+        end do
     endif
 !
     if (limped) then
         do 41 , ieq = 1,neq
         zr(iforc1+ieq-1) = zr(iforc1+ieq-1) - fimpe(ieq)
-41      continue
+ 41     continue
         if (ener) then
-            do 411 ieq = 1, neq
+            do ieq = 1, neq
                 fliai(ieq)=fliai(ieq+neq)
                 fliai(ieq+neq)=fimpe(ieq)
-411          continue
+            end do
         endif
     endif
 !
     if (nmodam .ne. 0) then
         do 42 , ieq = 1,neq
         zr(iforc1+ieq-1) = zr(iforc1+ieq-1) - fammo(ieq)
-42      continue
+ 42     continue
         if (ener) then
-            do 421 ieq = 1, neq
+            do ieq = 1, neq
                 famor(ieq)=famor(ieq+neq)
                 famor(ieq+neq)=fammo(ieq)
-421          continue
+            end do
         endif
     endif
 !
@@ -296,7 +296,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         call jeveuo('&&OP0048.LISTRESU', 'L', lresu)
         prec=1.d-9
         eps0 =1.d-12
-        do 210 iresu = 1, nbexre
+        do iresu = 1, nbexre
             if (abs(temps) .gt. eps0) then
                 call rsorac(zk8(lresu+iresu-1), 'INST', 0, temps, k8bid,&
                             cbid, prec, 'RELATIF', item2, 1,&
@@ -317,7 +317,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                 call jelira(zk8(lresu+iresu-1)//'           .ORDR', 'LONUTI', nbinst)
 !
 !        --- INTERPOLATION LINEAIRE ---
-                do 211 i = 1, nbinst-1
+                do i = 1, nbinst-1
 !
                     call rsadpa(zk8(lresu+iresu-1), 'L', 1, 'INST', i,&
                                 0, sjv=ltps0, styp=k8bid)
@@ -353,24 +353,24 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                         call jeveuo(chamno//'.VALE', 'L', lvale)
                         goto 213
                     endif
-211              continue
-213              continue
+                end do
+213             continue
             endif
-            do 212 ieq = 1, neq
+            do ieq = 1, neq
                 zr(iforc2+ieq-1) = zr(lvale+ieq-1)*zr(lcrre+iresu-1)
                 zr(iforc1+ieq-1) = zr(iforc1+ieq-1) + zr(lvale+ieq-1)* zr(lcrre+iresu-1)
-212          continue
+            end do
             if (ibid .gt. 0) then
                 call jelibe(cham19//'.VALE')
             else
                 call jelibe(cham19//'.VALE')
                 call jedetr('&&DLNEW0.XTRAC')
             endif
-210      continue
+        end do
         if (ener) then
-            do 23 ieq = 1, neq
+            do ieq = 1, neq
                 fexte(ieq+neq)=fexte(ieq+neq)+ zr(iforc2+ieq-1)
-23          continue
+            end do
         endif
     endif
 !
@@ -474,7 +474,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
             depla(ieq) = depla(ieq) + dep0(ieq)
             vitea(ieq) = vitea(ieq) + vit0(ieq)
             accea(ieq) = accea(ieq) + acc0(ieq)
-101          continue
+101         continue
             call dlarch(result, neq, istoc, iarchi, ' ',&
                         alarm, ifm, temps, nbtyar, typa,&
                         masse, depla, vitea, accea, fexte( neq+1),&

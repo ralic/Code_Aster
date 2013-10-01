@@ -91,7 +91,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
     real(kind=8) :: ax, ay, axx, ayy
-    complex(kind=8) :: cbid, betac, ccmp(3)
+    complex(kind=8) :: betac, ccmp(3)
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
@@ -109,7 +109,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     endif
 !
     call getfac(motfac, nliai)
-    if (nliai .eq. 0) goto 9999
+    if (nliai .eq. 0) goto 999
 !
 ! --- INITIALISATIONS
 !     ---------------
@@ -132,9 +132,9 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     ccmp(1) = (0.0d0,0.0d0)
     ccmp(2) = (0.0d0,0.0d0)
     ccmp(3) = (0.0d0,0.0d0)
-    do 10 i = 1, 6
+    do i = 1, 6
         icmp(i) = 0
-10  end do
+    end do
 !
     ligrel = '&&RAPO2D'
     lisnoe = '&&RAPO2D.LISTE_NOEUDS'
@@ -195,10 +195,10 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
         vali (2) = nddla
         call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
     endif
-    do 20 i = 1, nddla
+    do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
-20  end do
+    end do
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
 !
@@ -214,11 +214,12 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE
     call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
-    do 30 i = 1, nlili
+    do i = 1, nlili
         call jenuno(jexnum(numddl//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA') goto 30
         k = i
-30  end do
+ 30     continue
+    end do
     ASSERT(k.ne.0)
     call jeveuo(jexnum(numddl//'.NUME.PRNO', k), 'L', iaprno)
 !
@@ -429,7 +430,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !     -S.DX(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DX(NOEUD_I) = 0
     nbterm = lonlis + 1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
-    do 70 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
@@ -437,7 +438,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
         zk8(jlisno+i-1) = zk8(ilisno+i-1)
         zk8(jlisdl+i-1) = 'DX'
         zr(jliscr+i-1) = zr(idch1+ival-1)
-70  end do
+    end do
 !
     zk8(jlisno+lonlis+1-1) = noepou
     zk8(jlisdl+lonlis+1-1) = 'DX'
@@ -453,7 +454,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !     -S.DY(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DY(NOEUD_I) = 0
     nbterm = lonlis + 1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
-    do 80 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
@@ -461,7 +462,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
         zk8(jlisno+i-1) = zk8(ilisno+i-1)
         zk8(jlisdl+i-1) = 'DY'
         zr(jliscr+i-1) = zr(idch1+ival-1)
-80  end do
+    end do
 !
     zk8(jlisno+lonlis+1-1) = noepou
     zk8(jlisdl+lonlis+1-1) = 'DY'
@@ -485,7 +486,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !        IZZ.DRZ(NOEUD_POUTRE)                            = 0
     nbterm = 2*lonlis + 1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
-    do 120 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2))
@@ -496,7 +497,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
         zk8(jlisdl+2*(i-1)+1) = 'DX'
         zr(jliscr+2*(i-1) ) = zr(idch2+ival-1)
         zr(jliscr+2*(i-1)+1) = -zr(idch2+ival-1+1)
-120  end do
+    end do
 !
     zk8(jlisno+2*lonlis+1-1) = noepou
     zk8(jlisdl+2*lonlis+1-1) = 'DRZ'
@@ -531,6 +532,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     call detrsd('CHAMP_GD', 'CH_DEPL_1')
     call detrsd('CHAMP_GD', 'CH_DEPL_2')
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

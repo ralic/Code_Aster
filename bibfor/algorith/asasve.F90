@@ -106,9 +106,9 @@ subroutine asasve(vechar, numedd, typres, vachar)
     if (iret .gt. 0) then
         call jeveuo(vacha8, 'L', jvacha)
         call jelira(vacha8, 'LONMAX', n1)
-        do 10,i = 1,n1
-        call detrsd('CHAMP_GD', zk24(jvacha-1+i) (1:19))
-10      continue
+        do i = 1, n1
+            call detrsd('CHAMP_GD', zk24(jvacha-1+i) (1:19))
+        end do
         call jedetr(vacha8)
     endif
     call wkvect(vacha8, 'V V K24', max(nbvec, 1), jass)
@@ -140,7 +140,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     ityp = 1
     if (typres .eq. 'C') ityp = 2
 !
-    do 20 i = 1, nbvec
+    do i = 1, nbvec
         resuel = zk24(jvec-1+i)(1:19)
 !       CALL UTIMS2('ASASVE 1',I,RESUEL,1,' ')
 !
@@ -171,21 +171,21 @@ subroutine asasve(vechar, numedd, typres, vachar)
             ASSERT(.false.)
         endif
 !
-20  end do
+    end do
     call jedetr('&&ASASVE           .RELR')
     call jedetr('&&ASASVE           .RERR')
 !
 !
-30  continue
+ 30 continue
 !
 !
 !
 !     DESTRUCTION DU VECT_ELEM :
 !     -----------------------------------
-    do 40 i = 1, nbvec
+    do i = 1, nbvec
         call corich('S', zk24(jvec+i-1) (1:19), ibid, ibid)
         call detrsd('CHAMP_GD', zk24(jvec+i-1))
-40  end do
+    end do
     call jedetr(vecele//'.RELR')
     call jedetr(vecele//'.RERR')
 !

@@ -81,7 +81,7 @@ subroutine deelpo(caelem, noma, numail, phie)
     iasedi = zi(icad+2)
     iasbon = 0
 !
-    do 10 ias = 1, iasedi
+    do ias = 1, iasedi
         icode = zi(icad+3+2*(ias-1))
         nuenti = zi(icad+3+2*(ias-1)+1)
 !        SI AFFECATION SUR UN GROUPE DE MAILLE
@@ -94,15 +94,15 @@ subroutine deelpo(caelem, noma, numail, phie)
             call jelira(jexnum(calima, nuenti), 'LONMAX', nbma)
         endif
 !        RECHERCHE DE LA MAILLE
-        do 30 ima = 1, nbma
+        do ima = 1, nbma
             numa = zi(iglma+ima-1)
             if (numa .eq. numail) then
                 iasbon = ias
                 goto 40
             endif
-30      continue
+        end do
 !
-10  end do
+    end do
 !
     if (iasbon .eq. 0) then
         nomama = noma//'.NOMMAI'
@@ -110,7 +110,7 @@ subroutine deelpo(caelem, noma, numail, phie)
         call utmess('F', 'ALGELINE_34', sk=nomail)
     endif
 !
-40  continue
+ 40 continue
 !
 !     EXTRACTION DES RAYONS EXTERIEURS AUX DEUX EXTREMITES DE L'ELEMENT
 !       SI LE RAYON EXTERIEUR EST CONSTANT SUR L'ELEMENT, ON DEDUIT
@@ -129,13 +129,13 @@ subroutine deelpo(caelem, noma, numail, phie)
     endif
     icode = zi(icad-1+3+2*iasmax+nbec*(iasbon-1)+1)
     iranv1 = 0
-    do 61 icmp = 1, irang1
+    do icmp = 1, irang1
         if (exisdg([icode],icmp)) iranv1 = iranv1 + 1
-61  end do
+    end do
     iranv2 = 0
-    do 62 icmp = 1, irang2
+    do icmp = 1, irang2
         if (exisdg([icode],icmp)) iranv2 = iranv2 + 1
-62  end do
+    end do
     if (iranv1 .eq. 0 .or. iranv2 .eq. 0) then
         call utmess('F', 'ALGELINE_36')
     endif

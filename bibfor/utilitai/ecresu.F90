@@ -139,13 +139,13 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     if (typout(1:10) .eq. 'DYNA_HARMO') then
 !        --- CAS OU RESULTAT EST HARMO SUR BASE PHYSIQUE
 !        --- RECUPERER LA LISTE DES FREQUENCES DE LA TABLE FFT
-        do 10 i = 0, nbva-1
+        do i = 0, nbva-1
 !           --- LES FREQUENCES SONT DECALEES PAR (NEQ*NBVA) DS LA TBLE
             zr(ltps+i) = dble(zc(npara+(neq*nbva)+i))
-10      continue
+        end do
 !
 !        --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
-        do 20 i = 0, nbordr-1
+        do i = 0, nbordr-1
             call rsadpa(resou, 'E', 1, 'FREQ', i+1,&
                         0, sjv=ltps2, styp=k8b)
             zr(ltps2) = zr(ltps+i)
@@ -169,16 +169,16 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !           --- REMPLIR LE .VALE PAR LES RESULTATS DANS LA TABLE FFT
             call jeveuo(chdeps//'.VALE', 'E', lvals)
-            do 30 ieq = 0, neq-1
+            do ieq = 0, neq-1
                 zc(lvals+ieq) = zc(npara+nbva*ieq+i)
-30          continue
+            end do
             call rsnoch(resou, grande, i+1)
-20      continue
+        end do
     else if (typout(1:10).eq.'DYNA_TRANS') then
-        do 100 i = 1, nbva
+        do i = 1, nbva
             zr(ltps+i-1) = zr(npara+(neq*nbva2)+i-1)
-100      continue
-        do 200 i = 1, nbordr
+        end do
+        do i = 1, nbordr
 !  Temps
             call rsadpa(resou, 'E', 1, 'INST', (i-1),&
                         0, sjv=ltps2, styp=k8b)
@@ -199,21 +199,21 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             ASSERT(n1.eq.neq)
             call jelira(chdeps//'.VALE', 'TYPE', cval=ktyp)
             ASSERT(ktyp.eq.'R')
-            do 300 ieq = 1, neq
+            do ieq = 1, neq
                 r1 = zr(npara+nbva*(ieq-1)+i-1)
                 zr(lvals+ieq-1) = r1
-300          continue
+            end do
             call rsnoch(resou, grande, (i-1))
-200      continue
+        end do
     else if (typout(1:9).eq.'TRAN_GENE') then
 !        --- SI NOUVEAU RESULTAT TRAN_GENE
         if (ires .eq. 0) then
 !           --- BOUCLE SUR LES INSTANTS A ARCHIVER
-            do 400 i = 0, nbva-1
+            do i = 0, nbva-1
 !              --- INSTANTS SAUVEGARDEES DANS LA TABLE FFT MAIS
 !                  DECALEES PAR (NEQ*NBVA2)
                 zr(ltps+i) = zr(npara+(neq*nbva2)+i)
-400          continue
+            end do
 !           --- INITIALISATION DES INDICES D'ARCHIVAGE POUR MDARCH
             isto1 = 0
             isto2 = 0
@@ -267,18 +267,18 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 lv3 = lvals
             endif
 !           --- BOUCLE SUR LES INSTANTS D'ARCHIVAGE (NUM ORDRE)
-            do 500 j = 0, nbordr-1
+            do j = 0, nbordr-1
                 iarchi = j
                 isto1 = j
 !              --- BOUCLE SUR LES MODES
-                do 600 ieq = 0, neq-1
+                do ieq = 0, neq-1
 !                 --- RECUPERER LA VALEUR DANS LA TABLE FFT
                     r1 = zr(npara+nbva*ieq+j)
 !                 --- SAUVER LA VALEUR DANS LE VECT DE TRAVAIL ASSOCIE
                     zr(lv1+ieq) = r1
                     zr(lv2+ieq) = 0.d0
                     zr(lv3+ieq) = 0.d0
-600              continue
+                end do
 !
 !              --- ARCHIVER LES RESULTATS POUR L'INSTANT EN COURS
                 call mdarnl(isto1, iarchi, zr(ltps+j), dt, neq,&
@@ -288,21 +288,21 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                             zr(jdeps), zr(jvits), zr(jaccs), zr( jpass), zi(jordr),&
                             zr(jinst), zr(jfcho), zr(jdcho), zr( jvcho), zi(jicho),&
                             zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevv))
-500          continue
+            end do
         else
 !           --- SI LE RESULTAT TRAN_GENE N'EST PAS UN NOUVEAU CONCEPT,
 !               ALORS MODIFIER DIRECTEMENT LES VALEURS DANS LA SD
 !               (FONCTION AVEC APPELS RECURSIFS)
             call jeveuo(resou(1:8)//'           .'//grande, 'E', lvals)
             call jelira(resou(1:8)//'           .'//grande, 'LONMAX', ibid)
-            do 700 j = 0, nbordr-1
+            do j = 0, nbordr-1
                 iarchi = j
                 isto1 = j
-                do 800 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     r1 = zr(npara+nbva*ieq+j)
                     zr(lvals+(neq*isto1)+ieq) = r1
-800              continue
-700          continue
+                end do
+            end do
         endif
     else if (typout(1:9).eq.'HARM_GENE') then
 !
@@ -310,10 +310,10 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !        --- RECUPERER LA LISTE DES FREQUENCES DE LA TABLE FFT
         if (ires .eq. 0) then
 !
-            do 11 i = 0, nbva-1
+            do i = 0, nbva-1
 !             --- LES FREQUENCES SONT DECALEES PAR (NEQ*NBVA) DS LA TBLE
                 zr(ltps+i) = dble(zc(npara+(neq*nbva)+i))
-11          continue
+            end do
 !
 !           --- INITIALISATION DES INDICES D'ARCHIVAGE POUR MDARCH
             isto1 = 0
@@ -370,18 +370,18 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             endif
 !
 !           --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
-            do 21 j = 0, nbordr-1
+            do j = 0, nbordr-1
                 iarchi = j
                 isto1 = j
 !              --- BOUCLE SUR LES MODES
-                do 22 ieq = 0, neq-1
+                do ieq = 0, neq-1
 !                 --- RECUPERER LA VALEUR DANS LA TABLE FFT
                     r1c = zc(npara+nbva*ieq+j)
 !                 --- SAUVER LA VALEUR DANS LE VECT DE TRAVAIL ASSOCIE
                     zc(lv1+ieq) = r1c
                     zc(lv2+ieq) = 0.d0
                     zc(lv3+ieq) = 0.d0
-22              continue
+                end do
                 nbsym = 3
                 nomsym(1) = 'DEPL'
                 nomsym(2) = 'VITE'
@@ -393,21 +393,21 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                             [0.d0], [0.d0], [0.d0], [0.d0], zc(lvals),&
                             zc(lvalv), zc(lvala), zc(jdeps), zc(jvits), zc(jaccs),&
                             [0.d0], zi(jordr), zr(jfreq))
-21          continue
+            end do
         else
 !           --- SI LE RESULTAT HARM_GENE N'EST PAS UN NOUVEAU CONCEPT,
 !               ALORS MODIFIER DIRECTEMENT LES VALEURS DANS LA SD
 !               (FONCTION AVEC APPELS RECURSIFS)
             call jeveuo(resou(1:8)//'           .'//grande, 'E', lvals)
             call jelira(resou(1:8)//'           .'//grande, 'LONMAX', ibid)
-            do 23 j = 0, nbordr-1
+            do j = 0, nbordr-1
                 iarchi = j
                 isto1 = j
-                do 24 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     r1c = zc(npara+nbva*ieq+j)
                     zc(lvals+(neq*isto1)+ieq) = r1c
-24              continue
-23          continue
+                end do
+            end do
         endif
     endif
 !

@@ -66,8 +66,6 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 !
     integer :: ibid, sinco(1), nbma
     integer :: jfiss
-    real(kind=8) :: rbid
-    complex(kind=8) :: cbid
     character(len=19) :: xdonco, xindco, xmemco, xgliss, xcohes, ccohes
     character(len=16) :: option
     character(len=8) :: k8bid
@@ -122,7 +120,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     lcontx = zi(jxc) .ge. 1
     if (.not.lcontx) then
         mmcvca = .true.
-        goto 9999
+        goto 999
     endif
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
@@ -235,7 +233,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     call copisd('CHAMP_GD', 'V', lchout(3), xmemco)
     call copisd('CHAMP_GD', 'V', lchout(4), xcoheo)
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

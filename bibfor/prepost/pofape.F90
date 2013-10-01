@@ -124,12 +124,12 @@ subroutine pofape()
     if (nval .eq. 0) then
         forvie = '        '
     endif
-
+!
     call getvid(' ', 'FORMULE_CRITIQUE', scal=forcri, nbret=nval)
     if (nval .eq. 0) then
         forcri = '        '
     endif
-
+!
 !
     kdomm = ' '
     call getvtx(' ', 'DOMMAGE', scal=kdomm, nbret=n1)
@@ -210,29 +210,29 @@ subroutine pofape()
     else
 !
         nbptot = nbpts
-        do 20 i = 2, nbf
+        do i = 2, nbf
             fvale(i) = nomten(i)//'           .VALE'
             call jelira(fvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) then
                 call utmess('F', 'FATIGUE1_21')
             endif
-20      continue
+        end do
         call wkvect('&&POFAPE.ORDO', 'V V R', nbptot/2*nbf, iordo)
         call jeveuo(fvale(1), 'L', ifonc1)
-        do 30 i = 2, nbf
+        do i = 2, nbf
             call jeveuo(fvale(i), 'L', ifonc)
-            do 35 j = 1, nbptot/2
+            do j = 1, nbptot/2
                 if (zr(ifonc+j-1) .ne. zr(ifonc1+j-1)) then
                     call utmess('F', 'FATIGUE1_21')
                 endif
                 zr(iordo+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
-35          continue
-30      continue
+            end do
+        end do
         nbptot = nbptot / 2
-        do 40 j = 1, nbptot
+        do j = 1, nbptot
             zr(iordo+(j-1)*nbf) = zr(ifonc1+nbptot+j-1)
 !
-40      end do
+        end do
 !
     endif
 !
@@ -245,28 +245,28 @@ subroutine pofape()
     else
 !
         nbptot = nbpts
-        do 21 i = 2, nbeps
+        do i = 2, nbeps
             etvale(i) = nomeps(i)//'           .VALE'
             call jelira(etvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) then
                 call utmess('F', 'FATIGUE1_21')
             endif
-21      continue
+        end do
         call wkvect('&&POFAPE.ORDOE', 'V V R', nbptot*nbeps/2, iordoe)
         call jeveuo(etvale(1), 'L', ifonc2)
-        do 31 i = 2, nbeps
+        do i = 2, nbeps
             call jeveuo(etvale(i), 'L', ifonce)
-            do 36 j = 1, nbptot/2
+            do j = 1, nbptot/2
                 if (zr(ifonce+j-1) .ne. zr(ifonc2+j-1)) then
                     call utmess('F', 'FATIGUE1_21')
                 endif
                 zr(iordoe+(j-1)*nbeps+i-1) = zr(ifonce+nbptot/2+j-1)
-36          continue
-31      continue
+            end do
+        end do
         nbptot = nbptot / 2
-        do 41 j = 1, nbptot
+        do j = 1, nbptot
             zr(iordoe+(j-1)*nbeps) = zr(ifonc2+nbptot+j-1)
-41      continue
+        end do
     endif
 !
 !
@@ -280,28 +280,28 @@ subroutine pofape()
     else
 !
         nbptot = nbpts
-        do 22 i = 2, nbepsp
+        do i = 2, nbepsp
             ptvale(i) = nomepp(i)//'           .VALE'
             call jelira(ptvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) then
                 call utmess('F', 'FATIGUE1_21')
             endif
-22      continue
+        end do
         call wkvect('&&POFAPE.ORDOP', 'V V R', nbptot*nbepsp/2, iordop)
         call jeveuo(ptvale(1), 'L', ifonc3)
-        do 32 i = 2, nbepsp
+        do i = 2, nbepsp
             call jeveuo(ptvale(i), 'L', ifoncp)
-            do 37 j = 1, nbptot/2
+            do j = 1, nbptot/2
                 if (zr(ifoncp+j-1) .ne. zr(ifonc3+j-1)) then
                     call utmess('F', 'FATIGUE1_21')
                 endif
                 zr(iordop+(j-1)*nbeps+i-1) = zr(ifoncp+nbptot/2+j-1)
-37          continue
-32      continue
+            end do
+        end do
         nbptot = nbptot / 2
-        do 42 j = 1, nbptot
+        do j = 1, nbptot
             zr(iordop+(j-1)*nbeps) = zr(ifonc3+nbptot+j-1)
-42      continue
+        end do
     endif
 !
 !CC  RECUPERER LE MATERIAU
@@ -336,9 +336,9 @@ subroutine pofape()
 !
 !
 !
-    do 601 j = 1, 7
+    do j = 1, 7
         resu(j) = 0.0d0
-601  continue
+    end do
 !
     if (( criter .eq. 'FORMULE_CRITERE' ) .or. ( criter .eq. 'MATAKE_MODI_AV' ) .or.&
         ( criter .eq. 'DANG_VAN_MODI_AV' ) .or. ( criter .eq. 'FATESOCI_MODI_AV' ) .or.&
@@ -353,13 +353,13 @@ subroutine pofape()
 !
         call wkvect('&&POFAPE.ORDOCD', 'V V R', nbptot*nbcmp*3, jrwork)
 !
-        do 60 j = 1, nbptot
-            do 65 k = 1, 6
+        do j = 1, nbptot
+            do k = 1, 6
                 zr(jrwork+(j-1)*nbcmp*3+k-1) = zr(iordo+(j-1)*nbcmp+k- 1)
                 zr(jrwork+(j-1)*nbcmp*3 + nbcmp + k-1) = zr( iordoe+(j- 1 )*nbcmp+k-1 )
                 zr(jrwork+(j-1)*nbcmp*3 + nbcmp*2 + k-1) = zr( iordop+(j-1 )*nbcmp+k-1 )
-65          continue
-60      continue
+            end do
+        end do
 !
         tdisp = nbptot*nbcmp*3
         nbnot = 1
@@ -377,68 +377,68 @@ subroutine pofape()
 !
             call dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                         nnoini, nbnop, tspaq, nommet, criter,&
-                        nomfor, kdomm, forvie, forcri, k8b, k19b,&
-                        nommat, post, valpar, vresu)
+                        nomfor, kdomm, forvie, forcri, k8b,&
+                        k19b, nommat, post, valpar, vresu)
 !
-           if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
+            if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
                 (paract(5) .eq. 1) .or. (paract(6) .eq. 1)) then
 !
                 plcicr = .true.
             endif
-
+!
 ! PLAN CRITIQUE DE TYPE CISSAILLEMENT DE DANG VAN-MATAKE
             if (plcicr) then
 !
                 call tbajli(result, 1, nomppf(10), ibid, vresu(1),&
                             cbid, k8b, ilign)
 !
-                do 46 i = 1, 3
+                do i = 1, 3
                     call tbajli(result, 1, nomppf(i+44), ibid, vresu(i+1),&
                                 cbid, k8b, ilign)
 !
-46              continue
+                end do
 !
-                do 44 i = 1, 4
+                do i = 1, 4
                     call tbajli(result, 1, nomppf(i+11), ibid, vresu(i+4),&
                                 cbid, k8b, ilign)
 !
-44              continue
+                end do
             endif
-
+!
 !POUR LES NOUVEUAX CRITERS DE PLAN CRITIQUE
-
-            do 47 i = 24, 35
+!
+            do i = 24, 35
                 if (paract(i) .eq. 1) plcr2 = .true.
-47          continue
-
+            end do
+!
             if (plcr2) then
-                do 48 i = 1, 3
+                do i = 1, 3
                     call tbajli(result, 1, nomppf(i+44), ibid, vresu(i+1),&
                                 cbid, k8b, ilign)
 !
-48              continue
-
-                do 49 i = 24, 35
+                end do
+!
+                do i = 24, 35
                     if (paract(i) .eq. 1) then
                         call tbajli(result, 1, nomppf(i+9), ibid, valpar(i),&
                                     cbid, k8b, ilign)
                     endif
-49             continue
-
+                end do
+!
             endif
-
-
+!
+!
 ! POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
-           if (paract(2) .eq. 1) then
-               call tbajli(result, 1, nomppf(11), ibid, valpar(2),&
-                                    cbid, k8b, ilign)
-           endif
-           do 43 i = 7, 23
+            if (paract(2) .eq. 1) then
+                call tbajli(result, 1, nomppf(11), ibid, valpar(2),&
+                            cbid, k8b, ilign)
+            endif
+            do i = 7, 23
                 if (paract(i) .eq. 1) then
-                   call tbajli(result, 1, nomppf(i+9), ibid, valpar(i),&
-                                    cbid, k8b, ilign)
+                    call tbajli(result, 1, nomppf(i+9), ibid, valpar(i),&
+                                cbid, k8b, ilign)
                 endif
-43          continue
+            end do
 !
 !
             call tbajli(result, 1, nomppf(2), ibid, vresu(9),&
@@ -568,7 +568,7 @@ subroutine pofape()
 !
     endif
 !
-50  continue
+ 50 continue
 !
     call jedetr('&&POFAPE.ORDO')
     call jedema()

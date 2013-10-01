@@ -159,9 +159,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
     call detrsd('CHAMP_GD', vecas)
     call wkvect(vecas//'.LIVE', bas//' V K24 ', nbvec, ilivec)
-    do 10 i = 1, nbvec
+    do i = 1, nbvec
         zk24(ilivec-1+i)=tlivec(i)
-10  end do
+    end do
 !
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A VECAS
     kmaila='&MAILLA                 '
@@ -262,14 +262,14 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     ASSERT(type.eq.1)
     call wkvect(kvale, bas//' V R8', nequa, jvale)
 !
-    do 20 i = 1, nequa
+    do i = 1, nequa
         zr(jvale+i-1)=r8maem()
-20  end do
+    end do
 !
 !
 !     -- REMPLISSAGE DE .VALE
 !     ------------------------
-    do 90 imat = 1, nbvec
+    do imat = 1, nbvec
         rcoef=licoef(imat)
         vecel=zk24(ilivec+imat-1)(1:19)
 !
@@ -284,7 +284,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
         call jeveuo(vecel//'.RELR', 'L', idlres)
         call jelira(vecel//'.RELR', 'LONUTI', nbresu)
-        do 80 iresu = 1, nbresu
+        do iresu = 1, nbresu
             resu=zk24(idlres+iresu-1)(1:19)
             call jeveuo(resu//'.NOLI', 'L', iad)
             nomli=zk24(iad)
@@ -292,7 +292,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
             call jenonu(jexnom(kvelil, nomli), ilive)
             call jenonu(jexnom(knulil, nomli), ilinu)
 !
-            do 70 igr = 1, zi(iadlie+3*(ilive-1))
+            do igr = 1, zi(iadlie+3*(ilive-1))
                 if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 70
 !
 !             -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
@@ -308,7 +308,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                     call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
                     ncmpel=digdel(mode)
 !
-                    do 60 iel = 1, nel
+                    do iel = 1, nel
                         numa=zi(zi(iadlie+3*(ilive-1)+1)-1+ &
                              zi(zi(iadlie+3*(ilive-1)+2)+igr-1)+iel-1)
                         r=rcoef
@@ -321,7 +321,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
                         if (numa .gt. 0) then
                             il=0
-                            do 50 k1 = 1, nnoe
+                            do k1 = 1, nnoe
                                 n1=zi(iconx1-1+zi(iconx2+numa-1)+k1-1)
                                 iad1=zi(idprn1-1+zi(idprn2+ilimnu-1)+&
                                 (n1-1)*(nec+2)+1-1)
@@ -354,24 +354,28 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                 endif
 !
                                 if (type .eq. 1) then
-                                    do 30 i1 = 1, nddl1
+                                    do i1 = 1, nddl1
                                         il=il+1
                                         zr(jvale-1+zi(ianueq-1+iad1+&
                                         zi(iapsdl-1+i1)- 1))=min(zr(&
                                         jvale-1+zi(ianueq-1+iad1+&
                                         zi(iapsdl-1+i1)-1)), zr(jresl+&
                                         (iel-1)*ncmpel+il-1)*r)
-30                                  continue
+                                    end do
                                 endif
-50                          continue
+ 50                             continue
+                            end do
                         endif
-60                  continue
+ 60                     continue
+                    end do
                     call jelibe(jexnum(resu//'.RESL', igr))
                 endif
-70          continue
-80      continue
+ 70             continue
+            end do
+        end do
 !
-90  end do
+ 90     continue
+    end do
     call jedetr(vecas//'.LILI')
     call jedetr(vecas//'.LIVE')
     call jedetr(vecas//'.ADNE')

@@ -118,7 +118,8 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     call bmrdda(basmod, kbid, nomint, numint, 0,&
                 [0], nbddl, ordo, ii)
     kbid=' '
-    call bmnoin(basmod, kbid, nomint, numint, 0, [0], nbnoe)
+    call bmnoin(basmod, kbid, nomint, numint, 0,&
+                [0], nbnoe)
 !
 !-------ALLOCATION DU MINI PROFNO LIAISON INTERFACE COURANTE------------
 !
@@ -130,8 +131,8 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     call jeveuo(jexnum(lintf//'.IDC_DDAC', numint), 'L', llact)
 !
     icomp=0
-    do 10 i = 1, nbnoe
-        do 20 iec = 1, nbec
+    do i = 1, nbnoe
+        do iec = 1, nbec
             if (ordo .eq. 0) then
                 zi(ldmap+(1+nbec)*(i-1)+iec)=zi(llact+(i-1)*nbec+iec-&
                 1)
@@ -143,7 +144,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
                 zi(ldmap+(1+nbec)*(i-1)+iec)=zi(llint4+(i-1)*nbec+iec-&
                 1)
             endif
-20      continue
+        end do
         zi(ldmap+(1+nbec)*(i-1))=icomp+1
         if (ordo .eq. 0) then
             call isdeco(zi(llact+(i-1)*nbec+1-1), idec, nbcmpm)
@@ -154,10 +155,10 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
             call jeveuo(ordod, 'L', llint4)
             call isdeco(zi(llint4+(i-1)*nbec+1-1), idec, nbcmpm)
         endif
-        do 30 j = 1, 6
+        do j = 1, 6
             icomp=icomp+idec(j)
-30      continue
-10  continue
+        end do
+    end do
 !
     call jedema()
 end subroutine

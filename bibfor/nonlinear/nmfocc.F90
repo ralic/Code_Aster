@@ -20,7 +20,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "asterfort/assvec.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -165,6 +165,6 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
         if (leltf .and. (.not.lallv)) call vtaxpy(1.d0, cneltf, cnfint)
     endif
 !
-999  continue
+999 continue
 !
 end subroutine

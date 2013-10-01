@@ -48,11 +48,8 @@ subroutine vtcreb(champz, numedz, basez, typcz, neq)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: idime, neql
     character(len=1) :: classe, typc
-    character(len=8) :: k8bid
-    character(len=11) :: k11b
-    character(len=24) :: champ, numedd, k24bid, k24b
+    character(len=24) :: champ, numedd
 !
 !------------------------------------------------------------------
     call jemarq()

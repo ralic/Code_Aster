@@ -23,7 +23,6 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/alresl.h"
 #include "asterfort/assert.h"
@@ -37,6 +36,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iopt, nout
     character(len=19) :: ligrel
     character(len=*) :: base, lchout(*)
@@ -77,7 +77,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
 !
 !     -- ALLOCATION DES CHAMPS RESULTATS :
-    do 10 i = 1, nout
+    do i = 1, nout
         nompar = lpaout(i)
         nochou = lchout(i)
         gd = grdeur(nompar)
@@ -111,7 +111,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
                 zk24(jnoli-1+3)='MPI_INCOMPLET'
             endif
         endif
-10  end do
+    end do
 !
 !
 !     --MISE A JOUR DE CAII07 :
@@ -122,7 +122,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
     nbobtr = nbobtr + 1
     zk24(iaobtr-1+nbobtr) = '&&CALCUL.LCHOU_K8'
 !
-    do 30 i = 1, nout
+    do i = 1, nout
         nompar = lpaout(i)
         nochou = lchout(i)
         gd = grdeur(nompar)
@@ -155,6 +155,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
             endif
             zk8(iachok-1+2* (i-1)+1) = 'RESL'
         endif
-30  end do
+ 30     continue
+    end do
 !
 end subroutine

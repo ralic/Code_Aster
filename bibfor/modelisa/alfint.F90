@@ -90,7 +90,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !
     call getres(k8b, k8b, nomcmd)
 !     EN THERMIQUE ON N A PAS BESOIN DE CALCULER ALPHA=F(T)
-    if (nomcmd(1:5) .eq. 'THER_') goto 9999
+    if (nomcmd(1:5) .eq. 'THER_') goto 999
 !
 ! --- RECUPERATION DE LA TEMPERATURE DE REFERENCE (TREF):
 !     ---------------------------------------------------
@@ -108,9 +108,9 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !     TREF EST SUR LE 1ER ENTIER CODE :
     ec1=zi(jdesc-1+3+2*ngdmax+nbec*(imate-1)+1)
     k=0
-    do 777, kk=1,30
-    if (exisdg([ec1],kk)) k=k+1
-    777 end do
+    do kk = 1, 30
+        if (exisdg([ec1],kk)) k=k+1
+    end do
     if (zk8(jvale+ncmp*(imate-1)+k-2) .ne. 'TREF=>') then
         call utmess('F', 'CALCULEL6_56', sk=chmat)
     endif
@@ -151,10 +151,10 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
         call jeveuo(chwork(1:19)//'.PROL', 'L', jprol)
 !        -- SI LA FONCTION EST UNE CONSTANTE, ON NE FAIT RIEN :
         if (zk24(jprol-1+1) .eq. 'CONSTANT') then
-            goto 9999
+            goto 999
 !        -- SI TREF ET TDEF SONT PROCHES (1 DEGRE), ON NE FAIT RIEN :
         else if (abs(tref-tdef).lt.1.d0) then
-            goto 9999
+            goto 999
 !        -- SINON ON ARRETE TOUT :
         else
             call utmess('F', 'MODELISA2_42', sk=ch19(1:8))
@@ -174,7 +174,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     call jeveuo(ch19(1:19)//'.VALE', 'L', idvale)
 !
 ! --- CALCUL DES ALPHA INTERPOLES :
-    do 10 i = 1, nbpts
+    do i = 1, nbpts
 !
         alphai = zr(idvale+i+nbpts-1)
         ti = zr(idvale+i-1)
@@ -239,18 +239,18 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !
         endif
 !
-10  end do
+    end do
 !
 ! --- ON REMPLACE LA FONCTION EN ENTREE CH19 PAR LA FONCTION
 ! --- DE TRAVAIL CONTENANT LES VALEURS DE ALPHA INTERPOLEES CHWORK :
     ch19 = chwork
 !
-    goto 9999
+    goto 999
 !     -- SECTION "ERREUR":
-9998  continue
+9998 continue
     valk(1)=chmat
     valk(2)=nommat
     call utmess('F', 'CALCULEL6_1', nk=2, valk=valk)
 !
-9999  continue
+999 continue
 end subroutine

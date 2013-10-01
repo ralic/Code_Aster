@@ -272,7 +272,7 @@ subroutine penorm(resu, modele)
 !
 !  --- BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ----------------------------------
-    do 5 inum = 1, nbordr
+    do inum = 1, nbordr
 !
 !      -- 4.1 RECUPERATION DU CHAMP --
 !
@@ -348,7 +348,7 @@ subroutine penorm(resu, modele)
                 ASSERT(.false.)
             endif
             call utflmd(mailla, mesmai, nbma, iresma, ' ',&
-                         nbma, mesmaf)
+                        nbma, mesmaf)
             call jedetr(mesmai)
             mesmai=mesmaf
         else
@@ -451,7 +451,7 @@ subroutine penorm(resu, modele)
 !
         call celces(cham1, 'V', chamtm)
         call jeveuo(mesmai, 'L', jma)
-        call cesred(chamtm,nbma,zi(jma),0,[k8b],&
+        call cesred(chamtm, nbma, zi(jma), 0, [k8b],&
                     'V', chamtm)
         optio2 ='NORME_L2'
         nopar='PCHAMPG'
@@ -512,11 +512,11 @@ subroutine penorm(resu, modele)
 !
 !     --- FIN DE LA BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ---------------------------------------------
- 5  continue
+    end do
 !
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE NORME
 !     ---------------------------------------------------------
-999  continue
+999 continue
 !
     if (nr .ne. 0) then
         call detrsd('RESULTAT', tmpres)

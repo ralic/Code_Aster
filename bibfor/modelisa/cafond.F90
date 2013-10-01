@@ -70,7 +70,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: npres, iocc, nb_cmp
-    integer :: ibid, ifm, niv, val_nb, jvalv, codret
+    integer :: ifm, niv, val_nb, jvalv, codret
     real(kind=8) :: r8dummy
     real(kind=8) :: hole_area, cara_geom(10), mate_area, coef_mult
     complex(kind=8) :: c16dummy
@@ -192,7 +192,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
     end do
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

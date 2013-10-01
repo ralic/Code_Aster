@@ -1,10 +1,10 @@
 subroutine irgmor(tord, vers)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
+!
     integer :: ntyele, neletr
     parameter (ntyele = 28)
     parameter (neletr =  8)
@@ -65,17 +65,17 @@ subroutine irgmor(tord, vers)
     if (vers .ne. 1 .and. vers .ne. 2) goto 999
 !
 ! --- REMPLISSAGE QUI POURRAIT VARIER SELON LA VERSION
-    do 10 i = 1, neletr
+    do i = 1, neletr
         call jenonu(jexnom('&CATA.TM.NOMTM', formgm(i)), ind)
         if (ind .gt. ntyele) goto 999
         tord(i)=ind
-10  end do
+    end do
     goto 9000
 !
 !     VERIFICATION EMMELAGE DE PINCEAUX DU PROGRAMMEUR...
-999  continue
+999 continue
     ASSERT(.false.)
 !     ------------------------------------------------------------------
 !
-9000  continue
+9000 continue
 end subroutine

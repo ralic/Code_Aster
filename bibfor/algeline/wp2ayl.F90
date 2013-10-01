@@ -4,9 +4,9 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
                   n, solveu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/mrmult.h"
 #include "asterfort/resoud.h"
+!
     character(len=1) :: appr
     complex(kind=8) :: v(*), sigma
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*)
@@ -55,7 +55,7 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
 !     ------------------------------------------------------------------
 !
 !
-    real(kind=8) :: zero, sr, rbid
+    real(kind=8) :: zero, sr
     integer :: i
     complex(kind=8) :: cbid
     character(len=1) :: kbid
@@ -65,6 +65,7 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
 ! INIT. OBJETS ASTER
 !-----------------------------------------------------------------------
     real(kind=8) :: si
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     matass=zk24(zi(lmatra+1))
     chcine=' '
@@ -84,39 +85,39 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
 !     LA BOUCLE 5 REALISE LE PRODUIT PAR MASSE*INV(MASSE_REG)*MASSR
 !     OR CETTE MATRICE EST EGALE A MASSE
 !---> VOIR CE QUI SE PASSE QUAND LA BOUCLE EST SUPPRIMEE
-    do 5, i = 1, n, 1
-    u3(i) = u3(i)*lbloq(i)
-    u2(i) = u2(i)*lbloq(i)
-    5 end do
+    do i = 1, n, 1
+        u3(i) = u3(i)*lbloq(i)
+        u2(i) = u2(i)*lbloq(i)
+    end do
 !-RM-FIN
     if (si .ne. zero) then
-        do 10, i = 1, n, 1
-        v(i) = dcmplx(u1(i)) + sigma*dcmplx(u3(i)) + dcmplx(u2(i))
-10      continue
+        do i = 1, n, 1
+            v(i) = dcmplx(u1(i)) + sigma*dcmplx(u3(i)) + dcmplx(u2(i))
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, [0.d0], v,&
                     criter, .false., 0, iret)
         if (appr .eq. 'R') then
-            do 20, i = 1, n, 1
-            zh(i) = - dble(v(i))
-            zb(i) = (yh(i) - dble(sigma*v(i)))*lbloq(i)
-20          continue
+            do i = 1, n, 1
+                zh(i) = - dble(v(i))
+                zb(i) = (yh(i) - dble(sigma*v(i)))*lbloq(i)
+            end do
         else
-            do 21, i = 1, n, 1
-            zh(i) = - dimag(v(i))
-            zb(i) = - dimag(sigma*v(i))*lbloq(i)
-21          continue
+            do i = 1, n, 1
+                zh(i) = - dimag(v(i))
+                zb(i) = - dimag(sigma*v(i))*lbloq(i)
+            end do
         endif
     else
-        do 30, i = 1, n, 1
-        u4(i) = u1(i) + sr*u3(i) + u2(i)
-30      continue
+        do i = 1, n, 1
+            u4(i) = u1(i) + sr*u3(i) + u2(i)
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, u4, [cbid],&
                     criter, .false., 0, iret)
-        do 31, i = 1, n, 1
-        zh(i) = -u4(i)
-        zb(i) = (yh(i) - sr*u4(i))*lbloq(i)
-31      continue
+        do i = 1, n, 1
+            zh(i) = -u4(i)
+            zb(i) = (yh(i) - sr*u4(i))*lbloq(i)
+        end do
     endif
 end subroutine

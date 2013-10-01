@@ -71,6 +71,7 @@ subroutine sinoz1(modele, sigma, signo)
     integer :: i, ieq, ier, indeq, jkmoch, jnueq, jprno
     integer :: jsig, jsixx, jsixy, jsixz, jsiyy, jsiyz, jsizz
     integer :: jslvi, jvecas, nbligr, nbno
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -131,9 +132,9 @@ subroutine sinoz1(modele, sigma, signo)
     vecass = '??????'
     call asasve(vecele, nume, typres, vecass)
     call jeveuo(vecass, 'L', jvecas)
-    do 10,i = 1,nbcmp
-    vect(i) = zk24(jvecas-1+i)
-    10 end do
+    do i = 1, nbcmp
+        vect(i) = zk24(jvecas-1+i)
+    end do
 !
 !
 !     RESOLUTIONS SANS DIRICHLET
@@ -147,18 +148,18 @@ subroutine sinoz1(modele, sigma, signo)
     k19bid=' '
     k1bid=' '
     criter=' '
-    do 20 i = 1, nbcmp
+    do i = 1, nbcmp
         call jeveuo(vect(i) (1:19)//'.VALE', 'E', jvect)
         call resoud('&&MASSAS', matpre, solveu, k19bid, 1,&
                     k19bid, k19bid, k1bid, zr(jvect), [cbid],&
                     criter, .true., 0, iret)
-20  end do
+    end do
 !
 !   CREATION DU CHAM_NO_SIEF_R A PARTIR DES 4 CHAM_NO_SIZZ_R (A 1 CMP)
 !
-    do 30 i = 1, nbcmp
+    do i = 1, nbcmp
         rcmp(i) = 0.d0
-30  end do
+    end do
     licmp(1) = 'SIXX'
     licmp(2) = 'SIYY'
     licmp(3) = 'SIZZ'
@@ -183,7 +184,7 @@ subroutine sinoz1(modele, sigma, signo)
 !
     call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
                 kbid, ier)
-    do 40 i = 1, nbno
+    do i = 1, nbno
         indeq = zi(jprno-1+3* (i-1)+1)
         ieq = zi(jnueq-1+indeq)
         zr(jsig-1+nbcmp* (i-1)+1) = zr(jsixx-1+ieq)
@@ -194,15 +195,15 @@ subroutine sinoz1(modele, sigma, signo)
             zr(jsig-1+nbcmp* (i-1)+5) = zr(jsixz-1+ieq)
             zr(jsig-1+nbcmp* (i-1)+6) = zr(jsiyz-1+ieq)
         endif
-40  end do
+    end do
 !
     call detrsd('MATR_ASSE', '&&MASSAS')
     call jedetr(nupgm//'.&LMODCHAR')
     call detrsd('NUME_DDL', nupgm)
 !
-    do 50,i = 1,nbcmp
-    call detrsd('CHAMP_GD', zk24(jvecas-1+i))
-    50 end do
+    do i = 1, nbcmp
+        call detrsd('CHAMP_GD', zk24(jvecas-1+i))
+    end do
     call jedetr(vecass)
 !
 !

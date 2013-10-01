@@ -97,7 +97,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
     if (lteatt(' ','AXIS','OUI')) then
 !
         r=0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             r=r+zr(igeom-1+2*(i-1)+1)*ff(i)
 !
             sig11=sig(nbcmp*(i-1)+1)
@@ -115,7 +115,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
             spg33=spg33+sig33*ff(i)
             spg12=spg12+sig12*ff(i)
 !
-10      continue
+        end do
 !
 !
         ASSERT(abs(r).gt.r8prem())
@@ -132,7 +132,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
 !
     else
 !
-        do 20 i = 1, nno
+        do i = 1, nno
             sig11=sig(nbcmp*(i-1)+1)
             sig22=sig(nbcmp*(i-1)+2)
             sig33=sig(nbcmp*(i-1)+3)
@@ -148,7 +148,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
             spg33=spg33+sig33*ff(i)
             spg12=spg12+sig12*ff(i)
 !
-20      continue
+        end do
 !
         dsx=dsig11+dsig12
         dsy=dsig21+dsig22

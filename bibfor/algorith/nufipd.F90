@@ -354,5 +354,5 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 !
-999  continue
+999 continue
 end subroutine

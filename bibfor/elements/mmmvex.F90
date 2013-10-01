@@ -51,17 +51,18 @@ subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
 !
     if (ndexfr .ne. 0) then
         call isdeco([ndexfr], ndexcl, 10)
-        do 30 i = 1, nnl
+        do i = 1, nnl
             if (ndexcl(i) .eq. 1) then
-                do 40 l = 1, nbcpf
+                do l = 1, nbcpf
                     if ((l.eq.2) .and. (ndexcl(10).eq.0)) then
                         goto 40
                     endif
                     ii = (i-1)*nbcpf+l
                     vectff(ii) = 0.d0
-40              continue
+ 40                 continue
+                end do
             endif
-30      continue
+        end do
     endif
 !
 end subroutine

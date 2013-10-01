@@ -250,7 +250,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                             repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
                             coef_type, vale_type, lagr_type, 0.d0, list_rela)
 !
-105              continue
+105             continue
             enddo
         endif
 !
@@ -279,7 +279,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                             repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
                             coef_type, vale_type, lagr_type, 0.d0, list_rela)
 !
-115              continue
+115             continue
             enddo
         endif
 !
@@ -338,6 +338,6 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
         call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
     endif
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

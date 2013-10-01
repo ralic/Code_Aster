@@ -150,9 +150,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     call jeveuo(captma, 'L', iptma)
 !
 !     RECUPERATION DES NUMEROS DES TYPES ELEMENTS ADMISSIBLES
-    do 20 itel = 1, nbtel
+    do itel = 1, nbtel
         call jenonu(jexnom('&CATA.TE.NOMTE', nomele(itel)), ntyele(itel))
-20  end do
+    end do
 !
 !     RECUPERATION DES 3 ANGLES NAUTIQUES POUR TOUS LES ELEMENTS DE
 !     LA STRUCTURE DE TYPE :
@@ -164,17 +164,17 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     call wkvect('&&AXDIPO.TEMP.ANGL', 'V V R', 3*nbmail, iangl)
     pobali = 0
 !
-    do 30 nummai = 1, nbmail
+    do nummai = 1, nbmail
         nutyel = zi(jdme+nummai-1)
         itelok = 0
-        do 31 itel = 1, nbtel
+        do itel = 1, nbtel
             if (nutyel .eq. ntyele(itel)) then
                 itelok = itel
                 goto 32
             endif
-31      continue
+        end do
         call utmess('F', 'MODELISA2_27')
-32      continue
+ 32     continue
 !
         if (itelok .le. nbtel1) then
             ias = zi(iptma+nummai-1)
@@ -184,17 +184,17 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
             icode = zi(idesc-1+3+2*iasmax+nbec*(ias-1)+1)
             irana = 0
-            do 41 icmp = 1, ialpha
+            do icmp = 1, ialpha
                 if (exisdg([icode],icmp)) irana = irana + 1
-41          continue
+            end do
             iranb = 0
-            do 42 icmp = 1, ibeta
+            do icmp = 1, ibeta
                 if (exisdg([icode],icmp)) iranb = iranb + 1
-42          continue
+            end do
             irang = 0
-            do 43 icmp = 1, igamma
+            do icmp = 1, igamma
                 if (exisdg([icode],icmp)) irang = irang + 1
-43          continue
+            end do
             ntrouv = (irana.eq.0).or.(iranb.eq.0).or.(irang.eq.0)
             if (ntrouv) then
                 call utmess('F', 'MODELISA2_29', si=nummai)
@@ -207,7 +207,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
             endif
         endif
 !
-30  end do
+    end do
     if (pobali .eq. 0) then
         call utmess('F', 'MODELISA2_30')
     endif
@@ -255,7 +255,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !     ON VERIFIE QUE LES ORIENTATIONS DES AUTRES ELEMENTS DEFINISSENT
 !     LE MEME AXE DIRECTEUR
     if (pobali .gt. 1) then
-        do 50 ipbl = 2, pobali
+        do ipbl = 2, pobali
             alpha2 = zr(iangl+3*(ipbl-1))
             beta2 = zr(iangl+3*(ipbl-1)+1)
             gamma2 = zr(iangl+3*(ipbl-1)+2)
@@ -291,7 +291,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
                     call utmess('F', 'MODELISA2_32')
                 endif
             endif
-50      continue
+        end do
     endif
 !
     call jedetr('&&AXDIPO.TEMP.ANGL')

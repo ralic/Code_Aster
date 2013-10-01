@@ -140,7 +140,7 @@ subroutine rfresu()
         endif
         goto 10
     endif
-10  continue
+ 10 continue
     call foattr(' ', 1, nomfon)
 !     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 !         ET REMISE DES ABSCISSES EN ORDRE CROISSANT

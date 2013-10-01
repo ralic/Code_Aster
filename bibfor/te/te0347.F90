@@ -97,14 +97,14 @@ subroutine te0347(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         call terefe('EFFORT_REFE', 'MECA_POUTRE', forref)
         call terefe('MOMENT_REFE', 'MECA_POUTRE', momref)
-        do 301 in = 1, nno
-            do 305 i = 1, 3
+        do in = 1, nno
+            do i = 1, 3
                 zr(ivectu+(in-1)*nc+i-1)=forref
-305          continue
-            do 302 i = 4, nc
+            end do
+            do i = 4, nc
                 zr(ivectu+(in-1)*nc+i-1)=momref
-302          continue
-301      continue
+            end do
+        end do
 !
 ! --- ------------------------------------------------------------------
     else if (option .eq. 'VARI_ELNO  ') then
@@ -128,12 +128,12 @@ subroutine te0347(option, nomte)
         d1b3(2,1) = ksi1*(ksi1-1.d0)/2.0d0
         d1b3(2,2) = 1.d0-ksi1*ksi1
         d1b3(2,3) = ksi1*(ksi1+1.d0)/2.0d0
-        do 11 i = 1, nbvar
-            do 12 k = 1, 3
+        do i = 1, nbvar
+            do k = 1, 3
                 zr(ichn +i-1) = zr(ichn +i-1) + zr(ichg + lgpg*(k-1) + i-1)*d1b3(1,k)
                 zr(ichn+lgpg+i-1) = zr(ichn+lgpg+i-1) + zr(ichg + lgpg*(k-1) + i-1)*d1b3(2,k)
-12          continue
-11      continue
+            end do
+        end do
 !
 !
 ! --- ------------------------------------------------------------------
@@ -146,15 +146,15 @@ subroutine te0347(option, nomte)
             call jevech('PCONTRR', 'L', icgp)
             call jevech(peffor, 'E', icontn)
             if (npg .eq. 2) then
-                do 100 i = 1, nc
+                do i = 1, nc
                     zr(icontn-1+i) = zr(icgp-1+i)
                     zr(icontn-1+i+nc) = zr(icgp-1+i+nc)
-100              continue
+                end do
             else
-                do 110 i = 1, nc
+                do i = 1, nc
                     zr(icontn-1+i) = zr(icgp-1+i)
                     zr(icontn-1+i+nc) = zr(icgp-1+i+nc+nc)
-110              continue
+                end do
             endif
         else if (option .eq. 'FORC_NODA') then
             call jevech('PCONTMR', 'L', icontg)
@@ -204,19 +204,19 @@ subroutine te0347(option, nomte)
                 phiy = e*xiz*12.d0*alfay/ (xl*xl*g*aa)
                 phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*aa)
 !
-                do 400 kp = 1, npg
+                do kp = 1, npg
                     call jsd1ff(kp, xl, phiy, phiz, d1b)
-                    do 405 i = 1, nc
+                    do i = 1, nc
                         sigp(i) = zr(icontg-1+nc*(kp-1)+i)
-405                  continue
+                    end do
 !
-                    do 410 k = 1, 2*nc
-                        do 420 kk = 1, nc
+                    do k = 1, 2*nc
+                        do kk = 1, nc
                             fs(k)=fs(k)+xl*sigp(kk)*d1b(kk,k)*co(kp)*&
                             0.50d0
-420                      continue
-410                  continue
-400              continue
+                        end do
+                    end do
+                end do
 !              PRENDRE EN COMPTE CENTRE DE TORSION
                 ey = -zr(isect-1+6)
                 ez = -zr(isect-1+7)
@@ -224,15 +224,15 @@ subroutine te0347(option, nomte)
                 fs(11)=fs(11)-ez*fs(9)+ey*fs(10)
             else
                 if (npg .eq. 2) then
-                    do 222 in = 1, nc
+                    do in = 1, nc
                         fs(in) = -zr(icontg+in-1)
                         fs(in+nc) = zr(icontg+in+nc-1)
-222                  continue
+                    end do
                 else
-                    do 225 in = 1, nc
+                    do in = 1, nc
                         fs(in) = -zr(icontg+in-1)
                         fs(in+nc) = zr(icontg+in+nc+nc-1)
-225                  continue
+                    end do
                 endif
             endif
 !

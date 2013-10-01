@@ -228,6 +228,6 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     call jedetc('V', '&&CALIOB.RLLISTE', 1)
     call jedetr(keywordexcl)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

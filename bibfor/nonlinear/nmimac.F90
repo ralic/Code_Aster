@@ -18,7 +18,7 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/infniv.h"
@@ -231,11 +231,11 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
     suiinf = sdsuiv(1:14)//'     .INFO'
     call jeveuo(suiinf, 'L', jsuiin)
     nbsuiv = zi(jsuiin+2-1)
-    do 20 isuiv = 1, nbsuiv
+    do isuiv = 1, nbsuiv
         call impfoi(0, 1, isuiv, indsui)
         typcol = 'SUIVDDL'//indsui
         call oblsap(slcolo, typcol, .true.)
-20  end do
+    end do
 !
 ! --- CALCUL DE LA LARGEUR DE LA LIGNE
 !
@@ -243,10 +243,10 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 !
 ! --- PAS DE VALEUR AFFECTEE
 !
-    do 30 icolo = 1, nbcolo
+    do icolo = 1, nbcolo
         call oblgoi(slcolo, icolo, sdcolo)
         call obsetb(sdcolo, 'VALE_AFFE', .false.)
-30  end do
+    end do
 !
     call jedema()
 !

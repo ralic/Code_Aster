@@ -163,7 +163,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
                         list_rela)
         endif
 !
-25      continue
+ 25     continue
     end do
 !
     call jedema()

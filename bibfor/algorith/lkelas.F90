@@ -1,5 +1,5 @@
-subroutine lkelas(ndi, ndt,nmat, mater,&
-                  deps, sigd, de, k, mu)
+subroutine lkelas(ndi, ndt, nmat, mater, deps,&
+                  sigd, de, k, mu)
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
@@ -69,15 +69,15 @@ subroutine lkelas(ndi, ndt,nmat, mater,&
 ! --- DEFINITION DE LA MATRICE HYPOLELASTIQUE ---------------------
 ! =================================================================
     call r8inir(6*6, 0.d0, de, 1)
-    do 10 i = 1, 3
-        do 20 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             de(i,j) = k - deux*mu/trois
-20      continue
-10  continue
+        end do
+    end do
 !
-    do 30 i = 1, ndt
+    do i = 1, ndt
         de(i,i) = de(i,i) + deux*mu
-30  continue
+    end do
 !
 ! =================================================================
 end subroutine

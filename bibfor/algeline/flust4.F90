@@ -99,13 +99,13 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
     vneg = .false.
     vpos = .false.
-    do 10 iv = 1, npv
+    do iv = 1, npv
         if (vite(iv) .lt. 0.d0) then
             vneg = .true.
         else if (vite(iv).gt.0.d0) then
             vpos = .true.
         endif
-10  end do
+    end do
     if (vneg .and. vpos) then
         call utmess('F', 'ALGELINE_48')
     else if (vneg) then
@@ -116,13 +116,13 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
     call wkvect('&&FLUST4.TEMP.VABS', 'V V R', npv, ivabs)
     if (vneg) then
-        do 11 iv = 1, npv
+        do iv = 1, npv
             zr(ivabs+iv-1) = dble(abs(vite(iv)))
-11      continue
+        end do
     else
-        do 12 iv = 1, npv
+        do iv = 1, npv
             zr(ivabs+iv-1) = vite(iv)
-12      continue
+        end do
     endif
 !
 !
@@ -199,7 +199,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
 !-------6.1.1.ON RECOPIE LES MASSES GENERALISEES ET LES DEFORMEES
 !
-        do 50 im = 1, nbm
+        do im = 1, nbm
             ior = nuor(im)
             call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
                         0, sjv=lmasg, styp=k8b)
@@ -209,7 +209,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
             fact(3*(im-1)+1) = zr(lfact ) * masg(im)
             fact(3*(im-1)+2) = zr(lfact+1) * masg(im)
             fact(3*(im-1)+3) = zr(lfact+2) * masg(im)
-50      continue
+        end do
         call cpdepl(melflu, base, nuor, nbm)
 !
 !-------6.1.2.CALCUL DE LA MATRICE DE MASSE AJOUTEE A RETRANCHER AUX
@@ -217,7 +217,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         write(ifr,*) 'CALCUL DES MASSES MODALES AJOUTEES PAR LE FLUIDE'
         write(ifr,*)
-        do 20 imod = 1, nbm
+        do imod = 1, nbm
 !
             numod = nuor(imod)
             write(ifr,'(A9,I3)') 'NUMOD = ',numod
@@ -235,7 +235,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
             zr(iamfr+imod-1) = 4.d0*pi*fi*ksi*masg(imod)
             zr(iamfr+nbm+imod-1) = fi
 !
-20      continue
+        end do
 !
 !-------6.1.3.CALCUL DES NOUVEAUX PARAMETRES MODAUX SOUS ECOULEMENT
 !
@@ -269,25 +269,25 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
         write(ifr,*) 'RESULTATS DU CALCUL DES MODES EN EAU AU REPOS'
         write(ifr,*)
         write(ifr,*) 'FREQUENCES PROPRES'
-        do 30 imod = 1, nbm
+        do imod = 1, nbm
             write(ifr,'(I3,1X,G23.16)') imod,zr(iamfr+nbm+imod-1)
-30      continue
+        end do
         write(ifr,*)
         write(ifr,*) 'DECOMPOSITION MODES EN EAU AU REPOS/MODES EN AIR'
-        do 31 jmod = 1, nbm
+        do jmod = 1, nbm
             write(ifr,'(A24,I3)') 'MODE EN EAU AU REPOS NO ',jmod
             icomp = ivcpr + nbm*(jmod-1)
-            do 32 imod = 1, nbm
+            do imod = 1, nbm
                 write(ifr,'(G23.16,1X,A23,I3)') zr(icomp+imod-1),&
                 'SUIVANT MODE EN AIR NO ',imod
-32          continue
+            end do
             write(ifr,*)
-31      continue
+        end do
         write(ifr,*)
         write(ifr,*) 'MASSES MODALES'
-        do 33 imod = 1, nbm
+        do imod = 1, nbm
             write(ifr,'(I3,1X,G23.16)') imod,masg(imod)
-33      continue
+        end do
         write(ifr,*)
 !
 !-------6.2.2.CALCUL DES NOUVEAUX PARAMETRES MODAUX SOUS ECOULEMENT

@@ -18,7 +18,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calatm.h"
 #include "asterfort/infdbg.h"
@@ -60,7 +60,6 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     integer :: ifm, niv
     integer :: iliai, jdecal, nbddl
     complex(kind=8) :: c16bid
-    real(kind=8) :: r8bid
     character(len=19) :: k19bla
     character(len=24) :: apcoef, apddl, appoin
     integer :: japcoe, japddl, japptr
@@ -73,6 +72,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     character(len=19) :: mu
     integer :: jmu
     integer :: iret
+    c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,11 +115,11 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
 ! --- RECALCUL DE ALPHA POUR UNE SOLUTION ADMISSIBLE
 !
     if (search .eq. 'ADMISSIBLE') then
-        do 60 iliai = 1, nbliai
+        do iliai = 1, nbliai
             if (zr(jdirec-1+iliai) .lt. 0.d0) then
                 alpha = min(alpha,-zr(jmu+iliai-1)/zr(jdirec-1+iliai))
             endif
-60      continue
+        end do
         if (niv .eq. 2) then
             write (ifm,9050) alpha
         endif
@@ -133,11 +133,11 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
 ! --- DESACTIVATION DE MU POUR UNE SOLUTION NON-ADMISSIBLE
 !
     if (search .eq. 'NON_ADMISSIBLE') then
-        do 70 iliai = 1, nbliai
+        do iliai = 1, nbliai
             if (zr(jmu-1+iliai) .lt. 0.d0) then
                 zr(jmu-1+iliai) = 0.d0
             endif
-70      continue
+        end do
     endif
 !
 ! --- RECALCUL D'UN SOLUTION
@@ -149,12 +149,12 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
 !
 ! ----- SECOND MEMBRE: [A]T.{MU}
 !
-        do 80 iliai = 1, nbliai
+        do iliai = 1, nbliai
             jdecal = zi(japptr+iliai-1)
             nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
             call calatm(neq, nbddl, zr(jmu-1+iliai), zr(japcoe+jdecal), zi(japddl+jdecal),&
                         zr(jsecmb))
-80      continue
+        end do
 !
 ! ----- RESOLUTION [K].{DDELT} = [A]T.{MU} -> {DDELT}
 !

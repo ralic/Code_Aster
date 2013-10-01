@@ -111,7 +111,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: ndeg, ierd, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
-    complex(kind=8) :: cbid, livc(nbmxpa)
+    complex(kind=8) :: livc(nbmxpa)
     logical :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: resu, fiss
@@ -262,7 +262,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         baseco = modele//'.TOPOFAC.BA'
     endif
 !
-    do 20 i = 1, ndimte
+    do i = 1, ndimte
         chthet = zk24(jresu+i-1)
         call codent(i, 'G', chgthi)
         lpaout(1) = 'PGTHETA'
@@ -380,7 +380,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                     'OUI')
         call mesomm(chgthi, 1, vr=gthi(1))
         zr(iadrg+i-1) = gthi(1)
-20  continue
+    end do
 !
 !- CALCUL DE G(S) SUR LE FOND DE FISSURE PAR 4 METHODES
 !- PREMIERE METHODE : G_LEGENDRE ET THETA_LEGENDRE
@@ -399,9 +399,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     call jeveuo(chfond, 'L', ifon)
     objcur = '&&MECAGL.ABSGAMM0'
     call wkvect(objcur, 'V V R', nnoff, iadabs)
-    do 11 i = 1, nnoff
+    do i = 1, nnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
-11  continue
+    end do
     xl=zr(iadabs-1+(nnoff-1)+1)
 !
 ! NOM DES NOEUDS DU FOND
@@ -432,9 +432,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !- SYMETRIE DU CHARGEMENT ET IMPRESSION DES RESULTATS
 !
     if (symech .ne. 'NON') then
-        do 30 i = 1, nnoff
+        do i = 1, nnoff
             zr(iadrgs+i-1) = 2.d0*zr(iadrgs+i-1)
-30      continue
+        end do
     endif
 !
 !- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S)
@@ -459,7 +459,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
 !
-    do 40 i = 1, nnoff
+    do i = 1, nnoff
         if (lxfem) then
             call tbajvi(result, nbprup, 'NUM_PT', i, livi)
         else
@@ -469,7 +469,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G', zr(iadrgs+i-1), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-40  continue
+    end do
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

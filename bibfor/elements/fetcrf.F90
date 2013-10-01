@@ -138,9 +138,9 @@ subroutine fetcrf(sdpart1)
 !     VECTEURS TEMPORAIRES DES CHARGES
     if (nbchar .gt. 0) then
         call wkvect('&&FETCRF.NOMCHA   ', 'V V K8', nbchar, nomcha)
-        do 800 i = 1, nbchar
+        do i = 1, nbchar
             call getvid('EXCIT', 'CHARGE', iocc=i, scal=zk8(nomcha-1+i), nbret=nd)
-800      continue
+        end do
     endif
 !     NBSD: NBRE D'OCCURENCE DU MOT-CLE DEFI
     call getfac('DEFI', nbsd)
@@ -163,9 +163,9 @@ subroutine fetcrf(sdpart1)
     intbuf=nbchar+1
     call wkvect(nomref, 'G V K8', intbuf, jadr)
     zk8(jadr)=nomo
-    do 50 i = 1, nbchar
+    do i = 1, nbchar
         zk8(jadr+i)=zk8(nomcha-1+i)
-50  end do
+    end do
     if (niv .ge. 4) call utimsd(ifm, 2, .false., .true., nomref,&
                                 1, 'G')
 !     MA: MAILLAGE ASSOCIE AU MODELE
@@ -189,14 +189,14 @@ subroutine fetcrf(sdpart1)
     nec30=30*nec
 !
 !     LECTURE DU CONTENU DES MOT-CLES DEFI
-    do 1 i = 1, nbsd
+    do i = 1, nbsd
         call getvtx('DEFI', 'GROUP_MA', iocc=i, scal=zk24(lstgma-1+i), nbret=zi(ngma-1+i))
         if (zi(ngma-1+i) .ne. 1) then
             vali(1)=i
             call utmess('F', 'ELEMENTS5_25', si=vali(1))
         endif
         call getvtx('DEFI', 'GROUP_MA_BORD', iocc=i, scal=zk24(lstbrd-1+i), nbret=zi(nbrd-1+i))
- 1  end do
+    end do
 !
 !     NOMS DES SOUS-DOMAINES : NOMSD
 !     ON PREND LE MOT-CLE NOM TRONQUE A 4  ET ON AJOUTE LE NUM
@@ -204,26 +204,26 @@ subroutine fetcrf(sdpart1)
     k4tmp=nom(1:4)
     itmp=0
     iaux=len(k4tmp)
-    do 3 i = 1, iaux
+    do i = 1, iaux
         if (k4tmp(i:i) .ne. ' ') itmp=itmp+1
- 3  end do
-    do 5 i = 1, nbsd
+    end do
+    do i = 1, nbsd
         write(k8bid,'(I4)') i
         call lxcadr(k8bid)
         zk24(nomsd-1+i) = k4tmp(1:itmp)//k8bid
- 5  end do
+    end do
 !
 ! TEST POUR VERFIFIER LA COHERENCE DES PARAMETRES DE LA MACRO ET DES
 ! GROUP_MA CREES EFFECTIVEMENT DANS LE MAILLAGE
     ier = 0
-    do 21 i = 1, nbsd
+    do i = 1, nbsd
         nomgma=zk24(lstgma-1+i)
         call jeexin(jexnom(grpma, nomgma), iret)
         if (iret .eq. 0) then
             ier = ier + 1
             call utmess('E', 'ELEMENTS_62', sk=nomgma)
         endif
-21  end do
+    end do
     ASSERT(ier.eq.0)
 !
 !     CREATION sdpart / .FETB
@@ -253,7 +253,7 @@ subroutine fetcrf(sdpart1)
     nbnot2=2*nbnoto
     call wkvect('&&FETCRF.TRAV ', 'V V I', nbnot2, jtrav)
     call wkvect('&&FETCRF.TMP  ', 'V V I', nbnot2, jtmp)
-    do 22 i = 1, nbsd
+    do i = 1, nbsd
         nomgma=zk24(lstgma-1+i)
         call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmail)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
@@ -270,7 +270,7 @@ subroutine fetcrf(sdpart1)
         zi(ianbno-1+i)=nbnosd
         zi(nbno-1+i)=nbnosd
         nb=nb+nbnosd
-22  end do
+    end do
 !
 ! ****** ON PEUT MAINTENANT DIMENSIONNER EXACTEMENT:
 !     LISTE DES NOEUDS AVEC MULTIPLICITES
@@ -287,7 +287,7 @@ subroutine fetcrf(sdpart1)
 ! REMPLIR .FETB
 !**********************************************************************
     nb=0
-    do 222 i = 1, nbsd
+    do i = 1, nbsd
 !       ON REFAIT UN COUP POUR CETTE FOIS REMPLIR IALINO
         ialima= zi(iafeta+i-1)
         nbmail=zi(ianbma-1+i)
@@ -304,14 +304,14 @@ subroutine fetcrf(sdpart1)
 ! **** SOUS-BOUCLE 2.1 SUR LES NOEUDS POUR DETERMINER LE NBRE DE DDLS
 !      ET REMPLIR .FETB (SANS LES SIGNES DES INTERFACES)
         k=0
-        do 210 j = 1, nbnosd
+        do j = 1, nbnosd
             ino = zi(jtmp-1+j)
             zi(jadr+2*(j-1))=ino
-            do 7 l = 1, nec30
+            do l = 1, nec30
                 if (exisdg(zi(jprnm-1+nec*(ino-1)+1),l)) k=k+1
- 7          continue
+            end do
             zi(jadr+2*(j-1)+1)=k
-210      continue
+        end do
 !       NB DDL TOTAL DU SOUS-DOMAINE I
         zi(ialsk-1+i)=k
 ! **** SOUS-BOUCLE 2.2 SUR LES NOEUDS POUR REMPLIR
@@ -319,14 +319,14 @@ subroutine fetcrf(sdpart1)
 !       VECTEUR DE CORRESPONDANCE NOEUD -> SD: ZI(LINOMA-1+...NB)
 !       VECTEUR DE CORRESPONDANCE NOEUD -> POSITION DANS SD: ZI(IALSPO)
         ipos=1
-        do 25 j = 1, nbnosd
+        do j = 1, nbnosd
             zi(ialino+nb-1+j)= zi(jtmp-1+j)
             zi(linoma+nb-1+j)= i
             zi(ialspo+nb-1+j)= ipos
             ipos=ipos+1
-25      continue
+        end do
         nb=nb+nbnosd
-222  end do
+    end do
     call jedetr('&&FETCRF.TMP')
     call jedetr('&&FETCRF.TRAV')
     if (niv .ge. 3) call jxveri()
@@ -339,7 +339,7 @@ subroutine fetcrf(sdpart1)
     call wkvect('&&FETCRF.TESTMA ', 'V V I', nbmatr, itma)
     call jecrec(nomsda, 'G V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsd)
-    do 100 i = 1, nbsd
+    do i = 1, nbsd
         k24buf=zk24(nomsd-1+i)
         call jecroc(jexnom(nomsda, k24buf))
 !
@@ -367,35 +367,35 @@ subroutine fetcrf(sdpart1)
         call jeecra(jexnom(nomsda, k24buf), 'LONMAX', nbid)
         call jeveuo(jexnom(nomsda, k24buf), 'E', jadr)
 !       MAILLES VOLUMIQUES
-        do 90 j = 1, nbmail
+        do j = 1, nbmail
             ial=zi(ialima+j-1)
             zi(jadr+j-1)=ial
 !         POUR TEST SUR LES MAILLES
             zi(itma+ial-1)=1
-90      continue
+        end do
 !       MAILLES DE BORD
         if (lbord) then
-            do 91 j = 1, nbmabo
+            do j = 1, nbmabo
                 ial=zi(ialibd-1+j)
                 zi(jadr+j-1+nbmail)=ial
                 zi(itma+ial-1)=1
-91          continue
+            end do
         endif
-100  end do
+    end do
 !
 ! **** TEST NBRE DE MAILLES MODELE = SOMME DES MAILLES DES GROUP_MA
     call jelira(nomo(1:8)//'.MAILLE', 'LONMAX', nbma)
     call jeveuo(nomo(1:8)//'.MAILLE', 'L', ial)
     nbmama=0
     nber=0
-    do 93 i = 1, nbma
+    do i = 1, nbma
 !       MAILLE DU MODELE
         if (zi(ial+i-1) .ne. 0) then
             nbmama=nbmama+1
 !         MAILLE DANS UN SD OU PAS ?
             if (zi(itma-1+i) .eq. 0) nber=nber+1
         endif
-93  end do
+    end do
     if (nbmama .ne. nbmato) then
         vali(1)=nbmama
         vali(2)=nbmato
@@ -405,13 +405,13 @@ subroutine fetcrf(sdpart1)
         call utmess('F', 'ELEMENTS5_28', si=nber)
     endif
     nber=0
-    do 94 i = 1, nbmato
+    do i = 1, nbmato
 !       MAILLE DANS UN SD
         if (zi(itma-1+i) .ne. 0) then
 !         MAILLE DU MODELE ?
             if (zi(ial+i-1) .eq. 0) nber=nber+1
         endif
-94  end do
+    end do
     if (nber .gt. 0) then
         call utmess('F', 'ELEMENTS5_29', si=nber)
     endif
@@ -431,12 +431,12 @@ subroutine fetcrf(sdpart1)
         write(ifm,*) '|             - NB MAILLES          |'
         write(ifm,*) '|             - NB NOEUDS           |'
         write(ifm,*) ' '
-        do 941 i = 1, nbsd
+        do i = 1, nbsd
             write(ifm,*) 'SD=',i
             write(ifm,*) 'DDL TOTAL   =',zi(ialsk-1+i)
             write(ifm,*) 'MA VOL/BORD =',zi(ianbma-1+i),zi(nbmabd-1+i)
             write(ifm,*) 'NO TOTAL    =',zi(ianbno-1+i)
-941      continue
+        end do
     endif
 !
     if (niv .ge. 5) then
@@ -444,9 +444,9 @@ subroutine fetcrf(sdpart1)
         write(ifm,*) '------------------------------------'
         write(ifm,*) '|    TOUS LES NOEUDS ET LEUR SD     |'
         write(ifm,*) ' '
-        do 24 j = 1, nb
+        do j = 1, nb
             write(ifm,*) 'NOEUD=',zi(ialino-1+j), 'SD=',zi(linoma-1+j)
-24      continue
+        end do
         write(ifm,*) 'TOTAL NOEUDS (AVEC MULTIPLICITE)=',nb
         write(ifm,*) ' '
         write(ifm,*) '------------------------------------'
@@ -463,16 +463,16 @@ subroutine fetcrf(sdpart1)
 !         --- CHOIX DE L'INCREMENT ---
         incrs = 1
         is9 = nb / 9
-11      continue
+ 11     continue
         if (incrs .lt. is9) then
             incrs = 3*incrs+1
             goto 11
         endif
 !         --- REMONTEE DES BULLES ---
-12      continue
-        do 15 j = incrs+1, nb
+ 12     continue
+        do j = incrs+1, nb
             l = j-incrs
-13          continue
+ 13         continue
             if (l .gt. 0) then
                 ial=ialino-1+l
                 ials=ial+incrs
@@ -495,7 +495,7 @@ subroutine fetcrf(sdpart1)
                     goto 13
                 endif
             endif
-15      continue
+        end do
         incrs = incrs/3
         if (incrs .ge. 1) goto 12
     endif
@@ -529,10 +529,10 @@ subroutine fetcrf(sdpart1)
 !     K1:  NBRE DE NOEUDS D'INTERFACE AVEC MULTIPLICITE
 !     NB: NBRE DE NOEUDS TOTAL EN COMPTANT LES MULTIPLICITES
     k=1
-    do 28 i = 1, nb
+    do i = 1, nb
         ial=zi(ialino-1+i)
         i1=i+1
-        do 29 j = i1, nb
+        do j = i1, nb
             jal=zi(ialino-1+j)
 !         SI ON A TROUVE UN NOEUD D'INTERFACE (CAD COMMUN A 2 SD)
             if (ial .eq. jal) then
@@ -561,8 +561,8 @@ subroutine fetcrf(sdpart1)
                 k=k+1
             endif
 !
-29      continue
-28  end do
+        end do
+    end do
     if (niv .ge. 3) call jxveri()
     if (niv .ge. 4) call utimsd(ifm, 2, .false., .true., nomsdb,&
                                 1, 'G')
@@ -576,10 +576,10 @@ subroutine fetcrf(sdpart1)
     call wkvect('&&FETCRF.LST_MLT  ', 'V V I', k1, ialsml)
 !     VECTEUR AUXILIAIRE POUR LA BOUCLE CI DESSOUS
     call wkvect('&&FETCRF.LST_MSD  ', 'V V I', nbsd, ialsmd)
-    do 34 l = 1, k1
+    do l = 1, k1
         ial=zi(ialstr+3*(l-1))
         call jerazo('&&FETCRF.LST_MSD  ', nbsd, 1)
-        do 30 i = 1, k1
+        do i = 1, k1
             jal=ialstr+3*(i-1)
             if (zi(jal) .eq. ial) then
                 jtmp=zi(jal+1)
@@ -587,13 +587,13 @@ subroutine fetcrf(sdpart1)
                 jtmp=zi(jal+2)
                 zi(ialsmd+jtmp-1)=1
             endif
-30      continue
+        end do
         nn=0
-        do 35 j = 1, nbsd
+        do j = 1, nbsd
             if (zi(ialsmd+j-1) .eq. 1) nn=nn+1
-35      continue
+        end do
         zi(ialsml+l-1)=nn
-34  end do
+    end do
 !
     if (niv .ge. 5) then
         write(ifm,*) ' '
@@ -607,7 +607,7 @@ subroutine fetcrf(sdpart1)
 ! TENANT COMPTE DES INTERFACES DE MESURE NULLE
 ! NBFETE : NOEUD D'INTERFACE AVEC MULTIPLICITE=K1
 !***********************************************************************
-    do 37 i = 1, k1
+    do i = 1, k1
         addr=ialstr+3*(i-1)
         itmp=zi(addr+1)
         jtmp=zi(addr+2)
@@ -615,7 +615,7 @@ subroutine fetcrf(sdpart1)
         if (niv .ge. 5) write(ifm, *)'NOEUD/SD1/SD2/NB: ', ktmp, itmp, jtmp, zi(ialsml+i-1)
         zi(ialsno-1+i)=ktmp
         zi(ialsmu-1+i)=zi(ialsml+i-1)
-37  end do
+    end do
 !     NB NOEUDS INTERFACE (EN COMPTANT LEUR MULTIPLICITE)
     nbfete=k1
 !
@@ -633,7 +633,7 @@ subroutine fetcrf(sdpart1)
     call wkvect(nomsdi, 'G V I', 4*nbfete, jadri)
     multc = 1
     k=0
-    do 500 i = 1, nbfete
+    do i = 1, nbfete
 !
 !       NUMERO DU NOEUD D'INTERFACE ET MULTIPLICITE
         addr=jadri+4*(i-1)
@@ -641,9 +641,9 @@ subroutine fetcrf(sdpart1)
         zi(addr)=ino
         zi(addr+1)=zi(ialsmu-1+i)
 !       NB DDL CUMULES
-        do 2 j = 1, nec30
+        do j = 1, nec30
             if (exisdg(zi(jprnm-1+nec*(ino-1)+1),j)) k=k+1
- 2      continue
+        end do
         zi(addr+2)=k
 !       LISTE DES SD D'APPARTENANCE
         zi(addr+3)=multc
@@ -651,7 +651,7 @@ subroutine fetcrf(sdpart1)
         zi(jadrj-1+multc) =zi(ialstr+3*(i-1)+1)
         zi(jadrj-1+multc+1)=zi(ialstr+3*(i-1)+2)
         multc=multc+2
-500  end do
+    end do
 !
 !     ON STOCKE LE NB DE DDL TOTAL DES NOEUDS D'INTERFACE
     nbddli=k
@@ -670,7 +670,7 @@ subroutine fetcrf(sdpart1)
     call jecrec(nomsdg, 'G V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsd)
     call wkvect('&&FETCRF.LST_FETG ', 'V V I', 2*nbfete, ialsfg)
-    do 51 i = 1, nbsd
+    do i = 1, nbsd
 !**** ON DETERMINE LES DONNEES A METTRE DANS .FETG ET SA TAILLE
 !       NB D'OCCURENCE DANS FETG
         nn=0
@@ -678,13 +678,13 @@ subroutine fetcrf(sdpart1)
         jadr=zi(iajadr-1+i)
 !       NBRE DE NOEUDS DU SD I
         nbnosd=zi(ianbno-1+i)
-        do 52 j = 1, nbnosd
+        do j = 1, nbnosd
 !         SI LE NOEUD DANS FETB EST NEGATIF (IE NOEUD D'INTERFACE)
             iaux=zi(jadr+2*(j-1))
             if (iaux .lt. 0) then
                 iaux=abs(iaux)
 !           ON RECHERCHE DANS FETI LE NOEUD CORRESPONDANT
-                do 53 k = 1, nbfete
+                do k = 1, nbfete
 !
 !             SI LES NOEUDS CORRESPONDENT (JADRI/J, ADDR DE .FETI/J)
                     if (zi(jadri+4*(k-1)) .eq. iaux) then
@@ -718,9 +718,9 @@ subroutine fetcrf(sdpart1)
                             zi(iaux3+1)= j
                         endif
                     endif
-53              continue
+                end do
             endif
-52      continue
+        end do
 !
 !***** ON CONSTRUIT EFFECTIVEMENT .FETG
         k24buf=zk24(nomsd-1+i)
@@ -728,16 +728,16 @@ subroutine fetcrf(sdpart1)
         intbuf=2*nn
         call jeecra(jexnom(nomsdg, k24buf), 'LONMAX', intbuf)
         call jeveuo(jexnom(nomsdg, k24buf), 'E', jadr)
-        do 610 j = 1, nn
+        do j = 1, nn
             j2=2*(j-1)
             iaux1=jadr+j2
             iaux2=ialsfg+j2
             zi(iaux1) =zi(iaux2)
             zi(iaux1+1)=zi(iaux2+1)
-610      continue
+        end do
 !
 ! FIN BOUCLE SUR LES SD
-51  end do
+    end do
     call jedetr('&&FETCRF.LST_FETG ')
     if (niv .ge. 3) call jxveri()
     if (niv .ge. 4) call utimsd(ifm, 2, .false., .true., nomsdg,&
@@ -769,7 +769,7 @@ subroutine fetcrf(sdpart1)
 !       LISTE TEMPORAIRE : NOMS DES LIGREL DE CHARGE
         call wkvect('&&FETCRF.LST_CHA  ', 'V V K24', nbchar, ilscha)
 !       PREMIERE PASSE : CALCUL DU NB TOTAL DE MAILLES TARDIVES
-        do 811 i = 1, nbchar
+        do i = 1, nbchar
             ligrch = zk8(nomcha-1+i)//'.CHME.LIGRE'
             zk24(ilscha-1+i)= ligrch
             call jeexin(ligrch//'.NEMA', n2)
@@ -778,7 +778,7 @@ subroutine fetcrf(sdpart1)
                 nbmata=nbmata+nbobj1
                 zi(inbmch-1+i)=nbobj1
             endif
-811      continue
+        end do
         if (niv .ge. 4) write(ifm,*) 'NBRE MAILLES TARDIVES:', nbmata
     endif
 !
@@ -816,7 +816,7 @@ subroutine fetcrf(sdpart1)
 !***********************************************************************
 ! MAXI BOUCLE 9 SUR LES CHARGES
 !***********************************************************************
-        do 801 ich = 1, nbchar
+        do ich = 1, nbchar
             ligrch = zk8(nomcha-1+ich)//'.CHME.LIGRE'
             if (niv .ge. 4) then
                 write(ifm,*) '--------------------------------------------'
@@ -834,11 +834,11 @@ subroutine fetcrf(sdpart1)
                 nzoco = cfdisi(zk8(nomcha-1+ich)//'.CONTACT','NZOCO')
                 iform = cfdisi(zk8(nomcha-1+ich)//'.CONTACT', 'FORMULATION')
 !
-                do 805 izone = 1, nzoco
-                    if (iform .eq. 2)  lcfc1=.true.
-805              continue
+                do izone = 1, nzoco
+                    if (iform .eq. 2) lcfc1=.true.
+                end do
             endif
-
+!
 ! **** 9.1 SI ON TROUVE DES NOEUDS TARDIFS DANS LA CHARGE
             inbno=0
             call jeexin(ligrch//'.NBNO', n1)
@@ -876,18 +876,18 @@ subroutine fetcrf(sdpart1)
 ! **** 9.3 BOUCLE SUR LES OBJETS DE LA COLLECTION .NEMA
 !           POINTEUR VERS LA POSITION DANS LA COLLECTION
                 iadr=idlig1
-                do 802 j = 1, nbobj1
+                do j = 1, nbobj1
 !             NB NOEUDS DE CHAQUE MAILLE
                     call jelira(jexnum(ligrch//'.NEMA', j), 'LONMAX', n3)
                     n31=n3-1
 !             ON PARCOURS LES NOEUDS DE LA MAILLE TARDIVE
-                    do 803 k = 1, n31
+                    do k = 1, n31
                         ndtar=zi(iadr-1+k)
 !
 !               SI C'EST UN NOEUD PHYSIQUE, ON CHERCHE SON(SES) SD
                         if (ndtar .gt. 0) then
                             nb1=0
-                            do 804 l = 1, nb
+                            do l = 1, nb
 ! **** 9.3.1 ON A TROUVE LE NOEUDS PHYSIQUE CORRESPONDANT
                                 if (ndtar .eq. zi(ialino-1+l)) then
                                     numsd=zi(linoma-1+l)
@@ -927,7 +927,7 @@ subroutine fetcrf(sdpart1)
                                         endif
                                     endif
                                 endif
-804                          continue
+                            end do
 !
 !                 .AJOUT DU NOEUD CHARGE SUR L'INTERFACE DANS LA LISTE
                             if (nb1 .gt. 1) then
@@ -944,7 +944,7 @@ subroutine fetcrf(sdpart1)
 !               SINON C'EST UN NOEUD TARDIF (NDTAR)
                         else
 ! **** 9.3.3 BOUCLE SUR LES NOEUDS TARDIFS DEJA COMPTES
-                            do 205 ll = 1, icompt
+                            do ll = 1, icompt
                                 if (ndtar .eq. zi(iliais-1+ll)) then
 ! TEST SUPPLEMENTAIRE POUR SAVOIR SI IL EST CONCERNE PAR UN LIGREL DE
 ! CHARGE TOUCHANT L'INTERFACE
@@ -957,43 +957,43 @@ subroutine fetcrf(sdpart1)
                                     endif
                                     goto 206
                                 endif
-205                          continue
+                            end do
                             zi(ifnt-1+j+nb2)=zi(ifnt-1+j+nb2)+1
                             nbnota=nbnota+1
                             icompt=icompt+1
                             zi(iliais-1+icompt)=ndtar
-206                          continue
+206                         continue
                         endif
 !             FIN BOUCLE SUR LES MAILLES TARDIVES
-803                  continue
+                    end do
 !             POSITION DE LA MAILLE TARDIVE SUIVANTE DANS LA COLLECTION
                     iadr=iadr+n3
-802              continue
+                end do
 !
 ! **** 9.4 MONITORING
                 if (niv .ge. 5) then
                     write(ifm,*) '----------'
-                    do 810 j = 1, nbobj1
-                        do 812 numsd = 1, nbsd
+                    do j = 1, nbobj1
+                        do numsd = 1, nbsd
                             dec=(j-1)*nbsd+numsd
                             write(ifm,*) 'SD:',numsd,' MT:',j,' VAL:',&
                             zi(isdmat-1+dec)
-812                      continue
-810                  continue
+                        end do
+                    end do
                     write(ifm,*) '----------'
-                    do 815 numsd = 1, nbsd
-                        do 814 j = 1, nbobj1
+                    do numsd = 1, nbsd
+                        do j = 1, nbobj1
                             dec=(j-1)*nbsd+numsd
                             write(ifm,*) 'MT:',j,' SD:',numsd,' VAL:',&
                             zi(isdmat-1+dec)
-814                      continue
-815                  continue
+                        end do
+                    end do
                     write(ifm,*) '----------', nb2
                 endif
 !
 ! **** 9.5 MISE A JOUR DE L'OBJET TEMPORAIRE POUR FLIM
-                do 900 j = 1, nbobj1
-                    do 901 numsd = 1, nbsd
+                do j = 1, nbobj1
+                    do numsd = 1, nbsd
                         dec=(j-1)*nbsd+numsd
                         nval=zi(isdmat-1+dec)
 !               LOGICAL=1 SI LA MAILLE TARDIVE J A UN POINT TARDIF DANS
@@ -1009,8 +1009,8 @@ subroutine fetcrf(sdpart1)
                             dec=(ich-1)*nbsd+numsd
                             zi(iflii-1+ dec) = zi(iflii-1+ dec) + 1
                         endif
-901                  continue
-900              continue
+                    end do
+                end do
 !           DECALAGE POUR IFLIM (LES NOUVELLES MaT COMMENCENT A LA FIN)
                 nb2=nb2+nbobj1
                 call jedetr('&&FETCRF.L_MAT_SD')
@@ -1022,7 +1022,7 @@ subroutine fetcrf(sdpart1)
                 call jedetr('&&FETCRF.LIAISON')
                 call jedetr('&&FETCRF.LIAISONDDL')
             endif
-801      continue
+        end do
 !
 !***********************************************************************
 ! FIN MAXI BOUCLE 9 SUR LES CHARGES
@@ -1044,38 +1044,38 @@ subroutine fetcrf(sdpart1)
             write(ifm,*) 'NBCHAR=',nbchar
 !
             write(ifm,*) '--------------------------'
-            do 902 j = 1, nbmata
+            do j = 1, nbmata
                 write(ifm,*) ' '
-                do 903 numsd = 1, nbsd
+                do numsd = 1, nbsd
                     dec=(j-1)*nbsd+numsd
                     write(ifm,*) 'SD:',numsd,' MT:',j,' IFLIM:',zi(&
                     iflim-1+dec)
-903              continue
-902          continue
+                end do
+            end do
             write(ifm,*) '--------------------------'
-            do 905 k = 1, nbsd*nbmata
+            do k = 1, nbsd*nbmata
                 write(ifm,*) 'IFLIM:',zi(iflim-1+k)
-905          continue
+            end do
             write(ifm,*) '--------------------------'
-            do 904 ich = 1, nbchar
-                do 908 isd = 1, nbsd
+            do ich = 1, nbchar
+                do isd = 1, nbsd
                     dec=(ich-1)*nbsd+isd
                     write(ifm,*) 'CH:',ich,' SD:',isd,' IFLII:',zi(&
                     iflii-1+dec)
-908              continue
-904          continue
+                end do
+            end do
             write(ifm,*) '--------------------------'
-            do 907 k = 1, nbsd
+            do k = 1, nbsd
                 write(ifm,*) 'SD:',k,' IDFLIM:',zi(idflim-1+ k)
-907          continue
+            end do
             write(ifm,*) '--------------------------'
-            do 906 k = 1, nbchar
+            do k = 1, nbchar
                 write(ifm,*) 'CHA:',zk24(ilscha-1+ k)
-906          continue
+            end do
             write(ifm,*) '--------------------------'
-            do 824 k = 1, nbmata
+            do k = 1, nbmata
                 write(ifm,*) 'MAT',k,' NBNOT:',zi(ifnt-1+k)
-824          continue
+            end do
             write(ifm,*) '--------------------------'
         endif
 ! **** FIN IF SUR LES CHARGES A MAILLES TARDIVES
@@ -1100,20 +1100,20 @@ subroutine fetcrf(sdpart1)
 !***********************************************************************
 !     PRISE EN COMPTE DES NOEUDS PHYSIQUES
     call wkvect(nomsdh, 'G V I', nbsd, jadrh)
-    do 700 isd = 1, nbsd
+    do isd = 1, nbsd
         zi(jadrh+isd-1)=zi(ialsk-1+isd)
-700  end do
+    end do
 !
 !     DES NOEUDS TARDIFS
     if (nbnota .gt. 0) then
-        do 701 j = 1, nbmata
-            do 702 numsd = 1, nbsd
+        do j = 1, nbmata
+            do numsd = 1, nbsd
                 dec=(j-1)*nbsd+numsd
                 if (zi(iflim-1+dec) .gt. 0) then
                     zi(jadrh-1+numsd)=zi(jadrh-1+numsd) + zi(ifnt-1+j)
                 endif
-702          continue
-701      continue
+            end do
+        end do
     endif
 !
     if (niv .ge. 3) call jxveri()
@@ -1142,17 +1142,17 @@ subroutine fetcrf(sdpart1)
         call wkvect('&&FETCRF.TEMP     ', 'V V I', nbchar, itmp)
 !
 ! ****  13.1 PREMIER PASSAGE : RECUPERATION DE LA TAILLE DES COLLECTIONS
-        do 910 ich = 1, nbchar
+        do ich = 1, nbchar
 !         NBRE DE MAILLES TARDIVES DU CHARGEMENT ICH
             nn = 0
-            do 911 isd = 1, nbsd
+            do isd = 1, nbsd
                 dec=(ich-1)*nbsd+isd
                 nn=nn+zi(iflii-1+dec)
-911          continue
+            end do
             zi(itmp+ich-1)=nn
 !         SI LA CHARGE COURANTE A DES MAILLES TARDIVES
             if (nn .gt. 0) then
-                do 913 isd = 1, nbsd
+                do isd = 1, nbsd
                     dec=(ich-1)*nbsd+isd
 !             SI LA CHARGE COURANTE A DES MAILLES TARDIVES DANS LE SD
 !             ON INCREMENTE LES TAILLES DES 3 COLLECTIONS POUR LE SD
@@ -1162,9 +1162,9 @@ subroutine fetcrf(sdpart1)
                         zi(idflm-1+isd)=zi(idflm-1+isd)+zi(iflii-1+&
                         dec)
                     endif
-913              continue
+                end do
             endif
-910      continue
+        end do
 !
 !       VECTEURS DE POINTEUR VERS L'ADDRESSE JEVEUX DES OBJETS DE COLL.:
 !       CA VAUT 0 SI L'OBJET N'A PAS ENCORE ETE CREE
@@ -1174,12 +1174,12 @@ subroutine fetcrf(sdpart1)
         call wkvect('&&FETCRF.BIM_FLIN ', 'V V I', nbsd, bifln)
 !
 ! **** 13.2 DEUXIEME PASSAGE : REMPLISSAGE DES COLLECTIONS FLII ET FLIN
-        do 920 ich = 1, nbchar
+        do ich = 1, nbchar
 !         NN = NB DE MAILLES TARDIVE DE LA CHARGE
             nn = zi(itmp+ich-1)
 !         SI LA CHARGE COURANTE A DES MAILLES TARDIVES
             if (nn .gt. 0) then
-                do 923 isd = 1, nbsd
+                do isd = 1, nbsd
                     dec=(ich-1)*nbsd+isd
 !             SI LA CHARGE COURANTE A DES MAILLES TARDIVES DANS LE SD
                     if (zi(iflii-1+dec) .gt. 0) then
@@ -1238,15 +1238,15 @@ subroutine fetcrf(sdpart1)
 !             FIN SI LA CHARGE EST CONCERNEE PAR LE SD
                     endif
 !           FIN BOUCLE SUR LES SD
-923              continue
+                end do
 !         FIN SI LA CHARGE COURANTE A DES MAILLES TARDIVES
             endif
 !       FIN BOUCLE SUR LES CHARGES
-920      continue
+        end do
 !
 ! **** 13.3 TROISIEME PASSAGE : REMPLISSAGE DE LA COLLECTION FLIM
-        do 930 j = 1, nbmata
-            do 932 numsd = 1, nbsd
+        do j = 1, nbmata
+            do numsd = 1, nbsd
                 dec=(j-1)*nbsd+numsd
                 if (zi(iflim-1+dec) .gt. 0) then
 !             ADDR COURANTE POUR FLIM/ISD
@@ -1257,8 +1257,8 @@ subroutine fetcrf(sdpart1)
                     jadr=jadr+1
                     zi(biflim-1+numsd)=jadr
                 endif
-932          continue
-930      continue
+            end do
+        end do
 !
 !     FIN DE CREATION DE FLII, FLIM ET FLIN, IF (NBNOTA.GT.0)
     endif
@@ -1291,10 +1291,10 @@ subroutine fetcrf(sdpart1)
 ! **** 14.1 BOUCLE POUR DETERMINER LE NOMBRE DE ZONES MAXI DE CONTACT
 !  ET LES POINTEURS DE CONTACT ADHOC
     nzocom=0
-    do 940 ich = 1, nbchar
+    do ich = 1, nbchar
         nocha1=zk8(nomcha-1+ich)
         methco = nocha1//'.CONTACT.METHCO'
-        pzone  = nocha1//'.CONTACT.PZONECO'
+        pzone = nocha1//'.CONTACT.PZONECO'
         psurma = nocha1//'.CONTACT.PSUMACO'
         psurno = nocha1//'.CONTACT.PSUNOCO'
         contma = nocha1//'.CONTACT.MAILCO'
@@ -1324,7 +1324,7 @@ subroutine fetcrf(sdpart1)
             call jeveuo(ndimco, 'L', jdim)
             zi(ifcfb+9*(ich-1)+8)=jdim
         endif
-940  end do
+    end do
 ! VECTEUR INDIQUANT LE NUMERO DE SD CONCERNE PAR LA JIEME ZONE
 ! DU IEME CHARGEMENT
 !     CHAR     1        2        3...
@@ -1336,7 +1336,7 @@ subroutine fetcrf(sdpart1)
 !
 ! **** 14.2 BOUCLE SUR LES CHARGEMENTS POUR DETERMINER LES COUPLES
 ! (SD,CHAR), LES NOMBRES DE MAILLES ET NOEUDS MAITRES PAR SD
-    do 950 ich = 1, nbchar
+    do ich = 1, nbchar
         if (zi(ifcfb+9*(ich-1)) .eq. 1) then
             jmeth=zi(ifcfb+9*(ich-1)+1)
             jzone=zi(ifcfb+9*(ich-1)+2)
@@ -1346,9 +1346,9 @@ subroutine fetcrf(sdpart1)
             nzoco=zi(ifcfb+9*(ich-1)+6)
             isuco = 0
 ! BOUCLE SUR LES ZONES DE CONTACT
-            do 951 izone = 1, nzoco
+            do izone = 1, nzoco
                 nbsurf = zi(jzone+izone) - zi(jzone+izone-1)
-                do 949 isurf = 1, nbsurf
+                do isurf = 1, nbsurf
 ! CETTE INITIALISATION PERMET DE TESTER SI TOUTES LES MAILLES D'UNE ZONE
 ! APPARTIENNENT A UN SEUL SOUS-DOMAINE
                     cfsd=-1
@@ -1360,45 +1360,45 @@ subroutine fetcrf(sdpart1)
                     jdecno = zi(jsuno+isuco-1)
 !
                     zi(ifcnm+ich-1)=zi(ifcnm+ich-1)+nbma
-                    ! BOUCLE SUR SES MAILLES
-                    do 953 ima = 1, nbma
+! BOUCLE SUR SES MAILLES
+                    do ima = 1, nbma
                         numma = zi(jmaco+jdecma+ima-1)
-                        ! BOUCLE SUR LES SOUS-DOMAINES
-                        do 954 idd = 1, nbsd
-                            ! ILS ONT DES MAILLES DE BORD OU PAS ?
+! BOUCLE SUR LES SOUS-DOMAINES
+                        do idd = 1, nbsd
+! ILS ONT DES MAILLES DE BORD OU PAS ?
                             if (zi(nbrd-1+idd) .eq. 1) then
                                 nomgma=zk24(lstbrd-1+idd)
                                 call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmabo)
                                 call jeveuo(jexnom(grpma, nomgma), 'L', ialibd)
                                 nbmabo=nbmabo-1
-                                ! BOUCLE SUR LES MAILLES DE BORD
-                                do 955 j = 0, nbmabo
+! BOUCLE SUR LES MAILLES DE BORD
+                                do j = 0, nbmabo
                                     if (zi(ialibd+j) .eq. numma) then
                                         cfsd=idd
                                         goto 952
                                     endif
-955                              continue
+                                end do
                             endif
 ! SORTIE DU IF; ON A TROUVE QUE LA MAILLE DE CONTACT NUMMA EST CONCERNEE
 ! PAR LE SD IDD. ON VA VERIFIER QU'ELLE NE L'EST PAS AUCUN AUTRE SD
-952                          continue
-954                      continue
-953                  continue
-
-                    ! SI UNE SURFACE DE CONTACT N'A TROUVE AUCUN SD, UTMESS_F
+952                         continue
+                        end do
+                    end do
+!
+! SI UNE SURFACE DE CONTACT N'A TROUVE AUCUN SD, UTMESS_F
                     if (cfsd .gt. 0) then
                         zi(ifcfl+(ich-1)*nzocom+izone)=cfsd
                         zi(ifcfm+cfsd-1)=zi(ifcfm+cfsd-1)+nbma
                         zi(ifcfn+cfsd-1)=zi(ifcfn+cfsd-1)+nbno
                     endif
-                 ! FIN BOUCLE SUR LES SURFACES
-949              continue
-             ! FIN BOUCLE SUR LES ZONES DE CONTACT
-951          continue
+! FIN BOUCLE SUR LES SURFACES
+                end do
+! FIN BOUCLE SUR LES ZONES DE CONTACT
+            end do
         endif
-    ! FIN BOUCLE SUR LES CHARGES
-950  end do
-
+! FIN BOUCLE SUR LES CHARGES
+    end do
+!
 ! CREATION OBJETS .FCFL, .FCFI, .FCFM ET .FCFN POUR FETI+CONTACT (inutiles => a supprimer)
     call jecrec(nomfcl, 'G V K24', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsd)
@@ -1411,19 +1411,19 @@ subroutine fetcrf(sdpart1)
 !
 ! **** 14.3 ON REPARCOURT LES CHARGES PAR SD CETTE FOIS POUR REMPLIR
 ! LES OBJETS PRECEDENTS
-    do 960 idd = 1, nbsd
+    do idd = 1, nbsd
 ! ON CHERCHE A DIMENSIONNER L'OBJET IDD DE NOMFCL
 ! IAUX: NOMBRE DE CHARGEMENT DE CONTACT CONCERNANT IDD
         iaux=0
-        do 965 ich = 1, nbchar
-            do 967 izone = 1, nzocom
+        do ich = 1, nbchar
+            do izone = 1, nzocom
                 if (zi(ifcfl+(ich-1)*nzocom+izone) .eq. idd) then
                     iaux=iaux+1
                     goto 966
                 endif
-967          continue
-966          continue
-965      continue
+            end do
+966         continue
+        end do
         k24buf=zk24(nomsd-1+idd)
         if (iaux .ne. 0) then
 ! TRAVAIL PREPARATOIRE 1 POUR CALCULER DDLS DE CONTACT SUPPLEMENTAIRES
@@ -1450,7 +1450,7 @@ subroutine fetcrf(sdpart1)
             call jeecra(jexnom(nomfcn, k24buf), 'LONMAX', zi(ifcfn+idd-1))
             call jeveuo(jexnom(nomfcn, k24buf), 'E', ladr)
             iaux3=0
-            do 961 ich = 1, nbchar
+            do ich = 1, nbchar
                 if (zi(ifcfb+9*(ich-1)) .eq. 1) then
 !
                     nzoco=zi(ifcfb+9*(ich-1)+6)
@@ -1461,26 +1461,26 @@ subroutine fetcrf(sdpart1)
                     inddz=0
                     isuco= 0
                     lpaire=.true.
-                    do 962 izone = 1, nzoco
+                    do izone = 1, nzoco
                         nbsurf = zi(jzone+izone) - zi(jzone+izone-1)
-                        do 959 isurf = 1, nbsurf
+                        do isurf = 1, nbsurf
 ! ISUCO PILOTE LE CHANGEMENT DE SURFACE: IMPAIRE=ESCLAVE, PAIRE=MAITRE
                             isuco = isuco + 1
                             lpaire=.not.lpaire
                             if (zi(ifcfl+(ich-1)*nzocom+izone) .eq. idd) then
 ! ON STOCKE LE NOM DE LA CHARGE
                                 k8bid=zk8(nomcha-1+ich)
-                                do 963 i = 1, iaux1
+                                do i = 1, iaux1
                                     if (zk24(jadr+i-1)(1:8) .eq. k8bid) then
                                         iiaux1=i
                                         goto 964
                                     endif
-963                              continue
+                                end do
                                 zk24(jadr+iaux1)=k8bid//'.CHME.LIGRE'
                                 iiaux1=iaux1+1
                                 iaux1=iaux1+1
 ! LABEL POUR NE PAS ENREGISTRER PLUSIEURS FOIS LE NOM DE LA CHARGE
-964                              continue
+964                             continue
 ! TRAVAIL PREPARATOIRE 2 POUR CALCULER DDLS DE CONTACT SUPPLEMENTAIRES
                                 k24bid=k8bid//'.CHME.LIGRE.PRNM'
                                 call jeveuo(k24bid, 'L', jprnm)
@@ -1496,10 +1496,10 @@ subroutine fetcrf(sdpart1)
                                 jdecma = zi(jsuma+isuco-1)
                                 jdecno = zi(jsuno+isuco-1)
 ! ON REMPLI .FCFM POUR IDD
-                                do 968 ima = 1, nbma
+                                do ima = 1, nbma
                                     zi(kadr+iaux2+ima-1)=zi(jmaco+&
                                     jdecma+ima-1)
-968                              continue
+                                end do
                                 iaux2=iaux2+nbma
 ! ON REMPLI .FCFI POUR IDD
                                 zi(madr+2*(iiaux1-1))=zi(ifcnm+ich-1)
@@ -1508,13 +1508,13 @@ subroutine fetcrf(sdpart1)
 ! ON REMPLI .FCFN POUR IDD (EN EVITANT LES DOUBLONS POUR LES DDLS)
 ! ON NE COMPTE QU'UNE FOIS UN NOEUD COMMUN AUX DEUX PARTIES D'UNE
 ! MEME ZONE OU A PLUSIEURS ZONES
-                                do 969 ino = 1, nbno
+                                do ino = 1, nbno
                                     j2=iaux3+ino-2
                                     jj=zi(jnoco+jdecno+ino-1)
                                     zi(ladr+j2+1)=jj
-                                    do 369 j = 1, nbfete
-369                                  continue
-                                    do 469 j = 0, j2
+                                    do j = 1, nbfete
+                                    end do
+                                    do j = 0, j2
                                         if (zi(ladr+j) .eq. jj) then
 ! NOEUD COMPTE DEUX FOIS
                                             vali(1)=i
@@ -1523,14 +1523,14 @@ subroutine fetcrf(sdpart1)
                                                 goto 869
                                             endif
                                         endif
-469                                  continue
+                                    end do
 ! POUR LES NOEUDS ESCLAVES (ISUCO IMPAIR)
 ! ON DETERMINE LE NOMBRE DE DDL DUS AU CONTACT SANS LES DDLS
 ! PHYSIQUES DEJA COMPTES
                                     ddlm=0
                                     k=0
                                     if (lpaire) then
-                                        do 569 l = 1, lfetb
+                                        do l = 1, lfetb
                                             if (abs(zi(ifetb+2*(l-1))) .eq. jj) then
                                                 if (l .eq. 1) then
                                                     ddlm=zi(ifetb+1)
@@ -1540,12 +1540,12 @@ subroutine fetcrf(sdpart1)
                                                 endif
                                                 goto 669
                                             endif
-569                                      continue
-669                                      continue
+                                        end do
+669                                     continue
                                         k=-ddlm
-                                        do 769 l = 1, nec30
+                                        do l = 1, nec30
                                             if (exisdg( zi(jprnm-1+nec*(jj- 1)+1),l)) k=k+1
-769                                      continue
+                                        end do
 ! MAJ DE .FETH EN NE TENANT COMPTE QUE DES DDLS DE CONTACT
                                         zi(jadrh-1+idd)=zi(jadrh-1+&
                                         idd)+k
@@ -1553,25 +1553,25 @@ subroutine fetcrf(sdpart1)
 !
 ! MONITORING
 !                    WRITE(IFM,*)'NOEUD/DDL CONTACT',JJ,DDLM,K
-869                                  continue
+869                                 continue
 ! FIN BOUCLE SUR LES NOEUDS
-969                              continue
+                                end do
                                 iaux3=iaux3+nbno
 ! FIN SI ZONE CONCERNANT LE SD
                             endif
 ! FIN BOUCLE SUR LES SURFACES
-959                      continue
+                        end do
 ! FIN BOUCLE SUR LES ZONES
                         inddz=inddz+iaux3
-962                  continue
+                    end do
 ! FIN SI CHARGEMENT DE CONTACT
                 endif
 ! FIN BOUCLE SUR LES CHARGES
-961          continue
+            end do
 ! SI SD CONCERNE PAR CONTACT
         endif
 ! FIN BOUCLE SUR LES SD
-960  end do
+    end do
 !
 !***********************************************************************
 ! ETAPE 15 DESTRUCTION OBJETS TEMPORAIRES

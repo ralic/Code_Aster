@@ -77,7 +77,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 !
     real(kind=8) :: dep0(*), vit0(*), acc0(*)
     real(kind=8) :: fexte0(*), famor0(*), fliai0(*)
-    real(kind=8) :: t0, rbid
+    real(kind=8) :: t0
     real(kind=8) :: tabwk(*)
 !
     character(len=8) :: baseno, result
@@ -103,6 +103,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
     integer :: iforc0, iforc1
     character(len=24) :: cine
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !     -----------------------------------------------------------------
 !
@@ -200,9 +201,9 @@ subroutine dltali(neq, result, imat, masse, rigid,&
             call mrmult('ZERO', imat(3), vit0, zr(ifextc), 1,&
                         .true.)
         endif
-        do 562 ieq = 1, neq
+        do ieq = 1, neq
             fexte0(ieq)=fexte0(ieq)+zr(ifextm-1+ieq) +zr(ifextc-1+ieq)
-562      continue
+        end do
     endif
     call jedetr('FEXT0M')
     call jedetr('FEXT0C')

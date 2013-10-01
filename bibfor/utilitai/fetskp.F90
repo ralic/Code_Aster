@@ -108,24 +108,24 @@ subroutine fetskp()
     if (err .eq. 0) then
         write(ifm,*)' -- AUCUN MODELE PRIS EN COMPTE'
         call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
-        do 90 ima = 1, nbmato
+        do ima = 1, nbmato
             zi(renum-1+ima)=ima
             zi(renum1-1+ima)=ima
-90      continue
+        end do
     else
         write(ifm,*)' -- PRISE EN COMPTE DU MODELE :',mod
         nbmato=0
         call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
-        do 94 iocc = 1, nocc
+        do iocc = 1, nocc
             call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
             nbmato=nbmato+nbma-1
-94      continue
+        end do
         call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
         id=1
-        do 93 iocc = 1, nocc
+        do iocc = 1, nocc
             call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
             call jeveuo(jexnum(mod//'.MODELE    .LIEL', iocc), 'L', idma)
-            do 91 ima = 1, nbma-1
+            do ima = 1, nbma-1
                 zi(renum-1+id)=zi(idma-1+ima)
 ! --------- ON VERIFIE QUE LE MODELE NE CONTIENT PAS DE MAILLES TARDIVES
 ! --------- QUI SONT ESSENTIELLEMENT DES NOEUDS A CE STADE
@@ -134,8 +134,8 @@ subroutine fetskp()
                 endif
                 zi(renum1-1+zi(idma-1+ima))=id
                 id=id+1
-91          continue
-93      continue
+            end do
+        end do
     endif
 !
 ! ------- CREATION DE LA CONNECTIVITE DES MAILLES
@@ -161,56 +161,56 @@ subroutine fetskp()
 !
     call wkvect('&&FETSKP.VELO', 'V V S', nbmato, velo)
     call wkvect('&&FETSKP.EDLO', 'V V S', nblien, edlo)
-    do 114 ima = 1, nbmato
+    do ima = 1, nbmato
         zi4(velo-1+ima)=1
-114  end do
-    do 115 i = 1, nblien
+    end do
+    do i = 1, nblien
         zi4(edlo-1+i)=1
-115  end do
+    end do
 !
     call getfac('GROUPAGE', nocc)
-    do 116 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx('GROUPAGE', 'GROUP_MA', iocc=iocc, scal=grpema, nbret=err)
         call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
         nbma=0
-        do 118 j = 1, nbre
+        do j = 1, nbre
             call jenuno(jexnum(ma//'.GROUPEMA', j), nom)
             if (nom .eq. grpema) then
                 call jelira(jexnum(ma//'.GROUPEMA', j), 'LONUTI', nbma)
                 call jeveuo(jexnum(ma//'.GROUPEMA', j), 'L', idma)
             endif
-118      continue
+        end do
         if (nbma .eq. 0) then
             call utmess('F', 'UTILITAI_80')
         endif
         write(ifm,*)'  - GROUPAGE  :',grpema
         write(ifm,*)' '
-        do 204 ima = 1, nbma-1
+        do ima = 1, nbma-1
             mail=zi(renum3-1+zi(renum1-1+zi(idma-1+ima)))
-            do 212 i = ima+1, nbma
+            do i = ima+1, nbma
                 mail2=zi(renum3-1+zi(renum1-1+zi(idma-1+i)))
-                do 205 j = zi4(idco-1+mail), zi4(idco-1+mail+1)-1
+                do j = zi4(idco-1+mail), zi4(idco-1+mail+1)-1
                     if (zi4(co-1+j) .eq. mail2) zi4(edlo-1+j)=int(nbmato+ 1, kind=4)
-205              continue
-                do 220 j = zi4(idco-1+mail2), zi4(idco-1+mail2+1)-1
+                end do
+                do j = zi4(idco-1+mail2), zi4(idco-1+mail2+1)-1
                     if (zi4(co-1+j) .eq. mail) zi4(edlo-1+j)=int(nbmato+1, kind=4)
-220              continue
-212          continue
-204      continue
-116  end do
+                end do
+            end do
+        end do
+    end do
 !
     call getfac('POIDS_MAILLES', nocc)
-    do 117 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx('POIDS_MAILLES', 'GROUP_MA', iocc=iocc, scal=grpema, nbret=err)
         call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
         nbma=0
-        do 207 j = 1, nbre
+        do j = 1, nbre
             call jenuno(jexnum(ma//'.GROUPEMA', j), nom)
             if (nom .eq. grpema) then
                 call jelira(jexnum(ma//'.GROUPEMA', j), 'LONUTI', nbma)
                 call jeveuo(jexnum(ma//'.GROUPEMA', j), 'L', idma)
             endif
-207      continue
+        end do
         if (nbma .eq. 0) then
             call utmess('F', 'UTILITAI_80')
         endif
@@ -218,11 +218,11 @@ subroutine fetskp()
         write(ifm,*)'  - POIDS_MAILLES :',grpema
         write(ifm,*)'       AVEC UN POIDS DE : ',poids
         write(ifm,*) ' '
-        do 203 ima = 1, nbma
+        do ima = 1, nbma
             mail=zi(renum3-1+zi(renum1-1+zi(idma-1+ima)))
             zi4(velo-1+mail)=int(poids, kind=4)
-203      continue
-117  end do
+        end do
+    end do
 !
 ! ------- ON IMPRIME LE GRAPH SI PROC 0
 !
@@ -241,12 +241,12 @@ subroutine fetskp()
 !  70     CONTINUE
 !         WRITE(K8NB,'(''('',I4,''I8'','')'')') NBFORM
 !
-        do 71 ima = 1, nbmato
+        do ima = 1, nbmato
             write(k8nb,'(''('',I4,''I8'','')'')') 2*(1+zi4(idco-1+ima+&
             1)-1 - zi4(idco-1+ima) ) + 2
             write(iulm1,k8nb)zi4(velo-1+ima), (zi4(co-1+i),zi4(edlo-1+&
             i), i=zi4(idco-1+ima),zi4(idco-1+ima+1)-1)
-71      continue
+        end do
 !
         call ulopen(-iulm1, ' ', ' ', ' ', ' ')
 !
@@ -367,9 +367,9 @@ subroutine fetskp()
             endif
         else
             lrep=0
-            do 77 i = 1, len(rep)
+            do i = 1, len(rep)
                 if (rep(i:i) .ne. ' ') lrep=lrep+1
-77          continue
+            end do
             jnom(1)=rep(1:lrep)
         endif
         call aplext(niv, 3, jnom, err)
@@ -403,23 +403,23 @@ subroutine fetskp()
                 call utmess('F', 'UTILITAI_81')
             endif
             lrep=0
-            do 177 i = 1, len(ktmp2)
+            do i = 1, len(ktmp2)
                 if (ktmp2(i:i) .ne. ' ') lrep=lrep+1
-177          continue
+            end do
             jnom(1)='fort.'//ktmp2(1:lrep)//'.part.'//ktmp
             call ulopen(iulm2, jnom(1), ' ', 'OLD', 'O')
-            do 35 ima = 1, nbmato
+            do ima = 1, nbmato
                 read(iulm2,'(I4)')zi(numsdm-1+zi(renum2-1+ima))
-35          continue
+            end do
             call ulopen(-iulm2, ' ', ' ', ' ', ' ')
         endif
         k24b='&&FETSKP.NUMSDM'
         call asmpi_comm_jev('BCAST', k24b)
-        do 36 ima = 1, nbmato
+        do ima = 1, nbmato
             iaux=zi(renum2-1+ima)
             iaux2=zi(numsdm-1+iaux)
             zi(nbmasd+iaux2)=zi(nbmasd+iaux2)+1
-36      continue
+        end do
     else
 ! CETTE PARTIE PERMET L'APPEL EXTERNE DE SCOTCH - LAISSER EN L'ETAT
 !        CALL ULOPEN (-IULM2,' ',' ',' ',' ')
@@ -437,11 +437,11 @@ subroutine fetskp()
 ! FIN APPEL EXTERNE DE SCOTCH
         k24b='&&FETSKP.NMAP'
         call asmpi_comm_jev('BCAST', k24b)
-        do 135 ima = 1, nbmato
+        do ima = 1, nbmato
             zi(numsdm-1+zi(renum2-1+ima))=zi4(nmap-1+ima)
             zi(nbmasd+zi(numsdm-1+zi(renum2-1+ima)))= zi(nbmasd+zi(&
             numsdm-1+zi(renum2-1+ima)))+1
-135      continue
+        end do
         call jedetr(k24b)
 !        ENDIF
     endif
@@ -450,7 +450,7 @@ subroutine fetskp()
 !
     if (bord .eq. 'OUI     ') then
         if (sdb .eq. 0) then
-            do 55 ima = 1, nbbord
+            do ima = 1, nbbord
                 mail=zi(renum2-1+nbmato+ima)
                 if (zi(mabord+zi(mabord-1+mail)-1) .ne. 0) then
                     zi(mabord-1+mail)=zi(mabord+zi(mabord-1+mail)-1)
@@ -459,9 +459,9 @@ subroutine fetskp()
                 zi(numsdm-1+mail)=zi(numsdm-1+zi(mabord-1+mail))
                 zi(nbmasd+zi(numsdm-1+zi(mabord-1+mail)))= zi(nbmasd+&
                 zi(numsdm-1+zi(mabord-1+mail)))+1
-55          continue
+            end do
         else
-            do 45 ima = 1, nbbord
+            do ima = 1, nbbord
                 mail=zi(renum2-1+nbmato+ima)
                 if (zi(mabord+zi(mabord-1+mail)-1) .ne. 0) then
                     zi(mabord-1+mail)=zi(mabord+zi(mabord-1+mail)-1)
@@ -471,7 +471,7 @@ subroutine fetskp()
                 nbpart/2
                 zi(nbmasd+nbpart/2+zi(numsdm-1+zi(mabord-1+mail)))=&
                 zi(nbmasd+nbpart/2+zi(numsdm-1+zi(mabord-1+mail)))+1
-45          continue
+            end do
         endif
     endif
 !
@@ -488,9 +488,9 @@ subroutine fetskp()
     if (val .eq. 1) then
         call jedetr('&&FETSKP.NBMASD')
         call wkvect('&&FETSKP.NBMASD', 'V V I', nbpart, nbmasd)
-        do 145 ima = 1, nbmabo
+        do ima = 1, nbmabo
             zi(nbmasd+zi(numsdm-1+ima))=zi(nbmasd+zi(numsdm-1+ima))+1
-145      continue
+        end do
     endif
 !
 ! ------- CREATION DES GROUP_MA
@@ -509,34 +509,35 @@ subroutine fetskp()
 !
     if (val .eq. 1) then
         call wkvect('&&FETSKP.TEMP', 'V V I', nbpart, temp)
-        do 166 isd = 1, nbpart
+        do isd = 1, nbpart
             id=0
-            do 167 ima = zi(idmasd-1+isd), zi(idmasd-1+isd+1)-1
+            do ima = zi(idmasd-1+isd), zi(idmasd-1+isd+1)-1
                 if (zi(mabord-1+zi(masd-1+ima)) .ne. 0) then
                     if (bord .eq. 'OUI     ') goto 167
                 endif
                 mail=zi(renum3-1+zi(masd-1+ima))
-                do 168 i = zi4(idco-1+mail), zi4(idco-1+mail+1)-1
+                do i = zi4(idco-1+mail), zi4(idco-1+mail+1)-1
                     mail2=zi4(co-1+i)
                     if (zi(numsdm-1+zi(renum2-1+mail2)) .ne. (isd-1)) then
-                        do 169 j = 1, id
+                        do j = 1, id
                             if (zi(temp-1+j) .eq. zi(numsdm-1+zi(renum2- 1+mail2))) goto 170
-169                      continue
+                        end do
                         zi(temp+id)=zi(numsdm-1+zi(renum2-1+mail2))
                         id=id+1
-170                      continue
+170                     continue
                     endif
-168              continue
-167          continue
+                end do
+167             continue
+            end do
             write(ifm,*)zk24(nomsdm-1+isd),' CONTIENT '&
      &                ,zi(nbmasd-1+isd),' MAILLES  ET SES VOISINS :'&
      &                ,(zk24(nomsdm+zi(temp-1+j)),j=1,id)
-166      continue
+        end do
     else
-        do 56 i = 1, nbpart
+        do i = 1, nbpart
             write(ifm,*)'LE SOUS DOMAINE ',zk24(nomsdm-1+i),' CONTIENT '&
      &                     ,zi(nbmasd-1+i),' MAILLES '
-56      continue
+        end do
         call jedetr('&&FETSKP.TEMP')
     endif
 !

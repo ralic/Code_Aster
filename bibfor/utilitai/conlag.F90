@@ -17,13 +17,13 @@ subroutine conlag(matasz, cond)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     real(kind=8) :: cond
     character(len=*) :: matasz
 !
@@ -40,9 +40,9 @@ subroutine conlag(matasz, cond)
 !
 !
 !
-    integer :: jconl, neq, iret, jcol, nbsd, jfetm, idd
+    integer :: jconl, neq, iret, jcol
     character(len=8) :: k8bid
-    character(len=19) :: matass, matdd
+    character(len=19) :: matass
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,13 +57,13 @@ subroutine conlag(matasz, cond)
         call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
                     k8bid, iret)
         call jeveuo(matass//'.CONL', 'L', jconl)
-        do 30 jcol = 1, neq
+        do jcol = 1, neq
             cond = 1.d0/zr(jconl-1+jcol)
-            if (cond .ne. 1.d0)  goto 9999
-30      continue
+            if (cond .ne. 1.d0) goto 999
+        end do
     endif
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

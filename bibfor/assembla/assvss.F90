@@ -82,16 +82,15 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     parameter(nbecmx=10)
 !
     character(len=1) :: bas
-    character(len=8) :: nomsd, k8bid, ma, mo, mo2, nogdsi, nogdco, nomcas, kbid
-    character(len=11) :: k11b
-    character(len=14) :: k14b, nudev
-    character(len=19) :: k19b, vecas, vprof
-    character(len=24) :: k24b, knueq, kmaila, k24prn
-    character(len=24) :: kvelil, kveref, kvedsc, knequa, kvale, nomlog
-    integer :: icodla(nbecmx), icodge(nbecmx), iligrp
-    integer :: irefn, admodl, lcmodl, ibid, ifm, niv
+    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas, kbid
+    character(len=14) :: nudev
+    character(len=19) :: vecas, vprof
+    character(len=24) :: knueq, kmaila, k24prn
+    character(len=24) :: kvelil, kveref, kvedsc, knequa, kvale
+    integer :: icodla(nbecmx), icodge(nbecmx)
+    integer :: admodl, lcmodl, ibid, ifm, niv
     integer :: jfonct
-    real(kind=8) :: temps(6), rbid, rcoef
+    real(kind=8) :: rcoef
 !
 ! --- DEBUT ------------------------------------------------------------
     call jemarq()
@@ -171,11 +170,11 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     nec=nbec(nugd)
     ncmp=nmxcmp
 !
-    do 10 i = 1, nbecmx
+    do i = 1, nbecmx
         icodla(i)=0
         icodge(i)=0
- 10 end do
-
+    end do
+!
 !   -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
     call wkvect('&&ASSVEC.POSDDL', 'V V I', nmxcmp, iapsdl)
 !
@@ -213,7 +212,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     kveref=vecas//'.REFE'
     kvale=vecas//'.VALE'
     kvedsc=vecas//'.DESC'
-
+!
     call jecreo(kveref, bas//' V K24')
     call jeecra(kveref, 'LONMAX', 4)
     call jeveuo(kveref, 'E', idverf)
@@ -225,8 +224,8 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     zk24(idverf+1)=k24prn(1:14)//'.NUME'
     zi(idveds)=gd
     zi(idveds+1)=1
-
-
+!
+!
     if (type .eq. 1) then
         call jecreo(kvale, bas//' V R8')
     else if (type.eq.2) then
@@ -236,20 +235,20 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     endif
     call jeecra(kvale, 'LONMAX', nequa)
     call jeveuo(kvale, 'E', iadval)
-
-
+!
+!
     call dismoi('F', 'NOM_MODELE', vecel, 'VECT_ELEM', ibid,&
                 mo2, ierd)
     if (mo2 .ne. mo) then
         call utmess('F', 'ASSEMBLA_5')
     endif
-
+!
     call dismoi('F', 'EXI_ELEM', mo, 'MODELE', ibid,&
                 exiele, ierd)
     call dismoi('F', 'NB_SS_ACTI', vecel, 'VECT_ELEM', nbssa,&
                 kbid, ierd)
-
-
+!
+!
 !   -- TRAITEMENT DES SOUS-STRUCTURES
 !   ----------------------------------------------------------
     if (nbssa .gt. 0) then
@@ -264,7 +263,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
         call jelira(vecel//'.RELC', 'NUTIOC', nbchar)
         call jeveuo(fomult, 'L', jfonct)
 !
-        do 80 ichar = 1, nbchar
+        do ichar = 1, nbchar
             call jenuno(jexnum(vecel//'.RELC', ichar), nomcas)
             call jeveuo(jexnum(vecel//'.RELC', ichar), 'L', ialcha)
             if (zk24(jfonct+ichar-1)(1:8) .eq. '&&CONSTA') then
@@ -273,7 +272,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
                 call fointe('F ', zk24(jfonct+ichar-1)(1:8), 1, ['INST'], [instap],&
                             rcoef, ierd)
             endif
-            do 70 ima = 1, nbsma
+            do ima = 1, nbsma
 !               -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
                 if (zi(iasssa-1+ima) .eq. 0) goto 70
                 if (zi(ialcha-1+ima) .eq. 0) goto 70
@@ -287,18 +286,18 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
                 call jeveuo(nomacr//'.CONX', 'L', iaconx)
                 call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprol)
                 il=0
-                do 60 k1 = 1, nnoe
+                do k1 = 1, nnoe
                     n1=zi(iamail-1+k1)
                     if (n1 .gt. nm) then
-                        do 20 iec = 1, nbecmx
+                        do iec = 1, nbecmx
                             icodge(iec)=icodla(iec)
- 20                     continue
+                        end do
                     else
                         inold=zi(iaconx-1+3*(k1-1)+2)
-                        do 30 iec = 1, nec
+                        do iec = 1, nec
                             icodge(iec)=zi(iaprol-1+(nec+2)*(&
                                     inold-1)+2+iec)
- 30                     continue
+                        end do
                     endif
 !
                     iad1=zi(idprn1-1+zi(idprn2+ilimnu-1)+(n1-&
@@ -307,25 +306,26 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
                                 ncmp, n1, nddl1, zi(iapsdl))
 !
                     if (type .eq. 1) then
-                        do 40 i1 = 1, nddl1
+                        do i1 = 1, nddl1
                             il=il+1
                             zr(iadval-1+zi(ianueq-1+iad1+zi(&
                                     iapsdl-1+i1)- 1))=zr(iadval-1+zi(&
                                     ianueq-1+iad1+zi(iapsdl-1+&
                                     i1)-1))+zr(idresl+il-1)*rcoef
- 40                     continue
+                        end do
                     else if (type.eq.2) then
-                        do 50 i1 = 1, nddl1
+                        do i1 = 1, nddl1
                             il=il+1
                             zc(iadval-1+zi(ianueq-1+iad1+zi(&
                                     iapsdl-1+i1)- 1))=zc(iadval-1+zi(&
                                     ianueq-1+iad1+zi(iapsdl-1+&
                                     i1)-1))+zc(idresl+il-1)*rcoef
- 50                     continue
+                        end do
                     endif
- 60             continue
- 70         continue
- 80     continue
+                end do
+ 70             continue
+            end do
+        end do
         call ssvalv('FIN', nomcas, mo, ma, 0,&
                     idresl, ncmpel)
     endif

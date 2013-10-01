@@ -130,7 +130,6 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
     character(len=24) :: lchin(3), lchout(1), chgeom
     character(len=24) :: chtem1, chtem2
     real(kind=8) :: work(9), p(2, 2)
-    complex(kind=8) :: cbid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
@@ -150,9 +149,9 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
     knum2 = '&&PECAP2.NUME_ORD_2'
     crit = 'RELATIF'
 !
-    do 10 i = 1, 9
+    do i = 1, 9
         work(i) = zero
-10  end do
+    end do
 !
 ! --- ON VERIFIE QUE LES RESULTATS SONT DE TYPE EVOL_THER :
 !     ---------------------------------------------------

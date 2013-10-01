@@ -77,7 +77,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
     integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt, iret
     integer :: ibid, idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: rbid, rbid4(4), rbid6(6), rbid10(10), rbid33(3, 3)
+    real(kind=8) :: rbid, rbid6(6), rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
     real(kind=8) :: dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), sign(2*ndim)
@@ -127,21 +127,21 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                 jdfd2, jgano)
 !
     ASSERT(npg.eq.npgbis)
-    do 178 n = 1, nnop
+    do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
-178  end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS
-    do 1000 kpg = 1, npg
+    do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 100 i = 1, ndim
-            do 101 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*( n-1)+i)
-101          continue
-100      continue
+            end do
+        end do
 !
 !       JUSTE POUR CALCULER LES FF
 !
@@ -158,13 +158,13 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
             call vecini(3*ndim, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 110 n = 1, nnop
+            do n = 1, nnop
                 lsng = lsng + lsn(n) * ff(n)
                 lstg = lstg + lst(n) * ff(n)
-                do 111 i = 1, 3*ndim
+                do i = 1, 3*ndim
                     baslog(i) = baslog(i) + basloc(3*ndim*(n-1)+i) * ff(n)
-111              continue
-110          continue
+                end do
+            end do
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             if (ndim .eq. 2) then
@@ -184,9 +184,9 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
         if (axi) then
             r = 0.d0
-            do 120 n = 1, nnop
+            do n = 1, nnop
                 r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
-120          continue
+            end do
 !
             ASSERT(r.gt.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
@@ -206,10 +206,10 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
-        do 140 n = 1, nnop
+        do n = 1, nnop
             cpt = 0
 !         FONCTIONS DE FORME CLASSIQUES
-            do 141 i = 1, ndim
+            do i = 1, ndim
                 cpt = cpt+1
                 def(1,n,i) = f(i,1)*dfdi(n,1)
                 def(2,n,i) = f(i,2)*dfdi(n,2)
@@ -220,7 +220,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                     def(5,n,i) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1)) /rac2
                     def(6,n,i) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2)) /rac2
                 endif
-141          continue
+            end do
 !
 !         TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
@@ -228,27 +228,27 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
             endif
 !
 !         ENRICHISSEMENT PAR HEAVYSIDE
-            do 142 ig = 1, nfh
-                do 143 i = 1, ndim
+            do ig = 1, nfh
+                do i = 1, ndim
                     cpt = cpt+1
-                    do 144 m = 1, 2*ndim
+                    do m = 1, 2*ndim
                         def(m,n,cpt) = def(m,n,i) * he(fisno(n,ig))
-144                  continue
+                    end do
                     if (ndim .eq. 2) then
                         def(3,n,cpt) = 0.d0
                     endif
-143              continue
+                end do
 !
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
                     def(3,n,1+ndim*ig) = f(3,3) * ff(n)/r * he(fisno( n,ig))
                 endif
 !
-142          continue
+            end do
 !
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do 145 ig = 1, nfe
-                do 146 i = 1, ndim
+            do ig = 1, nfe
+                do i = 1, ndim
                     cpt=cpt+1
                     def(1,n,cpt) = f(i,1)* (dfdi(n,1) * fe(ig) + ff(n) *dgdgl(ig,1))
 !
@@ -272,18 +272,18 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                                        &fdi(n,3)*fe(ig)+ ff(n)*dgdgl(ig,3))&
                                        )/rac2
                     endif
-146              continue
+                end do
 !
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+IG)
                 if (axi) then
                     def(3,n,1+ndim*(nfh+ig)) = f(3,3) * ff(n)/r * fe( ig)
                 endif
 !
-145          continue
+            end do
 !
             ASSERT(cpt.eq.ddld)
 !
-140      continue
+        end do
 !
 !       CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       AVEC LES COORDONNEES DU SOUS-ELEMENT
@@ -301,9 +301,9 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
         endif
 !
         if (codopt .eq. 1) then
-            do 150 n = 1, 3
+            do n = 1, 3
                 sign(n) = sigma(n ,kpg)
-150          continue
+            end do
             sign(4) = sigma(4,kpg) * rac2
             if (ndim .eq. 3) then
                 sign(5) = sigma(5,kpg) * rac2
@@ -311,11 +311,11 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
             endif
         endif
 !
-        do 160 n = 1, nnop
+        do n = 1, nnop
             nn=dec(n)
 !
-            do 161 i = 1, ddld
-                do 162 m = 1, 2*ndim
+            do i = 1, ddld
+                do m = 1, 2*ndim
                     if (codopt .eq. 1) then
                         zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + def(m,&
                         n,i)*sign(m)*jac
@@ -325,12 +325,12 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                     else
                         ASSERT(.false.)
                     endif
-162              continue
-161          continue
+                end do
+            end do
 !
-160      continue
+        end do
 !
 !
-1000  end do
+    end do
 !
 end subroutine

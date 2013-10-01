@@ -145,9 +145,9 @@ subroutine majou(model, modmec, solveu, num, nu,&
     call jeecra('&&TABIRG', 'LONUTI', nbmode)
     call jeveut('&&TABIRG', 'E', iadirg)
 !
-    do 6 i = 1, nbmode
+    do i = 1, nbmode
         zi(iadirg+i-1)=i
- 6  continue
+    end do
 !
 ! FORMATION DU TABLEAU DES ADRESSES DES TABLEAUX
 !
@@ -180,31 +180,32 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !      CALL JEVEUO(MODMEC//'           .NUMO','L',INUMO)
     call jelira(modmec//'           .ORDR', 'LONMAX', nbnumo)
     call jeveuo(modmec//'           .ORDR', 'L', jordr)
-    do 100 jj = 1, nbsel
-        do 200 kk = 1, nbnumo
+    do jj = 1, nbsel
+        do kk = 1, nbnumo
             call rsadpa(modmec, 'L', 1, 'NUME_MODE', zi(jordr-1+kk),&
                         0, sjv=jpara, styp=k8bid)
             if (zi(idsel+jj-1) .eq. zi(jpara)) goto 100
-200      continue
+        end do
         vali = zi(idsel+jj-1)
         call utmess('F', 'ALGORITH13_35', si=vali)
-100  continue
+100     continue
+    end do
 !
 !
 !
 !
 ! BOUCLE SUR LE NOMBRES DE MODES
 !
-    do 1 ilires = 1, nbmode
+    do ilires = 1, nbmode
 !
 !
 ! SORTIE DE BOUCLE POUR LES MODES NON-SELECTIONNES
         if (nbsel .gt. 0) then
-            do 2 ii = 0, nbsel-1
+            do ii = 0, nbsel-1
                 if (ilires .eq. zi(idsel+ii)) goto 22
- 2          continue
+            end do
             goto 1
-22          continue
+ 22         continue
         endif
 !
 !
@@ -310,16 +311,17 @@ subroutine majou(model, modmec, solveu, num, nu,&
         vestoc= '&&MAJOU.VESTOC'
         call prstoc(vepr, vestoc, ilires, ilires, iadpr,&
                     nbvale, nbrefe, nbdesc)
- 1  continue
+  1     continue
+    end do
 !
 ! CREATION DE TABLEAUX NULS POUR LA PRESSION ET LES
 ! DEPLACEMENTS DES MODES NON-SELECTIONNES
 !
     if (nbsel .gt. 0) then
-        do 3 ilires = 1, nbmode
-            do 33 ii = 0, nbsel
+        do ilires = 1, nbmode
+            do ii = 0, nbsel
                 if (ilires .eq. zi(idsel+ii)) goto 3
-33          continue
+            end do
 !
             chaine = 'CBIDON'
             call codent(ilires, 'D0', chaine(1:5))
@@ -358,7 +360,8 @@ subroutine majou(model, modmec, solveu, num, nu,&
                 call wkvect(zk24(iadz+ilires-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
             endif
 !
- 3      continue
+  3         continue
+        end do
     endif
 !
 ! --- MENAGE

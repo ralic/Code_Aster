@@ -158,10 +158,10 @@ subroutine ajlipa(modelz, base)
 !
 !       NBMAMO : NBRE DE MAILLES DU MODELE
         nbmamo = 0
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnumsd-1+ima) = -999
             if (zi(jmail-1+ima) .ne. 0) nbmamo = nbmamo+1
-10      continue
+        end do
     endif
 !
 !     -- RECUPERATIONS DES MOT-CLES :
@@ -232,11 +232,11 @@ subroutine ajlipa(modelz, base)
 !     --------------------------------
         call wkvect('&&AJLIPA.PARTITION.SD', 'V V I', nbsd, jparsd)
         call sdpart(nbsd, dist0, zi(jparsd))
-        do 30 idd = 1, nbsd
+        do idd = 1, nbsd
             if (zi(jparsd-1+idd) .eq. 1) then
                 call jeveuo(jexnum(partit1//'.FETA', idd), 'L', jfeta)
                 call jelira(jexnum(partit1//'.FETA', idd), 'LONMAX', nbmasd)
-                do 20 i = 1, nbmasd
+                do i = 1, nbmasd
                     i2 = zi(jfeta-1+i)
                     if (zi(jnumsd-1+i2) .ne. -999) then
 !               -- MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
@@ -245,9 +245,9 @@ subroutine ajlipa(modelz, base)
                     else
                         zi(jnumsd-1+i2) = rang
                     endif
-20              continue
+                end do
             endif
-30      continue
+        end do
         call asmpi_comm_vect('MPI_MAX', 'I', nbval=nbma, vi=zi(jnumsd))
         call jedetr('&&AJLIPA.PARTITION.SD')
 !
@@ -265,18 +265,19 @@ subroutine ajlipa(modelz, base)
         ico = 0
         nbpro1 = nbproc
         plein0 = .false.
-        do 40,ima = 1,nbma
-        if (zi(jmail-1+ima) .eq. 0) goto 40
-        ico = ico+1
-        krang = mod(ico,nbpro1)
-        if (plein0) krang = krang+1
-        if (krang .eq. 0) nmp0af = nmp0af+1
-        zi(jnumsd-1+ima) = krang
-        if (nmp0af .eq. nmp0) then
-            plein0 = .true.
-            nbpro1 = nbproc-1
-        endif
-40      continue
+        do ima = 1, nbma
+            if (zi(jmail-1+ima) .eq. 0) goto 40
+            ico = ico+1
+            krang = mod(ico,nbpro1)
+            if (plein0) krang = krang+1
+            if (krang .eq. 0) nmp0af = nmp0af+1
+            zi(jnumsd-1+ima) = krang
+            if (nmp0af .eq. nmp0) then
+                plein0 = .true.
+                nbpro1 = nbproc-1
+            endif
+ 40         continue
+        end do
 !
 !
     else if (kdis.eq.'MAIL_CONTIGU') then
@@ -292,25 +293,26 @@ subroutine ajlipa(modelz, base)
         nmpp = nmp0
         krang = 0
         ico = 0
-        do 50,ima = 1,nbma
-        if (zi(jmail-1+ima) .eq. 0) goto 50
-        ico = ico+1
+        do ima = 1, nbma
+            if (zi(jmail-1+ima) .eq. 0) goto 50
+            ico = ico+1
 !         -- ON CHANGE DE PROC :
-        if (ico .gt. nmpp) then
-            ico = 1
-            nmpp = nmp1
-            krang = krang+1
-        endif
-        zi(jnumsd-1+ima) = krang
-50      continue
+            if (ico .gt. nmpp) then
+                ico = 1
+                nmpp = nmp1
+                krang = krang+1
+            endif
+            zi(jnumsd-1+ima) = krang
+ 50         continue
+        end do
 !
 !       -- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTRIBUEES :
         ico = 0
         icobis = 0
-        do 60 i = 1, nbma
+        do i = 1, nbma
             if (zi(jnumsd-1+i) .ge. 0) ico = ico+1
             if (zi(jnumsd-1+i) .eq. rang) icobis = icobis+1
-60      continue
+        end do
         ASSERT(ico.eq.nbmamo)
 !
 !
@@ -328,7 +330,7 @@ subroutine ajlipa(modelz, base)
     endif
 !
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

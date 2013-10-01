@@ -74,9 +74,9 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 !
 ! --- INITIALISATIONS
 !
-    do 5 i = 1, 8
+    do i = 1, 8
         lact(i) = 0
- 5  end do
+    end do
     call vecini(27, 0.d0, ffp)
     call vecini(400, 0.d0, vtmp)
     rr = 0.d0
@@ -120,7 +120,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 !
 ! --- BOUCLE SUR LES FISSURES
 !
-    do 90 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 ! --- RECUPERATION DIVERSES DONNEES CONTACT
 !
@@ -143,11 +143,11 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                     npgf, ipoidf, ivff, idfdef, ibid)
         nface=zi(jlonch+3*(ifiss-1)-1+2)
         nptf=zi(jlonch+3*(ifiss-1)-1+3)
-        do 11 i = 1, nface
-            do 12 j = 1, nptf
+        do i = 1, nface
+            do j = 1, nptf
                 cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
-12          continue
-11      continue
+            end do
+        end do
 !
         nspfis = npgf*nface
 !
@@ -162,11 +162,11 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 !
 ! --- BOUCLE SUR LES FACETTES
 !
-        do 100 ifa = 1, nface
+        do ifa = 1, nface
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !
-            do 110 ipgf = 1, npgf
+            do ipgf = 1, npgf
 !
 ! --- PREPARATION DU CALCUL
 !
@@ -185,24 +185,25 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                             ncomph, jfisno, jac, ffc, ffp,&
                             singu, rr, vtmp)
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
-110          continue
+            end do
 !
 ! --- FIN DE BOUCLE SUR LES FACETTES
-100      continue
+        end do
 ! --- FIN BOUCLE SUR LES FISSURES
         nbspg = nbspg + nspfis
         jbasec = jbasec + ncompb
         jptint = jptint + ncompp
         jaint = jaint + ncompa
         jcface = jcface + ncompc
-90  end do
+ 90     continue
+    end do
 !
 !-----------------------------------------------------------------------
 !     COPIE DES CHAMPS DE SORTIES ET FIN
 !-----------------------------------------------------------------------
 !
-    do 900 i = 1, nddl
+    do i = 1, nddl
         zr(ivectu-1+i)=zr(ivectu-1+i)+vtmp(i)
-900  end do
+    end do
 !
 end subroutine

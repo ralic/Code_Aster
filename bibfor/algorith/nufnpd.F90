@@ -1,5 +1,7 @@
-subroutine nufnpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
-                  vu, vp, typmod, mate, compor, geomi, sig, ddl, mini, vect)
+subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
+                  vff1, vff2, idff1, vu, vp,&
+                  typmod, mate, compor, geomi, sig,&
+                  ddl, mini, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,8 +110,11 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
 !
         divum = epsm(1) + epsm(2) + epsm(3)
 !
@@ -156,13 +161,16 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor(1), .false., mini, alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor(1),&
+                    .false., mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep, kbb)
+            call calkbb(nno1, ndim, w, def, dsbdep,&
+                        kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm, presd, kce, rce)
+            call calkce(nno1, ndim, kbp, kbb, presm,&
+                        presd, kce, rce)
         else
             call r8inir(nno2, 0.d0, rce, 1)
         endif

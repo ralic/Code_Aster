@@ -149,6 +149,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
     common /debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+    cbid = dcmplx(0.d0, 0.d0)
 !------------------------------------------------------------------
 ! INITIALISATION POUR ARPACK
 !
@@ -187,7 +188,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !------------------------------------------------------------------
 ! BOUCLE PRINCIPALE
 !
-20  continue
+ 20 continue
 !
 ! CALCUL DES VALEURS PROPRES DE (OP)
     call dnaups(ido, bmat, nbeq, which, nfreq,&
@@ -248,29 +249,29 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! 1/ CALCUL D'UN ELT. INITIAL X REPONDANT AU C.I. DE LAGRANGE
 ! 2/ CALCUL DE Y = (OP)* X AVEC DDL CINEMATIQUEMENT BLOQUES
 ! X <- X*DDL_LAGRANGE
-        do 25 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = workd(ipntr(1)+j-1) * ddllag(j)
-25      continue
+        end do
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
-        do 30 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
-30      continue
+        end do
 ! X <- (OP)*(X*DDL_BLOQUE)
 !        CALL MRMULT('ZERO', LMASSE, WORKD(IPNTR(1)), 'R', VAUX, 1)
-        do 35 j = 1, nbeq
+        do j = 1, nbeq
 !          VAUX(J) = VAUX(J) * DDLEXC(J)
             vaux(j) = workd(ipntr(1)+j-1) * ddlexc(j)
-35      continue
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
-        do 40 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)
-40      continue
+        end do
         goto 20
 !
     else if (ido .eq. 1) then
@@ -278,9 +279,9 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !--------------ELIMINATION DDL DANS RECHERCHE DE VP----------------
 !
         if (nbddl .ne. 0) then
-            do 42 j = 1, nbeq
+            do j = 1, nbeq
                 workd(ipntr(3)+j-1) = workd(ipntr(3)+j-1)*vecddl(j)
-42          continue
+            end do
         endif
 !
 !---------------------FIN ELIMINATION DDL--------------------------
@@ -289,25 +290,25 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! SEULEMENT (ID)*X VIA IDO= 2 CAR PRODUIT SCALAIRE= L2)
 ! X <- (B)*X*DDL_BLOQUE
 !        CALL MRMULT('ZERO', LMASSE, WORKD(IPNTR(3)), 'R', VAUX, 1)
-        do 45 j = 1, nbeq
+        do j = 1, nbeq
 !          VAUX(J) = VAUX(J) * DDLEXC(J)
             vaux(j) = workd(ipntr(3)+j-1) * ddlexc(j)
-45      continue
+        end do
 ! X <- (OP)*X
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, vaux, [cbid],&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
-        do 50 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)
-50      continue
+        end do
         goto 20
 !
     else if (ido .eq. 2) then
 ! X <- X*DDL_BLOQUE  (PRODUIT SCALAIRE= L2)
-        do 55 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1)=workd(ipntr(1)+j-1)*ddlexc(j)
-55      continue
+        end do
 ! RETOUR VERS DNAUPD
         goto 20
 !
@@ -351,7 +352,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !
 !
 ! VERIFICATIONS DES VALEURS PROPRES
-    do 60 j = 1, nconv
+    do j = 1, nconv
         varaux = abs(dsor(j,2))
         if (varaux .gt. omecor) then
             vali (1) = j
@@ -369,13 +370,13 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
             write(ifm,*)'--> LORSQUE LE SPECTRE RECHERCHE EST'
             write(ifm,*)'--> TRES ETENDU (EN PULSATION) '
         endif
-60  end do
+    end do
 !
 ! REMISE EN FORMES DES MODES PROPRES SELON FORMAT OP0045
-    do 65 i = 1, nconv
+    do i = 1, nconv
         dsor(i,1) = dsor(i,1) - sigmar
         dsor(i,2) = dsor(i,2) - sigmai
-65  end do
+    end do
 !
 ! TRI DES MODES PROPRES PAR RAPPORT AU NCONV DSOR(I)
     call vpordo(1, 0, nconv, dsor, vect,&

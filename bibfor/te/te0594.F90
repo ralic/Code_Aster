@@ -42,7 +42,7 @@ subroutine te0594(option, nomte)
 !-----------------------------------------------------------------------
 !
     integer :: ndim, nfh, nfe, ibid, igeom, nnop, jptint, jaint, jcface
-    integer ::  jlonch, jlst, itps, ihechp, jstno, jbasec
+    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
     integer :: imattt, nddlno
     real(kind=8) :: vect(1)
     character(len=8) :: elrefp
@@ -64,11 +64,11 @@ subroutine te0594(option, nomte)
     if (option .eq. 'RIGI_THER_PARO_R') then
         fonree = 'REEL'
         call jevech('PHECHPR', 'L', ihechp)
-        if (abs(zr(ihechp)) .lt. r8prem()) goto 9999
+        if (abs(zr(ihechp)) .lt. r8prem()) goto 999
     else if (option.eq.'RIGI_THER_PARO_F') then
         fonree = 'FONC'
         call jevech('PHECHPF', 'L', ihechp)
-        if (zk8(ihechp) .eq. '&FOZERO ') goto 9999
+        if (zk8(ihechp) .eq. '&FOZERO ') goto 999
     else
         ASSERT(.false.)
     endif
@@ -110,6 +110,6 @@ subroutine te0594(option, nomte)
     call xthddl(nfh, nddlno, nnop, zi(jstno), option,&
                 nomte, zr(imattt), vect)
 !
-9999  continue
+999 continue
 !
 end subroutine

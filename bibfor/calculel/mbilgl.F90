@@ -96,7 +96,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, ibid, iadrg, iadrgs, jresu, nchin
+    integer :: i, iadrg, iadrgs, jresu, nchin
     integer :: num
     integer :: ifon, init
     integer :: iadrno, iadgi, iadabs, ifm, niv
@@ -104,7 +104,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
 !
-    complex(kind=8) :: cbid, livc(nbmxpa)
+    complex(kind=8) :: livc(nbmxpa)
 !
 !
     character(len=2) :: codret
@@ -222,7 +222,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     call wkvect('&&MBILGL.VALG', 'V V R8', ndimte, iadrg)
     call jeveuo(thetai, 'L', jresu)
 !
-    do 20 i = 1, ndimte
+    do i = 1, ndimte
         chthet = zk24(jresu+i-1)
         call codent(i, 'G', chgthi(1))
         lpaout(1) = 'PGTHETA'
@@ -289,15 +289,15 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
                     'OUI')
         call mesomm(chgthi(1), 1, vr=gthi(1))
         zr(iadrg+i-1) = gthi(1)
-20  continue
+    end do
 !
 ! ABSCISSE CURVILIGNE
     call jeveuo(chfond, 'L', ifon)
     objcur = '&&MBILGL.ABSGAMM0'
     call wkvect(objcur, 'V V R', nnoff, iadabs)
-    do 11 i = 1, nnoff
+    do i = 1, nnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
-11  continue
+    end do
     xl=zr(iadabs-1+(nnoff-1)+1)
 !
 !- CALCUL DE G(S) SUR LE FOND DE FISSURE PAR 2 METHODES
@@ -327,9 +327,9 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !- SYMETRIE DU CHARGEMENT ET IMPRESSION DES RESULTATS
 !
     if (symech .ne. 'NON') then
-        do 30 i = 1, nnoff
+        do i = 1, nnoff
             zr(iadrgs+i-1) = 2.d0*zr(iadrgs+i-1)
-30      continue
+        end do
     endif
 !
 !- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S)
@@ -348,7 +348,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         call tbajvr(result, nbprup, 'INST', timeu, livr)
     endif
 !
-    do 40 i = 1, nnoff
+    do i = 1, nnoff
         call tbajvi(result, nbprup, 'NUME_CMP_I', indi, livi)
         call tbajvi(result, nbprup, 'NUME_CMP_J', indj, livi)
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
@@ -356,7 +356,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         call tbajvr(result, nbprup, 'G_BILI_LOCAL', zr(iadrgs+i-1), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-40  continue
+    end do
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

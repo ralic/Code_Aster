@@ -93,7 +93,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg, r8bid
-    real(kind=8) :: rbid, rbid4(4), rb4(4), rbid10(10), rb10(10), rbd4(4)
+    real(kind=8) :: rbid
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
     real(kind=8) :: dgdgl(4, 3), pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+nfe), nnop)
@@ -138,21 +138,21 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 ! DECALAGES CALCULES EN AMONT: PERF
 !
-    do 179 n = 1, nnop
+    do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
-179  continue
+    end do
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS
-    do 1000 kpg = 1, npg
+    do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 100 i = 1, ndim
-            do 101 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*( n-1)+i)
-101          continue
-100      continue
+            end do
+        end do
 !
 !       JUSTE POUR CALCULER LES FF
 !
@@ -169,13 +169,13 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             call vecini(3*ndim, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 110 n = 1, nnop
+            do n = 1, nnop
                 lsng = lsng + lsn(n) * ff(n)
                 lstg = lstg + lst(n) * ff(n)
-                do 111 i = 1, 3*ndim
+                do i = 1, 3*ndim
                     baslog(i) = baslog(i) + basloc(3*ndim*(n-1)+i) * ff(n)
-111              continue
-110          continue
+                end do
+            end do
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             if (ndim .eq. 2) then
@@ -196,19 +196,19 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
         if (axi) then
             r = 0.d0
             ur = 0.d0
-            do 120 n = 1, nnop
+            do n = 1, nnop
                 r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
                 ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
-                do 121 ig = 1, nfh
+                do ig = 1, nfh
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
 !
-121              continue
-                do 122 ig = 1, nfe
+                end do
+                do ig = 1, nfe
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
 !
-122              continue
+                end do
 !
-120          continue
+            end do
 !
             ASSERT(r.gt.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
@@ -240,10 +240,10 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
-        do 140 n = 1, nnop
+        do n = 1, nnop
             cpt = 0
 !         FONCTIONS DE FORME CLASSIQUES
-            do 141 i = 1, ndim
+            do i = 1, ndim
                 cpt = cpt+1
                 def(1,i,n) = f(i,1)*dfdi(n,1)
                 def(2,i,n) = f(i,2)*dfdi(n,2)
@@ -254,7 +254,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                     def(5,i,n) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1)) /rac2
                     def(6,i,n) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2)) /rac2
                 endif
-141          continue
+            end do
 !
 !         TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
@@ -262,27 +262,27 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             endif
 !
 !         ENRICHISSEMENT PAR HEAVYSIDE
-            do 142 ig = 1, nfh
-                do 143 i = 1, ndim
+            do ig = 1, nfh
+                do i = 1, ndim
                     cpt = cpt+1
-                    do 144 m = 1, 2*ndim
+                    do m = 1, 2*ndim
                         def(m,cpt,n) = def(m,i,n) * he(fisno(n,ig))
-144                  continue
+                    end do
                     if (ndim .eq. 2) then
                         def(3,cpt,n) = 0.d0
                     endif
-143              continue
+                end do
 !
 !   TERME DE CORRECTION (3,3) A PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
                     def(3,1+ndim*ig,n) = f(3,3) * ff(n)/r * he(fisno( n,ig))
                 endif
 !
-142          continue
+            end do
 !
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do 145 ig = 1, nfe
-                do 146 i = 1, ndim
+            do ig = 1, nfe
+                do i = 1, ndim
                     cpt=cpt+1
                     def(1,cpt,n) = f(i,1)* (dfdi(n,1) * fe(ig) + ff(n) *dgdgl(ig,1))
 !
@@ -306,18 +306,18 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                                        &fdi(n,3)*fe(ig)+ ff(n)*dgdgl(ig,3))&
                                        )/rac2
                     endif
-146              continue
+                end do
 !
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+IG)
                 if (axi) then
                     def(3,1+ndim*(nfh+ig),n) = f(3,3) * ff(n)/r * fe( ig)
                 endif
 !
-145          continue
+            end do
 !
             ASSERT(cpt.eq.ddld)
 !
-140      continue
+        end do
 !
 !       CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       AVEC LES COORDONNEES DU SOUS-ELEMENT
@@ -344,8 +344,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !       CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
         if (( option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' ) .and.&
             grdepl) then
-            do 160 n = 1, nnop
-                do 161 m = 1, n
+            do n = 1, nnop
+                do m = 1, n
                     pff(1,m,n) = dfdi(n,1)*dfdi(m,1)
                     pff(2,m,n) = dfdi(n,2)*dfdi(m,2)
                     pff(3,m,n) = 0.d0
@@ -358,8 +358,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                         pff(6,m,n)=(dfdi(n,2)*dfdi(m,3)+dfdi(n,3)*&
                         dfdi(m,2))/rac2
                     endif
-161              continue
-160          continue
+                end do
+            end do
         endif
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE POUR L'OPTION RIGI_MECA
@@ -380,20 +380,20 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                         option, eps, sigma, vi(1, kpg), dsidep,&
                         codret)
 !
-            do 170 n = 1, nnop
+            do n = 1, nnop
                 nn=dec(n)
-                do 178 i = 1, ddld
-                    do 172 kl = 1, 2*ndim
+                do i = 1, ddld
+                    do kl = 1, 2*ndim
                         sigp(kl,i) = 0.d0
-                        do 173 l = 1, 2*ndim
+                        do l = 1, 2*ndim
                             sigp(kl,i) = sigp(kl,i) + def(l,i,n)* dsidep(l,kl)
-173                      continue
-172                  continue
-178              continue
+                        end do
+                    end do
+                end do
 !
-                do 175 m = 1, n
+                do m = 1, n
                     mn=dec(m)
-                    do 171 i = 1, ddld
+                    do i = 1, ddld
                         kkd = (nn+i-1) * (nn+i) /2
                         if (m .eq. n) then
                             j1 = i
@@ -401,24 +401,24 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                             j1 = ddld
                         endif
 !
-                        do 174 j = 1, ddld
+                        do j = 1, ddld
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2 = 0.d0
-                            do 176 l = 1, 2*ndim
+                            do l = 1, 2*ndim
                                 tmp2 = tmp2 + sigp(l,i)*def(l,j,m)
-176                          continue
+                            end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (j .le. j1) then
                                 matuu(kkd+mn+j) = matuu(kkd+mn+j) + tmp2*jac
                             endif
 !
-174                      continue
-171                  continue
-175              continue
-170          continue
-            goto 9999
+                        end do
+                    end do
+                end do
+            end do
+            goto 999
         endif
 !
 ! - LOI DE COMPORTEMENT : CALCUL DE S(E) ET DS/DE À PARTIR DE EPS
@@ -439,19 +439,19 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA') then
 !
-            do 180 n = 1, nnop
+            do n = 1, nnop
                 nn=dec(n)
 !
-                do 181 i = 1, ddld
+                do i = 1, ddld
                     kkd = (nn+i-1) * (nn+i) /2
-                    do 182 kl = 1, 2*ndim
+                    do kl = 1, 2*ndim
                         sigp(kl,i) = 0.d0
-                        do 183 l = 1, 2*ndim
+                        do l = 1, 2*ndim
                             sigp(kl,i) = sigp(kl,i) + def(l,i,n)* dsidep(l,kl)
-183                      continue
-182                  continue
-                    do 184 j = 1, ddld
-                        do 185 m = 1, n
+                        end do
+                    end do
+                    do j = 1, ddld
+                        do m = 1, n
                             mn=dec(m)
 !
                             if (m .eq. n) then
@@ -464,9 +464,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                             tmp1 = 0.d0
                             if (grdepl .and. i .eq. j) then
                                 tmp1 = 0.d0
-                                do 186 l = 1, 2*ndim
+                                do l = 1, 2*ndim
                                     tmp1 = tmp1 + pff(l,m,n)*sigma(l)
-186                              continue
+                                end do
 !
 !                  TERME DE CORRECTION AXISYMETRIQUE
 !                    IF (AXI .AND. I.EQ.1) THEN
@@ -477,19 +477,19 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2 = 0.d0
-                            do 187 l = 1, 2*ndim
+                            do l = 1, 2*ndim
                                 tmp2 = tmp2 + sigp(l,i)*def(l,j,m)
-187                          continue
+                            end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (j .le. j1) then
                                 matuu(kkd+mn+j) = matuu(kkd+mn+j) + ( tmp1+tmp2)*jac
                             endif
 !
-185                      continue
-184                  continue
-181              continue
-180          continue
+                        end do
+                    end do
+                end do
+            end do
         endif
 !
 !
@@ -497,16 +497,16 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
 !
-            do 190 n = 1, nnop
+            do n = 1, nnop
                 nn=dec(n)
 !
-                do 191 i = 1, ddld
-                    do 192 m = 1, 2*ndim
+                do i = 1, ddld
+                    do m = 1, 2*ndim
                         zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + def(m,&
                         i,n)*sigma(m)*jac
-192                  continue
-191              continue
-190          continue
+                    end do
+                end do
+            end do
 !
             if (grdepl) then
 !          CONVERSION LAGRANGE -> CAUCHY
@@ -516,9 +516,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                     detf = detf - f(2,3)*(f(1,1)*f(3,2)-f(3,1)*f(1,2)) + f(1,3)*(f(2,1)*f(3,2)-f(&
                            &3,1)*f(2,2))
                 endif
-                do 200 i = 1, 2*ndim
+                do i = 1, 2*ndim
                     sig(i,kpg) = 0.d0
-                    do 210 l = 1, 2*ndim
+                    do l = 1, 2*ndim
                         ftf = (&
                               f(&
                               indi(i), indi(l))*f(indj(i), indj(l)) + f(indi(i),&
@@ -526,14 +526,14 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                               )*rind(l&
                               )
                         sig(i,kpg) = sig(i,kpg) + ftf*sigma(l)
-210                  continue
+                    end do
                     sig(i,kpg) = sig(i,kpg)/detf
-200              continue
+                end do
             else
 !          SIMPLE CORRECTION DES CONTRAINTES
-                do 300 l = 1, 3
+                do l = 1, 3
                     sig(l,kpg) = sigma(l)
-300              continue
+                end do
                 sig(4,kpg) = sigma(4)/rac2
                 if (ndim .eq. 3) then
                     sig(5,kpg) = sigma(5)/rac2
@@ -542,8 +542,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             endif
         endif
 !
-9999      continue
+999     continue
 !
-1000  end do
+    end do
 !
 end subroutine

@@ -19,7 +19,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
@@ -277,7 +277,8 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 !
 ! 3.6.2. ==> CONCATENATION DES SECOND(S) MEMBRE(S)
 !
-    call fetccn(chamn1, chamn2, chamn3, chamn4, typcum, vecass)
+    call fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
+                vecass)
 !
 !
 ! 3.7. ==> CHARGES CINEMATIQUES

@@ -92,6 +92,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     integer :: lcine
     integer :: jdigs, jrefab, jccid
     real(kind=8) :: epsb, d1, moydia
+    cbid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -170,9 +171,9 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !     -- VALEUR ABSOLUE MOYENNE DE LA DIAGONALE
     moydia=0.d0
-    do 10 ieq = 1, neq
+    do ieq = 1, neq
         moydia=moydia+abs(zr(jdigs-1+ieq))
-10  end do
+    end do
 !
 !
 !     -- 1. RECHERCHE DES PIVOTS NULS DE LA MATRICE :
@@ -181,7 +182,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     nmrig=0
 !
 !     -- DEBUT BOUCLE: TANT QU'IL EXISTE DES PIVOTS NULS
-20  continue
+ 20 continue
     pass=0
     nmrav=nmrig
 !     -- FACTORISATION : SI NPIVOT.NE.0 ALORS KI SINGULIERE ET
@@ -197,7 +198,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !       -- 1.2 LA FACT. A PEUT ETRE CALCULE DES PIVOTS QUASI-NULS
 !          POUR EVITER DE FACTORISER PLUSIEURS FOIS (COUT), ON RELEVE
 !          TOUS LES PETITS PIVOTS OBTENUS.
-        do 30 ieq = 1, neq
+        do ieq = 1, neq
             d1=abs(zr(jdigs-1+ieq)/zr(jdigs+neq-1+ieq))
             if (d1 .gt. 0.d0) then
                 ndeci=int(log10(d1))
@@ -208,25 +209,25 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
                 nmrig=nmrig+1
                 zi(jksing-1+nmrig)=ieq
             endif
-30      continue
+        end do
     endif
 !
 !     -- 1.3 SI ON A RENCONTRE DE NOUVEAUX PIVOTS NULS :
-    do 31, ksing=nmrav+1,nmrig
-    pass=1
-    isingu=zi(jksing-1+ksing)
-    ASSERT(isingu.gt.0 .and. isingu.le.neq)
+    do ksing = nmrav+1, nmrig
+        pass=1
+        isingu=zi(jksing-1+ksing)
+        ASSERT(isingu.gt.0 .and. isingu.le.neq)
 !       -- CE SERAIT BIZARRE QUE ISINGU SOIT UN DDL DE LAGRANGE :
-    ASSERT(zi(jdelg-1+isingu).eq.0)
-    zi(jpomr-1+isingu)=ksing
-    if (niv .ge. 2) then
-        write (ifm,*)'<TLDLG2> PIVOT NUL A LA LIGNE ',isingu
-        call rgndas(nu, isingu, nomno, nomcmp, tyddl,&
-                    ligrel, infobl)
-        ASSERT(tyddl.eq.'A'.or.tyddl.eq.'D')
-        write (ifm,*)'<TLDLG2> NOEUD ',nomno,' CMP ',nomcmp
-    endif
-    31 end do
+        ASSERT(zi(jdelg-1+isingu).eq.0)
+        zi(jpomr-1+isingu)=ksing
+        if (niv .ge. 2) then
+            write (ifm,*)'<TLDLG2> PIVOT NUL A LA LIGNE ',isingu
+            call rgndas(nu, isingu, nomno, nomcmp, tyddl,&
+                        ligrel, infobl)
+            ASSERT(tyddl.eq.'A'.or.tyddl.eq.'D')
+            write (ifm,*)'<TLDLG2> NOEUD ',nomno,' CMP ',nomcmp
+        endif
+    end do
 !
     if (pass .ne. 0) then
         goto 40
@@ -234,7 +235,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
         goto 60
     endif
 !
-40  continue
+ 40 continue
 !
 !     -- 1.3 REINITIALISATION DE B
     call detrsd('MATR_ASSE', nomb19)
@@ -250,9 +251,9 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     else
         call wkvect(nomb19//'.CCID', 'V V I', neq+1, jccid)
     endif
-    do 50,ieq=1,neq
-    if (zi(jpomr-1+ieq) .gt. 0) zi(jccid-1+ieq)=1
-    50 end do
+    do ieq = 1, neq
+        if (zi(jpomr-1+ieq) .gt. 0) zi(jccid-1+ieq)=1
+    end do
     zi(jccid-1+neq+1)=nmrig
     zk24(jrefab-1+3)='ELIML'
     call mtmchc(nomb19, 'ELIMF')
@@ -261,7 +262,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     goto 20
 !
 !     -- FIN RECHERCHE DES PIVOTS NULS :
-60  continue
+ 60 continue
 !
 !
 !     -- 1.4 : FIN DE BOUCLE RECHERCHE NMRIG :
@@ -293,14 +294,14 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !       -- REMPLISSAGE POUR AVOIR FI=0 ET U0=-1 (NOTATION CSMBGG)
         krig=1
-        do 70 jeq = 1, neq
+        do jeq = 1, neq
             if (zi(jpomr+jeq-1) .ne. 0) then
                 zr(lcine+(krig-1)*neq+jeq-1)=-1.d0
                 krig=krig+1
             endif
-70      continue
+        end do
 !
-        do 80 krig = 1, nmrig
+        do krig = 1, nmrig
 !       -----------------------------------------------------------
 !         CSMBGG : CALCUL DE LA CONTRIBUTION AU SECOND MEMBRE DES
 !         DDLS IMPOSES LORSQU'ILS SONT TRAITEES PAR ELIMINATION :
@@ -319,7 +320,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
             call csmbgg(lmatb, zr(lxsol+(krig-1)*neq), zr(lcine+(krig- 1)*neq), [cbid], [cbid],&
                         'R')
-80      continue
+        end do
 !
 !       -- REMARQUE : ON N'A PAS BESOIN D'UTILISER MRCONL CAR
 !          LES DDLS DUALISES SONT MIS A 0. (ALPHA*0=0 !)

@@ -50,31 +50,31 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
     if (typcal(1:4) .eq. 'TRAN') then
 !
         passto(isto1+1) = dt
-        do 69 im = 1, nbmode
+        do im = 1, nbmode
             depstr(ind+im) = depger(im)
             vitstr(ind+im) = vitger(im)
             accstr(ind+im) = accger(im)
-69      continue
+        end do
 !
     else
 !
-        do 100 ich = 1, nbsym
+        do ich = 1, nbsym
 !
             if (nomsym(ich)(1:4) .eq. 'DEPL') then
-                do 101 im = 1, nbmode
+                do im = 1, nbmode
                     depstc(ind+im) = depgec(im)
-101              continue
+                end do
             else if (nomsym(ich)(1:4).eq.'VITE') then
-                do 102 im = 1, nbmode
+                do im = 1, nbmode
                     vitstc(ind+im) = vitgec(im)
-102              continue
+                end do
             else
-                do 103 im = 1, nbmode
+                do im = 1, nbmode
                     accstc(ind+im) = accgec(im)
-103              continue
+                end do
             endif
 !
-100      continue
+        end do
 !
     endif
 !

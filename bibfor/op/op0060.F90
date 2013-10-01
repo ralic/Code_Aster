@@ -329,9 +329,9 @@ subroutine op0060()
 ! 4.1. ==> PREPARATION DU CALCUL ---
 !====
 !
-    do 41 i = 1, nbmat
+    do i = 1, nbmat
         call jeveuo(nomat(i), 'L', lmat(i))
-41  continue
+    end do
     neq = zi(lmat(1)+2)
     typcst(1) = 'R'
     typcst(2) = 'R'
@@ -344,14 +344,14 @@ subroutine op0060()
     dynam = baseno//'.DYNAMIC_MX'
 !
     jpomr=0
-    do 15 icomb = 1, nbmat
+    do icomb = 1, nbmat
 !        ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
         nomi =nomat(icomb)(1:19)
         call jeveuo(nomi//'.REFA', 'L', jrefe)
         if (zk24(jrefe-1+9) .eq. 'MR') then
             jpomr=icomb
         endif
-15  continue
+    end do
     if (jpomr .eq. 0) then
         if (lamor .ne. 0) then
             call mtdefs(dynam, amor, 'V', typres)
@@ -387,7 +387,7 @@ subroutine op0060()
 !====
     call uttcpu('CPU.OP0060', 'INIT', ' ')
 !
-    do 42 ifreq = 1, nbfreq
+    do ifreq = 1, nbfreq
         call uttcpu('CPU.OP0060', 'DEBUT', ' ')
 !
 ! ----- CALCUL DES COEFF. POUR LES MATRICES
@@ -451,7 +451,7 @@ subroutine op0060()
         if (.not.calgen) then
 !       --- SI CALCUL SUR BASE PHYSIQUE
 !         - CREER UN CHAM_NO DANS LA SD_RESULTAT
-            do 130 inom = 1, nbsym
+            do inom = 1, nbsym
 !         --- BOUCLE SUR LES CHAMPS A STOCKER (DEPL,VITE,ACCE)
                 call rsexch(' ', result, nomsym(inom), ifreq+nbold, chamno,&
                             ier)
@@ -477,23 +477,23 @@ subroutine op0060()
 !           --- RECOPIE DANS L'OBJET RESULTAT
                 call jeveuo(chamno//'.VALE', 'E', lvale)
                 if ((nomsym(inom) .eq. 'DEPL' ) .or. ( nomsym(inom) .eq. 'PRES' )) then
-                    do 131 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zc(lvale+ieq) = zc(lsecmb+ieq)
-131                  continue
+                    end do
                 else if (nomsym(inom) .eq. 'VITE') then
                     cval = dcmplx(0.d0,depi*freq)
-                    do 132 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zc(lvale+ieq) = cval * zc(lsecmb+ieq)
-132                  continue
+                    end do
                 else if (nomsym(inom) .eq. 'ACCE') then
                     rval = coef(2)
-                    do 133 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zc(lvale+ieq) = rval * zc(lsecmb+ieq)
-133                  continue
+                    end do
                 endif
                 call rsnoch(result, nomsym(inom), ifreq+nbold)
                 call jelibe(chamno//'.VALE')
-130          continue
+            end do
 !         --- FIN DE LA BOUCLE 130 SUR LES CHAMPS A STOCKER
 !
 !         --- RECOPIE DE LA FREQUENCE DE STOCKAGE
@@ -504,24 +504,24 @@ subroutine op0060()
         else
 !       --- SI CALCUL SUR BASE GENERALISEE
 !         - REMPLISSAGE DES VECTEURS DE TRAVAIL: DEPGEC,VITGEC,ACCGEC
-            do 140 inom = 1, nbsym
+            do inom = 1, nbsym
                 if (nomsym(inom) .eq. 'DEPL') then
-                    do 141 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zc(ldgec+ieq) = zc(lsecmb+ieq)
-141                  continue
+                    end do
                 else if (nomsym(inom) .eq. 'VITE') then
                     cval = dcmplx(0.d0,depi*freq)
-                    do 142 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zc(lvgec+ieq) = cval * zc(lsecmb+ieq)
-142                  continue
+                    end do
                 else if (nomsym(inom) .eq. 'ACCE') then
                     rval = coef(2)
-                    do 143 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zc(lagec+ieq) = rval * zc(lsecmb+ieq)
-143                  continue
+                    end do
                 endif
 !
-140          continue
+            end do
             call mdarch(isto1, ifreq-1, freq, 0.d0, neq,&
                         typcal, nbsym, nomsym, [0.d0], [0.d0],&
                         [0.d0], [0.d0], [0.d0], [0.d0], zc(ldgec),&
@@ -547,7 +547,7 @@ subroutine op0060()
             call utmess('Z', 'DYNAMIQUE_13', si=ifreq, nr=2, valr=rtab,&
                         num_except=28)
         endif
-42  continue
+    end do
 !
 !     --- DETRUIRE LES OBJETS TEMPORAIRES A LA FIN DU CALCUL GENE
     if (calgen) then
@@ -567,7 +567,7 @@ subroutine op0060()
                     carele, iret)
         call jeveuo(result//'           .ORDR', 'L', jord)
         call jelira(result//'           .ORDR', 'LONUTI', nbord)
-        do 43 i = 1, nbord
+        do i = 1, nbord
             call rsadpa(result, 'E', 1, 'MODELE', zi(jord+i-1),&
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = nomo
@@ -577,7 +577,7 @@ subroutine op0060()
             call rsadpa(result, 'E', 1, 'CARAELEM', zi(jord+i-1),&
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = carele(1:8)
-43      continue
+        end do
     endif
 !
 ! --- CAS DE REPRISE AVEC CALCUL SUR BASE GENERALISE

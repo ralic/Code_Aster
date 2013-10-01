@@ -43,8 +43,9 @@ subroutine op0015()
     character(len=16) :: concep, nomcmd
     character(len=19) :: solve1, solve2
     complex(kind=8) :: cbid
-    real(kind=8) :: eps, rbid
-    integer ::  iret
+    real(kind=8) :: eps
+    integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
     call jemarq()
 !

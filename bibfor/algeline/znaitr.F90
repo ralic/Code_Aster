@@ -393,7 +393,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !     | NOTE:  B*R_{J-1} IS ALREADY IN WORKD(1:N)=WORKD(IPJ:IPJ+N-1) |
 !     %--------------------------------------------------------------%
 !
-1000  continue
+1000 continue
 !
     if (msglvl .gt. 1) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: GENERATING ARNOLDI VECTOR NUMBER')
@@ -428,10 +428,10 @@ subroutine znaitr(ido, bmat, n, k, np,&
     betaj = rzero
     nrstrt = nrstrt + 1
     itry = 1
-20  continue
+ 20 continue
     rstart = .true.
     ido = 0
-30  continue
+ 30 continue
 !
 !           %--------------------------------------%
 !           | IF IN REVERSE COMMUNICATION MODE AND |
@@ -457,7 +457,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
         goto 9000
     endif
 !
-40  continue
+ 40 continue
 !
 !        %---------------------------------------------------------%
 !        | STEP 2:  V_{J} = R_{J-1}/RNORM AND P_{J} = P_{J}/RNORM  |
@@ -502,7 +502,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------%
 !
     goto 9000
-50  continue
+ 50 continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -538,7 +538,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd(ipj), 1)
     endif
-60  continue
+ 60 continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -607,7 +607,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd(ipj), 1)
     endif
-70  continue
+ 70 continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH1 = .TRUE. |
@@ -657,7 +657,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | GRAM-SCHMIDT USING ALL THE ARNOLDI VECTORS V_{J}  |
 !        %---------------------------------------------------%
 !
-80  continue
+ 80 continue
 !
     if (msglvl .gt. 2) then
         rtemp(1) = wnorm
@@ -705,7 +705,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd(ipj), 1)
     endif
-90  continue
+ 90 continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH2 = .TRUE. |
@@ -767,9 +767,9 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !           | OTHERWISE RESID IS NUMERICALLY IN THE SPAN OF V |
 !           %-------------------------------------------------%
 !
-        do 95 jj = 1, n
+        do jj = 1, n
             resid(jj) = zero
-95      continue
+        end do
         rnorm = rzero
     endif
 !
@@ -779,7 +779,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | STEPS OF ITERATIVE REFINEMENT.               |
 !        %----------------------------------------------%
 !
-100  continue
+100 continue
 !
     rstart = .false.
     orth2 = .false.
@@ -791,7 +791,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     j = j + 1
     if (j .gt. k+np) then
         ido = 99
-        do 110 i = max(1, k), k+np-1
+        do i = max(1, k), k+np-1
 !
 !              %--------------------------------------------%
 !              | CHECK FOR SPLITTING AND DEFLATION.         |
@@ -805,7 +805,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
             if (tst1 .eq. dble(zero)) tst1 = zlanhs( '1', k+np, h, ldh, rbid )
             if (dlapy2(dble(h(i+1,i)),dimag(h(i+1,i))) .le. max( ulp* tst1, smlnum )) h(i+1,i) = &
                                                                                       zero
-110      continue
+        end do
 !
         if (msglvl .gt. 2) then
             call zmout(logfil, k+np, k+np, h, ldh,&
@@ -827,7 +827,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !     |                                                               |
 !     %---------------------------------------------------------------%
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !     %---------------%

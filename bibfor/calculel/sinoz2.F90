@@ -116,40 +116,40 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 nbno)
 !
     call wkvect('&&SINOZ2.LONGCONINV', 'V V I', nbno, ialcv)
-    do 20 ima = 1, nbma
+    do ima = 1, nbma
         iad = iatyma - 1 + ima
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
         if (typema(1:4) .eq. 'TRIA' .or. typema(1:4) .eq. 'QUAD') then
             call jeveuo(jexnum(connex, ima), 'L', jcon)
             call jelira(jexnum(connex, ima), 'LONMAX', nbn)
-            do 10 ino = 1, nbn
+            do ino = 1, nbn
                 num = zi(jcon-1+ino)
                 zi(ialcv-1+num) = zi(ialcv-1+num) + 1
-10          continue
+            end do
         endif
-20  end do
+    end do
 !
-    do 30,ino = 1,nbno
-    call jeecra(jexnum(coninv, ino), 'LONMAX', zi(ialcv-1+ino))
-    30 end do
+    do ino = 1, nbno
+        call jeecra(jexnum(coninv, ino), 'LONMAX', zi(ialcv-1+ino))
+    end do
 !
     call wkvect('&&SINOZ2.INDIC', 'V V I', nbno, iindic)
 !
-    do 50 ima = 1, nbma
+    do ima = 1, nbma
         iad = iatyma - 1 + ima
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
         if (typema(1:4) .eq. 'TRIA' .or. typema(1:4) .eq. 'QUAD') then
             call jeveuo(jexnum(connex, ima), 'L', jcon)
             call jelira(jexnum(connex, ima), 'LONMAX', nbn)
-            do 40 ino = 1, nbn
+            do ino = 1, nbn
                 num = zi(jcon-1+ino)
                 call jeveuo(jexnum(coninv, num), 'E', jconin)
                 nb = zi(iindic-1+num)
                 zi(jconin+nb) = ima
                 zi(iindic-1+num) = zi(iindic-1+num) + 1
-40          continue
+            end do
         endif
-50  end do
+    end do
     call jedetr('&&SINOZ2.INDIC')
 !
 !   CONSTRUCTION D'UN VECTEUR DE BOOLEENS SUR LES NOEUDS INDIQUANT
@@ -184,30 +184,30 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     call jeveuo(noeub//'.VALE', 'L', jval)
     eps = 1.d-06
     nbnob = 0
-    do 70 ino = 1, nbno
+    do ino = 1, nbno
         numeq = zi(jprno-1+ (nbec+2)* (ino-1)+1)
         nbcmp = zi(jprno-1+ (nbec+2)* (ino-1)+2)
         xnorm = 0.d0
-        do 60 icmp = 1, nbcmp
+        do icmp = 1, nbcmp
             xnorm = xnorm + zr(jval-1+numeq-1+icmp)**2
-60      continue
+        end do
         if (xnorm .le. eps) then
             zl(jnoeu-1+ino) = .false.
         else
             zl(jnoeu-1+ino) = .true.
             nbnob = nbnob + 1
         endif
-70  end do
+    end do
     call wkvect('&&SINOZ2.NBPATCHMIL', 'V V I', nbno, jpami)
     call wkvect('&&SINOZ2.NUMNB', 'V V I', nbnob, jnb)
     call wkvect('&&SINOZ2.NBPATCH', 'V V I', nbnob, jpa)
     inob = 0
-    do 80 ino = 1, nbno
+    do ino = 1, nbno
         if (zl(jnoeu-1+ino)) then
             inob = inob + 1
             zi(jnb-1+inob) = ino
         endif
-80  end do
+    end do
     if (inob .ne. nbnob) then
         call utmess('F', 'CALCULEL4_84')
     endif
@@ -216,7 +216,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
     ntri = 0
     nqua = 0
-    do 90 ima = 1, nbma
+    do ima = 1, nbma
         iad = iatyma - 1 + ima
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
         if (typema(1:4) .eq. 'TRIA') then
@@ -230,7 +230,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 call utmess('F', 'CALCULEL4_86')
             endif
         endif
-90  end do
+    end do
     if (ntri .ne. 0 .and. nqua .ne. 0) then
         call utmess('F', 'CALCULEL4_87')
     endif
@@ -265,7 +265,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !   *********************
 !
     ipa = 0
-    do 240 ino = 1, nbno
+    do ino = 1, nbno
         if (.not.zl(jnoeu-1+ino)) then
             call jelira(jexnum(coninv, ino), 'LONMAX', nbmav)
 !
@@ -293,11 +293,11 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 xmax = -1.d+10
                 ymin = 1.d+10
                 ymax = -1.d+10
-                do 140 ima = 1, nbmav
+                do ima = 1, nbmav
                     numav = zi(iamav-1+ima)
                     call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                     call jeveuo(jexnum(connex, numav), 'L', ianov)
-                    do 130 inoma = 1, nbnoma
+                    do inoma = 1, nbnoma
                         num = zi(ianov-1+inoma)
                         x(inoma) = zr(iacoor-1+3* (num-1)+1)
                         y(inoma) = zr(iacoor-1+3* (num-1)+2)
@@ -305,12 +305,12 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                         if (y(inoma) .le. ymin) ymin = y(inoma)
                         if (x(inoma) .ge. xmax) xmax = x(inoma)
                         if (y(inoma) .ge. ymax) ymax = y(inoma)
-130                  continue
-140              continue
+                    end do
+                end do
 !
 !      BOUCLE SUR LES MAILLES VOISINES
 !
-                do 160 ima = 1, nbmav
+                do ima = 1, nbmav
                     numav = zi(iamav-1+ima)
                     numgr = zi(iarepe-1+2*(numav-1)+1)
                     numel = zi(iarepe-1+2*(numav-1)+2)
@@ -319,7 +319,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 !        RECUPERATION DES COORDONNEES DES NOEUDS
 !
-                    do 150 inoma = 1, nbnoma
+                    do inoma = 1, nbnoma
                         num = zi(ianov-1+inoma)
 !    SI NOEUD BORD
                         if (zl(jnoeu-1+num)) then
@@ -331,7 +331,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                         endif
                         x(inoma) = zr(iacoor-1+3* (num-1)+1)
                         y(inoma) = zr(iacoor-1+3* (num-1)+2)
-150                  continue
+                    end do
 !
 !        RECUPERATION DES FCTS DE FORME DE L'ELEMENT
                     elrefe = zk16(jelfa-1+numav)(1:8)
@@ -352,7 +352,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
                     call jedetr(nomjv)
 !
-160              continue
+                end do
                 ianew = ianob + nbnobp
 !
 !   PRECONDITIONNEMENT PAR LA DIAGONALE ET RESOLUTION
@@ -361,11 +361,11 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 call mtcrou(a, b, 9, nno, 4,&
                             wk1, wk2)
 !
-                do 180 ic = 1, 4
-                    do 170 i = 1, nno
+                do ic = 1, 4
+                    do i = 1, nno
                         b(i,ic) = b(i,ic)*diag(i)
-170                  continue
-180              continue
+                    end do
+                end do
 !
                 xino = zr(iacoor-1+3* (ino-1)+1)
                 yino = zr(iacoor-1+3* (ino-1)+2)
@@ -380,27 +380,27 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 !    TRAITEMENT DES NOEUDS BORD DU PATCH
 !
-                do 200 inob = 1, nbnobp
+                do inob = 1, nbnobp
                     num = zi(ianob-1+inob)
-                    do 190 k = 1, nbnob
+                    do k = 1, nbnob
                         numc = zi(jnb-1+k)
                         if (numc .eq. num) then
                             zi(jpa-1+k) = zi(jpa-1+k) + 1
                         endif
-190                  continue
+                    end do
                     xinob = zr(iacoor-1+3* (num-1)+1)
                     yinob = zr(iacoor-1+3* (num-1)+2)
                     xinob = -1.d0 + 2.d0* (xinob-xmin)/ (xmax-xmin)
                     yinob = -1.d0 + 2.d0* (yinob-ymin)/ (ymax-ymin)
                     call zzpoly(nno, num, xinob, yinob, zr(jsig),&
                                 b)
-200              continue
+                end do
                 call jedetr('&&SINOZ2.NOEBOPA')
 !
 !    TRAITEMENT DES NOEUDS MILIEUX (NON BORD)
 !
                 if (nno .ge. 6) then
-                    do 220 ima = 1, nbmav
+                    do ima = 1, nbmav
                         numav = zi(iamav-1+ima)
                         call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                         call jeveuo(jexnum(connex, numav), 'L', ianov)
@@ -408,12 +408,12 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !       RECUPERATION DU NOEUD MILIEU ASSOCIE AU NOEUD SOMMET DU PATCH
 !             (1 SEUL PAR ELEMENT VOISIN)
 !
-                        do 210 inoma = 1, nbnoma
+                        do inoma = 1, nbnoma
                             num = zi(ianov-1+inoma)
                             if (num .eq. ino) then
                                 numloc = inoma
                             endif
-210                      continue
+                        end do
 !
                         if (nno .eq. 6) numloc = numloc + 3
                         if (nno .eq. 8) numloc = numloc + 4
@@ -426,14 +426,14 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                         yinomi = -1.d0 + 2.d0* (yinomi-ymin)/ (ymax- ymin)
                         call zzpoly(nno, num, xinomi, yinomi, zr(jsig),&
                                     b)
-220                  continue
+                    end do
 !
                 endif
 !
 !    TRAITEMENT DU NOEUD BARYCENTRE (CAS DES Q9)
 !
                 if (nno .eq. 9) then
-                    do 230 ima = 1, nbmav
+                    do ima = 1, nbmav
                         numav = zi(iamav-1+ima)
                         call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                         call jeveuo(jexnum(connex, numav), 'L', ianov)
@@ -448,38 +448,38 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                         yinomi = -1.d0 + 2.d0* (yinomi-ymin)/ (ymax- ymin)
                         call zzpoly(nno, num, xinomi, yinomi, zr(jsig),&
                                     b)
-230                  continue
+                    end do
                 endif
 !
             endif
         endif
-240  end do
+    end do
 !
 !    MOYENNAGE SUR LES NOEUDS BORD
 !
-    do 260 i = 1, nbnob
+    do i = 1, nbnob
         num = zi(jnb-1+i)
         if (zi(jpa-1+i) .eq. 0) then
             call utmess('F', 'CALCULEL4_89')
         endif
-        do 250 ic = 1, 4
+        do ic = 1, 4
             zr(jsig-1+4* (num-1)+ic) = zr(jsig-1+4* (num-1)+ic)/ zi(jpa-1+i)
-250      continue
-260  end do
+        end do
+    end do
 !
 !    MOYENNAGE SUR LES NOEUDS NON BORD
 !
-    do 280 ino = 1, nbno
+    do ino = 1, nbno
 !    SI PAS NOEUD BORD
         if (.not.zl(jnoeu-1+ino)) then
             if (zi(jpami-1+ino) .eq. 0) then
                 zi(jpami-1+ino) = 1
             endif
-            do 270 ic = 1, 4
+            do ic = 1, 4
                 zr(jsig-1+4* (ino-1)+ic) = zr( jsig-1+4* (ino-1)+ic )/ zi(jpami-1+ino )
-270          continue
+            end do
         endif
-280  end do
+    end do
     call detrsd('CHAMP_GD', '&&VECASS')
     call jedetr('&&SINOZ2.NUMNB')
     call jedetr('&&SINOZ2.NBPATCH')

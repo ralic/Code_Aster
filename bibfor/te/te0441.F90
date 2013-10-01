@@ -119,29 +119,29 @@ subroutine te0441(option, nomte)
 !
         call jevech('PPESANR', 'L', ipesa)
 !
-        do 10 ino = 1, nnop
-            do 11 j = 1, ndim
+        do ino = 1, nnop
+            do j = 1, ndim
                 kk = ndim*(ino-1)+j
                 fno(kk) = fno(kk) + rho(1)*zr(ipesa)*zr(ipesa+j)
-11          continue
-10      continue
+            end do
+        end do
 !
     else if (option.eq.'CHAR_MECA_ROTA_R') then
 !
         call jevech('PROTATR', 'L', irota)
 !
         om = zr(irota)
-        do 20 ino = 1, nnop
+        do ino = 1, nnop
             omo = 0.d0
-            do 21 j = 1, ndim
+            do j = 1, ndim
                 omo = omo + zr(irota+j)* zr(igeom+ndim*(ino-1)+j-1)
-21          continue
-            do 22 j = 1, ndim
+            end do
+            do j = 1, ndim
                 kk = ndim*(ino-1)+j
                 fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
                 irota+j))
-22          continue
-20      continue
+            end do
+        end do
 !
     endif
 !
@@ -149,12 +149,12 @@ subroutine te0441(option, nomte)
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -167,8 +167,8 @@ subroutine te0441(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
         call xpesro(elrefp, ndim, coorse, igeom, jheavt,&
                     jfisno, nfh, ddlc, nfe, nfiss,&
@@ -176,7 +176,7 @@ subroutine te0441(option, nomte)
                     fno)
 !
 !
-110  end do
+    end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     call teattr(nomte, 'C', 'XLAG', lag, ibid)

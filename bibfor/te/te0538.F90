@@ -40,7 +40,7 @@ subroutine te0538(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
     integer :: nnos, nfiss, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
-    real(kind=8) :: r8bid,vect(1)
+    real(kind=8) :: vect(1)
 !
 !
 !

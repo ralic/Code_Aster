@@ -146,10 +146,10 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! --- CONVENTIONS DE SIGNE DU MODELE LAIGLE VISCOPLASTIQUE --------
 ! =================================================================
 !
-    do 10 i = 1, ndt
+    do i = 1, ndt
         sigml(i) = mun * sigm(i)
         depml(i) = mun * deps(i)
-10  end do
+    end do
 ! =================================================================
 ! --- DEFINITION DES INVARIANTS ET DU DEVIATEUR A L'INSTANT MOINS--
 ! =================================================================
@@ -183,24 +183,24 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! =================================================================
     dvml = 0.d0
 !
-    do 110 k = 1, ndt
+    do k = 1, ndt
         depsth(k) = depml(k)
-110  end do
-    do 111 k = 1, 3
+    end do
+    do k = 1, 3
         depsth(k) = depsth(k) - coef
         dvml = dvml + depsth(k)
-111  end do
-    do 115 k = 1, ndt
+    end do
+    do k = 1, ndt
         devml(k) = depsth(k) - dvml/3.d0 * kron(k)
-115  end do
+    end do
 !
 ! =================================================================
 ! --- VERIFICATION D'UN ETAT INITIAL PLASTIQUEMENT ADMISSIBLE -----
 ! =================================================================
     somme = zero
-    do 140 i = 1, nvi
+    do i = 1, nvi
         somme = somme + vinm(i)
-140  end do
+    end do
     if (abs(somme) .lt. r8prem()) then
         call lkcrip(i1ml, sml, vinm, nbmat, materd,&
                     ucrpm, seupm)
@@ -211,18 +211,18 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! =================================================================
 ! --- PREDICTION ELASTIQUE ----------------------------------------
 ! =================================================================
-    call lkelas(ndi, ndt, nbmat, materd,&
-                depsth, sigml, de, kk, mu)
+    call lkelas(ndi, ndt, nbmat, materd, depsth,&
+                sigml, de, kk, mu)
 !
     iel = i1ml + trois*kk*dvml
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         sel(i) = sml(i) + deux* mu *devml(i)
-20  end do
+    end do
 !
-    do 30 i = 1, ndt
+    do i = 1, ndt
         sigel(i) = sel(i) + iel/trois*kron(i)
-30  end do
+    end do
 !
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -298,10 +298,10 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
             dxiv = zero
             dvml1 = zero
 !
-            do 31 i = 1, ndt
+            do i = 1, ndt
                 depsv(i) = zero
                 devml1(i) = zero
-31          continue
+            end do
 !
 !---- XIV A T + DT ------------------------------------------------
 !
@@ -354,9 +354,9 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
         i1el = iel - trois*kk*dvml1
 !
-        do 22 i = 1, ndt
+        do i = 1, ndt
             sel1(i) = sel(i) - deux* mu *devml1(i)
-22      continue
+        end do
 ! =================================================================
 ! --- CRITERE ELASTOPLASTIQUE  ------------------------------------
 ! =================================================================
@@ -383,16 +383,16 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
         if (seuilp .lt. zero) then
             dgamp = zero
 !
-            do 35 i = 1, ndt
+            do i = 1, ndt
                 depsp(i) = zero
-35          continue
+            end do
 !
 !---- REACTUALISATION DES CONTRAINTES -----------------------------
 !
-            do 23 i = 1, ndt
+            do i = 1, ndt
                 sigel(i) = sel1(i) + i1el/trois*kron(i)
                 sigpl(i) = sigel(i)
-23          continue
+            end do
 !
 ! -------- DELTA XIP
 !
@@ -476,9 +476,9 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
             call lcprmv(de, vecd, dsig)
 !
-            do 40 i = 1, ndt
+            do i = 1, ndt
                 sigpl(i) = sigml(i) + dsig(i)
-40          continue
+            end do
 !
 !==================================================================
 !--------- REACTUALISATION DES VARIABLES INTERNES PLASTIQUES ------
@@ -548,8 +548,8 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! --- TERMES DE L OPERATEUR TANGENT -------------------------------
 ! =================================================================
     if (option(11:14) .eq. 'ELAS') then
-        call lkelas(ndi, ndt, nbmat, materd,&
-                    depsth, sigml, de, kk, mu)
+        call lkelas(ndi, ndt, nbmat, materd, depsth,&
+                    sigml, de, kk, mu)
         call lceqma(de, dside)
     endif
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -568,17 +568,17 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
             endif
         endif
         call r8inir(6*6, 0.d0, dside, 1)
-        call lkelas(ndi, ndt, nbmat, materd,&
-                    depsth, sigml, de, kk, mu)
+        call lkelas(ndi, ndt, nbmat, materd, depsth,&
+                    sigml, de, kk, mu)
 !
         if (matr .eq. 0) then
 !
 !
-            do 120 i = 1, ndt
-                do 130 k = 1, ndt
+            do i = 1, ndt
+                do k = 1, ndt
                     dside(i,k) = de(i,k)
-130              continue
-120          continue
+                end do
+            end do
 !
         else
 !
@@ -623,10 +623,10 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !--------- CONTRAINTES DE SORTIE:
 ! -------- RETABLISSEMENT DES SIGNES POUR ASTER --
 !==================================================================
-    do 50 i = 1, ndt
+    do i = 1, ndt
         sigp(i) = mun * sigpl(i)
         deps(i) = mun * depsth(i)
-50  continue
+    end do
 ! =================================================================
-1000  continue
+1000 continue
 end subroutine

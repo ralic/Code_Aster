@@ -142,9 +142,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     idecma = lonuti - nbma
     call jeveuo(numaca, 'L', jnumac)
 !
-    do 5 i = 1, 2
+    do i = 1, 2
         call jenonu(jexnom('&CATA.TE.NOMTE', nomele(i)), ntyele(i))
- 5  continue
+    end do
     modmai = modele//'.MAILLE'
     call jeveuo(modmai, 'L', jmodma)
 !
@@ -230,7 +230,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         endif
     end do
 !
-31  continue
+ 31 continue
     if (.not. trouv1) then
         write(k3cab,'(I3)') icabl
         call utmess('F', 'MODELISA2_52', sk=k3cab)
@@ -267,7 +267,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         trouv3 = .false.
         trouv4 = .false.
         trouv5 = .false.
-        do 40 icste = 1, nbcste
+        do icste = 1, nbcste
             if (zk8(jvalk+icste-1) .eq. bpela(1)) then
                 trouv1 = .true.
                 rh1000 = zr(jvalr+icste-1)
@@ -289,9 +289,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
                 frli = zr(jvalr+icste-1)
             endif
             if (trouv1 .and. trouv2 .and. trouv3 .and. trouv4 .and. trouv5) goto 41
-40      continue
+        end do
 !
-41      continue
+ 41     continue
     else
 !       LECTURE DES DONNEES ETCC_ACIER
         trouv1 = .false.
@@ -299,7 +299,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         trouv3 = .false.
         trouv4 = .false.
 !
-        do 42 icste = 1, nbcste
+        do icste = 1, nbcste
             if (zk8(jvalk+icste-1) .eq. etcca(1)) then
                 trouv1 = .true.
                 rh1000 = zr(jvalr+icste-1)
@@ -317,9 +317,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
                 frli = zr(jvalr+icste-1)
             endif
             if (trouv1 .and. trouv2 .and. trouv3 .and. trouv4) goto 43
-42      continue
+        end do
 !
-43      continue
+ 43     continue
 !
 !     POUR ETCC, FRLI=FROTTEMENT*PERTE EN LIGNE
         frli=frli*frco
@@ -407,9 +407,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !
         icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
         iranv = 0
-        do 70 icmp = 1, irana1
+        do icmp = 1, irana1
             if (exisdg([icode],icmp)) iranv = iranv + 1
-70      continue
+        end do
         if (iranv .eq. 0) then
             write(k3mai,'(I3)') numail
             write(k3cab,'(I3)') icabl

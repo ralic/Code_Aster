@@ -102,9 +102,9 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
 !
     call jenonu(jexnom(nomres//'      .MODG.SSNO', sst), ibid)
     call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', llrot)
-    do 10 i = 1, 3
+    do i = 1, 3
         rot(i)=zr(llrot+i-1)
-10  end do
+    end do
 !
 ! --- CALCUL DE LA MATRICE DE ROTATION
 !
@@ -124,7 +124,8 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
     call mgutdm(nomres, sst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
     kbid=' '
-    call bmnoin(basmod, kbid, intf, ibid, 0, [0], nbnoe)
+    call bmnoin(basmod, kbid, intf, ibid, 0,&
+                [0], nbnoe)
 !
     kbid=' '
 !
@@ -145,61 +146,61 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
     call jeveuo(jexnum(fplio, ii), 'E', ldprof)
 !
 ! INITIALISATION
-    do 70 k1 = 1, nbcmpm
-        do 71 k2 = 1, nbcmpm
+    do k1 = 1, nbcmpm
+        do k2 = 1, nbcmpm
             codn(k1,k2)=zero
-71      continue
-70  end do
+        end do
+    end do
 !
 ! --- BOUCLE SUR LES NOEUDS DU MINI-PROFNO POUR REMPLISSAGE ET COMPTAGE
 !
     icomp=0
-    do 20 i = 1, nbnoe
+    do i = 1, nbnoe
         call isdeco(zi(ldprli+(i-1)*(1+nbec)+1), ideco, nbcmpm)
-        do 30 j = 1, nbcmpm
+        do j = 1, nbcmpm
 ! ICI ON FABRIQUE UN VECTEUR D ENTIERS DE CMP 1 SUR LA
 ! CMP COURANTE 0 AILLEURS
-            do 60 kk = 1, nbcmpm
+            do kk = 1, nbcmpm
                 if (kk .eq. j) then
                     idecw(kk)=1
                 else
                     idecw(kk)=0
                 endif
-60          continue
+            end do
 ! ON MULTIPLIE LE VECTEUR D'ENTIERS TRADUISANT LA PRESENCE DES
 ! CMPS SUR LE NOEUD PAR LE VECTEUR DE TRAVAIL EFFECTUE
 ! PRECEDEMMENT DE TELLE SORTE QU ON NE FAIT ICI QUE LA ROTATION
 ! DE LA CMP COURANTE -IE NUMERO J
 ! LE CRITERE DE PRESENCE DE LA CMP DANS L INTERFACE ORIENTE
 ! DEVIENT DONC VALABLE- IE IDECN
-            do 80 l = 1, nbcmpm
+            do l = 1, nbcmpm
                 idecw2(l)=ideco(l)*idecw(l)
-80          continue
-            do 40 k1 = 1, nbcmpm
-                do 41 k2 = 1, nbcmpm
+            end do
+            do k1 = 1, nbcmpm
+                do k2 = 1, nbcmpm
                     codn(j,k1)=codn(j,k1)+matrot(k1,k2)*idecw2(k2)
-41              continue
-40          continue
-30      continue
+                end do
+            end do
+        end do
 !
-        do 31 k = 1, nbcmpm
+        do k = 1, nbcmpm
             codw=zero
-            do 32 j = 1, nbcmpm
+            do j = 1, nbcmpm
                 codw=codw+abs(codn(j,k))
-32          continue
+            end do
 !
             if (codw .gt. epsi) then
                 idecn(k)=1
             else
                 idecn(k)=0
             endif
-31      continue
+        end do
         call iscode(idecn, zi(ldprof+(i-1)*(nbec+1)+1), nbcmpm)
         zi(ldprof+(i-1)*(nbec+1))=icomp+1
-        do 50 k = 1, nbcmpm
+        do k = 1, nbcmpm
             icomp=icomp+idecn(k)
-50      continue
-20  end do
+        end do
+    end do
     nblig=icomp
 !
     icar(1)=nblig

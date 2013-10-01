@@ -138,13 +138,13 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     call getvtx(motcl1, 'OPTION', iocc=1, scal=optcal(1), nbret=np)
     call getvtx(motcl1, 'CORR_PLAST', iocc=1, scal=optcal(2), nbret=nq)
     if (nbocc .gt. 1) then
-        do 10 i = 2, nbocc
+        do i = 2, nbocc
             call getvtx(motcl1, 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
             call getvtx(motcl1, 'CORR_PLAST', iocc=i, scal=toptca(2), nbret=n2)
             if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
                 call utmess('F', 'UTILITAI3_83')
             endif
-10      continue
+        end do
     endif
 !
     option = 'WEIBULL'
@@ -200,12 +200,12 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         call wkvect(kins, 'V V R', nbordr, jins)
         call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
         if (iret .ne. 0) then
-            do 20 iord = 1, nbordr
+            do iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
-20          continue
+            end do
         endif
         call tbcrsd(resu, base)
         call tbajpa(resu, nbparr, noparr, typarr)
@@ -237,16 +237,16 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     call jeveuo(kvalrk, 'L', ibik)
     call jelira(kvalrk, 'LONMAX', imc)
     sref = 0.d0
-    do 30 i = 1, imc
+    do i = 1, imc
         if (zk8(ibik+i-1) .eq. 'SIGM_CNV') sref = zr(ibid+i-1)
         if (zk8(ibik+i-1) .eq. 'M       ') mref = zr(ibid+i-1)
         if (zk8(ibik+i-1) .eq. 'VOLU_REF') vref = zr(ibid+i-1)
-30  continue
+    end do
 ! CAS WEIBULL_FO
     if (sref .eq. 0.d0) then
-        do 40 i = 1, imc
+        do i = 1, imc
             if (zk8(ibik+i-1) .eq. 'SIGM_REF') sref = zr(ibid+i-1)
-40      continue
+        end do
         valr (1) = mref
         valr (2) = vref
         valr (3) = sref
@@ -260,7 +260,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     endif
 !
     call wkvect('&&PEWEIB.TRAV1', 'V V R', mxvale, lvale)
-    do 80 iord = 1, nbordr
+    do iord = 1, nbordr
         call jemarq()
         call jerecu('V')
         numord = zi(jord+iord-1)
@@ -335,7 +335,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !        RECOPIE DE SIGIS DANS SIGIE
         call copisd('CHAMP_GD', 'V', '&&PEWEIB.SIGIS', '&&PEWEIB.SIGIE')
 !
-        do 70 iocc = 1, nbocc
+        do iocc = 1, nbocc
             if (.not.opti) then
                 inum = iocc
             else
@@ -376,7 +376,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                 call getvem(noma, 'GROUP_MA', motcl3, 'GROUP_MA', inum,&
                             iarg, nbgrma, zk24(jgr), ng)
                 vale2(2) = 'GROUP_MA'
-                do 50 ig = 1, nbgrma
+                do ig = 1, nbgrma
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
@@ -407,7 +407,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         call tbajli(resu, nbpard, nopard, numord, rtval,&
                                     c16b, vale2, 0)
                     endif
-50              continue
+ 50                 continue
+                end do
                 call jedetr('&&PEWEIB_GROUPM')
             endif
 !
@@ -417,7 +418,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                 call getvem(noma, 'MAILLE', motcl3, 'MAILLE', inum,&
                             iarg, nbmail, zk8(jma), nm)
                 valek(2) = 'MAILLE'
-                do 60 im = 1, nbmail
+                do im = 1, nbmail
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
@@ -443,17 +444,18 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         call tbajli(resu, nbpard, nopard, numord, rtval,&
                                     c16b, valek, 0)
                     endif
-60              continue
+ 60                 continue
+                end do
                 call jedetr('&&PEWEIB_MAILLE')
             endif
-70      continue
+        end do
 !
         call detrsd('CHAMP_GD', '&&PEWEIB.EPSG')
         call detrsd('CARTE', '&&PEWEIB.CH.SOUSOP')
         call jedema()
-80  continue
+    end do
 ! FIN BOUCLE SUR LES NUMEROS D ORDRE
-90  continue
+ 90 continue
 !
 ! -- MENAGE
     call jedetr('&&PEWEIB.NUME_ORDRE')
@@ -463,7 +465,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     call jedetr('&&PEWEIB.TRAV1')
     call jedetr('&&PEWEIB.L_NOM_MAT')
 !
-100  continue
+100 continue
 !
     call jedema()
 end subroutine

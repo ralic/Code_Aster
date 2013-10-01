@@ -41,7 +41,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
     integer :: i, j, ier, ifm, niv
     integer :: i1, i2, iddl, iddl1, iddl2, num, isn
     integer :: nouvsn(0:n1), ancsn(*), p(*), q(*)
-    integer :: nrl, maxrl, minrl, nbsnd, j1, j2, ianc, ip, ipp, iret
+    integer :: nrl, maxrl, minrl, nbsnd, j1, j2, ianc, ip, ipp
     integer :: vali(3)
 !--------------------------------------------------------------
 !      5) POUR LES REL.LIN.,ON FAIT RL1(I)=LAMBD1,I ETANT LE
@@ -64,7 +64,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
     call infniv(ifm, niv)
 !
 !------------------------------- RELATIONS LINEAIRES
-    do 160 i = 1, nrl
+    do i = 1, nrl
         iddl2 = rl(2,i)
         minrl = n1 + 1
         maxrl = 0
@@ -77,7 +77,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
         j1 = diag(iddl2-1) + 2
         j2 = diag(iddl2) - 1
         lgind = lgind + 2* (j2-j1+2) * ddlmoy
-        do 150 j = j1, j2
+        do j = j1, j2
             iddl = col(j)
             ipp = p(iddl)
 !
@@ -87,7 +87,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
                 if (ip .lt. minrl) minrl = invp(p(iddl))
             endif
 !
-150      continue
+        end do
 !                      RL1 ET RL2 MARQUENT LES DDL T.Q.
 !                      LEURS IMAGES PAR LA RENUMEROTATION
 !                      SOIENT LES PREMIERS ET DERNIERS ENCADRES
@@ -95,30 +95,30 @@ subroutine premlc(n1, diag, col, parent, parend,&
         rl(4,i) = maxrl
         rl1(minrl) = 1
         rl2(maxrl) = 1
-160  end do
+    end do
 !--------------------------------- CALCUL DE NOUV,ANC,SUPND
     nouvsn(0) = 0
     nbsn = nbsnd
-    do 180 i = 1, nbsn
+    do i = 1, nbsn
         nouvsn(i) = i
         ancsn(i) = i
-180  end do
+    end do
 !                       NOUVSN ET ANCSN SERVENT DE TAB NOUV ET ANC
 !                     POUR LES  SUPERNDS
     nbsnd = 1
     num = 1
     supnd(nbsnd)= num
-    do 260 isn = 1, nbsn
+    do isn = 1, nbsn
         i1 = supnd2(isn)
         i2 = supnd2(isn+1) - 1
 !
 !                                 ON MET EN TETE DU SUPERNOEUD :
 !                                LES LAMBDA1 DE RELATION LINEAIRES
 !                                PUIS LES LAMBDA1 DE BLOCAGE
-        do 200 i = i1, i2
+        do i = i1, i2
             if (rl1(i) .ne. 0) then
 !         I EST LE 1ER DDL D UN RELATION LINEAIRE ( LA J EME)
-                do 190 j = 1, nrl
+                do j = 1, nrl
                     if (rl(3,j) .eq. i) then
                         nouv(rl(1,j)) = num
                         anc(num) = rl(1,j)
@@ -130,13 +130,13 @@ subroutine premlc(n1, diag, col, parent, parend,&
                         nbsnd = nbsnd + 1
                         supnd(nbsnd) = num
                     endif
-190              continue
+                end do
 !
             endif
 !
-200      continue
+        end do
 !
-        do 210 i = i1, i2
+        do i = i1, i2
             ianc = q(perm(i))
             if (lbd1(ianc) .ne. 0) then
 !         I EST UN DDL BLOQUE
@@ -151,18 +151,18 @@ subroutine premlc(n1, diag, col, parent, parend,&
                 supnd(nbsnd) = num
             endif
 !
-210      continue
+        end do
 !       ADDITION DES DDL NON LAGRANGES
-        do 220 i = i1, i2
+        do i = i1, i2
             ianc = q(perm(i))
             nouv(ianc) = num
             anc(num) = ianc
             num = num + 1
-220      continue
+        end do
 !                         ON MET EN QUEUS DU SUPERNOEUD :
 !                            LES LAMBDA2 DE BLOCAGE,PUIS
 !                           LES LAMBDA2 DE RELATION LINEAIRES
-        do 230 i = i1, i2
+        do i = i1, i2
             ianc = q(perm(i))
             if (lbd2(ianc) .ne. 0) then
                 nouv(lbd2(ianc)) = num
@@ -170,33 +170,33 @@ subroutine premlc(n1, diag, col, parent, parend,&
                 num = num + 1
             endif
 !
-230      continue
-        do 250 i = i1, i2
+        end do
+        do i = i1, i2
             if (rl2(i) .ne. 0) then
-                do 240 j = 1, nrl
+                do j = 1, nrl
                     if (rl(4,j) .eq. i) then
                         nouv(rl(2,j)) = num
                         anc(num) = rl(2,j)
                         num = num + 1
                     endif
 !
-240              continue
+                end do
             endif
 !
-250      continue
+        end do
 !        PRINT *, ' ON CREE UN NV SN DDL ORDINAIRE : '
         ancsn(nbsnd) = isn
         nouvsn(isn) = nbsnd
         nbsnd = nbsnd + 1
         supnd(nbsnd) = num
-260  end do
+    end do
     nbsnd = nbsnd-1
     num = num -1
     if (num .ne. n1) then
         vali (1) = num
         vali (2) = n1
         call utmess('F+', 'ALGELINE5_36', ni=2, vali=vali)
-        do 350 i = 1, n1
+        do i = 1, n1
             if (lbd1(i) .ne. 0) then
                 write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA1: ',&
                 lbd1(i)
@@ -212,27 +212,27 @@ subroutine premlc(n1, diag, col, parent, parend,&
                 vali (3) = lbd2(i)
                 call utmess('F+', 'ALGELINE5_37', ni=3, vali=vali)
             endif
-350      end do
+        end do
         vali (1) = nrl
         call utmess('F+', 'ALGELINE5_38', si=vali(1))
-        do 360 i = 1, nrl
+        do i = 1, nrl
             vali (1) = rl(1,i)
             vali (2) = rl(2,i)
             call utmess('F+', 'ALGELINE5_39', ni=2, vali=vali)
-360      continue
+        end do
     endif
 !----------------------    CALCUL DU NOUVEAU PARENT
-    do 270 isn = 1, nbsnd
+    do isn = 1, nbsnd
         if (ancsn(isn) .gt. 0) then
             parend(isn) = nouvsn( parent( ancsn( isn ) ) )
         else
 !       C'EST UN NOUVEAU SN (LAMBDA1)
             parend(isn) = nouvsn( - ancsn( isn ) )
         endif
-270  end do
+    end do
     if (niv .ge. 2) then
         write(ifm,*)'   --- APRES ADDITION  DES  RELATIONS LINEAIRES '
         write(ifm,*)'   --- NOMBRE DE SUPERNOEUDS ',nbsnd
     endif
-
+!
 end subroutine

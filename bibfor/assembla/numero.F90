@@ -63,21 +63,13 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nchar, nblig, iret, jchar, jlligr, k, jtypch, islvk, idime, i
-    integer :: ilima, nbma, nbsd, ifm, niv, ibid, isolfs, irefe, ideeq, ifetn
-    integer :: nequa, nbpb, ncharf, l, ivligr, inueq, ifel1, ldeeqg, iinf, ifcpu
-    integer :: idd, jmult, ier, nbproc, rang, ilimpi, nivmpi, nbchat, iffcc
-    integer :: nequag, nbi2, iaux, ino, icmp, imult, vali(2)
-    real(kind=8) :: temps(6), rbid
-    character(len=1) :: k1
-    character(len=3) :: verif
-    character(len=8) :: moloc, nomcha, k8bid, method, nomsd, modele
-    character(len=14) :: nuposb, nomfe2
-    character(len=16) :: pheno
-    character(len=19) :: infcha, ligrsd
-    character(len=24) :: lcharg, lligr, nomlig, nomsda, k24b
-    character(len=24) :: ksolvf, lligrs, noobj, k24mul
-    logical :: lcf
+    integer :: nchar, nblig, iret, jchar, jlligr, k, jtypch
+    integer :: ifm, niv
+    integer :: ier
+    integer :: nequag
+    character(len=8) :: nomcha, modele
+    character(len=19) :: infcha
+    character(len=24) :: lcharg, lligr, nomlig
 !
 ! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
@@ -111,7 +103,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
         nblig = nblig + 1
     endif
 !     PUIS LES CHARGES A MAILLES ET/OU A NOEUDS TARDIFS
-    do 10 k = 1, nchar
+    do k = 1, nchar
         nomcha = zk24(jchar+k-1)(1:8)
         call jeexin(nomcha(1:8)//'.TYPE', ier)
         if (ier .gt. 0) then
@@ -125,13 +117,13 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
             zk24(jlligr+nblig) = nomlig(1:19)
             nblig = nblig + 1
         endif
-10  end do
+    end do
 !
     call jeecra(lligr, 'LONUTI', nblig)
 !
     call numer2(nuposs, nblig, zk24(jlligr), ' ', solveu,&
                 base, nu, nequag)
-
+!
     call jedetr(lligr)
 !
 !

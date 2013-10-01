@@ -68,7 +68,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !     ------------------------------------------------------------------
     integer :: ibid, id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
     integer :: jddl2, jdgn, jgrn, jnoe, lvale, nba, nbb, n1, nbbd, nbl, nbliai
-    integer :: nbocc, nbtrou, ngr, nno, nt, vali(2),tabord(1)
+    integer :: nbocc, nbtrou, ngr, nno, nt, vali(2), tabord(1)
     character(len=4) :: ctyp, dir(3)
     character(len=8) :: k8b, noma, noeu, nomcmp(3)
     character(len=15) :: motfac
@@ -93,14 +93,14 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     call wkvect('&&ASMSUP.POSITION.DDL2', 'V V I', neq, jddl2)
     call typddl('BLOQ', nume, neq, zi(jddl1), nba,&
                 nbb, nbl, nbliai)
-    do 10 id = 1, 3
+    do id = 1, 3
         if (ndir(id) .eq. 1) then
             call pteddl('NUME_DDL', nume, 1, nomcmp(id), neq,&
                         zi(jddl2))
             nbbd = 0
-            do 12 in = 1, neq
+            do in = 1, neq
                 nbbd = nbbd + ( zi(jddl1+in-1) * zi(jddl2+in-1) )
-12          continue
+            end do
             if (nsupp(id) .ne. nbbd) then
                 ier = ier + 1
                 valk(1) = dir(id)
@@ -109,37 +109,38 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                 call utmess('E', 'SEISME_23', sk=valk(1), ni=2, vali=vali)
             endif
         endif
-10  end do
+    end do
     call jedetr('&&ASMSUP.POSITION.DDL1')
     call jedetr('&&ASMSUP.POSITION.DDL2')
 !
 !     --- VERIFICATION DE L'OPTION "REAC_NODA" ---
     nomsy = 'REAC_NODA'
-    call rsutnc(meca, nomsy, 0, k8b, tabord, nbtrou)
+    call rsutnc(meca, nomsy, 0, k8b, tabord,&
+                nbtrou)
     if (nbtrou .eq. 0) then
         ier = ier + 1
         valk(1) = meca
         valk(2) = nomsy
         call utmess('E', 'SEISME_24', nk=2, valk=valk)
-        goto 9999
+        goto 999
     endif
 !
 !     --- RECUPERATION DES REACTIONS NODALES ---
-    do 60 im = 1, nbmode
+    do im = 1, nbmode
         call rsexch('F', meca, nomsy, lordr(im), cham19,&
                     iret)
         call jeveuo(cham19//'.VALE', 'L', lvale)
-        do 62 id = 1, 3
+        do id = 1, 3
             if (ndir(id) .eq. 1) then
-                do 64 is = 1, nsupp(id)
+                do is = 1, nsupp(id)
                     noeu = nomsup(is,id)
                     call posddl('NUME_DDL', nume, noeu, nomcmp(id), ino,&
                                 iddl)
                     reasup(is,im,id) = zr(lvale+iddl-1)
-64              continue
+                end do
             endif
-62      continue
-60  end do
+        end do
+    end do
 !
 !     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
     motfac = 'GROUP_APPUI'
@@ -148,12 +149,12 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
         motfac = 'COMB_MULT_APPUI'
         call getfac(motfac, nbocc)
     endif
-    do 39 id = 1, 3
-        do 40 is = 1, nbsup
+    do id = 1, 3
+        do is = 1, nbsup
             tcosup(is,id) = 1
-40      continue
-39  end do
-    do 42 ioc = 1, nbocc
+        end do
+    end do
+    do ioc = 1, nbocc
         ctyp = ' '
         if (motfac .eq. 'GROUP_APPUI') then
             ctyp = 'QUAD'
@@ -164,11 +165,11 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
         endif
         if (ctyp .ne. 'QUAD') then
             if (nt .ne. 0) then
-                do 44 id = 1, 3
-                    do 45 is = 1, nbsup
+                do id = 1, 3
+                    do is = 1, nbsup
                         if (ctyp .eq. 'LINE') tcosup(is,id) = 2
-45                  continue
-44              continue
+                    end do
+                end do
             else
                 call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
@@ -176,7 +177,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                     call wkvect('&&ASMSUP.NOEUD', 'V V K8', nno, jnoe)
                     call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe),&
                                 nbret=n1)
-                    do 46 ino = 1, nno
+                    do ino = 1, nno
                         noeu = zk8(jnoe+ino-1)
                         call jenonu(jexnom(obj2, noeu), iret)
                         if (iret .eq. 0) then
@@ -186,14 +187,15 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                             call utmess('E', 'SEISME_1', nk=2, valk=valk)
                             goto 46
                         endif
-                        do 48 is = 1, nbsup
-                            do 49 id = 1, 3
+                        do is = 1, nbsup
+                            do id = 1, 3
                                 if (nomsup(is,id) .eq. noeu) then
                                     if (ctyp .eq. 'LINE') tcosup(is,id) = 2
                                 endif
-49                          continue
-48                      continue
-46                  continue
+                            end do
+                        end do
+ 46                     continue
+                    end do
                     call jedetr('&&ASMSUP.NOEUD')
                 else
                     call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=n1)
@@ -202,7 +204,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                         call wkvect('&&ASMSUP.GROUP_NO', 'V V K24', ngr, jgrn)
                         call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=zk24(jgrn),&
                                     nbret=n1)
-                        do 50 igr = 1, ngr
+                        do igr = 1, ngr
                             grnoeu = zk24(jgrn+igr-1)
                             call jeexin(jexnom(obj1, grnoeu), iret)
                             if (iret .eq. 0) then
@@ -214,27 +216,28 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                             else
                                 call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                                 call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
-                                do 52 ino = 1, nno
+                                do ino = 1, nno
                                     call jenuno(jexnum(obj2, zi(jdgn+ ino-1)), noeu)
-                                    do 54 is = 1, nbsup
-                                        do 55 id = 1, 3
+                                    do is = 1, nbsup
+                                        do id = 1, 3
                                             if (nomsup(is,id) .eq. noeu) then
                                                 if (ctyp .eq. 'LINE') tcosup(is, id) = &
                                                                       2
                                             endif
-55                                      continue
-54                                  continue
-52                              continue
+                                        end do
+                                    end do
+                                end do
                             endif
-50                      continue
+ 50                         continue
+                        end do
                         call jedetr('&&ASMSUP.GROUP_NO')
                     endif
                 endif
             endif
         endif
-42  end do
+    end do
 !
-9999  continue
+999 continue
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
     endif

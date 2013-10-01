@@ -63,12 +63,10 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
     logical :: lpilo
     integer :: ifm, niv
-    integer :: jcri, jcri1
-    integer :: iret
     integer :: rescvg
-    real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
     character(len=19) :: crgc
+    c16bid = dcmplx(0.d0, 0.d0)
     data         crgc/'&&RESGRA_GCPC'/
 !
 ! ----------------------------------------------------------------------
@@ -120,7 +118,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (rescvg .eq. 1) goto 9999
+    if (rescvg .eq. 1) goto 999
 !
 ! --- INVERSION DE LA PARTIE PILOTEE
 !
@@ -128,7 +126,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
         call resoud(matass, maprec, solveu, cncine, 0,&
                     cnpilo, depso2, 'V', [0.d0], [c16bid],&
                     crgc, .true., -9999, rescvg)
-        if (rescvg .eq. 1) goto 9999
+        if (rescvg .eq. 1) goto 999
     endif
 !
 ! --- AFFICHAGE DES SOLUTIONS
@@ -143,7 +141,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
     endif
 !
 !
-9999  continue
+999 continue
 !
     call jedetr(crgc//'.CRTI')
     call jedetr(crgc//'.CRTR')

@@ -90,18 +90,18 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     ASSERT(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
     if (cumul .eq. 'ZERO') call detrsd('MATR_ASSE', matas)
     if (nbmat .gt. 150) ASSERT(.false.)
-    do 10,k = 1,nbmat
-    tlima2(k) = tlimat(k)
-    10 end do
+    do k = 1, nbmat
+        tlima2(k) = tlimat(k)
+    end do
 !
 !
 !     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
 !     ---------------------------------------------------------------
     if (licoe2 .eq. ' ') then
         call wkvect('&&ASMATR.LICOEF', 'V V R', nbmat, ilicoe)
-        do 20 i = 1, nbmat
+        do i = 1, nbmat
             zr(ilicoe+i-1) = 1.d0
-20      continue
+        end do
     else
         call jeveuo(licoe2, 'L', ilicoe)
     endif
@@ -117,7 +117,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     call jeveuo(solve2//'.SLVK', 'L', jslvk)
     syme = zk24(jslvk+5-1)(1:3)
     if (syme .eq. 'OUI') then
-        do 30 i = 1, nbmat
+        do i = 1, nbmat
             call dismoi('F', 'TYPE_MATRICE', tlima2(i), 'MATR_ELEM', ibid,&
                         symel, ier)
             if (symel .eq. 'NON_SYM') then
@@ -128,12 +128,12 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
             else
                 zk24(ilimat+i-1) = tlima2(i)
             endif
-30      continue
+        end do
         matsym = 'S'
     else
-        do 40 i = 1, nbmat
+        do i = 1, nbmat
             zk24(ilimat+i-1) = tlima2(i)
-40      continue
+        end do
     endif
 !
 !
@@ -175,12 +175,13 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     -----------
     call jedetr('&&ASMATR.LICOEF')
     if (syme .eq. 'OUI') then
-        do 60 i = 1, nbmat
+        do i = 1, nbmat
             call dismoi('F', 'TYPE_MATRICE', tlima2(i), 'MATR_ELEM', ibid,&
                         symel, ier)
             if (symel .eq. 'SYMETRI') goto 60
             call detrsd('MATR_ELEM', zk24(ilimat+i-1)(1:19))
-60      continue
+ 60         continue
+        end do
     endif
 !
 !

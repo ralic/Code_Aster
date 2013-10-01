@@ -1,5 +1,5 @@
-subroutine nmimrv(sdimpr, fonact, iterat, relcoe,&
-                  relite, eta)
+subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
+                  eta)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@ subroutine nmimrv(sdimpr, fonact, iterat, relcoe,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"

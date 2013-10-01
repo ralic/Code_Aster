@@ -56,9 +56,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
 #include "asterfort/tabcor.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, nbvale, nbrefe, nbdesc, nbmode, iret, ierd
-    integer :: ilires, j, nbid, ivalk, indice, tabad(5),tmod(1)
+    integer :: ilires, j, nbid, ivalk, indice, tabad(5), tmod(1)
     integer :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble
-    real(kind=8) :: bid, ebid, rbid
+    real(kind=8) :: bid, ebid
     character(len=*) :: option, mate, phibar, solvez
     character(len=2) :: model
     character(len=8) :: k8bid, modmec, mailla, maflui, ma
@@ -140,7 +140,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
         ilires = 0
         phib24=phibar
 !
-        do 20 j = 1, nbmode
+        do j = 1, nbmode
 !
             call rsexch(' ', modmec, 'DEPL', j, nomcha,&
                         iret)
@@ -190,7 +190,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !
             endif
 !
-20      end do
+        end do
 !
     else
         if ((n7.gt.0) .and. (indice.ne.1)) then
@@ -207,7 +207,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
             ilires = 0
             phib24=phibar
 !
-            do 5000 j = 1, n7
+            do j = 1, n7
 !
                 chamno=zk8(ivalk+j-1)
                 vecso1 = '&&OP0152.VESL1'
@@ -252,7 +252,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
                                 nbvale, nbrefe, nbdesc)
                 endif
 !
-5000          continue
+            end do
         endif
     endif
 !

@@ -113,7 +113,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
         endop1 = 0
         endop2 = 0
 !
-        do 5 i = 1, neq
+        do i = 1, neq
 !
             if (zi(endo+i-1) .eq. 2) then
                 if (zr(jfint+i-1) .ge. 0.d0) then
@@ -124,7 +124,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
                 endif
             endif
 !
- 5      continue
+        end do
 !        WRITE(6,*) 'NB_ENDO_NPROJ=', ENDOP1
 !        WRITE(6,*) 'NB_ENDO_PROJ=', ENDOP2
     endif

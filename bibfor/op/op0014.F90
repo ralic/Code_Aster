@@ -65,7 +65,7 @@ subroutine op0014()
     integer :: iret, iretgc, isingu, istop, jadia, pcpiv, niremp
     integer :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
     integer :: jslvk, jslvr, jslvi, reacpr
-    real(kind=8) :: rbid, fillin, epsmat, eps
+    real(kind=8) :: fillin, epsmat, eps
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -141,7 +141,7 @@ subroutine op0014()
             endif
         endif
 !
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -232,7 +232,7 @@ subroutine op0014()
         call apetsc('PRERES', solveu, mfac, [0.d0], ' ',&
                     0, ibid, iret)
         iret=0
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -335,7 +335,7 @@ subroutine op0014()
                 ndeci, isingu, npvneg, iret)
 !     --------------------------------------------------------------
 !
-9999  continue
+999 continue
 !
     if (metres .eq. 'GCPC' .or. metres .eq. 'PETSC') then
         call uttcpu('CPU.RESO.1', 'FIN', ' ')

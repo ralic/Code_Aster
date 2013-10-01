@@ -84,10 +84,12 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !-----------------RECUPERATION DES CONCEPTS AMONT-----------------------
 !
-
-
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1), intf, iret)
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1), mailla, iret)
+!
+!
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1),&
+                intf, iret)
+    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1),&
+                mailla, iret)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
@@ -132,9 +134,11 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !--------------RECUPERATION NOMBRE DE DDL AUX INTERFACES----------------
 !
     kbid=' '
-    call bmnodi(basmod, kbid, '          ', numd, 0, ibid, nbddr)
+    call bmnodi(basmod, kbid, '          ', numd, 0,&
+                ibid, nbddr)
     kbid=' '
-    call bmnodi(basmod, kbid, '          ', numg, 0, ibid, nbdga)
+    call bmnodi(basmod, kbid, '          ', numg, 0,&
+                ibid, nbdga)
     if (nbdga .ne. nbddr) then
         vali (1) = nbddr
         vali (2) = nbdga
@@ -155,7 +159,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !
     nbdcou=0
-    do 10 i = 1, nbnod
+    do i = 1, nbnod
         inod=zi(llnod+i-1)
 !******************************************************************
 !        ICODD=ZI(LLDESC+2*NBNOT+INOD-1)
@@ -164,7 +168,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
         call isdeco(zi(lldesc+2*nbnot+(inod-1)*nbec+1-1), idecd, 10)
         call isdeco(zi(lldesc+2*nbnot+(inog-1)*nbec+1-1), idecg, 10)
 !******************************************************************
-        do 20 j = 1, 10
+        do j = 1, 10
             if (idecd(j) .eq. 1) then
                 xd(j)=1.d0
             else
@@ -176,22 +180,22 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
             else
                 xg(j)=0.d0
             endif
-20      continue
+        end do
 !
 !
-        do 30 j = 1, 10
+        do j = 1, 10
             xtd(j)=0.d0
             xtg(j)=0.d0
-            do 40 k = 1, 10
+            do k = 1, 10
                 xtd(j)=xtd(j)+abs(tet0(j,k))*xd(k)
                 xtg(j)=xtg(j)+abs(tet0(k,j))*xg(k)
-40          continue
-30      continue
+            end do
+        end do
 !
 !
 !    VERIFICATION SUR COHERENCE DES DDL INTERFACES
 !
-        do 50 j = 1, 10
+        do j = 1, 10
             if (xtd(j) .gt. 0.d0 .and. xg(j) .eq. 0.d0) then
                 noer=zi(lldesc+inog-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
@@ -213,7 +217,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
                 nook=.true.
             endif
 !
-50      continue
+        end do
 !
         if (nook) then
             call utmess('F', 'ALGORITH15_7')
@@ -221,25 +225,25 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
         iloci=0
         icomp=0
-        do 60 j = 1, 10
+        do j = 1, 10
             if (idecg(j) .gt. 0) then
                 iloci=iloci+1
                 ilocj=0
                 icomp=icomp+1
-                do 70 k = 1, 10
+                do k = 1, 10
                     if (idecd(k) .gt. 0) then
                         ilocj=ilocj+1
                         x=tet0(j,k)
                         call amppr(teta, nbddr, nbddr, [x], 1,&
                                    1, nbdcou+ iloci, nbdcou+ilocj)
                     endif
-70              continue
+                end do
             endif
-60      continue
+        end do
 !
         nbdcou=nbdcou+icomp
 !
-10  continue
+    end do
 !
     call jedema()
 end subroutine

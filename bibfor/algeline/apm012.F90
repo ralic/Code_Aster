@@ -68,6 +68,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
     complex(kind=8) :: cun, czero, cbd(100), caux1, caux2, caux(100), cbid
     character(len=19) :: numedd, mas19, k19b, rai19
     character(len=24) :: nomrai, nommas
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !   --- MISCELLANEOUS ---
     call jemarq()
@@ -106,7 +107,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
         rauxm=sqrt(rauxx*rauxx+rauxy*rauxy)
         raux1=rauxm+2.d0*rayonc
         ideb=1
-        do 18 j = 1, nk
+        do j = 1, nk
             jm1=j-1
             ifin=zi(iadia+jm1)
             ifin1=ifin-1
@@ -118,7 +119,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 !   --- COLUMN CORRESPONDING TO A PHYSICAL VARIABLE (ACTIVE OR PASSIVE)
 !   --- ACTIVE ---
                 imult=1
-                do 15 i = ideb, ifin
+                do i = ideb, ifin
                     im1=i-1
                     iauxh=zi4(ihcol+im1)
                     rauxx=abs(zr(ivalr+im1))
@@ -129,19 +130,19 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
                             imult=0
                         endif
                     endif
-15              continue
+                end do
             endif
-            do 16 i = ideb, ifin
+            do i = ideb, ifin
                 im1=i-1
                 zr(ivalr+im1)=zr(ivalr+im1)*imult
                 zr(ivalm+im1)=zr(ivalm+im1)*imult
-16          continue
+            end do
             if (imult .eq. 0) then
                 zr(ivalr+ifin1)=raux1
                 zr(ivalm+ifin1)=1.d0
             endif
             ideb=ifin+1
-18      continue
+        end do
 !
 !
         k19b=' '
@@ -150,14 +151,14 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 !
 !   --- CASE K REAL SYMETRIC ---
         call wkvect('&&APM012.MATRICE.A0', 'V V R', nk2, imata0)
-        do 34 i = 1, nk2
+        do i = 1, nk2
             zr(imata0+i-1)=0.d0
-34      continue
+        end do
         ideb=1
-        do 38 j = 1, nk
+        do j = 1, nk
             jm1=j-1
             ifin=zi(iadia+jm1)
-            do 36 i = ideb, ifin
+            do i = ideb, ifin
                 im1=i-1
                 iauxh=zi4(ihcol+im1)
                 iauxh1=iauxh-1
@@ -166,19 +167,19 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
                 zr(imata0+jm1*nk+iauxh1)=rauxr
 !   --- LOWER PARTS
                 zr(imata0+nk*iauxh1+jm1)=rauxr
-36          continue
+            end do
             ideb=ifin+1
-38      continue
+        end do
 !
 !   --- BUILDING OF M-1*K AND STORE IN ZC(IMATA)
         call resoud(mas19, k19b, solveu, k19b, nk,&
                     k19b, k19b, 'V', zr(imata0), [cbid],&
                     ' ', .false., 0, iret)
         call wkvect('&&APM012.MATRICE.A', 'V V C', nk2, imata)
-        do 41 i = 1, nk2
+        do i = 1, nk2
             im1=i-1
             zc(imata+im1)=zr(imata0+im1)*cun
-41      continue
+        end do
 !
         call jedetr('&&APM012.MATRICE.A0')
 !
@@ -216,11 +217,11 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 !
 !   --- TO CLARIFY THE SITUATION, ZEROING THE LOWER TRIANGULAR ---
 !   --- PART OF THE HESSENBERG MATRIX                          ---
-    do 90 j = 1, nk
-        do 89 i = 1, nk
+    do j = 1, nk
+        do i = 1, nk
             if (i .ge. (j+2)) zc(imata+(j-1)*nk+i-1)=czero
-89      continue
-90  end do
+        end do
+    end do
 !
 !
 !   --- STEP 2: COMPUTATION OF THE COEFFICIENTS OF THE CHARACTERISTIC --
@@ -231,59 +232,59 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
     k24rc='&&APM012.ROMBOUT.COEFF'
     call wkvect('&&APM012.ROMBOUT.MAT', 'V V C', nk2, imatb)
     call wkvect(k24rc, 'V V C', nk+1, imatc)
-    do 100 i = 1, nk2
+    do i = 1, nk2
         zc(imatb+i-1)=czero
-100  end do
-    do 120 j = nk, 1, -1
+    end do
+    do j = nk, 1, -1
         nkj=nk-j
-        do 110 i = 1, j
-            do 105 k = nkj, 1, -1
+        do i = 1, j
+            do k = nkj, 1, -1
                 caux1=dconjg(zc(imata+(j-1)*nk+i-1))* zc(imatb+(j+1-1)&
                 *nk+k-1)
 !
                 caux2=dconjg(zc(imata+(j-1)*nk+j+1-1))* zc(imatb+(i-1)&
                 *nk+k-1)
                 zc(imatb+(i-1)*nk+k+1-1)=caux1-caux2
-105          continue
+            end do
             zc(imatb+(i-1)*nk+1-1)=dconjg(zc(imata+(j-1)*nk+i-1))
-110      continue
-        do 115 k = 1, nkj
+        end do
+        do k = 1, nkj
             zc(imatb+(j-1)*nk+k-1)=zc(imatb+(j-1) *nk+k-1)+ zc(imatb+(&
             j+1-1)*nk+k-1)
-115      continue
-120  end do
+        end do
+    end do
     zc(imatc+nk+1-1)=cun
-    do 125 i = 1, nk
+    do i = 1, nk
         nkj=nk-(i-1)
         zc(imatc+i-1)=((-1)**nkj)*zc(imatb+(1-1)*nk+nkj-1)
-125  end do
+    end do
     call jedetr('&&APM012.MATRICE.A')
     call jedetr('&&APM012.ROMBOUT.MAT')
 !
     if ((niv.ge.2) .or. ltest) then
         write(ifm,*)'COEFFICIENTS OF ROMBOUT POLYNOMIAL'
         write(ifm,*)'----------------------------------'
-        do 150 i = 0, nk
+        do i = 0, nk
             write(ifm,*)'I/AI ',i,zc(imatc+i)
-150      continue
+        end do
     endif
 !
 !   --- INTERMEDIARY TEST RESULT ---
     if (ltest) then
-        do 130 j = 1, nk
+        do j = 1, nk
             caux(j)=zc(imatc+nk)
-130      continue
-        do 132 i = nkm1, 0, -1
-            do 131 j = 1, nk
+        end do
+        do i = nkm1, 0, -1
+            do j = 1, nk
                 caux(j)=caux(j)*cbd(j)+zc(imatc+i)
-131          continue
-132      continue
-        do 133 j = 1, nk
+            end do
+        end do
+        do j = 1, nk
             rauxx=dble(caux(j))
             rauxy=dimag(caux(j))
             rauxm=sqrt(rauxx*rauxx+rauxy*rauxy)
             write(ifm,*)'STEP 2: ROOT  I/P(LBD_I)',j,rauxm,caux(j)
-133      continue
+        end do
     endif
 !
     call jedema()

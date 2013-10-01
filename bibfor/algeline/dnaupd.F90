@@ -560,9 +560,9 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
 !        | ZERO OUT INTERNAL WORKSPACE |
 !        %-----------------------------%
 !
-        do 10 j = 1, 3*ncv**2 + 6*ncv
+        do j = 1, 3*ncv**2 + 6*ncv
             workl(j) = zero
-10      continue
+        end do
 !
 !        %-------------------------------------------------------------%
 !        | POINTER INTO WORKL FOR ADDRESS OF H, RITZ, BOUNDS, Q        |
@@ -657,7 +657,7 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
     nitref=0
     nrstrt=0
 !
-9000  continue
+9000 continue
 !
 !     %---------------%
 !     | END OF DNAUPD |

@@ -86,7 +86,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 ! --- BOUCLE SUR LES FISSURES
 !     ---------------------------------------
 !
-    do 1000 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
         stano=fiss(ifiss)//'.STNO'
         call jeveuo(stano//'.VALE', 'L', jstano)
@@ -95,7 +95,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 ! ----- BOUCLE SUR LES NOEUDS DU MAILLAGE
 !       -------------------------------------
 !
-        do 1100 ino = 1, nbno
+        do ino = 1, nbno
             istan = zi(jstano-1+ino)
             if (istan .gt. 0) then
                 call jenuno(jexnum(noma(1:8)//'.NOMNOE', ino), nomnoe(1))
@@ -129,11 +129,11 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
             endif
 !
-1100      continue
+        end do
 !       -------------------------------------
 ! ----- FIN BOUCLE SUR LES NOEUDS DU MAILLAGE
 !       -------------------------------------
-1000  end do
+    end do
 !     ---------------------------------------
 ! --- FIN BOUCLE SUR LES FISSURES
 !     ---------------------------------------

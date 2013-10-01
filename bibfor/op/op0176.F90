@@ -190,7 +190,7 @@ subroutine op0176()
                 r8b, fals, r8b, fals, fals,&
                 formar, nive, versio)
 !
-9997  continue
+9997 continue
 !
 !
 !

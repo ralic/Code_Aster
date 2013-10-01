@@ -117,8 +117,7 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(2).eq.1
 !
     else if (func_name.eq.'CONTACT') then
-        isfonc = (list_func_acti(4).eq.1) .or.&
-                 (list_func_acti(5).eq.1) .or.&
+        isfonc = (list_func_acti(4).eq.1) .or. (list_func_acti(5).eq.1) .or.&
                  (list_func_acti(9).eq.1)
     else if (func_name.eq.'LIAISON_UNILATER') then
         isfonc = list_func_acti(12).eq.1

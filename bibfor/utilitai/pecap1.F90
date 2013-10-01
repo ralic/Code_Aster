@@ -130,9 +130,9 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     xmin = zero
     ymin = zero
 !
-    do 10 i = 1, 9
+    do i = 1, 9
         work(i) = zero
-10  end do
+    end do
 !
 ! --- ON VERIFIE QUE LE RESULTAT EST DE TYPE EVOL_THER :
 !     ------------------------------------------------
@@ -261,7 +261,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---   OU TEMP(1) EST LA TEMPERATURE AU PREMIER NOEUD DU BORD
 ! ---   BOUCLE SUR LES CONTOURS INTERIEURS :
 !       ----------------------------------
-        do 30 igr = 1, ngi
+        do igr = 1, ngi
 !
             strap = zero
 !
@@ -299,7 +299,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---   BOUCLE SUR LES MAILLES (SEG2 OU SEG3) CONSTITUANT LE CONTOUR
 ! ---   INTERIEUR COURANT :
 !       -----------------
-            do 20 m = 1, nbmail
+            do m = 1, nbmail
 !
 ! ---     NUMERO DE LA MAILLE :
 !         -------------------
@@ -335,13 +335,13 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---    ET PAR SA PROJECTION SUR L'AXE Y :
 !        --------------------------------
                 strap = strap + undemi* (x1+x2)* (y2-y1)
-20          continue
+            end do
 !
 ! ---  MISE A JOUR DE LA CONSTANTE DE TORSION, ELLE EST AUGMENTEE
 ! ---  DE 2*AIRE(TROU)*TEMP(1) :
 !      -----------------------
             ct = ct + deux*temp*abs(strap)
-30      continue
+        end do
 !
     endif
 !

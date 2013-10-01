@@ -61,7 +61,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 !
     integer :: nbparr, nbpard, numa, long, mxvale
     integer :: ifm, nd, nr, niv, i, ni, np, nq, n1, n2, iret, jord, jins
-    integer :: iord, iainst, ibid, lvale, nbin, iocc, nt, nm, nc
+    integer :: iord, iainst, lvale, nbin, iocc, nt, nm, nc
     integer :: ng, kk, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, nume, ier
     integer :: numord, numomu, nbordr
     parameter (mxvale=5,nbparr=6,nbpard=4)
@@ -103,13 +103,13 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     call getvtx('RICE_TRACEY', 'OPTION', iocc=1, scal=optcal(1), nbret=np)
     call getvtx('RICE_TRACEY', 'LOCAL', iocc=1, scal=optcal(2), nbret=nq)
     if (nbocc .gt. 1) then
-        do 10 i = 2, nbocc
+        do i = 2, nbocc
             call getvtx('RICE_TRACEY', 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
             call getvtx('RICE_TRACEY', 'LOCAL', iocc=i, scal=toptca(2), nbret=n2)
             if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
                 call utmess('F', 'UTILITAI3_83')
             endif
-10      continue
+        end do
     endif
 !
     option = 'RICE_TRACEY'
@@ -151,12 +151,12 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         call wkvect(kins, 'V V R', nbordr, jins)
         call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
         if (iret .ne. 0) then
-            do 20 iord = 1, nbordr
+            do iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
-20          continue
+            end do
         endif
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbparr, noparr, typarr)
@@ -170,7 +170,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 ncmp=1, nomcmp='X1', sr=0.d0)
 !
     call wkvect('&&PERITR.TRAV1', 'V V R', mxvale, lvale)
-    do 90 iord = 1, nbordr
+    do iord = 1, nbordr
         call jemarq()
         call jerecu('V')
         numord = zi(jord+iord-1)
@@ -233,7 +233,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     lpain, 2, lchout, lpaout, 'V',&
                     'OUI')
 !
-        do 80 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvtx(option(1:11), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
                         iarg, 0, k8b, nm)
@@ -244,9 +244,9 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 if (optcal(2) .eq. 'OUI') then
                     call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
                                 vr, 0, [0])
-                    do 30 kk = 1, mxvale
+                    do kk = 1, mxvale
                         zr(lvale+kk-1) = vr(kk)
-30                  continue
+                    end do
                 else if (optcal(2).eq.'NON') then
                     call memoy(chelem, 1, chelem, 3, vr,&
                                0, [0])
@@ -290,7 +290,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 call wkvect('&&PERITR_GROUPM', 'V V K24', nbgrma, jgr)
                 call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc,&
                             iarg, nbgrma, zk24(jgr), ng)
-                do 50 ig = 1, nbgrma
+                do ig = 1, nbgrma
                     nomma2 = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomma2), iret)
                     if (iret .eq. 0) then
@@ -306,9 +306,9 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     if (optcal(2) .eq. 'OUI') then
                         call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
                                     vr, nbma, zi(jad))
-                        do 40 kk = 1, mxvale
+                        do kk = 1, mxvale
                             zr(lvale+kk-1) = vr(kk)
-40                      continue
+                        end do
                     else if (optcal(2).eq.'NON') then
                         call memoy(chelem, 1, chelem, 3, vr,&
                                    nbma, zi(jad))
@@ -346,7 +346,8 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                         call tbajli(resu, nbpard, nopard, numord, rtval,&
                                     c16b, valek, 0)
                     endif
-50              continue
+ 50                 continue
+                end do
                 call jedetr('&&PERITR_GROUPM')
             endif
 !
@@ -355,7 +356,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 call wkvect('&&PERITR_MAILLE', 'V V K8', nbmail, jma)
                 call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
                             iarg, nbmail, zk8(jma), nm)
-                do 70 im = 1, nbmail
+                do im = 1, nbmail
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
@@ -366,9 +367,9 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     if (optcal(2) .eq. 'OUI') then
                         call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
                                     vr, 1, [nume])
-                        do 60 kk = 1, mxvale
+                        do kk = 1, mxvale
                             zr(lvale+kk-1) = vr(kk)
-60                      continue
+                        end do
                     else if (optcal(2).eq.'NON') then
                         call memoy(chelem, 1, chelem, 3, vr,&
                                    1, [nume])
@@ -406,17 +407,18 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                         call tbajli(resu, nbpard, nopard, numord, rtval,&
                                     c16b, valek, 0)
                     endif
-70              continue
+ 70                 continue
+                end do
                 call jedetr('&&PERITR_MAILLE')
             endif
-80      continue
+        end do
         call copisd('CHAMP_GD', 'V', '&&PERITR.SDRPR', '&&PERITR.SDRMR')
         call detrsd('CARTE', '&&PERITR.CH.SOUSOP')
         call detrsd('CHAM_ELEM', chelem)
         call jedema()
-90  continue
+    end do
 !
-100  continue
+100 continue
 !
 ! --- MENAGE
     call jedetr(knum)
@@ -426,6 +428,6 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     call detrsd('CHAMP_GD', '&&PERITR.SDRPR')
     call detrsd('CHAMP_GD', '&&PERITR.SDRMR')
 !
-110  continue
+110 continue
     call jedema()
 end subroutine

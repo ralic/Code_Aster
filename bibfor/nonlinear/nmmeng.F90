@@ -18,7 +18,7 @@ subroutine nmmeng(fonact)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/detmat.h"
 #include "asterfort/isfonc.h"
@@ -40,10 +40,6 @@ subroutine nmmeng(fonact)
 !
 !
 !
-    character(len=24) :: opt, k24bid
-    character(len=19) :: k19bid
-    integer :: ibid
-    real(kind=8) :: r8bid
 !
 ! ----------------------------------------------------------------------
 !

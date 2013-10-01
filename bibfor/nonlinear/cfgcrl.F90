@@ -57,7 +57,6 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
     real(kind=8) :: numer, denom
     integer :: iliai, jdecal, nbddl
     complex(kind=8) :: c16bid
-    real(kind=8) :: r8bid
     character(len=19) :: k19bla
     character(len=24) :: apcoef, apddl, appoin
     integer :: japcoe, japddl, japptr
@@ -66,6 +65,7 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
     character(len=24) :: secmbr, ddelt, cncin0
     integer :: jsecmb, jddelt
     integer :: iret
+    c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,12 +104,12 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
 !
 ! --- SECOND MEMBRE: [A]T .{DIRECP}
 !
-    do 50 iliai = 1, nbliai
+    do iliai = 1, nbliai
         jdecal = zi(japptr+iliai-1)
         nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
         call calatm(neq, nbddl, zr(jdirec+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
                     zr(jsecmb))
-50  end do
+    end do
 !
 ! --- RESOLUTION [K].{DDELT} = [A]T .{DIRECP} -> {DDELT}
 !

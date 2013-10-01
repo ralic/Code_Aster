@@ -68,21 +68,22 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
 !
 !-----------------------------------------------------------------------
     integer :: im, iret, jmass
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     if (typbas(1:9) .eq. 'MODE_MECA' .or. typbas(1:9) .eq. 'MODE_GENE') then
         if (lamor) then
-            do 100 im = 1, neqgen
+            do im = 1, neqgen
                 x1 = fexgen(im) / masgen(im)
                 x2 = pulsa2(im)*depgen(im) + amogen(im)*vitgen(im)
                 accgen(im) = x1 - x2
-100          continue
+            end do
         else
             call pmavec('ZERO', neqgen, amogen, vitgen, work1)
-            do 110 im = 1, neqgen
+            do im = 1, neqgen
                 x1 = fexgen(im) / masgen(im)
                 x2 = pulsa2(im)*depgen(im) + work1(im)/masgen(im)
                 accgen(im) = x1 - x2
-110          continue
+            end do
         endif
 !
     else if (typbas(1:9).eq.'BASE_MODA') then
@@ -96,16 +97,16 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
         endif
         if (lamor) then
             call pmavec('ZERO', neqgen, masgen, vitgen, work1)
-            do 120 im = 1, neqgen
+            do im = 1, neqgen
                 work1(im) = amogen(im)*work1(im)
-120          continue
+            end do
         else
             call pmavec('ZERO', neqgen, amogen, vitgen, work1)
         endif
         call pmavec('CUMU', neqgen, riggen, depgen, work1)
-        do 130 im = 1, neqgen
+        do im = 1, neqgen
             accgen(im) = fexgen(im) - work1(im)
-130      continue
+        end do
 !        CALL DCOPY(NEQGEN*NEQGEN,MASGEN,1,ZR(JMASS),1)
 !        CALL TRLDS(ZR(JMASS),NEQGEN,NEQGEN,IRET)
         call rrlds(zr(jmass), neqgen, neqgen, accgen, 1)
@@ -120,9 +121,9 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
             call mrmult('ZERO', descr, depgen, work1, 1,&
                         .false.)
         endif
-        do 140 im = 1, neqgen
+        do im = 1, neqgen
             accgen(im) = fexgen(im) - work1(im)
-140      continue
+        end do
 !
         ASSERT(descm.ne.0)
         matr = zk24(zi(descm+1))(1:19)

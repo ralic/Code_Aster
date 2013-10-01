@@ -68,8 +68,9 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
     character(len=24) :: tlimat(2), mediri, merigi, cnvabt
-    real(kind=8) :: testr, testm, vnorm, rbid
+    real(kind=8) :: testr, testm, vnorm
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !
     data typres        /'R'/
     data chsol         /'&&NXNEWT.SOLUTION'/
@@ -119,12 +120,12 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     testr = 0.d0
     testm = 0.d0
     vnorm = 0.d0
-    do 100 k = 1, lonch
+    do k = 1, lonch
         zr(jtempp+k-1) = zr(j2nd+k-1) - zr(jvare+k-1) - zr(jbtla+k-1)
         testr = testr + ( zr(jtempp+k-1) )**2
         vnorm = vnorm + ( zr(j2nd+k-1) - zr(jbtla+k-1) )**2
         testm = max( testm,abs( zr(jtempp+k-1) ) )
-100  end do
+    end do
     if (vnorm .gt. 0d0) then
         testr = sqrt( testr / vnorm )
     endif
@@ -193,6 +194,6 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !
     call copisd('CHAMP_GD', 'V', chsol, vtempp(1:19))
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

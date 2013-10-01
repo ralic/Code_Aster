@@ -15,7 +15,7 @@ subroutine detmat()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 !
 ! BUT : DETRUIRE TOUTES LES MATR_ASSE PRESENTES SUR LA BASE VOLATILE
@@ -39,7 +39,7 @@ subroutine detmat()
                 nbmat)
     ASSERT(nbmat.ge.0)
 !
-    do i=1,nbmat
+    do i = 1, nbmat
         call jeexin(lirefa(i), ier)
         if (ier .eq. 0) goto 10
         matass = lirefa(i)(1:19)
@@ -55,7 +55,7 @@ subroutine detmat()
 !           eventuelles instances mumps et petsc
         call detrsd('MATR_ASSE', matass)
 !
-10      continue
+ 10     continue
     end do
 !
 end subroutine

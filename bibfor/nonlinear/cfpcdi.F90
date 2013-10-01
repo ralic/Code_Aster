@@ -67,7 +67,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
     integer :: ifm, niv
     real(kind=8) :: numer, denom, conver, alpha
     real(kind=8) :: numerp, numerm, beta
-    real(kind=8) :: convm, coef, r8bid
+    real(kind=8) :: convm, coef
     integer :: iliac, iliai, jdecal, nbddl, iterat, nbliac
     character(len=24) :: cncin0, secmbr, ddelt, pcresi, pcdire, pcdepl
     integer :: jsecmb, jddelt, jpcres, jpcdir, jpcdep
@@ -75,6 +75,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
     complex(kind=8) :: c16bid
     parameter    (coef=1.d-2)
     integer :: iret
+    c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,12 +104,12 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 ! --- COMPTAGE DU NOMBRE DE LIAISONS REELLEMENT ACTIVES
 !
     nbliac = 0
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
         if ((mu(iliai).gt.tole) .or. (ssgrad(iliai).gt.epsipc)) then
             nbliac = nbliac + 1
             inliac(nbliac) = iliai
         endif
-10  end do
+    end do
 !
 ! --- SI AUCUNE LIAISON ACTIVE ON SORT CAR
 ! --- LE PRECONDITIONNEUR EST INUTILE
@@ -143,11 +144,11 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 ! =========================== BOUCLE PRINCIPALE ========================
 ! ======================================================================
 !
-20  continue
+ 20 continue
 !
 ! --- NOUVELLE VALEUR DU GRADIENT
 !
-    do 30 iliac = 1, nbliac
+    do iliac = 1, nbliac
         iliai = inliac(iliac)
         jdecal = appoin(iliai)
         nbddl = appoin(iliai+1) - appoin(iliai)
@@ -155,14 +156,14 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
         call caladu(neq, nbddl, apcoef(1+jdecal), apddl(1+jdecal), zr(jpcdep),&
                     zr(jpcres-1+iliac))
         zr(jpcres-1+iliac) = zr(jpcres-1+iliac) - ssgrad(iliai)
-30  end do
+    end do
 !
 ! --- TEST DE CONVERGENCE
 !
     conver = -1.d0
-    do 40 iliac = 1, nbliac
+    do iliac = 1, nbliac
         conver = max(conver,abs(zr(jpcres-1+iliac)))
-40  end do
+    end do
     if (niv .ge. 2) then
         if (iterat .eq. 1) convm=10*conver/coef
         if (conver .lt. (coef*convm)) then
@@ -199,13 +200,13 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 ! --- AT.DIRECH
 !
     call r8inir(neq, 0.d0, zr(jsecmb), 1)
-    do 50 iliac = 1, nbliac
+    do iliac = 1, nbliac
         iliai = inliac(iliac)
         jdecal = appoin(iliai)
         nbddl = appoin(iliai+1) - appoin(iliai)
         call calatm(neq, nbddl, zr(jpcdir-1+iliac), apcoef(1+jdecal), apddl(1+jdecal),&
                     zr(jsecmb))
-50  end do
+    end do
 !
 ! --- RESOLUTION
 ! --- DU=K-1*(AT.DIRECH)
@@ -227,10 +228,10 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 !
 ! --- ACTUALISATION DU SOUS GRADIENT ET DU DEPLACEMENT
 !
-    do 70 iliac = 1, nbliac
+    do iliac = 1, nbliac
         iliai = inliac(iliac)
         ssgrpr(iliai) = ssgrpr(iliai) + alpha*zr(jpcdir-1+iliac)
-70  end do
+    end do
 !
     call daxpy(neq, -alpha, zr(jddelt), 1, zr(jpcdep),&
                1)
@@ -244,7 +245,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
     iterat = iterat + 1
     goto 20
 !
-80  continue
+ 80 continue
 !
 !     ON A DEPASSE LE NOMBRE D'ITERATIONS MAX
     if (niv .ge. 2) then
@@ -253,7 +254,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
     endif
 !
 !
-90  continue
+ 90 continue
 !
 ! ======================================================================
 ! ============================= ON A CONVERGE ==========================
@@ -263,23 +264,23 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 !     ET CETTE ROUTINE. DU COUP, ON PEUT ENTRER ICI ET S'APERCEVOIR
 !     QUE L'ON A RIEN A FAIRE. DANS CE CAS, ON RECOPIE.
     if (iterat .eq. 1) then
-        do 100 iliac = 1, nbliac
+        do iliac = 1, nbliac
             iliai = inliac(iliac)
             ssgrpr(iliai) = zr(jpcres-1+iliac)
-100      continue
+        end do
     endif
 !
 !     ON REPROJETE LE SOUS-GRADIENT PRECONDITIONNE POUR
 !     ASSURER LA POSITIVITE DES MULTIPLICATEURS
     call dscal(nbliai, -1.d0, ssgrpr, 1)
-    do 110 iliai = 1, nbliai
+    do iliai = 1, nbliai
         if (mu(iliai) .le. tole) then
             ssgrpr(iliai) = max(ssgrpr(iliai),0.d0)
         endif
-110  end do
+    end do
 !
 !
-120  continue
+120 continue
 !
     call jedema()
 !

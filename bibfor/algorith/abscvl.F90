@@ -54,7 +54,7 @@ subroutine abscvl(ndim, tabar, xg, s)
 !
 !      RTECHERCHE DE LA MONOTONIE SUR X ET Y
     k=0
- 1  continue
+  1 continue
     k=k+1
     a = tabar(k)+tabar(ndim+k)-2*tabar(2*ndim+k)
     b = tabar(ndim+k)-tabar(k)
@@ -94,7 +94,7 @@ subroutine abscvl(ndim, tabar, xg, s)
         endif
     endif
 !
- 2  continue
+  2 continue
 !
 !     ALIAS DE L'ARETE (QUADRATIQUE)
     elp='SE3'

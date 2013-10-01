@@ -44,9 +44,7 @@ subroutine vtcopy(chin, chout, kstop, codret)
 !
 !
 !
-    integer :: iret, nbsd, ilimpi, iret1, ifetc1, ifetc2, idd
     character(len=19) :: ch1, ch2
-    character(len=24) :: ch1esc, ch2esc
 !     ------------------------------------------------------------------
 !
     call jemarq()

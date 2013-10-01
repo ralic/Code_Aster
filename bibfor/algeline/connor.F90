@@ -108,9 +108,9 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     nbzex = zi(ifsvi+1)
 !
     nbval=1
-    do 5 i = 1, nbzex
+    do i = 1, nbzex
         nbval=nbval*zi(ifsvi+1+nbzex+i)
- 5  continue
+    end do
 !
 ! =======================
 !     VECTEUR DE TRAVAIL CONTENANT POUR CHAQUE MODE ET CHAQUE ZONE
@@ -134,9 +134,9 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 ! ---      DIRECTION DANS LAQUELLE AGISSENT LES FORCES FLUIDELASTIQUES
     idep = 0
     depl = zk8(ifsvk+1)
-    do 7 ide = 1, 3
+    do ide = 1, 3
         if (depla(ide) .eq. depl) idep = ide
- 7  continue
+    end do
 ! ---  DEFORMEES MODALES
 !
 !
@@ -160,7 +160,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !
     rhoeq = 0.d0
 !
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
 !
         rhoeq = rhoeq + (&
                 abscur(ima+1)-abscur(ima))* (rhotub+(di**2/( de**2-di**2))*((rho(ima+lnoe)+ rho(i&
@@ -168,7 +168,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 &/2)&
                 )
         rhos = rhos + (abscur(ima+1)-abscur(ima))* ((rho(ima)+rho(ima+ 1))/2)
-10  continue
+    end do
 !
     mastub = ((r8pi()/4)*(de**2-di**2)*rhoeq)/ltube
     rhos = rhos/ltube
@@ -183,7 +183,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !     CALCUL DE LA VITESSE CRITIQUE INTER TUBES POUR CHAQUE COMBINAISON
 !     DES CONSTANTE DE CONNORS ET POUR CHAQUE MODE
 !
-    do 20 im = 1, nbm
+    do im = 1, nbm
 !
         imode=nuor(im)
 !        LES LIGNES COMMENTARISEES CORRESPONDENT A
@@ -196,14 +196,14 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
         delta(im)=(2*r8pi()*amoc(im))/sqrt(1-amoc(im)**2)
         coef(im)=freq(imode)*sqrt(mastub*delta(im)/rhos)
 !
-        do 30 izone = 1, nbzex
+        do izone = 1, nbzex
 !
             nmamin=zi(jzone+2*(izone-1)+1)
             nmamax=zi(jzone+2*(izone-1)+2)-1
 !     RHO EST DE LA FORME A*S+B
 !     V   EST DE LA FORME C*S+D
 !     PHI EST DE LA FORME E*S+F
-            do 40 ima = nmamin, nmamax
+            do ima = nmamin, nmamax
                 a=(rho(ima+1)-rho(ima))/(abscur(ima+1)-abscur(ima))
                 b=rho(ima)-a*abscur(ima)
 !
@@ -232,18 +232,18 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 (abscur(ima+1)**3-abscur(ima)**3))/3+ (coeff5*(abscur(&
                 ima+1)**2-abscur(ima)**2))/2+ coeff6*(abscur(ima+1)-&
                 abscur(ima))
-40          continue
-30      continue
-20  continue
+            end do
+        end do
+    end do
 !
-    do 50 i = 1, nbval
+    do i = 1, nbval
         modul=1
 !
-        do 60 j = 1, nbzex
+        do j = 1, nbzex
             modul=1
-            do 65 k = (j+1), nbzex
+            do k = (j+1), nbzex
                 modul=modul*zi(ifsvi+1+nbzex+k)
-65          continue
+            end do
             if (j .eq. 1) then
                 pas=dble((i-1)/modul)
             else
@@ -252,29 +252,29 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
             endif
             zr(icste-1+j)=zr(ifsvr+3+2*(j-1))+pas* (zr(ifsvr+3+2*(j-1)&
             +1)-zr(ifsvr+3+2*(j-1))) /(zi(ifsvi+1+nbzex+j)-1)
-60      continue
+        end do
 !
-        do 70 im = 1, nbm
+        do im = 1, nbm
             numera(im)=0.d0
             denomi=0.d0
-            do 80 izone = 1, nbzex
+            do izone = 1, nbzex
                 numera(im) = numera(im)+ zr(iener-1+nbzex*(im-1)+ izone)
                 denomi = denomi+zr(icste-1+izone)**(-2)* zr(iener-1+ nbzex*(im-1)+izone)
-80          continue
+            end do
             zr(ivcn-1+(im-1)*nbval+i)= sqrt((numera(im)/denomi))*coef(&
             im)
-70      continue
-50  continue
+        end do
+    end do
 !
 !    CALCUL DE LA VITESSE EFFICACE POUR CHAQUE MODE PROPRE
 !
-    do 90 im = 1, nbm
+    do im = 1, nbm
 !
 !    LA MASSE LINEIQUE DU TUBE EST DE LA FORME A*S+B
 !    LE MODE PROPRE DU TUBE EST DE LA FORME C*S+D
 !
         mphi2(im)=0.d0
-        do 100 ima = 1, nbma
+        do ima = 1, nbma
 !
             a=(0.5d0*r8pi()*(di**2)*(rho(lnoe+ima+1)-rho(lnoe+ima))+&
             correl*(de**2)*(rho(ima+1)-rho(ima)))/ (2*(abscur(ima+1)-&
@@ -297,13 +297,13 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                         &(ima+1)**3-abscur(ima)**3))/3+ (coeff3*(abscur(ima+1)**2-abscur(ima)**2)&
                         &)/2+ coeff4*( abscur(ima+1)-abscur(ima))
 !
-100      continue
+        end do
 !
         zr(iven-1+im) = sqrt((numera(im)*mastub) / (mphi2(im)*rhos))
-        do 95 i = 1, nbval
+        do i = 1, nbval
             zr(irap-1+(im-1)*nbval+i) = zr(iven-1+im)/ zr(ivcn-1+(im- 1)*nbval+i)
-95      continue
-90  continue
+        end do
+    end do
 !
 !
 !
@@ -314,7 +314,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !     CALCUL DE LA VITESSE CRITIQUE INTER TUBES POUR CHAQUE COMBINAISON
 !     DES CONSTANTE DE CONNORS ET POUR CHAQUE MODE
 !
-    do 120 im = 1, nbm
+    do im = 1, nbm
 !
         imode=nuor(im)
 !        LES LIGNES COMMENTARISEES CORRESPONDENT A
@@ -324,14 +324,14 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !        AMORED(IMODE)=AMOC(IMODE)/(4*R8PI()*MASG(IMODE)*FREQ(IMODE))
 !        DELTA(IMODE)=(2*R8PI()*AMORED(IMODE))/SQRT(1-AMORED(IMODE)**2)
 !
-        do 130 izone = 1, nbzex
+        do izone = 1, nbzex
 !
             nmamin=zi(jzone+2*(izone-1)+1)
             nmamax=zi(jzone+2*(izone-1)+2)-1
 !     RHO EST DE LA FORME A*S+B
 !     V   EST DE LA FORME C*S+D
 !     PHI EST DE LA FORME E*S+F
-            do 140 ima = nmamin, nmamax
+            do ima = nmamin, nmamax
                 a=(rho(ima+1)-rho(ima))/(abscur(ima+1)-abscur(ima))
                 b=rho(ima)-a*abscur(ima)
 !
@@ -347,7 +347,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !
 ! PRISE EN COMPTE DES DDL DE TRANSLATION
 !
-                do 145 id = 1, 3
+                do id = 1, 3
                     increm = (lnoe*(im-1)+ima-1)*3+id
                     e=(modetr(increm+3)-modetr(increm)) /(abscur(ima+&
                     1)-abscur(ima))
@@ -366,7 +366,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                     *a+ coeff5
                     coeff6=(d**2)*(f**2)*b+coeff6
 !
-145              continue
+                end do
 !
                 zr(iener-1+nbzex*(im-1)+izone+nbzex*nbm)= zr(iener-1+&
                 nbzex*(im-1)+izone+nbzex*nbm)+ (coeff1*(abscur(ima+1)&
@@ -375,18 +375,18 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 ima)**4))/4+ (coeff4*(abscur(ima+1)**3-abscur(ima)**3)&
                 )/3+ (coeff5*(abscur(ima+1)**2-abscur(ima)**2))/2+&
                 coeff6*(abscur(ima+1)-abscur(ima))
-140          continue
-130      continue
-120  continue
+            end do
+        end do
+    end do
 !
-    do 150 i = 1, nbval
+    do i = 1, nbval
         modul=1
 !
-        do 160 j = 1, nbzex
+        do j = 1, nbzex
             modul=1
-            do 165 k = (j+1), nbzex
+            do k = (j+1), nbzex
                 modul=modul*zi(ifsvi+1+nbzex+k)
-165          continue
+            end do
             if (j .eq. 1) then
                 pas=dble((i-1)/modul)
             else
@@ -395,24 +395,24 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
             endif
             zr(icste-1+j)=zr(ifsvr+3+2*(j-1))+pas* (zr(ifsvr+3+2*(j-1)&
             +1)-zr(ifsvr+3+2*(j-1))) /(zi(ifsvi+1+nbzex+j)-1)
-160      continue
+        end do
 !
-        do 170 im = 1, nbm
+        do im = 1, nbm
             numera(im)=0.d0
             denomi=0.d0
-            do 180 izone = 1, nbzex
+            do izone = 1, nbzex
                 numera(im) = numera(im)+ zr(iener-1+nbzex*(im-1)+ izone+nbzex*nbm)
                 denomi = denomi+zr(icste-1+izone)**(-2)* zr(iener-1+ nbzex*(im-1)+izone+nbzex*nbm&
                          &)
-180          continue
+            end do
             zr(ivcn-1+(im-1)*nbval+i+nbm*nbval)= sqrt((numera(im)/&
             denomi))*coef(im)
-170      continue
-150  continue
+        end do
+    end do
 !
 !    CALCUL DE LA VITESSE EFFICACE POUR CHAQUE MODE PROPRE
 !
-    do 190 im = 1, nbm
+    do im = 1, nbm
 !
 !    LA MASSE GENERALISEE DU MODE IM
 !
@@ -420,11 +420,11 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                     0, sjv=lmasg, styp=k8b)
         mass(im) = zr(lmasg)
         zr(iven-1+nbm+im) = sqrt((numera(im)*mastub) / (mass(im)*rhos) )
-        do 195 i = 1, nbval
+        do i = 1, nbval
             zr(irap-1+(im-1)*nbval+i+nbm*nbval) = zr(iven-1+nbm+im)/ zr(ivcn-1+(im-1)*nbval+i+nbm&
                                                   &*nbval)
-195      continue
-190  continue
+        end do
+    end do
 !
 !
 !

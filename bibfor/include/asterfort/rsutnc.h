@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,13 +14,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine rsutnc(nomsd,nomsy,nbvale,tabnom,tabord,nbtrou)
-              character(len=*), intent(in) :: nomsd
-              character(len=*), intent(in) :: nomsy
-              integer, intent(in) :: nbvale
-              character(len=*), intent(out) :: tabnom(*)
-              integer, intent(out) :: tabord(*)
-              integer, intent(out) :: nbtrou
-            end subroutine rsutnc
-          end interface
+interface
+    subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
+                      nbtrou)
+        character(len=*), intent(in) :: nomsd
+        character(len=*), intent(in) :: nomsy
+        integer, intent(in) :: nbvale
+        character(len=*), intent(out) :: tabnom(*)
+        integer, intent(out) :: tabord(*)
+        integer, intent(out) :: nbtrou
+    end subroutine rsutnc
+end interface

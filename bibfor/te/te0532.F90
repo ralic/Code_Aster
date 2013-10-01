@@ -59,7 +59,7 @@ subroutine te0532(option, nomte)
     integer :: idepl, jptint, jaint, jcface, jlonch, jgliss
     integer :: ivff, iadzi, iazk24, ibid, jout1, jout2
     integer :: jout3, jmemco, ndim, nfh, ddlc, ddls, ddlm
-    integer :: npg, npgf, incoca, nfe, ninter, nnof,vstnc(1)
+    integer :: npg, npgf, incoca, nfe, ninter, nnof, vstnc(1)
     integer :: indco, gliss, memco, nface, cface(5, 3)
     integer :: nno, nnos, nnom, nnol, pla(27), lact(8), nlact, nvec
     integer :: contac, jbasec, nddl, nfiss, jfisno
@@ -88,9 +88,9 @@ subroutine te0532(option, nomte)
     call vecini(27, 0.d0, ffpc)
     call vecini(27, 0.d0, ffp)
     call vecini(8, 0.d0, ffc)
-    do 1 i = 1, 8
+    do i = 1, 8
         lact(i)=0
- 1  end do
+    end do
 !
     call elref1(elref)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
@@ -155,7 +155,7 @@ subroutine te0532(option, nomte)
 !
 ! --- BOUCLE SUR LES FISSURES
 !
-    do 90 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 ! --- RECUPERATION DIVERSES DONNEES CONTACT
 !
@@ -196,11 +196,11 @@ subroutine te0532(option, nomte)
 !
 ! --- BOUCLE SUR LES FACETTES
 !
-        do 100 ifa = 1, nface
+        do ifa = 1, nface
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !
-            do 110 ipgf = 1, npgf
+            do ipgf = 1, npgf
 !
 ! --- RECUPERATION DES STATUTS POUR LE POINT DE GAUSS
 !
@@ -208,9 +208,9 @@ subroutine te0532(option, nomte)
                 indco = zi(jindco-1+nbspg+isspg)
                 dn = 0.d0
                 if (algocr .eq. 3) then
-                    do 2 i = 1, ncompv
+                    do i = 1, ncompv
                         cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
- 2                  continue
+                    end do
                 endif
 !
 ! --- PREPARATION DU CALCUL
@@ -234,9 +234,9 @@ subroutine te0532(option, nomte)
                 if (algocr .eq. 1 .or. algocr .eq. 2) then
                     gliss = zi(jgliss-1+nbspg+isspg)
                     memco = zi(jmemco-1+nbspg+isspg)
-                    do 143 j = 1, ndim
+                    do j = 1, ndim
                         dn = dn + saut(j)*nd(j)
-143                  continue
+                    end do
                     nvec = 1
                     call xxlagm(ffc, idepl, ibid, lact, ndim,&
                                 nnol, pla, reac, r3bid, tau1,&
@@ -313,10 +313,10 @@ subroutine te0532(option, nomte)
 ! --- ACTUALISATION VARIABLE INTERNE
 !
                     if (algocr .eq. 3) then
-                        do 3 i = 1, ncompv
+                        do i = 1, ncompv
                             zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) =&
                             alpha(i)
- 3                      continue
+                        end do
                         eps = r8prem()
                         ASSERT((alpha(1)+eps).ge.cohes(1))
                     endif
@@ -328,15 +328,15 @@ subroutine te0532(option, nomte)
                     incoca = 0
                 endif
 !
-110          continue
-100      continue
+            end do
+        end do
         nbspg = nbspg + nspfis
-91      continue
+ 91     continue
         jbasec = jbasec + ncompb
         jptint = jptint + ncompp
         jaint = jaint + ncompa
         jcface = jcface + ncompc
-90  end do
+    end do
 !
 !     ENREGISTREMENT DES CHAMPS DE SORTIE
     zi(jout1)=incoca

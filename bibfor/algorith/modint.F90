@@ -99,6 +99,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     character(len=1) :: listyp(2)
     character(len=19) :: lismat(2), imped, solveu, nume91, nume, prno
     character(len=24) :: valk
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !-- DEBUT --C
 !
@@ -211,53 +212,53 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- ON DESACTIVE LE TEST FPE
     call matfpe(-1)
 !
-    do 70 n1 = 1, nbsst
+    do n1 = 1, nbsst
 !
 !-- TIRAGE ALEATOIRE DU VECTEUR INITIAL
         norm=0.d0
-        do 80 i1 = 1, 6*nnoint
+        do i1 = 1, 6*nnoint
             call getran(rand)
             zr(lkryl+i1-1)=(rand*2-1)*zi(lindin+6*nnoint*(n1-1)+i1-1)
             norm=norm+zr(lkryl+i1-1)**2
-80      continue
+        end do
 !
         norm=sqrt(norm)
-        do 90 i1 = 1, 6*nnoint
+        do i1 = 1, 6*nnoint
             zr(lkryl+i1-1)=zr(lkryl+i1-1)/norm
-90      continue
+        end do
 !
 !-- REMPLISSAGE DE LA MATRICE DE HESSENBERG ET DU SE DE KRYLOV ASSOCIE
-        do 100 k1 = 2, nbvect+1
-            do 110 i1 = 1, 6*nnoint
+        do k1 = 2, nbvect+1
+            do i1 = 1, 6*nnoint
                 zr(lvtemp+i1-1)=zr(lkryl+i1-1+(k1-2)*6*nnoint)
-110          continue
+            end do
 !
             call mrmult('ZERO', lmatma, zr(lvtemp), zr(lvtmp2), 1,&
                         .true.)
             call resoud(imped, ' ', solveu, ' ', 1,&
                         ' ', ' ', ' ', zr(lvtmp2), [cbid],&
                         ' ', .true., 0, iret)
-            do 120 j1 = 1, k1-1
+            do j1 = 1, k1-1
                 norm=ddot(6*nnoint,zr(lvtmp2),1, zr(lkryl+(j1-1)*6*&
                 nnoint),1)
                 zr(lmath+(k1-2)*nbvect+j1-1)=norm
-                do 130 i1 = 1, 6*nnoint
+                do i1 = 1, 6*nnoint
                     zr(lvtmp2+i1-1)=zr(lvtmp2+i1-1)- norm*zr(lkryl+(&
                     j1-1)*6*nnoint+i1-1)
-130              continue
-120          continue
+                end do
+            end do
 !
             norm=ddot(6*nnoint,zr(lvtmp2),1,zr(lvtmp2),1)
             norm=sqrt(norm)
             if (k1 .lt. nbvect+1) then
                 zr(lmath+(k1-2)*nbvect+k1-1)=norm
-                do 140 i1 = 1, 6*nnoint
+                do i1 = 1, 6*nnoint
                     zr(lkryl+(k1-1)*6*nnoint+i1-1)=zr(lvtmp2+i1-1)/&
                     norm
                     zr(lvtemp+i1-1)=zr(lkryl+(k1-1)*6*nnoint+i1-1)
-140              continue
+                end do
             endif
-100      continue
+        end do
 !
 !-- RESOLUTION DU PROBLEME AUX VALEURS PROPRES
         call dgeev('N', 'V', nbvect, zr(lmath), nbvect,&
@@ -271,20 +272,20 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
         call jedetr('&&MODINT.MATR_EIGEN_WORK')
 !
 !-- TRI DES VALEURS PROPRES
-        do 150 i1 = 1, nbvect
+        do i1 = 1, nbvect
             temp=1.d+16
-            do 160 j1 = 1, nbvect
+            do j1 = 1, nbvect
                 norm=abs(1.d0/sqrt(zr(lwr+j1-1)**2+zr(lwi+j1-1)**2)+&
                 shift)
                 if (norm .lt. temp) then
                     temp=norm
                     zi(lindfr+i1-1)=j1
                 endif
-160          continue
+            end do
 !
             zr(lwr+zi(lindfr+i1-1)-1)=1.d-16
             zr(lwi+zi(lindfr+i1-1)-1)=1.d-16
-150      continue
+        end do
 !
 !-- RAJOUTER LA SELECTION DES DDL
 !-- ON GARDE LES 6 DDL POUR LA CONSTRUCTION DU MODELE D'INTERFACE
@@ -295,30 +296,30 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
             call wkvect(matmod, 'V V R', nddlin*coeff, lmatmo)
 !
-            do 175 l1 = 1, coeff
+            do l1 = 1, coeff
                 j1=zi(lindfr+l1-1)
-                do 185 k1 = 1, nbvect
+                do k1 = 1, nbvect
                     temp=zr(lmolor+(j1-1)*nbvect+k1-1)
-                    do 195 i1 = 1, nddlin
+                    do i1 = 1, nddlin
                         m1=zi(lintrf+i1-1)
                         zr(lmatmo+(l1-1)*nddlin+i1-1)= zr(lmatmo+(l1-&
                         1)*nddlin+i1-1) +zr(lkryl+(k1-1)*6*nnoint+m1-&
                         1)*temp
-195                  continue
-185              continue
-175          continue
+                    end do
+                end do
+            end do
             nbmod=coeff
-            goto 9999
+            goto 999
 !
         endif
 !
 !-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
         decal=int((n1-1)*coeff*neq)
-        do 170 l1 = 1, coeff
+        do l1 = 1, coeff
             j1=zi(lindfr+l1-1)
-            do 180 k1 = 1, nbvect
+            do k1 = 1, nbvect
                 temp=zr(lmolor+(j1-1)*nbvect+k1-1)
-                do 190 i1 = 1, nddlin
+                do i1 = 1, nddlin
                     m1=zi(lintrf+i1-1)
 !
                     zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2)-1)=&
@@ -328,11 +329,11 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                     zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2+1)-&
                     1)= zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2+&
                     1)-1) +zr(lkryl+(k1-1)*6*nnoint+m1-1)*temp
-190              continue
-180          continue
-170      continue
+                end do
+            end do
+        end do
 !
-70  end do
+    end do
 !
 !
 !
@@ -361,13 +362,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                 prno, ibid)
     call jeveuo(prno//'.DELG', 'L', ldelg)
 !
-    do 200 i1 = 1, neq
+    do i1 = 1, neq
         if (zi(ldelg+i1-1) .lt. 0) then
-            do 210 j1 = 1, nsekry
+            do j1 = 1, nsekry
                 zr(lmakry+(j1-1)*neq+i1-1)=0.d0
-210          continue
+            end do
         endif
-200  end do
+    end do
 !
     call jeveuo(masse(1:19)//'.&INT', 'L', lmatm)
     call mrmult('ZERO', lmatm, zr(lmakry), zr(lmatrm), nsekry,&
@@ -376,12 +377,12 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call mrmult('ZERO', lmatk, zr(lmakry), zr(lmatrk), nsekry,&
                 .true.)
 !
-    do 240 j1 = 1, nsekry
+    do j1 = 1, nsekry
         zr(lmapro+(j1-1)*nsekry+j1-1)= ddot(neq,zr(lmakry+(j1-1)*neq),&
         1, zr(lmatrm+(j1-1)*neq),1)
         zr(lkpro+(j1-1)*nsekry+j1-1)= ddot(neq,zr(lmakry+(j1-1)*neq),&
         1, zr(lmatrk+(j1-1)*neq),1)
-        do 250 i1 = 1, j1-1
+        do i1 = 1, j1-1
             zr(lmapro+(j1-1)*nsekry+i1-1)= ddot(neq,zr(lmakry+(i1-1)*&
             neq),1, zr(lmatrm+(j1-1)*neq),1)
             zr(lmapro+(i1-1)*nsekry+j1-1)= zr(lmapro+(j1-1)*nsekry+i1-&
@@ -390,8 +391,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
             zr(lkpro+(j1-1)*nsekry+i1-1)= ddot(neq,zr(lmakry+(i1-1)*&
             neq),1, zr(lmatrk+(j1-1)*neq),1)
             zr(lkpro+(i1-1)*nsekry+j1-1)= zr(lkpro+(j1-1)*nsekry+i1-1)
-250      continue
-240  end do
+        end do
+    end do
 !
 !-------------------------------------------------C
 !--                                             --C
@@ -419,31 +420,31 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
 !-- CLASSEMENT DES FREQUENCES PROPRES
     temp=1.d+16
-    do 260 i1 = 1, nsekry
+    do i1 = 1, nsekry
         if (abs(zr(lbeta+i1-1)) .gt. 0) then
             lambda=zr(lalpr+i1-1)/zr(lbeta+i1-1)
             zr(lfreq+i1-1)=(sqrt(abs(lambda)))/2/pi
         else
             zr(lfreq+i1-1)=temp
         endif
-260  end do
+    end do
 !
 !
     call wkvect(vefreq, 'V V R', nbmod, lvp)
 !
-    do 270 i1 = 1, nbmod
+    do i1 = 1, nbmod
         temp=1.d+16
-        do 280 j1 = 1, nsekry
+        do j1 = 1, nsekry
             if (zr(lfreq+j1-1) .lt. temp) then
                 temp=zr(lfreq+j1-1)
                 zi(lindfr+i1-1)=j1
             endif
-280      continue
+        end do
         zr(lfreq+zi(lindfr+i1-1)-1)=1.d+16
         lambda=zr(lalpr+zi(lindfr+i1-1)-1)/ zr(lbeta+zi(lindfr+i1-1)-&
         1)-0*shift
         zr(lvp+i1-1)=(sqrt(abs(lambda)))/2/pi
-270  end do
+    end do
 !
 !-------------------------------------------------------C
 !--                                                   --C
@@ -452,15 +453,15 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-------------------------------------------------------C
 !
     call wkvect(matmod, 'V V R', neq*nbmod, lmatmo)
-    do 290 j1 = 1, nbmod
-        do 300 k1 = 1, nsekry
+    do j1 = 1, nbmod
+        do k1 = 1, nsekry
             temp=zr(lmored+(zi(lindfr+j1-1)-1)*nsekry+k1-1)
-            do 310 i1 = 1, neq
+            do i1 = 1, neq
                 zr(lmatmo+(j1-1)*neq+i1-1)=zr(lmatmo+(j1-1)*neq+i1-1)+&
                 temp*zr(lmakry+(k1-1)*neq+i1-1)
-310          continue
-300      continue
-290  end do
+            end do
+        end do
+    end do
 !
 !---------------------------------------C
 !--                                   --C
@@ -480,7 +481,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call jedetr('&&MODINT.MATR_MOD_RED')
     call jedetr('&&MODINT.MATR_WORK_DGGEV')
 !
-9999  continue
+999 continue
 !
     call detrsd('MATR_ASSE', imped)
 !

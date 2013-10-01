@@ -272,7 +272,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 ! --- TOUS LES NOEUDS DU MAILLAGE + TOUS LES NOEUDS SUPL. DES LIGRELS :
 !     ---------------------------------------------------------------
     n = nbnom
-    do 10 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
         call jeexin(nomli(1:19)//'.NBNO', iret)
         if (iret .ne. 0) then
@@ -292,7 +292,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
         call jeecra(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', nbn* (nec+2))
         n = n + nbn
-10  end do
+    end do
 !
     call jeveuo(nu//'.NUME.PRNO', 'E', idprn1)
     call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
@@ -324,7 +324,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 ! --- 1ERE ETAPE :
 ! --- PSUIV(K)= NOMBRE DE NOEUDS SUP A ECRIRE DERRIERE K :
 !     ==================================================
-    do 30 ili = 2, nlili
+    do ili = 2, nlili
 !
 ! ---  INULAG EST UN INDICATEUR PERMETTANT DE SAVOIR SI LE
 ! ---  LIGREL CONTIENT DES MAILLES DE LAGRANGE (INFORMATION
@@ -346,7 +346,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
             inulag = 1
         endif
 !
-        do 20 iel = 1, zznels(ili)
+        do iel = 1, zznels(ili)
             nn = zznsup(ili,iel)
 !
 ! ---   DOUBLE LAGRANGE :
@@ -392,19 +392,19 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                     zi(ipsuiv+n1re) = zi(ipsuiv+n1re) + 1
                 endif
             endif
-20      continue
-30  end do
+        end do
+    end do
 !
 ! --- 2EME ETAPE :
 ! --- PSUIV = PROFIL DE PSUIV :
 !     =======================
     l1 = zi(ipsuiv)
     zi(ipsuiv) = 1
-    do 40 i = 1, n + 1
+    do i = 1, n + 1
         l2 = zi(ipsuiv+i)
         zi(ipsuiv+i) = zi(ipsuiv+i-1) + l1
         l1 = l2
-40  end do
+    end do
 !
 ! --- ALLOCATION DE VSUIV :
 !     -------------------
@@ -423,7 +423,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 ! --- CALCUL DE VSUIV ET LSUIV :
 !     ========================
-    do 80 ili = 2, nlili
+    do ili = 2, nlili
 !
 ! ---  INULAG EST UN INDICATEUR PERMETTANT DE SAVOIR SI LE
 ! ---  LIGREL CONTIENT DES MAILLES DE LAGRANGE (INFORMATION
@@ -445,7 +445,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
             inulag = 1
         endif
 !
-        do 70 iel = 1, zznels(ili)
+        do iel = 1, zznels(ili)
             nn = zznsup(ili,iel)
             if (nn .eq. 3) then
                 n1 = zznema(ili,iel,1)
@@ -576,7 +576,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                             icer1 = 0
                             icer2 = 0
                             if (jnulag .eq. 1) then
-                                do 50 j = 1, suivdi(n0re+1)
+                                do j = 1, suivdi(n0re+1)
                                     ns = suiv(n0re+1,j)
                                     if (ns .eq. n2) then
                                         if (icer1 .ne. 0) then
@@ -587,9 +587,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                                         icer1 = icer1 + 1
                                         zi(idsuiv(n0re+1,j)) = -1
                                     endif
-50                              continue
+                                end do
                             endif
-                            do 60 j = 1, suivdi(n0re+1)
+                            do j = 1, suivdi(n0re+1)
                                 ns = suiv(n0re+1,j)
                                 if (ns .eq. n3) then
                                     if (icer2 .ne. 0) then
@@ -600,7 +600,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                                     icer2 = icer2 + 1
                                     zi(idsuiv(n0re+1,j)) = -1
                                 endif
-60                          continue
+                            end do
 !
 ! ---    CAS JNULAG = 1 : ON PLACE LE PREMIER LAGRANGE APRES LE
 ! ---    NOEUD PHYSIQUE COURANT:
@@ -720,8 +720,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                     endif
                 endif
             endif
-70      continue
-80  end do
+        end do
+    end do
 !
 !
 ! --- RENUMEROTATION :
@@ -742,7 +742,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 ! ---  BOUCLE SUR LES LAGRANGE PRECEDANT LE PREMIER NOEUD PHYSIQUE :
 !      -----------------------------------------------------------
-    do 90 j = 1, suivdi(1)
+    do j = 1, suivdi(1)
         j1 = suiv(1,j)
 !
 ! ---  SI LE LAGRANGE N'A PAS ETE RENUMEROTE, ON LE RENUMEROTE :
@@ -752,7 +752,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
             zi(inum2+j1) = nbnonu
             zi(inum21+nbnonu) = j1
         endif
-90  end do
+    end do
 !
 ! ---  NBNORE EST LE NOMBRE DE NOEUDS DU MAILLAGE PARTICIPANTS A LA
 ! ---  NUMEROTATION:
@@ -761,7 +761,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 ! ---  BOUCLE SUR LES NOEUDS PHYSIQUES :
 !      -------------------------------
-    do 110 ire = 1, nbnore
+    do ire = 1, nbnore
         i = zi(ioldn-1+ire)
 !
 ! ---  SI LE NOEUD PHYSIQUE N'A PAS ETE RENUMEROTE, ON LE RENUMEROTE :
@@ -773,7 +773,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 ! ---  BOUCLE SUR LES LAGRANGE SUIVANT LE NOEUD PHYSIQUE COURANT :
 !      ---------------------------------------------------------
-            do 100 j = 1, suivdi(ire+1)
+            do j = 1, suivdi(ire+1)
                 j1 = suiv(ire+1,j)
 !
 ! ---  ON NE PREND EN COMPTE QUE LES LAGRANGE AYANT UN INDICE 'ACTIF':
@@ -788,9 +788,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                         zi(inum21+nbnonu) = j1
                     endif
                 endif
-100          continue
+            end do
         endif
-110  end do
+    end do
 !
     if (nbnonu .ne. (nbnore+nlag)) then
         call utmess('F', 'ASSEMBLA_28')
@@ -804,43 +804,44 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 ! --- DETERMINATION DES .PRNM ET DES .PRNS POUR CHAQUE LIGREL :
 !     -------------------------------------------------------
-    do 120 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
         call creprn(nomli, moloc, 'V', nomli(1:19)//'.QRNM', nomli(1:19) //'.QRNS')
-120  end do
+    end do
 !
 !
 ! --- 1ERE ETAPE : NOEUDS DU MAILLAGE (PHYSIQUES ET LAGRANGES)
 ! --- SI NUNOEL NOEUD DU MAILLAGE
 ! --- PRNO(1,NUNOEL,L+2)= "SIGMA"(.QRNM(MA(NUNOEL))(L))
 !     -------------------------------------------------
-    do 150 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
         call jeexin(nomli(1:19)//'.QRNM', iret)
         if (iret .eq. 0) goto 150
         call jeveuo(nomli(1:19)//'.QRNM', 'L', iprnm)
 !
-        do 140 i = 1, nbnore
+        do i = 1, nbnore
             nunoel = zi(ioldn-1+i)
-            do 130 l = 1, nec
+            do l = 1, nec
                 iec = zi(iprnm-1+nec* (nunoel-1)+l)
                 zi(izzprn(1,nunoel,l+2)) = ior(zzprno(1,nunoel,l+2), iec)
-130          continue
-140      continue
-150  end do
+            end do
+        end do
+150     continue
+    end do
 !
 !
 ! --- 2EME ETAPE : NOEUDS SUPPLEMENTAIRES DES LIGRELS:
 ! --- SI NUNOEL NOEUD TARDIF DU LIGREL ILI NOMLI = LILI(ILI)
 ! --- PRNO(ILI,NUNOEL,L+2)= NOMLI.QRNS(NUNOEL)(L) :
 !     -------------------------------------------
-    do 210 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
         call jeveuo(nomli(1:19)//'.QRNM', 'L', iprnm)
         call jeveuo(nomli(1:19)//'.NBNO', 'L', ibid)
         if (zi(ibid) .gt. 0) call jeveuo(nomli(1:19)//'.QRNS', 'L', iprns)
 !
-        do 200 igr = 1, zzngel(ili)
+        do igr = 1, zzngel(ili)
             nel = zznelg(ili,igr)
 !
             if (nel .ge. 0) then
@@ -850,19 +851,19 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                 nddlb = 0
             endif
 !
-            do 190 j = 1, nel
+            do j = 1, nel
                 numa = zzliel(ili,igr,j)
                 if (numa .lt. 0) then
                     numa = -numa
-                    do 180 k = 1, zznsup(ili, numa)
+                    do k = 1, zznsup(ili, numa)
                         nunoel = zznema(ili,numa,k)
 !
                         if (nunoel .gt. 0) then
-                            do 160 l = 1, nec
+                            do l = 1, nec
                                 iec = zi(iprnm+nec* (nunoel-1)+l-1)
                                 zi(izzprn(ilim,nunoel,l+2)) = ior(&
                                                               zzprno( ilim, nunoel, l+2 ), iec)
-160                          continue
+                            end do
 !
                         else
                             nunoel = -nunoel
@@ -889,30 +890,30 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                                 icddlb = 1
                             endif
 !
-                            do 170 l = 1, nec
+                            do l = 1, nec
                                 iec = zi(iprns+nec* (nunoel-1)+l-1)
                                 zi(izzprn(ili,nunoel,l+2)) = ior(zzprno( ili, nunoel, l+2), iec)
-170                          continue
+                            end do
 !
                             ilag = zi(inuno2+ili-1) + nunoel - 1
                             ilag = ilag - nbnom
                             zi(iddlag+3* (ilag-1)+1) = zi(iddlag+3* ( ilag-1)+1 )* nddlb
 !
                         endif
-180                  continue
+                    end do
 !
                 endif
 !
-190          continue
-200      continue
-210  end do
+            end do
+        end do
+    end do
 !
 !
 ! --- CALCUL DES ADRESSES DANS LES PRNO
 !     =================================
     iad = 1
 !
-    do 220 i = 1, n
+    do i = 1, n
         call nuno1(i, ili, nunoel, n, inum21,&
                    inuno2, nlili)
         if (ili .gt. 0) then
@@ -925,7 +926,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
             zi(izzprn(ili,nunoel,1)) = iad
             iad = iad + nddl1
         endif
-220  end do
+    end do
 !
     nequa = iad - 1
     call wkvect(nu//'.NUME.NEQU', base(1:1)//' V I', 2, idnequ)
@@ -937,9 +938,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !       ----------------------------------------------------------------
         nma = 0
         call jeveuo(jexnum(nu//'.NUME.PRNO', 1), 'L', jprno)
-        do 230,ino = 1,nbnom
-        if (zi(jprno-1+ (ino-1)* (2+nec)+2) .gt. 0) nma = nma + 1
-230      continue
+        do ino = 1, nbnom
+            if (zi(jprno-1+ (ino-1)* (2+nec)+2) .gt. 0) nma = nma + 1
+        end do
         vali(1) = nma + nlag
         vali(2) = nma
         vali(3) = nlag
@@ -968,20 +969,20 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !        OBJET '.NUEQ' :
 !     ---------------------------------------------------
     call wkvect(nu//'.NUME.NUEQ', base(2:2)//' V I', nequa, ianueq)
-    do 310,i = 1,nequa
-    zi(ianueq-1+i) = i
-    310 end do
+    do i = 1, nequa
+        zi(ianueq-1+i) = i
+    end do
 !
     call nudeeq(base, nu, nequa, igds, iddlag)
 !
 !
 ! --- DESTRUCTION DES .PRNM ET DES .PRNS DE CHAQUE LIGREL :
 !     ---------------------------------------------------
-    do 320 ili = 1, nlili
+    do ili = 1, nlili
         call jenuno(jexnum(lili, ili), nomli)
         call jedetr(nomli(1:19)//'.QRNM')
         call jedetr(nomli(1:19)//'.QRNS')
-320  end do
+    end do
 !
     call jedetr(lsuiv)
     call jedetr(psuiv)

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,14 +14,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine mesomm(champ,long,vi,vr,vc,nbma,linuma)
-              character(len=*) :: champ
-              integer, intent(in) :: long
-              integer ,optional, intent(out) :: vi(*)
-              real(kind=8) ,optional, intent(out) :: vr(*)
-              complex(kind=8) ,optional, intent(out) :: vc(*)
-              integer ,optional, intent(in) :: nbma
-              integer ,optional, intent(in) :: linuma(*)
-            end subroutine mesomm
-          end interface
+interface
+    subroutine mesomm(champ, long, vi, vr, vc,&
+                      nbma, linuma)
+        character(len=*) :: champ
+        integer, intent(in) :: long
+        integer, optional, intent(out) :: vi(*)
+        real(kind=8), optional, intent(out) :: vr(*)
+        complex(kind=8), optional, intent(out) :: vc(*)
+        integer, optional, intent(in) :: nbma
+        integer, optional, intent(in) :: linuma(*)
+    end subroutine mesomm
+end interface

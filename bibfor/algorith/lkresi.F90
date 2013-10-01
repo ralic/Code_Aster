@@ -18,7 +18,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !       ----------------------------------------------------------------
 !       CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = -R(DY) POUR LETK
 !       IN  TYPMOD    :  TYPE DE MODELISATION
@@ -76,11 +76,11 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 ! --------------------------------------------------------------------
 ! --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
 ! --------------------------------------------------------------------
-    do 10 i = 1, ndt
+    do i = 1, ndt
         sigft(i) = -yf(i)
         sigdt(i) = -yd(i)
         depst(i) = -deps(i)
-10  continue
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- VARIABLES LOCALES TEMPORAIRES
@@ -115,8 +115,8 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
     xippic = materf(18,2)
 !
 ! --- CONSTRUCTION TENSEUR ELASTIQUE NON LINEAIRE DSDENL
-    call lkelas(ndi, ndt, nmat, materf,&
-                depst, sigft, dsdenl, kk, mu)
+    call lkelas(ndi, ndt, nmat, materf, depst,&
+                sigft, dsdenl, kk, mu)
 !
 ! ----------------------------------------------------------------------
 ! --- I) - BUT : CALCUL DE LA DEFORMATION VISQUEUSE -DEPSV- ET DU
@@ -138,9 +138,9 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
                     depsv, dgamv, retcom)
     else
         dgamv = zero
-        do 20 i = 1, ndt
+        do i = 1, ndt
             depsv(i) = zero
-20      continue
+        end do
     endif
 ! ----------------------------------------------------------------------
 ! --- II) - BUT : CALCUL DE LA DEFORMATION PLASTIQUE -DEPSP- ET DU
@@ -193,32 +193,32 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 ! ---      SIGDT - SIGFT + DSDE:(DEPST-DEPSP-DEPSVP) = 0
 ! ----------------------------------------------------------------------
     if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
-        do 30 i = 1, ndt
+        do i = 1, ndt
             depse(i) = depst(i)-depsv(i)-yf(ndt+1)*gp(i)
-30      continue
+        end do
 !
         call lcprmv(dsdenl, depse, dsige)
 !
-        do 40 i = 1, ndt
+        do i = 1, ndt
             r(i) = dsige(i)+sigdt(i)-sigft(i)
-40      continue
+        end do
     else
-        do 50 i = 1, ndt
+        do i = 1, ndt
             depse(i) = depst(i)-depsv(i)
-50      continue
+        end do
 !
         call lcprmv(dsdenl, depse, dsige)
 !
-        do 60 i = 1, ndt
+        do i = 1, ndt
             r(i) = dsige(i)+sigdt(i)-sigft(i)
-60      continue
+        end do
     endif
 ! === =================================================================
 ! --- MISE A L'ECHELLE DE DEFORMATIONS -> R(I)/MODULE_CISAILLEMENT
 ! === =================================================================
-    do 70 i = 1, ndt
+    do i = 1, ndt
         r(i) = r(i)/mu
-70  continue
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- IV) CONDITION DE KUHN-TUCKER : -FP = 0 OU -DLAM = 0

@@ -87,7 +87,7 @@ subroutine mdtr74(nomres)
     logical :: lamor, lflu
     integer :: itypfl, nexcit, nexcir, ntotex
     integer :: vali(3), jvec, jvecr, j1
-    real(kind=8) :: r8b, xlambd, acrit, agene
+    real(kind=8) :: xlambd, acrit, agene
     real(kind=8) :: valr(3)
     real(kind=8) :: dt, dts, dtu, dtmax, dtmin
     real(kind=8) :: rad
@@ -139,6 +139,7 @@ subroutine mdtr74(nomres)
     integer :: nterm, nts, numvif, nv, nbobjs
     real(kind=8) :: crit, deux, dtarch, eps, omeg2, prec
     real(kind=8) :: seuil, tfexm, tfin, tinit, ts, vgap
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
     data k14b/'              '/
@@ -192,14 +193,14 @@ subroutine mdtr74(nomres)
     call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=na)
     if (nexcit .ne. 0) then
         call wkvect('&&MDTR74.NOMVEC', 'V V K8', nexcit, jvec)
-        do 10 i = 1, nexcit
+        do i = 1, nexcit
             call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen, nbret=nv)
             zk8(jvec-1+i) = vecgen
-10      continue
+        end do
     endif
     if (nexcir .ne. 0) then
         call wkvect('&&MDTR74.NOMVER', 'V V K8', nexcir, jvecr)
-        do 11 i = 1, nexcir
+        do i = 1, nexcir
             call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resgen, nbret=nv)
             zk8(jvecr-1+i) = resgen
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
@@ -210,7 +211,7 @@ subroutine mdtr74(nomres)
             if (bamo1 .ne. bamo2) then
                 call utmess('F', 'ALGORITH17_18', si=i)
             endif
-11      continue
+        end do
     endif
     if (na .eq. 0) lamor = .true.
 !
@@ -318,11 +319,11 @@ subroutine mdtr74(nomres)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
                 'R', zr(jbase), [cbid])
 !
-    do 20 i = 0, nbmode - 1
+    do i = 0, nbmode - 1
         omeg2 = abs(zr(jraig+i)/zr(jmasg+i))
         zr(jpuls+i) = sqrt(omeg2)
         zr(jpul2+i) = omeg2
-20  continue
+    end do
 !
 !     --- RECUPERATION DE L AMORTISSEMENT ---
 !
@@ -353,9 +354,9 @@ subroutine mdtr74(nomres)
                                 vect=zr(jamog), nbret=n)
                 else
                     call jeveuo(listam//'           .VALE', 'L', iamog)
-                    do 30 iam = 1, nbmode
+                    do iam = 1, nbmode
                         zr(jamog+iam-1) = zr(iamog+iam-1)
-30                  continue
+                    end do
                 endif
             else if (nbamor.lt.nbmode) then
 !
@@ -365,9 +366,9 @@ subroutine mdtr74(nomres)
                                 vect=zr(jamog), nbret=n)
                 else
                     call jeveuo(listam//'           .VALE', 'L', iamog)
-                    do 40 iam = 1, nbamor
+                    do iam = 1, nbamor
                         zr(jamog+iam-1) = zr(iamog+iam-1)
-40                  continue
+                    end do
                 endif
                 idiff = nbmode - nbamor
                 vali (1) = idiff
@@ -375,12 +376,12 @@ subroutine mdtr74(nomres)
                 vali (3) = idiff
                 call utmess('I', 'ALGORITH16_19', ni=3, vali=vali)
                 call wkvect('&&MDTR74.AMORTI2', 'V V R8', nbmode, jamo2)
-                do 50 iam = 1, nbamor
+                do iam = 1, nbamor
                     zr(jamo2+iam-1) = zr(jamog+iam-1)
-50              continue
-                do 60 iam = nbamor + 1, nbmode
+                end do
+                do iam = nbamor + 1, nbmode
                     zr(jamo2+iam-1) = zr(jamog+nbamor-1)
-60              continue
+                end do
                 jamog = jamo2
             else if (nbamor.eq.nbmode) then
 !
@@ -390,14 +391,14 @@ subroutine mdtr74(nomres)
                                 vect=zr(jamog), nbret=n)
                 else
                     call jeveuo(listam//'           .VALE', 'L', iamog)
-                    do 70 iam = 1, nbamor
+                    do iam = 1, nbamor
                         zr(jamog+iam-1) = zr(iamog+iam-1)
-70                  continue
+                    end do
                 endif
             endif
         else
             call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode, jamog)
-            do 80 im = 1, nbmode
+            do im = 1, nbmode
 !            IF (TYPBA2(1:9).NE.'MODE_STAT'.AND.
 !     &          TYPBA2(1:9).NE.'BASE_MODA') THEN
                 if (typeba(1:1) .eq. ' ') then
@@ -407,7 +408,7 @@ subroutine mdtr74(nomres)
                 else
                     zr(jamog+im-1) = 0.d0
                 endif
-80          continue
+            end do
         endif
         amogen = '        '
 !
@@ -422,7 +423,7 @@ subroutine mdtr74(nomres)
         numgec = zk24(jrefac-1+2)(1:14)
         numc24(1:14) = numgec
         call extdia(amogen, numc24, 0, zr(jamo1))
-        do 90 i = 1, nbmod2
+        do i = 1, nbmod2
             acrit = deux*sqrt(abs(zr(jmasg+i-1)*zr(jraig+i-1)))
             agene = zr(jamo1+i-1)
             if (agene .gt. acrit) then
@@ -433,7 +434,7 @@ subroutine mdtr74(nomres)
                 call utmess('A', 'ALGORITH16_20', sk=valk(1), si=vali(1), nr=2,&
                             valr=valr)
             endif
-90      continue
+        end do
 !        PROBLEME POSSIBLE DU JEVEUO SUR UNE COLLECTION
         call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode*nbmode, jamog)
         call copmat(amogen, numgec, zr(jamog))
@@ -537,11 +538,11 @@ subroutine mdtr74(nomres)
 !
         if (method .eq. 'ITMI') then
             nbf = 0
-            do 100 i = 1, ntotex
+            do i = 1, ntotex
                 call jelira(zk8(jnomfo-1+i)//'           .VALE', 'LONMAX', nbfv)
                 nbfv = nbfv/2
                 nbf = max(nbf,nbfv)
-100          continue
+            end do
         endif
     endif
 !
@@ -552,7 +553,7 @@ subroutine mdtr74(nomres)
     call getfac('CHOC', nbcho1)
 !
     nbchoc = 0
-    do 200 ioc = 1, nbcho1
+    do ioc = 1, nbcho1
         call getvtx('CHOC', 'MAILLE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbchoc = nbchoc - n1
@@ -563,16 +564,16 @@ subroutine mdtr74(nomres)
                 call wkvect('&&MDTR74.GROUP_MA', 'V V K24', ngr, jgr)
                 call getvtx('CHOC', 'GROUP_MA', iocc=ioc, nbval=ngr, vect=zk24(jgr),&
                             nbret=n2)
-                do 210 ig = 0, ngr-1
+                do ig = 0, ngr-1
                     call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgr+ ig)), 'LONMAX', nbmg)
                     nbchoc = nbchoc + nbmg
-210              continue
+                end do
                 call jedetr('&&MDTR74.GROUP_MA')
             else
                 nbchoc = nbchoc + 1
             endif
         endif
-200  continue
+    end do
 !
     nbnli = nbchoc + nbsism + nbflam
 !
@@ -616,7 +617,7 @@ subroutine mdtr74(nomres)
         nbnli = nbnli + nbrfis
         call wkvect('&&MDTR74.FK', 'V V K8', 2*nbrfis, jfk)
         call wkvect('&&MDTR74.DFK', 'V V K8', 2*nbrfis, jdfk)
-        do 600 ioc = 1, nbrfis
+        do ioc = 1, nbrfis
             call getvid('ROTOR_FISS', 'K_PHI', iocc=ioc, scal=fonct, nbret=n1)
             fk(1) = fonct(1:8)
             call jeveuo(fonct//'.PROL', 'L', lprol)
@@ -631,7 +632,7 @@ subroutine mdtr74(nomres)
                 call getvr8('ROTOR_FISS', 'ANGL_INIT', iocc=ioc, scal=angini, nbret=n1)
                 angini=angini*rad
             endif
-600      continue
+        end do
     endif
 ! =<
     jinti=1
@@ -949,7 +950,7 @@ subroutine mdtr74(nomres)
                     zr(jvit0), zr(jamog), nbsauv)
     endif
 !
-120  continue
+120 continue
 !      CALL JEDETC('V','&&',1)
     if (iret .ne. 0) then
         call utmess('F', 'ALGORITH5_24')

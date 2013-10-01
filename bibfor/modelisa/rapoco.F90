@@ -102,7 +102,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8) :: ayz, axx, ax, ay, axz, axy, ayy, azz, az, beta, dnorme, eps
     real(kind=8) :: un
     real(kind=8) :: xg, yg, zg, xpou, ypou, zpou, xnorm, s1, s
-    complex(kind=8) :: cbid, betac, ccmp(3)
+    complex(kind=8) :: betac, ccmp(3)
     integer :: iarg
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
@@ -150,9 +150,9 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     ccmp(1) = (0.0d0,0.0d0)
     ccmp(2) = (0.0d0,0.0d0)
     ccmp(3) = (0.0d0,0.0d0)
-    do 10 i = 1, 6
+    do i = 1, 6
         icmp(i) = 0
-10  end do
+    end do
 !
     ligrel = '&&RAPOCO'
     lisnoe = '&&RAPOCO.LISTE_NOEUDS'
@@ -215,10 +215,10 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         vali (2) = nddla
         call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
     endif
-    do 20 i = 1, nddla
+    do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
-20  end do
+    end do
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
 !
@@ -235,11 +235,12 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili)
 !
     k = 0
-    do 30 i = 1, nlili
+    do i = 1, nlili
         call jenuno(jexnum(numddl//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA') goto 30
         k = i
-30  end do
+ 30     continue
+    end do
 !
     ASSERT(k.ne.0)
 !
@@ -360,33 +361,33 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VERIFICATION DU FAIT QUE LES NOEUDS DE LISNOE (DONC
 ! --- APPARTENANT A LA COQUE)  PORTENT LES DDLS DE ROTATION :
 !     -----------------------------------------------------
-    do 50 i = 1, lonlis
+    do i = 1, lonlis
 ! ---     NUMERO DU NOEUD COURANT DE LA LISTE
         call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
 !
         dg = zi(jprnm-1+ (ino-1)*nbec+1)
-        do 40 j = 4, 6
+        do j = 4, 6
             icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
             if (.not.exisdg([dg],icmp(j))) then
                 valk(1) = zk8(ilisno+i-1)
                 valk(2) = cmp(j)
                 call utmess('F', 'MODELISA6_54', nk=2, valk=valk)
             endif
-40      continue
-50  end do
+        end do
+    end do
 !
 ! --- VERIFICATION DU FAIT QUE LE NOEUD POUTRE A RACCORDER PORTE
 ! --- LES 3 DDLS DE TRANSLATION ET LES 3 DDLS DE ROTATION :
 !     ---------------------------------------------------
     dg = zi(jprnm-1+ (numnop-1)*nbec+1)
-    do 60 j = 1, 6
+    do j = 1, 6
         icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
         if (.not.exisdg([dg],icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
             call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
         endif
-60  end do
+    end do
 !
 ! --- CALCUL SUR CHAQUE ELEMENT DE BORD A RELIER A LA POUTRE
 ! --- DES CARACTERISTIQUES GEOMETRIQUES SUIVANTES :
@@ -585,7 +586,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     nbterm = lonlis + 1
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
-    do 70 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
@@ -594,7 +595,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         zk8(jlisno+i-1) = zk8(ilisno+i-1)
         zk8(jlisdl+i-1) = 'DX'
         zr(jliscr+i-1) = zr(idch1-1+ival+4)
-70  end do
+    end do
 !
     zk8(jlisno+lonlis+1-1) = noepou
     zk8(jlisdl+lonlis+1-1) = 'DX'
@@ -612,7 +613,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     nbterm = lonlis + 1
 ! ---   BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
-    do 80 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
@@ -621,7 +622,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         zk8(jlisno+i-1) = zk8(ilisno+i-1)
         zk8(jlisdl+i-1) = 'DY'
         zr(jliscr+i-1) = zr(idch1-1+ival+4)
-80  end do
+    end do
 !
     zk8(jlisno+lonlis+1-1) = noepou
     zk8(jlisdl+lonlis+1-1) = 'DY'
@@ -639,7 +640,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     nbterm = lonlis + 1
 ! --- BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
-    do 90 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
@@ -648,7 +649,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         zk8(jlisno+i-1) = zk8(ilisno+i-1)
         zk8(jlisdl+i-1) = 'DZ'
         zr(jliscr+i-1) = zr(idch1-1+ival+4)
-90  end do
+    end do
 !
     zk8(jlisno+lonlis+1-1) = noepou
     zk8(jlisdl+lonlis+1-1) = 'DZ'
@@ -667,7 +668,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     nbterm = 5*lonlis + 3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
-    do 100 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
@@ -689,7 +690,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         zr(jliscr+5* (i-1)+3-1) = zr(idch2-1+ival+1)
         zr(jliscr+5* (i-1)+4-1) = zr(idch2-1+ival+2)
         zr(jliscr+5* (i-1)+5-1) = zr(idch2-1+ival+3)
-100  end do
+    end do
 !
     zk8(jlisno+5*lonlis+1-1) = noepou
     zk8(jlisno+5*lonlis+2-1) = noepou
@@ -713,7 +714,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     nbterm = 5*lonlis + 3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
-    do 110 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
@@ -735,7 +736,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         zr(jliscr+5* (i-1)+3-1) = zr(idch2-1+ival+2)
         zr(jliscr+5* (i-1)+4-1) = zr(idch2-1+ival+4)
         zr(jliscr+5* (i-1)+5-1) = zr(idch2-1+ival+5)
-110  end do
+    end do
 !
     zk8(jlisno+5*lonlis+1-1) = noepou
     zk8(jlisno+5*lonlis+2-1) = noepou
@@ -759,7 +760,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     nbterm = 5*lonlis + 3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
-    do 120 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
@@ -781,7 +782,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         zr(jliscr+5* (i-1)+3-1) = zr(idch2-1+ival+3)
         zr(jliscr+5* (i-1)+4-1) = zr(idch2-1+ival+5)
         zr(jliscr+5* (i-1)+5-1) = zr(idch2-1+ival+6)
-120  end do
+    end do
 !
     zk8(jlisno+5*lonlis+1-1) = noepou
     zk8(jlisno+5*lonlis+2-1) = noepou
@@ -829,6 +830,6 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call detrsd('CHAMP_GD', '&&RAPOCO.CH_DEPL_01')
     call detrsd('CHAMP_GD', '&&RAPOCO.CH_DEPL_02')
 !
-130  continue
+130 continue
     call jedema()
 end subroutine

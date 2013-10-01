@@ -17,7 +17,7 @@ subroutine lisimp(lischa, ifm)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -83,7 +83,7 @@ subroutine lisimp(lischa, ifm)
 !
 ! --- AFFICHAGE
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- INFORMATIONS GENERALES
 !
@@ -118,7 +118,7 @@ subroutine lisimp(lischa, ifm)
 ! ----- BOUCLE SUR LES GENRES
 !
         write(6,*) '  * GENRES DE LA CHARGE:'
-        do 15 igenr = 1, nbgenr(1)
+        do igenr = 1, nbgenr(1)
             gencha = zk24(jlisg-1+igenr)
             nomlis = '&&LISIMP.NOMLIS'
 !
@@ -132,12 +132,12 @@ subroutine lisimp(lischa, ifm)
 !
                 write(6,*) '  ** GENRE        : ',gencha
             endif
-15      continue
-10  continue
+        end do
+    end do
 !
     call jedetr(lisgen)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

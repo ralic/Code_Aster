@@ -155,12 +155,12 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
             if ((nbsym.le.0) .or. (nbsym.ge.4)) then
                 call utmess('F', 'ALGORITH17_29')
             endif
-            do 50, inom = 1,nbsym
-            if ((nomsym(inom)(1:4).ne.'DEPL') .and. (nomsym(inom)( 1:4).ne.'VITE') .and.&
-                (nomsym(inom)(1:4).ne.'ACCE')) then
-                call utmess('F', 'ALGORITH17_29')
-            endif
-50          continue
+            do inom = 1, nbsym
+                if ((nomsym(inom)(1:4).ne.'DEPL') .and. (nomsym(inom)( 1:4).ne.'VITE')&
+                    .and. (nomsym(inom)(1:4).ne.'ACCE')) then
+                    call utmess('F', 'ALGORITH17_29')
+                endif
+            end do
         else if (typcal.eq.'TRAN') then
 !         -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
             nbsym = 3
@@ -198,7 +198,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
-        do 140 inom = 1, nbsym
+        do inom = 1, nbsym
 !
             call jecreo(nomres//bl11pt//nomsym(inom), attrib)
             call jeecra(nomres//bl11pt//nomsym(inom), 'LONMAX', nbstoc)
@@ -208,18 +208,18 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !         INITIALISATION DES CHAMPS A ZERO
 !
             if (typcal .eq. 'TRAN') then
-                do 150, i = 0,nbstoc-1
-                zr(jchmp+i) = 0.d0
-150              continue
+                do i = 0, nbstoc-1
+                    zr(jchmp+i) = 0.d0
+                end do
             else
-                do 160, i = 0,nbstoc-1
-                zc(jchmp+i) = dcmplx(0.d0,0.d0)
-160              continue
+                do i = 0, nbstoc-1
+                    zc(jchmp+i) = dcmplx(0.d0,0.d0)
+                end do
             endif
             if (nomsym(inom) .eq. 'DEPL') jdepl=jchmp
             if (nomsym(inom) .eq. 'VITE') jvite=jchmp
             if (nomsym(inom) .eq. 'ACCE') jacce=jchmp
-140      continue
+        end do
 !
 !       OBJETS COMMUNS
         call jecreo(nomres//'           .ORDR', typsau//' I')
@@ -276,13 +276,13 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         call jeexin(nomres//'           .INTI', iret)
         if (iret .eq. 0) then
             call wkvect(nomres//'           .INTI', typsau//' K8', nbchoc, jinti)
-            do 10 ic = 1, nbchoc
+            do ic = 1, nbchoc
                 zk8(jinti+ic-1) = intitu(ic)
                 zk8(jncho+ic-1) = noecho(ic,1)
                 zk8(jncho+nbchoc+ic-1) = noecho(ic,5)
                 zk8(jsst+ic-1) = noecho(ic,2)
                 zk8(jsst+nbchoc+ic-1) = noecho(ic,6)
-10          continue
+            end do
         endif
     endif
 !
@@ -302,9 +302,9 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         call jeexin(nomres//'           .REDN', iret)
         if (iret .eq. 0) then
             call wkvect(nomres//'           .REDN', typsau//' K24', nbrede, jredn)
-            do 20 i = 1, nbrede
+            do i = 1, nbrede
                 zk24(jredn+i-1) = fonred(i,1)//fonred(i,2)//fonred(i, 3)
-20          continue
+            end do
         endif
     endif
 !
@@ -324,9 +324,9 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         call jeexin(nomres//'           .REVN', iret)
         if (iret .eq. 0) then
             call wkvect(nomres//'           .REVN', typsau//' K24', nbrevi, jrevn)
-            do 30 i = 1, nbrevi
+            do i = 1, nbrevi
                 zk24(jrevn+i-1) = fonrev(i,1)//fonrev(i,2)//fonrev(i, 3)
-30          continue
+            end do
         endif
     endif
 !

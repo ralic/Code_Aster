@@ -196,9 +196,9 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
     if (nbvec .gt. 8) then
         ASSERT(.false.)
     endif
-    do 10 i = 1, nbvec
+    do i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
-10  end do
+    end do
 !
     call jedema()
 end subroutine

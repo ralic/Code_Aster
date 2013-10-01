@@ -107,9 +107,9 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
     integer :: nnoff, num, incr, nres
     integer :: ndeg, ierd, init, livi(nbmxpa)
-    integer :: iadgki, iadabs, ifm, niv, vi(8)
+    integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa)
-    complex(kind=8) :: cbid, livc(nbmxpa), vc(8)
+    complex(kind=8) :: livc(nbmxpa)
     logical :: lfonc
     character(len=2) :: codret
     character(len=8) :: resu
@@ -227,7 +227,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
 !
 !     BOUCLE SUR LES DIFFERENTS CHAMPS THETA
-    do 20 i = 1, ndimte
+    do i = 1, ndimte
 !
         chthet = zk24(jresu+i-1)
         call codent(i, 'G', chgthi)
@@ -306,7 +306,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         if (lmoda) then
             chpuls = '&&CAKG3D.PULS'
             call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
-                        ncmp=1, nomcmp='FREQ   ',sr=puls)
+                        ncmp=1, nomcmp='FREQ   ', sr=puls)
             nchin = nchin + 1
             lpain(nchin) = 'PPULPRO'
             lchin(nchin) = chpuls
@@ -318,13 +318,13 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
                     'OUI')
 !
 !       FAIRE LA "SOMME" D'UN CHAM_ELEM
-        call mesomm(chgthi, 8,vr=gkthi)
+        call mesomm(chgthi, 8, vr=gkthi)
 !
 !       SYMETRIE DU CHARGEMENT
         if (symech .eq. 'NON') then
-            do 29 j = 1, 7
+            do j = 1, 7
                 zr(iadrgk-1+(i-1)*8+j) = gkthi(j)
-29          continue
+            end do
         else if (symech.eq.'OUI') then
 !         G, fic1, fic2, fic3, K1, K2, K3,
             zr(iadrgk-1+(i-1)*8+1) = 2.d0*gkthi(1)
@@ -336,7 +336,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             zr(iadrgk-1+(i-1)*8+7) = 0.d0
         endif
 !
-20  continue
+    end do
 !
 !     ------------------------------------------------------------------
 !     3) CALCUL DE G(S), K1(S), K2(S) ET K3(S) LE LONG DU FOND
@@ -405,7 +405,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
 !
-    do 40 i = 1, nnoff
+    do i = 1, nnoff
         call tbajvi(result, nbprup, 'NUM_PT', i, livi)
         call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
         call tbajvr(result, nbprup, 'K1', zr(iadgks-1+6*(i-1)+2), livr)
@@ -416,7 +416,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+6*(i-1)+5), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
-40  continue
+    end do
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

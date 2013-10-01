@@ -88,7 +88,6 @@ subroutine pecap3(chgeoz, tempez, iomega)
     character(len=24) :: lchin(2), lchout(1), chgeom
     character(len=24) :: chtemp
     real(kind=8) :: work(9)
-    complex(kind=8) :: cbid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
@@ -104,9 +103,9 @@ subroutine pecap3(chgeoz, tempez, iomega)
     knum = '&&PECAP3.NUME_ORD_1'
     crit = 'RELATIF'
 !
-    do 10 i = 1, 9
+    do i = 1, 9
         work(i) = zero
-10  end do
+    end do
 !
 ! --- ON VERIFIE QUE LE RESULTAT EST DE TYPE EVOL_THER :
 !     ------------------------------------------------

@@ -303,7 +303,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
         call zcopy(n, resid, 1, workd, 1)
     endif
 !
-20  continue
+ 20 continue
 !
     first = .false.
     if (bmat .eq. 'G') then
@@ -333,7 +333,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !    %---------------------------------------------------------------%
 !
     orth = .true.
-30  continue
+ 30 continue
 !
     call zgemv('C', n, j-1, one, v,&
                ldv, workd, 1, zero, workd(n+1),&
@@ -357,7 +357,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
         call zcopy(n, resid, 1, workd, 1)
     endif
 !
-40  continue
+ 40 continue
 !
     if (bmat .eq. 'G') then
         cnorm = zdotc (n, resid, 1, workd, 1)
@@ -392,14 +392,14 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !        | ITERATIVE REFINEMENT STEP "FAILED" |
 !        %------------------------------------%
 !
-        do 45 jj = 1, n
+        do jj = 1, n
             resid(jj) = zero
-45      continue
+        end do
         rnorm = rzero
         ierr = -1
     endif
 !
-50  continue
+ 50 continue
 !
     if (msglvl .gt. 0) then
         call dvout(logfil, 1, [rnorm], ndigit,&
@@ -410,7 +410,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
     endif
     ido = 99
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !     %---------------%

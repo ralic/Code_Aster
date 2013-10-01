@@ -88,7 +88,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 !..............................................................
 !----------------------------------------------------------------
     character(len=8) :: elrefp, elrese(6), fami(6)
-    real(kind=8) :: he(nfiss), r8bid(3), coorse(81), rbid, rb
+    real(kind=8) :: he(nfiss), coorse(81)
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs, idebv, nnops
     integer :: ibid, idecpg, nbsig, ig, ifiss, ibid2
@@ -128,28 +128,28 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 !     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
 !     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
     if (nfiss .eq. 1) then
-        do 30 ino = 1, nnop
+        do ino = 1, nnop
             fisno(ino,1) = 1
-30      continue
+        end do
     else
-        do 10 ig = 1, nfh
+        do ig = 1, nfh
 !    ON REMPLIT JUSQU'A NFH <= NFISS
-            do 20 ino = 1, nnop
+            do ino = 1, nnop
                 fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-20          continue
-10      continue
+            end do
+        end do
     endif
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -162,13 +162,13 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
 !       FONCTION HEAVYSIDE CSTE POUR CHAQUE FISSURE SUR LE SS-ELT
-        do 113 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             he(ifiss) = heavt(ncomp*(ifiss-1)+ise)
-113      continue
+        end do
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
         idecpg = npg * (ise-1)
@@ -205,6 +205,6 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 !
 !
 !
-110  end do
+    end do
 !
 end subroutine

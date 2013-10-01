@@ -49,8 +49,8 @@ subroutine preml1(neq, n2, diag, delg, col,&
     integer :: deb(*), vois(*), suit(*)
     integer :: noeud(*), ddl(*), permnd(*), invpnd(*), spndnd(*), xadjd(*)
 !     VARIABLES LOCALES
-    integer :: i, j, idelta, maxint, nadj, ifet3, ifet4, ilimpi
-    integer :: n2, fctnzs, innz, numi, numj, numl, num, ii, iret, ifet1, ifet2
+    integer :: i, j, idelta, maxint, nadj
+    integer :: n2, fctnzs, innz, numi, numj, numl, num, ii
     real(kind=8) :: nbops
     integer :: nnz(1:neq), qsize(neq), llist(neq), suiv(neq)
     integer :: libre, iovflo, ncmpa, ifm, niv, p(neq), q(n2), nrl
@@ -62,7 +62,6 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !     VERSION RENUMEROTATION PAR NOEUD
     integer :: nbnd, nd, nbnd1, ddlmoy, renum
     integer :: pas, k, ndanc, iddl, sni, ind, nddl
-    integer :: nbsd, iaux
     integer :: vali(2)
     integer(kind=4) :: nbnd4, nadj4, nbsn4, fctnz4, lgind4
     character(len=24) :: noxadj, noadjn, noperm, noinvp, nopare, nospnd
@@ -100,18 +99,18 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !        SI ON AVAIT N2< NEQ ( CERTAINS DELG NON NULS)
 !        IL FAUDRAIT P.E DEPLACER LA BOUCLE 3 APRES LA 350
 !        AVEC N2 EN PLACE DE NEQ
-        do 3 i = 1, neq+1
+        do i = 1, neq+1
             ddl(i)=i
             noeud(i)=i
- 3      continue
+        end do
 !     RECHERCHE DE PRESENCE DE LIAISON NON DETECTEE PAR PREML0(NRL=0)
 !     (NON SIGNALEE PAR DES VALEURS DE DELG NEGATIVES)
         liaiso=.false.
-        do 4 i = 1, neq
+        do i = 1, neq
             if (deeq(2*i) .lt. 0) then
                 liaiso=.true.
             endif
- 4      continue
+        end do
         if (liaiso) then
 !          EN CAS DE LIAISON DANS UNE MATRICE GENERALISEE
 !          LES DDL SONT CORRECTEMENT ORDONNES A PRIORI
@@ -120,22 +119,22 @@ subroutine preml1(neq, n2, diag, delg, col,&
             renum=3
         endif
     else
-        do 1 i = 1, neq
+        do i = 1, neq
             noeud(i) = 0
- 1      continue
+        end do
         nbnd=0
         i = 1
         ddl(i)= 1
-101      continue
+101     continue
 !     DO WHILE(I.LE.NEQ)
         if (i .le. neq) then
             if (deeq(2*i) .gt. 0) then
                 ino = deeq(2*i-1)
                 nbnd = nbnd +1
                 nbcmp = prno( (ino-1)*(2+nec) + 2)
-                do 2 j = i, i+nbcmp-1
+                do j = i, i+nbcmp-1
                     noeud(j)= nbnd
- 2              continue
+                end do
                 ddl(nbnd+1) = ddl(nbnd) + nbcmp
                 pas = nbcmp
             else
@@ -152,51 +151,51 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !     INITIALISATION DE NNZ : NBRE DE TERMES A AJOUTER
 !     POUR CHAQUE LIGNE
     num = 0
-    do 320 i = 1, neq
+    do i = 1, neq
         if (delg(i) .eq. 0) then
             num = num +1
 !     ON COMPTE LES NON-ZEROS
             innz=0
-            do 315 j = diag(i-1)+1, diag(i)-1
+            do j = diag(i-1)+1, diag(i)-1
                 if (delg(col(j)) .eq. 0) then
 !     PARTIE TRIANGULAIRE INFERIEURE
                     innz = innz + 1
 !     PARTIE TRIANGULAIRE SUPERIEURE
                     nnz(p(col(j) )) = nnz(p(col(j))) + 1
                 endif
-315          continue
+            end do
             nnz(num) = innz
         endif
-320  end do
+    end do
     if (nrl .ne. 0) then
-        do 220 j = 1, neq
+        do j = 1, neq
             it = deb(j)
-219          continue
+219         continue
             if (it .gt. 0) then
                 nnz(p(j)) = nnz(p(j)) + 1
                 it = suit(it)
                 goto 219
             endif
-220      continue
+        end do
 !     VERIFICATION
 !
-        do 325 j = 1, neq
+        do j = 1, neq
 !     TERMES A AJOUTER PARTIE SUPERIEURE
             it = deb(j)
-324          continue
+324         continue
             if (it .gt. 0) then
                 nnz(p(vois(it))) = nnz(p(vois(it))) + 1
                 it = suit(it)
                 goto 324
             endif
-325      continue
+        end do
     endif
 !
     xadj(1) = 1
-    do 330 j = 1, n2
+    do j = 1, n2
         xadj(j+1) = xadj(j) + nnz(j)
         nnz(j) = 0
-330  end do
+    end do
     if ((xadj(neq+1)-1) .gt. lgadjn) then
 !     TEST D'ESPACE SUFFISANT DANS ADJNCY
         vali (1) = lgadjn
@@ -204,10 +203,10 @@ subroutine preml1(neq, n2, diag, delg, col,&
         call utmess('F', 'ALGELINE4_4', ni=2, vali=vali)
     endif
 !
-    do 350 j = 1, neq
+    do j = 1, neq
         if (delg(j) .eq. 0) then
             numj=p(j)
-            do 340 ii = diag(j-1)+1, diag(j)-1
+            do ii = diag(j-1)+1, diag(j)-1
                 i = col(ii)
                 if (delg(i) .eq. 0) then
                     numi=p(i)
@@ -216,10 +215,10 @@ subroutine preml1(neq, n2, diag, delg, col,&
                     adjncy(xadj (numi)+nnz(numi)) = numj
                     nnz(numi) = nnz(numi) + 1
                 endif
-340          continue
+            end do
             if (nrl .ne. 0) then
                 it = deb(j)
-344              continue
+344             continue
                 if (it .gt. 0) then
                     numl = p(vois(it))
                     adjncy(xadj(numj)+nnz(numj)) = numl
@@ -231,7 +230,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
                 endif
             endif
         endif
-350  end do
+    end do
     nbnd1 = nbnd + 1
     libre = xadj(nbnd1)
     nadj = libre - 1
@@ -256,9 +255,9 @@ subroutine preml1(neq, n2, diag, delg, col,&
     else if (renum.eq.1) then
 !----------------------------------MINIMUM DEGRE : APPROXIMATE MIN DEG
         iovflo = ismaem()
-        do 250 i = 1, n2
+        do i = 1, n2
             qsize(i)=xadjd(i+1)-xadjd(i)
-250      continue
+        end do
         call amdbar(nbnd, xadjd, adjncy, qsize, lgadjn,&
                     libre, suiv, llist, permnd, nnz,&
                     invpnd, parent, ncmpa, adress, iovflo)
@@ -278,28 +277,28 @@ subroutine preml1(neq, n2, diag, delg, col,&
         call wkvect(noperm, ' V V S ', nbnd, permn4)
         call wkvect(nopare, ' V V S ', nbnd, paren4)
         call wkvect(nospnd, ' V V S ', nbnd, spndn4)
-        do 401 i = 1, nbnd+1
+        do i = 1, nbnd+1
             zi4(xadjd4+i-1)=xadjd(i)
-401      continue
-        do 402 i = 1, nadj
+        end do
+        do i = 1, nadj
             zi4(adjnc4+i-1)=adjncy(i)
-402      continue
+        end do
         call onmetl(nbnd4, nadj4, zi4(xadjd4), zi4(adjnc4), zi4(invpn4),&
                     zi4(permn4), zi4(spndn4), zi4(paren4), nbsn4, nbops,&
                     fctnz4, lgind4, niv)
         nbsn=nbsn4
         fctnzs=fctnz4
         lgind=lgind4
-        do 403 i = 1, nbnd
+        do i = 1, nbnd
             invpnd(i)=zi4(invpn4 + i-1 )
             permnd(i)=zi4(permn4 + i-1 )
-403      continue
-        do 404 i = 1, nbsn
+        end do
+        do i = 1, nbsn
             parent(i)=zi4(paren4 + i-1)
-404      continue
-        do 405 i = 1, nbsn+1
+        end do
+        do i = 1, nbsn+1
             spndnd(i)=zi4(spndn4 + i-1)
-405      continue
+        end do
 !
         call jedetr(noxadj)
         call jedetr(noadjn)
@@ -312,10 +311,10 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !     ON L'EMULE EN CREANT UN SEUL SUPER NOEUD
 !
         nbsn=1
-        do 399 i = 1, nbnd
+        do i = 1, nbnd
             invpnd(i)=i
             permnd(i)=i
-399      continue
+        end do
         parent(nbsn)=0
         spndnd(1)=1
         spndnd(nbsn+1)=nbnd+1
@@ -331,25 +330,25 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !     A CELLE PAR DDL
 !     PERM, INVP, SUPND SONT RECONSTITUES
     ind=0
-    do 415 nd = 1, nbnd
+    do nd = 1, nbnd
         ndanc = permnd(nd)
         nddl = ddl(ndanc+1) -ddl(ndanc)
-        do 410 k = 1, nddl
+        do k = 1, nddl
             ind = ind +1
             perm(ind) = ddl(ndanc) +k - 1
-410      continue
-415  end do
+        end do
+    end do
     if (niv .eq. 2 .and. ind .ne. n2) then
         vali (1) = n2
         vali (2) = ind
         call utmess('F', 'ALGELINE4_60', ni=2, vali=vali)
     endif
-    do 406 iddl = 1, n2
+    do iddl = 1, n2
         invp(perm(iddl)) = iddl
-406  end do
+    end do
 !     SUPND
     supnd(nbsn+1)=n2+1
-    do 407 sni = 1, nbsn
+    do sni = 1, nbsn
 !        ND 1ER NOEUD DU SNI
         nd = spndnd(sni)
 !        ND : ANCIEN NUMERO DE ND
@@ -358,7 +357,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
         iddl = ddl(nd)
         supnd(sni) = invp(iddl)
 !        INVP(IDDL) 1ER DDL DU SNI
-407  end do
+    end do
 !.....................................................................
     if (niv .ge. 1) then
 !     WRITE(IFM,*)'RENUMEROTATION PAR MINIMUM DEGRE'//

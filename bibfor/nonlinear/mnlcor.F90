@@ -1,6 +1,7 @@
 subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                   adime, ninc, nd, nchoc, h,&
-                  hf, itemax, epscor, xvect, cor, info)
+                  hf, itemax, epscor, xvect, cor,&
+                  info)
     implicit none
 !
 ! ======================================================================
@@ -51,13 +52,8 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
 #include "asterfort/assert.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/dnrm2.h"
+#include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -67,8 +63,13 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
 #include "asterfort/mnltan.h"
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/iunifi.h"
-
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dnrm2.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
+!
     integer :: imat(2), ninc, nd, nchoc, h, hf, itemax, info
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
     character(len=19) :: matdrv
@@ -80,7 +81,8 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
     character(len=14) :: xru, xtang, xtemp
     integer :: iru, itang, ivect, cptr, iret, itemp, inddl, ifres
     real(kind=8) :: eps, normr, normc
-    complex(kind=8) cbid
+    complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
     ifres = iunifi ('MESSAGE')
 !
@@ -114,14 +116,14 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
     normr = dnrm2(ninc-1,zr(iru),1)
     call dcopy(ninc, zr(ivect), 1, zr(itemp), 1)
     normc = normr
-900 format (' Norme erreur iteration Newton numero : ',i2,' : ',1pe12.5)
-    if(info.eq.2) then
+    900 format (' Norme erreur iteration Newton numero : ',i2,' : ',1pe12.5)
+    if (info .eq. 2) then
         write(ifres,900) cptr,normc
     endif
 ! ----------------------------------------------------------------------
 ! --- ALGORITHME DE NEWTON
 ! ----------------------------------------------------------------------
-120  continue
+120 continue
     if (normc .ge. eps .and. cptr .lt. itemax) then
 ! ---   INCREMENTATION DU COMPTEUR
         cptr = cptr+1
@@ -155,7 +157,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
         normc = dnrm2(ninc-1,zr(iru),1)
         normr=normc
         call dcopy(ninc, zr(itemp), 1, zr(ivect), 1)
-        if(info.eq.2) then
+        if (info .eq. 2) then
             write(ifres,900) cptr,normc
         endif
         goto 120

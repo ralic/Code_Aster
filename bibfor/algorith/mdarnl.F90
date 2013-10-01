@@ -39,7 +39,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ic, ind, ipas, ird, irv, isto1, isto2, ibid, ndec, nbscho
+    integer :: ic, ind, ipas, ird, irv, isto1, isto2, ndec, nbscho
     integer :: isto3, isto4, nbmode, nbrede, nbrevi
     character(len=4) :: typcal, kbid
     real(kind=8) :: dt, t
@@ -62,7 +62,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
     if (nbchoc .ne. 0) then
         ndec = nbchoc*isto1
         ind = nbchoc * isto1
-        do 204 ic = 1, nbchoc
+        do ic = 1, nbchoc
             isto2 = isto2 + 1
             fchost(isto2) = saucho(ic,1)
             dchost(isto2) = saucho(ic,4)
@@ -81,28 +81,28 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
             ichost(ndec+ic) = nint(saucho(ic,13))
 !           --- VARIABLES INTERNES : FLAMBAGE ---
             vint(ind+ic) = saucho(ic,14)
-204      continue
+        end do
     endif
 !
 !--- CAS DES RELATIONS EFFORT-DEPLACEMENT
 !
     if (nbrede .ne. 0) then
-        do 206 ird = 1, nbrede
+        do ird = 1, nbrede
             isto3 = isto3 + 1
             iredst(isto3) = saredi(ird)
             dredst(isto3) = saured(ird)
-206      continue
+        end do
     endif
 !
 !
 !--- CAS DES RELATIONS EFFORT-VITESSE
 !
     if (nbrevi .ne. 0) then
-        do 207 irv = 1, nbrevi
+        do irv = 1, nbrevi
             isto4 = isto4 + 1
             irevst(isto4) = sarevi(irv)
             drevst(isto4) = saurev(irv)
-207      continue
+        end do
     endif
 !
 end subroutine

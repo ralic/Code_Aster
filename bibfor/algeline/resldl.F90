@@ -61,6 +61,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     character(len=19) :: vci19, solveu
     complex(kind=8) :: cbid
     integer :: k, kdeb, idvalc, lmat, neq, nimpo, islvk
+    cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -113,10 +114,11 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
             call mrconl('MULT', lmat, 0, 'R', rsolu,&
                         nsecm)
             if (idvalc .ne. 0) then
-                do 10,k=1,nsecm
-                kdeb=(k-1)*neq+1
-                call csmbgg(lmat, rsolu(kdeb), zr(idvalc), [cbid], [cbid], 'R')
-10              continue
+                do k = 1, nsecm
+                    kdeb=(k-1)*neq+1
+                    call csmbgg(lmat, rsolu(kdeb), zr(idvalc), [cbid], [cbid],&
+                                'R')
+                end do
             endif
         endif
         call rldlg3(metres, lmat, rsolu, [cbid], nsecm)
@@ -134,10 +136,11 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
             call mcconl('MULT', lmat, 0, 'C', csolu,&
                         nsecm)
             if (idvalc .ne. 0) then
-                do 20,k=1,nsecm
-                kdeb=(k-1)*neq+1
-                call csmbgg(lmat, [0.d0], [0.d0], csolu(kdeb), zc(idvalc), 'C')
-20              continue
+                do k = 1, nsecm
+                    kdeb=(k-1)*neq+1
+                    call csmbgg(lmat, [0.d0], [0.d0], csolu(kdeb), zc(idvalc),&
+                                'C')
+                end do
             endif
         endif
         call rldlg3(metres, lmat, [0.d0], csolu, nsecm)

@@ -27,7 +27,6 @@ subroutine lctel3()
 !
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -41,6 +40,7 @@ subroutine lctel3()
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: dg
     character(len=8) :: k8bid
     character(len=16) :: nomte
@@ -68,31 +68,32 @@ subroutine lctel3()
 !
 !     - BOUCLE SUR TOUS LES MODES LOCAUX DES CATALOGUES :
     call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbml)
-    do 1, iml=1,nbml
-    call jeveuo(jexnum('&CATA.TE.MODELOC', iml), 'L', iamolo)
-    icode=zi(iamolo-1+1)
-    igd=zi(iamolo-1+2)
-    if (igd .ne. igdgeo) goto 1
-    if (icode .gt. 3) goto 1
+    do iml = 1, nbml
+        call jeveuo(jexnum('&CATA.TE.MODELOC', iml), 'L', iamolo)
+        icode=zi(iamolo-1+1)
+        igd=zi(iamolo-1+2)
+        if (igd .ne. igdgeo) goto 1
+        if (icode .gt. 3) goto 1
 !
-    call jenuno(jexnum('&CATA.TE.NOMMOLOC', iml), nomolo)
-    nomte=nomolo(1:16)
-    call jenonu(jexnom('&CATA.TE.NOMTE', nomte), ite)
+        call jenuno(jexnum('&CATA.TE.NOMMOLOC', iml), nomolo)
+        nomte=nomolo(1:16)
+        call jenonu(jexnom('&CATA.TE.NOMTE', nomte), ite)
 !
-    nbpt=zi(iamolo-1+4)
-    if (nbpt .ge. 10000) then
-        nbdg=nbpt-10000
-    else
-        nbdg=1
-    endif
+        nbpt=zi(iamolo-1+4)
+        if (nbpt .ge. 10000) then
+            nbdg=nbpt-10000
+        else
+            nbdg=1
+        endif
 !
-    do 2, k=1,nbdg
-    dg=zi(iamolo-1+4+k)
-    if (exisdg([dg],ix)) zi(iadige-1+ite)=max(1,zi(iadige-1+ite) )
-    if (exisdg([dg],iy)) zi(iadige-1+ite)=max(2,zi(iadige-1+ite) )
-    if (exisdg([dg],iz)) zi(iadige-1+ite)=max(3,zi(iadige-1+ite) )
- 2  continue
- 1  continue
+        do k = 1, nbdg
+            dg=zi(iamolo-1+4+k)
+            if (exisdg([dg],ix)) zi(iadige-1+ite)=max(1,zi(iadige-1+ite) )
+            if (exisdg([dg],iy)) zi(iadige-1+ite)=max(2,zi(iadige-1+ite) )
+            if (exisdg([dg],iz)) zi(iadige-1+ite)=max(3,zi(iadige-1+ite) )
+        end do
+  1     continue
+    end do
 !
 !
     call jedema()

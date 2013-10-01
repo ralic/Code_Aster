@@ -24,7 +24,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
@@ -100,19 +100,18 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! ----------------------------------------------------------------------
 !
     integer :: jccid, jfint, jdiri, jfext, jvcfo, jrefe, jiner, jvcf1
-    integer :: ifm, niv, nivmpi, nocc
+    integer :: ifm, niv, nocc
     integer :: neq
     character(len=8) :: k8bid, noddlm
     logical :: ldyna, lstat, lcine, lctcc
     character(len=19) :: profch, foiner
-    character(len=24) :: k24bid
     character(len=19) :: commoi, depmoi
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
     integer :: jdeeq, jfnod, jbudi, jdfdo, jdipi
     integer :: ibid, ier, ieq, iret
     logical :: lrefe, linit, lcmp
-    real(kind=8) :: val1, val4, val5, r8bid
+    real(kind=8) :: val1, val4, val5
     real(kind=8) :: maxres
     integer :: irela, imaxi, iresi, irefe, ichar, icomp
     logical :: lndepl, lpilo
@@ -251,7 +250,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! --- CALCUL DES RESIDUS
 !
-    do 20 ieq = 1, neq
+    do ieq = 1, neq
 !
 ! ----- SI SCHEMA NON EN DEPLACEMENT: ON IGNORE LA VALEUR DU RESIDU
 !
@@ -318,7 +317,8 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
             endif
         endif
 !
-20  end do
+ 20     continue
+    end do
 !
 ! --- SYNTHESE DES RESULTATS
 !

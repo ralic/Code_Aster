@@ -96,37 +96,37 @@ subroutine typeco(char, noma)
 !
 ! --- REMPLISSAGE DU TABLEAU TYPE_NOEUD
 !
-    do 50 izone = 1, nzoco
+    do izone = 1, nzoco
         nbnoe = mminfi(defico,'NBNOE' ,izone )
         nbnom = mminfi(defico,'NBNOM' ,izone )
         jdecne = mminfi(defico,'JDECNE',izone )
         jdecnm = mminfi(defico,'JDECNM',izone )
 !
-        do 60 inom = 1, nbnom
+        do inom = 1, nbnom
             posnom = jdecnm + inom
             zi(jtypno+ztypn*(posnom-1)+1-1) = 1
             zi(jtypno+ztypn*(posnom-1)+2-1) = izone
-60      continue
+        end do
 !
-        do 61 inoe = 1, nbnoe
+        do inoe = 1, nbnoe
             posnoe = jdecne + inoe
             zi(jtypno+ztypn*(posnoe-1)+1-1) = -1
             zi(jtypno+ztypn*(posnoe-1)+2-1) = izone
-61      continue
+        end do
 !
-50  end do
+    end do
 !
 ! --- REMPLISSAGE DU TABLEAU TYPE_MAILLE - TYPE MAITRE OU ESCLAVE
 !
     indmae = 0
     indmam = 0
-    do 150 izone = 1, nzoco
+    do izone = 1, nzoco
         nbmae = mminfi(defico,'NBMAE' ,izone )
         nbmam = mminfi(defico,'NBMAM' ,izone )
         jdecme = mminfi(defico,'JDECME',izone )
         jdecmm = mminfi(defico,'JDECMM',izone )
 !
-        do 160 imam = 1, nbmam
+        do imam = 1, nbmam
             posmam = jdecmm + imam
             indmam = indmam + 1
             zi(jtypma+ztypm*(posmam-1)+1-1) = 1
@@ -139,9 +139,9 @@ subroutine typeco(char, noma)
                     call utmess('F', 'CONTACT3_2', sk=nommam)
                 endif
             endif
-160      continue
+        end do
 !
-        do 161 imae = 1, nbmae
+        do imae = 1, nbmae
             posmae = jdecme + imae
             indmae = indmae + 1
             zi(jtypma+ztypm*(posmae-1)+1-1) = -1
@@ -154,17 +154,17 @@ subroutine typeco(char, noma)
                     call utmess('F', 'CONTACT3_2', sk=nommae)
                 endif
             endif
-161      continue
-150  end do
+        end do
+    end do
 !
 ! --- REMPLISSAGE DU TABLEAU DES MAILLES ESCLAVES MAESC
 !
     indmae = 0
-    do 30 izone = 1, nzoco
+    do izone = 1, nzoco
         nbmae = mminfi(defico,'NBMAE' ,izone )
         jdecme = mminfi(defico,'JDECME',izone )
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
             posmae = jdecme + imae
             indmae = indmae + 1
             call cfnumm(defico, posmae, nummae)
@@ -180,24 +180,24 @@ subroutine typeco(char, noma)
             zi(jmaesc+zmaes*(indmae-1)+2-1) = izone
             zi(jmaesc+zmaes*(indmae-1)+3-1) = nptm
             zi(jmaesc+zmaes*(indmae-1)+4-1) = ndexfr(1)
-20      continue
-30  end do
+        end do
+    end do
 !
 ! --- VERIFS: TYPENO ET TYPEMA SANS TROUS !
 !
-    do 1 ino = 1, nnoco
+    do ino = 1, nnoco
         posno = ino
         if (zi(jtypno+ztypn*(posno -1)+1-1) .eq. 0) then
             ASSERT(.false.)
         endif
- 1  end do
+    end do
 !
-    do 2 ima = 1, nmaco
+    do ima = 1, nmaco
         posma = ima
         if (zi(jtypma+ztypm*(posma -1)+1-1) .eq. 0) then
             ASSERT(.false.)
         endif
- 2  end do
+    end do
 !
     call jedema()
 end subroutine

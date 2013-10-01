@@ -335,7 +335,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----- REPERAGE DES CHARGEMENTS
 !
-        do 10 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             nomobj = nomob(indxch)
             iposit = 0
             if (nomobj .eq. '__ELIM') then
@@ -395,7 +395,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             if ((iposit.ge.1) .and. (iposit.le.30)) then
                 tabcod(iposit) = 1
             endif
-10      continue
+        end do
 !
 ! ----- CODAGE DE L'ENTIER
 !
@@ -412,7 +412,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----- REPERAGE DES CHARGEMENTS
 !
-        do 11 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             nomobj = nomob(indxch)
             iposit = 0
             if (nomobj .eq. '__ELIM') then
@@ -472,7 +472,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             if ((iposit.ge.1) .and. (iposit.le.60)) then
                 tabcox(iposit) = 1
             endif
-11      continue
+        end do
 !
 ! ----- CODAGE DE L'ENTIER
 !
@@ -496,23 +496,23 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----- DETECTION VECT_ASSE_CHAR
 !
-        do 20 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (genre(indxch) .eq. 'VECT_ASSE_CHAR') iposit = gencod( indxch)
-20      continue
+        end do
         if (tabcod(iposit) .eq. 1) lveac = .true.
 !
 ! ----- DETECTION VECT_ASSE
 !
-        do 21 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (genre(indxch) .eq. 'VECT_ASSE') iposit = gencod(indxch)
-21      continue
+        end do
         if (tabcod(iposit) .eq. 1) lveas = .true.
 !
 ! ----- DETECTION VECT_ASSE_GENE
 !
-        do 22 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (genre(indxch) .eq. 'VECT_ASSE_GENE') iposit = gencod( indxch)
-22      continue
+        end do
         if (tabcod(iposit) .eq. 1) lveag = .true.
 !
 ! ----- DETECTION TYPE DU CHAMP
@@ -550,7 +550,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         if (typech .eq. 'FONC') then
             typech = 'FONC_F0'
             lfirst = .false.
-            do 103 indxch = 1, nbtyth
+            do indxch = 1, nbtyth
                 carte = prefob(1:13)//nomob(indxch)
                 call exisd('CARTE', carte, iexi)
                 if (iexi .eq. 1) then
@@ -558,7 +558,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                                 parcha, iret)
                     if (parcha .eq. 'OUI') typech = 'FONC_FT'
                 endif
-103          continue
+            end do
         endif
         valkz = typech
 ! ----------------------------------------------------------------------
@@ -607,9 +607,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
     else if (oper.eq.'POSG') then
         gencha = optkz
         iposit = 0
-        do 15 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) iposit = gencod(indxch)
-15      continue
+        end do
         if ((iposit.le.0) .or. (iposit.gt.30)) ASSERT(.false.)
         vali(1) = iposit
 ! ----------------------------------------------------------------------
@@ -618,9 +618,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
     else if (oper.eq.'POSM') then
         motcle = optkz
         iposit = 0
-        do 17 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (motcl(indxch) .eq. motcle) iposit = mcfcod(indxch)
-17      continue
+        end do
         if ((iposit.le.0) .or. (iposit.gt.60)) ASSERT(.false.)
         vali(1) = iposit
 ! ----------------------------------------------------------------------
@@ -630,9 +630,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         motcle = optkz
         nomcar = ' '
         itypob = 1
-        do 16 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (motcl(indxch) .eq. motcle) nomcar = nomob(indxch)
-16      continue
+        end do
         if (nomcar(1:2) .eq. '__') itypob = 0
         valkz = nomcar
         vali(1) = itypob
@@ -679,9 +679,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----------------------------------------------------------------------
     else if (oper.eq.'GENR') then
         iposit = opti
-        do 80 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (iposit .eq. gencod(indxch)) gencha = genre(indxch)
-80      continue
+        end do
         valkz = gencha
 ! ----------------------------------------------------------------------
 ! --- MOT-CLEF A PARTIR DE LA POSITION DANS L'ENTIER CODE
@@ -698,16 +698,16 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----- GENRE DU CHARGEMENT
 !
-        do 40 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (iposit .eq. gencod(indxch)) gencha = genre(indxch)
-40      continue
+        end do
 !
 ! ----- NOMBRE DE CHARGEMENTS DE CE GENRE
 !
         nbch = 0
-        do 45 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) nbch = nbch + 1
-45      continue
+        end do
         ASSERT(nbch.gt.0)
 !
 ! ----- CREATION DE L'OBJET
@@ -717,12 +717,12 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----- REMPLISSAGE DE L'OBJET
 !
         i = 0
-        do 50 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) then
                 i = i+1
                 zi(jlisci-1+i) = indxch
             endif
-50      continue
+        end do
         ASSERT(i.eq.nbch)
         vali(1) = nbch
 ! ----------------------------------------------------------------------
@@ -740,28 +740,28 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         liscns = optkz
         idd = 1
         call wkvect(liscns, 'V V K24', nbtyth, jlisck)
-        do 70 indxch = 1, nbtyth
+        do indxch = 1, nbtyth
             gencha = genre(indxch)
             if (gencha .ne. ' ') then
                 if (indxch .eq. 1) then
                     zk24(jlisck-1+indxch) = gencha
                 else
                     ldoub = .false.
-                    do 71 index2 = 1, nbtyth
+                    do index2 = 1, nbtyth
                         genold = zk24(jlisck-1+index2)
                         if ((genold.eq.gencha) .and. (genold.ne.' ')) then
                             ldoub = .true.
                             goto 72
                         endif
-71                  continue
-72                  continue
+                    end do
+ 72                 continue
                     if (.not.ldoub) then
                         idd = idd + 1
                         zk24(jlisck-1+idd) = gencha
                     endif
                 endif
             endif
-70      continue
+        end do
         ASSERT(idd.le.nbtyth)
         vali(1) = idd
 !

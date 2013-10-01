@@ -407,7 +407,8 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
     iter = iter + 1
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, [iter], ndigit, '_NAUP2: **** START OF MAJOR ITERATION NUMBER ****')
+        call ivout(logfil, 1, [iter], ndigit,&
+                   '_NAUP2: **** START OF MAJOR ITERATION NUMBER ****')
     endif
 !
 !        %-----------------------------------------------------------%

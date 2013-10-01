@@ -135,17 +135,17 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
-    do 100 kpg = 1, npg
+    do kpg = 1, npg
 !
         ipg = idecpg + kpg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 110 i = 1, ndim
-            do 111 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(3*(n-1)+i)
-111          continue
-110      continue
+            end do
+        end do
 !
 !       JUSTE POUR CALCULER LES FF
         call reeref(elrefp, .false., nnop, nnops, zr(igeom),&
@@ -160,13 +160,13 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
             call vecini(9, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 113 ino = 1, nnop
+            do ino = 1, nnop
                 lsng = lsng + lsn(ino) * ff(ino)
                 lstg = lstg + lst(ino) * ff(ino)
-                do 114 i = 1, 9
+                do i = 1, 9
                     baslog(i) = baslog(i) + basloc(9*(ino-1)+i) * ff( ino)
-114              continue
-113          continue
+                end do
+            end do
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             call xcalfe(he(1), lsng, lstg, baslog, fe,&
@@ -198,16 +198,16 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 ! --- VECTEUR DES CONTRAINTES
 !      ----------------------
-        do 30 i = 1, nbsig
+        do i = 1, nbsig
             s = zero
             sth = zero
-            do 40 j = 1, nbsig
+            do j = 1, nbsig
                 s = s + eps(j)*d(i,j)
                 sth = sth + epsth(j)*d(i,j)
-40          continue
+            end do
             sig(i,kpg) = s - sth
-30      end do
+        end do
 !
-100  end do
+    end do
 !
 end subroutine

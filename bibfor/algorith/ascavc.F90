@@ -64,7 +64,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     character(len=19) :: charci, chamno, vci2, ligrel
     character(len=24) :: vachci, valk(2), infobl
     character(len=8) :: charge
-    integer :: irefn, ier
+    integer :: ier
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
     data charci/'&&ASCAVC.LISTE_CHI'/
@@ -74,7 +74,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     call jemarq()
     if (vci .eq. ' ') vci='&&ASCAVC.VCI'
     vci2=vci
-
+!
     call infniv(ifm, niv)
 !
 !
@@ -90,14 +90,14 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     nchci = 0
     ieqmul=0
 !
-    do 10 ichar = 1, nchtot
+    do ichar = 1, nchtot
         icine = zi(jinfc+ichar)
         if (icine .lt. 0) nchci=nchci+1
 !       -- UNE CHARGE NON "CINEMATIQUE" PEUT EN CONTENIR UNE :
         charge=zk24(idchar-1+ichar)(1:8)
         call jeexin(charge//'.ELIM      .AFCK', ier)
         if (ier .gt. 0) nchci=nchci+1
-10  end do
+    end do
 !
 !
     call wkvect(vachci, 'V V K24', max(nchci, 1), ilchno)
@@ -118,7 +118,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
         call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
                     kbid, ier)
         call wkvect(vci2//'.DLCI', 'V V I', neq, jdlci2)
-        do 20 ichar = 1, nchtot
+        do ichar = 1, nchtot
             charge=zk24(idchar-1+ichar)(1:8)
             icine = zi(jinfc+ichar)
             call jeexin(charge//'.ELIM      .AFCK', ier)
@@ -139,15 +139,15 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 !           --- COMBINAISON DES DLCI (OBJET CONTENANT DES 0 OU DES 1),
 !           --- LES 1 ETANT POUR LES DDL CONTRAINT
 !           --- LE RESTE DE L OBJECT VCI2 EST CREE PAR ASCOVA
-                do 30 ieq = 1, neq
+                do ieq = 1, neq
 !             -- ON REGARDE SI UN DDL N'EST PAS ELIMINE PLUSIEURS FOIS:
                     if (zi(jdlci2-1+ieq) .gt. 0 .and. zi(jdlci-1+ieq) .gt. 0) ieqmul=ieq
 !
                     zi(jdlci2-1+ieq)=max(zi(jdlci2-1+ieq),zi(jdlci-1+&
                     ieq))
-30              continue
+                end do
             endif
-20      continue
+        end do
         call jedetr(chamno//'.DLCI')
     endif
 !

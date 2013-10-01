@@ -45,7 +45,6 @@ subroutine mtcopy(matin, matout, ier)
 !
 !     ------------------------------------------------------------------
     integer :: lmatou, lmatin, nimpou
-    real(kind=8) :: un
     character(len=8) :: nomddl
     character(len=19) :: mati19, mato19
     character(len=24) :: nmatou, nmatin
@@ -87,7 +86,7 @@ subroutine mtcopy(matin, matout, ier)
             zi(lmatou+15) = 0
             zi(lmatou+16) = 0
         endif
-
+!
 !
 ! --- RECOPIE DU .VALE ET DE .CCID, .CCLL, .CCVA
         call mtcmbl(1, 'R', [1.d0], nmatin, nmatou,&

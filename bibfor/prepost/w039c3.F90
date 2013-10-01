@@ -1,7 +1,6 @@
 subroutine w039c3(carele, modele, ifi, form, titre)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/carelo.h"
 #include "asterfort/detrsd.h"
@@ -10,6 +9,7 @@ subroutine w039c3(carele, modele, ifi, form, titre)
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
+!
     integer :: ifi
     character(len=8) :: carele, modele
     character(len=80) :: titre

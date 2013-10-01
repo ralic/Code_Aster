@@ -71,32 +71,32 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
     call dismoi('F', 'NB_EC', 'CAGEPO', 'GRANDEUR', nbec,&
                 k8bid, ier)
 !     TOUTES LES COMPOSANTES DOIVENT ETRE DANS LA GRANDEUR
-    do 200 jj = 1, nbgd
+    do jj = 1, nbgd
         irang = indik8( zk8(icmp) , nomcmp(jj) , 1 , nbcmp )
         if (irang .eq. 0) then
             call utmess('E', 'UTILITAI4_8', sk=nomcmp(jj))
         endif
-200  continue
+    end do
 !
-    do 10 ii = 1, iassef
+    do ii = 1, iassef
         icode = zi(icard-1+3+2*iassmx+nbec*(ii-1)+1)
 !
-        do 20 jj = 1, nbgd
+        do jj = 1, nbgd
 !           RANG DANS LA GRANDEUR
             irang = indik8( zk8(icmp) , nomcmp(jj) , 1 , nbcmp )
 !           RANG DANS LA CARTE
             iranv = 0
-            do 40 ll = 1, irang
+            do ll = 1, irang
                 if (exisdg([icode],ll)) iranv = iranv + 1
-40          continue
+            end do
 !           ON MET A ZERO SI INEXISTANT
             if (iranv .eq. 0) then
                 valres(nbgd*(ii-1)+jj) = 0.0d0
             else
                 valres(nbgd*(ii-1)+jj) = zr(icarv-1+nbcmp*(ii-1)+ iranv)
             endif
-20      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

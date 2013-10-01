@@ -79,7 +79,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: cohes, copilo(5), dtau, ffc(8), ffp(27)
     real(kind=8) :: mat3bd(3, 3), mat6bd(6, 6), alpha(3), cohes2(3)
     real(kind=8) :: jac, mud(3), mup(3), r3bd(3), ma3bd(3, 3)
-    real(kind=8) :: nd(3), r8bid, r6bid(6), rb, r3bid(3)
+    real(kind=8) :: nd(3), r8bid, r6bid(6), r3bid(3)
     real(kind=8) :: rr, rbid, sud(3), sud2d(2), sudd(3), sup(3)
     real(kind=8) :: sup2d(2), supp(3), tau1(3), tau2(3), vim(9)
     integer :: ifa, ipgf, isspg, mate, nnol, nvec, pla(27)
@@ -150,11 +150,11 @@ subroutine te0547(option, nomte)
     nface=zi(jlonch-1+2)
     nptf=zi(jlonch-1+3)
 !
-    do 11 i = 1, nface
-        do 12 j = 1, nptf
+    do i = 1, nface
+        do j = 1, nptf
             cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
-12      continue
-11  end do
+        end do
+    end do
 !
 ! SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
 ! DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
@@ -190,9 +190,9 @@ subroutine te0547(option, nomte)
 !
 ! BOUCLE SUR LE NOMBRE DE FACETTES DE CONTACT
 !
-    do 100 ifa = 1, nface
+    do ifa = 1, nface
 !
-        do 110 ipgf = 1, npgf
+        do ipgf = 1, npgf
 !         INDICE DE CE POINT DE GAUSS DANS INDCO
             isspg = npgf*(ifa-1)+ipgf
             cohes = zr(jcohes+ncompv*(isspg-1))
@@ -290,12 +290,12 @@ subroutine te0547(option, nomte)
                 endif
             endif
 !
-            do 120 i = 1, 5
+            do i = 1, 5
                 zr(icopil-1+5*(isspg-1)+i) = copilo(i)
-120          continue
+            end do
 !
-110      continue
-100  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

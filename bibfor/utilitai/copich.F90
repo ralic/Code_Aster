@@ -51,12 +51,12 @@ subroutine copich(base, ch1z, ch2z)
 !-----------------------------------------------------------------------
 !
     character(len=4) :: docu
-    character(len=8) :: nomu, k8bid
+    character(len=8) :: nomu
     character(len=16) :: concep, cmd
-    character(len=19) :: prno, prno2, prno3, ch1esc, ch2esc, ch1, ch2
+    character(len=19) :: prno, prno2, prno3, ch1, ch2
     character(len=24) :: noojb
-    integer :: ibid, iret, iret1, iret2, jad, ier, nbsd, ilimpi
-    integer :: idd, nuprf
+    integer :: ibid, iret1, iret2, jad, ier
+    integer :: nuprf
     logical :: leco
 !-----------------------------------------------------------------------
     call jemarq()
@@ -66,7 +66,7 @@ subroutine copich(base, ch1z, ch2z)
 !
     call jeexin(ch1 // '.DESC', iret1)
     call jeexin(ch1 // '.CELD', iret2)
-    if (max(iret1,iret2) .eq. 0) goto 9999
+    if (max(iret1,iret2) .eq. 0) goto 999
 !
     if (iret1 .gt. 0) then
         call jelira(ch1//'.DESC', 'DOCU', cval=docu)
@@ -148,6 +148,6 @@ subroutine copich(base, ch1z, ch2z)
         call utmess('F', 'CALCULEL_17')
     endif
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

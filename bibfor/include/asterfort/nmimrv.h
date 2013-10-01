@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +15,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite, eta)
+    subroutine nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
+                      eta)
         character(len=24) :: sdimpr
         integer :: fonact(*)
         integer :: iterat

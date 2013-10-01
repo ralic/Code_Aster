@@ -211,7 +211,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     integer :: i, iend, istart, j, jj, kplusp, msglvl
     logical :: first
-    complex(kind=8) ::  f, g, h11, h21, r, s, sigma(1), t
+    complex(kind=8) :: f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid(1)
     save       first, smlnum, ulp, unfl
 !
@@ -225,7 +225,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | STATEMENT FUNCTIONS |
 !     %---------------------%
 !
-#define zabs1( cdum )   abs( dble( cdum ) ) + abs( dimag( cdum ) )
+#define zabs1( cdum ) abs( dble( cdum ) ) + abs( dimag( cdum ) )
 !
 !     %----------------%
 !     | DATA STATMENTS |
@@ -286,7 +286,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | WHOLE MATRIX INCLUDING EACH BLOCK.           |
 !     %----------------------------------------------%
 !
-    do 110 jj = 1, np
+    do jj = 1, np
         sigma(1) = shift(jj)
 !
         if (msglvl .gt. 2) then
@@ -295,9 +295,9 @@ subroutine znapps(n, kev, np, shift, v,&
         endif
 !
         istart = 1
-20      continue
+ 20     continue
 !
-        do 30 i = istart, kplusp-1
+        do i = istart, kplusp-1
 !
 !           %----------------------------------------%
 !           | CHECK FOR SPLITTING AND DEFLATION. USE |
@@ -320,9 +320,9 @@ subroutine znapps(n, kev, np, shift, v,&
                 h(i+1,i) = zero
                 goto 40
             endif
-30      continue
+        end do
         iend = kplusp
-40      continue
+ 40     continue
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, [istart], ndigit, '_NAPPS: START OF CURRENT BLOCK ')
@@ -342,7 +342,7 @@ subroutine znapps(n, kev, np, shift, v,&
         f = h11 - sigma(1)
         g = h21
 !
-        do 80 i = istart, iend-1
+        do i = istart, iend-1
 !
 !           %------------------------------------------------------%
 !           | CONSTRUCT THE PLANE ROTATION G TO ZERO OUT THE BULGE |
@@ -358,31 +358,31 @@ subroutine znapps(n, kev, np, shift, v,&
 !           | APPLY ROTATION TO THE LEFT OF H;  H <- G'*H |
 !           %---------------------------------------------%
 !
-            do 50 j = i, kplusp
+            do j = i, kplusp
                 t = c*h(i,j) + s*h(i+1,j)
                 h(i+1,j) = -dconjg(s)*h(i,j) + c*h(i+1,j)
                 h(i,j) = t
-50          continue
+            end do
 !
 !           %---------------------------------------------%
 !           | APPLY ROTATION TO THE RIGHT OF H;  H <- H*G |
 !           %---------------------------------------------%
 !
-            do 60 j = 1, min(i+2, iend)
+            do j = 1, min(i+2, iend)
                 t = c*h(j,i) + dconjg(s)*h(j,i+1)
                 h(j,i+1) = -s*h(j,i) + c*h(j,i+1)
                 h(j,i) = t
-60          continue
+            end do
 !
 !           %-----------------------------------------------------%
 !           | ACCUMULATE THE ROTATION IN THE MATRIX Q;  Q <- Q*G' |
 !           %-----------------------------------------------------%
 !
-            do 70 j = 1, min(i+jj, kplusp)
+            do j = 1, min(i+jj, kplusp)
                 t = c*q(j,i) + dconjg(s)*q(j,i+1)
                 q(j,i+1) = - s*q(j,i) + c*q(j,i+1)
                 q(j,i) = t
-70          continue
+            end do
 !
 !           %---------------------------%
 !           | PREPARE FOR NEXT ROTATION |
@@ -392,13 +392,13 @@ subroutine znapps(n, kev, np, shift, v,&
                 f = h(i+1,i)
                 g = h(i+2,i)
             endif
-80      continue
+        end do
 !
 !        %-------------------------------%
 !        | FINISHED APPLYING THE SHIFT.  |
 !        %-------------------------------%
 !
-100      continue
+100     continue
 !
 !        %---------------------------------------------------------%
 !        | APPLY THE SAME SHIFT TO THE NEXT BLOCK IF THERE IS ANY. |
@@ -411,7 +411,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !        | LOOP BACK TO THE TOP TO GET THE NEXT SHIFT. |
 !        %---------------------------------------------%
 !
-110  end do
+    end do
 !
 !     %---------------------------------------------------%
 !     | PERFORM A SIMILARITY TRANSFORMATION THAT MAKES    |
@@ -419,7 +419,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | REAL SUBDIAGONAL ELEMENTS.                        |
 !     %---------------------------------------------------%
 !
-    do 120 j = 1, kev
+    do j = 1, kev
         if (dble( h(j+1,j) ) .lt. rzero .or. dimag( h(j+1,j) ) .ne. rzero) then
             t = h(j+1,j) / dlapy2(dble(h(j+1,j)),dimag(h(j+1,j)))
             call zlscal(kplusp-j+1, dconjg(t), h(j+1, j), ldh)
@@ -427,9 +427,9 @@ subroutine znapps(n, kev, np, shift, v,&
             call zlscal(min(j+np+1, kplusp), t, q(1, j+1), 1)
             h(j+1,j) = dcmplx( dble( h(j+1,j) ), rzero )
         endif
-120  end do
+    end do
 !
-    do 130 i = 1, kev
+    do i = 1, kev
 !
 !        %--------------------------------------------%
 !        | FINAL CHECK FOR SPLITTING AND DEFLATION.   |
@@ -443,7 +443,7 @@ subroutine znapps(n, kev, np, shift, v,&
         tst1 = zabs1( h( i, i ) ) + zabs1( h( i+1, i+1 ) )
         if (tst1 .eq. rzero) tst1 = zlanhs( '1', kev, h, ldh, rbid)
         if (dble( h( i+1,i ) ) .le. max( ulp*tst1, smlnum )) h(i+1,i) = zero
-130  end do
+    end do
 !
 !     %-------------------------------------------------%
 !     | COMPUTE THE (KEV+1)-ST COLUMN OF (V*Q) AND      |
@@ -462,12 +462,12 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | TAKING ADVANTAGE OF THE UPPER HESSENBERG STRUCTURE OF Q. |
 !     %----------------------------------------------------------%
 !
-    do 140 i = 1, kev
+    do i = 1, kev
         call zgemv('N', n, kplusp-i+1, one, v,&
                    ldv, q(1, kev-i+1), 1, zero, workd,&
                    1)
         call zcopy(n, workd, 1, v(1, kplusp-i+1), 1)
-140  end do
+    end do
 !
 !     %-------------------------------------------------%
 !     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
@@ -505,7 +505,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     endif
 !
-9000  continue
+9000 continue
     call matfpe(1)
 !
 !

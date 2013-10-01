@@ -20,7 +20,6 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -30,6 +29,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: nrel
     character(len=8) :: noma
     character(len=19) :: nliseq
@@ -76,9 +76,9 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 ! --- INTIALISATIONS
 !
     betar = 0.d0
-    do 5 i = 1, 8
+    do i = 1, 8
         ndime(i) = 0
- 5  end do
+    end do
 !
 ! --- DONNÉES RELATIVES AU MAILLAGE
 !
@@ -102,7 +102,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
         endif
     endif
 !
-    do 10 i = 1, neq/2
+    do i = 1, neq/2
         nuno(1) = zi(jlis1-1+2*(i-1)+1)
         nuno(2) = zi(jlis1-1+2*(i-1)+2)
 !
@@ -114,7 +114,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 !
 ! --- RELATION POUR LES MULTIPLICATEURS DE CONTACT ET FROTTEMENT
 !
-        do 20 j = 1, ndim
+        do j = 1, ndim
             if (.not.lmulti) then
                 ddl(1) = ddlc(j)
                 ddl(2) = ddlc(j)
@@ -126,9 +126,9 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
                         [0.d0], 2, betar, cbid, k8bid,&
                         'REEL', 'REEL', '12', 0.d0, lisrel)
             nrel = nrel + 1
-20      continue
-10  end do
-100  continue
+        end do
+    end do
+100 continue
 !
 !
     call jedema()

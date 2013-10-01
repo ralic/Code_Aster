@@ -65,7 +65,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     character(len=24) :: numedd, modele
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro, sdstat, sdconv, sdtime
-
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,12 +109,9 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! ----------------------------------------------------------------------
 !
     logical :: lreli, lnkry, limpex, lcont
-    integer :: iret
     real(kind=8) :: r8bid
     real(kind=8) :: resigr, pasmin
     real(kind=8) :: instam, instap
-    character(len=24) :: critfe
-    integer :: jcrit
     real(kind=8) :: vrela, vmaxi, vrefe, vresi, vchar, vinit, vcomp, vfrot
     real(kind=8) :: vgeom
     logical :: lerror, itemax, dvdebo
@@ -229,8 +226,8 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! --- ENREGISTRE LES DONNEES POUR AFFICHAGE DANS LA SDIMPR
 !
-    call nmimrv(sdimpr, fonact, iterat, relcoe,&
-                relite, eta)
+    call nmimrv(sdimpr, fonact, iterat, relcoe, relite,&
+                eta)
 !
 ! --- CAPTURE ERREUR EVENTUELLE
 !

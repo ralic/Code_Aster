@@ -212,7 +212,7 @@ subroutine nminim(sdsuiv, sdimpr)
 !
 ! --- CREATION DE TOUTES LES COLONNES DISPONIBLES
 !
-    do 10 icolo = 1, nbcolo
+    do icolo = 1, nbcolo
         typcol = typcoz(icolo)
         titli1 = titr1z(icolo)
         titli2 = titr2z(icolo)
@@ -224,17 +224,17 @@ subroutine nminim(sdsuiv, sdimpr)
 !
         call obclcr('NMINIM', typcol, larcol, tithau, titli1,&
                     titli2, titli3, typval, cnoval, sdcolo)
-10  end do
+    end do
 !
 ! --- AFFECTATION DES COLONNES DANS LA LISTE (DANS L'ORDRE !)
 !
-    do 15 icolo1 = 1, nbcolo
+    do icolo1 = 1, nbcolo
         ordcol = ordcoz(icolo1)
         icolo = 0
-        do 16 icolo2 = 1, nbcolo
+        do icolo2 = 1, nbcolo
             typcol = typcoz(icolo2)
             if (typcol .eq. ordcol) icolo = icolo2
-16      continue
+        end do
         ASSERT(icolo.ne.0)
         typcol = typcoz(icolo)
 !
@@ -245,11 +245,11 @@ subroutine nminim(sdsuiv, sdimpr)
 ! ----- AFFECTATION DE LA COLONNE
 !
         call oblsoi(slcolo, typcol, sdcolo)
-15  end do
+    end do
 !
 ! --- CREATION DES COLONNES POUR LE SUIVI EN TEMPS REEL
 !
-    do 20 isuiv = 1, nbsuiv
+    do isuiv = 1, nbsuiv
         call impfoi(0, 1, isuiv, indsui)
         typcol = 'SUIVDDL'//indsui
         titli1 = zk16(jddlti+3*(isuiv-1)+1-1)
@@ -259,11 +259,11 @@ subroutine nminim(sdsuiv, sdimpr)
         cnoval = 'ERRE'
         call obclcr('NMINIM', typcol, larcol, tithau, titli1,&
                     titli2, titli3, typval, cnoval, sdcolo)
-20  end do
+    end do
 !
 ! --- AFFECTATION DES COLONNES DANS LA LISTE
 !
-    do 25 isuiv = 1, nbsuiv
+    do isuiv = 1, nbsuiv
         call impfoi(0, 1, isuiv, indsui)
         typcol = 'SUIVDDL'//indsui
 !
@@ -274,17 +274,17 @@ subroutine nminim(sdsuiv, sdimpr)
 ! ----- AFFECTATION DE LA COLONNE
 !
         call oblsoi(slcolo, typcol, sdcolo)
-25  end do
+    end do
 !
 ! --- RECUPERATION HAUTEUR TITRE COMMUNE POUR TABLEAU
 !
     call oblgoi(slcolo, 1, sdcolo)
     call obgeti(sdcolo, 'HAUTEUR_TITRE', titco1)
-    do 30 icolo = 2, nbcolt
+    do icolo = 2, nbcolt
         call oblgoi(slcolo, icolo, sdcolo)
         call obgeti(sdcolo, 'HAUTEUR_TITRE', titcom)
         if (titco1 .ne. titcom) ASSERT(.false.)
-30  end do
+    end do
     call obseti(sdtabc, 'HAUTEUR_TITRE', titcom)
 !
 ! --- OUVERTURE DU FICHIER

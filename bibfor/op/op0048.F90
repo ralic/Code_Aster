@@ -165,10 +165,10 @@ subroutine op0048()
     if (nbexre .ne. 0) then
         call wkvect(baseno//'.COEF_RRE', 'V V R  ', nbexre, lcrre)
         call wkvect(baseno//'.LISTRESU', 'V V K8 ', nbexre, lresu)
-        do 252 iresu = 1, nbexre
+        do iresu = 1, nbexre
             call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8( lresu+iresu-1), nbret=l)
             call getvr8('EXCIT_RESU', 'COEF_MULT', iocc=iresu, scal=zr(lcrre+iresu-1), nbret=l)
-252      continue
+        end do
     endif
 !
 !===
@@ -236,7 +236,7 @@ subroutine op0048()
 !
     call jeveuo(result//'           .ORDR', 'L', jord)
     call jelira(result//'           .ORDR', 'LONUTI', nbord)
-    do 61 iordr = 1, nbord
+    do iordr = 1, nbord
         call rsadpa(result, 'E', 1, 'MODELE', zi(jord+iordr-1),&
                     0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=modele(1:8)
@@ -246,7 +246,7 @@ subroutine op0048()
         call rsadpa(result, 'E', 1, 'CARAELEM', zi(jord+iordr-1),&
                     0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=carael
-61  end do
+    end do
 !
 ! --- ON CALCULE LE CHAMP DE STRUCTURE STRX_ELGA SI BESOIN
 !
@@ -308,7 +308,7 @@ subroutine op0048()
 !
         call rsnoch(result, 'STRX_ELGA', iordr)
 !
-62      continue
+ 62     continue
     endif
 !
     call jedema()

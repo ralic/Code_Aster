@@ -34,10 +34,6 @@ subroutine assde1(champ)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, idd, nbsd, ifetc, ilimpi
-    character(len=5) :: refe, vale, desc
-    character(len=19) :: k19b
-    character(len=24) :: k24b
     character(len=19) :: champ2
     logical :: dbg
 ! -DEB------------------------------------------------------------------

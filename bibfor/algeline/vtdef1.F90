@@ -98,9 +98,9 @@ subroutine vtdef1(chpout, chpin, base, typc)
     call jeecra(tamp, 'LONMAX', nbval)
     call jeveuo(tamp, 'E', lchpou)
     nbval1=nbval-1
-    do 10 ival = 0, nbval1
+    do ival = 0, nbval1
         zk24(lchpou+ival) = zk24(lchpin+ival)
-10  end do
+    end do
 !
     tamp(1:19) = chpin
     tamp(1:19) = chpout
@@ -120,9 +120,9 @@ subroutine vtdef1(chpout, chpin, base, typc)
     call jeecra(desc, 'DOCU', cval=docu)
 !
     call jeveuo(desc, 'E', lchpou)
-    do 20 ival = 0, nbval1
+    do ival = 0, nbval1
         zi(lchpou+ival) = zi(lchpin+ival)
-20  end do
+    end do
 !
     desc(1:19) = chpin
     desc(1:19) = chpout

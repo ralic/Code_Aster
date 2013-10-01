@@ -121,12 +121,12 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     nunoi = zi(inunoi)
     z0int = zr(icoor+3*(nunoi-1)+idir1-1)
     z1int = z0int
-    do 10 ino = 2, nbnoin
+    do ino = 2, nbnoin
         nunoi = zi(inunoi+ino-1)
         zno = zr(icoor+3*(nunoi-1)+idir1-1)
         if (zno .lt. z0int) z0int = zno
         if (zno .gt. z1int) z1int = zno
-10  end do
+    end do
     difz = dble(abs(z1int-z0int))
     if (difz .lt. tole) then
         call utmess('F', 'ALGELINE_50')
@@ -143,12 +143,12 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     nunoe = zi(inunoe)
     z0ext = zr(icoor+3*(nunoe-1)+idir1-1)
     z1ext = z0ext
-    do 20 ino = 2, nbnoex
+    do ino = 2, nbnoex
         nunoe = zi(inunoe+ino-1)
         zno = zr(icoor+3*(nunoe-1)+idir1-1)
         if (zno .lt. z0ext) z0ext = zno
         if (zno .gt. z1ext) z1ext = zno
-20  end do
+    end do
     difz = dble(abs(z1ext-z0ext))
     if (difz .lt. tole) then
         call utmess('F', 'ALGELINE_52')
@@ -200,14 +200,14 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     iasedi = zi(idesc+2)
     iascqi = 0
     iascqx = 0
-    do 30 ias = 1, iasedi
+    do ias = 1, iasedi
         icode = zi(idesc+3+2*(ias-1))
         if (icode .eq. 2) then
             nuenti = zi(idesc+3+2*(ias-1)+1)
             if (nuenti .eq. nucoqi) iascqi = ias
             if (nuenti .eq. nucoqx) iascqx = ias
         endif
-30  end do
+    end do
     if (iascqi .eq. 0 .or. iascqx .eq. 0) then
         call utmess('F', 'ALGELINE_56')
     endif
@@ -225,9 +225,9 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 ! --- 3.4. VALEUR DE L'EPAISSEUR DE LA COQUE INTERNE
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqi-1)+1)
     iranv = 0
-    do 50 icmp = 1, irang
+    do icmp = 1, irang
         if (exisdg([icode],icmp)) iranv = iranv + 1
-50  end do
+    end do
     if (iranv .eq. 0) then
         call utmess('F', 'ALGELINE_58')
     endif
@@ -240,9 +240,9 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 ! --- 3.5. VALEUR DE L'EPAISSEUR DE LA COQUE EXTERNE
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqx-1)+1)
     iranv = 0
-    do 51 icmp = 1, irang
+    do icmp = 1, irang
         if (exisdg([icode],icmp)) iranv = iranv + 1
-51  end do
+    end do
     if (iranv .eq. 0) then
         call utmess('F', 'ALGELINE_60')
     endif

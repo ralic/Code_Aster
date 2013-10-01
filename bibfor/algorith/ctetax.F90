@@ -86,8 +86,10 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-------------------RECUPERATION DU MAILLAGE----------------------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1), intf, iret)
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1), mailla, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1),&
+                intf, iret)
+    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1),&
+                mailla, iret)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
@@ -118,7 +120,8 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !-------------RECUPERATION NOMBRE DE DDL INTERFACE AXE------------------
 !
     kbid=' '
-    call bmnodi(basmod, kbid, '         ', numa, 0, ibid, nbdax)
+    call bmnodi(basmod, kbid, '         ', numa, 0,&
+                ibid, nbdax)
 !
     if (nbdax .ne. nbtet) then
         vali (1) = nbdax
@@ -134,12 +137,12 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !
     nbdcou=0
-    do 10 i = 1, nbnoa
+    do i = 1, nbnoa
         inoa=zi(llnoa+i-1)
 !*************************************************************
 !        ICOD=ZI(LLDESC+2*NBNOT+INOA-1)
         call isdeco(zi(lldesc+2*nbnot+(inoa-1)*nbec+1-1), ideca, nbcmp)
-        do 20 j = 1, nta
+        do j = 1, nta
 !*************************************************************
             if (ideca(j) .eq. 1) then
                 xa(j)=1.d0
@@ -147,20 +150,20 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
                 xa(j)=0.d0
             endif
 !
-20      continue
+        end do
 !
 !
-        do 30 j = 1, nta
+        do j = 1, nta
             xta(j)=0.d0
-            do 40 k = 1, nta
+            do k = 1, nta
                 xta(j)=xta(j)+tet0(j,k)*xa(k)
-40          continue
-30      continue
+            end do
+        end do
 !
 !
 !    VERIFICATION SUR COHERENCE DES DDL INTERFACES
 !
-        do 50 j = 1, nta
+        do j = 1, nta
             if (xta(j) .gt. 0.d0 .and. xa(j) .eq. 0.d0) then
                 noer=zi(lldesc+inoa-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
@@ -183,7 +186,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
                 nook=.true.
             endif
 !
-50      continue
+        end do
 !
         if (nook) then
             call utmess('F', 'ALGORITH14_94')
@@ -192,25 +195,25 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
         nbdcou=0
         iloci=0
         icomp=0
-        do 60 j = 1, nta
+        do j = 1, nta
             if (ideca(j) .gt. 0) then
                 iloci=iloci+1
                 ilocj=0
                 icomp=icomp+1
-                do 70 k = 1, nta
+                do k = 1, nta
                     if (ideca(k) .gt. 0) then
                         ilocj=ilocj+1
                         x=tet0(j,k)
                         call amppr(teta, nbdax, nbdax, [x], 1,&
                                    1, nbdcou+ iloci, nbdcou+ilocj)
                     endif
-70              continue
+                end do
             endif
-60      continue
+        end do
 !
         nbdcou=nbdcou+icomp
 !
-10  continue
+    end do
 !
     call jedema()
 end subroutine

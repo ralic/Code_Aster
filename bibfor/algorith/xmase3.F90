@@ -62,13 +62,12 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !
     integer :: retour(1)
     integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret
-    integer :: nno, nnos, npgbis, ddlt, ddld, cpt, ndimb, ibid
+    integer :: nno, nnos, npgbis, ddlt, ddld, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
 !
     real(kind=8) :: f(3, 3), eps(6), rho(1)
     real(kind=8) :: fe(4), baslog(9)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: rbid1(4), rbid2(4), rbid3(4)
     real(kind=8) :: dfdi(nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: enr(nnop, ndim+ddlh+ndim*nfe), grad(3, 3)
     real(kind=8) :: depl0(ndim+ddlh+ndim*nfe+ddlc, nnop)
@@ -95,22 +94,22 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
-    do 100 kpg = 1, npg
+    do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 110 i = 1, ndim
-            do 111 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(3*(n-1)+i)
-111          continue
-110      continue
+            end do
+        end do
 !
 !
-        do 300 i = 1, nnop
-            do 301 j = 1, ddlt
+        do i = 1, nnop
+            do j = 1, ddlt
                 depl0(j,i)=0.d0
-301          continue
-300      continue
+            end do
+        end do
 !
 !       JUSTE POUR CALCULER LES FF
         call reere3(elrefp, nnop, igeom, xg, depl0,&
@@ -124,13 +123,13 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
             call vecini(9, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 113 ino = 1, nnop
+            do ino = 1, nnop
                 lsng = lsng + lsn(ino) * ff(ino)
                 lstg = lstg + lst(ino) * ff(ino)
-                do 114 i = 1, 9
+                do i = 1, 9
                     baslog(i) = baslog(i) + basloc(9*(ino-1)+i) * ff( ino)
-114              continue
-113          continue
+                end do
+            end do
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             call xcalfe(he, lsng, lstg, baslog, fe,&
@@ -151,29 +150,29 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                     eps, grad)
 !
 !--------CALCUL DES FONCTIONS ENRICHIES--------------------------
-        do 120 n = 1, nnop
+        do n = 1, nnop
             cpt=0
 !         FONCTIONS DE FORME CLASSIQUES
-            do 121 i = 1, ndim
+            do i = 1, ndim
                 cpt=cpt+1
                 enr(n,i) = ff(n)
-121          continue
+            end do
 !         ENRICHISSEMENT PAR HEAVYSIDE
-            do 122 i = 1, ddlh
+            do i = 1, ddlh
                 cpt=cpt+1
                 enr(n,cpt) = enr(n,i) * he
-122          continue
+            end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do 124 ig = 1, nfe
-                do 125 i = 1, ndim
+            do ig = 1, nfe
+                do i = 1, ndim
                     cpt=cpt+1
                     enr(n,cpt)=ff(n)*fe(ig)
-125              continue
-124          continue
+                end do
+            end do
 !
             ASSERT(cpt.eq.ddld)
 !
-120      continue
+        end do
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ON ENVOIE DFDM3D AVEC LES COORD DU SS-ELT
@@ -187,11 +186,11 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                     ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, retour, 1)
 !
-        do 230 n = 1, nnop
-            do 231 i = 1, ddld
+        do n = 1, nnop
+            do i = 1, ddld
                 kkd = (ddld*(n-1)+i-1) * (ddld*(n-1)+i) /2
-                do 240 j = 1, ddld
-                    do 241 m = 1, n
+                do j = 1, ddld
+                    do m = 1, n
                         if (m .eq. n) then
                             j1 = i
                         else
@@ -203,11 +202,11 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                             jac*rho(1)
                         endif
 !
-241                  continue
-240              continue
-231          continue
-230      continue
+                    end do
+                end do
+            end do
+        end do
 !
-100  end do
+    end do
 !
 end subroutine

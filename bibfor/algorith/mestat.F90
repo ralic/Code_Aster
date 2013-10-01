@@ -76,16 +76,16 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     character(len=6) :: nompro
     parameter    (nompro = 'MESTAT')
-    integer :: nbval, ibid, ierd, jval, itps, itps0, iret, ninstc, islvk, neq
+    integer :: nbval, ibid, ierd, jval, itps, itps0, iret, ninstc, neq
     integer :: vali
     real(kind=8) :: time, instf, tps1(4), tps2(4), tps3(4), tcpu, partps(3)
-    real(kind=8) :: rbid, valr(3)
+    real(kind=8) :: valr(3)
     character(len=1) :: base
     character(len=8) :: repk, result
     character(len=14) :: nuposs
     character(len=16) :: k16bid
-    character(len=19) :: maprec, vecass, chdepl, k19b, matass
-    character(len=24) :: numedd, method, criter, opt, k24b, modele, carele
+    character(len=19) :: maprec, vecass, chdepl, matass
+    character(len=24) :: numedd, criter, modele, carele
     character(len=24) :: fomult, noojb
     logical :: matcst, assmat
     logical :: lbid, ltemp, lhydr, lsech, lptot
@@ -233,10 +233,10 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
             goto 999
         endif
 !
- 2      continue
+  2     continue
     end do
 !
-999  continue
+999 continue
     call detrsd('CHAMP_GD', vecass)
 !
 !

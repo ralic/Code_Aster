@@ -52,7 +52,7 @@ subroutine pechli(resu, modele, mate)
 ! ----------------------------------------------------------------------
 !
     logical :: chrcst
-    integer :: i, ibid, iret, jinst, jpilo
+    integer :: i, iret, jinst, jpilo
     integer :: nbord, jord, numord
     real(kind=8) :: chlim(3), chmax(3), inst, eta, prec, valer(3), f0u, m
     complex(kind=8) :: c16b
@@ -130,7 +130,7 @@ subroutine pechli(resu, modele, mate)
 !
 ! -- CALCUL DES CHARGES LIMITES AUX DIFFERENTS INSTANTS
 !
-    do 10 i = 1, nbord
+    do i = 1, nbord
         call jemarq()
         call jerecu('V')
 !
@@ -207,7 +207,7 @@ subroutine pechli(resu, modele, mate)
                     c16b, k8b, 0)
 !
         call jedema()
-10  end do
+    end do
 !
 ! --- MENAGE
     call jedetr('&&PECHLI.VECTORDR')

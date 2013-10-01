@@ -82,9 +82,9 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 !
     lligr = '&&NUMER2.LISTE_LIGREL'
     call wkvect(lligr, 'V V K24', nbligr, jlligr)
-    do 10 i = 1, nbligr
+    do i = 1, nbligr
         zk24(jlligr-1+i) = vligr(i)
-10  end do
+    end do
 !
     call nueffe(lligr, bas2, nu1, method, moloc,&
                 solve2, nequa)

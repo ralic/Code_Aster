@@ -20,7 +20,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -65,12 +65,11 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
 !
     integer :: jccid, jfint, jdiri, jfext, jvcfo, jiner
-    integer :: ifm, niv, nivmpi
+    integer :: ifm, niv
     logical :: ldyna, lcine
-    character(len=24) :: k24bid
     character(len=19) :: cndiri, cnvcfo
-    integer :: ibid, ieq
-    real(kind=8) :: val2, val3, r8bid, appui, fext
+    integer :: ieq
+    real(kind=8) :: val2, val3, appui, fext
     character(len=24) :: sdnuco
     integer :: jnuco
 !
@@ -120,7 +119,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
 ! --- CALCUL DES RESIDUS
 !
-    do 20 ieq = 1, neq
+    do ieq = 1, neq
 !
 ! ----- QUELLE REACTION D'APPUI ?
 !
@@ -164,7 +163,8 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
             endif
         endif
 !
-20  end do
+ 20     continue
+    end do
 !
     call jedema()
 end subroutine

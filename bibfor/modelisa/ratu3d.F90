@@ -43,12 +43,11 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !     RACCORD 3D_TUYAU PAR DES RELATIONS LINEAIRES
 !     ECRITURE DES RELATIONS SUR LES DDLS DE FOURIER
 !
-    integer :: nbcmp, nbmode, irayo, ibid
+    integer :: nbcmp, nbmode, irayo
     parameter (nbmode=3,nbcmp=6* (nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(5), lpaout(6), nomddl(4)
     character(len=24) :: lchin(5), lchout(6), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3), sectio
-    complex(kind=8) :: cbid
     integer :: imod, info, ifm
     integer :: nbcoef, idec
 !
@@ -162,7 +161,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     nocmp(11) = 'VO3'
     nocmp(12) = 'WO3'
 !
-    do 10 imod = 1, nbmode
+    do imod = 1, nbmode
         if (info .eq. 2) then
             write (ifm,*) 'RELATIONS SUR LE MODE ',imod
         endif
@@ -305,7 +304,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
 !     FIN DE LA BOUCLE SUR LES MODES
 !
-10  end do
+    end do
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL
 !

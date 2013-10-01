@@ -47,7 +47,7 @@ subroutine xprcfl(model, lcmin)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ibid, ifm, niv
+    integer :: ifm, niv
     character(len=8) :: lpain(1), lpaout(1)
     character(len=19) :: cellc
     character(len=24) :: ligrel, chgeom, lchin(1), lchout(1)

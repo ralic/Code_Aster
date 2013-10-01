@@ -101,7 +101,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     integer :: iret, livi(nbmxpa), nbchar
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
-    complex(kind=8) :: cbid, livc(nbmxpa)
+    complex(kind=8) :: livc(nbmxpa)
     logical :: lfonc
     parameter   (mxstac=1000)
     character(len=2) :: codret
@@ -383,14 +383,14 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
     call mesomm(lchout(1), 5, vr=fic)
 !
-    do 20 i = 1, 5
+    do i = 1, 5
         zr(ific+i-1) = fic(i)
-20  continue
+    end do
 !
     if (typmo(1:4) .eq. 'AXIS') then
-        do 21 i = 1, 5
+        do i = 1, 5
             zr(ific+i-1) = zr(ific+i-1)/rcmp(1)
-21      continue
+        end do
     endif
 !
     if (symech .eq. 'OUI') then

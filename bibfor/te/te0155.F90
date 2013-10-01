@@ -93,34 +93,34 @@ subroutine te0155(option, nomte)
         call jevech('PDEPLMR', 'L', idepla)
         call jevech('PDEPLPR', 'L', ideplp)
         if (nomte .eq. 'MECA_BARRE') then
-            do 10 i = 1, 3
+            do i = 1, 3
                 w(i) = zr(lx+i) + zr(idepla-1+i) + zr(ideplp-1+i)
                 w(i+3) = zr(lx+i+3) + zr(idepla+2+i) + zr(ideplp+2+i)
                 w2(i) = w(i+3) - w(i)
- 10         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
-            do 11 i = 1, 2
+            do i = 1, 2
                 w(i) = zr(lx+i) + zr(idepla-1+i) + zr(ideplp-1+i)
                 w(i+2) = zr(lx+i+2) + zr(idepla+1+i) + zr(ideplp+1+i)
                 w2(i) = w(i+2) - w(i)
- 11         continue
+            end do
         endif
         call angvx(w2, ang1(1), ang1(2))
         ang1(3) = zr(lorien+2)
         call matrot(ang1, pgl)
     else
         if (nomte .eq. 'MECA_BARRE') then
-            do 12 i = 1, 3
+            do i = 1, 3
                 w(i) = zr(lx+i)
                 w(i+3) = zr(lx+i+3)
                 w2(i) = w(i+3) - w(i)
- 12         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
-            do 13 i = 1, 2
+            do i = 1, 2
                 w(i) = zr(lx+i)
                 w(i+2) = zr(lx+i+2)
                 w2(i) = w(i+2) - w(i)
- 13         continue
+            end do
         endif
         call matrot(zr(lorien), pgl)
     endif
@@ -137,9 +137,9 @@ subroutine te0155(option, nomte)
     endif
 !
 !     --- INITIALISATION DE FL ---
-    do 15 i = 1, 6
+    do i = 1, 6
         fl(i) = 0.d0
- 15 end do
+    end do
 !
     call jevech('PVECTUR', 'E', lvect)
 !
@@ -160,10 +160,10 @@ subroutine te0155(option, nomte)
                     1, 'RHO', rho, codres, 1)
 !
         call jevech('PPESANR', 'L', lpesa)
-        do 20 i = 1, 3
+        do i = 1, 3
             qg(i) = rho(1) * zr(lpesa) * zr(lpesa+i)
             qg(i+3) = qg(i)
- 20     continue
+        end do
 !
 !        --- PASSAGE REPERE LOCAL DU VECTEUR FORCE ---
         call utpvgl(nno, nc, pgl, qg(1), ql(1))
@@ -171,18 +171,18 @@ subroutine te0155(option, nomte)
 !        --- CALCUL DES FORCES NODALES EQUIVALENTES EN REPERE LOCAL ---
 !         FL(1) = QL(1) * A * XL / 2.D0
 !         FL(4) = QL(4) * A * XL / 2.D0
-        do 22 i = 1, 6
+        do i = 1, 6
             fl(i)= ql(i) * a * xl / 2.d0
- 22     continue
+        end do
         call utpvlg(nno, nc, pgl, fl(1), vect)
     endif
 !
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
     if (nomte .eq. 'MECA_BARRE') then
-        do 23 i = 1, 6
+        do i = 1, 6
             zr(lvect+i-1) = vect(i)
- 23     continue
+        end do
     else if (nomte.eq.'MECA_2D_BARRE') then
         zr(lvect) = vect(1)
         zr(lvect+1) = vect(2)
@@ -227,10 +227,10 @@ subroutine te0155(option, nomte)
 !
     if (option .eq. 'CHAR_MECA_FR1D1D') then
 !     --- FORCES REPARTIES PAR VALEURS REELLES---
-        do 30 i = 1, 3
+        do i = 1, 3
             qg(i) = zr(lforc+i-1)
             qg(i+3) = qg(i)
- 30     continue
+        end do
         if (normal) then
             s=ddot(3,w2,1,w2,1)
             s2=1.d0/s
@@ -260,25 +260,25 @@ subroutine te0155(option, nomte)
         if (global .or. normal) then
             call utpvgl(nno, nc, pgl, qg(1), ql(1))
         else
-            do 32 i = 1, 6
+            do i = 1, 6
                 ql(i) = qg(i)
- 32         continue
+            end do
         endif
 !
 !        --- CALCUL DES FORCES NODALES EQUIVALENTES EN REPERE LOCAL ---
 !         FL(1) = QL(1) * XL / 2.D0
 !         FL(4) = QL(4) * XL / 2.D0
-        do 34 i = 1, 6
+        do i = 1, 6
             fl(i)= ql(i) * xl / 2.d0
- 34     continue
+        end do
         call utpvlg(nno, nc, pgl, fl(1), vect)
 !
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 35 i = 1, 6
+            do i = 1, 6
                 zr(lvect+i-1) = vect(i)
- 35         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(lvect) = vect(1)
             zr(lvect+1) = vect(2)
@@ -289,16 +289,16 @@ subroutine te0155(option, nomte)
         elseif ( option .eq.'CHAR_MECA_FF1D1D' .or. option&
     .eq.'CHAR_MECA_SF1D1D' ) then
 !     --- FORCES REPARTIES PAR FONCTIONS ---
-        do 40 i = 1, 3
+        do i = 1, 3
             valpa1(i) = w(i)
             valpa2(i) = w(i+3)
- 40     continue
-        do 42 i = 1, 3
+        end do
+        do i = 1, 3
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpa1,&
                         qg(i), iret)
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpa2,&
                         qg(i+ 3), iret)
- 42     continue
+        end do
 !
         if (normal) then
             s=ddot(3,w2,1,w2,1)
@@ -330,25 +330,25 @@ subroutine te0155(option, nomte)
         if (global .or. normal) then
             call utpvgl(nno, nc, pgl, qg(1), ql(1))
         else
-            do 44 i = 1, 6
+            do i = 1, 6
                 ql(i) = qg(i)
- 44         continue
+            end do
         endif
 !
 !        --- CALCUL DES FORCES NODALES EQUIVALENTES EN REPERE LOCAL ---
 !         FL(1) = QL(1) * XL / 2.D0
 !         FL(4) = QL(4) * XL / 2.D0
-        do 46 i = 1, 6
+        do i = 1, 6
             fl(i)= ql(i) * xl / 2.d0
- 46     continue
+        end do
         call utpvlg(nno, nc, pgl, fl(1), vect)
 !
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 45 i = 1, 6
+            do i = 1, 6
                 zr(lvect+i-1) = vect(i)
- 45         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(lvect) = vect(1)
             zr(lvect+1) = vect(2)
@@ -363,12 +363,12 @@ subroutine te0155(option, nomte)
 !        SEUL LE CAS DU VENT DONNE PAR 'PVITER' EST ACCEPTE
         if (.not. okvent) goto 998
 !        RECUPERATION DE LA VITESSE DE VENT RELATIVE AUX NOEUDS
-        do 50 i = 1, 6
+        do i = 1, 6
             qg(i)=zr(lforc-1+i)
- 50     continue
-        do 51 i = 1, 3
+        end do
+        do i = 1, 3
             vp(i)=0.d0
- 51     continue
+        end do
 !
 !        CALCUL DU VECTEUR VITESSE PERPENDICULAIRE
         s=ddot(3,w2,1,w2,1)
@@ -420,17 +420,17 @@ subroutine te0155(option, nomte)
 !
         call utpvgl(nno, nc, pgl, qg(1), ql(1))
 !        --- CALCUL DES FORCES NODALES EQUIVALENTES EN REPERE LOCAL ---
-        do 52 i = 1, 6
+        do i = 1, 6
             fl(i)= ql(i) * xl / 2.d0
- 52     continue
+        end do
         call utpvlg(nno, nc, pgl, fl(1), vect)
 !
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 53 i = 1, 6
+            do i = 1, 6
                 zr(lvect+i-1) = vect(i)
- 53         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(lvect) = vect(1)
             zr(lvect+1) = vect(2)
@@ -467,9 +467,9 @@ subroutine te0155(option, nomte)
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 54 i = 1, 6
+            do i = 1, 6
                 zr(lvect+i-1) = vect(i)
- 54         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(lvect) = vect(1)
             zr(lvect+1) = vect(2)
@@ -536,9 +536,9 @@ subroutine te0155(option, nomte)
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 55 i = 1, 6
+            do i = 1, 6
                 zr(lvect+i-1) = vect(i)
- 55         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(lvect) = vect(1)
             zr(lvect+1) = vect(2)
@@ -605,9 +605,9 @@ subroutine te0155(option, nomte)
 ! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 56 i = 1, 6
+            do i = 1, 6
                 zr(lvect+i-1) = vect(i)
- 56         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(lvect) = vect(1)
             zr(lvect+1) = vect(2)

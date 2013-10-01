@@ -56,8 +56,8 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ibid, irefe, idime, i, ifm, niv
-    integer :: icmb, iret, ival, ilimpi, lvale, iconst
+    integer :: ibid, i, ifm, niv
+    integer :: icmb, iret, ival, lvale, iconst
     integer :: jdesc, jrefe, jvale
     integer :: kdesc, krefe, kvale
     integer :: nbdesc, nbrefe, nbvale
@@ -66,7 +66,6 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     complex(kind=8) :: c8cst
     character(len=4) :: docu, type
     character(len=5) :: refe, desc, vale
-    character(len=8) :: k8b
     character(len=19) :: ch19, ch19r
     character(len=24) :: k24b
 !     ------------------------------------------------------------------
@@ -119,7 +118,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     call jelira(ch19//refe, 'LONMAX', nbrefe)
     call jeveuo(ch19//desc, 'L', jdesc)
     call jeveuo(ch19//refe, 'L', jrefe)
-
+!
 !   CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
     ch19r=chpres
     call jeexin(ch19r//vale, iret)
@@ -138,16 +137,16 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         ASSERT(nbref1.eq.nbrefe)
         ASSERT(nbval1.eq.nbvale)
     endif
-
+!
     call jeecra(ch19r//desc, 'DOCU', cval=docu)
 !   RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
 !   DANS CEUX DU CHAM_NO SOLUTION
-    do 30 i = 0, nbdesc-1
+    do i = 0, nbdesc-1
         zi(kdesc+i)=zi(jdesc+i)
-30  continue
-    do 40 i = 0, nbrefe-1
+    end do
+    do i = 0, nbrefe-1
         zk24(krefe+i)=zk24(jrefe+i)
-40  continue
+    end do
 !
 !   CHANGER LA GRANDEUR
     call sdchgd(ch19r, typres)
@@ -160,7 +159,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 ! --- BOUCLE SUR LES CHAM_GDS A COMBINER
 !-----------------------------------------------------------------------
     iconst=1
-    do 120 icmb = 1, nbcmb
+    do icmb = 1, nbcmb
 !
 !       CHAM_NO A CONCATENER
         ch19=nomch(icmb)
@@ -168,21 +167,21 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         call jeveuo(ch19//vale, 'L', jvale)
         if (typres(1:1) .eq. 'R') then
             if (typech(icmb)(1:1) .eq. 'R') then
-                do 50 ival = 0, nbvale-1
+                do ival = 0, nbvale-1
                     zr(lvale+ival)=zr(lvale+ival)+ const(&
                             iconst)*zr(jvale+ival)
-50              continue
+                end do
             else
                 if (typcst(icmb)(1:1) .eq. 'R') then
-                    do 60 ival = 0, nbvale-1
+                    do ival = 0, nbvale-1
                         zr(lvale+ival)=zr(lvale+ival)+&
                                 const(iconst)*dble(zc(jvale+ival))
-60                  continue
+                    end do
                 else if (typcst(icmb)(1:1).eq.'I') then
-                    do 70 ival = 0, nbvale-1
+                    do ival = 0, nbvale-1
                         zr(lvale+ival)=zr(lvale+ival)+&
                                 const(iconst)*dimag(zc(jvale+ival))
-70                  continue
+                    end do
                 else
                     type=typcst(icmb)(1:1)
                     call utmess('F', 'PREPOST3_6', sk=type)
@@ -191,50 +190,50 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         else
             if (typech(icmb)(1:1) .eq. 'R') then
                 if (typcst(icmb)(1:1) .eq. 'R') then
-                    do 80 ival = 0, nbvale-1
+                    do ival = 0, nbvale-1
                         zc(lvale+ival)=zc(lvale+ival)+&
                                 const(iconst)*zr(jvale+ival)
-80                  continue
+                    end do
                 else if (typcst(icmb)(1:1).eq.'C') then
                     c8cst=dcmplx(const(iconst),const(iconst+1)&
                             )
-                    do 90 ival = 0, nbvale-1
+                    do ival = 0, nbvale-1
                         zc(lvale+ival)=zc(lvale+ival)+c8cst*&
                                 zr(jvale+ival)
-90                  continue
+                    end do
                 endif
             else
                 if (typcst(icmb)(1:1) .eq. 'R') then
-                    do 100 ival = 0, nbvale-1
+                    do ival = 0, nbvale-1
                         zc(lvale+ival)=zc(lvale+ival)+&
                                 const(iconst)*zc(jvale+ival)
-100                  continue
+                    end do
                 else if (typcst(icmb)(:1).eq.'C') then
                     c8cst=dcmplx(const(iconst),const(iconst+1)&
                             )
-                    do 110 ival = 0, nbvale-1
+                    do ival = 0, nbvale-1
                         zc(lvale+ival)=zc(lvale+ival)+c8cst*&
                                 zc(jvale+ival)
-110                  continue
+                    end do
                 endif
             endif
         endif
         call jelibe(ch19//vale)
         iconst=iconst+1
         if (typcst(icmb)(1:1) .eq. 'C') iconst=iconst+1
-120  continue
-
+    end do
+!
 !
 !   IL EST NECESSAIRE D'ACTUALISER KVALE SI LE RESULTAT EST DANS NOMCH()
     call jeveuo(ch19r//vale, 'E', kvale)
     if (type(1:1) .eq. 'R') then
-        do 130 ival = 0, nbvale-1
+        do ival = 0, nbvale-1
             zr(kvale+ival)=zr(lvale+ival)
-130      continue
+        end do
     else if (type(1:1).eq.'C') then
-        do 140 ival = 0, nbvale-1
+        do ival = 0, nbvale-1
             zc(kvale+ival)=zc(lvale+ival)
-140      continue
+        end do
     endif
 !
     call jedetr('&&VTCMBL.VALE')

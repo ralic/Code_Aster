@@ -48,6 +48,7 @@ function mminfi(defico, questz, izone)
 !
 ! ----------------------------------------------------------------------
 !
-    call mminfp(izone, defico, questz, irep, r8bid, lbid)
+    call mminfp(izone, defico, questz, irep, r8bid,&
+                lbid)
     mminfi = irep(1)
 end function

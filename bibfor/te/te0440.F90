@@ -50,7 +50,7 @@ subroutine te0440(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno
     integer :: ivectu, iforc, itemps, igeom, jpmilt, irese
     integer :: nfiss, jfisno
-    real(kind=8) :: he, rbid, coorse(81), mat(1)
+    real(kind=8) :: he, coorse(81), mat(1)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag
     logical :: fonc, lbid
 !
@@ -124,12 +124,12 @@ subroutine te0440(option, nomte)
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -142,8 +142,8 @@ subroutine te0440(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
 !       FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT
         he = zi(jheavt-1+ise)
@@ -153,7 +153,7 @@ subroutine te0440(option, nomte)
                     jlst, iforc, itemps, ivectu, fonc,&
                     .true.)
 !
-110  end do
+    end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     call teattr(nomte, 'C', 'XLAG', lag, ibid)

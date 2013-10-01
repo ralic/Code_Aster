@@ -70,6 +70,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
     integer :: ic, ie, ila1, ila2, im, imod, in
     integer :: in2, ind, jddl, jddr
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
 !     ------------------------------------------------------------------
@@ -81,24 +82,24 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
         call wkvect('&&MODSTA.POSITION_DDL', 'V V I', 3*neq, jddl)
         call pteddl('NUME_DDL', nume, 3, nomcmp, neq,&
                     zi(jddl))
-        do 10 im = 1, nbmode
+        do im = 1, nbmode
             imod = imod + 1
             in2 = 3 * ( im - 1 )
             call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq, jddr)
-            do 12 ic = 1, 3
+            do ic = 1, 3
                 ind = neq * ( ic - 1 )
-                do 14 in = 0, neq-1
+                do in = 0, neq-1
                     zr(jddr+in) = zr(jddr+in) + zi(jddl+ind+in) * coef(in2+ic)
-14              continue
-12          continue
+                end do
+            end do
             call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1,&
                         .true.)
             call jedetr('&&MODSTA.POSITION_DDR')
 !
-10      continue
+        end do
         call jedetr('&&MODSTA.POSITION_DDL')
     else
-        do 20 ie = 1, neq
+        do ie = 1, neq
             if (iddl(ie) .eq. 1) then
                 imod = imod + 1
                 if (motcle(1:4) .eq. 'DEPL') then
@@ -126,7 +127,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
                     call jedetr('&&MODSTA.POSITION_DDR')
                 endif
             endif
-20      continue
+        end do
     endif
 !
 !     --- RESOLUTION ---

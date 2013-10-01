@@ -72,7 +72,6 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/afrela.h"
 #include "asterfort/ante2d.h"
 #include "asterfort/elrfvf.h"
@@ -84,6 +83,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! ARGUMENTS
 ! ---------
@@ -362,7 +362,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             else
 !
                 nbterm = 1 + nbcnx
-                do 10 icnx = 1, nbcnx
+                do icnx = 1, nbcnx
                     call jenuno(jexnum(nonoma, cxma(icnx)), zk8(jnomno+ icnx))
                     zk8(jddl+icnx) = 'DEPL'
 !
@@ -424,7 +424,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
                     endif
                     zr(jcmur+icnx) = -ffel2d
 !                  ZR(JCMUR+ICNX) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
-10              continue
+                end do
 !
             endif
 !
@@ -437,18 +437,18 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !....... EN COMPTE LES DIFFERENTS COEFFICIENTS PAR DIRECTION DEFINIS
 !....... DANS LE VECTEUR ZR(JDIREC)
 !
-        do 20 iterm = 1, nbterm
+        do iterm = 1, nbterm
             zi(jdime+iterm-1) = 3
-20      continue
+        end do
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA PREMIERE RELATION (DDL DX)
 !....... PUIS AFFECTATION
 !
-        do 30 iterm = 1, nbterm
+        do iterm = 1, nbterm
             zr(jdirec+3* (iterm-1)) = 1.0d0
             zr(jdirec+3* (iterm-1)+1) = 0.0d0
             zr(jdirec+3* (iterm-1)+2) = 0.0d0
-30      continue
+        end do
 !
         call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                     zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -457,11 +457,11 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
 !....... PUIS AFFECTATION
 !
-        do 40 iterm = 1, nbterm
+        do iterm = 1, nbterm
             zr(jdirec+3* (iterm-1)) = 0.0d0
             zr(jdirec+3* (iterm-1)+1) = 1.0d0
             zr(jdirec+3* (iterm-1)+2) = 0.0d0
-40      continue
+        end do
 !
         call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                     zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -470,11 +470,11 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
 !....... PUIS AFFECTATION
 !
-        do 50 iterm = 1, nbterm
+        do iterm = 1, nbterm
             zr(jdirec+3* (iterm-1)) = 0.0d0
             zr(jdirec+3* (iterm-1)+1) = 0.0d0
             zr(jdirec+3* (iterm-1)+2) = 1.0d0
-50      continue
+        end do
 !
         call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                     zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -702,7 +702,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             else
 !
                 nbterm = 1 + 2*nbcnx
-                do 60 icnx = 1, nbcnx
+                do icnx = 1, nbcnx
                     call jenuno(jexnum(nonoma, cxma(icnx)), zk8(jnomno+ 2* (icnx-1)+1))
                     zk8(jnomno+2*icnx) = zk8(jnomno+2* (icnx-1)+1)
                     zk8(jddl+2* (icnx-1)+1) = 'DEPL'
@@ -767,7 +767,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
                     zr(jcmur+2* (icnx-1)+1) = -ffel2d
 !            ZR(JCMUR+2*(ICNX-1)+1) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
                     zr(jcmur+2*icnx) = excent*zr(jcmur+2* (icnx-1)+1)
-60              continue
+                end do
 !
             endif
 !
@@ -780,9 +780,9 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !....... EN COMPTE LES DIFFERENTS COEFFICIENTS PAR DIRECTION DEFINIS
 !....... DANS LE VECTEUR ZR(JDIREC)
 !
-        do 70 iterm = 1, nbterm
+        do iterm = 1, nbterm
             zi(jdime+iterm-1) = 3
-70      continue
+        end do
 !
         nbbloc = (nbterm-1)/2
 !
@@ -792,14 +792,14 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
         zr(jdirec) = 1.0d0
         zr(jdirec+1) = 0.0d0
         zr(jdirec+2) = 0.0d0
-        do 80 ibloc = 1, nbbloc
+        do ibloc = 1, nbbloc
             zr(jdirec+3+6* (ibloc-1)) = 1.0d0
             zr(jdirec+3+6* (ibloc-1)+1) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+2) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+3) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+4) = normal(3)
             zr(jdirec+3+6* (ibloc-1)+5) = -normal(2)
-80      continue
+        end do
 !
         call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                     zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -811,14 +811,14 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
         zr(jdirec) = 0.0d0
         zr(jdirec+1) = 1.0d0
         zr(jdirec+2) = 0.0d0
-        do 90 ibloc = 1, nbbloc
+        do ibloc = 1, nbbloc
             zr(jdirec+3+6* (ibloc-1)) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+1) = 1.0d0
             zr(jdirec+3+6* (ibloc-1)+2) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+3) = -normal(3)
             zr(jdirec+3+6* (ibloc-1)+4) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+5) = normal(1)
-90      continue
+        end do
 !
         call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                     zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -830,14 +830,14 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
         zr(jdirec) = 0.0d0
         zr(jdirec+1) = 0.0d0
         zr(jdirec+2) = 1.0d0
-        do 100 ibloc = 1, nbbloc
+        do ibloc = 1, nbbloc
             zr(jdirec+3+6* (ibloc-1)) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+1) = 0.0d0
             zr(jdirec+3+6* (ibloc-1)+2) = 1.0d0
             zr(jdirec+3+6* (ibloc-1)+3) = normal(2)
             zr(jdirec+3+6* (ibloc-1)+4) = -normal(1)
             zr(jdirec+3+6* (ibloc-1)+5) = 0.0d0
-100      continue
+        end do
 !
         call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                     zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -845,7 +845,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
     endif
 !
-110  continue
+110 continue
 !
 ! --- MENAGE
     call jedetr('&&RECI2D.COEMUR')

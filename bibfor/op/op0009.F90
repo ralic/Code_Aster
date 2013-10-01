@@ -184,7 +184,7 @@ subroutine op0009()
     endif
     goto 20
 !
-20  continue
+ 20 continue
 !
 !
 !     -- CREATION DE L'OBJET .RECC :
@@ -203,7 +203,7 @@ subroutine op0009()
     if (iexi .gt. 0) then
         call jelira(matel//'.RELR', 'LONMAX', nbresu)
         call jeveuo(matel//'.RELR', 'L', jrelr)
-        do 101 iresu = 1, nbresu
+        do iresu = 1, nbresu
             resuel=zk24(jrelr+iresu-1)
             call jeexin(resuel//'.RESL', iexi)
             if (iexi .eq. 0) goto 101
@@ -211,7 +211,8 @@ subroutine op0009()
                         kmpic, ibid)
             ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
             if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
-101      continue
+101         continue
+        end do
     endif
 !
 !

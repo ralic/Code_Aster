@@ -76,8 +76,8 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !
     integer :: idbgav, ifm, niv, islvk, ibid
     integer :: islvi, lmat, nprec, ndeci, isingu, niremp
-    integer :: ifcpu, istopz, iretgc
-    character(len=24) :: metres, k24b, opt, precon
+    integer :: istopz, iretgc
+    character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
     character(len=8) :: renum, kmpic, kmatd
     logical :: dbg
@@ -106,21 +106,20 @@ subroutine preres(solvez, base, iret, matpre, matass,&
                                      solveu, ibid)
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     metres = zk24(islvk)
-
-
+!
+!
     if (dbg) then
         call cheksd(matas, 'SD_MATR_ASSE', ibid)
         call cheksd(solveu, 'SD_SOLVEUR', ibid)
     endif
-
+!
     call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
     call dismoi('F', 'MATR_DISTR', matas, 'MATR_ASSE', ibid,&
                 kmatd, ibid)
-
+!
     if (kmpic .eq. 'NON') then
-        if (metres .eq. 'MUMPS' .or.&
-            ( metres.eq.'PETSC'.and.kmatd.eq.'OUI')) then
+        if (metres .eq. 'MUMPS' .or. ( metres.eq.'PETSC'.and.kmatd.eq.'OUI')) then
         else
             call sdmpic('MATR_ASSE', matas)
         endif
@@ -128,57 +127,57 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !
 !
 !
-                call jeveuo(solveu//'.SLVI', 'L', islvi)
-
-            call mtdscr(matas)
-            call jeveuo(matas//'.&INT', 'E', lmat)
+    call jeveuo(solveu//'.SLVI', 'L', islvi)
+!
+    call mtdscr(matas)
+    call jeveuo(matas//'.&INT', 'E', lmat)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !             MULTIFRONTALE OU LDLT OU MUMPS               C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-            if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS') then
-                nprec = zi(islvi-1+1)
-                if (istopz .eq. -9999) istopz = zi(islvi-1+3)
-                    renum=' '
-                    if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)
-                    if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) then
-                        call utmess('F', 'ALGELINE5_74')
-                    endif
-                    call tldlg3(metres, renum, istopz, lmat, 1,&
-                                0, nprec, ndeci, isingu, npvneg,&
-                                iret, solveu)
-                    if ((nprec.lt.0) .and. (iret.ne.2)) iret=3
+    if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS') then
+        nprec = zi(islvi-1+1)
+        if (istopz .eq. -9999) istopz = zi(islvi-1+3)
+        renum=' '
+        if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)
+        if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) then
+            call utmess('F', 'ALGELINE5_74')
+        endif
+        call tldlg3(metres, renum, istopz, lmat, 1,&
+                    0, nprec, ndeci, isingu, npvneg,&
+                    iret, solveu)
+        if ((nprec.lt.0) .and. (iret.ne.2)) iret=3
 !
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                         PETSC                            C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-            else if (metres.eq.'PETSC') then
-                call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
-                            0, ibid, iret)
-                call apetsc('PRERES', solveu, matas, [0.d0], ' ',&
-                            0, ibid, iret)
+    else if (metres.eq.'PETSC') then
+        call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
+                    0, ibid, iret)
+        call apetsc('PRERES', solveu, matas, [0.d0], ' ',&
+                    0, ibid, iret)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                         GCPC                             C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-            else if (metres.eq.'GCPC') then
+    else if (metres.eq.'GCPC') then
 !
-                call jeveuo(solveu//'.SLVK', 'L', islvk)
-                call jeveuo(solveu//'.SLVI', 'E', islvi)
-                precon=zk24(islvk-1+2)
+        call jeveuo(solveu//'.SLVK', 'L', islvk)
+        call jeveuo(solveu//'.SLVI', 'E', islvi)
+        precon=zk24(islvk-1+2)
 !
-                if (precon .eq. 'LDLT_INC') then
-                    niremp = zi(islvi-1+4)
-                    call pcldlt(maprec, matas, niremp, base)
-                else if (precon.eq.'LDLT_SP') then
-                    call pcmump(matas, solveu, iretgc)
-                    if (iretgc .ne. 0) then
-                        call utmess('F', 'ALGELINE5_76')
-                    endif
-                endif
-                iret=0
+        if (precon .eq. 'LDLT_INC') then
+            niremp = zi(islvi-1+4)
+            call pcldlt(maprec, matas, niremp, base)
+        else if (precon.eq.'LDLT_SP') then
+            call pcmump(matas, solveu, iretgc)
+            if (iretgc .ne. 0) then
+                call utmess('F', 'ALGELINE5_76')
             endif
+        endif
+        iret=0
+    endif
 !
 !
 !

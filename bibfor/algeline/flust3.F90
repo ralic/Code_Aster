@@ -97,7 +97,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     integer :: nbnoe, nbtot, nbtron, nbz, ncoor, ndir, neq
     integer :: nima, nima2, nn, nt, ntypg, numno1, numno2
 !
-    real(kind=8) :: ang, epsit, g, pi, rbid, x1
+    real(kind=8) :: ang, epsit, g, pi, x1
     real(kind=8) :: x2, y1, y2, z1, z2, zmax, zmin
 !
 !-----------------------------------------------------------------------
@@ -134,9 +134,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
             nbgtot = zi(ifsvi+6+nbgrma)
         endif
         call wkvect('&&FLUST3.TMP.NBCC', 'V V I', nbgrp, inbneq)
-        do 5 i = 1, nbgrp
+        do i = 1, nbgrp
             zi(inbneq+i-1) = zi(ifsvi+i+5)
- 5      continue
+        end do
     else if (iequiv .eq. 0) then
         nbcyl = nbgrma
         if (ntypg .ne. 0) then
@@ -174,9 +174,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         som(3) = zr(ifsvr+7)
         ikn = 8
     else if (iencei .eq. 2) then
-        do 20 i = 1, 5
+        do i = 1, 5
             don(i) = zr(ifsvr+i+4)
-20      continue
+        end do
         ikn = 10
 !
 ! ---    CALCUL DES COORDONNEES DES QUATRES SOMMETS DE L'ENCEINTE
@@ -199,9 +199,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
     if (iequiv .eq. 1) then
         call wkvect('&&FLUST3.TMP.REQ', 'V V R', nbgrp, ireq)
-        do 30 i = 1, nbgrp
+        do i = 1, nbgrp
             zr(ireq+i-1) = zr(ifsvr+ikn+i-1)
-30      continue
+        end do
     else
         ireq=1
     endif
@@ -215,9 +215,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     if (iequiv .eq. 1) then
 ! --     NOMS DES GROUPES CLASSES D EQUIVALENCE
         call wkvect('&&FLUST3.TMP.NOEQ', 'V V K24', nbcyl, inomeq)
-        do 40 i = 1, nbgrp
+        do i = 1, nbgrp
             zk24(inomeq+i-1) = zk24(ifsgm+i-1)
-40      continue
+        end do
     else if (iequiv.eq.0 .and. nbgrma.eq.0) then
 ! --     NOM DE LA RACINE COMMUNE
         nomrac = zk24(ifsgm)
@@ -225,9 +225,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 ! --     NOM POUR CHAQUE CYLINDRE DE LA CLASSE D EQUIVALENCE A
 ! --     LAQUELLE IL APPARTIENT
         call wkvect('&&FLUST3.TMP.NOCY', 'V V K24', nbcyl, inomcy)
-        do 50 i = 1, nbcyl
+        do i = 1, nbcyl
             zk24(inomcy+i-1) = zk24(ifsgm+i-1)
-50      continue
+        end do
     endif
 !
 ! --- 1.9.COORDONNEES DES CENTRES DES TUBES DU FAISCEAU REEL
@@ -236,9 +236,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         fscr = typflu//'           .FSCR'
         call jeveuo(fscr, 'L', ifscr)
         call wkvect('&&FLUST3.TMP.CENT', 'V V R', 2*nbcyl, icency)
-        do 60 i = 1, nbcyl*2
+        do i = 1, nbcyl*2
             zr(icency+i-1) = zr(ifscr+i-1)
-60      continue
+        end do
     else
         icency = 1
     endif
@@ -256,21 +256,21 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     if (ntypg .ne. 0) then
         call wkvect('&&FLUST3.TMP.TYPG', 'V V I', nbgtot, jtypg)
         if (iequiv .eq. 1) then
-            do 70 i = 1, nbgtot
+            do i = 1, nbgtot
                 zi(jtypg+i-1) = zi(ifsvi+i+6+nbgrma)
-70          continue
+            end do
         else if (iequiv.eq.0) then
-            do 80 i = 1, nbgtot
+            do i = 1, nbgtot
                 zi(jtypg+i-1) = zi(ifsvi+i+5)
-80          continue
+            end do
         endif
 !
         fsgr = typflu//'           .FSGR'
         call jeveuo(fsgr, 'L', ifsgr)
         call wkvect('&&FLUST3.TMP.GRIL', 'V V R', nbgtot+6*ntypg, izg)
-        do 90 i = 1, nbgtot+6*ntypg
+        do i = 1, nbgtot+6*ntypg
             zr(izg+i-1) = zr(ifsgr+i-1)
-90      continue
+        end do
         ilongg = izg + nbgtot
         ilargg = ilongg + ntypg
         iepaig = ilargg + ntypg
@@ -314,22 +314,22 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     if (iequiv .eq. 0) then
         nbgrp = nbcyl
         inomeq = inomcy
-        do 100 i = 1, nbcyl
+        do i = 1, nbcyl
             zi(igreq+i-1) = i
-100      continue
+        end do
     else if (iequiv .eq. 1) then
         nt = 0
         nn = 0
-        do 130 i = 1, nbgrp
+        do i = 1, nbgrp
             nt = nt + zi(inbneq+i-1)
             if (nt .gt. nbcyl) then
                 call utmess('F', 'ALGELINE_45')
             endif
-            do 110 j = 1, zi(inbneq+i-1)
+            do j = 1, zi(inbneq+i-1)
                 nn = nn + 1
                 zi(igreq+nn-1) = i
-110          continue
-130      continue
+            end do
+        end do
         if (nt .ne. nbcyl) then
             call utmess('F', 'ALGELINE_45')
         endif
@@ -355,7 +355,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     inbnog = iadnog + nbgrp
     iadmag = inbnog + nbgrp
     inbmag = iadmag + nbgrp
-    do 150 i = 1, nbgrp
+    do i = 1, nbgrp
         call codent(i, 'D0', numgno)
         grpno='&&MEFGMN.'//numgno//'       '
         call jeveuo(grpno, 'L', zi(iadnog+i-1))
@@ -364,7 +364,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         call jelira(jexnom(mailla//'.GROUPEMA', zk24(inomeq+i-1)), 'LONMAX', zi(inbmag+i-1),&
                     k1bid)
         if (zi(inbnog+i-1) .gt. nbz) nbz = zi(inbnog+i-1)
-150  end do
+    end do
 !
 !
 ! --- 6.VERIFICATION DE L AXE DIRECTEUR DU FAISCEAU. CREATION DU
@@ -448,7 +448,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST3.TMP.DMOD', 'V V R', 6*nbm*nbnoe, idefm)
     imatra = imatma + nbm
     imataa = imatra + nbm
-    do 160 im = 1, nbm
+    do im = 1, nbm
         ior = nuor(im)
         call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
                     0, sjv=lmasg, styp=k8b)
@@ -462,7 +462,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         zr(ifpart+nbm+im-1) = zr(lfacx+1)
         zr(ifpart+2*nbm+im-1) = zr(lfacx+2)
         zr(imataa+im-1) = 4.d0 * pi * zr(imatma+im-1) * amor(im) * zr(ifreqi+ior-1)
-160  end do
+    end do
     call extmod(base, numddl, nuor, nbm, zr(idefm),&
                 neq, nbnoe, iddl, 6)
 !
@@ -537,11 +537,11 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
 ! --- MENAGE
 !
-    do 170 i = 1, nbgrp
+    do i = 1, nbgrp
         call codent(i, 'D0', numgno)
         grpno='&&MEFGMN.'//numgno
         call jedetr(grpno)
-170  end do
+    end do
     call jedetr('&&FLUST3.TMP.NBCC')
     call jedetr('&&FLUST3.TMP.REQ')
     call jedetr('&&FLUST3.TMP.NOEQ')

@@ -78,7 +78,7 @@ subroutine te0036(option, nomte)
     real(kind=8) :: y(3), xg(4), rbid, fe(4), xe(2), lsng, lstg, rg, tg
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
-    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(6), geomlo(81),mat(1)
+    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(6), geomlo(81), mat(1)
     logical :: lbid, axi
     real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
     integer :: kk
@@ -195,12 +195,12 @@ subroutine te0036(option, nomte)
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -213,14 +213,14 @@ subroutine te0036(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
 !       ON RENOMME LES SOMMETS DU SOUS-ELEMENT
         call vecini(3, 0.d0, a)
         call vecini(3, 0.d0, b)
         call vecini(3, 0.d0, ab)
-        do 113 j = 1, ndim
+        do j = 1, ndim
             a(j)=coorse(ndim*(1-1)+j)
             b(j)=coorse(ndim*(2-1)+j)
             ab(j)=b(j)-a(j)
@@ -229,7 +229,7 @@ subroutine te0036(option, nomte)
             endif
             if (ndim .eq. 3) c(j)=coorse(ndim*(3-1)+j)
             if (ndim .eq. 3) ac(j)=c(j)-a(j)
-113      continue
+        end do
 !
         if (ndime .eq. 2) then
 !         CREATION DU REPERE LOCAL 2D : (AB,Y)
@@ -278,18 +278,18 @@ subroutine te0036(option, nomte)
         endif
 !
 !       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
-        do 116 ino = 1, nnop*ndime
+        do ino = 1, nnop*ndime
             geomlo(ino)=0.d0
-116      continue
-        do 114 ino = 1, nnop
-            do 115 j = 1, ndim
+        end do
+        do ino = 1, nnop
+            do j = 1, ndim
                 n(j)=zr(igeom-1+ndim*(ino-1)+j)
                 an(j)=n(j)-a(j)
-115          continue
+            end do
             geomlo(ndime*(ino-1)+1)=ddot(ndim,an,1,ab,1)
 !
             if (ndime .eq. 2) geomlo(ndime*(ino-1)+2)=ddot(ndim,an,1,y , 1)
-114      continue
+        end do
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
@@ -297,15 +297,15 @@ subroutine te0036(option, nomte)
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
         if (axi) then
             r = 0.d0
-            do 1000 ino = 1, nnop
+            do ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-1000          continue
+            end do
             ASSERT(r.ge.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
 !
-        do 200 kpg = 1, npg
+        do kpg = 1, npg
 !
 !         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             if (ndime .eq. 2) then
@@ -319,12 +319,12 @@ subroutine te0036(option, nomte)
 !
 !         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
             call vecini(ndime, 0.d0, gloc)
-            do 210 j = 1, nno
+            do j = 1, nno
                 vf=zr(ivf-1+nno*(kpg-1)+j)
-                do 211 k = 1, ndime
+                do k = 1, ndime
                     gloc(k)=gloc(k)+vf*coorlo(2*j+k-2)
-211              continue
-210          continue
+                end do
+            end do
 !
 !         CALCUL DE LA NORMALE A LA FACE AU POINT DE GAUSS
             if (ndim .eq. 2 .and. .not.iselli(elref)) then
@@ -339,10 +339,10 @@ subroutine te0036(option, nomte)
                 dff(1,3) = -2*ksig(1)
                 dx=0.d0
                 dy=0.d0
-                do 212 i = 1, nno
+                do i = 1, nno
                     dx = dx+dff(1,i)*coorse(ndim*(i-1)+1)
                     dy = dy+dff(1,i)*coorse(ndim*(i-1)+2)
-212              continue
+                end do
                 jac=sqrt(dx*dx+dy*dy)
 ! MODIFIER LE JAC
                 if (axi) then
@@ -368,11 +368,11 @@ subroutine te0036(option, nomte)
 !
 !         COORDONNES REELLES DU POINT DE GAUSS
             call vecini(4, 0.d0, xg)
-            do 220 i = 1, ndim
-                do 221 in = 1, nno
+            do i = 1, ndim
+                do in = 1, nno
                     xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+in) * coorse( ndim*(in-1)+i)
-221              continue
-220          continue
+                end do
+            end do
 !
 !           2EME METHODE POUR CALCULER LES COORDONNÉES RÉELLES
 !           DU POINT DE GAUSS
@@ -387,10 +387,10 @@ subroutine te0036(option, nomte)
 !           LEVEL SETS AU POINT DE GAUSS
                 lsng = 0.d0
                 lstg = 0.d0
-                do 230 ino = 1, nnop
+                do ino = 1, nnop
                     lsng = lsng + zr(jlsn-1+ino) * ff(ino)
                     lstg = lstg + zr(jlst-1+ino) * ff(ino)
-230              continue
+                end do
 !
 !           COORDONNÉES POLAIRES DU POINT
                 rg=sqrt(lsng**2+lstg**2)
@@ -416,18 +416,18 @@ subroutine te0036(option, nomte)
 !             CALCUL DE LA PRESSION AUX POINTS DE GAUSS
                 pres = 0.d0
                 cisa = 0.d0
-                do 240 ino = 1, nnop
+                do ino = 1, nnop
                     if (ndim .eq. 3) pres = pres + zr(ipres-1+ino) * ff( ino)
                     if (ndim .eq. 2) then
                         pres = pres + zr(ipres-1+2*(ino-1)+1) * ff( ino)
                         cisa = cisa + zr(ipres-1+2*(ino-1)+2) * ff( ino)
                     endif
-240              continue
+                end do
 !           ATTENTION AU SIGNE : POUR LES PRESSIONS, IL FAUT UN - DVT
 !           CAR LE SECOND MEMBRE SERA ECRIT AVEC UN + (VOIR PLUS BAS)
-                do 250 j = 1, ndim
+                do j = 1, ndim
                     forrep(j) = -pres * nd(j)
-250              continue
+                end do
                 if (ndim .eq. 2) then
                     forrep(1) = forrep(1)- cisa * nd(2)
                     forrep(2) = forrep(2)+ cisa * nd(1)
@@ -442,9 +442,9 @@ subroutine te0036(option, nomte)
                             pres, ier)
                 if (ndim .eq. 2) call fointe('FM', zk8(ipres+1), ndim+1, nompar, xg,&
                                              cisa, ier)
-                do 260 j = 1, ndim
+                do j = 1, ndim
                     forrep(j) = -pres * nd(j)
-260              continue
+                end do
                 if (ndim .eq. 2) then
                     forrep(1) = forrep(1)-cisa * nd(2)
                     forrep(2) = forrep(2)+cisa * nd(1)
@@ -454,60 +454,60 @@ subroutine te0036(option, nomte)
      &            option.eq.'CHAR_MECA_FR1D2D') then
 !
                 call vecini(ndim, 0.d0, forrep)
-                do 270 ino = 1, nnop
-                    do 271 j = 1, ndim
+                do ino = 1, nnop
+                    do j = 1, ndim
                         forrep(j)=forrep(j)+zr(iforc-1+ndim*(ino-1)+j)&
                         *ff(ino)
-271                  continue
-270              continue
+                    end do
+                end do
 !
                 elseif (option.eq.'CHAR_MECA_FF2D3D'.or.&
      &            option.eq.'CHAR_MECA_FF1D2D') then
 !
                 xg(ndim+1) = zr(itemps)
-                do 280 j = 1, ndim
+                do j = 1, ndim
                     call fointe('FM', zk8(iforc-1+j), ndim+1, nompar, xg,&
                                 forrep(j), ier)
-280              continue
+                end do
 !
             endif
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE
 !         --------------------------------
             pos=0
-            do 290 ino = 1, nnop
+            do ino = 1, nnop
 !
 !           TERME CLASSIQUE
-                do 291 j = 1, ndim
+                do j = 1, ndim
                     pos=pos+1
                     zr(ires-1+pos) = zr(ires-1+pos) + forrep(j) * poids * ff(ino)
-291              continue
+                end do
 !
 !           TERME HEAVISIDE
-                do 295 ig = 1, nfh
+                do ig = 1, nfh
                     if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ ig)
-                    do 292 j = 1, ndim
+                    do j = 1, ndim
                         pos=pos+1
                         zr(ires-1+pos) = zr(ires-1+pos) + zi(jheavt-1+ (ifiss-1)*ncomp+ise)*forre&
                                          &p(j)*poids*ff(ino)
-292                  continue
-295              continue
+                    end do
+                end do
 !
 !           TERME SINGULIER
-                do 293 ig = 1, nfe
-                    do 294 j = 1, ndim
+                do ig = 1, nfe
+                    do j = 1, ndim
                         pos=pos+1
                         zr(ires-1+pos) = zr(ires-1+pos) + fe(ig) * forrep(j) * poids * ff(ino)
-294                  continue
-293              continue
-290          continue
-200      continue
+                    end do
+                end do
+            end do
+        end do
 !
 !-----------------------------------------------------------------------
 !         FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
 !
-110  end do
+    end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     ddls = ndim*(1+nfh+nfe)

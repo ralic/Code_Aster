@@ -100,59 +100,59 @@ subroutine sschge(nomacr)
 !        ET CHAM_MATER :
     call getfac('CAS_CHARGE', nocc)
 !
-    do 1, iocc= 1,nocc
+    do iocc = 1, nocc
 !
-    call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
-    call jecroc(jexnom(nomacr//'.LICA', nomcas))
-    call jecroc(jexnom(nomacr//'.LICH', nomcas))
-    call jenonu(jexnom(nomacr//'.LICA', nomcas), icas)
-    call jeveuo(jexnum(nomacr//'.LICA', icas), 'E', ialica)
-    call jeveuo(jexnum(nomacr//'.LICH', icas), 'E', ialich)
+        call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
+        call jecroc(jexnom(nomacr//'.LICA', nomcas))
+        call jecroc(jexnom(nomacr//'.LICH', nomcas))
+        call jenonu(jexnom(nomacr//'.LICA', nomcas), icas)
+        call jeveuo(jexnum(nomacr//'.LICA', icas), 'E', ialica)
+        call jeveuo(jexnum(nomacr//'.LICH', icas), 'E', ialich)
 !
 !       -- MISE A JOUR DE .LICH:
 !       ------------------------
-    call getvtx('CAS_CHARGE', 'SUIV', iocc=iocc, scal=kbid, nbret=n1)
-    if (kbid(1:3) .eq. 'OUI') then
-        zk8(ialich-1+1)= 'OUI_SUIV'
-    else
-        zk8(ialich-1+1)= 'NON_SUIV'
-    endif
-    call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
-    if (-n1 .gt. nch) then
-        call utmess('F', 'SOUSTRUC_40')
-    endif
-    call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=-n1, vect=zk8(ialich+1),&
-                nbret=n2)
+        call getvtx('CAS_CHARGE', 'SUIV', iocc=iocc, scal=kbid, nbret=n1)
+        if (kbid(1:3) .eq. 'OUI') then
+            zk8(ialich-1+1)= 'OUI_SUIV'
+        else
+            zk8(ialich-1+1)= 'NON_SUIV'
+        endif
+        call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
+        if (-n1 .gt. nch) then
+            call utmess('F', 'SOUSTRUC_40')
+        endif
+        call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=-n1, vect=zk8(ialich+1),&
+                    nbret=n2)
 !
 !       -- INSTANT:
 !       -----------
-    call getvr8('CAS_CHARGE', 'INST', iocc=iocc, scal=time, nbret=n2)
+        call getvr8('CAS_CHARGE', 'INST', iocc=iocc, scal=time, nbret=n2)
 !
 !       -- CALCULS VECTEURS ELEMENTAIRES DU CHARGEMENT :
 !       ------------------------------------------------
-    call me2mme(nomo, -n1, zk8(ialich+1), mate, cara,&
-                .true., time, vecel, 0, base)
-    call ss2mm2(nomo, vecel, nomcas)
+        call me2mme(nomo, -n1, zk8(ialich+1), mate, cara,&
+                    .true., time, vecel, 0, base)
+        call ss2mm2(nomo, vecel, nomcas)
 !
 !        -- ASSEMBLAGE:
-    call assvec('V', vecas, 1, vecel, [1.d0],&
-                nu, vprof, 'ZERO', 1)
+        call assvec('V', vecas, 1, vecel, [1.d0],&
+                    nu, vprof, 'ZERO', 1)
 !
 !       -- RECOPIE DE VECAS.VALE DANS .LICA(1:NDDLT) :
-    call jeveuo(vecas//'.VALE', 'L', iavale)
-    do 11 kk = 1, nddlt
-        zr(ialica-1+kk)=zr(iavale-1+kk)
-11  continue
+        call jeveuo(vecas//'.VALE', 'L', iavale)
+        do kk = 1, nddlt
+            zr(ialica-1+kk)=zr(iavale-1+kk)
+        end do
 !
 !       -- CONDENSATION DE .LICA(1:NDDLT) DANS .LICA(NDDLT+1,2*NDDLT) :
-    call ssvau1(nomacr, ialica, ialica+nddlt)
+        call ssvau1(nomacr, ialica, ialica+nddlt)
 !
 !       -- ON COMPTE LES CAS DE CHARGE EFFECTIVEMENT CALCULES:
-    zi(iadesm-1+7) = icas
+        zi(iadesm-1+7) = icas
 !
-    call detrsd('VECT_ELEM', vecel)
-    call detrsd('CHAMP_GD', vecas)
-    1 end do
+        call detrsd('VECT_ELEM', vecel)
+        call detrsd('CHAMP_GD', vecas)
+    end do
 !
 !
     call jedema()

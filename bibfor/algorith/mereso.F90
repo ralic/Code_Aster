@@ -71,7 +71,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
     character(len=*) :: mate
     character(len=8) :: result
 !
-    real(kind=8) :: partps(3), rbid
+    real(kind=8) :: partps(3)
 !
 ! 0.2. ==> COMMUNS
 !
@@ -90,6 +90,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
     character(len=24) :: criter
     character(len=24) :: depl
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
 ! DEB-------------------------------------------------------------------
 !====
@@ -145,13 +146,14 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     write (ifm,100) 'DEPL', partps(1), itps
 !
-    call rsexch(' ', result, 'DEPL', itps, chdepl, iret)
-
+    call rsexch(' ', result, 'DEPL', itps, chdepl,&
+                iret)
+!
     if (iret .le. 100) then
         call copisd('CHAMP_GD', 'G', depl(1:19), chdepl(1:19))
         call rsnoch(result, 'DEPL', itps)
     endif
-
+!
 !
 !*** INST
 !

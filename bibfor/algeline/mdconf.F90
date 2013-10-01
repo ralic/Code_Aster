@@ -163,11 +163,11 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
 ! ---    ABSCISSE CURVILIGNES
 !
-        do 10 ik = 1, lnoe
+        do ik = 1, lnoe
             vecr5(ik) = zr(irhoe+ik-1)
             vecr2(ik) = zr(irhoe+ik+lnoe-1)
             vecr2(ik+lnoe)=zr(irhoi+ik+lnoe-1)
-10      continue
+        end do
 !
 ! ---    2.4.CALCUL DES NUMERO DE ZONE     --> VECTEUR VECI1 ---
 ! ---        CALCUL DU  PROFIL DE VITESSE  --> VECTEUR VECR1 ---
@@ -192,7 +192,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! ---    BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
 !
 !
-        do 60 nuzo = 1, nzex
+        do nuzo = 1, nzex
             pvite = zk8(ifsvk+3+nuzo)
             ireszo = zi(ifsvi+1+nuzo)
             pvite = pvite(1:19)//'.VALE'
@@ -200,21 +200,21 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! ---       RECHERCHE DES EXTREMITES DE LA ZONE 'NUZO'
             n1 = -1
             n2 = -1
-            do 20 ik = 1, lnoe
+            do ik = 1, lnoe
                 if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                     n1 = ik
                     goto 21
                 endif
-20          continue
-21          continue
+            end do
+ 21         continue
 !
-            do 30 ik = lnoe, 1, -1
+            do ik = lnoe, 1, -1
                 if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                     n2 = ik
                     goto 31
                 endif
-30          continue
-31          continue
+            end do
+ 31         continue
 !
             zi(izone + 2*(nuzo-1)-1+2) = n1
             zi(izone + 2*(nuzo-1)-1+3) = n2
@@ -225,28 +225,28 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             aire = 0.d0
             x1 = zr(ipv+n1-1)
             x2 = zr(ipv+n2-1)
-            do 40 ik = n1+1, n2
+            do ik = n1+1, n2
                 aire = aire + (&
                        zr(ipv+lnoe+ik-1) + zr(ipv+lnoe+ik-2) ) * ( zr(ipv+ik-1) - zr(ipv+ik-2)&
                        ) / 2.d0
-40          continue
+            end do
 !
             vmoy = aire / (x2-x1)
             vmoyto = vmoyto + aire
             alonto = alonto + (x2-x1)
-            do 50 ik = n1, n2
+            do ik = n1, n2
                 if (veci1(ik) .ne. 0) then
                     call utmess('F', 'ALGELINE_69', sk=zk8(ifsvk+3+nuzo))
                 endif
                 vecr1(ik+lnoe) = vmoy
                 veci1(ik) = ireszo
                 vecr1(ik) = zr(ipv+lnoe+ik-1)
-50          continue
+            end do
 !
             call jelibe(pvite)
 !
 ! ---    FIN DE BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
-60      continue
+        end do
 !
 ! ---    VITESSE MOYENNE SUR L'ENSEMBLE DU TUBE
         vmoyto = vmoyto / alonto
@@ -260,9 +260,9 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! ---      DIRECTION DANS LAQUELLE AGISSENT LES FORCES FLUIDELASTIQUES
             idep = 0
             depl = zk8(ifsvk+1)
-            do 70 ide = 1, 3
+            do ide = 1, 3
                 if (depla(ide) .eq. depl) idep = ide
-70          continue
+            end do
 !
 ! ---       DEFORMEES MODALES
 !
@@ -293,11 +293,11 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             valr (1) = phie
             call utmess('I', 'ALGELINE5_10', nk=2, valk=valk, ni=2,&
                         vali=vali, sr=valr(1))
-            do 170 nuzo = 1, nzex
+            do nuzo = 1, nzex
                 valk (1) = zk8(ifsvk+nuzo+3)
                 vali (1) = zi(ifsvi+nuzo+1)
                 call utmess('I', 'ALGELINE5_11', sk=valk(1), si=vali(1))
-170          continue
+            end do
             call utmess('I', 'VIDE_1')
         endif
 !
@@ -323,10 +323,10 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !        DEDUCTION DE DONNEES COMPLEMENTAIRES
 ! ---    3.2.TYPE DE CONFIGURATION GRAPPE --> VARIABLE INDIC ---
 !
-            do 120 igrap = 1, 4
+            do igrap = 1, 4
                 if (zk8(lfsvk) .eq. config(igrap)) goto 121
-120          continue
-121          continue
+            end do
+121         continue
             indic = igrap
             nomno0 = zk8(lfsvk+1)
             mlgnno = noma//'.NOMNOE'
@@ -397,7 +397,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.5.PONDERATIONS DUES AUX DEFORMEES MODALES
 !                                                --> VECTEUR VECR3  ---
 !            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
-            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
+            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
+                        masse, ire)
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
             call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
@@ -409,7 +410,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             deeq = numddl//'.NUME.DEEQ'
             call jeveuo(deeq, 'L', ideeq)
 !
-            do 140 imod = 1, nbm
+            do imod = 1, nbm
 !
                 numod = nuor(imod)
 !
@@ -425,7 +426,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 dzi = 0.d0
                 dryi = 0.d0
                 drzi = 0.d0
-                do 130 j = 1, neq
+                do j = 1, neq
                     if (zi(ideeq+(2*j)-1) .eq. 1) then
                         ipm = ipm + 1
                     endif
@@ -442,8 +443,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                     else if (ipm .eq. (numno0+1)) then
                         goto 131
                     endif
-130              continue
-131              continue
+                end do
+131             continue
                 ptran = dyi*dyi + dzi*dzi
                 prota = drzi*drzi + dryi*dryi
                 vecr3(2*imod-1) = ptran
@@ -452,7 +453,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
                 vecr1(imod) = zr(lmasg) + comaj1*ptran + comaj2*prota
 !
-140          continue
+            end do
 !
 !
 ! ---   2.6.IMPRESSION  ---

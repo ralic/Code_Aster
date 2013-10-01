@@ -169,7 +169,7 @@ subroutine cresol(solveu)
     endif
 !
 !
-10  continue
+ 10 continue
 !
     call jedema()
 end subroutine

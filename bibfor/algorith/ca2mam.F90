@@ -49,7 +49,7 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 #include "asterfort/wkvect.h"
     character(len=*) :: moint
     character(len=3) :: incr
-    character(len=8) ::  lpain(2), lpaout(1)
+    character(len=8) :: lpain(2), lpaout(1)
     character(len=14) :: num
     character(len=16) :: option
     character(len=19) :: matel, nu19
@@ -92,7 +92,8 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 !
     made = 'MA'//incr
 !
-    call assmam('V', made, 1, matel, [1.d0], num, 'ZERO', 1)
+    call assmam('V', made, 1, matel, [1.d0],&
+                num, 'ZERO', 1)
 !
 !
     nu19=num

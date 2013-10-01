@@ -193,14 +193,14 @@ subroutine prcymn(nomres, soumat, repmat)
     call jenonu(jexnom(repmat, 'M0II'), ibid)
     call jeveuo(jexnum(soumat, ibid), 'E', ldm0ii)
 !
-    do 10 i = 1, nbmod
+    do i = 1, nbmod
         call rsadpa(basmod, 'L', 1, 'RIGI_GENE', i,&
                     0, sjv=llkge, styp=k8bid)
         zr(ldk0ii+i*(i-1)/2) = zr(llkge)
         call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
                     0, sjv=llmge, styp=k8bid)
         zr(ldm0ii+i*(i-1)/2) = zr(llmge)
-10  continue
+    end do
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL
 !
@@ -290,13 +290,13 @@ subroutine prcymn(nomres, soumat, repmat)
     call jeveuo(jexnum(soumat, ibid), 'E', ldk0ji)
     call wkvect('&&'//pgc//'CDPHI', 'V V R', nbmod*nbddr, ltcdp)
 !
-    do 80 i = 1, nbmod
+    do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
-        do 81 j = 1, nbddr
+        do j = 1, nbddr
 !
 ! ------- EXTRACTION DDL DROITE
 !
@@ -304,9 +304,9 @@ subroutine prcymn(nomres, soumat, repmat)
             xx=zr(ltvec+iran-1)
             call amppr(zr(ltcdp), nbddr, nbmod, [xx], 1,&
                        1, j, i)
-81      continue
+        end do
         call jelibe(chamva)
-80  continue
+    end do
 !
     call daxpy(nbmod*nbddr, -1.d0, zr(ltcdp), 1, zr(ldk0ji),&
                1)
@@ -318,13 +318,13 @@ subroutine prcymn(nomres, soumat, repmat)
     call jeveuo(jexnum(soumat, ibid), 'E', ldkpji)
     call wkvect('&&'//pgc//'CGPHI', 'V V R', nbmod*nbddr, ltcgp)
 !
-    do 90 i = 1, nbmod
+    do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
-        do 91 j = 1, nbddr
+        do j = 1, nbddr
 !
 ! ------- EXTRACTION DDL GAUCHE
 !
@@ -332,9 +332,9 @@ subroutine prcymn(nomres, soumat, repmat)
             xx=zr(ltvec+iran-1)
             call amppr(zr(ltcgp), nbddr, nbmod, [xx], 1,&
                        1, j, i)
-91      continue
+        end do
         call jelibe(chamva)
-90  continue
+    end do
 !
     call pmppr(zr(ltetgd), nbddr, nbddr, -1, zr(ltcgp),&
                nbddr, nbmod, 1, zr(ldkpji), nbddr,&
@@ -352,13 +352,13 @@ subroutine prcymn(nomres, soumat, repmat)
         call jenonu(jexnom(repmat, 'KPLUSAI'), ibid)
         call jeveuo(jexnum(soumat, ibid), 'E', ldkpai)
 !
-        do 100 i = 1, nbmod
+        do i = 1, nbmod
             call dcapno(basmod, 'DEPL    ', i, chamva)
             call jeveuo(chamva, 'L', llcham)
             call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
             call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
-            do 101 j = 1, nbdax
+            do j = 1, nbdax
 !
 ! --------- EXTRACTION DDL AXE
 !
@@ -366,10 +366,10 @@ subroutine prcymn(nomres, soumat, repmat)
                 xx=zr(ltvec+iran-1)
                 call amppr(zr(ltcap), nbdax, nbmod, [xx], 1,&
                            1, j, i)
-101          continue
+            end do
             call jelibe(chamva)
             call jedetr('&&'//pgc//'.VECT')
-100      continue
+        end do
 !
         call pmppr(zr(ltetax), nbdax, nbdax, -1, zr(ltcap),&
                    nbdax, nbmod, 1, zr(ldkpai), nbdax,&
@@ -400,11 +400,12 @@ subroutine prcymn(nomres, soumat, repmat)
     call daxpy(nbddr*nbddr, -1.d0, zr(ltflex), 1, zr(ltmat),&
                1)
     k = 0
-    do 110 j = 1, nbddr
-        do 110 i = j, 1, -1
+    do j = 1, nbddr
+        do i = j, 1, -1
             zr(ldk0jj+k) = zr(ltmat-1+(j-1)*nbddr+i)
             k = k + 1
-110      continue
+        end do
+    end do
 !
     call flexib(basmod, nbmod, zr(ltflex), nbddr, nbddr,&
                 numg, numg)
@@ -418,11 +419,12 @@ subroutine prcymn(nomres, soumat, repmat)
     call daxpy(nbddr*nbddr, -1.d0, zr(ltflex), 1, zr(ltmat),&
                1)
     k = 0
-    do 120 j = 1, nbddr
-        do 120 i = j, 1, -1
+    do j = 1, nbddr
+        do i = j, 1, -1
             zr(ldk0jj+k) = zr(ldk0jj+k)+zr(ltmat-1+(j-1)*nbddr+i)
             k = k + 1
-120      continue
+        end do
+    end do
 !
 ! --- POUR KPLUSJJ
 !

@@ -57,7 +57,7 @@ subroutine chveno(fonree, noma, nomo)
     integer :: nbt
     parameter    (nbt = 5 )
     integer :: ier, ier1, iret, zero
-    integer :: imfac, nbmfac, ibid, n, ndim, ndim1, vali
+    integer :: imfac, nbmfac, n, ndim, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
     integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
     integer :: jcoor, jtyma, jgroup, jgro, jnma, jmab, jpri, jbor
@@ -107,7 +107,7 @@ subroutine chveno(fonree, noma, nomo)
     endif
     call jeveuo(nomma//'.COORDO    .VALE', 'L', jcoor)
 !
-    do 100 imfac = 1, nbmfac
+    do imfac = 1, nbmfac
         motfac = mcft(imfac)
 !
 !       CAS OU UN MOT CLE N'EXISTE QUE POUR CERTAINS CATALOGUES
@@ -115,7 +115,7 @@ subroutine chveno(fonree, noma, nomo)
         if (getexm(motfac,' ') .eq. 0) goto 100
 !
         call getfac(motfac, nocc)
-        do 200 iocc = 1, nocc
+        do iocc = 1, nocc
 !         POUR CERTAINS MOTS-CLES, IL NE FAUT TESTER QUE
 !         POUR CERTAINS CHARGEMENTS
             if (motfac .eq. 'FACE_IMPO') then
@@ -160,7 +160,7 @@ subroutine chveno(fonree, noma, nomo)
 !
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 !
-            do 210 ic = 1, nbmc
+            do ic = 1, nbmc
                 call getvtx(motfac, valmc(ic), iocc=iocc, nbval=0, nbret=nbobj)
                 if (nbobj .eq. 0) goto 210
 !
@@ -169,7 +169,7 @@ subroutine chveno(fonree, noma, nomo)
                 call getvem(noma, typmc(ic), motfac, valmc(ic), iocc,&
                             iarg, nbobj, zk24(jgroup), nbobj)
                 if (typmc(ic) .eq. 'GROUP_MA') then
-                    do 212 iobj = 1, nbobj
+                    do iobj = 1, nbobj
                         nogr = zk24(jgroup-1+iobj)
                         if (motfac .eq. 'ZONE') then
 !
@@ -178,7 +178,7 @@ subroutine chveno(fonree, noma, nomo)
                             call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
                             call jeveuo(jexnom(grmama, nogr), 'L', jgro)
 !
-                            do 213 ima = 1, nbmail
+                            do ima = 1, nbmail
                                 numail = zi(jgro-1+ima)
                                 call jenuno(jexnum(mailma, numail), nomail)
 !
@@ -208,7 +208,7 @@ subroutine chveno(fonree, noma, nomo)
                                     endif
 !
                                 endif
-213                          continue
+                            end do
 !
 ! ---           FIN DE BOUCLE SUR LES MAILLES DU GROUP_MA
 !
@@ -246,7 +246,7 @@ subroutine chveno(fonree, noma, nomo)
                                 call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
                                 nbmapr = 0
                                 nbmabo = 0
-                                do 218 impb = 1, nbmail
+                                do impb = 1, nbmail
                                     if (zi(jmab+impb-1) .eq. 0) then
                                         nbmapr = nbmapr + 1
                                         zi(jpri+nbmapr-1) = zi(jgro+ impb-1)
@@ -254,7 +254,7 @@ subroutine chveno(fonree, noma, nomo)
                                         nbmabo = nbmabo + 1
                                         zi(jbor+nbmabo-1) = zi(jgro+ impb-1)
                                     endif
-218                              continue
+                                end do
                                 call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
                                 call orilma(nomma, ndim, zi(jbor), nbmabo, norie1,&
                                             ntrait, reorie, 0, [0])
@@ -272,13 +272,13 @@ subroutine chveno(fonree, noma, nomo)
                             vali = norien
                             call utmess('E', 'MODELISA8_56', sk=valk(1), si=vali)
                         endif
-212                  continue
+                    end do
 !
 ! ----------CAS DES MAILLES :
 !           ---------------
                 else
                     call wkvect('&&CHVENO.NUME_MAILLE', 'V V I', nbobj, jnma)
-                    do 216 iobj = 1, nbobj
+                    do iobj = 1, nbobj
                         nomail = zk24(jgroup-1+iobj)
                         call jenonu(jexnom(nomma//'.NOMMAI', nomail), numa)
                         zi(jnma+iobj-1) = numa
@@ -304,7 +304,7 @@ subroutine chveno(fonree, noma, nomo)
                             endif
 !
                         endif
-216                  continue
+                    end do
                     norie1 = 0
                     norie2 = 0
                     if (mcfl(ic)) then
@@ -332,7 +332,7 @@ subroutine chveno(fonree, noma, nomo)
                             call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
                             nbmapr = 0
                             nbmabo = 0
-                            do 220 impb = 1, nbobj
+                            do impb = 1, nbobj
                                 if (zi(jmab+impb-1) .eq. 0) then
                                     nbmapr = nbmapr + 1
                                     zi(jpri+nbmapr-1) = zi(jnma+impb- 1)
@@ -340,7 +340,7 @@ subroutine chveno(fonree, noma, nomo)
                                     nbmabo = nbmabo + 1
                                     zi(jbor+nbmabo-1) = zi(jnma+impb- 1)
                                 endif
-220                          continue
+                            end do
                             call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
                             call orilma(nomma, ndim, zi(jbor), nbmabo, norie1,&
                                         ntrait, reorie, 0, [0])
@@ -358,12 +358,15 @@ subroutine chveno(fonree, noma, nomo)
                         call utmess('E', 'MODELISA8_57', sk=valk(1))
                     endif
                 endif
-211              continue
+211             continue
                 call jedetr('&&CHVENO.NUME_MAILLE')
                 call jedetr('&&CHVENO.OBJET')
-210          continue
-200      continue
-100  end do
+210             continue
+            end do
+200         continue
+        end do
+100     continue
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA4_24')

@@ -72,7 +72,6 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/afrela.h"
 #include "asterfort/ante3d.h"
 #include "asterfort/elrfvf.h"
@@ -84,6 +83,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! ARGUMENTS
 ! ---------
@@ -178,7 +178,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
     else
 !
         nbterm = 1 + nbcnx
-        do 10 icnx = 1, nbcnx
+        do icnx = 1, nbcnx
             call jenuno(jexnum(nonoma, cxma(icnx)), zk8(jnomno+icnx))
             zk8(jddl+icnx) = 'DEPL'
             x(1) = ksi1
@@ -206,7 +206,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
             ffel3d = ff(icnx)
             zr(jcmur+icnx) = -ffel3d
 !            ZR(JCMUR+ICNX) = -FFEL3D(NBCNX,ICNX,KSI1,KSI2,KSI3)
-10      continue
+        end do
 !
     endif
 !
@@ -216,18 +216,18 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !.... EN COMPTE LES DIFFERENTS COEFFICIENTS PAR DIRECTION DEFINIS
 !.... DANS LE VECTEUR ZR(JDIREC)
 !
-    do 20 iterm = 1, nbterm
+    do iterm = 1, nbterm
         zi(jdime+iterm-1) = 3
-20  end do
+    end do
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA PREMIERE RELATION (DDL DX)
 !.... PUIS AFFECTATION
 !
-    do 30 iterm = 1, nbterm
+    do iterm = 1, nbterm
         zr(jdirec+3* (iterm-1)) = 1.0d0
         zr(jdirec+3* (iterm-1)+1) = 0.0d0
         zr(jdirec+3* (iterm-1)+2) = 0.0d0
-30  end do
+    end do
 !
     call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                 zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -236,11 +236,11 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
 !.... PUIS AFFECTATION
 !
-    do 40 iterm = 1, nbterm
+    do iterm = 1, nbterm
         zr(jdirec+3* (iterm-1)) = 0.0d0
         zr(jdirec+3* (iterm-1)+1) = 1.0d0
         zr(jdirec+3* (iterm-1)+2) = 0.0d0
-40  end do
+    end do
 !
     call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                 zr(jdirec), nbterm, zero, cbid, k8b,&
@@ -249,17 +249,17 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
 !.... PUIS AFFECTATION
 !
-    do 50 iterm = 1, nbterm
+    do iterm = 1, nbterm
         zr(jdirec+3* (iterm-1)) = 0.0d0
         zr(jdirec+3* (iterm-1)+1) = 0.0d0
         zr(jdirec+3* (iterm-1)+2) = 1.0d0
-50  end do
+    end do
 !
     call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
                 zr(jdirec), nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !
-60  continue
+ 60 continue
 !
 ! --- MENAGE
     call jedetr('&&RECI3D.COEMUR')

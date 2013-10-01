@@ -2,7 +2,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
                   parcho, adime, xvect, ninc, nd,&
                   nchoc, h, hf, xtang)
 ! aslint: disable=W1306
-
+!
     implicit none
 !
 ! ======================================================================
@@ -51,12 +51,6 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/dcopy.h"
-#include "blas/dnrm2.h"
-#include "blas/dscal.h"
 #include "asterc/getran.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -65,6 +59,12 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 #include "asterfort/mnldrv.h"
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     logical :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect, xtang
@@ -74,7 +74,8 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     integer :: i, itang, iret, ib
     real(kind=8) :: vecplu(ninc), norme
-    complex(kind=8) cbid
+    complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
 !    call jxveri(' ', ' ')
@@ -82,9 +83,9 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! --- CREATION D'UN VECTEUR ALEATOIRE (A AJOUTER A LA DERNIERE LIGNE
 ! ---                                          DE LA MATRICE JACOBIENNE)
 ! ----------------------------------------------------------------------
-    do 10 i = 1, ninc
+    do i = 1, ninc
         call getran(vecplu(i))
-10  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- CREATION D'UN VECTEUR TEMPORAIRE
 ! ----------------------------------------------------------------------

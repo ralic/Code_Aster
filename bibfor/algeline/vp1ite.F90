@@ -5,12 +5,12 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/ggubs.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/resoud.h"
 #include "asterfort/vpmort.h"
 #include "asterfort/vpstur.h"
+!
     integer :: neq
     real(kind=8) :: x(neq, 1), mx(neq, *), err, x0(neq)
     real(kind=8) :: valp
@@ -67,6 +67,7 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
     integer :: idet0, ieq, ier, iquoti, jter
     real(kind=8) :: dseed, tol
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     matass=zk24(zi(ldynam+1))
     chcine=' '
@@ -79,29 +80,29 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
     call vpmort(neq, x0, x, mx, imode)
     call mrmult('ZERO', lmasse, x0, mx(1, imode), 1,&
                 .false.)
-    do 20 ieq = 1, neq
+    do ieq = 1, neq
         mx(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
-20  end do
+    end do
 !
     x0mx = 0.d0
-    do 30 ieq = 1, neq
+    do ieq = 1, neq
         x0mx = x0mx + x0(ieq)*mx(ieq,imode)
-30  end do
+    end do
 !
     coef = 1.d0/sqrt(abs(x0mx))
     coeft = sign(1.d0,x0mx)*coef
-    do 40 ieq = 1, neq
+    do ieq = 1, neq
         x0(ieq) = coef*x0(ieq)
         mx(ieq,imode) = coeft*mx(ieq,imode)
-40  end do
+    end do
 !
-    do 100 jter = 1, mxiter
+    do jter = 1, mxiter
         iter = jter
 !
 !        --- ELIMINATION DES DDL EXTERNES ---
-        do 110 ieq = 1, neq
+        do ieq = 1, neq
             x(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
-110      continue
+        end do
 !
 !        --- RESOLUTION DE (K-W.M) X = (M).X ---
         call resoud(matass, k19bid, solveu, chcine, 1,&
@@ -114,29 +115,29 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 !        --- CALCUL DE M.XN ---
         call mrmult('ZERO', lmasse, x(1, imode), mx(1, imode), 1,&
                     .false.)
-        do 120 ieq = 1, neq
+        do ieq = 1, neq
             mx(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
-120      continue
+        end do
 !
 !        --- CALCUL DE XN.M.XN ---
         xmx = 0.d0
-        do 130 ieq = 1, neq
+        do ieq = 1, neq
             xmx = xmx + x(ieq,imode)*mx(ieq,imode)
-130      continue
+        end do
 !
 !        --- NORMALISATION DE XN ---
         coef = 1.d0/sqrt(abs(xmx))
         coeft = sign(1.d0,xmx)*coef
-        do 140 ieq = 1, neq
+        do ieq = 1, neq
             x0(ieq) = coef*x0(ieq)
             mx(ieq,imode) = coeft*mx(ieq,imode)
-140      continue
+        end do
 !
 !        --- CALCUL DE LA NORME DE XN-1.M.XN ---
         xxx = 0.d0
-        do 150 ieq = 1, neq
+        do ieq = 1, neq
             xxx = xxx + x0(ieq)*mx(ieq,imode)
-150      continue
+        end do
 !
 !        --- CALCUL DE L'ERREUR ---
         coef = xxx/xmx/coef
@@ -144,9 +145,9 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
         if (err .lt. tol) goto 900
 !
 !        --- SAUVEGARDE DE XN DANS XN-1 ---
-        do 160 ieq = 1, neq
+        do ieq = 1, neq
             x0(ieq) = x(ieq,imode)
-160      continue
+        end do
 !
 !        --- SHIFT ---
         if (iquoti .gt. 0) then
@@ -162,22 +163,22 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 !
         endif
 !
-100  end do
+    end do
 !
 !     --- SORTIE SANS CONVERGENCE ---
     iter = -mxiter
-900  continue
+900 continue
 !
 !     --- FREQUENCE CORRIGEE ---
     valp = valp + coef
 !
 !     --- NORMALISATION DU VECTEUR ---
     rmg = 0.d0
-    do 911 ieq = 1, neq
+    do ieq = 1, neq
         rmg = max(abs(x(ieq,imode)),rmg)
-911  end do
-    do 912 ieq = 1, neq
+    end do
+    do ieq = 1, neq
         x(ieq,imode) = x(ieq,imode)/rmg
-912  end do
+    end do
 !
 end subroutine

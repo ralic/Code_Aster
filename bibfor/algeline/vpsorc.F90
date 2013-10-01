@@ -121,7 +121,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! POUR LE FONCTIONNEMENT GLOBAL
     integer :: i, j
-    real(kind=8) :: rbid, valr
+    real(kind=8) :: valr
     integer :: iret
 !
 ! POUR ARPACK
@@ -172,7 +172,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !------------------------------------------------------------------
 ! BOUCLE PRINCIPALE
 !
-20  continue
+ 20 continue
 !
 ! CALCUL DES VALEURS PROPRES DE (OP)
     call znaupd(ido, bmat, nbeq, which, nfreq,&
@@ -224,29 +224,29 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! 1/ CALCUL D'UN ELT. INITIAL X REPONDANT AU C.I. DE LAGRANGE
 ! 2/ CALCUL DE Y = (OP)* X AVEC DDL CINEMATIQUEMENT BLOQUES
 ! X <- X*DDL_LAGRANGE
-        do 25 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = workd(ipntr(1)+j-1) * ddllag(j)
-25      continue
+        end do
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, [0.d0], vaux,&
                     criter, .false., 0, iret)
-        do 30 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
-30      continue
+        end do
 ! X <- (OP)*(X*DDL_BLOQUE)
         call mcmult('ZERO', lmasse, workd(ipntr(1)), vaux, 1,&
                     .false.)
-        do 35 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = workd(ipntr(1)+j-1) * ddlexc(j)
-35      continue
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, [0.d0], vaux,&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
-        do 40 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j) *ddlexc(j)
-40      continue
+        end do
         goto 20
 !
     else if (ido .eq. 1) then
@@ -255,24 +255,24 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! X <- (B)*X*DDL_BLOQUE
         call mcmult('ZERO', lmasse, workd(ipntr(3)), vaux, 1,&
                     .false.)
-        do 45 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = vaux(j) *ddlexc(j)
-45      continue
+        end do
 ! X <- (OP)*X
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, [0.d0], vaux,&
                     criter, .false., 0, iret)
 ! RETOUR VERS DNAUPD
-        do 50 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j)*ddlexc(j)
-50      continue
+        end do
         goto 20
 !
     else if (ido .eq. 2) then
 ! X <- X*DDL_BLOQUE  (PRODUIT SCALAIRE= L2)
-        do 55 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1)=workd(ipntr(1)+j-1)*ddlexc(j)
-55      continue
+        end do
 ! RETOUR VERS DNAUPD
         goto 20
 !
@@ -316,9 +316,9 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     call vpordc(1, 0, nconv, dsor, vect,&
                 nbeq)
 !
-    do 66 i = 1, nconv
+    do i = 1, nconv
         dsor(i) = dsor(i)+sigma
-66  end do
+    end do
 !
 ! FIN DE VPSORC
 !

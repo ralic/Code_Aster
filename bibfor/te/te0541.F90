@@ -45,7 +45,7 @@ subroutine te0541(option, nomte)
     integer :: contac, nnom, singu, itab(1)
     integer :: iret, k, itemps
     logical :: lbid
-    real(kind=8) :: rbid,mat(1)
+    real(kind=8) :: mat(1)
     character(len=8) :: enr, elref
     character(len=16) :: compor(4)
 ! ----------------------------------------------------------------------
@@ -65,13 +65,13 @@ subroutine te0541(option, nomte)
 !
 !     RECUPERATION DES XHAMPS IN ET OUT
     call tecach('ONO', 'PCOMPOR', 'L', iret, iad=itab(1))
-    do 100 k = 1, 4
+    do k = 1, 4
         if (iret .eq. 0) then
             compor(k) = zk16(itab(1)-1+k)
         else
             compor(k) = ' '
         endif
-100  end do
+    end do
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PVECTUR', 'E', ivectu)

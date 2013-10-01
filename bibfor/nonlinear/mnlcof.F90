@@ -3,7 +3,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
                   nchoc, h, hf, ordman, xups,&
                   xfpnla, lbif, nextr, epsbif)
 ! aslint: disable=W1306
-
+!
     implicit none
 !
 ! ======================================================================
@@ -54,14 +54,6 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/ddot.h"
-#include "blas/dnrm2.h"
-#include "blas/dscal.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -70,6 +62,14 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 #include "asterfort/mnlqnl.h"
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     integer :: imat(2), ninc, nd, nchoc, h, hf, ordman, nextr
     real(kind=8) :: epsbif
     character(len=14) :: numdrv, xcdl, parcho, adime, xvecu0, xtang, xups, xfpnla
@@ -90,7 +90,8 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 !      PARAMETER ( NEXTR = 3 )
     real(kind=8) :: alpha(nextr), ratio(nextr), ecar(nextr-1)
     real(kind=8) :: nratio, necar, ac, nudom
-    complex(kind=8) cbid
+    complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -124,11 +125,11 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     call wkvect(xvecu2, 'V V R', ninc, ivecu2)
     xqnl='&&MNLCOF.VECQ'
     call wkvect(xqnl, 'V V R', ninc-1, iqnl)
-    do 10 p = 2, ordman
+    do p = 2, ordman
 !       REMISE A ZERO DU SECOND MEMBRE
         call dscal(ninc, 0.d0, zr(ifpnl), 1)
 !       CALCUL DU SECOND MEMBRE
-        do 11 r = 1, p-1
+        do r = 1, p-1
 !         VECU1 = UPS(:,R)
             call dcopy(ninc, zr(iups+r*ninc), 1, zr(ivecu1), 1)
 !         VECUI = UPS(:,P-R)
@@ -140,14 +141,14 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 !         CALCUL DE FPNL(1:NEQ)=FPNL(1:NEQ)-Q(SYS,UPS(:,R),UPS(:,P-R))
             call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnl),&
                        1)
-11      continue
+        end do
         zr(ifpnl-1+ninc)=0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
         call resoud(matdrv, '', '', '', 1,&
                     '', '', 'v', zr(ifpnl), [cbid],&
                     '', .false., 0, iret)
         call dcopy(ninc, zr(ifpnl), 1, zr(iups+p*ninc), 1)
-10  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- REMISE A ZERO DES VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------
@@ -157,20 +158,21 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- EXTRACTION SERIE GEOMETRIQUE
 ! ----------------------------------------------------------------------
-    do 30 k = 1, nextr
+    do k = 1, nextr
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
         alpha(k)=ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),1,&
         zr(iups+(ordman-k+1-1)*ninc),1)
         alpha(k)=alpha(k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
         1, zr(iups+(ordman-k+2-1)*ninc),1)
         call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
-        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),1)
+        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),&
+                   1)
         ratio(k)=dnrm2(ninc,zr(ivecu1),1)/dnrm2(ninc, zr(iups+(&
         ordman-k+1-1)*ninc),1)
         if (k .gt. 1) then
             ecar(k-1)=(alpha(k-1)-alpha(k))/alpha(k-1)
         endif
-30  continue
+    end do
     nratio=dnrm2(nextr,ratio,1)
     necar=dnrm2(nextr-1,ecar,1)
     if (nratio .lt. epsbif .and. necar .lt. epsbif) then
@@ -182,9 +184,10 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         call dcopy(ninc, zr(iups+ordman*ninc), 1, zr(ivecu1), 1)
         call dscal(ninc, ac**ordman, zr(ivecu1), 1)
         nudom=dnrm2(ninc,zr(ivecu1),1)
-        do 40 k = 1, ordman
-            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc),1)
-40      continue
+        do k = 1, ordman
+            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc),&
+                       1)
+        end do
     endif
 !
     call dscal(ninc, 0.d0, zr(ivecu1), 1)
@@ -195,7 +198,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     call jeveuo(xfpnla, 'E', ifpnla)
     call dscal(ninc-1, 0.d0, zr(ifpnla), 1)
 ! ---   CALCULE DE FPNLA = FPNLA - Q(SYS,UPS(:,R),UPS(:,P+1-R))
-    do 20 r = 1, ordman
+    do r = 1, ordman
         call dscal(ninc-1, 0.d0, zr(iqnl), 1)
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
         call dscal(ninc, 0.d0, zr(ivecu2), 1)
@@ -210,7 +213,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 !       AJOUT DES DEUX VECTEURS DANS XFPNLA
         call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla),&
                    1)
-20  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------

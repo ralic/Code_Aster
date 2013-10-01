@@ -91,6 +91,7 @@ subroutine calirc(chargz)
     logical :: l_angl_naut
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
+    cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -177,12 +178,12 @@ subroutine calirc(chargz)
     do iocc = 1, nocc
 !
 !       IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
-        do 10,kk=1,idmax
-        zi(idimen-1+kk)=0
-10      continue
-        do 20,kk=1,3*idmax
-        zr(idirec-1+kk)=0.d0
-20      continue
+        do kk = 1, idmax
+            zi(idimen-1+kk)=0
+        end do
+        do kk = 1, 3*idmax
+            zr(idirec-1+kk)=0.d0
+        end do
 !
         dnor=.false.
         typrac=' '
@@ -259,9 +260,9 @@ subroutine calirc(chargz)
             call wkvect('&&CALIRC.INDIRE', 'V V I', nnomx, indire)
             call jelira('&&NBNLMA.LN', 'LONUTI', lno)
 !
-            do 30 i = 1, lno
+            do i = 1, lno
                 zi(indire+zi(jnunoe+i-1)-1)=i
-30          continue
+            end do
 !
             call canort(noma, nbma2, zi(idmai2), ndim, nbno2,&
                         zi(jnunoe), 1)
@@ -278,21 +279,21 @@ subroutine calirc(chargz)
         if (kelim .eq. 'NON') then
             kkno2=0
             call wkvect('&&CALIRC.LINONU2BIS', 'V V I', nbno2, jnu2bs)
-            do 40,kno2=1,nbno2
-            nuno2=zi(iagno2-1+kno2)
+            do kno2 = 1, nbno2
+                nuno2=zi(iagno2-1+kno2)
 !            -- SI NUNO2 N'EST PAS ENCORE ELIMINE :
-            if (zi(jelim-1+nuno2) .eq. 0) then
-                zi(jelim-1+nuno2)=1
-                kkno2=kkno2+1
-                zi(jnu2bs+kkno2)=nuno2
-            endif
-40          continue
+                if (zi(jelim-1+nuno2) .eq. 0) then
+                    zi(jelim-1+nuno2)=1
+                    kkno2=kkno2+1
+                    zi(jnu2bs+kkno2)=nuno2
+                endif
+            end do
             nbno2=kkno2
             call jedetr('&&CALIRC.LINONU2')
             call wkvect('&&CALIRC.LINONU2', 'V V I', nbno2, iagno2)
-            do 50,kno2=1,nbno2
-            zi(iagno2-1+kno2)=zi(jnu2bs+kno2)
-50          continue
+            do kno2 = 1, nbno2
+                zi(iagno2-1+kno2)=zi(jnu2bs+kno2)
+            end do
             call jedetr('&&CALIRC.LINONU2BIS')
         endif
 !
@@ -386,7 +387,7 @@ subroutine calirc(chargz)
                 ideca2=0
 !
 !           -- ON BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE :
-                do 140 ino2 = 1, nbno2t
+                do ino2 = 1, nbno2t
 !             IMA1: MAILLE A CONNECTER A INO2
                     ima1=zi(jcom1-1+ino2)
 !             -- SI IMA1=0, C'EST QUE INO2 NE FAIT PAS PARTIE
@@ -402,34 +403,34 @@ subroutine calirc(chargz)
                     zk8(idnomn-1+1)=nono2
                     zr(idcoef-1+1)=-1.d0
 !
-                    do 60,ino1=1,nno1
-                    nuno1=zi(jconu+idecal-1+ino1)
-                    coef1=zr(jcocf+idecal-1+ino1)
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-                    zk8(idnomn+ino1)=nono1
-                    zr(idcoef+ino1)=coef1
+                    do ino1 = 1, nno1
+                        nuno1=zi(jconu+idecal-1+ino1)
+                        coef1=zr(jcocf+idecal-1+ino1)
+                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        zk8(idnomn+ino1)=nono1
+                        zr(idcoef+ino1)=coef1
 !               SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
-                    if (nuno1 .eq. nuno2) then
-                        if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
-                            call utmess('A', 'CALCULEL5_49', sk=nono1)
-                            goto 130
+                        if (nuno1 .eq. nuno2) then
+                            if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
+                                call utmess('A', 'CALCULEL5_49', sk=nono1)
+                                goto 130
 !
+                            endif
                         endif
-                    endif
-60                  continue
+                    end do
 !
 !           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
 !           -----------------------------------------------------
                     if (dnor) then
-                        do 80 ino1 = 1, nno1+1
+                        do ino1 = 1, nno1+1
                             zi(idimen+ino1-1)=ndim
                             zk8(idnomd-1+ino1)='DEPL'
-                            do 70 idim = 1, ndim
+                            do idim = 1, ndim
                                 zr(idirec+(ino1-1)*ndim1+idim-1)=zr(&
                                 jnorm+ (zi(indire+ino2-1)-1)*ndim+&
                                 idim-1)
-70                          continue
-80                      continue
+                            end do
+                        end do
                         call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8( idnomn), zi(idimen),&
                                     zr(idirec), nno1+1, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
@@ -438,19 +439,20 @@ subroutine calirc(chargz)
 !               -- RELATIONS CONCERNANT LES TRANSLATIONS (DX/DY/DZ) :
 !               -----------------------------------------------------
                         if (typrac .ne. 'MASSIF_COQUE') then
-                            do 100,k=1,ndim
-                            if (k .eq. 1) cmp='DX'
-                            if (k .eq. 2) cmp='DY'
-                            if (k .eq. 3) cmp='DZ'
-                            do 90,ino1=1,nno1+1
-                            zk8(idnomd-1+ino1)=cmp
-90                          continue
-                            call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn), zi(idimen),&
-                                        zr( idirec), nno1+1, beta, betac, kbeta,&
-                                        typcoe, fonree, typlag, 1.d-6, lisrel)
-                            call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
-                                        beta)
-100                          continue
+                            do k = 1, ndim
+                                if (k .eq. 1) cmp='DX'
+                                if (k .eq. 2) cmp='DY'
+                                if (k .eq. 3) cmp='DZ'
+                                do ino1 = 1, nno1+1
+                                    zk8(idnomd-1+ino1)=cmp
+                                end do
+                                call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn),&
+                                            zi(idimen), zr( idirec), nno1+1, beta, betac,&
+                                            kbeta, typcoe, fonree, typlag, 1.d-6,&
+                                            lisrel)
+                                call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                                            beta)
+                            end do
 !
                         else if (typrac.eq.'MASSIF_COQUE') then
                             call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
@@ -462,19 +464,20 @@ subroutine calirc(chargz)
 !               -- RELATIONS CONCERNANT LES ROTATIONS (DRX/DRY/DRZ) :
 !               -----------------------------------------------------
                         if (typrac .eq. 'COQUE') then
-                            do 120,k=1,ndim
-                            if (k .eq. 1) cmp='DRX'
-                            if (k .eq. 2) cmp='DRY'
-                            if (k .eq. 3) cmp='DRZ'
-                            do 110,ino1=1,nno1+1
-                            zk8(idnomd-1+ino1)=cmp
-110                          continue
-                            call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn), zi(idimen),&
-                                        zr( idirec), nno1+1, beta, betac, kbeta,&
-                                        typcoe, fonree, typlag, 1.d-6, lisrel)
-                            call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
-                                        beta)
-120                          continue
+                            do k = 1, ndim
+                                if (k .eq. 1) cmp='DRX'
+                                if (k .eq. 2) cmp='DRY'
+                                if (k .eq. 3) cmp='DRZ'
+                                do ino1 = 1, nno1+1
+                                    zk8(idnomd-1+ino1)=cmp
+                                end do
+                                call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn),&
+                                            zi(idimen), zr( idirec), nno1+1, beta, betac,&
+                                            kbeta, typcoe, fonree, typlag, 1.d-6,&
+                                            lisrel)
+                                call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                                            beta)
+                            end do
 !
                         else if (typrac.eq.'COQUE_MASSIF') then
                             call calir4(noma, lisrel, nono2, ino2, zr(jlisv1+3*(ino2-1)),&
@@ -482,13 +485,14 @@ subroutine calirc(chargz)
                                         jcocf2, jconu2, ideca2)
                         endif
                     endif
-130                  continue
+130                 continue
                     idecal=idecal+nno1
                     if (typrac .eq. 'COQUE_MASSIF') then
                         ideca1=ideca1+zi(jconb1-1+ino2)
                         ideca2=ideca2+zi(jconb2-1+ino2)
                     endif
-140              continue
+140                 continue
+                end do
 !
 !
 !       -- 3.1.2  S'IL Y A UNE ROTATION :
@@ -496,21 +500,21 @@ subroutine calirc(chargz)
             else
                 idecal=0
 !
-                do 260 ino2 = 1, nbno2t
+                do ino2 = 1, nbno2t
 !
 ! ---       NNO1: NB DE NOEUD_MAIT LIES A INO2 :
 !           ------------------------------------
                     nno1=zi(jconb-1+ino2)
                     if (nno1 .eq. 0) goto 260
-                    do 160 k = 1, idmax
+                    do k = 1, idmax
                         zk8(idnomn+k-1)=m8blan
                         zk8(idnomd+k-1)=m8blan
                         zr(idcoef+k-1)=zero
                         zi(idimen+k-1)=0
-                        do 150 kk = 1, 3
+                        do kk = 1, 3
                             zr(idirec+3*(k-1)+kk-1)=zero
-150                      continue
-160                  continue
+                        end do
+                    end do
 !
                     normal(1)=zero
                     normal(2)=zero
@@ -525,69 +529,70 @@ subroutine calirc(chargz)
                         ij=ndim
                     endif
 !
-                    do 170,ino1=1,nno1
-                    nuno1=zi(jconu+idecal-1+ino1)
-                    coef1=zr(jcocf+idecal-1+ino1)
-                    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-                    zk8(idnomn+ij+ino1-1)=nono1
-                    zr(idcoef+ij+ino1-1)=coef1
-170                  continue
+                    do ino1 = 1, nno1
+                        nuno1=zi(jconu+idecal-1+ino1)
+                        coef1=zr(jcocf+idecal-1+ino1)
+                        call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                        zk8(idnomn+ij+ino1-1)=nono1
+                        zr(idcoef+ij+ino1-1)=coef1
+                    end do
 !
 !
 !           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
 !           -----------------------------------------------------
                     if (dnor) then
-                        do 190 idim = 1, ndim
-                            do 180 jdim = 1, ndim
+                        do idim = 1, ndim
+                            do jdim = 1, ndim
                                 normal(idim)=normal(idim)+ mrota(jdim,&
                                 idim)*zr(jnorm+(zi(indire+ ino2-1)-1)*&
                                 ndim+jdim-1)
-180                          continue
-190                      continue
+                            end do
+                        end do
                         zr(idcoef+1-1)=1.0d0
                         zk8(idnomn+1-1)=nono2
                         zk8(idnomd+1-1)='DEPL'
                         zi(idimen+1-1)=ndim
-                        do 200 idim = 1, ndim
+                        do idim = 1, ndim
                             zr(idirec+idim-1)=zr(jnorm+(zi(indire+&
                             ino2-1)-1)*ndim+ idim-1)
-200                      continue
-                        do 220 ino1 = 2, nno1+1
+                        end do
+                        do ino1 = 2, nno1+1
                             zi(idimen+ino1-1)=ndim
                             zk8(idnomd-1+ino1)='DEPL'
-                            do 210 idim = 1, ndim
+                            do idim = 1, ndim
                                 zr(idirec+(ino1-1)*ndim1+idim-1)=-&
                                 normal(idim)
-210                          continue
-220                      continue
+                            end do
+                        end do
                         call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8( idnomn), zi(idimen),&
                                     zr(idirec), nno1+1, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
                     else
-                        do 250,k=1,ndim
-                        if (k .eq. 1) cmp='DX'
-                        if (k .eq. 2) cmp='DY'
-                        if (k .eq. 3) cmp='DZ'
-                        do 230,ino1=1,nno1
-                        zk8(idnomd+ndim+ino1-1)=cmp
-230                      continue
-                        do 240 kk = 1, ndim
-                            if (kk .eq. 1) cmp='DX'
-                            if (kk .eq. 2) cmp='DY'
-                            if (kk .eq. 3) cmp='DZ'
-                            zk8(idnomn+kk-1)=nono2
-                            zk8(idnomd+kk-1)=cmp
-                            zr(idcoef+kk-1)=-mrota(kk,k)
-240                      continue
-                        call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
-                                    zr(idirec), nno1+ ndim, beta, betac, kbeta,&
-                                    typcoe, fonree, typlag, 1.d-6, lisrel)
-                        call imprel(motfac, nno1+ndim, zr(idcoef), zk8(idnomd), zk8(idnomn),&
-                                    beta)
-250                      continue
+                        do k = 1, ndim
+                            if (k .eq. 1) cmp='DX'
+                            if (k .eq. 2) cmp='DY'
+                            if (k .eq. 3) cmp='DZ'
+                            do ino1 = 1, nno1
+                                zk8(idnomd+ndim+ino1-1)=cmp
+                            end do
+                            do kk = 1, ndim
+                                if (kk .eq. 1) cmp='DX'
+                                if (kk .eq. 2) cmp='DY'
+                                if (kk .eq. 3) cmp='DZ'
+                                zk8(idnomn+kk-1)=nono2
+                                zk8(idnomd+kk-1)=cmp
+                                zr(idcoef+kk-1)=-mrota(kk,k)
+                            end do
+                            call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
+                                        zr(idirec), nno1+ ndim, beta, betac, kbeta,&
+                                        typcoe, fonree, typlag, 1.d-6, lisrel)
+                            call imprel(motfac, nno1+ndim, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                                        beta)
+                        end do
                     endif
                     idecal=idecal+nno1
-260              continue
+260                 continue
+                end do
             endif
 !
 !
@@ -595,7 +600,7 @@ subroutine calirc(chargz)
 !       =================
         else if (typlia.eq.'TEMP') then
             idecal=0
-            do 300 ino2 = 1, nbno2t
+            do ino2 = 1, nbno2t
 !           NNO1: NB DE NOEUD_MAIT LIES A INO2
                 nno1=zi(jconb-1+ino2)
                 if (nno1 .eq. 0) goto 300
@@ -606,37 +611,38 @@ subroutine calirc(chargz)
                 zk8(idnomn-1+1)=nono2
                 zr(idcoef-1+1)=-1.d0
 !
-                do 270,ino1=1,nno1
-                nuno1=zi(jconu+idecal-1+ino1)
-                coef1=zr(jcocf+idecal-1+ino1)
-                call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-                zk8(idnomn+ino1)=nono1
-                zr(idcoef+ino1)=coef1
+                do ino1 = 1, nno1
+                    nuno1=zi(jconu+idecal-1+ino1)
+                    coef1=zr(jcocf+idecal-1+ino1)
+                    call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
+                    zk8(idnomn+ino1)=nono1
+                    zr(idcoef+ino1)=coef1
 !             SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
-                if (nuno1 .eq. nuno2) then
-                    if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
-                        call utmess('A', 'CALCULEL5_49', sk=nono1)
-                        goto 290
+                    if (nuno1 .eq. nuno2) then
+                        if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
+                            call utmess('A', 'CALCULEL5_49', sk=nono1)
+                            goto 290
 !
+                        endif
                     endif
-                endif
-270              continue
+                end do
 !
 !           -- AFFECTATION DE LA RELATION CONCERNANT LE NOEUD INO2 :
 !           -----------------------------------------------------
                 cmp='TEMP'
-                do 280,ino1=1,nno1+1
-                zk8(idnomd-1+ino1)=cmp
-280              continue
+                do ino1 = 1, nno1+1
+                    zk8(idnomd-1+ino1)=cmp
+                end do
                 call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
                             zr(idirec), nno1+1, beta, betac, kbeta,&
                             typcoe, fonree, typlag, 1.d-6, lisrel)
                 call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
                             beta)
 !
-290              continue
+290             continue
                 idecal=idecal+nno1
-300          continue
+300             continue
+            end do
         else
             ASSERT(.false.)
         endif
@@ -668,6 +674,6 @@ subroutine calirc(chargz)
 !     ------------------------------------------------
     call aflrch(lisrel, charge)
 !
-320  continue
+320 continue
     call jedema()
 end subroutine

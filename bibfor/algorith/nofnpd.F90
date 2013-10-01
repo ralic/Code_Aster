@@ -1,5 +1,8 @@
-subroutine nofnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
-                  vu, vp, vpi, typmod, mate, compor, geomi, nomte, sig, ddl, vect)
+subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
+                  iw, vff1, vff2, vff3, idff1,&
+                  vu, vp, vpi, typmod, mate,&
+                  compor, geomi, nomte, sig, ddl,&
+                  vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +94,8 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     rac2 = sqrt(2.d0)
     option = 'FORC_NODA       '
 !
-    call uthk(nomte, geomi, hk, ndim, ibid, ibid, ibid, ibid, 1, ibid)
+    call uthk(nomte, geomi, hk, ndim, ibid,&
+              ibid, ibid, ibid, 1, ibid)
     stab = 1.d-4*hk*hk
 !
     call r8inir(nddl, 0.d0, vect, 1)
@@ -118,8 +122,11 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
 !
 ! - CALCUL DE LA PRESSION
         pm = ddot(nno2,vff2(1,g),1,presm,1)
@@ -173,7 +180,8 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         end do
 !
 ! - CALCUL DE L'INVERSE DE KAPPA
-        call tanbul(option, ndim, g, mate, compor(1), .false., .false., alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor(1),&
+                    .false., .false., alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U
         do na = 1, nno1

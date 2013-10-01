@@ -75,23 +75,23 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !==================================================================
     integer :: chaine(nbnd), place(nbnd), nbass(nbsn)
     integer :: i, k, j, nd, p, sni, andi, sn, suiv, cour
-    integer :: ind, ndk, ndi, dli, ilimpi
-    integer :: ifm, niv, long, decal, iret, ifet1, ifet2, ifet3, nbsd, iaux
+    integer :: ind, ndk, ndi, dli
+    integer :: ifm, niv, long, decal
 !
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)
     ier =0
 !     CALCUL DE INVSUP FILS ET FRERE
-    do 120 i = 1, nbsn
+    do i = 1, nbsn
         place(i) = 0
         fils(i) = 0
         frere(i) = 0
         lgsn(i) = supnd(i+1) - supnd(i)
-        do 110 j = supnd(i), supnd(i+1) - 1
+        do j = supnd(i), supnd(i+1) - 1
             invsup(j) = i
-110      continue
-120  end do
-    do 130 nd = 1, nbsn
+        end do
+    end do
+    do nd = 1, nbsn
         p = parent(nd)
         if (p .ne. 0) then
             if (fils(p) .eq. 0) then
@@ -102,28 +102,28 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
                 place(p) = nd
             endif
         endif
-130  end do
+    end do
 !
 !
     decal = 0
     adress(1) = 1
     debfac(1) = 1
-    do 140 sni = 1, nbsn
+    do sni = 1, nbsn
         lgsn(sni) = supnd(sni+1) - supnd(sni)
-140  end do
+    end do
 !
     adress(1) = 1
     debfac(1) = 1
     nbnd1 = nbnd+1
 !     CORRECTION DE NOV 2006 CETTE BOUCLE 311 REMPLACE LA PRECEDENTE
 !     INTERNE A LA BOUCLE 310 CELA ENTRAINAIT BEAUCOUP DE TEMPS CPU
-    do 311 i = 1, nbnd
+    do i = 1, nbnd
         place(i)=0
-311  end do
-    do 309 ndi = 1, nbsn
+    end do
+    do ndi = 1, nbsn
         chaine(ndi) = nbnd1
-309  end do
-    do 310 sni = 1, nbsn
+    end do
+    do sni = 1, nbsn
         ndi = supnd(sni)
         andi = anc(ndi)
         chaine(ndi) = nbnd1
@@ -142,34 +142,34 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !     FASSE DE L'AMALGAME.
 !--------------------------------------------------------------
 !
-            do 152 dli = ndi+1, supnd(sni+1)-1
+            do dli = ndi+1, supnd(sni+1)-1
                 andi = anc(dli)
                 if (delg(andi) .ne. 0) goto 151
                 call inschn(andi, dli, xadj, adjncy, chaine,&
                             nouv, place, debut)
 !
-152          continue
-151          continue
+            end do
+151         continue
         endif
 !-------------------------------------------------------------
 !
 !     LES NOEUDS VOISINS DES FILS SONT MIS DANS LA CHAINE
 !-------------------------------------------------------------
         sn = fils(sni)
-230      continue
+230     continue
 !        DO WHILE (SN.NE.0)
         if (sn .ne. 0) then
 !           K = ADRESS(SN) + LGSN(SN) + 1 CORRECTION DU 15/03/02
             k = adress(sn) + lgsn(sn)
             ind = 1
             nd = ndi
-240          continue
+240         continue
 !     DO WHILE (K.LT.ADRESS(SN+1))
             if (k .lt. adress(sn+1)) then
                 ndk = global(k)
                 if (ndk .gt. ndi) then
                     suiv= nd
-235                  continue
+235                 continue
                     if (suiv .lt. ndk) then
 !     DO WHILE(SUIV.LT.NDK)
                         cour = suiv
@@ -194,7 +194,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
         k = 0
         ind = ndi
 !     DO WHILE (IND.NE.NBND1) ( FIN DE LA CHAINE)
-280      continue
+280     continue
         if (ind .ne. nbnd1) then
 !-------------------------------------------------------------
 !     VERIFICATION DE LA LONGUEUR DE GLOBAL
@@ -220,7 +220,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !...........................................
         sn = fils(sni)
 !     DO WHILE (SN.NE.0)
-290      continue
+290     continue
         if (sn .ne. 0) then
             call mltalc(local, global, adress, sn, lgsn,&
                         place, sni, supnd, nbass(sn))
@@ -238,26 +238,26 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !     L = L - 1
 !     300     CONTINUE
 !     MODIFS POUR DGEMV
-        do 300 k = 1, lgsn(sni)
+        do k = 1, lgsn(sni)
             nd=supnd(sni) + k-1
             debfac( nd ) = decal +k
             decal = decal+long
-300      continue
+        end do
         debfsn(sni) = debfac(supnd(sni))
 !   ON REMET LE TABLEAU PLACE A ZERO ICI AU LIEU DE 311
-        do 320 k = adress(sni), (adress(sni+1) - 1)
+        do k = adress(sni), (adress(sni+1) - 1)
             place(global(k))=0
-320      end do
+        end do
 !
-310  end do
+    end do
 !
     debfac(nbnd+1)=decal+1
     debfsn(nbsn+1) = debfac(nbnd+1)
     if (niv .ge. 2) then
         write(ifm,*)'   --- LONGUEUR DE LA MATRICE FACTORISEE ',decal
     endif
-
 !
-999  continue
+!
+999 continue
 !
 end subroutine

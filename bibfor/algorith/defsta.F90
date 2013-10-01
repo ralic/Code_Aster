@@ -78,6 +78,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
     character(len=*) :: nmresz, numrfz, raildz
     complex(kind=8) :: cbid
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
 !
@@ -96,7 +97,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 !-----------------------------------------------------------------------
 !
-    if (nbdef .eq. 0) goto 9999
+    if (nbdef .eq. 0) goto 999
 !
 ! --- RECUPERATION DU MODELE DE REFERENCE
 !
@@ -125,7 +126,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 ! --- BOUCLE DE CALCUL DES DEFORMEES
 !
-    do 10 i = 1, nbdef
+    do i = 1, nbdef
 !
 ! ----- GENERATION DU NOM DU CHAMP RESULTAT
 !
@@ -188,11 +189,11 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
         inord=inord+1
 !
-10  end do
+    end do
 !
     call jedetr(nomcvn)
     call jedetr('&&'//pgc//'CHAMNO')
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

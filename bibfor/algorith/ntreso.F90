@@ -22,7 +22,7 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 ! ======================================================================
 !
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/copisd.h"
@@ -54,13 +54,13 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 !
 !
     integer :: ifm, niv
-    real(kind=8) :: r8bid
     character(len=16) :: k16b1, k16b2
     character(len=19) :: chsol
     character(len=24) :: mediri, vhydr, tmpchi, tmpchf, vec2ni, criter, result
     character(len=24) :: vtemp
     complex(kind=8) :: c16bid
     integer :: iret
+    c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
 !

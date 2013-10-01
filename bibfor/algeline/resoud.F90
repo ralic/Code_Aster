@@ -110,6 +110,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     complex(kind=8) :: cbid
     logical :: dbg
     character(len=1) :: ftype(2)
+    cbid = dcmplx(0.d0, 0.d0)
     data         ftype/'R','C'/
 ! ----------------------------------------------------------------------
     dbg=.false.
@@ -169,7 +170,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
             call detrsd('CHAMP_GD', csol19)
             call vtdefs(csol19, secm19, base, ' ')
         endif
-
+!
         call jelira(secm19//'.VALE', 'LONMAX', neq1)
         call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
         if ((neq1.ne.neq) .and. (imd.eq.0)) then
@@ -187,13 +188,13 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
             call wkvect('&&RESOUD.TRAV', 'V V '//type, neq1, jtrav)
             call jacopo(neq1, type, jval2, jtrav)
         endif
-
+!
     else
         ASSERT(secm19.eq.' ')
         ASSERT(csol19.eq.' ')
     endif
 !
-    if (cine19.ne.' ') then
+    if (cine19 .ne. ' ') then
         call jelira(cine19//'.VALE', 'TYPE', cval=typ1)
         ASSERT(typ1.eq.type)
     endif
@@ -284,7 +285,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !
 !
 !     -- RECOPIE DANS LE CHAMP SOLUTION S'IL Y A LIEU :
-    if (nsecm.eq.0) then
+    if (nsecm .eq. 0) then
         call jeveuo(csol19//'.VALE', 'E', jvals)
         if (imd .eq. 0) then
             call jacopo(neq, type, jtrav, jvals)

@@ -155,14 +155,15 @@ subroutine op0046()
 !
     call dismoi('F', 'NOM_MAILLA', nomode, 'MODELE', ibid,&
                 noma, ierd)
-    call dismoi('F', 'NB_CHAMP_MAX', result, 'RESULTAT', nbmax, k8bla, ierd)
+    call dismoi('F', 'NB_CHAMP_MAX', result, 'RESULTAT', nbmax,&
+                k8bla, ierd)
     call getvtx(' ', 'OPTION', scal=nosy, nbret=n7)
     ASSERT(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
 !
 !   A-t-on des POU_D_EM qui utilisent le champ STRX_ELGA en lineaire
     call dismoi('F', 'EXI_STR2', nomode, 'MODELE', ibid,&
                 kstr, ierd)
-    if ((nosy.eq.'SANS') .and. (kstr(1:3).eq.'NON')) goto 9999
+    if ((nosy.eq.'SANS') .and. (kstr(1:3).eq.'NON')) goto 999
 !
 !   A-t-on des VARC
     call dismoi('F', 'EXI_VARC', mate, 'CHAM_MATER', ibid,&
@@ -171,20 +172,20 @@ subroutine op0046()
     if ((k8bla(1:3).eq.'OUI') .and. (kstr(1:3).eq.'OUI')) then
         call utmess('F', 'MECASTATIQUE_1')
     endif
-
+!
     exipou = .false.
     call dismoi('F', 'EXI_POUX', modele, 'MODELE', ibid,&
                 k8bla, ierd)
     if (k8bla(1:3) .eq. 'OUI') exipou = .true.
     call jelira(charge, 'LONMAX', nchar)
-
+!
     if (exipou) then
         call jeveuo(charge, 'L', jchar)
         call cochre(zk24(jchar), nchar, nbchre, iocc)
         if (nbchre .gt. 1) then
             call utmess('F', 'MECASTATIQUE_25')
         endif
-
+!
         typcoe = 'R'
         alpha = 1.d0
         if (iocc .gt. 0) then
@@ -192,9 +193,9 @@ subroutine op0046()
             call getvid('EXCIT', 'FONC_MULT', iocc=iocc, scal=nomfon, nbret=nfon)
         endif
     endif
-
+!
     call jeveuo(listps//'           .VALE', 'L', iainst)
-    do 13 iordr = 1, nbmax
+    do iordr = 1, nbmax
         call rsexch(' ', result, 'DEPL', iordr, chamgd,&
                     iret)
         if (iret .gt. 0) goto 13
@@ -229,7 +230,7 @@ subroutine op0046()
                         iret)
             call rsnoch(result, nosy, iordr)
         endif
-62      continue
+ 62     continue
 !
         if (kstr(1:3) .eq. 'OUI') then
             ibid = 0
@@ -250,10 +251,11 @@ subroutine op0046()
         endif
 !
 !
-13  continue
+ 13     continue
+    end do
 !
 !
-9999  continue
+999 continue
 !
 !     ----------------------------------------------------------------
 ! --- STOCKAGE POUR CHAQUE NUMERO D'ORDRE DU MODELE, DU CHAMP MATERIAU
@@ -266,11 +268,11 @@ subroutine op0046()
     call dismoi('F', 'NB_CHAMP_UTI', result, 'RESULTAT', nbuti,&
                 k8bla, ierd)
     call jeveuo(result//'           .ORDR', 'L', jordr)
-    do 14 i = 1, nbuti
+    do i = 1, nbuti
         iordr=zi(jordr+i-1)
         call rssepa(result, iordr, modele(1:8), mate(1:8), carele(1:8),&
                     lisch2(1:19))
-14  continue
+    end do
 !
 !     -----------------------------------------------
 ! --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE

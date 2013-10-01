@@ -3,7 +3,6 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
                   resufk, vecpro, solveu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/detrsd.h"
 #include "asterfort/freqom.h"
 #include "asterfort/ggubsc.h"
@@ -18,6 +17,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmasse, lamor, lraide, nitf, nbfreq, neq
     integer :: mxresf
     integer :: resufi(mxresf, *)
@@ -57,7 +57,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
     complex(kind=8) :: rp1, rp, rnorm, rpp
     complex(kind=8) :: czero, cun
     complex(kind=8) :: rmasse, ramor, rraide
-    real(kind=8) :: const(6), rbid
+    real(kind=8) :: const(6)
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: icomb, ieq, imode, iter, jter, lacc1, lacc2
@@ -99,14 +99,14 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
     nmat(1) = zk24(zi(lmat(1)+1))
     nmat(2) = zk24(zi(lmat(2)+1))
     nmat(3) = zk24(zi(lmat(3)+1))
-    do 10 icomb = 1, 3
+    do icomb = 1, 3
         typcst(icomb) = 'C'
-10  end do
+    end do
     const(5) = - 1.d0
     const(6) = - 0.d0
 !
 !
-    do 100 imode = 1, nbfreq
+    do imode = 1, nbfreq
 !
         rp = dcmplx( resufr(imode,3), resufr(imode,2) )
 !
@@ -124,13 +124,13 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
         dseed = 123457.d0
         call ggubsc(dseed, neq, vecpro(1, imode))
 !CC      CALL WP1ORT(NEQ,VECPRO,VECPRO(1,IMODE),ZC(LMORTH),IMODE)
-        do 110 ieq = 1, neq
+        do ieq = 1, neq
             zc(lyn+ieq-1) = rp * vecpro(ieq,imode)
-110      continue
+        end do
 !
 !        --- METHODE D'ITERATION INVERSE ---
         rpp = rp
-        do 200 jter = 1, nitf
+        do jter = 1, nitf
             iter = jter
 !
 !           --- M-NORMALISATION DES VECTEURS XN-1 ET YN-1 ---
@@ -139,21 +139,21 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !           --- RENORMALISATION ---
             rnorm = czero
-            do 210 ieq = 1, neq
+            do ieq = 1, neq
                 rnorm = rnorm + dconjg(vecpro(ieq,imode))*zc(lacc2+ ieq-1)
-210          continue
+            end do
             rnorm = sign(1.d0,dble(rnorm)) * cun /sqrt(abs(dble(rnorm) ))
-            do 215 ieq = 1, neq
+            do ieq = 1, neq
                 vecpro(ieq,imode) = vecpro(ieq,imode) * rnorm
                 zc(lyn+ieq-1) = zc(lyn+ieq-1) * rnorm
-215          continue
+            end do
 !
 !           --- CONSTITUTION DU SECOND MEMBRE POUR CALCULER XN ---
             call mcmult('ZERO', lamor, vecpro(1, imode), zc(lacc2), 1,&
                         .false.)
-            do 220 ieq = 1, neq
+            do ieq = 1, neq
                 zc(lacc1+ieq-1) = rp * vecpro(ieq,imode)
-220          continue
+            end do
             call mcmult('CUMU', lmasse, zc(lacc1), zc(lacc2), 1,&
                         .false.)
             call mcmult('CUMU', lmasse, zc(lyn), zc(lacc2), 1,&
@@ -168,29 +168,29 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !CC         CALL WP1ORT(NEQ,VECPRO,ZC(LACC2),ZC(LMORTH),IMODE)
 !
 !           --- CALCUL DE YN ---
-            do 225 ieq = 1, neq
+            do ieq = 1, neq
                 zc(lyn+ieq-1) = rp*zc(lacc2+ieq-1)+vecpro(ieq,imode)
-225          continue
+            end do
 !
 !           --- CALCUL DE LA VALEUR PROPRE ---
             call mcmult('ZERO', lmasse, zc(lacc2), zc(lacc1), 1,&
                         .false.)
             rmasse = czero
-            do 230 ieq = 0, neq-1
+            do ieq = 0, neq-1
                 rmasse = rmasse + dconjg(zc(lacc2+ieq))*zc(lacc1+ieq)
-230          continue
+            end do
             call mcmult('ZERO', lraide, zc(lacc2), zc(lacc1), 1,&
                         .false.)
             rraide = czero
-            do 235 ieq = 0, neq-1
+            do ieq = 0, neq-1
                 rraide = rraide + dconjg(zc(lacc2+ieq))*zc(lacc1+ieq)
-235          continue
+            end do
             call mcmult('ZERO', lamor, zc(lacc2), zc(lacc1), 1,&
                         .false.)
             ramor = czero
-            do 240 ieq = 0, neq-1
+            do ieq = 0, neq-1
                 ramor = ramor + dconjg(zc(lacc2+ieq))*zc(lacc1+ieq)
-240          continue
+            end do
 !
             rp1 = -ramor + sqrt( ramor*ramor - 4.d0*rmasse*rraide)
             rp1 = rp1 / (2.d0*rmasse)
@@ -200,9 +200,9 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
             err = abs(rpp-rp1)/abs(rp1)
 !
 !           --- ON ARCHIVE XN  ---
-            do 245 ieq = 1, neq
+            do ieq = 1, neq
                 vecpro(ieq,imode) = zc(lacc2+ieq-1)
-245          continue
+            end do
             rpp = rp1
 !
             if (err .lt. tolf) then
@@ -210,11 +210,11 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
                 err2 = max( abs(dble(rpp-rp1)),abs(dimag(rpp-rp1)) )
                 if (err2 .lt. tolf) goto 300
             endif
-200      continue
+        end do
 !
         iter = -nitf
 !
-300      continue
+300     continue
 !
 !        --- ARCHIVAGE DES VALEURS ----
         resufr(imode,2) = dimag(rp1)*dimag(rp1)
@@ -230,17 +230,17 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !        --- RENORMALISATION ---
         rnorm = czero
-        do 310 ieq = 1, neq
+        do ieq = 1, neq
             rnorm = rnorm + dconjg(vecpro(ieq,imode))*zc(lacc2+ieq-1)
-310      continue
+        end do
         rnorm = sign(1.d0,dble(rnorm)) * cun /sqrt(abs(dble(rnorm)))
-        do 315 ieq = 1, neq
+        do ieq = 1, neq
             vecpro(ieq,imode) = vecpro(ieq,imode) * rnorm
-315      continue
+        end do
 !CC      LMORT = LMORTH + (IMODE-1)*NEQ
 !CC      CALL MCMULT('ZERO',LMASSE,VECPRO(1,IMODE),'C',ZC(LMORT),1)
 !
-100  end do
+    end do
 !
 !     --- MENAGE ---
     call jedetr('&&WP1INV.YN_ASSOCIE_A_XN')

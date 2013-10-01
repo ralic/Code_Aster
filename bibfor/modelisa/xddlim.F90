@@ -4,7 +4,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                   ch3, cnxinv)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
 #include "asterfort/afrela.h"
@@ -19,6 +18,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+!
     integer :: ino, icompt, ndim, jnoxfv
     real(kind=8) :: valimr, direct(3)
     character(len=4) :: fonree
@@ -79,6 +79,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     character(len=19) :: ch1, ch2, ch3, ch4
     complex(kind=8) :: cbid, valimc
     character(len=1) :: ch
+    cbid = dcmplx(0.d0, 0.d0)
     data        axes /'X','Y','Z'/
 !
 ! ----------------------------------------------------------------------
@@ -114,13 +115,13 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         call jeveuo(ch4//'.CESD', 'L', jfisnd)
 ! --- NOMBRE DE DDLS HEAVISIDES DANS LA MAILLE
         nfh = zi(jfisnd-1+5+4*(numa-1)+2)
-        do 40 i = 1, nfh
+        do i = 1, nfh
             call cesexi('S', jfisnd, jfisnl, numa, nuno,&
                         i, 1, iad)
             fisno(i) = zi(jfisnv-1+iad)
-40      continue
+        end do
     endif
-    do 70 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
         call cesexi('S', jstnod, jstnol, numa, nuno,&
                     ifiss, 1, iad)
         stano(ifiss)=zi(jstnov-1+iad)
@@ -130,7 +131,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         call cesexi('S', jlstd, jlstl, numa, nuno,&
                     ifiss, 1, iad)
         lst(ifiss) = zr(jlstv-1+iad)
-70  end do
+    end do
 !
 !
 ! --- IDENTIFICATIOND DES CAS A TRAITER :
@@ -159,15 +160,15 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
             call jelira(jexnum(cnxinv, ino), 'LONMAX', nbmano)
             call jeveuo(jexnum(cnxinv, ino), 'L', adrma)
 ! ---     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD
-            do 100 ima = 1, nbmano
+            do ima = 1, nbmano
                 numa = zi(adrma-1 + ima)
                 nbnoma = zi(jconx2+numa) - zi(jconx2+numa-1)
 ! ---       BOUCLE SUR LES NOEUDS DE LA MAILLE
 ! ---       ATTENTION ON NE PREND EN COMPTE QUE LES MAILLES LINEAIRES !
-                do 110 i = 1, nbnoma
+                do i = 1, nbnoma
                     nuno = zi(jconx1-1+zi(jconx2+numa-1)+i-1)
 ! ---         ON REGARDE SI LE NOEUD APPARTIENT AU GRP DE NOEUD AFFECTÉ
-                    do 120 j = 1, nbno
+                    do j = 1, nbno
                         nuno2 = zi(ialino-1+j)
                         if (nuno2 .eq. nuno) then
                             call cesexi('C', jlsnd, jlsnl, numa, i,&
@@ -179,9 +180,10 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                             if (lsn2 .gt. maxlsn) maxlsn=lsn2
                             goto 110
                         endif
-120                  continue
-110              continue
-100          continue
+                    end do
+110                 continue
+                end do
+            end do
 !
             if ((minlsn.eq.0.d0) .and. (maxlsn.gt.0.d0)) then
 ! ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE MAITRE
@@ -212,19 +214,19 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         endif
     else
         nrel = 1
-        do 50 ifh = 1, nfh
+        do ifh = 1, nfh
 ! --- ON NE PREND PAS ENCORE EN COMPTE LE CAS OU ON PASSE PAR UN NOEUD
             if (lsn(fisno(ifh)) .eq. 0) goto 888
             he(1,ifh) = sign(1.d0,lsn(fisno(ifh)))
-50      continue
+        end do
     endif
-    do 5 i = 1, nbxcmp
+    do i = 1, nbxcmp
         dimens(i)= 0
         noeud(i) = nomn
- 5  end do
+    end do
 !
 !     BOUCLE SUR LES RELATIONS
-    do 10 irel = 1, nrel
+    do irel = 1, nrel
 !
 !       CALCUL DES COORDONNÉES POLAIRES DU NOEUD (R,T)
         r = sqrt(lsn(1)**2+lst(1)**2)
@@ -234,7 +236,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         if (motcle(1:8) .eq. 'DEPL    ') then
 !
             i = 0
-            do 20 j = 1, ndim
+            do j = 1, ndim
 !
 !           COEFFICIENTS ET DDLS DE LA RELATION
                 i = i+1
@@ -263,16 +265,16 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                         coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)*direct(j)
                     endif
                 else
-                    do 80 ifh = 1, nfh
+                    do ifh = 1, nfh
                         if (stano(fisno(ifh)) .eq. 1) then
                             i = i+1
                             call codent(ifh, 'G', ch)
                             ddl(i) = 'H'//ch//axes(j)
                             coef(i)=he(irel,ifh)*direct(j)
                         endif
-80                  continue
+                    end do
                 endif
-20          continue
+            end do
 !
 !       CAS DDL_IMPO DX DY DZ
             elseif (motcle.eq.'DX'.or.motcle.eq.'DY'.or.motcle.eq.'DZ')&
@@ -303,14 +305,14 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)
                 endif
             else
-                do 60 ifh = 1, nfh
+                do ifh = 1, nfh
                     if (stano(fisno(ifh)) .eq. 1) then
                         i = i+1
                         call codent(ifh, 'G', ch)
                         ddl(i) = 'H'//ch//motcle(2:2)
                         coef(i)=he(irel,ifh)
                     endif
-60              continue
+                end do
             endif
         endif
         nterm = i
@@ -318,11 +320,11 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     [0.d0], nterm, valimr, valimc, valimf,&
                     'REEL', fonree, '12', 0.d0, lisrel)
 !
-10  end do
+    end do
 !
     icompt = icompt + 1
 !
-888  continue
+888 continue
 !
     if (nfiss .gt. 1) call detrsd('CHAM_ELEM_S', ch4)
 !

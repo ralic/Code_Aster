@@ -39,14 +39,13 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     real(kind=8) :: alpha
 !
 !
-    integer :: nbsd, ilimpi, ifetc1, ifetc2, idd, neq1, neq2, ival1, ival2, iret1
-    integer :: iret2
+    integer :: neq1, neq2, ival1, ival2
     character(len=24) :: kval1, kval2, chamn1, chamn2
 !
     call jemarq()
     chamn1=chamna
     chamn2=chamnb
-
+!
     kval1=chamn1(1:19)//'.VALE'
     kval2=chamn2(1:19)//'.VALE'
     call jeveuo(kval1, 'L', ival1)
@@ -54,8 +53,9 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     call jelira(kval1, 'LONMAX', neq1)
     call jelira(kval2, 'LONMAX', neq2)
     ASSERT(neq1.eq.neq2)
-    call daxpy(neq2, alpha, zr(ival1), 1, zr(ival2), 1)
-
-
+    call daxpy(neq2, alpha, zr(ival1), 1, zr(ival2),&
+               1)
+!
+!
     call jedema()
 end subroutine

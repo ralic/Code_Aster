@@ -57,13 +57,14 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 !
 !
     integer :: k, jvare, j2nd, jtempm, jtempp, jtemp
-    real(kind=8) :: r8bid, testn, rbid
+    real(kind=8) :: r8bid, testn
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, criter
 !
 !-----------------------------------------------------------------------
     integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data typres        /'R'/
     data chsol         /'&&NTTAIN.SOLUTION'/
@@ -100,9 +101,9 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
     call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
-    do 130 k = 1, lonch
+    do k = 1, lonch
         zr(jtempp+k-1) = zr(j2nd+k-1) + zr(jvare+k-1)
-130  continue
+    end do
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
                 vtempp, chsol, 'V', [0.d0], [cbid],&
@@ -119,12 +120,12 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 !
     testi = 0.d0
     testn = 0.d0
-    do 131 k = 1, lonch
+    do k = 1, lonch
         testi = testi + (zr(jtempp+k-1)-zr(jtempm+k-1))**2
         testn = testn + (zr(jtempp+k-1))**2
         zr(jtemp +k-1) = zr(jtempm+k-1)
         zr(jtempm+k-1) = zr(jtempp+k-1)
-131  continue
+    end do
     if (testn .gt. 0) testi = testi/testn
 !
 ! --- A-T-ON CONVERGE ?

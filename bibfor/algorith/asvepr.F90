@@ -17,7 +17,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
@@ -77,7 +77,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     character(len=24) :: vachar
     integer :: jvacha
     character(len=24) :: resuel
-    character(len=8) ::  newnom, modele, typech, typsca
+    character(len=8) :: newnom, modele, typech, typsca
     integer :: ivach, nbvach
     integer :: neq, nbvec
     integer :: iret, ibid, ivec, ichar, ityprs
@@ -117,9 +117,9 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     if (iret .gt. 0) then
         call jeveuo(vachar, 'L', jvacha)
         call jelira(vachar, 'LONMAX', nbvach)
-        do 10 ivach = 1, nbvach
+        do ivach = 1, nbvach
             call detrsd('CHAMP_GD', zk24(jvacha-1+ivach)(1:19))
-10      continue
+        end do
         call jedetr(vachar)
     endif
 !
@@ -152,7 +152,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! --- ASSEMBLAGE DES VECT_ELEM
 !
-    do 20 ivec = 1, nbvec
+    do ivec = 1, nbvec
 !
 ! ----- NOM DU RESU_ELEM
 !
@@ -203,7 +203,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             call vtcopy(resuel, chamno, 'F', ibid)
         endif
 !
-20  end do
+    end do
     call jedetr('&&ASVEPR           .RELR')
     call jedetr('&&ASVEPR           .RERR')
 !
@@ -216,15 +216,15 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 ! --- DESTRUCTION DU VECT_ELEM
 !
     call jeexin(vecele//'.RELR', iret)
-    do 40 ivec = 1, nbvec
+    do ivec = 1, nbvec
         resuel = zk24(jvec-1+ivec)
         call corich('S', resuel, ibid, ibid)
         call detrsd('CHAMP_GD', resuel)
-40  end do
+    end do
     call jedetr(vecele//'.RELR')
     call jedetr(vecele//'.RERR')
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

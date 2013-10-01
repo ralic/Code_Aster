@@ -343,38 +343,38 @@ subroutine prcycb(nomres, soumat, repmat)
     if (nbdax .gt. 0) then
         call wkvect('&&'//pgc//'.VECTD', 'V V R', nbdax*neq, ltvecd)
     endif
-    do 666 i = 1, nbmod
+    do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltveca+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltveca+(i-1)*neq))
-666  continue
-    do 667 i = 1, nbddr
+    end do
+    do i = 1, nbddr
         iord=zi(ltord+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvecb+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvecb+(i-1)*neq))
-667  continue
-    do 668 i = 1, nbddr
+    end do
+    do i = 1, nbddr
         iord=zi(ltorg+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvecc+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvecc+(i-1)*neq))
-668  continue
+    end do
     if (nbdax .gt. 0) then
-        do 669 i = 1, nbdax
+        do i = 1, nbdax
             iord=zi(ltora+i-1)
             call dcapno(basmod, 'DEPL    ', iord, chamva)
             call jeveuo(chamva, 'L', llcham)
             call dcopy(neq, zr(llcham), 1, zr(ltvecd+(i-1)*neq), 1)
             call jelibe(chamva)
             call zerlag(neq, zi(iddeeq), vectr=zr(ltvecd+(i-1)*neq))
-669      continue
+        end do
     endif
 !
     call wkvect('&&'//pgc//'.VECT1', 'V V R', neq, ltvec1)
@@ -417,7 +417,7 @@ subroutine prcycb(nomres, soumat, repmat)
     call jeveuo(jexnum(soumat, ibid), 'E', ldm0ii)
 !
     ktrian = 0
-    do 10 i = 1, nbmod
+    do i = 1, nbmod
 !
 ! ----- CALCUL PRODUIT MATRICE  MODES
 !
@@ -433,13 +433,13 @@ subroutine prcycb(nomres, soumat, repmat)
         zr(ldk0ii+ktrian) = ddot(neq,zr(ltvec1),1, zr(ltveca+(i-1)* neq),1)
         zr(ldm0ii+ktrian) = ddot(neq,zr(ltvec3),1, zr(ltveca+(i-1)* neq),1)
         ktrian = ktrian + 1
-        do 20 j = i-1, 1, -1
+        do j = i-1, 1, -1
             zr(ldk0ii+ktrian) = ddot(neq,zr(ltvec1),1, zr(ltveca+(j-1) *neq),1)
             zr(ldm0ii+ktrian) = ddot(neq,zr(ltvec3),1, zr(ltveca+(j-1) *neq),1)
             ktrian = ktrian + 1
-20      continue
+        end do
 !
-10  continue
+    end do
 !
 ! --- PRODUIT MATRICE DEFORMEES DROITES
 !
@@ -482,7 +482,7 @@ subroutine prcycb(nomres, soumat, repmat)
 !
     ktrian = 0
 !
-    do 60 i = 1, nbddr
+    do i = 1, nbddr
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE DROITE
 !
@@ -502,38 +502,38 @@ subroutine prcycb(nomres, soumat, repmat)
 ! ----- NUL SI MODES CONTRAINTS STATIQUES MAIS NON NUL
 ! ----- SI MODES CONTRAINTS HARMONIQUES
 !
-        do 65 j = 1, nbmod
+        do j = 1, nbmod
             xprod= ddot(neq,zr(ltvec1),1,zr(ltveca+(j-1)*neq),1)
             call amppr(zr(ldk0ij), nbmod, nbddr, [xprod], 1,&
                        1, j, i)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltveca+(j-1)*neq),1)
             call amppr(zr(ldm0ij), nbmod, nbddr, [xprod], 1,&
                        1, j, i)
-65      continue
+        end do
 !
 ! ----- PRODUIT AVEC DEFORMEES DROITES (HORS TERMES DIAGONAUX)
 !
         ktrian = ktrian + 1
-        do 70 j = i-1, 1, -1
+        do j = i-1, 1, -1
             zr(ldk0jj+ktrian) = ddot(neq,zr(ltvec1),1, zr(ltvecb+(j-1) *neq),1)
             zr(ldm0jj+ktrian) = ddot(neq,zr(ltvec3),1, zr(ltvecb+(j-1) *neq),1)
             ktrian = ktrian + 1
-70      continue
+        end do
 !
 ! ----- PRODUIT AVEC DEFORMEES AXE
 !
         if (nbdax .gt. 0) then
-            do 75 j = 1, nbdax
+            do j = 1, nbdax
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltvecd+(j-1)*neq),1)
                 call amppr(zr(ldk0aj), nbdax, nbddr, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltvecd+(j-1)*neq),1)
                 call amppr(zr(ldm0aj), nbdax, nbddr, [xprod], 1,&
                            1, j, i)
-75          continue
+            end do
         endif
 !
-60  continue
+    end do
 !
 !
 ! --- TRAITEMENT DES PRODUITS MATRICIELS PAR TETA
@@ -568,7 +568,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call wkvect('&&'//pgc//'.MAG', 'V V R', nbdax*nbddr, ltmag)
     endif
 !
-    do 80 i = 1, nbdga
+    do i = 1, nbdga
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE GAUCHE
 !
@@ -590,29 +590,29 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! ----- MULTIPLICATION PAR MODES PROPRES
 !
-        do 85 j = 1, nbmod
+        do j = 1, nbmod
             xprod= ddot(neq,zr(ltvec1),1,zr(ltveca+(j-1)*neq),1)
             call amppr(zr(ltkig), nbmod, nbdga, [xprod], 1,&
                        1, j, i)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltveca+(j-1)*neq),1)
             call amppr(zr(ltmig), nbmod, nbdga, [xprod], 1,&
                        1, j, i)
-85      continue
+        end do
 !
 ! ----- PRODUIT AVEC DEFORMEE DROITE
 !
-        do 90 j = 1, nbddr
+        do j = 1, nbddr
             xprod= ddot(neq,zr(ltvec1),1,zr(ltvecb+(j-1)*neq),1)
             call amppr(zr(ltkdg), nbddr, nbddr, [xprod], 1,&
                        1, j, i)
             xprod= ddot(neq,zr(ltvec3),1,zr(ltvecb+(j-1)*neq),1)
             call amppr(zr(ltmdg), nbddr, nbddr, [xprod], 1,&
                        1, j, i)
-90      continue
+        end do
 !
 ! ----- PRODUIT AVEC DEFORMEES GAUCHES (HORS TERMES DIAGONAUX)
 !
-        do 100 j = 1, i-1
+        do j = 1, i-1
             xprod= ddot(neq,zr(ltvec1),1,zr(ltvecc+(j-1)*neq),1)
             call amppr(zr(ltkgg), nbdga, nbdga, [xprod], 1,&
                        1, j, i)
@@ -623,22 +623,22 @@ subroutine prcycb(nomres, soumat, repmat)
                        1, j, i)
             call amppr(zr(ltmgg), nbdga, nbdga, [xprod], 1,&
                        1, i, j)
-100      continue
+        end do
 !
 ! ----- PRODUIT AVEC DEFORMEES AXE
 !
         if (nbdax .gt. 0) then
-            do 105 j = 1, nbdax
+            do j = 1, nbdax
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltvecd+(j-1)*neq),1)
                 call amppr(zr(ltkag), nbdax, nbdga, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltvecd+(j-1)*neq),1)
                 call amppr(zr(ltmag), nbdax, nbdga, [xprod], 1,&
                            1, j, i)
-105          continue
+            end do
         endif
 !
-80  continue
+    end do
 !
 !
 ! --- TRAITEMENT DES PRODUITS MATRICIELS PAR TETA
@@ -698,12 +698,13 @@ subroutine prcycb(nomres, soumat, repmat)
                nbddr)
 !
     k = 0
-    do 107 j = 1, nbddr
-        do 107 i = j, 1, -1
+    do j = 1, nbddr
+        do i = j, 1, -1
             zr(ldk0jj+k) = zr(ldk0jj+k)+zr(ltkgg-1+(j-1)*nbddr+i)
             zr(ldm0jj+k) = zr(ldm0jj+k)+zr(ltmgg-1+(j-1)*nbddr+i)
             k = k + 1
-107      continue
+        end do
+    end do
 !
 !
 ! --- SAUVEGARDE ET DESTRUCTION
@@ -755,7 +756,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call wkvect('&&'//pgc//'.MAA', 'V V R', nbdax*nbdax, ltmaa)
         call wkvect('&&'//pgc//'.MIA', 'V V R', nbmod*nbdax, ltmia)
 !
-        do 210 i = 1, nbdax
+        do i = 1, nbdax
 !
 ! ------- CALCUL PROJECTION MATRICE DEFORMEES AXE
 !
@@ -768,26 +769,26 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! ------- MULTIPLICATION PAR MODES PROPRES
 !
-            do 220 j = 1, nbmod
+            do j = 1, nbmod
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltveca+(j-1)*neq),1)
                 call amppr(zr(ltkia), nbmod, nbdax, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltveca+(j-1)*neq),1)
                 call amppr(zr(ltmia), nbmod, nbdax, [xprod], 1,&
                            1, j, i)
-220          continue
+            end do
 !
 ! ------- PRODUIT AVEC DEFORMEE AXE
 !
-            do 230 j = 1, nbdax
+            do j = 1, nbdax
                 xprod= ddot(neq,zr(ltvec1),1,zr(ltvecd+(j-1)*neq),1)
                 call amppr(zr(ltkaa), nbdax, nbdax, [xprod], 1,&
                            1, j, i)
                 xprod= ddot(neq,zr(ltvec3),1,zr(ltvecd+(j-1)*neq),1)
                 call amppr(zr(ltmaa), nbdax, nbdax, [xprod], 1,&
                            1, j, i)
-230          continue
-210      continue
+            end do
+        end do
 !
 ! ----- TRAITEMENT DES PRODUITS MATRICIEL PAR TETA
 ! -----(RECUPERATION EN LECTURE DE K0AA & MOAA)

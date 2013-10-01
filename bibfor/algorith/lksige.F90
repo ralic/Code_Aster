@@ -1,6 +1,6 @@
 subroutine lksige(mod, nmat, materd, deps, sigd,&
                   sigf)
-    implicit  none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,15 +55,15 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 ! --- MECANIQUE DES SOLS --- INVERSE DE MMC
 ! --- TRACTION -> NEGATIF / COMPRESSION -> POSITIF
 ! --------------------------------------------------------------------
-    do 10 i = 1, ndt
+    do i = 1, ndt
         sigdt(i) = -sigd(i)
         depst(i) = -deps(i)
-10  continue
+    end do
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DE RIGIDITE ELASTIQUE NON LINEAIRE
 ! --------------------------------------------------------------------
-    call lkelas(ndi, ndt, nmat, materd,&
-                depst, sigdt, dsde, kk, mu)
+    call lkelas(ndi, ndt, nmat, materd, depst,&
+                sigdt, dsde, kk, mu)
 !
 ! --------------------------------------------------------------------
 ! --- DEFINITION DE L'INCREMENT DEFORMATION VOLUMIQUE
@@ -89,22 +89,22 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES ELASTIQUES
 ! --------------------------------------------------------------------
-    do 20 i = 1, ndt
+    do i = 1, ndt
         devsig(i) = devsig(i) + deux* mu *depsd(i)
-20  continue
+    end do
 !
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DES CONTRAINTES ELASTIQUES
 ! --------------------------------------------------------------------
-    do 30 i = 1, ndt
+    do i = 1, ndt
         sigft(i) = devsig(i) + iel/trois*kron(i)
-30  continue
+    end do
 !
 ! --------------------------------------------------------------------
 ! --- RETOUR DES CONTRAINTES ELASTIQUES A LA CONVENTION MMC
 ! --------------------------------------------------------------------
-    do 40 i = 1, ndt
+    do i = 1, ndt
         sigf(i) = -sigft(i)
-40  continue
+    end do
 !
 end subroutine

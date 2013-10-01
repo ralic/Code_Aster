@@ -142,10 +142,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !
         depstr = deps
 !
-        do 300 i = 4, 6
+        do i = 4, 6
             depstr(i) = deps(i)*rac2
             congep(adcome+i-1)= congep(adcome+i-1)/rac2
-300      continue
+        end do
 !
 !    CALCUL DE LA MATRICE DE HOOK DANS LE REPERE GLOBAL
 !
@@ -153,57 +153,57 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     aniso, d, ndim, phenom)
 !
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 101 i = 1, 3
-                do 301 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
                     addeme+ndim-1+j)+d(i,j)
-301              continue
-                do 302 j = 4, 6
+                end do
+                do j = 4, 6
                     dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
                     addeme+ndim-1+j)+d(i,j)/(0.5*rac2)
-302              continue
-101          continue
+                end do
+            end do
 !
-            do 102 i = 4, 6
-                do 303 j = 1, 3
+            do i = 4, 6
+                do j = 1, 3
                     dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
                     addeme+ndim-1+j)+d(i,j)*rac2
-303              continue
-                do 304 j = 4, 6
+                end do
+                do j = 4, 6
                     dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
                     addeme+ndim-1+j)+d(i,j)*2.d0
-304              continue
-102          continue
+                end do
+            end do
         endif
 !
 !
         if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 121 i = 1, 6
-                do 122 j = 1, 6
+            do i = 1, 6
+                do j = 1, 6
                     congep(adcome+i-1)=congep(adcome+i-1)+d(i,j)*&
                     depstr(j)
-122              continue
-121          continue
+                end do
+            end do
         endif
 !
 !   ON REVIENT AUX CONTRAINTES * RAC2
 !
-        do 400 i = 4, 6
+        do i = 4, 6
             congep(adcome+i-1)= congep(adcome+i-1)*rac2
-400      continue
+        end do
 !
 !
         if (yate .eq. 1) then
             if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                do 103 i = 1, 6
+                do i = 1, 6
                     dsde(adcome-1+i,addete)=dsde(adcome-1+i,addete)&
                     -mdal(i)
-103              continue
+                end do
             endif
             if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                do 104 i = 1, 6
+                do i = 1, 6
                     congep(adcome+i-1)=congep(adcome+i-1)-mdal(i)*dt
-104              continue
+                end do
             endif
         endif
 !
@@ -230,9 +230,9 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         mectru = .true.
         tini = t - dt
 !
-        do 150 i = 1, 7
+        do i = 1, 7
             angmas(i)=0.d0
-150      continue
+        end do
 !
         complg(1) = 'HUJEUX'
         write (complg(2),'(I16)') nvimec
@@ -307,21 +307,21 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     endif
     if (mectru) then
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 200 i = 1, ndt
-                do 201 j = 1, ndt
+            do i = 1, ndt
+                do j = 1, ndt
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-201              continue
-200          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 206 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-206              continue
+                end do
             endif
         endif
     endif
@@ -335,21 +335,21 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     congem(adcome), vintm, congep(adcome), vintp, dsdeme,&
                     retcom)
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 252 i = 1, 2*ndim
-                do 253 j = 1, 2*ndim
+            do i = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-253              continue
-252          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 256 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-256              continue
+                end do
             endif
         endif
     endif
@@ -363,21 +363,21 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     deps, congem(adcome), vintm, option, congep(adcome),&
                     vintp, dsdeme, retcom)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 402 i = 1, 2*ndim
-                do 401 j = 1, 2*ndim
+            do i = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-401              continue
-402          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 406 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-406              continue
+                end do
             endif
         endif
     endif
@@ -394,21 +394,21 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     p2, dp1, dp2, dsidp1, sipm,&
                     sipp, retcom)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 412 i = 1, 2*ndim
-                do 411 j = 1, 2*ndim
+            do i = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-411              continue
-412          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 416 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-416              continue
+                end do
             endif
         endif
     endif
@@ -427,17 +427,17 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
 !
-            do 522 i = 1, 2*ndim
+            do i = 1, 2*ndim
                 dsde(adcome+i-1,addep1) = dsde(adcome+i-1,addep1) +dsidp1(i)
-                do 521 j = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-521              continue
-522          continue
+                end do
+            end do
 !
             if (yapre2) then
-                do 523 i = 1, 2*ndim
+                do i = 1, 2*ndim
                     dsde(adcome+i-1,addep2) = dsde(adcome+i-1,addep2) +dsidp2(i)
-523              continue
+                end do
             endif
 !
 ! ======================================================================
@@ -445,11 +445,11 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 4116 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-4116              continue
+                end do
             endif
         endif
     endif
@@ -470,7 +470,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     vintm, vintp, dspdp1, dspdp2, sipp,&
                     congep(adcome), dsdeme, dsidp1, dsidp2, retcom)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 413 i = 1, 2*ndim
+            do i = 1, 2*ndim
                 if (addep1 .ge. 1) then
                     dsde(adcome+i-1,addep1) = dsidp1(i)
                 endif
@@ -478,20 +478,20 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                 if (pre2tr) then
                     dsde(adcome+i-1,addep2) = dsidp2(i)
                 endif
-                do 414 j = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-414              continue
-413          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 417 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-417              continue
+                end do
             endif
         endif
     endif
@@ -505,21 +505,21 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     tini, t, tref, option, congep(adcome),&
                     vintp, dsdeme)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 502 i = 1, 2*ndim
-                do 501 j = 1, 2*ndim
+            do i = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-501              continue
-502          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 506 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-506              continue
+                end do
             endif
         endif
     endif
@@ -539,21 +539,21 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     tini, t, tref, option, congep(adcome),&
                     vintp, dsdeme12, crit)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 602 i = 1, 2*ndim
-                do 601 j = 1, 2*ndim
+            do i = 1, 2*ndim
+                do j = 1, 2*ndim
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme12(i,j)
-601              continue
-602          continue
+                end do
+            end do
 ! ======================================================================
 ! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
 ! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
 ! ======================================================================
             if (yate .eq. 1) then
-                do 606 i = 1, 3
+                do i = 1, 3
                     dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
                     addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
                     + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-606              continue
+                end do
             endif
         endif
     endif

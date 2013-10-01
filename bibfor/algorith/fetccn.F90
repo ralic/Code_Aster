@@ -32,7 +32,6 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -41,6 +40,7 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utimsd.h"
+!
     integer :: typcum
     character(len=19) :: chamn1, chamn2, chamn3, chamn4, chamnr
 !
@@ -80,25 +80,25 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
 !----------------------------------------------------------------------
 !
     if (typcum .eq. 0) then
-        do 2 k = 0, nbval
+        do k = 0, nbval
             zr(jr+k) = 0.d0
- 2      continue
+        end do
     else if (typcum.eq.1) then
-        do 3 k = 0, nbval
+        do k = 0, nbval
             zr(jr+k) = zr(j1+k)
- 3      continue
+        end do
     else if (typcum.eq.2) then
-        do 4 k = 0, nbval
+        do k = 0, nbval
             zr(jr+k) = zr(j1+k) + zr(j2+k)
- 4      continue
+        end do
     else if (typcum.eq.3) then
-        do 5 k = 0, nbval
+        do k = 0, nbval
             zr(jr+k) = zr(j1+k) + zr(j2+k) + zr(j3+k)
- 5      continue
+        end do
     else if (typcum.eq.4) then
-        do 6 k = 0, nbval
+        do k = 0, nbval
             zr(jr+k) = zr(j1+k) + zr(j2+k) + zr(j3+k) + zr(j4+ k)
- 6      continue
+        end do
     else
         ASSERT(.false.)
     endif

@@ -68,7 +68,7 @@ subroutine te0533(option, nomte)
     real(kind=8) :: mmat(216, 216), jac, mu, coeffr, rela
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: nd(3), seuil, cohes(3)
-    real(kind=8) :: rr, rbid, coheo(3),vect(1)
+    real(kind=8) :: rr, coheo(3), vect(1)
     integer :: jheano, ifiss, jheafa, ncomph
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
     logical :: matsym, lelim
@@ -81,9 +81,9 @@ subroutine te0533(option, nomte)
 !
 ! --- INITIALISATIONS
 !
-    do 6 i = 1, 8
+    do i = 1, 8
         lact(i) = 0
- 6  end do
+    end do
     call vecini(27, 0.d0, ffp)
     call vecini(3, 0.d0, tau2)
     lelim = .false.
@@ -157,13 +157,13 @@ subroutine te0533(option, nomte)
     ncompc = jtab(2)
 !
 !     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
-    do 30 i = 1, max(1, nfh)*nnos
+    do i = 1, max(1, nfh)*nnos
         vstnc(i) = 1
-30  end do
+    end do
 !
 ! --- BOUCLE SUR LES FISSURES
 !
-    do 90 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 ! --- RECUPERATION DIVERSES DONNEES CONTACT
 !
@@ -198,11 +198,11 @@ subroutine te0533(option, nomte)
 !
 ! --- BOUCLE SUR LES FACETTES
 !
-        do 100 ifa = 1, nface
+        do ifa = 1, nface
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !
-            do 110 ipgf = 1, npgf
+            do ipgf = 1, npgf
 !
 ! --- RECUPERATION DES STATUTS POUR LE POINT DE GAUSS
 !
@@ -210,9 +210,9 @@ subroutine te0533(option, nomte)
                 indco = zi(jindco-1+nbspg+isspg)
                 if (algofr .ne. 0) seuil = zr(jseuil-1+nbspg+isspg)
                 if (algocr .eq. 3) then
-                    do 2 i = 1, ncompv
+                    do i = 1, ncompv
                         cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
- 2                  continue
+                    end do
                 endif
 !
 ! --- PREPARATION DU CALCUL
@@ -241,9 +241,9 @@ subroutine te0533(option, nomte)
 ! --- ACTUALISATION VARIABLE INTERNE
 !
                     if (algocr .eq. 3) then
-                        do 3 i = 1, ncompv
+                        do i = 1, ncompv
                             zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) = coheo(i)
- 3                      continue
+                        end do
                     endif
 !
                 else if (option.eq.'RIGI_FROT' .and. rela.ne.3.d0 .and. rela.ne.4.d0) then
@@ -259,18 +259,18 @@ subroutine te0533(option, nomte)
                     ASSERT(rela.eq.3.d0.or.rela.eq.4.d0)
                 endif
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
-110          continue
+            end do
 !
 ! --- FIN DE BOUCLE SUR LES FACETTES
-100      continue
+        end do
 ! --- FIN BOUCLE SUR LES FISSURES : DECALAGE D INDICES
         nbspg = nbspg + nspfis
-91      continue
+ 91     continue
         jbasec = jbasec + ncompb
         jptint = jptint + ncompp
         jaint = jaint + ncompa
         jcface = jcface + ncompc
-90  end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     COPIE DES CHAMPS DE SORTIES ET FIN
@@ -280,22 +280,22 @@ subroutine te0533(option, nomte)
 ! --- RECUPERATION DE LA MATRICE 'OUT' NON SYMETRIQUE
         matsym=.false.
         call jevech('PMATUNS', 'E', imatt)
-        do 201 j = 1, nddl
-            do 211 i = 1, nddl
+        do j = 1, nddl
+            do i = 1, nddl
                 ij = j+nddl*(i-1)
                 zr(imatt+ij-1) = mmat(i,j)
-211          continue
-201      continue
+            end do
+        end do
     else
 ! --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
         matsym=.true.
         call jevech('PMATUUR', 'E', imatt)
-        do 200 j = 1, nddl
-            do 210 i = 1, j
+        do j = 1, nddl
+            do i = 1, j
                 ij = (j-1)*j/2 + i
                 zr(imatt+ij-1) = mmat(i,j)
-210          continue
-200      continue
+            end do
+        end do
     endif
 ! --- SUPPRESSION DES DDLS DE DEPLACEMENT SEULEMENT POUR LES XHTC
     if (nfh .ne. 0) then

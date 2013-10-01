@@ -130,7 +130,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     nbpbse=0
     nbpbvt=0
     ordre = .true.
-    do 20 i = 1, nbd
+    do i = 1, nbd
 !     --- BOUCLE SUR LES NOEUDS DE L'INTERFACE DROITE ---
         nunod=zi(ltnd+i-1)
         call jenuno(jexnum(mailla//'.NOMNOE', nunod), nomnod)
@@ -141,7 +141,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
         rd = sqrt(xd*xd+yd*yd)
 !
 !       RECHERCHE DU NOEUD J (GAUCHE) LE PLUS PROCHE DE I (DROITE)
-        do 10 j = 1, nbd
+        do j = 1, nbd
 !       --- BOUCLE SUR LES NOEUDS DE L'INTERFACE GAUCHE ---
             nunog=zi(ltng+j-1)
             call jenuno(jexnum(mailla//'.NOMNOE', nunog), nomnog)
@@ -170,7 +170,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
                     nomnj = nomnog
                 endif
             endif
-10      continue
+        end do
         zi(llista-1+i) = jnode
         if (zi(llistb-1+jnode) .ne. 0) then
 !       --- CAS OU JNODE EST DEJA UN VIS-A-VIS ---
@@ -253,7 +253,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
             call utmess('E', 'ALGORITH16_55', nk=2, valk=valk, si=vali(1))
         endif
 !
-20  end do
+    end do
 !
 !
     nbpbto=nbpbax+nbpbr+nbpbse+nbpbvt
@@ -276,24 +276,24 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     if (.not.ordre .and. diag .eq. ' ') then
 !     --- LES NOEUDS NE SONT PAS EN VIS-A-VIS ---
 !         ON REGARDE D'ABORD SI LE TRI EST PLAUSIBLE
-        do 30 i = 1, nbd
+        do i = 1, nbd
             if (zi(llistb-1+zi(llista-1+i)) .ne. i) then
                 diag = 'TRI DES NOEUDS IMPOSSIBLE'
                 goto 40
             endif
-30      continue
-40      continue
+        end do
+ 40     continue
 !
         call utmess('A', 'ALGORITH16_57')
         call jeveuo(jexnum(intf//'.IDC_LINO', numg), 'E', llintg)
 !    --- ON ORDONNE LES NOEUDS DE LLINTG SUIVANT LLISTA
-        do 50 i = 1, nbd
+        do i = 1, nbd
 !        --- RECOPIE DE LLINT2 DANS LLISTB
             zi(llistb-1+i) = zi(llintg-1+i)
-50      continue
-        do 60 i = 1, nbd
+        end do
+        do i = 1, nbd
             zi(llintg-1+i) = zi(llistb-1+zi(llista-1+i))
-60      continue
+        end do
 !
     endif
 !

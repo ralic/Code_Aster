@@ -107,20 +107,20 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 ! --- COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
     nn=3*nptfmx
-    do 9 i = 1, nn
+    do i = 1, nn
         coor2d(i)=0.d0
- 9  end do
-    do 10 i = 1, nptf
-        do 11 j = 1, ndim
+    end do
+    do i = 1, nptf
+        do j = 1, ndim
             coor2d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
-11      continue
-10  end do
+        end do
+    end do
 !
-    do 20 j = 1, ndim
+    do j = 1, ndim
         a(j)=zr(jinter-1+ndim*(cface(ifa,1)-1)+j)
         b(j)=zr(jinter-1+ndim*(cface(ifa,2)-1)+j)
         ab(j)=b(j)-a(j)
-20  end do
+    end do
 !
 ! --- COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE
 !     LIE A LA FACETTE
@@ -157,9 +157,9 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 ! --- COORDONNEES REELLES 1D DU POINT DE GAUSS IPG (ABS CUR DE G)
     xg=0.d0
-    do 30 j = 1, nnof
+    do j = 1, nnof
         xg=xg+zr(ivff-1+nnof*(ipg-1)+j)*coor1d(2*j-1)
-30  end do
+    end do
 !
 ! --- COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
     call reereg('S', elc, nnof, seg, [xg],&
@@ -175,19 +175,19 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE LA FACETTE EN CE POINT DE GAUSS
     call elrfvf(elc, ksig1, nbnomx, ff, ibid)
 !
-    do 40 j = 1, ndim
-        do 41 k = 1, nnof
+    do j = 1, ndim
+        do k = 1, nnof
             nd(j) = nd(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
             grlt(j)= grlt(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
             ndim)
-41      continue
-40  end do
+        end do
+    end do
 !
     call normev(nd, norme)
     ps=ddot(ndim,grlt,1,nd,1)
-    do 50 j = 1, ndim
+    do j = 1, ndim
         tau1(j)=grlt(j)-ps*nd(j)
-50  end do
+    end do
     call normev(tau1, norme)
 !
     if (norme .lt. 1.d-12) then
@@ -226,7 +226,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                 'NON', xe, ffpc, dfdic, f,&
                 eps, grad)
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

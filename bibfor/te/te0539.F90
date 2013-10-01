@@ -56,7 +56,7 @@ subroutine te0539(option, nomte)
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     logical :: matsym
-    real(kind=8) :: angmas(7), r8bid, bary(3),crit(1),sig(1),vi(1)
+    real(kind=8) :: angmas(7), bary(3), crit(1), sig(1), vi(1)
 !
     ivectu=1
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -148,7 +148,7 @@ subroutine te0539(option, nomte)
 !
 !-------ON MET NE DUR LE FAIT QUE LA MATRICE EST SYMETRIQUE
         matsym=.true.
-        goto 9999
+        goto 999
     else
         imatuu=1
     endif
@@ -160,11 +160,11 @@ subroutine te0539(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call rcangm(ndim, bary, angmas)
 !
 ! - VARIABLES DE COMMANDE
@@ -196,10 +196,10 @@ subroutine te0539(option, nomte)
     endif
 !
 ! provisoire. Mieux : utiliser ELAS_INCR
-    if ((zk16(icompo).eq. 'ELAS').and.(zk16(icompo+2).eq.'GROT_GDEP')) then
-         zk16(icompo+3)='COMP_INCR'
+    if ((zk16(icompo).eq. 'ELAS') .and. (zk16(icompo+2).eq.'GROT_GDEP')) then
+        zk16(icompo+3)='COMP_INCR'
     endif
-
+!
     if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then
 !
 ! - LOIS DE COMPORTEMENT ECRITES EN CONFIGURATION DE REFERENCE
@@ -217,9 +217,9 @@ subroutine te0539(option, nomte)
         else
 !
 !        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
-            do 200 li = 1, nddl
+            do li = 1, nddl
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
-200          continue
+            end do
 !
             call xnmel('+', nno, nfh, nfe, ddlc,&
                        ddlm, igeom, typmod, option, zi(imate),&
@@ -257,9 +257,9 @@ subroutine te0539(option, nomte)
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2).eq.'GROT_GDEP') then
 !            DO 50 I = 1,3*NNO
-            do 50 i = 1, nddl
+            do i = 1, nddl
                 zr(ideplp+i-1) = zr(ideplm+i-1) + zr(ideplp+i-1)
-50          continue
+            end do
 !
             call xnmgr(nno, nfh, nfe, ddlc, ddlm,&
                        igeom, zr(iinstm), zr( iinstp), ideplp, zr(icontm),&
@@ -317,7 +317,7 @@ subroutine te0539(option, nomte)
 !
     endif
 !
-9999  continue
+999 continue
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     call teattr(nomte, 'C', 'XLAG', lag, ibid)

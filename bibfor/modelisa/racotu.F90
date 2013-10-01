@@ -153,7 +153,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     nocmp(11) = 'VO3'
     nocmp(12) = 'WO3'
 !
-    do 10 imod = 1, nbmode
+    do imod = 1, nbmode
         if (info .eq. 2) then
             write (ifm,*) 'RELATIONS SUR LE MODE ',imod
         endif
@@ -284,7 +284,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
 !     FIN DE LA BOUCLE SUR LES MODES
 !
-10  end do
+    end do
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL
 !

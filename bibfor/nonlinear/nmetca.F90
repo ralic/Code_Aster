@@ -74,13 +74,12 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     character(len=8) :: licmp(npara)
     real(kind=8) :: rcmp(npara)
 !
-    integer :: ibid, codret, iret
+    integer :: codret, iret
     character(len=1) :: base
     character(len=24) :: ligrmo, chgeom
     character(len=24) :: chtime
     character(len=24) :: cartca
     character(len=19) :: sigmam, sigmap, chelem
-    complex(kind=8) :: cbid
     real(kind=8) :: somme(1)
     real(kind=8) :: instap, instam, deltat
     real(kind=8) :: longc, presc
@@ -183,7 +182,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'CALCULEL2_88', sk=option)
-        goto 9999
+        goto 999
     endif
 !
 ! --- PASSAGE A UNE VALEUR GLOBALE EN ESPACE
@@ -203,7 +202,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     zr(jerrt-1+1) = taberr(1)
     zr(jerrt-1+2) = taberr(2)
 !
-9999  continue
+999 continue
 !
 ! --- MENAGE
 !

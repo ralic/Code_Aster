@@ -18,7 +18,7 @@ subroutine mmcyc1(resoco, iptc, nompt, indco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/iscode.h"
 #include "asterfort/iscycl.h"
@@ -106,9 +106,9 @@ subroutine mmcyc1(resoco, iptc, nompt, indco)
 !
     if (ncycle .eq. longcy) then
         call isdeco(ccycle(1), statut, 30)
-        do 10 icycl = 1, longcy-1
+        do icycl = 1, longcy-1
             statut(icycl) = statut(icycl+1)
-10      continue
+        end do
         call iscode(statut, ccycle(1), 30)
         ncycle = longcy - 1
     endif

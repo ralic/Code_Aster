@@ -76,7 +76,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq, indin1, lino1, tramod
     character(len=24) :: modet
-    integer ::  iret
+    integer :: iret
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !---------------------------------------------------C
 !--                                               --C
@@ -121,26 +122,26 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call wkvect('&&MODEXP.VECT_CLEFS', 'V V I', nbno, lclef)
     call wkvect('&&MODEXP.VECT_NUM', 'V V I', nbno, lnum)
 !
-    do 10 k1 = 1, nbno
+    do k1 = 1, nbno
         zi(lclef+k1-1)=k1
         zi(lnum+k1-1)=zi(llino+k1-1)
-10  end do
+    end do
     call tri(zi(lnum), zi(lclef), 1, nbno)
-    do 30 k1 = 1, nbno
+    do k1 = 1, nbno
         ik=zi(lclef+k1-1)
         zi(lnoint+(k1-1))=zi(llino+ik-1)
         zi(lnoint+(k1-1)+nbno)=zi(lindin+(ik-1)*6)
         zi(lnoint+(k1-1)+2*nbno)=6
-        do 40 j1 = 1, 6
+        do j1 = 1, 6
             zi(lnoint+(k1-1)+((2+j1)*nbno))=j1
-40      continue
-30  end do
+        end do
+    end do
     call jedetr('&&MODEXP.VECT_CLEFS')
     call jedetr('&&MODEXP.VECT_NUM')
 !
     call wkvect('&&MOIN93.IS_DDL_INTERF', 'V V I', nbeq1, lddld)
     k1=1
-    do 50 i1 = 1, nbddl
+    do i1 = 1, nbddl
         if (zi(lindin+i1-1) .gt. 0) zi(lddld+zi(lindin+i1-1)-1)=1
         ipos1=zi(lindin+i1-1)
         if (ipos1 .gt. 0) then
@@ -149,7 +150,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
             zi(lintrf+k1-1)=i1
             k1=k1+1
         endif
-50  end do
+    end do
     nddlin=k1-1
 !
 !-- CONSTRUCTION DES MATRICES DE MASSE ET DE RAIDEUR DU PROBLEME
@@ -186,7 +187,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !-- ON BOUCLE POUR AVOIR UNE EXPANSION CORRECTE. TANT QUE C'EST PAS BON,
 !-- ON ENRICHIT LA BASE DES MODES D'INTERFACE
-500  continue
+500 continue
     call modint(ssami, raiint, nddlin, nbvect, shift,&
                 matmod, masse, raide, nbeq1, coint,&
                 noddli, nbno, vefreq, 0)
@@ -210,15 +211,15 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call matfpe(-1)
     call wkvect('&&MODEXP.CPHI', 'V V R', nl*nbvect, lcphi)
 !
-    do 300 j1 = 1, nbvect
-        do 310 k1 = 1, nc
-            do 320 i1 = 1, nl
+    do j1 = 1, nbvect
+        do k1 = 1, nc
+            do i1 = 1, nl
                 zr(lcphi+(j1-1)*nl+i1-1)=zr(lcphi+(j1-1)*nl+i1-1)+&
                 zr(ltramo+(k1-1)*nl+(i1-1))*zr(lmatmo+(j1-1)*nc+(k1-1)&
                 )
-320          continue
-310      continue
-300  end do
+            end do
+        end do
+    end do
 !      CALL DGEMM('N','N',NL,NBVECT,NC,1.,ZR(LTRAMO),
 !     &            NL,ZR(LMATMO),NC,0.,ZR(LCPHI),NL)
 !
@@ -227,11 +228,11 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call wkvect('&&MODEXP.COMB_LIN', 'V V R', ibid*nbmod, lclin)
 !
 !-- RECOPIE A LA MAIN POUR ETRE COMPATIBLE AVEC LES TAILLES
-    do 60 j1 = 1, nbmod
-        do 70 i1 = 1, nl
+    do j1 = 1, nbmod
+        do i1 = 1, nl
             zr(lclin+(j1-1)*max(nl,nbvect)+(i1-1)) = zr(lmast+(j1-1)* nl+(i1-1) )
-70      continue
-60  end do
+        end do
+    end do
 !
     call wkvect('&&MODEXP.VEC_VAL_SING', 'V V R', min(nl, nbvect), ibid)
 !
@@ -249,28 +250,28 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !-- MOUVEMENTS DE L'INTERFACE
     call wkvect('&&MODEXP.PHI_EXP', 'V V R', nc*nbmod, lphiex)
 !
-    do 450 j1 = 1, nbmod
-        do 460 k1 = 1, nbvect
-            do 470 i1 = 1, nc
+    do j1 = 1, nbmod
+        do k1 = 1, nbvect
+            do i1 = 1, nc
                 zr(lphiex+(j1-1)*nc+i1-1)=zr(lphiex+(j1-1)*nc+i1-1)+&
                 zr(lmatmo+(k1-1)*nc+(i1-1))*zr(lclin+(j1-1)*nbvect+(&
                 k1-1))
-470          continue
-460      continue
-450  end do
+            end do
+        end do
+    end do
 !
 !-- PROJECTION POUR VERIFIER L'EXPANSION
     call wkvect('&&MODEXP.C_PHI_EXP', 'V V R', nl*nbmod, lcpet)
 !
-    do 150 j1 = 1, nbmod
-        do 160 k1 = 1, nc
-            do 170 i1 = 1, nl
+    do j1 = 1, nbmod
+        do k1 = 1, nc
+            do i1 = 1, nl
                 zr(lcpet+(j1-1)*nl+i1-1)=zr(lcpet+(j1-1)*nl+i1-1)+&
                 zr(ltramo+(k1-1)*nl+(i1-1))*zr(lphiex+(j1-1)*nc+(k1-1)&
                 )
-170          continue
-160      continue
-150  end do
+            end do
+        end do
+    end do
 !
 !-- VERIFICATION DE LA QUALITE DE L'EXPANSION
 !
@@ -278,14 +279,14 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !-- NORME DE LA DIFFERENCE
     swork(1)=0
-    do 80 j1 = 1, nbmod
-        do 90 i1 = 1, nl
+    do j1 = 1, nbmod
+        do i1 = 1, nl
             zr(lnres+j1-1)=zr(lnres+j1-1)+( zr(lmast+(j1-1)*nl+(i1-1))&
             - zr(lcpet+(j1-1)*nl+(i1-1)) )**2
-90      continue
+        end do
         zr(lnres+j1-1)=sqrt(zr(lnres+j1-1))/nl
         swork(1)=max(swork(1),zr(lnres+j1-1))
-80  end do
+    end do
 !
     call matfpe(1)
 !
@@ -328,14 +329,14 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !-- EXPANSION STATIQUE
 !
-    do 100 j1 = 1, nbmod
-        do 110 i1 = 1, nddlin
+    do j1 = 1, nbmod
+        do i1 = 1, nddlin
             zr(lmodet + (j1-1)*nbeq1 + zi(linlag+(i1-1)*2) -1 ) =&
             zr(lphiex + (j1-1)*nc + (i1-1))
             zr(lmodet + (j1-1)*nbeq1 + zi(linlag+(i1-1)*2+1) -1 ) =&
             zr(lphiex + (j1-1)*nc + (i1-1))
-110      continue
-100  end do
+        end do
+    end do
 !
     call dismoi('F', 'SOLVEUR', raide, 'MATR_ASSE', ibid,&
                 solveu, ibid)

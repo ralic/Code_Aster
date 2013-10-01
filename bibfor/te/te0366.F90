@@ -17,7 +17,7 @@ subroutine te0366(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
@@ -81,7 +81,7 @@ subroutine te0366(option, nomte)
     real(kind=8) :: geopi(9), dvitet(3)
     real(kind=8) :: coefff, coefcr, coeffr, coeffp
     real(kind=8) :: coefcp, rese(3), nrese
-    real(kind=8) :: rre, rrm, jeu, r8bid
+    real(kind=8) :: rre, rrm, jeu
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrc, dlagrf(2)
     logical :: lpenaf, lesclx, lmaitx, lcontx, lpenac
     integer :: contac, ibid, npte
@@ -372,29 +372,29 @@ subroutine te0366(option, nomte)
 !
     if (lpenac .or. lpenaf) then
         call jevech('PMATUNS', 'E', imatt)
-        do 801 j = 1, nddl
-            do 811 i = 1, nddl
+        do j = 1, nddl
+            do i = 1, nddl
                 ij = nddl*(i-1) + j
                 zr(imatt+ij-1) = mmat(i,j)
-811          continue
-801      continue
+            end do
+        end do
         else if ((option.eq.'RIGI_CONT').or.(coefff.eq.0.d0) .or.(&
     ifrott.ne.3)) then
         call jevech('PMATUUR', 'E', imatt)
-        do 700 j = 1, nddl
-            do 710 i = 1, j
+        do j = 1, nddl
+            do i = 1, j
                 ij = (j-1)*j/2 + i
                 zr(imatt+ij-1) = mmat(i,j)
-710          continue
-700      continue
+            end do
+        end do
     else
         call jevech('PMATUNS', 'E', imatt)
-        do 800 j = 1, nddl
-            do 810 i = 1, nddl
+        do j = 1, nddl
+            do i = 1, nddl
                 ij = nddl*(i-1) + j
                 zr(imatt+ij-1) = mmat(i,j)
-810          continue
-800      continue
+            end do
+        end do
     endif
 !
     call jedema()

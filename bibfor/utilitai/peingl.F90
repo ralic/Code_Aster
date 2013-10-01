@@ -150,7 +150,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
-    integer :: ng, ibid, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
+    integer :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
     integer :: idesc, ngdmax, ncmpmx, ivale, iptma, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
     integer :: i
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec, energi
@@ -214,12 +214,12 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         endif
     endif
     energi = zero
-    do 8 i = 1, 5
+    do i = 1, 5
         work(i)=0.d0
- 8  continue
-    do 9 i = 1, 6
+    end do
+    do i = 1, 6
         valr(i)=0.d0
- 9  continue
+    end do
 !
 ! --- RECUPERATION DU RESULTAT A TRAITER :
 !     ----------------------------------
@@ -260,12 +260,12 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     call wkvect(kins, 'V V R', nbordr, jins)
     call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
     if (iret .ne. 0) then
-        do 10 iord = 1, nbordr
+        do iord = 1, nbordr
             numord = zi(jord+iord-1)
             call rsadpa(resul, 'L', 1, 'INST', numord,&
                         0, sjv=iainst, styp=k8b)
             zr(jins+iord-1) = zr(iainst)
-10      continue
+        end do
     endif
 !
 ! --- VERIFICATIONS ET RECUPERATION DU NOM DU MAILLAGE :
@@ -286,7 +286,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! --- BOUCLE SUR LES NUMEROS D'ORDRE DU RESULTAT :
 !     ------------------------------------------
-    do 60 iord = 1, nbordr
+    do iord = 1, nbordr
         call jemarq()
         call jerecu('V')
 !
@@ -363,7 +363,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
             call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
                         k8b, iret)
 !
-            do 20 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(iptma+ima-1) .ne. 0) then
                     igd = zi(iptma+ima-1)
                     idebgd = (igd-1)*ncmpmx
@@ -383,7 +383,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
 !
                 endif
-20          continue
+            end do
 !
 !CC---FIN DE RECUPERATION DU COMPOR
 !
@@ -502,7 +502,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---  BOUCLE SUR LES OCCURENCES DU MOT-CLE INDIC_ENER :
 !      -----------------------------------------------
-        do 50 iocc = 1, nbocc
+        do iocc = 1, nbocc
 !
 ! ---   RECUPERATION DES MAILLES POUR LESQUELLES ON VA CALCULER
 ! ---   L'INDICATEUR :
@@ -600,7 +600,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---     BOUCLE SUR LES GROUPES DE MAILLES :
 !         ---------------------------------
                 vk24(2) = 'GROUP_MA'
-                do 30 ig = 1, nbgrma
+                do ig = 1, nbgrma
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
@@ -688,7 +688,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !          --------------------------------------
                     call tbajli(resu, nbparr, noparr, numord, valr,&
                                 c16b, vk24, 0)
-30              continue
+                end do
 !
                 call jedetr('&&PEINGL_GROUPM')
             endif
@@ -705,7 +705,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---    BOUCLE SUR LES MAILLES :
 !        ----------------------
                 vk8(2) = 'MAILLE'
-                do 40 im = 1, nbmail
+                do im = 1, nbmail
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
@@ -780,18 +780,18 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !          --------------------------------------
                     call tbajli(resu, nbparr, noparr, numord, valr,&
                                 c16b, vk8, 0)
-40              continue
+                end do
 !
                 call jedetr('&&PEINGL_MAILLE')
             endif
-50      continue
+        end do
         call jedetr('&&MECHTI.CH_INST_R')
         call detrsd('CHAM_ELEM', chvarc)
         call detrsd('CHAM_ELEM', chvref)
         call jedetr(compor//'.PTMA')
         call jedema()
-60  continue
-70  continue
+    end do
+ 70 continue
     call jedetr(knum)
     call jedetr(kins)
     call jedetr('&&PEINGL.INDIC')
@@ -801,6 +801,6 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         call jedetr(chbid)
     endif
 !
-80  continue
+ 80 continue
     call jedema()
 end subroutine

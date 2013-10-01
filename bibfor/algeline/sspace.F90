@@ -80,6 +80,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     integer :: itolve, ivecpr, ivect, jj, kk, ll, nfrcv
     integer :: nitja
     real(kind=8) :: art, brt, dseed
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data valm/'                   .VALM'/
 !
@@ -108,9 +109,9 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     call mtdsc2(zk24(zi(lraid+1)), 'SMDI', 'L', jsmdi)
     valm(1:19) = zk24(zi(lraid+1))
     call jeveuo(jexnum(valm, 1), 'L', iaa)
-    do 10 jj = 1, neq
+    do jj = 1, neq
         zr(irdiak+jj-1) = zr(iaa+zi(jsmdi+jj-1)-1)
-10  continue
+    end do
     call jelibe(jexnum(valm, 1))
 !
 !     - ON CHERCHE LA DIAGONALE DE LA MASSE ET ON REMPLIT ZR(IRDIAM) -
@@ -118,9 +119,9 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     call mtdsc2(zk24(zi(lmass+1)), 'SMDI', 'L', jsmdi)
     valm(1:19) = zk24(zi(lmass+1))
     call jeveuo(jexnum(valm, 1), 'L', iaa)
-    do 30 jj = 1, neq
+    do jj = 1, neq
         zr(irdiam+jj-1) = zr(iaa+zi(jsmdi+jj-1)-1)
-30  continue
+    end do
     call jelibe(jexnum(valm, 1))
 !
 !     --- ON CHERCHE LES PLUS PETITS RAPPORTS K/M ---
@@ -129,26 +130,26 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
 !     --- ON INITIALISE LES VECTEURS ---
 !
-    do 50 i = 1, neq
+    do i = 1, neq
         vect(i,1) = zr(irdiam+i-1)*lprod(i)
-50  end do
+    end do
 !
     icomp = 0
-    do 70 i = 2, nbvec - 1
-60      continue
+    do i = 2, nbvec - 1
+ 60     continue
         if (lprod(zi(iipos+i+icomp-1-1)) .eq. 0) then
             icomp = icomp + 1
             goto 60
         else
             vect(zi(iipos+i+icomp-1-1),i) = 1.d0
         endif
-70  end do
+    end do
 !
     dseed = 123457.d0
     call ggubs(dseed, neq, vect(1, nbvec))
-    do 80 i = 1, neq
+    do i = 1, neq
         vect(i,nbvec) = vect(i,nbvec)*lprod(i)
-80  end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     ------   DEUXIEME DECLARATION DE VARIABLES AUXILLIAIRES   --------
@@ -174,7 +175,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     --- NOMBRE DE FREQUENCES CONVERGEES SOUHAITEES
     nfrcv = nfreq + (nbvec-nfreq)/2
 !
-90  continue
+ 90 continue
 !
     iter = iter + 1
 !
@@ -182,47 +183,47 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     ---       ON NE STOCKE QUE LA MOITIE DE LA MATRICE      ---
 !
     ii = 0
-    do 140 jj = 1, nbvec
-        do 100 kk = 1, neq
+    do jj = 1, nbvec
+        do kk = 1, neq
             zr(ivect+kk-1) = vect(kk,jj)*lprod(kk)
-100      continue
+        end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
                     k19bid, k19bid, kbid, zr(ivect), [cbid],&
                     criter, .false., 0, iret)
-        do 120 ll = jj, nbvec
+        do ll = jj, nbvec
             art = 0.d0
-            do 110 kk = 1, neq
+            do kk = 1, neq
                 art = art + vect(kk,ll)*zr(ivect+kk-1)*lprod(kk)
-110          continue
+            end do
             ii = ii + 1
             zr(iar+ii-1) = art
-120      continue
-        do 130 kk = 1, neq
+        end do
+        do kk = 1, neq
             vect(kk,jj) = zr(ivect+kk-1)*lprod(kk)
-130      continue
-140  end do
+        end do
+    end do
 !
 !     --- CALCUL DE LA MATRICE SYMETRIQUE DE MASSE PROJETEE ---
 !     ---       ON NE STOCKE QUE LA MOITIE DE LA MATRICE    ---
 !
     ii = 0
-    do 180 jj = 1, nbvec
+    do jj = 1, nbvec
         call mrmult('ZERO', lmass, vect(1, jj), zr(ivect), 1,&
                     .false.)
-        do 160 ll = jj, nbvec
+        do ll = jj, nbvec
             brt = 0.0d0
-            do 150 kk = 1, neq
+            do kk = 1, neq
                 brt = brt + vect(kk,ll)*zr(ivect+kk-1)*lprod(kk)
-150          continue
+            end do
             ii = ii + 1
             zr(ibr+ii-1) = brt
-160      continue
+        end do
         if (iconv .le. 0) then
-            do 170 kk = 1, neq
+            do kk = 1, neq
                 vect(kk,jj) = zr(ivect+kk-1)
-170          continue
+            end do
         endif
-180  end do
+    end do
 !
 !     --- ALGORITHME DE JACOBI SUR LES MATRICES PROJETEES ---
 !     --- CLASSEMENT PAR ORDRE CROISSANT DES VALEURS PROPRES  ---
@@ -245,28 +246,28 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     ---        SEULEMENT LES NFREQ PREMIERES        ---
 !
     if (iconv .le. 0) then
-        do 200 i = 1, nfrcv
+        do i = 1, nfrcv
             zr(itolve+i-1) = abs(valpro(i)-zr(itempo+i-1))
-200      continue
-        do 210 i = 1, nfrcv
+        end do
+        do i = 1, nfrcv
             if (zr(itolve+i-1) .gt. tol*abs(valpro(i))) then
                 if (i .gt. nfreq) then
                     iconvf = .true.
                 endif
                 goto 220
             endif
-210      continue
+        end do
         iconv = 1
         iconvf = .true.
         goto 90
-220      continue
+220     continue
         if (iter .lt. itemax) goto 230
         iconv = 2
         goto 90
-230      continue
-        do 240 i = 1, nfrcv
+230     continue
+        do i = 1, nfrcv
             zr(itempo+i-1) = valpro(i)
-240      continue
+        end do
         goto 90
     endif
 !
