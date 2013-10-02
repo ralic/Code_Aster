@@ -157,11 +157,10 @@ VL=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
+                SOLVEUR=_F(METHODE='MUMPS'),
                        CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-3,
+                RESI_GLOB_MAXI = 1.E-5,
                 ITER_GLOB_MAXI = 50),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3)
               )
 
 VT=STAT_NON_LINE(
@@ -179,11 +178,10 @@ VT=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
+                SOLVEUR=_F(METHODE='MUMPS'),
                        CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-3,
+                RESI_GLOB_MAXI = 1.E-5,
                 ITER_GLOB_MAXI = 50),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3)
               )
 
 VT=CALC_CHAMP( reuse=VT,
