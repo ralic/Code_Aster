@@ -1880,9 +1880,9 @@ subroutine te0000(numc, opt, te)
             call codent(numc, 'D', k8bid)
             call utmess('F', 'CALCULEL4_91', 1, k8bid)
         end select
+999     continue
     end do
 !
-999 continue
     call uttcpu('CPU.CALC.3', 'FIN', ' ')
 !
 end subroutine
