@@ -505,6 +505,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.58196338178927,
+           TOLE_MACHINE=5.E-6,          #TODO TOLE_MACHINE variable entre les machines
            NOM_PARA='D2',
            TABLE=TD_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -907,6 +908,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.58196338178927,
+           TOLE_MACHINE=5.E-6,             #TODO TOLE_MACHINE variable entre les machines
            NOM_PARA='D2',
            TABLE=TD_3,
            FILTRE=_F(NOM_PARA='INST',

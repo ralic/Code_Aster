@@ -215,6 +215,7 @@ for i in range(1,NPS-1) :
               REFERENCE='ANALYTIQUE',
               PRECISION=TOL_K2,
               VALE_CALC=VALE_CALC[(i-1)*2+1],
+              TOLE_MACHINE=5.E-6,       #TODO TOLE_MACHINE variable entre les machines
               VALE_REFE=0.0,
               NOM_PARA='K2',
               TYPE_TEST='MAX',

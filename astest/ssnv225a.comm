@@ -154,6 +154,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03229801,
 # fluage tertiaire
 tter=4000
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05093043,
+                        TOLE_MACHINE=1.E-5,           #TODO TOLE_MACHINE variable entre les machines
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
@@ -161,6 +162,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05093043,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06808422,
+                        TOLE_MACHINE=1.E-5,           #TODO TOLE_MACHINE variable entre les machines
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=endo,

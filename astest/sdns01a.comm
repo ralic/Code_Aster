@@ -664,6 +664,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=330.8992,
 
 TEST_TABLE(
            VALE_CALC=2229.5515037805,
+           TOLE_MACHINE=1.0E-05,      #TODO TOLE_MACHINE variable entre les machines
            NOM_PARA='NORME',
            TABLE=NEXT,
            )
