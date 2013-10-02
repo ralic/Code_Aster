@@ -32,14 +32,17 @@ subroutine op0124()
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "asterfort/ve0124.h"
-    integer :: nbfac
+    integer :: nbfac, nk
+    character(len=16) :: typres, valk(2)
 !     ------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
 !
-    call ve0124()
+    call ve0124(typres)
+    valk(1)=typres
 !
 ! ----------------------------------------------------------------------
 !                   TRAITEMENT DU MOT CLE "ECLA_PG"
@@ -47,6 +50,12 @@ subroutine op0124()
 !
     call getfac('ECLA_PG', nbfac)
     if (nbfac .gt. 0) then
+        if ( typres .ne. 'EVOL_ELAS' .and. &
+             typres .ne. 'EVOL_NOLI' .and. &
+             typres .ne. 'EVOL_THER' ) then
+           valk(2)='ECLA_PG'        
+           call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk)
+        endif      
         call eclpgr()
         goto 9999
     endif
@@ -57,6 +66,10 @@ subroutine op0124()
 !
     call getfac('PERM_CHAM', nbfac)
     if (nbfac .gt. 0) then
+        if ( typres .ne. 'EVOL_NOLI' ) then
+           valk(2)='PERM_CHAM' 
+           call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk )
+        endif   
         call crperm()
         goto 9999
     endif
@@ -67,6 +80,10 @@ subroutine op0124()
 !
     call getfac('PROL_RTZ', nbfac)
     if (nbfac .gt. 0) then
+        if ( typres .ne. 'EVOL_THER' ) then
+           valk(2)='EVOL_THER' 
+           call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk )
+        endif
         call crprol()
         goto 9999
     endif
@@ -87,6 +104,10 @@ subroutine op0124()
 !
     call getfac('ASSE', nbfac)
     if (nbfac .gt. 0) then
+        if ( typres .ne. 'EVOL_THER' ) then
+           valk(2)='ASSE' 
+           call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
+        endif
         call crasse()
         goto 9999
     endif
@@ -97,6 +118,10 @@ subroutine op0124()
 !
     call getfac('PREP_VRC1', nbfac)
     if (nbfac .gt. 0) then
+        if ( typres .ne. 'EVOL_THER' ) then
+           valk(2)='PREP_VRC1' 
+           call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
+        endif
         call crvrc1()
         goto 9999
     endif
@@ -107,6 +132,10 @@ subroutine op0124()
 !
     call getfac('PREP_VRC2', nbfac)
     if (nbfac .gt. 0) then
+        if ( typres .ne. 'EVOL_THER' ) then
+             valk(2)='PREP_VRC2' 
+             call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
+        endif
         call crvrc2()
         goto 9999
     endif

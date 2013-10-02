@@ -35,14 +35,32 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 
          OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),
                          fr="choix de la fonction a activer",),
+                         
+         TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',
+                            into=(
+                                  # pour bloc AFFE                         
+                                    "MODE_MECA","MULT_ELAS","EVOL_ELAS","EVOL_NOLI","DYNA_HARMO","DYNA_TRANS",
+                                    "FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER"
+                                  # pour bloc ASSE 
+                                  # "EVOL_THER "
+                                  # pour bloc ECLA_PG
+                                  # "EVOL_ELAS","EVOL_NOLI","EVOL_THER" 
+                                  # pour bloc PERM_CHAM
+                                  # "EVOL_NOLI"
+                                  # pour bloc PROL_RTZ
+                                  # "EVOL_THER"
+                                  # pour bloc PREP_VRC1
+                                  # "EVOL_THER"
+                                  # pour bloc PREP_VRC2
+                                  # "EVOL_THER"
+                                  ),
+                           ),
 
 
          # Creation par affectation de champs :
          #-------------------------------------
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
 
-           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("MODE_MECA","MULT_ELAS","EVOL_ELAS","EVOL_NOLI",
-                              "DYNA_HARMO","DYNA_TRANS","FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER") ),
            b_type_resu    =BLOC(condition = "TYPE_RESU == 'EVOL_CHAR'",
              NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("PRES",
                                     "FSUR_2D","FSUR_3D","FVOL_2D","FVOL_3D","VITE_VENT")),
@@ -140,7 +158,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          # Creation par assemblage d'evol_ther :
          #-----------------------------------------
          b_asse       =BLOC(condition = "OPERATION == 'ASSE'",
-           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("EVOL_THER",) ),
            ASSE         =FACT(statut='o',max='**',
              RESULTAT       =SIMP(statut='o',typ=evol_ther),
              TRANSLATION    =SIMP(statut='f',typ='R',defaut= 0. ),
@@ -149,8 +166,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 
 
          b_ecla_pg    =BLOC(condition = "OPERATION == 'ECLA_PG'",
-
-           TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_ELAS","EVOL_NOLI","EVOL_THER"), ),
 
            ECLA_PG         =FACT(statut='o',
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
@@ -177,7 +192,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 
          b_perm_cham =BLOC(condition = "OPERATION == 'PERM_CHAM'",
 
-           TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_NOLI",) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","SIEF_ELGA","VARI_ELGA","STRX_ELGA"),
                                  validators=NoRepeat(),max='**'),
            RESU_INIT       =SIMP(statut='o',typ=evol_noli),
@@ -199,8 +213,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          ),
 
          b_prol_rtz   =BLOC(condition = "OPERATION == 'PROL_RTZ'",
-
-           TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER",) ),
 
            PROL_RTZ        =FACT(statut='o',
               regles=(EXCLUS('INST','LIST_INST'),),
@@ -227,8 +239,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            # calculer la temperature dans les couches des coques multicouche a partir d'un champ de fonctions
            # de fonctions du temps et de l'espace (epaisseur)
 
-           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=( "EVOL_THER",) ),
-
            PREP_VRC1        =FACT(statut='o',max=1,
              CHAM_GD       =SIMP(statut='o',typ=(cham_gd_sdaster)), # carte de fonctions du temps et de l'epaisseur
              MODELE        =SIMP(statut='o',typ=modele_sdaster),    # modele mecanique contenant les coques multicouche
@@ -240,8 +250,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          b_prep_vrc2      =BLOC(condition = "OPERATION == 'PREP_VRC2'",
            # calculer la temperature dans les couches des coques multicouche a partir d'un evol_ther "coque"
            # contenant TEMP_MIL/TEMP_INF/TEMP_SUP
-
-           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=( "EVOL_THER",) ),
 
            PREP_VRC2        =FACT(statut='o',max=1,
              EVOL_THER     =SIMP(statut='o',typ=(evol_ther)),       # evol_ther de type "coque" (TEMP_MIL/TEMP_INF/TEMP_SUP)

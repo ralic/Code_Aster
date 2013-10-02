@@ -1,4 +1,4 @@
-subroutine ve0124()
+subroutine ve0124(typres)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,6 +16,7 @@ subroutine ve0124()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+    character(len=16), intent(inout) :: typres
 ! ----------------------------------------------------------------------
 !     COMMANDE: CREA_RESU
 !     VERIFICATION DE NIVEAU 1
@@ -28,7 +29,7 @@ subroutine ve0124()
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
     character(len=8) :: k8bid, resu
-    character(len=16) :: type, oper, typres
+    character(len=16) :: type, oper
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, iocc, k, n0, n1
