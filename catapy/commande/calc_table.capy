@@ -100,6 +100,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
                             "pour que les colonnes soient combinées"),
          RESTREINT = SIMP(statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON',
                           fr="Restreint la fusion uniquement aux lignes où les NOM_PARA sont communs"),
+         FORMAT_R       =SIMP(statut='f',typ='TXM'),
       ),
 
       b_ajout_lig = BLOC(condition="OPERATION == 'AJOUT_LIGNE'",

@@ -122,7 +122,8 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                     if not p in tab2.para:
                         UTMESS('F', 'TABLE0_2', valk=[p, occ['TABLE'].nom] )
             restrict = occ.get('RESTREINT') == 'OUI'
-            tab = merge(tab, tab2, lpar, restrict=restrict)
+            format_r = occ.get('FORMAT_R')
+            tab = merge(tab, tab2, lpar, restrict=restrict, format_r=format_r)
 
         # 7. Traitement de OPER
         if occ['OPERATION'] == 'OPER':

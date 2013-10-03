@@ -33,6 +33,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    from Cata.cata import table_jeveux
    from Utilitai.Utmess  import  UTMESS
    from Utilitai.UniteAster import UniteAster
+   from Utilitai.utils import fmtF2PY
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -207,23 +208,3 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    # 99. Traiter le cas des UL réservées
    UL.EtatInit()
    return ier
-
-
-def fmtF2PY(fformat):
-   """Convertit un format Fortran en format Python (printf style).
-   Gère uniquement les fortrans réels, par exemple : E12.5, 1PE13.6, D12.5...
-   """
-   fmt=''
-   matP=re.search('([0-9]+)P',fformat)
-   if matP:
-      fmt+=' '*int(matP.group(1))
-   matR=re.search('([eEdDfFgG]{1})([\.0-9]+)',fformat)
-   if matR:
-      fmt+='%'+matR.group(2)+re.sub('[dD]+','E',matR.group(1))
-   try:
-      s=fmt % -0.123
-   except (ValueError, TypeError), msg:
-      fmt='%12.5E'
-      print 'Error :',msg
-      print 'Format par défaut utilisé :',fmt
-   return fmt

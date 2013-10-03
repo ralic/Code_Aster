@@ -285,7 +285,8 @@ tp2=CREA_TABLE(LISTE=(_F(PARA    ='NOEUD',
 tp3=CALC_TABLE(TABLE = tp2,
                ACTION=_F(OPERATION = 'COMB',
                          TABLE     = tp1,
-                         NOM_PARA  = ('NOEUD','NUME_ORDRE',),),)
+                         FORMAT_R  = 'E12.5',
+                         NOM_PARA  = ('NOEUD','INST',),),)
 
 IMPR_TABLE(TABLE=tp3,
            FORMAT='ASTER',

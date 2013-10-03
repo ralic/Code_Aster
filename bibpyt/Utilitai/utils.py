@@ -22,6 +22,7 @@ Module fournissant quelques fonctions utilitaires.
 """
 
 import os
+import re
 import time
 
 from Utilitai.string_utils import maximize_lines
@@ -93,6 +94,24 @@ def get_titre_concept(co=None):
     ltit = maximize_lines(ltit, 80, " ")
     return os.linesep.join(ltit)
 
+def fmtF2PY(fformat):
+   """Convertit un format Fortran en format Python (printf style).
+   Gère uniquement les fortrans réels, par exemple : E12.5, 1PE13.6, D12.5...
+   """
+   fmt=''
+   matP=re.search('([0-9]+)P',fformat)
+   if matP:
+      fmt+=' '*int(matP.group(1))
+   matR=re.search('([eEdDfFgG]{1})([\.0-9]+)',fformat)
+   if matR:
+      fmt+='%'+matR.group(2)+re.sub('[dD]+','E',matR.group(1))
+   try:
+      s=fmt % -0.123
+   except (ValueError, TypeError), msg:
+      fmt='%12.5E'
+      print 'Error :',msg
+      print 'Format par défaut utilisé :',fmt
+   return fmt
 
 if __name__ == '__main__':
     npar = ('X', 'Y',)

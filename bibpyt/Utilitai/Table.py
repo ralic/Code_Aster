@@ -30,6 +30,7 @@ from Noyau.N_types import is_int, is_float, is_complex, is_number, is_str, is_se
 import transpose
 from Utilitai.Utmess import UTMESS
 from Utilitai.string_utils import cut_long_lines
+from Utilitai.utils import fmtF2PY
 
 if not sys.modules.has_key('Graph'):
    try:
@@ -883,7 +884,7 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
       fmt=' '*max(min(larg-len(val),larg-len(fmt % 0)),0) + fmt
    return fmt
 
-def merge(tab1, tab2, labels=[], restrict=False):
+def merge(tab1, tab2, labels=[], restrict=False, format_r=None):
    """Assemble les deux tables tb1 et tb2 selon une liste de labels communs.
       Si labels est vide:
        - les lignes de tb2 sont ajoutés à celles de tb1,
@@ -891,7 +892,26 @@ def merge(tab1, tab2, labels=[], restrict=False):
        - si on trouve les valeurs de tb2 sur les labels dans tb1 (et une seule fois),
          on surcharge tb1 avec les lignes de tb2 ;
        - sinon on ajoute la ligne de tb2 à la fin de tb1.
+      Si format_r est fourni, on "arrondi" les réels selon ce format lors de la
+      comparaison.
    """
+   if format_r:
+       fmtr = fmtF2PY(format_r)
+       def _reformat(values):
+           """Convertit les réels en utilisant format_r"""
+           conv = []
+           for i in values:
+               try:
+                   vali = fmtr % i
+               except TypeError:
+                   vali = i
+               conv.append(vali)
+           return tuple(conv)
+   else:
+       def _reformat(values):
+           """no change"""
+           return tuple(values)
+
    tb1 = tab1.copy()
    tb2 = tab2.copy()
    if not is_sequence(labels):
@@ -910,7 +930,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
    rows1 = tb1.rows
    dlab1 = {}
    for i1 in range(len(rows1)):
-      tu1 = tuple(map(rows1[i1].__getitem__, labels))
+      tu1 = _reformat(map(rows1[i1].__getitem__, labels))
       if dlab1.get(tu1, '') == '':
          dlab1[tu1] = i1
       else:
@@ -919,7 +939,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
    rows2 = tb2.rows
    dlab2 = {}
    for i2 in range(len(rows2)):
-      tu2 = tuple(map(rows2[i2].__getitem__, labels))
+      tu2 = _reformat(map(rows2[i2].__getitem__, labels))
       if dlab2.get(tu2, '') == '':
          dlab2[tu2] = i2
       else:
