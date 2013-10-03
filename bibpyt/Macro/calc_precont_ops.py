@@ -510,9 +510,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                         SIGM_BPEL = 'NON',
                                         RELA_CINE = 'OUI',) )
 
-      set_nume_cable=set()
-      set_nume_cable.update(__TCAB1.EXTR_TABLE().NUME_CABLE.values())
-      nb_cable = len(set_nume_cable)
+      nb_cable = len(__TCAB1.EXTR_TABLE().NOM_ANCRAGE1.values())
       table_cable=__TCAB1.EXTR_TABLE()
 
       for icable in xrange(nb_cable) :

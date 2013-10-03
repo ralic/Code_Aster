@@ -58,8 +58,8 @@ ACIER=DEFI_MATERIAU(
                        ELAS=_F(  E = 1.85E+11,
                               NU = 0.),
                  BPEL_ACIER=_F(  F_PRG = 1.77E+9,
-                              FROT_COURB = 0.,
-                              FROT_LINE = 0.) )
+                              FROT_COURB = 3.e-2,
+                              FROT_LINE = 1.e-2) )
 
 #
 
@@ -162,14 +162,53 @@ EVOLNOLI=STAT_NON_LINE(reuse=EVOLNOLI,
                               INFO=1
               )
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),NUME_ORDRE=(2,3)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOLI,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),NUME_ORDRE=(2,3)))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(2,3)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOLI,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(2,3)))
 
+#IMPR_RESU(RESU=_F(MAILLAGE = MAILLAGE))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='ANCR2',
+                  NOM_CMP='DY',
+                  VALE_CALC=3.087564002561E-04,
+                  CRITERE='RELATIF',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='ANCR2',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.042328604857266,
+                  CRITERE='RELATIF',),
+          )
+# M89 premiere maille de cable en partant de ANCR1
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M89',
+                  POINT = 1,
+                  NOM_CMP='N',
+                  VALE_CALC=7.837433596013E+05,
+                  CRITERE='RELATIF',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M89',
+                  POINT = 1,
+                  NOM_CMP='N',
+                  VALE_CALC=7.921749893351E+05,
+                  CRITERE='RELATIF',),
+          )
 
 FIN()
 #

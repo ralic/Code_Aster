@@ -302,6 +302,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
                     t1=l(n)*vff2(m,g)*(1.d0-r*ddedt)
                     kk=(iuc(n)-1)*nddl+im(m)
                     matr(kk)=matr(kk)+wg*t1
+                    t1=t1-vff2(m,g)*ddedn*dsidep*b(4,n)
                     kk=(im(m)-1)*nddl+iuc(n)
                     matr(kk)=matr(kk)+wg*t1
 642              continue
@@ -315,6 +316,17 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
                     matr(kk) = matr(kk) + wg*t1
 710              continue
 700          continue
+!
+!        MATRICE K:U(N),MU(M)
+            do n = 1, nno1
+                do i = 1, ndim
+                    do m = 1, nno2
+                        t1=-vff2(m,g)*ddedn*dsidep*b(i,n)
+                        kk=(im(m)-1)*nddl+iu(i,n)
+                        matr(kk)=matr(kk)+wg*t1
+                    enddo
+                enddo
+            enddo
 !
         endif
 !

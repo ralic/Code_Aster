@@ -60,8 +60,8 @@ ACIER=DEFI_MATERIAU(
                               NU = 0.),
                        CABLE_GAINE_FROT=_F(TYPE='ADHERENT',PENA_LAGR=1),
                  BPEL_ACIER=_F(  F_PRG = 1.77E+9,
-                              FROT_COURB = 0.,
-                              FROT_LINE = 0.) )
+                              FROT_COURB = 3.e-2,
+                              FROT_LINE = 1.e-2) )
 
 #
 
@@ -175,37 +175,37 @@ EVOLNOLI=STAT_NON_LINE(reuse=EVOLNOLI,
               )
 
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOLI,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),))
-
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOLI,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),))
+##IMPR_RESU(RESU=_F(MAILLAGE = MAILLAGE))
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=EVOLNOLI,
                   NOM_CHAM='DEPL',
-                  NOEUD='N40',
+                  GROUP_NO='ANCR2',
                   NOM_CMP='DY',
-                  VALE_CALC=3.47543221692E-4,
-                  VALE_REFE=3.48672E-4,
+                  VALE_CALC=3.0762908434052E-04,
+                  VALE_REFE=3.087564002561E-04,
                   REFERENCE='AUTRE_ASTER',
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   RESULTAT=EVOLNOLI,
                   NOM_CHAM='DEPL',
-                  NOEUD='N40',
+                  GROUP_NO='ANCR2',
                   NOM_CMP='DX',
-                  VALE_CALC=4.2345579880E-2,
-                  VALE_REFE=4.23456E-2,
+                  VALE_CALC=0.042328543750478,
+                  VALE_REFE=0.042328604857266,
                   REFERENCE='AUTRE_ASTER',
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  PRECISION=2.E-6,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -214,11 +214,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   MAILLE='M89',
                   POINT = 1,
                   NOM_CMP='N',
-                  VALE_CALC=0.999118361E6,
-                  VALE_REFE=1.0E6,
+                  VALE_CALC=7.8401249870166E+05,
+                  VALE_REFE=7.837433596013E+05,
                   REFERENCE='AUTRE_ASTER',
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  PRECISION=5.E-4,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
@@ -227,11 +227,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   MAILLE='M89',
                   POINT = 1,
                   NOM_CMP='N',
-                  VALE_CALC=1.0074797E6,
-                  VALE_REFE=1.0084350E6,
+                  VALE_CALC=7.923705527632E+05,
+                  VALE_REFE=7.921749893351E+05,
                   REFERENCE='AUTRE_ASTER',
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  PRECISION=5.E-4,),
           )
 
 FIN()

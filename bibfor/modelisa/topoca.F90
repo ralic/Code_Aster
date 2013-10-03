@@ -468,7 +468,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     else
 !                   TOUTES LES MAILLES DOIVENT ETRE DANS LE MEME SENS
                         if (zk8(jnono1+ino-1) .eq. vk(1)) then
-                            ASSERT(sens.eq.1)
+                            if (sens .ne.1) call utmess('F', 'MODELISA7_14', nk=1, valk=nogrma)
+!                             ASSERT(sens.eq.1)
                         else
                             ASSERT(sens.eq.-1)
                         endif

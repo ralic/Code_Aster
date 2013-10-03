@@ -76,17 +76,17 @@ CHMATER=AFFE_MATERIAU(
 
 #
 
-CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
-                                  CHAM_MATER=CHMATER,
-                                   CARA_ELEM=CARAELEM,
-                              GROUP_MA_BETON='BETON',
-                              ADHERENT='NON',
-                                  DEFI_CABLE=_F(
-                               GROUP_MA = 'CABLE',
-                               GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
-                               TYPE_ANCRAGE = ( 'PASSIF',  'ACTIF',  ),
-                                TENSION_INIT=1.0E+6,
-                               RECUL_ANCRAGE=0. )
+#CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
+                                  #CHAM_MATER=CHMATER,
+                                   #CARA_ELEM=CARAELEM,
+                              #GROUP_MA_BETON='BETON',
+                              #ADHERENT='NON',
+                                  #DEFI_CABLE=_F(
+                               #GROUP_MA = 'CABLE',
+                               #GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
+                               #TYPE_ANCRAGE = ( 'PASSIF',  'ACTIF',  ),
+                                #TENSION_INIT=1.0E+6,
+                               #RECUL_ANCRAGE=0. )
 
 #
 
@@ -104,9 +104,9 @@ CHARMECA=AFFE_CHAR_MECA(
                                GLIS = 0.1,
                                ),
                              ),
-                RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
-                               SIGM_BPEL = 'NON',
-                               RELA_CINE = 'NON'),
+                #RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
+                               #SIGM_BPEL = 'NON',
+                               #RELA_CINE = 'NON'),
                         INFO=1 )
 
 #

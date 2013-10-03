@@ -86,6 +86,14 @@ cata_msg={
  L'interpolation est donc faite par une méthode discrète.
 """),
 
+14: _(u"""
+ Les mailles du groupe %(k1)s définissant un câble dans DEFI_CABLE_BP
+ ne sont pas toutes orientées dans le même sens.
+
+ Conseils:
+    Modifier le maillage grâce à la commande MODI_MAILLAGE/ORIE_LIGNE.
+"""),
+
 15: _(u"""
  FAISCEAU_AXIAL : il y a plus de types de grilles que de grilles
 """),
@@ -199,7 +207,7 @@ cata_msg={
 """),
 
 43: _(u"""
- FAISCEAU_AXIAL : les mots-clés <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clé facteur. 
+ FAISCEAU_AXIAL : les mots-clés <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clé facteur.
 Sinon, ils doivent apparaître ensemble dans au moins une des occurrences. le mot-clé <ANGL_VRIL> doit également être présent si l'on définit une enceinte rectangulaire
 """),
 
