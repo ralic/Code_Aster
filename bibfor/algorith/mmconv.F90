@@ -1,5 +1,5 @@
-subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
-                  solalg, vfrot, nfrot, vgeom, ngeom)
+subroutine mmconv(noma, defico, resoco, valinc, solalg,&
+                  vfrot, nfrot, vgeom, ngeom)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,6 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/mmcycl.h"
 #include "asterfort/mmmcrf.h"
 #include "asterfort/mmmcrg.h"
 #include "asterfort/mmreas.h"
@@ -35,7 +34,6 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 #include "asterfort/nmimck.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
-    character(len=24) :: sdimpr
     character(len=19) :: valinc(*), solalg(*)
     real(kind=8) :: vfrot, vgeom
     character(len=16) :: nfrot, ngeom
@@ -50,7 +48,6 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 !
 !
 ! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDIMPR : SD AFFICHAGE
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -64,8 +61,7 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 !
     integer :: ifm, niv
     character(len=19) :: depplu, depmoi, ddepla
-    character(len=16) :: liecyc, typcyc
-    logical :: lallv, lnewtf, lnewtg
+    logical :: lnewtf, lnewtg
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,7 +70,6 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 !
 ! --- INITIALISATIONS
 !
-    typcyc = ' '
     nfrot = ' '
     vfrot = r8vide()
     ngeom = ' '
@@ -88,7 +83,6 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lallv = cfdisl(defico,'ALL_VERIF' )
     lnewtf = cfdisl(defico,'FROT_NEWTON')
     lnewtg = cfdisl(defico,'GEOM_NEWTON')
 !
@@ -123,13 +117,6 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 ! ----- CALCUL RESIDU DE GEOMETRIE
 !
         call mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
-    endif
-!
-! --- CYCLAGE ?
-!
-    if (.not.lallv) then
-        call mmcycl(defico, resoco, typcyc, liecyc)
-        call nmimck(sdimpr, 'CTCC_CYCL', typcyc, .true.)
     endif
 !
     call jedema()

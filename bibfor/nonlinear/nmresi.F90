@@ -1,8 +1,8 @@
 subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                   sddyna, sdconv, sdimpr, defico, resoco,&
-                  matass, numins, conv, resigr, eta,&
+                  matass, numins, conv, resigr, eta, &
                   comref, valinc, solalg, veasse, measse,&
-                  vrela, vmaxi, vchar, vresi, vrefe,&
+                  vrela, vmaxi, vchar, vresi, vrefe, &
                   vinit, vcomp, vfrot, vgeom)
 !
 ! ======================================================================
@@ -338,8 +338,8 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- RESIDUS SPECIFIQUES POUR NEWTON GENERALISE
 !
     if (lctcc) then
-        call mmconv(noma, sdimpr, defico, resoco, valinc,&
-                    solalg, vfrot, nfrot, vgeom, ngeom)
+        call mmconv(noma, defico, resoco, valinc, solalg,&
+                    vfrot, nfrot, vgeom, ngeom)
     endif
 !
 ! --- ECRITURE DES INFOS SUR LES RESIDUS POUR AFFICHAGE

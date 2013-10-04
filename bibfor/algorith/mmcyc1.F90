@@ -1,4 +1,14 @@
-subroutine mmcyc1(resoco, iptc, nompt, indco)
+subroutine mmcyc1(resoco, iptc, indco)
+!
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/iscode.h"
+#include "asterfort/iscycl.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,17 +28,8 @@ subroutine mmcyc1(resoco, iptc, nompt, indco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/iscode.h"
-#include "asterfort/iscycl.h"
-#include "asterfort/isdeco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: iptc
-    character(len=16) :: nompt
     integer :: indco
 !
 ! ----------------------------------------------------------------------
@@ -42,17 +43,15 @@ subroutine mmcyc1(resoco, iptc, nompt, indco)
 !
 ! IN  RESOCO : SD DE RESOLUTION DU CONTACT
 ! IN  INDCO  : STATUT DE CONTACT
-! IN  NOMPT  : NOM DU POINT DE CONTACT
 ! IN  IPTC   : NUMERO DE LA LIAISON DE CONTACT
 !
 !
 !
 !
-    character(len=24) :: cyclis, cycnbr, cyctyp, cycpoi
-    integer :: jcylis, jcynbr, jcytyp, jcypoi
+    character(len=24) :: cyclis, cycnbr, cyctyp
+    integer :: jcylis, jcynbr, jcytyp
     integer :: statut(30)
     integer :: longcy, ccycle(1), ncycle, tcycle, icycl
-    character(len=16) :: lcycle
     logical :: detect
 !
 ! ----------------------------------------------------------------------
@@ -69,11 +68,9 @@ subroutine mmcyc1(resoco, iptc, nompt, indco)
     cyclis = resoco(1:14)//'.CYCLIS'
     cycnbr = resoco(1:14)//'.CYCNBR'
     cyctyp = resoco(1:14)//'.CYCTYP'
-    cycpoi = resoco(1:14)//'.CYCPOI'
     call jeveuo(cyclis, 'E', jcylis)
     call jeveuo(cycnbr, 'E', jcynbr)
     call jeveuo(cyctyp, 'E', jcytyp)
-    call jeveuo(cycpoi, 'E', jcypoi)
 !
 ! --- ETAT PRECEDENT
 !
@@ -90,17 +87,14 @@ subroutine mmcyc1(resoco, iptc, nompt, indco)
 ! --- DETECTION D'UN CYCLE
 !
     tcycle = 0
-    lcycle = ' '
     if (ncycle .eq. longcy) then
         detect = iscycl(ccycle(1),longcy)
         if (detect) then
             tcycle = 1
-            lcycle = nompt
         endif
     endif
 !
     zi(jcytyp-1+4*(iptc-1)+1) = tcycle
-    zk16(jcypoi-1+4*(iptc-1)+1) = lcycle
 !
 ! --- REINITIALISATION DU CYCLE
 !

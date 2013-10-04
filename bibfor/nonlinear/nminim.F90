@@ -144,7 +144,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &             'R','K','K',&
      &             'I','I','I',&
      &             'I','I','R',&
-     &             'R','K','R',&
+     &             'R','I','R',&
      &             'K','K','K',&
      &             'R'/
 !
@@ -155,7 +155,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &             'VIDE','VIDE','ERRE',&
      &             'ERRE','ERRE','ERRE',&
      &             'ERRE','ERRE','ERRE',&
-     &             'ERRE','SANS','SANS',&
+     &             'ERRE','ERRE','SANS',&
      &             'SANS','SANS','ERRE',&
      &             'ERRE'/
 !

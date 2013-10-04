@@ -137,6 +137,22 @@ subroutine nmrvai(sdstat, questz, phase, vali)
             zi(jstvit-1+15) = zi(jstvit-1+15) + vali
             zi(jstvip-1+15) = zi(jstvip-1+15) + vali
             zi(jstvin-1+15) = zi(jstvin-1+15) + vali
+        else if (questi.eq.'CTCC_CYCL_1') then
+            zi(jstvit-1+17) = zi(jstvit-1+17) + vali
+            zi(jstvip-1+17) = zi(jstvip-1+17) + vali
+            zi(jstvin-1+17)  =zi(jstvin-1+17) + vali
+        else if (questi.eq.'CTCC_CYCL_2') then
+            zi(jstvit-1+18) = zi(jstvit-1+18) + vali
+            zi(jstvip-1+18) = zi(jstvip-1+18) + vali
+            zi(jstvin-1+18) = zi(jstvin-1+18) + vali
+        else if (questi.eq.'CTCC_CYCL_3') then
+            zi(jstvit-1+19) = zi(jstvit-1+19) + vali
+            zi(jstvip-1+19) = zi(jstvip-1+19) + vali
+            zi(jstvin-1+19) = zi(jstvin-1+19) + vali
+        else if (questi.eq.'CTCC_CYCL_4') then
+            zi(jstvit-1+20) = zi(jstvit-1+20) + vali
+            zi(jstvip-1+20) = zi(jstvip-1+20) + vali
+            zi(jstvin-1+20) = zi(jstvin-1+20) + vali
         else
             ASSERT(.false.)
         endif
@@ -219,6 +235,26 @@ subroutine nmrvai(sdstat, questz, phase, vali)
             if (phase .eq. 'P') vali = zi(jstvip-1+15)
             if (phase .eq. 'N') vali = zi(jstvin-1+15)
 !
+!
+        else if (questi.eq.'CTCC_CYCL_1') then
+            if (phase .eq. 'T') vali = zi(jstvit-1+17)
+            if (phase .eq. 'P') vali = zi(jstvip-1+17)
+            if (phase .eq. 'N') vali = zi(jstvin-1+17)
+!
+        else if (questi.eq.'CTCC_CYCL_2') then
+            if (phase .eq. 'T') vali = zi(jstvit-1+18)
+            if (phase .eq. 'P') vali = zi(jstvip-1+18)
+            if (phase .eq. 'N') vali = zi(jstvin-1+18)
+!
+        else if (questi.eq.'CTCC_CYCL_3') then
+            if (phase .eq. 'T') vali = zi(jstvit-1+19)
+            if (phase .eq. 'P') vali = zi(jstvip-1+19)
+            if (phase .eq. 'N') vali = zi(jstvin-1+19)
+!
+        else if (questi.eq.'CTCC_CYCL_4') then
+            if (phase .eq. 'T') vali = zi(jstvit-1+20)
+            if (phase .eq. 'P') vali = zi(jstvip-1+20)
+            if (phase .eq. 'N') vali = zi(jstvin-1+20)
 !
         else
             ASSERT(.false.)

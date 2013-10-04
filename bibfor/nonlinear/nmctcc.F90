@@ -1,6 +1,21 @@
-subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
-                  sderro, defico, resoco, valinc, solalg,&
+subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
+                  sdstat, defico, resoco, valinc, solalg, &
                   mmcvca, instan)
+!
+    implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mm_cycl_flip.h"
+#include "asterfort/mmmbca.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/utmess.h"
+#include "asterfort/xmmbca.h"
+#include "asterfort/xmtbca.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,27 +35,18 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/mmcycl.h"
-#include "asterfort/mmmbca.h"
-#include "asterfort/nmcrel.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/utmess.h"
-#include "asterfort/xmmbca.h"
-#include "asterfort/xmtbca.h"
-    character(len=8) :: noma
-    character(len=24) :: modele
-    character(len=24) :: defico, resoco
-    character(len=19) :: sddyna
-    character(len=24) :: sdimpr, sderro
-    character(len=19) :: valinc(*), solalg(*)
-    logical :: mmcvca
-    real(kind=8) :: instan
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: modele
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: sderro
+    character(len=24), intent(in) :: sdstat
+    character(len=19), intent(in) :: valinc(*)
+    character(len=19), intent(in) :: solalg(*)
+    real(kind=8), intent(in) :: instan
+    logical, intent(out) :: mmcvca
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,8 +61,8 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : SD MATERIAU
 ! IN  SDDYNA : SD POUR DYNAMIQUE
-! IN  SDIMPR : SD AFFICHAGE
 ! IN  SDERRO : GESTION DES ERREURS
+! IN  SDSTAT : SD STATISTIQUES
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -73,8 +79,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
     integer :: mmitca
     character(len=8) :: nomo
     integer :: iterat
-    character(len=16) :: typcyc, liecyc
-    character(len=24) :: mate
+    logical :: cycl_flip
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,7 +95,6 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
 !
     nomo = modele(1:8)
     ntpc = cfdisi(defico,'NTPC')
-    typcyc = ' '
     mmcvca = .false.
     lerroc = .false.
     iterat = -1
@@ -122,14 +126,12 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
                         mmcvca)
         endif
     else if (lctcc) then
-        call mmmbca(noma, sddyna, iterat, defico, resoco,&
-                    valinc, solalg, ctcsta, mmcvca, instan)
-        call mmcycl(defico, resoco, typcyc, liecyc)
+        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
+                    sdstat, valinc, solalg, ctcsta, mmcvca,&
+                    instan)
+        call mm_cycl_flip(defico, resoco, cycl_flip)
 ! ----- FLIP-FLOP: ON FORCE LA CONVERGENCE
-        if (typcyc .eq. 'FLIP FLOP') then
-            mmcvca = .true.
-            call nmimck(sdimpr, 'CTCC_CYCL', typcyc, .true.)
-        endif
+        if (cycl_flip) mmcvca = .true.
     else
         ASSERT(.false.)
     endif

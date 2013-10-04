@@ -5,26 +5,8 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
                   conv, eta, parcri, defico, resoco,&
                   valinc, solalg, measse, veasse)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=W1504
     implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfmmcv.h"
@@ -53,6 +35,26 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 #include "asterfort/nmresi.h"
 #include "asterfort/nmrvai.h"
 #include "asterfort/utmess.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
+!
     integer :: fonact(*)
     integer :: iterat, numins
     real(kind=8) :: eta, conv(*), parcri(*), parmet(*), instan
@@ -198,10 +200,10 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! --- CALCUL DES RESIDUS
 !
     call nmresi(noma, mate, numedd, sdnume, fonact,&
-                sddyna, sdconv, sdimpr, defico, resoco,&
-                matass, numins, conv, resigr, eta,&
-                comref, valinc, solalg, veasse, measse,&
-                vrela, vmaxi, vchar, vresi, vrefe,&
+                sddyna, sdconv, sdimpr, defico, resoco, &
+                matass, numins, conv, resigr, eta, &
+                comref, valinc, solalg, veasse, measse, &
+                vrela, vmaxi, vchar, vresi, vrefe, &
                 vinit, vcomp, vfrot, vgeom)
 !
 ! --- VERIFICATION DES CRITERES D'ARRET SUR RESIDUS

@@ -41,7 +41,7 @@ subroutine nmcrst(sdstat)
 !
 !
     integer :: nbstat
-    parameter    (nbstat=16)
+    parameter    (nbstat=20)
 !
     character(len=24) :: stvip, stvit, stvin
     integer :: jstvip, jstvit, jstvin

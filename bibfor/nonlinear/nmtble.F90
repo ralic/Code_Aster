@@ -3,6 +3,25 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
                   sddyna, sderro, sdconv, sddisc, numins,&
                   valinc, solalg)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/diinst.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mm_cycl_init.h"
+#include "asterfort/nmaffi.h"
+#include "asterfort/nmctcc.h"
+#include "asterfort/nmctcf.h"
+#include "asterfort/nmctgo.h"
+#include "asterfort/nmevcv.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,23 +40,6 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/diinst.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/mmcycz.h"
-#include "asterfort/nmaffi.h"
-#include "asterfort/nmctcc.h"
-#include "asterfort/nmctcf.h"
-#include "asterfort/nmctgo.h"
-#include "asterfort/nmevcv.h"
-#include "asterfort/nmimci.h"
-#include "asterfort/nmleeb.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
     integer :: niveau
     integer :: numins
     character(len=8) :: noma
@@ -118,15 +120,15 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 ! --- EVALUATION STATUTS DU CONTACT
 !
-        if (lboucc) then
-            niveau = 1
-            call nmtime(sdtime, 'INI', 'CTCC_CONT')
-            call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-            call nmctcc(noma, modele, mate, sddyna, sdimpr,&
-                        sderro, defico, resoco, valinc, solalg,&
-                        mmcvca, instan)
-            call nmtime(sdtime, 'END', 'CTCC_CONT')
-            call nmrinc(sdstat, 'CTCC_CONT')
+    if (lboucc) then
+        niveau = 1
+        call nmtime(sdtime, 'INI', 'CTCC_CONT')
+        call nmtime(sdtime, 'RUN', 'CTCC_CONT')
+        call nmctcc(noma  , modele, mate  , sddyna, sderro, &
+                    sdstat, defico, resoco, valinc, solalg, &
+                    mmcvca, instan)
+        call nmtime(sdtime, 'END', 'CTCC_CONT')
+        call nmrinc(sdstat, 'CTCC_CONT')
 !
 ! ----- ON CONTINUE LA BOUCLE
 !
@@ -183,9 +185,11 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 999 continue
 !
-! --- REMISE A ZERO DES COMPTEURS DE CYCLE
+! - Initialization of data structures for cycling detection and treatment
 !
-    if (mmcvca .or. mmcvfr .or. mmcvgo) call mmcycz(defico, resoco)
+    if (mmcvca .or. mmcvfr .or. mmcvgo) then
+      call mm_cycl_init(defico, resoco, 0)
+    endif
 !
 ! --- AFFICHAGES PENDANT LA BOUCLE DE POINT FIXE
 !

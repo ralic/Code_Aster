@@ -16,31 +16,22 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmstaf(noma, ndim, chdepd, coefaf, lpenaf,&
-                      nummae, aliase, nne, nummam, ksipc1,&
-                      ksipc2, ksipr1, ksipr2, mlagf1, mlagf2,&
-                      tau1, tau2, norm, indco, indfr,&
-                      rese)
-        character(len=8) :: noma
-        integer :: ndim
+    subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
+                  nummae, aliase, nne, nummam, ksipc1,&
+                  ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
+                  tang_1, tang_2, norm, indi_cont, indi_frot,&
+                  pres_frot,dist_frot)
+        character(len=8) :: noma, aliase
+        integer :: ndim, nne
+        real(kind=8) :: ksipc1, ksipc2
+        real(kind=8) :: ksipr1, ksipr2
+        integer :: nummae, nummam
         character(len=19) :: chdepd
-        real(kind=8) :: coefaf
+        real(kind=8) :: tang_1(3), tang_2(3), norm(3)
+        real(kind=8) :: coef_augm_frot
         logical :: lpenaf
-        integer :: nummae
-        character(len=8) :: aliase
-        integer :: nne
-        integer :: nummam
-        real(kind=8) :: ksipc1
-        real(kind=8) :: ksipc2
-        real(kind=8) :: ksipr1
-        real(kind=8) :: ksipr2
-        real(kind=8) :: mlagf1(9)
-        real(kind=8) :: mlagf2(9)
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
-        real(kind=8) :: norm(3)
-        integer :: indco
-        integer :: indfr
-        real(kind=8) :: rese(3)
+        integer :: indi_frot, indi_cont
+        real(kind=8) :: mult_lagr_f1(9), mult_lagr_f2(9)
+        real(kind=8) :: pres_frot(3),dist_frot(3)
     end subroutine mmstaf
 end interface

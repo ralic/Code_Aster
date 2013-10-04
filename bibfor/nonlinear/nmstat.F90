@@ -74,6 +74,7 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     integer :: nbliac, nbliaf
     integer :: ctccpr, ctcmat, ctcvec, ctiter, ctcfro
     integer :: vali(5)
+    integer :: nb_cycle_1,nb_cycle_2,nb_cycle_3,nb_cycle_4
     character(len=24) :: tpscvt
 !
 ! ----------------------------------------------------------------------
@@ -205,6 +206,10 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             call nmtimr(sdtime, 'CTCC_VECT', phase, tpsccv)
             call nmtimr(sdtime, 'CTCC_CONT', phase, tpsccc)
             call nmtimr(sdtime, 'CTCC_FROT', phase, tpsccf)
+            call nmrvai(sdstat, 'CTCC_CYCL_1', phase, nb_cycle_1)
+            call nmrvai(sdstat, 'CTCC_CYCL_2', phase, nb_cycle_2)
+            call nmrvai(sdstat, 'CTCC_CYCL_3', phase, nb_cycle_3)
+            call nmrvai(sdstat, 'CTCC_CYCL_4', phase, nb_cycle_4)
         endif
     endif
 !
@@ -296,6 +301,12 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
             call utmess('I', 'MECANONLINE7_31', si=nbliac)
             if (lfrot) then
                 call utmess('I', 'MECANONLINE7_32', si=nbliaf)
+            endif
+            if (lctcc) then
+                if (nb_cycle_1.ne.0) call utmess('I', 'MECANONLINE7_33', si=nb_cycle_1)
+                if (nb_cycle_2.ne.0) call utmess('I', 'MECANONLINE7_34', si=nb_cycle_2)
+                if (nb_cycle_3.ne.0) call utmess('I', 'MECANONLINE7_35', si=nb_cycle_3)
+                if (nb_cycle_4.ne.0) call utmess('I', 'MECANONLINE7_36', si=nb_cycle_4)
             endif
         endif
 !

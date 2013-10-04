@@ -29,7 +29,7 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/misazl.h"
-#include "asterfort/mmcycz.h"
+#include "asterfort/mm_cycl_init.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/xmiszl.h"
@@ -160,7 +160,7 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! --- INITIALISATION DES CYCLES
 !
     if (lctcc) then
-        call mmcycz(defico, resoco)
+        call mm_cycl_init(defico, resoco, 0)
     endif
 !
     call jedema()

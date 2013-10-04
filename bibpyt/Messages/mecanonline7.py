@@ -62,8 +62,16 @@ cata_msg = {
   Statistiques du contact dans ce pas de temps
 """),
 
-31 : _(u"""    * Nombre de liaisons de contact               : %(i1)d"""),
+31 : _(u"""    * Nombre de liaisons de contact                     : %(i1)d"""),
 
-32 : _(u"""    * Nombre de liaisons de frottement adhérentes : %(i1)d"""),
+32 : _(u"""    * Nombre de liaisons de frottement adhérentes       : %(i1)d"""),
+
+33 : _(u"""    * Nombre de cycles de type contact/pas contact      : %(i1)d"""),
+
+34 : _(u"""    * Nombre de cycles de type glissement/adhérence     : %(i1)d"""),
+
+35 : _(u"""    * Nombre de cycles de type glissement avant/arrière : %(i1)d"""),
+
+36 : _(u"""    * Nombre de cycles de type point fixe contact       : %(i1)d"""),
 
 }

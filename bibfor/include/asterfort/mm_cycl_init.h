@@ -16,19 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmmbca(noma  , sddyna, iterat, defico, resoco,&
-                      sdstat, valinc, solalg, ctcsta, mmcvca,&
-                      instan)
-        character(len=8), intent(in) :: noma
-        character(len=19), intent(in) :: sddyna
-        integer, intent(in) :: iterat
-        character(len=24), intent(in) :: defico
-        character(len=24), intent(in) :: resoco
-        character(len=24), intent(in) :: sdstat
-        character(len=19), intent(in) :: valinc(*)
-        character(len=19), intent(in) :: solalg(*)
-        integer, intent(out) :: ctcsta
-        logical, intent(out) :: mmcvca
-        real(kind=8), intent(in) :: instan
-    end subroutine mmmbca
+    subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv, cycl_type)
+        character(len=24), intent(in) :: sd_cont_defi
+        character(len=24), intent(in) :: sd_cont_solv
+        integer, intent(in) :: cycl_type
+    end subroutine mm_cycl_init
 end interface

@@ -31,6 +31,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/mm_cycl_crsd.h"
     character(len=24) :: numedd
     character(len=19) :: sddyna
     character(len=24) :: defico, resoco
@@ -60,8 +61,6 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
     character(len=24) :: tabfin, apjeu
     integer :: jtabf, japjeu
     character(len=24) :: vitini, accini
-    character(len=24) :: cyclis, cycnbr, cyctyp, cycpoi, cycgli
-    integer :: jcylis, jcynbr, jcytyp, jcypoi, jcygli
     integer :: ztabf, zetat
 !
 ! ----------------------------------------------------------------------
@@ -114,18 +113,9 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
     etatct = resoco(1:14)//'.ETATCT'
     call wkvect(etatct, 'V V R', zetat*ntpc, jetat)
 !
-! --- DETECTION DE CYCLAGE
+! - Creating data structures for cycling detection and treatment
 !
-    cyclis = resoco(1:14)//'.CYCLIS'
-    cycnbr = resoco(1:14)//'.CYCNBR'
-    cyctyp = resoco(1:14)//'.CYCTYP'
-    cycpoi = resoco(1:14)//'.CYCPOI'
-    cycgli = resoco(1:14)//'.CYCGLI'
-    call wkvect(cyclis, 'V V I', 4*ntpc, jcylis)
-    call wkvect(cycnbr, 'V V I', 4*ntpc, jcynbr)
-    call wkvect(cyctyp, 'V V I', 4*ntpc, jcytyp)
-    call wkvect(cycpoi, 'V V K16', 4*ntpc, jcypoi)
-    call wkvect(cycgli, 'V V R', 3*ntpc, jcygli)
+    call mm_cycl_crsd(defico,resoco)
 !
 ! --- JEU TOTAL
 !

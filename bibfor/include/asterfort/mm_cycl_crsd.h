@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmcycd(noma, defico, resoco)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-    end subroutine mmcycd
+    subroutine mm_cycl_crsd(sd_cont_defi, sd_cont_solv)
+        character(len=24), intent(in) :: sd_cont_defi
+        character(len=24), intent(in) :: sd_cont_solv
+    end subroutine mm_cycl_crsd
 end interface

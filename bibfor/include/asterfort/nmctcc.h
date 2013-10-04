@@ -16,20 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
-                      sderro, defico, resoco, valinc, solalg,&
-                      mmcvca,instan)
-        character(len=8) :: noma
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=19) :: sddyna
-        character(len=24) :: sdimpr
-        character(len=24) :: sderro
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        logical :: mmcvca
-        real(kind=8) :: instan
+    subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
+                      sdstat, defico, resoco, valinc, solalg, &
+                      mmcvca, instan)
+        character(len=8), intent(in) :: noma
+        character(len=24), intent(in) :: modele
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: sderro
+        character(len=24), intent(in) :: sdstat
+        character(len=19), intent(in) :: valinc(*)
+        character(len=19), intent(in) :: solalg(*)
+        real(kind=8), intent(in) :: instan
+        logical, intent(out) :: mmcvca
     end subroutine nmctcc
 end interface

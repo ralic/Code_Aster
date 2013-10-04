@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmcycl(defico, resoco, typcyc, liecyc)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=16) :: typcyc
-        character(len=16) :: liecyc
-    end subroutine mmcycl
+    subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
+        character(len=24), intent(in) :: sd_cont_defi
+        character(len=24), intent(in) :: sd_cont_solv
+        logical, intent(out) :: cycl_flip
+    end subroutine mm_cycl_flip
 end interface

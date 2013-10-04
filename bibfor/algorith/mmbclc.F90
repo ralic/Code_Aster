@@ -3,6 +3,24 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
                   valinc, solalg, sdtime, sdstat, mmcvca,&
                   instan)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmappa.h"
+#include "asterfort/mm_cycl_print.h"
+#include "asterfort/mmchml.h"
+#include "asterfort/mmligr.h"
+#include "asterfort/mmmbca.h"
+#include "asterfort/mreacg.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,21 +39,6 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmappa.h"
-#include "asterfort/mmchml.h"
-#include "asterfort/mmligr.h"
-#include "asterfort/mmmbca.h"
-#include "asterfort/mreacg.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmimci.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
     character(len=8) :: noma, nomo
     integer :: numins, iterat
     character(len=19) :: sddisc, sddyna
@@ -127,8 +130,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call mmmbca(noma, sddyna, iterat, defico, resoco,&
-                    valinc, solalg, ctcsta, mmcvca,&
+        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
+                    sdstat, valinc, solalg, ctcsta, mmcvca,&
                     instan)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
         call nmrinc(sdstat, 'CTCC_CONT')
@@ -146,6 +149,12 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     endif
 !
 999 continue
+!
+! - Cycling informations printing in convergence table
+!
+    if (.not.lallv) then
+        call mm_cycl_print(sdimpr, sdstat)
+    endif
 !
 ! --- STATUTS DE CONTACT EN NEWTON GENERALISE
 !

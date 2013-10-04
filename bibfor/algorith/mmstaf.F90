@@ -1,8 +1,18 @@
-subroutine mmstaf(noma, ndim, chdepd, coefaf, lpenaf,&
+subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
                   nummae, aliase, nne, nummam, ksipc1,&
-                  ksipc2, ksipr1, ksipr2, mlagf1, mlagf2,&
-                  tau1, tau2, norm, indco, indfr,&
-                  rese)
+                  ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
+                  tang_1, tang_2, norm, indi_cont, indi_frot,&
+                  pres_frot,dist_frot)
+!
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/matini.h"
+#include "asterfort/mcopco.h"
+#include "asterfort/mmvalp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,28 +31,20 @@ subroutine mmstaf(noma, ndim, chdepd, coefaf, lpenaf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/matini.h"
-#include "asterfort/mcopco.h"
-#include "asterfort/mmvalp.h"
+!
     character(len=8) :: noma, aliase
     integer :: ndim, nne
     real(kind=8) :: ksipc1, ksipc2
     real(kind=8) :: ksipr1, ksipr2
     integer :: nummae, nummam
     character(len=19) :: chdepd
-    real(kind=8) :: tau1(3), tau2(3), norm(3)
-    real(kind=8) :: coefaf
+    real(kind=8) :: tang_1(3), tang_2(3), norm(3)
+    real(kind=8) :: coef_augm_frot
     logical :: lpenaf
-    integer :: indfr, indco
-    real(kind=8) :: mlagf1(9), mlagf2(9)
-    real(kind=8) :: rese(3)
+    integer :: indi_frot, indi_cont
+    real(kind=8) :: mult_lagr_f1(9), mult_lagr_f2(9)
+    real(kind=8) :: pres_frot(3),dist_frot(3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,141 +55,145 @@ subroutine mmstaf(noma, ndim, chdepd, coefaf, lpenaf,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NDIM   : DIMENSION DE L'ESPACE
-! IN  CHDEPD : DEPLACEMENT CUMULE
-! IN  COEFAF : COEF_AUGM_FROT
-! IN  LPENAF : .TRUE. SI FROTTEMENT PENALISE
-! IN  NUMMAE : NUMERO ABSOLU MAILLE ESCLAVE
-! IN  ALIASE : NOM D'ALIAS DE L'ELEMENT ESCLAVE
-! IN  NNE    : NOMBRE DE NOEUD DE L'ELEMENT ESCLAVE
-! IN  NUMMAM : NUMERO ABSOLU MAILLE MAITRE
-! IN  KSIPC1 : COORDONNEE KSI1 DU POINT DE CONTACT SUR LA MAILLE ESCLAVE
-! IN  KSIPC2 : COORDONNEE KSI2 DU POINT DE CONTACT SUR LA MAILLE ESCLAVE
-! IN  KSIPR1 : COORDONNEE KSI1 DU PROJETE DU POINT DE CONTACT SUR LA
-!              MAILLE MAITRE
-! IN  KSIPR2 : COORDONNEE KSI2 DU PROJETE DU POINT DE CONTACT SUR LA
-!              MAILLE MAITRE
-! IN  MLAGF1 : MULTIPLICATEUR DE FROTTEMENT 1 SUR LES NOEUDS
-! IN  MLAGF2 : MULTIPLICATEUR DE FROTTEMENT 2 SUR LES NOEUDS
-! IN  TAU1   : PREMIER VECTEUR TANGENT
-! IN  TAU2   : SECOND VECTEUR TANGENT
-! IN  NORM   : NORMALE
-! IN  INDCO  : STATUT DE CONTACT
-! OUT INDFR  : INDICATEUR DE FROTTEMENT
-!              - INDFR  = 0 SI ADHERENT
-!              - INDFR  = 1 SI GLISSANT
-! OUT RESE   : MULITPLICATEUR AUGMENTE DU FROTTEMENT (NORMALISE)
+! In  noma           : name of mesh
+! In  ndim           : space size
+! In  chdepd         : cumulated displacement
+! In  coef_augm_frot : augmented ratio for friction
+! In  lpenaf         : .true. if penalized friction
+! In  nummae         : number of slave element
+! In  aliase         : type of slave element
+! In  nne            : number of nodes of slave element
+! In  nummam         : number of master element
+! In  kspic1         : first parametric coord. of contact point (in slave element)
+! In  kspic2         : second parametric coord. of contact point (in slave element)
+! In  kspir1         : first parametric coord. of projection of contact point (in master element)
+! In  kspir2         : second parametric coord. of projection of contact point (in master element)
+! In  mult_lagr_f1   : first lagrange multiplier for friction at nodes
+! In  mult_lagr_f2   : second lagrange multiplier for friction at nodes
+! In  tang_1         : first tangent vector
+! In  tang_2         : second tangent vector
+! In  norm           : normal
+! In  indi_cont      : contact status
+! Out indi_frot      : friction status
+! Out pres_frot      : friction "pressure"
+! Out dist_frot      : tangent distance
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: idim, idim1, idim2
     real(kind=8) :: nrese
-    real(kind=8) :: dlagrf(2), djeu(3), djeut(3)
+    real(kind=8) :: dlagrf(2), dist_total(3)
     real(kind=8) :: ddeple(3), ddeplm(3)
     real(kind=8) :: mprojt(3, 3)
+    real(kind=8) :: lagr_augm_frot(3)
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- INITIALISATIONS
+! - Initializations
 !
     nrese = 0.d0
-    indfr = 0
-    do 10 idim = 1, 3
-        rese(idim) = 0.d0
-        djeut(idim) = 0.d0
-        djeu(idim) = 0.d0
-10  end do
+    indi_frot = 0
+    do idim = 1, 3
+        lagr_augm_frot(idim) = 0.d0
+        dist_frot(idim) = 0.d0
+        dist_total(idim) = 0.d0
+        pres_frot(idim) = 0.d0
+    end do
     dlagrf(1) = 0.d0
     dlagrf(2) = 0.d0
     call matini(3, 3, 0.d0, mprojt)
-    if (indco .eq. 0) goto 99
+    if (indi_cont .eq. 0) goto 99
 !
-! --- MATRICE DE PROJECTION TANGENTE
+! - Tangent projection matrix
 !
-    do 121 idim1 = 1, ndim
-        do 111 idim2 = 1, ndim
+    do idim1 = 1, ndim
+        do idim2 = 1, ndim
             mprojt(idim1,idim2) = -1.d0*norm(idim1)*norm(idim2)
-111      continue
-121  end do
-    do 330 idim1 = 1, ndim
+        end do
+    end do
+    do idim1 = 1, ndim
         mprojt(idim1,idim1) = 1.d0 + mprojt(idim1,idim1)
-330  end do
+    end do
 !
-! --- MULTIPLICATEUR DE LAGRANGE DE FROTTEMENT DU POINT
+! - Lagrange multiplier for friction at current contact point
 !
     call mmvalp(ndim, aliase, nne, 1, ksipc1,&
-                ksipc2, mlagf1, dlagrf(1))
+                ksipc2, mult_lagr_f1, dlagrf(1))
     if (ndim .eq. 3) then
         call mmvalp(ndim, aliase, nne, 1, ksipc1,&
-                    ksipc2, mlagf2, dlagrf( 2))
+                    ksipc2, mult_lagr_f2, dlagrf(2))
     endif
 !
-! --- INCREMENTS DE DEPLACEMENT
+! - Displacement increment
 !
     call mcopco(noma, chdepd, ndim, nummae, ksipc1,&
                 ksipc2, ddeple)
     call mcopco(noma, chdepd, ndim, nummam, ksipr1,&
                 ksipr2, ddeplm)
 !
-! --- CALCUL DE L'INCREMENT DE JEU
+! - Gap increment
 !
-    do 5 idim = 1, 3
-        djeu(idim) = ddeple(idim) - ddeplm(idim)
- 5  end do
+    do idim = 1, 3
+        dist_total(idim) = ddeple(idim) - ddeplm(idim)
+    end do
 !
-! --- PROJECTION DE L'INCREMENT DE JEU SUR LE PLAN TANGENT
+! - Projection of gap increment on tangent plane
 !
-    do 20 idim1 = 1, ndim
-        do 25 idim2 = 1, ndim
-            djeut(idim1) = mprojt(idim1,idim2)*djeu(idim2)+djeut( idim1)
-25      continue
-20  end do
+    do idim1 = 1, ndim
+        do idim2 = 1, ndim
+            dist_frot(idim1) = mprojt(idim1,idim2)*dist_total(idim2)+dist_frot(idim1)
+        end do
+    end do
 !
-! --- SEMI-MULTIPLICATEUR DE FROTTEMENT
+! - Friction "pressure"
+!
+    if (ndim .eq. 2) then
+        do idim = 1, 2
+            pres_frot(idim) = dlagrf(1)*tang_1(idim)
+        end do
+    else if (ndim.eq.3) then
+        do idim = 1, 3
+            pres_frot(idim) = dlagrf(1)*tang_1(idim) + dlagrf(2)*tang_2(idim)
+        end do
+    else
+        ASSERT(.false.)
+    endif 
+!
+! - Semi-multiplicator for friction SEMI-MULTIPLICATEUR DE FROTTEMENT
 !
     if (lpenaf) then
-        do 32 idim = 1, 3
-            rese(idim) = coefaf*djeut(idim)
-32      continue
+        do idim = 1, 3
+            lagr_augm_frot(idim) = coef_augm_frot*dist_frot(idim)
+        end do
     else
-        if (ndim .eq. 2) then
-            do 30 idim = 1, 2
-                rese(idim) = dlagrf(1)*tau1(idim)+coefaf*djeut(idim)
-30          continue
-        else if (ndim.eq.3) then
-            do 31 idim = 1, 3
-                rese(idim) = dlagrf(1)*tau1(idim)+ dlagrf(2)*tau2( idim)+ coefaf*djeut(idim)
-31          continue
-        else
-            ASSERT(.false.)
-        endif
+        do idim = 1, 3
+            lagr_augm_frot(idim) = pres_frot(idim) + coef_augm_frot*dist_frot(idim)
+        end do
     endif
 !
-! --- CALCUL DU COEF D'ADHERENCE
+! - Friction ratio
 !
-    do 40 idim = 1, 3
-        nrese = rese(idim)*rese(idim) + nrese
-40  end do
+    do idim = 1, 3
+        nrese = lagr_augm_frot(idim)*lagr_augm_frot(idim) + nrese
+    end do
     nrese = sqrt(nrese)
 !
-! --- NORMALISATION
+! - Normalization
 !
-    if (nrese .ne. 0.d0) then
-        do 50 idim = 1, 3
-            rese(idim) = rese(idim)/nrese
-50      continue
+    if (nrese.ne.0.d0) then
+      do idim = 1,3
+        lagr_augm_frot(idim) = lagr_augm_frot(idim)/nrese
+      end do
     endif
 !
-! --- ADHERENCE OU GLISSEMENT ?
+! - Sliding or not ?
 !
     if (nrese .le. 1.d0) then
-        indfr = 0
+        indi_frot = 0
     else
-        indfr = 1
+        indi_frot = 1
     endif
 !
 99  continue
