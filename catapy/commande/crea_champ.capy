@@ -47,7 +47,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        CE MOT CLE N'A DE SENS QUE DANS 2 CAS DE FIGURE :
 #          - POUR LES CHAM_ELEM (AVEC LE MOT CLE MODELE)
 #          - POUR LES CHAM_NO SI ON IMPOSE LEUR NUMEROTATION
-         b_prol_zero  =BLOC(condition = "NUME_DDL != None or CHAM_NO != None or TYPE_CHAM[0:2] == 'EL'",
+         b_prol_zero  =BLOC(condition = "NUME_DDL != None or CHAM_NO != None or (TYPE_CHAM != None and TYPE_CHAM[0:2] == 'EL')",
                  PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",)),),
 
 
