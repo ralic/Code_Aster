@@ -78,7 +78,7 @@ DEBUT=MACRO(nom="DEBUT",
                                  # 2 : impression en fin de commande des mesures principales et secondaires
                                  # 3 : impression des mesures principales et secondaires pour chaque pas de temps
            MOYENNE     =SIMP(fr="affichage des moyennes et écart-types en parallèle",
-                                  statut='f',typ='TXM',into=('OUI','NON',),defaut='OUI'),
+                                  statut='f',typ='TXM',into=('OUI','NON',),defaut='NON'),
          ),
 
          MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='d',min=1,max=1,
