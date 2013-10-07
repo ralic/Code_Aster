@@ -15,7 +15,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
-
 def calc_table_prod(self, TABLE, ACTION, **kargs):
    """Typage du concept produit.
    """
@@ -31,8 +30,6 @@ def calc_table_prod(self, TABLE, ACTION, **kargs):
       return table_container
    else:
       return table_sdaster
-
-
 
 CALC_TABLE=MACRO(nom="CALC_TABLE",
                  op=OPS('Macro.calc_table_ops.calc_table_ops'),
@@ -126,6 +123,8 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
                          fr="Formule à appliquer aux colonnes de la table"),
          NOM_PARA = SIMP(statut='o',typ='TXM',
                          fr="Nom de la nouvelle colonne"),
+         NOM_COLONNE = SIMP(statut='f',typ='TXM', max='**',
+                         fr="Nom des colonnes à utiliser en tant que paramètres de la formule"),
       ),
    ),
 

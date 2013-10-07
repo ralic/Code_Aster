@@ -348,4 +348,23 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='ligne5',),
            )
 
+# test de l'évaluation d'une formule avec d'autres noms de colonne
+form = FORMULE(NOM_PARA=('A', 'B'), VALE='A + B')
+
+tp8 = CALC_TABLE(TABLE=tp3,
+                 ACTION=_F(OPERATION='OPER',
+                           FORMULE=form,
+                           NOM_PARA='EVAL',
+                           NOM_COLONNE=('DX', 'COOR_Y')),
+                 TITRE='tp8 + eval formule')
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=150.,
+           VALE_REFE=150.,
+           NOM_PARA='EVAL',
+           TABLE=tp8,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N100',),
+           )
+
 FIN();

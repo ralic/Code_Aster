@@ -72,6 +72,9 @@ Il ne satisfait pas l'expression régulière :
     %(k2)s
 """),
 
+19 : _(u"""La formule dépend de %(i1)d paramètre(s).
+Vous devez fournir autant de nom de colonne dans NOM_COLONNE."""),
+
 20 : _(u"""Erreur lors de la construction des n-uplets
 """),
 

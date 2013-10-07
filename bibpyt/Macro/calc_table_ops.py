@@ -126,8 +126,12 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
         # 7. Traitement de OPER
         if occ['OPERATION'] == 'OPER':
+            if occ.get('NOM_COLONNE') \
+                and len(occ['NOM_COLONNE']) != len(occ['FORMULE'].nompar):
+                UTMESS('F', 'TABLE0_19', vali=len(occ['FORMULE'].nompar))
             # ajout de la colonne dans la table
-            tab.fromfunction(occ['NOM_PARA'], occ['FORMULE'])
+            tab.fromfunction(occ['NOM_PARA'], occ['FORMULE'],
+                             l_para=occ.get('NOM_COLONNE'))
             if INFO == 2:
                 vectval = getattr(tab, occ['NOM_PARA']).values()
                 aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' \

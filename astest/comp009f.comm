@@ -367,8 +367,8 @@ for i in range(1,NCAL+1):
                                 _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
                                 _F(OPERATION='COMB',TABLE=SN3[i],NOM_PARA=('INST'),),
                                 _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
-                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
-                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                _F(OPERATION='OPER', FORMULE=VERIF,
+                                   NOM_PARA='DIFF', NOM_COLONNE=(NOMPARA, 'VAL_CAL')),
                                    ),)
 
           DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
@@ -379,8 +379,8 @@ for i in range(1,NCAL+1):
                                 _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
                                 _F(OPERATION='COMB',TABLE=VARN3[i],NOM_PARA=('INST'),),
                                 _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
-                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
-                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                _F(OPERATION='OPER', FORMULE=VERIF,
+                                   NOM_PARA='DIFF', NOM_COLONNE=(NOMPARA, 'VAL_CAL')),
                                    ),)
 
           TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
