@@ -88,6 +88,7 @@ subroutine erglme(jceld, iavale, option, iord, ligrel,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
 !
     ifi = iunifi('RESULTAT')
 !

@@ -40,6 +40,7 @@ subroutine ustuen(dimtub, tubuse, rcray, nomt19, ns,&
      &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX' /
 !-----------------------------------------------------------------------
 !
+    c16b=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
     tabk(1) = 'TUBE'

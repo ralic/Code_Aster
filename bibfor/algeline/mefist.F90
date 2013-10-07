@@ -153,6 +153,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     data typara / 'I', 'R', 'K24', 'K24', 'K24' /
 ! ----------------------------------------------------------------------
     call jemarq()
+    c16b=(0.d0,0.d0)
 !
 ! --- LECTURE DES DIMENSIONS
     nbz = ndim(1)

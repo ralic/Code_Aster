@@ -91,6 +91,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)

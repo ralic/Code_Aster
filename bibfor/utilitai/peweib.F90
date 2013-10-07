@@ -98,6 +98,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     data chvarc/'&&PEWEIB.CHVARC'/
 !     ------------------------------------------------------------------
     call jemarq()
+    c16b=(0.d0,0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)

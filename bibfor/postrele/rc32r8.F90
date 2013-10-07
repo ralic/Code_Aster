@@ -51,6 +51,8 @@ subroutine rc32r8(nomres, mater, symax)
 ! DEB ------------------------------------------------------------------
 !
     rbid = 0.d0
+    ibid=0
+    c16b=(0.d0,0.d0)
     call tbajpa(nomres, npar1-2, nopar1(3), typar1(3))
 !
     if (symax .eq. r8vide()) then

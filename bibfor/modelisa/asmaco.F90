@@ -73,6 +73,7 @@ subroutine asmaco(ma1, ma2, mag)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    r8b=0.d0
     call infniv(ifm, niv)
 !CC   ------------------------------------------------------------------
 !CC RECUPERATION DE L'ARETE MINIMUM DES MAILLAGE

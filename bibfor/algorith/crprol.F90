@@ -74,7 +74,8 @@ subroutine crprol()
     character(len=24) :: valk(2)
 !
     call jemarq()
-!
+!    
+    cbid=(0.d0,0.d0)
     motfac = 'PROL_RTZ'
     call getres(resu, typres, nomcmd)
     if (typres .ne. 'EVOL_THER') then

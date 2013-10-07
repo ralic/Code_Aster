@@ -101,6 +101,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
+    rbid=0.d0
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   SAISIE DES ENTITES TOPOLOGIQUES ASSOCIEES AU CABLE

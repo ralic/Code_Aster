@@ -103,6 +103,7 @@ subroutine op0109()
      &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 !     ------------------------------------------------------------------
     call jemarq()
+    r8b=0.d0
     zero = 0.d0
     ifm = iunifi('RESULTAT')
     tronc = .false.

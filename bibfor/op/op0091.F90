@@ -91,6 +91,7 @@ subroutine op0091()
     character(len=24) :: lisint, modet
 !     -----------------------------------------------------------------
     call jemarq()
+    cbid=(0.d0,0.d0)
     call getres(nomres, typres, nomcmd)
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=lmodge)

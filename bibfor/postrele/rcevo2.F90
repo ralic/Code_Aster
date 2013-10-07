@@ -67,6 +67,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
+    r8b=0.d0
     motclf = 'TRANSITOIRE'
     call getfac(motclf, nbtran)
     if (nbtran .eq. 0) goto 9999

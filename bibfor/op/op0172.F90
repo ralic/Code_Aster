@@ -87,6 +87,7 @@ subroutine op0172()
 !-----------------------------------------------------------------------
 !
     call jemarq()
+    r8b=0.d0
     call infmaj()
     call getres(resu, concep, nomcmd)
     zero = 0.d0

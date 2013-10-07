@@ -71,6 +71,8 @@ subroutine pofaqu()
 !
 !     --- CHARGEMENT QUELCONQUE ---
 !
+    ibid=0
+    cbid=(0.d0,0.d0)
     fvale(1) = nomten(1)//'           .VALE'
     call jelira(fvale(1), 'LONMAX', nbpts)
     nbptot = nbpts

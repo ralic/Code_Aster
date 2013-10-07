@@ -42,6 +42,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
     data nomsig/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
     data nomgrd/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
 !
+    cbid=(0.d0,0.d0)
     rac2=sqrt(2.d0)
     if (igrad .ne. 0) then
         ncmp=9
@@ -81,7 +82,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
         if (imptgt .eq. 1) then
             call dcopy(36, dsidep, 1, vr(1+6+6+3+nbvari), 1)
         endif
-        call tbajli(table, nbpar, nompar, [i], vr,&
+        call tbajli(table, nbpar, nompar, [0], vr,&
                     [cbid], k8b, 0)
 !
     else
@@ -98,7 +99,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-551      continue
+551     continue
         vk8(1)='SIGM'
         do 552 i = 1, 6
             vr(2)=sigt(i)

@@ -56,6 +56,8 @@ subroutine op0170()
 !     -----------------------------------------------------------------
 !
     call infmaj()
+    c16b=(0.d0,0.d0)
+    ibid=0
     rundf = r8vide()
     xm4 = rundf
     ivmom = 0
@@ -72,14 +74,6 @@ subroutine op0170()
         call tbexp2(table, 'LAMBDA_00')
         call tbexp2(table, 'LAMBDA_02')
         call tbexp2(table, 'LAMBDA_04')
-!        CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
-!     &                'GRANDEUR', K8B, IBID, R8B, C16B, K8B, IRET )
-!        IF ( IRET.NE.0 .AND. IRET.NE.3 )
-!     &                CALL U2MESS('F','MODELISA2_89')
-!        IF ( K8B .NE. 'DSP_SIPO' .OR. K8B .NE. 'DSP_SIGM' .OR.
-!     &       K8B .NE. 'DSP_EFGE'  ) THEN
-!              CALL U2MESS('A','PREPOST4_16')
-!        ENDIF
         nomob1 = '&&OP0170.LAMBDA_0'
         call tbexve(table, 'LAMBDA_00', nomob1, 'V', nbl0,&
                     k8b)

@@ -109,6 +109,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   ACCES AUX DONNEES

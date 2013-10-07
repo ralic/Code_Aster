@@ -39,7 +39,8 @@ subroutine usobce(dimobs, obsuse, rcarte, nomt19, nbusur,&
     data nopara / 'LIEU'    , 'SECTEUR' , 'TYPE'    , 'ANGL_DEBUT',&
      &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX' /
 !-----------------------------------------------------------------------
-!
+!    
+    c16b=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
     tabk(1) = 'OBST'

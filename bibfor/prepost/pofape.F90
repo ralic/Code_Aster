@@ -100,6 +100,10 @@ subroutine pofape()
 !
     call jemarq()
 !
+    cbid=(0.d0,0.d0)
+    rbid=0.d0
+    ibid=0
+!
     lke = .false.
     lhaigh = .false.
     nbc = 1

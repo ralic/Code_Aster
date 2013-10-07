@@ -136,6 +136,7 @@ subroutine op0044()
 !
     call jemarq()
 !
+    cbid=(0.d0,0.d0)
     undf = r8vide()
     indf = isnnem()
     det1 = 0.d0

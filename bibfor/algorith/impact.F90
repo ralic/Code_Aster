@@ -43,6 +43,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
     complex(kind=8) :: c16b
 ! ----------------------------------------------------------------------
 !
+    c16b=(0.d0,0.d0)
     zero = 0.0d0
     nbchoc = 0
     nbrebo = 0

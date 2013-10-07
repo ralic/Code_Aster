@@ -89,6 +89,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     data tabcmp/'TRIAX','RSR0','VOLU','NUMEMA','DEPSEQ'/
 !     ------------------------------------------------------------------
     call jemarq()
+    c16b=(0.d0,0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)

@@ -53,6 +53,8 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
      &              'R'     , 'R'     , 'R'        , 'R' /
 ! DEB ------------------------------------------------------------------
 !
+    ibid=0
+    c16b=(0.d0,0.d0)
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, npara, nopara, typara)
 !

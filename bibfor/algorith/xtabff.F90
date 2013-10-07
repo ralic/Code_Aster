@@ -71,6 +71,9 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
+    r8bid=0.d0
+
     call infdbg('XFEM', ifm, niv)
 !
 !     S'IL N'Y A PAS DE FOND DE FISSURE ON SORT

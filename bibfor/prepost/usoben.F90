@@ -56,6 +56,7 @@ subroutine usoben(guidag, dimobs, obsuse, nco, rayo,&
      &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX' /
 !-----------------------------------------------------------------------
 !
+    c16b=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
     rad = r8dgrd( )

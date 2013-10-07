@@ -112,6 +112,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
 ! ----------------------------------------------------------------------
 !     INITIALISATIONS
+    cbid=(0.d0,0.d0)
     ndim=3
     typmod(1)='3D'
     typmod(2)=' '

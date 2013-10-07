@@ -87,6 +87,8 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    zbid=(0.d0,0.d0)
+    rbid=0.d0
 !
 !     --- PRISE EN COMPTE DES MODES NEGATIFS ?
     ineg = +1

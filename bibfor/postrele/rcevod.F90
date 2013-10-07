@@ -104,6 +104,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
+    c16b=(0.d0,0.d0)
     call getres(nomres, concep, nomcmd)
     call infniv(ifm, niv)
 !

@@ -48,6 +48,9 @@ subroutine op0173()
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
+    r8b=0.d0
+    ibid=0
 !
     call getres(nomres, concep, nomcmd)
 !

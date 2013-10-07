@@ -57,6 +57,7 @@ subroutine pewext(resu)
 !
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
     lisord='&&PEWEXT.VECTORDR'
     call getvid(' ', 'RESULTAT', scal=result, nbret=iret)
 !

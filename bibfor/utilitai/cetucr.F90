@@ -63,6 +63,8 @@ subroutine cetucr(motfac, model0)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    ibid=0
+    cbid=(0.d0,0.d0)
 !
     modele = model0
 !

@@ -120,6 +120,8 @@ subroutine op0144()
 !-----------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
+    r8b=0.d0
     call infmaj()
 !
     call getres(nomu, concep, cmd)

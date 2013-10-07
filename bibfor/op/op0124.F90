@@ -34,7 +34,7 @@ subroutine op0124()
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/ve0124.h"
-    integer :: nbfac, nk
+    integer :: nbfac
     character(len=16) :: typres, valk(2)
 !     ------------------------------------------------------------------
 !

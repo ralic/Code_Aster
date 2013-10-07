@@ -82,6 +82,9 @@ subroutine op0177()
 !====
 !
     call jemarq()
+    ibid=0
+    cbid=(0.d0,0.d0)
+    r8b=0.d0
     call infmaj()
 !
     travr = '&&'//nompro//'_TRAVR          '

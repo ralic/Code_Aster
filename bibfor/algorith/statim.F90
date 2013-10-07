@@ -95,6 +95,8 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 !-----------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
+    ibid=0
 !
     dt = (temps(nbpt)-temps(1))/(nbpt-1)
     idebut = int((tdebut-temps(1))/dt)+1

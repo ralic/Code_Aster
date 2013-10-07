@@ -58,6 +58,9 @@ subroutine rcveri(tablz)
 !
     call jemarq()
 !
+    ibid=0
+    cbid=(0.d0,0.d0)
+    r8b=0.d0
     valek(1) = 'INST            '
     valek(2) = 'COOR_X          '
     valek(3) = 'COOR_Y          '

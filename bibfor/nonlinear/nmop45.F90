@@ -123,6 +123,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
 ! --- INITIALISATIONS
 !
+    cbid=(0.d0,0.d0)
     omecor = omega2(1.d-2)
     un=1
     precsh = 5.d-2

@@ -62,6 +62,8 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
 !
 !
 ! --- INITS.
+    cbid=(0.d0,0.d0)
+    ibid=0
     call jemarq()
     call infniv(ifm, niv)
     valk(1)=tabmod

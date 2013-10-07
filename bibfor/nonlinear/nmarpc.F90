@@ -65,6 +65,7 @@ subroutine nmarpc(result, sdener, numrep, instan)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    c16bid=(0.d0,0.d0)
     call infdbg('MECA_NON_LINE', ifm, niv)
 !
 ! --- RECUPERATION DU NOM DE LA TABLE CORRESPONDANT

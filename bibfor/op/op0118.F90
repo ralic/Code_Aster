@@ -64,6 +64,7 @@ subroutine op0118()
 !
     call jemarq()
 !
+    c16b=(0.d0,0.d0)
     call infmaj()
     call infniv(ifm, niv)
 !

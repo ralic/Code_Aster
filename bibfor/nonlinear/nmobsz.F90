@@ -87,6 +87,7 @@ subroutine nmobsz(sdobse, nomtab, titobs, nomcha, typcha,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    c16bid=(0.d0,0.d0)
 !
 ! --- SD PRINCIPALE (INFO)
 !

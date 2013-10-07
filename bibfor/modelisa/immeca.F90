@@ -126,6 +126,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     call jemarq()
     call infniv(ifm, niv)
 !
+    cbid=(0.d0,0.d0)
+    rbid=0.d0
     zero = 0.0d0
     longcy = zero
     longca = zero

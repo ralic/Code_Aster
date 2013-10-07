@@ -68,6 +68,7 @@ subroutine pechli(resu, modele, mate)
 !
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
     lisord = '&&PECHLI.VECTORDR'
     chtime = '&&PECHLI.CH_INST_R'
     f0u = 0

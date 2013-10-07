@@ -51,6 +51,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
     nomk19 = ' '
     nomk19(1:8) = trange
     nomk24 = ' '

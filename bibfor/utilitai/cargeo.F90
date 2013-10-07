@@ -68,6 +68,8 @@ subroutine cargeo(mailla)
 ! DEB------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
+    ibid=0
 !
     ma = mailla
     nodime = ma//'.DIME           '

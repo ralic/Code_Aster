@@ -114,10 +114,10 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
             ji = jiszon + kadm + ideci/lois
             nl = lonoi / (5*lois)
             nd = mod( lonoi , (5*lois) ) / lois
-            write ( unit , '((I7,'' - '',5(I12,1X)))') (5*(l-1)+1,(&
+            write ( unit , '((I7,'' - '',5(I20,1X)))') (5*(l-1)+1,(&
             iszon( ji + 5*(l-1)+k-1),k=1,5),l=1,nl)
             if (nd .ne. 0) then
-                write ( unit , '(I7,'' - '',5(I12,1X))') 5*nl+1,(&
+                write ( unit , '(I7,'' - '',5(I20,1X))') 5*nl+1,(&
                 iszon( ji + 5*nl+k-1),k=1,nd)
             endif
         else if (typei .eq. 'R') then

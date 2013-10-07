@@ -106,6 +106,8 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!    
+    cbid=(0.d0,0.d0)
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !-INUTILE ???

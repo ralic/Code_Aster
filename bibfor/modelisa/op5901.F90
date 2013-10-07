@@ -53,6 +53,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !
     call jemarq()
 !
+    cbid=(0.d0,0.d0)
     comdes='&&OP0059.TABLETX'
     call tbcrsd(comdes, 'V')
     nompar(1)='FAMI_SYST_GLIS'

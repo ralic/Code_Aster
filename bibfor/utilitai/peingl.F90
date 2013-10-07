@@ -178,6 +178,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! --- INITIALISATIONS :
 !     ---------------
+    c16b=(0.d0,0.d0)
     ivari=0
     chbid='&&PEINGL.VARINUL'
     compor='&&PEINGL.COMPNUL'

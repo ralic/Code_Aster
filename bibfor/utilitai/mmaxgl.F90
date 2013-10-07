@@ -70,7 +70,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     integer :: ig, ind, indold, iprov, iq, igq, ipa, inopr, itypr, ni, nj
     integer :: irmax, ikmax
 !
-    real(kind=8) :: mgmax, gmax, s, rbid
+    real(kind=8) :: mgmax, gmax, s
     complex(kind=8) :: cbid
 !
     character(len=3) :: chnu
@@ -81,6 +81,8 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    ibid=0
+    cbid=(0.d0,0.d0)
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !-INUTILE ???

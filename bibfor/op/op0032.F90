@@ -90,6 +90,7 @@ subroutine op0032()
     call jemarq()
     call infmaj()
     call infniv(ifm, niv)
+    cbid=(0.d0,0.d0)
     rzero=0.d0
     izero=0
 !-----------------------------------------------------------------------

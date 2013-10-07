@@ -80,6 +80,8 @@ subroutine pofaun()
 !
     call jemarq()
 !
+    cbid=(0.d0,0.d0)
+    ibid=0
     r8b = 0.d0
     fateps = .false.
     lhaigh = .false.

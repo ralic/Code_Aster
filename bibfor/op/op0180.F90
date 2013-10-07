@@ -127,6 +127,7 @@ subroutine op0180()
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
     call infmaj()
 !
     call getres(nomu, concep, cmd)

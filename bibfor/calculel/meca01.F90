@@ -142,6 +142,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 1. PREALABLES
 !=======================================================================
 !
+    rbid=0.d0
+    cbid=(0.d0,0.d0)
     codret = 0
     rundf = r8vide()
 !

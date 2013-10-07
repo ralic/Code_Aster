@@ -73,6 +73,8 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
 !
     call jemarq()
 !
+    ibid=0
+    cbid=(0.d0,0.d0)
     nbprup = lonvec+2
     ncomb = 2**lonvec
     call wkvect('&&MEMAXG.NORU', 'V V K16', nbprup, inopr)

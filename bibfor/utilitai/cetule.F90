@@ -73,6 +73,9 @@ subroutine cetule(model0, tbgrca, codret)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    ibid=0
+    rbid=0.d0
+    cbid=(0.d0,0.d0)
 !
     modele = model0(1:8)
 !

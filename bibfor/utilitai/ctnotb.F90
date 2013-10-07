@@ -73,6 +73,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     call jemarq()
 !
 ! --- 0. INITIALISATIONS
+    ibid=0
+    cbid=(0.d0,0.d0)
     chamns = '&&CTNOTB.CNS       '
     call jeveuo(nkcmp, 'L', jcmp)
     call jeveuo(nkcha, 'L', jkcha)

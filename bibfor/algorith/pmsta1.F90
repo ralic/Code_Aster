@@ -56,6 +56,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !
     call jemarq()
 !
+    cbid=(0.d0,0.d0)
     rac2=sqrt(2.d0)
     if (igrad .ne. 0) then
         ncmp=9

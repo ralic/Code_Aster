@@ -62,6 +62,9 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
 !
     call jemarq()
 !
+    c16b=(0.d0,0.d0)
+    r8b=0.d0
+    ibid=0
     espace = 0.d0
     rad = r8dgrd( )
     deg = r8rddg( )

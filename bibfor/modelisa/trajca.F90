@@ -109,6 +109,8 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
+    ibid=0
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   CREATION DES OBJETS DE TRAVAIL

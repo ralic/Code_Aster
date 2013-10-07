@@ -80,6 +80,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     character(len=16) :: nompar(4*nbcmp+5), nomax(2*nbcmp+3)
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
 !
     call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
                 ligrel, iret)

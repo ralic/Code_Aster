@@ -96,6 +96,7 @@ subroutine op0096()
     call infmaj()
 !
     ifm = iunifi('MESSAGE')
+    r8b=0.d0
     zero = 0.0d0
     nil = -1
     tetra = 1

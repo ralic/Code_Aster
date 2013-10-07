@@ -49,6 +49,8 @@ subroutine op0035()
     real(kind=8) :: rval, rbid
 !
     call jemarq()
+    rbid=0.d0
+    cbid=(0.d0,0.d0)
     call infmaj()
     call getres(result, type, nomcmd)
     ketat='?'

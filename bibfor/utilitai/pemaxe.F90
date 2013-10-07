@@ -86,6 +86,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !
     call jemarq()
 !
+    cbid=(0.d0,0.d0)
     call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
                 ligrel, iret)
     call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&

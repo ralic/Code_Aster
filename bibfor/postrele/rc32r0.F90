@@ -60,6 +60,8 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
      &              'NUME_SITU', 'PM', 'PB', 'PMPB', 'SN', 'SN*'  /
 ! DEB ------------------------------------------------------------------
 !
+    ibid=0
+    c16b=(0.d0,0.d0)
     call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)

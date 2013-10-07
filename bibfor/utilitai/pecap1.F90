@@ -119,6 +119,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     real(kind=8) :: x1, x2, xmin, y1, y2, ymin, zero
 !
 !-----------------------------------------------------------------------
+    r8b=0.d0
     zero = 0.0d0
     undemi = 0.5d0
     deux = 2.0d0

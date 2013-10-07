@@ -127,6 +127,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
+    ibid=0
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   TRAITEMENT DES CAS PARTICULIERS F0 = 0 OU PAS D'ANCRAGE ACTIF

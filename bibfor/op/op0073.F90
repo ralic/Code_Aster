@@ -56,6 +56,8 @@ subroutine op0073()
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
+    r8bid=0.d0
     call infmaj()
     call infniv(ifm, niv)
 !

@@ -88,6 +88,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 ! --- 0. INITIALISATIONS
 !      -----------------
+    cbid=(0.d0,0.d0)
     chames = '&&CTELTB.CES       '
     call jeveuo(nkcmp, 'L', jcmp)
     call jeveuo(nkcha, 'L', jkcha)

@@ -56,6 +56,8 @@ subroutine peaire(resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    ibid=0
+    c16b=(0.d0,0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)

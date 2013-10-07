@@ -64,6 +64,7 @@ subroutine rvmoye(nomres, iocc)
 ! ---------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
     knum = '&&RVMOYE.NUME_ORDRE'
     nbc = 0
 !

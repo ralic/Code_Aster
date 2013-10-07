@@ -79,6 +79,8 @@ subroutine pecage(resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    c16b=(0.d0,0.d0)
+    r8b=0.d0
     iorig = 0
     icage = 1
 !

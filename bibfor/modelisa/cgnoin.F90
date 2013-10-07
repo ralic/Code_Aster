@@ -67,6 +67,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- INITIALISATIONS :
 !     ---------------
+    r8b=0.d0
     motfac=mofaz
     noma2=nomaz
     lisnoi=lisnoz

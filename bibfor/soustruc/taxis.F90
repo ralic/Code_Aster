@@ -55,6 +55,7 @@ subroutine taxis(noma, indic, nbma)
 !
 !-----------------------------------------------------------------------
     call jemarq()
+    r8b=0.d0
 !
 !     TOLERANCE POUR DES ABSCISSES TRES LEGEREMENT < 0 : 1.E-6*X_MAX
     call ltnotb(noma, 'CARA_GEOM', tablg)

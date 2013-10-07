@@ -52,6 +52,7 @@ function armin(nomaz)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+    r8b=0.d0
 !
 ! --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
 !

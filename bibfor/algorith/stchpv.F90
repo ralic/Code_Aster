@@ -102,6 +102,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
     data tusur / 'INTITU','NOEUD', 'CALCUL'        , 'PUIS_USURE'   /
 !-----------------------------------------------------------------------
 !
+    c16b=(0.d0,0.d0)
+    ibid=0
     zero = 0.0d0
     rad = r8rddg()
     call infniv(ifires, impr)

@@ -89,6 +89,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     logical :: exist
 !
     call jemarq()
+    cbid=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
     call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&

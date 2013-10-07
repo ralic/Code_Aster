@@ -52,6 +52,7 @@ subroutine op0094()
      &              'R' , 'R' /
 !     ------------------------------------------------------------------
     call jemarq()
+    c16b=(0.d0,0.d0)
     call infmaj()
 !
     call getres(nomtrc, concep, nomcmd)
