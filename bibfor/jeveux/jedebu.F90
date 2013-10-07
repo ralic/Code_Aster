@@ -210,7 +210,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     endif
     vmet = vmxdyn
 !
-    call utptme(1, 'MEM_MUMP', 0.d0, iret)
+    call utptme('MEM_MUMP', 0.d0, iret)
     call utgtme(1, 'VMPEAK  ', rval, iret)
     if (rval(1) .le. 0) then
         call utmess('I', 'JEVEUX1_75')
@@ -225,7 +225,7 @@ subroutine jedebu(nbfi, mxzon, idb)
 !
     if (rval(3) .gt. 0) then
 !
-        call utptme(1, 'RLQ_MEM ', rval(3), iret)
+        call utptme('RLQ_MEM ', rval(3), iret)
         if (rval(1)-rval(3) .le. 0) then
             call utmess('F', 'JEVEUX1_71', nr=3, valr=rval)
         endif

@@ -263,8 +263,8 @@ subroutine cargeo(mailla)
 !
     call tbcrsd(nomt19, bas1)
     call tbajpa(nomt19, nbpart, nopara, typara)
-    call tbajli(nomt19, nbpart, nopara, ibid, vale,&
-                c16b, k8b, 0)
+    call tbajli(nomt19, nbpart, nopara, [ibid], vale,&
+                [c16b], k8b, 0)
 !
     call jedema()
 end subroutine

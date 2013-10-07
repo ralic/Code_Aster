@@ -94,25 +94,25 @@ subroutine rvmima(nomres, iocc)
             valk(4) = nomax
             valk(5) = cpmax
             call tbajli(nomres, nbpano, nopano, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(1) = valmin
             valk(3) = 'MIN'
             valk(4) = nomin
             valk(5) = cpmin
             call tbajli(nomres, nbpano, nopano, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(1) = vaamax
             valk(3) = 'MAXI_ABS'
             valk(4) = noamax
             valk(5) = cpamax
             call tbajli(nomres, nbpano, nopano, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(1) = vaamin
             valk(3) = 'MINI_ABS'
             valk(4) = noamin
             valk(5) = cpamin
             call tbajli(nomres, nbpano, nopano, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
         else if (tych(1:4).eq.'ELNO') then
             call prexel(champ, iocc, mamax, nomax, ispmax,&
                         cpmax, valmax, mamin, nomin, ispmin,&
@@ -126,28 +126,28 @@ subroutine rvmima(nomres, iocc)
             valk(5) = nomax
             valk(6) = cpmax
             call tbajli(nomres, nbpael, nopael, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(1) = valmin
             valk(3) = 'MIN'
             valk(4) = mamin
             valk(5) = nomin
             valk(6) = cpmin
             call tbajli(nomres, nbpael, nopael, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(1) = vaamax
             valk(3) = 'MAXI_ABS'
             valk(4) = maamax
             valk(5) = noamax
             valk(6) = cpamax
             call tbajli(nomres, nbpael, nopael, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(1) = vaamin
             valk(3) = 'MINI_ABS'
             valk(4) = maamin
             valk(5) = noamin
             valk(6) = cpamin
             call tbajli(nomres, nbpael, nopael, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
 !
         else
             call utmess('F', 'ALGORITH10_56', sk=tych)
@@ -253,25 +253,25 @@ subroutine rvmima(nomres, iocc)
             valk(ik+2) = nomax
             valk(ik+3) = cpmax
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(ir+1) = valmin
             valk(ik+1) = 'MIN'
             valk(ik+2) = nomin
             valk(ik+3) = cpmin
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(ir+1) = vaamax
             valk(ik+1) = 'MAXI_ABS'
             valk(ik+2) = noamax
             valk(ik+3) = cpamax
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(ir+1) = vaamin
             valk(ik+1) = 'MINI_ABS'
             valk(ik+2) = noamin
             valk(ik+3) = cpamin
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
 !
         else if (tych(1:4).eq.'ELNO') then
             nbpar = nbpar + 1
@@ -295,28 +295,28 @@ subroutine rvmima(nomres, iocc)
             valk(ik+3) = nomax
             valk(ik+4) = cpmax
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(ir+1) = valmin
             valk(ik+1) = 'MIN'
             valk(ik+2) = mamin
             valk(ik+3) = nomin
             valk(ik+4) = cpmin
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(ir+1) = vaamax
             valk(ik+1) = 'MAXI_ABS'
             valk(ik+2) = maamax
             valk(ik+3) = noamax
             valk(ik+4) = cpamax
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
             valr(ir+1) = vaamin
             valk(ik+1) = 'MINI_ABS'
             valk(ik+2) = maamin
             valk(ik+3) = noamin
             valk(ik+4) = cpamin
             call tbajli(nomres, nbpar, nopara, vali, valr,&
-                        c16b, valk, 0)
+                        [c16b], valk, 0)
 !
         else
             call utmess('F', 'ALGORITH10_56', sk=tych)

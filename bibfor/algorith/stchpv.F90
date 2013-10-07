@@ -210,8 +210,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             para(3) = dxrmst
             para(4) = dxmaxt
             para(5) = dxmint
-            call tbajli(nomres, ndepl, tdepl, ibid, para,&
-                        c16b, valek, 0)
+            call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+                        [c16b], valek, 0)
 11      continue
 !
 !       --------------------------------------------------------
@@ -265,8 +265,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         para(3) = dxrmst
         para(4) = dxmaxt
         para(5) = dxmint
-        call tbajli(nomres, ndepl, tdepl, ibid, para,&
-                    c16b, valek, 0)
+        call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+                    [c16b], valek, 0)
 !
 !       ----------------------------------
 !       --- ANALYSE DE L ANGLE POLAIRE ---
@@ -321,8 +321,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         para(3) = dxrmst
         para(4) = dxmaxt
         para(5) = dxmint
-        call tbajli(nomres, ndepl, tdepl, ibid, para,&
-                    c16b, valek, 0)
+        call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+                    [c16b], valek, 0)
 !
 !       ------------------------------------------------------------
 !       CALCUL DE LA MOYENNE,ECART TYPE,RMS, MAX DE LA FORCE NORMALE
@@ -379,8 +379,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         para(3) = fxrmst
         para(4) = fxrmsc
         para(5) = fxmaxt
-        call tbajli(nomres, nforn, tforn, ibid, para,&
-                    c16b, valek, 0)
+        call tbajli(nomres, nforn, tforn, [ibid], para,&
+                    [c16b], valek, 0)
 !
 !       ----------------------------------------------------------------
 !       CALCUL DE LA MOYENNE,ECART TYPE,RMS,MAX DE LA FORCE TANGENTIELLE
@@ -439,8 +439,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             para(3) = fyrmst
             para(4) = fymaxt
             para(5) = fymint
-            call tbajli(nomres, ndepl, tdepl, ibid, para,&
-                        c16b, valek, 0)
+            call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+                        [c16b], valek, 0)
 40      continue
 !
 !       -------------------------------------------------------
@@ -505,8 +505,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         para(3) = tchomi
         para(4) = trebmy
         valei(3) = int( 100.d0 * tchocg / ttot )
-        call tbajli(nomres, nstch, tstch, valei, para,&
-                    c16b, valek, 0)
+        call tbajli(nomres, nstch, tstch, [valei], para,&
+                    [c16b], valek, 0)
 !
 !       --------------------------------------------------------
 !       --- CALCUL DE LA PUISSANCE D'USURE AU SENS D'ARCHARD ---
@@ -517,8 +517,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                     idebut, nbloc, nbval, ifires, i,&
                     impr, pusurn)
         valek(3) = tvar(10)
-        call tbajli(nomres, nusur, tusur, ibid, pusurn,&
-                    c16b, valek, 0)
+        call tbajli(nomres, nusur, tusur, [ibid], [pusurn],&
+                    [c16b], valek, 0)
 !
 10  end do
 !

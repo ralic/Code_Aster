@@ -247,7 +247,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
         valk(5) = kbif
         valk(6) = 'NON_EVALUE'
         call tbajli(nomres, nbpar, nompar, vali, valr,&
-                    cvide, valk, 0)
+                    [cvide], valk, 0)
 !
 100  continue
 !
@@ -300,7 +300,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
             valrt(5) = zr(iorig-1+(iordr-1)*3+2)
             valrt(6) = zr(iorig-1+(iordr-1)*3+3)
             call tbajli(nomtab, nbpart, nompat, valit, valrt,&
-                    cvide, valkt, 0)
+                    [cvide], valkt, 0)
 300      continue
     endif
 !

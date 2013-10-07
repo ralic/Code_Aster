@@ -290,7 +290,7 @@ subroutine jjldyn(imode, lmin, ltot)
 !
 !   ON AJUSTE LA VALEUR DU RELIQUAT ET LA LIMITE DES ALLOCATONS JEVEUX
 !
-            call utptme(1, 'RLQ_MEM ', (valp(3)-valp(1)), iret)
+            call utptme('RLQ_MEM ', valp(3) - valp(1), iret)
             vx(1)=valp(4)-(valp(3)-valp(1))
             if (vx(1) .gt. 0) then
                 call jermxd(vx(1)*1024*1024, iret)

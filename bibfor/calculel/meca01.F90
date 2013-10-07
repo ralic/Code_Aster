@@ -480,13 +480,13 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         lipacr(1)='NUME_ORDR'
         lipacr(2)='OPTION'
 !
-        call tbliva(tabp, npacri, lipacr, iordr, rbid,&
-                    cbid, 'ERME_ELEM', 'EGAL', 0.d0, 'ERRE_ABSO',&
-                    ctype, vali, erp, valc, valk,&
+        call tbliva(tabp, npacri, lipacr,  [iordr], [rbid],&
+                    [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO',&
+                    ctype, vali, erp, valc, valk(1),&
                     iret)
-        call tbliva(tabd, npacri, lipacr, iordr, rbid,&
-                    cbid, 'ERME_ELEM', 'EGAL', 0.d0, 'ERRE_ABSO',&
-                    ctype, vali, erd, valc, valk,&
+        call tbliva(tabd, npacri, lipacr, [iordr], [rbid],&
+                    [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO',&
+                    ctype, vali, erd, valc, valk(1),&
                     iret)
         s=sqrt(erd/erp)
 !----- CREE UNE CARTE CONSTANTE

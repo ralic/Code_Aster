@@ -106,7 +106,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
                 ipar(1) = nbchoc
                 ipar(2) = nbrebo
                 call tbajli(nmtab, npari, lpari, ipar, para,&
-                            c16b, valek, 0)
+                            [c16b], valek, 0)
             endif
 !
             irebo = 0
@@ -160,7 +160,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
         ipar(1) = nbchoc
         ipar(2) = nbrebo
         call tbajli(nmtab, npari, lpari, ipar, para,&
-                    c16b, valek, 0)
+                    [c16b], valek, 0)
     endif
 !
 end subroutine

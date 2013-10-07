@@ -110,7 +110,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 ! -----------------
     integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, jtblp, jtbnp, nblign
     integer :: nbpara, n1, irt, jtabx, jtaby, nbval
-    real(kind=8) :: df, flim, krelax, zero, fi, f2
+    real(kind=8) :: df, flim, krelax, fi, f2
     complex(kind=8) :: cbid
     logical :: trouv1, trouv2, exi1, exi2
     character(len=3) :: k3b
@@ -128,8 +128,6 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
     call jemarq()
 !
-    zero = 0.0d0
-!
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   TRAITEMENT DES CAS PARTICULIERS F0 = 0 OU PAS D'ANCRAGE ACTIF
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,8 +140,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
     if ((f0.eq.0.0d0) .or. (nbf0.eq.0)) then
         do 10 ino = 1, nbnoca
-            call tbajli(tablca, 1, param, ibid, zero,&
-                        cbid, k3b, idecno+ino)
+            call tbajli(tablca, 1, param, [ibid], [0.d0],&
+                        [cbid], k3b, idecno+ino)
 10      continue
         goto 9999
     endif
@@ -303,8 +301,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     do 90 ino = 1, nbnoca
-        call tbajli(tablca, 1, param, ibid, zr(jf+ino-1),&
-                    cbid, k3b, idecno+ ino)
+        call tbajli(tablca, 1, param, [ibid], zr(jf+ino-1),&
+                    [cbid], k3b, idecno+ ino)
 90  end do
 !
 9999  continue

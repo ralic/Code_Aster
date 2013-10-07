@@ -151,8 +151,8 @@ subroutine pofaqu()
     do 50 i = 1, nbptot
         val(1) = zr(ifonc1+i-1)
         val(2) = zr(ivdome+i-1)
-        call tbajli(result, 2, nomppf, ibid, val,&
-                    cbid, k8b, 0)
+        call tbajli(result, 2, nomppf, [ibid], val,&
+                    [cbid], k8b, 0)
 50  end do
 !
 !     --- CALCUL DU DOMMAGE TOTAL ---
@@ -163,8 +163,8 @@ subroutine pofaqu()
 !
         call fgdomm(nbptot, zr(ivdome), rdomm)
 !
-        call tbajli(result, 1, nomppf(3), ibid, rdomm,&
-                    cbid, k8b, 0)
+        call tbajli(result, 1, nomppf(3), [ibid], [rdomm],&
+                    [cbid], k8b, 0)
 !
     endif
 !

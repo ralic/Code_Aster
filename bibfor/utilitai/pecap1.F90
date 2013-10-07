@@ -208,15 +208,15 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
         call jeexin(noma//'           .LTNT', iret1)
         if (iret1 .ne. 0) then
             call ltnotb(noma, 'CARA_GEOM', nomt19)
-            call tbliva(nomt19, 0, ' ', ibid, r8b,&
-                        cbid, k8bid, k8bid, r8b, 'X_MIN',&
+            call tbliva(nomt19, 0, ' ', [ibid], [r8b],&
+                        [cbid], k8bid, k8bid, [r8b], 'X_MIN',&
                         k8bid, ibid, xmin, cbid, k8bid,&
                         iret2)
             if (iret2 .ne. 0) then
                 call utmess('F', 'MODELISA2_13')
             endif
-            call tbliva(nomt19, 0, ' ', ibid, r8b,&
-                        cbid, k8bid, k8bid, r8b, 'Y_MIN',&
+            call tbliva(nomt19, 0, ' ', [ibid], [r8b],&
+                        [cbid], k8bid, k8bid, [r8b], 'Y_MIN',&
                         k8bid, ibid, ymin, cbid, k8bid,&
                         iret2)
             if (iret2 .ne. 0) then

@@ -84,8 +84,8 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
 !
     do 10 i = 1, nbsect
 !
-        call tbliva(nomta, 2, valek, i, dinst,&
-                    c16b, k8b, crit, prec, 'V_USUR_TUBE_CUMU',&
+        call tbliva(nomta, 2, valek, [i], [dinst],&
+                    [c16b], k8b, crit, [prec], 'V_USUR_TUBE_CUMU',&
                     k8b, ibid, votub(i), c16b, k8b,&
                     iret)
 !                   ----------------
@@ -96,8 +96,8 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
             call utmess('F', 'PREPOST5_54', sk=valk, si=vali, sr=valr)
         endif
 !
-        call tbliva(nomta, 2, valek, i, dinst,&
-                    c16b, k8b, crit, prec, 'V_USUR_OBST_CUMU',&
+        call tbliva(nomta, 2, valek, [i], [dinst],&
+                    [c16b], k8b, crit, [prec], 'V_USUR_OBST_CUMU',&
                     k8b, ibid, voobs(i), c16b, k8b,&
                     iret)
 !                   ----------------
@@ -108,8 +108,8 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
             call utmess('F', 'PREPOST5_54', sk=valk, si=vali, sr=valr)
         endif
 !
-        call tbliva(nomta, 2, valek, i, dinst,&
-                    c16b, k8b, crit, prec, 'ANGLE_DEBUT',&
+        call tbliva(nomta, 2, valek, [i], [dinst],&
+                    [c16b], k8b, crit, [prec], 'ANGLE_DEBUT',&
                     k8b, ibid, sec(i), c16b, k8b,&
                     iret)
 !                          -----------

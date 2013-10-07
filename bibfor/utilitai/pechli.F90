@@ -203,8 +203,8 @@ subroutine pechli(resu, modele, mate)
         else
             valer(3) = chlim(2)
         endif
-        call tbajli(resu, 4, noparr, numord, valer,&
-                    c16b, k8b, 0)
+        call tbajli(resu, 4, noparr, [numord], valer,&
+                    [c16b], k8b, 0)
 !
         call jedema()
     end do

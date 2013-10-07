@@ -121,8 +121,8 @@ subroutine porefd(trange, noeu, cmp, nomrez)
             para(2) = temf
             para(3) = xmax
             para(4) = temm
-            call tbajli(nomres, nbpara, nopara, ii, para,&
-                        c16b, valek, 0)
+            call tbajli(nomres, nbpara, nopara, [ii], para,&
+                        [c16b], valek, 0)
         endif
 30  end do
     if (ic .eq. 1) then
@@ -132,8 +132,8 @@ subroutine porefd(trange, noeu, cmp, nomrez)
         para(2) = temf
         para(3) = xmax
         para(4) = temm
-        call tbajli(nomres, nbpara, nopara, ii, para,&
-                    c16b, valek, 0)
+        call tbajli(nomres, nbpara, nopara, [ii], para,&
+                    [c16b], valek, 0)
     endif
 !
 500  continue

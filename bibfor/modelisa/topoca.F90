@@ -449,8 +449,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 vk(3) = nogrno(1)
                 vk(4) = nogrno(2)
                 vk(5) = 'NON'
-                call tbajli(tablca, 6, param, icabl, rbid,&
-                            cbid, vk, 0)
+                call tbajli(tablca, 6, param, [icabl], [rbid],&
+                            [cbid], vk, 0)
                 if (quad) then
                     numail=zi(jnuma1+imail-1)
                     call jeveuo(jexnum(conxma, numail), 'L', jcxma)
@@ -476,8 +476,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     vk(3) = nogrno(1)
                     vk(4) = nogrno(2)
                     vk(5) = 'OUI'
-                    call tbajli(tablca, 6, param, icabl, rbid,&
-                                cbid, vk, 0)
+                    call tbajli(tablca, 6, param, [icabl], [rbid],&
+                                [cbid], vk, 0)
                 endif
 100          continue
             vk(1) = zk8(jnono1+nbno1-1)
@@ -485,8 +485,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
             vk(3) = nogrno(1)
             vk(4) = nogrno(2)
             vk(5) = 'NON'
-            call tbajli(tablca, 6, param, icabl, rbid,&
-                        cbid, vk, 0)
+            call tbajli(tablca, 6, param, [icabl], [rbid],&
+                        [cbid], vk, 0)
 !
 !
 ! 3.2.2  CAS OU LE SECOND CHEMIN POSSIBLE EST VALIDE
@@ -517,8 +517,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 vk(3) = nogrno(1)
                 vk(4) = nogrno(2)
                 vk(5) = 'NON'
-                call tbajli(tablca, 6, param, icabl, rbid,&
-                            cbid, vk, 0)
+                call tbajli(tablca, 6, param, [icabl], [rbid],&
+                            [cbid], vk, 0)
                 if (quad) then
                     numail=zi(jnuma2+imail-1)
                     call jeveuo(jexnum(conxma, numail), 'L', jcxma)
@@ -544,8 +544,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     vk(3) = nogrno(1)
                     vk(4) = nogrno(2)
                     vk(5) = 'OUI'
-                    call tbajli(tablca, 6, param, icabl, rbid,&
-                                cbid, vk, 0)
+                    call tbajli(tablca, 6, param, [icabl], [rbid],&
+                                [cbid], vk, 0)
                 endif
 150          continue
             vk(1) = zk8(jnono2+nbno2-1)
@@ -553,8 +553,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
             vk(3) = nogrno(1)
             vk(4) = nogrno(2)
             vk(5) = 'NON'
-            call tbajli(tablca, 6, param, icabl, rbid,&
-                        cbid, vk, 0)
+            call tbajli(tablca, 6, param, [icabl], [rbid],&
+                        [cbid], vk, 0)
 !
 ! 3.2.3  AUCUN CHEMIN CONTINU VALIDE
 ! .....

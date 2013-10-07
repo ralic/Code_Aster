@@ -798,36 +798,36 @@ subroutine op0032()
 !
     if (typmod(1:9) .eq. 'DYNAMIQUE') then
         do 50 k = 1, nbrow
-            call tbajli(table, 1, nmparn, zi(jstu+k-1), rbid,&
-                        cbid, kbid, 0)
+            call tbajli(table, 1, nmparn, zi(jstu+k-1), [rbid],&
+                        [cbid], kbid, 0)
             calpar(1)=zr(jlmod+k-1)
             calpar(2)=zr(jlmod+k)
-            call tbajli(table, 2, nmparr, ibid, calpar,&
-                        cbid, kbid, k)
+            call tbajli(table, 2, nmparr, [ibid], calpar,&
+                        [cbid], kbid, k)
             calpar(1)=zr(jlmoe+k-1)
             calpar(2)=zr(jlmoe+k)
-            call tbajli(table, 2, nmparm, ibid, calpar,&
-                        cbid, kbid, k)
+            call tbajli(table, 2, nmparm, [ibid], calpar,&
+                        [cbid], kbid, k)
 50      continue
 !
     else if (typmod(1:13).eq.'MODE_COMPLEXE') then
-        call tbajli(table, 1, nmparn, nbfreq, rbid,&
-                    cbid, kbid, 0)
-        call tbajli(table, 3, nmparc, ibid, calpac,&
-                    cbid, kbid, 1)
+        call tbajli(table, 1, nmparn, [nbfreq], [rbid],&
+                    [cbid], kbid, 0)
+        call tbajli(table, 3, nmparc, [ibid], calpac,&
+                    [cbid], kbid, 1)
 !
     else if (typmod(1:10).eq.'MODE_FLAMB') then
         do 55 k = 1, nbrow
-            call tbajli(table, 1, nmparn, zi(jstu+k-1), rbid,&
-                        cbid, kbid, 0)
+            call tbajli(table, 1, nmparn, zi(jstu+k-1), [rbid],&
+                        [cbid], kbid, 0)
             calpaf(1)=zr(jlmod+k-1)
             calpaf(2)=zr(jlmod+k)
-            call tbajli(table, 2, nmparf, ibid, calpaf,&
-                        cbid, kbid, k)
+            call tbajli(table, 2, nmparf, [ibid], calpaf,&
+                        [cbid], kbid, k)
             calpaf(1)=zr(jlmoe+k-1)
             calpaf(2)=zr(jlmoe+k)
-            call tbajli(table, 2, nmparm, ibid, calpaf,&
-                        cbid, kbid, k)
+            call tbajli(table, 2, nmparm, [ibid], calpaf,&
+                        [cbid], kbid, k)
 55      continue
 !
     else

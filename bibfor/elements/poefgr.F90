@@ -48,7 +48,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
     integer :: i, iret, itype, j, jdepl, kanl, ldyna
     integer :: lmater, lopt, lorien, lrcou, lsect, lsect2, lx
     integer :: mater, nc, ncc, nno, nnoc
-    real(kind=8) :: a, a2, along, angarc, angs2, deux, f
+    real(kind=8) :: a, a2, along, angarc, angs2, deux, f(1)
     real(kind=8) :: rad, xl, zero
 !-----------------------------------------------------------------------
     zero = 0.d0
@@ -108,16 +108,16 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
     call verifm('NOEU', nno, 1, '+', mater,&
                 'ELAS', 1, f, iret)
 !
-    if (f .ne. zero) then
+    if (f(1) .ne. zero) then
         do 10 i = 1, 12
             ul(i) = zero
 10      continue
 !
         if (itype .ne. 10) then
-            ul(1) = -f*xl
+            ul(1) = -f(1)*xl
             ul(7) = -ul(1)
         else
-            along = deux*rad*f*sin(angs2)
+            along = deux*rad*f(1)*sin(angs2)
             ul(1) = -along*cos(angs2)
             ul(2) = along*sin(angs2)
             ul(7) = -ul(1)

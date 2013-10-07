@@ -488,7 +488,7 @@ subroutine op0197()
             valr(2) = sigint
             valr(3) = proint
             call tbajli(zk16(itabr-1+iresu), nbparr, noparr, vali, valr,&
-                        c16b, k8bid, 0)
+                        [c16b], k8bid, 0)
             if (impr) write(ifm,*) 'SIGMA WEIBULL :',sigint
 310      continue
 !
@@ -548,7 +548,7 @@ subroutine op0197()
         zr(ivapa+iresu) = zr(isigkp+iresu-1)
 11  end do
     call tbajli(tapait, ntpsi+2, zk16(inopa), vali, zr(ivapa),&
-                c16b, k8bid, 0)
+                [c16b], k8bid, 0)
 !
 !  ---   CALCUL CRITERE DE CONVERGENCE (MK,MK+1,SUK,SUK+1)
 !
@@ -586,11 +586,11 @@ subroutine op0197()
             valr(2) = zr(ipro+it-1)
             if (method(1:9) .eq. 'REGR_LINE') then
                 valr(3) = zr(ipth+it-1)
-                call tbajli(nomres, nbpars, nopars, ibid, valr,&
-                            c16b, k8bid, 0)
+                call tbajli(nomres, nbpars, nopars, [ibid], valr,&
+                            [c16b], k8bid, 0)
             else
-                call tbajli(nomres, 2, nopars, ibid, valr,&
-                            c16b, k8bid, 0)
+                call tbajli(nomres, 2, nopars, [ibid], valr,&
+                            [c16b], k8bid, 0)
             endif
 308      continue
 !
@@ -612,11 +612,11 @@ subroutine op0197()
             valr(2) = mkp
             valr(3) = zr(isigkp+iresu-1)
             if (dept) then
-                call tbajli(nomres, nbpart, nopart, ibid, valr,&
-                            c16b, k8bid, 0)
+                call tbajli(nomres, nbpart, nopart, [ibid], valr,&
+                            [c16b], k8bid, 0)
             else
-                call tbajli(nomres, 2, nopart(2), ibid, valr(2),&
-                            c16b, k8bid, 0)
+                call tbajli(nomres, 2, nopart(2), [ibid], valr(2),&
+                            [c16b], k8bid, 0)
             endif
 311      continue
 !

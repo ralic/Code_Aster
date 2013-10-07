@@ -139,8 +139,8 @@ subroutine pewext(resu)
         valer(1)=inst
         valer(2)=f1u1/2
         valer(3)=w
-        call tbajli(resu, 4, noparr, numord, valer,&
-                    c16b, k8b, 0)
+        call tbajli(resu, 4, noparr, [numord], valer,&
+                    [c16b], k8b, 0)
 !
         call copisd('CHAM_NO_S', 'V', depls1, depls0)
         call copisd('CHAM_NO_S', 'V', forcs1, forcs0)

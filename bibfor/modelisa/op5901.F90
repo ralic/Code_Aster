@@ -169,8 +169,8 @@ subroutine op5901(nboccm, ifm, niv, compor)
                         ng, lg, ir, q)
         endif
 !
-        call tbajli(comdes, 5, nompar, 0, 0.d0,&
-                    cbid, noms, 0)
+        call tbajli(comdes, 5, nompar, [0], [0.d0],&
+                    [cbid], noms, 0)
         do 11 j = 1, 5
             zk24(imk-1+(iocc-1)*5+j)=noms(j)
 11      continue

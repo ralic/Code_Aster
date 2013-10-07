@@ -186,8 +186,8 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                 call getvem(noma, 'GROUP_MA', motclf, 'GROUP_MA', iocc,&
                             iarg, 1, mongrm, ngr)
                 para = 'AIRE'
-                call tbliva(nomtab, 1, 'GROUP_MA', ibid, r8b,&
-                            c16b, mongrm, k8b, r8b, para,&
+                call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b],&
+                            [c16b], mongrm, k8b, [r8b], para,&
                             k8b, ibid, aire, c16b, k8b,&
                             iret)
                 if (iret .eq. 1) then
@@ -202,8 +202,8 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                     call utmess('F', 'MODELISA8_36', sk=valk(1))
                 endif
                 para = 'LONGUEUR'
-                call tbliva(nomtab, 1, 'GROUP_MA', ibid, r8b,&
-                            c16b, mongrm, k8b, r8b, para,&
+                call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b],&
+                            [c16b], mongrm, k8b, [r8b], para,&
                             k8b, ibid, xlong, c16b, k8b,&
                             iret)
                 if (iret .eq. 1) then

@@ -294,8 +294,8 @@ subroutine pofaun()
         val(1) = zr(ivmin+i-1)
         val(2) = zr(ivmax+i-1)
         val(3) = zr(ivdome+i-1)
-        call tbajli(result, nbp, nomppf, i, val,&
-                    cbid, k8b, 0)
+        call tbajli(result, nbp, nomppf, [i], val,&
+                    [cbid], k8b, 0)
 20  end do
 !
 !     --- CALCUL DU DOMMAGE TOTAL ---
@@ -306,8 +306,8 @@ subroutine pofaun()
 !
         call fgdomm(nbcycl, zr(ivdome), rdomm)
 !
-        call tbajli(result, 1, nomppf(5), ibid, rdomm,&
-                    cbid, k8b, 0)
+        call tbajli(result, 1, nomppf(5), [ibid], [rdomm],&
+                    [cbid], k8b, 0)
 !
     endif
 !

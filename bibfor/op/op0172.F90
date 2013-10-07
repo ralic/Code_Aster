@@ -148,8 +148,8 @@ subroutine op0172()
     nomob1 = '&&OP0172.FREQ'
     call wkvect(nomob1, 'V V R', nbmode, jfreq)
     do 12 i = 1, nbmode
-        call tbliva(enerpo, 1, 'NUME_ORDRE', zi(jnume+i-1), r8b,&
-                    c16b, k8b, k8b, r8b, 'FREQ',&
+        call tbliva(enerpo, 1, 'NUME_ORDRE', zi(jnume+i-1), [r8b],&
+                    [c16b], k8b, k8b, [r8b], 'FREQ',&
                     ctype, ibid, zr(jfreq+i-1), c16b, k8b,&
                     iret)
         if (iret .eq. 0) then
@@ -425,8 +425,8 @@ subroutine op0172()
         do 61 i = 1, nbga
 !
             valek(2) = 'LIEU'
-            call tbliva(enerpo, 2, valek, im, r8b,&
-                        c16b, zk24(idga+i- 1), 'RELA', 1.d-03, 'POUR_CENT',&
+            call tbliva(enerpo, 2, valek, [im], [r8b],&
+                        [c16b], zk24(idga+i- 1), 'RELA', [1.d-03], 'POUR_CENT',&
                         k8b, ibid, poucen, c16b, k8b,&
                         iret)
             if (iret .ge. 2) then

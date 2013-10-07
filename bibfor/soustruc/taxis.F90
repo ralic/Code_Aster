@@ -58,8 +58,8 @@ subroutine taxis(noma, indic, nbma)
 !
 !     TOLERANCE POUR DES ABSCISSES TRES LEGEREMENT < 0 : 1.E-6*X_MAX
     call ltnotb(noma, 'CARA_GEOM', tablg)
-    call tbliva(tablg, 0, ' ', ibid, r8b,&
-                c16b, k8b, k8b, r8b, 'X_MAX',&
+    call tbliva(tablg, 0, ' ', [ibid], [r8b],&
+                [c16b], k8b, k8b, [r8b], 'X_MAX',&
                 k8b, ibid, xmax, c16b, k8b,&
                 iret)
     ASSERT(iret.eq.0)

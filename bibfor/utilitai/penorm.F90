@@ -487,7 +487,7 @@ subroutine penorm(resu, modele)
             call wkvect(vali, 'V V I', 1, jvali)
             zi(jvali)=numo
             call tbajli(resu, nbpar, nompar, zi(jvali), zr(jvalr),&
-                        c16b, zk24(jvalk), 0)
+                        [c16b], zk24(jvalk), 0)
         else
             call wkvect(valk, 'V V K24', 3, jvalk)
             zk24(jvalk) =nomcha
@@ -496,8 +496,8 @@ subroutine penorm(resu, modele)
             zk24(jvalk+3)=tynorm
             call wkvect(valr, 'V V R', 1, jvalr)
             zr(jvalr)=sqrt(vnorm(1))
-            call tbajli(resu, nbpar, nompar, ibid, zr(jvalr),&
-                        c16b, zk24(jvalk), 0)
+            call tbajli(resu, nbpar, nompar, [ibid], zr(jvalr),&
+                        [c16b], zk24(jvalk), 0)
         endif
 !
 !      -- 4.10 NETTOYAGE POUR L'OCCURRENCE SUIVANTE --

@@ -100,8 +100,8 @@ subroutine cetucr(motfac, model0)
     call getvr8(motfac, motcle(iaux), iocc=1, scal=vr, nbret=n1)
     if (n1 .gt. 0) then
         vk = nomgrd(iaux)
-        call tbajli(table, nbpar, nompar, ibid, vr,&
-                    cbid, vk, 0)
+        call tbajli(table, nbpar, nompar, [ibid], [vr],&
+                    [cbid], vk, 0)
     endif
 !
     10 end do

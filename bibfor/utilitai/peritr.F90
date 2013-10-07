@@ -277,11 +277,11 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 if (nr .ne. 0) then
                     valer(2) = rtval(1)
                     valer(3) = rtval(2)
-                    call tbajli(resu, nbparr, noparr, numord, valer,&
-                                c16b, valek, 0)
+                    call tbajli(resu, nbparr, noparr, [numord], valer,&
+                                [c16b], valek, 0)
                 else
-                    call tbajli(resu, nbpard, nopard, numord, rtval,&
-                                c16b, valek, 0)
+                    call tbajli(resu, nbpard, nopard, [numord], rtval,&
+                                [c16b], valek, 0)
                 endif
             endif
 !
@@ -340,11 +340,11 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     if (nr .ne. 0) then
                         valer(2) = rtval(1)
                         valer(3) = rtval(2)
-                        call tbajli(resu, nbparr, noparr, numord, valer,&
-                                    c16b, valek, 0)
+                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                                    [c16b], valek, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, numord, rtval,&
-                                    c16b, valek, 0)
+                        call tbajli(resu, nbpard, nopard, [numord], rtval,&
+                                    [c16b], valek, 0)
                     endif
  50                 continue
                 end do
@@ -401,11 +401,11 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     if (nr .ne. 0) then
                         valer(2) = rtval(1)
                         valer(3) = rtval(2)
-                        call tbajli(resu, nbparr, noparr, numord, valer,&
-                                    c16b, valek, 0)
+                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                                    [c16b], valek, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, numord, rtval,&
-                                    c16b, valek, 0)
+                        call tbajli(resu, nbpard, nopard, [numord], rtval,&
+                                    [c16b], valek, 0)
                     endif
  70                 continue
                 end do

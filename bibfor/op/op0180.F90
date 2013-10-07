@@ -239,8 +239,8 @@ subroutine op0180()
         endif
 !
 !       REMPLISSAGE DE LA TABLE
-        call tbajli(nomg19, nbpar2, nompa2, ibid, valr,&
-                    cbid, valk, 0)
+        call tbajli(nomg19, nbpar2, nompa2, [ibid], valr,&
+                    [cbid], valk, 0)
 !
     end do
 !

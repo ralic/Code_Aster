@@ -265,11 +265,11 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                 if (nr .ne. 0) then
                     valer(2) = varpep(1)
                     valer(3) = varpep(2)
-                    call tbajli(resu, nbparr, noparr, numord, valer,&
-                                c16b, valk, 0)
+                    call tbajli(resu, nbparr, noparr, [numord], valer,&
+                                [c16b], valk, 0)
                 else
-                    call tbajli(resu, nbpard, nopard, numord, varpep,&
-                                c16b, valk, 0)
+                    call tbajli(resu, nbpard, nopard, [numord], varpep,&
+                                [c16b], valk, 0)
                 endif
             endif
             if (ng .ne. 0) then
@@ -296,11 +296,11 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                     if (nr .ne. 0) then
                         valer(2) = varpep(1)
                         valer(3) = varpep(2)
-                        call tbajli(resu, nbparr, noparr, numord, valer,&
-                                    c16b, valk2, 0)
+                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                                    [c16b], valk2, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, numord, varpep,&
-                                    c16b, valk2, 0)
+                        call tbajli(resu, nbpard, nopard, [numord], varpep,&
+                                    [c16b], valk2, 0)
                     endif
 40              continue
                 call jedetr('&&PEEPOT_GROUPM')
@@ -324,11 +324,11 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                     if (nr .ne. 0) then
                         valer(2) = varpep(1)
                         valer(3) = varpep(2)
-                        call tbajli(resu, nbparr, noparr, numord, valer,&
-                                    c16b, valk, 0)
+                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                                    [c16b], valk, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, numord, varpep,&
-                                    c16b, valk, 0)
+                        call tbajli(resu, nbpard, nopard, [numord], varpep,&
+                                    [c16b], valk, 0)
                     endif
 50              continue
                 call jedetr('&&PEEPOT_MAILLE')

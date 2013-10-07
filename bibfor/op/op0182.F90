@@ -101,12 +101,12 @@ subroutine op0182()
     call jeexin(resu//'.TBLP', ireuse)
     if (ireuse .ne. 0) then
 !     SI REENTRANT ON CONSERVE LA DESCRIPTION ET LE TYPE DE L'OBSTACLE
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, 'DEFIOBST', k8b, r8b, 'FONCTION',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], 'DEFIOBST', k8b, [r8b], 'FONCTION',&
                     k8typ, ibid, r8b, c16b, nomf,&
                     irett)
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, 'DEFIOBST', k8b, r8b, 'TYPE',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], 'DEFIOBST', k8b, [r8b], 'TYPE',&
                     k8typ, ibid, r8b, c16b, typini,&
                     iret2)
         if (irett .ne. 0 .or. iret2 .ne. 0) then
@@ -145,8 +145,8 @@ subroutine op0182()
     tabk(1) = 'DEFIOBST'
     tabk(2) = typini
     tabk(3) = nomfon
-    call tbajli(resu, 3, nopar1, ibid, r8b,&
-                c16b, tabk, 0)
+    call tbajli(resu, 3, nopar1, [ibid], [r8b],&
+                [c16b], tabk, 0)
 !
 !     utiliser uniquement par CALFIG
     call jelira(nomfon(1:19)//'.VALE', 'LONMAX', npo)
@@ -199,12 +199,12 @@ subroutine op0182()
 !
     call getvid(' ', 'GUIDE', scal=guide, nbret=n1)
 !
-    call tbliva(guide, 1, 'LIEU', ibid, r8b,&
-                c16b, 'DEFIOBST', k8b, r8b, 'TYPE',&
+    call tbliva(guide, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], 'DEFIOBST', k8b, [r8b], 'TYPE',&
                 k8typ, ibid, r8b, c16b, type,&
                 irett)
-    call tbliva(guide, 1, 'LIEU', ibid, r8b,&
-                c16b, 'DEFIOBST', k8b, r8b, 'FONCTION',&
+    call tbliva(guide, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], 'DEFIOBST', k8b, [r8b], 'FONCTION',&
                 k8typ, ibid, r8b, c16b, nomfg,&
                 iret2)
     if (irett .ne. 0 .or. iret2 .ne. 0) then
@@ -278,12 +278,12 @@ subroutine op0182()
             if (type(14:17) .eq. '1300') rtube = 4.84d-3
             if (type(14:16) .eq. '900') rtube = 4.825d-3
         else
-            call tbliva(obcray, 1, 'LIEU', ibid, r8b,&
-                        c16b, 'DEFIOBST', k8b, r8b, 'TYPE',&
+            call tbliva(obcray, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], 'DEFIOBST', k8b, [r8b], 'TYPE',&
                         k8typ, ibid, r8b, c16b, typobc,&
                         irett)
-            call tbliva(obcray, 1, 'LIEU', ibid, r8b,&
-                        c16b, 'DEFIOBST', k8b, r8b, 'FONCTION',&
+            call tbliva(obcray, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], 'DEFIOBST', k8b, [r8b], 'FONCTION',&
                         k8typ, ibid, r8b, c16b, nomobc,&
                         iret2)
             ASSERT(irett.eq.0.and.iret2.eq.0)
@@ -396,14 +396,14 @@ subroutine op0182()
     tabr(1) = sinit
     tabr(2) = susetu
     tabk(1) = 'TUBE'
-    call tbajli(resu, 3, nopar1, ibid, tabr,&
-                c16b, tabk, 0)
+    call tbajli(resu, 3, nopar1, [ibid], tabr,&
+                [c16b], tabk, 0)
     nopar1(1) = nopara(1)
     nopar1(2) = nopara(9)
     tabr(1) = suseob
     tabk(1) = 'OBST'
-    call tbajli(resu, 2, nopar1, ibid, tabr,&
-                c16b, tabk, 0)
+    call tbajli(resu, 2, nopar1, [ibid], tabr,&
+                [c16b], tabk, 0)
 !
 !
     call jedema()

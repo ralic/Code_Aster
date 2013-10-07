@@ -82,7 +82,7 @@ subroutine te0150(option, nomte)
     real(kind=8) :: ang, rad, angarc, angs2, along, xfly, xflz
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), de(14), ffe(14)
     real(kind=8) :: bsm(14, 14), matk(105), carsec(6), cars1(6)
-    real(kind=8) :: xfl, temp, f, zero, xjg
+    real(kind=8) :: xfl, temp, f(1), zero, xjg
     real(kind=8) :: fr(14), fi(14), fgr(14), fgi(14)
     real(kind=8) :: fer(12), fei(12)
     real(kind=8) :: ea
@@ -435,7 +435,7 @@ subroutine te0150(option, nomte)
                         materi, 'ELAS', 3, nompar, valpar,&
                         1, 'K_DESSIC', kdessi, codres, 0)
             if (codres(1) .ne. 0) kdessi(1)=0.d0
-            f = -kdessi(1)*(sref-sech)
+            f(1) = -kdessi(1)*(sref-sech)
 !
         else if (option.eq.'CHAR_MECA_HYDR_R') then
 !
@@ -470,23 +470,23 @@ subroutine te0150(option, nomte)
                         1, 'B_ENDOGE', kendog, codres, 0)
             if (codres(1) .ne. 0) kendog(1)=0.d0
 !        DEPLACEMENT INDUIT PAR L'HYDRATATION
-            f = -kendog(1)*hydr
+            f(1) = -kendog(1)*hydr
         else
             ch16 = option
             call utmess('F', 'ELEMENTS2_47', sk=ch16)
         endif
 !
         if (itype .eq. 10) then
-            along = 2.d0 * rad * f * sin(angs2)
+            along = 2.d0 * rad * f(1) * sin(angs2)
             de(1) = -along * cos(angs2)
             de(2) = along * sin(angs2)
             de(7) = -de(1)
             de(8) = de(2)
         else if (itype .eq.30) then
-            de(1) = -f * xl
+            de(1) = -f(1) * xl
             de(8) = -de(1)
         else
-            de(1) = -f * xl
+            de(1) = -f(1) * xl
             de(7) = -de(1)
         endif
 !

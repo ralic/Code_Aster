@@ -232,8 +232,8 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
             vk(1) = newobj(iobja)
             vk(2) = newtyp
             vk(3) = newsd(iobja)
-            call tbajli(nomtab, nbpara, nompar, numins, inst,&
-                        c16bid, vk, 0)
+            call tbajli(nomtab, nbpara, nompar, [numins], [inst],&
+                        [c16bid], vk, 0)
         endif
     enddo
 !

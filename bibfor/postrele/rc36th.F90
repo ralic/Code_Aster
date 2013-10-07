@@ -188,8 +188,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
         nopara(2) = 'ABSC_CURV'
         vale(1) = inst
         vale(2) = zr(jabsc)
-        call tbliva(tbther, 2, nopara, ibid, vale,&
-                    cbid, k8b, crit, prec, 'TEMP',&
+        call tbliva(tbther, 2, nopara, [ibid], vale,&
+                    [cbid], k8b, crit, prec, 'TEMP',&
                     k8b, ibid, tint, cbid, k8b,&
                     iret)
         if (iret .ne. 0) then
@@ -201,8 +201,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
                         valr=vale)
         endif
         vale(2) = zr(jabsc+nbabsc-1)
-        call tbliva(tbther, 2, nopara, ibid, vale,&
-                    cbid, k8b, crit, prec, 'TEMP',&
+        call tbliva(tbther, 2, nopara, [ibid], vale,&
+                    [cbid], k8b, crit, prec, 'TEMP',&
                     k8b, ibid, text, cbid, k8b,&
                     iret)
         if (iret .ne. 0) then
@@ -220,8 +220,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 !
         nopara(1) = 'INST'
         nopara(2) = 'QUANTITE'
-        call tbliva(tbmoye, 2, nopara, ibid, inst,&
-                    cbid, 'MOMENT_0', 'RELATIF', epsi, 'TEMP',&
+        call tbliva(tbmoye, 2, nopara, [ibid], [inst],&
+                    [cbid], 'MOMENT_0', 'RELATIF', [epsi], 'TEMP',&
                     k8b, ibid, ta, cbid, k8b,&
                     iret)
         if (iret .ne. 0) then
@@ -232,8 +232,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             valk (5) = 'MOMENT_0'
             call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
         endif
-        call tbliva(tbmoye, 2, nopara, ibid, inst,&
-                    cbid, 'MOMENT_1', 'RELATIF', epsi, 'TEMP',&
+        call tbliva(tbmoye, 2, nopara, [ibid], [inst],&
+                    [cbid], 'MOMENT_1', 'RELATIF', [epsi], 'TEMP',&
                     k8b, ibid, vmoy, cbid, k8b,&
                     iret)
         if (iret .ne. 0) then

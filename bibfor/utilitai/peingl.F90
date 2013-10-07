@@ -584,8 +584,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---    ECRITURE DE L'INDICATEUR OU DE L'ENERGIE DANS LA TABLE :
 !        ------------------------------------------------------
-                call tbajli(resu, nbparr, noparr, numord, valr,&
-                            c16b, vk8, 0)
+                call tbajli(resu, nbparr, noparr, [numord], valr,&
+                            [c16b], vk8, 0)
             endif
 !
 ! ---   TRAITEMENT DU MOT CLE "GROUP_MA" ,LA QUANTITE EST CALCULEE
@@ -686,8 +686,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 !          --------------------------------------
-                    call tbajli(resu, nbparr, noparr, numord, valr,&
-                                c16b, vk24, 0)
+                    call tbajli(resu, nbparr, noparr, [numord], valr,&
+                                [c16b], vk24, 0)
                 end do
 !
                 call jedetr('&&PEINGL_GROUPM')
@@ -778,8 +778,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 !          --------------------------------------
-                    call tbajli(resu, nbparr, noparr, numord, valr,&
-                                c16b, vk8, 0)
+                    call tbajli(resu, nbparr, noparr, [numord], valr,&
+                                [c16b], vk8, 0)
                 end do
 !
                 call jedetr('&&PEINGL_MAILLE')

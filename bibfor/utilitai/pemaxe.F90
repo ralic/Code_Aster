@@ -220,7 +220,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 ! --- ON REMPLIT LA TABLE
     nbpara=4+npara
     call tbajli(resu, nbpara, nompar, ptmax, mima,&
-                cbid, mamax, 0)
+                [cbid], mamax, 0)
 !
     call jedetr('&&PEMAXC_IND.MAILLE')
     call jedetr('&&PEMAXC_CESOUT')

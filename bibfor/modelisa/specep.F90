@@ -146,8 +146,8 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     if (ltable) then
 !
         table = zk16(ispte+3)(1:8)
-        call tbliva(table, 0, k8b, ibid, r8b,&
-                    c16b, k8b, k8b, r8b, 'DIMENSION',&
+        call tbliva(table, 0, k8b, [ibid], [r8b],&
+                    [c16b], k8b, k8b, [r8b], 'DIMENSION',&
                     k8b, nbexcp, r8b, c16b, k8b,&
                     iret)
         if (iret .ne. 0) then
@@ -231,8 +231,8 @@ subroutine specep(casint, nomu, spectr, base, vite,&
             do 21 iex1 = 1, iex2
                 iex = iex2*(iex2-1)/2 + iex1
                 ival(1) = iex1
-                call tbliva(table, 2, nopart, ival, r8b,&
-                            c16b, k8b, k8b, r8b, 'FONCTION_C',&
+                call tbliva(table, 2, nopart, ival, [r8b],&
+                            [c16b], k8b, k8b, [r8b], 'FONCTION_C',&
                             k8b, ibid, r8b, c16b, nomfon,&
                             iret)
                 ASSERT(iret.eq.0)

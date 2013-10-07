@@ -77,8 +77,8 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
 ! --- RECUPERATION DES SOUS-TABLES ASSOCIEES A L'INSTANT COURANT -------
 ! ======================================================================
     call tbextb(tabthr, 'V', tmpth1, 1, 'INST',&
-                'EQ', ibid, temph1, cbid, k8b,&
-                lprec, lcrit, iret)
+                'EQ', [ibid], [temph1], [cbid], k8b,&
+                [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabthr
@@ -89,8 +89,8 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
     endif
     call tbextb(tabthr, 'V', tmpth2, 1, 'INST',&
-                'EQ', ibid, temph2, cbid, k8b,&
-                lprec, lcrit, iret)
+                'EQ', [ibid], [temph2], [cbid], k8b,&
+                [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabthr

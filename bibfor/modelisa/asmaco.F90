@@ -82,8 +82,8 @@ subroutine asmaco(ma1, ma2, mag)
         call ltnotb(ma1, 'CARA_GEOM', nomt19)
         nbpar = 0
         para = 'AR_MIN                  '
-        call tbliva(nomt19, nbpar, ' ', ibid, r8b,&
-                    c16b, k8b, k8b, r8b, para,&
+        call tbliva(nomt19, nbpar, ' ', [ibid], [r8b],&
+                    [c16b], k8b, k8b, [r8b], para,&
                     k8b, ibid, armin, c16b, k8b,&
                     iret)
         if (iret .ne. 0) then
@@ -102,8 +102,8 @@ subroutine asmaco(ma1, ma2, mag)
         call ltnotb(ma2, 'CARA_GEOM', nomt19)
         nbpar = 0
         para = 'AR_MIN                  '
-        call tbliva(nomt19, nbpar, ' ', ibid, r8b,&
-                    c16b, k8b, k8b, r8b, para,&
+        call tbliva(nomt19, nbpar, ' ', [ibid], [r8b],&
+                    [c16b], k8b, k8b, [r8b], para,&
                     k8b, ibid, armin, c16b, k8b,&
                     iret)
         if (iret .ne. 0) then

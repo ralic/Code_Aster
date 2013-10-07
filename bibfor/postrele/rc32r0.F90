@@ -106,8 +106,8 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
             valer(5) = r8vide()
         endif
 !
-        call tbajli(nomres, npar1, nopar1, ibid, valer,&
-                    c16b, valek, 0)
+        call tbajli(nomres, npar1, nopar1, [ibid], valer,&
+                    [c16b], valek, 0)
 130  end do
 !
     if (typtab .eq. 'VALE_MAX') goto 9999
@@ -136,7 +136,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
                 valei(2) = zi(jnsitu+ioc-1)
 !
                 call tbajli(nomres, npar2, nopar2, valei, zr(jpmpba- 1+10*(is-1)+1),&
-                            c16b, valek, 0)
+                            [c16b], valek, 0)
 204          continue
 !
             valek(2) = 'SANS'
@@ -145,7 +145,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
                 valei(2) = zi(jnsitu+ioc-1)
 !
                 call tbajli(nomres, npar2, nopar2, valei, zr(jpmpbs- 1+10*(is-1)+1),&
-                            c16b, valek, 0)
+                            [c16b], valek, 0)
 206          continue
 202      continue
 200  continue

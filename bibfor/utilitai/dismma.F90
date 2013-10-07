@@ -101,12 +101,12 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'Z_CST') then
 !     ---------------------------------
         call ltnotb(nomob, 'CARA_GEOM', table)
-        call tbliva(table, 0, ' ', ibid, 0.d0,&
-                    c16b, k1bid, 'ABSO', 0.d0, 'Z_MIN',&
+        call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN',&
                     k1bid, ibid, zmin, c16b, k1bid,&
                     ier)
-        call tbliva(table, 0, ' ', ibid, 0.d0,&
-                    c16b, k1bid, 'ABSO', 0.d0, 'Z_MAX',&
+        call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX',&
                     k1bid, ibid, zmax, c16b, k1bid,&
                     ier)
 !
@@ -120,12 +120,12 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'Z_ZERO'.or.questi.eq.'DIM_GEOM') then
 !     ------------------------------------------------------------
         call ltnotb(nomob, 'CARA_GEOM', table)
-        call tbliva(table, 0, ' ', ibid, 0.d0,&
-                    c16b, k1bid, 'ABSO', 0.d0, 'Z_MIN',&
+        call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN',&
                     k1bid, ibid, zmin, c16b, k1bid,&
                     ier)
-        call tbliva(table, 0, ' ', ibid, 0.d0,&
-                    c16b, k1bid, 'ABSO', 0.d0, 'Z_MAX',&
+        call tbliva(table, 0, ' ', [ibid], [0.d0],&
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX',&
                     k1bid, ibid, zmax, c16b, k1bid,&
                     ier)
 !

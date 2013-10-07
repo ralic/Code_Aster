@@ -199,8 +199,8 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
             nbpar = lonvec+3
 !
 !  CONSTRUCTION DE LA TABLE DES G
-            call tbajli(tabgma, nbpar, zk16(inopr), ibid, zr(ipa),&
-                        cbid, noeu(n), 0)
+            call tbajli(tabgma, nbpar, zk16(inopr), [ibid], zr(ipa),&
+                        [cbid], noeu(n), 0)
 !
 190      continue
 !
@@ -231,12 +231,12 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
                 endif
 !
                 nbpar = lonvec+4
-                call tbajli(tabgma, nbpar, zk16(inopr), ibid, zr( ipa),&
-                            cbid, noeu(n), k)
+                call tbajli(tabgma, nbpar, zk16(inopr), [ibid], zr( ipa),&
+                            [cbid], noeu(n), k)
 !
 !  CONSTRUCTION DE LA TABLE DES G_MAX
-                call tbajli('T4', nbpar, zk16(inopr), ibid, zr(ipa),&
-                            cbid, noeu(n), 0)
+                call tbajli('T4', nbpar, zk16(inopr), [ibid], zr(ipa),&
+                            [cbid], noeu(n), 0)
             endif
 !
 220      continue
@@ -263,8 +263,8 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 !
     call tbtrtb('T4', 'V', 'T5', 1, zk16(inopr+lonvec+3),&
                 'DE', 0.d0, 'ABSOLU  ')
-    call tbajli('T5', nbprup, zk16(inopr), ibid, zr(irmax),&
-                cbid, zk8(ikmax), 1)
+    call tbajli('T5', nbprup, zk16(inopr), [ibid], zr(irmax),&
+                [cbid], zk8(ikmax), 1)
     call detrsd('TABLE', 'T4')
 !
 !  CONSTRUCTION DE LA TABLE SYNTHETISANT LES G_MAX

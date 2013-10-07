@@ -95,8 +95,8 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
     else if (vale(1)(1:8).eq.'&&OPB033') then
 !
 !       RESULTAT DE CALC_POINT_MAT OP0033, FORMAT_TABLE='CMP_LIGNE',
-        call tbliva(vale(1)(1:16), 1, 'CMP', ibid, r8bid,&
-                    c16bid, nocmp, 'EGAL', 0.d0, 'VALEUR',&
+        call tbliva(vale(1)(1:16), 1, 'CMP', [ibid], [r8bid],&
+                    [c16bid], nocmp, 'EGAL', [0.d0], 'VALEUR',&
                     k8bid, ibid, dval, c16bid, k8bid,&
                     ier)
         if (ier .ne. 0) then

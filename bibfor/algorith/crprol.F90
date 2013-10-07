@@ -137,8 +137,8 @@ subroutine crprol()
 !
         dinst = zr(jinst+iord-1)
         call tbextb(table, 'V', tabl2, 1, 'INST',&
-                    'EQ', ibid, dinst, cbid, k8b,&
-                    prec, crit, iret)
+                    'EQ', [ibid], [dinst], [cbid], k8b,&
+                    [prec], crit, iret)
         if (iret .eq. 10) then
             valk(1) = 'INST'
             valk(2) = table

@@ -80,12 +80,12 @@ subroutine op0035()
         if (zk16(jkval+k-1) .eq. 'CPU_RESTANT') then
 !         -- TEMPS CPU RESTANT :
             call uttrst(rval)
-            call tbajli(result, nbval, zk16(jkval+k-1), ibid, rval,&
-                        cbid, k8bid, 0)
+            call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rval],&
+                        [cbid], k8bid, 0)
         else if (zk16(jkval+k-1) .eq. 'UNITE_LIBRE') then
             ul = ulnume ()
-            call tbajli(result, nbval, zk16(jkval+k-1), ul, rbid,&
-                        cbid, k8bid, 0)
+            call tbajli(result, nbval, zk16(jkval+k-1), [ul], [rbid],&
+                        [cbid], k8bid, 0)
         else if (zk16(jkval+k-1) .eq. 'ETAT_UNITE') then
             call getvis(' ', 'UNITE', scal=ul, nbret=nbunit)
             if (nbunit .eq. 0) then
@@ -101,8 +101,8 @@ subroutine op0035()
                     etat='RESERVE '
                 endif
             endif
-            call tbajli(result, nbval, zk16(jkval+k-1), ibid, rbid,&
-                        cbid, etat, 0)
+            call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rbid],&
+                        [cbid], etat, 0)
             if ((ketat .eq. 'R') .or. (ketat .eq. 'O')) then
 !       SI LE FICHIER EST RESERVE OU OUVERT LE NOM EST MIS DANS LA TABLE
 !             K*255 = 4*K*80 = (1,80)+(81,160)+(161,240)+(241,255)

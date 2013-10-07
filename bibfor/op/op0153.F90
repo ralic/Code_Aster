@@ -335,15 +335,15 @@ subroutine op0153()
 !        --- CREATION DE LA TABLE ---
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbpmr, nompmr, typpmr)
-        call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', ibid, puusur,&
-                    c16b, k8b, 0)
+        call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
+                    [c16b], k8b, 0)
         do 30 k = 1, nbinst
             valer(1) = zr(jins2+k-1) / coinst
             valer(2) = zr(jusut+k-1)
             valer(3) = zr(jusuo+k-1)
             valer(4) = zr(jprut+k-1)
-            call tbajli(resu, 4, nompmr(2), ibid, valer,&
-                        c16b, k8b, 0)
+            call tbajli(resu, 4, nompmr(2), [ibid], valer,&
+                        [c16b], k8b, 0)
 30      continue
         goto 888
     endif
@@ -385,8 +385,8 @@ subroutine op0153()
         else
             newtab = '&&OP0153.NEWTAB'
             call tbextb(nomta, 'V', newtab, 1, 'INST',&
-                        'LE', ibid, dinst, c16b, k8b,&
-                        1.d-03, 'RELA', iret)
+                        'LE', [ibid], [dinst], [c16b], k8b,&
+                        [1.d-03], 'RELA', iret)
             if (iret .eq. 10) then
                 valk(1) = 'INST'
                 valk(2) = nomta
@@ -398,8 +398,8 @@ subroutine op0153()
             endif
             call detrsd('TABLE', nomta)
             call tbextb(newtab, 'G', nomta, 1, 'INST',&
-                        'LE', ibid, dinst, c16b, k8b,&
-                        1.d-03, 'RELA', iret)
+                        'LE', [ibid], [dinst], [c16b], k8b,&
+                        [1.d-03], 'RELA', iret)
             if (iret .eq. 10) then
                 valk(1) = 'INST'
                 valk(2) = newtab
@@ -421,12 +421,12 @@ subroutine op0153()
         valek(1) = 'INST'
         valek(2) = 'SECTEUR'
         do 1 i = 1, nbsect
-            call tbliva(nomta, 2, valek, i, dinst,&
-                        c16b, k8b, 'RELA', 1.d-03, 'V_USUR_TUBE_CUMU',&
+            call tbliva(nomta, 2, valek, [i], [dinst],&
+                        [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_TUBE_CUMU',&
                         k8b, ibid, zr(ivust+i-1), c16b, k8b,&
                         ire1)
-            call tbliva(nomta, 2, valek, i, dinst,&
-                        c16b, k8b, 'RELA', 1.d-03, 'V_USUR_OBST_CUMU',&
+            call tbliva(nomta, 2, valek, [i], [dinst],&
+                        [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_OBST_CUMU',&
                         k8b, ibid, zr(ivuso+i-1), c16b, k8b,&
                         ire2)
             if ((ire1+ire2) .gt. 0) then
@@ -435,8 +435,8 @@ subroutine op0153()
  1      continue
     endif
 !
-    call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', ibid, puusur,&
-                c16b, k8b, 0)
+    call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
+                [c16b], k8b, 0)
 !
     do 26 k = 1, nbinst
 !        -INST-
@@ -451,8 +451,8 @@ subroutine op0153()
         valer(5) = zr(jusuo+k-1)
 !        -P_USUR_TUBE-
         valer(6) = zr(jprut+k-1)
-        call tbajli(resu, 6, nopar(2), ibid, valer,&
-                    c16b, k8b, 0)
+        call tbajli(resu, 6, nopar(2), [ibid], valer,&
+                    [c16b], k8b, 0)
         do 28 i = 1, nbsect
 !           -ANGLE_DEBUT-
             valer(4) = zr(idangt+i-1)
@@ -470,8 +470,8 @@ subroutine op0153()
             valer(10) = zr(ivustu+(k-1)*nbsect+i-1) + zr(ivust+i-1)
 !           -V_USUR_OBST_CUMU-
             valer(11) = zr(ivusob+(k-1)*nbsect+i-1) + zr(ivuso+i-1)
-            call tbajli(resu, nbpar2, nopar2, i, valer,&
-                        c16b, k8b, 0)
+            call tbajli(resu, nbpar2, nopar2, [i], valer,&
+                        [c16b], k8b, 0)
 28      continue
 26  end do
     if (nbsect .ne. 0 .and. info .gt. 1) then

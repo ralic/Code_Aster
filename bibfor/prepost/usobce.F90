@@ -67,8 +67,8 @@ subroutine usobce(dimobs, obsuse, rcarte, nomt19, nbusur,&
         tabr(2) = parusu(i,3)
         tabr(3) = parusu(i,2)
         tabr(4) = parusu(i,4)
-        call tbajli(nomt19, 7, nopara, i, tabr,&
-                    c16b, tabk, 0)
+        call tbajli(nomt19, 7, nopara, [i], tabr,&
+                    [c16b], tabk, 0)
         if (niv .ge. 2) write(ifm, 1010) i, t2, parusu(i, 1), parusu( i, 3), parusu(i, 2),&
                         deltan, parusu(i, 4)
 140  end do

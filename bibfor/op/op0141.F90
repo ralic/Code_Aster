@@ -331,7 +331,7 @@ subroutine op0141()
                 zi(ind+1)=j
                 zr(indv)=pij
                 call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
-                            cbid, k8b, 0)
+                            [cbid], k8b, 0)
 40          continue
 30      continue
 !
@@ -401,7 +401,7 @@ subroutine op0141()
                 zi(ind+1)=j
                 zr(indv)=pij
                 call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
-                            cbid, k8b, 0)
+                            [cbid], k8b, 0)
 140          continue
 130      continue
 !

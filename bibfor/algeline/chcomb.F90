@@ -84,19 +84,19 @@ subroutine chcomb(tablez, nomaou)
 ! --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE
 ! --- DE CISAILLEMENT-TORSION :
 !     -----------------------
-    call tbliva(table, 0, k8b, ibid, r8b,&
-                c16b, k8b, k8b, r8b, 'MAILLAGE',&
+    call tbliva(table, 0, k8b, [ibid], [r8b],&
+                [c16b], k8b, k8b, [r8b], 'MAILLAGE',&
                 k8b, ibid, r8b, c16b, noma,&
                 iret)
-    call tbliva(table, 1, 'LIEU', ibid, r8b,&
-                c16b, noma, k8b, r8b, 'EY',&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], noma, k8b, [r8b], 'EY',&
                 k8b, ibid, xt, c16b, k8b,&
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
     endif
-    call tbliva(table, 1, 'LIEU', ibid, r8b,&
-                c16b, noma, k8b, r8b, 'EZ',&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], noma, k8b, [r8b], 'EZ',&
                 k8b, ibid, yt, c16b, k8b,&
                 iret)
     if (iret .ne. 0) then

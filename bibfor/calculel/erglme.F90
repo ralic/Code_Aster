@@ -195,8 +195,8 @@ subroutine erglme(jceld, iavale, option, iord, ligrel,&
     listr(2) = err0
     listr(3) = nors
 !
-    call tbajli(nomt19, nbpar, nompar, iord, listr,&
-                cbid, option, 0)
+    call tbajli(nomt19, nbpar, nompar, [iord], listr,&
+                [cbid], option, 0)
 !
     write(ifi,*) ' '
     write(ifi,*) '***************************************************'

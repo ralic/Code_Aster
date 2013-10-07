@@ -46,7 +46,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     real(kind=8) :: f(nbrddl), b(4, nbrddl), vout(nbrddl), sig(4)
     real(kind=8) :: pi, deuxpi, fi, e, nu, valres(3)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
-    real(kind=8) :: c(2, 2), coe1, pgl4(3, 3)
+    real(kind=8) :: c(2, 2), coe1(1), pgl4(3, 3)
     real(kind=8) :: poids, rayon, theta, sinfi, xpg(4)
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl)
     integer :: codres(3)
@@ -187,9 +187,9 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
             iret=0
             call verifg('RIGI', igau, nspg, '+', zi(imate),&
                         'ELAS', 1, coe1, iret)
-            if (iret .ne. 0) coe1=0.d0
-            sig(1) = (c(1,1)+c(1,2))*coe1
-            sig(2) = (c(2,1)+c(2,2))*coe1
+            if (iret .ne. 0) coe1(1)=0.d0
+            sig(1) = (c(1,1)+c(1,2))*coe1(1)
+            sig(2) = (c(2,1)+c(2,2))*coe1(1)
             sig(3) = 0.d0
             sig(4) = 0.d0
 !

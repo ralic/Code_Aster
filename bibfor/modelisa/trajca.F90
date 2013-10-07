@@ -473,15 +473,15 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         do 70 ino = 1, nbno
             valpar(1) = zr(jabsc+ino-1)
             valpar(2) = zr(jalph+ino-1)
-            call tbajli(tablca, 2, param, ibid, valpar,&
-                        cbid, k3b, idecal+ ino)
+            call tbajli(tablca, 2, param, [ibid], valpar,&
+                        [cbid], k3b, idecal+ ino)
 70      continue
     else
         do 71 ino = 1, nbno
             valpar(1) = zr(jcord+ino-1)
             valpar(2) = zr(jalphd+ino-1)
-            call tbajli(tablca, 2, param, ibid, valpar,&
-                        cbid, k3b, idecal+ ino)
+            call tbajli(tablca, 2, param, [ibid], valpar,&
+                        [cbid], k3b, idecal+ ino)
 71      continue
     endif
 !

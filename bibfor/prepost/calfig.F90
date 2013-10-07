@@ -86,16 +86,16 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
     call fo0182(nomfon, dimtub, tubuse)
     tabk(1) = 'TUBE_USE'
     tabk(2) = nomfon
-    call tbajli(resu, 2, nopara, ibid, r8b,&
-                c16b, tabk, 0)
+    call tbajli(resu, 2, nopara, [ibid], [r8b],&
+                [c16b], tabk, 0)
 !
     call gcncon('_', k8b)
     nomfon = resu(1:8)//k8b
     call fo0182(nomfon, dimobs, obsuse)
     tabk(1) = 'OBST_USE'
     tabk(2) = nomfon
-    call tbajli(resu, 2, nopara, ibid, r8b,&
-                c16b, tabk, 0)
+    call tbajli(resu, 2, nopara, [ibid], [r8b],&
+                [c16b], tabk, 0)
 !
 ! --- REMPLISSAGE DES TABLEAUX POUR LE CALCUL :
 !     ---------------------------------------
@@ -117,8 +117,8 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
     call fo0182(nomfon, no, zr(ijeu))
     tabk(1) = 'JEU_INIT'
     tabk(2) = nomfon
-    call tbajli(resu, 2, nopara, ibid, r8b,&
-                c16b, tabk, 0)
+    call tbajli(resu, 2, nopara, [ibid], [r8b],&
+                [c16b], tabk, 0)
 !
     n1 = no
     do 104 j = 1, (n1-1)
@@ -345,8 +345,8 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
 !
     tabk(1) = 'JEU_USE'
     tabk(2) = nomfon
-    call tbajli(resu, 2, nopara, ibid, r8b,&
-                c16b, tabk, 0)
+    call tbajli(resu, 2, nopara, [ibid], [r8b],&
+                [c16b], tabk, 0)
 !
     call jedetr('&&CALFIG.JEU')
     call jedetr('&&CALFIG.JEUPRM')

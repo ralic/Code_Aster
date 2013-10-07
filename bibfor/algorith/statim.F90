@@ -131,8 +131,8 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
         para(1) = fnmaxa
         para(2) = fnmmoy
         para(3) = fnmety
-        call tbajli(nomres, nparg, lparg, ibid, para,&
-                    c16b, valek, 0)
+        call tbajli(nomres, nparg, lparg, [ibid], para,&
+                    [c16b], valek, 0)
 !
         ndec = nbclas
         fmin = 1.d50
@@ -149,8 +149,8 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
             endif
             para(2) = wk2(idec)
             para(3) = wk1(idec)
-            call tbajli(nomres, nparp, lparp, idec, para,&
-                        c16b, valek, 0)
+            call tbajli(nomres, nparp, lparp, [idec], para,&
+                        [c16b], valek, 0)
 30      continue
 !
 !       --- AJOUT FLAMBAGE SI CELUI-CI A EU LIEU ---
@@ -170,16 +170,16 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 !          --- CAS CHOC ENTRE 2 NOEUDS : ON REPARTIT DEFPLA ---
                 para(1) = para(1)/2.d0
 !             --- 1ER NOEUD ---
-                call tbajli(nomres, nparf, lparf, i, para,&
-                            c16b, valek, 0)
+                call tbajli(nomres, nparf, lparf, [i], para,&
+                            [c16b], valek, 0)
 !             --- 2EME NOEUD ---
                 valek(1) = intitu(nbobst+i)
                 valek(2) = noecho(nbobst+i)
-                call tbajli(nomres, nparf, lparf, i, para,&
-                            c16b, valek, 0)
+                call tbajli(nomres, nparf, lparf, [i], para,&
+                            [c16b], valek, 0)
             else
-                call tbajli(nomres, nparf, lparf, i, para,&
-                            c16b, valek, 0)
+                call tbajli(nomres, nparf, lparf, [i], para,&
+                            [c16b], valek, 0)
             endif
         endif
 !

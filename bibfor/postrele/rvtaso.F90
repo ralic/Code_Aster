@@ -235,7 +235,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
 206  continue
 !
     call tbajli(nomtab, nbpar, nopara, valei, valer,&
-                c16b, valek, ilign)
+                [c16b], valek, ilign)
 !
 204  continue
 !

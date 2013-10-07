@@ -91,8 +91,8 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- RECUPERATION DU MAILLAGE INITIAL :
 !     --------------------------------
     call tbexp2(resu, 'MAILLAGE')
-    call tbliva(resu, 0, k8b, ibid, r8b,&
-                c16b, 'TOUT', k8b, r8b, 'MAILLAGE',&
+    call tbliva(resu, 0, k8b, [ibid], [r8b],&
+                [c16b], 'TOUT', k8b, [r8b], 'MAILLAGE',&
                 k8b, ibid, r8b, c16b, noma,&
                 iret)
     nomail=noma
@@ -126,10 +126,10 @@ subroutine pecapo(resu, modele, cara, nh)
 ! ---   VARIABLE "NOMA" :
 !       ---------------
     call tbexp2(resu, 'LIEU')
-    call tbnuli(resu, 1, 'LIEU', ibid, r8b,&
-                c16b, nomail, r8b, k8b, ilignm)
-    call tbnuli(resu, 1, 'LIEU', ibid, r8b,&
-                c16b, noma, r8b, k8b, ilign)
+    call tbnuli(resu, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], nomail, [r8b], k8b, ilignm)
+    call tbnuli(resu, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], noma, [r8b], k8b, ilign)
     if (ilign .lt. 0) ilign = 0
 !
 ! ---   RECUPERATION DE L'OPTION DE CALCUL RELATIVE AUX
@@ -195,11 +195,11 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- AJOUT DE JX ET RT DANS LA TABLE 'RESU' :
 !     --------------------------------------
         if (nrt .ne. 0) then
-            call tbajli(resu, nbrt, prt, ibid, rt,&
-                        c16b, k8b, ilign)
+            call tbajli(resu, nbrt, prt, [ibid], [rt],&
+                        [c16b], k8b, ilign)
         endif
-        call tbajli(resu, nbtors, ptors, ibid, jx,&
-                    c16b, k8b, ilign)
+        call tbajli(resu, nbtors, ptors, [ibid], [jx],&
+                    [c16b], k8b, ilign)
 !         ILIGN = 1
 !
 !     ------------------------------------------
@@ -238,39 +238,39 @@ subroutine pecapo(resu, modele, cara, nh)
         call tbexp2(resu, 'ALPHA')
         call tbexp2(resu, 'CDG_Y')
         call tbexp2(resu, 'CDG_Z')
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'A',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'A',&
                     k8b, ibid, s, c16b, k8b,&
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'MODELISA2_89')
         endif
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'IY',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'IY',&
                     k8b, ibid, iy, c16b, k8b,&
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'MODELISA2_89')
         endif
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'IZ',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'IZ',&
                     k8b, ibid, iz, c16b, k8b,&
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE_7')
         endif
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'ALPHA',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'ALPHA',&
                     k8b, ibid, alpha, c16b, k8b,&
                     iret)
         ASSERT(iret .eq. 0)
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'CDG_Y',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'CDG_Y',&
                     k8b, ibid, yg, c16b, k8b,&
                     iret)
         ASSERT(iret.eq.0)
-        call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'CDG_Z',&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'CDG_Z',&
                     k8b, ibid, zg, c16b, k8b,&
                     iret)
         ASSERT(iret.eq.0)
@@ -293,52 +293,52 @@ subroutine pecapo(resu, modele, cara, nh)
         valpar(6) = -pctz
         valpar(7) = 0.d0
         valpar(8) = 0.d0
-        call tbajli(resu, nbcisa, pcisa, ibid, valpar,&
-                    c16b, k8b, ilign)
+        call tbajli(resu, nbcisa, pcisa, [ibid], valpar,&
+                    [c16b], k8b, ilign)
         if (nomail .ne. noma) then
             call tbexp2(resu, 'KY')
             call tbexp2(resu, 'KZ')
 !       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'A',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'A',&
                         k8b, ibid, seq, c16b, k8b,&
                         iret)
             ASSERT(iret.eq.0)
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'IY',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'IY',&
                         k8b, ibid, iyeq, c16b, k8b,&
                         iret)
             ASSERT(iret.eq.0)
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'IZ',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'IZ',&
                         k8b, ibid, izeq, c16b, k8b,&
                         iret)
             ASSERT(iret.eq.0)
 !
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'KY',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'KY',&
                         k8b, ibid, ky, c16b, k8b,&
                         iret)
             if (iret .ne. 0) ky=0.d0
 !
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'KZ',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'KZ',&
                         k8b, ibid, kz, c16b, k8b,&
                         iret)
             if (iret .ne. 0) kz=0.d0
 !
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'ALPHA',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'ALPHA',&
                         k8b, ibid, alpheq, c16b, k8b,&
                         iret)
             ASSERT(iret .eq. 0)
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'CDG_Y',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'CDG_Y',&
                         k8b, ibid, ygeq, c16b, k8b,&
                         iret)
             ASSERT(iret .eq. 0)
-            call tbliva(resu, 1, 'LIEU', ibid, r8b,&
-                        c16b, nomail, k8b, r8b, 'CDG_Z',&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
+                        [c16b], nomail, k8b, [r8b], 'CDG_Z',&
                         k8b, ibid, zgeq, c16b, k8b,&
                         iret)
             ASSERT(iret .eq. 0)
@@ -388,12 +388,12 @@ subroutine pecapo(resu, modele, cara, nh)
 !         NOUVEAUX AY ET AZ POUR LE MAILLAGE
             valpar(1) = 1.d0/kyeq
             valpar(2) = 1.d0/kzeq
-            call tbajli(resu, 2, pcisa(1), ibid, valpar(1),&
-                        c16b, k8b, ilignm)
+            call tbajli(resu, 2, pcisa(1), [ibid], valpar(1),&
+                        [c16b], k8b, ilignm)
             valpar(7) = ky
             valpar(8) = kz
-            call tbajli(resu, 2, pcisa(7), ibid, valpar(7),&
-                        c16b, k8b, ilignm)
+            call tbajli(resu, 2, pcisa(7), [ibid], valpar(7),&
+                        [c16b], k8b, ilignm)
         endif
 !
 !     ------------------------------------------
@@ -416,8 +416,8 @@ subroutine pecapo(resu, modele, cara, nh)
 !     ----------------------------------------------
         call pecap3(chgeom, temper, iomega)
 !
-        call tbajli(resu, nbgauc, pgauc, ibid, iomega,&
-                    c16b, k8b, ilign)
+        call tbajli(resu, nbgauc, pgauc, [ibid], [iomega],&
+                    [c16b], k8b, ilign)
     endif
 !
 ! --- MENAGE

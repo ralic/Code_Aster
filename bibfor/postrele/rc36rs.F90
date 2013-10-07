@@ -110,8 +110,8 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
 !
 30          continue
 !
-            call tbajli(nomres, npara, nopara, ibid, valer,&
-                        c16b, valek, 0)
+            call tbajli(nomres, npara, nopara, [ibid], valer,&
+                        [c16b], valek, 0)
 !
 20      continue
 !

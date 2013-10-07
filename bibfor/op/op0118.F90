@@ -51,7 +51,7 @@ subroutine op0118()
     integer :: lnuor
     parameter   ( nbpar = 2 )
 !
-    real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, r8b, tini
+    real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, tini
     real(kind=8) :: tfin, duree
     complex(kind=8) :: c16b
     character(len=8) :: typar(2), nomvec
@@ -152,8 +152,8 @@ subroutine op0118()
     do 60 kf = 1, dim
         write (nomfon,'(A8,A3,I4.4)') nomvec, '.FO', kf
 !
-        call tbajli(nomvec, nbpar, nopar, zi(lnuor-1+kf), r8b,&
-                    c16b, nomfon, 0)
+        call tbajli(nomvec, nbpar, nopar, zi(lnuor-1+kf), [0.d0],&
+                    [c16b], nomfon, 0)
 !
         call wkvect(nomfon//'.VALE', 'G V R', ln4*2, lfo)
         call wkvect(nomfon//'.PROL', 'G V K24', 6, lprof)

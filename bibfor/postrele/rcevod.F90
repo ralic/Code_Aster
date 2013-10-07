@@ -231,9 +231,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             valo(ir) = stpar
             vale(ir) = stpar
             call tbajli(nomres, npar1, nopara, vaio, valo,&
-                        c16b, vako, 0)
+                        [c16b], vako, 0)
             call tbajli(nomres, npar1, nopara, vaie, vale,&
-                        c16b, vake, 0)
+                        [c16b], vake, 0)
 400      continue
 !
     endif
@@ -277,7 +277,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             ir = ir + 1
             valo(ir) = tresca
             call tbajli(nomres, npar1, nopara, vaio, valo,&
-                        c16b, vako, 0)
+                        [c16b], vako, 0)
 110      continue
         do 120 i = 1, nbinst
             vake(ik+1) = zk8(jresu+i-1)
@@ -303,7 +303,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             ir = ir + 1
             vale(ir) = tresca
             call tbajli(nomres, npar1, nopara, vaie, vale,&
-                        c16b, vake, 0)
+                        [c16b], vake, 0)
 120      continue
     endif
 !
@@ -340,7 +340,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     valo(ir) = zr(jsneo+ind-1)
                 endif
                 call tbajli(nomres, npar1, nopara, vaio, valo,&
-                            c16b, vako, 0)
+                            [c16b], vako, 0)
 212          continue
 210      continue
 !
@@ -364,7 +364,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     vale(ir) = zr(jsnee+ind-1)
                 endif
                 call tbajli(nomres, npar1, nopara, vaie, vale,&
-                            c16b, vake, 0)
+                            [c16b], vake, 0)
 222          continue
 220      continue
     endif
@@ -438,7 +438,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                 ir = ir + 1
                 valo(ir) = zr(jfao-1+5*(ind-1)+4)
                 call tbajli(nomres, npar1, nopara, vaio, valo,&
-                            c16b, vako, 0)
+                            [c16b], vako, 0)
 312          continue
 310      continue
 !
@@ -490,7 +490,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                 ir = ir + 1
                 vale(ir) = zr(jfae-1+5*(ind-1)+4)
                 call tbajli(nomres, npar1, nopara, vaie, vale,&
-                            c16b, vake, 0)
+                            [c16b], vake, 0)
 322          continue
 320      continue
 !
@@ -503,9 +503,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
         valo(3) = dco
         vale(3) = dce
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
 !
     endif
 !

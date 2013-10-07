@@ -74,8 +74,8 @@ subroutine motubn(tabpus, dinst, nbsect)
     call tbexp2(nomta, 'P_USUR_TUBE_SECT')
     call tbexp2(nomta, 'V_USUR_TUBE_CUMU')
 !
-    call tbliva(nomta, 1, valek, ibid, acces(1),&
-                c16b, k8b, lcrit(1), lprec(1), valek(2),&
+    call tbliva(nomta, 1, valek, [ibid], acces(1),&
+                [c16b], k8b, lcrit(1), lprec(1), valek(2),&
                 k8b, ibid, acces(2), c16b, k8b,&
                 iret)
     if (iret .ne. 0) then
@@ -84,8 +84,8 @@ subroutine motubn(tabpus, dinst, nbsect)
         call utmess('F', 'PREPOST5_57', sk=valk, sr=valr)
     endif
 !
-    call tbnuli(nomta, 2, valek, ibid, acces,&
-                c16b, k8b, lprec, lcrit, numeli)
+    call tbnuli(nomta, 2, valek, [ibid], acces,&
+                [c16b], k8b, lprec, lcrit, numeli)
     if (numeli .le. 0) then
         valr = dinst
         valk = valek(2)
@@ -103,8 +103,8 @@ subroutine motubn(tabpus, dinst, nbsect)
 !
     do 20 i = 1, nbsect
 !
-        call tbnuli(nomta, 2, valek, i, acces(1),&
-                    c16b, k8b, lprec(1), lcrit(1), numeli)
+        call tbnuli(nomta, 2, valek, [i], acces(1),&
+                    [c16b], k8b, lprec(1), lcrit(1), numeli)
         if (numeli .le. 0) then
             valr = dinst
             vali = i

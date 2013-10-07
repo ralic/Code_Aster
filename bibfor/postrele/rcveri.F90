@@ -119,12 +119,12 @@ subroutine rcveri(tablz)
 !         CONTENANT UNIQUEMENT L'INTITULE EN COURS
             if (tyva(1:2) .eq. 'K8') then
                 call tbextb(table, 'V', tbtmp1, 1, valek(5),&
-                            'EQ', ibid, r8b, cbid, zk8(jinti+inti-1),&
-                            r8b, k8b, iret)
+                            'EQ', [ibid], [r8b], [cbid], zk8(jinti+inti-1),&
+                            [r8b], k8b, iret)
             else if (tyva(1:3).eq.'K16') then
                 call tbextb(table, 'V', tbtmp1, 1, valek(5),&
-                            'EQ', ibid, r8b, cbid, zk16(jinti+inti-1),&
-                            r8b, k8b, iret)
+                            'EQ', [ibid], [r8b], [cbid], zk16(jinti+inti-1),&
+                            [r8b], k8b, iret)
             else
                 call utmess('F', 'DVP_1')
             endif
@@ -137,8 +137,8 @@ subroutine rcveri(tablz)
 !         EXTRACTION D'UNE NOUVELLE TABLE A PARTIR DE "TBTMP1"
 !         CONTENANT UNIQUEMENT L'INSTANT "INST".
             call tbextb(tbtmp1, 'V', tbtmp2, 1, valek(1),&
-                        'EQ', ibid, inst, cbid, k8b,&
-                        eps, crit, iret)
+                        'EQ', [ibid], [inst], [cbid], k8b,&
+                        [eps], crit, iret)
             call detrsd('TABLE', tbtmp1)
             call jedetr(instan)
 !

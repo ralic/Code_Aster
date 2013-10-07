@@ -68,8 +68,8 @@ subroutine op0173()
         newtab = newta1
     endif
 !
-    call tbliva(newtab, 0, k8b, ibid, r8b,&
-                cbid, k8b, k8b, r8b, para,&
+    call tbliva(newtab, 0, k8b, [ibid], [r8b],&
+                [cbid], k8b, k8b, [r8b], para,&
                 ctype, vali, valr, valc, valk,&
                 iret)
     if (iret .eq. 0) then

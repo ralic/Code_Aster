@@ -61,8 +61,8 @@ function armin(nomaz)
         call ltnotb(noma, 'CARA_GEOM', nomt19)
         nbpar = 0
         para = 'AR_MIN                  '
-        call tbliva(nomt19, nbpar, ' ', ibid, r8b,&
-                    cbid, k8b, k8b, r8b, para,&
+        call tbliva(nomt19, nbpar, ' ', [ibid], [r8b],&
+                    [cbid], k8b, k8b, [r8b], para,&
                     k8b, ibid, arete, cbid, k8b,&
                     ier)
         if (ier .eq. 0) then

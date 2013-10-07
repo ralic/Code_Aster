@@ -88,8 +88,8 @@ subroutine rftabl(tabres)
 !
     else if (n4 .ne. 0) then
 !
-        call tbliva(newtab, 0, k8b, ibid, r8b,&
-                    c16b, k8b, k8b, r8b, nopara,&
+        call tbliva(newtab, 0, k8b, [ibid], [r8b],&
+                    [c16b], k8b, k8b, [r8b], nopara,&
                     k8b, ibid, r8b, c16b, nomf,&
                     iret)
         if (iret .ne. 0) then

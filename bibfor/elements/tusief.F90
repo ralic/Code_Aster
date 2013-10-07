@@ -54,7 +54,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     real(kind=8) :: valres(nbres), valpar, degg(24)
     real(kind=8) :: h, a, l, e, nu, beta, cisail, g, omega, dhk
     real(kind=8) :: sinfi, fi, deuxpi, r, at1, at2, vpg(4), vno(4)
-    real(kind=8) :: b(4, nbrddl), c(4, 4), epsthe, hk, sigth(2), xpg(4)
+    real(kind=8) :: b(4, nbrddl), c(4, 4), epsthe(1), hk, sigth(2), xpg(4)
     real(kind=8) :: pgl(3, 3), vin(nbrddl), vout(4), mat(4, nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl), pgl4(3, 3)
@@ -194,9 +194,9 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
             iret=0
             call verifg('RIGI', igau, nspg, '+', zi(imate),&
                         'ELAS', 1, epsthe, iret)
-            if (iret .ne. 0) epsthe=0.d0
-            at1 = (c(1,1)+c(1,2))*epsthe
-            at2 = (c(2,1)+c(2,2))*epsthe
+            if (iret .ne. 0) epsthe(1)=0.d0
+            at1 = (c(1,1)+c(1,2))*epsthe(1)
+            at2 = (c(2,1)+c(2,2))*epsthe(1)
         endif
 !
         if ((option.eq.'SIEF_ELGA') .or. (option.eq.'EPSI_ELGA')) then

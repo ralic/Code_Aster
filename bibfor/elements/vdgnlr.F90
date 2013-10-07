@@ -99,7 +99,7 @@ subroutine vdgnlr(option, nomte)
     integer :: lzi, lzr, jcara
     integer :: nb1, nb2
     integer :: iinstm, iinstp, jmate
-    real(kind=8) :: valpar, epsthe
+    real(kind=8) :: valpar, epsthe(1)
     integer :: icodre(1)
     character(len=10) :: phenom
 !
@@ -587,8 +587,8 @@ subroutine vdgnlr(option, nomte)
 !
                 call verifg('RIGI', intsn, 3, '+', zi(jmate),&
                             phenom, 1, epsthe, iret1)
-                etild(1) = etild(1) - epsthe
-                etild(2) = etild(2) - epsthe
+                etild(1) = etild(1) - epsthe(1)
+                etild(2) = etild(2) - epsthe(1)
 !
 !------------- LA  MATRICE DE COMPORTEMENT  MATC ( 5 , 5 )
 !

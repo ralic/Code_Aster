@@ -132,8 +132,8 @@ subroutine pecage(resu, modele, nbocc)
         call utmess('F', 'UTILITAI3_48')
     endif
     nbparc = nbparr - 1
-    call tbajli(resu, 1, noparr(nbparr), ibid, r8b,&
-                c16b, noma, 0)
+    call tbajli(resu, 1, noparr(nbparr), [ibid], [r8b],&
+                [c16b], noma, 0)
 !
     call wkvect('&&PECAGE.TRAV1', 'V V R', mxvale, lvale)
     do 40 iocc = 1, nbocc
@@ -157,8 +157,8 @@ subroutine pecage(resu, modele, nbocc)
                         0, k8b, valpar)
             valk(1) = noma
             valk(2) = 'TOUT'
-            call tbajli(resu, nbparc, noparr, ibid, valpar,&
-                        c16b, valk, 0)
+            call tbajli(resu, nbparc, noparr, [ibid], valpar,&
+                        [c16b], valk, 0)
         endif
 !
         if (ng .ne. 0) then
@@ -186,8 +186,8 @@ subroutine pecage(resu, modele, nbocc)
                 call pecag3(ndim, nsymx, nsymy, noma, 'GROUP_MA',&
                             1, zk24(jgr+ig-1), valpar)
                 valk(1) = zk24(jgr+ig-1)
-                call tbajli(resu, nbparc, noparr, ibid, valpar,&
-                            c16b, valk, 0)
+                call tbajli(resu, nbparc, noparr, [ibid], valpar,&
+                            [c16b], valk, 0)
 20          continue
             call jedetr('&&PECAGE_GROUPM')
         endif
@@ -212,8 +212,8 @@ subroutine pecage(resu, modele, nbocc)
                 call pecag3(ndim, nsymx, nsymy, noma, 'MAILLE',&
                             nbmail, zk8( jma), valpar)
                 valk(1) = zk8(jma+im-1)
-                call tbajli(resu, nbparc, noparr, ibid, valpar,&
-                            c16b, valk, 0)
+                call tbajli(resu, nbparc, noparr, [ibid], valpar,&
+                            [c16b], valk, 0)
 30          continue
 !
             call jedetr('&&PECAGE_MAILLE')

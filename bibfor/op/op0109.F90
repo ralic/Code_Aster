@@ -292,8 +292,8 @@ subroutine op0109()
                     noma, ierd)
         call tbexp2(tmas, 'LIEU')
         call tbexp2(tmas, 'MASSE')
-        call tbliva(tmas, 1, 'LIEU', ibid, r8b,&
-                    c16b, noma, k8b, r8b, 'MASSE',&
+        call tbliva(tmas, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], noma, k8b, [r8b], 'MASSE',&
                     k8b, ibid, xmastr, c16b, k8b,&
                     iret)
         if (iret .eq. 2) then
@@ -304,8 +304,8 @@ subroutine op0109()
             paraki(2) = 'ENTITE'
             valeki(1) = noma
             valeki(2) = 'TOUT'
-            call tbliva(tmas, 2, paraki, ibid, r8b,&
-                        c16b, valeki, k8b, r8b, 'MASSE',&
+            call tbliva(tmas, 2, paraki, [ibid], [r8b],&
+                        [c16b], valeki, k8b, [r8b], 'MASSE',&
                         k8b, ibid, xmastr, c16b, k8b,&
                         iret)
             if (iret .ne. 0) then

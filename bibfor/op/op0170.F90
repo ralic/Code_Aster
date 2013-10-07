@@ -138,16 +138,16 @@ subroutine op0170()
             valer(2) = xm2
             valer(3) = rduree
             valer(4) = dom
-            call tbajli(nomres, 4, nopfa2, ibid, valer,&
-                        c16b, k8b, ilign)
+            call tbajli(nomres, 4, nopfa2, [ibid], valer,&
+                        [c16b], k8b, ilign)
         else
             valer(1) = xm0
             valer(2) = xm2
             valer(3) = xm4
             valer(4) = rduree
             valer(5) = dom
-            call tbajli(nomres, nbpfat, nopfat, ibid, valer,&
-                        c16b, k8b, ilign)
+            call tbajli(nomres, nbpfat, nopfat, [ibid], valer,&
+                        [c16b], k8b, ilign)
         endif
 20  end do
 !

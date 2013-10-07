@@ -364,7 +364,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 !                       ON AJOUTE LA LIGNE A LA TABLE
                         call tbajli(nomtb, nbpara, zk16(jparak), zi(ji), zr(jr),&
-                                    cbid, zk16(jk), 0)
+                                    [cbid], zk16(jk), 0)
 !
 225                  continue
 !

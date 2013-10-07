@@ -57,7 +57,7 @@ subroutine te0144(option, nomte)
     character(len=8) :: nomres(nbres)
 !
     real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
-    real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith
+    real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith(1)
     real(kind=8) :: x, temp
     real(kind=8) :: e, xnu, xl, rad, angarc, angs2, along
 !
@@ -152,16 +152,16 @@ subroutine te0144(option, nomte)
     call pmavec('ZERO', 12, klc, ul, fl)
 !
 !     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
-    if (epsith .ne. zero) then
+    if (epsith(1) .ne. zero) then
         do 40 i = 1, 12
             ug(i) = zero
 40      continue
 !
         if (itype .ne. 10) then
-            ug(1) = -epsith * xl
+            ug(1) = -epsith(1) * xl
             ug(7) = -ug(1)
         else
-            along = 2.d0 * rad * epsith * sin(angs2)
+            along = 2.d0 * rad * epsith(1) * sin(angs2)
             ug(1) = -along * cos(angs2)
             ug(2) = along * sin(angs2)
             ug(7) = -ug(1)

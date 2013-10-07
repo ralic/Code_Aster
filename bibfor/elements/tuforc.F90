@@ -65,7 +65,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     integer :: ip, ic, kp
     integer :: jnbspi, iret2, nbsp
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
-    real(kind=8) :: epsthe, alphaf, betaf
+    real(kind=8) :: epsthe(1), alphaf, betaf
     real(kind=8) :: alpham, betam, xa, xb, xc, xd
     real(kind=8) :: sigtmp(4), sigref
     call elref5(' ', 'RIGI', ndim, nno, nnos,&
@@ -323,9 +323,9 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
             iret=0
             call verifg('RIGI', igau, nspg, '+', zi(imate),&
                         'ELAS', 1, epsthe, iret)
-            if (iret .ne. 0) epsthe=0.d0
-            sigth(1) = (c(1,1)+c(1,2))*epsthe
-            sigth(2) = (c(2,1)+c(2,2))*epsthe
+            if (iret .ne. 0) epsthe(1)=0.d0
+            sigth(1) = (c(1,1)+c(1,2))*epsthe(1)
+            sigth(2) = (c(2,1)+c(2,2))*epsthe(1)
             do 300,i = 1,6
             efg(i) = 0.d0
 300          continue

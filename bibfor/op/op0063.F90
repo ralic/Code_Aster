@@ -66,8 +66,8 @@ subroutine op0063()
     ival(1) = iordr
     lipar(1) = 'NUME_ORDRE'
 !
-    call tbliva(modenl, 1, lipar, ival, r8b,&
-                c16b, k8b, k8b, r8b, 'NOM_SD',&
+    call tbliva(modenl, 1, lipar, ival, [r8b],&
+                [c16b], k8b, k8b, [r8b], 'NOM_SD',&
                 k8b, ibid, r8b, c16b, modein,&
                 iret)
 !

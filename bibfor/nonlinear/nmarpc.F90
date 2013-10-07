@@ -83,8 +83,8 @@ subroutine nmarpc(result, sdener, numrep, instan)
 !
 ! --- CONSTRUCTION DES LISTES DE PARAMETRES A SAUVEGARDER PAR TYPE
 !
-    call tbajli(tablpc, nbpar, nompar, vali, valr,&
-                c16bid, k8bid, 0)
+    call tbajli(tablpc, nbpar, nompar, [vali], valr,&
+                [c16bid], k8bid, 0)
 !
     call jedema()
 !

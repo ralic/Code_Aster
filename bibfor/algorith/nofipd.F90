@@ -130,7 +130,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
     nddl = nno1*ndim + nno2 + nno3*ndim
     rac2 = sqrt(2.d0)
 !
-    call uthk(nomte, geomi, hk, ndim, ibid,&
+    call uthk(nomte, geomi, hk, ndim, [ibid],&
               ibid, ibid, ibid, 1, ibid)
     stab = 1.d-4*hk*hk
 !

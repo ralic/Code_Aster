@@ -334,8 +334,8 @@ subroutine op0144()
             write(nompar,'(I3.3)') ipar
             nomcha(17:24) = nompar(1:3)//'     '
 !
-            call tbajli(nomu, 1, 'NOM_CHAM', ibid, r8b,&
-                        c16b, nomcha, 0)
+            call tbajli(nomu, 1, 'NOM_CHAM', [ibid], [r8b],&
+                        [c16b], nomcha, 0)
 !
 ! --------CREATION DU CHAMP
             cham19 = nomcha(1:19)

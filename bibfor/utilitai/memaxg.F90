@@ -150,8 +150,8 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
 !
         zr(ipa+lonvec) = s
         nbpar = lonvec+1
-        call tbajli(tabgma, nbpar, zk16(inopr), ibid, zr(ipa),&
-                    cbid, k8bid, 0)
+        call tbajli(tabgma, nbpar, zk16(inopr), [ibid], zr(ipa),&
+                    [cbid], k8bid, 0)
 !
 190  end do
 !
@@ -168,8 +168,8 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
 230          continue
             zr(ipa+lonvec) = gmax
             zr(ipa+lonvec+1) = gmax
-            call tbajli(tabgma, nbprup, zk16(inopr), ibid, zr(ipa),&
-                        cbid, k8bid, k)
+            call tbajli(tabgma, nbprup, zk16(inopr), [ibid], zr(ipa),&
+                        [cbid], k8bid, k)
         endif
 !
 220  end do

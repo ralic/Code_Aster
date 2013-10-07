@@ -118,8 +118,8 @@ subroutine rc32r1(nomres)
 !
         call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
 !
-        call tbajli(nomres, npar6, nopar6, ibid, zr(jvale),&
-                    c16b, valek, 0)
+        call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale),&
+                    [c16b], valek, 0)
 !
 110  end do
 !
@@ -149,14 +149,14 @@ subroutine rc32r1(nomres)
                 ioc = zi(jnsg+is-1)
                 valei(2) = zi(jnsitu+ioc-1)
                 call tbajli(nomres, npar4, nopar4, valei, zr(jreas- 1+10*(is-1)+1),&
-                            c16b, valek, 0)
+                            [c16b], valek, 0)
 104          continue
             valek(2) = 'SANS'
             do 106 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
                 valei(2) = zi(jnsitu+ioc-1)
                 call tbajli(nomres, npar4, nopar4, valei, zr(jress- 1+10*(is-1)+1),&
-                            c16b, valek, 0)
+                            [c16b], valek, 0)
 106          continue
 102      continue
 !
@@ -187,10 +187,10 @@ subroutine rc32r1(nomres)
 !
                     valek(2) = 'AVEC'
                     call tbajli(nomres, npar1, nopar1, valei, zr(jreas+ii),&
-                                c16b, valek, 0)
+                                [c16b], valek, 0)
                     valek(2) = 'SANS'
                     call tbajli(nomres, npar1, nopar1, valei, zr(jress+ii),&
-                                c16b, valek, 0)
+                                [c16b], valek, 0)
 !
                     ii = ii + 5
 124              continue
@@ -228,7 +228,7 @@ subroutine rc32r1(nomres)
                 call codent(is2, 'D', k8b)
                 valek(4) = k8b
                 call tbajli(nomres, npar2, nopar2, valei, valer,&
-                            c16b, valek, 0)
+                            [c16b], valek, 0)
 !
 114          continue
 116          continue

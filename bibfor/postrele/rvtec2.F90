@@ -307,7 +307,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 106  continue
 !
     call tbajli(nomtab, nbpar, zk24(jvalk), valei, zr(jval1),&
-                c16b, valek, ilign)
+                [c16b], valek, ilign)
 !
 102  continue
 !

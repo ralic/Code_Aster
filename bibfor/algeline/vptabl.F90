@@ -115,7 +115,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
     lcrit(2)='RELA'
 !
     call tbextb(tabmod, 'V', tabmof, 2, lipacr,&
-                lcrpa, ibid, vr, cbid, k8bid,&
+                lcrpa, [ibid], vr, [cbid], k8bid,&
                 lprec, lcrit, ier)
 !
 ! --- PB EXTRACTION: PAS DE LIGNE CORRESPONDANT AUX CRITERES

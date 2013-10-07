@@ -175,8 +175,8 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                         orig, iorig, icage)
             valk(1) = noma
             valk(2) = 'TOUT'
-            call tbajli(resu, nbparr, noparr, ibid, zr(lvale),&
-                        c16b, valk, 0)
+            call tbajli(resu, nbparr, noparr, [ibid], zr(lvale),&
+                        [c16b], valk, 0)
         endif
         if (ng .ne. 0) then
             nbgrma = -ng
@@ -199,8 +199,8 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                 call pemica(chelem, mxvale, zr(lvale), nbma, zi(jad),&
                             orig, iorig, icage)
                 valk2(1) = zk24(jgr+ig-1)
-                call tbajli(resu, nbparr, noparr, ibid, zr(lvale),&
-                            c16b, valk2, 0)
+                call tbajli(resu, nbparr, noparr, [ibid], zr(lvale),&
+                            [c16b], valk2, 0)
 30          continue
             call jedetr('&&PEMAIN_GROUPM')
         endif
@@ -220,8 +220,8 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                 call pemica(chelem, mxvale, zr(lvale), 1, [nume],&
                             orig, iorig, icage)
                 valk(1) = zk8(jma+im-1)
-                call tbajli(resu, nbparr, noparr, ibid, zr(lvale),&
-                            c16b, valk, 0)
+                call tbajli(resu, nbparr, noparr, [ibid], zr(lvale),&
+                            [c16b], valk, 0)
 40          continue
             call jedetr('&&PEMAIN_MAILLE')
         endif

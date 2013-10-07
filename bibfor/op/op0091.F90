@@ -413,8 +413,8 @@ subroutine op0091()
         call jedetr('&&MOIN93.MODE_INTF_DEPL')
         call jedetr('&&MOIN93.FREQ_INTF_DEPL')
 !
-        call tbajli(nomres, 3, nompar, ibid, rbid,&
-                    cbid, vk, 0)
+        call tbajli(nomres, 3, nompar, [ibid], [rbid],&
+                    [cbid], vk, 0)
 !--
 !-- VECTEURS A INTERFACE LIBRE
 !--
@@ -438,8 +438,8 @@ subroutine op0091()
                     nume91, ibid)
         call arch93(vk(3), 'MODE_MECA       ', nume14, mraid//'           ', 0,&
                     0, 0, 0, nindep, 0)
-        call tbajli(nomres, 3, nompar, ibid, rbid,&
-                    cbid, vk, 0)
+        call tbajli(nomres, 3, nompar, [ibid], [rbid],&
+                    [cbid], vk, 0)
 !-- PETIT MENAGE
         call jedetr('&&MOIN93.MODE_INTF_DEPL')
         call jedetr('&&MOIN93.FREQ_INTF_DEPL')
@@ -462,8 +462,8 @@ subroutine op0091()
             trvint=trvint+zr(ltrain+nbmod*(j1-1)+i1-1)
         end do
         write(unit,*)'MODE ',i1,' - TRAVAIL TOTAL :',trvint
-        call tbajli(nomres, 2, nompar, i1, trvint,&
-                    cbid, kb, 0)
+        call tbajli(nomres, 2, nompar, [i1], [trvint],&
+                    [cbid], kb, 0)
     end do
 !-- ARCHIVAGE DES TRAVAUX INTERFACES
     nompar(1)='TRAV_INTERF'
@@ -479,10 +479,10 @@ subroutine op0091()
             intf1=zk8(lllia+1)
             intf2=zk8(lllia+3)
             vr(1)=zr(ltrain+nbmod*(i1-1)+j1-1)
-            call tbajli(nomres, 3, nompar, j1, vr,&
-                        cbid, intf1, 0)
-            call tbajli(nomres, 3, nompar, j1, vr,&
-                        cbid, intf2, 0)
+            call tbajli(nomres, 3, nompar, [j1], vr,&
+                        [cbid], intf1, 0)
+            call tbajli(nomres, 3, nompar, [j1], vr,&
+                        [cbid], intf2, 0)
         end do
     end do
 !-- ARCHIVAGE DES TRAVAUX SOUS STRUCTURES
@@ -497,8 +497,8 @@ subroutine op0091()
         do i1 = 1, nbsst
             vk(1)=zk8(lnosst+i1-1)
             vr(1)=zr(ltrsst+nbmod*(i1-1)+j1-1)
-            call tbajli(nomres, 3, nompar, j1, vr,&
-                        cbid, vk, 0)
+            call tbajli(nomres, 3, nompar, [j1], vr,&
+                        [cbid], vk, 0)
         end do
     end do
 !-- MENAGE DANS LES CONCEPTS TEMPORAIRES

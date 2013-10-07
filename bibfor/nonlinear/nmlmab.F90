@@ -85,7 +85,7 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
     real(kind=8) :: depgrd, depthe, depst, xrig, correc, sig, yg, sigp
     real(kind=8) :: epsv, xx, x1, x2, dx, dx1, dx2, coeflm(ncoefl), sigsig, ier
 !      EXTERNAL NMCRI3
-    real(kind=8) :: x(4), y(4), xi
+    real(kind=8) :: x(4), y(4), xi, rval(1)
     integer :: i
 !
 ! ----------------------------------------------------------------------
@@ -124,7 +124,8 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
 !
 !-- CALCUL DES INCREMENTS DE DEFORMATION
     call verifm('RIGI', npg, 1, 'T', imate,&
-                'ELAS', 1, depthe, iret)
+                'ELAS', 1, rval, iret)
+    depthe=rval(1)            
     depst = dlong0/xlong0
 !
     if (iret .eq. 0) then

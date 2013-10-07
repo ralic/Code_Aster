@@ -43,6 +43,10 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
 !      ON RAPPELLE QU'EN FORTRAN L'ORDRE DE RANGEMENT EST LE SUIVANT :
 !   (1,1,1) (2,1,1) (3,1,1) ... (9,1,1) (1,2,1) (2,2,1) ... (9,2,1)
 !   (1,3,1)  ...    (8,6,4) (9,6,4)
+!    POUR UTILISER UN VECTEUR UNIDIMENSIONNEL EQUIVALENT ZI(IVAL)
+!    LA POSITION i,j,k  pour noe(n1,n2,n3) EST DONNEE PAR LA FORMULE
+!    i + (j-1)*n1 + (k-1)*(n1*n2)
+!
 !    ON COMMENCE AINSI PAR LES 9 NOEUDS DE LA 1ERE FACE DE L'HEXAEDRE,
 !    PUIS LES 9 NOEUDS DE LA 2EME FACE DE L'HEXAEDRE,
 !    ETC JUSQU'AUX 9 NOEUDS DE LA 6EME FACE DE L'HEXAEDRE.
@@ -70,7 +74,9 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
 #include "asterfort/utmess.h"
 #include "asterfort/uttgel.h"
 !
-    integer :: ndim, noe(9, 6, 4), nsomm, ifa, tymvol, niv, ifm
+    integer :: l1,l2,l3
+    parameter (l1=9,l2=6,l3=4) 
+    integer :: ndim, noe(l1*l2*l3), nsomm, ifa, tymvol, niv, ifm
     character(len=16) :: nomte
     real(kind=8) :: hk, geom(*)
 !
@@ -130,7 +136,7 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
 !
         do 10 in = 1, nsomm
 !
-            iino = noe(in,ifa,tymvol)
+            iino=noe(in+l1*(ifa-1)+l1*l2*(tymvol-1))
             i = 3*(iino-1)+1
             if (in .eq. 1) then
                 x1 = geom(i)

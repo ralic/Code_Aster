@@ -81,8 +81,8 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
         if (imptgt .eq. 1) then
             call dcopy(36, dsidep, 1, vr(1+6+6+3+nbvari), 1)
         endif
-        call tbajli(table, nbpar, nompar, i, vr,&
-                    cbid, k8b, 0)
+        call tbajli(table, nbpar, nompar, [i], vr,&
+                    [cbid], k8b, 0)
 !
     else
 !
@@ -95,28 +95,28 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
             else
                 vk8(2)=nomgrd(i)
             endif
-            call tbajli(table, nbpar, nompar, 0, vr,&
-                        cbid, vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr,&
+                        [cbid], vk8, 0)
 !
 551      continue
         vk8(1)='SIGM'
         do 552 i = 1, 6
             vr(2)=sigt(i)
             vk8(2)=nomsig(i)
-            call tbajli(table, nbpar, nompar, 0, vr,&
-                        cbid, vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr,&
+                        [cbid], vk8, 0)
 !
 552      continue
         vk8(1)='SIEQ'
         vr(2)=equi(1)
         vk8(2)='VMIS'
-        call tbajli(table, nbpar, nompar, 0, vr,&
-                    cbid, vk8, 0)
+        call tbajli(table, nbpar, nompar, [0], vr,&
+                    [cbid], vk8, 0)
 !
         vr(2)=equi(16)
         vk8(2)='TRACE'
-        call tbajli(table, nbpar, nompar, 0, vr,&
-                    cbid, vk8, 0)
+        call tbajli(table, nbpar, nompar, [0], vr,&
+                    [cbid], vk8, 0)
 !
         vk8(1)='VARI'
         do 553 i = 1, nbvita
@@ -124,8 +124,8 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
             vk8(2)=nomvi(i)
 !            VK8(2)(1:1)='V'
 !            CALL CODENT(I,'G',VK8(2)(2:8))
-            call tbajli(table, nbpar, nompar, 0, vr,&
-                        cbid, vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr,&
+                        [cbid], vk8, 0)
 553      continue
 !
     endif

@@ -92,7 +92,7 @@ subroutine rvmoye(nomres, iocc)
                 valk(3) = nocmp(icmp)
                 valr(1) = som(icmp)
                 call tbajli(nomres, nbpar, nopara, vali, valr,&
-                            c16b, valk, 0)
+                            [c16b], valk, 0)
 10          continue
 !
         else if (tych(1:2).eq.'EL') then
@@ -200,7 +200,7 @@ subroutine rvmoye(nomres, iocc)
                 ir = ir + 1
                 valr(ir) = som(icmp)
                 call tbajli(nomres, nbpar, nopara, vali, valr,&
-                            c16b, valk, 0)
+                            [c16b], valk, 0)
 11          continue
 !
         else if (tych(1:2).eq.'EL') then

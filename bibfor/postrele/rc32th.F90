@@ -168,8 +168,8 @@ subroutine rc32th()
                 kk = kk + 1
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, ibid, vale,&
-                            cbid, k8b, crit, prec, nocmp(j),&
+                call tbliva(table, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
                             k8b, ibid, zr( jcont+k-1), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
@@ -218,8 +218,8 @@ subroutine rc32th()
         do 166 k = 1, nbabsc
             vale(2) = zr(jabsc+k-1)
 !
-            call tbliva(table, 2, valek, ibid, vale,&
-                        cbid, k8b, crit, prec, nocmp(j),&
+            call tbliva(table, 2, valek, [ibid], vale,&
+                        [cbid], k8b, crit, prec, nocmp(j),&
                         k8b, ibid, zr(jcont+k-1), cbid, k8b,&
                         iret)
 166      continue
@@ -236,8 +236,8 @@ subroutine rc32th()
         do 266 k = 1, nbabsc
             vale(2) = zr(jabsc+k-1)
 !
-            call tbliva(table, 2, valek, ibid, vale,&
-                        cbid, k8b, crit, prec, nocmp(j),&
+            call tbliva(table, 2, valek, [ibid], vale,&
+                        [cbid], k8b, crit, prec, nocmp(j),&
                         k8b, ibid, zr(jcont+k-1), cbid, k8b,&
                         iret)
 266      continue
@@ -259,8 +259,8 @@ subroutine rc32th()
         do 366 k = 1, nbabsc
             vale(2) = zr(jabsc+k-1)
 !
-            call tbliva(table, 2, valek, ibid, vale,&
-                        cbid, k8b, crit, prec, nocmp(j),&
+            call tbliva(table, 2, valek, [ibid], vale,&
+                        [cbid], k8b, crit, prec, nocmp(j),&
                         k8b, ibid, zr(jcont+k-1), cbid, k8b,&
                         iret)
 366      continue
@@ -282,8 +282,8 @@ subroutine rc32th()
         do 466 k = 1, nbabsc
             vale(2) = zr(jabsc+k-1)
 !
-            call tbliva(table, 2, valek, ibid, vale,&
-                        cbid, k8b, crit, prec, nocmp(j),&
+            call tbliva(table, 2, valek, [ibid], vale,&
+                        [cbid], k8b, crit, prec, nocmp(j),&
                         k8b, ibid, zr(jcont+k-1), cbid, k8b,&
                         iret)
 466      continue

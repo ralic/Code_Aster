@@ -74,11 +74,11 @@ subroutine op0094()
         call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=0, nbret=nbval)
         nbval = -nbval
         call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale))
-        call tbajli(nomtrc, 8, noparr, ibid, zr(jvale),&
-                    c16b, k8b, 0)
+        call tbajli(nomtrc, 8, noparr, [ibid], zr(jvale),&
+                    [c16b], k8b, 0)
         xnbv = dble(( nbval - 8 ) / 4 )
-        call tbajli(nomtrc, 1, noparr(9), ibid, xnbv,&
-                    c16b, k8b, i)
+        call tbajli(nomtrc, 1, noparr(9), [ibid], [xnbv],&
+                    [c16b], k8b, i)
 110  end do
 !
     do 120 i = 1, nbhist
@@ -88,8 +88,8 @@ subroutine op0094()
         nbv = ( nbval - 8 ) / 4
         do 122 j = 1, nbv
             ind = jvale + 8 + 4*(j-1)
-            call tbajli(nomtrc, 4, noparr(10), ibid, zr(ind),&
-                        c16b, k8b, 0)
+            call tbajli(nomtrc, 4, noparr(10), [ibid], zr(ind),&
+                        [c16b], k8b, 0)
 122      continue
 120  end do
 !
@@ -104,8 +104,8 @@ subroutine op0094()
         if (ibid .eq. 0) vale(5) = 0.d0
         call getvr8('GRAIN_AUST', 'A', iocc=i, scal=vale(6), nbret=ibid)
         if (ibid .eq. 0) vale(6) = 0.d0
-        call tbajli(nomtrc, 6, noparr(14), ibid, vale,&
-                    c16b, k8b, 0)
+        call tbajli(nomtrc, 6, noparr(14), [ibid], vale,&
+                    [c16b], k8b, 0)
 200  end do
 !
     call jedema()

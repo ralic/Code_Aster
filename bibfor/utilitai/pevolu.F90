@@ -441,7 +441,7 @@ subroutine pevolu(resu, modele, nbocc)
                 zr(jvalr+ivalr+2)=zr(jbpct+3*(ii-1)+2)
                 zi(jvali+ivali)=ii
                 call tbajli(resu, nbpar, nompar, zi(jvali), zr(jvalr),&
-                            c16b, zk24(jvalk), 0)
+                           [c16b], zk24(jvalk), 0)
             end do
 !
 !     IMPRESSION DU VOLUME TOTAL CONCERNE PAR LE CALCUL :

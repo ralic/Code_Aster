@@ -224,9 +224,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = stpar
         vale(ir) = stpar
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
 !
     endif
 !
@@ -306,9 +306,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = pm
         vale(ir) = pm
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU'
@@ -325,9 +325,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = pb
         vale(ir) = pb
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU'
@@ -344,9 +344,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = pmpbo
         vale(ir) = pmpbe
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
     endif
 !
 ! --- POUR L'OPTION "SN"
@@ -426,9 +426,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = sno
         vale(ir) = sne
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
     endif
 !
     if (flexio .and. lsn) then
@@ -508,9 +508,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = sno
         vale(ir) = sne
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
     endif
 !
 ! --- POUR L'OPTION "FATIGUE"
@@ -691,9 +691,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(ir) = doo
         vale(ir) = doe
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
 !
         call rcevfu(cnoc, cfao, dco)
         call rcevfu(cnoc, cfae, dce)
@@ -705,9 +705,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         valo(3) = dco
         vale(3) = dce
         call tbajli(nomres, npar1, nopara, vaio, valo,&
-                    c16b, vako, 0)
+                    [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
-                    c16b, vake, 0)
+                    [c16b], vake, 0)
     endif
 !
     call jedema()

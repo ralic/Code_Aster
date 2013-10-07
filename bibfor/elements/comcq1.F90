@@ -36,7 +36,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
     integer :: codret, kpg, ksp, mod, imate
     real(kind=8) :: tempm, tempp, angmas(3), sigm(4), eps(4), deps(4), val(1)
     real(kind=8) :: vim(*), vip(*), sigp(4), dsde(6, 6), carcri(*), lc(1)
-    real(kind=8) :: instm, instp, ep, em, depsth, etg, depsm, wkout(1)
+    real(kind=8) :: instm, instp, ep, em, depsth(1), etg, depsm, wkout(1)
     character(len=8) :: typmod(2), nompar, materi
     integer :: codres(1)
 !
@@ -99,14 +99,14 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
             if (compor(1) .eq. 'ELAS') then
                 call verifg('RIGI', kpg, 3, 'T', imate,&
                             'ELAS', 1, depsth, iret)
-                sigp(1) = ep* (sigm(1)/em+deps(1)-depsth)
+                sigp(1) = ep* (sigm(1)/em+deps(1)-depsth(1))
                 dsde(1,1) = ep
                 dsde(2,2) = ep
                 else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1)&
             .eq.'VMIS_ISOT_TRAC')) then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            materi, 'ELAS', iret, epsth=depsth)
-                depsm=deps(1)-depsth
+                            materi, 'ELAS', iret, epsth=depsth(1))
+                depsm=deps(1)-depsth(1)
                 call nm1dis(fami, kpg, ksp, imate, em,&
                             ep, sigm(1), depsm, vim, option,&
                             compor, ' ', sigp(1), vip, etg)
@@ -116,8 +116,8 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 sigp(2)=0.d0
             else if (compor(1).eq.'VMIS_CINE_LINE') then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            materi, 'ELAS', iret, epsth=depsth)
-                depsm=deps(1)-depsth
+                            materi, 'ELAS', iret, epsth=depsth(1))
+                depsm=deps(1)-depsth(1)
                 call nm1dci(fami, kpg, ksp, imate, em,&
                             ep, sigm(1), depsm, vim, option,&
                             ' ', sigp(1), vip, ep)

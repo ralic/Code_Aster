@@ -275,7 +275,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
 30              continue
 !
                 call tbajli(nomtab, nbpar, nopara, valei, valer,&
-                            c16b, valek, ilign)
+                            [c16b], valek, ilign)
 40          continue
 !
 10      continue

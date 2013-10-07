@@ -79,8 +79,8 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 ! --- RECUPERATION DES SOUS-TABLES ASSOCIEES A L'INSTANT COURANT -------
 ! ======================================================================
     call tbextb(tabrev, 'V', tmprev, 1, 'INST',&
-                'EQ', ibid, temps, cbid, k8b,&
-                lprec, lcrit, iret)
+                'EQ', [ibid], [temps], [cbid], k8b,&
+                [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabrev
@@ -91,8 +91,8 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
     endif
     call tbextb(tabmdb, 'V', tmpmdb, 1, 'INST',&
-                'EQ', ibid, temps, cbid, k8b,&
-                lprec, lcrit, iret)
+                'EQ', [ibid], [temps], [cbid], k8b,&
+                [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabmdb

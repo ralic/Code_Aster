@@ -264,8 +264,8 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
 ! --- ON REMPLIT LA TABLE
     nbpara=ind1+nbcmp*2
-    call tbajli(resu, nbpara, zk16(jintk), nuord, zr(jintr),&
-                cbid, valk, 0)
+    call tbajli(resu, nbpara, zk16(jintk), [nuord], zr(jintr),&
+                [cbid], valk, 0)
     call detrsd('CHAM_ELEM_S', '&&PEECAL.CESOUT')
     call jedetr('&&PEECAL.INTE_R')
     call jedetr('&&PEECAL.INTE_K')

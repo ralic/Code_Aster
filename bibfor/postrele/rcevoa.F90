@@ -258,8 +258,8 @@ subroutine rcevoa(typtab, nommat)
             zi(jnock-1+i1) = zi(jnbcy-1+i1)
             zi(jnocl-1+i1) = zi(jnbcy-1+i1)
 !
-            call tbliva(table, 2, valek, ibid, vale,&
-                        cbid, k8b, crit, prec, valek(3),&
+            call tbliva(table, 2, valek, [ibid], vale,&
+                        [cbid], k8b, crit, prec, valek(3),&
                         k8b, ibid, sitt1, cbid, k8b,&
                         iret)
             if (iret .ne. 0) then
@@ -277,8 +277,8 @@ subroutine rcevoa(typtab, nommat)
                 table = zk8(jtabl-1+i2)
                 vale(2) = zr(jinst-1+i2)
 !
-                call tbliva(table, 2, valek, ibid, vale,&
-                            cbid, k8b, crit, prec, valek(3),&
+                call tbliva(table, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, valek(3),&
                             k8b, ibid, sitt2, cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
@@ -385,11 +385,11 @@ subroutine rcevoa(typtab, nommat)
         vale(2) = fatot
 !
         if (typtab .eq. 'VALE_MAX') then
-            call tbajli(nomres, nparm, noparm, ibid, vale,&
-                        cbid, k8b, 0)
+            call tbajli(nomres, nparm, noparm, [ibid], vale,&
+                        [cbid], k8b, 0)
         else
-            call tbajli(nomres, npard, nopard, ibid, vale,&
-                        cbid, k8b, 0)
+            call tbajli(nomres, npard, nopard, [ibid], vale,&
+                        [cbid], k8b, 0)
         endif
 !
 200  end do

@@ -170,8 +170,8 @@ subroutine rc32mu()
         do 12 j = 1, ncmp
 !
             do 14 k = 1, nbabsc
-                call tbliva(tbsig(i), 1, valek, ibid, zr(jabsc+k-1),&
-                            cbid, k8b, crit, prec, nocmp(j),&
+                call tbliva(tbsig(i), 1, valek, [ibid], zr(jabsc+k-1),&
+                            [cbid], k8b, crit, [prec], nocmp(j),&
                             k8b, ibid, zr(jcont+ k-1), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then

@@ -194,8 +194,8 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 !
         call getvid(motfac, 'OBSTACLE', iocc=i, scal=noecho(i, 9), nbret=n1)
 !
-        call tbliva(noecho(i, 9), 1, 'LIEU', ibid, r8bid,&
-                    cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
+        call tbliva(noecho(i, 9), 1, 'LIEU', [ibid], [r8bid],&
+                    [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE',&
                     k8typ, ibid, r8bid, cbid, refo,&
                     irett)
         ASSERT(irett.eq.0)

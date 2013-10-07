@@ -305,8 +305,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 endif
                 call getvr8(motfac, 'AMOR_TAN', iocc=ioc, scal=ctang, nbret=namtan)
                 call getvid(motfac, 'OBSTACLE', iocc=ioc, scal=noecho( iliai, 9), nbret=n1)
-                call tbliva(noecho(iliai, 9), 1, 'LIEU', ibid, r8bid,&
-                            cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
+                call tbliva(noecho(iliai, 9), 1, 'LIEU', [ibid], [r8bid],&
+                            [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE',&
                             k8typ, ibid, r8bid, cbid, refo,&
                             irett)
                 ASSERT(irett.eq.0)
@@ -344,8 +344,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     endif
                 endif
                 call getvid(motfac, 'OBSTACLE', iocc=ioc, scal=noecho( iliai, 9), nbret=n1)
-                call tbliva(noecho(iliai, 9), 1, 'LIEU', ibid, r8bid,&
-                            cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
+                call tbliva(noecho(iliai, 9), 1, 'LIEU', [ibid], [r8bid],&
+                            [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE',&
                             k8typ, ibid, r8bid, cbid, refo,&
                             irett)
                 ASSERT(irett.eq.0)

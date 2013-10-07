@@ -127,8 +127,8 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
 !
 !     --- OBSTACLE DISCRETISE ---
     else
-        call tbliva(typeob, 1, 'LIEU', ibid, r8bid,&
-                    cbid, 'DEFIOBST', kbid, r8bid, 'FONCTION',&
+        call tbliva(typeob, 1, 'LIEU', [ibid], [r8bid],&
+                    [cbid], 'DEFIOBST', kbid, [r8bid], 'FONCTION',&
                     k8typ, ibid, r8bid, cbid, nomfon,&
                     irett)
         ASSERT(irett.eq.0)

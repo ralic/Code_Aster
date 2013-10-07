@@ -80,7 +80,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     logical :: vecteu, matric
     integer :: dimklv, kp, kk, i, j, k
     real(kind=8) :: eps(7), deps(7), fg(14), sigp(7), sigm(7), vip(9)
-    real(kind=8) :: e, nu, g, phiy, phiz, xls2, l346p(28), epsthf, epsthd
+    real(kind=8) :: e, nu, g, phiy, phiz, xls2, l346p(28), epsthf(1), epsthd(1)
     real(kind=8) :: co(3), aa, xiy, xiz, alfay, alfaz, xjx, xjg, loi346(28)
     real(kind=8) :: valres(2)
 !
@@ -203,9 +203,9 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
 211          continue
             sigm(i) = contm(nc*(kp-1)+i)*e/em
 210      continue
-        if ((epsthd.ne.0.d0) .and. (itemp.ne.0)) then
-            f = epsthf
-            df= epsthd
+        if ((epsthd(1).ne.0.d0) .and. (itemp.ne.0)) then
+            f = epsthf(1)
+            df= epsthd(1)
             eps(1) = eps(1)- f
             deps(1)=deps(1)-df
         endif

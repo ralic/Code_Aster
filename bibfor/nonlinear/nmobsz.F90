@@ -224,7 +224,7 @@ subroutine nmobsz(sdobse, nomtab, titobs, nomcha, typcha,&
 ! --- AJOUT DANS LA TABLE
 !
     call tbajli(nomtab, npar, noparz, tabi, tabr,&
-                c16bid, tabk, 0)
+                [c16bid], tabk, 0)
 !
 ! --- OBSERVATION SUIVANTE
 !

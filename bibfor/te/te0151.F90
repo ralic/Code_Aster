@@ -80,7 +80,7 @@ subroutine te0151(option, nomte)
     character(len=8) :: nompar, nomres(nbres), nomail, famil, poum
     character(len=16) :: ch16
     real(kind=8) :: ul(14), ug(14), pgl(3, 3), klc(14, 14), klv(105)
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe
+    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe(1)
     integer :: iadzi, iazk24, kpg, spt, nklv
 !     ------------------------------------------------------------------
     data nomres / 'E' , 'NU' , 'RHO' /
@@ -301,8 +301,8 @@ subroutine te0151(option, nomte)
         if = 1
         call ptenpo(nc*2, ul, klc, zr(jende), itype,&
                     if)
-        if (epsthe .ne. zero) then
-            call ptenth(ul, xl, epsthe, 2*nc, klc,&
+        if (epsthe(1) .ne. zero) then
+            call ptenth(ul, xl, epsthe(1), 2*nc, klc,&
                         itype, enerth)
             zr(jende) = zr(jende) - enerth
         endif

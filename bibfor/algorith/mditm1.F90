@@ -316,8 +316,8 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
             else
                 zi(jtypch+ic-1) = 3
                 nomobj = noecho(ic,9)
-                call tbliva(nomobj, 1, 'LIEU', ibid, r8bid,&
-                            cbid, 'DEFIOBST', kbid, r8bid, 'FONCTION',&
+                call tbliva(nomobj, 1, 'LIEU', [ibid], [r8bid],&
+                            [cbid], 'DEFIOBST', kbid, [r8bid], 'FONCTION',&
                             k8typ, ibid, r8bid, cbid, nomfon,&
                             irett)
                 ASSERT(irett.eq.0)
@@ -333,8 +333,8 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
         do 80 ic = 1, nbnl
             if (zi(jtypch+ic-1) .eq. 3) then
                 nomobj = noecho(ic,9)
-                call tbliva(nomobj, 1, 'LIEU', ibid, r8bid,&
-                            cbid, 'DEFIOBST', kbid, r8bid, 'FONCTION',&
+                call tbliva(nomobj, 1, 'LIEU', [ibid], [r8bid],&
+                            [cbid], 'DEFIOBST', kbid, [r8bid], 'FONCTION',&
                             k8typ, ibid, r8bid, cbid, nomfon,&
                             irett)
                 ASSERT(irett.eq.0)

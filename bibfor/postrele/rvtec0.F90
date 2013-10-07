@@ -394,7 +394,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
 224  continue
 !
     call tbajli(nomtab, nbpar, nopara, valei, valer,&
-                c16b, valek, ilign)
+                [c16b], valek, ilign)
 !
 222  continue
 !

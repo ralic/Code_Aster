@@ -406,23 +406,23 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             call dcopy(36, dsidep, 1, vr(1+6+6+3+nbvari), 1)
         endif
         vr(nbpar)=0
-        call tbajli(table, nbpar, nompar, 0, vr,&
-                    cbid, k8b, 0)
+        call tbajli(table, nbpar, nompar, [0], vr,&
+                    [cbid], k8b, 0)
     else
         vr(1)=instam
         vk8(1)='EPSI'
         do 551 i = 1, ncmp
             vr(2)=epsm(i)
             vk8(2)=nomeps(i)
-            call tbajli(table, nbpar, nompar, 0, vr,&
-                        cbid, vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr,&
+                        [cbid], vk8, 0)
 551      continue
         vk8(1)='SIGM'
         do 552 i = 1, ncmp
             vr(2)=sigm(i)
             vk8(2)=nomsig(i)
-            call tbajli(table, nbpar, nompar, 0, vr,&
-                        cbid, vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr,&
+                        [cbid], vk8, 0)
 552      continue
         vk8(1)='VARI'
         do 553 i = 1, nbvita
@@ -430,8 +430,8 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             vk8(2)(1:1)='V'
             call codent(i, 'G', vk8(2)(2:8))
             nomvi(i)=vk8(2)
-            call tbajli(table, nbpar, nompar, 0, vr,&
-                        cbid, vk8, 0)
+            call tbajli(table, nbpar, nompar, [0], vr,&
+                        [cbid], vk8, 0)
 553      continue
     endif
 !     ----------------------------------------

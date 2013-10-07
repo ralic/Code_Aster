@@ -78,8 +78,8 @@ subroutine rc32r8(nomres, mater, symax)
 !
         call rcmcrt(symax, valer(3), valer(4), valer(5))
 !
-        call tbajli(nomres, npar1, nopar1, ibid, valer,&
-                    c16b, valek, 0)
+        call tbajli(nomres, npar1, nopar1, [ibid], valer,&
+                    [c16b], valek, 0)
 !
 10  end do
 !

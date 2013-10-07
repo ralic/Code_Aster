@@ -308,7 +308,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             zr(ipr+3) = zr(ik3+j+(i-1)*nnoff-1)
             zr(ipr+4) = zr(igl+j+(i-1)*nnoff-1)
             call tbajli('T4', nbcol, zk16(inopr), zi(ipi), zr(ipr),&
-                        cbid, k8b, 0)
+                        [cbid], k8b, 0)
 42      continue
 40  continue
 !
@@ -323,7 +323,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         zr(ipr+3) = zr(ikm3+j-1)
         zr(ipr+4) = zr(iglm+j-1+nnoff*lonvec)
         call tbajli('T4', nbcol, zk16(inopr), zi(ipi), zr(ipr),&
-                    cbid, k8b, 0)
+                    [cbid], k8b, 0)
 50  continue
 !
     call copisd('TABLE', 'G', 'T4', latabl)

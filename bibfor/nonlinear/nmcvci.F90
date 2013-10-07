@@ -121,7 +121,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     typch(1)='R'
     typch(2)='R'
     call vtcmbl(2, typch, coefr, typch, l2cnci,&
-                typch, cncine)
+                typch(1), cncine)
 !
 !     MENAGE :
 !     ---------

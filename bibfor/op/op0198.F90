@@ -163,8 +163,8 @@ subroutine op0198()
             rnom(6) = k1bcp
             rnom(7) = tempb
             knom = zk32(jnogn+ik1d-1)
-            call tbajli(result, 8, nomtab, ibid, rnom,&
-                        c16b, knom, 0)
+            call tbajli(result, 8, nomtab, [ibid], rnom,&
+                        [c16b], knom, 0)
 ! ======================================================================
 ! --- DESTRUCTION DES CHAMPS DE CONTRAINTES ----------------------------
 ! ======================================================================

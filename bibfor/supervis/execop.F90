@@ -90,7 +90,7 @@ subroutine execop()
 !
 ! --- ON AJUSTE LE RELIQUAT CAR IL A DIMINUE
 !
-        call utptme(1, 'RLQ_MEM ', (rval(3)-rval(6)), iret)
+        call utptme('RLQ_MEM ', rval(3) - rval(6), iret)
     endif
     if (rval(2)-rval(5) .ge. 0) then
         if ((rval(2)-rval(5)) .gt. rval(1)) then

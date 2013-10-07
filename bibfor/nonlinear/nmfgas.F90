@@ -88,7 +88,7 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
 ! *************** DECLARATION DES VARIABLES LOCALES ********************
 !
     real(kind=8) :: ul(12)
-    real(kind=8) :: fgrand, depgrd, rigela, depthe, expon
+    real(kind=8) :: fgrand, depgrd, rigela, depthe(1), expon
     real(kind=8) :: preci, ba, bb, fa, correc, xrig, sigp, tabs
     real(kind=8) :: e, em, tempm, tempp
     real(kind=8) :: nu, num, irram, irrap
@@ -161,7 +161,7 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
                 fgrand)
     pp(3) = pm(3)+fgrand
 !
-    depgrd = theta * (fgrand + depthe)
+    depgrd = theta * (fgrand + depthe(1))
 !
 !JMP  CETTE FORMULE NE FONCTIONNE QUE POUR THETA=1 OU 0.5
     sige=e/em*sigm+(1.d0-theta)*(1.d0-e/em)*sigm+e*depsi-e*depgrd

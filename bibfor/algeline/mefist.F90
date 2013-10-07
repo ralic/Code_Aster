@@ -576,8 +576,8 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         call mefsma(zr(imatm), zr(imata), zr(imatr), nugene, masgen,&
                     amogen, riggen)
 !
-        call tbajli(nomt19, nbpara, nopara, nv, vit0,&
-                    c16b, valek, 0)
+        call tbajli(nomt19, nbpara, nopara, [nv], [vit0],&
+                    [c16b], valek, 0)
 !
 ! --- FIN DE BOUCLE SUR LES VITESSES D ECOULEMENT
 100  end do

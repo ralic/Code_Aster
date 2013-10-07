@@ -96,7 +96,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
             vale(1)=zr(jfon-1+4*(i-1)+1)
             vale(2)=zr(jfon-1+4*(i-1)+2)
             call tbajli(tabcoo, npara, nopar2, vali, vale,&
-                        c16b, k8bid, 0)
+                        [c16b], k8bid, 0)
 100      continue
     else if (ndim.eq.3) then
         npara = 6
@@ -117,7 +117,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
             vale(3)=zr(jfon-1+4*(i-1)+2)
             vale(4)=zr(jfon-1+4*(i-1)+3)
             call tbajli(tabcoo, npara, nopar3, vali, vale,&
-                        c16b, k8bid, 0)
+                        [c16b], k8bid, 0)
 200      continue
     else
         ASSERT(.false.)
@@ -130,8 +130,8 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
     call ltnotb(fiss, 'NB_FOND_FISS', tabnb)
     call tbcrsd(tabnb, 'G')
     call tbajpa(tabnb, 1, 'NOMBRE', 'I')
-    call tbajli(tabnb, 1, 'NOMBRE', nbfond, r8bid,&
-                c16b, k8bid, 0)
+    call tbajli(tabnb, 1, 'NOMBRE', [nbfond], [r8bid],&
+                [c16b], k8bid, 0)
 !
 999  continue
     call jedema()

@@ -82,7 +82,7 @@ subroutine te0247(option, nomte)
     real(kind=8) :: zero, deux
     real(kind=8) :: xfl, xfly, xflz, ang
     real(kind=8) :: effnom, tempm, tempp
-    real(kind=8) :: irram, irrap, epsthe
+    real(kind=8) :: irram, irrap, epsthe(1)
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
     logical :: reactu, matric, vecteu
 !
@@ -247,7 +247,7 @@ subroutine te0247(option, nomte)
             endif
             call nmpoel(nomte, npg, klv, xl, nno,&
                         nc, pgl, pgl1, pgl2, zr(ideplp),&
-                        epsthe, e, em, zr(icontm), fl,&
+                        epsthe(1), e, em, zr(icontm), fl,&
                         zr( icontp), angs2, rad)
         endif
 !
@@ -300,7 +300,7 @@ subroutine te0247(option, nomte)
 !
         call nmpoel(nomte, npg, klv, xl, nno,&
                     nc, pgl, pgl1, pgl2, zr(ideplp),&
-                    epsthe, e, em, zr(icontm), fl,&
+                    epsthe(1), e, em, zr(icontm), fl,&
                     zr(icontp), angs2, rad)
 !
 !-- CALCUL DE LA MATRICE TANGENTE ET CORRECTION DES TERMES D'ALLONGEMENT

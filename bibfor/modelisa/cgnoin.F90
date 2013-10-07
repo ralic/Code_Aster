@@ -111,8 +111,8 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !       SOIENT SUREMENT RETENUS, IL FAUT UNE PETITE TOLERANCE :
 !       0.01*AR_MIN :
         call ltnotb(noma2, 'CARA_GEOM', tablg)
-        call tbliva(tablg, 0, ' ', ibid, r8b,&
-                    c16b, k8bid, k8bid, r8b, 'AR_MIN',&
+        call tbliva(tablg, 0, ' ', [ibid], [r8b],&
+                    [c16b], k8bid, k8bid, [r8b], 'AR_MIN',&
                     k8bid, ibid, armin, c16b, k8bid,&
                     iret)
         ASSERT(iret.eq.0)

@@ -50,9 +50,9 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 #include "asterfort/sdchgd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbcmb
-    real(kind=8) :: const(*)
-    character(len=*) :: typcst(*), typech(*), nomch(*), typres, chpres
+    integer, intent(in) :: nbcmb
+    real(kind=8), intent(in) :: const(*)
+    character(len=*), intent(in) :: typcst(*), typech(*), nomch(*), typres, chpres
 !
 !
 ! DECLARATION VARIABLES LOCALES

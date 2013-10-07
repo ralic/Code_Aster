@@ -95,8 +95,8 @@ subroutine peaire(resu, modele, nbocc)
                 call peair1(modele, nbb, zi(iadgma), aire, long)
                 valpar(1) = aire
                 valpar(2) = long
-                call tbajli(resu, nbparr, noparr, ibid, valpar,&
-                            c16b, zk24(jgb+igb-1), 0)
+                call tbajli(resu, nbparr, noparr, [ibid], valpar,&
+                            [c16b], zk24(jgb+igb-1), 0)
 40          continue
             call jedetr('&&PEAIRE.GROUP_NO')
         endif

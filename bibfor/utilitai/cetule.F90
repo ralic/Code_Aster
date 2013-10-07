@@ -104,8 +104,8 @@ subroutine cetule(model0, tbgrca, codret)
 !
         do 30 , iaux = 1 , nbmcle
 !
-        call tbliva(table, 1, 'GRANDEUR', ibid, rbid,&
-                    cbid, nomgrd( iaux), kbid, rbid, 'VALE',&
+        call tbliva(table, 1, 'GRANDEUR', [ibid], [rbid],&
+                    [cbid], nomgrd( iaux), kbid, [rbid], 'VALE',&
                     ctype, vali, valeur, valc, valk,&
                     iret)
 !

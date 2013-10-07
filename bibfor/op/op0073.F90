@@ -123,8 +123,8 @@ subroutine op0073()
     endif
 !
 ! --- INSERTION EFFECTIVE DE LA LIGNE DANS LA TABLE
-    call tbajli(nomres, nbinfo, nopara, ibid, r8bid,&
-                cbid, tabk, 0)
+    call tbajli(nomres, nbinfo, nopara, [ibid], [r8bid],&
+                [cbid], tabk, 0)
 !
     call jedema()
 end subroutine

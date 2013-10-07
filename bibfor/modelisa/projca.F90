@@ -252,8 +252,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 ! .....
         call jenuno(jexnum(nomama, numail), voisin(1))
         call jenuno(jexnum(nonoma, noebe), voisin(2))
-        call tbajli(tablca, 4, param, iproj, excent,&
-                    cbid, voisin(1), ideca+ inoca)
+        call tbajli(tablca, 4, param, [iproj], [excent],&
+                    [cbid], voisin(1), ideca+ inoca)
 !
 100  end do
 !

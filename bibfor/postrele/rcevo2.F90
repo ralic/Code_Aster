@@ -121,8 +121,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 tabfle = '&&RCEVO2.SIGM_TH'
                 tabpre = '&&RCEVO2.RESU_PR'
                 call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                            'EQ', ibid, r8b, cbid, kinti,&
-                            r8b, k8b, iret)
+                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                            [r8b], k8b, iret)
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
                     valk(2) = tabl0
@@ -134,8 +134,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 endif
                 if (flexio) then
                     call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
-                                'EQ', ibid, r8b, cbid, kinti,&
-                                r8b, k8b, iret)
+                                'EQ', [ibid], [r8b], [cbid], kinti,&
+                                [r8b], k8b, iret)
                     if (iret .eq. 10) then
                         valk(1) = 'INTITULE'
                         valk(2) = tabfl0
@@ -148,8 +148,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 endif
                 if (lrocht) then
                     call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                                'EQ', ibid, r8b, cbid, kinti,&
-                                r8b, k8b, iret)
+                                'EQ', [ibid], [r8b], [cbid], kinti,&
+                                [r8b], k8b, iret)
                     if (iret .eq. 10) then
                         valk(1) = 'INTITULE'
                         valk(2) = tabpr0
@@ -191,8 +191,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             tabfle = '&&RCEVO2.SIGM_TH'
             tabpre = '&&RCEVO2.RESU_PR'
             call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                        'EQ', ibid, r8b, cbid, kinti,&
-                        r8b, k8b, iret)
+                        'EQ', [ibid], [r8b], [cbid], kinti,&
+                        [r8b], k8b, iret)
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
                 valk(2) = tabl0
@@ -204,8 +204,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             endif
             if (flexio) then
                 call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
-                            'EQ', ibid, r8b, cbid, kinti,&
-                            r8b, k8b, iret)
+                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                            [r8b], k8b, iret)
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
                     valk(2) = tabfl0
@@ -218,8 +218,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             endif
             if (lrocht) then
                 call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                            'EQ', ibid, r8b, cbid, kinti,&
-                            r8b, k8b, iret)
+                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                            [r8b], k8b, iret)
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
                     valk(2) = tabpr0
@@ -341,8 +341,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         tabfle = '&&RCEVO2.SIGM_TH'
         tabpre = '&&RCEVO2.RESU_PR'
         call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                    'EQ', ibid, r8b, cbid, kinti,&
-                    r8b, k8b, iret)
+                    'EQ', [ibid], [r8b], [cbid], kinti,&
+                    [r8b], k8b, iret)
         if (iret .eq. 10) then
             valk(1) = 'INTITULE'
             valk(2) = tabl0
@@ -354,8 +354,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         endif
         if (flexii) then
             call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
-                        'EQ', ibid, r8b, cbid, kinti,&
-                        r8b, k8b, iret)
+                        'EQ', [ibid], [r8b], [cbid], kinti,&
+                        [r8b], k8b, iret)
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
                 valk(2) = tabfl0
@@ -368,8 +368,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         endif
         if (lrocht) then
             call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                        'EQ', ibid, r8b, cbid, kinti,&
-                        r8b, k8b, iret)
+                        'EQ', [ibid], [r8b], [cbid], kinti,&
+                        [r8b], k8b, iret)
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
                 valk(2) = tabpr0
@@ -430,8 +430,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             do 106 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, ibid, vale,&
-                            cbid, k8b, crit, prec, nocmp(j),&
+                call tbliva(table, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
                             k8b, ibid, zr( jcont+k-1), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
@@ -444,8 +444,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 endif
 !
                 if (flexii) then
-                    call tbliva(tabfle, 2, valek, ibid, vale,&
-                                cbid, k8b, crit, prec, nocmp(j),&
+                    call tbliva(tabfle, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
                                 k8b, ibid, zr(jcofl+k-1), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then
@@ -459,8 +459,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 endif
 !
                 if (lrocht) then
-                    call tbliva(tabpre, 2, valek, ibid, vale,&
-                                cbid, k8b, crit, prec, nocmp(j),&
+                    call tbliva(tabpre, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
                                 k8b, ibid, zr(jcopr+k-1), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then

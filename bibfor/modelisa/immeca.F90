@@ -516,8 +516,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         call jenuno(jexnum(nomama, numail), voisin(1))
         ASSERT(noebec.ne.0)
         call jenuno(jexnum(nonoma, noebec), voisin(2))
-        call tbajli(tablca, 3, param, immer, rbid,&
-                    cbid, voisin(1), ideca+ inoca)
+        call tbajli(tablca, 3, param, [immer], [rbid],&
+                    [cbid], voisin(1), ideca+ inoca)
 !
 100  end do
 !

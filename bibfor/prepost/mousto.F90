@@ -293,12 +293,12 @@ subroutine mousto(guidag, dimtub, voltub, tubuse, dimobs,&
         call usobce(dimobs, obsuse, rcarte, resu, ns,&
                     paruob, typuob)
     else
-        call tbliva(obcont, 1, 'LIEU', ibid, r8b,&
-                    c16b, 'DEFIOBST', k8b, r8b, 'TYPE',&
+        call tbliva(obcont, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], 'DEFIOBST', k8b, [r8b], 'TYPE',&
                     k8typ, ibid, r8b, c16b, refo,&
                     irett)
-        call tbliva(obcont, 1, 'LIEU', ibid, r8b,&
-                    c16b, 'DEFIOBST', k8b, r8b, 'FONCTION',&
+        call tbliva(obcont, 1, 'LIEU', [ibid], [r8b],&
+                    [c16b], 'DEFIOBST', k8b, [r8b], 'FONCTION',&
                     k8typ, ibid, r8b, c16b, nomf,&
                     iret2)
         ASSERT(irett.eq.0.and.iret2.eq.0)

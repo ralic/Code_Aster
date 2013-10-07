@@ -61,7 +61,7 @@ subroutine bsthco(nomte, bsigth, indith)
     real(kind=8) :: epsth(5), sigmth(5), bsigt1(42)
     real(kind=8) :: ksi3s2, kappa, matc(5, 5)
     real(kind=8) :: coef, deux, epais, eptot, quatre, trois, un, valpar, zero
-    real(kind=8) :: zic, zmin, epsthe
+    real(kind=8) :: zic, zmin, epsthe(1)
     integer :: icodre(1)
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
@@ -313,8 +313,8 @@ subroutine bsthco(nomte, bsigth, indith)
                 call moytem('RIGI', inte, 3, '+', valpar,&
                             iret)
 !
-                epsth(1) = epsthe
-                epsth(2) = epsthe
+                epsth(1) = epsthe(1)
+                epsth(2) = epsthe(1)
 !
 ! ---       CALCUL DE LA MATRICE DE COMPORTEMENT  MATC(5,5) :
 !           ----------------------------------------------

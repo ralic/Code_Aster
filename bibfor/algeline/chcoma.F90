@@ -95,24 +95,24 @@ subroutine chcoma(tablez, nomaou)
         iret=0
     else
         call tbexp2(table, 'MAILLAGE')
-        call tbliva(table, 0, k8b, ibid, r8b,&
-                    c16b, k8b, k8b, r8b, 'MAILLAGE',&
+        call tbliva(table, 0, k8b, [ibid], [r8b],&
+                    [c16b], k8b, k8b, [r8b], 'MAILLAGE',&
                     k8b, ibid, r8b, c16b, noma,&
                     iret)
     endif
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
     endif
-    call tbliva(table, 1, 'LIEU', ibid, r8b,&
-                c16b, noma, k8b, r8b, 'CDG_Y',&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], noma, k8b, [r8b], 'CDG_Y',&
                 k8b, ibid, yg, c16b, k8b,&
                 iret)
     print*,'IRET ',iret
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
     endif
-    call tbliva(table, 1, 'LIEU', ibid, r8b,&
-                c16b, noma, k8b, r8b, 'CDG_Z',&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], noma, k8b, [r8b], 'CDG_Z',&
                 k8b, ibid, zg, c16b, k8b,&
                 iret)
     if (iret .ne. 0) then
@@ -122,8 +122,8 @@ subroutine chcoma(tablez, nomaou)
 ! --- RECUPERATION DANS LA TABLE DE L'ANGLE FAISANT PASSER DU REPERE
 ! --- PRINCIPAL D'INERTIE AU REPERE GLOBAL :
 !     ------------------------------------
-    call tbliva(table, 1, 'LIEU', ibid, r8b,&
-                c16b, noma, k8b, r8b, 'ALPHA',&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
+                [c16b], noma, k8b, [r8b], 'ALPHA',&
                 k8b, ibid, alpha, c16b, k8b,&
                 iret)
     if (iret .ne. 0) then

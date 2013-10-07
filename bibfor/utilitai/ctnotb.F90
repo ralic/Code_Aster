@@ -242,11 +242,11 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 !               ON AJOUTE LA LIGNE A LA TABLE
                 if (resu .eq. ' ') then
-                    call tbajli(nomtb, nbpara, zk16(jparak), ibid, zr(jr),&
-                                cbid, zk16(jk), 0)
+                    call tbajli(nomtb, nbpara, zk16(jparak), [ibid], zr(jr),&
+                                [cbid], zk16(jk), 0)
                 else
                     call tbajli(nomtb, nbpara, zk16(jparak), zi(ji), zr( jr),&
-                                cbid, zk16(jk), 0)
+                                [cbid], zk16(jk), 0)
                 endif
 !
 110          continue
