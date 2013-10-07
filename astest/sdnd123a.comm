@@ -37,13 +37,13 @@ CARA_ELE =AFFE_CARA_ELEM(  MODELE=MO,
                                    _F(  NOEUD = ('N2',  'N3',),
                                         CARA = 'K_T_D_N',  VALE = (0.,0.,0.,)),
                                    _F(  GROUP_MA = 'RAID1',  CARA = 'K_T_D_L',
-                                        VALE = (1., 0., 0.,),  REPERE = 'GLOBAL'),
+                                        VALE = (0., 0., 1.,),  REPERE = 'GLOBAL'),
                                    _F(  GROUP_MA = 'RAID2',  CARA = 'K_T_D_L',
-                                        VALE = (beta, 0., 0.,),  REPERE = 'GLOBAL'),)
+                                        VALE = (0., 0., beta,),  REPERE = 'GLOBAL'),)
                          )
 
 CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(_F(  NOEUD='N1', DX = 0., DY = 0., DZ = 0.,),
-                                          _F(  GROUP_NO='TOUT', DY = 0., DZ = 0.,),)
+                                          _F(  GROUP_NO='TOUT', DY = 0., DX = 0.,),)
                   )
 
 Ke=CALC_MATR_ELEM(OPTION='RIGI_MECA',
@@ -91,7 +91,7 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
                               DIR_EVOLUTION=1,),
                  CHOC=(_F(NOEUD='N2',
                           OBSTACLE = 'BI_PLAN',
-                          NOM_CMP='DX',
+                          NOM_CMP='DZ',
                           JEU=1.,
                           RIGI_NOR=30.,
                           PARA_REGUL=0.005,),
@@ -101,11 +101,28 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
 
 #IMPR_TABLE(TABLE=MNL)
 
+MNL = MODE_NON_LINE(reuse=MNL,
+                 MATR_RIGI=K,
+                 MATR_MASS=M,
+                 RESOLUTION=_F(METHODE='EHMAN',
+                            NB_HARM_LINE=hu,
+                            NB_HARM_NONL=hf,
+                            NB_PAS_MAN=ndiscr,
+                            NB_BRANCHE=1,
+                            NB_ORDRE_MAN=20,
+                            PREC_MAN=1.E-14,  # conseil PREC_MAN << NEWTON
+                            PREC_NEWTON=1.E-09,
+                            ITER_NEWTON_MAXI=15),
+                 ETAT_INIT=_F(MODE_NON_LINE = MNL,NUME_ORDRE = 12,
+                              DIR_EVOLUTION=1,),
+                 INFO=1,
+                 )
+
+#IMPR_TABLE(TABLE=MNL)
+
 TTTS = CALC_STABILITE(MODE_NON_LINE=MNL, #PRECISION = 1.e-3,
                      FILTRE=_F( NUME_ORDRE = (9,10,11,),),
                    )
-
-#IMPR_TABLE(TABLE=TREP)
 
 TTTS =CALC_TABLE(reuse=TTTS,TABLE=TTTS,
                  ACTION=(
