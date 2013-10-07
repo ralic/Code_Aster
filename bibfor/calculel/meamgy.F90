@@ -1,4 +1,5 @@
-subroutine meamgy(modele, mate, cara, compor, matel)
+subroutine meamgy(modele, mate, cara, compor, matel,&
+                  nchar, lchar)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,10 +30,12 @@ subroutine meamgy(modele, mate, cara, compor, matel)
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: modele, cara
+#include "asterfort/exisd.h"
+    character(len=8) :: modele, cara, lchar(*)
     character(len=19) :: matel
     character(len=24) :: mate
     character(len=*) :: compor
+    integer :: nchar
 ! ----------------------------------------------------------------------
 !     CALCUL DES MATRICES ELEMENTAIRES D'AMORTISSEMENT GYROSCOPIQUE
 !     LES NOMS QUI SUIVENT SONT LES PREFIXES UTILISATEUR K8:
@@ -48,17 +51,19 @@ subroutine meamgy(modele, mate, cara, compor, matel)
 !     VARIABLES LOCALES:
 !     ------------------
     logical :: exicar
-    character(len=8) :: lpain(10), lpaout(1)
+    character(len=8) :: lpain(12), lpaout(1)
     character(len=16) :: option
-    character(len=24) :: chgeom, chcara(18), lchin(10), lchout(10)
-    character(len=24) :: ligrmo
+    character(len=19) :: chvarc
+    character(len=24) :: chgeom, chcara(18), lchin(12), lchout(1)
+    character(len=24) :: ligrmo, chrota
+    data chvarc /'&&MEAMGY.CHVARC'/
+    integer :: icha, iret, nbro
 !
 !
     call jemarq()
 !
     ASSERT(modele.ne.' ')
-!      ASSERT(MATE.NE.' ')
-    ASSERT(cara.ne.' ')
+    ASSERT(mate.ne.' ')
 !
     call jedetr(matel//'.RERR')
     call jedetr(matel//'.RELR')
@@ -69,12 +74,18 @@ subroutine meamgy(modele, mate, cara, compor, matel)
     call megeom(modele, chgeom)
     ASSERT(chgeom.ne.' ')
 !
+    nbro = 0
+    do 10 icha = 1,nchar
+        call exisd('CHAMP_GD',lchar(icha)//'.CHME.ROTAT',iret)
+        if (iret.ne.0) then
+          chrota = lchar(icha)//'.CHME.ROTAT.DESC'
+          nbro = nbro + 1
+        end if
+ 10 continue
 !
 !    CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(cara, exicar, chcara)
-    if (.not.exicar) then
-        call utmess('F', 'CALCULEL2_94')
-    endif
+!    if (.not.exicar) call u2mess('F', 'CALCULEL2_94')
 !
 !
     lpaout(1) = 'PMATUNS'
@@ -100,11 +111,14 @@ subroutine meamgy(modele, mate, cara, compor, matel)
     lchin(9) = chcara(17)
     lpain(10) = 'PCOMPOR'
     lchin(10) = compor
+    lpain(11) = 'PROTATR'
+    lchin(11) = chrota
+    lpain(12) = 'PVARCPR'
+    lchin(12) = chvarc
     ligrmo = modele//'.MODELE'
     option = 'MECA_GYRO'
 !
-!
-    call calcul('S', option, ligrmo, 10, lchin,&
+    call calcul('S', option, ligrmo, 12, lchin,&
                 lpain, 1, lchout, lpaout, 'G',&
                 'OUI')
 !

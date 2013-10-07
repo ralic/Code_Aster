@@ -81,14 +81,14 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          ),
 
          b_meca_gyro = BLOC( condition = "OPTION=='MECA_GYRO'",
-           CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
-           CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
+           CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+           CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
          ),
 
          b_rigi_gyro = BLOC( condition = "OPTION=='RIGI_GYRO'",
-           CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
-           CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
+           CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+           CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
          ),
 

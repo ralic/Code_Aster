@@ -127,10 +127,12 @@ subroutine op0009()
                     exitim, time, compor, matel)
 !
     else if (suropt.eq.'MECA_GYRO') then
-        call meamgy(modele, mate, cara, compor, matel)
+        call meamgy(modele, mate, cara, compor, matel,&
+                    ncha, zk8(icha))
 !
     else if (suropt.eq.'RIGI_GYRO') then
-        call merigy(modele, mate, cara, compor, matel)
+        call merigy(modele, mate, cara, compor, matel,&
+                    ncha, zk8(icha))
 !
     else if (suropt.eq.'MASS_MECA') then
 !        COMPOR = ' '

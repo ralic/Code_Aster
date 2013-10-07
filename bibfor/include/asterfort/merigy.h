@@ -16,11 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merigy(modele, mate, cara, compor, matel)
+    subroutine merigy(modele, mate, cara, compor, matel,&
+                      nchar, lchar)
         character(len=8) :: modele
         character(len=24) :: mate
         character(len=8) :: cara
         character(len=*) :: compor
         character(len=19) :: matel
+        integer :: nchar
+        character(len=8) :: lchar(*)
     end subroutine merigy
 end interface
