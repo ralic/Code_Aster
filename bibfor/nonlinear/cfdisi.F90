@@ -134,6 +134,10 @@ function cfdisi(deficz, questz)
         call jeveuo(paraci, 'L', jparci)
         cfdisi = zi(jparci+19-1)
 !
+    else if (questi.eq.'COEF_ADAPT') then
+        call jeveuo(paraci, 'L', jparci)
+        cfdisi = zi(jparci+20-1)
+!
     else if (questi.eq.'EXIS_XFEM_CZM') then
         call jeveuo(paraci, 'L', jparci)
         cfdisi = zi(jparci+21-1)

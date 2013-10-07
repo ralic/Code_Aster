@@ -20,21 +20,21 @@ interface
                       sddisc, sddyna, sdimpr, defico, resoco,&
                       valinc, solalg, sdtime, sdstat, mmcvca,&
                       instan)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=24) :: numedd
-        integer :: iterat
-        integer :: numins
-        character(len=19) :: sddisc
-        character(len=19) :: sddyna
-        character(len=24) :: sdimpr
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=24) :: sdtime
-        character(len=24) :: sdstat
-        logical :: mmcvca
+        character(len=8), intent(in) :: noma
+        character(len=8), intent(in) :: nomo
+        character(len=24), intent(in) :: numedd
+        integer, intent(in) :: iterat
+        integer, intent(in) :: numins
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: sdimpr
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=19), intent(in) :: valinc(*)
+        character(len=19), intent(in) :: solalg(*)
+        character(len=24), intent(in) :: sdtime
+        character(len=24), intent(in) :: sdstat
+        logical, intent(out) :: mmcvca
         real(kind=8) :: instan
     end subroutine mmbclc
 end interface

@@ -17,9 +17,9 @@
 !
 interface
     subroutine cfmxme(numedd, sddyna, defico, resoco)
-        character(len=24) :: numedd
-        character(len=19) :: sddyna
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        character(len=24), intent(in) :: numedd
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
     end subroutine cfmxme
 end interface

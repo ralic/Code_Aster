@@ -3,6 +3,22 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
                   numins, iterat, defico, resoco, valinc,&
                   solalg, instan)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/cfconv.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mm_cycl_print.h"
+#include "asterfort/mmbclc.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,16 +37,6 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/cfconv.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmbclc.h"
-#include "asterfort/nmcrel.h"
-#include "asterfort/nmimck.h"
-#include "asterfort/nmimcr.h"
     integer :: fonact(*)
     integer :: iterat, numins
     character(len=19) :: sddisc, sddyna
@@ -41,13 +47,13 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
     character(len=19) :: solalg(*), valinc(*)
     real(kind=8) :: instan
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! CRITERES DE CONVERGENCE POUR LE CONTACT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
 ! IN  NOMA   : NOM DU MAILLAGE
@@ -67,27 +73,30 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    logical :: lctcd, lnewtc
+    logical :: lctcd, lctcc, lnewtc
     logical :: mmcvca
     character(len=8) :: nomo
     character(len=16) :: k16bla
     real(kind=8) :: r8bid
+    integer :: ntpc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
 ! --- INITIALISATIONS
 !
     mmcvca = .false.
-    nomo = modele(1:8)
+    nomo   = modele(1:8)
     k16bla = ' '
+    ntpc   = cfdisi(defico,'NTPC' )
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
     lctcd = isfonc(fonact,'CONT_DISCRET')
+    lctcc = isfonc(fonact,'CONT_CONTINU')
     lnewtc = isfonc(fonact,'CONT_NEWTON')
 !
 ! --- VALEURS NON AFFECTEES DANS LE TABLEAU
@@ -107,12 +116,19 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
     if (lnewtc) then
         call mmbclc(noma, nomo, numedd, iterat, numins,&
                     sddisc, sddyna, sdimpr, defico, resoco,&
-                    valinc, solalg, sdtime, sdstat, mmcvca, instan)
+                    valinc, solalg, sdtime, sdstat, mmcvca,&
+                    instan)
         if (mmcvca) then
             call nmcrel(sderro, 'DIVE_CTCC', .false.)
         else
             call nmcrel(sderro, 'DIVE_CTCC', .true.)
         endif
+    endif
+!
+! - Cycling informations printing in convergence table
+!
+    if (lctcc) then
+        call mm_cycl_print(sdimpr, sdstat)
     endif
 !
     call jedema()

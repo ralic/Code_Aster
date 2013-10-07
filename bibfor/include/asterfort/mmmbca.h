@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmmbca(noma  , sddyna, iterat, defico, resoco,&
+    subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
                       sdstat, valinc, solalg, ctcsta, mmcvca,&
                       instan)
         character(len=8), intent(in) :: noma

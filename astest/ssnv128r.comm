@@ -70,14 +70,16 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CHA1=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
                   FROTTEMENT='COULOMB',
-                  ALGO_RESO_GEOM = 'NEWTON',
-                  ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
+                    ALGO_RESO_FROT = 'NEWTON',
+                    ADAPT_COEF     = 'OUI',
                   RESI_FROT=0.01,
                   ZONE=_F(GROUP_MA_MAIT='SBATI',
                           GROUP_MA_ESCL='SCONTA',
                           CONTACT_INIT='INTERPENETRE',
                           COULOMB=1.0,
-                          COEF_FROT     = 1.E6,
+                          #COEF_FROT     = 1.E6,
                           SANS_GROUP_NO_FR='PP',
                           DIRE_EXCL_FROT=(1,0,0),),);
 
@@ -101,7 +103,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=1,),);
 
 L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                   LIST_INST=LINST,),
@@ -122,7 +124,7 @@ U2M=STAT_NON_LINE(MODELE=MO,
                   INCREMENT=_F(LIST_INST=L_INST,),
                   NEWTON=_F(REAC_ITER=1,),
                   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-5,
-                                 ITER_GLOB_MAXI=20,
+                                 ITER_GLOB_MAXI=30,
                                  ARRET='OUI',),);
 
 TEST_RESU(RESU=(_F(GROUP_NO='PPA',

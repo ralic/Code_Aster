@@ -16,9 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmcyc2(resoco, iptc, indco, indfr)
-        character(len=24) :: resoco
-        integer :: iptc
-        integer :: indco, indfr
-    end subroutine mmcyc2
+    subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot, &
+                            dist_frot, coef_adap, stat_adap)
+        character(len=8) , intent(in) :: adap_type
+        real(kind=8), intent(in) :: tole_stick
+        real(kind=8), intent(in) :: tole_slide
+        real(kind=8), intent(in)  :: coef_init
+        real(kind=8), intent(in)  :: pres_frot(3)
+        real(kind=8), intent(in)  :: dist_frot(3)
+        real(kind=8), intent(out) :: coef_adap
+        integer, intent(out) :: stat_adap
+    end subroutine mm_cycl_adaf
 end interface

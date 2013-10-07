@@ -1,8 +1,8 @@
-subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
+subroutine nmctcc(noma  , modele, mate  , sddyna, sderro, &
                   sdstat, defico, resoco, valinc, solalg, &
                   mmcvca, instan)
 !
-    implicit none
+    implicit     none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -62,7 +62,6 @@ subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
 ! IN  MATE   : SD MATERIAU
 ! IN  SDDYNA : SD POUR DYNAMIQUE
 ! IN  SDERRO : GESTION DES ERREURS
-! IN  SDSTAT : SD STATISTIQUES
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -126,7 +125,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
                         mmcvca)
         endif
     else if (lctcc) then
-        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
+        call mmmbca(noma  , sddyna, iterat, defico, resoco, &
                     sdstat, valinc, solalg, ctcsta, mmcvca,&
                     instan)
         call mm_cycl_flip(defico, resoco, cycl_flip)
@@ -157,6 +156,5 @@ subroutine nmctcc(noma, modele, mate, sddyna, sderro,&
     else
         call nmcrel(sderro, 'DIVE_FIXC', .true.)
     endif
-!
 !
 end subroutine

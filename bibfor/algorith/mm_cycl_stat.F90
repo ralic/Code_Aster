@@ -10,6 +10,7 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmrvai.h"
+#include "asterfort/mm_cycl_erase.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,9 +48,9 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_typ
-    integer :: jcytyp
-    integer :: cycl_index, cycl_acti
+    character(len=24) :: sd_cycl_eta
+    integer :: jcyeta
+    integer :: cycl_index, cycl_stat
     integer :: point_index, point_number
     logical :: cont_disc, cont_xfem
     integer :: cycl_nb(4)
@@ -66,24 +67,26 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
 ! - Initializations
 !
-    cycl_nb(1) = 0
-    cycl_nb(2) = 0
-    cycl_nb(3) = 0
-    cycl_nb(4) = 0
+    do cycl_index = 1, 4
+        cycl_nb(cycl_index) = 0
+    enddo
 !
 ! - Acces to cycling objects
 !
-    sd_cycl_typ = sd_cont_solv(1:14)//'.CYCTYP'
-    call jeveuo(sd_cycl_typ,'L',jcytyp)
+    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
+    call jeveuo(sd_cycl_eta,'L',jcyeta)
 !
 ! - Counting cycles
 !
     point_number = cfdisi(sd_cont_defi,'NTPC' )
     do point_index = 1, point_number
         do cycl_index = 1, 4
-          cycl_acti  = zi(jcytyp-1+4*(point_index-1)+cycl_index)
-          if (cycl_acti.eq.1) then
+          cycl_stat  = zi(jcyeta-1+4*(point_index-1)+cycl_index)
+          if (cycl_stat.ne.0) then
               cycl_nb(cycl_index) = cycl_nb(cycl_index) + 1
+          endif
+          if (cycl_stat.lt.0) then
+              call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_index, point_index)
           endif
         end do
     end do

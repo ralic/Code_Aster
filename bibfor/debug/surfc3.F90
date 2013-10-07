@@ -57,9 +57,6 @@ subroutine surfc3(char, noma, ifm)
     character(len=8) :: nommae, nomzon
     integer :: imae, ntmae, nummae
 !
-    character(len=24) :: paraci
-    integer :: jparci
-!
     character(len=24) :: caraxf, maescx
     integer :: jcmxf, jmaesx
 !
@@ -75,8 +72,6 @@ subroutine surfc3(char, noma, ifm)
 ! --- INITIALISATIONS
 !
     defico = char(1:8)//'.CONTACT'
-    paraci = defico(1:16)//'.PARACI'
-    call jeveuo(paraci, 'L', jparci)
     nzoco = cfdisi(defico,'NZOCO')
     ltfcm = cfdisl(defico,'CONT_XFEM_GG')
     ntmae = cfdisi(defico,'NTMAE')

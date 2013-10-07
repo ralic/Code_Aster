@@ -6,11 +6,12 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/diinst.h"
 #include "asterfort/mmbouc.h"
+#include "asterfort/mm_cycl_erase.h"
 #include "asterfort/mm_cycl_init.h"
 #include "asterfort/nmaffi.h"
 #include "asterfort/nmctcc.h"
@@ -188,7 +189,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 ! - Initialization of data structures for cycling detection and treatment
 !
     if (mmcvca .or. mmcvfr .or. mmcvgo) then
-      call mm_cycl_init(defico, resoco, 0)
+        call mm_cycl_erase(defico, resoco, 0, 0)
     endif
 !
 ! --- AFFICHAGES PENDANT LA BOUCLE DE POINT FIXE

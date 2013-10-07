@@ -42,9 +42,9 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: point_number
-    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_typ, sd_cycl_gli
-    integer :: jcylis, jcynbr, jcytyp, jcygli
+    integer :: point_number, zone_number
+    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_eta, sd_cycl_his, sd_cycl_coe
+    integer :: jcylis, jcynbr, jcyeta, jcyhis, jcycoe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,20 +53,35 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 ! - Initializations
 !
     point_number = cfdisi(sd_cont_defi,'NTPC' )
+    zone_number  = cfdisi(sd_cont_defi,'NZOCO' )
 !
-! - Name of cycling objects
+! - Status saving (coded integer)
 !
     sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
+!
+! - Cycling length
+!
     sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
-    sd_cycl_typ = sd_cont_solv(1:14)//'.CYCTYP'
-    sd_cycl_gli = sd_cont_solv(1:14)//'.CYCGLI'
+!
+! - Cycling state
+!
+    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
+!
+! - Cycling history 
+!
+    sd_cycl_his = sd_cont_solv(1:14)//'.CYCHIS'
+!
+! - Informations about ratios 
+!
+    sd_cycl_coe = sd_cont_solv(1:14)//'.CYCCOE'
 !
 ! - Creating cycling objects
-! 
-    call wkvect(sd_cycl_lis, 'V V I'  , 4*point_number, jcylis)
-    call wkvect(sd_cycl_nbr, 'V V I'  , 4*point_number, jcynbr)
-    call wkvect(sd_cycl_typ, 'V V I'  , 4*point_number, jcytyp)
-    call wkvect(sd_cycl_gli, 'V V R'  , 12*point_number, jcygli)
+!
+    call wkvect(sd_cycl_lis, 'V V I', 4*point_number, jcylis)
+    call wkvect(sd_cycl_nbr, 'V V I', 4*point_number, jcynbr)
+    call wkvect(sd_cycl_eta, 'V V I', 4*point_number, jcyeta)
+    call wkvect(sd_cycl_his, 'V V R', 25*point_number, jcyhis)
+    call wkvect(sd_cycl_coe, 'V V R', 6*zone_number, jcycoe)
 !
     call jedema()
 end subroutine

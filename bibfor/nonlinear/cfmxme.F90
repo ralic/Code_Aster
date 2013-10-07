@@ -1,5 +1,22 @@
 subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mm_cycl_crsd.h"
+#include "asterfort/mm_cycl_init.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,23 +35,10 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vtcreb.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/mm_cycl_crsd.h"
-    character(len=24) :: numedd
-    character(len=19) :: sddyna
-    character(len=24) :: defico, resoco
+    character(len=24), intent(in) :: numedd
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +58,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
     integer :: ifm, niv
     character(len=8) :: k8bid
-    integer :: iret, neq, ntpc
+    integer :: iret, neq,  ntpc
     logical :: ldyna, lnoeu
     character(len=24) :: mdecol, etatct
     integer :: jmdeco, jetat
@@ -115,7 +119,8 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
 ! - Creating data structures for cycling detection and treatment
 !
-    call mm_cycl_crsd(defico,resoco)
+    call mm_cycl_crsd(defico, resoco)
+    call mm_cycl_init(defico, resoco)
 !
 ! --- JEU TOTAL
 !

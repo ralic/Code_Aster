@@ -140,10 +140,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    #REAC_GEOM      = 'CONTROLE',
-                    #NB_ITER_GEOM   = 3,
-                    ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
+                    ALGO_RESO_FROT = 'NEWTON',
+                    ADAPT_COEF     = 'OUI',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'BCC2',

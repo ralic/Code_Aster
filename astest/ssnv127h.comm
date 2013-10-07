@@ -117,6 +117,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     ALGO_RESO_CONT = 'NEWTON',
                     ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_FROT = 'NEWTON',
+                    ADAPT_COEF     = 'OUI',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'BCC2',

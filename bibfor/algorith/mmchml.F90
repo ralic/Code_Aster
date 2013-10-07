@@ -69,6 +69,8 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
     integer :: jvalv
     character(len=19) :: ligrcf, chmlcf, crnudd
     integer :: ifm, niv, jcrnud
+    character(len=24) :: sd_cycl_his
+    integer :: jcyhis
     real(kind=8) :: instam, instap, deltat
     logical :: ldyna, ltheta, lappar
     real(kind=8) :: theta
@@ -109,6 +111,11 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
     call jeveuo(crnudd, 'L', jcrnud)
 !
     ztabf = cfmmvd('ZTABF')
+!
+! - Acces to cycling objects
+!
+    sd_cycl_his = resoco(1:14)//'.CYCHIS'
+    call jeveuo(sd_cycl_his,'L',jcyhis)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -166,7 +173,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 ! --- REMPLISSAGE DU CHAM_ELEM
 !
     ntliel = 0
-    do 200 igr = 1, nbgrel
+    do igr = 1, nbgrel
 !       ADRESSE DANS CELD DES INFORMATIONS DU GREL IGR
         decal = zi(jceld-1+nceld1+igr)
 !       NOMBRE D'ELEMENTS DU GREL IGR
@@ -175,7 +182,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
         ASSERT(zi(jceld-1+decal+3).eq.ncmp)
 !       RECUPERATION DES MAILLES DU GREL IGR
         call jeveuo(jexnum(ligrcf//'.LIEL', igr), 'L', jliel)
-        do 300 iel = 1, nbliel
+        do iel = 1, nbliel
 !         MAILLE TARDIVE ZI(JLIEL-1+IEL) < 0
             iptc = -zi(jliel-1+iel)
             izone = nint(zr(jtabf+ztabf*(iptc-1)+13))
@@ -208,12 +215,12 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
             zr(jvalv-1+14) = zr(jjsup-1+iptc)
 ! ------- ALGO/COEF DU CONTACT
             zr(jvalv-1+15) = ialgoc
-            zr(jvalv-1+16) = coefac
+            zr(jvalv-1+16) = zr(jcyhis-1+25*(iptc-1)+2)
 ! ------- ALGO/COEF DU FROTTEMENT
             zr(jvalv-1+17) = iresof
             zr(jvalv-1+25) = iresog
             zr(jvalv-1+18) = ialgof
-            zr(jvalv-1+19) = coefaf
+            zr(jvalv-1+19) = zr(jcyhis-1+25*(iptc-1)+6)
             zr(jvalv-1+20) = coefff
 ! ------- EXCLUSION
             zr(jvalv-1+21) = zr(jtabf+ztabf*(iptc-1)+19)
@@ -222,12 +229,10 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
             zr(jvalv-1+23) = deltat
             zr(jvalv-1+24) = theta
 !
-            if (niv .ge. 2) then
-                call mmimp3(ifm, noma, iptc, jvalv, jtabf)
-            endif
-300      continue
+            if (niv .ge. 2) call mmimp3(ifm, noma, iptc, jvalv, jtabf)
+        enddo
         ntliel = ntliel + nbliel
-200  end do
+    enddo
     ASSERT(ntliel.eq.ntpc)
 !
     call jedema()

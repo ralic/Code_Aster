@@ -1,5 +1,18 @@
 subroutine cazocp(char)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,17 +31,6 @@ subroutine cazocp(char)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
     character(len=8) :: char
 !
 ! ----------------------------------------------------------------------
@@ -55,9 +57,9 @@ subroutine cazocp(char)
     integer :: noc
     real(kind=8) :: precis, coefrs
     real(kind=8) :: resige, resifr
-    logical :: lgcp
+    logical :: lgcp, l_newt_fr
     logical :: lctcd, lctcc, lxfcm, lfrot, lmail
-    character(len=16) :: lissa
+    character(len=16) :: lissa, coef_adap
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,6 +76,7 @@ subroutine cazocp(char)
     lgbloc = 10
     resige = 1.d-2
     resifr = 1.d-2
+    l_newt_fr = .false.
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
@@ -162,6 +165,7 @@ subroutine cazocp(char)
             zi(jparci+28-1) = 0
         else if (algofr.eq.'NEWTON') then
             zi(jparci+28-1) = 1
+            l_newt_fr = .true.
         else
             ASSERT(.false.)
         endif
@@ -186,8 +190,6 @@ subroutine cazocp(char)
             call getvr8(' ', 'RESI_FROT', scal=resifr, nbret=noc)
             zr(jparcr+2-1) = resifr
         endif
-    else
-        zi(jparci+20-1) = 0
     endif
 !
 ! --- ALGORITHME CONTACT
@@ -306,6 +308,19 @@ subroutine cazocp(char)
             zi(jparci+19-1) = 0
         else if (lissa(1:3) .eq. 'OUI') then
             zi(jparci+19-1) = 1
+        else
+            ASSERT(.false.)
+        endif
+    endif
+!
+! - Auto-adaptation 
+!
+    if (l_newt_fr .and. lctcc) then
+        call getvtx(' ', 'ADAPT_COEF', scal=coef_adap, nbret=noc)
+        if (coef_adap .eq. 'NON') then
+            zi(jparci+20-1) = 0
+        else if (coef_adap .eq. 'OUI') then
+            zi(jparci+20-1) = 1
         else
             ASSERT(.false.)
         endif

@@ -1,5 +1,22 @@
 subroutine mminit(noma, defico, resoco, sddyna, valinc)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/misazl.h"
+#include "asterfort/mm_cycl_init.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/xmiszl.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,21 +35,6 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/copisd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/misazl.h"
-#include "asterfort/mm_cycl_init.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/xmiszl.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)
@@ -53,8 +55,7 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     logical :: ldyna
@@ -119,11 +120,11 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
         etatct = resoco(1:14)//'.ETATCT'
         call jeveuo(tabfin, 'E', jtabf)
         call jeveuo(etatct, 'L', jetat)
-        do 100 ipc = 1, ntpc
+        do ipc = 1, ntpc
             zr(jtabf+ztabf*(ipc-1)+22) = zr(jetat-1+zetat*(ipc-1)+1)
             zr(jtabf+ztabf*(ipc-1)+16) = zr(jetat-1+zetat*(ipc-1)+2)
             zr(jtabf+ztabf*(ipc-1)+17) = zr(jetat-1+zetat*(ipc-1)+3)
-100      continue
+        end do
     else
         xindco = resoco(1:14)//'.XFIN'
         xmemco = resoco(1:14)//'.XMEM'
@@ -156,12 +157,6 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 !
     deplam = resoco(1:14)//'.DEPF'
     call copisd('CHAMP_GD', 'V', depmoi, deplam)
-!
-! --- INITIALISATION DES CYCLES
-!
-    if (lctcc) then
-        call mm_cycl_init(defico, resoco, 0)
-    endif
 !
     call jedema()
 end subroutine

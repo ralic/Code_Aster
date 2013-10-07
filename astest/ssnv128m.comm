@@ -68,11 +68,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    ALGO_RESO_CONT = 'POINT_FIXE',
-                    ALGO_RESO_GEOM = 'POINT_FIXE',
-                    REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 2,
+                    ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_FROT = 'NEWTON',
+                    ADAPT_COEF     = 'OUI',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'LCONTA',
@@ -96,7 +95,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0));
 #
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5));
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
 #
 #-----------------------------------------------------------
 #

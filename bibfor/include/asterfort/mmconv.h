@@ -18,10 +18,14 @@
 interface
     subroutine mmconv(noma, defico, resoco, valinc, solalg,&
                       vfrot, nfrot, vgeom, ngeom)
-        character(len=8) :: noma
-        character(len=24) :: defico, resoco
-        character(len=19) :: valinc(*), solalg(*)
-        real(kind=8) :: vfrot, vgeom
-        character(len=16) :: nfrot, ngeom
+        character(len=8), intent(in) :: noma
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=19), intent(in) :: valinc(*)
+        character(len=19), intent(in) :: solalg(*)
+        real(kind=8), intent(out) :: vfrot
+        character(len=16), intent(out) :: nfrot
+        real(kind=8), intent(out) :: vgeom
+        character(len=16), intent(out) :: ngeom
     end subroutine mmconv
 end interface

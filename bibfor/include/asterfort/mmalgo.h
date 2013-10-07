@@ -15,20 +15,36 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
 interface
-    subroutine mmalgo(indcoi, lvites, lglini, jeu, jeuvit,&
-                      lambdc, coefac, ctcsta, mmcvca, scotch,&
-                      indcon)
-        integer :: indcoi
-        logical :: lvites
-        logical :: lglini
-        real(kind=8) :: jeu
-        real(kind=8) :: jeuvit
-        real(kind=8) :: lambdc
-        real(kind=8) :: coefac
-        integer :: ctcsta
-        logical :: mmcvca
-        logical :: scotch
-        integer :: indcon
+    subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   , l_vite    , &
+                  l_glis_init   , l_coef_adap   , zone_index    , point_index   , indi_cont_init, &
+                  indi_cont_eval, indi_frot_eval, dist_cont     , vite_cont     , pres_cont     , &
+                  dist_frot     , pres_frot     , cycl_hist     , cycl_coef     , indi_cont_curr, &
+                  indi_frot_curr, ctcsta        , mmcvca        , scotch        )
+        character(len=24), intent(in) :: sd_cont_defi
+        character(len=24), intent(in) :: sd_cont_solv
+        logical, intent(in) :: l_loop_cont
+        logical, intent(in) :: l_frot_zone
+        logical, intent(in) :: l_vite
+        logical, intent(in) :: l_glis_init
+        logical, intent(in) :: l_coef_adap
+        integer, intent(in) :: point_index
+        integer, intent(in) :: zone_index
+        integer, intent(in) :: indi_cont_init
+        integer, intent(in) :: indi_cont_eval
+        integer, intent(in) :: indi_frot_eval
+        real(kind=8), intent(in) :: dist_cont
+        real(kind=8), intent(in) :: vite_cont
+        real(kind=8), intent(in) :: pres_cont
+        real(kind=8), intent(in) :: dist_frot(3)
+        real(kind=8), intent(in) :: pres_frot(3)
+        real(kind=8), intent(inout) :: cycl_hist(*) 
+        real(kind=8), intent(inout) :: cycl_coef(*) 
+        integer, intent(out) :: indi_cont_curr
+        integer, intent(out) :: indi_frot_curr
+        integer, intent(out) :: ctcsta
+        logical, intent(out) :: mmcvca
+        logical, intent(out) :: scotch
     end subroutine mmalgo
 end interface

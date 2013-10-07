@@ -1,25 +1,14 @@
-subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv)
+subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, point_index, &
+                          pres_cont_prev, dist_cont_prev, coef_cont_prev, indi_frot_prev, &
+                          dist_frot_prev, indi_cont, dist_cont, pres_cont, indi_frot,&
+                          dist_frot)
 !
     implicit     none
 !
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmcyc1.h"
-#include "asterfort/mmcyc2.h"
+#include "asterfort/mm_cycl_d1.h"
+#include "asterfort/mm_cycl_d2.h"
 #include "asterfort/mm_cycl_d3.h"
-#include "asterfort/mmcyc4.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
-#include "asterfort/mminfm.h"
-#include "asterfort/mmnpoi.h"
+#include "asterfort/mm_cycl_d4.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,107 +28,63 @@ subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi, sd_cont_solv
+    character(len=24), intent(in) :: sd_cont_defi
+    character(len=24), intent(in) :: sd_cont_solv
+    logical, intent(in) :: l_loop_cont
+    logical, intent(in) :: l_frot_zone
+    integer, intent(in) :: point_index
+    real(kind=8), intent(in) :: pres_cont_prev
+    real(kind=8), intent(in) :: dist_cont_prev
+    integer, intent(in) :: indi_frot_prev
+    real(kind=8), intent(in) :: dist_frot_prev(3)
+    real(kind=8), intent(in) :: coef_cont_prev
+    real(kind=8), intent(in) :: dist_frot(3)
+    integer, intent(in) :: indi_cont
+    real(kind=8), intent(in) :: pres_cont
+    real(kind=8), intent(in) :: dist_cont
+    integer, intent(in) :: indi_frot
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! Contact (continue method)
 !
 ! Cycling detection
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition 
+! In  sd_cont_solv   : data structure for contact solving
+! In  sd_cont_defi   : data structure from contact definition 
+! In  l_frot_zone    : .true. if friction on zone
+! In  l_loop_cont    : .true. if fixed poitn on contact loop
+! In  point_index    : contact point index
+! In  indi_frot_prev : previous friction indicator in cycle
+! In  dist_frot_prev : previous friction distance in cycle
+! In  coef_cont_prev : augmented ratio for contact
+! In  dist_frot      : friction distance
+! In  indi_cont      : contact indicator
+! In  indi_frot      : friction indicator
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    character(len=24) :: tabfin
-    integer :: jtabf
-    integer :: ztabf
-    integer :: indi_cont, indi_frot
-    integer :: nbmae, nptm
-    logical :: lveri
-    integer :: nzoco
-    logical :: lfrot, lboucc
-    integer :: izone, iptm, imae, iptc
-    integer :: jdecme, posmae
+
 !
-! ----------------------------------------------------------------------
+! - Detection of cycling: contact/no contact
 !
-    call jemarq()
-    call infdbg('CONTACT', ifm, niv)
-    if (niv .ge. 2) write (ifm,*) '<CONTACT> ... Cycling detection'
+    call mm_cycl_d1(sd_cont_solv, point_index, pres_cont_prev, dist_cont_prev, coef_cont_prev, &
+                    indi_cont   , dist_cont  , pres_cont) 
 !
-! - Acces to contact objects
+! - Detection of cycling: sliding/sticking
 !
-    tabfin = sd_cont_solv(1:14)//'.TABFIN'
-    call jeveuo(tabfin, 'L', jtabf)
-    ztabf = cfmmvd('ZTABF')
+    if (l_frot_zone) call mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_frot)
 !
-! - Initializations
+! - Detection of cycling: sliding forward/backward
 !
-    nzoco = cfdisi(sd_cont_defi,'NZOCO')
-    lfrot = cfdisl(sd_cont_defi,'FROTTEMENT')
-    lboucc = cfdisl(sd_cont_defi,'CONT_BOUCLE')
+    if (l_frot_zone) call mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_frot_prev, &
+                                     dist_frot_prev, indi_cont, indi_frot, &
+                                     dist_frot)
 !
-! - Loop on contact zones
+! - Detection of cycling: old flip/flop
 !
-    iptc = 1
-    do izone = 1, nzoco
-!
-! ----- Contact options on zone
-!
-        lveri = mminfl(sd_cont_defi,'VERIF' ,izone )
-        nbmae = mminfi(sd_cont_defi,'NBMAE' ,izone )
-        jdecme = mminfi(sd_cont_defi,'JDECME',izone )
-!
-! ----- No contact solving: break
-!
-        if (lveri) goto 25
-!
-! ----- Loop on salve meshes
-!
-        do imae = 1, nbmae
-!
-! --------- Slave mesh informations
-!
-            posmae = jdecme + imae
-            call mminfm(posmae, sd_cont_defi, 'NPTM', nptm)
-!
-! --------- Loop on contact points
-!
-            do iptm = 1, nptm
-!
-! ------------- Current status
-!
-                indi_cont = nint(zr(jtabf+ztabf*(iptc-1)+22))
-                indi_frot = nint(zr(jtabf+ztabf*(iptc-1)+23))
-!
-! ------------- DETECTION DU CYCLE DE TYPE CONTACT/PAS CONTACT
-!
-                call mmcyc1(sd_cont_solv, iptc, indi_cont)
-!
-! ------------- DETECTION DU CYCLE DE TYPE ADHERENT/GLISSANT
-!
-                if (lfrot) call mmcyc2(sd_cont_solv, iptc, indi_cont, indi_frot)
-!
-! ------------- Detection of cycling: sliding forward/backward
-!
-                if (lfrot) call mm_cycl_d3(sd_cont_defi, sd_cont_solv, iptc, indi_cont,indi_frot)
-!
-! ------------- DETECTION DU CYCLE DE TYPE FLIP-FLOP HISTORIQUE
-!
-                if (lboucc) call mmcyc4(sd_cont_solv, iptc, indi_cont)
-!
-! ------------- Next active contact point
-!
-                iptc = iptc + 1
-            end do
-        end do
-25      continue
-    end do
-!
-    call jedema()
+    if (l_loop_cont) call mm_cycl_d4(sd_cont_solv, point_index, indi_cont)
+
 end subroutine

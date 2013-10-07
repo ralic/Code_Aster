@@ -1,14 +1,17 @@
-subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv, cycl_type)
+subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv)
 !
     implicit     none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mminfr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +33,6 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv, cycl_type)
 !
     character(len=24), intent(in) :: sd_cont_defi
     character(len=24), intent(in) :: sd_cont_solv
-    integer, intent(in) :: cycl_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,58 +44,73 @@ subroutine mm_cycl_init(sd_cont_defi, sd_cont_solv, cycl_type)
 !
 ! In  sd_cont_solv : data structure for contact solving
 ! In  sd_cont_defi : data structure from contact definition 
-! In  cycl_type    : type of cycling to erase 
-!                     0 - for erasing for all cycles
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_typ, sd_cycl_gli
-    integer :: jcylis, jcynbr, jcytyp, jcygli
-    integer :: point_number, point_index
-    integer :: cycl_index, i
-    logical :: cont_disc, cont_xfem
+    character(len=24) :: sd_cycl_his, sd_cycl_coe
+    integer :: jcyhis, jcycoe
+    integer :: point_index
+    integer :: zone_index, zone_number
+    integer :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
+    integer :: slave_pt_index, slave_pt_nb
+    real(kind=8) :: coef_cont, coef_frot
+    logical :: lveri
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! - Formulation of contact
+! - Initializations
 !
-    cont_disc = cfdisl(sd_cont_defi,'FORMUL_DISCRETE')
-    cont_xfem = cfdisl(sd_cont_defi,'FORMUL_XFEM')
-    if (cont_disc .or. cont_xfem) goto 99
+    zone_number = cfdisi(sd_cont_defi,'NZOCO' )
 !
 ! - Access to cycling objects
 !
-    sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
-    sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
-    sd_cycl_typ = sd_cont_solv(1:14)//'.CYCTYP'
-    sd_cycl_gli = sd_cont_solv(1:14)//'.CYCGLI'
-    call jeveuo(sd_cycl_lis, 'E', jcylis)
-    call jeveuo(sd_cycl_nbr, 'E', jcynbr)
-    call jeveuo(sd_cycl_typ, 'E', jcytyp)
-    call jeveuo(sd_cycl_gli, 'E', jcygli)
+    sd_cycl_his = sd_cont_solv(1:14)//'.CYCHIS'
+    sd_cycl_coe = sd_cont_solv(1:14)//'.CYCCOE'
+    call jeveuo(sd_cycl_his, 'E', jcyhis)
+    call jeveuo(sd_cycl_coe, 'E', jcycoe)
 !
-! - Initializations
+! - Init history
 !
-    point_number = cfdisi(sd_cont_defi,'NTPC' )
-    do point_index = 1, point_number
-        if (cycl_type.le.0) then
-            do cycl_index = 1, 4
-                zi(jcylis-1+4*(point_index-1)+cycl_index) = 0
-                zi(jcynbr-1+4*(point_index-1)+cycl_index) = 0
-                zi(jcytyp-1+4*(point_index-1)+cycl_index) = 0
+    point_index = 1
+    do zone_index = 1, zone_number
+        lveri           = mminfl(sd_cont_defi,'VERIF' ,zone_index)
+        slave_elt_nb    = mminfi(sd_cont_defi,'NBMAE' ,zone_index)
+        slave_elt_shift = mminfi(sd_cont_defi,'JDECME',zone_index)
+        coef_cont       = mminfr(sd_cont_defi,'COEF_AUGM_CONT',zone_index)
+        coef_frot       = mminfr(sd_cont_defi,'COEF_AUGM_FROT',zone_index)
+        zr(jcycoe-1+6*(zone_index-1)+1) = coef_cont
+        zr(jcycoe-1+6*(zone_index-1)+2) = coef_frot
+        zr(jcycoe-1+6*(zone_index-1)+3) = +1.d99
+        zr(jcycoe-1+6*(zone_index-1)+4) = -1.d99
+        zr(jcycoe-1+6*(zone_index-1)+5) = +1.d99
+        zr(jcycoe-1+6*(zone_index-1)+6) = -1.d99
+        if (lveri) goto 25
+!
+! ----- Loop on slave elements
+!
+        do slave_elt_index = 1, slave_elt_nb
+!
+! --------- Absolute number of slave element
+!
+            slave_elt_num = slave_elt_shift + slave_elt_index
+!
+! --------- Number of points on slave element
+!
+            call mminfm(slave_elt_num, sd_cont_defi, 'NPTM', slave_pt_nb)
+!
+! --------- Loop on points
+!
+            do slave_pt_index = 1, slave_pt_nb
+                zr(jcyhis-1+25*(point_index-1)+2)  = coef_cont
+                zr(jcyhis-1+25*(point_index-1)+6)  = coef_frot
+                zr(jcyhis-1+25*(point_index-1)+25) = zone_index
+                point_index = point_index + 1
             end do
-            do i = 1, 12
-                zr(jcygli-1+12*(point_index-1)+i) = 0.d0
-            end do
-        endif
-        if (cycl_type.eq.3) then
-            zi(jcylis-1+4*(point_index-1)+3) = 1
-        endif
+        end do
+25      continue
     end do
-!
-99  continue
 !
     call jedema()
 end subroutine

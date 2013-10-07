@@ -1,5 +1,8 @@
-subroutine mmstac(indcoi, lvites, jeu, jeuvit, lambdc,&
-                  coefac, indcon)
+subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval)
+!
+    implicit none
+!
+#include "asterc/r8prem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,63 +22,43 @@ subroutine mmstac(indcoi, lvites, jeu, jeuvit, lambdc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    integer :: indcoi, indcon
-    logical :: lvites
-    real(kind=8) :: jeu, jeuvit, lambdc, coefac
+    real(kind=8), intent(in) :: dist_cont
+    real(kind=8), intent(in) :: pres_cont
+    real(kind=8), intent(in) :: coef_cont
+    integer, intent(out) :: indi_cont_eval
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - CONTRAINTES ACTIVES)
+! Contact (continue method)
 !
-! STATUT DE CONTACT
+! Evaluate contact status
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  INDCOI : INDICATEUR DE CONTACT INITIAL
-!              - INDCOI = 0: PAS DE CONTACT
-!              - INDCOI = 1: CONTACT
-! IN  LVITES : .TRUE. SI FORMULATION EN VITESSE
-! IN  JEU    : VALEUR DU JEU
-! IN  JEUVIT : VALEUR DU GAP DES VITESSES NORMALES
-! IN  LAMBDC : MULTIPLICATEUR DE CONTACT DU POINT DE CONTACT
-! IN  COEFAC : COEFFICIENT D'AUGMENTATION DU CONTACT RHO_N
-! OUT INDCON : INDICATEUR DE CONTACT FINAL
-!              - INDCON = 0: PAS DE CONTACT
-!              - INDCON = 1: CONTACT
+! In  dist_cont      : contact gap
+! In  pres_cont      : contact pressure
+! In  coef_cont      : augmented ratio for contact
+! Out indi_cont_eval : evaluation of new contact status
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: laug_cont
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
 !
+! - Augmented lagrangian for contact
 !
+    laug_cont = pres_cont - coef_cont * dist_cont
 !
-! ----------------------------------------------------------------------
+! - New status of contact (sign of augmented lagrangian)
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    indcon = indcoi
-!
-! --- VERIFICATION DU SIGNE DU MULTIPLICATEUR AUGMENTE
-!
-    if ((lambdc-coefac*jeu) .le. r8prem()) then
-        indcon = 1
+    if (laug_cont .le. r8prem()) then
+        indi_cont_eval = 1
     else
-        indcon = 0
+        indi_cont_eval = 0
     endif
 !
-! --- FORMULATION EN VITESSE
-!
-    if (lvites) then
-        if ((indcoi.eq.0) .and. (jeuvit.le.0.d0)) then
-            indcon = 0
-        endif
-    endif
-!
-    call jedema()
 end subroutine

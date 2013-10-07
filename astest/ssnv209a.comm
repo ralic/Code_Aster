@@ -90,11 +90,10 @@ CHAF=AFFE_CHAR_MECA_F(MODELE=MO,
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    ALGO_RESO_CONT = 'POINT_FIXE',
-                    ALGO_RESO_GEOM = 'POINT_FIXE',
+                    ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_FROT = 'NEWTON',
-                    ITER_GEOM_MAXI = 3,
-                    ITER_CONT_MAXI = 4,
+                    ADAPT_COEF     = 'OUI',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'LBATI',
@@ -105,7 +104,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              COULOMB       = 1.0,
                              ),
                           ),
-                   );
+                    );
 
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',

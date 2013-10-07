@@ -85,6 +85,9 @@ function cfdisl(deficz, questz)
     else if (questi .eq.'LISSAGE') then
         cfdisl = cfdisi(defico,'LISSAGE').eq.1
 !
+    else if (questi .eq.'COEF_ADAPT') then
+        cfdisl = cfdisi(defico,'COEF_ADAPT').eq.1
+!
     else if (questi .eq.'CONT_DISC_GLIS') then
         izone = 1
         cfdisl = mminfl(defico,'GLISSIERE_ZONE',izone )

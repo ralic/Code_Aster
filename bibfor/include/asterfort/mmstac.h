@@ -16,14 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmstac(indcoi, lvites, jeu, jeuvit, lambdc,&
-                      coefac, indcon)
-        integer :: indcoi
-        logical :: lvites
-        real(kind=8) :: jeu
-        real(kind=8) :: jeuvit
-        real(kind=8) :: lambdc
-        real(kind=8) :: coefac
-        integer :: indcon
+    subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval)
+        real(kind=8), intent(in) :: dist_cont
+        real(kind=8), intent(in) :: pres_cont
+        real(kind=8), intent(in) :: coef_cont
+        integer, intent(out) :: indi_cont_eval
     end subroutine mmstac
 end interface

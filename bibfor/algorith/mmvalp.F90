@@ -1,6 +1,14 @@
 subroutine mmvalp(ndim, alias, nno, ncmp, ksi1,&
                   ksi2, valend, valept)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmnonf.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,17 +27,10 @@ subroutine mmvalp(ndim, alias, nno, ncmp, ksi1,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmnonf.h"
     integer :: ndim, nno, ncmp
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: valend(*), valept(*)
-!
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,9 +62,9 @@ subroutine mmvalp(ndim, alias, nno, ncmp, ksi1,&
 !
 ! --- INITIALISATIONS
 !
-    do 1 icmp = 1, ncmp
+    do icmp = 1, ncmp
         valept(icmp) = 0.d0
- 1  end do
+    end do
     ASSERT(nno.le.9)
 !
 ! --- FONCTIONS DE FORME
@@ -73,11 +74,11 @@ subroutine mmvalp(ndim, alias, nno, ncmp, ksi1,&
 !
 ! --- CALCUL
 !
-    do 40 icmp = 1, ncmp
-        do 10 ino = 1, nno
+    do icmp = 1, ncmp
+        do ino = 1, nno
             valept(icmp) = ff(ino)*valend((ino-1)*ncmp+icmp) + valept(icmp)
-10      continue
-40  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

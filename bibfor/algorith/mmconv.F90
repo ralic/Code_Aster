@@ -1,6 +1,21 @@
 subroutine mmconv(noma, defico, resoco, valinc, solalg,&
                   vfrot, nfrot, vgeom, ngeom)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmmcrf.h"
+#include "asterfort/mmmcrg.h"
+#include "asterfort/mmreas.h"
+#include "asterfort/mreacg.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimck.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,24 +34,15 @@ subroutine mmconv(noma, defico, resoco, valinc, solalg,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmmcrf.h"
-#include "asterfort/mmmcrg.h"
-#include "asterfort/mmreas.h"
-#include "asterfort/mreacg.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmimck.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: valinc(*), solalg(*)
-    real(kind=8) :: vfrot, vgeom
-    character(len=16) :: nfrot, ngeom
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    character(len=19), intent(in) :: valinc(*)
+    character(len=19), intent(in) :: solalg(*)
+    real(kind=8), intent(out) :: vfrot
+    character(len=16), intent(out) :: nfrot
+    real(kind=8), intent(out) :: vgeom
+    character(len=16), intent(out) :: ngeom
 !
 ! ----------------------------------------------------------------------
 !

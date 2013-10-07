@@ -44,9 +44,9 @@ subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_typ
-    integer :: jcytyp
-    integer :: cycl_index, cycl_acti
+    character(len=24) :: sd_cycl_eta
+    integer :: jcyeta
+    integer :: cycl_index, cycl_stat
     integer :: point_number, point_index
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,21 +56,19 @@ subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 ! - Initializations
 !
     cycl_flip = .false.
+    cycl_index = 4
 !
 ! - Cycling objects
 !
-    sd_cycl_typ = sd_cont_solv(1:14)//'.CYCTYP'
-    call jeveuo(sd_cycl_typ,'L',jcytyp)
+    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
+    call jeveuo(sd_cycl_eta,'L',jcyeta)
 !
-! - Counting cycles
+! - Flip-flop dectected ?
 !
     point_number = cfdisi(sd_cont_defi,'NTPC' )
-    cycl_index = 4
     do point_index = 1, point_number
-      cycl_acti  = zi(jcytyp-1+4*(point_index-1)+cycl_index)
-      if (cycl_acti.eq.1) then
-          cycl_flip = .true.
-      endif
+      cycl_stat  = zi(jcyeta-1+4*(point_index-1)+cycl_index)
+      if (cycl_stat.gt.0) cycl_flip = .true.
     end do
 !
     call jedema()

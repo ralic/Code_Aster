@@ -11,7 +11,6 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mmappa.h"
-#include "asterfort/mm_cycl_print.h"
 #include "asterfort/mmchml.h"
 #include "asterfort/mmligr.h"
 #include "asterfort/mmmbca.h"
@@ -39,12 +38,12 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma, nomo
-    integer :: numins, iterat
-    character(len=19) :: sddisc, sddyna
-    character(len=24) :: defico, resoco, sdtime, sdstat, sdimpr, numedd
-    character(len=19) :: valinc(*), solalg(*)
-    logical :: mmcvca
+    character(len=8), intent(in) :: noma, nomo
+    integer, intent(in) :: numins, iterat
+    character(len=19), intent(in) :: sddisc, sddyna
+    character(len=24), intent(in) :: defico, resoco, sdtime, sdstat, sdimpr, numedd
+    character(len=19), intent(in) :: valinc(*), solalg(*)
+    logical, intent(out) :: mmcvca
     real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
@@ -130,7 +129,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     if (lnewtc .or. lnewtg) then
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
-        call mmmbca(noma  , sddyna, iterat, defico, resoco,&
+        call mmmbca(noma  , sddyna, iterat, defico, resoco, &
                     sdstat, valinc, solalg, ctcsta, mmcvca,&
                     instan)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
@@ -148,17 +147,11 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
         call nmrinc(sdstat, 'CTCC_PREP')
     endif
 !
-999 continue
-!
-! - Cycling informations printing in convergence table
-!
-    if (.not.lallv) then
-        call mm_cycl_print(sdimpr, sdstat)
-    endif
-!
-! --- STATUTS DE CONTACT EN NEWTON GENERALISE
+! - Contact status for generalized Newton
 !
     if (lnewtc) call nmimci(sdimpr, 'CONT_NEWT', ctcsta, .true.)
+!
+999 continue
 !
     call jedema()
 !

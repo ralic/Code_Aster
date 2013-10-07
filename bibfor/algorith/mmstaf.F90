@@ -1,8 +1,8 @@
-subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
+subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
                   nummae, aliase, nne, nummam, ksipc1,&
                   ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
-                  tang_1, tang_2, norm, indi_cont, indi_frot,&
-                  pres_frot,dist_frot)
+                  tang_1, tang_2, norm, indi_frot_eval ,pres_frot,&
+                  dist_frot)
 !
     implicit     none
 !
@@ -13,6 +13,7 @@ subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
 #include "asterfort/matini.h"
 #include "asterfort/mcopco.h"
 #include "asterfort/mmvalp.h"
+#include "asterfort/mm_cycl_laugf.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,32 +34,32 @@ subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-    character(len=8) :: noma, aliase
-    integer :: ndim, nne
-    real(kind=8) :: ksipc1, ksipc2
-    real(kind=8) :: ksipr1, ksipr2
-    integer :: nummae, nummam
-    character(len=19) :: chdepd
-    real(kind=8) :: tang_1(3), tang_2(3), norm(3)
-    real(kind=8) :: coef_augm_frot
-    logical :: lpenaf
-    integer :: indi_frot, indi_cont
-    real(kind=8) :: mult_lagr_f1(9), mult_lagr_f2(9)
-    real(kind=8) :: pres_frot(3),dist_frot(3)
+    character(len=8), intent(in) :: noma, aliase
+    integer, intent(in) :: ndim, nne
+    real(kind=8), intent(in) :: ksipc1, ksipc2
+    real(kind=8), intent(in) :: ksipr1, ksipr2
+    integer, intent(in) :: nummae, nummam
+    character(len=19), intent(in) :: chdepd
+    real(kind=8), intent(in) :: tang_1(3), tang_2(3), norm(3)
+    real(kind=8), intent(in) :: coef_frot
+    logical, intent(in) :: lpenaf
+    real(kind=8), intent(in) :: mult_lagr_f1(9), mult_lagr_f2(9)
+    integer, intent(out) :: indi_frot_eval
+    real(kind=8), intent(out) :: pres_frot(3), dist_frot(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - CONTRAINTES ACTIVES)
+! Contact (continue method)
 !
-! STATUT DU FROTTEMENT
+! Evaluate friction status
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
 ! In  noma           : name of mesh
 ! In  ndim           : space size
 ! In  chdepd         : cumulated displacement
-! In  coef_augm_frot : augmented ratio for friction
+! In  coef_frot_prev : previousaugmented ratio for friction
 ! In  lpenaf         : .true. if penalized friction
 ! In  nummae         : number of slave element
 ! In  aliase         : type of slave element
@@ -73,30 +74,29 @@ subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
 ! In  tang_1         : first tangent vector
 ! In  tang_2         : second tangent vector
 ! In  norm           : normal
-! In  indi_cont      : contact status
-! Out indi_frot      : friction status
-! Out pres_frot      : friction "pressure"
-! Out dist_frot      : tangent distance
+! Out indi_frot_eval : new friction status
+! Out pres_frot      : friction pressure
+! Out dist_frot      : friction distance
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: idim, idim1, idim2
-    real(kind=8) :: nrese
+    real(kind=8) :: laug_frot_norm
     real(kind=8) :: dlagrf(2), dist_total(3)
     real(kind=8) :: ddeple(3), ddeplm(3)
     real(kind=8) :: mprojt(3, 3)
-    real(kind=8) :: lagr_augm_frot(3)
+    real(kind=8) :: laug_frot(3)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
 ! - Initializations
 !
-    nrese = 0.d0
-    indi_frot = 0
+    laug_frot_norm = 0.d0
+    indi_frot_eval = 0
     do idim = 1, 3
-        lagr_augm_frot(idim) = 0.d0
+        laug_frot(idim) = 0.d0
         dist_frot(idim) = 0.d0
         dist_total(idim) = 0.d0
         pres_frot(idim) = 0.d0
@@ -104,7 +104,6 @@ subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
     dlagrf(1) = 0.d0
     dlagrf(2) = 0.d0
     call matini(3, 3, 0.d0, mprojt)
-    if (indi_cont .eq. 0) goto 99
 !
 ! - Tangent projection matrix
 !
@@ -141,11 +140,13 @@ subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
 !
 ! - Projection of gap increment on tangent plane
 !
-    do idim1 = 1, ndim
-        do idim2 = 1, ndim
-            dist_frot(idim1) = mprojt(idim1,idim2)*dist_total(idim2)+dist_frot(idim1)
+    if (.not.lpenaf) then
+        do idim1 = 1, ndim
+            do idim2 = 1, ndim
+                dist_frot(idim1) = mprojt(idim1,idim2)*dist_total(idim2)+dist_frot(idim1)
+            end do
         end do
-    end do
+    endif
 !
 ! - Friction "pressure"
 !
@@ -161,42 +162,17 @@ subroutine mmstaf(noma, ndim, chdepd, coef_augm_frot, lpenaf,&
         ASSERT(.false.)
     endif 
 !
-! - Semi-multiplicator for friction SEMI-MULTIPLICATEUR DE FROTTEMENT
+! - Norm of the augmented lagrangian for friction
 !
-    if (lpenaf) then
-        do idim = 1, 3
-            lagr_augm_frot(idim) = coef_augm_frot*dist_frot(idim)
-        end do
+    call mm_cycl_laugf(pres_frot, dist_frot, coef_frot, laug_frot_norm)
+!
+! - Friction status
+!
+    if (laug_frot_norm .le. 1.d0) then
+        indi_frot_eval = 1
     else
-        do idim = 1, 3
-            lagr_augm_frot(idim) = pres_frot(idim) + coef_augm_frot*dist_frot(idim)
-        end do
+        indi_frot_eval = 0
     endif
-!
-! - Friction ratio
-!
-    do idim = 1, 3
-        nrese = lagr_augm_frot(idim)*lagr_augm_frot(idim) + nrese
-    end do
-    nrese = sqrt(nrese)
-!
-! - Normalization
-!
-    if (nrese.ne.0.d0) then
-      do idim = 1,3
-        lagr_augm_frot(idim) = lagr_augm_frot(idim)/nrese
-      end do
-    endif
-!
-! - Sliding or not ?
-!
-    if (nrese .le. 1.d0) then
-        indi_frot = 0
-    else
-        indi_frot = 1
-    endif
-!
-99  continue
 !
     call jedema()
 end subroutine

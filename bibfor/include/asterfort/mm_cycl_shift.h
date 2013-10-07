@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmcyc1(resoco, iptc, indco)
-        character(len=24) :: resoco
-        integer :: iptc
-        integer :: indco
-    end subroutine mmcyc1
+    subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
+        integer, intent(in) :: cycl_long_acti
+        integer, intent(inout) :: cycl_ecod
+        integer, intent(inout) :: cycl_long
+    end subroutine mm_cycl_shift
 end interface

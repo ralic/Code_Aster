@@ -1,4 +1,5 @@
-subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_frot)
+subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_frot_prev, dist_frot_prev,&
+                      indi_cont   , indi_frot   , dist_frot)
 !
     implicit     none
 !
@@ -10,6 +11,7 @@ subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/normev.h"
+#include "asterfort/mm_cycl_erase.h"
 #include "asterfort/mm_cycl_init.h"
 #include "blas/ddot.h"
 !
@@ -31,9 +33,14 @@ subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi, sd_cont_solv
+    character(len=24), intent(in) :: sd_cont_defi
+    character(len=24), intent(in) :: sd_cont_solv
     integer, intent(in) :: point_index
-    integer, intent(in) :: indi_cont, indi_frot
+    integer, intent(in) :: indi_frot_prev
+    real(kind=8), intent(in) :: dist_frot_prev(3)
+    integer, intent(in) :: indi_cont
+    integer, intent(in) :: indi_frot
+    real(kind=8), intent(in) :: dist_frot(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,22 +51,23 @@ subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
 ! --------------------------------------------------------------------------------------------------
 !
 !
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition 
-! In  indi_cont    : contact status
-! In  indi_frot    : friction status
-! In  point_index  : contact point index
+! In  sd_cont_solv   : data structure for contact solving
+! In  sd_cont_defi   : data structure from contact definition 
+! In  point_index    : contact point index
+! In  indi_frot_prev : previous friction indicator
+! In  dist_frot_prev : previous friction distance
+! In  indi_cont      : contact indicator
+! In  indi_frot      : friction indicator
+! In  indi_frot      : current friction indicator
+! In  dist_frot      : current friction distance
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_typ, sd_cycl_gli
-    integer :: jcylis, jcynbr, jcytyp, jcygli
-    integer :: state_prev,cycl_type
-    logical :: detect
-    real(kind=8) :: module_prev,module_curr,dist_sliding 
-    real(kind=8) :: angle, prosca, val, tole_angl,tole_dist
-    real(kind=8) :: pres_frot_curr(3),dist_frot_curr(3)
-    real(kind=8) :: pres_frot_prev(3),dist_frot_prev(3)
+    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_eta
+    integer :: jcylis, jcynbr, jcyeta
+    real(kind=8) :: module_prev, module_curr
+    real(kind=8) :: angle, prosca, val, tole_angl
+    integer :: cycl_type, cycl_ecod, cycl_long, cycl_stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,55 +75,39 @@ subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
 !
 ! - Initializations
 !
-    detect = .false.
-    tole_angl = 2.d0
-    tole_dist = 1.d-2
     cycl_type = 3
+    cycl_stat = 0
+    cycl_ecod = 0
+    cycl_long = 0
+    tole_angl = 2.d0
 !
 ! - Access to cycling objects
 !
     sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
     sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
-    sd_cycl_typ = sd_cont_solv(1:14)//'.CYCTYP'
-    sd_cycl_gli = sd_cont_solv(1:14)//'.CYCGLI'
+    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
     call jeveuo(sd_cycl_lis,'E',jcylis)
     call jeveuo(sd_cycl_nbr,'E',jcynbr)
-    call jeveuo(sd_cycl_typ,'E',jcytyp)
-    call jeveuo(sd_cycl_gli,'E',jcygli)
+    call jeveuo(sd_cycl_eta,'E',jcyeta)
 !
-! - Current state
-!
-    pres_frot_curr(1) = zr(jcygli-1+12*(point_index-1)+1) 
-    pres_frot_curr(2) = zr(jcygli-1+12*(point_index-1)+2) 
-    pres_frot_curr(3) = zr(jcygli-1+12*(point_index-1)+3) 
-    dist_frot_curr(1) = zr(jcygli-1+12*(point_index-1)+4) 
-    dist_frot_curr(2) = zr(jcygli-1+12*(point_index-1)+5) 
-    dist_frot_curr(3) = zr(jcygli-1+12*(point_index-1)+6) 
-!
-! - Previous state
-!
-    state_prev = zi(jcylis-1+4*(point_index-1)+3)
-    pres_frot_prev(1) = zr(jcygli-1+12*(point_index-1)+7) 
-    pres_frot_prev(2) = zr(jcygli-1+12*(point_index-1)+8) 
-    pres_frot_prev(3) = zr(jcygli-1+12*(point_index-1)+9) 
-    dist_frot_prev(1) = zr(jcygli-1+12*(point_index-1)+10) 
-    dist_frot_prev(2) = zr(jcygli-1+12*(point_index-1)+11) 
-    dist_frot_prev(3) = zr(jcygli-1+12*(point_index-1)+12) 
-!
-! - Cycling break if: no contact, no sliding or previous state was not sliding
+! - Cycling break if: no contact, sticking or previous state was sticking
 !
     if ((indi_cont .eq. 0).or.&
-        (indi_frot .eq. 0).or.&
-        (state_prev .eq. 1)) then
-        call mm_cycl_init(sd_cont_defi,sd_cont_solv,cycl_type)
+        (indi_frot .eq. 1).or.&
+        (indi_frot_prev .eq. 1)) then
+        call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_index)
         goto 99
     endif
 !
 ! - Cycling detection
 !
-    call normev(dist_frot_prev, module_prev)
-    call normev(dist_frot_curr, module_curr)
-    prosca = ddot(3,dist_frot_prev,1,dist_frot_curr,1)
+    prosca = ddot(3,dist_frot_prev,1,dist_frot,1)
+    module_curr = sqrt(dist_frot(1)*dist_frot(1)+&
+                       dist_frot(2)*dist_frot(2)+&
+                       dist_frot(3)*dist_frot(3))
+    module_prev = sqrt(dist_frot_prev(1)*dist_frot_prev(1)+&
+                       dist_frot_prev(2)*dist_frot_prev(2)+&
+                       dist_frot_prev(3)*dist_frot_prev(3))
     angle  = 0.d0
     if ((module_prev*module_curr) .gt. r8prem()) then
         val = prosca/(module_prev*module_curr)
@@ -125,36 +117,18 @@ subroutine mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
         angle = angle*r8rddg()
     endif
 !
-! - Sliding distance
-!
-    dist_sliding = 1.d2
-    if (module_curr .gt. r8prem()) then
-        dist_sliding = abs(module_prev-module_curr)/module_curr
-    else if (module_prev .gt. r8prem()) then
-        dist_sliding = abs(module_prev-module_curr)/module_prev
-    endif 
-!
 ! - Detection
 !
-    detect = .false.
-    if ((abs(angle-180.d0) .le. tole_angl).and.&
-        (dist_sliding.le.tole_dist)) then            
-        detect = .true.
+    cycl_stat = 0
+    if (abs(angle-180.d0) .le. tole_angl) then            
+        cycl_stat = 10
     endif
 !
-! - For next cycling
+! - Cycling save
 !
-    zr(jcygli-1+12*(point_index-1)+7)  = pres_frot_prev(1)
-    zr(jcygli-1+12*(point_index-1)+8)  = pres_frot_prev(2) 
-    zr(jcygli-1+12*(point_index-1)+9)  = pres_frot_prev(3)
-    zr(jcygli-1+12*(point_index-1)+10) = dist_frot_prev(1) 
-    zr(jcygli-1+12*(point_index-1)+11) = dist_frot_prev(2) 
-    zr(jcygli-1+12*(point_index-1)+12) = dist_frot_prev(3) 
-    zi(jcylis-1+4*(point_index-1)+3)   = 0
-!
-! - Cycling detected
-!
-    if (detect) zi(jcytyp-1+4*(point_index-1)+3) = 1
+    zi(jcyeta-1+4*(point_index-1)+cycl_type) = cycl_stat
+    zi(jcylis-1+4*(point_index-1)+cycl_type) = cycl_ecod
+    zi(jcynbr-1+4*(point_index-1)+cycl_type) = cycl_long
 !
 99  continue
 !

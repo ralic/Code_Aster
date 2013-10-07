@@ -44,8 +44,10 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAG2,
 CONT = DEFI_CONTACT(MODELE         = MODELE,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
+                    ALGO_RESO_FROT = 'NEWTON',
+                    ADAPT_COEF     = 'OUI',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'L21',
