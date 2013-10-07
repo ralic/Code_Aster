@@ -88,13 +88,8 @@ cata_msg = {
  le champ de type ELGA n'est pas supporté
 """),
 
-63 : _(u"""
- on attend 10 ou 12 secteurs
-"""),
 
-64 : _(u"""
- ******* percement tube *******
-"""),
+
 
 65 : _(u"""
  pour la variable d'accès "NOEUD_CMP", il faut un nombre pair de valeurs.

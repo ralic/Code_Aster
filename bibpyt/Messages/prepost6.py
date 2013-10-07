@@ -27,20 +27,6 @@ cata_msg = {
 """),
 
 
-3 : _(u"""
- le volume diffère du volume use mais le nombre d'itération
-  est supérieur a  %(i1)d
-      volume use:  %(r1)f
-  volume calcule:  %(r2)f
-"""),
-
-4 : _(u"""
- vérifiez les paramètres d'usure pour le secteur  %(i1)d
-"""),
-
-5 : _(u"""
- vérifiez les paramètres d'usure pour le secteur  %(i1)d
-"""),
 
 6 : _(u"""
  composante %(k1)s / point  %(i1)d

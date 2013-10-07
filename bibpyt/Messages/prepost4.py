@@ -246,9 +246,8 @@ cata_msg = {
  les tables n'ont pas les mêmes dimensions
 """),
 
-93 : _(u"""
- volume usé trop grand pour la modélisation
-"""),
+
+
 
 94 : _(u"""
 Élément inconnu.
@@ -267,9 +266,8 @@ On a lu un objet dit composé (car type d'élément = 0) qui serait
 composé de 0 sous objet !
 """),
 
-96 : _(u"""
- Type de concept invalide.
-"""),
+
+
 
 97 : _(u"""
  La maille de peau : %(k1)s ne peut pas être réorientée.

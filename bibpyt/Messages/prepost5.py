@@ -105,11 +105,8 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
  élément inconnu dans le fichier IDEAS élément numéro :  %(i1)d
 """),
 
-54 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération de  %(k1)s
-  pour le secteur  %(i1)d
-"""),
+
+
 
 57 : _(u"""
  problème dans  nomta traitement de l'instant  %(r1)f
