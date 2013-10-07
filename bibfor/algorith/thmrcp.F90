@@ -35,7 +35,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 ! =====================================================================
 ! OUT RETCOM : RETOUR LOI DE COMPORTEMENT
-! aslint: disable=W1501,W1504
+! aslint: disable=W1501,W1504,W1502
     implicit none
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -643,17 +643,17 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     aniso3 = 0
     aniso4 = 0
 ! INITIALISATION DES VECTEURS POUR LE CHOIX ISOTROPIE/ANISOTROPIE
-    do 12 ii = 1, 4
+    do ii = 1, 4
         biot(ii)=0.d0
         permfh(ii)=0.d0
         lambct(ii)=0.d0
         dlambt(ii)=0.d0
-12  end do
+    end do
 !
     if (etape .eq. 'INITIALI') then
-        do 10 ii = 1, dim1
+        do ii = 1, dim1
             val1(ii) = 0.0d0
-10      continue
+        end do
         val1(1) = r8vide()
         call rcvala(imate, ' ', 'THM_INIT', 0, ' ',&
                     [0.d0], dim1, ncra1, val1, icodre,&
@@ -693,12 +693,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_SATU -------------------------------
 ! =====================================================================
-            do 20 ii = 1, dim2
+            do ii = 1, dim2
                 val2(ii) = 0.0d0
-20          continue
-            do 30 ii = 1, dim3
+            end do
+            do ii = 1, dim3
                 val3(ii) = 0.0d0
-30          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra2, val2, icodre,&
                         0)
@@ -733,7 +733,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra3, val3, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra2(5), val2(5), icodre,&
                             1)
@@ -762,12 +762,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------
 ! =====================================================================
-            do 41 ii = 1, dim4
+            do ii = 1, dim4
                 val4(ii) = 0.0d0
-41          continue
-            do 50 ii = 1, dim5
+            end do
+            do ii = 1, dim5
                 val5(ii) = 0.0d0
-50          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra4, val4, icodre,&
                         0)
@@ -801,7 +801,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, ncra5, val5, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra4(6), val4(6), icodre,&
                             1)
@@ -830,15 +830,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------
 ! =====================================================================
-            do 60 ii = 1, dim6
+            do ii = 1, dim6
                 val6(ii) = 0.0d0
-60          continue
-            do 70 ii = 1, dim7
+            end do
+            do ii = 1, dim7
                 val7(ii) = 0.0d0
-70          continue
-            do 80 ii = 1, dim8
+            end do
+            do ii = 1, dim8
                 val8(ii) = 0.0d0
-80          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, 'TEMP',&
                         [0.d0], 2, ncra6, val6, icodre,&
                         0)
@@ -874,7 +874,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 2, ncra8, val8, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra6(6), val6(6), icodre,&
                             1)
@@ -927,18 +927,18 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------
 ! =====================================================================
-            do 90 ii = 1, dim9+1
+            do ii = 1, dim9+1
                 val9(ii) = 0.0d0
-90          continue
-            do 100 ii = 1, dim10
+            end do
+            do ii = 1, dim10
                 val10(ii) = 0.0d0
-100          continue
-            do 110 ii = 1, dim11
+            end do
+            do ii = 1, dim11
                 val11(ii) = 0.0d0
-110          continue
-            do 120 ii = 1, dim12
+            end do
+            do ii = 1, dim12
                 val12(ii) = 0.0d0
-120          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra9, val9, icodre,&
                         0)
@@ -978,7 +978,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 2, ncra12, val12, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra9(6), val9(6), icodre,&
                             1)
@@ -1048,21 +1048,21 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE   -----------
 ! =====================================================================
-            do 91 ii = 1, dim35+1
+            do ii = 1, dim35+1
                 val35(ii) = 0.0d0
-91          continue
-            do 101 ii = 1, dim36
+            end do
+            do ii = 1, dim36
                 val36(ii) = 0.0d0
-101          continue
-            do 111 ii = 1, dim37
+            end do
+            do ii = 1, dim37
                 val37(ii) = 0.0d0
-111          continue
-            do 121 ii = 1, dim38
+            end do
+            do ii = 1, dim38
                 val38(ii) = 0.0d0
-121          continue
-            do 131 ii = 1, dim39
+            end do
+            do ii = 1, dim39
                 val39(ii) = 0.0d0
-131          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra35, val35, icodre,&
                         0)
@@ -1106,7 +1106,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         [0.d0], 2, ncra38, val38, icodre,&
                         0)
 !
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra35(6), val35(6), icodre,&
                             1)
@@ -1183,18 +1183,18 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_    -----------
 ! =====================================================================
-            do 991 ii = 1, dim35+1
+            do ii = 1, dim35+1
                 val35(ii) = 0.0d0
-991          continue
-            do 9101 ii = 1, dim36
+            end do
+            do ii = 1, dim36
                 val36(ii) = 0.0d0
-9101          continue
-            do 9111 ii = 1, dim37
+            end do
+            do ii = 1, dim37
                 val37(ii) = 0.0d0
-9111          continue
-            do 9131 ii = 1, dim39
+            end do
+            do ii = 1, dim39
                 val39(ii) = 0.0d0
-9131          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, crad35, val35, icodre,&
                         0)
@@ -1232,7 +1232,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         [0.d0], 1, crad37, val37, icodre,&
                         0)
 !
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, crad35(6), val35(6), icodre,&
                             1)
@@ -1308,15 +1308,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------
 ! =====================================================================
-            do 130 ii = 1, dim13+1
+            do ii = 1, dim13+1
                 val13(ii) = 0.0d0
-130          continue
-            do 141 ii = 1, dim14
+            end do
+            do ii = 1, dim14
                 val14(ii) = 0.0d0
-141          continue
-            do 150 ii = 1, dim15
+            end do
+            do ii = 1, dim15
                 val15(ii) = 0.0d0
-150          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra13, val13, icodre,&
                         0)
@@ -1353,7 +1353,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, ncra15, val15, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra13(6), val13(6), icodre,&
                             1)
@@ -1420,12 +1420,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------
 ! =====================================================================
-            do 160 ii = 1, dim16+1
+            do ii = 1, dim16+1
                 val16(ii) = 0.0d0
-160          continue
-            do 170 ii = 1, dim17
+            end do
+            do ii = 1, dim17
                 val17(ii) = 0.0d0
-170          continue
+            end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra16, val16, icodre,&
                         0)
@@ -1459,7 +1459,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra17, val17, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra16(5), val16(5), icodre,&
                             1)
@@ -1569,12 +1569,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_SATU -------------------------------
 ! =====================================================================
-            do 180 ii = 1, dim18
+            do ii = 1, dim18
                 val18(ii) = 0.0d0
-180          continue
-            do 190 ii = 1, dim19
+            end do
+            do ii = 1, dim19
                 val19(ii) = 0.0d0
-190          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE FCT DE PHI
 !
@@ -1635,7 +1635,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], dim19-1, ncra19, val19, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra18(8), val18(8), icodre,&
                             0)
@@ -1775,12 +1775,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------
 ! =====================================================================
-            do 200 ii = 1, dim20
+            do ii = 1, dim20
                 val20(ii) = 0.0d0
-200          continue
-            do 210 ii = 1, dim21
+            end do
+            do ii = 1, dim21
                 val21(ii) = 0.0d0
-210          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -1843,7 +1843,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], dim21, ncra21, val21, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra20(9), val20(9), icodre,&
                             0)
@@ -1981,15 +1981,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------
 ! =====================================================================
-            do 220 ii = 1, dim22
+            do ii = 1, dim22
                 val22(ii) = 0.0d0
-220          continue
-            do 230 ii = 1, dim23
+            end do
+            do ii = 1, dim23
                 val23(ii) = 0.0d0
-230          continue
-            do 241 ii = 1, dim24
+            end do
+            do   ii = 1, dim24
                 val24(ii) = 0.0d0
-241          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -2052,7 +2052,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 1, 'TEMP',&
                         [t], 3, ncra24, val24, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra22(9), val22(9), icodre,&
                             0)
@@ -2165,7 +2165,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             valpar, 5, ncra22(24), val22(24), icodre,&
                             1)
             endif
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra22(17), val22(17), icodre,&
                             0)
@@ -2243,18 +2243,18 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------
 ! =====================================================================
-            do 250 ii = 1, dim25
+            do ii = 1, dim25
                 val25(ii) = 0.0d0
-250          continue
-            do 260 ii = 1, dim26
+            end do
+            do ii = 1, dim26
                 val26(ii) = 0.0d0
-260          continue
-            do 270 ii = 1, dim27
+            end do
+            do ii = 1, dim27
                 val27(ii) = 0.0d0
-270          continue
-            do 280 ii = 1, dim28
+            end do
+            do ii = 1, dim28
                 val28(ii) = 0.0d0
-280          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -2322,7 +2322,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 1, ncra28, val28, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra25(9), val25(9), icodre,&
                             0)
@@ -2437,7 +2437,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             valpar, 5, ncra25(24), val25(24), icodre,&
                             1)
             endif
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra25(17), val25(17), icodre,&
                             0)
@@ -2560,18 +2560,18 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE  --------------
 ! =====================================================================
-            do 251 ii = 1, dim40
+            do ii = 1, dim40
                 val40(ii) = 0.0d0
-251          continue
-            do 261 ii = 1, dim41
+            end do
+            do ii = 1, dim41
                 val41(ii) = 0.0d0
-261          continue
-            do 271 ii = 1, dim42
+            end do
+            do ii = 1, dim42
                 val42(ii) = 0.0d0
-271          continue
-            do 281 ii = 1, dim43
+            end do
+            do ii = 1, dim43
                 val43(ii) = 0.0d0
-281          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -2639,7 +2639,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 1, ncra43, val43, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra40(9), val40(9), icodre,&
                             0)
@@ -2755,7 +2755,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             valpar, 5, ncra40(24), val40(24), icodre,&
                             1)
             endif
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra40(17), val40(17), icodre,&
                             0)
@@ -2905,15 +2905,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ--------------
 ! =====================================================================
-            do 9251 ii = 1, dim40
+            do ii = 1, dim40
                 val40(ii) = 0.0d0
-9251          continue
-            do 9261 ii = 1, dim41
+            end do
+            do ii = 1, dim41
                 val41(ii) = 0.0d0
-9261          continue
-            do 9271 ii = 1, dim42
+            end do
+            do ii = 1, dim42
                 val42(ii) = 0.0d0
-9271          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -2978,7 +2978,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], 3, crad42, val42, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, crad40(9), val40(9), icodre,&
                             0)
@@ -3094,7 +3094,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             valpar, 5, crad40(24), val40(24), icodre,&
                             1)
             endif
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, crad40(17), val40(17), icodre,&
                             0)
@@ -3216,15 +3216,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------
 ! =====================================================================
-            do 290 ii = 1, dim29
+            do ii = 1, dim29
                 val29(ii) = 0.0d0
-290          continue
-            do 300 ii = 1, dim30
+            end do
+            do ii = 1, dim30
                 val30(ii) = 0.0d0
-300          continue
-            do 310 ii = 1, dim31
+            end do
+            do ii = 1, dim31
                 val31(ii) = 0.0d0
-310          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -3289,7 +3289,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], 3, ncra31, val31, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra29(9), val29(9), icodre,&
                             0)
@@ -3402,7 +3402,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             valpar, 5, ncra29(24), val29(24), icodre,&
                             1)
             endif
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra29(17), val29(17), icodre,&
                             0)
@@ -3479,12 +3479,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------
 ! =====================================================================
-            do 320 ii = 1, dim32
+            do ii = 1, dim32
                 val32(ii) = 0.0d0
-320          continue
-            do 330 ii = 1, dim33
+            end do
+            do ii = 1, dim33
                 val33(ii) = 0.0d0
-330          continue
+            end do
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
@@ -3548,7 +3548,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, ncra33, val33, icodre,&
                         0)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra32(8), val32(8), icodre,&
                             0)
@@ -3642,7 +3642,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
                         valpar, 2, ncra32(23), val32(23), icodre,&
                         1)
-            if (ther .ne. ' ') then
+            if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra32(16), val32(16), icodre,&
                             0)
@@ -3733,7 +3733,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
         endif
     endif
-500  continue
+500 continue
 !
 ! =====================================================================
 end subroutine

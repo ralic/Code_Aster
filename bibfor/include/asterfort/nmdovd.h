@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
-                      defo)
-        character(len=24) :: modele
-        character(len=24) :: mesmai
-        integer :: nbma
-        character(len=19) :: ces2
-        character(len=16) :: comcod
-        character(len=16) :: defo
+    subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, &
+                      defo_comp, defo_comp_py)
+        character(len=8), intent(in) :: model
+        character(len=24), intent(in) :: list_elem_affe
+        logical, intent(in) :: l_affe_all
+        integer, intent(in) :: nb_elem_affe
+        character(len=19), intent(in) :: full_elem_s
+        character(len=16), intent(in) :: defo_comp
+        character(len=16), intent(in) :: defo_comp_py
     end subroutine nmdovd
 end interface

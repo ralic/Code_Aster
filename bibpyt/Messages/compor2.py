@@ -48,7 +48,7 @@ cata_msg={
 """),
 
 7 : _(u"""
-   La loi métallurgique META_LEMA_ANI n'est utilisable qu'avec le zirconium.
+   On ne peut pas utiliser les KIT_THM dans SIMU_POINT_MAT.
 """),
 
 8 : _(u"""
@@ -123,32 +123,6 @@ La rotation de réseau n'est pas compatible avec RUNGE_KUTTA. Utiliser l'intégr
    GRAD_IMPOSE n'est utilisable qu'avec DEFORMATION='SIMO_MIEHE'.
 """),
 
-23: _(u"""
-Mot-clef : %(k1)s - occurrence  %(i1)d : comportement %(k2)s - nombre de variables internes : %(i2)d
-Noms des variables internes :"""),
-
-24: _(u"""   V%(i1)d : %(k1)s"""),
-
-25: _(u"""
-Pour les noms des variables internes du MONOCRISTAL, voir DEFI_COMPOR."""),
-
-26: _(u"""
-MONOCRISTAL : en grandes déformations, il y a 18 variables internes supplémentaires :
-Le tableau des variables internes comporte, avant les 3 dernières variables internes habituelles :
-FP : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
-FE : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
-"""),
-
-27: _(u"""
-Mot-clef : %(k1)s - nombre de grains  %(i1)d : localisation %(k2)s 
-nombre d'occurrences de MONOCRISTAL différentes : %(i2)d - nombre de variables internes : %(i3)d
-Noms des variables internes :"""),
-
-28: _(u""" A partir de la variable interne %(i1)d : pour chaque grain : """),
-
-29: _(u""" Dernière variable interne V%(i1)d : %(k1)s"""),
-
-30: _(u""" ... jusqu'à V%(i1)d """),
 
 31: _(u"""
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 
@@ -270,7 +244,9 @@ Noms des variables internes :"""),
   Les colonnes ABSCISSE et ORDONNEE d'une TABLE_REF doivent avoir même cardinal et contenir des réels.
 """),
 
-50: _(u"""
+
+
+70: _(u"""
 #---------------------------------------------------------------------------------------------------------------------------
 # test pour analyser à l'aide de SIMU_POINT_MAT l'échec d'intégration du comportement sur la maille <%(k1)s>, point <%(i1)d>
 #---------------------------------------------------------------------------------------------------------------------------
@@ -282,91 +258,93 @@ LIST=DEFI_LIST_REEL(DEBUT= %(r1).15E , INTERVALLE=_F(JUSQU_A= %(r2).15E , NOMBRE
 """),
 
 
-51: _(u"""
+71: _(u"""
 %(k1)s=DEFI_FONCTION(NOM_PARA='INST',VALE=( %(r1).15E , %(r2).15E, %(r3).15E,  %(r4).15E))
 """),
 
-52: _(u"""
+72: _(u"""
 RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
                       EPSI_IMPOSE=_F(EPXX=EXX, EPYY=EYY,EPZZ=EZZ,EPXY=EXY),                      
 """),
 
-53: _(u"""
+73: _(u"""
                       SUPPORT='ELEMENT', MODELISATION='C_PLAN',                      
 """),
 
-54: _(u"""
+74: _(u"""
 RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
                       EPSI_IMPOSE=_F(EPXX=EXX, EPYY=EYY,EPZZ=EZZ,EPXY=EXY,EPXZ=EXZ,EPYZ=EYZ),                      
 """),
 
-55: _(u"""
+75: _(u"""
                       EPSI_INIT=_F(EPXX= %(r1).15E , EPYY= %(r2).15E,  EPZZ= %(r3).15E,  EPXY= %(r4).15E,  EPXZ= %(r5).15E,  EPYZ= %(r6).15E ),
 """),
 
-56: _(u"""
+76: _(u"""
                       SIGM_INIT=_F(SIXX= %(r1).15E , SIYY= %(r2).15E,  SIZZ= %(r3).15E,  SIXY= %(r4).15E,  SIXZ= %(r5).15E,  SIYZ= %(r6).15E ),
                       VARI_INIT=_F(VALE=(
 """),
 
-57: _(u"""
+77: _(u"""
                       %(r1).15E,
 """),
 
-58: _(u"""
+78: _(u"""
                       COMPORTEMENT=_F(RELATION= '%(k1)s', 
 """),
 
-59: _(u"""
+79: _(u"""
                       NEWTON=_F(REAC_ITER=1),
 )
 FIN()                      
 """),
 
-60: _(u"""
+80: _(u"""
 )
 FIN()                      
 """),
 
-61: _(u"""
+81: _(u"""
 %(k1)s=DEFI_FONCTION(NOM_PARA='INST',VALE=( %(r1).15E, %(r2).15E, %(r3).15E, %(r4).15E))
 """),
 
-62: _(u"""
+82: _(u"""
                   AFFE_VARC=(
 """),
 
-63: _(u"""
+83: _(u"""
                               _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s,VALE_REF=%(r1).15E),
 """),
 
-64: _(u"""
+84: _(u"""
                               _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s),
 """),
 
 
-65: _(u"""
+85: _(u"""
                   ),
 """),
 
-66: _(u"""
+86: _(u"""
                       )),
 """),
 
-67: _(u"""
+87: _(u"""
                       COMPOR=%(k1)s,
 """),
 
-68: _(u"""
+88: _(u"""
                       ITER_INTE_MAXI=%(i1)d, RESI_INTE_RELA=%(r1).15E, ALGO_INTE='%(k1)s',
 """),
 
-69: _(u"""
+89: _(u"""
                       ITER_INTE_PAS=%(i1)d, PARM_THETA=%(r1).15E,
 """),
 
-70: _(u"""
+90: _(u"""
                       DEFORMATION='%(k1)s',
 """),
+
+
 
 }

@@ -27,6 +27,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/getvid.h"
 #include "asterfort/ndcrdy.h"
 #include "asterfort/ndlect.h"
 #include "asterfort/nmcrer.h"
@@ -76,8 +77,10 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: n1, n2
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
+    logical :: l_etat_init
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,6 +97,12 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 !
     call getres(k8bid, k16bid, nomcmd)
 !
+! - Initial state
+!
+    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, nbret=n1)
+    call getvid('ETAT_INIT', 'SIGM',      iocc=1, nbret=n2)
+    l_etat_init =  ((n1.ne.0).or.(n2.ne.0)) 
+!
 ! --- LECTURE DONNEES GENERALES
 !
     call nmlect(result, modele, mate, carele, compor,&
@@ -104,7 +113,7 @@ subroutine nmdata(result, modele, mate, carele, compor,&
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... LECTURE DONNEES COMPORTEMENT'
     endif
-    call nmdorc(modele, compor, carcri)
+    call nmdorc(modele(1:8), mate, l_etat_init, compor, carcri)
 !
 ! --- CRITERES DE CONVERGENCE GLOBAL
 !

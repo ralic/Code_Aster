@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine op5902(nboccp, compor)
-        integer :: nboccp
-        character(len=8) :: compor
+    subroutine op5902(nboccp, sdcomp)
+        integer, intent(in) :: nboccp
+        character(len=8), intent(in) :: sdcomp
     end subroutine op5902
 end interface

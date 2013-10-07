@@ -1,5 +1,25 @@
-subroutine pmdorc(compor, carcri, nbvari, incela)
+subroutine pmdorc(compor, carcri, nb_vari, incela)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterc/zaswri.h"
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/carc_read.h"
+#include "asterfort/comp_meca_cvar.h"
+#include "asterfort/comp_meca_l.h"
+#include "asterfort/comp_meca_pvar.h"
+#include "asterfort/comp_meca_read.h"
+#include "asterfort/imvari.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmdocv.h"
+#include "asterfort/utlcal.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,235 +37,185 @@ subroutine pmdorc(compor, carcri, nbvari, incela)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-!-----------------------------------------------------------------------
+!
+    character(len=16), intent(out) :: compor(20)
+    real(kind=8), intent(out) :: carcri(13)
+    integer, intent(out) :: nb_vari
+    integer, intent(out) :: incela
+!
+! --------------------------------------------------------------------------------------------------
+!
 !           OPERATEUR    CALC_POINT_MAT : LECTURE COMPOR ET CARCRI
-!-----------------------------------------------------------------------
-!      IDEM NMDORC MAIS SANS MODELEK
-! ----------------------------------------------------------------------
-! OUT COMPOR  : OBJET COMPOR(8) DECRIVANT LE TYPE DE COMPORTEMENT
-! OUT CARCRI  : OBJET CARCRI(13) CRITERES DE CONVERGENCE LOCAUX
+!
+! --------------------------------------------------------------------------------------------------
+!
+! OUT COMPOR  : OBJET COMPOR DECRIVANT LE TYPE DE COMPORTEMENT
+! OUT CARCRI  : OBJET CARCRI CRITERES DE CONVERGENCE LOCAUX
 ! OUT NBVARI  : NOMBRE DE VARIABLE INTERNES
-! OUT k       : =1 si COMP_INCR, =2 si COMP_ELAS
-#include "jeveux.h"
-#include "asterc/getexm.h"
-#include "asterc/getfac.h"
-#include "asterc/lcalgo.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lctest.h"
-#include "asterc/zaswri.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/imvari.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utlcal.h"
-#include "asterfort/utmess.h"
-    integer :: iret, n1, nbvari, k, icpri, typtgt, exits
-    integer :: ncomel, numlc, iteint, itepas, itdebo, nbocc, irett
-    integer :: nunit, indimp, ncmpma, dimaki, dimanv, ii, incela
+! OUT incela  : =1 si COMP_INCR, =2 si COMP_ELAS
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=19) :: list_vari_name
+    character(len=24) :: list_vale
+    integer :: j_lvalk, j_lvali, j_lnvar, j_lvalr
+    integer :: iocc, nbocc, unit_comp, i, nume_comp
     integer :: nbocc1, nbocc2, nbocc3
-!    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
-    parameter (dimaki=9)
-!    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
-    parameter (dimanv=4)
-    parameter (ncmpma=7+dimaki+dimanv)
-    character(len=8) :: sdcomp, tavari
-    character(len=16) :: compor(ncmpma), comp, comcod, algo, lcomel(5)
-    character(len=16) :: moclef(2)
-    character(len=16) :: tymatg, texte(2), txcp, defo
-    character(len=16) :: nomsub
-    character(len=128) :: nomlib
-    real(kind=8) :: carcri(13), resi, algor
-    real(kind=8) :: resid, pert, theta, tseuil, tolrad
-    logical :: iszmat
-    save indimp
-    data indimp /1/
-!-----------------------------------------------------------------------
+    character(len=16) :: keywordfact
+    character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp, mult_comp
+    logical :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm, l_etat_init
+    real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    moclef(1) = 'COMPORTEMENT'
-    call getfac(moclef(1), nbocc)
-    k=1
-
-    iszmat = .false.
-    call getvtx(moclef(1), 'RELATION', iocc=1, scal=comp, nbret=n1)
-    ncomel=1
-    lcomel(ncomel)=comp
-    txcp='ANALYTIQUE'
 !
-!     APPEL A LCINFO POUR RECUPERER LE NOMBRE DE VARIABLES INTERNES
-    call lccree(ncomel, lcomel, comcod)
-    call lcinfo(comcod, numlc, nbvari)
+    list_vari_name = '&&PMDORC.LIST_VARI'
+    list_vale      = '&&PMDORC.LIST_VALE'
+    keywordfact    = 'COMPORTEMENT'
+    do i = 1,20
+        compor(i) = 'VIDE'
+    end do
 !
-!     NOMS DES VARIABLES INTERNES
-    if (indimp .eq. 1) then
-        call imvari(moclef(1), 1, ncomel, lcomel, comcod,&
-                    nbvari, tavari)
+! - Initial state
+!
+    call getfac('SIGM_INIT', nbocc1)
+    call getfac('EPSI_INIT', nbocc2)
+    call getfac('VARI_INIT', nbocc3)
+    l_etat_init = (nbocc1+nbocc2+nbocc3) > 0
+!
+! - Read informations from command file
+!
+    call comp_meca_read(list_vale, l_etat_init, nbocc)
+    ASSERT(nbocc.eq.1)
+!
+! - Count internal variables
+!
+    call comp_meca_cvar(list_vale)
+!
+! - Save it
+!
+    iocc = 1
+    call jeveuo(list_vale(1:19)//'.NVAR', 'L', j_lnvar)
+    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
+    call jeveuo(list_vale(1:19)//'.VALI', 'L', j_lvali)
+    nb_vari      = zi(j_lnvar+10*(iocc-1) -1 + 2)
+    nume_comp    = zi(j_lnvar+10*(iocc-1) -1 + 1)
+    unit_comp    = zi(j_lvali+2*(iocc-1) -1 + 2)
+    rela_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 1)(1:16)
+    defo_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 2)(1:16)
+    type_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 3)(1:16)
+    mult_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 14)(1:16)
+    type_matg    = zk24(j_lvalk+16*(iocc-1) -1 + 15)(1:16)
+    post_iter    = zk24(j_lvalk+16*(iocc-1) -1 + 16)(1:16)
+    call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
+    call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
+    call comp_meca_l(rela_comp, 'ZMAT'     , l_zmat)
+    call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
+    call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
+    call comp_meca_l(rela_comp, 'KIT_THM'  , l_kit_thm)
+    if (l_kit_thm) then
+        call utmess('F', 'COMPOR2_7')
     endif
-    indimp=0
 !
-    call getvtx(moclef(1), 'DEFORMATION', iocc=1, scal=defo, nbret=n1)
-!     VERIF QUE DEFO EST POSSIBLE POUR COMP
-    call lctest(comcod, 'DEFORMATION', defo, iret)
-    if (iret .eq. 0) then
-        texte(1)=defo
-        texte(2)=comp
-        call utmess('F', 'COMPOR1_44', nk=2, valk=texte)
-    endif
-    if (defo .eq. 'SIMO_MIEHE') nbvari=nbvari+6
-!
-!     CAS PARTICULIER DU MONOCRISTAL
-    if (comp(1:8) .eq. 'MONOCRIS') then
-        call getvid(moclef(1), 'COMPOR', iocc=1, scal=sdcomp, nbret=n1)
-        call jeveuo(sdcomp//'.CPRI', 'L', icpri)
-        nbvari=zi(icpri-1+3)
-        compor(7) = sdcomp
-        if (defo .eq. 'SIMO_MIEHE') nbvari=nbvari+9+9
-    else if (comp(1:8).eq.'POLYCRIS') then
-        call getvid(moclef(1), 'COMPOR', iocc=1, scal=sdcomp, nbret=n1)
-        call jeveuo(sdcomp//'.CPRI', 'L', icpri)
-        nbvari=zi(icpri-1+3)
-        compor(7) = sdcomp
-    endif
-!
-    if (comp(1:4) .eq. 'ZMAT') then
-        iszmat = .true.
-        call getvis(moclef(1), 'NB_VARI', iocc=1, scal=nbvari, nbret=n1)
-        call getvis(moclef(1), 'UNITE', iocc=1, scal=nunit, nbret=n1)
-        write (compor(7),'(I16)') nunit
-    else if ((comp.eq.'UMAT').or.(comp.eq.'MFRONT')) then
-        call getvis(moclef(1), 'NB_VARI', iocc=1, scal=nbvari, nbret=n1)
-!       POUR LES COMPORTEMENTS UMAT
-!       ON STOCKE LA LIB DANS KIT1-KIT8 (128 CARACTERES)
-!       ET LA SUBROUTINE DANS KIT9
-        call getvtx(moclef(1), 'LIBRAIRIE', iocc=1, scal=nomlib, nbret=n1)
-        call getvtx(moclef(1), 'NOM_ROUTINE', iocc=1, scal=nomsub, nbret=n1)
-        do 30 ii = 1, dimaki-1
-            compor(ii+7) = nomlib(16*(ii-1)+1:16*ii)
-30      continue
-        compor(dimaki+7) = nomsub
-!       POUR EVITER DE PLANTER DANS LC0050 / TECAEL
-        comp(9:16)='OP0033__'
-    endif
-
-!   determination du caratere incremental ou elastique    
-    call lctest(comcod, 'PROPRIETES', 'COMP_ELAS', iret)
-    if (iret .eq. 0) then
-        moclef(2)='COMP_INCR'
-        incela=1
+    if (type_comp.eq.'COMP_ELAS') then
+        incela = 2
+    elseif (type_comp.eq.'COMP_INCR') then
+        incela = 1
     else
-        moclef(2)='COMP_ELAS'
-        incela=2
-        
-!       exceptions
-
-        call getfac('SIGM_INIT', nbocc1)
-        call getfac('EPSI_INIT', nbocc2)
-        call getfac('VARI_INIT', nbocc3)
-        if ((nbocc1+nbocc2+nbocc3)>0) then
-            moclef(2)='COMP_INCR'
-            incela=1
-        endif
-    endif
-    
-    compor(1)=comp
-    write (compor(2),'(I16)') nbvari
-    compor(3)=defo
-    compor(4)=moclef(2)
-    compor(5)=txcp
-    write (compor(6),'(I16)') numlc
-!
-!     ALGORITHME D'INTEGRATION
-    call getvtx(moclef(1), 'ALGO_INTE', iocc=1, scal=algo, nbret=iret)
-    if (iret .eq. 0) then
-!        LOI DE COMPORTEMENT (1ERE VALEUR DE LA LISTE)
-        call lcalgo(comcod, algo)
+        ASSERT(.false.)
     endif
 !
-!     CRITERES DE CONVERGENCE
-    call getvr8(moclef(1), 'RESI_INTE_RELA', iocc=1, scal=resi, nbret=iret)
-    call getvis(moclef(1), 'ITER_INTE_MAXI', iocc=1, scal=iteint, nbret=iret)
-!
-    itepas = 0
-    if (k .eq. 1) then
-        call getvis(moclef(1), 'ITER_INTE_PAS', iocc=1, scal=itepas, nbret=iret)
-    endif
-!
-!     CPLAN DEBORST  ET COMP1D DEBORST INUTILES AVEC SUPPORT='POINT'
-    resid=1.d-6
-    pert=0.d0
-    itdebo=1
-!     PASSAGE NOM ALGO -> IDENTIFICATEUR (VALEUR REELLE)
-    call utlcal('NOM_VALE', algo, algor)
-    typtgt = 0
-    if (moclef(1) .eq. 'COMPORTEMENT') then
-        exits = getexm(moclef(1),'TYPE_MATR_TANG')
-        if (exits .eq. 1) then
-!        dans ZR(JVALV+1) on stocke le type de matrice tgte
-            call getvtx(moclef(1), 'TYPE_MATR_TANG', iocc=1, scal=tymatg, nbret=iret)
-            if (iret .eq. 0) then
-                typtgt = 0
-            else
-                if (tymatg .eq. 'PERTURBATION') then
-                    typtgt = 1
-                    call getvr8(moclef(1), 'VALE_PERT_RELA', iocc=1, scal=pert, nbret=iret)
-                else if (tymatg.eq.'VERIFICATION') then
-                    typtgt = 2
-                    call getvr8(moclef(1), 'VALE_PERT_RELA', iocc=1, scal=pert, nbret=iret)
-                endif
-!              Verif que TYMATG est possible pour COMP
-                call lctest(comcod, 'TYPE_MATR_TANG', tymatg, irett)
-                if (irett .eq. 0) then
-                    texte(1)=tymatg
-                    texte(2)=comp
-                    call utmess('F', 'COMPOR1_46', nk=2, valk=texte)
-                endif
-            endif
-        endif
-    endif
-!
-    tseuil=-10.d0
-!
-!     TOLERANCE POUR LE CRITERE DE RADIALITE
-    if (moclef(1) .eq. 'COMPORTEMENT') then
-        if (typtgt .eq. 0) then
-            call getvr8(moclef(1), 'RESI_RADI_RELA', iocc=1, scal=tolrad, nbret=iret)
-            if (iret .ne. 0) then
-                tseuil=tolrad
-            else
-                tseuil=-10.d0
-            endif
-        endif
-    endif
-!
-    if (k .eq. 1) then
-        call getvr8(moclef(1), 'PARM_THETA', iocc=1, scal=theta, nbret=iret)
+    compor(1)  = rela_comp
+    write (compor(2),'(I16)') nb_vari
+    compor(3)  = defo_comp
+    compor(4)  = type_comp    
+    write (compor(6),'(I16)') nume_comp
+    if (l_cristal) then
+        compor(7) = mult_comp
     else
-        theta=1.d0
+         write (compor(7),'(I16)') unit_comp
     endif
-    carcri(1)=iteint
-    carcri(2)=typtgt
-    carcri(3)=resi
-    carcri(4)=theta
-    carcri(5)=itepas
-    carcri(6)=algor
-    carcri(7)=pert
-    carcri(8)=resid
-    carcri(9)=itdebo
-    carcri(10)=tseuil
-    carcri(11)=0.d0
-    carcri(12)=0.d0
-    carcri(13)=0.d0
+    compor(8)  = zk24(j_lvalk+16*(iocc-1) -1 + 5)(1:16)
+    compor(9)  = zk24(j_lvalk+16*(iocc-1) -1 + 6)(1:16)
+    compor(10) = zk24(j_lvalk+16*(iocc-1) -1 + 7)(1:16)
+    compor(11) = zk24(j_lvalk+16*(iocc-1) -1 + 8)(1:16)
+    if (l_exte_comp) then
+        compor(12) = zk24(j_lvalk+16*(iocc-1) -1 + 9)(1:16)
+    else
+        write (compor(12),'(I16)') iocc
+    endif
+    if (l_exte_comp) then
+        if (l_matr_tgsc) call utmess('F','COMPOR4_59')
+        if (l_crit_rupt) call utmess('F','COMPOR4_60')
+        compor(13) = zk24(j_lvalk+16*(iocc-1) -1 + 10)(1:16)
+        compor(14) = zk24(j_lvalk+16*(iocc-1) -1 + 11)(1:16)
+    else
+        compor(13) = zk24(j_lvalk+16*(iocc-1) -1 + 15)(1:16)
+        compor(14) = zk24(j_lvalk+16*(iocc-1) -1 + 16)(1:16)
+    endif
+    compor(15) = zk24(j_lvalk+16*(iocc-1) -1 + 12)(1:16)
+    compor(16) = zk24(j_lvalk+16*(iocc-1) -1 + 13)(1:16)
 !
-!     SI ZMAT, ON REINITIALISE LES ZASTER_HANDLER POUR FORCER
-!     LA RELECTURE DES FICHIERS DECRIVANT LES COMPORTEMENTS
-    if (iszmat) then
-        call zaswri()
-    endif
+! - No THM
+!
+    write (compor(17),'(I16)') 0
+    write (compor(18),'(I16)') 0
+    write (compor(19),'(I16)') 0
+    write (compor(20),'(I16)') 0
+!
+! - For LC0050.F90
+!
+    compor(17) = 'POINT'
+!
+    call jedetr(list_vale(1:19)//'.NVAR')
+    call jedetr(list_vale(1:19)//'.VALK')
+    call jedetr(list_vale(1:19)//'.VALI')
+!
+! - Prepare informations about internal variables
+!
+    call comp_meca_pvar(list_vari_name, compor_list = compor)
+!
+! - Print informations about internal variables
+!
+    call imvari(list_vari_name, compor_list = compor)
+!
+! - Read informations from command file
+!
+    call carc_read(list_vale, nbocc)
+    ASSERT(nbocc.eq.1)
+!
+! - Save it
+!
+    call jeveuo(list_vale(1:19)//'.VALR', 'L', j_lvalr)
+    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
+    iocc = 1
+!
+    algo_inte  = zk24(j_lvalk+2*(iocc-1) -1 + 2)(1:16)
+    call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+    call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
+    call utlcal('NOM_VALE', algo_inte, algo_inte_r)
+!
+    carcri(1)  =  iter_inte_maxi
+    carcri(2)  =  zr(j_lvalr+13*(iocc-1) -1 + 2) 
+    carcri(3)  =  resi_inte_rela
+    carcri(4)  =  zr(j_lvalr+13*(iocc-1) -1 + 4) 
+    carcri(5)  =  zr(j_lvalr+13*(iocc-1) -1 + 5) 
+    carcri(6)  =  algo_inte_r
+    carcri(7)  =  zr(j_lvalr+13*(iocc-1) -1 + 7) 
+    carcri(8)  =  zr(j_lvalr+13*(iocc-1) -1 + 8) 
+    carcri(9)  =  zr(j_lvalr+13*(iocc-1) -1 + 9) 
+    carcri(10) =  zr(j_lvalr+13*(iocc-1) -1 + 10)
+    carcri(11) =  zr(j_lvalr+13*(iocc-1) -1 + 11)
+    carcri(12) =  zr(j_lvalr+13*(iocc-1) -1 + 12)
+    carcri(13) =  zr(j_lvalr+13*(iocc-1) -1 + 13)
+!
+    call jedetr(list_vale(1:19)//'.VALR')
+    call jedetr(list_vale(1:19)//'.VALK')
+!
+! - Init ZASTER_HANDLER
+!
+    if (l_zmat) call zaswri()
 !
     call jedema()
 !

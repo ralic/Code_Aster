@@ -28,7 +28,7 @@ subroutine calc_meta_field(ligrmo, chmate, tempe, compor, phasin, &
 !
     character(len=19), intent(in) :: meta_out
     character(len=24), intent(in) :: ligrmo
-    character(len=24), intent(in) :: compor
+    character(len=19), intent(in) :: compor
     character(len=24), intent(in) :: phasin
     character(len=24), intent(in) :: chmate
     character(len=24), intent(in) :: tempe

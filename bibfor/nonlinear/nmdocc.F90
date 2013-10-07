@@ -1,6 +1,22 @@
-subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
-                  ncmpma, meca, nomcmd)
-! person_in_charge: jean-michel.proix at edf.fr
+subroutine nmdocc(model, chmate, l_etat_init, compor)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/comp_init.h"
+#include "asterfort/comp_meca_chck.h"
+#include "asterfort/comp_meca_cvar.h"
+#include "asterfort/comp_meca_elas.h"
+#include "asterfort/comp_meca_full.h"
+#include "asterfort/comp_meca_pvar.h"
+#include "asterfort/comp_meca_read.h"
+#include "asterfort/comp_meca_save.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imvari.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,343 +33,90 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     SAISIE ET STOCKAGE DES PARAMETRES LOCAUX DE COMPORTEMENT
+! person_in_charge: mickael.abbas at edf.fr
 !
-! OUT COMPOR : CARTE DECRIVANT LES PARAMETRES K16 DU COMPORTEMENT
-! IN MODELE  : LE MODELE
-! IN NBMO1   : NOMBRE DE MOTS-CLES (1 OU 2) COMP_INCR / COMP_ELAS
-! IN MOCLEF  : MOTS-CLE FACTEUR COMPORTEMENT
-! IN NCMPMA  : NOMBRE DE CMP DE LA GRANDEUR COMPOR
-! IN NOMCMP  : NOMS DES CMP DE LA GRANDEUR COMPOR
-! IN MECA    : COMMANDE MECANIQUE OU PAS
-! IN NOMCMD  : NOMS DE LA COMMANDE
-! ----------------------------------------------------------------------
-    implicit none
-#include "jeveux.h"
-#include "asterc/getexm.h"
-#include "asterc/getfac.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lctest.h"
-#include "asterc/zaswri.h"
-#include "asterfort/alcart.h"
-#include "asterfort/crcmel.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/imvari.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmdocp.h"
-#include "asterfort/nmdogd.h"
-#include "asterfort/nmdoki.h"
-#include "asterfort/nmdovd.h"
-#include "asterfort/nmdovm.h"
-#include "asterfort/nmdpmf.h"
-#include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
-#include "asterfort/utmess.h"
-    integer :: icmp, k, jma, nbma, iret, i, n1, jvalv, ncmpma, jncmp
-    integer :: nbmo1, nbocc, dimaki, dimanv, nbkit, numlc, nbvari, icpri
-    integer :: nbvarz, nunit, ii, inv, indimp, n2
-!    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
-    parameter (dimaki=9)
-!    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
-    parameter (dimanv=4)
-    integer :: nbnvi(dimanv), ncomel, nvmeta, nt
-    character(len=8) :: noma, typmcl(2), nomcmp(*), sdcomp, tavari
-    character(len=16) :: tymatg, moclef, comp, txcp, defo, mocles(2)
-    character(len=16) :: texte(2), comcod, lcomel(10), nomkit(dimaki)
-    character(len=16) :: nomsub, nomcmd, comco2, crirup, etatini
-    character(len=19) :: ces2, compor
-    character(len=24) :: mesmai, modele
-    character(len=128) :: nomlib
-    integer :: exist
-    logical :: exipmf, meca, iszmat
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: chmate
+    logical, intent(in) :: l_etat_init
+    character(len=19), intent(out) :: compor
 !
-    save indimp
-    data indimp /1/
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! COMPOR <CARTE> - MECHANICS
+!
+! SAISIE ET STOCKAGE DES PARAMETRES LOCAUX DE COMPORTEMENT
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  model       : name of model
+! In  chmate      : name of material field
+! In  l_etat_init : .true. if initial state is defined
+! Out compor      : name of <CARTE> COMPOR
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_cmp, nbocc
+    integer :: iret, ibid
+    character(len=8) :: mesh
+    character(len=19) :: list_vale, comp_elas, full_elem_s
+    character(len=19) :: list_vari_name
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    exipmf = .false.
-    iszmat = .false.
-    compor = '&&NMDOCC.COMPOR'
+! - Initializations
 !
-    call dismoi('F', 'NOM_MAILLA', modele(1:8), 'MODELE', i,&
-                noma, iret)
+    compor         = '&&NMDOCC.COMPOR'
+    list_vale      = '&&NMDOCC.LIST_VALE'
+    comp_elas      = '&&NMDOCC.COMP_ELAS'
+    full_elem_s    = '&&NMDOCC.FULL_ELEM'
+    list_vari_name = '&&NMDOCC.LIST_VARI'
+    call dismoi('F', 'NOM_MAILLA', model, 'MODELE', ibid,&
+                mesh, iret)
 !
-! ======================================================================
-    if (meca) then
-!        ON INITIALISE LA CARTE COMPOR AVEC 'ELAS' SUR TOUT LE MAILLAGE
-        ces2='&&NMDOCC.CES2'
-        call crcmel(nbmo1, moclef, compor, ces2, modele,&
-                    ncmpma, nomcmp, nt)
+! - Create COMPOR <CARTE>
 !
-!        SI COMP_ELAS ET COMP_INCR SONT ABSENTS (POUR CALC_G)
-        if (nt .eq. 0) then
-            if (nomcmd(1:6) .eq. 'CALC_G') then
-                goto 170
-            else if (nomcmd(1:9).eq.'LIRE_RESU') then
-!                       1234567890123456789
-                compor = '                   '
-                goto 170
-            endif
-        endif
-    else
-        call alcart('V', compor, noma, 'COMPOR')
-    endif
-! ======================================================================
+    call comp_init(mesh, compor, 'V', nb_cmp)
 !
-    mocles(1) = 'GROUP_MA'
-    mocles(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-    mesmai = '&&NMDOCC'//'.MES_MAILLES'
-    txcp='ANALYTIQUE'
+! - Set ELASTIQUE COMPOR
 !
-! ======================================================================
-!                       REMPLISSAGE DE LA CARTE COMPOR :
-! --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR COMPORTEMENT
-! ======================================================================
+    call comp_meca_elas(compor, nb_cmp)
 !
-    call jeveuo(compor//'.NCMP', 'E', jncmp)
-    call jeveuo(compor//'.VALV', 'E', jvalv)
-    do 90 icmp = 1, ncmpma
-        zk8(jncmp+icmp-1) = nomcmp(icmp)
-90  end do
+! - Read informations from command file
 !
-!     MOTS CLES FACTEUR
-        call getfac(moclef, nbocc)
+    call comp_meca_read(list_vale, l_etat_init, nbocc)
+    if (nbocc.eq.0) goto 99
 !
-!       NOMBRE D'OCCURRENCES
-        do 150 k = 1, nbocc
+! - Create <CARTE> of FULL_MECA option for checking
 !
-            call getvtx(moclef, 'RELATION', iocc=k, scal=comp, nbret=n1)
-            ncomel=1
-            lcomel(ncomel)=comp
+    call comp_meca_full(model, compor, full_elem_s)
 !
-            call reliem(modele, noma, 'NU_MAILLE', moclef, k,&
-                        2, mocles, typmcl, mesmai, nbma)
+! - Check informations in COMPOR <CARTE>
 !
-!         VERIFICATIONS DE LA COMPATIBILITE MODELE-COMPORTEMENT
-!         AFFECTATION AUTOMATIQUE DE DEBORST LE CAS ECHEANT
-            if (meca) then
-                call lccree(ncomel, lcomel, comco2)
-                call nmdovm(modele, mesmai, nbma, ces2, comco2,&
-                            comp, txcp)
-            endif
+    call comp_meca_chck(model, mesh, full_elem_s, list_vale)
 !
-!         SAISIE ET VERIFICATION DU TYPE DE DEFORMATION UTILISEE
-            call nmdogd(moclef, comp, k, ncomel, lcomel,&
-                        defo)
+! - Count internal variables
 !
-!         VERIFICATIONS DE LA COMPATIBILITE MODELE-DEFORMATION
-            if (meca) then
-                call lccree(1, lcomel(2), comco2)
-                call nmdovd(modele, mesmai, nbma, ces2, comco2,&
-                            lcomel(2))
-            endif
+    call comp_meca_cvar(list_vale)
 !
-!         POUR COMPORTEMENTS KIT_
-            call nmdoki(moclef, modele, comp, k, dimaki,&
-                        nbkit, nomkit, nbnvi, ncomel, lcomel,&
-                        numlc, nvmeta)
-
-            if (comp.eq.'META_LEMA_ANI') then
-                if (nomkit(1).ne.'ZIRC') then
-                    call utmess('F','COMPOR2_7')
-                endif
-            endif
+! - Save informations in COMPOR <CARTE>
 !
-!         PRISE EN COMPTE DE DEBORST
-            call nmdocp(ncomel, lcomel, txcp)
+    call comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
 !
-!         APPEL A LCINFO POUR RECUPERER LE NOMBRE DE VARIABLES INTERNES
-            call lccree(ncomel, lcomel, comcod)
-            call lcinfo(comcod, numlc, nbvari)
+! - Prepare informations about internal variables
 !
-            if (comp .eq. 'ROUSSELIER') then
-                nbvari=nbvari-6
-            endif
+    call comp_meca_pvar(list_vari_name, compor_cart = compor)
 !
-!         NOMS DES VARIABLES INTERNES
-            if (indimp .eq. 1) then
-                call imvari(moclef, k, ncomel, lcomel, comcod,&
-                            nbvari, tavari)
-            endif
+! - Print informations about internal variables
 !
-!         CAS PARTICULIER DE META A INTEGRER DANS CATA_COMPORTEMENT.PY
-            if (comp(1:4) .eq. 'META') then
-                if (defo .eq. 'SIMO_MIEHE') nvmeta=nvmeta+1
-                if (defo .eq. 'GDEF_LOG') nvmeta=nvmeta+6
-                nbvari=nvmeta
-            endif
+    call imvari(list_vari_name, compor_cart = compor)
 !
-!         VERIF QUE DEFO EST POSSIBLE POUR COMP
-            call lctest(comcod, 'DEFORMATION', defo, iret)
-            if (iret .eq. 0) then
-                texte(1)=defo
-                texte(2)=comp
-                call utmess('F', 'COMPOR1_44', nk=2, valk=texte)
-            endif
+    call jedetr(list_vale(1:19)//'.VALK')
+    call jedetr(list_vale(1:19)//'.VALI')
+    call jedetr(list_vale(1:19)//'.NVAR')
 !
-! ======================================================================
-!         CAS PARTICULIERS
-            tymatg=' '
-            exist = getexm(moclef,'TYPE_MATR_TANG')
-            if (exist .eq. 1) then
-                call getvtx(moclef, 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=n1)
-                if (n1 .gt. 0) then
-                    if (tymatg .eq. 'TANGENTE_SECANTE') nbvari=nbvari+1
-                endif
-            endif
-!         CAS PARTICULIER DE MONOCRISTAL
-            if (comp(1:8) .eq. 'MONOCRIS') then
-                call getvid(moclef, 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
-                call jeveuo(sdcomp//'.CPRI', 'L', icpri)
-                nbvari=zi(icpri-1+3)
-                zk16(jvalv-1+7) = sdcomp
-                if (txcp .eq. 'DEBORST') nbvari=nbvari+4
-                if ((defo.eq.'SIMO_MIEHE') .and. (comp.eq.'MONOCRISTAL')) then
-                    nbvari=nbvari+9+9
-                endif
-            else if (comp(1:8).eq.'POLYCRIS') then
-                call getvid(moclef, 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
-                call jeveuo(sdcomp//'.CPRI', 'L', icpri)
-                nbvari=zi(icpri-1+3)
-                zk16(jvalv-1+7) = sdcomp
-                if (txcp .eq. 'DEBORST') nbvari=nbvari+4
-            endif
+ 99 continue
 !
-!         STOCKAGE DE VI SI POST_ITER='CRIT_RUPT'
-            if ((nomcmd(1:6) .ne. 'CALC_G').and.(nomcmd(1:4).ne.'THER')) then
-                if (moclef .eq. 'COMPORTEMENT') then
-                    call getvtx(moclef, 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
-                    if (iret .eq. 1) then
-                        nbvari=nbvari+6
-                    endif
-                endif
-            endif
-!
-!
-            if (comp(1:8) .eq. 'MULTIFIB') exipmf=.true.
-            if (comp(1:4) .eq. 'ZMAT') then
-                iszmat = .true.
-                call getvis(moclef, 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
-                nbvari=nbvarz+nbvari
-                call getvis(moclef, 'UNITE', iocc=k, scal=nunit, nbret=n1)
-                write (zk16(jvalv-1+7),'(I16)') nunit
-            endif
-!         POUR COMPORTEMENT KIT_
-            do 140 ii = 1, dimaki
-                if ((comp(1:4).eq.'KIT_') .or. (comp(1:4).eq.'META')) then
-                    zk16(jvalv-1+ii+7) = nomkit(ii)
-                else
-                    zk16(jvalv-1+ii+7) = '        '
-                endif
-140          continue
-            if ((comp(1:5).eq.'KIT_H') .or. (comp(1:6).eq.'KIT_TH')) then
-                do 180 inv = 1, dimanv
-                    write (zk16(jvalv-1+7+dimaki+inv),'(I16)') nbnvi(&
-                    inv)
-180              continue
-            endif
-            if (comp .eq. 'KIT_DDI') then
-                if ((nomkit(1)(1:4).eq.'GLRC') .or. (nomkit(2)(1:4) .eq.'GLRC')) then
-                    nbvari=nbvari+10
-                endif
-            endif
-!
-!         POUR LES COMPORTEMENTS UMAT
-!         ON STOCKE LA LIB DANS KIT1-KIT8 (128 CARACTERES)
-!         ET LA SUBROUTINE DANS KIT9
-            if ((comp.eq.'UMAT') .or. (comp.eq.'MFRONT')) then
-                call getvis(moclef, 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
-                nbvari=nbvarz+nbvari
-                call getvtx(moclef, 'LIBRAIRIE', iocc=k, scal=nomlib, nbret=n1)
-                call getvtx(moclef, 'NOM_ROUTINE', iocc=k, scal=nomsub, nbret=n1)
-                do 30 ii = 1, dimaki-1
-                    zk16(jvalv-1+ii+7) = nomlib(16*(ii-1)+1:16*ii)
-30              continue
-                zk16(jvalv-1+dimaki+7) = nomsub
-            endif
-!         FIN DES CAS PARTICULIERS
-! ======================================================================
-!
-!         REMPLISSAGE DES CMP
-!
-            zk16(jvalv-1+1) = comp
-            write (zk16(jvalv-1+2),'(I16)') nbvari
-            zk16(jvalv-1+3) = defo
-!            zk16(jvalv-1+4) = moclef
-            call lctest(comcod, 'PROPRIETES', 'COMP_ELAS', iret)
-            if (iret .eq. 0) then
-               zk16(jvalv-1+4) = 'COMP_INCR'
-            else
-               zk16(jvalv-1+4) = 'COMP_ELAS'
-!              exceptions : sauf dans le cas ETAT_INIT , PETIT_REAC               
-               if ((nomcmd.eq.'STAT_NON_LINE').or.(nomcmd.eq.'DYNA_NON_LINE')) then
-                  call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=etatini, nbret=n1)
-                  call getvid('ETAT_INIT', 'SIGM',      iocc=1, scal=etatini, nbret=n2)
-                  if ((n1.ne.0).or.(n2.ne.0)) then
-                      zk16(jvalv-1+4) = 'COMP_INCR'
-                  endif                      
-               else if ((nomcmd(1:6).eq.'CALC_G')) then
-                  call getvid(moclef, 'SIGM_INIT', iocc=k, scal=etatini, nbret=n1)
-                  if ((n1.ne.0)) then
-                      zk16(jvalv-1+4) = 'COMP_INCR'
-                  endif                      
-               else if ((nomcmd.eq.'CALCUL')) then
-                  call getvid(' ', 'SIGM', iocc=0, scal=etatini, nbret=n1)
-                  if ((n1.ne.0)) then
-                      zk16(jvalv-1+4) = 'COMP_INCR'
-                  endif                      
-               endif                      
-               if (defo.eq.'PETIT_REAC') then
-                   zk16(jvalv-1+4) = 'COMP_INCR'
-               endif                      
-            endif                      
-            zk16(jvalv-1+5) = txcp
-!         ON ECRIT NUMLC EN POSITION 6 (CMP XXX1)
-            if (comp(1:8) .ne. 'MULTIFIB') then
-                write (zk16(jvalv-1+6),'(I16)') numlc
-            endif
-!
-            if (nbma .ne. 0) then
-                call jeveuo(mesmai, 'L', jma)
-                call nocart(compor, 3, ncmpma, mode='NUM', nma=nbma,&
-                            limanu=zi(jma))
-                call jedetr(mesmai)
-            else
-! -----   PAR DEFAUT C'EST TOUT='OUI'
-                call nocart(compor, 1, ncmpma)
-            endif
-!
-150      continue
-!
-! ======================================================================
-!     SI MULTIFIBRE, ON FUSIONNE AVEC LA CARTE CREEE DANS AFFE_MATERIAU
-!      / AFFE_COMPOR - RCCOMP.F
-    if (exipmf) then
-        call nmdpmf(compor)
-    endif
-! ======================================================================
-170  continue
-!
-!     SI ZMAT, ON REINITIALISE LES ZASTER_HANDLER POUR FORCER
-!     LA RELECTURE DES FICHIERS DECRIVANT LES COMPORTEMENTS
-    if (iszmat) then
-        call zaswri()
-    endif
-!
-    call jedetr(compor//'.NCMP')
-    call jedetr(compor//'.VALV')
-! FIN ------------------------------------------------------------------
-    indimp=1
     call jedema()
 end subroutine

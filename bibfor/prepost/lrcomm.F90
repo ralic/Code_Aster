@@ -73,7 +73,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 !
     complex(kind=8) :: cbid
 !
-    logical :: matcst, coecst
+    logical :: matcst, coecst, l_etat_init
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,6 +82,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     blan8 = ' '
     blan24 = ' '
     compor = blan24
+    l_etat_init = .false.
 !
     lischa = '&&'//nompro//'.LISCHA    '
 !
@@ -115,7 +116,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     endif
     if (modele .ne. blan8) then
         if (typres(1:9) .eq. 'EVOL_NOLI') then
-            call nmdorc(modele, compor, carcri)
+            call nmdorc(modele, chmat, l_etat_init, compor, carcri)
             if (compor .ne. blan24) then
                 do 30 i = 1, nbordr
                     iordr=zi(lordr+i-1)

@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cgleco(resu, modele, iord0, typfis, compor,&
-                      incr)
-        character(len=8) :: resu
-        character(len=8) :: modele
-        integer :: iord0
-        character(len=8) :: typfis
-        character(len=24) :: compor
-        logical :: incr
+    subroutine cgleco(resu, modele, mate, iord0, typfis, &
+                      compor,incr)
+        integer, intent(in) :: iord0
+        character(len=8), intent(in) :: resu
+        character(len=8), intent(in) :: modele
+        character(len=8), intent(in) :: mate
+        character(len=8), intent(in) :: typfis
+        character(len=19), intent(out) :: compor
+        logical, intent(out) :: incr
     end subroutine cgleco
 end interface

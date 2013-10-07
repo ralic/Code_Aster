@@ -93,7 +93,7 @@ subroutine op0026()
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
     character(len=19) :: mediri, merigi, vediri, vefint, veforc
     logical :: lmatr, lvnod, lvfin, lcomp
-    logical :: l_merimo, l_medime, l_vefnme
+    logical :: l_merimo, l_medime, l_vefnme, l_etat_init
     logical :: tabret(0:10)
     integer :: fonact(100)
 !-----------------------------------------------------------------------
@@ -165,6 +165,7 @@ subroutine op0026()
     call getvid(' ', 'SIGM', scal=sigmoi, nbret=n1)
     call chpver('F', sigmoi, 'ELGA', 'SIEF_R', iret)
     call nmcha0('VALINC', 'SIGMOI', sigmoi, valinc)
+    l_etat_init =  n1.ne.0
 !
 ! - Get internal variables
 !
@@ -174,7 +175,7 @@ subroutine op0026()
 !
 ! - Get comportment
 !
-    call nmdorc(modele, compor, carcri)
+    call nmdorc(modele(1:8), mate, l_etat_init, compor, carcri)
 !
 ! - Get current time
 !

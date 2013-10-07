@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'KIT_CG',
    doc = """Loi d'adherence cable/gaine et loi comportement cable""",
-   num_lc         = 56,
+   num_lc         = 9999,
    nb_vari        = 0,
    nom_vari       = None,
    mc_mater       = None,

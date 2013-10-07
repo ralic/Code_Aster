@@ -1,18 +1,19 @@
-subroutine nmdpmf(compor)
+subroutine nmdpmf(compor, chmate)
+!
     implicit none
+!
 #include "jeveux.h"
+#include "asterfort/getvid.h"
 #include "asterfort/carces.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cesfus.h"
 #include "asterfort/cesred.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
-#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    character(len=19) :: compor
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,25 +32,34 @@ subroutine nmdpmf(compor)
 ! ======================================================================
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-!     POUR LES MULTIFIBRES, FUSION AVEC LA CARTE CREEE DANS
-!        AFFE_MATERIAU / AFFE_COMPOR AVEC RCCOMP.F
+    character(len=19), intent(in) :: compor
+    character(len=8), intent(in) :: chmate
 !
-! IN/OUT  COMPOR    carte de comportement
-! ----------------------------------------------------------------------
-    integer :: n1, ibid, iret
+! --------------------------------------------------------------------------------------------------
+!
+! COMPOR <CARTE> - MECHANICS
+!
+! Save informations in COMPOR <CARTE>
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  compor      : name of <CARTE> COMPOR
+! In  chmate      : name of material field
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ibid, iret
     logical :: lcumu(2), lcoc(2)
-    character(len=6) :: nompro
-    character(len=8) :: chmat, licmp
+    character(len=8) :: licmp
     character(len=19) :: chs(2), chs3, chsx
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-!
-    parameter (nompro='NMDPMF')
-! ----------------------------------------------------------------------
     data lcumu/.false.,.false./
     data lcoc/.false.,.false./
     data lcoer/1.d0,1.d0/
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
 !     EN PRESENCE DE MULTIFIBRE, ON FUSIONNE LES CARTES
@@ -57,25 +67,23 @@ subroutine nmdpmf(compor)
 !        DE AFFE_MATERIAU / AFFE_COMPOR AVEC RCCOMP
 !
 !     CHAM_ELEM_S DE TRAVAIL
-    chs(1)='&&'//nompro//'.CHS1'
-    chs(2)='&&'//nompro//'.CHS2'
-    chs3  ='&&'//nompro//'.CHS3'
-    chsx  ='&&'//nompro//'.CHSX'
+    chs(1)='&&NMDPMF.CHS1'
+    chs(2)='&&NMDPMF.CHS2'
+    chs3  ='&&NMDPMF.CHS3'
+    chsx  ='&&NMDPMF.CHSX'
 !
 !     ON RECUPERE LA CARTE COMPOR ==> CHAM_ELEM_S
     call carces(compor, 'ELEM', ' ', 'V', chs(1),&
                 'A', ibid)
 !
-!     ON RECUPERE LA CARTE COMPOR DE AFFE_COMPOR ==> CHAM_ELEM_S
-    call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=n1)
-!
 !     VERIFICATION QU'UN COMPORTEMENT MULTI-FIBRES A ETE AFFECTE
-    call exisd('CARTE', chmat//'.COMPOR', iret)
+!
+    call exisd('CARTE', chmate//'.COMPOR', iret)
     if (iret .eq. 0) then
         call utmess('F', 'COMPOR1_73')
     endif
 !
-    call carces(chmat//'.COMPOR', 'ELEM', ' ', 'V', chsx,&
+    call carces(chmate//'.COMPOR', 'ELEM', ' ', 'V', chsx,&
                 'A', ibid)
 !     ON ENLEVE LA COMPOSANTE 'DEFORM' DE LA CARTE
     licmp = 'DEFORM'

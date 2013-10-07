@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mtdorc(modelz, compoz, carcri)
-        character(len=*) :: modelz
-        character(len=*) :: compoz
-        character(len=24) :: carcri
+    subroutine mtdorc(model, compor)
+        character(len=8), intent(in) :: model
+        character(len=19), intent(in) :: compor
     end subroutine mtdorc
 end interface

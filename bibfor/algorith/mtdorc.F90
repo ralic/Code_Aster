@@ -1,21 +1,17 @@
-subroutine mtdorc(modelz, compoz, carcri)
+subroutine mtdorc(model, compor)
+!
     implicit none
+!
 #include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
-#include "asterfort/alcart.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
+#include "asterfort/comp_meta_read.h"
+#include "asterfort/comp_meta_save.h"
+#include "asterfort/comp_init.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
 !
-    character(len=*) :: modelz, compoz
-    character(len=24) :: carcri
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,106 +28,54 @@ subroutine mtdorc(modelz, compoz, carcri)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
-!     POUR CALC_META
-! IN  MODELZ  : NOM DU MODELE
-! OUT COMPOZ  : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
-! OUT CARCRI  : CARTE DECRIVANT LES CRITERES LOCAUX DE CONVERGENCE
-!                     0 : ITER_INTE_MAXI
-!                     1 : COMPOSANTE INUTILISEE
-!                     2 : RESI_INTE_RELA
-!                     3 : THETA
-!                     4 : ITER_INTE_PAS
-!                     5 : ALGO_INTE
-! ----------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: compor
 !
-    integer :: ncmpma, dimaki, nbocc, i, icmp, jma, jncmp
-    integer :: jnoma, jvalv, k, n1, nbma, nbmo1, nbvari
-    integer :: dimanv
-!    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
-    parameter (dimaki=9)
-!    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
-    parameter (dimanv=4)
-    parameter (ncmpma=7+dimaki+dimanv)
-    character(len=6) :: nompro
-    parameter (nompro='MTDORC')
-    character(len=8) :: noma, nomgrd, nomcmp(ncmpma), k8b, typmcl(2)
-    character(len=16) :: comp, moclef(2), k16bid, nomcmd, mocles(2)
-    character(len=19) :: compor
-    character(len=24) :: ligrmo, modele, mesmai
+! --------------------------------------------------------------------------------------------------
 !
-    data nomgrd/'COMPOR  '/
-    data nomcmp/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',&
-     &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',&
-     &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',&
-     &     'KIT9    ', 'NVI_C   ', 'NVI_T   ', 'NVI_H   ', 'NVI_M   '/
-!     ------------------------------------------------------------------
+! CALC_META
+!
+! Create COMPOR <CARTE>
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  model       : name of model
+! In  compor      : name of <CARTE> COMPOR
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: iret, ibid
+    integer :: nb_cmp
+    character(len=8) :: mesh
+    character(len=19) :: list_vale
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-!     initialisations
-    modele = modelz
 !
-    call getres(k8b, k16bid, nomcmd)
+! - Initializations
 !
-    compor = '&&'//nompro//'.COMPOR'
-    nbmo1 = 1
-    moclef(1) = 'COMPORTEMENT'
+    call dismoi('F', 'NOM_MAILLA', model, 'MODELE', ibid,&
+                mesh, iret)
+    list_vale   = '&&LIST_VALE'
 !
-    mocles(1) = 'GROUP_MA'
-    mocles(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-    mesmai = '&&'//nompro//'.MES_MAILLES'
+! - Create COMPOR <CARTE>
 !
-    ligrmo = modele(1:8)//'.MODELE'
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call comp_init(mesh, compor, 'V', nb_cmp)
 !
-! ======================================================================
-!                       REMPLISSAGE DE LA CARTE COMPOR :
-! --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR RELATION -----------
-! --- DE COMPORTEMENT --------------------------------------------------
-! ======================================================================
+! - Read informations from command file
 !
-    call alcart('V', compor, noma, nomgrd)
-    call jeveuo(compor//'.NCMP', 'E', jncmp)
-    call jeveuo(compor//'.VALV', 'E', jvalv)
-    do 90 icmp = 1, ncmpma
-        zk8(jncmp+icmp-1) = nomcmp(icmp)
-90  end do
+    call comp_meta_read(list_vale)
 !
-!     mots cles facteur
-    do 160 i = 1, nbmo1
-        call getfac(moclef(i), nbocc)
+! - Save informations in COMPOR <CARTE> 
 !
-!       nombre d'occurrences
-        do 150 k = 1, nbocc
+    call comp_meta_save(mesh, compor, nb_cmp, list_vale)
 !
-            call getvtx(moclef(i), 'RELATION', iocc=k, scal=comp, nbret=n1)
-            call getvis(moclef(i), comp, iocc=k, scal=nbvari, nbret=n1)
-            zk16(jvalv-1+1) = comp
-            write (zk16(jvalv-1+2),'(I16)') nbvari
-            zk16(jvalv-1+3) = ' '
-            zk16(jvalv-1+4) = moclef(i)
-            zk16(jvalv-1+5) = ' '
-            call reliem(modele, noma, 'NU_MAILLE', moclef(i), k,&
-                        2, mocles, typmcl, mesmai, nbma)
-            if (nbma .ne. 0) then
-                call jeveuo(mesmai, 'L', jma)
-                call nocart(compor, 3, ncmpma, mode='NUM', nma=nbma,&
-                            limanu=zi(jma))
-                call jedetr(mesmai)
-            else
-! -----   PAR DEFAUT C'EST TOUT='OUI'
-                call nocart(compor, 1, ncmpma)
-            endif
-150      continue
-160  end do
+! - Clean it
 !
-    call jedetr(compor//'.NCMP')
-    call jedetr(compor//'.VALV')
-    compoz = compor
-! FIN ------------------------------------------------------------------
+    call jedetr(list_vale)
+!
     call jedema()
+
 end subroutine

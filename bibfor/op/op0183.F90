@@ -45,7 +45,7 @@ subroutine op0183()
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmdome.h"
-#include "asterfort/nmdorc.h"
+#include "asterfort/nmdocc.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/refdcp.h"
@@ -81,6 +81,7 @@ subroutine op0183()
     character(len=24) :: vreno, compor, chvive, chacve, raide
     character(len=24) :: bidon, chvarc
     character(len=24) :: numref, valk(3)
+    logical :: l_etat_init
 !     ------------------------------------------------------------------
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
@@ -172,6 +173,7 @@ subroutine op0183()
     partps(1)=0.d0
     partps(2)=0.d0
     partps(3)=0.d0
+    l_etat_init = .false.
 !
 !
     numref=' '
@@ -283,7 +285,7 @@ subroutine op0183()
 !       --- CALCUL DES VECTEURS ELEMENTAIRES ---
         if (i .eq. 1) then
             compor='&&OP0183.COMPOR'
-            call nmdorc(modele, compor, k24bid)
+            call nmdocc(modele(1:8), materi, l_etat_init, compor)
         endif
 !
         call vefnme(option, 'V'   , modele, mater , carac ,&

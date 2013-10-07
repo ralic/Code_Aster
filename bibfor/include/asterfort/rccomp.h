@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rccomp(chmat, nomail, nomode)
-        character(len=8) :: chmat
-        character(len=8) :: nomail
-        character(len=8) :: nomode
+    subroutine rccomp(chmat, mesh)
+        character(len=8), intent(in) :: chmat
+        character(len=8), intent(in) :: mesh
     end subroutine rccomp
 end interface

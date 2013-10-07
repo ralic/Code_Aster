@@ -16,15 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
-                      ncmpma, nomcmp, nt)
-        integer :: ncmpma
-        integer :: nbmo1
-        character(len=16) :: moclef
-        character(len=19) :: compor
-        character(len=19) :: ces2
-        character(len=24) :: modele
-        character(len=8) :: nomcmp(ncmpma)
-        integer :: nt
-    end subroutine crcmel
+    subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
+        character(len=16), intent(in) :: rela_cg(2)
+        integer, intent(out) :: nb_vari_cg(2)
+    end subroutine cg_kit_nvar
 end interface

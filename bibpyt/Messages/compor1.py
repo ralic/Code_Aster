@@ -358,12 +358,6 @@ Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi C
 Le type de déformations %(k1)s n'est pas compatible avec les modélisations SHB. Utilisez PETIT ou GROT_GDEP.
 """),
 
-70 : _(u"""
-Problème lors du traitement de l'occurrence numéro %(i1)d du mot-clé facteur %(k2)s :
-  La donnée du mot-clé %(k1)s n'est pas cohérente avec le reste des données (MODELISATION, RELATION).
-  Le mot-clé %(k1)s sera ignoré.
-"""),
-
 71 : _(u"""
 Erreur dans le calcul du tenseur équivalent au sens de HILL.
 """),
@@ -422,6 +416,10 @@ Conseils: Vérifier l'état des contraintes initiales ou modifier les paramètre
 84 : _(u"""
 Comportement  %(k1)s : le paramètre %(k2)s devrait rester positif. Il vaut actuellement <%(r1).15E>.
 Conseils: modifiez sa valeur dans CIN1_CHAB / CIN2_CHAB.
+"""),
+
+85: _(u"""
+Aucun groupe de fibres n'a de comportement.
 """),
 
 85 : _(u"""

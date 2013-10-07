@@ -1,0 +1,75 @@
+subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf, l_excl, &
+                          vari_excl)
+!
+    implicit none
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=16), intent(in) :: defo_comp
+    logical, intent(in) :: l_kit_meta
+    logical, intent(in) :: l_mult_comp
+    logical, intent(in) :: l_pmf
+    logical, intent(out) :: l_excl
+    character(len=16), intent(out) :: vari_excl
+!
+! --------------------------------------------------------------------------------------------------
+!
+! COMPOR <CARTE> - MECHANICS
+!
+! Exception for name of internal variables
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  defo_comp    : DEFORMATION comportment
+! In  l_kit_meta   : .true. if metallurgy
+! In  l_mult_comp  : .true. if *CRISTAL comportment
+! In  l_pmf        : .true. if MULTIFIBRE comportment
+! Out l_excl       : .true. if exception case (no names for internal variables)
+! Out vari_excl    : name of internal variables if l_excl
+!
+! --------------------------------------------------------------------------------------------------
+!
+    l_excl    = .false.
+    vari_excl = ' '
+!
+! - KIT META
+!
+    if (l_kit_meta) then
+        if ((defo_comp .eq. 'SIMO_MIEHE').or.(defo_comp .eq. 'GDEF_LOG')) then
+            l_excl = .true.
+            vari_excl = '&&KMET'
+        endif
+    endif
+!
+! - Multiple comportment (*CRISTAL)
+!
+    if (l_mult_comp) then
+        l_excl    = .true.
+        vari_excl = '&&POLY'
+        if (defo_comp.eq.'SIMO_MIEHE') vari_excl = '&&POLY_SIMO'
+    endif
+!
+! - Multi-fiber
+!
+    if (l_pmf) then
+        l_excl    = .true.
+        vari_excl = '&&PMF'
+    endif
+!
+end subroutine

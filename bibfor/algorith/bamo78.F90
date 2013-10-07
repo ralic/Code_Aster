@@ -11,9 +11,10 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/dyna_comp_fuse.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -69,7 +70,7 @@ subroutine bamo78(nomres, trange, typres)
 !
 !
     character(len=8) :: k8bid
-    integer :: ibid, iret, iretou, i
+    integer :: ibid, iret, iretou
     integer :: icham, iarch
     real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
@@ -91,7 +92,7 @@ subroutine bamo78(nomres, trange, typres)
     character(len=24) :: chvarc, chvref
     character(len=19) :: knume, kinst, krefe
     integer :: jnume, jinst
-    character(len=8) :: ctype, sdnoli, k8bla, modele, materi, crit
+    character(len=8) :: ctype, sdnoli, k8bla, modele, materi, crit, mesh
     character(len=1) :: typcoe
     character(len=2) :: codret
     character(len=24) :: trgene
@@ -101,25 +102,15 @@ subroutine bamo78(nomres, trange, typres)
     logical :: exicar
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    character(len=8) :: nomcmp(20)
-    character(len=16) :: valcmp(20)
     logical :: lcumu(2), lcoc(2)
 !-----------------------------------------------------------------------
     integer :: iarc2, ievnew, iopt, jordr, lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0
     real(kind=8) :: alpha, epsi, rundf, time
-!-----------------------------------------------------------------------
-    data lcumu/.false.,.false./
-    data lcoc/.false.,.false./
-    data lcoer/1.d0,1.d0/
-    data nomcmp/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',&
-     &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',&
-     &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',&
-     &     'KIT9    ','NVI_C   ','NVI_T   ','NVI_H   ','NVI_M   '/
-!
 !
 ! ----------------------------------------------------------------------
 !
+    cbid = dcmplx(0.d0, 0.d0)
     call jemarq()
 !
 ! --- INITIALISATIONS
@@ -192,7 +183,7 @@ subroutine bamo78(nomres, trange, typres)
             call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         else
             call utmess('A', 'ALGORITH10_93')
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -235,8 +226,8 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- PROJECTION SUR BASE PHYSIQUE
 !
-    do 300 icham = 1, nbcham
-        do 310 iarch = 1, nbinst
+    do icham = 1, nbcham
+        do iarch = 1, nbinst
             time = zr(jinst+iarch-1)
             num0 = zi(jnume+iarch-1)
             nume = zi(jordr+num0-1)
@@ -303,14 +294,15 @@ subroutine bamo78(nomres, trange, typres)
 !
             call jelibe(chgene)
 !
-310      continue
-300  continue
+        end do
+300     continue
+    end do
 !
 ! --- ENRICHISSEMENT SD TRAN_GENE -> EVOL_NOLI SD_VERI = 'NON' !!!
 !
     if (typres .ne. 'EVOL_NOLI') then
         call refdcp(basemo, krefe(1:8))
-        goto 9999
+        goto 999
     endif
 !
     ches1 = '&&BAMO78.CHES1'
@@ -326,27 +318,18 @@ subroutine bamo78(nomres, trange, typres)
     k8bla = ' '
     alpha = 0.d0
     calpha = (0.d0 , 0.d0)
-!      NFON   = 0
     chvarc='&&BAMO78.VARC'
     chvref='&&BAMO78.VREF'
     rundf=r8vide()
-!      CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,MAILLA,IRET)
     ligrel = modele//'.MODELE'
+    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
+                mesh, iret)
     compor = mate(1:8)//'.COMPOR'
     call megeom(modele, chgeom)
     call mecara(carele(1:8), exicar, chcara)
 !     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
     call meharm(modele, nh, chharm)
-    valcmp(1)='ELAS'
-    valcmp(2)='1'
-    valcmp(3)='PETIT'
-    valcmp(4)='COMP_INCR'
-    valcmp(5)='ANALYTIQUE'
-    valcmp(6)='1'
-    do 350 i = 7, 20
-        valcmp(i) = ' '
-350  continue
-    do 400 iarch = 1, nbinst
+    do iarch = 1, nbinst
         num0 = zi(jnume+iarch-1)
         nume = zi(jordr+num0-1)
         time = zr(jinst+iarch-1)
@@ -357,7 +340,7 @@ subroutine bamo78(nomres, trange, typres)
         iarc2 = iarch + nume0-1
 !
 !         --- RECUP POINTEUR SUR CHAMP PHYSIQUE DANS SD RESULTAT
-        do 401 iopt = 1, 2
+        do iopt = 1, 2
 !
             option = opti(iopt)
 !
@@ -402,28 +385,20 @@ subroutine bamo78(nomres, trange, typres)
 !         --- STOCKAGE CHAMP PHYSIQUE
 !
             call rsnoch(nomres, option, iarc2)
-401      continue
+        end do
+
         call rsexch('F', sdnoli, 'COMPORTEMENT', nume, chel1,&
                     iret)
         call rsexch(' ', nomres, 'COMPORTEMENT', iarc2, chamel,&
                     iret)
         if (iret .eq. 0) call detrsd('CHAMP_GD', chamel)
-        call carces(chel1, 'ELEM', ' ', 'V', ches1,&
-                    'A', ibid)
-        call mecact('V', chel2, 'LIGREL', ligrel, 'COMPOR',&
-                    ncmp=20, lnomcmp=nomcmp,  vk=valcmp)
-        call carces(chel2, 'ELEM', ' ', 'V', ches2,&
-                    'A', ibid)
-        nc = 2
-        chs(1) = ches2
-        chs(2) = ches1
-        call cesfus(nc, chs, lcumu, lcoer, lcoec,&
-                    lcoc(1), 'V', ches3)
-        call cescar(ches3, chamel, 'G')
+
+        call dyna_comp_fuse(mesh, chel1, chamel)
+
         call rsnoch(nomres, 'COMPORTEMENT', iarc2)
-400  continue
+    end do
 !
-9999  continue
+999 continue
 !
 ! --- MENAGE
 !

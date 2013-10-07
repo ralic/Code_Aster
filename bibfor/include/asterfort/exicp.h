@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function exicp(modele, mesmai, nbma)
-        character(len=8) :: modele
-        character(len=24) :: mesmai
-        integer :: nbma
+    function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
+        character(len=8), intent(in) :: model
+        character(len=24), intent(in) :: list_elem_affe
+        logical, intent(in) :: l_affe_all
+        integer, intent(in) :: nb_elem_affe
         logical :: exicp
     end function exicp
 end interface

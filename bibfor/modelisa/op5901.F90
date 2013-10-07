@@ -1,5 +1,27 @@
-subroutine op5901(nboccm, ifm, niv, compor)
+subroutine op5901(nboccm, sdcomp)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexlr.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,28 +39,24 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
-!     COMMANDE:  DEFI_COMPOR MONOCRISTAL
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetc.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lcmmsg.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajpa.h"
-#include "asterfort/tbcrsd.h"
-#include "asterfort/tbexlr.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "blas/dcopy.h"
 !
-    character(len=8) :: compor, materi, typpar(5), chaine
-    character(len=16) :: nompar(5), ecoule, ecrois, ecroci, elasti, nomvar(200)
+    integer, intent(in) :: nboccm
+    character(len=8), intent(in) :: sdcomp
+!
+! --------------------------------------------------------------------------------------------------
+!
+! DEFI_COMPOR
+!
+! MONOCRISTAL
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_para
+    parameter (nb_para = 5)
+!
+    character(len=8) :: materi, typpar(nb_para), chaine
+    character(len=16) :: nompar(nb_para), ecoule, ecrois, ecroci, elasti
+    character(len=24) :: nomvar(200)
     character(len=16) :: fasygl, noms(6), comdes, rota, tbinte, systgl
     character(len=19) :: listr
     real(kind=8) :: ms(6), ng(3), q(3, 3), lg(3), pgl(3, 3)
@@ -47,11 +65,11 @@ subroutine op5901(nboccm, ifm, niv, compor)
     integer :: iocc, nbmat, nbecou, nbecro, nbcine, nbelas, nbfasy
     integer :: i, j, nbela1, nbsys, nvi, imk, imi, ipr, itab, itsg, irra, irr2
     integer :: ncprr, ir, irota, iadlr, decal, nbrota, nbsyst, tabdes(13)
-    integer :: nboccm
 !
-!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+    call infniv(ifm, niv)
 !
     cbid=(0.d0,0.d0)
     comdes='&&OP0059.TABLETX'
@@ -71,9 +89,9 @@ subroutine op5901(nboccm, ifm, niv, compor)
     nvi=6
 !     DEFORMATION PLASTIQUE CUMULEE MACROSCOPIQUE EQUIVALENTE
     nvi=nvi+1
-    call tbajpa(comdes, 5, nompar, typpar)
+    call tbajpa(comdes, nb_para, nompar, typpar)
     call getfac('MONOCRISTAL', nboccm)
-    call wkvect(compor//'.CPRK', 'G V K24', 5*nboccm+1, imk)
+    call wkvect(sdcomp//'.CPRK', 'G V K24', 5*nboccm+1, imk)
 !     DIMENSION MAX DE CPRR : 1812 = 12+5*6*30+30*30
 !     ORGANISATION DE CPRR :
 !     1 : NB TABLES SYST GLIS
@@ -88,16 +106,16 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !     ...
 !     CPRR(2)    : TABLE D'INTERACTION (NBSYST*NBSYST VALEURS)
     ncprr=1812
-    call wkvect(compor//'.CPRR', 'G V R', ncprr, ipr)
+    call wkvect(sdcomp//'.CPRR', 'G V R', ncprr, ipr)
     nbtbsg=0
     decal=12
-    do 101 i = 1, 13
+    do i = 1, 13
         tabdes(i)=0
-101  end do
+    end do
     irra=0
     irr2=0
 !
-    do 9 iocc = 1, nboccm
+    do iocc = 1, nboccm
         call getvid('MONOCRISTAL', 'MATER', iocc=iocc, scal=materi, nbret=nbmat)
         call getvtx('MONOCRISTAL', 'ECOULEMENT', iocc=iocc, scal=ecoule, nbret=nbecou)
         call getvtx('MONOCRISTAL', 'ECRO_ISOT', iocc=iocc, scal=ecrois, nbret=nbecro)
@@ -156,10 +174,10 @@ subroutine op5901(nboccm, ifm, niv, compor)
                 write(ifm,*) ' TABLE SYSTEMES DE GLISSEMENT FAMILLE',&
                 iocc
                 write(ifm,*) ' NX     NY     NZ     MX     MY     MZ '
-                do 4 i = 1, nbsys
+                do i = 1, nbsys
                     write(ifm,'(I2,6(1X,E11.4))') i,(zr(ipr-1+decal+6*&
                     (i-1)+j),j=1,6)
- 4              continue
+                enddo
             endif
 !
             decal=decal+6*nbsys
@@ -172,14 +190,14 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !
         call tbajli(comdes, 5, nompar, [0], [0.d0],&
                     [cbid], noms, 0)
-        do 11 j = 1, 5
+        do j = 1, 5
             zk24(imk-1+(iocc-1)*5+j)=noms(j)
-11      continue
+        enddo
         ir=0
         nvi=nvi+4*nbsys
         nbsyst=nbsyst+nbsys
 !
- 9  end do
+    end do
 !
     zr(ipr)=nbtbsg
     zr(ipr+1)=decal+1
@@ -206,12 +224,14 @@ subroutine op5901(nboccm, ifm, niv, compor)
         nvi=nvi+24*nboccm
     endif
 !
-    noms(1)='MONOCRISTAL'
     noms(2)=ecoule
     nums(1)=nboccm
     nums(2)=nvi
-    call utmess('I', 'COMPOR2_23', nk=2, valk=noms, ni=2,&
-                vali=nums)
+    call utmess('I', 'COMPOR4_1')
+    call utmess('I', 'COMPOR4_2', si = nboccm)
+    call utmess('I', 'COMPOR4_4', sk = 'MONOCRISTAL') 
+    call utmess('I', 'COMPOR4_6', sk = ecoule) 
+    call utmess('I', 'COMPOR4_9', si = nvi) 
 !
     nomvar(1)='EPSPXX'
     nomvar(2)='EPSPYY'
@@ -219,26 +239,26 @@ subroutine op5901(nboccm, ifm, niv, compor)
     nomvar(4)='EPSPXY'
     nomvar(5)='EPSPXZ'
     nomvar(6)='EPSPYZ'
-    do 554 i = 1, nbsyst
+    do i = 1, nbsyst
         call codent(i, 'G', chaine)
         nomvar(6+3*i-2)='ALPHA'//chaine
         nomvar(6+3*i-1)='GAMMA'//chaine
         nomvar(6+3*i )='P'//chaine
-554  end do
+    end do
     if (irra .gt. 0) then
-        do 557 i = 1, 12*nboccm
+        do i = 1, 12*nboccm
             call codent(i, 'G', chaine)
             nomvar(6+3*nbsyst+i)='RHO_IRRA_'//chaine
-557      continue
+        enddo
     endif
 !
     if (irr2 .gt. 0) then
-        do 559 i = 1, 12*nboccm
+        do i = 1, 12*nboccm
             call codent(i, 'G', chaine)
             nomvar(6+3*nbsyst+i)='RHO_LOOPS_'//chaine
             call codent(i, 'G', chaine)
             nomvar(6+4*nbsyst+i)='PHI_VOIDS_'//chaine
-559      continue
+        enddo
     endif
 !
     indvar=6+3*nbsyst
@@ -247,25 +267,25 @@ subroutine op5901(nboccm, ifm, niv, compor)
     if (irr2 .gt. 0) indvar=indvar+24*nboccm
 !
     if (irota .gt. 0) then
-        do 556 i = 1, 16
+        do i = 1, 16
             call codent(i, 'G', chaine)
             nomvar(indvar+i)='ROTA_'//chaine
-556      continue
+        enddo
         indvar=indvar+16
     endif
 !
-    do 558 i = 1, nbsyst
+    do i = 1, nbsyst
         call codent(i, 'G', chaine)
         nomvar(indvar+i)='TAU_'//chaine
-558  end do
+    end do
 !
     nomvar(nvi-2)='SIGM_CLIV'
     nomvar(nvi-1)='EPSPEQ'
     nomvar(nvi)='NBITER'
 !
-    do 555 i = 1, nvi
-        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=i)
-555  end do
+    do i = 1, nvi
+        call utmess('I', 'COMPOR4_20', sk = nomvar(i), si=i)
+    end do
 !
 !
     zk24(imk+5*nboccm)=elasti
@@ -284,20 +304,21 @@ subroutine op5901(nboccm, ifm, niv, compor)
         endif
         call dcopy(nbsyst*nbsyst, zr(iadlr+3), 1, zr(ipr+decal), 1)
 !        VERIF QUE LA MATRICE EST SYMETRIQUE
-        do 5 i = 1, nbsyst
-            do 5 j = 1, nbsyst
+        do i = 1, nbsyst
+            do j = 1, nbsyst
                 if (zr(ipr-1+decal+nbsyst*(i-1)+j) .ne. zr(ipr-1+decal+ nbsyst*(j-1)+i)) then
                     call utmess('F', 'COMPOR2_18')
                 endif
- 5          continue
+            enddo
+        enddo
         call jedetc('V', listr, 1)
 !
         if (niv .eq. 2) then
             write(ifm,*) ' MATRICE INTERACTION UTILISATEUR'
-            do 6 i = 1, nbsyst
+            do i = 1, nbsyst
                 write(ifm,'(I2,12(1X,E11.4))') i,(zr(ipr-1+decal+&
                 nbsyst*(i-1)+j),j=1,nbsyst)
- 6          continue
+            enddo
         endif
     else
         if (nboccm .gt. 1) then
@@ -323,10 +344,10 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !     7 : NVI
 !     8 : NOMBRE DE SYSTEMES DE GLISSEMENT TOTAL
 !
-    call wkvect(compor//'.CPRI', 'G V I', 13, imi)
-    do 999 i = 1, 13
+    call wkvect(sdcomp//'.CPRI', 'G V I', 13, imi)
+    do i = 1, 13
         zi(imi+i-1)=tabdes(i)
-999  end do
+    end do
     call detrsd('TABLE', comdes)
 !
 ! FIN ------------------------------------------------------------------

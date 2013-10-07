@@ -1,5 +1,22 @@
-subroutine op5902(nboccp, compor)
+subroutine op5902(nboccp, sdcomp)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/eulnau.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,33 +35,28 @@ subroutine op5902(nboccp, compor)
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 !
-!     COMMANDE:  DEFI_COMPOR MOT-CLE POLYCRISTAL
+    integer, intent(in) :: nboccp
+    character(len=8), intent(in) :: sdcomp
 !
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/codent.h"
-#include "asterfort/eulnau.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: compor, mono, chaine
-    character(len=16) :: loca, noms(6), nomvar(100)
+! DEFI_COMPOR
+!
+! POLYCRISTAL
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8) :: mono, chaine
+    character(len=16) :: loca, noms(6)
+    character(len=24) :: nomvar(100)
     real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt
-    integer :: iocc, nloc, nboccp, ndl, nda, itbint, nums(3)
+    integer :: iocc, nloc, ndl, nda, itbint, nums(3)
     integer :: i, nmono, imk, imi, ipk, ipi, ipr, iorie, irra
     integer :: ncpri, ncprk, ncprr, jcprk, jcprr, jcpri, nvit, lmk, ifvol, ipl
     integer :: imono, nbmono, nvloc, indvar
     integer :: nbsyst, nbsysm
 !
-!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -75,7 +87,7 @@ subroutine op5902(nboccp, compor)
 !     nombre de paramètres de localisation
 !
     ncpri=4+3*nboccp+1+1+1
-    call wkvect(compor//'.CPRI', 'G V I', ncpri, ipi)
+    call wkvect(sdcomp//'.CPRI', 'G V I', ncpri, ipi)
     zi(ipi)=2
     zi(ipi+1)=nboccp
     call wkvect('&&OP0059.LISTEMONO', 'V V K8', nboccp, ipl)
@@ -83,7 +95,7 @@ subroutine op5902(nboccp, compor)
     nbmono=0
     ncprk=0
 !
-    do 13 iocc = 1, nboccp
+    do iocc = 1, nboccp
         call getvid('POLYCRISTAL', 'MONOCRISTAL', iocc=iocc, scal=mono, nbret=nmono)
 !        On ne stocke pas les doublons
         imono=indik8(zk8(ipl),mono,1,nbmono)
@@ -96,7 +108,7 @@ subroutine op5902(nboccp, compor)
         else
             zi(ipi-1+4+3*(iocc-1)+2)=imono
         endif
-13  end do
+    end do
     ncprk=ncprk+1
     if (nbmono .gt. 5) then
         call utmess('F', 'COMPOR2_16', si=itbint)
@@ -111,10 +123,10 @@ subroutine op5902(nboccp, compor)
 !     2   : Nom Monocristal 1 + NBFAM + CPRK du monocristal 1
 !     n+2 : Nom Monocristal 2 + NBFAM + CPRK du monocristal 2
 !     ..: etc...
-    call wkvect(compor//'.CPRK', 'G V K24', ncprk, ipk)
+    call wkvect(sdcomp//'.CPRK', 'G V K24', ncprk, ipk)
     jcprk=1
     itbint=0
-    do 15 imono = 1, nbmono
+    do imono = 1, nbmono
         mono=zk8(ipl-1+imono)
         call jelira(mono//'.CPRK', 'LONMAX', lmk)
         call jeveuo(mono//'.CPRK', 'L', imk)
@@ -122,25 +134,25 @@ subroutine op5902(nboccp, compor)
 !        RECOPIE DU VECTEUR K16 DU MONOCRISTAL DANS CELUI DU POLY
         zk24(ipk-1+jcprk+1)=mono
         write(zk24(ipk-1+jcprk+2),'(I24)') zi(imi-1+5)
-        do 14 i = 1, lmk
+        do i = 1, lmk
             zk24(ipk-1+jcprk+2+i)=zk24(imk-1+i)
-14      continue
+        end do
         jcprk=jcprk+lmk+2
         if (zk24(imk-1+3) .eq. 'MONO_DD_CC_IRRA') irra=1
         if (zk24(imk-1+3) .eq. 'MONO_DD_CFC_IRRA') irra=2
 !
-15  end do
+    end do
 !
     ncprr=4*nboccp+2
 !
-    call wkvect(compor//'.CPRR', 'G V R', ncprr, ipr)
+    call wkvect(sdcomp//'.CPRR', 'G V R', ncprr, ipr)
     jcprr=0
     jcpri=4
     nvit=0
     fvolt=0.d0
     nbsyst=0
     nbsysm=0
-    do 16 iocc = 1, nboccp
+    do iocc = 1, nboccp
         imono=zi(ipi-1+4+3*(iocc-1)+2)
         mono=zk8(ipl-1+imono)
         call jeveuo(mono//'.CPRI', 'L', imi)
@@ -176,7 +188,7 @@ subroutine op5902(nboccp, compor)
         zr(ipr-1+jcprr+3)=orie(2)
         zr(ipr-1+jcprr+4)=orie(3)
         jcprr=jcprr+4
-16  end do
+    end do
 !
     if (abs(fvolt-1.d0) .gt. 1.d-3) then
         call utmess('F', 'COMPOR2_8', sr=fvolt)
@@ -200,8 +212,7 @@ subroutine op5902(nboccp, compor)
     nums(1)=nboccp
     nums(2)=nbmono
     nums(3)=nvit
-    call utmess('I', 'COMPOR2_27', nk=2, valk=noms, ni=3,&
-                vali=nums)
+    call utmess('I', 'COMPOR4_53', sk=loca, ni=3,vali=nums)
 !
     nomvar(1)='EPSPXX'
     nomvar(2)='EPSPYY'
@@ -210,87 +221,87 @@ subroutine op5902(nboccp, compor)
     nomvar(5)='EPSPXZ'
     nomvar(6)='EPSPYZ'
     nomvar(7)='EPSPEQ'
-    do 558 i = 1, 7
-        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=i)
-558  end do
+    do i = 1, 7
+        call utmess('I', 'COMPOR4_20', sk=nomvar(i), si=i)
+    end do
     indvar=indvar+7
-    call utmess('I', 'COMPOR2_28', si=indvar+1)
+    call utmess('I', 'COMPOR4_54', si=indvar+1)
     nomvar(1)='EPSPXX(GRAIN_I)'
     nomvar(2)='EPSPYY(GRAIN_I)'
     nomvar(3)='EPSPZZ(GRAIN_I)'
     nomvar(4)='EPSPXY(GRAIN_I)'
     nomvar(5)='EPSPXZ(GRAIN_I)'
     nomvar(6)='EPSPYZ(GRAIN_I)'
-    do 559 i = 1, 6
-        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
-559  end do
+    do i = 1, 6
+        call utmess('I', 'COMPOR4_20', sk=nomvar(i), si=indvar+i)
+    end do
     indvar=indvar+6*nboccp
-    call utmess('I', 'COMPOR2_30', si=indvar)
+    call utmess('I', 'COMPOR4_56', si=indvar)
 !
-    call utmess('I', 'COMPOR2_28', si=indvar+1)
+    call utmess('I', 'COMPOR4_55', si=indvar+1)
 !
-    do 554 i = 1, nbsysm
+    do i = 1, nbsysm
         call codent(i, 'G', chaine)
         nomvar(3*i-2)='ALPHA'//chaine
         nomvar(3*i-1)='GAMMA'//chaine
         nomvar(3*i )='P'//chaine
-554  end do
-    do 556 i = 1, 3*nbsysm
-        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
-556  end do
+    end do
+    do i = 1, 3*nbsysm
+        call utmess('I', 'COMPOR4_20', sk=nomvar(i), si=indvar+i)
+    end do
 !
     indvar=indvar+3*nbsyst
 !
-    call utmess('I', 'COMPOR2_30', si=indvar)
+    call utmess('I', 'COMPOR4_56', si=indvar)
 !
     if (irra .eq. 1) then
-        call utmess('I', 'COMPOR2_28', si=indvar+1)
-        do 557 i = 1, 12
+        call utmess('I', 'COMPOR4_54', si=indvar+1)
+        do i = 1, 12
             call codent(i, 'G', chaine)
             nomvar(i)='RHO_IRRA_'//chaine
-557      continue
-        do 560 i = 1, 12
-            call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
-560      continue
+        enddo
+        do i = 1, 12
+            call utmess('I', 'COMPOR4_20', sk=nomvar(i), si=indvar+i)
+        enddo
         indvar=indvar+12*nboccp
-        call utmess('I', 'COMPOR2_30', si=indvar)
+        call utmess('I', 'COMPOR4_56', si=indvar)
     endif
 !
     if (irra .eq. 2) then
-        call utmess('I', 'COMPOR2_28', si=indvar+1)
-        do 571 i = 1, 12
+        call utmess('I', 'COMPOR4_54', si=indvar+1)
+        do i = 1, 12
             call codent(i, 'G', chaine)
             nomvar(i)='RHO_LOOPS_'//chaine
-571      continue
-        do 572 i = 1, 12
+        enddo
+        do i = 1, 12
             call codent(i, 'G', chaine)
             nomvar(12+i)='PHI_VOIDS_'//chaine
-572      continue
-        do 573 i = 1, 24
-            call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
-573      continue
+        enddo
+        do i = 1, 24
+            call utmess('I', 'COMPOR4_20', sk=nomvar(i), si=indvar+i)
+        enddo
         indvar=indvar+24*nboccp
-        call utmess('I', 'COMPOR2_30', si=indvar)
+        call utmess('I', 'COMPOR4_56', si=indvar)
     endif
 !
-    call utmess('I', 'COMPOR2_28', si=indvar+1)
+    call utmess('I', 'COMPOR4_54', si=indvar+1)
 !
-    do 555 i = 1, 6
+    do i = 1, 6
         nomvar(1)='SIGMAXX(GRAIN_I)'
         nomvar(2)='SIGMAYY(GRAIN_I)'
         nomvar(3)='SIGMAZZ(GRAIN_I)'
         nomvar(4)='SIGMAXY(GRAIN_I)'
         nomvar(5)='SIGMAXZ(GRAIN_I)'
         nomvar(6)='SIGMAYZ(GRAIN_I)'
-555  end do
-    do 561 i = 1, 6
-        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
-561  end do
+    enddo
+    do i = 1, 6
+        call utmess('I', 'COMPOR4_20', sk=nomvar(i), si=indvar+i)
+    enddo
     indvar=indvar+6*nboccp
-    call utmess('I', 'COMPOR2_30', si=indvar)
+    call utmess('I', 'COMPOR4_56', si=indvar)
     indvar=indvar+1
     nomvar(1)='INDIPLAS'
-    call utmess('I', 'COMPOR2_29', sk=nomvar(1), si=nvit)
+    call utmess('I', 'COMPOR4_55', sk=nomvar(1), si=nvit)
     ASSERT(indvar.eq.nvit)
 ! FIN ------------------------------------------------------------------
     call jedema()

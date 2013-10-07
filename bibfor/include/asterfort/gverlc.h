@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gverlc(resuco, compor, iord)
-        character(len=8) :: resuco
-        character(len=24) :: compor
-        integer :: iord
+    subroutine gverlc(resu, compor, iord0)
+        character(len=8), intent(in) :: resu
+        character(len=19), intent(in) :: compor
+        integer, intent(in) :: iord0
     end subroutine gverlc
 end interface

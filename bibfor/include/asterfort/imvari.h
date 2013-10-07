@@ -16,14 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
-                      nbvari, tavari)
-        character(len=16) :: moclef
-        integer :: iocc
-        integer :: ncomel
-        character(len=16) :: lcomel(5)
-        character(len=16) :: comcod
-        integer :: nbvari
-        character(len=8) :: tavari
+    subroutine imvari(list_vari_name, compor_cart, compor_list)
+        character(len=19), intent(in) :: list_vari_name
+        character(len=19), optional, intent(in) :: compor_cart
+        character(len=16), optional, intent(in) :: compor_list(20)
     end subroutine imvari
 end interface

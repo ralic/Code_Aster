@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdpmf(compor)
-        character(len=19) :: compor
+    subroutine nmdpmf(compor, chmate)
+        character(len=19), intent(in) :: compor
+        character(len=8), intent(in) :: chmate
     end subroutine nmdpmf
 end interface

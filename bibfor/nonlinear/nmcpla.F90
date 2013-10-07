@@ -86,6 +86,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/betnvi.h"
 #include "asterfort/granvi.h"
 #include "asterfort/lcopil.h"
@@ -148,13 +149,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     cmp3(1) = comp(10)
     mod = typmod(1)
 !
-    if (cmp3(1)(1:8) .ne. '        ') then
-        call utmess('F', 'ALGORITH7_1')
-    endif
-!
-    if (cmp1(1)(1:10) .ne. 'GRANGER_FP') then
-        call utmess('F', 'ALGORITH7_11')
-    endif
+    ASSERT(cmp1(1) .eq. 'GRANGER_FP')
 !
 !     TABLEAU DES VARIABLES INTERNES DIMENSIONNE AUX MAX I.E. 3D
     call granvi(mod3d, ibid, ibid2, nvi1)
@@ -165,20 +160,20 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     call granvi(mod, ndt, ndi, ibid)
 !
     nn = nvi1 + 1
-    if (cmp2(1)(1:5) .eq. 'ELAS ' .or. cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1)(1:14)&
-        .eq. 'VMIS_ISOT_LINE') then
+    if (cmp2(1)(1:5) .eq. 'ELAS ' .or. &
+        cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. &
+        cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') then
         if (cmp2(1)(1:5) .eq. 'ELAS ') nvi2 = 1
         if (cmp2(1)(1:9) .eq. 'VMIS_ISOT') nvi2 = 2
         if (cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') nvi2 = 2
 !
-        elseif (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.&
-    'BETON_DOUBLE_DP') then
+    elseif (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
 !
         if (cmp2(1)(1:8) .eq. 'ROUSS_PR') call rslnvi(mod3d, ibid, ibid2, ibid3, nvi2)
         if (cmp2(1)(1:15) .eq. 'BETON_DOUBLE_DP') call betnvi(mod3d, ibid, ibid2, ibid3, nvi2)
 !
     else
-        call utmess('F', 'ALGORITH7_3')
+        ASSERT(.false.)
     endif
 !
     write (cmp2(2),'(I16)') nvi2
@@ -223,9 +218,9 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 ! --- DEBUT DES ITERATIONS DU COUPLAGE
 !     --------------------------------
     iter = 1
-    do 10 k = 1, 6
+    do k = 1, 6
         depst2(k) = depst(k)
-10  end do
+    end do
 !
 20  continue
 !
@@ -263,41 +258,41 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         materd(1) = 1.d0
         materf(1) = 1.d0
 !
-        do 40 k = 1, ndt
+        do k = 1, ndt
             epsfl(k) = vind(8*ndt+k)
-            do 30 i = 1, 8
+            do i = 1, 8
                 epsfl(k) = epsfl(k) - vind((i-1) * ndt+k)
-30          continue
-40      continue
+            enddo
+        enddo
 !
         call lcopil('ISOTROPE', mod, materd, kooh)
         call lcprmv(kooh, epsfl, epsfld)
 !
-        do 60 k = 1, ndt
+        do k = 1, ndt
             epsfl(k) = vinf(8*ndt+k)
-            do 50 i = 1, 8
+            do i = 1, 8
                 epsfl(k) = epsfl(k) - vinf((i-1) * ndt+k)
-50          continue
-60      continue
+            enddo
+        enddo
 !
         call lcopil('ISOTROPE', mod, materf, kooh)
         call lcprmv(kooh, epsfl, epsflf)
 !
-        do 70 k = 1, ndt
+        do k = 1, ndt
             depsfl(k) = epsflf(k) - epsfld(k)
-70      continue
+        enddo
     endif
 !
 ! --- RETRAIT DE LA DEFORMATION DE FLUAGE A LA DEFORMATION TOTALE
 !
     if (optflu .eq. 'RAPH_MECA') then
-        do 80 k = 1, ndt
+        do k = 1, ndt
             deps(k) = depst(k) - depsfl(k)
-80      continue
+        enddo
     else
-        do 90 k = 1, ndt
+        do k = 1, ndt
             deps(k) = depst(k)
-90      continue
+        enddo
     endif
 !
 !
@@ -310,8 +305,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
                     vind(nn), opt, sigf, vinf(nn), dsde,&
                     rbid, rbid, iret)
 !
-        elseif (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.&
-    'BETON_DOUBLE_DP') then
+    elseif (cmp2(1)(1:8).eq. 'ROUSS_PR' .or. cmp2(1)(1:15).eq.'BETON_DOUBLE_DP') then
 !
         call lccree(1, cmp2, comcod)
         call lcinfo(comcod, numlc2, nbvar2)
@@ -323,7 +317,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
                     sigf, vinf(nn), ndsde, dsde, nwkout,&
                     wkout, retcom)
     else
-        call utmess('F', 'ALGORITH7_3')
+        ASSERT(.false.)
     endif
 !
     if (optflu .eq. 'RAPH_MECA') then
@@ -356,9 +350,9 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         call lcopil('ISOTROPE', mod, materf, kooh)
         call lcprmv(kooh, sigf, epself)
 !
-        do 100 k = 1, ndt
+        do k = 1, ndt
             depsel(k) = epself(k) - epseld(k)
-100      continue
+        enddo
 !
         alphad = materd(3)
         alphaf = materf(3)
@@ -390,9 +384,9 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
             epsthe = alphaf*(tempf-tref) - alphad*(tempd-tref)
         endif
         epsth = epsthe - bendof*hydrf + bendod*hydrd - kdessf*(sref- sechf) + kdessd*(sref-sechd)
-        do 110 k = 1, 3
+        do  k = 1, 3
             depsel(k) = depsel(k) + epsth
-110      continue
+        enddo
         if (mod(1:6) .eq. 'C_PLAN') then
             nu = materf(2)
             depsel(3)=-nu / (1.d0-nu) * (depsel(1)+depsel(2)) +(1.d0+&
@@ -403,22 +397,22 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 ! ---    CALCUL DE L'INCREMENT DE DEFORMATION EN ENTREE DU CALCUL
 ! ---    DE FLUAGE POR L'ITERATION SUIVANTE
 !
-        do 120 k = 1, ndt
+        do k = 1, ndt
             depst2(k) = depst2(k) + depsel(k) + depsfl(k) - depst2(k)
-120      continue
+        enddo
 !
 ! ---    CRITERE DE CONVERGENCE - NORME DE SIGF2 - SIGF
 !
-        do 150 k = 1, ndt
+        do k = 1, ndt
             dsigf(k) = sigf2(k) - sigf(k)
-150      continue
+        enddo
 !
         ndsig = 0.d0
         nsigf = 0.d0
-        do 160 k = 1, ndt
+        do k = 1, ndt
             ndsig = ndsig + dsigf(k) * dsigf(k)
             nsigf = nsigf + sigf(k) * sigf(k)
-160      continue
+        enddo
 !
         if (nsigf .gt. toler*toler) then
             epsicv = (ndsig/nsigf) ** 0.5d0
@@ -436,7 +430,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !               CALL CODREE(ABS(EPSICV),'E',DCV)
 !               CALL CODENT(ITER,'G',CITER)
                 iret = 1
-                goto 9999
+                goto 999
             endif
         endif
     endif
@@ -444,5 +438,5 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 ! --- FIN DES ITERATIONS
 !     ------------------
 !
-9999  continue
+999 continue
 end subroutine

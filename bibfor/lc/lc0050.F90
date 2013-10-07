@@ -134,7 +134,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
 !     NUMERO D'ELEMENT SEULEMENT SI ON N'EST PAS DANS CALC_POINT_MAT
     noel=0
-    if (compor(1)(9:14) .ne. 'OP0033') then
+    if (compor(17) .ne. 'POINT') then
 !        NUMERO D'ELEMENT
         call tecael(iadzi, iazk24)
         noel=zi(iadzi)

@@ -1,8 +1,8 @@
-function exicp(modele, mesmai, nbma)
+function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
+!
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -10,10 +10,6 @@ function exicp(modele, mesmai, nbma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
-    character(len=8) :: modele
-    character(len=24) :: mesmai
-    integer :: nbma
-    logical :: exicp
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,80 +28,87 @@ function exicp(modele, mesmai, nbma)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: list_elem_affe
+    logical, intent(in) :: l_affe_all
+    integer, intent(in) :: nb_elem_affe
+    logical :: exicp
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     RENVOIE .TRUE. SI PARMI LES ELEMENTS FINIS ASSOCIES AUX MAILLES
 !     DONNEES, IL EN EXISTE UN QUI SOIT EN C_PLAN
-!     SI AUCUNE MAILLE N'EST DONNEE EN ENTREE (NBMA=0), ALORS
+!     SI AUCUNE MAILLE N'EST DONNEE EN ENTREE (nb_elem_affe=0), ALORS
 !     ON REGARDE TOUTES LES MAILLES DU MAILLAGE
 !
 ! IN  MODELE : NOM DU MODELE
-! IN  MESMAI : LISTE DES MAILLES SUR LESQUELLES ON FAIT LE TEST
-! IN  NBMA   : NOMBRE DE MAILLES DANS MESMAI
-!              SI NBMA = 0  ON FAIT LE TEST SUR TOUTES LES MAILLES DU
+! IN  list_elem_affe : LISTE DES MAILLES SUR LESQUELLES ON FAIT LE TEST
+! IN  nb_elem_affe   : NOMBRE DE MAILLES DANS list_elem_affe
+!              SI nb_elem_affe = 0  ON FAIT LE TEST SUR TOUTES LES MAILLES DU
 !              MAILLAGE ASSOCIÉE AU MODELE
 ! OUT EXICP : .TRUE. SI C_PLAN TROUVE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbmat, jma, iret, ima, jtypel, numa, itypel, ibid
-    character(len=8) :: noma, k8bid, dmo, dma
+    integer :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel, ibid
+    integer :: j_elem_affe, j_mail
+    character(len=8) :: mesh, k8bid, dmo, dma
     character(len=16) :: notype, typmod
-    character(len=24) :: mail
 !
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     exicp = .false.
 !
-    if (nbma .ne. 0) then
-!       DES MAILLES ONT ETE DONNEES
-        call jeveuo(mesmai, 'L', jma)
-        nbmat = nbma
+! - Access to model and mesh
+! 
+    call jeveuo(model//'.MAILLE', 'L', j_mail)
+    call dismoi('C', 'NOM_MAILLA', model(1:8), 'MODELE', ibid, &
+                mesh, iret)
+    call dismoi('F', 'NB_MA_MAILLA', mesh, 'MAILLAGE', nb_elem_mesh,&
+                k8bid, iret)
+!
+! - Mesh affectation
+!
+    if (l_affe_all) then
+        nb_elem = nb_elem_mesh
     else
-!       ON PREND TOUTES LES MAILLES DU MAILLAGE
-        call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                    noma, iret)
-        call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat,&
-                    k8bid, iret)
+        call jeveuo(list_elem_affe, 'L', j_elem_affe)
+        nb_elem = nb_elem_affe
     endif
 !
-    mail = modele//'.MAILLE'
-    call jeveuo(mail, 'L', jtypel)
+! - Loop on elements
 !
-!     BOUCLE SUR LES MAILLES
-    do 10 ima = 1, nbmat
+    do ielem = 1, nb_elem
 !
-!       RECUP DU NUMERO DE LA MAILLE COURANTE
-        if (nbma .ne. 0) then
-            numa = zi(jma-1+ima)
+! ----- Current element
+!
+        if (l_affe_all) then
+            nume_elem = ielem
         else
-            numa = ima
+            nume_elem = zi(j_elem_affe-1+ielem)
         endif
 !
-!       RECUP DU NUMERO DU TYPE D'ELEMENT ASSOCIE
-        itypel=zi(jtypel-1+numa)
+! ----- Access to element type
 !
-!       SI LA MAILLE N'EST PAS AFFECTEE D'UN ELEMENT FINI ON ZAPPE
-        if (itypel .eq. 0) goto 10
-!
-!       RECUP DU NOM DU TYPE D'ELEMENT ASSOCIE
-        call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
-!
-        call teattr(notype, 'S', 'DIM_TOPO_MODELI', dmo, iret)
-        call teattr(notype, 'S', 'DIM_TOPO_MAILLE', dma, iret)
-!       SI ELEMENT DE BORD ON ZAPPE
-        if (dmo .ne. dma) goto 10
-!
-        call teattr(notype, 'C', 'TYPMOD', typmod, iret)
-!
-!       SI L'ATTRIBUT TYPMOD N'EST PAS TROUVE ON ZAPPE
-        if (iret .ne. 0) goto 10
-!
-        if (typmod(1:6) .eq. 'C_PLAN') then
-            exicp=.true.
-            goto 999
+        nutyel = zi(j_mail-1+nume_elem)
+
+        if (nutyel.ne.0) then
+            call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
+            call teattr(notype, 'S', 'DIM_TOPO_MODELI', dmo, iret)
+            call teattr(notype, 'S', 'DIM_TOPO_MAILLE', dma, iret)
+            if (dmo .eq. dma) then
+                call teattr(notype, 'C', 'TYPMOD', typmod, iret)
+                if (iret .eq. 0) then
+                    if (typmod(1:6) .eq. 'C_PLAN') then
+                        exicp = .true.
+                        goto 999
+                    endif
+                endif   
+            endif   
         endif
-!
-10  end do
+    end do
 !
 999  continue
     call jedema()

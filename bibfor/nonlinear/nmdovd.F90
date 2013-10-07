@@ -1,5 +1,21 @@
-subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
-                  defo)
+subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, &
+                  defo_comp, defo_comp_py)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterc/lctest.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/teattr.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,133 +32,141 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterc/lctest.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/teattr.h"
-#include "asterfort/utmess.h"
 !
-    character(len=24) :: modele, mesmai
-    character(len=16) :: defo, comcod
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: list_elem_affe
+    logical, intent(in) :: l_affe_all
+    integer, intent(in) :: nb_elem_affe
+    character(len=19), intent(in) :: full_elem_s
+    character(len=16), intent(in) :: defo_comp
+    character(len=16), intent(in) :: defo_comp_py
 !
-! PERMET DE VERIFIER SI LES DEFORMATIONS
-! SONT COMPATIBLES AVEC LES ELEMENTS DU MODELE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-! IN MODELE   : LE MODELE
-! IN MESMAI   : LISTE DES MAILLES AFFECTEES
-! IN NBMA     : NOMRE DE CES MAILLES (0 SIGNIFIE : TOUT)
-! IN CES2     :  CHAMELEM SIMPLE ISSU DE COMPOR, DEFINI SUR LES
-!                ELEMENTS QUI CALCULENT FULL_MECA
-! IN  COMCOD  : COMPORTEMENT PYTHON (DEFORMAITON) SUR LES MAILLES MESMAI
-! IN  DEFO    : COMPORTEMENT LU ACTUELLEMENT AFFECTE AUX MAILLES MESMAI
+! COMPOR <CARTE> - MECHANICS
 !
+! Check deformation with Comportement.py
 !
-    character(len=16) :: notype, texte(3), typmod, typmo2
-    character(len=24) :: ligrel, mailma
-    character(len=19) :: ces2
-    character(len=8) :: noma, nomail
-    integer :: nutyel, irett, iad, nugrel
-    integer :: irepe, nbma, nbmat, nbma1
-    integer :: ima, i, igrel, jma, iret
-    integer :: nbmagl, jcesd, jcesl, jcesv
+! --------------------------------------------------------------------------------------------------
 !
-!      NUMAIL(I,IEL) = ZI(IALIEL-1+ZI(ILLIEL+I-1)+IEL-1)
+! In  model          : name of model
+! In  full_elem_s    :  <CHELEM_S> of FULL_MECA option
+! In  l_affe_all     : .true. if affect on all elements of model
+! In  nb_elem_affe   : number of elements where comportment affected
+! In  list_elem_affe : list of elements where comportment affected
+! In  defo_comp      : comportement DEFORMATION
+! In  defo_comp_py   : comportement DEFORMATION - Python coding
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: notype, texte(3), type_elem, type_elem2
+    character(len=8) :: mesh, name_elem
+    character(len=19) :: ligrmo
+    integer :: nutyel
+    integer :: j_cesd, j_cesl, j_cesv
+    integer :: ibid, iret, irett, ielem
+    integer :: iad
+    integer :: j_repe, j_grel, j_elem_affe
+    integer :: nb_elem_mesh, nb_elem, nb_elem_grel
+    integer :: nume_elem, nume_grel
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- INITIALISATIONS
+! - Access to model and mesh
 !
+    ligrmo = model//'.MODELE'
+    call jeveuo(ligrmo(1:19)//'.REPE', 'L', j_repe)
+    call dismoi('C', 'NOM_MAILLA', model(1:8), 'MODELE', ibid, &
+                mesh, iret)
 !
-    ligrel = modele(1:8)//'.MODELE    .LIEL'
-    call jeveuo(ligrel(1:19)//'.REPE', 'L', irepe)
-    call dismoi('C', 'NOM_MAILLA', modele(1:8), 'MODELE', i,&
-                nomail, irett)
+! - Access to <CHELEM_S> of FULL_MECA option
 !
-    call jeveuo(ces2//'.CESD', 'L', jcesd)
-    call jeveuo(ces2//'.CESL', 'L', jcesl)
-    call jeveuo(ces2//'.CESV', 'L', jcesv)
-    nbmat = zi(jcesd-1+1)
+    call jeveuo(full_elem_s//'.CESD', 'L', j_cesd)
+    call jeveuo(full_elem_s//'.CESL', 'L', j_cesl)
+    call jeveuo(full_elem_s//'.CESV', 'L', j_cesv)
+    nb_elem_mesh = zi(j_cesd-1+1)
 !
-    if (nbma .ne. 0) then
-        call jeveuo(mesmai, 'L', jma)
-        nbma1=nbma
+! - Mesh affectation
+!
+    if (l_affe_all) then
+        nb_elem = nb_elem_mesh
     else
-        nbma1=nbmat
+        call jeveuo(list_elem_affe, 'L', j_elem_affe)
+        nb_elem = nb_elem_affe
     endif
 !
-    do 40,i = 1,nbma1
-    if (nbma .ne. 0) then
-        ima=zi(jma-1+i)
-    else
-        ima=i
-    endif
-    call cesexi('C', jcesd, jcesl, ima, 1,&
-                1, 1, iad)
-    if (iad .gt. 0) then
-        mailma = nomail(1:8)//'.NOMMAI'
-        call jenuno(jexnum(mailma, ima), noma)
-!           NUMERO DU GREL CONTENANT LA MAILLE IMA
-        nugrel=zi(irepe-1+2*(ima-1)+1)
-        call jeveuo(jexnum(ligrel, nugrel), 'L', igrel)
-        call jelira(jexnum(ligrel, nugrel), 'LONMAX', ival=nbmagl)
-        nutyel = zi(igrel+nbmagl-1)
-        call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
+! - Loop on elements
 !
-!           LECTURE DE TYPMOD DANS LE CATALOGUE PHENOMENE_MDOELISATION
-        call teattr(notype, 'C', 'TYPMOD', typmod, iret)
-        if (iret .ne. 0) goto 40
-        call teattr(notype, 'C', 'TYPMOD2', typmo2, iret)
+    do ielem = 1, nb_elem
 !
-!           Dans le grel il y a TYPMOD=COMP3D
-        if (typmod(1:6) .eq. 'COMP3D') then
-            call lctest(comcod, 'MODELISATION', '3D', irett)
-            if (irett .eq. 0) then
-                texte(1)=notype
-                texte(2)=noma
-                texte(3)=defo
-                call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
-            endif
-        else if (typmod(1:6).eq.'COMP1D') then
-            if (typmo2 .eq. 'PMF') then
-                call lctest(comcod, 'MODELISATION', 'PMF', irett)
-                if (irett .eq. 0) then
-                    texte(1)=notype
-                    texte(2)=noma
-                    texte(3)=defo
-                    call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
-                endif
-            else
-                call lctest(comcod, 'MODELISATION', '1D', irett)
-                if (irett .eq. 0) then
-                    texte(1)=notype
-                    texte(2)=noma
-                    texte(3)=defo
-                    call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
-                endif
-            endif
+! ----- Current element
+!
+        if (l_affe_all) then
+            nume_elem = ielem
         else
-            call lctest(comcod, 'MODELISATION', typmod, irett)
-            if (irett .eq. 0) then
-                texte(1)=notype
-                texte(2)=noma
-                texte(3)=defo
-                call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+            nume_elem = zi(j_elem_affe-1+ielem)
+        endif
+        call jenuno(jexnum(mesh(1:8)//'.NOMMAI', nume_elem), name_elem)
+!
+! ----- <CARTE> access
+!
+        call cesexi('C', j_cesd, j_cesl, nume_elem, 1, &
+                    1, 1, iad)
+        if (iad .gt. 0) then
+!
+! --------- Access to element type
+!
+            nume_grel = zi(j_repe-1+2*(nume_elem-1)+1)
+            call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', nume_grel), 'L', j_grel)
+            call jelira(jexnum(ligrmo(1:19)//'.LIEL', nume_grel), 'LONMAX', nb_elem_grel)
+            nutyel = zi(j_grel-1+nb_elem_grel)
+            call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
+!
+! --------- Type of modelization
+!
+            call teattr(notype, 'C', 'TYPMOD', type_elem, iret)
+            if (iret .eq. 0) then
+                call teattr(notype, 'C', 'TYPMOD2', type_elem2, iret)
+                if (type_elem(1:6) .eq. 'COMP3D') then
+                    call lctest(defo_comp_py, 'MODELISATION', '3D', irett)
+                    if (irett .eq. 0) then
+                        texte(1) = notype
+                        texte(2) = name_elem
+                        texte(3) = defo_comp
+                        call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                    endif
+                else if (type_elem(1:6).eq.'COMP1D') then
+                    if (type_elem2 .eq. 'PMF') then
+                        call lctest(defo_comp_py, 'MODELISATION', 'PMF', irett)
+                        if (irett .eq. 0) then
+                            texte(1) = notype
+                            texte(2) = name_elem
+                            texte(3) = defo_comp
+                            call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                        endif
+                    else
+                        call lctest(defo_comp_py, 'MODELISATION', '1D', irett)
+                        if (irett .eq. 0) then
+                            texte(1) = notype
+                            texte(2) = name_elem
+                            texte(3) = defo_comp
+                            call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                        endif
+                    endif
+                else
+                    call lctest(defo_comp_py, 'MODELISATION', type_elem, irett)
+                    if (irett .eq. 0) then
+                        texte(1) = notype
+                        texte(2) = name_elem
+                        texte(3) = defo_comp
+                        call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
+                    endif
+                endif
             endif
         endif
-!
-    endif
-    40 end do
+    end do
 !
     call jedema()
 !

@@ -16,13 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdogd(moclef, comp, k, ncomel, lcomel,&
-                      defo)
-        character(len=16) :: moclef
-        character(len=*) :: comp
-        integer :: k
-        integer :: ncomel
-        character(len=16) :: lcomel(5)
-        character(len=16) :: defo
-    end subroutine nmdogd
+    subroutine comp_meta_save(mesh, compor, nb_cmp, list_vale)
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: compor
+        integer, intent(in) :: nb_cmp
+        character(len=19), intent(in) :: list_vale 
+    end subroutine comp_meta_save
 end interface

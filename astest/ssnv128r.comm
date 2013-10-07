@@ -115,7 +115,7 @@ L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
 
 #-----------------------------------------------------------
 
-U2M=STAT_NON_LINE(MODELE=MO,
+U2M=STAT_NON_LINE(MODELE=MO,INFO=2,
                   CHAM_MATER=CHMAT,
                   EXCIT=_F(CHARGE=CHA2,
                            FONC_MULT=RAMPE,),

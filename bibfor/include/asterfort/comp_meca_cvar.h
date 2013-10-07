@@ -16,20 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdoki(moclef, modele, comp, k, dimaki,&
-                      nbkit, nomkit, nbnvi, ncomel, lcomel,&
-                      numlc, nbvari)
-        integer :: dimaki
-        character(len=16) :: moclef
-        character(len=*) :: modele
-        character(len=16) :: comp
-        integer :: k
-        integer :: nbkit
-        character(len=16) :: nomkit(dimaki)
-        integer :: nbnvi(*)
-        integer :: ncomel
-        character(len=16) :: lcomel(*)
-        integer :: numlc
-        integer :: nbvari
-    end subroutine nmdoki
+    subroutine comp_meca_cvar(list_vale)
+        character(len=19), intent(in) :: list_vale
+    end subroutine comp_meca_cvar
 end interface

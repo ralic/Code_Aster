@@ -366,8 +366,4 @@ Erreur utilisateur :
      Il n'est donc pas recréé dans le maillage assemblé.
 """),
 
-99: _(u"""
- Aucun groupe de fibres n'a de comportement.
-"""),
-
 }

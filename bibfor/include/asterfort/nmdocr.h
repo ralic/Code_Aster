@@ -16,11 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
-        character(len=24) :: carcrz
-        character(len=24) :: modele
-        integer :: nbmo1
-        character(len=16) :: moclef
-        integer :: iret
+    subroutine nmdocr(model, carcri)
+        character(len=8), intent(in) :: model
+        character(len=24), intent(out) :: carcri
     end subroutine nmdocr
 end interface

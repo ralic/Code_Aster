@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdorc(modelz, compoz, carcri)
-        character(len=*) :: modelz
-        character(len=*) :: compoz
-        character(len=24) :: carcri
+    subroutine nmdorc(model, chmate, l_etat_init, compor, carcri)
+        character(len=8), intent(in) :: model
+        character(len=8), intent(in) :: chmate
+        logical, intent(in) :: l_etat_init
+        character(len=19), intent(out) :: compor
+        character(len=24), intent(out) :: carcri
     end subroutine nmdorc
 end interface

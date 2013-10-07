@@ -1,0 +1,247 @@
+subroutine carc_read(list_vale, nbocc)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterc/lcalgo.h"
+#include "asterc/lccree.h"
+#include "asterc/lctest.h"
+#include "asterfort/assert.h"
+#include "asterfort/comp_meca_rkit.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=19), intent(in) :: list_vale
+    integer, intent(out) :: nbocc
+!
+! --------------------------------------------------------------------------------------------------
+!
+! <CARTE> CARCRI
+!
+! Read informations from command file
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  list_vale   : list of informations to save
+! Out nbocc       : number of occurrences of COMPORTEMENT
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: keywordfact
+    integer :: iocc
+    integer :: iret
+    integer :: j_lvalr, j_lvalk
+    character(len=16) :: algo_inte, type_matr_tang, method, post_iter
+    real(kind=8) :: parm_theta, vale_pert_rela 
+    real(kind=8) :: resi_cplan_maxi, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
+    integer :: type_matr_t, iter_inte_pas, iter_cplan_maxi
+    character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
+    character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
+    logical :: l_kit_thm
+    character(len=16) :: texte(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call jemarq()
+!
+! - Initializations
+!
+    nbocc       = 0
+    keywordfact = 'COMPORTEMENT'
+    call getfac(keywordfact, nbocc)
+!
+! - List construction
+!
+    if (nbocc.ne.0) then
+        call wkvect(list_vale(1:19)//'.VALR', 'V V R'  , 13*nbocc, j_lvalr)
+        call wkvect(list_vale(1:19)//'.VALK', 'V V K24', 2*nbocc , j_lvalk)
+    endif
+!
+! - Read informations
+!
+    do iocc = 1, nbocc
+!
+! ----- Get RELATION
+!
+        call getvtx(keywordfact, 'RELATION', iocc = iocc, scal = rela_comp)
+        l_kit_thm  = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
+!
+! ----- Coding comportment (Python)
+!
+        call lccree(1, rela_comp, rela_comp_py)
+!
+! ----- Get ALGO_INTE
+!
+        call getvtx(keywordfact, 'ALGO_INTE', iocc = iocc, scal = algo_inte, nbret = iret)
+        if (iret .eq. 0) then
+            call lcalgo(rela_comp_py, algo_inte)
+        else
+            if (l_kit_thm) then
+                call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
+                rela_thmc = kit_comp(1)
+                rela_ther = kit_comp(2)
+                rela_hydr = kit_comp(3)
+                rela_meca = kit_comp(4)
+            else
+                rela_meca = rela_comp
+            endif
+            call lccree(1, rela_meca, rela_meca_py)
+            call lctest(rela_meca_py, 'ALGO_INTE', algo_inte, iret)
+            if (iret .eq. 0) then
+                    texte(1) = algo_inte
+                    texte(2) = 'ALGO_INTE'
+                    texte(3) = rela_comp
+                    call utmess('F', 'COMPOR1_45', nk = 3, valk = texte)
+            endif  
+        endif
+!
+! ----- Get ITER_INTE_PAS
+!
+        iter_inte_pas = 0
+        call getvis(keywordfact, 'ITER_INTE_PAS', iocc = iocc, scal = iter_inte_pas)
+!
+! ----- Get ITER_CPLAN_MAXI/RESI_CPLAN_MAXI/RESI_CPLAN_RELA (Deborst method)
+!
+        resi_cplan_maxi = 1.d-6
+        iter_cplan_maxi = 1
+        call getvis(keywordfact, 'ITER_CPLAN_MAXI', iocc = iocc, scal = iter_cplan_maxi)
+        call getvr8(keywordfact, 'RESI_CPLAN_MAXI', iocc = iocc, scal = resi_cplan_maxi, &
+                    nbret = iret)
+        if (iret .ne. 0) then
+            resi_cplan_maxi = -resi_cplan_maxi
+        else
+            call getvr8(keywordfact, 'RESI_CPLAN_RELA', iocc = iocc, scal = resi_cplan_maxi)
+        endif
+!
+! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA/SEUIL/AMPLITUDE/TAUX_RETOUR
+!
+        vale_pert_rela = 0.d0
+        seuil          = -1.d0
+        amplitude      = -1.d0
+        taux_retour    = -1.d0
+        type_matr_t    = 0
+        type_matr_tang = ' '
+        call getvtx(keywordfact, 'TYPE_MATR_TANG', iocc = iocc, &
+                    scal = type_matr_tang, nbret = iret)
+        if (iret .eq. 0) then
+            type_matr_t = 0
+        else
+            if (type_matr_tang .eq. 'PERTURBATION') then
+                type_matr_t = 1
+                call getvr8(keywordfact, 'VALE_PERT_RELA', iocc = iocc, scal = vale_pert_rela)
+            else if (type_matr_tang .eq. 'VERIFICATION') then
+                type_matr_t = 2
+                call getvr8(keywordfact, 'VALE_PERT_RELA', iocc = iocc, scal = vale_pert_rela)
+            elseif (type_matr_tang .eq. 'TANGENTE_SECANTE') then
+                call getvr8(keywordfact, 'SEUIL', iocc = iocc, scal = seuil)
+                call getvr8(keywordfact, 'AMPLITUDE', iocc = iocc, scal = amplitude)
+                call getvr8(keywordfact, 'TAUX_RETOUR', iocc = iocc, scal = taux_retour)
+            else
+                ASSERT(.false.)
+            endif
+            call lctest(rela_comp_py, 'TYPE_MATR_TANG', type_matr_tang, iret)
+            if (iret .eq. 0) then
+                texte(1) = type_matr_tang
+                texte(2) = rela_comp
+                call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
+            endif
+        endif
+!
+! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA/SEUIL/AMPLITUDE/TAUX_RETOUR - <IMPLEX>
+!
+        if (getexm(' ','METHODE') .eq. 1) then
+            call getvtx(' ', 'METHODE', iocc = 0, scal = method, nbret = iret)
+            if (iret .ne. 0) then
+                if (method .eq. 'IMPLEX') then
+                    if ((type_matr_t.ne.0) .and. (rela_comp.ne.'SANS')) then
+                        texte(1) = type_matr_tang
+                        texte(2) = method
+                        call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
+                    else
+                        type_matr_t = 9
+                    endif
+                    call lctest(rela_comp_py, 'TYPE_MATR_TANG', method, iret)
+                    if ((iret.eq.0) .and. (rela_comp.ne.'SANS')) then
+                        texte(1) = type_matr_tang
+                        texte(2) = method
+                        call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
+                    endif
+                endif
+            endif
+        endif
+!
+! ----- Get PARM_THETA/PARM_ALPHA
+!
+        parm_theta = 1.d0
+        parm_alpha = 1.d0
+        call getvr8(keywordfact, 'PARM_THETA', iocc = iocc, scal = parm_theta)
+        call getvr8(keywordfact, 'PARM_ALPHA', iocc = iocc, scal = parm_alpha)
+!
+! ----- Get RESI_RADI_RELA
+! 
+        if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
+            call getvr8(keywordfact, 'RESI_RADI_RELA', iocc = iocc, scal = resi_radi_rela,&
+                        nbret = iret)
+            if (iret .ne. 0) then
+                seuil = resi_radi_rela
+            else
+                seuil = -10.d0
+            endif
+        endif
+!
+! ----- Get POST_ITER
+!
+        if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
+            call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter,&
+                        nbret = iret)
+            if (iret .eq. 1) then
+                amplitude = 1.d0
+            endif
+        endif
+!
+! ----- Save options in list
+!
+        zr(j_lvalr+13*(iocc-1) -1 + 1)  = 0.d0
+        zr(j_lvalr+13*(iocc-1) -1 + 2)  = type_matr_t
+        zr(j_lvalr+13*(iocc-1) -1 + 3)  = 0.d0
+        zr(j_lvalr+13*(iocc-1) -1 + 4)  = parm_theta
+        zr(j_lvalr+13*(iocc-1) -1 + 5)  = iter_inte_pas
+        zr(j_lvalr+13*(iocc-1) -1 + 6)  = 0.d0
+        zr(j_lvalr+13*(iocc-1) -1 + 7)  = vale_pert_rela
+        zr(j_lvalr+13*(iocc-1) -1 + 8)  = resi_cplan_maxi
+        zr(j_lvalr+13*(iocc-1) -1 + 9)  = iter_cplan_maxi
+        zr(j_lvalr+13*(iocc-1) -1 + 10) = seuil
+        zr(j_lvalr+13*(iocc-1) -1 + 11) = amplitude
+        zr(j_lvalr+13*(iocc-1) -1 + 12) = taux_retour
+        zr(j_lvalr+13*(iocc-1) -1 + 13) = parm_alpha
+        zk24(j_lvalk+2*(iocc-1) -1 + 1) = rela_comp
+        zk24(j_lvalk+2*(iocc-1) -1 + 2) = algo_inte
+    end do
+!
+    call jedema()
+end subroutine

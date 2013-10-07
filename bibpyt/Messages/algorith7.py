@@ -19,18 +19,6 @@
 
 cata_msg = {
 
-1 : _(u"""
- couplage fluage/fissuration :
- il faut définir deux lois de comportement exactement.
-"""),
-
-2 : _(u"""
- GRANGER et ENDO_ISOT_BETON ou MAZARS non encore développé
-"""),
-
-3 : _(u"""
- loi de comportement non autorisée dans le couplage fluage/fissuration
-"""),
 
 4 : _(u"""
  DEBORST non compatible avec couplage UMLV/Mazars.
@@ -41,10 +29,6 @@ cata_msg = {
 5 : _(u"""
  pas de C_PLAN pour ENDO_ISOT_BETON
  utiliser C_PLAN_DEBORST
-"""),
-
-6 : _(u"""
- loi de fluage non autorisée dans le couplage fluage/fissuration
 """),
 
 7 : _(u"""
@@ -63,11 +47,6 @@ cata_msg = {
  COMP1D et SIMO_MIEHE incompatibles
 """),
 
-11 : _(u"""
- couplage fluage/fissuration :
- la première loi doit être une loi de fluage de type GRANGER_FP ou GRANGER_FP_V.
-"""),
-
 12 : _(u"""
  couplage fluage/fissuration :
  nombre total de variables internes incohérent <--> erreur de programmation.
@@ -83,13 +62,6 @@ cata_msg = {
 
 20 : _(u"""
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s
-"""),
-
-60 : _(u"""
-  -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'
-     est lâche (très supérieur à la valeur par défaut).
-  -> Risque & Conseil :
-     Cela peut nuire à la qualité de la solution et à la convergence.
 """),
 
 61 : _(u"""
@@ -155,11 +127,6 @@ cata_msg = {
 
 82 : _(u"""
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
-"""),
-
-83 : _(u"""
- Vous utilisez le modèle BETON_UMLV_FP avec un modèle d'endommagement.
- Attention, la mise à jour des contraintes sera faite suivant les déformations totales et non pas suivant un schéma incrémental.
 """),
 
 96 : _(u"""

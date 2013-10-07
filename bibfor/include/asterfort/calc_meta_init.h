@@ -21,7 +21,7 @@ interface
         character(len=8), intent(in) :: sd_temp
         integer, intent(in) :: temp_nume
         character(len=24), intent(in) :: ligrmo
-        character(len=24), intent(in) :: compor
+        character(len=19), intent(in) :: compor
         character(len=24), intent(in) :: phasin
         character(len=24), intent(in) :: chmate
     end subroutine calc_meta_init

@@ -31,7 +31,8 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     integer :: numpha
     character(len=8) :: temper
     character(len=16) :: option
-    character(len=24) :: mate, compor, phasin
+    character(len=19) :: compor
+    character(len=24) :: mate, phasin
     character(len=*) :: modelz
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -85,54 +85,6 @@ cata_msg = {
  la viscosité UN_SUR_K doit être différente de zéro
 """),
 
-35 : _(u"""
- incompatibilité entre la loi de couplage  %(k1)s  et la modélisation choisie  %(k2)s
-"""),
-
-36 : _(u"""
- il y a déjà une loi de couplage
-"""),
-
-37 : _(u"""
- il y a déjà une loi hydraulique
-"""),
-
-38 : _(u"""
- il y a déjà une loi de mécanique
-"""),
-
-39 : _(u"""
- il n y a pas de loi de couplage
-"""),
-
-40 : _(u"""
- il n y a pas de loi hydraulique
-"""),
-
-41 : _(u"""
- il n y a pas de loi de mécanique
-"""),
-
-42 : _(u"""
- la loi de couplage est incorrecte pour une modélisation %(k1)s
-"""),
-
-43 : _(u"""
- incompatibilité des comportements mécanique et hydraulique
-"""),
-
-44 : _(u"""
- loi de mécanique incompatible avec une modélisation %(k1)s
-"""),
-
-46 : _(u"""
- il y a une loi de mécanique dans la relation %(k1)s
-"""),
-
-59 : _(u"""
- la loi de couplage doit être LIQU_SATU ou GAZ pour une modélisation H
-"""),
-
 61 : _(u"""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),

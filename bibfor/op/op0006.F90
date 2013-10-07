@@ -56,7 +56,7 @@ subroutine op0006()
 !
 !     2- TRAITEMENT DU MOT-CLE AFFE_COMPOR :
 !     -----------------------------------------
-    call rccomp(chmat, nomail, nomode)
+    call rccomp(chmat, nomail)
 !
 !
 !     3- TRAITEMENT DU MOT-CLE AFFE_VARC :

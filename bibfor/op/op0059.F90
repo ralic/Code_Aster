@@ -2,8 +2,14 @@ subroutine op0059()
 !
     implicit none
 !
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/op5901.h"
+#include "asterfort/op5902.h"
+#include "asterfort/op5903.h"
 !
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,44 +26,45 @@ subroutine op0059()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: jean-michel.proix at edf.fr
 !
-!     COMMANDE:  DEFI_COMPOR
 !
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/infniv.h"
-#include "asterfort/op5901.h"
-#include "asterfort/op5902.h"
-#include "asterfort/op5903.h"
-    integer :: nboccp, nboccm, nbocci, ifm, niv
-    character(len=8) :: compor
-    character(len=16) :: oper, typres
+! --------------------------------------------------------------------------------------------------
+!
+! OPERATEUR    DEFI_COMPOR
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nboccp, nboccm, nbocci
+    character(len=8) :: sdcomp
+    character(len=24) :: k24bid
+!
+! --------------------------------------------------------------------------------------------------
 !
     call infmaj()
-    call infniv(ifm, niv)
-    call getres(compor, typres, oper)
+
+    call getres(sdcomp, k24bid, k24bid)
     call getfac('MONOCRISTAL', nboccm)
     call getfac('POLYCRISTAL', nboccp)
-    call getfac('MULTIFIBRE', nbocci)
+    call getfac('MULTIFIBRE' , nbocci)
 !
     if (nboccm .gt. 0) then
 !
 !        MONOCRISTAL
 !
-        call op5901(nboccm, ifm, niv, compor)
+        call op5901(nboccm, sdcomp)
 !
     else if (nboccp.gt.0) then
 !
 !        POLYCRISTAL
 !
-        call op5902(nboccp, compor)
+        call op5902(nboccp, sdcomp)
 !
     else if (nbocci.gt.0) then
 !
 !        MULTIFIBRE
 !
-        call op5903(nbocci, compor)
+        call op5903(nbocci, sdcomp)
 !
     endif
 !

@@ -16,15 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
-                      ncmpma, meca, nomcmd)
-        character(len=19) :: compor
-        character(len=24) :: modele
-        integer :: nbmo1
-        character(len=16) :: moclef
-        character(len=8) :: nomcmp(*)
-        integer :: ncmpma
-        logical :: meca
-        character(len=16) :: nomcmd
+    subroutine nmdocc(model, chmate, l_etat_init, compor)
+        character(len=8), intent(in) :: model
+        character(len=8), intent(in) :: chmate
+        logical, intent(in) :: l_etat_init
+        character(len=19), intent(out) :: compor
     end subroutine nmdocc
 end interface

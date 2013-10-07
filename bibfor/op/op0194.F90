@@ -59,8 +59,8 @@ subroutine op0194()
     character(len=4) :: ctyp
     character(len=8) :: k8b, crit, temper, modele, cara
     character(len=16) :: tysd, option
-    character(len=19) :: kordre, kcha
-    character(len=24) :: compor, chmeta, phasin, mate, k24bid
+    character(len=19) :: kordre, kcha, compor
+    character(len=24) :: chmeta, phasin, mate
     character(len=24) :: valk
     character(len=24) :: lesopt
 !
@@ -72,6 +72,7 @@ subroutine op0194()
     lesopt='&&'//nompro//'.LES_OPTION'
     kordre='&&'//nompro//'.NUME_ORDRE'
     kcha = '&&'//nompro//'.CHARGES   '
+    compor = '&&'//nompro//'.COMPOR'
 !
     call getvid(' ', 'RESULTAT', scal=temper, nbret=n1)
     call gettco(temper, tysd)
@@ -101,7 +102,7 @@ subroutine op0194()
 !
         if (option .eq. 'META_ELNO') then
 !
-            call mtdorc(modele, compor, k24bid)
+            call mtdorc(modele, compor)
 !
 ! ----- ETAT INITIAL
             numpha = 0

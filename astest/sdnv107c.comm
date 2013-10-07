@@ -900,15 +900,6 @@ RESUGLO=REST_COND_TRAN(   reuse=RESUGLO,
                           TOUT_CHAM='OUI',
                                         );
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  PARA='FREQ',
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=MODE,
-                  VALE_CALC=117.111304842,
-                  VALE_REFE=117.11,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-3,),
-          )
 
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
                   INST=3.0E-3,

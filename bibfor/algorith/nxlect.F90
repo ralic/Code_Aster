@@ -3,6 +3,17 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
                   parmei, parmer, solveu, parcri, parcrr,&
                   compor, evolsc)
 !
+    implicit none
+!
+#include "asterc/getres.h"
+#include "asterfort/cresol.h"
+#include "asterfort/nxdocc.h"
+#include "asterfort/ntdcom.h"
+#include "asterfort/ntdomt.h"
+#include "asterfort/ntdoth.h"
+#include "asterfort/nxdocn.h"
+#include "asterfort/nxdomt.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +32,6 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 ! ======================================================================
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
-    implicit none
-#include "asterc/getres.h"
-#include "asterfort/cresol.h"
-#include "asterfort/nmdorc.h"
-#include "asterfort/ntdcom.h"
-#include "asterfort/ntdomt.h"
-#include "asterfort/ntdoth.h"
-#include "asterfort/nxdocn.h"
-#include "asterfort/nxdomt.h"
     character(len=8) :: evolsc
     logical :: matcst, coecst
     integer :: parmei(2), parcri(3)
@@ -47,7 +49,6 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 !
     integer :: ibid
     character(len=16) :: k16bid, nomcmd
-    character(len=24) :: k24bid
     character(len=8) :: k8bla
 !
 ! ----------------------------------------------------------------------
@@ -69,7 +70,7 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 ! --- COMPORTEMENT
 !
     if (nomcmd(1:13) .ne. 'THER_LINEAIRE') then
-        call nmdorc(modele, compor, k24bid)
+        call nxdocc(modele, compor)
     endif
 !
 ! --- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR

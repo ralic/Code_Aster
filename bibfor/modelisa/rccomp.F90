@@ -1,22 +1,17 @@
-subroutine rccomp(chmat, nomail, nomode)
-    implicit none
+subroutine rccomp(chmat, mesh)
+!
+    implicit   none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
+#include "asterfort/comp_comp_read.h"
+#include "asterfort/comp_comp_save.h"
+#include "asterfort/comp_init.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
+#include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: chmat, nomail, nomode
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,97 +30,54 @@ subroutine rccomp(chmat, nomail, nomode)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!  IN : CHMAT  : CHAMP MATERIAU PRODUIT
-!  IN : NOMAIL : NOM DU MAILLAGE
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: chmat
+    character(len=8), intent(in) :: mesh
 !
-    integer :: ibid, nocc, i, j, nm, nt, jncmp, jvalv, nbma, jmail
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motcle(2)
-    character(len=24) :: mesmai
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ncmpma, icmp, icpri, icprk, nbgmax, icp, numlc
-    parameter (ncmpma=7+9+4)
-    character(len=8) :: nomcmp(ncmpma), k8b, sdcomp
-    character(len=16) :: comcod
+! AFFE_MATERIAU
+!
+! Create COMPOR <CARTE> for AFFE_COMPOR
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh        : name of mesh
+! In  chmat       : name material field
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_cmp, nocc
+    character(len=16) :: keywordfact
     character(len=19) :: compor
-    data nomcmp/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',&
-     &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',&
-     &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',&
-     &     'KIT9    ', 'NVI_C   ', 'NVI_T   ', 'NVI_H   ', 'NVI_M   '/
-! ----------------------------------------------------------------------
+    character(len=24) :: list_vale
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    call getfac('AFFE_COMPOR', nocc)
-    if (nocc .eq. 0) goto 999
-!
+    keywordfact = 'AFFE_COMPOR'
     compor = chmat//'.COMPOR'
+    list_vale   = '&&LIST_VALE'
+    call getfac(keywordfact, nocc)
+    if (nocc .ne. 0) then
 !
-    call alcart('G', compor, nomail, 'COMPOR')
-    call jeveuo(compor//'.NCMP', 'E', jncmp)
-    call jeveuo(compor//'.VALV', 'E', jvalv)
+! ----- Create COMPOR <CARTE>
 !
-    do 90 icmp = 1, ncmpma
-        zk8(jncmp+icmp-1) = nomcmp(icmp)
-        zk16(jvalv+icmp-1)= ' '
-90  end do
+        call comp_init(mesh, compor, 'G', nb_cmp)
 !
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
+! ----- Read informations from command file
 !
-    mesmai = '&&RCCOMP.MES_MAILLES'
+        call comp_comp_read(list_vale)
 !
-    do 10 i = 1, nocc
-        call getvid('AFFE_COMPOR', 'COMPOR', iocc=i, scal=sdcomp, nbret=nm)
-        call jeveuo(sdcomp//'.CPRI', 'L', icpri)
-        ASSERT(zi(icpri).eq.3)
-! ---ON MET LE NOM DE LA PREMIERE RELATION NON VIDE DANS RELCOM POUR QUE
-!    ALGO1D FONCTIONNE (AVEC UN SEUL GROUPE DE FIBRE)
-        call jeveuo(sdcomp//'.CPRK', 'L', icprk)
-! --- RECHERCHE DE LA PREMIERE RELATION NON VIDE
-        call jelira(sdcomp//'.CPRK', 'LONMAX', nbgmax)
-        nbgmax=(nbgmax-1)/6
-        do 20 j = 1, nbgmax
-            icp=icprk-1+6*(j-1)
-            if (zk24(icp+2) .ne. 'VIDE') goto 25
-20      continue
-        call utmess('F', 'MODELISA7_99')
-25      continue
-!---- REMPLISSAGE DE LA CARTE
-        zk16(jvalv-1+1) = zk24(icp+3)
-        write (zk16(jvalv-1+2),'(I16)') zi(icpri+1)
-        zk16(jvalv-1+3) = zk24(icp+5)
-        zk16(jvalv-1+4) = 'COMP_INCR'
-        zk16(jvalv-1+5) = zk24(icp+4)
-!         APPEL A LCINFO POUR RECUPERER LE NUMERO DE LC
-        call lccree(1, zk24(icp+3), comcod)
-        call lcinfo(comcod, numlc, ibid)
-        write(zk16(jvalv-1+6),'(I16)') numlc
-        zk16(jvalv-1+7) = sdcomp//'.CPRK'
+! ----- Save informations in COMPOR <CARTE>
 !
-        call getvtx('AFFE_COMPOR', 'TOUT', iocc=i, scal=k8b, nbret=nt)
-        if (nt .ne. 0) then
-            call nocart(compor, 1, ncmpma)
-        else
-            call reliem(nomode, nomail, 'NU_MAILLE', 'AFFE_COMPOR', i,&
-                        2, motcle(1), typmcl(1), mesmai, nbma)
-            if (nbma .ne. 0) then
-                call jeveuo(mesmai, 'L', jmail)
-                call nocart(compor, 3, ncmpma, mode='NUM', nma=nbma,&
-                            limanu=zi(jmail))
-                call jedetr(mesmai)
-            endif
-        endif
-10  end do
+        call comp_comp_save(mesh, compor, nb_cmp, list_vale)
 !
+! ----- Clean it
 !
-    call jedetr(compor//'.VALV')
-    call jedetr(compor//'.NCMP')
+        call jedetr(list_vale)
+    endif
 !
-999  continue
     call jedema()
 end subroutine
+

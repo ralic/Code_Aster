@@ -1,16 +1,11 @@
-subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
+subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
+!
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    character(len=14) :: nommc
-    character(len=16) :: mcfact, algo
-    integer :: iocc
-    real(kind=8) :: valrmc
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,61 +23,62 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-!     RECUPERATION ET VERIFICATION DES MOT-CLES LIES
-!     A LA CONVERGENCE LOCALE DES COMPOREMENTS
-!     LES MOT-CLES TRAITES SONT RESI_INTE_RELA ET ITER_INTE_MAXI
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=14), intent(in) :: keyword
+    character(len=16), intent(in) :: algo_inte
+    real(kind=8), intent(out) :: value
 !
-! IN  MCFACT : MOT-CLE FACTEUR (COMP_ELAS OU COMP_INCR)
-! IN  IOCC   : NUMERO D'OCCURENCE DU MOT-CLE FACTEUR
-! IN  ALGO   : ALGO_INTE (SERT A LA VERIF DE COHERENCE)
-! IN  NOMMC  : MOT-CLE A TRAITER ('RESI_INTE_RELA' / 'ITER_INTE_MAXI')
-! OUT VALRMC : VALEUR REELLE DU MOT-CLE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! <CARTE> CARCRI
 !
-    integer :: iarg, iret, valimc, vali
-    character(len=16) :: valk(2)
+! Get and check special keywords for convergence criterion
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+! In  keywordfact  : factor keyword to read (COMPORTEMENT)
+! In  iocc         : factor keyword index in COMPORTEMENT
+! In  keyword      : keyword 
+! In  algo_inte    : integration algorithm
+! Out value        : real value of keyword
 !
-!     VERIFICATIONS INITIALES
-
-    ASSERT(nommc.eq.'RESI_INTE_RELA'.or. nommc.eq.'ITER_INTE_MAXI')
+! --------------------------------------------------------------------------------------------------
 !
-!     RECUP DES VALEURS
-    if (nommc .eq. 'RESI_INTE_RELA') then
-        call getvr8(mcfact, nommc, iocc=iocc, scal=valrmc, nbret=iret,&
+    integer :: iarg, iret, vali
+!
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(keyword.eq.'RESI_INTE_RELA'.or. keyword.eq.'ITER_INTE_MAXI')
+!
+! - Get Values
+!
+    if (keyword .eq. 'RESI_INTE_RELA') then
+        call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret,&
                     isdefault=iarg)
-    else if (nommc.eq.'ITER_INTE_MAXI') then
-        call getvis(mcfact, nommc, iocc=iocc, scal=valimc, nbret=iret,&
+    else if (keyword.eq.'ITER_INTE_MAXI') then
+        call getvis(keywordfact, keyword, iocc=iocc, scal=vali, nbret=iret,&
                     isdefault=iarg)
-        valrmc = valimc
+        value = vali
     endif
 !
     ASSERT(iret.ne.0)
 !
-!     VERIFICATIONS DE COHERENCE
+! - Checking
+!
     if (iarg .eq. 0) then
-!        LA VALEUR A ETE FOURNIE PAR L'UTILISATEUR
-!        VERIF QUE C'EST BIEN COMPATIBLE AVEC LE RESTE
-        if (algo .eq. 'ANALYTIQUE') then
-            valk(1)=nommc
-            valk(2)=mcfact
-            vali=iocc
-            call utmess('A', 'COMPOR1_70', nk=2, valk=valk, si=vali)
-!          ON MET LA VALEUR A -999 (ON POURRAIT METTRE R8VIDE)
-            valrmc = -999.d0
+        if (algo_inte .eq. 'ANALYTIQUE') then
+            call utmess('A', 'COMPOR4_70', sk=keyword)
+            value = -999.d0
         endif
     endif
 !
-    if (nommc .eq. 'RESI_INTE_RELA') then
-        if (valrmc .gt. 1.0001d-6) then
-            call utmess('A', 'ALGORITH7_60')
+    if (keyword .eq. 'RESI_INTE_RELA') then
+        if (value .gt. 1.0001d-6) then
+            call utmess('A', 'COMPOR4_62')
         endif
     endif
 !
-    call jedema()
 end subroutine

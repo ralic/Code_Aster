@@ -1,20 +1,18 @@
-subroutine cgleco(resu, modele, iord0, typfis, compor,&
-                  incr)
+subroutine cgleco(resu, modele, mate, iord0, typfis, &
+                  compor, incr)
     implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
+#include "asterfort/comp_init.h"
+#include "asterfort/comp_meca_elas.h"
+#include "asterfort/nmdocc.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gverlc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/nmdorc.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer :: iord0
-    character(len=8) :: resu, modele, typfis
-    character(len=24) :: compor
-    logical :: incr
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,78 +32,89 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-!     SOUS-ROUTINE DE L'OPERATEUR CALC_G
+    integer, intent(in) :: iord0
+    character(len=8), intent(in) :: resu
+    character(len=8), intent(in) :: modele
+    character(len=8), intent(in) :: mate
+    character(len=8), intent(in) :: typfis
+    character(len=19), intent(out) :: compor
+    logical, intent(out) :: incr
 !
-!     BUT : LECTURE DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
+! --------------------------------------------------------------------------------------------------
 !
-!  IN :
-!     RESU   : MOT-CLE RESULTAT
-!     MODELE : MODELE ASSOCIE AU RESULTAT
-!     IORD0  : PREMIER NUME_ORDRE
-!     TYPFIS : TYPE D'OBJET POUR DECRIRE LE FOND DE FISSURE
-!              'FONDFISS' OU 'FISSURE' OU 'THETA'
-!  OUT :
-!     COMPOR : CARTE DU COMPORTEMENT
-!     INCR   : .TRUE. SI COMPORTEMENT INCREMENTAL
-! ======================================================================
+! CALC_G
 !
-    integer :: nbcomp, ntmp, ier, ibid
-    character(len=16) :: moclef
-    character(len=24) :: k24b, repk
-    logical :: limpel
+! Comportment selection
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  resu   : name of result
+! In  model  : name of model
+! In  mate   : name of material field
+! In  iord0  : first NUME_ORDRE in result 
+! In  typfis : object to describe crack
+!               'FONDFISS'/'FISSURE'/'THETA'
+! Out compor : name of COMPOR <CARTE>
+! Out incr   : if incrental comportment
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbcomp, ibid, iret, nb_cmp
+    character(len=16) :: keywordfact
+    character(len=24) :: repk
+    character(len=8) :: mesh
+    logical :: limpel, l_etat_init
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-!     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
-    moclef = 'COMPORTEMENT'
+! - Initializations
 !
-!     NOMBRE MAX D'OCCURENCES DE COMPORTEMENT DANS CALC_G
-    nbcomp=0
-
-    call getfac(moclef, ntmp)
-    nbcomp=max(nbcomp,ntmp)
-
+    limpel = .false.
+    incr   = .false.
+    nbcomp = 0
+    keywordfact = 'COMPORTEMENT'
+    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
+                mesh, iret)
+    l_etat_init = .false.
 !
-    limpel=.false.
+! - How many COMPORTEMENT in CALC_G ?
+! 
+    call getfac(keywordfact, nbcomp)
 !
-!
-!     1) RECUP OU CREATION DE COMPOR
-!     ------------------------------
+! - Get or create COMPOR <CARTE>
 !
     if (nbcomp .eq. 0) then
 !
-!       COMPORTEMENT N'EST PAS RENSEIGNE DANS CALC_G ALORS
-!       ON VA CHERCHE LE COMPORTEMENT ASSOCIE AU RESU (1ER NUME_ORDRE)
+! ----- No COMPORTEMENT: get from RESULT
+!
         call rsexch(' ', resu, 'COMPORTEMENT', iord0, compor,&
-                    ier)
+                    iret)
 !
-        if (ier .ne. 0) then
-!         PROBLEME  DANS LA RECUPERATION DU COMPORTEMENT DANS RESU
-!         (CAS MECA_STATIQUE PAR EXEMPLE)
-!         --> ON VA IMPOSER DANS CALC_G COMP_ELAS
-            limpel=.true.
-            call nmdorc(modele, compor, k24b)
+! ----- No COMPOR <CARTE> in RESULT: create ELAS COMPOR <CARTE>
+!
+        if (iret .ne. 0) then
+            limpel = .true.
+            compor = '&&CGLECO.COMPOR'
+            call comp_init(mesh, compor, 'V', nb_cmp)
+            call comp_meca_elas(compor, nb_cmp)
         endif
-!
     else
 !
-!       COMPORTEMENT EST RENSEIGNE DANS CALC_G ALORS ON LE PREND
-        call nmdorc(modele, compor, k24b)
+! ----- Get COMPORTEMENT from command file
+!
+        call nmdocc(modele, mate, l_etat_init, compor)
 !
     endif
 !
-!
-!     2) RECUPERATION DE INCR
-!     -----------------------
+! - Incremental comportement or not ?
 !
     if (limpel) then
-!       C'EST FACILE, ON A IMPOSE COMP_ELAS DONC INCR EST FAUX
         incr = .false.
     else
-!       SOIT COMPORTEMENT EST IMPOSE DANS CALC_G
-!       SOIT ON A PRIS LE COMPOR DE RESU
         call dismoi('F', 'ELAS_INCR', compor, 'CARTE_COMPOR', ibid,&
-                    repk, ier)
+                    repk, iret)
         if (repk .eq. 'ELAS') then
             incr = .false.
         else if (repk.eq.'INCR'.or.repk.eq.'MIXTE') then
@@ -115,14 +124,12 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
         endif
     endif
 !
+! - Check is CALG_G COMPOR <CARTE> is coherent with result COMPOR <CARTE>
 !
-!     3) VERIFS
-!     ---------
-!
-!     VERIF COHERENCE (CAS OU COMPORTEMENT EST IMPOSE DANS CALC_G)
     if (nbcomp .ne. 0) call gverlc(resu, compor, iord0)
 !
-!     X-FEM N'EST PAS ENCORE DEVELOPPE POUR GTP (G EN INCREMENTAL)
+! - No XFEM for GTP
+!
     if (incr .and. typfis .eq. 'FISSURE') then
         call utmess('F', 'RUPTURE1_43')
     endif
