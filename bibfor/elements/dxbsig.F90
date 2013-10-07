@@ -24,7 +24,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
     character(len=16) :: nomte
-    real(kind=8) :: xyzl(3, 1), pgl(3, 1)
+    real(kind=8) :: xyzl(3, 1), pgl(3, 3)
     real(kind=8) :: sigma(1), bsigma(1)
 !     ------------------------------------------------------------------
 ! --- CALCUL DES FORCES INTERNES B*SIGMA AUX NOEUDS DE L'ELEMENT
