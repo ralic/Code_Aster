@@ -151,7 +151,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
         call vpstor(ineg, 'R', modes, nfreq, neq,&
-                    vectr, zbid, mxresf, nbpari, nbparr,&
+                    vectr, [zbid], mxresf, nbpari, nbparr,&
                     nbpark, nopara, mod45, resui, resur,&
                     resuk, iprec)
 !
@@ -175,7 +175,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
         call vpstor(ineg, 'C', modes, nfreq, neq,&
-                    rbid, vectc, mxresf, nbpari, nbparr,&
+                    [rbid], vectc, mxresf, nbpari, nbparr,&
                     nbpark, nopara, '    ', resui, resur,&
                     resuk, iprec)
 !
@@ -195,7 +195,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
         call vpstor(ineg, 'C', modes, nfreq, neq,&
-                    rbid, vectc, mxresf, nbpari, nbparr,&
+                    [rbid], vectc, mxresf, nbpari, nbparr,&
                     nbpark, nopara, '    ', resui, resur,&
                     resuk, iprec)
     else if (( lamor .ne. 0 ).and.(ktyp.eq.'C')) then
@@ -215,7 +215,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
         call vpstor(ineg, 'C', modes, nfreq, neq,&
-                    rbid, vectc, mxresf, nbpari, nbparr,&
+                    [rbid], vectc, mxresf, nbpari, nbparr,&
                     nbpark, nopara, '    ', resui, resur,&
                     resuk, iprec)
     endif

@@ -64,7 +64,7 @@ subroutine xoripe(modele)
     integer :: ndime, icmp, ndim, id(3), intemp, nseori, ifm, niv, nncp
     integer :: s1, s2, jgrp, nmaenr, jlsnv, jlsnd, jlsnl
     integer :: nsignp, nsignm, nsignz, ihe, he, itypma
-    integer :: ifiss, nfiss
+    integer :: ifiss, nfiss, mailvo(1)
     character(len=8) :: noma, k8bid, typbo, fiss
     character(len=2) :: kdim
     character(len=19) :: ligrel, chs(5), chlsn
@@ -161,7 +161,7 @@ subroutine xoripe(modele)
     nomob = '&&XORIPE.NU_MAILLE_3D'
 !
     call utmasu(noma, kdim, nbmail, zi(jmail), nomob,&
-                zr(jcoor), 0, 0, .false.)
+                zr(jcoor), 0, mailvo, .false.)
     call jeveuo(nomob, 'L', jm3d)
 !
 !     ------------------------------------------------------------------

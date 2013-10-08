@@ -290,8 +290,7 @@ subroutine te0368(option, nomte)
 !
 ! 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 !
-    call uthk(nomte, zr(igeom), hk, ndim, itab,&
-              ibid, ibid, ibid, niv, ifm)
+    call uthk(nomte, zr(igeom), hk, ndim, niv)
 !
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR  ---
 !
@@ -329,7 +328,7 @@ subroutine te0368(option, nomte)
         frpx(ipg) = 0.d0
         frpy(ipg) = 0.d0
         frpz(ipg) = 0.d0
-231      continue
+231     continue
     endif
 !GN      WRITE(IFM,1000) 'R PRIMAL X',(FRPX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R PRIMAL Y',(FRPY(IPG),IPG = 1 , NPG)
@@ -343,7 +342,7 @@ subroutine te0368(option, nomte)
         frdx(ipg) = 0.d0
         frdy(ipg) = 0.d0
         frdz(ipg) = 0.d0
-232      continue
+232     continue
     endif
 !GN      WRITE(IFM,1000) 'R DUAL X  ',(FRDX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R DUAL Y  ',(FRDY(IPG),IPG = 1 , NPG)
@@ -369,7 +368,7 @@ subroutine te0368(option, nomte)
             call fointe('FM', zk8(ifovfp+ibid-1), 1, nompar, r8bid3,&
                         fovop(ibid), iret)
         endif
-241      continue
+241     continue
 !GN        WRITE(IFM,*) 'F PRIMAL X : ',ZK8(IFOVFP)
 !GN        WRITE(IFM,*) 'F PRIMAL Y : ',ZK8(IFOVFP+1)
 !GN        WRITE(IFM,*) 'F PRIMAL Z : ',ZK8(IFOVFP+2)
@@ -395,7 +394,7 @@ subroutine te0368(option, nomte)
             call fointe('FM', zk8(ifovfd+ibid-1), 1, nompar, r8bid3,&
                         fovod(ibid), iret)
         endif
-242      continue
+242     continue
 !GN        WRITE(IFM,*) 'F DUAL X   : ',ZK8(IFOVFD)
 !GN        WRITE(IFM,*) 'F DUAL Y   : ',ZK8(IFOVFD+1)
 !GN        WRITE(IFM,*) 'F DUAL Z   : ',ZK8(IFOVFD+2)
@@ -574,8 +573,8 @@ subroutine te0368(option, nomte)
 ! ----- CALCUL DU DIAMETRE HF DE LA FACE ----------
 !
         ibid=0
-        call uthk(nomte, zr(igeom), hf, ibid, noe,&
-                  nnosf, tymvol, ifa, niv, ifm)
+        call uthk(nomte, zr(igeom), hf, ibid, niv,&
+                  noe, nnosf, tymvol, ifa)
 !
 ! ------- CALCUL DE NORMALES ET JACOBIENS AUX POINTS DE GAUSS ----------
 !
@@ -633,7 +632,7 @@ subroutine te0368(option, nomte)
             chmoy(in) = 0.d0
             chmoz(in) = 0.d0
 !
-321          continue
+321         continue
 !
             call intega(npgf, jaco, zr(ipoidf), chplx, chply,&
                         chplz, sopl11, sopl22, sopl33, sopl12,&
@@ -704,7 +703,7 @@ subroutine te0368(option, nomte)
             simo13(in)=s*sigp13(in)-unsurs*sigd13(in)
             simo23(in)=s*sigp23(in)-unsurs*sigd23(in)
 !
-322          continue
+322         continue
 !
 ! ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 ! ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------

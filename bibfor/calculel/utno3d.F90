@@ -71,38 +71,38 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
     nomteb = ' '
 !
 !  CALCUL DES PRODUITS VECTORIELS OMI VECTORIEL OMJ
-    do 20 in = 1, nsomm
+    do in = 1, nsomm
         iino = noe(in,ifa,tymvol)
         i = igeom + 3*(iino-1)
-        do 10 jn = 1, nsomm
+        do jn = 1, nsomm
             jjno = noe(jn,ifa,tymvol)
             j = igeom + 3*(jjno-1)
             sx(in,jn) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
             sy(in,jn) = zr(i+2) * zr(j) - zr(i) * zr(j+2)
             sz(in,jn) = zr(i) * zr(j+1) - zr(i+1) * zr(j)
-10      continue
-20  end do
+        end do
+    end do
 !
 ! CALCUL DES NORMALES AUX SOMMETS IPG DE LA FACE IFA ET DE SON
 ! DIAMETRE
 !
     hf = 0.d0
-    do 100 ipg = 1, npgf
+    do ipg = 1, npgf
         kdec = 2*(ipg-1)*nsomm
         ixk = idfdx+kdec
         iyk = idfdy+kdec
         xn(ipg) = 0.0d0
         yn(ipg) = 0.0d0
         zn(ipg) = 0.0d0
-        do 90 i = 1, nsomm
+        do i = 1, nsomm
             idec = 2*(i-1)
-            do 80 j = 1, nsomm
+            do j = 1, nsomm
                 jdec = 2*(j-1)
                 xn(ipg)=xn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sx(i,j)
                 yn(ipg)=yn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sy(i,j)
                 zn(ipg)=zn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sz(i,j)
-80          continue
-90      continue
+            end do
+        end do
 !   JACOBIEN
         aux = sqrt(xn(ipg)*xn(ipg)+yn(ipg)*yn(ipg)+ zn(ipg)*zn(ipg))
         jac(ipg) = aux*poids3(ipg)
@@ -113,12 +113,12 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
         xn(ipg) = xn(ipg)*aux
         yn(ipg) = yn(ipg)*aux
         zn(ipg) = zn(ipg)*aux
-100  end do
+    end do
 !
 ! DIAMETRE DE LA FACE
     if (niv .eq. 2) write(ifm,*)
-    call uthk(nomteb, zr(igeom), hf, 0, noe,&
-              nsomm, tymvol, ifa, niv, ifm)
+    call uthk(nomteb, zr(igeom), hf, 0, niv,&
+              noe=noe, nsomm=nsomm, tymvol=tymvol, ifa=ifa)
 !
 ! AFFICHAGES
     if (niv .eq. 2) then

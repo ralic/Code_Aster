@@ -44,7 +44,7 @@ subroutine te0292(option, nomte)
 !
     integer :: nno, kp, npg1, i, k, nnos, jgano, ndim, mater
     integer :: ipoids, ivf, idfde, igeom, imate, isiefp, isiefd
-    integer :: isigp, isigd, ierr, niv, ibid, nbcmp
+    integer :: isigp, isigd, ierr, niv, nbcmp
 !
     real(kind=8) :: dfdx(9), dfdy(9), dfdz(9), poids, valres(2)
     real(kind=8) :: sigp11, sigp22, sigp33, sigp12, sigp13, sigp23
@@ -84,7 +84,7 @@ subroutine te0292(option, nomte)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
 !
         if (ndim .eq. 2) then
@@ -101,9 +101,9 @@ subroutine te0292(option, nomte)
 !
         if (laxi) then
             r = 0.d0
-            do 103 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1)) * zr(ivf+k+i-1)
-103          continue
+            end do
             poids = poids*r
         endif
 !
@@ -120,7 +120,7 @@ subroutine te0292(option, nomte)
         sigd13=0.d0
         sigd23=0.d0
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             sigp11 = sigp11 + zr(isigp-1+nbcmp*(i-1)+1) * zr(ivf+k+i- 1)
             sigp22 = sigp22 + zr(isigp-1+nbcmp*(i-1)+2) * zr(ivf+k+i- 1)
             sigp33 = sigp33 + zr(isigp-1+nbcmp*(i-1)+3) * zr(ivf+k+i- 1)
@@ -135,7 +135,7 @@ subroutine te0292(option, nomte)
                 sigd13 = sigd13 + zr(isigd-1+nbcmp*(i-1)+5) * zr(ivf+ k+i-1)
                 sigd23 = sigd23 + zr(isigd-1+nbcmp*(i-1)+6) * zr(ivf+ k+i-1)
             endif
-102      continue
+        end do
 !
         call rcvalb(fami, kp, 1, '+', mater,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -195,11 +195,10 @@ subroutine te0292(option, nomte)
             ASSERT(.false.)
         endif
 !
-101  end do
+    end do
 !
     niv=1
-    call uthk(nomte, zr(igeom), he, ndim, ibid,&
-              ibid, ibid, ibid, niv, ibid)
+    call uthk(nomte, zr(igeom), he, ndim, niv)
 !
     if ((zr(ierr)+norsig) .ne. 0.d0) then
         nu0 = 100.d0*sqrt(zr(ierr)/(zr(ierr)+norsig))

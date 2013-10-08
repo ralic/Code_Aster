@@ -229,8 +229,7 @@ subroutine te0377(option, nomte)
 !
 ! 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 !
-    call uthk(nomte, zr(igeom), hk, ndim, itab,&
-              ibid, ibid, ibid, niv, ifm)
+    call uthk(nomte, zr(igeom), hk, ndim, niv)
 !
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 !
@@ -252,7 +251,7 @@ subroutine te0377(option, nomte)
         do 23 , ipg = 1 , npg
         frx(ipg) = 0.d0
         fry(ipg) = 0.d0
-23      continue
+ 23     continue
     endif
 !GN      WRITE(IFM,1000) 'R X',(FRX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R Y',(FRY(IPG),IPG = 1 , NPG)
@@ -276,7 +275,7 @@ subroutine te0377(option, nomte)
             call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
                         fovo(ibid), iret)
         endif
-24      continue
+ 24     continue
 !GN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
 !GN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
     endif
@@ -431,7 +430,7 @@ subroutine te0377(option, nomte)
             do 321 , ipgf = 1 , npgf
             chx(ipgf) = 0.d0
             chy(ipgf) = 0.d0
-321          continue
+321         continue
 !
             call intenc(nnof, jaco, chx, chy, sg11,&
                         sg22, sg12, nx, ny, inte)
@@ -440,7 +439,7 @@ subroutine te0377(option, nomte)
 !
             if (inte .lt. 0.d0) then
                 call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
             if (typnor(1:2) .eq. 'H1') then
@@ -479,7 +478,7 @@ subroutine te0377(option, nomte)
 !
             if (inte .lt. 0.d0) then
                 call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
             if (typnor(1:2) .eq. 'H1') then
@@ -623,7 +622,7 @@ subroutine te0377(option, nomte)
 !       DIAMETRE
     zr(ierr+9)=hk
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

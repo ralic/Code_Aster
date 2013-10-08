@@ -140,7 +140,7 @@ subroutine op0109()
                 masse, iret)
     nomsy = 'DEPL'
     call vprecu(meca, nomsy, nbordr, zi(jordr), kvec,&
-                nbpara, nopara, k8b, kval, k8b,&
+                nbpara, nopara(1), k8b, kval, k8b,&
                 neq, nbmode, ctyp, nbpari, nbparr,&
                 nbpark)
 !

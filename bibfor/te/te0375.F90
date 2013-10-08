@@ -233,8 +233,7 @@ subroutine te0375(option, nomte)
 !
 ! 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 !
-    call uthk(nomte, zr(igeom), hk, ndim, itab,&
-              ibid, ibid, ibid, niv, ifm)
+    call uthk(nomte, zr(igeom), hk, ndim, niv)
 !
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 !
@@ -259,7 +258,7 @@ subroutine te0375(option, nomte)
         frx(ipg) = 0.d0
         fry(ipg) = 0.d0
         frz(ipg) = 0.d0
-23      continue
+ 23     continue
     endif
 !GN      WRITE(IFM,1000) 'R X',(FRX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R Y',(FRY(IPG),IPG = 1 , NPG)
@@ -285,7 +284,7 @@ subroutine te0375(option, nomte)
             call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
                         fovo(ibid), iret)
         endif
-24      continue
+ 24     continue
 !GN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
 !GN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
 !GN        WRITE(IFM,*) 'F Z : ',ZK8(IFOVF+2),FOVO(3)
@@ -346,7 +345,7 @@ subroutine te0375(option, nomte)
 !
     if (ter1 .lt. 0.d0) then
         call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-        goto 9999
+        goto 999
     endif
 !
     ter1=hk*sqrt(ter1)
@@ -428,8 +427,8 @@ subroutine te0375(option, nomte)
 ! ----- CALCUL DU DIAMETRE HF DE LA FACE ----------
 !
         ibid=0
-        call uthk(nomte, zr(igeom), hf, ibid, noe,&
-                  nnosf, tymvol, ifa, niv, ifm)
+        call uthk(nomte, zr(igeom), hf, ibid, niv,&
+                  noe, nnosf, tymvol, ifa)
 !
 ! ------- CALCUL DE NORMALES ET JACOBIENS AUX POINTS DE GAUSS ----------
 !
@@ -462,7 +461,7 @@ subroutine te0375(option, nomte)
             chx(ipgf) = 0.d0
             chy(ipgf) = 0.d0
             chz(ipgf) = 0.d0
-321          continue
+321         continue
 !
             call intega(npgf, jaco, zr(ipoidf), chx, chy,&
                         chz, dsg11, dsg22, dsg33, dsg12,&
@@ -473,7 +472,7 @@ subroutine te0375(option, nomte)
 !
             if (inte .lt. 0.d0) then
                 call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
             ter2=ter2+0.5d0*sqrt(hf)*sqrt(inte)
@@ -511,7 +510,7 @@ subroutine te0375(option, nomte)
 !
             if (inte .lt. 0.d0) then
                 call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
 !GN       WRITE(IFM,*) '==> INTE', INTE
@@ -594,7 +593,7 @@ subroutine te0375(option, nomte)
 !       DIAMETRE
     zr(ierr+9)=hk
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

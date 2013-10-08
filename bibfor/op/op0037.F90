@@ -522,7 +522,7 @@ subroutine op0037()
 !     --- RECUPERATION DES VECTEURS PROPRES ET DES GRANDEURS MODALES ---
 !
     call vprecu(modein, nomsy, nbmod, zi(lnumor), kvec,&
-                nbpara, nopara, kvali, kvalr, kvalk,&
+                nbpara, nopara(1), kvali, kvalr, kvalk,&
                 neq, nbmode, typmod, npari, nparr,&
                 npark)
 !

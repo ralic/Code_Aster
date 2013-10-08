@@ -66,7 +66,7 @@ function mmmaxi(modelz, lisma, nbma)
     character(len=24) :: typele
     integer :: numail, nutyel
     integer :: ibid, ier, ima
-    integer :: numsup, nbaxis
+    integer :: numsup, nbaxis, mailvo(1)
     integer :: jmaisu, ilmail, itypel, jcoor
 !
 ! ----------------------------------------------------------------------
@@ -89,7 +89,7 @@ function mmmaxi(modelz, lisma, nbma)
     call jeveuo(lisma, 'L', ilmail)
     call infmue()
     call utmasu(noma, '2D', nbma, zi(ilmail), maisup,&
-                zr(jcoor), 0, 0, .false.)
+                zr(jcoor), 0, mailvo, .false.)
     call infbav()
     call jeveuo(maisup, 'L', jmaisu)
 !

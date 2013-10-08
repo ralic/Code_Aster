@@ -1476,7 +1476,7 @@ subroutine op0045()
     if ((.not.lc) .and. lkr .and. (.not.lns)) then
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nconv, omecor,&
-                    zi(lddl), zi(lprod), zr(lvec), cbid, nbpari,&
+                    zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari,&
                     nparr, nbpark, nopara, '    ', zi(lresui),&
                     zr(lresur), zk24(lresuk), ktyp, lcomod, icom1,&
                     icom2, typres, nfreqg)
@@ -1484,7 +1484,7 @@ subroutine op0045()
         if (lcomod) ASSERT(.false.)
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nconv, omecor,&
-                    zi(lddl), zi(lprod), rbid, zc(lvec), nbpari,&
+                    zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari,&
                     nparr, nbpark, nopara, '    ', zi(lresui),&
                     zr(lresur), zk24(lresuk), ktyp, lcomod, ibid,&
                     ibid, k16bid, ibid)

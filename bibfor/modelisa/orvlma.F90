@@ -53,7 +53,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: idtyma, nutyma, lori, jori, nori, kori, iliste
-    integer :: ima, numail, numa, norieg, lliste, zero, ibid
+    integer :: ima, numail, numa, norieg, lliste, zero, ibid(1)
     integer :: im1, im2, ico
     integer :: p1, p2, ifm, niv, p3, p4
     integer :: nbnmai, jdesm1, jdesm2

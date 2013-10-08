@@ -99,7 +99,7 @@ subroutine te0003(option, nomte)
     integer :: ifm, niv
     integer :: tabniv(20)
     integer :: iadzi, iazk24
-    integer :: ibid, itab(7), iret, iret2
+    integer :: ibid, iret, iret2
     integer :: noe(9, 6, 4)
     integer :: igeom
     integer :: ierr, ivois
@@ -324,9 +324,9 @@ subroutine te0003(option, nomte)
     call elref1(elrefe)
 !
 ! NIVEAU D'AFFICHAGE DIFFERENCIE PAR ROUTINE (0: RIEN, 2 AFFICHAGE)
-    do 10 ibid = 1, 20
+    do ibid = 1, 20
         tabniv(ibid) = 0
-10  end do
+    end do
     if (niv .eq. 2) then
 ! INFO GENERALES SUR L'ELEMENT K
         tabniv(1) = 2
@@ -374,9 +374,9 @@ subroutine te0003(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
 !
     call jevech('PERREUR', 'E', ierr)
-    do 1 ibid = 1, 14
+    do ibid = 1, 14
         zr(ierr-1+ibid)=0.d0
- 1  end do
+    end do
 !
 ! INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
     llumpe = lteatt(' ','LUMPE','OUI')
@@ -486,8 +486,7 @@ subroutine te0003(option, nomte)
 ! ----------------------------------------------------------------------
 !
 ! ----- CALCUL DU DIAMETRE HK DE LA MAILLE ----
-    call uthk(nomte, zr(igeom), hk, ndim, itab,&
-              ibid, ibid, ibid, tabniv(3), ifm)
+    call uthk(nomte, zr(igeom), hk, ndim, tabniv(3))
 !
 !------------------------------------------------------------------
 ! CALCUL DU TERME VOLUMIQUE
@@ -554,14 +553,14 @@ subroutine te0003(option, nomte)
         z = 0.d0
         valsp = 0.d0
         valsm = 0.d0
-        do 20 i = 1, nno
+        do i = 1, nno
             i1 = i - 1
             i2 = igeom + ndim*i1
             fforme = zr(ivf+k+i1)
             x = x + zr(i2)*fforme
             y = y + zr(i2+1)*fforme
             if (.not.l2d) z = z + zr(i2+2)*fforme
-20      continue
+        end do
         r8bid3(1) = x
         r8bid3(2) = y
         if (.not.l2d) r8bid3(3) = z
@@ -602,12 +601,12 @@ subroutine te0003(option, nomte)
 ! TEMPM/P T-/+ AU POINT DE GAUSS
         tempm = 0.d0
         tempp = 0.d0
-        do 30 i = 1, nno
+        do i = 1, nno
             i1 = i - 1
             fforme = zr(ivf+k+i1)
             tempm = tempm + zr(itemm+i1)*fforme
             tempp = tempp + zr(itemp+i1)*fforme
-30      continue
+        end do
         deltat = inst - insold
         ASSERT(deltat.gt.ovfl)
         unsurd = 1.d0/deltat
@@ -630,10 +629,10 @@ subroutine te0003(option, nomte)
 ! CALCUL DE LA PARTIE DIVERGENCE (DIV(THETA*Q+ + (1-THETA)*Q-))
 !---------------------------------
 !
-    do 40 i = 1, ndim
+    do i = 1, ndim
         fluxm(i) = 0.d0
         fluxp(i) = 0.d0
-40  continue
+    end do
 !
 ! TRAITEMENT PARTICULIER DU A L'AXI (PART I)
     if (laxi) then
@@ -642,7 +641,7 @@ subroutine te0003(option, nomte)
         flurp = 0.d0
     endif
 !
-    do 60 i = 1, nno
+    do i = 1, nno
         i1 = i - 1
         i2 = i1*ndim
         der(1) = dfdx(i)
@@ -655,12 +654,12 @@ subroutine te0003(option, nomte)
             if (ltheta) flurm = flurm + zr(iflum+i2)*der(4)
         endif
         if (.not.l2d) der(3) = dfdz(i)
-        do 50 j = 1, ndim
+        do j = 1, ndim
             ij = i2 + j - 1
             fluxp(j) = fluxp(j) + zr(iflup+ij)*der(j)
             if (ltheta) fluxm(j) = fluxm(j) + zr(iflum+ij)*der(j)
-50      continue
-60  continue
+        end do
+    end do
 !
 ! TRAITEMENT PARTICULIER DU A L'AXI (PART III)
     if (laxi) then
@@ -920,13 +919,13 @@ subroutine te0003(option, nomte)
 !
                     lmaj = .true.
 ! CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-                    do 100 i = 1, nnosf
+                    do i = 1, nnosf
                         valfp(i) = r8cart
-100                  continue
+                    end do
                     if (ltheta) then
-                        do 110 i = 1, nnosf
+                        do i = 1, nnosf
                             valfm(i) = r8cart
-110                      continue
+                        end do
                     endif
                     call uterfl(ndim, iflup, iflum, ifa, mno,&
                                 jno, nnosf, jac, term22, aux,&
@@ -1035,15 +1034,15 @@ subroutine te0003(option, nomte)
 !
                     lmaj = .true.
 ! CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-                    do 120 i = 1, nnosf
+                    do i = 1, nnosf
                         valhp(i) = r8cart
                         valtp(i) = r8car1
-120                  continue
+                    end do
                     if (ltheta) then
-                        do 130 i = 1, nnosf
+                        do i = 1, nnosf
                             valhm(i) = r8cart
                             valtm(i) = r8car1
-130                      continue
+                        end do
                     endif
                     call uterec(ndim, iflup, iflum, ifa, mno,&
                                 jno, nnosf, jac, term22, aux,&

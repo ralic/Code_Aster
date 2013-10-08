@@ -57,7 +57,7 @@ subroutine ssdmrm(mag)
 !-----------------------------------------------------------------------
     integer :: i, iacoo2, iadim2, iadime, iagno, ialiii, ialiij
     integer :: ialikg, ialikm, ialini, ialinj, iamacr, iancnf, iaparr
-    integer :: ibi, ibid, ico, iconf, ier, ii, inoi
+    integer :: ibi, ibid(1), ico, iconf, ier, ii, inoi
     integer :: inoii, inoj, inojj, iocc, ismai, ismaj, j
     integer :: jj, kk, longi, longj, n1, n2, n3
     integer :: nbexti, nbextj, nbid, nbngno, nbnore, nbnori, nbnorj

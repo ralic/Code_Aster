@@ -468,7 +468,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     call vppara(modes, typcon, knega, lraide, lmasse,&
                 lamor, mxresf, neq, nconv, omecor,&
-                zi(lddl), zi(lprod), zr(lvec), cbid, nbpari,&
+                zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari,&
                 nparr, nbpark, nopara, mod45, zi(lresui),&
                 zr(lresur), zk24(lresuk), ktyp, .false., ibid,&
                 ibid, k16bid, ibid)
@@ -484,9 +484,9 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
         call vppara(modes2, typco2, knega, lraide, lmasse,&
                     lamor, un, neq, un, omecor,&
-                    zi(lddl), zi(lprod), zr(lsta), cbid, nbpari,&
+                    zi(lddl), zi(lprod), zr(lsta), [cbid], nbpari,&
                     nparr, nbpark, nopara, 'STAB', zi(lresui),&
-                    csta, zk24(lresuk), ktyp, .false., ibid,&
+                    [csta], zk24(lresuk), ktyp, .false., ibid,&
                     ibid, k16bid, ibid)
 !
     endif

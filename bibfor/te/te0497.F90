@@ -433,8 +433,7 @@ subroutine te0497(option, nomte)
 !
 ! 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 !
-    call uthk(nomte, zr(igeom), hk, ndim, itab,&
-              ibid, ibid, ibid, niv, ifm)
+    call uthk(nomte, zr(igeom), hk, ndim, niv)
 !
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 !

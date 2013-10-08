@@ -713,14 +713,14 @@ subroutine op0044()
     if (lamor .eq. 0) then
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nbmod, omecor,&
-                    zi(lddl), zi(lprod), zr(lvec), cbid, nbpari,&
+                    zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari,&
                     nparr, nbpark, nopara, '    ', zi(lresui),&
                     zr(lresur), zk24(lresuk), ktyp, .false., ibid,&
                     ibid, k16bid, ibid)
     else
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nbmod, omecor,&
-                    zi(lddl), zi(lprod), rbid, zc(lvec), nbpari,&
+                    zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari,&
                     nparr, nbpark, nopara, '    ', zi(lresui),&
                     zr(lresur), zk24(lresuk), ktyp, .false., ibid,&
                     ibid, k16bid, ibid)

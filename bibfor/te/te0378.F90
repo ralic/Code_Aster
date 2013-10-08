@@ -258,8 +258,7 @@ subroutine te0378(option, nomte)
 !
 ! 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 !
-    call uthk(nomte, zr(igeom), hk, ndim, itab,&
-              ibid, ibid, ibid, niv, ifm)
+    call uthk(nomte, zr(igeom), hk, ndim, niv)
 !
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR  ---
 !
@@ -292,7 +291,7 @@ subroutine te0378(option, nomte)
         do 231 , ipg = 1 , npg
         frpx(ipg) = 0.d0
         frpy(ipg) = 0.d0
-231      continue
+231     continue
     endif
 !GN      WRITE(IFM,1000) 'R PRIMAL X',(FRPX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R PRIMAL Y',(FRPY(IPG),IPG = 1 , NPG)
@@ -304,7 +303,7 @@ subroutine te0378(option, nomte)
         do 232 , ipg = 1 , npg
         frdx(ipg) = 0.d0
         frdy(ipg) = 0.d0
-232      continue
+232     continue
     endif
 !GN      WRITE(IFM,1000) 'R DUAL X  ',(FRDX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R DUAL Y  ',(FRDY(IPG),IPG = 1 , NPG)
@@ -328,7 +327,7 @@ subroutine te0378(option, nomte)
             call fointe('FM', zk8(ifovfp+ibid-1), 1, nompar, r8bid3,&
                         fovop(ibid), iret)
         endif
-241      continue
+241     continue
 !GN        WRITE(IFM,*) 'F PRIMAL X : ',ZK8(IFOVFP)
 !GN        WRITE(IFM,*) 'F PRIMAL Y : ',ZK8(IFOVFP+1)
     endif
@@ -352,7 +351,7 @@ subroutine te0378(option, nomte)
             call fointe('FM', zk8(ifovfd+ibid-1), 1, nompar, r8bid3,&
                         fovod(ibid), iret)
         endif
-242      continue
+242     continue
 !GN        WRITE(IFM,*) 'F DUAL X   : ',ZK8(IFOVFD)
 !GN        WRITE(IFM,*) 'F DUAL Y   : ',ZK8(IFOVFD+1)
     endif
@@ -549,7 +548,7 @@ subroutine te0378(option, nomte)
             chmox(in) = 0.d0
             chmoy(in) = 0.d0
 !
-321          continue
+321         continue
 !
             call intenc(nnof, jaco, chplx, chply, sopl11,&
                         sopl22, sopl12, nx, ny, intpl)
@@ -561,7 +560,7 @@ subroutine te0378(option, nomte)
 !
             if ((intpl.lt.0.d0) .or. (intmo.lt.0.d0)) then
                 call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
             terpl2=terpl2+0.5d0*hf*abs(intpl)
@@ -612,7 +611,7 @@ subroutine te0378(option, nomte)
             simo22(in)=s*sigp22(in)-unsurs*sigd22(in)
             simo12(in)=s*sigp12(in)-unsurs*sigd12(in)
 !
-322          continue
+322         continue
 !
 ! ------- CALCUL DE L'INTEGRALE SUR LE BORD ----------------------------
 ! ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
@@ -627,7 +626,7 @@ subroutine te0378(option, nomte)
 !
             if ((intpl.lt.0.d0) .or. (intmo.lt.0.d0)) then
                 call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
             terpl3=terpl3+hf*abs(intpl)
@@ -688,7 +687,7 @@ subroutine te0378(option, nomte)
 !       DIAMETRE
     zr(ierr+9)=hk
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

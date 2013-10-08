@@ -97,7 +97,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
     integer :: os, kk
     integer :: vuiana, vpiana, vpsa
-    integer :: cod(27), ibid
+    integer :: cod(27)
     real(kind=8) :: rac2
     real(kind=8) :: deplm(3*27), depld(3*27)
     real(kind=8) :: r, w, dff1(nno1, ndim)
@@ -130,8 +130,7 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
     nddl = nno1*ndim + nno2 + nno3*ndim
     rac2 = sqrt(2.d0)
 !
-    call uthk(nomte, geomi, hk, ndim, [ibid],&
-              ibid, ibid, ibid, 1, ibid)
+    call uthk(nomte, geomi, hk, ndim, 1)
     stab = 1.d-4*hk*hk
 !
 ! - EXTRACTION DES CHAMPS

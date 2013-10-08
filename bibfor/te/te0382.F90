@@ -202,8 +202,7 @@ subroutine te0382(option, nomte)
 !
 ! --- CALCUL DU DIAMETRE DE L'ELEMENT PARENT
 !
-    call uthk(nomte, zr(igeom), he, ndim, itab,&
-              ibid, ibid, ibid, niv, ifm)
+    call uthk(nomte, zr(igeom), he, ndim, niv)
 !
 ! --- CALCUL DE LA NORME DE SIGMA
 !
@@ -353,13 +352,13 @@ subroutine te0382(option, nomte)
 !
     nse=zi(jlonch-1+1)
 !
-    do 310 ise = 1, nse
+    do ise = 1, nse
 !
 ! ----- BOUCLE SUR LES 3 SOMMETS DU SOUS-ELEMENT
 !
-        do 311 in = 1, nno
+        do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
-            do 312 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -372,13 +371,12 @@ subroutine te0382(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-312          continue
-311      continue
+            end do
+        end do
 !
 ! ----- CALCUL DE LA TAILLE DU SOUS-ELEMENT
 !
-        call uthk(nomtse, coorse, hse, ndim, itab,&
-                  ibid, ibid, ibid, niv, ifm)
+        call uthk(nomtse, coorse, hse, ndim, niv)
 !
 ! ----- CALCUL DE L'ORIENTATION DU SOUS-ELEMENT
 !
@@ -401,7 +399,7 @@ subroutine te0382(option, nomte)
 ! ------------- BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
 ! --------------------------------------------------------------------
 !
-        do 314 in = 1, nno
+        do in = 1, nno
 !
             levois=zi(jvoxse-1+nno*(ise-1)+in)
 !
@@ -443,13 +441,13 @@ subroutine te0382(option, nomte)
 !
             endif
 !
-314      continue
+        end do
 !
 ! --------------------------------------------------------------------
 ! --------- FIN BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
 ! --------------------------------------------------------------------
 !
-310  end do
+    end do
 !
 !
 ! ----------------------------------------------------------------------

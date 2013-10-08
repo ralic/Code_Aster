@@ -49,7 +49,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 ! -----  VARIABLES LOCALES
     integer :: idtyma, nutyma, lori, jori, nori, kori, iliste
     integer :: ima, numail, numa, norieg, lliste
-    integer :: im1, im2, ico, ibid
+    integer :: im1, im2, ico, ibid(1)
     integer :: p1, p2, ifm, niv, ktyp, p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, nconex, zero

@@ -125,7 +125,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     kvalr = '&&MODIBA.PARA_R'
     kvalk = '&&MODIBA.PARA_K'
     call vprecu(basemo, 'DEPL', nbnuor, nuor, kvec,&
-                nbpara, nopara, kvali, kvalr, kvalk,&
+                nbpara, nopara(1), kvali, kvalr, kvalk,&
                 neq, nbmode, typmod, npari, nparr,&
                 npark)
     ASSERT(npari.eq.nbpari)

@@ -43,7 +43,7 @@ subroutine te0291(option, nomte)
 !
     integer :: nno, kp, npg1, i, k, nnos, jgano, ndim
     integer :: ipoids, ivf, idfde, igeom, niv, nbcmp
-    integer :: ibid, ierr, imate, isigm, isigno, mater
+    integer ::  ierr, imate, isigm, isigno, mater
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, valres(2)
     real(kind=8) :: sigl11, sigl22, sigl33, sigl12, sigl13, sigl23
@@ -85,7 +85,7 @@ subroutine te0291(option, nomte)
     laxi = .false.
     if (lteatt(' ','AXIS','OUI')) laxi = .true.
 !
-    do 101 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
         if (ndim .eq. 2) then
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -99,9 +99,9 @@ subroutine te0291(option, nomte)
 !
         if (laxi) then
             r = 0.d0
-            do 103 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1)) * zr(ivf+k+i-1)
-103          continue
+            end do
             poids = poids*r
         endif
 !
@@ -111,7 +111,7 @@ subroutine te0291(option, nomte)
         sigl12 = 0.d0
         sigl13 = 0.d0
         sigl23 = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             sigl11 = sigl11 + zr(isigno-1+nbcmp*(i-1)+1) * zr(ivf+k+i- 1)
             sigl22 = sigl22 + zr(isigno-1+nbcmp*(i-1)+2) * zr(ivf+k+i- 1)
             sigl33 = sigl33 + zr(isigno-1+nbcmp*(i-1)+3) * zr(ivf+k+i- 1)
@@ -121,7 +121,7 @@ subroutine te0291(option, nomte)
                 sigl23 = sigl23 + zr(isigno-1+nbcmp*(i-1)+6) * zr(ivf+ k+i-1)
             endif
 !
-102      continue
+        end do
 !
         call rcvalb(fami, kp, 1, '+', mater,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -175,11 +175,10 @@ subroutine te0291(option, nomte)
             ASSERT(.false.)
         endif
 !
-101  end do
+    end do
 !
     niv=1
-    call uthk(nomte, zr(igeom), he, ndim, ibid,&
-              ibid, ibid, ibid, niv, ibid)
+    call uthk(nomte, zr(igeom), he, ndim, niv)
 !
     if ((zr(ierr)+norsig) .ne. 0.d0) then
         nu0 = 100.d0*sqrt(zr(ierr)/(zr(ierr)+norsig))

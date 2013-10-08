@@ -252,7 +252,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
         if (nomsy(1:4) .eq. 'VITE') nomsy2 = 'DEPL'
         if (nomsy(1:4) .eq. 'ACCE') nomsy2 = 'DEPL'
         call vprecu(mome, nomsy2, nbmode, nordr, kvec,&
-                    nbpara, nopara, k8b, kval, k8b,&
+                    nbpara, nopara(1), k8b, kval, k8b,&
                     neq, nbmode, ctyp, nbpari, nbparr,&
                     nbpark)
         call jeveuo(kvec, 'L', jmod)

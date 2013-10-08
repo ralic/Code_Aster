@@ -1,5 +1,5 @@
-subroutine uthk(nomte, geom, hk, ndim, noe,&
-                nsomm, tymvol, ifa, niv, ifm)
+subroutine uthk(nomte, geom, hk, ndim, niv,&
+                noe, nsomm, tymvol, ifa)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,15 +71,20 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttgel.h"
 !
-    integer :: l1,l2,l3
-    parameter (l1=9,l2=6,l3=4) 
-    integer :: ndim, noe(l1*l2*l3), nsomm, ifa, tymvol, niv, ifm
-    character(len=16) :: nomte
-    real(kind=8) :: hk, geom(*)
-!
+    integer, parameter :: l1=9, l2=6, l3=4
+    character(len=16), intent(in) :: nomte
+    real(kind=8), intent(in) :: geom(*)
+    real(kind=8), intent(out) :: hk
+    integer, intent(in) :: ndim
+    integer, intent(in) :: niv
+    integer, intent(in), optional :: noe(l1*l2*l3)
+    integer, intent(in), optional :: nsomm
+    integer, intent(in), optional :: tymvol
+    integer, intent(in), optional :: ifa
 !
 ! DECLARATION VARIABLES LOCALES
 !
@@ -132,9 +137,11 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
 !
     else if (ndim.eq.0) then
 !
+        ASSERT(present(noe))
+        ASSERT(ENSEMBLE4(noe, nsomm, tymvol, ifa))
 ! 1.3. ==> FACE3/4/6/8
 !
-        do 10 in = 1, nsomm
+        do in = 1, nsomm
 !
             iino=noe(in+l1*(ifa-1)+l1*l2*(tymvol-1))
             i = 3*(iino-1)+1
@@ -156,7 +163,7 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
                 z4 = geom(i+2)
             endif
 !
-10      continue
+        end do
         if ((nsomm.eq.3) .or. (nsomm.eq.6)) then
 ! FACE_3 OU FACE_6
             nomte2 = 'FT'

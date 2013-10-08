@@ -360,7 +360,7 @@ subroutine op0168()
         endif
         call jeveuo(jexnum(kmode, i), 'L', jordr)
         call vprecu(modein, nomsy, nbmode, zi(jordr), kvec,&
-                    nbpara, nopara, kvali, kvalr, kvalk,&
+                    nbpara, nopara(1), kvali, kvalr, kvalk,&
                     neq, nbmode, typmod, npari, nparr,&
                     npark)
         ASSERT(npari.eq.nbpari)
@@ -372,12 +372,12 @@ subroutine op0168()
         call jeveuo(kvalk, 'L', lvalk)
         if (typmod .eq. 'R') then
             call vpstor(-1, typmod, modeou, nbmode, neq,&
-                        zr(lmod), c16b, nbmode, nbpari, nbparr,&
+                        zr(lmod), [c16b], nbmode, nbpari, nbparr,&
                         nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
                         zk24(lvalk), iprec)
         else if (typmod .eq. 'C') then
             call vpstor(-1, typmod, modeou, nbmode, neq,&
-                        r8b, zc(lmod), nbmode, nbpari, nbparr,&
+                        [r8b], zc(lmod), nbmode, nbpari, nbparr,&
                         nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
                         zk24(lvalk), iprec)
         else

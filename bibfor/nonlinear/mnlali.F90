@@ -134,12 +134,12 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
 ! ----------------------------------------------------------------------
     clnm='&&MNLALI.RECUP     '
     if (reprise) then
-        call vprecu(modini, 'DEPL', -1, 0, clnm,&
+        call vprecu(modini, 'DEPL', -1, [0], clnm,&
                     0, '', '', '', '',&
                     neqv, nbmode, typmod, nbpari, nbparr,&
                     nbpark)
     else
-        call vprecu(lnm, 'DEPL', -1, 0, clnm,&
+        call vprecu(lnm, 'DEPL', -1, [0], clnm,&
                     0, '', '', '', '',&
                     neqv, nbmode, typmod, nbpari, nbparr,&
                     nbpark)

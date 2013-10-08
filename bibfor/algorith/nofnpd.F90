@@ -68,7 +68,6 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
     logical :: axi, grand
     integer :: nddl, g
     integer :: ia, na, ra, sa, kk
-    integer :: ibid
     real(kind=8) :: deplm(3*27), r
     real(kind=8) :: presm(27), pm, gpm(ndim), pim(ndim)
     real(kind=8) :: gpresm(3*27)
@@ -94,8 +93,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
     rac2 = sqrt(2.d0)
     option = 'FORC_NODA       '
 !
-    call uthk(nomte, geomi, hk, ndim, ibid,&
-              ibid, ibid, ibid, 1, ibid)
+    call uthk(nomte, geomi, hk, ndim, 1)
     stab = 1.d-4*hk*hk
 !
     call r8inir(nddl, 0.d0, vect, 1)

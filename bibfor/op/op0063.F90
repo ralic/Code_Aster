@@ -80,7 +80,7 @@ subroutine op0063()
         nomsym(1) = 'DEPL'
         nbpara = 0
         nbtrou = -1
-        call vprecu(modein, nomsym(1), nbtrou, ibid, kvec,&
+        call vprecu(modein, nomsym(1), nbtrou, [ibid], kvec,&
                     nbpara, k16bid, k24bid, k24bid, k24bid,&
                     neq, nbmode, typmod, npari, nparr,&
                     npark)

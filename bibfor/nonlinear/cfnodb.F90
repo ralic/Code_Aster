@@ -55,7 +55,7 @@ subroutine cfnodb(char)
     integer :: jnodbl, jnodb2
     character(len=24) :: contno, sansno, psans
     integer :: jnoco, jsans, jpsans
-    integer :: izone, ibid, ndoubl, nvdbl
+    integer :: izone, ibid(1), ndoubl, nvdbl
     integer :: izonea, izoneb, nvdba, nvdbb
     integer :: nbnoe, jdecne, nbnoea, nbnoeb
     integer :: nbnom, jdecnm, jdecea, jdeceb

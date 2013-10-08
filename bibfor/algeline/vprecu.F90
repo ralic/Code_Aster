@@ -18,10 +18,11 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=*) :: modes, nomsy, nomvec, typmod, nopara
-    character(len=*) :: nomvai, nomvar, nomvak
-    integer :: nbvect, lposi(*), neq, nbmode, nbpara
-    integer :: nbpari, nbparr, nbpark
+    character(len=*), intent(in) :: modes, nomsy, nomvec, nopara
+    character(len=*), intent(out) :: typmod
+    character(len=*), intent(in) :: nomvai, nomvar, nomvak
+    integer, intent(in) :: nbvect, lposi(*), nbpara
+    integer, intent(out) :: neq, nbmode, nbpari, nbparr, nbpark
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
