@@ -610,6 +610,7 @@ EVOL=DYNA_NON_LINE(reuse=EVOL,MODELE=MODELE,
                                      ITER_GLOB_MAXI=20,),
                       ARCHIVAGE=_F(LIST_INST=TEMPLI,),);
 
+#  Le TOLE_MACHINE est du a clap0f0q (32 bits)
 TEST_RESU(RESU=(_F(INST=0.0,
                    RESULTAT=EVOL,
                    NOM_CHAM='DEPL',
@@ -639,7 +640,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
                    NOM_CMP='DX',
-                   VALE_CALC=-3.6555389040271E-04,
+                   VALE_CALC=-3.6555389040987E-04,TOLE_MACHINE=6.E-6,
                    CRITERE=('RELATIF', 'RELATIF'),
                    ),
                 ),

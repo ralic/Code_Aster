@@ -72,7 +72,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=0.38583607467578,
-           NOM_PARA='eH_0_SOMMET',
+           NOM_PARA='eH_0_SOMMET',CRITERE='ABSOLU',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
                      VALE=7.25,),
