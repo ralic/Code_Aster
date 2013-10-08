@@ -59,15 +59,15 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
-    E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
-    E9NEUTI  = NEUT_I   ELEM__         (X[9])
-    E4NEUTR  = NEUT_R   ELEM__         (X[4])
-    E8NEUTR  = NEUT_R   ELEM__         (X[8])
-    E10NEUTR = NEUT_R   ELEM__         (X[10])
-    E6NEUTR  = NEUT_R   ELEM__         (X[6])
-    E6NEUTI  = NEUT_I   ELEM__         (X[6])
+    E3NEUTI  = N120_I   ELEM__         (X[3]     )
+    E9NEUTI  = N120_I   ELEM__         (X[9])
+    E4NEUTR  = N120_R   ELEM__         (X[4])
+    E8NEUTR  = N120_R   ELEM__         (X[8])
+    E10NEUTR = N120_R   ELEM__         (X[10])
+    E6NEUTR  = N120_R   ELEM__         (X[6])
+    E6NEUTI  = N120_I   ELEM__         (X[6])
     E20NEUTR = NEUT_R   ELEM__         (X[20])
-    E18NEUI  = NEUT_I   ELEM__         (X[18])
+    E18NEUI  = N480_I   ELEM__         (X[18])
     ECODRET  = CODE_I   ELEM__         (IRET     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
@@ -92,7 +92,7 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
-    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
     E1NEUTK  = NEUT_K8  ELEM__         (Z1       )
@@ -282,3 +282,20 @@ OPTION__
     XREACL              548   IN__   DDL_MECA PDEPL_P  E10NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA
                                      CONTX_R  PDONCO   E4NEUTR  PPINTER  NGEOMER  PGEOMER  E8NEUTR  PBASECO
                               OUT__  E1NEUTR  PSEUIL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

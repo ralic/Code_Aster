@@ -29,23 +29,23 @@ OPTION__
         PVITE_P  DEPL_R    << VITESSES POUR T+ >>
         PACCE_M  DEPL_R    << ACCELERATIONS POUR T- >>
         PCONFR   NEUT_R    << INFORMATION AUX POINTS POUR LE CONTACT - VOIR MMCHML >>
-        PCAR_PT  NEUT_R    << XFEM - INFORMATIONS AUX POINTS >>
+        PCAR_PT  N120_R    << XFEM - INFORMATIONS AUX POINTS >>
         PCAR_PI  NEUT_R    << XFEM >>
         PCAR_AI  NEUT_R    << XFEM >>
         PCAR_CF  NEUT_I    << XFEM >>
         PINDCOI  NEUT_I    << XFEM >>
         PDONCO   XCONTAC   << XFEM >>
         PLST     NEUT_R    << XFEM >>
-        PPINTER  NEUT_R    << XFEM >>
-        PAINTER  NEUT_R    << XFEM >>
-        PCFACE   NEUT_I    << XFEM >>
-        PLONCHA  NEUT_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PBASECO  NEUT_R    << XFEM >>
+        PPINTER  N120_R    << XFEM >>
+        PAINTER  N120_R    << XFEM >>
+        PCFACE   N120_I    << XFEM >>
+        PLONCHA  N120_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
+        PBASECO  N120_R    << XFEM >>
         PSEUIL   NEUT_R    << XFEM >>
-        PSTANO   NEUT_I    << XFEM >>
+        PSTANO   N120_I    << XFEM >>
         PCOHES   NEUT_R    << XFEM >>
         PFISNO   NEUT_I    << XFEM >>
         PHEAVNO  NEUT_I    << XFEM >>
-        PHEAVFA  NEUT_I    << XFEM >>
+        PHEAVFA  N120_I    << XFEM >>
    OUT__
         PVECTUR VDEP_R RESL__

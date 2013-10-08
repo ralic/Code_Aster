@@ -171,7 +171,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- CRÉATION DE LA SD CNSLJ : LSJ(IFISS,1) = COEF*LSN(IFISS)
 !                               LSJ(IFISS,2) = LST(IFISS)
 !
-    call cnscre(noma, 'NEUT_R', 2*nfiss, zk8(jncmp), 'V',&
+    call cnscre(noma, 'N120_R', 2*nfiss, zk8(jncmp), 'V',&
                 cnslj)
     call jeveuo(cnslj//'.CNSV', 'E', jcnsv)
     call jeveuo(cnslj//'.CNSL', 'E', jcnsl)

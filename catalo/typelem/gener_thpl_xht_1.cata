@@ -29,15 +29,15 @@ ENTETE__ ELEMENT__ THAXSE2_XHT     MAILLE__ SEG2
 
 MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       E1       )
-    E15NEUTR = NEUT_R   ELEM__        (X[15])
-    E2NEUTI  = NEUT_I   ELEM__         (X[2])
-    E4NEUTR  = NEUT_R   ELEM__         (X[4])
-    E6NEUTI  = NEUT_I   ELEM__         (X[6])
-    E6NEUTR  = NEUT_R   ELEM__         (X[6])
-    E8NEUTI  = NEUT_I   ELEM__         (X[8])
+    E15NEUTR = N120_R   ELEM__        (X[15])
+    E2NEUTI  = N120_I   ELEM__         (X[2])
+    E4NEUTR  = N120_R   ELEM__         (X[4])
+    E6NEUTI  = N480_I   ELEM__         (X[6])
+    E6NEUTR  = N120_R   ELEM__         (X[6])
+    E8NEUTI  = N120_I   ELEM__         (X[8])
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y       )
-    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER

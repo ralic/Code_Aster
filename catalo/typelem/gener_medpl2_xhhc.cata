@@ -86,18 +86,18 @@ MODE_LOCAL__
                                         LAG2_C   LAG2_F1  LAG3_C   LAG3_F1  LAG4_C  LAG4_F1  )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
-    E2NEUTI  = NEUT_I   ELEM__         (X[2]     )
-    E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
-    E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
-    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
-    E54NEUI  = NEUT_I   ELEM__         (X[54]    )
+    E2NEUTI  = N120_I   ELEM__         (X[2]     )
+    E3NEUTI  = N120_I   ELEM__         (X[3]     )
+    E9NEUTI  = N120_I   ELEM__         (X[9]     )
+    E18NEUI  = N120_I   ELEM__         (X[18]    )
+    E54NEUI  = N480_I   ELEM__         (X[54]    )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
-    E6NEUTR  = NEUT_R   ELEM__         (X[6]     )
-    E12NEUTR = NEUT_R   ELEM__         (X[12]    )
-    E15NEUTR = NEUT_R   ELEM__         (X[15]    )
-    E36NEUTR = NEUT_R   ELEM__         (X[36]    )
-    E22NEUTR = NEUT_R   ELEM__         (X[22]    )
+    E6NEUTR  = N120_R   ELEM__         (X[6]     )
+    E12NEUTR = N120_R   ELEM__         (X[12]    )
+    E15NEUTR = N120_R   ELEM__         (X[15]    )
+    E36NEUTR = N120_R   ELEM__         (X[36]    )
+    E22NEUTR = N120_R   ELEM__         (X[22]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
@@ -109,7 +109,7 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
-    ECONTSE  = NEUT_R   ELEM__         (X[72]    )
+    ECONTSE  = N120_R   ELEM__         (X[72]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
@@ -129,7 +129,7 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
     FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
@@ -333,3 +333,22 @@ OPTION__
                                      CONTX_R  PDONCO   E6NEUTR  PPINTER  NGEOMER  PGEOMER
                                      N1NEUT_R PLST     E12NEUTR PBASECO
                               OUT__  E1NEUTR  PSEUIL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

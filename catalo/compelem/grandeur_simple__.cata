@@ -1327,9 +1327,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        nombreuses grandeurs sans grand interet.
        X(1)  : composante 1
        ...
-       X(90) : composante 90   !!! meme nombre d'entiers codes que NEUT_R
+       X(30) : composante 30   !!! meme nombre d'entiers codes que NEUT_R
 >>
-    NEUT_F   = K8   X[90]
+    NEUT_F   = K8   X[30]
 
 <<  NEUT_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1337,9 +1337,29 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        nombreuses grandeurs sans grand interet.
        X(1)   : composante 1
        ...
-       X(360) : composante 360
+       X(30) : composante 30
 >>
-    NEUT_I   = I    X[360]
+    NEUT_I   = I    X[30]
+
+<<  N120_I Type:I Grandeur ''neutre'' de type I
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)   : composante 1
+       ...
+       X(120) : composante 120
+>>
+    N120_I   = I    X[120]
+
+<<  N480_I Type:I Grandeur ''neutre'' de type I
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)   : composante 1
+       ...
+       X(480) : composante 480
+>>
+    N480_I   = I    X[480]
 
 <<  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1347,9 +1367,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        nombreuses grandeurs sans grand interet.
        Z(1)  : composante 1
        ...
-       Z(24) : composante 24
+       Z(30) : composante 30
 >>
-    NEUT_K8 = K8    Z[24]
+    NEUT_K8 = K8    Z[30]
 
 <<  NEUT_K16 Type:K16 Grandeur ''neutre'' de type K16
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1357,9 +1377,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        nombreuses grandeurs sans grand interet.
        Z(1)  : composante 1
        ...
-       Z(24) : composante 24
+       Z(30) : composante 30
 >>
-    NEUT_K16 = K16  Z[24]
+    NEUT_K16 = K16  Z[30]
 
 <<  NEUT_K24 Type:K24 Grandeur ''neutre'' de type K24.
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1367,9 +1387,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        nombreuses grandeurs sans grand interet.
        Z(1)  : composante 1
        ...
-       Z(24) : composante 24
+       Z(30) : composante 30
 >>
-    NEUT_K24 = K24  Z[24]
+    NEUT_K24 = K24  Z[30]
 
 <<  NEUT_R Type:R Grandeur ''neutre'' de type reel
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1377,9 +1397,19 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        nombreuses grandeurs sans grand interet.
        X(1)  : composante 1
        ...
-       X(90) : composante 90
+       X(30) : composante 30
 >>
-    NEUT_R   = R    X[90]
+    NEUT_R   = R    X[30]
+
+<<  N120_R Type:R Grandeur ''neutre'' de type reel
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)  : composante 1
+       ...
+       X(120) : composante 120
+>>
+    N120_R   = R    X[120]
 %
 %
 <<  NOMMATER Type:K8 Nom des materiaux

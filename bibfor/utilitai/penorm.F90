@@ -68,7 +68,7 @@ subroutine penorm(resu, modele)
 !     ------------------------------------------------------------------
 !
     integer :: nb_cmp_max, nbpmax
-    parameter(nbpmax=13,nb_cmp_max=31)
+    parameter(nbpmax=13,nb_cmp_max=30)
     character(len=8) :: typpar(nbpmax)
     character(len=16) :: nompar(nbpmax)
 !

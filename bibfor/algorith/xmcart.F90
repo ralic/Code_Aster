@@ -198,7 +198,11 @@ subroutine xmcart(noma, defico, modele, resoco)
     carte(7) = resoco(1:14)//'.XFPL'
     do 120 i = 1, 7
         call detrsd('CARTE', carte(i))
-        if (i .eq. 1 .or. i .eq. 3 .or. i .eq. 4) then
+        if (i .eq. 1) then
+            nomgd = 'N120_R'
+        elseif (i .eq. 2 .or. i .eq. 6) then
+            nomgd = 'N120_I'
+        elseif (i .eq. 3 .or. i .eq. 4) then
             nomgd = 'NEUT_R'
         else
             nomgd = 'NEUT_I'

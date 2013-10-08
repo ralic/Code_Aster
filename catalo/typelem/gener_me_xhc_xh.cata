@@ -149,7 +149,7 @@ MODE_LOCAL__
 
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
 
-    CCONPT   = NEUT_R   ELEM__         (X[34])
+    CCONPT   = N120_R   ELEM__         (X[34])
 
     CCONPI   = NEUT_R   ELEM__         (X[18])
 
@@ -159,7 +159,7 @@ MODE_LOCAL__
 
     I3NEUT_I = NEUT_I   ELEM__         (X[3] )
 
-    STANO_I  = NEUT_I   ELEM__         (X[40])
+    STANO_I  = N120_I   ELEM__         (X[16])
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

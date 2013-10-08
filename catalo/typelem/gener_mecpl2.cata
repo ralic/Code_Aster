@@ -131,9 +131,9 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
-    E6NEUTI  = NEUT_I   ELEM__         (X[6]     )
-    E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
-    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
+    E6NEUTI  = N120_I   ELEM__         (X[6]     )
+    E9NEUTI  = N120_I   ELEM__         (X[9]     )
+    E18NEUI  = N480_I   ELEM__         (X[18]    )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     CCONSTR  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
@@ -141,7 +141,7 @@ MODE_LOCAL__
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    E6NEUTR  = NEUT_R   ELEM__         (X[6]     )
+    E6NEUTR  = N120_R   ELEM__         (X[6]     )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
@@ -501,3 +501,7 @@ OPTION__
                               OUT__  E1NEUTR  PMEAST   N2NEUT_R PNIELNO
     XFEM_SMPLX_CALC     118   IN__   N1NEUT_R PLSNO    N2NEUT_R PGRLS    E1NEUTR  PGRANDF  N2NEUT_R PNIELNO
                               OUT__  E1NEUTR  PDPHI    N1NEUT_R PALPHA
+
+
+
+

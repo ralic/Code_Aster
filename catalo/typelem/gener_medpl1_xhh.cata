@@ -53,15 +53,15 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA    )
     CPRES_R  = PRES_R   ELEM__         (PRES     CISA    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    E4NEUTI = NEUT_I    ELEM__         (X[4])
-    E8NEUTI = NEUT_I    ELEM__         (X[8])
+    E4NEUTI = N120_I    ELEM__         (X[4])
+    E8NEUTI = N120_I    ELEM__         (X[8])
     E18NEUI = NEUT_I    ELEM__         (X[18])
-    E24NEUI = NEUT_I    ELEM__         (X[24])
+    E24NEUI = N480_I    ELEM__         (X[24])
     
     E8NEUTR = NEUT_R    ELEM__         (X[8])
-    E10NEUTR = NEUT_R   ELEM__         (X[10])
-    E16NEUTR = NEUT_R   ELEM__         (X[16])
-    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    E10NEUTR = N120_R   ELEM__         (X[10])
+    E16NEUTR = N120_R   ELEM__         (X[16])
+    STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
     FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     FISCO_I  = NEUT_I   ELEM__         (X[2]     )
 
@@ -100,3 +100,10 @@ OPTION__
                               OUT__  CPRES_R  PPRES_R
     FULL_MECA           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO    FISNO_I  PFISNO
                               OUT__  MVECTUR  PVECTUR
+
+
+
+
+
+
+
