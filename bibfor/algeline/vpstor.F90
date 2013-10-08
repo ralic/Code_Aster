@@ -115,8 +115,15 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     if (typeba(1:1) .ne. ' ') lbasm = .true.
     if (lbasm) then
         call getvid(' ', 'RAIDE', scal=raide, nbret=ier)
-        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', iarg,&
-                    nume, iret)
+        if (ier .ne. 0) then
+            call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', iarg,&
+                        nume, iret)
+        else 
+            call dismoi('C', 'REF_RIGI_PREM', modes, 'RESU_DYNA', iarg,&
+                        raide, iret)
+            call dismoi('C', 'NUME_DDL', modes, 'RESU_DYNA', iarg,&
+                        nume, iret)
+        endif
     else
         call dismoi('C', 'REF_RIGI_PREM', modes, 'RESU_DYNA', iarg,&
                     k24b, iret)

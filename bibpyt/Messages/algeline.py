@@ -19,13 +19,33 @@
 
 cata_msg={
 
+1: _(u"""
+ La base modale à normer (%(k1)s) est soit composée, soit issue d'une restitution
+ sur base physique d'une autre base, mais en coordonnées généralisées.
 
+ Pour pouvoir mettre à jour les paramètres modaux, des informations sur les
+ matrices de rigidité et de masse sont nécessaires.
+"""),
 
+2: _(u"""
+ À défaut de trouver l'information exacte pour la matrice de rigidité sous le 
+ mot-clé RAIDE, on utilisera la matrice %(k1)s référencée dans la base.
 
+ Conseil :
 
+ Si la matrice %(k1)s ne correspond pas à la matrice de rigidité du système. Il
+ faudra renseigner le mot-clé RAIDE pour forcer l'utilisation de la bonne matrice.
+"""),
 
+3: _(u"""
+ À défaut de trouver l'information exacte pour la matrice de masse sous le
+ mot-clé MASSE, on utilisera la matrice %(k1)s référencée dans la base.
 
+ Conseil :
 
+ Si la matrice %(k1)s ne correspond pas à la matrice de masse du système. Il
+ faudra renseigner le mot-clé MASSE pour forcer l'utilisation de la bonne matrice.
+"""),
 
 4: _(u"""
  valeur inférieure à la tolérance
@@ -37,12 +57,9 @@ cata_msg={
 """),
 
 6: _(u"""
- La base modale à normer est issue de DEFI_BASE_MODALE.
- Pour pouvoir mettre à jour les paramètres modaux,
- il faut donc donner les matrices de raideur et de masse.
-
  Conseil :
-  Renseignez les mots-clés RAIDE et MASSE.
+
+ Renseignez les mots-clés RAIDE et MASSE.
 """),
 
 7: _(u"""

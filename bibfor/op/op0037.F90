@@ -49,7 +49,6 @@ subroutine op0037()
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
 #include "asterfort/titre.h"
-#include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/vpcrea.h"
@@ -247,19 +246,30 @@ subroutine op0037()
         if (l1 .eq. 0) then
             call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
                         mat1, iret)
-            if (iret .eq. 0) l1 = 1
+            if (iret .eq. 0) then
+                l1 = 1
+                call utmess('A+', 'ALGELINE_1', nk=1, valk=[modein])
+                call utmess('A', 'ALGELINE_2', nk=1, valk=[mat1])
+            endif
         endif
         if (l2 .eq. 0) then
             call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
                         mat2, iret)
-            if (iret .eq. 0) l2 = 1
+            if (iret .eq. 0) then
+                l2 = 1
+                call utmess('A+', 'ALGELINE_1', nk=1, valk=[modein])
+                call utmess('A', 'ALGELINE_3', nk=1, valk=[mat2])
+            endif
         endif
         if (l3 .eq. 0) then
             call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
                         mat3, iret)
-            if (iret .eq. 0) l3 = 1
+            if (iret .eq. 0) then
+                l3 = 1
+            endif
         endif
         if ((l1*l2) .eq. 0) then
+            call utmess('F+', 'ALGELINE_1', nk=1, valk=[modein])
             call utmess('F', 'ALGELINE_6')
         endif
         masse = mat2
@@ -646,14 +656,6 @@ subroutine op0037()
         call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
         call vpddl(raide(1:19), masse(1:19), neq, ib, ib,&
                    ib, zi(lddl2), zi(lprod), ierd)
-        call utimsd(6, 2, .false., .true., kvec,&
-                    1, ' ')
-        call utimsd(6, 2, .false., .true., kvali,&
-                    1, ' ')
-        call utimsd(6, 2, .false., .true., kvalr,&
-                    1, ' ')
-        call utimsd(6, 2, .false., .true., kvalk,&
-                    1, ' ')
         call vppgen(lmasse, lamor, lraide, zr(lvalr+3*nbmode), zr(lvalr+ 5*nbmode),&
                     zr(lvalr+4*nbmode), zr(lmod), neq, nbmode, zi(lprod))
 !
