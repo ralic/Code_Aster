@@ -37,7 +37,7 @@ subroutine te0181(option, nomte)
 !
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, npg, ij, i, j, imattt
-    real(kind=8) :: cel, dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
     integer :: icodre(1)
 !
     complex(kind=8) :: valres(1)
@@ -56,7 +56,6 @@ subroutine te0181(option, nomte)
 !
     call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres,&
                 icodre, 1)
-    cel = dble(valres(1))
 !
     do 20 i = 1, ndi
         zc(imattt-1+i) = (0.0d0,0.0d0)
@@ -73,8 +72,8 @@ subroutine te0181(option, nomte)
         do 40 i = 1, nno
             do 30 j = 1, i
                 ij = (i-1)*i/2 + j
-                zc(imattt+ij-1) = zc(imattt+ij-1) + ((1.0d0,0.0d0)/ ( cel**2))*poids* zr(ivf+l+i-&
-                                  &1)*zr(ivf+l+j-1)
+                zc(imattt+ij-1) = zc(imattt+ij-1) + ((1.0d0,0.0d0)/ ( valres(1)**2))*poids*&
+                                  &zr(ivf+l+i-1)*zr(ivf+l+j-1)
 30          continue
 40      continue
 50  end do
