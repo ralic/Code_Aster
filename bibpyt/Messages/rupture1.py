@@ -26,6 +26,36 @@ Veuillez utiliser une autre option de lissage
 (par exemple, le lissage 'LAGRANGE' pour le champ thêta)
 """),
 
+2: _(u"""
+Formalisme de déformation différents au moins pour la maille %(k3)s :
+ - type de déformation extrait de la SD Résultat   : %(k1)s
+ - type de déformation fourni à l'opérateur CALC_G : %(k2)s
+
+--> Risques & conseils :
+Vous effectuez un post-traitement de mécanique de la rupture à partir d'un formalisme
+de déformation autre que PETIT et différent de celui utilisé pour le calcul mécanique.
+Ceci est hors du champ de validation des opérateurs.
+La démarche la plus fiable de calcul de G est de réaliser un second calcul en petites
+déformations, de calculer G et de faire une équivalence en ouverture : le G en grandes
+déformations sera égal au G en petites déformations lorsque les ouvertures de défaut
+sont identiques.
+"""),
+
+3: _(u"""
+Formalisme de déformation non valide au moins pour la maille %(k2)s :
+ - type de déformation extrait de la SD Résultat   : %(k1)s
+
+
+--> Risques & conseils :
+Vous effectuez un post-traitement de mécanique de la rupture à partir d'un formalisme
+de déformation autre que PETIT ou PETIT_REAC.
+Ceci est hors du champ de validation des opérateurs.
+La démarche la plus fiable de calcul de G est de réaliser un second calcul en petites
+déformations, de calculer G et de faire une équivalence en ouverture : le G en grandes
+déformations sera égal au G en petites déformations lorsque les ouvertures de défaut
+sont identiques.
+"""),
+
 4: _(u"""
 La commande CALC_G ne traite pas le cas des fonds doubles.
 """),
@@ -228,7 +258,7 @@ Veillez à ne pas vous servir de FISSURE avec le mot-clé CALCUL_CONTRAINTE.
 """),
 
 42: _(u"""
- Lois de comportement différentes pour la maille %(k3)s :
+ Lois de comportement différentes au moins pour la maille %(k3)s :
  - loi de comportement extraite de la SD Résultat   : %(k1)s
  - loi de comportement fournie à l'opérateur CALC_G : %(k2)s
 
@@ -264,17 +294,15 @@ paramètres ainsi que K3 en 3D. Veuillez vérifier le contenu de votre tableau d
 """),
 
 45: _(u"""
- Lois de comportement différentes pour la maille %(k3)s :
- - type de déformation de la loi de comportement extraite de la SD Résultat   : %(k1)s
- - type de déformation de la loi de comportement fournie à l'opérateur CALC_G : %(k2)s
+ Formalismes de déformations différents au moins pour la maille %(k3)s :
+ - type de déformation extrait de la SD Résultat   : %(k1)s
+ - type de déformation fourni à l'opérateur CALC_G : %(k2)s
 
 --> Risques & conseils :
-On doit généralement utiliser la même type de déformation de loi de comportement entre le calcul et le
-post-traitement. On peut utiliser deux type de déformation différents, mais alors
-l'utilisateur doit être vigilant sur l'interprétation des résultats(cf.U2.05.01).
-Si plusieurs types de déformation de comportements sont définis sur la structure, le type de déformation comportement à
-indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe.
-Dans ce cas, ce message d'alarme est quand même émis mais le résultat est bien cohérent.
+Vous avez choisi d'effectuer un post-traitement de mécanique de la rupture en petites déformations (seules 
+valables) alors que le calcul mécanique ne l'était pas. Cela demande d'être vigilant sur les résultats (cf.U2.05.01).
+Si plusieurs types de déformation sont définis sur la structure et que la fissure se développe dans une partie en 
+petites déformations, ce message d'alarme est quand même émis mais le résultat est bien cohérent.
 """),
 
 46: _(u"""
@@ -288,9 +316,9 @@ maximale, type de lissage, ...).
 47: _(u"""
 Vous demandez un calcul de G en post-traitement d'un calcul élastoplastique. Ceci n'est valable que 
 si votre CHARGEMENT est MONOTONE PROPORTIONNEL.
-Si tel est le cas, renseignez, dans CALC_G, RELATION = ELAS_VMIS_XXX pour un calcul de G.
+Si tel est le cas, renseignez, dans CALC_G, l'option RELATION = ELAS_VMIS_XXX pour un calcul de G.
 Si votre chargement n'est pas monotone proportionnel, il faut renseigner, dans CALC_G, 
-RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
+l'option RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
 """),
 
 

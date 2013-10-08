@@ -87,7 +87,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          ),
 
          COMPORTEMENT       =FACT(statut='f',
-               RELATION  =SIMP( statut='o',typ='TXM',defaut="ELAS",into=C_RELATION('CALC_G')),
+               RELATION  =SIMP( statut='o',typ='TXM',into=C_RELATION('CALC_G')),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","PETIT_REAC") ),
              regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

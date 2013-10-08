@@ -51,7 +51,7 @@ subroutine gverlc(resu, compor, iord0)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, jresv, jresd, jresl, jresk, jcalv, jcald, jcall, jcalk
-    integer :: nbma, iadr, iadc, ima
+    integer :: nbma, iadr, iadc, ima, cldc, celasto, cdefdiffat, cdefnook,cdefdifal
     character(len=8) :: noma, nomail
     character(len=6) :: lcham(3)
     character(len=16) :: valk(3)
@@ -65,7 +65,16 @@ subroutine gverlc(resu, compor, iord0)
     call jemarq()
 !
 ! - Initializations
-!
+! On ne veut appeler qu'une fois chaque alarme ou erreur
+! ces compteurs permettent de savoir si les messages ont deja ete appeles
+    cldc=0
+    celasto=0
+    cdefdiffat=0
+    cdefnook=0
+    cdefdifal=0
+
+
+
     chtmp  = '&&GVERLC_CHTMP'
     chresu = '&&GVERLC_CHRESU'
     chcalc = '&&GVERLC_CHCALC'
@@ -121,7 +130,10 @@ subroutine gverlc(resu, compor, iord0)
                     valk(1) = 'ELAS'
                     valk(2) = zk16(jcalv+iadc-1)
                     valk(3) = nomail
-                    call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
+                    if (cldc .eq. 0) then
+                        call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
+                        cldc=1
+                    endif
                     goto 999
                 endif
             endif
@@ -144,43 +156,112 @@ subroutine gverlc(resu, compor, iord0)
 !
 ! --------- COMP_INCR -> only VMIS and ELAS
 !
-            if (iadr .gt. 0) then
-                if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
-                    if (zk16(jresv+iadr-1)(1:4) .eq. 'VMIS') then
-                        call utmess('A', 'RUPTURE1_47')
-                    else
-                        if (zk16(jresv+iadr-1)(1:4) .ne. 'ELAS') then
-                            call utmess('F', 'RUPTURE1_47')
-                        endif
+! SI LA LDC DANS SNL EST COMP_INC, ON EMMET UNE ALAMRE
+        if (iadr .gt. 0) then
+!!            if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
+                if (zk16(jresv+iadr-1)(1:4) .eq. 'VMIS') then
+                    if (celasto .eq. 0) then
+                      call utmess('A', 'RUPTURE1_47')
+                      celasto=1
+                    end if
+                else
+                    if ((zk16(jresv+iadr-1)(1:4) .ne. 'ELAS') .and. &
+                         (celasto .eq. 0)) then
+                       call utmess('F', 'RUPTURE1_47')
+                       celasto=1
                     endif
                 endif
-            endif
+!!            endif
+        endif
 !
             if (iadc .gt. 0 .and. iadr .gt. 0) then
 !
                 if (zk16(jresv+iadr-1) .eq. zk16(jcalv+iadc-1)) then
-!
-! ----------------- If not same deformation -> Alarm
+!-------------If same deformation -> check validity
 !
                     if (zk16(jresv+iadr-1+1) .eq. zk16(jcalv+iadc-1+1)) then
-                        goto 20
+                        if  (zk16(jcalv+iadc-1+1)(1:5) .eq.'PETIT') then
+!--------------------Validity OK
+                           goto 20
+                        else
+!--------------------Validity NOOK-> Fatal Error
+                           call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                           valk(1)=zk16(jresv+iadr-1+1)
+                           valk(2)=nomail
+                           if (cdefnook .eq. 0) then
+                               call  utmess('F', 'RUPTURE1_3', nk=2, valk=valk)
+                               cdefnook=1
+                           endif
+                        endif
                     else
+!--------------If not same deformation
                         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                         valk(1)=zk16(jresv+iadr-1+1)
                         valk(2)=zk16(jcalv+iadc-1+1)
                         valk(3)=nomail
-                        call utmess('A', 'RUPTURE1_45', nk=3, valk=valk)
+                        if (zk16(jcalv+iadc-1+1) .eq.'PETIT') then
+!---------------deformation set to PETIT in order to compute G
+!---------------could be licite -> Alarm
+                            if (cdefdifal .eq. 0) then 
+                                call utmess('A', 'RUPTURE1_45', nk=3, valk=valk)
+                                cdefdifal = 1
+                            endif
+                        else
+!----------------deformation set to another value
+!----------------no sense ! -> Fatal error
+                            if (cdefdiffat .eq. 0) then  
+                                call utmess('F', 'RUPTURE1_2', nk=3, valk=valk)
+                                cdefdiffat=1
+                            endif
+                        endif
                         goto 999
                     endif
                 else
 !
-! ----------------- If not same compotment -> Alarm
+! ----------------- If not same comportment -> Alarm and check deformation validity
 !
                     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                     valk(1)=zk16(jresv+iadr-1)
                     valk(2)=zk16(jcalv+iadc-1)
                     valk(3)=nomail
-                    call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
+                    if (cldc .eq. 0) then
+                       call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
+                       cldc = 1
+                    endif
+                    if (zk16(jresv+iadr-1+1) .eq. zk16(jcalv+iadc-1+1)) then
+                        if  (zk16(jcalv+iadc-1+1)(1:5) .ne.'PETIT') then
+! ------------------Same non licite deformation -> Fatal Error
+                           call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                           valk(1)=zk16(jresv+iadr-1+1)
+                           valk(2)=nomail
+                           if (cdefnook .eq. 0) then
+                              call  utmess('F', 'RUPTURE1_3', nk=2, valk=valk)
+                              cdefnook=1
+                           endif
+                         endif                    
+                    else
+! ----------Non same deformation -> Check validity
+                      call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                      valk(1)=zk16(jresv+iadr-1+1)
+                      valk(2)=zk16(jcalv+iadc-1+1)
+                      valk(3)=nomail
+                      if (zk16(jcalv+iadc-1+1) .eq.'PETIT') then
+!----------Deformation set to PETIT in order to compute G
+!----------Could be licite -> Alarm
+                        if (cdefdifal .eq. 0) then 
+                         call utmess('A', 'RUPTURE1_45', nk=3, valk=valk)
+                         cdefdifal=1
+                        endif
+                      else
+!-----------Deformation set to another value
+!-----------No sense! -> Fatal error
+                        if (cdefdiffat .eq. 0) then
+                         call utmess('F', 'RUPTURE1_2', nk=3, valk=valk)
+                         cdefdiffat = 1
+                        endif
+                      endif
+                      goto 999
+                    endif   
                     goto 999
                 endif
             endif

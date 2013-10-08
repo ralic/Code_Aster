@@ -117,7 +117,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     option = optioz
 !
 !     INITIALISATIONS
-    g(1) = 0.d0
+    g = 0.d0
     nsig=0
     inga=0
     ch1d2d = '&&MECALG.1D2D'

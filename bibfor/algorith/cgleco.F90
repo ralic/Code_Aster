@@ -126,8 +126,8 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
 !
 ! - Check is CALG_G COMPOR <CARTE> is coherent with result COMPOR <CARTE>
 !
-    if (nbcomp .ne. 0) call gverlc(resu, compor, iord0)
-!
+    call gverlc(resu, compor, iord0)
+
 ! - No XFEM for GTP
 !
     if (incr .and. typfis .eq. 'FISSURE') then
