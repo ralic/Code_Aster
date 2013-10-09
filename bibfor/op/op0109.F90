@@ -93,7 +93,7 @@ subroutine op0109()
     data  kvec   /'&&OP0109.VAL_PROPRE'/
     data  kval   /'&&OP0109.GRAN_MODAL'/
     data  kspect /'&&OP0109.SPECTRE   '/
-    data  kasysp /'&&OP0109.ASYMP_SPEC'/
+    data  kasysp /'&&OP0109.GAMMA0'/
     data  knoeu  /'&&OP0109.NOM_SUPPOR'/
     data  knume  /'&&OP0109.NUME_ORDRE'/
     data  nopara /&

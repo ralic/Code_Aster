@@ -1,6 +1,6 @@
 subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                   nsupp, neq, nbmode, id, vecmod,&
-                  parmod, spectr, nomsup, reasup, recmor,&
+                  parmod, gamma0, nomsup, reasup, recmor,&
                   recmop)
     implicit none
 #include "jeveux.h"
@@ -15,7 +15,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 #include "asterfort/wkvect.h"
 !
     integer :: nbsup, nsupp(*), neq, nbmode, id, tordr(1)
-    real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
+    real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), gamma0(*)
     real(kind=8) :: reasup(nbsup, nbmode, *), recmop(nbsup, neq, *)
     real(kind=8) :: recmor(nbsup, neq, *)
     character(len=16) :: nomsy
@@ -54,7 +54,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 ! IN  : ID     : LA DIRECTION DE CALCUL
 ! IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 ! IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
-! IN  : SPECTR : TABLEAU DES VALEURS DU SPECTRE
+! IN  : GAMMA0 : TABLEAU DES CORRECTIONS STATIQUES (PAR SUPPORT ET DIRECTION) 
 ! IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 ! IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 ! OUT : RECMOP : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
@@ -62,7 +62,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 !     ------------------------------------------------------------------
     integer :: ibid, im, in, iordr, iret, is, jmod, jvale, nbtrou
     integer :: ind
-    real(kind=8) :: r8b, gamma0, rni, un, xxx
+    real(kind=8) :: r8b, rni, un, xxx
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3)
     character(len=16) :: monacc, acces(3)
@@ -105,10 +105,8 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                 call jeveuo(chextr//'.CELV', 'L', jvale)
             endif
 !
-            ind = id + 3*(nbmode-1)
-            gamma0 = spectr(ind)
             do 34 in = 1, neq
-                xxx = gamma0 * ( zr(jvale+in-1) - zr(jmod+in-1) )
+                xxx = gamma0(id) * ( zr(jvale+in-1) - zr(jmod+in-1) )
                 recmor(nbsup,in,id) = recmor(nbsup,in,id) + xxx
 34          continue
             call jedetr('&&ASTRON.VECTEUR_MODA')
@@ -119,8 +117,6 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
             do 40 is = 1, nsupp(id)
                 noeu = nomsup(is,id)
                 monacc = noeu//cmp
-                ind = id + 3*(nbmode-1) + 3*nbmode*(is-1)
-                gamma0 = spectr(ind)
                 call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc,&
                             cbid, r8b, k8b, tordr, 1,&
                             nbtrou)
@@ -145,12 +141,12 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 50              continue
                 if (muapde) then
                     do 42 in = 1, neq
-                        xxx = gamma0 * ( zr(jvale+in-1) - zr(jmod+in- 1) )
+                        xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
                         recmop(is,in,id) = recmop(is,in,id) + xxx*xxx
 42                  continue
                 else
                     do 44 in = 1, neq
-                        xxx = gamma0 * ( zr(jvale+in-1) - zr(jmod+in- 1) )
+                        xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
                         recmop(1,in,id) = recmop(1,in,id) + xxx*xxx
 44                  continue
                 endif

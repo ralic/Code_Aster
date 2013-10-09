@@ -1,6 +1,6 @@
 subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
                   nbmode, id, moncha, vecmod, parmod,&
-                  spectr, recmor, recmod, nbdis)
+                  gamma0, recmor, recmod, nbdis)
     implicit  none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -9,7 +9,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 #include "asterfort/pteddl.h"
 #include "asterfort/wkvect.h"
     integer :: nbsup, neq, nbmode, id, nbdis(nbsup)
-    real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
+    real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), gamma0(*)
     real(kind=8) :: recmod(nbsup, neq, *), recmor(nbsup, neq, *)
     character(len=16) :: nomsy
     character(len=*) :: moncha
@@ -46,7 +46,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 ! IN  : ID     : LA DIRECTION DE CALCUL
 ! IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 ! IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
-! IN  : SPECTR : VECTEUR DES SPECTRES
+! IN  : GAMMA0 : VECTEUR DES CORRECTIONS STATIQUES
 ! IN  : RECMOD : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
 ! IN  : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 ! OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
@@ -54,7 +54,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: im, in, is, jmod, juni, ioc
-    real(kind=8) :: gamma0, xxx
+    real(kind=8) ::  xxx
     character(len=8) :: nomcmp(3)
 !     ------------------------------------------------------------------
     data nomcmp / 'DX' , 'DY' , 'DZ' /
@@ -89,9 +89,8 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
             call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
                         zi(juni))
 !
-            gamma0 = spectr(id+3*(nbmode-1))
             do 24 in = 1, neq
-                xxx = gamma0 * ( zi(juni+in-1) - zr(jmod+in-1) )
+                xxx = gamma0(id) * ( zi(juni+in-1) - zr(jmod+in-1) )
                 recmod(is,in,id) = recmod(is,in,id) + xxx*xxx
 24          continue
             call jedetr('&&ASTRON.VECTEUR_UNIT')
@@ -113,9 +112,8 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
             call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
                         zi(juni))
 !
-            gamma0 = spectr(id+3*(nbmode-1)+3*nbmode*(is-1))
             do 44 in = 1, neq
-                xxx = gamma0 * ( zi(juni+in-1) - zr(jmod+in-1) )
+                xxx = gamma0(is+nbsup*(id-1)) * ( zi(juni+in-1) - zr(jmod+in-1) )
                 recmod(is,in,id) = recmod(is,in,id) + xxx*xxx
 44          continue
             call jedetr('&&ASTRON.VECTEUR_UNIT')

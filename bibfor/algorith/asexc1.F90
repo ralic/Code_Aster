@@ -51,17 +51,16 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
 ! OUT : ASYSPE : VALEURS ASYMPTOTIQUES DU SPECTRE
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: nature(3), id, ier, ifm, ii, im, inat, ioc, nbpt1, nbpt2, n1
+    integer :: nature(3), id, ier, ifm, ii, im, inat, ioc, n1
     integer :: nimpr, jvar1
     real(kind=8) :: amor, coef, deuxpi, echel, epsi, freq, dirspe(3), echspe(3)
     real(kind=8) :: valpu(2), omega, omega2, resu, un, uns2pi, xnorm, zero
+    real(kind=8) :: fcoup
     character(len=1) :: dir(3)
     character(len=4) :: knat
     character(len=8) :: spect, nomspe(3), nompu(2)
     character(len=9) :: niveau
-    character(len=24) :: vale
 !     ------------------------------------------------------------------
-    data   vale / '                   .VALE' /
     data  nompu / 'AMOR' , 'FREQ'    /
     data   dir  / 'X' , 'Y' , 'Z' /
 !     ------------------------------------------------------------------
@@ -79,6 +78,11 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
 !
     call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
     if (nimpr .eq. 0) niveau='TOUT     '
+!
+    call getvr8(' ','FREQ_COUP',iocc=1,scal=fcoup,nbret=n1)
+    if (n1 .eq. 0) then
+        fcoup = uns2pi * sqrt(parmod(nbmode,2))
+    endif
 !
     do 10 ioc = 1, nbocc
 !
@@ -212,12 +216,12 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
     endif
     do 30 id = 1, 3
         if (ndir(id) .eq. 1) then
-            vale(1:8) = nomspe(id)
-            call jeveuo(jexnum(vale, 1), 'L', jvar1)
-            call jelira(jexnum(vale, 1), 'LONMAX', nbpt1)
-            nbpt2 = nbpt1 / 2
-            omega = deuxpi * zr(jvar1+nbpt2-1)
-            resu = zr(jvar1+nbpt1-1)
+            amor=amort(nbmode)
+            valpu(1) = amor
+            valpu(2) = fcoup
+            omega = deuxpi * fcoup
+            if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
+            call fointe('F ', nomspe(id), 2, nompu, valpu, resu, ier)
             coef = dirspe(id)*echspe(id)
             if (nature(id) .eq. 1) then
                 asyspe(id) = resu * coef
@@ -236,8 +240,8 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
      &'MODE      FREQUENCE    AMORTISSEMENT    DIR         SPECTRE')
     1100 format(1p,1x,i4,3x,d12.5,5x,d12.5,6x,a1,4x,d12.5)
     1110 format(1p,43x,a1,4x,d12.5)
-    1300 format(/,1x,'--- VALEURS ASYMPTOTIQUES DU SPECTRE ---')
-    1310 format(1x,'DIRECTION         SPECTRE')
+    1300 format(/,1x,'--- VALEURS CORRECTION STATIQUE ---')
+    1310 format(1x,'DIRECTION                ')
     1410 format(1p,9x,a1,4x,d12.5)
 !
     call jedema()

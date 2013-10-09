@@ -20,7 +20,7 @@ interface
                       nbmode, neq, nordr, knomsy, nbopt,&
                       ndir, monoap, muapde, nbsup, nsupp,&
                       typcmo, temps, comdir, typcdi, tronc,&
-                      amort, spectr, asspec, nomsup, reasup,&
+                      amort, spectr, gamma0, nomsup, reasup,&
                       depsup, tcosup, corfre, f1gup, f2gup)
         integer :: nbsup
         character(len=*) :: resu
@@ -44,7 +44,7 @@ interface
         logical :: tronc
         real(kind=8) :: amort(*)
         real(kind=8) :: spectr(*)
-        real(kind=8) :: asspec(*)
+        real(kind=8) :: gamma0(*)
         character(len=*) :: nomsup(*)
         real(kind=8) :: reasup(*)
         real(kind=8) :: depsup(*)

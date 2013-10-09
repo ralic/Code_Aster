@@ -67,12 +67,12 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
     integer :: i, id, ier, ifm, igr, ii, iii, im, inat, ino, ioc
     integer :: iret, is, j, jaspe, jdgn, jgrn, jkno, jnoe
-    integer :: jvar1, jvspe, n1, nbpt1, nbpt2, nbsupm, ngr, nimpr
+    integer :: jvspe, n1, nbsupm, ngr, nimpr
     integer :: nno
 !
     real(kind=8) :: amor, coef, deuxpi, echel, epsi, freq, dirsp0(3)
     real(kind=8) :: echsp0(3), valpu(2), omega, omega2
-    real(kind=8) :: resu, un, uns2pi, xnorm, zero
+    real(kind=8) :: resu, un, uns2pi, xnorm, zero, fcoup
 !
     character(len=1) :: dir(3)
     character(len=4) :: knat
@@ -83,7 +83,6 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !     ------------------------------------------------------------------
 !
-    data   vale / '                   .VALE' /
     data  nompu / 'AMOR' , 'FREQ'    /
     data   dir  / 'X' , 'Y' , 'Z' /
 !
@@ -107,6 +106,11 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
     call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
     if (nimpr .eq. 0) niveau='TOUT     '
+!
+    call getvr8(' ','FREQ_COUP',iocc=1,scal=fcoup,nbret=n1)
+    if (n1 .eq. 0) then
+        fcoup = uns2pi * sqrt(parmod(nbmode,2))
+    endif
 !
 !     --- NOMBRE DE SUPPORTS PAR DIRECTION ---
     do 10 ioc = 1, nbocc
@@ -336,16 +340,16 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
         if (ndir(id) .eq. 1) then
             iii = 0
             do 62 is = 1, nsupp(id)
-                vale(1:8) = nomspe(id,is)
-                call jeveuo(jexnum(vale, 1), 'L', jvar1)
-                call jelira(jexnum(vale, 1), 'LONMAX', nbpt1)
-                nbpt2 = nbpt1 / 2
-                omega = deuxpi * zr(jvar1+nbpt2-1)
                 coef = dirspe(id,is)*echspe(id,is)
-                resu = zr(jvar1+nbpt1-1) * coef
-                if (nature(id,is) .eq. 2) resu = resu * omega
+                valpu(1) = amort(nbmode)
+                valpu(2) = fcoup
+                if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
+                omega = deuxpi * fcoup
+                call fointe('F ', nomspe(id,is), 2, nompu, valpu, resu, ier)
+                if (nature(id,is) .eq. 2) resu = resu * omega 
                 if (nature(id,is) .eq. 3) resu = resu * omega * omega
                 j = j + 1
+                resu = resu * coef
                 zr(jaspe+j-1) = resu
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (iii .eq. 0) then
@@ -365,8 +369,8 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     1200 format(1p,1x,i4,3x,d12.5,4x,d12.5,4x,a1,4x,a8,3x,d12.5)
     1210 format(1p,40x,a1,4x,a8,3x,d12.5)
     1220 format(1p,45x,a8,3x,d12.5)
-    1300 format(/,1x,'--- VALEURS ASYMPTOTIQUES DU SPECTRE ---')
-    1320 format(1x,' DIRECTION   SUPPORT         SPECTRE')
+    1300 format(/,1x,'--- VALEURS CORRECTION STATIQUE ---')
+    1320 format(1x,' DIRECTION                          ')
     1420 format(1p,10x,a1,3x,a8,3x,d12.5)
     1430 format(1p,14x,a8,3x,d12.5)
 !

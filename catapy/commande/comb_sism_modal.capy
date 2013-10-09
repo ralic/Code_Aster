@@ -34,6 +34,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          ),
          MODE_CORR       =SIMP(statut='f',typ=mode_meca ),
+         FREQ_COUP = SIMP(statut='f',typ='R',min=1,max=1),
 
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
          LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),

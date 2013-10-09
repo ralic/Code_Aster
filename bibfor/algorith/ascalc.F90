@@ -2,7 +2,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                   nbmode, neq, nordr, knomsy, nbopt,&
                   ndir, monoap, muapde, nbsup, nsupp,&
                   typcmo, temps, comdir, typcdi, tronc,&
-                  amort, spectr, asspec, nomsup, reasup,&
+                  amort, spectr, gamma0, nomsup, reasup,&
                   depsup, tcosup, corfre, f1gup, f2gup)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -34,7 +34,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 #include "asterfort/wkvect.h"
 !
     integer :: ndir(*), tcosup(*), nordr(*), nsupp(*)
-    real(kind=8) :: amort(*), spectr(*), asspec(*), depsup(*), reasup(*)
+    real(kind=8) :: amort(*), spectr(*), gamma0(*), depsup(*), reasup(*)
     real(kind=8) :: f1gup, f2gup
     character(len=*) :: resu, masse, mome, psmo, stat, typcmo, typcdi, knomsy(*)
     character(len=*) :: nomsup(*)
@@ -86,8 +86,8 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 ! IN  : TRONC  : =.TRUE.  , PRISE EN COMPTE DE LA TRONCATURE
 !                =.FALSE. , PAS DE PRISE EN COMPTE DE LA TRONCATURE
 ! IN  : AMORT  : VECTEUR DES AMORTISSEMENTS MODAUX
-! IN  : SPECTR : VECTEUR DES SPECTRES MODAUX
-! IN  : ASSPEC : VECTEUR DES ASYMPTOTES DES SPECTRES AUX SUPPORTS
+! IN  : SPECTR : TABLEAU DES VALEURS SPECTRALES
+! IN  : GAMMA0 : TABLEAU DES CORRECTIONS STATIQUES (PAR SUPPORT ET DIRECTION)
 ! IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 ! IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 ! IN  : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
@@ -297,7 +297,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                 if (tronc) then
                     call astron(nomsy, psmo, monoap, muapde, nbsup,&
                                 nsupp, neq, nbmode, id, zr(jmod),&
-                                zr(jval), spectr, nomsup, reasup, zr(jcrer),&
+                                zr(jval), gamma0, nomsup, reasup, zr(jcrer),&
                                 zr(jcrep))
                 endif
 !
@@ -305,7 +305,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !
                 call asacce(nomsy, monoap, muapde, nbsup, neq,&
                             nbmode, id, moncha, zr(jmod), zr(jval),&
-                            spectr, zr( jcrer), zr(jcrep), nbdis)
+                            gamma0, zr( jcrer), zr(jcrep), nbdis)
 !
 !              --- CALCUL DES RECOMBINAISONS PAR DIRECTIONS---
                 call asdir(monoap, muapde, id, neq, nbsup,&
