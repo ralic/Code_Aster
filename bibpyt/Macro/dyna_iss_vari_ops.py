@@ -149,12 +149,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    v_refa_mass = MATR_GENE['MATR_MASS'].sdj.REFA.get()
    # MAILLAGE
    nom_bamo = v_refa_rigi[0]
-   iret,ibid,nume_ddl = aster.dismoi('F','NUME_DDL',nom_bamo,'RESU_DYNA')
-   iret,ibid,nom_mail = aster.dismoi('F','NOM_MAILLA',nume_ddl,'NUME_DDL')
+   iret,ibid,nume_ddl = aster.dismoi('NUME_DDL',nom_bamo,'RESU_DYNA','F')
+   iret,ibid,nom_mail = aster.dismoi('NOM_MAILLA',nume_ddl,'NUME_DDL','F')
    maillage = sd_maillage(nom_mail)
    # MODELE, DDLGENE
    nom_ddlgene = v_refa_rigi[1]
-   iret,ibid,nom_modele = aster.dismoi('F','NOM_MODELE',nume_ddl,'NUME_DDL')
+   iret,ibid,nom_modele = aster.dismoi('NOM_MODELE',nume_ddl,'NUME_DDL','F')
    resultat = self.get_concept(nom_bamo)
    nume_ddlgene = self.get_concept(nom_ddlgene)
    #TEST base modale
@@ -180,9 +180,9 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
   # MODES
    nbmodt2 = MATR_GENE['MATR_RIGI'].sdj.DESC.get()[1]
-   iret,nbmodd,kbid=aster.dismoi('F','NB_MODES_DYN', nom_bamo,'RESULTAT')
-   iret,nbmods,kbid=aster.dismoi('F','NB_MODES_STA', nom_bamo,'RESULTAT')
-   iret,nbmodt,kbid=aster.dismoi('F','NB_MODES_TOT',nom_bamo,'RESULTAT')
+   iret,nbmodd,kbid=aster.dismoi('NB_MODES_DYN', nom_bamo,'RESULTAT','F')
+   iret,nbmods,kbid=aster.dismoi('NB_MODES_STA', nom_bamo,'RESULTAT','F')
+   iret,nbmodt,kbid=aster.dismoi('NB_MODES_TOT',nom_bamo,'RESULTAT','F')
    if nbmodt2 != nbmodt:
        UTMESS('F','ALGORITH5_42')
 

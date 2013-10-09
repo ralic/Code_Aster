@@ -52,14 +52,14 @@ subroutine resvoi(moz, maz, chvoiz)
 !
     character(len=32) :: noe1, noe2, noe3, noe4
     character(len=24) :: typmai, connex, coninv, valk(1), nomma
-    character(len=8) :: ma, kbid, typema, mo
+    character(len=8) :: ma, typema, mo
     character(len=19) :: ligrmo, chvois
     integer :: ibid, nbvois
     integer :: ibidt(1), vali(2)
     integer :: nbno, nbma, nbs, nbf, tymvol
     integer :: ima, ino, ino1, ino2, ino3, ino4, kma, jma
     integer :: iamav1, iamav2, iamav3, iamav4, iarepe, iavale
-    integer :: ifa, ima1, ima2, ima3, ima4, ier
+    integer :: ifa, ima1, ima2, ima3, ima4
     integer :: igrel, iel, igrelv, ielv
     integer :: iaval1, iaval2, jad, iad, iadv
     integer :: jceld, nbmav1, nbmav2, nbmav3, nbmav4
@@ -102,10 +102,8 @@ subroutine resvoi(moz, maz, chvoiz)
     chvois = chvoiz
     mo = moz
     ma = maz
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                kbid, ier)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ier)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
     typmai = ma//'.TYPMAIL'
     connex = ma//'.CONNEX'
@@ -121,13 +119,13 @@ subroutine resvoi(moz, maz, chvoiz)
             troisd = .true.
             goto 600
         endif
-500  end do
+500 end do
     if (nbma .lt. 1) goto 700
 !
 !
 ! --------- CREATION DU POINTEUR DE LONGUEUR DE CONINV ----------------
 !
-600  continue
+600 continue
     coninv = '&&RESVOI.CONINV'
     call cncinv(ma, ibidt, 0, 'G', coninv)
 !
@@ -282,7 +280,7 @@ subroutine resvoi(moz, maz, chvoiz)
                                 zi(iaval2+ifa+7) = typ
                                 goto 803
                             endif
-806                      continue
+806                     continue
 !
                     else
 !
@@ -307,14 +305,14 @@ subroutine resvoi(moz, maz, chvoiz)
                     endif
                 endif
 !
-805              continue
+805             continue
             endif
 !
-804          continue
+804         continue
 !
         endif
 !
-803      continue
+803     continue
         if (nbvois .gt. 1) then
             call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
             valk(1)=nomma
@@ -323,7 +321,7 @@ subroutine resvoi(moz, maz, chvoiz)
             call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
             ASSERT(.false.)
         endif
-802      continue
+802     continue
 !
 ! --------- STOCKAGE DU NUMERO DE L'ELEMENT ET DE SON TYPE -------------
 !
@@ -407,9 +405,9 @@ subroutine resvoi(moz, maz, chvoiz)
 !
                                 goto 603
                             endif
-604                      continue
+604                     continue
                     endif
-603              continue
+603             continue
                 if (nbvois .gt. 1) then
                     call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
                     valk(1)=nomma
@@ -418,17 +416,17 @@ subroutine resvoi(moz, maz, chvoiz)
                     call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
                     ASSERT(.false.)
                 endif
-602          continue
+602         continue
 !
 ! --------- STOCKAGE DU NUMERO DE L'ELEMENT ET DE SON TYPE -------------
 !
             zi(iaval1+14*(iel-1)) = ima
             typ = zi(iad)
             zi(iaval1+14*(iel-1)+7) = typ
-601      end do
+601     end do
     endif
     call jedetr('&&RESVOI.LONGCONINV')
     call jedetr('&&RESVOI.CONINV')
     call jedema()
-700  continue
+700 continue
 end subroutine

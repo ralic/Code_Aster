@@ -58,7 +58,7 @@ subroutine caliag(fonrez, chargz)
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, k, iret, ier, iocc, ibid, ifm, niv, nmocl
+    integer :: i, j, k, iret, iocc, ifm, niv, nmocl
     integer :: vali(2)
 !-----------------------------------------------------------------------
     integer :: icmpz, idco1, idco2, idcoef, idconi, idconr, iddl1
@@ -75,7 +75,7 @@ subroutine caliag(fonrez, chargz)
     character(len=2) :: typlag
     character(len=4) :: fonree, typcoe
     character(len=7) :: typcha
-    character(len=8) :: nomno1, nomno2, charge, nomg, noma, mod, k8bid, nomdep
+    character(len=8) :: nomno1, nomno2, charge, nomg, noma, mod, nomdep
     character(len=8) :: kbeta, cmp, nomcmp(nmocl), valk(2)
     character(len=16) :: motfac, mcgrex, mcex
     character(len=19) :: prefix, ligrmo, lisrel
@@ -104,8 +104,7 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 !
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
     ligrmo = mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
     noma = zk8(jnoma)
@@ -239,8 +238,7 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- TYPE DE LA CHARGE ---
 !
-    call dismoi('F', 'TYPE_CHARGE', charge(1:8), 'CHARGE', ibid,&
-                typcha, ier)
+    call dismoi('TYPE_CHARGE', charge(1:8), 'CHARGE', repk=typcha)
 !
     if (typcha(1:2) .eq. 'TH') then
         nomg = 'TEMP_R'
@@ -250,8 +248,7 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
 !
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
@@ -343,7 +340,7 @@ subroutine caliag(fonrez, chargz)
                     goto 60
                 endif
             enddo
-60          continue
+ 60         continue
 !
             do iec = 1, nbec
                 if (zi(jprnm-1+ (ino2-1)*nbec+iec) .ne. 0) then
@@ -351,7 +348,7 @@ subroutine caliag(fonrez, chargz)
                     goto 80
                 endif
             enddo
-80          continue
+ 80         continue
             idg1 = jprnm - 1 + (ino1-1)*nbec + 1
             idg2 = jprnm - 1 + (ino2-1)*nbec + 1
 !
@@ -482,6 +479,6 @@ subroutine caliag(fonrez, chargz)
 !
     call aflrch(lisrel, charge)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

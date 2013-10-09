@@ -103,8 +103,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     parameter    (zvalin=28,zsolal=17)
 !
     logical :: lgrot, lendo
-    integer :: neq, iret, nmax
-    character(len=8) :: k8bid
+    integer :: neq, nmax
     character(len=19) :: vefint, vediri, vebudi
     character(len=19) :: cnfint, cndiri, cnfext, cnbudi
     character(len=24) :: codere
@@ -141,8 +140,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     depplt = '&&CNCETA.CHP2'
     codere = '&&NMCETA.CODRE1'
     ldccvg = -1
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call nmchai('VALINC', 'LONMAX', nmax)
     ASSERT(nmax.eq.zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
@@ -203,7 +201,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! --- REACTUALISATION DES FORCES INTERIEURES
 !
-
+!
     call nmfint(modele, mate, carele, comref, compor,&
                 carcri, fonact, iterat, k19bla, sdstat,&
                 sdtime, valint, solalt, ldccvg, codere,&

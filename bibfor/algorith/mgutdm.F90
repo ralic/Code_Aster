@@ -61,7 +61,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
 !
 !
 !
-    integer :: repi, iret, lldesc, llmcl, llref, nuss, nusst, ibid
+    integer :: repi, iret, lldesc, llmcl, llref, nuss, nusst
     integer :: vali
     character(len=*) :: questi
     character(len=24) :: repk
@@ -116,15 +116,13 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         nommcl=zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                    repk, iret)
+        call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=repk)
     else if (questi(1:12).eq.'NOM_MODELE  ') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl=zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                    nume, iret)
+        call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=nume)
         call jenuno(jexnum(nume(1:14)//'.NUME.LILI', 2), llref2)
         repk(1:8)=llref2(1:8)
     else if (questi(1:15).eq.'NOM_LIST_INTERF') then
@@ -133,8 +131,8 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
 !       call utimsd(6, 2, .false., .true.,basmod(1:8)//'           .REFD', 1, ' ')
-        call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                    repk, iret)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=repk, arret='C',&
+                    ier=iret)
     else if (questi(1:10).eq.'NB_CMP_MAX') then
         call jeveuo(modgen//'      .MODG.DESC', 'L', lldesc)
         repi=zi(lldesc+1)
@@ -144,7 +142,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         goto 9999
     endif
 !
-9999  continue
+9999 continue
     repkz = repk
     call jedema()
 end subroutine

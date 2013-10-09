@@ -55,8 +55,7 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
     real(kind=8) :: zero
     parameter    (zero = 0.d0)
 !
-    integer :: iret, neq, ie, iex
-    character(len=8) :: k8bid
+    integer ::  neq, ie, iex
     real(kind=8) :: instap
     real(kind=8) :: coef1, coef2, coef3
     character(len=19) :: depent, vitent, accent
@@ -79,8 +78,7 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     nbexci = ndynin(sddyna,'NBRE_EXCIT')
     instap = diinst(sddisc,numins)
 !
@@ -130,8 +128,8 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
             zr(jdepen+ie-1) = zr(jdepen+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef1
             zr(jviten+ie-1) = zr(jviten+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef2
             zr(jaccen+ie-1) = zr(jaccen+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef3
-810      continue
-910  end do
+810     continue
+910 end do
 !
 ! --- AFFICHAGE
 !

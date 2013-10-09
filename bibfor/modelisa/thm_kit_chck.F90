@@ -69,10 +69,8 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 ! - Access to model and mesh
 !
     call jeveuo(model//'.MAILLE', 'L', j_mail)
-    call dismoi('C', 'NOM_MAILLA', model, 'MODELE', ibid, &
-                mesh, iret)
-    call dismoi('C', 'NB_MA_MAILLAGE', mesh, 'MAILLAGE', nb_elem_mesh, &
-                k8dummy, iret)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('NB_MA_MAILLAGE', mesh, 'MAILLAGE', repi=nb_elem_mesh, arret='C')
 !
 ! - Mesh affectation
 !
@@ -101,8 +99,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
         nutyel = zi(j_mail-1+nume_elem)
         if (nutyel .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
-            call dismoi('F', 'MODELISATION', notype, 'TYPE_ELEM', ibid,&
-                        modeli, iret)
+            call dismoi('MODELISATION', notype, 'TYPE_ELEM', repk=modeli)
             if ((rela_thmc(1:3)  .eq. 'GAZ') .or. &
                 (rela_thmc(1:9)  .eq. 'LIQU_SATU') .or.&
                 (rela_thmc(1:12) .eq. 'LIQU_GAZ_ATM')) then

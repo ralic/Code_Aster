@@ -59,8 +59,6 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !
 !
     integer :: ifm, niv, jfonr, nbptfr, jfmult, numfon, jfond, nbptfd, i, j, fon
-    integer :: ib
-    character(len=1) :: k1b
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
     real(kind=8) :: dismin, dismax, difmin, difmax
@@ -76,20 +74,17 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !
 !     RETREIVE THE CRACK FRONT (FISREF)
     call jeveuo(fisref//'.FONDFISS', 'L', jfonr)
-    call dismoi('F', 'NB_POINT_FOND', fisref, 'FISS_XFEM', nbptfr,&
-                k1b, ib)
+    call dismoi('NB_POINT_FOND', fisref, 'FISS_XFEM', repi=nbptfr)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
     call jeveuo(fisref//'.FONDMULT', 'L', jfmult)
-    call dismoi('F', 'NB_FOND', fisref, 'FISS_XFEM', numfon,&
-                k1b, ib)
+    call dismoi('NB_FOND', fisref, 'FISS_XFEM', repi=numfon)
 !
 !     ---- FISDIS ----
 !
 !     RETREIVE THE CRACK FRONT (FISDIF)
     call jeveuo(fisdis//'.FONDFISS', 'L', jfond)
-    call dismoi('F', 'NB_POINT_FOND', fisdis, 'FISS_XFEM', nbptfd,&
-                k1b, ib)
+    call dismoi('NB_POINT_FOND', fisdis, 'FISS_XFEM', repi=nbptfd)
 !
 !     ***************************************************************
 !     EVALUATE THE PROJECTION OF EACH POINT OF FISDIF ON THE CRACK
@@ -119,7 +114,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !           FRONT)
             do 213 fon = 1, numfon
                 if ((j.eq.zi(jfmult-1+2*fon)) .and. (j.lt.nbptfr)) goto 210
-213          continue
+213         continue
 !
 !           COORD PT I, ET J
             xi1 = zr(jfonr-1+4*(j-1)+1)
@@ -157,12 +152,12 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
             d = (xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm)
             if (d .lt. dmin) dmin=d
 !
-210      continue
+210     continue
 !
         if (dmin .gt. dismax) dismax=dmin
         if (dmin .lt. dismin) dismin=dmin
 !
-200  end do
+200 end do
 !
     dismax=sqrt(dismax)
     dismin=sqrt(dismin)

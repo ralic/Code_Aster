@@ -74,7 +74,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     character(len=4) :: docu
     integer :: acpgd, ntc, nin, ntn1, ntn2, nep, nnc, avk8, i, nbcpgd, nso
     integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc, alcpc2
-    integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, ier, iexi, nn
+    integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, iexi, nn
     logical :: dirx, diry, dirz
 !
 !======================================================================
@@ -131,10 +131,8 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
         quant = 'ELEMENTS_PRINCIPAUX'
         repere = 'GLOBAL'
     else if ((ntn1 .ne. 0) .or. (ntn2 .ne. 0)) then
-        call dismoi('F', 'NOM_MAILLA', nch19, 'CHAMP', ibid,&
-                    mailla, ier)
-        call dismoi('F', 'Z_CST', mailla, 'MAILLAGE', ibid,&
-                    k8b, ier)
+        call dismoi('NOM_MAILLA', nch19, 'CHAMP', repk=mailla)
+        call dismoi('Z_CST', mailla, 'MAILLAGE', repk=k8b)
         if (k8b(1:3) .eq. 'NON') then
             call utmess('F', 'POSTRELE_32')
         endif
@@ -164,9 +162,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
         endif
         call jeveuo(nomob1, 'L', ancpu)
         call wkvect(nomojb, 'V V K8', nbc, avk8)
-        do 10, i = 1, nbc, 1
-        zk8(avk8 + i-1) = zk8(ancpu + i-1)
-10      continue
+        do 10 i = 1, nbc, 1
+            zk8(avk8 + i-1) = zk8(ancpu + i-1)
+ 10     continue
         call jedetr(nomob1)
     else if ((nin .ne. 0) .or. (nep .ne. 0)) then
         if ((option .eq. 'SIGM_ELNO') .or. (option .eq. 'SIEF_ELNO') .or.&
@@ -176,22 +174,22 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             (option .eq. 'EPSI_NOEU') .or. (option .eq. 'EPSG_NOEU') .or.&
             (option .eq. 'EPME_NOEU_DEPL') .or. (option .eq. 'EPMG_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 20, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + i-1)
-20          continue
+            do 20 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + i-1)
+ 20         continue
             else if ((option .eq. 'EFGE_ELNO') .or. (option .eq.&
         'EFGE_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 21, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + 13 + i-1)
-21          continue
+            do 21 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + 13 + i-1)
+ 21         continue
             iret = 0
             else if ((option .eq. 'DEGE_ELNO') .or. (option .eq.&
         'DEGE_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 22, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + 6 + i-1)
-22          continue
+            do 22 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + 6 + i-1)
+ 22         continue
             iret = 0
         else
             iret = 0
@@ -224,9 +222,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !
         if ((option .eq. 'FLUX_ELNO') .or. (option .eq. 'FLUX_NOEU_DEPL')) then
             call wkvect(nomojb, 'V V K8', 3, avk8)
-            do 32, i = 1, 3, 1
-            zk8(avk8 + i-1) = zk8(acpgd + i-1)
-32          continue
+            do 32 i = 1, 3, 1
+                zk8(avk8 + i-1) = zk8(acpgd + i-1)
+ 32         continue
             else if ((option .eq. 'SIGM_ELNO') .or. (option .eq.&
         'SIEF_ELNO') .or. (option .eq. 'EPSI_ELNO') .or. (option .eq.&
         'EPSG_ELNO') .or. (option .eq. 'EPME_ELNO') .or. (option .eq.&
@@ -243,16 +241,16 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             else if ((option .eq. 'DEGE_ELNO') .or. (option .eq.&
         'DEGE_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 40, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + i+6-1)
-40          continue
+            do 40 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + i+6-1)
+ 40         continue
             iret = 0
             else if ((option .eq. 'EFGE_ELNO') .or. (option .eq.&
         'EFGE_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 41, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + i+13-1)
-41          continue
+            do 41 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + i+13-1)
+ 41         continue
             iret = 0
         else
             iret = 0
@@ -361,9 +359,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             else if ((option .eq. 'EFGE_ELNO') .or. (option .eq.&
         'EFGE_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 42, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + 13 + i-1)
-42          continue
+            do 42 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + 13 + i-1)
+ 42         continue
             iret = 0
             call wkvect(nomnew, 'V V I', 4, avinew)
             if (dirx) then
@@ -384,9 +382,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             else if ((option .eq. 'DEGE_ELNO') .or. (option .eq.&
         'DEGE_NOEU')) then
             call wkvect(nomojb, 'V V K8', 6, avk8)
-            do 43, i = 1, 6, 1
-            zk8(avk8 + i-1) = zk8(acpgd + 6 + i-1)
-43          continue
+            do 43 i = 1, 6, 1
+                zk8(avk8 + i-1) = zk8(acpgd + 6 + i-1)
+ 43         continue
             iret = 0
             call wkvect(nomnew, 'V V I', 4, avinew)
             if (dirx) then
@@ -435,9 +433,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             pt = pt - 1
             if (pt .gt. 0) then
                 call wkvect(nomojb, 'V V K8', pt, avk8)
-                do 50, i = 1, pt, 1
-                zk8(avk8 + i-1) = zk8(acpgd + zi(avicp + i-1)-1)
-50              continue
+                do 50 i = 1, pt, 1
+                    zk8(avk8 + i-1) = zk8(acpgd + zi(avicp + i-1)-1)
+ 50             continue
             else if (iret .ne. 0) then
                 iret = 0
                 call utmess('F', 'POSTRELE_36', si=iocc)
@@ -454,9 +452,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !     /* CAS SOMME (REPERE GLOBAL) */
 !
         call wkvect(nomojb, 'V V K8', nbcpc, avk8)
-        do 62, i = 1, nbcpc, 1
-        zk8(avk8 + i-1) = zk8(alscpc + i-1)
-62      continue
+        do 62 i = 1, nbcpc, 1
+            zk8(avk8 + i-1) = zk8(alscpc + i-1)
+ 62     continue
     else
 !
 !     /* CAS NOM_CMP */
@@ -470,9 +468,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !
         if (repere .eq. 'GLOBAL') then
             call wkvect(nomojb, 'V V K8', nbcpc, avk8)
-            do 60, i = 1, nbcpc, 1
-            zk8(avk8 + i-1) = zk8(alscpc + i-1)
-60          continue
+            do 60 i = 1, nbcpc, 1
+                zk8(avk8 + i-1) = zk8(alscpc + i-1)
+ 60         continue
         else
 !JMP       CALL WKVECT('&&RVCPNC.LISTE.IS','V V I',12,ALSI)
             call wkvect('&&RVCPNC.LISTE.IS', 'V V I', nbcpgd, alsi)
@@ -482,19 +480,19 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                 call wkvect('&&RVCPNC.TMP', 'V V K8', nbcpgd, alcpc2)
                 do 369 i = 1, nbcpgd
                     zk8(alcpc2+i-1)=' '
-369              continue
+369             continue
                 do 370 i = 1, nn
                     zk8(alcpc2+i-1)=zk8(alscpc+i-1)
-370              continue
+370             continue
                 call num2k8(nomgd, zk8(alcpc2), zk8(acpgd), nbcpgd, zi(alsi))
                 call jedetr('&&RVCPNC.TMP')
-                do 63, i = 1, 6, 1
-                n1 = n1 + zi(alsi + i-1)
-63              continue
-                do 164, i = 1, 3, 1
-                n2 = n2 + zi(alsi + 6 + i-1)
-                n3 = n3 + zi(alsi + 9 + i-1)
-164              continue
+                do 63 i = 1, 6, 1
+                    n1 = n1 + zi(alsi + i-1)
+ 63             continue
+                do 164 i = 1, 3, 1
+                    n2 = n2 + zi(alsi + 6 + i-1)
+                    n3 = n3 + zi(alsi + 9 + i-1)
+164             continue
                 if (n1 .ne. 0) then
                     option = nomgd
                     if (docu .eq. 'CHNO') then
@@ -508,30 +506,30 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                     call wkvect('&&RVCPNC.TABIS.2', 'V V I', 3, iadt2)
                     pt = 1
                     ptnc = 1
-                    do 47, i = 1, 6, 1
-                    if (zi(alsi + i-1) .ne. 0) then
-                        zk8(alscpc + pt-1) = zk8(acpgd + i-1)
-                        pt = pt + 1
-                        if ((i .eq. 1) .or. (i .eq. 2) .or. (i.eq.4)) then
-                            zi(iadt2 + 1-1) = 1
-                            zi(iadt2 + 2-1) = 2
-                            zi(iadt2 + 3-1) = 4
-                            call i2trgi(zi(iadt1), zi(iadt2), 3, ptnc)
-                            else if ( ( i .eq. 5 ) .or. ( i .eq. 6) )&
+                    do 47 i = 1, 6, 1
+                        if (zi(alsi + i-1) .ne. 0) then
+                            zk8(alscpc + pt-1) = zk8(acpgd + i-1)
+                            pt = pt + 1
+                            if ((i .eq. 1) .or. (i .eq. 2) .or. (i.eq.4)) then
+                                zi(iadt2 + 1-1) = 1
+                                zi(iadt2 + 2-1) = 2
+                                zi(iadt2 + 3-1) = 4
+                                call i2trgi(zi(iadt1), zi(iadt2), 3, ptnc)
+                                else if ( ( i .eq. 5 ) .or. ( i .eq. 6) )&
                             then
-                            zi(iadt2 + 1-1) = 5
-                            zi(iadt2 + 2-1) = 6
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else
-                            zi(iadt2 + 1-1) = 3
-                            call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                                zi(iadt2 + 1-1) = 5
+                                zi(iadt2 + 2-1) = 6
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else
+                                zi(iadt2 + 1-1) = 3
+                                call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                            endif
                         endif
-                    endif
-47                  continue
+ 47                 continue
                     call wkvect(nomojb, 'V V K8', ptnc-1, avk8)
-                    do 48, i = 1, ptnc-1, 1
-                    zk8(avk8 + i-1) = zk8(acpgd + zi(iadt1 + i-1)- 1)
-48                  continue
+                    do 48 i = 1, ptnc-1, 1
+                        zk8(avk8 + i-1) = zk8(acpgd + zi(iadt1 + i-1)- 1)
+ 48                 continue
                     call jedetr('&&RVCPNC.TABIS.1')
                     call jedetr('&&RVCPNC.TABIS.2')
                     call utmess('I', 'POSTRELE_37', si=iocc)
@@ -549,13 +547,13 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                         call jedetr(nlscpc)
                         call wkvect(nlscpc, 'V V K8', n2+n3, alscpc)
                         pt = 1
-                        do 100, i = 1, 6, 1
-                        zk8(avk8 + i-1) = zk8(acpgd + i+6-1)
-                        if (zi(alsi +i+6-1) .ne. 0) then
-                            zk8(alscpc + pt-1) = zk8(acpgd + i+6- 1)
-                            pt = pt + 1
-                        endif
-100                      continue
+                        do 100 i = 1, 6, 1
+                            zk8(avk8 + i-1) = zk8(acpgd + i+6-1)
+                            if (zi(alsi +i+6-1) .ne. 0) then
+                                zk8(alscpc + pt-1) = zk8(acpgd + i+6- 1)
+                                pt = pt + 1
+                            endif
+100                     continue
                     else
                         iret = 0
                         call utmess('F', 'POSTRELE_38', si=iocc)
@@ -564,9 +562,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                 else if ( (nomgd(1:6) .eq. 'DEPL_R') .or. (nomgd(1:6)&
             .eq. 'FORC_R') ) then
                 call numek8(zk8(alscpc), zk8(acpgd), nbcpc, nbcpgd, zi( alsi))
-                do 64, i = 1, 6, 1
-                n1 = n1 + zi(alsi + i-1)
-64              continue
+                do 64 i = 1, 6, 1
+                    n1 = n1 + zi(alsi + i-1)
+ 64             continue
                 if (n1 .ne. 0) then
                     call jedetr(nlscpc)
                     call wkvect(nlscpc, 'V V K8', n1, alscpc)
@@ -574,39 +572,39 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                     call wkvect('&&RVCPNC.TABIS.2', 'V V I', 2, iadt2)
                     pt = 1
                     ptnc = 1
-                    do 65, i = 1, 6, 1
-                    if (zi(alsi + i-1) .ne. 0) then
-                        zk8(alscpc + pt-1) = zk8(acpgd + i-1)
-                        pt = pt + 1
-                        if (i .eq. 1) then
-                            zi(iadt2 + 1-1) = 1
-                            zi(iadt2 + 2-1) = 2
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else if (i .eq. 2) then
-                            zi(iadt2 + 1-1) = 1
-                            zi(iadt2 + 2-1) = 2
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else if (i .eq. 3) then
-                            zi(iadt2 + 1-1) = 3
-                            call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
-                        else if (i .eq. 4) then
-                            zi(iadt2 + 1-1) = 4
-                            zi(iadt2 + 2-1) = 5
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else if (i .eq. 5) then
-                            zi(iadt2 + 1-1) = 4
-                            zi(iadt2 + 2-1) = 5
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else
-                            zi(iadt2 + 1-1) = 6
-                            call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                    do 65 i = 1, 6, 1
+                        if (zi(alsi + i-1) .ne. 0) then
+                            zk8(alscpc + pt-1) = zk8(acpgd + i-1)
+                            pt = pt + 1
+                            if (i .eq. 1) then
+                                zi(iadt2 + 1-1) = 1
+                                zi(iadt2 + 2-1) = 2
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else if (i .eq. 2) then
+                                zi(iadt2 + 1-1) = 1
+                                zi(iadt2 + 2-1) = 2
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else if (i .eq. 3) then
+                                zi(iadt2 + 1-1) = 3
+                                call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                            else if (i .eq. 4) then
+                                zi(iadt2 + 1-1) = 4
+                                zi(iadt2 + 2-1) = 5
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else if (i .eq. 5) then
+                                zi(iadt2 + 1-1) = 4
+                                zi(iadt2 + 2-1) = 5
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else
+                                zi(iadt2 + 1-1) = 6
+                                call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                            endif
                         endif
-                    endif
-65                  continue
+ 65                 continue
                     call wkvect(nomojb, 'V V K8', ptnc-1, avk8)
-                    do 66, i = 1, ptnc-1, 1
-                    zk8(avk8 + i-1) = zk8(acpgd + zi(iadt1 + i-1)- 1)
-66                  continue
+                    do 66 i = 1, ptnc-1, 1
+                        zk8(avk8 + i-1) = zk8(acpgd + zi(iadt1 + i-1)- 1)
+ 66                 continue
                     call jedetr('&&RVCPNC.TABIS.1')
                     call jedetr('&&RVCPNC.TABIS.2')
                     if (nomgd(1:6) .eq. 'DEPL_R') then
@@ -625,9 +623,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                 endif
             else if (nomgd(1:6) .eq. 'FLUX_R') then
                 call numek8(zk8(alscpc), zk8(acpgd), nbcpc, nbcpgd, zi( alsi))
-                do 74, i = 1, 3, 1
-                n1 = n1 + zi(alsi + i-1)
-74              continue
+                do 74 i = 1, 3, 1
+                    n1 = n1 + zi(alsi + i-1)
+ 74             continue
                 if (n1 .ne. 0) then
                     call jedetr(nlscpc)
                     call wkvect(nlscpc, 'V V K8', n1, alscpc)
@@ -635,28 +633,28 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                     call wkvect('&&RVCPNC.TABIS.2', 'V V I', 2, iadt2)
                     pt = 1
                     ptnc = 1
-                    do 67, i = 1, 3, 1
-                    if (zi(alsi + i-1) .ne. 0) then
-                        zk8(alscpc + pt-1) = zk8(acpgd + i-1)
-                        pt = pt + 1
-                        if (i .eq. 1) then
-                            zi(iadt2 + 1-1) = 1
-                            zi(iadt2 + 2-1) = 2
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else if (i .eq. 2) then
-                            zi(iadt2 + 1-1) = 1
-                            zi(iadt2 + 2-1) = 2
-                            call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
-                        else
-                            zi(iadt2 + 1-1) = 3
-                            call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                    do 67 i = 1, 3, 1
+                        if (zi(alsi + i-1) .ne. 0) then
+                            zk8(alscpc + pt-1) = zk8(acpgd + i-1)
+                            pt = pt + 1
+                            if (i .eq. 1) then
+                                zi(iadt2 + 1-1) = 1
+                                zi(iadt2 + 2-1) = 2
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else if (i .eq. 2) then
+                                zi(iadt2 + 1-1) = 1
+                                zi(iadt2 + 2-1) = 2
+                                call i2trgi(zi(iadt1), zi(iadt2), 2, ptnc)
+                            else
+                                zi(iadt2 + 1-1) = 3
+                                call i2trgi(zi(iadt1), zi(iadt2), 1, ptnc)
+                            endif
                         endif
-                    endif
-67                  continue
+ 67                 continue
                     call wkvect(nomojb, 'V V K8', ptnc-1, avk8)
-                    do 68, i = 1, ptnc-1, 1
-                    zk8(avk8 + i-1) = zk8(acpgd + zi(iadt1 + i-1)- 1)
-68                  continue
+                    do 68 i = 1, ptnc-1, 1
+                        zk8(avk8 + i-1) = zk8(acpgd + zi(iadt1 + i-1)- 1)
+ 68                 continue
                     call jedetr('&&RVCPNC.TABIS.1')
                     call jedetr('&&RVCPNC.TABIS.2')
                     option = 'FLUX_ELNO'

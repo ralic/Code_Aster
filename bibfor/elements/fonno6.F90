@@ -80,7 +80,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
     real(kind=8) :: vecdir(ndim), vecnor(ndim), vnprec(ndim)
     real(kind=8) :: p, prvd1, prvd2
     character(len=6) :: syme
-    character(len=8) :: k8b, type
+    character(len=8) ::  type
     parameter    (angmax=2.5d0)
 !
 !     -----------------------------------------------------------------
@@ -162,8 +162,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
                 call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
                 ityp = iatyma-1+iret
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-                call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn,&
-                            k8b, iret)
+                call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
                 do 210 inp = 1, 2
                     compt=0
                     do 220 j = 1, nn
@@ -171,15 +170,15 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
                             if (zi(iamase-1 + j) .eq. noe(indr(inp),ino)) then
                                 compt = compt+1
                             endif
-230                      continue
-220                  continue
+230                     continue
+220                 continue
 !             ON A TROUVE UNE FACE COINCIDENTE A UNE LEVRE, ON SORT
                     if (compt .eq. nbnoel) then
                         ifl = inp
                         goto 300
                     endif
-210              continue
-200          continue
+210             continue
+200         continue
 !
 !       SI LES LEVRES NE SONT PAS DONNEES, ON TENTE AVEC DTAN_ORIG
         else if (itano.ne.0) then
@@ -201,7 +200,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
     endif
 !
-300  continue
+300 continue
 !
 !     3) CALCUL DES VRAIS VECTEURS DIRECTION ET NORMAL
 !     ------------------------------------------------
@@ -218,7 +217,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         do 310 i = 1, ndim
             vecdir(i) = (vdir(1,i)+vdir(2,i))/ndir
             vecnor(i) = sens*(vnor(1,i)+vnor(2,i))/nnor
-310      continue
+310     continue
 !
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
@@ -228,7 +227,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
                 sens = -1.d0
                 do 320 i = 1, ndim
                     vecnor(i) = sens*vecnor(i)
-320              continue
+320             continue
             endif
         endif
 !
@@ -271,7 +270,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         do 330 i = 1, ndim
             vecdir(i) = vdir(ifl,i)/ndir
             vecnor(i) = sens*vnor(ifl,i)/nnor
-330      continue
+330     continue
 !
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
@@ -281,7 +280,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
                 sens = -1.d0
                 do 340 i = 1, ndim
                     vecnor(i) = sens*vecnor(i)
-340              continue
+340             continue
             endif
         endif
 !
@@ -299,7 +298,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         endif
         do 410 i = 1, ndim
             vecdir(i) = zr(jtano-1+i)
-410      continue
+410     continue
     endif
 !
 !     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
@@ -310,7 +309,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         endif
         do 420 i = 1, ndim
             vecdir(i) = zr(jtane-1+i)
-420      continue
+420     continue
     endif
 !
 !
@@ -320,7 +319,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
     do 510 i = 1, ndim
         zr(jbasse-1+2*ndim*(iseg-1)+i) = vecnor(i)
         zr(jbasse-1+2*ndim*(iseg-1)+i+ndim) = vecdir(i)
-510  continue
+510 continue
 !
 !
 !     6) VERIF QUE LE VECTEUR NORMAL N'EST PAS TROP DIFFERENT DU
@@ -331,7 +330,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !       RECUP DU VECTEUR NORMAL PRECEDENT
         do 610 i = 1, ndim
             vnprec(i) = zr(jbasse-1+2*ndim*(iseg-2)+i)
-610      continue
+610     continue
         s = ddot(ndim,vecnor,1,vnprec,1)
         beta = trigom('ACOS',s)*180.d0/r8pi()
         if (abs(beta) .gt. 10.d0) then

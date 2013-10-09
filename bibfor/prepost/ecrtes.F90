@@ -72,7 +72,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     character(len=80) :: stitr, stitrb
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ier, iret, istmax, itimax
+    integer :: i, iad, iret, istmax, itimax
     integer :: jpar, jtitr, nbac, nbcmp, nbpa
 !-----------------------------------------------------------------------
     call jemarq()
@@ -111,8 +111,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     endif
 !
 !   --- A-T-ON UN CHAMP OU UN RESULTAT --------
-    call dismoi('F', 'TYPE', nomsd, 'INCONNU', ibid,&
-                typinc, ier)
+    call dismoi('TYPE', nomsd, 'INCONNU', repk=typinc)
 !
 !   --- CHOIX DU TYPE D'ANALYSE--------
     anatyp = 0
@@ -137,10 +136,10 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                 else if (zk16(jpar-1+i).eq.'FREQ') then
                     anatyp = 5
                 endif
-20          continue
+ 20         continue
         endif
     endif
-21  continue
+ 21 continue
     call jedetr('&&ECRTES.NOM_ACC')
 !
 !   --- CHOIX DU TYPE DE CARACTERISTIQUES----

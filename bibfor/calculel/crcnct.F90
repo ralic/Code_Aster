@@ -64,13 +64,12 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     character(len=4) :: tysca
     character(len=24) :: valk(2)
 !
-    character(len=8) :: kbid
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iancmp, iarefe, iavale, ibid, icmp, iec
-    integer :: ied, igd, iiec, ino, itrou, nbcmp2, nbno
+    integer :: iadesc, iancmp, iarefe, iavale, icmp, iec
+    integer ::  igd, iiec, ino, itrou, nbcmp2, nbno
     integer :: nec
 !-----------------------------------------------------------------------
     call jemarq()
@@ -88,19 +87,17 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iancmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2)
-    do 1, icmp=1,nbcmp
-    nocmp=licmp(icmp)
-    itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
-    if (itrou .eq. 0) then
-        valk(1) = nocmp
-        valk(2) = gd2
-        call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
-    endif
-    1 end do
-    call dismoi('F', 'NB_EC', gd2, 'GRANDEUR', nec,&
-                kbid, ied)
-    call dismoi('F', 'TYPE_SCA', gd2, 'GRANDEUR', ibid,&
-                tysca, ied)
+    do 1 icmp = 1, nbcmp
+        nocmp=licmp(icmp)
+        itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
+        if (itrou .eq. 0) then
+            valk(1) = nocmp
+            valk(2) = gd2
+            call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
+        endif
+  1 end do
+    call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec)
+    call dismoi('TYPE_SCA', gd2, 'GRANDEUR', repk=tysca)
     if (tysca(1:1) .ne. 'R') then
         call utmess('F', 'CALCULEL2_23', sk=gd2)
     endif
@@ -108,8 +105,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 !
 !     ALLOCATION DU CHAM_NO :
 !     -----------------------
-    call dismoi('F', 'NB_NO_MAILLA', maill2, 'MAILLAGE', nbno,&
-                kbid, ied)
+    call dismoi('NB_NO_MAILLA', maill2, 'MAILLAGE', repi=nbno)
     call wkvect(ch19//'.VALE', bas2//' V R', nbcmp*nbno, iavale)
     call wkvect(ch19//'.DESC', bas2//' V I', nec+2, iadesc)
     call wkvect(ch19//'.REFE', bas2//' V K24', 4, iarefe)
@@ -123,21 +119,21 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     call jeecra(ch19//'.DESC', 'DOCU', cval='CHNO')
     zi(iadesc-1+1)=igd
     zi(iadesc-1+2)=-nbcmp
-    do 2, icmp=1,nbcmp
-    nocmp=licmp(icmp)
-    itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
-    iec=(itrou-1)/30 +1
-    iiec=itrou-(iec-1)*30
-    zi(iadesc-1+2+iec)=ior(zi(iadesc-1+2+iec),2**iiec)
-    2 end do
+    do 2 icmp = 1, nbcmp
+        nocmp=licmp(icmp)
+        itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
+        iec=(itrou-1)/30 +1
+        iiec=itrou-(iec-1)*30
+        zi(iadesc-1+2+iec)=ior(zi(iadesc-1+2+iec),2**iiec)
+  2 end do
 !
 !     OBJET: .VALE
 !     ------------
-    do 3, icmp=1,nbcmp
-    do 4, ino=1,nbno
-    zr(iavale-1+(ino-1)*nbcmp+icmp)=rcmp(icmp)
- 4  continue
-    3 end do
+    do 3 icmp = 1, nbcmp
+        do 4 ino = 1, nbno
+            zr(iavale-1+(ino-1)*nbcmp+icmp)=rcmp(icmp)
+  4     continue
+  3 end do
 !
 !
     call jedema()

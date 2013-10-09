@@ -46,7 +46,7 @@ subroutine u195tb(chou)
 !
 !      ==> VARIABLES LOCALES
 !
-    integer :: n1, n2, jnoma, ibid, iret, nncp
+    integer :: n1, n2, jnoma, ibid, nncp
     character(len=3) :: prol0
     character(len=8) :: nomgd, ma, mo
     character(len=16) :: tychlu, option, typchs, typch2
@@ -101,8 +101,7 @@ subroutine u195tb(chou)
         call cnscno(chs, ' ', prol0, 'G', chou,&
                     'F', ibid)
     else if (typchs(1:2).eq.'EL') then
-        call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
-                    ligrel, iret)
+        call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
 !        -- POUR L'UTILISATEUR DISTRAIT :
         if (option .eq. 'VARI_ELGA') option='RAPH_MECA'
         call cescel(chs, ligrel, option, ' ', prol0,&

@@ -41,7 +41,6 @@ subroutine conlag(matasz, cond)
 !
 !
     integer :: jconl, neq, iret, jcol
-    character(len=8) :: k8bid
     character(len=19) :: matass
 !
 ! ----------------------------------------------------------------------
@@ -54,8 +53,7 @@ subroutine conlag(matasz, cond)
 ! ---  on sort des que l'on trouve un conditionnement de lagrange
     call jeexin(matass//'.CONL', iret)
     if (iret .ne. 0) then
-        call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
-                    k8bid, iret)
+        call dismoi('NB_EQUA', matass, 'MATR_ASSE', repi=neq)
         call jeveuo(matass//'.CONL', 'L', jconl)
         do jcol = 1, neq
             cond = 1.d0/zr(jconl-1+jcol)

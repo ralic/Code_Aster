@@ -61,8 +61,8 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !
     integer :: nbmala, i, j, jmala, jco, iacnx, ilcnx, ii, nbmc
     integer :: jnoeu, nbno, nno, jlmas, idlist, ima, n1
-    integer :: ityp, jnnma, nuno, j1, k, nbnot, ier
-    character(len=8) :: noma, k8bid, motcle(2), tymocl(2), typma
+    integer :: ityp, jnnma, nuno, j1, k, nbnot
+    character(len=8) :: noma, motcle(2), tymocl(2), typma
     character(len=16) :: motfac, typapp
     character(len=24) :: listrv, lismai, mesnoe, lismas, lnnma
 !
@@ -112,13 +112,12 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
                 nbmc, motcle, tymocl, mesnoe, nbno)
     call jeveuo(mesnoe, 'L', j1)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
     call wkvect('&&CGMAAP.NOEUDS', 'V V I', nbnot, jnoeu)
-    do 1, k=1,nbno
-    nuno=zi(j1-1+k)
-    zi(jnoeu-1+nuno)=1
-    1 end do
+    do 1 k = 1, nbno
+        nuno=zi(j1-1+k)
+        zi(jnoeu-1+nuno)=1
+  1 end do
 !
     call jeveuo(noma//'.CONNEX', 'L', iacnx)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx)
@@ -150,13 +149,13 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
             else if (typma(1:4).eq.'HEXA') then
                 zi(jnnma+i-1)=8
             endif
-10      continue
+ 10     continue
 !
     else if (typapp.eq.'TOUT'.or.typapp.eq.'MAJORITE') then
         do 20 i = 1, nbmala
             ima=zi(jmala+i-1)
             zi(jnnma+i-1)=zi(ilcnx+ima)-zi(ilcnx+ima-1)
-20      continue
+ 20     continue
     else
         ASSERT(.false.)
     endif
@@ -175,7 +174,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
         do 40 j = 1, nno
             nuno=zi(jco+j-1)
             if (zi(jnoeu-1+nuno) .eq. 1) ii=ii+1
-40      continue
+ 40     continue
 !
         if (typapp .eq. 'TOUT' .or. typapp .eq. 'SOMMET') then
             if (ii .eq. nno) then
@@ -188,16 +187,16 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
                 zi(jlmas+nbma-1)=ima
             endif
         endif
-30  continue
+ 30 continue
 !
 ! --- CREATION ET REMPLISSAGE DU VECTEUR DE SORTIE
 !     --------------------------------------------
-333  continue
+333 continue
     if (nbma .gt. 0) then
         call wkvect(lismai, 'V V I', nbma, idlist)
         do 50 i = 1, nbma
             zi(idlist+i-1) = zi(jlmas+i-1)
-50      continue
+ 50     continue
     endif
 !
 ! --- FIN

@@ -46,7 +46,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
 ! OUT : NO1    : NOEUD EXTREMITE DE L'ENSEMBLE DES MAILLES
 ! OUT : NO2    : NOEUD AUTRE EXTREMITE DE L'ENSEMBLE DES MAILLES
 ! ----------------------------------------------------------------------
-    character(len=24) :: mlggma, mlgnma, mlgcnx, c24
+    character(len=24) :: mlggma, mlgnma, mlgcnx
     character(len=24) :: valk
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -55,22 +55,22 @@ subroutine acnoex(noma, type, liste, nb, no1,&
     integer :: nn2, no1, no2, nummai
 !-----------------------------------------------------------------------
     call jemarq()
-    call dismoi('C', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbn,&
-                c24, ir)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbn, arret='C',&
+                ier=ir)
     call wkvect('&&ACNOEX', 'V V I', nbn, jnbn)
     mlggma = noma//'.GROUPEMA'
     mlgnma = noma//'.NOMMAI'
     mlgcnx = noma//'.CONNEX'
     if (type .eq. 'TOUT') then
-        call dismoi('C', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbm,&
-                    c24, ir)
+        call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbm, arret='C',&
+                    ier=ir)
         do 52 im = 1, nbm
             call jeveuo(jexnum(mlgcnx, im), 'L', jdno)
             nn1 = zi(jdno)
             nn2 = zi(jdno+1)
             zi(jnbn+nn1-1)=zi(jnbn+nn1-1)+1
             zi(jnbn+nn2-1)=zi(jnbn+nn2-1)+1
-52      continue
+ 52     continue
     else if (type.eq.'GRMA') then
         do 53 ig = 1, nb
             call jeveuo(jexnom(mlggma, liste(ig)), 'L', jdgm)
@@ -82,8 +82,8 @@ subroutine acnoex(noma, type, liste, nb, no1,&
                 nn2 = zi(jdno+1)
                 zi(jnbn+nn1-1)=zi(jnbn+nn1-1)+1
                 zi(jnbn+nn2-1)=zi(jnbn+nn2-1)+1
-54          continue
-53      continue
+ 54         continue
+ 53     continue
     else if (type.eq.'LIMA') then
         do 55 im = 1, nb
             call jenonu(jexnom(mlgnma, liste(im)), nummai)
@@ -92,7 +92,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
             nn2 = zi(jdno+1)
             zi(jnbn+nn1-1)=zi(jnbn+nn1-1)+1
             zi(jnbn+nn2-1)=zi(jnbn+nn2-1)+1
-55      continue
+ 55     continue
     endif
 !
 !     RECHERCHE DES EXTREMITES DE L'ARC
@@ -111,7 +111,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
                 call utmess('E', 'MODELISA8_25', sk=valk)
             endif
         endif
-56  end do
+ 56 end do
 !
 !     CAS OU LES EXTREMITES DE L'ARC SONT IDENTIQUES
 !     ARC FERME

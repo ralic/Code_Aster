@@ -2,7 +2,6 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
                   lres, ddlexc, matd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cbvalc.h"
@@ -18,6 +17,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 #include "asterfort/mtdsc2.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: ddlexc, typcst(*), typres
     real(kind=8) :: const(*)
@@ -67,7 +67,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     character(len=14) :: nume
     character(len=19) :: noma
     character(len=2) :: rouc
-    integer :: neq, ibid, mxddl, ierd, lddl, jsmdi, jrefa, jsmhc
+    integer :: neq, mxddl, lddl, jsmdi, jrefa, jsmhc
     integer :: ival, iconst, imat, jvamr1, jvamr2, jvami1, jvami2
     real(kind=8) :: zero, r8cst, rbid
     complex(kind=8) :: czero, c8cst, cbid
@@ -96,8 +96,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     mxddl = 1
 !
 !     I) RECUPERATION DU NOM DE LA NUMEROTATION ASSOCIEE AUX MATRICES
-    call dismoi('F', 'NOM_NUME_DDL', noma, 'MATR_ASSE', ibid,&
-                nume, ierd)
+    call dismoi('NOM_NUME_DDL', noma, 'MATR_ASSE', repk=nume)
 !
 !     II) RECUPERATION DES POSITIONS DES DDL
     call wkvect('&&CBVALE', 'V V I', neq*mxddl, lddl)
@@ -122,21 +121,21 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     if (typres .eq. 'R') then
         do 10 ival = jvamr1, jvamr1 + lgbloc - 1
             zr(ival) = zero
-10      continue
+ 10     continue
         if (.not.symr) then
             do 20 ival = jvamr2, jvamr2 + lgbloc - 1
                 zr(ival) = zero
-20          continue
+ 20         continue
         endif
 !
     else if (typres.eq.'C') then
         do 30 ival = jvamr1, jvamr1 + lgbloc - 1
             zc(ival) = czero
-30      continue
+ 30     continue
         if (.not.symr) then
             do 40 ival = jvamr2, jvamr2 + lgbloc - 1
                 zc(ival) = czero
-40          continue
+ 40         continue
         endif
     endif
 !
@@ -231,7 +230,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
         call jelibe(jexnum(valmi, 1))
         if (.not.symi) call jelibe(jexnum(valmi, 2))
-50  end do
+ 50 end do
 !
 !
 !

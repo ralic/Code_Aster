@@ -94,9 +94,9 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             if (nbcmpg .gt. 0) then
                 do 12 j = 1, nbcmpg
                     if (im .eq. cmpg(j)) goto 14
-12              continue
+ 12             continue
                 goto 10
-14              continue
+ 14             continue
             endif
             call mgutdm(mogene, blan, istru, 'NOM_BASE_MODALE', ib,&
                         mode)
@@ -132,14 +132,14 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             endif
             ir = ir + 1
             if (ir .eq. nbcmpg) goto 9999
-10      continue
+ 10     continue
     else
 !
 !      --- CALCUL TRADITIONNEL ---
 !
 !---------ON RECUPERE LE TYPE DE BASE MODALE S'IL S'AGIT D'UNE BASE
-        call dismoi('C', 'TYPE_BASE', mode, 'RESU_DYNA', ib,&
-                    typeba, ir)
+        call dismoi('TYPE_BASE', mode, 'RESU_DYNA', repk=typeba, arret='C',&
+                    ier=ir)
 !---------ON RECUPERE LE TYPE DE MODES STAT/DYN
         call rsadpa(mode, 'L', 1, 'TYPE_MODE', 1,&
                     0, sjv=iad, styp=k8b)
@@ -193,9 +193,9 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             if (nbcmpg .gt. 0) then
                 do 22 j = 1, nbcmpg
                     if (i .eq. cmpg(j)) goto 24
-22              continue
+ 22             continue
                 goto 20
-24              continue
+ 24             continue
             endif
 !             IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
             if (dynsta .eq. 'MODE_STA') then
@@ -248,10 +248,10 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             endif
             ir = ir + 1
             if (ir .eq. nbcmpg) goto 9999
-20      continue
+ 20     continue
     endif
 !
-9999  continue
+9999 continue
 !
     1010 format(/,' NUME_CMP   VALEUR        BASE_MODALE  ',&
      &         'TYPE_MODE     FREQUENCE    APPLICATION')

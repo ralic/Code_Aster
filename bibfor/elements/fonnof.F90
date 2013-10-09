@@ -64,7 +64,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro
-    character(len=8) :: k8b, critn
+    character(len=8) ::  critn
     character(len=24) :: msup, minf, fonnoe, nomnoe
 !
 ! DEB-------------------------------------------------------------------
@@ -83,10 +83,8 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     call getvr8(' ', 'PREC_NORM', scal=precn, nbret=n1)
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', igeom)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&
-                k8b, iret)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nomnoe = noma//'.NOMNOE'
     fonnoe = resu//'.FOND.NOEU'
     call jeexin(fonnoe, irlev)
@@ -126,7 +124,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     call wkvect('&&'//nompro//'_MAILLE_LEV_SUP', 'V V I', nbma, jlima)
     do 10 im = 1, nbma
         call jenonu(jexnom(noma//'.NOMMAI', zk8(jsup-1 + im)), zi( jlima-1 + im))
-10  end do
+ 10 end do
     call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma,&
                 zi(jnols), nbnols, 'TOUS')
 !
@@ -135,7 +133,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
         zr(jcoors-1+3*(in-1)+1) = zr(igeom-1+3*(zi(jnols-1+in)-1)+1)
         zr(jcoors-1+3*(in-1)+2) = zr(igeom-1+3*(zi(jnols-1+in)-1)+2)
         zr(jcoors-1+3*(in-1)+3) = zr(igeom-1+3*(zi(jnols-1+in)-1)+3)
-11  end do
+ 11 end do
 !
     call jedetr('&&'//nompro//'_TRAV')
 !
@@ -152,7 +150,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
         call wkvect('&&'//nompro//'_MAILLE_LEV_INF', 'V V I', nbma, jlima)
         do 20 im = 1, nbma
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jinf-1 + im)), zi(jlima-1 + im))
-20      continue
+ 20     continue
         call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma,&
                     zi(jnoli), nbnoli, 'TOUS')
 !
@@ -161,7 +159,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
             zr(jcoori-1+3*(in-1)+1) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 1)
             zr(jcoori-1+3*(in-1)+2) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 2)
             zr(jcoori-1+3*(in-1)+3) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 3)
-21      continue
+ 21     continue
         call jedetr('&&'//nompro//'_TRAV')
     endif
 !
@@ -242,7 +240,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                     dmin = d
                     numun = zi(ino)
                 endif
-310          continue
+310         continue
 !
             vectan(1) = zr(igeom-1+3*(numun-1)+1)-x1
             vectan(2) = zr(igeom-1+3*(numun-1)+2)-y1
@@ -266,7 +264,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                         numfin = zi(ino)
                     endif
                 endif
-320          continue
+320         continue
 !
             preco = prec*10
             call oreino(noma, zi(jti), nbi, nuno, numfin,&
@@ -274,7 +272,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
             do 330 in = 1, min(nbi, 20)
                 call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1 + 20*(inoff-1)+in))
-330          continue
+330         continue
 !
             call jedetr('&&PKFOND_INTERS_INF')
             call jedetr('&&PKFOND_TRAV_INF')
@@ -319,7 +317,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                 dmin = d
                 numun = zi(ino)
             endif
-210      continue
+210     continue
 !
         vectan(1) = zr(igeom-1+3*(numun-1)+1)-x1
         vectan(2) = zr(igeom-1+3*(numun-1)+2)-y1
@@ -342,19 +340,19 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                     numfin = zi(ino)
                 endif
             endif
-220      continue
+220     continue
         preco = prec*10
         call oreino(noma, zi(jts), nbs, nuno, numfin,&
                     zr(igeom), critn, preco, iera, iret)
 !
         do 230 in = 1, min(nbs, 20)
             call jenuno(jexnum(nomnoe, zi(jts-1 + in)), zk8(inols-1 + 20*(inoff-1)+in))
-230      continue
+230     continue
 !
         call jedetr('&&PKFOND_INTERS_SUP')
         call jedetr('&&PKFOND_TRAV_SUP')
 !
-200  end do
+200 end do
 !
     call jedema()
 end subroutine

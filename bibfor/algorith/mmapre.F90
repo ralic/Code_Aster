@@ -77,9 +77,9 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     real(kind=8) :: vectpm(3), jeusgn
     real(kind=8) :: seuili, epsint
     real(kind=8) :: armini
-    character(len=8) :: aliase, nommam, k8bid
+    character(len=8) :: aliase, nommam
     logical :: lveri
-    integer :: ibid, iret
+    integer :: ibid
     integer :: jdecme
     integer :: ctcini, typint, typapp, entapp
     integer :: posmae, nummae, posmam, nummam
@@ -101,8 +101,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
     iptc = 1
     ntpc = 0
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- NOUVEL APPARIEMENT
 !
@@ -226,10 +225,10 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
                 ip = ip + 1
 !
-30          continue
-20      continue
-25      continue
-10  end do
+ 30         continue
+ 20     continue
+ 25     continue
+ 10 end do
 !
 ! --- NOMBRE TOTAL DE NOEUDS EN CONTACT
 !

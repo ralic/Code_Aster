@@ -54,7 +54,7 @@ subroutine ssdmdn(mag)
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, iaconx, iadim2, iadime, ialino, iancnf
-    integer :: ianmcr, ianon2, iasupm, ibid, ied, ino, ino1
+    integer :: ianmcr, ianon2, iasupm, ino, ino1
     integer :: inol, iocc, isma, kk, lmail, lnoeu, longt
     integer :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex, lpr(1)
     integer :: nbnol, nbsma, nnnoe, nocc
@@ -102,8 +102,7 @@ subroutine ssdmdn(mag)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nosma)
                 nomacr= zk8(ianmcr-1+isma)
                 call jeveuo(nomacr//'.CONX', 'L', iaconx)
-                call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
-                            mal, ied)
+                call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
                 nbnoe=zi(iadim2-1+4*(isma-1)+1)
                 nbnol=zi(iadim2-1+4*(isma-1)+2)
                 nbnoet=nbnoe+nbnol
@@ -118,7 +117,7 @@ subroutine ssdmdn(mag)
                     if (lmail .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lmail) = nosma( indi(1):indi(2))
                     i1= i1+lmail
                     if (lnoeu .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lnoeu) = nomnol( indi(3):indi(4))
- 3                  continue
+  3                 continue
                 end do
             end do
         else
@@ -137,8 +136,7 @@ subroutine ssdmdn(mag)
             nomacr= zk8(ianmcr-1+isma)
             call jeveuo(nomacr//'.LINO', 'L', ialino)
             call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
-            call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
-                        mal, ied)
+            call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
             call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)
             kk= indiis(zi(ialino),inol,1,nbnoex)
             if (kk .eq. 0) then
@@ -157,7 +155,7 @@ subroutine ssdmdn(mag)
                 call utmess('A', 'SOUSTRUC_60', nk=2, valk=valk)
             endif
         endif
- 1      continue
+  1     continue
     end do
 !
     call jedema()

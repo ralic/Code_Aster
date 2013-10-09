@@ -123,14 +123,14 @@ subroutine tran75(nomres, typres, nomin, basemo)
         xnorm = 0.d0
         do 10 id = 1, nbdir
             xnorm = xnorm + depl(id) * depl(id)
-10      continue
+ 10     continue
         xnorm = sqrt(xnorm)
         if (xnorm .lt. r8prem()) then
             call utmess('F', 'ALGORITH9_81')
         endif
         do 12 id = 1, nbdir
             depl(id) = depl(id) / xnorm
-12      continue
+ 12     continue
 !
     endif
 !
@@ -152,40 +152,34 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     if (mode .eq. blanc) then
 !
-        call dismoi('C', 'BASE_MODALE', trange, 'RESU_DYNA', ibid,&
-                    basemo, ir)
-        call dismoi('C', 'REF_RIGI_PREM', trange, 'RESU_DYNA', ibid,&
-                    matgen, ir)
+        call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=basemo, arret='C',&
+                    ier=ir)
+        call dismoi('REF_RIGI_PREM', trange, 'RESU_DYNA', repk=matgen, arret='C',&
+                    ier=ir)
 !
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('C', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        numddl, ir)
-            call dismoi('C', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, ir)
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl, arret='C',&
+                        ier=ir)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C',&
+                        ier=ir)
 !
             if (numddl .eq. blanc) then
                 if (matric .ne. blanc) then
-                    call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                                numddl, ir)
+                    call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
                 endif
             endif
             prchno=numddl//'.NUME'
-            call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
-                        nomgd, ie)
-            call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                        mailla, ir)
-            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, ir)
+            call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
+            call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
+            if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         else
 !          -- POUR LES CALCULS SANS MATRICE GENERALISEE
 !             (PROJ_MESU_MODAL)
-            call dismoi('C', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        matric, ir)
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=matric, arret='C',&
+                        ier=ir)
             if (matric(1:8) .eq. blanc) then
-                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                            matric, ir)
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, ir)
+                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
             else
                 numddl = matric(1:8)
             endif
@@ -193,10 +187,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, ir)
-            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, ir)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         endif
 !
         basem2 = basemo
@@ -208,10 +200,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call rsexch('F', basemo, 'DEPL', 1, chmod,&
                     ir)
         chmod = chmod(1:19)//'.REFE'
-        call dismoi('F', 'NOM_GD', chmod, 'CHAM_NO', ibid,&
-                    nomgd, ie)
-        call dismoi('F', 'PROF_CHNO', chmod, 'CHAM_NO', ibid,&
-                    prchno, ie)
+        call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
+        call dismoi('PROF_CHNO', chmod, 'CHAM_NO', repk=prchno)
         call jeveuo(chmod, 'L', llcha)
         mailla = zk24(llcha)(1:8)
         crefe(1) = zk24(llcha)
@@ -275,8 +265,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         idec = idec + 1
                         zr(jpsdel+idec-1) = zr(ipsdel+zi(inuddl+idec- 1)-1)
                     endif
-102              continue
-100          continue
+102             continue
+100         continue
             call wkvect('&&TRAN75.VAL2', 'V V R', neq, lval2)
             lpsdel = jpsdel
         endif
@@ -348,9 +338,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
             nomcha(20:24)='.CELV'
         endif
 !
-        if (leffor) then 
+        if (leffor) then
             call jelira(nomcha, 'LONMAX', neq)
-        else 
+        else
             neq = neq0
         endif
 !
@@ -370,8 +360,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
 !              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
                 ASSERT(prchno.ne.' ')
-                call dismoi('F', 'PROF_CHNO', nomcha, 'CHAM_NO', ibid,&
-                            prchn1, ie)
+                call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchn1)
                 ASSERT(idensd('PROF_CHNO', prchno, prchn1))
 !
                 nomcha(20:24)='.VALE'
@@ -383,9 +372,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
                             idec = idec + 1
                             zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
-122                  continue
-120              continue
-110          continue
+122                 continue
+120             continue
+110         continue
         endif
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
@@ -416,8 +405,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         prems=.false.
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
-                        call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                                    prof, ir)
+                        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi( inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)
@@ -456,7 +444,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                                                               zr(lval2))
                 do 240 ie = 1, neq
                     zr(lvale+ie-1)=zr(lvale+ie-1)+zr(lval2+ie-1)
-240              continue
+240             continue
             endif
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
             if (type(ich) .eq. 'ACCE_ABSOLU' .and. nfonct .ne. 0) then
@@ -471,11 +459,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 do 250 id = 1, nbdir
                     do 252 ie = 0, neq-1
                         zr(jvec+ie) = zr(jvec+ie) + zi(jddl+neq*(id-1) +ie)*alpha*depl(id)
-252                  continue
-250              continue
+252                 continue
+250             continue
                 do 254 ie = 0, neq-1
                     zr(lvale+ie) = zr(lvale+ie) + zr(jvec+ie)
-254              continue
+254             continue
                 call jedetr('&&TRAN75.VECTEUR')
                 call jedetr('&&TRAN75.DDL')
             endif
@@ -483,9 +471,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
-200      continue
+200     continue
         call jedetr('&&TRAN75.BASE')
-210  continue
+210 continue
 !
 !
     if (mode .eq. blanc) then

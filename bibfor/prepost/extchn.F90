@@ -170,12 +170,12 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !   -------------------------------
 !
     integer :: nbtnd
-    character(len=8) :: nmaila, cbid
+    character(len=8) :: nmaila
 !
 !   VARIABLES COMPLEMENTAIRES
 !   -------------------------
 !
-    integer :: num, anumcp, i, ind, n1, ibid, ier
+    integer :: num, anumcp, i, ind, n1, ibid
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     logical :: utili
@@ -231,14 +231,14 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
             xnormz = zero
             do 30 i = 1, 3
                 xnormz = xnormz + axez(i)*axez(i)
-30          continue
+ 30         continue
             if (xnormz .lt. epsi) then
                 call utmess('F', 'PREPOST_38')
             endif
             xnormz = 1.0d0 / sqrt( xnormz )
             do 32 i = 1, 3
                 axez(i) = axez(i) * xnormz
-32          continue
+ 32         continue
             call rvchn2(nchmno, nomjv, nbn, numnd, orig,&
                         axez)
             call jeveuo(nomjv, 'L', avalch)
@@ -277,19 +277,18 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !   RECUPERATION DU NOMBRE TOTAL DE NOEUD DANS LE MAILLAGE
 !   ------------------------------------------------------
 !
-    call dismoi('F', 'NB_NO_MAILLA', nmaila, 'MAILLAGE', nbtnd,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', nmaila, 'MAILLAGE', repi=nbtnd)
 !
 !   TRADUCTION DES NOMS DE NOEUDS ET DE CMP EN NUMEROS
 !   --------------------------------------------------
 !
     if (indic .eq. 'NOMME') then
 !
-        do 10,i = 1,nbn,1
+        do 10 i = 1, nbn, 1
 !
-        call jenonu(jexnom(nmaila//'.NOMNOE', nnoeud(i)), numnd(i))
+            call jenonu(jexnom(nmaila//'.NOMNOE', nnoeud(i)), numnd(i))
 !
-10      continue
+ 10     continue
 !
     endif
 !
@@ -297,11 +296,11 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     call jeecra('&&EXTRCHNNUMCP', 'LONMAX', nbc)
     call jeveuo('&&EXTRCHNNUMCP', 'E', anumcp)
 !
-    do 20,i = 1,nbc,1
+    do 20 i = 1, nbc, 1
 !
-    zi(anumcp+i-1) = 0
+        zi(anumcp+i-1) = 0
 !
-    20 end do
+ 20 end do
 !
     call numek8(zk8(acmpgd), ncmp, nbtcmp, nbc, zi(anumcp))
 !
@@ -332,34 +331,34 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !   REMPLISSAGE DU POINTEUR D' ADRESSES
 !   -----------------------------------
 !
-    do 100,i = 1,nbtnd,1
+    do 100 i = 1, nbtnd, 1
 !
-    zi(apadr+i-1) = 0
+        zi(apadr+i-1) = 0
 !
-    100 end do
+100 end do
 !
 !
-    do 110,i = 1,nbn,1
+    do 110 i = 1, nbn, 1
 !
-    zi(apadr+numnd(i)-1) = nbc* (i-1) + 1
+        zi(apadr+numnd(i)-1) = nbc* (i-1) + 1
 !
-    110 end do
+110 end do
 !
 !   REMPLISSAGE DU POINTEUR DES POSITIONS DES CMP
 !   ---------------------------------------------
 !
-    do 200,i = 1,nbtcmp,1
+    do 200 i = 1, nbtcmp, 1
 !
-    zi(apcmp+i-1) = 0
+        zi(apcmp+i-1) = 0
 !
-    200 end do
+200 end do
 !
-    do 210,i = 1,nbc,1
+    do 210 i = 1, nbc, 1
 !
 !CC          ZI(APCMP+ZI(ANUMCP+I-1)-1) = I
-    zi(apcmp+i-1) = zi(anumcp+i-1)
+        zi(apcmp+i-1) = zi(anumcp+i-1)
 !
-    210 end do
+210 end do
 !
 !   REMPISSAGE DU SGT DE VALEURS
 !   ----------------------------
@@ -368,18 +367,18 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !
 !          /* CAS D' UN CHAM_NO A REPRESENTATION CONSTANTE */
 !
-        do 300,i = 1,nbn,1
+        do 300 i = 1, nbn, 1
 !
-        call jecroc(jexnum(nperr, i))
-        call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
-        call jeveuo(jexnum(nperr, i), 'E', aperr)
+            call jecroc(jexnum(nperr, i))
+            call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
+            call jeveuo(jexnum(nperr, i), 'E', aperr)
 !
-        ind = numnd(i)
+            ind = numnd(i)
 !
-        call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch),&
-                    [ibid], .false., zr(apval+nbc* (i-1)+1-1), zi(aperr))
+            call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch),&
+                        [ibid], .false., zr(apval+nbc* (i-1)+1-1), zi(aperr))
 !
-300      continue
+300     continue
 !
     else
 !
@@ -405,18 +404,18 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !        ------------------------
 !
 !
-        do 400,i = 1,nbn,1
+        do 400 i = 1, nbn, 1
 !
-        call jecroc(jexnum(nperr, i))
-        call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
-        call jeveuo(jexnum(nperr, i), 'E', aperr)
+            call jecroc(jexnum(nperr, i))
+            call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
+            call jeveuo(jexnum(nperr, i), 'E', aperr)
 !
-        ind = numnd(i)
+            ind = numnd(i)
 !
-        call exchnn(zi(aprno+ (ind-1)* (2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch),&
-                    zi(anueq), .true., zr(apval+nbc* (i-1)+1-1), zi(aperr))
+            call exchnn(zi(aprno+ (ind-1)* (2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch),&
+                        zi(anueq), .true., zr(apval+nbc* (i-1)+1-1), zi(aperr))
 !
-400      continue
+400     continue
 !
     endif
 !

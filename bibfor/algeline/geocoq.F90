@@ -65,7 +65,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !
 !
     integer :: ias, iascqi, iascqx, iasedi, iasmax, icmp, icode
-    integer :: icoor, idesc, idir1, idir2, idir3, ier
+    integer :: icoor, idesc, idir1, idir2, idir3
     integer :: ino, inomcp, inunoe, inunoi, irang, iranv, iret
     integer :: ivale, nbcmp, nbec, nbnoex, nbnoin, nucoqi
     integer :: nucoqx, nuenti, nunoe, nunoex, nunoi, nunoin
@@ -75,7 +75,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     real(kind=8) :: rext, rint, rmoy, tole, x2, x3, z0, long
     real(kind=8) :: z0ext, z0int, z1, z1ext, z1int, zno
 !
-    character(len=8) :: nomcmp, k8bid
+    character(len=8) :: nomcmp
     character(len=24) :: grpma, coorno, carte, cadesc, cavale
     character(len=24) :: coquei, coquex
     character(len=32) :: grpno, kjexn
@@ -188,8 +188,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
         call utmess('F', 'ALGELINE_54')
     endif
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('F', 'NB_EC', 'CACOQU', 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', 'CACOQU', 'GRANDEUR', repi=nbec)
     call jeveuo(cadesc, 'L', idesc)
     call jeveuo(cavale, 'L', ivale)
 !

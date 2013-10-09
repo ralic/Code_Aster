@@ -212,7 +212,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   ------
 !
     integer :: i, m, nbscal, numm, nbtmai, gd, acmpgd, nbtcmp, adesgd
-    integer :: nbval, nbn, nbco, nbsp, ibid, n1, ie, kk
+    integer :: nbval, nbn, nbco, nbsp, n1, kk
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     logical :: utili
@@ -234,8 +234,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     nchmel= '&&EXTCHE.CHAMEL1'
     call celver(nchmel, 'NBSPT_1', 'COOL', kk)
     if (kk .eq. 1) then
-        call dismoi('F', 'NOM_GD', nchmel, 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('NOM_GD', nchmel, 'CHAMP', repk=nomgd)
         call utmess('I', 'PREPOST_36', sk=nomgd)
         call celcel('PAS_DE_SP', nchmel, 'V', '&&EXTCHE.CHAMEL2')
         nchmel= '&&EXTCHE.CHAMEL2'
@@ -247,19 +246,18 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     ncelk = nchmel//'.CELK'
     zero = 0.0d0
     epsi = 1.0d-6
-    call dismoi('F', 'NOM_MAILLA', nchmel, 'CHAMP', ibid,&
-                nmaila, ie)
+    call dismoi('NOM_MAILLA', nchmel, 'CHAMP', repk=nmaila)
 !
 !   TRADUCTION DES NOMS DE MAILLES EN NUMERO (SI NECESSAIRE)
 !   --------------------------------------------------------
 !
     if (indic .eq. 'NOMME') then
 !
-        do 10,m = 1,nbm,1
+        do 10 m = 1, nbm, 1
 !
-        call jenonu(jexnom(nmaila//'.NOMMAI', nmaile(m)), nummai(m))
+            call jenonu(jexnom(nmaila//'.NOMMAI', nmaile(m)), nummai(m))
 !
-10      continue
+ 10     continue
 !
     endif
 !
@@ -302,14 +300,14 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
             xnormz = zero
             do 20 i = 1, 3
                 xnormz = xnormz + axez(i)*axez(i)
-20          continue
+ 20         continue
             if (xnormz .lt. epsi) then
                 call utmess('F', 'PREPOST_38')
             endif
             xnormz = 1.0d0/sqrt(xnormz)
             do 30 i = 1, 3
                 axez(i) = axez(i)*xnormz
-30          continue
+ 30         continue
             call rvche2(nchmel, nomjv, nbm, nummai, orig,&
                         axez, nbnac, nnoeud)
             call jeveuo(nomjv, 'L', avale)
@@ -370,9 +368,9 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   -------------------------------------------------
 !
     call wkvect(npcmp, 'V V I', nbtcmp, apcmp)
-    do 40,i = 1,nbc,1
-    zi(apcmp+zi(anumcp+i-1)-1) = i
-    40 end do
+    do 40 i = 1, nbc, 1
+        zi(apcmp+zi(anumcp+i-1)-1) = i
+ 40 end do
 !
 !   CONSTRUCTION DES POINTEURS SUR : NBR DE NDS, DE COUCHES ET DE SSPT
 !   ------------------------------------------------------------------
@@ -383,39 +381,39 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
     nbval = 0
 !
-    do 50,m = 1,nbm,1
+    do 50 m = 1, nbm, 1
 !
-    numm = nummai(m)
-    grel = zi(arepe+2* (numm-1)+1-1)
-    agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
-    mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
+        numm = nummai(m)
+        grel = zi(arepe+2* (numm-1)+1-1)
+        agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
+        mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
 !
 !
-    call jelira(jexnum(nmaila//'.CONNEX', numm), 'LONMAX', nbn)
+        call jelira(jexnum(nmaila//'.CONNEX', numm), 'LONMAX', nbn)
 !
-    if (mod .ne. 0) then
+        if (mod .ne. 0) then
 !
-        call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amodlo)
+            call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amodlo)
 !
-        nbco = zi(amodlo+4-1)
-        nbco = max(nbco,nbco-10000)/nbn
-        nbco = max(1,nbco)
-        nbsp = max(1,zi(jceld-1+4))
+            nbco = zi(amodlo+4-1)
+            nbco = max(nbco,nbco-10000)/nbn
+            nbco = max(1,nbco)
+            nbsp = max(1,zi(jceld-1+4))
 !
-    else
+        else
 !
-        nbn = 0
-        nbco = 0
-        nbsp = 0
+            nbn = 0
+            nbco = 0
+            nbsp = 0
 !
-    endif
+        endif
 !
-    zi(apnbn+numm-1) = nbn
-    zi(apnco+numm-1) = nbco
-    zi(apnsp+numm-1) = nbsp
-    nbval = nbval + nbn*nbc*nbco*nbsp
+        zi(apnbn+numm-1) = nbn
+        zi(apnco+numm-1) = nbco
+        zi(apnsp+numm-1) = nbsp
+        nbval = nbval + nbn*nbc*nbco*nbsp
 !
-    50 end do
+ 50 end do
 !
 !   CONSTRUCTION DU POINTEUR SUR LES ADR DES SGT EXTRAITS PAR MAILLES
 !   -----------------------------------------------------------------
@@ -426,14 +424,14 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
     zi(apadr+numm-1) = 1
 !
-    do 60,m = 2,nbm,1
+    do 60 m = 2, nbm, 1
 !
-    numm = nummai(m-1)
+        numm = nummai(m-1)
 !
-    zi(apadr+nummai(m)-1) = zi(apadr+numm-1) + nbc*zi(apnbn+numm- 1)*zi(apnsp+numm-1)* zi(apnco+n&
-                            &umm-1)
+        zi(apadr+nummai(m)-1) = zi(apadr+numm-1) + nbc*zi(apnbn+numm- 1)*zi(apnsp+numm-1)* zi(apn&
+                                &co+numm-1)
 !
-    60 end do
+ 60 end do
 !
 !   CONSTRUCTION DE LA TABLE DES VALEURS DES CMP EXTRAITES
 !   ------------------------------------------------------
@@ -444,34 +442,34 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbm)
 !
-    do 70,m = 1,nbm,1
+    do 70 m = 1, nbm, 1
 !
-    call jecroc(jexnum(nperr, m))
-    call jeecra(jexnum(nperr, m), 'LONMAX', nbc)
-    call jeveuo(jexnum(nperr, m), 'E', aperr)
+        call jecroc(jexnum(nperr, m))
+        call jeecra(jexnum(nperr, m), 'LONMAX', nbc)
+        call jeveuo(jexnum(nperr, m), 'E', aperr)
 !
-    numm = nummai(m)
+        numm = nummai(m)
 !
-    grel = zi(arepe+2* (numm-1)+1-1)
-    posm = zi(arepe+2* (numm-1)+2-1)
+        grel = zi(arepe+2* (numm-1)+1-1)
+        posm = zi(arepe+2* (numm-1)+2-1)
 !
-    agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
-    mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
+        agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
+        mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
 !
-    if (mod .ne. 0) then
+        if (mod .ne. 0) then
 !
-        call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amodlo)
+            call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amodlo)
 !
-        nbscal = zi(amodlo+3-1)
-        nbsp = zi(apnsp+numm-1)
-        asgtm = agrel + (posm-1)*nbscal*nbsp - 1
+            nbscal = zi(amodlo+3-1)
+            nbsp = zi(apnsp+numm-1)
+            asgtm = agrel + (posm-1)*nbscal*nbsp - 1
 !
-        call exchem(zi(amodlo), zi(anumcp), nbc, nbsp, zr(avale+asgtm),&
-                    zr(avalcp+zi(apadr+numm-1)-1), zi(aperr))
+            call exchem(zi(amodlo), zi(anumcp), nbc, nbsp, zr(avale+asgtm),&
+                        zr(avalcp+zi(apadr+numm-1)-1), zi(aperr))
 !
-    endif
+        endif
 !
-    70 end do
+ 70 end do
 !
     if (utili) call jedetr(nomjv)
     call jedetr('&&EXTRCHE.NUMCP')

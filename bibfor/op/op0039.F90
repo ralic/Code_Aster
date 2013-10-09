@@ -50,7 +50,7 @@ subroutine op0039()
 #include "asterfort/utmess.h"
 #include "asterfort/w039ca.h"
 #include "asterfort/wkvect.h"
-    integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive, ier
+    integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive
     integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret, ndim
     integer :: jlast, jmodl, nmo, nn, nmod, nforma, ngibi, ifimed, codret
 !
@@ -83,7 +83,7 @@ subroutine op0039()
                 call utmess('F', 'PREPOST3_65')
             endif
         endif
-100  end do
+100 end do
 !
 !     -----------------
 !     --- LE MODELE ---
@@ -112,28 +112,26 @@ subroutine op0039()
 !       -- SI RESTREINT, IL FAUT VERIFIER QUE RESU/RESULTAT EST
 !          TOUJOURS FOURNI :
         ASSERT(nocc.le.9)
-        do 74,iocc=1,nocc
-        call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
-        if (nresu .eq. 0) then
-            call utmess('F', 'CALCULEL4_5')
-        endif
-74      continue
+        do 74 iocc = 1, nocc
+            call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
+            if (nresu .eq. 0) then
+                call utmess('F', 'CALCULEL4_5')
+            endif
+ 74     continue
 !
 !       -- ON VERIFIE QUE TOUS LES RESUR ONT LE MEME MAILLAGE
-        call dismoi('F', 'NOM_MAILLA', resur(1), 'RESULTAT', ibid,&
-                    noma, ier)
-        do 76,iocc=2,nocc
-        call dismoi('F', 'NOM_MAILLA', resur(iocc), 'RESULTAT', ibid,&
-                    noma2, ier)
-        ASSERT(noma2.ne.' ')
-        if (noma2 .ne. noma) then
-            valk(1)=resur(1)
-            valk(2)=resur(iocc)
-            valk(3)=noma
-            valk(4)=noma2
-            call utmess('F', 'CALCULEL4_2', nk=4, valk=valk)
-        endif
-76      continue
+        call dismoi('NOM_MAILLA', resur(1), 'RESULTAT', repk=noma)
+        do 76 iocc = 2, nocc
+            call dismoi('NOM_MAILLA', resur(iocc), 'RESULTAT', repk=noma2)
+            ASSERT(noma2.ne.' ')
+            if (noma2 .ne. noma) then
+                valk(1)=resur(1)
+                valk(2)=resur(iocc)
+                valk(3)=noma
+                valk(4)=noma2
+                call utmess('F', 'CALCULEL4_2', nk=4, valk=valk)
+            endif
+ 76     continue
 !
 !       -- ON VA FABRIQUER :
 !          NOMARE : 1 SD_MAILLAGE "RESTREINT"
@@ -144,12 +142,12 @@ subroutine op0039()
         call rdtmai(noma, nomare, 'V', corrn, corrm,&
                     'V', 0, [0])
 !
-        do 77, iocc=1,nocc
-        call codent(iocc, 'D', k1occ)
-        resure(iocc)='&RESUR'//k1occ//'_'
-        call rdtres(resur(iocc), resure(iocc), noma, nomare, corrn,&
-                    corrm, iocc)
-77      continue
+        do 77 iocc = 1, nocc
+            call codent(iocc, 'D', k1occ)
+            resure(iocc)='&RESUR'//k1occ//'_'
+            call rdtres(resur(iocc), resure(iocc), noma, nomare, corrn,&
+                        corrm, iocc)
+ 77     continue
     endif
 !
 !     ---------------------------------------------
@@ -170,8 +168,7 @@ subroutine op0039()
         call getvid('RESU', 'RESULTAT', iocc=1, scal=resu, nbret=nres)
         call getvid('RESU', 'MAILLAGE', iocc=1, scal=noma, nbret=nmail)
         if (nres*nmail .gt. 0) then
-            call dismoi('F', 'NOM_MAILLA', resu, 'RESULTAT', ibid,&
-                        nomsq, ier)
+            call dismoi('NOM_MAILLA', resu, 'RESULTAT', repk=nomsq)
             if (nomsq .ne. noma) then
                 valk(1)=noma
                 valk(2)=nomsq
@@ -249,7 +246,7 @@ subroutine op0039()
                 do 202 ioc2 = 1, nocc
                     call getvid('RESU', 'RESULTAT', iocc=ioc2, scal=resu, nbret=nresu)
                     if (nresu .ne. 0) call rscrmo(ioc2, resu, nomjv)
-202              continue
+202             continue
                 numemo = numemo + 1
             endif
 !
@@ -257,8 +254,8 @@ subroutine op0039()
             call getvid('RESU', 'MAILLAGE', iocc=iocc, scal=noma, nbret=nmail)
             if (nmail .ne. 0) then
                 if (lmod) then
-                    call dismoi('C', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                                nomab, iret)
+                    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomab, arret='C',&
+                                ier=iret)
                     if (noma .ne. nomab) then
                         call utmess('F', 'PREPOST3_66')
                     endif
@@ -267,7 +264,7 @@ subroutine op0039()
                             modele, nive, infmai, formr)
                 numemo = numemo + 1
             endif
-200      continue
+200     continue
 !
         if (numemo .le. 1) then
             call utmess('F', 'PREPOST3_67')
@@ -290,7 +287,7 @@ subroutine op0039()
                 goto 220
             endif
             if (nmail .ne. 0) lmail=.true.
-220      continue
+220     continue
         if (lmail .and. lresu) then
             call utmess('A', 'PREPOST3_68')
             goto 9999
@@ -305,7 +302,7 @@ subroutine op0039()
         call irmfac(iocc, form, ifi, nive, versio,&
                     modele, noma, nomare, resure(iocc), lgmsh)
 !
-10  end do
+ 10 end do
     if (lcasts) then
         ibid=5
         write(ifc,'(A,I4)') ' ENREGISTREMENT DE TYPE',ibid
@@ -319,6 +316,6 @@ subroutine op0039()
     call w039ca(ifi, form)
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

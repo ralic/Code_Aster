@@ -161,7 +161,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     integer :: jnumty, numma, ima, hdfok, medok, jlgrf, jmaill
 !
     character(len=1) :: saux01
-    character(len=8) :: saux08, k8b, modele
+    character(len=8) :: saux08, modele
     character(len=8) :: nomtyp(ntymax)
     character(len=19) :: prefix
     character(len=24) :: numcmp, ntncmp, ntucmp, ntvale, nmcmfi(ntymax)
@@ -293,12 +293,10 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     endif
 !
     if (typech .eq. 'NOEU') then
-        call dismoi('F', 'NB_NO_MAILLA', nomaas, 'MAILLAGE', nbnoma,&
-                    k8b, iret)
+        call dismoi('NB_NO_MAILLA', nomaas, 'MAILLAGE', repi=nbnoma)
         nbvato = nbnoma
     else
-        call dismoi('F', 'NB_MA_MAILLA', nomaas, 'MAILLAGE', nbma,&
-                    k8b, iret)
+        call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
         nbvato = nbma
     endif
 !
@@ -419,7 +417,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                     numord = zi(adnume+2*iaux2-1)
                     goto 2221
                 endif
-222              continue
+222             continue
                 valk (1) = nofimd(1:24)
                 valk (2) = nochmd(1:24)
                 valr = inst
@@ -429,7 +427,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                             vali=vali, sr=valr)
                 call utmess('A', 'MED_52')
                 goto 22
-2221              continue
+2221             continue
 !
                 if (nivinf .gt. 1) then
                     valk (1) = nochmd(1:24)
@@ -520,8 +518,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     do 5 i = 1, ntypel
         do 6 j = 1, npgmax
             indpg(i,j)=0
- 6      continue
- 5  end do
+  6     continue
+  5 end do
 !
     if (typech(1:4) .eq. 'NOEU') then
         call cnscre(nomaas, nomgd, ncmprf, zk8(jnocmp), 'V',&
@@ -666,7 +664,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                         zi(jnumty+k-1)=ima
                     endif
                 endif
-72          continue
+ 72         continue
             if (k .ne. nbty(letype)) then
                 call utmess('F', 'MED_58')
             endif
@@ -683,7 +681,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                     endif
                     cptyma=cptyma+1
                 endif
-73          continue
+ 73         continue
             if (k .ne. lgprof) then
                 call utmess('F', 'MED_58')
             endif
@@ -700,7 +698,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                     typech, ltyp(letype), adsl, adsv, adsd,&
                     codret)
 !
-71      continue
+ 71     continue
     endif
 !
 !====
@@ -731,7 +729,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     if (typech(1:4) .ne. 'NOEU') then
         do 9 , letype = 1 , nbtylu
         call jedetr('&&'//nompro//'.NUM.'//nomtyp(ltyp(letype)))
- 9      continue
+  9     continue
     endif
 !
     if (nivinf .gt. 1) then

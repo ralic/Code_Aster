@@ -60,7 +60,7 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: opt, iaopds, iaoplo, iapara, nparin, ipara, opt2, ierd, ibid
+    integer :: opt, iaopds, iaoplo, iapara, nparin, ipara, opt2, ierd
     integer :: decal
     character(len=8) :: noma
     character(len=16) :: optio2
@@ -138,8 +138,7 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
             endif
 !       CAS OU CE PARAM EST UN OBJET DU MAILLAGE
         else if (zk24(iaoplo+3*ipara-3).eq.'MAIL') then
-            call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                        noma, ierd)
+            call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
             nochin = noma//zk24(iaoplo+3*ipara-2)
 !       CAS OU CE PARAM EST UN OBJET DU MODELE
         else if (zk24(iaoplo+3*ipara-3).eq.'MODL') then
@@ -155,7 +154,7 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
             nochin = mateco//zk24(iaoplo+3*ipara-2)
         endif
         lichin(nbpain) = nochin
-10  end do
+ 10 end do
 !
     call jedema()
 !

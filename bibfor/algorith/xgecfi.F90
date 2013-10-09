@@ -59,7 +59,7 @@ subroutine xgecfi(modele, depgeo)
 !
     integer :: nbout, nbin
     parameter    (nbout=2, nbin=7)
-    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), noma, kbid
+    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), noma
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=16) :: option
@@ -67,7 +67,7 @@ subroutine xgecfi(modele, depgeo)
     character(len=19) :: gesclo, ltno, fissno, heavfa
     character(len=1) :: base
     logical :: debug
-    integer :: ifmdbg, nivdbg, iret, jnoma, ibid, nbma, ima
+    integer :: ifmdbg, nivdbg, iret, jnoma, nbma, ima
     integer :: jcesd, jcesl, jcesd2, jcesv, iad
 !
 ! ----------------------------------------------------------------------
@@ -105,14 +105,13 @@ subroutine xgecfi(modele, depgeo)
 !
         call jeveuo(modele//'.MODELE    .LGRF', 'L', jnoma)
         noma = zk8(jnoma)
-        call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                    kbid, ibid)
+        call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
         call celces(gesclo, 'V', '&&XGECFI.GESCLO')
         call jeveuo('&&XGECFI.GESCLO    .CESD', 'L', jcesd2)
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
         call cescre('V', newges, 'ELEM', noma, 'DCEL_I',&
-                    2, licmp, [ibid], [-1], [-2])
+                    2, licmp, [0], [-1], [-2])
         call jeveuo(newges//'.CESD', 'L', jcesd)
         call jeveuo(newges//'.CESV', 'E', jcesv)
         call jeveuo(newges//'.CESL', 'E', jcesl)
@@ -121,7 +120,7 @@ subroutine xgecfi(modele, depgeo)
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
             zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+2)
-10      continue
+ 10     continue
         call copisd('CHAM_ELEM_S', 'V', newges, newgem)
         call detrsd('CHAM_ELEM_S', '&&XGECFI.GESCLO')
     endif

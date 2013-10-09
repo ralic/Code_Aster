@@ -54,7 +54,7 @@ subroutine orilgm(noma)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ifm, niv, nbf1, nbf2, nbf3, iret, jjj, jgro, n1, n2
+    integer :: ifm, niv, nbf1, nbf2, nbf3, jjj, jgro, n1, n2
     integer :: n3, noeud, iocc, ngv, ier, ndim, igr, ng, nbmail, norit, norien
     integer :: ntrait, jjv, nbmavo, jmavo, nbmato, ima, nbmavi, jmavi, k, jgv
     integer :: ncf3, ngs, jgs, nbmasu, jmasu
@@ -94,8 +94,7 @@ subroutine orilgm(noma)
 !
 ! --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
 !     -------------------------------------------------
-    call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ndim,&
-                k8b, ier)
+    call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8b)
     if (k8b(1:3) .eq. 'OUI') then
         ndim = 2
     else
@@ -129,25 +128,24 @@ subroutine orilgm(noma)
             call wkvect('&&ORILGM.WORK2', 'V V K24', ngs, jgs)
             call getvem(noma, 'GROUP_MA', mofa2d, 'GROUP_MA_SURF', iocc,&
                         iarg, ngs, zk24(jgs), ngs)
-            call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmato,&
-                        k8b, iret)
+            call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
             call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
             do 101 ima = 1, nbmato
                 zi(jjv+ima-1)=0
-101          continue
+101         continue
             do 102 igr = 1, ngs
                 gmat = zk24(jgs+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
                 call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
                 do 103 ima = 1, nbmavi
                     zi(jjv+zi(jmavi+ima-1)-1)=1
-103              continue
-102          continue
+103             continue
+102         continue
 !          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMASU
             nbmasu=0
             do 104 ima = 1, nbmato
                 nbmasu=nbmasu+zi(jjv+ima-1)
-104          continue
+104         continue
 !          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMASU)
             call wkvect('&&ORILGM.GROUP_MA_SURF', 'V V I', nbmasu, jmasu)
             k=0
@@ -156,7 +154,7 @@ subroutine orilgm(noma)
                     k=k+1
                     zi(jmasu+k-1)=ima
                 endif
-105          continue
+105         continue
             call jedetr('&&ORILGM.WORK3')
             call jedetr('&&ORILGM.WORK2')
         else
@@ -175,10 +173,10 @@ subroutine orilgm(noma)
             norit = norit + norien
             write(ifm,1100) norien
             if (ntrait .ne. 0) write(ifm,1110) ntrait
-110      continue
+110     continue
         call jedetr('&&ORILGM.WORK')
         call jedetr('&&ORILGM.GROUP_MA_SURF')
-100  end do
+100 end do
 !
 ! --- TRAITEMENT DE 'ORIE_PEAU_3D' :
 !     ----------------------------
@@ -199,25 +197,24 @@ subroutine orilgm(noma)
             call wkvect('&&ORILGM.WORK2', 'V V K24', ngv, jgv)
             call getvem(noma, 'GROUP_MA', mofa3d, 'GROUP_MA_VOLU', iocc,&
                         iarg, ngv, zk24(jgv), ngv)
-            call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmato,&
-                        k8b, iret)
+            call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
             call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
             do 201 ima = 1, nbmato
                 zi(jjv+ima-1)=0
-201          continue
+201         continue
             do 202 igr = 1, ngv
                 gmat = zk24(jgv+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
                 call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
                 do 203 ima = 1, nbmavi
                     zi(jjv+zi(jmavi+ima-1)-1)=1
-203              continue
-202          continue
+203             continue
+202         continue
 !          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMAVO
             nbmavo=0
             do 204 ima = 1, nbmato
                 nbmavo=nbmavo+zi(jjv+ima-1)
-204          continue
+204         continue
 !          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMAVO)
             call wkvect('&&ORILGM.GROUP_MA_VOLU', 'V V I', nbmavo, jmavo)
             k=0
@@ -226,7 +223,7 @@ subroutine orilgm(noma)
                     k=k+1
                     zi(jmavo+k-1)=ima
                 endif
-205          continue
+205         continue
             call jedetr('&&ORILGM.WORK3')
             call jedetr('&&ORILGM.WORK2')
         else
@@ -246,10 +243,10 @@ subroutine orilgm(noma)
             norit = norit + norien
             write(ifm,1100) norien
             if (ntrait .ne. 0) write(ifm,1110) ntrait
-210      continue
+210     continue
         call jedetr('&&ORILGM.WORK')
         call jedetr('&&ORILGM.GROUP_MA_VOLU')
-200  end do
+200 end do
 !
 ! --- TRAITEMENT DE 'ORIE_NORM_COQUE':
 !     -------------------------------
@@ -299,7 +296,7 @@ subroutine orilgm(noma)
                             noeud)
                 norit = norit + norien
                 write(ifm,1100) norien
-310          continue
+310         continue
         else
             do 320 igr = 1, ng
                 gmat = zk24(jjj+igr-1)
@@ -310,10 +307,10 @@ subroutine orilgm(noma)
                 call ornorm(noma, zi(jgro), nbmail, reorie, norien)
                 norit = norit + norien
                 write(ifm,1100) norien
-320          continue
+320         continue
         endif
         call jedetr('&&ORILGM.WORK')
-300  end do
+300 end do
 !
 ! --- TRAITEMENT DE 'ORIE_LIGNE':
 !     ------------------------------
@@ -363,7 +360,7 @@ subroutine orilgm(noma)
                             noeud)
                 norit = norit + norien
                 write(ifm,1100) norien
-410          continue
+410         continue
         else
             do 420 igr = 1, ng
                 gmat = zk24(jjj+igr-1)
@@ -374,10 +371,10 @@ subroutine orilgm(noma)
                 call ornorm(noma, zi(jgro), nbmail, reorie, norien)
                 norit = norit + norien
                 write(ifm,1100) norien
-420          continue
+420         continue
         endif
         call jedetr('&&ORILGM.WORK')
-400  end do
+400 end do
 !
     if (norit .ne. 0) write(ifm,1010) norit
 !

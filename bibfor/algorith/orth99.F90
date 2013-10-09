@@ -94,13 +94,11 @@ subroutine orth99(nomres, ritz)
     endif
 !
     if (n1 .ne. 0) then
-        call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
-                    numdda, ier)
+        call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdda)
         call mtdscr(matras)
         matr=matras
         call jeveuo(matr//'.&INT', 'E', imatra)
-        call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
-                    numdda, ier)
+        call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdda)
     else
         matr=' '
     endif
@@ -121,27 +119,23 @@ subroutine orth99(nomres, ritz)
                 cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
     nbmode=tmod(1)
-                
+!
 !
     call jeveuo(base//'           .ORDR', 'L', jordm)
 ! RECUPERATION DE LA NUMEROTATION DES BASES
     if ((typbas.eq.'MODE_MECA') .or. (typbas.eq.'MODE_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid,&
-                    matri1, ir)
+        call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matri1)
     else
-        call dismoi('F', 'REF_AMOR_PREM', base, 'RESU_DYNA', ibid,&
-                    matri1, ir)
+        call dismoi('REF_AMOR_PREM', base, 'RESU_DYNA', repk=matri1)
     endif
     if (matri1 .ne. ' ') then
-        call dismoi('F', 'NOM_NUME_DDL', matri1, 'MATR_ASSE', ibid,&
-                    numdd1, ier)
+        call dismoi('NOM_NUME_DDL', matri1, 'MATR_ASSE', repk=numdd1)
     else
-        call dismoi('F', 'NUME_DDL', base, 'RESU_DYNA', ibid,&
-                    numdd1, ir)
+        call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numdd1)
     endif
 !
-    call dismoi('C', 'REF_INTD_PREM', base, 'RESU_DYNA', ibid,&
-                intf, ir)
+    call dismoi('REF_INTD_PREM', base, 'RESU_DYNA', repk=intf, arret='C',&
+                ier=ir)
 !
     if (numdd1 .ne. numdda) then
         call utmess('I', 'ALGELINE2_81')
@@ -162,7 +156,7 @@ subroutine orth99(nomres, ritz)
 !
     do 50 i = 1, neq
         zi(jtrav4+i-1) = 1
-50  continue
+ 50 continue
 !
     if (matr .eq. ' ') then
 ! ORTHONORMALISATION L2
@@ -183,7 +177,7 @@ subroutine orth99(nomres, ritz)
         call wkvect('&&ORTH99.VECT_TEMP', 'V V I', nbmode, ibid)
         do 10 i = 1, nbmode
             zi(ibid+i-1)=zi(jordm+i-1)
-10      continue
+ 10     continue
         jordm=ibid
 !
 !       Save the old REFD information in a temporary location
@@ -216,7 +210,7 @@ subroutine orth99(nomres, ritz)
         call jeveuo(chamol//'.VALE', 'E', jvale)
         do 111 ieq = 1, neq
             zr(jvale+ieq-1) = zr(idmode+(i-1)*neq+ieq-1)
-111      continue
+111     continue
         call rsnoch(nomres, 'DEPL', iorne)
 !
         call rsadpa(base, 'L', 1, 'NUME_MODE', iorol,&
@@ -260,7 +254,7 @@ subroutine orth99(nomres, ritz)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-80  continue
+ 80 continue
 !
 !
     call jedetr('&&ORTH99.TRAV1')
@@ -270,7 +264,7 @@ subroutine orth99(nomres, ritz)
     call jedetr('&&ORTH99.VECT_TEM')
 !
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

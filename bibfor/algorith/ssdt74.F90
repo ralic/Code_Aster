@@ -85,7 +85,7 @@ subroutine ssdt74(nomres, nomcmd)
 ! =<
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, ifm, info, iparch, iret
+    integer :: i, ibid, ifm, info, iparch, iret
     integer :: j1, jaccs, jadcho, jamog, jarch
     integer :: jcoefm, jconl, jdcho, jdepl, jdeps, jfcho, jfond
     integer :: jfonv, jiadve, jidesc, jinst, jinti, jinumo, jmasg
@@ -156,7 +156,7 @@ subroutine ssdt74(nomres, nomcmd)
         do 10 i = 1, nexcit
             call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen, nbret=nv)
             zk8(jvec-1+i) = vecgen
-10      continue
+ 10     continue
     endif
     if (nexcir .ne. 0) then
         call wkvect('&&SSDT74.NOMVER', 'V V K8', nexcir, jvecr)
@@ -166,12 +166,11 @@ subroutine ssdt74(nomres, nomcmd)
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
-            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid,&
-                        bamo2, ier)
+            call dismoi('BASE_MODALE', resgen, 'RESU_DYNA', repk=bamo2)
             if (bamo1 .ne. bamo2) then
                 call utmess('F', 'ALGORITH17_18', si=i)
             endif
-11      continue
+ 11     continue
     endif
 !
 !     --- NUMEROTATION GENERALISEE ET NOMBRE DE MODES ---
@@ -188,13 +187,11 @@ subroutine ssdt74(nomres, nomcmd)
         kbid = '        '
         call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                     basemo)
-        call dismoi('F', 'NB_MODES_TOT', basemo, 'RESULTAT', nbbas,&
-                    kbid, ier)
+        call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
         nbmode = nbmode + nbbas
-        call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbbas,&
-                    kbid, ier)
+        call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
         nbmody = nbmody + nbbas
-20  continue
+ 20 continue
     nbmost = nbmode - nbmody
     call jeveuo(numgen//'.SLCS.SCDE', 'L', jscde)
     neqgen = zi(jscde-1+1)
@@ -213,23 +210,21 @@ subroutine ssdt74(nomres, nomcmd)
     do 31 k = 1, neqgen
         zr(jpuls+k-1) = 0
         zr(jpul2+k-1) = 0
-31  continue
+ 31 continue
     nbmodi = 0
     do 30 k = 1, nbsst
         kbid = '        '
         call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                     basemo)
-        call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbbas,&
-                    kbid, ier)
+        call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
         do 33 i = 1, nbbas
             omeg2 = abs(zr(jraig+nbmodi+i-1)/zr(jmasg+nbmodi+i-1))
             zr(jpuls+nbmodi+i-1) = sqrt(omeg2)
             zr(jpul2+nbmodi+i-1) = omeg2
-33      continue
-        call dismoi('F', 'NB_MODES_TOT', basemo, 'RESULTAT', nbbas,&
-                    kbid, ier)
+ 33     continue
+        call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
         nbmodi = nbmodi + nbbas
-30  continue
+ 30 continue
 !
     if (namor .ne. 0) then
         call extdia(amogen, numg24, 1, zr(jamog))
@@ -246,7 +241,7 @@ subroutine ssdt74(nomres, nomcmd)
                                 valr=valr)
                 endif
             endif
-40      continue
+ 40     continue
     endif
 !
 !     --- VERIFICATION DES DONNEES GENERALISEES ---
@@ -325,7 +320,7 @@ subroutine ssdt74(nomres, nomcmd)
         call jeveuo(amotem//'           .CONL', 'E', jconl)
         do 50 i = 1, neqgen
             zr(jconl-1+i) = zr(jconl-1+i)/deux
-50      continue
+ 50     continue
     endif
 !
 !     --- RECUPERATION DES DESCRIPTEURS DES MATRICES ---
@@ -452,7 +447,7 @@ subroutine ssdt74(nomres, nomcmd)
 !
     call titre()
 !
-60  continue
+ 60 continue
     call jedetc('V', '&&SSDT74', 1)
     if (iret .ne. 0) then
         call utmess('F', 'ALGORITH5_24')

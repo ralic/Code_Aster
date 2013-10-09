@@ -70,13 +70,13 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
 !
     integer :: nbante, ino1
-    character(len=8) :: gd1, repk, ma
+    character(len=8) :: gd1, ma
     character(len=24) :: valk(2)
     character(len=8) :: diff, chnaff
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !
 !-----------------------------------------------------------------------
-    integer :: iaval1, iaval2, ibid, ieq1, ieq2, ierd, ino2
+    integer :: iaval1, iaval2, ibid, ieq1, ieq2, ino2
     integer :: inueq1, inueq2, iprn1, iprn2, ival1, ival2, nbcn1
     integer :: nbnaff, nbno, nbnrcp, ncmp1, ncmp2, nec
 !-----------------------------------------------------------------------
@@ -88,12 +88,9 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
 ! ------------------------------ VERIFICATIONS -------------------------
 !
-    call dismoi('F', 'NOM_GD', cn1, 'CHAM_NO', ibid,&
-                gd1, ierd)
-    call dismoi('F', 'PROF_CHNO', cn1, 'CHAM_NO', ibid,&
-                pchno1, ierd)
-    call dismoi('F', 'PROF_CHNO', cn2, 'CHAM_NO', ibid,&
-                pchno2, ierd)
+    call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
+    call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
+    call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
 !
 !
 !
@@ -112,78 +109,75 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
     call jeveuo(pchno1//'.NUEQ', 'L', inueq1)
     call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
 !
-    call dismoi('F', 'NOM_MAILLA', cn1, 'CHAM_NO', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                repk, ierd)
+    call dismoi('NOM_MAILLA', cn1, 'CHAM_NO', repk=ma)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
-    call dismoi('F', 'NB_EC', gd1, 'GRANDEUR', nec,&
-                repk, ierd)
+    call dismoi('NB_EC', gd1, 'GRANDEUR', repi=nec)
 !
 ! NOMBRE DE NOEUDS A AFFECTER
 !
     nbnaff = 0
-    do 10, ino1 =1,nbno
-    ncmp1= zi(iprn1-1+ (ino1-1)* (nec+2)+2)
-    if (ncmp1 .eq. 0) goto 10
-    ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
-    ieq1 = zi(inueq1-1+ival1-1+1)
-    val = zr(iaval1-1+ieq1)
-    if (abs(val) .lt. tmin) nbnaff=nbnaff+1
-    10 end do
+    do 10 ino1 = 1, nbno
+        ncmp1= zi(iprn1-1+ (ino1-1)* (nec+2)+2)
+        if (ncmp1 .eq. 0) goto 10
+        ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
+        ieq1 = zi(inueq1-1+ival1-1+1)
+        val = zr(iaval1-1+ieq1)
+        if (abs(val) .lt. tmin) nbnaff=nbnaff+1
+ 10 end do
 !
 !
 !
     nbnrcp = 0
-    do 1, ino2=1,nbno
+    do 1 ino2 = 1, nbno
 !
-    ival2 = zi(iprn2-1+ (ino2-1)* (nec+2)+1)
-    ncmp2 = zi(iprn2-1+ (ino2-1)* (nec+2)+2)
-    ieq2 = zi(inueq2-1+ival2-1+1)
+        ival2 = zi(iprn2-1+ (ino2-1)* (nec+2)+1)
+        ncmp2 = zi(iprn2-1+ (ino2-1)* (nec+2)+2)
+        ieq2 = zi(inueq2-1+ival2-1+1)
 !
-    if (ncmp2 .eq. 0) goto 1
+        if (ncmp2 .eq. 0) goto 1
 !
-    call antece(ino2, ma, tgeom, tailmi, epsi,&
-                nbante, ino1)
-!
-!
-    if (nbante .gt. 1) then
-!
-        call utmess('F', 'CALCULEL2_7')
-!
-    else
-!
-        if (nbante .eq. 0) then
+        call antece(ino2, ma, tgeom, tailmi, epsi,&
+                    nbante, ino1)
 !
 !
-            zr(iaval2-1+ieq2)=0.0d0
+        if (nbante .gt. 1) then
 !
+            call utmess('F', 'CALCULEL2_7')
 !
         else
 !
-            if (nbante .eq. 1) then
+            if (nbante .eq. 0) then
 !
 !
-                ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
-                ncmp1 = zi(iprn1-1+ (ino1-1)* (nec+2)+2)
-                ieq1 = zi(inueq1-1+ival1-1+1)
-                val = zr(iaval1-1+ieq1)
+                zr(iaval2-1+ieq2)=0.0d0
 !
-                if (abs(val) .gt. tmin) then
-                    zr(iaval2-1+ieq2)=val
-                    nbnrcp = nbnrcp+1
-                else
-                    zr(iaval2-1+ieq2)=0.0d0
+!
+            else
+!
+                if (nbante .eq. 1) then
+!
+!
+                    ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
+                    ncmp1 = zi(iprn1-1+ (ino1-1)* (nec+2)+2)
+                    ieq1 = zi(inueq1-1+ival1-1+1)
+                    val = zr(iaval1-1+ieq1)
+!
+                    if (abs(val) .gt. tmin) then
+                        zr(iaval2-1+ieq2)=val
+                        nbnrcp = nbnrcp+1
+                    else
+                        zr(iaval2-1+ieq2)=0.0d0
+                    endif
+!
+!
                 endif
 !
-!
             endif
-!
         endif
-    endif
 !
 !
-    1 end do
+  1 end do
 !
     if ((nbnrcp.lt.nbnaff) .and. (nbnrcp.gt.(nbnaff/2))) then
 !

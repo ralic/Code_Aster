@@ -58,7 +58,7 @@ subroutine op0141()
     integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
     integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
     integer :: idvec1, iddeeq, idvec2, ifm, niv, llneq1, neq1, llneq2, iret
-    integer :: iddl, ier, indv, tmod(1)
+    integer :: iddl, indv, tmod(1)
     real(kind=8) :: rbid, pij, pii, pjj
     complex(kind=8) :: cbid, dcmplx, ztemp, dconjg
     character(len=1) :: typsca
@@ -92,10 +92,8 @@ subroutine op0141()
         call mtdscr(matras)
         matr=matras
         call jeveuo(matr//'.&INT', 'E', imatra)
-        call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
-                    numdda, ier)
-        call dismoi('F', 'NB_EQUA', matras, 'MATR_ASSE', neq,&
-                    k8b, ier)
+        call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdda)
+        call dismoi('NB_EQUA', matras, 'MATR_ASSE', repi=neq)
     else
 ! PAS COOL ELLE EXISTE PAS
         matr=' '
@@ -136,30 +134,26 @@ subroutine op0141()
     call rsorac(base1, 'LONUTI', 0, rbid, k8b,&
                 cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
-    nbmod1=tmod(1)            
+    nbmod1=tmod(1)
     call gettco(base2, typba2)
     call rsorac(base2, 'LONUTI', 0, rbid, k8b,&
                 cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
-    nbmod2=tmod(1)            
+    nbmod2=tmod(1)
 !
 ! RECUPERATION DE LA NUMEROTATION DES BASES
 !
     if ((typba1(1:9).eq.'MODE_MECA') .or. (typba1(1:9).eq.'MODE_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', base1, 'RESU_DYNA', ibid,&
-                    matri1, ier)
+        call dismoi('REF_RIGI_PREM', base1, 'RESU_DYNA', repk=matri1)
         call exisd('MATR_ASSE', matri1, iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'NOM_NUME_DDL', matri1, 'MATR_ASSE', ibid,&
-                        numdd1, ier)
+            call dismoi('NOM_NUME_DDL', matri1, 'MATR_ASSE', repk=numdd1)
         else
-            call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid,&
-                        numdd1, ier)
+            call dismoi('NUME_DDL', base1, 'RESU_DYNA', repk=numdd1)
         endif
     else
 !       On passe par la numerotation du REFD
-        call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid,&
-                    numdd1, ier)
+        call dismoi('NUME_DDL', base1, 'RESU_DYNA', repk=numdd1)
     endif
     call exisd('NUME_DDL', numdd1, iret)
     if (iret .ne. 1) then
@@ -171,19 +165,15 @@ subroutine op0141()
 !
 !
     if ((typba2(1:9).eq.'MODE_MECA') .or. (typba2(1:9).eq.'MODE_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', base2, 'RESU_DYNA', ibid,&
-                    matri2, ier)
+        call dismoi('REF_RIGI_PREM', base2, 'RESU_DYNA', repk=matri2)
         call exisd('MATR_ASSE', matri2, iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'NOM_NUME_DDL', matri2, 'MATR_ASSE', ibid,&
-                        numdd2, ier)
+            call dismoi('NOM_NUME_DDL', matri2, 'MATR_ASSE', repk=numdd2)
         else
-            call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid,&
-                        numdd2, ier)
+            call dismoi('NUME_DDL', base2, 'RESU_DYNA', repk=numdd2)
         endif
     else
-        call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid,&
-                    numdd2, ier)
+        call dismoi('NUME_DDL', base2, 'RESU_DYNA', repk=numdd2)
     endif
     call exisd('NUME_DDL', numdd2, iret)
     if (iret .ne. 1) then
@@ -221,7 +211,7 @@ subroutine op0141()
     call wkvect('&&OP0141.NOM_PARA', 'V V K16', nbpara, inom)
     do 20 i = 1, 2
         zk8(ityp+i-1)='I'
-20  continue
+ 20 continue
     if (zcmplx) then
         call wkvect('&&OP0141.MAC', 'V V R', 1, indv)
     else
@@ -265,7 +255,7 @@ subroutine op0141()
 !
                 do 10 iddl = 1, neq
                     if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0,0.d0)
-10              continue
+ 10             continue
 !
             else
                 call zcopy(neq, zc(idbas1+(i-1)*neq), 1, zc(idvec1), 1)
@@ -275,7 +265,7 @@ subroutine op0141()
             ztemp = dcmplx(0.0d0,0.0d0)
             do 112 iddl = 1, neq
                 ztemp = ztemp + zc( idbas1+(i-1)*neq-1+iddl)*dconjg(zc( idvec1-1+iddl))
-112          continue
+112         continue
             pii = abs(ztemp)
 !
             zi(ind)=i
@@ -289,7 +279,7 @@ subroutine op0141()
 !
                     do 50 iddl = 1, neq
                         if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0,0.d0)
-50                  continue
+ 50                 continue
 !
                 else
                     call zcopy(neq, zc(idbas2+(j-1)*neq), 1, zc(idvec2), 1)
@@ -298,24 +288,24 @@ subroutine op0141()
                 ztemp = dcmplx(0.0d0,0.0d0)
                 do 114 iddl = 1, neq
                     ztemp = ztemp + zc( idbas2+(j-1)*neq-1+iddl)* dconjg(zc(idvec2-1+iddl))
-114              continue
+114             continue
                 pjj = abs(ztemp)
 !
                 if (ieri) then
                     do 115 iddl = 1, neq
                         zc(idbas3-1+iddl)=zc(idbas1+(i-1)*neq-1+iddl)&
                         -zc(idbas2+(j-1)*neq-1+iddl)
-115                  continue
+115                 continue
                     call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1,&
                                 .true.)
                     do 116 iddl = 1, neq
                         if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0,0.d0)
-116                  continue
+116                 continue
 !
                     ztemp = dcmplx(0.0d0,0.0d0)
                     do 117 iddl = 1, neq
                         ztemp = ztemp + zc(idbas3-1+iddl)*dconjg(zc( idvec3-1+iddl))
-117                  continue
+117                 continue
                     pij = abs(ztemp)
 !
                     pij = (pij**2) / (pii**2 + pjj**2)
@@ -323,7 +313,7 @@ subroutine op0141()
                     ztemp = dcmplx(0.0d0,0.0d0)
                     do 113 iddl = 1, neq
                         ztemp = ztemp + zc( idbas1+(i-1)*neq-1+iddl)* dconjg(zc(idvec2-1+iddl) )
-113                  continue
+113                 continue
                     pij = abs(ztemp)
                     pij = (pij**2) / (pii * pjj)
                 endif
@@ -332,8 +322,8 @@ subroutine op0141()
                 zr(indv)=pij
                 call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
                             [cbid], k8b, 0)
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
     else
 !
@@ -402,8 +392,8 @@ subroutine op0141()
                 zr(indv)=pij
                 call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
                             [cbid], k8b, 0)
-140          continue
-130      continue
+140         continue
+130     continue
 !
     endif
 !  FIN TEST SUR TYPE DE VECTEURS (C/R)

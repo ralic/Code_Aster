@@ -1,4 +1,5 @@
-subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
+subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
+                  ivcord, nbdif)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,18 +62,17 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
 !
 !
     character(len=*), intent(in) :: basmdz, nmintz, intfz
-    integer, intent(in) :: numint,nbdef
-    integer, intent(out):: ivcord(nbdef)
+    integer, intent(in) :: numint, nbdef
+    integer, intent(out) :: ivcord(nbdef)
     integer, intent(inout) :: nbdif
-!    
+!
     character(len=8) :: basmod, nomint, intf, blanc, intfb
-    character(len=8) :: k8bid
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
-    integer :: vali, ier 
-    integer :: idec(300), ibid
+    integer :: vali, ier
+    integer :: idec(300)
     character(len=10) :: typbas(3)
-    integer :: i, inoe, iordef, iret, j, lldes, llnoe
+    integer :: i, inoe, iordef, j, lldes, llnoe
     integer :: nbnot, nbcmp, nbec, nbmod, nbnoe
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/
@@ -97,10 +97,9 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
 !-------------RECUPERATION DU TYPE DE BASE ET INTERF_DYNA------------
 !
     if (basmod .ne. blanc) then
-        call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
-                    idesc, ier)
-        call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod,&
-                    k8bid, ier)
+        call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=idesc, arret='C',&
+                    ier=ier)
+        call dismoi('NB_MODES_DYN', basmod, 'RESULTAT', repi=nbmod)
         if (idesc(1:9) .ne. 'CLASSIQUE') then
             valk (1) = basmod
             valk (2) = idesc
@@ -108,8 +107,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
             call utmess('F', 'ALGORITH12_27', nk=3, valk=valk)
         endif
 !
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                    intfb, ier)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intfb)
         if (intf .ne. blanc .and. intf .ne. intfb) then
             valk (1) = basmod
             valk (2) = intfb
@@ -123,10 +121,8 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
 !
 !----------------RECUPERATION DONNEES GRANDEUR SOUS-JACENTE-------------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
 !
 !
 !
@@ -172,9 +168,9 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
                 if (nbdif .ge. 0) ivcord(nbdef-nbdif)=iordef
                 iordef=iordef+1
             endif
-30      continue
+ 30     continue
 !
-20  continue
+ 20 continue
 !
     nbdif=-nbdif
 !

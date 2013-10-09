@@ -118,8 +118,7 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
     integer :: jnum
     integer :: jdep1, jdep2, jsol1, jsol2
-    integer :: neq, i, iret
-    character(len=8) :: k8bid
+    integer :: neq, i
     character(len=19) :: depso1, depso2, cncine
     character(len=19) :: solu1, solu2, cndonn, cnpilo, cncind
 !
@@ -139,8 +138,7 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
     call vtzero(cndonn)
     call vtzero(cnpilo)
     call vtzero(cncind)
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     ldccvg = -1
     faccvg = -1
 !
@@ -201,9 +199,9 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
             zr(jdep1+i-1) = zr(jdep1+i-1)+zr(jsol1+i-1)
             zr(jdep2+i-1) = zr(jsol2+i-1)
         endif
-10  end do
+ 10 end do
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

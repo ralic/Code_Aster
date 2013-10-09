@@ -141,7 +141,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2
     integer :: iaval1, iaval2, ibid, ico1, ico2, icorr2, ieq1
-    integer :: ieq2, ierd, ino, inueq1, inueq2, iprn1, iprn2
+    integer :: ieq2, ino, inueq1, inueq2, iprn1, iprn2
     integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
     integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nugd2, nval1
     integer :: nval2
@@ -154,18 +154,13 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
 ! ------------------------------ VERIFICATIONS -------------------------
 !
-    call dismoi('F', 'NOM_GD', cn1, 'CHAM_NO', ibid,&
-                gd1, ierd)
-    call dismoi('F', 'PROF_CHNO', cn1, 'CHAM_NO', ibid,&
-                pchno1, ierd)
+    call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
+    call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
     pchno2=nu2//'.NUME'
-    call dismoi('F', 'NOM_GD', nu2, 'NUME_DDL', ibid,&
-                gd2, ierd)
+    call dismoi('NOM_GD', nu2, 'NUME_DDL', repk=gd2)
 !
-    call dismoi('F', 'TYPE_SCA', gd1, 'GRANDEUR', ibid,&
-                tysca1, ierd)
-    call dismoi('F', 'TYPE_SCA', gd2, 'GRANDEUR', ibid,&
-                tysca2, ierd)
+    call dismoi('TYPE_SCA', gd1, 'GRANDEUR', repk=tysca1)
+    call dismoi('TYPE_SCA', gd2, 'GRANDEUR', repk=tysca2)
     if (tysca1 .ne. 'R') then
         call utmess('F', 'CALCULEL_92', sk=cn1)
     endif
@@ -174,8 +169,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     endif
 !
 !
-    call dismoi('F', 'NB_EQUA', cn1, 'CHAM_NO', nval1,&
-                repk, ierd)
+    call dismoi('NB_EQUA', cn1, 'CHAM_NO', repi=nval1)
 !
 ! ------------------------------- REFE --------------------------------
 !
@@ -192,15 +186,13 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
     call wkvect(cn2//'.DESC', base2//' V I', 2, i1)
     call jeecra(cn2//'.DESC', 'DOCU', cval='CHNO')
-    call dismoi('F', 'NUM_GD', gd2, 'GRANDEUR', nugd2,&
-                repk, ierd)
+    call dismoi('NUM_GD', gd2, 'GRANDEUR', repi=nugd2)
     zi(i1 ) = nugd2
     zi(i1+1) = 1
 !
 ! ------------------------------- VALE --------------------------------
 !
-    call dismoi('F', 'NB_EQUA', nu2, 'NUME_DDL', nval2,&
-                repk, ierd)
+    call dismoi('NB_EQUA', nu2, 'NUME_DDL', repi=nval2)
     call wkvect(cn2//'.VALE', base2//' V R', nval2, iaval2)
     call jeveuo(cn1//'.VALE', 'L', iaval1)
 !
@@ -211,18 +203,13 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     call jeveuo(pchno1//'.NUEQ', 'L', inueq1)
     call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
 !
-    call dismoi('F', 'NOM_MAILLA', cn1, 'CHAM_NO', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NOM_MAILLA', nu2, 'NUME_DDL', ibid,&
-                repk, ierd)
+    call dismoi('NOM_MAILLA', cn1, 'CHAM_NO', repk=ma)
+    call dismoi('NOM_MAILLA', nu2, 'NUME_DDL', repk=repk)
     ASSERT(ma.eq.repk)
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                repk, ierd)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
-    call dismoi('F', 'NB_EC', gd1, 'GRANDEUR', nec1,&
-                repk, ierd)
-    call dismoi('F', 'NB_EC', gd2, 'GRANDEUR', nec2,&
-                repk, ierd)
+    call dismoi('NB_EC', gd1, 'GRANDEUR', repi=nec1)
+    call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gd1), 'L', iacmp1)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gd2), 'L', iacmp2)
@@ -235,53 +222,53 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     if (ncorr .eq. 0) then
 !       LES GRANDEURS G1 ET G2 DOIVENT ETRE IDENTIQUES
         ASSERT(gd1.eq.gd2)
-        do 5,i2=1,ncmmx2
-        zi(icorr2-1+i2)=i2
- 5      continue
+        do 5 i2 = 1, ncmmx2
+            zi(icorr2-1+i2)=i2
+  5     continue
     else
         ASSERT(ncorr.eq.2*(ncorr/2))
-        do 4,i=1,ncorr/2
-        cmp1=tcorr(2*(i-1)+1)
-        cmp2=tcorr(2*(i-1)+2)
-        j1=indik8(zk8(iacmp1),cmp1,1,ncmmx1)
-        j2=indik8(zk8(iacmp2),cmp2,1,ncmmx2)
-        if (j2 .ne. 0) zi(icorr2-1+j2)=j1
- 4      continue
+        do 4 i = 1, ncorr/2
+            cmp1=tcorr(2*(i-1)+1)
+            cmp2=tcorr(2*(i-1)+2)
+            j1=indik8(zk8(iacmp1),cmp1,1,ncmmx1)
+            j2=indik8(zk8(iacmp2),cmp2,1,ncmmx2)
+            if (j2 .ne. 0) zi(icorr2-1+j2)=j1
+  4     continue
     endif
 !
-    do 1, ino=1,nbno
-    ival1 = zi(iprn1-1+ (ino-1)* (nec1+2)+1)
-    ival2 = zi(iprn2-1+ (ino-1)* (nec2+2)+1)
-    ncmp1 = zi(iprn1-1+ (ino-1)* (nec1+2)+2)
-    ncmp2 = zi(iprn2-1+ (ino-1)* (nec2+2)+2)
-    iadg1 = iprn1 - 1 + (ino-1)* (nec1+2) + 3
-    iadg2 = iprn2 - 1 + (ino-1)* (nec2+2) + 3
-    if (ncmp1*ncmp2 .eq. 0) goto 1
-    ico2=0
-    do 2, i2=1,ncmmx2
-    if (exisdg(zi(iadg2),i2)) then
-        ico2=ico2+1
-        i1=zi(icorr2-1+i2)
+    do 1 ino = 1, nbno
+        ival1 = zi(iprn1-1+ (ino-1)* (nec1+2)+1)
+        ival2 = zi(iprn2-1+ (ino-1)* (nec2+2)+1)
+        ncmp1 = zi(iprn1-1+ (ino-1)* (nec1+2)+2)
+        ncmp2 = zi(iprn2-1+ (ino-1)* (nec2+2)+2)
+        iadg1 = iprn1 - 1 + (ino-1)* (nec1+2) + 3
+        iadg2 = iprn2 - 1 + (ino-1)* (nec2+2) + 3
+        if (ncmp1*ncmp2 .eq. 0) goto 1
+        ico2=0
+        do 2 i2 = 1, ncmmx2
+            if (exisdg(zi(iadg2),i2)) then
+                ico2=ico2+1
+                i1=zi(icorr2-1+i2)
 !
-        if (.not.(exisdg(zi(iadg1),i1))) then
-            ico1=0
-        else
-            ico1=0
-            do 3, j1=1,i1
-            if (exisdg(zi(iadg1),j1)) ico1=ico1+1
- 3          continue
-        endif
+                if (.not.(exisdg(zi(iadg1),i1))) then
+                    ico1=0
+                else
+                    ico1=0
+                    do 3 j1 = 1, i1
+                        if (exisdg(zi(iadg1),j1)) ico1=ico1+1
+  3                 continue
+                endif
 !
-        if (ico1 .gt. 0) then
+                if (ico1 .gt. 0) then
 !             --RECOPIE D'UNE VALEUR :
-            ieq1 = zi(inueq1-1+ival1-1+ico1)
-            ieq2 = zi(inueq2-1+ival2-1+ico2)
-            zr(iaval2-1+ieq2)=zr(iaval1-1+ieq1)
-        endif
+                    ieq1 = zi(inueq1-1+ival1-1+ico1)
+                    ieq2 = zi(inueq2-1+ival2-1+ico2)
+                    zr(iaval2-1+ieq2)=zr(iaval1-1+ieq1)
+                endif
 !
-    endif
- 2  continue
-    1 end do
+            endif
+  2     continue
+  1 end do
 !
     call jedetr('&&CHNUCN.CORR2')
 !

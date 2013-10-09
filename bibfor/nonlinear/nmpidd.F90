@@ -62,8 +62,7 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
 !
     real(kind=8) :: du, rn, rd
     integer :: jcoef, jdepde, jdep0, jdep1
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     character(len=19) :: chapil
     integer :: ifm, niv
 !
@@ -81,8 +80,7 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
 ! --- INITIALISATIONS
 !
     pilcvg = -1
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ACCES OBJETS JEVEUX
 !

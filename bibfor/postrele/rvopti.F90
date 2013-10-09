@@ -37,7 +37,7 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
 ! OUT OPTION : K : NOM OPTION POUR CHLM OU ADAPTATION CHNO
 !     ------------------------------------------------------------------
 !
-    integer :: iocc, nc, ier
+    integer :: iocc, nc
     integer :: lnch
 !
 !======================================================================
@@ -48,8 +48,7 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
 !
     if (typegd .eq. 'CHML') then
 !
-        call dismoi('F', 'NOM_OPTION', nch19, 'CHAMP', nc,&
-                    option, ier)
+        call dismoi('NOM_OPTION', nch19, 'CHAMP', repk=option)
 !
     else if (typegd .eq. 'CHNO') then
 !
@@ -74,5 +73,5 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
             option = 'FORC_NOEU_FORC  '
         endif
     endif
-9999  continue
+9999 continue
 end subroutine

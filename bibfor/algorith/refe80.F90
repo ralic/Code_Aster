@@ -50,7 +50,7 @@ subroutine refe80(nomres)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ioc1, iret, ldref
+    integer ::  ioc1, iret, ldref
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/
 !
@@ -66,8 +66,8 @@ subroutine refe80(nomres)
 !
 !------------------CONTROLE SUR TYPE DE BASE MODALE---------------------
 !
-    call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
-                idesc, iret)
+    call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=idesc, arret='C',&
+                ier=iret)
 !
     if (idesc(1:9) .ne. 'CLASSIQUE') then
         valk (1) = basmod
@@ -78,10 +78,8 @@ subroutine refe80(nomres)
 !
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                intf, iret)
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
-                mailla, iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+    call dismoi('NOM_MAILLA', intf, 'INTERF_DYNA', repk=mailla)
 !
 !--------------------ALLOCATION ET REMPLISSAGE DU REFE------------------
 !

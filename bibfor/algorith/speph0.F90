@@ -75,7 +75,7 @@ subroutine speph0(nomu, table)
     call rsorac(modmec, 'LONUTI', ibid, r8b, k8b,&
                 c16b, epsi, k8b, tmod, 1,&
                 nbtrou)
-    nbmod1=tmod(1)            
+    nbmod1=tmod(1)
     call wkvect('&&SPEPH0.NUMERO.ORDRE', 'V V I', nbmod1, lnumor)
     call rsorac(modmec, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, epsi, k8b, zi(lnumor), nbmod1,&
@@ -90,7 +90,7 @@ subroutine speph0(nomu, table)
             do 11 im = 1, nbmod1
                 zi(ilmode-1+im)=im
                 zi(ilmode-1+im)=zi(lnumor+im-1)
-11          continue
+ 11         continue
         else
             call getvr8(' ', 'BANDE', nbval=2, vect=bande, nbret=ibid)
             if (ibid .eq. 0) then
@@ -106,7 +106,7 @@ subroutine speph0(nomu, table)
                     nbmode = nbmode + 1
                     zi(ilmode-1+nbmode) = imod1
                 endif
-10          continue
+ 10         continue
             if (nbmode .eq. 0) then
                 call utmess('F', 'ALGORITH10_31')
             endif
@@ -122,7 +122,7 @@ subroutine speph0(nomu, table)
             if (zi(ilmode-1+im) .gt. nbmod1) then
                 call utmess('F', 'ALGORITH10_32')
             endif
-20      continue
+ 20     continue
     endif
 !
     napexc = 0
@@ -163,7 +163,7 @@ subroutine speph0(nomu, table)
         if (zi(lnumi-1+i1) .ge. idim0) then
             idim0 = zi(lnumi-1+i1)
         endif
-200  continue
+200 continue
 !
     if (idim1 .ne. idim0) then
         call utmess('F', 'ALGORITH10_63')
@@ -226,8 +226,7 @@ subroutine speph0(nomu, table)
     call rsexch('F', modmec, optch1, zi(ilmode), cham19,&
                 iret)
     call wkvect('&&SPEPH0.NUME_DDL', 'V V I', nbn, inddl)
-    call dismoi('F', 'TYPE_SUPERVIS', cham19, 'CHAMP', ibid,&
-                typcha, iret)
+    call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
         do 30 i = 1, nbn
@@ -243,14 +242,13 @@ subroutine speph0(nomu, table)
                 call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
             zi(inddl+i-1) = iddl
-30      continue
+ 30     continue
 !
     else if (typcha(1:9).eq.'CHAM_ELEM') then
         if (nbmail .eq. 0) then
             call utmess('F', 'ALGORITH10_72')
         endif
-        call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_ELEM', ibid,&
-                    noma, iret)
+        call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=noma)
         nupo = 0
         ivari = 1
         do 40 i = 1, nbn
@@ -266,7 +264,7 @@ subroutine speph0(nomu, table)
                 call utmess('F', 'ALGORITH10_73', nk=3, valk=valk)
             endif
             zi(inddl+i-1) = iddl
-40      continue
+ 40     continue
     else
         call utmess('F', 'CALCULEL_17')
     endif
@@ -305,7 +303,7 @@ subroutine speph0(nomu, table)
         call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces,&
                     c16b, r8b, k8b, tmod, 1,&
                     nbtrou)
-        numod=tmod(1)            
+        numod=tmod(1)
         if (nbtrou .ne. 1) then
             valk (1) = modsta
             valk (2) = acces
@@ -317,11 +315,11 @@ subroutine speph0(nomu, table)
         do 50 in = 1, nbn
             icham1 = icham + nbn* (imr-1) + in - 1
             zr(icham1) = zr(isip+zi(inddl+in-1)-1)
-50      continue
-60  continue
+ 50     continue
+ 60 continue
 !
-    call dismoi('C', 'TYPE_BASE', modmec, 'RESU_DYNA', ibid,&
-                typba, iret)
+    call dismoi('TYPE_BASE', modmec, 'RESU_DYNA', repk=typba, arret='C',&
+                ier=iret)
 !
     do 90 imr = 1, nbmod1
         numod = zi(ilmode+imr-1)
@@ -332,14 +330,13 @@ subroutine speph0(nomu, table)
             do 70 in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
                 zr(icham1) = dble(zc(isip+zi(inddl+in-1)-1))
-70          continue
+ 70         continue
 !  -------------------------------
 !  si base modale, alors les nume_ddl des differents modes peuvent
 !              etres differents
 !
         else if (typba(1:1).ne.' ') then
-            call dismoi('F', 'TYPE_SUPERVIS', cham19, 'CHAMP', ibid,&
-                        typcha, iret)
+            call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
             if (typcha(1:7) .eq. 'CHAM_NO') then
                 do 71 in = 1, nbn
                     noeud = zk8(inoen+in-1)
@@ -348,10 +345,9 @@ subroutine speph0(nomu, table)
                                 iddl)
                     icham1 = icham + nbn* (imr-1) + in - 1
                     zr(icham1) = zr(isip+iddl-1)
-71              continue
+ 71             continue
             else if (typcha(1:9).eq.'CHAM_ELEM') then
-                call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_ELEM', ibid,&
-                            noma, iret)
+                call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=noma)
                 nupo = 0
                 ivari = 1
                 do 72 i = 1, nbn
@@ -361,16 +357,16 @@ subroutine speph0(nomu, table)
                     call utchdl(cham19, noma, maille, noeud, nupo,&
                                 0, ivari, cmp, iddl)
                     zr(icham1) = zr(isip+iddl-1)
-72              continue
+ 72             continue
             endif
 !  -------------------------------
         else
             do 80 in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
                 zr(icham1) = zr(isip+zi(inddl+in-1)-1)
-80          continue
+ 80         continue
         endif
-90  continue
+ 90 continue
 !
 !     --- CREATION DE LA TABLE DE SORTIE ---
 !
@@ -387,7 +383,7 @@ subroutine speph0(nomu, table)
 !
     do 100 if1 = 1, nbpf
         zr(lfreqs+if1-1) = zr(lfreq+if1-1)
-100  continue
+100 continue
 !
     call speph2(movrep, napexc, nbmode, nbpf, intmod,&
                 table, zr(ifor), zr(ifoi))

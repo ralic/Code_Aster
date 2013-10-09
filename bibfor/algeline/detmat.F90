@@ -30,7 +30,7 @@ subroutine detmat()
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelstc.h"
-    integer :: nbmat, i, ibid, ier
+    integer :: nbmat, i, ier
     character(len=19) :: matass, solveu
     character(len=24) :: lirefa(100)
 !-----------------------------------------------------------------------
@@ -45,8 +45,8 @@ subroutine detmat()
         matass = lirefa(i)(1:19)
 !
 !       -- on detruit l'eventuelle instance mumps associee a ldlt_sp
-        call dismoi('C', 'SOLVEUR', matass, 'MATR_ASSE', ibid,&
-                    solveu, ier)
+        call dismoi('SOLVEUR', matass, 'MATR_ASSE', repk=solveu, arret='C',&
+                    ier=ier)
         if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX') then
             call detlsp(matass, solveu)
         endif

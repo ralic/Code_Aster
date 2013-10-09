@@ -54,7 +54,7 @@ subroutine impe81(nomres, impe, basemo)
 !
 !
 !
-    integer :: i, j, ier, nbmode
+    integer :: i, j, nbmode
     integer :: ldblo, ldbloi, lddesa, lddesm, lddesr, ldrefa, ldrefm
     integer :: ldrefr, ldresa, ldresm, ldresr, ldresi, ldrefi
     integer :: nbdef, nbmodd, nbmods, nfr, nim, ntail
@@ -63,7 +63,7 @@ subroutine impe81(nomres, impe, basemo)
     real(kind=8) :: partr, parti, partr0, parti0
     real(kind=8) :: amso, dpi, freq
 !
-    character(len=8) :: k8b, blanc
+    character(len=8) ::  blanc
     character(len=16) :: typres, nomcom
     character(len=19) :: impini
     character(len=19) :: impk, impm, impc
@@ -101,10 +101,8 @@ subroutine impe81(nomres, impe, basemo)
     zk24(ldrefa+1) = blanc
 !
 !
-    call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmodd,&
-                k8b, ier)
-    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                k8b, ier)
+    call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
+    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
     nbmode = nbmodd + nbmods
 !
 ! --- RECUPERATION DES DIMENSIONS DE LA BASE MODALE
@@ -161,8 +159,8 @@ subroutine impe81(nomres, impe, basemo)
                 endif
             endif
 !
-40      continue
-30  continue
+ 40     continue
+ 30 continue
 !
 ! --- CREATION DU .DESC
 !

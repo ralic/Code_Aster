@@ -57,7 +57,7 @@ subroutine ssdmrm(mag)
 !-----------------------------------------------------------------------
     integer :: i, iacoo2, iadim2, iadime, iagno, ialiii, ialiij
     integer :: ialikg, ialikm, ialini, ialinj, iamacr, iancnf, iaparr
-    integer :: ibi, ibid(1), ico, iconf, ier, ii, inoi
+    integer ::  ibid(1), ico, iconf, ii, inoi
     integer :: inoii, inoj, inojj, iocc, ismai, ismaj, j
     integer :: jj, kk, longi, longj, n1, n2, n3
     integer :: nbexti, nbextj, nbid, nbngno, nbnore, nbnori, nbnorj
@@ -86,12 +86,12 @@ subroutine ssdmrm(mag)
 !     -----------------------------------------
     longi=0
     longj=0
-    do 2, iocc=1,nocc
+    do 2 iocc = 1, nocc
 !
 !     -- ON RECUPERE LA LISTE DES MAILLES ET LA LISTE DES GROUP_NO:
 !     -------------------------------------------------------------
-    call getvtx('RECO_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma, vect=zk8(ialikm),&
-                nbret=n1)
+        call getvtx('RECO_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma,&
+                    vect=zk8(ialikm), nbret=n1)
     call getvtx('RECO_SUPER_MAILLE', 'GROUP_NO', iocc=iocc, nbval=nbsma, vect=zk24(ialikg),&
                 nbret=n2)
     if (n1 .lt. 0) then
@@ -112,14 +112,13 @@ subroutine ssdmrm(mag)
         call getvtx('RECO_SUPER_MAILLE', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
     endif
 !
-    do 5, i=1,nbsmar
+        do 5 i = 1, nbsmar
     nosma= zk8(ialikm-1+i)
     nognoi= zk24(ialikg-1+i)
     call jenonu(jexnom(mag//'.SUPMAIL', nosma), ismai)
     di=zr(iaparr-1+14*(ismai-1)+13)
     nomacr= zk8(iamacr-1+ismai)
-    call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibi,&
-                mal, ier)
+            call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
     call jeveuo(nomacr//'.LINO', 'L', ialini)
     call jelira(nomacr//'.LINO', 'LONUTI', nbexti)
     call jeveuo(jexnom(mal//'.GROUPENO', nognoi), 'L', iagno)
@@ -135,14 +134,13 @@ subroutine ssdmrm(mag)
     endif
     call utlisi('INTER', zi(iagno), nbngno, zi(ialini), nbexti,&
                 zi(ialiii), nbnori, nbid)
-    do 6, j=i+1,nbsmar
+            do 6 j = i+1, nbsmar
     nosma= zk8(ialikm-1+j)
     nognoj= zk24(ialikg-1+j)
     call jenonu(jexnom(mag//'.SUPMAIL', nosma), ismaj)
     dj=zr(iaparr-1+14*(ismaj-1)+13)
     nomacr= zk8(iamacr-1+ismaj)
-    call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibi,&
-                mal, ier)
+                call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
     call jeveuo(nomacr//'.LINO', 'L', ialinj)
     call jelira(nomacr//'.LINO', 'LONUTI', nbextj)
     call jeveuo(jexnom(mal//'.GROUPENO', nognoj), 'L', iagno)
@@ -170,7 +168,7 @@ subroutine ssdmrm(mag)
 !
     if (option(1:13) .eq. 'NOEUD_A_NOEUD') then
 !           ---------------------------------
-        do 61, ii=1,nbnore
+                    do 61 ii = 1, nbnore
         inoii=indiis(zi(ialini),zi(ialiii-1+ii),1,&
                         nbexti)
         inojj=indiis(zi(ialinj),zi(ialiij-1+ii),1,&
@@ -187,7 +185,7 @@ subroutine ssdmrm(mag)
 !
     else if (option(1:7).eq.'INVERSE') then
 !           -----------------------------------
-        do 62, ii=1,nbnore
+                    do 62 ii = 1, nbnore
         if (i .eq. 1) then
             kk=nbnore+1-ii
             inoii=indiis(zi(ialini),zi(ialiii-1+kk),1,&
@@ -211,16 +209,16 @@ subroutine ssdmrm(mag)
     else if (option(1:11).eq.'GEOMETRIQUE') then
 !           --------------------------------------
         ico=0
-        do 63, ii=1,nbnore
+                    do 63 ii = 1, nbnore
         inoii=indiis(zi(ialini),zi(ialiii-1+ii),1,&
                         nbexti)
         inoi= zi(iadim2-1+4*(ismai-1)+3)+inoii
-        do 631, jj=1,nbnore
+                        do 631 jj = 1, nbnore
         inojj=indiis(zi(ialinj),zi(ialiij-1+jj),1,&
                             nbextj)
         inoj= zi(iadim2-1+4*(ismaj-1)+3)+inojj
-        call ssdmu1(dj, crit, prec, zr(iacoo2+3*( inoi-1)), zr(iacoo2+3*(inoj-1)),&
-                    iconf)
+                            call ssdmu1(dj, crit, prec, zr(iacoo2+3*( inoi-1)),&
+                                        zr(iacoo2+3*(inoj-1)), iconf)
         if (iconf .eq. 0) then
             if (inoi .lt. inoj) then
                 zi(iancnf-1+inoj)=inoi

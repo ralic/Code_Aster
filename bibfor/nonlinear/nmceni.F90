@@ -52,10 +52,9 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 !
 !
 !
-    character(len=8) :: k8bid
     integer :: jdepde, jdu0, jdu1, ideeq, jcoee, jcoef
     character(len=19) :: profch, chapil, chapic
-    integer :: neq, iret, i, j, ibid
+    integer :: neq, i, j
     real(kind=8) :: dn, dc, dp
 !
 ! ----------------------------------------------------------------------
@@ -74,10 +73,8 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 !
 ! --- INFORMATIONS SUR NUMEROTATION
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
-    call dismoi('F', 'PROF_CHNO', depdel, 'CHAM_NO', ibid,&
-                profch, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
+    call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', ideeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS
@@ -105,17 +102,17 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
                             dc = dc + zr(jcoef+i-1)*zr(jdu0-1+i)+ zr(jcoef+j-1)*zr(jdu0-1+j)
                             dp = dp + zr(jcoef+i-1)*zr(jdu1-1+i)+ zr(jcoef+j-1)*zr(jdu1-1+j)
                         endif
-31                  continue
+ 31                 continue
                     f = f + (dn+rho*dc+eta*dp)**2
                 endif
             endif
-20      end do
+ 20     end do
     else
         do 30 i = 1, neq
             if (zi(ideeq-1 + 2*i + 2) .gt. 0) then
                 f = f + (zr(jdepde+i)+rho*zr(jdu0+i)+eta*zr(jdu1+i))** 2
             endif
-30      continue
+ 30     continue
     endif
     call jedema()
 end subroutine

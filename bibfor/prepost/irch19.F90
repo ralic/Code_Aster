@@ -78,7 +78,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     character(len=8) :: tych, nomgd, nomsd8
     character(len=19) :: ch19
     character(len=24) :: valk(2), tyres
-    integer :: ibid, ierd, ifi, numcmp(nbcmp)
+    integer ::  ifi, numcmp(nbcmp)
 !
 !     PASSAGE DANS DES VARIABLES FIXES
 !
@@ -86,10 +86,8 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     nomsd8 = nomsd
 !
 !     --- TYPE DU CHAMP A IMPRIMER (CHAM_NO OU CHAM_ELEM)
-    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid,&
-                tych, ierd)
-    call dismoi('F', 'TYPE_RESU', nomsd8, 'RESULTAT', ibid,&
-                tyres, ierd)
+    call dismoi('TYPE_CHAMP', ch19, 'CHAMP', repk=tych)
+    call dismoi('TYPE_RESU', nomsd8, 'RESULTAT', repk=tyres)
 !
     if ((tych(1:4).eq.'NOEU') .or. (tych(1:2).eq.'EL')) then
     else if (tych(1:4).eq. 'CART') then
@@ -106,8 +104,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     endif
 !
 !     --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CH19
-    call dismoi('F', 'NOM_GD', ch19, 'CHAMP', ibid,&
-                nomgd, ierd)
+    call dismoi('NOM_GD', ch19, 'CHAMP', repk=nomgd)
 !
     ncmp = 0
     if (nbcmp .ne. 0) then
@@ -135,13 +132,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
                     lmax, lmin, lresu, formr, ncmp,&
                     numcmp, nive)
     endif
-!
-9999  continue
-!
-    if (ierd .ne. 0) then
-        valk(1) = ch19
-        valk(2) = form(1:7)
-        call utmess('A', 'PREPOST_90', nk=2, valk=valk)
-    endif
-!
+9999 continue
+
+
 end subroutine

@@ -1,5 +1,5 @@
 subroutine cntran(linoeu, nbno, chs1, chs2)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -34,7 +34,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
 !
 !
-    integer :: ibid, ncmp1, ncmp2, ino1, ino2, jcn1k, jcn1d, jcn1c, jcn1v, jcn1l
+    integer ::  ncmp1, ncmp2, ino1, ino2, jcn1k, jcn1d, jcn1c, jcn1v, jcn1l
     integer :: icmp1, jcn2k, jcn2d, jcn2c, jcn2v, jcn2l, icmp2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
@@ -65,8 +65,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
     ASSERT(nomgd2.eq.nomgd)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     do 10 ino2 = 1, nbno
 !
@@ -97,9 +96,9 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
                 ASSERT(.false.)
             endif
 !
-20      continue
+ 20     continue
 !
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

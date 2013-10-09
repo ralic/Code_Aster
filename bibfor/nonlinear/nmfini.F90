@@ -90,8 +90,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     integer :: ifexmo, ifammo, iflimo
     integer :: neq, iaux, icv, ima
     logical :: lamor, ldyna
-    character(len=8) :: k8bid
-    integer :: nbvect, icnfno, ifnomo, iret
+    integer :: nbvect, icnfno, ifnomo
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
     logical :: lassve(20), lcalve(20)
@@ -103,8 +102,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     call nmchex(valinc, 'VALINC', 'FEXMOI', fexmoi)
     call jeveuo(fexmoi//'.VALE', 'E', ifexmo)
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT
 ! --- MODAL
@@ -115,7 +113,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     call jeveuo(flimoi//'.VALE', 'L', iflimo)
     do 10 iaux = 1, neq
         zr(ifexmo-1+iaux)=zr(ifammo-1+iaux)+zr(iflimo-1+iaux)
-10  end do
+ 10 end do
 !
 ! --- AJOUT DU TERME C.V
 !
@@ -130,7 +128,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
                     .true.)
         do 20 iaux = 1, neq
             zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(icv-1+iaux)
-20      continue
+ 20     continue
         call jedetr('&&NMFINI.CV')
     endif
 !
@@ -147,7 +145,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
                     .true.)
         do 30 iaux = 1, neq
             zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(ima-1+iaux)
-30      continue
+ 30     continue
         call jedetr('&&NMFINI.MA')
     endif
 !
@@ -165,7 +163,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     call jeveuo(cnfnod//'.VALE', 'L', icnfno)
     do 40 iaux = 1, neq
         zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(icnfno-1+iaux)
-40  end do
+ 40 end do
 !
 ! --- INITIALISATION DES FORCES INTERNES
 !
@@ -173,7 +171,7 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     call jeveuo(fnomoi//'.VALE', 'E', ifnomo)
     do 50 iaux = 1, neq
         zr(ifnomo-1+iaux) = zr(icnfno-1+iaux)
-50  end do
+ 50 end do
 !
     call jedema()
 !

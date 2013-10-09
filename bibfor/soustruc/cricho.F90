@@ -136,8 +136,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                             .true.)
 !
                 if (ifac .eq. 0) then
-                    call dismoi('F', 'SOLVEUR', marig, 'MATR_ASSE', ibid,&
-                                solveu, ibid)
+                    call dismoi('SOLVEUR', marig, 'MATR_ASSE', repk=solveu)
                     ASSERT(solveu.eq.'&&OP0074.SOLVEUR')
                     matpre='&&OP0074.BIDON'
 !

@@ -97,7 +97,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
     integer :: i, ibid, ific, inorma, init, ifm, niv, jnor, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno
-    integer :: lobj2, ndimte, nunoff, ndim, nchin, ier, ixfem, jfond, numfon
+    integer :: lobj2, ndimte, nunoff, ndim, nchin, ixfem, jfond, numfon
     integer :: iret, livi(nbmxpa), nbchar
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
@@ -195,13 +195,10 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !     MOSAIN = MODELE ISSU DE AFFE_MODELE
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ixfem)
     if (ixfem .gt. 0) then
-        call dismoi('F', 'NOM_MODELE', fiss, 'FISS_XFEM', ibid,&
-                    mosain, ier)
-        call dismoi('F', 'MODELISATION', mosain, 'MODELE', ibid,&
-                    typmo, ier)
+        call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=mosain)
+        call dismoi('MODELISATION', mosain, 'MODELE', repk=typmo)
     else
-        call dismoi('F', 'MODELISATION', modele, 'MODELE', ibid,&
-                    typmo, ier)
+        call dismoi('MODELISATION', modele, 'MODELE', repk=typmo)
     endif
 !
 !     OBJET CONTENANT LES NOEUDS DU FOND DE FISSURE

@@ -59,7 +59,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idcoor, idlino, ier, ino, iocc, iret, nb
+    integer :: idcoor, idlino, ino, iocc, iret, nb
     integer :: nbno, nbnoe, ndim, nprec, nrayon
     real(kind=8) :: d2, dist, prec, rayon, zero
 !-----------------------------------------------------------------------
@@ -87,8 +87,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
-    call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ndim,&
-                k8bid, ier)
+    call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8bid)
     if (k8bid(1:3) .eq. 'OUI') then
         ndim = 2
     else
@@ -133,8 +132,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES NOEUDS  APPARTENANT
 ! --- A L'ENVELOPPE DE LA SPHERE :
@@ -168,7 +166,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
             zi(idlino+nbno-1) = ino
         endif
 !
-10  end do
+ 10 end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

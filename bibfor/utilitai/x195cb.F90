@@ -65,63 +65,56 @@ subroutine x195cb(tychr, nomgd, chou)
     call jeveuo(ch2//'.VALE', 'E', jvale2)
     call jelira(ch2//'.VALE', 'LONMAX', n1)
     call jerazo(ch2//'.VALE', n1, 1)
-    call dismoi('F', 'NOM_MAILLA', ch2, 'CHAMP', ib,&
-                ma2, ib)
-    call dismoi('F', 'PROF_CHNO', ch2, 'CHAM_NO', ib,&
-                pfcn2, ib)
+    call dismoi('NOM_MAILLA', ch2, 'CHAMP', repk=ma2)
+    call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=pfcn2)
 !
 !
 !     -- 2. CALCUL DU CONTENU DE CH2 :
 !     ---------------------------------
-    do 10,iocc = 1,nbocc
-    call getvid('COMB', 'CHAM_GD', iocc=iocc, scal=ch1, nbret=ib)
+    do 10 iocc = 1, nbocc
+        call getvid('COMB', 'CHAM_GD', iocc=iocc, scal=ch1, nbret=ib)
 !
 !       -- QUELQUES VERIFICATIONS DE COHERENCE :
-    call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ib,&
-                tych1, ib)
-    if (tych1 .ne. 'NOEU') then
-        call utmess('F', 'MODELISA5_10')
-    endif
+        call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych1)
+        if (tych1 .ne. 'NOEU') then
+            call utmess('F', 'MODELISA5_10')
+        endif
 !
-    call dismoi('F', 'NOM_MAILLA', ch1, 'CHAMP', ib,&
-                ma1, ib)
-    if (ma1 .ne. ma2) then
-        call utmess('F', 'MODELISA5_13')
-    endif
+        call dismoi('NOM_MAILLA', ch1, 'CHAMP', repk=ma1)
+        if (ma1 .ne. ma2) then
+            call utmess('F', 'MODELISA5_13')
+        endif
 !
-    call dismoi('F', 'PROF_CHNO', ch1, 'CHAM_NO', ib,&
-                pfcn1, ib)
-    if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) then
-        call utmess('F', 'MODELISA5_12')
-    endif
+        call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=pfcn1)
+        if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) then
+            call utmess('F', 'MODELISA5_12')
+        endif
 !
-    call jelira(ch1//'.VALE', 'LONMAX', n2)
-    if (n2 .ne. n1) ASSERT(.false.)
+        call jelira(ch1//'.VALE', 'LONMAX', n2)
+        if (n2 .ne. n1) ASSERT(.false.)
 !
-    call dismoi('F', 'NOM_GD', ch1, 'CHAMP', ib,&
-                nomgd1, ib)
-    if (nomgd1 .ne. nomgd) then
-        call utmess('F', 'MODELISA5_11')
-    endif
+        call dismoi('NOM_GD', ch1, 'CHAMP', repk=nomgd1)
+        if (nomgd1 .ne. nomgd) then
+            call utmess('F', 'MODELISA5_11')
+        endif
 !
-    call dismoi('F', 'TYPE_SCA', nomgd1, 'GRANDEUR', ib,&
-                tsca, ib)
-    ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
+        call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca)
+        ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
 !
 !       -- CUMUL DES VALEURS :
-    call jeveuo(ch1//'.VALE', 'L', jvale1)
-    call getvr8('COMB', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
-    ASSERT(ib.eq.1)
-    if (tsca .eq. 'R') then
-        do 11, k=1,n1
-        zr(jvale2-1+k)=zr(jvale2-1+k)+coefr*zr(jvale1-1+k)
-11      continue
-    else if (tsca.eq.'C') then
-        do 12, k=1,n1
-        zc(jvale2-1+k)=zc(jvale2-1+k)+coefr*zc(jvale1-1+k)
-12      continue
-    endif
-    10 end do
+        call jeveuo(ch1//'.VALE', 'L', jvale1)
+        call getvr8('COMB', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
+        ASSERT(ib.eq.1)
+        if (tsca .eq. 'R') then
+            do 11 k = 1, n1
+                zr(jvale2-1+k)=zr(jvale2-1+k)+coefr*zr(jvale1-1+k)
+ 11         continue
+        else if (tsca.eq.'C') then
+            do 12 k = 1, n1
+                zc(jvale2-1+k)=zc(jvale2-1+k)+coefr*zc(jvale1-1+k)
+ 12         continue
+        endif
+ 10 end do
 !
 !
 !     -- RECOPIE DE CH2 DANS CHOU :

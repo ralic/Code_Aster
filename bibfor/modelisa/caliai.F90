@@ -68,7 +68,7 @@ subroutine caliai(fonree, charge)
     real(kind=8) :: valpar(3), vale
     integer :: iarg
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, igr, in, indnoe, ino
+    integer :: i, ier, igr, in, indnoe, ino
     integer :: iocc, iret, j, jcmuc, jcmuf, jcmur, jcoor
     integer :: jddl, jdime, jdirec, jgr0, jjj, jlist1, jlist2
     integer :: k, n, n1, n2, n3, nb, nbgt
@@ -92,12 +92,9 @@ subroutine caliai(fonree, charge)
 !
     betac = (1.0d0,0.0d0)
 !
-    call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                typcha, ier)
-    call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                mod, ier)
-    call dismoi('F', 'NOM_MAILLA', charge, 'CHARGE', ibid,&
-                noma, ier)
+    call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
+    call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
+    call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
     noeuma = noma//'.NOMNOE'
     grouno = noma//'.GROUPENO'
@@ -113,7 +110,7 @@ subroutine caliai(fonree, charge)
         ndim1 = max(ndim1,-nent)
         call getvtx(motfac, motcle, iocc=i, nbval=0, nbret=nent)
         ndim1 = max(ndim1,-nent)
-10  end do
+ 10 end do
 !
     trav = '&&CALIAI.'//motfac
     call wkvect(trav, 'V V K24', ndim1, jjj)
@@ -138,7 +135,7 @@ subroutine caliai(fonree, charge)
                 call jelira(jexnom(grouno, zk24(jjj+igr-1)), 'LONUTI', n1)
                 nbgt = nbgt + n1
             endif
-20      continue
+ 20     continue
         ndim2 = max(ndim2,nbgt)
         call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
                     nbret=nno)
@@ -150,8 +147,8 @@ subroutine caliai(fonree, charge)
                 valk(3) = noma
                 call utmess('F', 'MODELISA2_96', nk=3, valk=valk)
             endif
-30      continue
-40  end do
+ 30     continue
+ 40 end do
 !
 !     -- ALLOCATION DE TABLEAUX DE TRAVAIL
 !    -------------------------------------
@@ -189,7 +186,7 @@ subroutine caliai(fonree, charge)
             n1 = ndim2
             do 50 k = 1, n1
                 zk8(jddl-1+k) = 'TEMP'
-50          continue
+ 50         continue
         endif
 !
         if (n1 .ne. (n2+n3)) then
@@ -241,8 +238,8 @@ subroutine caliai(fonree, charge)
                                     vale, ier)
                         zr(jcmur-1+indnoe)=vale
                     endif
-60              continue
-70          continue
+ 60             continue
+ 70         continue
 !
 !           -- ON VERIFIE QUE LE NOMBRE DE NOEUDS DES GROUP_NO
 !              EST EGAL AU NOMBRE DE DDLS DE LA RELATION :
@@ -278,7 +275,7 @@ subroutine caliai(fonree, charge)
                         call fointe('F', zk8(jcmuf-1+k), 3, nompar, valpar,&
                                     vale, ier)
                         zr(jcmur-1+k)=vale
-100                  continue
+100                 continue
                 endif
             endif
 !
@@ -295,7 +292,7 @@ subroutine caliai(fonree, charge)
                         typcoe, typval, typlag, 0.d0, lisrel)
         endif
 !
-80  end do
+ 80 end do
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
@@ -313,6 +310,6 @@ subroutine caliai(fonree, charge)
     call jedetr('&&CALIAI.DIRECT')
     call jedetr('&&CALIAI.DIMENSION')
 !
-90  continue
+ 90 continue
     call jedema()
 end subroutine

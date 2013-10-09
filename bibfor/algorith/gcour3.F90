@@ -1,7 +1,7 @@
 subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
-                  trav2, trav3, chfond, connex, grlt, thlagr,&
-                  thlag2, basfon, nbre, milieu, pair,&
-                  ndimte)
+                  trav2, trav3, chfond, connex, grlt,&
+                  thlagr, thlag2, basfon, nbre, milieu,&
+                  pair, ndimte)
     implicit none
 !
 !
@@ -60,7 +60,6 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -77,14 +76,15 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn
     character(len=24) :: basfon
     character(len=19) :: cnsgt, grlt
-    character(len=8) :: chbid, resu, noma
+    character(len=8) ::  resu, noma
     character(len=6) :: kiord
 !
     integer :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
-    integer :: ierd, imodu, nbre, iret, numa, ndimte, jgt
+    integer ::  imodu, nbre, iret, numa, ndimte, jgt
     integer :: nbno, ifon, i, idesc, irefe, j, jresu, k, jgtl
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
@@ -111,8 +111,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
     call jeveuo(coorn, 'L', iadrco)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                chbid, ierd)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
     call jeveuo(chfond, 'L', ifon)
     call jeveuo(basfon, 'L', jbas)
@@ -134,7 +133,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
         if (mod(lnoff,2) .eq. 0) then
             ndimte = 1+lnoff/2
             pair = .true.
-            if (connex) call utmess('F','RUPTURE1_1')
+            if (connex) call utmess('F', 'RUPTURE1_1')
         endif
     else if (thlagr) then
         ndimte = lnoff
@@ -274,7 +273,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                         jmin = j
                         smin = s
                     endif
-600              continue
+600             continue
 !
                 rii = (1-smin)*zr(iadrt1+jmin-1)+smin*zr(iadrt1+jmin+ 1-1)
                 rsi = (1-smin)*zr(iadrt2+jmin-1)+smin*zr(iadrt2+jmin+ 1-1)
@@ -362,10 +361,10 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
                     endif
                 endif
-500          continue
+500         continue
         endif
 !
-999  end do
+999 end do
 !
     call jedema()
 !

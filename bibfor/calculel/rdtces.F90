@@ -47,12 +47,11 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcorrm, nbma2, iret, jnbpt, jnbsp, jnbcmp
+    integer :: jcorrm, nbma2, jnbpt, jnbsp, jnbcmp
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, ima1, ima2, nbpt, nbsp, iad1
     integer :: jce2d, jce2v, jce2l, jce2c
-    integer :: ibid, ipt, isp, iad2
+    integer ::  ipt, isp, iad2
     integer :: ncmp, icmp
-    character(len=1) :: kbid
     character(len=8) :: nomgd, typces
     character(len=3) :: tsca
     logical :: isvide
@@ -76,30 +75,28 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
     typces=zk8(jce1k-1+3)
     ncmp=zi(jce1d-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !
 !     2- CREATION DE 3 OBJETS CONTENANT LES NOMBRES DE POINTS,
 !         SOUS-POINTS ET CMPS POUR CHAQUE MAILLE :
 !     -----------------------------------------------------------
-    call dismoi('F', 'NB_MA_MAILLA', ma2, 'MAILLAGE', nbma2,&
-                kbid, iret)
+    call dismoi('NB_MA_MAILLA', ma2, 'MAILLAGE', repi=nbma2)
     call jeveuo(corrm, 'L', jcorrm)
     call wkvect('&&CESRED.NBPT', 'V V I', nbma2, jnbpt)
     call wkvect('&&CESRED.NBSP', 'V V I', nbma2, jnbsp)
     call wkvect('&&CESRED.NBCMP', 'V V I', nbma2, jnbcmp)
     isvide=.true.
-    do 10,ima2=1,nbma2
-    ima1=zi(jcorrm-1+ima2)
-    zi(jnbpt-1+ima2)=zi(jce1d-1+5+4*(ima1-1)+1)
-    zi(jnbsp-1+ima2)=zi(jce1d-1+5+4*(ima1-1)+2)
-    zi(jnbcmp-1+ima2)=min(zi(jce1d-1+5+4*(ima1-1)+3),ncmp)
-    if (zi(jnbpt-1+ima2) .ne. 0 .and. zi(jnbsp-1+ima2) .ne. 0 .and. zi( jnbcmp-1+ima2) .ne.&
-        0) then
-        isvide=.false.
-    endif
-    10 end do
+    do 10 ima2 = 1, nbma2
+        ima1=zi(jcorrm-1+ima2)
+        zi(jnbpt-1+ima2)=zi(jce1d-1+5+4*(ima1-1)+1)
+        zi(jnbsp-1+ima2)=zi(jce1d-1+5+4*(ima1-1)+2)
+        zi(jnbcmp-1+ima2)=min(zi(jce1d-1+5+4*(ima1-1)+3),ncmp)
+        if (zi(jnbpt-1+ima2) .ne. 0 .and. zi(jnbsp-1+ima2) .ne. 0 .and. zi( jnbcmp-1+ima2)&
+            .ne. 0) then
+            isvide=.false.
+        endif
+ 10 end do
     if (isvide) goto 60
     codret=0
 !
@@ -117,55 +114,55 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !
 !     4- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
-    do 50,icmp=1,ncmp
+    do 50 icmp = 1, ncmp
 !
-    do 40,ima2=1,nbma2
-    ima1=zi(jcorrm-1+ima2)
-    nbpt=zi(jce2d-1+5+4*(ima2-1)+1)
-    nbsp=zi(jce2d-1+5+4*(ima2-1)+2)
-    do 30,ipt=1,nbpt
-    do 20,isp=1,nbsp
-    call cesexi('C', jce1d, jce1l, ima1, ipt,&
-                isp, icmp, iad1)
-    call cesexi('C', jce2d, jce2l, ima2, ipt,&
-                isp, icmp, iad2)
-    ASSERT(iad2.le.0)
-    if ((iad1.le.0) .or. (iad2.eq.0)) goto 20
+        do 40 ima2 = 1, nbma2
+            ima1=zi(jcorrm-1+ima2)
+            nbpt=zi(jce2d-1+5+4*(ima2-1)+1)
+            nbsp=zi(jce2d-1+5+4*(ima2-1)+2)
+            do 30 ipt = 1, nbpt
+                do 20 isp = 1, nbsp
+                    call cesexi('C', jce1d, jce1l, ima1, ipt,&
+                                isp, icmp, iad1)
+                    call cesexi('C', jce2d, jce2l, ima2, ipt,&
+                                isp, icmp, iad2)
+                    ASSERT(iad2.le.0)
+                    if ((iad1.le.0) .or. (iad2.eq.0)) goto 20
 !
 !               -- RECOPIE DE LA VALEUR:
-    zl(jce2l-1-iad2)=.true.
-    if (tsca .eq. 'R') then
-        zr(jce2v-1-iad2)=zr(jce1v-1+iad1)
-    else if (tsca.eq.'C') then
-        zc(jce2v-1-iad2)=zc(jce1v-1+iad1)
-    else if (tsca.eq.'I') then
-        zi(jce2v-1-iad2)=zi(jce1v-1+iad1)
-    else if (tsca.eq.'L') then
-        zl(jce2v-1-iad2)=zl(jce1v-1+iad1)
-    else if (tsca.eq.'K8') then
-        zk8(jce2v-1-iad2)=zk8(jce1v-1+iad1)
-    else if (tsca.eq.'K16') then
-        zk16(jce2v-1-iad2)=zk16(jce1v-1+iad1)
-    else if (tsca.eq.'K24') then
-        zk24(jce2v-1-iad2)=zk24(jce1v-1+iad1)
-    else if (tsca.eq.'K32') then
-        zk32(jce2v-1-iad2)=zk32(jce1v-1+iad1)
-    else if (tsca.eq.'K80') then
-        zk80(jce2v-1-iad2)=zk80(jce1v-1+iad1)
-    else
-        ASSERT(.false.)
-    endif
+                    zl(jce2l-1-iad2)=.true.
+                    if (tsca .eq. 'R') then
+                        zr(jce2v-1-iad2)=zr(jce1v-1+iad1)
+                    else if (tsca.eq.'C') then
+                        zc(jce2v-1-iad2)=zc(jce1v-1+iad1)
+                    else if (tsca.eq.'I') then
+                        zi(jce2v-1-iad2)=zi(jce1v-1+iad1)
+                    else if (tsca.eq.'L') then
+                        zl(jce2v-1-iad2)=zl(jce1v-1+iad1)
+                    else if (tsca.eq.'K8') then
+                        zk8(jce2v-1-iad2)=zk8(jce1v-1+iad1)
+                    else if (tsca.eq.'K16') then
+                        zk16(jce2v-1-iad2)=zk16(jce1v-1+iad1)
+                    else if (tsca.eq.'K24') then
+                        zk24(jce2v-1-iad2)=zk24(jce1v-1+iad1)
+                    else if (tsca.eq.'K32') then
+                        zk32(jce2v-1-iad2)=zk32(jce1v-1+iad1)
+                    else if (tsca.eq.'K80') then
+                        zk80(jce2v-1-iad2)=zk80(jce1v-1+iad1)
+                    else
+                        ASSERT(.false.)
+                    endif
 !
-20  continue
-30  continue
+ 20             continue
+ 30         continue
 !
-40  continue
-    50 end do
+ 40     continue
+ 50 end do
 !
 !
 !     5- MENAGE :
 !     -----------
-60  continue
+ 60 continue
     call jedetr('&&CESRED.NBPT')
     call jedetr('&&CESRED.NBSP')
     call jedetr('&&CESRED.NBCMP')

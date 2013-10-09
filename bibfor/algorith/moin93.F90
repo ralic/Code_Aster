@@ -49,7 +49,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, ierd, neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
+    integer ::  neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
     integer :: linddl, lddld, nbnoeu, lprno, nnoint, ipos1, ipos2, numno, nbcmpm
     integer :: nbec, nddlin, lnoint, connec, lconnc, sizeco, lintrf, linlag
     integer :: lipos, lfreq
@@ -58,7 +58,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
     integer :: deco(nbcmpm)
     real(kind=8) :: rbid, shift
 !
-    character(len=8) :: k8b, k8bid, nomma
+    character(len=8) ::  nomma
     character(len=14) :: nume, nume91
     character(len=16) :: nomcmd
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint, raidfa
@@ -67,18 +67,12 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                k8bid, ibid)
-    call dismoi('F', 'NOM_MAILLA', raide, 'MATR_ASSE', ibid,&
-                nomma, ierd)
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                nume, ierd)
-    call dismoi('F', 'NB_EQUA', raide, 'MATR_ASSE', neq,&
-                k8b, ierd)
-    call dismoi('F', 'SOLVEUR', raide, 'MATR_ASSE', ibid,&
-                solveu, ierd)
-    call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbnoeu,&
-                k8bid, ierd)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
+    call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=nomma)
+    call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
+    call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
+    call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
+    call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoeu)
 !
 !-----------------------------------------------------C
 !--                                                 --C
@@ -87,8 +81,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !-----------------------------------------------------C
 !
 !-- RECUPERATION DE LA DEFINITION DES EQUATIONS
-    call dismoi('F', 'PROF_CHNO', nume, 'NUME_DDL', ibid,&
-                prno, ierd)
+    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', lprno)
 !
 !-- ALLOCATION ET REMPLISSAGE DU VECTEUR DES INDICES DES DDL D'INTERFACE
@@ -110,10 +103,10 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
                         nnoint=nnoint+1
                     endif
                 endif
-15          continue
+ 15         continue
             numno=0
         endif
-10  end do
+ 10 end do
 !
 !-- RECUPERATION DES NOEUDS D'INTERFACE
     noddli='&&MOIN93.NOEUDS_DDL_INT'
@@ -153,23 +146,23 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
                         zi(lnoint+k1+2*nnoint)=6
                         call isdeco(zi(lprno+(i1-1)*(2+nbec)+2), deco, nbcmpm)
                         l1=1
-                        do 30,n1=1,6
-                        if (deco(n1)*zi(lddld+ipos1-1+n1-1) .gt. 0) then
-                            zi(lintrf+m1-1+l1-1)=k1*6+n1
-                            l1=l1+1
-                        endif
-                        zi(lnoint+k1+(2+n1)*nnoint)=n1
+                        do 30 n1 = 1, 6
+                            if (deco(n1)*zi(lddld+ipos1-1+n1-1) .gt. 0) then
+                                zi(lintrf+m1-1+l1-1)=k1*6+n1
+                                l1=l1+1
+                            endif
+                            zi(lnoint+k1+(2+n1)*nnoint)=n1
 !
-30                      continue
+ 30                     continue
                         k1=k1+1
 !
                     endif
                 endif
 !
-25          continue
+ 25         continue
             numno=0
         endif
-20  end do
+ 20 end do
 !
     call wkvect('&&MOIN93.IND_NOEUD', 'V V I', zi(lnoint+nnoint-1), lindno)
 !
@@ -204,7 +197,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !
     do 60 ieq = 1, nbmoin
         write(6,'(I10,4X,F12.2)')ieq,zr(lfreq+ieq-1)
-60  end do
+ 60 end do
 !
 !----------------------------------------C
 !--                                    --C

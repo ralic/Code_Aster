@@ -63,9 +63,8 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
 !
 !
-    integer :: idec(30), llint4, nbcmpm, nbec, ierd, nbcmp, nbddl, ordo
-    integer :: ii, llact, iec, ldmap, numint, nbdef, ibid, nbnoe, icomp, i, j
-    integer :: ier
+    integer :: idec(30), llint4, nbcmpm, nbec, nbcmp, nbddl, ordo
+    integer :: ii, llact, iec, ldmap, numint, nbdef, nbnoe, icomp, i, j
     parameter   (nbcmpm=10)
     character(len=*) :: basmdz, nmintz, lintfz, famprz
     character(len=4) :: nliai
@@ -87,15 +86,13 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     famprl = famprz
 !
     if (basmod .ne. blanc) then
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                    lintf, ier)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf)
     endif
 !
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                kbid, ierd)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -109,8 +106,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
 !----------------RECUPERATION DU NOMBRE DE DDL GENERALISES--------------
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbdef,&
-                kbid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
 !
 !----RECUPERATION DU NOMBRE DE DDL  ET NOEUDS ASSOCIES A L'INTERFACE----
 !

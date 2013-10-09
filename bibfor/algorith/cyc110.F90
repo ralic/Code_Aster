@@ -57,13 +57,13 @@ subroutine cyc110(nomres, mailla, nbsect)
     real(kind=8) :: depi
     character(len=3) :: knusec
     character(len=6) :: kchiff
-    character(len=8) :: k8bid, nomres, mailla, nomcou
+    character(len=8) ::  nomres, mailla, nomcou
     character(len=16) :: mcgrm, motfac, mcmail
     character(len=24) :: gpptnm, grmcou
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iatyma, ibid, icomp, igd, ioctou, iret
+    integer :: i, iatyma, ibid, icomp, igd, ioctou
     integer :: itcon, j, k, ldcone, ldcoo, lddesc, lddime
     integer :: ldgrma, ldref, ldskin, ldtyp, llcona, llcoo, llcox
     integer :: lltitr, lltyp, ltnmgr, ltnmma, ltnuma, ltnuno, nbcon
@@ -113,8 +113,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     call getvtx(motfac, 'TOUT', iocc=1, nbval=0, nbret=ioctou)
     if (ioctou .lt. 0) then
         ioctou = 1
-        call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbtout,&
-                    k8bid, iret)
+        call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbtout)
     endif
 !
 !----------NOMBRE DE MAILLES (AVEC REPETITION EVENTUELLE)---------------
@@ -135,7 +134,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     if (ioctou .eq. 1) then
         do 5 i = 1, nbtout
             zi(ltnuma+i-1) = i
- 5      continue
+  5     continue
     else
         call recuma(mailla, nbma, nbgr, zk8(ltnmma), zk24(ltnmgr),&
                     nbskma, zi(ltnuma))
@@ -157,7 +156,7 @@ subroutine cyc110(nomres, mailla, nbsect)
         numa = zi(ltnuma+i-1)
         call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
         nbtemp = nbtemp + nbno
-10  end do
+ 10 end do
 !
     nbskno = nbtemp
     ntacon = nbtemp
@@ -177,9 +176,9 @@ subroutine cyc110(nomres, mailla, nbsect)
         do 30 j = 1, nbno
             icomp = icomp + 1
             zi(ltnuno+icomp-1) = zi(llcox+j-1)
-30      continue
+ 30     continue
 !
-20  end do
+ 20 end do
 !
 !
 !------------------------SUPPRESSION DES DOUBLES------------------------
@@ -246,8 +245,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     zk24(ldref) = nomres
 !
 !
-    call dismoi('F', 'NUM_GD', 'GEOM_R', 'GRANDEUR', igd,&
-                k8bid, iret)
+    call dismoi('NUM_GD', 'GEOM_R', 'GRANDEUR', repi=igd)
     zi(lddesc) = igd
     zi(lddesc+1) = -3
     zi(lddesc+2) = 14
@@ -318,7 +316,7 @@ subroutine cyc110(nomres, mailla, nbsect)
             zr(ldcoo+ (ntemno-1)*3+1) = ynew
             zr(ldcoo+ (ntemno-1)*3+2) = znew
 !
-60      continue
+ 60     continue
 !
 !    BOUCLE SUR LES ELEMENTS DU SECTEUR
 !
@@ -345,17 +343,17 @@ subroutine cyc110(nomres, mailla, nbsect)
                 ligne(2) = zi(llcona+k-1)
                 call trnuli(zi(ldskin), nbnoto, 2, ligne, nunew)
                 zi(ldcone+itcon-1) = nunew
-80          continue
+ 80         continue
 !
             call jeveuo(mailla//'.TYPMAIL', 'L', iatyma)
             lltyp=iatyma-1+numma
             zi(ldtyp+ntemna-1) = zi(lltyp)
 !
-70      continue
+ 70     continue
 !
 !
 !
-50  end do
+ 50 end do
 !
 !-------------SAUVEGARDE ET DESTRUCTION DES OBJETS EVENTUELS------------
 !

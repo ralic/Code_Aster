@@ -71,8 +71,8 @@ subroutine op0113()
     character(len=24) :: liel1, liel2
     character(len=24) :: mail2
     character(len=24) :: trav
-    integer :: jmail2, jtab, jxc, iret
-    character(len=8) :: modelx, mod1, k8bid, noma, k8cont
+    integer :: jmail2, jtab, jxc
+    character(len=8) :: modelx, mod1, noma, k8cont
     logical :: linter
 !
     data motfac /' '/
@@ -97,11 +97,9 @@ subroutine op0113()
 !
     call jeveuo(ligr1//'.LGRF', 'L', jlgrf1)
     noma = zk8(jlgrf1-1+1)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- RECUPERER LE NOMBRE DE FISSURES
 !
@@ -143,7 +141,7 @@ subroutine op0113()
 !
     do 110 i = 1, nbma
         zi(jtab-1+5*(i-1)+4) = 1
-110  end do
+110 end do
 !
 ! ---------------------------------------------------------------------
 !     1)  REMPLISSAGE DE TAB : NBMA X 5 : GR1 | GR2 | GR3 | GR0 | ITYP
@@ -165,7 +163,7 @@ subroutine op0113()
         if (zi(jtab-1+5*(ima-1)+5) .ne. 0) then
             nelt = nelt+1
         endif
-230  end do
+230 end do
     if (nelt .eq. 0) then
         call utmess('F', 'XFEM2_51')
     endif
@@ -187,7 +185,7 @@ subroutine op0113()
         call jeveuo(jexnum(liel2, iel), 'E', j2)
         zi(j2-1+1)=ima
         zi(j2-1+2)=zi(jtab-1+5*(ima-1)+5)
-300  end do
+300 end do
 !
     call jelira(liel2, 'NUTIOC', nb1)
     ASSERT(nb1.eq.nelt)
@@ -200,7 +198,7 @@ subroutine op0113()
     call wkvect(mail2, 'G V I', nbma, jmail2)
     do 400 ima = 1, nbma
         zi(jmail2-1+ima)=zi(jtab-1+5*(ima-1)+5)
-400  end do
+400 end do
 !
 !-----------------------------------------------------------------------
 !     5) DUPLICATION DU .NOMA, .NBNO

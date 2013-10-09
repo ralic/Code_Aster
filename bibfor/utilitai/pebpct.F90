@@ -76,14 +76,14 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, iret, nbmat, i, nbintv, jcesc
+    integer ::  nbmat, i, nbintv, jcesc
     integer :: jcesv, jcesl, jcesd, jcesk, jpoiv, jpoil, jpoid, jpdsm, jval
     integer :: jvol
     integer :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
     real(kind=8) :: volpt, pas, p0, valmin, valmax, pdiv
     integer :: ncmpm, nucmp, nbval
     character(len=4) :: tych, non
-    character(len=8) :: noma, k8b
+    character(len=8) :: noma
     character(len=19) :: ligrel, cesout, cespoi, chams
     character(len=24) :: tabval, tabvol
     logical :: first
@@ -91,12 +91,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
     call jemarq()
 !
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrel, iret)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat,&
-                k8b, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
 !
 ! --- CALCULS DES VALEURS ET VOLUMES POUR CHAQUE POINT DE CHAQUE MAILLE
 !     ----------------------------------------------------------------
@@ -117,8 +114,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
 !     DETERMINATION DES POIDS DES POINTS DE GAUSS
     non='NON'
-    call dismoi('F', 'TYPE_CHAMP', cham, 'CHAMP', ibid,&
-                tych, iret)
+    call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
     call chpond(tych, non, cham, cesout, cespoi,&
                 modele)
     call jeveuo(cespoi//'.CESV', 'L', jpoiv)
@@ -213,9 +209,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
             endif
 !
-40      continue
+ 40     continue
 !
-35  end do
+ 35 end do
 !
 !     NOMBRE DE VALEURS STOCKEES
     nbval=k
@@ -236,7 +232,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     else if (abs(valmin-valmax).le.r8miem()) then
         do 45 i = 1, nbintv
             borpct(3*(i-1)+3)=100.d0/nbintv
-45      continue
+ 45     continue
         goto 100
     endif
 !
@@ -249,14 +245,14 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
             borpct(3*(i-1)+2)=pas
             p0=seuil
             pas=valmax
-50      end do
+ 50     end do
     else
         pas=(valmax-valmin)/nbintv
         do 51 i = 1, nbintv
             borpct(3*(i-1)+1)=p0
             borpct(3*(i-1)+2)=p0+pas
             p0=p0+pas
-51      end do
+ 51     end do
     endif
 !
 ! --- AJOUT DES VOLUMES DANS 'BORPCT' EN FONCTION DES VALEURS
@@ -265,20 +261,20 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
         if (zr(jval+j-1) .lt. borpct(2)) then
             borpct(3)=borpct(3)+zr(jvol+j-1)
         endif
-60  end do
+ 60 end do
     do 70 i = 2, nbintv-1
         do 75 j = 1, nbval
             if (zr(jval+j-1) .lt. borpct(3*(i-1)+2) .and. zr(jval+j-1) .ge.&
                 borpct(3*(i-1)+1)) then
                 borpct(3*(i-1)+3)=borpct(3*(i-1)+3)+zr(jvol+j-1)
             endif
-75      continue
-70  end do
+ 75     continue
+ 70 end do
     do 80 j = 1, nbval
         if (zr(jval+j-1) .ge. borpct(3*(nbintv-1)+1)) then
             borpct(3*(nbintv-1)+3)=borpct(3*(nbintv-1)+3)+zr(jvol+j-1)
         endif
-80  end do
+ 80 end do
 !
     if (norme(1:7) .eq. 'RELATIF') then
         pdiv=voltot
@@ -288,9 +284,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
     do 90 i = 1, nbintv
         borpct(3*(i-1)+3)=100*borpct(3*(i-1)+3)/pdiv
-90  end do
+ 90 end do
 !
-100  continue
+100 continue
 !
     call detrsd('CHAM_ELEM_S', chams)
     call jedetr(tabval)

@@ -43,16 +43,14 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !     IER   : ERREUR PRECEDENTE + NOUVELLE ERREUR
 !
 ! --- ------------------------------------------------------------------
-    character(len=8) :: k8bid, kmess
-    integer :: ierd, ibid, dimmai, dimmod
+    character(len=8) ::  kmess
+    integer ::  ibid, dimmai, dimmod
 ! --- ------------------------------------------------------------------
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE
-    call dismoi('F', 'DIM_GEOM_B', nomail, 'MAILLAGE', dimmai,&
-                k8bid, ierd)
+    call dismoi('DIM_GEOM_B', nomail, 'MAILLAGE', repi=dimmai)
 ! --- RECUPERATION DE LA DIMENSION DU MODELE
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', dimmod,&
-                k8bid, ierd)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=dimmod)
 !     SI DIMMAI=DIMMOD
     if (dimmai .eq. dimmod) then
         ndim = dimmai

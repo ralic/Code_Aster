@@ -98,10 +98,10 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     integer :: ifm, niv
     integer :: nuord
     integer :: iordr, jordr
-    integer :: iret, iret1, iret2, iret3, iret4, iret5, ierd, ireter
+    integer :: iret, iret1, iret2, iret3, iret4, iret5, ireter
     integer :: nh, nbopt
     integer :: iadou, iadin
-    integer :: iaux, ib, j, ibid, ie
+    integer :: iaux, j, ibid
     integer :: iopt
     integer :: n1, n2
     integer :: jpa, jopt, jcha
@@ -175,13 +175,11 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
         call rscrsd('G', resuc1, tysd, nbordr)
         call titre()
     endif
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrmo, ierd)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call jenonu(jexnom(resuco//'           .NOVA', 'INST'), iret)
     call exlima(' ', 0, 'V', modele, ligrel)
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ierd)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! -- GRANDEURS CARACTERISTIQUES DE L'ETUDE
 !
@@ -200,32 +198,32 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
         call rsnopa(resuco, 2, nompar, nbac, nbpa)
         nbpara=nbac+nbpa
         call jeveuo(nompar, 'L', jpa)
-        do 30,iaux=1,nbordr
-        iordr=zi(jordr+iaux-1)
-        do 20 j = 1, nbpara
-            call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
-                        1, sjv=iadin, styp=type)
-            call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
-                        1, sjv=iadou, styp=type)
-            if (type(1:1) .eq. 'I') then
-                zi(iadou)=zi(iadin)
-            else if (type(1:1).eq.'R') then
-                zr(iadou)=zr(iadin)
-            else if (type(1:1).eq.'C') then
-                zc(iadou)=zc(iadin)
-            else if (type(1:3).eq.'K80') then
-                zk80(iadou)=zk80(iadin)
-            else if (type(1:3).eq.'K32') then
-                zk32(iadou)=zk32(iadin)
-            else if (type(1:3).eq.'K24') then
-                zk24(iadou)=zk24(iadin)
-            else if (type(1:3).eq.'K16') then
-                zk16(iadou)=zk16(iadin)
-            else if (type(1:2).eq.'K8') then
-                zk8(iadou)=zk8(iadin)
-            endif
-20      continue
-30      continue
+        do 30 iaux = 1, nbordr
+            iordr=zi(jordr+iaux-1)
+            do 20 j = 1, nbpara
+                call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
+                            1, sjv=iadin, styp=type)
+                call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
+                            1, sjv=iadou, styp=type)
+                if (type(1:1) .eq. 'I') then
+                    zi(iadou)=zi(iadin)
+                else if (type(1:1).eq.'R') then
+                    zr(iadou)=zr(iadin)
+                else if (type(1:1).eq.'C') then
+                    zc(iadou)=zc(iadin)
+                else if (type(1:3).eq.'K80') then
+                    zk80(iadou)=zk80(iadin)
+                else if (type(1:3).eq.'K32') then
+                    zk32(iadou)=zk32(iadin)
+                else if (type(1:3).eq.'K24') then
+                    zk24(iadou)=zk24(iadin)
+                else if (type(1:3).eq.'K16') then
+                    zk16(iadou)=zk16(iadin)
+                else if (type(1:2).eq.'K8') then
+                    zk8(iadou)=zk8(iadin)
+                endif
+ 20         continue
+ 30     continue
     endif
 !
 !    ------------------------------------------------------------------
@@ -262,37 +260,36 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
         if (option .eq. 'SIZ1_NOEU' .or. option .eq. 'SIZ2_NOEU') then
 !
 !
-            do 160,iaux=1,nbordr
-            call jemarq()
-            call jerecu('V')
-            iordr=zi(jordr+iaux-1)
-            call medom1(modele, mate, cara, kcha, nchar,&
-                        ctyp, resuco, iordr)
-            call jeveuo(kcha//'.LCHA', 'L', jcha)
-            call mecara(cara, exicar, chcara)
-            call rsexc2(1, 1, resuco, 'DEPL', iordr,&
-                        chamgd, option, iret)
-            if (iret .gt. 0) goto 150
-            call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&
-                        chsig, option, iret)
-            if (iret .gt. 0) then
-                call utmess('A', 'CALCULEL3_7', sk=option)
-                call jedema()
-                goto 660
+            do 160 iaux = 1, nbordr
+                call jemarq()
+                call jerecu('V')
+                iordr=zi(jordr+iaux-1)
+                call medom1(modele, mate, cara, kcha, nchar,&
+                            ctyp, resuco, iordr)
+                call jeveuo(kcha//'.LCHA', 'L', jcha)
+                call mecara(cara, exicar, chcara)
+                call rsexc2(1, 1, resuco, 'DEPL', iordr,&
+                            chamgd, option, iret)
+                if (iret .gt. 0) goto 150
+                call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&
+                            chsig, option, iret)
+                if (iret .gt. 0) then
+                    call utmess('A', 'CALCULEL3_7', sk=option)
+                    call jedema()
+                    goto 660
 !
-            endif
-            call rsexc1(leres1, option, iordr, chsign)
-            if (option .eq. 'SIZ1_NOEU') then
-                call sinoz1(modele, chsig, chsign)
-            else if (option.eq.'SIZ2_NOEU') then
-                call dismoi('F', 'PROF_CHNO', chamgd, 'CHAM_NO', ib,&
-                            pfchno, ie)
-                call sinoz2(modele, pfchno, chsig, chsign)
-            endif
-            call rsnoch(leres1, option, iordr)
-150          continue
-            call jedema()
-160          continue
+                endif
+                call rsexc1(leres1, option, iordr, chsign)
+                if (option .eq. 'SIZ1_NOEU') then
+                    call sinoz1(modele, chsig, chsign)
+                else if (option.eq.'SIZ2_NOEU') then
+                    call dismoi('PROF_CHNO', chamgd, 'CHAM_NO', repk=pfchno)
+                    call sinoz2(modele, pfchno, chsig, chsign)
+                endif
+                call rsnoch(leres1, option, iordr)
+150             continue
+                call jedema()
+160         continue
 !
 !    ------------------------------------------------------------------
 !    -- OPTIONS DES INDICATEURS D'ERREURS
@@ -345,8 +342,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !  JCOOR : ADRESSE DES COORDONNEES
 !  JTYPE : ADRESSE DU TYPE D ELEMENTS FINIS
 !
-            call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                        noma, ierd)
+            call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
             call jeveuo(noma//'.DIME', 'L', jdim)
             call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
@@ -478,9 +474,9 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 call detrsd('CHAM_ELEM_S', cherrs)
                 call detrsd('CHAM_ELEM_S', chenes)
 !
-250              continue
+250             continue
                 call jedema()
-260          continue
+260         continue
 !
 ! 4 - DESTRUCTION DES OBJETS TEMPORAIRES
 !
@@ -528,9 +524,9 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 call detrsd('CHAM_ELEM_S', chsins)
                 call detrsd('CHAM_ELEM_S', chsinn)
 !
-270              continue
+270             continue
                 call jedema()
-280          continue
+280         continue
 !
 !      -----------------------------------------------------------------
 !
@@ -538,10 +534,10 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             call utmess('A', 'CALCULEL3_22', sk=option)
         endif
 !
-660  end do
+660 end do
 !
 !============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
 !
-690  continue
+690 continue
     call jedema()
 end subroutine

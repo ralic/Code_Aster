@@ -88,9 +88,9 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     integer :: nto, nnu, jlist, nbordr
     integer :: jnume, nis, npas, fid, major, minor, rel
     integer :: iret, ifimed
-    integer :: i, ier
+    integer :: i
     integer :: ipas, iaux2
-    integer :: ibid, j
+    integer ::  j
     integer :: mfich, jinst, itps
     integer :: ifm, nivinf, jrefe, jnuom
     integer :: nbma, jnbpgm, jnbpmm, ordins
@@ -202,25 +202,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             typent = edmail
         endif
 !
-        do 230,letype = 1,nbtyp
-        iaux = renumd(letype)
-        typgom = typgeo(iaux)
-        ifimed = 0
-        call mdchin(nofimd, ifimed, nochmd, typent, typgom,&
-                    prefix, npas, iret)
-        if (npas .ne. 0) then
-            call jeveuo(prefix//'.INST', 'L', ipas)
-            call jeveuo(prefix//'.NUME', 'L', inum)
-            goto 240
-        endif
-230      continue
-!
-!         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
-!         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
-        if (typcha(1:4) .eq. 'ELNO') then
-            typent = edmail
-            call utmess('A', 'MED_53', sk=nochmd)
-            do 231,letype = 1,nbtyp
+        do 230 letype = 1, nbtyp
             iaux = renumd(letype)
             typgom = typgeo(iaux)
             ifimed = 0
@@ -231,11 +213,29 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                 call jeveuo(prefix//'.NUME', 'L', inum)
                 goto 240
             endif
-231          continue
+230     continue
+!
+!         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
+!         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
+        if (typcha(1:4) .eq. 'ELNO') then
+            typent = edmail
+            call utmess('A', 'MED_53', sk=nochmd)
+            do 231 letype = 1, nbtyp
+                iaux = renumd(letype)
+                typgom = typgeo(iaux)
+                ifimed = 0
+                call mdchin(nofimd, ifimed, nochmd, typent, typgom,&
+                            prefix, npas, iret)
+                if (npas .ne. 0) then
+                    call jeveuo(prefix//'.INST', 'L', ipas)
+                    call jeveuo(prefix//'.NUME', 'L', inum)
+                    goto 240
+                endif
+231         continue
         endif
 !
     endif
-240  continue
+240 continue
 !
     if (acces .ne. 'TOUT_ORDRE') then
         npas0=nbordr
@@ -252,11 +252,10 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             else if (zi(inum+2*(j-1)).ne.ednono) then
                 zi(jnuom+j-1)=zi(inum+2*(j-1))
             endif
-242      continue
+242     continue
     endif
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call wkvect('&&OP0150_NBPG_MAILLE', 'V V I', nbma, jnbpgm)
     call wkvect('&&OP0150_NBPG_MED', 'V V I', nbma, jnbpmm)
 !
@@ -298,8 +297,8 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                 numord = zi(inum+2*iaux2-1)
                 goto 2221
             endif
-222          continue
-2221          continue
+222         continue
+2221         continue
         endif
 !
         call lrchme(chanom, nochmd, k64b, noma, typcha,&
@@ -312,8 +311,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !         ON ESSAYE DE PARTAGER LE PROF_CHNO DU CHAMP CREE AVEC
 !         LE PROF_CHNO PRECEDENT :
         if (typcha .eq. 'NOEU') then
-            call dismoi('F', 'PROF_CHNO', chanom, 'CHAM_NO', ibid,&
-                        pchn1, ier)
+            call dismoi('PROF_CHNO', chanom, 'CHAM_NO', repk=pchn1)
             if (.not.idensd('PROF_CHNO',nomprn(1:19),pchn1)) then
                 call gnomsd(' ', nomprn, 15, 19)
                 call copisd('PROF_CHNO', 'G', pchn1, nomprn)
@@ -358,7 +356,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             zr(jinst) = zr(ipas-1+itps)
         endif
         call detrsd('CHAMP_GD', chanom)
-250  end do
+250 end do
     call jedetr('&&OP0150_NBPG_MAILLE')
     call jedetr('&&OP0150_NBPG_MED')
     call jedetr(ncmpva)

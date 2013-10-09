@@ -1,10 +1,10 @@
 subroutine rldlgg(lmat, xsol, cxsol, nbsol)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/rldlg3.h"
 #include "asterfort/uttcpu.h"
+!
     integer :: lmat, nbsol
     real(kind=8) :: xsol(*)
     complex(kind=8) :: cxsol(*)
@@ -31,14 +31,12 @@ subroutine rldlgg(lmat, xsol, cxsol, nbsol)
     character(len=8) :: metres
 !------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid
 !-----------------------------------------------------------------------
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
     mat19=zk24(zi(lmat+1))
-    call dismoi('F', 'METH_RESO', mat19, 'MATR_ASSE', ibid,&
-                metres, ibid)
+    call dismoi('METH_RESO', mat19, 'MATR_ASSE', repk=metres)
     call rldlg3(metres, lmat, xsol, cxsol, nbsol)
 !
     call uttcpu('CPU.RESO.1', 'FIN', ' ')

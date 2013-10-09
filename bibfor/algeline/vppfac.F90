@@ -1,8 +1,7 @@
 subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                   mxvect, masmod, facpar)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterfort/dismoi.h"
@@ -13,6 +12,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 #include "asterfort/pteddl.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: lmasse, neq, nbvect, mxvect
     real(kind=8) :: masgen(*), vect(neq, *)
     real(kind=8) :: masmod(mxvect, *), facpar(mxvect, *)
@@ -43,7 +43,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ier, lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, neq1
+    integer ::  lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, neq1
     parameter     ( mxddl=6 )
     character(len=8) :: nomddl(mxddl)
     character(len=14) :: nume
@@ -65,8 +65,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !
     call jemarq()
     masse = zk24(zi(lmasse+1))
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ia,&
-                nume, ier)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
 !
     call wkvect(posddl, 'V V I', neq*mxddl, lddl)
     call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
@@ -89,7 +88,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
         ia = (iddl-1)*neq
         do 110 ieq = 0, neq1
             zr(laux1+ieq) = zi(lddl+ia+ieq)
-110      continue
+110     continue
         call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
                     .false.)
         do 200 ivect = 1, nbvect
@@ -103,8 +102,8 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                 masmod(ivect,iddl) = rval * raux
                 facpar(ivect,iddl) = raux
             endif
-200      continue
-100  end do
+200     continue
+100 end do
 !
 !     ------------------------------------------------------------------
 !     ----------------- DESTRUCTION DES VECTEURS DE TRAVAIL ------------

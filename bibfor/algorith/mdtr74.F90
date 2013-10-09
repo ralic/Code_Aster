@@ -115,9 +115,9 @@ subroutine mdtr74(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iam, iamog, ib, ibid, icoupl, idiff
-    integer :: ie, ier, ifimp, ifm, ig, iindic, im
-    integer :: indic, ioc, iparch, iptcho, ire, iret, irfimp
+    integer :: i, iam, iamog, ibid, icoupl, idiff
+    integer ::  ier, ifimp, ifm, ig, iindic, im
+    integer :: indic, ioc, iparch, iptcho, iret, irfimp
     integer :: ng1, ng2, nng1, nng0, nng2, jrefag, jscdeg, jgyog, jrgyg
     integer :: isoupl, itrans, itrloc, ivchoc, iveci1, ivecr1
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
@@ -202,8 +202,7 @@ subroutine mdtr74(nomres)
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
-            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid,&
-                        bamo2, iret)
+            call dismoi('BASE_MODALE', resgen, 'RESU_DYNA', repk=bamo2)
             if (bamo1 .ne. bamo2) then
                 call utmess('F', 'ALGORITH17_18', si=i)
             endif
@@ -230,11 +229,10 @@ subroutine mdtr74(nomres)
     call jeveuo(masgen//'           .DESC', 'L', jdesc)
     nbmode = zi(jdesc+1)
     basemo = zk24(jrefam-1+1)(1:8)
-    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                rigass, iret)
+    call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=rigass)
 !------------on recupere le type de base modale---------
-    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid,&
-                typeba, iret)
+    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
+                ier=iret)
 !-------------------------------------------------------
     marig = '&&MDTR74.RIGI'
     call copisd('MATR_ASSE', 'V', rigass, marig)
@@ -264,31 +262,22 @@ subroutine mdtr74(nomres)
     nbstoc = nbmode
 !
     if (typba2(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                    matass, iret)
-        call dismoi('F', 'NOM_MAILLA', matass, 'MATR_ASSE', ibid,&
-                    mailla, ie)
-        call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ib,&
-                    numddl, ie)
-        call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
-                    k8b, ie)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matass)
+        call dismoi('NOM_MAILLA', matass, 'MATR_ASSE', repk=mailla)
+        call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
+        call dismoi('NB_EQUA', matass, 'MATR_ASSE', repi=neq)
         nbmod2 = nbmode
 !
     else if (typeba(1:1).ne.' ') then
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                    numddl, iret)
-        call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
-                    mailla, ie)
-        call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                    k8b, ie)
+        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
+        call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
+        call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         nbmod2 = nbmode
     else if (typba2(1:9).eq.'MODE_GENE') then
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                    matass, iret)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matass)
         call jeveuo(matass//'           .REFA', 'L', jrefa)
         numddl = zk24(jrefa-1+2)(1:14)
-        call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
-                    mailla, ie)
+        call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
         call jeveuo(numddl//'.NUME.NEQU', 'L', llnequ)
         neq = zi(llnequ)
         nbmod2 = nbmode
@@ -919,13 +908,11 @@ subroutine mdtr74(nomres)
 !
 ! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 !
-        call dismoi('F', 'REF_MASS_PREM', basemo, 'RESU_DYNA', ibid,&
-                    masse, iret)
+        call dismoi('REF_MASS_PREM', basemo, 'RESU_DYNA', repk=masse)
         call mtdscr(masse)
 !
 !
-        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                    mailla, ire)
+        call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
 !        --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
         nomnoe = mailla//'.NOMNOE'

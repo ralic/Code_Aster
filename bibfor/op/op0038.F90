@@ -50,7 +50,7 @@ subroutine op0038()
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ibid, ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
+    integer ::  ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
 !
     real(kind=8) :: time, rundf
 !
@@ -202,11 +202,10 @@ subroutine op0038()
         call utmess('F', 'CALCULEL3_22', sk=option)
     endif
 !
-10  continue
+ 10 continue
 !
 !     -- SI CHELEM N'EST PAS MPI_COMPLET, ON LE COMPLETE :
-    call dismoi('F', 'MPI_COMPLET', chelem, 'CHAM_ELEM', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', chelem, 'CHAM_ELEM', repk=kmpic)
     if (kmpic .eq. 'NON') call sdmpic('CHAM_ELEM', chelem)
 !
     call jedema()

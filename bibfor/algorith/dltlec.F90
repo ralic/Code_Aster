@@ -105,7 +105,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 !
 !
     integer :: niv, ifm
-    integer :: nr, nm, na, nvect, ivec, ie, n1
+    integer :: nr, nm, na, nvect, ivec, n1
     integer :: iaux, ibid
     integer :: indic, nond, jinf, ialich, ich
 !
@@ -183,7 +183,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
         if (iaux .eq. 1) then
             nchar = nchar + 1
         endif
-311      continue
+311     continue
 !
 ! 3.1.2. ==> LISTE DE VECT_ASSE DECRIVANT LE CHARGEMENT
 !
@@ -195,7 +195,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
             indic = 0
             do 312 ivec = 1, nveca
                 indic = indic + 1
-3121              continue
+3121             continue
                 call getvid('EXCIT', 'VECT_ASSE', iocc=indic, scal=channo, nbret=iaux)
                 if (iaux .eq. 0) then
                     indic = indic + 1
@@ -216,7 +216,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
                         call focste(zk24(ialifo+ivec-1), 'INST', rval, 'V')
                     endif
                 endif
-312          continue
+312         continue
 !
 !
         endif
@@ -252,7 +252,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
             if (zi(jinf+nchar+ich) .eq. 6) then
                 nondp = nondp + 1
             endif
-32      continue
+ 32     continue
     endif
 !
     if (nveca .ne. 0 .and. nchar .ne. 0) then
@@ -273,7 +273,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
                 nond = nond + 1
                 zk8(iondp+nond-1) = zk24(ialich+ich-1)(1:8)
             endif
-33      continue
+ 33     continue
     endif
 !
 !
@@ -283,15 +283,11 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 !
 ! 4.1. ==>
 !
-    call dismoi('F', 'NOM_NUME_DDL', rigid, 'MATR_ASSE', ibid,&
-                numedd, ie)
-    call dismoi('F', 'NOM_MODELE', rigid, 'MATR_ASSE', ibid,&
-                modele, ie)
-    call dismoi('F', 'CARA_ELEM', rigid, 'MATR_ASSE', ibid,&
-                carael, ie)
+    call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numedd)
+    call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=modele)
+    call dismoi('CARA_ELEM', rigid, 'MATR_ASSE', repk=carael)
     materi = ' '
-    call dismoi('F', 'CHAM_MATER', rigid, 'MATR_ASSE', ibid,&
-                materi, ie)
+    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=materi)
     if (materi .ne. ' ') then
         call rcmfmc(materi, mate)
     endif

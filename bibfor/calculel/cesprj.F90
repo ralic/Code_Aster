@@ -62,7 +62,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: kbid, base
+    character(len=1) ::  base
     character(len=3) :: tsca
     character(len=4) :: typces
     character(len=8) :: ma1, ma2, nomgd
@@ -70,7 +70,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     character(len=19) :: ces1, ces2
     integer :: jce1c, jce1l, jce1v, jce1k, jce1d
     integer :: jce2c, jce2l, jce2v, jce2d, ifm, niv
-    integer :: nbno1, ibid, jxxk1, iaconb, iaconu, iacocf, gd, nbno2
+    integer :: nbno1, jxxk1, iaconb, iaconu, iacocf, gd, nbno2
     integer :: ncmpmx, iad1, iad2, ima1, ima2, jdecal, nbmam2, iacom1
     integer :: idecal, ino2, icmp, ico, ino1, nuno2, iacnx2, ilcnx2
     real(kind=8) :: v1, v2, coef1
@@ -122,8 +122,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     ma1 = zk8(jce1k-1+1)
     nomgd = zk8(jce1k-1+2)
     ncmpmx = zi(jce1d-1+2)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !
 !------------------------------------------------------------------
@@ -167,7 +166,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !     -----------------------------
     call detrsd('CHAM_ELEM_S', ces2)
     call cescre(base, ces2, 'ELNO', ma2, nomgd,&
-                ncmpmx, zk8(jce1c), [ibid], [-1], [-ncmpmx])
+                ncmpmx, zk8(jce1c), [0], [-1], [-ncmpmx])
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESC', 'L', jce2c)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
@@ -182,76 +181,75 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !       -- IL FAUT FABRIQUER UN OBJET TEMPORAIRE POUR UTILISER CORRES
 !          DANS UNE OPTIQUE "CHAM_ELEM" : UNE ESPECE DE POINTEUR DE
 !          LONGUEUR CUMULEE SUR LES OBJETS .PJEF_NU ET .PJEF_CF
-    call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
-                kbid, ibid)
+    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     call wkvect('&&CESPRJ.IDECAL', 'V V I', nbno2, jdecal)
     idecal = 0
 !
-    do 10,ino2 = 1,nbno2
-    nbno1 = zi(iaconb-1+ino2)
-    zi(jdecal-1+ino2) = idecal
-    idecal = idecal + nbno1
-    10 end do
+    do 10 ino2 = 1, nbno2
+        nbno1 = zi(iaconb-1+ino2)
+        zi(jdecal-1+ino2) = idecal
+        idecal = idecal + nbno1
+ 10 end do
     call jeveuo(ma2//'.CONNEX', 'L', iacnx2)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', ilcnx2)
 !
 !
-    do 70,ima2 = 1,nbmam2
-    nbno2 = zi(jce2d-1+5+4* (ima2-1)+1)
-    do 60,ino2 = 1,nbno2
-    nuno2 = zi(iacnx2+zi(ilcnx2-1+ima2)-2+ino2)
-    nbno1 = zi(iaconb-1+nuno2)
-    ima1 = zi(iacom1-1+nuno2)
-    idecal = zi(jdecal-1+nuno2)
-    do 50 icmp = 1, ncmpmx
+    do 70 ima2 = 1, nbmam2
+        nbno2 = zi(jce2d-1+5+4* (ima2-1)+1)
+        do 60 ino2 = 1, nbno2
+            nuno2 = zi(iacnx2+zi(ilcnx2-1+ima2)-2+ino2)
+            nbno1 = zi(iaconb-1+nuno2)
+            ima1 = zi(iacom1-1+nuno2)
+            idecal = zi(jdecal-1+nuno2)
+            do 50 icmp = 1, ncmpmx
 ! ================================================================
 ! --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE
 !     PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
 !  EN PRINCIPE, C'EST TOUJOURS LE CAS POUR LES CHAM_ELEM
 ! ================================================================
-        ico = 0
-        do 20,ino1 = 1,nbno1
-        call cesexi('C', jce1d, jce1l, ima1, ino1,&
-                    1, icmp, iad1)
-        coef1 = zr(iacocf+idecal-1+ino1)
-        if (iad1 .gt. 0) ico = ico + 1
-20      continue
-        if (ico .eq. 0) goto 50
-        if (ico .lt. nbno1) goto 50
+                ico = 0
+                do 20 ino1 = 1, nbno1
+                    call cesexi('C', jce1d, jce1l, ima1, ino1,&
+                                1, icmp, iad1)
+                    coef1 = zr(iacocf+idecal-1+ino1)
+                    if (iad1 .gt. 0) ico = ico + 1
+ 20             continue
+                if (ico .eq. 0) goto 50
+                if (ico .lt. nbno1) goto 50
 !
-        call cesexi('S', jce2d, jce2l, ima2, ino2,&
-                    1, icmp, iad2)
-        ASSERT(iad2.lt.0)
-        zl(jce2l-1-iad2) = .true.
+                call cesexi('S', jce2d, jce2l, ima2, ino2,&
+                            1, icmp, iad2)
+                ASSERT(iad2.lt.0)
+                zl(jce2l-1-iad2) = .true.
 !
-        if (tsca .eq. 'R') then
-            v2 = 0.d0
-            do 30,ino1 = 1,nbno1
-            coef1 = zr(iacocf+idecal-1+ino1)
-            call cesexi('C', jce1d, jce1l, ima1, ino1,&
-                        1, icmp, iad1)
-            ASSERT(iad1.gt.0)
-            v1 = zr(jce1v-1+iad1)
-            v2 = v2 + coef1*v1
-30          continue
-            zr(jce2v-1-iad2) = v2
+                if (tsca .eq. 'R') then
+                    v2 = 0.d0
+                    do 30 ino1 = 1, nbno1
+                        coef1 = zr(iacocf+idecal-1+ino1)
+                        call cesexi('C', jce1d, jce1l, ima1, ino1,&
+                                    1, icmp, iad1)
+                        ASSERT(iad1.gt.0)
+                        v1 = zr(jce1v-1+iad1)
+                        v2 = v2 + coef1*v1
+ 30                 continue
+                    zr(jce2v-1-iad2) = v2
 !
-        else if (tsca.eq.'C') then
-            v2c = dcmplx(0.d0,0.d0)
-            do 40,ino1 = 1,nbno1
-            coef1 = zr(iacocf+idecal-1+ino1)
-            call cesexi('C', jce1d, jce1l, ima1, ino1,&
-                        1, icmp, iad1)
-            ASSERT(iad1.gt.0)
-            v1c = zc(jce1v-1+iad1)
-            v2c = v2c + coef1*v1c
-40          continue
-            zc(jce2v-1-iad2) = v2c
-        endif
+                else if (tsca.eq.'C') then
+                    v2c = dcmplx(0.d0,0.d0)
+                    do 40 ino1 = 1, nbno1
+                        coef1 = zr(iacocf+idecal-1+ino1)
+                        call cesexi('C', jce1d, jce1l, ima1, ino1,&
+                                    1, icmp, iad1)
+                        ASSERT(iad1.gt.0)
+                        v1c = zc(jce1v-1+iad1)
+                        v2c = v2c + coef1*v1c
+ 40                 continue
+                    zc(jce2v-1-iad2) = v2c
+                endif
 !
-50  continue
-60  continue
-    70 end do
+ 50         continue
+ 60     continue
+ 70 end do
 !
 !
 !     -- VERIFICATION DE LA QUALITE DE CES2:
@@ -273,6 +271,6 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     endif
     call jedetr('&&CESPRJ.IDECAL')
 !
-80  continue
+ 80 continue
     call jedema()
 end subroutine

@@ -58,7 +58,6 @@ subroutine op0112()
     integer :: jforc2, ilengt
     integer :: nbcmpg, nbno2, nbno1, nbocc
     integer :: ddlfor(3)
-    character(len=1) :: kbid
     character(len=8) :: charg, modele, ma, ma1, ma2
     character(len=16) :: corres, ncmpgd(10), nomcmp(3)
     character(len=19) :: chnos, carte
@@ -119,8 +118,7 @@ subroutine op0112()
 !     ! =============================== !
     call jeveuo(charg//'.CHME.MODEL.NOMO', 'L', jnomo)
     modele = zk8(jnomo)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                ma, ibid)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
 !
 !      ! ========================= !
 !      ! CREATION D'UN CHAMPS_NO_S !
@@ -170,10 +168,8 @@ subroutine op0112()
 !     ! ================================================= !
 !     ! RECUPERATIONS DES NOMBRES DE NOEUDS DES MAILLAGES !
 !     ! ================================================= !
-    call dismoi('F', 'NB_NO_MAILLA', ma1, 'MAILLAGE', nbno1,&
-                kbid, ibid)
-    call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
-                kbid, ibid)
+    call dismoi('NB_NO_MAILLA', ma1, 'MAILLAGE', repi=nbno1)
+    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     nbno4 = int(nbno2, 4)
 !
 !     ! ===================================== !

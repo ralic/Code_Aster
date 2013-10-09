@@ -18,7 +18,6 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cnocns.h"
@@ -33,6 +32,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rschor.h"
 #include "asterfort/rsexch.h"
+!
     integer :: numch, nbord, liord(*), nbcmp
     character(len=8) :: liscmp(*)
     character(len=16) :: nomch
@@ -51,9 +51,9 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
 ! ---------------------------------------------------------------------
 !
 !
-    integer :: ibid, iret, itab, i, numord, loncmp, icmp, c, j
+    integer ::  iret, itab, i, numord, loncmp, icmp, c, j
     character(len=4) :: typech
-    character(len=8) ::  comp
+    character(len=8) :: comp
     character(len=19) :: nomsd, champ, chs
     character(len=24) :: tabord
 ! ---------------------------------------------------------------------
@@ -70,7 +70,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
     call jeveuo(tabord, 'L', itab)
     do 10 i = 1, nbord
         liord(i) = zi(itab-1 + i)
-10  end do
+ 10 end do
 !    COMPOSANTES DU CHAMP
     nbcmp = 0
     do 20 i = 1, nbord
@@ -79,8 +79,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
         call rsexch('F', nomsd, nomch, numord, champ,&
                     iret)
 !      TRANSFORMATION EN CHAMP_S ET ACCES A LA LISTE DES COMPOSANTES
-        call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
-                    typech, iret)
+        call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=typech)
         if (typech .eq. 'NOEU') then
             call cnocns(champ, 'V', chs)
             call jeveuo(chs // '.CNSC', 'L', icmp)
@@ -98,14 +97,14 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
             comp = zk8(icmp-1 + c)
             do 40 j = 1, nbcmp
                 if (comp .eq. liscmp(j)) goto 30
-40          continue
+ 40         continue
             nbcmp = nbcmp + 1
             ASSERT(nbcmp.le.500)
             liscmp(nbcmp) = comp
-30      continue
+ 30     continue
 !      DESTRUCTION DU CHAMP_S
         call detrsd('CHAMP_GD', chs)
-20  end do
+ 20 end do
     call jedetr(tabord)
     call jedema()
 end subroutine

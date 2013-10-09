@@ -44,21 +44,19 @@ subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, ibid, ie, ier
+    integer :: vali, ier
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
     character(len=3) :: ssigne
     character(len=4) :: tych
 !     ------------------------------------------------------------------
-    call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
-                tych, ie)
+    call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych)
     if (tych .ne. 'CART') then
         call utmess('F', 'CALCULEL3_90', sk=cham19)
     endif
 !
-    call dismoi('F', 'NOM_MAILLA', cham19, 'CARTE', ibid,&
-                nomma, ie)
+    call dismoi('NOM_MAILLA', cham19, 'CARTE', repk=nomma)
 !
     call utchca(cham19, nomma, nomail, nocmp, typres,&
                 valr, vali, valc, ier)

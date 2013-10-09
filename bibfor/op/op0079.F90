@@ -68,7 +68,7 @@ subroutine op0079()
     character(len=14) :: nu, numdd1, numdd2
     character(len=16) :: typres, nomcom, typbas, matri2
     character(len=19) :: nochno
-    character(len=24) :: matric, kbid, deeq
+    character(len=24) :: matric, deeq
     complex(kind=8) :: cbid
     data  nosyin / 'DEPL','VITE','ACCE'/
     data  nosyou / 'DEPL','VITE','ACCE'/
@@ -103,7 +103,7 @@ subroutine op0079()
     call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
                 cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
-    nbmode=tmod(1)            
+    nbmode=tmod(1)
 !
 !
     call jeveuo(numgen//'      .SMOS.SMDE', 'L', jsmde)
@@ -114,7 +114,7 @@ subroutine op0079()
     call rsorac(res, 'LONUTI', ibid, bid, k8bid,&
                 cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
-    nbo=tmod(1)            
+    nbo=tmod(1)
     call jeveuo(res//'           .ORDR', 'L', iliord)
 !
 !
@@ -127,34 +127,28 @@ subroutine op0079()
 !
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
-        call dismoi('F', 'NUME_DDL', res, 'RESU_DYNA', ibid,&
-                    nu, iret)
+        call dismoi('NUME_DDL', res, 'RESU_DYNA', repk=nu)
         if (nu(1:1) .ne. ' ') then
             numdd1=nu
         else
-            call dismoi('F', 'REF_RIGI_PREM', res, 'RESU_DYNA', ibid,&
-                        matric, iret)
+            call dismoi('REF_RIGI_PREM', res, 'RESU_DYNA', repk=matric)
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            nu, iret)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nu)
                 numdd1=nu
             endif
             if (iret .eq. 0) then
                 call utmess('F', 'ALGORITH17_8', sk=res)
             endif
         endif
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                    nu, iret)
+        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nu)
         if (nu(1:1) .ne. ' ') then
             numdd2=nu
         else
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            nu, iret)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nu)
                 numdd2=nu
             endif
             if (iret .eq. 0) then
@@ -163,10 +157,8 @@ subroutine op0079()
         endif
 !
     else if (typbas(1:9).eq.'MODE_GENE') then
-        call dismoi('F', 'NUME_DDL', res, 'RESU_DYNA', ibid,&
-                    nu, iret)
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                    matric, iret)
+        call dismoi('NUME_DDL', res, 'RESU_DYNA', repk=nu)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
         numdd2=zk24(jrefa-1+2)
@@ -179,8 +171,7 @@ subroutine op0079()
 ! --- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
     if ((typbas(1:9).eq.'MODE_MECA')) then
-        call dismoi('F', 'NB_EQUA', numdd1, 'NUME_DDL', neq,&
-                    kbid, iret)
+        call dismoi('NB_EQUA', numdd1, 'NUME_DDL', repi=neq)
     else if (typbas(1:9).eq.'MODE_GENE') then
         call jeveuo(numdd1//'.NUME.NEQU', 'L', llnequ)
         neq = zi(llnequ)
@@ -246,7 +237,7 @@ subroutine op0079()
                     zr(ind) = ddot(neq,zr(idvect),1,zr(iadvec),1)
 !
 ! ------- LIBERATION DU VECTEUR TEMP
-10              continue
+ 10             continue
                 call jedetr('&&OP0079.VECTASSE')
             else
 !
@@ -284,7 +275,7 @@ subroutine op0079()
                         pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
                         zr(iamatr+imod+ (jmod-1)*nbmode-1) = pij
                         zr(iamatr+jmod+ (imod-1)*nbmode-1) = pij
-20                  continue
+ 20                 continue
 !
 ! ----- CALCUL DE LA PROJECTION
 !
@@ -302,7 +293,7 @@ subroutine op0079()
 !
                     zr(idvec2+imod-1) = ddot(neq,zr(idvec1),1,zr( iadvec),1)
 !
-30              continue
+ 30             continue
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
 !
@@ -319,8 +310,8 @@ subroutine op0079()
                 if (typvec .eq. 'C') call jedetr('&&OP0079.VECTASC2')
             endif
 !
-50      continue
-40  continue
+ 50     continue
+ 40 continue
 !
     call jedema()
 end subroutine

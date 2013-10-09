@@ -66,7 +66,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: gd, descgd, code, i, iret1, iret2, ibid, iret, jcelk, jnoli
+    integer :: gd, descgd, code, i, iret1, iret2, iret, jcelk, jnoli
     character(len=19) :: nochou, dcel
     character(len=8) :: nompar
     character(len=8) :: kbi1, kbi2
@@ -132,13 +132,10 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
         call jeexin(nochou//'.CELD', iret2)
         if ((iret1+iret2) .eq. 0) goto 30
 !
-        call dismoi('F', 'NOM_GD', nochou, 'CHAMP', ibid,&
-                    kbi1, ibid)
-        call dismoi('F', 'TYPE_SCA', kbi1, 'GRANDEUR', ibid,&
-                    kbi2, ibid)
+        call dismoi('NOM_GD', nochou, 'CHAMP', repk=kbi1)
+        call dismoi('TYPE_SCA', kbi1, 'GRANDEUR', repk=kbi2)
         zk8(iachok-1+2* (i-1)+2) = kbi2
-        call dismoi('F', 'TYPE_CHAMP', nochou, 'CHAMP', ibid,&
-                    kbi1, ibid)
+        call dismoi('TYPE_CHAMP', nochou, 'CHAMP', repk=kbi1)
 !        -- SI C'EST UN CHAM_ELEM:
 !           ON DOIT FAIRE UN JEVEUO EN ECRITURE POUR RECUPERER
 !           L'ADRESSE DU .CELV

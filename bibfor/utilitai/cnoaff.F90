@@ -63,7 +63,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     integer :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, nt, nbval
     character(len=1) :: tsca
     character(len=3) :: prol0
-    character(len=8) :: k8b, kbid, typmcl(4)
+    character(len=8) ::  kbid, typmcl(4)
     character(len=16) :: motcle(4)
     character(len=19) :: cnos
     character(len=24) :: valk(2), mesnoe, mescmp, prchno
@@ -122,10 +122,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
                 valk (2) = zk8(jcmp+i-1)
                 call utmess('F', 'UTILITAI6_4', nk=2, valk=valk, si=vali)
             endif
-21      continue
+ 21     continue
         call jedetr('&&CNOAFF.LISTE_COMP')
 !
-20  end do
+ 20 end do
 !
 !
 ! --- 3. PREPARATION AVANT LA CREATION DU CHAMP
@@ -143,7 +143,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
         if (iocc .eq. 1) then
             do 31 i = 1, ncmp
                 zk8(jcmpt+i-1)=zk8(jtmp+i-1)
-31          continue
+ 31         continue
             nt=ncmp
         else
             do 32 i = 1, ncmp
@@ -152,10 +152,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
                     zk8(jcmpt+nt)=zk8(jtmp+i-1)
                     nt=nt+1
                 endif
-32          continue
+ 32         continue
         endif
         call jedetr('&&CNOAFF.TMP')
-30  end do
+ 30 end do
     nbcmpt=nt
 !
 !
@@ -183,10 +183,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
     call jeveuo(cnos//'.CNSV', 'E', jcnsv)
     call jeveuo(cnos//'.CNSL', 'E', jcnsl)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     do 50 iocc = 1, nocc
 !
@@ -199,7 +197,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
             call wkvect(mesnoe, 'V V I', nbnoe, jlno)
             do 51 i = 1, nbnoe
                 zi(jlno+i-1)=i
-51          continue
+ 51         continue
         else
             call reliem(' ', noma, 'NU_NOEUD', 'AFFE', iocc,&
                         4, motcle, typmcl, mesnoe, nbnoe)
@@ -240,8 +238,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
                     ino=zi(jlno+j-1)
                     zr(jcnsv+nbcmpt*(ino-1)+icmp-1)=zr(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
-53              continue
-52          continue
+ 53             continue
+ 52         continue
             call jedetr('&&CNOAFF.VAL_IOCC')
 !
 !   -    TYPE "I" :
@@ -261,8 +259,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
                     ino=zi(jlno+j-1)
                     zi(jcnsv+nbcmpt*(ino-1)+icmp-1)=zi(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
-55              continue
-54          continue
+ 55             continue
+ 54         continue
             call jedetr('&&CNOAFF.VAL_IOCC')
 !
 !   -    TYPE "C" :
@@ -281,8 +279,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
                     ino=zi(jlno+j-1)
                     zc(jcnsv+nbcmpt*(ino-1)+icmp-1)=zc(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
-57              continue
-56          continue
+ 57             continue
+ 56         continue
             call jedetr('&&CNOAFF.VAL_IOCC')
 !
 !   -    TYPE "F" :
@@ -301,12 +299,12 @@ subroutine cnoaff(noma, nomgd, base, cno)
                     ino=zi(jlno+j-1)
                     zk8(jcnsv+nbcmpt*(ino-1)+icmp-1)=zk8(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
-59              continue
-58          continue
+ 59             continue
+ 58         continue
             call jedetr('&&CNOAFF.VAL_IOCC')
         endif
 !
-50  end do
+ 50 end do
 !
 !
 ! --- 5. PASSAGE DU CHAM_NO_S AU CHAM_NO :

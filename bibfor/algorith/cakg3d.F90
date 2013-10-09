@@ -106,7 +106,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
     integer :: nnoff, num, incr, nres
-    integer :: ndeg, ierd, init, livi(nbmxpa)
+    integer :: ndeg, init, livi(nbmxpa)
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa)
     complex(kind=8) :: livc(nbmxpa)
@@ -143,8 +143,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     call getfac('COMPORTEMENT', incr)
     if (incr .ne. 0) then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
-        call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
-                    type, ierd)
+        call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=type)
         if (type .ne. 'EVOL_NOLI') then
             call utmess('F', 'RUPTURE1_15')
         endif

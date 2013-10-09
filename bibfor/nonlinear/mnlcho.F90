@@ -77,7 +77,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     integer :: ijmax, idmax, inddl, iraid, ijeu, ireg, iind, k, ier, pddl, ind, ldgn
-    integer :: j, iarg, nunoe, iadim, pdlmax, neq, iei, ier2, i, ityp, iorig
+    integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, ityp, iorig
     integer :: ineqs, incmp, inoe, icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
     character(len=8) :: tchoc, kvide, typval, mailla
@@ -187,8 +187,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
         else
             call getvtx('CHOC', 'GROUP_NO', iocc=k, scal=grno, nbret=ier)
             if (ier .eq. 1) then
-                call dismoi('F', 'NOM_MAILLA', matm, 'MATR_ASSE', iarg,&
-                            mailla, ier)
+                call dismoi('NOM_MAILLA', matm, 'MATR_ASSE', repk=mailla)
                 magrno = mailla//'.GROUPENO'
                 manono = mailla//'.NOMNOE'
                 call jelira(jexnom(magrno, grno), 'LONUTI', ier, kvide)

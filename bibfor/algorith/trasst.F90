@@ -94,8 +94,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     lismat(1)=mraid
     lismat(2)=mmass
 !
-    call dismoi('F', 'NOM_NUME_DDL', mraid, 'MATR_ASSE', ibid,&
-                nume91, ibid)
+    call dismoi('NOM_NUME_DDL', mraid, 'MATR_ASSE', repk=nume91)
 !
     call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
     comlin(1)=1.d0
@@ -107,8 +106,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call mtdscr(imped)
     call jeveuo(imped(1:19)//'.&INT', 'E', limped)
 !
-    call dismoi('F', 'SOLVEUR', mraid, 'MATR_ASSE', ibid,&
-                solveu, ibid)
+    call dismoi('SOLVEUR', mraid, 'MATR_ASSE', repk=solveu)
 !
     call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
                 ibid, -9999)
@@ -152,8 +150,8 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
                 if (zi(llint1+l1-1) .gt. 0) then
                     zr(lmod1+zi(llint1+l1-1)-1)=0
                 endif
-140          continue
-90      continue
+140         continue
+ 90     continue
 !
 !-- CALCUL DES TRAVAUX
         call mrmult('ZERO', zi(lmass+isst1-1), zr(lcopy1), zr(leff1), 1,&
@@ -190,10 +188,10 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
                     zr(lsecme+nbeq1*(nbmod+j1-1)+ibid-1)=zr(leff1+&
                     ibid-1)
                 endif
-170          continue
-160      continue
+170         continue
+160     continue
 !
 !
-80  continue
+ 80 continue
 !
 end subroutine

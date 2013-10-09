@@ -42,7 +42,7 @@ subroutine xfisco(noma, modelx)
     integer :: jcesd2, jcesv2, jcesl2, jjonf, jjonc, iad, iad3
     integer :: ima, nbma, ifiss, ifis2, ifis3, nfiss, nfis2
     character(len=19) :: ces, ces2, ligrel, chglo
-    character(len=8) :: nomfis, nomfi3, licmp(2), kbid, valk(3)
+    character(len=8) :: nomfis, nomfi3, licmp(2), valk(3)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -72,8 +72,7 @@ subroutine xfisco(noma, modelx)
 !
 ! --- RECUPERATION NOMBRE DE MAILLES
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                kbid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- BOUCLE SUR LES MAILLES
 !
@@ -135,8 +134,8 @@ subroutine xfisco(noma, modelx)
                             zl(jcesl-1-iad) = .true.
                             zi(jcesv-1-iad) = zi(jjonc-1+ifis2)
                         endif
-120                  continue
-130              continue
+120                 continue
+130             continue
             endif
 !
 ! --- SI ON A RIEN TROUVER
@@ -152,9 +151,9 @@ subroutine xfisco(noma, modelx)
                 zl(jcesl-1-iad) = .true.
                 zi(jcesv-1-iad) = 0
             endif
-110      continue
+110     continue
 !
-100  end do
+100 end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

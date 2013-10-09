@@ -63,7 +63,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    integer :: i, iadval, ibid, ier, inord, irt, lmat
+    integer :: i, iadval, ier, inord, lmat
     integer :: ltcham, ltcvn, nbdef, nbfor, nbpabm, neq, neqr
 !
 !-----------------------------------------------------------------------
@@ -101,19 +101,16 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 ! --- RECUPERATION DU MODELE DE REFERENCE
 !
-    call dismoi('F', 'NOM_MAILLA', numref, 'NUME_DDL', ibid,&
-                mailla, irt)
+    call dismoi('NOM_MAILLA', numref, 'NUME_DDL', repk=mailla)
     crefe(1)=mailla
     crefe(2)=numref
 !
 ! --- CONVERSION DU NUMDDL ASSOCIE A LA MATRICE
 !
-    call dismoi('F', 'NOM_NUME_DDL', raildl, 'MATR_ASSE', ibid,&
-                numddl, irt)
+    call dismoi('NOM_NUME_DDL', raildl, 'MATR_ASSE', repk=numddl)
     numddl(15:19)='.NUME'
 !
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                kbid, irt)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
     nomcvn='&&'//pgc//'.CONV.NUMDDL'
     numref(15:19)='.NUME'

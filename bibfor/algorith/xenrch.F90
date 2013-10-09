@@ -74,17 +74,16 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
     integer :: nxmafi, nxptff
 !
-    integer :: iret, nbno, ino, imae, nmafon, jfon, jtail, nfon
+    integer ::  nbno, ino, imae, nmafon, jfon, jtail, nfon
     integer :: jfono, jbaso, jtailo
     integer :: jcoor, jstano, jfonmu
     integer :: jensv, jensl, nbma
     integer :: jensvr, jenslr, jcaraf
-    integer :: i, nmafis, ibid
+    integer :: i, nmafis
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
     integer :: nbfond, numfon
     integer :: ifm, niv
     integer :: nmaen1, nmaen2, nmaen3, ncouch, nfono
-    character(len=8) :: k8bid
     character(len=16) :: typdis
     character(len=19) :: cnxinv, info, listpt
     character(len=24) :: mafis, stano, xcarfo, fonmul
@@ -100,20 +99,17 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 ! --- ACCES AU MAILLAGE
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 !     NOMBRE MAX DE MAILLES TRAVERSEES PAR LA FISSURE
     nxmafi = nbma
 !
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XENRCH.CNCINV'
-    call cncinv(noma, [ibid], 0, 'V', cnxinv)
+    call cncinv(noma, [0], 0, 'V', cnxinv)
 !
-    call dismoi('F', 'TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', ibid,&
-                typdis, iret)
+    call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
 !
 ! --- RECUPERATION INFORMATIONS SUR LE FOND DE FISSURE
     rayon = 0.d0
@@ -152,7 +148,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
         call utmess('I', 'XFEM_26')
         do 110 imae = 1, nmafis
             write(ifm,*)' ',zi(jmafis-1+imae)
-110      continue
+110     continue
     endif
 !
 !--------------------------------------------------------------------
@@ -212,7 +208,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     do 210 ino = 1, nbno
         zi(jensv-1+(ino-1)+1)=zi(jstano-1+(ino-1)+1)
         zl(jensl-1+(ino-1)+1)=.true.
-210  end do
+210 end do
 !
 !     ENREGISTREMENT DU CHAM_NO SIMPLE REEL (POUR VISUALISATION)
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
@@ -222,7 +218,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     do 211 ino = 1, nbno
         zr(jensvr-1+(ino-1)+1)=zi(jstano-1+(ino-1)+1)
         zl(jenslr-1+(ino-1)+1)=.true.
-211  end do
+211 end do
 !
 !     POUR UNE INTERFACE, ON PASSE DIRECTEMENT A LA CREATION DE LA SD
     if (typdis .eq. 'INTERFACE') then
@@ -306,7 +302,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
     endif
 !   SI LE FOND EST FERME
-    if (nfono .eq. (nfon-1)) call utmess('I','XFEM_60')
+    if (nfono .eq. (nfon-1)) call utmess('I', 'XFEM_60')
 !
 !     REMPLISSAGE DE FONDFISS ET DE BASEFOND
 !     STOCKAGE DES FONDS MULTIPLES EN 2D
@@ -323,11 +319,11 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                 zr(jfon-1+4*(i-1)+k) = zr(jfono-1+11*(i-1)+k)
                 zr(jbas-1+4*(i-1)+k) = zr(jbaso-1+4*(i-1)+k)
                 zr(jbas-1+4*(i-1)+k+2) = zr(jbaso-1+4*(i-1)+k+2)
-11          continue
+ 11         continue
             zr(jtail-1+i) = zr(jtailo-1+i)
             zi(jfonmu-1+2*(i-1)+1)=i
             zi(jfonmu-1+2*(i-1)+2)=i
-999      continue
+999     continue
     endif
 !
 !     IMPRESSION DES POINTS DE FOND DE FISSURE (2D/3D)
@@ -354,7 +350,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
         if (ndim .eq. 2) write(ifm,798)(q(k),k=1,2)
         if (ndim .eq. 3) write(ifm,798)(q(k),k=1,4)
         if (zi(jfonmu-1+2*(numfon-1)+2) .eq. i) numfon=numfon+1
-799  end do
+799 end do
 !
     797 format(7x,'X',13x,'Y',13x,'Z',13x,'S')
 !
@@ -363,7 +359,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     798 format(2x,4(e12.5,2x))
 !
 !
-800  continue
+800 continue
 !
 ! --- CREATION DE LA SD
 !

@@ -76,16 +76,16 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno, iret, jltno, jlnno, jgrtno, jgrnno, ndim, j
+    integer :: i, ifm, niv, nbno, jltno, jlnno, jgrtno, jgrnno, ndim, j
     integer :: jelcal, jnodto, node, nbnoma, ier
     integer :: ibid, neleto, jdelta
-    character(len=8) :: k8b, lpain(2), lpaout(1)
+    character(len=8) ::  lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
     real(kind=8) :: normgn, normgt
 !
     real(kind=8) :: vnscgn, vtscgt
-    character(len=8) :: typcmp(3), kbid
+    character(len=8) :: typcmp(3)
     character(len=19) :: cnsvvt, cnsvvn
     integer :: jvtv, jvtl, jvnv, jvnl, jcnsvn, jcnsvt
 !
@@ -103,12 +103,10 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(cnsbl//'.CNSV', 'E', jbl)
 !
 !     RECUPERATION DE CARACTERISTIQUES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoma,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
 !
 !     RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                kbid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
 !     CALCULUS (SAME ORDER THAN THE ONE USED IN THE CONNECTION TABLE)
@@ -211,7 +209,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
                 else
                     zr(jvtv-1+ndim*(node-1)+j) = 0.d0
                 endif
-405          continue
+405         continue
 !
         else
 !
@@ -221,11 +219,11 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
             do 406 j = 1, ndim
                 zr(jvnv-1+ndim*(node-1)+j) = zr(jcnsvn-1+node)* zr(jbl-1+2*ndim*(node-1)+j)
                 zr(jvtv-1+ndim*(node-1)+j) = zr(jcnsvt-1+node)* zr(jbl-1+2*ndim*(node-1)+ndim+j)
-406          continue
+406         continue
 !
         endif
 !
-400  end do
+400 end do
 !
 ! ***************************************************************
 ! UPDATE THE LEVEL SETS
@@ -265,7 +263,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !
 !
 !
-105      continue
+105     continue
 !
 !         UPDATE THE LEVEL SETS
         if (zr(jltno-1+node) .gt. r8prem()) then
@@ -278,7 +276,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
         node-1)+1)
 !
 !
-100  end do
+100 end do
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES

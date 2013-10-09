@@ -19,7 +19,6 @@ subroutine misazl(vecinc, defico)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -32,6 +31,7 @@ subroutine misazl(vecinc, defico)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
     character(len=19) :: vecinc
     character(len=24) :: defico
 !
@@ -51,13 +51,13 @@ subroutine misazl(vecinc, defico)
 !
     integer :: nnoco, ntnoe
     integer :: ino, nbno, nec, ncmpmx, numno(1)
-    integer :: ibid, ier, ino_ind(1)
+    integer ::  ino_ind(1)
     integer :: jnocmp, jprno, jnueq, jvale, jdg
     integer :: numlc, numlf1, numlf2
     integer :: poslc, poslf1, poslf2
     integer :: inueq, ivalc, ivalf1, ivalf2
     character(len=4) :: typno
-    character(len=8) :: nomgd, kbid
+    character(len=8) :: nomgd
     character(len=19) :: prno
 !
 ! ----------------------------------------------------------------------
@@ -72,26 +72,22 @@ subroutine misazl(vecinc, defico)
 !
 ! --- ACCES AU NOM DE LA GRANDEUR
 !
-    call dismoi('F', 'NOM_GD', vecinc, 'CHAM_NO', ibid,&
-                nomgd, ier)
+    call dismoi('NOM_GD', vecinc, 'CHAM_NO', repk=nomgd)
 !
 ! --- ACCES AU NOM ET AU NOMBRE DES COMPOSANTES DE LA GRANDEUR
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ier)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
 ! --- ACCES AU PROF_CHNO ET AU POINTEUR .NUEQ
 !
-    call dismoi('F', 'PROF_CHNO', vecinc, 'CHAM_NO', ibid,&
-                prno, ier)
+    call dismoi('PROF_CHNO', vecinc, 'CHAM_NO', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
     call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
 ! --- ACCES AU NOMBRE D'ENTIERS CODES POUR PARCOURIR LE .PRNO
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
 ! --- ACCES AU .VALE DU CHAMP VECINC
 !

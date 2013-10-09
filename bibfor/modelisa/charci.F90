@@ -91,14 +91,10 @@ subroutine charci(chcine, mfact, mo, type)
     mfac = mfact
     call getfac(mfac, noc)
 !
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, ier)
-    call dismoi('F', 'PHENOMENE', mo, 'MODELE', ibid,&
-                phenom, ier)
-    call dismoi('F', 'NOM_GD', phenom, 'PHENOMENE', ibid,&
-                nomgd, ier)
-    call dismoi('F', 'NOM_GD_SI', nomgd, 'GRANDEUR', ibid,&
-                nogdsi, ier)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('PHENOMENE', mo, 'MODELE', repk=phenom)
+    call dismoi('NOM_GD', phenom, 'PHENOMENE', repk=nomgd)
+    call dismoi('NOM_GD_SI', nomgd, 'GRANDEUR', repk=nogdsi)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', nbcmp)
     cns='&&CHARCI.CNS'
@@ -201,8 +197,8 @@ subroutine charci(chcine, mfact, mo, type)
         do 111 iddl = 1, nbobm
             icmp = indik8( zk8(jcmp), chcino(iddl)(1:8), 1, nbcmp )
             icmpmx=max(icmpmx,icmp)
-111      continue
-101  end do
+111     continue
+101 end do
     ASSERT(icmpmx.gt.0)
     call cnscre(ma, gdcns, icmpmx, zk8(jcmp), 'V',&
                 cns)
@@ -232,7 +228,7 @@ subroutine charci(chcine, mfact, mo, type)
             k16b = chcino(iddl)
             do 112 i = 1, 5
                 if (k16b .eq. motcle(i)) goto 110
-112          continue
+112         continue
 !
             zk8(idnddl+nbddl) = k16b(1:8)
 !
@@ -246,7 +242,7 @@ subroutine charci(chcine, mfact, mo, type)
                     do 113 ino = 1, nbno
                         nuno = zi(idino-1+ino)
                         ASSERT(.not.zl(jnoxfl-1+2*nuno))
-113                  continue
+113                 continue
                 endif
             endif
 !
@@ -260,7 +256,7 @@ subroutine charci(chcine, mfact, mo, type)
                 call getvid(mfac, k16b, iocc=ioc, scal=zk8(idvddl+nbddl), nbret=ila)
             endif
             nbddl = nbddl+1
-110      continue
+110     continue
 !
 ! --- ON RECHERCHE SI UNE QUAND ON A DES FONCT. IL Y EN A UNE = F(TPS)
 !
@@ -276,9 +272,9 @@ subroutine charci(chcine, mfact, mo, type)
                     zk8(jafck)(5:7) = '_FT'
                     goto 122
                 endif
-120          continue
+120         continue
         endif
-122      continue
+122     continue
 !
 ! ----- AFFECTATION DANS LE CHAM_NO_S
 !
@@ -290,8 +286,8 @@ subroutine charci(chcine, mfact, mo, type)
                     nuno = zi(idino-1+ino)
                     zr(jcnsv+(nuno-1)*icmpmx+icmp-1) = zr(idvddl-1+ cmp)
                     zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-132              continue
-130          continue
+132             continue
+130         continue
         else if (type .eq. 'C') then
             do 140 cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
@@ -300,8 +296,8 @@ subroutine charci(chcine, mfact, mo, type)
                     nuno = zi(idino-1+ino)
                     zc(jcnsv+(nuno-1)*icmpmx+icmp-1) = zc(idvddl-1+ cmp)
                     zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-142              continue
-140          continue
+142             continue
+140         continue
         else if (type .eq. 'F') then
             do 150 cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
@@ -310,16 +306,16 @@ subroutine charci(chcine, mfact, mo, type)
                     nuno = zi(idino-1+ino)
                     zk8(jcnsv+(nuno-1)*icmpmx+icmp-1) = zk8(idvddl-1+ cmp)
                     zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-152              continue
-150          continue
+152             continue
+150         continue
         endif
 !
         call jedetr(cino)
         call jedetr(cnuddl)
         call jedetr(cvlddl)
 !
-100  end do
-200  continue
+100 end do
+200 continue
 !
 !
     if (( niv.ge.2) .and. (evoim.eq.' ')) then

@@ -3,7 +3,6 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -21,6 +20,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 #include "asterfort/panbno.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     real(kind=8) :: rayon
     integer :: nmafis, jmafis
     character(len=8) :: noma
@@ -72,13 +72,13 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     integer :: nb, nunoa, nunob, enr, enr1, enr2, jdlino, jma, jstano
     integer :: jconx1, jconx2, jltsv, jlnsv, jcoor, itypma, ndim
     integer :: jljsd, jljsv, nfiss, ifiss
-    integer :: nbma, ibid, jlmaf, nmasup, jmasup, isup, iret
+    integer :: nbma, jlmaf, nmasup, jmasup, isup, iret
     real(kind=8) :: minlsn, minlst, maxlsn, maxlst, lsna, lsnb, lsta, lstb
     real(kind=8) :: minlsj(10, 2), maxlsj(10), lsja(10, 2), lsjb(10, 2)
     real(kind=8) :: lsjc(10, 2)
     real(kind=8) :: lstc, lsn, a(3), b(3), c(3), lst
     real(kind=8) :: ab(3), ac(3)
-    character(len=8) :: typma, k8b
+    character(len=8) :: typma
     character(len=19) :: mai, lmafis
     logical :: ljonc
 ! ----------------------------------------------------------------------
@@ -106,11 +106,9 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 !     CREATION D'UN VECTEUR TEMPORAIRE LMAFIS POUR SAVOIR RAPIDEMENT
 !     SI UNE MAILLE DU MAILLAGE APPARTIENT A MAFIS
@@ -119,7 +117,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     do 10 i = 1, nmafis
         ima=zi(jmafis-1+i)
         zi(jlmaf-1+ima)=1
-10  end do
+ 10 end do
 !
 !     BOUCLE SUR LES NOEUDS DE GROUP_ENRI
     do 200 i = 1, nbnoe
@@ -132,7 +130,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                 maxlsj(ifiss)=-1*r8maem()
                 minlsj(ifiss,1)= r8maem()
                 minlsj(ifiss,2)= r8maem()
-201          continue
+201         continue
         endif
         ino=zi(jdlino-1+i)
         call jelira(jexnum(cnxinv, ino), 'LONMAX', nmasup)
@@ -178,7 +176,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                         ifiss-1)+2)
                         lsjb(ifiss,2)=zr(jljsv-1+2*nfiss*(nunob-1)+2*(&
                         ifiss-1)+2)
-211                  continue
+211                 continue
                 endif
                 if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0) then
 !             ON RETIENT LES 2 POINTS A ET B
@@ -195,7 +193,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                             if (lsja(ifiss,1) .gt. maxlsj(ifiss)) maxlsj(ifiss)=lsja(ifiss,1)
                             if (lsjb(ifiss,2) .lt. minlsj(ifiss,2)) minlsj(ifiss,2)=lsjb(ifiss,2)
                             if (lsja(ifiss,2) .lt. minlsj(ifiss,2)) minlsj(ifiss,2)=lsja(ifiss,2)
-214                      continue
+214                     continue
                     endif
                 else if ((lsna*lsnb).le.0.d0) then
 !            CA VEUT DIRE QUE LSN S'ANNULE SUR L'ARETE AU PT C
@@ -207,7 +205,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !               INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
                         c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                         ac(k)=c(k)-a(k)
-21                  continue
+ 21                 continue
                     ASSERT(ddot(ndim, ab, 1, ab, 1).gt.r8prem())
                     lstc = lsta + (lstb-lsta) * ddot(ndim,ab,1,ac,1) / ddot(ndim,ab,1,ab,1)
                     if (lstc .lt. minlst) minlst=lstc
@@ -221,7 +219,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                             if (lsjc(ifiss,1) .lt. minlsj(ifiss,1)) minlsj(ifiss,1)=lsjc(ifiss,1)
                             if (lsjc(ifiss,1) .gt. maxlsj(ifiss)) maxlsj(ifiss)=lsjc(ifiss,1)
                             if (lsjc(ifiss,2) .lt. minlsj(ifiss,2)) minlsj(ifiss,2)=lsjc(ifiss,2)
-215                      continue
+215                     continue
                     endif
                 else
 !             AUCUN POINT DE L'ARETE N'A LSN = 0,ALORS ON RETIENT RIEN
@@ -229,7 +227,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                 endif
 !           AUCUNE ARETE SUR LAQUELLE LSN S'ANNULE
                 ASSERT(nrien.ne.nbar)
-212          continue
+212         continue
 !
             call panbno(itypma, nbnott)
 !         BOUCLE SUR LES NOEUDS SOMMET DE LA MAILLE COURANTE
@@ -238,9 +236,9 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                 lsn=zr(jlnsv-1+(nuno-1)+1)
                 if (lsn .lt. minlsn) minlsn=lsn
                 if (lsn .gt. maxlsn) maxlsn=lsn
-213          continue
+213         continue
 !
-210      continue
+210     continue
 !
         enr=0
         enr1=0
@@ -263,7 +261,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                         enr2=0
                         if (minlsn*maxlsn .lt. 0.d0) enr1 = 1
                     endif
-220              continue
+220             continue
             endif
         endif
 !
@@ -284,7 +282,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !       ENREGISTREMENT DU STATUT DU NOEUD
         zi(jstano-1+(ino-1)+1)=enr
 !
-200  end do
+200 end do
 !
     call jedetr(lmafis)
 !

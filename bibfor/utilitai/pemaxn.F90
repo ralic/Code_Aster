@@ -65,8 +65,8 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 !     IN  INST    : INSTANT
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbma, i, jcesv, jcesl, jcesd
-    integer :: jcesk, jcmpgd, ncmpm, ibid, jcesc
+    integer ::  nbma, i, jcesv, jcesl, jcesd
+    integer :: jcesk, jcmpgd, ncmpm, jcesc
     integer :: icmp, nbpara, nbno
     integer :: ino, nmin, nmax, npara, nbcmpm
     real(kind=8) :: vmin, vmax, inst
@@ -82,14 +82,10 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     call jemarq()
     cbid=(0.d0,0.d0)
 !
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrel, iret)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
     if (lieu(1:4) .ne. 'TOUT') then
         call utmess('A', 'UTILITAI3_94')
@@ -130,7 +126,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
             nomva = 'V'
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
-25      continue
+ 25     continue
     endif
 !
     npara=4*nbcmp
@@ -152,7 +148,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
                     nmin=ino
                 endif
             endif
-36      continue
+ 36     continue
         mima(1+2*(i-1)+1)=vmax
         mima(1+2*(i-1)+2)=vmin
         call jenuno(jexnum(nomnoe, nmin), knmin)
@@ -175,7 +171,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
         endif
 !
 !
-30  end do
+ 30 end do
 !
 ! --- ON REMPLIT LA TABLE
     nbpara=4+npara

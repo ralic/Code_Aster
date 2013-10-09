@@ -107,6 +107,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !====
 !
     call infniv(ifm, nivinf)
+    codret=0
 !
     10000 format(/,81('='),/,81('='),/)
     10001 format(81('-'),/)

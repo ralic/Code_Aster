@@ -84,7 +84,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     integer :: jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ib, ibid, iddeeq, ieq, ii, iinst, imod
+    integer ::  iddeeq, ieq, ii, iinst, imod
     integer :: imodco, inum, iret, jdepl, jmod, jordr
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
@@ -92,24 +92,19 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     call jemarq()
     ier = 0
 ! ---    CALCUL TRANSITOIRE CLASSIQUE
-    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ib,&
-                typeba, ier)
+    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
+                ier=ier)
 !
 !
     if (typbas(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ib,&
-                    matass, ier)
-        call dismoi('F', 'NOM_MAILLA', matass, 'MATR_ASSE', ib,&
-                    mailla, ier)
-        call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ibid,&
-                    numddl, ier)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matass)
+        call dismoi('NOM_MAILLA', matass, 'MATR_ASSE', repk=mailla)
+        call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
     else if (typeba(1:1).ne.' ') then
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ib,&
-                    numddl, ier)
-        call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
-                    mailla, ier)
+        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
+        call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
     endif
@@ -247,7 +242,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call jeveuo(chamno//'.VALE', 'L', imodco)
                 do 30 ieq = 1, neq
                     zr(jpsdel+ieq-1+(i-1)*neq) = zr(imodco+ieq-1)
-30              continue
+ 30             continue
                 do 40 nm = 1, nbmode
                     coef = zr(iadvec(i)+nm-1)/riggen(nm)
                     call rsexch('F', basemo, 'DEPL', nm, chamn2,&
@@ -258,9 +253,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                                                      jpsdel+ieq-1+(i-1)* neq&
                                                      ) - coef*zr(imod+ieq-1&
                                                      )
-50                  continue
+ 50                 continue
                     call jelibe(chamn2//'.VALE')
-40              continue
+ 40             continue
                 call jelibe(chamno//'.VALE')
 !
 !           --- MISE A ZERO DES DDL DE LAGRANGE
@@ -270,7 +265,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 ASSERT(.false.)
             endif
         endif
-10  continue
+ 10 continue
 !
 !
 ! --- EXCITATIONS SOUS LE MOT-CLE EXCIT_RESU
@@ -300,7 +295,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
             do 31 iinst = 1, ninst
                 zr(jvale-1+iinst) = zr(jinst-1+iinst)
                 zr(jvale-1+ninst+iinst) = alpha* zr( jdepl-1+nbmode*( iinst-1)+jmod)
-31          continue
+ 31         continue
 !
             call wkvect(nofk19//'.PROL', 'V V K24', 6, jprol)
             zk24(jprol-1+1)='FONCTION'
@@ -315,9 +310,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
             inumor(ii+jmod)=zi(jordr-1+jmod)
             idescf(ii+jmod)=2
 !
-21      continue
+ 21     continue
 !
-11  continue
+ 11 continue
 !
     call jedema()
 end subroutine

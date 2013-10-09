@@ -186,8 +186,8 @@ subroutine appcpr(kptsc)
 !
 !     VERIFICATION DU DOMAINE D'APPLICATION
     if (precon .eq. 'ML' .or. precon .eq. 'BOOMER') then
-        call dismoi('C', 'EXIS_LAGR', nomat, 'MATR_ASSE', ibid,&
-                    exilag, iret)
+        call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',&
+                    ier=iret)
         if (iret .eq. 0) then
             if (exilag .eq. 'OUI') then
                 call utmess('F', 'PETSC_17')
@@ -211,7 +211,7 @@ subroutine appcpr(kptsc)
         endif
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

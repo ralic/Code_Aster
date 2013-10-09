@@ -55,17 +55,17 @@ subroutine promor(nuz, base)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=8) :: ma, mo, kbid, exiele, exivf
+    character(len=8) :: ma, mo, exiele, exivf
 !----------------------------------------------------------------------
     character(len=14) :: nu
     logical :: ldist, ldgrel, lmadis
     character(len=19) :: nomlig
     integer :: iconx1, iconx2, ili, iadlie, iel, iadnem
     integer :: idprn1
-    integer :: idprn2, ifm, niv, iret, ibid, ier, nnoe, jnueq
+    integer :: idprn2, ifm, niv, iret, ibid, nnoe, jnueq
     integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
-    integer :: iasssa, ierd, iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
+    integer :: iasssa, iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
     integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma, itypel, jnvge
     integer :: nnov, numav, kvois, rang, jnumsd, imd, jsmh1, jprtk
 !
@@ -148,20 +148,15 @@ subroutine promor(nuz, base)
     nu=nuz
 !
 !
-    call dismoi('F', 'NOM_MODELE', nu, 'NUME_DDL', ibid,&
-                mo, ier)
-    call dismoi('F', 'NUM_GD_SI', nu, 'NUME_DDL', igd,&
-                kbid, ier)
-    call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
-                ma, ier)
+    call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
+    call dismoi('NUM_GD_SI', nu, 'NUME_DDL', repi=igd)
+    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=ma)
 !
 !---- QUEL TYPE DE PARTITION ?
 !     LDIST=.TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
 !     LDGREL=.TRUE. : PARTITION DE TYPE 'GROUP_ELEM'
-    call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
-                nomlig, ier)
-    call dismoi('F', 'PARTITION', nomlig, 'LIGREL', ibid,&
-                partit, ier)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=nomlig)
+    call dismoi('PARTITION', nomlig, 'LIGREL', repk=partit)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
@@ -185,11 +180,9 @@ subroutine promor(nuz, base)
     if (mo .eq. ' ') then
         nbss=0
     else
-        call dismoi('F', 'NB_SS_ACTI', mo, 'MODELE', nbss,&
-                    kbid, ierd)
+        call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbss)
         if (nbss .gt. 0) then
-            call dismoi('F', 'NB_SM_MAILLA', mo, 'MODELE', nbsma,&
-                        kbid, ierd)
+            call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
             call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
         endif
     endif
@@ -264,14 +257,11 @@ subroutine promor(nuz, base)
 !     -----------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
-        call dismoi('F', 'EXI_ELEM', nomlig, 'LIGREL', ibid,&
-                    exiele, ierd)
-        call dismoi('F', 'EXI_VF', nomlig, 'LIGREL', ibid,&
-                    exivf, ierd)
+        call dismoi('EXI_ELEM', nomlig, 'LIGREL', repk=exiele)
+        call dismoi('EXI_VF', nomlig, 'LIGREL', repk=exivf)
 !
         if (nomlig(1:8) .eq. mo) then
-            call dismoi('F', 'NB_SS_ACTI', mo, 'MODELE', nbss,&
-                        kbid, ierd)
+            call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbss)
         else
             nbss=0
         endif

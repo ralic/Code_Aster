@@ -2,7 +2,6 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
                   noe)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/confac.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -10,6 +9,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: noma
     integer :: tablev(2), ndim, na, nb, noe(4, 4)
 !
@@ -45,11 +45,11 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
 !                MAILLES CONNECTEES AU NOEUD SOMMET COURANT
 !                ET AUX LEVRES
 !
-    integer :: iatyma, iret, iamase, ityp
+    integer :: iatyma, iamase, ityp
     integer :: i, j, jf, numert(12, 3), nbft, numero(6, 4), nbf
     integer :: compte, ima, nn, inp, compt(2), compf
     integer :: numerf(4, 2)
-    character(len=8) :: k8b, type
+    character(len=8) ::  type
 !
 !     -----------------------------------------------------------------
 !
@@ -63,13 +63,12 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
     do 10 i = 1, 4
         do 11 j = 1, 4
             noe(i,j)=0
-11      continue
-10  end do
+ 11     continue
+ 10 end do
     do 130 ima = 1, 2
         ityp = iatyma-1+tablev(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-        call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn,&
-                    k8b, iret)
+        call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
         call jeveuo(jexnum( noma//'.CONNEX', tablev(ima)), 'L', iamase)
 !
 !       EN 3D
@@ -83,7 +82,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
                     compt(i) = inp
                     i = i+1
                 endif
-131          continue
+131         continue
 !         RECHERCHE DE LA FACE
             do 132 inp = 1, nbf
                 compf = 0
@@ -91,7 +90,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
                     if ((numero(inp,i).eq.compt(1)) .or. (numero(inp,i) .eq.compt(2))) then
                         compf = compf + 1
                     endif
-133              continue
+133             continue
                 if (compf .eq. 2) then
 !             RECUPERATION DES NOEUDS SOMMETS DE LA FACE INP
                     compte = compte + 1
@@ -101,9 +100,9 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
                         else
                             noe(compte,jf) = 0
                         endif
-134                  continue
+134                 continue
                 endif
-132          continue
+132         continue
 !
 !
 !       EN 2D
@@ -135,7 +134,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
                     compt(i) = inp
                     i = i+1
                 endif
-135          continue
+135         continue
 !         RECHERCHE DE LA FACE OU ARETE
             do 136 inp = 1, 4
                 compf = 0
@@ -143,17 +142,17 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
                     if (numerf(inp,i) .eq. compt(1)) then
                         compf = compf + 1
                     endif
-137              continue
+137             continue
                 if (compf .eq. 1) then
 !             RECUPERATION DES NOEUDS SOMMETS DE LA FACE INP
                     compte = compte + 1
                     do 138 jf = 1, 2
                         noe(compte,jf) = zi(iamase-1+numerf(inp,jf))
-138                  continue
+138                 continue
                 endif
-136          continue
+136         continue
         endif
-130  end do
+130 end do
 !
     call jedema()
 end subroutine

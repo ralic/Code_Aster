@@ -149,8 +149,7 @@ subroutine chcoma(tablez, nomaou)
 !
 ! --- NOMBRE DE NOEUDS DU MAILLAGE :
 !     ----------------------------
-    call dismoi('F', 'NB_NO_MAILLA', nomaou, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', nomaou, 'MAILLAGE', repi=nbno)
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DU MAILLAGE :
 !     ---------------------------------------------------
@@ -163,7 +162,7 @@ subroutine chcoma(tablez, nomaou)
         idcoor = jcoor-1+dimcoo*(ino-1)
         zr(idcoor+1) = zr(idcoor+1) - yg
         zr(idcoor+2) = zr(idcoor+2) - zg
-10  end do
+ 10 end do
 !
 ! --- ROTATION D'ANGLE ALPHA DES AXES :
 !     -------------------------------
@@ -175,7 +174,7 @@ subroutine chcoma(tablez, nomaou)
 !
         zr(idcoor+1) = p(1,1)*yabs + p(2,1)*zabs
         zr(idcoor+2) = p(1,2)*yabs + p(2,2)*zabs
-20  end do
+ 20 end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

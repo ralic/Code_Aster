@@ -53,13 +53,13 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
     character(len=24) :: valk(2)
 !
 ! VARIABLES LOCALES
-    integer :: ic, typobs, nbs, ino1, jcoor1, i, j, k, nbno, ier
+    integer :: ic, typobs, nbs, ino1, jcoor1, i, j, k, nbno
     real(kind=8) :: xloc(3), xglo(3)
     real(kind=8) :: xjeu, sint, cost, dnorm
     real(kind=8) :: xorig(3), xoriv(3), sina, cosa, sinb, cosb, sing, cosg
     real(kind=8) :: epsi, coor(3, 3), vect(3), tot
     character(len=3) :: inum
-    character(len=8) :: k8b, mailla, nomnoe
+    character(len=8) ::  mailla, nomnoe
 !
 ! ****************** DEBUT DU CODE EXECUTABLE ************************
 !
@@ -71,7 +71,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
 !
     do 10 i = 1, nbm
         depg(i) = 0.d0
-10  end do
+ 10 end do
 !
 ! 1. BOUCLE SUR LES NON-LINEARITES.
 !    ------------------------------
@@ -158,8 +158,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
 !
         call jeveuo(mailla//'.COORDO    .VALE', 'L', jcoor1)
         call jenonu(jexnom(mailla//'.NOMNOE', nomnoe), ino1)
-        call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbno,&
-                    k8b, ier)
+        call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbno)
         if (ino1 .gt. 1) then
             ino1 = ino1 - 1
         endif
@@ -169,17 +168,17 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
         do 12 k = 1, 3
             do 11 j = 1, 3
                 coor(k,j) = zr(jcoor1+3*(ino1+k-2)+j-1)
-11          continue
-12      continue
+ 11         continue
+ 12     continue
         tot = 0.d0
         do 13 j = 1, 3
             vect(j) = coor(3,j) - coor(1,j)
             tot = tot + vect(j)*vect(j)
-13      continue
+ 13     continue
         tot = dble(sqrt(tot))
         do 14 j = 1, 3
             vect(j) = vect(j) / tot
-14      continue
+ 14     continue
 !
         call gloloc(vect, xoriv, sina, cosa, sinb,&
                     cosb, sing, cosg, xloc)
@@ -196,6 +195,6 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
             call utmess('A', 'ALGELINE_13', sk=inum)
         endif
 !
-20  end do
+ 20 end do
     call jedema()
 end subroutine

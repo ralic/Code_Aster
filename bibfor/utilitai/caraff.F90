@@ -49,7 +49,7 @@ subroutine caraff(noma, gran, base, cartz)
 !    POUR LES CARTES ET LES CHAM_ELEM (SAUF POUR VARI_R)
 !  - CREER LA CARTE  (CARTZ)
 !-----------------------------------------------------------------------
-    integer :: gd, ibid, ied, nocc, ncmpmx, nbtou, n1, vali(2)
+    integer :: gd, nocc, ncmpmx, nbtou, n1, vali(2)
     integer :: iad, jncmp, jvalv, jmail, nbcmp, k, iocc, nbmail, nbvar
     real(kind=8) :: rvid
     character(len=8) :: k8b, tsca, typmcl(2)
@@ -67,8 +67,7 @@ subroutine caraff(noma, gran, base, cartz)
         call utmess('F', 'UTILITAI_11')
     endif
 !
-    call dismoi('F', 'TYPE_SCA', gran, 'GRANDEUR', ibid,&
-                tsca, ied)
+    call dismoi('TYPE_SCA', gran, 'GRANDEUR', repk=tsca)
 !
     motclf = 'AFFE'
     call getfac(motclf, nocc)
@@ -93,10 +92,10 @@ subroutine caraff(noma, gran, base, cartz)
     if (gran .eq. 'VAR2_R') then
         rvid=r8vide()
         nbcmp = ncmpmx
-        do 10,k = 1,ncmpmx
-        zk8(jncmp-1+k) = zk8(iad-1+k)
-        zr(jvalv-1+k) = rvid
-10      continue
+        do 10 k = 1, ncmpmx
+            zk8(jncmp-1+k) = zk8(iad-1+k)
+            zr(jvalv-1+k) = rvid
+ 10     continue
         call nocart(carte, 1, nbcmp)
     endif
 !
@@ -163,7 +162,7 @@ subroutine caraff(noma, gran, base, cartz)
                         limanu=zi(jmail))
             call jedetr(mesmai)
         endif
-30  end do
+ 30 end do
 !
     call tecart(carte)
     call jedetr(carte//'.NCMP')

@@ -60,7 +60,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
 !
 !
     integer :: ifm, niv
-    character(len=8) :: k8bid, cmp, nomno
+    character(len=8) ::  cmp, nomno
     integer :: ino, iddl, cddl
     character(len=24) :: ddlco, atmu, apjeu
     character(len=24) :: valk(2)
@@ -83,8 +83,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
 ! --- INITIALISATIONS
 !
     noeuma = noma // '.NOMNOE'
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- AFFICHAGE
 !
@@ -151,8 +150,8 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
                 zi(jddl+iddl) = cddl
                 iddl = iddl+1
             endif
-200      continue
-100  end do
+200     continue
+100 end do
     if ((iddl-1) .ne. ncmpg) then
         ASSERT(.false.)
     endif
@@ -237,7 +236,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
     call jeecra(cm1a, 'LONMAX', neq)
     do 40 i = 1, ncmpg
         call jecroc(jexnum(cm1a, i))
-40  end do
+ 40 end do
 !
 ! --- MATRICE DE LA LIAISON_UNILATERALE ACM1AT
 !

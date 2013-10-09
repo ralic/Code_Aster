@@ -19,9 +19,8 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -43,6 +42,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/wkvect.h"
 #include "asterfort/xmelin.h"
 #include "asterfort/xxconi.h"
+!
     character(len=8) :: noma, modele
     character(len=*) :: param, option
     integer :: nfiss
@@ -70,8 +70,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 !
     integer :: ifm, niv
-    character(len=8) :: k8bid
-    integer :: ibid, iad, ispt, i, ima, ifis, izone, ier
+    integer :: ibid, iad, ispt, i, ima, ifis, izone
     integer :: ifima, jcesd1, jcesl1, jcesv1, jxc
     integer :: ndim, nface, nfisc, nnint, npg, typint, nfisc2
     integer :: nbma, nmaenr, jcesd2, jcesl2, jcesv2
@@ -106,10 +105,8 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 ! --- RECUPERATION DES INFOS SUR LE MAILLAGE ET LE MODELE
 !
     call jeveuo(modele//'.FISS', 'L', jmofis)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
-    call dismoi('F', 'DIM_GEOM', modele, 'MODELE', ndim,&
-                k8bid, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
     call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
 !
 ! --- ELEMENT DE REFERENCE ASSOCIE A UNE FACETTE DE CONTACT
@@ -207,9 +204,9 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                         ASSERT(nface.le.6)
                         zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+nface*nnint
                     endif
-12              continue
-10          continue
-11      continue
+ 12             continue
+ 10         continue
+ 11     continue
 !
         if (param .eq. 'PCOHES') then
             call cescre('V', chelsi, 'ELEM', noma, nomgd,&
@@ -294,7 +291,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                             nface = zi(jcesv2-1+iad)
                             npg = nface*nnint
                         endif
-15                  continue
+ 15                 continue
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
@@ -305,17 +302,17 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                             zl(jcesl-1+abs(iad)) = .true.
                             if (isint) zi(jcesv-1+abs(iad)) = 1
                             if (.not.isint) zr(jcesv-1+abs(iad)) = valr
-151                      continue
-150                  continue
+151                     continue
+150                 continue
 !
 ! --- INCREMENTATION REPERAGE POUR LES FISSURES SUIVANTES
 !
                     zi(jnbsp-1+ima) = zi(jnbsp-1+ima) + npg
 !
-120              continue
+120             continue
             endif
         endif
-110  end do
+110 end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

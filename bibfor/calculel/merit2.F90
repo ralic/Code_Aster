@@ -75,12 +75,12 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
     character(len=8) :: nomcha, lpain(4), lpaout(1), k8bid
     character(len=16) :: option
     character(len=24) :: ligrel(2), lchin(5), lchout(1), chgeom, chcara(18)
-    integer :: iret, ilires, ibid, icha
+    integer :: iret, ilires, icha
     logical :: exicar
 ! ----------------------------------------------------------------------
     integer :: nbchmx
 !-----------------------------------------------------------------------
-    integer :: ierd, iret3, k
+    integer ::  iret3, k
 !-----------------------------------------------------------------------
     parameter (nbchmx=2)
     integer :: nligr(nbchmx)
@@ -122,8 +122,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
         do 20 icha = 1, nchar
             nomcha = lchar(icha)
             ligrel(2) = nomcha(1:8)//'.CHTH.LIGRE'
-            call dismoi('F', 'TYPE_CHARGE', nomcha, 'CHARGE', ibid,&
-                        k8bid, ierd)
+            call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=k8bid)
             if (k8bid(5:7) .eq. '_FO') then
                 option = 'RIGI_THER_    _F'
                 lpain(3) = '      F'
@@ -144,8 +143,8 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
                                 'OUI')
                     call reajre(matel, lchout(1), base)
                 endif
-10          continue
-20      continue
+ 10         continue
+ 20     continue
     endif
     call jedema()
 end subroutine

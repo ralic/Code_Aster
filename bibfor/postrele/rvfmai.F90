@@ -2,7 +2,6 @@ subroutine rvfmai(courbe, listma)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -13,6 +12,7 @@ subroutine rvfmai(courbe, listma)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: listma
     character(len=8) :: courbe
 !
@@ -50,7 +50,6 @@ subroutine rvfmai(courbe, listma)
     character(len=24) :: nmail
     integer :: adr, pt, nbma, nbtma, alstma, m, p, nbpart, im, i
     integer :: adrm1, nbmail, adrm2, d3, asds, vlccou
-    character(len=1) :: k1bid
 !
 !================= CORPS DE LA ROUTINE ===============================
 !
@@ -66,59 +65,58 @@ subroutine rvfmai(courbe, listma)
         call jeveuo(courbe//'.NOMMAIL', 'L', adr)
     endif
     nmaila = zk8(adr)
-    call dismoi('F', 'NB_MA_MAILLA', nmaila, 'MAILLAGE', nbtma,&
-                k1bid, i)
+    call dismoi('NB_MA_MAILLA', nmaila, 'MAILLAGE', repi=nbtma)
     call wkvect('&&RVFMAI.VEC.TEMP', 'V V I', nbtma, adr)
-    do 10, i = 1, nbtma, 1
-    zi(adr + i-1) = 0
-    10 end do
+    do 10 i = 1, nbtma, 1
+        zi(adr + i-1) = 0
+ 10 end do
     if (d3 .ne. 0) then
         call jelira(courbe//'.NSDS', 'LONMAX', nbpart)
         call jeveuo(courbe//'.NSDS', 'L', asds)
-        do 100, p = 1, nbpart, 1
-        nmail = zk24(asds + p-1)(1:13)//'.MAIL'
-        call jeveuo(jexatr(nmail, 'LONCUM'), 'L', vlccou)
-        call jelira(nmail, 'NMAXOC', nbmail)
-        call jeveuo(nmail, 'L', adrm1)
-        do 110, im = 1, zi(vlccou + nbmail)-1,1
-        m = zi(adrm1 + im-1)
-        zi(adr + m-1) = 1
-110      continue
-100      continue
+        do 100 p = 1, nbpart, 1
+            nmail = zk24(asds + p-1)(1:13)//'.MAIL'
+            call jeveuo(jexatr(nmail, 'LONCUM'), 'L', vlccou)
+            call jelira(nmail, 'NMAXOC', nbmail)
+            call jeveuo(nmail, 'L', adrm1)
+            do 110 im = 1, zi(vlccou + nbmail)-1, 1
+                m = zi(adrm1 + im-1)
+                zi(adr + m-1) = 1
+110         continue
+100     continue
     else
         call jeveuo(courbe//'.TYPCOURBE', 'L', im)
         typcrb = zk8(im)
         nmail1 = courbe//'.MAIL1'
         nmail2 = courbe//'.MAIL2'
         call jelira(nmail1, 'NMAXOC', nbpart)
-        do 200, p = 1, nbpart, 1
-        call jelira(jexnum(nmail1, p), 'LONMAX', nbmail)
-        call jeveuo(jexnum(nmail1, p), 'L', adrm1)
-        call jeveuo(jexnum(nmail2, p), 'L', adrm2)
-        if (typcrb .eq. 'LISTMAIL') then
-            nbmail = nbmail - 1
-        endif
-        do 210, im = 1, nbmail, 1
-        m = zi(adrm1 + im-1)
-        zi(adr + m-1) = 1
-        m = zi(adrm2 + im-1)
-        if (m .gt. 0) then
-            zi(adr + m-1) = 1
-        endif
-210      continue
-200      continue
+        do 200 p = 1, nbpart, 1
+            call jelira(jexnum(nmail1, p), 'LONMAX', nbmail)
+            call jeveuo(jexnum(nmail1, p), 'L', adrm1)
+            call jeveuo(jexnum(nmail2, p), 'L', adrm2)
+            if (typcrb .eq. 'LISTMAIL') then
+                nbmail = nbmail - 1
+            endif
+            do 210 im = 1, nbmail, 1
+                m = zi(adrm1 + im-1)
+                zi(adr + m-1) = 1
+                m = zi(adrm2 + im-1)
+                if (m .gt. 0) then
+                    zi(adr + m-1) = 1
+                endif
+210         continue
+200     continue
     endif
 !
-    do 300, i = 1, nbtma, 1
-    nbma = nbma + max(0,zi(adr + i-1))
-    300 end do
+    do 300 i = 1, nbtma, 1
+        nbma = nbma + max(0,zi(adr + i-1))
+300 end do
     call wkvect(listma, 'V V I', nbma, alstma)
-    do 400, i = 1, nbtma, 1
-    if (zi(adr + i-1) .ne. 0) then
-        zi(alstma + pt-1) = i
-        pt = pt + 1
-    endif
-    400 end do
+    do 400 i = 1, nbtma, 1
+        if (zi(adr + i-1) .ne. 0) then
+            zi(alstma + pt-1) = i
+            pt = pt + 1
+        endif
+400 end do
     call jedetr('&&RVFMAI.VEC.TEMP')
     call jedema()
 end subroutine

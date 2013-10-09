@@ -76,7 +76,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbma, nbmai, i, jcesv, jcesl, jcesd, jpoiv, jpoil, jpoid
-    integer :: nucmp, jcesk, jcmpgd, ncmpm, ibid, iad, jintr, jintk, indma
+    integer :: nucmp, jcesk, jcmpgd, ncmpm, iad, jintr, jintk, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara
     integer :: jpdsm, ico, ind1, ind2, ifm, niv
     real(kind=8) :: vol, val, inst, volpt
@@ -92,12 +92,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     cbid=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrel, iret)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- TABLEAUX DE TRAVAIL:
 !     - TABLEAU DES PARAMETRES INTE_XXXX : ZK16(JINTK)
@@ -141,14 +138,14 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         call jeveuo(mesmai, 'L', jmesma)
         do 5 i = 1, nbma
             zi(indma+i-1)=0
- 5      continue
+  5     continue
         do 10 i = 1, nbmai
             zi(indma+zi(jmesma+i-1)-1)=1
-10      continue
+ 10     continue
     else
         do 15 i = 1, nbma
             zi(indma+i-1)=1
-15      continue
+ 15     continue
     endif
 !
 !
@@ -191,7 +188,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
             nomva = 'V'
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
-25      continue
+ 25     continue
     endif
 !
 !     - INFOS
@@ -236,8 +233,8 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                 endif
                 ico=ico+1
                 vol=vol+volpt
-40          continue
-35      continue
+ 40         continue
+ 35     continue
         if (ico .eq. 0) then
             valk(3)=nomcmp(icmp)
             call utmess('F', 'UTILITAI7_12', nk=3, valk=valk)
@@ -248,7 +245,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         zk16(jintk+ind1+icmp-1)='INTE_'//nomcp2(icmp)
         zr(jintr+nbcmp+icmp+ind2)=val/vol
         zk16(jintk+ind1+nbcmp+icmp-1)='MOYE_'//nomcp2(icmp)
-30  end do
+ 30 end do
 !
 !
 ! --- ON AJOUTE LES PARAMETRES MANQUANTS DANS LA TABLE:
@@ -261,7 +258,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         if (.not.exist) then
             call tbajpa(resu, 1, zk16(jintk+ind1+icmp-1), 'R')
         endif
-45  continue
+ 45 continue
 !
 ! --- ON REMPLIT LA TABLE
     nbpara=ind1+nbcmp*2

@@ -49,7 +49,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !
 !
-    integer :: ibid, ierd, jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
+    integer ::  jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
     integer :: vali(4)
     character(len=14) :: nume
     parameter (mxddl=1)
@@ -70,8 +70,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !     -------------------------------------
 !
 !       --- RECUPERATION DU NOM DE LA NUMEROTATION ASSOCIEE AUX MATRICES
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                nume, ierd)
+    call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
 !
 !       --- RECUPERATION DES POSITIONS DES DDL LAGRANGE : DLAGR
     call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
@@ -81,12 +80,12 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     nblagr = 0
     do 10 ieq = 1, neq
         nblagr = nblagr + dlagr(ieq)
-10  end do
+ 10 end do
 !
 !       --- INVERSION : DLAGR = 0 SI LAGRANGE ET 1 SINON
     do 20 ieq = 1, neq
         dlagr(ieq) = abs(dlagr(ieq)-1)
-20  end do
+ 20 end do
 !
 !     --- DETECTION DES DDL BLOQUES PAR AFFE_CHAR_CINE ---
 !     ----------------------------------------------------
@@ -101,12 +100,12 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
         call jeveuo(masse//'.CCID', 'E', jccid)
         do 30 ieq = 1, neq
             dbloq(ieq) = dbloq(ieq)*abs(zi(jccid+ieq-1)-1)
-30      continue
+ 30     continue
 !
 !       --- CALCUL DU NOMBRE DE DDL BLOQUE PAR CETTE METHODE : NCINE ---
         do 40 ieq = 1, neq
             nbcine = nbcine + zi(jccid+ieq-1)
-40      continue
+ 40     continue
     endif
 !
 !     --- SI NUMEROTATION GENERALISEE : PAS DE DDLS BLOQUES ---
@@ -115,7 +114,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     if (nbprno .ne. 0) then
         do 50 ieq = 1, neq
             dbloq(ieq) = 1
-50      continue
+ 50     continue
     endif
 !
 !     ----------------- CALCUL DU NOMBRE DE DDL ACTIFS -----------------

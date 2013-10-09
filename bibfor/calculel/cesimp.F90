@@ -18,7 +18,6 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/codent.h"
@@ -32,6 +31,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cesz
     integer :: unite, nbmat, nummai(*)
 ! ---------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !
 !     ------------------------------------------------------------------
     integer :: jcesk, jcesd, jcesv, jcesl, jcesc, iad, jconx1, jconx2
-    integer :: nbma, ibid, k, ima, ncmp, jlval, ipt, isp, nbpt, nbsp, ino, iret
+    integer :: nbma, k, ima, ncmp, jlval, ipt, isp, nbpt, nbsp, ino, iret
     integer :: ik, ncmpu, licmpu(997), nbmai, im
     character(len=8) :: ma, nomgd, nomma, poin, spoin, typces
     character(len=3) :: tsca
@@ -85,27 +85,26 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !            ET DE LICMPU : NUMEROS DES CMPS UTILISEES
 !     ------------------------------------------------------------
     ncmpu = 0
-    do 50,k = 1,ncmp
-    do 30,ima = 1,nbma
-    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-    nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-    do 20,ipt = 1,nbpt
-    do 10,isp = 1,nbsp
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, k, iad)
-    if (iad .gt. 0) goto 40
-10  continue
-20  continue
-30  continue
-    goto 50
-40  continue
-    ncmpu = ncmpu + 1
-    licmpu(ncmpu) = k
-    50 end do
+    do 50 k = 1, ncmp
+        do 30 ima = 1, nbma
+            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+            do 20 ipt = 1, nbpt
+                do 10 isp = 1, nbsp
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, k, iad)
+                    if (iad .gt. 0) goto 40
+ 10             continue
+ 20         continue
+ 30     continue
+        goto 50
+ 40     continue
+        ncmpu = ncmpu + 1
+        licmpu(ncmpu) = k
+ 50 end do
 !
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .eq. 'I' .or. tsca .eq. 'K8') then
         fmt1= '(3(''|'',A12),XXX(''|'',A12))'
         fmt = '(3(''|'',A12),XXX(''|'',A12))'
@@ -154,86 +153,86 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     else
         nbmai = nbmat
     endif
-    do 110,im = 1,nbmai
-    ima = im
-    if (nbmat .ne. 0) ima = nummai(im)
-    call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
-    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-    nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-    do 100,ipt = 1,nbpt
-    do 90,isp = 1,nbsp
+    do 110 im = 1, nbmai
+        ima = im
+        if (nbmat .ne. 0) ima = nummai(im)
+        call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+        do 100 ipt = 1, nbpt
+            do 90 isp = 1, nbsp
 !
 !       -- ON N'ECRIT UN SOUS_POINT QUE S'IL EXISTE AU MOINS 1 CMP :
-    exicmp = .false.
-    do 60,ik = 1,ncmpu
-    k = licmpu(ik)
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, k, iad)
-    if (iad .gt. 0) then
-        exicmp = .true.
-        goto 70
-    endif
-60  continue
-70  continue
-    if (.not.exicmp) goto 90
+                exicmp = .false.
+                do 60 ik = 1, ncmpu
+                    k = licmpu(ik)
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, k, iad)
+                    if (iad .gt. 0) then
+                        exicmp = .true.
+                        goto 70
+                    endif
+ 60             continue
+ 70             continue
+                if (.not.exicmp) goto 90
 !
 !
 !
-    do 80,ik = 1,ncmpu
-    k = licmpu(ik)
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, k, iad)
-    if (iad .gt. 0) then
+                do 80 ik = 1, ncmpu
+                    k = licmpu(ik)
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, k, iad)
+                    if (iad .gt. 0) then
 !
-        if (tsca .eq. 'R') then
-            write (zk16(jlval-1+ik),'(1PE16.9)') zr(&
+                        if (tsca .eq. 'R') then
+                            write (zk16(jlval-1+ik),'(1PE16.9)') zr(&
                             jcesv-1+iad)
 !
-        else if (tsca.eq.'C') then
-            write (zk16(jlval-1+2*(ik-1)+1),'(1PE16.9)')&
+                        else if (tsca.eq.'C') then
+                            write (zk16(jlval-1+2*(ik-1)+1),'(1PE16.9)')&
      &                  dble(zc(jcesv-1+iad))
-            write (zk16(jlval-1+2*(ik-1)+2),'(1PE16.9)')&
+                            write (zk16(jlval-1+2*(ik-1)+2),'(1PE16.9)')&
      &                  dimag(zc(jcesv-1+iad))
 !
-        else if (tsca.eq.'I') then
-            write (zk16(jlval-1+ik),'(I12,A4)') zi(&
+                        else if (tsca.eq.'I') then
+                            write (zk16(jlval-1+ik),'(I12,A4)') zi(&
                             jcesv-1+iad),' '
 !
-        else if (tsca.eq.'K8') then
-            write (zk16(jlval-1+ik),'(A8,A8)') zk8(&
+                        else if (tsca.eq.'K8') then
+                            write (zk16(jlval-1+ik),'(A8,A8)') zk8(&
                             jcesv-1+iad),' '
 !
-        else if (tsca.eq.'K16') then
-            write (zk16(jlval-1+ik),'(A16)') zk16(&
+                        else if (tsca.eq.'K16') then
+                            write (zk16(jlval-1+ik),'(A16)') zk16(&
                             jcesv-1+iad)
-        endif
+                        endif
 !
-    else
+                    else
 !               -- ON MET LES VALEURS NON AFFECTEES A " " :
-        write (zk16(jlval-1+ik),'(A16)') ' '
-    endif
-80  continue
+                        write (zk16(jlval-1+ik),'(A16)') ' '
+                    endif
+ 80             continue
 !
 !
-    if (typces .eq. 'ELNO') then
-        ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
-        call jenuno(jexnum(ma//'.NOMNOE', ino), poin)
-    else
-        write (poin,'(I8)') ipt
-    endif
+                if (typces .eq. 'ELNO') then
+                    ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
+                    call jenuno(jexnum(ma//'.NOMNOE', ino), poin)
+                else
+                    write (poin,'(I8)') ipt
+                endif
 !
-    write (spoin,'(I8)') isp
-    if (tsca .ne. 'C') then
-        write (unite,fmt) nomma,poin,spoin, (zk16(jlval-1+&
+                write (spoin,'(I8)') isp
+                if (tsca .ne. 'C') then
+                    write (unite,fmt) nomma,poin,spoin, (zk16(jlval-1+&
                     ik),ik=1,ncmpu)
-    else
-        write (unite,fmt) nomma,poin,spoin, (zk16(jlval-1+&
+                else
+                    write (unite,fmt) nomma,poin,spoin, (zk16(jlval-1+&
                     ik),ik=1,2*ncmpu)
-    endif
+                endif
 !
-90  continue
-100  continue
-    110 end do
+ 90         continue
+100     continue
+110 end do
 !
     call jedetr('&&CESIMP.LVALEURS')
     call jedema()

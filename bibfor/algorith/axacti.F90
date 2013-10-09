@@ -57,12 +57,12 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, icomp, ier, inu, j, lldesc, llnoa
+    integer :: i, icomp, inu, j, lldesc, llnoa
     integer :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
     integer :: nbnoa, nbnot, numa
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
-    character(len=8) :: basmod, intf, k8bid
+    character(len=8) :: basmod, intf
     logical :: okass
     integer :: idec(nbcpmx), lisnu(nblis)
 !
@@ -75,15 +75,12 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !-------------------RECUPERATION DE LA LISTE-INTERFACE------------------
 !
     call jemarq()
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ier,&
-                intf, ier)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, ier)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, ier)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -137,8 +134,8 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
                 nbacti=nbacti+1
                 if (nbacti .le. nblis) lisnu(nbacti)=icomp
             endif
-20      continue
-10  continue
+ 20     continue
+ 10 continue
 !
     call jedema()
 end subroutine

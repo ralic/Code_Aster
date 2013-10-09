@@ -51,13 +51,13 @@ subroutine celces(celz, basez, cesz)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: kbid, base
+    character(len=1) ::  base
     character(len=3) :: tsca
     character(len=4) :: typces, kmpic
     character(len=8) :: ma, nomgd
     character(len=19) :: cel, ces, ligrel
     logical :: diff
-    integer :: nec, gd, ncmpmx, ibid, nbma, jcorr1, jcelv, jceld
+    integer :: nec, gd, ncmpmx, nbma, jcorr1, jcelv, jceld
     integer :: iadg, icmp, ncmp, jcesl, jcesv, jcorr2, kcmp
     integer :: ieq, icmp1, igr, iel, ialiel, illiel
     integer :: jcelk, nbpt, nbgr, imolo, jmolo, k, nbgr2
@@ -86,28 +86,20 @@ subroutine celces(celz, basez, cesz)
 !
 !     1.1 CALCUL DE MA,NOMGD,LIGREL,GD,NEC,TSCA,NCMPMX,NBMA :
 !     --------------------------------------------------------
-    call dismoi('F', 'NOM_MAILLA', cel, 'CHAM_ELEM', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NOM_GD', cel, 'CHAM_ELEM', ibid,&
-                nomgd, ibid)
-    call dismoi('F', 'NOM_LIGREL', cel, 'CHAM_ELEM', ibid,&
-                ligrel, ibid)
+    call dismoi('NOM_MAILLA', cel, 'CHAM_ELEM', repk=ma)
+    call dismoi('NOM_GD', cel, 'CHAM_ELEM', repk=nomgd)
+    call dismoi('NOM_LIGREL', cel, 'CHAM_ELEM', repk=ligrel)
 !
 !     -- SI CEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
-    call dismoi('F', 'MPI_COMPLET', cel, 'CHAM_ELEM', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', cel, 'CHAM_ELEM', repk=kmpic)
     ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
     if (kmpic .eq. 'NON') call sdmpic('CHAM_ELEM', cel)
 !
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ibid)
-    call dismoi('F', 'NUM_GD', nomgd, 'GRANDEUR', gd,&
-                kbid, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !
 !     1.2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
@@ -150,72 +142,71 @@ subroutine celces(celz, basez, cesz)
 !     ---------------------------------------------------------
     call wkvect('&&CELCES.NBPT', 'V V I', nbma, jnbpt)
     call wkvect('&&CELCES.NBSPT', 'V V I', nbma, jnbspt)
-    do 50,numa = 1,nbma
-    zi(jnbspt-1+numa) = 1
-    50 end do
+    do 50 numa = 1, nbma
+        zi(jnbspt-1+numa) = 1
+ 50 end do
     call wkvect('&&CELCES.NBCMP', 'V V I', nbma, jnbcmp)
     nptmx = 0
     ncdymx = 0
 !
-    do 90,igr = 1,nbgr
-    nbel = nbelem(ligrel,igr)
-    imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
-    if (imolo .eq. 0) goto 90
+    do 90 igr = 1, nbgr
+        nbel = nbelem(ligrel,igr)
+        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+        if (imolo .eq. 0) goto 90
 !
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-    ASSERT(zi(jmolo-1+1).le.3)
-    ASSERT(zi(jmolo-1+2).eq.gd)
-    diff = (zi(jmolo-1+4).gt.10000)
-    nbpt = mod(zi(jmolo-1+4),10000)
-    nptmx = max(nptmx,nbpt)
+        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
+        ASSERT(zi(jmolo-1+1).le.3)
+        ASSERT(zi(jmolo-1+2).eq.gd)
+        diff = (zi(jmolo-1+4).gt.10000)
+        nbpt = mod(zi(jmolo-1+4),10000)
+        nptmx = max(nptmx,nbpt)
 !
 !
 !       -- CALCUL DE NCMPM : NUMERO MAX DES CMPS PORTEES
 !          PAR LES ELEMENTS DU GREL
-    ncmpm = 0
-    do 70,ipt = 1,nbpt
-    k = 1
-    if (diff) k = ipt
-    iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-    do 60,icmp = 1,ncmpmx
-    if (exisdg(zi(iadg),icmp)) then
-        ncmpm = max(ncmpm,icmp)
-    endif
-60  continue
-70  continue
+        ncmpm = 0
+        do 70 ipt = 1, nbpt
+            k = 1
+            if (diff) k = ipt
+            iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+            do 60 icmp = 1, ncmpmx
+                if (exisdg(zi(iadg),icmp)) then
+                    ncmpm = max(ncmpm,icmp)
+                endif
+ 60         continue
+ 70     continue
 !
 !
-    do 80,iel = 1,nbel
-    numa = numail(igr,iel)
-    if (numa .lt. 0) goto 80
+        do 80 iel = 1, nbel
+            numa = numail(igr,iel)
+            if (numa .lt. 0) goto 80
 !
 !         -- NOMBRE DE POINTS:
-    zi(jnbpt-1+numa) = nbpt
+            zi(jnbpt-1+numa) = nbpt
 !
 !         -- NOMBRE DE SOUS-POINTS:
-    nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
-    zi(jnbspt-1+numa) = nbspt
+            nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
+            zi(jnbspt-1+numa) = nbspt
 !
 !         -- NOMBRE DE CMPS:
-    ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
-    ncdyn = max(ncdyn,1)
-    ncdymx = max(ncdymx,ncdyn)
-    if (nomgd(1:5) .eq. 'VARI_') then
-        zi(jnbcmp-1+numa) = ncdyn
-    else
-        zi(jnbcmp-1+numa) = zi(jcorr1-1+ncmpm)
-    endif
+            ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
+            ncdyn = max(ncdyn,1)
+            ncdymx = max(ncdymx,ncdyn)
+            if (nomgd(1:5) .eq. 'VARI_') then
+                zi(jnbcmp-1+numa) = ncdyn
+            else
+                zi(jnbcmp-1+numa) = zi(jcorr1-1+ncmpm)
+            endif
 !
-80  continue
-    90 end do
+ 80     continue
+ 90 end do
     ASSERT(nptmx.ne.0)
 !
 !
 !
 !     1.6 ALLOCATION DE CES :
 !     -------------------------------------------
-    call dismoi('F', 'TYPE_CHAMP', cel, 'CHAM_ELEM', ibid,&
-                typces, ibid)
+    call dismoi('TYPE_CHAMP', cel, 'CHAM_ELEM', repk=typces)
     if (nomgd(1:5) .eq. 'VARI_') ncmp = -ncdymx
     call cescre(base, ces, typces, ma, nomgd,&
                 ncmp, zk8(jnocmp), zi(jnbpt), zi(jnbspt), zi(jnbcmp))
@@ -233,133 +224,134 @@ subroutine celces(celz, basez, cesz)
 !     ----------------------------
         call wkvect('&&CELCES.LONG_PT', 'V V I', nptmx, jlpt)
         call wkvect('&&CELCES.LONG_PT_CUMU', 'V V I', nptmx, jlcupt)
-        do 170,igr = 1,nbgr
-        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
-        if (imolo .eq. 0) goto 170
+        do 170 igr = 1, nbgr
+            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            if (imolo .eq. 0) goto 170
 !
 !
-        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-        diff = (zi(jmolo-1+4).gt.10000)
-        nbpt = mod(zi(jmolo-1+4),10000)
-        nbel = nbelem(ligrel,igr)
+            call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
+            diff = (zi(jmolo-1+4).gt.10000)
+            nbpt = mod(zi(jmolo-1+4),10000)
+            nbel = nbelem(ligrel,igr)
 !
 !         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
-        do 110,ipt = 1,nbpt
-        ico = 0
-        k = 1
-        if (diff) k = ipt
-        iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-        do 100,kcmp = 1,ncmp
-        icmp = zi(jcorr2-1+kcmp)
-        if (exisdg(zi(iadg),icmp)) ico = ico + 1
-100      continue
-        zi(jlpt-1+ipt) = ico
-110      continue
+            do 110 ipt = 1, nbpt
+                ico = 0
+                k = 1
+                if (diff) k = ipt
+                iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+                do 100 kcmp = 1, ncmp
+                    icmp = zi(jcorr2-1+kcmp)
+                    if (exisdg(zi(iadg),icmp)) ico = ico + 1
+100             continue
+                zi(jlpt-1+ipt) = ico
+110         continue
 !
-        cumu = 0
-        do 120,ipt = 1,nbpt
-        zi(jlcupt-1+ipt) = cumu
-        cumu = cumu + zi(jlpt-1+ipt)
-120      continue
+            cumu = 0
+            do 120 ipt = 1, nbpt
+                zi(jlcupt-1+ipt) = cumu
+                cumu = cumu + zi(jlpt-1+ipt)
+120         continue
 !
 !
-        do 160,ipt = 1,nbpt
-        k = 1
-        if (diff) k = ipt
-        iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-        ico = 0
-        do 150,kcmp = 1,ncmp
-        icmp = zi(jcorr2-1+kcmp)
-        if (exisdg(zi(iadg),icmp)) then
-            ico = ico + 1
-            icmp1 = zi(jcorr1-1+icmp)
-            ASSERT(icmp1.eq.kcmp)
+            do 160 ipt = 1, nbpt
+                k = 1
+                if (diff) k = ipt
+                iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+                ico = 0
+                do 150 kcmp = 1, ncmp
+                    icmp = zi(jcorr2-1+kcmp)
+                    if (exisdg(zi(iadg),icmp)) then
+                        ico = ico + 1
+                        icmp1 = zi(jcorr1-1+icmp)
+                        ASSERT(icmp1.eq.kcmp)
 !
-            do 140,iel = 1,nbel
-            numa = numail(igr,iel)
-            if (numa .lt. 0) goto 140
+                        do 140 iel = 1, nbel
+                            numa = numail(igr,iel)
+                            if (numa .lt. 0) goto 140
 !
-            nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
-            adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
+                            nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
+                            adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
 !
-            do 130,ispt = 1,nbspt
-            call cesexi('S', jcesd, jcesl, numa, ipt,&
-                        ispt, icmp1, iad)
-            iad = abs(iad)
-            zl(jcesl-1+iad) = .true.
+                            do 130 ispt = 1, nbspt
+                                call cesexi('S', jcesd, jcesl, numa, ipt,&
+                                            ispt, icmp1, iad)
+                                iad = abs(iad)
+                                zl(jcesl-1+iad) = .true.
 !
-            ieq = adiel - 1 + nbspt*zi(jlcupt-1+ ipt) + (ispt-1)*zi(jlpt-1+ipt) + ico
+                                ieq = adiel - 1 + nbspt*zi(jlcupt-1+ ipt) + (ispt-1)*zi(jlpt-1+ip&
+                                      &t) + ico
 !
-            if (tsca .eq. 'R') then
-                zr(jcesv-1+iad) = zr(jcelv-1+ieq)
-            else if (tsca.eq.'I') then
-                zi(jcesv-1+iad) = zi(jcelv-1+ieq)
-            else if (tsca.eq.'C') then
-                zc(jcesv-1+iad) = zc(jcelv-1+ieq)
-            else if (tsca.eq.'L') then
-                zl(jcesv-1+iad) = zl(jcelv-1+ieq)
-            else if (tsca.eq.'K8') then
-                zk8(jcesv-1+iad) = zk8(jcelv-1+ ieq)
-            else if (tsca.eq.'K16') then
-                zk16(jcesv-1+iad) = zk16(jcelv-1+ ieq)
-            else if (tsca.eq.'K24') then
-                zk24(jcesv-1+iad) = zk24(jcelv-1+ ieq)
-            else
-                ASSERT(.false.)
-            endif
-130          continue
-140          continue
-        endif
-150      continue
-160      continue
-170      continue
+                                if (tsca .eq. 'R') then
+                                    zr(jcesv-1+iad) = zr(jcelv-1+ieq)
+                                else if (tsca.eq.'I') then
+                                    zi(jcesv-1+iad) = zi(jcelv-1+ieq)
+                                else if (tsca.eq.'C') then
+                                    zc(jcesv-1+iad) = zc(jcelv-1+ieq)
+                                else if (tsca.eq.'L') then
+                                    zl(jcesv-1+iad) = zl(jcelv-1+ieq)
+                                else if (tsca.eq.'K8') then
+                                    zk8(jcesv-1+iad) = zk8(jcelv-1+ ieq)
+                                else if (tsca.eq.'K16') then
+                                    zk16(jcesv-1+iad) = zk16(jcelv-1+ ieq)
+                                else if (tsca.eq.'K24') then
+                                    zk24(jcesv-1+iad) = zk24(jcelv-1+ ieq)
+                                else
+                                    ASSERT(.false.)
+                                endif
+130                         continue
+140                     continue
+                    endif
+150             continue
+160         continue
+170     continue
 !
 !
     else
 !       -- CAS DE VARI_* :
 !       -------------------
-        do 220,igr = 1,nbgr
-        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
-        if (imolo .eq. 0) goto 220
+        do 220 igr = 1, nbgr
+            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            if (imolo .eq. 0) goto 220
 !
 !
-        lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
-        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-        diff = (zi(jmolo-1+4).gt.10000)
-        ASSERT(.not.diff)
-        nbpt = mod(zi(jmolo-1+4),10000)
-        ASSERT(nbpt.eq.lgcata)
-        nbel = nbelem(ligrel,igr)
+            lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
+            call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
+            diff = (zi(jmolo-1+4).gt.10000)
+            ASSERT(.not.diff)
+            nbpt = mod(zi(jmolo-1+4),10000)
+            ASSERT(nbpt.eq.lgcata)
+            nbel = nbelem(ligrel,igr)
 !
-        do 210,iel = 1,nbel
-        numa = numail(igr,iel)
-        if (numa .lt. 0) goto 210
+            do 210 iel = 1, nbel
+                numa = numail(igr,iel)
+                if (numa .lt. 0) goto 210
 !
-        nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
-        ncdyn = max(zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+ 2),1)
-        adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
-        do 200,ipt = 1,nbpt
-        do 190,ispt = 1,nbspt
-        do 180,icmp = 1,ncdyn
+                nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
+                ncdyn = max(zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+ 2),1)
+                adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
+                do 200 ipt = 1, nbpt
+                    do 190 ispt = 1, nbspt
+                        do 180 icmp = 1, ncdyn
 !
-        call cesexi('S', jcesd, jcesl, numa, ipt,&
-                    ispt, icmp, iad)
-        iad = abs(iad)
-        zl(jcesl-1+iad) = .true.
+                            call cesexi('S', jcesd, jcesl, numa, ipt,&
+                                        ispt, icmp, iad)
+                            iad = abs(iad)
+                            zl(jcesl-1+iad) = .true.
 !
-        ieq = adiel - 1 + ((ipt-1)*nbspt+ispt-1)* ncdyn + icmp
+                            ieq = adiel - 1 + ((ipt-1)*nbspt+ispt-1)* ncdyn + icmp
 !
-        if (tsca .eq. 'R') then
-            zr(jcesv-1+iad) = zr(jcelv-1+ieq)
-        else
-            ASSERT(.false.)
-        endif
-180      continue
-190      continue
-200      continue
-210      continue
-220      continue
+                            if (tsca .eq. 'R') then
+                                zr(jcesv-1+iad) = zr(jcelv-1+ieq)
+                            else
+                                ASSERT(.false.)
+                            endif
+180                     continue
+190                 continue
+200             continue
+210         continue
+220     continue
     endif
 !
 !

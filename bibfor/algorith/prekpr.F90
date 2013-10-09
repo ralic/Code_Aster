@@ -1,6 +1,6 @@
 subroutine prekpr(modmec, mtrmas, nbddl, numer, mailla,&
                   chamat, celem)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -39,27 +39,20 @@ subroutine prekpr(modmec, mtrmas, nbddl, numer, mailla,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-    integer :: ibid,ie
-    character(len=8) :: k8b
 !
 !---------CONSTITUTION DE LA LISTE COMPLETE DES ET DDLS EN CAS D EFFORT
 !---------RECUPERATION MODELE ET MAILLA
 !
     call jemarq()
 !
-
-
-    call dismoi('F', 'REF_MASS_PREM', modmec, 'RESU_DYNA', ibid, mtrmas, ie)
-    call dismoi('F', 'NB_EQUA', mtrmas, 'MATR_ASSE', nbddl,&
-                k8b, ie)
-    call dismoi('F', 'NOM_NUME_DDL', mtrmas, 'MATR_ASSE', ibid,&
-                numer, ie)
-    call dismoi('F', 'NOM_MAILLA', mtrmas, 'MATR_ASSE', ibid,&
-                mailla, ie)
-    call dismoi('F', 'CHAM_MATER', mtrmas, 'MATR_ASSE', ibid,&
-                chamat, ie)
-    call dismoi('F', 'CARA_ELEM', mtrmas, 'MATR_ASSE', ibid,&
-                celem, ie)
+!
+!
+    call dismoi('REF_MASS_PREM', modmec, 'RESU_DYNA', repk=mtrmas)
+    call dismoi('NB_EQUA', mtrmas, 'MATR_ASSE', repi=nbddl)
+    call dismoi('NOM_NUME_DDL', mtrmas, 'MATR_ASSE', repk=numer)
+    call dismoi('NOM_MAILLA', mtrmas, 'MATR_ASSE', repk=mailla)
+    call dismoi('CHAM_MATER', mtrmas, 'MATR_ASSE', repk=chamat)
+    call dismoi('CARA_ELEM', mtrmas, 'MATR_ASSE', repk=celem)
 !
     call jedema()
 end subroutine

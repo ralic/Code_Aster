@@ -335,8 +335,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
             nomgd = 'COMPOR  '
 !
-            call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                        k8b, iret)
+            call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
             if (nec .gt. 1) then
                 call utmess('F', 'UTILITAI2_61')
@@ -361,8 +360,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---    NOMBRE DE MAILLES DU MAILLAGE ---
 !
-            call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                        k8b, iret)
+            call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
             do ima = 1, nbma
                 if (zi(iptma+ima-1) .ne. 0) then

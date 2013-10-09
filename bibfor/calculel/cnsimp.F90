@@ -18,7 +18,6 @@ subroutine cnsimp(cnsz, unite)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -29,6 +28,7 @@ subroutine cnsimp(cnsz, unite)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cnsz
     integer :: unite
 ! ---------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine cnsimp(cnsz, unite)
 !
 !     ------------------------------------------------------------------
     integer :: jcnsk, jcnsd, jcnsv, jcnsl, jcnsc
-    integer :: nbno, ibid, k, ino, ncmp, ncmpu, jlval, ik, licmpu(997)
+    integer :: nbno, k, ino, ncmp, ncmpu, jlval, ik, licmpu(997)
     character(len=8) :: ma, nomgd, nomno
     character(len=3) :: tsca
     character(len=19) :: cns
@@ -72,22 +72,21 @@ subroutine cnsimp(cnsz, unite)
 !            ET DE LICMPU : NUMEROS DES CMPS UTILISEES
 !     ------------------------------------------------------------
     ncmpu = 0
-    do 30,k = 1,ncmp
-    do 10,ino = 1,nbno
-    if (zl(jcnsl-1+ (ino-1)*ncmp+k)) goto 20
-10  continue
-    goto 30
-20  continue
-    ncmpu = ncmpu + 1
-    ASSERT(ncmpu.le.997)
-    licmpu(ncmpu) = k
-    30 end do
+    do 30 k = 1, ncmp
+        do 10 ino = 1, nbno
+            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) goto 20
+ 10     continue
+        goto 30
+ 20     continue
+        ncmpu = ncmpu + 1
+        ASSERT(ncmpu.le.997)
+        licmpu(ncmpu) = k
+ 30 end do
 !
 !     -- LE CHAMP EST VIDE : ON SORT
     if (ncmpu .eq. 0) goto 9999
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT((tsca.eq.'R') .or. (tsca.eq.'K8') .or. (tsca.eq.'I') .or. (tsca.eq.'C'))
 !
 !
@@ -124,61 +123,61 @@ subroutine cnsimp(cnsz, unite)
 !
 !     4- ECRITURE DES VALEURS :
 !     ---------------------------------------
-    do 70,ino = 1,nbno
-    call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
+    do 70 ino = 1, nbno
+        call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
 !
 !       -- ON N'ECRIT UN NOEUD QUE S'IL EXISTE AU MOINS 1 CMP :
-    exicmp = .false.
-    do 40,ik = 1,ncmpu
-    k = licmpu(ik)
-    if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
-        exicmp = .true.
-        goto 50
-    endif
-40  continue
-50  continue
-    if (.not.exicmp) goto 70
+        exicmp = .false.
+        do 40 ik = 1, ncmpu
+            k = licmpu(ik)
+            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
+                exicmp = .true.
+                goto 50
+            endif
+ 40     continue
+ 50     continue
+        if (.not.exicmp) goto 70
 !
 !
 !
 !       -- ON MET LES VALEURS NON AFFECTEES A " " :
-    do 60,ik = 1,ncmpu
-    k = licmpu(ik)
-    if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
-        if (tsca .eq. 'R') then
-            write (zk16(jlval-1+ik),'(E12.5,A4)') zr(jcnsv-1+&
+        do 60 ik = 1, ncmpu
+            k = licmpu(ik)
+            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
+                if (tsca .eq. 'R') then
+                    write (zk16(jlval-1+ik),'(E12.5,A4)') zr(jcnsv-1+&
                     (ino-1)*ncmp+k),' '
-        else if (tsca.eq.'K8') then
-            write (zk16(jlval-1+ik),'(A8,A8)') zk8(jcnsv-1+&
+                else if (tsca.eq.'K8') then
+                    write (zk16(jlval-1+ik),'(A8,A8)') zk8(jcnsv-1+&
                     (ino-1)*ncmp+k),' '
-        else if (tsca.eq.'C') then
-            write (zk16(jlval-1+2*(ik-1)+1),'(E12.5,A4)')&
+                else if (tsca.eq.'C') then
+                    write (zk16(jlval-1+2*(ik-1)+1),'(E12.5,A4)')&
                     dble(zc(jcnsv-1+(ino-1)*ncmp+k)),' '
-            write (zk16(jlval-1+2*(ik-1)+2),'(E12.5,A4)')&
+                    write (zk16(jlval-1+2*(ik-1)+2),'(E12.5,A4)')&
                     dimag(zc(jcnsv-1+(ino-1)*ncmp+k)),' '
-        else if (tsca.eq.'I') then
-            write (zk16(jlval-1+ik),'(I12,A4)') zi(jcnsv-1+&
+                else if (tsca.eq.'I') then
+                    write (zk16(jlval-1+ik),'(I12,A4)') zi(jcnsv-1+&
                     (ino-1)*ncmp+k),' '
-        endif
-    else
+                endif
+            else
+                if (tsca .ne. 'C') then
+                    write (zk16(jlval-1+ik),'(A16)') ' '
+                else
+                    write (zk16(jlval-1+2*(ik-1)+1),'(A16)') ' '
+                    write (zk16(jlval-1+2*(ik-1)+2),'(A16)') ' '
+                endif
+            endif
+ 60     continue
         if (tsca .ne. 'C') then
-            write (zk16(jlval-1+ik),'(A16)') ' '
+            write (unite,fmt2) nomno, (zk16(jlval-1+ik),ik=1,ncmpu)
         else
-            write (zk16(jlval-1+2*(ik-1)+1),'(A16)') ' '
-            write (zk16(jlval-1+2*(ik-1)+2),'(A16)') ' '
-        endif
-    endif
-60  continue
-    if (tsca .ne. 'C') then
-        write (unite,fmt2) nomno, (zk16(jlval-1+ik),ik=1,ncmpu)
-    else
-        write (unite,fmt2) nomno, (zk16(jlval-1+2*(ik-1)+1),&
+            write (unite,fmt2) nomno, (zk16(jlval-1+2*(ik-1)+1),&
             zk16(jlval-1+2*(ik-1)+2),ik=1,ncmpu)
-    endif
+        endif
 !
-    70 end do
+ 70 end do
 !
-9999  continue
+9999 continue
 !
     call jedetr('&&CNSIMP.LVALEURS')
     call jedema()

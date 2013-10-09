@@ -1,6 +1,6 @@
 subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
-                  nomfor, grdvie, forvie,forcri, fordef, typcha,&
-                  proaxe, instic, inscri, prec)
+                  nomfor, grdvie, forvie, forcri, fordef,&
+                  typcha, proaxe, instic, inscri, prec)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 ! NOMCRI   IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ierd, lordr, jordr, nbordr, ndim, iret, iret1
+    integer :: ibid, lordr, jordr, nbordr, ndim, iret, iret1
     integer :: nbno, ino, tdisp(1), jrwork, tpaq, iret2, iret3
     integer :: nbpaq, numpaq, nnopaq, bormax, nbpmax, nbp0, bor0
     integer :: nbcmp, jpaqno, k, ordini, iord, jinst
@@ -115,8 +115,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     chepsp = '                   '
 ! RECUPERATION DU TYPE DE CALCUL MECANIQUE EFFECTUE
 !
-    call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
-                typres, ierd)
+    call dismoi('TYPE_RESU', nomsd, 'RESULTAT', repk=typres)
     if ((typres(1:9) .ne. 'EVOL_ELAS') .and. (typres(1:9) .ne. 'EVOL_NOLI')) then
         call utmess('F', 'PREPOST4_26')
     endif
@@ -134,7 +133,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, r8b, k8b, tord, 1,&
                 nbordr)
-    lordr=tord(1)            
+    lordr=tord(1)
 !
     if (nbordr .lt. 0) then
         ndim = -nbordr
@@ -166,8 +165,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 endif
             endif
         endif
-400  end do
-410  continue
+400 end do
+410 continue
 !
     if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
         call utmess('A', 'PREPOST4_48')
@@ -308,7 +307,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
             endif
         endif
 !
-100  end do
+100 end do
 !
     if (nbpaq .gt. nbpmax) then
         vali (1) = nbpmax
@@ -450,7 +449,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         else
                             call utmess('F', 'PREPOST4_30')
                         endif
-340                  continue
+340                 continue
                 endif
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
@@ -465,7 +464,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         else
                             call utmess('F', 'PREPOST4_35')
                         endif
-360                  continue
+360                 continue
                 endif
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
@@ -480,7 +479,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         else
                             call utmess('F', 'PREPOST4_35')
                         endif
-380                  continue
+380                 continue
                 endif
 !
                 if (creppe) then
@@ -496,18 +495,18 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             else
                                 call utmess('F', 'PREPOST4_35')
                             endif
-390                      continue
+390                     continue
 !
                     else
                         do 395 ic = 1, 6
                             zr( jrwork + (ic+6+6-1) + kwork*somnow*18&
                             + (iordr-1)*tspaq ) = 0.d0
-395                      continue
+395                     continue
                     endif
                 endif
 !
-320          continue
-300      continue
+320         continue
+300     continue
 !
 !
 !
@@ -524,8 +523,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
             call dtauno(jrwork, zi(jnoeu), nbno, nbordr, ordini,&
                         nnoini, nbnop, tspaq, nommet, nomcri,&
-                        nomfor, grdvie, forvie,forcri, nommai, cnsr,&
-                        k8b, post, valpar, vresu)
+                        nomfor, grdvie, forvie, forcri, nommai,&
+                        cnsr, k8b, post, valpar, vresu)
 !
         else if (typcha .eq. 'NON_PERIODIQUE') then
 !
@@ -538,7 +537,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         k8b, cnsr, post, resu)
         endif
 !
-200  end do
+200 end do
 !
 ! TRANSFORMATION D'UN CHAM_NO SIMPLE EN CHAM_NO
 !

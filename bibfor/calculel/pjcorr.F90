@@ -50,7 +50,6 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: kbid
     character(len=8) :: nomgd, ma, licmp(2)
     character(len=19) :: cns1, ces2, cel2
     character(len=19) :: cham1s, dcel
@@ -62,7 +61,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
     integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
     integer :: nbno1, nbmax, ncmp1, ncmp2
-    integer :: iad2, ier, nval
+    integer :: iad2, nval
     integer :: iad, nbpt, nbsp, icmp1
 !
     integer :: ima, ipt, isp, jcesc, jlgrf
@@ -128,28 +127,27 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
         call jeveuo(dcel//'.CESV', 'E', jcesv)
 !
 !
-        call dismoi('F', 'NB_MA_MAILLA', nomo2, 'MODELE', nbma,&
-                    kbid, ier)
+        call dismoi('NB_MA_MAILLA', nomo2, 'MODELE', repi=nbma)
 !
-        do 40,ima = 1,nbma
-        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-        ASSERT(nbpt.eq.1)
-        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        ASSERT(nbsp.eq.1)
+        do 40 ima = 1, nbma
+            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+            ASSERT(nbpt.eq.1)
+            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+            ASSERT(nbsp.eq.1)
 !
-        do 30,ipt = 1,nbpt
-        do 20,isp = 1,nbsp
-        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                    isp, 1, iad)
-        zi(jcesv-1-iad)=0
-        zl(jcesl-1-iad)=.true.
-        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                    isp, 2, iad)
-        zi(jcesv-1-iad)=nbmax
-        zl(jcesl-1-iad)=.true.
-20      continue
-30      continue
-40      continue
+            do 30 ipt = 1, nbpt
+                do 20 isp = 1, nbsp
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, 1, iad)
+                    zi(jcesv-1-iad)=0
+                    zl(jcesl-1-iad)=.true.
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, 2, iad)
+                    zi(jcesv-1-iad)=nbmax
+                    zl(jcesl-1-iad)=.true.
+ 20             continue
+ 30         continue
+ 40     continue
 !
         call alchml(ligrel, option, nompar, 'V', cel2,&
                     iret, dcel)
@@ -212,8 +210,8 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
             zr(jce2v-1+iad2)=zr(jcns1v+(ipo-1)*ncmp1+icmp1-1)
             zl(jce2l-1+iad2)=.true.
-98      continue
-92  end do
+ 98     continue
+ 92 end do
 !
 !
     call jedema()

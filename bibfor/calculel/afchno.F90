@@ -3,7 +3,6 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
                   cval, kval)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cmpcha.h"
 #include "asterfort/crchno.h"
 #include "asterfort/crprno.h"
@@ -17,6 +16,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pteequ.h"
+!
     integer :: nbcpno(*), desc(*)
     real(kind=8) :: rval(*)
     complex(kind=8) :: cval(*)
@@ -42,12 +42,11 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
 !
 !
-    character(len=8) :: k8b
     character(len=19) :: chamno
     integer :: ncmp, ncmpmx, jcorr2
 !
 !-----------------------------------------------------------------------
-    integer :: i1, ic, idec, ie, iec, ii, inec
+    integer :: i1, ic, idec, iec, ii, inec
     integer :: ino, jj, lnueq, lonval, lprno, lvale, nbnoeu
     integer :: nec, nn, numgd
 !-----------------------------------------------------------------------
@@ -56,8 +55,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
     call jelira(jexnum('&CATA.GD.NOMCMP', numgd), 'LONMAX', ncmpmx)
-    call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
-                k8b, ie)
+    call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
 !
 !     --- CREATION DU CHAMP ---
 !
@@ -79,9 +77,9 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
         do 102 inec = 1, nec
             ii = ii + 1
             zi(lprno-1+ (nec+2)*(ino-1)+2+inec) = desc(ii)
-102      continue
+102     continue
         idec = idec + nbcpno(ino)
-100  end do
+100 end do
 !
 !     --- AFFECTATION DU .VALE DE L'OBJET CHAMNO ---
 !
@@ -104,8 +102,8 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
                 endif
                 i1 = i1 + 1
             endif
-112      continue
-110  end do
+112     continue
+110 end do
 !
 !
 !     -- CALCUL DE L'OBJET .DEEQ :

@@ -88,7 +88,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     integer :: ndeci, isingu, nom, neq, typvar, typsym
     integer :: lmatb, ndigi2, npivot, jdelg, ksing, nmrav, jksing
     integer :: ifm, niv
-    integer :: pass, ieq, jeq, krig, jpomr, ibid, lxsol
+    integer :: pass, ieq, jeq, krig, jpomr, lxsol
     integer :: lcine
     integer :: jdigs, jrefab, jccid
     real(kind=8) :: epsb, d1, moydia
@@ -103,8 +103,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     typvar=zi(lmat+3)
     typsym=zi(lmat+4)
     noma19=zk24(nom)(1:19)
-    call dismoi('F', 'NOM_NUME_DDL', noma19, 'MATR_ASSE', ibid,&
-                nu, ibid)
+    call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.DELG', 'L', jdelg)
     ASSERT(nu.ne.' ')
     metres='MULT_FRONT'

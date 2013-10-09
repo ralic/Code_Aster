@@ -47,10 +47,10 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: n1, ibid, k, nbnot, ino, jtrav, ncmp
+    integer :: n1, k, nbnot, ino, jtrav, ncmp
     integer :: jlisno, jcn2v, jcn2l, jcn2k
     character(len=3) :: tsca
-    character(len=8) :: nocmp, noma, ma1, kbid, nomgd
+    character(len=8) :: nocmp, noma, ma1, nomgd
     character(len=16) :: motfac
     character(len=19) :: cham19, cns1, cns2
     character(len=24) :: lisnoi, valk(5)
@@ -73,15 +73,13 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     vmax=valr(2)
     if (vmin .gt. vmax) goto 30
 !
-    call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                ma1, ibid)
+    call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=ma1)
     if (noma .ne. ma1) then
         valk(1)=cham19
         valk(2)=noma
         call utmess('F', 'CALCULEL2_50', nk=2, valk=valk)
     endif
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
-                kbid, ibid)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
 !
     cns1='&&CGNOIV.CNS1'
     cns2='&&CGNOIV.CNS2'
@@ -94,23 +92,22 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     call jeveuo(cns2//'.CNSV', 'L', jcn2v)
     call jeveuo(cns2//'.CNSL', 'L', jcn2l)
     nomgd=zk8(jcn2k-1+2)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
 !
     call wkvect('&&CGNOIV.LISNO', 'V V I', nbnot, jtrav)
-    do 10,ino=1,nbnot
-    if (.not.zl(jcn2l-1+(ino-1)*ncmp+1)) goto 10
-    if (tsca .eq. 'R') then
-        v1=zr(jcn2v-1+(ino-1)*ncmp+1)
-    else if (tsca.eq.'I') then
-        v1=zi(jcn2v-1+(ino-1)*ncmp+1)
-    endif
-    if (v1 .ge. vmin .and. v1 .le. vmax) then
-        nbno=nbno+1
-        zi(jtrav-1+nbno)=ino
-    endif
-    10 end do
+    do 10 ino = 1, nbnot
+        if (.not.zl(jcn2l-1+(ino-1)*ncmp+1)) goto 10
+        if (tsca .eq. 'R') then
+            v1=zr(jcn2v-1+(ino-1)*ncmp+1)
+        else if (tsca.eq.'I') then
+            v1=zi(jcn2v-1+(ino-1)*ncmp+1)
+        endif
+        if (v1 .ge. vmin .and. v1 .le. vmax) then
+            nbno=nbno+1
+            zi(jtrav-1+nbno)=ino
+        endif
+ 10 end do
 !
 !
 !
@@ -119,7 +116,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
     do 20 k = 1, nbno
         zi(jlisno-1+k)=zi(jtrav-1+k)
-20  end do
+ 20 end do
 !
 !
 ! --- MENAGE :
@@ -127,7 +124,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     call detrsd('CHAM_NO_S', cns1)
     call detrsd('CHAM_NO_S', cns2)
 !
-30  continue
+ 30 continue
     call jedema()
 !
 end subroutine

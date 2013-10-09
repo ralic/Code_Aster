@@ -28,7 +28,7 @@ subroutine op0050()
 #include "asterfort/i2segm.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/utmess.h"
-    integer :: ibid, nbparm, nbpars, nbpara, n1
+    integer ::  nbparm, nbpars, nbpara, n1
     character(len=8) :: k8b, nomail
 !----------------------------------------------------------------------
 !
@@ -41,8 +41,7 @@ subroutine op0050()
 !
 !----------------------------------------------------------------------
     call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n1)
-    call dismoi('F', 'Z_CST', nomail, 'MAILLAGE', ibid,&
-                k8b, ibid)
+    call dismoi('Z_CST', nomail, 'MAILLAGE', repk=k8b)
     if (k8b(1:3) .eq. 'NON') then
         call utmess('F', 'INTEMAIL_10')
     endif
@@ -68,6 +67,6 @@ subroutine op0050()
         goto 9999
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

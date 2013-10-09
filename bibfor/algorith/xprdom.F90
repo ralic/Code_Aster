@@ -112,7 +112,6 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !     GENERAL PURPOSE
     integer :: iret, i, j, k
-    character(len=8) :: k8b
     integer :: ifm, niv
 !
 !     MULTIPLE CRACK FRONTS
@@ -137,8 +136,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 ! ----------------------------------------------------------------------
 !
 !     RETRIEVE THE NUMBER OF NODES IN THE MESH
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 !     RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
     call jeveuo(noma//'.TYPMAIL', 'L', jmai)
@@ -151,21 +149,18 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !     RETRIEVE THE PROBLEM DIMENSION
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     RETRIEVE THE COORDINATES OF THE NODES
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     RETRIEVE THE POINTS ON THE CRACK FRONT
     call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
-    call dismoi('F', 'NB_POINT_FOND', fiss, 'FISS_XFEM', nbptff,&
-                k8b, iret)
+    call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
     call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
-    call dismoi('F', 'NB_FOND', fiss, 'FISS_XFEM', numfon,&
-                k8b, iret)
+    call dismoi('NB_FOND', fiss, 'FISS_XFEM', repi=numfon)
 !
 !     CREATE A TEMPORARY LOGICAL VECTOR TO MARK THE NODES THAT HAVE
 !     BEEN SELECTED
@@ -206,7 +201,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !            FRONT)
                 do 2113 fon = 1, numfon
                     if (j .eq. zi(jfmult-1+2*fon)) goto 2100
-2113              continue
+2113             continue
 !
 !            COORD PT I, AND J
                 xi1 = zr(jfonf-1+4*(j-1)+1)
@@ -240,7 +235,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                     dmin = d
                 endif
 !
-2100          continue
+2100         continue
 !
         else
 !
@@ -258,7 +253,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
                 if (d .lt. dmin) dmin = d
 !
-2114          continue
+2114         continue
 !
         endif
 !
@@ -271,7 +266,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             zl(jnofla-1+i) = .true.
         endif
 !
-2000  end do
+2000 end do
 !
     nodfl1='&&XPRDOM.NODEFLAG1'
     call jedupo(nodfla, 'V', nodfl1, .false.)
@@ -319,15 +314,15 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
                         endif
 !
-1700                  continue
+1700                 continue
 !
                 endif
 !
-1150          continue
+1150         continue
 !
         endif
 !
-1000  end do
+1000 end do
 !
     call jedetr(nodfl1)
 !
@@ -348,7 +343,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             zi(jnto-1+j) = i
         endif
 !
-1500  end do
+1500 end do
 !
 !     DESTROY THE TEMPORARY OBJECTS
     call jedetr(nodfla)
@@ -360,10 +355,8 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 ! ----------------------------------------------------------------------
 !
 !     RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
-    call dismoi('F', 'NB_NO_MAILLA', dnoma, 'MAILLAGE', dnbno,&
-                k8b, iret)
-    call dismoi('F', 'NB_MA_MAILLA', dnoma, 'MAILLAGE', dnbma,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', dnoma, 'MAILLAGE', repi=dnbno)
+    call dismoi('NB_MA_MAILLA', dnoma, 'MAILLAGE', repi=dnbma)
 !
 !     RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
     call jeveuo(dnoma//'.TYPMAIL', 'L', jdmai)
@@ -383,7 +376,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
     do 50 i = 1, dnbma
         zl(jecons-1+i) = .false.
-50  end do
+ 50 end do
 !
     do 100 i = 1, dnbno
 !
@@ -406,18 +399,18 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !              MARK THE SELECTED ELEMENT
                 if (eldim .eq. ndim) zl(jecons-1+numelm) = .true.
 !
-150          continue
+150         continue
 !
         endif
 !
-100  end do
+100 end do
 !
 !     COUNT THE NUMBER OF ELEMENTS INVOLVED IN THE PROJECTION
     nbelpr = 0
 !
     do 200 i = 1, dnbma
         if (zl(jecons-1+i)) nbelpr = nbelpr+1
-200  end do
+200 end do
 !
 !     STORE THE NUMBER OF THESE ELEMENTS ONLY. THESE INFORMATIONS ARE
 !     USED FOR THE PROJECTION
@@ -434,7 +427,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
         endif
 !
-300  end do
+300 end do
 !
     call jedetr(econs)
 !

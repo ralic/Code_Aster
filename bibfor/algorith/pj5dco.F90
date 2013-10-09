@@ -52,7 +52,7 @@ subroutine pj5dco(mo1, mo2, corres)
 !
 !
 !
-    integer :: nbmail, nbdim, ibid, ie, nno1, nno2, nbno
+    integer :: nbmail, nbdim, nno1, nno2, nbno
     integer :: llin1, llin2, inode, nbtr, lno1, lno2, lco1, lco2, idecal
     integer :: out1, out2, jcoo1, jcoo2, iacnx1, ilcnx1, numnoe
     integer :: i, nbmano, ima, imail, ino, j2xxk1, i2conb, i2conu, i2cocf
@@ -61,7 +61,7 @@ subroutine pj5dco(mo1, mo2, corres)
     integer :: numano(nbmail), nunoe(nbmail)
     real(kind=8) :: a(nbdim), b(nbdim), m(nbdim), un, deux
     real(kind=8) :: dpmin, l1, l2, xabs, dp, am(nbdim), bm(nbdim), a1, a2, dist
-    character(len=8) :: kb, m1, m2
+    character(len=8) ::  m1, m2
     character(len=16) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: noeud1, noeud2, cobar1, cobar2
     character(len=24) :: coormo, coorme
@@ -72,15 +72,11 @@ subroutine pj5dco(mo1, mo2, corres)
     un = 1.d0
     deux = 2.d0
 !
-    call dismoi('F', 'NOM_MAILLA', mo1, 'MODELE', ibid,&
-                m1, ie)
-    call dismoi('F', 'NOM_MAILLA', mo2, 'MODELE', ibid,&
-                m2, ie)
+    call dismoi('NOM_MAILLA', mo1, 'MODELE', repk=m1)
+    call dismoi('NOM_MAILLA', mo2, 'MODELE', repk=m2)
 !
-    call dismoi('F', 'NB_NO_MAILLA', m1, 'MAILLAGE', nno1,&
-                kb, ie)
-    call dismoi('F', 'NB_NO_MAILLA', m2, 'MAILLAGE', nno2,&
-                kb, ie)
+    call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
+    call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
 !
     if (nno2 .eq. 0) then
         call utmess('F', 'CALCULEL4_54')
@@ -96,7 +92,7 @@ subroutine pj5dco(mo1, mo2, corres)
         m(i) = 0.d0
         am(i) = 0.d0
         bm(i) = 0.d0
-771  end do
+771 end do
 !
     coormo = m1//'.COORDO    .VALE'
     call jeveuo(coormo, 'L', jcoo1)
@@ -117,10 +113,10 @@ subroutine pj5dco(mo1, mo2, corres)
 !
     do 60 inode = 1, nno1
         call jenuno(jexnum (m1//'.NOMNOE', inode), zk8(llin1-1+inode))
-60  end do
+ 60 end do
     do 61 inode = 1, nno2
         call jenuno(jexnum (m2//'.NOMNOE', inode), zk8(llin2-1+inode))
-61  end do
+ 61 end do
 !
     call pacoa2(lisin1, lisin2, nno1, nno2, m1,&
                 m2, lisou1, lisou2, nbtr)
@@ -152,7 +148,7 @@ subroutine pj5dco(mo1, mo2, corres)
         call jenonu(jexnom(m2//'.NOMNOE', zk8(out2-1+inode)), numnoe)
         do 22 i = 1, nbdim
             m(i) = zr(jcoo2-1 +(numnoe-1)*nbdim+i)
-22      continue
+ 22     continue
 !
         call jenonu(jexnom(m1//'.NOMNOE', zk8(out1-1+inode)), numnoe)
         call exmano(m1, numnoe, numano, nbmano)
@@ -166,25 +162,25 @@ subroutine pj5dco(mo1, mo2, corres)
 !     THEORIQUEMENT NBNO = 2 (POUR SEG2)
             do 31 ino = 1, nbno
                 nunoe(ino)=zi(iacnx1-1 +zi(ilcnx1-1 +imail)-1+ino)
-31          continue
+ 31         continue
             do 32 i = 1, nbdim
                 a(i) = zr(jcoo1-1 +(nunoe(1)-1)*nbdim+i)
                 b(i) = zr(jcoo1-1 +(nunoe(2)-1)*nbdim+i)
-32          continue
+ 32         continue
 !
 !     3. CALCUL DE LA DISTANCE NOEUD-MAILLE (AM + BM)
 !     ------------------------------------------------
             do 33 i = 1, nbdim
                 am(i)=m(i)-a(i)
                 bm(i)=m(i)-b(i)
-33          continue
+ 33         continue
 !
             a1 = 0.d0
             a2 = 0.d0
             do 34 i = 1, nbdim
                 a1= a1 + am(i)*am(i)
                 a2= a2 + bm(i)*bm(i)
-34          continue
+ 34         continue
             dist = sqrt(a1)+sqrt(a2)
 !
             if (dist .lt. dpmin) then
@@ -199,7 +195,7 @@ subroutine pj5dco(mo1, mo2, corres)
                 zr(lco1-1 +inode) = l1
                 zr(lco2-1 +inode) = l2
             endif
-63      continue
+ 63     continue
 !
 !     5. APPLICATION FONCTION DE FORME (ELEMENT ISOPARAMETRIQUE)
 !     ---------------------------------------------------
@@ -207,7 +203,7 @@ subroutine pj5dco(mo1, mo2, corres)
         xabs = -un*zr(lco1-1 +inode) + un*zr(lco2-1 +inode)
         zr(lco1-1 +inode) = (un-xabs)/deux
         zr(lco2-1 +inode) = (un+xabs)/deux
-62  end do
+ 62 end do
 !
 !     6. CREATION DE LA SD CORRESP_2_MAILLA : CORRES
 !     ---------------------------------------------------
@@ -220,18 +216,18 @@ subroutine pj5dco(mo1, mo2, corres)
     zk24(j2xxk1-1 +2)=m2
     zk24(j2xxk1-1 +3)='COLLOCATION'
 !
-    do 10, ino=1,nno2
-    zi(i2conb-1 +ino)=2
-    10 end do
+    do 10 ino = 1, nno2
+        zi(i2conb-1 +ino)=2
+ 10 end do
 !
     idecal=0
-    do 20, ino=1,nno2
-    zi(i2conu-1 +idecal+1)=zi(lno1-1 +ino)
-    zi(i2conu-1 +idecal+2)=zi(lno2-1 +ino)
-    zr(i2cocf-1 +idecal+1)=zr(lco1-1 +ino)
-    zr(i2cocf-1 +idecal+2)=zr(lco2-1 +ino)
-    idecal = idecal+zi(i2conb-1 +ino)
-    20 end do
+    do 20 ino = 1, nno2
+        zi(i2conu-1 +idecal+1)=zi(lno1-1 +ino)
+        zi(i2conu-1 +idecal+2)=zi(lno2-1 +ino)
+        zr(i2cocf-1 +idecal+1)=zr(lco1-1 +ino)
+        zr(i2cocf-1 +idecal+2)=zr(lco2-1 +ino)
+        idecal = idecal+zi(i2conb-1 +ino)
+ 20 end do
 !
 !
     call jedetr(lisin1)

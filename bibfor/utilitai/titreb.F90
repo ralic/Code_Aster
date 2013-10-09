@@ -192,8 +192,8 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (cgen(1:16) .eq. 'MAILLAGE') then
                 cbid = para(1)(1:16)
             else
-                call dismoi('C', 'NOM_MAILLA', para(1), cgen, ibid,&
-                            cbid, ierd)
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                            ier=ierd)
                 if (ierd .ne. 0) goto 900
             endif
             call jeveuo(cbid(1:8)//'           .TITR', 'L', ltit)
@@ -229,12 +229,12 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (cgen(1:16) .eq. 'MAILLAGE') then
                 cbid = para(1)(1:16)
             else
-                call dismoi('C', 'NOM_MAILLA', para(1), cgen, ibid,&
-                            cbid, ierd)
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                            ier=ierd)
                 if (ierd .ne. 0) goto 900
             endif
-            call dismoi('C', 'NB_MA_MAILLA', cbid, 'MAILLAGE', ibid,&
-                        cbid, ierd)
+            call dismoi('NB_MA_MAILLA', cbid, 'MAILLAGE', repi=ibid, arret='C',&
+                        ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
             call codent(ibid, 'G', cgen(1:16))
@@ -249,12 +249,12 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (cgen(1:16) .eq. 'MAILLAGE') then
                 cbid = para(1)(1:16)
             else
-                call dismoi('C', 'NOM_MAILLA', para(1), cgen, ibid,&
-                            cbid, ierd)
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                            ier=ierd)
                 if (ierd .ne. 0) goto 900
             endif
-            call dismoi('C', 'NB_NO_MAILLA', cbid, 'MAILLAGE', ibid,&
-                        cbid, ierd)
+            call dismoi('NB_NO_MAILLA', cbid, 'MAILLAGE', repi=ibid, arret='C',&
+                        ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
             call codent(ibid, 'G', cgen(1:16))
@@ -269,13 +269,13 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (cgen(1:16) .eq. 'MODELE') then
                 cbid = para(1)(1:16)
             else
-                call dismoi('C', 'NOM_MODELE', para(1), cgen, ibid,&
-                            cbid, ierd)
+                call dismoi('NOM_MODELE', para(1), cgen, repk=cbid, arret='C',&
+                            ier=ierd)
                 if (ierd .ne. 0) goto 900
             endif
             cgen = '  '
-            call dismoi('C', 'PHENOMENE', cbid, 'MODELE', ibid,&
-                        cgen(1:16), ierd)
+            call dismoi('PHENOMENE', cbid, 'MODELE', repk=cgen(1:16), arret='C',&
+                        ier=ierd)
             if (ierd .ne. 0) goto 900
             igen = lxlgut(cgen(1:16))
 !
@@ -288,12 +288,12 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (cgen(1:16) .eq. 'MAILLAGE') then
                 cbid = para(1)(1:16)
             else
-                call dismoi('C', 'NOM_MAILLA', para(1), cgen, ibid,&
-                            cbid, ierd)
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                            ier=ierd)
                 if (ierd .ne. 0) goto 900
             endif
-            call dismoi('C', 'DIM_GEOM_B', cbid, 'MAILLAGE', ibid,&
-                        cbid, ierd)
+            call dismoi('DIM_GEOM_B', cbid, 'MAILLAGE', repi=ibid, arret='C',&
+                        ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '.D'
             call codent(ibid, 'G', cgen(1:1))
@@ -305,8 +305,8 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
-            call dismoi('C', 'NB_EQUA', para(1), cgen, ibid,&
-                        cbid, ierd)
+            call dismoi('NB_EQUA', para(1), cgen, repi=ibid, arret='C',&
+                        ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
             call codent(ibid, 'G', cgen(1:16))
@@ -316,8 +316,8 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !        --- LOCALISATION POUR UN CHAM_ELEM ---
             call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
                         para, nbpara)
-            call dismoi('C', 'TYPE_CHAMP', para(1), 'CHAMP', ibid,&
-                        cbid, ierd)
+            call dismoi('TYPE_CHAMP', para(1), 'CHAMP', repk=cbid, arret='C',&
+                        ier=ierd)
             if (cbid(1:4) .eq. 'ELNO') then
                 cgen = 'AUX NOEUDS'
                 igen = 10
@@ -520,13 +520,13 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                     endif
                 endif
             end do
-210         continue 
+210         continue
             igen = lxlgut(cgen)
         case default
 !CC      DEMON INCORRECT
         end select
-    endif 
-900 continue 
+    endif
+900 continue
 !     ------------------------------------------------------------------
     if (igen .gt. 0) then
 !       --- Y A T IL ASSEZ DE PLACE ---

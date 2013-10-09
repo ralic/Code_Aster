@@ -54,10 +54,9 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
     integer :: lchamp
     character(len=1) :: classe
     character(len=1) :: type
-    character(len=8) :: kbid
     character(len=24) :: vale, refe, desc
 !     ------------------------------------------------------------------
-    integer :: ibid, nugdsi, ied, neq
+    integer :: ibid, nugdsi, neq
     character(len=19) :: chmod2
 !     ------------------------------------------------------------------
     data vale/'                   .VALE'/
@@ -84,8 +83,7 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
 !     -- CREATION DE L'OBJET .DESC :
     call wkvect(desc, classe//' V I', 2, lchamp)
     call jeecra(desc, 'DOCU', ibid, 'CHNO')
-    call dismoi('F', 'NUM_GD', chmod2, 'CHAM_NO', nugdsi,&
-                kbid, ied)
+    call dismoi('NUM_GD', chmod2, 'CHAM_NO', repi=nugdsi)
     zi(lchamp-1+1)=nugdsi
     zi(lchamp-1+2) = 1
 !

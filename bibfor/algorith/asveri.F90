@@ -223,8 +223,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !        --- ON RECUPERE LE PREMIER CHAMP ---
         call rsexch('F', meca, nomsy, nordr(1), chextr,&
                     iret)
-        call dismoi('F', 'TYPE_CHAMP', chextr, 'CHAMP', ibid,&
-                    ctyp, iret)
+        call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=ctyp)
 !
 !        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
         do im = 2, nbmode

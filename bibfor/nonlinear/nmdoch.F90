@@ -63,7 +63,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 !
     integer :: itych
-    integer :: n1, ibid, nocc, iexc, incha1, iret2
+    integer :: n1, nocc, iexc, incha1, iret2
     integer :: npilo, nexci, nchar, nchar1, nchar2, nchar3
     integer :: infmax, indic, ich, iret, infc, j, ichar
     integer :: jinfch, jlcha, jinfc
@@ -143,7 +143,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 if ((nocc.eq.1) .and. (iret2.ne.0)) then
                     nchar = nchar + 1
                 endif
-20          continue
+ 20         continue
         else
 ! --- CAS OU LE CHARGEMENT PEUT NE PAS ETRE OBLIGATOIRE (DYNA_NON_LINE)
 !     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
@@ -172,14 +172,13 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
                 call jeexin(nomcha//'.CHME.SIGIN', iret)
                 if (nomcha .ne. ' ') then
-                    call dismoi('F', 'TYPE_CHARGE', nomcha, 'CHARGE', ibid,&
-                                affcha, iret)
+                    call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=affcha)
 !
                     if (affcha(1:5) .ne. 'CIME_') then
                         nchar2 = nchar2 + 1
                     endif
                 endif
-22          continue
+ 22         continue
 !
             if (nchar1 .ne. nchar2) then
                 nchar3 = max(nchar2,1)
@@ -197,7 +196,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                                     infoc1, ival1)
                     endif
 !
-24              continue
+ 24             continue
                 nchar = nchar2
                 excit = lisch2
             endif
@@ -222,15 +221,15 @@ subroutine nmdoch(lischa, iexcit, excit)
         do 130 ich = 1, nchar
             if (iexcit .eq. 1) then
                 indic = indic + 1
-30              continue
+ 30             continue
                 call getvid('EXCIT', 'CHARGE', iocc=indic, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     call getvid('EXCIT', 'CHARGE', iocc=indic, scal=nomcha, nbret=n1)
-                    do 131,ichd = 1,nchar
-                    if (nomcha .eq. zk8(jlisdb+ichd-1)) then
-                        call utmess('E', 'CHARGES_1', sk=nomcha)
-                    endif
-131                  continue
+                    do 131 ichd = 1, nchar
+                        if (nomcha .eq. zk8(jlisdb+ichd-1)) then
+                            call utmess('E', 'CHARGES_1', sk=nomcha)
+                        endif
+131                 continue
                 else
                     indic = indic + 1
                     goto 30
@@ -274,8 +273,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 ! ------- CONTROLE DU CARACTERE MECANIQUE DE LA CHARGE
 !
-            call dismoi('F', 'TYPE_CHARGE', nomcha, 'CHARGE', ibid,&
-                        affcha, iret)
+            call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=affcha)
             if ((affcha(1:5).ne.'MECA_') .and. (affcha(1:5) .ne.'CIME_')) then
                 call utmess('F', 'CHARGES_22', sk=nomcha(1:8))
             endif
@@ -332,8 +330,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     call utmess('F', 'CHARGES_23', sk=nomcha(1:8))
 !
                 else if (typcha.eq.'FIXE_PIL') then
-                    call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
-                                parcha, iret)
+                    call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                     if (parcha(1:3) .eq. 'OUI') then
                         call utmess('F', 'CHARGES_28', sk=nomcha(1:8))
                     endif
@@ -348,8 +345,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 else
                     if (affcha(5:7) .eq. '_FO') then
                         infoch = 'DIRI_FO'
-                        call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
-                                    parcha, iret)
+                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                         if (parcha(1:3) .eq. 'OUI') then
                             infoch = 'DIRI_FT'
                         endif
@@ -388,8 +384,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     else if (typcha.eq.'FIXE_PIL') then
                         infoch = 'NEUM_PILO'
                         if (nomlig(itych) .ne. '.VEASS') then
-                            call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
-                                        parcha, iret)
+                            call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                             if (parcha(1:3) .eq. 'OUI') then
                                 call utmess('F', 'CHARGES_28')
                             endif
@@ -399,8 +394,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                         infoch = 'NEUM_SUIV'
 !
                     else if (affcha(5:7).eq.'_FO') then
-                        call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
-                                    parcha, iret)
+                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
 !
                         if (parcha(1:3) .eq. 'OUI') then
                             infoch = 'NEUM_FT'
@@ -416,7 +410,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     ASSERT(nbinfo.lt.nbinmx)
                     lisinf(nbinfo) = infoch
                 endif
-70          continue
+ 70         continue
 !
 ! ------- CHARGE DE TYPE EVOL_CHAR
 !
@@ -482,8 +476,8 @@ subroutine nmdoch(lischa, iexcit, excit)
                 else
                     goto 90
                 endif
-80          continue
-90          continue
+ 80         continue
+ 90         continue
             if (infc .ne. 0) then
                 ival = max(infmax,infc)
                 infoch = 'NEUM_LAPL'
@@ -502,7 +496,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                             lisinf, ival)
             endif
 !
-130      continue
+130     continue
 !
 ! ---- PILOTAGE POSSIBLE SI IL YA DES CHARGES PILOTEES !
 !

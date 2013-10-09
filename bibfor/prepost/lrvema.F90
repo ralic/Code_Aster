@@ -65,7 +65,7 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
     integer :: nummed(ntymax)
     character(len=1) :: k1b
-    character(len=8) :: saux08, nomast(ntymax), k8b
+    character(len=8) :: saux08, nomast(ntymax)
     character(len=64) :: nomamd
     character(len=200) :: nofimd
     character(len=255) :: kfic
@@ -152,20 +152,19 @@ subroutine lrvema(nomail, mfich, nochmd)
                            ednoda, nmatyp, iret)
             zi(jnbtyp+i-1)=nmatyp
         endif
-10  end do
+ 10 end do
 !
     call as_mficlo(idfimd, iret)
-    call dismoi('F', 'NB_MA_MAILLA', nomail, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NB_MA_MAILLA', nomail, 'MAILLAGE', repi=nbma)
     call wkvect('&&LRVERIMO_NBMA_TYP', 'V V I', nbma, jmatyp)
     do 20 i = 1, nbma
         zi(jmatyp+i-1)=0
-20  end do
+ 20 end do
 !
     call jeveuo(nomail//'.TYPMAIL', 'L', jtymas)
     do 30 i = 1, nbma
         zi(jmatyp+i-1)=nummed(zi(jtymas+i-1))
-30  end do
+ 30 end do
 !
     do 50 i = 1, ntymax
         nbtym=0
@@ -175,10 +174,10 @@ subroutine lrvema(nomail, mfich, nochmd)
                 if (zi(jmatyp+j-1) .eq. nummed(i)) then
                     nbtym=nbtym+1
                 endif
-60          continue
+ 60         continue
         endif
         zi(jnbty2+i-1)=nbtym
-50  end do
+ 50 end do
 !
     lfirst=.true.
     do 70 i = 1, ntymax
@@ -198,7 +197,7 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
             endif
         endif
-70  end do
+ 70 end do
 !
     call jedetr('&&LRVERIMO_NBETYP1')
     call jedetr('&&LRVERIMO_NBETYP2')

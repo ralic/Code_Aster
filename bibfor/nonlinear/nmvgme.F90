@@ -107,8 +107,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
     endif
 !
 !     ----------------------------------
-    call dismoi('F', 'NB_CHAMP_MAX', fnocal, 'RESULTAT', nbcham,&
-                k8bid, ier)
+    call dismoi('NB_CHAMP_MAX', fnocal, 'RESULTAT', repi=nbcham)
 !
     if (nbcham .le. 0) then
         call utmess('F', 'ALGORITH7_16', sk=fnocal)
@@ -134,7 +133,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
     goto 10
 !     CALCUL DES OPTIONS : CHAR_MECA_SR1D1D
 !     -------------------------------------
-110  continue
+110 continue
     if (option .eq. 'CHAR_MECA_SR1D1D') then
         call megeom(modele, chgeom)
         call mecara(carele, exicar, chcara)
@@ -144,12 +143,10 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 !
 !       VERIF AVANT DE COMMENCER
         call jelira(chfnoe//'.VALE', 'LONMAX', ival=nbequa)
-        call dismoi('F', 'NOM_MAILLA', chfnoe, 'CHAMP', ibid,&
-                    noma1, ier)
+        call dismoi('NOM_MAILLA', chfnoe, 'CHAMP', repk=noma1)
 !
 !       -- DETERMINATION DE LA DIMENSION DE L'ESPACE :
-        call dismoi('F', 'Z_CST', noma1, 'MAILLAGE', ibid,&
-                    k8bid, ier)
+        call dismoi('Z_CST', noma1, 'MAILLAGE', repk=k8bid)
         nx=3
         if (k8bid .eq. 'OUI') nx=2
 !
@@ -164,8 +161,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 !       FABRIQUE A PARTIR DU MAILLAGE SOUS JACENT AU MODELE
         madef = '.0000000'
         call gcncon('.', madef)
-        call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                    noma2, ier)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma2)
         call copisd('MAILLAGE', 'V', noma2, madef)
         call vtgpld('CUMU', noma2//'.COORDO', 1.d0, depmoi, 'V',&
                     madef//'.COORDO1')
@@ -234,6 +230,6 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
                     'OUI')
     endif
 !
-10  continue
+ 10 continue
     call jedema()
 end subroutine

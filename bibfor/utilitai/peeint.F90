@@ -84,10 +84,8 @@ subroutine peeint(resu, modele, nbocc)
     call jemarq()
 !
 !     --- RECUPERATION DU MAILLAGE ET DU NOMBRE DE MAILLES
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
+    call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
 !
 !
 !     --- RECUPERATION DU RESULTAT ET DU NUMERO D'ORDRE
@@ -193,7 +191,7 @@ subroutine peeint(resu, modele, nbocc)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), kbid,&
                                 cbid, prec, crit, tord, nbordr,&
                                 iret)
-                    numo=tord(1)            
+                    numo=tord(1)
                 endif
 !
 !         --- CHAMP DU POST-TRAITEMENT
@@ -213,10 +211,10 @@ subroutine peeint(resu, modele, nbocc)
 !
             endif
 !
-            call dismoi('C', 'TYPE_CHAMP', cham2, 'CHAMP', ibid,&
-                        tych, iret)
-            call dismoi('C', 'NOM_GD', cham2, 'CHAMP', ibid,&
-                        nomgd, iret)
+            call dismoi('TYPE_CHAMP', cham2, 'CHAMP', repk=tych, arret='C',&
+                        ier=iret)
+            call dismoi('NOM_GD', cham2, 'CHAMP', repk=nomgd, arret='C',&
+                        ier=iret)
 !
             if (nomgd(6:6) .eq. 'C') goto 10
 !
@@ -238,7 +236,7 @@ subroutine peeint(resu, modele, nbocc)
                     call codent(i, 'G', ki)
                     zk8(jlicm2+i-1)='X'//ki(1:len(ki))
                     zk8(jlicm1+i-1)=zk8(jlicmp+i-1)
-15              continue
+ 15             continue
                 call chsut1(chamtm, 'NEUT_R', ncmpm, zk8(jlicm1), zk8(jlicm2),&
                             'V', chamtm)
                 cham3='&&PEEINT.CHAM_3'
@@ -248,8 +246,8 @@ subroutine peeint(resu, modele, nbocc)
 !
 !           --- 2. CHANGEMENT DE DISCRETISATION : NOEU -> ELGA
                 optio2 ='TOU_INI_ELGA'
-                call dismoi('C', 'NOM_GD', cham3, 'CHAMP', ibid,&
-                            nomgd, iret)
+                call dismoi('NOM_GD', cham3, 'CHAMP', repk=nomgd, arret='C',&
+                            ier=iret)
                 nopar = nopar2(optio2,nomgd,'OUT')
                 celmod = '&&PEEINT.CELMOD'
                 ligrel = modele//'.MODELE'
@@ -271,8 +269,8 @@ subroutine peeint(resu, modele, nbocc)
                 cham=cham2
             endif
 !
-            call dismoi('C', 'TYPE_CHAMP', cham, 'CHAMP', ibid,&
-                        tych, iret)
+            call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych, arret='C',&
+                        ier=iret)
 !
 !         --- COMPOSANTES DU POST-TRAITEMENT
             call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=nzero, vect=k8b,&
@@ -286,13 +284,13 @@ subroutine peeint(resu, modele, nbocc)
             call wkvect('&&PEEINT.CMP_INIT', 'V V K8', nbcmp, jcpini)
             do 50 i = 1, nbcmp
                 zk8(jcpini+i-1)=zk8(jcmp+i-1)
-50          continue
+ 50         continue
 !
             if (toneut) then
                 do 55 i = 1, nbcmp
                     nucmp=indik8(zk8(jlicm1),zk8(jcpini+i-1),1,ncmpm)
                     zk8(jcmp+i-1)=zk8(jlicm2+nucmp-1)
-55              continue
+ 55             continue
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNE : MOT-CLE 'TOUT'
@@ -319,7 +317,7 @@ subroutine peeint(resu, modele, nbocc)
                     call peecal(tych, resu, nomcha, grpma, zk24(jgma+igm- 1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
                                 zk8(jcpini), numo, inst, iocc)
-20              continue
+ 20             continue
                 call jedetr('&&PEEINT_GMA')
             endif
 !
@@ -336,7 +334,7 @@ subroutine peeint(resu, modele, nbocc)
                     call peecal(tych, resu, nomcha, maille, zk8(jma+im-1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
                                 zk8(jcpini), numo, inst, iocc)
-30              continue
+ 30             continue
                 call jedetr('&&PEEINT_MAIL')
             endif
 !
@@ -345,9 +343,9 @@ subroutine peeint(resu, modele, nbocc)
 !
 !
 !
- 5      end do
+  5     end do
 !
-10  end do
+ 10 end do
 !
     if (nr .eq. 0) then
         call detrsd('CHAMP', tmpcha)

@@ -54,7 +54,7 @@ subroutine calamo(nomres, classe, basmod)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, iam, idiff, ier, ioc, lamo2
+    integer :: i, iad, iam, idiff, ioc, lamo2
     integer :: lamor, lddes, ldref, ldres, lfreq, lmgen, nbamor
     integer :: nbdef, nbmod, ntail
     real(kind=8) :: coeff
@@ -74,13 +74,11 @@ subroutine calamo(nomres, classe, basmod)
 !
 !   NOMBRE DE MODES PROPRES
 !
-    call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod,&
-                k8bid, ier)
+    call dismoi('NB_MODES_DYN', basmod, 'RESULTAT', repi=nbmod)
 !
 !   NOMBRE TOTAL DE MODES ET DEFORMEES
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbdef,&
-                k8bid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
 !
 ! --- CREATION DU .DESC
 !
@@ -119,10 +117,10 @@ subroutine calamo(nomres, classe, basmod)
         call wkvect('&&CALAMO.COEFF2', 'V V R', nbmod, lamo2)
         do 20 iam = 1, nbamor
             zr(lamo2+iam-1) = zr(lamor+iam-1)
-20      continue
+ 20     continue
         do 22 iam = nbamor, nbmod
             zr(lamo2+iam-1) = zr(lamor+nbamor-1)
-22      continue
+ 22     continue
         lamor = lamo2
 !
     else if (nbamor.eq.nbmod) then
@@ -139,7 +137,7 @@ subroutine calamo(nomres, classe, basmod)
                     0, sjv=lmgen, styp=k8bid)
         coeff = 4.d0*pi*zr(lfreq)*zr(lamor+i-1)*zr(lmgen)
         zr(ldres+iad-1) = coeff
-10  end do
+ 10 end do
 !
 !
 ! --- MENAGE
@@ -149,6 +147,6 @@ subroutine calamo(nomres, classe, basmod)
 !
     goto 9999
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

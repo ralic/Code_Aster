@@ -46,7 +46,7 @@ subroutine nmdoco(modele, carele, compor)
 !
 !
 !
-    integer :: iret, ibid
+    integer :: iret
     character(len=24) :: ligrmo
     integer :: ifm, niv
 !
@@ -57,8 +57,7 @@ subroutine nmdoco(modele, carele, compor)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrmo, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! --- EXTENSION DU COMPORTEMENT : NOMBRE DE VARIABLES INTERNES
 !

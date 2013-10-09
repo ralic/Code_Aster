@@ -59,7 +59,7 @@ subroutine calirc(chargz)
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !-----------------------------------------------------------------------
 !
-    integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, ier, nocc, iocc
+    integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
     integer :: ibid, jnoma, nnomx, idmax, idnomn, idcoef, idnomd, igeom
     integer :: idirec, idimen, iagma1, iagno2, nbma1, nbno2, nbno2t
     integer :: nno1, i, indire, lno
@@ -75,7 +75,7 @@ subroutine calirc(chargz)
     character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe, typlia
-    character(len=8) :: noma, mo, m8blan, kelim, kbid
+    character(len=8) :: noma, mo, m8blan, kelim
     character(len=8) :: kbeta, nono1, nono2, charge, cmp, ddl2, listyp(8)
     character(len=16) :: motfac, tymocl(4), motcle(4), nomcmd
     character(len=16) :: corres, corre1, corre2, typrac
@@ -121,14 +121,12 @@ subroutine calirc(chargz)
     m8blan='        '
     ndim1=3
 !
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mo, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mo)
     ligrmo=mo//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
     noma=zk8(jnoma)
 !
-    call dismoi('F', 'DIM_GEOM', mo, 'MODELE', igeom,&
-                kbid, ier)
+    call dismoi('DIM_GEOM', mo, 'MODELE', repi=igeom)
     if (.not.(igeom.eq.2.or.igeom.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -155,8 +153,7 @@ subroutine calirc(chargz)
         listyp(8)='SEG4'
     endif
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nnomx,&
-                kb, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnomx)
 !     -- IDMAX : NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE
 !              = 2*27 + 3 = 57
     idmax=57

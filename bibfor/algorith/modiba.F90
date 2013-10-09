@@ -70,7 +70,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
 !
     integer :: iddl(6), ifrfl, imafl, ifafl, neq, nbmode, j, i
-    integer :: lmod, iret, ibid, ideeq, ivit, numod, imas
+    integer :: lmod, iret, ideeq, ivit, numod, imas
     integer :: ifac, ifre, ieq, k, icm, iprec, ivale
     integer :: lmat(2), lddl, lvali, lvalr, lvalk, lcoef
     integer :: npari, nparr, npark
@@ -110,7 +110,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
     if (newres) then
         call rscrsd('G', nomres, 'MODE_MECA', nbnuor)
-        call refdcp(basemo,nomres)
+        call refdcp(basemo, nomres)
     endif
 !
 !     --- PARAMETRES SOUS ECOULEMENT ---
@@ -140,8 +140,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
     call rsexch('F', basemo, 'DEPL', nuor(1), nomcha,&
                 iret)
-    call dismoi('F', 'PROF_CHNO', nomcha, 'CHAM_NO', ibid,&
-                prchno, iret)
+    call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchno)
     call jeveuo(prchno//'.DEEQ', 'L', ideeq)
 !
 !     --- CAS DU COUPLAGE ---
@@ -199,12 +198,12 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                                 zr(lmod+neq*(i-1)+ieq-1) = zr(ivale+ icm-1)
                                 goto 30
                             endif
-32                      continue
-30                  continue
+ 32                     continue
+ 30                 continue
                 endif
             endif
-20      continue
-10  continue
+ 20     continue
+ 10 continue
 !
 !     --- ON NORMALISE 'SANS_CMP: LAGR'
 !
@@ -216,7 +215,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                     zi(lddl))
         do 40 ieq = 0, neq-1
             zi(lddl+ieq)= 1 - zi(lddl+ieq)
-40      continue
+ 40     continue
         call wkvect('&&MODIBA.COEF_MODE', 'V V R', nbmode, lcoef)
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&

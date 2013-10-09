@@ -99,7 +99,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    character(len=8) :: kbid
     character(len=19) :: prefix, matel
     character(len=24) :: resu, nomli, k24lil, kmaill
 !-----------------------------------------------------------------------
@@ -110,8 +109,8 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, iarefr, ibid, icomp, idimli, idlres, ierc
-    integer :: ierd, ili, imat, iresu, iret, iret1, n1
+    integer :: iad, iarefr, icomp, idimli, idlres
+    integer ::  ili, imat, iresu, iret, iret1, n1
     integer :: nbgr, nbmo, nbresu, nbsup, ncmp
 !
 !-----------------------------------------------------------------------
@@ -145,8 +144,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         models= modele
         surops= suropt
 !
-        call dismoi('F', 'NB_SS_ACTI', matel, 'MATR_ELEM', n1,&
-                    kbid, ierd)
+        call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=n1)
         if (n1 .gt. 0) then
             exiss1= 'OUI'
             exiss2= 'OUI'
@@ -164,18 +162,15 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
                 call utmess('F', 'ASSEMBLA_19')
             endif
         endif
-100  end do
+100 end do
 !
 !     --SI IL EXISTE DES SOUS-STRUCTURES, ON COMPTE 1 LIGREL DE PLUS:
 !
     if (exiss2(1:3) .eq. 'OUI') idimli=idimli+1
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla(1:8), ierd)
-    call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                pheno, ierd)
-    call dismoi('F', 'NUM_GD', pheno, 'PHENOMENE', gd,&
-                kbid, ierd)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla(1:8))
+    call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
+    call dismoi('NUM_GD', pheno, 'PHENOMENE', repi=gd)
 !
 !---- CALCUL DE NEC ET NCMP
 !
@@ -226,8 +221,8 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
                 nlili = nlili + 1
                 call jecroc(jexnom(k24lil, nomli))
             endif
-120      continue
-110  end do
+120     continue
+110 end do
 !
 !     -- ON REGARDE SI ON DOIT AJOUTER LE LIGREL DE MODELE POUR LES
 !     -- SOUS-STRUCTURES:
@@ -236,7 +231,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         do 777 ili = 1, nlili
             call jenuno(jexnum(k24lil, ili), nomli)
             if (nomli(1:8) .eq. modele) icomp =1
-777      continue
+777     continue
         if (icomp .eq. 0) then
             nlili= nlili+1
             call jecroc(jexnom(k24lil, modele//'.MODELE'))
@@ -254,12 +249,11 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         endif
     endif
 !
-101  continue
+101 continue
 !
 !---- RECUPERATION ADRESSES DE CONNEX: ICONX1, ICONX2  ET NBELM
 !
-    call dismoi('F', 'NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', nbelm,&
-                kbid, ierc)
+    call dismoi('NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', repi=nbelm)
     if (nbelm .gt. 0) then
         call jeveuo(mailla(1:8)//'.CONNEX', 'L', iconx1)
         call jeveuo(jexatr(mailla(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
@@ -320,6 +314,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
             zi(iadlie+3* (ili-1)+1) = 2**30
             zi(iadlie+3* (ili-1)+2) = 2**30
         endif
-200  end do
-9999  continue
+200 end do
+9999 continue
 end subroutine

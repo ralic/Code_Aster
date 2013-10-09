@@ -67,7 +67,7 @@ subroutine macr78(nomres, trange, typres)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iaconx, iadref, iaprno, iarc0, iarch
-    integer :: ibid, icmp, idbase, iddl, ie, ierd, im
+    integer :: ibid, icmp, idbase, iddl, im
     integer :: inoe, inu0, inum, iret, iretou, ivale, j
     integer :: jinst, jnocmp, jnume, jordr, jrestr, k, ldnew
     integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
@@ -97,16 +97,12 @@ subroutine macr78(nomres, trange, typres)
     call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                 cbid, rbid, k8b, tmod, 1,&
                 ibid)
-    nbmode=tmod(1)            
-    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                numedd, iret)
-    call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
-                mailla, iret)
-    call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
-                lintf, iret)
+    nbmode=tmod(1)
+    call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
+    call dismoi('NOM_MAILLA', numedd(1:14), 'NUME_DDL', repk=mailla)
+    call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=lintf)
     call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
-    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
-                k8b, ierd)
+    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmdef)
 !      CALL BMNBMD(BASEMO,'DEFORMEE',NBMDEF)
     nbmdyn = nbmode-nbmdef
     call jelira(macrel//'.LINO', 'LONMAX', nbntot)
@@ -125,7 +121,7 @@ subroutine macr78(nomres, trange, typres)
             nbndef = nbntot-nbndyn
         else
             k = 1
-31          continue
+ 31         continue
             if ((k+1) .gt. nbmdef) then
                 nes = k
                 goto 32
@@ -139,7 +135,7 @@ subroutine macr78(nomres, trange, typres)
                 k=k+1
                 goto 31
             endif
-32          continue
+ 32         continue
             nbndef = nbmdef/nes
             nbndyn = nbntot-nbndef
             if (nbmdyn .ne. 0) then
@@ -161,7 +157,7 @@ subroutine macr78(nomres, trange, typres)
                         0, sjv=lnocmp, styp=k8b)
             zk8(jnocmp+2*i-2) = zk16(lnocmp)(1:8)
             zk8(jnocmp+2*i-1) = zk16(lnocmp)(9:16)
-23      continue
+ 23     continue
     endif
 !
     do 21 i = 1, nbtdyn
@@ -169,16 +165,15 @@ subroutine macr78(nomres, trange, typres)
         do 22 j = 1, nec
             zk8(jnocmp+2*nec*(i-1)+2*j-2) = nomnol
             zk8(jnocmp+2*nec*(i-1)+2*j-1) = nomcmp(j)
-22      continue
-21  continue
+ 22     continue
+ 21 continue
 !        CALL GETVID(' ','NUME_DDL',1,IARG,1,K8B,IBID)
 !        IF (IBID.NE.0) THEN
 !          CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
 !          NUMEDD = NUMEDD(1:14)//'.NUME'
 !        ENDIF
     numddl = numedd(1:14)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8b, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     call wkvect('&&MACR78.BASE', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
                 'R', zr(idbase), [cbid])
@@ -224,17 +219,13 @@ subroutine macr78(nomres, trange, typres)
     call wkvect('&&MACR78.RESTR', 'V V R', nbmode, jrestr)
     call rsexch('F', nomin, 'DEPL', 1, cham19,&
                 iret)
-    call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                maya, ie)
+    call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=maya)
 ! ATTENTION MAILLA MAILLAGE DU MACRO_ELEM DE RESTITUTION
 !  ET MAYA MAILLAGE DU RESULTAT SUR MODELE SOUS-STRUC-STAT
-    call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
-                nogdsi, ie)
-    call dismoi('F', 'NB_EC', nogdsi, 'GRANDEUR', nbec,&
-                k8b, ierd)
+    call dismoi('NOM_GD', cham19, 'CHAMP', repk=nogdsi)
+    call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nbec)
 !
-    call dismoi('F', 'PROF_CHNO', cham19, 'CHAMP', ibid,&
-                nprno, ie)
+    call dismoi('PROF_CHNO', cham19, 'CHAMP', repk=nprno)
     nprno = nprno(1:19)//'.PRNO'
     call jeveuo(jexnum(nprno, 1), 'L', iaprno)
     do 300 i = 1, nbcham
@@ -257,7 +248,7 @@ subroutine macr78(nomres, trange, typres)
                 if (zk8(jnocmp+2*im-1) .eq. 'DRZ') icmp = 6
                 iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                 zr(jrestr+im-1) = zr(ivale+iddl-1+icmp-1)
-24          continue
+ 24         continue
             call rsexch(' ', nomres, champ(i)(1:4), iarch, chamno,&
                         iret)
             call vtcreb(chamno, numedd, 'G', 'R', neq)
@@ -284,8 +275,8 @@ subroutine macr78(nomres, trange, typres)
                             0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
             endif
-310      continue
-300  continue
+310     continue
+300 continue
 !
     call refdcp(basemo, nomres)
 !
@@ -299,7 +290,7 @@ subroutine macr78(nomres, trange, typres)
     call jedetr('&&MACR78.RESTR')
 !
     call titre()
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

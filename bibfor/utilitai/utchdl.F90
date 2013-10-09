@@ -145,8 +145,8 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !     4. ON VERIFIE LE NOEUD : CALCUL DE NUPO2
 !     ------------------------------------------
     if (nonoeu(1:1) .ne. ' ') then
-        call dismoi('C', 'TYPE_CHAMP', chm19z, 'CHAMP', ibid,&
-                    k8b, ibid)
+        call dismoi('TYPE_CHAMP', chm19z, 'CHAMP', repk=k8b, arret='C',&
+                    ier=ibid)
         if (k8b(1:4) .ne. 'ELNO') then
             call utmess(aof, 'UTILITAI5_32', sk=chm19z)
         endif
@@ -235,20 +235,20 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !
 !         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
-        do 20,ipt = 1,nbpt
-        ico = 0
-        k = 1
-        if (diff) k = ipt
-        iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-        do 10,kcmp = 1,ncmpmx
-        if (exisdg(zi(iadg),kcmp)) then
-            ico = ico + 1
-            zk8(incmp+ico-1) = zk8(iancmp+kcmp-1)
-            if (nocmp .eq. zk8(incmp+ico-1)) trouve = .true.
-        endif
-10      continue
-        zi(jlpt-1+ipt) = ico
-20      continue
+        do 20 ipt = 1, nbpt
+            ico = 0
+            k = 1
+            if (diff) k = ipt
+            iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+            do 10 kcmp = 1, ncmpmx
+                if (exisdg(zi(iadg),kcmp)) then
+                    ico = ico + 1
+                    zk8(incmp+ico-1) = zk8(iancmp+kcmp-1)
+                    if (nocmp .eq. zk8(incmp+ico-1)) trouve = .true.
+                endif
+ 10         continue
+            zi(jlpt-1+ipt) = ico
+ 20     continue
         if ((.not.trouve) .and. (.not.nogran)) then
             call utmess(aof, 'UTILITAI5_38', sk=nocmp)
         endif
@@ -256,32 +256,32 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !
 !
         cumu = 0
-        do 30,ipt = 1,nbpt
-        zi(jlcupt-1+ipt) = cumu
-        cumu = cumu + zi(jlpt-1+ipt)
-30      continue
+        do 30 ipt = 1, nbpt
+            zi(jlcupt-1+ipt) = cumu
+            cumu = cumu + zi(jlpt-1+ipt)
+ 30     continue
 !
 !
-        do 50,ipt = 1,nbpt
-        k = 1
-        if (diff) k = ipt
-        iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-        ico = 0
-        do 40,kcmp = 1,ncmpmx
-        if (exisdg(zi(iadg),kcmp)) then
-            ico = ico + 1
+        do 50 ipt = 1, nbpt
+            k = 1
+            if (diff) k = ipt
+            iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+            ico = 0
+            do 40 kcmp = 1, ncmpmx
+                if (exisdg(zi(iadg),kcmp)) then
+                    ico = ico + 1
 !
 !
-            iddl = adiel - 1 + nbspt*zi(jlcupt-1+ipt) + (ispt-1)*zi(jlpt-1+ipt) + ico
-            if ((ipt.eq.nupo2) .and. (kcmp.eq.icmp)) goto 60
+                    iddl = adiel - 1 + nbspt*zi(jlcupt-1+ipt) + (ispt-1)*zi(jlpt-1+ipt) + ico
+                    if ((ipt.eq.nupo2) .and. (kcmp.eq.icmp)) goto 60
 !
-        endif
-40      continue
-50      continue
+                endif
+ 40         continue
+ 50     continue
 !       -- ON N'A PAS TROUVE LE POINT LE SOUS-POINT OU LA COMPOSANTE :
         iddl=0
         goto 9999
-60      continue
+ 60     continue
 !
 !
 !     6.2 CAS : NOMGD = VARI_R :
@@ -314,7 +314,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     endif
 !
 !
-9999  continue
+9999 continue
     call jedetr('&&UTCHDL.LONG_PT')
     call jedetr('&&UTCHDL.LONG_PT_CUMU')
     call jedetr('&&UTCHDL.N_CMP')

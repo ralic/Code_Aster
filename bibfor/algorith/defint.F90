@@ -56,7 +56,7 @@ subroutine defint(mailla, nomres)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ideb, iec, ier, ifin, ioc
+    integer :: i, ibid, ideb, iec, ifin, ioc
     integer :: iret, j, k, ldact, ldfreq, llnin, lltyp
     integer :: ltgui, ltlgr, ltlno, ltmas, maxgr, maxno, nball
     integer :: nbbid, nbcmp, nbcou, nbec, nbecmx, nbgr, nbint
@@ -67,7 +67,6 @@ subroutine defint(mailla, nomres)
     parameter   (nbecmx = 10)
     character(len=8) :: nomres, mailla
     character(len=8) :: nomcou, type
-    character(len=8) :: k8bid
     character(len=9) :: nom, no, grno
     character(len=14) :: int
     character(len=24) :: nomint, notint, typint, noeint, ddlact
@@ -83,12 +82,9 @@ subroutine defint(mailla, nomres)
 !----------------RECUPERATION DES DONNEES GRANDEUR----------------------
 !
     call jemarq()
-    call dismoi('F', 'NB_CMP_MAX', nomres, 'INTERF_DYNA', nbcmp,&
-                k8bid, ier)
-    call dismoi('F', 'NB_EC', nomres, 'INTERF_DYNA', nbec,&
-                k8bid, ier)
-    call dismoi('F', 'NUM_GD', nomres, 'INTERF_DYNA', numgd,&
-                k8bid, ier)
+    call dismoi('NB_CMP_MAX', nomres, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', nomres, 'INTERF_DYNA', repi=nbec)
+    call dismoi('NUM_GD', nomres, 'INTERF_DYNA', repi=numgd)
 !
 !-------------INITIALISATION DES NOMS TRES UTILISES---------------------
 !
@@ -110,7 +106,7 @@ subroutine defint(mailla, nomres)
     do 10 i = 1, ioc
         call getvtx(int, nom, iocc=i, scal=kar80, nbret=nbval)
         if (nbval .gt. 0) nbint=nbint+1
-10  end do
+ 10 end do
 !
 !------------ALLOCATION REPERTOIRES DES NOMS D'INTERFACE ---------------
 !
@@ -180,7 +176,7 @@ subroutine defint(mailla, nomres)
 !
             nbgr=nbgr-nbvag
             nbno=nbno-nbvan
-20      continue
+ 20     continue
 !
     endif
 !
@@ -252,7 +248,7 @@ subroutine defint(mailla, nomres)
                         nbret=nbvag)
             call compno(mailla, nbvag, zk24(ltlgr), nbuf)
             nbno=nbno-nbvan+nbuf
-40      continue
+ 40     continue
 !
 !-------ALLOCATION DES VECTEURS NUMERO NOEUDS INTERFACES----------------
 !                     MASQUE,DDL ACTIFS
@@ -293,11 +289,11 @@ subroutine defint(mailla, nomres)
                 do 56 iec = 1, nbec
                     zi(ldact+nbpre+(k-1)*nbec+iec-1) = icodac(iec)
                     zi(ltmas+nbpre+(k-1)*nbec+iec-1) = icodma(iec)
-56              continue
-55          continue
+ 56             continue
+ 55         continue
             nbpre=nbpre+nbcou*nbec
-50      continue
-30  end do
+ 50     continue
+ 30 end do
 !
 !------SAUVEGARDE DES OBJECT EN GLOBALE SAUF CEUX A MODIFIER------------
 !

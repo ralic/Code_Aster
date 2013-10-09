@@ -45,7 +45,7 @@ subroutine rfrcha()
     integer :: lvale, lg1, lg2, iddl, inoeud, nch
     integer :: n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn
-    integer :: ngn, ibid, ie, nc, ifm, niv, nusp
+    integer :: ngn, nc, ifm, niv, nusp
     real(kind=8) :: epsi, valr
     complex(kind=8) :: valc
     character(len=1) :: type
@@ -89,10 +89,8 @@ subroutine rfrcha()
 !     -----------------------------------------------------------------
     call getvid(' ', 'CHAM_GD', scal=cham19, nbret=nch)
     if (nch .ne. 0) then
-        call dismoi('F', 'TYPE_SUPERVIS', cham19, 'CHAMP', ibid,&
-                    typcha, ie)
-        call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                    noma, ie)
+        call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
+        call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=noma)
         if (typcha(1:7) .eq. 'CHAM_NO') then
 !       ----------------------------------
             if (ngn .ne. 0) then
@@ -147,8 +145,7 @@ subroutine rfrcha()
                     call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 endif
             endif
-            call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
-                        typch2, ie)
+            call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch2)
             if (typch2 .eq. 'ELEM') then
                 npoint = 1
                 nusp = 1
@@ -166,10 +163,8 @@ subroutine rfrcha()
                     call utmess('F', 'CHAMPS_13')
                 endif
             endif
-            call dismoi('F', 'NOM_GD', cham19, 'CHAM_ELEM', ibid,&
-                        nomgd, ie)
-            call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                        type, ie)
+            call dismoi('NOM_GD', cham19, 'CHAM_ELEM', repk=nomgd)
+            call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=type)
             if (type .ne. 'R') then
                 call utmess('F', 'UTILITAI4_19')
             endif
@@ -187,7 +182,7 @@ subroutine rfrcha()
     endif
 !
 !     -----------------------------------------------------------------
-10  continue
+ 10 continue
     call foattr(' ', 1, nomfon)
 !
 !     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---

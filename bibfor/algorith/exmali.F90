@@ -40,7 +40,6 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/bmrdda.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
@@ -51,12 +50,13 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=6) :: pgc
     character(len=8) :: basmod, nomint, lintf, kbid
     character(len=24) :: chamva, nommat
     integer :: ord, ii, numint, nbdef, nbcol, ibid, nbddl, nblig, ltrang
-    integer :: llcham, iran, iad, i, j, ldmat, ier
+    integer :: llcham, iran, iad, i, j, ldmat
 !
 !-----------------------------------------------------------------------
     data pgc /'EXMALI'/
@@ -65,8 +65,8 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !---------------------RECUPERATION LISTE_INTERFACE AMONT----------------
 !
     call jemarq()
-
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf, ier)
+!
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf)
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
@@ -77,8 +77,7 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
 !----------------RECUPERATION DU NOMBRE DE DDL GENERALISES--------------
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbdef,&
-                kbid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
     nbcol=nbdef
 !
 !----RECUPERATION DU NOMBRE DE DDL  ET NOEUDS ASSOCIES A L'INTERFACE----
@@ -114,10 +113,10 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
             iran=zi(ltrang+j-1)
             iad=ldmat+((i-1)*nbddl)+j-1
             zr(iad)=zr(llcham+iran-1)
-20      continue
+ 20     continue
 !
 !
-10  continue
+ 10 continue
 !
 !
     call jedetr('&&'//pgc//'.RAN.DDL')

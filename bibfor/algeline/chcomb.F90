@@ -110,8 +110,7 @@ subroutine chcomb(tablez, nomaou)
 !
 ! --- NOMBRE DE NOEUDS DU MAILLAGE :
 !     ----------------------------
-    call dismoi('F', 'NB_NO_MAILLA', nomaou, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', nomaou, 'MAILLAGE', repi=nbno)
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DU MAILLAGE :
 !     ---------------------------------------------------
@@ -124,7 +123,7 @@ subroutine chcomb(tablez, nomaou)
         idcoor = jcoor-1+dimcoo*(ino-1)
         zr(idcoor+1) = zr(idcoor+1) + xt
         zr(idcoor+2) = zr(idcoor+2) + yt
-10  end do
+ 10 end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

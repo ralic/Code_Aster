@@ -42,13 +42,13 @@ subroutine nuacno(nuage, lno, chno)
 !     ------------------------------------------------------------------
     integer :: gd
     character(len=4) :: type
-    character(len=8) :: k8b, noma, nomgd
+    character(len=8) ::  noma, nomgd
     character(len=19) :: kchno, klno, knuage, nonu
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, iaec, ianueq, iaprno, ibid, icmp
-    integer :: icompt, ie, iec, ieq, ino, itype, ival
+    integer :: icompt, iec, ieq, ino, itype, ival
     integer :: j, jdesc, jlno, jnuai, jnuav, jrefe, k
     integer :: kcomp, kvale, nc, ncmp, ncmpmx, nec, np
     integer :: num
@@ -71,8 +71,7 @@ subroutine nuacno(nuage, lno, chno)
     call jeveuo(kchno//'.REFE', 'L', jrefe)
     noma = zk24(jrefe-1+1) (1:8)
     nonu = zk24(jrefe-1+2) (1:19)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', np,&
-                k8b, ie)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=np)
 !
     if (klno .ne. ' ') then
         call jelira(klno, 'LONUTI', np)
@@ -81,7 +80,7 @@ subroutine nuacno(nuage, lno, chno)
         call wkvect('&&NUACNO.NOEUD', 'V V I', np, jlno)
         do 10 i = 1, np
             zi(jlno+i-1) = i
-10      continue
+ 10     continue
     endif
 !
     call jelira(kchno//'.VALE', 'TYPE', cval=type)
@@ -104,7 +103,7 @@ subroutine nuacno(nuage, lno, chno)
         ncmp = -num
         do 200 iec = 1, nec
             zi(iaec+iec-1) = zi(jdesc-1+2+iec)
-200      continue
+200     continue
         do 202 j = 1, np
             ino = zi(jlno+j-1)
             ival = ncmp * ( ino - 1 )
@@ -119,8 +118,8 @@ subroutine nuacno(nuage, lno, chno)
                         zc(kvale-1+ival+icmp) = zc(jnuav+k-1)
                     endif
                 endif
-204          continue
-202      continue
+204         continue
+202     continue
     else
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
@@ -135,7 +134,7 @@ subroutine nuacno(nuage, lno, chno)
             if (ncmp .eq. 0) goto 210
             do 212 iec = 1, nec
                 zi(iaec+iec-1) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
-212          continue
+212         continue
             icompt = 0
             do 220 icmp = 1, ncmpmx
                 if (exisdg(zi(iaec) , icmp )) then
@@ -148,8 +147,8 @@ subroutine nuacno(nuage, lno, chno)
                         zc(kvale-1+ieq) = zc(jnuav+k-1)
                     endif
                 endif
-220          continue
-210      continue
+220         continue
+210     continue
     endif
 !
     call jedetr('&&NUACNO.NOMCMP')

@@ -59,8 +59,7 @@ subroutine chvepg(chel1, chel2)
 !
 ! --- MAILLAGE ATTACHE
 !
-    call dismoi('F', 'NOM_MAILLA', chel1, 'CHAM_ELEM', ibid,&
-                noma, ibid)
+    call dismoi('NOM_MAILLA', chel1, 'CHAM_ELEM', repk=noma)
 !
 ! --- EXTRAIRE DE CHEL1 LE SCHEMA DE POINT DE GAUSS DES MAILLES
 !
@@ -89,7 +88,7 @@ subroutine chvepg(chel1, chel2)
             valk(3) = fpg2
             call utmess('F', 'CALCULEL_91', nk=3, valk=valk)
         endif
-10  end do
+ 10 end do
 !
     call jedetr('&&CHVEPG.FAPG1')
     call jedetr('&&CHVEPG.FAPG2')

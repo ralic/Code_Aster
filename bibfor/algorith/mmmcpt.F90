@@ -18,7 +18,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -62,8 +62,6 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
     integer :: posmae
     integer :: jdecme
     integer :: cont
-    character(len=8) :: k8bid
-    integer :: ibid
     character(len=24) :: tabfin
     integer :: jtabf
     logical :: lveri, lnoeu
@@ -84,8 +82,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! --- SD TEMPORAIRE POUR VERIF NOEUDS DEJA CALCULES
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ibid)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     dejcal = '&&XMMRES.DEJCAL'
     call wkvect(dejcal, 'V V I', nbno, jdejca)
 !
@@ -163,12 +160,12 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
-30          continue
-20      continue
-25      continue
-10  end do
+ 30         continue
+ 20     continue
+ 25     continue
+ 10 end do
 !
-999  continue
+999 continue
 !
     call jedetr(dejcal)
     call nmrvai(sdstat, 'CONT_NBLIAC', 'E', nbliac)

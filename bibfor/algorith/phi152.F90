@@ -55,7 +55,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
 #include "asterfort/rsorac.h"
 #include "asterfort/tabcor.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbvale, nbrefe, nbdesc, nbmode, iret, ierd
+    integer :: ibid, nbvale, nbrefe, nbdesc, nbmode, iret
     integer :: ilires, j, nbid, ivalk, indice, tabad(5), tmod(1)
     integer :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble
     real(kind=8) :: bid, ebid
@@ -92,10 +92,8 @@ subroutine phi152(model, option, mate, phibar, ma,&
                     cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
         nbmode=tmod(1)
-        call dismoi('F', 'NOM_MAILLA', nomcha(1:19), 'CHAM_NO', ibid,&
-                    mailla, ierd)
-        call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
-                    maflui, ierd)
+        call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
+        call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
             call tabcor(model, mate, mailla, maflui, moint,&
                         num, ndble, icor)

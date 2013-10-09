@@ -51,11 +51,10 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
 !
     character(len=6) :: pgc
-    character(len=8) :: k8bid
     character(len=14) :: num
     character(len=24) :: valk
     complex(kind=8) :: xprod, dcmplx, cbid
-    integer :: ldref, nbdef, ntail, ldres, ier, lmat, neq, iret, ibid
+    integer :: ldref, nbdef, ntail, ldres, ier, lmat, neq
     integer :: iddeeq, idbase, ltvec1, ltvec2, i, j, k, iad, lddes
 !
 !
@@ -72,8 +71,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
 ! --- RECUPERATION DES DIMENSIONS DE LA BASE MODALE
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbdef,&
-                k8bid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
@@ -95,10 +93,8 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
 ! --- RECUPERATION NUMEROTATION ET NB EQUATIONS
 !
-    call dismoi('F', 'NB_EQUA', nommat(1:8), 'MATR_ASSE', neq,&
-                k8bid, iret)
-    call dismoi('F', 'NOM_NUME_DDL', nommat(1:8), 'MATR_ASSE', ibid,&
-                num, iret)
+    call dismoi('NB_EQUA', nommat(1:8), 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_NUME_DDL', nommat(1:8), 'MATR_ASSE', repk=num)
     call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
 !
     call wkvect('&&'//pgc//'.BASEMO', 'V V R', nbdef*neq, idbase)
@@ -119,12 +115,12 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
         do 20 j = 1, neq
             zc(ltvec1+j-1)=dcmplx(zr(idbase+(i-1)*neq+j-1),0.d0)
-20      continue
+ 20     continue
         call mcmult('ZERO', lmat, zc(ltvec1), zc(ltvec2), 1,&
                     .true.)
         call zeclag(zc(ltvec2), neq, zi(iddeeq))
         do 21 j = 1, neq
-21      continue
+ 21     continue
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE
 !
@@ -132,7 +128,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
         do 30 j = 1, neq
             xprod=xprod+ zc(ltvec2-1+j)*dcmplx(zr(idbase+(i-1)*neq-1+&
             j),0.d0)
-30      continue
+ 30     continue
 !
         iad = i*(i+1)/2
         zc(ldres+iad-1) = xprod
@@ -145,13 +141,13 @@ subroutine calprc(nomres, classe, basmod, nommat)
                 do 50 k = 1, neq
                     xprod=xprod+ zc(ltvec2-1+k)*dcmplx(zr(idbase+(j-1)&
                     *neq-1+k),0.d0)
-50              continue
+ 50             continue
                 iad = i+(j-1)*j/2
                 zc(ldres+iad-1) = xprod
-40          continue
+ 40         continue
         endif
 !
-10  end do
+ 10 end do
 !
     call jedetr('&&'//pgc//'.VECT1')
     call jedetr('&&'//pgc//'.VECT2')

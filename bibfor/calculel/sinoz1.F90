@@ -55,7 +55,6 @@ subroutine sinoz1(modele, sigma, signo)
     character(len=1) :: typres, k1bid
     character(len=8) :: modele
     character(len=14) :: nupgm
-    character(len=8) :: kbid
     character(len=8) :: licmp(6), ma
     character(len=19) :: infcha
     character(len=19) :: solveu, vecele, matpre, k19bid, criter
@@ -75,8 +74,7 @@ subroutine sinoz1(modele, sigma, signo)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'DIM_GEOM', modele, 'MODELE', repdim,&
-                kbid, ibid)
+    call dismoi('DIM_GEOM', modele, 'MODELE', repi=repdim)
 !
     if ((repdim.ne.2) .or. (repdim.ne.3)) then
         if (repdim .eq. 1) then
@@ -166,8 +164,7 @@ subroutine sinoz1(modele, sigma, signo)
     licmp(4) = 'SIXY'
     licmp(5) = 'SIXZ'
     licmp(6) = 'SIYZ'
-    call dismoi('F', 'NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', ibid,&
-                ma, ier)
+    call dismoi('NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', repk=ma)
     call crcnct('G', signo, ma, 'SIEF_R', nbcmp,&
                 licmp, rcmp)
     call jeveuo(signo(1:19)//'.VALE', 'E', jsig)
@@ -182,8 +179,7 @@ subroutine sinoz1(modele, sigma, signo)
     call jeveuo(jexnum(nume(1:14)//'.NUME.PRNO', 1), 'L', jprno)
     call jeveuo(nume(1:14)//'.NUME.NUEQ', 'L', jnueq)
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                kbid, ier)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     do i = 1, nbno
         indeq = zi(jprno-1+3* (i-1)+1)
         ieq = zi(jnueq-1+indeq)

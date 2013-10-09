@@ -1,13 +1,13 @@
 function xvfimo(modele, fiss)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     character(len=8) :: modele, fiss
     logical :: xvfimo
 !
@@ -39,7 +39,6 @@ function xvfimo(modele, fiss)
 ! ======================================================================
 !
     integer :: ier, nfiss, jfiss, i
-    character(len=8) :: k8b
 !
     call jemarq()
 !
@@ -47,8 +46,7 @@ function xvfimo(modele, fiss)
     ASSERT(ier.ne.0)
 !
 !     RECUPERATION DU NOMBRE DE FISSURES ASSOCIEES AU MODELE
-    call dismoi('F', 'NB_FISS_XFEM', modele, 'MODELE', nfiss,&
-                k8b, ier)
+    call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
 !
 !     RECUPERATION DE LA LISTE DES FISSURES ASSOCIEES AU MODELE
     call jeveuo(modele//'.FISS', 'L', jfiss)
@@ -57,7 +55,7 @@ function xvfimo(modele, fiss)
 !
     do 10 i = 1, nfiss
         if (fiss .eq. zk8(jfiss-1+i)) xvfimo=.true.
-10  end do
+ 10 end do
 !
     call jedema()
 !

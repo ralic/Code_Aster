@@ -45,7 +45,6 @@ subroutine simult()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: masse, modsta, mailla, nomnoe
     character(len=16) :: type, nomcmd
@@ -58,7 +57,7 @@ subroutine simult()
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
 !-----------------------------------------------------------------------
-    integer :: i, idgn, idno, ier, ii, in, ldgn
+    integer :: i, idgn, idno, ii, in, ldgn
     integer :: nb, nbd, nbdir, nbgr, nbno, nbv
 !-----------------------------------------------------------------------
     call jemarq()
@@ -70,8 +69,7 @@ subroutine simult()
 !     --- MATRICE DE MASSE ---
 !
     call getvid(' ', 'MATR_MASS', scal=masse, nbret=nbv)
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                mailla, ier)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
 !
 !     --- QUELLE EST LA DIRECTION ? ---
 !
@@ -83,14 +81,14 @@ subroutine simult()
     xnorm = 0.d0
     do 10 i = 1, nbdir
         xnorm = xnorm + depl(i) * depl(i)
-10  end do
+ 10 end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
     endif
     do 12 i = 1, nbdir
         depl(i) = depl(i) / xnorm
-12  end do
+ 12 end do
 !
 !     --- ON RECUPERE LES MODES STATIQUES ---
 !
@@ -130,8 +128,8 @@ subroutine simult()
                 call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                 ii = ii + 1
                 zk8(idno+ii) = nomnoe
-22          continue
-20      continue
+ 22         continue
+ 20     continue
     endif
     call simul2(resu, nomcmd, masse, modsta, nbdir,&
                 depl, zk8(idno), nbno)

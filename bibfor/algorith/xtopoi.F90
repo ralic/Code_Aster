@@ -51,14 +51,14 @@ subroutine xtopoi(noma, modele)
 !
     integer :: nbout, nbin
     parameter    (nbout=5, nbin=4)
-    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), k8bid
+    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: jnoma
     character(len=19) :: ligrel, chgeom
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
     logical :: debug
-    integer :: ifm, niv, ifmdbg, nivdbg, jnbsp, ima, nbma, iret
+    integer :: ifm, niv, ifmdbg, nivdbg, jnbsp, ima, nbma
     integer :: jcesd, jcesv, jcesl, iad
     character(len=16) :: option
 !
@@ -107,15 +107,14 @@ subroutine xtopoi(noma, modele)
 !
 ! --- REMPLISSAGE DES SOUS POINT DE HEAVTO
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     do 10 ima = 1, nbma
         call cesexi('S', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         zl(jcesl-1-iad) = .true.
         zi(jcesv-1-iad) = zi(jnbsp-1+ima)
 !
-10  end do
+ 10 end do
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !

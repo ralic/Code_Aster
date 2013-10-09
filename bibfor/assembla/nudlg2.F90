@@ -20,7 +20,6 @@ subroutine nudlg2(nu)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -31,6 +30,7 @@ subroutine nudlg2(nu)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nu
 ! ----------------------------------------------------------------------
 !     BUT : CREER L'OBJET NU.DLG2 PERMETTANT D'ASSOCIER LES
@@ -50,20 +50,19 @@ subroutine nudlg2(nu)
 !                               DANS CE CAS .DLG2(IEQ2)=IEQ1
 ! ----------------------------------------------------------------------
 !
-    integer :: neq, ili, ier, nbligr, iexi, jprno, jdlg2
+    integer :: neq, ili, nbligr, iexi, jprno, jdlg2
     integer :: ima, nn, n1, n2, n3, n4
     integer :: j1nema, j2nema, nbma
-    integer :: ieq2, ieq3, nueq2, nueq3, nec, ibid, jnueq
+    integer :: ieq2, ieq3, nueq2, nueq3, nec, jnueq
     character(len=19) :: ligr19
     character(len=14) :: nu14
     character(len=8) :: nogd
-    character(len=1) :: kbid
 !
 !     -- ZZNSUP : NOMBRE DE NOEUDS DE LA MAILLE TARDIVE
-#define zznsup(ili,ima)   zi(j2nema+ima) - zi(j2nema+ima-1) - 1
+#define zznsup(ili,ima) zi(j2nema+ima) - zi(j2nema+ima-1) - 1
 !
 !     -- ZZNEMA : NUMERO DES NOEUDS DE LA MAILLE TARDIVE
-#define zznema(ili,ima,j)   zi(j1nema-1+ zi(j2nema+ima-1)+j-1)
+#define zznema(ili,ima,j) zi(j1nema-1+ zi(j2nema+ima-1)+j-1)
 !
 !
 !
@@ -73,12 +72,9 @@ subroutine nudlg2(nu)
     call jeexin(nu14//'.NUME.DLG2', iexi)
     if (iexi .gt. 0) goto 9999
 !
-    call dismoi('F', 'NB_EQUA', nu14, 'NUME_DDL', neq,&
-                kbid, ier)
-    call dismoi('F', 'NOM_GD', nu14, 'NUME_DDL', ibid,&
-                nogd, ier)
-    call dismoi('F', 'NB_EC', nogd, 'GRANDEUR', nec,&
-                kbid, ier)
+    call dismoi('NB_EQUA', nu14, 'NUME_DDL', repi=neq)
+    call dismoi('NOM_GD', nu14, 'NUME_DDL', repk=nogd)
+    call dismoi('NB_EC', nogd, 'GRANDEUR', repi=nec)
     call jelira(nu14//'.NUME.PRNO', 'NMAXOC', nbligr)
     call jeveuo(nu14//'.NUME.NUEQ', 'L', jnueq)
 !
@@ -116,12 +112,12 @@ subroutine nudlg2(nu)
                     zi(jdlg2-1+nueq3)=nueq2
                 endif
             endif
-21      continue
-31  end do
+ 21     continue
+ 31 end do
 !
 !
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

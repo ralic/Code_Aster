@@ -49,8 +49,7 @@ subroutine nmrecz(numedd, cndiri, cnfint, cnfext, ddepla,&
 !
 !
 !
-    character(len=8) :: k8bid
-    integer :: ieq, neq, iret
+    integer :: ieq, neq
     integer :: jfext, jfint, jdiri, jddepl
 !
 ! ----------------------------------------------------------------------
@@ -59,8 +58,7 @@ subroutine nmrecz(numedd, cndiri, cnfint, cnfext, ddepla,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ACCES OBJETS
 !
@@ -72,7 +70,7 @@ subroutine nmrecz(numedd, cndiri, cnfint, cnfext, ddepla,&
     fonc = 0.d0
     do 10 ieq = 1, neq
         fonc = fonc + zr(jddepl+ieq-1) * (zr(jfint+ieq-1)+ zr(jdiri+ ieq-1)- zr(jfext+ieq-1))
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

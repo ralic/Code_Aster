@@ -33,18 +33,16 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
     character(len=16) :: corres
     character(len=19) :: cham1
     character(len=1) :: base
-    character(len=8) :: ma1p, ma2p, kbid
-    integer :: ndim, ndim1, ndim2, ibid
+    character(len=8) :: ma1p, ma2p
+    integer :: ndim, ndim1, ndim2
 !     ----------------------------------------------
 !
     ASSERT(base.eq.'V')
 !
 !
 !     -- CALCUL DE NDIM :
-    call dismoi('F', 'DIM_GEOM', moa1, 'MODELE', ndim1,&
-                kbid, ibid)
-    call dismoi('F', 'DIM_GEOM', moa2, 'MODELE', ndim2,&
-                kbid, ibid)
+    call dismoi('DIM_GEOM', moa1, 'MODELE', repi=ndim1)
+    call dismoi('DIM_GEOM', moa2, 'MODELE', repi=ndim2)
     ASSERT(ndim1.eq.ndim2)
     ndim=ndim1
     ASSERT(ndim.eq.2.or.ndim.eq.3)

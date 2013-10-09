@@ -107,8 +107,7 @@ subroutine crperm()
 !
     endif
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
-                k8b, ibid)
+    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     iord2 = 1
 !
 ! --- VERIFICATIONS SUPPLEMENTAIRES :
@@ -163,7 +162,7 @@ subroutine crperm()
             chsi2(ic) = chs2
         endif
 !
-100  end do
+100 end do
 !
 !
     linoeu = '&&CRPERM.LISTE_NOEU'
@@ -213,13 +212,13 @@ subroutine crperm()
 !
             endif
 !
-20      continue
+ 20     continue
 !
         call jedetr(lima1)
         call jedetr(lima2)
         call jedetr(linoeu)
 !
-10  end do
+ 10 end do
 !
     do 110 ic = 1, nbcham
         call rsexch('F', resu2, cham(ic), iord2, ch2,&
@@ -227,23 +226,20 @@ subroutine crperm()
         chs1 = chsi1(ic)
         chs2 = chsi2(ic)
         if (cham(ic) .eq. 'DEPL') then
-            call dismoi('F', 'PROF_CHNO', ch2, 'CHAM_NO', ibid,&
-                        prchno, ibid)
+            call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prchno)
             call cnscno(chs2, prchno, 'NON', 'G', ch2,&
                         'F', ibid)
             call detrsd('CHAM_NO_S', chs1)
             call detrsd('CHAM_NO_S', chs2)
         else
-            call dismoi('F', 'NOM_LIGREL', ch2, 'CHAM_ELEM', ibid,&
-                        ligrel, ibid)
-            call dismoi('F', 'NOM_OPTION', ch2, 'CHAM_ELEM', ibid,&
-                        option, ibid)
+            call dismoi('NOM_LIGREL', ch2, 'CHAM_ELEM', repk=ligrel)
+            call dismoi('NOM_OPTION', ch2, 'CHAM_ELEM', repk=option)
             call cescel(chs2, ligrel, option, ' ', 'OUI',&
                         nncp, 'G', ch2, 'F', ibid)
             call detrsd('CHAM_ELEM_S', chs1)
             call detrsd('CHAM_ELEM_S', chs2)
         endif
-110  end do
+110 end do
 !
     call jedema()
 end subroutine

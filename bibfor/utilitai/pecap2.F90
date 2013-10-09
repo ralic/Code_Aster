@@ -135,7 +135,7 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ierd, iret, nbordr
+    integer :: i, iret, nbordr
     real(kind=8) :: alpha, alphar, ay, az, ey, ez, pctx
     real(kind=8) :: pcty, prec, s, xg, yg, zero
 !
@@ -155,14 +155,12 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
 !
 ! --- ON VERIFIE QUE LES RESULTATS SONT DE TYPE EVOL_THER :
 !     ---------------------------------------------------
-    call dismoi('F', 'TYPE_RESU', tempe1, 'RESULTAT', ibid,&
-                typre1, ierd)
+    call dismoi('TYPE_RESU', tempe1, 'RESULTAT', repk=typre1)
     if (typre1 .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_54')
     endif
 !
-    call dismoi('F', 'TYPE_RESU', tempe2, 'RESULTAT', ibid,&
-                typre2, ierd)
+    call dismoi('TYPE_RESU', tempe2, 'RESULTAT', repk=typre2)
     if (typre2 .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_55')
     endif
@@ -190,18 +188,15 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
 !     ---------------------------------------------------------
-    call dismoi('F', 'PROF_CHNO', chtem1, 'CHAM_NO', ibid,&
-                prchno, ierd)
+    call dismoi('PROF_CHNO', chtem1, 'CHAM_NO', repk=prchno)
 !
 ! --- RECUPERATION DU MODELE ASSOCIE AU NUME_DDL  :
 !     ------------------------------------------
-    call dismoi('F', 'NOM_MODELE', prchno, 'PROF_CHNO', ibid,&
-                modele, ierd)
+    call dismoi('NOM_MODELE', prchno, 'PROF_CHNO', repk=modele)
 !
 ! --- RECUPERATION DU LIGREL DU MODELE  :
 !     --------------------------------
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrth, ierd)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrth)
 !
 ! --- CALCUL POUR CHAQUE ELEMENT DE LA SECTION DES 4 INTEGRALES
 ! --- SUIVANTES PERMETTANT LA DETERMINATION DU CENTRE DE

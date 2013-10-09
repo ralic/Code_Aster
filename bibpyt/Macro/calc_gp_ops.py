@@ -2,19 +2,19 @@
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 #########################################################################################
@@ -192,8 +192,8 @@ def calc_gp_ops(self,**args):
     from Accas import _F
     from Utilitai.Utmess import  UTMESS, MasquerAlarme, RetablirAlarme
     MasquerAlarme('CALCCHAMP_1')
-    
-    
+
+
     ier=0
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
@@ -216,20 +216,20 @@ def calc_gp_ops(self,**args):
     __RESU=self['RESULTAT']
 
 #  modele
-    iret,ibid,n_modele = aster.dismoi('F','MODELE',__RESU.nom,'RESULTAT')
+    iret,ibid,n_modele = aster.dismoi('MODELE',__RESU.nom,'RESULTAT','F')
     n_modele = n_modele.rstrip()
     if len(n_modele) == 0 or n_modele == "#PLUSIEURS":
         UTMESS('F','RUPTURE1_58')
     __model = self.get_concept(n_modele)
     # Dimension du modele
-    iret, ndim, rbid = aster.dismoi('F','DIM_GEOM',__model.nom,'MODELE')
+    iret, ndim, rbid = aster.dismoi('DIM_GEOM',__model.nom,'MODELE','F')
 #
 #  maillage
-    iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',__RESU.nom,'RESULTAT')
+    iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',__RESU.nom,'RESULTAT','F')
     __maillage = self.get_concept(nom_ma.strip())
 #
 #  champ materiau (inutile mais permet d eviter des alarmes)
-    iret,ibid,nom_cham_mater = aster.dismoi('F','CHAM_MATER',__RESU.nom,'RESULTAT')
+    iret,ibid,nom_cham_mater = aster.dismoi('CHAM_MATER',__RESU.nom,'RESULTAT','F')
     __cham_mater = self.get_concept(nom_cham_mater.strip())
 
 ############################################################
@@ -261,7 +261,7 @@ def calc_gp_ops(self,**args):
       if (lnormale==None):UTMESS('F','POST0_39')
 
 #    symetrie
-      iret,ibid,syme = aster.dismoi('F','SYME',self['FOND_FISS'].nom,'FOND_FISS')
+      iret,ibid,syme = aster.dismoi('SYME',self['FOND_FISS'].nom,'FOND_FISS','F')
       if syme=='OUI':
         mult = 2
 
@@ -299,7 +299,7 @@ def calc_gp_ops(self,**args):
 # L'eventuel champ de copeaux est cree plus tard si besoin
     self.DeclareOut('tabout', self.sd)
 
-# Definition de la sortie facultative GP_MAX 
+# Definition de la sortie facultative GP_MAX
     GPMAX=self['GPMAX']
     if GPMAX!=None:
         self.DeclareOut('tabgpmax', GPMAX)
@@ -308,7 +308,7 @@ def calc_gp_ops(self,**args):
         tabcopmax =[]
         tabenelmax=[]
         tablcopmax=[]
-        tabgpmax  =[] 
+        tabgpmax  =[]
 
 ##########################################################################################
 
@@ -330,7 +330,7 @@ def calc_gp_ops(self,**args):
         lgroupma = TRANCHE_2D['GROUP_MA']
         lcopeau  = TRANCHE_2D['TAILLE'].Valeurs()
         if len(lgroupma)!=len(lcopeau) :
-            UTMESS('F','RUPTURE1_21')  
+            UTMESS('F','RUPTURE1_21')
         nbcop = len(lcopeau)
 
         tabmax = [0]*nbcop*nb_inst
@@ -367,7 +367,7 @@ def calc_gp_ops(self,**args):
         nbcop = TRANCHE_2D['NB_ZONE']
         theta = TRANCHE_2D['ANGLE']
         taille= TRANCHE_2D['TAILLE']
-# Manipulation obligatoire pour pouvoir se servir des grandeurs dans les formules        
+# Manipulation obligatoire pour pouvoir se servir des grandeurs dans les formules
         self.update_const_context({'origine' : TRANCHE_2D['CENTRE']})
         self.update_const_context({'rayon' : TRANCHE_2D['RAYON']})
         self.update_const_context({'taille' : taille})
@@ -385,7 +385,7 @@ def calc_gp_ops(self,**args):
         __CHXG=CREA_CHAMP(OPERATION='DISC',
                           TYPE_CHAM='ELGA_GEOM_R',
                           MODELE=__model,
-                          CHAM_GD=__CHXN)                
+                          CHAM_GD=__CHXN)
 
 # construction du champ copeau pour visualisation par utilisateur s'il le souhaite
         if TRANCHE_2D['CHAMP_VISU']!=0:
@@ -413,8 +413,8 @@ def calc_gp_ops(self,**args):
                                CHAM_F=__formule_seuil,
                                CHAM_PARA=(__CHXG),);
 
-# calcul des energies et du gp              
-        __ener = [None for cop in range(nbcop)]        
+# calcul des energies et du gp
+        __ener = [None for cop in range(nbcop)]
         for cop in range(nbcop):
             __ener[cop]=FORMULE(VALE='''NRJ(TOTALE,X,Y,origine[0],origine[1],rayon,taille,%d,ccos,ssin)'''%(cop+1),
                                 NOM_PARA=('TOTALE','X','Y'),)
@@ -503,13 +503,13 @@ def calc_gp_ops(self,**args):
 # calcul de la surface des mailles appartenant au plan de symetrie de l'entaille
       mesure=Calcul_mesure_3D(__maillage,nbcop,l_copo_tot,ltyma,l_noeuds_fissure[0],lnormale)
 
-# calcul des energies et du gp 
+# calcul des energies et du gp
       __enertemp= POST_ELEM(MODELE=__model,
                             RESULTAT=__RESU,
                             LIST_INST=__linstr8,
                             ENER_ELAS=_F(GROUP_MA=l_copo_tot),
                             TITRE='Energie elastique',)
-  
+
       enerel = __enertemp.EXTR_TABLE()
       tabcop = enerel.LIEU.values()
       tabenel= [mult*x for x in enerel.TOTALE.values()]
@@ -551,6 +551,6 @@ def calc_gp_ops(self,**args):
                             _F(PARA='ENER ELAS', LISTE_R=tabenelmax,),
                             _F(PARA='DELTA L',   LISTE_R=tablcopmax,),
                             _F(PARA='GP',        LISTE_R=tabgpmax,),
-                           ),)        
+                           ),)
     RetablirAlarme('CALCCHAMP_1')
     return ier

@@ -74,7 +74,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ipt, ima, i, j, ibid, ndim, ino, k, ifq, iret, ifm, niv
+    integer :: ipt, ima, i, j, ibid, ndim, ino, k, ifq, ifm, niv
     integer :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
     integer :: fa(6, 4), ibid3(12, 3), vecind(5)
     integer :: jconx1, jconx2, jcoor, jltsv, jlnsv, jma
@@ -85,7 +85,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
     real(kind=8) :: normi
-    character(len=8) :: typma, k8b, nommai, alias
+    character(len=8) :: typma, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn
     logical :: fabord, indic
 ! ----------------------------------------------------------------------
@@ -140,7 +140,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     do 10 i = 1, nxptff
         zl(jbord-1+i) = .false.
         zl(jborl-1+i) = .false.
-10  end do
+ 10 end do
 !
 !     COMPTEUR : NOMBRE DE POINTS DE FONFIS TROUVES
     ipt = 0
@@ -155,8 +155,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         nmaabs = zi(jmafon-1+(ima-1)+1)
         itypma = zi(jma-1+nmaabs)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-        call dismoi('F', 'DIM_TOPO', typma, 'TYPE_MAILLE', ndime,&
-                    k8b, iret)
+        call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
 !
 !       ON SE RECREE UN ENVIRONNEMENT COMME DANS UN TE
 !       POUR LSN, LST, GRLST, GRLST ET IGEOM
@@ -175,8 +174,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 zr(jglsn-1+ndim*(ino-1)+j) = zr(jgn-1+ndim*(nuno-1)+j)
                 zr(jglst-1+ndim*(ino-1)+j) = zr(jgt-1+ndim*(nuno-1)+j)
                 zr(igeom-1+ndim*(ino-1)+j) = zr(jcoor-1+3*(nuno-1)+j)
-120          continue
-110      continue
+120         continue
+110     continue
 !
 !       CALCUL DU CENTRE DE GRAVITE DE LA MAILLE
         call cengra(noma, nmaabs, coorg)
@@ -190,7 +189,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         nbptma = 0
         do 130 i = 1, 3
             indptf(i)=0
-130      continue
+130     continue
 !
 !       BOUCLE SUR LES FACES
         do 200 ifq = 1, nbf
@@ -277,7 +276,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                     indipt = j
                     goto 300
                 endif
-220          continue
+220         continue
 !
 !         CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
             ipt = ipt+1
@@ -291,11 +290,11 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 zr(jfon-1+11*(ipt-1)+k) = m(k)
                 zr(jbas-1+2*ndim*(ipt-1)+k) = gln(k)
                 zr(jbas-1+2*ndim*(ipt-1)+k+ndim)= glt(k)
-230          continue
+230         continue
             do 231 k = 1, 3
                 zr(jfon-1+11*(ipt-1)+4+k) = zi( jconx1-1+zi(jconx2+ nmaabs-1)+fa(ifq,k)-1 )
                 zr(jfon-1+11*(ipt-1)+8+k) = indptf(k)
-231          continue
+231         continue
             if (alias .eq. 'QU4') then
                 zr(jfon-1+11*(ipt-1)+8) = zi( jconx1-1+zi(jconx2+ nmaabs-1)+fa(ifq,4)-1 )
             else
@@ -310,7 +309,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
             if (ndim .ne. 3) goto 200
 !
-300          continue
+300         continue
 !
 !         ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
 !         CELA N'A DE SENS QU'EN 3D
@@ -345,7 +344,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 else if (nbptma.gt.1) then
                     do 240 j = 1, nbptma
                         if (indipt .eq. vecind(j)) goto 400
-240                  continue
+240                 continue
 !             ORIENTATION DU FOND PAS POSSIBLE A REALISER
                     orient = .false.
 !
@@ -365,13 +364,13 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                             p(3) = zr(jfon-1+11*(vecind(j)-1)+3)
                             write(ifm,798)(p(k),k=1,3)
                             798             format(2x,3(e12.5,2x))
-250                      continue
+250                     continue
                     endif
                 endif
             endif
-400          continue
+400         continue
 !       FIN BOUCLE SUR LES FACES DE LA MAILLE
-200      continue
+200     continue
 !
 !       CALCUL DES VECTEURS DE PROPAGATION AUX EXTREMITES
         if ((ndim.eq.3) .and. (nbfacb.ne.0)) then
@@ -387,7 +386,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         call jedetr('&&XPTFON.IGEOM')
 !
 !     FIN BOUCLE SUR LES MAILLES
-100  end do
+100 end do
 !
 !     NORMALISATION DES NOUVEAUX VECTEURS DE DIRECTION DE
 !     PROPAGATION
@@ -396,7 +395,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
             if (zl(jbord-1+k)) then
                 call normev(zr(jbas-1+6*(k-1)+4), normi)
             endif
-500      continue
+500     continue
 !
     endif
 !
@@ -415,7 +414,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
             p(3) = zr(jfon-1+11*(i-1)+3)
             write(ifm,898)(p(k),k=1,3)
             898     format(2x,3(e12.5,2x))
-600      continue
+600     continue
     endif
 !
 !

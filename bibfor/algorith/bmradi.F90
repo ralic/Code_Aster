@@ -60,13 +60,12 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, iran(1), iret, j, lldeeq, lldes
-    integer :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec, ibid
+    integer :: i, inoe, iran(1), j, lldeeq, lldes
+    integer :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec
     integer :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
     character(len=8) :: basmod, nomint, intf
-    character(len=8) :: k8bid
     character(len=19) :: numddl
     character(len=24) :: noeint
     character(len=24) :: valk(2)
@@ -84,18 +83,15 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
     if (basmod(1:1) .ne. ' ') then
 !
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                    intf, iret)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
         if (intf .eq. ' ') then
             valk (1) = basmod
             call utmess('F', 'ALGORITH12_30', sk=valk(1))
         endif
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                    numddl, iret)
+        call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
     else
         if (intf(1:1) .ne. ' ') then
-            call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
-                        numddl, iret)
+            call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=numddl)
         else
             valk (1) = basmod
             valk (2) = intf
@@ -107,10 +103,8 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !------------RECUPERATION DONNEE GRANDEUR SOUS-JACENTE------------------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
@@ -128,8 +122,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !-----------RECUPERATION DU NOMBRE DE DDL PHYSIQUES ASSEMBLES-----------
 !
 !
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !
 !------------RECUPERATION DU NOMBRE DE NOEUD DE L'INTERFACES------------
@@ -165,12 +158,13 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) then
-                    call cheddl(zi(lldeeq), neq, nunoe, j, iran, 1)
+                    call cheddl(zi(lldeeq), neq, nunoe, j, iran,&
+                                1)
                     ivddl(nbddl-nbdif)=iran(1)
                 endif
             endif
-30      continue
-20  continue
+ 30     continue
+ 20 continue
 !
     nbdif=-nbdif
 !

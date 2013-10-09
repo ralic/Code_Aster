@@ -68,10 +68,9 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 !
 !
-    integer :: nbtyp, i, ii, iret, itrou, itych
+    integer :: nbtyp, i, ii, itrou, itych
     integer :: itypma, idimto, jtypma, it, itempo
 !
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,9 +97,8 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
         do 10 i = 1, nbtyp
             call jenuno(jexnum('&CATA.TM.NOMTM', i), zk8(itypma-1+i))
-            call dismoi('F', 'DIM_TOPO', zk8(itypma-1+i), 'TYPE_MAILLE', zi(idimto-1+i),&
-                        k8bid, iret)
-10      continue
+            call dismoi('DIM_TOPO', zk8(itypma-1+i), 'TYPE_MAILLE', repi=zi(idimto-1+i))
+ 10     continue
     endif
 !
 !
@@ -136,7 +134,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
                 ii = ii + 1
             endif
         endif
-20  end do
+ 20 end do
 !
     if (nbtrou .eq. 0) goto 9999
 !
@@ -144,9 +142,9 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
     do 30 itrou = 1, nbtrou
         tatrou(itrou) = zi(itempo-1+itrou)
-30  end do
+ 30 end do
 !
-9999  continue
+9999 continue
 !
     call jedetr('&&UTFLM2.TYPE_MAILLE')
     call jedetr('&&UTFLM2.DIME_TOPO')

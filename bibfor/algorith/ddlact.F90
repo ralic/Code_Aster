@@ -59,14 +59,13 @@ subroutine ddlact(nomres, numddl)
 !
     character(len=6) :: pgc
     character(len=8) :: nomres, typint
-    character(len=8) :: k8bid
     character(len=19) :: numddl
     character(len=24) :: desdef, deeq, temmat, noeint, actint, temdec
     real(kind=8) :: actifs
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iec, ino, iret, j, ldact, lldeeq
+    integer :: i, iec, ino, j, ldact, lldeeq
     integer :: lldes, llnoe, lltypi, ltcono, ltidec, ltmat, ltnono
     integer :: nbcmp, nbec, nbint, nbno, nbnot, neq, nomax
 !
@@ -81,10 +80,8 @@ subroutine ddlact(nomres, numddl)
 !------RECUPERATION DONNEES RELATIVES A LA GRANDEUR SOUS-JACENTE--------
 !            ET ALLOCATION VECTEUR TRAVAIL DECODAGE
 !
-    call dismoi('F', 'NB_CMP_MAX', nomres, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', nomres, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', nomres, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', nomres, 'INTERF_DYNA', repi=nbec)
     temdec='&&'//pgc//'.IDEC'
     call wkvect(temdec, 'V V I', nbcmp*nbec*2, ltidec)
 !
@@ -109,7 +106,7 @@ subroutine ddlact(nomres, numddl)
     do 10 i = 1, nbint
         call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         nomax=max(nomax,nbno)
-10  end do
+ 10 end do
 !
 !---------CREATION DU NOM DE LA MATRICE DESCRIPTIVE DES DDL-------------
 !
@@ -126,8 +123,7 @@ subroutine ddlact(nomres, numddl)
 !
     deeq=numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !-----------------------BOUCLE SUR LES INTERFACES-----------------------
 !
@@ -142,8 +138,8 @@ subroutine ddlact(nomres, numddl)
             do 40 iec = 1, nbec
                 zi(ltcono+(j-1)*nbec+iec-1)= zi(lldes+2*nbnot+(ino-1)*&
                 nbec+iec-1)
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
         call recddl(nbcmp, zi(ltnono), nbno, nbec, zi(lldeeq),&
                     neq, zi(ltmat), zi(ltidec))
@@ -168,7 +164,7 @@ subroutine ddlact(nomres, numddl)
         actifs=0.d0
         do 50 j = 1, nbno*nbec
             actifs=actifs+zi(ldact+j-1)**2
-50      continue
+ 50     continue
 !
         if (actifs .lt. 1) then
             call utmess('F', 'SOUSTRUC2_8')
@@ -177,7 +173,7 @@ subroutine ddlact(nomres, numddl)
         call jelibe(jexnum(actint, i))
         call jelibe(jexnum(noeint, i))
 !
-20  end do
+ 20 end do
 !
     call jelibe(deeq)
     call jedetr(temdec)

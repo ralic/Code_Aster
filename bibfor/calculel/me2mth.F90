@@ -22,7 +22,6 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -35,6 +34,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+!
     character(len=*) :: modelz, chtnz, caraz, matez, vecelz, timez
     character(len=*) :: lchar(*)
     character(len=8) :: modele, cara
@@ -79,7 +79,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
     character(len=16) :: option
     character(len=24) :: lchin(5), lchout(1), ligrmo, ligrch
     character(len=24) :: chgeom
-    integer :: icha, iret, ilires, ibid, ierd, jnomo
+    integer :: icha, iret, ilires, jnomo
 !
 !
 !-----------------------------------------------------------------------
@@ -127,8 +127,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
         endif
         do 10 icha = 1, nchar
             lcharz = lchar(icha)
-            call dismoi('F', 'TYPE_CHARGE', lcharz, 'CHARGE', ibid,&
-                        k8bid, ierd)
+            call dismoi('TYPE_CHARGE', lcharz, 'CHARGE', repk=k8bid)
             if (k8bid(5:7) .eq. '_FO') then
                 lfonc = .true.
             else
@@ -257,7 +256,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
                             'OUI')
                 call reajre(vecel, lchout(1), 'G')
             endif
-10      continue
+ 10     continue
     endif
 !
     call jedema()

@@ -11,6 +11,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,12 +63,10 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
     exicp = .false.
 !
 ! - Access to model and mesh
-! 
+!
     call jeveuo(model//'.MAILLE', 'L', j_mail)
-    call dismoi('C', 'NOM_MAILLA', model(1:8), 'MODELE', ibid, &
-                mesh, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mesh, 'MAILLAGE', nb_elem_mesh,&
-                k8bid, iret)
+    call dismoi('NOM_MAILLA', model(1:8), 'MODELE',repk=mesh)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
 ! - Mesh affectation
 !
@@ -105,11 +104,11 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
                         exicp = .true.
                         goto 999
                     endif
-                endif   
-            endif   
+                endif
+            endif
         endif
     end do
 !
-999  continue
+999 continue
     call jedema()
 end function

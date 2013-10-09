@@ -47,7 +47,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ialiel, ierd, ierr, igrel, ima, iret, itypel
+    integer :: ialiel, ierr, igrel, ima, iret, itypel
     integer :: kma, kmai, nbgrel, nel
 !-----------------------------------------------------------------------
     call jemarq()
@@ -75,8 +75,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
             call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel= zi(ialiel -1 +nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            call dismoi('F', 'MODELISATION', nomte, 'TYPE_ELEM', repi,&
-                        repk, ierd)
+            call dismoi('MODELISATION', nomte, 'TYPE_ELEM', repk=repk)
             nomodl=repk(1:16)
             if (nomodl .ne. chaine) then
                 if (ityp .eq. 0) then
@@ -92,12 +91,12 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
                         endif
                         call testli(ima, zi(ialiel), nel-1, kmai, ierr)
                         if (ierr .eq. 1) goto 20
- 1                  continue
+  1                 continue
                 endif
             endif
-10      continue
+ 10     continue
     endif
-20  continue
+ 20 continue
 !     IF (IERR.EQ.1)  WRITE(*,*) 'KMAI',KMAI,'IGREL',IGREL,
 !    .       'NOMODL',NOMODL,'CHAINE',CHAINE
     if (ierr .eq. 1) then

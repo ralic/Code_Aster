@@ -61,9 +61,9 @@ subroutine etenca(chinz, ligrlz, iret)
 !     ------------------
     integer :: nma, nms, nbedit, igd, code, ient, i, ii, nb
     integer :: desc, grpma, lima, ialima, illima, jmalut
-    integer :: ptma, ptms, ierd, noli, iexi
+    integer :: ptma, ptms, noli, iexi
     logical :: bonlig, lalloc
-    character(len=8) :: ma, kbid
+    character(len=8) :: ma
     character(len=24) :: ligri
     integer :: vali(3)
     character(len=24) :: valk
@@ -79,10 +79,8 @@ subroutine etenca(chinz, ligrlz, iret)
 !
 !     ----ALLOCATION DES OBJETS PTMA ET PTMS:
     ma = mailla(ligrel)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nma,&
-                kbid, ierd)
-    call dismoi('F', 'NB_MA_SUP', ligrel, 'LIGREL', nms,&
-                kbid, ierd)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nma)
+    call dismoi('NB_MA_SUP', ligrel, 'LIGREL', repi=nms)
 !
     call jeexin(ma//'.GROUPEMA', iexi)
     if (iexi .gt. 0) then
@@ -140,13 +138,13 @@ subroutine etenca(chinz, ligrlz, iret)
         if (code .eq. 1) then
             do 10 i = 1, nma
                 zi(ptma-1+i) = igd
-10          continue
+ 10         continue
             goto 60
         endif
         if ((code.eq.-1) .and. bonlig) then
             do 20 i = 1, nms
                 zi(ptms-1+i) = igd
-20          continue
+ 20         continue
             goto 60
         endif
 !
@@ -158,7 +156,7 @@ subroutine etenca(chinz, ligrlz, iret)
             do 30 i = 1, nb
                 ii = zi(grpma-1+i)
                 zi(ptma-1+ii) = igd
-30          continue
+ 30         continue
             goto 60
         endif
 !
@@ -178,19 +176,19 @@ subroutine etenca(chinz, ligrlz, iret)
                         call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
                     endif
                     zi(ptma-1+ii) = igd
-40              continue
+ 40             continue
             else
                 if (bonlig) then
                     do 50 i = 1, nb
                         ii = zi(lima-1+i)
                         ASSERT(ii.lt.0)
                         zi(ptms-1-ii) = igd
-50                  continue
+ 50                 continue
                 endif
             endif
             goto 60
         endif
-60  end do
-9999  continue
+ 60 end do
+9999 continue
     call jedema()
 end subroutine

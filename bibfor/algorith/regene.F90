@@ -97,7 +97,7 @@ subroutine regene(nomres, resgen, profno)
     call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
                 cbid, rbid, kbid, tmod, 1,&
                 ibid)
-    nbmod=tmod(1)            
+    nbmod=tmod(1)
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 !
@@ -110,7 +110,7 @@ subroutine regene(nomres, resgen, profno)
         call wkvect('&&REGENE.NUME', 'V V I', nbmod, jbid)
         do 2 i = 1, nbmod
             zi(jbid+i-1) = i
- 2      continue
+  2     continue
     endif
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
@@ -147,8 +147,7 @@ subroutine regene(nomres, resgen, profno)
 !
 ! ------ RECUPERATION DU MODELE GENERALISE
 !
-        call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid,&
-                    raid, iret)
+        call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
         call jeveuo(raid//'.REFA', 'L', llref2)
         numgen(1:14)=zk24(llref2+1)
@@ -159,8 +158,7 @@ subroutine regene(nomres, resgen, profno)
         respro=zk24(llref3)
         call jelibe(numgen//'.REFN')
 !
-        call dismoi('F', 'REF_RIGI_PREM', respro, 'RESU_DYNA', ibid,&
-                    raid, iret)
+        call dismoi('REF_RIGI_PREM', respro, 'RESU_DYNA', repk=raid)
 !
         call jeveuo(raid//'.REFA', 'L', llref4)
         numgen(1:14)=zk24(llref4+1)
@@ -178,8 +176,7 @@ subroutine regene(nomres, resgen, profno)
 !
 ! ------ RECUPERATION DU NOMBRE DE NOEUDS
 !
-        call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                    kbid, iret)
+        call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 ! ------ RECUPERATION DE LA BASE MODALE
 !
@@ -196,7 +193,7 @@ subroutine regene(nomres, resgen, profno)
         call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
                     cbid, rbid, kbid, tmod, 1,&
                     ibid)
-        nbmo2=tmod(1)            
+        nbmo2=tmod(1)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, 'DEPL', neq, profno(1:14), nbmo2,&
                     'R', zr( idbase), [cbid])
@@ -249,7 +246,7 @@ subroutine regene(nomres, resgen, profno)
             zk16(iadpar(7)) = 'MODE_DYN'
 !
             call jelibe(chamol)
-10      continue
+ 10     continue
 !-----------------------------------------------------------------------
     else
 !-----------------------------------------------------------------------
@@ -258,18 +255,16 @@ subroutine regene(nomres, resgen, profno)
         call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
                     cbid, rbid, kbid, tmod, 1,&
                     ibid)
-        nbmo2=tmod(1)            
+        nbmo2=tmod(1)
 !
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                    numedd, iret)
+        call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numedd)
         call getvid(' ', 'NUME_DDL', scal=k8b, nbret=iret1)
         if (iret1 .ne. 0) then
             call getvid(' ', 'NUME_DDL', scal=numedd, nbret=ibid)
             numedd = numedd(1:14)//'.NUME'
         endif
         numddl = numedd(1:14)
-        call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                    k8b, iret)
+        call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, 'DEPL', neq, numddl, nbmo2,&
                     'R', zr(idbase), [cbid])
@@ -324,7 +319,7 @@ subroutine regene(nomres, resgen, profno)
             zk16(iadpar(7)) = 'MODE_DYN'
 !
             call jelibe(chamol)
-20      continue
+ 20     continue
 !
         if (iret1 .ne. 0) then
             matric(1) = ' '

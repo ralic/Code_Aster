@@ -38,7 +38,7 @@ subroutine op0015()
 #include "asterfort/resoud.h"
 #include "asterfort/titre.h"
 !
-    integer :: ibid, ifm, niv, nb, j1, mxiter, ier
+    integer ::  ifm, niv, nb, j1, mxiter, ier
     character(len=8) :: xsol, secmbr, matr, vcine, matf, metres, kvari
     character(len=16) :: concep, nomcmd
     character(len=19) :: solve1, solve2
@@ -71,8 +71,7 @@ subroutine op0015()
 !
 !
 !     --- CREATION D'1 SOLVEUR TEMPORAIRE : SOLVE2 (SAUF SI MUMPS)
-    call dismoi('F', 'SOLVEUR', matr, 'MATR_ASSE', ibid,&
-                solve1, ibid)
+    call dismoi('SOLVEUR', matr, 'MATR_ASSE', repk=solve1)
     call jeveuo(solve1//'.SLVK', 'E', j1)
     metres=zk24(j1-1+1)
     if (metres .ne. 'MUMPS' .and. metres .ne. 'PETSC') then

@@ -55,7 +55,7 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
   # instant calcule
     if not INST and not NUME_ORDRE :
        INST = dico2['INST'][0]
-    iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+    iret,ibid,n_modele = aster.dismoi('MODELE',RESULTAT.nom,'RESULTAT','F')
     MODEL = self.get_concept(n_modele)
     if NUME_ORDRE :
       if not NUME_ORDRE in dico2['NUME_ORDRE']:

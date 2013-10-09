@@ -74,7 +74,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     character(len=24) :: lchin(16), chtim2, ligrch, evolch
     character(len=19) :: resuel, resufv(1), depmoi, depdel, vites
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
-    integer :: ierd, jlchin, ier
+    integer ::  jlchin, ier
     logical :: exicar, bidon
     integer :: nbchmx, ii, somme
     parameter (nbchmx=7)
@@ -171,8 +171,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         numchm = zi(jinf+nchar+icha)
-        call dismoi('F', 'TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', ibid,&
-                    affcha, ierd)
+        call dismoi('TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', repk=affcha)
 !
         if (numchm .eq. 4) then
             somme = 0
@@ -258,7 +257,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 !
     end do
 !
-99  continue
+ 99 continue
 !
     vecelz = vecele//'.RELR'
     call jedema()

@@ -60,7 +60,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
     integer :: ichci, ibid, ifm, niv, neq, ieq, jdlci2, jdlci, ieqmul
-    character(len=8) :: newnom, kbid, nomno, nomcmp, tyddl
+    character(len=8) :: newnom, nomno, nomcmp, tyddl
     character(len=19) :: charci, chamno, vci2, ligrel
     character(len=24) :: vachci, valk(2), infobl
     character(len=8) :: charge
@@ -115,8 +115,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     else
 !
         ichci = 0
-        call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                    kbid, ier)
+        call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
         call wkvect(vci2//'.DLCI', 'V V I', neq, jdlci2)
         do ichar = 1, nchtot
             charge=zk24(idchar-1+ichar)(1:8)

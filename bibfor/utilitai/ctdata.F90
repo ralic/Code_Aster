@@ -62,7 +62,6 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !                 TSCA  (K1)  : TYPE DE LA GRANDEUR (REEL)
 !
 ! ----------------------------------------------------------------------
-    character(len=8) :: k8b
     integer :: jkcha, i, ibid, iret, jlno, jcmp, n1, jlma, n2, n3, nchi, n0, n4
     integer :: n5
     character(len=8) :: nomo, nomgd, noca
@@ -88,41 +87,32 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     call getvid('RESU', 'CHAM_GD', iocc=1, nbval=0, nbret=n4)
     do 60 i = 1, nbval
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
-            call dismoi('F', 'TYPE_CHAMP', zk24(jkcha+i-1)(1:19), 'CHAMP', ibid,&
-                        tych, iret)
-            call dismoi('F', 'NOM_MAILLA', zk24(jkcha+i-1)(1:19), 'CHAMP', ibid,&
-                        noma, iret)
-            call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                        k8b, iret)
-            call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                        k8b, iret)
-            call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                        k8b, iret)
-            call dismoi('F', 'NOM_GD', zk24(jkcha+i-1)(1:19), 'CHAMP', ibid,&
-                        nomgd, iret)
-            call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                        tsca, ibid)
+            call dismoi('TYPE_CHAMP', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=tych)
+            call dismoi('NOM_MAILLA', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=noma)
+            call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+            call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+            call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+            call dismoi('NOM_GD', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=nomgd)
+            call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
             if (tsca .ne. 'R') then
                 call utmess('F', 'TABLE0_42')
             endif
             if (tych(1:2) .eq. 'EL') then
-                call dismoi('F', 'NOM_MODELE', zk24(jkcha+i-1)(1:19), 'CHAMP', ibid,&
-                            nomo, iret)
+                call dismoi('NOM_MODELE', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=nomo)
                 ligrel=nomo//'.MODELE'
             endif
             if (tych .eq. 'ELGA') then
 !               CARACTERISTIQUES POUR LES CAS DES ELEMENTS A SOUS POINTS
                 if (n0 .ne. 0) then
-                    call dismoi('C', 'CARA_ELEM', zk24(jkcha+i-1)(1:8), 'RESULTAT', ibid,&
-                                noca, iret)
+                    call dismoi('CARA_ELEM', zk24(jkcha+i-1)(1:8), 'RESULTAT', repk=noca,&
+                                arret='C', ier=iret)
                     if (iret .eq. 0) exicar=.true.
                 else if (n4.ne.0) then
                     call getvid('RESU', 'CARA_ELEM', iocc=1, scal=noca, nbret=n5)
                     if (n5 .ne. 0) exicar=.true.
                 endif
 !               DIMENSION MODELE POUR IMPRESSION COOR POINT GAUSS
-                call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ibid,&
-                            k8b, iret)
+                call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ibid)
                 ndim=ibid
                 if (ibid .ge. 100) then
                     ibid = ibid - 100
@@ -138,8 +128,8 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
             endif
             goto 61
         endif
-60  end do
-61  continue
+ 60 end do
+ 61 continue
 !
 !  --- 2. RECUPERATION DES NOEUDS,MAILLES
 !
@@ -158,7 +148,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
             call wkvect(mesnoe, 'V V I', nbno, jlno)
             do 70 i = 1, nbno
                 zi(jlno+i-1)=i
-70          continue
+ 70         continue
         else
             call reliem(' ', noma, 'NU_NOEUD', 'RESU', 1,&
                         4, motcle, typmcl, mesnoe, nbno)
@@ -185,7 +175,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
             call wkvect(mesmai, 'V V I', nbma, jlma)
             do 80 i = 1, nbma
                 zi(jlma+i-1)=i
-80          continue
+ 80         continue
         else
             call reliem(' ', noma, 'NU_MAILLE', 'RESU', 1,&
                         2, motcle, typmcl, mesmai, nbma)

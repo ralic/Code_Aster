@@ -127,10 +127,8 @@ subroutine penorm(resu, modele)
 !
 ! --- 1- RECUPERATION DU MAILLAGE ET DU NOMBRE DE MAILLES
 !     ===================================================
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbmato,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
+    call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmato)
 !
 !
 ! --- 2- RECUPERATION DU RESULTAT ET DES NUMEROS D'ORDRE
@@ -263,8 +261,8 @@ subroutine penorm(resu, modele)
 !
 !     -- VERIFICATION DE L'UTILISATION DE COEF_MULT
     if (nr .eq. 0 .and. nb_coef_user .ne. 0) then
-        call dismoi('C', 'NOM_GD', tmpcha, 'CHAMP', ibid,&
-                    nomgd, iret)
+        call dismoi('NOM_GD', tmpcha, 'CHAMP', repk=nomgd, arret='C',&
+                    ier=iret)
         if (nomgd(1:6) .ne. 'NEUT_R') then
             call utmess('F', 'POSTELEM_2')
         endif
@@ -306,10 +304,10 @@ subroutine penorm(resu, modele)
             nomcha= chamg
         endif
 !
-        call dismoi('C', 'TYPE_CHAMP', cham2, 'CHAMP', ibid,&
-                    tych, iret)
-        call dismoi('C', 'NOM_GD', cham2, 'CHAMP', ibid,&
-                    nomgd, iret)
+        call dismoi('TYPE_CHAMP', cham2, 'CHAMP', repk=tych, arret='C',&
+                    ier=iret)
+        call dismoi('NOM_GD', cham2, 'CHAMP', repk=nomgd, arret='C',&
+                    ier=iret)
 !
 !         ON RESTREINT LE CALCUL DE LA NORME AUX CHAMPS DE DEPLACEMENTS,
 !         CONTRAINTES, DEFORMATION, TEMPERATURE, FLUX ...

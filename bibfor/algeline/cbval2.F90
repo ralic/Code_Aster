@@ -62,8 +62,8 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     character(len=14) :: numr, numi
     character(len=19) :: matres, mati
     character(len=24) :: valmi, valmr
-    integer :: neq, ibid, mxddl, ierd, lddl, jrefai, jrefar, jsmhcr, jsmdir
-    integer :: iconst, imat, ier, jsmhci, jsmdii, jvlmi1, jvlmr1, k
+    integer :: neq, mxddl, lddl, jrefai, jrefar, jsmhcr, jsmdir
+    integer :: iconst, imat, jsmhci, jsmdii, jvlmi1, jvlmr1, k
     integer :: jvlmi2, jvlmr2
     real(kind=8) :: zero
 !     -----------------------------------------------------------------
@@ -82,8 +82,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     symr = zk24(jrefar-1+9) .eq. 'MS'
 !
     mxddl = 1
-    call dismoi('F', 'NOM_NUME_DDL', matres, 'MATR_ASSE', ibid,&
-                numr, ierd)
+    call dismoi('NOM_NUME_DDL', matres, 'MATR_ASSE', repk=numr)
     call wkvect('&&CBVAL2', 'V V I', neq*mxddl, lddl)
     call pteddl('NUME_DDL', numr, mxddl, nomddl, neq,&
                 zi(lddl))
@@ -95,12 +94,12 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     if (typres(1:1) .eq. 'R') then
         do 10 k = 1, lgbloc
             zr(jvlmr1-1+k) = zero
-10      continue
+ 10     continue
         if (.not.symr) then
             call jeveuo(jexnum(valmr, 2), 'E', jvlmr2)
             do 20 k = 1, lgbloc
                 zr(jvlmr2-1+k) = zero
-20          continue
+ 20         continue
         endif
 !
     else
@@ -114,8 +113,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     do 30 imat = 1, nbcomb
         ASSERT(typcst(imat).eq.'R')
         mati = zk24(zi(lmat(imat)+1))
-        call dismoi('F', 'NOM_NUME_DDL', mati, 'MATR_ASSE', ibid,&
-                    numi, ier)
+        call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numi)
         call jeveuo(numi//'.SMOS.SMHC', 'L', jsmhci)
         call jeveuo(numi//'.SMOS.SMDI', 'L', jsmdii)
         call jeveuo(mati//'.REFA', 'L', jrefai)
@@ -146,7 +144,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         iconst = iconst + 1
         call jelibe(jexnum(valmi, 1))
         if (.not.symi) call jelibe(jexnum(valmi, 2))
-30  end do
+ 30 end do
 !
     call jedetr('&&CBVAL2')
 !

@@ -44,7 +44,6 @@ function typmat(nbmat, tlimat)
     character(len=8) :: sym, zero
     character(len=19) :: matel
     integer :: i, itymat
-    integer :: ibid, ierd
     integer :: iexi, iexiav
 !----------------------------------------------------------------------
 !     ITYMAT =  0 -> SYMETRIQUE
@@ -67,11 +66,9 @@ function typmat(nbmat, tlimat)
 !          A ETE EXPURGE DE SES RESUELEM NULS => CALL REDETR()
         call redetr(matel)
 !
-        call dismoi('F', 'TYPE_MATRICE', matel, 'MATR_ELEM', ibid,&
-                    sym, ierd)
+        call dismoi('TYPE_MATRICE', matel, 'MATR_ELEM', repk=sym)
         if (sym .eq. 'NON_SYM') then
-            call dismoi('F', 'ZERO', matel, 'MATR_ELEM', ibid,&
-                        zero, ierd)
+            call dismoi('ZERO', matel, 'MATR_ELEM', repk=zero)
             if (zero .eq. 'NON') then
                 itymat = 1
             endif
@@ -80,8 +77,8 @@ function typmat(nbmat, tlimat)
         call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
         if (itymat .eq. 1) goto 11
 !
-10  end do
-11  continue
+ 10 end do
+ 11 continue
 !
     if (itymat .eq. 0) then
         typmat='S'

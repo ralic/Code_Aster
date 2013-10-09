@@ -45,7 +45,7 @@ subroutine op0012()
     character(len=19) :: matel, solveu
     character(len=24) :: lchci, lmatel
     integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k, j, nbchar
-    integer :: jrecc, ico, iexi, iret, islvk, ilimat
+    integer :: jrecc, ico, iexi, islvk, ilimat
 !-----------------------------------------------------------------------
 !----------------------------------------------------------------------
     call jemarq()
@@ -74,40 +74,40 @@ subroutine op0012()
     call getvid(' ', 'CHAR_CINE', nbval=0, nbret=nbchc)
     nbchc = -nbchc
 !     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
-    do 1, k=1,nbmat
-    matel=zk24(jlimat-1+k)
-    ASSERT(zk24(jlimat-1+k)(9:24).eq.' ')
-    call jeexin(matel//'.RECC', iexi)
-    if (iexi .gt. 0) then
-        call jeveuo(matel//'.RECC', 'L', jrecc)
-        call jelira(matel//'.RECC', 'LONMAX', nbchar)
-        do 2, j=1,nbchar
-        charge=zk8(jrecc-1+j)
-        call jeexin(charge//'.ELIM      .AFCK', iexi)
-        if (iexi .gt. 0) nbchc=nbchc+1
- 2      continue
-    endif
-    1 end do
-!
-    if (nbchc .gt. 0) then
-        call wkvect(lchci, 'V V K24', nbchc, jlchci)
-        call getvid(' ', 'CHAR_CINE', nbval=nbchc, vect=zk24(jlchci), nbret=ico)
-        do 3, k=1,nbmat
+    do 1 k = 1, nbmat
         matel=zk24(jlimat-1+k)
+        ASSERT(zk24(jlimat-1+k)(9:24).eq.' ')
         call jeexin(matel//'.RECC', iexi)
         if (iexi .gt. 0) then
             call jeveuo(matel//'.RECC', 'L', jrecc)
             call jelira(matel//'.RECC', 'LONMAX', nbchar)
-            do 4, j=1,nbchar
-            charge=zk8(jrecc-1+j)
-            call jeexin(charge//'.ELIM      .AFCK', iexi)
-            if (iexi .gt. 0) then
-                ico=ico+1
-                zk24(jlchci-1+ico)=charge//'.ELIM'
-            endif
- 4          continue
+            do 2 j = 1, nbchar
+                charge=zk8(jrecc-1+j)
+                call jeexin(charge//'.ELIM      .AFCK', iexi)
+                if (iexi .gt. 0) nbchc=nbchc+1
+  2         continue
         endif
- 3      continue
+  1 end do
+!
+    if (nbchc .gt. 0) then
+        call wkvect(lchci, 'V V K24', nbchc, jlchci)
+        call getvid(' ', 'CHAR_CINE', nbval=nbchc, vect=zk24(jlchci), nbret=ico)
+        do 3 k = 1, nbmat
+            matel=zk24(jlimat-1+k)
+            call jeexin(matel//'.RECC', iexi)
+            if (iexi .gt. 0) then
+                call jeveuo(matel//'.RECC', 'L', jrecc)
+                call jelira(matel//'.RECC', 'LONMAX', nbchar)
+                do 4 j = 1, nbchar
+                    charge=zk8(jrecc-1+j)
+                    call jeexin(charge//'.ELIM      .AFCK', iexi)
+                    if (iexi .gt. 0) then
+                        ico=ico+1
+                        zk24(jlchci-1+ico)=charge//'.ELIM'
+                    endif
+  4             continue
+            endif
+  3     continue
     endif
 !
 !
@@ -118,8 +118,7 @@ subroutine op0012()
     syme = ' '
     call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
     if (syme .eq. 'OUI') then
-        call dismoi('F', 'SOLVEUR', nu, 'NUME_DDL', ibid,&
-                    solveu, iret)
+        call dismoi('SOLVEUR', nu, 'NUME_DDL', repk=solveu)
         call jeveuo(solveu(1:19)//'.SLVK', 'E', islvk)
         sym2 = zk24(islvk+5-1)(1:8)
         zk24(islvk+5-1)='OUI'
@@ -127,9 +126,9 @@ subroutine op0012()
                     lchci, 'ZERO', 'G', itysca, matas)
         zk24(islvk+5-1)=sym2(1:3)
         call jeveuo(matas//'           .LIME', 'E', ilimat)
-        do 5, k=1,nbmat
-        zk24(ilimat-1+k)=zk24(jlimat-1+k)
- 5      continue
+        do 5 k = 1, nbmat
+            zk24(ilimat-1+k)=zk24(jlimat-1+k)
+  5     continue
     else
         call asmatr(nbmat, zk24(jlimat), ' ', nu, ' ',&
                     lchci, 'ZERO', 'G', itysca, matas)
@@ -138,8 +137,7 @@ subroutine op0012()
 !
 !
 !     -- SI MATAS N'EST PAS MPI_COMPLET, ON LA COMPLETE :
-    call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
     if (kmpic .eq. 'NON') call sdmpic('MATR_ASSE', matas)
 !

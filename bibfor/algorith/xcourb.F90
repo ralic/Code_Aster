@@ -49,7 +49,7 @@ subroutine xcourb(basloc, noma, modele, courb)
     integer :: ino, i, j, nbno, ibid, nchin
     integer :: jrsv, jrsl, jgl, jgb
     real(kind=8) :: el1(3), el2(3), el3(3), p(3, 3), invp(3, 3), norme
-    character(len=8) :: k8bid, lpain(2), lpaout(1), licmp(9)
+    character(len=8) ::  lpain(2), lpaout(1), licmp(9)
     character(len=19) :: cnsr, matpas, cnsg
     character(len=24) :: lchin(2), lchout(1), ligrmo
 !
@@ -62,8 +62,7 @@ subroutine xcourb(basloc, noma, modele, courb)
     call jeveuo(cnsg//'.CNSV', 'L', jgb)
     call jeveuo(cnsg//'.CNSL', 'L', jgl)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ibid)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 !------------------------------------------------------------------
 !     CREATION DU CHAM_NO SIMPLE MATPASS  (MATRICE INVP)
@@ -89,7 +88,7 @@ subroutine xcourb(basloc, noma, modele, courb)
         do 110 i = 1, 3
             el1(i) = zr(jgb-1+3*3*(ino-1)+i+3)
             el2(i) = zr(jgb-1+3*3*(ino-1)+i+6)
-110      continue
+110     continue
 !
 !       NORMALISATION DE LA BASE
         call normev(el1, norme)
@@ -100,13 +99,13 @@ subroutine xcourb(basloc, noma, modele, courb)
             p(i,1)=el1(i)
             p(i,2)=el2(i)
             p(i,3)=el3(i)
-120      continue
+120     continue
 !       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TP
         do 130 i = 1, 3
             do 140 j = 1, 3
                 invp(i,j)=p(j,i)
-140          continue
-130      continue
+140         continue
+130     continue
         do 150 i = 1, 3
             zr(jrsv-1+9*(ino-1)+i)=invp(i,1)
             zl(jrsl-1+9*(ino-1)+i)=.true.
@@ -114,9 +113,9 @@ subroutine xcourb(basloc, noma, modele, courb)
             zl(jrsl-1+9*(ino-1)+i+3)=.true.
             zr(jrsv-1+9*(ino-1)+i+6)=invp(i,3)
             zl(jrsl-1+9*(ino-1)+i+6)=.true.
-150      continue
+150     continue
 !
-100  end do
+100 end do
     matpas='&&XCOURB.MATPAS'
     call cnscno(cnsr, ' ', 'NON', 'V', matpas,&
                 'F', ibid)

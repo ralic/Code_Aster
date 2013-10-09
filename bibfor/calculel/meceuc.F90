@@ -6,7 +6,6 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assach.h"
 #include "asterfort/assert.h"
 #include "asterfort/barych.h"
@@ -20,6 +19,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/sepach.h"
+!
     integer :: nin, nou
     character(len=1) :: stop
     character(len=8) :: poux, carael
@@ -76,7 +76,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     character(len=19) :: lchinr(nin), lchini(nin)
     character(len=16) :: optio2
     character(len=8) :: nomgd
-    integer :: ibid, k, iexi, iexi1, iexi2
+    integer ::  k, iexi, iexi1, iexi2
     integer :: inddec(nin)
     logical :: lcmplx, lsspt, ldbg, lopdec
 ! ----------------------------------------------------------------------
@@ -119,32 +119,31 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !           SI OUI, IL FAUT LES DECOUPER
 !     -----------------------------------------------------------
     lcmplx=.false.
-    do 1, k=1,nin
-    inddec(k)=0
-    if (lpain(k) .eq. ' ') goto 1
-    ch19=lchin(k)
-    if (ch19 .eq. ' ') goto 1
-    if (ldbg) call chlici(ch19, 19)
-    call exisd('CHAMP', ch19, iexi)
-    if (iexi .eq. 0) goto 1
-    call dismoi('F', 'NOM_GD', ch19, 'CHAMP', ibid,&
-                nomgd, ibid)
+    do 1 k = 1, nin
+        inddec(k)=0
+        if (lpain(k) .eq. ' ') goto 1
+        ch19=lchin(k)
+        if (ch19 .eq. ' ') goto 1
+        if (ldbg) call chlici(ch19, 19)
+        call exisd('CHAMP', ch19, iexi)
+        if (iexi .eq. 0) goto 1
+        call dismoi('NOM_GD', ch19, 'CHAMP', repk=nomgd)
 !        -- MECHPO CREE PARFOIS UN CHAMP DE FORC_C
 !           IL M'EMBETE ! COMMENT SAVOIR S'IL EST PERTINENT ?
-    if (nomgd .eq. 'FORC_C') goto 1
+        if (nomgd .eq. 'FORC_C') goto 1
 !
-    if (nomgd(5:6) .eq. '_C') then
-        lcmplx=.true.
-        inddec(k)=1
-        chr='&&MECEUC.CHXX.R'
-        chi='&&MECEUC.CHXX.I'
-        call codent(k, 'D0', chr(12:13))
-        call codent(k, 'D0', chi(12:13))
-        call sepach(carael, ch19, 'V', chr, chi)
-        chdecr(k)=chr
-        chdeci(k)=chi
-    endif
-    1 end do
+        if (nomgd(5:6) .eq. '_C') then
+            lcmplx=.true.
+            inddec(k)=1
+            chr='&&MECEUC.CHXX.R'
+            chi='&&MECEUC.CHXX.I'
+            call codent(k, 'D0', chr(12:13))
+            call codent(k, 'D0', chi(12:13))
+            call sepach(carael, ch19, 'V', chr, chi)
+            chdecr(k)=chr
+            chdeci(k)=chi
+        endif
+  1 end do
 !
 !
 !     -- 2. S'IL N'Y A AUCUN CHAMP COMPLEXE, C'EST FACILE :
@@ -166,15 +165,15 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !
 !     -- 4.0 ON PREPARE LCHINR ET LCHINI :
 !     ------------------------------------
-    do 2,k=1,nin
-    if (inddec(k) .eq. 0) then
-        lchinr(k)=lchin(k)
-        lchini(k)=lchin(k)
-    else
-        lchinr(k)=chdecr(k)
-        lchini(k)=chdeci(k)
-    endif
-    2 end do
+    do 2 k = 1, nin
+        if (inddec(k) .eq. 0) then
+            lchinr(k)=lchin(k)
+            lchini(k)=lchin(k)
+        else
+            lchinr(k)=chdecr(k)
+            lchini(k)=chdeci(k)
+        endif
+  2 end do
 !
 !
 !     -- 4.1 APPEL A CALCUL AVEC LES PARTIES REELLES :
@@ -226,13 +225,13 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !
 !     -- 7. MENAGE :
 !     --------------
-9998  continue
-    do 3,k=1,nin
-    if (inddec(k) .ne. 0) then
-        call detrsd('CHAMP', chdecr(k))
-        call detrsd('CHAMP', chdeci(k))
-    endif
-    3 end do
+9998 continue
+    do 3 k = 1, nin
+        if (inddec(k) .ne. 0) then
+            call detrsd('CHAMP', chdecr(k))
+            call detrsd('CHAMP', chdeci(k))
+        endif
+  3 end do
 !
     call detrsd('CHAMP', ch1)
     call detrsd('CHAMP', ch2)
@@ -240,6 +239,6 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     call detrsd('CHAM_ELEM_S', ch2)
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

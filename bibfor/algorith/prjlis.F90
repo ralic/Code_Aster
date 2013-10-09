@@ -75,14 +75,14 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !
 !
     character(len=4) :: zcst
-    character(len=8) :: k8bid, linta, lintb, moda, modb, maa, mab, intfa, intfb
+    character(len=8) ::  linta, lintb, moda, modb, maa, mab, intfa, intfb
     character(len=8) :: matprj, nonob, nonoa, nomg, modgen, ssta, sstb
     character(len=16) :: tymocl(2), motcle(2), motfac, corres
     character(len=24) :: inta, intb, fpliao, fplibo, toto, geoma, geomb
-    integer :: ibid, ier, nbnoa, nbnob, llinta, llintb, nbmaa, iagmaa, ndim
+    integer :: ibid, nbnoa, nbnob, llinta, llintb, nbmaa, iagmaa, ndim
     integer :: iaconb, iaconu, iacocf, nbnob2, idecal, inoa, inob, nbterm
     integer :: itemcm, itemtm, nnoa, nunoa, nunob, nunoa2, nunoai, nunobi, i, j
-    integer :: iinob, llplia, llplib, icompa, icompb, iadoa, iadob, nbec, ierd
+    integer :: iinob, llplia, llplib, icompa, icompb, iadoa, iadob, nbec
     integer :: numlis, iada(3), iadb(3), nbcmpm, ldesca, ldescb, ifm, niv
     parameter      (nbcmpm=10)
     integer :: idecoa(nbcmpm), idecob(nbcmpm)
@@ -127,8 +127,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !
 !---ON FAIT LA PROJECTION
     ndim = 3
-    call dismoi('F', 'Z_CST', maa, 'MAILLAGE', ibid,&
-                zcst, ier)
+    call dismoi('Z_CST', maa, 'MAILLAGE', repk=zcst)
     if (zcst .eq. 'OUI') ndim = 2
 !
     corres = '&&PRJLIS.CORRES'
@@ -167,8 +166,8 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     do 445 inob = 1, nbnob
         do 444 inoa = 1, nbnoa
             zr(itemtm+(inob-1)*nbnoa+inoa-1)=0.d0
-444      continue
-445  end do
+444     continue
+445 end do
 !
 ! Remplissage et impression de la matrice d'observation
     idecal = 0
@@ -193,42 +192,41 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
                 write (ifm,1001) -1.d0,nonob
             endif
 ! boucle sur le nombre de noeud maitre lie au noeud esclave courant
-            do 30,inoa = 1,nnoa
-            nunoa = zi(iaconu+idecal-1+inoa)
-            coefa = zr(iacocf+idecal-1+inoa)
-            call jenuno(jexnum(maa//'.NOMNOE', nunoa), nonoa)
+            do 30 inoa = 1, nnoa
+                nunoa = zi(iaconu+idecal-1+inoa)
+                coefa = zr(iacocf+idecal-1+inoa)
+                call jenuno(jexnum(maa//'.NOMNOE', nunoa), nonoa)
 ! boucle sur le nombre de noeud maitre present dans l'interface
-            do 40 j = 1, nbnoa
+                do 40 j = 1, nbnoa
 ! si le noeud maitre courant est present dans la liste des noeuds
 ! maitres d'interface on stocke la valeur du coefficient
-                nunoa2=zi(llinta+j-1)
-                nunoai=zi(ldesca+nunoa2-1)
-                if (nunoa .eq. nunoai) then
+                    nunoa2=zi(llinta+j-1)
+                    nunoai=zi(ldesca+nunoa2-1)
+                    if (nunoa .eq. nunoai) then
 ! On stocke la valeur du coefficient dans la matrice d'observation
 ! le stockage est donc C(Nbre Noeud esclave,Nbre Noeud maitre)
 ! l'ordre est donc celui de l'interface esclave pour
 ! les lignes de la matrice et celui de l'interface maitre pour les
 ! colonnes
-                    zr(itemtm+(iinob-1)*nbnoa+j-1)=coefa
-                    if (niv .eq. 2) then
-                        write (ifm,1001) coefa,nonoa
+                        zr(itemtm+(iinob-1)*nbnoa+j-1)=coefa
+                        if (niv .eq. 2) then
+                            write (ifm,1001) coefa,nonoa
+                        endif
                     endif
-                endif
-40          continue
-30          continue
+ 40             continue
+ 30         continue
             if (niv .eq. 2) then
                 write (ifm,*) '_RELA = ',beta
             endif
             idecal = idecal+nnoa
             iinob=iinob+1
         endif
-10  end do
+ 10 end do
 !
 ! ************************************************************
 ! Recuperation des donnees par composantes
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ierd)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -241,8 +239,8 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     do 446 inob = 1, iadb(1)
         do 447 inoa = 1, iada(1)
             zr(itemcm+(inob-1)*iada(1)+inoa-1)=0.d0
-447      continue
-446  end do
+447     continue
+446 end do
 !
     do 110 inob = 1, nbnob
         iadob=zi(llplib+(inob-1)*(1+nbec))
@@ -262,11 +260,11 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
                             zr(itemcm+(icompb-1)*iada(1)+icompa-1)=&
                             zr(itemtm+(inob-1)*nbnoa+inoa-1)
                         endif
-140                  continue
-130              continue
+140                 continue
+130             continue
             endif
-120      continue
-110  end do
+120     continue
+110 end do
 !
 !
 ! ************************************************************

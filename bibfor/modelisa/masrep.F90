@@ -44,7 +44,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8) :: k8b
     character(len=8) :: nomnoe, typm
     character(len=8) :: nompar(3)
     character(len=24) :: manono, magrma, manoma, matyma
@@ -54,7 +53,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     integer :: appui
 !
 !-----------------------------------------------------------------------
-    integer :: i, icoef, idno, ier, ifongr, ii, iunite
+    integer :: i, icoef, idno, ifongr, ii, iunite
     integer :: ij, im, in, inoe, iret, isurma, jcoor
     integer :: ldgm, ldnm, ltyp, nb, nbma
     integer :: nfg, nm, nn, noemax, ntopo, numa
@@ -120,8 +119,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             call jeveuo(jexnum(manoma, numa), 'L', ldnm)
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ltyp-1+numa)), typm)
-            call dismoi('F', 'DIM_TOPO', typm, 'TYPE_MAILLE', ntopo,&
-                        k8b, ier)
+            call dismoi('DIM_TOPO', typm, 'TYPE_MAILLE', repi=ntopo)
 !
             if (appui .eq. -1) then
 !            LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
@@ -136,9 +134,9 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             do 24 nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
-24          continue
-22      continue
-20  end do
+ 24         continue
+ 22     continue
+ 20 end do
     ASSERT(appui.ne.-1)
 !
     call wkvect('&&MASREP.COENO', 'V V R', noemax, icoef)
@@ -190,7 +188,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
-25          continue
+ 25         continue
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -252,8 +250,8 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 zr(isurm5+im-1) = zr(isurma+im-1)*c(2)*c(3)/nm
                 zr(isurm6+im-1) = zr(isurma+im-1)*c(3)*c(3)/nm
             endif
-23      continue
-21  end do
+ 23     continue
+ 21 end do
 !
     write(iunite,1010) surtxx,surtxy,surtxz,surtyy,surtyz,surtzz
 !
@@ -284,10 +282,10 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                             zr(icoezz+ij-1) = zr(icoezz+ij-1) + zr( isurm6+im-1)
                         endif
                     endif
-37              continue
-35          continue
-33      continue
-31  end do
+ 37             continue
+ 35         continue
+ 33     continue
+ 31 end do
     nbma = im
 !
     ii = 0
@@ -338,7 +336,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
-51  end do
+ 51 end do
     nbno = ii
 !
     call jedetr('&&MASREP.FONGRO')

@@ -50,7 +50,7 @@ subroutine xtopoc(modele)
 !
     integer :: nbout, nbin
     parameter    (nbout=7, nbin=6)
-    character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2), kbid
+    character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: jnoma
@@ -59,7 +59,7 @@ subroutine xtopoc(modele)
     logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
-    integer :: jcesd, jcesv, jcesl, iad, i, iret, nbma, ima, jnbsp, ibid
+    integer :: jcesd, jcesv, jcesl, iad, i, nbma, ima, jnbsp
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,8 +103,7 @@ subroutine xtopoc(modele)
 ! --- DUPLIQUÉS PAR LE NOMBRE DE FISSURES VUES
 !
     call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                kbid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
 !
@@ -123,9 +122,9 @@ subroutine xtopoc(modele)
             zl(jcesl-1-iad) = .true.
             zi(jcesv-1-iad) = zi(jnbsp-1+ima)
             if (i .eq. 7) zi(jcesv-1-iad) = zi(jnbsp-1+ima)**2
-10      continue
+ 10     continue
 !
-20  end do
+ 20 end do
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !

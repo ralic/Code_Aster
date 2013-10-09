@@ -145,10 +145,10 @@ class MISS_PARAMETER(object):
 
         # si base modale, vérifier/compléter les amortissements réduits
         if self['BASE_MODALE']:
-            res = aster.dismoi('C', 'NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT')
+            res = aster.dismoi('NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT','C')
             ASSERT(res[0] == 0)
             self['_NBM_DYN'] = res[1]
-            res = aster.dismoi('C', 'NB_MODES_STA', self['BASE_MODALE'].nom, 'RESULTAT')
+            res = aster.dismoi('NB_MODES_STA', self['BASE_MODALE'].nom, 'RESULTAT','C')
             ASSERT(res[0] == 0)
             self['_NBM_STAT'] = res[1]
             if self['AMOR_REDUIT']:
@@ -172,7 +172,7 @@ class MISS_PARAMETER(object):
     def __iter__(self):
         """Itérateur simple sur le dict des mots-clés"""
         return iter(self._keywords)
-    
+
     def __getitem__(self, key):
         return self._keywords[key]
 

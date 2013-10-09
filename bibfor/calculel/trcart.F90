@@ -40,7 +40,7 @@ subroutine trcart(ific, nocc)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iocc, ibid, iret
+    integer :: iocc, iret
     integer :: n1, n2, n3, n1r, n2r, n3r, ivari
     integer :: nl1, nl2, vali, valir
     real(kind=8) :: epsi, epsir, valr, valrr
@@ -108,8 +108,7 @@ subroutine trcart(ific, nocc)
 !
 !
         call getvtx('CARTE', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
-        call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                    nomma, iret)
+        call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
         call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc,&
                     iarg, 1, nomail, n1)
         ASSERT(n1.eq.1)
@@ -121,8 +120,7 @@ subroutine trcart(ific, nocc)
         lign2(nl2+17:nl2+17)='.'
 !
 !
-        call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
-                    nomgd, iret)
+        call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
         call utcmp1(nomgd, 'CARTE', iocc, noddl, ivari)
 !
         nl1 = lxlgut(lign1)
@@ -147,7 +145,7 @@ subroutine trcart(ific, nocc)
         endif
         write (ific,*)' '
 !
-100  end do
+100 end do
 !
 !
     call jedema()

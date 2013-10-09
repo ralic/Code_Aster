@@ -53,7 +53,7 @@ subroutine trresu(ific, nocc)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: vali, ibid, ie, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
+    integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
     integer :: nbordr, numord, nupo, nbcmp, jcmp
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
@@ -352,8 +352,7 @@ subroutine trresu(ific, nocc)
 !
 !
                 nonoeu = ' '
-                call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                            nomma, ie)
+                call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
                 call getvem(nomma, 'NOEUD', 'RESU', 'NOEUD', iocc,&
                             iarg, 1, nonoeu(1:8), n1)
                 if (n1 .ne. 0) then
@@ -387,12 +386,9 @@ subroutine trresu(ific, nocc)
                     endif
                     nonoeu(10:33) = nogrno
                 endif
-                call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
-                            typch, ie)
-                call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                            nomma, ie)
-                call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
-                            nomgd, ie)
+                call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
+                call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
+                call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
                 call utcmp1(nomgd, 'RESU', iocc, noddl, ivari)
                 call getvis('RESU', 'SOUS_POINT', iocc=iocc, scal=nusp, nbret=n2)
                 if (n2 .eq. 0) nusp = 0
@@ -513,7 +509,7 @@ subroutine trresu(ific, nocc)
                 endif
             endif
         endif
-50      continue
+ 50     continue
         call jedetr(knum)
         write (ific,*)' '
     end do

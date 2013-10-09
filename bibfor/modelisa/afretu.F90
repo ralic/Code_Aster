@@ -40,9 +40,9 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 ! -------------------------------------------------------
 !     RACCORD (COQUE OU 3D)_TUYAU : UNE RELATION LINEAIRE
 !
-    integer :: ino, ival, idch1, nbterm, i, nbec, ier
+    integer :: ino, ival, idch1, nbterm, i, nbec
     integer :: jlisno, jliscr, jliscc, jlisdi, jlisdm, jlisdl
-    character(len=8) :: betaf, k8bid
+    character(len=8) :: betaf
     character(len=16) :: motfac
     character(len=24) :: noeuma
     real(kind=8) :: beta
@@ -57,8 +57,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
     noeuma = noma//'.NOMNOE'
     motfac = 'LIAISON_ELEM'
     call jeveuo(vale1, 'L', idch1)
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -102,13 +101,13 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
         zr(jliscr+3* (i-1)+1-1) = zr(idch1+ival-1+idec+0)
         zr(jliscr+3* (i-1)+2-1) = zr(idch1+ival-1+idec+1)
         zr(jliscr+3* (i-1)+3-1) = zr(idch1+ival-1+idec+2)
-10  end do
+ 10 end do
 !
     do 20 i = 1, nbcoef
         zk8(jlisno+3*lonlis+i-1) = noepou
         zk8(jlisdl+3*lonlis+i-1) = nomddl(i)
         zr(jliscr+3*lonlis+i-1) = coef(i)
-20  end do
+ 20 end do
 !
     call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
                 zr(jlisdi), nbterm, beta, betac, betaf,&

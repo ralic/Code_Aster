@@ -79,7 +79,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 !
 !
 !
-    integer :: i, idconi, idlou1, idlou2, ier, ino1, ino2, lonli1, lonli2
+    integer :: i, idconi, idlou1, idlou2, ino1, ino2, lonli1, lonli2
     integer :: lonlis, nbma1, nbno1, n1, ndim, ng1, ngm1, nlino, no, nr, nt
     integer :: n2, n3, n4, n5, n6, n7, n8, vali(2)
     real(kind=8) :: centre(3), theta(3), t(3)
@@ -144,7 +144,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
         t(i) = 0.0d0
         theta(i) = 0.0d0
         centre(i) = 0.0d0
-10  continue
+ 10 continue
 !
     call getvr8(motfac, 'TRAN', iocc=iocc, nbval=3, vect=t,&
                 nbret=nt)
@@ -227,7 +227,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
         call jenonu(jexnom(noeuma, zk8(idlou2+i-1)), ino2)
         zi(idconi+2*(i-1)+1) = ino1
         zi(idconi+2*(i-1)+2) = ino2
-20  end do
+ 20 end do
 !
 ! --- CONSTITUTION DE LA S.D. CONR CONTENANT LES NORMALES
 ! --- AUX NOEUDS
@@ -243,8 +243,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     endif
 !
     if (dnor) then
-        call dismoi('F', 'DIM_GEOM', mod, 'MODELE', ndim,&
-                    k8bid, ier)
+        call dismoi('DIM_GEOM', mod, 'MODELE', repi=ndim)
         call pacoje(coni, iocc, motfac, noma, conr,&
                     ndim)
     endif
@@ -256,7 +255,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     call jedetr(lisou1)
     call jedetr(lisou2)
 !
-999  continue
+999 continue
 ! FIN -----------------------------------------------------------------
     call jedema()
 end subroutine

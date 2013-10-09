@@ -56,8 +56,8 @@ subroutine chckma(nomu, dtol)
     integer :: iaconx, ilconx, ima, nbnm, nbnm2, it, jcoor, ifm, niv
     integer :: jdrvlc, jcncin, numail, imail
     integer :: iadr, iadr0, nbm, nbm0, iadtyp, nb200
-    integer :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l, iret
-    character(len=8) :: noxa, noxb, k8b, tyma
+    integer :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l
+    character(len=8) :: noxa, noxb, tyma
     character(len=24) :: ncncin
     real(kind=8) :: dm, dp, aplat, drap
     real(kind=8) :: xa, xb, ya, yb, za, zb
@@ -73,10 +73,8 @@ subroutine chckma(nomu, dtol)
     nomnoe = nomu// '.NOMNOE         '
     cooval = nomu// '.COORDO    .VALE'
     connex = nomu// '.CONNEX         '
-    call dismoi('F', 'NB_MA_MAILLA', nomu, 'MAILLAGE', nbmail,&
-                k8b, iret)
-    call dismoi('F', 'NB_NO_MAILLA', nomu, 'MAILLAGE', nbnoeu,&
-                k8b, iret)
+    call dismoi('NB_MA_MAILLA', nomu, 'MAILLAGE', repi=nbmail)
+    call dismoi('NB_NO_MAILLA', nomu, 'MAILLAGE', repi=nbnoeu)
     call jeveuo(nomu//'.TYPMAIL', 'L', iatyma)
 !
     call jeveuo(connex, 'L', iaconx)
@@ -123,8 +121,8 @@ subroutine chckma(nomu, dtol)
                 write(ifm,*) ' LE NOEUD  '//noxa//' EST ORPHELIN'
                 alarme=.true.
             endif
-11      continue
-10  end do
+ 11     continue
+ 10 end do
     if (alarme) then
         call utmess('A', 'MODELISA4_6')
     endif
@@ -164,7 +162,7 @@ subroutine chckma(nomu, dtol)
             endif
 !         -- POUR NE PAS DEBORDER DE  TABMA :
             if (i .gt. 199) goto 99
-101      continue
+101     continue
 !
 !     SI NBM0 DIFFERENT DE I : UN NOEUD DE LA MAILLE EST PRESENT
 !     PLUSIEURS FOIS DANS LA CONNECTIVITE DE CELLE CI
@@ -197,9 +195,9 @@ subroutine chckma(nomu, dtol)
                         do 104 l = 1, nbnm
                             k2=zi(iaconx-1+zi(ilconx+ima-1)+l-1)
                             if (k1 .eq. k2) indic=.true.
-104                      continue
+104                     continue
                         if (.not.indic) goto 102
-103                  continue
+103                 continue
                     kmdb=kmdb+1
                     if (kmdb .gt. nmdoub) then
                         nmdoub=2*nmdoub
@@ -217,16 +215,16 @@ subroutine chckma(nomu, dtol)
                     alarme=.true.
                 endif
 !
-102          continue
+102         continue
 !
         else if (nbm0.gt.1) then
             call jenuno(jexnum(nommai, ima), noxa)
             write(ifm,*) ' MAILLE POI1 '//noxa//'INCLUSE DANS UNE AUTRE'
         endif
 !
-99      continue
+ 99     continue
         it=it+nbnm
-100  end do
+100 end do
     if (alarme) then
         call utmess('A', 'MODELISA4_8')
     endif
@@ -257,8 +255,8 @@ subroutine chckma(nomu, dtol)
                     aplat = (xa-xb)**2 + (ya-yb)**2 + (za-zb)**2
                     if (aplat .lt. dm) dm=aplat
                     if (aplat .gt. dp) dp=aplat
-220              continue
-210          continue
+220             continue
+210         continue
             if (dp .gt. 0.d0) then
                 drap=sqrt(dm/dp)
                 if (drap .lt. dtol) then
@@ -276,7 +274,7 @@ subroutine chckma(nomu, dtol)
 !
         endif
         it=it+nbnm
-200  end do
+200 end do
     if (alarme) then
         call utmess('A', 'MODELISA4_9')
     endif

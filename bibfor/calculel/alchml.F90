@@ -110,8 +110,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
     call jeveuo(ligrel//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                ma, ibid)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
 !
 !
 !     1- LE CHAM_ELEM DOIT-IL ETRE CREE ?
@@ -121,7 +120,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
         te = typele(ligrel,igrel)
         mode = modat2(iopt,te,nompar)
         modmx = max(modmx,mode)
-10  end do
+ 10 end do
     if (modmx .eq. 0) then
         iret = 1
         goto 60
@@ -185,9 +184,9 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !     4- OBJET .CELD :
 !     -------------------
     neltot = 0
-    do 20,igrel = 1,ngrel
-    neltot = neltot + nbelem(ligrel,igrel)
-    20 end do
+    do 20 igrel = 1, ngrel
+        neltot = neltot + nbelem(ligrel,igrel)
+ 20 end do
 !
     long = 4 + ngrel + 4*ngrel + 4*neltot
     call wkvect(cel//'.CELD', base//' V I', long, jceld)
@@ -241,67 +240,67 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
             lgcata = digdel(mode)
             zi(jceld-1+debgrl+3) = lgcata
 !
-            do 30,iel = 1,nel
+            do 30 iel = 1, nel
 !
 !           4.1 CALCUL DE NBSPT ET NCDYN POUR CHAQUE ELEMENT :
 !           --------------------------------------------------
 !
 !           -- CAS D'UN CHAM_ELEM ETENDU :
-            if (lmult) then
-                ima = zi(ialiel-1+zi(illiel+igrel-1)+iel-1)
+                if (lmult) then
+                    ima = zi(ialiel-1+zi(illiel+igrel-1)+iel-1)
 !
 !             -- SI LA MAILLE APPARTIENT AU MAILLAGE, ON SE SERT
 !                DE DCEL, SINON ON ARRETE LE CODE:
-                if (ima .gt. 0) then
+                    if (ima .gt. 0) then
 !
-                    call cesexi('C', jdcesd, jdcesl, ima, 1,&
-                                1, 1, kk)
-                    if (kk .gt. 0) then
-                        nbspt = max(zi(jdcesv-1+kk),1)
-                    else
-                        nbspt = 1
-                    endif
-!
-                    ncdyn = 0
-                    if (nomgd .eq. 'VARI_R') then
                         call cesexi('C', jdcesd, jdcesl, ima, 1,&
-                                    1, 2, kk)
-                        if (kk .gt. 0) ncdyn = zi(jdcesv-1+kk)
-                    endif
+                                    1, 1, kk)
+                        if (kk .gt. 0) then
+                            nbspt = max(zi(jdcesv-1+kk),1)
+                        else
+                            nbspt = 1
+                        endif
+!
+                        ncdyn = 0
+                        if (nomgd .eq. 'VARI_R') then
+                            call cesexi('C', jdcesd, jdcesl, ima, 1,&
+                                        1, 2, kk)
+                            if (kk .gt. 0) ncdyn = zi(jdcesv-1+kk)
+                        endif
 !
 !             -- CAS DES MAILLES TARDIVES :
+                    else
+                        nbspt = 1
+                        ncdyn = 0
+                        if (nomgd .eq. 'VARI_R') ncdyn = 1
+                    endif
+!
+!           -- CAS D'UN CHAM_ELEM NON-ETENDU :
                 else
                     nbspt = 1
                     ncdyn = 0
                     if (nomgd .eq. 'VARI_R') ncdyn = 1
                 endif
 !
-!           -- CAS D'UN CHAM_ELEM NON-ETENDU :
-            else
-                nbspt = 1
-                ncdyn = 0
-                if (nomgd .eq. 'VARI_R') ncdyn = 1
-            endif
-!
 !
 !           4.2 AFFECTATION DES VALEURS DANS CELD :
 !           ---------------------------------------
-            zi(jceld-1+debgrl+4+ (iel-1)*4+1) = nbspt
-            zi(jceld-1+debgrl+4+ (iel-1)*4+2) = ncdyn
-            zi(jceld-1+3) = max(zi(jceld-1+3),nbspt)
-            zi(jceld-1+4) = max(zi(jceld-1+4),ncdyn)
+                zi(jceld-1+debgrl+4+ (iel-1)*4+1) = nbspt
+                zi(jceld-1+debgrl+4+ (iel-1)*4+2) = ncdyn
+                zi(jceld-1+3) = max(zi(jceld-1+3),nbspt)
+                zi(jceld-1+4) = max(zi(jceld-1+4),ncdyn)
 !
-            lgchel = lgcata*nbspt*max(1,ncdyn)
-            zi(jceld-1+debgrl+4+ (iel-1)*4+3) = lgchel
-            zi(jceld-1+debgrl+4+ (iel-1)*4+4) = ncmpv
-            ncmpv = ncmpv + lgchel
-30          continue
+                lgchel = lgcata*nbspt*max(1,ncdyn)
+                zi(jceld-1+debgrl+4+ (iel-1)*4+3) = lgchel
+                zi(jceld-1+debgrl+4+ (iel-1)*4+4) = ncmpv
+                ncmpv = ncmpv + lgchel
+ 30         continue
 !
         endif
 !
         zi(jceld-1+debgrl+4) = ncmpv - ncmpv2
         debgrl = debgrl + 4 + 4*nel
-40  end do
+ 40 end do
 !
 !
 !     5- OBJET .CELV:
@@ -336,7 +335,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !
 !     7- SECTION ERREUR:
 !     ------------------------
-50  continue
+ 50 continue
 !     CE CAS DE FIGURE NE DEVRAIT PLUS EXISTER APRES VERIF DANS
 !     CAVER1  (COHERENCE DES TYPE_ELEM AVEC L'OPTION):
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
@@ -349,7 +348,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !
 !     8- FIN NORMALE:
 !     ----------------
-60  continue
+ 60 continue
 !
 !
     call jedema()

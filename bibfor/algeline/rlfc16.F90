@@ -61,7 +61,7 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     integer :: decal, global
     integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav
     integer :: lgblma, points
-    integer :: ibid, ierd, i
+    integer ::  i
     character(len=14) :: nu
 !
 !     ------------------------------------------------------------------
@@ -70,8 +70,7 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'NOM_NUME_DDL', nommat, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', nommat, 'MATR_ASSE', repk=nu)
     factol(1:19) = nommat
     factou(1:19) = nommat
     call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
@@ -95,7 +94,7 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     lgblma=0
     do 1 i = 0, nbloc-1
         if (zi(lgbloc+i) .gt. lgblma) lgblma = zi(lgbloc+i)
- 1  end do
+  1 end do
     call wkvect('&&RLFC16.ALLEUR.VALF ', ' V V C ', lgblma, points)
 !
 !                                ALLOCATION TABLEAU REEL PROVISOIRE
@@ -111,7 +110,7 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
                     nbsn, neq, zi(supnd), zi(adress), zi4(global),&
                     zi(lgsn), factol, factou, cxsol(1, i), zc(pointr),&
                     zi(nouv), zi(anc), zi(ad), zc(trav), typsym)
-110  end do
+110 end do
 !
     call jedetr('&&RLFC16.POINTER.ADRESSE')
     call jedetr('&&RLFC16.POINTER.TRAVAIL')

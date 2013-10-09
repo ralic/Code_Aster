@@ -38,7 +38,7 @@ subroutine op0098()
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nomres, mailla, nomgd, k8bid
+    character(len=8) :: nomres, mailla, nomgd
     character(len=19) :: numddl
     character(len=16) :: nomope, nomcon
 !
@@ -48,7 +48,7 @@ subroutine op0098()
 ! --- PHASE DE VERIFICATION
 !
 !-----------------------------------------------------------------------
-    integer :: iadref, ibid, ier, ierd, ifm, lddesc, nbcmp
+    integer :: iadref, ifm, lddesc, nbcmp
     integer :: nbec, nbid, niv, numgd
 !-----------------------------------------------------------------------
     call jemarq()
@@ -64,8 +64,7 @@ subroutine op0098()
 !
     call getvid('   ', 'NUME_DDL', iocc=1, scal=numddl, nbret=nbid)
     numddl(15:19)='.NUME'
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                mailla, ierd)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
     call wkvect(nomres//'.IDC_REFE', 'G V K24', 3, iadref)
     zk24(iadref)=mailla
     zk24(iadref+1)=numddl
@@ -73,14 +72,10 @@ subroutine op0098()
 !
 ! --- CREATION DU .DESC
 !
-    call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
-                nomgd, ier)
-    call dismoi('F', 'NUM_GD', nomgd, 'GRANDEUR', numgd,&
-                k8bid, ier)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmp,&
-                k8bid, ier)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
+    call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=numgd)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
 !
     call wkvect(nomres//'.IDC_DESC', 'G V I', 5, lddesc)
     zi(lddesc)=1

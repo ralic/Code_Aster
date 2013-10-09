@@ -79,7 +79,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     integer :: iocc
     integer :: nbnoeu, jdirec
     integer :: idim, nume_node, jnorm, jtang, nfaci
-    integer :: ibid, ier, ndim, jcompt
+    integer :: ibid, ndim, jcompt
     integer :: ino, jprnm, nbec
     integer :: nbcmp, inom
     real(kind=8) :: repe_defi(3)
@@ -93,7 +93,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
     character(len=8) :: model, nomg
-    character(len=8) :: name_node, dof_name, k8bid
+    character(len=8) :: name_node, dof_name
     character(len=16) :: keywordfact, keyword
     character(len=19) :: list_rela
     character(len=19) :: connex_inv
@@ -129,8 +129,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 ! - Model informations
 !
     model = ligrmo(1:8)
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
-                k8bid, ier)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Type of coefficients
@@ -150,8 +149,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
 ! - Local coordinate system (dummy)

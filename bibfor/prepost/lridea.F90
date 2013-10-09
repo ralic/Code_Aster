@@ -91,12 +91,12 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     integer :: inoide, inoast, ielast, ielide, knoide, knoast
     integer :: nbcmp, nbcmid, ich, icmp, nbcmp1, maxnod, lon1, versio
     integer :: irec, valatt, ifield, iord, ibid, ilu1
-    integer :: i, iexp, nbnoe, nbfiel, ier, nbnoeu, nbelem
+    integer :: i, iexp, nbnoe, nbfiel, nbnoeu, nbelem
     integer :: iret, idecal, icmp1, icmp2, inatur, kk, numode
     logical :: trouve, astock, chamok, zcmplx, ldepl
     character(len=4) :: tychas, tychid, acce2
     character(len=6) :: kar
-    character(len=8) :: nomgd, licmp(1000), k8bid, nomno, nomma, noma
+    character(len=8) :: nomgd, licmp(1000), nomno, nomma, noma
     character(len=8) :: nomnoa, nomnob, prolo
     character(len=13) :: a13bid
     character(len=16) :: nomch, noidea, concep, nomc2, nomcha
@@ -119,10 +119,8 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     call rsexpa(resu, 0, 'FREQ', iret)
     if (iret .gt. 0) acce2 = 'FREQ'
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbelem,&
-                k8bid, ier)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8bid, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbelem)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
     call jeveuo(noma//'.TYPMAIL', 'L', jtypm)
 !
@@ -159,7 +157,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
 !- LECTURE DU NUMERO DU DATASET
 !
-10  continue
+ 10 continue
     read (mfich,'(A6)',end=170,err=160) kar
 !
 !- ON NE LIT QUE LES DATASETS 55, 57 ET 2414
@@ -181,17 +179,17 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
     do 20 irec = 1, nbrec
         read (mfich,'(A80)',end=160) rec(irec)
-20  end do
+ 20 end do
 !
 !-TRAITEMENT DE L'ENTETE : ON RECHERCHE SI LE CONTENU EST
 ! CONFORME A CELUI PRESENT DANS LA SD FORMAT_IDEAS
 !
     do 30 ich = 1, nbnoch
         if (zi(lfinum-1+ich) .eq. numdat) goto 40
-30  end do
+ 30 end do
     goto 10
 !
-40  continue
+ 40 continue
 !
 ! RECUPERATION DU NOMCHA DU DATASET
     if ((numdat .eq. 55) .or. (numdat .eq. 57)) then
@@ -232,14 +230,14 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                             call decod1(rec, irec, ifield, valatt, trouve)
                             if (.not.trouve) goto 70
                         endif
-50                  continue
-60              continue
+ 50                 continue
+ 60             continue
                 chamok = .true.
                 nomch = linoch(ich)
                 numch = ich
             endif
         endif
-70  end do
+ 70 end do
     if (.not.chamok) goto 10
 !
 !- TRAITEMENT DU NUMERO D'ORDRE, DE L'INSTANT OU DE LA FREQUENCE
@@ -380,7 +378,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 nbcmp1 = nbcmp1 + 1
                 licmp(nbcmp1) = zk8(lficmp-1+ (numch-1)*1000+icmp)
             endif
-80      continue
+ 80     continue
 !
         if (tychid .eq. 'NOEU') then
 !
@@ -416,16 +414,16 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                     do 85 iaux = 1, nbval
                         zc(jcnsv-1+iaux) = dcmplx(0.d0,0.d0)
                         zl(jcnsl-1+iaux) = .true.
-85                  continue
+ 85                 continue
                 else
                     do 86 iaux = 1, nbval
                         zr(jcnsv-1+iaux) = 0.d0
                         zl(jcnsl-1+iaux) = .true.
-86                  continue
+ 86                 continue
                 endif
             endif
 !
-90          continue
+ 90         continue
 !
             read (mfich,'(I10,A13,A8)',end=160) inoide,a13bid,nomnoa
             if (inoide .eq. -1) goto 150
@@ -461,7 +459,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                         zc(jcnsv-1+idecal+icmp1) = dcmplx( val(icmp2-1) , val(icmp2))
                         zl(jcnsl-1+idecal+icmp1) = .true.
                     endif
-100              continue
+100             continue
             else
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,nbcmid)
                 icmp1 = 0
@@ -471,7 +469,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                         zr(jcnsv-1+idecal+icmp1) = val(icmp)
                         zl(jcnsl-1+idecal+icmp1) = .true.
                     endif
-110              continue
+110             continue
             endif
             goto 90
 ! - LECTURE DU CHAMP ELEMENT
@@ -481,7 +479,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
             call jeveuo(chs//'.CESV', 'E', jcesv)
             call jeveuo(chs//'.CESL', 'E', jcesl)
 !
-120          continue
+120         continue
             read (mfich,'(4I10)',end=160) ielide,iexp,nbnoe,nbcmid
             if (nomch(1:4) .eq. 'VARI') nbcmp = nbvari
             if (ielide .eq. -1) goto 150
@@ -505,9 +503,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 do 141 iast = 1, nbnoe
                     isup=zi(jperm-1+maxnod*(itype-1)+iast)
                     if (isup .eq. knoide) goto 142
-141              continue
+141             continue
                 call utmess('F', 'PREPOST3_40')
-142              continue
+142             continue
                 knoast=iast
 !
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,nbcmid)
@@ -520,15 +518,15 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                         zr(jcesv-1+abs(kk)) = val(icmp)
                         zl(jcesl-1+abs(kk)) = .true.
                     endif
-130              continue
-140          continue
+130             continue
+140         continue
 !
             goto 120
         else if (tychid.eq.'ELGA') then
             call utmess('F', 'PREPOST3_41')
         endif
 !
-150      continue
+150     continue
 !       -- STOCKAGE DU CHAMP SIMPLE DANS LA SD_RESULTAT :
 !
 !       -- ON CHERCHE A ECONOMISER LES PROF_CHNO :
@@ -556,13 +554,13 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     endif
 !
     goto 180
-160  continue
+160 continue
     call getres(resu, concep, nomcmd)
     call utmess('F', 'ALGORITH5_5')
 !
-170  continue
+170 continue
 !
-180  continue
+180 continue
     call jedetr('&&IRADHS.PERMUTA')
     call jedetr('&&IRADHS.CODEGRA')
     call jedetr('&&IRADHS.CODEPHY')

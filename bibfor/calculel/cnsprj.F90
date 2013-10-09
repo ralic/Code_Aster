@@ -64,7 +64,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     character(len=19) :: cns1, cns2
     integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
     integer :: jcns2c, jcns2l, jcns2v, jcns2k, jcns2d
-    integer :: nbno1, ncmp, ibid, jxxk1, iaconb, iaconu, iacocf, gd, nbno2
+    integer :: nbno1, ncmp, jxxk1, iaconb, iaconu, iacocf, gd, nbno2
     integer :: idecal, ino2, icmp, ico1, ico2, ino1, nuno1, kalarm
     real(kind=8) :: v1, v2, coef1, coetot, vrmoy
     complex(kind=8) :: v1c, v2c, vcmoy
@@ -95,8 +95,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     nbno1 = zi(jcns1d-1+1)
     ncmp = zi(jcns1d-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !
 !------------------------------------------------------------------
@@ -146,110 +145,110 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !     5- CALCUL DES VALEURS DE CNS2 :
 !     -------------------------------
     idecal = 0
-    do 50,ino2 = 1,nbno2
-    nbno1 = zi(iaconb-1+ino2)
-    if (nbno1 .eq. 0) goto 50
-    do 40,icmp = 1,ncmp
+    do 50 ino2 = 1, nbno2
+        nbno1 = zi(iaconb-1+ino2)
+        if (nbno1 .eq. 0) goto 50
+        do 40 icmp = 1, ncmp
 !
 !          -- ON COMPTE (ICO1) LES NOEUDS PORTANT LE DDL :
 !             ON COMPTE AUSSI (ICO2) CEUX DONT LE COEF EST > 0
 !             ON CALCULE LA VALEUR MOYENNE SUR LA MAILLE (VXMOY)
 !             ON CALCULE LA SOMME DES COEF > 0 (COETOT)
-    ico1 = 0
-    ico2 = 0
-    vrmoy = 0.d0
-    vcmoy = dcmplx(0.d0,0.d0)
-    coetot = 0.d0
-    do 10,ino1 = 1,nbno1
-    nuno1 = zi(iaconu+idecal-1+ino1)
-    coef1 = zr(iacocf+idecal-1+ino1)
-    if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
-        ico1 = ico1 + 1
-        if (coef1 .gt. 0.d0) then
-            ico2 = ico2 + 1
-            coetot = coetot + coef1
-        endif
-        if (tsca .eq. 'R') then
-            vrmoy = vrmoy + zr(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
+            ico1 = 0
+            ico2 = 0
+            vrmoy = 0.d0
+            vcmoy = dcmplx(0.d0,0.d0)
+            coetot = 0.d0
+            do 10 ino1 = 1, nbno1
+                nuno1 = zi(iaconu+idecal-1+ino1)
+                coef1 = zr(iacocf+idecal-1+ino1)
+                if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
+                    ico1 = ico1 + 1
+                    if (coef1 .gt. 0.d0) then
+                        ico2 = ico2 + 1
+                        coetot = coetot + coef1
+                    endif
+                    if (tsca .eq. 'R') then
+                        vrmoy = vrmoy + zr(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
 !
-        else
-            vcmoy = vcmoy + zc(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
-        endif
-    endif
-10  continue
-    if (ico1 .eq. 0) goto 40
-    zl(jcns2l-1+ (ino2-1)*ncmp+icmp) = .true.
+                    else
+                        vcmoy = vcmoy + zc(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
+                    endif
+                endif
+ 10         continue
+            if (ico1 .eq. 0) goto 40
+            zl(jcns2l-1+ (ino2-1)*ncmp+icmp) = .true.
 !
 !
 !         -- SI COETOT EST FAIBLE, LA PROJECTION N'EST PAS PRECISE :
 !            L'EMISSION DE L'ALARME EST COUTEUSE, ON LA LIMITE :
-    if (coetot .lt. 1.d-3 .and. kalarm .le. 6) then
-        kalarm=kalarm+1
-        call jenuno(jexnum(ma2//'.NOMNOE', ino2), nomno2)
-        nomcmp=zk8(jcns1c-1+icmp)
-        valk(1)=nomgd
-        valk(2)=nomno2
-        valk(3)=nomcmp
-        call utmess('A', 'CALCULEL4_9', nk=3, valk=valk)
-    endif
+            if (coetot .lt. 1.d-3 .and. kalarm .le. 6) then
+                kalarm=kalarm+1
+                call jenuno(jexnum(ma2//'.NOMNOE', ino2), nomno2)
+                nomcmp=zk8(jcns1c-1+icmp)
+                valk(1)=nomgd
+                valk(2)=nomno2
+                valk(3)=nomcmp
+                call utmess('A', 'CALCULEL4_9', nk=3, valk=valk)
+            endif
 !
 !
 !          -- 3 CAS DE FIGURE POUR L'INTERPOLATION :
 !          ----------------------------------------
-    if (ico1 .eq. nbno1) then
+            if (ico1 .eq. nbno1) then
 !            1 : NORMAL ON PREND TOUS LES NOEUDS N1
-        lexact = .true.
-        coetot = 1.d0
+                lexact = .true.
+                coetot = 1.d0
 !
-    else if (ico2.gt.0) then
+            else if (ico2.gt.0) then
 !            2 : ON PREND LES NOEUDS N1 DE COEF > 0
-        lexact = .false.
+                lexact = .false.
 !
-    else
+            else
 !            3 : ON FAIT UNE MOYENNE ARITHMETIQUE
-        if (tsca .eq. 'R') then
-            zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = vrmoy/ico1
+                if (tsca .eq. 'R') then
+                    zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = vrmoy/ico1
 !
-        else
-            zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = vcmoy/ico1
-        endif
-        goto 40
+                else
+                    zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = vcmoy/ico1
+                endif
+                goto 40
 !
-    endif
-!
-!
-    if (tsca .eq. 'R') then
-        v2 = 0.d0
-        do 20,ino1 = 1,nbno1
-        nuno1 = zi(iaconu+idecal-1+ino1)
-        coef1 = zr(iacocf+idecal-1+ino1)
-        if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
-            if (lexact .or. coef1 .gt. 0) then
-                v1 = zr(jcns1v-1+ (nuno1-1)*ncmp+icmp)
-                v2 = v2 + coef1*v1
             endif
-        endif
-20      continue
-        zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2/coetot
 !
-    else if (tsca.eq.'C') then
-        v2c = dcmplx(0.d0,0.d0)
-        do 30,ino1 = 1,nbno1
-        nuno1 = zi(iaconu+idecal-1+ino1)
-        coef1 = zr(iacocf+idecal-1+ino1)
-        if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
-            if (lexact .or. coef1 .gt. 0) then
-                v1c = zc(jcns1v-1+ (nuno1-1)*ncmp+icmp)
-                v2c = v2c + coef1*v1c
+!
+            if (tsca .eq. 'R') then
+                v2 = 0.d0
+                do 20 ino1 = 1, nbno1
+                    nuno1 = zi(iaconu+idecal-1+ino1)
+                    coef1 = zr(iacocf+idecal-1+ino1)
+                    if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
+                        if (lexact .or. coef1 .gt. 0) then
+                            v1 = zr(jcns1v-1+ (nuno1-1)*ncmp+icmp)
+                            v2 = v2 + coef1*v1
+                        endif
+                    endif
+ 20             continue
+                zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2/coetot
+!
+            else if (tsca.eq.'C') then
+                v2c = dcmplx(0.d0,0.d0)
+                do 30 ino1 = 1, nbno1
+                    nuno1 = zi(iaconu+idecal-1+ino1)
+                    coef1 = zr(iacocf+idecal-1+ino1)
+                    if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
+                        if (lexact .or. coef1 .gt. 0) then
+                            v1c = zc(jcns1v-1+ (nuno1-1)*ncmp+icmp)
+                            v2c = v2c + coef1*v1c
+                        endif
+                    endif
+ 30             continue
+                zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2c/coetot
             endif
-        endif
-30      continue
-        zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2c/coetot
-    endif
-40  continue
-    idecal = idecal + nbno1
-    50 end do
+ 40     continue
+        idecal = idecal + nbno1
+ 50 end do
 !
-60  continue
+ 60 continue
     call jedema()
 end subroutine

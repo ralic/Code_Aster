@@ -51,11 +51,10 @@ subroutine craglc(long, ligrch)
 !
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: mod
-    character(len=8) :: k8bid
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idlgns, idnbno, ier, iret, lonema
+    integer ::  idlgns, idnbno, iret, lonema
     integer :: longma, longut, lonlig, lont, nbeldi, nbelma, nbelut
     integer :: nbmata, nbnomx
 !-----------------------------------------------------------------------
@@ -66,7 +65,7 @@ subroutine craglc(long, ligrch)
 !
     call jeexin(ligrch//'.LIEL', iret)
     if (iret .eq. 0) then
-
+!
 !  appeler char_lrea_ligf
         call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     long)
@@ -82,8 +81,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 !
-        call dismoi('F', 'NOM_MODELE', ligrch(1:8), 'CHARGE', ibid,&
-                    mod, ier)
+        call dismoi('NOM_MODELE', ligrch(1:8), 'CHARGE', repk=mod)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE ---
 !
@@ -99,8 +97,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- NOMBRE DE MAILLES TARDIVES DU LIGREL DE CHARGE ---
 !
-    call dismoi('F', 'NB_MA_SUP', ligrch, 'LIGREL', nbmata,&
-                k8bid, ier)
+    call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi=nbmata)
 !
 ! --- NOMBRE D'ELEMENTS DEJA AFFECTES DE LA COLLECTION LIGRCH ---
 !
@@ -120,8 +117,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- MAJORANT DE LA NOUVELLE LONGUEUR DE LA COLLECTION LIGRCH.NEMA ---
 !
-    call dismoi('F', 'NB_NO_MAX', '&', 'CATALOGUE', nbnomx,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAX', '&', 'CATALOGUE', repi=nbnomx)
     longma = (nbnomx+1)*longut
 !
 ! --- VERIFICATION DE L'ADEQUATION DE LA TAILLE DU LIGREL DE ---

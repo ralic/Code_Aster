@@ -77,7 +77,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     parameter   (nbcmpm=10)
     character(len=4) :: nliai
     character(len=8) :: modgen, lint1, lint2, criter, temp
-    character(len=8) :: sst1, sst2, intf1, intf2, mail1, mail2, k8bid, nomnoi
+    character(len=8) :: sst1, sst2, intf1, intf2, mail1, mail2, nomnoi
     character(len=8) :: nomnoj, nomnop, option
     character(len=24) :: repnom, int1, int2, famli, ordol, ordod
     character(len=24) :: valk(5)
@@ -113,13 +113,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     do 10 i = 1, 3
         rot1(i)=zr(llrot1+i-1)
         rot2(i)=zr(llrot2+i-1)
-10  end do
+ 10 end do
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst1), 'L', lltra1)
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst2), 'L', lltra2)
     do 110 i = 1, 3
         tra1(i)=zr(lltra1+i-1)
         tra2(i)=zr(lltra2+i-1)
-110  end do
+110 end do
 !
 !-----CALCUL DES MATRICES DE ROTATION
 !
@@ -218,14 +218,14 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
         do 30 k = 1, 3
             x1(k)=zr(llcoo1+(nuno1-1)*3+k-1)
-30      continue
+ 30     continue
         do 40 k = 1, 3
             xr1(k)=0.d0
             do 50 l = 1, 3
                 xr1(k)=xr1(k)+matro1(k,l)*x1(l)
-50          continue
+ 50         continue
             xr1(k)=xr1(k)+tra1(k)
-40      continue
+ 40     continue
 !
         dxr = 0.d0
         do 120 j = 1, nbno
@@ -237,12 +237,12 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             saut = .false.
             do 60 k = 1, 3
                 x2(k)=zr(llcoo2+(nuno2-1)*3+k-1)
-60          continue
+ 60         continue
             do 70 k = 1, 3
                 xr2(k)=0.d0
                 do 80 l = 1, 3
                     xr2(k)=xr2(k)+matro2(k,l)*x2(l)
-80              continue
+ 80             continue
                 xr2(k)=xr2(k)+tra2(k)
                 if (j .ne. 1 .and. abs(xr2(k)-xr1(k)) .gt. dxr) then
 !               --- COMPARAISON COMPOSANTE AVEC DISTANCE --
@@ -254,7 +254,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                         goto 120
                     endif
                 endif
-70          continue
+ 70         continue
 !
 !          ---CALCUL DE LA DIFFERENCE DES DISTANCES NOEUD A NOEUD
 !
@@ -262,7 +262,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                 dxrij=0.d0
                 do 90 k = 1, 3
                     dxrij=dxrij+(xr1(k)-xr2(k))**2
-90              continue
+ 90             continue
                 dxrij=sqrt(dxrij)
                 if (j .eq. 1 .or. dxrij .lt. dxr) then
 !             --- CRITERE SUR DISTANCE (RECHERCHE DU MINIMUM)
@@ -279,14 +279,14 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                 do 100 k = 1, 3
                     lcara1=lcara1+xr1(k)**2
                     lcara2=lcara2+xr2(k)**2
-100              continue
+100             continue
                 lcara1=sqrt(lcara1)
                 lcara2=sqrt(lcara2)
                 if (lcaram .lt. lcara1) lcaram=lcara1
                 if (lcaram .lt. lcara2) lcaram=lcara2
             endif
 !
-120      continue
+120     continue
 !
 !
         if (dxrm .lt. dxr) dxrm=dxr
@@ -316,7 +316,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !        ONT ETE DONNES DANS UN ORDRE DE NON CORRESPONDANCE
         if (jnode .ne. i) ordre = .false.
 !
-20  end do
+ 20 end do
 !
 !
 !-----VERIFICATION FINALE
@@ -362,7 +362,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                 endif
                 goto 9999
             endif
-130      continue
+130     continue
 !
 !        ON RECUPERE LE DESCRIPTEUR DE LA LIAISON COURANTE
         famli=modgen//'      .MODG.LIDF'
@@ -378,8 +378,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         if (iret .eq. 0) then
             call jecreo(ordol, 'V V I')
             call jeecra(ordol, 'LONMAX', nbno)
-            call dismoi('F', 'NB_EC', lint2, 'INTERF_DYNA', nbec,&
-                        k8bid, iret)
+            call dismoi('NB_EC', lint2, 'INTERF_DYNA', repi=nbec)
             call jecreo(ordod, 'V V I')
             call jeecra(ordod, 'LONMAX', nbno*nbec)
         endif
@@ -390,10 +389,10 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         do 140 i = 1, nbno
 !         --- RECOPIE DE LLINT2 DANS LLISTB
             zi(llistb-1+i) = zi(llint2-1+i)
-140      continue
+140     continue
         do 150 i = 1, nbno
             zi(llint3-1+i) = zi(llistb-1+zi(llista-1+i))
-150      continue
+150     continue
 !    ---  ON REORDONNE LES CODES DE CONDITIONS AUX LIMITES
 !         AFIN D'AVOIR UNE VERIFICATION CORRECTE DANS VERILI
         call jenonu(jexnom(lint2//'.IDC_NOMS', intf2), ibid)
@@ -405,10 +404,10 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         do 160 i = 1, nbno
 !         --- RECOPIE DE LDAC2 DANS LLISTB
             zi(llistb+(i-1)*nbec) = zi(ldac2+(i-1)*nbec)
-160      continue
+160     continue
         do 170 i = 1, nbno
             zi(llint4+(i-1)*nbec) = zi(llistb+(zi(llista-1+i)-1)*nbec)
-170      continue
+170     continue
 !
     endif
 !
@@ -418,7 +417,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
     nliais=1
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

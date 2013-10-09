@@ -56,7 +56,7 @@ subroutine op0109()
 !
     integer :: vali(2)
 !-----------------------------------------------------------------------
-    integer :: iam, ibid, id, ierd, ifm, ifu, ii
+    integer :: iam, ibid, id, ifm, ifu, ii
     integer :: im, info, iret, j, jamo2
     integer :: jamor, jarm, jasy, jcsu, jdep, jdir
     integer :: jkno, jnsu, jopt, jordr, jrea, jspe
@@ -136,8 +136,8 @@ subroutine op0109()
                 prec, crit, iret)
     if (iret .ne. 0) goto 9999
     call jeveuo(knume, 'L', jordr)
-    call dismoi('C', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid,&
-                masse, iret)
+    call dismoi('REF_MASS_PREM', meca, 'RESU_DYNA', repk=masse, arret='C',&
+                ier=iret)
     nomsy = 'DEPL'
     call vprecu(meca, nomsy, nbordr, zi(jordr), kvec,&
                 nbpara, nopara(1), k8b, kval, k8b,&
@@ -176,10 +176,10 @@ subroutine op0109()
             call wkvect('&&OP0109.AMORTISSEMEN2', 'V V R', nbmode, jamo2)
             do 10 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamor+iam-1)
-10          continue
+ 10         continue
             do 12 iam = nbamor, nbmode
                 zr(jamo2+iam-1) = zr(jamor+nbamor-1)
-12          continue
+ 12         continue
             nbamor = nbmode
             jamor = jamo2
         endif
@@ -196,11 +196,11 @@ subroutine op0109()
             call wkvect('&&OP0109.AMORTISSEMENT', 'V V R', nbmode, jamor)
             do 14 iam = 1, nbamor
                 zr(jamor+iam-1) = zr(jarm+iam-1)
-14          continue
+ 14         continue
             if (nbamor .lt. nbmode) then
                 do 16 iam = nbamor, nbmode
                     zr(jamor+iam-1) = zr(jarm+nbamor-1)
-16              continue
+ 16             continue
             endif
             nbamor = nbmode
         else
@@ -238,7 +238,7 @@ subroutine op0109()
         call utmess('I', 'SEISME_15', nk=3, valk=valk, si=vali(1))
         do 15 j = 2, nbopt
             call utmess('I', 'SEISME_16', sk=zk16(jopt+j-1))
-15      continue
+ 15     continue
         if (nna .ne. 0) then
             call utmess('I', 'SEISME_17', sk=nature)
         endif
@@ -289,8 +289,7 @@ subroutine op0109()
     call getvid(' ', 'MASS_INER', scal=tmas, nbret=nt)
     if (nt .ne. 0) then
 !        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
-        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                    noma, ierd)
+        call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
         call tbexp2(tmas, 'LIEU')
         call tbexp2(tmas, 'MASSE')
         call tbliva(tmas, 1, 'LIEU', [ibid], [r8b],&
@@ -331,12 +330,12 @@ subroutine op0109()
                         xmastr = 1.d0
                         goto 24
                     endif
-22              continue
+ 22             continue
                 xmastr = xmastr / xcumul
                 goto 24
             endif
-20      continue
-24      continue
+ 20     continue
+ 24     continue
     endif
 !
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'MASS_EFFE') then
@@ -387,8 +386,8 @@ subroutine op0109()
                         endif
                     endif
                 endif
-32          continue
-30      continue
+ 32         continue
+ 30     continue
         if (calmas) write(ifm,1160) xmastr
         write(ifm,1162)
         do 34 id = 1, 3
@@ -398,7 +397,7 @@ subroutine op0109()
             else
                 if (zi(jdir+id-1) .eq. 1) write(ifm,1164)dir(id),mastot( id)
             endif
-34      continue
+ 34     continue
     endif
 !     --- RECUPERATION DES MODES STATIQUES ---
     call getvtx(' ', 'MULTI_APPUI', nbval=0, nbret=nret1)
@@ -424,8 +423,7 @@ subroutine op0109()
     endif
 !     ----- CAS DU MULTI-SUPPORT -----
     if (.not.monoap) then
-        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                    nume, iret)
+        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
         if (nume .eq. ' ') then
             call utmess('F', 'SEISME_40')
         endif
@@ -455,7 +453,7 @@ subroutine op0109()
     if (ndepl .ne. 0) call asimpr(nbsup, zi(jcsu), zk8(jkno))
 !
 !
-9999  continue
+9999 continue
     call titre()
 !
 !

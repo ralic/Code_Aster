@@ -55,14 +55,13 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
 !
 !
-    integer :: nbcpmx, nbddl, nbdif, numint, iret, i, j, nbec, nbcmp, neq, ibid
+    integer :: nbcpmx, nbddl, nbdif, numint, i, j, nbec, nbcmp, neq
     integer :: nunoe, iran(1), lldesc, ord, nliais, llint3, llint4, llact, llnoe
     integer :: lldeeq, nbnoe, inoe
     parameter (nbcpmx=300)
     integer :: idec(nbcpmx), ivddl(nbddl)
     character(len=4) :: nliai
     character(len=8) :: basmod, nomint, intf, temp
-    character(len=8) :: k8bid
     character(len=19) :: numddl
     character(len=24) :: noeint, actint, ordol, ordod
     character(len=24) :: valk(2)
@@ -80,23 +79,20 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
     if (basmod(1:1) .ne. ' ') then
 !
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                    intf, iret)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
         if (intf .eq. ' ') then
             valk (1) = basmod
             call utmess('F', 'ALGORITH12_30', sk=valk(1))
         endif
 !
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                    numddl, iret)
+        call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
 !
 !  SI ON A DONNE UNE LIST_INTERFACE
 !
     else
         if (intf(1:1) .ne. ' ') then
 !
-            call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
-                        numddl, iret)
+            call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=numddl)
 !
         else
             valk (1) = basmod
@@ -107,10 +103,8 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
 !--------------RECUPERATION DONNEE GRANDEUR SOUS-JACENTE----------------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
@@ -121,8 +115,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !-----------RECUPERATION DU NOMBRE DE DDL PHYSIQUES ASSEMBLES-----------
 !
 !
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !--------------------RECUPERATION DE LA LISTE DDL ACTIF-----------------
 !
@@ -173,8 +166,8 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
                     ivddl(nbddl-nbdif)=iran(1)
                 endif
             endif
-30      continue
-20  continue
+ 30     continue
+ 20 continue
 !
     nbdif=-nbdif
 !

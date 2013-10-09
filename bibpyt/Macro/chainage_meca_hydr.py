@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import aster
@@ -29,19 +29,19 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     CREA_RESU       = self.get_cmd('CREA_RESU')
     CALC_CHAMP      = self.get_cmd('CALC_CHAMP')
     PROJ_CHAMP      = self.get_cmd('PROJ_CHAMP')
-    
+
     b_info = False
     if args.has_key('INFO'):
       if   args['INFO'] != None :
         motscles['INFO'] = args['INFO']
         if args['INFO']==2 :
           b_info = True
-        
+
     RESU_MECA   = args['RESU_MECA']
     MODELE_HYDR = args['MODELE_HYDR']
     INST        = args['INST']
     MATR_MH     = args['MATR_MH']
-    
+
     para = RESU_MECA.LIST_PARA()
     smo = set(para['MODELE'])
 
@@ -55,11 +55,11 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
   # Nom du modèle obtenu à partir du résultat : nom_modele_1
   ############################################################
 
-    iret,ibid,nom_modele_1 = aster.dismoi('F','MODELISATION',__modele.nom,'MODELE')
+    iret,ibid,nom_modele_1 = aster.dismoi('MODELISATION',__modele.nom,'MODELE','F')
     nom_modele_1=nom_modele_1.strip()
 
-    iret,ibid,yathm1 = aster.dismoi('F','EXI_THM',__modele.nom,'MODELE')
-  
+    iret,ibid,yathm1 = aster.dismoi('EXI_THM',__modele.nom,'MODELE','F')
+
   #########################################################
   # A l'heure actuelle, les modélisations autorisées pour
   # faire du chaînage sont :
@@ -76,15 +76,15 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
   #   => les modélisations HM saturées à intégration sélective :
   #      D_PLAN_HMS, 3D_HMS
   #########################################################
-  
+
     mod_mec_autorise = ['D_PLAN','D_PLAN_SI','D_PLAN_GRAD_SIGM']
     mod_hyd_autorise = ['D_PLAN_HS','D_PLAN_HMS']
-    
+
   #############################################
   # Nom du modèle 2 fourni en entrée : nom_modele_2
   #############################################
-  
-    iret,ibid,nom_modele_2 = aster.dismoi('F','MODELISATION',MODELE_HYDR.nom,'MODELE')
+
+    iret,ibid,nom_modele_2 = aster.dismoi('MODELISATION',MODELE_HYDR.nom,'MODELE','F')
     nom_modele_2=nom_modele_2.strip()
 
     linst_resultat = RESU_MECA.LIST_VARI_ACCES()['INST']
@@ -94,7 +94,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
   # instp et instm sont les 2 derniers instants présents dans
   # le résultat donné en entrée
   ###########################################################
-  
+
     instp = linst_resultat[-1]
 
     instm = None
@@ -120,7 +120,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
         UTMESS('F', 'CHAINAGE_6', valr=[INST],valk=[RESU_MECA.nom])
       if abs(instp - INST)<prec :
         inst_coincident = True
-        
+
   #########################################################
   # On vérifie que le résultat donné en entrée
   # (mécanique) est défini
@@ -147,7 +147,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     if not(nom_modele_2 in mod_hyd_autorise) :
       UTMESS('F', 'CHAINAGE_3', valk=[nom_modele_2,'d arrivée'])
 
-    iret,ibid,nom_mail = aster.dismoi('F','NOM_MAILLA',MODELE_HYDR.nom,'MODELE')
+    iret,ibid,nom_mail = aster.dismoi('NOM_MAILLA',MODELE_HYDR.nom,'MODELE','F')
     nom_mail=nom_mail.strip()
     __maillage_h = self.get_concept(nom_mail)
 
@@ -161,7 +161,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                        LIST_INST=__listinst,**motscles);
 
     if b_info :  UTMESS('I', 'CHAINAGE_7',valk=['epsi_elno',nom_mo_re],valr=[instp])
-      
+
     __epsip=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                        OPERATION='EXTR',
                        RESULTAT=__epsir,
@@ -177,7 +177,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                        INST=instm,**motscles);
 
     if b_info :  UTMESS('I', 'CHAINAGE_7',valk=['divu',nom_mo_re],valr=[instp])
-    
+
     __defvp=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                        OPERATION='ASSE',
                        MODELE=__modele,
@@ -200,7 +200,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                           TOUT='OUI',),),**motscles);
 
     if b_info :  UTMESS('I', 'CHAINAGE_7',valk=['divu',nom_mo_re],valr=[instm])
-    
+
     __defvm=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                        OPERATION='ASSE',
                        MODELE=__modele,
@@ -231,7 +231,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                              _F(CHAM_GD=__defvp,
                                 MODELE=__modele,
                                 INST=instp,),),);
-    
+
     __defvr1=CALC_CHAMP(reuse=__defvr1,
                         RESULTAT=__defvr1,
                         DEFORMATION='EPSI_NOEU',
@@ -241,7 +241,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     __epsrpro=PROJ_CHAMP(RESULTAT=__defvr1,
                            NOM_CHAM='EPSI_NOEU',
                            MATR_PROJECTION=MATR_MH,**motscles);
-    
+
     __defvrppro=CREA_CHAMP(TYPE_CHAM='NOEU_EPSI_R',
                            OPERATION='EXTR',
                            RESULTAT=__epsrpro,
@@ -253,9 +253,9 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                            RESULTAT=__epsrpro,
                            NOM_CHAM='EPSI_NOEU',
                            INST=instm,**motscles);
-    
+
     if b_info :  UTMESS('I', 'CHAINAGE_7',valk=['divu',MODELE_HYDR.nom],valr=[instm])
-    
+
     __divum=CREA_CHAMP(TYPE_CHAM='NOEU_EPSI_R',
                        OPERATION='ASSE',
                        MODELE=MODELE_HYDR,
@@ -266,7 +266,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                           TOUT='OUI',),),**motscles);
 
     if b_info :  UTMESS('I', 'CHAINAGE_7',valk=['divu',MODELE_HYDR.nom],valr=[instp])
-    
+
     __divup=CREA_CHAMP(TYPE_CHAM='NOEU_EPSI_R',
                        OPERATION='ASSE',
                        MODELE=MODELE_HYDR,

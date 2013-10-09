@@ -220,7 +220,7 @@ def verif_config_init(FOND_FISS) :
    from Utilitai.Utmess     import  UTMESS
    import aster
 
-   iret,ibid,config = aster.dismoi('F','CONFIG_INIT',FOND_FISS.nom,'FOND_FISS')
+   iret,ibid,config = aster.dismoi('CONFIG_INIT',FOND_FISS.nom,'FOND_FISS','F')
    if config != 'COLLEE' :
       UTMESS('F','RUPTURE0_16')
 
@@ -623,7 +623,7 @@ def verif_resxfem(self,RESULTAT) :
       import aster
       from Utilitai.Utmess     import  UTMESS
 
-      iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+      iret,ibid,n_modele = aster.dismoi('MODELE',RESULTAT.nom,'RESULTAT','F')
       n_modele=n_modele.rstrip()
       if len(n_modele)==0 :
          UTMESS('F','RUPTURE0_18')
@@ -643,7 +643,7 @@ def get_resxfem(self,xcont,RESULTAT,MODELISATION,MODEL) :
       DETRUIRE         = self.get_cmd('DETRUIRE')
       CREA_MAILLAGE    = self.get_cmd('CREA_MAILLAGE')
 
-      iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+      iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESULTAT.nom,'RESULTAT','F')
       if xcont[0] != 3 :
          __RESX = RESULTAT
 
@@ -1707,7 +1707,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    if FOND_FISS :
 
-      iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+      iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESULTAT.nom,'RESULTAT','F')
       MAILLAGE = self.get_concept(nom_ma.strip())
 
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
@@ -1746,7 +1746,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     Verification de la presence de symetrie
 #     ----------------------------------
 
-      iret,ibid,syme_char = aster.dismoi('F','SYME',FOND_FISS.nom,'FOND_FISS')
+      iret,ibid,syme_char = aster.dismoi('SYME',FOND_FISS.nom,'FOND_FISS','F')
 
 #     Recuperation de la liste des tailles de maille en chaque noeud du fond
 #     ----------------------------------------------------------------------
@@ -1790,7 +1790,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             dicoF = get_absfon(Lnoff,Nnoff,d_coorf)
 
 #        Extraction dep sup/inf sur les normales
-         iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+         iret,ibid,n_modele = aster.dismoi('MODELE',RESULTAT.nom,'RESULTAT','F')
          n_modele=n_modele.rstrip()
          if len(n_modele)==0 :
             UTMESS('F','RUPTURE0_18')
@@ -1839,7 +1839,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    elif FISSURE :
 
-      iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+      iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESULTAT.nom,'RESULTAT','F')
       MAILLAGE = self.get_concept(nom_ma.strip())
 
 #     Recuperation de la liste des tailles de maille en chaque noeud du fond

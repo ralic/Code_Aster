@@ -72,9 +72,9 @@ subroutine xmacon(char, noma, nomo)
     integer :: jcesd2, jcesv2, jcesl2
     integer :: jconx1, jconx2
     integer :: jcesd, jcesl, jcesv, jmail, ityele
-    integer :: izone, ima, ntpc, iret, iad, posmae
+    integer :: izone, ima, ntpc, iad, posmae
     integer :: iad1, iad2, statut, ibid, nfiss, ifiss
-    character(len=8) :: nomfis, nomzon, k8bid, typma, elrefe
+    character(len=8) :: nomfis, nomzon, typma, elrefe
     character(len=19) :: chs, faclon, chs2, typmai, maille
     character(len=16) :: typele, enr
     logical :: lmalin
@@ -102,10 +102,8 @@ subroutine xmacon(char, noma, nomo)
 !
 ! --- ON RECUPERE LE NOMBRE TOTAL DE MAILLES DU MAILLAGE ET SA DIMENSION
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 ! --- ON RECUPERE LA CONNECTIVITE DU MAILLAGE
 !
@@ -148,10 +146,10 @@ subroutine xmacon(char, noma, nomo)
                             ifiss, 1, iad2)
                 ninter = zi(jcesv2-1+iad2)
                 if (ninter .gt. 0) ntmae=ntmae+1
-120          continue
+120         continue
 !          ENDIF
         endif
-110  end do
+110 end do
 !
 !
 ! --- CREATION DU TABLEAU DES MAILLES ESCLAVES
@@ -190,10 +188,10 @@ subroutine xmacon(char, noma, nomo)
                             ifiss, 1, iad1)
                 nomfis = zk8(jcesv-1+iad1)
                 if (nomzon .eq. nomfis) goto 230
-220          continue
+220         continue
 ! --- ON SORT SI LA MAILLE NE CONTIENT PAS LA FISSURE EN COURS
             goto 210
-230          continue
+230         continue
 !
 ! --- ON SORT SI PAS DE POINTS D'INTERSECTIONS
             call cesexi('C', jcesd2, jcesl2, ima, 1,&
@@ -241,8 +239,8 @@ subroutine xmacon(char, noma, nomo)
                 zi(jmaesx+zmesx*(posmae-1)+3-1) = 1
                 zi(jmaesx+zmesx*(posmae-1)+4-1) = -1*statut
             endif
-210      continue
-200  end do
+210     continue
+200 end do
 !
 ! --- NOMBRE DE MAILLES ESCLAVES
 !

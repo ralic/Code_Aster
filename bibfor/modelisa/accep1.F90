@@ -47,7 +47,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/wkvect.h"
 !
     integer :: nbm, i
-    integer :: iret, ilime, inoli, ibid, ngrel, ipg, n1, jlgrf
+    integer :: iret, ilime, inoli, ngrel, ipg, n1, jlgrf
     integer :: ncham, icham, nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
@@ -72,8 +72,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         if (iret .gt. 0) then
             call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
                         iret)
-            call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', ibid,&
-                        matas, iret)
+            call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matas)
             call jeveuo(matas//'.LIME', 'L', ilime)
             call jeveuo(zk24(ilime)(1:8)//'.ME001     .NOLI', 'L', inoli)
             modele = zk24(inoli) (1:8)
@@ -96,8 +95,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         modele = ligrmo(1:8)
     endif
 !
-    call dismoi('F', 'PARTITION', ligrmo, 'LIGREL', ibid,&
-                partit, ibid)
+    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
     if (partit .ne. ' ') then
         call utmess('F', 'CALCULEL_25', sk=ligrmo)
     endif
@@ -139,7 +137,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call detrsd('CARTE', chharm)
-70  continue
+ 70 continue
     if (ncham .gt. 0) call jedetr('&&ACCEP1.VEC')
 !
 !
@@ -155,7 +153,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     do 80 igr = 1, ngrel
         nbelgr = nbelem(ligrmo,igr)
         nbelto = nbelto + nbelgr
-80  continue
+ 80 continue
 !
 ! TAILLE DU TABLEAU
 !          NTAIL=16*NBELTO*NBM
@@ -221,10 +219,10 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                             endif
                         endif
                     endif
-90              continue
-100          continue
-110      continue
-120  continue
+ 90             continue
+100         continue
+110     continue
+120 continue
 !
     call jedema()
 end subroutine

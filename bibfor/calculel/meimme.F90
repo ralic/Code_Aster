@@ -53,7 +53,7 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
     logical :: lfonc
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, icha, icode, ierd, ilires, iret
+    integer ::  icha, icode, ilires, iret
 !-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
@@ -87,8 +87,7 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
         lchin(3) = mate
 !
         do 10 icha = 1, nchar
-            call dismoi('F', 'TYPE_CHARGE', lchar(icha), 'CHARGE', ibid,&
-                        k8b, ierd)
+            call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8b)
             if (k8b(5:7) .eq. '_FO') then
                 lfonc = .true.
             else
@@ -112,7 +111,7 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
                             'OUI')
                 call reajre(matel, lchout(1), 'G')
             endif
-10      continue
+ 10     continue
     endif
     call jedema()
 end subroutine

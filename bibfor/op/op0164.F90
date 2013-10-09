@@ -50,7 +50,7 @@ subroutine op0164()
 !
     integer :: n1, n2, n4, jscde
     real(kind=8) :: partr, parti, inst
-    character(len=8) :: k8b, nomres, basemo, numgen
+    character(len=8) ::  nomres, basemo, numgen
     character(len=16) :: typres, nomcom, typbas, k16nom, typbin, tissf, tsym
     character(len=19) :: resu, stolci
     character(len=14) :: nugene
@@ -63,7 +63,7 @@ subroutine op0164()
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iaconl, iadesc, ialime, ic
-    integer :: ier, ifmis, ifr, ifreq, ii, j, jfrq
+    integer ::  ifmis, ifr, ifreq, ii, j, jfrq
     integer :: jj, jrefa, jri2, jrig, jrit, ldblo, ldblo2
     integer :: nbmodd, nbmode, nbmods, nfr, nfreq, nit, nsaut
     integer :: nterm, nueq
@@ -101,10 +101,8 @@ subroutine op0164()
 ! NB_VECT DONNE PAR NUME_DDL_GENE
     call jeveuo(stolci//'.SCDE', 'L', jscde)
 !
-    call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmodd,&
-                k8b, ier)
-    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                k8b, ier)
+    call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
+    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
     if (lissf) then
         nbmode = nbmodd + nbmods
     else
@@ -126,7 +124,7 @@ subroutine op0164()
                 zr(jrig+2*(i2-1)*nbmode+2*i1-2)=zr(jrit+(i2-1)*nbmode+&
                 i1-1)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1)=0.d0
-20          continue
+ 20         continue
         call jedetr(tabrit)
         goto 21
     endif
@@ -147,7 +145,7 @@ subroutine op0164()
                 if (i1 .eq. 1 .and. i2 .eq. 1) nsaut = ifreq
                 do 2 i = 1, nsaut
                     read(ifmis,'(A72)') texte
- 2              continue
+  2             continue
                 read(ifmis,*) (a(j),j=1,3)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-2) = a(2)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1) = -a(3)
@@ -166,8 +164,8 @@ subroutine op0164()
                                                       &*i1-1) -zr(jrig+2*(i2- 1)*nbmode+2*i1-1)&
                                                       )
                 endif
- 1          continue
- 4      continue
+  1         continue
+  4     continue
     else
         rewind ifmis
 !
@@ -197,13 +195,13 @@ subroutine op0164()
                 endif
                 goto 7
             endif
- 3      continue
+  3     continue
         ifreq = nfreq
         ic = 0
- 7      continue
+  7     continue
         do 5 i = 1, ifreq-1
             read(ifmis) a(1)
- 5      continue
+  5     continue
         read(ifmis) ((zr(jrig+2*(i2-1)*nbmode+2*i1-2), zr(jrig+2*(i2-&
         1)*nbmode+2*i1-1), i1=1,nbmode),i2=1,nbmode)
         if (ic .ge. 1) then
@@ -223,15 +221,15 @@ subroutine op0164()
                                                       &q-1)) * (zr(jri2+2*(i2-1)* nbmode+2*i1-1) &
                                                       &-zr(jrig+2*(i2-1)*nbmode+2*i1-1)&
                                                       )
- 8              continue
+  8             continue
         endif
         do 6 i1 = 1, nbmode
             do 6 i2 = 1, nbmode
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1)= -zr(jrig+2*(i2-1)*&
                 nbmode+2*i1-1)
- 6          continue
+  6         continue
     endif
-21  continue
+ 21 continue
 !
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
@@ -259,7 +257,7 @@ subroutine op0164()
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
     do 10 i = 1, nueq
         zc(iaconl+i-1) = dcmplx(1.0d0,0.0d0)
-10  end do
+ 10 end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 11, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -336,8 +334,8 @@ subroutine op0164()
                 endif
             endif
 !
-40      continue
-30  end do
+ 40     continue
+ 30 end do
     call jelibe(jexnum(resu//'.VALM', 1))
     if (.not.lsym) call jelibe(jexnum(resu//'.VALM', 2))
     call jedetr(tabrig)

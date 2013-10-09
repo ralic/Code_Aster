@@ -109,7 +109,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     integer :: iopt, imod, jmod, igrd, iadgd, nec
 !
     character(len=1) :: saux01
-    character(len=8) :: saux08, k8b, fapg, elref, nomtm, tyele(ntygeo)
+    character(len=8) :: saux08, fapg, elref, nomtm, tyele(ntygeo)
     character(len=8) :: typma(ntygeo)
     character(len=16) :: nomte, nofgpg
     character(len=24) :: liel
@@ -234,8 +234,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         nloc
     endif
 !
-    call dismoi('F', 'DIM_GEOM', ligrel(1:8), 'MODELE', dime,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', ligrel(1:8), 'MODELE', repi=dime)
     if (.not.(dime.eq.2.or.dime.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -314,7 +313,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !               UNE PERMUTATION DANS LES PG MED/ASTER
                     do 220 ipgm = 1, nbpg
                         indpg(nutyma,ipgm)=zi(jperm+ipgm-1)
-220                  continue
+220                 continue
                     zi(jngaok+j-1) = 1
                 else
 !  ===>         SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
@@ -323,7 +322,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !              - LES PG ASTER/MED CORRESPONDENT
                     do 230 ipg = 1, nbpg
                         indpg(nutyma,ipg)=ipg
-230                  continue
+230                 continue
                     zi(jngaok+j-1) = 1
                 endif
 !
@@ -334,14 +333,14 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
         endif
 !
-21      continue
+ 21     continue
 !
 !      REMPLISSAGE DU TABLEAU PGMAIL : PGMAIL(NUM_MAILLE_ASTER)=NBRE_PG
         if (zi(igr) .gt. 0) then
             do 301 ima = 1, nbmag-1
                 pgmail(zi(igr+ima-1))=nbpg
                 pgmmil(zi(igr+ima-1))=nbpgm
-301          continue
+301         continue
         endif
 !
     endif

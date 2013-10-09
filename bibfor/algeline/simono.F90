@@ -41,15 +41,15 @@ subroutine simono()
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
-    integer :: lmat, neq, ibid
+    integer :: lmat, neq
     real(kind=8) :: xnorm, depl(6)
-    character(len=8) :: tabcmp(6), masse, k8b
+    character(len=8) :: tabcmp(6), masse
     character(len=14) :: nume
     character(len=16) :: type, nomcmd
     character(len=19) :: resu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idchm, ie, in, jddl, jvec, nbd
+    integer :: i, idchm, in, jddl, jvec, nbd
     integer :: nbdir, nbv
 !-----------------------------------------------------------------------
     data   tabcmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
@@ -66,10 +66,8 @@ subroutine simono()
     call getvid(' ', 'MATR_MASS', scal=masse, nbret=nbv)
     call mtdscr(masse)
     call jeveuo(masse//'           .&INT', 'E', lmat)
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                nume, ie)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                k8b, ie)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
 !
 ! --- QUELLE EST LA DIRECTION ?
 !
@@ -81,14 +79,14 @@ subroutine simono()
     xnorm = 0.d0
     do 10 i = 1, nbdir
         xnorm = xnorm + depl(i) * depl(i)
-10  end do
+ 10 end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
     endif
     do 12 i = 1, nbdir
         depl(i) = depl(i) / xnorm
-12  end do
+ 12 end do
 !
     call wkvect('&&SIMONO.VECTEUR', 'V V R', neq, jvec)
     call wkvect('&&SIMONO.DDL', 'V V I', neq*nbdir, jddl)
@@ -97,8 +95,8 @@ subroutine simono()
     do 20 i = 1, nbdir
         do 22 in = 0, neq-1
             zr(jvec+in) = zr(jvec+in) - zi(jddl+(i-1)*neq+in)*depl(i)
-22      continue
-20  end do
+ 22     continue
+ 20 end do
 !
 !     --- CREATION DU CHAMNO ---
 !

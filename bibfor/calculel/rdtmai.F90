@@ -79,7 +79,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=4) :: docu
     character(len=8) :: typmcl(2), nomres
     character(len=16) :: motcle(2), nomcmd, typres
-    character(len=8) :: k8b, nomma, nomno, ttgrma, ttgrno, valk(2)
+    character(len=8) ::  nomma, nomno, ttgrma, ttgrno, valk(2)
     character(len=24) :: nommai, nomnoe, grpnoe, cooval, cooref, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm
@@ -112,15 +112,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     else
         nbmaou=nbmal
         call wkvect('&&RDTMAI.NUM_MAIL_IN', 'V V I', nbmaou, jnuma)
-        do 11, k=1,nbmaou
-        zi(jnuma-1+k)=lima(k)
-11      continue
+        do 11 k = 1, nbmaou
+            zi(jnuma-1+k)=lima(k)
+ 11     continue
     endif
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoin,&
-                k8b, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmain,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoin)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmain)
 !
 ! --- CREATION DE TABLEAUX DE TRAVAIL:
 !     ZI(JWK1) :
@@ -168,8 +166,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 zi(jwk1+nuno-1)=nbnoou
                 zi(jwk2+nbnoou-1)=nuno
             endif
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 !
 ! -2- CREATION DU NOUVEAU MAILLAGE
@@ -202,20 +200,19 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     do 30 ima = 1, nbmaou
         call jenuno(jexnum(noma//'.NOMMAI', zi(jnuma+ima-1)), nomma)
         call jecroc(jexnom(nommai, nomma))
-30  end do
+ 30 end do
 !
 ! --- OBJET .TYPMAIL
     call wkvect(typmai, base//' V I', nbmaou, itypou)
     call jeveuo(noma//'.TYPMAIL', 'L', itypin)
     do 40 ima = 1, nbmaou
         zi(itypou-1+ima)=zi(itypin-1+zi(jnuma+ima-1))
-40  end do
+ 40 end do
 !
 ! --- OBJET .CONNEX
     call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmaou)
-    call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nbnomx,&
-                k8b, iret)
+    call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
     call jeecra(connex, 'LONT', nbnomx*nbmaou, ' ')
     do 60 ima = 1, nbmaou
@@ -225,8 +222,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call jeveuo(jexnum(connex, ima), 'E', jadou)
         do 50 ino = 1, nbno
             zi(jadou+ino-1)=zi(jwk1+zi(jadin+ino-1)-1)
-50      continue
-60  end do
+ 50     continue
+ 60 end do
 !
 ! --- OBJET .NOMNOE
     call jecreo(nomnoe, base//' N K8')
@@ -234,7 +231,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     do 70 ino = 1, nbnoou
         call jenuno(jexnum(noma//'.NOMNOE', zi(jwk2+ino-1)), nomno)
         call jecroc(jexnom(nomnoe, nomno))
-70  end do
+ 70 end do
 !
 ! --- OBJET .COORDO.VALE
     call jecreo(cooval, base//' V R')
@@ -249,7 +246,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             zr(jcorou+3*(zi(jwk1+ino-1)-1)+1)=zr(jcorin+3*(ino-1)+1)
             zr(jcorou+3*(zi(jwk1+ino-1)-1)+2)=zr(jcorin+3*(ino-1)+2)
         endif
-80  end do
+ 80 end do
 !
 !
 ! --- OBJET COORDO.DESC
@@ -297,8 +294,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             call jeveuo(jexnom(grpmai, nomgma), 'E', jadou)
             do 90 ima = 1, nbma
                 zi(jadou+ima-1)=zi(jwk3+zi(jadin+ima-1)-1)
-90          continue
-100      continue
+ 90         continue
+100     continue
     else
 !       TOUT_GROUP_MA='OUI'
         call jelira(noma//'.GROUPEMA', 'NOMUTI', nbgmin)
@@ -324,7 +321,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     endif
                     nmpg=nmpg+1
                 endif
-110          continue
+110         continue
             if (.not.lvide) then
                 if (.not.lcaay) then
                     zi(jnmpg+nbgmnv-1)=nmpg
@@ -332,7 +329,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     zi(jnmpg+igm-1)=nmpg
                 endif
             endif
-120      continue
+120     continue
         call jecreo(ptngrm, base//' N K24')
         call jeecra(ptngrm, 'NOMMAX', nbgmnv)
         call jecrec(grpmai, base//' V I', 'NO '//ptngrm, 'DISPERSE', 'VARIABLE',&
@@ -352,10 +349,10 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     k=k+1
                     zi(jadou+k-1)=zi(jwk3+zi(jadin+ima-1)-1)
                 endif
-130          continue
-140      continue
+130         continue
+140     continue
     endif
-141  continue
+141 continue
 !
 !
 !
@@ -405,9 +402,9 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     endif
                     nnpg=nnpg+1
                 endif
-150          continue
+150         continue
             if (.not.lvide) zi(jnnpg+nbgnnv-1)=nnpg
-160      continue
+160     continue
 !
     else
 !       TOUT_GROUP_NO='OUI'
@@ -434,7 +431,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     endif
                     nnpg=nnpg+1
                 endif
-170          continue
+170         continue
             if (.not.lvide) then
                 if (.not.lcaay) then
                     zi(jnnpg+nbgnnv-1)=nnpg
@@ -442,7 +439,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     zi(jnnpg+ign-1)=nnpg
                 endif
             endif
-180      continue
+180     continue
     endif
 !
 !     SI AUCUN GROUPE DE NOEUD N'EST A CREER, ON SORT
@@ -467,9 +464,9 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 k=k+1
                 zi(jadou+k-1)=zi(jwk1+zi(jadin+ino-1)-1)
             endif
-190      continue
-200  end do
-210  continue
+190     continue
+200 end do
+210 continue
 !
     call cargeo(nomare)
 !
@@ -485,12 +482,12 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     endif
     if (corrm .ne. ' ') then
         call wkvect(corrm, bascor//' V I', nbmaou, jcorrm)
-        do 220,imain=1,nbmain
-        imaou=zi(jwk3-1+imain)
-        if (imaou .ne. 0) then
-            zi(jcorrm-1+imaou)=imain
-        endif
-220      continue
+        do 220 imain = 1, nbmain
+            imaou=zi(jwk3-1+imain)
+            if (imaou .ne. 0) then
+                zi(jcorrm-1+imaou)=imain
+            endif
+220     continue
     endif
 !
     call jedetr('&&RDTMAI_WORK_1')

@@ -49,10 +49,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 !
 !
 #include "jeveux.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "asterfort/dismoi.h"
-#include "blas/dscal.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -69,6 +66,9 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 #include "asterfort/mnlqd2.h"
 #include "asterfort/preres.h"
 #include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
@@ -148,8 +148,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! --- CALCUL DE LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
         call jeveuo(numdrv//'.SMOS.SMDI', 'E', ismdi)
-        call dismoi('F', 'NOM_NUME_DDL', matk, 'MATR_ASSE', iret,&
-                    numedd, iret)
+        call dismoi('NOM_NUME_DDL', matk, 'MATR_ASSE', repk=numedd)
         neq = zi(imat(1)+2)
         do 10 j = 1, ninc
 ! ---     MISE A ZERO DES VECTEURS TEMPORAIRES
@@ -205,7 +204,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ---         2/ ON RECUPERE LA VALEUR ASSOCIE A CETTE CLE
                     zr(ivinf-1+ninf)=zr(idrvj-1+i)
                 endif
-11          continue
+ 11         continue
 ! ---     3/ ON INDIQUE LE NOMBRE DE TERMES NON NULS POUR CETTE COLONNE
             zi(ininf-1+j)=ninf
 ! ---     ON STOCKE LES VALEURS (NON NULLES) DE LA MATRICE DANS LES
@@ -303,9 +302,9 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         zr(ivat2-1+ndrdv)=zr(ivinf-1+ind)
                     endif
                 endif
-12          continue
+ 12         continue
             zi(ismdi-1+j)=ndrdv
-10      continue
+ 10     continue
         call jeveuo(numdrv//'.SMOS.SMDE', 'E', ismde)
         zi(ismde-1+2)=ndrdv
 ! ---   DESTRUCTION DES CHAMPS A REMPLIR
@@ -315,7 +314,8 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call jeveuo(matdrv//'.REFA', 'E', irefa)
         zk24(irefa-1+8)=''
 ! ---   REMPLISSAGE CHAMP SMDI, SMHC ET VALE
-        call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', 2)
+        call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+                    2)
         call jeecra(jexnum(matdrv//'.VALM', 1), 'LONMAX', ndrdv, ' ')
         call jeecra(jexnum(matdrv//'.VALM', 2), 'LONMAX', ndrdv, ' ')
         call jeveuo(jexnum(matdrv//'.VALM', 1), 'E', ival1)
@@ -325,7 +325,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call dcopy(ndrdv, zr(ivat2), 1, zr(ival2), 1)
         do 30 i = 1, ndrdv
             zi4(ismhc-1+i)=zi(ismct-1+i)
-30      continue
+ 30     continue
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------
@@ -354,7 +354,8 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- FACTORISATION DE LA MATRICE
 ! ----------------------------------------------------------------------
-    call preres(' ', 'V', iret, ' ', matdrv, ibid, -9999)
+    call preres(' ', 'V', iret, ' ', matdrv,&
+                ibid, -9999)
 !
     call jedema()
 !

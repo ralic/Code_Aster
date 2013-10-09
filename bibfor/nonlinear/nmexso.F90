@@ -57,7 +57,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
 !
     character(len=15) :: sdexso
     character(len=19) :: sdexsz
-    character(len=8) :: k8bid, cnfsol
+    character(len=8) ::  cnfsol
     character(len=8) :: nomacr
     character(len=24) :: magrno, maille, nprno
     character(len=24) :: tabequ, tabfrq, tabinf, nomres
@@ -68,7 +68,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
     real(kind=8) :: pasa, pasm, pas, ainst, rinst
     integer :: iamacr, idno
     integer :: jdveis
-    integer :: ibid, iret
+    integer :: ibid
     integer :: ifreq, i1, i2, inoe, ino, ima, iddl, icmp
     character(len=24) :: uniamo, unirig, unimas, unifor
     integer :: unitea, uniter, unitem, unitef
@@ -88,10 +88,8 @@ subroutine nmexso(noma, result, sddyna, numedd)
 !
 ! --- ACCES NUMEROTATION
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
-    call dismoi('F', 'NUM_GD_SI', numedd, 'NUME_DDL', gd,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
+    call dismoi('NUM_GD_SI', numedd, 'NUME_DDL', repi=gd)
     nec = nbec(gd)
 !
 ! --- ACCES SD EXCIT_SOL
@@ -149,7 +147,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
         inoe = zi(idno+ino-1)
         ncmp = zi(aprno + (nec+2)*(inoe-1) + 2 - 1 )
         nddint = nddint+ncmp
-10  end do
+ 10 end do
 !
 ! --- TABLEAU DES NUMEROS D EQUATION ACTIFS DE L INTERFACE
 !
@@ -163,8 +161,8 @@ subroutine nmexso(noma, result, sddyna, numedd)
         do 21 icmp = 1, ncmp
             iddint = iddint+1
             zi(ieqint+iddint-1) = iddl+icmp-1
-21      continue
-20  end do
+ 21     continue
+ 20 end do
 !
 ! --- OUVERTURE DES FICHIERS
 !
@@ -209,7 +207,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
     call wkvect(tabfrq, 'V V R', nfreq, jfrq)
     do 110 ifreq = 1, nfreq
         zr(jfrq+ifreq-1) = (ifreq-1)*pas
-110  end do
+110 end do
 !
 ! --- VERIFICATIONS
 !
@@ -256,7 +254,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
             read(uniter,*) rinst
             read(uniter,1000) ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)&
             *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-120      continue
+120     continue
     endif
 !
 ! --- LECTURE MATRICE REDUITE MASSE A L'INTERFACE
@@ -268,7 +266,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
             read(unitem,*) rinst
             read(unitem,1000) ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)&
             *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-130      continue
+130     continue
     endif
 !
 ! --- LECTURE MATRICE REDUITE AMORTISSEMENT A L'INTERFACE
@@ -280,7 +278,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
             read(unitea,*) rinst
             read(unitea,1000) ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)&
             *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-140      continue
+140     continue
     endif
 !
     call jedetr(tabfrq)

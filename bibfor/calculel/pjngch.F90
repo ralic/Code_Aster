@@ -1,7 +1,6 @@
 subroutine pjngch(cham1z, cham2z, corres, base)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/chpnua.h"
 #include "asterfort/chpver.h"
@@ -17,6 +16,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
 #include "asterfort/nuachp.h"
 #include "asterfort/pronua.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cham1z, cham2z, corres, base
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     integer :: ibid, nx, jxxk1, jngi1, jngi2, ieq, nbocc, nbeq, ioc, jvale
     integer :: nb1, nb2, idec1, idec2, jlno1, jlno2
     character(len=1) :: type
-    character(len=8) ::  noma1, noma2, cnref, noma3, k8
+    character(len=8) :: noma1, noma2, cnref, noma3, k8
     character(len=16) :: corr16, method
     character(len=19) :: nuage1, nuage2, cham1, cham2
     character(len=24) :: lno1, lno2
@@ -69,19 +69,16 @@ subroutine pjngch(cham1z, cham2z, corres, base)
 !
     call chpver('F', cham1, 'NOEU', '*', ibid)
     call chpver('F', cnref, 'NOEU', '*', ibid)
-    call dismoi('F', 'NOM_MAILLA', cham1, 'CHAMP', ibid,&
-                noma3, ibid)
+    call dismoi('NOM_MAILLA', cham1, 'CHAMP', repk=noma3)
     ASSERT(noma3.eq.noma1)
-    call dismoi('F', 'NOM_MAILLA', cnref, 'CHAMP', ibid,&
-                noma3, ibid)
+    call dismoi('NOM_MAILLA', cnref, 'CHAMP', repk=noma3)
     ASSERT(noma3.eq.noma2)
 !
 !
 !     C'EST LE MAILLAGE MAILLA1 QUI IMPOSE LA DIMENSION D'ESPACE DES
 !     DEUX NUAGES :
     nx=3
-    call dismoi('F', 'Z_CST', noma1, 'MAILLAGE', ibid,&
-                k8, ibid)
+    call dismoi('Z_CST', noma1, 'MAILLAGE', repk=k8)
     if (k8 .eq. 'OUI') nx=2
 !
     call jeveuo(corr16//'.PJNG_I1', 'L', jngi1)
@@ -97,7 +94,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     if (type .eq. 'R') then
         do 10 ieq = 0, nbeq-1
             zr(jvale+ieq)=0.d0
-10      continue
+ 10     continue
     else
         ASSERT(.false.)
     endif
@@ -128,7 +125,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
             call jedetr(lno2)
             idec1=idec1+nb1
             idec2=idec2+nb2
-20      continue
+ 20     continue
 !
     else
         call chpnua(nx, cham1, ' ', nuage1)

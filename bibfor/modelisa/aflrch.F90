@@ -69,14 +69,14 @@ subroutine aflrch(lisrez, chargz)
     character(len=24) :: valk(2)
     character(len=7) :: typcha
     character(len=19) :: betaf
-    character(len=8) :: mod, nomgd, nomnoe, kbid
+    character(len=8) :: mod, nomgd, nomnoe
     character(len=8) :: noma, cmp, nomcmp(nmocl)
     character(len=9) :: nomte
     character(len=19) :: ca1, ca2
     character(len=19) :: ligrmo, ligrch
     integer :: ntypel(nmocl)
     real(kind=8) :: beta
-    integer :: i, ibid, icmp, iddl, idecal, ier, ierd, ifm, igrel
+    integer :: i, icmp, iddl, idecal, ifm, igrel
     integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
     integer :: iret, j, jnbno, jncmp1, jncmp2, jnoma, jprnm, jrlbe, jrlco
     integer :: jrlcof, jrldd, jrlla, jrlno, idnoeu, jrlnr, jrlnt, jrlpo
@@ -93,13 +93,11 @@ subroutine aflrch(lisrez, chargz)
     call infniv(ifm, niv)
 !
 !
-    call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     ligrmo=mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
     noma=zk8(jnoma)
-    call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                typcha, ier)
+    call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
 !
     if (typcha(1:4) .eq. 'MECA') then
         ligrch=charge//'.CHME.LIGRE'
@@ -182,8 +180,7 @@ subroutine aflrch(lisrez, chargz)
         nomcmp(i)=zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i)(1:7)), ntypel(i))
     end do
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                kbid, ierd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
 !
 !
     ASSERT(nbec.le.10)
@@ -204,10 +201,8 @@ subroutine aflrch(lisrez, chargz)
 !
     numel=0
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
-    call dismoi('F', 'NB_MA_SUP', ligrch, 'LIGREL', inema,&
-                kbid, ier)
-    call dismoi('F', 'NB_GREL', ligrch, 'LIGREL', igrel,&
-                kbid, ier)
+    call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi=inema)
+    call dismoi('NB_GREL', ligrch, 'LIGREL', repi=igrel)
 !
 !
     call jeveuo(lisrel//'.RLCO', 'L', jrlco)
@@ -263,7 +258,7 @@ subroutine aflrch(lisrez, chargz)
                     endif
                 enddo
             endif
-30          continue
+ 30         continue
 !
             if (numel .ne. 0) then
                 igrel=igrel+1
@@ -315,14 +310,14 @@ subroutine aflrch(lisrez, chargz)
             call nocart(ca2, -3, 1, ligrel=ligrch, nma=1,&
                         limanu=[nunewm])
         enddo
-60      continue
+ 60     continue
     end do
 !
 !
 !
 !     -- IMPRESSION DES RELATIONS REDONDANTES ET DONC SUPPRIMEES :
 !     ------------------------------------------------------------
-998  continue
+998 continue
     if ((nbsurc.gt.0) .and. (niv.ge.2)) then
 !
         call utmess('I', 'CHARGES2_34')
@@ -364,6 +359,6 @@ subroutine aflrch(lisrez, chargz)
     call jedetr(lisrel//'.RLTV')
     call jedetr(lisrel//'.RLLA')
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

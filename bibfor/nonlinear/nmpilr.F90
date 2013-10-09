@@ -19,7 +19,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -58,8 +58,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
     integer :: jfint, jfext, jdiri, jbudi, jdipi, jdfdo
     character(len=19) :: cnfext, cnfint, cndiri, cnbudi, cndipi, cndfdo
     integer :: jccid
-    integer :: ieq, neq, iret
-    character(len=8) :: k8bid
+    integer :: ieq, neq
     integer :: ifm, niv
     logical :: lcine
 !
@@ -97,8 +96,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
         call jeveuo(matass(1:19)//'.CCID', 'L', jccid)
     endif
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     residu = 0.d0
 !
 ! --- CALCUL
@@ -119,8 +117,8 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
                  &-1)- eta*zr( jdipi+ieq-1)&
                  )&
                  )
-15      continue
-10  end do
+ 15     continue
+ 10 end do
 !
     call jedema()
 end subroutine

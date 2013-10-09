@@ -44,11 +44,11 @@ subroutine cnonua(nx, chno, lno, nuage)
 ! OUT NUAGE  : SD NUAGE PRODUITE
 !     ------------------------------------------------------------------
     integer :: gd, jdesc, num, ncmpmx, iad, nec, kcomp
-    integer :: iaec, jrefe, np, ie, kcoor, jlno, i, ibid, kvale, itype
+    integer :: iaec, jrefe, np, kcoor, jlno, i, ibid, kvale, itype
     integer :: nc, iec, icmp, ianueq, iaprno, j, ino, ncmp, icompt
     integer :: jnuai, jnuax, jnuav, jnual, ival, k, ieq
     character(len=4) :: type
-    character(len=8) :: k8b, noma, nomgd
+    character(len=8) ::  noma, nomgd
     character(len=19) :: kchno, klno, knuage, nonu
     logical :: lnual, prem
 !     ------------------------------------------------------------------
@@ -72,8 +72,7 @@ subroutine cnonua(nx, chno, lno, nuage)
     call jeveuo(kchno//'.REFE', 'L', jrefe)
     noma = zk24(jrefe-1+1) (1:8)
     nonu = zk24(jrefe-1+2) (1:19)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', np,&
-                k8b, ie)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=np)
     call jeveuo(noma//'.COORDO    .VALE', 'L', kcoor)
 !
     if (klno .ne. ' ') then
@@ -83,7 +82,7 @@ subroutine cnonua(nx, chno, lno, nuage)
         call wkvect('&&CNONUA.NOEUD', 'V V I', np, jlno)
         do 10 i = 1, np
             zi(jlno+i-1) = i
-10      continue
+ 10     continue
     endif
 !
     call jelira(kchno//'.VALE', 'TYPE', cval=type)
@@ -103,10 +102,10 @@ subroutine cnonua(nx, chno, lno, nuage)
         nc = -num
         do 100 iec = 1, nec
             zi(iaec+iec-1) = zi(jdesc-1+2+iec)
-100      continue
+100     continue
         do 102 icmp = 1, ncmpmx
             if (exisdg(zi(iaec) , icmp )) zi(kcomp+icmp-1) = icmp
-102      continue
+102     continue
     else
 !
 !
@@ -122,14 +121,14 @@ subroutine cnonua(nx, chno, lno, nuage)
             if (ncmp .eq. 0) goto 110
             do 112 iec = 1, nec
                 zi(iaec+iec-1) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
-112          continue
+112         continue
             icompt = 0
             do 120 icmp = 1, ncmpmx
                 if (exisdg(zi(iaec) , icmp )) then
                     icompt = icompt + 1
                     zi(kcomp+icmp-1) = icmp
                 endif
-120          continue
+120         continue
             if (prem) then
                 nc = icompt
                 prem = .false.
@@ -139,7 +138,7 @@ subroutine cnonua(nx, chno, lno, nuage)
                     lnual = .true.
                 endif
             endif
-110      continue
+110     continue
     endif
 !
     call crenua(nuage, nomgd, np, nx, nc,&
@@ -159,7 +158,7 @@ subroutine cnonua(nx, chno, lno, nuage)
             icmp = icmp + 1
             zi(jnuai+5+icmp-1) = zi(kcomp+i-1)
         endif
-30  end do
+ 30 end do
 !
 !     --- .NUAX ---
 !
@@ -167,8 +166,8 @@ subroutine cnonua(nx, chno, lno, nuage)
     do 40 i = 1, np
         do 42 j = 1, nx
             zr(jnuax-1+nx*(i-1)+j) = zr(kcoor-1+3*(i-1)+j)
-42      continue
-40  end do
+ 42     continue
+ 40 end do
 !
 !     --- .NUAV ---
 !
@@ -196,8 +195,8 @@ subroutine cnonua(nx, chno, lno, nuage)
                         zc(jnuav+k-1) = zc(kvale-1+ival+icmp)
                     endif
                 endif
-204          continue
-202      continue
+204         continue
+202     continue
     else
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
@@ -212,7 +211,7 @@ subroutine cnonua(nx, chno, lno, nuage)
             if (ncmp .eq. 0) goto 210
             do 212 iec = 1, nec
                 zi(iaec+iec-1) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
-212          continue
+212         continue
             icompt = 0
             do 220 icmp = 1, ncmpmx
                 if (exisdg(zi(iaec) , icmp )) then
@@ -226,8 +225,8 @@ subroutine cnonua(nx, chno, lno, nuage)
                         zc(jnuav+k-1) = zc(kvale-1+ieq)
                     endif
                 endif
-220          continue
-210      continue
+220         continue
+210     continue
     endif
 !
     call jedetr('&&CNONUA.NOMCMP')

@@ -50,7 +50,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 ! -------------------------------------------------------
 !
     integer :: nbmc, nbno1, jma1, nbno2, jno2
-    integer :: n1, ier, jtrav, jpjnb
+    integer :: n1, jtrav, jpjnb
     integer :: ino2, jlisno, i, ibid, iret
     complex(kind=8) :: c16b
     character(len=8) :: noma2, k8bid, ncas, noma1
@@ -141,19 +141,18 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- EXPLOITATION DE LA SD CORRESP_2_MAILLA POUR DETERMINER
 !     LES NOEUDS A RETENIR :
 !     --------------------------------------------------------
-    call dismoi('F', 'NB_NO_MAILLA', noma2, 'MAILLAGE', nbno2,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma2, 'MAILLAGE', repi=nbno2)
     call wkvect('&&CGNOIN.LITRAV', 'V V I', nbno2, jtrav)
     call jeveuo(corres//'.PJEF_NB', 'L', jpjnb)
 !
 !
     nbno=0
-    do 20,ino2=1,nbno2
-    if (zi(jpjnb-1+ino2) .gt. 0) then
-        nbno=nbno+1
-        zi(jtrav-1+nbno)=ino2
-    endif
-    20 end do
+    do 20 ino2 = 1, nbno2
+        if (zi(jpjnb-1+ino2) .gt. 0) then
+            nbno=nbno+1
+            zi(jtrav-1+nbno)=ino2
+        endif
+ 20 end do
 !
 !
 !
@@ -163,7 +162,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
     do 30 i = 1, nbno
         zi(jlisno-1+i)=zi(jtrav-1+i)
-30  end do
+ 30 end do
 !
     call jedetr('&&CGNOIN.LITRAV')
     call jedetr(mesma1)

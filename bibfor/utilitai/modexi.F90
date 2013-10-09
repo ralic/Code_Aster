@@ -51,7 +51,7 @@ subroutine modexi(modelz, nomodz, iexi)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ialiel, ierd, iexi, igrel, iret, itypel, l
+    integer :: ialiel, iexi, igrel, iret, itypel, l
     integer :: nbgrel, nel
 !-----------------------------------------------------------------------
     call jemarq()
@@ -76,15 +76,14 @@ subroutine modexi(modelz, nomodz, iexi)
             call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel= zi(ialiel -1 +nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            call dismoi('F', 'MODELISATION', nomte, 'TYPE_ELEM', repi,&
-                        repk, ierd)
+            call dismoi('MODELISATION', nomte, 'TYPE_ELEM', repk=repk)
             nomodl=repk(1:16)
             if (nomodl(1:l) .eq. nomodz(1:l)) then
                 iexi = 1
                 goto 20
             endif
-10      continue
-20      continue
+ 10     continue
+ 20     continue
     endif
     call jedema()
 end subroutine

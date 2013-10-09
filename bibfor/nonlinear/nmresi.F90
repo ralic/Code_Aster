@@ -104,14 +104,14 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     integer :: jccid, jfint, jdiri, jfext, jvcfo, jrefe, jiner, jvcf1
     integer :: ifm, niv, nocc
     integer :: neq
-    character(len=8) :: k8bid, noddlm
+    character(len=8) ::  noddlm
     logical :: ldyna, lstat, lcine, lctcc
     character(len=19) :: profch, foiner
     character(len=19) :: commoi, depmoi
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
     integer :: jdeeq, jfnod, jbudi, jdfdo, jdipi
-    integer :: ibid, ier, ieq, iret
+    integer ::  ieq
     logical :: lrefe, linit, lcmp
     real(kind=8) :: val1, val4, val5
     real(kind=8) :: maxres
@@ -150,8 +150,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     ichar = 0
     icomp = 0
     jccid = 0
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -208,8 +207,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! --- ACCES NUMEROTATION DUALISATION DES EQUATIONS
 !
-    call dismoi('F', 'PROF_CHNO', depmoi, 'CHAM_NO', ibid,&
-                profch, ier)
+    call dismoi('PROF_CHNO', depmoi, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', jdeeq)
 !
 !

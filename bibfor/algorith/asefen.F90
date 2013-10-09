@@ -80,8 +80,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     call jemarq()
 !
     call wkvect('&&ASEFEN.REPMO', 'V V R', nbsup*neq, jrepmo)
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                noma, iret)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
     obj1 = noma//'.GROUPENO'
     obj2 = noma//'.NOMNOE'
     inorf =0
@@ -115,19 +114,19 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     if (nx .ne. 0) then
                         do 72 is = 1, nsupp(1)
                             if (nomsup(is,1) .eq. noeu) depsup(is,1) = dx
-72                      continue
+ 72                     continue
                     endif
                     if (ny .ne. 0) then
                         do 74 is = 1, nsupp(2)
                             if (nomsup(is,2) .eq. noeu) depsup(is,2) = dy
-74                      continue
+ 74                     continue
                     endif
                     if (nz .ne. 0) then
                         do 76 is = 1, nsupp(3)
                             if (nomsup(is,3) .eq. noeu) depsup(is,3) = dz
-76                      continue
+ 76                     continue
                     endif
-22              continue
+ 22             continue
                 call jedetr('&&ASEFEN.NOEUD')
 !
             else
@@ -158,21 +157,21 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                             if (nx .ne. 0) then
                                 do 82 is = 1, nsupp(1)
                                     if (nomsup(is,1) .eq. noeu) depsup( is,1) = dx
-82                              continue
+ 82                             continue
                             endif
                             if (ny .ne. 0) then
                                 do 84 is = 1, nsupp(2)
                                     if (nomsup(is,2) .eq. noeu) depsup( is,2) = dy
-84                              continue
+ 84                             continue
                             endif
                             if (nz .ne. 0) then
                                 do 86 is = 1, nsupp(3)
                                     if (nomsup(is,3) .eq. noeu) depsup( is,3) = dz
-86                              continue
+ 86                             continue
                             endif
-28                      continue
+ 28                     continue
                     endif
-26              continue
+ 26             continue
 !
                 call jedetr('&&ASEFEN.GROUP_NO')
 !
@@ -198,30 +197,30 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                             if (nomsup(is,idi) .eq. noeref) then
                                 do 94 in = 1, nsupp(idi)
                                     depsup(in,idi) = depsup(in,idi) - depsup(is,idi)
-94                              continue
+ 94                             continue
                                 goto 90
                             endif
-92                      continue
+ 92                     continue
                         ier = ier + 1
                         call utmess('E', 'SEISME_3', sk=noeref)
                         goto 9999
                     endif
-90              continue
+ 90             continue
             endif
 !
- 2      continue
+  2     continue
     else
         do 116 is = 1, nsupp(id)
             depsup(is,id) = 0.d0
-116      continue
+116     continue
     endif
 !
     cmp = nomcmp(id)
     do 11 is = 1, nbsup
         do 12 in = 1, neq
             zr(jrepmo-1+in + (is-1)*neq) = 0.d0
-12      continue
-11  end do
+ 12     continue
+ 11 end do
     do 110 is = 1, nsupp(id)
         noeu = nomsup(is,id)
         monacc = noeu//cmp
@@ -230,7 +229,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
             call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc,&
                         cbid, r8b, k8b, tordr, 1,&
                         nbtrou)
-            iordr=tordr(1)            
+            iordr=tordr(1)
             call rsexch('F', stat, nomsy, iordr, chextr,&
                         iret)
             call jeexin(chextr//'.VALE', ibid)
@@ -245,25 +244,25 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                 do 112 in = 1, neq
                     xxx = zr(jvale+in-1) * xx1
                     zr(jrepmo-1+in+(ioc-1)*neq) = zr(jrepmo-1+in+(ioc- 1)*neq ) + xxx
-112              continue
+112             continue
             else
                 do 114 in = 1, neq
                     xxx = zr(jvale+in-1) * xx1
                     recmod(1,in,id) = recmod(1,in,id) + xxx*xxx
-114              continue
+114             continue
             endif
         endif
-110  end do
+110 end do
     if (muapde) then
         do 111 ioc = 1, nintra
             do 113 in = 1, neq
                 xxx = zr(jrepmo-1+in+(ioc-1)*neq)
                 recmod(ioc,in,id) = recmod(ioc,in,id) + xxx*xxx
-113          continue
-111      continue
+113         continue
+111     continue
     endif
 !
-9999  continue
+9999 continue
 !
     call jedetr('&&ASEFEN.REPMO')
 !

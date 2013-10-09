@@ -75,14 +75,14 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !
     integer :: jnosy, jncmed, jpa, jordr, n23, iret, n21, nvcmp
     integer :: n22, nnrmed, isy, nnocha, nnocmp, nchar, jvcmp, ibid, npreci
-    integer :: vali, ncrit, innosy, jnordr, icmp, nbcmpt, gd, ier, ncmpmx, iad
+    integer :: vali, ncrit, innosy, jnordr, icmp, nbcmpt, gd, ncmpmx, iad
     integer :: ntpara, nnpara, jcmp, nparam
 !
     real(kind=8) :: prec
 !
     character(len=1) :: k1bid
     character(len=3) :: toupar, toucha
-    character(len=8) :: k8b, resmed, crit, nomgd
+    character(len=8) ::  resmed, crit, nomgd
     character(len=19) :: noch19, knum
     character(len=24) :: valk(6)
 !
@@ -127,7 +127,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
             call wkvect(nchsym, 'V V K16', nbnosy, jnosy)
             do 12 isy = 1, nbnosy
                 call jenuno(jexnum(leresu//'           .DESC', isy), zk16(jnosy-1+isy))
-12          continue
+ 12         continue
         else if (n21.gt.0 .and. toucha.eq.'NON') then
             nbnosy=0
             jnosy =1
@@ -165,7 +165,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                 nchar=lxlgut(zk16(jnosy-1+isy))
                 zk80(jncmed+isy-1)(9:8+nchar)=zk16(jnosy-1+isy)(1:&
                 nchar)
-13          continue
+ 13         continue
         endif
 !
 !       --- ON REGARDE QUELS SONT LES NOM_CMP A IMPRIMER:
@@ -208,8 +208,8 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                         vali = zi(jordr+jnordr)
                         call utmess('A', 'POSTRELE_41', sk=valk(1), si=vali)
                     endif
-14              continue
-16          continue
+ 14             continue
+ 16         continue
             if (afaire) then
                 do 15 icmp = 0, nvcmp-1
                     nbcmpt = 0
@@ -217,8 +217,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                         call rsexch(' ', leresu, zk16(jnosy+innosy), zi( jordr), noch19,&
                                     iret)
                         if (iret .eq. 0) then
-                            call dismoi('F', 'NUM_GD', noch19, 'CHAMP', gd,&
-                                        k8b, ier)
+                            call dismoi('NUM_GD', noch19, 'CHAMP', repi=gd)
                             call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
                             if (nomgd .eq. 'VARI_R') then
 !                   TRAITEMENT PARTICULIER POUR LA GRANDEUR VARI_R
@@ -229,13 +228,13 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                             call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
                             call irvcmp(ncmpmx, zk8(iad), zk8(jvcmp+ icmp), nbcmpt)
                         endif
-17                  continue
+ 17                 continue
                     if (nbcmpt .eq. 0) then
                         valk (1) = zk8(jvcmp+icmp)
                         valk (2) = k1bid
                         call utmess('A', 'PREPOST5_61', nk=2, valk=valk)
                     endif
-15              continue
+ 15             continue
             endif
         endif
 !
@@ -271,7 +270,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !     - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
     call irparb(leresu, nparam, zk16(jpa), nnopar, nbpara)
 !
-9999  continue
+9999 continue
     call jedetr('&&IRCHOR.VERI_NOM_CMP')
     call jedetr('&&IRCHOR.NOMUTI_PARA')
 !

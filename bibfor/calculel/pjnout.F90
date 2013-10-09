@@ -1,7 +1,6 @@
 subroutine pjnout(modele)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -9,6 +8,7 @@ subroutine pjnout(modele)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: modele
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -37,28 +37,25 @@ subroutine pjnout(modele)
 !     NOEUD_UTIL(INO) = 0 =>: SINON
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: k8b, noma
-    integer :: nbnoeu, ibid, jnout, ima, nbno, j, jmaill, nbmail
+    character(len=8) ::  noma
+    integer :: nbnoeu, jnout, ima, nbno, j, jmaill, nbmail
 !     ------------------------------------------------------------------
 !
 !     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
     integer :: iconx1, iconx2
-#define zzconx(imail,j)   zi(iconx1-1+zi(iconx2+imail-1)+j-1)
-#define zznbne(imail)   zi(iconx2+imail) - zi(iconx2+imail-1)
+#define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
+#define zznbne(imail) zi(iconx2+imail) - zi(iconx2+imail-1)
 !     ------------------------------------------------------------------
 !
 !
     call jemarq()
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ibid)
-    call dismoi('F', 'NB_NO_MAILLA', modele, 'MODELE', nbnoeu,&
-                k8b, ibid)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_NO_MAILLA', modele, 'MODELE', repi=nbnoeu)
     call jedetr(modele//'.NOEUD_UTIL')
     call wkvect(modele//'.NOEUD_UTIL', 'V V I', nbnoeu, jnout)
 !
-    call dismoi('F', 'NB_MA_MAILLA', modele, 'MODELE', nbmail,&
-                k8b, ibid)
+    call dismoi('NB_MA_MAILLA', modele, 'MODELE', repi=nbmail)
     if (nbmail .eq. 0) goto 290
 !
     call jeveuo(noma//'.CONNEX', 'L', iconx1)
@@ -70,9 +67,9 @@ subroutine pjnout(modele)
         nbno = zznbne(ima)
         do 270 j = 1, nbno
             zi(jnout-1+zzconx(ima,j)) = 1
-270      continue
-280  end do
-290  continue
+270     continue
+280 end do
+290 continue
 !
     call jedema()
 end subroutine

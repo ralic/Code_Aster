@@ -51,7 +51,7 @@ subroutine nmmuap(sddyna)
     character(len=14) :: numddl
     character(len=24) :: deeq, matric
     integer :: nbmd, neq, na, nd, nbexci, nf, nv
-    integer :: ibid, ier, iret, i
+    integer ::  i
     integer :: iddeeq
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
     integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
@@ -63,16 +63,12 @@ subroutine nmmuap(sddyna)
 ! --- LECTURE INFO. MATRICE MODES STATIQUES
 !
     call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbmd)
-    call dismoi('F', 'REF_RIGI_PREM', modsta, 'RESU_DYNA', ibid,&
-                matric, iret)
-    call dismoi('F', 'NOM_MAILLA', matric, 'MATR_ASSE', ibid,&
-                mailla, ier)
-    call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                numddl, iret)
+    call dismoi('REF_RIGI_PREM', modsta, 'RESU_DYNA', repk=matric)
+    call dismoi('NOM_MAILLA', matric, 'MATR_ASSE', repk=mailla)
+    call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
     deeq = numddl//'.NUME.DEEQ'
     call jeveuo(deeq, 'L', iddeeq)
-    call dismoi('F', 'NB_EQUA', matric, 'MATR_ASSE', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', matric, 'MATR_ASSE', repi=neq)
 !
 ! --- LECTURE EFFORTS MULTI-APPUIS
 !
@@ -125,7 +121,7 @@ subroutine nmmuap(sddyna)
 !
             call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(i-1)*neq))
         endif
-10  continue
+ 10 continue
 !
     call jedema()
 end subroutine

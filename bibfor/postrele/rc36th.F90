@@ -50,7 +50,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbreth, nbcmp, iths, ith, iret, n1, n2, iocc, ierd, ino, iad, in
+    integer :: nbreth, nbcmp, iths, ith, iret, n1, n2, iocc, ino, iad, in
     integer :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu, jcesd, jcesl
     integer :: jcesv, nbpt, decal, i, ipt, jconx1, jconx2, icmp, it1, vali(4)
     integer :: jinst, jther, jmoye, jabsc, nbabsc, nbinst, ibid
@@ -111,8 +111,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     call jeveuo(chams0//'.CESL', 'E', jcesl)
     call jeveuo(chams0//'.CESV', 'E', jcesv)
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat,&
-                k8b, ierd)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !

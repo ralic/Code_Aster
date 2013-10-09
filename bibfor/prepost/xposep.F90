@@ -67,11 +67,11 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !       LOGRMA : LONGUEUR DES NOUVEAUX GROUP_MA
 !       LISTGR : LISTE DES GROUPES CONTENANT CHAQUE MAILLE
 !
-    integer :: ibid, nbma, isepma, jcesd, jcesl, iad, ima, jcesv
+    integer ::  nbma, isepma, jcesd, jcesl, iad, ima, jcesv
     integer :: nbman, nbmac, nbmax, ngr, igr, j1, n1, nbelt, iel, nsetot
     integer :: imac, imax, jmac, jmax, nnntot, ncotot, nse, n, nbgma
     integer :: jtmdim, ndime, jtypm, iret1, jlogma, jtma
-    character(len=8) :: k8b, massmo, typma
+    character(len=8) ::  massmo, typma
     character(len=19) :: ces, ligrel
     character(len=24) :: sepmai, liel
     parameter     (massmo = 'NON')
@@ -79,8 +79,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !
     call jemarq()
 !
-    call dismoi('F', 'NB_MA_MAILLA', malini, 'MAILLAGE', nbma,&
-                k8b, ibid)
+    call dismoi('NB_MA_MAILLA', malini, 'MAILLAGE', repi=nbma)
     call jeveuo(malini//'.TYPMAIL', 'L', jtma)
 !
 !     TABLEAU D'ENTIERS DIMENSIONNÉ AU NOMBRE DE MAILLE DU MAILLAGE
@@ -107,8 +106,8 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtma-1+ima)), typma)
             if (typma .eq. 'POI1') goto 100
             zi(isepma-1+ima)=-1
-110      continue
-100  end do
+110     continue
+100 end do
 !
     ces = '&&XPOSEP.TOPOSE.LON'
     call celces(mo//'.TOPOSE.LON', 'V', ces)
@@ -188,7 +187,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !
         endif
 !
-200  end do
+200 end do
 !
 !     NOMBRE DE MAILLES NON TRAITEES
     nbman = nbma - nbmac - nbmax
@@ -211,7 +210,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             imax = imax + 1
             zi(jmax-1+imax) = ima
         endif
-300  end do
+300 end do
 !
     call jedetr(sepmai)
 !

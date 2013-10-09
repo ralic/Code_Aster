@@ -49,10 +49,10 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
 !
 !
-    character(len=8) :: k8bid, mod
+    character(len=8) ::  mod
     character(len=24) :: nomo, phen, valk(2)
     character(len=19) :: ligrmo
-    integer :: ibid, ier
+    integer :: ibid
     integer :: jnoma, jnomo
 !
 ! ----------------------------------------------------------------------
@@ -71,8 +71,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
 ! --- COHERENCE DU MODELE AVEC LA CHARGE
 !
-    call dismoi('F', 'PHENOMENE', mod, 'MODELE', ibid,&
-                phen, ier)
+    call dismoi('PHENOMENE', mod, 'MODELE', repk=phen)
     valk(1) = oper
     valk(2) = phen
     if (oper(11:14) .eq. 'THER' .and. phen .ne. 'THERMIQUE') then
@@ -85,8 +84,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
 ! --- RECUPERATION DE LA DIMENSION REELLE DU PROBLEME
 !
-    call dismoi('F', 'DIM_GEOM', mod, 'MODELE', ndim,&
-                k8bid, ier)
+    call dismoi('DIM_GEOM', mod, 'MODELE', repi=ndim)
 !
 ! --- CREATION DE .NOMO
 !

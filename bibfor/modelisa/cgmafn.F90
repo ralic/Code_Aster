@@ -79,7 +79,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: iatyma, ibid, idcoor, idlima, idnoeu, ier, ima
+    integer :: iatyma, ibid, idcoor, idlima, idnoeu, ima
     integer :: ino1, ino2, ino3, iocc, ityp, jtyp, nangle
     integer :: nb, nbang, nbma, nbmai, nbno, nbo, nboui
     integer :: ndim, ndim1, nv, nvect
@@ -117,8 +117,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
-    call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ndim,&
-                k8bid, ier)
+    call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8bid)
     if (k8bid(1:3) .eq. 'OUI') then
         ndim = 2
     else
@@ -238,8 +237,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmai,&
-                k8bid, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmai)
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES MAILLES DE SURFACE DE
 ! --- NORMALE PARALLELE AU VECTEUR VECNOR :
@@ -355,7 +353,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             nbma = nbma + 1
             zi(idlima+nbma-1) = ima
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

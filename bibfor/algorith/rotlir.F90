@@ -55,7 +55,6 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/bmnoin.h"
 #include "asterfort/codent.h"
@@ -74,6 +73,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 #include "asterfort/rotati.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
 !
 !
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
@@ -103,8 +103,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
     call jemarq()
 !
 !-- RECUPERATION DU NOMBRE D'ENTIER CODES POUR LES DDL
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                kbid, ibid)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
 !
 !--------------------------------------------------------C
 !--                                                    --C
@@ -115,8 +114,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- NOM DE LA BASE MODALE ET NOMBRE DE MODES
     call mgutdm(nomres, sst1, ibid, 'NOM_BASE_MODALE', ibid,&
                 bamo1)
-    call dismoi('F', 'NB_MODES_TOT', bamo1, 'RESULTAT', nbeq1,&
-                kbid, ibid)
+    call dismoi('NB_MODES_TOT', bamo1, 'RESULTAT', repi=nbeq1)
 !
 !-- INTERFACE AMONT DE LA SOUS-STRUCTURE
     call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid,&
@@ -156,11 +154,11 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                     if (zi(l1+i1-1) .eq. zi(llint1+j1-1)) then
                         zi(n1+i1-1)=j1
                     endif
-20              continue
-10          continue
+ 20             continue
+ 10         continue
             do 30 i1 = 1, nbno1
                 zi(lnoeu1+i1-1)=zi(m1+zi(n1+i1-1)-1)
-30          continue
+ 30         continue
             call jedetr('&&VECTEUR_NOEUDS_TEMP')
             call jedetr('&&VECTEUR_INDICES_TEMP')
         endif
@@ -191,14 +189,14 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
         ipos1=zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec))
         call isdeco(zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec)+2), deco, nbcmpm)
         ipos2=0
-        do 50,k1=1,6
-        if (iret .eq. 0) then
-            zi(lindi1+(i1-1)*6+k1-1)=(ipos1+ipos2)*deco(k1)
-        endif
-        ipos2=ipos2+deco(k1)
-        ddla1=ddla1+deco(k1)
-50      continue
-40  end do
+        do 50 k1 = 1, 6
+            if (iret .eq. 0) then
+                zi(lindi1+(i1-1)*6+k1-1)=(ipos1+ipos2)*deco(k1)
+            endif
+            ipos2=ipos2+deco(k1)
+            ddla1=ddla1+deco(k1)
+ 50     continue
+ 40 end do
 !
 !-- ALLOCATION DE LA PLACE POUR LES MATRICES TEMPORAIRES
     maint1='&&MATR_TEMP_MO_INT1'
@@ -229,7 +227,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
         if (ddla1 .eq. nbddl1) then
             do 260 j1 = 1, ddla1
                 zr(lmain1+(j1-1)*(ddla1+1))=1.0d0
-260          continue
+260         continue
         endif
         if (2*ddla1 .eq. nbddl1) then
             l1=0
@@ -241,7 +239,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                     m1=m1+6
                     l1=0
                 endif
-270          continue
+270         continue
         endif
         if ((ddla1-nbddl1)*(2*ddla1-nbddl1) .ne. 0) then
             write(6,*)'SEULS LES ELEMENTS PORTANT (DX,DY,DZ) OU ',&
@@ -262,7 +260,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
         call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', leuler)
         do 75 i1 = 1, 3
             euler(i1)=-zr(leuler+i1-1)
-75      continue
+ 75     continue
 !
         call rotati(euler, rota)
 !        CALL WKVECT('&&ROTLIR.MATR_ROTATION','V V R',
@@ -282,7 +280,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             zr(ibid+(j1-1)*3+1)=rota(2,l1)
             zr(ibid+(j1-1)*3+2)=rota(3,l1)
 !
-280      continue
+280     continue
 !
 !
 !
@@ -297,7 +295,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
         call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', leuler)
         do 65 i1 = 1, 3
             euler(i1)=zr(leuler+i1-1)
-65      continue
+ 65     continue
         call rotati(euler, rota)
 !
 !-- ALLOCATION DE LA PLACE POUR LES MATRICES TEMPORAIRES
@@ -328,7 +326,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                     else
                         zr(lresmo+k1-1)=0.d0
                     endif
-100              continue
+100             continue
 !
 !-- ROTATION DU VECTEUR RESTRICTION
                 do 110 k1 = 1, 6
@@ -337,8 +335,8 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                     zr(lmain1+(i1-1)*nbddl1+(j1-1)*6+k1-1)= rota(l1,1)&
                     *zr(lresmo+m1)+ rota(l1,2)*zr(lresmo+m1+1)+&
                     rota(l1,3)*zr(lresmo+m1+2)
-110              continue
-90          continue
+110             continue
+ 90         continue
 !
 !-- ON ANNULE BRUTALEMENT LES DEPLACEMENTS DES MODES
 !--   DONT ON PENSE QUE L'INTERFACE EST FIXE
@@ -350,10 +348,10 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             if (sqrt(norme)/length .lt. 100.d0*r8prem()*nortot) then
                 do 101 k1 = 1, nbddl1
                     zr(lmain1+(i1-1)*nbddl1+k1-1)=0.d0
-101              continue
+101             continue
             endif
 !
-80      continue
+ 80     continue
 !
     else
 !-- POUR EVITER DES CALCULS
@@ -374,8 +372,8 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                 i1-1)
                 ibid=ibid+1
             endif
-190      continue
-180  end do
+190     continue
+180 end do
 !
 !
 !
@@ -386,7 +384,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !--     --C
 !---------C
 !
-9999  continue
+9999 continue
     call jedetr(restmo)
     call jedema()
 end subroutine

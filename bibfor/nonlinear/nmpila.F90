@@ -65,8 +65,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
     integer :: i, j, nrac
     real(kind=8) :: r0, d0, r1, d1, r2, dtau2, rac(2)
     integer :: jdep0, jdep1, jdepde, jcoef, jcoee
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     integer :: ifm, niv
     character(len=19) :: chapil, chapic
 !
@@ -88,8 +87,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
     r0 = - dtau2
     r1 = 0.d0
     r2 = 0.d0
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ACCES OBJETS JEVEUX
 !
@@ -120,18 +118,18 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
                              &r(jdepde+j-1)+zr( jdep0+j-1))
                         d1 = d1 + zr(jcoef+i-1)*zr(jdep1+i-1)+ zr(jcoef+j-1)*zr(jdep1+j-1)
                     endif
-30              continue
+ 30             continue
                 r0 = r0 + d0**2
                 r1 = r1 + d1*d0
                 r2 = r2 + d1**2
             endif
-20      continue
+ 20     continue
     else
         do 10 i = 1, neq
             r0 = r0 + zr(jcoef+i-1) * (zr(jdepde+i-1)+zr(jdep0+i-1))** 2
             r1 = r1 + zr(jcoef+i-1) * (zr(jdepde+i-1)+zr(jdep0+i-1))* zr(jdep1+i-1)
             r2 = r2 + zr(jcoef+i-1) * zr(jdep1+i-1) * zr(jdep1+i-1)
-10      continue
+ 10     continue
     endif
 !
     r1 = 2.d0*r1

@@ -110,7 +110,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     integer :: iipg, jceld1, jcelk1, moloc1, ncmpmx
     parameter(mxcmp=100)
     integer :: nuddl(mxcmp), mxvari, iel, ncmp, jnocmp, jcorr1
-    character(len=8) :: ma2, kbid, nomg1, nomg2, elrefa, fapg
+    character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
     character(len=16) :: nomte
     character(len=16) :: optio, param
     character(len=19) :: ligrel, ch1, ch2s, ch2, prchno, ch1b
@@ -127,8 +127,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !
 !
     ch1b=ch1
-    call dismoi('F', 'NOM_GD', ch1b, 'CHAMP', ibid,&
-                nomg1, ibid)
+    call dismoi('NOM_GD', ch1b, 'CHAMP', repk=nomg1)
     if (nomg1(5:6) .ne. '_R') then
         call utmess('F', 'CALCULEL2_39')
     endif
@@ -186,15 +185,14 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     else
 !       -- POUR VARI_R :
         ASSERT(nomg2.eq.'VAR2_R')
-        call dismoi('F', 'NB_CMP_MAX', nomg2, 'GRANDEUR', ncmpmx,&
-                    kbid, ibid)
+        call dismoi('NB_CMP_MAX', nomg2, 'GRANDEUR', repi=ncmpmx)
         ASSERT(mxvari.le.ncmpmx)
         ncmp=mxvari
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg2), 'L', jnocmp)
         call wkvect('&&ECLPGC.CORR1', 'V V I', ncmp, jcorr1)
-        do 77,k=1,ncmp
-        zi(jcorr1-1+k)=k
-77      continue
+        do 77 k = 1, ncmp
+            zi(jcorr1-1+k)=k
+ 77     continue
     endif
     ASSERT(ncmp.le.mxcmp)
 !
@@ -220,94 +218,94 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
     ima=0
     nbgr=nbgrel(ligrel)
-    do 80,igr=1,nbgr
-    moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
-    if (moloc1 .eq. 0) goto 80
+    do 80 igr = 1, nbgr
+        moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
+        if (moloc1 .eq. 0) goto 80
 !
-    if (.not.lvari) ASSERT(mxvari.eq.1)
+        if (.not.lvari) ASSERT(mxvari.eq.1)
 !
-    call jeveuo(jexnum('&CATA.TE.MODELOC', moloc1), 'L', iamol1)
-    ASSERT(zi(iamol1-1+1).eq.3)
-    nbpg=zi(iamol1-1+4)
+        call jeveuo(jexnum('&CATA.TE.MODELOC', moloc1), 'L', iamol1)
+        ASSERT(zi(iamol1-1+1).eq.3)
+        nbpg=zi(iamol1-1+4)
 !
-    numa=numail(igr,1)
-    elrefa=zk16(jnofpg-1+numa)(1:8)
-    fapg=zk16(jnofpg-1+numa)(9:16)
-    if (fapg .eq. ' ') goto 80
+        numa=numail(igr,1)
+        elrefa=zk16(jnofpg-1+numa)(1:8)
+        fapg=zk16(jnofpg-1+numa)(9:16)
+        if (fapg .eq. ' ') goto 80
 !
 !           -- ON VERIFIE QUE C'EST UN CHAMP "ELGA/IDEN" :
 !           ----------------------------------------------
-    ASSERT(.not.((nbpg.lt.0).or.(nbpg.gt.10000)))
+        ASSERT(.not.((nbpg.lt.0).or.(nbpg.gt.10000)))
 !
 !           -- ON ECLATE LE TYPE_ELEM :
 !           ---------------------------
-    te=typele(ligrel,igr)
-    call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-    call eclaty(nomte, elrefa, fapg, npg1, npoini,&
-                nterm1, nsomm1, csomm1, tyma, nbno2,&
-                connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
-                nse1, corsel)
-    if (npg1 .ne. 0) then
-        if (nbpg .ne. npg1) then
-            valk(1)=nomte
-            call utmess('F', 'CALCULEL2_42', sk=valk(1))
-        endif
-    else
+        te=typele(ligrel,igr)
+        call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
+        call eclaty(nomte, elrefa, fapg, npg1, npoini,&
+                    nterm1, nsomm1, csomm1, tyma, nbno2,&
+                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+                    nse1, corsel)
+        if (npg1 .ne. 0) then
+            if (nbpg .ne. npg1) then
+                valk(1)=nomte
+                call utmess('F', 'CALCULEL2_42', sk=valk(1))
+            endif
+        else
 !            -- ON IGNORE LES AUTRES ELEMENTS :
-        ASSERT(nse1.eq.0)
-        goto 80
+            ASSERT(nse1.eq.0)
+            goto 80
 !
-    endif
-    nbelgr=nbelem(ligrel,igr)
+        endif
+        nbelgr=nbelem(ligrel,igr)
 !
 !            -- QUELLES SONT LES CMPS PORTEES PAR LES POINTS DE GAUSS ?
 !            ----------------------------------------------------------
-    if (lvari) then
-        nddl=mxvari
-        do 20,k=1,nddl
-        nuddl(k)=k
-20      continue
-    else
-        nddl=0
-        do 30,k=1,ncmpmx
-        if (exisdg(zi(iamol1-1+4+1),k)) then
-            nddl=nddl+1
-            nuddl(nddl)=zi(jcorr1-1+k)
+        if (lvari) then
+            nddl=mxvari
+            do 20 k = 1, nddl
+                nuddl(k)=k
+ 20         continue
+        else
+            nddl=0
+            do 30 k = 1, ncmpmx
+                if (exisdg(zi(iamol1-1+4+1),k)) then
+                    nddl=nddl+1
+                    nuddl(nddl)=zi(jcorr1-1+k)
+                endif
+ 30         continue
         endif
-30      continue
-    endif
 !
 !
 !          -- BOUCLE SUR TOUS LES POINTS DE GAUSS DU GREL :
 !          ------------------------------------------------
-    do 70,iel=1,nbelgr
-    if (lvari) nddl=zi(jceld1-1+zi(jceld1-1+4+igr)+4+ 4*(iel- 1)+2)
+        do 70 iel = 1, nbelgr
+            if (lvari) nddl=zi(jceld1-1+zi(jceld1-1+4+igr)+4+ 4*(iel- 1)+2)
 !
-    do 60,kse=1,nse1
+            do 60 kse = 1, nse1
 !            -- AU POINT DE GAUSS IIPG CORRESPOND LA MAILLE NUMERO IMA
 !               DANS MA2.
-    iipg=corsel(kse)
-    ima=ima+1
+                iipg=corsel(kse)
+                ima=ima+1
 !
-    nbno=nbnoma(ima)
-    if (nbno .gt. 27) then
-        call utmess('F', 'CALCULEL2_43')
-    endif
-    do 50,ino=1,nbno
-    inogl=numglm(ima,ino)
-    do 40,iddl=1,nddl
-    ideca2=ncmp*(inogl-1)+nuddl(iddl)
-    jval2=jcnsv2-1+ideca2
-    zl(jcnsl2-1+ideca2)=.true.
-    adiel=zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-&
+                nbno=nbnoma(ima)
+                if (nbno .gt. 27) then
+                    call utmess('F', 'CALCULEL2_43')
+                endif
+                do 50 ino = 1, nbno
+                    inogl=numglm(ima,ino)
+                    do 40 iddl = 1, nddl
+                        ideca2=ncmp*(inogl-1)+nuddl(iddl)
+                        jval2=jcnsv2-1+ideca2
+                        zl(jcnsl2-1+ideca2)=.true.
+                        adiel=zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-&
                         1)+4)
-    zr(jval2)=zr(jcelv1-1+adiel-1+nddl*(iipg-1)+&
+                        zr(jval2)=zr(jcelv1-1+adiel-1+nddl*(iipg-1)+&
                         iddl)
-40  continue
-50  continue
-60  continue
-70  continue
-    80 end do
+ 40                 continue
+ 50             continue
+ 60         continue
+ 70     continue
+ 80 end do
 !
 !     -- ON ESSAYE DE FAIRE UN PEU DE PLACE EN MEMOIRE :
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B1')
@@ -331,7 +329,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jedetr('&&ECLPGC.CORR2')
 !
 !
-90  continue
+ 90 continue
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B1')
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B2')
     call jedema()

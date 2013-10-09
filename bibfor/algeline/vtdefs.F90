@@ -52,18 +52,15 @@ subroutine vtdefs(chpout, chpin, base, typc)
     character(len=*) :: chpout, chpin, base, typc
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ibid
     character(len=4) :: tych
     character(len=19) :: ch19, arg1, arg2
 !
 !-----------------------------------------------------------------------
-    integer :: ier
 !-----------------------------------------------------------------------
     call jemarq()
     ch19 = chpin
 !
-    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid,&
-                tych, ier)
+    call dismoi('TYPE_CHAMP', ch19, 'CHAMP', repk=tych)
 !
     arg1=chpout
     arg2=chpin

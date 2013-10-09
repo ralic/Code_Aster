@@ -50,7 +50,7 @@ subroutine cesver(cesz)
 !
 !     ------------------------------------------------------------------
     integer :: jcesk, jcesd, jcesv, jcesl, jcesc, iad
-    integer :: nbma, ibid, ima, ncmp, ipt, isp, nbpt, icmp, ima1
+    integer :: nbma, ima, ncmp, ipt, isp, nbpt, icmp, ima1
     character(len=24) :: valk(3)
     character(len=8) :: ma, nomgd, nomma, typces
     character(len=3) :: tsca
@@ -85,8 +85,7 @@ subroutine cesver(cesz)
 !     -- ON NE TRAITE QUE LES CHAMPS R OU C :
 !        POUR LES CHAMPS COMPLEXES, ON NE S'INTERESSE QU'A LA
 !        PARTIE REELLE.
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .eq. 'R' .or. tsca .eq. 'C') then
     else
         goto 9999
@@ -96,61 +95,61 @@ subroutine cesver(cesz)
 !
 !     1- PARCOURS DES VALEURS DU CHAMP :
 !     ----------------------------------
-    do 80,icmp = 1,ncmp
-    rmi2=1.d200
-    rma2=-1.d200
-    rdispx=0.d0
-    do 70,ima = 1,nbma
-    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-    lexima=.false.
+    do 80 icmp = 1, ncmp
+        rmi2=1.d200
+        rma2=-1.d200
+        rdispx=0.d0
+        do 70 ima = 1, nbma
+            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+            lexima=.false.
 !         -- ON NE REGARDE QUE LE 1ER SOUS-POINT :
-    do 50,isp = 1,1
-    rmi1=1.d200
-    rma1=-1.d200
-    do 60,ipt = 1,nbpt
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, icmp, iad)
-    if (iad .le. 0) goto 60
-    lexima=.true.
+            do 50 isp = 1, 1
+                rmi1=1.d200
+                rma1=-1.d200
+                do 60 ipt = 1, nbpt
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, icmp, iad)
+                    if (iad .le. 0) goto 60
+                    lexima=.true.
 !
-    if (tsca .eq. 'R') then
-        r1=zr(jcesv-1+iad)
-    else if (tsca.eq.'C') then
-        r1=dble(zc(jcesv-1+iad))
-    endif
-    rmi1=min(rmi1,r1)
-    rma1=max(rma1,r1)
-    rmi2=min(rmi2,r1)
-    rma2=max(rma2,r1)
-60  continue
-    if (lexima) then
-        rdisp=rma1-rmi1
-    else
-        rdisp=0.d0
-    endif
-    if (rdisp .gt. rdispx) then
-        rdispx=rdisp
-        ima1=ima
-    endif
-50  continue
-70  continue
+                    if (tsca .eq. 'R') then
+                        r1=zr(jcesv-1+iad)
+                    else if (tsca.eq.'C') then
+                        r1=dble(zc(jcesv-1+iad))
+                    endif
+                    rmi1=min(rmi1,r1)
+                    rma1=max(rma1,r1)
+                    rmi2=min(rmi2,r1)
+                    rma2=max(rma2,r1)
+ 60             continue
+                if (lexima) then
+                    rdisp=rma1-rmi1
+                else
+                    rdisp=0.d0
+                endif
+                if (rdisp .gt. rdispx) then
+                    rdispx=rdisp
+                    ima1=ima
+                endif
+ 50         continue
+ 70     continue
 !
-    rmax=max(abs(rmi2),abs(rma2))
-    if (rdispx .gt. 0.1d0*rmax) then
-        valr(1)=rdispx
-        valr(2)=rmax
-        valr(3)=100.d0*rdispx/rmax
-        call jenuno(jexnum(ma//'.NOMMAI', ima1), nomma)
-        valk(1)=nomma
-        valk(2)=zk8(jcesc-1+icmp)
-        valk(3)=nomgd
-        call utmess('A', 'CALCULEL_26', nk=3, valk=valk, nr=3,&
-                    valr=valr)
-    endif
+        rmax=max(abs(rmi2),abs(rma2))
+        if (rdispx .gt. 0.1d0*rmax) then
+            valr(1)=rdispx
+            valr(2)=rmax
+            valr(3)=100.d0*rdispx/rmax
+            call jenuno(jexnum(ma//'.NOMMAI', ima1), nomma)
+            valk(1)=nomma
+            valk(2)=zk8(jcesc-1+icmp)
+            valk(3)=nomgd
+            call utmess('A', 'CALCULEL_26', nk=3, valk=valk, nr=3,&
+                        valr=valr)
+        endif
 !
-    80 end do
+ 80 end do
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

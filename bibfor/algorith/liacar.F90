@@ -63,11 +63,11 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    integer :: nbcmpm, ldlid, ordo, ntail, nbec, iret, ibid, llrot, ldprof, k1
+    integer :: nbcmpm, ldlid, ordo, ntail, nbec, ibid, llrot, ldprof, k1
     integer :: k2, i, j, kk, l, k, nbnoe, ii, ldprli, icomp, nblig, nbcol
     parameter    (nbcmpm=10)
     integer :: ideco(nbcmpm), idecn(nbcmpm), icar(3), idecw(nbcmpm)
-    integer :: idecw2(nbcmpm), ier
+    integer :: idecw2(nbcmpm)
     character(len=8) :: nomres, sst, intf, kbid, nommcl, basmod, nomg
     character(len=24) :: fplio, fplin, famli
     real(kind=8) :: rot(3), matrot(nbcmpm, nbcmpm), zero, epsi
@@ -85,8 +85,7 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                kbid, iret)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -204,8 +203,7 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
     nblig=icomp
 !
     icar(1)=nblig
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbcol,&
-                kbid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbcol)
     icar(2)=nbcol
 !
     call jedema()

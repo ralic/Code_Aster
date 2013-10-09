@@ -101,7 +101,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, iadesc, iaec, ianueq, iaprno, iarefe
-    integer :: iavale, ibid, ier, ino, iret, itype, jcoor
+    integer :: iavale, ibid, ino, iret, itype, jcoor
     integer :: jncmp, jno, jnu, jtitr, nbcmpt
     integer :: nbno, nbnot2, nbtitr, ncmpmx, ndim, nec, num
 !
@@ -171,8 +171,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     endif
 !
 !     --- NOMBRE DE NOEUDS DU MAILLAGE: NBNO
-    call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbno,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
 !
 !     --- CREATION LISTES DES NOMS ET DES NUMEROS DES NOEUDS A IMPRIMER
     call wkvect('&&IRDEPL.NOMNOE', 'V V K8', nbno, jno)
@@ -184,7 +183,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
             call jenuno(jexnum(nomma//'.NOMNOE', ino), zk8(jno-1+ino))
             zi(jnu-1+ino) = ino
             nbnot2= nbno
-11      continue
+ 11     continue
 !
     else
 !       - IL Y A EU SELECTION SUR DES ENTITES TOPOLOGIQUES => ON NE
@@ -193,12 +192,11 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         do 12 ino = 1, nbnot
             zi(jnu-1+ino) = numnoe(ino)
             call jenuno(jexnum(nomma//'.NOMNOE', numnoe(ino)), zk8(jno- 1+ino))
-12      continue
+ 12     continue
         nbnot2= nbnot
     endif
 ! --- RECHERCHE DES COORDONNEES ET DE LA DIMENSION -----
-    call dismoi('F', 'DIM_GEOM_B', nomma, 'MAILLAGE', ndim,&
-                cbid, ier)
+    call dismoi('DIM_GEOM_B', nomma, 'MAILLAGE', repi=ndim)
     call jeveuo(nomma//'.COORDO    .VALE', 'L', jcoor)
 !
     if (form .eq. 'RESULTAT') then
@@ -248,11 +246,11 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
             if (partie .eq. 'REEL') then
                 do 10 i = 1, nuti
                     zr(jvale-1+i)=dble(zc(iavale-1+i))
-10              continue
+ 10             continue
             else if (partie.eq.'IMAG') then
                 do 20 i = 1, nuti
                     zr(jvale-1+i)=dimag(zc(iavale-1+i))
-20              continue
+ 20             continue
             else
                 call utmess('F', 'PREPOST2_4')
             endif
@@ -302,7 +300,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !
     endif
     goto 9998
-9997  continue
+9997 continue
     lgch16=lxlgut(nosy16)
     if (.not.lresu) then
         valk(1) = nosy16(1:lgch16)
@@ -316,12 +314,12 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         valk(3) = nomgd
         call utmess('A', 'PREPOST2_41', nk=3, valk=valk)
     endif
-9998  continue
+9998 continue
     call jedetr('&&IRDEPL.ENT_COD')
     call jedetr('&&IRDEPL.NUM_CMP')
     call jedetr('&&IRDEPL.NOMNOE')
     call jedetr('&&IRDEPL.NUMNOE')
     call jedetr('&&IRDEPL.VALE')
-9999  continue
+9999 continue
     call jedema()
 end subroutine

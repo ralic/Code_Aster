@@ -95,8 +95,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
         call copisd('MATR_ASSE', 'V', nomrai(1:19), rai19)
         call jeveuo(jexnum(rai19//'.VALM', 1), 'E', ivalr)
 !
-        call dismoi('F', 'NOM_NUME_DDL', nomrai, 'MATR_ASSE', ibid,&
-                    numedd, iret)
+        call dismoi('NOM_NUME_DDL', nomrai, 'MATR_ASSE', repk=numedd)
         call jeveuo(numedd(1:14)//'.SMOS.SMHC', 'L', ihcol)
         call jeveuo(numedd(1:14)//'.SMOS.SMDI', 'L', iadia)
         call jeveuo(numedd(1:14)//'.NUME.DELG', 'L', idelg)

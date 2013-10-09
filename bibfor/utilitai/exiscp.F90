@@ -67,10 +67,10 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 !
     integer :: jnom, jnoma, jprnm, jexis
-    integer :: i, ier, icmp, ibid, ino
+    integer :: i, icmp, ino
     integer :: nbcmp, nmocl, nbec
     parameter    (nmocl=300)
-    character(len=8) :: nomddl(nmocl), k8bid, noma, mod
+    character(len=8) :: nomddl(nmocl), noma, mod
     character(len=16) :: pheno
     character(len=19) :: ligrmo
     character(len=24) :: nomnoe
@@ -82,15 +82,12 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                pheno, ier)
-    call dismoi('F', 'NOM_GD', pheno, 'PHENOMENE', ibid,&
-                nomgd, ier)
+    call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
+    call dismoi('NOM_GD', pheno, 'PHENOMENE', repk=nomgd)
 !
 ! --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
 ! --- RECUPERATION DES NOMS DES DDLS DISPONIBLES POUR UNE GRANDEUR
@@ -114,7 +111,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
     do 10 i = 1, nbcmp
         nomddl(i) = zk8(jnom-1+i)
-10  end do
+ 10 end do
 !
 ! --- INDICE DU DDL DANS LE TABLEAU NOMCMP
 !
@@ -131,8 +128,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
     if (char(1:1) .eq. ' ') then
         mod = modele
     else
-        call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
-                    mod, ier)
+        call dismoi('NOM_MODELE', char(1:8), 'CHARGE', repk=mod)
     endif
 !
 ! --- LIGREL DU MODELE
@@ -163,7 +159,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
                 resu(i) = 0
             endif
         endif
-20  end do
+ 20 end do
 !
     call jedema()
 end subroutine

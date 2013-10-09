@@ -19,7 +19,6 @@ subroutine numecn(modele, champ, nume)
 !----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/idenob.h"
@@ -33,6 +32,7 @@ subroutine numecn(modele, champ, nume)
 #include "asterfort/jexnum.h"
 #include "asterfort/nueffe.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: modele, champ
     character(len=*) :: nume
 ! ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ subroutine numecn(modele, champ, nume)
 ! EN COMPARANT 2 APPELS SUCCESSIFS
 ! ----------------------------------------------------------------------
 !
-    character(len=8) ::  mo
+    character(len=8) :: mo
     character(len=24) :: lligr, lligrs, noojb
     character(len=19) :: prfchn, nomlig, numes
     integer :: ibid, nb1, jlligr, i1, i2, iret, nb2, iexi
@@ -59,8 +59,7 @@ subroutine numecn(modele, champ, nume)
 !
     call jemarq()
     mo=modele
-    call dismoi('F', 'PROF_CHNO', champ, 'CHAM_NO', ibid,&
-                prfchn, ibid)
+    call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=prfchn)
     call jelira(prfchn//'.LILI', 'NOMMAX', nb1)
 !
 !
@@ -80,7 +79,7 @@ subroutine numecn(modele, champ, nume)
             if (iret .ne. 0) then
                 if (nomlig .ne. mo//'.MODELE') nb2=nb2+1
             endif
-10      continue
+ 10     continue
         call wkvect(lligr, 'V V K24', nb2+1, jlligr)
         i2=1
         zk24(jlligr-1+i2) = mo//'.MODELE'
@@ -93,7 +92,7 @@ subroutine numecn(modele, champ, nume)
                     zk24(jlligr-1+i2) = nomlig
                 endif
             endif
-11      continue
+ 11     continue
     endif
 !
 !

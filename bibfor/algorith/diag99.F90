@@ -54,7 +54,7 @@ subroutine diag99(nomres)
 !----------------------------------------------------------------------
 !
 !
-    integer :: iad, jiad, ier, ibid, jordm, idmode, lmasse, idstat, jords
+    integer :: iad, jiad, ier, jordm, idmode, lmasse, idstat, jords
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jnsta, i, j, k, ieq, nbord
     integer :: nbmode, nbstat, neq, n1, iorne, iorol, jvale
     real(kind=8) :: alpha, r8scal
@@ -76,17 +76,13 @@ subroutine diag99(nomres)
     call jeveuo(meca//'           .ORDR', 'L', jordm)
 !
 !
-    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid,&
-                masse, ier)
-    call dismoi('F', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
-                numddl, ier)
+    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=masse)
+    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numddl)
 !
     nu = numddl(1:14)
 !
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                mailla, ier)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                k8b, ier)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call wkvect('&&DIAG99.MODE_MECA', 'V V R', nbmode*neq, idmode)
     call copmod(meca, 'DEPL', neq, nu, nbmode,&
                 'R', zr(idmode), [cbid])
@@ -139,18 +135,18 @@ subroutine diag99(nomres)
 ! --------- SOMME (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
             do 30 k = 1, neq
                 zr(jtrav1+(k-1)) = zr( jtrav1+(k-1)) + r8scal * zr( idmode+(i-1)*neq+(k-1) )
-30          continue
-20      continue
+ 30         continue
+ 20     continue
 !
         do 40 k = 1, neq
             zr(jnsta+(j-1)*neq+(k-1)) = zr( idstat+(j-1)*neq+(k-1)) - zr(jtrav1+(k-1) )
-40      continue
+ 40     continue
 !
-10  continue
+ 10 continue
 !
     do 50 i = 1, neq
         zi(jtrav4+i-1) = 1
-50  continue
+ 50 continue
     alpha = 0.717d0
 !
     call vpgskp(neq, nbstat, zr(jnsta), alpha, lmasse,&
@@ -213,7 +209,7 @@ subroutine diag99(nomres)
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
-80  continue
+ 80 continue
 !
     do 90 i = 1, nbstat
         iorol = zi(jords+i-1)
@@ -263,9 +259,9 @@ subroutine diag99(nomres)
         call jeveuo(chamol//'.VALE', 'E', jvale)
         do 111 ieq = 1, neq
             zr(jvale+ieq-1) = zr(jnsta+(i-1)*neq+ieq-1)
-111      continue
+111     continue
         call rsnoch(nomres, 'DEPL', iorne)
-90  continue
+ 90 continue
 !
     call jedetr('&&DIAG99.TRAV1')
     call jedetr('&&DIAG99.TRAV2')

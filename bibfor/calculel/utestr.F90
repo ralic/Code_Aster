@@ -75,14 +75,13 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !
 !-----------------------------------------------------------------------
     integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale, ibid
-    integer :: icmp, idecal, ierd, iicmp, ino, ival, ncmp
+    integer :: icmp, idecal, iicmp, ino, ival, ncmp
     integer :: ncmpmx, nec, num
 !-----------------------------------------------------------------------
     call jemarq()
     testok = 'NOOK'
 !
-    call dismoi('F', 'NOM_GD', cham19, 'CHAM_NO', ibid,&
-                nogd, ierd)
+    call dismoi('NOM_GD', cham19, 'CHAM_NO', repk=nogd)
 !
     call jeveuo(cham19//'.REFE', 'L', iarefe)
     nomma = zk24(iarefe-1+1)(1:8)
@@ -131,7 +130,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
         idecal = 0
         do 2 iicmp = 1, icmp
             if (exisdg(zi(iadesc+2),iicmp)) idecal = idecal + 1
- 2      continue
+  2     continue
 !
         if (exisdg(zi(iadesc+2),icmp)) then
             if (type .eq. 'R') then
@@ -172,9 +171,9 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP:
         idecal = 0
-        do 1,iicmp = 1,icmp
-        if (exisdg(zi(iadg),iicmp)) idecal = idecal + 1
- 1      continue
+        do 1 iicmp = 1, icmp
+            if (exisdg(zi(iadg),iicmp)) idecal = idecal + 1
+  1     continue
 !
         if (exisdg(zi(iadg),icmp)) then
             if (type .eq. 'R') then
@@ -191,6 +190,6 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
             call utmess('F', 'CALCULEL6_93')
         endif
     endif
-9999  continue
+9999 continue
     call jedema()
 end subroutine

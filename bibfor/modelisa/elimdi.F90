@@ -143,10 +143,8 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !     2. ALLOCATION/RECUPERATION DE LA SD_CHAR_CINE :
 !     ----------------------------------------------
     charci=charge//'.ELIM'
-    call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                modele, ibid)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, ibid)
+    call dismoi('NOM_MODELE', charge, 'CHARGE', repk=modele)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call jeexin(charci//'.AFCK', ier)
     if (ier .eq. 0) then
         call wkvect(charci//'.AFCK', 'G V K8', 3, jafck)
@@ -205,8 +203,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     ASSERT(kbid.eq.'R'.or.kbid.eq.'C')
     if (kbid .eq. 'R') ASSERT(typcoe.eq.'REEL')
     if (kbid .eq. 'C') ASSERT(typcoe.eq.'COMP')
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                kbid, ibid)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     call jeveuo(modele//'.MODELE    .PRNM', 'L', jprnm)
 !
     do irela = 1, nbrela
@@ -238,7 +235,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
             endif
         enddo
         ASSERT(.false.)
-123      continue
+123     continue
 !
         zi(jafci+3*(ico-1)+1)=nuno
         zi(jafci+3*(ico-1)+2)=nucmp2
@@ -252,7 +249,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
         else
             ASSERT(.false.)
         endif
-21      continue
+ 21     continue
 !
     end do
 !
@@ -260,7 +257,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !
 !     4. CALCUL DE NBDUAL ET NBSURC:
 !     ------------------------------
-999  continue
+999 continue
     nbdual=0
     nbsurc=0
     do irela = 1, nbrela

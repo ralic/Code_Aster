@@ -53,7 +53,7 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
 ! OUT : IER    : CODE RETOUR.
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, icmp, jcelv
+    integer ::  icmp, jcelv
     real(kind=8) :: r1, r2
     character(len=1) :: typrez
     character(len=4) :: type, kmpic
@@ -68,8 +68,7 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
     call jelira(chm19z//'.CELV', 'TYPE', cval=type)
 !
     ASSERT(type.eq.typrez)
-    call dismoi('F', 'MPI_COMPLET', cham19, 'CHAM_ELEM', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', cham19, 'CHAM_ELEM', repk=kmpic)
     ASSERT(kmpic.eq.'OUI'.or.kmpic.eq.'NON')
 !
     if (type .ne. 'R' .and. type .ne. 'C' .and. type .ne. 'I') then
@@ -110,6 +109,6 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
         endif
     endif
 !
-10  continue
+ 10 continue
     call jedema()
 end subroutine

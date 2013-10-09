@@ -51,7 +51,7 @@ subroutine ssmage(nomu, option)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: nchaci, ibid, ier
+    integer :: nchaci
     real(kind=8) :: time
     character(len=1) :: base
     character(len=8) :: nomo, cara, materi, matel, promes
@@ -102,8 +102,7 @@ subroutine ssmage(nomu, option)
                     cara, .true., time, compor, matel,&
                     base)
     else if (option.eq.'AMOR_MECA') then
-        call dismoi('F', 'NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', ibid,&
-                    promes, ier)
+        call dismoi('NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', repk=promes)
 !     --  CAS MODIFICATION STRUCTURALE : CREATION MATRICE PAR SSMAU2
         if (promes .eq. ' ') then
             call utmess('F', 'SOUSTRUC_69')

@@ -108,7 +108,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     integer :: i, ibid, iadrg, iadrgs, iret, jresu, nchin
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
-    integer :: ndeg, ierd, livi(nbmxpa), numfon
+    integer :: ndeg, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: livc(nbmxpa)
@@ -158,8 +158,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     if (incr .ne. 0) then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
-        call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
-                    type, ierd)
+        call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=type)
         if (type .ne. 'EVOL_NOLI') then
             call utmess('F', 'RUPTURE1_15')
         endif

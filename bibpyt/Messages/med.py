@@ -259,9 +259,9 @@ cata_msg = {
   -> Le type d'entité  %(k1)s  est inconnu.
 """),
 
-43 : _(u"""
-  -> Le maillage est introuvable !
-"""),
+
+
+
 
 44 : _(u"""
   -> Pas d'écriture pour  %(k1)s
@@ -565,7 +565,7 @@ Conseil :
 99 : _(u"""
   Le nombre de composantes à imprimer est trop grand pour le champ %(k1)s.
   Le format MED accepte au maximum 80 composantes dans un champ.
-  
+
   Le champ ne sera donc pas imprimé au format MED.
 """),
 

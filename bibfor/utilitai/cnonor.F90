@@ -41,7 +41,7 @@ subroutine cnonor(nomo, gran, base, cno)
 ! ======================================================================
 ! BUT :     COMMANDE : CREA_CHAMP/OPERATION:'NORMALE'
 ! ----------------------------------------------------------------------
-    integer :: ibid, ier, nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
+    integer ::  nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
     integer :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
     integer :: ic, iec, iand, jlma, jnunoe, jnorm, jnno, jval, jnbca, jdesc
     real(kind=8) :: valr(3)
@@ -60,19 +60,16 @@ subroutine cnonor(nomo, gran, base, cno)
         valk (1) = gran
         call utmess('F', 'UTILITAI6_1', sk=valk(1))
     endif
-    call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
-                k8b, ier)
+    call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gran), 'L', iacmp)
     call jeveuo(jexatr('&CATA.GD.NOMCMP', 'LONCUM'), 'L', iav)
     ncmpmx = zi(iav+numgd) - zi(iav+numgd-1)
 !
-    call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
 !
 ! --- DIMENSION DU PROBLEME
 !
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, ier)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 ! --- DEFINITION DES COMPOSANTES ET DES TYPES DE MAILLE A TRAITER
 !

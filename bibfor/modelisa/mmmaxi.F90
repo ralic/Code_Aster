@@ -65,7 +65,7 @@ function mmmaxi(modelz, lisma, nbma)
     character(len=16) :: notype, maisup
     character(len=24) :: typele
     integer :: numail, nutyel
-    integer :: ibid, ier, ima
+    integer ::  ima
     integer :: numsup, nbaxis, mailvo(1)
     integer :: jmaisu, ilmail, itypel, jcoor
 !
@@ -80,8 +80,7 @@ function mmmaxi(modelz, lisma, nbma)
     mmmaxi = .false.
     typele = modele(1:8)//'.MAILLE'
     maisup = '&&MMMAXI.MAISUP'
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! --- RECHERCHE DES MAILLES 2D SUPPORTS DES MAILLES DE LISMA
 !

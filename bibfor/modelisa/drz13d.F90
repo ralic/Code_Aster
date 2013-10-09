@@ -1,4 +1,4 @@
-subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
+subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
                   cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
                   cmp_index_drz, type_lagr, lisrel)
 !
@@ -34,7 +34,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in)  :: noma
+    character(len=8), intent(in) :: noma
     character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: type_vale
     integer, intent(in) :: nb_node
@@ -74,7 +74,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: i_no, ier
+    integer :: i_no
     integer :: jcoor, jliscc, jliscr, jlisdi, jlisdl
     integer :: jlisdm, jlisno, jprnm
     integer :: nbec
@@ -85,7 +85,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
     complex(kind=8) :: vale_cplx
     character(len=8) :: vale_fonc
     character(len=4) :: type_coef
-    character(len=8) :: nomg, nomnoe_m, nomnoe_a, k8bid
+    character(len=8) :: nomg, nomnoe_m, nomnoe_a
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,8 +103,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 ! - Information about <GRANDEUR>
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
@@ -130,8 +129,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
     do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
-        if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drx).and.&
-            exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dry).and.&
+        if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drx) .and.&
+            exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dry) .and.&
             exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drz)) then
             numnoe_a = numnoe_m
             goto 30
@@ -142,17 +141,17 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
     ASSERT(.false.)
 !
-30  continue
+ 30 continue
 !
     call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
 !
 ! - Loop on nodes
 !
-    do i_no = 1,nb_node
+    do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
 !
-        if (numnoe_m.ne.numnoe_a) then
+        if (numnoe_m .ne. numnoe_a) then
 !
 ! --------- Distances: x = DX(A) - DX(M) and y = DY(A) - DY(M) and z = DZ(A) - DZ(M)
 !
@@ -162,8 +161,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 ! --------- Linear relations for translation dof
 !
-            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dx).and.&
-                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dy).and.&
+            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dx) .and.&
+                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dy) .and.&
                 exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dz)) then
 !
                 nb_term = 4
@@ -226,8 +225,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 ! --------- Linear relations for rotation dof
 !
-            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drx).and.&
-                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dry).and.&
+            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drx) .and.&
+                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dry) .and.&
                 exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drz)) then
 !
                 nb_term = 2
@@ -246,7 +245,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
                 call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
                             zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
-
+!
 !
 ! ------------- Fifth relation: DRY(M) - DRY(A)  = 0
 !

@@ -111,8 +111,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION DU MODELE GENERALISE--------------------------------
 !
-    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid,&
-                raid, iret)
+    call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
     call jeveuo(raid//'.REFA', 'L', llref2)
     numgen(1:14)=zk24(llref2+1)
@@ -138,7 +137,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         zr(ltrotz+i-1)=zr(llrot)
         zr(ltroty+i-1)=zr(llrot+1)
         zr(ltrotx+i-1)=zr(llrot+2)
-15  continue
+ 15 continue
 !
 !-----CREATION DU PROF-CHAMNO-------------------------------------------
 !
@@ -147,8 +146,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION DU NOMBRE DE NOEUDS----------------------------------
 !
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                kbid, iret)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !-----RECUPERATION DE LA BASE MODALE------------------------------------
 !
@@ -173,7 +171,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         call wkvect('&&REGEGL.NUME', 'V V I', nbmod(1), jbid)
         do 2 i = 1, nbmod(1)
             zi(jbid+i-1) = i
- 2      continue
+  2     continue
     endif
 !
 !-----ALLOCATION STRUCTURE DE DONNEES RESULTAT--------------------------
@@ -202,7 +200,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         call jeveuo(sst, 'L', lsst)
         do 10 i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
-10      continue
+ 10     continue
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
     endif
 !
@@ -233,8 +231,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 do 31 k1 = 1, neqred
                     zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
                     neqet+i1-1)* zr(llchol+k1-1)
-31              continue
-21          continue
+ 31             continue
+ 21         continue
             llchol=lmoet
         endif
 !
@@ -271,21 +269,20 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     ieq=0
                     do 41 i1 = 1, numsst-1
                         ieq=ieq+zi(lsilia+i1-1)
-41                  continue
+ 41                 continue
                 else
                     numsst=k
 !  RECUPERATION DU NUMERO TARDIF DE LA SST
                     do 40 j = 1, nbsst
                         if (zi(llors+j-1) .eq. numsst) nutars=j
-40                  continue
+ 40                 continue
                     ieq=zi(llprs+(nutars-1)*2)
                 endif
 !
                 call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                             basmod)
 !
-                call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                            intf, iret)
+                call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
                 call jeveuo(intf(1:8)//'.IDC_TYPE', 'L', ltype)
                 if (zk8(ltype) .eq. 'AUCUN') then
                     vali (1) = k
@@ -303,13 +300,11 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call jeveuo(jexnum(modgen//'      .MODG.SSOR', k), 'L', llrot)
                 call matrot(zr(llrot), mat)
 !
-                call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbbas,&
-                            kbid, ier)
+                call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
                 kbid='  '
                 call mgutdm(modgen, kbid, k, 'NOM_NUME_DDL', ibid,&
                             numddl)
-                call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqs,&
-                            kbid, iret)
+                call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                 call wkvect('&&REGEGL.TRAV', 'V V R', neqs, ltvec)
 !
 !  BOUCLE SUR LES MODES PROPRES DE LA BASE
@@ -342,10 +337,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     do 60 l = 1, neqs
                         zr(ltvec+l-1)=zr(ltvec+l-1)+zr(llchab+l-1)*&
                         zr(iad)
-60                  continue
+ 60                 continue
 !
                     call jelibe(chamba)
-50              continue
+ 50             continue
                 call jeveuo(jexnum(indirf, k), 'L', llind)
                 call jelira(jexnum(indirf, k), 'LONMAX', nbcou)
                 nbcou=nbcou/2
@@ -353,11 +348,11 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     idep=zi(llind+(l-1)*2)
                     iar=zi(llind+(l-1)*2+1)
                     zr(ldnew+iar-1)=zr(ltvec+idep-1)
-70              continue
+ 70             continue
                 call jelibe(jexnum(indirf, k))
                 call jedetr('&&REGEGL.TRAV')
             endif
-30      continue
+ 30     continue
 !
         fpartx = efmasx/genem
         fparty = efmasy/genem
@@ -391,7 +386,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     nbnot, nbcmp, 2)
         call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi(llinsk),&
                     nbnot, nbcmp, 1)
-20  continue
+ 20 continue
 !
 ! --- MENAGE
     call jedetr('&&REGEGL.ROTX')

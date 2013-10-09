@@ -94,7 +94,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, iret, nbss, nbsst, ibid
+    integer :: nocc, iret, nbss, nbsst
     integer :: nbfonc, iform, jslvk
     logical :: lbors, lfrot, lchoc, lallv
     logical :: lboucg, lboucf, lboucc
@@ -325,8 +325,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! --- SOUS STRUCTURES STATIQUES
 !
-    call dismoi('F', 'NB_SS_ACTI', modele, 'MODELE', nbss,&
-                k8bid, iret)
+    call dismoi('NB_SS_ACTI', modele, 'MODELE', repi=nbss)
     if (nbss .gt. 0) fonact(14) = 1
 !
 ! --- CALCUL PAR SOUS-STRUCTURATION
@@ -380,20 +379,17 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! --- PRESENCE DE VARIABLES DE COMMANDE
 !
-    call dismoi('F', 'EXI_VARC', mate, 'CHAM_MATER', ibid,&
-                repk, iret)
+    call dismoi('EXI_VARC', mate, 'CHAM_MATER', repk=repk)
     if (repk .eq. 'OUI') fonact(30) = 1
 !
 ! --- MODELISATION THM ?
 !
-    call dismoi('F', 'EXI_THM', modele, 'MODELE', ibid,&
-                repk, iret)
+    call dismoi('EXI_THM', modele, 'MODELE', repk=repk)
     if (repk .eq. 'OUI') fonact(37) = 1
 !
 ! --- PRESENCE D'ELEMENTS UTILISANT STRX (PMF)
 !
-    call dismoi('F', 'EXI_STRX', modele, 'MODELE', ibid,&
-                repk, iret)
+    call dismoi('EXI_STRX', modele, 'MODELE', repk=repk)
     if (repk .eq. 'OUI') fonact(56) = 1
 !
 ! --- CONCEPT REENTRANT ?
@@ -441,8 +437,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! - Do elastic properties are functions ?
 !
-    call dismoi('F', 'ELAS_FO', mate, 'CHAM_MATER', ibid,&
-                repk, iret)
+    call dismoi('ELAS_FO', mate, 'CHAM_MATER', repk=repk)
     if (repk .eq. 'OUI') fonact(57) = 1
 !
 ! --- AFFICHAGE

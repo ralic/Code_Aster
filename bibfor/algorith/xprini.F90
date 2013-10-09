@@ -86,7 +86,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     integer :: i, ino, ima, ifm, niv, jglsno, iret, iret2, nbno, jnosom, jnresi
     integer :: nbma, jcoor, jconx1, jconx2, jlnno, jltno, nbmaff, nnores, jmaiff
     integer :: nbnoma, inoa, inob, nunoa, nunob, ibid
-    character(len=8) :: lpain(4), lpaout(2), k8b, method, nomno
+    character(len=8) :: lpain(4), lpaout(2), method, nomno
     character(len=19) :: celmt, maiff
     character(len=24) :: ligrel, lchin(1), lchout(2)
     real(kind=8) :: p(3), ff(3), dist, lsna, lsnb, lsta, lstb, rayon
@@ -102,10 +102,8 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !
 !  RECUPERATION DU MODELE ET DU MAILLAGE
     ligrel = model//'.MODELE'
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -186,7 +184,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !  LES NOEUDS DONT LE GRADIENT DE LS EST NUL SONT DES NOEUDS MILIEUX
 !         IF (NORMGR.LT.R8PREM()) ZL(JNOSOM-1+INO) = .FALSE.
 !
-100  end do
+100 end do
 !
 !-----------------------------------------------------------------
 !     ON REPERE LES NOEUDS SUR LESQUELS LE RESIDU DOIT ETRE ESTIME
@@ -218,8 +216,8 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                 if ((lsna*lsnb) .le. 0.d0) coupln=.true.
                 if ((lsta*lstb) .le. 0.d0) couplt=.true.
 !
-220          continue
-210      continue
+220         continue
+210     continue
 !
 !  SI LA MAILLE EST COUPEE PAR LES ISOZEROS DE LS ET LT
         if (coupln .and. couplt) then
@@ -228,7 +226,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !  ON REPERE LE BARYCENTRE DES NOEUDS DE LA MAILLE
             do 230 i = 1, 3
                 zr(jmaiff-1+3*(nbmaff-1)+i) = 0.d0
-230          continue
+230         continue
             do 240 inoa = 1, nbnoma
                 nunoa = zi(jconx1-1+zi(jconx2+ima-1)+inoa-1)
                 do 245 i = 1, 3
@@ -236,11 +234,11 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                                                   jmaiff-1+3*( nbmaff-1)+i) + zr(jcoor-1+3*(nunoa&
                                                   &-1)+i&
                                                   ) / nbnoma
-245              continue
-240          continue
+245             continue
+240         continue
         endif
 !
-200  end do
+200 end do
 !
     nnores=0
     call wkvect(noresi, 'V V L', nbno, jnresi)
@@ -250,12 +248,12 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
         if (.not.zl(jnosom-1+ino)) goto 250
         do 260 i = 1, 3
             p(i) = zr(jcoor-1+3*(ino-1)+i)
-260      continue
+260     continue
 !
         do 270 ima = 1, nbmaff
             do 275 i = 1, 3
                 ff(i) = zr(jmaiff-1+3*(ima-1)+i)
-275          continue
+275         continue
             dist = padist(3,p,ff)
             if (dist .le. (rayon+damax)) then
 !  LE NOEUD EST PROCHE D'UNE MAILLE DU FOND DE FISSURE
@@ -263,15 +261,15 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                 nnores = nnores+1
                 goto 250
             endif
-270      continue
-250  end do
+270     continue
+250 end do
 !      IF (NIV.GT.1)
     write(ifm,*)'   NOMBRE DE NOEUDS POUR L'''&
      &                         //'ESTIMATION DES RESIDUS :',nnores
 !
     call jedetr(maiff)
 !
-9999  continue
+9999 continue
 !
 !-----------------------------------------------------------------------
 !     FIN

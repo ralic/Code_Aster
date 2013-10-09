@@ -106,7 +106,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=2) :: codret
     integer :: nbin
 !-----------------------------------------------------------------------
-    integer :: ibid, icha, ier, ierd, ifla, ilires, iret
+    integer ::  icha, ier, ifla, ilires, iret
     integer :: j, jveass, nh
 !-----------------------------------------------------------------------
     parameter(nbin=43)
@@ -131,10 +131,10 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     matel=matelz
     base=basez
 !
-    do 10,i=1,nbin
-    lchin(i)=' '
-    lpain(i)=' '
-    10 end do
+    do 10 i = 1, nbin
+        lchin(i)=' '
+        lpain(i)=' '
+ 10 end do
 !
     chvarc='&&ME2MME.VARC'
     chvref='&&ME2MME.VARC.REF'
@@ -145,8 +145,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                 'CHAR_MECA')
 !
 !     -- S'IL N' Y A PAS D'ELEMENTS CLASSIQUES, ON RESSORT:
-    call dismoi('F', 'EXI_ELEM', modele, 'MODELE', ibid,&
-                exiele, ierd)
+    call dismoi('EXI_ELEM', modele, 'MODELE', repk=exiele)
 !
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
@@ -268,15 +267,14 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !        -- EN PRINCIPE, EXITIM EST TOUJOURS .TRUE.
     chtime='&&ME2MME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                ncmp=1, nomcmp='INST   ',sr=time)
+                ncmp=1, nomcmp='INST   ', sr=time)
     lpain(5)='PTEMPSR'
     lchin(5)=chtime
 !
 !
 !
     do 50 icha = 1, nchar
-        call dismoi('F', 'TYPE_CHARGE', lchar(icha), 'CHARGE', ibid,&
-                    kbid, ierd)
+        call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=kbid)
         if (kbid(5:7) .eq. '_FO') then
             lfonc=.true.
         else
@@ -574,8 +572,8 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
             call reajre(matel, lchout(1), base)
-20      continue
-30      continue
+ 20     continue
+ 30     continue
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.PRESS', iret)
         if (iret .ne. 0) then
@@ -663,7 +661,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                 call detrsd('CHAMP_GD', resufv(i))
                 call reajre(matel, lchout(1), base)
             endif
-40      continue
+ 40     continue
         call jedetr(charge)
 !
 ! ====================================================================
@@ -684,7 +682,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         endif
 !
 ! ====================================================================
-50  end do
+ 50 end do
 !
 !
 ! ====================================================================
@@ -715,7 +713,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !
 !
-60  continue
+ 60 continue
     call detrsd('CHAMP_GD', chvarc)
     call detrsd('CHAMP_GD', chvref)
 !

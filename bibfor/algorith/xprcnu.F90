@@ -83,8 +83,8 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
     integer :: nbno, nbma, jcoor, jconx1, jconx2, jmai, itypma
-    integer :: ifm, niv, iret, ndim, ndime, dimuns, jtmdim
-    character(len=8) :: typma, k8b
+    integer :: ifm, niv, ndim, ndime, dimuns, jtmdim
+    character(len=8) :: typma
     integer :: i, j
 !
 !     LOCAL REFERENCE SYSTEM
@@ -120,10 +120,8 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
     dimuns = 0
 !
 ! RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 ! RETRIEVE THE COORDINATES OF THE NODES
 !                12345678901234567890
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
@@ -135,8 +133,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 ! RETRIEVE THE DIMENSIONS OF THE EXISTING ELEMENTS
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 ! RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     CREATE THE JEVEUX OBJECTS WHERE THE RESULTS WILL BE STORED
     call wkvect(vcn, base//' V I', 6*nbno, jvcn)
@@ -162,9 +159,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
             elmori = i
             goto 1000
         endif
-1010  end do
+1010 end do
 !
-1000  continue
+1000 continue
 !
 !     CHECK IF A SUPPORTED ELEMENT HAS BEEN FOUND
     if (elmori .eq. 0) then
@@ -194,7 +191,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
             ASSERT(j.le.maxedg(ndim))
             nodcon(j) = ar(i,1)
         endif
-1100  end do
+1100 end do
 !
 !     THE NUMBER OF EDGES RETRIEVED SHOULD ALWAYS BE EQUAL TO
 !     THE NUMBER OF THE EXPECTED EDGES
@@ -213,7 +210,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
         nodref(i+1,1) = zr(jcoor-1+3*(j-1)+1)
         nodref(i+1,2) = zr(jcoor-1+3*(j-1)+2)
         nodref(i+1,3) = zr(jcoor-1+3*(j-1)+3)
-1200  end do
+1200 end do
 !
 !     EVALUATE THE UNIT VECTORS DEFINING THE THREE LOCAL AXES
     do 1300 i = 1, ndim
@@ -227,7 +224,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
         locref(i,1) = locref(i,1)/modvec
         locref(i,2) = locref(i,2)/modvec
         locref(i,3) = locref(i,3)/modvec
-1300  end do
+1300 end do
 !
 !     FOR THE 2D CASE, THE Zl AXIS DIRECTION IS KNOWN IN ADVANCE BECAUSE
 !     IT'S COINCIDENT WITH THE GLOBAL Z AXIS
@@ -272,7 +269,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
         zr(jref-1+3*(i-1)+1) = locref(i,1)
         zr(jref-1+3*(i-1)+2) = locref(i,2)
         zr(jref-1+3*(i-1)+3) = locref(i,3)
-1400  end do
+1400 end do
 !
 !-----------------------------------------------------------------------
 ! CREATION OF THE TWO VECTORS DESCRIBING THE CONNECTION OF THE NODES.
@@ -333,7 +330,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                 do 300 nocur = 1, numnod(ndim)
                     eldef(nocur) = zi(jconx1-1+zi(jconx2-1+elno)+ nocur-1)
                     if (eldef(nocur) .eq. node) nodeps=nocur
-300              continue
+300             continue
 !
 !              THE NODE SHOULD ALWAYS BE PRESENT INTO THE ELEMENT
 !              DEFINITION. HOWEVER IT IS BETTER TO CHECK IT, JUST IN THE
@@ -369,7 +366,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                         ASSERT(j.le.maxedg(ndim))
                         nodcon(j) = ar(i,1)
                     endif
-350              continue
+350             continue
 !
 !              THE NUMBER OF EDGES RETRIEVED SHOULD ALWAYS BE EQUAL TO
 !              THE NUMBER OF THE EXPECTED EDGES
@@ -394,7 +391,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                                     nodxyz(2,1)*locref(j,1)+ nodxyz( 2,2)*locref(j,2)+ nodxyz(2,3&
                                     &)*locref(j,3)&
                                     )
-450                  continue
+450                 continue
 !
 !                 EVALUATE THE ABSOLUTE VALUE OF THE COMPONENTS OF THE
 !                 EDGE VECTOR EXPRESSED IN THE LOCAL REFERENCE SYSTEM
@@ -499,7 +496,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
                     endif
 !
-400              continue
+400             continue
 !
             else
 !
@@ -514,9 +511,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
             endif
 !
-200      continue
+200     continue
 !
-100  end do
+100 end do
 !
 !     IF EDGES NOT PARALLEL TO THE LOCAL REFERENCE SYSTEM HAVE BEEN
 !     DETECTED, A FATAL ERROR IS ISSUED
@@ -536,21 +533,21 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !        CHECK THE NEIGHBORING NODES IN Xl AND Yl DIRECTIONS
         do 600 nocur = 1, 4
             if (zi(jvcn-1+6*(node-1)+nocur) .eq. 0) i = i+1
-600      continue
+600     continue
 !
 !        CHECK THE NEIGHBORING NODES IN Zl DIRECTION ONLY FOR THE 3D
 !        CASE
         if (ndim .eq. 3) then
             do 601 nocur = 5, 6
                 if (zi(jvcn-1+6*(node-1)+nocur) .eq. 0) i = i+1
-601          continue
+601         continue
         endif
 !
 !        THE NODE DOES NOT BELONG TO ANY ALLOWED ELEMENT FOR THE UPWIND
 !        SCHEME. HERE I LABEL THIS NODE AS "ORPHAN NODE".
         if (((i.eq.6).and.(ndim.eq.3)) .or. ((i.eq.4).and.(ndim.eq.2))) orph=orph+1
 !
-500  end do
+500 end do
 !
 !     MANAGE THE UNSUPPORTED ELEMENTS
     if (unsupp .gt. 0) then
@@ -587,7 +584,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
             write(ifm,904)zr(jvcnd-1+6*(i-1)+1),zr(jvcnd-1+6*(i-1)+2),&
             zr(jvcnd-1+6*(i-1)+3),zr(jvcnd-1+6*(i-1)+4),zr(jvcnd-1+6*(&
             i-1)+5), zr(jvcnd-1+6*(i-1)+6)
-50      end do
+ 50     end do
     endif
 !
     900 format('NODE  | NX+  | NX-  | NY+  | NY-  | NZ+  | NZ-  |')

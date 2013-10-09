@@ -291,8 +291,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !
 !
 !     -- IL FAUT COMMUNIQUER LE RESULTAT ENTRE LES PROCS :
-    call dismoi('F', 'MPI_COMPLET', champ, 'CHAMP', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', champ, 'CHAMP', repk=kmpic)
     if (kmpic .eq. 'NON') then
         if (scal(1:1) .eq. 'I') then
             call asmpi_comm_vect('MPI_SUM', 'I', nbval=longt, vi=vi)

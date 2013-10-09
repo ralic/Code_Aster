@@ -61,7 +61,6 @@ subroutine op0111()
     integer :: nordre, nbno1, nbcmp, nbno2, nbocc
     integer :: ddldep(3), ddlvit(3), ddlacc(3)
     integer :: ifm, niv
-    character(len=1) :: kbid
     character(len=8) :: ma, ma1, ma2
     character(len=16) :: corres, valk(2)
     character(len=19) :: resu
@@ -202,7 +201,7 @@ subroutine op0111()
         ddldep(icmp) = 0
         ddlvit(icmp) = 0
         ddlacc(icmp) = 0
-10  end do
+ 10 end do
     do 20 icmp = 1, nbcmp
         if (idepl .eq. 1) then
             if (zk8(jdepsc-1+icmp) .eq. 'DX') ddldep(1) = icmp
@@ -219,12 +218,11 @@ subroutine op0111()
             if (zk8(jaccsc-1+icmp) .eq. 'DY') ddlacc(2) = icmp
             if (zk8(jaccsc-1+icmp) .eq. 'DZ') ddlacc(3) = icmp
         endif
-20  end do
+ 20 end do
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 2 !
 !     ! ======================================= !
-    call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
-                kbid, ibid)
+    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
 !     ! ===================================================== !
 !     ! PROJECTIONS DES DEPLACEMENTS ENTRE LES DEUX MAILLAGES !
 !     ! ===================================================== !
@@ -236,8 +234,8 @@ subroutine op0111()
             zr(jdepl-1+3*(ino2-1)+icmp) = 0.d0
             zr(jvite-1+3*(ino2-1)+icmp) = 0.d0
             zr(jacce-1+3*(ino2-1)+icmp) = 0.d0
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 !     Condition if pour le cas ETAT_INIT == None
     if (nbno1 .gt. 0) then
         idecal = 0
@@ -279,12 +277,12 @@ subroutine op0111()
                                                               )
                             endif
                         endif
-80                  continue
-70              continue
+ 80                 continue
+ 70             continue
                 idecal = idecal + zi(jaconb-1+ilengt+jj)
-60          continue
+ 60         continue
             ilengt = ilengt + nbno2
-50      continue
+ 50     continue
     endif
 !     ! ================================ !
 !     ! ENVOI DES GRANDEURS CINEMATIQUES !

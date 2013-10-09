@@ -52,8 +52,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     integer :: i, ii, ima, ifiss, ino, n
     integer :: nbno, nbnot, nfiss, nmax, nbmalo, nbmala
     integer :: jlmas, idlist, jfiss, jtem3, jtem4, jtem5, jstno
-    integer :: ibid, iret, test, valeno
-    character(len=8) :: noma, k8bid, nomail, fiss
+    integer :: ibid, test, valeno
+    character(len=8) :: noma, nomail, fiss
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno
     character(len=24) :: lismai, lismar, lisman, maifis
@@ -105,7 +105,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
             call jelira(fiss//maifis, 'LONMAX', n)
             zi(jtem4-1+ifiss) = n
             nbma = nbma + n
-10      continue
+ 10     continue
 ! ---   CREATION ET REMPLISSAGE DU VECTEUR DE SORTIE
         if (nbma .gt. 0) then
             call wkvect(lismai, 'V V I', nbma, idlist)
@@ -115,8 +115,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
                     nbmala = nbmala + 1
                     zi(idlist+nbmala-1) = zi(jlmas+i-1)
                     call jenuno(jexnum(noma//'.NOMMAI', zi(jlmas+i-1)), nomail)
-20              continue
-40          continue
+ 20             continue
+ 40         continue
         endif
         call jedetr('&&CGMAXF.TEM3')
         call jedetr('&&CGMAXF.TEM4')
@@ -134,10 +134,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !     ============================
     else if (typgrp.eq.'FISSUREE') then
 !
-        call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
-                    k8bid, iret)
-        call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nmax,&
-                    k8bid, iret)
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
+        call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nmax)
 !
 !       POUR DIMENSIONNER GROSSIEREMENT LA LISTE DES MAILLES
         lisman = '&&CGMAXF.TEM1'
@@ -177,22 +175,22 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
                     if (valeno .eq. 0) then
                         test = 0
                     endif
-511              continue
+511             continue
 !           MAILLES QUI REPOSENT SUR LES NOEUDS AU STATUS <> 0
                 if (test .eq. 1) then
                     nbmalo = nbmalo + 1
                     zi(jtem5+nbmalo-1) = zi(jlmas+ii-1)
                     call jenuno(jexnum(noma//'.NOMMAI', zi(jtem5+ nbmalo-1)), nomail)
                 endif
-51          continue
+ 51         continue
             call jedetr(lismar)
             call jedetr(lisman)
             call jedetr(stno)
-50      continue
+ 50     continue
         call wkvect(lismai, 'V V I', nbmalo, idlist)
         do 60 ima = 1, nbmalo
             zi(idlist-1+ima) = zi(jtem5-1+ima)
-60      continue
+ 60     continue
         call jedetr('&&CGMAXF.TEM3')
         call jedetr('&&CGMAXF.TEM4')
         call jedetr('&&CGMAXF.TEM5')

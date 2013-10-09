@@ -52,8 +52,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
 !
     integer :: vali(2)
 !
-    integer :: i, j, ire1, ire2, iadin, iadou, iret, ibid, jlgrf
-    integer :: jmaor, ier, cret
+    integer :: i, j, ire1, ire2, iadin, iadou, iret, jlgrf
+    integer :: jmaor, cret
     character(len=3) :: type, kchml
     character(len=4) :: tych
     character(len=8) :: noma1, noma2, nomavr
@@ -81,8 +81,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     endif
 !
     if (lrest) then
-        call dismoi('C', 'EXI_CHAM_ELEM', resuin, 'RESULTAT', ibid,&
-                    kchml, iret)
+        call dismoi('EXI_CHAM_ELEM', resuin, 'RESULTAT', repk=kchml, arret='C',&
+                    ier=iret)
         if (kchml .eq. 'OUI' .and. modele .ne. ' ') then
             call jeveuo(modele//'.MODELE    .LGRF', 'L', jlgrf)
             noma2=zk8(jlgrf)
@@ -103,7 +103,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
         call jenuno(jexnum(resuin//'.DESC', i), nomsym)
         do 10 j = 1, nbexcl
             if (chexcl(j) .eq. nomsym) goto 30
-10      continue
+ 10     continue
 !
         do 20 j = 1, nbordr
             if (nuarch(j) .eq. 0) goto 20
@@ -122,11 +122,9 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                 call utmess('F', 'PREPOST5_16', sk=valk, ni=2, vali=vali)
             endif
             if (lrest) then
-                call dismoi('F', 'NOM_MAILLA', chamin, 'CHAMP', ibid,&
-                            nomavr, iret)
+                call dismoi('NOM_MAILLA', chamin, 'CHAMP', repk=nomavr)
                 ASSERT(noma1.eq.nomavr)
-                call dismoi('F', 'TYPE_CHAMP', chamin, 'CHAMP', ibid,&
-                            tych, ier)
+                call dismoi('TYPE_CHAMP', chamin, 'CHAMP', repk=tych)
                 if (tych(1:2) .eq. 'EL') then
                     ASSERT(ligrel.ne.' ')
                 endif
@@ -136,8 +134,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                 call copisd('CHAMP_GD', 'G', chamin, chamou)
             endif
             call rsnoch(resuou, nomsym, nuordr(j))
-20      continue
-30  end do
+ 20     continue
+ 30 end do
 !
 !
     do 50 i = 1, nbordr
@@ -169,8 +167,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             else if (type(1:2).eq.'K8') then
                 zk8(iadou) = zk8(iadin)
             endif
-40      continue
-50  end do
+ 40     continue
+ 50 end do
 !
     call jedema()
 !

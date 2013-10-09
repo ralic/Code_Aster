@@ -90,7 +90,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     character(len=24) :: valk
     character(len=24) :: lchin(maxin), lchout(maxout), chdep2, chele2, chc
     character(len=24) :: chnova
-    integer :: iaux, ibid, iret1, iret2, ier, nb, nbin, nbout, ifm, niv, iret
+    integer :: iaux, ibid, iret1, iret2, nb, nbin, nbout, ifm, niv, iret
     integer :: ifiss
 !
     chdep2 = chdepl
@@ -269,8 +269,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
 ! ----------------------------------------------------------------------
 ! ---          RAJOUT DES POUTRES POUX ---
 ! ----------------------------------------------------------------------
-                call dismoi('F', 'EXI_POUX', nomode, 'MODELE', ibid,&
-                            poux, ier)
+                call dismoi('EXI_POUX', nomode, 'MODELE', repk=poux)
 ! ----------------------------------------------------------------------
                 if (optio2 .eq. 'SIGM_ELNO' .or. optio2 .eq. 'SIPO_ELNO' .or. optio2 .eq.&
                     'SIPM_ELNO' .or. optio2 .eq. 'SIEF_ELGA' .or. optio2 .eq. 'STRX_ELGA') then

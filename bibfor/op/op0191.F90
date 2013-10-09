@@ -148,10 +148,9 @@ subroutine op0191()
 !
             call rsexch('F', resuin, option, iordr, champ0,&
                         iret)
-            call dismoi('F', 'NOM_MAILLA', champ0(1:19), 'CHAMP', ibid,&
-                        nomma, iret)
-            call dismoi('C', 'TYPE_CHAMP', champ0, 'CHAMP', ibid,&
-                        tych, iret)
+            call dismoi('NOM_MAILLA', champ0(1:19), 'CHAMP', repk=nomma)
+            call dismoi('TYPE_CHAMP', champ0, 'CHAMP', repk=tych, arret='C',&
+                        ier=iret)
 !
             call rsexch(' ', resuou, option, iordr, champ1,&
                         iret)
@@ -162,10 +161,8 @@ subroutine op0191()
             call rslesd(resuin(1:8), iordr, modele, k8bid, carele,&
                         kbid, ibid)
             if (modele .ne. '') then
-                call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid,&
-                            exipla, iret)
-                call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid,&
-                            exicoq, iret)
+                call dismoi('EXI_PLAQUE', modele, 'MODELE', repk=exipla)
+                call dismoi('EXI_COQUE', modele, 'MODELE', repk=exicoq)
                 if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
                     ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
                     ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) then
@@ -190,8 +187,8 @@ subroutine op0191()
             call rsnoch(resuou, option, iordr)
 !
             call jedema()
-12      continue
-10  continue
+ 12     continue
+ 10 continue
 !
     nompar = '&&OP0191.NOMS_PARA'
     call rsnopa(resuin, 2, nompar, nbac, nbpa)
@@ -221,14 +218,14 @@ subroutine op0191()
             else if (type(1:2).eq.'K8') then
                 zk8(iadou) = zk8(iadin)
             endif
-22      continue
-20  continue
+ 22     continue
+ 20 continue
 !
     call titre()
 !
     if (niv .eq. 2) call rsinfo(resuou, ifm)
 !
-9999  continue
+9999 continue
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
@@ -264,15 +261,14 @@ subroutine op0191()
                 call celces(champ1, 'V', chams1)
                 call cesfus(2, chs, lcumu, lcoer, lcoec,&
                             lcoc(1), 'V', chafus)
-                call dismoi('F', 'NOM_LIGREL', champ0, 'CHAM_ELEM', ibid,&
-                            ligrel, ibid)
+                call dismoi('NOM_LIGREL', champ0, 'CHAM_ELEM', repk=ligrel)
                 call cescel(chafus, ligrel, option, ' ', 'NAN',&
                             nncp, 'G', champ0, 'F', ibid)
                 call detrsd('CHAMP', champ1)
                 call jedema()
 !
-30          continue
-25      continue
+ 30         continue
+ 25     continue
 !
         call detrsd('CHAMP', chams0)
         call detrsd('CHAMP', chams1)

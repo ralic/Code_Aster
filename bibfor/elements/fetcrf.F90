@@ -78,7 +78,7 @@ subroutine fetcrf(sdpart1)
 ! DECLARATION VARIABLES LOCALES
     integer :: nbno, ngma, nbrd, nbmabd, lstgma, lstbrd, nomcha, nomsd, jadr, i
     integer :: j, nbsd, intbuf, ifm, niv, nbchar, multc, nbid, itmp, i1, nec30
-    integer :: nbnot2, j2, n31, iret, ier, nbnoto, ierd, ialino, jtrav, ianbno
+    integer :: nbnot2, j2, n31, iret, ier, nbnoto, ialino, jtrav, ianbno
     integer :: nbmail, ialima, jj, nbnosd, nb, ianbma, ialibd, is9, incrs, l, xt
     integer :: yt, zt, ialsno, ialsmu, k, nn, nbma, linoma, ialsma, jnoma, jprnm
     integer :: nec, n, ino, ialsk, numsd, ialspo, ipos, iajadr, jtmp, ialstr
@@ -95,7 +95,7 @@ subroutine fetcrf(sdpart1)
     integer :: ifcfb, nzocom, kadr, ladr, ima, jzone, isuco, jnoco, ifetb, lfetb
     integer :: ddlm, madr, iiaux1, jdim, ifcnm, nbsurf, inddz
     character(len=4) :: k4tmp
-    character(len=8) :: k8bid, nom, ma, k8b, nomo, nomn1, nomn, noma, nocha1
+    character(len=8) :: k8bid, nom, ma, nomo, nomn1, nomn, noma, nocha1
     character(len=19) :: sdpart, ligrmo, ligrch
     character(len=24) :: nomsda, nomsdb, nomsdi, nomsdg, nomsdm, nomsdh, nomsdj
     character(len=24) :: nomsln, nomsli, nomslm, nomnoe, nomgma, nomref, grpma
@@ -177,10 +177,8 @@ subroutine fetcrf(sdpart1)
         ma=noma
     endif
 !     DETERMINATION DU NB TOTAL DE NOEUDS ET DE MAILLES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbnoto,&
-                k8b, ierd)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmato,&
-                k8b, ierd)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     nbmatr=nbmato
     grpma = ma//'.GROUPEMA       '
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)

@@ -63,11 +63,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !  -    -                  -      -              -         -
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: jordr, ibid, iret, iordr, i, jinfc, nbchar, ic, jref
+    integer :: jordr, iret, iordr, i, jinfc, nbchar, ic, jref
     integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, iad, ind
     integer :: neq, jnoch, jfo, jfono, lonch, jchmp, jreno
     integer :: jcgmp, jfpip, ldepl, lonc2, ltrav, j, inume, jddl, jddr, lacce
-    integer :: ierd, cret
+    integer ::  cret
     real(kind=8) :: etan, time, partps(3), omega2, coef(3)
     character(len=1) :: stop
     character(len=2) :: codret
@@ -112,8 +112,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'MODE_MECA' .or. typesd.eq.'DYNA_TRANS') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid,&
-                        masse, iret)
+            call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse)
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -123,8 +122,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'DYNA_HARMO') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid,&
-                        masse, iret)
+            call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse)
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -133,11 +131,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     endif
     if (typesd .eq. 'MODE_MECA' .or. typesd .eq. 'DYNA_TRANS') then
         numref=' '
-        call dismoi('F', 'REF_RIGI_PREM', resuin, 'RESU_DYNA', ibid,&
-                    raide, iret)
+        call dismoi('REF_RIGI_PREM', resuin, 'RESU_DYNA', repk=raide)
         if (raide .ne. ' ') then
-            call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                        numref, iret)
+            call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numref)
         endif
     endif
     carac=' '
@@ -169,7 +165,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call wkvect('&&'//nompro//'.L_CHARGE', 'V V K8', nbchar, ichar)
             do 150 ii = 1, nbchar
                 zk8(ichar-1+ii)=zk24(iachar-1+ii)(1:8)
-150          continue
+150         continue
         else
             ichar=1
         endif
@@ -181,12 +177,10 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !     ON REGARDE S'IL Y A DES ELEMENTS DE STRUCTURE UTILISANT LE CHAMP
 !     STRX_ELGA
     strx=' '
-    call dismoi('F', 'EXI_STRX', modele, 'MODELE', ibid,&
-                kstr, ierd)
+    call dismoi('EXI_STRX', modele, 'MODELE', repk=kstr)
     lstr=(kstr(1:3).eq.'OUI')
 !     Y A-T-IL DES ELEMENTS SACHANT CALCULER L'OPTION STRX_ELGA
-    call dismoi('F', 'EXI_STR2', modele, 'MODELE', ibid,&
-                kstr, ierd)
+    call dismoi('EXI_STR2', modele, 'MODELE', repk=kstr)
     lstr2=(kstr(1:3).eq.'OUI')
 !
     time=0.d0
@@ -288,10 +282,10 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     codret)
         call rsexch(' ', resuin, 'COMPORTEMENT', iordr, compor,&
                     iret)
-
-        call vefnme(option, 'V'   , modele, mater , carac ,&
-                    compor, partps, nh    , ligrel, chvarc,&
-                    sigma , strx  , chdepl, chdep2, vfono)
+!
+        call vefnme(option, 'V', modele, mater, carac,&
+                    compor, partps, nh, ligrel, chvarc,&
+                    sigma, strx, chdepl, chdep2, vfono)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vfono, nume, 'R', vafono)
@@ -320,7 +314,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         if (option .eq. 'FORC_NODA') then
             do 160 j = 0, lonch-1
                 zr(jnoch+j)=zr(jfono+j)
-160          continue
+160         continue
             goto 270
         endif
 !
@@ -369,18 +363,18 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call jeveuo(cncgmp(1:19)//'.VALE', 'L', jcgmp)
             do 170 j = 0, lonch-1
                 zr(jnoch+j)=zr(jfono+j)-zr(jchmp+j)-zr(jcgmp+j)
-170          continue
+170         continue
             if ((typesd.eq.'EVOL_NOLI') .and. (etan.ne.0.d0)) then
                 call jeveuo(cnfpip(1:19)//'.VALE', 'L', jfpip)
                 do 180 j = 0, lonch-1
                     zr(jnoch+j)=zr(jnoch+j)-etan*zr(jfpip+j)
-180              continue
+180             continue
             endif
         else
 !         --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
             do 190 j = 0, lonch-1
                 zr(jnoch+j)=zr(jfono+j)
-190          continue
+190         continue
         endif
 !
 !       --- TRAITEMENT DES MODE_MECA ---
@@ -398,7 +392,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                         .true.)
             do 200 j = 0, lonch-1
                 zr(jnoch+j)=zr(jnoch+j)-omega2*zr(ltrav+j)
-200          continue
+200         continue
             call jedetr('&&'//nompro//'.TRAV')
 !
 !       --- TRAITEMENT DES MODE_STAT ---
@@ -430,8 +424,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     ind=lonc2*(ic-1)
                     do 210 j = 0, lonc2-1
                         zr(jddr+j)=zr(jddr+j)+zi(jddl+ind+j)*coef(ic)
-210                  continue
-220              continue
+210                 continue
+220             continue
                 call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
                 if (lmat .eq. 0) then
                     call utmess('F', 'PREPOST3_81')
@@ -440,7 +434,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                             .true.)
                 do 230 j = 0, lonch-1
                     zr(jnoch+j)=zr(jnoch+j)-zr(ltrav+j)
-230              continue
+230             continue
                 call jedetr('&&'//nompro//'.POSI_DDR')
                 call jedetr('&&'//nompro//'.POSI_DDL')
                 call jedetr('&&'//nompro//'.TRAV')
@@ -460,7 +454,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                             .true.)
                 do 240 j = 0, lonch-1
                     zr(jnoch+j)=zr(jnoch+j)+zr(ltrav+j)
-240              continue
+240             continue
                 call jedetr('&&'//nompro//'.TRAV')
             else
                 call utmess('A', 'CALCULEL3_1')
@@ -480,7 +474,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                             .true.)
                 do 250 j = 0, lonch-1
                     zr(jnoch+j)=zr(jnoch+j)+dble(zc(ltrav+j))
-250              continue
+250             continue
                 call jedetr('&&'//nompro//'.TRAV')
             else
                 call utmess('A', 'CALCULEL3_1')
@@ -504,11 +498,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call jeveuo(zk24(jref)(1:19)//'.VALE', 'L', jreno)
                 do 260 j = 0, lonch-1
                     zr(jnoch+j)=zr(jnoch+j)+zr(jreno+j)
-260              continue
+260             continue
             endif
         endif
 !
-270      continue
+270     continue
         call rsnoch(resuou, option, iordr)
 !
         if (typesd .eq. 'EVOL_THER') then
@@ -545,7 +539,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call jedetr(vachmp(1:8)//'.ASCOVA')
         call jedetr(vacgmp(1:8)//'.ASCOVA')
         call jedetr(vafpip(1:8)//'.ASCOVA')
-280      continue
+280     continue
         call jedema()
     end do
     call detrsd('CHAMP_GD', bidon)

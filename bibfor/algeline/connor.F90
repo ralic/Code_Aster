@@ -68,7 +68,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     real(kind=8) :: coef(nbm), delta(nbm), rhotub, rhos
     integer :: imode, im, ifsvr, ifsvi, nbma, nbzex, nmamin, nmamax
     integer :: iener, ima, izone, ivcn, iven, icste, modul, nbval, i, j
-    integer :: jconn, modul2, k, jzone, ifsvk, ide, ire, neq, idep, ibid
+    integer :: jconn, modul2, k, jzone, ifsvk, ide, neq, idep
     integer :: ldepl(6), lmasg, increm, id, irap
     real(kind=8) :: di, de, mastub, ltube, numera(nbm), denomi
     real(kind=8) :: pas, correl, a, b, c, d, e, f, mphi2(nbm)
@@ -140,13 +140,10 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 ! ---  DEFORMEES MODALES
 !
 !
-    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
-                masse, ire)
+    call dismoi('REF_MASS_PREM', base, 'RESU_DYNA', repk=masse)
     call mtdscr(masse)
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                numddl, ire)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                k8b, ire)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numddl)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
 !
 !
 !     EXTRACTION DE LA COMPOSANTE SELON LA DIRECTION DE L ECOULEMENT DES

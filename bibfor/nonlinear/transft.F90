@@ -27,7 +27,6 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
 !
     implicit none
 #include "jeveux.h"
-!     -----------------------------------------------------------------
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -41,6 +40,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
 #include "asterfort/rsnoch.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+!     -----------------------------------------------------------------
     character(len=4) :: nomsym(1)
 !
     character(len=8) :: nomres, modein, k8b
@@ -49,7 +49,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     character(len=24) :: chamno
     character(len=24) :: numedd, rigid, masse, amort, matrice(3)
 !
-    integer :: nbordr, lvect, ibid, ier
+    integer :: nbordr, lvect, ier
     integer :: iadd, iarchi, ieq, itps
     integer :: nbmode, neq, nbpt
     integer :: iaux, jaux, nt, nbhar, lrep
@@ -64,10 +64,10 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     call jelira(modein//'           .ORDR', 'LONUTI', nbmode, k8b)
 ! RECUPERATION NUMEROS D ORDRE
 !
-    call dismoi('F', 'NUME_DDL', modein, 'RESU_DYNA', ibid, numedd, ier)
-    call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, rigid, ier)
-    call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, masse, ier)
-    call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amort, ier)
+    call dismoi('NUME_DDL', modein, 'RESU_DYNA', repk=numedd)
+    call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=rigid)
+    call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse)
+    call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amort)
 !
 ! RECUPERATION DE LA FREQUENCE
     call rsadpa(modein, 'L', 1, 'FREQ', 2,&
@@ -88,7 +88,8 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     matrice(1) = rigid
     matrice(2) = masse
     matrice(3) = amort
-    call refdaj ('F', nomres, nbmode, numedd,'DYNAMIQUE',matrice,ier)
+    call refdaj('F', nomres, nbmode, numedd, 'DYNAMIQUE',&
+                matrice, ier)
 !
     iarchi = -1
 ! IARCHI : numero ordre
@@ -120,10 +121,10 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
         do 211 , ieq = 1, neq
         iadd = (itps-1)*neq+ieq
         zr(jaux-1+ieq) = zr(lrep-1+iadd)
-211      continue
+211     continue
 !
         call rsnoch(nomres, nomsym(1), iarchi)
-200  continue
+200 continue
 !
     call jedema()
 end subroutine

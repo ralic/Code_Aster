@@ -63,10 +63,9 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
     character(len=24) :: coorn
     character(len=24) :: xfonfi
     integer :: ifon, npoint, ifm, niv, ier, ibid
-    character(len=8) :: k8bid
     character(len=19) :: cnsbas, basloc
     integer :: iadrco, jgsv, jgsl, jgt, jgtl, jgn
-    integer :: long, nfon, nbno, iret, ino, j
+    integer :: long, nfon, nbno, ino, j
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij, eps, d, norm2
     real(kind=8) :: xm, ym, zm, xim, yim, zim, s, dmin, xn, yn, zn, a(3)
 !
@@ -92,8 +91,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
     coorn = noma//'.COORDO    .VALE'
     call jeveuo(coorn, 'L', iadrco)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 ! --- ACCES AUX OBJETS: NOM DES POINTS DU FOND DE FISSURE
 !
@@ -110,8 +108,8 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
                 zl(jgsl-1+3*ndim*(ino-1)+j+ndim)=.true.
                 zr(jgsv-1+3*ndim*(ino-1)+j+2*ndim)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j+2*ndim)=.true.
-20          continue
-10      continue
+ 20         continue
+ 10     continue
         goto 999
     endif
 !
@@ -181,7 +179,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
                 a(2)=yn
                 a(3)=zn
             endif
-110      continue
+110     continue
 !       STOCKAGE DU PROJETÉ ET DES GRADIENTS
         do 120 j = 1, ndim
             zr(jgsv-1+3*ndim*(ino-1)+j)=a(j)
@@ -191,10 +189,10 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
             zr(jgsv-1+3*ndim*(ino-1)+j+2*ndim)=zr(jgn-1+ndim*(ino-1)+&
             j)
             zl(jgsl-1+3*ndim*(ino-1)+j+2*ndim)=.true.
-120      continue
-100  end do
+120     continue
+100 end do
 !
-999  continue
+999 continue
 !
 !     ENREGISTREMENT DU .BASLOC DANS LA SD FISS_XFEM
     basloc = fiss(1:8)//'.BASLOC'

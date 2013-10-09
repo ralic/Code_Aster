@@ -92,7 +92,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     character(len=19) :: complu, vitplu, strmoi
     character(len=24) :: vrcmoi, vrcplu, varc
     character(len=19) :: depl, sigm, strx
-    integer :: neq, iret, ibid
+    integer :: neq
     real(kind=8) :: partps(2), inst(3)
     character(len=24) :: charge, infoch
     character(len=8) :: noma, k8bid
@@ -107,10 +107,8 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 ! --- INITIALISATIONS
 !
     modele = modelz
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_EQUA   ', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_EQUA   ', numedd, 'NUME_DDL', repi=neq, repk=k8bid)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -142,8 +140,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 !
     charge = lischa(1:19)//'.LCHA'
     infoch = lischa(1:19)//'.INFC'
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- AFFICHAGE
 !
@@ -178,9 +175,9 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
             ASSERT(.false.)
         endif
 !
-        call vefnme(optio2, 'V'   , modele, mate  , carele  ,&
-                    compor, partps, 0     , ' '   , varc    ,&
-                    sigm  , strx  , depl  , depdel, vecele)
+        call vefnme(optio2, 'V', modele, mate, carele,&
+                    compor, partps, 0, ' ', varc,&
+                    sigm, strx, depl, depdel, vecele)
         call nmdep0('OFF', solalg)
 !
 ! --- DEPLACEMENTS DIRICHLET FIXE

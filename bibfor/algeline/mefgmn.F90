@@ -45,19 +45,18 @@ subroutine mefgmn(noma, nbgma, ligrma)
 ! IN  : LIGRMA : LISTE DES NOMS DES GROUPES DE MAILLES.
 !-----------------------------------------------------------------------
 !
-    character(len=8) :: k8b, numgno
+    character(len=8) ::  numgno
     character(len=24) :: grpma, grpno, nomgma
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialima, ialino, ianbno, ierd, igrno, iret
+    integer :: i, ialima, ialino, ianbno, igrno, iret
     integer :: j, n1, nbma, nbnoto
 !-----------------------------------------------------------------------
     call jemarq()
     grpma = noma//'.GROUPEMA       '
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoto,&
-                k8b, ierd)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoto)
     if (nbnoto .eq. 0) goto 9999
     if (nbgma .eq. 0) then
         call utmess('F', 'ALGELINE_82')
@@ -83,7 +82,7 @@ subroutine mefgmn(noma, nbgma, ligrma)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
         call gmgnre(noma, nbnoto, zi(ialino), zi(ialima), nbma,&
                     zi(ialino+ i*nbnoto), zi(ianbno-1+i), 'TOUS')
-10  end do
+ 10 end do
 !
 !
 ! --- CREATION DES GROUPES DE NOEUDS
@@ -96,10 +95,10 @@ subroutine mefgmn(noma, nbgma, ligrma)
         call wkvect(grpno, 'V V I', n1, igrno)
         do 30 j = 1, n1
             zi(igrno+j-1)=zi(ialino+i*nbnoto+j-1)
-30      continue
-40  end do
+ 30     continue
+ 40 end do
 !
-9999  continue
+9999 continue
 !
 ! -- MENAGE
     call jedetr('&&MEFGMN.LISTE_NO ')

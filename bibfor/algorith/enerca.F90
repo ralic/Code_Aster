@@ -70,7 +70,6 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! DECLARATION PARAMETRES D'APPELS
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/ddlphy.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -83,6 +82,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
+!
     character(len=19) :: valinc(*), masse, amort, rigid, sdener
     real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)
     real(kind=8) :: fexte(*), famor(*), fliai(*), fnoda(*), fcine(*)
@@ -95,7 +95,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! ----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: iaux, neq, ibid, ie, nbcol, long
+    integer :: iaux, neq, nbcol, long
     integer :: jdeeq, imdv, icvmoz, iener
     integer :: imasse, iamort, irigid
     integer :: iumoy, iupmum, iumoyz, iupmuz
@@ -153,13 +153,12 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
             zr(iupmum-1+iaux)=depl1(iaux)-dep0(iaux)
             zr(ivmoy-1+iaux)=(vite1(iaux)+vit0(iaux))*5.d-1
             zr(ivpmvm-1+iaux)=vite1(iaux)-vit0(iaux)
-10      continue
+ 10     continue
         call dcopy(neq, zr(iumoy), 1, zr(iumoyz), 1)
         call dcopy(neq, zr(iupmum), 1, zr(iupmuz), 1)
         call dcopy(neq, zr(ivmoy), 1, zr(ivmoyz), 1)
         call dcopy(neq, zr(ivpmvm), 1, zr(ivpmvz), 1)
-        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                    numedd, ie)
+        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numedd)
         call jeveuo(numedd(1:14)//'.NUME.DEEQ', 'L', jdeeq)
         if (sdener(1:8) .eq. '&&OP0070') then
 ! ON NE GARDE QUE LES DDL NODAUX PHYSIQUES
@@ -192,17 +191,16 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         do 20 iaux = 1, neq
             zr(iumoy-1+iaux)=(depl1(iaux)+dep0(iaux))*5.d-1
             zr(iupmum-1+iaux)=depl1(iaux)-dep0(iaux)
-20      continue
+ 20     continue
         call dcopy(neq, zr(iumoy), 1, zr(iumoyz), 1)
         call dcopy(neq, zr(iupmum), 1, zr(iupmuz), 1)
-        call dismoi('F', 'NOM_NUME_DDL', rigid, 'MATR_ASSE', ibid,&
-                    numedd, ie)
+        call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numedd)
         call jeveuo(numedd(1:14)//'.NUME.DEEQ', 'L', jdeeq)
         call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
 ! ON NE GARDE QUE LES DDL NODAUX PHYSIQUES
         call ddlphy(depplu, neq, zr(iupmuz), zk8(idesc))
 ! ON ENLEVE UNIQUEMENT LES LAGRANGES DES CONDITIONS DE DIRICHLET
-        call zerlag(neq, zi(jdeeq), vectr=zr(iumoyz) )
+        call zerlag(neq, zi(jdeeq), vectr=zr(iumoyz))
     endif
 ! --------------------------------------------------------------------
 ! WINT : TRAVAIL REEL DES EFFORTS CALCULE COMME LE TRAVAIL DES FORCES
@@ -219,7 +217,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     else
         do 30 iaux = 1, neq
             zr(ifmoy-1+iaux)=(fnoda(iaux)+fnoda(iaux+neq))*5.d-1
-30      continue
+ 30     continue
         wint=ddot(neq,zr(iupmuz),1,zr(ifmoy),1)
     endif
 ! --------------------------------------------------------------------
@@ -252,7 +250,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
                         .true.)
             do 40 iaux = 1, neq
                 zr(ifmoy-1+iaux)=zr(imumoz-1+iaux)-zr(imumoy-1+iaux)
-40          continue
+ 40         continue
             wext = wext + ddot(neq,zr(ifmoy),1,zr(iupmuz),1)
         else
 ! LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
@@ -261,14 +259,14 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
                         .true.)
             do 60 iaux = 1, neq
                 zr(ifmoy-1+iaux)=zr(ikumoz-1+iaux)-zr(ikumoy-1+iaux)
-60          continue
+ 60         continue
             wext = wext + ddot(neq,zr(ifmoy),1,zr(iupmuz),1)
         endif
     endif
 ! 3. CONTRIBUTION DES NEUMANN
     do 80 iaux = 1, neq
         zr(ifmoy-1+iaux)=(fexte(iaux)+fexte(iaux+neq))*5.d-1
-80  end do
+ 80 end do
 ! GLUT : LA CONTRIBUTION DE LA FORCE QUI TRAVAILLE EN UN POINT OU
 ! LE DEPLACEMENT EST IMPOSE EST PRIS EN COMPTE DANS WEXT1 POUR
 ! LES AFFE_CHAR_CINE ET DANS WEXT2 POUR AFFE_CHAR_MECA. IL PEUT
@@ -279,7 +277,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         if (fcine(iaux) .ne. 0.d0) then
             zr(ifmoy-1+iaux)=0.d0
         endif
-90  end do
+ 90 end do
     wext = wext + ddot(neq,zr(ifmoy),1,zr(iupmuz),1)
 ! --------------------------------------------------------------------
 ! LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
@@ -287,7 +285,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! --------------------------------------------------------------------
     do 100 iaux = 1, neq
         zr(ifmoy-1+iaux)=(fliai(iaux)+fliai(iaux+neq))*5.d-1
-100  end do
+100 end do
     liai=ddot(neq,zr(iupmuz),1,zr(ifmoy),1)
 ! --------------------------------------------------------------------
 ! AMOR : ENERGIE DISSIPEE PAR AMORTISSEMENT
@@ -296,7 +294,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     if (ldyna) then
         do 110 iaux = 1, neq
             zr(ifmoy-1+iaux)=(famor(iaux)+famor(iaux+neq))*5.d-1
-110      continue
+110     continue
         amor=ddot(neq,zr(iupmuz),1,zr(ifmoy),1)
         if (lamort) then
             if (zi(iamort+3) .eq. 1) then

@@ -46,7 +46,7 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 !     ------------------------------------------------------------------
     integer :: jcnsk1, jcnsd1, jcnsv1, jcnsl1, jcnsc1
     integer :: jcnsk2, jcnsd2, jcnsv2, jcnsl2, jcnsc2
-    integer :: nbno, ibid, k, ino, ncmp, nbno1, nbno2, ncmp1, ncmp2
+    integer :: nbno, k, ino, ncmp, nbno1, nbno2, ncmp1, ncmp2
     character(len=8) :: ma1, nomgd1, ma2, nomgd2
     character(len=3) :: tsca1
     character(len=19) :: cns1, cns2
@@ -91,40 +91,39 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 !
 !
 !
-    call dismoi('F', 'TYPE_SCA', nomgd1, 'GRANDEUR', ibid,&
-                tsca1, ibid)
+    call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca1)
     ASSERT(tsca1.eq.'R')
 !
-    do 10,k=1,ncmp
-    ASSERT(zk8(jcnsc1-1+k).eq.zk8(jcnsc2-1+k))
-    10 end do
+    do 10 k = 1, ncmp
+        ASSERT(zk8(jcnsc1-1+k).eq.zk8(jcnsc2-1+k))
+ 10 end do
 !
 !
 !     CALCUL DE LA SOMME DES PRODUITS DES CMPS :
 !     -------------------------------------------
     pscal=0.d0
     ier=0
-    do 30,ino=1,nbno
-    do 20,k=1,ncmp
-    if (zl(jcnsl1-1+(ino-1)*ncmp+k)) then
-        if (.not.zl(jcnsl2-1+(ino-1)*ncmp+k)) then
-            ier=1
-            goto 40
+    do 30 ino = 1, nbno
+        do 20 k = 1, ncmp
+            if (zl(jcnsl1-1+(ino-1)*ncmp+k)) then
+                if (.not.zl(jcnsl2-1+(ino-1)*ncmp+k)) then
+                    ier=1
+                    goto 40
 !
-        endif
-        x1=zr(jcnsv1-1+(ino-1)*ncmp+k)
-        x2=zr(jcnsv2-1+(ino-1)*ncmp+k)
-        pscal=pscal+x1*x2
-    else
-        if (zl(jcnsl2-1+(ino-1)*ncmp+k)) then
-            ier=1
-            goto 40
+                endif
+                x1=zr(jcnsv1-1+(ino-1)*ncmp+k)
+                x2=zr(jcnsv2-1+(ino-1)*ncmp+k)
+                pscal=pscal+x1*x2
+            else
+                if (zl(jcnsl2-1+(ino-1)*ncmp+k)) then
+                    ier=1
+                    goto 40
 !
-        endif
-    endif
-20  continue
-    30 end do
+                endif
+            endif
+ 20     continue
+ 30 end do
 !
-40  continue
+ 40 continue
     call jedema()
 end subroutine

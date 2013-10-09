@@ -185,13 +185,13 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         typal(iapp)='      '
         finpal(iapp)='   '
         cnpal(iapp)=' '
-111  end do
+111 end do
     prdeff = .false.
 !
     if (lamor) then
         do 100 im = 1, neqgen
             amogen(im) = deux * amogen(im) * pulsat(im)
-100      continue
+100     continue
     endif
 !
 !     --- RECUPERATION DES PARAMETRES D'ADAPTATION DU PAS
@@ -212,8 +212,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
     else if (typbas.eq.'MODELE_GENE     ') then
         mamass=zk24(zi(descm+1))(1:19)
-        call dismoi('F', 'SOLVEUR', mamass, 'MATR_ASSE', ibid,&
-                    solveu, ibid)
+        call dismoi('SOLVEUR', mamass, 'MATR_ASSE', repk=solveu)
         ASSERT(solveu.eq.'&&OP0074.SOLVEUR')
         matpre='&&OP0074.BIDON'
 !
@@ -303,7 +302,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
             typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
             finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
             cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
-21      continue
+ 21     continue
     endif
     if (nbpal .ne. 0) nbchoc = 0
 !
@@ -354,7 +353,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !     --- BOUCLE TEMPORELLE ---
 !
-30  continue
+ 30 continue
     if (temps .lt. tfin) then
 !       DO 30 WHILE(TEMPS .LT. TFIN)
 !
@@ -372,7 +371,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
         if (temps+dt2 .gt. tfin) dt2 = tfin-temps
 !         DO 29 WHILE(ERR .GT. 1. .AND. NR .LT. NRMAX)
-29      continue
+ 29     continue
         if (err .gt. 1.d0 .and. nr .lt. nrmax) then
 !
             pas1 = (dt1+dt2)*0.5d0
@@ -392,14 +391,14 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !  MODIFICATION POUR ADAPT ORDRE1
                     zr(jvip2+im) = zr(jvit2+im)
                 endif
-40          continue
+ 40         continue
 !
 !
 !        --- FORCES EXTERIEURES ---
 !
             do 20 if = 0, neqgen-1
                 zr(jfext+if) = zero
-20          continue
+ 20         continue
             if (nbexci .ne. 0) then
                 r8val = temps+dt2
                 call mdfext(r8val, r8bid1, neqgen, nbexci, idescf,&
@@ -526,18 +525,18 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
             tmp = zero
             do 28 iv = 0, nbmod1
                 tmp = tmp+zr(jvit2+iv)**2
-28          continue
+ 28         continue
             tmp = sqrt(tmp)*0.01d0
             do 27 iv = 0, nbmod1
                 zr(jvmin+iv) = tmp
-27          continue
+ 27         continue
         else if (vvar(1:4) .eq. 'MAXI') then
             do 26 iv = 0, nbmod1
                 rint1 = zr(jvit2+iv)*0.01d0
                 rint2 = abs(rint1)
                 rint1 = zr(jvmin+iv)
                 zr(jvmin+iv) = max(rint1,rint2)
-26          continue
+ 26         continue
         endif
 !
 !           --- MISE A JOUR ---
@@ -579,7 +578,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     endif
 ! 30      CONTINUE
 !
-31  continue
+ 31 continue
 !
     if (nbsauv .gt. (isto1+1)) then
         isto1 = isto1 + 1
@@ -623,7 +622,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                     valr=valr, num_except=28)
     endif
 !
-9999  continue
+9999 continue
     call jedetr('&&MDADAP.DEPL')
     call jedetr('&&MDADAP.DEP2')
     call jedetr('&&MDADAP.VITE')

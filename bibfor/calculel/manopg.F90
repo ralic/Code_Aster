@@ -89,15 +89,14 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !     ------------------------------------------------------------------
     integer :: nbpgmx, nbnomx, nbfamx, nbflmx
     parameter (nbpgmx=27,nbnomx=27,nbfamx=20,nbflmx=20)
-    integer :: ibid, nbma, ima, jcesd, jcesl, jcesv, iad, jnbpg
+    integer ::  nbma, ima, jcesd, jcesl, jcesv, iad, jnbpg
     integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl, jpnlfp
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
     integer :: jceld, nbgrel, nel, nute, imolo, jmolo, jecono
-    integer :: ierd, igr, iel, jmaref, lont1
+    integer ::  igr, iel, jmaref, lont1
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
     integer :: nblfpg, jnolfp, nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
-    character(len=1) :: kbid
     character(len=3) :: exixfm
     character(len=8) :: ma, fapg(nbfamx), nomgd, famil, elrefe, param
     character(len=8) :: lielrf(nbflmx), lifapg(nbflmx)
@@ -121,12 +120,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     obdime = '&&MANOPG.DIME'
 !
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
-    call dismoi('F', 'PHENOMENE', ligrel, 'LIGREL', ibid,&
-                pheno, ibid)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('PHENOMENE', ligrel, 'LIGREL', repk=pheno)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
@@ -162,50 +158,50 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jecrec(ligre1//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbgrel)
     lont1=0
-    do 883, igr=1,nbgrel
-    econom=zi(jecono-1+igr).eq.1
-    nel = nbelem(ligrel,igr)
-    if (econom .and. nel .gt. 1) then
-        lont1=lont1+2
-    else
-        lont1=lont1+nel+1
-    endif
-    883 end do
+    do 883 igr = 1, nbgrel
+        econom=zi(jecono-1+igr).eq.1
+        nel = nbelem(ligrel,igr)
+        if (econom .and. nel .gt. 1) then
+            lont1=lont1+2
+        else
+            lont1=lont1+nel+1
+        endif
+883 end do
 !
     call jeecra(ligre1//'.LIEL', 'LONT', lont1, ' ')
-    do 881, igr=1,nbgrel
-    econom=zi(jecono-1+igr).eq.1
-    nel = nbelem(ligrel,igr)
-    if (econom .and. nel .gt. 1) then
-        call jecroc(jexnum(ligre1//'.LIEL', igr))
-        call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', 2)
-        call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
-        call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-        zi(jliel1-1+1)=zi(jliel-1+1)
-        zi(jliel1-1+2)=zi(jliel-1+nel+1)
-        do 882, iel=1,nel
-        ima=zi(jliel-1+iel)
-        if (ima .lt. 0) goto 882
-        if (iel .eq. 1) then
-            zi(jmaref-1+ima)=+zi(jliel-1+1)
+    do 881 igr = 1, nbgrel
+        econom=zi(jecono-1+igr).eq.1
+        nel = nbelem(ligrel,igr)
+        if (econom .and. nel .gt. 1) then
+            call jecroc(jexnum(ligre1//'.LIEL', igr))
+            call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', 2)
+            call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
+            call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
+            zi(jliel1-1+1)=zi(jliel-1+1)
+            zi(jliel1-1+2)=zi(jliel-1+nel+1)
+            do 882 iel = 1, nel
+                ima=zi(jliel-1+iel)
+                if (ima .lt. 0) goto 882
+                if (iel .eq. 1) then
+                    zi(jmaref-1+ima)=+zi(jliel-1+1)
+                else
+                    zi(jmaref-1+ima)=-zi(jliel-1+1)
+                endif
+882         continue
         else
-            zi(jmaref-1+ima)=-zi(jliel-1+1)
+            call jecroc(jexnum(ligre1//'.LIEL', igr))
+            call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', nel+1)
+            call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
+            call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
+            zi(jliel1-1+nel+1)=zi(jliel-1+nel+1)
+            do 884 iel = 1, nel
+                zi(jliel1-1+iel)=zi(jliel-1+iel)
+                ima=zi(jliel-1+iel)
+                if (ima .lt. 0) goto 884
+                zi(jmaref-1+ima)=+zi(jliel-1+iel)
+884         continue
         endif
-882      continue
-    else
-        call jecroc(jexnum(ligre1//'.LIEL', igr))
-        call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', nel+1)
-        call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
-        call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-        zi(jliel1-1+nel+1)=zi(jliel-1+nel+1)
-        do 884, iel=1,nel
-        zi(jliel1-1+iel)=zi(jliel-1+iel)
-        ima=zi(jliel-1+iel)
-        if (ima .lt. 0) goto 884
-        zi(jmaref-1+ima)=+zi(jliel-1+iel)
-884      continue
-    endif
-    881 end do
+881 end do
     call jedupo(ligrel//'.LGRF', 'V', ligre1//'.LGRF', .false.)
     call jedupo(ligrel//'.NBNO', 'V', ligre1//'.NBNO', .false.)
 !
@@ -222,10 +218,10 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !     ---------------------------------------------------------------
     call wkvect(obdime, 'V V I', nbma, jdime)
     ncpmax=0
-    do 77, ima=1,nbma
-    zi(jdime-1+ima)= zi(jnbpg-1+ima)*zi(jnbno-1+ima) +2
-    ncpmax=max(ncpmax,zi(jdime-1+ima))
-    77 end do
+    do 77 ima = 1, nbma
+        zi(jdime-1+ima)= zi(jnbpg-1+ima)*zi(jnbno-1+ima) +2
+        ncpmax=max(ncpmax,zi(jdime-1+ima))
+ 77 end do
     call cescre('V', mnoga, 'ELEM', ma, 'VARI_R',&
                 -ncpmax, ' ', [-1], [-1], zi(jdime))
 !
@@ -251,142 +247,140 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jeveuo(mnoga//'.CESV', 'E', jcesv)
 !
 !
-    do 1, igr=1,nbgrel
-    econom=zi(jecono-1+igr).eq.1
-    call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-    nel = nbelem(ligrel,igr)
-    nute = typele(ligrel,igr)
-    call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
-    imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
-    if (imolo .eq. 0) goto 1
+    do 1 igr = 1, nbgrel
+        econom=zi(jecono-1+igr).eq.1
+        call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
+        nel = nbelem(ligrel,igr)
+        nute = typele(ligrel,igr)
+        call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
+        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+        if (imolo .eq. 0) goto 1
 !
-    call jeveuo(jexnum(ligre1//'.LIEL', igr), 'L', jliel1)
+        call jeveuo(jexnum(ligre1//'.LIEL', igr), 'L', jliel1)
 !
 !
 !       4.1 DETERMINATION DE LA LISTE DES FAMILLES DE PG :
 !       -----------------------------------------------------------
 !       => NBFAM, LIELRF, LIFAPG
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-    call dismoi('F', 'NOM_GD', celmod, 'CHAMP', ibid,&
-                nomgd, ierd)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ierd)
-    kfpg = zi(jmolo-1+4+nec+1)
+        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
+        call dismoi('NOM_GD', celmod, 'CHAMP', repk=nomgd)
+        call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+        kfpg = zi(jmolo-1+4+nec+1)
 !
 !       -- FAMILLE "LISTE"
-    if (kfpg .lt. 0) then
+        if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
-        call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
-        nbfam=nbfam-1
-        ASSERT(nbfam.le.nbflmx)
-        call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
-        elrefe=zk8(jfpgl-1+nbfam+1)
-        do 18,k=1,nbfam
-        lielrf(k)=elrefe
-        noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-        nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
-        nufgpg = zi(jnolfp-1+nuflpg)
-        call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
-        ASSERT(elrefe.eq.nofpg(1:8))
-        lifapg(k)=nofpg(9:16)
-18      continue
+            call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
+            nbfam=nbfam-1
+            ASSERT(nbfam.le.nbflmx)
+            call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
+            elrefe=zk8(jfpgl-1+nbfam+1)
+            do 18 k = 1, nbfam
+                lielrf(k)=elrefe
+                noflpg = nomte//elrefe//zk8(jfpgl-1+k)
+                nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
+                nufgpg = zi(jnolfp-1+nuflpg)
+                call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
+                ASSERT(elrefe.eq.nofpg(1:8))
+                lifapg(k)=nofpg(9:16)
+ 18         continue
 !
 !       -- FAMILLE "ORDINAIRE"
-    else
-        nbfam=1
-        call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
-        lielrf(1)=nofpg(1:8)
-        lifapg(1)=nofpg(9:16)
-    endif
+        else
+            nbfam=1
+            call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
+            lielrf(1)=nofpg(1:8)
+            lifapg(1)=nofpg(9:16)
+        endif
 !
 !
 !       4.2 BOUCLE SUR LA/LES FAMILLE(S) :
 !       ------------------------------------------
-    nbpgt=0
-    do 2, kfam=1,nbfam
-    elrefe=lielrf(kfam)
-    famil=lifapg(kfam)
+        nbpgt=0
+        do 2 kfam = 1, nbfam
+            elrefe=lielrf(kfam)
+            famil=lifapg(kfam)
 !
-    call elraca(elrefe, ndim, nno, nnos, nbfpg,&
-                fapg, nbpgf, xno, vol)
-    ASSERT(nbfpg.le.nbfamx)
-    ASSERT(nno.le.nbnomx)
+            call elraca(elrefe, ndim, nno, nnos, nbfpg,&
+                        fapg, nbpgf, xno, vol)
+            ASSERT(nbfpg.le.nbfamx)
+            ASSERT(nno.le.nbnomx)
 !
 !         4.2.1 CALCUL DE NPG ET XPG (SI FAMILLE != XFEM)
 !         ------------------------------------------------
-    if (famil(1:4) .ne. 'XFEM') then
-        call elraga(elrefe, famil, ndim, npg, xpg,&
-                    poipg)
-        ASSERT(npg.le.nbpgmx)
+            if (famil(1:4) .ne. 'XFEM') then
+                call elraga(elrefe, famil, ndim, npg, xpg,&
+                            poipg)
+                ASSERT(npg.le.nbpgmx)
 !
 !         4.2.2 CALCUL DE NPG (SI FAMILLE == 'XFEM...')
 !         ------------------------------------------------
-    else
-        ima=zi(jliel-1+1)
-        npg = zi(jcesgd-1+5+4* (ima-1)+1)
-    endif
+            else
+                ima=zi(jliel-1+1)
+                npg = zi(jcesgd-1+5+4* (ima-1)+1)
+            endif
 !
 !         4.2.3 ECRITURE DANS MANOPG :
 !         ------------------------------------------
-    do 3,iel = 1,nel
-    ima=zi(jliel-1+iel)
-    if (ima .lt. 0) goto 3
+            do 3 iel = 1, nel
+                ima=zi(jliel-1+iel)
+                if (ima .lt. 0) goto 3
 !
-    call cesexi('C', jcesd, jcesl, ima, 1,&
-                1, 1, iad0)
-    iad0=abs(iad0)
-    ASSERT(iad0.gt.0)
+                call cesexi('C', jcesd, jcesl, ima, 1,&
+                            1, 1, iad0)
+                iad0=abs(iad0)
+                ASSERT(iad0.gt.0)
 !
 !           -- SI CE N'EST PAS UNE MAILLE DE REFERENCE :
-    if (zi(jmaref-1+ima) .lt. 0) then
-        zl(jcesl-1+iad0-1+1) = .true.
-        zr(jcesv-1+iad0-1+1) = zi(jmaref-1+ima)
-        goto 3
-    endif
-    ASSERT(zi(jmaref-1+ima).eq.ima)
+                if (zi(jmaref-1+ima) .lt. 0) then
+                    zl(jcesl-1+iad0-1+1) = .true.
+                    zr(jcesv-1+iad0-1+1) = zi(jmaref-1+ima)
+                    goto 3
+                endif
+                ASSERT(zi(jmaref-1+ima).eq.ima)
 !
 !
 !           -- LES 2 PREMIERES CMPS : NNO ET NPG :
-    if (kfam .eq. 1) then
-        zl(jcesl-1+iad0-1+1) = .true.
-        zl(jcesl-1+iad0-1+2) = .true.
-        zr(jcesv-1+iad0-1+1) = nno
-        zr(jcesv-1+iad0-1+2) = npg
-    else
-        ASSERT(nint(zr(jcesv-1+iad0-1+1)).eq.nno)
-        zr(jcesv-1+iad0-1+2) = zr(jcesv-1+iad0-1+2) + npg
-    endif
+                if (kfam .eq. 1) then
+                    zl(jcesl-1+iad0-1+1) = .true.
+                    zl(jcesl-1+iad0-1+2) = .true.
+                    zr(jcesv-1+iad0-1+1) = nno
+                    zr(jcesv-1+iad0-1+2) = npg
+                else
+                    ASSERT(nint(zr(jcesv-1+iad0-1+1)).eq.nno)
+                    zr(jcesv-1+iad0-1+2) = zr(jcesv-1+iad0-1+2) + npg
+                endif
 !
-    call cesexi('C', jcesd, jcesl, ima, 1,&
-                1, 2+nno*(nbpgt+npg), iad)
-    ASSERT(iad.lt.0)
-    iad=iad0+2+nbpgt*nno
+                call cesexi('C', jcesd, jcesl, ima, 1,&
+                            1, 2+nno*(nbpgt+npg), iad)
+                ASSERT(iad.lt.0)
+                iad=iad0+2+nbpgt*nno
 !
 !           -- LES NNO*NPG AUTRES CMPS :
-    do 20 kp = 1, npg
-        if (famil(1:4) .eq. 'XFEM') then
-            ASSERT(.not.econom)
-            nbpt = zi(jcesgd-1+5+4* (ima-1)+1)
-            nbsp = zi(jcesgd-1+5+4* (ima-1)+2)
-            ASSERT(nbpt.eq.npg)
-            ASSERT(nbsp.eq.1)
-            call cesexi('C', jcesgd, jcesgl, ima, kp,&
-                        1, 1, iad1)
-            ASSERT(iad1.gt.0)
-            call elrfvf(elrefe, zr(jcesgv-1+iad1), nbnomx, ff, nno)
-        else
-            call elrfvf(elrefe, xpg(ndim*(kp-1)+1), nbnomx, ff, nno)
-        endif
-        do 10 ino = 1, nno
-            zl(jcesl-1+iad-1+nno*(kp-1)+ino) = .true.
-            zr(jcesv-1+iad-1+nno*(kp-1)+ino) = ff(ino)
-10      continue
-20  continue
+                do 20 kp = 1, npg
+                    if (famil(1:4) .eq. 'XFEM') then
+                        ASSERT(.not.econom)
+                        nbpt = zi(jcesgd-1+5+4* (ima-1)+1)
+                        nbsp = zi(jcesgd-1+5+4* (ima-1)+2)
+                        ASSERT(nbpt.eq.npg)
+                        ASSERT(nbsp.eq.1)
+                        call cesexi('C', jcesgd, jcesgl, ima, kp,&
+                                    1, 1, iad1)
+                        ASSERT(iad1.gt.0)
+                        call elrfvf(elrefe, zr(jcesgv-1+iad1), nbnomx, ff, nno)
+                    else
+                        call elrfvf(elrefe, xpg(ndim*(kp-1)+1), nbnomx, ff, nno)
+                    endif
+                    do 10 ino = 1, nno
+                        zl(jcesl-1+iad-1+nno*(kp-1)+ino) = .true.
+                        zr(jcesv-1+iad-1+nno*(kp-1)+ino) = ff(ino)
+ 10                 continue
+ 20             continue
 !
- 3  continue
-    nbpgt=nbpgt+npg
- 2  continue
-    1 end do
+  3         continue
+            nbpgt=nbpgt+npg
+  2     continue
+  1 end do
 !
 !
     call detrsd('CHAMP', celmod)

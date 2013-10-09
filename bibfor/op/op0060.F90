@@ -92,7 +92,7 @@ subroutine op0060()
     integer :: nbsym, i, n1, n2
     integer :: lamor1, lamor, limpe, lfreq, nbfreq
     integer :: neq, nbmat
-    integer :: ie, jrefa
+    integer ::  jrefa
     integer :: ifreq, ieq, inom, ier
     integer :: lsecmb, jsecmb, jsolut, jvezer
     integer :: icoef, icode
@@ -231,13 +231,10 @@ subroutine op0060()
     numdl1 = ' '
     numdl2 = ' '
     numdl3 = ' '
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                numdl1, ie)
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                numdl2, ie)
+    call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numdl1)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numdl2)
     if (lamor .ne. 0) then
-        call dismoi('F', 'NOM_NUME_DDL', amor, 'MATR_ASSE', ibid,&
-                    numdl3, ie)
+        call dismoi('NOM_NUME_DDL', amor, 'MATR_ASSE', repk=numdl3)
     else
         numdl3 = numdl2
     endif
@@ -559,12 +556,9 @@ subroutine op0060()
 ! --- STOCKAGE : MODELE,CARA_ELEM,CHAM_MATER, CALCUL PHYSIQUE
 !
     if (.not.calgen) then
-        call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', ibid,&
-                    nomo, iret)
-        call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', ibid,&
-                    mate, iret)
-        call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', ibid,&
-                    carele, iret)
+        call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
+        call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate)
+        call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carele)
         call jeveuo(result//'           .ORDR', 'L', jord)
         call jelira(result//'           .ORDR', 'LONUTI', nbord)
         do i = 1, nbord

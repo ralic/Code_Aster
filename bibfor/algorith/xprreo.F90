@@ -3,7 +3,6 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                   cnxinv, nodtor, eletor, liggrd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -26,6 +25,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+!
     real(kind=8) :: deltat
     character(len=8) :: noma, fiss
     character(len=19) :: cnsln, cnslt, cnsgln, cnsglt, noresi, noesom, isozro
@@ -80,7 +80,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbnom, nbma, iret, jconx1, jconx2, jmai, ndim, jlnno
+    integer :: i, ifm, niv, nbnom, nbma, jconx1, jconx2, jmai, ndim, jlnno
     integer :: jglnno, jltno, jgltno, jvi, jvil, jwi, jwil, jmeast, jmestl
     integer :: jmestd, jvf, jvfl, jgdf, jgdfl, itemp, ima, jdelfi, jdefil
     integer :: jdefid, jalpha, jalphl, jalphd, nbnoma, itypma, iadmet, iaddfi
@@ -89,7 +89,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
     real(kind=8) :: signln, normgn, normgt, sigmlt, sdiff, ltprec, ltnouv
     real(kind=8) :: siglst, sdifft, ji(3), dist, dismin
     character(len=3) :: iterk3
-    character(len=8) :: k8b, lpain(4), lpaout(2), typma, licmp(3)
+    character(len=8) ::  lpain(4), lpaout(2), typma, licmp(3)
     character(len=10) :: resk10, retk10
     character(len=19) :: cnolt, cnoglt, celglt, chams, celdfi, cesdfi, celalf
     character(len=19) :: cesalf, cnsvi, cnswi, cnsvf, cnsgdf, cnogdf, celgdf
@@ -118,15 +118,13 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
     write(ifm,*) '   UTILISATION DE LA METHODE SIMPLEXE'
 !
 !  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnom,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnom)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jmai)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
@@ -233,7 +231,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
             if (ndim .eq. 3) zr( jvf-1+3*(node-1)+3)=signln*zr(jglnno-1+ 3*(node-1)+3 )/normgn
         endif
 !
-10  end do
+ 10 end do
 !
 !-----------------------------------------------------------------------
 !
@@ -266,7 +264,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
             zl(jwil-1+node) = .true.
             zr(jvi-1+node) = 0.d0
             zr(jwi-1+node) = 0.d0
-110      continue
+110     continue
 !
 !--------------------------------------
 !   CALCUL DE GRAND F SUR LES ELEMENTS
@@ -306,7 +304,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                 endif
             endif
 !
-90      continue
+ 90     continue
         call cnscno(cnsgdf, ' ', 'NON', 'V', cnogdf,&
                     'F', ibid)
 !
@@ -380,9 +378,9 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                 nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                 zr(jvi-1+nuno) = zr(jvi-1+nuno) + zr(jalpha-1+iadalp) * zr(jdelfi-1+iaddfi)
                 zr(jwi-1+nuno) = zr(jwi-1+nuno) + zr(jalpha-1+iadalp) * zr(jmeast-1+iadmet)
-130          continue
+130         continue
 !
-120      continue
+120     continue
 !
 !-----------------------------------------------------------------------
 !
@@ -412,7 +410,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                 sdifft = sdifft + (ltnouv-ltprec)**2.0d0
                 siglst = siglst + ltprec**2.0d0
             endif
-200      continue
+200     continue
 !
 !  CAS OU TOUS LES RESIDUS A ESTIMER SONT CALCULES
         if (sdiff .eq. 0.d0 .and. sigmlt .eq. 0.d0) then
@@ -479,7 +477,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                             do 175 j = 1, ndim
                                 ji(j) = zr( jcoor-1+3*(node-1)+j) - zr(jcoor-1+3*(nuno-1)+j )
                                 dist=dist+ji(j)**2
-175                          continue
+175                         continue
                             dist=dist**0.5d0
 !     On repere le noeud le plus proche
                             if (dist .lt. dismin) then
@@ -488,8 +486,8 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
                             endif
                         endif
 !
-170                  continue
-160              continue
+170                 continue
+160             continue
 ! On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
                 ltprec = zr(jltno-1+node)
                 ltnouv = zr(jltno-1+node) -deltat*(zr(jvi-1+numin)/zr( jwi-1+numin))
@@ -502,7 +500,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
 !
 !
 !
-800      continue
+800     continue
 !---------------------------------------------------
 !     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
 !---------------------------------------------------
@@ -537,9 +535,9 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
             if ((resit(itemp)-resit(itemp-1)) .ge. 0.d0) goto 999
         endif
 !
-995  end do
+995 end do
 !-----FIN DE LA BOUCLE PRINCIPALE---------------------------------------
-999  continue
+999 continue
 !
 !-------------------------------------
 !     AFFICHAGE DES INFOS UTILISATEUR
@@ -552,7 +550,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
     write(ifm,903)
     do 300 i = 1, itemp
         write(ifm,904)i,residu(i),resit(i)
-300  continue
+300 continue
     write(ifm,903)
 !      ENDIF
 !

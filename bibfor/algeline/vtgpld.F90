@@ -19,9 +19,8 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -32,6 +31,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
+!
     character(len=*) :: geomiz, deplaz, geomfz
     character(len=1) :: base
     real(kind=8) :: alpha
@@ -64,12 +64,12 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
 !
 !
-    integer :: iad, ibid, icompt, igd, ival, ldim, iret
+    integer :: iad, ibid, icompt, igd, ival, ldim
     integer :: nbno, ncmp, ncmpmx, nec, num
     integer :: iadesc, iaprno, iarefe, iavald, iavalf, iavali
     integer :: icmp, ino
     real(kind=8) :: rdepla
-    character(len=8) :: noma, nomgd, k8bid, ktype
+    character(len=8) :: noma, nomgd, ktype
     character(len=19) :: geomi, depla, geomf
     character(len=24) :: nomnu
 !
@@ -85,11 +85,9 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
 ! --- CONFORMITE DES GRANDEURS
 !
-    call dismoi('F', 'NOM_GD', geomi, 'CHAM_NO', ibid,&
-                nomgd, iret)
+    call dismoi('NOM_GD', geomi, 'CHAM_NO', repk=nomgd)
     ASSERT(nomgd(1:6).eq.'GEOM_R')
-    call dismoi('F', 'NOM_GD', depla, 'CHAM_NO', ibid,&
-                nomgd, iret)
+    call dismoi('NOM_GD', depla, 'CHAM_NO', repk=nomgd)
     ASSERT(nomgd(1:6).eq.'DEPL_R')
     call jelira(depla//'.VALE', 'TYPE', cval=ktype)
     ASSERT(ktype(1:1).eq.'R')
@@ -100,10 +98,8 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
 ! --- INFORMATIONS SUR LE MAILLAGE
 !
-    call dismoi('F', 'NOM_MAILLA', geomi, 'CHAM_NO', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, iret)
+    call dismoi('NOM_MAILLA', geomi, 'CHAM_NO', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
     call jelira(geomi//'.VALE', 'LONMAX', ldim)
     ASSERT(ldim/3.eq.nbno)
@@ -142,8 +138,8 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                 else
                     ASSERT(.false.)
                 endif
-14          continue
-13      continue
+ 14         continue
+ 13     continue
     else
 !
 ! --- ON RECUPERE CE QUI CONCERNE LES NOEUDS DU MAILLAGE
@@ -169,9 +165,9 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                             ASSERT(.false.)
                         endif
                     endif
-12              continue
+ 12             continue
             endif
-11      continue
+ 11     continue
     endif
 !
     call jedema()

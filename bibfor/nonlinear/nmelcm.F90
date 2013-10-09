@@ -76,8 +76,8 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     integer :: ifm, niv
     logical :: debug
     integer :: ifmdbg, nivdbg
-    integer :: ibid, ib, nbma
-    character(len=8) :: noma, k8bid
+    integer ::  nbma
+    character(len=8) :: noma
     character(len=19) :: ligrel
     character(len=19) :: chmlcf
     character(len=16) :: option
@@ -157,10 +157,8 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     endif
 !
     if (lxczm) then
-        call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ib,&
-                    noma, ibid)
-        call dismoi('F', 'NB_MA_MAILLA', modele, 'MODELE', nbma,&
-                    k8bid, ibid)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+        call dismoi('NB_MA_MAILLA', modele, 'MODELE', repi=nbma)
     endif
 !
 ! --- INITIALISATIONS DES CHAMPS
@@ -335,7 +333,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
                     nbout, lpaout, lchout)
     endif
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

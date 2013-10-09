@@ -59,7 +59,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
 !
 !
-    integer :: ibid, jcesd, jcesl, jcesv, n1, i, iret
+    integer :: ibid, jcesd, jcesl, jcesv, n1, i
     integer :: nbma, ima, iad, jinst, nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, r8b
     logical :: booneg, boopos, exicar
@@ -125,28 +125,28 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     booneg = .false.
     boopos = .false.
     nbmcfl = 1
-    do 10,ima = 1,nbma
-    call cesexi('C', jcesd, jcesl, ima, 1,&
-                1, 1, iad)
-    if (iad .gt. 0) then
-        valeur = zr(jcesv-1+iad)
-    else if (iad.eq.0) then
-        goto 10
-    endif
-    if (valeur .lt. 0) then
-        booneg = .true.
-    else
-        boopos = .true.
-        if (dtcou .gt. 0) then
-            if (valeur .le. dtcou) then
-                dtcou = valeur
-                nbmcfl = ima
-            endif
-        else
-            dtcou = valeur
+    do 10 ima = 1, nbma
+        call cesexi('C', jcesd, jcesl, ima, 1,&
+                    1, 1, iad)
+        if (iad .gt. 0) then
+            valeur = zr(jcesv-1+iad)
+        else if (iad.eq.0) then
+            goto 10
         endif
-    endif
-    10 end do
+        if (valeur .lt. 0) then
+            booneg = .true.
+        else
+            boopos = .true.
+            if (dtcou .gt. 0) then
+                if (valeur .le. dtcou) then
+                    dtcou = valeur
+                    nbmcfl = ima
+                endif
+            else
+                dtcou = valeur
+            endif
+        endif
+ 10 end do
 !
     call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
 !
@@ -161,8 +161,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
                     r8b, nbinst, k8bid)
         call jeveuo(sddisc//'.DITR', 'L', jinst)
 !
-        call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                    mail, iret)
+        call dismoi('NOM_MAILLA', mo, 'MODELE', repk=mail)
         call jenuno(jexnum(mail//'.NOMMAI', nbmcfl), maicfl)
 !
 !
@@ -187,7 +186,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
                     call utmess('A', 'DYNAMIQUE_2')
                 endif
             endif
-20      continue
+ 20     continue
 !
     else if (stocfl(1:3).eq.'OUI') then
         call utmess('F', 'DYNAMIQUE_4')

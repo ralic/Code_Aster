@@ -58,8 +58,7 @@ subroutine ntcrch(modele, numedd, hydr0, vhydr)
     hydric = '&&NTCRCH.HYDR_C'
     hydris = '&&NTCRCH.HYDR_S'
     hydr0 = '&&NTCRCH.HYDR0'
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrmo, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! --- CREATION CHAMP HYDRATATION
 !

@@ -65,7 +65,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
 !----------------------------------------------------------------------
 !
 !
-    integer :: aprno, adeeq, iddl, ideb, nd, n, nec, ierd, gd, ier
+    integer :: aprno, adeeq, iddl, ideb, nd, n, nec, gd
     character(len=8) :: modgen, basemo
     character(len=16) :: typrep
     character(len=24) :: nprno, ndeeq, kbid, norig
@@ -87,8 +87,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
 !
     call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), nbprno)
     call jeveuo(ndeeq, 'L', adeeq)
-    call dismoi('F', 'NUM_GD_SI', nume, 'NUME_DDL', gd,&
-                kbid, ierd)
+    call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
     nec = nbec(gd)
 !
     if (nbprno .ne. 0) then
@@ -102,7 +101,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
         call jeveuo(jexnum(nprno, ibid), 'L', aprno)
         do 5 i = 1, neq
             tabddl(i) = 1
- 5      end do
+  5     end do
         do 10 i = 1, neq
             n = zi(adeeq + 2*i-1)
             if (n .eq. 0) then
@@ -117,11 +116,11 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                     if (exisdg(zi(aprno+(nec+2)*(nd-1)+ 3-1),icmp)) then
                         ico = ico + 1
                     endif
-15              continue
+ 15             continue
                 iddl = ideb + ico
                 tabddl(iddl) = -1
             endif
-10      end do
+ 10     end do
 !
     else
 !
@@ -134,7 +133,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
             else
                 tabddl(i)=0
             endif
-11      end do
+ 11     end do
 !
         call jeveuo(nume//'.NUME.REFN', 'L', jrefe)
         call gettco(zk24(jrefe), typrep)
@@ -151,14 +150,13 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                     kbid = '        '
                     call mgutdm(modgen, kbid, nusst, 'NOM_BASE_MODALE', ibid,&
                                 basemo)
-                    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbdefo,&
-                                kbid, ier)
+                    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbdefo)
                     n1ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)- nbdefo
                     n2ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)-1
                     do 24 j = n1ddl, n2ddl
                         tabddl(j)=-j
-24                  continue
-23              continue
+ 24                 continue
+ 23             continue
             endif
         endif
 !
@@ -181,7 +179,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 0
             endif
-12      continue
+ 12     continue
     else if (choix.eq.'BLOQ') then
         do 14 i = 1, neq
             n = tabddl(i)
@@ -195,7 +193,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 1
             endif
-14      continue
+ 14     continue
     else if (choix .eq. 'LAGR') then
         do 16 i = 1, neq
             n = tabddl(i)
@@ -209,7 +207,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 0
             endif
-16      continue
+ 16     continue
     else if (choix .eq. 'ACBL') then
         do 18 i = 1, neq
             n = tabddl(i)
@@ -223,7 +221,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 1
             endif
-18      continue
+ 18     continue
     else if (choix .eq. 'ACLA') then
         do 20 i = 1, neq
             n = tabddl(i)
@@ -237,7 +235,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 0
             endif
-20      continue
+ 20     continue
     else if (choix .eq. 'BLLA') then
         do 22 i = 1, neq
             n = tabddl(i)
@@ -251,7 +249,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 1
             endif
-22      continue
+ 22     continue
     else
         call utmess('F', 'UTILITAI5_3', sk=choix)
     endif

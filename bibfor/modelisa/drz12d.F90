@@ -1,4 +1,4 @@
-subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
+subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
                   cmp_index_drz, type_lagr, lisrel)
 !
     implicit none
@@ -34,7 +34,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    character(len=8), intent(in)  :: noma
+    character(len=8), intent(in) :: noma
     character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: type_vale
     integer, intent(in) :: nb_node
@@ -63,7 +63,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_no, ier
+    integer :: i_no
     integer :: jcoor, jliscc, jliscr, jlisdi, jlisdl
     integer :: jlisdm, jlisno, jprnm
     integer :: nbec
@@ -74,7 +74,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
     complex(kind=8) :: vale_cplx
     character(len=8) :: vale_fonc
     character(len=4) :: type_coef
-    character(len=8) :: nomg, nomnoe_m, nomnoe_a, k8bid
+    character(len=8) :: nomg, nomnoe_m, nomnoe_a
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,8 +92,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
 ! - Information about <GRANDEUR>
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
@@ -129,17 +128,17 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
 !
     ASSERT(.false.)
 !
-30  continue
+ 30 continue
 !
     call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
 !
 ! - Loop on nodes
 !
-    do i_no = 1,nb_node
+    do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
 !
-        if (numnoe_m.ne.numnoe_a) then
+        if (numnoe_m .ne. numnoe_a) then
 !
 ! --------- Distances: x = DX(A) - DX(M) and y = DY(A) - DY(M)
 !

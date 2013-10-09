@@ -17,9 +17,8 @@ subroutine xmligr(noma, nomo, resoco)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/detrsd.h"
@@ -40,6 +39,7 @@ subroutine xmligr(noma, nomo, resoco)
 #include "asterfort/mmimp2.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmelel.h"
+!
     character(len=8) :: noma, nomo
     character(len=24) :: resoco
 !
@@ -65,7 +65,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
     integer :: nbtyp
     parameter (nbtyp=30)
-    integer :: ico, jco, nbgrel, ipc, nbpc, k, ino, ibid
+    integer :: ico, jco, nbgrel, ipc, nbpc, k, ino
     integer :: jlgrf, jtymai, jmail, iacnx1, ilcnx1
     integer :: nummam, nummae, jnbno, long, jad, ityte, jtynma
     integer :: nndel, numtyp, compt(nbtyp), jtabf, ztabf
@@ -74,7 +74,6 @@ subroutine xmligr(noma, nomo, resoco)
     character(len=24) :: tabfin, nosdco
     character(len=19) :: ligrxf
     character(len=16) :: nomte, nomtm, nomte2(nbtyp), mail3(2, 8)
-    character(len=8) :: k8bid
     character(len=4) :: mode(3)
     character(len=3) :: mail2(2, 8)
     character(len=2) :: mail(2, 8)
@@ -119,11 +118,10 @@ subroutine xmligr(noma, nomo, resoco)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, ibid)
-    do 10,k = 1,nbtyp
-    compt(k) = 0
-    10 end do
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+    do 10 k = 1, nbtyp
+        compt(k) = 0
+ 10 end do
     nbpc = nint(zr(jtabf-1+1))
     ligrxf = zk24(jnosdc+3-1)(1:19)
 !
@@ -142,13 +140,13 @@ subroutine xmligr(noma, nomo, resoco)
 ! --- ON COMPTE LE NOMBRE DE NOEUDS A STOCKER AU TOTAL
 !
     long = nbpc
-    do 20,ipc = 1,nbpc
-    nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
-    nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
-    call xmelel(ndim, jmail, jtymai, nummae, nummam,&
-                imod, iatt, imail, nno)
-    long = long+nno(1)+nno(2)
-    20 end do
+    do 20 ipc = 1, nbpc
+        nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
+        nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
+        call xmelel(ndim, jmail, jtymai, nummae, nummam,&
+                    imod, iatt, imail, nno)
+        long = long+nno(1)+nno(2)
+ 20 end do
 !
 ! --- PAS DE NOEUDS TARDIFS
 !
@@ -165,59 +163,59 @@ subroutine xmligr(noma, nomo, resoco)
                 nbpc)
     call jeecra(ligrxf//'.NEMA', 'LONT', long)
     nbgrel = 0
-    do 50,ipc = 1,nbpc
-    nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
-    nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
-    call xmelel(ndim, jmail, jtymai, nummae, nummam,&
-                imod, iatt, imail, nno)
+    do 50 ipc = 1, nbpc
+        nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
+        nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
+        call xmelel(ndim, jmail, jtymai, nummae, nummam,&
+                    imod, iatt, imail, nno)
 !
 ! ----- CREATION DE L'ELEMENT DE CONTACT DANS LE LIGREL
 !
-    call jecroc(jexnum(ligrxf//'.NEMA', ipc))
-    nndel = nno(1)+nno(2)
-    call jeecra(jexnum(ligrxf//'.NEMA', ipc), 'LONMAX', nndel+1)
-    call jeveuo(jexnum(ligrxf//'.NEMA', ipc), 'E', jad)
-    if (iatt(1) .ne. 3) then
-        nomtm = mail2(ndim-1,imail(1))//mail2(ndim-1,imail(2))
-    else
-        nomtm = mail3(ndim-1,imail(1))
-    endif
-    call jenonu(jexnom('&CATA.TM.NOMTM', nomtm), numtyp)
-    zi(jad-1+nndel+1) = numtyp
+        call jecroc(jexnum(ligrxf//'.NEMA', ipc))
+        nndel = nno(1)+nno(2)
+        call jeecra(jexnum(ligrxf//'.NEMA', ipc), 'LONMAX', nndel+1)
+        call jeveuo(jexnum(ligrxf//'.NEMA', ipc), 'E', jad)
+        if (iatt(1) .ne. 3) then
+            nomtm = mail2(ndim-1,imail(1))//mail2(ndim-1,imail(2))
+        else
+            nomtm = mail3(ndim-1,imail(1))
+        endif
+        call jenonu(jexnom('&CATA.TM.NOMTM', nomtm), numtyp)
+        zi(jad-1+nndel+1) = numtyp
 !
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE ESCLAVE
 !
-    do 30,ino = 1,nno(1)
-    zi(jad-1+ino) = zi(iacnx1+zi(ilcnx1-1+nummae)-2+ino)
-30  continue
+        do 30 ino = 1, nno(1)
+            zi(jad-1+ino) = zi(iacnx1+zi(ilcnx1-1+nummae)-2+ino)
+ 30     continue
 !
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 !
-    do 40,ino = 1,nno(2)
-    zi(jad-1+nno(1)+ino) = zi(iacnx1+zi(ilcnx1-1+nummam)-2+ ino)
-40  continue
+        do 40 ino = 1, nno(2)
+            zi(jad-1+nno(1)+ino) = zi(iacnx1+zi(ilcnx1-1+nummam)-2+ ino)
+ 40     continue
 !
 ! --- TYPE D'ÉLÉMENT TARDIF
 !
-    nomte=mode(imod)//mail(ndim-1,imail(1))//attr(iatt(1))
-    if (iatt(1) .ne. 3) then
-        nomte=nomte(1:7)//mail(ndim-1,imail(2))//attr(iatt(2))//&
+        nomte=mode(imod)//mail(ndim-1,imail(1))//attr(iatt(1))
+        if (iatt(1) .ne. 3) then
+            nomte=nomte(1:7)//mail(ndim-1,imail(2))//attr(iatt(2))//&
             '_XH'
-    else
-        nomte=nomte(1:7)//'_XH'
-    endif
-    do 60 k = 1, nbgrel
-        if (nomte .eq. nomte2(k)) then
-            compt(k) = compt(k)+1
-            zi(jtynma-1+ipc)=k
-            goto 50
+        else
+            nomte=nomte(1:7)//'_XH'
         endif
-60  continue
-    nbgrel = nbgrel+1
-    nomte2(nbgrel) = nomte
-    compt(nbgrel) = 1
-    zi(jtynma-1+ipc)=nbgrel
-    50 end do
+        do 60 k = 1, nbgrel
+            if (nomte .eq. nomte2(k)) then
+                compt(k) = compt(k)+1
+                zi(jtynma-1+ipc)=k
+                goto 50
+            endif
+ 60     continue
+        nbgrel = nbgrel+1
+        nomte2(nbgrel) = nomte
+        compt(nbgrel) = 1
+        zi(jtynma-1+ipc)=nbgrel
+ 50 end do
     ASSERT(nbgrel.ne.0)
 !
 ! --- CREATION DE L'OBJET .LIEL
@@ -228,23 +226,23 @@ subroutine xmligr(noma, nomo, resoco)
     long = nbgrel + nbpc
     call jeecra(ligrxf//'.LIEL', 'LONT', long)
     ico = 0
-    do 90,k = 1,nbgrel
-    ico = ico + 1
-    call jecroc(jexnum(ligrxf//'.LIEL', ico))
-    call jeecra(jexnum(ligrxf//'.LIEL', ico), 'LONMAX', compt(k)+1)
-    call jeveuo(jexnum(ligrxf//'.LIEL', ico), 'E', jad)
+    do 90 k = 1, nbgrel
+        ico = ico + 1
+        call jecroc(jexnum(ligrxf//'.LIEL', ico))
+        call jeecra(jexnum(ligrxf//'.LIEL', ico), 'LONMAX', compt(k)+1)
+        call jeveuo(jexnum(ligrxf//'.LIEL', ico), 'E', jad)
 !
-    call jenonu(jexnom('&CATA.TE.NOMTE', nomte2(k)), ityte)
-    zi(jad-1+compt(k)+1) = ityte
+        call jenonu(jexnom('&CATA.TE.NOMTE', nomte2(k)), ityte)
+        zi(jad-1+compt(k)+1) = ityte
 !
-    jco = 0
-    do 80,ipc = 1,nbpc
-    if (zi(jtynma-1+ipc) .eq. k) then
-        jco = jco + 1
-        zi(jad-1+jco) = -ipc
-    endif
-80  continue
-    90 end do
+        jco = 0
+        do 80 ipc = 1, nbpc
+            if (zi(jtynma-1+ipc) .eq. k) then
+                jco = jco + 1
+                zi(jad-1+jco) = -ipc
+            endif
+ 80     continue
+ 90 end do
 !
 ! --- IMPRESSIONS
 !

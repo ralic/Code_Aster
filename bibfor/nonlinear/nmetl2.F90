@@ -56,7 +56,7 @@ subroutine nmetl2(motfac, sdieto, icham)
     integer :: jioinf, jiolch
     integer :: zioch
     character(len=24) :: champ1, champ2
-    integer :: ilecc, iret, ibid
+    integer :: ilecc, iret
     character(len=24) :: chetin, loccha, lochin
     character(len=24) :: motcei, statut
     character(len=24) :: nomcha, nomch0, nomchs, valk(2)
@@ -121,8 +121,8 @@ subroutine nmetl2(motfac, sdieto, icham)
 !
 ! ----- TYPE DU CHAMP DONNE
 !
-        call dismoi('C', 'TYPE_CHAMP', champ1, 'CHAMP', ibid,&
-                    lochin, iret)
+        call dismoi('TYPE_CHAMP', champ1, 'CHAMP', repk=lochin, arret='C',&
+                    ier=iret)
 !
 ! ----- CONVERSION EVENTUELLE DU CHAMP
 !
@@ -150,7 +150,7 @@ subroutine nmetl2(motfac, sdieto, icham)
         zk24(jiolch+zioch*(icham-1)+4-1) = 'CHAMP'
     endif
 !
-999  continue
+999 continue
 !
     call detrsd('CHAMP', champ2)
 !

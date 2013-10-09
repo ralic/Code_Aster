@@ -57,8 +57,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
     character(len=19) :: romk
     integer :: jromk
     integer :: i, icomp, iran(3), indro
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     real(kind=8) :: theta1(3), theta2(3), deldet(3)
     character(len=19) :: depplu, depdel
     integer :: jdepp, jdepde
@@ -75,8 +74,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -135,7 +133,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
         else
             ASSERT(.false.)
         endif
-20  end do
+ 20 end do
 !
     call jedema()
 end subroutine

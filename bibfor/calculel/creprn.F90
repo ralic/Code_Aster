@@ -69,14 +69,14 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 ! -----  VARIABLES LOCALES
     character(len=*) :: ligrez, molocz, basez, prnmz, prnsz
     integer :: gd, i, iaconx, ialiel, iamaco, iamail, iamsco, jmoloc, iancmp
-    integer :: ianmcr, iaprnm, iaprno, iaprns, iasssa, ibid, icmp
-    integer :: icodla, iec, ier, igr, illiel, ilmaco, ilmsco
+    integer :: ianmcr, iaprnm, iaprno, iaprns, iasssa, icmp
+    integer :: icodla, iec, igr, illiel, ilmaco, ilmsco
     integer :: ima, imode, ino, inold, iret, ite, j, k, l, lgncmp, nbnm
     integer :: nbnoms, nbsma, nbssa, nec, nel, nl, nm, nnoe, numa, nunoel
     integer :: admodl, lcmodl
     integer :: lshift
     character(len=1) :: base
-    character(len=8) :: k8bid, noma, nomgd, exiel, nomacr, moloc
+    character(len=8) ::  noma, nomgd, exiel, nomacr, moloc
     character(len=16) :: nomte
     character(len=14) :: num2
     character(len=16) :: phenom
@@ -112,28 +112,20 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
     ASSERT(ligrel.ne.'&MAILLA')
 !
-    call dismoi('F', 'EXI_ELEM', ligrel, 'LIGREL', ibid,&
-                exiel, ier)
-    call dismoi('F', 'NB_SS_ACTI', ligrel, 'LIGREL', nbssa,&
-                k8bid, ier)
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                noma, ier)
+    call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiel)
+    call dismoi('NB_SS_ACTI', ligrel, 'LIGREL', repi=nbssa)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nm,&
-                k8bid, ier)
-    call dismoi('F', 'NB_NL_MAILLA', noma, 'MAILLAGE', nl,&
-                k8bid, ier)
-    call dismoi('F', 'NB_SM_MAILLA', noma, 'MAILLAGE', nbsma,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nm)
+    call dismoi('NB_NL_MAILLA', noma, 'MAILLAGE', repi=nl)
+    call dismoi('NB_SM_MAILLA', noma, 'MAILLAGE', repi=nbsma)
 !
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
 !
     if (moloc .eq. ' ') then
-        call dismoi('F', 'PHENOMENE', ligrel, 'LIGREL', ibid,&
-                    phenom, ier)
-        call dismoi('F', 'NOM_MOLOC', phenom, 'PHENOMENE', ibid,&
-                    moloc, ier)
+        call dismoi('PHENOMENE', ligrel, 'LIGREL', repk=phenom)
+        call dismoi('NOM_MOLOC', phenom, 'PHENOMENE', repk=moloc)
     endif
 !
 !
@@ -149,7 +141,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                 call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), nomgd)
                 goto 20
             endif
-10      continue
+ 10     continue
 !       -- IL PEUT ARRIVER QUE NBGREL=0. ON S'EN SORT AVEC MOLOC :
         if (moloc .eq. 'DDL_MECA') then
             nomgd='DEPL_R'
@@ -158,22 +150,19 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         else
             ASSERT(.false.)
         endif
-20      continue
+ 20     continue
 !
     else
 !       -- SI IL N'Y A PAS D'ELEMENTS FINIS
 !          ON EST EN SOUS-STRUCTURATION STATIQUE => MECANIQUE.
-        call dismoi('F', 'NOM_GD', 'MECANIQUE', 'PHENOMENE', ibid,&
-                    nomgd, ier)
+        call dismoi('NOM_GD', 'MECANIQUE', 'PHENOMENE', repk=nomgd)
     endif
 !
 !
 !     -- CALCUL DE GD ET NEC :
 !     ---------------------------------------------------------
-    call dismoi('F', 'NUM_GD_SI', nomgd, 'GRANDEUR', gd,&
-                k8bid, ier)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8bid, ier)
+    call dismoi('NUM_GD_SI', nomgd, 'GRANDEUR', repi=gd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
 !
     call jeexin(noma//'.CONNEX', iret)
@@ -202,8 +191,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 ! --- ALLOCATION DE PRNS (POUR UN LIGREL CONTENANT DES NOEUDS TARDIFS):
 !     ----------------------------------------------------------------
     if (ligrel .ne. '&MAILLA') then
-        call dismoi('F', 'NB_NO_SUP', ligrel, 'LIGREL', nbnoms,&
-                    k8bid, ier)
+        call dismoi('NB_NO_SUP', ligrel, 'LIGREL', repi=nbnoms)
     endif
     call jeexin(prns, iret)
     if (iret .eq. 0) then
@@ -245,8 +233,8 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                                                               zi( iaprnm-1+nec* ( nunoel-1)+l ),&
                                                               iec&
                                                               )
-30                      continue
-40                  continue
+ 30                     continue
+ 40                 continue
                 else
 !
 ! ---          IL S'AGIT D'UNE MAILLE TARDIVE :
@@ -265,14 +253,14 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                                 ior(zi(iaprns-1+nec* (-nunoel-1)+l),&
                                 iec)
                             endif
-50                      continue
-60                  continue
+ 50                     continue
+ 60                 continue
                 endif
-70          continue
+ 70         continue
         endif
-80  end do
+ 80 end do
 !
-90  continue
+ 90 continue
 !
 !
 ! --- BOUCLE SUR LES SUPERELEMENTS :
@@ -297,40 +285,40 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
         icodla = lshift(1,icmp)
 !
-        do 120,ima = 1,nbsma
-        nomacr = zk8(ianmcr-1+ima)
-        call dismoi('F', 'NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', ibid,&
-                    num2, ier)
-        call jeveuo(nomacr//'.CONX', 'L', iaconx)
-        call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprno)
-        if (zi(iasssa-1+ima) .eq. 1) then
-            call jeveuo(jexnum(noma//'.SUPMAIL', ima), 'L', iamail)
-            call jelira(jexnum(noma//'.SUPMAIL', ima), 'LONMAX', nbnm)
+        do 120 ima = 1, nbsma
+            nomacr = zk8(ianmcr-1+ima)
+            call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
+            call jeveuo(nomacr//'.CONX', 'L', iaconx)
+            call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprno)
+            if (zi(iasssa-1+ima) .eq. 1) then
+                call jeveuo(jexnum(noma//'.SUPMAIL', ima), 'L', iamail)
+                call jelira(jexnum(noma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
-            do 110,i = 1,nbnm
-            ino = zi(iamail-1+i)
-            inold = zi(iaconx-1+3* (i-1)+2)
-            if (ino .gt. nm) then
+                do 110 i = 1, nbnm
+                    ino = zi(iamail-1+i)
+                    inold = zi(iaconx-1+3* (i-1)+2)
+                    if (ino .gt. nm) then
 !
 ! ---        CAS D'UN NOEUD DE LAGRANGE :
 !            --------------------------
-                zi(iaprnm-1+nec* (ino-1)+1) = ior( zi(iaprnm-1+ nec* (ino- 1)+1), icodla )
-            else if (inold.gt.0) then
+                        zi(iaprnm-1+nec* (ino-1)+1) = ior(zi(iaprnm-1+ nec* (ino- 1)+1), icodla)
+                    else if (inold.gt.0) then
 !
 ! ---        CAS D'UN NOEUD PHYSIQUE DU MAILLAGE :
 !            -----------------------------------
-                do 100,iec = 1,nec
-                zi(iaprnm-1+nec* (ino-1)+iec) = ior(&
-                                                zi(iaprnm-1+ nec* (ino-1)+iec),&
-                                                zi( iaprno-1+ ( nec+2)* (inold-1)+2+ iec )&
-                                                )
-100              continue
-            else
-                call utmess('F', 'CALCULEL2_24')
+                        do 100 iec = 1, nec
+                            zi(iaprnm-1+nec* (ino-1)+iec) = ior(&
+                                                            zi(iaprnm-1+ nec* (ino-1)+iec),&
+                                                            zi(&
+                                                            iaprno-1+ ( nec+2)* (inold-1)+2+ iec)&
+                                                            )
+100                     continue
+                    else
+                        call utmess('F', 'CALCULEL2_24')
+                    endif
+110             continue
             endif
-110          continue
-        endif
-120      continue
+120     continue
     endif
     call jedetr('&MAILLA            .NOMA')
 !

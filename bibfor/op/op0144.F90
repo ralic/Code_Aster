@@ -78,9 +78,9 @@ subroutine op0144()
 !
 !-----------------------------------------------------------------------
     integer :: i, iacmp, iamor, iav, icmp, idec, idesc
-    integer :: iec, ier, ifact, ifm, ifr, ifreq, ifsic
+    integer :: iec, ifact, ifm, ifr, ifreq, ifsic
     integer :: ii, imasg, inec, ino, inumo, io, ipar
-    integer :: irefe, iret, itypfl, iv, ivite
+    integer :: irefe, itypfl, iv, ivite
     integer :: j, jcdesc, jcrefe, jdesc, jj, jprno, long
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
@@ -166,7 +166,7 @@ subroutine op0144()
     if (tmode) then
         do 10 i = 1, nbno
             zi(inumo+i-1) = i
-10      continue
+ 10     continue
     else
         call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbno, vect=zi(inumo))
     endif
@@ -183,7 +183,7 @@ subroutine op0144()
         call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amor)
         do 20 i = 1, nbno
             zr(iamor+i-1) = amor
-20      continue
+ 20     continue
     endif
 !
     if (nbconn .ne. 0) then
@@ -217,7 +217,7 @@ subroutine op0144()
         vpas = (vmax-vmin)/(nbpv-1)
         do 30 iv = 1, nbpv
             zr(ivite+iv-1) = vmin + (iv-1)*vpas
-30      continue
+ 30     continue
     endif
 !
 ! --- 2.2.CREATION DE L'OBJET .FREQ
@@ -273,11 +273,9 @@ subroutine op0144()
 ! ---     A LA CREATION DES OBJETS ASSOCIES AUX CHAMPS
 ! ---     A LA CREATION DU PROF_CHNO COMMUN
 !
-    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ibid,&
-                matria, iret)
+    call dismoi('REF_RIGI_PREM', nombm, 'RESU_DYNA', repk=matria)
 !
-    call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
     call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoeu)
     long = 6*nbnoeu
 !
@@ -287,8 +285,7 @@ subroutine op0144()
     call jeveuo(jexatr('&CATA.GD.NOMCMP', 'LONCUM'), 'L', iav)
     nbcomp = zi(iav+numgd) - zi(iav+numgd-1)
 !
-    call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
-                k8b, ier)
+    call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
     call wkvect('&&OP0144.DESC_NOEUD', 'V V I', nec*nbnoeu, jdesc)
     do 40 ino = 1, nbnoeu
         do 50 icmp = 1, 6
@@ -298,8 +295,8 @@ subroutine op0144()
                 jj = j - 30*(iec-1)
                 zi(jdesc+(ino-1)*nec+iec-1) = ior( zi(jdesc+(ino-1)* nec+iec-1), 2**jj )
             endif
-50      continue
-40  continue
+ 50     continue
+ 40 continue
 !
 ! --- 6.2.CREATION DE LA STRUCTURE TABLE
 !
@@ -369,9 +366,9 @@ subroutine op0144()
                     do 90 inec = 1, nec
                         ii = ii + 1
                         zi(jprno-1+(nec+2)*(ino-1)+2+inec) = zi(jdesc+ ii-1)
-90                  continue
+ 90                 continue
                     idec = idec + 6
-80              continue
+ 80             continue
                 prchno = cham19
 !
 !           -- CALCUL DE L'OBJET .DEEQ :
@@ -388,9 +385,9 @@ subroutine op0144()
                 zk24(jcrefe+1) = prchno
             endif
 !
-70      continue
+ 70     continue
 !
-60  continue
+ 60 continue
 !
 !
 ! --- 7.LANCEMENT DU CALCUL EN FONCTION DU TYPE DE LA CONFIGURATION ---

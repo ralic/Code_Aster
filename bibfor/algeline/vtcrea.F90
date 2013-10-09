@@ -54,12 +54,11 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     integer :: lchamp
     character(len=1) :: classe
     character(len=1) :: type
-    character(len=8) :: kbid
     character(len=14) :: nu
     character(len=24) :: vale, refe, desc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ied, neq, nugdsi
+    integer :: i, ibid, neq, nugdsi
 !-----------------------------------------------------------------------
     data vale/'                   .VALE'/
     data refe/'                   .REFE'/
@@ -78,15 +77,14 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     call wkvect(refe, classe//' V K24', 4, lchamp)
     do 10 i = 1, 2
         zk24(lchamp-1+i) = crefe(i)
-10  end do
+ 10 end do
 !
 !     -- CREATION DE L'OBJET .DESC :
     desc(1:19) = champ
     call wkvect(desc, classe//' V I', 2, lchamp)
     call jeecra(desc, 'DOCU', ibid, 'CHNO')
     nu= crefe(2)(1:14)
-    call dismoi('F', 'NUM_GD_SI', nu, 'NUME_DDL', nugdsi,&
-                kbid, ied)
+    call dismoi('NUM_GD_SI', nu, 'NUME_DDL', repi=nugdsi)
     zi(lchamp-1+1)=nugdsi
     zi(lchamp-1+2) = 1
 !

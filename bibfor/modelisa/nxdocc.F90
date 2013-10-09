@@ -56,8 +56,7 @@ subroutine nxdocc(model, compor)
 ! - Initializations
 !
     compor      = '&&NXDOCC.COMPOR'
-    call dismoi('F', 'NOM_MAILLA', model, 'MODELE', ibid,&
-                mesh, iret)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     list_vale   = '&&LIST_VALE'
 !
 ! - Read informations from command file

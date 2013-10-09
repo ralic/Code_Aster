@@ -99,7 +99,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 ! -----------------
     integer :: ias, iasmax, icmp, icode, icste, idecma, imail, iranv, iret
     integer :: jdesc, jmodma, jnumac, jptma, jvalk, jvalr, lonuti, nbcste, nbec
-    integer :: nbno, ncaba, ntyele(2), numail, nbcmp, ier, idebgd, i, nbma
+    integer :: nbno, ncaba, ntyele(2), numail, nbcmp, idebgd, i, nbma
     real(kind=8) :: eps, rbid
     logical :: trouv1, trouv2, trouv3, trouv4, trouv5
     character(len=3) :: k3cab, k3mai
@@ -178,8 +178,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         call utmess('F', 'MODELISA2_49', nk=2, valk=valk)
     endif
 !
-    call dismoi('F', 'NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', nbcmp,&
-                k8b, ier)
+    call dismoi('NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', repi=nbcmp)
 !.... NBCMP COMPOSANTES POUR LA GRANDEUR NOMMATER QUI COMPOSE LA CARTE
 !.... => ACCES  AU NOM DU MATERIAU ASSOCIE A UNE MAILLE
     idebgd=nbcmp*(ias-1)+1
@@ -352,8 +351,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     iasmax = zi(jdesc+1)
     call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('F', 'NB_EC', 'CAGNBA', 'GRANDEUR', nbec,&
-                k8b, iret)
+    call dismoi('NB_EC', 'CAGNBA', 'GRANDEUR', repi=nbec)
 !
 !.... EXTRACTION DE LA VALEUR DE L'AIRE DE LA SECTION DROITE AFFECTEE
 !.... A LA PREMIERE MAILLE APPARTENANT AU CABLE

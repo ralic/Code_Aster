@@ -83,7 +83,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
             karg = zk24(jgnst-1+iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno1 = nbno1 + nno
-40      continue
+ 40     continue
 !
         call wkvect('&&DEFAPP.NOST', 'V V I', nbno1, jnost)
 !
@@ -95,9 +95,9 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
             do 50 jno = 1, nno
                 zi(jnost-1+nbno1+jno) = zi(kno+jno-1)
-50          continue
+ 50         continue
             nbno1 = nbno1 +nno
-60      continue
+ 60     continue
     endif
 !
 ! TRAITEMENT DU GROUP_NO_APPUI
@@ -115,7 +115,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
             karg = zk24(jgnap-1+iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno2 = nbno2 + nno
-70      continue
+ 70     continue
 !
         call wkvect('&&DEFAPP.NOAP', 'V V I', nbno2, jnoap)
 !
@@ -127,9 +127,9 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
             do 90 jno = 1, nno
                 zi(jnoap-1+nbno2+jno)= zi(kno+jno-1)
-90          continue
+ 90         continue
             nbno2 = nbno2 +nno
-80      continue
+ 80     continue
     endif
     if (nbno1 .ne. nbno2) then
         call utmess('F', 'ALGORITH2_62')
@@ -150,8 +150,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 !
     ncmp = zi(jcnsd-1+2)
     nomgd = zk8(jcnsk-1+2)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'R') then
         call utmess('F', 'ALGORITH2_63')
     endif
@@ -164,8 +163,8 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
                 zr(iavalf-1+3*(noap-1)+icmp)= zr(iavali-1+3*(noap-1)+&
                 icmp)+ alpha * rdepla
             endif
-100      continue
-200  continue
+100     continue
+200 continue
     call cnscno(chamns, ' ', 'NON', 'V', depla,&
                 'F', ibid)
 !

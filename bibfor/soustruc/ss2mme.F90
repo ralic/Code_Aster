@@ -62,7 +62,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
     character(len=8) :: noma, k8bid, nosma, nomcas, nomacr
     integer :: nbssa, nbsma, n1, n2, nboc
     integer :: iarefr, ialmai, ialsch, imas, iasssa, iamacr
-    integer :: ier0, ioc, i, ibid, ierd, iret
+    integer :: ier0, ioc, i, iret
     character(len=16) :: motfac, valk(2)
 !
 ! ----------------------------------------------------------------------
@@ -75,12 +75,9 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibid,&
-                noma, ierd)
-    call dismoi('F', 'NB_SS_ACTI', nomo, 'MODELE', nbssa,&
-                k8bid, ierd)
-    call dismoi('F', 'NB_SM_MAILLA', nomo, 'MODELE', nbsma,&
-                k8bid, ierd)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
+    call dismoi('NB_SS_ACTI', nomo, 'MODELE', repi=nbssa)
+    call dismoi('NB_SM_MAILLA', nomo, 'MODELE', repi=nbsma)
 !
     if (nbssa .eq. 0) then
         call utmess('F', 'SOUSTRUC_24')
@@ -113,7 +110,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
         if (n1 .eq. 1) then
             do 1 i = 1, nbsma
                 if (zi(iasssa-1+i) .eq. 1) zi(ialsch-1+i)=1
- 1          continue
+  1         continue
             goto 5
         endif
 !
@@ -136,11 +133,11 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
             else
                 zi(ialsch-1+imas)=1
             endif
- 2      continue
+  2     continue
 !
 !       -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES
 !
- 5      continue
+  5     continue
         do 3 i = 1, nbsma
             if (zi(ialsch-1+i) .ne. 0) then
                 call jenuno(jexnum(noma//'.SUPMAIL', i), nosma)
@@ -157,9 +154,9 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
                     call utmess('E', 'SOUSTRUC_28', nk=2, valk=valk)
                 endif
             endif
- 3      continue
+  3     continue
 !
-10  end do
+ 10 end do
 !
     if (ier0 .eq. 1) then
         call utmess('F', 'SOUSTRUC_29')
@@ -167,6 +164,6 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
     call jedetr('&&SS2MME.LMAI')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

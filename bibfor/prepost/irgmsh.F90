@@ -66,7 +66,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !                    = SCALAIRE/VECT_2D/VECT_3D/TENS_2D/TENS_3D
 !
 !     ------------------------------------------------------------------
-    integer :: ior, ich, iret, ibid, ierd, nbma, i
+    integer :: ior, ich, iret, nbma, i
     integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
     integer :: jcoor, jconx, jpoin, jpara, iad
     character(len=8) :: tych, noma, k8b, nomaou, valk(2)
@@ -91,18 +91,16 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                 call rsexch(' ', nomcon, cham(ich), ordr(ior), noch19,&
                             iret)
                 if (iret .eq. 0) goto 34
-32          continue
-30      continue
+ 32         continue
+ 30     continue
         call utmess('A', 'PREPOST2_59')
         goto 9999
-34      continue
+ 34     continue
     else
         noch19 = nomcon
     endif
-    call dismoi('F', 'NOM_MAILLA', noch19, 'CHAMP', ibid,&
-                noma, ierd)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, ierd)
+    call dismoi('NOM_MAILLA', noch19, 'CHAMP', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- ECRITURE DE L'ENTETE DU FICHIER AU FORMAT GMSH
 !
@@ -125,7 +123,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                 call rsadpa(nomcon, 'L', 1, 'INST', ordr(ior),&
                             0, sjv=iad, styp=k8b)
                 zr(jpara+ior-1) = zr(iad)
-20          continue
+ 20         continue
         else
             call jenonu(jexnom(noco19//'.NOVA', 'FREQ'), iret)
             if (iret .ne. 0) then
@@ -133,7 +131,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                     call rsadpa(nomcon, 'L', 1, 'FREQ', ordr(ior),&
                                 0, sjv=iad, styp=k8b)
                     zr(jpara+ior-1) = zr(iad)
-22              continue
+ 22             continue
             endif
         endif
     else
@@ -146,7 +144,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
     do 101 i = 1, ntyele
         nbel(i) = 0
         nobj(i) = ' '
-101  end do
+101 end do
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2' ), typseg)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
@@ -190,8 +188,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !
 ! ------ RECHERCHE DU TYPE DU CHAMP (CHAM_NO OU CHAM_ELEM)
 !
-        call dismoi('F', 'TYPE_CHAMP', noch19, 'CHAMP', ibid,&
-                    tych, ierd)
+        call dismoi('TYPE_CHAMP', noch19, 'CHAMP', repk=tych)
 !
 ! ------ TRAITEMENT DU CAS CHAM_NO:
 !
@@ -236,7 +233,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             valk2(2) = tych
             call utmess('I', 'PREPOST2_60', nk=2, valk=valk2)
         endif
-10  end do
+ 10 end do
 !
 ! --- MENAGE
 !
@@ -244,13 +241,13 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
         if (nobj(i) .ne. ' ') then
             call jedetr(nobj(i))
         endif
-102  end do
+102 end do
 !
     call detrsd('MAILLAGE', nomaou)
     call jedetr(nomaou//'.NUMOLD')
     call jedetr('&&IRGMSH.PARA')
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

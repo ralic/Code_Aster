@@ -57,7 +57,7 @@ subroutine ssafmo(mo)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialmai, iasssa, ibid, ierd, imas, ioc
+    integer :: i, ialmai, iasssa, imas, ioc
     integer :: iret, n1, n2, nboc, nbsma, nbss, nl
 !
 !-----------------------------------------------------------------------
@@ -65,12 +65,9 @@ subroutine ssafmo(mo)
     call getfac('AFFE_SOUS_STRUC', nboc)
     if (nboc .eq. 0) goto 9999
 !
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_SM_MAILLA', ma, 'MAILLAGE', nbsma,&
-                kbid, ierd)
-    call dismoi('F', 'NB_NL_MAILLA', ma, 'MAILLAGE', nl,&
-                kbid, ierd)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('NB_SM_MAILLA', ma, 'MAILLAGE', repi=nbsma)
+    call dismoi('NB_NL_MAILLA', ma, 'MAILLAGE', repi=nl)
     if (nbsma .eq. 0) then
         call utmess('F', 'SOUSTRUC_30')
     endif
@@ -82,9 +79,9 @@ subroutine ssafmo(mo)
 !     ----------------------
     call getvtx('AFFE_SOUS_STRUC', 'TOUT', iocc=ioc, scal=kbid, nbret=n1)
     if (n1 .eq. 1) then
-        do 1, i=1,nbsma
-        zi(iasssa-1+i)=1
- 1      continue
+        do 1 i = 1, nbsma
+            zi(iasssa-1+i)=1
+  1     continue
         nbss= nbsma
         goto 9998
     endif
@@ -96,21 +93,21 @@ subroutine ssafmo(mo)
     call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', iocc=ioc, nbval=-n1, vect=zk8(ialmai),&
                 nbret=n2)
     nbss= -n1
-    do 2, i=1,-n1
-    nosma=zk8(ialmai-1+i)
-    call jenonu(jexnom(ma//'.SUPMAIL', nosma), imas)
-    if (imas .eq. 0) then
-        valk(1) = nosma
-        valk(2) = ma
-        call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
-    else
-        zi(iasssa-1+imas)=1
-    endif
-    2 end do
+    do 2 i = 1, -n1
+        nosma=zk8(ialmai-1+i)
+        call jenonu(jexnom(ma//'.SUPMAIL', nosma), imas)
+        if (imas .eq. 0) then
+            valk(1) = nosma
+            valk(2) = ma
+            call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
+        else
+            zi(iasssa-1+imas)=1
+        endif
+  2 end do
 !
 !     -- ON REMPLIT LES 3 DERNIERES VALEURS:
 !     --------------------------------------
-9998  continue
+9998 continue
     zi(iasssa-1+nbsma+1)=nbsma
     zi(iasssa-1+nbsma+2)=nbss
     zi(iasssa-1+nbsma+3)=nl
@@ -119,6 +116,6 @@ subroutine ssafmo(mo)
     if (iret .gt. 0) call jedetr('&&SSAFMO.LMAI')
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

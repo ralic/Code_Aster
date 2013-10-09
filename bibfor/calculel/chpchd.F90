@@ -97,12 +97,9 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !      NOMGD : NOM DE LA GRANDEUR ASSOCIEE A CHIN
 ! ------------------------------------------------------------------
 !
-    call dismoi('F', 'NOM_MAILLA', chin, 'CHAMP', ib,&
-                ma, ib)
-    call dismoi('F', 'TYPE_CHAMP', chin, 'CHAMP', ib,&
-                tychi, ib)
-    call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
-                nomgd, ib)
+    call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma)
+    call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tychi)
+    call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
     bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' .or. tychi .eq. 'ELGA'&
            .or. tychi .eq. 'CESE'
     ASSERT(bool)
@@ -113,17 +110,12 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 ! ---------------------------------------------------------------
     if (type(1:2) .eq. 'EL') then
         ASSERT(celmod.ne.' ')
-        call dismoi('F', 'NOM_LIGREL', celmod, 'CHAM_ELEM', ib,&
-                    ligrel, ib)
-        call dismoi('F', 'NOM_OPTION', celmod, 'CHAM_ELEM', ib,&
-                    option, ib)
-        call dismoi('F', 'NOM_PARAM', celmod, 'CHAM_ELEM', ib,&
-                    param, ib)
-        call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ib,&
-                    ma2, ib)
+        call dismoi('NOM_LIGREL', celmod, 'CHAM_ELEM', repk=ligrel)
+        call dismoi('NOM_OPTION', celmod, 'CHAM_ELEM', repk=option)
+        call dismoi('NOM_PARAM', celmod, 'CHAM_ELEM', repk=param)
+        call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma2)
         if (ma .ne. ma2) then
-            call dismoi('F', 'NOM_MODELE', ligrel, 'LIGREL', ib,&
-                        moin, ib)
+            call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=moin)
             valk(1) = chin
             valk(2) = moin
             valk(3) = ma

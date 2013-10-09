@@ -38,7 +38,7 @@ subroutine rfnoch()
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: ifm, niv
-    integer :: ibid, n, nc, ng, int, ind, nsst, iret
+    integer ::  n, nc, ng, int, ind, nsst, iret
     character(len=8) :: k8b, noma, sst, basemo, noeud, intitu
     character(len=24) :: valk(2), nogno
     character(len=16) :: parax, paray, nomcmd, typcon
@@ -69,10 +69,8 @@ subroutine rfnoch()
 !
     else
 !
-        call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
-                    basemo, iret)
-        call dismoi('F', 'NOM_MAILLA', basemo, 'RESULTAT', ibid,&
-                    noma, iret)
+        call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
+        call dismoi('NOM_MAILLA', basemo, 'RESULTAT', repk=noma)
 !
         call utnono(' ', noma, 'NOEUD', nogno, noeud,&
                     iret)

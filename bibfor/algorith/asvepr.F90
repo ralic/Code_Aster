@@ -140,8 +140,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! --- CREER L'OBJET .RERR DU VECT_ELEM
 !
-    call dismoi('F', 'NOM_MODELE', numedd, 'NUME_DDL', ibid,&
-                modele, iret)
+    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
     call memare('V', '&&ASVEPR', modele, ' ', ' ',&
                 'CHAR_MECA')
 !
@@ -171,8 +170,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! ----- TYPE DU RESU_ELEM
 !
-        call dismoi('F', 'TYPE_CHAMP', resuel, 'CHAMP', ibid,&
-                    tyresl, ibid)
+        call dismoi('TYPE_CHAMP', resuel, 'CHAMP', repk=tyresl)
         ASSERT(tyresl.eq.'RESL'.or.tyresl.eq.'NOEU')
 !
 ! ----- SI LE RESU_ELEM EST UN VRAI RESU_ELEM (ISSU DE CALCUL)
@@ -180,8 +178,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
         if (tyresl .eq. 'RESL') then
             call jedetr('&&ASVEPR           .RELR')
             call reajre('&&ASVEPR', resuel, 'V')
-            call dismoi('F', 'TYPE_SCA', resuel, 'RESUELEM', ibid,&
-                        typsca, ibid)
+            call dismoi('TYPE_SCA', resuel, 'RESUELEM', repk=typsca)
             if (typsca .eq. 'R') then
                 ityprs = 1
             else if (typsca.eq.'C') then

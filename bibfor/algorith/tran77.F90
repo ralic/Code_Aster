@@ -72,7 +72,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadesc, iarchi, ibid, ich, idbase, iadrif
-    integer :: idec, idefm, idinsg, idresu, idvecg, ie, inocmp
+    integer :: idec, idefm, idinsg, idresu, idvecg, inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
     integer :: j3refe, jc, jinst, jnume, linst, llcha
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
@@ -107,49 +107,34 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !
     if (mode .eq. blanc) then
-        call dismoi('F', 'REF_RIGI_PREM', trange, 'RESU_DYNA', ibid,&
-                    matgen, iret)
-        call dismoi('F', 'REF_INTD_PREM', trange, 'RESU_DYNA', ibid,&
-                    basemo, iret)
+        call dismoi('REF_RIGI_PREM', trange, 'RESU_DYNA', repk=matgen)
+        call dismoi('REF_INTD_PREM', trange, 'RESU_DYNA', repk=basemo)
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             if (matric .ne. blanc) then
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, iret)
-                call dismoi('F', 'NOM_MAILLA', matric, 'MATR_ASSE', ibid,&
-                            mailla, iret)
-                if (tousno) call dismoi('F', 'NB_EQUA', matric, 'MATR_ASSE', neq,&
-                                        k8b, iret)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
+                call dismoi('NOM_MAILLA', matric, 'MATR_ASSE', repk=mailla)
+                if (tousno) call dismoi('NB_EQUA', matric, 'MATR_ASSE', repi=neq)
             else
-                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                            numddl, iret)
-                call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
-                            nomgd, ie)
-                call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                            mailla, iret)
-                if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                        k8b, iret)
+                call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
+                call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
+                call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
+                if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
             endif
         else
 !  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=matric)
             if (matric(1:8) .eq. blanc) then
-                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                            matric, iret)
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, iret)
+                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
             else
                 numddl = matric(1:8)
             endif
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
-            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, iret)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         endif
 !
         basem2 = basemo
@@ -161,8 +146,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
         call rsexch('F', basemo, 'DEPL', 1, nomcha,&
                     iret)
         nomcha = nomcha(1:19)//'.REFE'
-        call dismoi('F', 'NOM_GD', nomcha, 'CHAM_NO', ibid,&
-                    nomgd, ie)
+        call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=nomgd)
         call jeveuo(nomcha, 'L', llcha)
         k24bid=zk24(llcha)
         mailla = k24bid(1:8)
@@ -300,9 +284,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
                             idec = idec + 1
                             zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
-122                  continue
-120              continue
-110          continue
+122                 continue
+120             continue
+110         continue
         endif
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
@@ -332,8 +316,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                         prems=.false.
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
-                        call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                                    prof, iret)
+                        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi( inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)
@@ -365,9 +348,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
-200      continue
+200     continue
         call jedetr('&&TRAN77.BASE')
-210  continue
+210 continue
 !
 !
 !

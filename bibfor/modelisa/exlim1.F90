@@ -52,7 +52,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     character(len=8) :: modele, noma, nomail
     character(len=19) :: ligrel, ligrmo
     character(len=24) :: cptlie
-    integer :: i, j, ib, ie, lont, numvec, numail, igrel, nbmam
+    integer :: i, j, lont, numvec, numail, igrel, nbmam
     integer :: lcliel, adliel, jrepe, jdnb, iadm, jdli
     integer :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel
 !     ------------------------------------------------------------------
@@ -65,13 +65,11 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE
 !     --------------------------
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ib,&
-                noma, ie)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! --- LIGREL DU MODELE
 !     ----------------
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ib,&
-                ligrmo, ie)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     call jeveuo(ligrmo//'.REPE', 'L', jrepe)
     call jeveuo(jexatr(ligrmo//'.LIEL', 'LONCUM'), 'L', lcliel)
@@ -112,12 +110,12 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
             zi(jnel-1+itype) = 1
             zi(jtyp-1+nbtyel) = typele
         endif
-10  end do
+ 10 end do
 !
     nbmam = 0
     do 12 i = 1, nbtyel
         nbmam = max ( nbmam, zi(jnel-1+i) )
-12  end do
+ 12 end do
 !
 ! --- OBJET LIEL
 !     ----------
@@ -142,12 +140,12 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
             numvec = numvec + 1
             numail = numail + 1
             zi(jdli+numvec-1) = lismai(numail)
-22      continue
+ 22     continue
 !
         numvec = numvec + 1
         zi(jdli+numvec-1) = zi(jtyp-1+i)
 !
-20  end do
+ 20 end do
 !
     call jedetr('&&EXLIM1.TYPE_NOMBRE')
 !

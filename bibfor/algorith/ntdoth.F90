@@ -81,7 +81,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     character(len=6) :: nompro
     parameter ( nompro = 'NTDOTH' )
 !
-    integer :: n1, nchar, ialich, ibid, ierd, ialifc, ich, iret, jinf, jpro
+    integer :: n1, nchar, ialich, ialifc, ich, iret, jinf, jpro
     integer :: jval, k, nchci
     character(len=8) :: lchci, k8bid, cara, mode, typch, parcha, repk, materi
     character(len=8) :: blan8
@@ -151,8 +151,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 ! 2.2. ==> LE MATERIAU
         materi = ' '
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
-        call dismoi('F', 'THER_F_INST', materi, 'CHAM_MATER', ibid,&
-                    repk, ierd)
+        call dismoi('THER_F_INST', materi, 'CHAM_MATER', repk=repk)
         matcst = .false.
         if (repk .eq. 'NON') matcst = .true.
         call rcmfmc(materi, mate)
@@ -163,7 +162,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         carele = cara
     endif
 !
-500  continue
+500 continue
 !====
 ! 3. LES CHARGES
 !====
@@ -203,8 +202,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 !
 ! 3.2.2. ==> TYPES DE CHARGES UTILISEES
 !
-        call dismoi('F', 'TYPE_CHARGE', nomcha, 'CHARGE', ibid,&
-                    typch, ierd)
+        call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=typch)
         if ((typch(1:5).ne.'THER_') .and. (typch(1:5).ne.'CITH_')) then
             call utmess('E', 'ALGORITH9_5', sk=nomcha(1:8))
         endif
@@ -231,8 +229,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         if (iret .ne. 0) then
             if (typch(5:7) .eq. '_FO') then
                 zi(jinf+ich) = 2
-                call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
-                            parcha, ierd)
+                call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                 if (parcha(1:3) .eq. 'OUI') then
                     zi(jinf+ich) = 3
                 endif
@@ -287,8 +284,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
             endif
             if (typch(5:7) .eq. '_FO') then
                 zi(jinf+nchar+ich) = max(2,zi(jinf+nchar+ich))
-                call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
-                            parcha, ierd)
+                call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                 if (parcha(1:3) .eq. 'OUI') then
 !
 !               IL EST INUTILE DE REASSEMBLER LA MATRICE DE RIGIDITE
@@ -304,7 +300,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
                 zi(jinf+nchar+ich) = max(1,zi(jinf+nchar+ich))
             endif
         endif
-326      continue
+326     continue
 !
         32     end do
 !

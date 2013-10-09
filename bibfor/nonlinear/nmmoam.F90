@@ -77,7 +77,6 @@ subroutine nmmoam(sdammz, nbmoda)
     integer :: iddeeq, lmat, iamor, ltvec
     integer :: jvalmo, jbasmo, jamor, jval, jamo2, jmasg, jfreq
     integer :: exiam
-    integer :: iarg
 !
 ! ---------------------------------------------------------------------
 !
@@ -105,8 +104,7 @@ subroutine nmmoam(sdammz, nbmoda)
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
 !
-    call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', iarg,&
-                matric, iret)
+    call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matric)
     call mtdscr(matric(1:8))
     call jeveuo(matric(1:19)//'.&INT', 'E', lmat)
 !
@@ -149,7 +147,7 @@ subroutine nmmoam(sdammz, nbmoda)
             call jeveuo(listam//'           .VALE', 'L', iamor)
             do 30 iam = 1, nbmoda
                 zr(jamor+iam-1) = zr(iamor+iam-1)
-30          continue
+ 30         continue
         endif
 !
         if (nbamor .gt. nbmoda) then
@@ -159,10 +157,10 @@ subroutine nmmoam(sdammz, nbmoda)
             call wkvect('&&NMMOAM.AMORTISSEMEN2', 'V V R', nbmoda, jamo2)
             do 40 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamor+iam-1)
-40          continue
+ 40         continue
             do 42 iam = nbamor+1, nbmoda
                 zr(jamo2+iam-1) = zr(jamor+nbamor-1)
-42          continue
+ 42         continue
             nbamor = nbmoda
             jamor = jamo2
         endif
@@ -182,7 +180,7 @@ subroutine nmmoam(sdammz, nbmoda)
                     0, sjv=jfreq, styp=k8bid)
         zr(jvalmo+3*(imode-1)+2-1) = zr(jfreq)*2.d0*pi
         zr(jvalmo+3*(imode-1)+3-1) = zr(jamor+imode-1)
-10  continue
+ 10 continue
 !
 ! --- CREATION BASE MODALE
 !
@@ -197,7 +195,7 @@ subroutine nmmoam(sdammz, nbmoda)
         call mrmult('ZERO', lmat, zr(ltvec), zr(jbasmo+(imode-1)*neq), 1,&
                     .true.)
         call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
-11  continue
+ 11 continue
 !
 ! --- MENAGE
 !

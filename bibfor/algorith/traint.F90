@@ -129,7 +129,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         do 60 j1 = 1, ibid
             if (sst1 .eq. zk8(lnosst+j1-1)) isst1=j1
             if (sst2 .eq. zk8(lnosst+j1-1)) isst2=j1
-60      continue
+ 60     continue
         if (isst1 .eq. 0) then
             zi(lnusst)=zi(lnusst)+1
             zi(lnusst+zi(lnusst))=zi(lnusst)
@@ -174,7 +174,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 zi(lmasst+i1-1)=zi(lnusst+j1)
             endif
         endif
-400  end do
+400 end do
 !
 !-- OBSERVATION DE L'INTERFACE MAITRE
 !
@@ -224,13 +224,12 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
     mraid=zk24(lbid+1)(1:8)
-    call dismoi('F', 'NOM_NUME_DDL', mraid, 'MATR_ASSE', ibid,&
-                nume91, ibid)
+    call dismoi('NOM_NUME_DDL', mraid, 'MATR_ASSE', repk=nume91)
     do 410 k1 = 1, nbddl
         if (zi(llint+k1-1) .gt. 0) then
             call ddllag(nume91, zi(llint+k1-1), nbeq, zi(lag1+k1-1), zi(lag2+k1-1))
         endif
-410  end do
+410 end do
 !
 !  STOCKAGES DES EFFORTS
     call wkvect('&&OP0091.MODE_SST1', 'V V R', nbeq1, lmod1)
@@ -295,7 +294,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 zr(lobs1+ibid)=zr(lcopy1+zi(llint1+k1-1)-1)
                 ibid=ibid+1
             endif
-130      continue
+130     continue
 !
 !-- CALCUL DU TRAVAIL
         call mrmult('ZERO', zi(lmass+isst1-1), zr(lcopy1), zr(leff1), 1,&
@@ -331,7 +330,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 zr(lobs2+ibid)=zr(lcopy2+zi(llint2+k1-1)-1)
                 ibid=ibid+1
             endif
-150      continue
+150     continue
 !
 !--
 !-- CALCUL DE L'EFFORT RESIDUEL
@@ -367,10 +366,10 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
             do 310 l1 = 1, nc
                 zr(lesc+(k1-1)+(j1-1)*nl)=zr(lesc+(k1-1)+(j1-1)*nl)+&
                 zr(lmaobs+(k1-1)+(l1-1)*nl)*zr(lbid+l1-1)
-310          continue
+310         continue
 !-- STOCKAGE DES MVTS DE L'INT. ESCLAVE POUR EXPANSION
             zr(lmast+(k1-1)+(j1-1)*nl)=zr(ibid+k1-1)
-300      continue
+300     continue
 !
 !-- DEPLACEMENT IMPOSE DE L'INTERFACE ESCLAVE
 !
@@ -383,7 +382,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 j1-1)*nl)
                 l1=l1+1
             endif
-420      continue
+420     continue
 !
 !--
 !-- CALCUL DU TRAVAIL ASSOCIE AU DEPLACEMENT DIFERENTIEL DE L'INTERFACE
@@ -403,7 +402,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                         lomeg+j1-1)* zr(lefi2+zi(llint+k1-1)-1))
                         l1=l1+1
                     endif
-430              continue
+430             continue
 !
             else
                 do 431 k1 = 1, nbddl
@@ -413,7 +412,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                         lomeg+j1-1)* zr(lefi1+zi(llint+k1-1)-1))
                         l1=l1+1
                     endif
-431              continue
+431             continue
 !
             endif
             if (zr(lomeg+j1-1) .gt. 1) travk=travk/zr(lomeg+j1-1)
@@ -424,6 +423,6 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         endif
 !
 !
-120  end do
+120 end do
 !
 end subroutine

@@ -78,8 +78,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, 
 !
     ligrmo = model//'.MODELE'
     call jeveuo(ligrmo(1:19)//'.REPE', 'L', j_repe)
-    call dismoi('C', 'NOM_MAILLA', model(1:8), 'MODELE', ibid, &
-                mesh, iret)
+    call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
 !
 ! - Access to <CHELEM_S> of FULL_MECA option
 !

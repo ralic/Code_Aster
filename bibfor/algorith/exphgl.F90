@@ -94,16 +94,12 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
     call rsexch('F', modcyc, 'DEPL', 1, chamno,&
                 ier)
-    call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                pfchno, iret)
+    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchno)
 !
-    call dismoi('F', 'NB_EQUA', pfchno, 'PROF_CHNO', neqsec,&
-                k8b, iret)
+    call dismoi('NB_EQUA', pfchno, 'PROF_CHNO', repi=neqsec)
 !     -- QUESTION "POURRIE" :
-    call dismoi('F', 'NOM_GD ', pfchno, 'PROF_CHNO', ibid,&
-                k8b, iret)
-    call dismoi('F', 'NB_CMP_MAX', k8b, 'GRANDEUR', nbcmp,&
-                k8b, iret)
+    call dismoi('NOM_GD ', pfchno, 'PROF_CHNO', repi=ibid, repk=k8b)
+    call dismoi('NB_CMP_MAX', k8b, 'GRANDEUR', repi=nbcmp)
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
@@ -127,13 +123,12 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
     call wkvect('&&EXPHGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
     do 8 i = 1, nbsec
         zr(lttsc+i-1) = depi*(i-1) / nbsec
- 8  end do
+  8 end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !***********************************************************************
 !
@@ -215,8 +210,8 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
                 else
                     zr(llcham+ieqf-1) = zr(ltveco+ieqi-1)
                 endif
-40          continue
-20      continue
+ 40         continue
+ 20     continue
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
@@ -227,7 +222,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
         if (ires2 .ne. 0) then
             call jelibe(nomchs(1:19)//'.VALE')
         endif
-15  end do
+ 15 end do
 !
     call jedetr('&&EXPHGL.VEC.REEL')
     call jedetr('&&EXPHGL.ORDRE.FREQ')

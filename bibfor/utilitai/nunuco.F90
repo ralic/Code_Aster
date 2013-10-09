@@ -18,9 +18,8 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -35,6 +34,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: numedd, defico
     logical :: lcont
     character(len=24) :: sdnuco
@@ -56,12 +56,12 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
 !
 !
-    character(len=8) :: nomgd, modele, noma, k8bid
+    character(len=8) :: nomgd, modele, noma
     character(len=24) :: nolili
     logical :: lxfcm
     integer :: nec, nbnoeu, ncmpmx
     integer :: nlili, neq
-    integer :: ier, ibid, ico
+    integer ::  ico
     integer :: ilagc, ilagf1, ilagf2
     integer :: ino, i, k, inoc, ival, iadg
     integer :: jcmp, ianueq, iaprno
@@ -82,24 +82,20 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
 ! --- MODELE ASSOCIE AU NUME_DDL
 !
-    call dismoi('F', 'NOM_MODELE', numedd, 'NUME_DDL', ibid,&
-                modele, ier)
+    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
 !
 ! --- NOM DU MAILLAGE
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! --- NOMBRE DE NOEUDS DU MAILLAGE
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R
 !
     nomgd = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
 !
@@ -126,7 +122,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
-40  end do
+ 40 end do
     ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
@@ -147,26 +143,26 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
             ico = 0
             do 70 i = 1, ilagc-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
-70          continue
+ 70         continue
             zi(jnuco+ival+ico-1) = 1
         endif
         if (exisdg(zi(iadg),ilagf1)) then
             ico = 0
             do 71 i = 1, ilagf1-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
-71          continue
+ 71         continue
             zi(jnuco+ival+ico-1) = 1
         endif
         if (exisdg(zi(iadg),ilagf2)) then
             ico = 0
             do 72 i = 1, ilagf2-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
-72          continue
+ 72         continue
             zi(jnuco+ival+ico-1) = 1
         endif
-50  end do
+ 50 end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

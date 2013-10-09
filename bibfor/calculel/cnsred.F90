@@ -20,7 +20,6 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscre.h"
@@ -32,6 +31,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cns1z, cns2z, base
     integer :: nbno, nbcmp, lino(nbno)
     character(len=*) :: licmp(nbcmp)
@@ -69,10 +69,8 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbnom, ncmp2, jexno, kno
     integer :: icmp2
     integer :: jcn2d, jcn2v, jcn2l, jcn2c
-    integer :: ibid
     integer :: ncmpmx, ncmp1, icmp1
     integer :: ino
-    character(len=1) :: kbid
     character(len=8) :: ma, nomgd, nocmp
     character(len=3) :: tsca
     character(len=19) :: cns1, cns2
@@ -101,10 +99,8 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     nbnom = zi(jcn1d-1+1)
     ncmp1 = zi(jcn1d-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
     ASSERT(nbcmp.ge.0)
     if (nbcmp .gt. 0) then
@@ -132,55 +128,55 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !     2- ON TRANSFORME LINO EN LISTE DE BOOLEENS:
 !     ------------------------------------------
     call wkvect('&&CNSRED.EXINO', 'V V L', nbnom, jexno)
-    do 10,kno = 1,nbnom
-    zl(jexno-1+kno) = .false.
-    10 end do
+    do 10 kno = 1, nbnom
+        zl(jexno-1+kno) = .false.
+ 10 end do
 !
     ASSERT(nbno.ge.0)
     if (nbno .eq. 0) then
-        do 20,kno = 1,nbnom
-        zl(jexno-1+kno) = .true.
-20      continue
+        do 20 kno = 1, nbnom
+            zl(jexno-1+kno) = .true.
+ 20     continue
 !
     else
-        do 30,kno = 1,nbno
-        zl(jexno-1+lino(kno)) = .true.
-30      continue
+        do 30 kno = 1, nbno
+            zl(jexno-1+lino(kno)) = .true.
+ 30     continue
     endif
 !
 !     3- REMPLISSAGE DES OBJETS .CNSL ET .CNSV :
 !     ------------------------------------------
 !
-    do 50,icmp2 = 1,ncmp2
-    nocmp = zk8(jcn2c-1+icmp2)
-    icmp1 = indik8(zk8(jcn1c),nocmp,1,ncmp1)
-    if (icmp1 .eq. 0) goto 50
+    do 50 icmp2 = 1, ncmp2
+        nocmp = zk8(jcn2c-1+icmp2)
+        icmp1 = indik8(zk8(jcn1c),nocmp,1,ncmp1)
+        if (icmp1 .eq. 0) goto 50
 !
 !
-    do 40,ino = 1,nbnom
-    if (zl(jexno-1+ino)) then
-        if (zl(jcn1l-1+ (ino-1)*ncmp1+icmp1)) then
-            zl(jcn2l-1+ (ino-1)*ncmp2+icmp2) = .true.
+        do 40 ino = 1, nbnom
+            if (zl(jexno-1+ino)) then
+                if (zl(jcn1l-1+ (ino-1)*ncmp1+icmp1)) then
+                    zl(jcn2l-1+ (ino-1)*ncmp2+icmp2) = .true.
 !
-            if (tsca .eq. 'R') then
-                zr(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zr( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-            else if (tsca.eq.'C') then
-                zc(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zc( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-            else if (tsca.eq.'I') then
-                zi(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zi( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-            else if (tsca.eq.'L') then
-                zl(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zl( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-            else if (tsca.eq.'K8') then
-                zk8(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zk8( jcn1v- 1+ (ino-1 )*ncmp1+icmp1 )
-            else
-                ASSERT(.false.)
+                    if (tsca .eq. 'R') then
+                        zr(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zr( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
+                    else if (tsca.eq.'C') then
+                        zc(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zc( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
+                    else if (tsca.eq.'I') then
+                        zi(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zi( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
+                    else if (tsca.eq.'L') then
+                        zl(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zl( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
+                    else if (tsca.eq.'K8') then
+                        zk8(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zk8( jcn1v- 1+ (ino-1 )*ncmp1+icmp1 )
+                    else
+                        ASSERT(.false.)
+                    endif
+!
+                endif
             endif
 !
-        endif
-    endif
-!
-40  continue
-    50 end do
+ 40     continue
+ 50 end do
 !
 !
 !     5- MENAGE :

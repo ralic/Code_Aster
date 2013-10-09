@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 from Accas import _F
 from Utilitai.Utmess import UTMESS
@@ -33,10 +33,10 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    #
    # 1a. INITIALISATIONS
    #
-   # ----------------------------------------------------------------------      
+   # ----------------------------------------------------------------------
    ier=0
    dbg=False # True si on souhaite faire un IMPR_CO intermediaire, False sinon
-   lmatphys = True   # True si matrices d'entrée de type matr_asse_depl_r, False sinon    
+   lmatphys = True   # True si matrices d'entrée de type matr_asse_depl_r, False sinon
    if ( AsType(MATR_RIGI) != matr_asse_depl_r ) :
       lmatphys = False
 
@@ -44,7 +44,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    #  avec la commande du meme nom
    if lmatphys : # dans ce cas, NORM_MODE est renseigné donc l'accès par args[] est licite
       normode=args['NORM_MODE']
-  
+
    # On importe les definitions des commandes a utiliser dans la macro
    MODE_ITER_SIMULT  =self.get_cmd('MODE_ITER_SIMULT')
    NORM_MODE         =self.get_cmd('NORM_MODE')
@@ -63,7 +63,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    for i in dSolveur.keys():
       if dSolveur[i]==None : del dSolveur[i]
    solveur_lineaire=dSolveur.get('METHODE').strip()
-         
+
    nompro=None
    iocc=0
    # Rang du processus MPI et taille du MPI_COMM_WORLD
@@ -98,7 +98,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    # 1b. TRAVAUX PREPARATOIRES AU LANCEMENT DE LA BOUCLE
    #
    # ----------------------------------------------------------------------
-   
+
    # Modification de la sd_partition pour rendre compatible les niveaux de
    # parallelisme: celui en frequence et celui des calculs ele/assemblage.
    # Pour l'instant on fonctionne en mode 'CENTRALISE' au sein de la macro
@@ -112,13 +112,13 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
       if (sd_modele == None):
          assert(False)  # Pb, on arrive pas a recuperer le nom du modele
       if (old_prtk1 != None):
-         motdimo             ={} 
+         motdimo             ={}
          motdimo['reuse']    =sd_modele
          motdimo['MODELE']   =sd_modele
          motdimo['PARTITION']=_F(PARALLELISME='CENTRALISE')
          __modimo=MODI_MODELE(**motdimo)
-  
-   # INFO_MODE global sur la liste de frequences 
+
+   # INFO_MODE global sur la liste de frequences
    # Parametres basiques
    motfaci={}
    motfaci['COMPTAGE']=_F(METHODE         ='AUTO',
@@ -126,7 +126,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
                           NMAX_ITER_SHIFT =CALC_FREQ['NMAX_ITER_SHIFT'],
                           PREC_SHIFT      =CALC_FREQ['PREC_SHIFT'],)
 
-   # Gestion des frequences 
+   # Gestion des frequences
    ier=gestion_frequence(solveur_lineaire,nnfreq,nbproc)
 
    # Parametrage du parallelisme pour la couche FORTRAN/MPI
@@ -137,10 +137,10 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
                       INFO       =INFO,
                       FREQ       =lborne,
                       SOLVEUR    =dSolveur,
-                      **motfaci)      
+                      **motfaci)
 
-      
-   # Gestion des sous-bandes de frequences et construction (si //) de l'objet 
+
+   # Gestion des sous-bandes de frequences et construction (si //) de l'objet
    nbmodeth,nbsb_nonvide,proc_sb_nvide=gestion_sous_bande(solveur_lineaire,__nbmodi,nnfreq,nbproc)
 
    # ----------------------------------------------------------------------
@@ -152,11 +152,11 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    # On affiche un message a la place.
    # Tous les processeurs font la meme chose pour ces sous-bandes vides, par
    # contre, ils se repartissent bien sur les non-vides.
-   # 
+   #
    # RQ MPI:
    # Les procs s'attendent via le MPI_COMM_SPLIT opere en fin de l'INFO_MODE
-   # precedent. Ce n'est pas la peine de commencer la boucle si un proc 
-   # fait defaut. 
+   # precedent. Ce n'est pas la peine de commencer la boucle si un proc
+   # fait defaut.
    # ----------------------------------------------------------------------
    nbmodeef=None
    freq_ini=1.E+99
@@ -172,7 +172,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
       #
       #--------------------------------------------------------------------
       sb_vide=None
-      do_loop=None       
+      do_loop=None
       if (__nbmodi['NB_MODE',i+1]==0):
          sb_vide=True
          do_loop=False
@@ -183,7 +183,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
            do_loop=True
          else:
            do_loop=False
-              
+
       if ((not sb_vide)&do_loop):
          motscit={}
          motscfa={}
@@ -191,7 +191,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
             motscfa['DIM_SOUS_ESPACE']=CALC_FREQ['DIM_SOUS_ESPACE']
          if CALC_FREQ['COEF_DIM_ESPACE']:
             motscfa['COEF_DIM_ESPACE']=CALC_FREQ['COEF_DIM_ESPACE']
-         motscfa['FREQ']=(lborne[i],lborne[i+1])        
+         motscfa['FREQ']=(lborne[i],lborne[i+1])
          motscfa['TABLE_FREQ']=__nbmodi
          motscit['CALC_FREQ']=_F(OPTION          ='BANDE',
                                  SEUIL_FREQ      =CALC_FREQ['SEUIL_FREQ'],
@@ -203,7 +203,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
             motveri='OUI'
          else:
             motveri='NON'
-        
+
          motscit['VERI_MODE']=_F(STOP_ERREUR=VERI_MODE['STOP_ERREUR'],
                                  SEUIL      =VERI_MODE['SEUIL'],
                                  STURM      =motveri,
@@ -251,7 +251,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
          #
          # 2a. Calcul des modes
          #
-         #-----------------------------------------------------------------                                      )              
+         #-----------------------------------------------------------------                                      )
          __nomre0=MODE_ITER_SIMULT(  MATR_RIGI  =MATR_RIGI,
                                      MATR_MASS  =MATR_MASS,
                                      INFO       =INFO,
@@ -262,7 +262,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
 
          #-----------------------------------------------------------------
          #
-         # 2b. Preparation du test de Sturm de l'etape 3a. 
+         # 2b. Preparation du test de Sturm de l'etape 3a.
          #
          #-----------------------------------------------------------------
          if (VERI_MODE['STURM'] == 'GLOBAL'):
@@ -274,13 +274,13 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
                if (raux_ini < freq_ini):
                   freq_ini=raux_ini
                if (raux_fin > freq_fin):
-                  freq_fin=raux_fin            
+                  freq_fin=raux_fin
             else:
                assert(False) # Ce test ne marche pas (PB LIST_VARI_ACCES)
 
          #-----------------------------------------------------------------
          #
-         # 2c. Post-traitements: normalisation + impression + preparation 
+         # 2c. Post-traitements: normalisation + impression + preparation
          #     du filtre de l'etape 3b.
          #
          #-----------------------------------------------------------------
@@ -344,12 +344,12 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    elif VERI_MODE['STURM'] == 'LOCAL':
       aster.affiche('MESSAGE',72*'-')
       UTMESS('I', 'MODAL_3')
-      aster.affiche('MESSAGE',72*'-') 
+      aster.affiche('MESSAGE',72*'-')
 
    elif VERI_MODE['STURM'] == 'GLOBAL':
-     
+
       # Construction des 2 bornes de la bande a tester
-      if (nbmodeth != 0) :        
+      if (nbmodeth != 0) :
          omecor=CALC_FREQ['SEUIL_FREQ']
          precshift=VERI_MODE['PREC_SHIFT']
          freq_ini=(1.0-precshift)*freq_ini
@@ -383,7 +383,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
               UTMESS('A','MODAL_5',valr=(freq_ini,freq_fin,precshift),vali=(nbmodesg,nbmodeth))
             else:
               assert(False) # Pb parametrage VERI_MODE
-      
+
       # La bande globale est vide
       else:
          aster.affiche('MESSAGE',72*'-')
@@ -391,7 +391,7 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
          aster.affiche('MESSAGE',72*'-')
    else:
       assert(False) # Pb parametrage STURM
- 
+
 
    #-----------------------------------------------------------------------
    #
@@ -412,11 +412,11 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    #
    # RQ MPI:
    # Si la SD_PARTITION existait avant de rentrer ds la Macro on remet ses
-   # anciennes valeurs pour continuer la suite du fichier de commande. 
+   # anciennes valeurs pour continuer la suite du fichier de commande.
    #----------------------------------------------------------------------
    if (nbproc>1) :
       if (old_prtk1 != None):
-         motdimo={} 
+         motdimo={}
          motdimo['reuse']=sd_modele
          motdimo['MODELE']=sd_modele
          motdimo['PARTITION']=_F(PARALLELISME=old_prtk1)
@@ -463,7 +463,7 @@ def recup_modele_partition(MATR_RIGI,dbg):
             old_prtk1=old_prtk_buff.strip()
    if (dbg):
       aster.affiche('MESSAGE',"Nom de la partition retenue: "+ str(nompart))
-      aster.affiche('MESSAGE',"Ancienne option de distribution: "+ str(old_prtk1))   
+      aster.affiche('MESSAGE',"Ancienne option de distribution: "+ str(old_prtk1))
 
    return nommod,old_prtk1
 
@@ -478,7 +478,7 @@ def recup_modele_partition(MATR_RIGI,dbg):
 # Regle 2: En cas de desequilibre de charge, on surcharge les premieres sbandes.
 # RQ. Meme regle que pour la distribution frequence/proc operee ds le F77: cf. op0032.
 def gestion_sous_bande(solveur_lineaire,__nbmodi,nnfreq,nbproc):
-   
+
    nbmodeth=None
    nbsb_nonvide=None
    proc_sb_nvide=[]
@@ -509,7 +509,7 @@ def gestion_sous_bande(solveur_lineaire,__nbmodi,nnfreq,nbproc):
          UTMESS('F', 'MODAL_9',vali=(nbproc,nbsb_nonvide),valk=solveur_lineaire)
          aster.affiche('MESSAGE',72*'-')
       div=None
-      reste=None      
+      reste=None
       div=nbproc/nbsb_nonvide
       reste=nbproc-nbsb_nonvide*div
       if ((nbproc>nbsb_nonvide)&(reste!=0)):
@@ -533,7 +533,7 @@ def gestion_sous_bande(solveur_lineaire,__nbmodi,nnfreq,nbproc):
             proc_sb_nvide.append(num_sb)
 
    else:
-      proc_sb_nvide.append(-999)      
+      proc_sb_nvide.append(-999)
 
    return nbmodeth,nbsb_nonvide,proc_sb_nvide
 
@@ -549,12 +549,12 @@ def gestion_frequence(solveur_lineaire,nnfreq,nbproc):
          UTMESS('F', 'MODAL_10',vali=(nbproc,nnfreq),valk=solveur_lineaire)
          aster.affiche('MESSAGE',72*'-')
       div=None
-      reste=None      
+      reste=None
       div=nbproc/(nnfreq-1)
       reste=nbproc-(nnfreq-1)*div
       if ((nbproc>nnfreq-1)&(reste!=0)):
          aster.affiche('MESSAGE',72*'-')
          UTMESS('I', 'MODAL_11',vali=(nnfreq-1,div,div+1),)
-         aster.affiche('MESSAGE',72*'-')    
+         aster.affiche('MESSAGE',72*'-')
 
    return ier

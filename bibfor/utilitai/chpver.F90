@@ -39,7 +39,6 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
     character(len=1) :: arret
     character(len=*) :: nocham, locham, gdcham
 !
-    integer :: ibid
     character(len=19) :: noch
     character(len=4) :: loch, tych
     character(len=8) :: gdch, nomgd
@@ -56,8 +55,8 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
 !     VERIFICATION DU TYPE
     if (locham(1:1) .ne. '*') then
         loch=locham
-        call dismoi(arret, 'TYPE_CHAMP', noch, 'CHAMP', ibid,&
-                    tych, ie1)
+        call dismoi('TYPE_CHAMP', noch, 'CHAMP', repk=tych, arret=arret,&
+                    ier=ie1)
         if ((loch(3:4).ne.'XX' .and. loch.ne.tych ) .or.&
             (loch(3:4) .eq.'XX' .and. loch(1:2).ne.tych(1:2))) then
             ie1=1
@@ -73,8 +72,8 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
 !     VERIFICATION DE LA GRANDEUR
     if (gdcham(1:1) .ne. '*') then
         gdch=gdcham
-        call dismoi(arret, 'NOM_GD', noch, 'CHAMP', ibid,&
-                    nomgd, ie2)
+        call dismoi('NOM_GD', noch, 'CHAMP', repk=nomgd, arret=arret,&
+                    ier=ie2)
         if (gdch .ne. nomgd) then
             ie2=1
             if (arret .eq. 'F') then

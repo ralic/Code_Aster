@@ -51,10 +51,10 @@ subroutine mpjeft(corres)
 !
 !
     character(len=4) :: cdim1, exivol, exipou, exirdm, exipla, exicoq
-    character(len=8) :: k8b, noma1, noma2, model1, model2, labk8
+    character(len=8) ::  noma1, noma2, model1, model2, labk8
     character(len=8) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: tymocl(2), motcle(2)
-    integer :: ndim, ncas, n1, nbocc, iocc, ie, ibid, nbno2, nuno1, nuno2
+    integer :: ndim, ncas, n1, nbocc, iocc, nbno2, nuno1, nuno2
     integer :: iagno2, idecal, ino, irep
     integer :: llin1, llin2, llou2, nbncal, nbnlis
     integer :: kk, nbnmes, nbno1, iagno1, jxxk1, iaconb, iaconu, iacocf, i
@@ -103,21 +103,16 @@ subroutine mpjeft(corres)
     call getvid('MODELE_CALCUL', 'MODELE', iocc=1, scal=model1, nbret=n1)
     call getvid('MODELE_MESURE', 'MODELE', iocc=1, scal=model2, nbret=n1)
 !
-    call dismoi('F', 'NOM_MAILLA', model1, 'MODELE', ibid,&
-                noma1, ie)
-    call dismoi('F', 'NOM_MAILLA', model2, 'MODELE', ibid,&
-                noma2, ie)
+    call dismoi('NOM_MAILLA', model1, 'MODELE', repk=noma1)
+    call dismoi('NOM_MAILLA', model2, 'MODELE', repk=noma2)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma2, 'MAILLAGE', nbnmes,&
-                k8b, ibid)
+    call dismoi('NB_NO_MAILLA', noma2, 'MAILLAGE', repi=nbnmes)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma1, 'MAILLAGE', nbncal,&
-                k8b, ibid)
+    call dismoi('NB_NO_MAILLA', noma1, 'MAILLAGE', repi=nbncal)
 !
 !     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
 !     --------------------------------------------------------
-    call dismoi('F', 'Z_CST', noma1, 'MAILLAGE', ibid,&
-                cdim1, ie)
+    call dismoi('Z_CST', noma1, 'MAILLAGE', repk=cdim1)
 !
     if (cdim1 .eq. 'OUI') then
         ndim = 2
@@ -134,26 +129,21 @@ subroutine mpjeft(corres)
     if (ndim .eq. 2) then
         ncas = 2
     else if (ndim.eq.3) then
-        call dismoi('F', 'EXI_ELTVOL', model1, 'MODELE', ibid,&
-                    exivol, ie)
+        call dismoi('EXI_ELTVOL', model1, 'MODELE', repk=exivol)
         if (exivol .eq. 'OUI') then
             ncas = 3
         else
             ncas = 4
         endif
     endif
-    call dismoi('F', 'EXI_RDM', model1, 'MODELE', ibid,&
-                exirdm, ie)
+    call dismoi('EXI_RDM', model1, 'MODELE', repk=exirdm)
     irep = 0
-    call dismoi('F', 'EXI_PLAQUE', model1, 'MODELE', ibid,&
-                exipla, ie)
-    call dismoi('F', 'EXI_COQ3D', model1, 'MODELE', ibid,&
-                exicoq, ie)
+    call dismoi('EXI_PLAQUE', model1, 'MODELE', repk=exipla)
+    call dismoi('EXI_COQ3D', model1, 'MODELE', repk=exicoq)
     if (exipla .eq. 'OUI') irep = 1
     if (exicoq .eq. 'OUI') irep = 1
     if ((exirdm.eq.'OUI') .and. (irep.eq.0)) ncas = 0
-    call dismoi('F', 'EXI_POUX', model1, 'MODELE', ibid,&
-                exipou, ie)
+    call dismoi('EXI_POUX', model1, 'MODELE', repk=exipou)
     if (exipou .eq. 'OUI') ncas = 5
 !
 !
@@ -189,10 +179,10 @@ subroutine mpjeft(corres)
         zk24(jxxk1-1 +2)=noma2
         zk24(jxxk1-1 +3)='ELEM'
 !
-        do 10, ino=1,nbnmes
-        zi(iaconb-1 +ino)=1
-        zr(iacocf-1 +ino)=1.d0
-10      continue
+        do 10 ino = 1, nbnmes
+            zi(iaconb-1 +ino)=1
+            zr(iacocf-1 +ino)=1.d0
+ 10     continue
 !
 ! CREATION DES LISTES DE NOEUDS UTILISEES
 ! ***************************************
@@ -215,7 +205,7 @@ subroutine mpjeft(corres)
 !
         do 60 ino = 1, nbnmes
             call jenuno(jexnum (noma2//'.NOMNOE', ino), zk8(llin1-1+ ino))
-60      continue
+ 60     continue
 !
 ! ALLOCATION ET REMPLISSAGE DE LA LISTE DES NOEUDS NUMERIQUES
 ! ***********************************************************
@@ -223,7 +213,7 @@ subroutine mpjeft(corres)
 !
         do 61 ino = 1, nbncal
             call jenuno(jexnum (noma1//'.NOMNOE', ino), zk8(llin2-1+ ino))
-61      continue
+ 61     continue
 !
 ! RECHERCHE DES NOEUDS EN VIS-A-VIS
 ! *********************************
@@ -238,7 +228,7 @@ subroutine mpjeft(corres)
 !
         do 62 ino = 1, nbnmes
             call jenonu(jexnom (noma1//'.NOMNOE', zk8(llou2-1+ino)), zi(iaconu-1+ino))
-62      continue
+ 62     continue
 !
         call jedetr(lisin1)
         call jedetr(lisin2)
@@ -302,7 +292,7 @@ subroutine mpjeft(corres)
             idecal = 0
             do 51 i = 1, nbnmes
                 idecal = idecal + zi(iaconb-1 +i)
-51          continue
+ 51         continue
 ! CREATION DES VECTEURS TAMPON
             call wkvect('TAMPON1', 'V V I', nbnmes, it1)
             call wkvect('TAMPON2', 'V V I', idecal, it2)
@@ -310,11 +300,11 @@ subroutine mpjeft(corres)
 ! RECOPIE DE PJEF_NB PJEF_NU ET PJEF_CF
             do 52 i = 1, nbnmes
                 zi(it1-1 +i) = zi(iaconb-1 +i)
-52          continue
+ 52         continue
             do 53 i = 1, idecal
                 zi(it2-1 +i) = zi(iaconu-1 +i)
                 zr(it3-1 +i) = zr(iacocf-1 +i)
-53          continue
+ 53         continue
 ! DESTRUCTION DES ANCIENS PJEF_NB PJEF_NU ET PJEF_CF
             call jedetr(corres//'.PJEF_NB')
             call jedetr(corres//'.PJEF_NU')
@@ -324,7 +314,7 @@ subroutine mpjeft(corres)
             idecal = 0
             do 31 i = 1, nuno2 - 1
                 idecal = idecal + zi(it1-1 +i)
-31          continue
+ 31         continue
 !
             nbold = zi(it1-1 +nuno2)
             zi(it1-1 + nuno2)=1
@@ -334,12 +324,12 @@ subroutine mpjeft(corres)
             ndecal = 0
             do 32 i = nuno2 +1, nbnmes
                 ndecal = ndecal + zi(it1-1 + i)
-32          continue
+ 32         continue
 !
             do 33 i = 1, ndecal
                 zi(it2-1+idecal+1+i) = zi(it2-1+idecal+nbold+i)
                 zr(it3-1+idecal+1+i) = zr(it3-1+idecal+nbold+i)
-33          continue
+ 33         continue
 !
 ! CREATION DES NOUVEAUX OBJETS
             nbold = idecal + 1 + ndecal
@@ -349,11 +339,11 @@ subroutine mpjeft(corres)
 ! RECOPIE DES DONNEES
             do 54 i = 1, nbnmes
                 zi(iaconb-1 + i) = zi(it1-1 +i)
-54          continue
+ 54         continue
             do 55 i = 1, nbold
                 zi(iaconu-1 + i) = zi(it2-1 +i)
                 zr(iacocf-1 + i) = zr(it3-1 +i)
-55          continue
+ 55         continue
 !
 ! DESTRUCTION DES VECTEURS TAMPON
             call jedetr('TAMPON1')
@@ -364,7 +354,7 @@ subroutine mpjeft(corres)
             call jedetr('&&PJEFTE.LINONU1')
             call jedetr('&&PJEFTE.LINONU2')
 !
-30      continue
+ 30     continue
 !
     endif
 !
@@ -386,8 +376,8 @@ subroutine mpjeft(corres)
             call jenuno(jexnum(noma1//'.NOMNOE', zi(iaconu-1+kk)), labk8)
             coef = zr(iacocf-1 +kk)
             write(ifres,1001) labk8,coef
-41      continue
-40  end do
+ 41     continue
+ 40 end do
 !
     1000 format (' NOEUD MESURE :  ',a8)
     1001 format ('       ',a8,'    POIDS : ',d12.5)

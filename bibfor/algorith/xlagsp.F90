@@ -82,7 +82,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: jconx1, jconx2, jmail
     integer :: npil
     real(kind=8) :: c(ndim), cc(ndim)
-    character(len=8) :: k8bid, typma
+    character(len=8) ::  typma
     integer :: ifm, niv
     character(len=19) :: tabno, tabint, tabcri
     integer :: jtabno, jtabin, jtabcr
@@ -141,8 +141,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- RECUPERATION DE DONNEES RELATIVES AU MAILLAGE
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call jeveuo(noma(1:8)//'.TYPMAIL', 'L', jma)
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -203,8 +202,8 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             if (lmulti) then
                 zi(jnbpt-1+ima) = zi(jnbpt-1+ima)+1
             endif
-11      continue
-10  end do
+ 11     continue
+ 10 end do
 !
 ! --- RECUP MAILLES DE CONTACT
 !
@@ -286,7 +285,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
                 goto 110
                 if (nunoa .eq. zi(jtabno-1+3*(i-1)+2) .and. nunob .eq. zi( jtabno-1+3*(i-1)+1)) &
                 goto 110
-120          continue
+120         continue
 !
 ! --- NOUVELLE ARETE
 !
@@ -301,12 +300,12 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
                 ASSERT(iad4.gt.0)
                 c(i) = zr(jcesv4-1+iad4)
                 zr(jtabin-1+ndim*(nbarto-1)+i) = c(i)
-130          continue
+130         continue
 !
-110      continue
+110     continue
 !
-100  continue
-99  continue
+100 continue
+ 99 continue
 !
 !
 ! --- CRITERE POUR DEPARTAGER LES ARETES HYPERSTATIQUES:
@@ -320,7 +319,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
         nunom = zi(jtabno-1+3*(ia-1)+3)
         do 210 i = 1, ndim
             c(i)=zr(jtabin-1+ndim*(ia-1)+i)
-210      continue
+210     continue
         dist1=r8maem()
         dist2=r8maem()
         ia1=0
@@ -334,11 +333,11 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !           NUNOA CONNECTE LES DEUX ARETES
                 do 300 i = 1, ndim
                     cc(i)=zr(jtabin-1+ndim*(iia-1)+i)
-300              continue
+300             continue
                 lon=0.d0
                 do 310 i = 1, ndim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
-310              continue
+310             continue
                 lon=sqrt(lon)
                 if (lon .lt. dist1) then
                     dist1=lon
@@ -350,18 +349,18 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !           NUNOB CONNECTE LES DEUX ARETES
                 do 320 i = 1, ndim
                     cc(i)=zr(jtabin-1+ndim*(iia-1)+i)
-320              continue
+320             continue
                 lon=0.d0
                 do 330 i = 1, ndim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
-330              continue
+330             continue
                 lon=sqrt(lon)
                 if (lon .lt. dist2) then
                     dist2=lon
                     ia2=iia
                 endif
             endif
-220      continue
+220     continue
         lon=0.d0
         if (ia2 .ne. 0) then
             lon=lon+dist2
@@ -372,7 +371,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
         zr(jtabcr-1+1*(ia-1)+1)=lon
 !
-200  end do
+200 end do
 !
 ! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !

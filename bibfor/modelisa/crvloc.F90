@@ -22,21 +22,21 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbsomm.h"
 #include "asterfort/somloc.h"
+!
     integer :: adcom0, iatyma, nvtot, nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)
     integer :: dim
     integer :: vgeloc(*)
 !
-    integer :: ptvois, mv, adcomv, iret, nbnomv, nbsomv, nsco, is, iv, tyvoi
+    integer :: ptvois, mv, adcomv, nbnomv, nbsomv, nsco, is, iv, tyvoi
     integer :: nusglo, nuslo0, nuslov
-    character(len=8) :: typemv, k8b
+    character(len=8) :: typemv
     character(len=24) :: connex
 !
 !
@@ -70,8 +70,7 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
 !  SON TYPE
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+mv)), typemv)
 !  SON NOMBRE DE NOEUDS
-            call dismoi('F', 'NBNO_TYPMAIL', typemv, 'TYPE_MAILLE', nbnomv,&
-                        k8b, iret)
+            call dismoi('NBNO_TYPMAIL', typemv, 'TYPE_MAILLE', repi=nbnomv)
 !  SON NOMBRE DE SOMMETS
             call nbsomm(typemv, nbsomv)
 !
@@ -109,11 +108,11 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
                 vgeloc(ptvois+3+2*is-1)=nuslo0
                 call somloc(mv, adcomv, nbsomv, nusglo, nuslov)
                 vgeloc(ptvois+3+2*is)=nuslov
-10          continue
+ 10         continue
             if (iv .lt. nvtot) then
                 vgeloc(iv+2)=ptvois+4+2*nsco
             endif
-20      continue
+ 20     continue
     endif
 !
 end subroutine

@@ -54,7 +54,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, ifon, indica, indicb, ina, inb, ino
-    integer :: iret, iseg, jbas, jcoor
+    integer ::  iseg, jbas, jcoor
     integer :: jgsl, jgsv, jlnsv, jlnsl, jltsv, jltsl, jtyp
     integer :: k, nbno, ndim, nseg
     real(kind=8) :: d, dmin, eps, norm2, s, sn, xln, xlt
@@ -62,7 +62,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
     real(kind=8) :: xab, yab, zab, xam, yam, zam, xnm, ynm, znm
     real(kind=8) :: n(3), nm(3), vdira(3), vnora(3), vdirb(3), vnorb(3)
     real(kind=8) :: vdirn(3), vnorn(3)
-    character(len=8) :: k8b, licmp(9), typfon
+    character(len=8) ::  licmp(9), typfon
     character(len=16) :: casfon
     character(len=19) :: cnsbas, cnsln, cnslt
 !
@@ -79,10 +79,8 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !     ------------------------------------------------------------------
 !
 !     RECUPERATION DES INFORMATIONS RELATIVES AU MAILLAGE
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     NSEG : NOMBRE DE "SEGMENTS" DU FOND A TRAITER
@@ -156,7 +154,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
                 zl(jgsl-1+3*ndim*(ino-1)+k+2) = .true.
                 zr(jgsv-1+3*ndim*(ino-1)+k+4) = zr(jbas-1+k+ndim)
                 zl(jgsl-1+3*ndim*(ino-1)+k+4) = .true.
-110          continue
+110         continue
 !
 !         STOCKAGE DES LEVEL-SETS
             zr(jlnsv-1+(ino-1)+1)=nm(1)*zr(jbas-1+1)+nm(2)*zr(jbas-1+&
@@ -228,7 +226,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
                     n(3) = s*zab+za
                 endif
 !
-100          continue
+100         continue
 !
 !         CALCUL DES VECTEURS DE LA BASE LOCALE AU POINT PROJETE
 !         ------------------------------------------------------
@@ -254,7 +252,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
                 zr(jgsv-1+3*ndim*(ino-1)+k+6) = vnorn(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+6) = .true.
 !
-200          continue
+200         continue
 !
 !         STOCKAGE DES LEVEL-SETS
             xln = nm(1)*vnorn(1)+nm(2)*vnorn(2)+nm(3)*vnorn(3)
@@ -272,7 +270,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !
         endif
 !
-10  end do
+ 10 end do
 !
 !
 ! --- CREATION DES CHAM_NO

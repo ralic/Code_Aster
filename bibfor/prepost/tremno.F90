@@ -18,7 +18,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: ncmp, cbid
+    character(len=8) :: ncmp
     character(len=19) :: nssche, nomsd
 !*********************************************************************
 ! ======================================================================
@@ -90,7 +90,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     character(len=24) :: nvacp, nnund, nnuma, nnucp, nnocp
     integer :: avacp, anund, anuma, anucp, anocp
-    integer :: ptm, ptv, tco, tsp, nbco, nbsp, lngm, lngv, ico, isp, ier
+    integer :: ptm, ptv, tco, tsp, nbco, nbsp, lngm, lngv, ico, isp
 !
 !   ADRESSE DE NUMERO DE CMP CONCERNEES PAR L' EXTRACTION
 !   -----------------------------------------------------
@@ -175,18 +175,17 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     nbcpac = 0
 !
-    do 300, i = 1, nbtcmp, 1
+    do 300 i = 1, nbtcmp, 1
 !
-    nbcpac = nbcpac + min(zi(apcmp + i-1),1)
+        nbcpac = nbcpac + min(zi(apcmp + i-1),1)
 !
-    300 end do
+300 end do
 !
 !   CONSTRUCTION DU .NUND
 !   ---------------------
 !
 !-DEL CALL JELIRA(NMAILA//'.NOMNOE','NOMMAX',NBTND,K1BID)
-    call dismoi('F', 'NB_NO_MAILLA', nmaila, 'MAILLAGE', nbtnd,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', nmaila, 'MAILLAGE', repi=nbtnd)
 !
     call jecreo('&&TREMNO.LISTE.ENTIER', 'V V I')
     call jeecra('&&TREMNO.LISTE.ENTIER', 'LONMAX', nbtnd)
@@ -199,19 +198,19 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     libre = 1
 !
-    do 100, im = 1, nbtmai, 1
+    do 100 im = 1, nbtmai, 1
 !
-    if (zi(apadr + im-1) .ne. 0) then
+        if (zi(apadr + im-1) .ne. 0) then
 !
-        adrm=iconec+zi(lconec-1+im)-1
+            adrm=iconec+zi(lconec-1+im)-1
 !
-        nbn = zi(apnbn + im-1)
+            nbn = zi(apnbn + im-1)
 !
-        call i2trgi(zi(aliste), zi(adrm), nbn, libre)
+            call i2trgi(zi(aliste), zi(adrm), nbn, libre)
 !
-    endif
+        endif
 !
-    100 end do
+100 end do
 !
     nbtnd = libre - 1
 !
@@ -219,11 +218,11 @@ subroutine tremno(ncmp, nssche, nomsd)
     call jeecra(nnund, 'LONMAX', nbtnd)
     call jeveuo(nnund, 'E', anund)
 !
-    do 110, in = 1, nbtnd, 1
+    do 110 in = 1, nbtnd, 1
 !
-    zi(anund + in-1) = zi(aliste + in-1)
+        zi(anund + in-1) = zi(aliste + in-1)
 !
-    110 end do
+110 end do
 !
     call jedetr('&&TREMNO.LISTE.ENTIER')
 !
@@ -235,113 +234,113 @@ subroutine tremno(ncmp, nssche, nomsd)
     call jecrec(nnuma, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbtnd)
 !
-    do 200, in = 1, nbtnd, 1
+    do 200 in = 1, nbtnd, 1
 !
-    n = zi(anund + in-1)
-!
-!
-    adrm=icncin+zi(lcncin-1+n)-1
-    nbm=zi(lcncin+n)-zi(lcncin-1+n)
-!
-    lngm = 0
-    lngv = 0
-!
-    do 250, im = 1, nbm, 1
-!
-    m = zi(adrm + im-1)
-!
-    if (m .ne. 0) then
-!
-        lngm = lngm + min(zi(apadr + m-1),1)
-        lngv = lngv + min(zi(apadr + m-1),1)*zi(apnco + m-1)* zi(apnsp + m-1)
-!
-    endif
-!
-250  continue
-!
-    if (lngm .eq. 0) then
-!
-        vali = n
-        call utmess('F', 'PREPOST5_76', si=vali)
-!
-    endif
-!
-    call jecroc(jexnum(nvacp, in))
-    call jeecra(jexnum(nvacp, in), 'LONMAX', lngv)
-    call jeveuo(jexnum(nvacp, in), 'E', avacp)
-!
-    call jecroc(jexnum(nnuma, in))
-    call jeecra(jexnum(nnuma, in), 'LONMAX', lngm)
-    call jeveuo(jexnum(nnuma, in), 'E', anuma)
-!
-    ptm = 1
-    ptv = 1
-!
-    do 210, im = 1, nbm, 1
-!
-    m = zi(adrm + im-1)
-!
-    if (m .ne. 0) then
-!
-        if (zi(apadr + m-1) .ne. 0) then
-!
-            nbco = zi(apnco + m-1)
-            nbsp = zi(apnsp + m-1)
-            ndloc = 1
-            trouve = .false.
-!
-            aconec=iconec+zi(lconec-1+m)-1
-            nbnm=zi(lconec+m)-zi(lconec-1+m)
+        n = zi(anund + in-1)
 !
 !
-220          continue
-            if ((.not. trouve) .and. (ndloc .le. nbnm)) then
+        adrm=icncin+zi(lcncin-1+n)-1
+        nbm=zi(lcncin+n)-zi(lcncin-1+n)
 !
-                if (zi(aconec + ndloc-1) .eq. n) then
+        lngm = 0
+        lngv = 0
 !
-                    trouve = .true.
+        do 250 im = 1, nbm, 1
 !
-                else
+            m = zi(adrm + im-1)
 !
-                    ndloc = ndloc + 1
+            if (m .ne. 0) then
 !
-                endif
-!
-                goto 220
+                lngm = lngm + min(zi(apadr + m-1),1)
+                lngv = lngv + min(zi(apadr + m-1),1)*zi(apnco + m-1)* zi(apnsp + m-1)
 !
             endif
 !
-            tsp = nbcpac*nbsp
+250     continue
 !
-            do 231, ico = 1, nbco, 1
+        if (lngm .eq. 0) then
 !
-            tco = nbsp*nbcpac*nbnm*(ico-1)
-!
-            do 232, isp = 1, nbsp, 1
-!
-            zr(avacp + ptv-1) = zr(&
-                                avale + zi(apadr+m- 1) + tco + (ndloc-1)*tsp + (isp-1)*nbcpac + z&
-                                &i(apcmp + numcp-1) - 2&
-                                )
-!
-            ptv = ptv + 1
-!
-232          continue
-!
-231          continue
-!
-!
-            zi(anuma + ptm-1) = m
-!
-            ptm = ptm + 1
+            vali = n
+            call utmess('F', 'PREPOST5_76', si=vali)
 !
         endif
 !
-    endif
+        call jecroc(jexnum(nvacp, in))
+        call jeecra(jexnum(nvacp, in), 'LONMAX', lngv)
+        call jeveuo(jexnum(nvacp, in), 'E', avacp)
 !
-210  continue
+        call jecroc(jexnum(nnuma, in))
+        call jeecra(jexnum(nnuma, in), 'LONMAX', lngm)
+        call jeveuo(jexnum(nnuma, in), 'E', anuma)
 !
-    200 end do
+        ptm = 1
+        ptv = 1
+!
+        do 210 im = 1, nbm, 1
+!
+            m = zi(adrm + im-1)
+!
+            if (m .ne. 0) then
+!
+                if (zi(apadr + m-1) .ne. 0) then
+!
+                    nbco = zi(apnco + m-1)
+                    nbsp = zi(apnsp + m-1)
+                    ndloc = 1
+                    trouve = .false.
+!
+                    aconec=iconec+zi(lconec-1+m)-1
+                    nbnm=zi(lconec+m)-zi(lconec-1+m)
+!
+!
+220                 continue
+                    if ((.not. trouve) .and. (ndloc .le. nbnm)) then
+!
+                        if (zi(aconec + ndloc-1) .eq. n) then
+!
+                            trouve = .true.
+!
+                        else
+!
+                            ndloc = ndloc + 1
+!
+                        endif
+!
+                        goto 220
+!
+                    endif
+!
+                    tsp = nbcpac*nbsp
+!
+                    do 231 ico = 1, nbco, 1
+!
+                        tco = nbsp*nbcpac*nbnm*(ico-1)
+!
+                        do 232 isp = 1, nbsp, 1
+!
+                            zr(avacp + ptv-1) = zr(&
+                                                avale + zi(apadr+m- 1) + tco + (ndloc-1)*tsp + (i&
+                                                &sp-1)*nbcpac + zi(apcmp + numcp-1) - 2&
+                                                )
+!
+                            ptv = ptv + 1
+!
+232                     continue
+!
+231                 continue
+!
+!
+                    zi(anuma + ptm-1) = m
+!
+                    ptm = ptm + 1
+!
+                endif
+!
+            endif
+!
+210     continue
+!
+200 end do
 !
     call jedema()
 end subroutine

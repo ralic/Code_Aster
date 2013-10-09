@@ -44,7 +44,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: ias, iasbon, iasedi, iasmax, icad, icav, icmp, ier
+    integer :: ias, iasbon, iasedi, iasmax, icad, icav, icmp
     integer :: icode, iglma, igrand, ima, inomcp, irang1
     integer :: irang2, iranv1, iranv2, iret, nbcmp, nbma
     integer :: nuenti, numa, nbec
@@ -52,7 +52,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 !
     real(kind=8) :: difr, r1, r2, tolr
 !
-    character(len=8) :: nomcmp(2), nomail, k8bid
+    character(len=8) :: nomcmp(2), nomail
     character(len=19) :: carte
     character(len=24) :: cadesc, cavale, calima, gpmama, nomama
 !
@@ -120,8 +120,7 @@ subroutine deelpo(caelem, noma, numail, phie)
     call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', inomcp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('F', 'NB_EC', 'CAGEPO', 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', 'CAGEPO', 'GRANDEUR', repi=nbec)
     irang1 = indik8( zk8(inomcp) , nomcmp(1) , 1 , nbcmp )
     irang2 = indik8( zk8(inomcp) , nomcmp(2) , 1 , nbcmp )
     if (irang1 .eq. 0 .or. irang2 .eq. 0) then

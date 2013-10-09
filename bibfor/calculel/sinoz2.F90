@@ -55,7 +55,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 #include "asterfort/zzcalb.h"
 #include "asterfort/zzpoly.h"
 !
-    character(len=8) :: modele, kbid, ma, typema, licmp(4), vecass, elrefe
+    character(len=8) :: modele, ma, typema, licmp(4), vecass, elrefe
     character(len=8) :: famil
     character(len=14) :: nu14
     character(len=19) :: pfchno
@@ -73,7 +73,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 !-----------------------------------------------------------------------
     integer :: i, iacoor, iad, ialcv, iamav, ianew, ianob
-    integer :: ianov, iarepe, iatyma, ibid, ic, icmp, ier
+    integer :: ianov, iarepe, iatyma, ibid, ic, icmp
     integer :: iindic, ima, ino, inob, inoma, ipa, jceld
     integer :: jcelv, jcon, jconin, jelfa, jnb, jnoeu, jpa
     integer :: jpami, jprno, jrefe, jrefn, jsig, jval, k
@@ -92,18 +92,14 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     call celver(sigel, 'NBVARI_CST', 'STOP', ibid)
     call celver(sigel, 'NBSPT_1', 'STOP', ibid)
 !
-    call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                phen, ier)
+    call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
     if (phen .ne. 'MECANIQUE') then
         call utmess('F', 'CALCULEL4_83')
     endif
 !
-    call dismoi('F', 'NOM_MAILLA', sigel(1:19), 'CHAM_ELEM', ibid,&
-                ma, ier)
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                kbid, ier)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ier)
+    call dismoi('NOM_MAILLA', sigel(1:19), 'CHAM_ELEM', repk=ma)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     typmai = ma//'.TYPMAIL'
     connex = ma//'.CONNEX'
     call jeveuo(typmai, 'L', iatyma)
@@ -178,8 +174,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
     call wkvect('&&SINOZ2.NOEUBORD', 'V V L', nbno, jnoeu)
 !
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                kbid, ier)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     call jeveuo(jexnum(pfchno//'.PRNO', 1), 'L', jprno)
     call jeveuo(noeub//'.VALE', 'L', jval)
     eps = 1.d-06

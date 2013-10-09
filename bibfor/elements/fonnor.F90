@@ -63,7 +63,7 @@ subroutine fonnor(resu, noma, cnxinv)
     real(kind=8) :: vdir(2, 3), vnor(2, 3), norme, vecdir(3), hmax, hmaxpr
     real(kind=8) :: vect(3), sens
     character(len=6) :: nompro, tyfond
-    character(len=8) :: k8b, typfon, noeua
+    character(len=8) ::  typfon, noeua
     character(len=16) :: casfon
     character(len=19) :: basnof, basseg, macofo
     parameter    (nompro='FONNOR')
@@ -83,8 +83,7 @@ subroutine fonnor(resu, noma, cnxinv)
     call getvid(' ', 'MAILLAGE', scal=noma, nbret=nret)
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     RECUPERATION DU TYPE DU FOND DE FISSURE OUVERT OU FERME OU INF/SUP
     call getvtx('FOND_FISS', 'TYPE_FOND', iocc=1, scal=tyfond, nbret=iret)
@@ -178,7 +177,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !
     do 10 i = 1, nbnoff
         zl(jborl-1+i)=.false.
-10  end do
+ 10 end do
 !
 !
 !     ------------------------------------------------------------------
@@ -298,7 +297,7 @@ subroutine fonnor(resu, noma, cnxinv)
                 if (casfon .eq. 'QUADRATIQUE') zr(jbasno-1+6*(inc-1)+j) = zr(&
                                                                           jbasse-1+6*(iseg-1)+j)
 !
-110          continue
+110         continue
 !
 !         NORMALISATIONS
 !         ZR(JBASNO-1+6*(INC-1)+J) DEJA NORMALISE
@@ -318,7 +317,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !
             do 120 j = 1, 4
                 zr(jbasno-1+4*(ina-1)+j) = zr(jbasse-1+4*(iseg-1)+j)
-120          continue
+120         continue
 !
         endif
 !
@@ -326,7 +325,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !     (ET LE NOEUD MILIEU INC EN QUADRATIQUE)
         do 130 k = 1, ndim
             vecdir(k)=zr(jbasno-1+2*ndim*(ina-1)+k+ndim)
-130      continue
+130     continue
 !
         call fonno7(noma, cnxinv, ndim, na, vecdir,&
                     hmax)
@@ -344,7 +343,7 @@ subroutine fonnor(resu, noma, cnxinv)
             zr(jtail-1+iseg) = hmax
         endif
 !
-100  end do
+100 end do
 !
 !     DANS LE CAS D'UN FOND FERME: CORRECTION DE BASEFOND
 !     AUX NOEUDS EXTREMITES
@@ -353,7 +352,7 @@ subroutine fonnor(resu, noma, cnxinv)
             zr(jbasno-1+6*(1-1)+j)=(zr(jbasse-1+6*(1-1)+j) +zr(&
             jbasse-1+6*(nseg-1)+j))/2.d0
             zr(jbasno-1+6*(nbnoff-1)+j)=zr(jbasno-1+6*(1-1)+j)
-300      continue
+300     continue
         call normev(zr(jbasno-1+6*(1-1)+1), norme)
         call normev(zr(jbasno-1+6*(1-1)+4), norme)
         call normev(zr(jbasno-1+6*(nbnoff-1)+1), norme)
@@ -365,7 +364,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !
         do 200 k = 1, ndim
             vecdir(k)=zr(jbasno-1+2*ndim*(inb-1)+k+ndim)
-200      continue
+200     continue
 !
         call fonno7(noma, cnxinv, ndim, nb, vecdir,&
                     hmax)

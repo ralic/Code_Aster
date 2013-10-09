@@ -53,7 +53,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, iadesc, iaec, ianueq, iaprno, iarefe
-    integer :: ibid, ier, ifc, ino, iret, itype, jno
+    integer :: ibid, ifc, ino, iret, itype, jno
     integer :: jnu, nbno, ncmpmx, nec
 !-----------------------------------------------------------------------
     call jemarq()
@@ -100,7 +100,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         if (typi .ne. type) then
             call utmess('F', 'PREPOST2_69')
         endif
-10  end do
+ 10 end do
 !
 !     --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR NOMGD
     nec = nbec(gd)
@@ -120,8 +120,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     endif
 !
 !     --- NOMBRE DE NOEUDS DU MAILLAGE: NBNO
-    call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbno,&
-                k8b, ier)
+    call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
 !
 !     --- CREATION LISTES DES NOMS ET DES NUMEROS DES NOEUDS A IMPRIMER
     call wkvect('&&IRMAD0.NOMNOE', 'V V K8', nbno, jno)
@@ -129,7 +128,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     do 20 ino = 1, nbno
         call jenuno(jexnum(nomma//'.NOMNOE', ino), zk8(jno-1+ino))
         zi(jnu-1+ino) = ino
-20  end do
+ 20 end do
 !
     if (num .ge. 0) then
         ncmpmx = 6
@@ -146,6 +145,6 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     call jedetr('&&IRMAD0.NOMNOE')
     call jedetr('&&IRMAD0.NUMNOE')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

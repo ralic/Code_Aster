@@ -29,6 +29,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! aslint: disable=W1504
     implicit none
+#include "jeveux.h"
 #include "asterfort/accel0.h"
 #include "asterfort/assert.h"
 #include "asterfort/cetule.h"
@@ -39,8 +40,8 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/liscpy.h"
 #include "asterfort/ndynlo.h"
@@ -72,7 +73,6 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 #include "asterfort/nmrini.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/nmvcre.h"
-#include "jeveux.h"
     integer :: fonact(*)
     real(kind=8) :: parcon(*), parcri(*), parmet(*)
     character(len=16) :: method(*)
@@ -135,8 +135,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     nomo = modele(1:8)
     lacc0 = .false.
     lunil = .false.
@@ -182,9 +181,9 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
 !     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
     if (isfonc(fonact,'MUMPS')) then
-        if (isfonc(fonact,'CRIT_STAB').or.isfonc(fonact,'MODE_VIBR')) then
+        if (isfonc(fonact,'CRIT_STAB') .or. isfonc(fonact,'MODE_VIBR')) then
             call jeveuo(solveu//'.SLVI', 'E', islvi)
-            if (zi(islvi-1+6).lt.0) then
+            if (zi(islvi-1+6) .lt. 0) then
 ! --- PB INITIALISATION DE LA SD_SOLVEUR
                 ASSERT(.false.)
             else

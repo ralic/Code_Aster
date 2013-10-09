@@ -31,7 +31,6 @@ subroutine ddlphy(depplu, neq, vect, desc)
 ! DECLARATION PARAMETRES D'APPELS
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/iposdg.h"
 #include "asterfort/jedema.h"
@@ -41,6 +40,7 @@ subroutine ddlphy(depplu, neq, vect, desc)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: vect(*)
     character(len=19) :: depplu
     character(len=8) :: desc(*)
@@ -49,11 +49,11 @@ subroutine ddlphy(depplu, neq, vect, desc)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    character(len=8) :: nomgd, kbid, noma, exclus(200)
+    character(len=8) :: nomgd, noma, exclus(200)
     character(len=19) :: prno
-    integer :: iaux, ier, jnocmp, ncmpmx, jprno, jnueq, nec
+    integer :: iaux, jnocmp, ncmpmx, jprno, jnueq, nec
     integer :: jdg, inueq, jaux, kaux
-    integer :: nbnot, ibid
+    integer :: nbnot
     integer :: nbexcl, ival, pos, ivect2
     logical :: garder
 !
@@ -61,28 +61,22 @@ subroutine ddlphy(depplu, neq, vect, desc)
 !
     do 5 iaux = 1, 200
         exclus(iaux)=' '
- 5  end do
+  5 end do
     call wkvect('VECTMP', 'V V R', neq, ivect2)
     do 10 iaux = 1, neq
         zr(ivect2-1+iaux)=vect(iaux)
         vect(iaux)=0.d0
         desc(iaux)=' '
-10  end do
-    call dismoi('F', 'NOM_GD', depplu, 'CHAM_NO', ibid,&
-                nomgd, ier)
+ 10 end do
+    call dismoi('NOM_GD', depplu, 'CHAM_NO', repk=nomgd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ier)
-    call dismoi('F', 'PROF_CHNO', depplu, 'CHAM_NO', ibid,&
-                prno, ier)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
+    call dismoi('PROF_CHNO', depplu, 'CHAM_NO', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
     call jeveuo(prno//'.NUEQ', 'L', jnueq)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ier)
-    call dismoi('F', 'NOM_MAILLA', depplu, 'CHAM_NO', ibid,&
-                noma, ier)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
-                kbid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NOM_MAILLA', depplu, 'CHAM_NO', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
     nbexcl=0
 !
     do 20 iaux = 1, nbnot
@@ -100,7 +94,7 @@ subroutine ddlphy(depplu, neq, vect, desc)
                     if (exclus(kaux) .eq. zk8(jnocmp-1+jaux)) then
                         garder=.false.
                     endif
-22              continue
+ 22             continue
 !           ADRESSE DU DDL DANS LE .VALE
                 ival = zi(jnueq - 1 + inueq - 1 + pos)
                 desc(ival) = zk8(jnocmp-1+jaux)
@@ -108,8 +102,8 @@ subroutine ddlphy(depplu, neq, vect, desc)
                     vect(ival) = zr(ivect2-1+ival)
                 endif
             endif
-21      continue
-20  end do
+ 21     continue
+ 20 end do
 !
     call jedetr('VECTMP')
 !

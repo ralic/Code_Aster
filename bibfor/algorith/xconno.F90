@@ -20,7 +20,6 @@ subroutine xconno(mox, chfis, base, opt, param,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescre.h"
@@ -35,6 +34,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+!
     character(len=*) :: opt, param
     character(len=1) :: base
     character(len=19) :: chglo
@@ -66,7 +66,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
     character(len=19) :: ces, cns, ligrel, cns2, ces2
     character(len=24) :: grp(3)
     logical :: lstno
-    character(len=8) :: ma, nomgd, nomfis, licmp(2), k8bid
+    character(len=8) :: ma, nomgd, nomfis, licmp(2)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -98,13 +98,11 @@ subroutine xconno(mox, chfis, base, opt, param,&
 !
     call jeveuo(ma//'.CONNEX', 'L', jmacnx)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
-    call dismoi('F', 'DIM_GEOM', ma, 'MAILLAGE', ndim,&
-                k8bid, ibid)
+    call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
     call jeveuo(ma//'.TYPMAIL', 'L', jtypma)
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 ! --- RECUPERATION DU NOMBRE DE SOUS POINT (NBRE DE FISSURES VUES)
 !
@@ -113,7 +111,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
 ! --- CREATION DE LA SD ELNO
 !
     call cescre('V', ces, 'ELNO', ma, nomgd,&
-                ncmp1, zk8(jcnsc),[ibid], zi(jnbsp), [-ncmp1])
+                ncmp1, zk8(jcnsc), [ibid], zi(jnbsp), [-ncmp1])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', jcesv)
@@ -151,78 +149,79 @@ subroutine xconno(mox, chfis, base, opt, param,&
         call jeveuo(cns//'.CNSV', 'L', jcnsv)
         call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-        do 1000, ii = 1,3
+        do 1000 ii = 1, 3
 !         COPIER LE CHAMP 'CHFIS'
 !         POUR LES MAILLES '.HEAV','.CTIP' ET '.HECT'
-        call jeexin(grp(ii), iret)
-        if (iret .ne. 0) then
-            call jeveuo(grp(ii), 'L', jg)
-            call jelira(grp(ii), 'LONMAX', nmaenr)
-            do 120 i = 1, nmaenr
-                ima = zi(jg-1+i)
-                nbnom = zi(jlcnx+ima)-zi(jlcnx-1+ima)
-                itypma=zi(jtypma-1+ima)
-                ndime= zi(jtmdim-1+itypma)
-                do 1210, jj = 1,nbnom
-                ino = zi(jmacnx + zi(jlcnx-1+ima)-2+jj)
-                do 1220, icmp = 1,ncmp1
+            call jeexin(grp(ii), iret)
+            if (iret .ne. 0) then
+                call jeveuo(grp(ii), 'L', jg)
+                call jelira(grp(ii), 'LONMAX', nmaenr)
+                do 120 i = 1, nmaenr
+                    ima = zi(jg-1+i)
+                    nbnom = zi(jlcnx+ima)-zi(jlcnx-1+ima)
+                    itypma=zi(jtypma-1+ima)
+                    ndime= zi(jtmdim-1+itypma)
+                    do 1210 jj = 1, nbnom
+                        ino = zi(jmacnx + zi(jlcnx-1+ima)-2+jj)
+                        do 1220 icmp = 1, ncmp1
 !
 !                 POUR CHAQUE TYPE 'R', I', 'L', 'K8', SI LE CHAM_NO
 !                 A DEJE ETE REMPLI, ON INCREMENTE LE SOUS POINT
-                do 100 kk = 1, zi(jnbsp-1+ima)
-                    call cesexi('S', jcesd, jcesl, ima, jj,&
-                                kk, icmp, iad)
-                    if (iad .lt. 0) goto 110
-100              continue
-                ASSERT(.false.)
-110              continue
-                if (tsca .eq. 'R') then
-                    zl(jcesl-1-iad) = .true.
-                    zr(jcesv-1-iad) = zr(jcnsv-1+(ino-1)* ncmp1+icmp)
-                else if (tsca.eq.'I') then
-                    zl(jcesl-1-iad) = .true.
-                    zi(jcesv-1-iad) = zi(jcnsv-1+(ino-1)* ncmp1+icmp)
-                    if (lstno .and. ndim .eq. ndime) then
-                        if ((.not.zl(jcnsl2-1+(ino-1)*2+1) ) .and. zi(jcesv-1-iad) .gt. 0) then
-                            zl(jcnsl2-1+(ino-1)*2+1) =&
+                            do 100 kk = 1, zi(jnbsp-1+ima)
+                                call cesexi('S', jcesd, jcesl, ima, jj,&
+                                            kk, icmp, iad)
+                                if (iad .lt. 0) goto 110
+100                         continue
+                            ASSERT(.false.)
+110                         continue
+                            if (tsca .eq. 'R') then
+                                zl(jcesl-1-iad) = .true.
+                                zr(jcesv-1-iad) = zr(jcnsv-1+(ino-1)* ncmp1+icmp)
+                            else if (tsca.eq.'I') then
+                                zl(jcesl-1-iad) = .true.
+                                zi(jcesv-1-iad) = zi(jcnsv-1+(ino-1)* ncmp1+icmp)
+                                if (lstno .and. ndim .eq. ndime) then
+                                    if ((.not.zl(jcnsl2-1+(ino-1)*2+1) ) .and.&
+                                        zi(jcesv-1-iad) .gt. 0) then
+                                        zl(jcnsl2-1+(ino-1)*2+1) =&
                                         .true.
-                            zl(jcnsl2-1+(ino-1)*2+2) =&
+                                        zl(jcnsl2-1+(ino-1)*2+2) =&
                                         .true.
-                            zi(jcnsv2-1+(ino-1)*2+1) =&
+                                        zi(jcnsv2-1+(ino-1)*2+1) =&
                                         ima
-                            zi(jcnsv2-1+(ino-1)*2+2) = jj
-                        endif
-                    endif
-                else if (tsca.eq.'L') then
-                    zl(jcesl-1-iad) = .true.
-                    zl(jcesv-1-iad) = zl(jcnsv-1+(ino-1)* ncmp1+icmp)
-                else if (tsca.eq.'K8') then
-                    zl(jcesl-1-iad) = .true.
-                    zk8(jcesv-1-iad)= zk8(jcnsv-1+(ino-1)*&
+                                        zi(jcnsv2-1+(ino-1)*2+2) = jj
+                                    endif
+                                endif
+                            else if (tsca.eq.'L') then
+                                zl(jcesl-1-iad) = .true.
+                                zl(jcesv-1-iad) = zl(jcnsv-1+(ino-1)* ncmp1+icmp)
+                            else if (tsca.eq.'K8') then
+                                zl(jcesl-1-iad) = .true.
+                                zk8(jcesv-1-iad)= zk8(jcnsv-1+(ino-1)*&
                                 ncmp1+icmp)
-                else
-                    ASSERT(.false.)
-                endif
+                            else
+                                ASSERT(.false.)
+                            endif
 !
-1220              continue
-1210              continue
-                if (lstno) then
-                    do 130 kk = 1, zi(jnbsp-1+ima)
-                        call cesexi('S', jcesd2, jcesl2, ima, 1,&
-                                    kk, 1, iad)
-                        if (iad .lt. 0) then
-                            zl(jcesl2-1-iad) = .true.
-                            zk8(jcesv2-1-iad) = nomfis
-                            goto 120
-                        endif
-130                  continue
-                endif
-120          continue
-        endif
-1000      continue
+1220                     continue
+1210                 continue
+                    if (lstno) then
+                        do 130 kk = 1, zi(jnbsp-1+ima)
+                            call cesexi('S', jcesd2, jcesl2, ima, 1,&
+                                        kk, 1, iad)
+                            if (iad .lt. 0) then
+                                zl(jcesl2-1-iad) = .true.
+                                zk8(jcesv2-1-iad) = nomfis
+                                goto 120
+                            endif
+130                     continue
+                    endif
+120             continue
+            endif
+1000     continue
 !
         call detrsd('CHAM_NO_S', cns)
-20  end do
+ 20 end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

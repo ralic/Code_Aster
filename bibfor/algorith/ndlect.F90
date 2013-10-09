@@ -70,7 +70,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
     integer :: nmodam, nreavi, nondp
     integer :: nbmods, nbmoda, nbmodp
-    integer :: iret, ibid
+    integer :: iret
     integer :: n1, n2, nbmg, nrv
     integer :: nbexci, nbgene
     character(len=24) :: tsch, psch, losd, nosd, tfor
@@ -187,14 +187,10 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
     lamor = .false.
     lktan = .false.
-    call dismoi('F', 'EXI_AMOR_ALPHA', mate, 'CHAM_MATER', ibid,&
-                rep1, ibid)
-    call dismoi('F', 'EXI_AMOR_BETA', mate, 'CHAM_MATER', ibid,&
-                rep2, ibid)
-    call dismoi('F', 'EXI_AMOR_NOR', mate, 'CHAM_MATER', ibid,&
-                rep3, ibid)
-    call dismoi('F', 'EXI_AMOR_TAN', mate, 'CHAM_MATER', ibid,&
-                rep4, ibid)
+    call dismoi('EXI_AMOR_ALPHA', mate, 'CHAM_MATER', repk=rep1)
+    call dismoi('EXI_AMOR_BETA', mate, 'CHAM_MATER', repk=rep2)
+    call dismoi('EXI_AMOR_NOR', mate, 'CHAM_MATER', repk=rep3)
+    call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4)
     if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI') .or. (rep3(1:3).eq.'OUI') .or.&
         (rep4(1:3).eq.'OUI')) then
         lamor = .true.
@@ -499,7 +495,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         endif
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

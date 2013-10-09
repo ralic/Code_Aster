@@ -16,7 +16,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! COMMANDE PROJ_CHAMP / METHODE='ECLA_PG'
 !
@@ -31,7 +31,6 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 ! IN/JXVAR : ON COMPLETE LA SD_CORRESP_2_MAILLA AVEC L'OBJET .PJEL
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -55,12 +54,13 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 #include "asterfort/utflmd.h"
 #include "asterfort/utmamo.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres
     character(len=8) :: ma2p, moa2
     integer :: ndim
 ! ----------------------------------------------------------------------
     integer :: ntgeo, ipo, ipg, nuno2
-    integer :: ibid, iret, nbno2p, nno2, ino2p
+    integer :: ibid, nbno2p, nno2, ino2p
     integer :: k, j1, j4, ipoi1, ipy5, ipy13
     integer :: nbma, nbpt, nbcmp, nbmamo
     integer :: ima, ipt, icmp, iad, iadime
@@ -74,8 +74,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jemarq()
 !
 !     -- RECUPERATION DU NOM DU MAILLAGE 2
-    call dismoi('F', 'NOM_MAILLA', moa2, 'MODELE', ibid,&
-                mail2, iret)
+    call dismoi('NOM_MAILLA', moa2, 'MODELE', repk=mail2)
     call jeveuo(mail2//'.TYPMAIL', 'L', jtypma)
 !
 !     -- RECUPERATION DU CHAMP DE COORDONNEES DU MAILLAGE 2
@@ -90,7 +89,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call utmamo(moa2, nbmamo, limato)
 !     -- ON NE CONSERVE QUE LES MAILLES DE DIMENSION NDIM :
     call utflmd(mail2, limato, nbmamo, ndim, ' ',&
-                 nbtrou, litrou)
+                nbtrou, litrou)
     ASSERT(nbtrou.gt.0)
     call jeveuo(litrou, 'L', jlitr)
     call exlim1(zi(jlitr), nbtrou, moa2, 'V', ligrel)
@@ -120,39 +119,39 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !     ----------------------------------------------------------------
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), ipy5)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), ipy13)
-    do 80,ima=1,nbma
-    if (zi(jtypma-1+ima) .eq. ipy5 .or. zi(jtypma-1+ima) .eq. ipy13) then
-        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-        if (nbpt .eq. 27) then
-            do 20,icmp=1,3
-            xmoy(icmp)=0.d0
-20          continue
+    do 80 ima = 1, nbma
+        if (zi(jtypma-1+ima) .eq. ipy5 .or. zi(jtypma-1+ima) .eq. ipy13) then
+            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+            if (nbpt .eq. 27) then
+                do 20 icmp = 1, 3
+                    xmoy(icmp)=0.d0
+ 20             continue
 !           -- XMOY : CENTRE DE LA PYRAMIDE :
-            do 40,ipt=1,15
-            do 30,icmp=1,3
-            call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        1, icmp, iad)
-            ASSERT(iad.gt.0)
-            xmoy(icmp)=xmoy(icmp)+zr(jcesv-1+iad)
-30          continue
-40          continue
-            do 50,icmp=1,3
-            xmoy(icmp)=xmoy(icmp)/15
-50          continue
+                do 40 ipt = 1, 15
+                    do 30 icmp = 1, 3
+                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                    1, icmp, iad)
+                        ASSERT(iad.gt.0)
+                        xmoy(icmp)=xmoy(icmp)+zr(jcesv-1+iad)
+ 30                 continue
+ 40             continue
+                do 50 icmp = 1, 3
+                    xmoy(icmp)=xmoy(icmp)/15
+ 50             continue
 !
 !           -- ON "RAMENE" LES 12 DERNIERS PG VERS LE CENTRE (10%) :
-            do 70,ipt=16,27
-            do 60,icmp=1,3
-            call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        1, icmp, iad)
-            ASSERT(iad.gt.0)
-            rayo=zr(jcesv-1+iad)-xmoy(icmp)
-            zr(jcesv-1+iad)=zr(jcesv-1+iad)-0.6d0*rayo
-60          continue
-70          continue
+                do 70 ipt = 16, 27
+                    do 60 icmp = 1, 3
+                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                    1, icmp, iad)
+                        ASSERT(iad.gt.0)
+                        rayo=zr(jcesv-1+iad)-xmoy(icmp)
+                        zr(jcesv-1+iad)=zr(jcesv-1+iad)-0.6d0*rayo
+ 60                 continue
+ 70             continue
+            endif
         endif
-    endif
-    80 end do
+ 80 end do
 !
 !
 !     2. CALCUL DE NBNO2P : NOMBRE DE NOEUDS (ET DE MAILLES) DE MA2P
@@ -167,20 +166,20 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call wkvect(corres//'.PJEF_EL', 'V V I', nbma*27*2, jpo2)
 !
     ipo=1
-    do 100,ima=1,nbma
-    call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
-    if (zi(jdimt) .eq. ndim) then
-        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-        if (nbpt .eq. 0) goto 100
-        call jenuno(jexnum(mail2//'.NOMMAI', ima), noma)
-        do 90,ipg=1,nbpt
-        zi(jpo2-1+ipo)=ima
-        zi(jpo2-1+ipo+1)=ipg
-        ipo=ipo+2
-90      continue
-        nbno2p=nbno2p+nbpt
-    endif
-    100 end do
+    do 100 ima = 1, nbma
+        call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
+        if (zi(jdimt) .eq. ndim) then
+            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+            if (nbpt .eq. 0) goto 100
+            call jenuno(jexnum(mail2//'.NOMMAI', ima), noma)
+            do 90 ipg = 1, nbpt
+                zi(jpo2-1+ipo)=ima
+                zi(jpo2-1+ipo+1)=ipg
+                ipo=ipo+2
+ 90         continue
+            nbno2p=nbno2p+nbpt
+        endif
+100 end do
 !
 !
 !     3. CREATION DU .DIME DU NOUVEAU MAILLAGE
@@ -202,15 +201,15 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
 !
     nom(1:1)='N'
-    do 110,k=1,nbno2p
-    call codent(k, 'G', nom(2:8))
-    call jecroc(jexnom(ma2p//'.NOMNOE', nom))
-    110 end do
+    do 110 k = 1, nbno2p
+        call codent(k, 'G', nom(2:8))
+        call jecroc(jexnom(ma2p//'.NOMNOE', nom))
+110 end do
     nom(1:1)='M'
-    do 120,k=1,nbno2p
-    call codent(k, 'G', nom(2:8))
-    call jecroc(jexnom(ma2p//'.NOMMAI', nom))
-    120 end do
+    do 120 k = 1, nbno2p
+        call codent(k, 'G', nom(2:8))
+        call jecroc(jexnom(ma2p//'.NOMMAI', nom))
+120 end do
 !
 !
 !
@@ -225,14 +224,14 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
 !
     nuno2=0
-    do 130,ima=1,nbno2p
-    zi(iatypm-1+ima)=ipoi1
-    nno2=1
-    call jecroc(jexnum(ma2p//'.CONNEX', ima))
-    call jeecra(jexnum(ma2p//'.CONNEX', ima), 'LONMAX', nno2)
-    nuno2=nuno2+1
-    zi(ibid-1+nuno2)=nuno2
-    130 end do
+    do 130 ima = 1, nbno2p
+        zi(iatypm-1+ima)=ipoi1
+        nno2=1
+        call jecroc(jexnum(ma2p//'.CONNEX', ima))
+        call jeecra(jexnum(ma2p//'.CONNEX', ima), 'LONMAX', nno2)
+        nuno2=nuno2+1
+        zi(ibid-1+nuno2)=nuno2
+130 end do
 !
 !
 !
@@ -247,26 +246,26 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call wkvect(ma2p//'.COORDO    .VALE', 'V V R', 3*nbno2p, j1)
 !
     ino2p=0
-    do 160,ima=1,nbma
-    nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-    nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
-    if (nbpt .eq. 0) goto 160
-    call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
+    do 160 ima = 1, nbma
+        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+        nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
+        if (nbpt .eq. 0) goto 160
+        call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
 !
-    if (zi(jdimt) .eq. ndim) then
-        ASSERT(nbcmp.ge.3)
-        do 150,ipt=1,nbpt
-        ino2p=ino2p+1
-        do 140,icmp=1,3
-        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                    1, icmp, iad)
-        if (iad .gt. 0) then
-            zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
+        if (zi(jdimt) .eq. ndim) then
+            ASSERT(nbcmp.ge.3)
+            do 150 ipt = 1, nbpt
+                ino2p=ino2p+1
+                do 140 icmp = 1, 3
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                1, icmp, iad)
+                    if (iad .gt. 0) then
+                        zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
+                    endif
+140             continue
+150         continue
         endif
-140      continue
-150      continue
-    endif
-    160 end do
+160 end do
     ASSERT(ino2p.eq.nbno2p)
 !
 !

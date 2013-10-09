@@ -65,14 +65,14 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     logical :: lext
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
-    character(len=8) :: m1, m2, kb, elrefa, fapg(nbfamx), alarme
+    character(len=8) :: m1, m2, elrefa, fapg(nbfamx), alarme
     character(len=16) :: k16bid, nomcmd
     integer :: nbpg(nbfamx), cnquad(3, 2)
     real(kind=8) :: crrefe(3*nbnomx), ksi, eta, xr1(2), xr2(2), xr3(2)
     real(kind=8) :: ff(nbnomx), cooele(3*nbnomx), x1, x2, vol
     integer :: i1cocf, i1conb, j1xxk1, i1conu, i1cotr, i2cocf, i2coco
     integer :: i2com1, i2conb, j2xxk1, i2conu, iacnx1, ialim1, ialin1, ialin2
-    integer :: iatr3, iatyma, ideca1, ideca2, ie, ilcnx1, ima1, ino, ino2
+    integer :: iatr3, iatyma, ideca1, ideca2, ilcnx1, ima1, ino, ino2
     integer :: iret, itr, itypm, kdim, kk, nbfpg, nbno, ndim, nma1, nma2, nno
     integer :: nno1, nno2, nnos, nuno, nuno2, nutm, ibid
 !
@@ -107,14 +107,10 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !
     m1=zk24(j1xxk1-1+1)(1:8)
     m2=zk24(j1xxk1-1+2)(1:8)
-    call dismoi('F', 'NB_NO_MAILLA', m1, 'MAILLAGE', nno1,&
-                kb, ie)
-    call dismoi('F', 'NB_NO_MAILLA', m2, 'MAILLAGE', nno2,&
-                kb, ie)
-    call dismoi('F', 'NB_MA_MAILLA', m1, 'MAILLAGE', nma1,&
-                kb, ie)
-    call dismoi('F', 'NB_MA_MAILLA', m2, 'MAILLAGE', nma2,&
-                kb, ie)
+    call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
+    call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
+    call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
+    call dismoi('NB_MA_MAILLA', m2, 'MAILLAGE', repi=nma2)
 !
     call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
@@ -149,7 +145,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
         ideca2=ideca2+nbno
-10      continue
+ 10     continue
     enddo
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
@@ -274,7 +270,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
         ideca1=ideca1+3
         ideca2=ideca2+nbno
 !
-20      continue
+ 20     continue
     enddo
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:

@@ -41,7 +41,7 @@ subroutine momaba(mailla)
 !-----------------------------------------------------------------------
 !
     integer :: jtyma, nbmc, nbma, jnuma, i, j, ityp, jcoor, n1, n2, i1, i2, nbno
-    integer :: nbmat, jpoin, ier, ifm, niv, jcon, jconm, ndim, nn, jnbma, ncount
+    integer :: nbmat, jpoin, ifm, niv, jcon, jconm, ndim, nn, jnbma, ncount
     integer :: jdim
     logical :: lnmf, lmodi
     parameter(nbmc=2)
@@ -59,8 +59,7 @@ subroutine momaba(mailla)
     call jeveuo(mailla//'.TYPMAIL        ', 'L', jtyma)
     call jeveuo(mailla//'.COORDO    .VALE', 'E', jcoor)
     call jeveuo(mailla//'.DIME           ', 'L', jdim)
-    call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbmat,&
-                k8b, ier)
+    call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmat)
     lmodi=.false.
 !     ------------------------------------------------------------------
 !
@@ -136,10 +135,10 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-10                          continue
+ 10                         continue
                         endif
                     endif
-20              continue
+ 20             continue
 !
 ! --------- QUAD8 , QUAD9
             else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
@@ -168,10 +167,10 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-30                          continue
+ 30                         continue
                         endif
                     endif
-40              continue
+ 40             continue
 !
 ! --------- TETRA10
             else if (type.eq.'TETRA10') then
@@ -200,10 +199,10 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-50                          continue
+ 50                         continue
                         endif
                     endif
-60              continue
+ 60             continue
 !
 ! --------- PENTA15 , PENTA18
             else if (type.eq.'PENTA15' .or. type.eq.'PENTA18') then
@@ -232,10 +231,10 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-70                          continue
+ 70                         continue
                         endif
                     endif
-80              continue
+ 80             continue
 !
 ! --------- PYRAM13
             else if (type.eq.'PYRAM13') then
@@ -264,10 +263,10 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-90                          continue
+ 90                         continue
                         endif
                     endif
-100              continue
+100             continue
 !
 ! --------- HEXA20 , HEXA27
             else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
@@ -296,23 +295,23 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-110                          continue
+110                         continue
                         endif
                     endif
-120              continue
+120             continue
 !
             else
 !
             endif
 !
-130      continue
+130     continue
 !
-140  end do
+140 end do
 !
     call jedetr(nomjv)
     call jedetr('&&MOMABA_MAILLE')
 !
-150  continue
+150 continue
 !     ------------------------------------------------------------------
 !
 ! --- LECTURE DE LA LISTE DE NOEUDS
@@ -325,7 +324,7 @@ subroutine momaba(mailla)
     call wkvect('&&COORD_NOEUDS', 'V V R', ndim, jcon)
     do 160 i = 1, ndim
         zr(jcon+i-1)=zr(jconm+i-1)
-160  end do
+160 end do
 !
     motcle(1)='GROUP_NO_FOND'
     tymocl(1)='GROUP_NO'
@@ -375,7 +374,7 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-170              continue
+170             continue
 !
 ! --------- QUAD8 , QUAD9
             else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
@@ -393,7 +392,7 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-180              continue
+180             continue
 !
 ! --------- TETRA10
             else if (type.eq.'TETRA10') then
@@ -411,7 +410,7 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-190              continue
+190             continue
 !
 ! --------- PENTA15
             else if (type.eq.'PENTA15') then
@@ -429,7 +428,7 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-200              continue
+200             continue
 !
 ! --------- PYRAM13
             else if (type.eq.'PYRAM13') then
@@ -447,7 +446,7 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-210              continue
+210             continue
 !
 ! --------- HEXA20 , HEXA27
             else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
@@ -465,13 +464,13 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-220              continue
+220             continue
 !
             else
 !
             endif
 !
-230      continue
+230     continue
 !
         if (lnmf) then
 !         ON STOCKE LES NOEUDS MILIEU DU FOND DE FISSURE
@@ -479,7 +478,7 @@ subroutine momaba(mailla)
             ncount=ncount+1
         endif
 !
-240  end do
+240 end do
 !
     do 250 i = 1, ncount
 !       ON REAJUSTE LES COORDONNEES DES NOEUDS MILIEU
@@ -488,7 +487,7 @@ subroutine momaba(mailla)
         zr(jcoor+nn)=zr(jcon+nn)
         zr(jcoor+nn+1)=zr(jcon+nn+1)
         zr(jcoor+nn+2)=zr(jcon+nn+2)
-250  end do
+250 end do
 !
     if (.not.lmodi) then
         call utmess('F', 'ALGORITH16_72')
@@ -499,7 +498,7 @@ subroutine momaba(mailla)
     call jedetr(nomjv)
     call jedetr('&&MOMABA_MAILLE')
 !
-260  continue
+260 continue
 !
     call jedema()
 end subroutine

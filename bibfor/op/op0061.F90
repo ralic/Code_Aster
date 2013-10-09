@@ -31,25 +31,22 @@ subroutine op0061()
 !
     implicit none
 #include "jeveux.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/ddot.h"
-#include "blas/dscal.h"
 #include "asterc/getfac.h"
 #include "asterc/r8depi.h"
+#include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/cremnl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/mnlali.h"
 #include "asterfort/mnlbhf.h"
 #include "asterfort/mnlbra.h"
@@ -61,11 +58,14 @@ subroutine op0061()
 #include "asterfort/mnlgen.h"
 #include "asterfort/mnllec.h"
 #include "asterfort/mnltan.h"
-#include "asterfort/tbexve.h"
 #include "asterfort/tbacce.h"
+#include "asterfort/tbexve.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/assert.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0061' )
     character(len=8) :: baseno
@@ -81,10 +81,11 @@ subroutine op0061()
     character(len=24) :: numedd
     character(len=14) :: numdrv
     character(len=19) :: matdrv, nomobj, nomvect
-    character(len=8)  :: modini, modrep, vk8, typval, lnm, mailla
+    character(len=8) :: modini, modrep, vk8, typval, lnm, mailla
     character(len=24) :: masse, grno
 !
-    integer :: neq, nd, ijmax, iadim, ier, ninc, p, i, k, j, jj, ii, nbordr0, nbordr, iarg, prodsci
+    integer :: neq, nd, ijmax, iadim, ier, ninc, p, i, k, j, jj, ii, nbordr0, nbordr
+    integer :: prodsci
     character(len=14) :: xcdl, parcho, adime
     real(kind=8) :: ampl, amax, ap, epscor2, vr
     logical :: cor, lbif, reprise, lcine
@@ -94,7 +95,7 @@ subroutine op0061()
 !
     real(kind=8) :: omega, err, prodsc
     complex(kind=8) :: vc
-
+!
     integer :: ibif
 !
     call jemarq()
@@ -102,32 +103,35 @@ subroutine op0061()
     ifres = iunifi ('MESSAGE')
     call getvis(' ', 'INFO', scal=info)
     baseno = '&&'//nompro
-
+!
     call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=num_ordr)
     call getvid('ETAT_INIT', 'MODE_NON_LINE', iocc=1, scal=modrep, nbret=ier)
     if (ier .eq. 1) then
         reprise = .true.
         nomvect = '&&NUME_REPRISE'
-        call tbexve(modrep,'NUME_REPRISE',nomvect,'V',ntab,typval)
+        call tbexve(modrep, 'NUME_REPRISE', nomvect, 'V', ntab,&
+                    typval)
         call jeveuo(nomvect, 'L', ivect)
         numrep=zi(ivect)
-        do 20 k=2,ntab
-            if(zi(ivect-1+k).gt.numrep) numrep=zi(ivect-1+k)
-20      continue        
+        do 20 k = 2, ntab
+            if (zi(ivect-1+k) .gt. numrep) numrep=zi(ivect-1+k)
+ 20     continue
         numrep=numrep+1
-
+!
         nomvect = '&&NUME_ORDRE'
-        call tbexve(modrep,'NUME_ORDRE',nomvect,'V',ntab,typval)
+        call tbexve(modrep, 'NUME_ORDRE', nomvect, 'V', ntab,&
+                    typval)
         call jeveuo(nomvect, 'L', ivect)
         num_lig = 0
-        do 21 k = 1,ntab
+        do 21 k = 1, ntab
             if (zi(ivect-1+k) .eq. num_ordr) num_lig = k
-21      continue
+ 21     continue
         nbordr0=zi(ivect-1+ntab)
         if (num_lig .eq. 0) then
             call utmess('F', 'RUPTURE0_37', si=num_ordr)
         endif
-        call tbacce(modrep,num_lig,'NOM_SD','L',vi,vr,vc,modini)
+        call tbacce(modrep, num_lig, 'NOM_SD', 'L', vi,&
+                    vr, vc, modini)
     else
         call getvid('ETAT_INIT', 'MODE_LINE', iocc=1, scal=lnm)
         reprise = .false.
@@ -137,8 +141,9 @@ subroutine op0061()
 ! ----------------------------------------------------------------------
 ! --- LECTURE DES DONNEES DE L'OPERATEUR
 ! ----------------------------------------------------------------------
-    call mnllec(imat, numedd, ordman, epsman, nbpt, epscor, h,&
-                hf, itemax, nbran, nextr, epsbif)
+    call mnllec(imat, numedd, ordman, epsman, nbpt,&
+                epscor, h, hf, itemax, nbran,&
+                nextr, epsbif)
 ! ----------------------------------------------------------------------
 ! --- TAILLE DE LA MATRICE
 ! ----------------------------------------------------------------------
@@ -152,32 +157,34 @@ subroutine op0061()
 ! ----------------------------------------------------------------------
 ! --- GESTION DES PARAMETRES DE CHOC ET ADIMENSIONNEMENT
 ! ----------------------------------------------------------------------
-
+!
     parcho=baseno//'.PARCH'
     if (reprise) then
-        call tbacce(modrep,1,'CARA_CHOC','L',vi,vr,vc,vk8)
+        call tbacce(modrep, 1, 'CARA_CHOC', 'L', vi,&
+                    vr, vc, vk8)
         nomobj = '&&NUME_CHOC'
-        call tbexve(vk8,'NUME_CHOC',nomobj,'V',nchoc,typval)
+        call tbexve(vk8, 'NUME_CHOC', nomobj, 'V', nchoc,&
+                    typval)
     else
         call getfac('CHOC', nchoc)
         masse=zk24(zi(imat(2)+1))(1:19)
-        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', iarg, mailla, ier)
-        do 40 k=1,nchoc
+        call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
+        do 40 k = 1, nchoc
             call getvtx('CHOC', 'GROUP_NO', iocc=k, scal=grno, nbret=ier)
-            if(ier.eq.1) then
+            if (ier .eq. 1) then
                 call compno(mailla, 1, grno, nbno)
-                if(nbno.gt.1) then
+                if (nbno .gt. 1) then
                     call utmess('F', 'MECANONLINE9_68')
                 endif
             endif
-40      continue
+ 40     continue
         call wkvect(parcho//'.TYPE', 'V V K8', nchoc, ier)
         call wkvect(parcho//'.NOEU', 'V V K8', 2*nchoc, ier)
         call wkvect(parcho//'.RAID', 'V V R', nchoc, iraid)
         call wkvect(parcho//'.REG', 'V V R', nchoc, ireg)
         call wkvect(parcho//'.JEU', 'V V R', nchoc, ijeu)
     endif
-
+!
     call wkvect(parcho//'.JEUMAX', 'V V R', 1, ijmax)
     call wkvect(parcho//'.INDMAX', 'V V I', 1, ier)
     call wkvect(parcho//'.NDDL', 'V V I', 6*nchoc, inddl)
@@ -187,9 +194,10 @@ subroutine op0061()
     call wkvect(parcho//'.ORIG', 'V V R', 3*nchoc, iorig)
     adime=baseno//'.ADIME'
     call wkvect(adime, 'V V R', 3, iadim)
-    
-    call mnlcho(reprise,imat, numedd, xcdl, nd, nchoc,&
-                h, hf, parcho, adime, ninc, vk8,lcine)
+!
+    call mnlcho(reprise, imat, numedd, xcdl, nd,&
+                nchoc, h, hf, parcho, adime,&
+                ninc, vk8, lcine)
 ! ----------------------------------------------------------------------
 ! --- NOMBRE D'INCONNUE TOTAL DU SYSTEME
 ! ----------------------------------------------------------------------
@@ -204,13 +212,12 @@ subroutine op0061()
 ! ----------------------------------------------------------------------
 ! --- INITIALISATION DE L'ALGORITHME
 ! ----------------------------------------------------------------------
-905 format ('-- INITIALISATION :     ----------')
+    905 format ('-- INITIALISATION :     ----------')
     xvect = baseno//'.XVECT'
     call wkvect(xvect, 'V V R', ninc, ivec)
-    call mnlali(reprise, modini, imat, xcdl,&
-                parcho, adime, &
-                ninc, nd, nchoc, h, hf,&
-                ampl, xvect,lnm,num_ordr)
+    call mnlali(reprise, modini, imat, xcdl, parcho,&
+                adime, ninc, nd, nchoc, h,&
+                hf, ampl, xvect, lnm, num_ordr)
     write(ifres,905)
 ! ----------------------------------------------------------------------
 ! --- CORRECTION DU POINT DE DEPART
@@ -219,7 +226,8 @@ subroutine op0061()
     epscor2=1.d-08
     call mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                 adime, ninc, nd, nchoc, h,&
-                hf, itemax, epscor, xvect, cor,info)
+                hf, itemax, epscor, xvect, cor,&
+                info)
 ! ----------------------------------------------------------------------
 ! --- DIRECTION DE LA CONTINUATION (TANGENTE AU PREMIER POINT)
 ! ----------------------------------------------------------------------
@@ -251,15 +259,15 @@ subroutine op0061()
     call wkvect(xeng, 'V V R', nbpt-1, ieng)
     call wkvect(xsort, 'V V R', nbran*(nbpt-1)*(neq*(2*h+1)+2), isort)
     call wkvect(xbif, 'V V I', nbran, ibif)
-
-900 format ('-- BRANCHE NUMERO : ',i8,'   ----------')
-903 format ('     DETECTION D UNE BIFURCATION')
-904 format ('             (   ENERGIE   ,  FREQUENCE  )')
-901 format ('     DEBUT - (',1pe12.5,' ,',1pe12.5,' )')
-902 format ('     FIN   - (',1pe12.5,' ,',1pe12.5,' )')
+!
+    900 format ('-- BRANCHE NUMERO : ',i8,'   ----------')
+    903 format ('     DETECTION D UNE BIFURCATION')
+    904 format ('             (   ENERGIE   ,  FREQUENCE  )')
+    901 format ('     DEBUT - (',1pe12.5,' ,',1pe12.5,' )')
+    902 format ('     FIN   - (',1pe12.5,' ,',1pe12.5,' )')
     k=1
-10   continue
-    if(k.le.nbran) then    
+ 10 continue
+    if (k .le. nbran) then
 !    do 10 k = 1, nbran
 ! ---   CALCUL DES COEFFICIENTS DE LA SERIE ENTIERE
         call dscal((ordman+1)*ninc, 0.d0, zr(iups), 1)
@@ -269,7 +277,7 @@ subroutine op0061()
                     xfpnl, lbif, nextr, epsbif)
         write(ifres,900) k
         if (lbif) then
-            if(info.eq.2) then
+            if (info .eq. 2) then
                 write(ifres,903)
             endif
             zi(ibif-1+k)=1
@@ -284,15 +292,16 @@ subroutine op0061()
         cor=.true.
         call mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                     adime, ninc, nd, nchoc, h,&
-                    hf, itemax, epscor, xvect, cor, info)
-        if(cor) then
+                    hf, itemax, epscor, xvect, cor,&
+                    info)
+        if (cor) then
 ! ---       DIRECTION DE LA CONTINUATION (TANGENTE DE V(A))
             call dscal(ninc, 0.d0, zr(iutj), 1)
             do 101 p = 1, ordman
                 ap=dble(p)*(amax**(p-1))
                 call daxpy(ninc, ap, zr(iups+p*ninc), 1, zr(iutj),&
                            1)
-101          continue
+101         continue
 ! ---       CALCUL DE LA TANGENTE AU NOUVEAU POINT
             call mnltan(.true., imat, numdrv, matdrv, xcdl,&
                         parcho, adime, xvect, ninc, nd,&
@@ -302,31 +311,31 @@ subroutine op0061()
             if (prodsc .le. 0.d0) then
                 call dscal(ninc, -1.d0, zr(iut1), 1)
             endif
-!   
+!
 ! ---       BON HF ?
-!   
+!
             call mnlbhf(xvect, parcho, adime, ninc, nd,&
                         nchoc, h, hf, err)
             if (err .gt. 5.d-02) then
                 call utmess('A', 'MECANONLINE9_60')
             endif
-!   
+!
 ! ---       REDIMENSIONNEMENT DES VECTEURS SOLUTIONS
             do 11 i = 1, nbpt
                 do 111 p = 1, nd*(2*h+1)
                     zr(ius-1+(i-1)*ninc+p)=zr(ius-1+(i-1)*ninc+p)*zr(ijmax)
-111              continue
-11          continue
+111             continue
+ 11         continue
             do 12 i = 1, nbpt-1
                 zr(ius-1+i*ninc)=zr(ius-1+i*ninc)*zr(iadim-1+3)
-12          continue
+ 12         continue
 ! ---       CALCUL DE L'ENERGIE MECANIQUE
             call mnleng(imat, xcdl, parcho, xus, ninc,&
                         nd, nchoc, h, nbpt, xeng)
             do 13 i = 1, nbpt-1
                 omega=zr(ius-1+i*ninc)
-13          continue
-            if(info.eq.2) then
+ 13         continue
+            if (info .eq. 2) then
                 write(ifres,904)
                 write(ifres,901) zr(ieng),zr(ius-1+ninc)/r8depi()
                 write(ifres,902) zr(ieng-1+(nbpt-1)),zr(ius-1+(nbpt-1)*ninc)/r8depi()
@@ -345,29 +354,30 @@ subroutine op0061()
                         else
                             zr(isort-1+p+(j-1)*neq+jj)=0.d0
                         endif
-320                  continue
-310              continue
+320                 continue
+310             continue
                 zr(isort-1+p+neq*(2*h+1)+1)=zr(ius-1+ii*ninc)/r8depi()
                 zr(isort-1+p+neq*(2*h+1)+2)=zr(ieng-1+ii)
-300          continue
+300         continue
 ! ---       REMISE A ZERO DU VECTEUR RESULTAT
             if (k .ne. nbran) then
                 call dscal(ninc*nbpt, 0.d0, zr(ius), 1)
             endif
             nbranf=nbran
             k=k+1
-        else            
+        else
             nbranf=k-1
             k=nbran+1
         endif
         goto 10
     endif
 !10  continue
-!     
+!
     nbordr = nbranf*(nbpt-1)
-    call cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
-                h, imat, numedd, parcho, nchoc, vk8, modrep)
-    if(.not.cor) then
+    call cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
+                nbpt, neq, h, imat, numedd,&
+                parcho, nchoc, vk8, modrep)
+    if (.not.cor) then
         call utmess('S', 'MECANONLINE9_62')
     endif
 !

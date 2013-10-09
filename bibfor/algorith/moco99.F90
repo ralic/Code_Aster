@@ -108,8 +108,8 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     if (nbmod .eq. 0) goto 9999
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid,&
-                interf, ire)
+    call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=interf, arret='C',&
+                ier=ire)
     if (interf .ne. ' ') then
         type = interf//'.IDC_TYPE'
         call jeveuo(type, 'L', jtyp)
@@ -118,13 +118,12 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
 ! --- RECHERCHE DE L'ADRESSE DES ANCIENNES VALEURS PROPRES
 !
-    call dismoi('F', 'TYPE_RESU', resul, 'RESULTAT', ibid,&
-                typres, ire)
+    call dismoi('TYPE_RESU', resul, 'RESULTAT', repk=typres)
 !
     typeba=' '
     if (typres .ne. 'MULT_ELAS') then
-        call dismoi('C', 'TYPE_BASE', resul, 'RESU_DYNA', ibid,&
-                    typeba, ire)
+        call dismoi('TYPE_BASE', resul, 'RESU_DYNA', repk=typeba, arret='C',&
+                    ier=ire)
     endif
 !
     typmo=' '
@@ -157,7 +156,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                 endif
                 call rsnoch(nomres, chmeca, iorne)
             endif
-30      continue
+ 30     continue
 !
         if (typres .ne. 'MODE_MECA') goto 11
 !
@@ -177,7 +176,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                     0, sjv=lltmo, styp=k8bid)
         typmo=zk16(lltmo)
 !
-11      continue
+ 11     continue
 !
 ! ----- ECRITURE DES NOUVEAUX PARAMETRES
 !
@@ -243,14 +242,14 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
         endif
         zr(ldpar(10))=zr(llval2)
 !
-12      continue
+ 12     continue
 !
 ! ----- INCREMENTATION DU NUMERO ORDRE
 !
         iorne=iorne+1
 !
-10  continue
+ 10 continue
 !
 !
-9999  continue
+9999 continue
 end subroutine

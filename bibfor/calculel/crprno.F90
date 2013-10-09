@@ -35,13 +35,11 @@ subroutine crprno(champ, base, nbnoeu, nequa)
 !     ------------------------------------------------------------------
 #include "asterfort/crprn2.h"
 #include "asterfort/dismoi.h"
-    integer :: nbnoeu, nequa, nec, ibid, ie
+    integer :: nbnoeu, nequa, nec
     character(len=*) :: champ, base
-    character(len=8) :: cbid, gran
+    character(len=8) ::  gran
 !     ------------------------------------------------------------------
-    call dismoi('F', 'NOM_GD', champ, 'CHAM_NO', ibid,&
-                gran, ie)
-    call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
-                cbid, ie)
+    call dismoi('NOM_GD', champ, 'CHAM_NO', repk=gran)
+    call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
     call crprn2(champ, base, nbnoeu, nequa, nec)
 end subroutine

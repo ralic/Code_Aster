@@ -66,7 +66,7 @@ subroutine resyme(resu1z, basez, resu2z)
     character(len=16) :: phenom, option
     character(len=19) :: resl1, resl2, resul1, resul2
     character(len=19) :: ligrel
-    integer :: ibid, ier, nbresu, idlre1, idlre2, iresu, iret, kresu
+    integer ::  nbresu, idlre1, idlre2, iresu, iret, kresu
     integer :: jresl1, jresl2, igr, nbgr
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -74,14 +74,12 @@ subroutine resyme(resu1z, basez, resu2z)
     base = basez
     resul1 = resu1z
     resul2 = resu2z
-    call dismoi('F', 'NOM_MODELE', resul1, 'MATR_ELEM', ibid,&
-                modele, ier)
+    call dismoi('NOM_MODELE', resul1, 'MATR_ELEM', repk=modele)
 !
 !
 ! --- QUELLE OPTION APPELER ?
 !     -------------------------------------------
-    call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                phenom, ier)
+    call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
     if (phenom .eq. 'MECANIQUE') then
         option = 'SYME_MDNS_R'
     else if (phenom.eq.'THERMIQUE') then
@@ -116,11 +114,9 @@ subroutine resyme(resu1z, basez, resu2z)
         if (iret .ne. 0) then
             kresu=kresu+1
             call gcncon('.', resl2)
-            call dismoi('F', 'TYPE_MATRICE', resl1, 'RESUELEM', ibid,&
-                        symel, ier)
+            call dismoi('TYPE_MATRICE', resl1, 'RESUELEM', repk=symel)
             if (symel .eq. 'NON_SYM') then
-                call dismoi('F', 'NOM_LIGREL', resl1, 'RESUELEM', ibid,&
-                            ligrel, ier)
+                call dismoi('NOM_LIGREL', resl1, 'RESUELEM', repk=ligrel)
 !
                 call calcul('S', option, ligrel, 1, resl1,&
                             'PNOSYM', 1, resl2, 'PSYM', base,&
@@ -131,17 +127,17 @@ subroutine resyme(resu1z, basez, resu2z)
                 call jeveuo(resl2//'.DESC', 'L', jresl2)
                 nbgr=zi(jresl1-1+2)
                 ASSERT(nbgr.eq.zi(jresl2-1+2))
-                do 21, igr=1,nbgr
-                if (zi(jresl1-1+2+igr) .gt. 0) then
-                    ASSERT(zi(jresl2-1+2+igr).ne.0)
-                endif
-21              continue
+                do 21 igr = 1, nbgr
+                    if (zi(jresl1-1+2+igr) .gt. 0) then
+                        ASSERT(zi(jresl2-1+2+igr).ne.0)
+                    endif
+ 21             continue
             else
                 call copisd('CHAMP_GD', base, resl1, resl2)
             endif
             zk24(idlre2+kresu-1) = resl2
         endif
-20  end do
+ 20 end do
     call jeecra(resul2//'.RELR', 'LONUTI', kresu)
 !
 !

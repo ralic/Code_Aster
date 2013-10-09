@@ -57,8 +57,7 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
     character(len=24) :: valmod, basmod
     character(len=19) :: sdammo
     logical :: nreavi
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,8 +65,7 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call ndynkk(sddyna, 'SDAMMO', sdammo)
     valmod = sdammo(1:19)//'.VALM'
     basmod = sdammo(1:19)//'.BASM'

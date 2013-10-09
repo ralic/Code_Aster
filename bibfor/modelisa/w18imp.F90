@@ -38,7 +38,7 @@ subroutine w18imp(ligrel, noma, nomo)
 !     ------------------------------------------------------------------
 !
     integer :: ifm, numvec, nbgrel, i, nmgrel, numail, jdli, nutypm
-    integer :: ntypoi, jdtm, nutype, ibid, jc, j, numnoe
+    integer :: ntypoi, jdtm, nutype, jc, j, numnoe
     integer :: jdnw, k, niv, iexi, nbte, jnbele, jmodli, jtypma
     integer :: jtypel, nbele
     character(len=8) :: typema, nomail, tabmai(8)
@@ -97,8 +97,7 @@ subroutine w18imp(ligrel, noma, nomo)
             if (typele .eq. 'MECA_HEXS8') then
                 call utmess('A', 'ELEMENTS4_74')
             endif
-            call dismoi('F', 'PHEN_MODE', typele, 'TYPE_ELEM', ibid,&
-                        phemod, ibid)
+            call dismoi('PHEN_MODE', typele, 'TYPE_ELEM', repk=phemod)
             typemo=phemod(17:32)
             if (phemod(1:10) .eq. '#PLUSIEURS') typemo=' '
             zk16(jtypel-1+nutype)=typele
@@ -106,9 +105,9 @@ subroutine w18imp(ligrel, noma, nomo)
             zk8(jtypma-1+nutype)=typema
         endif
 !
- 9      continue
+  9     continue
         numvec=numvec+nmgrel
-10  end do
+ 10 end do
 !
 !
 !     -- 2. IMPRESSION DU NOMBRE D'ELEMENTS DE CHAQUE TYPE :
@@ -121,7 +120,7 @@ subroutine w18imp(ligrel, noma, nomo)
         typema=zk8(jtypma-1+i)
         typele=zk16(jtypel-1+i)
         write (ifm,9010)typemo,typele,typema,nbele
-20  end do
+ 20 end do
     write(ifm,9050)
 !
 !
@@ -146,8 +145,7 @@ subroutine w18imp(ligrel, noma, nomo)
                 call utmess('A', 'ELEMENTS4_74')
             endif
 !
-            call dismoi('F', 'PHEN_MODE', typele, 'TYPE_ELEM', ibid,&
-                        phemod, ibid)
+            call dismoi('PHEN_MODE', typele, 'TYPE_ELEM', repk=phemod)
             typemo=phemod(17:32)
             if (phemod(1:10) .eq. '#PLUSIEURS') typemo=' '
             write (ifm,9010)typemo,typele,typema,nmgrel-1
@@ -174,15 +172,15 @@ subroutine w18imp(ligrel, noma, nomo)
                 else
                     tabmai(jc)=nomail
                 endif
-30          continue
-39          continue
+ 30         continue
+ 39         continue
             numvec=numvec+nmgrel
-40      continue
+ 40     continue
         write(ifm,9050)
     endif
 !
 !
-50  continue
+ 50 continue
 !
 !
     9000 format (/,'    MODELISATION      ELEMENT FINI      TYPE MAILLE',&

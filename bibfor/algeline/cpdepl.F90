@@ -45,11 +45,11 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     character(len=19) :: melflu
 !
     integer :: iddl(6)
-    character(len=8) :: mailla, k8bid
+    character(len=8) :: mailla
     character(len=14) :: numddl
     character(len=24) :: nomcha, matria, nomnoe
 !-----------------------------------------------------------------------
-    integer :: ibi,icham,im,imod,iret,lnoe
+    integer ::  icham, im, imod, lnoe
     integer :: neq
 !-----------------------------------------------------------------------
     data iddl    /1,2,3,4,5,6/
@@ -62,15 +62,12 @@ subroutine cpdepl(melflu, base, nuor, nbm)
 !
     call wkvect('&&CPDEPL.TEMP.NUOR', 'V V I', 1, imod)
 !
-
-    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi, matria, iret)
 !
-    call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
-                numddl, iret)
-    call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&
-                k8bid, iret)
-    call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibi,&
-                mailla, iret)
+    call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matria)
+!
+    call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
+    call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
     nomnoe = mailla//'.NOMNOE'
     call jelira(nomnoe, 'NOMUTI', lnoe)
 !
@@ -81,7 +78,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
         call extmod(base, numddl, zi(imod), 1, zr(icham),&
                     neq, lnoe, iddl, 6)
         call jelibe(nomcha)
-10  continue
+ 10 continue
 !
 !     MENAGE
     call jedetr('&&CPDEPL.TEMP.NUOR')

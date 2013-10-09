@@ -99,15 +99,13 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
 !
 !       MODELE DE VISU ET MAILLAGE DE VISU (X-FEM)
         call getvid(' ', 'MODELE_VISU', scal=modvis, nbret=iret)
-        call dismoi('F', 'NOM_MAILLA', modvis, 'MODELE', ibid,&
-                    maxfem, iret)
+        call dismoi('NOM_MAILLA', modvis, 'MODELE', repk=maxfem)
 !
 !       NOM ET TYPE DE LA SD RESULTAT EN ENTREE : RESUCO
         call getvid(' ', 'RESULTAT', scal=resuco, nbret=ibid)
 !
 !       MODELE ENRICHI ASSOCIE AU RESULTAT EN ENTREE
-        call dismoi('F', 'NOM_MODELE', resuco, 'RESULTAT', ibid,&
-                    modele, iret)
+        call dismoi('NOM_MODELE', resuco, 'RESULTAT', repk=modele)
 !
 !       NOM DES CHAMPS A POST-TRAITER
         call gettco(resuco, tysd)
@@ -149,7 +147,7 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         call wkvect(licham, 'V V K16', nbcham, jlicha)
         do 10 i = 1, nbcham
             zk16(jlicha-1+i)=linom(i)
-10      continue
+ 10     continue
 !
 !     ----------------------------------------------------------------
     endif
@@ -162,8 +160,7 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
 !
 !     MAILLAGE_SAIN NE SERT A RIEN :
 !     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                malini, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=malini)
 !
     call jedema()
 end subroutine

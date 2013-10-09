@@ -57,7 +57,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic, kmatd
     character(len=19) :: matas
-    integer :: neq, jtemp, neql, jrefa, ibid, jsmhc, jsmdi, jvtemp
+    integer :: neq, jtemp, neql, jrefa, jsmhc, jsmdi, jvtemp
     logical :: lmatd
 !     ---------------------------------------------------------------
 !
@@ -73,8 +73,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
-    call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
 !
 !
 !     1.  MATRICE MPI_INCOMPLET :
@@ -85,8 +84,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
             call dcopy(nbvect*neq, xsol, 1, zr(jtemp), 1)
         endif
 !
-        call dismoi('F', 'MATR_DISTR', matas, 'MATR_ASSE', ibid,&
-                    kmatd, ibid)
+        call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
         if (kmatd .eq. 'OUI') then
             lmatd=.true.
             neql=zi(lmat+5)

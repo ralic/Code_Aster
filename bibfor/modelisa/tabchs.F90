@@ -69,13 +69,13 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !      ==> VARIABLES LOCALES
     integer :: jtbnp, jtblp, ncmp, jcmp, jcnsl, jcnsv, i
     integer :: vali(2), nblig, isp, jsp
-    integer :: nbval, ibid
+    integer :: nbval
     integer :: nuno, numa, nbma, jcesd, nbssp
     integer :: jcesl, jcesv, jcesc, iad
     integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
     integer :: jcolma, jcolno, jcolpt, jcolsp, ipt
     integer :: icmp, ili, iret, jind, jobj2, jobj3, jpg
-    character(len=8) :: k8b, nono, tsca, noma
+    character(len=8) ::  nono, tsca, noma
     character(len=24) :: objlg, objr, objtmp
     character(len=24) :: valk(3)
     logical :: lmail, lnoeu, lpoin, lspoin
@@ -89,10 +89,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     nblig=zi(jtbnp-1+2)
     call jeveuo(tabin//'.TBLP', 'L', jtblp)
 !
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                k8b, iret)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R')
     call jeveuo(ma//'.CONNEX', 'L', jcon1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jcon2)
@@ -201,7 +199,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
             zk24(jcmp+ncmp-1)=zk24(jtblp+4*(i-1))
             zi(jind+ncmp-1)=i
         endif
-10  continue
+ 10 continue
 !
 !     ON VERIFIE QUE LE NOM ET LE TYPE DES COMPOSANTES
 !        DE LA TABLE CORRESPONDENT A LA GRANDEUR LUE
@@ -236,8 +234,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     zr(jcnsv+(nuno-1)*ncmp+icmp-1)=zr(jobj3+ili-1)
                     zl(jcnsl+(nuno-1)*ncmp+icmp-1)=.true.
                 endif
-20          continue
-30      continue
+ 20         continue
+ 30     continue
 !
 !
 !
@@ -275,7 +273,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     call utmess('F', 'MODELISA9_5', nk=3, valk=valk, ni=2,&
                                 vali=vali)
                 endif
-40          continue
+ 40         continue
         endif
 !
 !
@@ -292,7 +290,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 ASSERT(numa.gt.0)
                 zi(jsp-1+numa)=max(zi(jsp-1+numa),ksp)
-50          continue
+ 50         continue
         else
             nbssp=1
         endif
@@ -308,7 +306,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 zi(jpg-1+numa)=max(zi(jpg-1+numa),kpt)
-60          continue
+ 60         continue
         endif
 !
 !
@@ -379,8 +377,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 endif
                 zr(jcesv+iad-1)=zr(jobj3+ili-1)
                 zl(jcesl+iad-1)=.true.
-70          continue
-80      continue
+ 70         continue
+ 80     continue
     endif
 !
     call jedetr('&&TABCHS.MAILLE')

@@ -46,10 +46,10 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 ! IN   NOMGD   K*      : NOM DE LA GRANDEUR
 !-----------------------------------------------------------------------
 !
-    integer :: nbloc, ibloc, icmp, ncmp, ino, nbno, nbec, ier, ii
+    integer :: nbloc, ibloc, icmp, ncmp, ino, nbno, nbec, ii
     integer :: jcnsd, jcnsv, jcnsl, jafci, jafcv, iaprnm, jcnsc, kcmp
     integer :: jcmp, ncmpmx, jcorr
-    character(len=8) :: k8b, nomo
+    character(len=8) ::  nomo
     character(len=19) :: chci, cns
     character(len=24) :: cafci, cafcv
 !
@@ -61,8 +61,7 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     call jemarq()
 !
     nomo = mo
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                k8b, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     call jeveuo(nomo//'.MODELE    .PRNM', 'L', iaprnm)
 !
     chci = chcine
@@ -84,10 +83,10 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call wkvect('&&CHCSUR.CORRES', 'V V I', ncmpmx, jcorr)
-    do 10, kcmp=1,ncmpmx
-    icmp = indik8(zk8(jcnsc),zk8(jcmp-1+kcmp),1,ncmp)
-    zi(jcorr-1+kcmp)=icmp
-    10 end do
+    do 10 kcmp = 1, ncmpmx
+        icmp = indik8(zk8(jcnsc),zk8(jcmp-1+kcmp),1,ncmp)
+        zi(jcorr-1+kcmp)=icmp
+ 10 end do
 !
 !
 !     -- CALCUL DE NBLOC :
@@ -95,8 +94,8 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     do 100 icmp = 1, ncmp
         do 110 ino = 1, nbno
             if (zl(jcnsl+(ino-1)*ncmp+icmp-1)) nbloc = nbloc + 1
-110      continue
-100  end do
+110     continue
+100 end do
 !
 !
 !     -- CREATION DE LA SD
@@ -134,8 +133,8 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
                     endif
                 endif
             endif
-122      continue
-120  end do
+122     continue
+120 end do
 !
     if (ibloc .eq. 0) then
         call utmess('F', 'CALCULEL_9')

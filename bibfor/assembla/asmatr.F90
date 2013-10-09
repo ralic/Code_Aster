@@ -72,7 +72,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     integer :: k
     character(len=8) :: matk8
     character(len=19) :: tlima2(150), solve2, matas, matel, infc19
-    integer :: ilicoe, i, jslvk, iret, ibid, idbgav, ilimat, ier
+    integer :: ilicoe, i, jslvk, iret, ibid, idbgav, ilimat
     integer :: jrefa
 !DEB-------------------------------------------------------------------
     call jemarq()
@@ -83,8 +83,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     infc19 = infcha
     solve2 = solveu
     if (solve2 .eq. ' ') then
-        call dismoi('F', 'SOLVEUR', nu, 'NUME_DDL', ibid,&
-                    solve2, ier)
+        call dismoi('SOLVEUR', nu, 'NUME_DDL', repk=solve2)
     endif
 !
     ASSERT(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
@@ -118,8 +117,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     syme = zk24(jslvk+5-1)(1:3)
     if (syme .eq. 'OUI') then
         do i = 1, nbmat
-            call dismoi('F', 'TYPE_MATRICE', tlima2(i), 'MATR_ELEM', ibid,&
-                        symel, ier)
+            call dismoi('TYPE_MATRICE', tlima2(i), 'MATR_ELEM', repk=symel)
             if (symel .eq. 'NON_SYM') then
                 call gcncon('.', matk8)
                 matel=matk8
@@ -176,8 +174,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     call jedetr('&&ASMATR.LICOEF')
     if (syme .eq. 'OUI') then
         do i = 1, nbmat
-            call dismoi('F', 'TYPE_MATRICE', tlima2(i), 'MATR_ELEM', ibid,&
-                        symel, ier)
+            call dismoi('TYPE_MATRICE', tlima2(i), 'MATR_ELEM', repk=symel)
             if (symel .eq. 'SYMETRI') goto 60
             call detrsd('MATR_ELEM', zk24(ilimat+i-1)(1:19))
  60         continue

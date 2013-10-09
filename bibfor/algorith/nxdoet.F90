@@ -76,7 +76,6 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
     character(len=24) :: nomcha, nomchs
     integer :: icham
     character(len=16) :: motfac
-    integer :: ibid, ierd, iret
     integer :: i, neq, nocc, numein
     integer :: jtemp
     real(kind=8) :: tempct
@@ -97,8 +96,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
     leinit = .false.
     motfac = 'ETAT_INIT'
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ACCES SD IN ET OUT
 !
@@ -111,8 +109,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
 ! --- ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
 !
-    call dismoi('F', 'CALC_RIGI', modele, 'MODELE', ibid,&
-                calcri, ierd)
+    call dismoi('CALC_RIGI', modele, 'MODELE', repk=calcri)
     if (calcri .ne. 'OUI') then
         call utmess('F', 'CALCULEL2_65', sk=modele)
     endif
@@ -219,7 +216,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
                     do 222 i = 1, neq
                         zr(jtemp+i-1) = tempct
                         zk24(jiolch+zioch*(icham-1)+4-1) = 'VALE'
-222                  continue
+222                 continue
                 endif
 !
             else
@@ -230,9 +227,9 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 ! ------- LECTURE DU CHAMP - VERIFICATIONS
 !
         call ntetl3(result, sdieto, icham, tempct)
-10  end do
+ 10 end do
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

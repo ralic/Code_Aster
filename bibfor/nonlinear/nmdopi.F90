@@ -93,9 +93,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     integer :: ino, iddl
     integer :: jvale
     integer :: jplir, jpltk, jplsl
-    integer :: ibid, ier, n1, n2, neq, ndim
+    integer :: ibid, n1, n2, neq, ndim
     real(kind=8) :: coef, lm(2)
-    character(len=8) :: k8bid, noma, lborn(2), nomcmp
+    character(len=8) ::  noma, lborn(2), nomcmp
     character(len=8) :: modele, fiss
     character(len=16) :: relmet
     character(len=24) :: lisnoe, liscmp, lisddl, lisequ
@@ -125,12 +125,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     modele = modelz
     call exixfe(modele, ierm)
     isxfe=(ierm.eq.1)
-    call dismoi('F', 'NOM_MAILLA', numedd, 'NUME_DDL', ibid,&
-                noma, ier)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoma,&
-                k8bid, ier)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, ier)
+    call dismoi('NOM_MAILLA', numedd, 'NUME_DDL', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     lisddl = '&&NMDOPI.LISDDL'
     lisequ = '&&NMDOPI.LISEQU'
     lisnoe = '&&NMDOPI.LISNOE'
@@ -363,7 +360,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
             nomcmp = zk8(jlicmp-1+iddl)
             do 15 ino = 1, nbno
                 zk8(jddl-1+ino) = nomcmp
-15          continue
+ 15         continue
             if (selxfe) then
                 call nueqch('F', chapil, noma, nbno, zi(jlino1),&
                             zk8(jddl), zi(jequ))
@@ -394,8 +391,8 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
                     numequ = zi(jequ-1+ino)
                     zr(jvale-1+numequ) = coef
                 endif
-20          continue
-10      continue
+ 20         continue
+ 10     continue
     endif
 !
     call jedetr(lisddl)
@@ -428,11 +425,11 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call wkvect(lisequ, 'V V I', nbnoma, jequ)
         do 16 ino = 1, nbnoma
             zi(jlinoe-1+ino) = ino
-16      continue
+ 16     continue
         do 70 iddl = 1, nddl
             do 75 ino = 1, nbnoma
                 zk8(jddl-1+ino) = zk8(jlicmp-1+iddl)
-75          continue
+ 75         continue
 !
             call nueqch(' ', selpil, noma, nbnoma, zi(jlinoe),&
                         zk8(jddl), zi(jequ))
@@ -443,8 +440,8 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
                 if (numequ .ne. 0) then
                     zr(jplsl-1+numequ) = 1.d0
                 endif
-80          continue
-70      continue
+ 80         continue
+ 70     continue
     endif
 !
 ! --- GESTION RECHERCHE LINEAIRE

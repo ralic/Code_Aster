@@ -18,7 +18,6 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -26,6 +25,7 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: noma
     integer :: nbma, numai(*), nbnos, numnos(*)
 ! ----------------------------------------------------------------------
@@ -42,11 +42,11 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: nnoe
-    character(len=8) :: nomma, cbid
+    character(len=8) :: nomma
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ier, ima, imai, ino, inoe, ipoin, jconx
+    integer ::  ima, imai, ino, inoe, ipoin, jconx
     integer :: jnunos, jpoin, nbnoe, num
 !-----------------------------------------------------------------------
     call jemarq()
@@ -54,13 +54,12 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
     nbnos= 0
 !  --- RECHERCHE DU NOMBRE DE NOEUDS DU MAILLAGE ---
 !-DEL CALL JELIRA(NOMMA//'.NOMNOE','NOMMAX',NBNOE,' ')
-    call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbnoe,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoe)
     call wkvect('&&IRMANO.NUMNOS', 'V V I', nbnoe, jnunos)
 !     --- INITIALISATION DU TABLEAU DE TRAVAIL &&IRMANO.NUMNOS ----
     do 10 ino = 1, nbnoe
         zi(jnunos-1+ino) = 0
-10  end do
+ 10 end do
 !     --- RECHERCHE DES NOEUDS SOMMETS ----
     call jeveuo(nomma//'.CONNEX', 'L', jconx)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpoin)
@@ -71,15 +70,15 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
         do 22 inoe = 1, nnoe
             num=zi(jconx-1+ipoin-1+inoe)
             zi(jnunos-1+num) =1
-22      continue
-12  continue
+ 22     continue
+ 12 continue
 !  --- STOCKAGE DES NOEUDS PRESENTS SUR LA LISTE DES MAILLES---
     do 32 inoe = 1, nbnoe
         if (zi(jnunos-1+inoe) .eq. 1) then
             nbnos=nbnos+1
             numnos(nbnos)=inoe
         endif
-32  continue
+ 32 continue
 !
     call jedetr('&&IRMANO.NUMNOS')
     call jedema()

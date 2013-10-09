@@ -86,7 +86,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ino, inoa, inob, ima, ifm, niv, nbnog, nbmag, iret, jconx1
+    integer :: ino, inoa, inob, ima, ifm, niv, nbnog, nbmag, jconx1
     integer :: jconx2, ndim, jzero, jmaco, nbmaco, nbnoma, jmai, nunoa, nunob
     integer :: jnomco, nbnoco, nuno, nmaabs, nptint, ntri, itypma, itri, jcoor
     integer :: jnosom, nbnozo, ia, ib, ic, cptzo, jlsno, jltno, jnouls, jnoult
@@ -96,7 +96,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     real(kind=8) :: b(3), c(3), eps(3), m(3), d, vn(3), lsna, lsnb, lsta, lstb
     real(kind=8) :: lstc, lst(6), bestd, bestdi, lsn, bestlt, bestli, dist
     real(kind=8) :: armin, longar, longmx, mp(3)
-    character(len=8) :: k8b, typma
+    character(len=8) ::  typma
     character(len=19) :: maicou, nomcou, vnouls, vnoult, mai, poifis, trifis
     logical :: dejain, dejadi, noemai, in, deja, bool
     real(kind=8) :: toll
@@ -176,10 +176,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
      &   //'DE L''ISOZERO DE '//levset//'.'
 !
 !  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnog,&
-                k8b, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmag,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnog)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmag)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
 !     CALCULUS (SAME ORDER THAN THE ONE USED IN THE CONNECTION TABLE)
@@ -198,8 +196,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jmai)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
 !   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
@@ -218,12 +215,12 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call jeveuo(isozro, 'E', jzero)
     do 10 ino = 1, nbnog
         zl(jzero-1+ino)=.false.
-10  end do
+ 10 end do
 !
 ! INITIALISATION DU VECTEUR LST
     do 20 i = 1, 6
         lst(i)=0.d0
-20  end do
+ 20 end do
 !
 !
 !-----------------------------------------------------------------------
@@ -238,7 +235,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             zl(jzero-1+node)=.true.
             nbnozo = nbnozo+1
         endif
-50  end do
+ 50 end do
 !
 !--------------------------------------------------------------------
 !     ON REPERE LES MAILLES VOLUMIQUES COUPEES OU TANGENTEES PAR LS=0
@@ -265,7 +262,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             nunoa=zi(jconx1-1+zi(jconx2+elem-1)+inoa-1)
             lsna = zr(jlsno-1+nunoa)
             if (abs(lsna) .lt. toll .and. zl(jnosom-1+nunoa)) cptzo = cptzo+1
-105      continue
+105     continue
 !
 !  SI AU - TROIS NOEUDS S'ANNULENT (en 3D),ON A UN PLAN D'INTERSECTION
         if (cptzo .ge. ndim) then
@@ -292,9 +289,9 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                 zi(jmaco-1+nbmaco) = elem
                 goto 100
             endif
-110      continue
+110     continue
 !
-100  end do
+100 end do
 !
 !     IF EVERYTHING GOES CORRECTLY, I SHOULD FIND AT LEAST ONE ELEMENT
 !     CUT BY THE ISOZERO OF LSN. IT'S BETTER TO CHECK IT BEFORE
@@ -313,7 +310,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call wkvect(trifis, 'V V I', nbmaco*7, jtri)
     do 147 ima = 1, nbmaco
         zi(jtri-1+7*(ima-1)+1) = 0
-147  end do
+147 end do
 !
 !     COORDINATES OF THE POINTS OF INTERSECTION BETWEEN EACH ELEMENT
 !     AND THE LSN=0. THE THREE COORDINATES AND THE LSN ARE STORED.
@@ -348,10 +345,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                         zi(jnomco-1+nbnoco) = node
                         goto 200
                     endif
-220              continue
-210          continue
+220             continue
+210         continue
         endif
-200  end do
+200 end do
 !
 !----------------------------------------------
 !     CALCUL DES LS SUR LES NOEUDS SELECTIONNES
@@ -394,7 +391,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             noemai=.false.
             do 320 i = 1, nbnoma
                 if (zi(jconx1-1+zi(jconx2+nmaabs-1)+i-1) .eq. nuno) noemai=.true.
-320          continue
+320         continue
 !
 !  SI LE NOEUD APPARTIENT A LA MAILLE
             if (noemai) then
@@ -413,7 +410,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     x(i)=0.d0
                     y(i)=0.d0
                     z(i)=0.d0
-321              continue
+321             continue
 !
 !
 !  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
@@ -433,7 +430,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                         lst(nptint)=zr(jltno-1+nunoa)
 !
                     endif
-340              continue
+340             continue
 !
 !
 !  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
@@ -452,7 +449,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     nbf=1
                     do 341 i = 1, nbsom
                         fa(1,i)=i
-341                  continue
+341                 continue
                 endif
 !
                 do 610 ifq = 1, nbf
@@ -469,7 +466,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                             nblsn0 = nblsn0 + 1
                         endif
                         lsna=lsnb
-411                  continue
+411                 continue
 !  On affecte a B le point A initial pour comparer D et A
                     nunob=nunoa
                     lsnb=zr(jlsno-1+(nunob-1)+1)
@@ -482,7 +479,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     if (nblsn0 .ge. 3) then
                         call utmess('F', 'XFEM_61')
                     endif
-610              continue
+610             continue
 !
 !
                 call conare(typma, ar, nbar)
@@ -496,10 +493,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     do 444 i = 1, ndim
                         a(i)= zr(jcoor-1+3*(nunoa-1)+i)
                         b(i)= zr(jcoor-1+3*(nunob-1)+i)
-444                  continue
+444                 continue
                     longar=padist(ndim,a,b)
                     if (longar .gt. longmx) longmx = longar
-333              continue
+333             continue
                 do 330 iar = 1, nbar
                     na=ar(iar,1)
                     nb=ar(iar,2)
@@ -574,7 +571,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                                 endif
 !
 !
-380                          continue
+380                         continue
 !
                         endif
 !
@@ -588,7 +585,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
 !
 !
-330              continue
+330             continue
 !
 !  VERIFICATION SUR LE NOMBRE DE POINTS D'INTERSECTION TROUVES
 !
@@ -644,9 +641,9 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                             intabl=.true.
                             goto 424
                         endif
-423                  continue
+423                 continue
 !
-424                  continue
+424                 continue
 !
                     if (.not.intabl) then
 !                    THE COORDINATES OF THE POINT MUST BE STORED...
@@ -662,7 +659,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                         zi(jtri-1+7*(ima-1)+ipt+1) = pos
                     endif
 !
-425              continue
+425             continue
 !
 !  CALCUL DE DISTANCE DU NOEUD (INO) A L'ISOZERO SUR LA MAILLE (NMAABS)
 !  --------------------------------------------------------------------
@@ -725,10 +722,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                                                            &a
                         endif
                     endif
-350              continue
+350             continue
 !
             endif
-310      continue
+310     continue
 !
 !  ON ATTRIBUE LES LS CORRESPONDANT AUX MEILLEURES DISTANCES TROUVEES
 !  ------------------------------------------------------------------
@@ -746,7 +743,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
         ASSERT(dejadi)
         zl(jzero-1+nuno)=.true.
 !
-300  end do
+300 end do
 !
 !     RESIZE THE TABLE CONTAINING THE INTERSECTION POINTS BETWEEN EACH
 !     ELEMENT AND LSN=0 (ONLY FOR THE UPWIND SCHEME)
@@ -754,7 +751,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
     do 500 i = 1, nbpfis*4
         zr(pos-1+i) = zr(jpoi-1+i)
-500  end do
+500 end do
 !
     call jedetr('&&XPRLS0.POIFIS')
 !
@@ -785,7 +782,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             zr(jltno-1+nuno) = zr(jnoult-1+ino)
         endif
 !
-400  end do
+400 end do
 !
 !      IF (NIV.GT.1)
     write(ifm,*)'   NOMBRE DE LEVEL SETS CALCULEES :',nbnoco+nbnozo

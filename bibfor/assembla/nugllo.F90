@@ -52,7 +52,7 @@ subroutine nugllo(nu, base, solveu)
 !----------------------------------------------------------------------
 !
 !
-    integer :: nbma, jconx1, jconx2, ier, ibid, jdime
+    integer :: nbma, jconx1, jconx2, jdime
     integer :: jnumsd, rang, numa, nbnoma, nbno, ino, nuno
     integer :: nec, nlili, neql, idprn1, idprn2, ili, ntot
     integer :: idpr21, idpr22, numinc, numec, nddl
@@ -61,7 +61,7 @@ subroutine nugllo(nu, base, solveu)
     integer :: jadne, jadli, iel, igr, nel, k1, n1, j, ilib
     integer :: jdelgt, jddlp, nbproc, vali(1), jnugl, ieqg
 !
-    character(len=8) :: k8b, noma, partit, mo
+    character(len=8) ::  noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
     integer :: jprtk
@@ -128,12 +128,9 @@ subroutine nugllo(nu, base, solveu)
     call detrsd('NUML_DDL', nu)
 !
 !---- RECHERCHE DU MAILLAGE ET DU NOMBRE DE MAILLES ET DE NOEUDS
-    call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
-                noma, ier)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, ier)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoma,&
-                k8b, ier)
+    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
 !
 !---- ON VERIFIE QU'IL N'Y A PAS DE SUPER-MAILLES
     call jeveuo(noma//'.DIME', 'L', jdime)
@@ -159,12 +156,9 @@ subroutine nugllo(nu, base, solveu)
     call wkvect(nu//'.NUML.NUGL', base(1:1)//' V I', neqg, jnugl)
 !
 !---- RECHERCHE DU TABLEAU PARTITION
-    call dismoi('F', 'NOM_MODELE', nu, 'NUME_DDL', ibid,&
-                mo, ier)
-    call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
-                ligrmo, ier)
-    call dismoi('F', 'PARTITION', ligrmo, 'LIGREL', ibid,&
-                partit, ier)
+    call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
+    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
     ldist=.false.
     ldgrel=.false.
     call asmpi_info(rank=mrank, size=msize)
@@ -189,7 +183,7 @@ subroutine nugllo(nu, base, solveu)
         call jeecra(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', n1)
 !       -- CALCUL DU NOMBRE D'ENTIERS CODES :
         if (ili .eq. 1) nec=n1/nbnoma-2
-10  end do
+ 10 end do
 !
 !---- LECTURE DE LA CONNECTIVITE
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
@@ -238,15 +232,15 @@ subroutine nugllo(nu, base, solveu)
                         zi(izzpr2(1,nuno,2))=nddl
                         do 20 numec = 1, nec
                             zi(izzpr2(1,nuno,2+numec))=zzprno(1,nuno,2+numec)
-20                      continue
+ 20                     continue
 !
                         do 30 iddl = 1, nddl
                             zi(jddlp+ddl1g+iddl-1)=1
                             zi(jtaeq+numinc-1+iddl-1)=ddl1g+iddl-1
-30                      continue
+ 30                     continue
                         numinc=numinc+nddl
                         zi(jtano+nuno-1)=1
-40                  continue
+ 40                 continue
 !
                 else
 !             -- MAILLE TARDIVE :
@@ -269,19 +263,19 @@ subroutine nugllo(nu, base, solveu)
                         zi(izzpr2(ilib,nuno,2))=nddl
                         do 50 numec = 1, nec
                             zi(izzpr2(ilib,nuno,2+numec))=zzprno(ilib,nuno, 2+numec)
-50                      continue
+ 50                     continue
                         do 60 iddl = 1, nddl
                             zi(jddlp+ddl1g+iddl-1)=1
                             zi(jtaeq+numinc-1+iddl-1)=ddl1g+iddl-1
                             zi(jdelgt+numinc-1+iddl-1)=zi(jdelgg+&
                             ddl1g-1+iddl-1)
-60                      continue
+ 60                     continue
                         numinc=numinc+nddl
-70                  continue
+ 70                 continue
                 endif
-80          continue
-90      continue
-100  end do
+ 80         continue
+ 90     continue
+100 end do
     neql=numinc-1
 !
 !
@@ -295,7 +289,7 @@ subroutine nugllo(nu, base, solveu)
     call wkvect(nu//'.NUML.DELG', base(1:1)//' V I', neql, jdelgl)
     do 110 j = 1, neql
         zi(jdelgl-1+j)=zi(jdelgt-1+j)
-110  end do
+110 end do
 !
 !---- CREATION DU .NUML.NEQU
     call wkvect(nu//'.NUML.NEQU', base(1:1)//' V I', 2, j1)
@@ -319,9 +313,9 @@ subroutine nugllo(nu, base, solveu)
                 zi(jnulg+ddl1l-1+iddl-1)=ieqg
                 zi(jnueql+ddl1l-1+iddl-1)=ddl1l+iddl-1
                 zi(jnugl+ieqg-1)=ddl1l-1+iddl
-120          continue
-130      continue
-140  end do
+120         continue
+130     continue
+140 end do
 !
     call jeveuo(solveu//'.SLVK', 'L', jslvk)
 !     POUR PETSC ON A BESOIN D'INFORMATIONS SUPPLEMENTAIRES

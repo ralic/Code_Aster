@@ -39,7 +39,7 @@ subroutine op0089()
     character(len=16) :: kbi1, kbi2, corres, tysd
     character(len=8) :: ouiri, ouima, affick(2)
 !
-    integer :: isma, iamacr, iarefm, ibid, ie, n1, lref
+    integer :: isma, iamacr, iarefm, ie, n1, lref
     character(len=8) :: noma, macrel, promes, modlms, noca
     character(len=19) :: method
     character(len=24) :: vref
@@ -56,8 +56,7 @@ subroutine op0089()
     call gettco(ug, tysd)
     if (tysd(1:4) .ne. 'CHAM') then
 !       UG DE TYPE RESULTAT (POUR MODIF STRUCTURALE)
-        call dismoi('F', 'NOM_MAILLA', ug, 'RESULTAT', ibid,&
-                    noma, ie)
+        call dismoi('NOM_MAILLA', ug, 'RESULTAT', repk=noma)
         call jeveuo(noma//'.NOMACR', 'L', iamacr)
 !
         call jenonu(jexnom(noma//'.SUPMAIL', mail), isma)
@@ -70,8 +69,7 @@ subroutine op0089()
 !
         macrel= zk8(iamacr-1+isma)
 !
-        call dismoi('F', 'NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', ibid,&
-                    promes, ie)
+        call dismoi('NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', repk=promes)
         if (promes .eq. ' ') then
             call utmess('F', 'SOUSTRUC_79')
         endif
@@ -104,8 +102,7 @@ subroutine op0089()
     else
 !       UG DE TYPE CHAM_NO
         call chpver('F', ug, 'NOEU', 'DEPL_R', ie)
-        call dismoi('F', 'NOM_MAILLA', ug, 'CHAM_NO', ibid,&
-                    noma, ie)
+        call dismoi('NOM_MAILLA', ug, 'CHAM_NO', repk=noma)
         call getvtx(' ', 'NOM_CAS', scal=nocas, nbret=n1)
         call ssdein(ul, ug, mail, nocas)
     endif

@@ -50,8 +50,7 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, neq
-    character(len=8) :: k8bid
+    integer ::  neq
     character(len=19) :: ddepla, deppr1, deppr2
     character(len=19) :: dvitla, vitpr1, vitpr2
     character(len=19) :: daccla, accpr1, accpr2
@@ -73,8 +72,7 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
         write (ifm,*) '<MECANONLINE> AJUSTEMENT DIRECTION DE '//&
         'DESCENTE'
     endif
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !

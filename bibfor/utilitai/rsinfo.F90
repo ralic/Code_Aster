@@ -113,7 +113,7 @@ subroutine rsinfo(nomcon, ifi)
     call rsorac(nomd2, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, tord, 1,&
                 ibid)
-    nbordt=tord(1)            
+    nbordt=tord(1)
 !
     if (nbordt .eq. 1) then
         write (ifi,10001) nomd2(1:8)
@@ -149,8 +149,8 @@ subroutine rsinfo(nomcon, ifi)
                 zk16(latac+inomsy-1) = nomsym
                 goto 241
             endif
-2411      continue
-241  continue
+2411     continue
+241 continue
 !
     if (inomsy .eq. 0) then
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES: AUCUN'
@@ -176,7 +176,7 @@ subroutine rsinfo(nomcon, ifi)
 !                          1234567890123456
         zk16(ltirt+i-1) = '----------------'
         zk16(lpoin+i-1) = '      ...       '
-242  end do
+242 end do
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
     write (ifi,form1) 'NUME_ORDRE', ( zk16(lnosy+j-1), j=1,inomsy )
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
@@ -197,8 +197,7 @@ subroutine rsinfo(nomcon, ifi)
             call rsexch(' ', nomd2, nomsym, zi(lres+i-1), noch19,&
                         iret)
             if (iret .eq. 0) then
-                call dismoi('F', 'NOM_GD', noch19, 'CHAMP', ibid,&
-                            nomgd, ibid)
+                call dismoi('NOM_GD', noch19, 'CHAMP', repk=nomgd)
                 lg = lxlgut( nomgd )
                 lb = ( 16 - lg ) / 2
                 chain2(ipcd:ipcf) = blanc(1:lb)//nomgd(1:lg)//blanc
@@ -211,7 +210,7 @@ subroutine rsinfo(nomcon, ifi)
             chain2(ipcd:ipcd) = '!'
             chain4(ipcd:ipcd) = '!'
             ipcd = ipcd + 1
-2431      continue
+2431     continue
 !
 ! ECRITURE : ON ECRIT TOUJOURS LA PREMIERE ET LA DERNIERE LIGNE. AU
 !            MILIEU, ON N'ECRIT QUE SI LE TEXTE A CHANGE.
@@ -258,11 +257,11 @@ subroutine rsinfo(nomcon, ifi)
         chain1(1:longt) = chain2(1:longt)
         chain3(1:longt) = chain4(1:longt)
 !
-243  end do
+243 end do
 !
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
 !
-2430  continue
+2430 continue
 !
     call jedetr('&&'//nompro//'.POINTEUR')
     call jedetr('&&'//nompro//'.COMPT')
@@ -299,7 +298,7 @@ subroutine rsinfo(nomcon, ifi)
             else if (ctype(1:2).eq.'K8') then
                 write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K8'
             endif
-25      continue
+ 25     continue
     endif
 !
 !     ------------------------------------------------------------------
@@ -327,12 +326,12 @@ subroutine rsinfo(nomcon, ifi)
                 nopar2 = blanc(1:lb)//nopara
                 do 2612 k = 1, ipar
                     if (zk16(lnopa+k-1) .eq. nopar2) goto 2611
-2612              continue
+2612             continue
                 ipar = ipar + 1
                 zk16(lnopa+ipar-1) = nopar2
                 zk16(lnupa+ipar-1) = nopara
-2611          continue
-261      continue
+2611         continue
+261     continue
 !
         call codent(ipar, 'D', nomb1)
         form1 = '(1X,''!'',1X,A10,1X,'//nomb1//'(''!'',A16),''!'')'
@@ -345,7 +344,7 @@ subroutine rsinfo(nomcon, ifi)
         do 262 i = 1, ipar
             zk16(ltirt+i-1) = '----------------'
             zk16(lpoin+i-1) = '      ...       '
-262      continue
+262     continue
 !
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE PARAMETRES:'
         write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,ipar )
@@ -385,7 +384,7 @@ subroutine rsinfo(nomcon, ifi)
                 ipcd = ipcf + 1
                 chain2(ipcd:ipcd) = '!'
                 ipcd = ipcd + 1
-2631          continue
+2631         continue
 !
 ! ECRITURE : ON ECRIT TOUJOURS LA PREMIERE ET LA DERNIERE LIGNE. AU
 !            MILIEU, ON N'ECRIT QUE SI LE TEXTE A CHANGE.
@@ -428,7 +427,7 @@ subroutine rsinfo(nomcon, ifi)
                 ii = i
             endif
             chain1 = chain2
-263      continue
+263     continue
         write (ifi,form1) '----------', ( zk16(ltirt+k-1), k=1,ipar )
         call jedetr('&&'//nompro//'.TIRET')
         call jedetr('&&'//nompro//'.POINT')
@@ -444,6 +443,6 @@ subroutine rsinfo(nomcon, ifi)
 !
 ! 3. LA FIN
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

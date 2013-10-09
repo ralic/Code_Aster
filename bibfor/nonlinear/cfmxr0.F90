@@ -1,6 +1,6 @@
 subroutine cfmxr0(defico, resoco, noma)
 !
-    implicit     none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -68,7 +68,6 @@ subroutine cfmxr0(defico, resoco, noma)
     integer :: nbnoe, posnoe(1), numnoe(1)
     integer :: nbno, ino, numno
     integer :: nzoco
-    character(len=8) :: k8bid
     character(len=24) :: nochco
     integer :: jnochc
     character(len=19) :: cnsinr, cnsper, cnoinr
@@ -100,8 +99,7 @@ subroutine cfmxr0(defico, resoco, noma)
 ! --- INITIALISATIONS
 !
     nzoco = cfdisi(defico,'NZOCO' )
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ibid)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     cnsinr = '&&CFMXR0.CNSINR'
     cnoinr = '&&CFMXR0.CNOINR'
     cnsper = '&&CFMXR0.CNSPER'

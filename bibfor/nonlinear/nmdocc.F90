@@ -72,8 +72,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
     comp_elas      = '&&NMDOCC.COMP_ELAS'
     full_elem_s    = '&&NMDOCC.FULL_ELEM'
     list_vari_name = '&&NMDOCC.LIST_VARI'
-    call dismoi('F', 'NOM_MAILLA', model, 'MODELE', ibid,&
-                mesh, iret)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! - Create COMPOR <CARTE>
 !

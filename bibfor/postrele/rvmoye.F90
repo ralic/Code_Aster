@@ -80,8 +80,7 @@ subroutine rvmoye(nomres, iocc)
         nbpar = nbpar + 1
         nopara(nbpar) = 'CHAM_GD'
         valk(2) = champ
-        call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
-                    tych, iret)
+        call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych)
 !
         if (tych(1:4) .eq. 'NOEU') then
             call prmono(champ, iocc, som, nbcmp, nocmp)
@@ -94,7 +93,7 @@ subroutine rvmoye(nomres, iocc)
                 valr(1) = som(icmp)
                 call tbajli(nomres, nbpar, nopara, vali, valr,&
                             [c16b], valk, 0)
-10          continue
+ 10         continue
 !
         else if (tych(1:2).eq.'EL') then
             call utmess('F', 'ALGORITH17_5')
@@ -176,7 +175,7 @@ subroutine rvmoye(nomres, iocc)
                     ik = ik + 1
                     valk(ik) = zk8(iadr)
                 endif
-1001          continue
+1001         continue
             call jedetr(nomjv)
         endif
 !
@@ -184,8 +183,7 @@ subroutine rvmoye(nomres, iocc)
         call rsexch(' ', resu, nomcha, iord, champ,&
                     iret)
         if (iret .ne. 0) goto 101
-        call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
-                    tych, iret)
+        call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych)
 !
         if (tych(1:4) .eq. 'NOEU') then
 !
@@ -202,7 +200,7 @@ subroutine rvmoye(nomres, iocc)
                 valr(ir) = som(icmp)
                 call tbajli(nomres, nbpar, nopara, vali, valr,&
                             [c16b], valk, 0)
-11          continue
+ 11         continue
 !
         else if (tych(1:2).eq.'EL') then
             call utmess('F', 'ALGORITH17_5')
@@ -210,11 +208,11 @@ subroutine rvmoye(nomres, iocc)
             call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
 !
-101  end do
+101 end do
 !
     call jedetr(knum)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

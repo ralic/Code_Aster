@@ -75,8 +75,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
     incr   = .false.
     nbcomp = 0
     keywordfact = 'COMPORTEMENT'
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mesh, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     l_etat_init = .false.
 !
 ! - How many COMPORTEMENT in CALC_G ?
@@ -113,8 +112,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
     if (limpel) then
         incr = .false.
     else
-        call dismoi('F', 'ELAS_INCR', compor, 'CARTE_COMPOR', ibid,&
-                    repk, iret)
+        call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
         if (repk .eq. 'ELAS') then
             incr = .false.
         else if (repk.eq.'INCR'.or.repk.eq.'MIXTE') then

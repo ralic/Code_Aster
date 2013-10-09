@@ -52,7 +52,6 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !                                 ON LE DETRUIT S'Il EXISTE DEJA
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -72,6 +71,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 #include "asterfort/moinsr.h"
 #include "asterfort/trir.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma
 ! -----  ARGUMENTS
     character(len=*) :: az, numedz, ataz, basez, numatz
@@ -80,9 +80,9 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 ! -----  VARIABLES LOCALES
     integer :: j, k, iimax, jhbid, idsuiv, dimacv, jacnbt, jconl, nblig, nblig2
     integer :: jac1er, ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
-    integer :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, ier, jrefa
-    integer :: i, jsmde, ibid, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
-    character(len=1) ::  base
+    integer :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, jrefa
+    integer :: i, jsmde, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
+    character(len=1) :: base
     character(len=14) :: numddl, numedd
     character(len=19) :: ata
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
@@ -148,14 +148,14 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
             nddlt = 0
             do 15 i = 1, nddltm
                 if (zr(idligm-1+i) .ne. 0.d0) nddlt = nddlt + 1
-15          continue
+ 15         continue
 !           ASSERT(NDDLT.GT.0)
             zi(jacnbt-1+ilig+(j-1)*nblia) = nddlt
             zi(jac1er-1+ilig+(j-1)*nblia) = dimacv + 1
             dimacv = dimacv + nddlt
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !       ASSERT(DIMACV.GT.0)
     dimacv = max(dimacv,1)
 !
@@ -172,21 +172,21 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
             nddlt = apptr(ilig+1) - apptr(ilig)
             jdecal = apptr(ilig)
             kdeb = k
-            do 35,i = 1,nddlt
-            if (zr(idligm-1+i) .ne. 0.d0) then
-                k = k + 1
-                zi(jaci-1+k) = apddl(jdecal+i)
-                zr(jacv-1+k) = zr(idligm-1+i)
-            endif
-35          continue
+            do 35 i = 1, nddlt
+                if (zr(idligm-1+i) .ne. 0.d0) then
+                    k = k + 1
+                    zi(jaci-1+k) = apddl(jdecal+i)
+                    zr(jacv-1+k) = zr(idligm-1+i)
+                endif
+ 35         continue
 !         ON DOIT TRIER LE TABLEAU DES NUMEROS D'EQUATIONS
 !         CAR MOINSR S'ATTEND A UN TABLEAU ORDONNE
 !         LE TABLEAU DES VALEURS EST AUSSI PERMUTE POUR
 !         RESPECTER CE TRI
             call trir(zi(jaci+kdeb), zr(jacv+kdeb), 1, k-kdeb)
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
-30      continue
-40  end do
+ 30     continue
+ 40 end do
 !
 !
 !     4. OBJETS DU NUME_DDL : .SMHC ET .SMDI :
@@ -200,7 +200,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
         zi(idlm) = ieq
         call moinsr(zi(idlm), 1, idlm, jsmdi, idsuiv,&
                     ksuiv, jhbid, khbid, iilib, iimax)
-50  end do
+ 50 end do
 !
 !
 !     4.2 : ON INSERE LES VRAIS TERMES :
@@ -214,8 +214,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
         do 60 iddl = 0, nddlt - 1
             call moinsr(zi(idlm+iddl), iddl+1, idlm, jsmdi, idsuiv,&
                         ksuiv, jhbid, khbid, iilib, iimax)
-60      continue
-70  end do
+ 60     continue
+ 70 end do
 !
 !
 !     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
@@ -239,8 +239,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     --------------------------------------------------
     krefa = ata//'.REFA'
     call wkvect(krefa, base//' V K24', 11, jrefa)
-    call dismoi('F', 'NOM_MAILLA', numedd, 'NUME_DDL', ibid,&
-                ma, ier)
+    call dismoi('NOM_MAILLA', numedd, 'NUME_DDL', repk=ma)
     zk24(jrefa-1+1) = ma
     zk24(jrefa-1+2) = numddl
     zk24(jrefa-1+9) = 'MS'
@@ -250,7 +249,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     call wkvect(kconl, base//' V R', neq, jconl)
     do 90 i = 1, neq
         zr(jconl+i-1) = un
-90  end do
+ 90 end do
 !
 !
 !     7. OBJET: MATR_ASSE.VALM :
@@ -268,31 +267,31 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
         decal = zi(jac1er-1+ilig)
 !
 !       -- CALCUL DE .VALM(II,JJ) :
-        do 130,j = 1,nddlt
-        vj = zr(jacv-1+decal-1+j)
-        jj = zi(jaci-1+decal-1+j)
-        ASSERT(jj.le.neq)
-        ii2 = zi(jsmdi-1+jj)
-        if (jj .eq. 1) then
-            ii1 = 1
-        else
-            ii1 = zi(jsmdi-1+jj-1) + 1
-        endif
-        ASSERT(ii2.ge.ii1)
-        do 120,i = 1,j
-        vi = zr(jacv-1+decal-1+i)
-        ii = zi(jaci-1+decal-1+i)
-        vij = vi*vj
+        do 130 j = 1, nddlt
+            vj = zr(jacv-1+decal-1+j)
+            jj = zi(jaci-1+decal-1+j)
+            ASSERT(jj.le.neq)
+            ii2 = zi(jsmdi-1+jj)
+            if (jj .eq. 1) then
+                ii1 = 1
+            else
+                ii1 = zi(jsmdi-1+jj-1) + 1
+            endif
+            ASSERT(ii2.ge.ii1)
+            do 120 i = 1, j
+                vi = zr(jacv-1+decal-1+i)
+                ii = zi(jaci-1+decal-1+i)
+                vij = vi*vj
 !           -- CUMUL DE VIJ DANS .VALM :
-        do 100,iii = ii1,ii2
-        if (zi4(jsmhc-1+iii) .eq. ii) goto 110
-100      continue
-        ASSERT(.false.)
-110      continue
-        zr(jvalm-1+iii) = zr(jvalm-1+iii) + vij
-120      continue
-130      continue
-140  end do
+                do 100 iii = ii1, ii2
+                    if (zi4(jsmhc-1+iii) .eq. ii) goto 110
+100             continue
+                ASSERT(.false.)
+110             continue
+                zr(jvalm-1+iii) = zr(jvalm-1+iii) + vij
+120         continue
+130     continue
+140 end do
 !
 !
 !     9. MENAGE :

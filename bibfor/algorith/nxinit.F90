@@ -60,7 +60,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
 !
 !
 !
-    integer :: iret, initpr, ibid
+    integer :: iret, initpr
     integer :: niv, ifm
     character(len=14) :: nuposs
     character(len=24) :: noojb
@@ -80,8 +80,7 @@ subroutine nxinit(result, modele, mate, carele, compor,&
     lnonl = .true.
     levol = .false.
     time = result(1:8)//'.CHTPS'
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, ibid)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
 !
 ! --- CONCEPT REENTRANT ?
 !

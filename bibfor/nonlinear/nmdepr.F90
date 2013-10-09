@@ -58,7 +58,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
     logical :: exicar
     integer :: ibid, ier, jchar, jfnoe, nbcham
     integer :: vali
-    character(len=8) :: fnocal, k8bid, lpain(6), paout
+    character(len=8) :: fnocal, lpain(6), paout
     character(len=16) :: tysd, option
     character(len=19) :: chfnoe, lchin(6)
     character(len=24) :: chgeom, nom24, chcara(18)
@@ -87,8 +87,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
     endif
 !
 !     ----------------------------------
-    call dismoi('F', 'NB_CHAMP_UTI', fnocal, 'RESULTAT', nbcham,&
-                k8bid, ier)
+    call dismoi('NB_CHAMP_UTI', fnocal, 'RESULTAT', repi=nbcham)
 !
     if (nbcham .le. 0) then
         call utmess('F', 'ALGORITH7_16', sk=fnocal)
@@ -125,7 +124,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 !
 !     CALCUL DES OPTIONS : CHAR_MECA_FR2D2D OU CHAR_MECA_FR3D3D
 !     ---------------------------------------------------------
-10  continue
+ 10 continue
     if (option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq. 'CHAR_MECA_FR2D2D') then
         call megeom(modele, chgeom)
 !
@@ -181,7 +180,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 !
 !     CALCUL DES OPTIONS : CHAR_MECA_FR2D3D OU CHAR_MECA_FR1D2D
 !     ---------------------------------------------------------
-20  continue
+ 20 continue
     if (option .eq. 'CHAR_MECA_FR2D3D' .or. option .eq. 'CHAR_MECA_FR1D2D') then
         call megeom(modele, chgeom)
 !
@@ -224,7 +223,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 !
 !     CALCUL DE L'OPTION : CHAR_MECA_PRES_R
 !     -------------------------------------
-30  continue
+ 30 continue
     if (option .eq. 'CHAR_MECA_PRES_R') then
         call megeom(modele, chgeom)
         call mecara(carele, exicar, chcara)
@@ -250,6 +249,6 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
     endif
 !
 !
-40  continue
+ 40 continue
     call jedema()
 end subroutine

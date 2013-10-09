@@ -52,7 +52,7 @@ subroutine op0042()
     character(len=6) :: nompro
     parameter  (nompro='OP0042')
 !
-    integer :: ifm, niv, n0, nuord, nchar, ibid, ierd, jordr, np, nc
+    integer :: ifm, niv, n0, nuord, nchar, ibid, jordr, np, nc
     integer :: nbordr, iret
     real(kind=8) :: prec
     character(len=4) :: ctyp
@@ -114,8 +114,7 @@ subroutine op0042()
 !
     call medom1(modele, mate, cara, kcha, nchar,&
                 ctyp, resuco, nuord)
-    call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                pheno, ierd)
+    call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
 !
 !     --- TRAITEMENT DU PHENOMENE MECANIQUE ---
     if (pheno(1:4) .eq. 'MECA') then
@@ -133,7 +132,7 @@ subroutine op0042()
 !
     endif
 !
-9999  continue
+9999 continue
 !
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE

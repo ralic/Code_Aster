@@ -56,7 +56,7 @@ subroutine celver(celz, typver, arret, iret)
     character(len=3) :: knan
     character(len=19) :: cel
     integer :: jceld, kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
-    integer :: imolo, inan, nb1, k, ibid, jcelv
+    integer :: imolo, inan, nb1, k, jcelv
     logical :: lnan
 !
 !     ------------------------------------------------------------------
@@ -76,26 +76,26 @@ subroutine celver(celz, typver, arret, iret)
 !     --------------------------------
         ngrel = zi(jceld-1+2)
         iprem = 0
-        do 20,igr = 1,ngrel
-        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
-        if (imolo .eq. 0) goto 20
-        nel = zi(jceld-1+zi(jceld-1+4+igr)+1)
-        do 10,iel = 1,nel
-        ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
-        iprem = iprem + 1
-        if (iprem .eq. 1) then
-            ncdyn1 = ncdyn
-        else
-            if (ncdyn .ne. ncdyn1) then
-                if (arret .ne. 'COOL') then
-                    call utmess('F', 'CALCULEL_48', sk=cel)
+        do 20 igr = 1, ngrel
+            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            if (imolo .eq. 0) goto 20
+            nel = zi(jceld-1+zi(jceld-1+4+igr)+1)
+            do 10 iel = 1, nel
+                ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
+                iprem = iprem + 1
+                if (iprem .eq. 1) then
+                    ncdyn1 = ncdyn
                 else
-                    iret = 1
+                    if (ncdyn .ne. ncdyn1) then
+                        if (arret .ne. 'COOL') then
+                            call utmess('F', 'CALCULEL_48', sk=cel)
+                        else
+                            iret = 1
+                        endif
+                    endif
                 endif
-            endif
-        endif
-10      continue
-20      continue
+ 10         continue
+ 20     continue
 !
 !
     else if (typver.eq.'NBSPT_1') then
@@ -112,10 +112,8 @@ subroutine celver(celz, typver, arret, iret)
 !
     else if (typver.eq.'PAS_NAN') then
 !     --------------------------------
-        call dismoi('F', 'NOM_GD', cel, 'CHAMP', ibid,&
-                    nomgd, ibid)
-        call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                    tsca, ibid)
+        call dismoi('NOM_GD', cel, 'CHAMP', repk=nomgd)
+        call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         call jeveuo(cel//'.CELV', 'L', jcelv)
         call jelira(cel//'.CELV', 'LONMAX', nb1)
         lnan=.false.
@@ -123,25 +121,25 @@ subroutine celver(celz, typver, arret, iret)
         knan = '???'
 !
         if (tsca .eq. 'R') then
-            do 80,k = 1,nb1
-            if (iisnan(zr(jcelv-1+k)) .eq. 1) lnan=.true.
-80          continue
+            do 80 k = 1, nb1
+                if (iisnan(zr(jcelv-1+k)) .eq. 1) lnan=.true.
+ 80         continue
         else if (tsca.eq.'C') then
-            do 81,k = 1,nb1
-            if (iisnan(dble(zc(jcelv-1+k))) .eq. 1) lnan=.true.
-81          continue
+            do 81 k = 1, nb1
+                if (iisnan(dble(zc(jcelv-1+k))) .eq. 1) lnan=.true.
+ 81         continue
         else if (tsca.eq.'I') then
-            do 82,k = 1,nb1
-            if (zi(jcelv-1+k) .eq. inan) lnan=.true.
-82          continue
+            do 82 k = 1, nb1
+                if (zi(jcelv-1+k) .eq. inan) lnan=.true.
+ 82         continue
         else if (tsca.eq.'K8') then
-            do 83,k = 1,nb1
-            if (zk8(jcelv-1+k) .eq. knan) lnan=.true.
-83          continue
+            do 83 k = 1, nb1
+                if (zk8(jcelv-1+k) .eq. knan) lnan=.true.
+ 83         continue
         else if (tsca.eq.'K24') then
-            do 84,k = 1,nb1
-            if (zk24(jcelv-1+k) .eq. knan) lnan=.true.
-84          continue
+            do 84 k = 1, nb1
+                if (zk24(jcelv-1+k) .eq. knan) lnan=.true.
+ 84         continue
         else
             ASSERT(.false.)
         endif

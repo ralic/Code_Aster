@@ -56,7 +56,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, ik, ino, inord, iret
+    integer :: i, ier, ik, ino, inord
     integer :: j, lldeeq, lldes, llncmp, llnoin, lltyp, ltddl
     integer :: ltpar, nbatta, nbcmp, nbcpmx, nbdeb, nbec, nbfin
     integer :: nbint, nbmn, nbnoe, nbnot, neq, ntail, numgd
@@ -65,7 +65,6 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     parameter (nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: nomres, intf, typcou, nomnoe, nomcmp, mailla
-    character(len=8) :: k8bid
     character(len=19) :: numddl, numref
     character(len=19) :: raildl, raid
     character(len=16) :: typdef
@@ -81,8 +80,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
 !---------------------RECHERCHE DU NUMDDL ASSOCIE A LA MATRICE----------
 !
-    call dismoi('F', 'NOM_NUME_DDL', raid, 'MATR_ASSE', ibid,&
-                numddl, iret)
+    call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=numddl)
     numddl(15:19)='.NUME'
 !
 !---------------------REQUETTE DU DEEQ DU NUMDDL------------------------
@@ -90,22 +88,17 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     numddl(15:19)='.NUME'
     deeq=numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !--------------------RECUPERATION DU MAILLAGE---------------------------
 !
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
 !
 !----RECUPERATION DES DONNEES RELATIVES A LA GRANDEUR SOUS-JACENTE------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
-    call dismoi('F', 'NUM_GD', intf, 'INTERF_DYNA', numgd,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
+    call dismoi('NUM_GD', intf, 'INTERF_DYNA', repi=numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', llncmp)
 !
 !-----------REQUETTE ADRESSE DE LA TABLE DESCRIPTION DES DEFORMEES------
@@ -137,10 +130,10 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
                 ik=zi(llnoin+i-1)
                 nbfin=max(nbfin,ik)
                 nbdeb=min(nbdeb,ik)
-15          continue
+ 15         continue
             call jelibe(jexnum(intf//'.IDC_LINO', j))
         endif
-10  end do
+ 10 end do
 !
     call jelibe(intf//'.IDC_TYPE')
 !
@@ -190,8 +183,8 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
                     call cheddl(zi(lldeeq), neq, ino, j, zi(ltddl+nbatta- 1),&
                                 1)
                 endif
-30          continue
-20      continue
+ 30         continue
+ 20     continue
     endif
 !
 !
@@ -209,6 +202,6 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     call jelibe(deeq)
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

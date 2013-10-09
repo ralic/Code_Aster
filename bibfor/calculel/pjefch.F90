@@ -55,8 +55,7 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
     ch3s = '&&PJEFCH'//'.CH3S'
     iret = 0
 !
-    call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ibid,&
-                tych, ibid)
+    call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
 !
 !
 !     1 : TRANSFORMATION DE CH1 EN CHAMP SIMPLE : CH1S
@@ -128,7 +127,7 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
 !
 !
 !
-10  continue
+ 10 continue
     call detrsd('CHAM_NO_S', ch1s)
     call detrsd('CHAM_NO_S', ch2s)
     call detrsd('CHAM_ELEM_S', ch1s)

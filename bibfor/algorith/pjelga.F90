@@ -28,7 +28,7 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !    APPEL A PJCORR (RETOUR AUX POINTS DE GAUSS)
 !
 !
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -64,7 +64,7 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
     character(len=19) :: cns1, ch2s
     character(len=24) :: nomfpg
 !
-    integer :: jcnsv, ibid
+    integer :: jcnsv
 !
 !
 ! DEB ------------------------------------------------------------------
@@ -78,10 +78,8 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !
 !     -- ON RECUPERE LE NOM DE L'OPTION ET LE NOM DU PARAMETRE
 !        POUR LE CHAM_ELEM VIVANT SUR LE MAILLAGE 1
-    call dismoi('F', 'NOM_OPTION', cham1, 'CHAM_ELEM', ibid,&
-                option, ibid)
-    call dismoi('F', 'NOM_PARAM', cham1, 'CHAM_ELEM', ibid,&
-                nompar, ibid)
+    call dismoi('NOM_OPTION', cham1, 'CHAM_ELEM', repk=option)
+    call dismoi('NOM_PARAM', cham1, 'CHAM_ELEM', repk=nompar)
 !
 !
 !     -- ECLATEMENT DU CHAMP VIVANT SUR LE MAILLAGE 1
@@ -116,13 +114,11 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
     call detrsd('MAILLAGE', ma1p)
     call detrsd('CHAM_NO_S', cns1)
 !
-    call dismoi('F', 'PROF_CHNO', cham1e, 'CHAM_NO', ibid,&
-                prfchn, ibid)
+    call dismoi('PROF_CHNO', cham1e, 'CHAM_NO', repk=prfchn)
     call detrsd('PROF_CHNO', prfchn)
     call detrsd('CHAM_NO', cham1e)
 !
-    call dismoi('F', 'PROF_CHNO', chauxs, 'CHAM_NO', ibid,&
-                prfchn, ibid)
+    call dismoi('PROF_CHNO', chauxs, 'CHAM_NO', repk=prfchn)
     call detrsd('PROF_CHNO', prfchn)
     call detrsd('CHAM_NO', chauxs)
 !

@@ -69,7 +69,7 @@ subroutine op0184()
     integer :: iadrno, imp, jdme, ntseg, imamin, jdco, jdno, no1, no2, nutyel
     integer :: jcelv, jceld, idec, nbelgr, liel, iel, iadno, nno
     integer :: jinst, nbtrou, lordr, ntpoi, itest, iad, imapl
-    integer :: nbordt, te, nbgr, igr, ier, tord(1)
+    integer :: nbordt, te, nbgr, igr, tord(1)
     real(kind=8) :: rbid, pres, epsi, temps, tref, cm(3), a(3), b(3), la, lb, d2
     real(kind=8) :: d2min
     real(kind=8) :: valr
@@ -92,11 +92,9 @@ subroutine op0184()
 !     LECTURE DE LA NUMEROTATION DES DDL
 !
     call getvid(' ', 'MAIL_PLEXUS', scal=nomapl, nbret=nbv)
-    call dismoi('F', 'NB_MA_MAILLA', nomapl, 'MAILLAGE', nbmapl,&
-                k8b, ier)
+    call dismoi('NB_MA_MAILLA', nomapl, 'MAILLAGE', repi=nbmapl)
     call getvid(' ', 'MAILLAGE', scal=nomast, nbret=nbv)
-    call dismoi('F', 'NB_NO_MAILLA', nomast, 'MAILLAGE', nbnoas,&
-                k8b, ier)
+    call dismoi('NB_NO_MAILLA', nomast, 'MAILLAGE', repi=nbnoas)
     call wkvect('&&OP0184.NOAST_MAPLEX', 'V V I', nbnoas, jnoma)
     coorn = nomast//'.COORDO    .VALE'
     call jeveuo(coorn, 'L', iadrno)
@@ -115,7 +113,7 @@ subroutine op0184()
     do 50 ino = 1, nbnoas
         do 10 i = 1, 3
             cm(i) = zr(iadrno+3*ino-3+i-1)
-10      continue
+ 10     continue
         imamin = 0
         d2min = 1.d10
         do 40 imp = 1, nbmapl
@@ -128,23 +126,23 @@ subroutine op0184()
             else
                 call utmess('F', 'UTILITAI3_9')
             endif
-20          continue
+ 20         continue
             call jeveuo(jexnum(mlgcnx, imp), 'L', jdno)
             no1 = zi(jdno)
             no2 = zi(jdno+1)
             do 30 i = 1, 3
                 a(i) = zr(jdco+ (no1-1)*3+i-1)
                 b(i) = zr(jdco+ (no2-1)*3+i-1)
-30          continue
+ 30         continue
             call pj3da4(cm, a, b, la, lb,&
                         d2)
             if (d2 .lt. d2min) then
                 imamin = imp
                 d2min = d2
             endif
-40      continue
+ 40     continue
         zi(jnoma-1+ino) = imamin
-50  end do
+ 50 end do
 ! TEST SUR LA PRESENCE DE MAILLE PONCTUELLE
     if (itest .ne. 0) then
         call utmess('I', 'UTILITAI3_10')
@@ -247,7 +245,7 @@ subroutine op0184()
 !     LECTURE DES DATASET DU FICHIER IDEAS
 !     ON NE LIT QUE DES CHAMPS CONSTANTS PAR ELEMENTS
 !
-60  continue
+ 60 continue
 !
     read (ifsig,'(A6)',end=160,err=180) kar
     if (kar .eq. '    56') then
@@ -324,7 +322,7 @@ subroutine op0184()
             endif
             do 70 iord = 1, nbordr
                 if (zi(jnume+iord-1) .eq. numpas) goto 90
-70          continue
+ 70         continue
         else if (nbinst.ne.0) then
             do 80 iord = 1, nbinst
                 tref = zr(jlist+iord-1)
@@ -333,16 +331,16 @@ subroutine op0184()
                 else if (crit(1:4).eq.'ABSO') then
                     if (abs(tref-temps) .le. abs(epsi)) goto 90
                 endif
-80          continue
+ 80         continue
         endif
         goto 60
     endif
-90  continue
+ 90 continue
     ipas = ipas + 1
 !
 !        LECTURE DES PRESSIONS
 !
-100  continue
+100 continue
     read (ifsig,'(I10)',end=180) ima
     if (ima .eq. -1) goto 110
     read (ifsig,'(E13.5)',end=180) pres
@@ -358,7 +356,7 @@ subroutine op0184()
     endif
 !
     goto 100
-110  continue
+110 continue
 !
     do 140 igr = 1, nbgr
         idec = zi(jceld-1+zi(jceld-1+4+igr)+8)
@@ -381,10 +379,10 @@ subroutine op0184()
 !  ON NE MODIFIE SURTOUT PAS LA PRESSION LUE
 !  ==> LES TE SAVENT CE QU4ILS ONT A FAIRE
                     zr(iad+i) = pres
-120              continue
-130          continue
+120             continue
+130         continue
         endif
-140  end do
+140 end do
 !
     nsymb = 'PRES'
     call rsexch(' ', resu, nsymb, ipas, nomch,&
@@ -406,17 +404,17 @@ subroutine op0184()
     zr(jinst) = temps
     do 150 i = 1, nbmapl
         zr(jpres-1+i) = 0.d0
-150  end do
+150 end do
 !
     goto 60
 !
-160  continue
+160 continue
 !
     call utmess('I', 'UTILITAI8_8')
     call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
                 cbid, epsi, crit, tord, 1,&
                 nbtrou)
-    nbordr=tord(1)            
+    nbordr=tord(1)
     if (nbordr .le. 0) then
         call utmess('F', 'UTILITAI2_97')
     endif
@@ -430,7 +428,7 @@ subroutine op0184()
         vali (1) = zi(lordr+iord-1)
         valr = zr(jinst)
         call utmess('I', 'UTILITAI8_9', si=vali(1), sr=valr)
-170  end do
+170 end do
     call utmess('I', 'VIDE_1')
 !
     call titre()
@@ -440,10 +438,10 @@ subroutine op0184()
 !
     goto 190
 !
-180  continue
+180 continue
     call utmess('F', 'UTILITAI3_15')
 !
-190  continue
+190 continue
     call jedema()
 !
 end subroutine

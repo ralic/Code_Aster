@@ -133,10 +133,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     call wkvect('&&CAPREC.LCESR', 'V V R', nliai, jlr)
     nbchs=0
 !
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndimmo,&
-                k8bid, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mesh, 'MAILLAGE', nb_elem,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndimmo)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem)
     if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) then
         call utmess('F', 'CHARGES2_6')
     endif
@@ -155,8 +153,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     nomg_depl = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'L', j_cmp_depl)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'LONMAX', nb_cmp_depl, k8bid)
-    call dismoi('F', 'NB_EC', nomg_depl, 'GRANDEUR', nbec_depl,&
-                k8bid, iret)
+    call dismoi('NB_EC', nomg_depl, 'GRANDEUR', repi=nbec_depl)
     ASSERT(nbec_depl.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
@@ -186,8 +183,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     nomg_sief = 'SIEF_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'L', j_cmp_sief)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'LONMAX', nb_cmp_sief, k8bid)
-    call dismoi('F', 'NB_EC', nomg_sief, 'GRANDEUR', nbec_sief,&
-                k8bid, iret)
+    call dismoi('NB_EC', nomg_sief, 'GRANDEUR', repi=nbec_sief)
     ASSERT(nbec_sief.le.10)
 !
     do iocc = 1, nliai
@@ -284,7 +280,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                             goto 110
                                         endif
                                     enddo
-110                                  continue
+110                                 continue
 !
 ! --------------------------------- Compute linear relations
 !
@@ -323,7 +319,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                             goto 120
                                         endif
                                     enddo
-120                                  continue
+120                                 continue
 !
 ! --------------------------------- Compute linear relations
 !
@@ -342,7 +338,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                 call jedetr(list_node)
                                 call aflrch(list_rela, load)
                             endif
-140                          continue
+140                         continue
                         enddo
                     endif
                 enddo
@@ -363,6 +359,6 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
     call jedetc('V', '&&CAPREC.CES', 1)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

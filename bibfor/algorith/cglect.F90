@@ -65,8 +65,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !     LISS   : TYPE DE LISSAGE (NOM UNIQUE CONTRACTE)
 ! ======================================================================
 !
-    integer :: ibid, ier, nexci
-    character(len=8) :: k8b
+    integer ::  ier, nexci
 !
     call jemarq()
 !
@@ -78,10 +77,8 @@ subroutine cglect(resu, modele, ndim, option, cas,&
     call cgverc(resu, nexci)
 !
 !     RECUPERATION DU MODELE PUIS DE LA DIMENSION DU MODELE
-    call dismoi('F', 'MODELE', resu, 'RESULTAT', ibid,&
-                modele, ier)
-    call dismoi('F', 'DIM_GEOM', modele, 'MODELE', ndim,&
-                k8b, ier)
+    call dismoi('MODELE', resu, 'RESULTAT', repk=modele)
+    call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
 !
 !     RECUPERATION DE L'OPTION
     call getvtx(' ', 'OPTION', scal=option, nbret=ier)

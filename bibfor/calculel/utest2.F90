@@ -49,14 +49,13 @@ subroutine utest2(cham19, nomail, nonoeu, nupo, nusp,&
 ! IN  : LLAB   : FLAG D IMPRESSION DE LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, ibid, ie, ier
+    integer :: vali, ier
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
 !     ------------------------------------------------------------------
 !
-    call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_ELEM', ibid,&
-                nomma, ie)
+    call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=nomma)
 !
     call utch19(cham19, nomma, nomail, nonoeu, nupo,&
                 nusp, ivari, nocmp, typres, valr,&

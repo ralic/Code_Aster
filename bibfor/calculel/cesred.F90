@@ -81,10 +81,10 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     logical :: loter
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2, jexma
     integer :: jce2d, jce2v, jce2l, jce2c, jnbpt, jnbsp, jnbcmp, nbpt
-    integer :: kma, ibid, isp, iad1, iad2, jce3c, nbsp, ipt
+    integer :: kma, isp, iad1, iad2, jce3c, nbsp, ipt
     integer :: ncmpmx, ncmp1, icmp1, icmp2, icmp3
     integer :: ima
-    character(len=8) :: ma, nomgd, nocmp, typces, kbid
+    character(len=8) :: ma, nomgd, nocmp, typces
     character(len=3) :: tsca
     character(len=19) :: ces1, ces2
 !     ------------------------------------------------------------------
@@ -114,10 +114,8 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     nbmam = zi(jce1d-1+1)
     ncmp1 = zi(jce1d-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
     jce3c = jce1c
     if (nbcmp .gt. 0) then
@@ -135,12 +133,12 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
             loter = .false.
             do 205 icmp3 = 1, -nbcmp
                 if (zk8(jce1c-1+icmp1) .eq. licmp(icmp3)) loter = .true.
-205          continue
+205         continue
             if (.not.loter) then
                 ncmp2 = ncmp2 +1
                 zk8(jce3c-1+ncmp2) = zk8(jce1c-1+icmp1)
             endif
-200      continue
+200     continue
         ASSERT(ncmp2 .lt. ncmp1)
     endif
     ASSERT(ncmp2 .ne. 0)
@@ -153,22 +151,22 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     call wkvect('&&CESRED.NBCMP', 'V V I', nbmam, jnbcmp)
 !
     if (nbma .ne. 0) then
-        do 10,kma = 1,nbma
-        ASSERT(lima(kma).le.nbmam)
-        if (lima(kma) .le. 0) goto 10
-        zi(jnbpt-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+1)
-        zi(jnbsp-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+2)
-        zi(jnbcmp-1+lima(kma))=min(zi(jce1d-1+5+4*(lima(kma)-1)+3)&
+        do 10 kma = 1, nbma
+            ASSERT(lima(kma).le.nbmam)
+            if (lima(kma) .le. 0) goto 10
+            zi(jnbpt-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+1)
+            zi(jnbsp-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+2)
+            zi(jnbcmp-1+lima(kma))=min(zi(jce1d-1+5+4*(lima(kma)-1)+3)&
             , ncmp2)
-10      continue
+ 10     continue
 !
     else
 !
-        do 11,ima = 1,nbmam
-        zi(jnbpt-1+ima)=zi(jce1d-1+5+4*(ima-1)+1)
-        zi(jnbsp-1+ima)=zi(jce1d-1+5+4*(ima-1)+2)
-        zi(jnbcmp-1+ima)=min(zi(jce1d-1+5+4*(ima-1)+3),ncmp2)
-11      continue
+        do 11 ima = 1, nbmam
+            zi(jnbpt-1+ima)=zi(jce1d-1+5+4*(ima-1)+1)
+            zi(jnbsp-1+ima)=zi(jce1d-1+5+4*(ima-1)+2)
+            zi(jnbcmp-1+ima)=min(zi(jce1d-1+5+4*(ima-1)+3),ncmp2)
+ 11     continue
     endif
 !
 !     3- CREATION DE CES2 :
@@ -196,72 +194,72 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !     4- ON TRANSFORME LIMA EN LISTE DE BOOLEENS:
 !     ------------------------------------------
     call wkvect('&&CESRED.EXIMA', 'V V L', nbmam, jexma)
-    do 20,kma = 1,nbmam
-    zl(jexma-1+kma) = .false.
-    20 end do
+    do 20 kma = 1, nbmam
+        zl(jexma-1+kma) = .false.
+ 20 end do
 !
     ASSERT(nbma.ge.0)
     if (nbma .eq. 0) then
-        do 30,kma = 1,nbmam
-        zl(jexma-1+kma) = .true.
-30      continue
+        do 30 kma = 1, nbmam
+            zl(jexma-1+kma) = .true.
+ 30     continue
 !
     else
-        do 40,kma = 1,nbma
-        if (lima(kma) .le. 0) goto 40
-        zl(jexma-1+lima(kma)) = .true.
-40      continue
+        do 40 kma = 1, nbma
+            if (lima(kma) .le. 0) goto 40
+            zl(jexma-1+lima(kma)) = .true.
+ 40     continue
     endif
 !
 !     5- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
-    do 80,icmp2 = 1,ncmp2
-    nocmp = zk8(jce2c-1+icmp2)
-    icmp1 = knindi(8,nocmp,zk8(jce1c),ncmp1)
-    if (icmp1 .eq. 0) goto 80
+    do 80 icmp2 = 1, ncmp2
+        nocmp = zk8(jce2c-1+icmp2)
+        icmp1 = knindi(8,nocmp,zk8(jce1c),ncmp1)
+        if (icmp1 .eq. 0) goto 80
 !
-    do 70,ima = 1,nbmam
-    if (zl(jexma-1+ima)) then
-        nbpt = zi(jce2d-1+5+4* (ima-1)+1)
-        nbsp = zi(jce2d-1+5+4* (ima-1)+2)
-        do 60,ipt = 1,nbpt
-        do 50,isp = 1,nbsp
-        call cesexi('C', jce1d, jce1l, ima, ipt,&
-                    isp, icmp1, iad1)
-        call cesexi('C', jce2d, jce2l, ima, ipt,&
-                    isp, icmp2, iad2)
-        ASSERT(iad2.le.0)
-        if ((iad1.le.0) .or. (iad2.eq.0)) goto 50
+        do 70 ima = 1, nbmam
+            if (zl(jexma-1+ima)) then
+                nbpt = zi(jce2d-1+5+4* (ima-1)+1)
+                nbsp = zi(jce2d-1+5+4* (ima-1)+2)
+                do 60 ipt = 1, nbpt
+                    do 50 isp = 1, nbsp
+                        call cesexi('C', jce1d, jce1l, ima, ipt,&
+                                    isp, icmp1, iad1)
+                        call cesexi('C', jce2d, jce2l, ima, ipt,&
+                                    isp, icmp2, iad2)
+                        ASSERT(iad2.le.0)
+                        if ((iad1.le.0) .or. (iad2.eq.0)) goto 50
 !               -- RECOPIE DE LA VALEUR:
-        zl(jce2l-1-iad2) = .true.
-        if (tsca .eq. 'R') then
-            zr(jce2v-1-iad2) = zr(jce1v-1+iad1)
-        else if (tsca.eq.'C') then
-            zc(jce2v-1-iad2) = zc(jce1v-1+iad1)
-        else if (tsca.eq.'I') then
-            zi(jce2v-1-iad2) = zi(jce1v-1+iad1)
-        else if (tsca.eq.'L') then
-            zl(jce2v-1-iad2) = zl(jce1v-1+iad1)
-        else if (tsca.eq.'K8') then
-            zk8(jce2v-1-iad2) = zk8(jce1v-1+iad1)
-        else if (tsca.eq.'K16') then
-            zk16(jce2v-1-iad2) = zk16(jce1v-1+iad1)
-        else if (tsca.eq.'K24') then
-            zk24(jce2v-1-iad2) = zk24(jce1v-1+iad1)
-        else if (tsca.eq.'K32') then
-            zk32(jce2v-1-iad2) = zk32(jce1v-1+iad1)
-        else if (tsca.eq.'K80') then
-            zk80(jce2v-1-iad2) = zk80(jce1v-1+iad1)
-        else
-            ASSERT(.false.)
-        endif
+                        zl(jce2l-1-iad2) = .true.
+                        if (tsca .eq. 'R') then
+                            zr(jce2v-1-iad2) = zr(jce1v-1+iad1)
+                        else if (tsca.eq.'C') then
+                            zc(jce2v-1-iad2) = zc(jce1v-1+iad1)
+                        else if (tsca.eq.'I') then
+                            zi(jce2v-1-iad2) = zi(jce1v-1+iad1)
+                        else if (tsca.eq.'L') then
+                            zl(jce2v-1-iad2) = zl(jce1v-1+iad1)
+                        else if (tsca.eq.'K8') then
+                            zk8(jce2v-1-iad2) = zk8(jce1v-1+iad1)
+                        else if (tsca.eq.'K16') then
+                            zk16(jce2v-1-iad2) = zk16(jce1v-1+iad1)
+                        else if (tsca.eq.'K24') then
+                            zk24(jce2v-1-iad2) = zk24(jce1v-1+iad1)
+                        else if (tsca.eq.'K32') then
+                            zk32(jce2v-1-iad2) = zk32(jce1v-1+iad1)
+                        else if (tsca.eq.'K80') then
+                            zk80(jce2v-1-iad2) = zk80(jce1v-1+iad1)
+                        else
+                            ASSERT(.false.)
+                        endif
 !
-50      continue
-60      continue
-    endif
+ 50                 continue
+ 60             continue
+            endif
 !
-70  continue
-    80 end do
+ 70     continue
+ 80 end do
 !
 !     6- MENAGE :
 !     -----------

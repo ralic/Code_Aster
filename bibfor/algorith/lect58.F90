@@ -121,8 +121,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
     cns = '&&CNS'
 !
 ! RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE : NBNMES
-    call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbnmes,&
-                k8bid, ibid)
+    call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbnmes)
 !
 ! VECTEUR DES NUMEROS DES NOEUDS MESURE SELON L ORDRE FICHIER UNV
     call wkvect(vcor, 'V V I', nbnmes*6, lcorr)
@@ -142,7 +141,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 !
         rewind ideas
 !
-10      continue
+ 10     continue
         read (ideas, 1000, end = 170) ligne
         if (ligne .ne. repem1) goto 10
 !
@@ -157,7 +156,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 ! LECTURE DE L'ENTETE DU DATASET
         do 20 irec = 1, nbrec
             read (ideas,'(A80)',err=160) rec(irec)
-20      end do
+ 20     end do
 !
 ! RECHERCHE DU NOMBRE DE VALEURS CONTENUES DANS LE DATASET
         irec = 7
@@ -327,17 +326,17 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 !
         goto 10
 !
-160      continue
+160     continue
 ! EN CAS D ERREUR DE LECTURE DU FICHIER UNV
         call utmess('F', 'ALGORITH5_5')
 !
-11      continue
+ 11     continue
 ! POSITIONNEMENT A LA FIN DU DATASET
         read ( ideas , 1000 , end = 170 ) ligne
         if (ligne .ne. repem1) goto 11
         goto 10
 !
-170      continue
+170     continue
 ! FIN LECTURE FICHIER UNV
 !
         ifres = iunifi ('MESSAGE')
@@ -440,9 +439,9 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                                             endif
                                         endif
                                     endif
-305                              continue
+305                             continue
                                 call jedetr('&&DEFDIR')
-304                          continue
+304                         continue
                         endif
 ! FIN TRAITEMENT DES ORIENTATIONS POUR DEPL
                     endif
@@ -470,7 +469,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                         zr(jcnsv-1 + (ino-1)*ncmp+icmp) = rval
                         zl(jcnsl-1 + (ino-1)*ncmp+icmp) = .true.
                     endif
-303              continue
+303             continue
 !
 ! RECUPERATION DU NOM DU CHAMP POUR NUMORD : NOMCH
                 call rsexch(' ', nomres, nomsym, numord, nomch,&
@@ -491,12 +490,12 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                 call detrsd('CHAM_NO_S', cns)
             endif
 ! FIN BOUCLE SUR NUMERO ORDRE
-200      end do
+200     end do
 !
-9999      continue
+9999     continue
 !
 ! FIN BOUCLE SUR LES CHAMPS DEMANDES
-500  end do
+500 end do
 !
     call jedetr(vabs)
     call jedetr(vori)

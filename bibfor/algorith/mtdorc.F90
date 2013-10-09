@@ -56,8 +56,7 @@ subroutine mtdorc(model, compor)
 !
 ! - Initializations
 !
-    call dismoi('F', 'NOM_MAILLA', model, 'MODELE', ibid,&
-                mesh, iret)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     list_vale   = '&&LIST_VALE'
 !
 ! - Create COMPOR <CARTE>
@@ -68,7 +67,7 @@ subroutine mtdorc(model, compor)
 !
     call comp_meta_read(list_vale)
 !
-! - Save informations in COMPOR <CARTE> 
+! - Save informations in COMPOR <CARTE>
 !
     call comp_meta_save(mesh, compor, nb_cmp, list_vale)
 !

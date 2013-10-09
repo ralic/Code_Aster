@@ -71,8 +71,7 @@ subroutine eclpgr()
     call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=mxsy, vect=licham,&
                 nbret=nbsy)
 !
-    call dismoi('F', 'NOM_MAILLA', mo1, 'MODELE', ibid,&
-                ma1, ibid)
+    call dismoi('NOM_MAILLA', mo1, 'MODELE', repk=ma1)
 !
     call exlima('ECLA_PG', 1, 'V', mo1, ligrel)
 !
@@ -132,9 +131,9 @@ subroutine eclpgr()
             call eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                         nomfpg)
             call rsnoch(resu, nomsy2, iordr)
-10      continue
+ 10     continue
         call jedetr(nomfpg)
-20  end do
+ 20 end do
 !
 !
 !       -- ON RECOPIE LE PARAMETRE "INST" :
@@ -146,7 +145,7 @@ subroutine eclpgr()
         call rsadpa(resu, 'E', 1, 'INST', iordr,&
                     0, sjv=iains2, styp=kbid)
         zr(iains2)=zr(iains1)
-30  end do
+ 30 end do
 !
 !
 ! --- MENAGE

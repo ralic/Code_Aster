@@ -18,7 +18,6 @@ subroutine xfisno(noma, modelx)
 ! person_in_charge: patrick.massin at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -30,6 +29,7 @@ subroutine xfisno(noma, modelx)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+!
     character(len=8) :: noma, modelx
 !
 !----------------------------------------------------------------------
@@ -49,8 +49,7 @@ subroutine xfisno(noma, modelx)
     integer :: jlcnx, jnbsp, jnbsp2, jcesfd, jcesfl, jcesfv, jcesd, jcesl, jcesv
     integer :: jcesd2, jcesv2, jcesl2, jxc
     integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
-    integer :: iret, ibid, iad, nncp
-    character(len=8) :: k8bid
+    integer ::  ibid, iad, nncp
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
     logical :: lcont
 !     ------------------------------------------------------------------
@@ -113,8 +112,7 @@ subroutine xfisno(noma, modelx)
 !
 ! --- INFOS SUR LE MAILLAGE
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
 !
     do 10 ima = 1, nbma
@@ -146,9 +144,9 @@ subroutine xfisno(noma, modelx)
                                 endif
                                 goto 30
                             endif
-40                      continue
+ 40                     continue
                     endif
-30              continue
+ 30             continue
 !
 ! --- DEUXIEME PASSE, ON REMPLIT AVEC LES HEAVISIDES INACTIFS
 !
@@ -172,16 +170,16 @@ subroutine xfisno(noma, modelx)
                                 endif
                                 goto 50
                             endif
-60                      continue
+ 60                     continue
                     endif
-50              continue
+ 50             continue
 !
 ! --- FIN DES DEUX PASSES, FISSNO EST DEFINI ENTIEREMENT POUR LE NOEUD
 ! ---                      HEAVNO N'EST PAS COMPLET
 !
-20          continue
+ 20         continue
         endif
-10  end do
+ 10 end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

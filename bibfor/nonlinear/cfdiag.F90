@@ -39,7 +39,7 @@ subroutine cfdiag(lmat, xmax)
 !
 !
 !
-    integer :: jsmdi, jvalm, ieq, iadia, neq, ibid
+    integer :: jsmdi, jvalm, ieq, iadia, neq
     character(len=19) :: mat
     character(len=4) :: kmpic
 ! ----------------------------------------------------------------------
@@ -49,8 +49,7 @@ subroutine cfdiag(lmat, xmax)
     xmax = 0.d0
     mat = zk24(zi(lmat+1))
     call mtdsc2(mat, 'SMDI', 'L', jsmdi)
-    call dismoi('F', 'MPI_COMPLET', mat, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', mat, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
     endif
@@ -60,6 +59,6 @@ subroutine cfdiag(lmat, xmax)
     do 20 ieq = 1, neq
         iadia = jvalm + zi(jsmdi+ieq-1) - 1
         xmax = max ( xmax , zr(iadia) )
-20  end do
+ 20 end do
     call jedema()
 end subroutine

@@ -118,8 +118,7 @@ subroutine op0041()
 ! --- NOM DU MODELE ET TYPE DE PHENOMENE
 !
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
-    call dismoi('F', 'PHENOMENE', nomo, 'MODELE', ibid,&
-                pheno, ibid)
+    call dismoi('PHENOMENE', nomo, 'MODELE', repk=pheno)
     ASSERT(pheno.eq.'MECANIQUE' .or. pheno.eq.'THERMIQUE')
     call wkvect(fiss//'.MODELE', 'G V K8', 1, jmod)
     zk8(jmod-1+1)=nomo
@@ -131,8 +130,7 @@ subroutine op0041()
 !
 !
 ! --- DIMENSION DU PROBLEME
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                kbid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     POUR DIFFERENCIER OP0041 et OP0010
     goinop=.false.
@@ -155,8 +153,7 @@ subroutine op0041()
         endif
 !
 !        THE GRID AND MODEL DIMENSIONS MUST BE THE SAME
-        call dismoi('F', 'DIM_GEOM', maiaux, 'MAILLAGE', ibid,&
-                    kbid, iret)
+        call dismoi('DIM_GEOM', maiaux, 'MAILLAGE', repi=ibid)
         if (ibid .ne. ndim) then
             call utmess('F', 'XFEM2_58')
         endif

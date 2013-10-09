@@ -49,7 +49,7 @@ subroutine rfhge2(harmge)
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "HARM_GENE"
 !     ------------------------------------------------------------------
     character(len=4) :: interp(2)
-    character(len=8) :: k8b, crit, noeud, cmp, noma, basemo
+    character(len=8) ::  crit, noeud, cmp, noma, basemo
     character(len=8) :: intres
     character(len=14) :: nume
     character(len=16) :: nomcmd, typcon, nomcha
@@ -59,7 +59,7 @@ subroutine rfhge2(harmge)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iagno, ibid, idbase, iddl, idinsg, idvecg
+    integer :: iagno, idbase, iddl, idinsg, idvecg
     integer :: ie, ierd, ign2, ii, ino, inoeud, iordr, ldesc
     integer :: iret, itresu, jinst, jj, lfon, lg1, lg2
     integer :: lordr, lpro, lvar, n1, n2
@@ -149,22 +149,18 @@ subroutine rfhge2(harmge)
                 jj = jj +1
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
-41          continue
+ 41         continue
         endif
     else
 !
 ! --- CAS D'UNE VARIABLE PHYSIQUE
 !
-        call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
-                    basemo, iret)
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                    nume, iret)
-        call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
-                    noma, ie)
+        call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
+        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume)
+        call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=noma)
 !
 ! ---   RECUPERATION DE LA BASE MODALE DANS UN VECTEUR DE TRAVAIL
-        call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
-                    k8b, ie)
+        call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=neq)
         call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
         call copmod(basemo, 'DEPL', neq, nume, nbmode,&
                     'R', zr( idbase), [cbid])
@@ -211,7 +207,7 @@ subroutine rfhge2(harmge)
                 jj = jj +1
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
-50          continue
+ 50         continue
             call jedetr('&&RFHGE2.VECTGENE')
 !
         else
@@ -226,7 +222,7 @@ subroutine rfhge2(harmge)
                 jj = jj +1
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
-51          continue
+ 51         continue
 !
         endif
     endif

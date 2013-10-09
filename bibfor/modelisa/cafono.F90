@@ -63,7 +63,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !     ------------------------------------------------------------------
     integer :: nmocl, nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
 !-----------------------------------------------------------------------
-    integer :: i, idgex, ierd, ii, in, ino, iret
+    integer :: i, idgex, ii, in, ino, iret
     integer :: j, jdesgi, jj, jl, jnbno, jncmp, jno
     integer :: jnono, jprnm, jval, jvalv, nangl, nbec, nbecf
     integer :: nbno, nbnoeu, nsurch, numel
@@ -73,7 +73,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
     logical :: verif
-    character(len=8) :: k8bid, nomn, typmcl(2), typlag, valfof(nmocl)
+    character(len=8) ::  nomn, typmcl(2), typlag, valfof(nmocl)
     character(len=16) :: motcle(nmocl), motclf, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
@@ -141,8 +141,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 ! *** DU MODELE
 ! ---------------------------------------------------
 !
-    call dismoi('F', 'NB_EC', 'FORC_R', 'GRANDEUR', nbecf,&
-                k8bid, ierd)
+    call dismoi('NB_EC', 'FORC_R', 'GRANDEUR', repi=nbecf)
     if (nbecf .gt. 10) then
         call utmess('F', 'MODELISA2_65')
     else
@@ -150,8 +149,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
         call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     endif
 !
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                k8bid, ierd)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -188,7 +186,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     if (fonree .eq. 'FONC') then
         do 10 i = 1, nbcomp*nbnoeu
             zk8(jval-1+i) = '&FOZERO'
-10      continue
+ 10     continue
     endif
     nsurch = 0
 !
@@ -199,12 +197,12 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     do i = 1, nfono
         do 20 ii = 1, nbcomp
             forimp(ii) = 0
-20      continue
+ 20     continue
 !
         if (fonree .eq. 'REEL') then
             do 30 j = 1, 6
                 call getvr8(motclf, motcle(j), iocc=i, scal=valfor(j), nbret=forimp(j))
-30          continue
+ 30         continue
 !
             call getvr8(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8),&
                         nbret=nangl)
@@ -215,7 +213,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
                 do 40 ii = 1, min(3, abs(nangl))
                     valfor(7+ii) = valfor(7+ii)*dgrd
                     forimp(7+ii) = 1
-40              continue
+ 40             continue
             else
 !              --- REPERE GLOBAL ---
                 valfor(7) = 0.d0
@@ -224,10 +222,10 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
         else if (fonree.eq.'FONC') then
             do 50 ii = 1, nbcomp
                 valfof(ii) = '&FOZERO'
-50          continue
+ 50         continue
             do 60 j = 1, 6
                 call getvid(motclf, motcle(j), iocc=i, scal=valfof(j), nbret=forimp(j))
-60          continue
+ 60         continue
 !
             call getvid(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8),&
                         nbret=nangl)
@@ -237,7 +235,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
                 forimp(7) = 1
                 do 70 ii = 1, min(3, abs(nangl))
                     forimp(7+ii) = 1
-70              continue
+ 70             continue
             else
 !              --- REPERE GLOBAL ---
                 valfof(7) = 'GLOBAL'
@@ -263,10 +261,10 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
                         nbcomp, fonree, zk8(jno-1+jj), ino, nsurch,&
                         forimp, valfor, valfof, motcle, verif,&
                         nbec)
-100      continue
+100     continue
 !
         call jedetr(mesnoe)
-110      continue
+110     continue
     end do
 !
 !     -----------------------------------------------
@@ -321,7 +319,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
                 if (exisdg(zi(idgex),i)) then
                     numel = ntypel(i)
                 endif
-120          continue
+120         continue
             if ((exisdg(zi(idgex),6)) .and. (.not. (exisdg(zi(idgex), 4)))) then
                 numel = ncoq2d
             endif
@@ -336,11 +334,11 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
             if (fonree .eq. 'REEL') then
                 do 130 i = 1, nbcomp
                     zr(jvalv-1+i) = zr(jval-1+nbcomp* (ino-1)+i)
-130              continue
+130             continue
             else
                 do 140 i = 1, nbcomp
                     zk8(jvalv-1+i) = zk8(jval-1+nbcomp* (ino-1)+i)
-140              continue
+140             continue
             endif
 !
 !   ON CREE UNE CARTE POUR CHAQUE NOEUD AFFECTE ET ON NOTE TOUTES
@@ -360,6 +358,6 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     else if (fonree.eq.'FONC') then
         call jedetr('&&CAFONO.VALDDLF')
     endif
-999  continue
+999 continue
     call jedema()
 end subroutine

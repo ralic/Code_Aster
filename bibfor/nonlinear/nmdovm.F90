@@ -82,8 +82,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 ! - Access to model and mesh
 !
     call jeveuo(model//'.MAILLE', 'L', j_mail)
-    call dismoi('C', 'NOM_MAILLA', model(1:8), 'MODELE', ibid, &
-                mesh, iret)
+    call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
 !
 ! - Access to <CHELEM_S> of FULL_MECA option
 !

@@ -70,10 +70,9 @@ subroutine calirg(mesh, nbno, list_node, tran, cent,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jgeom_init, jgeom_defo
-    integer :: nnomx, ier, nume_node, jlino
+    integer :: nnomx, nume_node, jlino
     integer :: i, j, ino, idim
     real(kind=8) :: coor2(3), zero, un
-    character(len=8) :: k8bid
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,8 +94,7 @@ subroutine calirg(mesh, nbno, list_node, tran, cent,&
             endif
         end do
     end do
-    call dismoi('F', 'NB_NO_MAILLA', mesh, 'MAILLAGE', nnomx,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nnomx)
 !
 ! - Rotation matrix
 !

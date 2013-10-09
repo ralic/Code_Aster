@@ -3107,15 +3107,15 @@ class PRE_STANLEY :
     for evol in t_evol[:]:
        dico[evol] = []
 
-       iret, ibid, nomsd = aster.dismoi('F','MODELE_1',evol,'RESULTAT')
+       iret, ibid, nomsd = aster.dismoi('MODELE_1',evol,'RESULTAT','F')
        n_modele = nomsd.strip()
        if n_modele[0]=='#': n_modele=''
 
-       iret, ibid, nomsd = aster.dismoi('F','CARA_ELEM_1',evol,'RESULTAT')
+       iret, ibid, nomsd = aster.dismoi('CARA_ELEM_1',evol,'RESULTAT','F')
        n_caraelem = nomsd.strip()
        if n_caraelem[0]=='#': n_caraelem=''
 
-       iret, ibid, nomsd = aster.dismoi('F','CHAM_MATER_1',evol,'RESULTAT')
+       iret, ibid, nomsd = aster.dismoi('CHAM_MATER_1',evol,'RESULTAT','F')
        n_chammater = nomsd.strip()
        if n_chammater[0]=='#': n_chammater=''
 

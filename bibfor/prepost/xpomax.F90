@@ -25,7 +25,6 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -57,6 +56,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 #include "asterfort/xpoajm.h"
 #include "asterfort/xpocmp.h"
 #include "asterfort/xpocox.h"
+!
     integer :: nbnoc, nbmac, ngfon
     character(len=2) :: prefno(4)
     character(len=8) :: mo, malini, maxfem, resuco
@@ -135,8 +135,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !                   RECUPERATION DES OBJETS JEVEUX
 !     ------------------------------------------------------------------
 !
-    call dismoi('F', 'DIM_GEOM', malini, 'MAILLAGE', ndim,&
-                k8b, ier)
+    call dismoi('DIM_GEOM', malini, 'MAILLAGE', repi=ndim)
 !
 !     NOM DE LA COMMANDE (POST_MAIL_XFEM OU POST_CHAM_XFEM)
     call getres(k8b, k16b, nomcmd)
@@ -204,12 +203,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
         call jeveuo(chs(ich)//'.CESV', 'E', jcesv(ich))
         call jeveuo(chs(ich)//'.CESL', 'L', jcesl(ich))
-10  end do
+ 10 end do
     do 11 ich = 6, 7
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
         call jeveuo(chs(ich)//'.CESV', 'E', jcesv(ich))
         call jeveuo(chs(ich)//'.CESL', 'L', jcesl(ich))
-11  end do
+ 11 end do
 !
     call jeveuo(malini//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(malini//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -311,8 +310,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !      LINOLA='&&XPOMAX.LINOLA'
     inofi=-1
     if (opmail) then
-        call dismoi('F', 'NB_NO_MAILLA', maxfem, 'MAILLAGE', nbnofi,&
-                    k8b, iret)
+        call dismoi('NB_NO_MAILLA', maxfem, 'MAILLAGE', repi=nbnofi)
         call wkvect(linofi, 'V V I', nbnofi, inofi)
 !       CALL WKVECT(LINOLA,'V V I',NBNOFI,INOLA)
     endif
@@ -419,8 +417,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             ino=zi(jconx1-1+zi(jconx2+ima-1)+in-1)
             do 21 j = 1, ndim
                 zr(igeom-1+ndim*(in-1)+j)=zr(iacoo1-1+3*(ino-1)+j)
-21          continue
-20      continue
+ 21         continue
+ 20     continue
 !
         if (.not.opmail) then
 !         TYPE DE LA MAILLE PARENT
@@ -507,8 +505,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                             ifiss, 1, iad)
                 ASSERT(iad.gt.0)
                 zr(jlst-1+(j-1)*nfiss+ifiss) = zr(jcesv(7)-1+iad)
-40          continue
-30      continue
+ 40         continue
+ 30     continue
 !
 !       RECUPERATION DE LA CONNECTIVITÉ DES FISSURES
         if (.not.opmail .and. nfh .gt. 0) then
@@ -526,9 +524,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                                     ifh, 1, iad)
                         ASSERT(iad.gt.0)
                         zi(jfisno-1+(j-1)*nfh+ifh) = zi(jcesv(8)-1+ iad)
-50                  continue
+ 50                 continue
                 endif
-60          continue
+ 60         continue
         endif
 !
 ! ----- ON AJOUTE LES NOUVELLES MAILLES ET LES NOUVEAUX NOEUDS
@@ -544,7 +542,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         do 140 ise = 1, nse
             do 150 ifiss = 1, nfiss
                 zi(jhea-1+ifiss) = zi(jcesv(4)-1+iad4-1+ncomp*(ifiss- 1)+ise)
-150          continue
+150         continue
             jcnse = jcesv(2)-1+iad2
             call xpoajm(maxfem, jtypm2, itypse(ndime+irese), jcnse, ise,&
                         n, nnose, prefno, jdirno, nse,&
@@ -573,7 +571,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
                 endif
             endif
-140      continue
+140     continue
 !
         if (opmail) ASSERT(inn.eq.nnn)
 !
@@ -584,7 +582,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jedetr(hea)
         if (.not.opmail .and. nfh .gt. 0) call jedetr(fisno)
 !
-100  end do
+100 end do
 !
 !     CREATION DU GROUPE DES NOEUDS SITUES SUR LA FISSURE
 !     PORTANT DES DDLS DE CONTACT
@@ -598,12 +596,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     1+ngfon)
         call jecroc(jexnom(grpnoe, nogno))
-        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,nbnofi))
+        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, nbnofi))
         call jeecra(jexnom(grpnoe, nogno), 'LONUTI', nbnofi)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagno)
         do 210 j = 1, nbnofi
             zi(iagno-1+j) = zi(inofi-1+j)
-210      continue
+210     continue
     endif
 !      IF (OPMAIL.AND.NBNOLA.GT.0) THEN
 !        NOGNO=NOGRLA
@@ -616,15 +614,15 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !      ENDIF
     do 300 ich = 1, 4
         call detrsd('CHAM_ELEM_S', chs(ich))
-300  end do
+300 end do
     do 310 ich = 6, 11
         call detrsd('CHAM_ELEM_S', chs(ich))
-310  end do
+310 end do
 !
     if (opmail) call jedetr(mailx)
     if (opmail) call jedetr(linofi)
 !
-999  continue
+999 continue
 !
 !      IF (.NOT.OPMAIL) CALL IMPRSD('CHAMP',COMPS2,6,'COMPS2')
 !

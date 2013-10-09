@@ -2,7 +2,6 @@ subroutine i2fnoe(courbe, listnd)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -13,6 +12,7 @@ subroutine i2fnoe(courbe, listnd)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: listnd
     character(len=8) :: courbe
 !
@@ -51,7 +51,6 @@ subroutine i2fnoe(courbe, listnd)
     character(len=19) :: nmail1
     integer :: adr, pt, nbnd, nbtnd, alstnd, m, p, nbpart, im, in, n, i
     integer :: adrndm, adrm1, nbmail, nbndm, vlcmai, vlccou, asds, aconec
-    character(len=1) :: k1bid
 !
 !================= CORPS DE LA ROUTINE ===============================
 !
@@ -68,66 +67,65 @@ subroutine i2fnoe(courbe, listnd)
     endif
     nmaila = zk8(adr)
     nconec = nmaila//'.CONNEX'
-    call dismoi('F', 'NB_NO_MAILLA', nmaila, 'MAILLAGE', nbtnd,&
-                k1bid, i)
+    call dismoi('NB_NO_MAILLA', nmaila, 'MAILLAGE', repi=nbtnd)
     call jeveuo(jexatr(nconec, 'LONCUM'), 'L', vlcmai)
     call jeveuo(jexnum(nconec, 1), 'L', aconec)
     call wkvect('&&I2FNOE.VEC.TEMP', 'V V I', nbtnd, adr)
-    do 10, i = 1, nbtnd, 1
-    zi(adr + i-1) = 0
-    10 end do
+    do 10 i = 1, nbtnd, 1
+        zi(adr + i-1) = 0
+ 10 end do
     if (n .ne. 0) then
         call jelira(courbe//'.NSDS', 'LONMAX', nbpart)
         call jeveuo(courbe//'.NSDS', 'L', asds)
-        do 100, p = 1, nbpart, 1
-        nmail1 = zk24(asds+p-1)(1:13)//'.MAIL'
-        call jeveuo(jexatr(nmail1, 'LONCUM'), 'L', vlccou)
-        call jelira(nmail1, 'NMAXOC', nbmail)
-        call jeveuo(jexnum(nmail1, 1), 'L', adrm1)
-        do 110, im = 1, nbmail, 1
-        m = zi(adrm1 + zi(vlccou + im-1)-1)
-        adrndm = aconec + zi(vlcmai + m-1)-1
-        nbndm = zi(vlcmai + m ) - zi(vlcmai + m-1)
-        do 111, in = 1, nbndm, 1
-        n = zi(adrndm + in-1)
-        zi(adr + n-1) = 1
-111      continue
-110      continue
-100      continue
+        do 100 p = 1, nbpart, 1
+            nmail1 = zk24(asds+p-1)(1:13)//'.MAIL'
+            call jeveuo(jexatr(nmail1, 'LONCUM'), 'L', vlccou)
+            call jelira(nmail1, 'NMAXOC', nbmail)
+            call jeveuo(jexnum(nmail1, 1), 'L', adrm1)
+            do 110 im = 1, nbmail, 1
+                m = zi(adrm1 + zi(vlccou + im-1)-1)
+                adrndm = aconec + zi(vlcmai + m-1)-1
+                nbndm = zi(vlcmai + m ) - zi(vlcmai + m-1)
+                do 111 in = 1, nbndm, 1
+                    n = zi(adrndm + in-1)
+                    zi(adr + n-1) = 1
+111             continue
+110         continue
+100     continue
     else
         call jeveuo(courbe//'.TYPCOURBE', 'L', im)
         typcrb = zk8(im)
         nmail1 = courbe//'.MAIL1'
         call jelira(nmail1, 'NMAXOC', nbpart)
-        do 400, p = 1, nbpart, 1
-        call jelira(jexnum(nmail1, p), 'LONMAX', nbmail)
-        call jeveuo(jexnum(nmail1, p), 'L', adrm1)
-        if (typcrb .eq. 'LISTMAIL') then
-            nbmail = nbmail - 1
-        endif
-        do 410, im = 1, nbmail, 1
-        m = zi(adrm1 + im-1)
+        do 400 p = 1, nbpart, 1
+            call jelira(jexnum(nmail1, p), 'LONMAX', nbmail)
+            call jeveuo(jexnum(nmail1, p), 'L', adrm1)
+            if (typcrb .eq. 'LISTMAIL') then
+                nbmail = nbmail - 1
+            endif
+            do 410 im = 1, nbmail, 1
+                m = zi(adrm1 + im-1)
 !C             CALL JEVEUO(JEXNUM(NCONEC,M),'L',ADRNDM)
 !C             CALL JELIRA(JEXNUM(NCONEC,M),'LONMAX',NBNDM)
-        adrndm = aconec + zi(vlcmai + m-1)-1
-        nbndm = zi(vlcmai + m ) - zi(vlcmai + m-1)
-        do 411, in = 1, nbndm, 1
-        n = zi(adrndm + in-1)
-        zi(adr + n-1) = 1
-411      continue
-410      continue
-400      continue
+                adrndm = aconec + zi(vlcmai + m-1)-1
+                nbndm = zi(vlcmai + m ) - zi(vlcmai + m-1)
+                do 411 in = 1, nbndm, 1
+                    n = zi(adrndm + in-1)
+                    zi(adr + n-1) = 1
+411             continue
+410         continue
+400     continue
     endif
-    do 500, i = 1, nbtnd, 1
-    nbnd = nbnd + min(zi(adr + i-1),1)
-    500 end do
+    do 500 i = 1, nbtnd, 1
+        nbnd = nbnd + min(zi(adr + i-1),1)
+500 end do
     call wkvect(listnd, 'V V I', nbnd, alstnd)
-    do 600, i = 1, nbtnd, 1
-    if (zi(adr + i-1) .ne. 0) then
-        zi(alstnd + pt-1) = i
-        pt = pt + 1
-    endif
-    600 end do
+    do 600 i = 1, nbtnd, 1
+        if (zi(adr + i-1) .ne. 0) then
+            zi(alstnd + pt-1) = i
+            pt = pt + 1
+        endif
+600 end do
     call jedetr('&&I2FNOE.VEC.TEMP')
     call jedema()
 end subroutine

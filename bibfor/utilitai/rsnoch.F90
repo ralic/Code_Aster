@@ -118,8 +118,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !
 !     -- SI LE CHAMP EST UN CHAM_ELEM MPI_INCOMPLET, ON LE COMPLETE:
 !     --------------------------------------------------------------
-    call dismoi('F', 'TYPE_CHAMP', chnote, 'CHAMP', ibid,&
-                repk, iret)
+    call dismoi('TYPE_CHAMP', chnote, 'CHAMP', repk=repk)
     if (repk(1:2) .eq. 'EL') call sdmpic('CHAM_ELEM', chnote)
 !
     call jedema()

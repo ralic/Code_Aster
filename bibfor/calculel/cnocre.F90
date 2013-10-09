@@ -69,52 +69,51 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
     nbno = zi(jcnsd-1+1)
     ncmp = zi(jcnsd-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     ASSERT((tsca.eq.'R') .or. (tsca.eq.'C'))
     if (tsca .eq. 'R') then
 !         -----------
         if (nbnoz .eq. 0) then
-            do 20,k = 1,ncmp
-            do 10,ino = 1,nbno
-            zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-            zr(jcnsv-1+ (ino-1)*ncmp+k) = 0.0d0
-10          continue
-20          continue
+            do 20 k = 1, ncmp
+                do 10 ino = 1, nbno
+                    zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
+                    zr(jcnsv-1+ (ino-1)*ncmp+k) = 0.0d0
+ 10             continue
+ 20         continue
 !
         else
-            do 40,i = 1,nbnoz
-            ino = linoe(i)
-            do 30,k = 1,ncmp
-            if (cnocmp((i-1)*ncmp+k) .eq. 1) then
-                zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-                zr(jcnsv-1+ (ino-1)*ncmp+k) = 0.0d0
-            endif
-30          continue
-40          continue
+            do 40 i = 1, nbnoz
+                ino = linoe(i)
+                do 30 k = 1, ncmp
+                    if (cnocmp((i-1)*ncmp+k) .eq. 1) then
+                        zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
+                        zr(jcnsv-1+ (ino-1)*ncmp+k) = 0.0d0
+                    endif
+ 30             continue
+ 40         continue
         endif
 !
     else if (tsca.eq.'C') then
 !             -----------
         if (nbnoz .eq. 0) then
-            do 60,k = 1,ncmp
-            do 50,ino = 1,nbno
-            zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-            zc(jcnsv-1+ (ino-1)*ncmp+k) = (0.0d0,0.0d0)
-50          continue
-60          continue
+            do 60 k = 1, ncmp
+                do 50 ino = 1, nbno
+                    zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
+                    zc(jcnsv-1+ (ino-1)*ncmp+k) = (0.0d0,0.0d0)
+ 50             continue
+ 60         continue
 !
         else
-            do 80,i = 1,nbnoz
-            ino = linoe(i)
-            do 70,k = 1,ncmp
-            if (cnocmp((i-1)*ncmp+k) .eq. 1) then
-                zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-                zc(jcnsv-1+ (ino-1)*ncmp+k) = (0.0d0,0.0d0)
-            endif
-70          continue
-80          continue
+            do 80 i = 1, nbnoz
+                ino = linoe(i)
+                do 70 k = 1, ncmp
+                    if (cnocmp((i-1)*ncmp+k) .eq. 1) then
+                        zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
+                        zc(jcnsv-1+ (ino-1)*ncmp+k) = (0.0d0,0.0d0)
+                    endif
+ 70             continue
+ 80         continue
         endif
     endif
 !

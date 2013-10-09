@@ -42,7 +42,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, ier, gdr, gdi, gdcpx, jncmpr, jncmpc, ibid
+    integer :: i, ier, gdr, gdi, gdcpx, jncmpr, jncmpc
     integer :: nmax1, nmax2, nbvalr, ivalr, nbvali, ivali, jvale, iret
     integer :: jceldr, jceldi, jcelkr, nbvalc, jcelk
 !
@@ -106,7 +106,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
     ier=0
     do 10 i = 1, nmax1
         if (zk8(jncmpr-1+i) .ne. zk8(jncmpc-1+i)) ier=1
-10  end do
+ 10 end do
 !
     if (ier .ne. 0) then
         valk(1)=nomgdr
@@ -140,12 +140,10 @@ subroutine assach(preel2, pimag2, base2, chout2)
 !
     do 40 i = 1, nbvalr
         zc(jvale-1+i)=dcmplx(zr(ivalr-1+i),zr(ivali-1+i))
-40  end do
+ 40 end do
 !
-    call dismoi('F', 'MPI_COMPLET', preel, 'CHAM_ELEM', ibid,&
-                kmpicr, ibid)
-    call dismoi('F', 'MPI_COMPLET', pimag, 'CHAM_ELEM', ibid,&
-                kmpici, ibid)
+    call dismoi('MPI_COMPLET', preel, 'CHAM_ELEM', repk=kmpicr)
+    call dismoi('MPI_COMPLET', pimag, 'CHAM_ELEM', repk=kmpici)
     ASSERT(kmpicr.eq.kmpici)
 !
     call jeveuo(chout//'.CELK', 'E', jcelk)

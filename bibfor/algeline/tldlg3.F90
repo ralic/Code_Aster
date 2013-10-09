@@ -99,16 +99,17 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=40) :: infobl, valk(7)
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
     integer :: ifm, niv, jrefa, nom, neq, iscbl, iscdi, lliai, iretp, npvnez
-    integer :: typvar, typsym, nbbloc, ilfin1, ibid
+    integer :: typvar, typsym, nbbloc, ilfin1
     integer :: ieq3, isingu, ischc, ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(2), ipiv
-    real(kind=8) :: eps, dmax, dmin, d1, rbid
+    real(kind=8) :: eps, dmax, dmin, d1
     complex(kind=8) :: cbid
 !     ------------------------------------------------------------------
     call jemarq()
     nom=zi(lmat+1)
     neq=zi(lmat+2)
     typvar=zi(lmat+3)
+    cbid=dcmplx(0.d0,0.d0)
     typsym=zi(lmat+4)
     noma19=zk24(nom)(1:19)
     metres=metrez
@@ -128,8 +129,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(noma19, 'ELIMF')
     ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
-    call dismoi('F', 'NOM_NUME_DDL', noma19, 'MATR_ASSE', ibid,&
-                nu, ibid)
+    call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
     ASSERT(nu.ne.' ')
     ASSERT(zk24(jrefa-1+2)(1:14).eq.nu)
 !
@@ -211,9 +211,9 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
     else if (metres.eq.'MUMPS') then
 !     ---------------------------------------
-        call amumph('DETR_OCC', solvop, noma19, [rbid], [cbid],&
+        call amumph('DETR_OCC', solvop, noma19, [0.d0], [cbid],&
                     ' ', 0, iretz, .true.)
-        call amumph('PRERES', solvop, noma19, [rbid], [cbid],&
+        call amumph('PRERES', solvop, noma19, [0.d0], [cbid],&
                     ' ', 0, iretz, .true.)
         nzero=-999
         iretp=0
@@ -324,7 +324,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                         ieq4=ieq
                     endif
                 endif
-10          continue
+ 10         continue
             ASSERT(dmax.gt.0)
             ndeci1=int(log10(dmax))
             ndeci2=int(log10(1.d0/dmin))
@@ -411,7 +411,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                 vali=vali)
 !
 !
-20  continue
+ 20 continue
 !     -- IMPRESSIONS INFO=2 :
 !     ------------------------
     if (niv .eq. 2) then
@@ -443,7 +443,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     endif
 !
 !
-30  continue
+ 30 continue
 !
 !
     iret=iretz

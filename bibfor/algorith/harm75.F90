@@ -77,7 +77,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=24) :: objve3, objve4
     logical :: tousno, leffor, prems
     integer :: inocmp, inoecp, inumno, inuddl
-    integer :: j, jc, i, ie, iadesc, iarchi, ich
+    integer :: j, jc, i, iadesc, iarchi, ich
     integer :: idbase, idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
     integer :: n1, n2, n3, n4, j3refe, idec, idefm, idinsg, idresu
@@ -119,7 +119,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             else
 !           CHAMP IGNORE
             endif
-11      continue
+ 11     continue
     endif
 !
 !
@@ -141,36 +141,28 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
     if (mode .eq. ' ') then
 !
-        call dismoi('C', 'REF_RIGI_PREM', hrange, 'RESU_DYNA', ibid, matgen, iret)
-        call dismoi('F', 'BASE_MODALE'  , hrange, 'RESU_DYNA', ibid, basemo, iret)
-
+        call dismoi('REF_RIGI_PREM', hrange, 'RESU_DYNA', repk=matgen, arret='C',&
+                    ier=iret)
+        call dismoi('BASE_MODALE', hrange, 'RESU_DYNA', repk=basemo)
+!
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             if (matric .ne. blanc) then
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, iret)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
             else
-                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                            numddl, iret)
+                call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
             endif
             prchno=numddl//'.NUME'
-            call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
-                        nomgd, ie)
-            call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                        mailla, iret)
-            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, iret)
+            call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
+            call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
+            if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         else
 !          -- POUR LES CALCULS SANS MATRICE GENERALISEE
 !             (PROJ_MESU_MODAL)
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=matric)
             if (matric(1:8) .eq. blanc) then
-                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                            matric, iret)
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, iret)
+                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+                call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
             else
                 numddl = matric(1:8)
             endif
@@ -178,10 +170,8 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matric, iret)
-            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, iret)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         endif
 !
         basem2 = basemo
@@ -191,10 +181,8 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         call rsexch('F', basemo, 'DEPL', 1, chmod,&
                     iret)
         chmod = chmod(1:19)//'.REFE'
-        call dismoi('F', 'NOM_GD', chmod, 'CHAM_NO', ibid,&
-                    nomgd, ie)
-        call dismoi('F', 'PROF_CHNO', chmod, 'CHAM_NO', ibid,&
-                    prchno, ie)
+        call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
+        call dismoi('PROF_CHNO', chmod, 'CHAM_NO', repk=prchno)
         call jeveuo(chmod, 'L', llcha)
         mailla = zk24(llcha)(1:8)
         crefe(1) = zk24(llcha)
@@ -302,9 +290,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                             idec = idec + 1
                             zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
-122                  continue
-120              continue
-110          continue
+122                 continue
+120             continue
+110         continue
         endif
 ! FIN DE LA RECUPERATION DE LA BASE MODALE
 !
@@ -340,8 +328,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
-                        call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                                    prof, iret)
+                        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi( inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)
@@ -374,9 +361,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
-200      continue
+200     continue
         call jedetr('&&HARM75.BASE')
-210  continue
+210 continue
 !
     if (mode .eq. ' ') call refdcp(basemo, nomres)
 !

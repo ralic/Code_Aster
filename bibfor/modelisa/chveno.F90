@@ -56,7 +56,7 @@ subroutine chveno(fonree, noma, nomo)
 !-----------------------------------------------------------------------
     integer :: nbt
     parameter    (nbt = 5 )
-    integer :: ier, ier1, iret, zero
+    integer :: ier, iret, zero
     integer :: imfac, nbmfac, n, ndim, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
     integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
@@ -65,7 +65,7 @@ subroutine chveno(fonree, noma, nomo)
     integer :: norien, norie1, norie2, jlima, nbmamo
     real(kind=8) :: dnor
     logical :: reorie, mcfl(nbt)
-    character(len=8) :: k8b, mot, nomma, nommo, typel
+    character(len=8) ::  mot, nomma, nommo, typel
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
     character(len=19) :: limamo
     character(len=24) :: grmama, mailma, nogr, nomail
@@ -98,8 +98,7 @@ subroutine chveno(fonree, noma, nomo)
     if (mot .eq. 'NON') nbmfac = 0
 !
     ndim = 0
-    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
-                k8b, ier1)
+    call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ndim)
 !
     call jeexin(nomma//'.TYPMAIL        ', iret)
     if (iret .ne. 0) then

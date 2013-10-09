@@ -77,7 +77,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iacces, ialexi, iatach, iatava
-    integer :: ibid, iddl1, iddl2, ie, ier, ierd, ierr1
+    integer :: ibid, iddl1, iddl2, ier, ierd, ierr1
     integer :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
     integer :: iret, ivari, jinst, jlir8, l1, l2, lfon
     integer :: lg1, lg2, lpro, lval1, lval2, lvar
@@ -177,7 +177,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
         else
             zl(ialexi-1+i) = .true.
         endif
-10  end do
+ 10 end do
 !
     rval = zr(jinst)
     call rsbary(zr(jlir8), nbordr, .false., zl(ialexi), rval,&
@@ -185,16 +185,13 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     call rsutro(resu, i1, ip1, ierr1)
     call rsexch('F', resu, nomcha, ip1, ch1,&
                 ierd)
-    call dismoi('F', 'TYPE_SUPERVIS', ch1, 'CHAMP', ibid,&
-                typcha, ierd)
+    call dismoi('TYPE_SUPERVIS', ch1, 'CHAMP', repk=typcha)
 !
 !               ----- EXTRACTION SUR UN "CHAM_NO" -----
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
-        call dismoi('F', 'PROF_CHNO', ch1, 'CHAM_NO', ibid,&
-                    profch, ie)
-        call dismoi('F', 'NOM_MAILLA', ch1, 'CHAM_NO', ibid,&
-                    noma, ie)
+        call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=profch)
+        call dismoi('NOM_MAILLA', ch1, 'CHAM_NO', repk=noma)
         call posddl('CHAM_NO', ch1, noeud, cmp, inoeud,&
                     iddl1)
         if (inoeud .eq. 0) then
@@ -243,8 +240,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call rsexch('F', resu, nomcha, ip2, ch2,&
                         l2)
 !
-            call dismoi('F', 'PROF_CHNO', ch1, 'CHAM_NO', ibid,&
-                        profc2, ie)
+            call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=profc2)
             if (profc2 .ne. profch) then
                 profch = profc2
                 call posddl('CHAM_NO', ch1, noeud, cmp, inoeud,&
@@ -271,8 +267,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             r1 = (zr(jlir8-1+i2)-rval)/rbase
             r2 = (rval-zr(jlir8-1+i1))/rbase
 !
-            call dismoi('F', 'PROF_CHNO', ch2, 'CHAM_NO', ibid,&
-                        profc2, ie)
+            call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=profc2)
             if (profc2 .ne. profch) then
                 profch = profc2
                 call posddl('CHAM_NO', ch2, noeud, cmp, inoeud,&
@@ -295,9 +290,9 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             zr(lfon+iordr) = r1*zr(lval1+iddl1-1) + r2*zr(lval2+iddl2- 1)
 !
             iddl1 = iddl2
-22          continue
+ 22         continue
             call jedema()
-20      continue
+ 20     continue
 !
 !               ----- EXTRACTION SUR UN "CHAM_ELEM" -----
 !
@@ -308,8 +303,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 ! ---    VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 ! ---    ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
 !        -------------------------------------------------------------
-        call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ibid,&
-                    typch2, ie)
+        call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=typch2)
         if (typch2 .eq. 'ELEM') then
             npoinz = 1
             nuspz = 1
@@ -327,12 +321,9 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                 call utmess('F', 'CHAMPS_13')
             endif
         endif
-        call dismoi('F', 'NOM_MAILLA', ch1, 'CHAM_ELEM', ibid,&
-                    noma, ie)
-        call dismoi('F', 'NOM_GD', ch1, 'CHAM_ELEM', ibid,&
-                    nogd, ie)
-        call dismoi('F', 'TYPE_SCA', nogd, 'GRANDEUR', ibid,&
-                    type, ie)
+        call dismoi('NOM_MAILLA', ch1, 'CHAM_ELEM', repk=noma)
+        call dismoi('NOM_GD', ch1, 'CHAM_ELEM', repk=nogd)
+        call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=type)
 !
         ii = 0
         do 30 iordr = 0, nbinst - 1
@@ -408,9 +399,9 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                 ii = ii + 1
             endif
 !
-32          continue
+ 32         continue
             call jedema()
-30      continue
+ 30     continue
     endif
 !
 ! --- MENAGE
@@ -418,7 +409,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     call jedetr('&&FOCRR2.LIR8')
     call jedetr('&&FOCRR2.INST')
 !
-40  continue
+ 40 continue
 !
     call jedema()
 end subroutine

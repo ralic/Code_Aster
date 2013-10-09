@@ -29,12 +29,10 @@ subroutine chpnua(nx, chpt, lno, nuage)
 ! IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 ! OUT NUAGE  : SD NUAGE PRODUITE
 !     ------------------------------------------------------------------
-    integer :: ibid, ie
     character(len=4) :: type
 !     ------------------------------------------------------------------
 !
-    call dismoi('F', 'TYPE_CHAMP', chpt, 'CHAMP', ibid,&
-                type, ie)
+    call dismoi('TYPE_CHAMP', chpt, 'CHAMP', repk=type)
 !
     if (type .eq. 'NOEU') then
         call cnonua(nx, chpt, lno, nuage)

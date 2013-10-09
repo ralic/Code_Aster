@@ -235,7 +235,7 @@ class CalcEssaiModifStruct:
         """
         for name, resu in self.objects.resultats.items():
             if aster.jeveux_exists(name.ljust(19)+'.NOVA'):
-                iret,ibid,modele_name = aster.dismoi('F','MODELE',name,'RESULTAT')
+                iret,ibid,modele_name = aster.dismoi('MODELE',name,'RESULTAT','F')
                 modele_name=modele_name.rstrip()
                 if modele_name[0:1] == "#" :  continue
 
@@ -246,23 +246,23 @@ class CalcEssaiModifStruct:
             if modllu == self.support_modele.nom:
                 support_modele = resu.obj
 
-                iret,ibid,nom_raideur = aster.dismoi('F','REF_RIGI_PREM',support_modele.nom,'RESU_DYNA')
+                iret,ibid,nom_raideur = aster.dismoi('REF_RIGI_PREM',support_modele.nom,'RESU_DYNA','F')
                 nom_raideur = nom_raideur.strip()
 
                 if nom_raideur == self.matr_rig.nom:
 
-                    iret,ibid,nom_masse = aster.dismoi('F','REF_MASS_PREM',support_modele.nom,'RESU_DYNA')
+                    iret,ibid,nom_masse = aster.dismoi('REF_MASS_PREM',support_modele.nom,'RESU_DYNA','F')
                     nom_masse = nom_masse.strip()
                     matr_masse = self.objects.get_matr(nom_masse)
 
-                    iret,ibid,nume_name = aster.dismoi('F','NUME_DDL',support_modele.nom,'RESU_DYNA')
+                    iret,ibid,nume_name = aster.dismoi('NUME_DDL',support_modele.nom,'RESU_DYNA','F')
                     nume_name = nume_name.strip()
                     numesup = self.objects.nume_ddl[nume_name]
 
-                    iret,ibid,var_carelem = aster.dismoi('F','CARA_ELEM',name,'RESULTAT')
+                    iret,ibid,var_carelem = aster.dismoi('CARA_ELEM',name,'RESULTAT','F')
                     var_carelem=var_carelem.strip()
 
-                    iret,ibid,var_chmat = aster.dismoi('F','CHAM_MATER',name,'RESULTAT')
+                    iret,ibid,var_chmat = aster.dismoi('CHAM_MATER',name,'RESULTAT','F')
                     var_chmat=var_chmat.strip()
                     break
         else:

@@ -19,7 +19,6 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/detrsd.h"
@@ -37,6 +36,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 #include "asterfort/nucalc.h"
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ligrel, chsgeo
     character(len=16) :: option
     character(len=8) :: param
@@ -75,11 +75,10 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: ibid, iopt, iopt1, nute, numc, igr, nbgrel
-    integer :: jecono, imolo, jmolo, nec, kfpg, ierd
+    integer ::  iopt, iopt1, nute, numc, igr, nbgrel
+    integer :: jecono, imolo, jmolo, nec, kfpg
     integer :: igd, jpnlfp, nblfpg, jnolfp, nbfam, jfpgl
     integer :: k, nuflpg, nufgpg
-    character(len=1) :: kbid
     character(len=8) :: nomgd, elrefe, ma, mo
     character(len=16) :: nofpg, nomte
     character(len=24) :: chgeom
@@ -87,10 +86,8 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NOM_MODELE', ligrel, 'LIGREL', ibid,&
-                mo, ibid)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
 !
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
@@ -102,57 +99,56 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 !     ------------------------------------------------------------------
     exixfm='NON'
     call wkvect(kecono, 'V V I', nbgrel, jecono)
-    do 1, igr=1,nbgrel
-    zi(jecono-1+igr)=1
-    1 end do
+    do 1 igr = 1, nbgrel
+        zi(jecono-1+igr)=1
+  1 end do
     call jenonu(jexnom('&CATA.OP.NOMOPT', 'XFEM_XPG'), iopt1)
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
-    do 2, igr=1,nbgrel
-    nute = typele(ligrel,igr)
-    call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
+    do 2 igr = 1, nbgrel
+        nute = typele(ligrel,igr)
+        call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
 !
 !       L'ELEMENT SAIT-IL CALCULER XFEM_XPG ?
-    numc = nucalc(iopt1,nute,1)
-    if (numc .lt. 0) goto 2
+        numc = nucalc(iopt1,nute,1)
+        if (numc .lt. 0) goto 2
 !
-    imolo = modat2(iopt,nute,param)
-    if (imolo .eq. 0) goto 2
+        imolo = modat2(iopt,nute,param)
+        if (imolo .eq. 0) goto 2
 !
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-    igd = zi(jmolo-1+2)
-    call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ierd)
-    kfpg = zi(jmolo-1+4+nec+1)
+        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
+        igd = zi(jmolo-1+2)
+        call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
+        call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+        kfpg = zi(jmolo-1+4+nec+1)
 !
 !       -- FAMILLE "LISTE"
-    if (kfpg .lt. 0) then
+        if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
-        call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
-        nbfam=nbfam-1
-        call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
-        elrefe=zk8(jfpgl-1+nbfam+1)
-        do 3,k=1,nbfam
-        noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-        nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
-        nufgpg = zi(jnolfp-1+nuflpg)
-        call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
-        if (nofpg(9:12) .eq. 'XFEM') then
-            exixfm='OUI'
-            zi(jecono-1+igr)=0
-        endif
- 3      continue
+            call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
+            nbfam=nbfam-1
+            call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
+            elrefe=zk8(jfpgl-1+nbfam+1)
+            do 3 k = 1, nbfam
+                noflpg = nomte//elrefe//zk8(jfpgl-1+k)
+                nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
+                nufgpg = zi(jnolfp-1+nuflpg)
+                call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
+                if (nofpg(9:12) .eq. 'XFEM') then
+                    exixfm='OUI'
+                    zi(jecono-1+igr)=0
+                endif
+  3         continue
 !
 !       -- FAMILLE "ORDINAIRE"
-    else
-        call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
-        if (nofpg(9:12) .eq. 'XFEM') then
-            exixfm='OUI'
-            zi(jecono-1+igr)=0
+        else
+            call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
+            if (nofpg(9:12) .eq. 'XFEM') then
+                exixfm='OUI'
+                zi(jecono-1+igr)=0
+            endif
         endif
-    endif
 !
-    2 end do
+  2 end do
     if (exixfm .eq. 'NON') goto 9999
 !
 !
@@ -180,6 +176,6 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     call celces(chgeom, 'V', chsgeo)
     call detrsd('CHAMP', chgeom)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

@@ -1,5 +1,6 @@
 subroutine coqucf(nomu)
     implicit none
+#include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -45,7 +46,6 @@ subroutine coqucf(nomu)
 !     ET REMPLIR LA CARTE DE REELS
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: ifm, niv, iret, ibid, ii, jj, kk
     integer :: jcesdf, jcesdo, jcescf, jcesco, nbmail, adrm, iad
@@ -53,7 +53,7 @@ subroutine coqucf(nomu)
     integer :: jceslf, jceslo, jcesvf, jcesvo
     integer :: jconne, iadr1, iadr2, jtabco
     real(kind=8) :: valr(3), fresu
-    character(len=8) :: nomma, nmcmpf, kbid, nomval(3), nomfct
+    character(len=8) :: nomma, nmcmpf, nomval(3), nomfct
     character(len=19) :: cartco, cartcf, celsco, celscf, connex
     character(len=24) :: k24bid
     logical :: lcoor
@@ -123,14 +123,12 @@ subroutine coqucf(nomu)
         else
             iret = iret + 1
         endif
-100  end do
+100 end do
     ASSERT(iret.eq.0)
 !
 ! --- INFORMATIONS SUR LE MAILLAGE
-    call dismoi('F', 'NOM_MAILLA', cartco, 'CARTE', ibid,&
-                nomma, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', nomma, 'MAILLAGE', nbmail,&
-                kbid, ibid)
+    call dismoi('NOM_MAILLA', cartco, 'CARTE', repk=nomma)
+    call dismoi('NB_MA_MAILLA', nomma, 'MAILLAGE', repi=nbmail)
 !
     k24bid = nomma//'.COORDO    .VALE'
     call jeveuo(k24bid, 'L', igeom)
@@ -174,9 +172,9 @@ subroutine coqucf(nomu)
                             do 240 inoeu = 1, nbno
                                 nunoe = zi(adrm-1+inoeu)
                                 valr(icompo) = valr(icompo) + zr( igeom+3*(nunoe-1)+icompo-1)
-240                          continue
+240                         continue
                             valr(icompo) = valr(icompo)/nbno
-250                      continue
+250                     continue
                     endif
                     call fointe('F', nomfct, 3, nomval, valr,&
                                 fresu, iret)
@@ -191,8 +189,8 @@ subroutine coqucf(nomu)
                     zr(jcesvo-1+iad) = fresu
                 endif
             endif
-210      continue
-200  end do
+210     continue
+200 end do
 !
 !     DESTRUCTION DE LA CARTE DES REELS, DES FONCTIONS
     call detrsd('CARTE', cartco)
@@ -208,6 +206,6 @@ subroutine coqucf(nomu)
     91 format("'",i7,"_",i1,"' : [ [",3(e18.10,","),"], '",&
      &       a,"' ,",e18.10,"],")
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

@@ -49,7 +49,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     character(len=4) :: num
     character(len=1) :: bas1
     integer :: nbocc, jngi1, jngi2, ioc, jnb12, lon1, lon2, nb1, nb2, idec1
-    integer :: idec2, jlno1, jlno2, jxxk1, ibid
+    integer :: idec2, jlno1, jlno2, jxxk1
 !----------------------------------------------------------------------
 !
     call jemarq()
@@ -67,8 +67,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     call getfac('VIS_A_VIS', nbocc)
     ASSERT(nbocc.le.999)
 !
-    call dismoi('F', 'NOM_MAILLA', cnref, 'CHAMP', ibid,&
-                noma3, ibid)
+    call dismoi('NOM_MAILLA', cnref, 'CHAMP', repk=noma3)
     ASSERT(noma3.eq.noma2)
 !
 !
@@ -86,7 +85,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         call utnuav(noma1, 1, ioc, lno1)
         lno2='&&PJNGCO.'//num//'.LNO2'
         call utnuav(noma2, 2, ioc, lno2)
-10  end do
+ 10 end do
 !
 !
 !      -- ON RECOPIE LES LISTES DANS .PJNG_I1/2 :
@@ -103,7 +102,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         zi(jnb12-1+2*(ioc-1)+2)=nb2
         lon1=lon1+nb1
         lon2=lon2+nb2
-20  end do
+ 20 end do
 !
     call wkvect(corr16//'.PJNG_I1', bas1//' V I', 1+nbocc+lon1, jngi1)
     zi(jngi1-1+1)=nbocc
@@ -125,7 +124,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         idec2=idec2+nb2
         zi(jngi1-1+1+ioc)=nb1
         zi(jngi2-1+1+ioc)=nb2
-30  end do
+ 30 end do
 !
 !
 !
@@ -136,8 +135,8 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         lno2='&&PJNGCO.'//num//'.LNO2'
         call jedetr(lno1)
         call jedetr(lno2)
-40  end do
+ 40 end do
 !
-50  continue
+ 50 continue
     call jedema()
 end subroutine

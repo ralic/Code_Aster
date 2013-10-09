@@ -35,7 +35,6 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ====================== DEBUT DES DECLARATIONS ========================
 #include "jeveux.h"
-!
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/cormgi.h"
@@ -54,6 +53,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
+!
 ! ----- ARGUMENTS
     character(len=*) :: basez, ligrey, ligrez
 ! ----- VARIABLES LOCALES -------------------------------
@@ -64,7 +64,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, idapma, idapno, idligi, idlima, idlino
-    integer :: idlity, idmode, idnema, idphen, idpoma, idpono, ier
+    integer :: idlity, idmode, idnema, idphen, idpoma, idpono
     integer :: ij, imodl, iret, j, jdnbno, jdpm, k
     integer :: k1, lonlie, nbapma, nbapno, nbmato, nbmaty, nbno
     integer :: nbno2, nbnoto, ntypoi, nutyp1, nutype
@@ -145,7 +145,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
             nutyp1 = nutype
             k1 = k1 + 1
         endif
-10  end do
+ 10 end do
 !
 ! --- ON CREE LE .LIEL SI LE NOMBRE DE MAILLES EST NON NUL :
 !     ----------------------------------------------------
@@ -207,7 +207,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
                 do 30 j = 1, nbmaty
                     ij = ij + 1
                     zi(idligi+j-1) = zi(idlima+ij-1)
-30              continue
+ 30             continue
 !
                 zi(idligi+nbmaty) = nutyp1
                 nutyp1 = nutype
@@ -220,9 +220,9 @@ subroutine lgtlgr(basez, ligrey, ligrez)
             endif
 !
 !
-32          continue
+ 32         continue
 !
-20      continue
+ 20     continue
 !
         if (nutyp1 .ne. 0) then
             k = k + 1
@@ -242,7 +242,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
             do 31 j = 1, nbmaty
                 ij = ij + 1
                 zi(idligi+j-1) = zi(idlima+ij-1)
-31          continue
+ 31         continue
 !
             zi(idligi+nbmaty) = nutyp1
         endif
@@ -276,11 +276,11 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
             do 60 j = 1, nbno
                 zi(idligi+j-1) = -j
-60          continue
+ 60         continue
 !
             zi(idligi+nbno) = nutype
 !
-50      continue
+ 50     continue
 !
     endif
 !
@@ -323,14 +323,13 @@ subroutine lgtlgr(basez, ligrey, ligrez)
             zi(idnema+1-1) = zi(idlino+zi(idpono+i-1))
             zi(idnema+2-1) = 1
 !
-70      continue
+ 70     continue
 !
     endif
 !
 ! --- RECUPERATION DU MODE LOCAL ASSOCIE AU PHENOMENE :
 !     -----------------------------------------------
-    call dismoi('F', 'NOM_MOLOC', zk16(idphen), 'PHENOMENE', ibid,&
-                moloc, ier)
+    call dismoi('NOM_MOLOC', zk16(idphen), 'PHENOMENE', repk=moloc)
 !
 ! --- ADAPTATION DE LA TAILLE DES GRELS :
 !     ---------------------------------

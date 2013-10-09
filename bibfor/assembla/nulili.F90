@@ -93,7 +93,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    character(len=8) :: nomgds, kbid
+    character(len=8) :: nomgds
 !
 !     VARIABLES LOCALES
 !-----------------------
@@ -101,8 +101,8 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
     character(len=16) :: pheno, phe, nomte
     character(len=19) :: prefix, ligrel, nomlig, k19, valk(6)
     character(len=24) :: nomli, lligr2
-    integer :: iad, ibid, ier, ierc, ierd, ifm, igr
-    integer :: illigr, iligr, iret, kkk
+    integer :: iad, ifm, igr
+    integer :: illigr, iligr, iret
     integer :: nbgr, nbsup, ncmp, niv, nligr, jmoloc, imode, ite
 !
 !----------------------------------------------------------------------
@@ -120,9 +120,9 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !
     lligr2='&&NULILI.LLIGR2'
     call wkvect(lligr2, 'V V K24', nligr, jligr2)
-    do 662,k=1,nligr
-    zk24(jligr2-1+k) =zk24(illigr-1+k)
-    662 end do
+    do 662 k = 1, nligr
+        zk24(jligr2-1+k) =zk24(illigr-1+k)
+662 end do
     call jeecra(lligr2, 'LONUTI', nligr)
     nlili = nligr+1
     if (nlili .eq. 1) then
@@ -151,8 +151,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
         nomli = zk24(jligr2+iligr-1)
 !
 !---- VERIFICATION DE L'UNICITE DU PHENOMENE
-        call dismoi('F', 'PHENOMENE', nomli, 'LIGREL', kkk,&
-                    phe, ierc)
+        call dismoi('PHENOMENE', nomli, 'LIGREL', repk=phe)
         if (iligr .eq. 1) then
             pheno = phe
         else if (pheno.ne.phe) then
@@ -179,8 +178,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !
 !
 !        -- SI LE LIGREL NE CONTIENT PAS D'ELEMENTS ON VA A FIN BCLE:
-        call dismoi('F', 'EXI_ELEM', nomli, 'LIGREL', ibid,&
-                    exiele, ierd)
+        call dismoi('EXI_ELEM', nomli, 'LIGREL', repk=exiele)
         if (exiele(1:3) .eq. 'NON') goto 10
 !
         call jeexin(nomli(1:19)//'.NEMA', iret)
@@ -208,19 +206,17 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
         zi(iadlie+3* (iligr)+1) = iad
         call jeveut(jexatr(nomli(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
         zi(iadlie+3* (iligr)+2) = iad
-10  end do
+ 10 end do
 !
 !
-    call dismoi('F', 'NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', nbelm,&
-                kbid, ierc)
+    call dismoi('NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', repi=nbelm)
     zi(iadnem) = nbelm
 !
 !
 !---- CALCUL DE : NOMGDS, IGDS, NEC , NCMP
 !------------------------------------------
     if (moloc .eq. ' ') then
-        call dismoi('F', 'NOM_GD', pheno, 'PHENOMENE', ibid,&
-                    nomgds, ier)
+        call dismoi('NOM_GD', pheno, 'PHENOMENE', repk=nomgds)
     else
         ligrel = zk24(jligr2-1+1)
         do 20 igr = 1, nbgrel(ligrel)
@@ -232,9 +228,9 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
                 call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), nomgds)
                 goto 30
             endif
-20      continue
+ 20     continue
         ASSERT(.false.)
-30      continue
+ 30     continue
     endif
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgds), igds)
     ASSERT(igds.ne.0)

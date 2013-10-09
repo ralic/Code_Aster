@@ -90,7 +90,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     character(len=24) :: modele
     integer :: jinfc, jchar, jchar2, iarefe
     integer :: nbchar
-    integer :: ibid, iret, i
+    integer ::  i
     character(len=16) :: optmat
     character(len=19) :: depmoi, sigplu, vitplu, vitmoi, accmoi, strplu
     character(len=19) :: depdel
@@ -107,8 +107,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
 !
     optmat = optmaz
     modele = modelz
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
 !
 ! --- AFFICHAGE
 !
@@ -146,7 +145,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
         call wkvect('&&NMCALC.LISTE_CHARGE', 'V V K8', nbchar, jchar2)
         do 10 i = 1, nbchar
             zk8(jchar2-1+i) = zk24(jchar-1+i) (1:8)
-10      continue
+ 10     continue
     else
         call wkvect('&&NMCALC.LISTE_CHARGE', 'V V K8', 1, jchar2)
     endif

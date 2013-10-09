@@ -99,13 +99,13 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, jcoor, iret, nbno, jmin, nbptff, ibid, jdelta, lsn, lst
+    integer :: i, j, jcoor, nbno, jmin, nbptff, ibid, jdelta, lsn, lst
     integer :: jfonf, jvtff, jvnff, jvtl, jvtv, jvnl, jvnv, ifm, niv, jvit
     integer :: jbeta, jdisfr, cfv, bfv, vfv, afv, nfv
     real(kind=8) :: eps, xm, ym, zm, dmin, smin, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
-    character(len=8) :: k8b, typcmp(6), method
+    character(len=8) ::  typcmp(6), method
     integer :: jvff, jbasef, jbl, jdis, k
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
@@ -148,19 +148,16 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     RECUPERATION DU FOND DE FISSURE
     call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
-    call dismoi('F', 'NB_POINT_FOND', fiss, 'FISS_XFEM', nbptff,&
-                k8b, iret)
+    call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
     call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
-    call dismoi('F', 'NB_FOND', fiss, 'FISS_XFEM', numfon,&
-                k8b, iret)
+    call dismoi('NB_FOND', fiss, 'FISS_XFEM', repi=numfon)
 !
 !     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE ON THE FRONT
     call jeveuo(fiss//'.BASEFOND', 'E', jbasef)
@@ -324,7 +321,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !    Initialisation du vecteur delta
     do 742 i = 1, 2*nbno
         zr(jdelta+i-1)=0.d0
-742  continue
+742 continue
 !
 ! ***************************************************************
 ! ELABORATE EACH POINT ON THE CRACK FRONT IN ORDER TO CALCULATE
@@ -449,7 +446,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         do 50 j = 1, ndim
             zr(jvff-1+ndim*(i-1)+j) = zr(jvnff-1+i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+ zr(jvtff&
                                       &-1+i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
-50      continue
+ 50     continue
 !
 !        ***************************************************************
 !        EVALUATE THE EULER AXIS AND ANGLE FOR THE ROTATION BETWEEN
@@ -519,7 +516,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
         endif
 !
-100  end do
+100 end do
 !
 ! ***************************************************************
 ! ELABORATE EACH NODE IN THE MESH IN ORDER TO CALCULATE THE FOLLOWING:
@@ -564,7 +561,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !               FORMING THE FRONT)
                     do 213 fon = 1, numfon
                         if (j .eq. zi(jfmult-1+2*fon)) goto 210
-213                  continue
+213                 continue
                 endif
 !
 !            COORD PT I, ET J
@@ -605,7 +602,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     zr(jdis-1+3*(i-1)+2) = ym-yn
                     zr(jdis-1+3*(i-1)+3) = zm-zn
                 endif
-210          continue
+210         continue
 !
         else
 !
@@ -633,7 +630,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     zr(jlistp-1+3*(i-1)+3) = zi1
                 endif
 !
-214          continue
+214         continue
 !
         endif
 !
@@ -662,7 +659,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                         jlimdx = zi(jfmult-1+2*fon)-1
                         goto 204
                     endif
-205              continue
+205             continue
             else
                 jlimsx = 1
                 jlimdx = zi(jfmult-1+2*numfon)-1
@@ -670,7 +667,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
             ASSERT(2.gt.1)
 !
-204          continue
+204         continue
 !
 !           SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
             do 206 j = 1, maxite
@@ -805,9 +802,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
                 dprec=d
 !
-206          continue
+206         continue
 !
-207          continue
+207         continue
 !
 !           CALCULATE THE PROJECTED POINT COORDINATES
             xn = smin*xij+xi1
@@ -843,7 +840,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     else
                         goto 861
                     endif
-861              continue
+861             continue
 !
 !         2: SI OUI, ON CALCULE LA CORRECTION A APPORTER
 !
@@ -926,7 +923,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                             endif
                             goto 61
                         endif
-61                  continue
+ 61                 continue
                 endif
             endif
 !
@@ -1091,7 +1088,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                         zr(jdelta+2*(i-1)+1)= lstth(1)-zr(lst+i-1)
 !
                     endif
-864              continue
+864             continue
             endif
         endif
 !
@@ -1130,7 +1127,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         zr(jcnsb+i-1) = betap
 !
 !
-200  end do
+200 end do
 !
 ! ***************************************************************
 ! PRINT SOME INFORMATIONS
@@ -1152,12 +1149,12 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
      &               //'BETA          VT            VN'
                 endif
 !
-312          continue
+312         continue
 !
             write(ifm,311) i,zr(jvit-1+i),zr(jbeta-1+i),zr(jvtff+i-1),&
             zr(jvnff+i-1)
 !
-310      continue
+310     continue
 !
         311     format(4x,i2,4x,4(1pd12.5,3x))
         313     format(1x,' FOND DE FISSURE ',i2)

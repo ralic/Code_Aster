@@ -127,7 +127,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: nbtyar
     parameter ( nbtyar = 6 )
     integer :: igrpa, ipepa
-    integer :: ibi, ibmat, iddeeq, ie, ier, ierr
+    integer ::  ibmat, iddeeq, ierr
     integer :: igrel, iexci, iexcl
     integer :: ifimpe
     integer :: idepl1, idepla
@@ -224,19 +224,18 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
             repk = 'OUI'
             goto 1039
         endif
-103  end do
+103 end do
 !
     if (repk .eq. 'NON') then
         limped = .false.
     endif
 !
-1039  continue
+1039 continue
 !
 ! 1.4. ==> ???
 !
     k8b = ' '
-    call dismoi('F', 'CHAM_MATER', rigid, 'MATR_ASSE', ibid,&
-                k8b, ie)
+    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=k8b)
     if (k8b .eq. ' ') limped = .false.
 !
     if (limped) then
@@ -283,17 +282,15 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     if (k8b .eq. 'OUI' .and. nbv .eq. 0) then
         call utmess('F', 'ALGORITH13_46')
     endif
-69  continue
+ 69 continue
 !
 ! 1.8. ==> ???
 !
     if (nbv .ne. 0) then
 !
         lmodst = .true.
-        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibi,&
-                    mailla, ier)
-        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibi,&
-                    numddl, iret)
+        call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
+        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numddl)
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
         call getfac('EXCIT', nbexci)
@@ -317,7 +314,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         else
             zi(jmltap+iexci-1) = 0
         endif
-108      continue
+108     continue
     else
         jnodep = 1
         jnovit = 1
@@ -517,7 +514,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
         do 322 , ibmat = 1,nbmat
         nmat(ibmat) = zk24(zi(imat(ibmat)+1))
-322      continue
+322     continue
         nmtres = zk24(zi(imtres+1))
         call mtcmbl(nbmat, typcst, lcoef, nmat, nmtres,&
                     nomddl, ' ', 'ELIM=')
@@ -572,7 +569,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         endif
 !
 ! ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
-324      continue
+324     continue
 !
         call uttcpu('CPU.DLNEWI.1', 'FIN', ' ')
         call uttcpr('CPU.DLNEWI.1', 4, tps1)
@@ -587,9 +584,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
 !
-32  end do
+ 32 end do
 !
-3900  continue
+3900 continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -600,7 +597,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
         do 41 , iexcl = 1,nbexcl
         typear(iexcl) = typ1(iexcl)
-41      continue
+ 41     continue
         alarm = 0
         call dlarch(result, neq, istoc, iarchi, ' ',&
                     alarm, ifm, temps, nbtyar, typear,&

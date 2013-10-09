@@ -65,7 +65,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 !
 !
 !
-    integer :: iret, initpr, ibid
+    integer :: iret, initpr
     integer :: niv, ifm
     character(len=14) :: nuposs
     character(len=19) :: k19bla
@@ -88,8 +88,7 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
     lnonl = .false.
     levol = .false.
     time = result(1:8)//'.CHTPS'
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, ibid)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
 !
 ! --- CONCEPT REENTRANT ?
 !

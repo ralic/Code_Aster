@@ -1,7 +1,6 @@
 subroutine xprmil(noma, cnslt, cnsln)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/conare.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
@@ -14,6 +13,7 @@ subroutine xprmil(noma, cnslt, cnsln)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nomil.h"
+!
     character(len=19) :: cnslt, cnsln
     character(len=8) :: noma
 !
@@ -54,10 +54,10 @@ subroutine xprmil(noma, cnslt, cnsln)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, iret, nbma, jma, jconx1, jconx2, jlnno, jltno, ima
+    integer :: ifm, niv, nbma, jma, jconx1, jconx2, jlnno, jltno, ima
     integer :: ar(12, 3), nbar, ia, na, nb, nunoa, nunob, nmil, nunom
     real(kind=8) :: lsna, lsnb, lsta, lstb
-    character(len=8) :: k8bid, typma
+    character(len=8) ::  typma
     character(len=19) :: mai
 !
 !-----------------------------------------------------------------------
@@ -68,8 +68,7 @@ subroutine xprmil(noma, cnslt, cnsln)
     call infmaj()
     call infniv(ifm, niv)
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
@@ -108,8 +107,8 @@ subroutine xprmil(noma, cnslt, cnsln)
             zr(jlnno-1+(nunom-1)+1) = (lsna+lsnb)/2.d0
             zr(jltno-1+(nunom-1)+1) = (lsta+lstb)/2.d0
 !
-110      continue
-100  end do
+110     continue
+100 end do
 !
 !-----------------------------------------------------------------------
 !     FIN

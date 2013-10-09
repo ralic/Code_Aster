@@ -501,8 +501,7 @@ subroutine op0045()
 !     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
     call exisd('MATR_ASSE', raide, ibid)
     if (ibid .ne. 0) then
-        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                    numedd, iret)
+        call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numedd)
     else
         numedd=' '
     endif

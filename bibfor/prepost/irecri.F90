@@ -108,7 +108,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     logical :: lordr
     integer :: nbchca, nbacc, nbcara
     integer :: nbrk16, nbk16, ierd, ibid
-    integer :: i, ibib, icha, ifi, isy, itype
+    integer :: i, icha, ifi, isy, itype
     integer :: iun, ideu
     integer :: iord, iordr, ivsi
     integer :: iret
@@ -140,16 +140,16 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                 call rsexch(' ', nomco, cham(icha), ordr(iord), noch19,&
                             iret)
                 if (iret .eq. 0) then
-                    call dismoi('C', 'TYPE_CHAMP', noch19, 'CHAMP', ibib,&
-                                tych, ierd)
+                    call dismoi('TYPE_CHAMP', noch19, 'CHAMP', repk=tych, arret='C',&
+                                ier=ierd)
                     if (tych(1:4) .eq. 'NOEU' .or. tych(1:4) .eq. 'ELNO') then
                         nbchca = nbchca + 1
                         zk16(jcham-1+nbchca) = cham(icha)
                         goto 50
                     endif
                 endif
-51          continue
-50      continue
+ 51         continue
+ 50     continue
         knacc = '&&IRECRI.NOM_ACCES '
         call rsnopa(nomco, 0, knacc, nbacc, ibid)
         call jeexin(knacc, iret)
@@ -257,7 +257,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                                 numnoe, nbmat, nummai, nbcmp, nomcmp,&
                                 lsup, borsup, linf, borinf, lmax,&
                                 lmin, lresu, formr, nive)
-20              continue
+ 20             continue
             endif
 !
 !       --- IMPRESSION  DE LA TABLE SI FORMAT 'CASTEM'
@@ -302,9 +302,9 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                 zi(jlast-1+6) = zi(jlast-1+6) + 1
                 call jedetr('&&IRPACA.TABL.CASTEM')
             endif
-22          continue
+ 22         continue
             call jedema()
-21      end do
+ 21     end do
 !
         if (lresu .and. form .eq. 'CASTEM' .and. nbordr .ne. 0) then
             zi(jlast-1+7) = zi(jlast-1+1)

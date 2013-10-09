@@ -57,7 +57,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: charge
-    character(len=8) ::  noma, nomnoe, nomail
+    character(len=8) :: noma, nomnoe, nomail
     character(len=16) :: momail, mogrma
     character(len=16) :: motfac
     character(len=24) :: noeuma, mailma, grmama, lisnoe
@@ -65,7 +65,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idim1, idim2, idimax, ier, igr, ima
+    integer :: ibid, idim1, idim2, idimax, igr, ima
     integer :: in1, indlis, indmot, indnoe, ino, iocc, jdes
     integer :: jgro, jind, jjj1, jjj2, jlist, lonlis, m
     integer :: n1, n2, nbma, nbmail, ng, ngr, nliai
@@ -90,8 +90,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call getfac(motfac, nliai)
     if (nliai .eq. 0) goto 9999
 !
-    call dismoi('F', 'NOM_MAILLA', charge, 'CHARGE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
     noeuma = noma//'.NOMNOE'
     mailma = noma//'.NOMMAI'
@@ -120,8 +119,8 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                 call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
                 call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                 idim1 = idim1 + n1
-20          continue
-10      continue
+ 20         continue
+ 10     continue
     endif
 !
 !     -- CALCUL DE IDIM2=NB_NOEUD/MAILLE*NB_MAILLE DE LISTE DE MAILLES
@@ -138,7 +137,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             idim2 = idim2 + n2
-30      continue
+ 30     continue
     endif
 !
 !     -- IDIMAX = MAJORANT DE LA LONGUEUR DE LA LISTE DE NOEUDS
@@ -169,9 +168,9 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                     call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
                     indnoe = indnoe + 1
                     zk8(jlist+indnoe-1) = nomnoe
-60              continue
-50          continue
-40      continue
+ 60             continue
+ 50         continue
+ 40     continue
     endif
 !
     call getvtx(motfac, momail, iocc=iocc, nbval=0, nbret=nbma)
@@ -188,8 +187,8 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                 call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
                 indnoe = indnoe + 1
                 zk8(jlist+indnoe-1) = nomnoe
-80          continue
-70      continue
+ 80         continue
+ 70     continue
     endif
 !
 !     -- ELIMINATION DES REDONDANCES EVENTUELLES DES NOEUDS
@@ -202,8 +201,8 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
             if (zk8(jlist+in1-1) .eq. zk8(jlist+ino-1)) then
                 zi(jind+in1-1) = 1
             endif
-100      continue
-90  end do
+100     continue
+ 90 end do
 !
     indlis = 0
 !
@@ -212,7 +211,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
             indlis = indlis + 1
             zk8(jlist+indlis-1) = zk8(jlist+ino-1)
         endif
-110  end do
+110 end do
 !
     lonlis = indlis
 !
@@ -220,6 +219,6 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call jedetr('&&MALIN1.TRAV2')
     call jedetr('&&MALIN1.TRAV3')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

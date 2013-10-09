@@ -32,7 +32,6 @@ subroutine imbint(nomres, ifm)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/bmnodi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
@@ -43,9 +42,10 @@ subroutine imbint(nomres, ifm)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ibid(1), idau, idcb, idda, idha, idmn
-    integer :: ifau, ifcb, ifha, ifmn, ino, ipoin, iret
+    integer :: ifau, ifcb, ifha, ifmn, ino, ipoin
     integer :: ityp, j, k, llact, lldes, lldesc, llncmp
     integer :: llnoe, lltyp, nbcmp, nbcpmx, nbdef, nbec, nbint
     integer :: nbno, nbnot, ncomp, numgd
@@ -53,7 +53,6 @@ subroutine imbint(nomres, ifm)
     parameter    (nbcpmx=300)
     character(len=8) :: nomcou, typcou, nomnoe, typ, typbas(3), nomtyp
     character(len=8) :: nomres, mailla, flec, craigb, mneal, aucun, cbharm
-    character(len=8) :: k8bid
     character(len=16) :: tydef
     character(len=11) :: dactif
     character(len=24) :: nomint, typint, noeint, desdef, ddact
@@ -82,7 +81,7 @@ subroutine imbint(nomres, ifm)
 !
 !--------------RECUPERATION DU NOM DU MAILLA--------------------------
 !
-    call dismoi('F', 'NOM_MAILLA', nomres, 'INTERF_DYNA', ibid(1), mailla, ibid1)
+    call dismoi('NOM_MAILLA', nomres, 'INTERF_DYNA', repk=mailla)
 !
 !--------------RECUPERATION TYPE LIST_INTERFACE-------------------------
 !
@@ -94,12 +93,9 @@ subroutine imbint(nomres, ifm)
 !
 !----RECUPERATION DES DONNEES RELATIVES A LA GRANDEUR SOUS-JACENTE------
 !
-    call dismoi('F', 'NB_CMP_MAX', nomres, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', nomres, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
-    call dismoi('F', 'NUM_GD', nomres, 'INTERF_DYNA', numgd,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', nomres, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', nomres, 'INTERF_DYNA', repi=nbec)
+    call dismoi('NUM_GD', nomres, 'INTERF_DYNA', repi=numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', llncmp)
 !
 !--------------------INITIALISATION DES MOTS USUELS---------------------
@@ -165,7 +161,7 @@ subroutine imbint(nomres, ifm)
                     chaine(idda:idda+7)=zk8(llncmp+k-1)
                     idda=idda+8
                 endif
-25          continue
+ 25         continue
             idda=idda-1
             ino=zi(lldes+ipoin-1)
             call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
@@ -176,7 +172,7 @@ subroutine imbint(nomres, ifm)
             endif
             write(ifm,*)'NOEUD: ',j,flec,nomnoe,' ',dactif, chaine(1:&
             idda)
-100          continue
+100         continue
 !
 !  STOCKAGE DU NUMERO DU PREMIER ET DERNIER NOEUD DE CHAQUE TYPE
 !            D'INTERFACE
@@ -201,15 +197,16 @@ subroutine imbint(nomres, ifm)
                 ifau=max(ifau,ipoin)
             endif
 !
-20      continue
+ 20     continue
         write(ifm,*)'  '
-        call bmnodi('        ', nomres, '         ', i, 0, ibid(1), nbdef)
+        call bmnodi('        ', nomres, '         ', i, 0,&
+                    ibid(1), nbdef)
         write(ifm,*)'  '
         write(ifm,*)' NOMBRE DE DEFORMEES STATIQUES ASSOCIES: ',nbdef
         write(ifm,*)'  '
         call jelibe(jexnum(ddact, i))
         call jelibe(jexnum(noeint, i))
-10  end do
+ 10 end do
 !
     write(ifm,*) ' '
     write(ifm,*) ' '
@@ -239,13 +236,13 @@ subroutine imbint(nomres, ifm)
                 ncomp=ncomp+1
                 write(ifm,*)'DEFORMEE: ',ncomp,flec,nomnoe,' ',typ,' ',tydef
             endif
-50      continue
-40  continue
+ 50     continue
+ 40 continue
 !
     write(ifm,*)' '
     write(ifm,*)'----------------------------------------------------'
     write(ifm,*)' '
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

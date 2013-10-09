@@ -15,9 +15,8 @@ subroutine pjmasp(moa2, masp, corres, noca)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -37,6 +36,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
 ! ----------------------------------------------------------------------
 ! COMMANDE PROJ_CHAMP / METHODE='SOUS_POINT'
 !
@@ -52,7 +52,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
     character(len=8) :: masp, moa2, noca
 ! ----------------------------------------------------------------------
     integer :: ntgeo, ipo, ipg, nuno2
-    integer :: ibid, iret, nbnosp, nno2, ino2p
+    integer :: ibid, nbnosp, nno2, ino2p
     integer :: k, j1, j4, ipoi1
     integer :: nbma, nbpt, nbsp, nbcmp
     integer :: ima, ipt, isp, icmp, iad, iadime
@@ -68,8 +68,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
 !
 !
 !     -- RECUPERATION DU NOM DU MAILLAGE 2
-    call dismoi('F', 'NOM_MAILLA', moa2, 'MODELE', ibid,&
-                mail2, iret)
+    call dismoi('NOM_MAILLA', moa2, 'MODELE', repk=mail2)
     call jeveuo(mail2//'.TYPMAIL', 'L', jtypma)
 !
 !     -- RECUPERATION DU CHAMP DE COORDONNEES DU MAILLAGE 2
@@ -130,21 +129,21 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call wkvect(corres//'.PJEF_SP', 'V V I', nbma*nbpgmx* nbspmx*3, jpo2)
 !
     ipo=1
-    do 100,ima=1,nbma
-    nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-    nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+    do 100 ima = 1, nbma
+        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+        nbsp=zi(jcesd-1+5+4*(ima-1)+2)
 !          IF (NBPT.LT.1) GOTO 100
-    if (nbsp .lt. 1) goto 100
-    do 90,ipg=1,nbpt
-    do 95 isp = 1, nbsp
-        zi(jpo2-1+ipo)=ima
-        zi(jpo2-1+ipo+1)=ipg
-        zi(jpo2-1+ipo+2)=isp
-        ipo=ipo+3
-95  continue
-90  continue
-    nbnosp=nbnosp+nbpt*nbsp
-    100 end do
+        if (nbsp .lt. 1) goto 100
+        do 90 ipg = 1, nbpt
+            do 95 isp = 1, nbsp
+                zi(jpo2-1+ipo)=ima
+                zi(jpo2-1+ipo+1)=ipg
+                zi(jpo2-1+ipo+2)=isp
+                ipo=ipo+3
+ 95         continue
+ 90     continue
+        nbnosp=nbnosp+nbpt*nbsp
+100 end do
 !
 !     3. CREATION DU .DIME DU NOUVEAU MAILLAGE
 !        IL Y A AUTANT DE MAILLES QUE DE NOEUDS
@@ -165,15 +164,15 @@ subroutine pjmasp(moa2, masp, corres, noca)
 !
 !
     nom(1:1)='N'
-    do 110,k=1,nbnosp
-    call codent(k, 'G', nom(2:8))
-    call jecroc(jexnom(masp//'.NOMNOE', nom))
-    110 end do
+    do 110 k = 1, nbnosp
+        call codent(k, 'G', nom(2:8))
+        call jecroc(jexnom(masp//'.NOMNOE', nom))
+110 end do
     nom(1:1)='M'
-    do 120,k=1,nbnosp
-    call codent(k, 'G', nom(2:8))
-    call jecroc(jexnom(masp//'.NOMMAI', nom))
-    120 end do
+    do 120 k = 1, nbnosp
+        call codent(k, 'G', nom(2:8))
+        call jecroc(jexnom(masp//'.NOMMAI', nom))
+120 end do
 !
 !
 !
@@ -188,14 +187,14 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
 !
     nuno2=0
-    do 130,ima=1,nbnosp
-    zi(iatypm-1+ima)=ipoi1
-    nno2=1
-    call jecroc(jexnum(masp//'.CONNEX', ima))
-    call jeecra(jexnum(masp//'.CONNEX', ima), 'LONMAX', nno2)
-    nuno2=nuno2+1
-    zi(ibid-1+nuno2)=nuno2
-    130 end do
+    do 130 ima = 1, nbnosp
+        zi(iatypm-1+ima)=ipoi1
+        nno2=1
+        call jecroc(jexnum(masp//'.CONNEX', ima))
+        call jeecra(jexnum(masp//'.CONNEX', ima), 'LONMAX', nno2)
+        nuno2=nuno2+1
+        zi(ibid-1+nuno2)=nuno2
+130 end do
 !
 !
 !
@@ -210,26 +209,26 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call wkvect(masp//'.COORDO    .VALE', 'V V R', 3*nbnosp, j1)
 !
     ino2p=0
-    do 160,ima=1,nbma
-    nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-    nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-    nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
-    if (nbpt .eq. 0) goto 160
-    ASSERT(nbcmp.eq.3)
-    do 150,ipt=1,nbpt
-    do 145 isp = 1, nbsp
-        ino2p=ino2p+1
-        do 140,icmp=1,3
-        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                    isp, icmp, iad)
-        if (iad .gt. 0) then
-            zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
-        endif
-140      continue
-145  continue
-150  continue
+    do 160 ima = 1, nbma
+        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+        nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+        nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
+        if (nbpt .eq. 0) goto 160
+        ASSERT(nbcmp.eq.3)
+        do 150 ipt = 1, nbpt
+            do 145 isp = 1, nbsp
+                ino2p=ino2p+1
+                do 140 icmp = 1, 3
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, icmp, iad)
+                    if (iad .gt. 0) then
+                        zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
+                    endif
+140             continue
+145         continue
+150     continue
 !
-    160 end do
+160 end do
     ASSERT(ino2p.eq.nbnosp)
 !
 !

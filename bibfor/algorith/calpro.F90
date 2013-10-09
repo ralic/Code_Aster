@@ -55,7 +55,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 #include "blas/ddot.h"
     character(len=1) :: classe, typ1
     character(len=6) :: pgc
-    character(len=8) :: basmod, k8bid
+    character(len=8) :: basmod
     character(len=19) :: nommat
     character(len=14) :: num
     character(len=24) :: nomres
@@ -64,7 +64,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, idbase, iddeeq, ier, iret
+    integer :: i, iad, idbase, iddeeq, ier, iret
     integer :: j, lddes, ldref, ldres, lmat, ltvec1, nbdef
     integer :: neq, ntail
     real(kind=8) :: xprod
@@ -82,8 +82,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! --- RECUPERATION DES DIMENSIONS DE LA BASE MODALE
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbdef,&
-                k8bid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
 !
 ! ----VERIFICATION DU TYPE DES VECTEURS PROPRES DANS LA BASE
 !
@@ -115,10 +114,8 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! --- RECUPERATION NUMEROTATION ET NB EQUATIONS
 !
-    call dismoi('F', 'NB_EQUA', nommat(1:8), 'MATR_ASSE', neq,&
-                k8bid, iret)
-    call dismoi('F', 'NOM_NUME_DDL', nommat(1:8), 'MATR_ASSE', ibid,&
-                num, iret)
+    call dismoi('NB_EQUA', nommat(1:8), 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_NUME_DDL', nommat(1:8), 'MATR_ASSE', repk=num)
     call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
 !
     call wkvect('&&CALPRO.BASEMO', 'V V R', nbdef*neq, idbase)
@@ -153,10 +150,10 @@ subroutine calpro(nomres, classe, basmod, nommat)
                 xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(j-1)*neq),1)
                 iad = i+(j-1)*j/2
                 zr(ldres+iad-1) = xprod
-20          continue
+ 20         continue
         endif
 !
-10  end do
+ 10 end do
 !
     call jedetr('&&'//pgc//'.VECT1')
 !

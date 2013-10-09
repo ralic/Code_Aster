@@ -112,7 +112,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !      ---------------
 !-----------------------------------------------------------------------
     integer :: i, ianueq, iaprno, ibid, idcoor, iddesc, idnoma
-    integer :: idvale, ierd, igr, iret, iret1, iret2, ival
+    integer :: idvale, igr, iret, iret1, iret2, ival
     integer :: jdes, jgro, m, nbmail, nbno, nbordr, nec
     integer :: numa, numail
     real(kind=8) :: ct, deux, prec, r8b, strap, temp, undemi
@@ -137,8 +137,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! --- ON VERIFIE QUE LE RESULTAT EST DE TYPE EVOL_THER :
 !     ------------------------------------------------
-    call dismoi('F', 'TYPE_RESU', temper, 'RESULTAT', ibid,&
-                typres, ierd)
+    call dismoi('TYPE_RESU', temper, 'RESULTAT', repk=typres)
     if (typres .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_50')
     endif
@@ -158,19 +157,16 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
 !     ---------------------------------------------------------
-    call dismoi('F', 'PROF_CHNO', chtemp, 'CHAM_NO', ibid,&
-                prchno, ierd)
+    call dismoi('PROF_CHNO', chtemp, 'CHAM_NO', repk=prchno)
 !
 ! --- RECUPERATION DU MODELE ASSOCIE AU NUME_DDL  :
 !     ------------------------------------------
 !     -- QUESTION "POURRIE" :
-    call dismoi('F', 'NOM_MODELE', prchno, 'PROF_CHNO', ibid,&
-                modele, ierd)
+    call dismoi('NOM_MODELE', prchno, 'PROF_CHNO', repk=modele)
 !
 ! --- RECUPERATION DU LIGREL DU MODELE  :
 !     --------------------------------
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrth, ierd)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrth)
 !
 ! --- CALCUL POUR CHAQUE ELEMENT DE LA SECTION DE L'INTEGRALE DU
 ! --- CHAMP DE SCALAIRES SOLUTION DE L'EQUATION DE LAPLACE DESTINEE

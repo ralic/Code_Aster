@@ -48,7 +48,7 @@ subroutine w039c4(carte, ifi, form)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, ibid, nugd, n1, jnocmp
+    integer :: iret, nugd, n1, jnocmp
     integer :: jcesk, jcesd, jcesc, jcesv, jcesl, jdesc
     character(len=8) :: typech, tsca, nomgd, k8bid
     character(len=19) :: cart1, chels1, chels2
@@ -68,8 +68,7 @@ subroutine w039c4(carte, ifi, form)
     call jeveuo(cart1//'.DESC', 'L', jdesc)
     nugd = zi(jdesc)
     call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R')
 !
 ! --- ON TRANSFORME LA CARTE EN UN CHAM_ELEM_S
@@ -86,7 +85,7 @@ subroutine w039c4(carte, ifi, form)
         chels2='&&W039C4.CHELS2'
         call copisd('CHAM_ELEM_S', 'V', chels1, chels2)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', nugd), 'L', jnocmp)
-        call cesred(chels2,0,[0],80,zk8(jnocmp),&
+        call cesred(chels2, 0, [0], 80, zk8(jnocmp),&
                     'V', chels1)
         call detrsd('CHAM_ELEM_S', chels2)
     endif
@@ -117,6 +116,6 @@ subroutine w039c4(carte, ifi, form)
 !
     call detrsd('CHAM_ELEM_S', chels1)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

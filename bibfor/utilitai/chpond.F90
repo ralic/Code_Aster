@@ -57,13 +57,13 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !                     + OBJET .PDSM (POIDS DES MAILLES)
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutv, joutl, joutd
+    integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutv, joutl, joutd
     integer :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsv, jchsl, jchsd, iexi
     integer :: jpoiv, jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
     integer :: indma
     real(kind=8) :: poids
     parameter(nbchin=2)
-    character(len=8) :: lpain(nbchin), lpaout(1), noma, k8b, valk
+    character(len=8) :: lpain(nbchin), lpaout(1), noma, valk
     character(len=19) :: chins
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
@@ -71,13 +71,10 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !
     call jemarq()
 !
-    call dismoi('F', 'NOM_LIGREL', chin, 'CHAM_ELEM', ibid,&
-                ligrel, ibid)
+    call dismoi('NOM_LIGREL', chin, 'CHAM_ELEM', repk=ligrel)
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeexin('&&PEECAL.IND.MAILLE', iret)
     peecal=.true.
     if (iret .eq. 0) then
@@ -133,13 +130,13 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                         call utmess('F', 'CALCULEL2_4', sk=zk16(jch1+ima- 1))
                     endif
                 endif
- 5          continue
+  5         continue
             call jedetr(vefch1)
             call jedetr(vefch2)
         endif
 !
         call celces(lchout(1), 'V', cespoi)
-        call cesred(cespoi,0,[ibid],1,'W',&
+        call cesred(cespoi, 0, [0], 1, 'W',&
                     'V', cespoi)
 !
     endif
@@ -184,9 +181,9 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                         ASSERT(iad2.gt.0)
                         zr(jpdsm-1+ima)=zr(jpdsm-1+ima)+zr(jpoiv-1+&
                         iad2)
-21                  continue
+ 21                 continue
                 endif
-11          continue
+ 11         continue
         else
             call jeveuo(cespoi//'.PDSM', 'L', jpdsm)
         endif
@@ -231,9 +228,9 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                             ASSERT(iad3.gt.0)
                             zr(joutv-1+iad3)=zr(jchsv-1+iad1)*poids
                         endif
-40                  continue
-30              continue
-20          continue
+ 40                 continue
+ 30             continue
+ 20         continue
         endif
     end do
 !

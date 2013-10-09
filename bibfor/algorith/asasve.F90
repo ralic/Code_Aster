@@ -74,7 +74,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec, jvec, ityp, neq, jass, i, ier, ibid, iret, icha
+    integer :: nbvec, jvec, ityp, neq, jass, i, ibid, iret, icha
     integer :: n1, jvacha
     logical :: bidon
     character(len=4) :: tych
@@ -131,8 +131,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !     3. SI IL FAUT FAIRE QUELQUE CHOSE :
 !     --------------------------------------------------------
-    call dismoi('F', 'NOM_MODELE', numedd, 'NUME_DDL', ibid,&
-                modele, ier)
+    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
     call memare('V', '&&ASASVE', modele, ' ', ' ',&
                 'CHAR_MECA')
     call reajre('&&ASASVE', ' ', 'V')
@@ -153,8 +152,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
         zk24(jass+i-1) = chamno
 !
 !       -- SI LE RESUELEM EST UN RESUELEM !
-        call dismoi('F', 'TYPE_CHAMP', resuel, 'CHAMP', ibid,&
-                    tych, ibid)
+        call dismoi('TYPE_CHAMP', resuel, 'CHAMP', repk=tych)
         if (tych .eq. 'RESL') then
             call jedetr('&&ASASVE           .RELR')
             call reajre('&&ASASVE', resuel, 'V')

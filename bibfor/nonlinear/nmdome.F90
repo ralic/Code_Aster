@@ -53,7 +53,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iexcit, n1, ibid, iret
+    integer :: iexcit, n1, iret
     character(len=8) :: k8bid, k8bla
     character(len=8) :: cara, nomo, materi, repons
     character(len=16) :: nomcmd, typesd
@@ -113,8 +113,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
         materi = ' '
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
-        call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
-                    repons, iret)
+        call dismoi('BESOIN_MATER', modele, 'MODELE', repk=repons)
         if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then
             call utmess('A', 'CALCULEL3_40')
         endif
@@ -129,8 +128,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
         cara = ' '
 !
         call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n1)
-        call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
-                    repons, iret)
+        call dismoi('EXI_RDM', modele, 'MODELE', repk=repons)
         if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then
             call utmess('A', 'CALCULEL3_39')
         endif
@@ -138,7 +136,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
         carele = cara
     endif
 !
-500  continue
+500 continue
 !
 ! --- TRAITEMENT DES CHARGES
 !

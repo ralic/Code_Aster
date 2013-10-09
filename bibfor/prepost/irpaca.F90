@@ -54,7 +54,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
     character(len=19) :: noch19
     integer :: maxlen
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ideu, ierd, ior, irest
+    integer :: i, iad, ideu, ierd, ior, irest
     integer :: iret, iseize, itype, iun, izero, j, jenti
     integer :: jlast, jposi, jtabl, nbobj, nfor, np
 !
@@ -95,15 +95,15 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
         nbcara = nbcara + il
         iob = iob + 1
         zi(jposi-1+iob) = nbcara
-34  end do
+ 34 end do
     j=0
     do 33 i = 1, nbchca
         call rsexch(' ', nomco, chamca(i), ordr(iocc), noch19,&
                     iret)
         if (iret .eq. 0) then
             j=j+1
-            call dismoi('C', 'TYPE_CHAMP', noch19, 'CHAMP', ibid,&
-                        tych, ierd)
+            call dismoi('TYPE_CHAMP', noch19, 'CHAMP', repk=tych, arret='C',&
+                        ier=ierd)
             if (tych(1:4) .eq. 'NOEU') then
                 zi(jtabl-1+(nbacc+1)*4+(j-1)*4+1) = 27
                 zi(jtabl-1+(nbacc+1)*4+(j-1)*4+2)=zi(jlast-1+8)+i+&
@@ -129,7 +129,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
         nbcara = nbcara + il
         iob = iob + 1
         zi(jposi-1+iob) = nbcara
-33  end do
+ 33 end do
     itype = 27
     if (iocc .eq. 1) then
         write (ifi,'(A,I4)') ' ENREGISTREMENT DE TYPE',ideu
@@ -161,7 +161,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
                     irest=0
                 endif
             endif
-101      continue
+101     continue
 !
         if (nive .eq. 3) write(ifi,'(12I5)') (zi(jposi-1+i),i=1,nbobj)
         if (nive .eq. 10) write(ifi,'(10I8)') (zi(jposi-1+i),i=1,nbobj)
@@ -172,7 +172,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
         do 45 ior = 1, nbordr
             zi(jenti-1+(ior-1)*2+1) = ior
             zi(jenti-1+(ior-1)*2+2) = ordr(ior)
-45      continue
+ 45     continue
         itype = 26
         write (ifi,'(A,I4)') ' ENREGISTREMENT DE TYPE',ideu
         if (nive .eq. 3) then
@@ -257,7 +257,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
             zi(jtabl-1+(i-1)*4+8) = zi(jlast-1+3)+nbobj
             nbk16 = nbk16 + 1
         endif
-55  end do
+ 55 end do
     call jedetr('&&IRPACA.POSI.CASTEM')
     call jedetr('&&IRPACA.ENTIER')
     call jedema()

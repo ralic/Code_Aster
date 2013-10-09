@@ -34,7 +34,6 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !        INFMAI: POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/irmaca.h"
@@ -52,6 +51,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
 !---------------- ARGUMENTS --------------------------------------------
     integer :: versio, nive, infmai
     logical :: lmod
@@ -60,7 +60,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     character(len=*) :: form
 !---------------- VARIABLES LOCALES ------------------------------------
 !
-    integer :: ier, ifi, igm, ign
+    integer ::  ifi, igm, ign
     integer :: ima, ino, iret
     integer :: jcod1, jcod2, jcodd, jconx
     integer :: jcoor, jnogm, jnogn
@@ -72,22 +72,19 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
     logical :: lmasu, lgmsh
 !
-    character(len=8) :: cbid
     character(len=80) :: titmai
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
 !     --- RECUPERATION DE LA DIMENSION DU PROBLEME
-    call dismoi('F', 'DIM_GEOM_B', noma, 'MAILLAGE', ndim,&
-                cbid, ier)
+    call dismoi('DIM_GEOM_B', noma, 'MAILLAGE', repi=ndim)
 !
 !     --- RECUPERATION DU NOMBRE DE MAILLES
     call jelira(noma//'.NOMMAI', 'NOMUTI', nbmai)
 !
 !     --- NBNOE = NOMBRE DE NOEUDS DU MAILLAGE (RECUPERATION VALEUR)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
 !
 !     --- RECUPERATION DES VECTEURS COORDONNEES DES NOEUDS JCOOR
 !                      DU  VECTEUR DES CONNECTIVITES
@@ -120,11 +117,11 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !       - RECUPERATION DES NOMS DES MAILLES
     do 10 ima = 1, nbmai
         call jenuno(jexnum(noma//'.NOMMAI', ima), zk8(jnomai-1+ima))
-10  end do
+ 10 end do
 !       - RECUPERATION DES NOMS DES NOEUDS
     do 20 ino = 1, nbnoe
         call jenuno(jexnum(noma//'.NOMNOE', ino), zk8(jnonoe-1+ino))
-20  end do
+ 20 end do
 !       - TEST EXISTENCE DE GROUPES DE NOEUDS
     call jeexin(noma//'.GROUPENO', iret)
     if (iret .ne. 0) then
@@ -134,7 +131,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
             call wkvect('&&IRMAIL.NOMGRNO', 'V V K24', nbgrn, jnogn)
             do 30 ign = 1, nbgrn
                 call jenuno(jexnum(noma//'.GROUPENO', ign), zk24(jnogn- 1+ign))
-30          continue
+ 30         continue
         else
 !           - SI PAS DE GROUPE DE NOEUDS - NOMBRE DE GROUPES = 0
             nbgrn=0
@@ -152,7 +149,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
             call wkvect('&&IRMAIL.NOMGRMA', 'V V K24', nbgrm, jnogm)
             do 40 igm = 1, nbgrm
                 call jenuno(jexnum(noma//'.GROUPEMA', igm), zk24(jnogm- 1+igm))
-40          continue
+ 40         continue
         else
             nbgrm=0
         endif

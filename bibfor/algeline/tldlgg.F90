@@ -20,15 +20,15 @@ subroutine tldlgg(istop, lmat, ildeb, ilfin, ndigit,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/tldlg3.h"
 #include "asterfort/uttcpu.h"
+!
     character(len=8) :: renum
     character(len=16) :: metres
     character(len=19) :: noma19, solveu
-    integer :: ibid, istop, lmat, ildeb, ilfin, ndigit
+    integer ::  istop, lmat, ildeb, ilfin, ndigit
     integer :: ndeci, isingu, npvneg, iret
 !
 !     ------------------------------------------------------------------
@@ -36,11 +36,9 @@ subroutine tldlgg(istop, lmat, ildeb, ilfin, ndigit,&
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
 !
     noma19 = zk24(zi(lmat+1))
-    call dismoi('F', 'METH_RESO', noma19, 'MATR_ASSE', ibid,&
-                metres, ibid)
+    call dismoi('METH_RESO', noma19, 'MATR_ASSE', repk=metres)
     ASSERT(metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS')
-    call dismoi('F', 'RENUM_RESO', noma19, 'MATR_ASSE', ibid,&
-                renum, ibid)
+    call dismoi('RENUM_RESO', noma19, 'MATR_ASSE', repk=renum)
 !     -- ON MET SCIEMMENT CETTE VALEUR CAR ON NE CONNAIT PAS A CET
 !        ENDROIT LA SD SOLVEUR LIE A L'OPERATEUR (ELLE PEUT DIFFERER
 !        DE CELLE LIEE AUX MATRICES). BESOIN UNIQUEMENT POUR MUMPS.

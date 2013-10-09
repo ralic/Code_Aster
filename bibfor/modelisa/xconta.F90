@@ -61,7 +61,7 @@ subroutine xconta(char, noma, nomo, ndim)
     integer :: ifiss, algola, izone
     integer :: nfiss, ier
     integer :: jfiss, jnfis, nbma, ibid, jnbpt
-    character(len=8) :: fiscou, k8bid
+    character(len=8) :: fiscou
     character(len=24) :: defico
     character(len=16) :: valk(2)
     character(len=24) :: xnrell
@@ -99,8 +99,7 @@ subroutine xconta(char, noma, nomo, ndim)
 !
 ! --- CHAMP TEMPORAIRE STOCKANT LE COMPTAGE DES FISS VUES EN MULTI-HEAV
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call wkvect('&&XCONTA.NBSP', 'V V I', nbma, jnbpt)
 !
 ! --- TRANSFO CHAM_ELEM -> CHAM_ELEM_S
@@ -136,7 +135,7 @@ subroutine xconta(char, noma, nomo, ndim)
                     nliseq)
 !
         call xbarvi(noma, nomo, fiscou, faclon, ainter)
-220  end do
+220 end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

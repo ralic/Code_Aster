@@ -44,10 +44,10 @@ extern void DEFPSSSS(ULOPEN,ulopen,INTEGER *,char *,STRING_SIZE,char *,STRING_SI
 #define CALL_FCLOSE(a) CALLP(FCLOSE,fclose,a)
 extern void DEFP(FCLOSE,fclose,INTEGER *);
 
-#define CALL_DISMOI(a,b,c,d,e,f,g) CALLSSSSPSP(DISMOI,dismoi,a,b,c,d,e,f,g)
-extern void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE,
+#define CALL_DISMOI(a,b,c,d,e,f,g) CALLSSSPSSP(DISMOI,dismoi,a,b,c,d,e,f,g)
+extern void DEFSSSPSSP(DISMOI, dismoi, char *,STRING_SIZE,
                        char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *,
-                       char *,STRING_SIZE, INTEGER *);
+                       char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *);
 
 #define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
 extern void DEFP(MATFPE, matfpe, INTEGER *);

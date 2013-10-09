@@ -23,7 +23,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
@@ -86,8 +86,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
     logical :: lgrot, ldyna, lnkry
     logical :: lcont, leltc, lctcc
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu
     character(len=19) :: complu, depdel
@@ -106,8 +105,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     scotch = .false.
 !
 ! --- FONCTIONNALITES ACTIVEES

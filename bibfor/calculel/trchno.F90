@@ -45,7 +45,7 @@ subroutine trchno(ific, nocc)
     character(len=6) :: nompro
     parameter (nompro='TRCHNO')
 !
-    integer :: iocc, ibid, iret, nbcmp, jcmp, n1, n2, n3, n4
+    integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: epsi, epsir
@@ -245,8 +245,7 @@ subroutine trchno(ific, nocc)
         else
 !
             call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
-            call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                        nomma, iret)
+            call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
             call getvem(nomma, 'NOEUD', 'CHAM_NO', 'NOEUD', iocc,&
                         iarg, 1, nonoeu(1:8), n1)
             if (n1 .ne. 0) then
@@ -298,7 +297,7 @@ subroutine trchno(ific, nocc)
             endif
         endif
         write (ific,*)' '
-100  end do
+100 end do
 !
     1160 format(1x,a80,a)
     1200 format(1x,2(a80),a)

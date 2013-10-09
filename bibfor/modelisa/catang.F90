@@ -60,17 +60,16 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, iacnx1, ilcnx1, jco, jtanma, j, ino, nbnoma, jcoor, jnoema
-    integer :: jtanno, iret, k, ino1, ino2, ino3, jtyp, i1, jtang
+    integer :: jtanno, k, ino1, ino2, ino3, jtyp, i1, jtang
     real(kind=8) :: vale1(3), vale2(3), vale3(3), vale(3), valu(3), valv(3)
     real(kind=8) :: norm
-    character(len=8) :: ntyp, k8b
+    character(len=8) :: ntyp
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoma,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
     call jeveuo(noma//'.TYPMAIL', 'L', jtyp)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', iacnx1)

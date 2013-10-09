@@ -58,8 +58,7 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 !
 !
     integer :: jdepes, jinces, jold
-    integer :: iret, neq
-    character(len=8) :: k8bid
+    integer ::  neq
     character(len=19) :: depold
     integer :: ifm, niv
     real(kind=8) :: instam, instap, instaa, coef
@@ -77,8 +76,7 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins )
 !

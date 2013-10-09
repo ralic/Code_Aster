@@ -33,7 +33,7 @@ subroutine lrvemo(modele)
 !-----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: ibid, n1
+    integer ::  n1
 !
     character(len=8) :: chanom, typech
     character(len=16) :: typres, pheno, valk(2), nomcmd, tych
@@ -49,8 +49,7 @@ subroutine lrvemo(modele)
 !     =========================
     if (nomcmd(1:9) .eq. 'LIRE_RESU') then
         call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
-        call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                    pheno, n1)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
         valk(1)=pheno
         valk(2)=typres
         if (typres(1:9) .eq. 'EVOL_THER') then
@@ -65,8 +64,7 @@ subroutine lrvemo(modele)
             endif
         endif
     else if (nomcmd(1:10).eq.'LIRE_CHAMP') then
-        call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                    pheno, n1)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
         call getvtx(' ', 'TYPE_CHAM', scal=tych, nbret=n1)
     endif
 !

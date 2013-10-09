@@ -211,9 +211,9 @@ Erreur utilisateur :
  numérotation absente  problème dans la matrice  %(k1)s
 """),
 
-44 : _(u"""
-  erreur dans la récupération du nombre de noeuds !
-"""),
+
+
+
 
 45 : _(u"""
  type non connu.
@@ -263,7 +263,7 @@ Erreur utilisateur :
      POIDS_MAILLES, GROUPAGE...),
    - générer votre partitionnement manuellement (autant de groupes de mailles et de
      groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
-     dédié: DEFI_PARTITION_OPS.
+     dédié: DEFI_PART_FETI_OPS.
 """),
 
 
@@ -334,13 +334,13 @@ Erreur utilisateur :
  unité logique  %(k1)s , problème lors du close
 """),
 
-78 : _(u"""
-  erreur dans la récupération du maillage
-"""),
 
-79 : _(u"""
-  erreur dans la récupération du nombre de mailles
-"""),
+
+
+
+
+
+
 
 80 : _(u"""
   groupe_ma non présent

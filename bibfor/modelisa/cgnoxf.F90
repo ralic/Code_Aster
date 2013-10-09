@@ -57,11 +57,11 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: ibid, iret
+    integer :: ibid
     integer :: n1, ifiss, nfiss
     integer :: ino, valeno, nbnot
     integer :: idlist, jnoeu, jfiss, jstno, jlst, jlsn
-    character(len=8) :: noma, k8bid, nomnoe, fiss, nomofi, nomafi, nomogr
+    character(len=8) :: noma, nomnoe, fiss, nomofi, nomafi, nomogr
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno, cnslt, cnsln
@@ -81,8 +81,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     lisnoe = lisnoz
     nbno = 0
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
     call wkvect('&&CGNOXF.NOEU', 'V V I', nbnot, jnoeu)
 !
 ! --  RECUPERATION DU TYPE GROUPE :
@@ -110,9 +109,9 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-110          continue
+110         continue
             call jedetr(stno)
-10      continue
+ 10     continue
 !
 ! --- TYPE DE NOEUD = 'CRACKTIP'
 !     ============================
@@ -127,9 +126,9 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-111          continue
+111         continue
             call jedetr(stno)
-11      continue
+ 11     continue
 !
 ! --- TYPE DE NOEUD = 'MIXTE'
 !     ============================
@@ -144,8 +143,8 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-112          continue
-12      continue
+112         continue
+ 12     continue
 !
 ! --- TYPE DE NOEUD = 'XFEM'
 !     ============================
@@ -160,9 +159,9 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-113          continue
+113         continue
             call jedetr(stno)
-13      continue
+ 13     continue
 !
 !
 ! --- TYPE DE NOEUD = 'TORE'
@@ -186,8 +185,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             if (typgrp .eq. 'TORE') then
 !
 !              GET THE CRACK MESH
-                call dismoi('F', 'NOM_MODELE', fiss, 'FISS_XFEM', ibid,&
-                            nomofi, iret)
+                call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=nomofi)
                 stnot = nomofi//'.MODELE    .LGRF'
                 call jeveuo(stnot, 'L', ibid)
                 nomafi = zk8(ibid)
@@ -234,7 +232,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                         nbno = nbno + 1
                         zi(jnoeu+nbno-1) = ino
                     endif
-116              continue
+116             continue
 !
                 call jedetr(cnslt)
                 call jedetr(cnsln)
@@ -247,8 +245,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             if (typgrp .eq. 'ZONE_MAJ') then
 !
 !             GET THE CRACK MESH
-                call dismoi('F', 'NOM_MODELE', fiss, 'FISS_XFEM', ibid,&
-                            nomofi, iret)
+                call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=nomofi)
                 stnot = nomofi//'.MODELE    .LGRF'
                 call jeveuo(stnot, 'L', ibid)
                 nomafi = zk8(ibid)
@@ -295,18 +292,18 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                             nbno = nbno + 1
                             zi(jnoeu+nbno-1) = ino
                         endif
-114                  continue
+114                 continue
                 else
 !                THE LOCALISATION HAS NOT BEEN USED. ZONE_MAJ IS
 !                COINCIDENT WITH THE WHOLE MODEL.
                     do 115 ino = 1, nbnot
                         nbno = nbno + 1
                         zi(jnoeu+nbno-1) = ino
-115                  continue
+115                 continue
                 endif
             endif
 !
-15      continue
+ 15     continue
 !
     else
         ASSERT(.false.)
@@ -318,7 +315,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
         do 20 ino = 1, nbno
             zi(idlist+ino-1)=zi(jnoeu+ino-1)
             call jenuno(jexnum(noma//'.NOMNOE', zi(idlist+ino-1)), nomnoe)
-20      continue
+ 20     continue
     endif
 !
 ! --- FIN

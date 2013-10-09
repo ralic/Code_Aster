@@ -42,7 +42,6 @@ subroutine op0076()
     character(len=8) :: nomres, trange, basemo, nomcha, interp, crit
     character(len=16) :: concep, nomcmd
     character(len=24) :: nddlge
-    integer :: iarg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadesc, idcham, iddesc, idinst, idrefe, idvecg
@@ -73,11 +72,9 @@ subroutine op0076()
     call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
 !
 !     --- RECUPERATION DE LA NUMEROTATION GENERALISEE NUME_DDL_GENE
-    call dismoi('F', 'NUME_DDL', trange, 'RESU_DYNA', iarg,&
-                nddlge, ierd)
+    call dismoi('NUME_DDL', trange, 'RESU_DYNA', repk=nddlge)
 !     --- RECUPERATION DE LA BASE MODALE ET LE NOMBRE DE MODES
-    call dismoi('F', 'BASE_MODALE', trange, 'RESU_DYNA', iarg,&
-                basemo, ierd)
+    call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=basemo)
     nbmode = zi(iadesc+1)
 !
     call wkvect(nomres//'           .REFE', 'G V K24', 2, idrefe)

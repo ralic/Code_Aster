@@ -54,8 +54,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) :: k8b
-    integer :: i, iret, nbno, jvtno, jvnno, jltno, ifm, niv, cptzo, cptaju
+    integer :: i, nbno, jvtno, jvnno, jltno, ifm, niv, cptzo, cptaju
     integer :: jlisno
     real(kind=8) :: modzon, dmin
 !
@@ -67,8 +66,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
     call infniv(ifm, niv)
 !
 !  RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 !   RECUPERATION DES ADRESSES DES CHAMPS DE VITESSE AUX NOEUDS
     call jeveuo(cnsvt//'.CNSV', 'L', jvtno)
@@ -120,7 +118,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !
         endif
 !
-100  end do
+100 end do
 !
     if (niv .ge. 1) then
         write(ifm,*)'   NOMBRE DE NOEUDS DONT VN EST ANNULEE :',cptzo

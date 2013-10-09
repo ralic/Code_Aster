@@ -76,7 +76,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     integer :: nbpout
     parameter ( nbpout = 1 )
 !
-    integer :: iret, ibid, ier, nbtm, ity, nbgd, igd, ncmp
+    integer :: iret, nbtm, ity, nbgd, igd, ncmp
     integer :: iacmp, iagd, iatyma, iconx1, iconx2
     character(len=1) :: base
     character(len=8) :: lpain(nbpin), lpaout(nbpout), ma, typema, gd
@@ -111,8 +111,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
         call utmess('F', 'CALCULEL2_88', sk=opt)
     endif
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                ma, ier)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
     call resvoi(modele, ma, chvois)
 !
 ! ------- SI LE MODELE EST XFEM ON CALCULE LA SD VOISIN ----------------
@@ -160,7 +159,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     do 1 ity = 1, nbtm
         call jenuno(jexnum('&CATA.TM.NOMTM', ity), typema)
         zk8(iatyma-1+ity) = typema
- 1  end do
+  1 end do
 !
     call jelira('&CATA.GD.NOMGD', 'NOMMAX', nbgd)
     call wkvect('&&'//nompro//'.GD', 'V V K8', nbgd, iagd)
@@ -168,14 +167,14 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     do 2 igd = 1, nbgd
         call jenuno(jexnum('&CATA.GD.NOMGD', igd), gd)
         zk8(iagd-1+igd) = gd
- 2  end do
+  2 end do
 !
     call wkvect('&&'//nompro//'.NBCMP', 'V V I', nbgd, iacmp)
 !
     do 3 igd = 1, nbgd
         call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp)
         zi(iacmp-1+igd) = ncmp
- 3  end do
+  3 end do
 !
     call jeveuo(ma//'.CONNEX', 'L', iconx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', iconx2)

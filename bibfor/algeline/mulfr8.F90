@@ -69,7 +69,6 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
 !     :SI RENUMZ=' ' : CELLE DU SOLVEUR PAR DEFAUT DE LA MATRICE
 !
 !     ------------------------------------------------------------------
-    integer :: ibid, ierd
     integer :: ierr
     character(len=14) :: nu
     character(len=19) :: noma19
@@ -128,8 +127,7 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
 !
 !     -- ON FAIT LA FACTORISATION SYMBOLIQUE SI NECESSAIRE :
     call mltpre(noma19, renumz)
-    call dismoi('F', 'NOM_NUME_DDL', noma19, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
     nomloc = nu//'.MLTF.LOCL'
     nomadi = nu//'.MLTF.ADNT'
     call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
@@ -163,9 +161,9 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     lonmat = zi(desc+4)
     call jelibe(nomp01)
     call wkvect(nomadj, ' V V I ', lonmat, adjnit)
-    do 1,i=0,lonmat-1
-    zi(adjnit+i)=zi(adinit+i)
-    1 end do
+    do 1 i = 0, lonmat-1
+        zi(adjnit+i)=zi(adinit+i)
+  1 end do
     call jelibe(nomadi)
 !
 !
@@ -189,14 +187,14 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     mxbloc = 0
     do 20 i = 1, nbloc
         mxbloc = max(mxbloc,zi(lgbloc+i-1))
-20  end do
+ 20 end do
     lpmax = zi(lgsn)
     mxmate= lpmax*(lpmax+1)/2
     do 10 i = 1, nbsn-1
         ln = zi(lgsn+i)
         mxmate = max(mxmate,ln*(ln+1)/2)
         lpmax = max(lpmax,ln)
-10  end do
+ 10 end do
     if (niv .ge. 2) then
         write (ifm,*) ' AVANT FACTORISATION LONGUEURS DISPONIBLES (R8)',&
      &        it(1),' ET ',it(2),'LONGUEUR DE LA PILE ',lgpile,&
@@ -274,18 +272,18 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
 !     PIVOTS NEGATIFS :
     do 60 i = 1, neq
         if (zr(ldiag+i-1) .lt. 0.d0) npivot = npivot - 1
-60  end do
+ 60 end do
     call jeveuo(noma19//'.DIGS', 'E', iadigs)
 !
     do 70 i = 1, neq
         j = zi(anc-1+i)
         zr(iadigs-1+neq+j) = zr(ldiag+i-1)
-70  end do
+ 70 end do
 !
 !
 !
 !     MATRICE SINGULIERE :
-9998  continue
+9998 continue
     if (ierr .ne. 0) then
         npivot = zi(anc-1+ierr)
     endif

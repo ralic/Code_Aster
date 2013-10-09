@@ -56,10 +56,9 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 !
 !
 !
-    character(len=8) :: k8bid
     real(kind=8) :: sca, nodup, coef, nodup1, nodup2
     integer :: jdepde, jdu0, jdu1, jdepol
-    integer :: neq, iret, i, j, ibid
+    integer :: neq, i, j
     character(len=19) :: profch, chapil, chapic, selpil
     integer :: jcoee, jcoef, ideeq, jplsl
     real(kind=8) :: dn, dc, dp, da
@@ -90,10 +89,8 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     nodup1 = 0.d0
     nodup2 = 0.d0
     f = 0.d0
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
-    call dismoi('F', 'PROF_CHNO', depdel, 'CHAM_NO', ibid,&
-                profch, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
+    call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', ideeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS
@@ -127,13 +124,13 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
                             dc = dc + zr(jcoef+i-1)*zr(jdu0-1+i)+ zr(jcoef+j-1)*zr(jdu0-1+j)
                             dp = dp + zr(jcoef+i-1)*zr(jdu1-1+i)+ zr(jcoef+j-1)*zr(jdu1-1+j)
                         endif
-30                  continue
+ 30                 continue
                     sca = sca + da*(dn+rho*dc+eta*dp)
                     nodup1 = nodup1 + (dn+rho*dc+eta*dp)**2
                     nodup2 = nodup2 + da**2
                 endif
             endif
-26      end do
+ 26     end do
         nodup = nodup1*nodup2
     else
         do 25 i = 1, neq
@@ -141,7 +138,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
             sca = sca + (zr(jdepol+i-1)*(zr(jdepde+i-1) + rho*zr(jdu0+ i-1) + eta*zr(jdu1+i-1))&
                   )*coef
             nodup = nodup + ( zr(jdepde+i-1) + rho*zr(jdu0+i-1) + eta*zr(jdu1+i-1))**2
-25      continue
+ 25     continue
     endif
 !
     if (nodup .eq. 0.d0) then

@@ -96,7 +96,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 !
     integer :: i, iret, iret1, iret2, iret3, iret4, iret5, iret6, iret7
     integer :: iret8, iret9, iret10, iret11, iret12, iret13, iret14
-    integer :: ibid, ier, iarepe
+    integer :: ibid, iarepe
     integer :: iatyma, iagd, iacmp, iconx1, iconx2
     integer :: iadep1, iadep2, iavap1, iavap2
     integer :: iaded1, iaded2, iavad1, iavad2
@@ -140,16 +140,14 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.PRESS', iret3)
         if (iret1 .ne. 0) then
             cartp1 = lcharp(i)//'.CHME.F1D2D'
-            call dismoi('F', 'NOM_GD', cartp1, 'CARTE', ibid,&
-                        nomgp1, ier)
+            call dismoi('NOM_GD', cartp1, 'CARTE', repk=nomgp1)
             call etenca(cartp1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_67')
             endif
         else if (iret2.ne.0) then
             cartp1 = lcharp(i)//'.CHME.F2D3D'
-            call dismoi('F', 'NOM_GD', cartp1, 'CARTE', ibid,&
-                        nomgp1, ier)
+            call dismoi('NOM_GD', cartp1, 'CARTE', repk=nomgp1)
             call etenca(cartp1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_67')
@@ -157,14 +155,13 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         endif
         if (iret3 .ne. 0) then
             cartp2 = lcharp(i)//'.CHME.PRESS'
-            call dismoi('F', 'NOM_GD', cartp2, 'CARTE', ibid,&
-                        nomgp2, ier)
+            call dismoi('NOM_GD', cartp2, 'CARTE', repk=nomgp2)
             call etenca(cartp2, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_67')
             endif
         endif
-10  end do
+ 10 end do
 !
 ! ------- FIN TEST SUR LE TYPE DE CHARGE DES BORDS POUR LE PB. PRIMAL
 !
@@ -186,16 +183,14 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         call exisd('CHAMP_GD', lchard(i)//'.CHME.PRESS', iret6)
         if (iret4 .ne. 0) then
             cartd1 = lchard(i)//'.CHME.F1D2D'
-            call dismoi('F', 'NOM_GD', cartd1, 'CARTE', ibid,&
-                        nomgd1, ier)
+            call dismoi('NOM_GD', cartd1, 'CARTE', repk=nomgd1)
             call etenca(cartd1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_68')
             endif
         else if (iret5.ne.0) then
             cartd1 = lchard(i)//'.CHME.F2D3D'
-            call dismoi('F', 'NOM_GD', cartd1, 'CARTE', ibid,&
-                        nomgd1, ier)
+            call dismoi('NOM_GD', cartd1, 'CARTE', repk=nomgd1)
             call etenca(cartd1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_68')
@@ -203,14 +198,13 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         endif
         if (iret6 .ne. 0) then
             cartd2 = lchard(i)//'.CHME.PRESS'
-            call dismoi('F', 'NOM_GD', cartd2, 'CARTE', ibid,&
-                        nomgd2, ier)
+            call dismoi('NOM_GD', cartd2, 'CARTE', repk=nomgd2)
             call etenca(cartd2, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_68')
             endif
         endif
-11  end do
+ 11 end do
 !
 ! ------- FIN TEST SUR LE TYPE DE CHARGE DES BORDS POUR LE PB. DUAL
 !
@@ -433,7 +427,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
             typcp3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOP3//' ET '//TYPCP3
         endif
-20  end do
+ 20 end do
 !
 ! ------- FIN TEST SUR LES CHARGEMENTS VOLUMIQUES POUR LE PB. PRIMAL ---
 !
@@ -473,7 +467,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
             typcd3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOD3//' ET '//TYPCD3
         endif
-21  end do
+ 21 end do
 !
 ! ------- FIN TEST SUR LES CHARGEMENTS VOLUMIQUES POUR LE PB. DUAL ---
 !

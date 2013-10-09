@@ -53,7 +53,6 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 #include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=8) :: maiin, maiout
-    character(len=8) :: k8bid
     character(len=19) :: numin, numout
     character(len=24) :: nomvec
     character(len=24) :: valk(4)
@@ -64,8 +63,8 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iran(1), iret, ityp, ldcvn, lldein, lldeou
-    integer :: nbid, neqin, neqout, nuno
+    integer :: i, iran(1), ityp, ldcvn, lldein, lldeou
+    integer ::  neqin, neqout, nuno
 !-----------------------------------------------------------------------
     data ibid/0/
 !-----------------------------------------------------------------------
@@ -76,10 +75,8 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
     call jemarq()
     erreur = .false.
-    call dismoi('F', 'NOM_MAILLA', numin, 'NUME_DDL', nbid,&
-                maiin, iret)
-    call dismoi('F', 'NOM_MAILLA', numout, 'NUME_DDL', nbid,&
-                maiout, iret)
+    call dismoi('NOM_MAILLA', numin, 'NUME_DDL', repk=maiin)
+    call dismoi('NOM_MAILLA', numout, 'NUME_DDL', repk=maiout)
 !
     if (maiin .ne. maiout) then
         valk (1) = numin
@@ -92,10 +89,8 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !------------RECUPERATION DES DIMENSIONS DES NUMEROTATIONS--------------
 !
-    call dismoi('F', 'NB_EQUA', numin, 'NUME_DDL', neqin,&
-                k8bid, ibid)
-    call dismoi('F', 'NB_EQUA', numout, 'NUME_DDL', neqout,&
-                k8bid, ibid)
+    call dismoi('NB_EQUA', numin, 'NUME_DDL', repi=neqin)
+    call dismoi('NB_EQUA', numout, 'NUME_DDL', repi=neqout)
 !
 !-------------------ALLOCATION DU VECTEUR RESULTAT----------------------
 !
@@ -126,7 +121,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
             endif
         endif
 !
-10  end do
+ 10 end do
 !
 !--------------------------TRAITEMENT ERREUR EVENTUELLE----------------
 !

@@ -64,7 +64,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     parameter    ( nbcar = 100 , nbval = 6 , nrd = 2 )
     integer :: jdc(3), jdv(3), ibid, niv, iunite
     integer :: jdcinf, jdvinf
-    integer :: i, ier, ii, in, inbn, ino, inoe, ioc, irep
+    integer :: i, ii, in, inbn, ino, inoe, ioc, irep
     integer :: irgno, irgto, isym, itbmp, itbno, iv
     integer :: ixci, ixckma, jd, jdls, jj, jn
     integer :: l, ldgm, ldnm, lokm, lorep, nbnma
@@ -103,8 +103,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     ifm = iunifi('MESSAGE')
 !
 ! --- RECUPERATION DE LA DIMENSION GEOMETRIQUE DU MODELE
-    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ibid,&
-                k8bid, ier)
+    call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ibid)
     ndim=ibid
     if (ibid .ge. 100) then
         ibid = ibid - 100
@@ -137,7 +136,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
         call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
         zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-200  end do
+200 end do
     zk8(jdcinf+9) = 'ETAK    '
     call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
     zk8(jdcinf+10) = 'TYDI    '
@@ -154,7 +153,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
         endif
         call jeveuo(tmpnd(i), 'E', jdc(i))
         call jeveuo(tmpvd(i), 'E', jdv(i))
-220  end do
+220 end do
 !
 !     RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ibid, niv)
@@ -177,7 +176,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !
         do 32 i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
-32      continue
+ 32     continue
 !        UNITE POUR IMPRIMER LES VALEUR DES DISCRETS
 !         CALL GETVIS('MASS_AJOU','UNITE',IOC,IARG,1,IBID,IER)
         iunite = 6
@@ -206,7 +205,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !
             do 255 ino = 1, nbno
                 zk8(itbmp + ino - 1) = ' '
-255          continue
+255         continue
 !
 !
 !
@@ -242,14 +241,14 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !
                                 goto 22
                             endif
-24                      continue
-25                  continue
+ 24                     continue
+ 25                 continue
 !                 SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
 !                 A LA SURFACE, ET CE N'EST PAS NORMAL
                     write(ifm,*)'GROUP_MA :', (' '//zk24(jdls+ii-1),&
                     ii=1,ng)
                     call utmess('F', 'MODELISA_21', sk=nomnoe)
-22              continue
+ 22             continue
 !              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
                 lorep = 5
                 if (irep .eq. 1) lorep = 6
@@ -263,7 +262,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                             call jenuno(jexnum(mlgnno, ino), nomnoe)
                             call utmess('F', 'MODELISA2_8', sk=nomnoe)
                         endif
-227                  continue
+227                 continue
                 endif
 !
                 if (iunite .gt. 0 .and. niv .eq. 2) then
@@ -278,7 +277,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                                 jj=0,5), repdis(irep)(1:lorep)
                             endif
                         endif
-27                  continue
+ 27                 continue
                 endif
 !
                 do 28 i = 1, nbno
@@ -306,11 +305,11 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                                 limano=[zk8(jd)])
                     call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
                                 limano=[zk8(jd)])
-28              continue
+ 28             continue
             endif
-34      continue
+ 34     continue
 !
-30  end do
+ 30 end do
 !
     call jedetr('&&TMPDISCRET')
     call jedetr('&&TMPTABNO')
@@ -323,7 +322,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
         do 240 i = 1, 3
             call jedetr(tmpnd(i))
             call jedetr(tmpvd(i))
-240      continue
+240     continue
         call jedetr(tmcinf)
         call jedetr(tmvinf)
     endif

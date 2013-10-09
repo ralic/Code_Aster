@@ -43,7 +43,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 ! --- : LONDEF : LONGUEUR DU DEFAUT ------------------------------------
 ! --- : ORIDEF : ORIENTATION DU DEFAUT ---------------------------------
 ! ======================================================================
-    integer :: ibid, ier
+    integer :: ibid
     character(len=8) :: k8b
     character(len=16) :: motfac
 ! ======================================================================
@@ -55,8 +55,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 ! ======================================================================
 ! --- DIMENSION DE L'ESPACE --------------------------------------------
 ! ======================================================================
-    call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ibid,&
-                k8b, ier)
+    call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8b)
     if (k8b(1:3) .eq. 'OUI') then
         ndim = 2
     else

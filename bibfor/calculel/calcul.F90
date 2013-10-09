@@ -69,12 +69,19 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/vrcdec.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zechlo.h"
-!
-    character(len=1), intent(in) :: stop
-    integer, intent(in) :: nin
-    integer, intent(in) :: nou
-    character(len=*), intent(in) :: base, optio
-    character(len=*), intent(in) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrlz, mpic
+
+        integer, intent(in) :: nou
+        integer, intent(in) :: nin
+        character(len=1), intent(in) :: stop
+        character(len=*), intent(in) :: optio
+        character(len=*), intent(in) :: ligrlz
+        character(len=*), intent(in) :: lchin(*)
+        character(len=*), intent(in) :: lpain(*)
+        character(len=*), intent(in) :: lchou(*)
+        character(len=*), intent(in) :: lpaou(*)
+        character(len=*), intent(in) :: base
+        character(len=*), intent(in) :: mpic
+
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !        STOP   :  /'S' : ON S'ARRETE SI AUCUN ELEMENT FINI DU LIGREL
@@ -123,7 +130,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel
     character(len=24) :: valk(2)
-    integer :: iachii, iachik, iachix, iadsgd, ibid, nbproc, jparal
+    integer :: iachii, iachik, iachix, iadsgd, nbproc, jparal
     integer :: ialiel, iamaco, iamloc, iamsco, ianoop, ianote, iaobtr
     integer :: iaopds, iaopmo, iaopno, iaoppa, iaoptt, ima, rang, ifm
     integer :: niv
@@ -174,8 +181,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !     -- S'IL N'Y A PAS D'ELEMENTS FINIS, ON SORT :
 !     ----------------------------------------------
-    call dismoi('F', 'EXI_ELEM', ligrel, 'LIGREL', ibid,&
-                exiele, ibid)
+    call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiele)
     if (exiele .ne. 'OUI') then
         if (stop .eq. 'S') then
             call utmess('F', 'CALCULEL2_25', sk=ligrel)
@@ -210,8 +216,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     -------------------------------------------------------------
     ldist=.false.
     ldgrel=.false.
-    call dismoi('F', 'PARTITION', ligrel, 'LIGREL', ibid,&
-                partit, ibid)
+    call dismoi('PARTITION', ligrel, 'LIGREL', repk=partit)
     call jeexin(partit//'.PRTK', iret)
     if (iret .ne. 0) then
         ldist=.true.
@@ -365,8 +370,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         nute=typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
         nomtm=zk8(jtypma-1+nute)
-        call dismoi('F', 'PHEN_MODE', nomte, 'TYPE_ELEM', ibid,&
-                    phemod, ibid)
+        call dismoi('PHEN_MODE', nomte, 'TYPE_ELEM', repk=phemod)
         pheno=phemod(1:16)
         modeli=phemod(17:32)
         call jelira(jexnum('&CATA.TE.CTE_ATTR', nute), 'LONMAX', lcteat)
@@ -463,8 +467,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     ----------------------------------------------------
     if (mpic .eq. 'OUI' .and. ldist) then
         do i = 1, nou2
-            call dismoi('F', 'TYPE_CHAMP', lchou2(i), 'CHAMP', ibid,&
-                        tych, ibid)
+            call dismoi('TYPE_CHAMP', lchou2(i), 'CHAMP', repk=tych)
             if (tych(1:2) .eq. 'EL') call sdmpic('CHAM_ELEM', lchou2(i))
         end do
     endif

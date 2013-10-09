@@ -39,7 +39,6 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gmgnre.h"
@@ -58,13 +57,13 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
 !
 !
+!
     integer :: iageo2, iageo1, igeom2, nbno2, ino2, nuno2, nno2, igeom1, nbno1
-    integer :: ino1, nuno1, nno1, iagma1, nmga1, nma1, i, k, kk, ibid, ier
+    integer :: ino1, nuno1, nno1, iagma1, nmga1, nma1, i, k, kk, ibid
     integer :: nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, llint2, lnuno2
     integer :: ialino
     real(kind=8) :: tra1(3), angl1(3), centr1(3), tra2(3), angl2(3), centr2(3)
     real(kind=8) :: coor1(3), coor2(3), zero, un, rot1(3, 3), rot2(3, 3)
-    character(len=1) :: kb
     character(len=8) :: modgen, lint2, sst1, sst2, intf1, intf2, mail1, mail2
     character(len=24) :: repnom, int2, toto, geom2, geom1
     character(len=*) :: limail
@@ -96,8 +95,8 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
                 rot2(k,kk) = zero
                 rot2(kk,k) = zero
             endif
- 2      continue
- 1  end do
+  2     continue
+  1 end do
 !
 !
 !
@@ -111,13 +110,13 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     do 10 i = 1, 3
         angl1(i)=zr(llrot1+i-1)*r8dgrd()
         angl2(i)=zr(llrot2+i-1)*r8dgrd()
-10  end do
+ 10 end do
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst1), 'L', lltra1)
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst2), 'L', lltra2)
     do 110 i = 1, 3
         tra1(i)=zr(lltra1+i-1)
         tra2(i)=zr(lltra2+i-1)
-110  end do
+110 end do
 !
     call matrot(angl1, rot1)
     call matrot(angl2, rot2)
@@ -132,10 +131,8 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
 ! --- DETERMINATION DES COORDONNEES TRANSFORMEES MAITRE :
 !     --------------------------------------------------
-    call dismoi('F', 'NB_MA_MAILLA', mail1, 'MAILLAGE', nma1,&
-                kb, ier)
-    call dismoi('F', 'NB_NO_MAILLA', mail1, 'MAILLAGE', nno1,&
-                kb, ier)
+    call dismoi('NB_MA_MAILLA', mail1, 'MAILLAGE', repi=nma1)
+    call dismoi('NB_NO_MAILLA', mail1, 'MAILLAGE', repi=nno1)
     call wkvect(geom1, 'V V R', 3*nno1, igeom1)
     call jeveuo(mail1//'.COORDO    .VALE', 'L', iageo1)
 !
@@ -153,8 +150,8 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
                     rot1, tra1, coor1)
         do 50 k = 1, 3
             zr(igeom1+3*(nuno1-1)+k-1) = coor1(k)
-50      continue
-40  end do
+ 50     continue
+ 40 end do
 !
 ! --- DETERMINATION DES COORDONNEES TRANSFORMEES ESCLAVE :
 !     ---------------------------------------------------
@@ -166,8 +163,7 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     call jeveuo(jexnum(lint2 //'.IDC_LINO', ibid), 'L', llint2)
     call jeveuo(lint2//'.IDC_DEFO', 'L', lnuno2)
 !
-    call dismoi('F', 'NB_NO_MAILLA', mail2, 'MAILLAGE', nno2,&
-                kb, ier)
+    call dismoi('NB_NO_MAILLA', mail2, 'MAILLAGE', repi=nno2)
     call wkvect(geom2, 'V V R', 3*nno2, igeom2)
     call jeveuo(mail2//'.COORDO    .VALE', 'L', iageo2)
 !
@@ -180,8 +176,8 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
                     rot2, tra2, coor2)
         do 51 k = 1, 3
             zr(igeom2+3*(nuno2-1)+k-1) = coor2(k)
-51      continue
-41  end do
+ 51     continue
+ 41 end do
 !
     call jedetr(toto)
     call jedema()

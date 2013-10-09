@@ -51,7 +51,7 @@ subroutine ualfcr(mataz, basz)
     character(len=4) :: kmpic
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
-    integer :: jscde, neq, nbloc, ibid, nblocm
+    integer :: jscde, neq, nbloc, nblocm
     integer :: jsmhc, jsmdi, jscdi, jschc
     integer :: itbloc, ieq, ibloc, jualf, jvalm, kterm, nbterm, ilig
     integer :: ismdi, ismdi0, ibloav, iscdi, jrefa, jscib, kblocm, iret
@@ -63,8 +63,7 @@ subroutine ualfcr(mataz, basz)
     call jemarq()
     matas=mataz
     base=basz
-    call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
     endif
@@ -110,49 +109,49 @@ subroutine ualfcr(mataz, basz)
     call jecrec(matas//'.UALF', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nblocm*nbloc)
     call jeecra(matas//'.UALF', 'LONMAX', itbloc)
-    do 3,ibloc=1,nblocm*nbloc
-    call jecroc(jexnum(matas//'.UALF', ibloc))
-    3 end do
+    do 3 ibloc = 1, nblocm*nbloc
+        call jecroc(jexnum(matas//'.UALF', ibloc))
+  3 end do
 !
 !
 !
 !     2. REMPLISSAGE DE .UALF :
 !     ----------------------------------------
-    do 10, kblocm=1,nblocm
-    call jeveuo(jexnum(matas//'.VALM', kblocm), 'L', jvalm)
-    ibloav=0+nbloc*(kblocm-1)
-    ismdi0=0
-    do 1, ieq=1,neq
-    iscdi=zi(jscdi-1+ieq)
-    ibloc=zi(jscib-1+ieq)+nbloc*(kblocm-1)
+    do 10 kblocm = 1, nblocm
+        call jeveuo(jexnum(matas//'.VALM', kblocm), 'L', jvalm)
+        ibloav=0+nbloc*(kblocm-1)
+        ismdi0=0
+        do 1 ieq = 1, neq
+            iscdi=zi(jscdi-1+ieq)
+            ibloc=zi(jscib-1+ieq)+nbloc*(kblocm-1)
 !
 !          -- ON RAMENE LE BLOC EN MEMOIRE SI NECESSAIRE:
-    if (ibloc .ne. ibloav) then
-        call jeveuo(jexnum(matas//'.UALF', ibloc), 'E', jualf)
-        if (ibloav .ne. 0) then
-            call jelibe(jexnum(matas//'.UALF', ibloav))
-        endif
-        ibloav=ibloc
-    endif
+            if (ibloc .ne. ibloav) then
+                call jeveuo(jexnum(matas//'.UALF', ibloc), 'E', jualf)
+                if (ibloav .ne. 0) then
+                    call jelibe(jexnum(matas//'.UALF', ibloav))
+                endif
+                ibloav=ibloc
+            endif
 !
-    ismdi=zi(jsmdi-1+ieq)
-    nbterm=ismdi-ismdi0
+            ismdi=zi(jsmdi-1+ieq)
+            nbterm=ismdi-ismdi0
 !
-    do 2, kterm=1,nbterm
-    ilig=zi4(jsmhc-1+ismdi0+kterm)
-    if (tyrc .eq. 'R') then
-        zr(jualf-1+ iscdi +ilig-ieq)=zr(jvalm-1+ismdi0+&
+            do 2 kterm = 1, nbterm
+                ilig=zi4(jsmhc-1+ismdi0+kterm)
+                if (tyrc .eq. 'R') then
+                    zr(jualf-1+ iscdi +ilig-ieq)=zr(jvalm-1+ismdi0+&
                     kterm)
-    else
-        zc(jualf-1+ iscdi +ilig-ieq)=zc(jvalm-1+ismdi0+&
+                else
+                    zc(jualf-1+ iscdi +ilig-ieq)=zc(jvalm-1+ismdi0+&
                     kterm)
-    endif
- 2  continue
-    ASSERT(ilig.eq.ieq)
+                endif
+  2         continue
+            ASSERT(ilig.eq.ieq)
 !
-    ismdi0=ismdi
- 1  continue
-    10 end do
+            ismdi0=ismdi
+  1     continue
+ 10 end do
 !
 !
     call jedema()

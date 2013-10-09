@@ -118,8 +118,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
 !
 !     GENERAL PURPOSE
-    integer :: ibid, iret, i, j, k, ndim, ifm, niv, eldim
-    character(len=8) :: k8b
+    integer :: ibid, i, j, k, ndim, ifm, niv, eldim
     real(kind=8) :: meserr(2)
 !
 !     TORUS
@@ -150,12 +149,10 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     call infniv(ifm, niv)
 !
 !     RETRIEVE THE NUMBER OF NODES DEFINING THE GRID
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nnodgr,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnodgr)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS IN THE MESH
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 !     RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
     call jeveuo(noma//'.TYPMAIL', 'L', jmai)
@@ -164,8 +161,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
 !     RETRIEVE THE PROBLEM DIMENSION
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     RETRIEVE THE DEFINITION OF THE ELEMENTS IN TERMS OF NODES
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
@@ -222,11 +218,11 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                         nnodto = nnodto+1
                     endif
 !
-201              continue
+201             continue
 !
             endif
 !
-200      continue
+200     continue
 !
 !        BUILD THE LIST OF THE NODES OF THE DOMAIN
         call wkvect(nodcal, 'V V I', nnodto, jnocal)
@@ -236,7 +232,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                 zi(jnocal-1+j) = i
                 j=j+1
             endif
-202      continue
+202     continue
 !
 !        BUILD THE LIST OF THE ELEMENTS OF THE DOMAIN
         call wkvect(elecal, 'V V I', neleto, jeleca)
@@ -246,7 +242,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                 zi(jeleca-1+j) = i
                 j=j+1
             endif
-203      continue
+203     continue
 !
 !        CREATE THE LIGREL
         call exlim1(zi(jeleca), neleto, model, 'V', liggrd)
@@ -254,7 +250,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
         call wkvect(fiss//'.PRO.NOEUD_TORE', 'G V L', nnodgr, jnocal)
         do 204 i = 1, nnodgr
             zl(jnocal-1+i) = zl(jlisno-1+i)
-204      continue
+204     continue
 !
         call jedetr('&&XPRTOR.LISTELE')
         call jedetr('&&XPRTOR.LISTNOD')
@@ -281,7 +277,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
         do 400 i = 1, nbma
             zl(jelcal-1+i) = .false.
-400      continue
+400     continue
 !
 !        COUNTER FOR THE NUMBER OF NODES IN THE NEW TORUS
         nnodto=0
@@ -306,7 +302,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
             do 302 i = 1, nnodgr
                 zl(jlisol-1+i) = .true.
-302          continue
+302         continue
         else
 !           THE DOMAIN LOCALISATION WAS USED IN THE PREVIOUS PROPAGATION
 !           STEP. WE JUST NEED TO COPY IT.
@@ -320,7 +316,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !        RESET THE LIST FOR THE NEW TORUS
         do 500 i = 1, nnodgr
             zl(jlisno-1+i) = .false.
-500      continue
+500     continue
 !
 !        VARIABLE USED FOR THE COMPUTATION OF THE EFFECTIVE RADIUS OF
 !        THE TORUS
@@ -357,15 +353,15 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                             nocur = zi(jconx1-1+zi(jconx2-1+numelm)+k- 1)
 !                       UPDATE THE RADIUS OF THE TORUS
                             if (zr(jdisfr-1+nocur) .gt. rdnew) rdnew=zr( jdisfr-1+nocur)
-1700                      continue
+1700                     continue
 !
                     endif
 !
-1500              continue
+1500             continue
 !
             endif
 !
-1000      continue
+1000     continue
 !
 !        ESTIMATE THE RADIUS OF THE TORUS THAT MUST BE IMPOSED, IF ITS
 !        VALUE HAS NOT BEEN GIVEN AS INPUT
@@ -396,7 +392,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                 zl(jlisno-1+i) = .true.
             endif
 !
-1001      continue
+1001     continue
 !
 !        CREATE A TEMPORARY LOGICAL LIST FOR THE NODES IN ORDER TO
 !        FIND AND ELIMINATE THE NODES WHOSE SUPPORT IS NOT IN THE
@@ -440,7 +436,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                             nocur = zi(jconx1-1+zi(jconx2-1+numelm)+k- 1)
                             if (zl(jlisno-1+nocur)) nodins=nodins+1
 !
-1702                      continue
+1702                     continue
 !
 !                    SELECT THE ELEMENT IF ALL OF ITS NODES ARE INSIDE
 !                    THE TORUS
@@ -454,11 +450,11 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
                     endif
 !
-1502              continue
+1502             continue
 !
             endif
 !
-1002      continue
+1002     continue
 !
 !        THE NODES FOR WHICH ALL THE ELEMENTS OF THE SUPPORT DO NOT
 !        BELONG TO THE DOMAIN MUST BE REMOVED FROM THE LIST (UNDEFINED
@@ -467,7 +463,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
             if (.not.zl(jndsup-1+i) .and. zl(jlisno-1+i)) then
                 zl(jlisno-1+i)=.false.
             endif
-1734      continue
+1734     continue
 !
         call jedetr('&&XPRTOR.NODSUPP')
 !
@@ -484,7 +480,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !           ELABORATE EACH NODE OF THE GRID
             do 2001 i = 1, nnodgr
                 if (zl(jlisno-1+i)) nnodto=nnodto+1
-2001          continue
+2001         continue
 !
         else
 !
@@ -511,7 +507,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                             zr(jlst-1+i)=zr(jlst-1+i)+zr(jdisv-1+ndim*&
                             (i-1)+j)* zr(jbl-1+2*ndim*(i-1)+j+ndim)
 !
-2500                      continue
+2500                     continue
 !
                     endif
 !
@@ -520,7 +516,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
                 endif
 !
-2000          continue
+2000         continue
 !
         endif
 !
@@ -554,7 +550,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !            SHORTEST EDGE IN THE GRID
             do 2100 i = 1, 10
                 zr(jgrlrt-1+i) = zr(jgrlr-1+i)
-2100          continue
+2100         continue
         endif
 !
 !        TEMPORARY POINTER
@@ -574,7 +570,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                     do 3500 k = 1, 6
                         zi(jvcnt-1+6*(j-1)+k) = zi(jvcn-1+6*(i-1)+k)
                         zr(jvcndt-1+6*(j-1)+k) = zr(jvcnd-1+6*(i-1)+k)
-3500                  continue
+3500                 continue
                 endif
 !
 !              INCREMENT THE POINTER FOR THE ACTUAL NODE IN THE TORUS
@@ -582,7 +578,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
             endif
 !
-3000      continue
+3000     continue
 !
 !        TEMPORARY POINTER
         j=1
@@ -597,7 +593,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
             endif
 !
-4700      continue
+4700     continue
 !
 !        ***********************************************************
 !        UPDATE THE NODAL CONNECTION TABLE FOR THE TORUS
@@ -622,9 +618,9 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
                     endif
 !
-4500              continue
+4500             continue
 !
-4000          continue
+4000         continue
 !
         endif
 !

@@ -40,7 +40,7 @@ subroutine varaff(noma, gran, base, ceselz)
 !  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP POUR VARI_R
 !  - CREER LE CHAM_ELEM_S / ELEM  (CESELZ)
 !-----------------------------------------------------------------------
-    integer :: ibid, nocc, nbtou, n1
+    integer ::  nocc, nbtou, n1
     integer :: iad, k, iocc, nbmail
     character(len=8) :: kbid, typmcl(2)
     character(len=6) :: knuva
@@ -57,8 +57,7 @@ subroutine varaff(noma, gran, base, ceselz)
     if (noma .eq. ' ') then
         call utmess('F', 'UTILITAI_10')
     endif
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmato,&
-                kbid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
 !
     ASSERT(gran.eq.'VARI_R')
     call wkvect('&&VARAFF.LNOVX', 'V V K8', nvarmx, jlnovx)
@@ -81,22 +80,22 @@ subroutine varaff(noma, gran, base, ceselz)
         call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
                     nbret=n1)
         ASSERT(n1.gt.0)
-        do 28, k=1,n1
-        ASSERT(zk8(jlnovx-1+k)(1:1).eq.'V')
-        read (zk8(jlnovx-1+k)(2:8),'(I7)') nuva
-        nuvamx=max(nuvamx,nuva)
-28      continue
-29  end do
+        do 28 k = 1, n1
+            ASSERT(zk8(jlnovx-1+k)(1:1).eq.'V')
+            read (zk8(jlnovx-1+k)(2:8),'(I7)') nuva
+            nuvamx=max(nuvamx,nuva)
+ 28     continue
+ 29 end do
     ASSERT(nuvamx.gt.0)
 !
 !
 !     1- ALLOCATION DE CESELM
 !     --------------------------------------------
     call wkvect('&&VARAFF.LNOVA', 'V V K8', nuvamx, jlnova)
-    do 27, k=1,nuvamx
-    call codent(k, 'G', knuva)
-    zk8(jlnova-1+k)='V'//knuva
-    27 end do
+    do 27 k = 1, nuvamx
+        call codent(k, 'G', knuva)
+        zk8(jlnova-1+k)='V'//knuva
+ 27 end do
     ceselm = ceselz
 !     -- REMARQUE : LES CMPS SERONT DANS L'ORDRE V1,V2,...
     call cescre(base, ceselm, 'ELEM', noma, 'VARI_R',&
@@ -140,29 +139,29 @@ subroutine varaff(noma, gran, base, ceselz)
             call jeveuo(mesmai, 'L', jmesma)
         endif
 !
-        do 31, kvari=1,n1
-        read (zk8(jlnovx-1+kvari)(2:8),'(I7)') nuva
-        ASSERT(nuva.gt.0.and.nuva.le.nuvamx)
-        do 32, k=1,nbmail
-        if (ltou) then
-            numa=k
-        else
-            numa=zi(jmesma-1+k)
-        endif
-        ASSERT(numa.gt.0.and.numa.le.nbmato)
+        do 31 kvari = 1, n1
+            read (zk8(jlnovx-1+kvari)(2:8),'(I7)') nuva
+            ASSERT(nuva.gt.0.and.nuva.le.nuvamx)
+            do 32 k = 1, nbmail
+                if (ltou) then
+                    numa=k
+                else
+                    numa=zi(jmesma-1+k)
+                endif
+                ASSERT(numa.gt.0.and.numa.le.nbmato)
 !
-        call cesexi('C', jcesd, jcesl, numa, 1,&
-                    1, nuva, iad)
-        ASSERT(iad.lt.0)
+                call cesexi('C', jcesd, jcesl, numa, 1,&
+                            1, nuva, iad)
+                ASSERT(iad.lt.0)
 !
 !           -- RECOPIE DE LA VALEUR:
-        zl(jcesl-1-iad) = .true.
-        zr(jcesv-1-iad) = zr(jlvavx-1+kvari)
-32      continue
-31      continue
+                zl(jcesl-1-iad) = .true.
+                zr(jcesv-1-iad) = zr(jlvavx-1+kvari)
+ 32         continue
+ 31     continue
 !
         call jedetr(mesmai)
-30  end do
+ 30 end do
 !
 !
     call jedetr('&&VARAFF.LNOVX')

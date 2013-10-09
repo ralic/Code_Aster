@@ -20,7 +20,6 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/c3drep.h"
 #include "asterfort/cesexi.h"
@@ -30,6 +29,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 #include "asterfort/matrot.h"
 #include "asterfort/mpglcp.h"
 #include "asterfort/typele.h"
+!
     integer :: jcesdd, numma, jrepe, jconx2, jconx1, jcoord
     integer :: ialpha, ibeta, iepais, jalpha, adcar1(3), adcar2(3)
     integer :: jbeta, jgamma, codret, ino
@@ -57,7 +57,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !     1,2 OU 3 EN CAS DE PROBLEME
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: nbpt1, igrel, te, ibid, ier, nbnol, posin, ino1, ino2, idir
+    integer :: nbpt1, igrel, te, nbnol, posin, ino1, ino2, idir
     integer :: iad, inos, nuno, jcesd, jcesl, jcesv, jcesdc, jceslc
     integer :: jcesvc
 !
@@ -84,8 +84,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
     igrel = zi(jrepe-1+2*(numma-1)+1)
     te = typele(ligrmo,igrel)
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-    call dismoi('F', 'MODELISATION', nomte, 'TYPE_ELEM', ibid,&
-                modeli, ier)
+    call dismoi('MODELISATION', nomte, 'TYPE_ELEM', repk=modeli)
 !
     nbnol = zi(jconx2+numma)-zi(jconx2+numma-1)
     posin = zi(jconx2+numma-1)
@@ -99,10 +98,10 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
         ino2 = zi(jconx1+posin)
         do 70 idir = 1, 3
             coordc(idir,1) = zr(jcoord+3*(ino2-1)+idir-1)
-70      continue
+ 70     continue
         do 80 idir = 1, 3
             coordc(idir,2) = zr(jcoord+3*(ino1-1)+idir-1)
-80      continue
+ 80     continue
 !
 !       LECTURE DE GAMMA DANS .CARORIEN
         call cesexi('S', jcesd, jcesl, numma, 1,&
@@ -128,8 +127,8 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
             if (nuno .eq. ino) inos = ino2
             do 150 idir = 1, 3
                 coordc(idir,ino2) = zr(jcoord+3*(nuno-1)+idir-1)
-150          continue
-160      continue
+150         continue
+160     continue
         ASSERT(inos.ne.0)
 !
 !       RECHERCHE DE ALPHA ET BETA DANS .CARCOQUE
@@ -154,8 +153,8 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
             nuno = zi(jconx1+posin+ino2-2)
             do 60 idir = 1, 3
                 coordc(idir,ino2) = zr(jcoord+3*(nuno-1)+idir-1)
-60          continue
-50      continue
+ 60         continue
+ 50     continue
 !
 !       RECHERCHE DE ALPHA ET BETA DANS .CARCOQUE
         call cesexi('S', jcesdc, jceslc, numma, 1,&
@@ -191,6 +190,6 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

@@ -85,12 +85,12 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     integer :: irot(3), iddl(6), ndim(14)
     logical :: calcul(2)
 !-----------------------------------------------------------------------
-    integer :: i, iadmag, iadnog, iaxe, ibi, icdg, icency
+    integer :: i, iadmag, iadnog, iaxe, icdg, icency
     integer :: icpg, idefm, iencei, iepaig, iequiv, ifpart, ifreqi
     integer :: ifscr, ifsgm, ifsgr, ifsvi, ifsvk, ifsvr, igreq
     integer :: ikn, ilargg, ilongg, im, imataa, imatma
     integer :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
-    integer :: ior, iphix, iphiy, ire, ireq, irint
+    integer :: ior, iphix, iphiy, ireq, irint
     integer :: irugg, ixint, iyint, iz, izg, izint, j
     integer :: jdco, jtypg, lfacx, lmasg, lrigg, n, n1
     integer :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
@@ -285,14 +285,10 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !-----RECUPERATION D'INFORMATIONS POUR CREATION DES OBJETS DE TRAVAIL
 !
 !
-    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi,&
-                matria, ire)
-    call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
-                numddl, ire)
-    call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&
-                k8b, ire)
-    call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibi,&
-                mailla, ire)
+    call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matria)
+    call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
+    call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
     call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoe)
     call jeveuo(mailla//'.COORDO    .VALE', 'L', jdco)
 !

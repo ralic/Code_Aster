@@ -36,7 +36,7 @@ subroutine op0071()
 #include "asterfort/projmr.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
-    integer :: ibid, n1, n2, n3, n4, ier, nbmode(1), neq, jsmde, iret
+    integer :: ibid, n1, n2, n3, n4, nbmode(1), neq, jsmde
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typmat
@@ -79,23 +79,18 @@ subroutine op0071()
     nbmode(1) = zi(jsmde-1+1)
 !
 !
-    call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
-                numdd1, ier)
-    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                matric, iret)
+    call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdd1)
+    call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
     if (matric .ne. ' ') then
-        call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                    numdd2, ier)
+        call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numdd2)
     else
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                    numdd2, iret)
+        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numdd2)
     endif
     if (numdd1 .ne. numdd2) then
         call utmess('I', 'ALGORITH9_39')
     endif
     nu = numdd1(1:14)
-    call dismoi('F', 'NB_EQUA', matras, 'MATR_ASSE', neq,&
-                k8b, ier)
+    call dismoi('NB_EQUA', matras, 'MATR_ASSE', repi=neq)
 !
     if (typmat .eq. 'R') then
         call projmr(matras, nomres, basemo, nugene, nu,&

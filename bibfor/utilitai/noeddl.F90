@@ -45,7 +45,7 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
 !       - 0 SINON
 ! ----------------------------------------------------------------------
     integer :: gd
-    character(len=8) :: nomma, nomno, k8bid
+    character(len=8) :: nomma, nomno
     character(len=24) :: nomnu
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
 !     - NON NECESSAIRE, L'OBJET EST CREE/DETRUIT A CHAQUE FOIS
 !     - DANS MSTGET
 !-----------------------------------------------------------------------
-    integer :: i, ianueq, iaprno, ibid, ieq, ierd, in
+    integer :: i, ianueq, iaprno, ibid, ieq, in
     integer :: nbcmp, nec, nunoe
 !-----------------------------------------------------------------------
     call jemarq()
@@ -66,10 +66,8 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
     nomnu(1:14) = nume
     nomnu(15:19) = '.NUME'
     call jeveuo(nomnu(1:19)//'.NUEQ', 'L', ianueq)
-    call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
-                nomma, ierd)
-    call dismoi('F', 'NUM_GD_SI', nume, 'NUME_DDL', gd,&
-                k8bid, ierd)
+    call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=nomma)
+    call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
     nec = nbec(gd)
     call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
@@ -86,8 +84,8 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
         nbcmp = zi(iaprno-1+(nec+2)*(nunoe-1)+2)
         do 22 i = 1, nbcmp
             ivec(ieq+i-1) = 1
-22      continue
-20  end do
+ 22     continue
+ 20 end do
 !
     call jedema()
 end subroutine

@@ -41,12 +41,12 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, ie, jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer ::  jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
     integer :: jcmp, iad, kcmp, igr, mode, nnoe, jceld, nbgrel, irepe, nbel
     integer :: jmod, imodel, ilong, idescr, jdesc, nb
     character(len=4) :: tych
     character(len=24) :: valk(2)
-    character(len=8) :: k8b, noma
+    character(len=8) ::  noma
     character(len=19) :: ch19, prno, noligr
 !     ------------------------------------------------------------------
     call jemarq()
@@ -54,12 +54,9 @@ subroutine utncmp(cham19, ncmp, nomobj)
     ch19 = cham19
     ncmp = 0
 !
-    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid,&
-                tych, ie)
-    call dismoi('F', 'NOM_MAILLA', ch19, 'CHAMP', ibid,&
-                noma, ie)
-    call dismoi('F', 'NUM_GD', ch19, 'CHAMP', gd,&
-                k8b, ie)
+    call dismoi('TYPE_CHAMP', ch19, 'CHAMP', repk=tych)
+    call dismoi('NOM_MAILLA', ch19, 'CHAMP', repk=noma)
+    call dismoi('NUM_GD', ch19, 'CHAMP', repi=gd)
 !
     call jeveuo('&CATA.GD.DESCRIGD', 'L', idescr)
     nec = nbec( gd)
@@ -72,55 +69,50 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !                            C H A M _ N O
 !     ==================================================================
     if (tych(1:4) .eq. 'NOEU') then
-        call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nnoe,&
-                    k8b, ie)
-        call dismoi('F', 'PROF_CHNO', ch19, 'CHAM_NO', ibid,&
-                    prno, ie)
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
+        call dismoi('PROF_CHNO', ch19, 'CHAM_NO', repk=prno)
         if (prno .eq. ' ') then
 !AS OU LE CHAMP EST A PROFIL CONSTANT (CHAMP DE GEOMETRIE)
             call jeveuo(ch19//'.DESC', 'L', jdesc)
             ncmp = - zi(jdesc+1)
             do 32 iec = 1, nec
                 tabec(iec)= zi(jdesc+1+iec)
-32          continue
+ 32         continue
             nb = 0
             do 34 icmp = 1, ncmpmx
                 if (exisdg(tabec,icmp)) then
                     do 36 j = 1, ncmp
                         if (zi(jcmp+j-1) .eq. icmp) goto 34
-36                  continue
+ 36                 continue
                     nb = nb + 1
                     zi(jcmp+nb-1) = icmp
                 endif
-34          continue
+ 34         continue
         else
             call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
             do 10 ino = 1, nnoe
                 do 12 iec = 1, nec
                     tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
-12              continue
+ 12             continue
                 do 14 icmp = 1, ncmpmx
                     if (exisdg(tabec,icmp)) then
                         do 16 j = 1, ncmp
                             if (zi(jcmp+j-1) .eq. icmp) goto 14
-16                      continue
+ 16                     continue
                         ncmp = ncmp + 1
                         zi(jcmp+ncmp-1) = icmp
                     endif
-14              continue
-10          continue
+ 14             continue
+ 10         continue
         endif
 !
 !     ==================================================================
 !                             C H A M _ E L E M
 !     ==================================================================
     else if (tych(1:2) .eq. 'EL') then
-        call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbel,&
-                    k8b, ie)
-        call dismoi('F', 'NOM_LIGREL', ch19, 'CHAMP', ibid,&
-                    noligr, ie)
-        call dismoi('F', 'NB_GREL', noligr, 'LIGREL', nbgrel,&
-                    k8b, ie)
+        call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbel)
+        call dismoi('NOM_LIGREL', ch19, 'CHAMP', repk=noligr)
+        call dismoi('NB_GREL', noligr, 'LIGREL', repi=nbgrel)
         call jeveuo(ch19//'.CELD', 'L', jceld)
         call jeveuo(noligr//'.REPE', 'L', irepe)
         call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
@@ -135,12 +127,12 @@ subroutine utncmp(cham19, ncmp, nomobj)
                 if (exisdg( tabec , icmp )) then
                     do 24 j = 1, ncmp
                         if (zi(jcmp+j-1) .eq. icmp) goto 22
-24                  continue
+ 24                 continue
                     ncmp = ncmp + 1
                     zi(jcmp+ncmp-1) = icmp
                 endif
-22          continue
-20      continue
+ 22         continue
+ 20     continue
 !
     else
         valk(1) = tych
@@ -155,7 +147,7 @@ subroutine utncmp(cham19, ncmp, nomobj)
     call wkvect(nomobj, 'V V K8', ncmp, kcmp)
     do 30 icmp = 1, ncmp
         zk8(kcmp+icmp-1) = zk8(iad-1+zi(jcmp+icmp-1))
-30  end do
+ 30 end do
     call jedetr('&&UTNCMP.ICMP')
 !
     call jedema()

@@ -68,14 +68,14 @@ subroutine op0075()
                 if (champ(i) .eq. champ(j)) then
                     call utmess('E', 'ALGORITH9_30')
                 endif
-10          continue
+ 10         continue
             if (champ(i) .eq. 'ACCE_ABSOLU') then
                 call getvid(' ', 'ACCE_MONO_APPUI', scal=k8bid, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('E', 'ALGORITH9_45')
                 endif
             endif
-20      continue
+ 20     continue
     endif
 !
 !     --- CREATION DU .REFN DU PROFIL :
@@ -91,12 +91,12 @@ subroutine op0075()
 !       -           OU 2) SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
     prsimp=.true.
 !
-    call dismoi('C', 'BASE_MODALE', resin, 'RESU_DYNA', ibid,&
-                basemo, iret)
-    call dismoi('C', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
-                numgen, iret)
-    call dismoi('C', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
-                matgen, iret)
+    call dismoi('BASE_MODALE', resin, 'RESU_DYNA', repk=basemo, arret='C',&
+                ier=iret)
+    call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen, arret='C',&
+                ier=iret)
+    call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen, arret='C',&
+                ier=iret)
 !
 !   --- LE RESU_GENE NE VIENT PAS DE PROJ_MESU_MODAL
     if ((matgen(1:8).ne.blanc8) .or. (numgen(1:8).ne.blanc8)) then
@@ -179,8 +179,8 @@ subroutine op0075()
                         0, tjv=lpaout, styp=k8bid)
             do 40 i = 1, 3
                 zk8(lpaout(i))=zk8(lpain(i))
-40          continue
-50      continue
+ 40         continue
+ 50     continue
     endif
 !
     call jedema()

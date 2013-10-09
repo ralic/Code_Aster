@@ -59,7 +59,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     integer :: jfd, jfc, jfv, jfl, jfk
     integer :: jpd, jpc, jpv, jpl, jpk
     integer :: jrd, jrc, jrv, jrl, jrk
-    integer :: nbma, ib, k, ima, ncmp, nbpu, ier, nbpumx, ibid
+    integer :: nbma, k, ima, ncmp, nbpu, ier, nbpumx, ibid
     integer :: ncmp2, ipara, jad1, ncmpmx, nspmx, nptmx
     integer :: k2, iadf, iadr, iadp, nbpt, nbsp, ipt, isp, jnompu, jvalpu
     character(len=8) :: ma, nomgdf, nomgdr, fo
@@ -95,8 +95,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     nspmx = zi(jfd-1+4)
     ncmpmx = zi(jfd-1+5)
 !
-    call dismoi('F', 'TYPE_SCA', nomgdf, 'GRANDEUR', ib,&
-                tsca, ib)
+    call dismoi('TYPE_SCA', nomgdf, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'K8') then
         call utmess('F', 'UTILITAI_16')
     endif
@@ -118,110 +117,109 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !     3- ON MET EN MEMOIRE LES OBJETS UTILES DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------------
     call wkvect('&&CESEVA.JAD1', 'V V I', 4*npara, jad1)
-    do 10,ipara = 1,npara
-    p = lpara(ipara)
-    call jeveuo(p//'.CESK', 'L', jpk)
-    call jeveuo(p//'.CESD', 'L', jpd)
-    call jeveuo(p//'.CESC', 'L', jpc)
-    call jeveuo(p//'.CESV', 'L', jpv)
-    call jeveuo(p//'.CESL', 'L', jpl)
-    ma2 = zk8(jpk-1+1)
-    nomgd2 = zk8(jpk-1+2)
+    do 10 ipara = 1, npara
+        p = lpara(ipara)
+        call jeveuo(p//'.CESK', 'L', jpk)
+        call jeveuo(p//'.CESD', 'L', jpd)
+        call jeveuo(p//'.CESC', 'L', jpc)
+        call jeveuo(p//'.CESV', 'L', jpv)
+        call jeveuo(p//'.CESL', 'L', jpl)
+        ma2 = zk8(jpk-1+1)
+        nomgd2 = zk8(jpk-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd2, 'GRANDEUR', ib,&
-                tsca, ib)
-    if (tsca .ne. 'R') then
-        call utmess('F', 'UTILITAI_17')
-    endif
-    if (ma2 .ne. ma) then
-        call utmess('F', 'UTILITAI_18')
-    endif
-    zi(jad1-1+4* (ipara-1)+1) = jpc
-    zi(jad1-1+4* (ipara-1)+2) = jpd
-    zi(jad1-1+4* (ipara-1)+3) = jpl
-    zi(jad1-1+4* (ipara-1)+4) = jpv
-    10 end do
+        call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca)
+        if (tsca .ne. 'R') then
+            call utmess('F', 'UTILITAI_17')
+        endif
+        if (ma2 .ne. ma) then
+            call utmess('F', 'UTILITAI_18')
+        endif
+        zi(jad1-1+4* (ipara-1)+1) = jpc
+        zi(jad1-1+4* (ipara-1)+2) = jpd
+        zi(jad1-1+4* (ipara-1)+3) = jpl
+        zi(jad1-1+4* (ipara-1)+4) = jpv
+ 10 end do
 !
 !     4- EVALUATION DES FONCTIONS :
 !     ---------------------------------------
 !     ON BOUCLE D'ABORD SUR LES CMPS POUR AVOIR PLUS DE CHANCES
 !     DE FAIRE PLUSIEURS FOINTE SUCCESSIFS AVEC LA MEME FONCTION.
 !
-    do 70,k = 1,ncmp
-    do 60,ima = 1,nbma
-    nbpt = zi(jfd-1+5+4* (ima-1)+1)
-    nbsp = zi(jfd-1+5+4* (ima-1)+2)
-    do 50,ipt = 1,nbpt
-    do 40,isp = 1,nbsp
-    call cesexi('C', jfd, jfl, ima, ipt,&
-                isp, k, iadf)
-    if (iadf .le. 0) goto 40
+    do 70 k = 1, ncmp
+        do 60 ima = 1, nbma
+            nbpt = zi(jfd-1+5+4* (ima-1)+1)
+            nbsp = zi(jfd-1+5+4* (ima-1)+2)
+            do 50 ipt = 1, nbpt
+                do 40 isp = 1, nbsp
+                    call cesexi('C', jfd, jfl, ima, ipt,&
+                                isp, k, iadf)
+                    if (iadf .le. 0) goto 40
 !
-    fo = zk8(jfv-1+iadf)
+                    fo = zk8(jfv-1+iadf)
 !
-    call cesexi('C', jrd, jrl, ima, ipt,&
-                isp, k, iadr)
-    ASSERT(iadr.lt.0)
-    zl(jrl-1-iadr) = .true.
+                    call cesexi('C', jrd, jrl, ima, ipt,&
+                                isp, k, iadr)
+                    ASSERT(iadr.lt.0)
+                    zl(jrl-1-iadr) = .true.
 !
-    if (fo .eq. ' ') goto 40
+                    if (fo .eq. ' ') goto 40
 !
 !           4.1 FABRICATION DE LA LISTE DES PARAMETRES POUR FOINTE:
 !           -------------------------------------------------------
-    nbpu = 0
-    do 30,ipara = 1,npara
-    jpc = zi(jad1-1+4* (ipara-1)+1)
-    jpd = zi(jad1-1+4* (ipara-1)+2)
-    jpl = zi(jad1-1+4* (ipara-1)+3)
-    jpv = zi(jad1-1+4* (ipara-1)+4)
-    ncmp2 = zi(jpd-1+2)
-    do 20,k2 = 1,ncmp2
-    call cesexi('C', jpd, jpl, ima, ipt,&
-                isp, k2, iadp)
-    if (iadp .le. 0) goto 20
+                    nbpu = 0
+                    do 30 ipara = 1, npara
+                        jpc = zi(jad1-1+4* (ipara-1)+1)
+                        jpd = zi(jad1-1+4* (ipara-1)+2)
+                        jpl = zi(jad1-1+4* (ipara-1)+3)
+                        jpv = zi(jad1-1+4* (ipara-1)+4)
+                        ncmp2 = zi(jpd-1+2)
+                        do 20 k2 = 1, ncmp2
+                            call cesexi('C', jpd, jpl, ima, ipt,&
+                                        isp, k2, iadp)
+                            if (iadp .le. 0) goto 20
 !
-    nbpu = nbpu + 1
-    if (nbpu .gt. nbpumx) then
+                            nbpu = nbpu + 1
+                            if (nbpu .gt. nbpumx) then
 !                    -- ON AGRANDIT .NOMPU ET .VALPU :
-        nbpumx=2*nbpumx
-        call juveca('&&CESEVA.NOMPU', nbpumx)
-        call juveca('&&CESEVA.VALPU', nbpumx)
-        call jeveuo('&&CESEVA.NOMPU', 'E', jnompu)
-        call jeveuo('&&CESEVA.VALPU', 'E', jvalpu)
-    endif
+                                nbpumx=2*nbpumx
+                                call juveca('&&CESEVA.NOMPU', nbpumx)
+                                call juveca('&&CESEVA.VALPU', nbpumx)
+                                call jeveuo('&&CESEVA.NOMPU', 'E', jnompu)
+                                call jeveuo('&&CESEVA.VALPU', 'E', jvalpu)
+                            endif
 !
 !                 -- ON VERIFIE QU'UN MEME PARAMETRE N'EST PAS AJOUTE
 !                    PLUSIEURS FOIS:
-    ibid=indik8(zk8(jnompu),zk8(jpc-1+k2),1,&
+                            ibid=indik8(zk8(jnompu),zk8(jpc-1+k2),1,&
                             nbpu-1)
-    if (ibid .gt. 0) then
-        call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
-    endif
+                            if (ibid .gt. 0) then
+                                call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
+                            endif
 !
-    zk8(jnompu-1+nbpu) = zk8(jpc-1+k2)
-    zr(jvalpu-1+nbpu) = zr(jpv-1+iadp)
-20  continue
-30  continue
+                            zk8(jnompu-1+nbpu) = zk8(jpc-1+k2)
+                            zr(jvalpu-1+nbpu) = zr(jpv-1+iadp)
+ 20                     continue
+ 30                 continue
 !
 !
 !           4.2 APPEL A FOINTE :
 !           --------------------
-    call fointe('E', fo, nbpu, zk8(jnompu), zr(jvalpu),&
-                x, ier)
-    if (ier .ne. 0) then
-        call utmess('F+', 'FONCT0_9', sk=fo)
-        call jenuno(jexnum(ma//'.NOMMAI', ima), valk)
-        call utmess('F', 'FONCT0_10', sk=valk)
-    endif
+                    call fointe('E', fo, nbpu, zk8(jnompu), zr(jvalpu),&
+                                x, ier)
+                    if (ier .ne. 0) then
+                        call utmess('F+', 'FONCT0_9', sk=fo)
+                        call jenuno(jexnum(ma//'.NOMMAI', ima), valk)
+                        call utmess('F', 'FONCT0_10', sk=valk)
+                    endif
 !
 !           4.3 STOCKAGE DU RESULTAT :
 !           --------------------------
-    zr(jrv-1-iadr) = x
+                    zr(jrv-1-iadr) = x
 !
-40  continue
-50  continue
-60  continue
-    70 end do
+ 40             continue
+ 50         continue
+ 60     continue
+ 70 end do
 !
     call cestas(cesr)
 !

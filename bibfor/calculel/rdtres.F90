@@ -62,12 +62,11 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !                 IMA_RE -> IMA
 !-------------------------------------------------------------------
 !
-    integer :: i, nbordr, ibid, nbpara, jpa, nbac, nbpa, iad1, iad2, j
+    integer :: i, nbordr, nbpara, jpa, nbac, nbpa, iad1, iad2, j
     integer :: iret, nbsym, isym, iordr, jordr, n1, j1, ima2, ima1
     integer :: nbgrel, igr, jcorrm, iel, nbma1, nbma2, jcoinv, cret
     integer :: ite, jmail2
     real(kind=8) :: prec
-    character(len=1) :: kbid
     character(len=16) :: typres, nomsym(200), nopara
     character(len=8) :: model1, crit, type, model2, kchml
     character(len=19) :: chp, chpre, ligrel
@@ -85,11 +84,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !
 !     1- FABRICATION DU LIGREL REDUIT (LIGREL) SI NECESSAIRE :
 !     --------------------------------------------------------
-    call dismoi('F', 'EXI_CHAM_ELEM', resu1, 'RESULTAT', ibid,&
-                kchml, iret)
+    call dismoi('EXI_CHAM_ELEM', resu1, 'RESULTAT', repk=kchml)
     if (kchml .eq. 'OUI') then
-        call dismoi('F', 'MODELE_1', resu1, 'RESULTAT', ibid,&
-                    model1, iret)
+        call dismoi('MODELE_1', resu1, 'RESULTAT', repk=model1)
         ASSERT(model1(1:1).ne.'#')
         ASSERT(model1.ne.' ')
     else
@@ -111,27 +108,25 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !       1.2.3 OBJET .LIEL A MODIFIER :
 !       -- ON A BESOIN DE LA CORRESPONDANCE INVERSE :
         call jeveuo(corrm, 'L', jcorrm)
-        call dismoi('F', 'NB_MA_MAILLA', noma1, 'MAILLAGE', nbma1,&
-                    kbid, iret)
-        call dismoi('F', 'NB_MA_MAILLA', noma2, 'MAILLAGE', nbma2,&
-                    kbid, iret)
+        call dismoi('NB_MA_MAILLA', noma1, 'MAILLAGE', repi=nbma1)
+        call dismoi('NB_MA_MAILLA', noma2, 'MAILLAGE', repi=nbma2)
         call wkvect('&&RDTRES.CORRM_INV', 'V V I', nbma1, jcoinv)
-        do 10,ima2=1,nbma2
-        ima1=zi(jcorrm-1+ima2)
-        ASSERT(ima1.gt.0)
-        zi(jcoinv-1+ima1)=ima2
-10      continue
+        do 10 ima2 = 1, nbma2
+            ima1=zi(jcorrm-1+ima2)
+            ASSERT(ima1.gt.0)
+            zi(jcoinv-1+ima1)=ima2
+ 10     continue
 !
         call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
-        do 30,igr=1,nbgrel
-        call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
-        call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
-        do 20,iel=1,n1-1
-        ima1=zi(j1-1+iel)
-        ima2=zi(jcoinv-1+ima1)
-        zi(j1-1+iel)=ima2
-20      continue
-30      continue
+        do 30 igr = 1, nbgrel
+            call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
+            call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
+            do 20 iel = 1, n1-1
+                ima1=zi(j1-1+iel)
+                ima2=zi(jcoinv-1+ima1)
+                zi(j1-1+iel)=ima2
+ 20         continue
+ 30     continue
 !
 !       1.2.4  OBJETS A DETRUIRE :
         call jedetr(ligrel//'.NEMA')
@@ -148,17 +143,17 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !              A IRCHME / ELGA :
         model2=resu2
         call wkvect(model2//'.MAILLE', 'V V I', nbma2, jmail2)
-        do 31,igr=1,nbgrel
-        call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
-        call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
-        ite=zi(j1-1+n1)
-        do 21,iel=1,n1-1
-        ima2=zi(j1-1+iel)
-        ASSERT(ima2.gt.0)
-        ASSERT(ima2.le.nbma2)
-        zi(jmail2-1+ima2)=ite
-21      continue
-31      continue
+        do 31 igr = 1, nbgrel
+            call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
+            call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
+            ite=zi(j1-1+n1)
+            do 21 iel = 1, n1-1
+                ima2=zi(j1-1+iel)
+                ASSERT(ima2.gt.0)
+                ASSERT(ima2.le.nbma2)
+                zi(jmail2-1+ima2)=ite
+ 21         continue
+ 31     continue
 !
 !
     else
@@ -192,29 +187,29 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                 nbsym, acceno)
     ASSERT(nbsym.gt.0)
     cret=0
-    do 50,isym=1,nbsym
-    redpos=.true.
-    do 40,i=1,nbordr
-    iordr=zi(jordr+i-1)
-    call rsexch(' ', resu1, nomsym(isym), iordr, chp,&
-                iret)
-    if (iret .gt. 0) goto 40
-    call rsexch(' ', resu2, nomsym(isym), iordr, chpre,&
-                iret)
+    do 50 isym = 1, nbsym
+        redpos=.true.
+        do 40 i = 1, nbordr
+            iordr=zi(jordr+i-1)
+            call rsexch(' ', resu1, nomsym(isym), iordr, chp,&
+                        iret)
+            if (iret .gt. 0) goto 40
+            call rsexch(' ', resu2, nomsym(isym), iordr, chpre,&
+                        iret)
 !
 !         -- REDUCTION DU CHAMP :
-    call rdtchp(corrn, corrm, chp, chpre, 'V',&
-                noma1, noma2, ligrel, cret)
-    if (cret .eq. 0) then
-        call rsnoch(resu2, nomsym(isym), iordr)
-    else
-        redpos=.false.
-    endif
-40  continue
-    if (.not.redpos) then
-        call utmess('A', 'CALCULEL4_7', sk=nomsym( isym))
-    endif
-    50 end do
+            call rdtchp(corrn, corrm, chp, chpre, 'V',&
+                        noma1, noma2, ligrel, cret)
+            if (cret .eq. 0) then
+                call rsnoch(resu2, nomsym(isym), iordr)
+            else
+                redpos=.false.
+            endif
+ 40     continue
+        if (.not.redpos) then
+            call utmess('A', 'CALCULEL4_7', sk=nomsym( isym))
+        endif
+ 50 end do
 !
 !
 !     4- ON RECOPIE LES VARIABLES D'ACCES :
@@ -222,46 +217,46 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     call rsnopa(resu1, 2, '&&RDTRES.NOMS_PARA', nbac, nbpa)
     nbpara=nbac+nbpa
     call jeveuo('&&RDTRES.NOMS_PARA', 'L', jpa)
-    do 70,i=1,nbordr
-    iordr=zi(jordr+i-1)
-    do 60 j = 1, nbpara
-        nopara=zk16(jpa-1+j)
+    do 70 i = 1, nbordr
+        iordr=zi(jordr+i-1)
+        do 60 j = 1, nbpara
+            nopara=zk16(jpa-1+j)
 !
 !         -- CERTAINS PARAMETRES NE DOIVENT PAS ETRE RECOPIES:
-        if (nopara .eq. 'CARAELEM') goto 60
-        if (nopara .eq. 'CHAMPMAT') goto 60
-        if (nopara .eq. 'EXCIT') goto 60
+            if (nopara .eq. 'CARAELEM') goto 60
+            if (nopara .eq. 'CHAMPMAT') goto 60
+            if (nopara .eq. 'EXCIT') goto 60
 !
-        call rsadpa(resu1, 'L', 1, nopara, iordr,&
-                    1, sjv=iad1, styp=type)
-        call rsadpa(resu2, 'E', 1, nopara, iordr,&
-                    1, sjv=iad2, styp=type)
-        if (nopara .eq. 'MODELE') ASSERT(type.eq.'K8')
-        if (type .eq. 'I') then
-            zi(iad2)=zi(iad1)
-        else if (type.eq.'R') then
-            zr(iad2)=zr(iad1)
-        else if (type.eq.'C') then
-            zc(iad2)=zc(iad1)
-        else if (type.eq.'K80') then
-            zk80(iad2)=zk80(iad1)
-        else if (type.eq.'K32') then
-            zk32(iad2)=zk32(iad1)
-        else if (type.eq.'K24') then
-            zk24(iad2)=zk24(iad1)
-        else if (type.eq.'K16') then
-            zk16(iad2)=zk16(iad1)
-        else if (type.eq.'K8') then
-            if (nopara .ne. 'MODELE') then
-                zk8(iad2)=zk8(iad1)
+            call rsadpa(resu1, 'L', 1, nopara, iordr,&
+                        1, sjv=iad1, styp=type)
+            call rsadpa(resu2, 'E', 1, nopara, iordr,&
+                        1, sjv=iad2, styp=type)
+            if (nopara .eq. 'MODELE') ASSERT(type.eq.'K8')
+            if (type .eq. 'I') then
+                zi(iad2)=zi(iad1)
+            else if (type.eq.'R') then
+                zr(iad2)=zr(iad1)
+            else if (type.eq.'C') then
+                zc(iad2)=zc(iad1)
+            else if (type.eq.'K80') then
+                zk80(iad2)=zk80(iad1)
+            else if (type.eq.'K32') then
+                zk32(iad2)=zk32(iad1)
+            else if (type.eq.'K24') then
+                zk24(iad2)=zk24(iad1)
+            else if (type.eq.'K16') then
+                zk16(iad2)=zk16(iad1)
+            else if (type.eq.'K8') then
+                if (nopara .ne. 'MODELE') then
+                    zk8(iad2)=zk8(iad1)
+                else
+                    zk8(iad2)=model2
+                endif
             else
-                zk8(iad2)=model2
+                ASSERT(.false.)
             endif
-        else
-            ASSERT(.false.)
-        endif
-60  continue
-    70 end do
+ 60     continue
+ 70 end do
     call jedetr('&&RDTRES.NOMS_PARA')
     call jedetr('&&RDTRES.NUME_ORDRE')
     call jedetr('&&RDTRES.CORRM_INV')

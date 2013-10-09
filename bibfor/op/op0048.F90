@@ -250,15 +250,13 @@ subroutine op0048()
 !
 ! --- ON CALCULE LE CHAMP DE STRUCTURE STRX_ELGA SI BESOIN
 !
-    call dismoi('F', 'EXI_STR2', modele, 'MODELE', ibid,&
-                kstr, iret)
+    call dismoi('EXI_STR2', modele, 'MODELE', repk=kstr)
     if (kstr(1:3) .eq. 'OUI') then
         compor = materi(1:8)//'.COMPOR'
         ligrel = modele(1:8)//'.MODELE'
         exipou=.false.
 !
-        call dismoi('F', 'EXI_POUX', modele, 'MODELE', ibid,&
-                    k8b, iret)
+        call dismoi('EXI_POUX', modele, 'MODELE', repk=k8b)
         if (k8b(1:3) .eq. 'OUI') then
             exipou = .true.
             if (nchar .ne. 0) then

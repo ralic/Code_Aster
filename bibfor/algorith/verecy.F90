@@ -60,7 +60,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iret, j, jnode, llcoo, llintg
+    integer :: i, ibid, j, jnode, llcoo, llintg
     integer :: llista, llistb, ltnd, ltng, nbd, nbg, nbpbax
     integer :: nbpbr, nbpbse, nbpbto, nbpbvt, nbsec, numd, numg
     integer :: nunod, nunog
@@ -98,8 +98,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !--------------------VERIFICATION REPETITIVITE GEOMETRIQUE--------------
 !
 !
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', intf, 'INTERF_DYNA', repk=mailla)
 !
 !
 !

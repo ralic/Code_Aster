@@ -45,7 +45,7 @@ subroutine chrpan(modele, carte, chelem)
 !
     integer :: ibid, ioc, n1, n2, na, nvec, iret, nrep, nbma, nbmail, jmail
     integer :: ialpha, ibeta, iad1, iad2, ima, numma, ncmax, icesk, icesl, icesv
-    integer :: icesc, icesd, ie, nncp
+    integer :: icesc, icesd, nncp
     real(kind=8) :: ang(2), vect(3)
     logical :: ltout
     character(len=8) :: k8b, noma, motcls(2), typmcl(2)
@@ -135,18 +135,17 @@ subroutine chrpan(modele, carte, chelem)
                 zr(icesv-1+iad2) = ang(2)
             endif
 !
-30      continue
+ 30     continue
 !
         if (.not. ltout) call jedetr(mesmai)
 !
-10  end do
+ 10 end do
 !
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrmo, ie)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call cescel(chelms, ligrmo, 'REPE_GENE', 'PANGREP', 'NON',&
                 nncp, 'V', chelem, 'F', ibid)
 !
     call detrsd('CHAM_ELEM_S', chelms)
 !
-9999  continue
+9999 continue
 end subroutine

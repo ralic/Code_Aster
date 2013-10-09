@@ -49,10 +49,10 @@ subroutine op0093()
 #include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, ierd, nbmodd
+    integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, nbmodd
     integer :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
     integer :: nbmoda, nbmoin, nbmodi, massfa
-    character(len=8) :: k8b, resu, nomma
+    character(len=8) ::  resu, nomma
     character(len=14) :: nume
     character(len=16) :: nomcmd, concep
     character(len=19) :: raide, masse, amor, numedd, matpre, solveu, raidfa
@@ -103,8 +103,7 @@ subroutine op0093()
 !     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
     call exisd('MATR_ASSE', raide, ibid)
     if (ibid .ne. 0) then
-        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                    numedd, iret)
+        call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numedd)
     else
         numedd=' '
     endif
@@ -114,12 +113,9 @@ subroutine op0093()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call dismoi('F', 'NOM_MAILLA', raide, 'MATR_ASSE', ibid,&
-                nomma, ierd)
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                nume, ierd)
-    call dismoi('F', 'NB_EQUA', raide, 'MATR_ASSE', neq,&
-                k8b, ierd)
+    call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=nomma)
+    call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
+    call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
 !
 !-- FACTORISATION DE LA MATRICE DE RAIDEUR
     raidfa = '&&MOIN93.RAIDFA'
@@ -161,7 +157,7 @@ subroutine op0093()
         call mstget(nomcmd, raide, 'MODE_STAT', nbmost, zi(lddld))
         do 10 i = 0, neq-1
             nbmodd = nbmodd + zi(lddld+i)
-10      continue
+ 10     continue
         call wkvect(mocb, 'V V R', neq*nbmodd, lmodd)
         call modsta('DEPL', raidfa, matpre, solveu, ibid,&
                     nume, zi(lddld), [0.d0], neq, nbmodd,&
@@ -174,7 +170,7 @@ subroutine op0093()
         call mstget(nomcmd, raide, 'FORCE_NODALE', nbfona, zi(lddlf))
         do 20 i = 0, neq-1
             nbmodf = nbmodf + zi(lddlf+i)
-20      continue
+ 20     continue
         call wkvect(moatta, 'V V R', neq*nbmodf, lmodf)
         call modsta('FORC', raidfa, matpre, solveu, ibid,&
                     nume, zi(lddlf), [0.d0], neq, nbmodf,&

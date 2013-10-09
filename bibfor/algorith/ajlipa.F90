@@ -52,11 +52,11 @@ subroutine ajlipa(modelz, base)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: modele, partit, ma, kbid, mopart, valk(3)
+    character(len=8) :: modele, partit, ma, mopart, valk(3)
     character(len=19) :: ligrmo, partit1
     character(len=24) :: k24b, kdis
 !
-    integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma, jmail, ierd
+    integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma, jmail
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
     integer :: iexi
     integer :: icobis, jfdim, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
@@ -123,10 +123,8 @@ subroutine ajlipa(modelz, base)
 !
 !     -- EN DISTRIBUE, LES SOUS-STRUCTURES SONT INTERDITES :
 !     ------------------------------------------------------
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_SM_MAILLA', ma, 'MAILLAGE', nbsma,&
-                kbid, ierd)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
+    call dismoi('NB_SM_MAILLA', ma, 'MAILLAGE', repi=nbsma)
     if (nbsma .gt. 0) then
         call utmess('F', 'ALGORITH16_91')
     endif

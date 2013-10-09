@@ -47,7 +47,7 @@ subroutine trchel(ific, nocc)
     character(len=6) :: nompro
     parameter (nompro='TRCHEL')
 !
-    integer :: iocc, ibid, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp
+    integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
     integer :: irefrr, irefir, irefcr
     real(kind=8) :: epsi, epsir
@@ -248,8 +248,7 @@ subroutine trchel(ific, nocc)
         else
 !
             call getvtx('CHAM_ELEM', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
-            call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                        nomma, iret)
+            call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
             call getvem(nomma, 'MAILLE', 'CHAM_ELEM', 'MAILLE', iocc,&
                         iarg, 1, nomail, n1)
             if (n1 .ne. 0) then
@@ -295,8 +294,7 @@ subroutine trchel(ific, nocc)
                 nonoeu(10:33) = nogrno
             endif
 !
-            call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
-                        nomgd, iret)
+            call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
             call utcmp1(nomgd, 'CHAM_ELEM', iocc, noddl, ivari)
             call getvis('CHAM_ELEM', 'SOUS_POINT', iocc=iocc, scal=nusp, nbret=n2)
             if (n2 .eq. 0) nusp = 0
@@ -348,7 +346,7 @@ subroutine trchel(ific, nocc)
             write (ific,*)' '
         endif
 ! ----------------------------------------------------------------------
-100  end do
+100 end do
 !
     1160 format(1x,a80,a)
     1200 format(1x,2(a80),a)

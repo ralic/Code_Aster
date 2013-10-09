@@ -68,7 +68,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
 !   LICHOU  K8*  LISTE DES CHAMPS OUT
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: ier, nbma, jmai, ibid, ngr, igr, nmaxob, iret
+    integer :: ier, nbma, jmai, ngr, igr, nmaxob, iret
     parameter    (nmaxob=30)
     integer :: adobj(nmaxob), nbobj, nbsp
 !
@@ -114,14 +114,13 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     endif
     call celces(chelem, 'V', chams0)
     if (nbma .ne. 0) then
-        call cesred(chams0,nbma,zi(jmai),0,[k8b],&
+        call cesred(chams0, nbma, zi(jmai), 0, [k8b],&
                     'V', chams0)
     endif
 !
 !     VERIFICATION DES REPERES LOCAUX
     erdm = 'NON'
-    call dismoi('F', 'EXI_RDM', ligrel, 'LIGREL', ibid,&
-                erdm, ier)
+    call dismoi('EXI_RDM', ligrel, 'LIGREL', repk=erdm)
 !
 !     CETTE VERIFICATION NE DOIT ETRE FAITE QUE DANS LE CAS
 !     OU LE MODELE CONTIENT DE ELEMENTS DE STRUCTURE
@@ -136,14 +135,13 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
 !         POUR LES COQUES 3D CERTAINES INITIALISATIONS SONT
 !         NECESSAIRES POUR POUVOIR UTILISER LES ROUTINES
 !         DE CHANGEMENT DE REPERE PROPRES AUX COQUES 3D
-            call dismoi('F', 'EXI_COQ3D', ligrel, 'LIGREL', ibid,&
-                        erdm, ier)
+            call dismoi('EXI_COQ3D', ligrel, 'LIGREL', repk=erdm)
             if (erdm .eq. 'OUI' .and. ligmod) then
                 call jelira(ligrel(1:19)//'.LIEL', 'NUTIOC', ngr)
                 do 10 igr = 1, ngr
                     call inigrl(ligrel, igr, nmaxob, adobj, noobj,&
                                 nbobj)
-10              continue
+ 10             continue
             endif
         endif
         if (carael .ne. ' ') call ccvrrl(nomail, modele, carael, mesmai, chams0,&
@@ -156,8 +154,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
                 ' ', iret)
 !
 !     VERIFICATION POUR LES CHAMPS A SOUS-POINT
-    call dismoi('F', 'MXNBSP', chelem, 'CHAM_ELEM', nbsp,&
-                k8b, ibid)
+    call dismoi('MXNBSP', chelem, 'CHAM_ELEM', repi=nbsp)
     if ((nbsp.gt.1) .and. (iret.eq.1)) then
         valk(1)=optele
         valk(2)=option
@@ -167,7 +164,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     call detrsd('CHAM_ELEM_S', chams0)
     call detrsd('CHAM_NO_S', chams1)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

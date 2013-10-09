@@ -5,7 +5,6 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -25,6 +24,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbcmp, nuord, iocc
     character(len=8) :: nomcmp(nbcmp), modele, nomlie, lieu
     character(len=19) :: chpost, resu
@@ -68,8 +68,8 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !     IN  IOCC    : NUMERO DE L'OCCURENCE
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbma, nbmai, i, jcesv, jcesl, jcesd
-    integer :: nucmp, jcesk, jcmpgd, ncmpm, ibid, iad, indma
+    integer ::  nbma, nbmai, i, jcesv, jcesl, jcesd
+    integer :: nucmp, jcesk, jcmpgd, ncmpm, iad, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara, nbno
     integer :: nmin, nmax, npara, pmax, pmin
     real(kind=8) :: vmin, vmax, inst
@@ -87,14 +87,10 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
     call jemarq()
 !
     cbid=(0.d0,0.d0)
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrel, iret)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, iret)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
     nommai = noma//'.NOMMAI         '
 !
@@ -110,14 +106,14 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
         call jeveuo(mesmai, 'L', jmesma)
         do 5 i = 1, nbma
             zi(indma+i-1)=0
- 5      continue
+  5     continue
         do 10 i = 1, nbmai
             zi(indma+zi(jmesma+i-1)-1)=1
-10      continue
+ 10     continue
     else
         do 15 i = 1, nbma
             zi(indma+i-1)=1
-15      continue
+ 15     continue
     endif
 !
     nompar(1)  ='CHAMP_GD'
@@ -155,7 +151,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
             nomva = 'V'
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
-25      continue
+ 25     continue
     endif
 !
     do 30 icmp = 1, nbcmp
@@ -183,8 +179,8 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
                         pmin=ipt
                     endif
                 endif
-40          continue
-35      continue
+ 40         continue
+ 35     continue
 !
         nompar(4+6*(icmp-1)+1)='MAX_'//nomcmp(icmp)
         nompar(4+6*(icmp-1)+2)='MA_MAX_'//nomcmp(icmp)
@@ -213,7 +209,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+5), 'K16')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+6), 'I')
         endif
-30  end do
+ 30 end do
 !
     npara=6*nbcmp
     ptmax(1)=nuord

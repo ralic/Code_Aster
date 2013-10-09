@@ -67,7 +67,7 @@ subroutine op0009()
     character(len=24) :: time2, mate, compor
     logical :: exitim
     integer :: nchar, n1, jrecc, n2, n3, n4, ier, n5, nh, n6, ncha, icha
-    integer :: ibid, nbresu, jrelr, iresu, iexi, n7
+    integer ::  nbresu, jrelr, iresu, iexi, n7
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
     data tps/0.d0,2*1.d0,3*0.d0/
@@ -209,8 +209,7 @@ subroutine op0009()
             resuel=zk24(jrelr+iresu-1)
             call jeexin(resuel//'.RESL', iexi)
             if (iexi .eq. 0) goto 101
-            call dismoi('F', 'MPI_COMPLET', resuel, 'RESUELEM', ibid,&
-                        kmpic, ibid)
+            call dismoi('MPI_COMPLET', resuel, 'RESUELEM', repk=kmpic)
             ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
             if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
 101         continue

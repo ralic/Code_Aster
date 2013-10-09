@@ -73,7 +73,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     character(len=24) :: ligrel, chgeom, chsour
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: i, ibid, ier, iretf, ireth, irett, irets, nbin, nbout, iretep
+    integer :: i, ier, iretf, ireth, irett, irets, nbin, nbout, iretep
     character(len=1) :: base
     character(len=8) :: lpain(1), lpaout(1)
     character(len=16) :: opt
@@ -107,8 +107,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! SURCOUCHE DE DISMMO RENVOYANT LE NOM DU MAILLAGE (MA) VIA UN JEVEUO
 ! SUR MODELE//'.MODELE.NOMA'
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                ma, ier)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
 ! REMPLISSAGE DU CHAM_ELEM '&&RESTHER.VOISIN' PAR LES NUMEROS ET LES
 ! TYPES DE MAILLES VOISINES.
     call resvoi(modele, ma, '&&RESTHER.VOISIN')
@@ -158,8 +157,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         if (iretf .ne. 0) then
 ! SURCOUCHE DE DISMCA RENVOYANT LE NOM DE LA SD (NOMGD...) VIA UN
 ! JEVEUO/JENUNO SUR CARTF//'.DESC'.
-            call dismoi('F', 'NOM_GD', cartf, 'CARTE', ibid,&
-                        nomgdf, ier)
+            call dismoi('NOM_GD', cartf, 'CARTE', repk=nomgdf)
 !
 ! EXTENSION DE LA CARTE CARTEF VIA CARTEF//'.PTMA' ET '.PTMS' SUR 'V'
             call etenca(cartf, ligrel, ier)
@@ -176,14 +174,12 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE ECHANGE/COEF_H
         if (ireth .ne. 0) then
-            call dismoi('F', 'NOM_GD', carth, 'CARTE', ibid,&
-                        nomgdh, ier)
+            call dismoi('NOM_GD', carth, 'CARTE', repk=nomgdh)
             call etenca(carth, ligrel, ier)
             ASSERT(ier.eq.0)
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE ECHANGE/TEMP_EXT
-            call dismoi('F', 'NOM_GD', cartt, 'CARTE', ibid,&
-                        nomgdt, ier)
+            call dismoi('NOM_GD', cartt, 'CARTE', repk=nomgdt)
             call etenca(cartt, ligrel, ier)
             ASSERT(ier.eq.0)
 !
@@ -202,8 +198,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 ! TRAITEMENT DES SOURCES VOLUMIQUES
         if (irets .ne. 0) then
             chsour = carts//'.DESC'
-            call dismoi('F', 'NOM_GD', carts, 'CARTE', ibid,&
-                        nomgds, ier)
+            call dismoi('NOM_GD', carts, 'CARTE', repk=nomgds)
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartes .ne. ' ') then
                 call utmess('A', 'CALCULEL6_43', sk='SOURCE')
@@ -214,7 +209,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         endif
 !
 ! FIN BOUCLE AFFE_CHAR_THER
-10  end do
+ 10 end do
 !
     call jedema()
 !

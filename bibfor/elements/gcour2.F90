@@ -90,12 +90,12 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     character(len=24) :: stok4, dire4, coorn, nomno, dire5, indicg
     character(len=24) :: absgam
     character(len=16) :: k16b, nomcmd
-    character(len=8) :: chbid, fond, resu, noma, nomo, k8b
+    character(len=8) ::  fond, resu, noma, nomo, k8b
     character(len=6) :: kiord
 !
     integer :: nbnoeu, iadrt1, iadrt2, iadrt3, itheta
     integer :: in2, iadrco, jmin, ielinf, iadnum, jvect
-    integer :: iadrno, num, indic, ierd, iadrtt, nbre, nbr8
+    integer :: iadrno, num, indic, iadrtt, nbre, nbr8
     integer :: iret, numa, ndimte, iaorig, nbnoff, iebas
     integer :: itanex, itanor, nbnos, iadabs, kno, iaextr, jnorm
 !
@@ -108,7 +108,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     logical :: thlagr, milieu, connex, thlag2, pair
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ibid, idesc, idiri, idirs, ielsup
+    integer :: i, i1, idesc, idiri, idirs, ielsup
     integer :: ienorm, irefe, j, jresu, k, nbel
     real(kind=8) :: s0, s1
 !-----------------------------------------------------------------------
@@ -129,7 +129,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     call wkvect(numgam, 'V V I', nbnoeu, iadnum)
     do 550 j = 1, nbnoeu
         call jenonu(jexnom(nomno, zk8(iadrno+j-1)), zi(iadnum+j-1))
-550  end do
+550 end do
 !
 ! RECUPERATION DES DIRECTIONS AUX EXTREMITES DE GAMM0
 !
@@ -192,15 +192,14 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
         norme = 0.d0
         do 991 i = 1, 3
             norme = norme + dir(i)*dir(i)
-991      continue
+991     continue
         norme = sqrt(norme)
         do 1 i = 1, nbnoeu
             zr(in2+(i-1)*3+1-1) = dir(1)/norme
             zr(in2+(i-1)*3+2-1) = dir(2)/norme
             zr(in2+(i-1)*3+3-1) = dir(3)/norme
- 1      continue
-        call dismoi('F', 'ELEM_VOLU_QUAD', nomo, 'MODELE', ibid,&
-                    repk, ierd)
+  1     continue
+        call dismoi('ELEM_VOLU_QUAD', nomo, 'MODELE', repk=repk)
         if (repk .eq. 'OUI') then
             milieu = .true.
         else if (repk.eq.'NON') then
@@ -238,7 +237,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(in2+(i-1)*3+1-1) = vecx/norme
                     zr(in2+(i-1)*3+2-1) = vecy/norme
                     zr(in2+(i-1)*3+3-1) = vecz/norme
- 2              continue
+  2             continue
             else
                 do 22 i = 1, nbnoeu
                     dirx = zr(idirs+(i-1)*3+1-1)
@@ -248,11 +247,10 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(in2+(i-1)*3+1-1) = dirx/norme
                     zr(in2+(i-1)*3+2-1) = diry/norme
                     zr(in2+(i-1)*3+3-1) = dirz/norme
-22              continue
+ 22             continue
             endif
         else if (ienorm.ne.0) then
-            call dismoi('F', 'ELEM_VOLU_QUAD', nomo, 'MODELE', ibid,&
-                        repk, ierd)
+            call dismoi('ELEM_VOLU_QUAD', nomo, 'MODELE', repk=repk)
             if (repk .eq. 'OUI') then
                 milieu = .true.
             else if (repk.eq.'NON') then
@@ -260,8 +258,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
             endif
             call gdinor(norm, nbnoeu, iadnum, coorn, in2)
         else
-            call dismoi('F', 'ELEM_VOLU_QUAD', nomo, 'MODELE', ibid,&
-                        repk, ierd)
+            call dismoi('ELEM_VOLU_QUAD', nomo, 'MODELE', repk=repk)
             if (repk .eq. 'OUI') then
                 milieu = .true.
             else if (repk.eq.'NON') then
@@ -272,7 +269,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 zr(in2+(i-1)*3+1-1) = zr(jvect-1+6*(i-1)+4)
                 zr(in2+(i-1)*3+2-1) = zr(jvect-1+6*(i-1)+5)
                 zr(in2+(i-1)*3+3-1) = zr(jvect-1+6*(i-1)+6)
-23          continue
+ 23         continue
         endif
 !
 !  ON RECUPERE LES DIRECTIONS UTILISATEUR AUX EXTREMITES DU FOND
@@ -314,8 +311,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
 ! ALLOCATION D UN OBJET INDICATEUR DU CHAMP THETA SUR GAMMO
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbel,&
-                chbid, ierd)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbel)
     indicg = '&&COURON.INDIC        '
     call wkvect(indicg, 'V V I', nbel, indic)
 !
@@ -385,7 +381,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(itheta+(num-1)*3+2-1) = 0.d0
                     zr(itheta+(num-1)*3+3-1) = 0.d0
                     zi(indic+num-1) = 1
- 3              continue
+  3             continue
                 call gabscu(nbnoeu, coorn, nomno, chfond, xl,&
                             absgam)
                 call jeveuo(absgam, 'L', iadabs)
@@ -473,7 +469,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     if (milieu) then
                         s0 = zr(iadabs+1-1)
                         s1 = zr(iadabs+1-1+4)
-                        zr(iadrtt)   = (zr(iadabs+1-1)  -s1)/(s0-s1)
+                        zr(iadrtt) = (zr(iadabs+1-1) -s1)/(s0-s1)
                         zr(iadrtt+1) = (zr(iadabs+1-1+1)-s1)/(s0-s1)
                         zr(iadrtt+2) = (zr(iadabs+1-1+2)-s1)/(s0-s1)
                         zr(iadrtt+3) = (zr(iadabs+1-1+3)-s1)/(s0-s1)
@@ -497,7 +493,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                         zr(itheta+(num-1)*3+2-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+2-1)
                         zr(itheta+(num-1)*3+3-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+3-1)
                     endif
- 4              continue
+  4             continue
                 if (connex .and. ((k.eq. 1) .or. (k.eq. ndimte))) then
                     if (k .eq. 1) kno = nbnoeu
                     if (k .eq. ndimte) kno = 1
@@ -512,7 +508,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                             zr(itheta+(num-1)*3+2-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+2-1)
                             zr(itheta+(num-1)*3+3-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+3-1)
                         endif
-401                  continue
+401                 continue
                 endif
 !
             else if (thlagr) then
@@ -523,7 +519,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(itheta+(num-1)*3+2-1) = 0.d0
                     zr(itheta+(num-1)*3+3-1) = 0.d0
                     zi(indic+num-1) = 1
-31              continue
+ 31             continue
                 num = zi(iadnum+k-1)
                 iadrtt = iadrt3 + (k-1)*nbnoeu + k - 1
                 zr(iadrtt) = 1.d0
@@ -557,7 +553,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(i-1) *3+2-1)
                     zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(i-1) *3+3-1)
                     zi(indic+num-1) = 1
-41              continue
+ 41             continue
             endif
         else
 !     STOCKAGE DE LA DIRECTION DU CHAMPS THETA SUR LE FOND DE FISSURE
@@ -566,9 +562,9 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 zr(itheta+(num-1)*3+1-1) = zr(in2+(i-1)*3+1-1)
                 zr(itheta+(num-1)*3+2-1) = zr(in2+(i-1)*3+2-1)
                 zr(itheta+(num-1)*3+3-1) = zr(in2+(i-1)*3+3-1)
-450          continue
+450         continue
         endif
-400  end do
+400 end do
 !
 !         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE SANS GAMMO
 !         POUR CALCULER PROJ(M)=N
@@ -612,7 +608,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     jmin = j
                     smin = s
                 endif
-600          continue
+600         continue
             rii = (1-smin)*zr(iadrt1+jmin-1)+smin*zr(iadrt1+jmin+1-1)
             rsi = (1-smin)*zr(iadrt2+jmin-1)+smin*zr(iadrt2+jmin+1-1)
             alpha = (dmin-rii)/(rsi-rii)
@@ -651,9 +647,9 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(itheta+(i-1)*3+2-1) = 0.d0
                     zr(itheta+(i-1)*3+3-1) = 0.d0
                 endif
-700          continue
+700         continue
         endif
-500  end do
+500 end do
 !
 !
 ! DESTRUCTION D'OBJETS DE TRAVAIL

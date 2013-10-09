@@ -140,8 +140,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
 ! - Local coordinate system
@@ -213,7 +212,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     call jedetr('&&CADDLP.DIMENSION')
     call jedetr(ncncin)
 !
-999  continue
+999 continue
 !
     call jedema()
 !

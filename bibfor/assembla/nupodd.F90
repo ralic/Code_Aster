@@ -52,13 +52,13 @@ subroutine nupodd(nu, base, rang, nbproc)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer :: ibid, ier, nbma, nbnoma, jprtk, jnumsd
+    integer ::  nbma, nbnoma, jprtk, jnumsd
     integer :: nlili, ili, igr, nel, iel, numa, jnequ, jpddl, nbno, ino
     integer :: nuno, iddl, nddl, ddl1g, jnugl, numpro, curpro, k1, n1
     integer :: ddl1l, ilib, neql, jconx1, jconx2, idprn1, idprn2
     integer :: jadli, jadne, nec
 !
-    character(len=8) :: noma, k8b, mo, partit
+    character(len=8) :: noma, mo, partit
     character(len=19) :: ligrmo, nomlig
 !
     logical :: ldist, ldgrel
@@ -77,7 +77,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 !      IZZPRN(ILI,NUNOEL,L) = (IDPRN1-1+ZI(IDPRN2+ILI-1)+
 !     &                       (NUNOEL-1)* (NEC+2)+L-1)
 #define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
@@ -87,7 +87,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
 #define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -97,30 +97,27 @@ subroutine nupodd(nu, base, rang, nbproc)
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
 #define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
 #define zznsup(ili,iel) zi(zi(jadne+3*(ili-1)+2)+iel)- \
-        zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
+    zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
 #define zznema(ili,iel,j) zi(zi(jadne+3*(ili-1)+1)-1+ \
-        zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
+    zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
 !
     call jemarq()
 !
 !---- RECHERCHE DU MAILLAGE ET DU NOMBRE DE MAILLES ET DE NOEUDS
-    call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
-                noma, ier)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8b, ier)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoma,&
-                k8b, ier)
+    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
 !
 !---- ON RAMENE EN MEMOIRE LES OBJETS DU .NUME :
 !     CALCUL DE NEQG, NLILI
@@ -135,12 +132,9 @@ subroutine nupodd(nu, base, rang, nbproc)
     nec=n1/nbnoma-2
 !
 !---- RECHERCHE DU TABLEAU PARTITION
-    call dismoi('F', 'NOM_MODELE', nu, 'NUME_DDL', ibid,&
-                mo, ier)
-    call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
-                ligrmo, ier)
-    call dismoi('F', 'PARTITION', ligrmo, 'LIGREL', ibid,&
-                partit, ier)
+    call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
+    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
     ldist=.false.
     ldgrel=.false.
     call asmpi_info(rank=mrank, size=msize)
@@ -169,7 +163,7 @@ subroutine nupodd(nu, base, rang, nbproc)
     call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
     do 10 iddl = 0, neql-1
         zi(jpddl+iddl)=nbproc+1
-10  end do
+ 10 end do
 !
 !---- CREATION DU TABLEAU DE POSSESSION DES DDL LOCAUX
     do 100 ili = 2, nlili
@@ -206,8 +200,8 @@ subroutine nupodd(nu, base, rang, nbproc)
 !
                         do 30 iddl = 1, nddl
                             zi(jpddl+ddl1l+iddl-2)=curpro
-30                      continue
-40                  continue
+ 30                     continue
+ 40                 continue
 !
                 else
                     if (ldgrel) then
@@ -241,12 +235,12 @@ subroutine nupodd(nu, base, rang, nbproc)
                             ddl1l=zi(jnugl+ddl1g+iddl-2)
                             if (ddl1l .eq. 0) goto 60
                             zi(jpddl+ddl1l-1)=curpro
-60                      continue
-70                  continue
+ 60                     continue
+ 70                 continue
                 endif
-80          continue
-90      continue
-100  end do
+ 80         continue
+ 90     continue
+100 end do
 !
 !---- DETERMINATION DU GRAPH DE COMMUNICATION ET DES RACCORDS
     call nugrco(nu, base)

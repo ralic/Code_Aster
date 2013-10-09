@@ -59,7 +59,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 !                  DE LA FATIGUE AUX NOEUDS.
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: iad, numa, jtyp, ibid, iret
+    integer :: iad, numa, jtyp
     real(kind=8) :: r8b, v(1)
     integer :: icodre(1)
     character(len=8) :: ktyp, dimk, k8b
@@ -96,8 +96,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
         numa = zi(adrma-1 + imap)
         jtyp = jtypma - 1 + numa
         call jenuno(jexnum( '&CATA.TM.NOMTM', zi(jtyp)), ktyp)
-        call dismoi('F', 'TYPE_TYPMAIL', ktyp, 'TYPE_MAILLE', ibid,&
-                    dimk, iret)
+        call dismoi('TYPE_TYPMAIL', ktyp, 'TYPE_MAILLE', repk=dimk)
 !
         if (dimk .eq. 'VOLU') then
             k = k + 1
@@ -138,20 +137,20 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
     if (nomcri(1:14) .eq. 'MATAKE_MODI_AC') then
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_A', v(1), icodre(1), 0)
-        vala=v(1)            
+        vala=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_64')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_B', v(1), icodre(1), 0)
-        valb=v(1)                                
+        valb=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_65')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_FLE', v(1), icodre(1), 0)
-        coefpa=v(1)            
+        coefpa=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_66')
         endif
@@ -162,14 +161,14 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
     else if (nomcri(1:16) .eq. 'DANG_VAN_MODI_AC') then
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_A ', v(1), icodre(1), 0)
-        vala=v(1)            
+        vala=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_67')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
-        valb=v(1) 
+        valb=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_68')
         endif
@@ -188,7 +187,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
     if (nomcri(1:14) .eq. 'MATAKE_MODI_AV') then
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_A', v(1), icodre(1), 0)
-        vala=v(1)            
+        vala=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_70')
         endif
@@ -213,7 +212,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
     if (nomcri(1:16) .eq. 'DANG_VAN_MODI_AV') then
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_A ', v(1), icodre(1), 0)
-        vala=v(1)            
+        vala=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_73')
         endif
@@ -238,7 +237,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
     if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'FATSOC_A', v(1), icodre(1), 0)
-        vala=v(1)            
+        vala=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_75')
         endif
@@ -254,7 +253,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 !
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

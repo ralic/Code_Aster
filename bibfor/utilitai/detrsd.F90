@@ -354,8 +354,7 @@ subroutine detrsd(typesd, nomsd)
 !       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
         call jeexin(matas//'.REFA', iret)
         if (iret .gt. 0) then
-            call dismoi('F', 'METH_RESO', matas, 'MATR_ASSE', ibid,&
-                        metres, ibid)
+            call dismoi('METH_RESO', matas, 'MATR_ASSE', repk=metres)
             if (metres .eq. 'MUMPS') then
                 call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid],&
                             ' ', 0, ibid, lbid)

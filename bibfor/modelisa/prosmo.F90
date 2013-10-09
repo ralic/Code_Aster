@@ -49,7 +49,6 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
@@ -68,6 +67,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 #include "asterfort/jexnum.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: tmax
 ! -----  ARGUMENTS
     integer :: nbmat
@@ -76,7 +76,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     character(len=*) :: limat(nbmat)
     character(len=1) :: rouc
 ! -----  VARIABLES LOCALES
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=14) :: numddl, numdd1, numddi
     character(len=19) :: matres, mat1, mati
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
@@ -84,7 +84,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     integer :: lgbl, jhtc, i, iadi, jeq, nbter, jibl, jpbl, ibl1, lcumu, kbl
     integer :: jbl1
     integer :: iblav, idhcoi, icum, ismdi, lsmhc, nterm, idsmhc, l, jsmde
-    integer :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq, ibid
+    integer :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq
     integer :: ier, jsmde1, neq, k, htc
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -113,8 +113,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !
 ! --- RECUPERATION DU NUME_DDL ATTACHE A LA PREMIERE MATR_ASSE  :
 !     --------------------------------------------------------
-    call dismoi('F', 'NOM_NUME_DDL', mat1, 'MATR_ASSE', ibid,&
-                numdd1, ier)
+    call dismoi('NOM_NUME_DDL', mat1, 'MATR_ASSE', repk=numdd1)
 !
 !
 ! --- RECOPIE DU PROF_CHNO DE LA PREMIERE MATRICE SUR LA MATRICE
@@ -154,20 +153,19 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call wkvect('&&PROSMO.HTC', 'V V I', neq, jhtc)
     do 20 i = 1, nbmat
         mati = limat(i)
-        call dismoi('F', 'NOM_NUME_DDL', mati, 'MATR_ASSE', ibid,&
-                    numddi, ier)
+        call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numddi)
         call jeveuo(numddi//'.SMOS.SMDI', 'L', iadi)
-        do 10,jeq = 1,neq
-        if (jeq .eq. 1) then
-            nbter = 1
+        do 10 jeq = 1, neq
+            if (jeq .eq. 1) then
+                nbter = 1
 !
-        else
-            nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
-        endif
-        zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
-10      continue
+            else
+                nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
+            endif
+            zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
+ 10     continue
         call jelibe(numddi//'.SMOS.SMDI')
-20  end do
+ 20 end do
 !
 !     7-2) IBL : NUMERO DU BLOC DE KLISTE(JEQ) :
 !          PBL : POSITION DE L'EQUATION JEQ DANS LE BLOC IBL  :
@@ -176,18 +174,18 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call wkvect('&&PROSMO.PBL', 'V V I', neq, jpbl)
     ibl1 = 1
     lcumu = 0
-    do 30,jeq = 1,neq
-    htc=zi(jhtc-1+jeq)
-    ASSERT(htc.le.lgbl)
+    do 30 jeq = 1, neq
+        htc=zi(jhtc-1+jeq)
+        ASSERT(htc.le.lgbl)
 !       -- SI ON CHANGE DE BLOC :
-    if (lcumu + htc .gt. lgbl) then
-        ibl1 = ibl1 + 1
-        lcumu = 0
-    endif
-    zi(jibl-1+jeq) = ibl1
-    zi(jpbl-1+jeq) = lcumu
-    lcumu = lcumu + htc
-    30 end do
+        if (lcumu + htc .gt. lgbl) then
+            ibl1 = ibl1 + 1
+            lcumu = 0
+        endif
+        zi(jibl-1+jeq) = ibl1
+        zi(jpbl-1+jeq) = lcumu
+        lcumu = lcumu + htc
+ 30 end do
 !
 !     7-3) ALLOCATION DE KLISTE :
 !     ------------------------------------------------------------
@@ -198,7 +196,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     do 40 kbl = 1, ibl1
         call jeveuo(jexnum(kliste, kbl), 'E', jbl1)
         call jelibe(jexnum(kliste, kbl))
-40  end do
+ 40 end do
 !
 !     7-4) REMPLISSAGE DE KLISTE :
 !     ------------------------------------------------------------
@@ -208,36 +206,35 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call jeveuo(jexnum(kliste, iblav), 'E', jbl1)
     do 70 i = 1, nbmat
         mati = limat(i)
-        call dismoi('F', 'NOM_NUME_DDL', mati, 'MATR_ASSE', ibid,&
-                    numddi, ier)
+        call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numddi)
         call jeveuo(numddi//'.SMOS.SMDI', 'L', iadi)
         call jeveuo(numddi//'.SMOS.SMHC', 'L', idhcoi)
         icum = 0
-        do 60,jeq = 1,neq
-        if (jeq .eq. 1) then
-            nbter = 1
+        do 60 jeq = 1, neq
+            if (jeq .eq. 1) then
+                nbter = 1
 !
-        else
-            nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
-        endif
+            else
+                nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
+            endif
 !
 !         LE BLOC CONTENANT J DOIT-IL ETRE RAMENE EN MEMOIRE ?
-        ibl1 = zi(jibl-1+jeq)
-        if (iblav .ne. ibl1) then
-            call jelibe(jexnum(kliste, iblav))
-            call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
-            iblav = ibl1
-        endif
-        do 50,k = 1,nbter
-        zi(jbl1+zi(jpbl-1+jeq)+zi(jhtc-1+jeq)+k-1)=zi4(idhcoi+&
+            ibl1 = zi(jibl-1+jeq)
+            if (iblav .ne. ibl1) then
+                call jelibe(jexnum(kliste, iblav))
+                call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
+                iblav = ibl1
+            endif
+            do 50 k = 1, nbter
+                zi(jbl1+zi(jpbl-1+jeq)+zi(jhtc-1+jeq)+k-1)=zi4(idhcoi+&
                 icum+ (k-1))
-50      continue
-        icum = icum + nbter
-        zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
-60      continue
+ 50         continue
+            icum = icum + nbter
+            zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
+ 60     continue
         call jelibe(numddi//'.SMOS.SMDI')
         call jelibe(numddi//'.SMOS.SMHC')
-70  end do
+ 70 end do
     call jelibe(jexnum(kliste, iblav))
 !
 !
@@ -271,7 +268,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             zi(ismdi+jeq-1) = zi(ismdi+ (jeq-1)-1) + nterm
         endif
         lsmhc = lsmhc + nterm
-80  end do
+ 80 end do
     call jelibe(jexnum(kliste, iblav))
 !
 !
@@ -295,8 +292,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
         do 90 k = 1, nterm
             l = l + 1
             zi4(idsmhc-1+l) = zi(jbl1+zi(jpbl-1+jeq)-1+k)
-90      continue
-100  end do
+ 90     continue
+100 end do
     call jelibe(jexnum(kliste, iblav))
     call jedetr(kliste)
     call jedetr('&&PROSMO.HTC')
@@ -335,9 +332,9 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call jecrec(kvalm, base//' V '//rouc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
     call jeecra(kvalm, 'LONMAX', itbloc)
-    do 110,kbloc = 1,nbloc
-    call jecroc(jexnum(kvalm, kbloc))
-    110 end do
+    do 110 kbloc = 1, nbloc
+        call jecroc(jexnum(kvalm, kbloc))
+110 end do
 !
 !
 !     13) CREATION ET AFFECTATION DU TABLEAU .REFA
@@ -369,8 +366,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             goto 130
 !
         endif
-120  end do
-130  continue
+120 end do
+130 continue
 !
 !
 !     15) CREATION ET AFFECTATION DU VECTEUR .CONL
@@ -378,7 +375,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call wkvect(kconl, base//' V R', neq, idconl)
     do 140 ieq = 1, neq
         zr(idconl+ieq-1) = 1.d0
-140  end do
+140 end do
 !
     call jedema()
 !

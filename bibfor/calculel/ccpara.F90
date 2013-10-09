@@ -70,8 +70,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
 !
     rundf = r8nnem()
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
 !
     if (exitim) then
         call rsadpa(resuin, 'L', 1, 'INST', numord,&
@@ -167,6 +166,6 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
             call mearcc(option, modele, chsig, chsigf)
 !
         endif
-10  end do
+ 10 end do
 !
 end subroutine

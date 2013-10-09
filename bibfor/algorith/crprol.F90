@@ -94,10 +94,8 @@ subroutine crprol()
     call getvr8(motfac, 'AXE_Z', iocc=1, nbval=3, vect=axez,&
                 nbret=ibid)
 !
-    call dismoi('F', 'NB_NO_MAILLA', nommaf, 'MAILLAGE', nbnof,&
-                k8b, ibid)
-    call dismoi('F', 'Z_CST', nommaf, 'MAILLAGE', ndimf,&
-                k8b, ibid)
+    call dismoi('NB_NO_MAILLA', nommaf, 'MAILLAGE', repi=nbnof)
+    call dismoi('Z_CST', nommaf, 'MAILLAGE', repk=k8b)
     ndimf = 3
     if (k8b .eq. 'OUI') ndimf = 2
     if (ndimf .ne. 3) then
@@ -174,7 +172,7 @@ subroutine crprol()
             if (rmin .ne. 0.0d0) then
                 call utmess('F', 'ALGORITH12_69')
             endif
- 2      continue
+  2     continue
 !
 ! ------ ON TRIE PAR ORDRE CROISSANT
 !
@@ -222,12 +220,12 @@ subroutine crprol()
                     rmax = zr(jtbcor-1+imax)
                     goto 5
                 endif
- 4          continue
+  4         continue
             indice = indice + 1
             zr(jtbpdg-1+indice) = rval
             zi(jtbnoe-1+indice) = inof
             goto 3
- 5          continue
+  5         continue
             if ((rmax-rmin) .eq. 0.0d0) then
                 call utmess('F', 'ALGORITH12_70')
             endif
@@ -235,7 +233,7 @@ subroutine crprol()
             zr(jcnsve-1+(inof-1)+1)=(1-lambda)*zr(jcnsvl-1+(imin-1)+1)&
             + lambda*zr(jcnsvl-1+(imax-1)+1)
             zl(jcnsle-1+(inof-1)+1) = .true.
- 3      continue
+  3     continue
         do 6 ordef = 1, indice
             ino = zi(jtbnoe-1+ordef)
             rval = zr(jtbpdg-1+ordef)
@@ -286,7 +284,7 @@ subroutine crprol()
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 endif
             endif
- 6      continue
+  6     continue
 !
         call rsexch(' ', resu, 'TEMP', iord, cnoinr,&
                     ibid)
@@ -310,7 +308,7 @@ subroutine crprol()
         call jedetr(tabval)
 !
         call jedema()
- 1  end do
+  1 end do
     call jedetr(knum)
     call jedetr(tabpdg)
     call jedetr(tabnoe)

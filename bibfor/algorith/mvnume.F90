@@ -18,7 +18,7 @@ subroutine mvnume(depmoi, depdel, depplu)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -43,7 +43,7 @@ subroutine mvnume(depmoi, depdel, depplu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, iret
+    integer ::  iret
     character(len=19) :: pfchn1, pfchn2
     character(len=1) :: typcst(2), typech(2), typres
     real(kind=8) :: const(2)
@@ -58,10 +58,8 @@ subroutine mvnume(depmoi, depdel, depplu)
 ! --- SI LES CHAMPS N'ONT PAS LA MEME NUMEROTATION, ON TRANSFERT DEPMOI
 ! --- DANS LA NUMEROTATION DE DEPDEL
 !
-    call dismoi('F', 'PROF_CHNO', depmoi, 'CHAM_NO', ibid,&
-                pfchn1, ibid)
-    call dismoi('F', 'PROF_CHNO', depdel, 'CHAM_NO', ibid,&
-                pfchn2, ibid)
+    call dismoi('PROF_CHNO', depmoi, 'CHAM_NO', repk=pfchn1)
+    call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=pfchn2)
     if (pfchn1 .ne. pfchn2) then
         call copisd('CHAMP_GD', 'V', depdel, depmo1)
         call vtzero(depmo1)

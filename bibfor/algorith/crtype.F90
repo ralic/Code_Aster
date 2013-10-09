@@ -142,19 +142,16 @@ subroutine crtype()
 !
         call getvid('AFFE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
         zk8(jcham+iocc-1) = champ(1:8)
-        call dismoi('F', 'NOM_MAILLA', champ, 'CHAMP', ibid,&
-                    noma, ier)
+        call dismoi('NOM_MAILLA', champ, 'CHAMP', repk=noma)
         if (modele .ne. ' ') then
-            call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                        noma2, ier)
+            call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma2)
             if (noma .ne. noma2) then
                 valkk(1)=noma
                 valkk(2)=noma2
                 call utmess('F', 'ALGORITH2_1', nk=2, valk=valkk)
             endif
         endif
-        call dismoi('F', 'NOM_GD', champ, 'CHAMP', ibid,&
-                    nogdsi, ier)
+        call dismoi('NOM_GD', champ, 'CHAMP', repk=nogdsi)
         if (typres .eq. 'EVOL_CHAR' .and. nogdsi .eq. 'NEUT_R') then
             valkk(1)=champ
             valkk(2)='NEUT_R'
@@ -162,8 +159,7 @@ subroutine crtype()
             call utmess('F', 'ALGORITH2_80', nk=3, valk=valkk)
         endif
 !
-        call dismoi('F', 'TYPE_SUPERVIS', champ, 'CHAMP', ibid,&
-                    k24, ier)
+        call dismoi('TYPE_SUPERVIS', champ, 'CHAMP', repk=k24)
         call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !        CALCUL DE LFONC ET TYPEGD
@@ -184,21 +180,19 @@ subroutine crtype()
                 call utmess('F', 'ALGORITH2_46', sk=k24)
             endif
             goto 20
-10      continue
-20      continue
+ 10     continue
+ 20     continue
 !
         if (k24(1:7) .eq. 'CHAM_NO') then
 !           ON CHERCHE A ECONOMISER LES PROF_CHNO (PARTAGE SI POSSIBLE)
             if (profch .eq. ' ') then
-                call dismoi('F', 'PROF_CHNO', champ, 'CHAM_NO', ibid,&
-                            pchn1, ier)
+                call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
                 noojb = '12345678.PRCHN00000.PRNO'
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
                 call copisd('PROF_CHNO', 'G', pchn1, profch)
             else
-                call dismoi('F', 'PROF_CHNO', champ, 'CHAM_NO', ibid,&
-                            pchn1, ier)
+                call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
                 if (.not.idensd('PROF_CHNO',profch,pchn1)) then
                     noojb = '12345678.PRCHN00000.PRNO'
                     call gnomsd(' ', noojb, 15, 19)
@@ -213,7 +207,7 @@ subroutine crtype()
             call rsorac(resu, 'LONUTI', 0, rbid, k8b,&
                         cbid, rbid, k8b, tnum, 1,&
                         nbtrou)
-            numini=tnum(1)            
+            numini=tnum(1)
             if (typres .eq. 'MODE_MECA') then
                 call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
                 if (n0 .ne. 0) then
@@ -226,7 +220,7 @@ subroutine crtype()
                             numini = nume
                             j = j+1
                         endif
-100                  continue
+100                 continue
                     if (j .eq. 0) numini = numini+1
                 else
                     numini = numini + 1
@@ -253,8 +247,7 @@ subroutine crtype()
 !
             call copisd('CHAMP_GD', 'G', champ, nomch)
             if (k24(1:7) .eq. 'CHAM_NO') then
-                call dismoi('F', 'PROF_CHNO', nomch, 'CHAM_NO', ibid,&
-                            pchn1, ier)
+                call dismoi('PROF_CHNO', nomch, 'CHAM_NO', repk=pchn1)
                 if (pchn1 .ne. profch) then
                     call detrsd('PROF_CHNO', pchn1)
                     call jeveuo(nomch//'.REFE', 'E', jrefe)
@@ -328,7 +321,7 @@ subroutine crtype()
                     call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b,&
                                 cbid, prec, criter, tnum, 1,&
                                 nbr)
-                    nume=tnum(1)            
+                    nume=tnum(1)
                 else
                     nbr = 0
                 endif
@@ -340,7 +333,7 @@ subroutine crtype()
                 else
                     zi(jcpt+k-1) = nume
                 endif
-30          continue
+ 30         continue
         else
 !           MOT CLE LIST_INST/LIST_FREQ PRESENT :
             n1 = 0
@@ -396,7 +389,7 @@ subroutine crtype()
                     call rsorac(resu, typabs, ibid, zr(jval-1+k), k8b,&
                                 cbid, prec, criter, tnum, 1,&
                                 nbr)
-                    nume=tnum(1)                
+                    nume=tnum(1)
                 else
                     nbr = 0
                 endif
@@ -408,7 +401,7 @@ subroutine crtype()
                 else
                     zi(jcpt+j-1) = nume
                 endif
-40          continue
+ 40         continue
         endif
 !
 !        DANS LE CAS DES FONCTIONS, LA PROGRAMMATION N'EST VALABLE QUE
@@ -433,10 +426,8 @@ subroutine crtype()
                 call utmess('F', 'CALCULEL2_90', nk=2, valk=valkk)
             endif
 !           NOMBRE D'ENTIER CODE
-            call dismoi('F', 'NB_EC', typegd, 'GRANDEUR', nbecd,&
-                        k8b, ier)
-            call dismoi('F', 'NB_EC', nogdsi, 'GRANDEUR', nbeci,&
-                        k8b, ier)
+            call dismoi('NB_EC', typegd, 'GRANDEUR', repi=nbecd)
+            call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nbeci)
             if (nbecd .ne. nbeci) then
                 valkk(1) = typegd
                 valkk(2) = nogdsi
@@ -461,7 +452,7 @@ subroutine crtype()
                     valkk(4) = zk8(icmpi+j-1)
                     call utmess('F', 'CALCULEL2_5', nk=4, valk=valkk)
                 endif
-300          continue
+300         continue
         endif
 !
         do 70 j = 1, nbinst
@@ -539,10 +530,10 @@ subroutine crtype()
                         else
                             call utmess('F', 'ALGORITH2_50')
                         endif
-50                  continue
+ 50                 continue
                     call fointe('F', nomf, nbpf, nomp, valpu,&
                                 zr(jc+l-1), ier)
-60              continue
+ 60             continue
             endif
 !
             call rsnoch(resu, nsymb, icompt)
@@ -553,10 +544,10 @@ subroutine crtype()
                         excit)
             if (j .ge. 2) call jedema()
 !
-70      continue
+ 70     continue
         call jedetr(linst)
         call jedetr(lcpt)
-80  continue
+ 80 continue
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
     if (typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' .or. typres(1:10)&
@@ -567,14 +558,12 @@ subroutine crtype()
         numedd = ' '
         call getvid(' ', 'MATR_RIGI', scal=matr, nbret=n1)
         if (n1 .eq. 1) then
-            call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid,&
-                        numedd, ier)
+            call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
             matric(1) = matr
         else
             call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
             if (n1 .eq. 1) then
-                call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid,&
-                            numedd, ier)
+                call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
             endif
         endif
         call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
@@ -585,9 +574,11 @@ subroutine crtype()
 !       the fields composing the sd_resultat
         if (numedd .eq. ' ') then
             call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
-            call dismoi('C', 'PROF_CHNO', champ, 'CHAMP', ibid, profch, ier)
+            call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C',&
+                        ier=ier)
             if (ier .eq. 0) then
-                call refdaj('F', resu19, -1, profch, 'DYNAMIQUE', matric, ier)
+                call refdaj('F', resu19, -1, profch, 'DYNAMIQUE',&
+                            matric, ier)
             endif
         else
             call refdaj('F', resu19, -1, numedd, 'DYNAMIQUE',&

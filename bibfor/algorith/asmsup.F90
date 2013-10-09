@@ -66,7 +66,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !                TCOSUP(I) = 2 : COMBINAISON LINEAIRE
 !                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 !     ------------------------------------------------------------------
-    integer :: ibid, id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
+    integer ::  id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
     integer :: jddl2, jdgn, jgrn, jnoe, lvale, nba, nbb, n1, nbbd, nbl, nbliai
     integer :: nbocc, nbtrou, ngr, nno, nt, vali(2), tabord(1)
     character(len=4) :: ctyp, dir(3)
@@ -82,8 +82,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !
     call jemarq()
 !
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
     obj1 = noma//'.GROUPENO'
     obj2 = noma//'.NOMNOE'
     ier = 0

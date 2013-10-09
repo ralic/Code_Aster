@@ -20,7 +20,7 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterfort/copisd.h"
@@ -70,8 +70,7 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 !
     logical :: lgrot
     logical :: scotch
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu
     character(len=19) :: complu, depdel
@@ -88,8 +87,7 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 !
     instap = diinst(sddisc,numins)
     scotch = .false.
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !

@@ -53,7 +53,6 @@ subroutine exithm(modele, yathm, perman)
 ! 0.2. ==> COMMUNS
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: ibid, ier
 !
     character(len=5) :: repons
 !
@@ -62,8 +61,7 @@ subroutine exithm(modele, yathm, perman)
 !    IL Y A ERREUR FATALE SI ON NE REUSSIT PAS A DECODER LE MODELE
 !====
 !
-    call dismoi('F', 'EXI_THM', modele, 'MODELE', ibid,&
-                repons, ier)
+    call dismoi('EXI_THM', modele, 'MODELE', repk=repons)
 !
     if (repons .eq. 'OUI') then
         yathm = .true.

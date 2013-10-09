@@ -77,7 +77,7 @@ subroutine op0180()
     real(kind=8) :: trelax, valr(2)
     logical :: mail2d, relax, quad
     character(len=3) :: k3b
-    character(len=8) :: caelem, chmat, k8b, mailla, modele, noancr(2), nomu, adher
+    character(len=8) :: caelem, chmat, mailla, modele, noancr(2), nomu, adher
     character(len=8) :: typanc(2)
     character(len=16) :: cmd, concep
     character(len=19) :: carsig, carte, ligrmo, lirela, numaca, nunobe, xnoca
@@ -261,12 +261,9 @@ subroutine op0180()
 !
 ! 4.1 RECUPERATION DU NOM DU CONCEPT MAILLAGE
 ! ---
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbmama,&
-                k8b, iret)
-    call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbnoma,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
+    call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmama)
+    call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbnoma)
 !
 ! 4.2 CREATION DES OBJETS DE TRAVAIL
 ! ---
@@ -330,7 +327,7 @@ subroutine op0180()
             goto 21
         endif
     end do
-21  continue
+ 21 continue
     if (irana1 .eq. 0) then
         call utmess('F', 'MODELISA5_91')
     endif

@@ -73,10 +73,9 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, jcoor, iret, nbno, jfonf, ifm, niv, jvit, jbeta, cfv, bfv
+    integer :: i, j, jcoor, nbno, jfonf, ifm, niv, jvit, jbeta, cfv, bfv
     integer :: vfv, afv, cfvpr, bfvpr, vfvpr, afvpr, nfv, npoin, nfvpr
     real(kind=8) :: v1, v2, ai, aj, ak, al, da1, da2, a1, a2
-    character(len=8) :: k8b
     integer :: jbasef, k
 !
     real(kind=8) :: pi(3), pj(3), pk(3), pl(3), pij(3), pkl(3), p1(3), p2(3), vi
@@ -93,14 +92,12 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     call infniv(ifm, niv)
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     RECUPERATION DU FOND DE FISSURE
     call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
-    call dismoi('F', 'NB_POINT_FOND', fiss, 'FISS_XFEM', nbptff,&
-                k8b, iret)
+    call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
     call jeveuo(fiss//'.FONDMULT', 'L', jfmult)

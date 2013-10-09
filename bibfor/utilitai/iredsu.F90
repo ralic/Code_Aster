@@ -60,7 +60,7 @@ subroutine iredsu(macr, form, ifc, versio)
 !
     integer :: nive
     integer :: i, icol, idrx, idry, idrz, idx, idy, idz
-    integer :: ie, iero, ifor, im, imat
+    integer ::  iero, ifor, im, imat
     integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
     integer :: j, k, m2, nbordr, nstat
     integer :: jmasg, jmasj, jmst, jordr, jnoeu, jpars, jpari
@@ -96,8 +96,7 @@ subroutine iredsu(macr, form, ifc, versio)
     basemo = zk24(jrefe)
     noma = zk24(jrefe+1)
     manono = noma//'.NOMNOE'
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8b, ie)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call rslipa(basemo, 'NOEUD_CMP', '&&IREDSU.LINOEU', jnoeu, nbmodt)
 !
     do im = 1, nbmodt

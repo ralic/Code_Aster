@@ -137,8 +137,7 @@ subroutine op0010()
     call getvid(' ', 'FISS_PROP', scal=fispre, nbret=ibid)
 !
 !     VERIFICATION QUE L'ON TRAITE UNE FISSURE ET NON UNE INTERFACE
-    call dismoi('F', 'TYPE_DISCONTINUITE', fispre, 'FISS_XFEM', ibid,&
-                typdis, iret)
+    call dismoi('TYPE_DISCONTINUITE', fispre, 'FISS_XFEM', repk=typdis)
     if (typdis .ne. 'FISSURE') then
         call utmess('F', 'XFEM2_1')
     endif
@@ -150,8 +149,7 @@ subroutine op0010()
 !
 !     CHECK THAT A CRACK HAS BEEN DEFINED ON THE MODEL
 !     AND RETRIEVE THE NUMBER OF CRACKS IN THE MODEL
-    call dismoi('F', 'NB_FISS_XFEM', nomo, 'MODELE', nfiss,&
-                k8bid, iret)
+    call dismoi('NB_FISS_XFEM', nomo, 'MODELE', repi=nfiss)
     if (nfiss .eq. 0) then
         call utmess('F', 'XFEM2_93', sk=nomo)
     endif
@@ -166,7 +164,7 @@ subroutine op0010()
         ncrack = zk8(jfiss-1+crack)
         if (ncrack .eq. fispre) numfis=crack
 !
- 1  end do
+  1 end do
 !
     if (numfis .eq. 0) then
         msgout(1) = fispre
@@ -227,14 +225,12 @@ subroutine op0010()
 !
 ! --- DIMENSION DU PROBLEME
 !
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     if ((ndim.lt.2) .or. (ndim.gt.3)) then
         call utmess('F', 'XFEM_18')
     endif
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
@@ -383,7 +379,7 @@ subroutine op0010()
         bmax = 0.d0
         do 500 i = 1, j
             if (abs(zr(jbeta-1+i)) .gt. bmax) bmax=abs(zr(jbeta-1+i))
-500      continue
+500     continue
 !        THE CHECK IS MADE ONLY IF THE ANGLE IS GREATER THAN 3 DEGREES
 !        AND LOWER OF 90 DEGREES
         if ((bmax.lt.1.57d0) .and. (bmax.gt.5.2d-2)) then
@@ -774,7 +770,7 @@ subroutine op0010()
     endif
 !
     call jedetr(isozro)
-1000  continue
+1000 continue
     call jedetr(vvit)
     call jedetr(vbeta)
     call jedetr(noesom)
@@ -823,8 +819,7 @@ subroutine op0010()
 !
 !       STORE THE LIST OF THE NODES OF THE STRUCTURAL MESH WHERE THE
 !       PROJECTION HAS BEEN CARRIED OUT
-        call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', j,&
-                    k8bid, iret)
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=j)
         call wkvect(fiss//'.PRO.NOEUD_PROJ', 'G V L', j, iret)
 !
         call jeveuo(ndomp, 'L', ibid)
@@ -832,7 +827,7 @@ subroutine op0010()
 !
         do 1001 i = 1, j
             zl(iret-1+zi(ibid-1+i)) = .true.
-1001      continue
+1001     continue
 !
     endif
 !
@@ -912,7 +907,7 @@ subroutine op0010()
 !
             endif
 !
-2000      continue
+2000     continue
 !
         call jedetr(grltc)
         call jedetr(grlnc)

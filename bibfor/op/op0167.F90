@@ -95,7 +95,7 @@ subroutine op0167()
     character(len=24) :: lisk
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momoto, momuto, prfn
-    integer :: nn1, iaa, iagma, iatyma, ierd, ii, ima, in, ino, inumol, j, nfi
+    integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j, nfi
     integer :: jcrgno, jcrgnu, jcrmno, jcrmnu, jgg, jlii, jlik, jmail, jmomto
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
     integer :: nbcrma, nbcrp1, nbdgma, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
@@ -170,7 +170,7 @@ subroutine op0167()
         do 10 i = 1, nbjoin
             zk16(jnommc-1+i)='CREA_FISS'
             zi(joccmc-1+i)=i
-10      continue
+ 10     continue
 !
         call cmcrea(nomain, nomaou, nbjoin, zk16(jnommc), zi(joccmc))
         goto 350
@@ -225,62 +225,58 @@ subroutine op0167()
 !          TRAITEMENT DES MOTS CLES "PENTA15_18","HEXA20_27"
 ! ----------------------------------------------------------------------
 !
-    do 77, k=1,2
-    if (k .eq. 1) motfac='HEXA20_27'
-    if (k .eq. 2) motfac='PENTA15_18'
-    call getfac(motfac, nbmoma)
-    if (nbmoma .gt. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'MAIL0_14', sk=motfac)
-        endif
+    do 77 k = 1, 2
+        if (k .eq. 1) motfac='HEXA20_27'
+        if (k .eq. 2) motfac='PENTA15_18'
+        call getfac(motfac, nbmoma)
+        if (nbmoma .gt. 0) then
+            if (nn1 .eq. 0) then
+                call utmess('F', 'MAIL0_14', sk=motfac)
+            endif
 !
-        call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=n1a)
-        call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1a+n1b .lt. 0) then
-            call utmess('A', 'MODELISA4_1', sk=motfac)
-        endif
+            call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=n1a)
+            call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
+            if (n1a+n1b .lt. 0) then
+                call utmess('A', 'MODELISA4_1', sk=motfac)
+            endif
 !
-        lpb=.false.
-        if (motfac .eq. 'HEXA20_27') then
-            call dismoi('F', 'EXI_PENTA15', nomain, 'MAILLAGE', ibid,&
-                        repk, ierd)
-            if (repk .eq. 'OUI') lpb=.true.
-            call dismoi('F', 'EXI_PYRAM13', nomain, 'MAILLAGE', ibid,&
-                        repk, ierd)
-            if (repk .eq. 'OUI') lpb=.true.
-        else if (motfac.eq.'PENTA15_18') then
-            call dismoi('F', 'EXI_HEXA20', nomain, 'MAILLAGE', ibid,&
-                        repk, ierd)
-            if (repk .eq. 'OUI') lpb=.true.
-            call dismoi('F', 'EXI_PYRAM13', nomain, 'MAILLAGE', ibid,&
-                        repk, ierd)
-            if (repk .eq. 'OUI') lpb=.true.
-        endif
-        if (lpb) then
-            call utmess('A', 'MODELISA4_11', sk=motfac)
-        endif
+            lpb=.false.
+            if (motfac .eq. 'HEXA20_27') then
+                call dismoi('EXI_PENTA15', nomain, 'MAILLAGE', repk=repk)
+                if (repk .eq. 'OUI') lpb=.true.
+                call dismoi('EXI_PYRAM13', nomain, 'MAILLAGE', repk=repk)
+                if (repk .eq. 'OUI') lpb=.true.
+            else if (motfac.eq.'PENTA15_18') then
+                call dismoi('EXI_HEXA20', nomain, 'MAILLAGE', repk=repk)
+                if (repk .eq. 'OUI') lpb=.true.
+                call dismoi('EXI_PYRAM13', nomain, 'MAILLAGE', repk=repk)
+                if (repk .eq. 'OUI') lpb=.true.
+            endif
+            if (lpb) then
+                call utmess('A', 'MODELISA4_11', sk=motfac)
+            endif
 !
-        call getvtx(motfac, 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
-        call getvis(motfac, 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
+            call getvtx(motfac, 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
+            call getvis(motfac, 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
 !
-        motcle(1)='MAILLE'
-        motcle(2)='GROUP_MA'
-        motcle(3)='TOUT'
-        nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', nomain, 'NU_MAILLE', motfac, 1,&
-                    3, motcle, motcle, nomjv, nbma)
-        call jeveuo(nomjv, 'L', jlima)
+            motcle(1)='MAILLE'
+            motcle(2)='GROUP_MA'
+            motcle(3)='TOUT'
+            nomjv='&&OP0167.LISTE_MA'
+            call reliem(' ', nomain, 'NU_MAILLE', motfac, 1,&
+                        3, motcle, motcle, nomjv, nbma)
+            call jeveuo(nomjv, 'L', jlima)
 !
-        if (motfac .eq. 'HEXA20_27') then
-            call cm2027(nomain, nomaou, nbma, zi(jlima), prefix,&
-                        ndinit)
-        else if (motfac.eq.'PENTA15_18') then
-            call cm1518(nomain, nomaou, nbma, zi(jlima), prefix,&
-                        ndinit)
+            if (motfac .eq. 'HEXA20_27') then
+                call cm2027(nomain, nomaou, nbma, zi(jlima), prefix,&
+                            ndinit)
+            else if (motfac.eq.'PENTA15_18') then
+                call cm1518(nomain, nomaou, nbma, zi(jlima), prefix,&
+                            ndinit)
+            endif
+            goto 350
         endif
-        goto 350
-    endif
-    77 end do
+ 77 end do
 !
 ! ----------------------------------------------------------------------
 !          TRAITEMENT DU MOT CLE "QUAD_LINE"
@@ -338,7 +334,7 @@ subroutine op0167()
                 iqtr=iqtr+1
                 iocct=iocc
             endif
-20      continue
+ 20     continue
 !
         if (iqtr .eq. 0) then
             goto 30
@@ -350,8 +346,7 @@ subroutine op0167()
             if (n1a+n1b .lt. 0) then
                 call utmess('A', 'MODELISA4_1', sk='QUAD_TRIA3')
             endif
-            call dismoi('F', 'EXI_TRIA6', nomain, 'MAILLAGE', ibid,&
-                        repk, ierd)
+            call dismoi('EXI_TRIA6', nomain, 'MAILLAGE', repk=repk)
             if (repk .eq. 'OUI') then
                 call utmess('A', 'MODELISA4_2')
             endif
@@ -374,7 +369,7 @@ subroutine op0167()
         goto 350
 !
     endif
-30  continue
+ 30 continue
 !
 ! ----------------------------------------------------------------------
 !                 TRAITEMENT DU MOT CLE "COQU_VOLU"
@@ -536,7 +531,7 @@ subroutine op0167()
             do 40 ii = 1, zi(jiad+iocc-1)-1
                 zi(jlii+ii-1)=zi(jmomnu+ii-1)
                 zk8(jlik+ii-1)=zk8(jmomno+ii-1)
-40          continue
+ 40         continue
             call cocali(momuto, lisi, 'I')
             call cocali(momoto, lisk, 'K8')
             iaa=iad
@@ -547,7 +542,7 @@ subroutine op0167()
 !
             do 50 ii = iaa, iad-1
                 zk8(jpr2+ii-1)=zk8(jpro+iocc-1)
-50          continue
+ 50         continue
 !
 ! LE PREF_NUME EST A DEFINIR POUR LE PREMIER NOEUD
 ! LES AUTRES SE TROUVENT EN INCREMENTANT
@@ -566,7 +561,7 @@ subroutine op0167()
                     write (ifm,9010)zi(jiad+iocc-1)-1,'SEG3','SEG4'
                 endif
             endif
-60      continue
+ 60     continue
 !
         call jeveuo(momuto, 'L', jmomtu)
         call jeveuo(momoto, 'L', jmomto)
@@ -599,7 +594,7 @@ subroutine op0167()
                 write (ifm,9040)iocc
                 write (ifm,9050)nbmaj1-nbmst
             endif
-70      continue
+ 70     continue
         call jeveuo(crmanu, 'L', jcrmnu)
         call jeveuo(crmano, 'L', jcrmno)
     endif
@@ -622,7 +617,7 @@ subroutine op0167()
         do 80 iocc = 1, nbgrma
             call palim3('CREA_GROUP_MA', iocc, nomain, crgrnu, crgrno,&
                         nbmaj2)
-80      continue
+ 80     continue
         call jeveuo(crgrnu, 'L', jcrgnu)
         call jeveuo(crgrno, 'L', jcrgno)
     endif
@@ -663,8 +658,8 @@ subroutine op0167()
             do 90 i = 0, nbno-1
                 call jenonu(jexnom(nomnov, zk8(jnoeu+i)), ino)
                 zi(jtrno-1+ino)=1
-90          continue
-100      continue
+ 90         continue
+100     continue
 !
 !        --- VERIFICATION QUE LE NOM N'EXISTE PAS ET COMPTAGE---
         do 110 ima = 1, nbnoev
@@ -679,7 +674,7 @@ subroutine op0167()
                 valk(2)=newmai
                 call utmess('A', 'ALGELINE4_43', nk=2, valk=valk)
             endif
-110      continue
+110     continue
     endif
 !
 ! ----------------------------------------------------------------------
@@ -701,7 +696,7 @@ subroutine op0167()
                 valk(1)=nomg
                 call utmess('F', 'ALGELINE4_5', sk=valk(1))
             endif
-120      continue
+120     continue
         do 130 ino = nbnoev+1, nbnot
 ! TRAITEMENT DES NOEUDS AJOUTES
 ! ON CODE LE NUMERO DU NOEUD COURANT
@@ -727,13 +722,13 @@ subroutine op0167()
                 valk(1)=nomg
                 call utmess('F', 'ALGELINE4_5', sk=valk(1))
             endif
-130      continue
+130     continue
 !
         call jeveuo(coovav, 'L', jvale)
         call wkvect(cooval, 'G V R8', 3*nbnot, kvale)
         do 140 i = 0, 3*nbnoev-1
             zr(kvale+i)=zr(jvale+i)
-140      continue
+140     continue
         call jelira(coovav, 'DOCU', cval=cdim)
         call jeecra(cooval, 'DOCU', cval=cdim)
     else
@@ -829,15 +824,15 @@ subroutine op0167()
                 goto 160
 !
             endif
-150      continue
-160      continue
+150     continue
+160     continue
         call jenonu(jexnom(nommai, nomg), ibid)
         dimcon = dimcon+nbptt
         zi(jnnoma+ima-1) = nbptt
         zi(jnnomb+ima-1) = nbpt
         zi(jadrjv+ima-1) = jopt
         zi(jnonum+ima-1) = ibid
-180  end do
+180 end do
 !
     decala = decala + nbmaiv
 !
@@ -865,7 +860,7 @@ subroutine op0167()
         zi(jnnoma+decala+ima-1) = nbpt
         zi(jadrjv+decala+ima-1) = jopt
         zi(jnonum+decala+ima-1) = ibid
-200  end do
+200 end do
 !
     decala = decala + nbmaj1
 !
@@ -893,7 +888,7 @@ subroutine op0167()
         zi(jnnoma+decala+ima-1) = nbpt
         zi(jadrjv+decala+ima-1) = jopt
         zi(jnonum+decala+ima-1) = ibid
-220  end do
+220 end do
 !
     dimcon = dimcon+nbmaj3
     call jeecra(connex, 'LONT', dimcon)
@@ -908,8 +903,8 @@ subroutine op0167()
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do 510 ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
-510      continue
-500  end do
+510     continue
+500 end do
 !
     decala = decala + nbmaiv
 !
@@ -921,8 +916,8 @@ subroutine op0167()
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do 530 ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
-530      continue
-520  end do
+530     continue
+520 end do
 !
     decala = decala + nbmaj1
 !
@@ -934,8 +929,8 @@ subroutine op0167()
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do 550 ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
-550      continue
-540  end do
+550     continue
+540 end do
 !
     do 230 ima = 1, nbmaj3
         newmai=zk8(jnono+ima-1)
@@ -958,7 +953,7 @@ subroutine op0167()
         call jeecra(jexnum(connex, ibid), 'LONMAX', 1)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         call jenonu(jexnom(nomnoe, newmai), zi(jnpt))
-230  end do
+230 end do
     call jedetr('&&OP0167.NBNOMA')
     call jedetr('&&OP0167.NBNOMB')
     call jedetr('&&OP0167.ADRJVX')
@@ -994,8 +989,8 @@ subroutine op0167()
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             do 240 j = 0, nbma-1
                 zi(jgg+j)=zi(jvg+j)
-240          continue
-250      continue
+240         continue
+250     continue
         do 270 i = 1, nbgrma
             call getvtx('CREA_GROUP_MA', 'NOM', iocc=i, scal=nomg, nbret=n1)
             ASSERT(n1.eq.1)
@@ -1015,8 +1010,8 @@ subroutine op0167()
             call jeveuo(jexnom(grpmai, nomg), 'E', iagma)
             do 260 ima = 0, nbmaj2-1
                 call jenonu(jexnom(nommai, zk8(jcrgno+ima)), zi(iagma+ ima))
-260          continue
-270      continue
+260         continue
+270     continue
     endif
 !
 ! ----------------------------------------------------------------------
@@ -1046,8 +1041,8 @@ subroutine op0167()
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 280 j = 0, nbno-1
                 zi(jgg+j)=zi(jvg+j)
-280          continue
-290      continue
+280         continue
+290     continue
     endif
 !
     if (nbmoma .ne. 0) call cmmoma(nomaou, momuto, nbnoev, nbnoaj)
@@ -1062,7 +1057,7 @@ subroutine op0167()
         do 300 iocc = 1, nbcrp1
             call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) nbgrma=nbgrma+1
-300      continue
+300     continue
         if (nbgrma .ne. 0) then
             call jeexin(grpmai, iret)
             if (iret .eq. 0) then
@@ -1098,8 +1093,8 @@ subroutine op0167()
                     call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
                     do 310 j = 0, nbma-1
                         zi(jgg+j)=zi(jvg+j)
-310                  continue
-320              continue
+310                 continue
+320             continue
             endif
             do 340 iocc = 1, nbcrp1
                 call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
@@ -1123,15 +1118,15 @@ subroutine op0167()
                     call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma, 1))
                     call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nogma), 'E', iagma)
-                    do 330,ima=0,nbma-1
-                    call jenonu(jexnom(nommai, zk8(jmail+ima)), zi( iagma+ima))
-330                  continue
+                    do 330 ima = 0, nbma-1
+                        call jenonu(jexnom(nommai, zk8(jmail+ima)), zi( iagma+ima))
+330                 continue
                     if (niv .ge. 1) then
                         write (ifm,9020)iocc
                         write (ifm,9030)nogma,nbma
                     endif
                 endif
-340          continue
+340         continue
         endif
     endif
 ! ----------------------------------------------------------------------
@@ -1145,7 +1140,7 @@ subroutine op0167()
         endif
         call cmdgma(nomaou)
     endif
-350  continue
+350 continue
 !
     call titre()
 !

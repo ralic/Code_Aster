@@ -39,7 +39,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer :: zslvk, zslvr, zslvi
-    integer :: jslvk, jslvr, jslvi, ibid, iret
+    integer :: jslvk, jslvr, jslvi, iret
     character(len=19) :: matass, solvbd
     character(len=8) :: symk, kmatd
     character(len=3) :: syme
@@ -53,8 +53,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     if (iret .eq. 0) call detrsd('SOLVEUR', solvbd)
 !
 !     LA MATRICE EST-ELLE NON SYMETRIQUE
-    call dismoi('F', 'TYPE_MATRICE', matass, 'MATR_ASSE', ibid,&
-                symk, iret)
+    call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=symk)
     if (symk .eq. 'SYMETRI') then
         syme='OUI'
     else if (symk.eq.'NON_SYM') then
@@ -62,8 +61,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     else
         ASSERT(.false.)
     endif
-    call dismoi('F', 'MATR_DISTR', matass, 'MATR_ASSE', ibid,&
-                kmatd, iret)
+    call dismoi('MATR_DISTR', matass, 'MATR_ASSE', repk=kmatd)
 !
     zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')

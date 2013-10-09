@@ -138,14 +138,10 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1),&
-                intf, ier)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1),&
-                numddl, ier)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec,&
-                k8b, ier)
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8b, ier)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqsec)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
@@ -158,8 +154,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION MATRICE DE MASSE-------------------------------------
 !
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1),&
-                mass, ier)
+    call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -226,7 +221,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     nbmoc = 0
     do 5 iddi = 1, nbdia
         nbmoc = nbmoc + zi(lldiam+nbdia+iddi-1)
- 5  continue
+  5 continue
     call wkvect('&&REMNGL.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNGL.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
     call ordr8(zr(llfreq), nbmoc, zi(ltorto))
@@ -238,12 +233,12 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
         do 7 jj = 1, nbdia
             icomp = icomp + zi(lldiam+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
- 7      continue
+  7     continue
         nborc = nborc + 1
         zi(ltorf+iormo-1) = nborc
         idiam = zi(lldiam+idicou-1)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
- 6  continue
+  6 continue
     call jedetr('&&REMNGL.ORDRE.TMPO')
 !
 !-----RECUPERATION DES MODES COMPLEXES----------------------------------
@@ -255,13 +250,12 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     call wkvect('&&REMNGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
     do 8 i = 1, nbsec
         zr(lttsc+i-1) = depi*(i-1) / nbsec
- 8  continue
+  8 continue
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                k8b, ier)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !***********************************************************************
 !     RESTITUTION
@@ -350,7 +344,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                 do 30 j = 1, neqsec
                     zc(ltveco+j-1) = zc(ltveco+j-1)*dephco
                     zr(ltvere+j-1) = dble(zc(ltveco+j-1))
-30              continue
+ 30             continue
                 call jeveuo(jexnum(indirf, k), 'L', ltinds)
                 call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
                 nddcou = nddcou/2
@@ -358,8 +352,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                     ieqi = zi(ltinds+(j-1)*2)
                     ieqf = zi(ltinds+(j-1)*2+1)
                     zr(llcham+ieqf-1) = zr(ltvere+ieqi-1)*fact
-40              continue
-20          continue
+ 40             continue
+ 20         continue
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
@@ -431,7 +425,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                     do 60 j = 1, neqsec
                         zc(ltveco+j-1) = zc(ltveco+j-1)*dephco
                         zr(ltvere+j-1) = dimag(zc(ltveco+j-1))
-60                  continue
+ 60                 continue
                     call jeveuo(jexnum(indirf, k), 'L', ltinds)
                     call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
                     nddcou = nddcou / 2
@@ -439,8 +433,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                         ieqi = zi(ltinds+(j-1)*2)
                         ieqf = zi(ltinds+(j-1)*2+1)
                         zr(llcham+ieqf-1) = zr(ltvere+ieqi-1)*fact
-70                  continue
-50              continue
+ 70                 continue
+ 50             continue
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
@@ -449,8 +443,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
             endif
 !
-15      continue
-10  continue
+ 15     continue
+ 10 continue
 !
     call jedetr('&&REMNGL.VEC.TRAVC')
     call jedetr('&&REMNGL.VEC.COMP')

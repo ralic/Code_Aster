@@ -94,7 +94,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai, nrl
     integer :: vali(2), nlili, nbterm, ncara, nddla, nbma, nbno, nno, nbec
     integer :: nbcmp
-    integer :: narl, naxe, lonlis, k, j, in, ino, ier, idiner, ibid, i, ival, n1
+    integer :: narl, naxe, lonlis, k, j, in, ino, idiner, i, ival, n1
     integer :: nbgno
     integer :: jnoma, jprnm, jlisma, jlisdm, jlisno, jliscr, jlisdi, jgro, jcoor
     integer :: jliscc, iaprno, idch2, idch1, ilisno, inom, jlisdl
@@ -183,8 +183,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE :
 !     ----------------------------------
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
 !
 ! ---  LIGREL DU MODELE :
 !      ----------------
@@ -219,8 +218,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
     end do
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
 !
 ! --- ACCES A L'OBJET .PRNM :
 !     ----------------------

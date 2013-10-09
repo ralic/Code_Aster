@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: nicolas.greffet at edf.fr
 #
@@ -66,7 +66,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
   grpRefeMocle['CREA_GROUP_NO'] = []
   grpProjMocle['CREA_GROUP_NO'] = []
   ifsCharMocle['GROUP_NO']      = []
-  
+
   ifsCharTuple = (GROUP_MA_IFS,)
   #print "ifsCharTuple=",ifsCharTuple
   ifsCharList = GROUP_MA_IFS
@@ -87,7 +87,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
       tmpListe.append(ifsCharTuple[j])
       grpRefeNode  = prefix + ifsCharTuple[j][0]
     #  ifsCharTuple = ifsCharTuple[1:] + (grpRefeNode,)
-            
+
       grpRefeDico                  = {}
       grpRefeDico['GROUP_MA']      = ifsCharTuple[j]
       grpRefeDico['NOM']           = grpRefeNode
@@ -143,7 +143,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
       motscles[cle]=args[cle]
 
   for i in range(len(motCleFactTuple)):
-    cle = motCleFactTuple[i]  
+    cle = motCleFactTuple[i]
     if args.has_key(cle):
       if args[cle] != None :
         dMotCle=[]
@@ -166,8 +166,8 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
   ### on recupere le concept maillage
   #print "MODELE=",MODELE
   #print "MODELE.strip()=",MODELE.strip()
-  
-  iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',MODELE.nom,'MODELE')
+
+  iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',MODELE.nom,'MODELE','F')
   _strucMesh = self.get_concept(nom_ma.strip())
   #print "MAILLAGE STRUCTURE=",_strucMesh
   #print "DEFI_GROUP MAILLAGE STRUCTURE"
@@ -263,7 +263,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
   # RECUPERATION DES DONNEES TEMPORELLES #  !!! YACS COMMUNICATION !!!
   # ------------------------------------ #
   print "Appel initialisation"
-  
+
   _timeStepAster = PAS_INIT
   print "PAS=",_timeStepAster
   _timeV = RECU_PARA_YACS(DONNEES    = 'INITIALISATION',
@@ -271,7 +271,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
   #print "__timeValues=",_timeV.Valeurs()
   _timeValues   = _timeV.Valeurs()
   _nbTimeStep  = int(_timeValues[0])
-  
+
 #  Ancien nommage
 #   _timeStep    = _timeValues[1]
 #   _tInitial    = _timeValues[2]
@@ -299,14 +299,14 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
 #  _endValue   = int(_timeValues[7])
 #  _nbTimeStep = _endValue
   #print '_nbTimeStep 2  = ',_nbTimeStep
-  
+
 #  Compteur de pas :
   _numpas     = 1
 # Compteur pour le couplage : CP_ITERATION
   _ntcast     = 0
 # Compteur de sous-itearation
   _SousIterations = 1
-  
+
   ticv=[None]*(_nbTimeStep+1) ;
   endv=[None]*(_nbTimeStep+1) ;
 
@@ -341,7 +341,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
                         INST   = _tStart,
                         PAS   = _timeStepAster,
                      )
-    _pastps0   = _pastps.Valeurs() 
+    _pastps0   = _pastps.Valeurs()
     print "_pastps0[0]=", _pastps0[0]
     _timeStep  = _pastps0[0]
     print "DEFI_LIST_REEL"
@@ -435,7 +435,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
                         INST   = _tyacs,
                         PAS   = _timeStepAster,
                      )
-    _pastps0   = _pastps.Valeurs() 
+    _pastps0   = _pastps.Valeurs()
     print "_pastps0[0]=", _pastps0[0]
     _timeStep  = _pastps0[0]
     _tEnd   = _tStart   + _timeStep
@@ -507,7 +507,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
                                             PAS     = 1,),);
         resdnl=EXTR_RESU(RESULTAT = resdnl,
                          ARCHIVAGE = _F(LIST_ORDRE =  _list2,))
-    
+
 #     endv[_iter] = RECU_PARA_YACS(DONNEES='FIN',
 #                         NUME_ORDRE_YACS = _iter,
 #                         INST  = _tEnd,

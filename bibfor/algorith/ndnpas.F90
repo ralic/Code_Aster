@@ -19,7 +19,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -75,12 +75,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     real(kind=8) :: alpha, beta, gamma, theta, phi, unthet, kappa
     real(kind=8) :: instam, instap, deltat
     logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
-    character(len=8) :: k8bid
     logical :: ldepl, lvite, lacce
     logical :: lnewma, ltheta, lkrenk
     real(kind=8) :: coerig, coeamo, coemas
     real(kind=8) :: coeext, coeint, coeequ, coeex2
-    integer :: iret, imode
+    integer ::  imode
     integer :: neq, nbmodp
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
     real(kind=8) :: coedep, coevit, coeacc
@@ -103,8 +102,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins)
     deltat = instap - instam
@@ -560,7 +558,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         do 54 imode = 1, nbmodp
             zr(jdepgp+imode-1) = zr(jdepgm+imode-1) + coefd(2)*zr( jvitgm+imode-1) + coefd(3)*zr(&
                                  &jaccgm+imode-1)
-54      continue
+ 54     continue
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... PRED. DEPL. GENE'
             call nmdebg('VECT', depgep, ifm)

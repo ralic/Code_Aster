@@ -56,7 +56,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     integer :: iexcit, iret, icha
     character(len=6) :: nompro
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ie, ier, ierd, in, inuord
+    integer :: i, ie, ier, ierd, in, inuord
     integer :: iordr, jinfc, jlcha, jordr, n1, n2, n3
     integer :: n4, nbordr, nc, np, nuord
     real(kind=8) :: prec
@@ -116,7 +116,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                 if (modnew .ne. modele) then
                     call utmess('F', 'CALCULEL7_3')
                 endif
-99          continue
+ 99         continue
         else
             call rslesd(result, nuord, modele, materi, cara,&
                         excit, iexcit)
@@ -139,16 +139,14 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
         endif
 !
         call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n2)
-        call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
-                    k8b, ie)
+        call dismoi('EXI_RDM', modele, 'MODELE', repk=k8b)
         if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) then
             call utmess('A', 'CALCULEL3_39')
         endif
 !
 !
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
-        call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
-                    k8b, ie)
+        call dismoi('BESOIN_MATER', modele, 'MODELE', repk=k8b)
         if ((nomcmd.ne.'CALC_MATR_ELEM') .and. (n3.eq.0) .and. (k8b(1:3) .eq.'OUI')) then
             call utmess('A', 'CALCULEL3_40')
         endif
@@ -172,16 +170,14 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !
 !     -- ON VERIFIE QUE LES CHARGES PORTENT TOUTES SUR LE MEME MODELE.
         if (ncha .gt. 0) then
-            call dismoi('F', 'NOM_MODELE', zk8(icha), 'CHARGE', ibid,&
-                        nomo, ie)
+            call dismoi('NOM_MODELE', zk8(icha), 'CHARGE', repk=nomo)
             do 10 i = 1, ncha
-                call dismoi('F', 'NOM_MODELE', zk8(icha-1+i), 'CHARGE', ibid,&
-                            k8b, ie)
+                call dismoi('NOM_MODELE', zk8(icha-1+i), 'CHARGE', repk=k8b)
                 if (k8b .ne. nomo) then
                     ier = ier + 1
                     call utmess('E', 'CALCULEL3_41')
                 endif
-10          continue
+ 10         continue
 !
 !        --- ON VERIFIE QUE LES CHARGES PORTENT SUR LE MODELE
 !                               EVENTUELEMENT DONNE EN ARGUMENT ---
@@ -191,17 +187,15 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
             endif
 !
 !        --- VERIFICATION DU TYPE DE CHARGEMENT ---
-            call dismoi('F', 'TYPE_CHARGE', zk8(icha), 'CHARGE', ibid,&
-                        ctyp, ie)
+            call dismoi('TYPE_CHARGE', zk8(icha), 'CHARGE', repk=ctyp)
             do 20 i = 1, ncha
-                call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+i), 'CHARGE', ibid,&
-                            k8b, ie)
+                call dismoi('TYPE_CHARGE', zk8(icha-1+i), 'CHARGE', repk=k8b)
                 if ((k8b(1:4).ne.'MECA') .and. (k8b(1:4).ne.'CIME') .and.&
                     (k8b(1:4).ne.'THER') .and. (k8b(1:4).ne.'ACOU')) then
                     ier = ier + 1
                     call utmess('E', 'CALCULEL3_43')
                 endif
-20          continue
+ 20         continue
         endif
     else
 !
@@ -212,34 +206,32 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
         call jeveuo(excit//'.LCHA', 'L', jlcha)
         call jedetr(kcha)
         call wkvect(kcha, 'V V K8', ncha, icha)
-        call dismoi('C', 'PHENOMENE', modele, 'MODELE', ibid,&
-                    phenom, ierd)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom, arret='C',&
+                    ier=ierd)
         ctyp=phenom(1:4)
         in=0
         do 50 i = 1, ncha
             call jeexin(zk24(jlcha+i-1)(1:8)//'.TYPE', ie)
 !          ON TESTE SI LA CHARGE EST NON VIDE
             if (ie .ne. 0) then
-                call dismoi('F', 'TYPE_CHARGE', zk24(jlcha+i-1)(1:8), 'CHARGE', ibid,&
-                            k8b, ie)
+                call dismoi('TYPE_CHARGE', zk24(jlcha+i-1)(1:8), 'CHARGE', repk=k8b)
 !          ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
                 if (ctyp .eq. k8b(1:4)) then
                     zk8(icha+in)=zk24(jlcha+i-1)(1:8)
                     in=in+1
                 endif
             endif
-50      continue
+ 50     continue
         ncha=in
 !
 !        ON VERIFIE QUE LES CHARGES RECUPEREES REPOSENT
 !        TOUTES SUR LE MEME MODELE
         do 60 i = 1, ncha
-            call dismoi('F', 'NOM_MODELE', zk8(icha+i-1), 'CHARGE', ibid,&
-                        nomo, ie)
+            call dismoi('NOM_MODELE', zk8(icha+i-1), 'CHARGE', repk=nomo)
             if (nomo .ne. modele) then
                 call utmess('F', 'CALCULEL3_44')
             endif
-60      continue
+ 60     continue
     endif
 !
     if (ier .ne. 0) then

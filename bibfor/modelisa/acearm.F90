@@ -63,11 +63,11 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     integer :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3, irpto
     integer :: irlto, itbmp, ndim, ixci, jdcinf, jdvinf, i, ixckma, ioc
     integer :: irep, isym, impris, nu, nfr, ngp, ngl, ifreq, nma, ldgm, nbpo
-    integer :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, ibid, ier, icf
+    integer :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, ibid, icf
     real(kind=8) :: eta, vale(3), r8bid, freq, coef, zero(5)
     character(len=1) :: kma(3)
     character(len=7) :: ledisc
-    character(len=8) :: nommai, k8b, nomu, k8bid
+    character(len=8) :: nommai, nomu, k8bid
     character(len=9) :: cara
     character(len=16) :: rep, repdis(nrd), concep, cmd, k16nom
     character(len=19) :: cart(3), cartdi
@@ -89,8 +89,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     impr = iunifi('MESSAGE')
 !
 ! --- RECUPERATION DE LA DIMENSION DU MODELE
-    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ibid,&
-                k8b, ier)
+    call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ibid)
     ndim=ibid
     if (ibid .ge. 100) then
         ibid = ibid - 100
@@ -126,7 +125,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
         zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-200  end do
+200 end do
     zk8(jdcinf+9) = 'ETAK    '
     call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
     zk8(jdcinf+10) = 'TYDI    '
@@ -143,7 +142,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         endif
         call jeveuo(tmpnd(i), 'E', jdc(i))
         call jeveuo(tmpvd(i), 'E', jdv(i))
-220  end do
+220 end do
 !
 ! --- BOUCLE SUR LES OCCURENCES DE DISCRET
     do 30 ioc = 1, nbocc
@@ -162,7 +161,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', iocc=ioc, scal=nogl, nbret=ngl)
         do 32 i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
-32      continue
+ 32     continue
         if (ivr(3) .eq. 1) then
             write(impr,1000)rep,ioc
             1000      format(/,3x,&
@@ -189,7 +188,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
             do 21 in = 0, nma-1
                 call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
                 zk8(itbmp+in) = nommai
-21          continue
+ 21         continue
             do 41 i = 1, nbpo
                 iv = 1
                 jd = itbmp + i - 1
@@ -223,7 +222,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
                             limano=[zk8(jd)])
-41          continue
+ 41         continue
 !
         endif
 !
@@ -236,7 +235,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
             do 22 in = 0, nma-1
                 call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
                 zk8(itbmp+in) = nommai
-22          continue
+ 22         continue
             call r8inir(3, 0.d0, vale, 1)
             do 42 i = 1, nbli
                 iv = 1
@@ -274,9 +273,9 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1,&
                             limano=[zk8(jd)])
-42          continue
+ 42         continue
         endif
-30  end do
+ 30 end do
 !
     call jedetr('&&TMPRIGMA')
     call jedetr('&&TMPRIGM2')
@@ -288,7 +287,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     do 240 i = 1, 3
         call jedetr(tmpnd(i))
         call jedetr(tmpvd(i))
-240  end do
+240 end do
     call jedetr(tmcinf)
     call jedetr(tmvinf)
 !

@@ -1,5 +1,6 @@
-subroutine mnllec(imat, numedd, ordman, epsman, pasman, epscor, h,&
-                  hf, itemax, nbran, nextr, epsbif)
+subroutine mnllec(imat, numedd, ordman, epsman, pasman,&
+                  epscor, h, hf, itemax, nbran,&
+                  nextr, epsbif)
     implicit none
 !
 ! ======================================================================
@@ -44,14 +45,11 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, epscor, h,&
 ! OUT  HF     : I    : NOMBRE D'HARMONIQUES POUR F
 ! OUT  ITEMAX : I    : NOMBRE D ITERATIONS MAX POUR LA CORRECTION
 ! OUT  NBRAN  : I    : NOMBRE DE BRANCHES A CALCULER
-! OUT  NEXTR  : I    : NOMBRE DE TERME A PRENDRE EN COMPTE POUR LA DETECTION DE BIFURCATION 
+! OUT  NEXTR  : I    : NOMBRE DE TERME A PRENDRE EN COMPTE POUR LA DETECTION DE BIFURCATION
 ! OUT  EPSBIF : R8   : RESIDU POUR LA BIFURCATION
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -61,14 +59,17 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, epscor, h,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
-
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
+!
     integer :: imat(2), ordman, pasman, h, hf, itemax, nbran, nextr
     real(kind=8) :: epsman, epscor, epsbif
     character(len=24) :: numedd
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ibid, ie, imeth
+    integer ::  imeth
     character(len=8) :: masse, rigid
     character(len=16) :: method
 !
@@ -81,14 +82,13 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, epscor, h,&
     call jeveuo(rigid//'           .&INT', 'E', imat(1))
     call mtdscr(masse)
     call jeveuo(masse//'           .&INT', 'E', imat(2))
-    call dismoi('F', 'NOM_NUME_DDL', rigid, 'MATR_ASSE', ibid,&
-                numedd, ie)
+    call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numedd)
 ! ----------------------------------------------------------------------
 ! --- ON RECUPERE LE NBRE D'HARMONIQUE (DEPL ET FORCE)
 ! ----------------------------------------------------------------------
     call getvis('RESOLUTION', 'NB_HARM_LINE', iocc=1, scal=h)
     call getvis('RESOLUTION', 'NB_HARM_NONL', iocc=1, scal=hf)
-    if (h.gt.hf) then
+    if (h .gt. hf) then
         call utmess('F', 'MECANONLINE9_63')
     endif
 ! ----------------------------------------------------------------------
@@ -115,7 +115,7 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, epscor, h,&
         pasman=pasman+1
 ! ----- NOMBRE DE BRANCHE
         call getvis('RESOLUTION', 'NB_BRANCHE', iocc=1, scal=nbran)
-! ----- NOMBRE DE TERME A PRENDRE EN COMPTE POUR LA DETECTION DE BIFURCATION 
+! ----- NOMBRE DE TERME A PRENDRE EN COMPTE POUR LA DETECTION DE BIFURCATION
         call getvis('RESOLUTION', 'CRIT_ORDR_BIFURCATION', iocc=1, scal=nextr)
 ! ----- RESIDU BIFURCATION
         call getvr8('RESOLUTION', 'RESI_RELA_BIFURCATION', iocc=1, scal=epsbif)

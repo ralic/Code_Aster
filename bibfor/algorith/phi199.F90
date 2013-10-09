@@ -104,10 +104,8 @@ subroutine phi199(model, mate, ma, nu, num,&
         nbmode=tmod(1)
         call rsexch('F', modmec, 'DEPL', 1, nomcha,&
                     iret)
-        call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
-                    mailla, ier)
-        call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
-                    maflui, ier)
+        call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=mailla)
+        call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
             call tabcor(model, mate, mailla, maflui, moint,&
                         num, ndble, icor)

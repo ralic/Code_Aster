@@ -58,7 +58,7 @@ subroutine crevge(ligrel, bas1)
     integer :: iaddvo, iadvoi
 !
     character(len=24) :: typmai, connex, coninv, ptvois, elvois
-    character(len=8) :: ma, kbid, typem0, typemr
+    character(len=8) :: ma, typem0, typemr
     character(len=32) :: no
     logical :: troisd
 !
@@ -66,7 +66,7 @@ subroutine crevge(ligrel, bas1)
     integer :: nvoima, nscoma
     parameter(nvoima=100,nscoma=4)
     integer :: touvoi(1:nvoima, 1:nscoma+2)
-    integer :: iv, ibid, nbma, ier, dim, dimma, iatyma, m0, is, adcom0, nbsom0
+    integer :: iv, nbma, dim, dimma, iatyma, m0, is, adcom0, nbsom0
     integer :: nbmr, admar, ir, numar, nvtot, iad, dimvlo, jnvge
 !
 !
@@ -74,10 +74,8 @@ subroutine crevge(ligrel, bas1)
 ! --------- CONSTRUCTION DE LA CONNECTIVITE INVERSE --------------------
 !
     call jemarq()
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                ma, ier)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ier)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
     typmai=ma//'.TYPMAIL'
     connex=ma//'.CONNEX'
@@ -96,8 +94,8 @@ subroutine crevge(ligrel, bas1)
             goto 20
 !
         endif
-10  end do
-20  continue
+ 10 end do
+ 20 continue
     if (troisd) then
         dim=3
     else
@@ -110,7 +108,7 @@ subroutine crevge(ligrel, bas1)
 ! --------- CREATION DU POINTEUR DE LONGUEUR DE CONINV ----------------
 !
     coninv='&&CREVGE.CONINV'
-    call cncinv(ma, [ibid], 0, 'G', coninv)
+    call cncinv(ma, [0], 0, 'G', coninv)
 !
     typmai=ma//'.TYPMAIL'
     connex=ma//'.CONNEX'
@@ -147,8 +145,8 @@ subroutine crevge(ligrel, bas1)
             do 40 iv = 1, nvoima
                 do 30 is = 1, nscoma+2
                     touvoi(iv,is)=0
-30              continue
-40          continue
+ 30             continue
+ 40         continue
             call jeveuo(jexnum(connex, m0), 'L', adcom0)
             call nbsomm(typem0, nbsom0)
 !
@@ -176,9 +174,9 @@ subroutine crevge(ligrel, bas1)
                             call adlivo(numar, is, nvtot, nvoima, nscoma,&
                                         touvoi)
                         endif
-50                  continue
+ 50                 continue
                 endif
-60          continue
+ 60         continue
             call dimvoi(nvtot, nvoima, nscoma, touvoi, dimvlo)
         else
 !
@@ -188,7 +186,7 @@ subroutine crevge(ligrel, bas1)
             dimvlo=1
         endif
         zi(iaddvo+m0)=zi(iaddvo+m0-1)+dimvlo
-70  end do
+ 70 end do
 !
 !  ON PEUT MAINTENANT ALLOUER ET REMPLIR CET OBJET
 !
@@ -207,8 +205,8 @@ subroutine crevge(ligrel, bas1)
             do 90 iv = 1, nvoima
                 do 80 is = 1, nscoma+2
                     touvoi(iv,is)=0
-80              continue
-90          continue
+ 80             continue
+ 90         continue
             call jeveuo(jexnum(connex, m0), 'L', adcom0)
             call nbsomm(typem0, nbsom0)
 !
@@ -230,9 +228,9 @@ subroutine crevge(ligrel, bas1)
                             call adlivo(numar, is, nvtot, nvoima, nscoma,&
                                         touvoi)
                         endif
-100                  continue
+100                 continue
                 endif
-110          continue
+110         continue
             iad=iadvoi+zi(iaddvo+m0-1)
             call crvloc(dim, adcom0, iatyma, connex, zi(iad),&
                         nvtot, nvoima, nscoma, touvoi)
@@ -243,7 +241,7 @@ subroutine crevge(ligrel, bas1)
 !
             zi(iadvoi+zi(iaddvo+m0-1))=0
         endif
-120  end do
+120 end do
 !
 !
 !      CALL IMPVOI(' VGE EN FIN DE CREVGE ',NBMA,IADDVO,IADVOI)

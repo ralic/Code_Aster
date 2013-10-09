@@ -61,7 +61,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !
 !
-    integer :: i, iad, ibid, ieq, ier, iord, iret, j, jbid, k, ldnew, llchab
+    integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k, ldnew, llchab
     integer :: llchol, llnueq, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
     integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref2, llref3
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
@@ -85,8 +85,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DU MODELE GENERALISE
 !
-    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid,&
-                raid, iret)
+    call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
     call jeveuo(raid//'.REFA', 'L', llref2)
     numgen(1:14) = zk24(llref2+1)
@@ -127,7 +126,7 @@ subroutine regeec(nomres, resgen, nomsst)
         nutars=0
         do 10 i = 1, nbsst
             if (zi(llors+i-1) .eq. nusst) nutars=i
-10      continue
+ 10     continue
 !
 !
         call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
@@ -143,7 +142,7 @@ subroutine regeec(nomres, resgen, nomsst)
             if (nomsst .eq. zk8(ibid+i1-1)) then
                 nusst=i1
             endif
-12      continue
+ 12     continue
         neqet=0
         ieq=0
 !
@@ -155,12 +154,12 @@ subroutine regeec(nomres, resgen, nomsst)
         ibid=1
         do 11 i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
-11      continue
+ 11     continue
 !
         ieq=0
         do 41 i1 = 1, nusst-1
             ieq=ieq+zi(lsilia+i1-1)
-41      continue
+ 41     continue
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
 !
     endif
@@ -172,8 +171,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     call refdcp(basmod, nomres)
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbbas,&
-                kbid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
 !
     if (elim .eq. 0) then
         if (nbbas .ne. nbddg) then
@@ -184,15 +182,11 @@ subroutine regeec(nomres, resgen, nomsst)
         endif
     endif
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                lint, iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lint)
 !
-    call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NOM_NUME_DDL', lint, 'INTERF_DYNA', ibid,&
-                numddl, iret)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                kbid, iret)
+    call dismoi('NOM_MAILLA', lint, 'INTERF_DYNA', repk=mailla)
+    call dismoi('NOM_NUME_DDL', lint, 'INTERF_DYNA', repk=numddl)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
     crefe(1)=mailla
     crefe(2)=numddl
@@ -222,7 +216,7 @@ subroutine regeec(nomres, resgen, nomsst)
         call wkvect('&&REGEEC.NUME', 'V V I', nbmod(1), jbid)
         do 2 i = 1, nbmod(1)
             zi(jbid+i-1) = i
- 2      continue
+  2     continue
     endif
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
@@ -247,8 +241,8 @@ subroutine regeec(nomres, resgen, nomsst)
                 do 31 k1 = 1, neqred
                     zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
                     neqet+i1-1)* zr(llchol+k1-1)
-31              continue
-21          continue
+ 31             continue
+ 21         continue
             llchol=lmoet
         endif
 !
@@ -284,9 +278,9 @@ subroutine regeec(nomres, resgen, nomsst)
                     iad=llchol+zi(llnueq+ieq+j-2)-1
                 endif
                 zr(ldnew+k-1) = zr(ldnew+k-1) + zr(llchab+k-1)*zr(iad)
-40          continue
+ 40         continue
             call jelibe(chamba)
-30      continue
+ 30     continue
         call rsnoch(nomres, depl, i)
         call rsadpa(nomres, 'E', 6, nompar, i,&
                     0, tjv=iadpar, styp=kbid)
@@ -298,7 +292,7 @@ subroutine regeec(nomres, resgen, nomsst)
         zk16(iadpar(6)) = 'MODE_DYN'
 !
         call jelibe(chamol)
-20  continue
+ 20 continue
 !
     call jelibe(numgen//'.NUEQ')
     call jedetr('&&REGEEC.NUME')

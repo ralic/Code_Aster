@@ -62,7 +62,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
     character(len=24) :: ioinfo, iolcha
     integer :: jioinf, jiolch
     integer :: zioch
-    integer :: iret, ibid
+    integer :: iret
     character(len=24) :: chetin, nomchs, loccha, nomgd, statut
     character(len=24) :: valk(2)
     character(len=24) :: nomcha
@@ -74,8 +74,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 !
 ! --- INITIALISATION
 !
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrmo, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! --- ACCES AUX SDS
 !
@@ -154,7 +153,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
         endif
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -59,7 +59,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=6) :: nompro
     parameter  (nompro='CCBCOP')
 !
-    integer :: jordr, ierd, ibid, iret, nbchar
+    integer :: jordr, iret, nbchar
     integer :: ifm, niv, nuord
     integer :: nbac, nbpa, nbpara, jpara
     integer :: iaux, j, iadou, iadin, iordr, jopt, iopt
@@ -107,14 +107,11 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 !
 !     ON VERIFIE QUE CARA_ELEM EST RENSEIGNES POUR LES COQUES
     exipla=.false.
-    call dismoi('F', 'EXI_COQ1D', modele, 'MODELE', ibid,&
-                k8b, ierd)
+    call dismoi('EXI_COQ1D', modele, 'MODELE', repk=k8b)
     if (k8b(1:3) .eq. 'OUI') exipla=.true.
-    call dismoi('F', 'EXI_COQ3D', modele, 'MODELE', ibid,&
-                k8b, ierd)
+    call dismoi('EXI_COQ3D', modele, 'MODELE', repk=k8b)
     if (k8b(1:3) .eq. 'OUI') exipla=.true.
-    call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid,&
-                k8b, ierd)
+    call dismoi('EXI_PLAQUE', modele, 'MODELE', repk=k8b)
     if (k8b(1:3) .eq. 'OUI') exipla=.true.
 !
     if (exipla .and. carael .eq. ' ') then
@@ -129,33 +126,33 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         nbpara=nbac+nbpa
 !
         call jeveuo(nompar, 'L', jpara)
-        do 40,iaux=1,nbordr
-        iordr=zi(jordr+iaux-1)
-        do 50 j = 1, nbpara
-            call rsadpa(resuin, 'L', 1, zk16(jpara+j-1), iordr,&
-                        1, sjv=iadin, styp=type)
-            call rsadpa(resuou, 'E', 1, zk16(jpara+j-1), iordr,&
-                        1, sjv=iadou, styp=type)
+        do 40 iaux = 1, nbordr
+            iordr=zi(jordr+iaux-1)
+            do 50 j = 1, nbpara
+                call rsadpa(resuin, 'L', 1, zk16(jpara+j-1), iordr,&
+                            1, sjv=iadin, styp=type)
+                call rsadpa(resuou, 'E', 1, zk16(jpara+j-1), iordr,&
+                            1, sjv=iadou, styp=type)
 !
-            if (type(1:1) .eq. 'I') then
-                zi(iadou)=zi(iadin)
-            else if (type(1:1).eq.'R') then
-                zr(iadou)=zr(iadin)
-            else if (type(1:1).eq.'C') then
-                zc(iadou)=zc(iadin)
-            else if (type(1:3).eq.'K80') then
-                zk80(iadou)=zk80(iadin)
-            else if (type(1:3).eq.'K32') then
-                zk32(iadou)=zk32(iadin)
-            else if (type(1:3).eq.'K24') then
-                zk24(iadou)=zk24(iadin)
-            else if (type(1:3).eq.'K16') then
-                zk16(iadou)=zk16(iadin)
-            else if (type(1:2).eq.'K8') then
-                zk8(iadou)=zk8(iadin)
-            endif
-50      continue
-40      continue
+                if (type(1:1) .eq. 'I') then
+                    zi(iadou)=zi(iadin)
+                else if (type(1:1).eq.'R') then
+                    zr(iadou)=zr(iadin)
+                else if (type(1:1).eq.'C') then
+                    zc(iadou)=zc(iadin)
+                else if (type(1:3).eq.'K80') then
+                    zk80(iadou)=zk80(iadin)
+                else if (type(1:3).eq.'K32') then
+                    zk32(iadou)=zk32(iadin)
+                else if (type(1:3).eq.'K24') then
+                    zk24(iadou)=zk24(iadin)
+                else if (type(1:3).eq.'K16') then
+                    zk16(iadou)=zk16(iadin)
+                else if (type(1:2).eq.'K8') then
+                    zk8(iadou)=zk8(iadin)
+                endif
+ 50         continue
+ 40     continue
         call jedetr(nompar)
     endif
 !
@@ -181,9 +178,9 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 !
             if (iret .ne. 0) ASSERT(.false.)
         endif
-20  end do
+ 20 end do
 !
-30  continue
+ 30 continue
 !
     call jedema()
 !

@@ -33,14 +33,13 @@ subroutine parti0(nbvec, tlivec, partit)
     character(len=8) :: part1
     character(len=19) :: vecel
     character(len=24) :: valk(5)
-    integer :: i, ibid
+    integer :: i
 !
 !
     partit=' '
     do 10 i = 1, nbvec
         vecel = tlivec(i)
-        call dismoi('F', 'PARTITION', vecel, 'VECT_ELEM', ibid,&
-                    part1, ibid)
+        call dismoi('PARTITION', vecel, 'VECT_ELEM', repk=part1)
         if (partit .eq. ' ' .and. part1 .ne. ' ') partit=part1
         if (partit .ne. ' ' .and. part1 .eq. ' ') goto 10
         if (partit .ne. ' ' .and. partit .ne. part1) then
@@ -48,5 +47,5 @@ subroutine parti0(nbvec, tlivec, partit)
             valk(2)=part1
             call utmess('F', 'CALCULEL_10', nk=2, valk=valk)
         endif
-10  end do
+ 10 end do
 end subroutine

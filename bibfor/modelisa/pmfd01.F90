@@ -50,7 +50,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     integer :: jnbfib, jpoint, jcarfi, jces1d, jces1v, jces1l, jnbfig
     integer :: iad, icmp, ncarfi, point, ima, ibid, nbma
     integer :: nb1, ispt, nncp, ifib, ig, nbgf, nbfig, nug, ipos, iret
-    character(len=1) :: kbid, ki1
+    character(len=1) ::  ki1
     character(len=2) :: ki2
     character(len=19) :: ces1, lichs(2), ces3, ligrmo, cel
     logical :: lcumul(2), exipmf
@@ -64,8 +64,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     call jemarq()
     nbcp=2+ngmxel
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                kbid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
     ligrmo = modele//'.MODELE'
 !
@@ -101,31 +100,31 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
         do 2 ig = 1, ngmxel
             call codent(ig, 'G', ki1)
             licmp(2+ig)='NUG'//ki1
- 2      continue
+  2     continue
     else if (ngmxel.le.99) then
         do 3 ig = 1, 9
             call codent(ig, 'G', ki1)
             licmp(2+ig)='NUG'//ki1
- 3      continue
+  3     continue
         do 4 ig = 10, ngmxel
             call codent(ig, 'G', ki2)
             licmp(2+ig)='NUG'//ki2
- 4      continue
+  4     continue
     endif
     call cescre('V', ces1, 'ELEM', noma, 'NBSP_I',&
                 nbcp, licmp, [-1], [-1], [-nbcp])
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
     call jeveuo(ces1//'.CESV', 'E', jces1v)
-    do 10,ima = 1,nbma
-    do 12 icmp = 1, nbcp
-        call cesexi('C', jces1d, jces1l, ima, 1,&
-                    1, icmp, iad)
-        ASSERT(iad.lt.0)
-        zl(jces1l-1-iad) = .true.
-        zi(jces1v-1-iad) = zi(jnbfib-1+(ima-1)*nbcp+icmp)
-12  continue
-    10 end do
+    do 10 ima = 1, nbma
+        do 12 icmp = 1, nbcp
+            call cesexi('C', jces1d, jces1l, ima, 1,&
+                        1, icmp, iad)
+            ASSERT(iad.lt.0)
+            zl(jces1l-1-iad) = .true.
+            zi(jces1v-1-iad) = zi(jnbfib-1+(ima-1)*nbcp+icmp)
+ 12     continue
+ 10 end do
 !
 ! --- 2.1.2. FUSION DE CES1 AVEC CESDEC :
 !     --------------------------------------
@@ -136,7 +135,8 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     lcoefr(1) = 1.d0
     lcoefr(2) = 1.d0
     ces3 = '&&PMFD01.CES3'
-    call cesfus(2, lichs, lcumul, lcoefr, [cbid], .false., 'V', ces3)
+    call cesfus(2, lichs, lcumul, lcoefr, [cbid],&
+                .false., 'V', ces3)
     call detrsd('CHAM_ELEM_S', ces1)
 !
     cel = carele//'.CANBSP'
@@ -154,7 +154,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     call wkvect('&&PMFD01.NBSP', 'V V I', nbma, jsp)
     do 70 ima = 1, nbma
         zi(jsp-1+ima)=zi(jnbfib+(ima-1)*nbcp)
-70  end do
+ 70 end do
 !
     licmp(1)='XG'
     licmp(2)='YG'
@@ -164,27 +164,27 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
     call jeveuo(ces1//'.CESV', 'E', jces1v)
-    do 40,ima = 1,nbma
-    ipos=jnbfib+(ima-1)*nbcp
-    nbgf=zi(ipos+1)
-    ispt=0
-    do 37 ig = 1, nbgf
-        nug = zi(ipos+1+ig)
-        nbfig = zi(jnbfig-1+nug)
-        point = zi(jpoint-1+nug)
-        do 35,ifib = 1,nbfig
-        ispt=ispt+1
-        do 30,icmp = 1,ncarfi
-        call cesexi('C', jces1d, jces1l, ima, 1,&
-                    ispt, icmp, iad)
+    do 40 ima = 1, nbma
+        ipos=jnbfib+(ima-1)*nbcp
+        nbgf=zi(ipos+1)
+        ispt=0
+        do 37 ig = 1, nbgf
+            nug = zi(ipos+1+ig)
+            nbfig = zi(jnbfig-1+nug)
+            point = zi(jpoint-1+nug)
+            do 35 ifib = 1, nbfig
+                ispt=ispt+1
+                do 30 icmp = 1, ncarfi
+                    call cesexi('C', jces1d, jces1l, ima, 1,&
+                                ispt, icmp, iad)
 !              ASSERT(IAD.LT.0)
-        zl(jces1l-1-iad) = .true.
-        zr(jces1v-1-iad)=zr(jcarfi-1+point-1+(ifib-1)*&
+                    zl(jces1l-1-iad) = .true.
+                    zr(jces1v-1-iad)=zr(jcarfi-1+point-1+(ifib-1)*&
                     ncarfi+icmp)
-30      continue
-35      continue
-37  continue
-    40 end do
+ 30             continue
+ 35         continue
+ 37     continue
+ 40 end do
 !
     cel = carele//'.CAFIBR'
     call cescel(ces1, ligrmo, 'TOU_INI_ELEM', ' ', 'NON',&
@@ -192,6 +192,6 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     call detrsd('CHAM_ELEM_S', ces1)
 !
 !
-50  continue
+ 50 continue
     call jedema()
 end subroutine

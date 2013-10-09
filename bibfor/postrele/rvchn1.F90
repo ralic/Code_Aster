@@ -38,7 +38,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ibid, ier, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno, jnueq
+    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno, jnueq
     integer :: iad, tabec(10), iavald, nunoe, numdx, numdy, numdz, numdrx
     integer :: numdry, numdrz, nuddl
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3)
@@ -49,12 +49,9 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 !
     depla = deplaz
 !
-    call dismoi('F', 'PROF_CHNO', deplaz, 'CHAM_NO', ibid,&
-                prno, ier)
-    call dismoi('F', 'NUM_GD', deplaz, 'CHAM_NO', gd,&
-                k8b, ier)
-    call dismoi('F', 'NOM_GD', deplaz, 'CHAM_NO', ibid,&
-                k8b, ier)
+    call dismoi('PROF_CHNO', deplaz, 'CHAM_NO', repk=prno)
+    call dismoi('NUM_GD', deplaz, 'CHAM_NO', repi=gd)
+    call dismoi('NOM_GD', deplaz, 'CHAM_NO', repk=k8b)
     if (k8b(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'POSTRELE_17')
     endif
@@ -77,7 +74,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
         nunoe = numnd(ino)
         do 10 iec = 1, nec
             tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
-10      continue
+ 10     continue
         numdx = 0
         numdy = 0
         numdz = 0
@@ -116,19 +113,19 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
                     valer(3) = zr(iavald-1+numdrz)
                 endif
             endif
-20      continue
+ 20     continue
         if ((numdx+numdy+numdz) .eq. 0) goto 22
         call utpvgl(1, 3, pgl, valed, vald)
         if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
         if (numdy .ne. 0) zr(iavald-1+numdy) = vald(2)
         if (numdz .ne. 0) zr(iavald-1+numdz) = vald(3)
-22      continue
+ 22     continue
         if ((numdrx+numdry+numdrz) .eq. 0) goto 30
         call utpvgl(1, 3, pgl, valer, valr)
         if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
         if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
         if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
-30  end do
+ 30 end do
 !
     call jedema()
 end subroutine

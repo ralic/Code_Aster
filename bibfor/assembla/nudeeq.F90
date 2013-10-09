@@ -86,14 +86,14 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !     VARIABLES LOCALES:
 !     ------------------
 !
-    character(len=8) :: k8bid, ma, nono, nocmp
+    character(len=8) ::  ma, nono, nocmp
     character(len=19) :: numeqa
     character(len=24) :: valk(2)
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadg, ibid, iddl, ied, ieq, ier
+    integer :: i, iadg, iddl, ieq, ier
     integer :: ilag, j, jdeeq, jdelg, jlblq, jncmp, jnueq
     integer :: jprno, jtypl, k, l, nblag, nbligr, nbnl
     integer :: nbnm, nbno, ncmpmx, nddlb, nec, nob, nucmp
@@ -101,12 +101,9 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !-----------------------------------------------------------------------
     call jemarq()
     numeqa=nu14//'.NUME'
-    call dismoi('F', 'NOM_MAILLA', numeqa, 'NUME_EQUA', ibid,&
-                ma, ied)
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbnm,&
-                k8bid, ied)
-    call dismoi('F', 'NB_NL_MAILLA', ma, 'MAILLAGE', nbnl,&
-                k8bid, ied)
+    call dismoi('NOM_MAILLA', numeqa, 'NUME_EQUA', repk=ma)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnm)
+    call dismoi('NB_NL_MAILLA', ma, 'MAILLAGE', repi=nbnl)
     if (nbnl .gt. 0) call jeveuo(ma//'.TYPL', 'L', jtypl)
 !
 !
@@ -171,40 +168,40 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
                         endif
 !
                     endif
-10              continue
-20          continue
+ 10             continue
+ 20         continue
             if (i .gt. 1) nblag = nblag + nbno
         endif
-30  end do
+ 30 end do
 !
 !
 !     -- ON VERIFIE QUE LES DDLS BLOQUES NE SONT PAS BLOQUES
 !        PLUSIEURS FOIS (ON NE REGARDE QUE LES 10 1ERES CMPS):
 !     -------------------------------------------------------
     call wkvect('&&NUEFFE.LNOBLOQ', 'V V I', nbnm*10, jlblq)
-    do 40,ieq = 1,neq
-    nuno = zi(jdeeq-1+2* (ieq-1)+1)
-    nucmp = zi(jdeeq-1+2* (ieq-1)+2)
-    if ((nuno.gt.0) .and. (nucmp.lt.0) .and. (nucmp.ge.-10)) then
-        nucmp = -nucmp
-        zi(jlblq-1+ (nuno-1)*10+nucmp) = zi(jlblq-1+ (nuno-1)*10+ nucmp) + 1
-    endif
-    40 end do
+    do 40 ieq = 1, neq
+        nuno = zi(jdeeq-1+2* (ieq-1)+1)
+        nucmp = zi(jdeeq-1+2* (ieq-1)+2)
+        if ((nuno.gt.0) .and. (nucmp.lt.0) .and. (nucmp.ge.-10)) then
+            nucmp = -nucmp
+            zi(jlblq-1+ (nuno-1)*10+nucmp) = zi(jlblq-1+ (nuno-1)*10+ nucmp) + 1
+        endif
+ 40 end do
 !
     ier = 0
-    do 60,nuno = 1,nbnm
-    do 50,nucmp = 1,10
-    if (zi(jlblq-1+ (nuno-1)*10+nucmp) .gt. 2) then
-        ier = ier + 1
-        call jenuno(jexnum(ma//'.NOMNOE', nuno), nono)
-        call jeveuo(jexnum('&CATA.GD.NOMCMP', gds), 'L', jncmp)
-        nocmp = zk8(jncmp-1+nucmp)
-        valk(1) = nono
-        valk(2) = nocmp
-        call utmess('E', 'ASSEMBLA_26', nk=2, valk=valk)
-    endif
-50  continue
-    60 end do
+    do 60 nuno = 1, nbnm
+        do 50 nucmp = 1, 10
+            if (zi(jlblq-1+ (nuno-1)*10+nucmp) .gt. 2) then
+                ier = ier + 1
+                call jenuno(jexnum(ma//'.NOMNOE', nuno), nono)
+                call jeveuo(jexnum('&CATA.GD.NOMCMP', gds), 'L', jncmp)
+                nocmp = zk8(jncmp-1+nucmp)
+                valk(1) = nono
+                valk(2) = nocmp
+                call utmess('E', 'ASSEMBLA_26', nk=2, valk=valk)
+            endif
+ 50     continue
+ 60 end do
     ASSERT(ier.le.0)
     call jedetr('&&NUEFFE.LNOBLOQ')
 !

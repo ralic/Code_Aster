@@ -44,7 +44,7 @@ subroutine pronua(method, nuag1, nuag2)
     integer :: inuai1, inuai2, inuax1, inuax2, iadref, iacorr
     integer :: inuav1, inuav2
     integer :: iret, inual1, inual2, ip2, ic2, ip1, ic1
-    integer :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2, ibid, ierd
+    integer :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2
     integer :: i1, i2, ii2, i
     real(kind=8) :: val2r
     character(len=19) :: nua1, nua2
@@ -81,8 +81,7 @@ subroutine pronua(method, nuag1, nuag2)
         call utmess('F', 'UTILITAI3_90', nk=2, valk=valk)
     endif
     call jenuno(jexnum('&CATA.GD.NOMGD', gd1), nogd)
-    call dismoi('F', 'TYPE_SCA', nogd, 'GRANDEUR', ibid,&
-                tysca, ierd)
+    call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=tysca)
 !
     nc1 = zi(inuai1-1+3)
     nc2 = zi(inuai2-1+3)
@@ -98,15 +97,15 @@ subroutine pronua(method, nuag1, nuag2)
 !        ENTRE LES NUMEROS DE CMPS DE NUAG2 ET CEUX DE NUAG1 :
 !        -----------------------------------------------------
     call wkvect('&&PRONUA.CORRESP', 'V V I', nc2, iacorr)
-    do 1,i2= 1,nc2
-    ii2=zi(inuai2-1+5+i2)
-    i1=indiis(zi(inuai1-1+6),ii2,1,nc1)
-    if (i1 .eq. 0) then
-        call utmess('F', 'UTILITAI3_91', sk=nua1)
-    else
-        zi(iacorr-1+i2) = i1
-    endif
-    1 end do
+    do 1 i2 = 1, nc2
+        ii2=zi(inuai2-1+5+i2)
+        i1=indiis(zi(inuai1-1+6),ii2,1,nc1)
+        if (i1 .eq. 0) then
+            call utmess('F', 'UTILITAI3_91', sk=nua1)
+        else
+            zi(iacorr-1+i2) = i1
+        endif
+  1 end do
 !
 !
 !     SI LES OBJETS .NUAL N'EXISTENT PAS, ON LES CREE :
@@ -114,9 +113,9 @@ subroutine pronua(method, nuag1, nuag2)
     call jeexin(nua1//'.NUAL', iret)
     if (iret .eq. 0) then
         call wkvect(nua1//'.NUAL', 'V V L', nc1*np1, inual1)
-        do 50,i=1,nc1*np1
-        zl(inual1-1+i)=.true.
-50      continue
+        do 50 i = 1, nc1*np1
+            zl(inual1-1+i)=.true.
+ 50     continue
     else
         call jeveuo(nua1//'.NUAL', 'L', inual1)
     endif
@@ -124,9 +123,9 @@ subroutine pronua(method, nuag1, nuag2)
     call jeexin(nua2//'.NUAL', iret)
     if (iret .eq. 0) then
         call wkvect(nua2//'.NUAL', 'V V L', nc2*np2, inual2)
-        do 51,i=1,nc2*np2
-        zl(inual2-1+i)=.true.
-51      continue
+        do 51 i = 1, nc2*np2
+            zl(inual2-1+i)=.true.
+ 51     continue
     else
         call jeveuo(nua2//'.NUAL', 'L', inual2)
     endif
@@ -136,46 +135,46 @@ subroutine pronua(method, nuag1, nuag2)
 !     ON POURRA NE CALCULER L'OBJET .DREF QU'UNE SEULE FOIS
 !     -------------------------------------------------
     ldref=.true.
-    do 71,ip1=2,np1
-    do 72,ic1=1,nc1
-    if (zl(inual1-1+(ip1-1)*nc1+ic1) .neqv. zl(inual1-1+(ip1-2) *nc1+ic1)) then
-        ldref=.false.
-        goto 73
-    endif
-72  continue
-    71 end do
-73  continue
+    do 71 ip1 = 2, np1
+        do 72 ic1 = 1, nc1
+            if (zl(inual1-1+(ip1-1)*nc1+ic1) .neqv. zl(inual1-1+(ip1-2) *nc1+ic1)) then
+                ldref=.false.
+                goto 73
+            endif
+ 72     continue
+ 71 end do
+ 73 continue
 !
 !     BOUCLE SUR LES CMPS DE NUAG2 :
 !     ------------------------------
-    do 20,ic2 = 1,nc2
-    ic1 = zi(iacorr-1+ic2)
+    do 20 ic2 = 1, nc2
+        ic1 = zi(iacorr-1+ic2)
 !
 !       CALCUL EVENTUEL DES DISTANCES DE REFERENCE :
 !       --------------------------------------------
-    if ((ic2.eq.1) .or. (.not.ldref)) call nuadrf(nua1, nua2, ic1, ic2, zr(iadref))
+        if ((ic2.eq.1) .or. (.not.ldref)) call nuadrf(nua1, nua2, ic1, ic2, zr(iadref))
 !
 !       BOUCLE SUR LES POINTS DU NUAGE NUAG2 :
 !       --------------------------------------
 !
-    if (tysca .eq. 'R') then
+        if (tysca .eq. 'R') then
 !       ----------------------
-        do 10,ip2 = 1,np2
-        if (zl(inual2-1+ (ip2-1)*nc2+ic2)) then
-            call nuainr(method, np1, nx1, nc1, ic1,&
-                        zr(inuax1), zl(inual1), zr(inuav1), zr(inuax2-1+ (ip2-1)*nx2+ 1),&
-                        zr(iadref-1+ip2), val2r)
-            zr(inuav2-1+ (ip2-1)*nc2+ic2) = val2r
+            do 10 ip2 = 1, np2
+                if (zl(inual2-1+ (ip2-1)*nc2+ic2)) then
+                    call nuainr(method, np1, nx1, nc1, ic1,&
+                                zr(inuax1), zl(inual1), zr(inuav1), zr(inuax2-1+ (ip2-1)*nx2+ 1),&
+                                zr(iadref-1+ip2), val2r)
+                    zr(inuav2-1+ (ip2-1)*nc2+ic2) = val2r
+                else
+                    zr(inuav2-1+ (ip2-1)*nc2+ic2) = 0.d0
+                endif
+ 10         continue
+!
         else
-            zr(inuav2-1+ (ip2-1)*nc2+ic2) = 0.d0
+            call utmess('F', 'UTILITAI3_93')
         endif
-10      continue
 !
-    else
-        call utmess('F', 'UTILITAI3_93')
-    endif
-!
-    20 end do
+ 20 end do
 !
 !
 !     MENAGE :

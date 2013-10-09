@@ -57,8 +57,7 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
 !
 !
     integer :: jdepp, jdepm, jddepl
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     character(len=24) :: incplu, incmoi
     character(len=24) :: ddincc
 !
@@ -72,8 +71,7 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
     incmoi = incmoz
     ddincc = ddincz
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call jeveuo(incmoi(1:19)//'.VALE', 'L', jdepm)
     call jeveuo(incplu(1:19)//'.VALE', 'E', jdepp)
     call jeveuo(ddincc(1:19)//'.VALE', 'E', jddepl)

@@ -1,7 +1,7 @@
 subroutine sdmpic(typesd, nomsd)
     implicit none
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -9,7 +9,7 @@ subroutine sdmpic(typesd, nomsd)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_jev.h"
+!
     character(len=*) :: nomsd, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -44,7 +44,7 @@ subroutine sdmpic(typesd, nomsd)
     character(len=24) :: noms2, types2
     character(len=19) :: k19
     character(len=8) :: kmpic
-    integer :: ifm, niv, ibid, jcelk, iexi, jrefa, jnoli
+    integer :: ifm, niv, jcelk, iexi, jrefa, jnoli
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -57,8 +57,7 @@ subroutine sdmpic(typesd, nomsd)
     k19=noms2(1:19)
     if (types2 .eq. 'CHAM_ELEM') then
 !     ----------------------------------
-        call dismoi('F', 'MPI_COMPLET', k19, 'CHAM_ELEM', ibid,&
-                    kmpic, ibid)
+        call dismoi('MPI_COMPLET', k19, 'CHAM_ELEM', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 9999
         call asmpi_comm_jev('MPI_SUM', k19//'.CELV')
         call jeveuo(k19//'.CELK', 'E', jcelk)
@@ -67,8 +66,7 @@ subroutine sdmpic(typesd, nomsd)
 !
     else if (types2.eq.'RESUELEM') then
 !     ----------------------------------
-        call dismoi('F', 'MPI_COMPLET', k19, 'RESUELEM', ibid,&
-                    kmpic, ibid)
+        call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 9999
         call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
         call jeveuo(k19//'.NOLI', 'E', jnoli)
@@ -77,8 +75,7 @@ subroutine sdmpic(typesd, nomsd)
 !
     else if (types2.eq.'MATR_ASSE') then
 !     ----------------------------------
-        call dismoi('F', 'MPI_COMPLET', k19, 'MATR_ASSE', ibid,&
-                    kmpic, ibid)
+        call dismoi('MPI_COMPLET', k19, 'MATR_ASSE', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 9999
         call asmpi_comm_jev('MPI_SUM', k19//'.VALM')
 !
@@ -92,6 +89,6 @@ subroutine sdmpic(typesd, nomsd)
         ASSERT(.false.)
     endif
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

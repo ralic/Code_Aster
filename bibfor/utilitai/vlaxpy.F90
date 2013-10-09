@@ -36,7 +36,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN  CHAMNA    :  K*  : CHAM_NO MAITRE 1
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
-    integer :: neq, ival1, ival2, iret1, i, ibid, jnum
+    integer :: neq, ival1, ival2, i, jnum
     character(len=19) :: prno
     character(len=24) :: chamn1, chamn2
 !----------------------------------------------------------------------
@@ -46,8 +46,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
     chamn2=chamnb
 !
 ! --- NUMEROTATION POUR TRIER LES LAGRANGE ET LES DDLS PHYSIQUES
-    call dismoi('F', 'PROF_CHNO', chamn1, 'CHAM_NO', ibid,&
-                prno, iret1)
+    call dismoi('PROF_CHNO', chamn1, 'CHAM_NO', repk=prno)
     call jeveuo(prno(1:14)// '.NUME.DELG', 'L', jnum)
 !
 !

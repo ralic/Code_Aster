@@ -47,8 +47,8 @@ subroutine iner81(nomres, classe, basmod, nommat)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !-----------------------------------------------------------------------
-    integer :: i, ia, iad, ibid, idbase, iddeeq, ieq
-    integer :: ier, if, iret, ldref, ldres, lmat, ltvec1
+    integer :: i, ia, iad, idbase, iddeeq, ieq
+    integer :: ier, if, ldref, ldres, lmat, ltvec1
     integer :: ltvec2, ltvec3, mxddl, nbdef, neq
 !-----------------------------------------------------------------------
     parameter     (mxddl=6)
@@ -56,7 +56,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     character(len=1) :: classe
     character(len=6) :: pgc
     character(len=19) :: nommat
-    character(len=8) :: basmod, k8bid
+    character(len=8) :: basmod
     character(len=14) :: num
     character(len=24) :: nomres
     character(len=24) :: valk
@@ -77,8 +77,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !
 ! --- NOMBRE TOTAL DE MODES ET DEFORMEES
 !
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbdef,&
-                k8bid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
 !
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
@@ -100,10 +99,8 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !
 ! --- RECUPERATION NUMEROTATION ET NB EQUATIONS
 !
-    call dismoi('F', 'NB_EQUA', nommat(1:8), 'MATR_ASSE', neq,&
-                k8bid, iret)
-    call dismoi('F', 'NOM_NUME_DDL', nommat(1:8), 'MATR_ASSE', ibid,&
-                num, iret)
+    call dismoi('NB_EQUA', nommat(1:8), 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_NUME_DDL', nommat(1:8), 'MATR_ASSE', repk=num)
 !
 ! --- ALLOCATION VECTEURS DE TRAVAIL
 !
@@ -127,7 +124,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
         ia = (if-1)*neq
         do 10 ieq = 0, neq-1
             zr(ltvec1+ieq) = zi(ltvec3+ia+ieq)
-10      continue
+ 10     continue
 !
 !     --- MULTIPLICATION DU MODE RIGIDE PAR LA MATRICE MASSE
 !
@@ -141,9 +138,9 @@ subroutine iner81(nomres, classe, basmod, nommat)
             call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(ltvec1), 1)
             call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
             zr(ldres+iad+i-1) = ddot(neq,zr(ltvec1),1,zr(ltvec2),1)
-20      continue
+ 20     continue
 !
-30  end do
+ 30 end do
 !
 ! --- DESTRUCTION VECTEURS DE TRAVAIL
 !

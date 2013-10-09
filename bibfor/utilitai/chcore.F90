@@ -51,10 +51,8 @@ subroutine chcore(chou)
     call getvid(' ', 'CHAM_GD', scal=chin, nbret=iret)
 !
 !     VERIFICATION : CHIN REEL?
-    call dismoi('F', 'NOM_GD', chin, 'CHAMP', ibid,&
-                nomgd, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'R') then
         call utmess('F', 'UTILITAI_20', sk=chin)
     endif
@@ -100,7 +98,7 @@ subroutine chcore(chou)
 !
     do 10 i = 1, nbval
         zc(jvale+i-1)=dcmplx(zr(jvalin+i-1),zero)
-10  end do
+ 10 end do
 !
 ! --- 2. CHANGEMENT DE LA GRANDEUR
 !     ----------------------------

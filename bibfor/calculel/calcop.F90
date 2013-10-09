@@ -164,8 +164,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         call utmess('A', 'CALCULEL_24')
     endif
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                nomail, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomail)
 !
     call ccvepo(modele, resuin, lischa, ncharg, typesd,&
                 nbchre, ioccur, suropt, ligrel, exipou)
@@ -207,7 +206,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         call cclord(iop, nbordr, lisord, nobase, optdem,&
                     minord, maxord, resuin, resuou, lisins)
         zi(jacalc-1+iop) = 1
- 5  end do
+  5 end do
 !
 !     PUIS ON RETIRE LES OPTIONS DONT LE CALCUL N'EST PAS UTILE
     do 10 iop = nopout-1, 1, -1
@@ -215,7 +214,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
         call cclodr(iop, nbordr, lisord, nobase, minord,&
                     maxord, resuin, resuou, lacalc)
-10  end do
+ 10 end do
 !
 !
 !     COMME ON PARCOURT LES OPTIONS DANS L'ORDRE INVERSE DES DEPENDANCES
@@ -308,9 +307,9 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
             call detrsd('CHAM_ELEM_S', chaout)
 !
             ligres = ligrel
-30      continue
+ 30     continue
 !
-20  end do
+ 20 end do
 !
     codret = 0
 !
@@ -320,7 +319,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     call ccnett(nobase, nopout)
     if (option(6:9) .eq. 'NOEU' .and. nbma .ne. 0) call jedetr(mesmai)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

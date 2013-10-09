@@ -56,7 +56,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     integer :: iarg, appui
 !
 !-----------------------------------------------------------------------
-    integer :: i, icoef, icoegr, idno, ier, ifongr, ii
+    integer :: i, icoef, icoegr, idno, ifongr, ii
     integer :: ij, im, in, inoe, iret, isurma, jcoor
     integer :: ldgm, ldgn, ldnm, ltyp, nb, nbma, ncg
     integer :: nfg, ngn, nm, nn, nno, noemax, ntopo
@@ -153,8 +153,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             call jeveuo(jexnum(manoma, numa), 'L', ldnm)
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ltyp-1+numa)), typm)
-            call dismoi('F', 'DIM_TOPO', typm, 'TYPE_MAILLE', ntopo,&
-                        k8b, ier)
+            call dismoi('DIM_TOPO', typm, 'TYPE_MAILLE', repi=ntopo)
 !
             if (appui .eq. -1) then
 !            LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
@@ -169,9 +168,9 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             do 24 nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
-24          continue
-22      continue
-20  end do
+ 24         continue
+ 22     continue
+ 20 end do
     ASSERT(appui.ne.-1)
 !
     call wkvect('&&RAIREP.COENO', 'V V R', noemax, icoef)
@@ -205,7 +204,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
-25          continue
+ 25         continue
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -251,8 +250,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             endif
             surtot = surtot + zr(isurma+im-1)
             zr(isurma+im-1) = zr(isurma+im-1)/nm
-23      continue
-21  end do
+ 23     continue
+ 21 end do
 !
 !     CALCUL DES PONDERATIONS ELEMENTAIRES
 !
@@ -270,10 +269,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                     if (zi(ldnm+nn-1) .eq. ij) then
                         zr(icoef+ij-1) = zr(icoef+ij-1) + zr(isurma+ im-1)/surtot
                     endif
-37              continue
-35          continue
-33      continue
-31  end do
+ 37             continue
+ 35         continue
+ 33     continue
+ 31 end do
     nbma = im
 !
 !     CALCUL DES RAIDEURS DE ROTATION
@@ -304,7 +303,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             rig3 = rig3 + (rigi(2)*xx**2+rigi(1)*yy**2)*zr(icoef+ij-1)
         endif
 !
-50  end do
+ 50 end do
     nbno = ii
 !
     trans=(km(1:7) .eq. 'K_T_D_N').or.(km(1:7) .eq. 'K_T_D_L').or.&
@@ -391,7 +390,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
-51  end do
+ 51 end do
 !
     call jedetr('&&RAIREP.COEGRO')
     call jedetr('&&RAIREP.FONGRO')

@@ -43,7 +43,6 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getran.h"
 #include "asterfort/crsint.h"
 #include "asterfort/crsolv.h"
@@ -63,6 +62,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 #include "asterfort/matint.h"
 #include "asterfort/wkvect.h"
 !
+!
 !-- VARIABLES EN ENTREES / SORTIE
     integer :: sizeco, connec, nnoint
     character(len=14) :: nume, nume91
@@ -70,14 +70,14 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     character(len=19) :: raide
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: ibid, ierd, i1, j1, k1, l1, m1, n1, lraide, lsmdi, lsmhc, neq
+    integer :: ibid, i1, j1, k1, l1, m1, n1, lraide, lsmdi, lsmhc, neq
     integer :: lprno, lnddli, ipos1, ipos2, noeu, nbec, icon1, icon2, noeuco
     integer :: numno, lconnc, lrefn, ldprs, ldors, lddeeq, lipos, ldnueq, lddelg
     integer :: neqddl, nozero, no1, no2, lindno, indeq, ismhc, indddl, neqd2
     integer :: nbvois, iret, nbvmax, lcoord, lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3)
-    character(len=8) :: k8bid, nomma
+    character(len=8) ::  nomma
     character(len=19) :: prgene, prno, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
 !
@@ -155,14 +155,12 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     call jeveuo(jexnum(raide//'.VALM', 1), 'L', lraide)
     call jeveuo(nume//'.SMOS.SMDI', 'L', lsmdi)
     call jeveuo(nume//'.SMOS.SMHC', 'L', lsmhc)
-    call dismoi('F', 'PROF_CHNO', nume, 'NUME_DDL', ibid,&
-                prno, ierd)
+    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', lprno)
 !
 !-- BOUCLE SUR LES NOEUDS D'INTERFACE
 !
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                k8bid, ibid)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     call jeveuo(noddli, 'L', lnddli)
     call jeveuo(coint, 'E', lconnc)
     connec=0
@@ -195,15 +193,15 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                     nozero=nozero+zi(lprno+(noeuco-1)*(2+nbec)+1)*&
                     neqddl
                 endif
-30          continue
-20      continue
+ 30         continue
+ 20     continue
 !
         zi(lconnc+l1)=nbvois
         if (nbvois .gt. nbvmax) then
             nbvmax=nbvois
         endif
 !
-10  end do
+ 10 end do
 !
 !-----------------------------C
 !--                         --C
@@ -227,7 +225,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
         zi(lddelg+i1-1)=0
         zi(lddeeq+(i1-1)*2)=i1
         zi(lddeeq+(i1-1)*2+1)=1
-40  end do
+ 40 end do
 !
 !-- CONSTRUCTION DU .SMDE
     call wkvect(nume91//'.SMOS.SMDE', 'V V I', 6, ibid)
@@ -246,7 +244,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
         zi(lindno+zi(lnddli+i1-1)-1)=i1
         zi(lipos+i1-1)=j1
         j1=j1+zi(lnddli+2*nnoint+i1-1)
-50  end do
+ 50 end do
 !
     ismhc=0
     indeq=0
@@ -267,19 +265,19 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                 do 90 l1 = 1, neqd2
                     zi4(lsmhc+ismhc)=indddl+l1
                     ismhc=ismhc+1
-90              continue
-80          continue
+ 90             continue
+ 80         continue
 !
 !-- ON REMPLIT LE BLOC DIAGONAL DU NOEUD COURANT
             indddl=zi(lipos+i1-1)
             do 100 l1 = 1, j1
                 zi4(lsmhc+ismhc)=indddl+l1
                 ismhc=ismhc+1
-100          continue
+100         continue
             zi(lsmdi+indeq)=ismhc
             indeq=indeq+1
-70      continue
-60  end do
+ 70     continue
+ 60 end do
 !
 !-- CREATION DU SOLVEUR
     solveu=nume91//'.SOLV'
@@ -304,8 +302,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !--                                                 --C
 !-----------------------------------------------------C
 !
-    call dismoi('F', 'NOM_MAILLA', raide, 'MATR_ASSE', ibid,&
-                nomma, ierd)
+    call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=nomma)
     call jeveuo(nomma//'.COORDO    .VALE', 'L', lcoord)
 !
     mindis=1.d16
@@ -326,8 +323,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             if (dist .gt. maxdis) then
                 maxdis=dist
             endif
-120      continue
-110  end do
+120     continue
+110 end do
     rayon=(mindis+maxdis)/20
 !
 !
@@ -339,7 +336,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !------------------------------------------------------------------C
 !
 !      DO WHILE (TEMP .LT. LONG*1.D-10)
-135  continue
+135 continue
 !
     call getran(ptref(1))
     call getran(ptref(2))
@@ -364,8 +361,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             if (dist .lt. temp) then
                 temp=dist
             endif
-140      continue
-130  continue
+140     continue
+130 continue
     if (temp .lt. long*1.d-10) then
         goto 135
     endif
@@ -396,7 +393,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                 direc(k1)=zr(lcoord+(no2-1)*3+k1-1)- zr(lcoord+(no1-1)&
                 *3+k1-1)
                 vtest(k1)=ptref(k1)-zr(lcoord+(no1-1)*3+k1-1)
-170          continue
+170         continue
 !
             call matint(kr, mr, direc, vtest, rayon)
             no1=i1
@@ -419,8 +416,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                     kr(n1,m1)
                     zr(lmaint+ipos2-k1+l1)=zr(lmaint+ipos2-k1+l1)+&
                     mr(n1,m1)
-190              continue
-180          continue
+190             continue
+180         continue
             do 200 k1 = 1, neqd2
                 ipos1=zi(lipos+no2-1)+k1
                 ipos2=zi(lsmdi+ipos1-1)-1
@@ -431,8 +428,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                     kr(n1,m1)
                     zr(lmaint+ipos2-k1+l1)=zr(lmaint+ipos2-k1+l1)+&
                     mr(n1,m1)
-210              continue
-200          continue
+210             continue
+200         continue
 !
 !-- REMPLISSAGE DU BLOC DE COUPLAGE
 !
@@ -443,7 +440,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                 if (zi4(lsmhc+ipos1+l1-1) .eq. m1) then
                     indeq=l1
                 endif
-220          continue
+220         continue
 !
             do 230 k1 = 1, neqddl
                 ipos1=zi(lsmdi+ zi(lipos+no1-1)+k1-2 )
@@ -454,11 +451,11 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                     indeq+l1-2)+ kr(m1,n1)
                     zr(lmaint+ipos1+indeq+l1-2)= zr(lmaint+ipos1+&
                     indeq+l1-2)+ mr(m1,n1)
-240              continue
-230          continue
+240             continue
+230         continue
 !
-160      continue
-150  end do
+160     continue
+150 end do
 !
 !---------C
 !--     --C

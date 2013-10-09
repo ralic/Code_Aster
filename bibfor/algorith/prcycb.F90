@@ -79,7 +79,7 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 !
     character(len=6) :: pgc
-    character(len=8) :: nomres, basmod, intf, kbid, k8bid
+    character(len=8) :: nomres, basmod, intf, kbid
     character(len=14) :: num
     character(len=19) :: raid, mass
     character(len=24) :: repmat, soumat, noeint, chamva
@@ -87,7 +87,7 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iddeeq, ier1, ier2, iord, iret
+    integer :: i, ibid, iddeeq, ier1, ier2, iord
     integer :: j, k, ktrian, ldk0aa, ldk0aj, ldk0ia, ldk0ii
     integer :: ldk0ij, ldk0jj, ldkpaa, ldkpaj, ldkpia, ldkpij, ldkpja
     integer :: ldkpjj, ldm0aa, ldm0aj, ldm0ia, ldm0ii, ldm0ij, ldm0jj
@@ -111,10 +111,8 @@ subroutine prcycb(nomres, soumat, repmat)
     intf  =zk24(llref1+1)
     basmod=zk24(llref1+2)
     call jelibe(nomres//'.CYCL_REFE')
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid,&
-                raid, iret)
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
-                mass, iret)
+    call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid)
+    call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
@@ -272,10 +270,8 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! --- RECUPERATION NUMEROTATION ET NB EQUATIONS
 !
-    call dismoi('F', 'NB_EQUA', raid, 'MATR_ASSE', neq,&
-                k8bid, iret)
-    call dismoi('F', 'NOM_NUME_DDL', raid, 'MATR_ASSE', ibid,&
-                num, iret)
+    call dismoi('NB_EQUA', raid, 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=num)
     call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DES INTERFACES

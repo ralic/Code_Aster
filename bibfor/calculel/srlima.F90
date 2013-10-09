@@ -49,10 +49,10 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
 !
     integer :: jma2d, jcoor, jma3d
-    integer :: ima, ibid, iret
+    integer :: ima
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
-    character(len=8) :: ma, limocl(3), tymocl(3), k8b
+    character(len=8) :: ma, limocl(3), tymocl(3)
     character(len=24) :: mesmai, limamo
 !
     data limocl/'TOUT','MAILLE','GROUP_MA'/
@@ -63,17 +63,15 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     call jemarq()
 !
 ! --- ON RECUPERE LES MAILLES DE PEAU
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmat,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
     mesmai = '&&SRLIMA.MAILLU'
     call reliem(mo, ma, 'NU_MAILLE', ' ', 0,&
                 3, limocl, tymocl, mesmai, nbma)
 !
 ! --- ON NE GARDE QUE LES MAILLES SURFACIQUES
-    call utflmd(ma, mesmai, nbma, 2, ' ', nbma2d,&
-                mail2d)
+    call utflmd(ma, mesmai, nbma, 2, ' ',&
+                nbma2d, mail2d)
     if (nbma2d .gt. 0) then
         call jeveuo(mail2d, 'L', jma2d)
     else
@@ -96,7 +94,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     do 20 ima = 1, nbma2d
         zi(jmato-1+ima) = zi(jma2d-1+ima)
         zi(jmato-1+nbma2d+ima) = zi(jma3d-1+ima)
-20  end do
+ 20 end do
 !
     call jedetr(mesmai)
     call jedetr(limamo)

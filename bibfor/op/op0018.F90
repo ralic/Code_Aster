@@ -157,7 +157,7 @@ subroutine op0018()
         ndgn=max(ndgn,-ngn)
         ndma=max(ndma,-nma)
         ndno=max(ndno,-nno)
-10  end do
+ 10 end do
 !
     ndmax1=max(ndgm,ndgn)
     ndmax2=max(ndma,ndno)
@@ -252,8 +252,7 @@ subroutine op0018()
             call jeveuo(jexnum('&CATA.'//phenom, imodl), 'L', jdpm)
 !
             phemod=phenom//modeli
-            call dismoi('F', 'DIM_TOPO', phemod, 'PHEN_MODE', d1,&
-                        k8b, ibid)
+            call dismoi('DIM_TOPO', phemod, 'PHEN_MODE', repi=d1)
             if (d2 .eq. -99) then
                 d2=d1
             else
@@ -274,7 +273,7 @@ subroutine op0018()
                     endif
                     zi(jmut+numail-1)=1
                     if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail-1)= 1
-20              continue
+ 20             continue
             endif
 !
             if (ngm .ne. 0) then
@@ -291,8 +290,8 @@ subroutine op0018()
                         endif
                         zi(jmut+numail-1)=1
                         if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail- 1)=1
-30                  continue
-40              continue
+ 30                 continue
+ 40             continue
             endif
 !
             if (nma .ne. 0) then
@@ -306,7 +305,7 @@ subroutine op0018()
                     endif
                     zi(jmut+numail-1)=1
                     if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail-1)= 1
-50              continue
+ 50             continue
             endif
 !
             if (ngn .ne. 0) then
@@ -318,8 +317,8 @@ subroutine op0018()
                         numnoe=zi(jdgn+j-1)
                         if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)= zi(jdpm+ ntypoi-1)
                         zi(jnut+numnoe-1)=1
-60                  continue
-70              continue
+ 60                 continue
+ 70             continue
             endif
 !
             if (nno .ne. 0) then
@@ -328,10 +327,10 @@ subroutine op0018()
                     call jenonu(jexnom(nomnoe, zk8(jdef2+i-1)), numnoe)
                     if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)=zi( jdpm+ ntypoi-1)
                     zi(jnut+numnoe-1)=1
-80              continue
+ 80             continue
             endif
 !
-90      continue
+ 90     continue
 !
 !       -- ON VERIFIE QU'A CHAQUE OCCURENCE DE AFFE, LES MAILLES
 !          "PRINCIPALES" ONT BIEN ETE AFFECTEES PAR DES ELEMENTS
@@ -340,14 +339,14 @@ subroutine op0018()
         ico=0
         do 100 numail = 1, nbmail
             if ((zi(jmut2+numail-1).eq.1) .and. zi(jdma2+numail-1) .eq. 0) ico=ico+1
-100      continue
+100     continue
         if (ico .gt. 0) then
             vali(1)=ioc
             vali(2)=ico
             vali(3)=d2
             call utmess('A', 'MODELISA8_70', ni=3, vali=vali)
         endif
-110  end do
+110 end do
 !
 !
 ! --- VERIFICATION QUE LES MAILLES "UTILISATEUR" ONT ETE AFFECTEES
@@ -368,7 +367,7 @@ subroutine op0018()
         else
             nbmpcf=nbmpcf+1
         endif
-120  end do
+120 end do
 !
 ! --- VERIFICATION QUE LES NOEUDS "UTILISATEUR" ONT ETE AFFECTES
     nbnpcf=0
@@ -386,7 +385,7 @@ subroutine op0018()
         else
             nbnpcf=nbnpcf+1
         endif
-130  end do
+130 end do
 !
 ! ---   DIMENSIONNEMENT DES OBJETS LIEL ET NEMA
     nbmaaf=0
@@ -402,7 +401,7 @@ subroutine op0018()
                 nbgrel=nbgrel+1
             endif
         endif
-140  end do
+140 end do
 !
 !
     if (lmail) then
@@ -424,7 +423,7 @@ subroutine op0018()
                 nbgrel=nbgrel+1
             endif
         endif
-150  end do
+150 end do
 !
 !
     if (lnoeu) then
@@ -482,7 +481,7 @@ subroutine op0018()
             call jecroc(jexnum(cptlie, nugrel))
             call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
         endif
-160  end do
+160 end do
 !
     nutype=0
     numsup=0
@@ -513,7 +512,7 @@ subroutine op0018()
             call jecroc(jexnum(cptlie, nugrel))
             call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
         endif
-170  end do
+170 end do
 !
 ! ---   STOCKAGE DES NOUVELLES MAILLES DANS NEMA
 !
@@ -529,10 +528,10 @@ subroutine op0018()
                 call jecroc(jexnum(cptnem, numsup))
                 call jeecra(jexnum(cptnem, numsup), 'LONMAX', 2)
             endif
-180      continue
+180     continue
     endif
 !
-190  continue
+190 continue
 !
 ! --- PRISE EN COMPTE DES SOUS-STRUCTURES (MOT CLEF AFFE_SOUS_STRUC):
     call ssafmo(nomu)
@@ -557,20 +556,17 @@ subroutine op0018()
 !
 !     --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE
 !     ----------------------------------------------------------
-    call dismoi('F', 'DIM_GEOM', nomu, 'MODELE', idim,&
-                k8b, ibid)
+    call dismoi('DIM_GEOM', nomu, 'MODELE', repi=idim)
     if (idim .gt. 3) then
         idim2=0
         call utmess('A', 'MODELISA4_4')
     else
         idim2=3
         idim3=3
-        call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ibid,&
-                    cdim, ibid)
+        call dismoi('Z_CST', noma, 'MAILLAGE', repk=cdim)
         if (cdim .eq. 'OUI') then
             idim2=2
-            call dismoi('F', 'Z_ZERO', noma, 'MAILLAGE', ibid,&
-                        cdim, ibid)
+            call dismoi('Z_ZERO', noma, 'MAILLAGE', repk=cdim)
             if (cdim .eq. 'OUI') idim3=2
         endif
 !
@@ -611,13 +607,11 @@ subroutine op0018()
 !
 !     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
 !     ---------------------------------------------------
-    call dismoi('F', 'EXI_VF', ligrel, 'LIGREL', ibid,&
-                exivf, ibid)
+    call dismoi('EXI_VF', ligrel, 'LIGREL', repk=exivf)
 !
 !     -- SCHEMAS NON VF AYANT BESOIN D'UN VOISINAGE :
 !     ---------------------------------------------------
-    call dismoi('F', 'BESOIN_VOISIN', ligrel, 'LIGREL', ibid,&
-                bevois, ibid)
+    call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=bevois)
 !
 !
 !     -- CREATION DE LA SD_VOISINAGE SI NECESSAIRE :

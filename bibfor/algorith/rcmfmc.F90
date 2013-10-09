@@ -1,7 +1,6 @@
 subroutine rcmfmc(chmatz, chmacz)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/ismaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -21,6 +20,7 @@ subroutine rcmfmc(chmatz, chmacz)
 #include "asterfort/jexnum.h"
 #include "asterfort/rcmaco.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chmatz, chmacz
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -51,10 +51,10 @@ subroutine rcmfmc(chmatz, chmacz)
     common /caii14/nbcvrc,jvcnom
 !
     integer :: nbval, jchev, iret, jvale, igd, jdesc, kk
-    integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, ier, j, k, nbmat
+    integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
     integer :: inbmat
     character(len=4) :: knumat
-    character(len=8) :: k8b, chmat, nomgd
+    character(len=8) ::  chmat, nomgd
     character(len=19) :: codi
     character(len=19) :: chemat, chmace
 !     ------------------------------------------------------------------
@@ -93,8 +93,7 @@ subroutine rcmfmc(chmatz, chmacz)
 !     -----------------------------------------------
     call jeveuo(chemat//'.DESC', 'L', jdesc)
     call jenuno(jexnum('&CATA.GD.NOMCMP', zi(jdesc)), nomgd)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmp,&
-                k8b, ier)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     ASSERT(nbcmp.ge.30)
     ASSERT((nbval/nbcmp)*nbcmp.eq.nbval)
 !
@@ -112,7 +111,7 @@ subroutine rcmfmc(chmatz, chmacz)
     icompt=0
     do 10 i = 1, nbval
         if (zk8(jchev-1+i) .ne. ' ') icompt=icompt+1
-10  end do
+ 10 end do
     ASSERT(icompt.gt.0)
 !
     call jedetr(chmat//'.MATE_CODE.GRP')
@@ -132,11 +131,11 @@ subroutine rcmfmc(chmatz, chmacz)
                 icompt=icompt+1
                 inbmat=inbmat+1
             endif
-20      continue
-30      continue
+ 20     continue
+ 30     continue
         zi(ingrp-1+i)=inbmat
         inbmat=0
-40  end do
+ 40 end do
 !
     codi=' '
     call jeveuo(chmat//'.MATE_CODE.GRP', 'L', igrp)
@@ -154,10 +153,10 @@ subroutine rcmfmc(chmatz, chmacz)
         codi(9:13)='.'//knumat
         call jeveuo(codi//'.CODI', 'L', zi(jvale+kk-1))
         icompt=icompt+nbmat
-50  end do
+ 50 end do
 !
 !
-90  continue
+ 90 continue
     chmacz=chmace
     call jedema()
 !

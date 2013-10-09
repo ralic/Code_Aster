@@ -53,13 +53,12 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, iret, jdls2
-    integer :: i, axyzm, nbmat, ier, nbma
+    integer :: i, axyzm, nbmat, nbma
     integer :: ima, nbno, jnuma, adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg
     real(kind=8) :: ang(2)
     real(kind=8) :: axey(3), xnorm, epsi, axex(3), vecnor(3)
     real(kind=8) :: vn1n2(3), vn1n3(3)
-    character(len=8) :: k8b
     character(len=19) :: cartgr
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex
     character(len=32) :: kjexn
@@ -67,8 +66,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     call jemarq()
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', axyzm)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat0,&
-                k8b, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
     call wkvect('&&ACEAMB.NUME_MA', 'V V I', nbmat0, jnuma)
     nomagr = noma//'.GROUPEMA'
     nomama = noma//'.NOMMAI'
@@ -114,7 +112,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
             if (ng .gt. 0) then
                 do 20 i = 1, ng
                     call nocart(cartgr, 2, 2, groupma=zk24(jdls+i-1))
-20              continue
+ 20             continue
             endif
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
             if (nm .gt. 0) then
@@ -134,14 +132,14 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     do 122 ima = 0, nbma-1
                         numa = numa + 1
                         zi(jnuma+numa) = zi(jgrma+ima)
-122                  continue
-120              continue
+122                 continue
+120             continue
             else
                 nbmat = nm
                 do 130 ima = 0, nm-1
                     kjexn = jexnom(nomama,zk8(jdls2+ima))
                     call jenonu(kjexn, zi(jnuma+ima))
-130              continue
+130             continue
             endif
 !
             call normev(axey, xnorm)
@@ -160,7 +158,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                 do 202 i = 1, 3
                     vn1n2(i) = zr( axyzm+3*(noe2-1)+i-1) - zr(axyzm+3*( noe1-1)+i-1 )
                     vn1n3(i) = zr( axyzm+3*(noe3-1)+i-1) - zr(axyzm+3*( noe1-1)+i-1 )
-202              continue
+202             continue
                 vecnor(1) = vn1n2(2)*vn1n3(3) - vn1n2(3)*vn1n3(2)
                 vecnor(2) = vn1n2(3)*vn1n3(1) - vn1n2(1)*vn1n3(3)
                 vecnor(3) = vn1n2(1)*vn1n3(2) - vn1n2(2)*vn1n3(1)
@@ -178,9 +176,9 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                 zr(jdvc+1) = ang(2) * r8rddg()
                 call nocart(cartgr, 3, 2, mode='NUM', nma=1,&
                             limanu=[numa])
-200          continue
+200         continue
         endif
-10  end do
+ 10 end do
 !
     call jedetr('&&ACEAMB.NUME_MA')
     call jedetr('&&TMPMEMBRANE')

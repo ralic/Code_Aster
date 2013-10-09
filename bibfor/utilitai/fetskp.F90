@@ -71,7 +71,7 @@ subroutine fetskp()
     integer :: mabord, val, rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
     integer :: vali(2), iret
     real(kind=8) :: tmps(6)
-    character(len=8) :: ma, k8bid, ktmp, mod, verif, ktmp2, meth, bord, k8nb
+    character(len=8) :: ma, ktmp, mod, verif, ktmp2, meth, bord, k8nb
     character(len=8) :: kersco
     character(len=24) :: k24b, grpema, nom, sdbord
     character(len=256) :: jnom(4)
@@ -95,14 +95,7 @@ subroutine fetskp()
 ! ------- ON RECUPERE LES DONNEES DU MAILLAGE OU DU MODELE
 !
     call getvid(' ', 'MAILLAGE', scal=ma, nbret=err)
-    if (err .eq. 0) then
-        call utmess('F', 'UTILITAI_78')
-    endif
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmato,&
-                k8bid, err)
-    if (err .ne. 0) then
-        call utmess('F', 'UTILITAI_79')
-    endif
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     call wkvect('&&FETSKP.RENUM1', 'V V I', nbmato, renum1)
     call getvid(' ', 'MODELE', scal=mod, nbret=err)
     if (err .eq. 0) then

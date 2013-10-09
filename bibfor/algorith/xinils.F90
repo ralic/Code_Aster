@@ -79,11 +79,11 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     integer :: jcoorc
     real(kind=8) :: xln, xlt
     integer :: ndim, dimno
-    integer :: ibid, iret, clsm, me4
+    integer :: ibid, clsm, me4
     integer :: nbno, nbnogr, ino, jcoor, jcoorg, nbmaf
     integer :: jltsv, jltsl, jlnsv, jlnsl
     real(kind=8) :: valpu(3)
-    character(len=8) :: fiss, k8bid, nompu(3), nchamn, nchamt
+    character(len=8) :: fiss, nompu(3), nchamn, nchamt
     character(len=16) :: k16bid, typdis
     character(len=19) :: chslsn, chslst
     character(len=24) :: lisma, lisse
@@ -101,10 +101,8 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     nompu(2)='Y'
     nompu(3)='Z'
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, iret)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
@@ -118,17 +116,14 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
 !     ELABORATE THE CASE "GRILLE AUXILIAIRE"
     if (grille) then
-        call dismoi('F', 'NB_NO_MAILLA', maiaux, 'MAILLAGE', nbnogr,&
-                    k8bid, iret)
-        call dismoi('F', 'NB_MA_MAILLA', maiaux, 'MAILLAGE', nbmagr,&
-                    k8bid, iret)
+        call dismoi('NB_NO_MAILLA', maiaux, 'MAILLAGE', repi=nbnogr)
+        call dismoi('NB_MA_MAILLA', maiaux, 'MAILLAGE', repi=nbmagr)
         call jeveuo(maiaux//'.COORDO    .VALE', 'L', jcoorg)
         call jeveuo(maiaux//'.CONNEX', 'L', jcong1)
         call jeveuo(jexatr(maiaux//'.CONNEX', 'LONCUM'), 'L', jcong2)
     endif
 !
-    call dismoi('F', 'TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', ibid,&
-                typdis, iret)
+    call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
     if (typdis .eq. 'INTERFACE') callst = .false.
     if (typdis .eq. 'FISSURE') callst = .true.
 !
@@ -149,7 +144,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         do 1 ino = 1, nbnoc
             do 12 dimno = 1, ndim
                 valpu(dimno)=zr(jcoorc-1+3*(ino-1)+dimno)
-12          continue
+ 12         continue
             call fointe('F ', nfong, ndim, nompu, valpu,&
                         xln, ibid)
             if (callst) then
@@ -162,7 +157,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             zr(jltsv-1+(ino-1)+1)=xlt
             zl(jltsl-1+(ino-1)+1)=.true.
             zl(jlnsl-1+(ino-1)+1)=.true.
- 1      continue
+  1     continue
 !
     else if (meth.eq.'GROUP_MA') then
 !
@@ -256,7 +251,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             if (callst) zr(jltsv-1+(ino-1)+1)=zr(jctv+ino-1)
             if (.not.callst) zr(jltsv-1+(ino-1)+1)= -1.d0
             zl(jltsl-1+(ino-1)+1)=.true.
-60      continue
+ 60     continue
 !
         call jedetr(chslsn)
         if (callst) call jedetr(chslst)

@@ -83,7 +83,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     logical :: modnum, exnume
-    integer :: i, ib, iret
+    integer :: i, iret
     integer :: jref, jdeeq, jval
     character(len=19) :: numer1, numer2, nomcha, tmpcha
     character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha
@@ -151,8 +151,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
     modnum = .false.
     if (numer2 .ne. ' ') then
         if ((numer2.ne.numer1) .and. (iret.eq.0) .and. (exnume)) then
-            call dismoi('F', 'NOM_MAILLA', numer2(1:14), 'NUME_DDL', ib,&
-                        maill2, iret)
+            call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
             if (maill1 .ne. maill2) then
                 valk (1) = numer2
                 valk (2) = maill2
@@ -236,7 +235,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
             endif
         endif
 !
-10  end do
+ 10 end do
 !     FIN DE LA BOUCLE (3.1) SUR LES MODES
 !  ____________________________________________________________________
 !

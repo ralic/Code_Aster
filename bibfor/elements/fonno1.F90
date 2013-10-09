@@ -2,7 +2,6 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
                   nbmac, macofo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -11,6 +10,7 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: na, nb, ndim, nbmac
     character(len=8) :: noma
     character(len=19) :: macofo, cnxinv
@@ -48,8 +48,8 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
 !
 !
     integer :: jdrvlc, iatyma, jmaco, iamase, jcncin, ityp
-    integer :: nbmaca, adra, iret, comp1, ima, numac, ino1, ndime, nn
-    character(len=8) :: k8b, type
+    integer :: nbmaca, adra, comp1, ima, numac, ino1, ndime, nn
+    character(len=8) ::  type
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -75,8 +75,7 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
         numac = zi(jcncin-1 + adra+ima-1)
         ityp = iatyma-1+numac
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-        call dismoi('F', 'DIM_TOPO', type, 'TYPE_MAILLE', ndime,&
-                    k8b, iret)
+        call dismoi('DIM_TOPO', type, 'TYPE_MAILLE', repi=ndime)
 !       ON ZAPPE LES MAILLES DE BORDS
         if (ndime .ne. ndim) goto 10
 !
@@ -86,16 +85,15 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
         else if (ndim.eq.3) then
 !         EN 3D ON DOIT AVOIR AUSSI LE NOEUD NB
             call jeveuo(jexnum(noma//'.CONNEX', numac), 'L', iamase)
-            call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn,&
-                        k8b, iret)
+            call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
             do 100 ino1 = 1, nn
                 if (zi(iamase-1 + ino1) .eq. nb) then
                     comp1=comp1+1
                     zi(jmaco-1+comp1)=numac
                 endif
-100          continue
+100         continue
         endif
-10  end do
+ 10 end do
 !
 !     NB MAILLES CONNECTEES AU SEGMENT
     nbmac = comp1

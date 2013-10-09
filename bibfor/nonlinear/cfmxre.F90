@@ -19,7 +19,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
@@ -138,7 +138,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! --- METHODE VERIF
 !
-50  continue
+ 50 continue
 !
     if (lexiv) then
         call cfmmve(noma, defico, resoco, valinc, instan)
@@ -146,8 +146,8 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! --- TRANSFO DU CHAM_NO_S EN CHAM_NO (AVEC UN PROF_CHNO CONSTANT !)
 !
-    call dismoi('C', 'PROF_CHNO', cnoinr, 'CHAM_NO', ibid,&
-                prno, iret)
+    call dismoi('PROF_CHNO', cnoinr, 'CHAM_NO', repk=prno, arret='C',&
+                ier=iret)
     call cnscno(cnsinr, prno, 'NON', 'V', cnoinr,&
                 'F', ibid)
 !

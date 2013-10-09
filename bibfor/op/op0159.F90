@@ -46,12 +46,11 @@ subroutine op0159()
     character(len=8) :: matr
     character(len=3) :: type, typ1
     integer :: lmat, nimpo, idvalc, jrefa, neq1, jval2, jtrav
-    integer :: ibid, ifm, niv, neq, jvals, nb, imd, ier
+    integer ::  ifm, niv, neq, jvals, nb, imd, ier
 !
     character(len=8) :: xsol, secmbr, vcine
     character(len=16) :: concep, nomcmd, metres
     complex(kind=8) :: cbid
-    real(kind=8) :: rbid
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -76,8 +75,7 @@ subroutine op0159()
     if (nb .eq. 1) call chpver('F', vcine, 'NOEU', '*', ier)
     vci19=vcine
 !
-    call dismoi('F', 'METH_RESO', matr, 'MATR_ASSE', ibid,&
-                metres, ibid)
+    call dismoi('METH_RESO', matr, 'MATR_ASSE', repk=metres)
     if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
         call utmess('F', 'ALGELINE4_1')
     endif

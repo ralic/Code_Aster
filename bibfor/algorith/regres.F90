@@ -49,7 +49,6 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 !
 !
-    character(len=8) :: k8bid
     character(len=24) :: valk(2)
     character(len=19) :: pfchn1, pfchn2
     character(len=24) :: objet
@@ -57,7 +56,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadnew, iadold, ibid, ieq, ierd, igd
+    integer :: i, iadnew, iadold, ieq, igd
     integer :: iold, iord, iret, j, k, lcorr, ldeeq
     integer :: lnequ, lnunew, lnuold, lord, lprnew, lprold, lrefe
     integer :: lvnew, lvold, nbord, nbval, ncmp, nddl, ndeeq
@@ -67,8 +66,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
     call rsexch('F', result, 'DEPL', 1, chamno,&
                 iret)
-    call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                pfchn1, ierd)
+    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn1)
 !
 !
     call copisd('PROF_CHNO', 'G', pfchn1, pfchn2)
@@ -82,8 +80,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
     call jeveuo(nomres//'           .ORDR', 'L', lord)
 !
-    call dismoi('F', 'NUM_GD', chamno, 'CHAM_NO', igd,&
-                k8bid, ierd)
+    call dismoi('NUM_GD', chamno, 'CHAM_NO', repi=igd)
 !
     nec = nbec(igd)
     ndi = nec + 2
@@ -93,7 +90,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     do 10 i = 1, nnodes
         iold = zi(lcorr-1+i)
         nddl = nddl + zi(lprold+(iold-1)*ndi+1)
-10  end do
+ 10 end do
 !
 !
 !
@@ -119,7 +116,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         call jelira(jexnum(objet, 1), 'LONMAX', nbval)
         do 15 i = 1, nbval
             zi(lprnew-1+i) = 0
-15      continue
+ 15     continue
         call jeecra(jexnum(objet, 1), 'LONUTI', nnodes*ndi)
     else
         valk(1) = objet
@@ -150,8 +147,8 @@ subroutine regres(nomres, mailsk, result, pfchn2)
             do 20 k = 1, ncmp
                 zi(lnunew-1+ieq) = ieq
                 ieq = ieq + 1
-20          continue
-30      continue
+ 20         continue
+ 30     continue
 !
 !     --- MISE A JOUR DU .VALE (DEPL_R) ---
         call jeexin(chexou//'.VALE', iret)
@@ -166,10 +163,10 @@ subroutine regres(nomres, mailsk, result, pfchn2)
                 iadnew = zi(lnunew-1+zi(lprnew+(i-1)*ndi))
                 do 40 j = 1, ncmp
                     zr(lvnew-1+iadnew+j-1)=zr(lvold-1+iadold+j-1)
-40              continue
-50          continue
+ 40             continue
+ 50         continue
         endif
-60  end do
+ 60 end do
 !
 !  --- MISE A JOUR DU .PROFC.NUME.DEEQ ---
     objet = pfchn2//'.DEEQ'
@@ -189,7 +186,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
             zi(ldeeq-1+ndeeq) = i
             ndeeq = ndeeq + 1
             zi(ldeeq-1+ndeeq) = j
-70      continue
+ 70     continue
 !
     call jedema()
 end subroutine

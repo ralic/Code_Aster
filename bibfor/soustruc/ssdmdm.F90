@@ -51,13 +51,13 @@ subroutine ssdmdm(mag)
 !     IN:
 !        MAG : NOM DU MAILLAGE QUE L'ON DEFINIT.
 !
-    character(len=8) :: nomacr, nomail, kbid, ma
+    character(len=8) :: nomacr, nomail, ma
     real(kind=8) :: lisr8(9), dist, a1, a2, a3, dmin, dmax, r1
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1noe, i1nol, iaconx, iacoo2, iacoor, iadesm
     integer :: iadim2, iadime, ialk81, ialk82, ianmcr, iaparr, iasupm
-    integer :: ibid, idim, idimto, ierd, ino, inold, iocc
+    integer ::  idim, idimto, ino, inold, iocc
     integer :: iret, isma, itrou, j, jno, k, n1
     integer :: n2, n3, n4, n5, nbnoe, nbnoet, nbnol
     integer :: nbsma, nnnoe, nnnol, nocc
@@ -69,10 +69,10 @@ subroutine ssdmdm(mag)
 !     ---------------------------------
     call getfac('DEFI_SUPER_MAILLE', nocc)
     nbsma=0
-    do 1, iocc=1,nocc
-    call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=0, nbret=n1)
-    nbsma=nbsma-n1
-    1 end do
+    do 1 iocc = 1, nocc
+        call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=0, nbret=n1)
+        nbsma=nbsma-n1
+  1 end do
 !
 !
 !     -- ON ALLOUE .DIME , .NOMACR ,.PARA_R ET .SUPMAIL:
@@ -98,93 +98,91 @@ subroutine ssdmdm(mag)
 !     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
 !     -----------------------------------------
     isma=0
-    do 2, iocc=1,nocc
+    do 2 iocc = 1, nocc
 !
-    call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=nbsma, vect=zk8(ialk81),&
-                nbret=n1)
-    call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma, vect=zk8(ialk82),&
-                nbret=n2)
-    if (n2 .lt. 0) then
-        call utmess('F', 'SOUSTRUC_50')
-    endif
-    if ((n2.gt.0) .and. (n2.ne.n1)) then
-        call utmess('F', 'SOUSTRUC_51')
-    endif
-!
-    do 3 ,k=1,9
-    lisr8(k)=0.0d0
- 3  continue
-    call getvr8('DEFI_SUPER_MAILLE', 'TRAN', iocc=iocc, nbval=3, vect=lisr8(1),&
-                nbret=n3)
-    call getvr8('DEFI_SUPER_MAILLE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=lisr8(4),&
-                nbret=n4)
-    call getvr8('DEFI_SUPER_MAILLE', 'CENTRE', iocc=iocc, nbval=3, vect=lisr8(7),&
-                nbret=n5)
-    if (n3 .lt. 0) then
-        call utmess('F', 'SOUSTRUC_52')
-    endif
-    if (n4 .lt. 0) then
-        call utmess('F', 'SOUSTRUC_53')
-    endif
-    if (n5 .lt. 0) then
-        call utmess('F', 'SOUSTRUC_54')
-    endif
-!
-    do 4,i=1,n1
-    isma=isma+1
-    nomacr=zk8(ialk81-1+i)
-    zk8(ianmcr-1+isma)=nomacr
-!
-    call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
-                ma, ierd)
-    call dismoi('F', 'DIM_GEOM_B', ma, 'MAILLAGE', idim,&
-                kbid, ierd)
-    if (isma .eq. 1) then
-        idimto=idim
-        zi(iadime-1+6)=idimto
-    else
-        if (idim .ne. idimto) then
-            call utmess('A', 'SOUSTRUC_55')
+        call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=nbsma, vect=zk8(ialk81),&
+                    nbret=n1)
+        call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma,&
+                    vect=zk8(ialk82), nbret=n2)
+        if (n2 .lt. 0) then
+            call utmess('F', 'SOUSTRUC_50')
         endif
-    endif
+        if ((n2.gt.0) .and. (n2.ne.n1)) then
+            call utmess('F', 'SOUSTRUC_51')
+        endif
 !
-    nomail=nomacr
-    if (n2 .gt. 0) nomail=zk8(ialk82-1+i)
+        do 3 ,k=1,9
+        lisr8(k)=0.0d0
+  3     continue
+        call getvr8('DEFI_SUPER_MAILLE', 'TRAN', iocc=iocc, nbval=3, vect=lisr8(1),&
+                    nbret=n3)
+        call getvr8('DEFI_SUPER_MAILLE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=lisr8(4),&
+                    nbret=n4)
+        call getvr8('DEFI_SUPER_MAILLE', 'CENTRE', iocc=iocc, nbval=3, vect=lisr8(7),&
+                    nbret=n5)
+        if (n3 .lt. 0) then
+            call utmess('F', 'SOUSTRUC_52')
+        endif
+        if (n4 .lt. 0) then
+            call utmess('F', 'SOUSTRUC_53')
+        endif
+        if (n5 .lt. 0) then
+            call utmess('F', 'SOUSTRUC_54')
+        endif
 !
-    call jecroc(jexnom(mag//'.SUPMAIL', nomail))
-    call jeexin(nomacr//'.DESM', iret)
-    if (iret .eq. 0) then
-        call utmess('F', 'SOUSTRUC_56', sk=nomacr)
-    endif
-    call jeveuo(nomacr//'.DESM', 'L', iadesm)
-    nbnoe=zi(iadesm-1+2)
-    nbnol=zi(iadesm-1+8)+zi(iadesm-1+9)
-    nbnoet =nbnoe+nbnol
-    zi(iadim2-1+4*(isma-1)+1)= nbnoe
-    zi(iadim2-1+4*(isma-1)+2)= nbnol
-    call jeecra(jexnom(mag//'.SUPMAIL', nomail), 'LONMAX', nbnoet)
+        do 4 i = 1, n1
+            isma=isma+1
+            nomacr=zk8(ialk81-1+i)
+            zk8(ianmcr-1+isma)=nomacr
 !
-    do 5,k=1,9
-    zr(iaparr-1+14*(isma-1)+k)=lisr8(k)
- 5  continue
+            call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=ma)
+            call dismoi('DIM_GEOM_B', ma, 'MAILLAGE', repi=idim)
+            if (isma .eq. 1) then
+                idimto=idim
+                zi(iadime-1+6)=idimto
+            else
+                if (idim .ne. idimto) then
+                    call utmess('A', 'SOUSTRUC_55')
+                endif
+            endif
+!
+            nomail=nomacr
+            if (n2 .gt. 0) nomail=zk8(ialk82-1+i)
+!
+            call jecroc(jexnom(mag//'.SUPMAIL', nomail))
+            call jeexin(nomacr//'.DESM', iret)
+            if (iret .eq. 0) then
+                call utmess('F', 'SOUSTRUC_56', sk=nomacr)
+            endif
+            call jeveuo(nomacr//'.DESM', 'L', iadesm)
+            nbnoe=zi(iadesm-1+2)
+            nbnol=zi(iadesm-1+8)+zi(iadesm-1+9)
+            nbnoet =nbnoe+nbnol
+            zi(iadim2-1+4*(isma-1)+1)= nbnoe
+            zi(iadim2-1+4*(isma-1)+2)= nbnol
+            call jeecra(jexnom(mag//'.SUPMAIL', nomail), 'LONMAX', nbnoet)
+!
+            do 5 k = 1, 9
+                zr(iaparr-1+14*(isma-1)+k)=lisr8(k)
+  5         continue
 !         ON CHANGE LES DEGRES EN RADIANS:
-    do 6,k=4,6
-    zr(iaparr-1+14*(isma-1)+k)=zr(iaparr-1+14*(isma-1)+k)*&
+            do 6 k = 4, 6
+                zr(iaparr-1+14*(isma-1)+k)=zr(iaparr-1+14*(isma-1)+k)*&
                 r1
- 6  continue
- 4  continue
+  6         continue
+  4     continue
 !
-    2 end do
+  2 end do
 !
 !
 !     -- MISE A JOUR DE .DIME_2 (3,4) ET .DIME :
 !     ------------------------------------------
-    do 10,isma=1,nbsma-1
-    nbnoe=zi(iadim2-1+4*(isma-1)+1)
-    nbnol=zi(iadim2-1+4*(isma-1)+2)
-    zi(iadim2-1+4*(isma)+3)=zi(iadim2-1+4*(isma-1)+3)+nbnoe
-    zi(iadim2-1+4*(isma)+4)=zi(iadim2-1+4*(isma-1)+4)+nbnol
-    10 end do
+    do 10 isma = 1, nbsma-1
+        nbnoe=zi(iadim2-1+4*(isma-1)+1)
+        nbnol=zi(iadim2-1+4*(isma-1)+2)
+        zi(iadim2-1+4*(isma)+3)=zi(iadim2-1+4*(isma-1)+3)+nbnoe
+        zi(iadim2-1+4*(isma)+4)=zi(iadim2-1+4*(isma-1)+4)+nbnol
+ 10 end do
     isma=nbsma
     nbnoe=zi(iadim2-1+4*(isma-1)+1)
     nbnol=zi(iadim2-1+4*(isma-1)+2)
@@ -197,70 +195,69 @@ subroutine ssdmdm(mag)
 !     -- CREATION DE .COORDO_2 ET REMPLISSAGE DE .SUPMAIL:
 !     ---------------------------------------------------
     call wkvect(mag//'.COORDO_2', 'V V R', 3*nnnoe, iacoo2)
-    do 21, isma=1,nbsma
-    nomacr=zk8(ianmcr-1+isma)
-    call jeveuo(nomacr//'.CONX', 'L', iaconx)
-    call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
-    call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
-                ma, ierd)
-    call jeveuo(ma//'.COORDO    .VALE', 'L', iacoor)
-    nbnoe=zi(iadim2-1+4*(isma-1)+1)
-    nbnol=zi(iadim2-1+4*(isma-1)+2)
-    nbnoet=nbnoe+nbnol
-    i1noe=zi(iadim2-1+4*(isma-1)+3)
-    i1nol=zi(iadim2-1+4*(isma-1)+4)
+    do 21 isma = 1, nbsma
+        nomacr=zk8(ianmcr-1+isma)
+        call jeveuo(nomacr//'.CONX', 'L', iaconx)
+        call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
+        call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=ma)
+        call jeveuo(ma//'.COORDO    .VALE', 'L', iacoor)
+        nbnoe=zi(iadim2-1+4*(isma-1)+1)
+        nbnol=zi(iadim2-1+4*(isma-1)+2)
+        nbnoet=nbnoe+nbnol
+        i1noe=zi(iadim2-1+4*(isma-1)+3)
+        i1nol=zi(iadim2-1+4*(isma-1)+4)
 !
-    do 22, ino=1,nbnoet
+        do 22 ino = 1, nbnoet
 !
 !         -- SI C'EST UN NOEUD PHYSIQUE:
-    if ((zi(iaconx-1+3*(ino-1)+1).eq.1) .and. (zi(iaconx-1+3*( ino-1)+3).eq.0)) then
-        inold=zi(iaconx-1+3*(ino-1)+2)
-        i1noe=i1noe+1
-        zi(iasupm-1+ino)=i1noe
-        call ssdmge(zr(iacoor+3*(inold-1)), zr(iacoo2+3*( i1noe-1)), zr(iaparr+14*(isma-1)),&
-                    idim)
-    else
+            if ((zi(iaconx-1+3*(ino-1)+1).eq.1) .and. (zi(iaconx-1+3*( ino-1)+3).eq.0)) then
+                inold=zi(iaconx-1+3*(ino-1)+2)
+                i1noe=i1noe+1
+                zi(iasupm-1+ino)=i1noe
+                call ssdmge(zr(iacoor+3*(inold-1)), zr(iacoo2+3*( i1noe-1)),&
+                            zr(iaparr+14*(isma-1)), idim)
+            else
 !           -- SI C'EST UN NOEUD DE LAGRANGE:
-        i1nol=i1nol+1
-        zi(iasupm-1+ino)=nnnoe+i1nol
-    endif
-22  continue
-    21 end do
+                i1nol=i1nol+1
+                zi(iasupm-1+ino)=nnnoe+i1nol
+            endif
+ 22     continue
+ 21 end do
 !
 !
 !     -- REMPLISSAGE DE .PARA_R (13,14):
 !     ----------------------------------
-    do 31,isma=1,nbsma
-    call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
-    nbnoe=zi(iadim2-1+4*(isma-1)+1)
-    nbnol=zi(iadim2-1+4*(isma-1)+2)
-    nbnoet= nbnoe+nbnol
-    dmin=0.0d0
-    dmax=0.0d0
-    itrou=0
-    do 32, i=1,nbnoet
-    ino=zi(iasupm-1+i)
-    if (ino .gt. nnnoe) goto 32
-    do 33, j=i+1,nbnoet
-    jno=zi(iasupm-1+j)
-    if (jno .gt. nnnoe) goto 33
-    a1= zr(iacoo2-1+3*(ino-1)+1)-zr(iacoo2-1+3*(jno-1)+1)
-    a2= zr(iacoo2-1+3*(ino-1)+2)-zr(iacoo2-1+3*(jno-1)+2)
-    a3= zr(iacoo2-1+3*(ino-1)+3)-zr(iacoo2-1+3*(jno-1)+3)
-    dist=sqrt(a1**2+a2**2+a3**2)
-    if (itrou .eq. 0) then
-        itrou=1
-        dmin=dist
-        dmax=dist
-    else
-        dmin=min(dmin,dist)
-        dmax=max(dmax,dist)
-    endif
-33  continue
-32  continue
-    zr(iaparr-1+14*(isma-1)+13)=dmin
-    zr(iaparr-1+14*(isma-1)+14)=dmax
-    31 end do
+    do 31 isma = 1, nbsma
+        call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
+        nbnoe=zi(iadim2-1+4*(isma-1)+1)
+        nbnol=zi(iadim2-1+4*(isma-1)+2)
+        nbnoet= nbnoe+nbnol
+        dmin=0.0d0
+        dmax=0.0d0
+        itrou=0
+        do 32 i = 1, nbnoet
+            ino=zi(iasupm-1+i)
+            if (ino .gt. nnnoe) goto 32
+            do 33 j = i+1, nbnoet
+                jno=zi(iasupm-1+j)
+                if (jno .gt. nnnoe) goto 33
+                a1= zr(iacoo2-1+3*(ino-1)+1)-zr(iacoo2-1+3*(jno-1)+1)
+                a2= zr(iacoo2-1+3*(ino-1)+2)-zr(iacoo2-1+3*(jno-1)+2)
+                a3= zr(iacoo2-1+3*(ino-1)+3)-zr(iacoo2-1+3*(jno-1)+3)
+                dist=sqrt(a1**2+a2**2+a3**2)
+                if (itrou .eq. 0) then
+                    itrou=1
+                    dmin=dist
+                    dmax=dist
+                else
+                    dmin=min(dmin,dist)
+                    dmax=max(dmax,dist)
+                endif
+ 33         continue
+ 32     continue
+        zr(iaparr-1+14*(isma-1)+13)=dmin
+        zr(iaparr-1+14*(isma-1)+14)=dmax
+ 31 end do
 !
 !
 ! --- MENAGE

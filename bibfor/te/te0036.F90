@@ -66,7 +66,7 @@ subroutine te0036(option, nomte)
 #include "blas/ddot.h"
 !
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
-    character(len=8) :: k8bid, elref
+    character(len=8) ::  elref
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
     integer :: jpmilt, irese, nfiss, ifiss, jfisno, jtab(7), ncomp
@@ -99,8 +99,7 @@ subroutine te0036(option, nomte)
 !     DIMENSION DE L'ESPACE
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)(1:8)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 !     NDIM EST LA DIMENSION DU MAILLAGE

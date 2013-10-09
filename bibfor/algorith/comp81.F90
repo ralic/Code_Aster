@@ -68,9 +68,9 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
 !
 !
-    integer :: iarefm, iret, ibid, nbnoe, lldef, iaconx
+    integer :: iarefm, iret, nbnoe, lldef, iaconx
     integer :: nbmtot, nbmdef, ier
-    integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie, ierd
+    integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
     integer :: iacon1, iadesc, iadesm, ialica, ialich, iaprno, icas
     integer :: igex, instdy, iocc, ival, ldgn, ldgn0, lnocmp
     integer :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
@@ -98,18 +98,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
 !     RECUPERATION DES INFOS UTILES
 ! **********************
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                numddl, ier)
-    call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                lintf, ier)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C',&
+                ier=ier)
 !
-    call dismoi('F', 'NOM_MODELE', numddl, 'NUME_DDL', ibid,&
-                nomo, iret)
+    call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=nomo)
     if (raidf .ne. blanc) then
-        call dismoi('F', 'CHAM_MATER', raidf, 'MATR_ASSE', ibid,&
-                    chmat, iret)
-        call dismoi('F', 'CARA_ELEM', raidf, 'MATR_ASSE', ibid,&
-                    chcar, iret)
+        call dismoi('CHAM_MATER', raidf, 'MATR_ASSE', repk=chmat)
+        call dismoi('CARA_ELEM', raidf, 'MATR_ASSE', repk=chcar)
     else
         chmat = blanc
         chcar = blanc
@@ -124,11 +120,9 @@ subroutine comp81(nomres, basmod, raidf, noma)
         nbnoe=0
     endif
     call jeveuo(nomres//'.MAEL_MASS_DESC', 'L', iadesc)
-    call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbmtot,&
-                k8bid, ier)
+    call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbmtot)
     if (nbmtot .eq. 0) ASSERT(.false.)
-    call dismoi('F', 'NB_MODES_STA', basmod, 'RESULTAT', nbmdef,&
-                k8bid, ier)
+    call dismoi('NB_MODES_STA', basmod, 'RESULTAT', repi=nbmdef)
     nbmdyn=nbmtot-nbmdef
     if (nbmdyn .lt. 0) ASSERT(.false.)
 !
@@ -141,10 +135,8 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
     call copisd('NUME_DDL', 'G', numddl, nu)
 !
-    call dismoi('F', 'NOM_GD', nu(1:14), 'NUME_DDL', ibid,&
-                nogdsi, ierd)
-    call dismoi('F', 'NB_EC', nogdsi, 'GRANDEUR', nec,&
-                k8bid, ierd)
+    call dismoi('NOM_GD', nu(1:14), 'NUME_DDL', repk=nogdsi)
+    call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nec)
 !
 ! IL FAUT CHOISIR NBNDYN QUI NE SOIENT PAS SUR L'INTERFACE ET POSSEDANT
 ! NCMPMX COMPOSANTES.
@@ -159,7 +151,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
             nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
             ncmpmx = max(ncmpmx,nueq)
         endif
-553  continue
+553 continue
 ! ON VA CHOISIR PLUSIEURS NOEUDS QUI NE SONT PAS PRESENTS DANS
 ! L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL
 ! AU NBRE DE MODES DYNAMIQUES
@@ -171,14 +163,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
         call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
         do 557 j = 1, nbno2
             zi(ldgn+j-1)=zi(ldgn0+j-1)
-557      continue
+557     continue
     else
         nbno2=nbnoe
         if (nbno2 .ne. 0) then
             call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
             do 558 j = 1, nbno2
                 zi(ldgn+j-1)=zi(lldef+j-1)
-558          continue
+558         continue
         else
             call wkvect('&&COMP81.NEUEXC', 'V V I', 1, ldgn)
             zi(ldgn) = 0
@@ -202,15 +194,15 @@ subroutine comp81(nomres, basmod, raidf, noma)
             if (nueq .eq. ncmpmx) then
                 do 556 j = 1, nbno2
                     if (i .eq. zi(ldgn+j-1)) goto 555
-556              continue
+556             continue
                 zi(inebid+k-1)= i
                 if (k .eq. nbndyn) goto 554
                 k=k+1
             endif
         endif
-555  continue
+555 continue
 !
-554  continue
+554 continue
     if (nbmdef .ne. 0) then
         call rsadpa(basmod, 'L', 1, 'NOEUD_CMP', nbmdyn+1,&
                     0, sjv=lnocmp, styp=k8bid)
@@ -228,7 +220,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
             call jeveuo('&&COMP81.NEUEXC', 'E', ldgn)
             do 651 j = nbno2+1, nbnot
                 zi(ldgn+j-1)=zi(inebid+j-1-nbno2)
-651          continue
+651         continue
             nbno2 = nbnot
         endif
         call wkvect('&&COMP81.NOSTDY', 'V V I', nbndef, instdy)
@@ -240,21 +232,21 @@ subroutine comp81(nomres, basmod, raidf, noma)
                 if (nueq .eq. ncmpmx) then
                     do 656 j = 1, nbno2
                         if (i .eq. zi(ldgn+j-1)) goto 655
-656                  continue
+656                 continue
                     zi(instdy+k-1)= i
                     if (k .eq. nbndef) goto 654
                     k=k+1
                 endif
             endif
-655      continue
+655     continue
 !
-654      continue
+654     continue
     else
         if (nbnoe .ne. 0) then
             call wkvect('&&COMP81.NOSTDY', 'V V I', nbnoe, instdy)
             do 658 j = 1, nbnoe
                 zi(instdy+j-1)=zi(lldef+j-1)
-658          continue
+658         continue
         else
             call wkvect('&&COMP81.NOSTDY', 'V V I', 1, instdy)
             zi(instdy) = 0
@@ -314,10 +306,10 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call wkvect(nomres//'.LINO', 'G V I', nbndef+nbndyn, iaconx)
     do 665 i = 1, nbndyn
         zi(iaconx+i-1)=zi(inebid+i-1)
-665  continue
+665 continue
     do 666 i = nbndyn+1, nbndef+nbndyn
         zi(iaconx+i-1)=zi(instdy+i-nbndyn-1)
-666  continue
+666 continue
 !
 ! **********************
 !     CREATION DU .CONX
@@ -327,13 +319,13 @@ subroutine comp81(nomres, basmod, raidf, noma)
         zi(iacon1+3*i-3)=1
         zi(iacon1+3*i-2)=zi(inebid+i-1)
         zi(iacon1+3*i-1)=0
-667  continue
+667 continue
     do 668 i = nbndyn+1, nbndef+nbndyn
         zi(iacon1+3*i-3)=1
         zi(iacon1+3*i-2)=zi(instdy+i-nbndyn-1)
         zi(iacon1+3*i-1)=0
-668  continue
-669  continue
+668 continue
+669 continue
 !
 ! **********************
 !     CREATION DU .KP_EE
@@ -354,23 +346,23 @@ subroutine comp81(nomres, basmod, raidf, noma)
         call jeecra(nomres//'.LICA', 'LONMAX', 2*nbmtot)
         call jeecra(nomres//'.LICH', 'LONMAX', 2)
 !
-        do 670, iocc= 1,nocc
-        call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
-        call getvid('CAS_CHARGE', 'VECT_ASSE_GENE', iocc=iocc, scal=vectas, nbret=n1)
-        call jecroc(jexnom(nomres//'.LICA', nomcas))
-        call jecroc(jexnom(nomres//'.LICH', nomcas))
-        call jenonu(jexnom(nomres//'.LICA', nomcas), icas)
-        call jeveuo(jexnum(nomres//'.LICA', icas), 'E', ialica)
-        call jeveuo(jexnum(nomres//'.LICH', icas), 'E', ialich)
-        call jeveuo(vectas//'           .VALE', 'L', ival)
-        do 671, ie= 1,nbmtot
-        zr(ialica+ie-1) = zr(ival+ie-1)
-        zr(ialica+nbmtot+ie-1) = zr(ival+ie-1)
-671      continue
-        zk8(ialich)='NON_SUIV'
-        zk8(ialich+1)=vectas
-        zi(iadesm-1+7)=icas
-670      continue
+        do 670 iocc = 1, nocc
+            call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
+            call getvid('CAS_CHARGE', 'VECT_ASSE_GENE', iocc=iocc, scal=vectas, nbret=n1)
+            call jecroc(jexnom(nomres//'.LICA', nomcas))
+            call jecroc(jexnom(nomres//'.LICH', nomcas))
+            call jenonu(jexnom(nomres//'.LICA', nomcas), icas)
+            call jeveuo(jexnum(nomres//'.LICA', icas), 'E', ialica)
+            call jeveuo(jexnum(nomres//'.LICH', icas), 'E', ialich)
+            call jeveuo(vectas//'           .VALE', 'L', ival)
+            do 671 ie = 1, nbmtot
+                zr(ialica+ie-1) = zr(ival+ie-1)
+                zr(ialica+nbmtot+ie-1) = zr(ival+ie-1)
+671         continue
+            zk8(ialich)='NON_SUIV'
+            zk8(ialich+1)=vectas
+            zi(iadesm-1+7)=icas
+670     continue
     endif
 !
 ! --- MENAGE

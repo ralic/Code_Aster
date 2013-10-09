@@ -46,9 +46,9 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !  NBMA          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: ibid, nbmc, nbno, nci, adrvlc, acncin, ier, i, j, nbmat, ityp
+    integer ::  nbmc, nbno, nci, adrvlc, acncin, i, j, nbmat, ityp
     integer :: nuno, jadr, numa, idlist, jnoeu, idlima
-    character(len=8) :: noma, k8bid, motcle(2), tymocl(2)
+    character(len=8) :: noma, motcle(2), tymocl(2)
     character(len=16) :: motfac
     character(len=24) :: mesnoe, lismai, listrv, ncncin
 !     -----------------------------------------------------------------
@@ -84,8 +84,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat,&
-                k8bid, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
 !
 ! --- RECUPERATION DU TYPE DES MAILLES DU MAILLAGE :
 !     --------------------------------------------
@@ -104,13 +103,13 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
         do 20 j = 1, nbma
             numa = zi(acncin+jadr-1+j-1)
             zi(idlima+numa-1) = 1
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     nbma = 0
     do 30 i = 1, nbmat
         if (zi(idlima+i-1) .eq. 1) nbma = nbma + 1
-30  end do
+ 30 end do
     if (nbma .eq. 0) then
         call utmess('F', 'MODELISA3_66')
     endif
@@ -125,7 +124,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
             nbma = nbma + 1
             zi(idlist+nbma-1) = i
         endif
-40  end do
+ 40 end do
 !
     call jedetr(listrv)
     call jedetr(mesnoe)

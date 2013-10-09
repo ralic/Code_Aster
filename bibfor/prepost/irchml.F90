@@ -95,14 +95,14 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     character(len=1) :: type
     integer :: gd, nuti, jcelv, iprem
     integer :: vali(2), versio
-    character(len=8) :: nomma, nomgd, nomel, nomno, cbid
+    character(len=8) :: nomma, nomgd, nomel, nomno
     character(len=16) :: nomsy2
     character(len=19) :: chame, chames
     character(len=24) :: nolili, nconec, ncncin, valk(2)
     character(len=80) :: titmai
     logical :: lmasu
-    integer :: i, iacelk, iad, iadr, ianoma, ibid, iel
-    integer :: ier, im, imod, in, ino, iret, itype
+    integer :: i, iacelk, iad, iadr, ianoma, iel
+    integer ::  im, imod, in, ino, iret, itype
     integer :: jceld, jcncin, jcnx, jcoor, jdrvlc, jligr, jliste
     integer :: jlongr, jmode, jnbnm, jncmp, jnmn, jnoel, jperm
     integer :: jpnt, jtitr, jtypm, jvale, kk, libre, lon1
@@ -187,8 +187,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     nomma = zk8(ianoma)
 !     RECHERCHE DU NOMBRE D'ELEMENTS : NBEL
     call jelira(nomma//'.NOMMAI', 'NOMMAX', nbel)
-    call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbno,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
     call wkvect('&&IRCHML.NOMMAI', 'V V K8', nbel, jnoel)
     call wkvect('&&IRCHML.NBNOMA', 'V V I', nbel, jnbnm)
     do 11 iel = 1, nbel
@@ -196,7 +195,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         zk8(jnoel-1+iel) = nomel
         call jelira(jexnum(nomma//'.CONNEX', iel), 'LONMAX', nbn)
         zi(jnbnm-1+iel) = nbn
-11  end do
+ 11 end do
     call jeveuo(chame//'.CELV', 'L', jcelv)
     call jeveuo(nolili(1:19)//'.LIEL', 'L', jligr)
     call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel)
@@ -224,12 +223,12 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             libre = 1
             call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', jdrvlc)
             call jeveuo(jexnum(ncncin, 1), 'L', jcncin)
-            do 100, in = 1, nbnot, 1
-            n = numnoe(in)
-            nbm = zi(jdrvlc + n+1-1) - zi(jdrvlc + n-1)
-            iadr = zi(jdrvlc + n-1)
-            call i2trgi(zi(jliste), zi(jcncin+iadr-1), nbm, libre)
-100          continue
+            do 100 in = 1, nbnot, 1
+                n = numnoe(in)
+                nbm = zi(jdrvlc + n+1-1) - zi(jdrvlc + n-1)
+                iadr = zi(jdrvlc + n-1)
+                call i2trgi(zi(jliste), zi(jcncin+iadr-1), nbm, libre)
+100         continue
             nbmac = libre - 1
         else
             nbmac = nbmat
@@ -238,7 +237,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                 call wkvect('&&IRCHML.MAILLE', 'V V I', nbmac, jliste)
                 do 110 im = 1, nbmac
                     zi(jliste+im-1) = nummai(im)
-110              continue
+110             continue
             endif
         endif
 !
@@ -248,15 +247,14 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             do 21 ino = 1, nbno
                 call jenuno(jexnum(nomma//'.NOMNOE', ino), nomno)
                 zk8(jnmn-1+ino) = nomno
-21          continue
+ 21         continue
             call jeveuo(nomma//'.CONNEX', 'L', jcnx)
             call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpnt)
 ! --
 ! --  RECHERCHE DES COORDONNEES ET DE LA DIMENSION
 !
             if (lcor) then
-                call dismoi('F', 'DIM_GEOM_B', nomma, 'MAILLAGE', ndim,&
-                            cbid, ier)
+                call dismoi('DIM_GEOM_B', nomma, 'MAILLAGE', repi=ndim)
                 call jeveuo(nomma//'.COORDO    .VALE', 'L', jcoor)
             endif
         else
@@ -338,10 +336,10 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         call jelira('&&OP0039.NOM_MODELE', 'LONUTI', nbmodl)
         do 200 imod = 1, nbmodl
             if (nolili .eq. zk24(jmode-1+imod)) goto 202
-200      continue
+200     continue
         call utmess('A', 'PREPOST2_2', sk=chame)
         goto 204
-202      continue
+202     continue
         if (itype .eq. 1) then
             call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
             if (loc .eq. 'ELNO') then
@@ -360,11 +358,11 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                 if (partie .eq. 'REEL') then
                     do 180 i = 1, nuti
                         zr(jvale-1+i)=dble(zc(jcelv-1+i))
-180                  continue
+180                 continue
                 else if (partie.eq.'IMAG') then
                     do 190 i = 1, nuti
                         zr(jvale-1+i)=dimag(zc(jcelv-1+i))
-190                  continue
+190                 continue
                 else
                     call utmess('F', 'PREPOST2_4')
                 endif
@@ -377,7 +375,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             endif
         endif
     endif
-204  continue
+204 continue
     call jedetr('&&IRCHML.NUM_CMP')
     call jedetr('&&IRCHML.NOMMAI')
     call jedetr('&&IRCHML.NBNOMA')
@@ -386,6 +384,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     call jedetr('&&IRCHML.VALE')
     call detrsd('CHAM_ELEM', '&&IRCHML.CHAMEL1')
     call detrsd('CHAM_ELEM', '&&IRCHML.CHAMEL2')
-9999  continue
+9999 continue
     call jedema()
 end subroutine

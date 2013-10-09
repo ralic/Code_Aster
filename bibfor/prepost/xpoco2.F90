@@ -23,7 +23,6 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -34,6 +33,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/xismec.h"
+!
     character(len=8) :: malini, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2
     character(len=19) :: comps1, comps2
@@ -59,13 +59,12 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !
 !
-    integer :: ier, i, j, ndim, nbcmp, jcnsd1, jcnsc1, jcnsv1, jcnsv2, jcnsl2
+    integer ::  i, j, ndim, nbcmp, jcnsd1, jcnsc1, jcnsv1, jcnsv2, jcnsl2
     integer :: jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, iad1, iad2
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2
     integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
     integer :: ncmv1, ncmv2, ndimc, idecv2, idecl2
     logical :: lmeca
-    character(len=8) :: k8b
     character(len=16) :: tysd
     integer :: iviex, iret
 !
@@ -74,8 +73,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !
     call jemarq()
-    call dismoi('F', 'DIM_GEOM', malini, 'MAILLAGE', ndim,&
-                k8b, ier)
+    call dismoi('DIM_GEOM', malini, 'MAILLAGE', repi=ndim)
 !
 !     ------------------------------------------------------------------
 !                    1.     DEPLACEMENT
@@ -115,9 +113,9 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
             do 110 j = 1, ndimc
                 zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
                 zl(idecl2+j)=.true.
-110          continue
+110         continue
         endif
-100  end do
+100 end do
 !
     call gettco(resuco, tysd)
 !
@@ -181,7 +179,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     ASSERT(iad2.gt.0)
                     zl(jcesl2-1+iad2) = .true.
                     zr(jcesv2-1+iad2) = zr(jcesv1-1+iad1)
-30              continue
+ 30             continue
                 if (iviex .ne. 0) then
                     do 40 icmp = 1, ncmv1
                         call cesexi('C', jcvid1, jcvil1, ima, ipg,&
@@ -193,10 +191,10 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                         iad2 = -iad2
                         zl(jcvil2-1+iad2) = .true.
                         zr(jcviv2-1+iad2) = zr(jcviv1-1+iad1)
-40                  continue
+ 40                 continue
                 endif
-20          continue
-10      continue
+ 20         continue
+ 10     continue
     endif
 !
 !
@@ -247,8 +245,8 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     zl(jresl2-1-iadr2) = .true.
                 endif
 !
-310          continue
-300      continue
+310         continue
+300     continue
 !
     endif
 !

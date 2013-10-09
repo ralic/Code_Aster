@@ -95,9 +95,9 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! DATA
 ! ----
 !-----------------------------------------------------------------------
-    integer :: iaxe, ibid, icoupl, ide, ideeq, idep, ifsic
+    integer :: iaxe, icoupl, ide, ideeq, idep, ifsic
     integer :: ifsvi, ifsvk, igrap, ik, imail, imod, ipas
-    integer :: ipm, ipv, ire, ireszo, iret, irhoe, irhoi
+    integer :: ipm, ipv, ireszo, iret, irhoe, irhoi
     integer :: irota1, irota2, itran1, itran2, itypfl, ivale, izone
     integer :: j, lfsvk, lfsvr, lmasg, lmasse, n1
     integer :: n2, nbma, nbmano, neq, numno0, numod, nuzo
@@ -266,16 +266,12 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
 ! ---       DEFORMEES MODALES
 !
-            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
-                        masse, ire)
+            call dismoi('REF_MASS_PREM', base, 'RESU_DYNA', repk=masse)
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
-            call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                        numddl, ire)
-            call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                        mailla, ire)
-            call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                        k8b, ire)
+            call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numddl)
+            call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
+            call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
 !
             call extmod(base, numddl, nuor, nbm, vecr3,&
                         neq, lnoe, [idep], 1)
@@ -397,16 +393,12 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.5.PONDERATIONS DUES AUX DEFORMEES MODALES
 !                                                --> VECTEUR VECR3  ---
 !            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
-            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
-                        masse, ire)
+            call dismoi('REF_MASS_PREM', base, 'RESU_DYNA', repk=masse)
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
-            call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                        numddl, ire)
-            call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                        mailla, ire)
-            call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                        k8b, ire)
+            call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numddl)
+            call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
+            call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
             deeq = numddl//'.NUME.DEEQ'
             call jeveuo(deeq, 'L', ideeq)
 !

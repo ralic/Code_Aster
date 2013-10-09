@@ -61,7 +61,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 ! OUT : NSUPP  : NOMBRE DE SUPPORTS PAR DIRECTION
 ! IN  : KNOEU  : NOM DU VECTEUR DES NOMS DES SUPPORTS
 !     ------------------------------------------------------------------
-    integer :: ibid, ier, im1, im2, ioc, nm, nn, ng, nbocc, jasy, neq, jddl1
+    integer ::  ier, im1, im2, ioc, nm, nn, ng, nbocc, jasy, neq, jddl1
     integer :: nba, nbbloq, nbl, nbliai, jnno, jnsp, jdsp, jesp, jspe, jnas, noc
     character(len=5) :: motfac
     character(len=8) :: k8b, noma
@@ -104,7 +104,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
             ier = ier + 1
             call utmess('E', 'SEISME_8')
         endif
-10  end do
+ 10 end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
@@ -130,12 +130,9 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         call asexc1(motfac, nbocc, nbmode, parmod, amort,&
                     corfre, ndir, zr(jspe), zr(jasy))
     else
-        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                    nume, ier)
-        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                    noma, ier)
-        call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                    k8b, ier)
+        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
+        call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
+        call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
         call wkvect('&&ASEXCI.POSITION.DDL1', 'V V I', neq, jddl1)
         call typddl('BLOQ', nume, neq, zi(jddl1), nba,&
                     nbbloq, nbl, nbliai)

@@ -30,7 +30,7 @@ subroutine ver152(option, moflui, moint, n12, model)
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
-    integer :: n12, ibid, ierd
+    integer :: n12
     character(len=*) :: option, model, moflui, moint
     character(len=9) :: optio9
     character(len=16) :: rep, rk16
@@ -43,22 +43,19 @@ subroutine ver152(option, moflui, moint, n12, model)
         call utmess('F', 'ALGORITH11_24')
     endif
 !
-    call dismoi('F', 'PHENOMENE', moflui, 'MODELE', ibid,&
-                rk16, ierd)
+    call dismoi('PHENOMENE', moflui, 'MODELE', repk=rk16)
 !
     if (rk16(1:9) .ne. 'THERMIQUE') then
         call utmess('F', 'ALGORITH11_25')
     endif
 !
-    call dismoi('F', 'PHENOMENE', moint, 'MODELE', ibid,&
-                rk16, ierd)
+    call dismoi('PHENOMENE', moint, 'MODELE', repk=rk16)
 !
     if (rk16(1:9) .ne. 'THERMIQUE') then
         call utmess('F', 'ALGORITH11_26')
     endif
 !
-    call dismoi('F', 'MODELISATION', moflui, 'MODELE', ibid,&
-                rep, ierd)
+    call dismoi('MODELISATION', moflui, 'MODELE', repk=rep)
     if (rep .eq. 'PLAN') then
         model='2D'
     else

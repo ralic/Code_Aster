@@ -76,7 +76,7 @@ subroutine op0026()
     character(len=16) :: newobj(nbomax)
     character(len=24) :: newsd(nbomax)
 !-----------------------------------------------------------------------
-    integer :: n1, nbopt, iterat, numins, i, ibid
+    integer :: n1, nbopt, iterat, numins, i
     integer :: niv, ifm
     integer :: iret, nuord, long
     integer :: nbnobj
@@ -145,8 +145,7 @@ subroutine op0026()
 !
     call nmdome(modele, mate, carele, lischa, result,&
                 nuord)
-    call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                ligrmo, iret)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! - Get displacements
 !
@@ -284,9 +283,9 @@ subroutine op0026()
         partps(2)=0.d0
         partps(3)=0.d0
         if (.not.l_merimo) call copisd('CHAMP_GD', 'V', sigmoi, sigplu)
-        call vefnme(option, 'G'   , modele, mate  , carele, &
-                    compor, partps, 0     , ligrmo, complu, &
-                    sigplu, k24bid, depplu, ' '   , veforc)
+        call vefnme(option, 'G', modele, mate, carele,&
+                    compor, partps, 0, ligrmo, complu,&
+                    sigplu, k24bid, depplu, ' ', veforc)
     endif
 !
 ! - New objects in table

@@ -51,7 +51,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
     integer :: lmat, neq, ibid, iordr(1), ier
     real(kind=8) :: r8b, epsi
-    character(len=8) :: k8b, cmp(6), crit
+    character(len=8) ::  cmp(6), crit
     character(len=24) :: valk(3)
     character(len=14) :: nume
     character(len=16) :: acces
@@ -59,7 +59,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, idchm, iddl, idmst, idve, ie
+    integer :: i, id, idchm, iddl, idmst, idve
     integer :: in, iret, nba, nbb, nbl, nbliai, nbtrou
 !
     real(kind=8) :: xd
@@ -74,10 +74,8 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     call mtdscr(masse)
     mass2=masse
     call jeveuo(mass2//'.&INT', 'E', lmat)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                k8b, ie)
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                nume, ie)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
     call wkvect('&&SIMUL2.VECTEUR', 'V V R', neq, idve)
 !
 !     --- CREATION DU CHAM_NO RESULTAT ---
@@ -130,14 +128,14 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
                     do 22 i = 0, neq-1
                         zr(idve+i) = -xd * zr(idmst+i)
-22                  continue
+ 22                 continue
                     call jelibe(chamno//'.VALE')
                     call mrmult('CUMU', lmat, zr(idve), zr(idchm), 1,&
                                 .true.)
                 endif
-20          continue
+ 20         continue
         endif
-10  end do
+ 10 end do
     if (ier .ne. 0) then
         call utmess('F', 'ALGELINE5_40')
     endif
@@ -148,7 +146,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
     do 30 in = 0, neq-1
         zr(idchm+in) = ( 1 - zi(iddl+in) ) * zr(idchm+in)
-30  end do
+ 30 end do
 !
 ! --- MENAGE
     call jelibe(resu2//'.VALE')

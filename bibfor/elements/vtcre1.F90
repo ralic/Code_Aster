@@ -59,8 +59,7 @@ subroutine vtcre1(champ, numedd, classe, type, neq)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: jchamp, jrefn, ierd, jneq, lchp
-    character(len=8) :: k8bid
+    integer :: jchamp, jrefn, jneq, lchp
     character(len=24) :: vale, refe, desc
 !
     data vale/'                   .VALE'/
@@ -84,8 +83,7 @@ subroutine vtcre1(champ, numedd, classe, type, neq)
     desc(1:19) = champ
     call wkvect(desc, classe//' V I', 2, jchamp)
     call jeecra(desc, 'DOCU', cval='CHNO')
-    call dismoi('F', 'NUM_GD_SI', numedd, 'NUME_DDL', zi(jchamp),&
-                k8bid, ierd)
+    call dismoi('NUM_GD_SI', numedd, 'NUME_DDL', repi=zi(jchamp))
     zi(jchamp+1) = 1
 !
 ! ------------------------------- VALE --------------------------------

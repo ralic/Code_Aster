@@ -45,12 +45,12 @@ subroutine op0162()
 #include "blas/ddot.h"
 !
     integer :: ierd, gd
-    character(len=8) :: k8b, resu, masse, noma, vect, typi
+    character(len=8) ::  resu, masse, noma, vect, typi
     character(len=14) :: nume
     character(len=16) :: concep, nomcmd, k16nom
     character(len=19) :: fonc
     character(len=24) :: refe, vale, deeq, type
-    character(len=24) :: kbid, nomch0
+    character(len=24) ::  nomch0
     character(len=8) :: mael, basemo, nomfon, interf
     character(len=80) :: titre
     real(kind=8) :: petir8, di(6)
@@ -58,8 +58,8 @@ subroutine op0162()
     complex(kind=8) :: cbid
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadmo1, iadmo2, ibid, ic, idbase, iddeeq
-    integer :: idvec1, idvec2, ifm, ifmis, iret, isvect, j
+    integer :: i, iadmo1, iadmo2, ic, idbase, iddeeq
+    integer :: idvec1, idvec2, ifm, ifmis, isvect, j
     integer :: j2, jfonc, jrefe, jtyp, jvect, k
     integer :: n, n1, n2, n3, n4, nbmode, nbmods
     integer :: nbmodt, nbnoeu, nbval, nc, ncharb, nchars, neq
@@ -96,15 +96,13 @@ subroutine op0162()
 !
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
-                interf, ierd)
+    call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=interf, arret='C',&
+                ier=ierd)
     if (interf .ne. ' ') then
 !       CALL BMNBMD(BASEMO,'MODE',NBMODE)
 !       CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)
-        call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                    k8b, ierd)
-        call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmode,&
-                    k8b, ierd)
+        call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
+        call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmode)
         type = interf//'.IDC_TYPE'
         call jeveuo(type, 'L', jtyp)
         typi = zk8(jtyp)
@@ -112,10 +110,8 @@ subroutine op0162()
 !       CALL JEVEUO(BASEMO//'           .UTIL','L',JVAL)
 !       NBMODE = ZI(JVAL+2)
 !       NBMODS = ZI(JVAL+3)
-        call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                    k8b, ierd)
-        call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmode,&
-                    k8b, ierd)
+        call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
+        call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmode)
         typi = 'CRAIGB'
     endif
     nbmodt = nbmode + nbmods
@@ -132,18 +128,13 @@ subroutine op0162()
 !
 !--------RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                nume, ierd)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                kbid, iret)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     deeq = nume//'.NUME.DEEQ'
     call jeveuo(deeq, 'L', iddeeq)
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                noma, ierd)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8b, ierd)
-    call dismoi('F', 'NUM_GD_SI', nume, 'NUME_DDL', gd,&
-                k8b, ierd)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
+    call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
     if (interf .eq. ' ') call vtcreb(nomch0, nume, 'V', 'R', neq)
 !
     call wkvect('&&OP0162.VECTASS1', 'V V R', neq, idvec1)
@@ -217,7 +208,7 @@ subroutine op0162()
 !
             pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
             zr(jvect+j-1) = pij + petir8
-71      continue
+ 71     continue
         do 72 j = 1, nbmods
 !
 !-----      RECOPIE DU JEME MODE
@@ -233,7 +224,7 @@ subroutine op0162()
 !
             pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
             zr(isvect+j-1) = pij + petir8
-72      continue
+ 72     continue
         if (niv .gt. 1) write(ifm,'(''DYNA CHAR'',1x,i6)') ic
         if (niv .gt. 1) write(ifm,'(6(1x,1pe12.5))') (zr(jvect+k-1),k=1, nbmode )
         if (niv .gt. 1) write(ifm,'(''STAT CHAR'',1x,i6)') ic
@@ -253,7 +244,7 @@ subroutine op0162()
         write(ifmis,'(''FONC CHAR'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') t, coef
         goto 81
-80      continue
+ 80     continue
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
@@ -264,9 +255,9 @@ subroutine op0162()
         write(ifmis,'(''FONC CHAR'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-81      continue
-70  continue
-9998  continue
+ 81     continue
+ 70 continue
+9998 continue
     call getfac('EXCIT_SOL', nchars)
     write(ifmis,'(''SOLS'',1x,i6)') nchars
     write(ifm,'(''SOLS'',1x,i6)') nchars
@@ -292,8 +283,8 @@ subroutine op0162()
         write(ifmis,'(''FONC SOLS'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-73  continue
-9999  continue
+ 73 continue
+9999 continue
 !
     call getfac('SOURCE_SOL', nsours)
     if (nsours .eq. 0) goto 9995
@@ -323,8 +314,8 @@ subroutine op0162()
         write(ifmis,'(''FONC SOUS'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-74  continue
-9995  continue
+ 74 continue
+9995 continue
 !
     call getfac('SOURCE_FLUIDE', nsourf)
     if (nsourf .eq. 0) goto 9996
@@ -352,8 +343,8 @@ subroutine op0162()
         write(ifmis,'(''FONC SOUF'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-75  continue
-9996  continue
+ 75 continue
+9996 continue
 !
     call jedema()
 end subroutine

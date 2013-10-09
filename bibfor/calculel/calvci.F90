@@ -77,14 +77,14 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !----------------------------------------------------------------------
     integer :: iddes, nec, ivvale, jnueq, jprno, icoor, ichcin, jafci
     integer :: jafcv, nbimp, nimp, n, ni, nddl, nn, nueq, ier
-    integer :: neq, ibid, numgd, idtyp, jdlci, jafck
+    integer :: neq, numgd, idtyp, jdlci, jafck
     integer :: jcn1k, jcn1d, jcn1c, jcn1v, jcn1l, icmp, icmp1, ino, jnocmp
     integer :: nbcmp1, jdeeq, imaill, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
     logical :: fonc
     real(kind=8) :: valp(4), res, valr(1)
-    character(len=8) :: nomma, kbid, gd, nomf, evoim, nocmp, nomch
+    character(len=8) :: nomma, gd, nomf, evoim, nocmp, nomch
     character(len=14) :: nu
     character(len=16) :: nomp(4)
     character(len=19) :: vcine, charci, cnoimp, cnsimp
@@ -106,12 +106,9 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !     ---------------------------------------------------------
     call detrsd('CHAMP_GD', vcine)
     call jedetr(vcine//'.DLCI')
-    call dismoi('F', 'NB_EQUA', nu, 'NUME_DDL', neq,&
-                kbid, ier)
-    call dismoi('F', 'NOM_GD', nu, 'NUME_DDL', ibid,&
-                gd, ier)
-    call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
-                nomma, ier)
+    call dismoi('NB_EQUA', nu, 'NUME_DDL', repi=neq)
+    call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
+    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=nomma)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo('&CATA.GD.TYPEGD', 'L', idtyp)
     typval = zk8(idtyp-1+numgd)
@@ -233,7 +230,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                 endif
 !
                 zi(jdlci-1+nueq) = 1
-10          continue
+ 10         continue
 !
 !
 !
@@ -250,15 +247,15 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                 nueq =zi(jnueq-1+ zi(jprno+nn)+nddl-1)
                 zc(ivvale-1+nueq) = zc(jafcv-1+nimp)
                 zi(jdlci-1+nueq) = 1
-20          continue
+ 20         continue
 !
 !
         else
             ASSERT(.false.)
         endif
- 1  end do
+  1 end do
 !
-9999  continue
+9999 continue
 !
     call detrsd('CHAMP', cnsimp)
     call jedema()

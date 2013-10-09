@@ -54,7 +54,7 @@ subroutine op0172()
 #include "asterfort/wkvect.h"
 !
 !
-    integer :: ibid, aprno, iddl, ncmp, nec, ierd, gd, nbmode
+    integer :: ibid, aprno, iddl, ncmp, nec, gd, nbmode
     integer :: vali
     real(kind=8) :: r8b, zero, rigi(6), amosol, seuil, amomo, poucen
     real(kind=8) :: valrr(2)
@@ -113,8 +113,7 @@ subroutine op0172()
 !     ----- RECUPERATION DES MODES -----
 !
     call getvid('ENER_SOL', 'MODE_MECA', iocc=1, scal=meca, nbret=nmm)
-    call dismoi('F', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid,&
-                masse, iret)
+    call dismoi('REF_MASS_PREM', meca, 'RESU_DYNA', repk=masse)
 !
 !     --- ON RECUPERE LA TABLE D'ENERGIE ---
 !
@@ -144,7 +143,7 @@ subroutine op0172()
         if (zi(jnuor+i-1) .eq. zi(jnume+nbmode-1)) goto 10
         nbmode = nbmode + 1
         zi(jnume+nbmode-1) = zi(jnuor+i-1)
-10  continue
+ 10 continue
 !
     nomob1 = '&&OP0172.FREQ'
     call wkvect(nomob1, 'V V R', nbmode, jfreq)
@@ -158,21 +157,16 @@ subroutine op0172()
         else
             call utmess('F', 'PREPOST4_18')
         endif
-12  continue
+ 12 continue
 !
 !
 !--------RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                nume, ierd)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                k8b, ierd)
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                noma, ierd)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8b, ierd)
-    call dismoi('F', 'NUM_GD_SI', nume, 'NUME_DDL', gd,&
-                k8b, ierd)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
+    call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
     deeq = nume//'.NUME.DEEQ'
     call jeveuo(deeq, 'L', iddeeq)
 !
@@ -223,10 +217,10 @@ subroutine op0172()
         do 22 in = 0, nb-1
             ii = ii + 1
             zi(idno+ii) = zi(ldgn+in)
-22      continue
-20  continue
+ 22     continue
+ 20 continue
     goto 111
-114  continue
+114 continue
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
                 iarg, 0, k8b, nbgr)
     if (nbgr .eq. 0) then
@@ -247,18 +241,18 @@ subroutine op0172()
             do 24 nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(idn2+inoe-1) = zi(idn2+inoe-1) + 1
-24          continue
-23      continue
-21  continue
+ 24         continue
+ 23     continue
+ 21 continue
     ii = 0
     do 25 ij = 1, nbnoeu
         if (zi(idn2+ij-1) .eq. 0) goto 25
         ii = ii + 1
         zi(idno+ii-1) = ij
-25  continue
+ 25 continue
     nbno = ii
     call jedetr('&&OP0172.GROUP_MA')
-111  continue
+111 continue
     if (method .ne. 'RIGI_PARASOL') goto 112
     zrig = min(abs(rigi(1)),abs(rigi(2)))
     zrig = min(zrig,abs(rigi(3)))
@@ -277,7 +271,7 @@ subroutine op0172()
                 iarg, nbgr, zk24(idgm), nbv)
     call raire2(noma, rigi, nbgr, zk24(idgm), nbnoeu,&
                 nbno, zi(idno), zr(irigno))
-112  continue
+112 continue
     if (method .ne. 'RIGI_PARASOL' .or. ncompo .ne. 6) goto 113
     zrig = min(abs(rigi(4)),abs(rigi(5)))
     zrig = min(zrig,abs(rigi(6)))
@@ -313,7 +307,7 @@ subroutine op0172()
         zg = zr(jcoor+3*(inoe-1)+3-1)
     endif
 !
-113  continue
+113 continue
 !
     do 51 i = 1, nbmode
         if (method .eq. 'DEPL') then
@@ -333,8 +327,8 @@ subroutine op0172()
                                                    idepmo+(ic-1)* nbmode+i-1&
                                                    ) + zr(iadmo1+iddl+ic-1&
                                                    )
-53              continue
-52          continue
+ 53             continue
+ 52         continue
         else if (method.eq.'RIGI_PARASOL') then
             call rsexch('F', meca, 'DEPL', zi(jnume+i-1), nomch1,&
                         iret)
@@ -351,20 +345,20 @@ subroutine op0172()
                 do 73 ic = 1, ncmp
                     valr(ic) = zr(iadmo1+iddl+ic-1)*zr(irigno+6*(ino- 1)+ic-1)
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr( idepmo+(ic-1)* nbmode+i-1 ) + valr(ic )
-73              continue
+ 73             continue
                 a(1) = zr(jcoor+3*(inoe-1)+1-1) - xg
                 a(2) = zr(jcoor+3*(inoe-1)+2-1) - yg
                 a(3) = zr(jcoor+3*(inoe-1)+3-1) - zg
                 do 74 ic = 1, 3
                     b(ic) = valr(ic)
-74              continue
+ 74             continue
                 call provec(a, b, c)
                 do 75 ic = 4, ncmp
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr( idepmo+(ic-1)* nbmode+i-1 ) + c(ic-3 )
-75              continue
-72          continue
+ 75             continue
+ 72         continue
         endif
-51  continue
+ 51 continue
 !
     if (ncmp .eq. 6) write(ifr,1000)
     if (ncmp .eq. 3) write(ifr,2000)
@@ -374,17 +368,17 @@ subroutine op0172()
                 zr(idepmo+(ic-1)*nbmode+i-1) = zr(idepmo+(ic-1)* nbmode+i-1 )/nbno
                 zr(ienemo+(ic-1)*nbmode+i-1) = 0.5d0* rigi(ic)*zr( idepmo+(ic-1)*nbmode+i-1)**2
                 zr(ienmot+i-1) = zr(ienemo+(ic-1)*nbmode+i-1) + zr( ienmot+i-1)
-55          continue
+ 55         continue
         else if (method.eq.'RIGI_PARASOL') then
             do 76 ic = 1, ncmp
                 zr(ienemo+(ic-1)*nbmode+i-1) = 0.5d0* zr(idepmo+(ic-1) *nbmode+i-1 )**2/rigi(ic)
                 zr(ienmot+i-1) = zr(ienemo+(ic-1)*nbmode+i-1) + zr( ienmot+i-1)
-76          continue
+ 76         continue
         endif
         f = zr(jfreq+i-1)
         write(ifr,1001) f,(zr(ienemo+(ic-1)*nbmode+i-1),ic=1,ncmp),&
         zr(ienmot+i-1)
-54  continue
+ 54 continue
 !
 !        --- ON RECUPERE LES SOUS_STRUC ET LEURS AMOR ---
 !
@@ -436,7 +430,7 @@ subroutine op0172()
 !
             zr(iamomo+imod-1) = zr(iamomo+imod-1) + 1.0d-2*poucen*zr( idam+i-1)
             enesol = enesol + poucen
-61      continue
+ 61     continue
 !
         enesol = 1.d0 - 1.0d-2*enesol
 !
@@ -451,7 +445,7 @@ subroutine op0172()
                                                                             &)* nbmode+imod-1) *e&
                                                                             &nesol/zr(ienmot+imod&
                                                                             &-1)
-62      continue
+ 62     continue
 !
         amomo = zr(iamomo+imod-1)
         if (amomo .gt. seuil) then
@@ -461,15 +455,15 @@ subroutine op0172()
             vali = imod
             call utmess('I', 'PREPOST5_64', si=vali, nr=2, valr=valrr)
         endif
-60  continue
+ 60 continue
 !
     write(ifr,1002)
     do 64 imod = 1, nbmode
         write(ifr,1003) imod, zr(jfreq+imod-1), zr(iamomo+imod-1)
-64  continue
+ 64 continue
 !
     goto 9999
-9998  continue
+9998 continue
     nbmode = 0
     pi = r8pi()
 !
@@ -487,8 +481,8 @@ subroutine op0172()
         omega=2.d0*pi*zr(jfreq)
         zr(iamomo+imod-1) = 0.5d0*(alfa*omega+beta/omega)
         write(ifr,1003) imod, zr(jfreq), zr(iamomo+imod-1)
-11  continue
-9999  continue
+ 11 continue
+9999 continue
     nbvale = nbmode
     if (nbvale .gt. 1) then
         call wkvect(resu//'           .LPAS', 'G V R', nbvale-1, jpas)
@@ -500,7 +494,7 @@ subroutine op0172()
             zi(jnbp+i-1) = 1
             zr(jbor+i-1) = zr(iamomo+i-1)
             zr(jval+i-1) = zr(iamomo+i-1)
-70      continue
+ 70     continue
         zr(jbor+nbvale-1) = zr(iamomo+nbvale-1)
         zr(jval+nbvale-1) = zr(iamomo+nbvale-1)
     else

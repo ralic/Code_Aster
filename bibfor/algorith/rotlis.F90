@@ -67,12 +67,12 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    integer :: nbcmpm, ordo, nbec, ierd, ibid, llrot, ntail, iadn, iado, i, j, k
+    integer :: nbcmpm, ordo, nbec, ibid, llrot, ntail, iadn, iado, i, j, k
     integer :: l, nbligo, icompo, ldmat, ii, llplin, nbnoe, llplio, ldlid
     integer :: nblign, nbcoln, llmat, nbcolo, icompn, iblo
     parameter    (nbcmpm=10)
     integer :: ideco(nbcmpm), idecn(nbcmpm), icar(3)
-    character(len=8) :: nomres, sst, intf, nommcl, basmod, nomg, kbid
+    character(len=8) :: nomres, sst, intf, nommcl, basmod, nomg
     character(len=24) :: fmli, fplin, fplio, nomatn, famli
     real(kind=8) :: rot(3), matrot(nbcmpm, nbcmpm), fact, matbuf(nbcmpm, nbcmpm)
     real(kind=8) :: mattmp(nbcmpm, nbcmpm), zero, xo(nbcmpm), xn(nbcmpm)
@@ -86,8 +86,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                kbid, ierd)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -107,7 +106,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
     call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', llrot)
     do 10 i = 1, 3
         rot(i)=zr(llrot+i-1)
-10  end do
+ 10 end do
 !
 ! --- CALCUL DE LA MATRICE DE ROTATION
 !
@@ -183,7 +182,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
                 else
                     xn(k)=zero
                 endif
-120          continue
+120         continue
 !
 !  ROTATION DU DELACEMENT NODAL MODAL
 !
@@ -191,8 +190,8 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
                 xo(k)=zero
                 do 150 l = 1, nbcmpm
                     xo(k)=xo(k)+matrot(k,l)*xn(l)
-150              continue
-140          continue
+150             continue
+140         continue
 !
 !  BOUCLE SUR LES COMPOSANTES ORIENTEES: RECUPERATION VALEURS
 !
@@ -201,9 +200,9 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
                     icompo=icompo+1
                     zr(ldmat+(j-1)*nbligo+icompo-1)=xo(k)*fact
                 endif
-130          continue
-110      continue
-100  continue
+130         continue
+110     continue
+100 continue
 !
     call jedetr(nomatn)
 !

@@ -112,7 +112,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     integer :: iade2, iaptm2, iava2, numgd2
     integer :: iade3, iaptm3, iava3, numgd3
     integer :: iarepe
-    integer :: ibid, ier
+    integer :: ibid
     integer :: nbrin
     real(kind=8) :: rcmp(2)
     character(len=1) :: base
@@ -169,12 +169,12 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             itycha(j) = itycha(j) + 1
             iret2 = iret2 + 1
         endif
-121      continue
+121     continue
         if (iret2 .eq. 0) then
             call utmess('A', 'INDICATEUR_6', sk=lchar(i))
             iret1 = iret1 + 1
         endif
-12  end do
+ 12 end do
 !
 !     ON VERIFIE QU'UN TYPE DE CHARGE N'EST PAS PRESENT 2 FOIS
 !     REMARQUE : SAUF POUR DU DIRICHLET (CIMPO)
@@ -213,15 +213,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         call exisd('CHAMP_GD', lchar(i)//'.CHME.F2D3D', iret2)
         if (iret1 .ne. 0) then
             carte1 = lchar(i)//'.CHME.F1D2D'
-            call dismoi('F', 'NOM_GD', carte1, 'CARTE', ibid,&
-                        nomgd1, ier)
+            call dismoi('NOM_GD', carte1, 'CARTE', repk=nomgd1)
             call etenca(carte1, ligrel, iret)
             ASSERT(iret.eq.0)
 !GN        WRITE(6,*) 'ON A DU F1D2D'
         else if (iret2.ne.0) then
             carte1 = lchar(i)//'.CHME.F2D3D'
-            call dismoi('F', 'NOM_GD', carte1, 'CARTE', ibid,&
-                        nomgd1, ier)
+            call dismoi('NOM_GD', carte1, 'CARTE', repk=nomgd1)
             call etenca(carte1, ligrel, iret)
             ASSERT(iret.eq.0)
 !GN        WRITE(6,*) 'ON A DU F2D3D'
@@ -232,8 +230,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         call exisd('CHAMP_GD', lchar(i)//'.CHME.PRESS', iret1)
         if (iret1 .ne. 0) then
             carte2 = lchar(i)//'.CHME.PRESS'
-            call dismoi('F', 'NOM_GD', carte2, 'CARTE', ibid,&
-                        nomgd2, ier)
+            call dismoi('NOM_GD', carte2, 'CARTE', repk=nomgd2)
             call etenca(carte2, ligrel, iret)
             ASSERT(iret.eq.0)
 !GN        WRITE(6,*) 'ON A DU PRESS AVEC CARTE2 : ',CARTE2
@@ -245,14 +242,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             call exisd('CHAMP_GD', lchar(i)//'.CHME.FLUX', iret1)
             if (iret1 .ne. 0) then
                 carte3 = lchar(i)//'.CHME.FLUX'
-                call dismoi('F', 'NOM_GD', carte3, 'CARTE', ibid,&
-                            nomgd3, ier)
+                call dismoi('NOM_GD', carte3, 'CARTE', repk=nomgd3)
                 call etenca(carte3, ligrel, iret)
                 ASSERT(iret.eq.0)
             endif
         endif
 !
-21  end do
+ 21 end do
 !
     call jeveuo(ligrel(1:19)//'.REPE', 'L', iarepe)
 !
@@ -437,7 +433,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             typc3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOR3//' ET '//TYPC3
         endif
-22  end do
+ 22 end do
 !
 !====
 ! 5. PARAMETRES DU CALCUL

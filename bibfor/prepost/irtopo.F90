@@ -71,7 +71,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     integer :: nbmamx, nbgmmx, imxno, imxgn, imxma, imxgm, idebu, jnunot
     integer :: iutil
 !
-    character(len=8) :: k8b, nomma
+    character(len=8) ::  nomma
     character(len=24) :: texte
 !
     call jemarq()
@@ -168,20 +168,17 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         if (nbno .ne. 0 .or. nbgrn .ne. 0 .or. nbma .ne. 0 .or. nbgrm .ne. 0) then
             if (lresul) then
 !           - C'EST UN RESULTAT COMPOSE: NOM DU MAILLAGE DANS NOMMA
-                call dismoi('F', 'NOM_MAILLA', leresu, 'RESULTAT', ibid,&
-                            nomma, ibid)
+                call dismoi('NOM_MAILLA', leresu, 'RESULTAT', repk=nomma)
             else
 !           - C'EST UN CHAM_GD: NOM DU MAILLAGE DANS NOMMA
-                call dismoi('F', 'NOM_MAILLA', leresu, 'CHAMP', ibid,&
-                            nomma, ibid)
+                call dismoi('NOM_MAILLA', leresu, 'CHAMP', repk=nomma)
             endif
 !         - NOMBRE TOTAL DE NOEUDS DU MAILLAGE NOMMA = NBNOE
-            call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbnoe,&
-                        k8b, ibid)
+            call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoe)
             call wkvect('&&IRTOPO.IND_NOEU', 'V V I', nbnoe, jindno)
             do 70 ino = 1, nbnoe
                 zi(jindno+ino-1)=0
-70          continue
+ 70         continue
         endif
 !
 !       ***  SELECTION SUR DES NOEUDS OU GROUPES DE NOEUDS
@@ -230,7 +227,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     ii=ii+1
                     zi(jnofi+ii-1)=zi(jnunos+ino-1)
                 endif
-490          continue
+490         continue
             nbnos=ii
             nbnoto = nbnoto + nbnos
         endif
@@ -252,13 +249,13 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !         - LISTE DES NUMEROS DE NOEUDS
             do 500 ino = 1, nbnou
                 zi(jnunot-1+ino)=zi(jnunou-1+ino)
-500          continue
+500         continue
         endif
         if (nbnos .gt. 0) then
 !         - SUIVIE DE LA LISTE DES NUMEROS DE NOEUDS SOMMETS
             do 501 ino = 1, nbnos
                 zi(jnunot-1+nbnou+ino)= zi(jnofi-1+ino)
-501          continue
+501         continue
         endif
     endif
 !
@@ -290,7 +287,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-800          continue
+800         continue
         endif
         if (nbgnmx .ne. 0) then
             idebu = 12
@@ -307,7 +304,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-810          continue
+810         continue
         endif
         if (nbgmmx .ne. 0) then
             idebu = 12
@@ -323,7 +320,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-820          continue
+820         continue
         endif
         if (nbmamx .ne. 0) then
             idebu = 12
@@ -340,7 +337,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-830          continue
+830         continue
         endif
         call jeveuo('&&IRTOPO.LIST_TOPO', 'L', jtopo)
         if (imxno .ne. 0 .or. imxgn .ne. 0 .or. imxma .ne. 0 .or. imxgm .ne. 0) then
@@ -364,7 +361,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         endif
         write(ifichi,'(A)')
     endif
-9999  continue
+9999 continue
     call jedetr('&&IRTOPO.LIST_TOPO')
     call jedetr('&&IRTOPO.LIST_GRNO')
     call jedetr('&&IRTOPO.NOM_GRNO')

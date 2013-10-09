@@ -65,8 +65,8 @@ subroutine op0051()
     parameter ( nompro = 'OP0051' )
 !
     integer :: ifm, niv
-    integer :: ichef, ie, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
-    integer :: jvac, n1, nbacce, nbchef, nbpost, nbresu, nbvchf, ibid
+    integer :: ichef, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
+    integer :: jvac, n1, nbacce, nbchef, nbpost, nbresu, nbvchf
 !
     real(kind=8) :: epsi
 !
@@ -134,84 +134,82 @@ subroutine op0051()
 !====
 !============ DEBUT DE LA BOUCLE SUR LES POST-TRAITEMENTS ==============
 !
-    do 3, iocc = 1, nbpost, 1
+    do 3 iocc = 1, nbpost, 1
 !
-    call getvtx('ACTION', 'OPERATION', iocc=iocc, scal=k16, nbret=iret)
-    if (k16(1:7) .eq. 'EXTREMA') then
-        call rvmima(latabl, iocc)
-        goto 3
-    endif
-    if (k16(1:14) .eq. 'MOYENNE_ARITH') then
-        call rvmoye(latabl, iocc)
-        goto 3
-    endif
+        call getvtx('ACTION', 'OPERATION', iocc=iocc, scal=k16, nbret=iret)
+        if (k16(1:7) .eq. 'EXTREMA') then
+            call rvmima(latabl, iocc)
+            goto 3
+        endif
+        if (k16(1:14) .eq. 'MOYENNE_ARITH') then
+            call rvmoye(latabl, iocc)
+            goto 3
+        endif
 !
 ! 3.1. ==> VERIFICATION DE COHERENCE DES ARGUMENTS DE LA COMMANDE
 !
-    call rvcohe(xnumcp, xnomcp, vnomch, iocc, iret)
+        call rvcohe(xnumcp, xnomcp, vnomch, iocc, iret)
 !
-    if (iret .ne. 0) then
+        if (iret .ne. 0) then
 !
-        call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, scal=k8b, nbret=n1)
+            call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, scal=k8b, nbret=n1)
 !
 !        --- EST-CE UN RESULTAT ? ---
 !
-        resuco = '        '
-        call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resuco, nbret=nbresu)
+            resuco = '        '
+            call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resuco, nbret=nbresu)
 !
 !
 !
 !        --- SAISIE DES CHAMPS EFFECTIFS A POST-TAITER ---
 !
-        if (nbresu .ne. 0) then
+            if (nbresu .ne. 0) then
 !
 !           /* CAS D' UN RESULTAT */
 !
-            call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
-            call getvtx(mcf, 'CRITERE', iocc=iocc, scal=criter, nbret=n1)
-            call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi, nbret=n1)
+                call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
+                call getvtx(mcf, 'CRITERE', iocc=iocc, scal=criter, nbret=n1)
+                call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi, nbret=n1)
 !
-            call rvgacc(iocc, codacc, naccis, naccr8, nbacce)
+                call rvgacc(iocc, codacc, naccis, naccr8, nbacce)
 !
-            call jeveuo(naccis, 'L', jaccis)
-            call jeveuo(naccr8, 'L', jaccr8)
+                call jeveuo(naccis, 'L', jaccis)
+                call jeveuo(naccr8, 'L', jaccr8)
 !
-            call rvgchf(epsi, criter, resuco, nchsym, codacc,&
-                        zi(jaccis), zr(jaccr8), nbacce, ncheff)
+                call rvgchf(epsi, criter, resuco, nchsym, codacc,&
+                            zi(jaccis), zr(jaccr8), nbacce, ncheff)
 !
 !
-            call jedetr(naccis)
-            call jedetr(naccr8)
+                call jedetr(naccis)
+                call jedetr(naccr8)
 !
-        else
+            else
 !
 !           /* CAS D' UN CHAMP DE GRANDEUR */
 !
-            call wkvect(ncheff//'.TYPACCE', 'V V K8', 1, jacc)
+                call wkvect(ncheff//'.TYPACCE', 'V V K8', 1, jacc)
 !
-            zk8(jacc) = 'DIRECT  '
+                zk8(jacc) = 'DIRECT  '
 !
-            call wkvect(ncheff//'.VALACCE', 'V V I', 1, jacc)
+                call wkvect(ncheff//'.VALACCE', 'V V I', 1, jacc)
 !
-            zi(jacc) = 1
+                zi(jacc) = 1
 !
-            call jecrec(ncheff//'.LSCHEFF', 'V V K24', 'NU', 'DISPERSE', 'VARIABLE',&
-                        1)
+                call jecrec(ncheff//'.LSCHEFF', 'V V K24', 'NU', 'DISPERSE', 'VARIABLE',&
+                            1)
 !
-            call jecroc(jexnum(ncheff//'.LSCHEFF', 1))
-            call jeecra(jexnum(ncheff//'.LSCHEFF', 1), 'LONMAX', 1)
-            call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'E', jacc)
+                call jecroc(jexnum(ncheff//'.LSCHEFF', 1))
+                call jeecra(jexnum(ncheff//'.LSCHEFF', 1), 'LONMAX', 1)
+                call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'E', jacc)
 !
-            call getvid(mcf, 'CHAM_GD', iocc=iocc, scal=zk24(jacc), nbret=n1)
+                call getvid(mcf, 'CHAM_GD', iocc=iocc, scal=zk24(jacc), nbret=n1)
 !
-            call dismoi('F', 'TYPE_CHAMP', zk24(jacc), 'CHAMP', ibid,&
-                        k8b, ie)
-            if (k8b(1:4) .eq. 'ELNO') then
-                call dismoi('F', 'NOM_OPTION', zk24(jacc), 'CHAMP', ibid,&
-                            option, ie)
+                call dismoi('TYPE_CHAMP', zk24(jacc), 'CHAMP', repk=k8b)
+                if (k8b(1:4) .eq. 'ELNO') then
+                    call dismoi('NOM_OPTION', zk24(jacc), 'CHAMP', repk=option)
+                endif
+!
             endif
-!
-        endif
 !
 !        =====================================================
 !        I     ON DISPOSE MAINTENANT DE :                    I
@@ -243,94 +241,94 @@ subroutine op0051()
 !        I     EFFECTIFS                                     I
 !        =====================================================
 !
-        call jelira(ncheff//'.LSCHEFF', 'NMAXOC', nbvchf)
+            call jelira(ncheff//'.LSCHEFF', 'NMAXOC', nbvchf)
 !
-        ivchf = 0
-        trouve = .false.
+            ivchf = 0
+            trouve = .false.
 !
-300      continue
-        if ((.not. trouve) .and. (ivchf .lt. nbvchf)) then
+300         continue
+            if ((.not. trouve) .and. (ivchf .lt. nbvchf)) then
 !
-            ivchf = ivchf + 1
-            ichef = 0
-!
-            call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
-            call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
-!
-310          continue
-            if ((.not. trouve) .and. (ichef .lt. nbchef)) then
-!
-                ichef = ichef + 1
-!
-                nch24 = zk24(jchef + ichef-1)
-!
-                if (nch24(1:1) .ne. '&') trouve = .true.
-!
-                goto 310
-!
-            endif
-!
-            goto 300
-!
-        endif
-!
-        if (.not. trouve) then
-            call utmess('F', 'POSTRELE_2', si=iocc)
-        else
-!
-!           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
-!
-            call rvouex(mcf, iocc, nch24, xnomcp, nlsmac,&
-                        nlsnac, iret)
-!
-            if (iret .eq. 0) then
-                call utmess('F', 'POSTRELE_3', si=iocc)
-!
-            else
-!
-                call jeveuo(ncheff//'.TYPACCE', 'L', jtac)
-                call jeveuo(ncheff//'.VALACCE', 'L', jvac)
-!
-                do 400, ivchf = 1, nbvchf, 1
+                ivchf = ivchf + 1
+                ichef = 0
 !
                 call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
                 call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
 !
+310             continue
+                if ((.not. trouve) .and. (ichef .lt. nbchef)) then
 !
-                do 410, ichef = 1, nbchef
+                    ichef = ichef + 1
 !
-                nch19 = zk24(jchef + ichef-1)(1:19)
+                    nch24 = zk24(jchef + ichef-1)
 !
-                call rvpost(mcf, iocc, dim, ivchf, ichef,&
-                            ncheff, xnomcp, resuco, nch19, nlsmac,&
-                            nlsnac, latabl, xnovar)
+                    if (nch24(1:1) .ne. '&') trouve = .true.
 !
-410              continue
+                    goto 310
 !
-400              continue
+                endif
+!
+                goto 300
 !
             endif
 !
-            call jeexin(nlsmac, n1)
-            if (n1 .ne. 0) call jedetr(nlsmac)
+            if (.not. trouve) then
+                call utmess('F', 'POSTRELE_2', si=iocc)
+            else
 !
-            call jeexin(nlsnac, n1)
-            if (n1 .ne. 0) call jedetr(nlsnac)
+!           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
+!
+                call rvouex(mcf, iocc, nch24, xnomcp, nlsmac,&
+                            nlsnac, iret)
+!
+                if (iret .eq. 0) then
+                    call utmess('F', 'POSTRELE_3', si=iocc)
+!
+                else
+!
+                    call jeveuo(ncheff//'.TYPACCE', 'L', jtac)
+                    call jeveuo(ncheff//'.VALACCE', 'L', jvac)
+!
+                    do 400 ivchf = 1, nbvchf, 1
+!
+                        call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
+                        call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
+!
+!
+                        do 410 ichef = 1, nbchef
+!
+                            nch19 = zk24(jchef + ichef-1)(1:19)
+!
+                            call rvpost(mcf, iocc, dim, ivchf, ichef,&
+                                        ncheff, xnomcp, resuco, nch19, nlsmac,&
+                                        nlsnac, latabl, xnovar)
+!
+410                     continue
+!
+400                 continue
+!
+                endif
+!
+                call jeexin(nlsmac, n1)
+                if (n1 .ne. 0) call jedetr(nlsmac)
+!
+                call jeexin(nlsnac, n1)
+                if (n1 .ne. 0) call jedetr(nlsnac)
+!
+            endif
+!
+            call jedetr(ncheff//'.NOMRESU')
+            call jedetr(ncheff//'.TYPACCE')
+            call jedetr(ncheff//'.VALACCE')
+            call jedetr(ncheff//'.LSCHEFF')
+!
+!
+!
 !
         endif
 !
-        call jedetr(ncheff//'.NOMRESU')
-        call jedetr(ncheff//'.TYPACCE')
-        call jedetr(ncheff//'.VALACCE')
-        call jedetr(ncheff//'.LSCHEFF')
 !
-!
-!
-!
-    endif
-!
-!
-    3 end do
+  3 end do
 !
 !============= FIN DE LA BOUCLE SUR LES POST-TRAITEMENTS ===============
 !

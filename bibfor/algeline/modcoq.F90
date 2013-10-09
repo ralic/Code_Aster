@@ -75,14 +75,14 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
     integer :: iddl(2)
     character(len=3) :: kmod
-    character(len=8) :: k8bid, nompar(3)
+    character(len=8) ::  nompar(3)
     character(len=14) :: numddl
     character(len=19) :: nomrc
     character(len=24) :: matria, coorno, rcvalk, rcvalr, nomgrp(*)
     character(len=32) :: grpno
 !
 !-----------------------------------------------------------------------
-    integer :: ibi, icoor, icoq, idec, idecm, idecmn, idefm
+    integer ::  icoor, icoq, idec, idecm, idecmn, idefm
     integer :: ifm, ifreba, imod, inmaxe, inmaxi, ino, inunoe
     integer :: inunoi, iok1, iok2, iok3, ipara, iret
     integer :: ivalk, ivalr, nbeq, nbnoex, nbnoin, nbnoto
@@ -154,7 +154,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             iok3 = 1
             rho1 = zr(ivalr+ipara-1)
         endif
-10  continue
+ 10 continue
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call utmess('F', 'ALGELINE_93')
     else if (young1.eq.0.d0) then
@@ -188,7 +188,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             iok3 = 1
             rho2 = zr(ivalr+ipara-1)
         endif
-20  continue
+ 20 continue
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call utmess('F', 'ALGELINE_96')
     else if (young2.eq.0.d0) then
@@ -199,15 +199,11 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 ! --- 3.EXTRACTION DES DEFORMEES MODALES DANS LES DEUX DIRECTIONS DU
 ! ---   PLAN ORTHOGONAL A L'AXE DE REVOLUTION DES COQUES
 !
-    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi,&
-                matria, iret)
+    call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matria)
 !
-    call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
-                numddl, iret)
-    call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', nbeq,&
-                k8bid, iret)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoto,&
-                k8bid, iret)
+    call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
+    call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=nbeq)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoto)
 !
     call wkvect('&&MODCOQ.TEMP.DEFM', 'V V R', 2*nbnoto*nbm, idefm)
     call extmod(base, numddl, nuor, nbm, zr(idefm),&
@@ -224,8 +220,8 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                 rtemp = zr(idefm+idecmn)
                 zr(idefm+idecmn) = zr(idefm+idecmn+1)
                 zr(idefm+idecmn+1) = rtemp
-31          continue
-30      continue
+ 31         continue
+ 30     continue
     endif
 !
 !
@@ -280,7 +276,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                 dpmaxi = dpnorm
                 inmaxi = ino
             endif
-50      continue
+ 50     continue
 !
 ! ----- 5.2.DETECTION DU DEPLACEMENT MAXIMUM SUR LA COQUE EXTERNE
 !
@@ -296,7 +292,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                 dpmaxe = dpnorm
                 inmaxe = ino
             endif
-60      continue
+ 60     continue
 !
 ! ----- 5.3.DETERMINATION DE L'ORDRE DE COQUE ET DES COEFFICIENTS DE
 ! -----     LA DEFORMEE AXIALE
@@ -379,7 +375,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         write(ifm,530)
         write(ifm,*)
 !
-40  continue
+ 40 continue
 !
 ! --- MENAGE
     call jedetr('&&MODCOQ.TEMP.DEFM')

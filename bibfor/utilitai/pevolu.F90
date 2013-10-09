@@ -86,10 +86,8 @@ subroutine pevolu(resu, modele, nbocc)
 !
 ! --- 1- RECUPERATION DU MAILLAGE ET DU NOMBRE DE MAILLES
 !     ===================================================
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbmato,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
+    call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmato)
 !
 !
 ! --- 2- RECUPERATION DU RESULTAT ET DES NUMEROS D'ORDRE
@@ -250,7 +248,7 @@ subroutine pevolu(resu, modele, nbocc)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), k8b,&
                                 c16b, prec, crit, tord, nbordr,&
                                 iret)
-                    numo=tord(1)            
+                    numo=tord(1)
                 endif
                 call getvtx('VOLUMOGRAMME', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
                 if (iret .eq. 0) then
@@ -267,10 +265,10 @@ subroutine pevolu(resu, modele, nbocc)
                 nomcha= chamg
             endif
 !
-            call dismoi('C', 'TYPE_CHAMP', cham2, 'CHAMP', ibid,&
-                        tych, iret)
-            call dismoi('C', 'NOM_GD', cham2, 'CHAMP', ibid,&
-                        nomgd, iret)
+            call dismoi('TYPE_CHAMP', cham2, 'CHAMP', repk=tych, arret='C',&
+                        ier=iret)
+            call dismoi('NOM_GD', cham2, 'CHAMP', repk=nomgd, arret='C',&
+                        ier=iret)
 !
             if (nomgd(6:6) .eq. 'C') goto 10
 !
@@ -303,8 +301,8 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !           --- 2. CHANGEMENT DE DISCRETISATION : NOEU -> ELGA
                 optio2 ='TOU_INI_ELGA'
-                call dismoi('C', 'NOM_GD', cham3, 'CHAMP', ibid,&
-                            nomgd, iret)
+                call dismoi('NOM_GD', cham3, 'CHAMP', repk=nomgd, arret='C',&
+                            ier=iret)
                 nopar = nopar2(optio2,nomgd,'OUT')
                 celmod = '&&PEVOLU.CELMOD'
                 ligrel = modele//'.MODELE'
@@ -326,8 +324,8 @@ subroutine pevolu(resu, modele, nbocc)
                 cham=cham2
             endif
 !
-            call dismoi('C', 'TYPE_CHAMP', cham, 'CHAMP', ibid,&
-                        tych, iret)
+            call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych, arret='C',&
+                        ier=iret)
 !
 !      -- 4.2 RECUPERATION DE LA COMPOSANTE --
 !
@@ -369,7 +367,7 @@ subroutine pevolu(resu, modele, nbocc)
                     ASSERT(.false.)
                 endif
                 call utflmd(mailla, mesmai, nbma, iresma, ' ',&
-                             nbma, mesmaf)
+                            nbma, mesmaf)
             else
                 infoma='-'
             endif
@@ -468,7 +466,7 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE VOLUMOGRAMME
 !     ----------------------------------------------------------------
-10      continue
+ 10     continue
     end do
 !
     if (nr .eq. 0) then

@@ -85,13 +85,13 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     character(len=24) :: obj3, numgam, chamno
     character(len=24) :: trav1, trav2, trav3, objor, objex, dirth
     character(len=24) :: norm, stok4, dire4, coorn, nomno, dire5, indicg, resu
-    character(len=8) :: fond, noma, nomnoe(*), k8b, chbid
+    character(len=8) :: fond, noma, nomnoe(*), k8b
     character(len=16) :: nomcmd, motfac, k16b
-    character(len=1) :: base, k1bid
+    character(len=1) :: base
 !
     integer :: lobj2, iadrt1, iadrt2, iadrt3, itheta, jvect
     integer :: in2, iadrco, jmin, ielinf, iadnum, iocc, jnorm
-    integer :: num, indic, ierd, iadrtt, nec, ibid
+    integer :: num, indic, ierd, iadrtt, nec
     integer :: iret, numa, ienorm, nbdir, idirth, ideeq
     integer :: irefe, nbnoff, iebas
 !
@@ -131,7 +131,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     call wkvect(numgam, 'V V I', lobj2, iadnum)
     do 550 j = 1, lobj2
         call jenonu(jexnom(nomno, nomnoe(j)), zi(iadnum+j-1))
-550  end do
+550 end do
 !
 ! RECUPERATION DES DIRECTIONS AUX EXTREMITES DE GAMM0 (EN 3D)
 !
@@ -193,13 +193,13 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         norme = 0.d0
         do 991 i = 1, 3
             norme = norme + dir(i)*dir(i)
-991      continue
+991     continue
         norme = sqrt(norme)
         do 1 i = 1, lobj2
             zr(in2+(i-1)*3+1-1) = dir(1)/norme
             zr(in2+(i-1)*3+2-1) = dir(2)/norme
             zr(in2+(i-1)*3+3-1) = dir(3)/norme
- 1      continue
+  1     continue
     else if (nbdir.ne.0) then
 !
 ! 2ER CAS: LA DIRECTION DU CHAMP THETA EST DONNEE EN CHAQUE NOEUD
@@ -227,8 +227,8 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                     suiv = .true.
                 endif
                 if (suiv) goto 5
- 6          continue
- 5      continue
+  6         continue
+  5     continue
 !
     else
 !
@@ -261,7 +261,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                     zr(in2+(i-1)*3+1-1) = vecx/norme
                     zr(in2+(i-1)*3+2-1) = vecy/norme
                     zr(in2+(i-1)*3+3-1) = vecz/norme
- 2              continue
+  2             continue
             else
                 do 22 i = 1, lobj2
                     dirx = zr(idirs+(i-1)*3+1-1)
@@ -271,7 +271,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                     zr(in2+(i-1)*3+1-1) = dirx/norme
                     zr(in2+(i-1)*3+2-1) = diry/norme
                     zr(in2+(i-1)*3+3-1) = dirz/norme
-22              continue
+ 22             continue
             endif
         else if (ienorm.ne.0) then
             call gdinor(norm, lobj2, iadnum, coorn, in2)
@@ -281,7 +281,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                 zr(in2+(i-1)*3+1-1) = zr(jvect-1+6*(i-1)+4)
                 zr(in2+(i-1)*3+2-1) = zr(jvect-1+6*(i-1)+5)
                 zr(in2+(i-1)*3+3-1) = zr(jvect-1+6*(i-1)+6)
-23          continue
+ 23         continue
         endif
 !
 !  ON RECUPERE LES DIRECTIONS UTILISATEUR AUX EXTREMITES DU FOND(EN 3D)
@@ -321,8 +321,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !
 ! ALLOCATION D UN OBJET INDICATEUR DU CHAMP THETA SUR GAMMO
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbel,&
-                chbid, ierd)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbel)
     indicg = '&&COURON.INDIC        '
     call wkvect(indicg, 'V V I', nbel, indic)
 !
@@ -333,8 +332,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !
 !  .DESC
     chamno(20:24) = '.DESC'
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nec,&
-                k1bid, ibid)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nec)
     call wkvect(chamno, base//' V I', 2+nec, idesc)
 !
     call jeecra(chamno, 'DOCU', cval='CHNO')
@@ -359,7 +357,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(i-1)*3+2-1)
         zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(i-1)*3+3-1)
         zi(indic+num-1) = 1
- 4  end do
+  4 end do
 !
 ! BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE SANS GAMMO
 ! POUR CALCULER PROJ(M)=N
@@ -402,7 +400,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                     jmin = j
                     smin = s
                 endif
-600          continue
+600         continue
             rii = (1-smin)*zr(iadrt1+jmin-1)+smin*zr(iadrt1+jmin+1-1)
             rsi = (1-smin)*zr(iadrt2+jmin-1)+smin*zr(iadrt2+jmin+1-1)
             alpha = (dmin-rii)/(rsi-rii)
@@ -429,7 +427,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                 zr(itheta+(i-1)*3+3-1) = (1-alpha)*valz
             endif
         endif
-500  end do
+500 end do
 !
 ! DESTRUCTION D'OBJETS DE TRAVAIL
 !

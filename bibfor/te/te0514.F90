@@ -54,7 +54,7 @@ subroutine te0514(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, noma, typma, enr, k8bid
+    character(len=8) :: elp, noma, typma, enr
     integer :: igeom, jlsn, ifisc, nfisc, ptmaxi, pmmaxi
     integer :: jout1, jout2, jout3, jout4, jout5, zintmx, nfimax
     integer :: iadzi, iazk24, nno, nnn, jfisco, nsemax
@@ -88,8 +88,7 @@ subroutine te0514(option, nomte)
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)(1:8)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 !     NDIM EST LA DIMENSION DU MAILLAGE
@@ -132,12 +131,12 @@ subroutine te0514(option, nomte)
     do 9 i = 1, 2*nfimax
         fisco(i) = 0
         fisc(i) = 0
- 9  end do
+  9 end do
     if (nfiss .gt. 1) then
         call jevech('PFISCO', 'L', jfisco)
         do 10 i = 1, 2*nfiss
             fisco(i) = zi(jfisco+i-1)
-10      continue
+ 10     continue
     endif
 !
     call tecach('OOO', 'PPINTTO', 'E', iret, nval=2,&
@@ -173,10 +172,10 @@ subroutine te0514(option, nomte)
 !
         do 91 i = 1, ifiss
             fisc(i)=0
-91      continue
+ 91     continue
         ifisc = ifiss
         nfisc = 0
-80      continue
+ 80     continue
         if (fisco(2*ifisc-1) .gt. 0) then
             nfisc = nfisc+1
             fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
@@ -196,7 +195,7 @@ subroutine te0514(option, nomte)
             npts = 0
             do 89 i = 1, nsemax*nfimax
                 heav(i)=0.d0
-89          continue
+ 89         continue
 !
             if (.not.iselli(elp) .and. ndim .le. 2) then
                 call xdecqu(nnose, it, ndim, zi(jout2), jlsn,&
@@ -222,19 +221,19 @@ subroutine te0514(option, nomte)
             do 200 ipt = 1, ninter
                 do 210 j = 1, ndim
                     newpt(j)=pinter(ndim*(ipt-1)+j)
-210              continue
+210             continue
 !
 !           VERIF SI EXISTE DEJA DANS PINTTO
                 deja=.false.
                 do 220 i = 1, npi
                     do 221 j = 1, ndim
                         p(j) = zr(jout1-1+ndim*(i-1)+j)
-221                  continue
+221                 continue
                     if (padist(ndim,p,newpt) .lt. (lonref*1.d-6)) then
                         deja = .true.
                         ni=i
                     endif
-220              continue
+220             continue
                 if (.not.deja) then
                     npi=npi+1
                     ni =npi
@@ -243,41 +242,41 @@ subroutine te0514(option, nomte)
 !             ARCHIVAGE DE PINTTO
                     do 230 j = 1, ndim
                         zr(jout1-1+ndim*(npi-1)+j)=newpt(j)
-230                  continue
+230                 continue
 !
 !             MISE A JOUR DU CNSE (TRANSFORMATION DES 100 EN 1000...)
                     do 240 ise = 1, nse
                         do 241 in = 1, ndime+1
                             if (cnse(ise,in) .eq. 100+ipt) cnse(ise,in )= 1000+ni
-241                      continue
-240                  continue
+241                     continue
+240                 continue
                 else
                     do 114 ise = 1, nse
                         do 115 in = 1, ndime+1
                             if (cnse(ise,in) .eq. 100+ipt) cnse(ise,in )= 1000+ni
-115                      continue
-114                  continue
+115                     continue
+114                 continue
                 endif
-200          continue
+200         continue
 !
 ! ------- BOUCLE SUR LES NMILIE POINTS MILIEUX : ARCHIVAGE DE PMILTO
             if (.not.iselli(elp) .and. ndim .le. 2) then
                 do 300 ipt = 1, nmilie
                     do 310 j = 1, ndim
                         newpt(j)=pmilie(ndim*(ipt-1)+j)
-310                  continue
+310                 continue
 !
 !             VERIF SI EXISTE DEJA DANS PMILTO
                     deja=.false.
                     do 320 i = 1, npm
                         do 321 j = 1, ndim
                             p(j) = zr(jout5-1+ndim*(i-1)+j)
-321                      continue
+321                     continue
                         if (padist(ndim,p,newpt) .lt. (lonref*1.d-6)) then
                             deja = .true.
                             ni=i
                         endif
-320                  continue
+320                 continue
                     if (.not.deja) then
                         npm=npm+1
 !               NOMBRE TOTAL DE POINTS MILIEUX LIMITE A PMMAX
@@ -286,23 +285,23 @@ subroutine te0514(option, nomte)
                         do 330 j = 1, ndim
                             zr(jout5-1+ndim*(npm-1)+j)=pmilie(ndim*(&
                             ipt-1)+j)
-330                      continue
+330                     continue
 !
 !               MISE A JOUR DU CNSE (TRANSFORMATION DES 200 EN 2000...)
                         do 340 ise = 1, nse
                             do 341 in = 1, 6
                                 if (cnse(ise,in) .eq. 200+ipt) cnse(ise, in )=2000+npm
-341                          continue
-340                      continue
+341                         continue
+340                     continue
                     else
                         do 350 ise = 1, nse
                             do 351 in = 1, 6
                                 if (cnse(ise,in) .eq. 200+ipt) cnse(ise, in )=2000+ni
-351                          continue
-350                      continue
+351                         continue
+350                     continue
                     endif
 !
-300              continue
+300             continue
             endif
 !
 ! ------- BOUCLE SUR LES NSE SOUS-ELE : ARCHIVAGE DE PCNSETO, PHEAVTO
@@ -319,18 +318,18 @@ subroutine te0514(option, nomte)
                 do 125 i = 1, ifiss
                     zi(jout3-1+ncomph*(i-1)+ise2)= nint(heav(ifiss*(&
                     ise-1)+i))
-125              continue
+125             continue
 !           ARCHIVAGE DE PCNSETO
                 do 121 in = 1, nnose
                     zi(jout2-1+nnose*(ise2-1)+in)=cnse(ise,in)
-121              continue
+121             continue
 !
-120          continue
+120         continue
 !
-100      continue
+100     continue
         nit = cpt
 !
-90  end do
+ 90 end do
 !
 !     ARCHIVAGE DE LONCHAM SOUS ELEMENTS
     zi(jout4-1+1)=nit
@@ -347,13 +346,13 @@ subroutine te0514(option, nomte)
     ASSERT(ncompp.le.ninmax)
     do 776 i = 1, ninmax*(2**nfimax)
         ndoub2(i)=0
-776  end do
+776 end do
 !     POUR COMPTER LES PT D'INTER EN DOUBLE (EN POST-TRAITEMENT)
 !     ON VA JUSQU'A NNO+1 POUR PRENDRE EN COMPTE LE 9EME NOEUD DU QUAD8
     ASSERT((nno+1).le.ninmax)
     do 777 i = 1, ninmax*(2**nfimax)
         ndoubl(i)=0
-777  end do
+777 end do
 !
     do 130 ise = 1, nit
         do 127 in = 1, nnose
@@ -367,7 +366,7 @@ subroutine te0514(option, nomte)
                     if (zi(jout3-1+ncomph*(ifiss-1)+ise) .eq. 1) then
                         iad = iad + 2**(nfiss-ifiss)
                     endif
-128              continue
+128             continue
                 ndoubl(iad+1) = 1
             else if (i.gt.1000.and.i.lt.2000) then
                 iad = ncomb*(i-1001)
@@ -375,11 +374,11 @@ subroutine te0514(option, nomte)
                     if (zi(jout3-1+ncomph*(ifiss-1)+ise) .eq. 1) then
                         iad = iad + 2**(nfiss-ifiss)
                     endif
-129              continue
+129             continue
                 ndoub2(iad+1) = 1
             endif
-127      continue
-130  end do
+127     continue
+130 end do
 !
 !     NOMBRE DE NOUVEAUX POINTS : NNN
     nnn = 0
@@ -387,14 +386,14 @@ subroutine te0514(option, nomte)
 !  -  AUTANT DE FOIS QU'IL Y A DE COMBINAISON D'HEAVISIDE DIFFERENTES
     do 600 i = 1, ncomb*ncompp
         nnn = nnn + ndoub2(i)
-600  end do
+600 end do
 !
 !  -  ON AJOUTE LES NOEUDS, AUTANT DE FOIS QU'IL Y A DE COMBINAISON
 !  -  D'HEAVISIDE DIFFERENTES.
 !  -  ON VA JUSQU'A NNO+1 POUR PRENDRE EN COMPTE LE 9EME NOEUD DU QUAD8
     do 500 i = 1, ncomb*(nno+1)
         nnn = nnn + ndoubl(i)
-500  end do
+500 end do
 !
     if (.not.iselli(elp) .and. ndim .le. 2) then
 !  - CAS QUADRATIQUE, ON AJOUTE LES NOUVEAUX NOEUDS MILIEUX DES SE
@@ -411,11 +410,11 @@ subroutine te0514(option, nomte)
                 call ndcent(igeom, zr(jlsn), nmil, rbid)
                 do 401 j = 1, ndim
                     zr(jout5+npm*ndim+j-1)=nmil(j)
-401              continue
+401             continue
                 zi(jout2-1+i)=3000+npm+1
                 ajn=.true.
             endif
-400      continue
+400     continue
     endif
 !
 !     ARCHIVAGE DE LONCHAM POINTS MILIEUX

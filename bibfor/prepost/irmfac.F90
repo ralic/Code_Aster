@@ -153,8 +153,8 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     call getvid('RESU', 'CHAM_GD', iocc=ioccur, scal=resu, nbret=ncham)
     if (ncham .ne. 0) then
         resu19=resu
-        call dismoi('C', 'NOM_GD', resu19, 'CHAMP', ibid,&
-                    nomgd, ier)
+        call dismoi('NOM_GD', resu19, 'CHAMP', repk=nomgd, arret='C',&
+                    ier=ier)
         if (nomgd(6:6) .eq. 'C') then
             if (formaf(1:4) .eq. 'GMSH' .or. formaf(1:6) .eq. 'CASTEM') then
                 if (npart .eq. 0) then
@@ -198,8 +198,8 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !     --- TEST DE LA COHERENCE DU MAILLAGE ET DU MODELE ---
 !
     if (lmodel .and. nmail .ne. 0) then
-        call dismoi('C', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                    nomab, iret)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomab, arret='C',&
+                    ier=iret)
         if (nomail .ne. nomab) then
             call utmess('F', 'PREPOST3_66')
         endif
@@ -313,7 +313,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !     **********************
 !     --- FIN IMPRESSION ---
 !     **********************
-99  continue
+ 99 continue
 !
 !     --- DESTRUCTION TABLEAUX DE TRAVAIL
     call jedetr(nchsym)

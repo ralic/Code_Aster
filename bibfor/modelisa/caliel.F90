@@ -64,7 +64,7 @@ subroutine caliel(fonrez, chargz)
     character(len=14) :: numddl
     character(len=16) :: motfac, option
     character(len=19) :: ligrmo, lisrel, k19b
-    integer :: iocc, nliai, ilmoch, iop, ibid, ier
+    integer :: iocc, nliai, ilmoch, iop, ibid
 !
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
@@ -83,8 +83,7 @@ subroutine caliel(fonrez, chargz)
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE
 !     ----------------------------------
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
 !
 ! ---  LIGREL DU MODELE
 !
@@ -114,7 +113,7 @@ subroutine caliel(fonrez, chargz)
         else if (option.eq.'COQ_TUYAU') then
             call rapoco(numddl, iocc, fonrez, lisrel, chargz)
         endif
-10  end do
+ 10 end do
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
@@ -127,6 +126,6 @@ subroutine caliel(fonrez, chargz)
     call jedetr('&&CALIEL.LIGRMO')
     call jedetr('&&CALIEL.NUMED')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

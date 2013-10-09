@@ -71,7 +71,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iocc, ier
+    integer :: iocc
     integer :: jnom, jprnm, n1
     integer :: i_no
     integer :: nb_cmp, nbec, ndim, nliai
@@ -79,7 +79,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: jlino, numnoe
     integer :: nb_node
     character(len=2) :: type_lagr
-    character(len=8) :: nomg, k8bid, poslag, model
+    character(len=8) :: nomg, poslag, model
     real(kind=8) :: dist_mini, dist
     character(len=8) :: cmp_name
     character(len=19) :: list_rela
@@ -119,8 +119,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! - Access to model
 !
     model = ligrmo(1:8)
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
-                k8bid, ier)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'CHARGES2_6')
@@ -143,8 +142,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
@@ -234,7 +232,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                     goto 40
                 endif
             enddo
-40          continue
+ 40         continue
 !
 ! --------- Compute linear relations
 !
@@ -262,7 +260,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                     goto 50
                 endif
             enddo
-50          continue
+ 50         continue
 !
 ! --------- Compute linear relations
 !
@@ -275,7 +273,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                             type_lagr, list_rela)
             endif
         endif
-998      continue
+998     continue
 !
         call jedetr(list_node)
 !
@@ -287,6 +285,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
     call jedetr(keywordexcl)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

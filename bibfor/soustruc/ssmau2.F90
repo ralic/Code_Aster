@@ -20,7 +20,6 @@ subroutine ssmau2(nomu, option)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/crmeam.h"
 #include "asterfort/crmema.h"
@@ -38,6 +37,7 @@ subroutine ssmau2(nomu, option)
 #include "asterfort/mtdsc2.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu
     character(len=*) :: option
 ! ----------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine ssmau2(nomu, option)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, scdi, schc, iblo, ibid
+    integer :: i, scdi, schc, iblo
     character(len=8) :: promes
     logical :: mostru
 !
@@ -67,7 +67,7 @@ subroutine ssmau2(nomu, option)
 !
 !-----------------------------------------------------------------------
     integer :: iampee, iaphi0, iaphie, iascdi, iaschc, iascib, iatmi0
-    integer :: iatmie, iblold, iblph, ier, ii, iiblph, j
+    integer :: iatmie, iblold, iblph, ii, iiblph, j
     integer :: jblph, jdesm, jjblph, jrefa, jualf, k, kk
     integer :: lgblph, lmat, nblph, nddle, nddli, nlblph
 !-----------------------------------------------------------------------
@@ -89,8 +89,7 @@ subroutine ssmau2(nomu, option)
 !
 !     -- MOSTRU=.TRUE. : CAS MODIFICATION STRUCTURALE
     mostru = .true.
-    call dismoi('F', 'NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', ibid,&
-                promes, ier)
+    call dismoi('NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', repk=promes)
     if (promes .eq. ' ') mostru = .false.
 !
 !
@@ -108,11 +107,11 @@ subroutine ssmau2(nomu, option)
     call jecrec(nomu//'.TMP_IE', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblph)
     call jeecra(nomu//'.TMP_IE', 'LONMAX', lgblph)
-    do 10,j = 1,nblph
-    call jecroc(jexnum(nomu//'.TMP_IE', j))
-    call jeveuo(jexnum(nomu//'.TMP_IE', j), 'E', iatmi0)
-    call jelibe(jexnum(nomu//'.TMP_IE', j))
-    10 end do
+    do 10 j = 1, nblph
+        call jecroc(jexnum(nomu//'.TMP_IE', j))
+        call jeveuo(jexnum(nomu//'.TMP_IE', j), 'E', iatmi0)
+        call jelibe(jexnum(nomu//'.TMP_IE', j))
+ 10 end do
 !
     if (optio2(1:9) .eq. 'MASS_MECA') then
         call wkvect(nomu//'.MAEL_MASS_VALE', 'G V R', (nddle*(nddle+1)/ 2), iampee)
@@ -140,92 +139,94 @@ subroutine ssmau2(nomu, option)
         call jeveuo(stock//'.SCIB', 'L', iascib)
 !
         iblold = 0
-        do 30,j = 1,nddle
-        iblo = zi(iascib-1+nddli+j)
-        scdi = zi(iascdi-1+nddli+j)
-        schc = zi(iaschc-1+nddli+j)
-        if (iblo .ne. iblold) then
-            if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
-            call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-        endif
-        iblold = iblo
+        do 30 j = 1, nddle
+            iblo = zi(iascib-1+nddli+j)
+            scdi = zi(iascdi-1+nddli+j)
+            schc = zi(iaschc-1+nddli+j)
+            if (iblo .ne. iblold) then
+                if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
+                call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
+            endif
+            iblold = iblo
 !CDIR$ IVDEP
-        do 20,i = max(1,j+1-schc),j
-        ii = (j-1)*j/2 + i
-        zr(iampee-1+ii) = zr(jualf-1+scdi+i-j)
-20      continue
+            do 20 i = max(1, j+1-schc), j
+                ii = (j-1)*j/2 + i
+                zr(iampee-1+ii) = zr(jualf-1+scdi+i-j)
+ 20         continue
 !
-30      continue
+ 30     continue
         if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 !     -- CALCUL DE MP_EE = MP_EE + M_EI*PHI_IE + PHI_EI*M_IE :
 !     --------------------------------------------------------
         iblold = 0
-        do 120,j = 1,nddle
-        iblo = zi(iascib-1+nddli+j)
-        scdi = zi(iascdi-1+nddli+j)
-        schc = zi(iaschc-1+nddli+j)
-        if (iblo .ne. iblold) then
-            if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
-            call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-        endif
-        iblold = iblo
+        do 120 j = 1, nddle
+            iblo = zi(iascib-1+nddli+j)
+            scdi = zi(iascdi-1+nddli+j)
+            schc = zi(iaschc-1+nddli+j)
+            if (iblo .ne. iblold) then
+                if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
+                call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
+            endif
+            iblold = iblo
 !
-        i = 0
-        do 60,iblph = 1,nblph
-        call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
-        do 50,iiblph = 1,nlblph
-        i = i + 1
-        if (i .gt. j) then
-            call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-            goto 70
+            i = 0
+            do 60 iblph = 1, nblph
+                call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
+                do 50 iiblph = 1, nlblph
+                    i = i + 1
+                    if (i .gt. j) then
+                        call jelibe(jexnum(nomu//'.PHI_IE', iblph))
+                        goto 70
 !
-        endif
-        iaphie = iaphi0 + (iiblph-1)*nddli
-        ii = (j-1)*j/2 + i
-        kk = 0
+                    endif
+                    iaphie = iaphi0 + (iiblph-1)*nddli
+                    ii = (j-1)*j/2 + i
+                    kk = 0
 !CDIR$ IVDEP
-        do 40,k = nddli + j + 1 - schc,nddli
-        kk = kk + 1
-        zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+ kk)
-40      continue
-50      continue
-        call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-60      continue
-70      continue
+                    do 40 k = nddli + j + 1 - schc, nddli
+                        kk = kk + 1
+                        zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
+                                          & kk)
+ 40                 continue
+ 50             continue
+                call jelibe(jexnum(nomu//'.PHI_IE', iblph))
+ 60         continue
+ 70         continue
 !
 !
 !        SYMETRIE:
-        i = 0
-        do 100,iblph = 1,nblph
-        if (i+nlblph .lt. j) then
-            i = i + nlblph
-            goto 100
+            i = 0
+            do 100 iblph = 1, nblph
+                if (i+nlblph .lt. j) then
+                    i = i + nlblph
+                    goto 100
 !
-        endif
-        call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
-        do 90,iiblph = 1,nlblph
-        i = i + 1
-        if (i .lt. j) goto 90
-        if (i .gt. nddle) then
-            call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-            goto 110
+                endif
+                call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
+                do 90 iiblph = 1, nlblph
+                    i = i + 1
+                    if (i .lt. j) goto 90
+                    if (i .gt. nddle) then
+                        call jelibe(jexnum(nomu//'.PHI_IE', iblph))
+                        goto 110
 !
-        endif
-        iaphie = iaphi0 + (iiblph-1)*nddli
-        ii = (i* (i-1)/2) + j
-        kk = 0
+                    endif
+                    iaphie = iaphi0 + (iiblph-1)*nddli
+                    ii = (i* (i-1)/2) + j
+                    kk = 0
 !CDIR$ IVDEP
-        do 80,k = nddli + j + 1 - schc,nddli
-        kk = kk + 1
-        zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+ kk)
-80      continue
-90      continue
-        call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-100      continue
-110      continue
+                    do 80 k = nddli + j + 1 - schc, nddli
+                        kk = kk + 1
+                        zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
+                                          & kk)
+ 80                 continue
+ 90             continue
+                call jelibe(jexnum(nomu//'.PHI_IE', iblph))
+100         continue
+110         continue
 !
-120      continue
+120     continue
 !
 !
         if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
@@ -234,78 +235,80 @@ subroutine ssmau2(nomu, option)
 !     -- CALCUL DE TMP_IE = M_II*PHI_IE :
 !     -----------------------------------
         i = 0
-        do 180,iblph = 1,nblph
-        call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
-        call jeveuo(jexnum(nomu//'.TMP_IE', iblph), 'E', iatmi0)
-        do 160,iiblph = 1,nlblph
-        i = i + 1
-        if (i .gt. nddle) goto 170
-        iaphie = iaphi0 + (iiblph-1)*nddli
-        iatmie = iatmi0 + (iiblph-1)*nddli
+        do 180 iblph = 1, nblph
+            call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
+            call jeveuo(jexnum(nomu//'.TMP_IE', iblph), 'E', iatmi0)
+            do 160 iiblph = 1, nlblph
+                i = i + 1
+                if (i .gt. nddle) goto 170
+                iaphie = iaphi0 + (iiblph-1)*nddli
+                iatmie = iatmi0 + (iiblph-1)*nddli
 !
-        iblold = 0
-        do 150,j = 1,nddli
-        iblo = zi(iascib-1+j)
-        scdi = zi(iascdi-1+j)
-        schc = zi(iaschc-1+j)
-        if (iblo .ne. iblold) then
-            if (iblold .gt. 0) call jelibe(jexnum(matas// '.UALF', iblold))
-            call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-        endif
-        iblold = iblo
+                iblold = 0
+                do 150 j = 1, nddli
+                    iblo = zi(iascib-1+j)
+                    scdi = zi(iascdi-1+j)
+                    schc = zi(iaschc-1+j)
+                    if (iblo .ne. iblold) then
+                        if (iblold .gt. 0) call jelibe(jexnum(matas// '.UALF', iblold))
+                        call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
+                    endif
+                    iblold = iblo
 !
-        kk = 0
+                    kk = 0
 !CDIR$ IVDEP
-        do 130,k = j + 1 - schc,j
-        kk = kk + 1
-        zr(iatmie-1+j) = zr(iatmie-1+j) - zr(iaphie-1+ k)*zr(jualf-1+scdi-schc+kk)
-130      continue
-        kk = 0
+                    do 130 k = j + 1 - schc, j
+                        kk = kk + 1
+                        zr(iatmie-1+j) = zr(iatmie-1+j) - zr(iaphie-1+ k)*zr(jualf-1+scdi-schc+kk&
+                                         &)
+130                 continue
+                    kk = 0
 !CDIR$ IVDEP
-        do 140,k = j + 1 - schc,j - 1
-        kk = kk + 1
-        zr(iatmie-1+k) = zr(iatmie-1+k) - zr(iaphie-1+ j)*zr(jualf-1+scdi-schc+kk)
-140      continue
-150      continue
-        if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
+                    do 140 k = j + 1 - schc, j - 1
+                        kk = kk + 1
+                        zr(iatmie-1+k) = zr(iatmie-1+k) - zr(iaphie-1+ j)*zr(jualf-1+scdi-schc+kk&
+                                         &)
+140                 continue
+150             continue
+                if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
-160      continue
-170      continue
-        call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-        call jelibe(jexnum(nomu//'.TMP_IE', iblph))
-180      continue
+160         continue
+170         continue
+            call jelibe(jexnum(nomu//'.PHI_IE', iblph))
+            call jelibe(jexnum(nomu//'.TMP_IE', iblph))
+180     continue
 !
 !
 !     -- CALCUL DE MP_EE = MP_EE + PHI_EI*TMP_IE:
 !     -------------------------------------------
 !
         i = 0
-        do 250,iblph = 1,nblph
-        call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
-        do 230,iiblph = 1,nlblph
-        i = i + 1
-        if (i .gt. nddle) goto 240
-        iaphie = iaphi0 + (iiblph-1)*nddli
-        j = 0
-        do 220,jblph = 1,nblph
-        call jeveuo(jexnum(nomu//'.TMP_IE', jblph), 'L', iatmi0)
-        do 200,jjblph = 1,nlblph
-        j = j + 1
-        if (j .gt. i) goto 210
-        iatmie = iatmi0 + (jjblph-1)*nddli
-        ii = (i-1)*i/2 + j
+        do 250 iblph = 1, nblph
+            call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
+            do 230 iiblph = 1, nlblph
+                i = i + 1
+                if (i .gt. nddle) goto 240
+                iaphie = iaphi0 + (iiblph-1)*nddli
+                j = 0
+                do 220 jblph = 1, nblph
+                    call jeveuo(jexnum(nomu//'.TMP_IE', jblph), 'L', iatmi0)
+                    do 200 jjblph = 1, nlblph
+                        j = j + 1
+                        if (j .gt. i) goto 210
+                        iatmie = iatmi0 + (jjblph-1)*nddli
+                        ii = (i-1)*i/2 + j
 !CDIR$ IVDEP
-        do 190,k = 1,nddli
-        zr(iampee-1+ii) = zr(iampee-1+ii) - zr(iaphie-1+k)*zr(iatmie-1+k)
-190      continue
-200      continue
-210      continue
-        call jelibe(jexnum(nomu//'.TMP_IE', iblph))
-220      continue
-230      continue
-240      continue
-        call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-250      continue
+                        do 190 k = 1, nddli
+                            zr(iampee-1+ii) = zr(iampee-1+ii) - zr(iaphie-1+k)*zr(iatmie-1+k)
+190                     continue
+200                 continue
+210                 continue
+                    call jelibe(jexnum(nomu//'.TMP_IE', iblph))
+220             continue
+230         continue
+240         continue
+            call jelibe(jexnum(nomu//'.PHI_IE', iblph))
+250     continue
 !
     endif
 !

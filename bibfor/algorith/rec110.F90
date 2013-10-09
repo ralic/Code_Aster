@@ -62,7 +62,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iadres, ibid, igr, in
-    integer :: incr, inew, iocc, iold, iposi, ireco, iret
+    integer :: incr, inew, iocc, iold, iposi, ireco
     integer :: istac, jltns, jn, jncr, jposi, jstac, lconn
     integer :: lcoord, lcorr, lcort, ldime, lintd, linver, ljntd
     integer :: lrefe, lsk, lsk2, lstac, ltabi, ltabj, lvnew
@@ -99,7 +99,7 @@ subroutine rec110(nomres, nomsqu, modgen)
     do 5 i = 1, nbnd
         zi(lcort-1+i) = i
         zi(linver-1+i) = i
- 5  end do
+  5 end do
 !
 !
 !     --- TABLEAU DE LISTES DE NOEUDS POUR COMPARAISON ---
@@ -133,8 +133,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         lintf)
             call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes)
-            call dismoi('F', 'NB_EC', lintf, 'INTERF_DYNA', nbec,&
-                        k8bid, iret)
+            call dismoi('NB_EC', lintf, 'INTERF_DYNA', repi=nbec)
             nbni = nnodes/(2+nbec)
             call jeveuo(lintf//'.IDC_DEFO', 'L', lintd)
             do 10 in = 1, nbni
@@ -157,10 +156,10 @@ subroutine rec110(nomres, nomsqu, modgen)
 !
                 endif
                 zi(ltabi-1+in) = numero + incr
-10          continue
+ 10         continue
             incr = numero + incr
 !        --- ON SE POSITIONNE EN FIN DE SOUS-STRUCTURE ISTAC ---
-20          continue
+ 20         continue
             if (zi(lsk+incr) .eq. istac) then
                 incr = incr + 1
                 goto 20
@@ -172,8 +171,7 @@ subroutine rec110(nomres, nomsqu, modgen)
                 call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                             ljntf)
                 call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes)
-                call dismoi('F', 'NB_EC', ljntf, 'INTERF_DYNA', nbec,&
-                            k8bid, iret)
+                call dismoi('NB_EC', ljntf, 'INTERF_DYNA', repi=nbec)
                 nbnj = nnodes/(2+nbec)
                 call jeveuo(ljntf//'.IDC_DEFO', 'L', ljntd)
                 do 30 jn = 1, nbnj
@@ -195,10 +193,10 @@ subroutine rec110(nomres, nomsqu, modgen)
                         call utmess('E', 'ALGORITH15_62', nk=3, valk=valk)
                     endif
                     zi(ltabj-1+jn) = numero + jncr
-30              continue
+ 30             continue
                 jncr = numero + jncr
 !           --- ON SE POSITIONNE EN FIN DE SOUS-STRUCTURE JSTAC ---
-40              continue
+ 40             continue
                 if (zi(lsk+jncr) .eq. jstac) then
                     jncr = jncr + 1
                     goto 40
@@ -230,10 +228,10 @@ subroutine rec110(nomres, nomsqu, modgen)
                             zi(linver-1+zi(ltabj-1+jn)) = zi(ltabi-1+ in)
                             nbfuse = nbfuse + 1
                         endif
-50                  continue
-60              continue
-70          continue
-80      end do
+ 50                 continue
+ 60             continue
+ 70         continue
+ 80     end do
 !
     else
 !
@@ -259,7 +257,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             call getvtx('RECO_GLOBAL', 'SOUS_STRUC_1', iocc=ireco, scal=nomsst, nbret=ibid)
 !        --- RECHERCHE DE LA SOUS-STRUCTURE ---
             istac = 0
-90          continue
+ 90         continue
             istac = istac + 1
             if (istac .le. nbstac) then
                 if (zk8(lstac-1+istac) .ne. nomsst) goto 90
@@ -280,25 +278,24 @@ subroutine rec110(nomres, nomsqu, modgen)
                 call utmess('E', 'ALGORITH15_65', nk=4, valk=valk)
             endif
             call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes)
-            call dismoi('F', 'NB_EC', lintf, 'INTERF_DYNA', nbec,&
-                        k8bid, iret)
+            call dismoi('NB_EC', lintf, 'INTERF_DYNA', repi=nbec)
             nbni = nnodes/(2+nbec)
 !         NBNI = NNODES/3
             call jeveuo(lintf//'.IDC_DEFO', 'L', lintd)
             incr = 0
 !        --- ON SE POSITIONNE AVANT ISTAC ---
-100          continue
+100         continue
             if (zi(lsk+incr) .ne. istac) then
                 incr = incr + 1
                 goto 100
             endif
             do 110 in = 1, nbni
                 zi(ltabi-1+in) = zi(lintd-1+in) + incr
-110          continue
+110         continue
             call getvtx('RECO_GLOBAL', 'SOUS_STRUC_2', iocc=ireco, scal=nomsst, nbret=ibid)
 !        --- RECHERCHE DE LA SOUS-STRUCTURE ---
             jstac = 0
-120          continue
+120         continue
             jstac = jstac + 1
             if (jstac .le. nbstac) then
                 if (zk8(lstac-1+jstac) .ne. nomsst) goto 120
@@ -319,21 +316,20 @@ subroutine rec110(nomres, nomsqu, modgen)
                 call utmess('E', 'ALGORITH15_67', nk=4, valk=valk)
             endif
             call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes)
-            call dismoi('F', 'NB_EC', ljntf, 'INTERF_DYNA', nbec,&
-                        k8bid, iret)
+            call dismoi('NB_EC', ljntf, 'INTERF_DYNA', repi=nbec)
             nbnj = nnodes/(2+nbec)
 !         NBNJ = NNODES/3
             call jeveuo(ljntf//'.IDC_DEFO', 'L', ljntd)
             jncr = 0
 !        --- ON SE POSITIONNE AVANT JSTAC ---
-130          continue
+130         continue
             if (zi(lsk+jncr) .ne. jstac) then
                 jncr = jncr + 1
                 goto 130
             endif
             do 140 jn = 1, nbnj
                 zi(ltabj-1+jn) = zi(ljntd-1+jn) + jncr
-140          continue
+140         continue
 !           ---- FUSION DES NOEUDS ---
             do 160 in = 1, nbni
                 iposi = (zi(ltabi-1+in)-1)*3
@@ -361,9 +357,9 @@ subroutine rec110(nomres, nomsqu, modgen)
                         zi(linver-1+zi(ltabj-1+jn)) = zi(ltabi-1+in)
                         nbfuse = nbfuse + 1
                     endif
-150              continue
-160          continue
-170      end do
+150             continue
+160         continue
+170     end do
 !
 ! --- FIN DE TRAITEMENT DES OCCURENCES DE RECO_GLOBAL ---
     endif
@@ -375,7 +371,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 !     --- MISE EN PLACE DU TABLEAU DE CORRESPONDANCE ---
     inew = 1
     iold = 1
-200  continue
+200 continue
     if (inew .le. nbnew .and. iold .le. nbnd) then
         if (zi(linver-1+iold) .ne. iold) then
 !           --- NOEUD FUSIONNE : N'EXISTE PLUS DANS LE NOUVEAU MAILLAGE
@@ -385,7 +381,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 !        --- RECHERCHE DU NOEUD CORRESPONDANT LE PLUS ELOIGNE ---
 !            (C'EST CELUI-LA QU'ON RETIENT)
         iadres = zi(lcort-1+iold)
-202      continue
+202     continue
         if (iadres .ne. zi(lcort-1+iadres)) then
             iadres = zi(lcort-1+iadres)
             goto 202
@@ -406,14 +402,14 @@ subroutine rec110(nomres, nomsqu, modgen)
 !        --- RECHERCHE DU NOEUD CORRESPONDANT LE PLUS ELOIGNE ---
 !            (IL DEVIENT LA REFERENCE)
             iadres = zi(lcort-1+iold)
-205          continue
+205         continue
             if (iadres .ne. zi(lcort-1+iadres)) then
                 iadres = zi(lcort-1+iadres)
                 goto 205
             endif
             zi(linver-1+iold) = zi(linver-1+iadres)
         endif
-207  end do
+207 end do
 !
 ! --- MISE A JOUR DES OBJETS DU NOUVEAU SQUELETTE ---
 ! --- COLLECTION .CONNEX
@@ -426,8 +422,8 @@ subroutine rec110(nomres, nomsqu, modgen)
         call jelira(jexnum(nomres//'.CONNEX', iocc), 'LONMAX', nbn)
         do 210 i = 1, nbn
             zi(lconn-1+i) = zi(linver-1+ zi(lconn-1+i))
-210      continue
-220  end do
+210     continue
+220 end do
 !
 ! --- OBJET  .REFE
     call jeveuo(nomres//'.COORDO    .REFE', 'E', lrefe)
@@ -446,7 +442,7 @@ subroutine rec110(nomres, nomsqu, modgen)
         zr(lvnew-1+(i-1)*3+1) = zr(lvold-1+(iold-1)*3+1)
         zr(lvnew-1+(i-1)*3+2) = zr(lvold-1+(iold-1)*3+2)
         zr(lvnew-1+(i-1)*3+3) = zr(lvold-1+(iold-1)*3+3)
-230  end do
+230 end do
 !
 ! --- OBJET .NOMNOE
     call jedetr(nomres//'.NOMNOE')
@@ -456,7 +452,7 @@ subroutine rec110(nomres, nomsqu, modgen)
         iold = zi(lcorr-1+i)
         call jenuno(jexnum(nomsqu//'.NOMNOE', iold), nomnoe)
         call jecroc(jexnom(nomres//'.NOMNOE', nomnoe))
-240  end do
+240 end do
 !
     call jedetr(tt//'.TABI')
     call jedetr(tt//'.TABJ')

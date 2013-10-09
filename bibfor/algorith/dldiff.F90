@@ -172,8 +172,8 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
 ! 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
 !
-    call dismoi('C', 'SUR_OPTION', masse, 'MATR_ASSE', ibid,&
-                sop, ibid)
+    call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=sop, arret='C',&
+                ier=ibid)
     if (sop .eq. 'MASS_MECA_DIAG') then
         call extdia(masse, numedd, 2, zr(iwk1))
     else
@@ -182,12 +182,12 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
     dt1 = zr(jlpas)
     r8bid = dt1/2.d0
-    do 15,  ieq = 1, neq
-    if (zr(iwk1+ieq-1) .ne. 0.d0) then
-        zr(iwk1+ieq-1)=1.0d0/zr(iwk1+ieq-1)
-    endif
-    vit0(1+ieq) = vit0(1+ieq) - r8bid*acc0(1+ieq)
-    15 end do
+    do 15 ieq = 1, neq
+        if (zr(iwk1+ieq-1) .ne. 0.d0) then
+            zr(iwk1+ieq-1)=1.0d0/zr(iwk1+ieq-1)
+        endif
+        vit0(1+ieq) = vit0(1+ieq) - r8bid*acc0(1+ieq)
+ 15 end do
 !
 ! 1.6. ==> --- ARCHIVAGE ---
 !
@@ -293,7 +293,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
                 ibid=1
             endif
         endif
-312  continue
+312 continue
 !
     if (ibid .eq. 1) then
         vali(1) = nint((tf-t0)/dtmax)
@@ -356,7 +356,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
     31 end do
 !
-3900  continue
+3900 continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -367,7 +367,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
         do 41 , iexcl = 1,nbexcl
         typear(iexcl) = typ1(iexcl)
-41      continue
+ 41     continue
 !
         alarm = 0
 !

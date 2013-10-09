@@ -110,8 +110,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     call getfac('FLAMBAGE', nbflam)
     nbocc = nbchoc + nbsism + nbflam
     mdgene = ' '
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
 !
     call jeveuo(mailla//'.COORDO    .VALE', 'L', jcoor)
 !
@@ -120,7 +119,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
         noecho(il,4) = mailla
         noecho(il,7) = numddl(1:8)
         noecho(il,8) = mailla
-10  end do
+ 10 end do
 !
     iliai = 0
     motfac = 'CHOC'
@@ -159,7 +158,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama+1)), noecho(iliai, 5))
                     call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                                 ier)
-110              continue
+110             continue
                 call jedetr('&&MDCHST.MAILLE')
                 goto 102
             endif
@@ -192,8 +191,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                         call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama+ 1)), noecho(iliai, 5))
                         call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                                     ier)
-122                  continue
-120              continue
+122                 continue
+120             continue
                 call jedetr('&&MDCHST.GROUP_MA')
                 goto 102
             endif
@@ -270,7 +269,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
         endif
         call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                     ier)
-102      continue
+102     continue
 !
         iliai = iliai - max(1,nmliai)
         do 130 il = 1, max(1, nmliai)
@@ -280,7 +279,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             do 132 j = 1, 3
                 parcho(iliai,7+j) = zr(jcoor+3*(ino1-1)+j-1)
                 parcho(iliai,10+j) = zr(jcoor+3*(ino2-1)+j-1)
-132          continue
+132         continue
 !
             ktang = 0.d0
             ctang = 0.d0
@@ -397,9 +396,9 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             call mdchan(motfac, ioc, iliai, mdgene, typnum,&
                         repere, xjeu, nbnli, noecho, parcho)
 !
-130      continue
+130     continue
 !
-100  end do
+100 end do
 !    COUPLAGE EDYOS
     if (nbpal .gt. 0) then
         cpal = 'C_PAL'
@@ -414,7 +413,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             noecho(ipal,1)=zk8(iadrk+(ipal-1)+2*palmax)(1:dimnas)
             noecho(ipal,5)=noecho(ipal,1)
             cnpal(ipal)=zk8(iadrk+(ipal-1)+2*palmax)(1:dimnas)
-21      continue
+ 21     continue
         do 22 ipal = 1, nbpal
             call utnono(' ', mailla, 'NOEUD', cnpal(ipal), nomno1,&
                         iret)
@@ -430,8 +429,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call posddl('NUME_DDL', numddl, nomno1, comp(ipat), nno,&
                             nddl)
                 ddlcho(6*(ipal-1)+ipat) = nddl
-23          continue
-22      continue
+ 23         continue
+ 22     continue
     endif
 ! FIN PALIERS EDYOS
 !
@@ -484,7 +483,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             nddl2)
                 ddlcho(iliai-1+6*(i-1)+ipat) = nddl1
                 ddlcho(iliai-1+6*(i-1)+ipat+3) = nddl2
-63          continue
+ 63         continue
 !
 !
 ! DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
@@ -500,7 +499,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             memail=.false.
                             do 78 j2 = 1, nbno
                                 if (zi(ibid+j2-1) .eq. nn2) memail= .true.
-78                          continue
+ 78                         continue
                             if (.not.memail) then
                                 compt1=compt1+1
                                 if (j1 .eq. 1) bono1=zi(ibid+1)
@@ -511,23 +510,23 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             memail=.false.
                             do 79 j2 = 1, nbno
                                 if (zi(ibid+j2-1) .eq. nn1) memail= .true.
-79                          continue
+ 79                         continue
                             if (.not.memail) then
                                 compt2=compt2+1
                                 if (j1 .eq. 1) bono2=zi(ibid+1)
                                 if (j1 .eq. 2) bono2=zi(ibid)
                             endif
                         endif
-77                  continue
+ 77                 continue
                 endif
-66          continue
+ 66         continue
             ASSERT(compt1 .ge. 1)
             ASSERT(compt2 .ge. 1)
 !
             do 89 j = 1, 3
                 axe(j)=zr(jcoor+3*(bono1-1)+j-1) - zr(jcoor+3*(bono2-&
                 1)+j-1)
-89          continue
+ 89         continue
 !
 ! ORIENTATION DU ROTOR
             call angvx(axe, alpha, beta)
@@ -536,7 +535,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             parcho(iliai,19) = sin(beta)
             parcho(iliai,20) = cos(beta)
 !
-61      end do
+ 61     end do
     endif
 !
 ! FIN ROTOR FISSURE

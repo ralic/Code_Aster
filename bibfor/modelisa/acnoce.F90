@@ -55,7 +55,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
 ! OUT : ISPV   : SIGNE DU PRODUIT MIXTE  (XCEN-N1).(XCEN-N2),V1
 ! ----------------------------------------------------------------------
     integer :: vali
-    character(len=24) :: mlggma, mlgnma, mlgcnx, c24
+    character(len=24) :: mlggma, mlgnma, mlgcnx
     character(len=24) :: valk
     real(kind=8) :: x1(3), x2(3), xc1(3), xc2(3), pvec(3)
 !     ------------------------------------------------------------------
@@ -70,8 +70,8 @@ subroutine acnoce(noma, type, liste, nb, coor,&
     mlgcnx = noma//'.CONNEX'
     ispv = 0
     if (type .eq. 'TOUT') then
-        call dismoi('C', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbm,&
-                    c24, ir)
+        call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbm, arret='C',&
+                    ier=ir)
         do 52 im = 1, nbm
             call jeveuo(jexnum(mlgcnx, im), 'L', jdno)
             nn1 = zi(jdno)
@@ -81,7 +81,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 x2(i) = coor((nn2-1)*3+i)
                 xc1(i) = x1(i)-xcen(i)
                 xc2(i) = x2(i)-xcen(i)
-42          continue
+ 42         continue
             xrc1 = padist( 3, x1, xcen )
             xrc2 = padist( 3, x2, xcen )
             if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
@@ -112,7 +112,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 valk = ' '
                 call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
             endif
-52      continue
+ 52     continue
     else if (type.eq.'GRMA') then
         do 53 ig = 1, nb
             call jeveuo(jexnom(mlggma, liste(ig)), 'L', jdgm)
@@ -127,7 +127,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                     x2(i) = coor((nn2-1)*3+i)
                     xc1(i) = x1(i)-xcen(i)
                     xc2(i) = x2(i)-xcen(i)
-44              continue
+ 44             continue
                 xrc1 = padist( 3, x1, xcen )
                 xrc2 = padist( 3, x2, xcen )
                 if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
@@ -158,8 +158,8 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                     valk = ' '
                     call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
                 endif
-54          continue
-53      continue
+ 54         continue
+ 53     continue
     else if (type.eq.'LIMA') then
         do 55 im = 1, nb
             call jenonu(jexnom(mlgnma, liste(im)), nummai)
@@ -171,7 +171,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 x2(i) = coor((nn2-1)*3+i)
                 xc1(i) = x1(i)-xcen(i)
                 xc2(i) = x2(i)-xcen(i)
-45          continue
+ 45         continue
             xrc1 = padist( 3, x1, xcen )
             xrc2 = padist( 3, x2, xcen )
             if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
@@ -202,7 +202,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 valk = ' '
                 call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
             endif
-55      continue
+ 55     continue
     endif
     call jedema()
 end subroutine

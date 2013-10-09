@@ -1,7 +1,6 @@
 subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -14,6 +13,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: matas, lchci(*), nomnu
     character(len=1) :: base
     integer :: nbchc
@@ -56,7 +56,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     character(len=8) :: gd
     character(len=14) :: nu
     character(len=19) :: mat, nomch
-    integer :: jrefa, jnequ, neq, ibid, ierd, numgd, iddes, nec, jccid, idprno
+    integer :: jrefa, jnequ, neq, numgd, iddes, nec, jccid, idprno
     integer :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich, imatd, jnugl
 !----------------------------------------------------------------------
 !
@@ -73,7 +73,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
         nimp = nimp + zi(jafci)
-19  end do
+ 19 end do
     if (nimp .eq. 0) goto 40
 !
 !
@@ -83,8 +83,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
         call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
     endif
     neq = zi(jnequ)
-    call dismoi('F', 'NOM_GD', nu, 'NUME_DDL', ibid,&
-                gd, ierd)
+    call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
     nec = zi(iddes+2)
@@ -111,20 +110,20 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
             iddl = zi(jafci+3* (imp-1)+2)
             ieq = zi(idprno-1+ (nec+2)* (ino-1)+1) + iddl - 1
             zi(jccid-1+ieq) = 1
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
     nelim=0
-    do 30, ieq=1,neq
-    if (imatd .ne. 0) then
-        if (zi(jnugl+ieq-1) .eq. 0) goto 30
-    endif
-    if (zi(jccid-1+ieq) .eq. 1) nelim=nelim+1
-    30 end do
+    do 30 ieq = 1, neq
+        if (imatd .ne. 0) then
+            if (zi(jnugl+ieq-1) .eq. 0) goto 30
+        endif
+        if (zi(jccid-1+ieq) .eq. 1) nelim=nelim+1
+ 30 end do
     zi(jccid-1+neq+1) = nelim
     if (nelim .gt. 0) zk24(jrefa-1+3)='ELIML'
 !
 !
-40  continue
+ 40 continue
     call jedema()
 end subroutine

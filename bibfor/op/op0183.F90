@@ -178,11 +178,9 @@ subroutine op0183()
 !
     numref=' '
     call refdcp(resuco, resuc1)
-    call dismoi('F', 'REF_RIGI_PREM', resuc1, 'RESU_DYNA', ibid,&
-                raide, iret)
+    call dismoi('REF_RIGI_PREM', resuc1, 'RESU_DYNA', repk=raide)
     if (raide .ne. ' ') then
-        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                    numref, iret)
+        call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numref)
     endif
 !
 !
@@ -201,7 +199,7 @@ subroutine op0183()
                 call wkvect('&&'//nompro//'.L_CHARGE', 'V V K8', nbchar, ichar)
                 do 20 ii = 1, nbchar
                     zk8(ichar-1+ii)=zk24(iachar-1+ii)(1:8)
-20              continue
+ 20             continue
             else
                 ichar=1
             endif
@@ -288,9 +286,9 @@ subroutine op0183()
             call nmdocc(modele(1:8), materi, l_etat_init, compor)
         endif
 !
-        call vefnme(option, 'V'   , modele, mater , carac ,&
-                    compor, partps, nh    , ligrel, chvarc,&
-                    sigma , ' '   , chdepl, chdep2, vfono)    
+        call vefnme(option, 'V', modele, mater, carac,&
+                    compor, partps, nh, ligrel, chvarc,&
+                    sigma, ' ', chdepl, chdep2, vfono)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vfono, nume, 'R', vafono)
@@ -322,7 +320,7 @@ subroutine op0183()
 !
         do 30 j = 0, lonch-1
             zr(jnoch+j)=zr(jfono+j)
-30      continue
+ 30     continue
 !
         call rsnoch(resuc1, 'DEPL', iordr)
         call nmdome(modele, mater, carac, infcha, resuc1(1:8),&
@@ -331,7 +329,7 @@ subroutine op0183()
         call detrsd('CHAMP_GD', '&&'//nompro//'.SIEF')
         call detrsd('VECT_ELEM', vfono(1:8))
         call detrsd('VECT_ELEM', vreno(1:8))
-40      continue
+ 40     continue
         call jedema()
     end do
 !
@@ -341,7 +339,7 @@ subroutine op0183()
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
     call onerrf(compex, k16bid, ibid)
 !
-60  continue
+ 60 continue
     call infbav()
     call jedema()
 !

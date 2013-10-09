@@ -50,7 +50,7 @@ subroutine ssdein(ul, ug, mail, nocas)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: ul, ug, mail, nocas, mag, mal, nomgd, kbid, nomacr
+    character(len=8) :: ul, ug, mail, nocas, mag, mal, nomgd, nomacr
     character(len=14) :: nul
     character(len=19) :: nug2, nul2
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
@@ -64,8 +64,8 @@ subroutine ssdein(ul, ug, mail, nocas)
     integer :: i, iabido, iaconx, iadesc, iadgg, iadgl, ialica
     integer :: ialich, iamacr, ianueg, ianuel, iaparr, iaphi0, iaphie
     integer :: iaprng, iaprnl, iarefe, iasupm, iavalg, iavall, iavalp
-    integer :: iavalt, ibi, ibid, iblph, icmp, icog, icol
-    integer :: ieqg, ieql, ier, iiblph, ili, inoe, inog
+    integer :: iavalt, ibid, iblph, icmp, icog, icol
+    integer :: ieqg, ieql, iiblph, ili, inoe, inog
     integer :: inol, iret, isma, j, jdesm, lgblph, nblph
     integer :: nbnoet, ncmpmx, nddle, nddli, nddlt, nec, nlblph
     integer :: nueqg, nueql
@@ -74,12 +74,10 @@ subroutine ssdein(ul, ug, mail, nocas)
     ug2= ug
     ul2= ul
 !
-    call dismoi('F', 'NOM_MAILLA', ug, 'CHAM_NO', ibi,&
-                mag, ier)
+    call dismoi('NOM_MAILLA', ug, 'CHAM_NO', repk=mag)
     call jeveuo(ug2//'.REFE', 'L', iavalt)
     nug2=zk24(iavalt+1)(1:19)
-    call dismoi('F', 'NOM_GD', ug, 'CHAM_NO', ibi,&
-                nomgd, ier)
+    call dismoi('NOM_GD', ug, 'CHAM_NO', repk=nomgd)
     if (nomgd(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_43', sk=nomgd)
     endif
@@ -99,8 +97,7 @@ subroutine ssdein(ul, ug, mail, nocas)
     nul= nomacr
     nul2=nul//'.NUME'
 !
-    call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibi,&
-                mal, ier)
+    call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
     call jeveuo(nomacr//'.CONX', 'L', iaconx)
     call jeveuo(nomacr//'.DESM', 'L', jdesm)
     nbnoet= zi(jdesm-1+2)+zi(jdesm-1+8)+zi(jdesm-1+9)
@@ -114,10 +111,8 @@ subroutine ssdein(ul, ug, mail, nocas)
     call jeveuo(jexnum(nug2//'.PRNO', 1), 'L', iaprng)
     call jeveuo(nug2//'.NUEQ', 'L', ianueg)
     call jeveuo(nul2//'.NUEQ', 'L', ianuel)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ier)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
 !
 !     2- ALLOCATION DU CHAM_NO RESULTAT : UL
@@ -141,37 +136,37 @@ subroutine ssdein(ul, ug, mail, nocas)
 !
 !     4-1- ON RECOPIE UG.VALE DANS Q_E:
 !     ---------------------------------
-    do 1, inoe=1,nbnoet
-    inog=zi(iasupm-1+inoe)
-    inol= zi(iaconx-1+3*(inoe-1)+2)
-    ili= zi(iaconx-1+3*(inoe-1)+1)
+    do 1 inoe = 1, nbnoet
+        inog=zi(iasupm-1+inoe)
+        inol= zi(iaconx-1+3*(inoe-1)+2)
+        ili= zi(iaconx-1+3*(inoe-1)+1)
 !
-    call jeveuo(jexnum(nul2//'.PRNO', ili), 'L', iaprnl)
+        call jeveuo(jexnum(nul2//'.PRNO', ili), 'L', iaprnl)
 !
-    nueql = zi(iaprnl-1+ (inol-1)* (nec+2)+1)
-    iadgl = iaprnl - 1 + (inol-1)* (nec+2)+3
-    ieql=zi(ianuel-1+nueql)
-    if (ieql .le. nddli) then
-        call utmess('F', 'SOUSTRUC_45')
-    endif
+        nueql = zi(iaprnl-1+ (inol-1)* (nec+2)+1)
+        iadgl = iaprnl - 1 + (inol-1)* (nec+2)+3
+        ieql=zi(ianuel-1+nueql)
+        if (ieql .le. nddli) then
+            call utmess('F', 'SOUSTRUC_45')
+        endif
 !
-    nueqg = zi(iaprng-1+ (inog-1)* (nec+2)+1)
-    iadgg = iaprng - 1 + (inog-1)* (nec+2)+3
+        nueqg = zi(iaprng-1+ (inog-1)* (nec+2)+1)
+        iadgg = iaprng - 1 + (inog-1)* (nec+2)+3
 !
-    icol = 0
-    icog = 0
-    do 2 ,icmp = 1,ncmpmx
-    exil= exisdg(zi(iadgl),icmp)
-    exig= exisdg(zi(iadgg),icmp)
-    if (exil) icol=icol+1
-    if (exig) icog=icog+1
-    if (exig .and. exil) then
-        ieql= zi(ianuel-1+nueql-1+icol)
-        ieqg= zi(ianueg-1+nueqg-1+icog)
-        zr(iavall-1+ieql) = zr(iavalg-1+ieqg)
-    endif
- 2  continue
-    1 end do
+        icol = 0
+        icog = 0
+        do 2 ,icmp = 1,ncmpmx
+        exil= exisdg(zi(iadgl),icmp)
+        exig= exisdg(zi(iadgg),icmp)
+        if (exil) icol=icol+1
+        if (exig) icog=icog+1
+        if (exig .and. exil) then
+            ieql= zi(ianuel-1+nueql-1+icol)
+            ieqg= zi(ianueg-1+nueqg-1+icog)
+            zr(iavall-1+ieql) = zr(iavalg-1+ieqg)
+        endif
+  2     continue
+  1 end do
 !
 !
 !     4-2- ON CHANGE LE REPERE (ROTATION G->L ) : Q_E  --> Q_E :
@@ -191,13 +186,13 @@ subroutine ssdein(ul, ug, mail, nocas)
                 lambda(i,j+3) = 0.d0
                 lambda(i+3,j) = 0.d0
                 lambda(i+3,j+3) = pgl(i,j)
-712          continue
-710      continue
+712         continue
+710     continue
         call ssvaro(lambda, 'GL', .false., 'EXTE', nomacr,&
                     iavall, iavalp)
-        do 4, i=1,nddle
-        zr(iavall-1+nddli+i)= zr(iavalp-1+nddli+i)
- 4      continue
+        do 4 i = 1, nddle
+            zr(iavall-1+nddli+i)= zr(iavalp-1+nddli+i)
+  4     continue
         call jedetr('&&SSVARO.IINO')
     endif
 !
@@ -221,21 +216,21 @@ subroutine ssdein(ul, ug, mail, nocas)
                     call ssvaro(lambda, 'GL', .false., 'TOUS', nomacr,&
                                 ialica, iavalp)
                     call ssvau1(nomacr, iavalp, iavalp)
-                    do 5, i=1,nddli
-                    zr(iavall-1+i)=zr(iavalp-1+i)
- 5                  continue
+                    do 5 i = 1, nddli
+                        zr(iavall-1+i)=zr(iavalp-1+i)
+  5                 continue
                 else
-                    do 6, i=1,nddli
-                    zr(iavall-1+i)=zr(ialica-1+nddlt+i)
- 6                  continue
+                    do 6 i = 1, nddli
+                        zr(iavall-1+i)=zr(ialica-1+nddlt+i)
+  6                 continue
                 endif
 !
             else if (zk8(ialich-1+1)(1:3).eq.'OUI') then
 !
 !           -- LE CHARGEMENT EST "SUIVEUR" :
-                do 7, i=1,nddli
-                zr(iavall-1+i)=zr(ialica-1+nddlt+i)
- 7              continue
+                do 7 i = 1, nddli
+                    zr(iavall-1+i)=zr(ialica-1+nddlt+i)
+  7             continue
             else
                 call utmess('F', 'SOUSTRUC_47')
             endif
@@ -251,20 +246,20 @@ subroutine ssdein(ul, ug, mail, nocas)
     nlblph=lgblph/nddli
 !
     j=0
-    do 10, iblph=1,nblph
-    call jeveuo(jexnum(nomacr//'.PHI_IE', iblph), 'L', iaphi0)
-    do 11, iiblph=1,nlblph
-    j=j+1
-    if (j .gt. nddle) goto 13
-    iaphie=iaphi0+ (iiblph-1)*nddli
-    do 12, i=1,nddli
-    zr(iavall-1+i)=zr(iavall-1+i) - zr(iaphie-1+i)* zr(&
+    do 10 iblph = 1, nblph
+        call jeveuo(jexnum(nomacr//'.PHI_IE', iblph), 'L', iaphi0)
+        do 11 iiblph = 1, nlblph
+            j=j+1
+            if (j .gt. nddle) goto 13
+            iaphie=iaphi0+ (iiblph-1)*nddli
+            do 12 i = 1, nddli
+                zr(iavall-1+i)=zr(iavall-1+i) - zr(iaphie-1+i)* zr(&
                 iavall-1+nddli+j)
-12  continue
-11  continue
-13  continue
-    call jelibe(jexnum(nomacr//'.PHI_IE', iblph))
-    10 end do
+ 12         continue
+ 11     continue
+ 13     continue
+        call jelibe(jexnum(nomacr//'.PHI_IE', iblph))
+ 10 end do
 !
     call jedetr('&&SSDEIN.VALP')
 !

@@ -189,8 +189,7 @@ subroutine op0044()
 !     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
     call exisd('MATR_ASSE', raide, ibid)
     if (ibid .ne. 0) then
-        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                    numedd, iret)
+        call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numedd)
     else
         numedd=' '
     endif
@@ -377,7 +376,7 @@ subroutine op0044()
         ierfr = 0
         do 4 ifreq = 0, nfreq - 1
             if (zr(lborne+ifreq) .lt. 0.d0) ierfr = ierfr + 1
- 4      continue
+  4     continue
         if (ierfr .gt. 0) then
             call utmess('A', 'ALGELINE2_59', sk=typevp)
         endif
@@ -415,7 +414,7 @@ subroutine op0044()
             am = -abs(am*omeg)/sqrt(1.d0-am*am)
             zr(lborne+2*ifreq) = am
             zr(lborne+2*ifreq+1) = omeg
- 6      continue
+  6     continue
     endif
 !
 !     ------------------------------------------------------------------
@@ -445,7 +444,7 @@ subroutine op0044()
         if (nfreq .ne. 0) then
             do 100 ifreq = 0, nbmod - 1
                 zr(lborne+ifreq) = omega2(zr(lborne+ifreq))
-100          continue
+100         continue
         endif
 !
         omgmax=zr(lborne+nbmod-1)
@@ -482,10 +481,10 @@ subroutine op0044()
 !
             do 110 ieq = 1, nbparr*mxresf
                 zr(lresur+ieq-1) = undf
-110          continue
+110         continue
             do 112 ieq = 1, nbpari*mxresf
                 zi(lresui+ieq-1) = indf
-112          continue
+112         continue
 !
             ndim = 2*nfreqb + nfreq
             call wkvect(work(1), ' V V R ', ndim, jvalp)
@@ -511,7 +510,7 @@ subroutine op0044()
 !
             do 120 ifreq = 0, nbmod-1
                 zr(jvalp+ifreq) = zr(lborne+ifreq)
-120          continue
+120         continue
 !
 !           --- CALCUL DES FREQUENCES PAR DICHOTOMIE
             call vpdich(lraide, lmasse, ldynam, tolsep, nitsep,&
@@ -543,7 +542,7 @@ subroutine op0044()
                 zr(lresur+4*mxresf+ifreq) = 0.0d0
                 zr(lresur+5*mxresf+ifreq) = 0.0d0
                 zr(lresur+6*mxresf+ifreq) = 0.0d0
-130          continue
+130         continue
 !
         endif
 !
@@ -559,8 +558,8 @@ subroutine op0044()
                     rbid = omeg+zfr(i)
                     am = -abs(zam(i)*rbid)/sqrt(1.d0-zam(i)*zam(i))
                     zc(lvalp+kfreq-1) = dcmplx(am,omeg)
-142              continue
-140          continue
+142             continue
+140         continue
 !
             call wp1mul(lmasse, lamor, lraide, zc(lvalp), tolaju,&
                         nitaju, nbmod, mxresf, nbmod, zi(lresui),&
@@ -588,10 +587,10 @@ subroutine op0044()
 !
         do 200 ieq = 1, nbparr*mxresf
             zr(lresur+ieq-1) = undf
-200      continue
+200     continue
         do 202 ieq = 1, nbpari*mxresf
             zi(lresui+ieq-1) = indf
-202      continue
+202     continue
 !
         call wkvect('&&OP0044.POSITION', 'V V I', nbmod, jieme)
 !
@@ -601,15 +600,15 @@ subroutine op0044()
             zi(lresui+ifreq) = 0
             zr(lresur+ifreq) = zr(lborne+ifreq)
             zr(lresur+2*mxresf+ifreq) = 0.0d0
-210      continue
+210     continue
         if (nfreq .ne. 0) then
             do 211 ifreq = 0, nbmod -1
                 zr(lresur+mxresf+ifreq) = omega2(zr(lborne+ifreq))
-211          continue
+211         continue
         else
             do 212 ifreq = 0, nbmod -1
                 zr(lresur+mxresf+ifreq) = zr(lborne+ifreq)
-212          continue
+212         continue
         endif
 !
 !     ------------------------------------------------------------------
@@ -628,10 +627,10 @@ subroutine op0044()
 !
         do 300 ieq = 1, nbparr*mxresf
             zr(lresur+ieq-1) = undf
-300      continue
+300     continue
         do 302 ieq = 1, nbpari*mxresf
             zi(lresui+ieq-1) = indf
-302      continue
+302     continue
 !
         depi = r8depi()
         k = -1
@@ -650,7 +649,7 @@ subroutine op0044()
                 raux2=sqrt(1.d0-am*am)
                 zr(lresur+2*mxresf+ifreq)=raux1/raux2
             endif
-310      continue
+310     continue
         nblagr = 0
         nbmod = nfreq
 !
@@ -692,7 +691,7 @@ subroutine op0044()
 !
         do 400 ifreq = 0, nbmod-1
             zi(lresui+ifreq) = zi(lresui+ifreq) - nblagr
-400      continue
+400     continue
 !
 !
     endif
@@ -759,7 +758,7 @@ subroutine op0044()
 !
 !
 !     ------------------------------------------------------------------
-9999  continue
+9999 continue
 !
 !     --- DESTRUCTION DE LA MATRICE DYNAMIQUE
     call detrsd('MATR_ASSE', dynam)

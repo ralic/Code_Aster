@@ -48,7 +48,7 @@ subroutine liscom(nomo, codarr, lischa)
 !
     integer :: ichar, nbchar
     character(len=8) :: modch2, charge, modch1
-    integer :: ibid, iret, genrec
+    integer ::  genrec
     logical :: lveag, lveas
 !
 ! ----------------------------------------------------------------------
@@ -69,8 +69,7 @@ subroutine liscom(nomo, codarr, lischa)
     lveas = lisico('VECT_ASSE' ,genrec)
     if (nomo .ne. ' ') then
         if (.not.lveag .and. .not.lveas) then
-            call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                        modch1, iret)
+            call dismoi('NOM_MODELE', charge, 'CHARGE', repk=modch1)
             if (modch1 .ne. nomo) then
                 call utmess(codarr, 'CHARGES5_5', sk=charge)
             endif
@@ -86,16 +85,15 @@ subroutine liscom(nomo, codarr, lischa)
         lveas = lisico('VECT_ASSE' ,genrec)
         if (nomo .ne. ' ') then
             if (.not.lveag .and. .not.lveas) then
-                call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                            modch2, iret)
+                call dismoi('NOM_MODELE', charge, 'CHARGE', repk=modch2)
                 if (modch1 .ne. modch2) then
                     call utmess(codarr, 'CHARGES5_6')
                 endif
             endif
         endif
-10  continue
+ 10 continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

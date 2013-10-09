@@ -79,7 +79,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     integer :: jdceld, jdcelv, jdcell, jdcelk
     integer :: jce2d, jce2v, jce2l, jce2k
     integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
-    integer :: ima, iret, kma, ibid
+    integer :: ima, iret, kma
     integer :: iadp, jcoppl, jcoppd, jcoppv, jcoppk, ip
     integer :: iadm, jcopml, jcopmd, jcopmv, jcopmk, im
     integer :: vali(5), tounul, k, nbpgm, n1, jrepp, jrepm
@@ -116,17 +116,15 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !
 ! --- MAILLAGES ATTACHES
 !
-    call dismoi('F', 'NOM_MAILLA', compop, 'CHAMP', ibid,&
-                nomma1, iret)
-    call dismoi('F', 'NOM_MAILLA', varmoi, 'CHAMP', ibid,&
-                nomma2, iret)
+    call dismoi('NOM_MAILLA', compop, 'CHAMP', repk=nomma1)
+    call dismoi('NOM_MAILLA', varmoi, 'CHAMP', repk=nomma2)
     if (nomma1 .ne. nomma2) then
         call utmess('F', 'MECANONLINE5_49')
     endif
 !
     call carces(compop, 'ELEM', ' ', 'V', coto,&
                 'A', iret)
-    call cesred(coto,0,[0],1,'RELCOM',&
+    call cesred(coto, 0, [0], 1, 'RELCOM',&
                 'V', copp)
     call detrsd('CHAM_ELEM_S', coto)
 !
@@ -157,8 +155,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     call jelira(lig19p//'.REPE', 'LONMAX', n1)
     ASSERT(n1.eq.2*nbma)
 !
-    call dismoi('F', 'NOM_LIGREL', varmoi, 'CHAM_ELEM', ibid,&
-                lig19m, iret)
+    call dismoi('NOM_LIGREL', varmoi, 'CHAM_ELEM', repk=lig19m)
     call jeveuo(lig19m//'.REPE', 'L', jrepm)
     call jelira(lig19m//'.REPE', 'LONMAX', n1)
 !
@@ -178,7 +175,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     if (compom .ne. ' ') then
         call carces(compom, 'ELEM', ' ', 'V', coto,&
                     'A', iret)
-        call cesred(coto,0,[0],1,'RELCOM',&
+        call cesred(coto, 0, [0], 1, 'RELCOM',&
                     'V', copm)
         call detrsd('CHAM_ELEM_S', coto)
 !
@@ -197,58 +194,58 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         ASSERT(noma.eq.zk8(jcopmk-1+1))
 !
         kma=0
-        do 10,ima=1,nbma
-        exim=zi(jrepm-1+2*(ima-1)+1).gt.0
-        exip=zi(jrepp-1+2*(ima-1)+1).gt.0
-        kma=kma+1
-        call cesexi('C', jcopmd, jcopml, ima, 1,&
-                    1, 1, iadm)
-        call cesexi('C', jcoppd, jcoppl, ima, 1,&
-                    1, 1, iadp)
-        if (iadp .gt. 0) then
-            relcop=zk16(jcoppv-1+iadp)
-            if (iadm .le. 0) goto 60
-            relcom=zk16(jcopmv-1+iadm)
+        do 10 ima = 1, nbma
+            exim=zi(jrepm-1+2*(ima-1)+1).gt.0
+            exip=zi(jrepp-1+2*(ima-1)+1).gt.0
+            kma=kma+1
+            call cesexi('C', jcopmd, jcopml, ima, 1,&
+                        1, 1, iadm)
+            call cesexi('C', jcoppd, jcoppl, ima, 1,&
+                        1, 1, iadp)
+            if (iadp .gt. 0) then
+                relcop=zk16(jcoppv-1+iadp)
+                if (iadm .le. 0) goto 60
+                relcom=zk16(jcopmv-1+iadm)
 !
 !           -- SI RELCOP=RELCOM C'EST OK :
-            if (relcom .eq. relcop) goto 10
+                if (relcom .eq. relcop) goto 10
 !
 !           -- SI RELCOP ET RELCOM SONT MISCIBLES C'EST OK :
-            im=index(comp1,relcom)
-            ip=index(comp1,relcop)
-            if ((im.gt.0) .and. (ip.gt.0)) goto 10
+                im=index(comp1,relcom)
+                ip=index(comp1,relcop)
+                if ((im.gt.0) .and. (ip.gt.0)) goto 10
 !
 !           -- SI RELCOP OU RELCOM EST 'ELAS' / 'SANS'  C'EST OK :
-            im=index(comp2,relcom)
-            ip=index(comp2,relcop)
-            if ((im.gt.0) .or. (ip.gt.0)) then
-                modif=.true.
-                if (exip .and. exim) then
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                    valk(1)=nomail
-                    valk(2)=relcom
-                    valk(3)=relcop
-                    call utmess('A', 'CALCULEL3_47', nk=3, valk=valk)
+                im=index(comp2,relcom)
+                ip=index(comp2,relcop)
+                if ((im.gt.0) .or. (ip.gt.0)) then
+                    modif=.true.
+                    if (exip .and. exim) then
+                        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                        valk(1)=nomail
+                        valk(2)=relcom
+                        valk(3)=relcop
+                        call utmess('A', 'CALCULEL3_47', nk=3, valk=valk)
+                    endif
+                    goto 10
                 endif
-                goto 10
+                goto 80
             endif
-            goto 80
-        endif
-10      continue
+ 10     continue
     endif
 !
 !
 !     2.  ON VERIFIE LES NOMBRES DE SOUS-POINTS ET DE CMPS :
 !     ------------------------------------------------------------
-    do 40,ima=1,nbma
-    exim=zi(jrepm-1+2*(ima-1)+1).gt.0
-    exip=zi(jrepp-1+2*(ima-1)+1).gt.0
-    call cesexi('C', jdceld, jdcell, ima, 1,&
-                1, 1, iad1)
-    call cesexi('C', jdceld, jdcell, ima, 1,&
-                1, 2, iad2)
-    call cesexi('C', jcoppd, jcoppl, ima, 1,&
-                1, 1, iadp)
+    do 40 ima = 1, nbma
+        exim=zi(jrepm-1+2*(ima-1)+1).gt.0
+        exip=zi(jrepp-1+2*(ima-1)+1).gt.0
+        call cesexi('C', jdceld, jdcell, ima, 1,&
+                    1, 1, iad1)
+        call cesexi('C', jdceld, jdcell, ima, 1,&
+                    1, 2, iad2)
+        call cesexi('C', jcoppd, jcoppl, ima, 1,&
+                    1, 1, iadp)
 !
 !       SI LE COMPORTEMENT N'EST PAS PRESENT SUR IMA, ON SAUTE
 !       (C'EST LE CAS POUR UN CALCUL SUR UN GROUPE DE MAILLES :)
@@ -256,17 +253,17 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !       POUR LES AUTRES MAILLES ON N'A PAS BESOIN DE VERIFIER
 !
 !
-    if (iad1 .le. 0) then
-        nbspp=0
-        ncmpp=0
-    else
-        ASSERT(iad2.gt.0)
-        nbspp=zi(jdcelv-1+iad1)
-        ncmpp=zi(jdcelv-1+iad2)
-    endif
-    nbpgm=zi(jce2d-1+5+4*(ima-1)+1)
-    nbspm=zi(jce2d-1+5+4*(ima-1)+2)
-    ncmpm=zi(jce2d-1+5+4*(ima-1)+3)
+        if (iad1 .le. 0) then
+            nbspp=0
+            ncmpp=0
+        else
+            ASSERT(iad2.gt.0)
+            nbspp=zi(jdcelv-1+iad1)
+            ncmpp=zi(jdcelv-1+iad2)
+        endif
+        nbpgm=zi(jce2d-1+5+4*(ima-1)+1)
+        nbspm=zi(jce2d-1+5+4*(ima-1)+2)
+        ncmpm=zi(jce2d-1+5+4*(ima-1)+3)
 !
 !       -- PARFOIS LE COMPORTEMENT EST AFFECTE SUR LES MAILLES
 !          DE BORD ALORS QUE CES ELEMENTS N'ONT PAS DE VARIABLES
@@ -274,83 +271,84 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !          ON NE VEUT PAS FAIRE D'ERREUR <F> :
 !
 !       -- VERIFICATION DU NOMBRE DE SOUS-POINTS :
-    if (nbspp .ne. 0 .and. nbspm .ne. 0) then
-        if (nbspp .ne. nbspm .and. nbspm .ne. 0) goto 50
-    endif
+        if (nbspp .ne. 0 .and. nbspm .ne. 0) then
+            if (nbspp .ne. nbspm .and. nbspm .ne. 0) goto 50
+        endif
 !
 !       -- VERIFICATION DU NOMBRE DE COMPOSANTES :
-    if (ncmpp .ne. ncmpm) then
-        if ((ncmpm.eq.0) .or. (ncmpp.eq.0)) then
+        if (ncmpp .ne. ncmpm) then
+            if ((ncmpm.eq.0) .or. (ncmpp.eq.0)) then
 !           -- CE N'EST PAS GRAVE SI LA MAILLE EST NOUVELLE
 !              OU SI ELLE A DISPARU DU CALCUL
 !           (IL N'Y A PAS LIEU D'EMETTRE UNE ALARME)
-            modif=.true.
-            goto 40
-        endif
+                modif=.true.
+                goto 40
+            endif
 !
 !         -- CE N'EST PAS GRAVE SI COMPOR "+" = 'ELAS' :
-        ASSERT(iadp.gt.0)
-        relcop=zk16(jcoppv-1+iadp)
-        if (relcop .eq. 'ELAS' .or. relcop .eq. 'SANS') goto 30
+            ASSERT(iadp.gt.0)
+            relcop=zk16(jcoppv-1+iadp)
+            if (relcop .eq. 'ELAS' .or. relcop .eq. 'SANS') goto 30
 !
 !         -- CE N'EST PAS GRAVE SI COMPOR "-" = 'ELAS' :
-        if (compom .ne. ' ') then
-            call cesexi('C', jcopmd, jcopml, ima, 1,&
-                        1, 1, iadm)
-            ASSERT(iadm.gt.0)
-            relcom=zk16(jcopmv-1+iadm)
-            if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. relcom .eq. 'KIT_CG') goto 30
-        else
+            if (compom .ne. ' ') then
+                call cesexi('C', jcopmd, jcopml, ima, 1,&
+                            1, 1, iadm)
+                ASSERT(iadm.gt.0)
+                relcom=zk16(jcopmv-1+iadm)
+                if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. relcom .eq. 'KIT_CG') &
+                goto 30
+            else
 !           CE N'EST PAS FACILE A VERIFIER SANS COMPOM !
 !           ON VERIFIE :  NCMPM=1 ET VARIM(*)=0.D0
-            if (ncmpm .eq. 1) then
-                call cesexi('C', jce2d, jce2l, ima, 1,&
-                            1, 1, iad2)
-                ASSERT(iad2.gt.0)
-                tounul=0
-                do 20,k=1,nbpgm*nbspp
-                if (zr(jce2v-1+iad2+k-1) .ne. 0.d0) tounul=1
-20              continue
-                if (tounul .eq. 0) goto 30
+                if (ncmpm .eq. 1) then
+                    call cesexi('C', jce2d, jce2l, ima, 1,&
+                                1, 1, iad2)
+                    ASSERT(iad2.gt.0)
+                    tounul=0
+                    do 20 k = 1, nbpgm*nbspp
+                        if (zr(jce2v-1+iad2+k-1) .ne. 0.d0) tounul=1
+ 20                 continue
+                    if (tounul .eq. 0) goto 30
+                endif
             endif
+            goto 70
         endif
-        goto 70
-    endif
 !
-    goto 40
-30  continue
-    modif=.true.
+        goto 40
+ 30     continue
+        modif=.true.
 !       -- SI COMPOM EST FOURNI, UN MESSAGE PLUS CLAIR
 !          A DEJA ETE EMIS ('CALCULEL3_47')
-    if ((compom.eq.' ') .and. exip .and. exim) then
-        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-        vali(1)=ncmpm
-        vali(2)=ncmpp
-        call utmess('A', 'CALCULEL3_48', sk=nomail, ni=2, vali=vali)
-    endif
-40  continue
+        if ((compom.eq.' ') .and. exip .and. exim) then
+            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+            vali(1)=ncmpm
+            vali(2)=ncmpp
+            call utmess('A', 'CALCULEL3_48', sk=nomail, ni=2, vali=vali)
+        endif
+ 40 continue
     goto 90
 !
 !
 !     3. MESSAGES D'ERREUR :
 !     ----------------------
-50  continue
+ 50 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     vali(1)=nbspm
     vali(2)=nbspp
     call utmess('F', 'CALCULEL6_52', sk=nomail, ni=2, vali=vali)
 !
-60  continue
+ 60 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     call utmess('F', 'CALCULEL5_41', sk=nomail)
 !
-70  continue
+ 70 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     vali(1)=ncmpm
     vali(2)=ncmpp
     call utmess('F', 'CALCULEL3_49', sk=nomail, ni=2, vali=vali)
 !
-80  continue
+ 80 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     valk(1)=relcom
     valk(2)=relcop
@@ -358,7 +356,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     call utmess('F', 'CALCULEL5_42', nk=3, valk=valk)
 !
 !
-90  continue
+ 90 continue
     if (modif) call vrcom2(compop, varmoi, ligrep)
 !
 !     4. MENAGE :

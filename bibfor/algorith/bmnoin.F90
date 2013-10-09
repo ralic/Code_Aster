@@ -66,7 +66,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !                 SI DONNEE BASE MODALE OU INTERF_DYNA
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, lldes, llint, nbdif, nbeffi, ibid, ir
+    integer :: i, inoe, lldes, llint, nbdif, nbeffi
     integer :: nbnoe, numcou, numint
 !-----------------------------------------------------------------------
     call jemarq()
@@ -76,8 +76,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
     if (basmod(1:1) .ne. ' ') then
 !
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                    intf, ir)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
         if (intf .eq. '        ') then
             valk (1) = basmod
             call utmess('F', 'ALGORITH12_30', sk=valk(1))
@@ -129,11 +128,11 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
         numcou=zi(lldes+inoe-1)
         nbdif=nbdif-1
         if (nbdif .ge. 0) numnoe(nbnoi-nbdif)=numcou
-20  continue
+ 20 continue
 !
     nbdif=-nbdif
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

@@ -46,7 +46,7 @@ subroutine op0163()
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ier, itresr(3), itresi(3)
+    integer ::  itresr(3), itresi(3)
     character(len=4) :: type(3)
     character(len=8) :: k8b, nomres
     character(len=8) :: mael, basemo
@@ -58,11 +58,10 @@ subroutine op0163()
     character(len=32) :: fichi
     character(len=64) :: base
     character(len=80) :: titre
-    integer :: iarg
     complex(kind=8) :: cbid
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iarch, ibi, ich, idbase, idresi
+    integer :: i, iarch, ich, idbase, idresi
     integer :: idresr, ie, ifmis, imess, iord, iret
     integer :: j, jinst, jnume, jrefe, linst, lval1
     integer :: lval2, lvale, nbcham, nbinst, nbmodd, nbmode, nbmods
@@ -111,10 +110,8 @@ subroutine op0163()
 !      CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
 !      INTERF = ZK24(IADRIF+4) (1:8)
 !
-    call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmodd,&
-                k8b, ier)
-    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                k8b, ier)
+    call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
+    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
 !
     nbmode = nbmodd + nbmods
     write(imess,'(1X,I6,1X,''MODES DYNAMIQUES'')') nbmodd
@@ -129,10 +126,8 @@ subroutine op0163()
     type(1) = 'DEPL'
     type(2) = 'VITE'
     type(3) = 'ACCE'
-    call dismoi('F', 'NOM_NUME_DDL', matrm, 'MATR_ASSE', ibi,&
-                numddl, iret)
-    call dismoi('F', 'NB_EQUA', matrm, 'MATR_ASSE', neq,&
-                k8b, iret)
+    call dismoi('NOM_NUME_DDL', matrm, 'MATR_ASSE', repk=numddl)
+    call dismoi('NB_EQUA', matrm, 'MATR_ASSE', repi=neq)
     call wkvect('&&OP0163.BASEMO', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
                 'R', zr(idbase), [cbid])
@@ -146,7 +141,7 @@ subroutine op0163()
     call wkvect(kinst, 'V V R8', nbinst, jinst)
     do 60 iord = 0, nbinst-1
         zi(jnume+iord) = iord + 1
-60  continue
+ 60 continue
     read(ifmis,1001) (zr(jinst+iord-1),iord=1,nbinst)
     read(ifmis,1001) ((zr(itresr(1)+j-1+(zi(jnume+i-1)-1)*nbmode),&
      &             j=1,nbmodd),i=1,nbinst)
@@ -177,7 +172,7 @@ subroutine op0163()
      &             j=nbmodd+1,nbmode),i=1,nbinst)
     read(ifmis,1001) ((zr(itresi(3)+j-1+(zi(jnume+i-1)-1)*nbmode),&
      &             j=nbmodd+1,nbmode),i=1,nbinst)
-9998  continue
+9998 continue
     iarch = 0
     call rscrsd('G', nomres, typres, nbinst)
     if (typres .eq. 'DYNA_HARMO') then
@@ -215,14 +210,14 @@ subroutine op0163()
                             zr(lval2))
                 do 93 ie = 1, neq
                     zc(lvale+ie-1) = dcmplx(zr(lval1+ie-1),zr(lval2+ ie-1))
-93              continue
+ 93             continue
             else
                 call mdgeph(neq, nbmode, zr(idbase), zr(idresr+(zi( jnume+i)-1)*nbmode),&
                             zr(lvale))
             endif
             call jelibe(chamno)
             call rsnoch(nomres, type(ich), iarch)
-92      continue
+ 92     continue
         if (typres .eq. 'DYNA_HARMO') then
             call rsadpa(nomres, 'E', 1, 'FREQ', iarch,&
                         0, sjv=linst, styp=k8b)
@@ -231,13 +226,12 @@ subroutine op0163()
                         0, sjv=linst, styp=k8b)
         endif
         zr(linst) = zr(jinst+i)
-90  continue
+ 90 continue
 !
     matric(1) = matrk
     matric(2) = matrm
     matric(3) = ' '
-    call dismoi('F', 'NOM_NUME_DDL', matrk, 'MATR_ASSE', iarg,&
-                numer, iret)
+    call dismoi('NOM_NUME_DDL', matrk, 'MATR_ASSE', repk=numer)
     call refdaj('F', nomres, nbcham, numer, 'DYNAMIQUE',&
                 matric, iret)
 !

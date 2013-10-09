@@ -63,7 +63,7 @@ subroutine op0186()
     logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
     logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
     logical :: force, lnonl
-    integer :: parmei(2), parcri(3), numins, k, ierd, icoret, nbcham, iterho
+    integer :: parmei(2), parcri(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp, jtempm, jtemp, jcrr
     integer :: itab(2)
     real(kind=8) :: parmer(2), tpsthe(6), deltat, timet, timtdt, tps1(4)
@@ -73,7 +73,6 @@ subroutine op0186()
     character(len=1) :: creas, base
     character(len=3) :: kreas
     character(len=8) :: evolsc, mailla
-    character(len=8) :: k8bid
     character(len=19) :: sdobse
     character(len=16) :: tysd, k16b1, k16b2
     character(len=19) :: lischa, lisch2
@@ -194,7 +193,7 @@ subroutine op0186()
     call uttcpr('CPU.OP0186.3', 4, tps3)
     reasrg = .false.
     reasms = .false.
-200  continue
+200 continue
 ! --- RECUPERATION DU PAS DE TEMPS ET DES PARAMETRES DE RESOLUTION
 !
     if (lostat) then
@@ -251,8 +250,7 @@ subroutine op0186()
     if (lsecha) then
         call gettco(evolsc, tysd)
         if (tysd(1:9) .eq. 'EVOL_THER') then
-            call dismoi('F', 'NB_CHAMP_UTI', evolsc, 'RESULTAT', nbcham,&
-                        k8bid, ierd)
+            call dismoi('NB_CHAMP_UTI', evolsc, 'RESULTAT', repi=nbcham)
             if (nbcham .gt. 0) then
                 timet = instap
                 timtdt = instap + deltat
@@ -321,7 +319,7 @@ subroutine op0186()
 !
 ! --- REPRISE DE LA BOUCLE D'ITERATIONS DE NEWTON-RAPHSON
 !
-20  continue
+ 20 continue
 !
 ! --- DOIT ON REACTUALISER LA MATRICE TANGENTE
 !
@@ -376,7 +374,7 @@ subroutine op0186()
 ! SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
         do 30 k = 1, neq
             zr(jtempm+k-1) = zr(jtempm+k-1) + rho*zr(jtempp+k-1)
-30      continue
+ 30     continue
     endif
 !
     write (ifm,&
@@ -450,7 +448,7 @@ subroutine op0186()
 ! VTEMPM --> VTEMP
     do 145 k = 1, neq
         zr(jtemp+k-1) = zr(jtempp+k-1)
-145  continue
+145 continue
     call uttcpu('CPU.OP0186.3', 'FIN', ' ')
     call uttcpr('CPU.OP0186.3', 4, tps3)
 !
@@ -504,7 +502,7 @@ subroutine op0186()
     goto 200
 !
 !
-500  continue
+500 continue
 !
     call titre()
 !

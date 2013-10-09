@@ -45,7 +45,7 @@ subroutine op0008()
 #include "asterfort/ss2mme.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ibid, ich, icha, ied, ncha, nh
+    integer :: ibid, ich, icha, ncha, nh
     integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
     real(kind=8) :: time, tps(6), vcmpth(4)
     logical :: exitim
@@ -83,20 +83,18 @@ subroutine op0008()
         call jeveuo(matel(1:8)//'.CHARGES', 'E', icha)
         call getvid(' ', 'CHARGE', nbval=ncha, vect=zk8(icha), nbret=ibid)
 !
-        call dismoi('F', 'NOM_MODELE', zk8(icha), 'CHARGE', ibid,&
-                    mo1, ied)
+        call dismoi('NOM_MODELE', zk8(icha), 'CHARGE', repk=mo1)
         if ((n1.eq.1) .and. (modele.ne.mo1)) then
             call utmess('F', 'CALCULEL3_88')
         endif
 !
         modele = mo1
-        do 10,ich = 1,ncha
-        call dismoi('F', 'NOM_MODELE', zk8(icha-1+ich), 'CHARGE', ibid,&
-                    k8bid, ied)
-        if (k8bid .ne. modele) then
-            call utmess('F', 'CALCULEL3_89')
-        endif
-10      continue
+        do 10 ich = 1, ncha
+            call dismoi('NOM_MODELE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
+            if (k8bid .ne. modele) then
+                call utmess('F', 'CALCULEL3_89')
+            endif
+ 10     continue
     endif
 !
 !
@@ -118,33 +116,30 @@ subroutine op0008()
 !
 !     -- VERIFICATION DES CHARGES:
     if ((suropt.eq.'CHAR_MECA') .or. (suropt.eq.'CHAR_MECA_LAGR')) then
-        do 20,ich = 1,ncha
-        call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', ibid,&
-                    k8bid, ied)
-        if (k8bid(1:5) .ne. 'MECA_') then
-            call utmess('F', 'CALCULEL3_91')
-        endif
-20      continue
+        do 20 ich = 1, ncha
+            call dismoi('TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
+            if (k8bid(1:5) .ne. 'MECA_') then
+                call utmess('F', 'CALCULEL3_91')
+            endif
+ 20     continue
     endif
 !
     if ((suropt.eq.'CHAR_THER')) then
-        do 30,ich = 1,ncha
-        call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', ibid,&
-                    k8bid, ied)
-        if (k8bid(1:5) .ne. 'THER_') then
-            call utmess('F', 'CALCULEL3_92')
-        endif
-30      continue
+        do 30 ich = 1, ncha
+            call dismoi('TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
+            if (k8bid(1:5) .ne. 'THER_') then
+                call utmess('F', 'CALCULEL3_92')
+            endif
+ 30     continue
     endif
 !
     if ((suropt.eq.'CHAR_ACOU')) then
-        do 40,ich = 1,ncha
-        call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', ibid,&
-                    k8bid, ied)
-        if (k8bid(1:5) .ne. 'ACOU_') then
-            call utmess('F', 'CALCULEL3_93')
-        endif
-40      continue
+        do 40 ich = 1, ncha
+            call dismoi('TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
+            if (k8bid(1:5) .ne. 'ACOU_') then
+                call utmess('F', 'CALCULEL3_93')
+            endif
+ 40     continue
     endif
 !
 !
@@ -185,11 +180,10 @@ subroutine op0008()
         resuel=zk24(jrelr+iresu-1)(1:19)
         call jeexin(resuel//'.RESL', iexi)
         if (iexi .eq. 0) goto 101
-        call dismoi('F', 'MPI_COMPLET', resuel, 'RESUELEM', ibid,&
-                    kmpic, ibid)
+        call dismoi('MPI_COMPLET', resuel, 'RESUELEM', repk=kmpic)
         ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
         if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
-101      continue
+101     continue
     end do
 !
 !

@@ -58,7 +58,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 ! IN   NOMA   K8  : NOM DU MAILLAGE
 ! IN   FONREE K4  : 'FONC' OU 'REEL'
 !
-    integer :: nbtymx, nechp, ibid, ierd, jncmp, jvalv, iocc, nh, nt, i, j
+    integer :: nbtymx, nechp, ibid, jncmp, jvalv, iocc, nh, nt, i, j
     integer :: nbtyp, jlistt, nbm, nfiss, nfismx, jma, ntcon
     parameter    (nfismx=100)
     logical :: ltcon, lcoefh
@@ -83,8 +83,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
     liel = ligrch
     liel(20:24) = '.LIEL'
     mo = ligrmo
-    call dismoi('F', 'MODELISATION', mo, 'MODELE', ibid,&
-                modl, ierd)
+    call dismoi('MODELISATION', mo, 'MODELE', repk=modl)
 !
 !     LE MOT-CLE COEF_H EST-IL PRESENT ?
     lcoefh=.false.
@@ -98,8 +97,8 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
             lcoefh=.true.
             goto 200
         endif
-100  end do
-200  continue
+100 end do
+200 continue
 !
 !     SI LE MOT-CLE COEF_H EST PRESENT, ON ALLOUE ET PREAPRE LA CARTE
     if (lcoefh) then
@@ -133,7 +132,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !       RECUPERATION DU VECTEUR DE TRANSLATION POUR PATRMA
         do 301 i = 1, 3
             t(i) = 0.0d0
-301      continue
+301     continue
         call getvr8(motclf, 'TRAN', iocc=iocc, nbval=3, vect=t,&
                     nbret=nt)
         call getvid(motclf, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
@@ -237,7 +236,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                 endif
                 call nocart(carte, -3, ncmp, ligrel=ligrch, nma=nbm,&
                             limanu=zi(jligr))
-400          continue
+400         continue
 !
 !         MENAGE
             call jedetr(llist1)
@@ -246,8 +245,8 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 ! ------
         endif
 !
-300  end do
+300 end do
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

@@ -93,7 +93,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
 !     -----------------------------------------------------------------
-    integer :: jrefar, jrefa1, jrefai, ier, ibid, idlima, ier1
+    integer :: jrefar, jrefa1, jrefai, ier, idlima, ier1
     integer :: i, lres, nbloc, jrefa, lgbloc
     logical :: reutil, symr, symi, matd
 !     -----------------------------------------------------------------
@@ -141,7 +141,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         endif
 !        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.
-10  end do
+ 10 end do
 !
 !
 !     -- SI LA MATRICE RESULTAT EST L'UNE DE CELLES A COMBINER,
@@ -158,31 +158,27 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !
 ! --- VERIF. DE LA COHERENCE MPI DES MATRICES A COMBINER
 !     ----------------------------------------------------
-    call dismoi('F', 'MPI_COMPLET', mat1, 'MATR_ASSE', ibid,&
-                kmpic1, ibid)
+    call dismoi('MPI_COMPLET', mat1, 'MATR_ASSE', repk=kmpic1)
     if (kmpic1 .eq. 'OUI') then
         zk24(jrefar-1+11)='MPI_COMPLET'
     else
         zk24(jrefar-1+11)='MPI_INCOMPLET'
     endif
     matd = .false.
-    call dismoi('F', 'MATR_DISTR', mat1, 'MATR_ASSE', ibid,&
-                kmatd, ibid)
+    call dismoi('MATR_DISTR', mat1, 'MATR_ASSE', repk=kmatd)
     if (kmatd .eq. 'OUI') then
         matd = .true.
         zk24(jrefar-1+11)='MATR_DISTR'
     endif
     do 19 i = 2, nbcomb
         mati=limat(i)
-        call dismoi('F', 'MPI_COMPLET', mati, 'MATR_ASSE', ibid,&
-                    kmpic, ibid)
+        call dismoi('MPI_COMPLET', mati, 'MATR_ASSE', repk=kmpic)
         if (kmpic .ne. kmpic1) then
             valk(1)=mat1
             valk(2)=mati
             call utmess('F', 'CALCULEL6_55', nk=2, valk=valk)
         endif
-        call dismoi('F', 'MATR_DISTR', mati, 'MATR_ASSE', ibid,&
-                    kmatd, ibid)
+        call dismoi('MATR_DISTR', mati, 'MATR_ASSE', repk=kmatd)
 !       IL EST NECESSAIRE QUE TOUTES LES MATRICES QU'ON CHERCHE A
 !       COMBINER SOIT DU MEME TYPE (SOIT TOUTES DISTRIBUEES,
 !       SOIT TOUTES COMPLETES MAIS SURTOUT PAS DE MELANGE !)
@@ -191,7 +187,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         else
             if (matd) ASSERT(.false.)
         endif
-19  end do
+ 19 end do
 !
 !
 ! --- VERIF. DE LA COHERENCE DES NUMEROTATIONS DES MATRICES A COMBINER
@@ -213,7 +209,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
                 call utmess('F', 'ALGELINE2_10', nk=2, valk=valk)
             endif
         endif
-20  end do
+ 20 end do
 !
 !
 !

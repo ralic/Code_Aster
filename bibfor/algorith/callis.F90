@@ -72,7 +72,7 @@ subroutine callis(nomres)
     character(len=8) :: k8bid, ma1, ma2, matprj
     character(len=16) :: motcle(2)
     integer :: nblis, ldpmli, nbbloc, lllia, iad, nblig, i, iret, ibid, nbno1
-    integer :: nbno2, ier, llint1, llint2, iinc, irep11, irep12, irep21, irep22
+    integer :: nbno2, llint1, llint2, iinc, irep11, irep12, irep21, irep22
     integer :: iopt, nbeq1, nbeq2, ddla1, ddla2, imast, nbcol
     integer :: taille(2), icar(4)
     real(kind=8) :: un, moins1
@@ -158,10 +158,8 @@ subroutine callis(nomres)
                     mod2)
 !
 !-------------LE NOM DES MAILLAGES
-        call dismoi('F', 'NOM_MAILLA', mod1, 'MODELE', ibid,&
-                    ma1, ier)
-        call dismoi('F', 'NOM_MAILLA', mod2, 'MODELE', ibid,&
-                    ma2, ier)
+        call dismoi('NOM_MAILLA', mod1, 'MODELE', repk=ma1)
+        call dismoi('NOM_MAILLA', mod2, 'MODELE', repk=ma2)
 !
 !--------------LES INTERFACES AMONT DES SOUS-STRUCTURES
         call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid,&
@@ -471,7 +469,7 @@ subroutine callis(nomres)
 !
         endif
 !
-10  end do
+ 10 end do
 !
 !   DESTRUCTIONS COLLECTIONS VOLATILES DE TRAVAIL
 !

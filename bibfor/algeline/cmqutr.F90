@@ -55,7 +55,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
     integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
     logical :: logic
-    character(len=1) :: k1b, base
+    character(len=1) ::  base
     character(len=24) :: valk
     character(len=8) :: typm, nima
     character(len=16) :: knume
@@ -156,7 +156,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             iq9 = iq9 + 1
             zi(jdec-1+ima) = 6
         endif
-10  end do
+ 10 end do
 !
     if (niv .ge. 1) then
         write(ifm,1000) 1
@@ -193,8 +193,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
 !     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
-    call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nbnomx,&
-                k1b, ier)
+    call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
     call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
@@ -223,7 +222,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 if (zi(jdec-1+im) .ne. 0) then
                     nbma2 = nbma2 - 1 + zi(jdec-1+im)
                 endif
-4210          continue
+4210         continue
             call jecroc(jexnom(grpmai, nomg))
 !        --- LE NOUVEAU GROUP_MA CONTIENDRA NBMA2 MAILLES
             call jeecra(jexnom(grpmai, nomg), 'LONMAX', ival=max(1, nbma2))
@@ -233,7 +232,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 write(ifm,*) 'GROUP_MA '//nomg,' (',i,') PASSE DE ',&
                 nbmag,' A ',nbma2,' MAILLES'
             endif
-421      continue
+421     continue
 !     --- VECTEUR POUR STOCKER TEMPORAIREMENT LA LISTE DES GROUP_MA
 !         D'UNE MAILLE
         call wkvect('&&CMQUTR.LISTE_GROUP_MA ', 'V V I', nbmag, jlgrma)
@@ -285,7 +284,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 521 ino = 1, nbpt
                 zi(jnpt-1+ino) = zi(jopt+ino-1)
-521          continue
+521         continue
 !
 ! 5.2.2. ==> MISE DES GROUPES DE MAILLES
 !
@@ -298,7 +297,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !                  print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                     zi(jgrma-1+im) = ima2
                     call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
-522              continue
+522             continue
             endif
 !
 ! 5.3. ==> LA MAILLE IMA DOIT ETRE DECOUPE
@@ -331,7 +330,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 do 5300 ino = 1, nbpt
 !              --- TABLEAU DE DECOUPAGE SELON LE TYPE
                     zi(jnpt-1+ino) = zi(jopt-1+tdec(ind, i, ino))
-5300              continue
+5300             continue
 !
                 if (igrma .ne. 0 .and. ier .eq. 0 .and. nbgm .gt. 0) then
                     do 5301 j = 1, nbgm
@@ -342,16 +341,16 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !                     print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                         zi(jgrma-1+im) = ima2
                         call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
-5301                  continue
+5301                 continue
                 endif
 !
-530          continue
+530         continue
 !
         endif
 !
 !  --- MAILLE SUIVANTE
 !
-500  end do
+500 end do
 !
 !====
 ! 6. LE .GROUPENO REPRIS A L'IDENTIQUE
@@ -383,8 +382,8 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 22 j = 1, nbno
                 zi(jgg-1+j) = zi(jvg-1+j)
-22          continue
-20      continue
+ 22         continue
+ 20     continue
     endif
 !
 !

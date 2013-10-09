@@ -45,7 +45,6 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
     integer :: nbno1, nbno2, jcorrn
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c
     integer :: jcn2d, jcn2v, jcn2l, jcn2c
-    integer :: ibid
     integer :: ncmp, icmp
     integer :: ino2, ino1
     character(len=8) :: nomgd
@@ -67,8 +66,7 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
     ncmp=zi(jcn1d-1+2)
     ASSERT(ncmp.gt.0)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !
 !
@@ -89,36 +87,36 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !     ------------------------------------------
     call jeveuo(corrn, 'L', jcorrn)
 !
-    do 20,icmp=1,ncmp
+    do 20 icmp = 1, ncmp
 !
-    do 10,ino2=1,nbno2
-    ino1=zi(jcorrn-1+ino2)
-    if (zl(jcn1l-1+(ino1-1)*ncmp+icmp)) then
-        zl(jcn2l-1+(ino2-1)*ncmp+icmp)=.true.
+        do 10 ino2 = 1, nbno2
+            ino1=zi(jcorrn-1+ino2)
+            if (zl(jcn1l-1+(ino1-1)*ncmp+icmp)) then
+                zl(jcn2l-1+(ino2-1)*ncmp+icmp)=.true.
 !
-        if (tsca .eq. 'R') then
-            zr(jcn2v-1+(ino2-1)*ncmp+icmp)=zr(jcn1v-1+(ino1-1)&
+                if (tsca .eq. 'R') then
+                    zr(jcn2v-1+(ino2-1)*ncmp+icmp)=zr(jcn1v-1+(ino1-1)&
                     *ncmp+ icmp)
-        else if (tsca.eq.'C') then
-            zc(jcn2v-1+(ino2-1)*ncmp+icmp)=zc(jcn1v-1+(ino1-1)&
+                else if (tsca.eq.'C') then
+                    zc(jcn2v-1+(ino2-1)*ncmp+icmp)=zc(jcn1v-1+(ino1-1)&
                     *ncmp+ icmp)
-        else if (tsca.eq.'I') then
-            zi(jcn2v-1+(ino2-1)*ncmp+icmp)=zi(jcn1v-1+(ino1-1)&
+                else if (tsca.eq.'I') then
+                    zi(jcn2v-1+(ino2-1)*ncmp+icmp)=zi(jcn1v-1+(ino1-1)&
                     *ncmp+ icmp)
-        else if (tsca.eq.'L') then
-            zl(jcn2v-1+(ino2-1)*ncmp+icmp)=zl(jcn1v-1+(ino1-1)&
+                else if (tsca.eq.'L') then
+                    zl(jcn2v-1+(ino2-1)*ncmp+icmp)=zl(jcn1v-1+(ino1-1)&
                     *ncmp+ icmp)
-        else if (tsca.eq.'K8') then
-            zk8(jcn2v-1+(ino2-1)*ncmp+icmp)=zk8(jcn1v-1+(ino1-&
+                else if (tsca.eq.'K8') then
+                    zk8(jcn2v-1+(ino2-1)*ncmp+icmp)=zk8(jcn1v-1+(ino1-&
                     1)*ncmp+ icmp)
-        else
-            ASSERT(.false.)
-        endif
+                else
+                    ASSERT(.false.)
+                endif
 !
-    endif
+            endif
 !
-10  continue
-    20 end do
+ 10     continue
+ 20 end do
 !
 !
     call jedema()

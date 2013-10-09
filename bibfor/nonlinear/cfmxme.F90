@@ -81,8 +81,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     ntpc = cfdisi(defico,'NTPC' )
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
 !

@@ -43,7 +43,7 @@ subroutine op0179()
 #include "asterfort/wkvect.h"
     integer :: ibid, n1, n2, n4, nbmode, jscde
     real(kind=8) :: partr, parti, coef, dpi
-    character(len=8) :: nomres, basemo, numgen, k8bid
+    character(len=8) :: nomres, basemo, numgen
     character(len=16) :: typres, nomcom, typbas, k16nom, tissf
     character(len=19) :: resu
     character(len=19) :: nomnum, nomsto
@@ -58,7 +58,7 @@ subroutine op0179()
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, iadesc, iarefe, iavale, ic, icf
-    integer :: ier, ifmis, ifreq, ii, j, jri2, jrig
+    integer ::  ifmis, ifreq, ii, j, jri2, jrig
     integer :: nbmodd, nbmods, nbmodt, nc, nf, nfr, nfreq
     integer :: nsau0, nsaut
     real(kind=8) :: freq
@@ -107,10 +107,8 @@ subroutine op0179()
 ! NB_VECT DONNE PAR NUME_DDL_GENE
 !      NBMODE   = ZI(JSCDE-1+1)
 !
-    call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmodd,&
-                k8bid, ier)
-    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                k8bid, ier)
+    call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
+    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
 !
     if (lissf) then
         nbmode = nbmodd + nbmods
@@ -137,7 +135,7 @@ subroutine op0179()
         if (i1 .eq. 1) nsaut = ifreq + nsau0
         do 2 i = 1, nsaut
             read(ifmis,'(A72)') texte
- 2      continue
+  2     continue
         read(ifmis,*) (a(j),j=1,3)
         if (nomcha .eq. 'VITE') then
             coef = -1.d0/(dpi*a(1))
@@ -183,8 +181,8 @@ subroutine op0179()
             zr(jrig+2*i1-1) = zr(jrig+2*i1-1) + (freq-a(1))/(a2(1)-a( 1)) * (zr(jri2+2*i1-1)-zr(j&
                               &rig+2*i1-1))
         endif
- 1  end do
- 4  continue
+  1 end do
+  4 continue
 !
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
@@ -235,7 +233,7 @@ subroutine op0179()
             zc(iavale+i-1) = dcmplx(partr,parti)
 !
         endif
-20  end do
+ 20 end do
 !
     call jedetr(tabrig)
 !

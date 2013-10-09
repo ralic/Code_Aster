@@ -119,25 +119,18 @@ subroutine op0168()
 !
             if (nbmr .eq. 1) then
 !      --- MATRICES DE REFERENCE DES MODES ---
-                call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
-                            raide, iret)
-                call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
-                            masse, iret)
-                call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
-                            amor, iret)
-                call dismoi('F', 'NUME_DDL', modein, 'RESU_DYNA', ibid,&
-                            numedd, iret)
+                call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raide)
+                call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse)
+                call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amor)
+                call dismoi('NUME_DDL', modein, 'RESU_DYNA', repk=numedd)
                 call vpcrea(0, modeou, masse, amor, raide,&
                             numedd, ibid)
             endif
 !
             zk8(jnom+nbmr-1) = modein
-            call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
-                        raidi, iret)
-            call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
-                        massi, iret)
-            call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
-                        amori, iret)
+            call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raidi)
+            call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=massi)
+            call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amori)
             if (massi .ne. masse .or. amori .ne. amor .or. raidi .ne. raide) then
                 call utmess('F', 'ALGELINE3_9')
             endif
@@ -145,7 +138,7 @@ subroutine op0168()
             call rsorac(modein, 'LONUTI', 0, r8b, k8b,&
                         c16b, r8b, k8b, tmod, 1,&
                         ibid)
-            nbmodt=tmod(1)            
+            nbmodt=tmod(1)
             call wkvect('&&OP0168.NUME_ORDRE', 'V V I', nbmodt, jor)
             call rsorac(modein, 'TOUT_ORDRE', 0, r8b, k8b,&
                         c16b, r8b, k8b, zi(jor), nbmodt,&
@@ -160,7 +153,7 @@ subroutine op0168()
                 nbmode = nbmodt
                 do 12 j = 1, nbmode
                     zi(jordr+j-1) = zi(jor+j-1)
-12              continue
+ 12             continue
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -181,11 +174,11 @@ subroutine op0168()
                             zi(jordr+nbmode-1) = zi(jme+j-1)
                             goto 20
                         endif
-22                  continue
+ 22                 continue
                     valk(1) = modein
                     vali(1) = zi(jme+j-1)
                     call utmess('A', 'ALGELINE4_55', sk=valk(1), si=vali(1))
-20              continue
+ 20             continue
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_MODE')
@@ -210,8 +203,8 @@ subroutine op0168()
                             nbmode = nbmode + 1
                             zi(jordr+nbmode-1) = iord
                         endif
-32                  continue
-30              continue
+ 32                 continue
+ 30             continue
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_MODE')
@@ -233,10 +226,10 @@ subroutine op0168()
                     nume = zi(jadr)
                     do 42 k = 1, nbme
                         if (nume .eq. zi(jme+k-1)) goto 40
-42                  continue
+ 42                 continue
                     nbmode = nbmode + 1
                     zi(jordr+nbmode-1) = iord
-40              continue
+ 40             continue
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -261,7 +254,7 @@ subroutine op0168()
                         nbmode = nbmode + 1
                         zi(jordr+nbmode-1) = iord
                     endif
-50              continue
+ 50             continue
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -309,7 +302,7 @@ subroutine op0168()
                             endif
                         endif
 !
-60                  continue
+ 60                 continue
                 endif
                 if (critfi .eq. 'MASS_GENE') then
                     mastot = zero
@@ -319,7 +312,7 @@ subroutine op0168()
                         call rsadpa(modein, 'L', 1, nompav, iord,&
                                     0, sjv=lpar(1), styp=k8b)
                         mastot = mastot + zr(lpar(1))
-61                  continue
+ 61                 continue
                     do 62 j = 1, nbmodt
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
@@ -330,14 +323,14 @@ subroutine op0168()
                             nbmode = nbmode + 1
                             zi(jordr+nbmode-1) = iord
                         endif
-62                  continue
+ 62                 continue
                 endif
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
                 goto 10
             endif
-10      continue
+ 10     continue
     endif
 !
 !     --- STOCKAGE ---
@@ -388,16 +381,16 @@ subroutine op0168()
         call jedetr(kvali)
         call jedetr(kvalr)
         call jedetr(kvalk)
-102      continue
+102     continue
         call jedema()
-100  continue
+100 continue
 !
 !     --- ON ALARME SI NUME_MODE IDENTIQUE ---
 !
     call rsorac(modeou, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, tmod, 1,&
                 ibid)
-    nbmode=tmod(1)            
+    nbmode=tmod(1)
     call wkvect('&&OP0168.NUME_ORDRE', 'V V I', nbmode, jordr)
     call rsorac(modeou, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbmode,&
@@ -417,8 +410,8 @@ subroutine op0168()
                 vali(2) = iord
                 call utmess('A', 'ALGELINE4_57', ni=2, vali=vali)
             endif
-210      continue
-200  continue
+210     continue
+200 continue
 !
 !     --- LES IMPRESSIONS ---
 !
@@ -481,7 +474,7 @@ subroutine op0168()
                     call utmess('I', 'ALGELINE6_53', ni=2, vali=vali, nr=4,&
                                 valr=valr)
                 endif
-300          continue
+300         continue
         endif
         if (critfi .eq. 'MASS_GENE') then
             if (ouinon .eq. 'OUI') then
@@ -515,7 +508,7 @@ subroutine op0168()
                     call utmess('I', 'ALGELINE6_57', ni=2, vali=vali, nr=2,&
                                 valr=valr)
                 endif
-301          continue
+301         continue
         endif
     endif
 !

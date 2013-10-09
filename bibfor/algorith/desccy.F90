@@ -51,7 +51,7 @@ subroutine desccy(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid(1), ier, lddnin, ldnoea, ldnoed, ldnoeg, ldnumg
+    integer :: ibid(1), lddnin, ldnoea, ldnoed, ldnoeg, ldnumg
     integer :: lldesc, llref, nba, nbd, nbda, nbdd, nbdg
     integer :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
     integer :: nbtemp, numa, numd, numg
@@ -102,9 +102,11 @@ subroutine desccy(nomres)
 !
 !------COMPTAGE DEFORMEES STATIQUES INTERFACE DROITE GAUCHE-------------
 !
-    call bmnodi(basmod, kbid, '        ', numd, 0, ibid, nbdd)
+    call bmnodi(basmod, kbid, '        ', numd, 0,&
+                ibid, nbdd)
     kbid=' '
-    call bmnodi(basmod, kbid, '        ', numg, 0, ibid, nbdg)
+    call bmnodi(basmod, kbid, '        ', numg, 0,&
+                ibid, nbdg)
 !
 !--------------TEST SUR NOMBRE DE DDL AUX INTERFACES--------------------
 !
@@ -119,7 +121,8 @@ subroutine desccy(nomres)
     nbda=0
     if (numa .gt. 0) then
         kbid=' '
-        call bmnodi(basmod, kbid, '        ', numa, 0, ibid, nbda)
+        call bmnodi(basmod, kbid, '        ', numa, 0,&
+                    ibid, nbda)
     else
         nbda=0
     endif
@@ -131,8 +134,7 @@ subroutine desccy(nomres)
     call getvis('   ', 'NB_MODE', iocc=1, scal=nbmod1, nbret=ibid(1))
 !
 !  NOMBRE DE MODES EXISTANTS
-    call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod2,&
-                kbid, ier)
+    call dismoi('NB_MODES_DYN', basmod, 'RESULTAT', repi=nbmod2)
 !
 !  TEST
 !

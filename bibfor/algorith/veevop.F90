@@ -87,8 +87,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
     if (typsd .ne. 'EVOL_CHAR') then
         call utmess('F', 'ALGORITH7_15', sk=fnocal)
     endif
-    call dismoi('F', 'NB_CHAMP_UTI', fnocal, 'RESULTAT', nbcham,&
-                k8bid, ier)
+    call dismoi('NB_CHAMP_UTI', fnocal, 'RESULTAT', repi=nbcham)
     if (nbcham .le. 0) then
         call utmess('F', 'ALGORITH7_16', sk=fnocal)
     endif
@@ -125,7 +124,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
 ! --- EFFORTS SURFACIQUES
 !
-10  continue
+ 10 continue
 !
     call rsinch(fnocal, 'FSUR_3D', 'INST', instan, chfnoe,&
                 'EXCLU', 'EXCLU', 0, 'V', ier)
@@ -165,7 +164,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
 ! --- PRESSIONS
 !
-20  continue
+ 20 continue
 !
     call rsinch(fnocal, 'PRES', 'INST', instan, chfnoe,&
                 'EXCLU', 'EXCLU', 0, 'V', ier)
@@ -229,7 +228,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
                     motclc, prefob, typapp, nomfct, typfct,&
                     r8bid, ibid)
 !
-100  continue
+100 continue
 !
 ! --- VERIFICATION DE LA LISTE DES CHARGES
 !

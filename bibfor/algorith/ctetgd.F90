@@ -55,8 +55,8 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid(1), icomp, ier, iloci, ilocj, inod
-    integer :: inog, iret, j, k, lldesc, llnod, llnog
+    integer :: i, ibid(1), icomp, iloci, ilocj, inod
+    integer :: inog, j, k, lldesc, llnod, llnog
     integer :: nbcmp, nbcpmx, nbdcou, nbddr, nbdga, nbec
     integer :: nbnod, nbnog, nbnot, nbsec, nbtet, noer, numd
     integer :: numg
@@ -86,17 +86,13 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1),&
-                intf, iret)
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1),&
-                mailla, iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+    call dismoi('NOM_MAILLA', intf, 'INTERF_DYNA', repk=mailla)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                kbid, ier)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                kbid, ier)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif

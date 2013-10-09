@@ -74,7 +74,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: i, nd, nbnac, ind, alsnac, acoord, ibid, ierd
+    integer :: i, nd, nbnac, ind, alsnac, acoord, ierd
     logical :: egal
     real(kind=8) :: znd, zref, aux
     character(len=8) :: k8b
@@ -87,8 +87,8 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
     iret = 1
 !
     if (repere(1:7) .eq. 'POLAIRE') then
-        call dismoi('C', 'Z_CST', mailla, 'MAILLAGE', ibid,&
-                    k8b, ierd)
+        call dismoi('Z_CST', mailla, 'MAILLAGE', repk=k8b, arret='C',&
+                    ier=ierd)
         if (k8b(1:3) .eq. 'NON') then
             iret = 0
             call utmess('A', 'POSTRELE_28')
@@ -131,7 +131,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !
         zref = zr(acoord + 3-1)
 !
-10      continue
+ 10     continue
         if ((iret .ne. 0) .and. (ind .le. nbnac)) then
 !
             nd = zi(alsnac + ind-1)
@@ -164,7 +164,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

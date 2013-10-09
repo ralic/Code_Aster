@@ -50,9 +50,9 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     integer :: gd, gdre, jdesc, jdescr, jdesci, nbval, nbval2
     integer :: jvaler, jvalei, ivale, ier, iret1, iret2
     integer :: nmax1, nmax2, jncmpr, jncmpc, i, jceld, jcelk, icelv, jcelvr
-    integer :: jcelvi, ibid, nbsp
+    integer :: jcelvi, nbsp
     character(len=8) :: nomgd, nomre
-    character(len=4) :: typch, kbid
+    character(len=4) :: typch
     character(len=19) :: canbva, chin
     character(len=24) :: ligrel, option, param, valk(2)
 !
@@ -109,7 +109,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
             ier=1
             goto 10
         endif
-10  end do
+ 10 end do
 !
     if (ier .ne. 0) then
         valk(1) = nomgd
@@ -139,7 +139,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         do 20 i = 1, nbval
             zr(jvaler-1+i)=dble(zc(ivale-1+i))
             zr(jvalei-1+i)=dimag(zc(ivale-1+i))
-20      continue
+ 20     continue
 !
 !
 !
@@ -154,8 +154,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !
 !       -- SI LE CHIN A DES SOUS-POINTS, IL FAUT ALLOUER CHREEL
 !          ET CHIMAG AVEC DES SOUS-POINTS :
-        call dismoi('F', 'MXNBSP', chin, 'CHAM_ELEM', nbsp,&
-                    kbid, ibid)
+        call dismoi('MXNBSP', chin, 'CHAM_ELEM', repi=nbsp)
         if (nbsp .gt. 1) then
             canbva='&&SEPACH.CANBVA'
             call cesvar(carael, ' ', ligrel, canbva)
@@ -191,7 +190,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         do 50 i = 1, nbval
             zr(jcelvr-1+i)=dble(zc(icelv-1+i))
             zr(jcelvi-1+i)=dimag(zc(icelv-1+i))
-50      continue
+ 50     continue
 !
 !     -- CART :
 !     -------------------
@@ -219,7 +218,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         do 60 i = 1, nbval
             zr(jvaler-1+i)=dble(zc(ivale-1+i))
             zr(jvalei-1+i)=dimag(zc(ivale-1+i))
-60      continue
+ 60     continue
 !
     endif
 !

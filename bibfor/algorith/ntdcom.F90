@@ -34,7 +34,7 @@ subroutine ntdcom(evolsc)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iocc, k, n1, ierd, nbcham
+    integer :: iocc, k, n1, nbcham
     character(len=8) :: k8b
     character(len=16) :: comp, motcle, k16bid, nomcmd, tysd
     logical :: lrela, lsech
@@ -54,7 +54,7 @@ subroutine ntdcom(evolsc)
             if (comp(1:10) .eq. 'SECH_NAPPE') lsech = .true.
             if (comp(1:12) .eq. 'SECH_GRANGER') lsech = .true.
             if (comp(1:5) .ne. 'SECH_') lrela = .true.
-100      end do
+100     end do
 !
         if (lsech .and. lrela) then
             call utmess('F', 'ALGORITH8_96')
@@ -74,8 +74,7 @@ subroutine ntdcom(evolsc)
                 if (tysd(1:9) .ne. 'EVOL_THER') then
                     call utmess('F', 'ALGORITH8_98', sk=evolsc)
                 else
-                    call dismoi('F', 'NB_CHAMP_UTI', evolsc, 'RESULTAT', nbcham,&
-                                k8b, ierd)
+                    call dismoi('NB_CHAMP_UTI', evolsc, 'RESULTAT', repi=nbcham)
                     if (nbcham .le. 0) then
                         call utmess('F', 'ALGORITH8_99', sk=evolsc)
                     endif

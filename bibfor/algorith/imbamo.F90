@@ -35,7 +35,7 @@ subroutine imbamo(nomres)
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iret, nbdef, nbmod, nbpabm, nbtot
+    integer :: i, nbdef, nbmod, nbpabm, nbtot
 !
     real(kind=8) :: freq, genek, genem
 !-----------------------------------------------------------------------
@@ -64,31 +64,28 @@ subroutine imbamo(nomres)
 !
 !------------------RECUPERATION DES CONCEPT AMONT-----------------------
 !
-    call dismoi('C', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid,&
-                raid, ier)
-    call dismoi('C', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid,&
-                mass, ier)
-    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
-                numref, ier)
-    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid,&
-                intf, ier)
-    call dismoi('C', 'TYPE_BASE', nomres, 'RESU_DYNA', ibid,&
-                typeba, ier)
+    call dismoi('REF_RIGI_PREM', nomres, 'RESU_DYNA', repk=raid, arret='C',&
+                ier=ier)
+    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=mass, arret='C',&
+                ier=ier)
+    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numref, arret='C',&
+                ier=ier)
+    call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf, arret='C',&
+                ier=ier)
+    call dismoi('TYPE_BASE', nomres, 'RESU_DYNA', repk=typeba, arret='C',&
+                ier=ier)
 !
 !--------------------------------ECRITURES------------------------------
 !
     call utmess('I', 'ALGELINE6_1', sk=nomres)
-    call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot,&
-                k8bid, ier)
+    call dismoi('NB_MODES_TOT', nomres, 'RESULTAT', repi=nbtot)
 !
 !    CAS D'UNE BASE DE TYPE CONNUE
 !
     if (typeba(1:9) .eq. 'CLASSIQUE') then
 !
-        call dismoi('F', 'NB_MODES_STA', nomres, 'RESULTAT', nbdef,&
-                    k8bid, ier)
-        call dismoi('F', 'NB_MODES_DYN', nomres, 'RESULTAT', nbmod,&
-                    k8bid, ier)
+        call dismoi('NB_MODES_STA', nomres, 'RESULTAT', repi=nbdef)
+        call dismoi('NB_MODES_DYN', nomres, 'RESULTAT', repi=nbmod)
 !
         valk(1)=intf
         valk(2)=numref
@@ -104,8 +101,7 @@ subroutine imbamo(nomres)
 !   CAS D'UNE BASE DE TYPE CYCLIQUE
 !
     if (typeba(1:8) .eq. 'CYCLIQUE') then
-        call dismoi('F', 'NOM_MODE_CYCL', intf, 'INTERF_DYNA', ibid,&
-                    rescyc, iret)
+        call dismoi('NOM_MODE_CYCL', intf, 'INTERF_DYNA', repk=rescyc)
 !
         valk(1)=intf
         valk(2)=numref
@@ -153,7 +149,7 @@ subroutine imbamo(nomres)
             call utmess('I', 'ALGELINE6_7', nk=3, valk=valk, si=vali(1))
 !
         endif
-10  continue
+ 10 continue
 !
     call jedema()
 end subroutine

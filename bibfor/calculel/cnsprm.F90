@@ -90,8 +90,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     nomgd = zk8(jcns1k-1+2)
     ncmp = zi(jcns1d-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     call jeveuo(ma1//'.NOMACR', 'L', iamacr)
 !
@@ -105,8 +104,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     endif
     macrel= zk8(iamacr-1+isma)
 !
-    call dismoi('F', 'NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', ibid,&
-                promes, ibid)
+    call dismoi('NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', repk=promes)
 !
 ! RECUPERATION DES ELEMENTS RELATIFS A LA MESURE
     vnoeud = promes//'.PROJM    .PJMNO'
@@ -133,14 +131,11 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
 ! BASEMO : POUR LA RECUPERATION DU MAILLAGE DU MODELE SUPPORT (MA2)
 !
-    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                k24bid, iret)
+    call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=k24bid)
     numddl = k24bid(1:8)
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                ma2, ibid)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=ma2)
 !
-    call dismoi('F', 'NOM_MAILLA', model3, 'MODELE', ibid,&
-                ma3, ibid)
+    call dismoi('NOM_MAILLA', model3, 'MODELE', repk=ma3)
 !
 !  QUELQUES VERIFS :
     if (tsca .ne. 'R' .and. tsca .ne. 'C') then
@@ -164,7 +159,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     call wkvect(licmp, 'V V K8', 3*ncmp, lcmp)
     do 230 icmp = 1, ncmp
         zk8(lcmp-1+icmp)=zk8(jcns1c-1+icmp)
-230  continue
+230 continue
     ncmp2 = ncmp
     do 220 iddl = 1, nbmesu
         kcmp = zk8(lrange-1+iddl)
@@ -172,12 +167,12 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
         do 210 icmp = 1, ncmp2
             ksto = zk8(lcmp-1+icmp)
             if (kcmp .eq. ksto) newk = .false.
-210      continue
+210     continue
         if (newk) then
             ncmp2 = ncmp2+1
             zk8(lcmp-1+ncmp2) = kcmp
         endif
-220  continue
+220 continue
 !
     call cnscre(ma3, nomgd, ncmp2, zk8(lcmp), base,&
                 cns2)
@@ -216,9 +211,9 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 iposi = (imod-1)*nbmesu+iddl
                 iposj = (jddl-1)*nbord+imod
                 zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lmesu-1+ iposi)*zr(lvsu-1+iposj)
-430          continue
-420      continue
-410  continue
+430         continue
+420     continue
+410 continue
 !
 !
 ! INITIALISATION A ZERO
@@ -234,8 +229,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             else
                 zc(jcns2v-1+ (ino2-1)*ncmp2+icmp)=v2c
             endif
-70      continue
-110  continue
+ 70     continue
+110 continue
 !
 !
 ! PROJECTION DU CHAMP SUIVANT LA DIRECTION DE MESURE
@@ -249,8 +244,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 icmp2=icmp
                 goto 60
             endif
-50      continue
-60      continue
+ 50     continue
+ 60     continue
 !
         v2=0.d0
         v2c = dcmplx(0.d0,0.d0)
@@ -267,8 +262,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                     icmp1=icmp
                     goto 160
                 endif
-150          continue
-160          continue
+150         continue
+160         continue
 !
             coef1 = zr(ltrav-1+(jddl-1)*nbmesu+iddl)
 !
@@ -280,7 +275,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 v2c=v2c+coef1*v1c
             endif
 !
-200      continue
+200     continue
 !
         zl(jcns2l-1+ (ino2-1)*ncmp2+icmp2)=.true.
         if (tsca .eq. 'R') then
@@ -321,8 +316,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                         icmpd=icmp
                         goto 260
                     endif
-250              continue
-260              continue
+250             continue
+260             continue
 !
                 zl(jcns2l-1+ (ino2-1)*ncmp2+icmpd)=.true.
                 if (tsca .eq. 'R') then
@@ -333,13 +328,13 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             endif
         endif
 !
-100  continue
+100 continue
 !
     call jedetr(trav)
     call jedetr(licmp)
 !
     iret = 0
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

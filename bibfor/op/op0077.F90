@@ -97,8 +97,8 @@ subroutine op0077()
                 if (champ(i) .eq. champ(j)) then
                     call utmess('E', 'ALGORITH9_30')
                 endif
-10          continue
-20      continue
+ 10         continue
+ 20     continue
     endif
 !
 !
@@ -160,10 +160,8 @@ subroutine op0077()
 !      PROMES=.FALSE.
     if ((concep(1:9).eq.'TRAN_GENE') .or. (concep(1:9).eq.'MODE_GENE') .or.&
         (concep(1:9).eq.'HARM_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
-                    matgen, ir)
-        call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
-                    numgen, ir)
+        call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen)
+        call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
 ! LE RESU_GENE VIENT DE PROJ_MESU_MODAL
         if ((matgen(1:8).eq.blanc) .and. (numgen(1:8).eq.blanc)) then
 !          PROMES=.TRUE.
@@ -285,7 +283,7 @@ subroutine op0077()
 !
     endif
 !
-30  continue
+ 30 continue
 !
 ! --- STOCKAGE
     call gettco(resin, concep)
@@ -304,8 +302,7 @@ subroutine op0077()
 !           call jeveuo(raide(1:8)//'           .REFA', 'L', lnume)
 !           call jeveuo(zk24(lnume+1)(1:14)//'.NUME.REFN', 'L', lmodge)
 !
-            call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
-                        numgen, ir)
+            call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', lmodge)
             call jenonu(jexnom(zk24(lmodge)(1:8)//'      .MODG.SSNO', nomsst), iret)
             call jeveuo(jexnum(zk24(lmodge)(1:8)//'      .MODG.SSME', iret), 'L', lmacr)
@@ -318,7 +315,7 @@ subroutine op0077()
                 zk8(lpaout(1))=zk8(lrefm)
                 zk8(lpaout(2))=zk8(lrefm+2)
                 zk8(lpaout(3))=zk8(lrefm+3)
-50          continue
+ 50         continue
         endif
 !
     endif

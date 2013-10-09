@@ -58,7 +58,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
     character(len=8) :: ddlc(nbddl)
 !
     real(kind=8) :: betar, coefr(6)
-    integer :: ier, jlis1, ndime(8), neq, i, jlis2, iret
+    integer :: ier, jlis1, ndime(8), neq, i, jlis2
     integer :: nuno(8), ndim, j
     character(len=8) :: noeud(8), k8bid, ddl(8)
     complex(kind=8) :: cbid
@@ -82,8 +82,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 !
 ! --- DONNÉES RELATIVES AU MAILLAGE
 !
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 ! --- 1) RELATIONS D'EGALITE
 !

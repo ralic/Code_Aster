@@ -26,7 +26,6 @@ subroutine expcar(carte)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecreo.h"
@@ -41,6 +40,7 @@ subroutine expcar(carte)
 #include "asterfort/melima.h"
 #include "asterfort/nbec.h"
 #include "asterfort/scalai.h"
+!
     character(len=19) :: carte
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -50,7 +50,7 @@ subroutine expcar(carte)
 !      ON A CREE QUELQUES OBJETS SUR LA VOLATILE ...
 ! ----------------------------------------------------------------------
     logical :: dejavu
-    character(len=8) :: scal, noma, kbid
+    character(len=8) :: scal, noma
     character(len=24) :: noli
 !
 !
@@ -59,7 +59,7 @@ subroutine expcar(carte)
 !-----------------------------------------------------------------------
     integer :: i1, i2, i3, i4, i5, iadesc, iadgp
     integer :: ialima, ianoli, ianoma, ianumt, iavale, iavalp, icode
-    integer :: ied, iedit, ient, igd, ima, iret, j
+    integer ::  iedit, ient, igd, ima, iret, j
     integer :: nbedit, nbgdmx, nbma, nbmato, ncmpmx, nec, num1
     integer :: num2, numat
 !-----------------------------------------------------------------------
@@ -106,39 +106,38 @@ subroutine expcar(carte)
     call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit)
     call jeveuo(carte//'.NUMT', 'E', ianumt)
     nbmato = 0
-    do 1,iedit = 1,nbedit
-    icode = zi(iadesc-1+3+2* (iedit-1)+1)
-    noli = zk24(ianoli-1+iedit)
-    dejavu = .false.
-    do 2,j = iedit - 1,1,-1
-    if (noli .eq. zk24(ianoli-1+j)) then
-        dejavu = .true.
-        goto 3
-    endif
- 2  continue
- 3  continue
-    if (dejavu) then
-        zi(ianumt-1+3* (iedit-1)+1) = zi(ianumt-1+3* (j-1)+1)
-        zi(ianumt-1+3* (iedit-1)+2) = zi(ianumt-1+3* (j-1)+2)
-        zi(ianumt-1+3* (iedit-1)+3) = 0
-    else
-        zi(ianumt-1+3* (iedit-1)+1) = nbmato + 1
-        if (noli(1:8) .eq. '        ') then
-!              MAILLES DU MAILLAGE:
-            call jelira(noma//'.NOMMAI', 'NOMMAX', nbma)
-            nbmato = nbmato + nbma
+    do 1 iedit = 1, nbedit
+        icode = zi(iadesc-1+3+2* (iedit-1)+1)
+        noli = zk24(ianoli-1+iedit)
+        dejavu = .false.
+        do 2 j = iedit - 1, 1, -1
+            if (noli .eq. zk24(ianoli-1+j)) then
+                dejavu = .true.
+                goto 3
+            endif
+  2     continue
+  3     continue
+        if (dejavu) then
+            zi(ianumt-1+3* (iedit-1)+1) = zi(ianumt-1+3* (j-1)+1)
+            zi(ianumt-1+3* (iedit-1)+2) = zi(ianumt-1+3* (j-1)+2)
+            zi(ianumt-1+3* (iedit-1)+3) = 0
         else
+            zi(ianumt-1+3* (iedit-1)+1) = nbmato + 1
+            if (noli(1:8) .eq. '        ') then
+!              MAILLES DU MAILLAGE:
+                call jelira(noma//'.NOMMAI', 'NOMMAX', nbma)
+                nbmato = nbmato + nbma
+            else
 !              MAILLES SUPPLEMENTAIRES D'1 LIGREL:
 !              TEST : ON DOIT AVOIR ICODE=3 POUR DES MAILLES TARDIVES
-            ASSERT(icode.eq.-3)
-            call dismoi('F', 'NB_MA_SUP', noli, 'LIGREL', nbma,&
-                        kbid, ied)
-            nbmato = nbmato + nbma
+                ASSERT(icode.eq.-3)
+                call dismoi('NB_MA_SUP', noli, 'LIGREL', repi=nbma)
+                nbmato = nbmato + nbma
+            endif
+            zi(ianumt-1+3* (iedit-1)+2) = nbmato
+            zi(ianumt-1+3* (iedit-1)+3) = 1
         endif
-        zi(ianumt-1+3* (iedit-1)+2) = nbmato
-        zi(ianumt-1+3* (iedit-1)+3) = 1
-    endif
-    1 end do
+  1 end do
 !
 !     -- ALOCATION DES OBJETS DE TRAVAIL : .VALP ET .DGP
 !
@@ -153,35 +152,35 @@ subroutine expcar(carte)
 !     -------------------------------
 !
     nbgdmx = zi(iadesc-1+2)
-    do 11,iedit = 1,nbedit
-    i1 = iavale + (iedit-1)*ncmpmx
-    i3 = iadesc - 1 + 3 + 2*nbgdmx + (iedit-1)*nec + 1
-    num1 = zi(ianumt-1+ (iedit-1)*3+1)
-    num2 = zi(ianumt-1+ (iedit-1)*3+2)
-    icode = zi(iadesc-1+3+2* (iedit-1)+1)
-    ient = zi(iadesc-1+3+2* (iedit-1)+2)
-    noli = zk24(ianoli-1+iedit)
-    if (abs(icode) .eq. 1) then
+    do 11 iedit = 1, nbedit
+        i1 = iavale + (iedit-1)*ncmpmx
+        i3 = iadesc - 1 + 3 + 2*nbgdmx + (iedit-1)*nec + 1
+        num1 = zi(ianumt-1+ (iedit-1)*3+1)
+        num2 = zi(ianumt-1+ (iedit-1)*3+2)
+        icode = zi(iadesc-1+3+2* (iedit-1)+1)
+        ient = zi(iadesc-1+3+2* (iedit-1)+2)
+        noli = zk24(ianoli-1+iedit)
+        if (abs(icode) .eq. 1) then
 !            -- GROUPE 'TOUT':
-        nbma = num2 - num1 + 1
-    else
-        call melima(carte, noma, icode, ient, i5,&
-                    nbma)
+            nbma = num2 - num1 + 1
+        else
+            call melima(carte, noma, icode, ient, i5,&
+                        nbma)
 !           --I5 : ADRESSE DANS ZI DE LA LISTE DES MAILLES A TRAITER.
 !           --NBMA: NOMBRE DE MAILLES A TRAITER.
-    endif
-    do 12,ima = 1,nbma
-    if (abs(icode) .eq. 1) then
-        numat = ima
-    else
-        numat = num1 - 1 + abs(zi(i5-1+ima))
-    endif
-    i2 = iavalp + (numat-1)*ncmpmx
-    i4 = iadgp - 1 + (numat-1)*nec + 1
-    call mecumu(scal, ncmpmx, i1, i2, nec,&
-                zi(i3), zi(i4))
-12  continue
-    11 end do
+        endif
+        do 12 ima = 1, nbma
+            if (abs(icode) .eq. 1) then
+                numat = ima
+            else
+                numat = num1 - 1 + abs(zi(i5-1+ima))
+            endif
+            i2 = iavalp + (numat-1)*ncmpmx
+            i4 = iadgp - 1 + (numat-1)*nec + 1
+            call mecumu(scal, ncmpmx, i1, i2, nec,&
+                        zi(i3), zi(i4))
+ 12     continue
+ 11 end do
 !
 !
     call jedema()

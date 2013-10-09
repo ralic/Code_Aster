@@ -60,7 +60,7 @@ subroutine op0072()
     character(len=14) :: numgen, numdd1, numdd2
     character(len=16) :: typres, nomcom, typbas, matri2
     character(len=19) :: proch1, proch2, nume2, nomcha
-    character(len=24) :: matric, kbid, deeq, typeba, valk(24)
+    character(len=24) :: matric, deeq, typeba, valk(24)
     complex(kind=8) :: cbid, dcmplx
     real(kind=8) :: zero
 !
@@ -94,7 +94,7 @@ subroutine op0072()
     call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
                 cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
-    nbmode=tmod(1)            
+    nbmode=tmod(1)
 !
 !
     call jeveuo(numgen//'.SMOS.SMDE', 'L', jsmde)
@@ -105,24 +105,21 @@ subroutine op0072()
     call jeveuo(vectas//'           .VALE', 'L', iadvec)
     call jeveuo(vectas//'           .REFE', 'L', iadref)
     call jelira(vectas//'           .VALE', 'TYPE', cval=typvec)
-    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid,&
-                typeba, iret)
+    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
+                ier=iret)
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
         proch1 = zk24(iadref+1)
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                    matric, iret)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
-                call dismoi('F', 'PROF_CHNO', matric, 'MATR_ASSE', ibid,&
-                            proch2, iret)
+                call dismoi('PROF_CHNO', matric, 'MATR_ASSE', repk=proch2)
             else
                 proch2 = proch1
             endif
         else
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        nume2, iret)
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume2)
             proch2 = nume2(1:8)//'.NUME'
         endif
 !
@@ -133,8 +130,7 @@ subroutine op0072()
     else if (typbas(1:9).eq.'MODE_GENE') then
         numdd1=zk24(iadref+1)
         proch1 = numdd1//'.NUME'
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                    matric, iret)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
         numdd2=zk24(jrefa-1+2)
@@ -147,8 +143,7 @@ subroutine op0072()
 !
 !
     if ((typbas(1:9).eq.'MODE_MECA')) then
-        call dismoi('F', 'NB_EQUA', vectas, 'CHAM_NO', neq,&
-                    kbid, iret)
+        call dismoi('NB_EQUA', vectas, 'CHAM_NO', repi=neq)
         deeq = proch1//'.DEEQ'
     else if (typbas(1:9).eq.'MODE_GENE') then
         call jeveuo(numdd1//'.NUME.NEQU', 'L', llnequ)
@@ -191,11 +186,9 @@ subroutine op0072()
 !         - 1. MAILLAGE DE REFERENCE POUR LA BASE
         call rsexch('F', basemo, 'DEPL', 1, nomcha,&
                     iret)
-        call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
-                    maill1, iret)
+        call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
 !       - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO
-        call dismoi('F', 'NOM_MAILLA', vectas, 'CHAM_NO', ibid,&
-                    maill2, iret)
+        call dismoi('NOM_MAILLA', vectas, 'CHAM_NO', repk=maill2)
         if (maill1 .ne. maill2) then
             valk (1) = proch2
             valk (2) = maill2
@@ -232,10 +225,10 @@ subroutine op0072()
             else
                 do 666 j = 1, neq
                     zc(idvec3+j-1)=dcmplx(zr(idvect+j-1),zero)
-666              continue
+666             continue
                 zc(iavale+i-1) = zdotc(neq,zc(idvec3),1,zc(iadvec),1)
             endif
-10      continue
+ 10     continue
     else
 !
 ! --- PROJECTION D UN VECTEUR DE TYPE DEPL OU VITE
@@ -275,7 +268,7 @@ subroutine op0072()
                 pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
                 zr(iamatr+i+ (j-1)*nbmode-1) = pij
                 zr(iamatr+j+ (i-1)*nbmode-1) = pij
-20          continue
+ 20         continue
 !
 ! ----- CALCUL DE LA PROJECTION
 !
@@ -296,10 +289,10 @@ subroutine op0072()
             else
                 do 667 j = 1, neq
                     zc(idvec3+j-1)=dcmplx(zr(idvec1+j-1),zero)
-667              continue
+667             continue
                 zc(idvec4+i-1) = zdotc(neq,zc(idvec3),1,zc(iadvec),1)
             endif
-30      continue
+ 30     continue
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
 !

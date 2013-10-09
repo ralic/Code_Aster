@@ -59,7 +59,7 @@ subroutine caimch(chargz)
 ! ------ VARIABLES LOCALES
     character(len=2) :: typlag
     character(len=4) :: tych, typval, typcoe
-    character(len=8) :: k8bid, chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) ::  chamno, noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, poslag, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, prchno
@@ -72,7 +72,7 @@ subroutine caimch(chargz)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, idcoec, idcoer, idddl, ideeq, idimen, idirec
-    integer :: idnoeu, idvale, iequa, ier, ino, inocmp, iocc
+    integer :: idnoeu, idvale, iequa, ino, inocmp, iocc
     integer :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
     integer :: nequa, nliai, nucmp
     real(kind=8) :: vale, zero
@@ -149,8 +149,7 @@ subroutine caimch(chargz)
 !
 ! ---   VERIFICATION DU TYPE DU CHAMP
 !       -----------------------------
-        call dismoi('F', 'TYPE_CHAMP', chamno, 'CHAM_NO', ibid,&
-                    tych, ier)
+        call dismoi('TYPE_CHAMP', chamno, 'CHAM_NO', repk=tych)
 !
         if (tych .ne. 'NOEU') then
             call utmess('F', 'MODELISA2_85')
@@ -166,37 +165,31 @@ subroutine caimch(chargz)
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
 !       ----------------------------------------------
-        call dismoi('F', 'NOM_GD', chamno, 'CHAM_NO', ibid,&
-                    nomgd, ier)
+        call dismoi('NOM_GD', chamno, 'CHAM_NO', repk=nomgd)
 !
 ! ---   RECUPERATION DU NOMBRE DE MOTS SUR-LESQUELS SONT CODEES LES
 ! ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 !       --------------------------------------------------
-        call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                    k8bid, ier)
+        call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
         if (nbec .gt. 10) then
             call utmess('F', 'MODELISA2_87', sk=nomgd)
         endif
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO
 !       -------------------------------------------
-        call dismoi('F', 'NOM_MAILLA', chamno, 'CHAM_NO', ibid,&
-                    noma, ier)
+        call dismoi('NOM_MAILLA', chamno, 'CHAM_NO', repk=noma)
 !
 ! ---   RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !       --------------------------------------------
-        call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                    k8bid, ier)
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
 ! ---   RECUPERATION DU NOMBRE DE TERMES DU CHAM_NO
 !       -------------------------------------------
-        call dismoi('F', 'NB_EQUA', chamno, 'CHAM_NO', nequa,&
-                    k8bid, ier)
+        call dismoi('NB_EQUA', chamno, 'CHAM_NO', repi=nequa)
 !
 ! ---   RECUPERATION DU PROF_CHNO DU CHAM_NO
 !       ------------------------------------
-        call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                    prchno, ier)
+        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prchno)
 !
 ! ---   RECUPERATION DU NOMBRE DE COMPOSANTES ASSOCIEES A LA LA GRANDEUR
 !       ----------------------------------------------------------------

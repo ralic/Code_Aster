@@ -20,7 +20,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
@@ -71,8 +71,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     character(len=19) :: depmoi, depplu
     character(len=19) :: depdel, ddepla
     integer :: jdepde, jddepl
@@ -99,8 +98,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
     lallv = cfdisl(defico,'ALL_VERIF')
     if (lallv) goto 999
@@ -142,7 +140,7 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     call nmtime(sdtime, 'END', 'CTCC_PREP')
     call nmrinc(sdstat, 'CTCC_PREP')
 !
-999  continue
+999 continue
 !
     call jedema()
 !

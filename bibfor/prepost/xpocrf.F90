@@ -55,7 +55,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     integer :: jtypm2, jnom
     character(len=2) :: chn1, chn2
     character(len=6) :: chn
-    character(len=8) :: k8b, fiss, mo
+    character(len=8) ::  fiss, mo
     character(len=19) :: nomtab, coord2
     character(len=24) :: nom, nogno, nogma
 !
@@ -69,12 +69,9 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     call jeveuo(nom, 'L', jnom)
     call jelira(nom, 'LONUTI', nfiss)
 !
-    call dismoi('F', 'NB_NO_MAILLA', maxfem, 'MAILLAGE', nnntot,&
-                k8b, iret)
-    call dismoi('F', 'NB_MA_MAILLA', maxfem, 'MAILLAGE', nbmax,&
-                k8b, iret)
-    call dismoi('F', 'DIM_GEOM', mo, 'MODELE', ndim,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', maxfem, 'MAILLAGE', repi=nnntot)
+    call dismoi('NB_MA_MAILLA', maxfem, 'MAILLAGE', repi=nbmax)
+    call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -89,12 +86,12 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
         do 10 ino = 1, nftot
             call codent(ino, 'G', chn)
             call jecroc(jexnom(maxfem//'.NOMNOE', 'NF'//chn))
-10      continue
+ 10     continue
 !       ATTRIBUTION DU NOM DES MAILLES DU FOND DE FISSURE
         do 20 ima = 1, mftot
             call codent(ima, 'G', chn)
             call jecroc(jexnom(maxfem//'.NOMMAI', 'MF'//chn))
-20      continue
+ 20     continue
 !
         ncompt = 0
         icompt = 0
@@ -161,7 +158,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                             zr(iacoo2+3*(ino-1)-1+1) = zr(jva1-1+ ifon1)
                             zr(iacoo2+3*(ino-1)-1+2) = zr(jva2-1+ ifon1)
                             zr(iacoo2+3*(ino-1)-1+3) = zr(jva3-1+ ifon1)
-311                      continue
+311                     continue
                     else
                         ifon1 = zi(jfmult-1+2*ifon-1)
                         ino = nnntot-nftot+ifon1+ncompt
@@ -182,7 +179,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                                 call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                                 do 3121 j = 1, 2
                                     zi(jconx-1+j)=ino+j-2
-3121                              continue
+3121                             continue
                                 icompt = icompt + 1
                                 zi(iagma-1+ifon2-1) = ima
                             endif
@@ -196,13 +193,13 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                             zi(iagma-1+ifon2) = ima
                         endif
                         zi(iagno-1+ifon2) = ino
-312                  continue
+312                 continue
 !
-31              continue
+ 31             continue
                 ncompt = ncompt + nfon
             endif
 !
-30      continue
+ 30     continue
 !
 !
     endif

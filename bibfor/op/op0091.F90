@@ -342,8 +342,7 @@ subroutine op0091()
         mmass=zk24(lbid+1)(1:8)
         call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
         mraid=zk24(lbid+1)(1:8)
-        call dismoi('F', 'SOLVEUR', mraid, 'MATR_ASSE', ibid,&
-                    solveu, ibid)
+        call dismoi('SOLVEUR', mraid, 'MATR_ASSE', repk=solveu)
         call resoud(imped, ' ', solveu, ' ', nbmod,&
                     ' ', ' ', ' ', zr(lsecme), [cbid],&
                     ' ', .true., 0, iret)
@@ -356,8 +355,7 @@ subroutine op0091()
         end do
 !-- "DEBLOQUAGE" DES DDL DE LAGRANGE ASSOCIES AUX INTERFACES DE LISINT
 !--   DANS LA MATRICE IMPED
-        call dismoi('F', 'NOM_NUME_DDL', mraid, 'MATR_ASSE', ibid,&
-                    nume91, ibid)
+        call dismoi('NOM_NUME_DDL', mraid, 'MATR_ASSE', repk=nume91)
         call libint(imped, nume91, nbint, lisint, nbeq1)
 !-- FACTORISATION DE LA MATRICE INTERFACE LIBRE
         call mtdscr(imped)

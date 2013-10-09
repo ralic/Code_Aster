@@ -133,10 +133,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                 ' ', nume91, 'ELIM1')
     call mtdscr(imped)
     call jeveuo(imped(1:19)//'.&INT', 'E', limped)
-    call dismoi('F', 'SOLVEUR', ssami, 'MATR_ASSE', ibid,&
-                solveu, ibid)
-    call dismoi('F', 'NOM_NUME_DDL', ssami, 'MATR_ASSE', ibid,&
-                nume91, ibid)
+    call dismoi('SOLVEUR', ssami, 'MATR_ASSE', repk=solveu)
+    call dismoi('NOM_NUME_DDL', ssami, 'MATR_ASSE', repk=nume91)
     call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
                 ibid, 1)
 !
@@ -338,8 +336,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
 !
 !-- RELEVE STATIQUE DU SOUS ESPACE DE KRYLOV SUR LE MODELE COMPLET
-    call dismoi('F', 'SOLVEUR', raide, 'MATR_ASSE', ibid,&
-                solveu, ibid)
+    call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry,&
                 ' ', ' ', ' ', zr(lmakry), [cbid],&
                 ' ', .true., 0, iret)
@@ -356,10 +353,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call wkvect('&&MODINT.K_PROJ', 'V V R', nsekry**2, lkpro)
 !
 !-- MISE A 0 DES DDL DE LAGRANGE
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                nume, ibid)
-    call dismoi('F', 'PROF_CHNO', nume, 'NUME_DDL', ibid,&
-                prno, ibid)
+    call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
+    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
     call jeveuo(prno//'.DELG', 'L', ldelg)
 !
     do i1 = 1, neq

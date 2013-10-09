@@ -166,17 +166,17 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        - DANS LE CAS OU CE N'EST PAS UN RESULTAT DE TYPE EVOL_NOLI -
 !        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
         if (typres(1:9) .ne. 'EVOL_NOLI') then
-            call dismoi('C', 'REF_MASS_PREM', resul, 'RESU_DYNA', ibid,&
-                        nommas, iret)
+            call dismoi('REF_MASS_PREM', resul, 'RESU_DYNA', repk=nommas, arret='C',&
+                        ier=iret)
             if (nommas .eq. ' ') goto 5
-            call dismoi('C', 'SUR_OPTION', nommas, 'MATR_ASSE', ibid,&
-                        opt, ie)
+            call dismoi('SUR_OPTION', nommas, 'MATR_ASSE', repk=opt, arret='C',&
+                        ier=ie)
             if (ie .ne. 0) then
                 call utmess('A', 'UTILITAI3_71')
             else
                 if (opt(1:14) .eq. 'MASS_MECA_DIAG') inume = 0
             endif
- 5          continue
+  5         continue
         endif
 !        --- ON VERIFIE SI L'UTILISATEUR A DEMANDE L'UTILISATION ---
 !        --- D'UNE MATRICE DE MASSE DIAGONALE                    ---
@@ -197,7 +197,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                 call rsadpa(resul, 'L', 1, 'FREQ', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
-10          continue
+ 10         continue
         endif
 !            CAS CALCUL TRANSITOIRE
 !            RECUPERATION DES INSTANTS
@@ -209,7 +209,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
-20          continue
+ 20         continue
         endif
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbparr, noparr, typarr)
@@ -266,10 +266,8 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         call mecact('V', chfreq, 'MAILLA', noma, 'OME2_R',&
                     ncmp=1, nomcmp='OMEG2', sr=xfreq)
 !
-        call dismoi('F', 'NOM_GD', depla, 'CHAMP', ibid,&
-                    nomgd, ie)
-        call dismoi('F', 'TYPE_SUPERVIS', depla, 'CHAMP', ibid,&
-                    typcha, ie)
+        call dismoi('NOM_GD', depla, 'CHAMP', repk=nomgd)
+        call dismoi('TYPE_SUPERVIS', depla, 'CHAMP', repk=typcha)
         if (typcha(1:7) .eq. 'CHAM_NO') then
             if (nomgd(1:4) .eq. 'DEPL') then
                 optio2 = 'ECIN_ELEM'
@@ -304,7 +302,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                     base, chvarc, chvref, k24b, k24b,&
                     k24b, k24b, k8b, ibid, k24b,&
                     iret)
-30      continue
+ 30     continue
 !
 !        --- ON CALCULE L'ENERGIE TOTALE ---
         call peenca(chelem, nbpaep, varpep, 0, [ibid])
@@ -359,7 +357,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                         call tbajli(resu, nbpard, nopard, [numord], varpep,&
                                     [c16b], valk2, 0)
                     endif
-40              continue
+ 40             continue
                 call jedetr('&&PEECIN_GROUPM')
             endif
             if (nm .ne. 0) then
@@ -387,19 +385,19 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                         call tbajli(resu, nbpard, nopard, [numord], varpep,&
                                     [c16b], valk, 0)
                     endif
-50              continue
+ 50             continue
                 call jedetr('&&PEECIN_MAILLE')
             endif
-60      continue
+ 60     continue
         call jedetr('&&PEECIN.PAR')
-72      continue
+ 72     continue
         call jedema()
-70  continue
+ 70 continue
 !
-80  continue
+ 80 continue
     call jedetr(knum)
     call jedetr(kins)
 !
-90  continue
+ 90 continue
     call jedema()
 end subroutine

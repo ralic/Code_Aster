@@ -79,16 +79,13 @@ subroutine lrrefd(resu, prchnd)
 !
     if (iret1 .eq. 1) then
         call utmess('I', 'PREPOST_14', sk=matrig)
-        call dismoi('F', 'NOM_NUME_DDL', matrig, 'MATR_ASSE', ibid,&
-                    nuddlr, iret)
-        call dismoi('F', 'PROF_CHNO', nuddlr, 'NUME_DDL', ibid,&
-                    prchnd, iret)
+        call dismoi('NOM_NUME_DDL', matrig, 'MATR_ASSE', repk=nuddlr)
+        call dismoi('PROF_CHNO', nuddlr, 'NUME_DDL', repk=prchnd)
     endif
 !
 !     VERIFICATION : LES NUME_DDL DES MATRICES A ET B SONT IDENTIQUES
     if (iret1 .eq. 1 .and. iret2 .eq. 1) then
-        call dismoi('F', 'NOM_NUME_DDL', matmas, 'MATR_ASSE', ibid,&
-                    nuddlm, iret)
+        call dismoi('NOM_NUME_DDL', matmas, 'MATR_ASSE', repk=nuddlm)
         if (nuddlm .ne. nuddlr) then
             pronur=(nuddlr//'.NUME')
             pronum=(nuddlm//'.NUME')

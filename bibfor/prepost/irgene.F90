@@ -99,8 +99,8 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                     write(ifi,'(1X,A)') (zk80(jtitr+i-1),i=1,nbtitr)
                     call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
                 endif
-110          continue
-100      continue
+110         continue
+100     continue
         call jedetr('&&IRGENE.PARAMETRE')
         call jeexin(nomst, iret)
         if (iret .ne. 0) call jedetr(nomst)
@@ -140,11 +140,10 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 !
         zi(kdesc+1) = nbmode
 !
-        call dismoi('F', 'NUME_DDL', gene(1:8), 'RESU_DYNA', ibid,&
-                    nuddl, iret)
+        call dismoi('NUME_DDL', gene(1:8), 'RESU_DYNA', repk=nuddl)
         call jeexin(nuddl(1:14)//'.NUME.DESC', iret)
-        call dismoi('C', 'BASE_MODALE', gene(1:8), 'RESU_DYNA', ibid,&
-                    basemo, ibid)
+        call dismoi('BASE_MODALE', gene(1:8), 'RESU_DYNA', repk=basemo, arret='C',&
+                    ier=ibid)
 !
 !       -- TEST POUR LE CAS DE LA SOUS-STRUCTURATION : EXISTENCE DE NUME_DDL_GENE  --
         if ((iret .eq. 0)) nuddl = ' '
@@ -179,10 +178,10 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                     else
                         zr(kvale+im) = zr(itresu+(iord-1)*nbmode+im)
                     endif
-220              continue
+220             continue
                 call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
-210          continue
-200      continue
+210         continue
+200     continue
         call jedetr(noch19//'.DESC')
         call jedetr(noch19//'.REFE')
         call jedetr(noch19//'.VALE')

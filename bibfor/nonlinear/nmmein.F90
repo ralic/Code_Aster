@@ -58,10 +58,10 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 !
 !
     integer :: alglag, i, nddl
-    character(len=8) :: nomap, nomo, kbid
+    character(len=8) :: nomap, nomo
     character(len=19) :: nlisco, nliseq, nlisrl, nbasco
     integer :: jlicmp, iadrma
-    integer :: nbarvi, ibid, iret
+    integer :: nbarvi, ibid
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,8 +70,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
     call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)
     nomap = zk8(iadrma)
-    call dismoi('F', 'DIM_GEOM', nomap, 'MAILLAGE', ndim,&
-                kbid, iret)
+    call dismoi('DIM_GEOM', nomap, 'MAILLAGE', repi=ndim)
 !
     nliseq = '&&NMMEIN.LISEQ'
     nlisrl = '&&NMMEIN.LISRL'
@@ -99,8 +98,8 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
             if (ndim .eq. 3) zk8(jlicmp+2)='H1Z'
             goto 2
         endif
- 1  end do
- 2  continue
+  1 end do
+  2 continue
     call jedetr(nliseq)
     call jedetr(nlisrl)
     call jedetr(nlisco)

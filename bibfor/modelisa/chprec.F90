@@ -57,7 +57,7 @@ subroutine chprec(chou)
     character(len=6) :: nompro
     parameter ( nompro = 'CHPREC' )
 !
-    integer :: ibid, icoret, iret, jordr, n1, n2, n3, n4, n5, nbordr, nc, np, ie
+    integer :: ibid, icoret, iret, jordr, n1, n2, n3, n4, n5, nbordr, nc, np
     integer :: ifm, niv, iexi
     real(kind=8) :: inst, epsi
     character(len=1) :: base
@@ -98,10 +98,8 @@ subroutine chprec(chou)
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
-        call dismoi('F', 'TYPE_CHAMP', ma//'.COORDO', 'CHAMP', ibid,&
-                    tych, ie)
-        call dismoi('F', 'NOM_GD', ma//'.COORDO', 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('TYPE_CHAMP', ma//'.COORDO', 'CHAMP', repk=tych)
+        call dismoi('NOM_GD', ma//'.COORDO', 'CHAMP', repk=nomgd)
 !
         if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
             valk(1) = tychlu
@@ -159,10 +157,8 @@ subroutine chprec(chou)
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
-        call dismoi('F', 'TYPE_CHAMP', chextr, 'CHAMP', ibid,&
-                    tych, ie)
-        call dismoi('F', 'NOM_GD', chextr, 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
+        call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
         if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
             valk(1) = tychlu
@@ -189,10 +185,8 @@ subroutine chprec(chou)
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
-        call dismoi('F', 'TYPE_CHAMP', chextr, 'CHAMP', ibid,&
-                    tych, ie)
-        call dismoi('F', 'NOM_GD', chextr, 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
+        call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
         if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
             valk(1) = tychlu
@@ -219,10 +213,8 @@ subroutine chprec(chou)
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
-        call dismoi('F', 'TYPE_CHAMP', chextr, 'CHAMP', ibid,&
-                    tych, ie)
-        call dismoi('F', 'NOM_GD', chextr, 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
+        call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
         if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
             valk(1) = tychlu
@@ -278,10 +270,8 @@ subroutine chprec(chou)
 !           ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !           TYPE DU CHAMP EXTRAIT.
 !
-                call dismoi('F', 'TYPE_CHAMP', chextr, 'CHAMP', ibid,&
-                            tych, ie)
-                call dismoi('F', 'NOM_GD', chextr, 'CHAMP', ibid,&
-                            nomgd, ie)
+                call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
+                call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
                 if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
                     valk(1) = tychlu
@@ -313,10 +303,8 @@ subroutine chprec(chou)
             call jeveuo(knum, 'L', jordr)
             call rsexch('F', resuco, nomch, zi(jordr), chextr,&
                         iret)
-            call dismoi('F', 'TYPE_CHAMP', chextr, 'CHAMP', ibid,&
-                        tych, ie)
-            call dismoi('F', 'NOM_GD', chextr, 'CHAMP', ibid,&
-                        nomgd, ie)
+            call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
+            call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
             if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
                 valk(1) = tychlu
@@ -332,10 +320,10 @@ subroutine chprec(chou)
 !
 !
     goto 20
-10  continue
+ 10 continue
     call utmess('F', 'MODELISA4_19')
 !
-20  continue
+ 20 continue
     call titre()
 !
 !

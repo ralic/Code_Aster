@@ -95,7 +95,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     complex(kind=8) :: valetc(6)
     character(len=3) :: tsca
     character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, param
-    character(len=8) :: lpain(4), paout, licmp(3), kbid
+    character(len=8) :: lpain(4), paout, licmp(3)
     character(len=16) :: option, motcle(2), nomch2
     character(len=19) :: chams1, chams0, ligrel, manoga, canbsp
     character(len=19) :: changl, carte
@@ -121,8 +121,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         call utmess('F', 'ALGORITH2_6')
     endif
 !
-    call dismoi('F', 'NOM_LIGREL', champ1, 'CHAM_ELEM', ibid,&
-                ligrel, ibid)
+    call dismoi('NOM_LIGREL', champ1, 'CHAM_ELEM', repk=ligrel)
 !
 !
 ! ----- DEFINITION ET CREATION DU CHAM_ELEM SIMPLE CHAMS1
@@ -138,8 +137,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     call jeveuo(chams1//'.CESD', 'L', jcesd)
     ma = zk8(jcesk-1+1)
     nomgd = zk8(jcesk-1+2)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
     call jeveuo(ma//'.DIME   ', 'L', inbno)
@@ -164,14 +162,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     valk (2) = nomch
     valk (3) = ' '
     call utmess('F', 'ALGORITH12_42', nk=3, valk=valk)
-100  continue
+100 continue
     call jedetr('&&CHRPEL.NOEUDS')
     call jedetr('&&CHRPEL.GROUP_NO')
 !
     nbma = zi(jcesd-1+1)
     ncmp = zi(jcesd-1+2)
-    call dismoi('F', 'Z_CST', ma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('Z_CST', ma, 'MAILLAGE', repk=k8b)
     ndim = 3
     if (k8b .eq. 'OUI') ndim = 2
 !
@@ -195,14 +192,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         valed(i) = 0.0d0
         valer(i) = 0.0d0
         valet(i) = 0.0d0
- 1  end do
+  1 end do
     do 2 i = 1, 3
         axer(i) = 0.0d0
         axet(i) = 0.0d0
         axez(i) = 0.0d0
         orig(i) = 0.0d0
         angnot(i) = 0.0d0
- 2  end do
+  2 end do
     licmpu(1) = 1
     licmpu(2) = 2
     licmpu(3) = 3
@@ -254,95 +251,95 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                 if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 11,ipt = 1,nbpt
-                    do 12,isp = 1,nbsp
-                    do 13 ii = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            valet(ii)=zr(jcesv-1+iad)
-                        else
-                            goto 10
-                        endif
-13                  continue
-                    valed(1) = valet(1)
-                    valed(2) = valet(4)
-                    valed(3) = valet(2)
-                    valed(4) = valet(5)
-                    valed(5) = valet(6)
-                    valed(6) = valet(3)
-                    call utpsgl(1, 3, pgl, valed, valet)
-                    valer(1) = valet(1)
-                    valer(2) = valet(3)
-                    valer(3) = valet(6)
-                    valer(4) = valet(2)
-                    valer(5) = valet(4)
-                    valer(6) = valet(5)
-                    do 14 ii = 1, nbcmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            zr(jcesv-1+iad) = valer(ii)
-                        else
-                            goto 10
-                        endif
-14                  continue
-12                  continue
-11                  continue
+                    do 11 ipt = 1, nbpt
+                        do 12 isp = 1, nbsp
+                            do 13 ii = 1, ncmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    valet(ii)=zr(jcesv-1+iad)
+                                else
+                                    goto 10
+                                endif
+ 13                         continue
+                            valed(1) = valet(1)
+                            valed(2) = valet(4)
+                            valed(3) = valet(2)
+                            valed(4) = valet(5)
+                            valed(5) = valet(6)
+                            valed(6) = valet(3)
+                            call utpsgl(1, 3, pgl, valed, valet)
+                            valer(1) = valet(1)
+                            valer(2) = valet(3)
+                            valer(3) = valet(6)
+                            valer(4) = valet(2)
+                            valer(5) = valet(4)
+                            valer(6) = valet(5)
+                            do 14 ii = 1, nbcmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    zr(jcesv-1+iad) = valer(ii)
+                                else
+                                    goto 10
+                                endif
+ 14                         continue
+ 12                     continue
+ 11                 continue
                 else
 ! CHAMP COMPLEXE
-                    do 111,ipt = 1,nbpt
-                    do 112,isp = 1,nbsp
-                    do 113 ii = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            valetc(ii)=zc(jcesv-1+iad)
-                        else
-                            goto 10
-                        endif
-113                  continue
-                    valed(1) = dble(valetc(1))
-                    valed(2) = dble(valetc(4))
-                    valed(3) = dble(valetc(2))
-                    valed(4) = dble(valetc(5))
-                    valed(5) = dble(valetc(6))
-                    valed(6) = dble(valetc(3))
-                    call utpsgl(1, 3, pgl, valed, valet)
-                    valer(1) = valet(1)
-                    valer(2) = valet(3)
-                    valer(3) = valet(6)
-                    valer(4) = valet(2)
-                    valer(5) = valet(4)
-                    valer(6) = valet(5)
+                    do 111 ipt = 1, nbpt
+                        do 112 isp = 1, nbsp
+                            do 113 ii = 1, ncmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    valetc(ii)=zc(jcesv-1+iad)
+                                else
+                                    goto 10
+                                endif
+113                         continue
+                            valed(1) = dble(valetc(1))
+                            valed(2) = dble(valetc(4))
+                            valed(3) = dble(valetc(2))
+                            valed(4) = dble(valetc(5))
+                            valed(5) = dble(valetc(6))
+                            valed(6) = dble(valetc(3))
+                            call utpsgl(1, 3, pgl, valed, valet)
+                            valer(1) = valet(1)
+                            valer(2) = valet(3)
+                            valer(3) = valet(6)
+                            valer(4) = valet(2)
+                            valer(5) = valet(4)
+                            valer(6) = valet(5)
 !
-                    valed(1) = dimag(valetc(1))
-                    valed(2) = dimag(valetc(4))
-                    valed(3) = dimag(valetc(2))
-                    valed(4) = dimag(valetc(5))
-                    valed(5) = dimag(valetc(6))
-                    valed(6) = dimag(valetc(3))
-                    call utpsgl(1, 3, pgl, valed, valet)
-                    valei(1) = valet(1)
-                    valei(2) = valet(3)
-                    valei(3) = valet(6)
-                    valei(4) = valet(2)
-                    valei(5) = valet(4)
-                    valei(6) = valet(5)
+                            valed(1) = dimag(valetc(1))
+                            valed(2) = dimag(valetc(4))
+                            valed(3) = dimag(valetc(2))
+                            valed(4) = dimag(valetc(5))
+                            valed(5) = dimag(valetc(6))
+                            valed(6) = dimag(valetc(3))
+                            call utpsgl(1, 3, pgl, valed, valet)
+                            valei(1) = valet(1)
+                            valei(2) = valet(3)
+                            valei(3) = valet(6)
+                            valei(4) = valet(2)
+                            valei(5) = valet(4)
+                            valei(6) = valet(5)
 !
-                    do 114 ii = 1, nbcmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            zc(jcesv-1+iad) = dcmplx(valer(ii) ,valei(ii))
-                        else
-                            goto 10
-                        endif
-114                  continue
-112                  continue
-111                  continue
+                            do 114 ii = 1, nbcmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    zc(jcesv-1+iad) = dcmplx(valer(ii) ,valei(ii))
+                                else
+                                    goto 10
+                                endif
+114                         continue
+112                     continue
+111                 continue
                 endif
-10          continue
+ 10         continue
         else
 !  VECTEUR
             do 15 inel = 1, nbmail
@@ -355,78 +352,77 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                 if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 16,ipt = 1,nbpt
-                    do 17,isp = 1,nbsp
-                    do 18 ii = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            valed(ii) = zr(jcesv-1+iad)
-                        else
-                            goto 15
-                        endif
-18                  continue
-                    if (ndim .eq. 3) then
-                        call utpvgl(1, ncmp, pgl, valed, valer)
-                    else
-                        call ut2vgl(1, ncmp, pgl, valed, valer)
-                    endif
-                    do 19 ii = 1, nbcmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            zr(jcesv-1+iad) = valer(ii)
-                        else
-                            goto 15
-                        endif
-19                  continue
-17                  continue
-16                  continue
+                    do 16 ipt = 1, nbpt
+                        do 17 isp = 1, nbsp
+                            do 18 ii = 1, ncmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    valed(ii) = zr(jcesv-1+iad)
+                                else
+                                    goto 15
+                                endif
+ 18                         continue
+                            if (ndim .eq. 3) then
+                                call utpvgl(1, ncmp, pgl, valed, valer)
+                            else
+                                call ut2vgl(1, ncmp, pgl, valed, valer)
+                            endif
+                            do 19 ii = 1, nbcmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    zr(jcesv-1+iad) = valer(ii)
+                                else
+                                    goto 15
+                                endif
+ 19                         continue
+ 17                     continue
+ 16                 continue
                 else
 ! CHAMP COMPLEXE
-                    do 116,ipt = 1,nbpt
-                    do 117,isp = 1,nbsp
-                    do 118 ii = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            valetc(ii) = zc(jcesv-1+iad)
-                            valed(ii) = dble(valetc(ii))
-                            valet(ii) = dimag(valetc(ii))
-                        else
-                            goto 15
-                        endif
-118                  continue
-                    if (ndim .eq. 3) then
-                        call utpvgl(1, ncmp, pgl, valed, valer)
-                        call utpvgl(1, ncmp, pgl, valet, valei)
-                    else
-                        call ut2vgl(1, ncmp, pgl, valed, valer)
-                        call ut2vgl(1, ncmp, pgl, valet, valei)
-                    endif
-                    do 119 ii = 1, nbcmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            zc(jcesv-1+iad) = dcmplx(valer(ii) ,valei(ii))
-                        else
-                            goto 15
-                        endif
-119                  continue
-117                  continue
-116                  continue
+                    do 116 ipt = 1, nbpt
+                        do 117 isp = 1, nbsp
+                            do 118 ii = 1, ncmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    valetc(ii) = zc(jcesv-1+iad)
+                                    valed(ii) = dble(valetc(ii))
+                                    valet(ii) = dimag(valetc(ii))
+                                else
+                                    goto 15
+                                endif
+118                         continue
+                            if (ndim .eq. 3) then
+                                call utpvgl(1, ncmp, pgl, valed, valer)
+                                call utpvgl(1, ncmp, pgl, valet, valei)
+                            else
+                                call ut2vgl(1, ncmp, pgl, valed, valer)
+                                call ut2vgl(1, ncmp, pgl, valet, valei)
+                            endif
+                            do 119 ii = 1, nbcmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    zc(jcesv-1+iad) = dcmplx(valer(ii) ,valei(ii))
+                                else
+                                    goto 15
+                                endif
+119                         continue
+117                     continue
+116                 continue
                 endif
-15          continue
+ 15         continue
         endif
-        call dismoi('F', 'NOM_OPTION', champ1, 'CHAM_ELEM', ibid,&
-                    option, ibid)
+        call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
         call cescel(chams1, ligrel, option, ' ', 'OUI',&
                     nncp, 'G', champ1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chams1)
     else if (repere(1:11).eq.'CYLINDRIQUE') then
 ! REPERE CYLINDRIQUE
-        call dismoi('C', 'TYPE_CHAMP', champ1, 'CHAMP', ibid,&
-                    tych, iret)
+        call dismoi('TYPE_CHAMP', champ1, 'CHAMP', repk=tych, arret='C',&
+                    ier=iret)
         if (ndim .eq. 3) then
             call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=3, vect=orig,&
                         nbret=ibid)
@@ -493,161 +489,161 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                     nbpt = zi(jcesd-1+5+4* (imai-1)+1)
                     nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                     ncmp = zi(jcesd-1+5+4* (imai-1)+3)
-                    do 21,ipt = 1,nbpt
-                    do 22,isp = 1,nbsp
-                    test = .true.
-                    do 23 ii = 1, ncmp
-                        call cesexi('S', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            test = .false.
-                        endif
-23                  continue
-                    if (test) goto 20
-                    ino = zi(jconx1-1+zi(jconx2+imai-1)+ipt-1)
-                    axer(1) = zr(axyzm+3*(ino-1) ) - orig(1)
-                    axer(2) = zr(axyzm+3*(ino-1)+1) - orig(2)
-                    if (ndim .eq. 3) then
-                        axer(3) = zr(axyzm+3*(ino-1)+2) - orig(3)
-                    else
-                        axer(3) = 0.0d0
-                    endif
-                    prosca=ddot(3,axer,1,axez,1)
-                    axer(1) = axer(1) - prosca*axez(1)
-                    axer(2) = axer(2) - prosca*axez(2)
-                    if (ndim .eq. 3) then
-                        axer(3) = axer(3) - prosca*axez(3)
-                    else
-                        axer(3) = 0.0d0
-                    endif
-                    xnormr = 0.0d0
-                    call normev(axer, xnormr)
-                    if (xnormr .lt. epsi) then
-                        call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
-                        call utmess('A', 'ALGORITH2_12')
-                        axer(1) = 0.0d0
-                        axer(2) = 0.0d0
-                        axer(3) = 0.0d0
-                        do 24 ipt2 = 1, nbpt
-                            inot = zi(jconx1-1+zi(jconx2+imai- 1)+ipt2-1)
-                            axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
-                            axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
+                    do 21 ipt = 1, nbpt
+                        do 22 isp = 1, nbsp
+                            test = .true.
+                            do 23 ii = 1, ncmp
+                                call cesexi('S', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    test = .false.
+                                endif
+ 23                         continue
+                            if (test) goto 20
+                            ino = zi(jconx1-1+zi(jconx2+imai-1)+ipt-1)
+                            axer(1) = zr(axyzm+3*(ino-1) ) - orig(1)
+                            axer(2) = zr(axyzm+3*(ino-1)+1) - orig(2)
                             if (ndim .eq. 3) then
-                                axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
+                                axer(3) = zr(axyzm+3*(ino-1)+2) - orig(3)
+                            else
+                                axer(3) = 0.0d0
                             endif
-24                      continue
-                        axer(1) = axer(1)/nbpt - orig(1)
-                        axer(2) = axer(2)/nbpt - orig(2)
-                        axer(3) = axer(3)/nbpt - orig(3)
-                        prosca=ddot(3,axer,1,axez,1)
-                        axer(1) = axer(1) - prosca*axez(1)
-                        axer(2) = axer(2) - prosca*axez(2)
-                        if (ndim .eq. 3) then
-                            axer(3) = axer(3) - prosca*axez(3)
-                        else
-                            axer(3) = 0.0d0
-                        endif
-                        xnormr = 0.0d0
-                        call normev(axer, xnormr)
-                        if (xnormr .lt. epsi) then
-                            call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
-                            valk (1) = k8b
-                            call utmess('F', 'ALGORITH12_44', sk=valk(1))
-                        endif
-                    endif
-                    call provec(axez, axer, axet)
-                    xnormr = 0.0d0
-                    call normev(axet, xnormr)
-                    do 26 i = 1, 3
-                        pgl(1,i) = axer(i)
-                        pgl(2,i) = axez(i)
-                        pgl(3,i) = axet(i)
-26                  continue
-                    if (tsca .eq. 'R') then
+                            prosca=ddot(3,axer,1,axez,1)
+                            axer(1) = axer(1) - prosca*axez(1)
+                            axer(2) = axer(2) - prosca*axez(2)
+                            if (ndim .eq. 3) then
+                                axer(3) = axer(3) - prosca*axez(3)
+                            else
+                                axer(3) = 0.0d0
+                            endif
+                            xnormr = 0.0d0
+                            call normev(axer, xnormr)
+                            if (xnormr .lt. epsi) then
+                                call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
+                                call utmess('A', 'ALGORITH2_12')
+                                axer(1) = 0.0d0
+                                axer(2) = 0.0d0
+                                axer(3) = 0.0d0
+                                do 24 ipt2 = 1, nbpt
+                                    inot = zi(jconx1-1+zi(jconx2+imai- 1)+ipt2-1)
+                                    axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
+                                    axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
+                                    if (ndim .eq. 3) then
+                                        axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
+                                    endif
+ 24                             continue
+                                axer(1) = axer(1)/nbpt - orig(1)
+                                axer(2) = axer(2)/nbpt - orig(2)
+                                axer(3) = axer(3)/nbpt - orig(3)
+                                prosca=ddot(3,axer,1,axez,1)
+                                axer(1) = axer(1) - prosca*axez(1)
+                                axer(2) = axer(2) - prosca*axez(2)
+                                if (ndim .eq. 3) then
+                                    axer(3) = axer(3) - prosca*axez(3)
+                                else
+                                    axer(3) = 0.0d0
+                                endif
+                                xnormr = 0.0d0
+                                call normev(axer, xnormr)
+                                if (xnormr .lt. epsi) then
+                                    call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
+                                    valk (1) = k8b
+                                    call utmess('F', 'ALGORITH12_44', sk=valk(1))
+                                endif
+                            endif
+                            call provec(axez, axer, axet)
+                            xnormr = 0.0d0
+                            call normev(axet, xnormr)
+                            do 26 i = 1, 3
+                                pgl(1,i) = axer(i)
+                                pgl(2,i) = axez(i)
+                                pgl(3,i) = axet(i)
+ 26                         continue
+                            if (tsca .eq. 'R') then
 ! CHAMP REEL
-                        do 27 ii = 1, ncmp
-                            call cesexi('S', jcesd, jcesl, imai, ipt,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                valet(ii)=zr(jcesv-1+iad)
+                                do 27 ii = 1, ncmp
+                                    call cesexi('S', jcesd, jcesl, imai, ipt,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        valet(ii)=zr(jcesv-1+iad)
+                                    else
+                                        goto 20
+                                    endif
+ 27                             continue
+                                valed(1) = valet(1)
+                                valed(2) = valet(4)
+                                valed(3) = valet(2)
+                                valed(4) = valet(5)
+                                valed(5) = valet(6)
+                                valed(6) = valet(3)
+                                call utpsgl(1, 3, pgl, valed, valet)
+                                valer(1) = valet(1)
+                                valer(2) = valet(3)
+                                valer(3) = valet(6)
+                                valer(4) = valet(2)
+                                valer(5) = valet(4)
+                                valer(6) = valet(5)
+                                do 28 ii = 1, nbcmp
+                                    call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        zr(jcesv-1+iad) = valer( licmpu(ii))
+                                    else
+                                        goto 20
+                                    endif
+ 28                             continue
                             else
-                                goto 20
-                            endif
-27                      continue
-                        valed(1) = valet(1)
-                        valed(2) = valet(4)
-                        valed(3) = valet(2)
-                        valed(4) = valet(5)
-                        valed(5) = valet(6)
-                        valed(6) = valet(3)
-                        call utpsgl(1, 3, pgl, valed, valet)
-                        valer(1) = valet(1)
-                        valer(2) = valet(3)
-                        valer(3) = valet(6)
-                        valer(4) = valet(2)
-                        valer(5) = valet(4)
-                        valer(6) = valet(5)
-                        do 28 ii = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                zr(jcesv-1+iad) = valer( licmpu(ii))
-                            else
-                                goto 20
-                            endif
-28                      continue
-                    else
 ! CHAMP COMPLEXE
-                        do 213 ii = 1, ncmp
-                            call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                valetc(ii)=zc(jcesv-1+iad)
-                            else
-                                goto 20
-                            endif
-213                      continue
-                        valed(1) = dble(valetc(1))
-                        valed(2) = dble(valetc(4))
-                        valed(3) = dble(valetc(2))
-                        valed(4) = dble(valetc(5))
-                        valed(5) = dble(valetc(6))
-                        valed(6) = dble(valetc(3))
-                        call utpsgl(1, 3, pgl, valed, valet)
-                        valer(1) = valet(1)
-                        valer(2) = valet(3)
-                        valer(3) = valet(6)
-                        valer(4) = valet(2)
-                        valer(5) = valet(4)
-                        valer(6) = valet(5)
+                                do 213 ii = 1, ncmp
+                                    call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        valetc(ii)=zc(jcesv-1+iad)
+                                    else
+                                        goto 20
+                                    endif
+213                             continue
+                                valed(1) = dble(valetc(1))
+                                valed(2) = dble(valetc(4))
+                                valed(3) = dble(valetc(2))
+                                valed(4) = dble(valetc(5))
+                                valed(5) = dble(valetc(6))
+                                valed(6) = dble(valetc(3))
+                                call utpsgl(1, 3, pgl, valed, valet)
+                                valer(1) = valet(1)
+                                valer(2) = valet(3)
+                                valer(3) = valet(6)
+                                valer(4) = valet(2)
+                                valer(5) = valet(4)
+                                valer(6) = valet(5)
 !
-                        valed(1) = dimag(valetc(1))
-                        valed(2) = dimag(valetc(4))
-                        valed(3) = dimag(valetc(2))
-                        valed(4) = dimag(valetc(5))
-                        valed(5) = dimag(valetc(6))
-                        valed(6) = dimag(valetc(3))
-                        call utpsgl(1, 3, pgl, valed, valet)
-                        valei(1) = valet(1)
-                        valei(2) = valet(3)
-                        valei(3) = valet(6)
-                        valei(4) = valet(2)
-                        valei(5) = valet(4)
-                        valei(6) = valet(5)
+                                valed(1) = dimag(valetc(1))
+                                valed(2) = dimag(valetc(4))
+                                valed(3) = dimag(valetc(2))
+                                valed(4) = dimag(valetc(5))
+                                valed(5) = dimag(valetc(6))
+                                valed(6) = dimag(valetc(3))
+                                call utpsgl(1, 3, pgl, valed, valet)
+                                valei(1) = valet(1)
+                                valei(2) = valet(3)
+                                valei(3) = valet(6)
+                                valei(4) = valet(2)
+                                valei(5) = valet(4)
+                                valei(6) = valet(5)
 !
-                        do 214 ii = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                zc(jcesv-1+iad) = dcmplx( valer(ii),valei(ii))
-                            else
-                                goto 20
+                                do 214 ii = 1, nbcmp
+                                    call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        zc(jcesv-1+iad) = dcmplx( valer(ii),valei(ii))
+                                    else
+                                        goto 20
+                                    endif
+214                             continue
                             endif
-214                      continue
-                    endif
-22                  continue
-21                  continue
-20              continue
+ 22                     continue
+ 21                 continue
+ 20             continue
 !
             else if (tych(1:4).eq.'ELGA') then
 !        ----------------------------
@@ -695,7 +691,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                         x(ino) = zr(axyzm+3*(nuno-1) )
                         y(ino) = zr(axyzm+3*(nuno-1)+1)
                         z(ino) = zr(axyzm+3*(nuno-1)+2)
-130                  continue
+130                 continue
 !
 !  CALCUL DES COORDONNEES DES POINTS DE GAUSS DE LA MAILLE COURANTE
 !
@@ -708,148 +704,148 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                             xx = xx + x(ino)*zr(iadr+ino)
                             yy = yy + y(ino)*zr(iadr+ino)
                             zz = zz + z(ino)*zr(iadr+ino)
-141                      continue
+141                     continue
                         xpg(ipg) = xx
                         ypg(ipg) = yy
                         zpg(ipg) = zz
-140                  continue
+140                 continue
 !
-                    do 121,ipg = 1,nbpg
-                    do 122,isp = 1,nbsp
-                    test = .true.
-                    do 123 ii = 1, ncmp
-                        call cesexi('S', jcesd, jcesl, imai, ipg,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            test = .false.
-                        endif
-123                  continue
-                    if (test) goto 120
-                    axer(1) = xpg(ipg) - orig(1)
-                    axer(2) = ypg(ipg) - orig(2)
-                    if (ndim .eq. 3) then
-                        axer(3) = zpg(ipg) - orig(3)
-                    else
-                        axer(3) = 0.0d0
-                    endif
-                    prosca=ddot(3,axer,1,axez,1)
-                    axer(1) = axer(1) - prosca*axez(1)
-                    axer(2) = axer(2) - prosca*axez(2)
-                    if (ndim .eq. 3) then
-                        axer(3) = axer(3) - prosca*axez(3)
-                    else
-                        axer(3) = 0.0d0
-                    endif
-                    xnormr = 0.0d0
-                    call normev(axer, xnormr)
-                    if (xnormr .lt. epsi) then
+                    do 121 ipg = 1, nbpg
+                        do 122 isp = 1, nbsp
+                            test = .true.
+                            do 123 ii = 1, ncmp
+                                call cesexi('S', jcesd, jcesl, imai, ipg,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    test = .false.
+                                endif
+123                         continue
+                            if (test) goto 120
+                            axer(1) = xpg(ipg) - orig(1)
+                            axer(2) = ypg(ipg) - orig(2)
+                            if (ndim .eq. 3) then
+                                axer(3) = zpg(ipg) - orig(3)
+                            else
+                                axer(3) = 0.0d0
+                            endif
+                            prosca=ddot(3,axer,1,axez,1)
+                            axer(1) = axer(1) - prosca*axez(1)
+                            axer(2) = axer(2) - prosca*axez(2)
+                            if (ndim .eq. 3) then
+                                axer(3) = axer(3) - prosca*axez(3)
+                            else
+                                axer(3) = 0.0d0
+                            endif
+                            xnormr = 0.0d0
+                            call normev(axer, xnormr)
+                            if (xnormr .lt. epsi) then
 !   SI LE PT DE GAUSS EST SUR L'AXE ALORS L'AXE R N'EST PAS DEFINI
 !   ON PREND UN AXE ARBITRAIRE ORTHOGONAL A OZ POUR DEFINIR LE REPERE
 !   CYLINDRIQUE EN CE POINT
-                        if (axez(1) .ne. 0.d0 .or. axez(2) .ne. 0.d0) then
-                            axer(1) = axez(2)
-                            axer(2) = -axez(1)
-                            axer(3) = 0.0d0
-                        else
-                            axer(1) = 1.0d0
-                            axer(2) = 0.0d0
-                            axer(3) = 0.0d0
-                        endif
-                        igaaxe = igaaxe + 1
-                    endif
-                    call provec(axez, axer, axet)
-                    xnormr = 0.0d0
-                    call normev(axet, xnormr)
-                    do 126 i = 1, 3
-                        pgl(1,i) = axer(i)
-                        pgl(2,i) = axez(i)
-                        pgl(3,i) = axet(i)
-126                  continue
-                    if (tsca .eq. 'R') then
+                                if (axez(1) .ne. 0.d0 .or. axez(2) .ne. 0.d0) then
+                                    axer(1) = axez(2)
+                                    axer(2) = -axez(1)
+                                    axer(3) = 0.0d0
+                                else
+                                    axer(1) = 1.0d0
+                                    axer(2) = 0.0d0
+                                    axer(3) = 0.0d0
+                                endif
+                                igaaxe = igaaxe + 1
+                            endif
+                            call provec(axez, axer, axet)
+                            xnormr = 0.0d0
+                            call normev(axet, xnormr)
+                            do 126 i = 1, 3
+                                pgl(1,i) = axer(i)
+                                pgl(2,i) = axez(i)
+                                pgl(3,i) = axet(i)
+126                         continue
+                            if (tsca .eq. 'R') then
 ! CHAMP REEL
-                        do 127 ii = 1, ncmp
-                            call cesexi('S', jcesd, jcesl, imai, ipg,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                valet(ii)=zr(jcesv-1+iad)
+                                do 127 ii = 1, ncmp
+                                    call cesexi('S', jcesd, jcesl, imai, ipg,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        valet(ii)=zr(jcesv-1+iad)
+                                    else
+                                        goto 120
+                                    endif
+127                             continue
+                                valed(1) = valet(1)
+                                valed(2) = valet(4)
+                                valed(3) = valet(2)
+                                valed(4) = valet(5)
+                                valed(5) = valet(6)
+                                valed(6) = valet(3)
+                                call utpsgl(1, 3, pgl, valed, valet)
+                                valer(1) = valet(1)
+                                valer(2) = valet(3)
+                                valer(3) = valet(6)
+                                valer(4) = valet(2)
+                                valer(5) = valet(4)
+                                valer(6) = valet(5)
+                                do 128 ii = 1, nbcmp
+                                    call cesexi('C', jcesd, jcesl, imai, ipg,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        zr(jcesv-1+iad) = valer( licmpu(ii))
+                                    else
+                                        goto 120
+                                    endif
+128                             continue
                             else
-                                goto 120
-                            endif
-127                      continue
-                        valed(1) = valet(1)
-                        valed(2) = valet(4)
-                        valed(3) = valet(2)
-                        valed(4) = valet(5)
-                        valed(5) = valet(6)
-                        valed(6) = valet(3)
-                        call utpsgl(1, 3, pgl, valed, valet)
-                        valer(1) = valet(1)
-                        valer(2) = valet(3)
-                        valer(3) = valet(6)
-                        valer(4) = valet(2)
-                        valer(5) = valet(4)
-                        valer(6) = valet(5)
-                        do 128 ii = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, imai, ipg,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                zr(jcesv-1+iad) = valer( licmpu(ii))
-                            else
-                                goto 120
-                            endif
-128                      continue
-                    else
 ! CHAMP COMPLEXE
-                        do 313 ii = 1, ncmp
-                            call cesexi('C', jcesd, jcesl, imai, ipg,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                valetc(ii)=zc(jcesv-1+iad)
-                            else
-                                goto 120
-                            endif
-313                      continue
-                        valed(1) = dble(valetc(1))
-                        valed(2) = dble(valetc(4))
-                        valed(3) = dble(valetc(2))
-                        valed(4) = dble(valetc(5))
-                        valed(5) = dble(valetc(6))
-                        valed(6) = dble(valetc(3))
-                        call utpsgl(1, 3, pgl, valed, valet)
-                        valer(1) = valet(1)
-                        valer(2) = valet(3)
-                        valer(3) = valet(6)
-                        valer(4) = valet(2)
-                        valer(5) = valet(4)
-                        valer(6) = valet(5)
+                                do 313 ii = 1, ncmp
+                                    call cesexi('C', jcesd, jcesl, imai, ipg,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        valetc(ii)=zc(jcesv-1+iad)
+                                    else
+                                        goto 120
+                                    endif
+313                             continue
+                                valed(1) = dble(valetc(1))
+                                valed(2) = dble(valetc(4))
+                                valed(3) = dble(valetc(2))
+                                valed(4) = dble(valetc(5))
+                                valed(5) = dble(valetc(6))
+                                valed(6) = dble(valetc(3))
+                                call utpsgl(1, 3, pgl, valed, valet)
+                                valer(1) = valet(1)
+                                valer(2) = valet(3)
+                                valer(3) = valet(6)
+                                valer(4) = valet(2)
+                                valer(5) = valet(4)
+                                valer(6) = valet(5)
 !
-                        valed(1) = dimag(valetc(1))
-                        valed(2) = dimag(valetc(4))
-                        valed(3) = dimag(valetc(2))
-                        valed(4) = dimag(valetc(5))
-                        valed(5) = dimag(valetc(6))
-                        valed(6) = dimag(valetc(3))
-                        call utpsgl(1, 3, pgl, valed, valet)
-                        valei(1) = valet(1)
-                        valei(2) = valet(3)
-                        valei(3) = valet(6)
-                        valei(4) = valet(2)
-                        valei(5) = valet(4)
-                        valei(6) = valet(5)
+                                valed(1) = dimag(valetc(1))
+                                valed(2) = dimag(valetc(4))
+                                valed(3) = dimag(valetc(2))
+                                valed(4) = dimag(valetc(5))
+                                valed(5) = dimag(valetc(6))
+                                valed(6) = dimag(valetc(3))
+                                call utpsgl(1, 3, pgl, valed, valet)
+                                valei(1) = valet(1)
+                                valei(2) = valet(3)
+                                valei(3) = valet(6)
+                                valei(4) = valet(2)
+                                valei(5) = valet(4)
+                                valei(6) = valet(5)
 !
-                        do 314 ii = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, imai, ipg,&
-                                        isp, ii, iad)
-                            if (iad .gt. 0) then
-                                zc(jcesv-1+iad) = dcmplx( valer(ii),valei(ii))
-                            else
-                                goto 120
+                                do 314 ii = 1, nbcmp
+                                    call cesexi('C', jcesd, jcesl, imai, ipg,&
+                                                isp, ii, iad)
+                                    if (iad .gt. 0) then
+                                        zc(jcesv-1+iad) = dcmplx( valer(ii),valei(ii))
+                                    else
+                                        goto 120
+                                    endif
+314                             continue
                             endif
-314                      continue
-                    endif
-122                  continue
-121                  continue
-120              continue
+122                     continue
+121                 continue
+120             continue
             endif
         else
 ! VECTEUR
@@ -866,139 +862,138 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 endif
                 nbpt = zi(jcesd-1+5+4* (imai-1)+1)
                 nbsp = zi(jcesd-1+5+4* (imai-1)+2)
-                do 30,ipt = 1,nbpt
-                do 31,isp = 1,nbsp
-                test = .true.
-                do 32 ii = 1, ncmp
-                    call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                isp, ii, iad)
-                    if (iad .gt. 0) then
-                        test = .false.
-                    endif
-32              continue
-                if (test) goto 29
-                ino = zi(jconx1-1+zi(jconx2+imai-1)+ipt-1)
-                axer(1) = zr(axyzm+3*(ino-1) ) - orig(1)
-                axer(2) = zr(axyzm+3*(ino-1)+1) - orig(2)
-                if (ndim .eq. 3) then
-                    axer(3) = zr(axyzm+3*(ino-1)+2) - orig(3)
-                else
-                    axer(3) = 0.0d0
-                endif
-                prosca=ddot(3,axer,1,axez,1)
-                axer(1) = axer(1) - prosca*axez(1)
-                axer(2) = axer(2) - prosca*axez(2)
-                if (ndim .eq. 3) then
-                    axer(3) = axer(3) - prosca*axez(3)
-                else
-                    axer(3) = 0.0d0
-                endif
-                xnormr = 0.0d0
-                call normev(axer, xnormr)
-                if (xnormr .lt. epsi) then
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
-                    call utmess('A', 'ALGORITH2_12')
-                    axer(1) = 0.0d0
-                    axer(2) = 0.0d0
-                    axer(3) = 0.0d0
-                    do 33 ipt2 = 1, nbpt
-                        inot = zi(jconx1-1+zi(jconx2+imai-1)+ ipt2-1)
-                        axer(1) = axer(1) + zr(axyzm+3*(inot- 1) )
-                        axer(2) = axer(2) + zr(axyzm+3*(inot- 1)+1)
+                do 30 ipt = 1, nbpt
+                    do 31 isp = 1, nbsp
+                        test = .true.
+                        do 32 ii = 1, ncmp
+                            call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                        isp, ii, iad)
+                            if (iad .gt. 0) then
+                                test = .false.
+                            endif
+ 32                     continue
+                        if (test) goto 29
+                        ino = zi(jconx1-1+zi(jconx2+imai-1)+ipt-1)
+                        axer(1) = zr(axyzm+3*(ino-1) ) - orig(1)
+                        axer(2) = zr(axyzm+3*(ino-1)+1) - orig(2)
                         if (ndim .eq. 3) then
-                            axer(3) = axer(3) + zr(axyzm+3*( inot-1)+2)
+                            axer(3) = zr(axyzm+3*(ino-1)+2) - orig(3)
+                        else
+                            axer(3) = 0.0d0
                         endif
-33                  continue
-                    axer(1) = axer(1)/nbpt - orig(1)
-                    axer(2) = axer(2)/nbpt - orig(2)
-                    axer(3) = axer(3)/nbpt - orig(3)
-                    prosca=ddot(3,axer,1,axez,1)
-                    axer(1) = axer(1) - prosca*axez(1)
-                    axer(2) = axer(2) - prosca*axez(2)
-                    if (ndim .eq. 3) then
-                        axer(3) = axer(3) - prosca*axez(3)
-                    else
-                        axer(3) = 0.0d0
-                    endif
-                    xnormr = 0.0d0
-                    call normev(axer, xnormr)
-                    if (xnormr .lt. epsi) then
-                        call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
-                        valk (1) = k8b
-                        call utmess('F', 'ALGORITH12_44', sk=valk(1))
-                    endif
-                endif
-                call provec(axez, axer, axet)
-                xnormr = 0.0d0
-                call normev(axet, xnormr)
-                do 35 i = 1, 3
-                    pgl(1,i) = axer(i)
-                    pgl(2,i) = axez(i)
-                    pgl(3,i) = axet(i)
-35              continue
-                if (tsca .eq. 'R') then
+                        prosca=ddot(3,axer,1,axez,1)
+                        axer(1) = axer(1) - prosca*axez(1)
+                        axer(2) = axer(2) - prosca*axez(2)
+                        if (ndim .eq. 3) then
+                            axer(3) = axer(3) - prosca*axez(3)
+                        else
+                            axer(3) = 0.0d0
+                        endif
+                        xnormr = 0.0d0
+                        call normev(axer, xnormr)
+                        if (xnormr .lt. epsi) then
+                            call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
+                            call utmess('A', 'ALGORITH2_12')
+                            axer(1) = 0.0d0
+                            axer(2) = 0.0d0
+                            axer(3) = 0.0d0
+                            do 33 ipt2 = 1, nbpt
+                                inot = zi(jconx1-1+zi(jconx2+imai-1)+ ipt2-1)
+                                axer(1) = axer(1) + zr(axyzm+3*(inot- 1) )
+                                axer(2) = axer(2) + zr(axyzm+3*(inot- 1)+1)
+                                if (ndim .eq. 3) then
+                                    axer(3) = axer(3) + zr(axyzm+3*( inot-1)+2)
+                                endif
+ 33                         continue
+                            axer(1) = axer(1)/nbpt - orig(1)
+                            axer(2) = axer(2)/nbpt - orig(2)
+                            axer(3) = axer(3)/nbpt - orig(3)
+                            prosca=ddot(3,axer,1,axez,1)
+                            axer(1) = axer(1) - prosca*axez(1)
+                            axer(2) = axer(2) - prosca*axez(2)
+                            if (ndim .eq. 3) then
+                                axer(3) = axer(3) - prosca*axez(3)
+                            else
+                                axer(3) = 0.0d0
+                            endif
+                            xnormr = 0.0d0
+                            call normev(axer, xnormr)
+                            if (xnormr .lt. epsi) then
+                                call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
+                                valk (1) = k8b
+                                call utmess('F', 'ALGORITH12_44', sk=valk(1))
+                            endif
+                        endif
+                        call provec(axez, axer, axet)
+                        xnormr = 0.0d0
+                        call normev(axet, xnormr)
+                        do 35 i = 1, 3
+                            pgl(1,i) = axer(i)
+                            pgl(2,i) = axez(i)
+                            pgl(3,i) = axet(i)
+ 35                     continue
+                        if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 36 ii = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            valed(ii)=zr(jcesv-1+iad)
+                            do 36 ii = 1, ncmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    valed(ii)=zr(jcesv-1+iad)
+                                else
+                                    goto 29
+                                endif
+ 36                         continue
+                            if (ndim .eq. 3) then
+                                call utpvgl(1, 3, pgl, valed, valer)
+                            else
+                                call ut2vgl(1, 3, pgl, valed, valer)
+                            endif
+                            do 37 ii = 1, nbcmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    zr(jcesv-1+iad) = valer(licmpu(ii) )
+                                else
+                                    goto 29
+                                endif
+ 37                         continue
                         else
-                            goto 29
-                        endif
-36                  continue
-                    if (ndim .eq. 3) then
-                        call utpvgl(1, 3, pgl, valed, valer)
-                    else
-                        call ut2vgl(1, 3, pgl, valed, valer)
-                    endif
-                    do 37 ii = 1, nbcmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            zr(jcesv-1+iad) = valer(licmpu(ii) )
-                        else
-                            goto 29
-                        endif
-37                  continue
-                else
 ! CHAMP COMPLEXE
-                    do 136 ii = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            valetc(ii) = zc(jcesv-1+iad)
-                            valed(ii) = dble(valetc(ii))
-                            valet(ii) = dimag(valetc(ii))
-                        else
-                            goto 29
+                            do 136 ii = 1, ncmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    valetc(ii) = zc(jcesv-1+iad)
+                                    valed(ii) = dble(valetc(ii))
+                                    valet(ii) = dimag(valetc(ii))
+                                else
+                                    goto 29
+                                endif
+136                         continue
+                            if (ndim .eq. 3) then
+                                call utpvgl(1, 3, pgl, valed, valer)
+                                call utpvgl(1, 3, pgl, valet, valei)
+                            else
+                                call ut2vgl(1, 3, pgl, valed, valer)
+                                call ut2vgl(1, 3, pgl, valet, valei)
+                            endif
+                            do 137 ii = 1, nbcmp
+                                call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                            isp, ii, iad)
+                                if (iad .gt. 0) then
+                                    i2=licmpu(ii)
+                                    zc(jcesv-1+iad) = dcmplx(valer(i2) ,valei(i2))
+                                else
+                                    goto 29
+                                endif
+137                         continue
                         endif
-136                  continue
-                    if (ndim .eq. 3) then
-                        call utpvgl(1, 3, pgl, valed, valer)
-                        call utpvgl(1, 3, pgl, valet, valei)
-                    else
-                        call ut2vgl(1, 3, pgl, valed, valer)
-                        call ut2vgl(1, 3, pgl, valet, valei)
-                    endif
-                    do 137 ii = 1, nbcmp
-                        call cesexi('C', jcesd, jcesl, imai, ipt,&
-                                    isp, ii, iad)
-                        if (iad .gt. 0) then
-                            i2=licmpu(ii)
-                            zc(jcesv-1+iad) = dcmplx(valer(i2) ,valei(i2))
-                        else
-                            goto 29
-                        endif
-137                  continue
-                endif
 !
-31              continue
-30              continue
-29          continue
+ 31                 continue
+ 30             continue
+ 29         continue
         endif
-        call dismoi('F', 'NOM_OPTION', champ1, 'CHAM_ELEM', ibid,&
-                    option, ibid)
+        call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
         call cescel(chams1, ligrel, option, ' ', 'OUI',&
                     nncp, 'G', champ1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chams1)
@@ -1084,8 +1079,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         endif
         call exisd('CHAM_ELEM_S', canbsp, iret1)
         if (iret1 .ne. 1) then
-            call dismoi('F', 'MXNBSP', champ0(1:19), 'CHAM_ELEM', nbsp,&
-                        kbid, iret)
+            call dismoi('MXNBSP', champ0(1:19), 'CHAM_ELEM', repi=nbsp)
 !
 ! SI LE CHAMP A DEJA ETE EXTRAIT IL FAUT APPELER CESVAR AVEC CE CHAMP
 !

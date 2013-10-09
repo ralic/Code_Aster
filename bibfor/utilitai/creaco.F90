@@ -56,7 +56,6 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -70,7 +69,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
     integer :: mail, ino, id, nbre, id2, err, temp, temp1, maxi, ifm, niv, coi
     integer :: numno, nutyma, nbnoto
     real(kind=8) :: tmps(6)
-    character(len=8) :: nom, k8bid, typma1, typma2
+    character(len=8) :: nom, typma1, typma2
 !
 ! CORPS DU PROGRAMME
     call jemarq()
@@ -83,11 +82,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 !
     call jeveuo('&&FETSKP.RENUM', 'L', renum)
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbnoto,&
-                k8bid, err)
-    if (err .ne. 0) then
-        call utmess('F', 'UTILITAI_44')
-    endif
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
 !
     write(ifm,*)' -- NOMBRE DE MAILLES : ',nbmato
     write(ifm,*)' -- NOMBRE DE NOEUDS  : ',nbnoto
@@ -155,15 +150,15 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
         do 2 ino = 1, zi(nbno-1+ima)
             numno = zi(idnoeu-1+ino)
             zi(nbmano-1+numno)=zi(nbmano-1+numno)+1
- 2      continue
- 1  end do
+  2     continue
+  1 end do
 !
 ! ------- ON CREE LE TABLEAU D'INDEX POUR COI ------------------------
 !
     zi(idcoi)=1
     do 4 ino = 2, nbnoto+1
         zi(idcoi-1+ino)=zi(idcoi-1+ino-1)+zi(nbmano-1+ino-1)
- 4  end do
+  4 end do
 !
 ! ------- ON CREE LE TABLEAU DE CONNECTIVITE INVERSE ( COI ) ---------
 !
@@ -176,8 +171,8 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
             id=zi(idcoi-1+numno)+zi(id1-1+numno)
             zi(coi-1+id)=ima
             zi(id1-1+numno)=zi(id1-1+numno)+1
- 6      continue
- 5  end do
+  6     continue
+  5 end do
 !
     call jedetr('&&FETSKP.ID1')
 !
@@ -191,9 +186,9 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
                 nbre=zi(idcoi-1+ino+1)-1-zi(idcoi-1+ino)
                 mail=zi(coi-1+i)
                 zi(nbmama-1+mail)=zi(nbmama-1+mail)+nbre
- 9          continue
+  9         continue
         endif
- 8  end do
+  8 end do
 !
     call jedetr('&&FETSKP.NBMANO')
 !
@@ -206,7 +201,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
     do 10 ima = 2, nbmato+1
         if (zi(nbmama-1+ima-1) .gt. maxi) maxi=zi(nbmama-1+ima-1)
         zi4(idco-1+ima)=zi4(idco-1+ima-1)+zi(nbmama-1+ima-1)
-10  end do
+ 10 end do
 !
 ! ------------------------ JEVEUX ------------------------------------
 !
@@ -236,13 +231,13 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
                         zi(temp1-1+j)=zi(temp1-1+j)+1
                         goto 20
                     endif
-14              continue
+ 14             continue
                 zi(temp+id)=mail
                 zi(temp1+id)=1
                 id=id+1
-20              continue
-13          continue
-12      continue
+ 20             continue
+ 13         continue
+ 12     continue
         do 15 j = 1, id
             if (zi(nbno-1+ima) .eq. zi(temp1-1+j)) then
                 if (zi(mabord-1+ima) .eq. 0) then
@@ -253,8 +248,8 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
                     zi(mabord-1+ima) = zi(temp-1+j)
                 endif
             endif
-15      continue
-11  end do
+ 15     continue
+ 11 end do
 !
 ! ------ ON ENLEVE LES MAILLES DE BORDS ------------------------------
 !
@@ -275,12 +270,12 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
                 zi(renum3-1+ima)=id
                 id=id+1
             endif
-49      continue
+ 49     continue
     else
         do 52 ima = 1, nbmato
             zi(renum2-1+ima)=ima
             zi(renum3-1+ima)=ima
-52      continue
+ 52     continue
     endif
 !
 ! ------------------------ JEVEUX ------------------------------------
@@ -309,13 +304,13 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
                         zi(temp1-1+j)=zi(temp1-1+j)+1
                         goto 23
                     endif
-22              continue
+ 22             continue
                 zi(temp+id)=mail
                 zi(temp1+id)=1
                 id=id+1
-23              continue
-21          continue
-19      continue
+ 23             continue
+ 21         continue
+ 19     continue
 !
         do 24 j = 1, id
             typma2=zk8(typma-1+zi(renum2-1+zi(temp-1+j)))
@@ -384,20 +379,20 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 !
             goto 24
 !
-61          continue
+ 61         continue
             zi(nbmama-1+ima)=zi(nbmama-1+ima)+1
             zi(nbmama-1+zi(temp-1+j))=zi(nbmama-1+zi(temp-1+j))+1
             nblien=nblien+2
 !
-24      continue
-17  end do
+ 24     continue
+ 17 end do
 !
 ! ------- ON RE-REMPLIT IDCO -----------------------------------------
 !
     zi4(idco)=1
     do 99 ima = 2, nbmato+1
         zi4(idco-1+ima)=zi4(idco-1+ima-1)+zi(nbmama-1+ima-1)
-99  end do
+ 99 end do
 !
 ! ------ CREATION DES CONNECTIVITES DES MAILLES ( CO ) ---------------
 !
@@ -421,13 +416,13 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
                         zi(temp1-1+j)=zi(temp1-1+j)+1
                         goto 29
                     endif
-28              continue
+ 28             continue
                 zi(temp+nbre)=mail
                 zi(temp1+nbre)=1
                 nbre=nbre+1
-29              continue
-27          continue
-26      continue
+ 29             continue
+ 27         continue
+ 26     continue
 !
         do 30 j = 1, nbre
             typma2=zk8(typma-1+zi(renum2-1+zi(temp-1+j)))
@@ -496,7 +491,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 !
             goto 30
 !
-31          continue
+ 31         continue
             id=zi4(idco-1+ima)+zi(id1-1+ima)
             id2=zi4(idco-1+zi(temp-1+j))+zi(id1-1+zi(temp-1+j))
             zi4(co-1+id2)=ima
@@ -504,8 +499,8 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
             zi(id1-1+ima)=zi(id1-1+ima)+1
             zi(id1-1+zi(temp-1+j))=zi(id1-1+zi(temp-1+j))+1
 !
-30      continue
-25  end do
+ 30     continue
+ 25 end do
 !
 ! ------------------------ JEVEUX ------------------------------------
     call jedetr('&&FETSKP.NBNO')

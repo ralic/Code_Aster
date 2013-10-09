@@ -19,9 +19,8 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -40,6 +39,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/mminfr.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxconi.h"
+!
     character(len=8) :: noma
     character(len=8) :: modele
     integer :: nfiss
@@ -74,7 +74,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     integer :: ifm, niv, iret
     integer :: ibid, iad, i, ima, ifis, izone
     integer :: nmaenr, nbma, jnbsp, ispt, icmp
-    character(len=8) :: nomfis, k8bid
+    character(len=8) :: nomfis
     integer :: jcesl, jcesv, jcesd, jmofis
     character(len=24) :: grp
     integer :: jgrp
@@ -104,12 +104,11 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
     call celces(modele//'.TOPOSE.HEA', 'V', '&&XMELE2.HEAV')
     call jeveuo('&&XMELE2.HEAV      .CESD', 'L', jcesd)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call wkvect('&&XMELE2.NBSP', 'V V I', nbma, jnbsp)
     do 10 ima = 1, nbma
         zi(jnbsp-1+ima) = zi(jcesd-1+5+4*(ima-1)+2)
-10  end do
+ 10 end do
 !
 !
 !
@@ -174,9 +173,9 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
                     call cesexi('S', jcesd, jcesl, ima, 1,&
                                 ispt, 1, iad)
                     if (iad .lt. 0) goto 140
-130              continue
+130             continue
                 ASSERT(.false.)
-140              continue
+140             continue
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
@@ -185,11 +184,11 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
                                 ispt, icmp, iad)
                     zl(jcesl-1-iad) = .true.
                     zr(jcesv-1-iad) = coef(icmp)
-150              continue
-120          continue
+150             continue
+120         continue
         endif
 !
-110  end do
+110 end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

@@ -63,14 +63,13 @@ subroutine crlidd(nomres, mailla)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomres, mailla, cb, mn, ha, au, nomtyp
-    character(len=8) :: k8bid
     character(len=24) :: temmn, temcb, temha, temau, temmas
     character(len=24) :: typint, noeint, desdef
     logical :: doubok
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ino, iran, iret, j, lldes
+    integer :: i, iad, ino, iran, j, lldes
     integer :: llnin, lltyp, ltau, ltcb, ltha, ltmas, ltmn
     integer :: nbau, nbcb, nbcmp, nbec, nbha, nbint, nbmn
     integer :: nbno, nbtem, nbto
@@ -87,8 +86,7 @@ subroutine crlidd(nomres, mailla)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES DE LA GRANDEUR-
 !
-    call dismoi('F', 'NB_EC', nomres, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_EC', nomres, 'INTERF_DYNA', repi=nbec)
 !
 !----------------------RECUPERATION TYPE INTERFACE----------------------
 !
@@ -135,7 +133,7 @@ subroutine crlidd(nomres, mailla)
             nbau=nbau+nbno
         endif
 !
-10  end do
+ 10 end do
 !
 !---------ALLOCATION DU VECTEUR DES NOEUDS CRAIG BAMPTON----------------
 !
@@ -191,7 +189,7 @@ subroutine crlidd(nomres, mailla)
             do 30 j = 1, nbno
                 zi(ltcb+nbcb)=zi(llnin+j-1)
                 nbcb=nbcb+1
-30          continue
+ 30         continue
         endif
 !
 !    NOEUD DE MAC NEAL
@@ -202,7 +200,7 @@ subroutine crlidd(nomres, mailla)
             do 40 j = 1, nbno
                 zi(ltmn+nbmn)=zi(llnin+j-1)
                 nbmn=nbmn+1
-40          continue
+ 40         continue
         endif
 !
 !    NOEUD DE CB_HARMO
@@ -213,7 +211,7 @@ subroutine crlidd(nomres, mailla)
             do 50 j = 1, nbno
                 zi(ltha+nbha)=zi(llnin+j-1)
                 nbha=nbha+1
-50          continue
+ 50         continue
         endif
 !
 !    NOEUD DE AUCUN
@@ -224,10 +222,10 @@ subroutine crlidd(nomres, mailla)
             do 60 j = 1, nbno
                 zi(ltau+nbau)=zi(llnin+j-1)
                 nbau=nbau+1
-60          continue
+ 60         continue
         endif
 !
-20  end do
+ 20 end do
 !
 !-------SUPPRESSION DES DOUBLES ET ORDRE DES LISTES TROUVEES------------
 !
@@ -284,8 +282,7 @@ subroutine crlidd(nomres, mailla)
 !
 !--RECUPERATION DU NOMBRE DE COMPOSANTES DE LA GRANDEUR SOUS-JACENTE----
 !
-    call dismoi('F', 'NB_CMP_MAX', nomres, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', nomres, 'INTERF_DYNA', repi=nbcmp)
 !
 !-------------DEFINITION DU NOM  OBJET MASQUE AUX INTERFACES------------
 !
@@ -320,7 +317,7 @@ subroutine crlidd(nomres, mailla)
 !
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
-110          continue
+110         continue
         endif
 !
 !    NOEUDS DE CRAIG BAMPTON
@@ -340,7 +337,7 @@ subroutine crlidd(nomres, mailla)
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
 !
-120          continue
+120         continue
         endif
 !
 !    NOEUDS DE CRAIG-BAMPTON-HARMONIQUE
@@ -360,7 +357,7 @@ subroutine crlidd(nomres, mailla)
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
 !
-130          continue
+130         continue
         endif
 !
 !    NOEUD DE AUCUN
@@ -380,10 +377,10 @@ subroutine crlidd(nomres, mailla)
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
 !
-140          continue
+140         continue
         endif
 !
-100  end do
+100 end do
 !
 !---------SAUVEGARDE DE LA DEFINITION DES INTERFACES--------------------
 !

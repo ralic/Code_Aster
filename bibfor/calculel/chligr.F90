@@ -75,7 +75,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
     integer :: ibid, iret, nncp, jcelk, nbma
     character(len=19) :: chel2, chel1, optio, param
     character(len=24) :: valk(2)
-    character(len=8) :: noma, k8bid
+    character(len=8) :: noma
     character(len=16) :: nomgd
 !
 ! ----------------------------------------------------------------------
@@ -92,14 +92,10 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 !
 ! --- MAILLAGE ATTACHE
 !
-    call dismoi('F', 'NOM_MAILLA', chel1, 'CHAM_ELEM', ibid,&
-                noma, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
-    call dismoi('F', 'NOM_LIGREL', chel1, 'CHAM_ELEM', ibid,&
-                ligr1, ibid)
-    call dismoi('F', 'NOM_GD', chel1, 'CHAM_ELEM', ibid,&
-                nomgd, ibid)
+    call dismoi('NOM_MAILLA', chel1, 'CHAM_ELEM', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('NOM_LIGREL', chel1, 'CHAM_ELEM', repk=ligr1)
+    call dismoi('NOM_GD', chel1, 'CHAM_ELEM', repk=nomgd)
 !
 ! --- TYPE DU CHAMP: RESU_ELEM INTERDIT
 !
@@ -147,7 +143,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
                 nncp, base2, chel2, 'F', ibid)
     call detrsd('CHAM_ELEM_S', ces)
 !
-20  continue
+ 20 continue
     call detrsd('CHAM_ELEM', '&&CHLIGR.CHELVIDE')
     call jedema()
 end subroutine

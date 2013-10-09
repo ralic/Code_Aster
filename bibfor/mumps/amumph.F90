@@ -101,7 +101,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     type (cmumps_struc) , pointer :: cmpsk
     type (dmumps_struc) , pointer :: dmpsk
     type (zmumps_struc) , pointer :: zmpsk
-    integer :: k, ierd, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
+    integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer :: jslvk, jslvi, nprec, iretz, pcentp(2)
     logical :: lbid, lpreco
     character(len=1) :: rouc, prec
@@ -187,8 +187,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !     ON TEST LE NOM DE LA MATRICE, CELUI DU NUME_DDL, LE TYPE ET
 !     LA TAILLE DU PB ASTER ET DU PB MUMPS ASSOCIE
 !
-    call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
     call jelira(nu//'.SMOS.SMDI', 'LONMAX', nsmdi)
 !
@@ -204,8 +203,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     if (solveu .eq. ' ') then
 !    -- ON NE CONNAIT PAS LA SD SOLVEUR. ON VIENT SANS DOUTE VIA TLDLGG.
 !       ON PREND CELUI ASSOCIE A LA MATRICE
-        call dismoi('F', 'SOLVEUR', matas, 'MATR_ASSE', ibid,&
-                    solveu, ibid)
+        call dismoi('SOLVEUR', matas, 'MATR_ASSE', repk=solveu)
     endif
 !
     prec=' '
@@ -221,16 +219,17 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- ON RECUPERE UNIQUEMENT UN NUMERO DE VERSION LICITE
             if (action(1:7) .eq. 'VERSION') then
                 if (zk24(jslvk-1+12)(1:4) .eq. 'XXXX') then
-                    call amumpu(31, rouc, ibid, k12bid, ibid, lbid, kvers, ibid)
+                    call amumpu(31, rouc, ibid, k12bid, ibid,&
+                                lbid, kvers, ibid)
                     zk24(jslvk-1+12)=kvers
                 else
 ! --- ON TESTE JUSTE LE CARACTERE LICITE DU NUMERO DE VERSION DEJA
 ! --- STOCKE DANS LA SD_SOLVEUR
                     kvers=trim(adjustl(zk24(jslvk-1+12)))
-                    select case(kvers)
-                    case('4.9.2','4.10.0')
+                    select case (kvers)
+                        case('4.9.2','4.10.0')
                     case default
-                    call utmess('F', 'FACTOR_72', sk=kvers)
+                        call utmess('F', 'FACTOR_72', sk=kvers)
                     end select
                 endif
                 goto 9999
@@ -255,62 +254,61 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     endif
 !
     kxmps=1
-    do 1, k=1,nmxins
+    do 1 k = 1, nmxins
 ! ----- ASTUCE POUR DETRUIRE TOUTES LES OCCURENCES (QQES SOIT LEUR
 !       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
-    if (action(1:8) .eq. 'DETR_MAT') prec=precs(k)
-    if ((nomats(k).eq.matas) .and. (nonus(k).eq.nu) .and. (roucs(k) .eq.rouc) .and.&
-        (precs(k).eq.prec)) then
-        if (rouc .eq. 'R') then
-            if (prec .eq. 'S') then
-                smpsk=>smps(k)
-                n=smpsk%n
-            else if (prec.eq.'D') then
-                dmpsk=>dmps(k)
-                n=dmpsk%n
+        if (action(1:8) .eq. 'DETR_MAT') prec=precs(k)
+        if ((nomats(k).eq.matas) .and. (nonus(k).eq.nu) .and. (roucs(k) .eq.rouc) .and.&
+            (precs(k).eq.prec)) then
+            if (rouc .eq. 'R') then
+                if (prec .eq. 'S') then
+                    smpsk=>smps(k)
+                    n=smpsk%n
+                else if (prec.eq.'D') then
+                    dmpsk=>dmps(k)
+                    n=dmpsk%n
+                else
+                    ASSERT(.false.)
+                endif
+            else if (rouc.eq.'C') then
+                if (prec .eq. 'S') then
+                    cmpsk=>cmps(k)
+                    n=cmpsk%n
+                else if (prec.eq.'D') then
+                    zmpsk=>zmps(k)
+                    n=zmpsk%n
+                else
+                    ASSERT(.false.)
+                endif
             else
                 ASSERT(.false.)
             endif
-        else if (rouc.eq.'C') then
-            if (prec .eq. 'S') then
-                cmpsk=>cmps(k)
-                n=cmpsk%n
-            else if (prec.eq.'D') then
-                zmpsk=>zmps(k)
-                n=zmpsk%n
-            else
-                ASSERT(.false.)
+            if (((nsmdi.eq.n).and.(imd.eq.0)) .or. (imd.eq.1)) then
+                kxmps=k
+                rouc=roucs(k)
+                prec=precs(k)
+                goto 2
             endif
-        else
-            ASSERT(.false.)
         endif
-        if (((nsmdi.eq.n).and.(imd.eq.0)) .or. (imd.eq.1)) then
-            kxmps=k
-            rouc=roucs(k)
-            prec=precs(k)
-            goto 2
-        endif
-    endif
-    1 end do
+  1 end do
     if (action(1:5) .eq. 'DETR_') goto 9999
 !
 !        Y-A-T-IL ENCORE UNE PLACE LIBRE ?
-    do 4, k=1,nmxins
-    if (nomats(k) .eq. ' ') then
-        kxmps=k
-        call jelira(matas//'.VALM', 'TYPE', cval=rouc)
-        goto 2
-    endif
-    4 end do
+    do 4 k = 1, nmxins
+        if (nomats(k) .eq. ' ') then
+            kxmps=k
+            call jelira(matas//'.VALM', 'TYPE', cval=rouc)
+            goto 2
+        endif
+  4 end do
     call utmess('F', 'FACTOR_60')
- 2  continue
+  2 continue
 !
 !
 !     2. QUELQUES VERIFICATIONS ET PETITES ACTIONS :
 !     ----------------------------------------------
     if (action(1:6) .eq. 'PRERES') then
-        call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
-                    nu, ierd)
+        call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
         ASSERT(solveu.ne.' ')
         ASSERT(nomats(kxmps).eq.' ')
         ASSERT(nosols(kxmps).eq.' ')
@@ -360,8 +358,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             ASSERT(solveu.eq.nosolv)
             ASSERT(etam.eq.'FNUM')
         endif
-        call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
-                    nu, ierd)
+        call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
         ASSERT(nonu.eq.nu)
 !
     else if (action(1:5).eq.'DETR_') then
@@ -446,7 +443,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         endif
     endif
 !
-9999  continue
+9999 continue
     if ((iretz.ne.0) .and. (iretz.ne.1) .and. (iretz.ne.2)) then
 ! --- VALEUR ILLICITE
         ASSERT(.false.)

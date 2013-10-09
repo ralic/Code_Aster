@@ -81,7 +81,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
     integer :: adr, aliste, acncin, alsmac, alsnac, acmp, adrvlc, arepe
     integer :: nbtma, nbm, nbmac, nbnac, nbcrb, nbmalu
     integer :: i, in, n, m, libre, n1, ibid, igrel, jnuma, j
-    integer :: ibib, ie, imolo, jceld, n2, kk, ier, nbvari, nbr
+    integer :: ibib, imolo, jceld, n2, kk, ier, nbvari, nbr
     integer :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
     character(len=4) :: docu
     character(len=8) :: nmaila, courbe, nomgd, resuco, nomvar, num
@@ -120,8 +120,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
             nchp19= '&&RVOUEX.CHAMEL1'
             call celver(nchp19, 'NBSPT_1', 'COOL', kk)
             if (kk .eq. 1) then
-                call dismoi('F', 'NOM_GD', nchp19, 'CHAMP', ibid,&
-                            nomgd, ie)
+                call dismoi('NOM_GD', nchp19, 'CHAMP', repk=nomgd)
                 call utmess('I', 'PREPOST_36', sk=nomgd)
                 call celcel('PAS_DE_SP', nchp19, 'V', '&&RVOUEX.CHAMEL2')
                 nchp19= '&&RVOUEX.CHAMEL2'
@@ -129,8 +128,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
             call jelira(nchp19//'.CELD', 'DOCU', cval=docu)
         endif
 !
-        call dismoi('F', 'NOM_MAILLA', nchp19, 'CHAMP', ibid,&
-                    nmaila, ie)
+        call dismoi('NOM_MAILLA', nchp19, 'CHAMP', repk=nmaila)
         nconec = nmaila//'.CONNEX'
         ncncin = '&&OP0051.CONNECINVERSE  '
 !
@@ -168,12 +166,12 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                         else
                             if (zk8(jcmp-1+i) .eq. zk8(jcmp1-1+j)) goto 102
                         endif
-103                  continue
+103                 continue
                     valk(1) = zk8(jcmp-1+i)
                     valk(2) = nchsym
                     valk(3) = resuco
                     call utmess('F', 'POSTRELE_65', nk=3, valk=valk)
-102              continue
+102             continue
             endif
 !
             call utmach(nchp19, nbcmp, zk8(jcmp), 'NU', malist,&
@@ -205,7 +203,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
             else
 !
-                call rvgnoe(mcf, iocc, nmaila, lstnac, 0, [ibid])
+                call rvgnoe(mcf, iocc, nmaila, lstnac, 0,&
+                            [ibid])
 !
                 call getvtx(mcf, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
                 call getvtx(mcf, 'MAILLE', iocc=iocc, nbval=0, nbret=n2)
@@ -236,45 +235,45 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', adrvlc)
                 call jeveuo(jexnum(ncncin, 1), 'L', acncin)
 !
-                do 100, in = 1, nbnac, 1
-                n = zi(alsnac + in-1)
-                nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
-                adr = zi(adrvlc + n-1)
+                do 100 in = 1, nbnac, 1
+                    n = zi(alsnac + in-1)
+                    nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
+                    adr = zi(adrvlc + n-1)
 !
-                call i2trgi(zi(aliste), zi(acncin + adr-1), nbm, libre)
+                    call i2trgi(zi(aliste), zi(acncin + adr-1), nbm, libre)
 !
-100              continue
+100             continue
 !
                 nbmac = libre - 1
                 libre = 1
 !
                 call jeveuo(nchp19//'.CELD', 'L', jceld)
 !
-                do 110, i = 1, nbmac, 1
-                m = zi(aliste + i-1)
-                if (nbtrou .ne. 0) then
-                    do 112 ii = 1, nbtrou
-                        if (m .eq. zi(jmmail+ii-1)) goto 114
-112                  continue
-                    goto 110
-114                  continue
-                endif
-                if (m .ne. 0) then
-                    if (nbmalu .ne. 0) then
-                        do 402, j = 1, nbmalu, 1
-                        if (m .eq. zi(jnuma+j-1)) goto 404
-402                      continue
+                do 110 i = 1, nbmac, 1
+                    m = zi(aliste + i-1)
+                    if (nbtrou .ne. 0) then
+                        do 112 ii = 1, nbtrou
+                            if (m .eq. zi(jmmail+ii-1)) goto 114
+112                     continue
                         goto 110
-404                      continue
+114                     continue
                     endif
-                    igrel = zi(arepe + 2*(m-1))
-                    imolo=zi(jceld-1+zi(jceld-1+4+igrel) +2)
-                    if (igrel .ne. 0 .and. imolo .gt. 0) then
-                        zi(aliste + libre-1) = zi(aliste + i-1)
-                        libre = libre + 1
+                    if (m .ne. 0) then
+                        if (nbmalu .ne. 0) then
+                            do 402 j = 1, nbmalu, 1
+                                if (m .eq. zi(jnuma+j-1)) goto 404
+402                         continue
+                            goto 110
+404                         continue
+                        endif
+                        igrel = zi(arepe + 2*(m-1))
+                        imolo=zi(jceld-1+zi(jceld-1+4+igrel) +2)
+                        if (igrel .ne. 0 .and. imolo .gt. 0) then
+                            zi(aliste + libre-1) = zi(aliste + i-1)
+                            libre = libre + 1
+                        endif
                     endif
-                endif
-110              continue
+110             continue
 !
                 nbmac = libre - 1
 !
@@ -282,9 +281,9 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
                     call wkvect(lstmac, 'V V I', nbmac, alsmac)
 !
-                    do 120, i = 1, nbmac, 1
-                    zi(alsmac + i-1) = zi(aliste + i-1)
-120                  continue
+                    do 120 i = 1, nbmac, 1
+                        zi(alsmac + i-1) = zi(aliste + i-1)
+120                 continue
 !
                 else
 !

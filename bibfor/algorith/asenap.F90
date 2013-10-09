@@ -54,7 +54,7 @@ subroutine asenap(masse)
 !     ------------------------------------------------------------------
 ! IN  : MASSE  : MATRICE DE MASSE DE LA STRUCTURE
 !     ------------------------------------------------------------------
-    integer :: ibid, icas, ier, ino, iocc, ire1, iref, iret, jcas, jdir
+    integer :: ibid, icas, ier, ino, iocc, ire1, iref, jcas, jdir
     integer :: jdref, jno, jnoeu, jnref, jref, jsta, jtyp, nbmc, nbno, nbocc, nc
     integer :: ncas, nocas, ns, nt, nucas, nx, ny, nz
     real(kind=8) :: dx, dy, dz, epsima
@@ -73,8 +73,7 @@ subroutine asenap(masse)
 !
     call getres(resu, concep, nomcmd)
 !
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                noma, iret)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
     obj2 = noma//'.NOMNOE'
     ier = 0
 !
@@ -103,7 +102,7 @@ subroutine asenap(masse)
             do 12 icas = 1, ncas
                 call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=icas, scal=nucas, nbret=ibid)
                 zi(jcas+icas-1) = nucas
-12          continue
+ 12         continue
         else
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=0, nbret=nc)
             nc=-nc
@@ -116,7 +115,7 @@ subroutine asenap(masse)
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=nc, vect=zi(jcas))
             ncas =ncas+nc
         endif
-10  end do
+ 10 end do
 !
 !
 ! -- CREATION DU VECTEUR TYPE_COMBI DE TOUTES LES OCCURRENCES
@@ -130,7 +129,7 @@ subroutine asenap(masse)
         if (ctyp .eq. 'LINE') zi(jtyp+iocc-1) = 2
         if (ctyp .eq. 'ABS') zi(jtyp+iocc-1) = 3
 !
-20  end do
+ 20 end do
 !
 !
 ! -- CREATION DE LA COLLECTION QUI CONTIENT LES NOEUDS
@@ -180,7 +179,7 @@ subroutine asenap(masse)
         call jeveuo(jexnom('&&ASENAP.LINOEU', knum), 'E', jno)
         do 34 ino = 1, nbno
             zk8(jno+ino-1) = zk8(jnoeu+ino-1)
-34      continue
+ 34     continue
 ! -- STOCKAGE DES NOEUD REFE
         zi(jref+icas-1)= 0
 !
@@ -211,7 +210,7 @@ subroutine asenap(masse)
         call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'E', jdir)
         do 36 ino = 1, 3*nbno
             zr(jdir+ino-1)= epsima
-36      continue
+ 36     continue
         call getvr8(motfac, 'DX', iocc=icas, scal=dx, nbret=nx)
         call getvr8(motfac, 'DY', iocc=icas, scal=dy, nbret=ny)
         call getvr8(motfac, 'DZ', iocc=icas, scal=dz, nbret=nz)
@@ -234,13 +233,13 @@ subroutine asenap(masse)
                 icas+2-1)
             endif
 !
-38      continue
-30  end do
+ 38     continue
+ 30 end do
 !
 !
     call jedetr(mesnoe)
 !
-9999  continue
+9999 continue
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
     endif

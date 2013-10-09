@@ -90,20 +90,19 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     linter = .false.
     do 130 i = 1, 3
         indptf(i)=0
-130  end do
+130 end do
     clsn = '&&XTYELE.LSN'
     clst = '&&XTYELE.LST'
     do 40 ifiss = 1, nfiss
         call codent(ifiss, 'G', ch2)
         cstn(ifiss)='&&XTYELE.STN'//ch2
         maicon(ifiss)='&&XTYELE.CONT'//ch2
-40  end do
+ 40 end do
     call jeveuo(noma(1:8)//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
     call jeveuo(noma(1:8)//'.TYPMAIL', 'L', jtypma)
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
     cnxinv = '&&XTYELE.CNCINV'
@@ -138,13 +137,13 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                 ncont = ncont + nmaenr
                 call jeveuo(grp(4*(ifiss-1)+l), 'L', jgrp(4*(ifiss-1)+l))
             endif
-11      continue
+ 11     continue
         icont(ifiss)=0
-14  end do
+ 14 end do
 !
     do 15 ifiss = 1, nfiss
         call wkvect(maicon(ifiss), 'V V I', ncont, jcont(ifiss))
-15  end do
+ 15 end do
 !
     do 10 ifiss = 1, nfiss
         call cnocns(fiss(ifiss)//'.LNNO', 'V', clsn)
@@ -214,7 +213,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                     .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb .eq. 0) &
                                 goto 110
                             endif
-100                      continue
+100                     continue
 ! --- BOUCLE SUR LES NOEUDS DE LA MAILLE
 !                DO 100 INO=1,NNO
 !                  NNGL=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO-1)
@@ -249,12 +248,12 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                         ima2-1)+ino2-1)
                                             lsn = zr(jlsn-1+nngl)
                                             if (lsn .gt. maxlsn) maxlsn=lsn
-220                                      continue
-210                                  continue
+220                                     continue
+210                                 continue
 !
                                     if (maxlsn .gt. 0) nbcoup=nbcoup+1
                                 endif
-200                          continue
+200                         continue
 ! --- ON REGARDE SI LE NOMBRE DE NOEUDS COUPÉES NBCOUP DEFINIT UNE FACE
                             if (ndim .eq. 2) then
                                 if (nbcoup .eq. 2) lcont=.true.
@@ -277,7 +276,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                         if (lsn .eq. 0) then
                                             nbcou2 = nbcou2+1
                                         endif
-300                                  continue
+300                                 continue
                                     if ((nbcou2.eq.3.or.nbcou2.eq.0) .and. nbcoup .eq. 3 .or.&
                                         nbcoup .eq. 4) lcont=.true.
                                 else if (typma(1:4).eq.'HEXA') then
@@ -313,7 +312,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                     ab(k)=b(k)-a(k)
                                     c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                                     ac(k)=c(k)-a(k)
-410                              continue
+410                             continue
                                 ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
                                 lstc = lsta + (lstb-lsta) * ddot(ndim, ab,1,ac,1) / ddot(ndim,ab,&
                                        &1,ab,1)
@@ -321,10 +320,10 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                     minlst=lstc
                                     do 420 k = 1, ndim
                                         cmin(k)=c(k)
-420                                  continue
+420                                 continue
                                 endif
                             endif
-400                      continue
+400                     continue
                         if (minlst .ge. 0) lcont =.false.
                         if (lcont) then
 ! --- ON VERIFIE LA TOLERANCE AVEC LES PT DE FOND DE FISSURE
@@ -343,8 +342,8 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                 do 440 j = 1, ndim
                                     zr(igeom-1+ndim*(ino-1)+j) =&
                                     zr(jcoor-1+3*(nngl-1)+j)
-440                              continue
-430                          continue
+440                             continue
+430                         continue
 ! --- BOUCLE SUR LES FACES
                             do 450 ifq = 1, nbf
                                 call intfac(noma, ima, ifq, fa, nno,&
@@ -358,18 +357,18 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                         a(j) = zr(igeom-1+ndim*(fa( ifq,1)-1)+j )
                                         b(j) = zr(igeom-1+ndim*(fa( ifq,2)-1)+j )
                                         c(j) = zr(igeom-1+ndim*(fa( ifq,3)-1)+j )
-460                                  continue
+460                                 continue
                                     longar=(padist(ndim,a,b)+padist(&
                                     ndim,a,c))/2.d0
                                     if (padist(ndim,m,cmin) .lt. ( longar*1.d-6)) lcont =.false.
                                 endif
-450                          continue
+450                         continue
                             call jedetr('&&XTYELE.LSN')
                             call jedetr('&&XTYELE.LST')
                             call jedetr('&&XTYELE.IGEOM')
                         endif
                     endif
-110                  continue
+110                 continue
 !
 ! --- POUR CHAQUE MAILLE DE CE GRP, REMPLIT LA COLONNE KK
 ! --- -1 -> X-FEM SANS CONTACT
@@ -406,9 +405,9 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                         = ima
                                         goto 188
                                     endif
-189                              continue
+189                             continue
                             endif
-188                      continue
+188                     continue
                     endif
 !
 ! SI MAILLE DEJA EN CONTACT POUR UNE AUTRE FISS
@@ -458,24 +457,24 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                     else
                         ASSERT(.false.)
                     endif
-30              continue
+ 30             continue
             endif
-20      continue
+ 20     continue
         call jedetr(clsn)
         call jedetr(clst)
 !
-10  end do
+ 10 end do
 !
     do 50 ifiss = 1, nfiss
         if (icont(ifiss) .gt. 0) then
             call wkvect(grp(4*(ifiss-1)+4), 'G V I', icont(ifiss), jco2)
             do 150 l = 1, icont(ifiss)
                 zi(jco2-1+l)=zi(jcont(ifiss)-1+l)
-150          continue
+150         continue
         endif
         call jedetr(maicon(ifiss))
         call jedetr(cstn(ifiss))
-50  end do
+ 50 end do
 !
     call jedetr(cnxinv)
 !

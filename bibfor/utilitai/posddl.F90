@@ -1,8 +1,7 @@
 subroutine posddl(type, resu, noeud, cmp, nunoe,&
                   nuddl)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -14,6 +13,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
+!
     character(len=*) :: type, resu, noeud, cmp
     integer :: nunoe, nuddl
 !     ------------------------------------------------------------------
@@ -46,28 +46,23 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
 ! OUT NUNOE  : NUMERO LOCAL DU NOEUD
 ! OUT NUDDL  : NUMERO DU DDL ASSOCIE AU NOEUD DE COMPOSANTE CMP
 !     ------------------------------------------------------------------
-    integer :: ibid, ier, gd, iec, nec, ncmpmx, icmpre, icmp, jprno, jnueq, iad
+    integer :: ibid, gd, iec, nec, ncmpmx, icmpre, icmp, jprno, jnueq, iad
     integer :: tabec(10)
-    character(len=8) :: k8b, nomma, nomcmp, ncmp
+    character(len=8) ::  nomma, nomcmp, ncmp
     character(len=19) :: prno
 !     ------------------------------------------------------------------
     call jemarq()
 !
     if (type(1:8) .eq. 'NUME_DDL') then
-        call dismoi('F', 'NOM_MAILLA', resu, 'NUME_DDL', ibid,&
-                    nomma, ier)
-        call dismoi('F', 'NUM_GD_SI', resu, 'NUME_DDL', gd,&
-                    k8b, ier)
+        call dismoi('NOM_MAILLA', resu, 'NUME_DDL', repk=nomma)
+        call dismoi('NUM_GD_SI', resu, 'NUME_DDL', repi=gd)
         prno( 1:14) = resu
         prno(15:19) = '.NUME'
 !
     else if (type(1:7) .eq. 'CHAM_NO') then
-        call dismoi('F', 'NOM_MAILLA', resu, 'CHAM_NO', ibid,&
-                    nomma, ier)
-        call dismoi('F', 'PROF_CHNO', resu, 'CHAM_NO', ibid,&
-                    prno, ier)
-        call dismoi('F', 'NUM_GD', resu, 'CHAM_NO', gd,&
-                    k8b, ier)
+        call dismoi('NOM_MAILLA', resu, 'CHAM_NO', repk=nomma)
+        call dismoi('PROF_CHNO', resu, 'CHAM_NO', repk=prno)
+        call dismoi('NUM_GD', resu, 'CHAM_NO', repi=gd)
 !
     else
         ASSERT(.false.)
@@ -89,7 +84,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     do 10 iec = 1, nec
         tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
-10  end do
+ 10 end do
 !
     icmpre = 0
     do 20 icmp = 1, ncmpmx
@@ -101,9 +96,9 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
                 goto 22
             endif
         endif
-20  end do
-22  continue
+ 20 end do
+ 22 continue
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

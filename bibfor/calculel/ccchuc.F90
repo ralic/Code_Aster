@@ -161,21 +161,16 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 ! ----- Get input field properties
 !
         if (iord .eq. 1) then
-            call dismoi('F', 'NOM_GD', field_in, 'CHAMP', ibid,&
-                        nomgd, iret)
-            call dismoi('F', 'TYPE_CHAMP', field_in, 'CHAMP', ibid,&
-                        type_field_in, iret)
+            call dismoi('NOM_GD', field_in, 'CHAMP', repk=nomgd)
+            call dismoi('TYPE_CHAMP', field_in, 'CHAMP', repk=type_field_in)
             if (type_field_in .ne. 'NOEU') then
-                call dismoi('F', 'NOM_LIGREL', field_in, 'CHAMP', ibid,&
-                            ligrel_old, iret)
-                call dismoi('F', 'NOM_MODELE', field_in, 'CHAMP', ibid,&
-                            model, ibid)
+                call dismoi('NOM_LIGREL', field_in, 'CHAMP', repk=ligrel_old)
+                call dismoi('NOM_MODELE', field_in, 'CHAMP', repk=model)
             endif
             ASSERT(type_field_in.ne.'CART' .and. type_field_in.ne.'RESL')
             call codent(nume_field_out, 'D0', cnum)
             name_field_out = 'UT'//cnum//'_'//type_field_in
-            call dismoi('F', 'NOM_MAILLA', field_in, 'CHAMP', ibid,&
-                        ma, iret)
+            call dismoi('NOM_MAILLA', field_in, 'CHAMP', repk=ma)
         endif
 !
 ! ----- Type of output field
@@ -272,11 +267,11 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                     call utmess('A', 'CHAMPS_15', si=numord)
                 endif
 !
-! ------------- Manage <LIGREL> - Create new if necessary 
+! ------------- Manage <LIGREL> - Create new if necessary
 !
                 call ccchuc_ligr(list_elem_stor, nb_elem, nb_elem_new, list_elem_new, ligrel_old,&
                                  ligrel_new)
-            endif 
+            endif
         endif
 !
 ! ----- Save in result

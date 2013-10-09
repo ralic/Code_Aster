@@ -51,7 +51,7 @@ subroutine op0054()
 !
     integer :: nbv, nbr8, nbno, nocc2d, nocc3d, iadrt1
     integer :: iadrno, impr, iadrco, iadrma, iadrt2, iadrt3, iadrt4, iadrt5
-    integer :: icode, ific, n1, ibid, ier
+    integer :: icode, ific, n1
     real(kind=8) :: dir(3), rinf, rsup
     logical :: ldirec
     character(len=8) :: noma, modele, fond, resu, noeud, format, config
@@ -152,8 +152,7 @@ subroutine op0054()
         call jeveuo(obj2, 'L', iadrno)
 !
         taillr = fond//'.FOND.TAILLE_R'
-        call dismoi('F', 'CONFIG_INIT', fond, 'FOND_FISS', ibid,&
-                    config, ier)
+        call dismoi('CONFIG_INIT', fond, 'FOND_FISS', repk=config)
         call gverig(noma, nocc3d, obj2, taillr, config,&
                     nbno, nomno, coorn, trav1, trav2,&
                     trav3, trav4)

@@ -35,7 +35,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 ! IN  NC     : NOMBRE MAX DE CMP PORTES PAR LES POINTS
 ! IN  LNUAL  : CREATION OU NON DU .NUAL
 !     ------------------------------------------------------------------
-    integer :: ibid, ie, i, ndim
+    integer ::  i, ndim
     character(len=4) :: type
     character(len=19) :: knuage
 !     ------------------------------------------------------------------
@@ -58,8 +58,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 !
 !     --- CREATION DU .NUAV ---
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                type, ie)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=type)
     ndim = nc * np
     if (type(1:1) .eq. 'R') then
         call wkvect(knuage//'.NUAV', 'V V R', ndim, jnuav)
@@ -76,7 +75,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
         call wkvect(knuage//'.NUAL', 'V V L', ndim, jnual)
         do 10 i = 1, ndim
             zl(jnual+i-1) = .false.
-10      continue
+ 10     continue
     endif
 !
     call jedema()

@@ -63,7 +63,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: noma, mod, base
     character(len=19) :: ca1, ca2
-    integer :: iret, longut, ibid, ier, jnoma, jdesc, ngdmx, nedit, ndisp
+    integer :: iret, longut, jnoma, jdesc, ngdmx, nedit, ndisp
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
     call jemarq()
@@ -91,8 +91,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 !
-        call dismoi('F', 'NOM_MODELE', ligrch(1:8), 'CHARGE', ibid,&
-                    mod, ier)
+        call dismoi('NOM_MODELE', ligrch(1:8), 'CHARGE', repk=mod)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE ---
 !

@@ -97,15 +97,14 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
         te = typele(ligrel,igr)
         ipar = inpara(opt,te,'OUT',nompar)
         iparmx = max(iparmx,ipar)
-10  end do
+ 10 end do
     if (iparmx .eq. 0) goto 30
 !
 !
 !     -- LE RESUELEM EST-IL "VOISIN_VF" ET DE TYPE "MATRICE" ?
 !        (I.E. LMATVF=.TRUE.)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
-    call dismoi('F', 'TYPE_MATRICE', nomgd, 'GRANDEUR', ibid,&
-                tymat, ibid)
+    call dismoi('TYPE_MATRICE', nomgd, 'GRANDEUR', repk=tymat)
     lmatvf=.false.
     if (evfini .eq. 1) then
         if (tymat .eq. ' ') then
@@ -142,7 +141,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
         do 22 igr = 1, ngrel
             nel = nbelem(ligrel,igr)
             lontot=lontot+nel+1
-22      continue
+ 22     continue
         call jeecra(nochou//'.RSVI', 'LONT', lontot, ' ')
     endif
 !
@@ -185,15 +184,15 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
                 lontot=0
                 zi(jrsvi-1+1)=lontot+1
                 dim1=digde3(mode,'L')
-                do 21, iel=1,nel
-                lon1=digde4(igr,iel,opt,ipar,dim1,codvoi)
-                lontot=lontot+lon1
-                zi(jrsvi-1+iel+1)=lontot+1
-21              continue
+                do 21 iel = 1, nel
+                    lon1=digde4(igr,iel,opt,ipar,dim1,codvoi)
+                    lontot=lontot+lon1
+                    zi(jrsvi-1+iel+1)=lontot+1
+ 21             continue
                 call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', lontot)
             endif
         endif
-20  end do
-30  continue
+ 20 end do
+ 30 continue
     call jedema()
 end subroutine

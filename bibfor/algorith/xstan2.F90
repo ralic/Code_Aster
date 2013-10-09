@@ -20,7 +20,6 @@ subroutine xstan2(crimax, noma, modele)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -46,6 +45,7 @@ subroutine xstan2(crimax, noma, modele)
 #include "asterfort/wkvect.h"
 #include "asterfort/xcrvol.h"
 #include "asterfort/xpheop.h"
+!
     character(len=8) :: modele, noma
     real(kind=8) :: crimax
 !
@@ -71,7 +71,7 @@ subroutine xstan2(crimax, noma, modele)
     character(len=24) :: geom
     character(len=19) :: ces(7), cel(7), cnxinv, noxfem, cns2, ligrel
     character(len=16) :: notype
-    character(len=8) :: k8bid, typma, lirefe(10), elrefp
+    character(len=8) ::  typma, lirefe(10), elrefp
     character(len=2) :: ch2
     real(kind=8) :: crit, vmoin, vplus, vtot
     integer :: jtypma, jcesd(7), jcesl(7), jcesv(7), iad
@@ -98,10 +98,8 @@ subroutine xstan2(crimax, noma, modele)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, ibid)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ibid)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call jeveuo(modele//'.MAILLE', 'L', jmail)
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XSTAN2.CNCINV'
@@ -136,7 +134,7 @@ subroutine xstan2(crimax, noma, modele)
         call jeveuo(ces(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(ces(i)//'.CESL', 'L', jcesl(i))
         call jeveuo(ces(i)//'.CESV', 'E', jcesv(i))
-10  end do
+ 10 end do
 !
     cpt = 0
 !     BOUCLE SUR LES NOEUDS DU MAILLAGE
@@ -202,9 +200,9 @@ subroutine xstan2(crimax, noma, modele)
                         inoloc = ino2
                         goto 200
                     endif
-60              continue
+ 60             continue
                 ASSERT(.false.)
-200              continue
+200             continue
                 if (zi(jnbsp-1+numa2) .eq. 1) then
                     ifiss = 1
                 else
@@ -220,8 +218,8 @@ subroutine xstan2(crimax, noma, modele)
                     do 220 j = 1, ndim
                         zr(igeom-1+ndim*(ino2-1)+j)=zr(jcoor-1+3*(&
                         nuno2-1)+j)
-220                  continue
-210              continue
+220                 continue
+210             continue
 !
 !           RECUPERATION DU NOMBRE TOTAL DE SOUS ELEMENTS
                 call cesexi('S', jcesd(1), jcesl(1), numa2, 1,&
@@ -240,7 +238,7 @@ subroutine xstan2(crimax, noma, modele)
                             jcesl(3), jcesv(3), numa2, ifiss, vmoin,&
                             vplus, vtot)
                 call jedetr(geom)
-50          continue
+ 50         continue
 !         CALCUL DU CRITERE
             crit=min(vmoin,vplus)/vtot
             if (crit .lt. crimax) then
@@ -266,12 +264,12 @@ subroutine xstan2(crimax, noma, modele)
                             zi(jcesv(2)-1+iad) = 0
                             goto 150
                         endif
-160                  continue
+160                 continue
                     ASSERT(.false.)
-150              continue
+150             continue
             endif
 !
-40      continue
+ 40     continue
 !       ELIMINATION DE LA LISTE DES NOEUDS XFEM SI NECESSAIRE
         lelim = .true.
         do 140 iheav = 1, nheav
@@ -285,12 +283,12 @@ subroutine xstan2(crimax, noma, modele)
             call cesexi('S', jcesd(2), jcesl(2), numa, ino,&
                         ifiss, 1, iad)
             if (zi(jcesv(2)-1+iad) .ge. 1) lelim = .false.
-140      continue
+140     continue
         if (lelim) then
             zl(jnoxfl-1+2*(nuno-1)+1) = .false.
             zl(jnoxfl-1+2*(nuno-1)+2) = .false.
         endif
-20  end do
+ 20 end do
 !
     write(ifm,*)'NOMBRE DE NOEUDS OU LES DDLS H SONT MIS A ZERO :',cpt
 !
@@ -312,6 +310,6 @@ subroutine xstan2(crimax, noma, modele)
         call jeexin(ces(i)//'.CESD', ier)
         if (ier .eq. 0) goto 130
         call detrsd('CHAM_ELEM_S', ces(i))
-130  end do
+130 end do
     call jedema()
 end subroutine

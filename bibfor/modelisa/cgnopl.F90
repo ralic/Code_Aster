@@ -62,7 +62,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idcoor, idlino, ier, iocc, iret, nangle
+    integer ::  idcoor, idlino, iocc, iret, nangle
     integer :: nb, nbno, nbnoe, ndim, ndim1, nprec, nv
     integer :: nvect
     real(kind=8) :: prec, xnorm, xnorm2, zero
@@ -88,8 +88,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
     ndim=3
-    call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ibid,&
-                k8bid, ier)
+    call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8bid)
     if (k8bid .eq. 'OUI') ndim=2
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
@@ -172,8 +171,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES NOEUDS  APPARTENANT
 ! --- AU PLAN OU A LA DROITE :

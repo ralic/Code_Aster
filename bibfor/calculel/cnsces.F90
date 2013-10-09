@@ -20,7 +20,6 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -33,6 +32,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cnsz, cesz, base, cesmoz, typces, mnogaz
 ! ------------------------------------------------------------------
 ! BUT: TRANSFORMER UN CHAM_NO_S EN CHAM_ELEM_S
@@ -75,12 +75,11 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, ibid, ncmp, icmp, jcnsk, jcnsl, jcnsc, jcnsv
+    integer :: ima, ncmp, icmp, jcnsk, jcnsl, jcnsc, jcnsv
     integer :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
     integer :: iad, jnbpt, nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
     integer :: jcemd, jnbsp, ilcnx1, iacnx1, nbpg, ipg, imaref
     integer :: mnogal, mnogad, mnogav, mnogak
-    character(len=1) :: kbid
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: ces, cesmod, cns, mnoga
@@ -106,10 +105,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
     ma = zk8(jcnsk-1+1)
     nomgd = zk8(jcnsk-1+2)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R')
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
@@ -123,29 +120,29 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !
 !     -- PAR DEFAUT : NBSP=1
-    do 10,ima = 1,nbma
-    zi(jnbsp-1+ima) = 1
-    10 end do
+    do 10 ima = 1, nbma
+        zi(jnbsp-1+ima) = 1
+ 10 end do
 !
     call exisd('CHAM_ELEM_S', cesmod, iret)
     ASSERT((typces.ne.'ELGA') .or. (iret.gt.0))
 !
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
-        do 20,ima = 1,nbma
-        zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
-        zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
-20      continue
+        do 20 ima = 1, nbma
+            zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
+            zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
+ 20     continue
     endif
 !
     if (typces .eq. 'ELEM') then
-        do 30,ima = 1,nbma
-        zi(jnbpt-1+ima) = 1
-30      continue
+        do 30 ima = 1, nbma
+            zi(jnbpt-1+ima) = 1
+ 30     continue
     else if (typces.eq.'ELNO') then
-        do 40,ima = 1,nbma
-        zi(jnbpt-1+ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
-40      continue
+        do 40 ima = 1, nbma
+            zi(jnbpt-1+ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
+ 40     continue
     else if (typces.eq.'ELGA') then
 !       DEJA FAIT GRACE A CESMOD
     else
@@ -170,76 +167,76 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
     if (typces .eq. 'ELEM') then
 !     --------------------------
-        do 100,ima = 1,nbma
-        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
-        do 90 icmp = 1, ncmp
+        do 100 ima = 1, nbma
+            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            do 90 icmp = 1, ncmp
 !
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
-            ico = 0
-            do 50,ino = 1,nbno
-            nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-            if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
-50          continue
-            if (ico .ne. nbno) goto 90
+                ico = 0
+                do 50 ino = 1, nbno
+                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
+ 50             continue
+                if (ico .ne. nbno) goto 90
 !
 !         -- CALCUL DE LA MOYENNE ARITHMETIQUE :
-            v = 0.d0
-            do 60,ino = 1,nbno
-            nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-            if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) then
-                v = v + zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
-            endif
-60          continue
-            v = v/nbno
+                v = 0.d0
+                do 60 ino = 1, nbno
+                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) then
+                        v = v + zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
+                    endif
+ 60             continue
+                v = v/nbno
 !
 !
-            do 80,ipt = 1,nbpt
-            do 70,isp = 1,nbsp
-            call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        isp, icmp, iad)
-            ASSERT(iad.lt.0)
-            zl(jcesl-1-iad) = .true.
-            zr(jcesv-1-iad) = v
-70          continue
-80          continue
-90      continue
-100      continue
+                do 80 ipt = 1, nbpt
+                    do 70 isp = 1, nbsp
+                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                    isp, icmp, iad)
+                        ASSERT(iad.lt.0)
+                        zl(jcesl-1-iad) = .true.
+                        zr(jcesv-1-iad) = v
+ 70                 continue
+ 80             continue
+ 90         continue
+100     continue
 !
 !
     else if (typces.eq.'ELNO') then
 !     --------------------------
-        do 150,ima = 1,nbma
-        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
-        ASSERT(nbno.eq.nbpt)
+        do 150 ima = 1, nbma
+            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            ASSERT(nbno.eq.nbpt)
 !
-        do 140 icmp = 1, ncmp
+            do 140 icmp = 1, ncmp
 !
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
-            ico = 0
-            do 110,ino = 1,nbno
-            nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-            if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
-110          continue
-            if (ico .ne. nbno) goto 140
+                ico = 0
+                do 110 ino = 1, nbno
+                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
+110             continue
+                if (ico .ne. nbno) goto 140
 !
-            do 130,ino = 1,nbno
-            nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-            if (.not.zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) goto 130
-            v = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
-            do 120,isp = 1,nbsp
-            call cesexi('C', jcesd, jcesl, ima, ino,&
-                        isp, icmp, iad)
-            ASSERT(iad.lt.0)
-            zl(jcesl-1-iad) = .true.
-            zr(jcesv-1-iad) = v
-120          continue
-130          continue
-140      continue
-150      continue
+                do 130 ino = 1, nbno
+                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    if (.not.zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) goto 130
+                    v = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
+                    do 120 isp = 1, nbsp
+                        call cesexi('C', jcesd, jcesl, ima, ino,&
+                                    isp, icmp, iad)
+                        ASSERT(iad.lt.0)
+                        zl(jcesl-1-iad) = .true.
+                        zr(jcesv-1-iad) = v
+120                 continue
+130             continue
+140         continue
+150     continue
 !
 !
     else if (typces.eq.'ELGA') then
@@ -251,58 +248,58 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
         call jeveuo(mnoga//'.CESV', 'L', mnogav)
         ASSERT(zk8(mnogak).eq.ma)
 !
-        do 210,ima = 1,nbma
-        call cesexi('C', mnogad, mnogal, ima, 1,&
-                    1, 1, iad)
-        if (iad .le. 0) goto 210
-        if (nint(zr(mnogav-1+iad)) .gt. 0) then
-            imaref=ima
-        else
-            imaref=-nint(zr(mnogav-1+iad))
-        endif
-        call cesexi('C', mnogad, mnogal, imaref, 1,&
-                    1, 1, iad)
-        if (iad .le. 0) goto 210
+        do 210 ima = 1, nbma
+            call cesexi('C', mnogad, mnogal, ima, 1,&
+                        1, 1, iad)
+            if (iad .le. 0) goto 210
+            if (nint(zr(mnogav-1+iad)) .gt. 0) then
+                imaref=ima
+            else
+                imaref=-nint(zr(mnogav-1+iad))
+            endif
+            call cesexi('C', mnogad, mnogal, imaref, 1,&
+                        1, 1, iad)
+            if (iad .le. 0) goto 210
 !
-        nbno2 = nint(zr(mnogav-1+iad))
-        nbpg2 = nint(zr(mnogav-1+iad+1))
+            nbno2 = nint(zr(mnogav-1+iad))
+            nbpg2 = nint(zr(mnogav-1+iad+1))
 !
-        nbpg = zi(jcesd-1+5+4* (ima-1)+1)
-        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
-        if (nbno .ne. nbno2 .and. cnsz .eq. '&&VRCIN1.CNS1') nbno = nbno2
-        ASSERT(nbno.eq.nbno2)
-        ASSERT(nbpg.eq.nbpg2)
+            nbpg = zi(jcesd-1+5+4* (ima-1)+1)
+            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            if (nbno .ne. nbno2 .and. cnsz .eq. '&&VRCIN1.CNS1') nbno = nbno2
+            ASSERT(nbno.eq.nbno2)
+            ASSERT(nbpg.eq.nbpg2)
 !
-        do 200 icmp = 1, ncmp
+            do 200 icmp = 1, ncmp
 !
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
-            ico = 0
-            do 160,ino = 1,nbno
-            nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-            if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
-160          continue
-            if (ico .ne. nbno) goto 200
+                ico = 0
+                do 160 ino = 1, nbno
+                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
+160             continue
+                if (ico .ne. nbno) goto 200
 !
-            do 190,ipg = 1,nbpg
-            v = 0.d0
-            do 170,ino = 1,nbno
-            nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-            v1 = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
-            v = v + v1*zr(mnogav-1+iad+1+nbno* (ipg-1)+ ino)
-170          continue
+                do 190 ipg = 1, nbpg
+                    v = 0.d0
+                    do 170 ino = 1, nbno
+                        nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                        v1 = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
+                        v = v + v1*zr(mnogav-1+iad+1+nbno* (ipg-1)+ ino)
+170                 continue
 !
-            do 180,isp = 1,nbsp
-            call cesexi('C', jcesd, jcesl, ima, ipg,&
-                        isp, icmp, iad1)
-            ASSERT(iad1.lt.0)
-            zl(jcesl-1-iad1) = .true.
-            zr(jcesv-1-iad1) = v
-180          continue
-190          continue
+                    do 180 isp = 1, nbsp
+                        call cesexi('C', jcesd, jcesl, ima, ipg,&
+                                    isp, icmp, iad1)
+                        ASSERT(iad1.lt.0)
+                        zl(jcesl-1-iad1) = .true.
+                        zr(jcesv-1-iad1) = v
+180                 continue
+190             continue
 !
-200      continue
-210      continue
+200         continue
+210     continue
 !
     endif
 !

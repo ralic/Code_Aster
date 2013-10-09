@@ -66,11 +66,10 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, iret, ibid, nec, ncmpmx, jdesc, jvale, ngrmx, ncmp
+    integer :: ima, iret, nec, ncmpmx, jdesc, jvale, ngrmx, ncmp
     integer :: jptma, jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
     integer :: cmp, ieq, iad, cmp2, jnocmp, jcorr1, jnbpt, nbpt, ipt
     integer :: jcemd, jnbsp, jconx2, isp, nbsp, jcorr2, kcmp
-    character(len=1) :: kbid
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: cart, ces, cesmod
@@ -82,16 +81,11 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     ces = cesz
     cesmod = cesmoz
 !
-    call dismoi('F', 'NOM_MAILLA', cart, 'CARTE', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NOM_GD', cart, 'CARTE', ibid,&
-                nomgd, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ibid)
+    call dismoi('NOM_MAILLA', cart, 'CARTE', repk=ma)
+    call dismoi('NOM_GD', cart, 'CARTE', repk=nomgd)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !
@@ -104,27 +98,27 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     call exisd('CHAM_ELEM_S', cesmod, iret)
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
-        do 10,ima = 1,nbma
-        zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
-        zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
-10      continue
+        do 10 ima = 1, nbma
+            zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
+            zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
+ 10     continue
     else
-        do 20,ima = 1,nbma
-        zi(jnbpt-1+ima) = 1
-        zi(jnbsp-1+ima) = 1
-20      continue
+        do 20 ima = 1, nbma
+            zi(jnbpt-1+ima) = 1
+            zi(jnbsp-1+ima) = 1
+ 20     continue
     endif
 !
 !
     if (typces .eq. 'ELEM') then
-        do 30,ima = 1,nbma
-        zi(jnbpt-1+ima) = 1
-        zi(jnbsp-1+ima) = 1
-30      continue
+        do 30 ima = 1, nbma
+            zi(jnbpt-1+ima) = 1
+            zi(jnbsp-1+ima) = 1
+ 30     continue
     else if (typces.eq.'ELNO') then
-        do 40,ima = 1,nbma
-        zi(jnbpt-1+ima) = zi(jconx2+ima) - zi(jconx2+ima-1)
-40      continue
+        do 40 ima = 1, nbma
+            zi(jnbpt-1+ima) = zi(jconx2+ima) - zi(jconx2+ima-1)
+ 40     continue
     endif
 !
 !
@@ -174,62 +168,62 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !
 !     6- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
-    do 120,ima = 1,nbma
-    ient = zi(jptma-1+ima)
-    if (ient .eq. 0) goto 120
+    do 120 ima = 1, nbma
+        ient = zi(jptma-1+ima)
+        if (ient .eq. 0) goto 120
 !
-    deb1 = (ient-1)*ncmpmx + 1
-    debgd = 3 + 2*ngrmx + (ient-1)*nec + 1
-    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-    nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+        deb1 = (ient-1)*ncmpmx + 1
+        debgd = 3 + 2*ngrmx + (ient-1)*nec + 1
+        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
 !
-    ico = 0
-    do 110 kcmp = 1, ncmp
-        cmp = zi(jcorr2-1+kcmp)
-        if (.not. (exisdg(zi(jdesc-1+debgd),cmp))) goto 110
-        ico = ico + 1
-        ieq = deb1 - 1 + ico
+        ico = 0
+        do 110 kcmp = 1, ncmp
+            cmp = zi(jcorr2-1+kcmp)
+            if (.not. (exisdg(zi(jdesc-1+debgd),cmp))) goto 110
+            ico = ico + 1
+            ieq = deb1 - 1 + ico
 !
-        cmp2 = zi(jcorr1-1+cmp)
-        ASSERT(cmp2.gt.0)
-        ASSERT(cmp2.le.ncmp)
+            cmp2 = zi(jcorr1-1+cmp)
+            ASSERT(cmp2.gt.0)
+            ASSERT(cmp2.le.ncmp)
 !
-        do 100,ipt = 1,nbpt
-        do 90,isp = 1,nbsp
-        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                    isp, cmp2, iad)
-        ASSERT(iad.le.0)
-        if (iad .eq. 0) goto 110
+            do 100 ipt = 1, nbpt
+                do 90 isp = 1, nbsp
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, cmp2, iad)
+                    ASSERT(iad.le.0)
+                    if (iad .eq. 0) goto 110
 !
 !
 !         -- RECOPIE DE LA VALEUR:
-        zl(jcesl-1-iad) = .true.
-        if (tsca .eq. 'R') then
-            zr(jcesv-1-iad) = zr(jvale-1+ieq)
-        else if (tsca.eq.'C') then
-            zc(jcesv-1-iad) = zc(jvale-1+ieq)
-        else if (tsca.eq.'I') then
-            zi(jcesv-1-iad) = zi(jvale-1+ieq)
-        else if (tsca.eq.'L') then
-            zl(jcesv-1-iad) = zl(jvale-1+ieq)
-        else if (tsca.eq.'K8') then
-            zk8(jcesv-1-iad) = zk8(jvale-1+ieq)
-        else if (tsca.eq.'K16') then
-            zk16(jcesv-1-iad) = zk16(jvale-1+ieq)
-        else if (tsca.eq.'K24') then
-            zk24(jcesv-1-iad) = zk24(jvale-1+ieq)
-        else if (tsca.eq.'K32') then
-            zk32(jcesv-1-iad) = zk32(jvale-1+ieq)
-        else if (tsca.eq.'K80') then
-            zk80(jcesv-1-iad) = zk80(jvale-1+ieq)
-        else
-            ASSERT(.false.)
-        endif
-90      continue
-100      continue
-110  continue
+                    zl(jcesl-1-iad) = .true.
+                    if (tsca .eq. 'R') then
+                        zr(jcesv-1-iad) = zr(jvale-1+ieq)
+                    else if (tsca.eq.'C') then
+                        zc(jcesv-1-iad) = zc(jvale-1+ieq)
+                    else if (tsca.eq.'I') then
+                        zi(jcesv-1-iad) = zi(jvale-1+ieq)
+                    else if (tsca.eq.'L') then
+                        zl(jcesv-1-iad) = zl(jvale-1+ieq)
+                    else if (tsca.eq.'K8') then
+                        zk8(jcesv-1-iad) = zk8(jvale-1+ieq)
+                    else if (tsca.eq.'K16') then
+                        zk16(jcesv-1-iad) = zk16(jvale-1+ieq)
+                    else if (tsca.eq.'K24') then
+                        zk24(jcesv-1-iad) = zk24(jvale-1+ieq)
+                    else if (tsca.eq.'K32') then
+                        zk32(jcesv-1-iad) = zk32(jvale-1+ieq)
+                    else if (tsca.eq.'K80') then
+                        zk80(jcesv-1-iad) = zk80(jvale-1+ieq)
+                    else
+                        ASSERT(.false.)
+                    endif
+ 90             continue
+100         continue
+110     continue
 !
-    120 end do
+120 end do
 !
 !
 !     7- RETASSAGE DE CES :

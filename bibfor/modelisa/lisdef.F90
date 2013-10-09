@@ -140,7 +140,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
     character(len=8) :: paraf(nbtyth), parar(nbtyth), parac(nbtyth)
     character(len=6) :: typlig(nbtyth)
 !
-    integer :: indxch, iret, genrec(1), ibid, iposit, nbch, i, itypob
+    integer :: indxch, iret, genrec(1), iposit, nbch, i, itypob
     character(len=16) :: option, typeco
     character(len=24) :: typcha, gencha, nomobj, parcha, genold, motcle
     character(len=8) :: charge, typech, lpain, nomgd
@@ -342,8 +342,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! --------- CHARGEMENT CINEMATIQUE (AFFE_CHAR_CINE)
 !
-                call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                            typcha, iret)
+                call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C',&
+                            ier=iret)
                 if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
                     (typcha(1:4).eq.'CIAC')) then
                     iposit = gencod(indxch)
@@ -419,8 +419,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! --------- CHARGEMENT CINEMATIQUE (AFFE_CHAR_CINE)
 !
-                call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                            typcha, iret)
+                call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C',&
+                            ier=iret)
                 if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
                     (typcha(1:4).eq.'CIAC')) then
                     iposit = mcfcod(indxch)
@@ -529,8 +529,8 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             endif
         else
             charge = prefob(1:8)
-            call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                        typcha, iret)
+            call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C',&
+                        ier=iret)
             if (iret .eq. 1) then
                 call utmess('F', 'CHARGES_3')
             endif
@@ -554,8 +554,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 carte = prefob(1:13)//nomob(indxch)
                 call exisd('CARTE', carte, iexi)
                 if (iexi .eq. 1) then
-                    call dismoi('F', 'PARA_INST', carte, 'CARTE', ibid,&
-                                parcha, iret)
+                    call dismoi('PARA_INST', carte, 'CARTE', repk=parcha)
                     if (parcha .eq. 'OUI') typech = 'FONC_FT'
                 endif
             end do

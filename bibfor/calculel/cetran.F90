@@ -1,5 +1,5 @@
 subroutine cetran(lima1, lima2, nbma, chs1, chs2)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -35,7 +35,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
 !
 !
-    integer :: ibid, nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
+    integer ::  nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
     integer :: iad2, jce1k, jce1d, jce1c, jce1v, jce1l, icmp1, jce2k, jce2d
     integer :: jce2c, jce2v, jce2l, icmp2, ima, ima1, ima2
     character(len=3) :: tsca
@@ -68,8 +68,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
     ASSERT(nomgd2.eq.nomgd)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     do 10 ima = 1, nbma
 !
@@ -119,13 +118,13 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
                         ASSERT(.false.)
                     endif
 !
-40              continue
+ 40             continue
 !
-30          continue
+ 30         continue
 !
-20      continue
+ 20     continue
 !
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

@@ -68,14 +68,14 @@ subroutine ordlrl(charge, lisrel, nomgd)
     parameter(nmocl=300)
     complex(kind=8) :: coproc, rapcoc
     character(len=4) :: typcoe
-    character(len=8) :: nomnoe, k8bid
+    character(len=8) :: nomnoe
     character(len=8) :: noma, mod, cmp, nomcmp(nmocl)
     character(len=16) :: kidrel
     character(len=19) :: ligrmo
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
-    integer :: i, ibid, icmp, icomp, idcoma, iddl, iddl1, iddl2, ideca1, ideca2
-    integer :: idecal, ier, ierd, in, indmax, ino
+    integer :: i, icmp, icomp, idcoma, iddl, iddl1, iddl2, ideca1, ideca2
+    integer :: idecal, in, indmax, ino
     integer :: inocc, inom, inorel, ipntr1, ipntr2, ipntrl, irela, irela1
     integer :: irela2
     integer :: jnoma, jprnm, jrlco, jrlco1, jrlco2, jrlcoc, jrlcof, jrlcor
@@ -91,8 +91,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 ! - Mesh and model
 !
-    call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     ligrmo=mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
     noma=zk8(jnoma)
@@ -105,8 +104,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
     do i = 1, nbcmp
         nomcmp(i)=zk8(inom-1+i)
     end do
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                k8bid, ierd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
@@ -323,9 +321,9 @@ subroutine ordlrl(charge, lisrel, nomgd)
                             icomp=1
                             goto 120
                         endif
-110                      continue
+110                     continue
                     enddo
-120                  continue
+120                 continue
                     if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
                 endif
             enddo
@@ -362,16 +360,16 @@ subroutine ordlrl(charge, lisrel, nomgd)
                             icomp=1
                             goto 150
                         endif
-140                      continue
+140                     continue
                     enddo
-150                  continue
+150                 continue
                     if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
                 endif
             enddo
         else
             ASSERT(.false.)
         endif
-170      continue
+170     continue
     end do
 !
 !

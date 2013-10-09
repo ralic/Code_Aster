@@ -76,8 +76,7 @@ subroutine op0014()
     mfac = matfac
     call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     mass = matass
-    call dismoi('F', 'METH_RESO', mass, 'MATR_ASSE', ibid,&
-                metres, ibid)
+    call dismoi('METH_RESO', mass, 'MATR_ASSE', repk=metres)
 !
     if (metres .eq. 'GCPC' .or. metres .eq. 'PETSC') then
         call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
@@ -102,8 +101,7 @@ subroutine op0014()
 !
         if (precon .eq. 'LDLT_INC') then
 !          ON ECRIT DANS LA SD SOLVEUR LE TYPE DE PRECONDITIONNEU
-            call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
-                        solveu, ier1)
+            call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
             call jeveuo(solveu//'.SLVK', 'E', jslvk)
             zk24(jslvk-1+2) = precon
 !
@@ -122,8 +120,7 @@ subroutine op0014()
             call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
 !
 !      --- ON REMPLIT LA SD_SOLVEUR GCPC
-            call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
-                        solveu, ier1)
+            call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
             call jeveuo(solveu//'.SLVK', 'E', jslvk)
             call jeveuo(solveu//'.SLVR', 'E', jslvr)
             call jeveuo(solveu//'.SLVI', 'E', jslvi)
@@ -163,8 +160,7 @@ subroutine op0014()
         epsmat=-1.d0
         eps=-1.d0
         if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)
-        call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
-                    solveu, ier1)
+        call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
         call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
         call getvtx(' ', 'TYPE_RESOL', scal=ktypr, nbret=ibid)
         call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps, nbret=ibid)
@@ -200,8 +196,7 @@ subroutine op0014()
         if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)
 !        ON EST OBLIGE DE MODIFIER DIRECTEMENT MASS
         mfac=mass
-        call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
-                    solveu, ier1)
+        call dismoi('SOLVEUR', mass, 'MATR_ASSE', repk=solveu)
         call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
         call jeveuo(solveu//'.SLVK', 'E', jslvk)
         call jeveuo(solveu//'.SLVR', 'E', jslvr)

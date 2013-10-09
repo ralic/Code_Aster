@@ -19,7 +19,6 @@ subroutine xmiszl(vecinc, defico, noma)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cnocns.h"
@@ -37,6 +36,7 @@ subroutine xmiszl(vecinc, defico, noma)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: vecinc
     character(len=24) :: defico
     character(len=8) :: noma
@@ -62,7 +62,7 @@ subroutine xmiszl(vecinc, defico, noma)
     integer :: ntmae, jconx1, jconx2
     integer :: numno, nummae, nno, posmae
     integer :: ino, imae, i
-    integer :: ibid, nbno, ier, jtab, zmesx
+    integer :: ibid, nbno, jtab, zmesx
     logical :: lcumul(4)
     real(kind=8) :: lcoefr(4)
     character(len=19) :: prno, lichs(4)
@@ -72,7 +72,7 @@ subroutine xmiszl(vecinc, defico, noma)
     character(len=24) :: maescx
     integer :: jmaesx
     complex(kind=8) :: c16bid
-    character(len=8) ::  nommae
+    character(len=8) :: nommae
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,11 +104,11 @@ subroutine xmiszl(vecinc, defico, noma)
             numno = zi(jconx1-1+zi(jconx2+nummae-1)+ino-1)
             do 30 i = 1, nbno
                 if (numno .eq. zi(jtab+i-1)) goto 20
-30          continue
+ 30         continue
             nbno = nbno+1
             zi(jtab+nbno-1) = numno
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! --- EXTRACTION CHAM_NO_S VECTEUR DES INCONNUES
 !
@@ -118,8 +118,7 @@ subroutine xmiszl(vecinc, defico, noma)
     cns1d = '&&XMISZL.CNS1D'
     cns1e = '&&XMISZL.CNS1E'
     call cnocns(vecinc, 'V', cns1)
-    call dismoi('F', 'PROF_CHNO', vecinc, 'CHAM_NO', ibid,&
-                prno, ier)
+    call dismoi('PROF_CHNO', vecinc, 'CHAM_NO', repk=prno)
 !
 ! --- REDUCTION CHAM_NO_S SUR LAGS_C/LAG_F1/LAG_F2
 !
@@ -139,7 +138,7 @@ subroutine xmiszl(vecinc, defico, noma)
         zr(jcns1b-1+zi(jtab+ino-1)) = 0.d0
         zr(jcns1d-1+zi(jtab+ino-1)) = 0.d0
         zr(jcns1e-1+zi(jtab+ino-1)) = 0.d0
-11  end do
+ 11 end do
 !
 ! --- FUSION CHAM_NO_S POUR CREATION CHAM_NO_S CNS1C
 !

@@ -91,13 +91,13 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     parameter ( nbfamx = 20 )
 !
     integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, ifam
-    integer :: itype, nb1, nbelr, jmolo, ibid
+    integer :: itype, nb1, nbelr, jmolo
     integer :: ifm, nivinf, jcelk, jceld, igrel
-    integer :: ierd, repi, jliel, nbgrel, iordr
+    integer :: ierd, jliel, nbgrel, iordr
     integer :: iaux
 !
     character(len=4) :: tych
-    character(len=8) :: elrefe, lielrf(nbfamx), fapg(nbfamx), nomgd, famil, kbid
+    character(len=8) :: elrefe, lielrf(nbfamx), fapg(nbfamx), nomgd, famil
     character(len=16) :: nomsym, valk(2)
     character(len=19) :: ligrel, resu
 !
@@ -126,8 +126,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         elrefe = lielrf(1)
 !
 !
-        call dismoi('F', 'TYPE_CHAMP', chanom, 'CHAMP', repi,&
-                    tych, ierd)
+        call dismoi('TYPE_CHAMP', chanom, 'CHAMP', repk=tych)
         ASSERT(tych.eq.typech)
         call jeveuo(chanom//'.CELK', 'L', jcelk)
         call jeveuo(chanom//'.CELD', 'L', jceld)
@@ -165,7 +164,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
         ASSERT(.false.)
 !
-32      continue
+ 32     continue
 !
     endif
 !
@@ -175,10 +174,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     if (codret .eq. 0) then
 !
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-        call dismoi('F', 'NOM_GD', chanom, 'CHAMP', ibid,&
-                    nomgd, ierd)
-        call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                    kbid, ierd)
+        call dismoi('NOM_GD', chanom, 'CHAMP', repk=nomgd)
+        call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
         kfpg = zi(jmolo-1+4+nec+1)
         call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nomfpg)
         ASSERT(elrefe.eq.nomfpg(1:8))
@@ -236,12 +233,12 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                 write (ifm,60001) 'NOEUDS         '
                 do 6011 , iaux = 1 , nno
                 write (ifm,60011) iaux,refcoo(iaux)
-6011              continue
+6011             continue
                 write (ifm,60021)
                 write (ifm,60001) 'POINTS DE GAUSS'
                 do 6021 , iaux = 1 , nbpg
                 write (ifm,60011) iaux,gscoo(iaux)
-6021              continue
+6021             continue
                 write (ifm,60021)
 !
 !     6.2. DIMENSION 2
@@ -251,13 +248,13 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                 do 6012 , iaux = 1 , nno
                 write (ifm,60012) iaux, refcoo(ndim*(iaux-1)+1),&
                     refcoo(ndim*(iaux-1)+2)
-6012              continue
+6012             continue
                 write (ifm,60022)
                 write (ifm,60002) 'POINTS DE GAUSS'
                 do 6022 , iaux = 1 , nbpg
                 write (ifm,60012) iaux, gscoo(ndim*(iaux-1)+1),&
                     gscoo(ndim*(iaux-1)+2)
-6022              continue
+6022             continue
                 write (ifm,60022)
 !
 !     6.3. DIMENSION 3
@@ -267,20 +264,20 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                 do 6013 , iaux = 1 , nno
                 write (ifm,60013) iaux, refcoo(ndim*(iaux-1)+1),&
                     refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
-6013              continue
+6013             continue
                 write (ifm,60023)
                 write (ifm,60003) 'POINTS DE GAUSS'
                 do 6023 , iaux = 1 , nbpg
                 write (ifm,60013) iaux, gscoo(ndim*(iaux-1)+1),&
                     gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
-6023              continue
+6023             continue
                 write (ifm,60023)
             endif
 !
             write (ifm,60004)
             do 6024 , iaux = 1 , nbpg
             write (ifm,60011) iaux, wg(iaux)
-6024          continue
+6024         continue
             write (ifm,60021)
 !
         endif

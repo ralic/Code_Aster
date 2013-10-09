@@ -18,7 +18,7 @@ subroutine chor2c(lischa, vecele)
 !
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/corich.h"
@@ -53,7 +53,7 @@ subroutine chor2c(lischa, vecele)
     character(len=19) :: chamno
     integer :: jcn
     character(len=24) :: resuel
-    character(len=8) ::  typech, typsca
+    character(len=8) :: typech, typsca
     integer :: iret, kvale, ibid, ichar
     integer :: ivec, nbvec, nbvdim, ivale, nbvale, jvec
     character(len=4) :: tyresl
@@ -98,11 +98,9 @@ subroutine chor2c(lischa, vecele)
 !
 ! ----- TYPE DU CHARGEMENT
 !
-        call dismoi('F', 'TYPE_CHAMP', resuel, 'CHAMP', ibid,&
-                    tyresl, ibid)
+        call dismoi('TYPE_CHAMP', resuel, 'CHAMP', repk=tyresl)
         if (tyresl .eq. 'RESL') then
-            call dismoi('F', 'TYPE_SCA', resuel, 'RESUELEM', ibid,&
-                        typsca, ibid)
+            call dismoi('TYPE_SCA', resuel, 'RESUELEM', repk=typsca)
             if (typsca .eq. 'R') then
                 typchn = 'R'
             else if (typsca.eq.'C') then
@@ -138,13 +136,13 @@ subroutine chor2c(lischa, vecele)
             call wkvect(chamno//'.VALE', 'V V C', nbvale, jcn)
             do 20 ivale = 1, nbvale
                 zc(jcn+ivale-1) = dcmplx(zr(kvale+ivale-1),0.d0)
-20          continue
+ 20         continue
 !
 ! ------- CHANGEMENT DE LA REFERENCE A LA GRANDEUR
 !
             call sdchgd(chamno, 'C')
         endif
-10  end do
+ 10 end do
 !
     call jedetr('&&CHOR2C.COPIE_TRAVAIL')
     call jedema()

@@ -68,7 +68,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, iddl, ie, ierd, ii, inoeud, iordr
+    integer :: ibid, iddl, ie, ii, inoeud, iordr
     integer :: iret, lacce, lfon, lg1, lg2, lpro, lvacc
     integer :: lvale, lvar, nbacc, nusp, vali
     real(kind=8) :: valr
@@ -77,8 +77,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
     call getres(k8b, typcon, nomcmd)
 ! GETTCO ne fonctionne pas avec les noms compose issus de sensibilite
 !      CALL GETTCO(RESU,TYPRES)
-    call dismoi('F', 'TYPE_RESU', resu(1:8), 'RESULTAT', ibid,&
-                typres, ierd)
+    call dismoi('TYPE_RESU', resu(1:8), 'RESULTAT', repk=typres)
 !
     call rsnopa(resu, 0, '&&FOCRR0.VAR.ACCES', nbacc, ibid)
     call jeexin('&&FOCRR0.VAR.ACCES', iret)
@@ -111,14 +110,11 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
     lfon = lvar + nbordr
     call rsexch('F', resu, nomcha, lordr(1), cham19,&
                 ie)
-    call dismoi('F', 'TYPE_SUPERVIS', cham19, 'CHAMP', ibid,&
-                typcha, ie)
+    call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
-        call dismoi('F', 'PROF_CHNO', cham19, 'CHAM_NO', ibid,&
-                    profch, ie)
-        call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_NO', ibid,&
-                    noma, ie)
+        call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=profch)
+        call dismoi('NOM_MAILLA', cham19, 'CHAM_NO', repk=noma)
         call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
                     iddl)
         if (inoeud .eq. 0) then
@@ -139,8 +135,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
             call rsexch(' ', resu, nomcha, lordr(iordr), cham19,&
                         ie)
             if (ie .eq. 0) then
-                call dismoi('F', 'PROF_CHNO', cham19, 'CHAM_NO', ibid,&
-                            profc2, ie)
+                call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=profc2)
                 if (profc2 .ne. profch) then
                     profch = profc2
                     call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
@@ -172,7 +167,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                 call jelibe(cham19//'.VALE')
             endif
             call jedema()
-10      continue
+ 10     continue
 !
     else if (typcha(1:9).eq.'CHAM_ELEM') then
         noeuz = noeud
@@ -181,8 +176,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 ! ---    VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 ! ---    ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
 !        -------------------------------------------------------------
-        call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
-                    typch2, ie)
+        call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch2)
         if (typch2 .eq. 'ELEM') then
             npoinz = 1
             nuspz = 1
@@ -200,12 +194,9 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                 call utmess('F', 'CHAMPS_13')
             endif
         endif
-        call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_ELEM', ibid,&
-                    noma, ie)
-        call dismoi('F', 'NOM_GD', cham19, 'CHAM_ELEM', ibid,&
-                    nogd, ie)
-        call dismoi('F', 'TYPE_SCA', nogd, 'GRANDEUR', ibid,&
-                    type, ie)
+        call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=noma)
+        call dismoi('NOM_GD', cham19, 'CHAM_ELEM', repk=nogd)
+        call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=type)
         ii = 0
         do 20 iordr = 1, nbordr
             call jemarq()
@@ -232,7 +223,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                 endif
             endif
             call jedema()
-20      continue
+ 20     continue
     else
         call utmess('F', 'UTILITAI_94', sk=typcha)
     endif

@@ -61,7 +61,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: iam, ib, idiff, ie, im, indic, iv, j, jabsc, jbasf, jcodim, jnuor
+    integer :: iam, ib, idiff, im, indic, iv, j, jabsc, jbasf, jcodim, jnuor
     integer :: jphie, jpoids, jrhoe, kchref, kfreq, kfsic, kmasg, knumo
     integer :: krefe, kvite, lamog, lires, lmasg, lomeg, lprofv, n1, n2, nbamor
     integer :: nbmcfc, nbnoeu, neq, nmp, nbtrou
@@ -130,18 +130,14 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
      &                                 iv,'.REFE'
     call jeveuo(chrefe, 'L', kchref)
     mailla = zk24(kchref)(1:8)
-    call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbnoeu,&
-                k8b, ie)
+    call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbnoeu)
 !
 !
 ! 4.  RECUPERATION DU NOMBRE D'EQUATIONS DU MODELE
 !     --------------------------------------------
-    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ib,&
-                matass, ie)
-    call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ib,&
-                numddl, ie)
-    call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
-                k8b, ie)
+    call dismoi('REF_RIGI_PREM', nombm, 'RESU_DYNA', repk=matass)
+    call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
+    call dismoi('NB_EQUA', matass, 'MATR_ASSE', repi=neq)
 !
 !
 ! 5.  RECUPERATION DU NOMBRE DE MODE SUR BASE COMPLETE
@@ -150,7 +146,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
     call rsorac(nombm, 'LONUTI', ib, r8b, k8b,&
                 c16b, 0.0d0, k8b, tmod, 1,&
                 nbtrou)
-      nbm0=tmod(1)          
+    nbm0=tmod(1)
 !     NBM0 = NBMCFC
 !
     call getvis('SCHEMA_TEMPS', 'NB_MODE', iocc=1, scal=nbmode, nbret=n1)
@@ -189,7 +185,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                     0, sjv=lmasg, styp=k8b)
         zr(jmasg+im-1) = zr(lmasg)
         zl(jlocf+im-1) = .false.
-10  continue
+ 10 continue
 !
 ! 6.3 AMORTISSEMENTS MODAUX
 !     STRUCTURE NON COUPLEE AVEC LE FLUIDE
@@ -218,7 +214,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                 call jeveuo(listam//'           .VALE', 'L', lamog)
                 do 20 iam = 1, nbmode
                     zr(jamog+iam-1) = zr(lamog+iam-1)
-20              continue
+ 20             continue
             endif
         else
             idiff = nbmode - nbamor
@@ -233,16 +229,16 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                 call jeveuo(listam//'           .VALE', 'L', lamog)
                 do 30 iam = 1, nbamor
                     zr(jamog+iam-1) = zr(lamog+iam-1)
-30              continue
+ 30             continue
             endif
             xamor = zr(jamog+nbamor-1)
             do 31 iam = nbamor+1, nbmode
                 zr(jamog+iam-1) = xamor
-31          continue
+ 31         continue
         endif
         do 40 im = 1, nbmode
             zr(jamo1+im-1) = 2.0d0 * zr(jamog+im-1) * zr(jmasg+im-1) * zr(jpuls+im-1)
-40      continue
+ 40     continue
     endif
 !
 ! 6.4 DEFORMEES MODALES
@@ -278,7 +274,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             zr(jamo1+im-1) = 2.0d0 * zr(jamog+im-1) * zr(jmasg+im-1) * zr(jpuls+im-1)
             zl(jlocf+im-1) = .true.
         endif
-50  continue
+ 50 continue
 !
 !
 ! 7.  RECUPERATION DES CARACTERISTIQUES DE LA CONFIGURATION ETUDIEE
@@ -288,7 +284,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
     call wkvect('&&MDITMI.NUOR', 'V V I', nbmode, jnuor)
     do 60 j = 1, nbmode
         zi(jnuor+j-1) = j
-60  continue
+ 60 continue
 !
     if (itypfl .eq. 1) then
         call wkvect('&&MDITMI.TEMP.IRES', 'V V I', nbnoeu, lires)

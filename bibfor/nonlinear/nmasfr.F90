@@ -57,7 +57,7 @@ subroutine nmasfr(defico, resoco, matass)
     character(len=14) :: numedf
     character(len=24) :: nosdco
     integer :: jnosdc
-    integer :: ibid, ier, nbliac
+    integer ::  nbliac
     character(len=19) :: matrcf
     character(len=24) :: limat(2)
     real(kind=8) :: coefmu(2)
@@ -100,12 +100,11 @@ subroutine nmasfr(defico, resoco, matass)
     call mtcmbl(2, typcst, coefmu, limat, matass,&
                 ' ', numedf, 'ELIM1')
     call infbav()
-    call dismoi('F', 'NOM_NUME_DDL', matrcf, 'MATR_ASSE', ibid,&
-                numedf, ier)
+    call dismoi('NOM_NUME_DDL', matrcf, 'MATR_ASSE', repk=numedf)
     call detrsd('MATR_ASSE', matrcf)
     call detrsd('NUME_DDL', numedf)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

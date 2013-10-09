@@ -1,7 +1,6 @@
 subroutine fonno8(resu, noma, tablev, vnor, vect)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -13,6 +12,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/panbno.h"
+!
     character(len=8) :: noma, resu
     integer :: tablev(2)
     real(kind=8) :: vect(3), vnor(2, 3)
@@ -54,7 +54,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
     integer :: jcoor, jconx, jfon, jmale
     integer :: nblev, nn, nn2, nbnott(3)
     real(kind=8) :: xg, yg, zg
-    character(len=8) :: k8b, type
+    character(len=8) ::  type
 !
 !     -----------------------------------------------------------------
 !
@@ -77,8 +77,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
         itypma = iatyma-1+tablev(inp)
 !
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypma)), type)
-        call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn2,&
-                    k8b, iret)
+        call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn2)
 !
         do 210 ilev = 1, nblev
             comp = 0
@@ -87,8 +86,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
             ityp = iatyma-1+iret
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-            call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn,&
-                        k8b, iret)
+            call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
 !
             do 220 inn = 1, nn
                 do 230 inn2 = 1, nn2
@@ -96,12 +94,12 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
                         comp=comp+1
                         if (comp .eq. nn) goto 300
                     endif
-230              continue
-220          continue
-210      continue
-200  end do
+230             continue
+220         continue
+210     continue
+200 end do
 !
-300  continue
+300 continue
 !
 !     CALCUL DES COORDONNEES DU CENTRE DE GRAVITE
     call panbno(zi(itypma), nbnott)
@@ -113,7 +111,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
         xg=xg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 1)
         yg=yg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 2)
         zg=zg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 3)
-240  end do
+240 end do
 !
     call jeexin(resu//'.FOND.NOEU', ifon)
     if (ifon .ne. 0) then

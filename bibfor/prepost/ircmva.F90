@@ -85,10 +85,10 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
 !
 !
     character(len=8) :: part, gd, valk(2), typcha
-    integer :: iaux, jaux, kaux, itype, ibid
+    integer :: iaux, jaux, kaux, itype
     integer :: adsvxx, adslxx
     integer :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
-    integer :: ifm, nivinf, ier
+    integer :: ifm, nivinf
 !
     logical :: logaux, lprolz
 !
@@ -100,8 +100,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
     gd=zk8(adsk-1+2)
     codret=0
 !
-    call dismoi('F', 'TYPE_SCA', gd, 'GRANDEUR', ibid,&
-                typcha, ier)
+    call dismoi('TYPE_SCA', gd, 'GRANDEUR', repk=typcha)
 !
     if (typcha .eq. 'R') then
         itype=1
@@ -179,9 +178,9 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
             lprolz=.true.
             val(nrcmp,1,1,jaux) = 0.d0
         endif
-211      continue
+211     continue
 !
-21      continue
+ 21     continue
 !
         if (lprolz) codret = 100
 !
@@ -249,9 +248,9 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
                                 jaux)= dimag(zc(adsv-1+kaux))
                 endif
             endif
-2211          continue
+2211         continue
 !
-221          continue
+221         continue
 !
         else
 !
@@ -274,14 +273,14 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
                                     zc(adsv-1+kaux))
                 endif
             endif
-2222          continue
-2221          continue
+2222         continue
+2221         continue
 !
-222          continue
+222         continue
 !
         endif
 !
-22      continue
+ 22     continue
 !
     endif
 !

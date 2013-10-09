@@ -73,7 +73,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idcoor, idlima, idnoeu, ier, ima, ino
+    integer :: ibid, idcoor, idlima, idnoeu, ima, ino
     integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
     integer :: nbnod, ndim, ndim1, ndist, numnoe, nv, nvect
 !
@@ -116,8 +116,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
-    call dismoi('F', 'Z_CST', noma, 'MAILLAGE', ndim,&
-                k8bid, ier)
+    call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8bid)
     if (k8bid(1:3) .eq. 'OUI') then
         ndim = 2
     else
@@ -217,8 +216,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmai,&
-                k8bid, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmai)
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES MAILLES APPARTENANT AU
 ! --- CYLINDRE :
@@ -294,7 +292,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
                 endif
             endif
 !
-20      continue
+ 20     continue
 !
         if (selec .eq. 'TOUS') then
             if (nbnod .eq. nbno) then
@@ -312,7 +310,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
             endif
         endif
 !
-10  end do
+ 10 end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

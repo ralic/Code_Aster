@@ -102,8 +102,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
     npvneg=-9999
 !
     solveu=solvez
-    if (solveu .eq. ' ') call dismoi('F', 'SOLVEUR', matas, 'MATR_ASSE', ibid,&
-                                     solveu, ibid)
+    if (solveu .eq. ' ') call dismoi('SOLVEUR', matas, 'MATR_ASSE', repk=solveu)
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     metres = zk24(islvk)
 !
@@ -113,10 +112,8 @@ subroutine preres(solvez, base, iret, matpre, matass,&
         call cheksd(solveu, 'SD_SOLVEUR', ibid)
     endif
 !
-    call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
-    call dismoi('F', 'MATR_DISTR', matas, 'MATR_ASSE', ibid,&
-                kmatd, ibid)
+    call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
+    call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
 !
     if (kmpic .eq. 'NON') then
         if (metres .eq. 'MUMPS' .or. ( metres.eq.'PETSC'.and.kmatd.eq.'OUI')) then

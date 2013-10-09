@@ -58,8 +58,8 @@ subroutine calyrc(chargz)
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !-----------------------------------------------------------------------
 !
-    integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, ier, nocc, iocc
-    integer :: ibid, jnoma, nnomx, idmax, idnomn, idcoef, jcmuc, idnomd
+    integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
+    integer ::  jnoma, nnomx, idmax, idnomn, idcoef, jcmuc, idnomd
     integer :: idirec, idimen, iagma1, iagma2, nbma1, nbma2
     integer :: nbno2, idcal1, idcal2, nul
     integer :: iconb1, iconu1, icocf1, iconb2, iconu2, icocf2
@@ -76,7 +76,7 @@ subroutine calyrc(chargz)
     character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe, typlia
-    character(len=8) :: k8b, noma, mo, m8blan
+    character(len=8) ::  noma, mo, m8blan
     character(len=8) :: kbeta, nono1, nono2, charge, cmp, ddl2, listyp(10)
     character(len=16) :: motfac, cores1, cores2, tymocl(4), motcle(4), nomcmd
     character(len=19) :: ligrmo
@@ -122,14 +122,12 @@ subroutine calyrc(chargz)
     ndim1 = 3
     lreori = .false.
 !
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mo, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mo)
     ligrmo = mo//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
     noma = zk8(jnoma)
 !
-    call dismoi('F', 'DIM_GEOM', mo, 'MODELE', ndim,&
-                k8b, ier)
+    call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -153,8 +151,7 @@ subroutine calyrc(chargz)
         listyp(10) = 'SEG4'
     endif
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nnomx,&
-                kb, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnomx)
     idmax = nnomx + 3
     call wkvect('&&CALYRC.NOMNOE', 'V V K8', idmax, idnomn)
     call wkvect('&&CALYRC.NOMDDL', 'V V K8', idmax, idnomd)

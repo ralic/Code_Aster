@@ -37,10 +37,10 @@ subroutine rcmate(chmat, nomail, nomode)
 !  IN : NOMAIL : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
 !
-    integer ::  nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, ier, nbcmp
-    integer ::  jad
+    integer :: nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, nbcmp
+    integer :: jad
     character(len=4) :: oui
-    character(len=8) :: k8b, nommat, typmcl(2)
+    character(len=8) ::  nommat, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=24) :: chamat, mesmai
 ! ----------------------------------------------------------------------
@@ -52,13 +52,12 @@ subroutine rcmate(chmat, nomail, nomode)
     call jeveuo(chamat(1:19)//'.NCMP', 'E', jncmp)
     call jeveuo(chamat(1:19)//'.VALV', 'E', jvalv)
 !
-    call dismoi('F', 'NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', nbcmp,&
-                k8b, ier)
+    call dismoi('NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', repi=nbcmp)
     ASSERT(nbcmp.eq.30)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'L', jad)
     do 5 i = 1, nbcmp
         zk8(jncmp-1+i) = zk8(jad-1+i)
- 5  end do
+  5 end do
 !
     call getfac('AFFE', nocc)
 !
@@ -87,7 +86,7 @@ subroutine rcmate(chmat, nomail, nomode)
                 call jedetr(mesmai)
             endif
         endif
-10  end do
+ 10 end do
 !
     call jedetr(chamat(1:19)//'.VALV')
     call jedetr(chamat(1:19)//'.NCMP')

@@ -40,10 +40,10 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: debugr
-    integer :: jceld, gd, iad, ncmpmx, nec, tabec(10), ibid, iavale, iacelk
+    integer :: jceld, gd, iad, ncmpmx, nec, tabec(10), iavale, iacelk
     integer :: irepe, im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
     integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
-    integer :: ier, numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
+    integer ::  numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
     integer :: jligr, jpnt, ipoin, ianoma, imodel, ilong
     real(kind=8) :: sg(6), sl(6)
     character(len=8) :: nomcmp, nomma
@@ -70,8 +70,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
         call utmess('F', 'POSTRELE_53')
     endif
 !
-    call dismoi('F', 'NOM_OPTION', chelez, 'CHAM_ELEM', ibid,&
-                option, ier)
+    call dismoi('NOM_OPTION', chelez, 'CHAM_ELEM', repk=option)
     if (option .eq. 'SIGM_ELNO' .or. option .eq. 'SIEF_ELNO') then
 !         COMPOSANTE:  SIXX SIYY SIZZ SIXY SIXZ SIYZ
         elseif ( option .eq. 'EPSI_ELNO' .or. option .eq. 'EPSG_ELNO'&
@@ -122,7 +121,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
             if (exisdg( tabec, icmp )) then
                 ncmpp = ncmpp + 1
             endif
-22      continue
+ 22     continue
         npcalc = nscal / ncmpp
         ncou = npcalc / nnoe
         debugr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
@@ -178,7 +177,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
                             sg(5) = zr(iavale-1+numyz)
                         endif
                     endif
-34              continue
+ 34             continue
 !
                 call utpsgl(1, 3, pgl, sg, sl)
 !
@@ -189,11 +188,11 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
                 if (numxz .ne. 0) zr(iavale-1+numxz) = sl(4)
                 if (numyz .ne. 0) zr(iavale-1+numyz) = sl(5)
 !
-32          continue
+ 32         continue
 !
-30      continue
+ 30     continue
 !
-20  end do
+ 20 end do
 !
     call jedema()
 end subroutine

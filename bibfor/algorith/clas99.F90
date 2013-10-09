@@ -56,21 +56,17 @@ subroutine clas99(nomres)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ii, inor, lldesc, lrang, ir
+    integer :: i, ibid, ii, inor, lldesc, lrang
     integer :: ltmome, ltnbmo, nbid, nbmod, nbmodo(1), nbmoma, nbmome
     integer :: nbmout, nbsdd
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid,&
-                raid, ir)
-    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid,&
-                mass, ir)
-    call dismoi('F', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
-                numddl, ir)
-    call dismoi('F', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid,&
-                intf, ir)
+    call dismoi('REF_RIGI_PREM', nomres, 'RESU_DYNA', repk=raid)
+    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=mass)
+    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numddl)
+    call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf)
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
@@ -112,12 +108,12 @@ subroutine clas99(nomres)
         zi(ltnbmo+i-1) = nbmodo(1)
         nbmoma = max(nbmoma,nbmodo(1))
         nbmod = nbmod+nbmodo(1)
- 5  continue
+  5 continue
 !
     call wkvect('&&CLAS99.NUME.RANG', 'V V I', nbmoma, lrang)
     do 10 ii = 1, nbmoma
         zi(lrang+ii-1)=ii
-10  continue
+ 10 continue
 !
 !
 ! --- DETERMINATION NOMBRE TOTAL DE MODES ET DEFORMEES
@@ -143,7 +139,7 @@ subroutine clas99(nomres)
     do 6 i = 1, nbmome
         call moco99(nomres, zk8(ltmome+i-1), zi(ltnbmo+i-1), zi(lrang), inor,&
                     .true.)
- 6  continue
+  6 continue
     if (nbmoma .gt. 0) call jedetr('&&CLAS99.NUME.ORD')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.MODE_MECA')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.NBMOD')

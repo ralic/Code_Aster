@@ -25,7 +25,7 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2,&
 !    APPEL A PJCOR2 (RETOUR AUX SOUS-POINTS)
 !
 !
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -49,7 +49,7 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2,&
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: nncp, ierd, ibid
+    integer :: nncp, ierd
 !
     character(len=4) :: tycha2
     character(len=8) :: nompar
@@ -91,15 +91,14 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2,&
     call cescel(ch2s, ligre2, option, nompar, prol0,&
                 nncp, 'G', cham2, 'A', ierd)
 !
-    call dismoi('F', 'PROF_CHNO', chauxs, 'CHAM_NO', ibid,&
-                prfchn, ibid)
+    call dismoi('PROF_CHNO', chauxs, 'CHAM_NO', repk=prfchn)
     call detrsd('PROF_CHNO', prfchn)
 !
 !
     call detrsd('CHAM_NO_S', cns1)
     call detrsd('CHAM_ELEM_S', ch2s)
 !
-999  continue
+999 continue
     call detrsd('CHAM_NO', chauxs)
 !
     call jedema()

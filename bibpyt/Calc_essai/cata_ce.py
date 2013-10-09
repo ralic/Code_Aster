@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: albert.alarcon at edf.fr
 
@@ -58,7 +58,7 @@ class Resultat:
         """Recherche le modele associe au resultat. Routine generique pour les dyna_harmo et mode_meca"""
         if not self.modele:
             if aster.jeveux_exists(self.nom.ljust(19)+'.NOVA'):
-                iret,ibid,modele_name = aster.dismoi('F','MODELE',self.nom,'RESULTAT')
+                iret,ibid,modele_name = aster.dismoi('MODELE',self.nom,'RESULTAT','F')
                 modele_name=modele_name.rstrip()
                 if modele_name[0:1] != "#" :
                     self.modele_name = modele_name
@@ -123,9 +123,9 @@ class ModeMeca(Resultat):
         """ recuperation des matrices du REFD et du nume_ddl"""
         indi = aster.getvectjev( self.nom.ljust(19)+'.INDI' )
         if indi:
-            iret,ibid,self.kass_name = aster.dismoi('C','REF_RIGI_PREM',self.nom,'RESU_DYNA')
-            iret,ibid,self.mass_name = aster.dismoi('C','REF_MASS_PREM',self.nom,'RESU_DYNA')
-            iret,ibid,self.cass_name = aster.dismoi('C','REF_AMOR_PREM',self.nom,'RESU_DYNA')
+            iret,ibid,self.kass_name = aster.dismoi('REF_RIGI_PREM',self.nom,'RESU_DYNA','C')
+            iret,ibid,self.mass_name = aster.dismoi('REF_MASS_PREM',self.nom,'RESU_DYNA','C')
+            iret,ibid,self.cass_name = aster.dismoi('REF_AMOR_PREM',self.nom,'RESU_DYNA','C')
             try:
                 self.kass = self.objects.matrices[self.kass_name]
                 self.mass = self.objects.matrices[self.mass_name]
@@ -138,7 +138,7 @@ class ModeMeca(Resultat):
         """Recuperation de la numerotation et du nume_ddl"""
         indi = aster.getvectjev( self.nom.ljust(19)+'.INDI' )
         if indi :
-          iret,ibid,toto = aster.dismoi('C','NUME_DDL',self.nom,'RESU_DYNA')
+          iret,ibid,toto = aster.dismoi('NUME_DDL',self.nom,'RESU_DYNA','C')
           self.nume_name = toto.strip()
           if self.nume_name:
             self.nume = self.objects.nume_ddl[self.nume_name]
@@ -556,13 +556,13 @@ class InterSpectre:
     def extr_nume_ordr(self):
         """! Extraction des numeros d'ordre de l'inter-spectre"""
         coupl_ddl = []
-        
+
         # Cas ou l'inter-spectre est defini par ses noeuds et composantes
         noeudi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEI')
         noeudj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEJ')
         cmpi    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPI')
         cmpj    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPJ')
-            
+
 
         # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants du modele
         numi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMI')
@@ -580,7 +580,7 @@ class InterSpectre:
                 coupl_ddl.append((numi[ind],numj[ind]))
 
         return coupl_ddl
-            
+
 
     def extr_inte_spec(self, resu=None, intersp=1):
         """!Extraction d'une matrice inter-spectrale a partir d'une sd_interspectre
@@ -592,7 +592,7 @@ class InterSpectre:
         from Cata.cata import RECU_FONCTION, DETRUIRE
         self.mess.disp_mess("Extraction de l'inter-spectre " + self.nom)
         self.mess.disp_mess(" ")
-            
+
         coupl_ddl = self.extr_nume_ordr()
         nb_fonc = len(coupl_ddl)
         nb_freq = len(self.f)
@@ -659,7 +659,7 @@ class InterSpectre:
             DETRUIRE(CONCEPT=_F(NOM=__fonc))
 
 
-                    
+
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
@@ -840,7 +840,7 @@ class Modele:
         """
         if self.mass == None or self.kass == None:
             for matr_name, matr in self.objects.matrices.items():
-                iret,ibid,nom_modele = aster.dismoi('F','NOM_MODELE',matr_name,'MATR_ASSE')
+                iret,ibid,nom_modele = aster.dismoi('NOM_MODELE',matr_name,'MATR_ASSE','F')
                 if nom_modele.strip() == self.nom.strip() :
                     if matr.sdj.REFA.get()[3].strip() == 'RIGI_MECA':
                         self.kass = matr

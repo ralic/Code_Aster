@@ -57,7 +57,7 @@ subroutine medomp(result, modele, mate, carele, nh)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iexcit, iret, ibid
+    integer :: iexcit, iret
     integer :: nbordr, iordr, jordr, numord, inuord, numlu
     integer :: n1, n2, n3
     real(kind=8) :: prec
@@ -90,11 +90,9 @@ subroutine medomp(result, modele, mate, carele, nh)
         if (n1 .eq. 0) then
             call utmess('F', 'POSTELEM_20')
         endif
-        call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
-                    repons, iret)
+        call dismoi('EXI_RDM', modele, 'MODELE', repk=repons)
         lrdm = repons.eq.'OUI'
-        call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
-                    repons, iret)
+        call dismoi('BESOIN_MATER', modele, 'MODELE', repk=repons)
         lmater = repons.eq.'OUI'
 !
 ! ----- RECUPERATION DU CARA_ELEM DANS LA COMMANDE
@@ -140,7 +138,7 @@ subroutine medomp(result, modele, mate, carele, nh)
             if (modnew .ne. modele) then
                 call utmess('F', 'POSTELEM_23')
             endif
-99      continue
+ 99     continue
         call jedetr(knum)
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT

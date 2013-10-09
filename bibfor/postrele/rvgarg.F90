@@ -69,9 +69,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     character(len=4) :: typech
     logical :: existe
     integer :: anomcp, anumcp, ancpu1, ancpu2, adesc, acpgd, avchef
-    integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, ie, avcodo
+    integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
     integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
-    integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50),tord(1)
+    integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50), tord(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !
@@ -92,197 +92,195 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     call wkvect(nvchef, 'V V K24', nbpost, avchef)
     call wkvect(nvcodo, 'V V I', nbpost, avcodo)
     kordre = '&&RVGARG.NUMEORDR'
-    do 100, iocc = 1, nbpost, 1
-    n1 = 0
-    n2 = 0
-    call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=0, nbret=n3)
-    n3 = -n3
-    call wkvect('&&RVGARG.NOM.OPERATION', 'V V K80', n3, adr)
-    call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=n3, vect=zk80(adr),&
-                nbret=n4)
-    if (n3 .eq. 1) then
-        text1 = zk80(adr + 1-1)
-        if (text1(1:1) .eq. 'E') then
-            zi(avcodo + iocc-1) = 1
-        else
-            zi(avcodo + iocc-1) = 3
-        endif
-    else
-        zi(avcodo + iocc-1) = 2
-    endif
-    call jedetr('&&RVGARG.NOM.OPERATION')
-    call getvid('ACTION', 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
-    call getvid('ACTION', 'CHAM_GD', iocc=iocc, nbval=0, nbret=nbchgd)
-    nbresu = -nbresu
-    nbchgd = -nbchgd
-    if (nbresu .ne. 0) then
-!        /* CAS D' UN RESULTAT COMPOSE */
-        call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=nresu, nbret=n1)
-        call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=text80, nbret=n1)
-        nchsym = text80(1:16)
-        call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
-        if (n1 .ne. 0) then
-!           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
-            call rsorac(nresu, 'LONUTI', 0, rbid, k8b,&
-                        cbid, rbid, 'RELATIF', tord, 1,&
-                        ibid)
-            n3=tord(1)            
-            if (n3 .gt. 0) then
-                call wkvect(kordre, 'V V I', n3, jordr)
-                call rsorac(nresu, 'TOUT_ORDRE', 0, rbid, k8b,&
-                            cbid, rbid, 'RELATIF', zi(jordr), n3,&
-                            ibid)
-                do 10 j = 1, n3
-                    call rsexch(' ', nresu, nchsym, zi(jordr+j-1), naux24,&
-                                n2)
-                    if (n2 .eq. 0) goto 12
-10              continue
-12              continue
-                call jedetr(kordre)
+    do 100 iocc = 1, nbpost, 1
+        n1 = 0
+        n2 = 0
+        call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=0, nbret=n3)
+        n3 = -n3
+        call wkvect('&&RVGARG.NOM.OPERATION', 'V V K80', n3, adr)
+        call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=n3, vect=zk80(adr),&
+                    nbret=n4)
+        if (n3 .eq. 1) then
+            text1 = zk80(adr + 1-1)
+            if (text1(1:1) .eq. 'E') then
+                zi(avcodo + iocc-1) = 1
             else
-                n2 = 1
+                zi(avcodo + iocc-1) = 3
             endif
         else
-!           /* LE CHAMP SYMBOLIQUE N' EXISTE PAS */
-            n2 = 1
-            write(ifr,*)'CHAMP SYMBOLIQUE >',nchsym,'< NON '//&
-                'AUTORISE POUR LE RESULTAT >',nresu,'<'
-            write(ifr,*)'LES CHAMPS SYMBOLIQUES AUTORISES SONT :'
-            call jeimpo(ifr, nresu//'           .DESC', ' ')
+            zi(avcodo + iocc-1) = 2
         endif
-        if ((n1 .eq. 0) .or. (n2 .ne. 0)) then
+        call jedetr('&&RVGARG.NOM.OPERATION')
+        call getvid('ACTION', 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
+        call getvid('ACTION', 'CHAM_GD', iocc=iocc, nbval=0, nbret=nbchgd)
+        nbresu = -nbresu
+        nbchgd = -nbchgd
+        if (nbresu .ne. 0) then
+!        /* CAS D' UN RESULTAT COMPOSE */
+            call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=nresu, nbret=n1)
+            call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=text80, nbret=n1)
+            nchsym = text80(1:16)
+            call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
+            if (n1 .ne. 0) then
+!           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
+                call rsorac(nresu, 'LONUTI', 0, rbid, k8b,&
+                            cbid, rbid, 'RELATIF', tord, 1,&
+                            ibid)
+                n3=tord(1)
+                if (n3 .gt. 0) then
+                    call wkvect(kordre, 'V V I', n3, jordr)
+                    call rsorac(nresu, 'TOUT_ORDRE', 0, rbid, k8b,&
+                                cbid, rbid, 'RELATIF', zi(jordr), n3,&
+                                ibid)
+                    do 10 j = 1, n3
+                        call rsexch(' ', nresu, nchsym, zi(jordr+j-1), naux24,&
+                                    n2)
+                        if (n2 .eq. 0) goto 12
+ 10                 continue
+ 12                 continue
+                    call jedetr(kordre)
+                else
+                    n2 = 1
+                endif
+            else
+!           /* LE CHAMP SYMBOLIQUE N' EXISTE PAS */
+                n2 = 1
+                write(ifr,*)'CHAMP SYMBOLIQUE >',nchsym,'< NON '//&
+                'AUTORISE POUR LE RESULTAT >',nresu,'<'
+                write(ifr,*)'LES CHAMPS SYMBOLIQUES AUTORISES SONT :'
+                call jeimpo(ifr, nresu//'           .DESC', ' ')
+            endif
+            if ((n1 .eq. 0) .or. (n2 .ne. 0)) then
 !           /* ALTERNATIVE :                              */
 !           /* LE CHAMPS SYMBOLIQUE EST ILEGAL OU         */
 !           /* AUCUN CHAMP EFFECTIF ASSOCIE N' A ETE CREE */
-            existe = .false.
+                existe = .false.
+            else
+                existe = .true.
+                nchp19 = naux24(1:19)
+            endif
         else
-            existe = .true.
-            nchp19 = naux24(1:19)
-        endif
-    else
 !        /* CAS D'UN CHAMP_GD */
-        call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=nchgd, nbret=n1)
-        existe = .true.
-        nchp19 = nchgd//'           '
-    endif
-    call jecroc(jexnum(nxdnom, iocc))
-    call jecroc(jexnum(nxdnum, iocc))
+            call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=nchgd, nbret=n1)
+            existe = .true.
+            nchp19 = nchgd//'           '
+        endif
+        call jecroc(jexnum(nxdnom, iocc))
+        call jecroc(jexnum(nxdnum, iocc))
 !
-    if (.not. existe) then
+        if (.not. existe) then
 !        /* LE CHAMPS SYMBOLIQUE EST ILEGAL, OU                 */
 !        /* IL EST LEGAL, MAIS IL N' ADMET AUCUN CHAMP EFFECTIF */
-        call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1)
-        call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
-        zk8(anomcp) = '&NOEXIST'
-        call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
-        call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
-        zi(anumcp) = 0
-        zk24(avchef + iocc-1) = '&NONEXISTEOUNONCREE     '
-    else
-        zk24(avchef + iocc-1) = nchp19//'     '
-        call dismoi('F', 'TYPE_CHAMP', nchp19, 'CHAMP', ibid,&
-                    typech, ie)
-        call dismoi('F', 'NOM_GD', nchp19, 'CHAMP', ibid,&
-                    granch, ie)
-        call jeexin(nchp19//'.DESC', ibid)
-        if (ibid .gt. 0) then
-            call jeveuo(nchp19//'.DESC', 'L', adesc)
-        else
-            call jeveuo(nchp19//'.CELD', 'L', adesc)
-        endif
-!
-        gd = zi(adesc + 1-1)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
-        call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
-        call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
-        call getvtx('ACTION', 'TOUT_CMP', iocc=iocc, nbval=0, nbret=nbtcp)
-        call getvtx('ACTION', 'INVARIANT', iocc=iocc, nbval=0, nbret=nbinv)
-        call getvtx('ACTION', 'ELEM_PRINCIPAUX', iocc=iocc, nbval=0, nbret=nbelp)
-        call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=nbsom)
-        nbcmp = -nbcmp
-        nbtcp = -nbtcp
-        nbinv = -nbinv
-        nbelp = -nbelp
-        nbsom = -nbsom
-        if ((nbcmp .ne. 0) .or. (nbsom .ne. 0)) then
-!           /* PASSAGE D' UNE OU DEUX LISTE DE NOM DE CMPS    */
-!           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
-            if (nbcmp .ne. 0) then
-                call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
-                call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(ancpu1),&
-                            nbret=n1)
-            else
-                if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
-                    call utmess('F', 'POSTRELE_20')
-                endif
-                call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
-                call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
-                n1 = -n1
-                n2 = -n2
-                nbcmp = n1+n2
-                call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
-                call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=n1, vect=zk8(ancpu1))
-                call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=n2, vect=zk8(ancpu1+n1))
-            endif
-            if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
-                call utcmp2(granch, 'ACTION', iocc, 50, nomcp,&
-                            numecp, nbnc)
-                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbnc)
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbnc)
-                call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
-                do 112 i = 1, nbnc
-                    zi(jxvar+i-1) = numecp(i)
-112              continue
-                nbcmp = 1
-                zk8(ancpu1) = 'VARI'
-            else
-                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbcmp)
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
-            endif
-            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbcmp)
-            call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
-            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbcmp)
-            call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
-            do 110, i = 1, nbcmp, 1
-            zk8(anomcp + i-1) = zk8(ancpu1 + i-1)
-110          continue
-            call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbcmp, zi(anumcp))
-            call jedetr('&&OP0051.NOMCMP.USER')
-        else if (nbtcp .ne. 0) then
-!
-            nomobj = '&&OP0051.NOMCMP.USER'
-            call utncmp(nchp19, nbc, nomobj)
-            if (nbc .eq. 0) then
-                call utmess('F', 'POSTRELE_54', si=iocc)
-            endif
-            call jeveuo(nomobj, 'L', ancpu2)
-            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbc)
-            call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
-            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbc)
-            call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
-            do 120, i = 1, nbc, 1
-            zk8(anomcp + i-1) = zk8(ancpu2 + i-1)
-120          continue
-            call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbc, zi(anumcp))
-            call jedetr(nomobj)
-            if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
-                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbc)
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbc)
-                call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
-                zi(jxvar) = -1
-            else
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
-            endif
-        else
-!           /* PASSAGE DE CMPS IMPLICITES */
             call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1)
             call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
+            zk8(anomcp) = '&NOEXIST'
             call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
             call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
-            zk8(anomcp) = 'IMPLICIT'
-            zi (anumcp) = -1
+            zi(anumcp) = 0
+            zk24(avchef + iocc-1) = '&NONEXISTEOUNONCREE     '
+        else
+            zk24(avchef + iocc-1) = nchp19//'     '
+            call dismoi('TYPE_CHAMP', nchp19, 'CHAMP', repk=typech)
+            call dismoi('NOM_GD', nchp19, 'CHAMP', repk=granch)
+            call jeexin(nchp19//'.DESC', ibid)
+            if (ibid .gt. 0) then
+                call jeveuo(nchp19//'.DESC', 'L', adesc)
+            else
+                call jeveuo(nchp19//'.CELD', 'L', adesc)
+            endif
+!
+            gd = zi(adesc + 1-1)
+            call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
+            call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
+            call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
+            call getvtx('ACTION', 'TOUT_CMP', iocc=iocc, nbval=0, nbret=nbtcp)
+            call getvtx('ACTION', 'INVARIANT', iocc=iocc, nbval=0, nbret=nbinv)
+            call getvtx('ACTION', 'ELEM_PRINCIPAUX', iocc=iocc, nbval=0, nbret=nbelp)
+            call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=nbsom)
+            nbcmp = -nbcmp
+            nbtcp = -nbtcp
+            nbinv = -nbinv
+            nbelp = -nbelp
+            nbsom = -nbsom
+            if ((nbcmp .ne. 0) .or. (nbsom .ne. 0)) then
+!           /* PASSAGE D' UNE OU DEUX LISTE DE NOM DE CMPS    */
+!           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
+                if (nbcmp .ne. 0) then
+                    call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
+                    call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(ancpu1),&
+                                nbret=n1)
+                else
+                    if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
+                        call utmess('F', 'POSTRELE_20')
+                    endif
+                    call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
+                    call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
+                    n1 = -n1
+                    n2 = -n2
+                    nbcmp = n1+n2
+                    call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
+                    call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=n1, vect=zk8(ancpu1))
+                    call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=n2, vect=zk8(ancpu1+n1))
+                endif
+                if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
+                    call utcmp2(granch, 'ACTION', iocc, 50, nomcp,&
+                                numecp, nbnc)
+                    call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbnc)
+                    call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbnc)
+                    call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
+                    do 112 i = 1, nbnc
+                        zi(jxvar+i-1) = numecp(i)
+112                 continue
+                    nbcmp = 1
+                    zk8(ancpu1) = 'VARI'
+                else
+                    call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbcmp)
+                    call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
+                endif
+                call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbcmp)
+                call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
+                call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbcmp)
+                call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
+                do 110 i = 1, nbcmp, 1
+                    zk8(anomcp + i-1) = zk8(ancpu1 + i-1)
+110             continue
+                call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbcmp, zi(anumcp))
+                call jedetr('&&OP0051.NOMCMP.USER')
+            else if (nbtcp .ne. 0) then
+!
+                nomobj = '&&OP0051.NOMCMP.USER'
+                call utncmp(nchp19, nbc, nomobj)
+                if (nbc .eq. 0) then
+                    call utmess('F', 'POSTRELE_54', si=iocc)
+                endif
+                call jeveuo(nomobj, 'L', ancpu2)
+                call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbc)
+                call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
+                call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbc)
+                call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
+                do 120 i = 1, nbc, 1
+                    zk8(anomcp + i-1) = zk8(ancpu2 + i-1)
+120             continue
+                call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbc, zi(anumcp))
+                call jedetr(nomobj)
+                if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
+                    call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbc)
+                    call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbc)
+                    call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
+                    zi(jxvar) = -1
+                else
+                    call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
+                endif
+            else
+!           /* PASSAGE DE CMPS IMPLICITES */
+                call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1)
+                call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
+                call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
+                call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
+                zk8(anomcp) = 'IMPLICIT'
+                zi (anumcp) = -1
+            endif
         endif
-    endif
-    100 end do
+100 end do
     call jedema()
 end subroutine

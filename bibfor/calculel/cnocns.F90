@@ -19,7 +19,6 @@ subroutine cnocns(cnoz, basez, cnsz)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/cnscre.h"
@@ -31,6 +30,7 @@ subroutine cnocns(cnoz, basez, cnsz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=*) :: cnoz, cnsz, basez
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_NO (CNOZ) EN CHAM_NO_S (CNSZ)
@@ -42,11 +42,11 @@ subroutine cnocns(cnoz, basez, cnsz)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: kbid, base
+    character(len=1) ::  base
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: cno, cns, profcn
-    integer :: nec, gd, ncmpmx, ibid, nbno, jcorr1, jrefe, jvale, kcmp
+    integer :: nec, gd, ncmpmx, nbno, jcorr1, jrefe, jvale, kcmp
     integer :: iadg, icmp, jprno, jnueq, ino, ncmp, ncmp1, jcnsl, jcnsv
     integer :: ival, ico, ieq, icmp1, jnocmp, jdesc, jcorr2
 !     ------------------------------------------------------------------
@@ -60,20 +60,14 @@ subroutine cnocns(cnoz, basez, cnsz)
 !     -- SI CNS EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_NO_S', cns)
 !
-    call dismoi('F', 'NOM_MAILLA', cno, 'CHAM_NO', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NOM_GD', cno, 'CHAM_NO', ibid,&
-                nomgd, ibid)
+    call dismoi('NOM_MAILLA', cno, 'CHAM_NO', repk=ma)
+    call dismoi('NOM_GD', cno, 'CHAM_NO', repk=nomgd)
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                kbid, ibid)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ibid)
-    call dismoi('F', 'NUM_GD', nomgd, 'GRANDEUR', gd,&
-                kbid, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     call jeveuo(cno//'.REFE', 'L', jrefe)
     call jeveuo(cno//'.VALE', 'L', jvale)
@@ -111,79 +105,77 @@ subroutine cnocns(cnoz, basez, cnsz)
         profcn = ' '
 !     -- CAS DES CHAM_NO A PROF_CHNO:
     else
-        call dismoi('F', 'PROF_CHNO', cno, 'CHAM_NO', ibid,&
-                    profcn, ibid)
+        call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=profcn)
     endif
 !
 !     2.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
 !     ---------------------------------------------------
     if (profcn .eq. ' ') then
-        do 60,ino = 1,nbno
-        do 50,icmp1 = 1,ncmp1
-        zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
-        ieq = (ino-1)*ncmp1 + icmp1
+        do 60 ino = 1, nbno
+            do 50 icmp1 = 1, ncmp1
+                zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
+                ieq = (ino-1)*ncmp1 + icmp1
 !
-        if (tsca .eq. 'R') then
-            zr(jcnsv-1+ieq) = zr(jvale-1+ieq)
-        else if (tsca.eq.'I') then
-            zi(jcnsv-1+ieq) = zi(jvale-1+ieq)
-        else if (tsca.eq.'C') then
-            zc(jcnsv-1+ieq) = zc(jvale-1+ieq)
-        else if (tsca.eq.'L') then
-            zl(jcnsv-1+ieq) = zl(jvale-1+ieq)
-        else if (tsca.eq.'K8') then
-            zk8(jcnsv-1+ieq) = zk8(jvale-1+ieq)
-        else
-            ASSERT(.false.)
-        endif
-50      continue
-60      continue
+                if (tsca .eq. 'R') then
+                    zr(jcnsv-1+ieq) = zr(jvale-1+ieq)
+                else if (tsca.eq.'I') then
+                    zi(jcnsv-1+ieq) = zi(jvale-1+ieq)
+                else if (tsca.eq.'C') then
+                    zc(jcnsv-1+ieq) = zc(jvale-1+ieq)
+                else if (tsca.eq.'L') then
+                    zl(jcnsv-1+ieq) = zl(jvale-1+ieq)
+                else if (tsca.eq.'K8') then
+                    zk8(jcnsv-1+ieq) = zk8(jvale-1+ieq)
+                else
+                    ASSERT(.false.)
+                endif
+ 50         continue
+ 60     continue
 !
 !
 !     2.2 CAS DES CHAM_NO A PROF-CHNO
 !     ---------------------------------------------------
     else
-        call dismoi('F', 'PROF_CHNO', cno, 'CHAM_NO', ibid,&
-                    profcn, ibid)
+        call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=profcn)
         call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
         call jeveuo(profcn//'.NUEQ', 'L', jnueq)
-        do 80,ino = 1,nbno
+        do 80 ino = 1, nbno
 !
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !         IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !         IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
-        ncmp = zi(jprno-1+ (ino-1)* (nec+2)+2)
-        if (ncmp .eq. 0) goto 80
-        ival = zi(jprno-1+ (ino-1)* (nec+2)+1)
-        iadg = jprno - 1 + (ino-1)* (nec+2) + 3
+            ncmp = zi(jprno-1+ (ino-1)* (nec+2)+2)
+            if (ncmp .eq. 0) goto 80
+            ival = zi(jprno-1+ (ino-1)* (nec+2)+1)
+            iadg = jprno - 1 + (ino-1)* (nec+2) + 3
 !
-        ico = 0
-        do 70,kcmp = 1,ncmp1
-        icmp=zi(jcorr2-1+kcmp)
-        if (exisdg(zi(iadg),icmp)) then
-            ico = ico + 1
-            ieq = zi(jnueq-1+ival-1+ico)
-            icmp1 = zi(jcorr1-1+icmp)
+            ico = 0
+            do 70 kcmp = 1, ncmp1
+                icmp=zi(jcorr2-1+kcmp)
+                if (exisdg(zi(iadg),icmp)) then
+                    ico = ico + 1
+                    ieq = zi(jnueq-1+ival-1+ico)
+                    icmp1 = zi(jcorr1-1+icmp)
 !             ASSERT(ICMP1.EQ.KCMP)  COUTEUX ?
 !
-            zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
+                    zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
 !
-            if (tsca .eq. 'R') then
-                zr(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zr(jvale-1+ ieq)
-            else if (tsca.eq.'I') then
-                zi(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zi(jvale-1+ ieq)
-            else if (tsca.eq.'C') then
-                zc(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zc(jvale-1+ ieq)
-            else if (tsca.eq.'L') then
-                zl(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zl(jvale-1+ ieq)
-            else if (tsca.eq.'K8') then
-                zk8(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zk8( jvale-1+ieq)
-            else
-                ASSERT(.false.)
-            endif
-        endif
-70      continue
-80      continue
+                    if (tsca .eq. 'R') then
+                        zr(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zr(jvale-1+ ieq)
+                    else if (tsca.eq.'I') then
+                        zi(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zi(jvale-1+ ieq)
+                    else if (tsca.eq.'C') then
+                        zc(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zc(jvale-1+ ieq)
+                    else if (tsca.eq.'L') then
+                        zl(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zl(jvale-1+ ieq)
+                    else if (tsca.eq.'K8') then
+                        zk8(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zk8( jvale-1+ieq)
+                    else
+                        ASSERT(.false.)
+                    endif
+                endif
+ 70         continue
+ 80     continue
     endif
 !------------------------------------------------------------------
 !

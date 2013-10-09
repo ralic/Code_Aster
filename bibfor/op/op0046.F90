@@ -65,7 +65,7 @@ subroutine op0046()
     parameter ( nompro = 'OP0046' )
 !
     integer :: ibid, nh, nbchre, n1, n4, n5, n7
-    integer :: ierd, iordr, nbmax, nchar, jchar
+    integer ::  iordr, nbmax, nchar, jchar
     integer :: iocc, nfon, iainst, iret, i, jordr, nbuti
     integer :: ifm, niv, ier
 !
@@ -153,29 +153,24 @@ subroutine op0046()
     nomode = modele(1:8)
     ligrel = nomode//'.MODELE'
 !
-    call dismoi('F', 'NOM_MAILLA', nomode, 'MODELE', ibid,&
-                noma, ierd)
-    call dismoi('F', 'NB_CHAMP_MAX', result, 'RESULTAT', nbmax,&
-                k8bla, ierd)
+    call dismoi('NOM_MAILLA', nomode, 'MODELE', repk=noma)
+    call dismoi('NB_CHAMP_MAX', result, 'RESULTAT', repi=nbmax)
     call getvtx(' ', 'OPTION', scal=nosy, nbret=n7)
     ASSERT(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
 !
 !   A-t-on des POU_D_EM qui utilisent le champ STRX_ELGA en lineaire
-    call dismoi('F', 'EXI_STR2', nomode, 'MODELE', ibid,&
-                kstr, ierd)
+    call dismoi('EXI_STR2', nomode, 'MODELE', repk=kstr)
     if ((nosy.eq.'SANS') .and. (kstr(1:3).eq.'NON')) goto 999
 !
 !   A-t-on des VARC
-    call dismoi('F', 'EXI_VARC', mate, 'CHAM_MATER', ibid,&
-                k8bla, iret)
+    call dismoi('EXI_VARC', mate, 'CHAM_MATER', repk=k8bla)
 !   On interdit provisoirement les POU_D_EM avec les VARC
     if ((k8bla(1:3).eq.'OUI') .and. (kstr(1:3).eq.'OUI')) then
         call utmess('F', 'MECASTATIQUE_1')
     endif
 !
     exipou = .false.
-    call dismoi('F', 'EXI_POUX', modele, 'MODELE', ibid,&
-                k8bla, ierd)
+    call dismoi('EXI_POUX', modele, 'MODELE', repk=k8bla)
     if (k8bla(1:3) .eq. 'OUI') exipou = .true.
     call jelira(charge, 'LONMAX', nchar)
 !
@@ -265,8 +260,7 @@ subroutine op0046()
     noobj ='12345678'//'.1234'//'.EXCIT.INFC'
     call gnomsd(' ', noobj, 10, 13)
     lisch2 = noobj(1:19)
-    call dismoi('F', 'NB_CHAMP_UTI', result, 'RESULTAT', nbuti,&
-                k8bla, ierd)
+    call dismoi('NB_CHAMP_UTI', result, 'RESULTAT', repi=nbuti)
     call jeveuo(result//'           .ORDR', 'L', jordr)
     do i = 1, nbuti
         iordr=zi(jordr+i-1)

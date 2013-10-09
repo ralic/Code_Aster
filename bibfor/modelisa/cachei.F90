@@ -50,9 +50,9 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, i, nchei, ncmp, jvale, jvalv, jncmp, iocc, nxx, nyy, nzz
+    integer ::  i, nchei, ncmp, jvale, jvalv, jncmp, iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
-    integer :: nbtou, ier, nbma, jma
+    integer :: nbtou, nbma, jma
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
     real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy
     character(len=8) :: k8b, kepxx, kepyy, kepzz, kepxy, kepxz, kepyz, mod
@@ -71,13 +71,11 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE
 !
-    call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', char(1:8), 'CHARGE', repk=mod)
 !
 ! --- MODELISATION DU MODELE
 !
-    call dismoi('F', 'MODELISATION', mod, 'MODELE', ibid,&
-                modeli, ier)
+    call dismoi('MODELISATION', mod, 'MODELE', repk=modeli)
 !
     if (fonree .eq. 'REEL') then
         call alcart('G', carte, noma, 'EPSI_R')
@@ -114,11 +112,11 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     if (fonree .eq. 'REEL') then
         do 10 i = 1, ncmp
             zr(jvalv-1+i) = 0.d0
-10      continue
+ 10     continue
     else
         do 12 i = 1, ncmp
             zk8(jvalv-1+i) = '&FOZERO'
-12      continue
+ 12     continue
     endif
     call nocart(carte, 1, ncmp)
 !
@@ -149,7 +147,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
             do 22 i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
-22          continue
+ 22         continue
 !
             if (nxx .ne. 0) zr(jvalv-1+1) = epxx
             if (nyy .ne. 0) zr(jvalv-1+2) = epyy
@@ -179,7 +177,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             call getvid(motclf, 'EPYZ', iocc=iocc, scal=kepyz, nbret=nyz)
             do 111 i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
-111          continue
+111         continue
             if (nxx .ne. 0) zk8(jvalv-1+1) = kepxx
             if (nyy .ne. 0) zk8(jvalv-1+2) = kepyy
             if (nzz .ne. 0) zk8(jvalv-1+3) = kepzz
@@ -202,7 +200,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
                         limanu=zi(jma))
             call jedetr(mesmai)
         endif
-20  end do
+ 20 end do
 !
     call jedema()
 end subroutine

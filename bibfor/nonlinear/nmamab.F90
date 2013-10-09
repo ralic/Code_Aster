@@ -18,21 +18,18 @@ subroutine nmamab(modele, carele, lamor)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
+!
     character(len=24) :: modele, carele
     logical :: lamor
 !
     character(len=24) :: rep1, rep2
-    integer :: ibid
 ! ----------------------------------------------------------------------
 !
 !
     lamor = .false.
-    call dismoi('F', 'EXI_AMOR', modele, 'MODELE', ibid,&
-                rep1, ibid)
-    call dismoi('F', 'EXI_AMOR', carele, 'CARA_ELEM', ibid,&
-                rep2, ibid)
+    call dismoi('EXI_AMOR', modele, 'MODELE', repk=rep1)
+    call dismoi('EXI_AMOR', carele, 'CARA_ELEM', repk=rep2)
 !
     if (rep1 .eq. 'OUI' .or. rep2 .eq. 'OUI') lamor=.true.
 !

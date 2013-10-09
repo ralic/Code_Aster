@@ -83,8 +83,8 @@ subroutine ritz99(nomres)
 !
     call jemarq()
 !
-    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
-                numref, ier)
+    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numref, arret='C',&
+                ier=ier)
     if (ier .ne. 0) then
         call getvid('    ', 'NUME_REF', iocc=1, scal=numref, nbret=ibid)
     endif
@@ -111,10 +111,8 @@ subroutine ritz99(nomres)
             nbmodb = min(nbmod2,nbold(1))
         endif
 !
-        call dismoi('F', 'NB_MODES_TOT', resul1, 'RESULTAT', nbmod1,&
-                    k8b, ier)
-        call dismoi('F', 'NB_MODES_STA', resul1, 'RESULTAT', nbdef,&
-                    k8b, ier)
+        call dismoi('NB_MODES_TOT', resul1, 'RESULTAT', repi=nbmod1)
+        call dismoi('NB_MODES_STA', resul1, 'RESULTAT', repi=nbdef)
 !
 !
 ! --- DETERMINATION NOMBRE TOTAL
@@ -151,7 +149,7 @@ subroutine ritz99(nomres)
             call wkvect(trang1, 'V V I', nbmod1, lrang1)
             do 31 ii = 1, nbmod1
                 zi(lrang1+ii-1)=ii
-31          continue
+ 31         continue
             inord=1
             call moco99(nomres, resul1, nbmod1, zi(lrang1), inord,&
                         .true.)
@@ -161,7 +159,7 @@ subroutine ritz99(nomres)
             call wkvect(trang2, 'V V I', nbmodb, lrang2)
             do 32 ii = 1, nbmodb
                 zi(lrang2+ii-1)=ii
-32          continue
+ 32         continue
             call moco99(nomres, resul2, nbmodb, zi(lrang2), inord,&
                         .false.)
             call jedetr(trang2)
@@ -233,14 +231,14 @@ subroutine ritz99(nomres)
                 nbmoda = nbmoda+min(zi(idor+i-1),nbold(1))
                 zi(lnbm+i-1)=min(zi(idor+i-1),nbold(1))
             endif
-30      continue
+ 30     continue
     endif
 !
     if (nbmoda .gt. 0) then
         call wkvect(trang1, 'V V I', nbmoda, lrang1)
         do 10 ii = 1, nbmoda
             zi(lrang1+ii-1)=ii
-10      continue
+ 10     continue
     endif
 !
     if (.not.seul) then
@@ -257,7 +255,7 @@ subroutine ritz99(nomres)
             call wkvect(trang2, 'V V I', nbmodb, lrang2)
             do 11 ii = 1, nbmodb
                 zi(lrang2+ii-1)=ii
-11          continue
+ 11         continue
         endif
     else
         nbmodb=0
@@ -285,13 +283,13 @@ subroutine ritz99(nomres)
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do 33 iam = 1, nbmoda
                 zr(jamog+iam-1) = zr(iamog+iam-1)
-33          continue
+ 33         continue
         else if (nbamor.lt.nbmoda) then
             call wkvect('&&RITZ99.AMORTI', 'V V R8', nbamor, jamog)
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do 41 iam = 1, nbamor
                 zr(jamog+iam-1) = zr(iamog+iam-1)
-41          continue
+ 41         continue
             idiff = nbmoda - nbamor
             vali (1) = idiff
             vali (2) = nbmoda
@@ -300,17 +298,17 @@ subroutine ritz99(nomres)
             call wkvect('&&RITZ99.AMORTI2', 'V V R8', nbmoda, jamo2)
             do 51 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamog+iam-1)
-51          continue
+ 51         continue
             do 61 iam = nbamor + 1, nbmoda
                 zr(jamo2+iam-1) = zr(jamog+nbamor-1)
-61          continue
+ 61         continue
             jamog = jamo2
         else if (nbamor.eq.nbmoda) then
             call wkvect('&&RITZ99.AMORTI', 'V V R8', nbamor, jamog)
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do 71 iam = 1, nbamor
                 zr(jamog+iam-1) = zr(iamog+iam-1)
-71          continue
+ 71         continue
         endif
 !   ----ON AJOUTE LA LIST_AMOR COMME VALEURS DU PARAM 'AMOR_REDUIT'
 !       DU RESULT1 (SI UN SEUL MODE_MECA)
@@ -319,7 +317,7 @@ subroutine ritz99(nomres)
                 call rsadpa(resul1, 'E', 1, 'AMOR_REDUIT', iam,&
                             0, sjv=iamor, styp=k8b)
                 zr(iamor) = zr(jamog+iam-1)
-81          continue
+ 81         continue
         endif
     endif
 !
@@ -341,20 +339,19 @@ subroutine ritz99(nomres)
             call moco99(nomres, resul1, nbmoda, zi(lrang1), inord,&
                         .true.)
 !
-            call dismoi('F', 'NUME_DDL', resul1, 'RESU_DYNA', ibid,&
-                        nume1, ier)
-            call dismoi('C', 'REF_RIGI_PREM', resul1, 'RESU_DYNA', ibid,&
-                        rigi1, ier)
-            call dismoi('C', 'REF_MASS_PREM', resul1, 'RESU_DYNA', ibid,&
-                        mass1, ier)
-            call dismoi('C', 'REF_AMOR_PREM', resul1, 'RESU_DYNA', ibid,&
-                        amor1, ier)
+            call dismoi('NUME_DDL', resul1, 'RESU_DYNA', repk=nume1)
+            call dismoi('REF_RIGI_PREM', resul1, 'RESU_DYNA', repk=rigi1, arret='C',&
+                        ier=ier)
+            call dismoi('REF_MASS_PREM', resul1, 'RESU_DYNA', repk=mass1, arret='C',&
+                        ier=ier)
+            call dismoi('REF_AMOR_PREM', resul1, 'RESU_DYNA', repk=amor1, arret='C',&
+                        ier=ier)
         else if (nbgl.gt.1) then
             do 20 i = 1, nbgl
                 call moco99(nomres, zk8(idgl+i-1), zi(lnbm+i-1), zi( lrang1), inord,&
                             .true.)
                 resul1 = zk8(idgl+i-1)
-20          continue
+ 20         continue
             inord = inord + nbmoda
         endif
 !
@@ -369,7 +366,7 @@ subroutine ritz99(nomres)
         endif
     endif
 !
-40  continue
+ 40 continue
 !
     call jedetr(tempor)
     call jedetr(trang1)

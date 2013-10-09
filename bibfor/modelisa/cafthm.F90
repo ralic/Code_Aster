@@ -47,8 +47,8 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !      FONREE : FONC OU REEL
 ! ======================================================================
 ! ======================================================================
-    integer :: ibid, n1, n2, n3, nflux, jvalv, jncmp, iocc
-    integer :: nbtou, nbma, jma, ier, ncmp
+    integer ::  n1, n2, n3, nflux, jvalv, jncmp, iocc
+    integer :: nbtou, nbma, jma, ncmp
     character(len=8) :: k8b, mod, typmcl(2)
     character(len=16) :: motclf, motcle(2), modeli
     character(len=19) :: carte
@@ -61,8 +61,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
     if (nflux .eq. 0) goto 99
 !
     mod = ligrmo(1:8)
-    call dismoi('F', 'MODELISATION', mod, 'MODELE', ibid,&
-                modeli, ier)
+    call dismoi('MODELISATION', mod, 'MODELE', repk=modeli)
 !
     carte = char//'.CHME.FLUX '
 !
@@ -134,7 +133,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
         endif
 !
     end do
-99  continue
+ 99 continue
 !
 !
     call jedema()

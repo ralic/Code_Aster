@@ -52,7 +52,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !        NUMFON  : NOMBRE DE FONDS DE FISSURE
 !
 !     ------------------------------------------------------------------
-    integer :: i, j, k, iret, ifm, niv, nbnol
+    integer :: i, j, k, ifm, niv, nbnol
     integer :: jbasef, jfmult, jfonf, jbeta, jvit, jmemo
     integer :: jbaso, jfmulo, jfono, jbetao, jvito, jfong
     integer :: long, nptfg, nbptff, ivalue, nval
@@ -60,7 +60,6 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
     real(kind=8) :: a1(4), b1(4), m1(3), a2(4), b2(4), m2(3)
     real(kind=8) :: prosca, normab, coeffk, mem(5), memo(5)
     real(kind=8) :: vect1, vect2
-    character(len=8) :: k8b
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -79,13 +78,11 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !
 !     RECUPERATION DU FOND DE FISSURE
     call jeveuo(fiss//'.FONDFISS', 'E', jfonf)
-    call dismoi('F', 'NB_POINT_FOND', fiss, 'FISS_XFEM', nbptff,&
-                k8b, iret)
+    call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
     call jeveuo(fiss//'.FONDMULT', 'E', jfmult)
-    call dismoi('F', 'NB_FOND', fiss, 'FISS_XFEM', numfon,&
-                k8b, iret)
+    call dismoi('NB_FOND', fiss, 'FISS_XFEM', repi=numfon)
 !
 !     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE ON THE FRONT
     call jeveuo(fiss//'.BASEFOND', 'E', jbasef)
@@ -105,17 +102,17 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
     do 333 j = 1, nbptff
         do 334 i = 1, 4
             zr(jfono-1+4*(j-1)+i)=zr(jfonf-1+4*(j-1)+i)
-334      continue
+334     continue
         do 335 i = 1, 6
             zr(jbaso-1+6*(j-1)+i)=zr(jbasef-1+6*(j-1)+i)
-335      continue
+335     continue
         zr(jvito-1+(j-1)+1)=zr(jvit-1+(j-1)+1)
         zr(jbetao-1+(j-1)+1)=zr(jbeta-1+(j-1)+1)
-333  end do
+333 end do
     do 336 i = 1, numfon
         zi(jfmulo-1+2*(i-1)+1)=zi(jfmult-1+2*(i-1)+1)
         zi(jfmulo-1+2*(i-1)+2)=zi(jfmult-1+2*(i-1)+2)
-336  end do
+336 end do
     mem(1)=1.d0/r8prem()
 !
 ! VERIFICATION DU BON ORDONNANCEMENT DES DIFFERENTS FONDS
@@ -124,7 +121,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             do 222 k = 1, 4
                 a1(k)=zr(jfong-1+4*(j-1)+k)
                 b1(k)=zr(jfong-1+4*(j+1-1)+k)
-222          continue
+222         continue
             normab=(b1(1)-a1(1))**2+(b1(2)-a1(2))**2+ (b1(3)-a1(3))**&
             2
 !   ON EXTRAIT LES COORDONNEES DU PREMIER POINT DU FOND DE FISSURE
@@ -147,7 +144,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
                     mem(1)=abs(coeffk)
                     do 328 k = 1, 4
                         mem(k+1)=a1(k)
-328                  continue
+328                 continue
                 endif
                 goto 505
             else
@@ -155,18 +152,18 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
                 mem(1)=1.d0/r8prem()
                 goto 66
             endif
-505      continue
+505     continue
         do 329 k = 1, 4
             a1(k)=mem(k+1)
-329      continue
+329     continue
         call vecini(4, 0.d0, mem)
         mem(1)=1.d0/r8prem()
-66      continue
+ 66     continue
         do 506 j = 1, nptfg-1
             do 223 k = 1, 4
                 a2(k)=zr(jfong-1+4*(j-1)+k)
                 b2(k)=zr(jfong-1+4*(j+1-1)+k)
-223          continue
+223         continue
             normab=(b1(1)-a1(1))**2+(b1(2)-a1(2))**2+ (b1(3)-a1(3))**&
             2
 !  ON EXTRAIT LES COORDONNEES DU DERNIER POINT DU FOND DE FISSURE
@@ -193,18 +190,18 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
                     mem(1)=abs(coeffk)
                     do 326 k = 1, 4
                         mem(k+1)=b2(k)
-326                  continue
+326                 continue
                 endif
                 goto 506
             else
                 goto 67
             endif
-506      continue
+506     continue
 !
         do 327 k = 1, 4
             b2(k)=mem(k+1)
-327      continue
-67      continue
+327     continue
+ 67     continue
         call vecini(4, 0.d0, mem)
         mem(1)=1.d0/r8prem()
         zr(jmemo-1+5*(i-1)+1)= i
@@ -212,7 +209,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
         zr(jmemo-1+5*(i-1)+3)= b2(4)
         zr(jmemo-1+5*(i-1)+4)= dble(zi(jfmulo-1+(2*i-1)))
         zr(jmemo-1+5*(i-1)+5)= dble(zi(jfmulo-1+(2*i)))
-700  end do
+700 end do
 !
 ! ON TRIE LE VECTEUR JMEMO
 ! (DE L'ABSCISSE CURV. LA PLUS PETITE A LA PLUS GRANDE)
@@ -221,21 +218,21 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             if (zr(jmemo-1+5*(j-1)+2) .lt. zr(jmemo-1+5*(i-1)+2)) then
                 do 855 k = 1, 5
                     memo(k) = zr(jmemo-1+5*(i-1)+k)
-855              continue
+855             continue
                 do 955 k = 1, 5
                     zr(jmemo-1+5*(i-1)+k) = zr(jmemo-1+5*(j-1)+k)
-955              continue
+955             continue
                 do 956 k = 1, 5
                     zr(jmemo-1+5*(j-1)+k) = memo(k)
-956              continue
+956             continue
             endif
-755      continue
-655  end do
+755     continue
+655 end do
 !
     do 708 i = 1, numfon
         zi(jfmulo-1+2*(i-1)+1)=nint(zr(jmemo-1+5*(i-1)+4))
         zi(jfmulo-1+2*(i-1)+2)=nint(zr(jmemo-1+5*(i-1)+5))
-708  end do
+708 end do
 !
     ivalue=0
 !
@@ -252,33 +249,33 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
                 do 711 k = 1, 4
                     zr(jfono-1+4*(nval+j-2)+k)= zr(jfonf-1+4*(npoinp+&
                     j-2)+k)
-711              continue
+711             continue
                 do 712 k = 1, 6
                     zr(jbaso-1+6*(nval+j-2)+k)= zr(jbasef-1+6*(npoinp+&
                     j-2)+k)
-712              continue
+712             continue
                 zr(jvito-1+(nval+j-2)+1)=zr(jvit-1+(npoinp+j-2)+1)
                 zr(jbetao-1+(nval+j-2)+1)=zr(jbeta-1+(npoinp+j-2)+1)
-710          continue
+710         continue
         endif
         npoino=zi(jfmulo-1+2*i)
         ivalue=npoino
-709  end do
+709 end do
 !
     do 136 i = 1, numfon
         zi(jfmult-1+2*(i-1)+1)=zi(jfmulo-1+2*(i-1)+1)
         zi(jfmult-1+2*(i-1)+2)=zi(jfmulo-1+2*(i-1)+2)
-136  end do
+136 end do
     do 133 j = 1, nbptff
         do 134 i = 1, 4
             zr(jfonf-1+4*(j-1)+i)=zr(jfono-1+4*(j-1)+i)
-134      continue
+134     continue
         do 135 i = 1, 6
             zr(jbasef-1+6*(j-1)+i)=zr(jbaso-1+6*(j-1)+i)
-135      continue
+135     continue
         zr(jvit-1+(j-1)+1)=zr(jvito-1+(j-1)+1)
         zr(jbeta-1+(j-1)+1)=zr(jbetao-1+(j-1)+1)
-133  end do
+133 end do
 !
 !     ON VERIFIE QUE LA LECTURE DES POINTS DES FRONTS SE FAIT DANS
 !     LE MEME SENS. POUR CELA ON VERIFIE LA COHERENCE AVEC LE SENS
@@ -297,28 +294,28 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             do 802 j = 1, nbnol+1
                 do 804 k = 1, 4
                     zr(jfono-1+4*(j-1)+k) = zr(jfonf-1+4*(npoin+j-1)+ k)
-804              continue
+804             continue
                 do 806 k = 1, 6
                     zr(jbaso-1+6*(j-1)+k) = zr(jbasef-1+6*(npoin+j-1)+ k)
-806              continue
+806             continue
                 zr(jvito-1+(j-1)+1)=zr(jvit-1+(npoin+j-1)+1)
                 zr(jbetao-1+(j-1)+1)=zr(jbeta-1+(npoin+j-1)+1)
-802          continue
+802         continue
 !
             do 803 j = 1, nbnol+1
                 do 805 k = 1, 4
                     zr(jfonf-1+4*(npoin+j-1)+k)= zr(jfono-1+4*(nbnol-&
                     j+1)+k)
-805              continue
+805             continue
                 do 807 k = 1, 6
                     zr(jbasef-1+6*(npoin+j-1)+k)= zr(jbaso-1+6*(nbnol-&
                     j+1)+k)
-807              continue
+807             continue
                 zr(jvit-1+(npoin+j-1)+1)=zr(jvito-1+(nbnol-j+1)+1)
                 zr(jbeta-1+(npoin-j-1)+1)=zr(jbetao-1+(nbnol-j+1)+1)
-803          continue
+803         continue
         endif
-177  end do
+177 end do
 !
     call jedetr('&&XPRFON.MEMO')
     call jedetr('&&XPRFON.JFONO')

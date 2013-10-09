@@ -70,7 +70,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     real(kind=8) :: sinb, sinb2, sing, sing2, tol
     real(kind=8) :: vdl(3), vdg(3)
 !-----------------------------------------------------------------------
-    character(len=8) :: k8bid, nomcmp(3)
+    character(len=8) ::  nomcmp(3)
     character(len=16) :: nomele(nbtel)
     character(len=19) :: carte, ligrmo
     character(len=24) :: modmai, modnem, cadesc, captma, cavale
@@ -135,8 +135,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
         call utmess('F', 'MODELISA2_25')
     endif
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('F', 'NB_EC', 'CAORIE', 'GRANDEUR', nbec,&
-                k8bid, iret)
+    call dismoi('NB_EC', 'CAORIE', 'GRANDEUR', repi=nbec)
 !
 !     EXTENSION DE LA CARTE D'ORIENTATION DES ELEMENTS : CREATION DE
 !     VECTEURS D'ADRESSES DES CARACTERISTIQUES POINTES PAR LE NUMERO

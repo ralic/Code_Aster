@@ -74,7 +74,7 @@ subroutine rc36ma(nommat, noma)
     integer :: nbcmp
     parameter (nbcmp=9)
     integer :: nbpa, nbpb, nbpt, ipt, nbseis, ndim, jcesvm, jcesdm, jceslm, isp
-    integer :: icmp, iad, im, ierd, nbmail, jcesla, jcesva, jcesda, jceslb
+    integer :: icmp, iad, im, nbmail, jcesla, jcesva, jcesda, jceslb
     integer :: jcesvb, jcesdb, ier, iocc, nbsitu, jchmat, na, nb, jmater
     real(kind=8) :: para(nbcmp), tempa, tempra, tempb, temprb, tke
     integer :: icodre(nbcmp)
@@ -101,8 +101,7 @@ subroutine rc36ma(nommat, noma)
     endif
     para(9)=tke
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmail,&
-                k8b, ierd)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmail)
 !
     call wkvect('&&RC3600.MATERIAU', 'V V K24', 2*ndim, jchmat)
     call wkvect('&&RC3600.NOM_MATERIAU', 'V V K8', nbmail, jmater)
@@ -121,7 +120,7 @@ subroutine rc36ma(nommat, noma)
 !      X30: TEMP_REF
     licmp(1)='MAT1'
     licmp(2)='VREF'
-    call cesred(chsmat,0,[0],2,licmp,&
+    call cesred(chsmat, 0, [0], 2, licmp,&
                 'V', chsma2)
     call detrsd('CHAM_ELEM_S', chsmat)
 !
@@ -148,309 +147,309 @@ subroutine rc36ma(nommat, noma)
     nocmp(8) = 'N_KE'
     nocmp(9) = 'TYPEKE'
 !
-    do 60,iocc = 1,nbsitu,1
+    do 60 iocc = 1, nbsitu, 1
 !
-    call codent(iocc, 'D0', k8b)
-!
-! ------ ETAT STABILISE "A"
-!        ------------------
-!
-    chmata = '&&RC36MA_A.'//k8b
-    nocmp(2) = 'E_AMBI'
-    call cescre('V', chmata, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, [-1], [-1], [-nbcmp])
-    nocmp(2) = 'E'
-!
-    call jeveuo(chmata(1:19)//'.CESD', 'L', jcesda)
-    call jeveuo(chmata(1:19)//'.CESL', 'E', jcesla)
-    call jeveuo(chmata(1:19)//'.CESV', 'E', jcesva)
-!
-    nbpa = 1
-    nopa = 'TEMP'
-    call getvr8(motcl1, 'TEMP_REF_A', iocc=iocc, scal=tempa, nbret=na)
-!
-! ------ ETAT STABILISE "B"
-!        ------------------
-!
-    chmatb = '&&RC36MA_B.'//k8b
-    nocmp(2) = 'E_AMBI'
-    call cescre('V', chmatb, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, [-1], [-1], [-nbcmp])
-    nocmp(2) = 'E'
-!
-    call jeveuo(chmatb(1:19)//'.CESD', 'L', jcesdb)
-    call jeveuo(chmatb(1:19)//'.CESL', 'E', jceslb)
-    call jeveuo(chmatb(1:19)//'.CESV', 'E', jcesvb)
-!
-    nbpb = 1
-    nopb = 'TEMP'
-    call getvr8(motcl1, 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
-!
-    do 50 im = 1, nbmail
-!
-        icmp = 1
-!
-! --------- LE MATERIAU
-        call cesexi('C', jcesdm, jceslm, im, 1,&
-                    1, 1, iad)
-        if (iad .gt. 0) then
-            mater = zk8(jcesvm-1+iad)
-        else
-            call codent(im, 'D', k8b)
-            call utmess('F', 'POSTRCCM_10', sk=k8b)
-        endif
-!
-! --------- LA TEPERATURE DE REFERENCE :
-        call cesexi('C', jcesdm, jceslm, im, 1,&
-                    1, 2, iad)
-        if (iad .gt. 0) then
-            ktref = zk8(jcesvm-1+iad)
-            if (ktref .eq. 'NAN') then
-                tempra=r8vide()
-            else
-                read (ktref,'(F8.2)') tempra
-            endif
-        else
-            tempra=r8vide()
-        endif
-!
-        if (na .eq. 0) tempa = tempra
-        temprb = tempra
-        if (nb .eq. 0) tempb = temprb
-!
-        zk8(jmater+im-1) = mater
-        call rccome(mater, 'ELAS', phenom, icodre(1))
-        if (icodre(1) .eq. 1) then
-            call utmess('F', 'POSTRCCM_7', sk='ELAS')
-        endif
-!
-        call rccome(mater, 'FATIGUE', phenom, icodre(1))
-        if (icodre(1) .eq. 1) then
-            call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
-        endif
-!
-        call rccome(mater, 'RCCM', phenom, icodre(1))
-        if (icodre(1) .eq. 1) then
-            call utmess('F', 'POSTRCCM_7', sk='RCCM')
-        endif
-!
-!   INTERPOLATION POUR TEMP_A
-        call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
-                    1, nocmp(1), para( 1), icodre, 2)
-!
-        call rcvale(mater, 'ELAS', nbpa, nopa, [tempra],&
-                    3, nocmp(2), para( 2), icodre, 2)
-!
-        call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
-                    1, nocmp(5), para(5), icodre, 2)
-!
-        call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
-                    3, nocmp(6), para( 6), icodre, 2)
-!
-! --------- LES MAILLES AFFECTEES
-!
-        nbpt = zi(jcesda-1+5+4* (im-1)+1)
-        isp = 1
-        do 20 ipt = 1, nbpt
-            do 10 icmp = 1, nbcmp
-                call cesexi('S', jcesda, jcesla, im, ipt,&
-                            isp, icmp, iad)
-                if (iad .lt. 0) then
-                    iad=-iad
-                    zl(jcesla-1+iad) = .true.
-                endif
-                zr(jcesva-1+iad) = para(icmp)
-10          continue
-20      continue
-!
-!   INTERPOLATION POUR TEMP_B
-        call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
-                    1, nocmp(1), para( 1), icodre, 2)
-!
-        call rcvale(mater, 'ELAS', nbpb, nopb, [temprb],&
-                    3, nocmp(2), para( 2), icodre, 2)
-!
-        call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
-                    1, nocmp(5), para(5), icodre, 2)
-!
-        call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
-                    3, nocmp(6), para( 6), icodre, 2)
-!
-! --------- LES MAILLES AFFECTEES
-!
-        nbpt = zi(jcesdb-1+5+4* (im-1)+1)
-        isp = 1
-        do 40 ipt = 1, nbpt
-            do 30 icmp = 1, nbcmp
-                call cesexi('S', jcesdb, jceslb, im, ipt,&
-                            isp, icmp, iad)
-                if (iad .lt. 0) then
-                    iad=-iad
-                    zl(jceslb-1+iad) = .true.
-                endif
-                zr(jcesvb-1+iad) = para(icmp)
-30          continue
-40      continue
-!
-50  continue
-!
-    zk24(jchmat+2*iocc-1) = chmata
-!
-    zk24(jchmat+2*iocc-2) = chmatb
-!
-    60 end do
-!
-    do 160,iocc = 1,nbseis,1
-!
-    call codent(nbsitu+iocc, 'D0', k8b)
+        call codent(iocc, 'D0', k8b)
 !
 ! ------ ETAT STABILISE "A"
 !        ------------------
 !
-    chmata = '&&RC36MA_A.'//k8b
-    nocmp(2) = 'E_AMBI'
-    call cescre('V', chmata, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, [-1], [-1], [-nbcmp])
-    nocmp(2) = 'E'
+        chmata = '&&RC36MA_A.'//k8b
+        nocmp(2) = 'E_AMBI'
+        call cescre('V', chmata, 'ELNO', noma, nomgd,&
+                    nbcmp, nocmp, [-1], [-1], [-nbcmp])
+        nocmp(2) = 'E'
 !
-    call jeveuo(chmata(1:19)//'.CESD', 'L', jcesda)
-    call jeveuo(chmata(1:19)//'.CESL', 'E', jcesla)
-    call jeveuo(chmata(1:19)//'.CESV', 'E', jcesva)
+        call jeveuo(chmata(1:19)//'.CESD', 'L', jcesda)
+        call jeveuo(chmata(1:19)//'.CESL', 'E', jcesla)
+        call jeveuo(chmata(1:19)//'.CESV', 'E', jcesva)
 !
-    nbpa = 1
-    nopa = 'TEMP'
-    call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempa, nbret=na)
+        nbpa = 1
+        nopa = 'TEMP'
+        call getvr8(motcl1, 'TEMP_REF_A', iocc=iocc, scal=tempa, nbret=na)
 !
 ! ------ ETAT STABILISE "B"
 !        ------------------
 !
-    chmatb = '&&RC36MA_B.'//k8b
-    nocmp(2) = 'E_AMBI'
-    call cescre('V', chmatb, 'ELNO', noma, nomgd,&
-                nbcmp, nocmp, [-1], [-1], [-nbcmp])
-    nocmp(2) = 'E'
+        chmatb = '&&RC36MA_B.'//k8b
+        nocmp(2) = 'E_AMBI'
+        call cescre('V', chmatb, 'ELNO', noma, nomgd,&
+                    nbcmp, nocmp, [-1], [-1], [-nbcmp])
+        nocmp(2) = 'E'
 !
-    call jeveuo(chmatb(1:19)//'.CESD', 'L', jcesdb)
-    call jeveuo(chmatb(1:19)//'.CESL', 'E', jceslb)
-    call jeveuo(chmatb(1:19)//'.CESV', 'E', jcesvb)
+        call jeveuo(chmatb(1:19)//'.CESD', 'L', jcesdb)
+        call jeveuo(chmatb(1:19)//'.CESL', 'E', jceslb)
+        call jeveuo(chmatb(1:19)//'.CESV', 'E', jcesvb)
 !
-    nbpb = 1
-    nopb = 'TEMP'
-    call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempb, nbret=nb)
+        nbpb = 1
+        nopb = 'TEMP'
+        call getvr8(motcl1, 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
 !
-    do 150 im = 1, nbmail
+        do 50 im = 1, nbmail
 !
-        icmp = 1
+            icmp = 1
 !
 ! --------- LE MATERIAU
-        call cesexi('C', jcesdm, jceslm, im, 1,&
-                    1, 1, iad)
-        if (iad .gt. 0) then
-            mater = zk8(jcesvm-1+iad)
-        else
-            call codent(im, 'D', k8b)
-            call utmess('F', 'POSTRCCM_10', sk=k8b)
-        endif
+            call cesexi('C', jcesdm, jceslm, im, 1,&
+                        1, 1, iad)
+            if (iad .gt. 0) then
+                mater = zk8(jcesvm-1+iad)
+            else
+                call codent(im, 'D', k8b)
+                call utmess('F', 'POSTRCCM_10', sk=k8b)
+            endif
 !
 ! --------- LA TEPERATURE DE REFERENCE :
-        call cesexi('C', jcesdm, jceslm, im, 1,&
-                    1, 2, iad)
-        if (iad .gt. 0) then
-            ktref = zk8(jcesvm-1+iad)
-            if (ktref .eq. 'NAN') then
-                tempra=r8vide()
+            call cesexi('C', jcesdm, jceslm, im, 1,&
+                        1, 2, iad)
+            if (iad .gt. 0) then
+                ktref = zk8(jcesvm-1+iad)
+                if (ktref .eq. 'NAN') then
+                    tempra=r8vide()
+                else
+                    read (ktref,'(F8.2)') tempra
+                endif
             else
-                read (ktref,'(F8.2)') tempra
+                tempra=r8vide()
             endif
-        else
-            tempra=r8vide()
-        endif
 !
-        if (na .eq. 0) tempa = tempra
-        temprb = tempra
-        if (nb .eq. 0) tempb = temprb
+            if (na .eq. 0) tempa = tempra
+            temprb = tempra
+            if (nb .eq. 0) tempb = temprb
 !
-        zk8(jmater+im-1) = mater
-        call rccome(mater, 'ELAS', phenom, icodre(1))
-        if (icodre(1) .eq. 1) then
-            call utmess('F', 'POSTRCCM_7', sk='ELAS')
-        endif
+            zk8(jmater+im-1) = mater
+            call rccome(mater, 'ELAS', phenom, icodre(1))
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'POSTRCCM_7', sk='ELAS')
+            endif
 !
-        call rccome(mater, 'FATIGUE', phenom, icodre(1))
-        if (icodre(1) .eq. 1) then
-            call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
-        endif
+            call rccome(mater, 'FATIGUE', phenom, icodre(1))
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
+            endif
 !
-        call rccome(mater, 'RCCM', phenom, icodre(1))
-        if (icodre(1) .eq. 1) then
-            call utmess('F', 'POSTRCCM_7', sk='RCCM')
-        endif
+            call rccome(mater, 'RCCM', phenom, icodre(1))
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'POSTRCCM_7', sk='RCCM')
+            endif
 !
 !   INTERPOLATION POUR TEMP_A
-        call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
-                    1, nocmp(1), para( 1), icodre, 2)
+            call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
+                        1, nocmp(1), para( 1), icodre, 2)
 !
-        call rcvale(mater, 'ELAS', nbpa, nopa, [tempra],&
-                    3, nocmp(2), para( 2), icodre, 2)
+            call rcvale(mater, 'ELAS', nbpa, nopa, [tempra],&
+                        3, nocmp(2), para( 2), icodre, 2)
 !
-        call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
-                    1, nocmp(5), para(5), icodre, 2)
+            call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
+                        1, nocmp(5), para(5), icodre, 2)
 !
-        call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
-                    3, nocmp(6), para( 6), icodre, 2)
+            call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
+                        3, nocmp(6), para( 6), icodre, 2)
 !
 ! --------- LES MAILLES AFFECTEES
 !
-        nbpt = zi(jcesda-1+5+4* (im-1)+1)
-        isp = 1
-        do 120 ipt = 1, nbpt
-            do 110 icmp = 1, nbcmp
-                call cesexi('S', jcesda, jcesla, im, ipt,&
-                            isp, icmp, iad)
-                if (iad .lt. 0) then
-                    iad=-iad
-                    zl(jcesla-1+iad) = .true.
-                endif
-                zr(jcesva-1+iad) = para(icmp)
-110          continue
-120      continue
+            nbpt = zi(jcesda-1+5+4* (im-1)+1)
+            isp = 1
+            do 20 ipt = 1, nbpt
+                do 10 icmp = 1, nbcmp
+                    call cesexi('S', jcesda, jcesla, im, ipt,&
+                                isp, icmp, iad)
+                    if (iad .lt. 0) then
+                        iad=-iad
+                        zl(jcesla-1+iad) = .true.
+                    endif
+                    zr(jcesva-1+iad) = para(icmp)
+ 10             continue
+ 20         continue
 !
 !   INTERPOLATION POUR TEMP_B
-        call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
-                    1, nocmp(1), para( 1), icodre, 2)
+            call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
+                        1, nocmp(1), para( 1), icodre, 2)
 !
-        call rcvale(mater, 'ELAS', nbpb, nopb, [temprb],&
-                    3, nocmp(2), para( 2), icodre, 2)
+            call rcvale(mater, 'ELAS', nbpb, nopb, [temprb],&
+                        3, nocmp(2), para( 2), icodre, 2)
 !
-        call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
-                    1, nocmp(5), para(5), icodre, 2)
+            call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
+                        1, nocmp(5), para(5), icodre, 2)
 !
-        call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
-                    3, nocmp(6), para( 6), icodre, 2)
+            call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
+                        3, nocmp(6), para( 6), icodre, 2)
 !
 ! --------- LES MAILLES AFFECTEES
 !
-        nbpt = zi(jcesdb-1+5+4* (im-1)+1)
-        isp = 1
-        do 140 ipt = 1, nbpt
-            do 130 icmp = 1, nbcmp
-                call cesexi('S', jcesdb, jceslb, im, ipt,&
-                            isp, icmp, iad)
-                if (iad .lt. 0) then
-                    iad=-iad
-                    zl(jceslb-1+iad) = .true.
+            nbpt = zi(jcesdb-1+5+4* (im-1)+1)
+            isp = 1
+            do 40 ipt = 1, nbpt
+                do 30 icmp = 1, nbcmp
+                    call cesexi('S', jcesdb, jceslb, im, ipt,&
+                                isp, icmp, iad)
+                    if (iad .lt. 0) then
+                        iad=-iad
+                        zl(jceslb-1+iad) = .true.
+                    endif
+                    zr(jcesvb-1+iad) = para(icmp)
+ 30             continue
+ 40         continue
+!
+ 50     continue
+!
+        zk24(jchmat+2*iocc-1) = chmata
+!
+        zk24(jchmat+2*iocc-2) = chmatb
+!
+ 60 end do
+!
+    do 160 iocc = 1, nbseis, 1
+!
+        call codent(nbsitu+iocc, 'D0', k8b)
+!
+! ------ ETAT STABILISE "A"
+!        ------------------
+!
+        chmata = '&&RC36MA_A.'//k8b
+        nocmp(2) = 'E_AMBI'
+        call cescre('V', chmata, 'ELNO', noma, nomgd,&
+                    nbcmp, nocmp, [-1], [-1], [-nbcmp])
+        nocmp(2) = 'E'
+!
+        call jeveuo(chmata(1:19)//'.CESD', 'L', jcesda)
+        call jeveuo(chmata(1:19)//'.CESL', 'E', jcesla)
+        call jeveuo(chmata(1:19)//'.CESV', 'E', jcesva)
+!
+        nbpa = 1
+        nopa = 'TEMP'
+        call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempa, nbret=na)
+!
+! ------ ETAT STABILISE "B"
+!        ------------------
+!
+        chmatb = '&&RC36MA_B.'//k8b
+        nocmp(2) = 'E_AMBI'
+        call cescre('V', chmatb, 'ELNO', noma, nomgd,&
+                    nbcmp, nocmp, [-1], [-1], [-nbcmp])
+        nocmp(2) = 'E'
+!
+        call jeveuo(chmatb(1:19)//'.CESD', 'L', jcesdb)
+        call jeveuo(chmatb(1:19)//'.CESL', 'E', jceslb)
+        call jeveuo(chmatb(1:19)//'.CESV', 'E', jcesvb)
+!
+        nbpb = 1
+        nopb = 'TEMP'
+        call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempb, nbret=nb)
+!
+        do 150 im = 1, nbmail
+!
+            icmp = 1
+!
+! --------- LE MATERIAU
+            call cesexi('C', jcesdm, jceslm, im, 1,&
+                        1, 1, iad)
+            if (iad .gt. 0) then
+                mater = zk8(jcesvm-1+iad)
+            else
+                call codent(im, 'D', k8b)
+                call utmess('F', 'POSTRCCM_10', sk=k8b)
+            endif
+!
+! --------- LA TEPERATURE DE REFERENCE :
+            call cesexi('C', jcesdm, jceslm, im, 1,&
+                        1, 2, iad)
+            if (iad .gt. 0) then
+                ktref = zk8(jcesvm-1+iad)
+                if (ktref .eq. 'NAN') then
+                    tempra=r8vide()
+                else
+                    read (ktref,'(F8.2)') tempra
                 endif
-                zr(jcesvb-1+iad) = para(icmp)
-130          continue
-140      continue
+            else
+                tempra=r8vide()
+            endif
 !
-150  continue
+            if (na .eq. 0) tempa = tempra
+            temprb = tempra
+            if (nb .eq. 0) tempb = temprb
 !
-    zk24(jchmat+2*(nbsitu+iocc)-1) = chmata
+            zk8(jmater+im-1) = mater
+            call rccome(mater, 'ELAS', phenom, icodre(1))
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'POSTRCCM_7', sk='ELAS')
+            endif
 !
-    zk24(jchmat+2*(nbsitu+iocc)-2) = chmatb
+            call rccome(mater, 'FATIGUE', phenom, icodre(1))
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
+            endif
 !
-    160 end do
+            call rccome(mater, 'RCCM', phenom, icodre(1))
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'POSTRCCM_7', sk='RCCM')
+            endif
+!
+!   INTERPOLATION POUR TEMP_A
+            call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
+                        1, nocmp(1), para( 1), icodre, 2)
+!
+            call rcvale(mater, 'ELAS', nbpa, nopa, [tempra],&
+                        3, nocmp(2), para( 2), icodre, 2)
+!
+            call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
+                        1, nocmp(5), para(5), icodre, 2)
+!
+            call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
+                        3, nocmp(6), para( 6), icodre, 2)
+!
+! --------- LES MAILLES AFFECTEES
+!
+            nbpt = zi(jcesda-1+5+4* (im-1)+1)
+            isp = 1
+            do 120 ipt = 1, nbpt
+                do 110 icmp = 1, nbcmp
+                    call cesexi('S', jcesda, jcesla, im, ipt,&
+                                isp, icmp, iad)
+                    if (iad .lt. 0) then
+                        iad=-iad
+                        zl(jcesla-1+iad) = .true.
+                    endif
+                    zr(jcesva-1+iad) = para(icmp)
+110             continue
+120         continue
+!
+!   INTERPOLATION POUR TEMP_B
+            call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
+                        1, nocmp(1), para( 1), icodre, 2)
+!
+            call rcvale(mater, 'ELAS', nbpb, nopb, [temprb],&
+                        3, nocmp(2), para( 2), icodre, 2)
+!
+            call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
+                        1, nocmp(5), para(5), icodre, 2)
+!
+            call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
+                        3, nocmp(6), para( 6), icodre, 2)
+!
+! --------- LES MAILLES AFFECTEES
+!
+            nbpt = zi(jcesdb-1+5+4* (im-1)+1)
+            isp = 1
+            do 140 ipt = 1, nbpt
+                do 130 icmp = 1, nbcmp
+                    call cesexi('S', jcesdb, jceslb, im, ipt,&
+                                isp, icmp, iad)
+                    if (iad .lt. 0) then
+                        iad=-iad
+                        zl(jceslb-1+iad) = .true.
+                    endif
+                    zr(jcesvb-1+iad) = para(icmp)
+130             continue
+140         continue
+!
+150     continue
+!
+        zk24(jchmat+2*(nbsitu+iocc)-1) = chmata
+!
+        zk24(jchmat+2*(nbsitu+iocc)-2) = chmatb
+!
+160 end do
     call detrsd('CHAM_ELEM_S', chsma2)
 !
     call jedema()

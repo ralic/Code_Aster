@@ -54,7 +54,7 @@ subroutine mearcc(option, mo, chin, chout)
     integer :: nbcmp, nbnomx
     parameter   (nbcmp=6,nbnomx=9)
 !
-    integer :: nbma, ibid, iret, jma2d, jma3d, ndim
+    integer :: nbma, ibid, jma2d, jma3d, ndim
     integer :: jcesv3, jcesd3, jcesk3, jcesl3, jcesc3, jcesv2, jcesd2, ima
     integer :: jcesk2, jcesl2, jcesc2, jlcnx, jcnx, ipt, icp, ino2, ino3
     integer :: jco3, jco2, npt3, npt2, ipt2, ipt3, jpt3d, k, npt
@@ -72,10 +72,8 @@ subroutine mearcc(option, mo, chin, chout)
 !
     call jemarq()
 !
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, iret)
-    call dismoi('F', 'DIM_GEOM', ma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
     ASSERT(ndim.eq.3)
 !
 !     RECUPERATION DES MAILLES DE FACES ET DES MAILLES 3D SUPPORT
@@ -129,9 +127,9 @@ subroutine mearcc(option, mo, chin, chout)
                     zi(jpt3d+nbnomx*(ima-1)+k-1)=ipt3
                     goto 110
                 endif
-111          continue
-110      continue
-100  continue
+111         continue
+110     continue
+100 continue
 !
 !
 !     REMPLISSAGE DU CHAMP SIMPLE 3D
@@ -159,15 +157,14 @@ subroutine mearcc(option, mo, chin, chout)
                             1, nucmp, iad2)
                 zr(jcesv2-iad2-1)=zr(jcesv3+iad3-1)
                 zl(jcesl2-iad2-1)=.true.
-220          continue
-210      continue
-200  end do
+220         continue
+210     continue
+200 end do
 !
-    call cesred(chous,nbma,zi(jma2d),0,[k8b],&
+    call cesred(chous, nbma, zi(jma2d), 0, [k8b],&
                 'V', chous)
 !
-    call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
-                ligrmo, iret)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
 !
     call cescel(chous, ligrmo, option, 'PSIG3D', 'OUI',&
                 ibid, 'V', chout, 'F', ibid)

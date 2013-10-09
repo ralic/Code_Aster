@@ -48,12 +48,12 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
 !                = 0 : LE MODELE CONTIENT DES ELEMENTS FINIS
 !                = 1 : LE MODELE NE CONTIENT PAS D'ELEMENTS FINIS
 !     ------------------------------------------------------------------
-    character(len=8) :: k8b, nomo, noma, nomacr, exiele
+    character(len=8) ::  nomo, noma, nomacr, exiele
     character(len=24) :: chgeom, chharm
     logical :: exicar
 !
 !-----------------------------------------------------------------------
-    integer :: ianmcr, iasssa, ibid, ier, ima, iexi, nbsma
+    integer :: ianmcr, iasssa, ier, ima, iexi, nbsma
     integer :: nbss
 !-----------------------------------------------------------------------
     call jemarq()
@@ -64,13 +64,10 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     nomo=modele
 !
 !     --- ON VERIFIE LES EVENTUELLES SOUS-STRUCTURES STATIQUES:
-    call dismoi('F', 'NB_SS_ACTI', nomo, 'MODELE', nbss,&
-                k8b, ier)
+    call dismoi('NB_SS_ACTI', nomo, 'MODELE', repi=nbss)
     if (nbss .gt. 0) then
-        call dismoi('F', 'NB_SM_MAILLA', nomo, 'MODELE', nbsma,&
-                    k8b, ier)
-        call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibid,&
-                    noma, ier)
+        call dismoi('NB_SM_MAILLA', nomo, 'MODELE', repi=nbsma)
+        call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
         call jeveuo(noma//'.NOMACR', 'L', ianmcr)
         call jeveuo(nomo//'.MODELE    .SSSA', 'L', iasssa)
 !
@@ -86,7 +83,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                         call utmess('E', 'CALCULEL3_31', sk=nomacr)
                     endif
                 endif
-10          continue
+ 10         continue
             if (ier .gt. 0) then
                 call utmess('F', 'CALCULEL3_32')
             endif
@@ -100,7 +97,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                         call utmess('E', 'CALCULEL3_33', sk=nomacr)
                     endif
                 endif
-20          continue
+ 20         continue
             if (ier .gt. 0) then
                 call utmess('F', 'CALCULEL3_34')
             endif
@@ -114,7 +111,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                         call utmess('E', 'CALCULEL6_80', sk=nomacr)
                     endif
                 endif
-30          continue
+ 30         continue
             if (ier .gt. 0) then
                 call utmess('F', 'CALCULEL6_81')
             endif
@@ -122,8 +119,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     endif
 !
 !     --- ON REGARDE S'IL Y A 1 LIGREL DANS LE MODELE ---
-    call dismoi('F', 'EXI_ELEM', nomo, 'MODELE', ibid,&
-                exiele, ier)
+    call dismoi('EXI_ELEM', nomo, 'MODELE', repk=exiele)
     if (exiele(1:3) .eq. 'OUI') then
         iret=0
     else
@@ -141,7 +137,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
 !     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
     call meharm(nomo, nh, chharm)
 !
-40  continue
+ 40 continue
     chgeoz=chgeom
     chharz=chharm
     call jedema()

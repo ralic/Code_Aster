@@ -88,7 +88,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     character(len=24) :: chtim2
     character(len=24) :: chgeom, chcara(18), chtime, ligrel
     character(len=24) :: ligrmo, ligrch, evolch
-    integer :: ibid, iret, ierd, ier, i, k, icha, inum
+    integer ::  iret, ier, i, k, icha, inum
     integer :: somme
     logical :: lbid, prem
     integer :: jchar, jinf, jlme
@@ -210,8 +210,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
             nomcha = zk24(jchar+icha-1) (1:8)
             ligrch = nomcha//'.CHME.LIGRE'
             numchm = zi(jinf+nchar+icha)
-            call dismoi('F', 'TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', ibid,&
-                        affcha, ierd)
+            call dismoi('TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', repk=affcha)
 !
             if (numchm .eq. 4) then
 !
@@ -289,8 +288,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 !
 ! ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE
 !
-                call dismoi('F', 'TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', ibid,&
-                            affcha, ierd)
+                call dismoi('TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', repk=affcha)
                 do k = 1, nbchmx
                     lchin(1) = ligrch(1:13)//nomlig(k)//'.DESC'
                     call exisd('CHAMP_GD', lchin(1), iret)
@@ -332,7 +330,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     call jelira(mesuiv//'.RELR', 'LONUTI', nbchme)
 !
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

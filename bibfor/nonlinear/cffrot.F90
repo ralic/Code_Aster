@@ -18,7 +18,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 ! ======================================================================
 ! RESPONSBALE
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -50,7 +50,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 !
 !
 !
-    integer :: iret, ibid, ier
+    integer :: iret
     real(kind=8) :: coefmu(2)
     character(len=1) :: typcst(2)
     character(len=14) :: numedf, numef1, numef2
@@ -61,8 +61,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 !
     call exisd('MATR_ASSE', mafrot, iret)
     if (iret .ne. 0) then
-        call dismoi('F', 'NOM_NUME_DDL', mafrot, 'MATR_ASSE', ibid,&
-                    numedf, ier)
+        call dismoi('NOM_NUME_DDL', mafrot, 'MATR_ASSE', repk=numedf)
         call detrsd('NUME_DDL', numedf)
         call detrsd('MATR_ASSE', mafrot)
     endif
@@ -90,10 +89,8 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 !
 ! --- DESTRUCTION DES NUME_DDL
 !
-    call dismoi('F', 'NOM_NUME_DDL', maf1, 'MATR_ASSE', ibid,&
-                numef1, ier)
-    call dismoi('F', 'NOM_NUME_DDL', maf2, 'MATR_ASSE', ibid,&
-                numef2, ier)
+    call dismoi('NOM_NUME_DDL', maf1, 'MATR_ASSE', repk=numef1)
+    call dismoi('NOM_NUME_DDL', maf2, 'MATR_ASSE', repk=numef2)
     call detrsd('NUME_DDL', numef1)
     call detrsd('NUME_DDL', numef2)
 !

@@ -61,7 +61,6 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
     integer :: ino1, nocmp, icor(2), ichnul, ndble
     real(kind=8) :: tailmi
     character(len=8) :: gd1, gd2, ma1, ma2
-    character(len=8) :: k8bid, repk
     character(len=14) :: num
     character(len=19) :: chnul, cn1, cn2, pchno1, pchno2
     character(len=24) :: prchno
@@ -70,7 +69,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
 !
 !-----------------------------------------------------------------------
-    integer :: iadg1, iaval1, iaval2, ieq1, ieq2, ierd, igeom1
+    integer :: iadg1, iaval1, iaval2, ieq1, ieq2, igeom1
     integer :: igeom2, inueq1, inueq2, iprn1, iprn2, ival1, ival2
     integer :: nbid, nbno1, nbno2, ncmp2, nec1, nec2, neq
 !
@@ -87,11 +86,9 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
 ! ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
-                repk, ierd)
+    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     chnul='&&ALIMRS.CHNUL'
-    call dismoi('F', 'NB_EQUA', num, 'NUME_DDL', neq,&
-                k8bid, ierd)
+    call dismoi('NB_EQUA', num, 'NUME_DDL', repi=neq)
     prchno = num//'.NUME'
     call crchno(chnul, prchno, 'TEMP_R', ma2, 'V',&
                 'R', nbno2, neq)
@@ -106,32 +103,25 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! PARCOURS DU MAILLAGE STRUCTURE
 !
 !
-    call dismoi('F', 'NOM_GD', cn2, 'CHAM_NO', ibid,&
-                gd2, ierd)
-    call dismoi('F', 'NOM_GD', cn1, 'CHAM_NO', ibid,&
-                gd1, ierd)
+    call dismoi('NOM_GD', cn2, 'CHAM_NO', repk=gd2)
+    call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma1, 'MAILLAGE', nbno1,&
-                repk, ierd)
-    call dismoi('F', 'PROF_CHNO', cn2, 'CHAM_NO', ibid,&
-                pchno2, ierd)
+    call dismoi('NB_NO_MAILLA', ma1, 'MAILLAGE', repi=nbno1)
+    call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
 !
 !
 !
 !
 !
-    call dismoi('F', 'PROF_CHNO', cn1, 'CHAM_NO', ibid,&
-                pchno1, ierd)
+    call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
 !
     call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno1//'.PRNO', ibid), 'L', iprn1)
     call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
 !
-    call dismoi('F', 'NB_EC', gd1, 'GRANDEUR', nec1,&
-                repk, ierd)
-    call dismoi('F', 'NB_EC', gd2, 'GRANDEUR', nec2,&
-                repk, ierd)
+    call dismoi('NB_EC', gd1, 'GRANDEUR', repi=nec1)
+    call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)
 !
     call jeveuo(pchno1//'.NUEQ', 'L', inueq1)
     call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
@@ -147,49 +137,14 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
 ! AVEC LES NOEUDS DE L INTERFACE FLUIDE
 !
-    do 10, ino1 =1,nbno1
+    do 10 ino1 = 1, nbno1
 !
-    if (zi(icor(1)+ino1-1) .eq. 0) goto 10
+        if (zi(icor(1)+ino1-1) .eq. 0) goto 10
 !
-    ncmp2= zi(iprn2-1+ (zi(icor(1)+ino1-1)-1)* (nec2+2)+2)
-    if (ncmp2 .eq. 0) goto 20
+        ncmp2= zi(iprn2-1+ (zi(icor(1)+ino1-1)-1)* (nec2+2)+2)
+        if (ncmp2 .eq. 0) goto 20
 !
-    ival2 = zi(iprn2-1+(zi(icor(1)+ino1-1)-1)* (nec2+2)+1)
-    ieq2 = zi(inueq2-1+ival2-1+1)
-!
-    ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
-    iadg1 = iprn1 - 1 + (ino1-1)* (nec1+2) + 3
-!
-! EXISTENCE DE LA COMPOSANTE A PLONGER DANS LE CHAMNO
-! DE DEPL_R DE LA STRUCTURE : SI ELLE EXISTE, ON LA
-! RECOPIE DANS LE CHAMNO DE TEMP_R CREE SUR
-! L INTERFACE
-    test = exisdg(zi(iadg1),nocmp)
-!
-    if (test) then
-!
-        ieq1 = zi(inueq1-1+ival1-1+nocmp)
-!
-! RECOPIE DE LA VALEUR DE DX, DY
-! OU DZ DANS LA CMP DE TEMP DE CN2 DU NOEUD
-! GEOMETRIQUEMENT COINCIDENT
-!
-        zr(iaval2-1+ieq2) = zr(iaval1-1+ieq1)
-        goto 20
-!
-    endif
-!
-! PRECHERCHE DE NOEUDS DOUBLES
-!
-20  continue
-    if (ndble .eq. 1) then
-!
-        if (zi(icor(2)+ino1-1) .eq. 0) goto 10
-!
-        ncmp2= zi(iprn2-1+ (zi(icor(2)+ino1-1)-1)* (nec2+2)+2)
-        if (ncmp2 .eq. 0) goto 10
-!
-        ival2 = zi(iprn2-1+(zi(icor(2)+ino1-1)-1)* (nec2+2)+1)
+        ival2 = zi(iprn2-1+(zi(icor(1)+ino1-1)-1)* (nec2+2)+1)
         ieq2 = zi(inueq2-1+ival2-1+1)
 !
         ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
@@ -210,13 +165,48 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! GEOMETRIQUEMENT COINCIDENT
 !
             zr(iaval2-1+ieq2) = zr(iaval1-1+ieq1)
-            goto 10
+            goto 20
 !
         endif
-    endif
+!
+! PRECHERCHE DE NOEUDS DOUBLES
+!
+ 20     continue
+        if (ndble .eq. 1) then
+!
+            if (zi(icor(2)+ino1-1) .eq. 0) goto 10
+!
+            ncmp2= zi(iprn2-1+ (zi(icor(2)+ino1-1)-1)* (nec2+2)+2)
+            if (ncmp2 .eq. 0) goto 10
+!
+            ival2 = zi(iprn2-1+(zi(icor(2)+ino1-1)-1)* (nec2+2)+1)
+            ieq2 = zi(inueq2-1+ival2-1+1)
+!
+            ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
+            iadg1 = iprn1 - 1 + (ino1-1)* (nec1+2) + 3
+!
+! EXISTENCE DE LA COMPOSANTE A PLONGER DANS LE CHAMNO
+! DE DEPL_R DE LA STRUCTURE : SI ELLE EXISTE, ON LA
+! RECOPIE DANS LE CHAMNO DE TEMP_R CREE SUR
+! L INTERFACE
+            test = exisdg(zi(iadg1),nocmp)
+!
+            if (test) then
+!
+                ieq1 = zi(inueq1-1+ival1-1+nocmp)
+!
+! RECOPIE DE LA VALEUR DE DX, DY
+! OU DZ DANS LA CMP DE TEMP DE CN2 DU NOEUD
+! GEOMETRIQUEMENT COINCIDENT
+!
+                zr(iaval2-1+ieq2) = zr(iaval1-1+ieq1)
+                goto 10
+!
+            endif
+        endif
 !
 !
-    10 end do
+ 10 end do
 !
 ! --- MENAGE
 !

@@ -4,7 +4,6 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/cengra.h"
 #include "asterfort/confac.h"
 #include "asterfort/dismoi.h"
@@ -19,6 +18,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 #include "asterfort/xextre.h"
 #include "asterfort/xfabor.h"
 #include "asterfort/xnorme.h"
+!
     integer :: jbasno, inoext, inoseg, nbnoff, jborl, jdirol
     integer :: jnvdir, iseg
     character(len=8) :: noma
@@ -71,13 +71,13 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, ifa, ima, ino, iret, itypma
+    integer :: ibid, ifa, ima, ino, itypma
     integer :: jconx1, jconx2, jcoor, jma, jmanoe
     integer :: nbf, nbfacb, nbno, ndime, nmaext, nmanoe, nuno
     integer :: nunoa, nunob, nunoc, numpt
     integer :: ibid3(12, 3), inobor(2), fa(6, 4)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
-    character(len=8) :: k8b, typma
+    character(len=8) ::  typma
     logical :: fabord, nofac
 !     -----------------------------------------------------------------
 !
@@ -103,8 +103,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
         itypma=zi(jma-1+nmaext)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
-        call dismoi('F', 'DIM_TOPO', typma, 'TYPE_MAILLE', ndime,&
-                    k8b, iret)
+        call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
 !
 !       ON NE PREND QUE LES MAILLES EN 3D
         if (ndime .ne. 3) goto 1000
@@ -125,7 +124,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
                 if (nuno .eq. inoseg) goto 1100
                 if (nuno .eq. inoext) nofac=.true.
 !         FIN BOUCLE SUR LES NOEUDS
-1110          continue
+1110         continue
 !
             if (nofac) then
                 nunoa = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,1)-1)
@@ -157,13 +156,13 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
                 endif
             endif
 !       FIN BOUCLE SUR LES FACES
-1100      continue
+1100     continue
         if (nbfacb .ne. 0) then
             call xextre(inobor, vectn, nbfacb, jbasno, jborl,&
                         jdirol, jnvdir)
         endif
 !     FIN BOUCLE SUR LES MAILLES
-1000  end do
+1000 end do
 !
     call normev(zr(jbasno-1+6*(numpt-1)+4), norme)
 !

@@ -83,7 +83,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !
     integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
     integer :: iq, ifm, niv, jtype, jzcmp, ncmpme
-    integer :: ibid, nbcmp, ipoin, iret, jcesc, jcesl
+    integer ::  nbcmp, ipoin, iret, jcesc, jcesl
     integer :: jtabc, jtabd, jtabv, jtabl, jcesk, jcesd
     integer :: icmp, jncmp, ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
@@ -134,8 +134,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         call jelira(champs//'.CESV', 'TYPE', cval=zk8(jtype+ior-1))
 !
         nomgd = zk8(jcesk-1+2)
-        call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                    tsca, ibid)
+        call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         if (tsca .ne. 'R') then
             call utmess('F', 'ALGORITH2_63')
         endif
@@ -153,30 +152,30 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
             nbcmp = zi(jcesd-1+2)
             ncmpu = 0
             call wkvect('&&IRGMCE.NOCMP', 'V V K8', nbcmp, jncmp)
-            do 50,icmp = 1,nbcmp
-            do 30,ima = 1,nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-            do 20,ipt = 1,nbpt
-            do 10,isp = 1,nbsp
-            call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        isp, icmp, iad)
-            if (iad .gt. 0) goto 40
-10          continue
-20          continue
-30          continue
-            goto 50
-40          continue
-            ncmpu = ncmpu + 1
-            zk8(jncmp+ncmpu-1) = zk8(jcesc-1+icmp)
-50          continue
+            do 50 icmp = 1, nbcmp
+                do 30 ima = 1, nbma
+                    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+                    nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+                    do 20 ipt = 1, nbpt
+                        do 10 isp = 1, nbsp
+                            call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                        isp, icmp, iad)
+                            if (iad .gt. 0) goto 40
+ 10                     continue
+ 20                 continue
+ 30             continue
+                goto 50
+ 40             continue
+                ncmpu = ncmpu + 1
+                zk8(jncmp+ncmpu-1) = zk8(jcesc-1+icmp)
+ 50         continue
         else
             if (zi(zi(jtabd+ior-1)-1+2) .ne. nbcmp) then
                 call utmess('F', 'PREPOST2_53')
             endif
         endif
 !
-60  end do
+ 60 end do
 !
 ! --- RECUPERATION DU TABLEAU DE CORRESPONDANCE ENTRE NUMERO DES
 !     NOUVELLES MAILLES ET NUMERO DE LA MAILLE INITIALE
@@ -185,7 +184,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
     call jeveuo(numold, 'L', jnumol)
     do 101 i = 1, ntyele
         nbel2(i)=0
-101  end do
+101 end do
 !
     tens = .false.
     vect = .false.
@@ -218,7 +217,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         call wkvect('&&IRGMCE.ORDRE_CMP', 'V V K8', ncmpme, jzcmp)
         do 268 k = 1, ncmpme
             zk8(jzcmp+k-1)=' '
-268      continue
+268     continue
         do 269 k = 1, nbcmpd
             zk8(jzcmp+k-1)=nomcmp(k)
             zk8(jzcmp+ncmpme/2+k-1)=zk8(jncmp+k-1)
@@ -227,12 +226,12 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                     icmp = ix
                     goto 62
                 endif
-61          continue
+ 61         continue
             k8b = nomcmp(k)
             call utmess('F', 'PREPOST2_54', sk=k8b)
-62          continue
+ 62         continue
             if (k .ne. ix) lcmp=.true.
-269      continue
+269     continue
         if (lcmp) then
             call utmess('A', 'PREPOST2_55', nk=ncmpme, valk=zk8(jzcmp))
         endif
@@ -246,10 +245,10 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                     icmp = ix
                     goto 80
                 endif
-70          continue
+ 70         continue
             k8b = nomcmp(k)
             call utmess('F', 'PREPOST2_54', sk=k8b)
-80          continue
+ 80         continue
         else
             icmp = k
         endif
@@ -275,16 +274,16 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                     ipoin = point(ima)
                     do 1202 inoe = 1, nbno
                         listno(inoe) = connx(ipoin-1+inoe)
-1202                  continue
+1202                 continue
                     call irgmec(zi(jnumol), ima, connex, nbord2, zi(jtabd),&
                                 zi(jtabl), zi(jtabv), partie, jtype, nbno,&
                                 listno, icmp, ifi, iwri, iadmax,&
                                 ordr, chamsy, nomcon, lresu)
                     iadmm = max(iadmax,iadmm)
-1201              continue
+1201             continue
                 if (iadmm .gt. 0) nbel2(i) = nbel(i)
             endif
-120      continue
+120     continue
 !
 !
         if (.not.tens) then
@@ -311,18 +310,18 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                         ipoin = point(ima)
                         do 1302 inoe = 1, nbno
                             listno(inoe) = connx(ipoin-1+inoe)
-1302                      continue
+1302                     continue
                         do 1303 j = 1, 3
                             write(ifi,1000) (coord(3*(listno(inoe)-1)+&
                             j),inoe=1,nbno)
-1303                      continue
+1303                     continue
                         call irgmec(zi(jnumol), ima, connex, nbord2, zi( jtabd),&
                                     zi(jtabl), zi(jtabv), partie, jtype, nbno,&
                                     listno, icmp, ifi, iwri, iadmax,&
                                     ordr, chamsy, nomcon, lresu)
-1301                  continue
+1301                 continue
                 endif
-130          continue
+130         continue
 !
 ! ----- FIN D'ECRITURE DE View
 !       **********************
@@ -330,7 +329,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !
         endif
 !
-270  end do
+270 end do
 !
 !
     if (tens) then
@@ -341,7 +340,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
             if (icmp .eq. 0) then
                 call utmess('F', 'PREPOST6_34', sk=nomcmp(k))
             endif
-145      continue
+145     continue
 !
 ! ----- ECRITURE DE L'ENTETE DE View
 !       ****************************
@@ -366,17 +365,17 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                     ipoin = point(ima)
                     do 1402 inoe = 1, nbno
                         listno(inoe) = connx(ipoin-1+inoe)
-1402                  continue
+1402                 continue
                     do 1403 j = 1, 3
                         write(ifi,1000) (coord(3*(listno(inoe)-1)+j),&
                         inoe=1,nbno)
-1403                  continue
+1403                 continue
                     call irgme2(zi(jnumol), ima, connex, nbord2, zi(jtabd),&
                                 zi(jtabl), zi(jtabv), partie, jtype, nbno,&
                                 listno, nbcmp, ifi, iadmax)
-1401              continue
+1401             continue
             endif
-140      continue
+140     continue
 !
 ! ----- FIN D'ECRITURE DE View
 !       **********************

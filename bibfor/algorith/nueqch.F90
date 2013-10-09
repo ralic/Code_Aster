@@ -60,27 +60,23 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 !
     character(len=19) :: pfchno
     character(len=8) :: nomgd
-    integer :: ibid, ier, nbcmpx, ncmp, ico, itrou
+    integer ::  nbcmpx, ncmp, ico, itrou
     integer :: icmp, ino, idc, nec
     integer :: jcmp, jnueq, jprno
     logical :: exis
-    character(len=8) :: k8bid, nom
+    character(len=8) ::  nom
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call dismoi('F', 'NOM_GD', chamno, 'CHAM_NO', ibid,&
-                nomgd, ier)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8bid, ier)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmpx,&
-                k8bid, ier)
+    call dismoi('NOM_GD', chamno, 'CHAM_NO', repk=nomgd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmpx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmp)
 !
-    call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                pfchno, ier)
+    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchno)
     call jeveuo(pfchno//'.PRNO', 'L', jprno)
     call jeveuo(pfchno//'.NUEQ', 'L', jnueq)
 !
@@ -106,17 +102,17 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
                     endif
                 endif
             endif
-100      continue
+100     continue
         if (erreur .ne. ' ') then
             call utmess(erreur, 'MECANONLINE5_50', sk=nom)
         endif
-101      continue
+101     continue
         if (itrou .eq. 0) then
             nueq(ino) = 0
         else
             nueq(ino) = zi( jnueq-1+zi(jprno-1+ (nec+2)*(numno(ino)-1)+ 1)+itrou-1)
         endif
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

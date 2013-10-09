@@ -71,12 +71,11 @@ subroutine rehaec(nomres, resgen, nomsst)
     character(len=24) :: crefe(2), chamba, chamno, seliai, sizlia, sst
     character(len=24) :: valk(2)
     integer :: itresu(3), elim, iret
-    character(len=8) :: k8bid, kbid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iarchi, ibid, ich
-    integer :: idresu, ieq, ier, ire1, ire2, ire3
+    integer :: idresu, ieq, ire1, ire2, ire3
     integer :: iretou, j, jfreq, jnume, k, k1, ldnew
     integer :: lfreq, llchab, llnequ, llnueq, llors, llprs
     integer :: llref2, lmapro, lmoet, lsilia, lsst
@@ -164,7 +163,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! ----        SI LE CHAMP N'EST PAS DEPL,VITE OU ACCE ON PLANTE
                 call utmess('F', 'ALGORITH10_16')
             endif
-69      continue
+ 69     continue
     endif
 !
 !     NOMBRE DE CHAMPS SYMBOLIQUES CALCULES.
@@ -177,8 +176,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
 !
-    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid,&
-                numgen(1:14), iret)
+    call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=numgen(1:14))
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
     modgen = zk24(llref2)(1:8)
@@ -214,7 +212,7 @@ subroutine rehaec(nomres, resgen, nomsst)
         nutars=0
         do 20 i = 1, nbsst
             if (zi(llors+i-1) .eq. nusst) nutars=i
-20      continue
+ 20     continue
 !
 !
 ! --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
@@ -236,12 +234,12 @@ subroutine rehaec(nomres, resgen, nomsst)
         ibid=1
         do 11 i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
-11      continue
+ 11     continue
 !
         ieq=0
         do 41 i1 = 1, nusst-1
             ieq=ieq+zi(lsilia+i1-1)
-41      continue
+ 41     continue
 !
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V C', neqet, lmoet)
     endif
@@ -251,19 +249,14 @@ subroutine rehaec(nomres, resgen, nomsst)
     call mgutdm(modgen, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
     if (elim .ne. 0) then
-        call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbddg,&
-                    kbid, ier)
+        call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbddg)
     endif
 !
 ! -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                lint, iret)
-    call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NOM_NUME_DDL', lint, 'INTERF_DYNA', ibid,&
-                numddl, iret)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lint)
+    call dismoi('NOM_MAILLA', lint, 'INTERF_DYNA', repk=mailla)
+    call dismoi('NOM_NUME_DDL', lint, 'INTERF_DYNA', repk=numddl)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
     crefe(1) = mailla
     crefe(2) = numddl
@@ -318,8 +311,8 @@ subroutine rehaec(nomres, resgen, nomsst)
                             zc(lmoet+i1-1)=zc(lmoet+i1-1)+ zr(lmapro+(&
                             k1-1)*neqet+i1-1)* zc(idresu+k1-1+(zi(&
                             jnume+i)-1)*neqred)
-33                      continue
-22                  continue
+ 33                     continue
+ 22                 continue
                 endif
 !
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
@@ -352,16 +345,16 @@ subroutine rehaec(nomres, resgen, nomsst)
                     do 80 k = 1, neq
                         zc(ldnew+k-1)=zc(ldnew+k-1)+zr(llchab+k-1)*zc(&
                         iad)
-80                  continue
+ 80                 continue
                     call jelibe(chamba)
-70              continue
+ 70             continue
                 call jelibe(chamno)
                 call rsnoch(nomres, chmp(ich), iarchi)
-42          continue
+ 42         continue
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
-40      continue
+ 40     continue
 !
     endif
 !
@@ -373,6 +366,6 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
     goto 9999
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

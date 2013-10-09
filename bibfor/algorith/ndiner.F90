@@ -18,7 +18,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -60,9 +60,8 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 !
     integer :: ifm, niv
     integer :: jmasse, jfoine, jvitp, jvitm, jvect
-    integer :: neq, iret
+    integer :: neq
     real(kind=8) :: coiner
-    character(len=8) :: k8bid
     logical :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
     character(len=19) :: vitmoi, vitplu, vector
     character(len=19) :: masse
@@ -100,8 +99,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
     vector = '&&CNPART.CHP2'
     call vtzero(foiner)
     call vtzero(vector)
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ACCES SD
 !

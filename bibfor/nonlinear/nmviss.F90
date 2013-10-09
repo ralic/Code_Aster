@@ -91,8 +91,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     motfac = 'ETAT_INIT'
     prec = 1.d-6
     criter = 'RELATIF'
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     tabfor = '&&NMVISS.FORM'
 !
 ! --- ACCES SD EXCIT_SOL
@@ -135,11 +134,11 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
         call rsorac(result, 'PREMIER', ibid, r8bid, k8bid,&
                     c16bid, prec, criter, tnum, 1,&
                     nbtro1)
-        nume0=tnum(1)            
+        nume0=tnum(1)
         call rsorac(result, 'INST', ibid, inst, k8bid,&
                     c16bid, prec, criter, tnum, 1,&
                     nbtro2)
-        nume=tnum(1)            
+        nume=tnum(1)
         if ((abs(nbtro1).ne.1) .or. (abs(nbtro2).ne.1)) then
             call utmess('F', 'DYNAMIQUE_25')
         endif
@@ -221,9 +220,9 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
                                   ldnew+zi(ieqint+id1-1)-1)= zr( ldnew+zi(ieqint+id1-1)-1)-impe12&
                                   &* zr(ivav2+zi(ieqint+ id2-1)-1&
                                   )*coef2
-32          continue
-31      continue
-30  end do
+ 32         continue
+ 31     continue
+ 30 end do
 !
 ! --- LECTURE FORCES
 !
@@ -234,10 +233,10 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
         do 36 id1 = 1, nbmode
             zr(ldnew+zi(ieqint+id1-1)-1)= zr(ldnew+zi(ieqint+id1-1)-1)&
             +zr(jfor+id1-1)
-36      continue
+ 36     continue
     endif
 !
-99  continue
+ 99 continue
     call jedetr(tabfor)
     call jedema()
 end subroutine

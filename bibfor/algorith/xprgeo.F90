@@ -79,9 +79,9 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno, iret, jltno, jlnno, ndim, j, jnodto, node, ier
+    integer :: i, ifm, niv, nbno, jltno, jlnno, ndim, j, jnodto, node, ier
     integer :: ibid, jbl, jbeta, jlistp, jcoor, pos, pos1, jvp
-    character(len=8) ::  kbid, lpain(2), lpaout(1)
+    character(len=8) ::  lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
     real(kind=8) :: t1(3), n1(3), p1(3), deltaa, newlsn, newlst, cbeta, sbeta
@@ -98,8 +98,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(cnsbl//'.CNSV', 'E', jbl)
 !
 !     RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                kbid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
@@ -152,7 +151,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !            NEW VALUES OF THE TWO LEVEL SETS
             newlsn = newlsn+(zr(jcoor-1+pos1+j)-p1(j))*n1(j)
             newlst = newlst+(zr(jcoor-1+pos1+j)-p1(j))*t1(j)
-105      continue
+105     continue
 !
 !         MODIFY THE NORMAL LEVEL SET ONLY IN THE POINTS WHERE THE
 !         TANGENTIAL LEVEL SET IS POSITIVE
@@ -161,7 +160,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !         STORE THE NEW VALUE OF THE TANTENGIAL LEVEL SET
         zr(jltno-1+node) = newlst
 !
-100  end do
+100 end do
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES

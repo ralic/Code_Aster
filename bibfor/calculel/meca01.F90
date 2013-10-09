@@ -107,7 +107,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
     integer :: iordr, jfin, jaux, tabido(5)
     integer :: np, nd, ncharp, nchard, jchap, jchad
-    integer :: iret, iret1, ierd, iad
+    integer :: iret, iret1, iad
     integer :: iainst, ii
     integer :: iaux, ibid
     integer :: vali
@@ -267,7 +267,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                 endif
 ! - --
             endif
-20          continue
+ 20         continue
         else
             time = 0.d0
             deltat = rundf
@@ -290,8 +290,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (iret .gt. 0) goto 2299
 !
 ! 2.2.3. ==> VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-        call dismoi('F', 'NOM_LIGREL', k24b, 'CHAM_ELEM', ibid,&
-                    ligrch, ierd)
+        call dismoi('NOM_LIGREL', k24b, 'CHAM_ELEM', repk=ligrch)
         if (ligrch .ne. ligrmo) then
             call codent(ibid, 'G', k8b)
             valk(1) = option
@@ -306,7 +305,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             chsigm = k24b
         endif
 !
-30      continue
+ 30     continue
 !
 !--- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS PAR SOUS
 !    ELEMENT (OPTION 'SIEF_SENO_SEGA'), CAS X-FEM UNIQUEMENT
@@ -339,7 +338,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             else
                 chdepm = k24b
             endif
-40          continue
+ 40         continue
 ! ---------------------------------------
 ! 2.2.4.2. LES GRANDEURS CARACTERISTIQUES
 ! ---------------------------------------
@@ -415,7 +414,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 2.2.11. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
         call rsnoch(leres1, option, iordr)
 !
-2299      continue
+2299     continue
 !
         call jedema()
 !
@@ -449,7 +448,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
         call jedema()
 !
-11      continue
+ 11     continue
 !
 !=======================================================================
 ! 4. OPTION "QIRE_ELEM"
@@ -525,16 +524,12 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (iret .gt. 0) goto 4299
 !
 ! 4.2.5. ==> RECUPERE LE NOM DE L'OPTION CALCULEE POUR CHACUN DES CHAMPS
-        call dismoi('F', 'NOM_OPTION', chsigp, 'CHAM_ELEM', ibid,&
-                    optiop, ierd)
-        call dismoi('F', 'NOM_OPTION', chsigd, 'CHAM_ELEM', ibid,&
-                    optiod, ierd)
+        call dismoi('NOM_OPTION', chsigp, 'CHAM_ELEM', repk=optiop)
+        call dismoi('NOM_OPTION', chsigd, 'CHAM_ELEM', repk=optiod)
 !
 ! 4.2.6. ==> VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-        call dismoi('F', 'NOM_LIGREL', chsigp, 'CHAM_ELEM', ibid,&
-                    ligrcp, ierd)
-        call dismoi('F', 'NOM_LIGREL', chsigd, 'CHAM_ELEM', ibid,&
-                    ligrcd, ierd)
+        call dismoi('NOM_LIGREL', chsigp, 'CHAM_ELEM', repk=ligrcp)
+        call dismoi('NOM_LIGREL', chsigd, 'CHAM_ELEM', repk=ligrcd)
         if (ligrcp .ne. ligrmo .or. ligrcd .ne. ligrmo) then
             call codent(iordr, 'G', k8b)
             valk(1)=option
@@ -584,11 +579,11 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 4.2.13. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
         call rsnoch(leres1, option, iordr)
 !
-4299      continue
+4299     continue
 !
         call jedema()
 !
-12      continue
+ 12     continue
 !
 !=======================================================================
 ! 5. OPTION "QIRE_ELNO"
@@ -612,7 +607,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
         call jedema()
 !
-13      continue
+ 13     continue
 !
 !=======================================================================
 ! 6. OPTIONS "QIZ1_ELEM" ET "QIZ2_ELEM"
@@ -691,11 +686,11 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 6.2.8. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
         call rsnoch(leres1, option, iordr)
 !
-6299      continue
+6299     continue
 !
         call jedema()
 !
-14      continue
+ 14     continue
 !
 !=======================================================================
 ! 7. OPTIONS "ERZ1_ELEM" ET "ERZ2_ELEM"
@@ -744,7 +739,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
         call jedema()
 !
-15      continue
+ 15     continue
 !
 !=======================================================================
 ! N. OPTION NE CORRESPONDANT PAS AUX INDICATEURS D'ERREUR
@@ -759,6 +754,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

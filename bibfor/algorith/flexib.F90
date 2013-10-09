@@ -73,7 +73,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iddeeq, iord, iran, iret, j
+    integer :: i, ibid, iddeeq, iord, iran, j
     integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
     integer :: llnoc, llnol, lltyp, ltextc, ltextl, ltorc
     integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
@@ -87,14 +87,12 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     do 10 i = 1, nl
         do 10 j = 1, nc
             flex(i,j)=0.d0
-10      continue
+ 10     continue
 !
 ! --- RECUPERATION CONCEPTS AMONT
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                intf, iret)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                numddl, iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
 !
     if (intf .eq. '        ') then
         valk = basmod
@@ -116,8 +114,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 ! --- RECUPERATION DU NOMBRE DE DDL PHYSIQUES ASSEMBLES
 !
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
     call jeveuo(numddl//'.DEEQ', 'L', iddeeq)
@@ -161,7 +158,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     else
         do 45 i = 1, neq
             zi(ltextl+i-1)=i
-45      continue
+ 45     continue
     endif
 !
     if (numl .gt. 0) then
@@ -187,10 +184,10 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
             iran=zi(ltextl+j-1)
             xx=zr(ltvec+iran-1)
             flex(j,i)=xx
-70      continue
+ 70     continue
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
-60  continue
+ 60 continue
 !
 ! --- SUPPRESSION CONTRIBUTION STATIQUE DES MODES CONNUS
 !
@@ -214,16 +211,16 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
                 kk=zi(ltextl+k-1)
                 toto=zr(ltvec+jj-1)*zr(ltvec+kk-1)/xkgen
                 flex(k,j)=flex(k,j)-toto
-95          continue
-90      continue
+ 95         continue
+ 90     continue
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
-80  continue
+ 80 continue
 !
     call jedetr('&&'//pgc//'.ORDREC')
     call jedetr('&&'//pgc//'.EXTRACC')
     call jedetr('&&'//pgc//'.EXTRACL')
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

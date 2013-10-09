@@ -69,7 +69,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, iec, ieq, ier
-    integer :: ipoint, iret, j, lddeeq, ldnueq, ldprno, linueq
+    integer :: ipoint, j, lddeeq, ldnueq, ldprno, linueq
     integer :: llinsk, llnueq, llprno, ltinse, lttds, nbcmp, nbcpmx
     integer :: nbddl, nbmcal, nbnot, nbsec, nddlt, neqsec, nsecpr
     integer :: ntail, nugd, numnos, numsec
@@ -77,7 +77,6 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     parameter    (nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, nomgd
-    character(len=8) :: k8bid
     character(len=19) :: pfchno, profno, chamno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx), nec
@@ -91,16 +90,13 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !----------------RECUPERATION DU PROF_CHNO:
     call rsexch('F', modcyc, 'DEPL', 1, chamno,&
                 ier)
-    call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                pfchno, iret)
+    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchno)
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !
 !     -- QUESTION "POURRIE" :
-    call dismoi('F', 'NOM_GD', pfchno, 'PROF_CHNO', ibid,&
-                nomgd, iret)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmp,&
-                k8bid, iret)
+    call dismoi('NOM_GD', pfchno, 'PROF_CHNO', repk=nomgd)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), nugd)
     nec = nbec(nugd)
     if (nec .gt. 10) then
@@ -110,8 +106,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !-------------RECUPERATION DIMENSION MAILLAGE SQUELETTE-----------------
 !
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !------------RECUPERATION DU .INV.SKELETON------------------------------
 !
@@ -122,8 +117,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     call jenonu(jexnom(pfchno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pfchno//'.PRNO', ibid), 'L', llprno)
     call jeveuo(pfchno//'.NUEQ', 'L', llnueq)
-    call dismoi('F', 'NB_EQUA', pfchno, 'PROF_CHNO', neqsec,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', pfchno, 'PROF_CHNO', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
 !     POUR STOCKAGE NOMBRE DE DDL GLOBAUX ENGENDRE PAR SECTEUR
@@ -139,7 +133,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
         nddlt=nddlt+zi(llprno+(numnos-1)*(2+nec)+1)
         zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
         2+nec)+1)
-10  end do
+ 10 end do
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
@@ -172,7 +166,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
         ntail=2*zi(lttds+i-1)
         call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
         zi(lttds+i-1)=0
-20  end do
+ 20 end do
 !
 !
 !---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
@@ -202,7 +196,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
         do 40 iec = 1, nec
             zi(ldprno+(i-1)*(2+nec)+1+iec)= zi(llprno+(numnos-1)*(2+&
             nec)+1+iec)
-40      continue
+ 40     continue
         if (numsec .ne. nsecpr) then
             call jelibe(jexnum(indirf, nsecpr))
             nsecpr=numsec
@@ -222,8 +216,8 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
                 zi(ipoint+2)=icomp
                 zi(lttds+numsec-1)=zi(lttds+numsec-1)+1
             endif
-50      continue
-30  end do
+ 50     continue
+ 30 end do
 !
     call jelibe(jexnum(indirf, nsecpr))
 !

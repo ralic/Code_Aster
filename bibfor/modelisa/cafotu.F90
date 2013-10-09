@@ -53,7 +53,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 !
 !-----------------------------------------------------------------------
     integer :: npres, jncmp, jvalv, ncmp, iocc, npr, iatyma, nbma, i, ima
-    integer :: iadtyp, jma, ibid, nmatot, nbtou
+    integer :: iadtyp, jma, nmatot, nbtou
     character(len=8) :: k8b, maille, type, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
@@ -77,8 +77,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
     endif
 !
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nmatot,&
-                k8b, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nmatot)
 !
     call jeveuo(carte//'.NCMP', 'E', jncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)

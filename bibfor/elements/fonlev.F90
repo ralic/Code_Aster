@@ -57,7 +57,7 @@ subroutine fonlev(resu, noma, nbnoff)
     real(kind=8) :: d, prec, precr
     character(len=4) :: typma
     character(len=6) :: nompro
-    character(len=8) :: k8b, maille, type, noeug, typmcl(2), motcle(2)
+    character(len=8) ::  maille, type, noeug, typmcl(2), motcle(2)
     character(len=9) :: typlev(2), motfac, valk(2)
     character(len=24) :: nomobj, grouma, nommai, conec, trav, trav2
     parameter(prec=1.d-1)
@@ -150,9 +150,9 @@ subroutine fonlev(resu, noma, nbnoff)
                         jmai1 = jmai1 + 1
                     endif
 !
-105              continue
+105             continue
 !
-110          continue
+110         continue
         else
 ! SI MAILLE
             do 230 ino = 1, nbmal
@@ -172,7 +172,7 @@ subroutine fonlev(resu, noma, nbnoff)
                     zk8(jmai1) = zk8(jjj-1 + ino)
                     jmai1 = jmai1 + 1
                 endif
-230          continue
+230         continue
 !
         endif
 !
@@ -192,9 +192,9 @@ subroutine fonlev(resu, noma, nbnoff)
                         zk8(jmaii-1 + j) = '0'
                         j2 = i
                     endif
-605              continue
+605             continue
             endif
-600      continue
+600     continue
         if (zk8(jmaii-1 + nbmal) .ne. '0') then
             zk8(jmai2-1 + k2) = zk8(jmaii-1 + nbmal)
             k2 = k2 + 1
@@ -230,8 +230,7 @@ subroutine fonlev(resu, noma, nbnoff)
                     call jenonu(jexnom(nommai, maille), ibid)
                     ityp=iatyma-1+ibid
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-                    call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn,&
-                                k8b, iret)
+                    call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
                     if ((type(1:5).ne.'QUAD8') .and. (type(1:5) .ne.'TRIA3') .and.&
                         (type(1:5).ne.'QUAD4') .and. ( type(1:5).ne.'TRIA6')) then
                         valk(1) = type(1:5)
@@ -246,14 +245,14 @@ subroutine fonlev(resu, noma, nbnoff)
                             compta = compta + 1
                             goto 610
                         endif
-630                  continue
-620              continue
+630                 continue
+620             continue
                 if (compta .eq. 0) then
                     valk(1) = zk8(jnoe1-1 + i)
                     valk(2) = motfac
                     call utmess('F', 'RUPTURE0_72', nk=2, valk=valk)
                 endif
-610          continue
+610         continue
         endif
 !
 !
@@ -264,7 +263,7 @@ subroutine fonlev(resu, noma, nbnoff)
 !
         call jedetr('&&'//nompro//'.MAIL')
 !
-10  end do
+ 10 end do
 ! ----------------------------------------------------------
 !    COMPARAISON LEVRE SUP / LEVRE INF AFIN DE S'ASSURER
 !    QU'ELLES N'ONT PAS DE MAILLES EN COMMUN
@@ -281,10 +280,10 @@ subroutine fonlev(resu, noma, nbnoff)
                 if (zk8(jsup-1 + i) .eq. zk8(jinf-1 + j)) then
                     call utmess('F', 'RUPTURE0_73', sk=zk8(jsup-1 + i))
                 endif
-715          continue
-710      continue
+715         continue
+710     continue
     endif
-9999  continue
+9999 continue
 !
 !     LORSQUE LE FOND DE FISSURE EST DEFINI PAR FOND_INF ET FOND_SUP,
 !     ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
@@ -311,7 +310,7 @@ subroutine fonlev(resu, noma, nbnoff)
                 valk(2) = zk8(jfsup+ino-1)
                 call utmess('F', 'RUPTURE0_69', nk=2, valk=valk)
             endif
-555      continue
+555     continue
     endif
 !
     call jedema()

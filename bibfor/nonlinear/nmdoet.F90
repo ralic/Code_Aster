@@ -81,7 +81,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     integer :: nbcham, zioch
     character(len=24) :: nomchs
     logical :: evonol, leinit
-    integer :: neq, nocc, numein, iret, ibid, i
+    integer :: neq, nocc, numein, iret, i
     integer :: jpltk, icham
     character(len=8) :: k8bid
     character(len=8) :: calcri, result
@@ -110,13 +110,11 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     lacc0 = .false.
     lpiarc = .false.
     motfac = 'ETAT_INIT'
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE
 !
-    call dismoi('F', 'CALC_RIGI', modele, 'MODELE', ibid,&
-                calcri, iret)
+    call dismoi('CALC_RIGI', modele, 'MODELE', repk=calcri)
     if (calcri .ne. 'OUI') then
         call utmess('F', 'CALCULEL2_65', sk=modele)
     endif
@@ -231,7 +229,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         call nmetl3(modele, compor, evonol, result, numein,&
                     sdieto, leinit, icham)
 !
-10  end do
+ 10 end do
 !
 ! --- VERIFICATION COMPATIBILITE PILOTAGE
 !
@@ -250,7 +248,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         call jeveuo(depold(1:19)//'.VALE', 'E', jdepol)
         do 156 i = 1, neq
             zr(jdepol-1+i) = zr(jdep1-1+i) - zr(jdep2-1+i)
-156      continue
+156     continue
         call jeveuo(sdpilo(1:19)//'.PLIR', 'E', jplir)
         call rsadpa(result, 'L', 1, 'COEF_MULT', numein,&
                     0, sjv=jinst, styp=k8bid)
@@ -290,7 +288,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
                 lacc0 = .true.
             endif
         endif
-30  end do
+ 30 end do
 !
 ! --- PROJECTION MODALE EN EXPLICITE
 !

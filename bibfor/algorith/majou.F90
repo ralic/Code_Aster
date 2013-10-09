@@ -90,7 +90,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! ON RECUPERE LE NOMBRE DE MODES DANS LE MODE_MECA
 ! DEFINI
 !-----------------------------------------------------------------------
-    integer :: iadirg, iadpr, iadx, iady, iadz, idesp, ierd
+    integer :: iadirg, iadpr, iadx, iady, iadz, idesp
     integer :: irefp, iret, ivalp, jchflu, jordr, jpara, nbnumo
 !
     real(kind=8) :: bid, ebid
@@ -160,10 +160,8 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! RECUPERATION DES NOMS DE MAILLAGES
     call rsexch('F', modmec, 'DEPL', 1, nomcha,&
                 iret)
-    call dismoi('F', 'NOM_MAILLA', nomcha(1:19), 'CHAM_NO', ibid,&
-                mailla, ierd)
-    call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
-                maflui, ierd)
+    call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
+    call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
 !
 ! RECUPERATION DES MODES SELECTIONNES
 !

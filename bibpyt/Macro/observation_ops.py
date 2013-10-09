@@ -87,7 +87,7 @@ def observation_ops(self,
     mayaexp = self.get_concept(maillage)
 
     # cham_mater et cara_elem pour le resultat a projeter
-    iret,ibid,nom_cara_elem = aster.dismoi('F','CARA_ELEM',RESULTAT.nom,'RESULTAT')
+    iret,ibid,nom_cara_elem = aster.dismoi('CARA_ELEM',RESULTAT.nom,'RESULTAT','F')
     if len(nom_cara_elem) > 0    :
         assert nom_cara_elem.strip() != "#PLUSIEURS" , nom_cara_elem
         if nom_cara_elem.strip() == "#AUCUN" :
@@ -97,7 +97,7 @@ def observation_ops(self,
     else:
         cara_elem = None
 
-    iret,ibid,nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
+    iret,ibid,nom_cham_mater = aster.dismoi('CHAM_MATER',RESULTAT.nom,'RESULTAT','F')
     if len(nom_cham_mater) > 0 :
         assert nom_cham_mater.strip() != "#PLUSIEURS" , nom_cham_mater
         if nom_cham_mater.strip() == "#AUCUN" :
@@ -117,10 +117,10 @@ def observation_ops(self,
         # noms des matrices
         if MATR_RIGI !=None or MATR_MASS !=None:
             # recherche du nume_ddl associe
-            iret,ibid,nom_nume_ddl = aster.dismoi('F','NOM_NUME_DDL',MATR_RIGI.nom,'MATR_ASSE')
+            iret,ibid,nom_nume_ddl = aster.dismoi('NOM_NUME_DDL',MATR_RIGI.nom,'MATR_ASSE','F')
             NUME_DDL = self.get_concept(nom_nume_ddl)
             # coherence avec le nom associe a MODELE_2 :
-            iret,ibid,nom_modele = aster.dismoi('F','NOM_MODELE',nom_nume_ddl,'NUME_DDL')
+            iret,ibid,nom_modele = aster.dismoi('NOM_MODELE',nom_nume_ddl,'NUME_DDL','F')
             if nom_modele.strip() != MODELE_2.nom.strip():
                 UTMESS('F','CALCESSAI0_10')
         else:

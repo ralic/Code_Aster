@@ -19,7 +19,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
@@ -64,7 +64,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
     integer :: cmpmax
     integer :: jvcfos
     character(len=19) :: cfnos, cfnint, cfndir, cfnfex
-    integer :: ibid, i, k
+    integer ::  i, k
     real(kind=8) :: resim, fonam, res
     integer :: jcnsd, jfints, jdiris, jfexts, jcnsl, jcnsc
     integer :: jcnsk, licmpu(999)
@@ -118,17 +118,16 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
     do 30 inc = 1, nbcmp
         do 10 ino = 1, nbno
             if (zl(jcnsl-1+(ino-1)*nbcmp+inc)) goto 20
-10      continue
+ 10     continue
         goto 30
-20      continue
+ 20     continue
         nbcmpu = nbcmpu + 1
         ASSERT(nbcmpu.lt.999)
         licmpu(nbcmpu) = inc
-30  end do
+ 30 end do
 !
     if (nbcmpu .gt. nddmax) ASSERT(.false.)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'R') ASSERT(.false.)
 !
     do 31 inc = 1, nbcmpu
@@ -136,7 +135,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
         maxddf(inc) = 0.d0
         maxddr(inc) = 0.d0
         numnod(inc) = 0
-31  end do
+ 31 end do
 !
 !
     do 28 ino = 1, nbno
@@ -153,8 +152,8 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
                 endif
                 maxddf(inc)=max(fonam,maxddf(inc))
             endif
-29      continue
-28  end do
+ 29     continue
+ 28 end do
     maxres=0.d0
 !
 !
@@ -168,7 +167,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
             maxres = res
             cmpmax = inc
         endif
-50  end do
+ 50 end do
 !
 !  POUR INFO SI BESOIN NUMDDL  : NUMERO DU DDL PENALISANT
 !    NUMDDL   = NUMN(CMPMAX)

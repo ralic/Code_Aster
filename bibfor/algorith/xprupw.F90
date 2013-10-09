@@ -107,8 +107,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
     integer :: nbno, nbnoma, jcoor, jcnsls, jgrls
     integer :: jlsv, jgrlsv, node, nodeps, ndim
-    integer :: ifm, niv, iret, jnores, jnodto, jelcal, neleto
-    character(len=8) :: k8b
+    integer :: ifm, niv, jnores, jnodto, jelcal, neleto
     integer :: i, j, k
 !
 !     CONNECTION TABLE OF THE NODES
@@ -155,8 +154,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     trifis = '&&XPRUPW.TRIFIS'
 !
 !     RETRIEVE THE DIMENSION OF THE PROBLEM
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     DECODE THE COMMAND TO BE EXECUTED AND PREPARE THE CORRECT INPUT
 !     FIELDS FOR THE LEVEL SETS AND THEIR GRADIENTS
@@ -217,8 +215,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     endif
 !
 !     RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoma,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
 !     RETRIEVE THE COORDINATES OF THE NODES
 !                12345678901234567890
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
@@ -254,7 +251,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
         ref(i,1) = zr(jref-1+3*(i-1)+1)
         ref(i,2) = zr(jref-1+3*(i-1)+2)
         ref(i,3) = zr(jref-1+3*(i-1)+3)
-100  end do
+100 end do
 !
 !     DECLARE SOME DATA STRUCTURES FOR THE EVALUATION OF THE GRADIENT
     cnols = '&&XPRUPW.CNOLS'
@@ -475,7 +472,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !
                 endif
 !
-1150          continue
+1150         continue
 !
             if (reinit) then
 !              SUBTRACT f(x) IN THE REINITIALIZATION CASE.
@@ -485,7 +482,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
                 zr(jtempv-1+k) = vtmp
             endif
 !
-1100      continue
+1100     continue
 !
 !        LAST STEP: EVALUATE THE NEW VALUE OF THE LEVEL SET AT EACH
 !        NODE. EVALUATE ALSO THE LOCAL AND GLOBAL RESIDUALS
@@ -516,7 +513,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !
             endif
 !
-1050      continue
+1050     continue
 !
 !        EVALUATION OF THE GRADIENT OF THE NEW LEVEL SET
         call cnscno(cnsls, ' ', 'NON', 'V', cnols,&
@@ -587,9 +584,9 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
             goto 2000
         endif
 !
-1000  end do
+1000 end do
 !
-2000  continue
+2000 continue
 !
 !     INTEGRATION LOOP ENDED
 !

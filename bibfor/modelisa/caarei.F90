@@ -86,7 +86,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=16) :: keywordlist(n_max_keyword)
 !
     integer :: jtang, jcompt, jdirec, jprnm
-    integer :: iocc, nume_node, ibid, ier
+    integer :: iocc, nume_node, ibid
     integer :: ino, inom, idim
     integer :: nbnoeu, narei, nbcmp, nbec, ndim
     real(kind=8) :: repe_defi(3)
@@ -137,8 +137,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 ! - Model informations
 !
     model = ligrmo(1:8)
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
-                k8bid, ier)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     if (ndim .ne. 3) then
         call utmess('F', 'CHARGES2_7', si=ndim)
     endif
@@ -161,8 +160,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
 ! - Local coordinate system (dummy)

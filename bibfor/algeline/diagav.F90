@@ -47,7 +47,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     character(len=1) :: base
     character(len=4) :: kmpic
     real(kind=8) :: eps, diamax, diamin, vabs
-    integer :: neq, ilfin, typvar, ifm, niv, iret, iadigs, ibid, jrefa
+    integer :: neq, ilfin, typvar, ifm, niv, iret, iadigs, jrefa
     integer :: jsxdi, jscbl, jscib, nbbloc, ibloc, iavale, idern, iprem, i
 !     ------------------------------------------------------------------
 !
@@ -55,8 +55,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     call jemarq()
     call infdbg('FACTOR', ifm, niv)
 !
-    call dismoi('F', 'MPI_COMPLET', noma19, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', noma19, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
     endif
@@ -76,8 +75,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     else
         call wkvect(noma19//'.DIGS', base//' V C', 2*neq, iadigs)
     endif
-    call dismoi('F', 'NOM_NUME_DDL', noma19, 'MATR_ASSE', ibid,&
-                nu, ibid)
+    call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
 !
 !
 !     CAS STOCKAGE MORSE DISPONIBLE (OBJET .VALM):
@@ -89,11 +87,11 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
         if (typvar .eq. 1) then
             do 40 i = 1, neq
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))
-40          continue
+ 40         continue
         else if (typvar.eq.2) then
             do 50 i = 1, neq
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
-50          continue
+ 50         continue
         else
             ASSERT(.false.)
         endif
@@ -116,20 +114,20 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
         if (typvar .eq. 1) then
             do 10 i = iprem, idern
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))
-10          continue
+ 10         continue
         else if (typvar.eq.2) then
             do 20 i = iprem, idern
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
-20          continue
+ 20         continue
         else
             ASSERT(.false.)
         endif
         call jelibe(jexnum(noma19//'.UALF', ibloc))
-30  end do
+ 30 end do
 !
 !
 !
-9998  continue
+9998 continue
 !     -- CALCUL DE EPS :
 !     ------------------
 !     ON AVAIT PENSE CALCULER EPS COMME:
@@ -152,7 +150,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
             if (vabs .ne. 0.d0) diamin = min(diamin,vabs)
 !
 !
-70      continue
+ 70     continue
         write (ifm,*) '<FACTOR> AVANT FACTORISATION :'
         write (ifm,*) '<FACTOR>   NB EQUATIONS : ',neq
         write (ifm,*) '<FACTOR>   TERME DIAGONAL MAXIMUM :  ',diamax

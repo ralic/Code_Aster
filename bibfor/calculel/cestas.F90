@@ -41,7 +41,7 @@ subroutine cestas(cesz)
 !     ------------------------------------------------------------------
     integer :: jcesk, jcesd, jcesv, jcesl, jcesc, nbma
     integer :: jce2d, jce2v, jce2l
-    integer :: ibid, jnbpt, jnbsp, jnbcmp, icmp
+    integer ::  jnbpt, jnbsp, jnbcmp, icmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad, iad2
     integer :: ncmp, nbcmp, nbpt2, nbsp2, nbcmp2
     character(len=1) :: base
@@ -70,8 +70,7 @@ subroutine cestas(cesz)
     ncmp = zi(jcesd-1+2)
 !
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !
 !
@@ -84,31 +83,31 @@ subroutine cestas(cesz)
     call wkvect('&&CESTAS.NBSP', 'V V I', nbma, jnbsp)
     call wkvect('&&CESTAS.NBCMP', 'V V I', nbma, jnbcmp)
 !
-    do 40,ima = 1,nbma
-    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-    nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-    nbcmp = zi(jcesd-1+5+4* (ima-1)+3)
-    nbpt2 = 0
-    nbsp2 = 0
-    nbcmp2 = 0
+    do 40 ima = 1, nbma
+        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
+        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+        nbcmp = zi(jcesd-1+5+4* (ima-1)+3)
+        nbpt2 = 0
+        nbsp2 = 0
+        nbcmp2 = 0
 !
-    do 30,ipt = 1,nbpt
-    do 20,isp = 1,nbsp
-    do 10,icmp = 1,nbcmp
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, icmp, iad)
-    if (iad .gt. 0) then
-        nbpt2 = ipt
-        nbsp2 = isp
-        nbcmp2 = icmp
-    endif
-10  continue
-20  continue
-30  continue
-    zi(jnbpt-1+ima) = nbpt2
-    zi(jnbsp-1+ima) = nbsp2
-    zi(jnbcmp-1+ima) = nbcmp2
-    40 end do
+        do 30 ipt = 1, nbpt
+            do 20 isp = 1, nbsp
+                do 10 icmp = 1, nbcmp
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, icmp, iad)
+                    if (iad .gt. 0) then
+                        nbpt2 = ipt
+                        nbsp2 = isp
+                        nbcmp2 = icmp
+                    endif
+ 10             continue
+ 20         continue
+ 30     continue
+        zi(jnbpt-1+ima) = nbpt2
+        zi(jnbsp-1+ima) = nbsp2
+        zi(jnbcmp-1+ima) = nbcmp2
+ 40 end do
 !
 !
 !
@@ -126,49 +125,49 @@ subroutine cestas(cesz)
 !
 !     3- RECOPIE DES VALEURS DE CES DANS CES2 :
 !     -----------------------------------------------------------
-    do 80,ima = 1,nbma
-    nbpt = zi(jce2d-1+5+4* (ima-1)+1)
-    nbsp = zi(jce2d-1+5+4* (ima-1)+2)
-    nbcmp = zi(jce2d-1+5+4* (ima-1)+3)
+    do 80 ima = 1, nbma
+        nbpt = zi(jce2d-1+5+4* (ima-1)+1)
+        nbsp = zi(jce2d-1+5+4* (ima-1)+2)
+        nbcmp = zi(jce2d-1+5+4* (ima-1)+3)
 !
-    do 70,ipt = 1,nbpt
-    do 60,isp = 1,nbsp
-    do 50,icmp = 1,nbcmp
-    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                isp, icmp, iad)
-    call cesexi('C', jce2d, jce2l, ima, ipt,&
-                isp, icmp, iad2)
-    if (iad .gt. 0) then
-        ASSERT(iad2.lt.0)
-        iad2 = -iad2
-        zl(jce2l-1+iad2) = .true.
+        do 70 ipt = 1, nbpt
+            do 60 isp = 1, nbsp
+                do 50 icmp = 1, nbcmp
+                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                                isp, icmp, iad)
+                    call cesexi('C', jce2d, jce2l, ima, ipt,&
+                                isp, icmp, iad2)
+                    if (iad .gt. 0) then
+                        ASSERT(iad2.lt.0)
+                        iad2 = -iad2
+                        zl(jce2l-1+iad2) = .true.
 !
-        if (tsca .eq. 'R') then
-            zr(jce2v-1+iad2) = zr(jcesv-1+iad)
-        else if (tsca.eq.'I') then
-            zi(jce2v-1+iad2) = zi(jcesv-1+iad)
-        else if (tsca.eq.'C') then
-            zc(jce2v-1+iad2) = zc(jcesv-1+iad)
-        else if (tsca.eq.'L') then
-            zl(jce2v-1+iad2) = zl(jcesv-1+iad)
-        else if (tsca.eq.'K8') then
-            zk8(jce2v-1+iad2) = zk8(jcesv-1+iad)
-        else if (tsca.eq.'K16') then
-            zk16(jce2v-1+iad2) = zk16(jcesv-1+iad)
-        else if (tsca.eq.'K24') then
-            zk24(jce2v-1+iad2) = zk24(jcesv-1+iad)
-        else if (tsca.eq.'K32') then
-            zk32(jce2v-1+iad2) = zk32(jcesv-1+iad)
-        else if (tsca.eq.'K80') then
-            zk80(jce2v-1+iad2) = zk80(jcesv-1+iad)
-        else
-            ASSERT(.false.)
-        endif
-    endif
-50  continue
-60  continue
-70  continue
-    80 end do
+                        if (tsca .eq. 'R') then
+                            zr(jce2v-1+iad2) = zr(jcesv-1+iad)
+                        else if (tsca.eq.'I') then
+                            zi(jce2v-1+iad2) = zi(jcesv-1+iad)
+                        else if (tsca.eq.'C') then
+                            zc(jce2v-1+iad2) = zc(jcesv-1+iad)
+                        else if (tsca.eq.'L') then
+                            zl(jce2v-1+iad2) = zl(jcesv-1+iad)
+                        else if (tsca.eq.'K8') then
+                            zk8(jce2v-1+iad2) = zk8(jcesv-1+iad)
+                        else if (tsca.eq.'K16') then
+                            zk16(jce2v-1+iad2) = zk16(jcesv-1+iad)
+                        else if (tsca.eq.'K24') then
+                            zk24(jce2v-1+iad2) = zk24(jcesv-1+iad)
+                        else if (tsca.eq.'K32') then
+                            zk32(jce2v-1+iad2) = zk32(jcesv-1+iad)
+                        else if (tsca.eq.'K80') then
+                            zk80(jce2v-1+iad2) = zk80(jcesv-1+iad)
+                        else
+                            ASSERT(.false.)
+                        endif
+                    endif
+ 50             continue
+ 60         continue
+ 70     continue
+ 80 end do
 !
 !
 !

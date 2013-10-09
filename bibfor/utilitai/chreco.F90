@@ -52,10 +52,8 @@ subroutine chreco(chou)
     call getvid(' ', 'CHAM_GD', scal=chin, nbret=iret)
 !
 !     VERIFICATION : CHIN COMPLEXE?
-    call dismoi('F', 'NOM_GD', chin, 'CHAMP', ibid,&
-                nomgd, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'C') then
         call utmess('F', 'UTILITAI_35', sk=chin)
     endif
@@ -114,7 +112,7 @@ subroutine chreco(chou)
             y=dimag(zc(jvalin+i-1))
             zr(jvale+i-1)=atan2(y,x)*c1
         endif
-10  end do
+ 10 end do
 !
 ! --- 2. CHANGEMENT DE LA GRANDEUR
 !     ----------------------------

@@ -46,7 +46,7 @@ subroutine lisccp(phenom, lischa)
 ! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar
-    integer :: ibid, iret, genrec
+    integer ::  genrec
     character(len=8) :: phecha, charge
     logical :: lok
     logical :: lveac, lveag, lveas
@@ -78,8 +78,7 @@ subroutine lisccp(phenom, lischa)
             phecha = ' '
         else
             call lislch(lischa, ichar, charge)
-            call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                        phecha, iret)
+            call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=phecha)
         endif
 !
         if (phenom .eq. 'MECANIQUE') then
@@ -102,9 +101,9 @@ subroutine lisccp(phenom, lischa)
         if (.not.lok) then
             call utmess('F', 'CHARGES5_4', sk=charge)
         endif
-10  continue
+ 10 continue
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import aster
 from Utilitai.Table import Table
@@ -35,7 +35,7 @@ def calc_stabilite_ops(self,reuse,SCHEMA_TEMPS,FILTRE,**args):
 
     # Le concept sortant est une table_container
     self.DeclareOut('t_resu', self.sd)
-   
+
     # On importe les definitions des commandes a utiliser dans la macro
     EXTR_TABLE    = self.get_cmd('EXTR_TABLE')
 
@@ -76,8 +76,8 @@ def calc_stabilite_ops(self,reuse,SCHEMA_TEMPS,FILTRE,**args):
                         **filtre)
 
         if not recup_para:
-            iret,ibid,kass_name = aster.dismoi('F','REF_RIGI_PREM',__sol_per.nom,'RESU_DYNA')
-            iret,ibid,mass_name = aster.dismoi('F','REF_MASS_PREM',__sol_per.nom,'RESU_DYNA')
+            iret,ibid,kass_name = aster.dismoi('REF_RIGI_PREM',__sol_per.nom,'RESU_DYNA','F')
+            iret,ibid,mass_name = aster.dismoi('REF_MASS_PREM',__sol_per.nom,'RESU_DYNA','F')
 
             ctx = CONTEXT.get_current_step().get_contexte_courant()
             kass = ctx[kass_name]
@@ -89,7 +89,7 @@ def calc_stabilite_ops(self,reuse,SCHEMA_TEMPS,FILTRE,**args):
                         **filtre)
 
             t_choc = __choc.EXTR_TABLE()
-    
+
             typ = t_choc['TYPE_CHOC'].values()['TYPE_CHOC']
             alpha = t_choc['RIGI_NOR'].values()['RIGI_NOR']
             eta = t_choc['PARA_REGUL'].values()['PARA_REGUL']
@@ -99,7 +99,7 @@ def calc_stabilite_ops(self,reuse,SCHEMA_TEMPS,FILTRE,**args):
             ncmp2 = t_choc['NOM_CMP_2'].values()['NOM_CMP_2']
             orig1 = t_choc['ORIG_OBST_X'].values()['ORIG_OBST_X']
             orig2 = t_choc['ORIG_OBST_Y'].values()['ORIG_OBST_Y']
-            orig3 = t_choc['ORIG_OBST_Z'].values()['ORIG_OBST_Z']          
+            orig3 = t_choc['ORIG_OBST_Z'].values()['ORIG_OBST_Z']
 
             nchoc=len(t_choc.rows)
             recup_para = 1
@@ -184,10 +184,10 @@ def calc_stabilite_ops(self,reuse,SCHEMA_TEMPS,FILTRE,**args):
     tab = t_res.dict_CREA_TABLE()
     t_resu = CREA_TABLE(TYPE_TABLE='TABLE_CONTENEUR',**tab)
 
-    return 
+    return
 
 def main(U,hu,omega,K,M,nchoc,poschoc,orig,typchoc,alpha,eta,jeu,nbinst,eps,info):
-    # Taille du vecteur 
+    # Taille du vecteur
     N=size(U)
     # Nombre de ddls actifs
     nd=int(N/(2*hu+1))
@@ -259,7 +259,7 @@ def main(U,hu,omega,K,M,nchoc,poschoc,orig,typchoc,alpha,eta,jeu,nbinst,eps,info
     if(info==2):
         UTMESS('I', 'MECANONLINE9_64', valr = (nrmaT,nrmT,max(abs(valp))))
 
-        
+
     return stable
 
 
@@ -282,7 +282,7 @@ def dfdu(t,nd,hu,U,omega,nchoc,poschoc,orig,typchoc,alpha,eta,jeu):
             ur=sqrt(ux**2+uy**2)
             fn=funilateral(ur,alpha[k],eta[k])
             dfndr=fn/((2/alpha[k])*fn-(ur-1))
-            
+
             drdux=ux/ur
             drduy=uy/ur
 
@@ -318,35 +318,35 @@ def funilateral(x,alpha,eta):
     fn=((x-1.)+sqrt((x-1.)**2+4.*eta/alpha))/(2./alpha)
     return fn
 
-def fbilateral(x,alpha,eta):        
+def fbilateral(x,alpha,eta):
     a1=1./(alpha**2)
     b1=-2.*x/alpha
     c1=(x**2-1)
     d1=eta*x
-        
+
     h=-b1/(3.*a1)
-    
+
     p=(3.*a1*h**2+2.*b1*h+c1)/a1
     q=-(a1*h**3+b1*h**2+c1*h+d1)/a1
-        
+
     discr1=q**2 + (4.*p**3)/27.
-        
+
     sd=(1-sign(discr1))/2
-        
+
     u3=(q - (1j**sd)*sqrt(abs(discr1)))/2.
     v3=(q + (1j**sd)*sqrt(abs(discr1)))/2.
-        
+
     u=u3**(1/3.);
     v=v3**(1/3.);
-    
+
     f1= u + v + h
-    
+
     a2=a1
     b2=b1+a1*f1
     c2=c1+b1*f1 + a1*f1**2
-    
+
     discr2= b2**2 - 4.*a2*c2
-    
+
     f= (-b2 + sqrt(b2**2 - 4.*a2*c2))/(2.*a2)
 
     return f.real
@@ -370,19 +370,19 @@ def posnoeud(typ,noeud1,comp1,comp2,pos):
             ncmp[0]=comp1[k]
             ncmp[1]=comp2[k]
             for j in range(nddl):
-                if(noeud1[k].strip()+ncmp[0].strip()==pos[j]):                
+                if(noeud1[k].strip()+ncmp[0].strip()==pos[j]):
                     poschoc[k*6]=j+1
-                elif(noeud1[k].strip()+ncmp[1].strip()==pos[j]):                
+                elif(noeud1[k].strip()+ncmp[1].strip()==pos[j]):
                     poschoc[k*6+1]=j+1
         elif(typ[k].strip()=='BI_PLAN'):
             ncmp[0]=comp1[k]
             for j in range(nddl):
-                if(noeud1[k].strip()+ncmp[0].strip()==pos[j]):                
+                if(noeud1[k].strip()+ncmp[0].strip()==pos[j]):
                     poschoc[k*6]=j+1
         elif(typ[k].strip()=='PLAN'):
             ncmp[0]=comp1[k]
             for j in range(nddl):
-                if(noeud1[k].strip()+ncmp[0].strip()==pos[j]):                
+                if(noeud1[k].strip()+ncmp[0].strip()==pos[j]):
                     poschoc[k*6]=j+1
     return poschoc
 
@@ -419,11 +419,11 @@ def extr_matr(matr):
   neq=len(vsmdi)
   # print(neq)
 
-# Nombre de termes non-nuls 
+# Nombre de termes non-nuls
   nterm=len(vsmhc)
   # print(nterm)
 
-# Creation de la matrice AVEC cdl        
+# Creation de la matrice AVEC cdl
   matriceg=zeros([neq,neq])
   j=0
   for k in range(nterm):
@@ -458,7 +458,7 @@ def extr_matr(matr):
     for k in range(neq):
       if(vdeeq[-1+2*k+2]>0):
         ind[k]=1
-      elif(vdeeq[-1+2*k+2]<0):        
+      elif(vdeeq[-1+2*k+2]<0):
         ind[k]=0
         j=0
         tcmp=-vdeeq[-1+2*k+2]
@@ -471,7 +471,7 @@ def extr_matr(matr):
       if(ind[k]==1):
         nd=nd+1
 
-# Creation de la matrice SANS cdl    
+# Creation de la matrice SANS cdl
   matrice=zeros([nd,nd])
   ii=0
   for i in range(neq):
@@ -486,7 +486,7 @@ def extr_matr(matr):
       ii=ii+1
   # print(matrice)
 
-# Creation du vecteur [N1DX ... N?D?] de taille nd 
+# Creation du vecteur [N1DX ... N?D?] de taille nd
   vectddl=['']*nd
   comp=['DX','DY','DZ','DRX','DRY','DRZ',]
   i=0

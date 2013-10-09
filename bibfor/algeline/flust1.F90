@@ -99,8 +99,8 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 ! DATA
 ! ----
 !-----------------------------------------------------------------------
-    integer :: iamfr, ibid, icoupl, ieq, ier, ifreqi, ifsic
-    integer :: ifsvk, im, imod, ind, indic, ior, ire
+    integer :: iamfr, icoupl, ieq, ier, ifreqi, ifsic
+    integer :: ifsvk, im, imod, ind, indic, ior
     integer :: iret, iv, ivale, kmasg, labsc, laux1
     integer :: laux2, lddl, ldefm, lfact, lires, lmasg, lmasse
     integer :: lnoe, lprofv, lrho, lvale, neq, nt
@@ -134,16 +134,12 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !
 !
 !
-    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
-                masse, ire)
+    call dismoi('REF_MASS_PREM', base, 'RESU_DYNA', repk=masse)
     call mtdscr(masse)
     call jeveuo(masse//'.&INT', 'L', lmasse)
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                numddl, ire)
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                mailla, ire)
-    call dismoi('F', 'NB_EQUA', masse, 'MATR_ASSE', neq,&
-                k8b, ire)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numddl)
+    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
+    call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
 !
 !-----RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
@@ -186,7 +182,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
                 zi(lddl))
     do 80 ieq = 0, neq-1
         zr(laux1+ieq) = zi(lddl+ieq)
-80  end do
+ 80 end do
     call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
                 .true.)
     do 100 im = 1, nbm
@@ -197,7 +193,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
         rval1 = 0.0d0
         do 90 ieq = 0, neq-1
             rval1 = rval1 + zr(lvale+ieq)*zr(laux2+ieq)*zr(lvale+ieq)
-90      continue
+ 90     continue
         zr(kmasg+im-1) = rval1
 !
         call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
@@ -208,7 +204,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
         fact(3*(im-1)+1) = zr(lfact ) * masg(im)
         fact(3*(im-1)+2) = zr(lfact+1) * masg(im)
         fact(3*(im-1)+3) = zr(lfact+2) * masg(im)
-100  end do
+100 end do
 !
 !
 ! --- 3.REMPLISSAGE DES OBJETS .VALE DES CHAMPS DE DEPLACEMENTS ---
@@ -228,7 +224,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
                 imod = nuor(im)
                 zr(iamfr+im-1) = 4.d0*pi*zr(ifreqi+imod-1)*amor(im)* zr(kmasg+im-1)
                 zr(iamfr+nbm+im-1) = zr(ifreqi+imod-1)
-110          continue
+110         continue
 !
             nt = 2
             lvale = 2*nt*nt + 10*nt + 2
@@ -251,8 +247,8 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
                     ind = 2*nbm*(iv-1)+2*(im-1)+1
                     freq(ind) = zr(ifreqi+imod-1)
                     freq(ind+1) = amor(im)
-130              continue
-140          continue
+130             continue
+140         continue
 !
         endif
     endif

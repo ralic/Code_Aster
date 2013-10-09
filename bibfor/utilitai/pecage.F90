@@ -51,7 +51,7 @@ subroutine pecage(resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: mxvale, nbparr, ibid, iret, lvale, iocc, nt, ng, nm, nbgrma, jgr
-    integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, ie, nbparc
+    integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
     integer :: np, ifm, niv, iorig, i, icage
     parameter (mxvale=29,nbparr=46)
     real(kind=8) :: valpar(nbparr), r8b, xyp(2), orig(3), zero
@@ -100,8 +100,7 @@ subroutine pecage(resu, modele, nbocc)
     mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
     ndim = 3
-    call dismoi('F', 'Z_CST', modele, 'MODELE', ibid,&
-                k8b, ie)
+    call dismoi('Z_CST', modele, 'MODELE', repk=k8b)
     if (k8b(1:3) .eq. 'OUI') ndim = 2
 !
     call exlim3('CARA_GEOM', 'V', modele, ligrel)
@@ -146,7 +145,7 @@ subroutine pecage(resu, modele, nbocc)
 !
         do 10 i = 1, nbparr
             valpar(i) = r8vide()
-10      continue
+ 10     continue
         valk(1) = '????????'
         valk(2) = '????????'
 !
@@ -190,7 +189,7 @@ subroutine pecage(resu, modele, nbocc)
                 valk(1) = zk24(jgr+ig-1)
                 call tbajli(resu, nbparc, noparr, [ibid], valpar,&
                             [c16b], valk, 0)
-20          continue
+ 20         continue
             call jedetr('&&PECAGE_GROUPM')
         endif
 !
@@ -216,11 +215,11 @@ subroutine pecage(resu, modele, nbocc)
                 valk(1) = zk8(jma+im-1)
                 call tbajli(resu, nbparc, noparr, [ibid], valpar,&
                             [c16b], valk, 0)
-30          continue
+ 30         continue
 !
             call jedetr('&&PECAGE_MAILLE')
         endif
-40  end do
+ 40 end do
 !
     call detrsd('CHAM_ELEM', '&&PECAGE.CARA_GEOM')
     call jedetr('&&PECAGE.TRAV1')

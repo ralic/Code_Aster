@@ -54,8 +54,7 @@ subroutine nmdocr(model, carcri)
 !
 ! - Initializations
 !
-    call dismoi('F', 'NOM_MAILLA', model, 'MODELE', ibid,&
-                mesh, iret)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     carcri    = '&&NMDOCR.CARCRI'
     list_vale = '&&NMDOCR.LIST_VALE'
 !

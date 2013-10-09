@@ -68,7 +68,7 @@ subroutine pmfd00()
     integer :: nbocc0, nbocc1, nbocc2, nbocc3, nbocc4
     integer :: iret, ibid, ifm, niv, iasbon, iasedi, iasmax
     integer :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
-    integer :: ii, jj, ioc, ipos, ier, izone, nbcmp, nbec
+    integer :: ii, jj, ioc, ipos, izone, nbcmp, nbec
     integer :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
     integer :: jdnm, jnf, jmp
     integer :: jnbfg, nbgf, jngf, jcarfi, jpoint, ipoint, ngf, ig, ng, ig1
@@ -87,7 +87,7 @@ subroutine pmfd00()
     real(kind=8) :: airpou, moinoy, moinoz, erre, precai
     parameter  (zero=0.d+0)
 !
-    character(len=8) :: carele, nomo, noma, k8b, modele, sdgf, ngrand
+    character(len=8) :: carele, nomo, noma, modele, sdgf, ngrand
     character(len=16) :: concep, cmd, ltymcl(3)
     character(len=19) :: cesdec, ligrmo, celbid
     character(len=24) :: modnom, mommai, vpoint, vnbfib, vcarfi, vnbfig, rnomgf
@@ -125,7 +125,7 @@ subroutine pmfd00()
         nbfib=0
         do 10 ig = 1, nbgf
             nbfib=nbfib+zi(jnbfg-1+ig)
-10      continue
+ 10     continue
     endif
 !
     modnom = nomo//'.MODELE    .LGRF'
@@ -171,14 +171,13 @@ subroutine pmfd00()
     call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
 !     NOMBRE D'ENTIER CODE DANS LA CARTE
-    call dismoi('F', 'NB_EC', ngrand, 'GRANDEUR', nbec,&
-                k8b, ier)
+    call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
 !
     valmi = 0
     do 100 ioc = 1, nbocc0
         do 110 ig = 1, ngmxel
             nugrp(ig)=0
-110      continue
+110     continue
         call reliem(nomo, noma, 'NU_MAILLE', 'MULTIFIBRE', ioc,&
                     2, ltymcl, ltymcl, '&&PMFD00.MAILLSEP', nmailp)
         call jeveuo('&&PMFD00.MAILLSEP', 'L', jmp)
@@ -198,7 +197,7 @@ subroutine pmfd00()
             call jenonu(jexnom(rnomgf, zk24(jngf+ig-1)), ng)
             nbfib = nbfib+zi(jnbfg+ng-1)
             nugrp(ig) = ng
-120      continue
+120     continue
 !
 !        ON AFFECTE LES ELEMENTS POUTRES CONCERNES PAR CETTE OCCURENCE
 !        POUR CHAQUE EL : NB DE FIBRE, NB DE GROUPES DE FIBRES
@@ -210,13 +209,13 @@ subroutine pmfd00()
             zi(ipos+1) = ngf
             do 131 ig = 1, ngmxel
                 zi(ipos+1+ig) = nugrp(ig)
-131          continue
-130      continue
+131         continue
+130     continue
 !
 !        INTEGRATION POUR TOUS LES GROUPES DE CETTE OCCURENCE
         do 135 ii = 1, 6
             casect(ii)=zero
-135      continue
+135     continue
         do 140 ig = 1, ngf
             ig1 = nugrp(ig)
             nbfig = zi(jnbfg -1+ig1)
@@ -224,8 +223,8 @@ subroutine pmfd00()
             call pmfitg(nbfig, ncarfi, zr(jcarfi+ipoint-1), carg)
             do 141 ii = 1, 6
                 casect(ii) = casect(ii) + carg(ii)
-141          continue
-140      continue
+141         continue
+140     continue
 !
 !        BOUCLE SUR LES MAILLES
         do 150 ima = 1, nmailp
@@ -258,13 +257,13 @@ subroutine pmfd00()
                         iasbon = ii
                         goto 160
                     endif
-152              continue
-155          continue
+152             continue
+155         continue
             if (iasbon .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 call utmess('F', 'ALGELINE_34', sk=valmk(1))
             endif
-160          continue
+160         continue
 !           RANG DES COMPOSANTES A1, IY1, IZ1 DANS LA CARTE
             ira1 = indik8( zk8(inomcp), 'A1' , 1, nbcmp )
             iriy1 = indik8( zk8(inomcp), 'IY1', 1, nbcmp )
@@ -341,14 +340,14 @@ subroutine pmfd00()
                 call utmess('E', 'MODELISA8_5', nk=2, valk=valmk, si=valmi,&
                             nr=4, valr=valmr)
             endif
-150      continue
-100  end do
+150     continue
+100 end do
     if (valmi .ne. 0) then
         call utmess('F', 'MODELISA8_6')
     endif
 !
 !
-200  continue
+200 continue
 !
 ! --- -------------------------------------------------------
 !     TRAITEMENT DES MOTS CLES COQUE_NCOU,TUYAU_NCOU, ...
@@ -365,6 +364,6 @@ subroutine pmfd00()
         call imprsd('CHAMP', carele//'.CANBSP', 6, 'INFO=2')
         call imprsd('CHAMP', carele//'.CAFIBR', 6, 'INFO=2')
     endif
-9999  continue
+9999 continue
     call jedema()
 end subroutine

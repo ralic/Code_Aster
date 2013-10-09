@@ -65,7 +65,6 @@ subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
     integer :: seq, adress, lgsn
     integer :: decal, global
     integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav, som
-    integer :: ibid, ierd
     character(len=14) :: nu
     integer :: ifm, niv
 !
@@ -76,8 +75,7 @@ subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
     call jemarq()
     call infniv(ifm, niv)
 !
-    call dismoi('F', 'NOM_NUME_DDL', nommat, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', nommat, 'MATR_ASSE', repk=nu)
     factol(1:19) = nommat
     factou(1:19) = nommat
     call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&

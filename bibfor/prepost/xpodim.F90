@@ -26,7 +26,6 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -56,6 +55,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xismec.h"
+!
     integer :: nsetot, nnntot, ncotot, nbnoc, ior, ngfon
     character(len=8) :: maxfem, malini, resuco, modvis
     character(len=19) :: cns1, cns2, ces1, ces2, cel2, cesvi1, cesvi2
@@ -95,7 +95,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !
     integer :: ier, nbmac, nbma2, nbno, nbno2, iret, jdime, igeomr, nbid
-    integer :: iadesc, ibid, iarefe, iacoo2, jtypm2, jtrav, jno, jmac
+    integer :: iadesc, iarefe, iacoo2, jtypm2, jtrav, jno, jmac
     integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
     integer :: jcnsk1, jcvid1, jnbpt, jcesd2
     integer :: jcnsk2, jcnsd2, jcnsc2, jdirgr
@@ -127,8 +127,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call jeveuo(mailc, 'L', jmac)
         call jelira(mailc, 'LONMAX', nbmac)
 !       RECHERCHE DE LA LISTE DE NOEUDS SOUS-JACENTE
-        call dismoi('F', 'NB_NO_MAILLA', malini, 'MAILLAGE', nbno,&
-                    k8b, iret)
+        call dismoi('NB_NO_MAILLA', malini, 'MAILLAGE', repi=nbno)
         call wkvect('&&XPODIM.LITRAV', 'V V I', nbno, jtrav)
         call wkvect(listno, 'V V I', nbno, jno)
         call gmgnre(malini, nbno, zi(jtrav), zi(jmac), nbmac,&
@@ -198,7 +197,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             ASSERT(nbgma.eq.nbgma1)
             do 30 i = 1, nbgma
                 if (zi(jlogma-1+i) .ne. 0) nbgma2 = nbgma2 + 1
-30          continue
+ 30         continue
         endif
         if (nbgma2 .ne. 0) then
             gpptnm = maxfem//'.PTRNOMMAI'
@@ -210,18 +209,18 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             if (igma1 .ne. 0) then
                 call wkvect(dirgrm, 'V V I', nbgma, jdirgr)
                 cptgr2 = 0
-                do 31,i=1,nbgma
-                if (zi(jlogma-1+i) .ne. 0) then
-                    call jenuno(jexnum(malini//'.GROUPEMA', i), nogma)
-                    call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
-                    n = zi(jlogma-1+i)
-                    cptgr2 = cptgr2 + 1
-                    zi(jdirgr-1+i)=cptgr2
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONMAX', n)
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONUTI', n)
-                    write(ifm,808) nogma,n
-                endif
-31              continue
+                do 31 i = 1, nbgma
+                    if (zi(jlogma-1+i) .ne. 0) then
+                        call jenuno(jexnum(malini//'.GROUPEMA', i), nogma)
+                        call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
+                        n = zi(jlogma-1+i)
+                        cptgr2 = cptgr2 + 1
+                        zi(jdirgr-1+i)=cptgr2
+                        call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONMAX', n)
+                        call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONUTI', n)
+                        write(ifm,808) nogma,n
+                    endif
+ 31             continue
             endif
         endif
         write(ifm,*)' '
@@ -246,10 +245,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call jelira(licham, 'LONMAX', nbcham)
         call jeveuo(licham, 'L', jlicha)
 !
-        call dismoi('F', 'DIM_GEOM', malini, 'MAILLAGE', ndim,&
-                    k8b, ier)
-        call dismoi('F', 'NB_NO_MAILLA', maxfem, 'MAILLAGE', nbid,&
-                    k8b, ier)
+        call dismoi('DIM_GEOM', malini, 'MAILLAGE', repi=ndim)
+        call dismoi('NB_NO_MAILLA', maxfem, 'MAILLAGE', repi=nbid)
         ASSERT(nbno2.eq.nbid)
 !
         ASSERT(nbcham.gt.0)
@@ -297,7 +294,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             do 20 i = 1, 2*ndim
                 if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep3(i)
                 if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep2(i)
-20          continue
+ 20         continue
         else
 !         CAS DE LA THERMIQUE
             zi(jcnsd2-1+2)=1
@@ -340,10 +337,10 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                 nmaxcm = zi(jcvid1-1 +5)
                 call wkvect('&&XPODIM.NBPT', 'V V I', nbma2, jnbpt)
 !
-                do 10,i = 1,nbma2
-                zi(jnbpt-1+i) = zi(jcesd2-1+5 + 4*(i-1) + 1)
+                do 10 i = 1, nbma2
+                    zi(jnbpt-1+i) = zi(jcesd2-1+5 + 4*(i-1) + 1)
 !
-10              continue
+ 10             continue
 !
                 call cescre('V', cesvi2, 'ELGA', maxfem, 'VARI_R',&
                             -nmaxcm, ' ', zi(jnbpt), [-nmaxsp], [-nmaxcm])
@@ -360,10 +357,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         if (iret .eq. 0) then
 !
 !         NOM ET TYPE DE LA GRANDEUR (NORMALEMENT TYPE='K16')
-            call dismoi('F', 'NOM_GD', comp1, 'CARTE', ibid,&
-                        nomgd, iret)
-            call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                        tsca, ibid)
+            call dismoi('NOM_GD', comp1, 'CARTE', repk=nomgd)
+            call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
             ASSERT(tsca.eq.'K16')
 !
 !         CREATION CHAM_ELEM_S 1 A PARTIR DE LA CARTE 1
@@ -377,7 +372,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !         CREATION CHAM_ELEM_S 2 : COMPS2
             call cescre('V', comps2, 'ELEM', maxfem, nomgd,&
-                        nbcmp, zk8( jresc1), [ibid], [-1], [-nbcmp])
+                        nbcmp, zk8( jresc1), [0], [-1], [-nbcmp])
 !
         endif
 !

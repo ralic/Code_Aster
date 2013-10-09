@@ -48,8 +48,7 @@ subroutine cfmmap(noma, defico, resoco)
 !
     integer :: ifm, niv
     integer :: nzoco, ntpt, ndimg, ntmano, ntma, nnoco
-    integer :: nbno, ier
-    character(len=8) :: k8bid
+    integer :: nbno
     character(len=19) :: sdappa, newgeo
 !
 ! ----------------------------------------------------------------------
@@ -65,8 +64,7 @@ subroutine cfmmap(noma, defico, resoco)
     ndimg = cfdisi(defico,'NDIM' )
     ntma = cfdisi(defico,'NMACO' )
     ntmano = cfdisi(defico,'NTMANO')
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 ! --- NOM DES SD
 !

@@ -63,7 +63,6 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
     integer :: jdepes, jdepm, jinces, neq
     integer :: iret, ibid
     real(kind=8) :: instan
-    character(len=8) :: k8bid
     character(len=19) :: deplu
 !
 ! ----------------------------------------------------------------------
@@ -79,8 +78,7 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     instan = diinst(sddisc,numins )
 !
 ! --- INITIALISATIONS

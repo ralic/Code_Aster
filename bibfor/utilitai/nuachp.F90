@@ -27,14 +27,12 @@ subroutine nuachp(nuage, lno, chpt)
 ! IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 ! VAR CHPT   : NOM DE LA SD CHAM_GD (CHPT A ETE CREE)
 !     ------------------------------------------------------------------
-    integer :: ibid, ie
     character(len=4) :: type
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call dismoi('F', 'TYPE_CHAMP', chpt, 'CHAMP', ibid,&
-                type, ie)
+    call dismoi('TYPE_CHAMP', chpt, 'CHAMP', repk=type)
 !
     if (type .eq. 'NOEU') then
         call nuacno(nuage, lno, chpt)

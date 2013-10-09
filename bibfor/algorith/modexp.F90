@@ -71,7 +71,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     real(kind=8) :: shift, swork(1)
     complex(kind=8) :: cbid
     character(len=4) :: k4bid
-    character(len=8) :: modgen, sst1, kb
+    character(len=8) :: modgen, sst1
     character(len=14) :: nume, nume91
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq, indin1, lino1, tramod
@@ -94,16 +94,12 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     masse=zk24(lbid+1)(1:19)
 !
 !-- RECUPERATION DU NUME_DDL
-    call dismoi('F', 'NOM_NUME_DDL', masse(1:8), 'MATR_ASSE', ibid,&
-                nume, ibid)
-    call dismoi('F', 'PROF_CHNO', nume, 'NUME_DDL', ibid,&
-                prno, ibid)
+    call dismoi('NOM_NUME_DDL', masse(1:8), 'MATR_ASSE', repk=nume)
+    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', lprno)
 !
-    call dismoi('F', 'NB_EQUA', raide, 'MATR_ASSE', nbeq1,&
-                kb, ibid)
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                kb, ibid)
+    call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=nbeq1)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
 !
 !-- REMPLISSAGE DES VECTEURS D'INDICES ASSOCIES AUX DDL D'INTERFACE
 !--      POUR LA CREATION DES MATRICES
@@ -338,8 +334,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
         end do
     end do
 !
-    call dismoi('F', 'SOLVEUR', raide, 'MATR_ASSE', ibid,&
-                solveu, ibid)
+    call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
                 ibid, 1)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod,&

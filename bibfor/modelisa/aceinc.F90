@@ -58,7 +58,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ioc, ixma, ixno, ixnw, j
+    integer :: i, ioc, ixma, ixno, ixnw, j
     integer :: jdgm, jdgn, jdls, jdme, jdne, jdnw, k
     integer :: mcl, nbcar, nbema, nbmagr, nbmail, nbmtrd, nbnogr
     integer :: ncar, ncara, ng, nj, nm, nn, nnoe
@@ -160,8 +160,8 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                                     nbeco, nbeca, nbeba, nbema, nbegb,&
                                     nbemb, nutyel, ntyele, car, ncara,&
                                     ivr, kioc, ier)
-36                  continue
-34              continue
+ 36                 continue
+ 34             continue
             endif
 !
 ! ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
@@ -178,7 +178,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                                 nbeco, nbeca, nbeba, nbema, nbegb,&
                                 nbemb, nutyel, ntyele, car, ncara,&
                                 ivr, kioc, ier)
-46              continue
+ 46             continue
             endif
 !
 ! ---     MAILLES TARDIVES EXISTENT POUR CE MODELE :
@@ -194,7 +194,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                             if (mcl .ne. 4) then
                                 do 52 k = 1, nbmtrd
                                     if (zi(jdnw+k*2-2) .eq. numnoe) zi(jdln+k-1 )=-mcl
-52                              continue
+ 52                             continue
                             endif
                             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
                             nutyel = zi(jdne+numnoe-1)
@@ -202,8 +202,8 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                                         nbeco, nbeca, nbeba, nbema, nbegb,&
                                         nbemb, nutyel, ntyele, car, ncara,&
                                         ivr, kioc, ier)
-50                      continue
-48                  continue
+ 50                     continue
+ 48                 continue
                 endif
 !
 ! ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
@@ -214,22 +214,21 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                         if (mcl .ne. 4) then
                             do 60 k = 1, nbmtrd
                                 if (zi(jdnw+k*2-2) .eq. numnoe) zi(jdln+ k-1 )=-mcl
-60                          continue
+ 60                         continue
                         endif
                         nutyel = zi(jdne+numnoe-1)
                         call vafcar('NOEUD', mclf(mcl), nomnoe, nbepo, nbedi,&
                                     nbeco, nbeca, nbeba, nbema, nbegb,&
                                     nbemb, nutyel, ntyele, car, ncara,&
                                     ivr, kioc, ier)
-58                  continue
+ 58                 continue
                 endif
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 ! --- AUCUNE MAILLE TARDIVE N'EXISTE SUR CE MODELE :
-    call dismoi('F', 'EXI_TUYAU', nomo, 'MODELE', ibid,&
-                exituy, ibid)
+    call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
     if (exituy .ne. 'OUI') then
         if (ixnw .eq. 0 .and. nnoe .ne. 0) then
             call utmess('E', 'MODELISA_37')
@@ -248,37 +247,37 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_38', sk=nommai)
                 endif
-81          continue
+ 81         continue
         endif
         if (nbocc(3) .ne. 0 .or. nbocc(10) .ne. 0 .or. nbocc(15) .ne. 0) then
             do 82 i = nbepo+1, nbepo+nbedi
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_39', sk=nommai)
                 endif
-82          continue
+ 82         continue
         endif
         if (nbocc(6) .ne. 0) then
             do 84 i = nbepo+nbedi+nbeco+1, nbepo+nbedi+nbeco+nbeca
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_40', sk=nommai)
                 endif
-84          continue
+ 84         continue
         endif
         if (nbocc(7) .ne. 0) then
             do 85 i = nbepo+nbedi+nbeco+nbeca+1, nbepo+nbedi+nbeco+ nbeca+nbeba
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_41', sk=nommai)
                 endif
-85          continue
+ 85         continue
         endif
         if (nbocc(12) .ne. 0) then
             do 88 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbtel
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_42', sk=nommai)
                 endif
-88          continue
+ 88         continue
         endif
-80  end do
+ 80 end do
     if (ixnw .ne. 0) then
         do 100 k = 1, nbmtrd
             numnoe = zi(jdnw+k*2-2)
@@ -287,8 +286,8 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 if (zi(jdln+k-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_43', sk=nomnoe)
                 endif
-102          continue
-100      continue
+102         continue
+100     continue
     endif
 !
     call jedetr('&&TMPINC')

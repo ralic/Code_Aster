@@ -61,8 +61,7 @@ subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0,&
 !
     real(kind=8) :: du, rn, rd, um
     integer :: jline, jdepde, jdepm, jdep0, jdep1
-    integer :: neq, iret
-    character(len=8) :: k8bid
+    integer :: neq
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -79,8 +78,7 @@ subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0,&
 ! --- INITIALISATIONS
 !
     pilcvg = -1
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- ACCES OBJETS JEVEUX
 !

@@ -107,8 +107,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     typp=nomail//'.TYPMAIL        '
     nommai=nomail//'.NOMMAI         '
     nomnoe=nomail//'.NOMNOE         '
-    call dismoi('F', 'NB_NO_MAILLA', nomail, 'MAILLAGE', nbnot,&
-                k8b, ier)
+    call dismoi('NB_NO_MAILLA', nomail, 'MAILLAGE', repi=nbnot)
     call jeveuo(typp, 'L', iatyma)
 !
 !
@@ -125,10 +124,10 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     endif
     call jeveuo(mesmai, 'L', jmail)
     call wkvect(mafour, 'V V I', nbma, jcour2)
-    do 10,im=1,nbma
-    call jenonu(jexnom(nommai, zk8(jmail-1+im)), ima)
-    zi(jcour2-1+im)=ima
-    10 end do
+    do 10 im = 1, nbma
+        call jenonu(jexnom(nommai, zk8(jmail-1+im)), ima)
+        zi(jcour2-1+im)=ima
+ 10 end do
 !
 !
 !     ------------------------------------------------------------------
@@ -137,32 +136,32 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     ------------------------------------------------------------------
     typmp=' '
     ier=0
-    do 20,im=1,nbma
-    nomma=zk8(jmail-1+im)
-    call jeexin(jexnom(nommai, nomma), existe)
-    if (existe .eq. 0) then
-        ier=ier+1
-        call utmess('E', 'ELEMENTS5_19', sk=nomma, si=iocc)
-    else
-        call jenonu(jexnom(nommai, nomma), ibid)
-        jtypm=iatyma-1+ibid
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
-        if (typm(1:3) .ne. 'SEG') then
-            if (nomcmd .ne. 'DEFI_GROUP') then
-                call utmess('F', 'RUPTURE0_63')
-            endif
+    do 20 im = 1, nbma
+        nomma=zk8(jmail-1+im)
+        call jeexin(jexnom(nommai, nomma), existe)
+        if (existe .eq. 0) then
             ier=ier+1
-            call utmess('E', 'ELEMENTS5_20', sk=nomma, si=iocc)
-        endif
-        if (im .gt. 1) then
-            if (typm .ne. typmp) then
+            call utmess('E', 'ELEMENTS5_19', sk=nomma, si=iocc)
+        else
+            call jenonu(jexnom(nommai, nomma), ibid)
+            jtypm=iatyma-1+ibid
+            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
+            if (typm(1:3) .ne. 'SEG') then
+                if (nomcmd .ne. 'DEFI_GROUP') then
+                    call utmess('F', 'RUPTURE0_63')
+                endif
                 ier=ier+1
-                call utmess('E', 'ELEMENTS5_21', sk=nomma, si=iocc)
+                call utmess('E', 'ELEMENTS5_20', sk=nomma, si=iocc)
             endif
+            if (im .gt. 1) then
+                if (typm .ne. typmp) then
+                    ier=ier+1
+                    call utmess('E', 'ELEMENTS5_21', sk=nomma, si=iocc)
+                endif
+            endif
+            typmp=typm
         endif
-        typmp=typm
-    endif
-    20 end do
+ 20 end do
     if (ier .gt. 0) then
         call utmess('F', 'ELEMENTS5_15', si=iocc)
     endif
@@ -229,7 +228,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         zi(jcour1-1+nbma+im)=nid
         zi(jcour4-1+nig)=zi(jcour4-1+nig)+1
         zi(jcour4-1+nid)=zi(jcour4-1+nid)+1
-30  end do
+ 30 end do
 !
 !
 ! --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
@@ -241,7 +240,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         if (zi(jcour4-1+im) .eq. 1) n1=n1+1
 !        COMPTAGE NOEUDS APPARTENANT A PLUS DE DEUX MAILLES
         if (zi(jcour4-1+im) .gt. 2) n2=n2+1
-40  end do
+ 40 end do
 !     IL NE PEUT Y AVOIR QUE 2 NOEUDS EXTREMITES
     if (n1 .gt. 2) bug=.true.
 !     IL NE DOIT PAS Y AVOIR DE NOEUDS APPARTENANT A PLUS DE DEUX
@@ -280,7 +279,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         do 50 im = 1, nbma
             if (zi(jcour1-1+im) .eq. nunori) trouv=trouv+1
             if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
-50      continue
+ 50     continue
 !
         if (trouv .eq. 0) then
             call utmess('F', 'ELEMENTS_68', sk=ndorig)
@@ -311,7 +310,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         do 51 im = 1, nbma
             if (zi(jcour1-1+im) .eq. nunori) trouv=trouv+1
             if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
-51      continue
+ 51     continue
 !
         if (trouv .eq. 0) then
             call utmess('F', 'ELEMENTS_68', sk=ndorig)
@@ -339,7 +338,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !       LISTE DES NOEUDS DEJA APPARIES
         do 60 in = 1, nbma*2
             zi(jcour3-1+in)=0
-60      continue
+ 60     continue
 !
 !       PARCOURS DE L'ENSEMBLE DES NOEUDS
         do 90 in = 1, nbma*2
@@ -352,16 +351,16 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
                     goto 80
 !
                 endif
-70          continue
+ 70         continue
 !
 !         NUNORI N'APPARAIT QU'UNE FOIS : C'EST L'ORIGINE
             goto 100
 !
-80          continue
-90      continue
+ 80         continue
+ 90     continue
         call utmess('F', 'ELEMENTS_71')
 !
-100      continue
+100     continue
         call jenuno(jexnum(nomnoe, nunori), ndorig)
         call utmess('I', 'ELEMENTS_72', sk=ndorig)
         call jedetr('&&CGNOOR.NOEUD_APPARIES')

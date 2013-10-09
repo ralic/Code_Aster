@@ -64,7 +64,7 @@ subroutine calich(chargz)
 ! ------ VARIABLES LOCALES
     character(len=2) :: typlag
     character(len=4) :: tych, typval, typcoe
-    character(len=8) :: k8bid, chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) ::  chamno, noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, poslag, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, prchno
@@ -76,7 +76,7 @@ subroutine calich(chargz)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, idcoec, idcoer, idddl, ideeq, idimen
-    integer :: idirec, idnoeu, idvale, iequa, ier, ino, inocmp
+    integer :: idirec, idnoeu, idvale, iequa, ino, inocmp
     integer :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
     integer :: nbterm, nequa, nliai, nucmp
     real(kind=8) :: beta, vale, zero
@@ -149,8 +149,7 @@ subroutine calich(chargz)
 !
 ! ---   VERIFICATION DU TYPE DU CHAMP
 !       -----------------------------
-        call dismoi('F', 'TYPE_CHAMP', chamno, 'CHAM_NO', ibid,&
-                    tych, ier)
+        call dismoi('TYPE_CHAMP', chamno, 'CHAM_NO', repk=tych)
 !
         if (tych .ne. 'NOEU') then
             call utmess('F', 'MODELISA3_1')
@@ -166,37 +165,31 @@ subroutine calich(chargz)
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
 !       ----------------------------------------------
-        call dismoi('F', 'NOM_GD', chamno, 'CHAM_NO', ibid,&
-                    nomgd, ier)
+        call dismoi('NOM_GD', chamno, 'CHAM_NO', repk=nomgd)
 !
 ! ---   RECUPERATION DU NOMBRE DE MOTS SUR-LESQUELS SONT CODEES LES
 ! ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 !       --------------------------------------------------
-        call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                    k8bid, ier)
+        call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
         if (nbec .gt. 10) then
             call utmess('F', 'MODELISA2_87', sk=nomgd)
         endif
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO
 !       -------------------------------------------
-        call dismoi('F', 'NOM_MAILLA', chamno, 'CHAM_NO', ibid,&
-                    noma, ier)
+        call dismoi('NOM_MAILLA', chamno, 'CHAM_NO', repk=noma)
 !
 ! ---   RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !       --------------------------------------------
-        call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                    k8bid, ier)
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
 ! ---   RECUPERATION DU NOMBRE DE TERMES DU CHAM_NO
 !       -------------------------------------------
-        call dismoi('F', 'NB_EQUA', chamno, 'CHAM_NO', nequa,&
-                    k8bid, ier)
+        call dismoi('NB_EQUA', chamno, 'CHAM_NO', repi=nequa)
 !
 ! ---   RECUPERATION DU PROF_CHNO DU CHAM_NO
 !       ------------------------------------
-        call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                    prchno, ier)
+        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prchno)
 !
 ! ---   RECUPERATION DU NOMBRE DE COMPOSANTES ASSOCIEES A LA LA GRANDEUR
 !       ----------------------------------------------------------------
@@ -221,7 +214,7 @@ subroutine calich(chargz)
             if (zr(idvale+i-1) .ne. zero) then
                 k = k + 1
             endif
-10      continue
+ 10     continue
 !
         nbterm = k
 !
@@ -281,7 +274,7 @@ subroutine calich(chargz)
                 endif
             endif
 !
-20      continue
+ 20     continue
 !
         nbterm = k
 !
@@ -300,7 +293,7 @@ subroutine calich(chargz)
         call jedetr('&&CALICH.DIRECT')
         call jedetr('&&CALICH.DIME')
 !
-30  end do
+ 30 end do
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
@@ -310,7 +303,7 @@ subroutine calich(chargz)
 !     ------
     call jedetr(lisrel)
 !
-40  continue
+ 40 continue
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

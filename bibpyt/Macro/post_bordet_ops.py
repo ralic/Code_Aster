@@ -41,14 +41,14 @@ def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
     self.DeclareOut('tabout', self.sd)
     #
     # Recuperation du modele a partir du resultat
-    iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+    iret,ibid,n_modele = aster.dismoi('MODELE',RESULTAT.nom,'RESULTAT','F')
     n_modele = n_modele.rstrip()
     if len(n_modele) == 0 or n_modele == "#PLUSIEURS":
         UTMESS('F','RUPTURE1_58')
     model = self.get_concept(n_modele)
 
     # Dimension du modele
-    iret, ndim, rbid = aster.dismoi('F','DIM_GEOM',model.nom,'MODELE')
+    iret, ndim, rbid = aster.dismoi('DIM_GEOM',model.nom,'MODELE','F')
 
     if iret == 1 or ndim == 23:
         UTMESS('F','RUPTURE1_57')

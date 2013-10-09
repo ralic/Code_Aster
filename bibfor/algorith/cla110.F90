@@ -117,12 +117,12 @@ subroutine cla110(nomres, modgen)
         else
             zi(ltfac+nusst-1)=1
         endif
-20  end do
+ 20 end do
 !
     nbstac=0
     do 30 i = 1, nbsst
         nbstac=nbstac+zi(ltfac+i-1)
-30  end do
+ 30 end do
 !
     if (nbstac .eq. 0) then
         call utmess('F', 'ALGORITH12_50')
@@ -135,7 +135,7 @@ subroutine cla110(nomres, modgen)
     do 80 i = 1, nbstac
         zi(ltnbma-1+i) = 0
         zi(ltnbgr-1+i) = 0
-80  end do
+ 80 end do
     call jecreo(tt//'.NOM.SST', 'V N K24')
     call jeecra(tt//'.NOM.SST', 'NOMMAX', nbstac, ' ')
     call jecrec(tt//'.LISTE.MA', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
@@ -157,7 +157,7 @@ subroutine cla110(nomres, modgen)
                         iarg, 1, zk24(lutgma-1+i), ibid)
 !           --- RECHERCHE SI LA SOUS-STRUCTURE EXISTE ---
             is = 0
-90          continue
+ 90         continue
             is = is+1
             if (is .le. nbsst) then
                 if (zi(ltfac-1+is) .ne. 0) then
@@ -171,7 +171,7 @@ subroutine cla110(nomres, modgen)
                 valk (2) = k8bid
                 call utmess('F', 'ALGORITH12_51', nk=2, valk=valk)
             endif
-100      continue
+100     continue
     else
         lutsst=1
         lutnom=1
@@ -189,7 +189,7 @@ subroutine cla110(nomres, modgen)
         else
             zi(ltdesc-1+i)=0
         endif
-200  end do
+200 end do
 !
 !
 !-----DETERMINATION DES DIMENSIONS MAX DES LISTES UTILISATEUR-----------
@@ -201,7 +201,7 @@ subroutine cla110(nomres, modgen)
         maxma=max(maxma,-nbvma)
         call getvtx(css, cgr, iocc=i, nbval=0, nbret=nbvgr)
         maxgr=max(maxgr,-nbvgr)
-210  end do
+210 end do
 !
 !-----ALLOCATION VECTEUR DE TRAVAIL-------------------------------------
 !
@@ -238,8 +238,7 @@ subroutine cla110(nomres, modgen)
             call compma(mailla, nbgr, zk24(ltnogr), nbuf)
             nbma=nbma+nbuf
         else
-            call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbma,&
-                        k8bid, iret)
+            call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
             call jeexin(mailla//'.GROUPEMA', iret)
             if (iret .ne. 0) then
                 call jelira(mailla//'.GROUPEMA', 'NUTIOC', ngrma)
@@ -248,12 +247,12 @@ subroutine cla110(nomres, modgen)
             do 215 igr = 1, ngrma
                 call jenuno(jexnum(mailla//'.GROUPEMA', igr), nomgr)
                 zk24(igrma-1+igr) = nomgr
-215          continue
+215         continue
         endif
         zi(ltnbma+nuact-1)=zi(ltnbma+nuact-1)+nbma
         zi(ltnbgr+nuact-1)=zi(ltnbgr+nuact-1)+ngrma
         ngrmat = ngrmat + ngrma
-220  end do
+220 end do
 !
 !
 !-----ECRITURE ATTRIBUT LONGUEUR----------------------------------------
@@ -262,7 +261,7 @@ subroutine cla110(nomres, modgen)
         ntail=zi(ltnbma+i-1)
         call jeecra(jexnum(tt//'.LISTE.MA', i), 'LONMAX', ntail, ' ')
         zi(ltnbma+i-1)=0
-230  end do
+230 end do
 !
 !-----DETERMINATION DES LISTES DES MAILLES PAR SST ACTIVE---------------
 !
@@ -275,12 +274,11 @@ subroutine cla110(nomres, modgen)
         mailla=zk8(ltmail+nuact-1)
         call jeveuo(jexnum(tt//'.LISTE.MA', nuact), 'E', ltlima)
         if (nbtout .gt. 0) then
-            call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbma,&
-                        k8bid, iret)
+            call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
             iad=ltlima+zi(ltnbma+nuact-1)
             do 250 j = 1, nbma
                 zi(iad+j-1)=j
-250          continue
+250         continue
             zi(ltnbma+nuact-1)=zi(ltnbma+nuact-1)+nbma
         else
             call getvtx(css, cma, iocc=i, nbval=0, nbret=nbma)
@@ -298,7 +296,7 @@ subroutine cla110(nomres, modgen)
         endif
 !
         call jelibe(jexnum(tt//'.LISTE.MA', nuact))
-240  end do
+240 end do
     if (maxma .ne. 0) then
         call jedetr(tt//'.NOM.MA')
     endif
@@ -323,16 +321,16 @@ subroutine cla110(nomres, modgen)
             numma=zi(ltlima+j-1)
             call jelira(jexnum(maicon, numma), 'LONMAX', nbno)
             icomp=icomp+nbno
-270      continue
+270     continue
         zi(ltnbno+i-1)=icomp
-260  end do
+260 end do
 !
 !-----ECRITURE ATTRIBUT DIMENSION DES NOEUDS----------------------------
 !
     do 300 i = 1, nbstac
         ntail=zi(ltnbno+i-1)
         call jeecra(jexnum(tt//'.LISTE.NO', i), 'LONMAX', ntail, ' ')
-300  end do
+300 end do
 !
 !-----RECUPERATION DES NOEUDS-------------------------------------------
 !
@@ -355,8 +353,8 @@ subroutine cla110(nomres, modgen)
             do 330 k = 1, nbtmp
                 icomp=icomp+1
                 zi(ltlino+icomp-1)=zi(llma+k-1)
-330          continue
-320      continue
+330         continue
+320     continue
         call jelibe(maicon)
         call jelibe(jexnum(tt//'.LISTE.MA', i))
         nbtmp=icomp
@@ -366,7 +364,7 @@ subroutine cla110(nomres, modgen)
         zi(ltnbno+i-1)=nbno
         nbnot=nbnot+nbno
         nbmat=nbmat+nbma
-310  end do
+310 end do
 !
 !-----TRAITEMENT DES ORIENTATIONS ET DES TRANSLATIONS DES SST-----------
 !
@@ -382,9 +380,9 @@ subroutine cla110(nomres, modgen)
             call jeveuo(jexnum(modrot, ibid), 'L', llrot)
             do 510 k = 1, 3
                 zr(ltrot+3*(icomp-1)+k-1)=zr(llrot+k-1)
-510          continue
+510         continue
         endif
-500  end do
+500 end do
     do 600 i = 1, nbsst
         icomp=zi(ltdesc-1+i)
         if (icomp .ne. 0) then
@@ -393,9 +391,9 @@ subroutine cla110(nomres, modgen)
             call jeveuo(jexnum(modtra, ibid), 'L', lltra)
             do 610 k = 1, 3
                 zr(lttra+3*(icomp-1)+k-1)=zr(lltra+k-1)
-610          continue
+610         continue
         endif
-600  end do
+600 end do
 !
 !-----ALLOCATION DES OBJETS MAILLAGE RESULTAT---------------------------
 !
@@ -431,8 +429,7 @@ subroutine cla110(nomres, modgen)
 !
 !-----REMPLISSAGE DU DIME ET DU DESC------------------------------------
 !
-    call dismoi('F', 'NUM_GD', 'GEOM_R', 'GRANDEUR', igd,&
-                k8bid, iret)
+    call dismoi('NUM_GD', 'GEOM_R', 'GRANDEUR', repi=igd)
     zi(lddes)=igd
     zi(lddes+1)=-3
     zi(lddes+2)=14
@@ -487,7 +484,7 @@ subroutine cla110(nomres, modgen)
         do 401 j = 1, nbno
             numno=zi(ltlino+j-1)
             if (numno .gt. ibid) ibid=numno
-401      continue
+401     continue
         call wkvect(tt//'.INV.NOEUD', 'V V I', ibid, ltino)
 !
         do 410 j = 1, nbno
@@ -508,19 +505,19 @@ subroutine cla110(nomres, modgen)
             call jecroc(jexnom(nomres//'.NOMNOE', nomcou))
             do 411 k = 1, nbsst
                 if (zi(ltdesc-1+k) .eq. i) zi(ldskin+nbtmno-1)=k
-411          continue
+411         continue
             zi(ldskin+nbnot+nbtmno-1)=numno
             do 420 k = 1, 3
                 xanc(k)=zr(llcoo+(numno-1)*3+k-1)
-420          continue
+420         continue
             do 430 k = 1, 3
                 xnew=0.d0
                 do 440 l = 1, 3
                     xnew=xnew+matrot(k,l)*xanc(l)
-440              continue
+440             continue
                 zr(ldcoo+(nbtmno-1)*3+k-1)=xnew+zr(lttra+(i-1)*3+k-1)
-430          continue
-410      continue
+430         continue
+410     continue
 !
         call jelibe(mailla//'.COORDO    .VALE')
         call jeveuo(jexnum(tt//'.LISTE.NO', i), 'L', ltlino)
@@ -554,12 +551,12 @@ subroutine cla110(nomres, modgen)
             do 460 k = 1, nbcon
                 itcon=itcon+1
                 zi(ldcone+itcon-1)=zi(ltino+zi(llcona+k-1)-1)
-460          continue
+460         continue
 !
             call jeveuo(mailla//'.TYPMAIL', 'L', iatyma)
             lltyp=iatyma-1+numma
             zi(ldtyp+nbtmma-1)=zi(lltyp)
-450      continue
+450     continue
 !
         nbgr = zi(ltnbgr-1+i)
         if (nbgr .gt. 0) then
@@ -578,7 +575,7 @@ subroutine cla110(nomres, modgen)
 !
         nbincr = nbincr + nbma
 !
-400  end do
+400 end do
 !
 !
 ! --- MENAGE

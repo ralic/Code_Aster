@@ -61,7 +61,7 @@ subroutine carbe3(charge)
     character(len=19) :: lisrel
     character(len=24) :: ddlstr, grouno, noeuma, gromai
     complex(kind=8) :: betac
-    integer :: ifm, niv, ibid, iarg, ier, iret
+    integer :: ifm, niv, iarg, iret
     integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
     integer :: idxddl
     integer :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
@@ -100,19 +100,15 @@ subroutine carbe3(charge)
     endif
 !
     call getres(nomres, concep, nomcmd)
-    call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                typcha, ier)
-    call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                mode, ier)
-    call dismoi('F', 'DIM_GEOM', mode, 'MODELE', dime,&
-                k8bid, ier)
+    call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
+    call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mode)
+    call dismoi('DIM_GEOM', mode, 'MODELE', repi=dime)
     dime2d=(dime.eq.2)
     if (niv .eq. 2) then
         write(ifm,*) 'MODELE 2D : ',dime2d
     endif
 !
-    call dismoi('F', 'NOM_MAILLA', charge, 'CHARGE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
     noeuma = noma//'.NOMNOE'
     grouno = noma//'.GROUPENO'
@@ -611,6 +607,6 @@ subroutine carbe3(charge)
 !       CALL JXVERI(' ')
 !     ENDIF
 !
-999  continue
+999 continue
 !
 end subroutine

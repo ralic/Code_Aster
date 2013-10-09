@@ -66,11 +66,10 @@ subroutine gesdef(nomres, numddl)
     character(len=19) :: numddl
     character(len=24) :: desdef, deeq, temmat, temidc
     integer :: ikyp(4)
-    character(len=8) :: k8bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad1, iad2, ik, iret, lddesc, lldeeq
+    integer :: i, iad1, iad2, ik, lddesc, lldeeq
     integer :: lldes, ltidec, ltmat, nbcmp, nbdef, nbec, nbno
     integer :: nbnot, nbtem, neq, nomax
 !-----------------------------------------------------------------------
@@ -81,10 +80,8 @@ subroutine gesdef(nomres, numddl)
 !             ET CREATION VECEUR DE TRAVAIL DECODAGE
 !
     call jemarq()
-    call dismoi('F', 'NB_CMP_MAX', nomres, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', nomres, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', nomres, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', nomres, 'INTERF_DYNA', repi=nbec)
     temidc = '&&'//pgc//'.IDEC'
     call wkvect(temidc, 'V V I', nbcmp*nbec*2, ltidec)
 !
@@ -99,13 +96,13 @@ subroutine gesdef(nomres, numddl)
 !
     do 5 i = 1, 4
         ikyp(i) = 0
- 5  end do
+  5 end do
 !
     do 10 i = 1, nbnot
         ik = zi(lldes+nbnot+i-1)
         ik = -ik
         ikyp(ik) = ikyp(ik) + 1
-10  end do
+ 10 end do
 !
     nomax = max(ikyp(1),ikyp(2))
     nomax = max(nomax,ikyp(3))
@@ -125,8 +122,7 @@ subroutine gesdef(nomres, numddl)
     deeq = numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
     call jelira(deeq, 'LONMAX', neq)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !--------------TRAITEMENT DES MODES D'ATTACHE (MAC NEAL)----------------
 !

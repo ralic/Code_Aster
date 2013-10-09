@@ -55,7 +55,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic
     character(len=19) :: matas
-    integer :: ibid, jrefa, jsmdi, jsmhc, jvtemp, neq
+    integer ::  jrefa, jsmdi, jsmhc, jvtemp, neq
 !
     call jemarq()
     prepo2=prepos
@@ -63,8 +63,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
     call jeveuo(matas//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
 !
-    call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
     endif

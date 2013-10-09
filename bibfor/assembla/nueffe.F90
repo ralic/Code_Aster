@@ -83,7 +83,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    character(len=8) :: cbid, nomcmp
+    character(len=8) ::  nomcmp
     character(len=8) :: mailla
     character(len=14) :: nu
     character(len=16) :: nomte
@@ -93,7 +93,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     integer :: i, iad, iadlie, iadnem, ianueq, ibid, icddlb
     integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
     integer :: idnbno, idnequ, idnocm, idprn1, idprn2, idref
-    integer :: iec, iel, ier, iexi1, ifm, igr, ilag, ilag2, ilag3
+    integer :: iec, iel, iexi1, ifm, igr, ilag, ilag2, ilag3
     integer :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
     integer :: inuno1, inuno2, ioldn, iprnm, iprns, ipsuiv, ire, iret
     integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
@@ -258,10 +258,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 ! --- PRNO :
 ! --- NBNOM NOMBRE DE NOEUDS TOTAL DU MAILLAGE :
 !     ------------------------------------------
-    call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbno,&
-                cbid, ier)
-    call dismoi('F', 'NB_NL_MAILLA', mailla, 'MAILLAGE', nbnl,&
-                cbid, ier)
+    call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_NL_MAILLA', mailla, 'MAILLAGE', repi=nbnl)
     nbnom = nbno + nbnl
     zi(idnbno) = nbnom
     call jeecra(jexnum(nuno, 1), 'LONMAX', nbnom)

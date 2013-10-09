@@ -17,7 +17,7 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -46,8 +46,6 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !
 !
 !
-    integer           :: iret, ibid
-    character(len=8)  :: k8bid
     character(len=24) :: matric
 !
 ! ----------------------------------------------------------------------
@@ -56,18 +54,15 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !
 ! --- INFORMATIONS SUR MATRICE DES MODES MECANIQUES
 !
-
-
-    call dismoi('F', 'NUME_DDL'     , modmec, 'RESU_DYNA', ibid, numddl, iret)
-    call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', ibid, matric, iret)
+!
+!
+    call dismoi('NUME_DDL', modmec, 'RESU_DYNA', repk=numddl)
+    call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matric)
     if (numddl(1:1) .ne. ' ') then
-        call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                    k8bid, iret)
+        call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     else
-        call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                    numddl, iret)
-        call dismoi('F', 'NB_EQUA', matric, 'MATR_ASSE', neq,&
-                    k8bid, iret)
+        call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
+        call dismoi('NB_EQUA', matric, 'MATR_ASSE', repi=neq)
     endif
 !
 ! --- NOMBRE DE MODES

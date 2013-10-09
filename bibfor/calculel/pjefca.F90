@@ -57,8 +57,8 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     character(len=*) :: moa1, ncas, lima1
     integer :: iocc
 !---------------- VARIABLES LOCALES  --------------------------
-    character(len=8) :: moa, nomo1, noma1, cdim1, kbid
-    integer :: ndim, iagma1, ie, ibid, nbma1, ditopo, typm1, dim1, jtypm1
+    character(len=8) :: moa, nomo1, noma1, cdim1
+    integer :: ndim, iagma1, nbma1, ditopo, typm1, dim1, jtypm1
     integer :: nb1, kma, jtmdim, jrepe, n1, iexi
 !-----------------------------------------------------------------------
     call jemarq()
@@ -67,8 +67,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     call jeexin(moa//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
         nomo1=moa
-        call dismoi('F', 'NOM_MAILLA', nomo1, 'MODELE', ibid,&
-                    noma1, ie)
+        call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
     else
         nomo1=' '
         noma1=moa
@@ -93,33 +92,31 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
         call jeveuo(lima1, 'L', iagma1)
         call jelira(lima1, 'LONMAX', nbma1)
     else
-        call dismoi('F', 'NB_MA_MAILLA', noma1, 'MAILLAGE', nb1,&
-                    kbid, ie)
+        call dismoi('NB_MA_MAILLA', noma1, 'MAILLAGE', repi=nb1)
         if (nomo1 .ne. ' ') then
             call jeveuo(nomo1//'.MODELE    .REPE', 'L', jrepe)
         endif
 !
         call wkvect('&&PJEFCA.LIMA1', 'V V I', nb1, iagma1)
         nbma1=0
-        do 10,kma=1,nb1
-        if (nomo1 .ne. ' ') then
+        do 10 kma = 1, nb1
+            if (nomo1 .ne. ' ') then
 !          -- SI C'EST UNE MAILLE DU MODELE :
-            if (zi(jrepe-1+2*(kma-1)+1) .gt. 0) then
+                if (zi(jrepe-1+2*(kma-1)+1) .gt. 0) then
+                    nbma1=nbma1+1
+                    zi(iagma1-1+nbma1)=kma
+                endif
+            else
                 nbma1=nbma1+1
                 zi(iagma1-1+nbma1)=kma
             endif
-        else
-            nbma1=nbma1+1
-            zi(iagma1-1+nbma1)=kma
-        endif
-10      continue
+ 10     continue
     endif
 !
 !
 !     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
 !     --------------------------------------------------------
-    call dismoi('F', 'Z_CST', noma1, 'MAILLAGE', ibid,&
-                cdim1, ie)
+    call dismoi('Z_CST', noma1, 'MAILLAGE', repk=cdim1)
     if (cdim1 .eq. 'OUI') then
         ndim=2
     else
@@ -135,11 +132,11 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !     -- ON PARCOURT LES MAILLES DE LIMA1 POUR DETERMINER
 !        LA PLUS GRANDE DIMENSION TOPOLOGIQUE : 3,2,1 : DITOPO
     ditopo=0
-    do 20,kma=1,nbma1
-    typm1=zi(jtypm1-1+zi(iagma1-1+kma))
-    dim1=zi(jtmdim-1+typm1)
-    ditopo=max(ditopo,dim1)
-    20 end do
+    do 20 kma = 1, nbma1
+        typm1=zi(jtypm1-1+zi(iagma1-1+kma))
+        dim1=zi(jtmdim-1+typm1)
+        ditopo=max(ditopo,dim1)
+ 20 end do
 !
     if (ditopo .eq. 3) then
         ASSERT(ndim.eq.3)
@@ -161,6 +158,6 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !
     call jedetr('&&PJEFCA.LIMA1')
 !
-30  continue
+ 30 continue
     call jedema()
 end subroutine

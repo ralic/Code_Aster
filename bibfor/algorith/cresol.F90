@@ -119,8 +119,7 @@ subroutine cresol(solveu)
         call getvtx(nomsol, 'MATR_DISTRIBUEE', iocc=1, scal=kmd, nbret=ibid)
         call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
         ligrmo=modele//'.MODELE'
-        call dismoi('F', 'PARTITION', ligrmo, 'LIGREL', ibid,&
-                    partit, ibid)
+        call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
         if ((partit.eq.' ') .and. (kmd.eq.'OUI')) then
             kmd='NON'
             call utmess('I', 'ASSEMBLA_3')

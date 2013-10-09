@@ -52,7 +52,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !
 !
-    integer :: ibid, iret, jptma, ierd, ima, nbma, izone, nuzone
+    integer ::  iret, jptma, ima, nbma, izone, nuzone
     integer :: jcesv, jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi
     integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, jzones, kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
@@ -84,8 +84,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     ngedit=zi(jdesc-1+3)
     nugd=zi(jdesc-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     write (ifm,*)' '
     write (ifr,*)' '
@@ -154,10 +153,8 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     ------------------------------------------------------
     call jelira(cart1//'.DESC', 'DOCU', cval=kbid)
     ASSERT(kbid.eq.'CART')
-    call dismoi('F', 'NOM_MAILLA', cart1, 'CARTE', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ierd)
+    call dismoi('NOM_MAILLA', cart1, 'CARTE', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
     call etenca(cart1, ligrel, iret)
     ASSERT(iret.eq.0)

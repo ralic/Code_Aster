@@ -46,7 +46,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR "MINMAX"
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbcmp, nzero, ibid, nbordr, iocc, jnuma, nbma
+    integer :: iret, nbcmp, nzero, nbordr, iocc, jnuma, nbma
     integer :: jcmp, n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
     integer :: nbgma, jgma, nma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0,nbpar=3)
@@ -70,10 +70,8 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     call tbajpa(resu, nbpar, nompar, typpar)
 !
 !     --- RECUPERATION DU MAILLAGE ET DU NOMBRE DE MAILLES
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mailla, iret)
-    call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
+    call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
 !
     if (indch .eq. 0) then
 !
@@ -156,7 +154,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), kbid,&
                                 cbid, prec, crit, tord, nbordr,&
                                 iret)
-                    numo=tord(1)            
+                    numo=tord(1)
                 endif
 !
 !             --- CHAMP DU POST-TRAITEMENT
@@ -170,11 +168,11 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                 inst=0.d0
             endif
 !
-            call dismoi('C', 'TYPE_CHAMP', cham, 'CHAMP', ibid,&
-                        tych, iret)
+            call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych, arret='C',&
+                        ier=iret)
 !
-            call dismoi('C', 'NOM_GD', cham, 'CHAMP', ibid,&
-                        nomgd, iret)
+            call dismoi('NOM_GD', cham, 'CHAMP', repk=nomgd, arret='C',&
+                        ier=iret)
             if (nomgd(6:6) .eq. 'C') goto 10
 !
 !         --- COMPOSANTES DU POST-TRAITEMENT
@@ -220,15 +218,15 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                         call pemaxn(resu, nomcha, grpma, zk8(jgma+igm-1), modele,&
                                     cham, nbcmp, zk8(jcmp), numo, inst)
                     endif
-20              continue
+ 20             continue
                 call jedetr('&&PEMIMA_GMA')
             endif
 !
             call jedetr('&&PEMIMA.CMP')
 !
- 5      continue
+  5     continue
 !
-10  continue
+ 10 continue
 !
     call jedema()
 !

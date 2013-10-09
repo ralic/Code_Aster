@@ -42,7 +42,7 @@ subroutine op0156()
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
-    integer :: ibid, n1, iret, neq, ier
+    integer ::  n1, iret, neq, ier
     integer :: lmat, jchin, jchout
     character(len=1) :: typmat, typres
     character(len=24) :: valk(2)
@@ -70,10 +70,8 @@ subroutine op0156()
     else
         call utmess('F', 'ALGELINE2_86')
     endif
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                numem, iret)
-    call dismoi('F', 'PROF_CHNO', masse, 'MATR_ASSE', ibid,&
-                pfchn1, iret)
+    call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numem)
+    call dismoi('PROF_CHNO', masse, 'MATR_ASSE', repk=pfchn1)
 !
 !
 !     1. CHAM_NO  :
@@ -87,8 +85,7 @@ subroutine op0156()
         call utmess('F', 'ALGELINE4_42', nk=2, valk=valk)
     endif
 !
-    call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                pfchn2, iret)
+    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn2)
 !     -- SI LA NUMEROTATION DE CHAM_NO N'EST PAS LA MEME QUE CELLE DE
 !        LA MATRICE, ON CHANGE LA NUMEROTATION DE CHAM_NO.
 !        EN APPELANT VTCOPY, ON PERD LA VALEUR DES LAGRANGES

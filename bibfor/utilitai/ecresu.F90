@@ -99,12 +99,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     else if (typres(1:9).eq.'TRAN_GENE') then
         typout='HARM_GENE'
         nbva2=2*nbva
-        call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
-                    riggen, iret)
-        call dismoi('F', 'REF_MASS_PREM', resin, 'RESU_DYNA', ibid,&
-                    masgen, iret)
-        call dismoi('F', 'REF_AMOR_PREM', resin, 'RESU_DYNA', ibid,&
-                    amogen, iret)
+        call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
+        call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
+        call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen)
     endif
 !
 !  Creation objet de stockage en LTPS pour les valeurs d'instants
@@ -133,8 +130,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     call jeexin(resou(1:8)//'           .DESC', ires)
     if ((ires.eq.0) .and. (typout(6:9).ne.'GENE')) call rscrsd('G', resou, typout, nbordr)
 !
-    call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
-                raide, iret)
+    call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=raide)
 !
     if (typout(1:10) .eq. 'DYNA_HARMO') then
 !        --- CAS OU RESULTAT EST HARMO SUR BASE PHYSIQUE
@@ -160,8 +156,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !              --- CREATION D'UNE STRUCTURE CHAM_NO "CHAMP" BASEE
 !                  SUR BASE MODALE (.REFD[3])
 !
-                call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
-                            numedd, iret)
+                call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numedd)
                 call vtcreb(chdeps, numedd(1:8), 'G', 'C', n1)
                 ASSERT(n1.eq.neq)
             endif
@@ -188,8 +183,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             if (raide(1:1) .ne. ' ') then
                 call vtcrem(chdeps, raide, 'G', 'R')
             else
-                call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
-                            numedd, iret)
+                call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numedd)
                 call vtcreb(chdeps, numedd(1:8), 'G', 'R', n1)
                 ASSERT(n1.eq.neq)
             endif
@@ -223,12 +217,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             jvint = 1
 !           --- INFORMATIONS POUR LE .REFD TRANSMIS DIRECTEMENT DE
 !               HARM_GENE A TRAN_GENE
-            call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
-                        riggen, iret)
-            call dismoi('F', 'REF_MASS_PREM', resin, 'RESU_DYNA', ibid,&
-                        masgen, iret)
-            call dismoi('F', 'REF_AMOR_PREM', resin, 'RESU_DYNA', ibid,&
-                        amogen, iret)
+            call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
+            call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
+            call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen)
 !
             nbsauv = nbordr
 !           --- RECUPERATION DU PAS DE TEMPS, NOMBRE DE MODES ET
@@ -320,12 +311,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !           --- INFORMATIONS POUR LE .REFD TRANSMIS DIRECTEMENT DE
 !               TRAN_GENE A HARM_GENE
-            call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
-                        riggen, iret)
-            call dismoi('F', 'REF_MASS_PREM', resin, 'RESU_DYNA', ibid,&
-                        masgen, iret)
-            call dismoi('F', 'REF_AMOR_PREM', resin, 'RESU_DYNA', ibid,&
-                        amogen, iret)
+            call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
+            call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
+            call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen)
 !
             nbsauv = nbordr
 !           --- RECUPERATION DU NOMBRE DE MODES ET LA BASE MODALE

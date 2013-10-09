@@ -116,7 +116,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     character(len=16) :: formar
     character(len=24) :: ntlcmp, ntncmp, ntucmp, ntproa, nmcmfi
     character(len=24) :: ncaimi, ncaimk
-    character(len=64) :: nomamd, saux32
+    character(len=64) :: nomamd
     character(len=200) :: nofimd
     character(len=255) :: kfic
 !
@@ -185,11 +185,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 ! 2.1. ==> NOM ET DIMENSION DU MAILLAGE ASTER
 !
     nomaas = zk8(adsk-1+1)
-    call dismoi('F', 'DIM_GEOM_B', nomaas, 'MAILLAGE', ndim,&
-                saux32, codret)
-    if (codret .ne. 0) then
-        call utmess('F', 'MED_43')
-    endif
+    call dismoi('DIM_GEOM_B', nomaas, 'MAILLAGE', repi=ndim)
 !
 ! 2.2. ==> CREATION DU NOM DU MAILLAGE POUR MED
 !
@@ -237,14 +233,14 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
         call jeveuo(etiqcp, 'L', jnocm2)
         call jelira(etiqcp, 'LONMAX', nbcmp2)
         nbcmp2=nbcmp2/2
-        do 10,icmp1 = 1,ncmpve
-        do 20,icmp2 = 1,nbcmp2
-        if (zk16(jnocm1+icmp1-1) .eq. zk16(jnocm2+2*(icmp2-1))) then
-            zk16(jnocm1+icmp1-1) = zk16(jnocm2+2*icmp2-1)
-            goto 10
-        endif
-20      continue
-10      continue
+        do 10 icmp1 = 1, ncmpve
+            do 20 icmp2 = 1, nbcmp2
+                if (zk16(jnocm1+icmp1-1) .eq. zk16(jnocm2+2*(icmp2-1))) then
+                    zk16(jnocm1+icmp1-1) = zk16(jnocm2+2*icmp2-1)
+                    goto 10
+                endif
+ 20         continue
+ 10     continue
     endif
 !
 ! 3.2. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -339,7 +335,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 ! 6. LA FIN
 !====
 !
-9999  continue
+9999 continue
     if (nivinf .gt. 1) then
         write (ifm,*) ' '
     endif

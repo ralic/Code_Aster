@@ -84,10 +84,10 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     character(len=8) :: vale_func(n_max_cmp)
     character(len=16) :: cmp_name(n_max_cmp)
 !
-    integer :: iocc, ino, icmp, ier, nume_node
+    integer :: iocc, ino, icmp, nume_node
     integer :: jdirec, jprnm, jnom, jcompt
     integer :: nbcmp, nbec, nbnoeu, nddli
-    character(len=8) :: name_node, k8bid, nomg, model
+    character(len=8) :: name_node, nomg, model
     character(len=19) :: list_rela
     character(len=4) :: coef_type
     character(len=19) :: connex_inv
@@ -157,8 +157,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     endif
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
@@ -273,7 +272,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
             enddo
         endif
 !
-60      continue
+ 60     continue
 !
         call jedetr('&&CADDLI.ICOMPT')
         call jedetr(list_node)
@@ -294,6 +293,6 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
         call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
     endif
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

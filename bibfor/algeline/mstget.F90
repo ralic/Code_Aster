@@ -62,7 +62,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ic, idgn, ieq, ierd, ii
+    integer :: i, ic, idgn, ieq, ii
     integer :: iii, imode, in, ind, ing, iret, jcmp
     integer :: jind1, jind2, jnoe, lacb, lact, lblo, lcmp
     integer :: ldgn, llag, lnoe, na, nac, nb, nba
@@ -76,12 +76,9 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
     text2 = 'UN DDL N EST PAS LIBRE  '
     text3 = 'UN DDL EST UN LAGRANGE  '
 !
-    call dismoi('F', 'NOM_MAILLA', matric, 'MATR_ASSE', ibid,&
-                nomma, ierd)
-    call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                nume, ierd)
-    call dismoi('F', 'NB_EQUA', matric, 'MATR_ASSE', neq,&
-                kbid, ierd)
+    call dismoi('NOM_MAILLA', matric, 'MATR_ASSE', repk=nomma)
+    call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nume)
+    call dismoi('NB_EQUA', matric, 'MATR_ASSE', repi=neq)
     magrno = nomma//'.GROUPENO'
     manono = nomma//'.NOMNOE'
     call wkvect('&&MSTGET.LISTE.LAGRAN', 'V V I', neq, llag)
@@ -161,8 +158,8 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                     ii = ii + 1
                     zk8(jnoe+ii) = nomnoe
-20              continue
-18          continue
+ 20             continue
+ 18         continue
             call wkvect('&&MSTGET.LISTE.NOEUD', 'V V I', neq, lnoe)
             call noeddl(nume, nnoe, zk8(jnoe), neq, zi(lnoe))
         endif
@@ -173,7 +170,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq, lcmp)
             do 26 ieq = 0, neq-1
                 zi(lcmp+ieq) = 1
-26          continue
+ 26         continue
         endif
 !
         call getvtx(motfac, 'AVEC_CMP', iocc=i, nbval=0, nbret=nac)
@@ -189,8 +186,8 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                 ind = (ic-1)*neq
                 do 30 ieq = 0, neq-1
                     zi(lcmp+ieq)= max(zi(lcmp+ind+ieq),zi(lcmp+ieq))
-30              continue
-28          continue
+ 30             continue
+ 28         continue
         endif
 !
         call getvtx(motfac, 'SANS_CMP', iocc=i, nbval=0, nbret=nsc)
@@ -208,11 +205,11 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                 ind = (ic-1)*neq
                 do 34 ieq = 0, neq-1
                     zi(lcmp+ieq)= max(zi(lcmp+ind+ieq),zi(lcmp+ieq))
-34              continue
-32          continue
+ 34             continue
+ 32         continue
             do 36 ieq = 0, neq-1
                 zi(lcmp+ieq)= 1 - zi(lcmp+ieq)
-36          continue
+ 36         continue
         endif
 !
 !        --- ON VERIFIE :
@@ -234,7 +231,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                 imode = 0
             endif
             ddlsta(ii)= max(ddlsta(ii),imode)
-38      continue
+ 38     continue
 !
 !        --- NETTOYAGE ---
 !
@@ -250,7 +247,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
         call jeexin('&&MSTGET.NOM.CMP', iret)
         if (iret .gt. 0) call jedetr('&&MSTGET.NOM.CMP')
 !
-10  end do
+ 10 end do
     call jedetr('&&MSTGET.LISTE.LAGRAN')
     call jedetr('&&MSTGET.LISTE.BLOQUE')
     call jedetr('&&MSTGET.LISTE.ACTIF')

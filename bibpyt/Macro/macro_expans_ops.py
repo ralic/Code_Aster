@@ -171,7 +171,7 @@ def macro_expans_ops( self,
     if NUME_DDL:
         nume = NUME_DDL
     if not nume :
-        iret,ibid,tmp = aster.dismoi('C','NUME_DDL',self.nom,'RESU_DYNA')
+        iret,ibid,tmp = aster.dismoi('NUME_DDL',self.nom,'RESU_DYNA','C')
         if iret==0:
             tmp = tmp.strip()
             if tmp : nume = self.get_concept(tmp)

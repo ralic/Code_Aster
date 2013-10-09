@@ -2240,11 +2240,11 @@ PyObject *args;
 /* ---------------------------------------------------------------------- */
 static char dismoi_doc[] =
 "Interface d'appel a la routine fortran DISMOI.\n"
-"   usage: iret, repi, repk = aster.dismoi(codmes, question, concept, type_concept) \n\n"
-"     codmes       :'F','E','A','I',...\n"
+"   usage: iret, repi, repk = aster.dismoi(question, concept, type_concept, codmes) \n\n"
 "     question     : texte de la question\n"
 "     concept      : nom du concept\n"
 "     type_concept : type du concept\n\n"
+"     codmes       :'F','E','A','I',...\n"
 "   Retourne :\n"
 "     iret         : 0 si ok, 1 en cas d'erreur\n"
 "     repi         : reponse entiere\n"
@@ -2261,14 +2261,14 @@ PyObject *args;
     PyObject *res;
 
     repk = MakeBlankFStr(32);
-    if (!PyArg_ParseTuple(args, "ssss", &codmes, &question, &concept, &typeconcept))
+    if (!PyArg_ParseTuple(args, "ssss", &question, &concept, &typeconcept, &codmes))
         return NULL;
 
-    Fcod = MakeFStrFromCStr(codmes, 1);
     Fque = MakeFStrFromCStr(question, 32);
     Fcon = MakeFStrFromCStr(concept, 32);
     Ftyc = MakeFStrFromCStr(typeconcept, 32);
-    CALL_DISMOI(Fcod, Fque, Fcon, Ftyc, &repi, repk, &iret);
+    Fcod = MakeFStrFromCStr(codmes, 1);
+    CALL_DISMOI(Fque, Fcon, Ftyc, &repi, repk, Fcod, &iret);
     Fres = MakeCStrFromFStr(repk, 32);
 
     res = Py_BuildValue("iis", (int)iret, (int)repi, Fres);

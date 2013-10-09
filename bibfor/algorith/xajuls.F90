@@ -58,12 +58,11 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     integer :: jma, ima, itypma, ar(12, 3), nbar, ia
     integer :: na, nb, nm, nunoa, nunob, nunom
-    integer :: jlnsv, jltsv, nmaabs, ndime, ndim, iret
+    integer :: jlnsv, jltsv, nmaabs, ndime, ndim
     real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2
     real(kind=8) :: lsnm, lstm, lsnmax, lstmax
     character(len=19) :: mai
     character(len=8) :: typma
-    character(len=32) :: kbid
 !
     parameter     (crilsn=1.d-2, crilst=1.d-3)
 !
@@ -83,8 +82,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     call jeveuo(mai, 'L', jma)
 !
 !     RECUPERATION DE LA DIMENSION DE L'ESPACE
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndime,&
-                kbid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndime)
 !
 !     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
 !
@@ -94,8 +92,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
 !       RECUPERATION DE LA DIMENSION TOPOLOGIQUE DE L'ELEMENT
-        call dismoi('F', 'DIM_TOPO', typma, 'TYPE_MAILLE', ndim,&
-                    kbid, iret)
+        call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndim)
 !
 !       LES ELEMENTS DE BORD NE SONT PAS TRAITES
         if (ndim .lt. ndime) goto 200
@@ -160,7 +157,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 endif
             endif
 !
-210      continue
+210     continue
 !
         do 230 ia = 1, nbar
             na=ar(ia,1)
@@ -204,9 +201,9 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 endif
             endif
 !
-230      continue
+230     continue
 !
-200  end do
+200 end do
 !
 !-----------------------------------------------------------------------
 !     FIN

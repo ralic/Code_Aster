@@ -2,7 +2,6 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
                   taillr, conf, lnoff)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -11,6 +10,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/xrecff.h"
+!
     character(len=8) :: typfis, nomfis
 !
 ! ======================================================================
@@ -57,7 +57,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
     character(len=8) :: conf
     character(len=24) :: fonoeu, chfond, basfon, taillr
     character(len=24) :: noeuin, fondin, basein
-    integer :: ier, ibid, lnoff
+    integer :: ier, lnoff
 !
     call jemarq()
 !
@@ -112,8 +112,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
         basein=nomfis//'.BASEFOND'
 ! ======================================================================
 !       CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE'
-        call dismoi('F', 'CONFIG_INIT', nomfis, 'FOND_FISS', ibid,&
-                    conf, ier)
+        call dismoi('CONFIG_INIT', nomfis, 'FOND_FISS', repk=conf)
         if (conf .eq. 'COLLEE') then
             call jeexin(basein, ier)
             ASSERT(ier.ne.0)

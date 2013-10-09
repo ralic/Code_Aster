@@ -144,8 +144,7 @@ subroutine crmeri(promes, iakpee)
 !
 ! CREATION DE LA BASE RESTREINTE AUX DDL EXTERIEUR
         call getvid('DEFINITION', 'MODELE', iocc=1, scal=modele, nbret=ibid)
-        call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                    ma, iret)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
 !
         call wkvect(baseit, 'G V R', nddle*nbvecb, lredi)
         call jeveuo(basemo//'           .ORDR', 'L', lord)
@@ -193,9 +192,9 @@ subroutine crmeri(promes, iakpee)
                 endif
                 ipos = (imod-1)*nddle + iddl
                 zr(lredi-1 +ipos) = zr(jcnsv-1 +(ino-1)*nbcmpi+ico)
-850          continue
+850         continue
 !
-220      continue
+220     continue
 !
         call jeecra(vnoeud, 'LONUTI', nddle)
         call jeecra(vrange, 'LONUTI', nddle)
@@ -242,14 +241,14 @@ subroutine crmeri(promes, iakpee)
                 else
                     zr(isol-1 +ipos) = 0.d0
                 endif
-84          continue
-83      continue
+ 84         continue
+ 83     continue
 !
         eps = 1.d2*r8prem()
         call wkvect(trav, 'V V R', nbvecb*nbmesu, ltrav)
         do 85 iddl = 1, nbvecb*nbmesu
             zr(ltrav-1+iddl) = zr(lred-1+iddl)
-85      continue
+ 85     continue
 !
         call rslsvd(nbmesu, nbmesu, nbvecb, zr(ltrav), zr(lvals),&
                     zr(lu), zr(lv), nbmesu, zr(isol), eps,&
@@ -267,8 +266,8 @@ subroutine crmeri(promes, iakpee)
                 ipos = (jddl-1)*nbmesu+imod
                 iposj = (jddl-1)*nbvecb+imod
                 zr(ltrav-1+iposj) = zr(isol-1+ipos)
-650          continue
-630      continue
+650         continue
+630     continue
 !
         call jedetr(vals)
         call jedetr(u)
@@ -287,9 +286,9 @@ subroutine crmeri(promes, iakpee)
                     iposi = (imod-1)*nddle+iddl
                     iposj = (jddl-1)*nbvecb+imod
                     zr(lint-1+ipos) = zr(lint-1+ipos) + zr(lredi-1+ iposi)*zr(ltrav-1+iposj)
-270              continue
-260          continue
-250      continue
+270             continue
+260         continue
+250     continue
 !
         call jedetr(trav)
 !
@@ -315,15 +314,15 @@ subroutine crmeri(promes, iakpee)
                     iposi = (jddl-1)*nddle+iddl
                     iposj = (jmod-1)*nbmesu+jddl
                     zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lint-1+ iposi)*zr(lmesu-1+iposj)
-320              continue
-310          continue
-300      continue
+320             continue
+310         continue
+300     continue
 !
 ! SAUVEGARDE TIT*PHIid POUR VERIFICATION ORTHOGONALITE MODES
         call wkvect(mestit, 'V V R', nddle*nbord, ltitp)
         do 350 iddl = 1, nddle*nbord
             zr(ltitp-1+iddl) = zr(ltrav-1+iddl)
-350      continue
+350     continue
 !
         call jedetr(mesint)
 !
@@ -349,8 +348,8 @@ subroutine crmeri(promes, iakpee)
                 else
                     zr(isol-1 +ipos) = 0.d0
                 endif
-184          continue
-183      continue
+184         continue
+183     continue
 !
 ! CALCUL DE L'INVERSE DU PRODUIT TIT*PHIid : LVSU
 !
@@ -371,8 +370,8 @@ subroutine crmeri(promes, iakpee)
                 ipos = (jddl-1)*nbord+imod
                 iposj = (jddl-1)*nddle+imod
                 zr(lvsu-1+ipos) = zr(isol-1+iposj)
-150          continue
-130      continue
+150         continue
+130     continue
 !
         call jeecra(vsu, 'LONUTI', nbord*nddle)
 !
@@ -415,8 +414,8 @@ subroutine crmeri(promes, iakpee)
             iposi = (imod-1)*nddle+iddl
             zr(ltrav-1+iposi)=sqrt(omega2*masg)*zr(lvsu-1+ipos)
             zr(lwks-1+ipos)=sqrt(omega2*masg)*zr(lvsu-1+ipos)
-560      continue
-570  end do
+560     continue
+570 end do
 !
 ! ===============================
 ! CALCUL DES TERMES DE LA <MATRICE ELEMENTAIRE>
@@ -433,9 +432,9 @@ subroutine crmeri(promes, iakpee)
                 iposi = (imod-1)*nddle+iddl
                 iposj = (jddl-1)*nbord+imod
                 zr(lmaelr-1+ipos) = zr(lmaelr-1+ipos) + zr(ltrav-1+ iposi)*zr(lwks-1+iposj)
-450          continue
-430      continue
-420  end do
+450         continue
+430     continue
+420 end do
 !
     call jeexin(mestit, iexist)
     if (iexist .ne. 0) then
@@ -451,9 +450,9 @@ subroutine crmeri(promes, iakpee)
                     iposj = (jddl-1)*nddle+iddl
                     zr(lwks-1+ipos) = zr(lwks-1+ipos) + zr(ltitp-1+ iposi)*zr(lmaelr-1+iposj)/sqr&
                                       &t(zr(lmasg-1+imod))
-620              continue
-610          continue
-600      continue
+620             continue
+610         continue
+600     continue
 !
         call jedetr(trav)
         call wkvect(trav, 'V V R', nbord*nbord, ltrav)
@@ -467,9 +466,9 @@ subroutine crmeri(promes, iakpee)
                     iposj = (jmod-1)*nddle+iddl
                     zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lwks-1+ iposi)*zr(ltitp-1+iposj)/sqr&
                                        &t(zr(lmasg-1+jmod))
-690              continue
-640          continue
-680      continue
+690             continue
+640         continue
+680     continue
 !
 ! LTRAV DEVRAIT ETRE UNE MATRICE DIAGONALE
 ! DONT LES TERMES DIAGONAUX SONT OMEGA2
@@ -484,8 +483,8 @@ subroutine crmeri(promes, iakpee)
                     eps = abs(zr(ltrav-1+ipos))
                 endif
                 eps1 = eps1+eps
-670          continue
-660      continue
+670         continue
+660     continue
         eps = eps1/nbord
 !
         ifres = iunifi ('MESSAGE')
@@ -500,8 +499,8 @@ subroutine crmeri(promes, iakpee)
             ipos = (iddl-1)*iddl/2 + jddl
             iposi = (jddl-1)*nddle + iddl
             zr(iakpee-1+ipos) = zr(lmaelr-1+iposi)
-710      continue
-700  end do
+710     continue
+700 end do
 !
     call jedetr(trav)
     call jedetr(wks)

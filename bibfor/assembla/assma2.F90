@@ -24,7 +24,6 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 ! BUT : ASSEMBLER LES MACRO-ELEMENTS DANS UNE MATR_ASSE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/ascopr.h"
 #include "asterfort/asretm.h"
@@ -40,20 +39,21 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ssvalm.h"
+!
     character(len=16) :: optio
 !-----------------------------------------------------------------------
     real(kind=8) :: c1
     logical :: lmasym, lmesym
     character(len=2) :: tt
     character(len=19) :: matel
-    character(len=8) :: mo, ma, kbid, nogdco, nogdsi, nomacr
+    character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
     character(len=14) :: nu14, num2
     integer :: nbecmx
     parameter(nbecmx=10)
     integer :: icodla(nbecmx), icodge(nbecmx)
     integer :: i1, i2, iaconx, iad1, iad11, iad2, iad21
-    integer :: jsupma, jnmacr, jnueq, jnulo1, jprno, jposd1, ibid
-    integer :: iec, ierd, ima, inold, nbterm, jprn1, jprn2
+    integer :: jsupma, jnmacr, jnueq, jnulo1, jprno, jposd1
+    integer :: iec, ima, inold, nbterm, jprn1, jprn2
     integer :: jresl, jsmdi, jsmhc, jsssa, jvalm(2), k1
     integer :: k2, n1, nugd, iancmp, lgncmp, icmp
     integer :: nbsma, nbssa, ncmp, nbvel, nddl1, nddl2, jtmp2, lgtmp2
@@ -64,7 +64,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 !-----------------------------------------------------------------------
 !
 #define zzprno(ili,nunoel,l) zi(jprn1-1+zi(jprn2+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 #define numlo1(kno,k) zi(jnulo1-1+2*(kno-1)+k)
 #define posdd1(kno,kddl) zi(jposd1-1+nmxcmp*(kno-1)+kddl)
 !-----------------------------------------------------------------------
@@ -72,8 +72,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 !
     call jemarq()
 !
-    call dismoi('F', 'NB_SS_ACTI', matel, 'MATR_ELEM', nbssa,&
-                kbid, ierd)
+    call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=nbssa)
     if (nbssa .eq. 0) goto 100
 !
     lmesym=.true.
@@ -82,14 +81,10 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
         icodge(i)=0
     end do
 !
-    call dismoi('F', 'NOM_MODELE', nu14, 'NUME_DDL', ibid,&
-                mo, ierd)
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_NO_MAILLA', mo, 'MODELE', nm,&
-                kbid, ierd)
-    call dismoi('F', 'NB_SM_MAILLA', mo, 'MODELE', nbsma,&
-                kbid, ierd)
+    call dismoi('NOM_MODELE', nu14, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
+    call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     call jeveuo(ma//'.NOMACR', 'L', jnmacr)
     call jeveuo(mo//'.MODELE    .SSSA', 'L', jsssa)
 !
@@ -99,16 +94,11 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     call jeveuo(nu14//'.NUME.PRNO', 'L', jprn1)
     call jeveuo(jexatr(nu14//'.NUME.PRNO', 'LONCUM'), 'L', jprn2)
 !
-    call dismoi('F', 'SUR_OPTION', matel, 'MATR_ELEM', ibid,&
-                optio, ierd)
-    call dismoi('F', 'NOM_GD', nu14, 'NUME_DDL', ibid,&
-                nogdco, ierd)
-    call dismoi('F', 'NOM_GD_SI', nogdco, 'GRANDEUR', ibid,&
-                nogdsi, ierd)
-    call dismoi('F', 'NB_CMP_MAX', nogdsi, 'GRANDEUR', nmxcmp,&
-                kbid, ierd)
-    call dismoi('F', 'NUM_GD_SI', nogdsi, 'GRANDEUR', nugd,&
-                kbid, ierd)
+    call dismoi('SUR_OPTION', matel, 'MATR_ELEM', repk=optio)
+    call dismoi('NOM_GD', nu14, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
+    call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
+    call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
     nec=nbec(nugd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
@@ -126,39 +116,38 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     call ssvalm('DEBUT', optio, mo, ma, 0,&
                 jresl, nbvel)
 !
-    do ima=1,nbsma
+    do ima = 1, nbsma
 !             -- BOUCLE SUR LES MACRO-ELEMENTS :
 !             ----------------------------------
         if (zi(jsssa-1+ima) .eq. 0) goto 90
-!       
+!
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
         call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
-!       
+!
         nbterm=0
-!       
+!
         call ssvalm(' ', optio, mo, ma, ima,&
                     jresl, nbvel)
-!       
+!
         nomacr=zk8(jnmacr-1+ima)
-        call dismoi('F', 'NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', ibid,&
-                    num2, ierd)
+        call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
         call jeveuo(nomacr//'.CONX', 'L', iaconx)
         call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', jprno)
-!       
+!
         do k1 = 1, nnoe
             n1=zi(jsupma-1+k1)
             if (n1 .gt. nm) then
                 do iec = 1, nbecmx
                     icodge(iec)=icodla(iec)
                 end do
-!       
+!
             else
                 inold=zi(iaconx-1+3*(k1-1)+2)
                 do iec = 1, nec
                     icodge(iec)=zi(jprno-1+(nec+2)*(inold-1)+2+iec)
                 end do
             endif
-!       
+!
             iad1=zzprno(1,n1,1)
             call cordd2(jprn1, jprn2, 1, icodge, nec,&
                         ncmp, n1, nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
@@ -186,17 +175,17 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                 end do
             end do
         end do
-!       
-!       
+!
+!
 !             ---- POUR FINIR, ON RECOPIE EFFECTIVEMENT LES TERMES:
         call ascopr(lmasym, lmesym, 'R'//tt(2:2), jtmp2, nbterm,&
                     jresl, c1, jvalm)
-90      continue
+ 90     continue
     end do
     call ssvalm('FIN', optio, mo, ma, ima,&
                 jresl, nbvel)
 !
 !
-100  continue
+100 continue
     call jedema()
 end subroutine

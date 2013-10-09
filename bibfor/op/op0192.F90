@@ -88,7 +88,7 @@ subroutine op0192()
     character(len=8) :: chanom, nomaas, nomo, nomgd
     character(len=19) :: chatmp
     character(len=8) :: typech, param
-    character(len=8) :: crit, saux08, k8b
+    character(len=8) :: crit, saux08
     character(len=3) :: prolz
     character(len=16) :: nomcmd, format, tych
     character(len=24) :: option
@@ -223,8 +223,7 @@ subroutine op0192()
 !
     call getvid(' ', 'MAILLAGE', scal=nomaas, nbret=iaux)
     if (iaux .eq. 0) then
-        call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', iaux,&
-                    nomaas, codret)
+        call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=nomaas)
         if (codret .ne. 0) then
             call utmess('F', 'UTILITAI3_19')
         endif
@@ -274,8 +273,7 @@ subroutine op0192()
 !====
 !
     if (tych(1:4) .eq. 'ELGA') then
-        call dismoi('F', 'NB_MA_MAILLA', nomaas, 'MAILLAGE', nbma,&
-                    k8b, iret)
+        call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
         call wkvect('&&OP0150_NBPG_MAILLE', 'V V I', nbma, jnbpgm)
         call wkvect('&&OP0150_NBPG_MED', 'V V I', nbma, jnbpmm)
     else

@@ -44,7 +44,6 @@ subroutine pjma1p(moa1, ma1p, cham1, corres)
 !
 !
     real(kind=8) :: shrink, lonmin
-    integer :: ibid
     integer :: jcorre
     character(len=16) :: corres, lisch(1)
     character(len=19) :: ligrel
@@ -55,8 +54,7 @@ subroutine pjma1p(moa1, ma1p, cham1, corres)
     shrink=1.d0
     lonmin=0.d0
     ASSERT(cham1.ne.' ')
-    call dismoi('F', 'NOM_LIGREL', cham1, 'CHAM_ELEM', ibid,&
-                ligrel, ibid)
+    call dismoi('NOM_LIGREL', cham1, 'CHAM_ELEM', repk=ligrel)
 !
     call eclpgm(ma1p, moa1, cham1, ligrel, shrink,&
                 lonmin, 0, lisch)

@@ -48,11 +48,10 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
 !-----------------------------------------------------------------------
 !
 !
-    integer :: icard, icarv, icmp, icode, nbec, ier
+    integer :: icard, icarv, icmp, icode, nbec
     integer :: ii, irang, iranv, jj, ll, nbcmp
 !
 !
-    character(len=8) :: k8bid
     character(len=24) :: carav, carad
     character(len=32) :: kexnom
 !
@@ -68,8 +67,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
     call jelira(kexnom, 'LONMAX', nbcmp)
     call jeveuo(kexnom, 'L', icmp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('F', 'NB_EC', 'CAGEPO', 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', 'CAGEPO', 'GRANDEUR', repi=nbec)
 !     TOUTES LES COMPOSANTES DOIVENT ETRE DANS LA GRANDEUR
     do jj = 1, nbgd
         irang = indik8( zk8(icmp) , nomcmp(jj) , 1 , nbcmp )

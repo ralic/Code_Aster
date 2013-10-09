@@ -91,8 +91,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !     MAILLAGE X-FEM
     call jeveuo(mailc, 'L', jmac)
     dirmai = '&&XPOMAC.DIRMAI'
-    call dismoi('F', 'NB_MA_MAILLA', malini, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NB_MA_MAILLA', malini, 'MAILLAGE', repi=nbma)
     call wkvect(dirmai, 'V V I', nbma, jdirma)
 !
     do 100 i = 1, nbmac
@@ -100,15 +99,14 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
         ima = zi(jmac-1+i)
 !        NUMERO DE LA MAILLE DANS LE MAILLAGE X-FEM
         zi(jdirma-1+ima)=i
-100  end do
+100 end do
 !
 !     CREATION DU TABLEAU DE CORRESPONDANCE DES NUMEROS DE NOEUDS
 !     SOIT INO LE NUMERO D'UN NOEUD DU MAILLAGE INITIAL
 !     ALORS ZI(ITAB-1+INO) EST LE NUMERO DE CE NOEUD DANS LE
 !     MAILLAGE X-FEM
     dirnoe = '&&XPOMAC.DIRNOE'
-    call dismoi('F', 'NB_NO_MAILLA', malini, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', malini, 'MAILLAGE', repi=nbno)
     call wkvect(dirnoe, 'V V I', nbno, jdirno)
     call jeexin(listno, ier)
     ASSERT(ier.ne.0)
@@ -119,7 +117,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
         ino = zi(jno-1+i)
 !        NUMERO DU NOEUD DANS LE MAILLAGE X-FEM
         zi(jdirno-1+ino)=i
-110  end do
+110 end do
 !
     call jedetr(listno)
 !
@@ -147,7 +145,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
     call jedetr(dirnoe)
     if (nomcmd .eq. 'POST_MAIL_XFEM') call jedetr(mailc)
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

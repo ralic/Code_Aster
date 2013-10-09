@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import aster
@@ -34,14 +34,14 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
 
     b_type_resu_cham_no = False
     TYPE_RESU = args['TYPE_RESU']
-      
+
     if (TYPE_RESU == "CHAM_NO") : b_type_resu_cham_no = True
 
     RESU_HYDR   = args['RESU_HYDR']
     MODELE_MECA = args['MODELE_MECA']
     MATR_HM1    = args['MATR_HM1']
     MATR_HM2    = args['MATR_HM2']
-   
+
     para = RESU_HYDR.LIST_PARA()
     smo = set(para['MODELE'])
 
@@ -55,11 +55,11 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
   # Nom du modèle obtenu à partir du résultat : nom_modele_1
   ############################################################
 
-    iret,ibid,nom_modele_1 = aster.dismoi('F','MODELISATION',__modele.nom,'MODELE')
+    iret,ibid,nom_modele_1 = aster.dismoi('MODELISATION',__modele.nom,'MODELE','F')
     nom_modele_1=nom_modele_1.strip()
 
-    iret,ibid,yathm1 = aster.dismoi('F','EXI_THM',__modele.nom,'MODELE')
-  
+    iret,ibid,yathm1 = aster.dismoi('EXI_THM',__modele.nom,'MODELE','F')
+
   #########################################################
   # A l'heure actuelle, les modélisations autorisées pour
   # faire du chaînage sont :
@@ -76,15 +76,15 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
   #   => les modélisations HM saturées à intégration sélective :
   #      D_PLAN_HMS, 3D_HMS
   #########################################################
-  
+
     mod_mec_autorise = ['D_PLAN','D_PLAN_SI','D_PLAN_GRAD_SIGM']
     mod_hyd_autorise = ['D_PLAN_HS','D_PLAN_HMS']
-    
+
   #############################################
   # Nom du modèle 2 fourni en entrée : nom_modele_2
   #############################################
-  
-    iret,ibid,nom_modele_2 = aster.dismoi('F','MODELISATION',MODELE_MECA.nom,'MODELE')
+
+    iret,ibid,nom_modele_2 = aster.dismoi('MODELISATION',MODELE_MECA.nom,'MODELE','F')
     nom_modele_2=nom_modele_2.strip()
 
     linst_resultat = RESU_HYDR.LIST_VARI_ACCES()['INST']
@@ -94,7 +94,7 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
   # instp et instm sont les 2 derniers instants présents dans
   # le résultat donné en entrée
   ###########################################################
-  
+
     instp = linst_resultat[-1]
 
     instm = None
@@ -135,13 +135,13 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
 
     if not(nom_modele_1 in mod_hyd_autorise) :
       UTMESS('F', 'CHAINAGE_3', valk=[nom_modele_1,'de départ'])
-  
+
   ###############################################################
   # On récupère le nom du maillage hydraulique à partir du modèle
   # hydraulique
   ###############################################################
-  
-    iret,ibid,nom_mail = aster.dismoi('F','NOM_MAILLA',__modele.nom,'MODELE')
+
+    iret,ibid,nom_mail = aster.dismoi('NOM_MAILLA',__modele.nom,'MODELE','F')
     nom_mail=nom_mail.strip()
     __maillage_h = self.get_concept(nom_mail)
 
@@ -157,7 +157,7 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
 
     if not(nom_modele_2 in mod_mec_autorise) :
       UTMESS('F', 'CHAINAGE_4', valk=[nom_modele_2,'d arrivée'])
-    
+
     __prep=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='EXTR',
                       RESULTAT=RESU_HYDR,
@@ -171,7 +171,7 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
                                   CHAM_GD=__prep,
                                   NOM_CMP='PRE1',
                                   NOM_CMP_RESU='PTOT',),),**motscles);
-      
+
     if b_type_resu_cham_no :
 
       __proch=PROJ_CHAMP(CHAM_GD=__prepmec,
@@ -204,7 +204,7 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
                              MAILLAGE=__maillage_h,
                              AFFE=(_F(TOUT='OUI',
                                       VALE=0.,
-                                      NOM_CMP='PTOT',),),**motscles);        
+                                      NOM_CMP='PTOT',),),**motscles);
 
       if inst_coincident :
 
@@ -221,14 +221,14 @@ def CHAINAGE_HYDR_MECA(self,args,motscles):
   # l'incrément de pression à l'instant t_i=INST est donné par
   # les valeurs à t_(i-2)=instm et t_(i-1)=instp
   #############################################################
-  
+
         __ptotre=CREA_RESU(OPERATION='AFFE',
                            TYPE_RESU='EVOL_VARC',
                            NOM_CHAM='PTOT',
                            AFFE=(
                                 _F(CHAM_GD=__premmec,INST=instp,),
                                 _F(CHAM_GD=__prepmec,INST=INST,),),);
-        
+
       __projres=PROJ_CHAMP(RESULTAT=__ptotre,MATR_PROJECTION=MATR_HM1,**motscles);
 
       nomres=PROJ_CHAMP(RESULTAT=__projres,MATR_PROJECTION=MATR_HM2,**motscles);

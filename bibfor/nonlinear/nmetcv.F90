@@ -51,7 +51,7 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
 !
 !
 !
-    integer :: iret, ibid
+    integer :: iret
     character(len=24) :: valk(3)
 !
 ! ----------------------------------------------------------------------
@@ -60,8 +60,8 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
 !
 ! --- LOCALISATION DU CHAMP EN ENTREE
 !
-    call dismoi('C', 'TYPE_CHAMP', chain, 'CHAMP', ibid,&
-                lochin, iret)
+    call dismoi('TYPE_CHAMP', chain, 'CHAMP', repk=lochin, arret='C',&
+                ier=iret)
     if (iret .eq. 1) then
         call utmess('F', 'ETATINIT_50', sk=nomchs)
     endif
@@ -93,7 +93,7 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
     call chpchd(chain, locout, chrefe, 'NON', 'V',&
                 chaout)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

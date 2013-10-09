@@ -84,17 +84,15 @@ subroutine debca1(nomop, ligrel, nin)
     common /carr01/timed1,timef1,td1,tf1
 ! -------------------------------------------------------------------
 ! VARIABLES LOCALES :
-    integer :: iret, ier, ibid, ierd, opt, ianblc, nbscmx, nbpara
+    integer :: iret, ier, opt, ianblc, nbscmx, nbpara
     integer :: nnomx, nbopt, nbte, i, jnvge
     character(len=16) :: nomop2, nomte
-    character(len=8) :: kbid
     character(len=3) :: bevois, exivf, exiele
     character(len=12) :: vge
     real(kind=8) :: rundef
 ! -------------------------------------------------------------------
 !
-    call dismoi('F', 'EXI_ELEM', ligrel, 'LIGREL', ibid,&
-                exiele, ierd)
+    call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiele)
     if (exiele .ne. 'OUI') then
         call utmess('F', 'CALCULEL2_25', sk=ligrel)
     endif
@@ -138,8 +136,7 @@ subroutine debca1(nomop, ligrel, nin)
 !
 !     INITIALISATION DU COMMON CAII03 :
 !     ---------------------------------
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                ma, ierd)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
     call jeexin(ma//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(ma//'.CONNEX', 'L', iamaco)
@@ -165,10 +162,8 @@ subroutine debca1(nomop, ligrel, nin)
 !
 !     INITIALISATION DU COMMON CAII19 :
 !     ---------------------------------
-    call dismoi('F', 'EXI_VF', ligrel, 'LIGREL', ibid,&
-                exivf, ibid)
-    call dismoi('F', 'BESOIN_VOISIN', ligrel, 'LIGREL', ibid,&
-                bevois, ibid)
+    call dismoi('EXI_VF', ligrel, 'LIGREL', repk=exivf)
+    call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=bevois)
     if (exivf .eq. 'OUI') then
         evfini=1
         calvoi=1
@@ -184,8 +179,7 @@ subroutine debca1(nomop, ligrel, nin)
         call jeexin(ligrel//'.REPE', ier)
         if (ier .eq. 0) call cormgi('V', ligrel)
         call jeveuo(ligrel//'.REPE', 'L', jrepe)
-        call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                    ma, ibid)
+        call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
         call jeexin(ligrel//'.NVGE', ier)
         if (ier .ne. 0) then
             call jeveuo(ligrel//'.NVGE', 'L', jnvge)
@@ -202,8 +196,7 @@ subroutine debca1(nomop, ligrel, nin)
 !
 !     INITIALISATION DU COMMON CAII10 :
 !     ---------------------------------
-    call dismoi('F', 'NB_NO_MAX', '&', 'CATALOGUE', nnomx,&
-                kbid, ier)
+    call dismoi('NB_NO_MAX', '&', 'CATALOGUE', repi=nnomx)
     call wkvect('&&CALCUL.TECAEL_K24', 'V V K24', 8+nnomx, icaelk)
     nbobtr=nbobtr+1
     zk24(iaobtr-1+nbobtr)='&&CALCUL.TECAEL_K24'
@@ -230,7 +223,7 @@ subroutine debca1(nomop, ligrel, nin)
 !     -------------------------------------
     do 10 i = 1, 512
         caindz(i)=1
-10  end do
+ 10 end do
 !
 !     -- INITIALISATION DU COMMON CAII13 :
 !     -------------------------------------
@@ -256,16 +249,16 @@ subroutine debca1(nomop, ligrel, nin)
     if (iret .eq. 0) then
         call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
         call wkvect('&&CALCUL.NOMOP', 'V V K16', nbopt, ianoop)
-        do 20,i=1,nbopt
-        call jenuno(jexnum('&CATA.OP.NOMOPT', i), nomop2)
-        zk16(ianoop-1+i)=nomop2
-20      continue
+        do 20 i = 1, nbopt
+            call jenuno(jexnum('&CATA.OP.NOMOPT', i), nomop2)
+            zk16(ianoop-1+i)=nomop2
+ 20     continue
         call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
         call wkvect('&&CALCUL.NOMTE', 'V V K16', nbte, ianote)
-        do 30,i=1,nbte
-        call jenuno(jexnum('&CATA.TE.NOMTE', i), nomte)
-        zk16(ianote-1+i)=nomte
-30      continue
+        do 30 i = 1, nbte
+            call jenuno(jexnum('&CATA.TE.NOMTE', i), nomte)
+            zk16(ianote-1+i)=nomte
+ 30     continue
     else
         call jeveuo('&&CALCUL.NOMOP', 'L', ianoop)
         call jeveuo('&&CALCUL.NOMTE', 'L', ianote)

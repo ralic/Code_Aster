@@ -120,8 +120,8 @@ subroutine op0037()
 !
     call getvid('  ', 'MODE', iocc=1, scal=modein, nbret=l)
 !
-    call dismoi('C', 'TYPE_BASE', modein, 'RESU_DYNA', ibid,&
-                typeba, iret)
+    call dismoi('TYPE_BASE', modein, 'RESU_DYNA', repk=typeba, arret='C',&
+                ier=iret)
     if (typeba(1:1) .ne. ' ') lbasm = .true.
 !
     if (iex .gt. 0) then
@@ -244,8 +244,8 @@ subroutine op0037()
         call getvid(' ', 'MASSE', scal=mat2, nbret=l2)
         call getvid(' ', 'AMOR', scal=mat3, nbret=l3)
         if (l1 .eq. 0) then
-            call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
-                        mat1, iret)
+            call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=mat1, arret='C',&
+                        ier=iret)
             if (iret .eq. 0) then
                 l1 = 1
                 call utmess('A+', 'ALGELINE_1', nk=1, valk=[modein])
@@ -253,8 +253,8 @@ subroutine op0037()
             endif
         endif
         if (l2 .eq. 0) then
-            call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
-                        mat2, iret)
+            call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=mat2, arret='C',&
+                        ier=iret)
             if (iret .eq. 0) then
                 l2 = 1
                 call utmess('A+', 'ALGELINE_1', nk=1, valk=[modein])
@@ -262,8 +262,8 @@ subroutine op0037()
             endif
         endif
         if (l3 .eq. 0) then
-            call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
-                        mat3, iret)
+            call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=mat3, arret='C',&
+                        ier=iret)
             if (iret .eq. 0) then
                 l3 = 1
             endif
@@ -281,12 +281,12 @@ subroutine op0037()
             amor=mat3
         endif
     else
-        call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
-                    raide, iret)
-        call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
-                    masse, iret)
-        call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
-                    amor, iret)
+        call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raide, arret='C',&
+                    ier=iret)
+        call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse, arret='C',&
+                    ier=iret)
+        call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amor, arret='C',&
+                    ier=iret)
         if (raide .eq. ' ') then
             lrefe = .false.
             call rsexch(' ', modein, 'DEPL', 1, chamno,&
@@ -302,16 +302,11 @@ subroutine op0037()
 !
 !
 !     --- NUMEROTATION ASSOCIEE AUX DDL ---
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
-                nume, iret)
-    call dismoi('F', 'NOM_MAILLA', raide, 'MATR_ASSE', ibid,&
-                noma, iret)
-    call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', ibid,&
-                cara, iret)
-    call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', ibid,&
-                mate, iret)
-    call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', ibid,&
-                modele, iret)
+    call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
+    call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=noma)
+    call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=cara)
+    call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate)
+    call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
 !
 !     --- COMPATIBILITE DES MODES ---
     call vpcrea(0, modeou, masse, amor, raide,&

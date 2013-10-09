@@ -71,7 +71,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
 !
 !
 !
-    character(len=8) :: kb, m1, m2, nono2, alarme
+    character(len=8) ::  m1, m2, nono2, alarme
     character(len=14) :: boite
     character(len=16) :: cortr3
     integer :: nbtm, nbtmx
@@ -79,7 +79,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     integer :: nutm(nbtmx)
     character(len=8) :: elrf(nbtmx)
 !
-    integer :: ifm, niv, ibid, ie, nno1, nno2, nma1, nma2, k
+    integer :: ifm, niv, ibid, nno1, nno2, nma1, nma2, k
     integer :: ima, ino2, ico
     integer :: iatr3, iacoo1, iacoo2, iabtdi, iabtvr, iabtnb, iabtlc
     integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
@@ -103,14 +103,10 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
                 lima1, nbno2, lino2, m1, m2,&
                 nbtmx, nbtm, nutm, elrf)
 !
-    call dismoi('F', 'NB_NO_MAILLA', m1, 'MAILLAGE', nno1,&
-                kb, ie)
-    call dismoi('F', 'NB_NO_MAILLA', m2, 'MAILLAGE', nno2,&
-                kb, ie)
-    call dismoi('F', 'NB_MA_MAILLA', m1, 'MAILLAGE', nma1,&
-                kb, ie)
-    call dismoi('F', 'NB_MA_MAILLA', m2, 'MAILLAGE', nma2,&
-                kb, ie)
+    call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
+    call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
+    call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
+    call dismoi('NB_MA_MAILLA', m2, 'MAILLAGE', repi=nma2)
 !
     call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
@@ -128,35 +124,35 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
 !           V(1+3(I-1)+3) : NUMERO DE LA MAILLE MERE DU IEME SEG2
     call jeveuo(m1//'.TYPMAIL', 'L', iatym1)
     ico=0
-    do 51,ima=1,nma1
-    if (zi(ialim1-1+ima) .eq. 0) goto 51
-    itypm=zi(iatym1-1+ima)
-    if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
-        ico=ico+1
-    else
-        ASSERT(.false.)
-        if (ico .eq. 0) then
-            call utmess('F', 'CALCULEL4_55')
+    do 51 ima = 1, nma1
+        if (zi(ialim1-1+ima) .eq. 0) goto 51
+        itypm=zi(iatym1-1+ima)
+        if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
+            ico=ico+1
+        else
+            ASSERT(.false.)
+            if (ico .eq. 0) then
+                call utmess('F', 'CALCULEL4_55')
+            endif
         endif
-    endif
-    51 end do
+ 51 end do
     call wkvect('&&PJXXCO.SEG2', 'V V I', 1+3*ico, iatr3)
     zi(iatr3-1+1)=ico
 !
     call jeveuo(m1//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
-    do 52,ima=1,nma1
-    if (zi(ialim1-1+ima) .eq. 0) goto 52
-    itypm=zi(iatym1-1+ima)
+    do 52 ima = 1, nma1
+        if (zi(ialim1-1+ima) .eq. 0) goto 52
+        itypm=zi(iatym1-1+ima)
 !       -- CAS DES SEGMENTS :
-    if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
-        ico=ico+1
-        zi(iatr3+(ico-1)*3+3)=ima
-        zi(iatr3+(ico-1)*3+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-        zi(iatr3+(ico-1)*3+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-    endif
-    52 end do
+        if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
+            ico=ico+1
+            zi(iatr3+(ico-1)*3+3)=ima
+            zi(iatr3+(ico-1)*3+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*3+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
+        endif
+ 52 end do
 !
 !
 !     3. ON MET LES SEG2 EN BOITES :
@@ -244,35 +240,35 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     loin2=.false.
     nbnod = 0
     nbnodm = 0
-    do 6,ino2=1,nno2
-    if (zi(ialin2-1+ino2) .eq. 0) goto 6
-    call pj6dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
-                cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
-                zi(iabtnb), zi(iabtlc), zi( iabtco), ifm, niv,&
-                ldmax, distma, loin, dmin)
-    if (loin) then
-        loin2=.true.
-        nbnodm = nbnodm + 1
-    endif
-    call inslri(nbmax, nbnod, tdmin2, tino2m, dmin,&
-                ino2)
-    if (ldmax .and. (nbtrou.eq.0)) then
+    do 6 ino2 = 1, nno2
+        if (zi(ialin2-1+ino2) .eq. 0) goto 6
+        call pj6dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
+                    cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
+                    zi(iabtnb), zi(iabtlc), zi( iabtco), ifm, niv,&
+                    ldmax, distma, loin, dmin)
+        if (loin) then
+            loin2=.true.
+            nbnodm = nbnodm + 1
+        endif
+        call inslri(nbmax, nbnod, tdmin2, tino2m, dmin,&
+                    ino2)
+        if (ldmax .and. (nbtrou.eq.0)) then
+            zi(iaconb-1+ino2)=2
+            zi(iacotr-1+ino2)=0
+            goto 6
+        endif
+        if (nbtrou .eq. 0) then
+            call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
+            call utmess('F', 'CALCULEL4_56', sk=nono2)
+        endif
         zi(iaconb-1+ino2)=2
-        zi(iacotr-1+ino2)=0
-        goto 6
-    endif
-    if (nbtrou .eq. 0) then
-        call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
-        call utmess('F', 'CALCULEL4_56', sk=nono2)
-    endif
-    zi(iaconb-1+ino2)=2
-    zi(iacotr-1+ino2)=itr3
-    do 61,k=1,2
-    zi(iaconu-1+idecal+k)= zi(iatr3+3*(itr3-1)+k)
-    zr(iacocf-1+idecal+k)= cobary(k)
-61  continue
-    idecal=idecal+zi(iaconb-1+ino2)
-    6 end do
+        zi(iacotr-1+ino2)=itr3
+        do 61 k = 1, 2
+            zi(iaconu-1+idecal+k)= zi(iatr3+3*(itr3-1)+k)
+            zr(iacocf-1+idecal+k)= cobary(k)
+ 61     continue
+        idecal=idecal+zi(iaconb-1+ino2)
+  6 end do
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
     if (loin2) then
@@ -283,15 +279,15 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
         endif
 !
         if (alarme .eq. 'OUI') then
-            do 70,ii=1,nbnod
-            ino2m = tino2m(ii)
-            call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
-            umessr(1) = zr(iacoo2+3*(ino2m-1) )
-            umessr(2) = zr(iacoo2+3*(ino2m-1)+1)
-            umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
-            umessr(4) = tdmin2(ii)
-            call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
-70          continue
+            do 70 ii = 1, nbnod
+                ino2m = tino2m(ii)
+                call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
+                umessr(1) = zr(iacoo2+3*(ino2m-1) )
+                umessr(2) = zr(iacoo2+3*(ino2m-1)+1)
+                umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
+                umessr(4) = tdmin2(ii)
+                call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
+ 70         continue
             call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
             call utmess('A', 'CALCULEL5_48', sk=nono2, si=nbnodm, sr=tdmin2(1))
         endif

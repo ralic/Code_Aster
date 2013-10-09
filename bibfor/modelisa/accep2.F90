@@ -112,10 +112,8 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
                     iret, ' ')
         call celces(nchel1, 'V', nches1)
         call celces(nchelc, 'V', nchesc)
-        call dismoi('F', 'NOM_OPTION', nchel1, 'CHAM_ELEM', ibid,&
-                    option, ibid)
-        call dismoi('F', 'NOM_PARAM', nchel1, 'CHAM_ELEM', ibid,&
-                    param, ibid)
+        call dismoi('NOM_OPTION', nchel1, 'CHAM_ELEM', repk=option)
+        call dismoi('NOM_PARAM', nchel1, 'CHAM_ELEM', repk=param)
         call manopg(ligrel, option, param, mnoga)
 ! INTERPOLER LE CHAM NO SIMPLE SUR LES PDG
         call cnsces(nochns, 'ELGA', nches1, mnoga, 'V',&
@@ -125,7 +123,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
         call detrsd('CHAM_ELEM_S', nches1)
         call detrsd('CHAM_ELEM', nchelc)
         call detrsd('CHAM_ELEM', nchel1)
-10  end do
+ 10 end do
 !
     phiout='&&SFIFJ.PHI'
     sphout='&&SFIFJ.SPHI'

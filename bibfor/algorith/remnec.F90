@@ -118,12 +118,9 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-----------------RECUPERATION DU NOMBRE DE DDL PHYSIQUES---------------
 !
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1),&
-                numddl, ier)
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid(1),&
-                matrix, ier)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8b, ier)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
+    call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=matrix)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !-------------RECUPERATION DES FREQUENCES ------------------------------
 !
@@ -131,8 +128,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !----------------RECUPERATION MATRICE DE MASSE--------------------------
 !
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1),&
-                mass, ier)
+    call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -208,7 +204,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
         else
             nbmor = nbmor + 2*nbtmp
         endif
- 5  continue
+  5 continue
     call wkvect('&&REMNEC.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNEC.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
     call ordr8(zr(llfreq), nbmoc, zi(ltorto))
@@ -228,12 +224,12 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
         do 7 jj = 1, nbdia
             icomp = icomp + zi(lldiam+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
- 7      continue
+  7     continue
         nborc = nborc + 1
         zi(ltorf+iormo-1) = nborc
         idiam = zi(lldiam+idicou-1)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
- 6  continue
+  6 continue
     call jedetr('&&REMNEC.ORDRE.TMPO')
 !
 !---------------------RECUPERATION DES MODES COMPLEXES------------------
@@ -282,7 +278,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
             do 20 j = 1, neq
                 zc(ltveco+j-1) = zc(ltveco+j-1)*dephc
                 zr(ltvere+j-1) = dble(zc(ltveco+j-1))
-20          continue
+ 20         continue
 !
 ! ------- RESTITUTION DU MODE PROPRES REEL (PARTIE RELLE)
 !
@@ -328,7 +324,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
                 do 30 j = 1, neq
                     zr(ltvere+j-1) = dimag(zc(ltveco+j-1))
-30              continue
+ 30             continue
                 iorc = iorc + 1
                 inum = inum + 1
 !
@@ -369,9 +365,9 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
             endif
 !
-15      continue
+ 15     continue
 !
-10  continue
+ 10 continue
 !
     call jedetr('&&REMNEC.VEC.TRAVC')
     call jedetr('&&REMNEC.VEC.COMP')

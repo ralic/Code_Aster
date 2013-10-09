@@ -19,7 +19,6 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/celces.h"
 #include "asterfort/detrsd.h"
@@ -29,6 +28,7 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ligrel, option, param, obnbpt, obnbno
 ! ------------------------------------------------------------------
 ! BUT: CREER L'OBJET OBNBPT QUI CONTIENDRA LE NOMBRE DE POINTS
@@ -53,8 +53,7 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ibid, iret, nbma, ima, jcesd, jnbpt, jnbno, iacnx1, ilcnx1, nbno
-    character(len=1) :: kbid
+    integer ::  iret, nbma, ima, jcesd, jnbpt, jnbno, iacnx1, ilcnx1, nbno
     character(len=8) :: ma
     character(len=19) :: cel, ces
 !     ------------------------------------------------------------------
@@ -62,10 +61,8 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
     cel = '&&NBPTCA.CEL'
     ces = '&&NBPTCA.CES'
 !
-    call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call wkvect(obnbpt, 'V V I', nbma, jnbpt)
     call wkvect(obnbno, 'V V I', nbma, jnbno)
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
@@ -78,11 +75,11 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
     else
         call celces(cel, 'V', ces)
         call jeveuo(ces//'.CESD', 'L', jcesd)
-        do 10,ima = 1,nbma
-        zi(jnbpt-1+ima) = zi(jcesd-1+5+4* (ima-1)+1)
-        nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
-        zi(jnbno-1+ima) = nbno
-10      continue
+        do 10 ima = 1, nbma
+            zi(jnbpt-1+ima) = zi(jcesd-1+5+4* (ima-1)+1)
+            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            zi(jnbno-1+ima) = nbno
+ 10     continue
 !
     endif
 !

@@ -74,7 +74,7 @@ subroutine op0150()
     integer :: nto, nnu, jlist, nbordr, nbnoch, nvar
     integer :: nbvari, jnume, np, ich, nis
     integer :: iret, nfor, ll, iexi
-    integer :: i, long, ier
+    integer :: i, long
     integer :: lordr, iord, nc
     integer :: ibid, nbv, nbtrou
     integer :: nfic
@@ -150,9 +150,9 @@ subroutine op0150()
         if (nbnoch .gt. 100) then
             nbnoch = -nbnoch
         else
-            do 10,i = 1,nbnoch
-            call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=i, scal=linoch(i), nbret=n1)
-10          continue
+            do 10 i = 1, nbnoch
+                call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=i, scal=linoch(i), nbret=n1)
+ 10         continue
         endif
     else
         call getvtx(' ', 'NOM_CHAM', nbval=100, vect=linoch, nbret=nbnoch)
@@ -250,7 +250,7 @@ subroutine op0150()
         goto 20
     endif
 !
-20  continue
+ 20 continue
 !
 !     --- LECTURE DE LA PRECISION ET DU CRITERE ---
     call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
@@ -277,7 +277,7 @@ subroutine op0150()
             valk (2) = linoch(ich)
             call utmess('F', 'UTILITAI8_24', nk=2, valk=valk)
         endif
-30  continue
+ 30 continue
 !
 !
 !
@@ -310,8 +310,7 @@ subroutine op0150()
         if (iexi .eq. 0) then
             call utmess('F', 'UTILITAI2_88')
         else
-            call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
-                        k8bid, ier)
+            call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ndim)
             if (.not.(ndim.eq.2.or.ndim.eq.3)) then
                 call utmess('F', 'MODELISA2_6')
             endif
@@ -327,8 +326,8 @@ subroutine op0150()
             if (fich(i:i) .ne. ' ') goto 40
             long = i - 1
             goto 50
-40      continue
-50      continue
+ 40     continue
+ 50     continue
 !
 !     --- LECTURE
 !
@@ -418,7 +417,7 @@ subroutine op0150()
                         nnu, nis, nto, jnume, jlist,&
                         noma, nbcmpv, ncmpva, ncmpvm, prolz,&
                         iinst, crit, epsi, linoch, acce)
-260      continue
+260     continue
 !
 !     POUR LES FORMATS NON PREVUS
 !     ===========================
@@ -455,7 +454,7 @@ subroutine op0150()
     call lrcomm(resu, typres, nbordr, chmat, carael,&
                 modele)
 !
-265  continue
+265 continue
 !
 !     -- MESSAGE D'INFORMATION SUR CE QU'ON A LU :
 !     --------------------------------------------
@@ -463,7 +462,7 @@ subroutine op0150()
         write (ifm,*) ' LECTURE DES CHAMPS:'
         do 270 ich = 1, nbnoch
             write (ifm,*) '    CHAMP : ',linoch(ich)
-270      continue
+270     continue
 !
         call wkvect('&&'//nompro//'.NUME_ORDR', 'V V I', nbordr, lordr)
         call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8bid,&
@@ -474,7 +473,7 @@ subroutine op0150()
                         0, sjv=jinst, styp=k8bid)
             write (ifm,*) '    NUMERO D''ORDRE : ',zi(lordr+iord-1),&
      &        '    '//acces//' : ',zr(jinst)
-280      continue
+280     continue
     endif
 !
     call titre()

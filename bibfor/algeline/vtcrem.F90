@@ -32,11 +32,10 @@ subroutine vtcrem(chamno, matass, base, typc)
 !     IN  TYPC   : K1 : TYPE JEVEUX DE BASE
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    character(len=8) :: cbid
     character(len=24) :: refa, crefe(2)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ierd, jrefa, neq
+    integer ::  jrefa, neq
 !-----------------------------------------------------------------------
     data refa/'                   .REFA'/
 !     ------------------------------------------------------------------
@@ -44,8 +43,7 @@ subroutine vtcrem(chamno, matass, base, typc)
 !
     refa(1:19) = matass
     call jeveuo(refa, 'L', jrefa)
-    call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
-                cbid, ierd)
+    call dismoi('NB_EQUA', matass, 'MATR_ASSE', repi=neq)
     crefe(1)=zk24(jrefa-1+1)
     crefe(2)=zk24(jrefa-1+2)(1:14)//'.NUME'
     call vtcrea(chamno, crefe, base, typc, neq)

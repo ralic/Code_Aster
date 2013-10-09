@@ -60,7 +60,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: i, ie, iret, ibid
+    integer :: i, ie, iret
     integer :: jordr, nbordr
     integer :: iordr, isym, nbsym
     logical :: acceno
@@ -82,8 +82,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !       1- CAS CHAMP ISOLE :
 !       =====================
     if (isole) then
-        call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
-                    tych, ibid)
+        call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
         if (tych .eq. 'NOEU') then
             lnoeu=.true.
         else if (tych.eq.'ELNO') then
@@ -116,84 +115,80 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !
 !
 !       -- DETERMINATION DE LNOEU
-        do 20,isym=1,nbsym
-        do 10,i=1,nbordr
-        iordr=zi(jordr+i-1)
-        call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
-                    iret)
+        do 20 isym = 1, nbsym
+            do 10 i = 1, nbordr
+                iordr=zi(jordr+i-1)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                            iret)
 !
-        if (iret .eq. 0) then
-            call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
-                        tych, ibid)
-            if (tych .eq. 'NOEU') then
-                lnoeu=.true.
-                goto 20
+                if (iret .eq. 0) then
+                    call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
+                    if (tych .eq. 'NOEU') then
+                        lnoeu=.true.
+                        goto 20
 !
-            endif
-        endif
+                    endif
+                endif
 !
-10      continue
-20      continue
+ 10         continue
+ 20     continue
 !
 !       -- DETERMINATION DE LELNO
-        do 40,isym=1,nbsym
-        do 30,i=1,nbordr
-        iordr=zi(jordr+i-1)
-        call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
-                    iret)
+        do 40 isym = 1, nbsym
+            do 30 i = 1, nbordr
+                iordr=zi(jordr+i-1)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                            iret)
 !
-        if (iret .eq. 0) then
-            call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
-                        tych, ibid)
-            if (tych .eq. 'ELNO') then
-                lelno=.true.
-                goto 40
+                if (iret .eq. 0) then
+                    call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
+                    if (tych .eq. 'ELNO') then
+                        lelno=.true.
+                        goto 40
 !
-            endif
-        endif
+                    endif
+                endif
 !
-30      continue
-40      continue
+ 30         continue
+ 40     continue
 !
 !       -- DETERMINATION DE LELEM
-        do 60,isym=1,nbsym
-        do 50,i=1,nbordr
-        iordr=zi(jordr+i-1)
-        call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
-                    iret)
+        do 60 isym = 1, nbsym
+            do 50 i = 1, nbordr
+                iordr=zi(jordr+i-1)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                            iret)
 !
-        if (iret .eq. 0) then
-            call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
-                        tych, ibid)
-            if (tych .eq. 'ELEM') then
-                lelem=.true.
-                goto 60
+                if (iret .eq. 0) then
+                    call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
+                    if (tych .eq. 'ELEM') then
+                        lelem=.true.
+                        goto 60
 !
-            endif
-        endif
+                    endif
+                endif
 !
-50      continue
-60      continue
+ 50         continue
+ 60     continue
 !
 !       -- DETERMINATION DE LELGA
-        do 80,isym=1,nbsym
-        do 70,i=1,nbordr
-        iordr=zi(jordr+i-1)
-        call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
-                    iret)
+        do 80 isym = 1, nbsym
+            do 70 i = 1, nbordr
+                iordr=zi(jordr+i-1)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                            iret)
 !
-        if (iret .eq. 0) then
-            call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
-                        tych, ibid)
-            if (tych .eq. 'ELGA') then
-                lelga=.true.
-                goto 80
+                if (iret .eq. 0) then
+                    call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
+                    if (tych .eq. 'ELGA') then
+                        lelga=.true.
+                        goto 80
 !
-            endif
-        endif
+                    endif
+                endif
 !
-70      continue
-80      continue
+ 70         continue
+ 80     continue
     endif
 !
     call jedema()

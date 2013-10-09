@@ -63,13 +63,13 @@ subroutine nurota(numedd, compor, sdnuro)
 !
 !
     integer :: dg
-    character(len=8) :: nocmp, nomgd, modele, noma, k8bid
+    character(len=8) :: nocmp, nomgd, modele, noma
     character(len=16) :: compt, nomte, deform
     character(len=19) :: ligrmo
     character(len=24) :: nolili, noliel
     integer :: nec, nbma, nbnoeu, ngdmax, ncmpmx
     integer :: nlili, nbno, nequa, nbnoc
-    integer :: ier, iret, ibid, ico
+    integer ::  iret, ico
     integer :: ima, igd, ino, idebgd, idrz, i, k, inoc, ival, iadg
     integer :: itrav, idesc, ivale, iptma, iconex
     integer :: indro, iancmp, ianueq, iaprno
@@ -85,30 +85,25 @@ subroutine nurota(numedd, compor, sdnuro)
     deform = 'GROT_GDEP'
     nomgd = 'COMPOR  '
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
     ASSERT(nec.le.1)
 !
 ! --- MODELE ASSOCIE AU NUME_DDL
 !
-    call dismoi('F', 'NOM_MODELE', numedd, 'NUME_DDL', ibid,&
-                modele, ier)
+    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
 !
 ! --- NOM DU MAILLAGE
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! --- NOMBRE DE MAILLES DU MAILLAGE
 !
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- NOMBRE DE NOEUDS DU MAILLAGE
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
     ligrmo = modele//'.MODELE'
 !
@@ -207,8 +202,7 @@ subroutine nurota(numedd, compor, sdnuro)
     endif
 !
     nomgd = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R ---
 !

@@ -63,7 +63,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: nomnoe_m, k8bid, nomg
+    character(len=8) :: nomnoe_m, nomg
     character(len=8) :: cmp_name, nomcmp(3)
     character(len=24) :: geom2
     logical :: lrota
@@ -73,7 +73,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     real(kind=8) :: coef_real_unit
     integer :: jlino, jcoor, jprnm, jgeom2, jnom
     integer :: i_no, i_cmp, i
-    integer :: ier, cmp_index
+    integer ::  cmp_index
     integer :: nbcmp, nbec
     integer :: numnoe_m
     real(kind=8) :: cent(3)
@@ -101,8 +101,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !

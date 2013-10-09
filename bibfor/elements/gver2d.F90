@@ -112,7 +112,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 nent = -nent
             endif
 !
- 1      continue
+  1     continue
 !
         ndim = max(ngro,nent)
 !
@@ -165,7 +165,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                     endif
 !
                 endif
- 3          continue
+  3         continue
 !
 ! MOT CLE NOEUD
 !
@@ -187,7 +187,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                     endif
 !
                 endif
- 6          continue
+  6         continue
 !
         else
             call getvr8(motfac(1:l), 'R_INF_FO', iocc=iocc, scal=rbid, nbret=ibid)
@@ -208,8 +208,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 endif
                 numfon = 1
                 if (nbm .eq. 0) then
-                    call dismoi('F', 'CONFIG_INIT', fond, 'FOND_FISS', ibid,&
-                                config, ibid)
+                    call dismoi('CONFIG_INIT', fond, 'FOND_FISS', repk=config)
                     if (config .eq. 'DECOLLEE') then
                         call utmess('F', 'RUPTURE1_7')
                     endif
@@ -239,7 +238,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 call utmess('I', 'RUPTURE1_5', nr=2, valr=valr)
             endif
         endif
- 2  end do
+  2 end do
 !
 ! DESTRUCTION DE L'OBJET DE TRAVAIL
 !

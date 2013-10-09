@@ -42,14 +42,13 @@ subroutine lctel3()
 #include "asterfort/wkvect.h"
 !
     integer :: dg
-    character(len=8) :: k8bid
     character(len=16) :: nomte
     character(len=24) :: nomolo
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadige, iamolo, icode, ier, igd, igdgeo, iml
+    integer :: iadige, iamolo, icode, igd, igdgeo, iml
     integer :: inocmp, ite, ix, iy, iz, k, nbcmp
     integer :: nbdg, nbec, nbml, nbpt, nbte
 !-----------------------------------------------------------------------
@@ -62,8 +61,7 @@ subroutine lctel3()
     ix=indik8(zk8(inocmp),'X',1,nbcmp)
     iy=indik8(zk8(inocmp),'Y',1,nbcmp)
     iz=indik8(zk8(inocmp),'Z',1,nbcmp)
-    call dismoi('F', 'NB_EC', 'GEOM_R', 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', 'GEOM_R', 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.1)
 !
 !     - BOUCLE SUR TOUS LES MODES LOCAUX DES CATALOGUES :

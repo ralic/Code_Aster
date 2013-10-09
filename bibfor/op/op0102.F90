@@ -45,7 +45,7 @@ subroutine op0102()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ierd, ilichc, inume, nbchci
+    integer ::  ilichc, inume, nbchci
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -72,10 +72,8 @@ subroutine op0102()
 !
 ! --- VERIF SUR LES GRANDEURS  GD ASSOCIEE AU NUME_DDL, GD ASSOCIEE AU
 !     VCINE
-    call dismoi('F', 'NOM_GD', nomnu, 'NUME_DDL', ibid,&
-                nomgd, ierd)
-    call dismoi('F', 'NOM_GD_SI', nomgd, 'GRANDEUR', ibid,&
-                nomgds, ierd)
+    call dismoi('NOM_GD', nomnu, 'NUME_DDL', repk=nomgd)
+    call dismoi('NOM_GD_SI', nomgd, 'GRANDEUR', repk=nomgds)
 !
 ! --- CREATION DU CHAMNO ET AFFECTATION DU CHAMNO
     call calvci(vcine, nomnu, nbchci, zk8(ilichc), inst,&

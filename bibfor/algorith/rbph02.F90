@@ -1,9 +1,8 @@
 subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
                   nbnoeu, objve1, ncmp, objve2, objve3,&
                   objve4)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -14,6 +13,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
 #include "asterfort/posddl.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbnoeu, neq
     character(len=8) :: mailla
     character(len=14) :: numddl
@@ -46,9 +46,9 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
 ! ----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ibid, ie, jprno, nec, tabec(10), i, idec, inuddl, iad, iec, ino
+    integer ::  jprno, nec, tabec(10), i, idec, inuddl, iad, iec, ino
     integer :: ncmpmx, jnoeu, ncmp, icmp, nunoe, jneq, jcmp, j, nbcmp
-    character(len=8) :: k8b, motcls(4), typmcl(4), nomgd, nomnoe, nomcmp
+    character(len=8) ::  motcls(4), typmcl(4), nomgd, nomnoe, nomcmp
     character(len=19) :: prno
 !     ------------------------------------------------------------------
 !
@@ -66,18 +66,14 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
     call jeveuo(objve1, 'L', jnoeu)
 !
     if (numddl .ne. ' ') then
-        call dismoi('F', 'PROF_CHNO', numddl, 'NUME_DDL', ibid,&
-                    prno, ie)
+        call dismoi('PROF_CHNO', numddl, 'NUME_DDL', repk=prno)
     else
         ASSERT(chamno.ne.' ')
-        call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                    prno, ie)
+        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prno)
     endif
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8b, ie)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                k8b, ie)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
     ASSERT(nec .le. 10)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iad)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
@@ -90,20 +86,20 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
         ino = zi(jnoeu+i-1)
         do 12 iec = 1, nec
             tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
-12      continue
+ 12     continue
         nbcmp = 0
         do 14 icmp = 1, ncmpmx
             if (exisdg(tabec,icmp)) then
                 nbcmp = nbcmp + 1
                 do 16 j = 1, ncmp
                     if (zk8(jcmp+j-1) .eq. zk8(iad-1+icmp)) goto 14
-16              continue
+ 16             continue
                 ncmp = ncmp + 1
                 zk8(jcmp-1+ncmp) = zk8(iad-1+icmp)
             endif
-14      continue
+ 14     continue
         neq = neq + nbcmp
-10  end do
+ 10 end do
 !
     call wkvect(objve3, 'V V I', nbnoeu*ncmp, jneq)
     call wkvect(objve4, 'V V I', neq, inuddl)
@@ -114,7 +110,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
         call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
         do 22 iec = 1, nec
             tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
-22      continue
+ 22     continue
         do 24 icmp = 1, ncmpmx
             if (exisdg(tabec,icmp)) then
                 idec = idec + 1
@@ -131,9 +127,9 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
                         zi(jneq-1+(i-1)*ncmp+j) = 1
                         goto 24
                     endif
-26              continue
+ 26             continue
             endif
-24      continue
-20  end do
+ 24     continue
+ 20 end do
 !
 end subroutine

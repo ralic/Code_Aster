@@ -79,12 +79,11 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: neq, iret
+    integer :: neq
     integer :: faccvg, rescvg
     character(len=19) :: matass, depso1, depso2
     character(len=19) :: cncine, cncinx, cndonn, k19bla
     character(len=19) :: accmoi
-    character(len=8) :: k8bid
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -106,8 +105,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
     cndonn = '&&CNCHAR.DONN'
     cncinx = '&&CNCHAR.CINE'
     matass = '&&ACCEL0.MATASS'
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -155,7 +153,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 !
     call copisd('CHAMP_GD', 'V', depso1, accmoi)
 !
-9999  continue
+9999 continue
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... ACCMOI : '

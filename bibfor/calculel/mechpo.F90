@@ -51,7 +51,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
     character(len=24) :: ligrmo, chdepl
     complex(kind=8) :: tpc(11)
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, iret
+    integer :: i, iret
 !-----------------------------------------------------------------------
     data         ncmppe/ 'G' , 'AG' , 'BG' , 'CG' /
     data         ncmpfo/ 'FX' , 'FY' , 'FZ' , 'MX' , 'MY' , 'MZ' ,&
@@ -62,7 +62,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         tps(i) = 0.d0
         tpf(i) = '&FOZERO'
         tpc(i) = ( 0.d0 , 0.d0 )
-10  end do
+ 10 end do
     ligrmo = modele(1:8)//'.MODELE'
     chdepl = chdep2
     ch5 = '.    '
@@ -119,8 +119,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
                     ncmp=11, lnomcmp=ncmpfo, vc=tpc)
 !
     else
-        call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
-                    k8b, ier)
+        call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=k8b)
         if (k8b(5:7) .eq. '_FO') then
             lpain(nbopt) = 'PFF1D1D'
 !

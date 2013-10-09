@@ -64,8 +64,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
     character(len=1) :: base
     logical :: lcont, lmacr
     character(len=19) :: cncont, cnsstr
-    character(len=8) :: k8bid
-    integer :: neq, iret, i, endo
+    integer :: neq, i, endo
     integer :: endop1, endop2
     integer :: jfint
     logical :: lendo
@@ -107,8 +106,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
         call jeveuo(sdnume(1:19)//'.ENDO', 'L', endo)
         call jeveuo(cnfint(1:19)//'.VALE', 'E', jfint)
 !
-        call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                    k8bid, iret)
+        call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
         endop1 = 0
         endop2 = 0

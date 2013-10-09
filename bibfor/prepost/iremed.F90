@@ -118,8 +118,8 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     sdcarm = ' '
     if (carael .ne. ' ') then
         if (lresu) then
-            call dismoi('C', 'CARA_ELEM', nomcon, 'RESULTAT', ibid,&
-                        carel2, ierd)
+            call dismoi('CARA_ELEM', nomcon, 'RESULTAT', repk=carel2, arret='C',&
+                        ier=ierd)
             if (carel2 .ne. carael) then
                 valk2(1) = carael
                 valk2(2) = carel2
@@ -203,10 +203,8 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             numord=zi(jliord+iordr-1)
 !
 !       --- TYPE DU CHAMP A IMPRIMER (CHAM_NO OU CHAM_ELEM)
-            call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
-                        typech, codret)
-            call dismoi('F', 'TYPE_RESU', noresu, 'RESULTAT', ibid,&
-                        tyres, codret)
+            call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typech)
+            call dismoi('TYPE_RESU', noresu, 'RESULTAT', repk=tyres)
 !
             if ((typech(1:4).eq.'NOEU') .or. (typech(1:2).eq.'EL')) then
             else if (typech(1:4).eq. 'CART') then
@@ -223,8 +221,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             endif
 !
 !         --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CHAM19
-            call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
-                        nomgd, codret)
+            call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
             if ((typech(1:4).eq. 'CART'.and.nomgd(6:7).ne.'R') .or. nomgd .eq. 'COMPOR') &
             goto 9999
 !
@@ -245,7 +242,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             else
                 do 10 i = 1, 64
                     nochmd(i:i) = ' '
-10              continue
+ 10             continue
                 i = lxlgut(nommed)
                 nochmd(1:i) = nommed(1:i)
             endif
@@ -270,7 +267,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                         nbnoec, linoec, nbmaec, limaec, lvarie,&
                         sdcarm, codret)
 !
-9999          continue
+9999         continue
 !
             if (codret .ne. 0 .and. codret .ne. 100) then
                 valk(1) = cham19
@@ -279,9 +276,9 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             endif
             if (codret .eq. 100 .or. codret .eq. 200) cresav=codret
 !
-22          continue
+ 22         continue
 !
-21      continue
+ 21     continue
         if (cresav .eq. 100) then
             valk(1) = nosy16
             call utmess('I', 'MED_30', sk=valk(1))
@@ -291,7 +288,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
         endif
         lfirst=.false.
 !
-20  end do
+ 20 end do
 !
     call detrsd('CHAM_ELEM_S', cesnsp)
     call detrsd('CHAM_ELEM_S', cescoq)

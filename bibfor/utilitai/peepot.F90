@@ -63,7 +63,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
 !
 !
     integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
-    integer :: ie, ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
+    integer ::  ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
     integer :: iocc, jma, icheml, ifm, niv, ier
     parameter (nbpaep=2,nbparr=6,nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), alpha, inst, valer(3), rundf
@@ -163,7 +163,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
-10          continue
+ 10         continue
         else
             call jenonu(jexnom(resul//'           .NOVA', 'FREQ'), iret)
             if (iret .ne. 0) then
@@ -172,7 +172,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                     call rsadpa(resul, 'L', 1, 'FREQ', numord,&
                                 0, sjv=iainst, styp=k8b)
                     zr(jins+iord-1) = zr(iainst)
-20              continue
+ 20             continue
             endif
         endif
         call tbcrsd(resu, 'G')
@@ -208,10 +208,8 @@ subroutine peepot(resu, modele, mate, cara, nh,&
             endif
         endif
 !
-        call dismoi('F', 'TYPE_SUPERVIS', depla, 'CHAMP', ibid,&
-                    typcha, ie)
-        call dismoi('F', 'NOM_GD', depla, 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('TYPE_SUPERVIS', depla, 'CHAMP', repk=typcha)
+        call dismoi('NOM_GD', depla, 'CHAMP', repk=nomgd)
         if (typcha(1:7) .eq. 'CHAM_NO') then
             if (nomgd(1:4) .eq. 'DEPL') then
                 chamgd = depla
@@ -248,7 +246,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                     base, chvarc, chvref, k24b, compor,&
                     k24b, k24b, k8b, ibid, k24b,&
                     iret)
-30      continue
+ 30     continue
 !
 !        --- ON CALCULE L'ENERGIE TOTALE ---
         call peenca(chelem, nbpaep, varpep, 0, [ibid])
@@ -303,7 +301,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                         call tbajli(resu, nbpard, nopard, [numord], varpep,&
                                     [c16b], valk2, 0)
                     endif
-40              continue
+ 40             continue
                 call jedetr('&&PEEPOT_GROUPM')
             endif
             if (nm .ne. 0) then
@@ -331,20 +329,20 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                         call tbajli(resu, nbpard, nopard, [numord], varpep,&
                                     [c16b], valk, 0)
                     endif
-50              continue
+ 50             continue
                 call jedetr('&&PEEPOT_MAILLE')
             endif
-60      continue
+ 60     continue
         call jedetr('&&PEEPOT.PAR')
         if (icheml .ne. 0) call jedetr(chelem)
-72      continue
+ 72     continue
         call jedema()
-70  continue
+ 70 continue
 !
-80  continue
+ 80 continue
     call jedetr(knum)
     call jedetr(kins)
 !
-90  continue
+ 90 continue
     call jedema()
 end subroutine

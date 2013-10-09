@@ -82,12 +82,12 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=14) :: numddl
     character(len=19) :: lisrel
     integer :: ntypel(nmocl), icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, narl, nrl, ibid, jnoma, jcoor, inom
+    integer :: iop, nliai, i, narl, nrl, jnoma, jcoor, inom
     integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
     integer :: ino, idiner, idch1, idch2, nbterm
     integer :: jlisno, jlisdl, jliscr, jliscc, jlisdi, jlisdm, ival
-    integer :: iocc, ier, iarg
+    integer :: iocc, iarg
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
     real(kind=8) :: ax, ay, axx, ayy
@@ -164,8 +164,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
 !
 ! --- -----------------------------------------------------------------
 !     LIGREL DU MODELE
@@ -199,8 +198,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
     end do
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
 !
 ! --- -----------------------------------------------------------------
 ! --- ACCES A L'OBJET .PRNM

@@ -44,9 +44,8 @@ subroutine cffoco(numedd, resoco, cnfoco)
 !
 !
 !
-    integer :: neq, iret, i
+    integer :: neq, i
     integer :: jatmu, jcnco
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,8 +53,7 @@ subroutine cffoco(numedd, resoco, cnfoco)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call jeveuo(cnfoco(1:19)//'.VALE', 'E', jcnco)
 !
 ! --- CALCUL DU VECT_ASSE
@@ -63,7 +61,7 @@ subroutine cffoco(numedd, resoco, cnfoco)
     call jeveuo(resoco(1:14)//'.ATMU', 'L', jatmu)
     do 10 i = 1, neq
         zr(jcnco+i-1) = zr(jatmu+i-1)
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

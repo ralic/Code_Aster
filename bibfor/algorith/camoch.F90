@@ -39,7 +39,6 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/cheddl.h"
 #include "asterfort/defsta.h"
 #include "asterfort/dismoi.h"
@@ -57,9 +56,10 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/wkvect.h"
+!
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ier, ik, ino, inord
-    integer :: iret, j, jj, lldeeq, lldes, llfreq, llncmp
+    integer :: i, iad, ier, ik, ino, inord
+    integer ::  j, jj, lldeeq, lldes, llfreq, llncmp
     integer :: llnoin, lltyp, lmat, ltddl, ltpar, nbcb, nbcmp
     integer :: nbcont, nbcpmx, nbdeb, nbec, nbfin, nbint, nbnoe
     integer :: nbnot, neq, ntail1, ntail2, numgd
@@ -69,7 +69,6 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     character(len=1) :: typcst(2)
     character(len=6) :: pgc
     character(len=8) :: nomddl
-    character(len=8) :: k8bid
     character(len=8) :: nomres, intf, typcou, nomnoe, nomcmp, mailla
     character(len=19) :: numref, numddl
     character(len=19) :: raildl, raid, mass
@@ -91,30 +90,24 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
 !---------------------RECHERCHE DU NUMDDL ASSOCIE A LA MATRICE----------
 !
-    call dismoi('F', 'NOM_NUME_DDL', raid, 'MATR_ASSE', ibid,&
-                numddl, iret)
+    call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=numddl)
 !
 !---------------------REQUETTE DU DEEQ DU NUMDDL------------------------
 !
     numddl(15:19)='.NUME'
     deeq=numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
 !--------------------RECUPERATION DU MAILLAGE---------------------------
 !
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                mailla, iret)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
 !
 !----RECUPERATION DES DONNEES RELATIVES A LA GRANDEUR SOUS-JACENTE------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
-    call dismoi('F', 'NUM_GD', intf, 'INTERF_DYNA', numgd,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
+    call dismoi('NUM_GD', intf, 'INTERF_DYNA', repi=numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', llncmp)
 !
 !
@@ -148,10 +141,10 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
                 ik=zi(llnoin+i-1)
                 nbfin=max(nbfin,ik)
                 nbdeb=min(nbdeb,ik)
-15          continue
+ 15         continue
             call jelibe(jexnum(intf//'.IDC_LINO', j))
         endif
-10  end do
+ 10 end do
 !
     call jelibe(intf//'.IDC_TYPE')
 !
@@ -223,8 +216,8 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
                     call cheddl(zi(lldeeq), neq, ino, jj, zi(iad),&
                                 2)
                 endif
-30          continue
-20      continue
+ 30         continue
+ 20     continue
     endif
 !
 !
@@ -241,6 +234,6 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     call jelibe(deeq)
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

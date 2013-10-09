@@ -56,14 +56,14 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! ----------------------------------------------------------------------
     real(kind=8) :: vecori(3)
 !
-    integer :: iret, nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j, idcoor
+    integer ::  nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j, idcoor
     integer :: jmail, jnotr, idlino, jtrav, jnobe, idnono, ino1, ino2, ino
     integer :: jnord, nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
     real(kind=8) :: rfut, rfut2, lfut, lcumul, xc1h, xc2h, r, c2nb(3), lc1nb, x
     real(kind=8) :: y, z, xmin, xmax, lc2nb, c2h(3), ymin, ymax, zmin, zmax
     real(kind=8) :: hnb(3), c1h(3), l12
-    character(len=8) :: k8b, noma, prefix, typm, ndorig, ndextr
+    character(len=8) ::  noma, prefix, typm, ndorig, ndextr
     character(len=16) :: motfac, motcle(3), typmcl(3)
     character(len=24) :: lisnoe, mesmai, lisnom, mafour
 !     ------------------------------------------------------------------
@@ -84,13 +84,11 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 !     ---------------------------------------------
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat,&
-                k8b, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
 !
 ! --- RECUPERATION DU GROUPE DE MAILLES BETON :
 !     ---------------------------------------
@@ -223,7 +221,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
                 nbnor = nbnor + 1
                 zi(jnord+nbnor-1) = ino
             endif
-110      continue
+110     continue
 !
 ! ------ PARCOURS DES NOEUDS DE LA BOITE A INTERSECTER :
 !        ---------------------------------------------
@@ -279,11 +277,11 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
                 endif
             endif
 !
-120      continue
+120     continue
 !
-100  end do
+100 end do
 !
-9999  continue
+9999 continue
 !
 ! --- ON COMPTE LES NOEUDS ET ON LES AFFECTE A LISNOE
 !
@@ -295,7 +293,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
             nbno = nbno + 1
             zi(idlino+nbno-1) = i
         endif
-200  end do
+200 end do
 !
     call jedetr(mesmai)
     call jedetr('&&CGNOFU.TRAVAIL')

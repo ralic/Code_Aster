@@ -83,10 +83,9 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 !
 !
 !
-    integer :: neq, i, iret, ierm
+    integer :: neq, i, ierm
     integer :: jpltk, jplir, jdu0, jdu1
     real(kind=8) :: dtau, etrmin, etrmax, coef
-    character(len=8) :: k8bid
     character(len=19) :: ddepl0, ddepl1
     integer :: jdep0, jdep1
     character(len=24) :: typpil
@@ -122,8 +121,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
     call nmchex(solalg, 'SOLALG', 'DEPPR1', deppr1)
     call nmchex(solalg, 'SOLALG', 'DEPPR2', deppr2)
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- LECTURE DONNEES PILOTAGE
 !
@@ -147,7 +145,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     do 10 i = 1, neq
         zr(jdep0+i-1) = rho * zr(jdu0+i-1)
         zr(jdep1+i-1) = zr(jdu1+i-1)
-10  end do
+ 10 end do
 !
     if (niv .ge. 2) then
         write (ifm,*) '<PILOTAGE> ...... SECOND MEMBRE DTAU : ',dtau

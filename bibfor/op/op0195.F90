@@ -97,8 +97,7 @@ subroutine op0195()
     call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
     if (n1 .eq. 0) ma = ' '
     if (mo .ne. ' ') then
-        call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ib,&
-                    ma2, ib)
+        call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma2)
         if ((ma.ne.' ') .and. (ma.ne.ma2)) then
             call utmess('F', 'UTILITAI3_21')
         endif
@@ -115,8 +114,7 @@ subroutine op0195()
     call getvtx(' ', 'TYPE_CHAM', scal=tychr1, nbret=ib)
     tychr = tychr1(1:4)
     nomgd = tychr1(6:13)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ib,&
-                tsca, ib)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     prol0=' '
     call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ib)
@@ -146,8 +144,7 @@ subroutine op0195()
 !              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
                 if (opera .eq. 'ASSE') then
                     call getvid('ASSE', 'CHAM_GD', iocc=1, scal=chin, nbret=ib)
-                    call dismoi('F', 'NOM_MAILLA', chin, 'CHAMP', ib,&
-                                ma2, ib)
+                    call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
                     if (ma2 .ne. ma) then
                         valk(1) = chin
                         valk(2) = mo
@@ -157,11 +154,9 @@ subroutine op0195()
                     endif
 !
                     call jeexin(chin//'.CELK', iret)
-                    call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
-                                nomgd2, ib)
+                    call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd2)
                     if (iret .ne. 0 .and. nomgd .eq. nomgd2) then
-                        call dismoi('F', 'NOM_OPTION', chin, 'CHAM_ELEM', ib,&
-                                    optio2, ib)
+                        call dismoi('NOM_OPTION', chin, 'CHAM_ELEM', repk=optio2)
                     endif
                 endif
 !
@@ -264,8 +259,7 @@ subroutine op0195()
     else if (opera.eq.'DISC') then
 !     -----------------------------------------
         call getvid(' ', 'CHAM_GD', scal=chin, nbret=ib)
-        call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
-                    nomgd2, ib)
+        call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd2)
         if (nomgd .ne. nomgd2) then
 !          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
             if (.not. (nomgd.eq.'VARI_R'.and.nomgd2.eq.'VAR2_R')) then
@@ -296,20 +290,15 @@ subroutine op0195()
         call getvid(' ', 'CHAM_NO', scal=ch1, nbret=i11)
         call getvid(' ', 'NUME_DDL', scal=nu1, nbret=i12)
         if ((i11+i12) .gt. 0) then
-            call dismoi('F', 'NOM_GD', chou, 'CHAMP', ib,&
-                        nogd, ib)
+            call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
             prchn1 = ' '
             if (i11 .gt. 0) then
-                call dismoi('F', 'PROF_CHNO', ch1, 'CHAM_NO', ib,&
-                            prchn1, ib)
-                call dismoi('F', 'NOM_GD', ch1, 'CHAM_NO', ib,&
-                            nomgd1, ib)
+                call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=prchn1)
+                call dismoi('NOM_GD', ch1, 'CHAM_NO', repk=nomgd1)
             endif
             if (i12 .gt. 0) then
-                call dismoi('F', 'PROF_CHNO', nu1, 'NUME_DDL', ib,&
-                            prchn1, ib)
-                call dismoi('F', 'NOM_GD', nu1, 'NUME_DDL', ib,&
-                            nomgd1, ib)
+                call dismoi('PROF_CHNO', nu1, 'NUME_DDL', repk=prchn1)
+                call dismoi('NOM_GD', nu1, 'NUME_DDL', repk=nomgd1)
             endif
 !
             if (nomgd1 .ne. nogd) then
@@ -323,10 +312,9 @@ subroutine op0195()
                 valk (2) = nogd
                 call utmess('F', 'UTILITAI6_5', nk=2, valk=valk)
             endif
- 1          continue
+  1         continue
 !
-            call dismoi('F', 'PROF_CHNO', chou, 'CHAM_NO', ib,&
-                        prchn2, ib)
+            call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
             if (prchn1 .ne. prchn2) then
                 cns1 = '&&OP0195.CNS1'
                 call cnocns(chou, 'V', cns1)
@@ -365,8 +353,7 @@ subroutine op0195()
 ! 8.  VERIFICATION DE LA COHERENCE DU MAILLAGE SOUS-JACENT :
 ! ---------------------------------------------------------
     if (ma .ne. ' ') then
-        call dismoi('F', 'NOM_MAILLA', chou, 'CHAMP', ib,&
-                    ma2, ib)
+        call dismoi('NOM_MAILLA', chou, 'CHAMP', repk=ma2)
         valk(1)=ma2
         valk(2)=ma
         if (ma .ne. ma2) then
@@ -377,16 +364,14 @@ subroutine op0195()
 !
 ! 9.  VERIFICATION DE LA COHERENCE DU CHAMP CREE AVEC TYPE_CHAM :
 ! ---------------------------------------------------------------
-    call dismoi('F', 'TYPE_CHAMP', chou, 'CHAMP', ib,&
-                tych, ib)
+    call dismoi('TYPE_CHAMP', chou, 'CHAMP', repk=tych)
     if (tych .ne. tychr) then
         valk(1)=tychr
         valk(2)=tych
         call utmess('F', 'CALCULEL4_70', nk=2, valk=valk)
     endif
 !
-    call dismoi('F', 'NOM_GD', chou, 'CHAMP', ib,&
-                nogd, ib)
+    call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
     if (nogd .ne. nomgd) then
         valk(1)=nomgd
         valk(2)=nogd

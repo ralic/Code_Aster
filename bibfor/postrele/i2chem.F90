@@ -82,74 +82,73 @@ subroutine i2chem(nomail, nbparm)
     nommai = nomail//'.NOMMAI         '
     nomnoe = nomail//'.NOMNOE         '
     grpmai = nomail//'.GROUPEMA       '
-    call dismoi('F', 'NB_NO_MAILLA', nomail, 'MAILLAGE', nbtnoe,&
-                k8b, ier)
+    call dismoi('NB_NO_MAILLA', nomail, 'MAILLAGE', repi=nbtnoe)
 !
     ier = 0
     nbtm = 0
-    do 40,occ = 1,nbparm,1
-    call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=0, nbret=n1)
-    call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=0, nbret=n2)
-    if (n1 .ne. 0) then
-        n1 = -n1
-        call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail)
-        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail))
-        do 10,im = 1,n1,1
-        nomma = zk8(jmail+im-1)
-        call jeexin(jexnom(nommai, nomma), existe)
-        if (existe .eq. 0) then
-            ier = ier + 1
-            valk (1) = 'DEFI_CHEMIN'
-            valk (2) = nomma
-            call utmess('E', 'INTEMAIL_12', nk=2, valk=valk, si=occ)
-        else
-            call jenonu(jexnom(nomail//'.NOMMAI', nomma), ibid)
-            call jeveuo(type, 'L', iatyma)
-            jtypm = iatyma - 1 + ibid
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
-            if (typm .ne. 'SEG2' .and. typm .ne. 'SEG3') then
-                ier = ier + 1
-                valk (1) = 'DEFI_CHEMIN'
-                valk (2) = nomma
-                call utmess('E', 'INTEMAIL_15', nk=2, valk=valk, si=occ)
-            endif
+    do 40 occ = 1, nbparm, 1
+        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=0, nbret=n1)
+        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=0, nbret=n2)
+        if (n1 .ne. 0) then
+            n1 = -n1
+            call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail)
+            call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail))
+            do 10 im = 1, n1, 1
+                nomma = zk8(jmail+im-1)
+                call jeexin(jexnom(nommai, nomma), existe)
+                if (existe .eq. 0) then
+                    ier = ier + 1
+                    valk (1) = 'DEFI_CHEMIN'
+                    valk (2) = nomma
+                    call utmess('E', 'INTEMAIL_12', nk=2, valk=valk, si=occ)
+                else
+                    call jenonu(jexnom(nomail//'.NOMMAI', nomma), ibid)
+                    call jeveuo(type, 'L', iatyma)
+                    jtypm = iatyma - 1 + ibid
+                    call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
+                    if (typm .ne. 'SEG2' .and. typm .ne. 'SEG3') then
+                        ier = ier + 1
+                        valk (1) = 'DEFI_CHEMIN'
+                        valk (2) = nomma
+                        call utmess('E', 'INTEMAIL_15', nk=2, valk=valk, si=occ)
+                    endif
+                endif
+ 10         continue
+            nbtm = nbtm + n1
+            call jedetr('&&OP0050.MAILLE')
         endif
-10      continue
-        nbtm = nbtm + n1
-        call jedetr('&&OP0050.MAILLE')
-    endif
-    if (n2 .ne. 0) then
-        n2 = -n2
-        call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
-        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24(jgrma))
-        do 30,ig = 1,n2,1
-        nomgr = zk24(jgrma+ig-1)
-        call jenonu(jexnom(grpmai, nomgr), existe)
-        if (existe .eq. 0) then
-            ier = ier + 1
-            valk (1) = 'DEFI_CHEMIN'
-            valk (2) = nomgr
-            call utmess('E', 'INTEMAIL_16', nk=2, valk=valk, si=occ)
-        else
-            call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
-            call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm1)
-            do 20,im = 1,nbm,1
-            call jeveuo(type, 'L', iatyma)
-            jtypm = iatyma - 1 + zi(jgrm1+im-1)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
-            if (typm .ne. 'SEG2' .and. typm .ne. 'SEG3') then
-                ier = ier + 1
-                valk (1) = 'DEFI_CHEMIN'
-                valk (2) = nomgr
-                call utmess('E', 'INTEMAIL_13', nk=2, valk=valk, si=occ)
-            endif
-20          continue
-            nbtm = nbtm + nbm
+        if (n2 .ne. 0) then
+            n2 = -n2
+            call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
+            call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24(jgrma))
+            do 30 ig = 1, n2, 1
+                nomgr = zk24(jgrma+ig-1)
+                call jenonu(jexnom(grpmai, nomgr), existe)
+                if (existe .eq. 0) then
+                    ier = ier + 1
+                    valk (1) = 'DEFI_CHEMIN'
+                    valk (2) = nomgr
+                    call utmess('E', 'INTEMAIL_16', nk=2, valk=valk, si=occ)
+                else
+                    call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
+                    call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm1)
+                    do 20 im = 1, nbm, 1
+                        call jeveuo(type, 'L', iatyma)
+                        jtypm = iatyma - 1 + zi(jgrm1+im-1)
+                        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
+                        if (typm .ne. 'SEG2' .and. typm .ne. 'SEG3') then
+                            ier = ier + 1
+                            valk (1) = 'DEFI_CHEMIN'
+                            valk (2) = nomgr
+                            call utmess('E', 'INTEMAIL_13', nk=2, valk=valk, si=occ)
+                        endif
+ 20                 continue
+                    nbtm = nbtm + nbm
+                endif
+ 30         continue
+            call jedetr('&&OP0050.GROUP_MA')
         endif
-30      continue
-        call jedetr('&&OP0050.GROUP_MA')
-    endif
-    40 end do
+ 40 end do
 !
     if (ier .gt. 0) then
         call utmess('F', 'INTEMAIL_14')
@@ -157,35 +156,35 @@ subroutine i2chem(nomail, nbparm)
 !
     call wkvect('&INTLISTOTAL', 'V V I', nbtm, alstot)
     libr1 = 1
-    do 80,occ = 1,nbparm,1
-    call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=0, nbret=n1)
-    call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=0, nbret=n2)
-    if (n1 .ne. 0) then
-        n1 = -n1
-        call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail3)
-        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail3),&
-                    nbret=n2)
-        do 50,im = 1,n1,1
-        call jenonu(jexnom(nommai, zk8(jmail3+im-1)), numm)
-        call i2rdli(numm, zi(alstot), libr1)
-50      continue
-        call jedetr('&&OP0050.MAILLE')
-    else
-        n2 = -n2
-        call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
-        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24(jgrma))
-        do 70,ig = 1,n2,1
-        nomgr = zk24(jgrma+ig-1)
-        call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
-        call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm2)
-        do 60,im = 1,nbm,1
-        numm = zi(jgrm2+im-1)
-        call i2rdli(numm, zi(alstot), libr1)
-60      continue
-70      continue
-        call jedetr('&&OP0050.GROUP_MA')
-    endif
-    80 end do
+    do 80 occ = 1, nbparm, 1
+        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=0, nbret=n1)
+        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=0, nbret=n2)
+        if (n1 .ne. 0) then
+            n1 = -n1
+            call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail3)
+            call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail3),&
+                        nbret=n2)
+            do 50 im = 1, n1, 1
+                call jenonu(jexnom(nommai, zk8(jmail3+im-1)), numm)
+                call i2rdli(numm, zi(alstot), libr1)
+ 50         continue
+            call jedetr('&&OP0050.MAILLE')
+        else
+            n2 = -n2
+            call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
+            call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24(jgrma))
+            do 70 ig = 1, n2, 1
+                nomgr = zk24(jgrma+ig-1)
+                call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
+                call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm2)
+                do 60 im = 1, nbm, 1
+                    numm = zi(jgrm2+im-1)
+                    call i2rdli(numm, zi(alstot), libr1)
+ 60             continue
+ 70         continue
+            call jedetr('&&OP0050.GROUP_MA')
+        endif
+ 80 end do
     nbtm = libr1 - 1
 !
 !     --- ON VERIFIE QU'EN 1 NOEUD ON A AU PLUS 2 MAILLES ---
@@ -197,11 +196,11 @@ subroutine i2chem(nomail, nbparm)
                     nid)
         zi(jnoe+nig-1) = zi(jnoe+nig-1) + 1
         zi(jnoe+nid-1) = zi(jnoe+nid-1) + 1
-90  end do
+ 90 end do
     ouvert = .false.
     do 100 in = 1, nbtnoe
         if (zi(jnoe+in-1) .eq. 1) ouvert = .true.
-100  end do
+100 end do
     do 110 in = 1, nbtnoe
         if (zi(jnoe+in-1) .gt. 2) then
             call jenuno(jexnum(nomnoe, in), nomse)
@@ -209,7 +208,7 @@ subroutine i2chem(nomail, nbparm)
             vali (1) = zi(jnoe+in-1)
             call utmess('F', 'INTEMAIL_17', sk=valk(1), si=vali(1))
         endif
-110  end do
+110 end do
     call jedetr('&&OP0050.VERI_MAIL')
 !
 !     --- CHOIX DE L'ABSCISSE CURVILIGNE 0. ---
@@ -250,7 +249,7 @@ subroutine i2chem(nomail, nbparm)
                 trouve = trouve + 1
                 ideb = im
             endif
-120      continue
+120     continue
         if (ouvert .and. trouve .ne. 1) then
             call utmess('F', 'INTEMAIL_1')
         endif
@@ -262,14 +261,14 @@ subroutine i2chem(nomail, nbparm)
         do 130 im = ideb, nbtm
             mi = mi + 1
             zi(jnoe+mi-1) = zi(alstot+im-1)
-130      continue
+130     continue
         do 140 im = 1, ideb - 1
             mi = mi + 1
             zi(jnoe+mi-1) = zi(alstot+im-1)
-140      continue
+140     continue
         do 150 im = 1, nbtm
             zi(alstot+im-1) = zi(jnoe+im-1)
-150      continue
+150     continue
         call jedetr('&&OP0050.VERI_MAIL')
     endif
 !
@@ -310,34 +309,34 @@ subroutine i2chem(nomail, nbparm)
     call wkvect(nnomma, 'G V K8', 1, knomma)
     zk8(knomma) = nomail
 !
-    do 170,chm = 1,nbcnx,1
-    debchm = zi(aptstr+chm-1)
-    finchm = zi(aptstr+chm) - 1
-    n1 = finchm - debchm + 1
-    call jecroc(jexnum(nchmin, chm))
-    call jeecra(jexnum(nchmin, chm), 'LONMAX', n1)
-    call jeveuo(jexnum(nchmin, chm), 'E', kchm)
-    call jecroc(jexnum(nmail1, chm))
-    call jeecra(jexnum(nmail1, chm), 'LONMAX', n1)
-    call jeveuo(jexnum(nmail1, chm), 'E', kmail1)
-    call jecroc(jexnum(nmail2, chm))
-    call jeecra(jexnum(nmail2, chm), 'LONMAX', n1)
-    call jeveuo(jexnum(nmail2, chm), 'E', kmail2)
-    do 160,sgcour = debchm,finchm,1
-    ind = zi(astrct+sgcour-1)
-    if (ind .ne. 0) then
-        numse = zi(alstot+ind-1)
-        call jenuno(jexnum(nommai, numse), nomse)
-        zi(kchm+sgcour-debchm) = zi(alstot+ind-1)
-        zi(kmail1+sgcour-debchm) = zi(jmail1+ind-1)
-        zi(kmail2+sgcour-debchm) = zi(jmail2+ind-1)
-    else
-        zi(kchm+sgcour-debchm) = 0
-        zi(kmail1+sgcour-debchm) = 0
-        zi(kmail2+sgcour-debchm) = 0
-    endif
-160  continue
-    170 end do
+    do 170 chm = 1, nbcnx, 1
+        debchm = zi(aptstr+chm-1)
+        finchm = zi(aptstr+chm) - 1
+        n1 = finchm - debchm + 1
+        call jecroc(jexnum(nchmin, chm))
+        call jeecra(jexnum(nchmin, chm), 'LONMAX', n1)
+        call jeveuo(jexnum(nchmin, chm), 'E', kchm)
+        call jecroc(jexnum(nmail1, chm))
+        call jeecra(jexnum(nmail1, chm), 'LONMAX', n1)
+        call jeveuo(jexnum(nmail1, chm), 'E', kmail1)
+        call jecroc(jexnum(nmail2, chm))
+        call jeecra(jexnum(nmail2, chm), 'LONMAX', n1)
+        call jeveuo(jexnum(nmail2, chm), 'E', kmail2)
+        do 160 sgcour = debchm, finchm, 1
+            ind = zi(astrct+sgcour-1)
+            if (ind .ne. 0) then
+                numse = zi(alstot+ind-1)
+                call jenuno(jexnum(nommai, numse), nomse)
+                zi(kchm+sgcour-debchm) = zi(alstot+ind-1)
+                zi(kmail1+sgcour-debchm) = zi(jmail1+ind-1)
+                zi(kmail2+sgcour-debchm) = zi(jmail2+ind-1)
+            else
+                zi(kchm+sgcour-debchm) = 0
+                zi(kmail1+sgcour-debchm) = 0
+                zi(kmail2+sgcour-debchm) = 0
+            endif
+160     continue
+170 end do
     call jedetr('&INTSTRUCT')
     call jedetr('&INTMAIL1')
     call jedetr('&INTMAIL2')
@@ -347,39 +346,39 @@ subroutine i2chem(nomail, nbparm)
     if (niv .ge. 2) then
         write (ifm,1000)
         write (ifm,1010) nbcnx
-        do 190,chm = 1,nbcnx,1
-        call jelira(jexnum(nchmin, chm), 'LONMAX', nbm)
-        call jeveuo(jexnum(nchmin, chm), 'L', kchm)
-        call jeveuo(jexnum(nmail1, chm), 'L', kmail1)
-        call jeveuo(jexnum(nmail2, chm), 'L', kmail2)
-        numse = zi(kchm+nbm-1)
-        if (numse .eq. 0) then
-            write (ifm,1020) chm
-        else
-            write (ifm,1030) chm
-        endif
-        write (ifm,1040)
-        do 180,sgcour = 1,nbm,1
-        numse = zi(kchm+sgcour-1)
-        if (numse .eq. 0) goto 180
-        call jenuno(jexnum(nommai, numse), nomse)
-        numm1 = zi(kmail1+sgcour-1)
-        numm2 = zi(kmail2+sgcour-1)
-        if (numm1 .eq. 0 .and. numm2 .eq. 0) then
-            write (ifm,1050) nomse
-        else if (numm1.eq.0 .and. numm2.ne.0) then
-            call jenuno(jexnum(nommai, numm2), nomm2)
-            write (ifm,1052) nomse,nomm2
-        else if (numm1.ne.0 .and. numm2.ne.0) then
-            call jenuno(jexnum(nommai, numm1), nomm1)
-            call jenuno(jexnum(nommai, numm2), nomm2)
-            write (ifm,1054) nomse,nomm1,nomm2
-        else if (numm1.ne.0 .and. numm2.eq.0) then
-            call jenuno(jexnum(nommai, numm1), nomm1)
-            write (ifm,1052) nomse,nomm1
-        endif
-180      continue
-190      continue
+        do 190 chm = 1, nbcnx, 1
+            call jelira(jexnum(nchmin, chm), 'LONMAX', nbm)
+            call jeveuo(jexnum(nchmin, chm), 'L', kchm)
+            call jeveuo(jexnum(nmail1, chm), 'L', kmail1)
+            call jeveuo(jexnum(nmail2, chm), 'L', kmail2)
+            numse = zi(kchm+nbm-1)
+            if (numse .eq. 0) then
+                write (ifm,1020) chm
+            else
+                write (ifm,1030) chm
+            endif
+            write (ifm,1040)
+            do 180 sgcour = 1, nbm, 1
+                numse = zi(kchm+sgcour-1)
+                if (numse .eq. 0) goto 180
+                call jenuno(jexnum(nommai, numse), nomse)
+                numm1 = zi(kmail1+sgcour-1)
+                numm2 = zi(kmail2+sgcour-1)
+                if (numm1 .eq. 0 .and. numm2 .eq. 0) then
+                    write (ifm,1050) nomse
+                else if (numm1.eq.0 .and. numm2.ne.0) then
+                    call jenuno(jexnum(nommai, numm2), nomm2)
+                    write (ifm,1052) nomse,nomm2
+                else if (numm1.ne.0 .and. numm2.ne.0) then
+                    call jenuno(jexnum(nommai, numm1), nomm1)
+                    call jenuno(jexnum(nommai, numm2), nomm2)
+                    write (ifm,1054) nomse,nomm1,nomm2
+                else if (numm1.ne.0 .and. numm2.eq.0) then
+                    call jenuno(jexnum(nommai, numm1), nomm1)
+                    write (ifm,1052) nomse,nomm1
+                endif
+180         continue
+190     continue
     endif
 !
     1000 format (/,1x,'COURBE DEFINIE A PARTIR D''UNE LISTE DE MAILLES')

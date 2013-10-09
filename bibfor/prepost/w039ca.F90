@@ -64,8 +64,7 @@ subroutine w039ca(ifi, form)
         call getvid('CONCEPT', 'CHAM_MATER', iocc=iocc, scal=chmat, nbret=n1)
         if (n1 .eq. 1) then
             if (.not.lexi) then
-                call dismoi('F', 'NOM_MAILLA', chmat, 'CHAM_MATER', ibid,&
-                            mailla, ibid)
+                call dismoi('NOM_MAILLA', chmat, 'CHAM_MATER', repk=mailla)
                 call lgphmo(mailla, ligrel, 'PRESENTATION', 'TOUT')
                 lexi=.true.
             endif
@@ -80,8 +79,7 @@ subroutine w039ca(ifi, form)
         call getvid('CONCEPT', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
         if (n1 .eq. 1) then
             if (.not.lexi) then
-                call dismoi('F', 'NOM_MAILLA', carele, 'CARA_ELEM', ibid,&
-                            mailla, ibid)
+                call dismoi('NOM_MAILLA', carele, 'CARA_ELEM', repk=mailla)
                 call lgphmo(mailla, ligrel, 'PRESENTATION', 'TOUT')
                 lexi=.true.
             endif
@@ -146,8 +144,7 @@ subroutine w039ca(ifi, form)
         call getvid('CONCEPT', 'CHARGE', iocc=iocc, scal=charge, nbret=n1)
         if (n1 .eq. 1) then
             if (.not.lexi) then
-                call dismoi('F', 'NOM_MAILLA', charge, 'CHARGE', ibid,&
-                            mailla, ibid)
+                call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=mailla)
                 call lgphmo(mailla, ligrel, 'PRESENTATION', 'TOUT')
                 lexi=.true.
             endif
@@ -200,11 +197,11 @@ subroutine w039ca(ifi, form)
             call w039c1(charge//'.CHME.ONDE', ifi, form, ligrel, titre)
 !
         endif
-10  end do
+ 10 end do
 !
 !
 !
-20  continue
+ 20 continue
     call detrsd('LIGREL', ligrel)
     call jedema()
 end subroutine

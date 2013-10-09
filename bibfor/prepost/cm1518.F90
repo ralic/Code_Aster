@@ -18,7 +18,6 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cm18ma.h"
 #include "asterfort/cm18na.h"
@@ -41,6 +40,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ndinit, nbma, lima(nbma)
     character(len=8) :: main, maout, prefix
 !
@@ -58,7 +58,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
 !
     integer :: nbtyma, ityp, jnoeu, nfmax
     parameter    ( nbtyma = 27, nfmax = 24 )
-    integer :: jnomim, jnomip, jmilie, jdim, nbno, iret
+    integer :: jnomim, jnomip, jmilie, jdim, nbno
     integer :: nbnomi, nbtot, no, jcoor, nbnomx, nbmato
     integer :: deffac(8, 0:6, nbtyma), jtypma, jrefe, reftyp(nbtyma)
     integer :: nbref(nbtyma), impmai(nbtyma)
@@ -147,7 +147,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
         ASSERT(nomast(ityp) .eq. kbid)
         call jeveuo(jexnum('&CATA.TM.NBNO', reftyp(ityp)), 'L', jnoeu)
         nbref(ityp) = zi(jnoeu)
-10  end do
+ 10 end do
 !
 ! --- DIMENSIONS DU PROBLEME
 !
@@ -192,7 +192,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
     do 5 no = 1, nbno
         call jenuno(jexnum(nomnoi, no), nomnd)
         call jecroc(jexnom(nomnoe, nomnd))
- 5  end do
+  5 end do
 !
 ! --- CHAM_GEOM : RECOPIE DE LA PARTIE COMMUNE
 !
@@ -210,8 +210,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
 !
 ! --- MISE A JOUR DES MAILLES
 !
-    call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nbnomx,&
-                kbid, iret)
+    call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
     typema = maout // '.TYPMAIL'
     connei = main //'.CONNEX'
     conneo = maout//'.CONNEX'

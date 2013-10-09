@@ -94,13 +94,13 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: kbid, base
+    character(len=1) ::  base
     character(len=3) :: tsca
     character(len=4) :: typces
     character(len=8) :: ma, nomgd, nomcmp
     character(len=19) :: ces
     character(len=24) :: valk(2)
-    integer :: gd, ncmpmx, ibid, nbma, jcmpgd, icmp, jcmp, jcesk, jcesd
+    integer :: gd, ncmpmx, nbma, jcmpgd, icmp, jcmp, jcesk, jcesd
     integer :: jcesc, k, jcesl, jcesv, ncmpg, ima, jlconx, decal
     integer :: nptma, nsptma, ncmpma, ncmp2, jlicmp, iret
 !
@@ -115,10 +115,8 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     nomgd = nomgdz
     ma = maz
 !
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 !     -- SI CES EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_ELEM_S', ces)
@@ -153,9 +151,9 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
         ASSERT(nomgd(1:5).ne.'VARI_')
         ncmp2 = ncmpmx
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
-        do 10,k = 1,ncmp2
-        zk8(jlicmp-1+k) = zk8(jcmpgd-1+k)
-10      continue
+        do 10 k = 1, ncmp2
+            zk8(jlicmp-1+k) = zk8(jcmpgd-1+k)
+ 10     continue
 !
     else if (ncmpg.gt.0) then
         call verigd(nomgd, licmp, ncmpg, iret)
@@ -163,46 +161,46 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !
         ncmp2 = ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
-        do 20,k = 1,ncmp2
-        zk8(jlicmp-1+k) = licmp(k)
-20      continue
+        do 20 k = 1, ncmp2
+            zk8(jlicmp-1+k) = licmp(k)
+ 20     continue
 !
     else if (ncmpg.lt.0) then
         ASSERT(nomgd(1:5).eq.'VARI_')
         ncmp2 = -ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
         nomcmp(1:1) = 'V'
-        do 30,k = 1,ncmp2
-        call codent(k, 'G', nomcmp(2:8))
-        zk8(jlicmp-1+k) = nomcmp
-30      continue
+        do 30 k = 1, ncmp2
+            call codent(k, 'G', nomcmp(2:8))
+            zk8(jlicmp-1+k) = nomcmp
+ 30     continue
     endif
 !
-    do 40,icmp = 1,ncmp2
-    if (nomgd(1:5) .ne. 'VARI_') then
-        jcmp = indik8(zk8(jcmpgd),zk8(jlicmp-1+icmp),1,ncmpmx)
-    else
-        if (zk8(jlicmp-1+icmp) (1:1) .ne. 'V') then
-            jcmp = 0
+    do 40 icmp = 1, ncmp2
+        if (nomgd(1:5) .ne. 'VARI_') then
+            jcmp = indik8(zk8(jcmpgd),zk8(jlicmp-1+icmp),1,ncmpmx)
         else
-            jcmp = 1
+            if (zk8(jlicmp-1+icmp) (1:1) .ne. 'V') then
+                jcmp = 0
+            else
+                jcmp = 1
+            endif
         endif
-    endif
-    if (jcmp .eq. 0) then
-        valk(1) = zk8(jlicmp-1+icmp)
-        valk(2) = nomgd
-        call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
-    endif
-    40 end do
+        if (jcmp .eq. 0) then
+            valk(1) = zk8(jlicmp-1+icmp)
+            valk(2) = nomgd
+            call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
+        endif
+ 40 end do
 !
 !
 !------------------------------------------------------------------
 !     2- CREATION DE CES.CESC :
 !     -------------------------------------------
     call wkvect(ces//'.CESC', base//' V K8', ncmp2, jcesc)
-    do 50,k = 1,ncmp2
-    zk8(jcesc-1+k) = zk8(jlicmp-1+k)
-    50 end do
+    do 50 k = 1, ncmp2
+        zk8(jcesc-1+k) = zk8(jlicmp-1+k)
+ 50 end do
 !
 !------------------------------------------------------------------
 !     3- CREATION DE CES.CESK:
@@ -222,46 +220,46 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     zi(jcesd-1+4) = 0
     zi(jcesd-1+5) = 0
     decal = 0
-    do 60,ima = 1,nbma
+    do 60 ima = 1, nbma
 !
 !       -- CALCUL DE NPT(IMA):
-    if (typces .eq. 'ELEM') then
-        nptma = 1
-    else if (typces.eq.'ELNO') then
-        nptma = nbnoma(ima)
-    else if (typces.eq.'ELGA') then
-        if (npg(1) .lt. 0) then
-            nptma = -npg(1)
-        else
-            nptma = npg(ima)
+        if (typces .eq. 'ELEM') then
+            nptma = 1
+        else if (typces.eq.'ELNO') then
+            nptma = nbnoma(ima)
+        else if (typces.eq.'ELGA') then
+            if (npg(1) .lt. 0) then
+                nptma = -npg(1)
+            else
+                nptma = npg(ima)
+            endif
         endif
-    endif
 !
 !       -- CALCUL DE NSPT(IMA):
-    if (nspt(1) .lt. 0) then
-        nsptma = -nspt(1)
-    else
-        nsptma = nspt(ima)
-    endif
+        if (nspt(1) .lt. 0) then
+            nsptma = -nspt(1)
+        else
+            nsptma = nspt(ima)
+        endif
 !
 !       -- CALCUL DE NCMP(IMA):
-    if (ncmp(1) .lt. 0) then
-        ncmpma = -ncmp(1)
-    else
-        ncmpma = ncmp(ima)
-    endif
+        if (ncmp(1) .lt. 0) then
+            ncmpma = -ncmp(1)
+        else
+            ncmpma = ncmp(ima)
+        endif
 !
-    zi(jcesd-1+5+4* (ima-1)+1) = nptma
-    zi(jcesd-1+5+4* (ima-1)+2) = nsptma
-    zi(jcesd-1+5+4* (ima-1)+3) = ncmpma
-    zi(jcesd-1+5+4* (ima-1)+4) = decal
+        zi(jcesd-1+5+4* (ima-1)+1) = nptma
+        zi(jcesd-1+5+4* (ima-1)+2) = nsptma
+        zi(jcesd-1+5+4* (ima-1)+3) = ncmpma
+        zi(jcesd-1+5+4* (ima-1)+4) = decal
 !
-    decal = decal + nptma*nsptma*ncmpma
+        decal = decal + nptma*nsptma*ncmpma
 !
-    zi(jcesd-1+3) = max(nptma,zi(jcesd-1+3))
-    zi(jcesd-1+4) = max(nsptma,zi(jcesd-1+4))
-    zi(jcesd-1+5) = max(ncmpma,zi(jcesd-1+5))
-    60 end do
+        zi(jcesd-1+3) = max(nptma,zi(jcesd-1+3))
+        zi(jcesd-1+4) = max(nsptma,zi(jcesd-1+4))
+        zi(jcesd-1+5) = max(ncmpma,zi(jcesd-1+5))
+ 60 end do
 !
 !     -- POUR POUVOIR CONTINUER SI DECAL=0 (CES VIDE):
     decal=max(decal,1)

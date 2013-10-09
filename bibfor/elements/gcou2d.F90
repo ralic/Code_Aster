@@ -73,7 +73,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: itheta, i, irefe, idesc, num, ierd, nbel, numa
+    integer :: itheta, i, irefe, idesc, num, nbel, numa
     integer :: nec, ibid, jfond, numfon, n1, n2, ndim, jgt, jgtl
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy
@@ -107,7 +107,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         norme = 0.d0
         do 1 i = 1, 2
             norme = norme + dir(i)*dir(i)
- 1      continue
+  1     continue
         norme = sqrt(norme)
         dir(1) = dir(1)/norme
         dir(2) = dir(2)/norme
@@ -124,8 +124,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 !  .DESC
     chamno = resu(1:19)//'.DESC'
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nec,&
-                k8b, ibid)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nec)
     call wkvect(chamno, base//' V I', 2+nec, idesc)
 !
     call jeecra(chamno, 'DOCU', cval='CHNO')
@@ -141,8 +140,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 !  .VALE
     chamno = resu(1:19)//'.VALE'
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbel,&
-                k8b, ierd)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbel)
     call wkvect(chamno, base//' V R', 2*nbel, itheta)
 !
 !     --- CALCUL DE THETA ---
@@ -217,7 +215,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                 zr(itheta+(i-1)*2+2-1) = (1-alpha)*valy
             endif
         endif
-500  end do
+500 end do
 !
     if (.not.ldirec) call detrsd('CHAM_NO_S', chgrs)
 !

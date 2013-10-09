@@ -50,12 +50,12 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
     character(len=1) :: base
     character(len=4) :: docu
     character(len=5) :: refe, desc, vale
-    character(len=8) :: k8b, noma, nomgd
+    character(len=8) ::  noma, nomgd
     character(len=19) :: ch19, ligrel
     logical :: lmeca, lther
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, ic, icoef, idecgr, ie, ier
+    integer :: i, i1, ic, icoef, idecgr
     integer :: igrel, im, ino, ip, iret, ival, jceld
     integer :: jcelk, jcelv, jdesc, jprno, jrefe, jvale, k
     integer :: kdesc, krefe, kvale, lvale, nbdesc, nbec, nbelgr
@@ -87,15 +87,13 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
     lmeca = .false.
     lther = .false.
-    call dismoi('F', 'NOM_GD', ch19, 'CHAMP', ibid,&
-                nomgd, ie)
+    call dismoi('NOM_GD', ch19, 'CHAMP', repk=nomgd)
     if (nomgd .eq. 'DEPL_R' .or. nomgd .eq. 'SIEF_R' .or. nomgd .eq. 'EPSI_R') then
         lmeca = .true.
     else if (nomgd.eq.'TEMP_R' .or. nomgd.eq.'FLUX_R') then
         lther = .true.
     endif
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                k8b, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
 !
 !     --- CONSTRUCTION D'UN CHAMP RESULTAT SUR LE MODELE DE NOMCH(1)
 !
@@ -120,7 +118,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
     call jeecra(ch19//desc, 'DOCU', cval=docu)
     do 10 i = 0, nbdesc-1
         zi(kdesc+i) = zi(jdesc+i)
-10  end do
+ 10 end do
     call jelibe(ch19//desc)
 !
 !
@@ -130,10 +128,9 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
         call jeveuo(zk24(jrefe+1)(1:19)//'.PRNO', 'L', jprno)
         do 20 i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
-20      continue
+ 20     continue
         call jelibe(ch19//'.REFE')
-        call dismoi('F', 'NOM_MAILLA', nomch(1), 'CHAMP', ibid,&
-                    noma, ie)
+        call dismoi('NOM_MAILLA', nomch(1), 'CHAMP', repk=noma)
         call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu)
 !
 !        --- BOUCLE SUR LES CHAMPS A RECOMBINER ---
@@ -154,7 +151,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* cos(ang)* zr(jvale+i+2)
                             zr(lvale+i+3) = zr(lvale+i+3) - coef(im)* sin(ang)* zr(jvale+i+3)
                         endif
-110                  continue
+110                 continue
 !
                 else if (tyharm(im)(1:4).eq.'ANTI') then
 !
@@ -165,7 +162,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* sin(ang)* zr(jvale+i+2)
                             zr(lvale+i+3) = zr(lvale+i+3) + coef(im)* cos(ang)* zr(jvale+i+3)
                         endif
-112                  continue
+112                 continue
 !
                 else if (tyharm(im)(1:4).eq.'TOUS') then
 !
@@ -179,7 +176,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             zr(lvale+i+3) = zr(lvale+i+3) + coef(im)* cos(ang)*zr(jvale+i+3) - co&
                                             &ef(im)*sin(ang) *zr(jvale+i+3)
                         endif
-114                  continue
+114                 continue
 !
                 endif
 !
@@ -192,7 +189,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
                         endif
-120                  continue
+120                 continue
 !
                 else if (tyharm(im)(1:4).eq.'ANTI') then
 !
@@ -201,7 +198,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
                         endif
-122                  continue
+122                 continue
 !
                 else if (tyharm(im)(1:4).eq.'TOUS') then
 !
@@ -211,16 +208,16 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
                                             &ef(im)*cos(ang) *zr(jvale+i+1)
                         endif
-124                  continue
+124                 continue
 !
                 endif
             endif
-100      continue
+100     continue
 !
     else if (docu.eq.'CHML') then
         do 22 i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
-22      continue
+ 22     continue
         call jelibe(ch19//'.CELK')
 !
         do 200 im = 1, nbcmb
@@ -282,8 +279,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-222                          continue
-220                      continue
+222                         continue
+220                     continue
 !
                     else if (tyharm(im)(1:4).eq.'ANTI') then
 !
@@ -314,8 +311,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-232                          continue
-230                      continue
+232                         continue
+230                     continue
 !
                     else if (tyharm(im)(1:4).eq.'TOUS') then
 !
@@ -352,8 +349,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
                                                &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
                                                &-1+idecgr+(k-1)*nbscal+ic)
-262                          continue
-260                      continue
+262                         continue
+260                     continue
                     endif
 !
                 else if (lther) then
@@ -377,8 +374,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-242                          continue
-240                      continue
+242                         continue
+240                     continue
 !
                     else if (tyharm(im)(1:4).eq.'ANTI') then
 !
@@ -397,8 +394,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-252                          continue
-250                      continue
+252                         continue
+250                     continue
 !
                     else if (tyharm(im)(1:4).eq.'TOUS') then
 !
@@ -420,21 +417,21 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
                                                &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
                                                &-1+idecgr+(k-1)*nbscal+ic)
-272                          continue
-270                      continue
+272                         continue
+270                     continue
                     endif
                 endif
-210          continue
+210         continue
             call jelibe(ch19//desc)
             call jelibe(ch19//'.CELK')
             call jelibe(ch19//vale)
 !
-200      continue
+200     continue
     endif
 !
     do 500 ival = 0, nbvale-1
         zr(kvale+ival) = zr(lvale+ival)
-500  end do
+500 end do
     ch19 = chpres
     call jelibe(ch19//vale)
     call jedetr('&&REFODE.VALE')

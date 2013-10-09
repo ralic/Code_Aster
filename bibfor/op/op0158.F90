@@ -53,8 +53,7 @@ subroutine op0158()
     call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     ASSERT(matass.eq.matfac)
     mass = matass
-    call dismoi('F', 'METH_RESO', mass, 'MATR_ASSE', ibid,&
-                metres, ibid)
+    call dismoi('METH_RESO', mass, 'MATR_ASSE', repk=metres)
 !
     if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
         call utmess('F', 'ALGELINE4_1')

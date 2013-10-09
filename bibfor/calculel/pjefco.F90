@@ -63,7 +63,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     character(len=16) :: corre1, corre2, corre3
     character(len=16) :: tymocl(5), motcle(5)
     character(len=24) :: geom2, geom1
-    integer :: n1, nbocc, iocc, ie, ibid, nbno2, nbma1
+    integer :: n1, nbocc, iocc, nbno2, nbma1
     integer :: iagno2, iagma1, iexi
 !
     logical :: ldmax, dbg
@@ -79,8 +79,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     call jeexin(moa1//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
         nomo1=moa1
-        call dismoi('F', 'NOM_MAILLA', nomo1, 'MODELE', ibid,&
-                    noma1, ie)
+        call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
     else
         nomo1=' '
         noma1=moa1
@@ -89,8 +88,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     call jeexin(moa2//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
         nomo2=moa2
-        call dismoi('F', 'NOM_MAILLA', nomo2, 'MODELE', ibid,&
-                    noma2, ie)
+        call dismoi('NOM_MAILLA', nomo2, 'MODELE', repk=noma2)
     else
         nomo2=' '
         noma2=moa2
@@ -244,7 +242,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call jedetr('&&PJEFCO.LIMANU1')
             call jedetr('&&PJEFCO.LINONU2')
-30      continue
+ 30     continue
         call copisd('CORRESP_2_MAILLA', 'V', corre2, corres)
         call detrsd('CORRESP_2_MAILLA', corre1)
         call detrsd('CORRESP_2_MAILLA', corre2)

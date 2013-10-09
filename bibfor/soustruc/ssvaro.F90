@@ -40,7 +40,6 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     character(len=4) :: typnoe
     integer :: iadm1, iadm2
     real(kind=8) :: l(6, 6)
-    character(len=8) :: kbid
 ! ----------------------------------------------------------------------
 !     BUT:
 !         "TOURNER" LA MATRICE ELEMENTAIRE (OU LE VECTEUR ELEMENTAIRE)
@@ -92,7 +91,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     integer :: long
     character(len=2) :: sens2
     integer :: i, i1, iacagd, iadeeq, iadesm, iaiino, icmp
-    integer :: icmpp, icumul, ied, ieq, ieqdeb, ieqp, ier
+    integer :: icmpp, icumul, ieq, ieqdeb, ieqp, ier
     integer :: ii, ino, iret, j, j1, jj, k
     integer :: n1, nbno, nddle, nddli, nddlt, nulag, nuno
     integer :: nunold, nunop
@@ -128,8 +127,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     if (ier .gt. 0) then
         call utmess('F', 'SOUSTRUC_73')
     endif
-    call dismoi('F', 'NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', nulag,&
-                kbid, ied)
+    call dismoi('NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', repi=nulag)
     if (nulag .eq. 0) then
         call utmess('F', 'SOUSTRUC_74')
     endif
@@ -138,15 +136,15 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     -2 CALCUL DE L2 = L OU LT :
 !     ------------------------
     if (sens2 .eq. 'LG') then
-        do 77, i=1,6
-        do 77, j=1,6
-        l2(i,j)=l(i,j)
-77      continue
+        do 77 i = 1, 6
+            do 77 j = 1, 6
+                l2(i,j)=l(i,j)
+ 77         continue
     else if (sens2.eq.'GL') then
-        do 88, i=1,6
-        do 88, j=1,6
-        l2(i,j)=l(j,i)
-88      continue
+        do 88 i = 1, 6
+            do 88 j = 1, 6
+                l2(i,j)=l(j,i)
+ 88         continue
     else
         call utmess('F', 'SOUSTRUC_75', sk=sens2)
     endif
@@ -203,75 +201,75 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     --------------------
     nunold=0
     ino=0
-    do 2, ieq=ieqdeb,nddlt
-    nuno =zi(iadeeq-1+2*(ieq-1)+1)
-    icmp=zi(iadeeq-1+2*(ieq-1)+2)
-    if ((icmp.le.0) .or. (icmp.eq.nulag)) then
+    do 2 ieq = ieqdeb, nddlt
+        nuno =zi(iadeeq-1+2*(ieq-1)+1)
+        icmp=zi(iadeeq-1+2*(ieq-1)+2)
+        if ((icmp.le.0) .or. (icmp.eq.nulag)) then
 !         --NOEUD DE LAGRANGE:
+            ino= ino+1
+            zi(iaiino-1+3*(ino-1)+1)=ieq-(ieqdeb-1)
+            zi(iaiino-1+3*(ino-1)+2)=1
+            zi(iaiino-1+3*(ino-1)+3)=0
+            goto 2
+        endif
+        if (nuno .eq. nunold) goto 2
+        nunold=nuno
         ino= ino+1
         zi(iaiino-1+3*(ino-1)+1)=ieq-(ieqdeb-1)
-        zi(iaiino-1+3*(ino-1)+2)=1
-        zi(iaiino-1+3*(ino-1)+3)=0
-        goto 2
-    endif
-    if (nuno .eq. nunold) goto 2
-    nunold=nuno
-    ino= ino+1
-    zi(iaiino-1+3*(ino-1)+1)=ieq-(ieqdeb-1)
-    if (icmp .eq. 1) then
-        icumul=1
+        if (icmp .eq. 1) then
+            icumul=1
 !       --ICUMUL COMPTE LA SOMME DES COMPOSANTES PRESENTES SUR LE NOEUD
-    else
-        call utmess('F', 'SOUSTRUC_76')
-    endif
+        else
+            call utmess('F', 'SOUSTRUC_76')
+        endif
 !
-    dmi=0
-    do 21, ieqp=ieq+1,nddlt
-    nunop =zi(iadeeq-1+2*(ieqp-1)+1)
-    if (nunop .ne. nuno) goto 22
-    icmpp=zi(iadeeq-1+2*(ieqp-1)+2)
-    icumul=icumul+icmpp
+        dmi=0
+        do 21 ieqp = ieq+1, nddlt
+            nunop =zi(iadeeq-1+2*(ieqp-1)+1)
+            if (nunop .ne. nuno) goto 22
+            icmpp=zi(iadeeq-1+2*(ieqp-1)+2)
+            icumul=icumul+icmpp
 !
 !         -- CAS "2D"
 !             3 = DX + DY
-    if (icmpp .eq. 2) then
-        dmi=2
-        if (icumul .ne. 3) then
-            call utmess('F', 'SOUSTRUC_77')
-        endif
-    endif
+            if (icmpp .eq. 2) then
+                dmi=2
+                if (icumul .ne. 3) then
+                    call utmess('F', 'SOUSTRUC_77')
+                endif
+            endif
 !
 !         -- CAS "3D"
 !             6 = DX + DY + DZ
-    if (icmpp .eq. 3) then
-        dmi=3
-        if (icumul .ne. 6) then
-            call utmess('F', 'SOUSTRUC_77')
-        endif
-    endif
+            if (icmpp .eq. 3) then
+                dmi=3
+                if (icumul .ne. 6) then
+                    call utmess('F', 'SOUSTRUC_77')
+                endif
+            endif
 !
 !         -- CAS "POUTRE/COQUE 3D"
 !             21 = DX + DY + DZ + DRX + DRY + DRZ
-    if (icmpp .eq. 6) then
-        if (icumul .eq. 21) then
-            dmi=6
+            if (icmpp .eq. 6) then
+                if (icumul .eq. 21) then
+                    dmi=6
 !
 !           -- CAS "POUTRE/COQUE AXIS"
 !              9 = DX + DY + DRZ
-        else if (icumul.eq.9) then
-            dmi=2
-        else
-            call utmess('F', 'SOUSTRUC_77')
-        endif
-    endif
-21  continue
+                else if (icumul.eq.9) then
+                    dmi=2
+                else
+                    call utmess('F', 'SOUSTRUC_77')
+                endif
+            endif
+ 21     continue
 !
-22  continue
-    di= ieqp-ieq
-    if (di .gt. 10) ASSERT(.false.)
-    zi(iaiino-1+3*(ino-1)+2)= di
-    zi(iaiino-1+3*(ino-1)+3)= dmi
-    2 end do
+ 22     continue
+        di= ieqp-ieq
+        if (di .gt. 10) ASSERT(.false.)
+        zi(iaiino-1+3*(ino-1)+2)= di
+        zi(iaiino-1+3*(ino-1)+3)= dmi
+  2 end do
     nbno=ino
 !
 !
@@ -279,13 +277,13 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !        ("LAGR","PRES","DDNDZ","PHI",...  )
 !     ----------------------------------------------------------------
     if (matrix) then
-        do 31, k=1,long
-        zr(iadm2-1+k)=zr(iadm1-1+k)
-31      continue
+        do 31 k = 1, long
+            zr(iadm2-1+k)=zr(iadm1-1+k)
+ 31     continue
     else
-        do 32, k=ieqdeb,nddlt
-        zr(iadm2-1+k)=zr(iadm1-1+k)
-32      continue
+        do 32 k = ieqdeb, nddlt
+            zr(iadm2-1+k)=zr(iadm1-1+k)
+ 32     continue
     endif
 !
 !
@@ -296,104 +294,104 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     -7-1 CALCUL DE M2(I,J)= LIT*M1(I,J)*LJ:
 !        (I ET J SONT DES NOEUDS !)
 !     -----------------------------------------
-        do 1, j=1,nbno
-        j1= zi(iaiino-1+3*(j-1)+1)
-        dj= zi(iaiino-1+3*(j-1)+2)
-        dmj= zi(iaiino-1+3*(j-1)+3)
+        do 1 j = 1, nbno
+            j1= zi(iaiino-1+3*(j-1)+1)
+            dj= zi(iaiino-1+3*(j-1)+2)
+            dmj= zi(iaiino-1+3*(j-1)+3)
 !
 !       -7-2 CALCUL DE LJ :
 !       -----------------
-        do 11, ii=1,dj
-        do 11, jj=1,dj
-        lj(ii,jj)=0.0d0
-11      continue
-        do 12, jj=1,dj
-        lj(jj,jj)=1.0d0
-12      continue
-        do 13, ii=1,dmj
-        do 13, jj=1,dmj
-        lj(ii,jj)=l2(ii,jj)
-13      continue
+            do 11 ii = 1, dj
+                do 11 jj = 1, dj
+                    lj(ii,jj)=0.0d0
+ 11             continue
+            do 12 jj = 1, dj
+                lj(jj,jj)=1.0d0
+ 12         continue
+            do 13 ii = 1, dmj
+                do 13 jj = 1, dmj
+                    lj(ii,jj)=l2(ii,jj)
+ 13             continue
 !
-        do 14, i=1,j
-        i1= zi(iaiino-1+3*(i-1)+1)
-        di= zi(iaiino-1+3*(i-1)+2)
-        dmi= zi(iaiino-1+3*(i-1)+3)
+            do 14 i = 1, j
+                i1= zi(iaiino-1+3*(i-1)+1)
+                di= zi(iaiino-1+3*(i-1)+2)
+                dmi= zi(iaiino-1+3*(i-1)+3)
 !
 !         -7-3 CALCUL DE LI :
 !         -----------------
-        do 141, ii=1,di
-        do 141, jj=1,di
-        li(ii,jj)=0.0d0
-141      continue
-        do 142, jj=1,di
-        li(jj,jj)=1.0d0
-142      continue
-        do 143, ii=1,dmi
-        do 143, jj=1,dmi
-        li(ii,jj)=l2(ii,jj)
-143      continue
+                do 141 ii = 1, di
+                    do 141 jj = 1, di
+                        li(ii,jj)=0.0d0
+141                 continue
+                do 142 jj = 1, di
+                    li(jj,jj)=1.0d0
+142             continue
+                do 143 ii = 1, dmi
+                    do 143 jj = 1, dmi
+                        li(ii,jj)=l2(ii,jj)
+143                 continue
 !
 !         -7-4 RECOPIE DE M1(I,J) DANS P1:
 !         ------------------------------
-        if (i .lt. j) then
-            do 144, jj=1,dj
-            do 1441, ii=1,di
-            p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
-1441          continue
-144          continue
-        else
-            do 145, jj=1,dj
-            do 1451, ii=1,jj
-            p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
-1451          continue
-            do 1452, ii=jj+1,di
-            p1(ii,jj)=zr(m1t(i1-1+ii,j1-1+jj))
-1452          continue
-145          continue
-        endif
+                if (i .lt. j) then
+                    do 144 jj = 1, dj
+                        do 1441 ii = 1, di
+                            p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
+1441                     continue
+144                 continue
+                else
+                    do 145 jj = 1, dj
+                        do 1451 ii = 1, jj
+                            p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
+1451                     continue
+                        do 1452 ii = jj+1, di
+                            p1(ii,jj)=zr(m1t(i1-1+ii,j1-1+jj))
+1452                     continue
+145                 continue
+                endif
 !
 !         -7-5 P2=P1*L2(J):
 !         --------------
-        do 146, ii=1,di
-        do 1461, jj=1,dj
-        p2(ii,jj)=0.0d0
-        do 1462, k=1,dj
-        p2(ii,jj)=p2(ii,jj)+p1(ii,k)*lj(k,jj)
-1462      continue
-1461      continue
-146      continue
+                do 146 ii = 1, di
+                    do 1461 jj = 1, dj
+                        p2(ii,jj)=0.0d0
+                        do 1462 k = 1, dj
+                            p2(ii,jj)=p2(ii,jj)+p1(ii,k)*lj(k,jj)
+1462                     continue
+1461                 continue
+146             continue
 !
 !         -7-6 P1=LT2(I)*P2:
 !         ---------------
-        do 147, ii=1,di
-        do 1471, jj=1,dj
-        p1(ii,jj)=0.0d0
-        do 1472, k=1,di
-        p1(ii,jj)=p1(ii,jj)+li(k,ii)*p2(k,jj)
-1472      continue
-1471      continue
-147      continue
+                do 147 ii = 1, di
+                    do 1471 jj = 1, dj
+                        p1(ii,jj)=0.0d0
+                        do 1472 k = 1, di
+                            p1(ii,jj)=p1(ii,jj)+li(k,ii)*p2(k,jj)
+1472                     continue
+1471                 continue
+147             continue
 !
 !         -7-7 RECOPIE DE P1 DANS M2(I,J):
 !         ------------------------------
-        if (i .lt. j) then
-            do 148, jj=1,dj
-            do 1481, ii=1,di
-            zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
-1481          continue
-148          continue
-        else
-            do 149, jj=1,dj
-            do 1491, ii=1,jj
-            zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
-1491          continue
-149          continue
-        endif
+                if (i .lt. j) then
+                    do 148 jj = 1, dj
+                        do 1481 ii = 1, di
+                            zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
+1481                     continue
+148                 continue
+                else
+                    do 149 jj = 1, dj
+                        do 1491 ii = 1, jj
+                            zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
+1491                     continue
+149                 continue
+                endif
 !
 !
-14      continue
- 1      continue
+ 14         continue
+  1     continue
     endif
 !
 !
@@ -406,16 +404,16 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     -- CALCUL DE V2(I)= L2T(I)*V1(I)
 !        (I EST UN NOEUD !)
 !     -----------------------------------------
-        do 5, i=1,nbno
-        i1= zi(iaiino-1+3*(i-1)+1) + (ieqdeb-1)
-        dmi= zi(iaiino-1+3*(i-1)+3)
-        do 51, ii=1,dmi
-        zr(v2(i1-1+ii))=0.0d0
-        do 511, k=1,dmi
-        zr(v2(i1-1+ii))=zr(v2(i1-1+ii))+l2(k,ii)*zr(v1(i1-1+k))
-511      continue
-51      continue
- 5      continue
+        do 5 i = 1, nbno
+            i1= zi(iaiino-1+3*(i-1)+1) + (ieqdeb-1)
+            dmi= zi(iaiino-1+3*(i-1)+3)
+            do 51 ii = 1, dmi
+                zr(v2(i1-1+ii))=0.0d0
+                do 511 k = 1, dmi
+                    zr(v2(i1-1+ii))=zr(v2(i1-1+ii))+l2(k,ii)*zr(v1(i1-1+k))
+511             continue
+ 51         continue
+  5     continue
     endif
 !
 !

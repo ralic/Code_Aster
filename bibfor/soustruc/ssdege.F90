@@ -44,14 +44,14 @@ subroutine ssdege(nomu)
 !     IN:
 !        NOMU : NOM DU MACR_ELEM_STAT QUE L'ON DEFINIT.
 !
-    character(len=8) :: kbi81, noma, nomo, nomgd, kbid, promes
+    character(len=8) :: kbi81, noma, nomo, nomgd, promes
     logical :: lmess
     real(kind=8) :: time
     character(len=16) :: pheno
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iaexte, ialino, iaprnm, iarefm, ibi, ibid(1), iec
+    integer :: iaexte, ialino, iaprnm, iarefm, ibid(1), iec
     integer :: ier, ii, ino, jdesm, jvarm, n1, nbc
     integer :: nbec, nbnoto, nch, nchar, nvalap
 !-----------------------------------------------------------------------
@@ -65,14 +65,10 @@ subroutine ssdege(nomu)
 !     -----------------------------------------
     call getvid('DEFINITION', 'MODELE', iocc=1, scal=nomo, nbret=n1)
 !
-    call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibi,&
-                noma, ier)
-    call dismoi('F', 'PHENOMENE', nomo, 'MODELE', ibi,&
-                pheno, ier)
-    call dismoi('F', 'NOM_GD', pheno, 'PHENOMENE', ibi,&
-                nomgd, ier)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                kbid, ier)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
+    call dismoi('PHENOMENE', nomo, 'MODELE', repk=pheno)
+    call dismoi('NOM_GD', pheno, 'PHENOMENE', repk=nomgd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
 !
     zk8(iarefm-1+1)= nomo
     zk8(iarefm-1+2)= noma
@@ -137,14 +133,14 @@ subroutine ssdege(nomu)
 !     --------------------------------------------------------
     call jeveuo(nomo//'.MODELE    .PRNM', 'L', iaprnm)
     lmess=.false.
-    do 11, ii=1,nbnoto
-    ino=zi(iaexte-1+ii)
-    do 12, iec=1,nbec
-    if (zi(iaprnm-1+nbec*(ino-1)+iec) .ne. 0) goto 11
-    zi(iaexte-1+ii)=0
-    lmess=.true.
-12  continue
-    11 end do
+    do 11 ii = 1, nbnoto
+        ino=zi(iaexte-1+ii)
+        do 12 iec = 1, nbec
+            if (zi(iaprnm-1+nbec*(ino-1)+iec) .ne. 0) goto 11
+            zi(iaexte-1+ii)=0
+            lmess=.true.
+ 12     continue
+ 11 end do
     if (lmess) then
         call utmess('A', 'SOUSTRUC_41')
     endif

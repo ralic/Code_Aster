@@ -38,7 +38,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
 !     SORTIES:
 !        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !
-    integer :: ibid, numord
+    integer ::  numord
 !
     character(len=8) :: typech, noresu, sdcarm
     character(len=16) :: nomsym
@@ -48,8 +48,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
 !
     chan19=chanom
     noch64=nochmd
-    call dismoi('F', 'TYPE_CHAMP', chan19, 'CHAMP', ibid,&
-                typech, codret)
+    call dismoi('TYPE_CHAMP', chan19, 'CHAMP', repk=typech)
 !
     noresu=' '
     nomsym=' '

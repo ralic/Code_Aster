@@ -156,7 +156,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
         oktres = .false.
         do 12 ibid = 1, 10
             if (typres .eq. accres(ibid)) oktres = .true.
-12      continue
+ 12     continue
         if (.not.(oktres)) then
             if (arret .eq. 'F') ASSERT(.false.)
             codret = 0
@@ -172,8 +172,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
             oktref = .true.
             goto 16
         endif
-15  continue
-16  continue
+ 15 continue
+ 16 continue
     if (.not.(oktref)) then
         if (arret .eq. 'F') ASSERT(.false.)
         codret = 0
@@ -192,7 +192,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !       INITIALISATION DES ELEMENTS DE .INDI A (-100)
         do 17 ibid = 1, nbinit
             zi(jbid+ibid-1) = -100
-17      continue
+ 17     continue
         if (typref .eq. 'INIT') then
             codret = 1
             goto 27
@@ -223,8 +223,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !               --- ALORS METTRE A JOUR L'ENTREE DU .REFD
                 do 21 jbid = 1, lonref(indref)
                     zk24(jrefe+jbid+1) = conref(jbid)
-21              continue
-!               --- VERIFIER EGALEMENT ET METTRE A JOUR LE .INDI SI LE NOMBRE DE 
+ 21             continue
+!               --- VERIFIER EGALEMENT ET METTRE A JOUR LE .INDI SI LE NOMBRE DE
 !                 - NUMEROS D'ORDRES INITIAL N'A PAS ETE CORRECTEMENT RENSEIGNE
 !                 - (N2 - N1 = -1 / APPEL A REFDAJ AVEC NBCHAM = -1 )
                 if (ibid .eq. nbrefs) then
@@ -238,7 +238,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
                 codret = 1
                 goto 27
             endif
-20      continue
+ 20     continue
     endif
 !
 !   2.2.2 - RAJOUTER UN OBJET A LA COLLECTION .REFD AVEC LES INFOS
@@ -249,12 +249,12 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     call jeveuo(obindi, 'E', jindi)
     if (nbrefs .ge. 1) then
         nbord0 = zi(jindi+nbrefs-1)
-    else 
+    else
 !       --- TRAITEMENT SPECIAL SI IL S'AGIT DE LA PREMIERE ENTREE INDI :
 !           SI nbord1 EST EGALE A -1 ET UN NOMBRE NON NULL DES CHAMPS EST DEJA STOCKE
 !           DANS LA SD : ON Y MET CE NOMBRE
-        call dismoi('C', 'NB_CHAMPS', result, 'RESU_DYNA', nbcham,&
-                    k8bid, ir)
+        call dismoi('NB_CHAMPS', result, 'RESU_DYNA', repi=nbcham, arret='C',&
+                    ier=ir)
         if ((ir .eq. 0) .and. (nbcham .ne. 0)) then
             nbord1 = nbcham
         endif
@@ -269,15 +269,15 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     zk24(jrefe+1) = numer1
     do 25 ibid = 1, lonref(indref)
         zk24(jrefe+ibid+1) = conref(ibid)
-25  continue
+ 25 continue
     if (lonref(indref) .lt. 3) then
         do 26 ibid = lonref(indref)+1, 3
             zk24(jrefe+ibid+1) = bl24
-26      continue
+ 26     continue
     endif
     codret = 1
 !
-27  continue
+ 27 continue
 !
 !   For debugging purposes only
 !   call utimsd(6, 1, .false., .true., corefd,1, 'G')

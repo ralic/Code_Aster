@@ -61,9 +61,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     real(kind=8) :: ksi, eta, dzeta, x1, x2, x3, vol
     real(kind=8) :: crrefe(3*nbnomx), xr1(3), xr2(3), xr3(3)
     real(kind=8) :: ff(nbnomx), cooele(3*nbnomx)
-    character(len=8) :: elrefa, m1, m2, kb, fapg(nbfamx), alarme
+    character(len=8) :: elrefa, m1, m2, fapg(nbfamx), alarme
     character(len=16) :: k16bid, nomcmd
-    integer :: j1xxk1, i1conb, i1conu, i1cocf, i1cotr, nno1, ie, nno2
+    integer :: j1xxk1, i1conb, i1conu, i1cocf, i1cotr, nno1, nno2
     integer :: nma1, nma2, ialim1, ialin1, ialin2, iatr3, iacnx1, ilcnx1, iatyma
     integer :: j2xxk1, i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu
     integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno
@@ -160,14 +160,10 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !
     m1=zk24(j1xxk1-1+1)(1:8)
     m2=zk24(j1xxk1-1+2)(1:8)
-    call dismoi('F', 'NB_NO_MAILLA', m1, 'MAILLAGE', nno1,&
-                kb, ie)
-    call dismoi('F', 'NB_NO_MAILLA', m2, 'MAILLAGE', nno2,&
-                kb, ie)
-    call dismoi('F', 'NB_MA_MAILLA', m1, 'MAILLAGE', nma1,&
-                kb, ie)
-    call dismoi('F', 'NB_MA_MAILLA', m2, 'MAILLAGE', nma2,&
-                kb, ie)
+    call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
+    call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
+    call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
+    call dismoi('NB_MA_MAILLA', m2, 'MAILLAGE', repi=nma2)
 !
     call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
@@ -201,7 +197,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
         ideca2=ideca2+nbno
-10      continue
+ 10     continue
     enddo
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
@@ -335,7 +331,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !
         ideca1=ideca1+4
         ideca2=ideca2+nbno
-20      continue
+ 20     continue
     enddo
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:

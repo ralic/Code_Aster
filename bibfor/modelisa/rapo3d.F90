@@ -95,7 +95,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
     integer :: ino, j, idiner, idch1, idch2, nbterm
     integer :: jlisno, jlisdl, jliscr, jliscc, jlisdi, jlisdm, ival
-    integer :: ncara, iocc, ier
+    integer :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
     real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme
     real(kind=8) :: ax, ay, az, axx, ayy, azz, axy, axz, ayz, valr(9)
@@ -189,8 +189,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
 ! --- -----------------------------------------------------------------
 !     LIGREL DU MODELE
     ligrmo = mod(1:8)//'.MODELE'
@@ -223,8 +222,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
     end do
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
 !
 ! --- -----------------------------------------------------------------
 ! --- ACCES A L'OBJET .PRNM

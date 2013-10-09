@@ -57,7 +57,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     integer :: jfd, jfc, jfv, jfl, jfk
     integer :: jpd, jpc, jpv, jpl, jpk
     integer :: jrd, jrc, jrv, jrl, jrk
-    integer :: nbno, ib, k, ino, ncmp, nbpu, ier, nbpumx
+    integer :: nbno, k, ino, ncmp, nbpu, ier, nbpumx
     integer :: k2, ncmp2, ipara, jad1, ibid
     parameter (nbpumx=50)
     character(len=8) :: ma, nomgdf, nomgdr, fo, nompu(nbpumx)
@@ -84,8 +84,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     nbno = zi(jfd-1+1)
     ncmp = zi(jfd-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgdf, 'GRANDEUR', ib,&
-                tsca, ib)
+    call dismoi('TYPE_SCA', nomgdf, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'K8') then
         call utmess('F', 'UTILITAI_16')
     endif
@@ -108,29 +107,28 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     3- ON MET EN MEMOIRE LES OBJETS UTILES DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------------
     call wkvect('&&CNSEVA.JAD1', 'V V I', 4*npara, jad1)
-    do 10,ipara = 1,npara
-    p = lpara(ipara)
-    call jeveuo(p//'.CNSK', 'L', jpk)
-    call jeveuo(p//'.CNSD', 'L', jpd)
-    call jeveuo(p//'.CNSC', 'L', jpc)
-    call jeveuo(p//'.CNSV', 'L', jpv)
-    call jeveuo(p//'.CNSL', 'L', jpl)
-    ma2 = zk8(jpk-1+1)
-    nomgd2 = zk8(jpk-1+2)
+    do 10 ipara = 1, npara
+        p = lpara(ipara)
+        call jeveuo(p//'.CNSK', 'L', jpk)
+        call jeveuo(p//'.CNSD', 'L', jpd)
+        call jeveuo(p//'.CNSC', 'L', jpc)
+        call jeveuo(p//'.CNSV', 'L', jpv)
+        call jeveuo(p//'.CNSL', 'L', jpl)
+        ma2 = zk8(jpk-1+1)
+        nomgd2 = zk8(jpk-1+2)
 !
-    call dismoi('F', 'TYPE_SCA', nomgd2, 'GRANDEUR', ib,&
-                tsca, ib)
-    if (tsca .ne. 'R') then
-        call utmess('F', 'UTILITAI_17')
-    endif
-    if (ma2 .ne. ma) then
-        call utmess('F', 'UTILITAI_18')
-    endif
-    zi(jad1-1+4* (ipara-1)+1) = jpc
-    zi(jad1-1+4* (ipara-1)+2) = jpd
-    zi(jad1-1+4* (ipara-1)+3) = jpl
-    zi(jad1-1+4* (ipara-1)+4) = jpv
-    10 end do
+        call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca)
+        if (tsca .ne. 'R') then
+            call utmess('F', 'UTILITAI_17')
+        endif
+        if (ma2 .ne. ma) then
+            call utmess('F', 'UTILITAI_18')
+        endif
+        zi(jad1-1+4* (ipara-1)+1) = jpc
+        zi(jad1-1+4* (ipara-1)+2) = jpd
+        zi(jad1-1+4* (ipara-1)+3) = jpl
+        zi(jad1-1+4* (ipara-1)+4) = jpv
+ 10 end do
 !
 !
 !
@@ -139,60 +137,60 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     ON BOUCLE D'ABORD SUR LES CMPS POUR AVOIR PLUS DE CHANCES
 !     DE FAIRE PLUSIEURS FOINTE SUCCESSIFS AVEC LA MEME FONCTION.
 !
-    do 50,k = 1,ncmp
-    do 40,ino = 1,nbno
-    if (zl(jfl-1+ (ino-1)*ncmp+k)) then
-        zl(jrl-1+ (ino-1)*ncmp+k) = .true.
-        fo = zk8(jfv-1+ (ino-1)*ncmp+k)
-        if (fo .eq. ' ') goto 40
+    do 50 k = 1, ncmp
+        do 40 ino = 1, nbno
+            if (zl(jfl-1+ (ino-1)*ncmp+k)) then
+                zl(jrl-1+ (ino-1)*ncmp+k) = .true.
+                fo = zk8(jfv-1+ (ino-1)*ncmp+k)
+                if (fo .eq. ' ') goto 40
 !
 !           4.1 FABRICATION DE LA LISTE DES PARAMETRES POUR FOINTE:
 !           -------------------------------------------------------
-        nbpu = 0
-        do 30,ipara = 1,npara
-        jpc = zi(jad1-1+4* (ipara-1)+1)
-        jpd = zi(jad1-1+4* (ipara-1)+2)
-        jpl = zi(jad1-1+4* (ipara-1)+3)
-        jpv = zi(jad1-1+4* (ipara-1)+4)
-        ncmp2 = zi(jpd-1+2)
-        do 20,k2 = 1,ncmp2
-        if (zl(jpl-1+ (ino-1)*ncmp2+k2)) then
-            nbpu = nbpu + 1
-            if (nbpu .gt. nbpumx) then
-                call utmess('F', 'CALCULEL2_66')
-            endif
+                nbpu = 0
+                do 30 ipara = 1, npara
+                    jpc = zi(jad1-1+4* (ipara-1)+1)
+                    jpd = zi(jad1-1+4* (ipara-1)+2)
+                    jpl = zi(jad1-1+4* (ipara-1)+3)
+                    jpv = zi(jad1-1+4* (ipara-1)+4)
+                    ncmp2 = zi(jpd-1+2)
+                    do 20 k2 = 1, ncmp2
+                        if (zl(jpl-1+ (ino-1)*ncmp2+k2)) then
+                            nbpu = nbpu + 1
+                            if (nbpu .gt. nbpumx) then
+                                call utmess('F', 'CALCULEL2_66')
+                            endif
 !
 !                 -- ON VERIFIE QU'UN MEME PARAMETRE N'EST PAS AJOUTE
 !                    PLUSIEURS FOIS:
-            ibid=indik8(nompu,zk8(jpc-1+k2),1,nbpu-1)
-            if (ibid .gt. 0) then
-                call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
-            endif
+                            ibid=indik8(nompu,zk8(jpc-1+k2),1,nbpu-1)
+                            if (ibid .gt. 0) then
+                                call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
+                            endif
 !
-            nompu(nbpu) = zk8(jpc-1+k2)
-            valpu(nbpu) = zr(jpv-1+ (ino-1)*ncmp2+k2)
-        endif
-20      continue
-30      continue
+                            nompu(nbpu) = zk8(jpc-1+k2)
+                            valpu(nbpu) = zr(jpv-1+ (ino-1)*ncmp2+k2)
+                        endif
+ 20                 continue
+ 30             continue
 !
 !
 !           4.2 APPEL A FOINTE :
 !           --------------------
-        call fointe('E', fo, nbpu, nompu, valpu,&
-                    x, ier)
-        if (ier .ne. 0) then
-            call utmess('F+', 'FONCT0_9', sk=fo)
-            call jenuno(jexnum(ma//'.NOMNOE', ino), valk)
-            call utmess('F', 'FONCT0_53', sk=valk)
-        endif
+                call fointe('E', fo, nbpu, nompu, valpu,&
+                            x, ier)
+                if (ier .ne. 0) then
+                    call utmess('F+', 'FONCT0_9', sk=fo)
+                    call jenuno(jexnum(ma//'.NOMNOE', ino), valk)
+                    call utmess('F', 'FONCT0_53', sk=valk)
+                endif
 !
 !           4.3 STOCKAGE DU RESULTAT :
 !           --------------------------
-        zr(jrv-1+ (ino-1)*ncmp+k) = x
+                zr(jrv-1+ (ino-1)*ncmp+k) = x
 !
-    endif
-40  continue
-    50 end do
+            endif
+ 40     continue
+ 50 end do
 !
 !
 !     5- MENAGE :

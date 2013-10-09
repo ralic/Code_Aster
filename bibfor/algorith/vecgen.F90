@@ -118,7 +118,7 @@ subroutine vecgen(nomres, numeg)
         call jeveuo(sst, 'L', lsst)
         do 9 i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
- 9      continue
+  9     continue
     endif
 !
 !     1/ LECTURE ET STOCKAGE DES INFORMATIONS
@@ -298,10 +298,8 @@ subroutine vecgen(nomres, numeg)
         call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
                     basmod)
 !
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                    nubamo, iret)
-        call dismoi('F', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
-                    typeba, iret)
+        call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=nubamo)
+        call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=typeba)
 !
         if (typeba(1:4) .ne. 'RITZ' .and. typeba(1:9) .ne. 'CLASSIQUE') then
             valk (1) = nomsst
@@ -320,7 +318,7 @@ subroutine vecgen(nomres, numeg)
 !
 !     COPIE DU NUME_DDL DANS LE .LICH
         zk8(ldnddl+i-1) = nubamo(1:8)
-10  continue
+ 10 continue
 !
 !     ECRITURE DU .REFE
     zk24(llref) = modgen
@@ -355,15 +353,14 @@ subroutine vecgen(nomres, numeg)
         call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
                     cbid, rbid, kbid, tmod, 1,&
                     ibid)
-        nbmod=tmod(1)            
+        nbmod=tmod(1)
 !
 !     RECUPERATION DU .VALE ASSOCIE AU SECOND MEMBRE
         call jeveuo(nom2mb//'           .VALE', 'L', ladrve)
         call jelira(nom2mb//'           .VALE', 'TYPE', cval=typve)
 !
 !     NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE, POUR LA SOUS-STRUCTURE
-        call dismoi('F', 'NB_EQUA', nomddl, 'NUME_DDL', neq,&
-                    kbid, iret)
+        call dismoi('NB_EQUA', nomddl, 'NUME_DDL', repi=neq)
 !
 !     POSITIONNEMENT DANS LE .DEEQ, AFIN DE DISPOSER DES CORRESPONDANCES
 !     ENTRE NUMEROS D'EQUATIONS ET NOEUDS ET D.D.L.
@@ -405,9 +402,9 @@ subroutine vecgen(nomres, numeg)
 !     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
             zr(iavale+j-1) = ddot(neq,zr(idvect),1,zr(ladrve),1)
 !
-20      continue
+ 20     continue
         call jedetr('&&'//pgc//'.VECTA')
-50  continue
+ 50 continue
 !
 !     3/ ASSEMBLAGE
 !     =============
@@ -435,7 +432,7 @@ subroutine vecgen(nomres, numeg)
                 if (zk8(lsst+i1-1) .eq. nomsst) then
                     nusst=i1
                 endif
-60          continue
+ 60         continue
         endif
 !
 !     RECUPERATION DU D.D.L. GENERALISE DE DEPART ET DU NOMBRE TOTAL
@@ -449,7 +446,7 @@ subroutine vecgen(nomres, numeg)
             nbmod=0
             do 70 i1 = 1, nusst-1
                 nddl0 = nddl0 + zi(lsilia+i1-1)
-70          continue
+ 70         continue
             nbmod = zi(lsilia+nusst-1)
         endif
 !
@@ -464,7 +461,7 @@ subroutine vecgen(nomres, numeg)
             do 80 j = 1, nbmod
                 ipos=(nddl0 - 1) + (j - 1)
                 zr(lrval+ipos) = zr(lrval+ipos) + zr(idvale+j-1)
-80          continue
+ 80         continue
         else
 !     CAS OU ON RECOURS A L'ELIMINATION
 !     ON RE PROJETTE SUR LA BASE T : F_proj = T^t * (Phi^t * F)
@@ -473,10 +470,10 @@ subroutine vecgen(nomres, numeg)
                 do 90 i1 = 1, nbmod
                     zr(lrval+j1-1) = zr(lrval+j1-1) + zr(idvale+i1-1)* zr(lmapro+(j1-1)*neqet+ndd&
                                      &l0+i1-1)
-90              continue
-100          continue
+ 90             continue
+100         continue
         endif
-200  continue
+200 continue
 !
     call jedema()
 end subroutine

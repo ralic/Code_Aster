@@ -56,7 +56,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 ! OUT : NBTROU : NOMBRE D'ENTITES TROUVEES
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, ierd, jcesd, jcesk, jcesl, nbent, jent, i, nbpt, nbsp, ipt
+    integer :: ierd, jcesd, jcesk, jcesl, nbent, jent, i, nbpt, nbsp, ipt
     integer :: isp, icp, iad, idlist, icmp, ncmpmx, gd, ier
     character(len=2) :: typem
     character(len=4) :: docu
@@ -77,10 +77,8 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     chtra1 = '&&UTMACH.CHAMP_COP'
     chtra2 = '&&UTMACH.CHAMP_RED'
 !
-    call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
-                docu, ierd)
-    call dismoi('F', 'NUM_GD', champ, 'CHAMP', gd,&
-                k8b, ierd)
+    call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=docu)
+    call dismoi('NUM_GD', champ, 'CHAMP', repi=gd)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     if (nomgd(1:6) .eq. 'VARI_R') goto 9999
 !
@@ -92,10 +90,10 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     do 2 icp = 1, ncmp
         do 4 icmp = 1, ncmpmx
             if (nocmp(icp) .eq. zk8(iad+icmp-1)) goto 2
- 4      continue
+  4     continue
         ier = ier + 1
         call utmess('E', 'UTILITAI5_48', sk=nocmp(icp))
- 2  end do
+  2 end do
     if (ier .ne. 0) then
         call utmess('F', 'PREPOST_60')
     endif
@@ -109,7 +107,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         else
             call celces(champ, 'V', chtra1)
         endif
-        call cesred(chtra1,0,[ibid],ncmp,nocmp,&
+        call cesred(chtra1, 0, [0], ncmp, nocmp,&
                     'V', chtra2)
         call jeveuo(chtra2//'.CESD', 'L', jcesd)
         call jeveuo(chtra2//'.CESK', 'L', jcesk)
@@ -130,10 +128,10 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                             goto 10
                         else
                         endif
-16                  continue
-14              continue
-12          continue
-10      continue
+ 16                 continue
+ 14             continue
+ 12         continue
+ 10     continue
         call detrsd('CHAM_ELEM_S', chtra1)
         call detrsd('CHAM_ELEM_S', chtra2)
 !
@@ -141,7 +139,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     else if (docu .eq. 'NOEU') then
 !              ----------------
         call cnocns(champ, 'V', chtra1)
-        call cnsred(chtra1, 0, [ibid], ncmp, nocmp,&
+        call cnsred(chtra1, 0, [0], ncmp, nocmp,&
                     'V', chtra2)
         call jeveuo(chtra2//'.CNSD', 'L', jcesd)
         call jeveuo(chtra2//'.CNSK', 'L', jcesk)
@@ -155,8 +153,8 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                     zi(jent+i-1) = 1
                     goto 20
                 endif
-22          continue
-20      continue
+ 22         continue
+ 20     continue
         call detrsd('CHAM_NO_S', chtra1)
         call detrsd('CHAM_NO_S', chtra2)
 !
@@ -182,7 +180,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     nbtrou = 0
     do 100 i = 1, nbent
         if (zi(jent+i-1) .eq. 1) nbtrou = nbtrou + 1
-100  end do
+100 end do
 !
     if (typem .eq. 'NU') then
 !          ---------------
@@ -193,7 +191,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                 nbtrou = nbtrou + 1
                 zi(idlist+nbtrou-1) = i
             endif
-110      continue
+110     continue
 !
     else if (typem .eq. 'NO') then
 !              ---------------
@@ -204,7 +202,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                 nbtrou = nbtrou + 1
                 call jenuno(jexnum(nomobj, zi(jent+i-1)), zk8(idlist+ nbtrou-1))
             endif
-120      continue
+120     continue
 !
     else
         call utmess('F', 'PREPOST3_6', sk=typem)
@@ -212,7 +210,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 !
     call jedetr('&&UTMACH.LIST_ENT')
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

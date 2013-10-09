@@ -141,8 +141,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     ------------------------------------
 !     ON TESTE LE NOM DE LA MATRICE, CELUI DU NUME_DDL,
 !     LA TAILLE DES MATRICES ASTER ET PETSC
-    call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     nglo = zi(jnequ)
 !
@@ -175,7 +174,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
     call utmess('F', 'PETSC_3')
 !
- 1  continue
+  1 continue
 !
 !     3. QUELQUES VERIFICATIONS ET PETITES ACTIONS :
 !     ----------------------------------------------
@@ -233,7 +232,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
                     iret)
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

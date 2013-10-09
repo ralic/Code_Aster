@@ -61,9 +61,9 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     character(len=24) :: linuma, linute
     character(len=19) :: ces1, ces2, ces3, ces4, ces5
     character(len=16) :: option
-    character(len=8) :: kbid, licmp(4), ma, nomgd, tsca, typces
+    character(len=8) ::  licmp(4), ma, nomgd, tsca, typces
     character(len=8) :: nompar
-    integer :: iret, nbma, ibid, nbmat, numa, jnbpt, kma
+    integer :: iret, nbma, nbmat, numa, jnbpt, kma
     integer :: nbpt, ksp1, ksp2, kpt, kcmp, nncp
     integer :: iad1, iad2, iad4, jlima, ncmp
     integer :: jce2l, jce2d, jce2v, jce3k, jce3l, jce3d, jce3v, jce3c
@@ -72,19 +72,14 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !
 ! ----------------------------------------------------------------------
     call jemarq()
-    call dismoi('F', 'NOM_MAILLA', chin, 'CHAM_ELEM', ibid,&
-                ma, iret)
-    call dismoi('F', 'NOM_GD', chin, 'CHAM_ELEM', ibid,&
-                nomgd, iret)
-    call dismoi('F', 'TYPE_SCA', chin, 'CHAM_ELEM', ibid,&
-                tsca, iret)
-    call dismoi('F', 'MXNBSP', chin, 'CHAM_ELEM', nbspmx,&
-                kbid, iret)
+    call dismoi('NOM_MAILLA', chin, 'CHAM_ELEM', repk=ma)
+    call dismoi('NOM_GD', chin, 'CHAM_ELEM', repk=nomgd)
+    call dismoi('TYPE_SCA', chin, 'CHAM_ELEM', repk=tsca)
+    call dismoi('MXNBSP', chin, 'CHAM_ELEM', repi=nbspmx)
     if (nbspmx .le. 1) then
         call utmess('F', 'CALCULEL2_15')
     endif
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmat,&
-                kbid, iret)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
 !
     ces1='&&W155CH.CES1'
     ces2='&&W155CH.CES2'
@@ -110,7 +105,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     licmp(2)='TUY_NCOU'
     licmp(3)='TUY_NSEC'
     licmp(4)='NBFIBR'
-    call cesred(ces1,nbma,zi(jlima),4,licmp,&
+    call cesred(ces1, nbma, zi(jlima), 4, licmp,&
                 'V', ces2)
     call detrsd('CHAM_ELEM_S', ces1)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
@@ -125,7 +120,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
                     'A', iret)
         ASSERT(iret.eq.0)
         licmp(1)='ANGZZK'
-        call cesred(ces1,nbma,zi(jlima),1,licmp,&
+        call cesred(ces1, nbma, zi(jlima), 1, licmp,&
                     'V', ces5)
         call detrsd('CHAM_ELEM_S', ces1)
         call jeveuo(ces5//'.CESD', 'L', jce5d)
@@ -149,12 +144,12 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call jelira(ces3//'.CESC', 'LONMAX', ncmp)
     typces=zk8(jce3k-1+3)
     call wkvect('&&W155CH.NBPT', 'V V I', nbmat, jnbpt)
-    do 10,kma=1,nbma
-    numa=zi(jlima-1+kma)
-    if (numa .le. 0) goto 10
-    nbpt=zi(jce3d-1+5+4*(numa-1)+1)
-    zi(jnbpt-1+numa)=nbpt
-    10 end do
+    do 10 kma = 1, nbma
+        numa=zi(jlima-1+kma)
+        if (numa .le. 0) goto 10
+        nbpt=zi(jce3d-1+5+4*(numa-1)+1)
+        zi(jnbpt-1+numa)=nbpt
+ 10 end do
 !
 !
 !     4. ALLOCATION ET CALCUL DE CHEXTR :
@@ -164,50 +159,48 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call jeveuo(ces4//'.CESD', 'L', jce4d)
     call jeveuo(ces4//'.CESV', 'L', jce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)
-    do 40,kma=1,nbma
-    numa=zi(jlima-1+kma)
-    if (numa .le. 0) goto 40
-    ASSERT(numa.le.nbmat)
-    nbpt=zi(jnbpt-1+numa)
-    call w155ma(numa, nucou, nicou, nangl, nufib,&
-                motfac, jce2d, jce2l, jce2v, jce5d,&
-                jce5l, jce5v, ksp1, ksp2, c1,&
-                c2, iret)
-    if (iret .eq. 1) goto 40
-    do 30,kpt=1,nbpt
-    do 20,kcmp=1,ncmp
-    call cesexi('C', jce3d, jce3l, numa, kpt,&
-                ksp1, kcmp, iad1)
-    call cesexi('C', jce3d, jce3l, numa, kpt,&
-                ksp2, kcmp, iad2)
-    if (iad1 .gt. 0) then
-        ASSERT(iad2.gt.0)
-        call cesexi('C', jce4d, jce4l, numa, kpt,&
-                    1, kcmp, iad4)
-        ASSERT(iad4.lt.0)
-        iad4=-iad4
-        if (tsca .eq. 'R') then
-            zr(jce4v-1+iad4)=c1*zr(jce3v-1+iad1)+c2*zr(&
+    do 40 kma = 1, nbma
+        numa=zi(jlima-1+kma)
+        if (numa .le. 0) goto 40
+        ASSERT(numa.le.nbmat)
+        nbpt=zi(jnbpt-1+numa)
+        call w155ma(numa, nucou, nicou, nangl, nufib,&
+                    motfac, jce2d, jce2l, jce2v, jce5d,&
+                    jce5l, jce5v, ksp1, ksp2, c1,&
+                    c2, iret)
+        if (iret .eq. 1) goto 40
+        do 30 kpt = 1, nbpt
+            do 20 kcmp = 1, ncmp
+                call cesexi('C', jce3d, jce3l, numa, kpt,&
+                            ksp1, kcmp, iad1)
+                call cesexi('C', jce3d, jce3l, numa, kpt,&
+                            ksp2, kcmp, iad2)
+                if (iad1 .gt. 0) then
+                    ASSERT(iad2.gt.0)
+                    call cesexi('C', jce4d, jce4l, numa, kpt,&
+                                1, kcmp, iad4)
+                    ASSERT(iad4.lt.0)
+                    iad4=-iad4
+                    if (tsca .eq. 'R') then
+                        zr(jce4v-1+iad4)=c1*zr(jce3v-1+iad1)+c2*zr(&
                         jce3v-1+iad2)
-        else if (tsca.eq.'C') then
-            zc(jce4v-1+iad4)=c1*zc(jce3v-1+iad1)+c2*zc(&
+                    else if (tsca.eq.'C') then
+                        zc(jce4v-1+iad4)=c1*zc(jce3v-1+iad1)+c2*zc(&
                         jce3v-1+iad2)
-        else
-            ASSERT(.false.)
-        endif
-        zl(jce4l-1+iad4)=.true.
-    endif
-20  continue
-30  continue
-    40 end do
+                    else
+                        ASSERT(.false.)
+                    endif
+                    zl(jce4l-1+iad4)=.true.
+                endif
+ 20         continue
+ 30     continue
+ 40 end do
 !
 !     4.5 CES4 -> CHEXTR :
 !     ------------------------------------
 !
-    call dismoi('F', 'NOM_OPTION', chin, 'CHAM_ELEM', ibid,&
-                option, ibid)
-    call dismoi('F', 'NOM_PARAM', chin, 'CHAM_ELEM', ibid,&
-                nompar, ibid)
+    call dismoi('NOM_OPTION', chin, 'CHAM_ELEM', repk=option)
+    call dismoi('NOM_PARAM', chin, 'CHAM_ELEM', repk=nompar)
     call cescel(ces4, ligrel, option, nompar, 'OUI',&
                 nncp, 'G', chextr, 'F', iret)
     ASSERT(nncp.eq.0)

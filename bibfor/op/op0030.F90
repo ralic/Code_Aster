@@ -53,7 +53,7 @@ subroutine op0030()
 #include "asterfort/lgtlgr.h"
 #include "asterfort/wkvect.h"
     integer :: ifm, niv
-    integer :: iret, ibid, noc, ndim, iatype
+    integer :: iret, noc, ndim, iatype
     character(len=4) :: k4bid
     character(len=8) :: noma, nomo, char
     character(len=16) :: k16bid, pheno, oper
@@ -98,8 +98,7 @@ subroutine op0030()
 !
 ! --- VERIFICATION QUE LE MODELE EST DE TYPE MECANIQUE
 !
-    call dismoi('F', 'PHENOMENE', nomo, 'MODELE', ibid,&
-                pheno, iret)
+    call dismoi('PHENOMENE', nomo, 'MODELE', repk=pheno)
 !
 ! --- RECUPERATION DE LA FORMULATION (UNIQUE !)
 !

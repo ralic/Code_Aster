@@ -54,7 +54,7 @@ subroutine op0154()
 #include "asterfort/vdiff.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
-    integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier, ibid
+    integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier
     logical :: bidim
     character(len=8) :: ma, ma2, depla, coutur, mab
     character(len=16) :: kbi1, kbi2, option
@@ -102,8 +102,7 @@ subroutine op0154()
     if (nbocc .ne. 0) then
         call getvtx('DEFORME', 'OPTION', iocc=1, scal=option, nbret=nop)
         call getvid('DEFORME', 'DEPL', iocc=1, scal=depla, nbret=n1)
-        call dismoi('F', 'NOM_MAILLA', depla, 'CHAM_NO', ibid,&
-                    mab, ibid)
+        call dismoi('NOM_MAILLA', depla, 'CHAM_NO', repk=mab)
         if (mab .ne. ma) then
             valk(1)=ma
             valk(2)=mab
@@ -199,7 +198,7 @@ subroutine op0154()
                 endif
             endif
             call rotama(geomi, pt, dir, angl, bidim)
-10      continue
+ 10     continue
     endif
 !
 !
@@ -250,7 +249,7 @@ subroutine op0154()
                 perp(3) = axe1(1)*axe2(2) - axe1(2)*axe2(1)
             endif
             call symema(geomi, perp, pt)
-20      continue
+ 20     continue
     endif
 !
 !

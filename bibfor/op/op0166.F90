@@ -54,7 +54,7 @@ subroutine op0166()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
     integer :: iret
-    integer :: ie, ibid, n1, n2, n3
+    integer :: ie, n1, n2, n3
     integer :: jpjk1
     logical :: isole
     logical :: lnoeu, lelno, lelem, lelga
@@ -116,15 +116,13 @@ subroutine op0166()
         if (n2 .eq. 1) then
             isole=.false.
             cham1=' '
-            call dismoi('F', 'NOM_MAILLA', resuin, 'RESULTAT', ibid,&
-                        nomare, ibid)
+            call dismoi('NOM_MAILLA', resuin, 'RESULTAT', repk=nomare)
             norein = resuin
         else
             isole=.true.
             call getvid(' ', 'CHAM_GD', scal=cham1, nbret=n3)
             norein = cham1(1:8)
-            call dismoi('F', 'NOM_MAILLA', cham1, 'CHAMP', ibid,&
-                        nomare, ibid)
+            call dismoi('NOM_MAILLA', cham1, 'CHAMP', repk=nomare)
             ASSERT(n3.eq.1)
             resuin=' '
         endif
@@ -157,8 +155,7 @@ subroutine op0166()
     if (typcal .eq. '1' .or. typcal .eq. '1ET2') then
         call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
         if (n1 .eq. 1) then
-            call dismoi('F', 'NOM_MAILLA', nomo1, 'MODELE', ibid,&
-                        noma1, ie)
+            call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
             moa1=nomo1
         else
             nomo1=' '
@@ -169,8 +166,7 @@ subroutine op0166()
 !
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 1) then
-            call dismoi('F', 'NOM_MAILLA', nomo2, 'MODELE', ibid,&
-                        noma2, ie)
+            call dismoi('NOM_MAILLA', nomo2, 'MODELE', repk=noma2)
             moa2=nomo2
         else
             nomo2=' '
@@ -194,8 +190,7 @@ subroutine op0166()
 !
         call getvid(' ', 'CHAM_NO_REFE', scal=cnref, nbret=n1)
         if (n1 .eq. 1) then
-            call dismoi('F', 'NOM_MAILLA', cnref, 'CHAMP', ibid,&
-                        noma3, ie)
+            call dismoi('NOM_MAILLA', cnref, 'CHAMP', repk=noma3)
             if (noma3 .ne. noma2) then
                 valk(1)=cnref
                 valk(2)=noma3
@@ -222,8 +217,7 @@ subroutine op0166()
             call utmess('F', 'CALCULEL5_31')
         endif
         if (.not. isole) then
-            call dismoi('F', 'TYPE_RESU', resuin, 'RESULTAT', ibid,&
-                        rtyp, ie)
+            call dismoi('TYPE_RESU', resuin, 'RESULTAT', repk=rtyp)
             if (rtyp .ne. 'EVOL_THER') then
                 call utmess('F', 'CALCULEL5_30')
             endif
@@ -277,8 +271,7 @@ subroutine op0166()
 !        -- POUR POUVOIR PROJETER LES CHAM_ELEM, IL FAUT MODELE_2
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 1) then
-            call dismoi('F', 'NOM_MAILLA', nomo2, 'MODELE', ibid,&
-                        noma2, ie)
+            call dismoi('NOM_MAILLA', nomo2, 'MODELE', repk=noma2)
             if (moa2 .ne. noma2) then
                 valk(1) = moa2
                 valk(2) = noma2
@@ -418,7 +411,7 @@ subroutine op0166()
                     'G', noca, method)
     endif
 !
-9999  continue
+9999 continue
 !
     if (typcal .ne. '2') then
         call detrsd('CORRESP_2_MAILLA', lcorre(1))

@@ -141,7 +141,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20), modlag
     logical :: lassme(20), lcalme(20)
-    integer :: ifm, niv, ibid, iret
+    integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
@@ -337,13 +337,11 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 ! --- VERIFICATION POUR MODE_VIBR QUE LES DEUX MATRICES SONT SYMETRIQUES
 !
     if (mod45 .eq. 'VIBR') then
-        call dismoi('F', 'TYPE_MATRICE', matass, 'MATR_ASSE', ibid,&
-                    syme, iret)
+        call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=syme)
         if (syme .eq. 'NON_SYM') then
             call utmess('F', 'MECANONLINE5_56')
         else
-            call dismoi('F', 'TYPE_MATRICE', matgeo, 'MATR_ASSE', ibid,&
-                        syme, iret)
+            call dismoi('TYPE_MATRICE', matgeo, 'MATR_ASSE', repk=syme)
             if (syme .eq. 'NON_SYM') then
                 call utmess('F', 'MECANONLINE5_56')
             endif

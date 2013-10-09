@@ -50,7 +50,7 @@ subroutine etenc2(cartz, iret)
     integer :: jptma, iret0, ibid
     integer :: noli
     integer :: vali(3)
-    character(len=8) :: ma, kbid
+    character(len=8) :: ma
 !
     call jemarq()
     cart = cartz
@@ -67,10 +67,8 @@ subroutine etenc2(cartz, iret)
 !
 !     1- ALLOCATION DE .PTMA :
 !     ----------------------------------------
-    call dismoi('F', 'NOM_MAILLA', cart, 'CARTE', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
+    call dismoi('NOM_MAILLA', cart, 'CARTE', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
     if (nbma .gt. 0) then
         call jeexin(cart//'.PTMA', ibid)
@@ -91,7 +89,7 @@ subroutine etenc2(cartz, iret)
         if (code .eq. 1) then
             do 10 i = 1, nbma
                 zi(jptma-1+i) = igd
-10          continue
+ 10         continue
             goto 40
         endif
         if ((code.eq.-1)) iret = 1
@@ -103,7 +101,7 @@ subroutine etenc2(cartz, iret)
             do 20 i = 1, nb
                 ii = zi(grpma-1+i)
                 zi(jptma-1+ii) = igd
-20          continue
+ 20         continue
             goto 40
         endif
 !
@@ -122,14 +120,14 @@ subroutine etenc2(cartz, iret)
                         call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
                     endif
                     zi(jptma-1+ii) = igd
-30              continue
+ 30             continue
             else
                 iret = 1
             endif
             goto 40
         endif
-40  end do
-50  continue
+ 40 end do
+ 50 continue
 !
 !
     call jedema()

@@ -23,7 +23,6 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -39,6 +38,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 #include "asterfort/loncar.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xstam1.h"
+!
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
     integer :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: nomo, noma
@@ -81,13 +81,13 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
 !
 !
-    integer :: jma, iret, igeom, jcoord, jconx1, jconx2
+    integer :: jma, igeom, jcoord, jconx1, jconx2
     integer :: ima, itypma, j, idim, ndim
     integer :: nuno, ifm, niv
     integer :: nbnoe, ino, nabs, jdlino, nbnoma
     integer :: jltsv, jlnsv
     real(kind=8) :: hff, diam, lsn, lst, rayon
-    character(len=8) :: typma, k8b
+    character(len=8) :: typma
     character(len=19) :: mai
 !
 !
@@ -117,8 +117,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
     if (ncouch .gt. 0) then
 !
 !       DIMENSINO DU MAILLAGE
-        call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                    k8b, iret)
+        call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !       LEVEL SETS
         call jeveuo(cnslt//'.CNSV', 'L', jltsv)
@@ -139,13 +138,13 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
                 do 402 idim = 1, ndim
                     zr(jcoord-1+ndim*(ino-1)+idim)=zr(igeom-1+3*(nuno-&
                     1)+idim)
-402              continue
-401          continue
+402             continue
+401         continue
 !
             call loncar(ndim, typma, zr(jcoord), diam)
             call jedetr('&&XSTAMA.MACOORD')
             hff = min(hff,diam)
-400      continue
+400     continue
 !
         rayon = hff*ncouch
         write(ifm,*)'LE RAYON D ENRICHISSEMENT EQUIVALENT EST ',rayon
@@ -164,7 +163,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
                     stano(nabs) = stano(nabs) + 2
                 endif
             endif
-410      continue
+410     continue
 !
         call jerazo('&&XENRCH.MAFOND', nmafis, 1)
         call jerazo('&&XENRCH.MAENR1', nbma, 1)
@@ -178,7 +177,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

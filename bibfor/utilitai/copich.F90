@@ -55,7 +55,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, prno3, ch1, ch2
     character(len=24) :: noojb
-    integer :: ibid, iret1, iret2, jad, ier
+    integer ::  iret1, iret2, jad
     integer :: nuprf
     logical :: leco
 !-----------------------------------------------------------------------
@@ -88,8 +88,7 @@ subroutine copich(base, ch1z, ch2z)
 !       --------------------------------------------------------------
         if (base .eq. 'G') then
             call getres(nomu, concep, cmd)
-            call dismoi('F', 'PROF_CHNO', ch2, 'CHAM_NO', ibid,&
-                        prno, ier)
+            call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prno)
 !         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
             if (prno .ne. ' ') then
                 if (prno(1:8) .ne. nomu) then

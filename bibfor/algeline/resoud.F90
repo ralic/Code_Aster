@@ -130,11 +130,9 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     crit19 = criter
 !
     ASSERT(matr19.ne.' ')
-    call dismoi('F', 'MPI_COMPLET', matr19, 'MATR_ASSE', ibid,&
-                kmpic, ibid)
+    call dismoi('MPI_COMPLET', matr19, 'MATR_ASSE', repk=kmpic)
 !
-    if (solv19 .eq. ' ') call dismoi('F', 'SOLVEUR', matr19, 'MATR_ASSE', ibid,&
-                                     solv19, ibid)
+    if (solv19 .eq. ' ') call dismoi('SOLVEUR', matr19, 'MATR_ASSE', repk=solv19)
     call jeveuo(solv19//'.SLVK', 'L', jslvk)
     call jeveuo(solv19//'.SLVR', 'L', jslvr)
     call jeveuo(solv19//'.SLVI', 'L', jslvi)

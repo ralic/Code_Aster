@@ -48,7 +48,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     integer :: jcesd, jcesl, jcesc, jcesv, jcesk, ncmpmx, icmp, numcmp
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, jval, jma, jpo, jsp
     integer :: ival, iret, itrma, itrno, igr, nbtrou, itbma, lma, nbval
-    integer :: jcnsd, jcnsl, jcnsc, jcnsv, nbno, ino, jno, nbn, in, ibid
+    integer :: jcnsd, jcnsl, jcnsc, jcnsv, nbno, ino, jno, nbn, in
     integer :: jcmp, cmpmin, cmpmax
     logical :: ltopo
 !
@@ -79,16 +79,11 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     endif
 !
 !
-    call dismoi('F', 'NOM_MAILLA', celz, 'CHAMP', ibid,&
-                nomma, iret)
-    call dismoi('F', 'NOM_GD', celz, 'CHAMP', ibid,&
-                nogd, iret)
-    call dismoi('F', 'TYPE_SCA', nogd, 'GRANDEUR', ibid,&
-                tsca, iret)
-    call dismoi('F', 'NB_MA_MAILLA', nomma, 'MAILLAGE', nbma,&
-                k8bid, iret)
-    call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NOM_MAILLA', celz, 'CHAMP', repk=nomma)
+    call dismoi('NOM_GD', celz, 'CHAMP', repk=nogd)
+    call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=tsca)
+    call dismoi('NB_MA_MAILLA', nomma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbma)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'C'.or.tsca.eq.'I')
 !
 !
@@ -112,8 +107,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call jeexin(litrou, iret)
             if (iret .ne. 0) call jedetr(litrou)
 !     --- RECUPERATION DU NUMERO DE MAILLE----
-            call dismoi('F', 'NB_MA_MAILLA', nomma, 'MAILLAGE', nbma,&
-                        k8bid, iret)
+            call dismoi('NB_MA_MAILLA', nomma, 'MAILLAGE', repi=nbma)
             call wkvect('&&PRCOCH.INDIC_MAILLE', 'V V I', nbma, itrma)
 !
             do 13 igr = 1, ngroup
@@ -127,14 +121,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     do 14 in = 1, nbn
                         ima = zi(iad-1+in)
                         zi(itrma-1+ima) = 1
-14                  continue
+ 14                 continue
                 endif
-13          continue
+ 13         continue
 !
             nbtrou = 0
             do 100 ima = 1, nbma
                 if (zi(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
-100          continue
+100         continue
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_4')
             endif
@@ -148,8 +142,8 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     lma = lma + 1
                     zi(itbma-1+lma) = ima
                 endif
-110          continue
-            call cesred(cesz,nbtrou,zi(itbma),0,[k8bid],&
+110         continue
+            call cesred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
             call jedetr('&&PRCOCH.INDIC_MAILLE')
         endif
@@ -168,9 +162,9 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 numcmp=icmp
                 goto 6
             endif
- 5      continue
+  5     continue
 !
- 6      continue
+  6     continue
 !
 ! -- 3EME ETAPE : RECUPERATION DE LA LONGUEUR DU VECTEUR DE VALEURS
 !                   UTILES - ON GARDE QUE LES VALEURS DE LA CMP REMPLIES
@@ -190,7 +184,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, numcmp, iad)
                     if (iad .gt. 0) nbval=nbval+1
-10              continue
+ 10             continue
 !
 !
         if (nbval .eq. 0) then
@@ -237,7 +231,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                             zi(jsp-1+ival)=isp
                         endif
                     endif
-20              continue
+ 20             continue
 !
 !
 !
@@ -258,8 +252,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call jeexin(litrou, iret)
             if (iret .ne. 0) call jedetr(litrou)
 !     --- RECUPERATION DU NUMERO DE NOEUDS----
-            call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbno,&
-                        k8bid, iret)
+            call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
             call wkvect('&&PRCOCH.INDIC_NOEUD', 'V V I', nbno, itrno)
 !
             do 130 igr = 1, ngroup
@@ -273,14 +266,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     do 140 in = 1, nbn
                         ino = zi(iad-1+in)
                         zi(itrno-1+ino) = 1
-140                  continue
+140                 continue
                 endif
-130          continue
+130         continue
 !
             nbtrou = 0
             do 1000 ino = 1, nbno
                 if (zi(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
-1000          continue
+1000         continue
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_5')
             endif
@@ -294,7 +287,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     lma = lma + 1
                     zi(itbma-1+lma) = ino
                 endif
-1100          continue
+1100         continue
             call cnsred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
             call jedetr('&&PRCOCH.INDIC_NOEUD')
@@ -318,12 +311,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 numcmp=icmp
                 goto 60
             endif
-50      continue
+ 50     continue
 !
 !       SI LA COMPOSANTE DEMANDEE N EXISTE PAS, ERREUR FATALE
         call utmess('F', 'CHAMPS_3', sk=nocmp)
 !
-60      continue
+ 60     continue
 !
 !
 ! -- 3EME ETAPE : RECUPERATION DE LA LONGUEUR DU VECTEUR DE VALEURS
@@ -337,12 +330,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             do 70 icmp = 1, ncmpmx
                 do 71 ino = 1, nbno
                     if (zl(jcnsl-1+(ino-1)*ncmpmx+icmp)) nbval=nbval+ 1
-71              continue
-70          continue
+ 71             continue
+ 70         continue
         else
             do 72 ino = 1, nbno
                 if (zl(jcnsl-1+(ino-1)*ncmpmx+numcmp)) nbval=nbval+1
-72          continue
+ 72         continue
         endif
 !
 !
@@ -393,14 +386,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                         if (numcmp .lt. 0) zk8(jcmp-1+ival)=zk8(jcnsc-1+ icmp)
                     endif
                 endif
-201          continue
-200      continue
+201         continue
+200     continue
 !
     else
         ASSERT(.false.)
     endif
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

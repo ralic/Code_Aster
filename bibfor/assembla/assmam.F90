@@ -117,7 +117,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: jposd1, jposd2, jtmp2, lgtmp2
     integer :: ibid, iconx1, iconx2, idbgav
     integer :: jlres, jprn1, jprn2, jresl, jrsvi
-    integer :: iel, ier, ierd, ifm, igr
+    integer :: iel, ier, ifm, igr
     integer :: ilima, ilimat, ilimo, ilinu
     integer :: imat, jnumsd, iresu
     integer :: iret, itbloc
@@ -156,24 +156,16 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     nudev=nu
     if (dbg) call cheksd(nudev, 'SD_NUME_DDL', iret)
 !
-    call dismoi('F', 'NOM_MODELE', nudev, 'NUME_DDL', ibid,&
-                mo, ierd)
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NOM_MAILLA', nudev, 'NUME_DDL', ibid,&
-                ma2, ierd)
+    call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma2)
     ASSERT(ma.eq.ma2)
-    call dismoi('F', 'NB_NO_SS_MAX', ma, 'MAILLAGE', nbnoss,&
-                k8bid, ierd)
-    call dismoi('F', 'NOM_GD', nudev, 'NUME_DDL', ibid,&
-                nogdco, ierd)
-    call dismoi('F', 'NOM_GD_SI', nogdco, 'GRANDEUR', ibid,&
-                nogdsi, ierd)
-    call dismoi('F', 'NB_CMP_MAX', nogdsi, 'GRANDEUR', nmxcmp,&
-                k8bid, ierd)
+    call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
+    call dismoi('NOM_GD', nudev, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
+    call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
     ncmp=nmxcmp
-    call dismoi('F', 'NUM_GD_SI', nogdsi, 'GRANDEUR', nugd,&
-                k8bid, ierd)
+    call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
     nec=nbec(nugd)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
@@ -456,10 +448,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     do imat = 1, nbmat
         c1=licoef(imat)
         matel=zk24(ilimat+imat-1)(1:19)
-        call dismoi('F', 'NOM_MODELE', matel, 'MATR_ELEM', ibid,&
-                    mo2, ierd)
-        call dismoi('F', 'SUR_OPTION', matel, 'MATR_ELEM', ibid,&
-                    optio, ierd)
+        call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=mo2)
+        call dismoi('SUR_OPTION', matel, 'MATR_ELEM', repk=optio)
 !
         if (imat .eq. 1) then
             optio2=optio
@@ -495,8 +485,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !
 !                   -- CALCUL DE KAMPIC :
-            call dismoi('F', 'MPI_COMPLET', resu, 'RESUELEM', ibid,&
-                        kempic, ierd)
+            call dismoi('MPI_COMPLET', resu, 'RESUELEM', repk=kempic)
             if (kempic .eq. 'NON') then
                 ASSERT(ldist)
                 kampic='NON'
@@ -513,8 +502,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call jeveuo(resu//'.NOLI', 'L', iad)
             ligre1=zk24(iad)(1:19)
 !
-            call dismoi('F', 'EXI_VF', ligre1, 'LIGREL', ibid,&
-                        exivf, ierd)
+            call dismoi('EXI_VF', ligre1, 'LIGREL', repk=exivf)
             if (exivf .eq. 'OUI') then
                 ASSERT(.not.lmasym)
                 call jeveuo(ligre1//'.REPE', 'L', jrepe)
@@ -529,12 +517,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call jenonu(jexnom(nu14//'.NUME.LILI', ligre1), ilinu)
 !
 !
-            call dismoi('F', 'TYPE_SCA', resu, 'RESUELEM', ibid,&
-                        typsca, ierd)
+            call dismoi('TYPE_SCA', resu, 'RESUELEM', repk=typsca)
             ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
             tt(1:1)=typsca
-            call dismoi('F', 'TYPE_MATRICE', resu, 'RESUELEM', ibid,&
-                        symel, ierd)
+            call dismoi('TYPE_MATRICE', resu, 'RESUELEM', repk=symel)
             ASSERT(symel(1:1).eq.'S' .or. symel(1:1) .eq.'N')
             lmesym=(symel(1:1).eq.'S')
             if (lmasym) ASSERT(lmesym)

@@ -70,9 +70,8 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     logical :: exicar
 !
-    integer :: iret1, iret2, ibid, kparin
+    integer :: iret1, iret2, kparin
     integer :: ipara, inume, nbsp
-    character(len=2) :: kbid
     character(len=8) :: k8b, noma, curpar, carae2, parain
     character(len=16) :: concep, nomcmd
     character(len=19) :: compor, compo2, canbva
@@ -84,8 +83,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
     codret=0
 !
     call getres(k8b, concep, nomcmd)
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret1)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 !
     call mecara(carael, exicar, chcara)
@@ -93,7 +91,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
         do 10 ipara = 1, nbpain
             curpar=lipain(ipara)
             if (curpar .eq. 'PCACOQU') lichin(ipara)=chcara(7)
-10      continue
+ 10     continue
     endif
 !
     if (option .eq. 'SIEQ_ELGA') then
@@ -124,7 +122,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
         do 20 ipara = 1, nbpain
             curpar=lipain(ipara)
             if (curpar .eq. 'PCOMPOR') compor=lichin(ipara)
-20      continue
+ 20     continue
         call exisd('CARTE', compor, iret2)
         if (iret2 .ne. 1) then
             call utmess('A', 'CALCULEL2_86')
@@ -183,8 +181,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
             call jeexin(lichin(kparin)(1:19)//'.CELD', iret1)
             nbsp=1
             if (iret1 .ne. 0) then
-                call dismoi('F', 'MXNBSP', lichin(kparin), 'CHAM_ELEM', nbsp,&
-                            kbid, ibid)
+                call dismoi('MXNBSP', lichin(kparin), 'CHAM_ELEM', repi=nbsp)
             endif
             if (nbsp .le. 1) carae2=' '
         endif
@@ -198,7 +195,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
     endif
 !
 !
-30  continue
+ 30 continue
     call jedema()
 !
 end subroutine

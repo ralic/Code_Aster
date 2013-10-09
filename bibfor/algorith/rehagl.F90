@@ -78,7 +78,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iar, iarchi, ibid, ich
-    integer :: idep, idresu, ieq, ier, ire1
+    integer :: idep, idresu, ieq, ire1
     integer :: ire2, ire3, iret, iretou, j, jfreq, jnume
     integer :: k, k1, l, ldnew, lfreq, llchab, llind
     integer :: llinsk, llnequ, llnueq, llors, llprs, llref2
@@ -179,7 +179,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 ! ----        SI LE CHAMP N'EST PAS DEPL,VITE OU ACCE ON PLANTE
                 call utmess('F', 'ALGORITH10_16')
             endif
-69      continue
+ 69     continue
     endif
 !     NOMBRE DE CHAMPS SYMBOLIQUES CALCULES.
 !     ON S'ASSURE QUE LEUR NOMBRE EST NON NUL.
@@ -190,8 +190,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     endif
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
-    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid,&
-                k24bid, iret)
+    call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=k24bid)
     numgen(1:14)=k24bid(1:14)
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
@@ -213,15 +212,14 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
         zr(ltrotz+i-1) = zr(llrot)
         zr(ltroty+i-1) = zr(llrot+1)
         zr(ltrotx+i-1) = zr(llrot+2)
-15  continue
+ 15 continue
 !
 ! --- CREATION DU PROF-CHAMNO
     call genugl(profno, indirf, modgen, mailsk)
     call jelira(profno//'.NUEQ', 'LONMAX', neq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 ! --- INFORMATIONS POUR CREATION DES CHAMNO A PARTIR DES .REFE
     crefe(1) = mailsk
@@ -266,7 +264,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
         call jeveuo(sst, 'L', lsst)
         do 10 i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
-10      continue
+ 10     continue
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V C', neqet, lmoet)
     endif
 !
@@ -302,8 +300,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                             zc(lmoet+i1-1)=zc(lmoet+i1-1)+ zr(lmapro+(&
                             k1-1)*neqet+i1-1)* zc(idresu+k1-1+(zi(&
                             jnume+i)-1)*neqred)
-33                      continue
-22                  continue
+ 33                     continue
+ 22                 continue
                 endif
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
@@ -333,26 +331,24 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                             ieq=0
                             do 43 i1 = 1, k-1
                                 ieq=ieq+zi(lsilia+i1-1)
-43                          continue
+ 43                         continue
                         else
                             numsst=k
 !  RECUPERATION DU NUMERO TARDIF DE LA SST
                             nutars = 0
                             do 44 j = 1, nbsst
                                 if (zi(llors+j-1) .eq. numsst) nutars=j
-44                          continue
+ 44                         continue
                             ieq=zi(llprs+(nutars-1)*2)
                         endif
                         k8bid = '  '
                         call mgutdm(modgen, k8bid, numsst, 'NOM_BASE_MODALE', ibid,&
                                     basmod)
-                        call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbbas,&
-                                    k8bid, ier)
+                        call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
                         k8bid = '  '
                         call mgutdm(modgen, k8bid, numsst, 'NOM_NUME_DDL', ibid,&
                                     numddl)
-                        call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqs,&
-                                    k8bid, iret)
+                        call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                         call wkvect('&&'//pgc//'.TRAV', 'V V C', neqs, ltvec)
 !
 ! --- BOUCLE SUR LES MODES PROPRES DE LA BASE
@@ -373,8 +369,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                             do 60 l = 1, neqs
                                 zc(ltvec+l-1)=zc(ltvec+l-1)+zr(llchab+&
                                 l-1)*zc(iad)
-60                          continue
-58                      continue
+ 60                         continue
+ 58                     continue
                         call jeveuo(jexnum(indirf, numsst), 'L', llind)
                         call jelira(jexnum(indirf, numsst), 'LONMAX', nbcou)
                         nbcou = nbcou/2
@@ -382,11 +378,11 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                             idep = zi(llind+(l-1)*2)
                             iar = zi(llind+(l-1)*2+1)
                             zc(ldnew+iar-1) = zc(ltvec+idep-1)
-65                      continue
+ 65                     continue
                         call jedetr('&&'//pgc//'.TRAV')
                     endif
 !
-54              continue
+ 54             continue
                 call rsnoch(nomres, chmp(ich), iarchi)
 !
 ! --- ROTATION DU CHAMP AUX NOEUDS
@@ -398,11 +394,11 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 call rotchc(profno, zc(ldnew), zr(ltrotx), nbsst, zi( llinsk),&
                             nbnot, nbcmp, 1)
 !
-52          continue
+ 52         continue
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
-50      continue
+ 50     continue
 !
     endif
 !
@@ -416,7 +412,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
     goto 9999
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

@@ -74,7 +74,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     integer :: ialcha, iamail, iancmp, ianmcr, ianueq, ianulo, iaprol
     integer :: iapsdl, iasssa, ichar, icmp, iconx1, iconx2, idnequ
     integer :: idprn1, idprn2, idresl, idveds, idverf, idvref, iec
-    integer :: ier, ierd, il, ilim, ilimnu, ilivec, ima
+    integer ::  ierd, il, ilim, ilimnu, ilivec, ima
     integer :: inold, iret, jec, k1, lgncmp, n1, nbchar
     integer :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
     integer :: nddl1, nequa, nm, nmxcmp, nnoe, nugd
@@ -82,13 +82,13 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     parameter(nbecmx=10)
 !
     character(len=1) :: bas
-    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas, kbid
+    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas
     character(len=14) :: nudev
     character(len=19) :: vecas, vprof
     character(len=24) :: knueq, kmaila, k24prn
     character(len=24) :: kvelil, kveref, kvedsc, knequa, kvale
     integer :: icodla(nbecmx), icodge(nbecmx)
-    integer :: admodl, lcmodl, ibid, ifm, niv
+    integer :: admodl, lcmodl, ifm, niv
     integer :: jfonct
     real(kind=8) :: rcoef
 !
@@ -147,26 +147,19 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     endif
 !
 !
-    call dismoi('F', 'NOM_MODELE', nudev, 'NUME_DDL', ibid,&
-                mo, ierd)
-    call dismoi('F', 'NOM_MAILLA', nudev, 'NUME_DDL', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_NO_SS_MAX', ma, 'MAILLAGE', nbnoss,&
-                kbid, ierd)
+    call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma)
+    call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
 !
 !     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
     nbnoss=max(nbnoss,100)
 !     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
     call wkvect('&&ASSVEC.NUMLOC', 'V V I', 3*nbnoss, ianulo)
 !
-    call dismoi('F', 'NOM_GD', nudev, 'NUME_DDL', ibid,&
-                nogdco, ierd)
-    call dismoi('F', 'NOM_GD_SI', nogdco, 'GRANDEUR', ibid,&
-                nogdsi, ierd)
-    call dismoi('F', 'NB_CMP_MAX', nogdsi, 'GRANDEUR', nmxcmp,&
-                kbid, ierd)
-    call dismoi('F', 'NUM_GD_SI', nogdsi, 'GRANDEUR', nugd,&
-                kbid, ierd)
+    call dismoi('NOM_GD', nudev, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
+    call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
+    call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
     nec=nbec(nugd)
     ncmp=nmxcmp
 !
@@ -178,8 +171,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 !   -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
     call wkvect('&&ASSVEC.POSDDL', 'V V I', nmxcmp, iapsdl)
 !
-    call dismoi('F', 'NB_NO_MAILLA', mo, 'MODELE', nm,&
-                kbid, ier)
+    call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
 !
     call jeexin(ma//'.NOMACR', iret)
     if (iret .gt. 0) then
@@ -237,26 +229,21 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     call jeveuo(kvale, 'E', iadval)
 !
 !
-    call dismoi('F', 'NOM_MODELE', vecel, 'VECT_ELEM', ibid,&
-                mo2, ierd)
+    call dismoi('NOM_MODELE', vecel, 'VECT_ELEM', repk=mo2)
     if (mo2 .ne. mo) then
         call utmess('F', 'ASSEMBLA_5')
     endif
 !
-    call dismoi('F', 'EXI_ELEM', mo, 'MODELE', ibid,&
-                exiele, ierd)
-    call dismoi('F', 'NB_SS_ACTI', vecel, 'VECT_ELEM', nbssa,&
-                kbid, ierd)
+    call dismoi('EXI_ELEM', mo, 'MODELE', repk=exiele)
+    call dismoi('NB_SS_ACTI', vecel, 'VECT_ELEM', repi=nbssa)
 !
 !
 !   -- TRAITEMENT DES SOUS-STRUCTURES
 !   ----------------------------------------------------------
     if (nbssa .gt. 0) then
         nomcas=' '
-        call dismoi('F', 'NB_SM_MAILLA', mo, 'MODELE', nbsma,&
-                    kbid, ierd)
-        call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                    ma, ierd)
+        call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
+        call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
         call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
         call ssvalv('DEBUT', nomcas, mo, ma, 0,&
                     idresl, ncmpel)
@@ -281,8 +268,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
                 call ssvalv(' ', nomcas, mo, ma, ima,&
                             idresl, ncmpel)
                 nomacr=zk8(ianmcr-1+ima)
-                call dismoi('F', 'NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', ibid,&
-                            num2, ierd)
+                call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
                 call jeveuo(nomacr//'.CONX', 'L', iaconx)
                 call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprol)
                 il=0

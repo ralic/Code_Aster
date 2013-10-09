@@ -59,7 +59,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 ! IN/OUT  : LIGN2  : DEUXIEME LIGNE D'IMPRESSION DU RESULTAT
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, ibid, neq, i, j, k, iret1, valii, icmp
+    integer :: vali, neq, i, j, k, iret1, valii, icmp
     integer :: ncmp, vnocmp, jcsd, jcsc, jcsv, jcsl, jcmp, ind
     integer :: nl1, nl11, nl2, nl22
     real(kind=8) :: valr, valrr
@@ -80,8 +80,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 !
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
-    call dismoi('C', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
-                tych, iret1)
+    call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych, arret='C',&
+                ier=iret1)
 !
     ASSERT(nbcmp.eq.1)
 !
@@ -101,9 +101,9 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     zi(jcmp-1+i) = j
                     goto 10
                 endif
-12          continue
+ 12         continue
             call utmess('F', 'CALCULEL6_88', sk=noddl)
-10      continue
+ 10     continue
         call jelira(cnsinr//'.CNSV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CNSV', 'LONMAX', neq)
         neq = neq / ncmp
@@ -132,9 +132,9 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     zi(jcmp-1+i) = j
                     goto 20
                 endif
-22          continue
+ 22         continue
             call utmess('F', 'CALCULEL6_88', sk=noddl)
-20      continue
+ 20     continue
         call jelira(cnsinr//'.CESV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CESV', 'LONMAX', neq)
         neq = neq / ncmp
@@ -165,8 +165,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         vali = vali + abs( zi(jcsv-1+ind) )
                     endif
-100              continue
-102          continue
+100             continue
+102         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -180,8 +180,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         vali = vali + zi(jcsv-1+ind)
                     endif
-110              continue
-112          continue
+110             continue
+112         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -195,14 +195,14 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         valii = zi(jcsv-1+ind)
                         goto 124
                     endif
-120              continue
-124              continue
+120             continue
+124             continue
                 do 126 k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valii = max( valii , zi(jcsv-1+ind) )
                     endif
-126              continue
+126             continue
                 if (i .eq. 1) then
                     vali=valii
                     icmp=1
@@ -212,7 +212,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-122          continue
+122         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -227,15 +227,15 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         valii = zi(jcsv-1+ind)
                         goto 134
                     endif
-130              continue
-134              continue
+130             continue
+134             continue
                 do 136 k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valii = min( valii , zi(jcsv-1+ind) )
                         icmp=vnocmp
                     endif
-136              continue
+136             continue
                 if (i .eq. 1) then
                     vali=valii
                     icmp=1
@@ -245,7 +245,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-132          continue
+132         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -266,8 +266,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         valr = valr + abs( zr(jcsv-1+ind) )
                     endif
-200              continue
-202          continue
+200             continue
+202         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -280,8 +280,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         valr = valr + zr(jcsv-1+ind)
                     endif
-210              continue
-212          continue
+210             continue
+212         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -294,14 +294,14 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         valrr = zr(jcsv-1+ind)
                         goto 224
                     endif
-220              continue
-224              continue
+220             continue
+224             continue
                 do 226 k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = max( valrr , zr(jcsv-1+ind) )
                     endif
-226              continue
+226             continue
                 if (i .eq. 1) then
                     valr=valrr
                     icmp=1
@@ -311,7 +311,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-222          continue
+222         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -326,14 +326,14 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         valrr = zr(jcsv-1+ind)
                         goto 234
                     endif
-230              continue
-234              continue
+230             continue
+234             continue
                 do 236 k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = min( valrr , zr(jcsv-1+ind) )
                     endif
-236              continue
+236             continue
                 if (i .eq. 1) then
                     valr=valrr
                     icmp=1
@@ -343,7 +343,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-232          continue
+232         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -364,8 +364,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         valr = valr + abs( zc(jcsv-1+ind) )
                     endif
-300              continue
-302          continue
+300             continue
+302         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -378,8 +378,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         valc = valc + zc(jcsv-1+ind)
                     endif
-310              continue
-312          continue
+310             continue
+312         continue
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -420,7 +420,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                 epsi, crit, ific, llab, ssigne)
 !
     call detrsd('CHAM_NO_S', cnsinr)
-9999  continue
+9999 continue
     call jedetr('&&UTEST4_CMP')
 !
     1160 format(1x,a80,a)

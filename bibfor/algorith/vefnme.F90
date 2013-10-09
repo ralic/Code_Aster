@@ -1,6 +1,6 @@
-subroutine vefnme(option, base  , model , mate      , carele  ,&
-                  compor, partps, nh    , ligrelz   , varicomz,&
-                  sigmaz, strxz , deplz , depl_incrz, vecelz)
+subroutine vefnme(option, base, model, mate, carele,&
+                  compor, partps, nh, ligrelz, varicomz,&
+                  sigmaz, strxz, deplz, depl_incrz, vecelz)
 !
     implicit none
 !
@@ -96,8 +96,7 @@ subroutine vefnme(option, base  , model , mate      , carele  ,&
     character(len=16) :: optio2
     logical :: lbid
     integer :: ibid, iret
-    real(kind=8) :: instm, instp, rbid
-    complex(kind=8) :: cbid
+    real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno
     character(len=19) :: sigma, varicom, strx
@@ -112,12 +111,12 @@ subroutine vefnme(option, base  , model , mate      , carele  ,&
 !
 ! - Initializations
 !
-    sigma     = sigmaz
-    varicom   = varicomz
-    strx      = strxz
-    depl      = deplz
+    sigma = sigmaz
+    varicom = varicomz
+    strx = strxz
+    depl = deplz
     depl_incr = depl_incrz
-    ligrel    = ligrelz
+    ligrel = ligrelz
     newnom = '.0000000'
     numhar = '&&VEFNME.NUME_HARM'
     tpsmoi = '&&VEFNME.CH_INSTAM'
@@ -134,11 +133,9 @@ subroutine vefnme(option, base  , model , mate      , carele  ,&
 ! - Get mesh
 !
     if (depl .ne. ' ') then
-        call dismoi('F', 'NOM_MAILLA', depl , 'CHAM_NO', ibid,&
-                    mesh, iret)
+        call dismoi('NOM_MAILLA', depl, 'CHAM_NO', repk=mesh)
     else if (sigma.ne.' ') then
-        call dismoi('F', 'NOM_MAILLA', sigma, 'CHAM_ELEM', ibid,&
-                    mesh, iret)
+        call dismoi('NOM_MAILLA', sigma, 'CHAM_ELEM', repk=mesh)
     else
         ASSERT(.false.)
     endif
@@ -230,9 +227,9 @@ subroutine vefnme(option, base  , model , mate      , carele  ,&
         loncha = model(1:8)//'.TOPOSE.LON'
         pmilto = model(1:8)//'.TOPOSE.PMI'
         basloc = model(1:8)//'.BASLOC'
-        lsn    = model(1:8)//'.LNNO'
-        lst    = model(1:8)//'.LTNO'
-        stano  = model(1:8)//'.STNO'
+        lsn = model(1:8)//'.LNNO'
+        lst = model(1:8)//'.LTNO'
+        stano = model(1:8)//'.STNO'
         fissno = model(1:8)//'.FISSNO'
     else
         pintto = '&&VEFNME.PINTTO.BID'

@@ -57,7 +57,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef
-    integer :: idebli, iequa, ierd, ifinli, ilig, ind, ival
+    integer :: idebli, iequa, ifinli, ilig, ind, ival
     integer :: jrefa, jsmdi, jsmhc, kin, lddl, neq
 !
     real(kind=8) :: coef, zero
@@ -95,8 +95,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     valmr = matres//'.VALM'
 !
 !     --- NOM DE LA NUMEROTATION ASSOCIEE A LA MATRICE ---
-    call dismoi('F', 'NOM_NUME_DDL', noma, 'MATR_ASSE', ibid,&
-                nume, ierd)
+    call dismoi('NOM_NUME_DDL', noma, 'MATR_ASSE', repk=nume)
 !
 !
 !     --- TOUTES COMPOSANTES A ZERO SAUF LES LAGRANGES ---
@@ -106,7 +105,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
                 zi(lddl))
     do 10 i = 0, neq - 1
         zi(lddl+i) = 1 - zi(lddl+i)
-10  end do
+ 10 end do
 !
 !
 !
@@ -118,16 +117,16 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     if (typmat(1:1) .eq. 'R') then
         do 20 ival = iatres, iatres + lgbloc - 1
             zr(ival) = zero
-20      continue
+ 20     continue
         if (.not.matsym) then
             do 30 ival = iatrei, iatrei + lgbloc - 1
                 zr(ival) = zero
-30          continue
+ 30         continue
         endif
     else
         do 40 ival = iatres, iatres + lgbloc - 1
             zc(ival) = czero
-40      continue
+ 40     continue
     endif
 !
     call jeveuo(jexnum(valm, 1), 'L', iatmat)
@@ -146,9 +145,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
                 ilig=zi4(jsmhc-1+kin)
                 icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)),1)
                 zr(iatres+kin-1) = zr(iatres+kin-1) + zr(iatmat+kin-1) *icoef*coef
-110          continue
+110         continue
             idebli = zi(jsmdi+iequa-1) + 1
-120      continue
+120     continue
 !
 !
     else if (typmat(1:1).eq.'C') then
@@ -161,9 +160,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
                 ilig=zi4(jsmhc-1+kin)
                 icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)),1)
                 zc(iatres+kin-1) = zc(iatres+kin-1) + zc(iatmat+kin-1) *icoef*ccoef
-150          continue
+150         continue
             idebli = zi(jsmdi+iequa-1) + 1
-160      continue
+160     continue
     endif
 !
 !

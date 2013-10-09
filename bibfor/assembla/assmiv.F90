@@ -87,10 +87,10 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! ---------------------------------------------------------------------
 !     VARIABLES LOCALES
 ! ---------------------------------------------------------------------
-    integer :: rang, nbproc, iret, ifm, niv, ibid
+    integer :: rang, nbproc, iret, ifm, niv
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
-    character(len=8) :: kbid, partit
+    character(len=8) ::  partit
     character(len=14) :: nudev
     character(len=19) :: vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
@@ -107,8 +107,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iad1, iadlie, iadnem, ianueq
     integer :: ianulo, iapsdl, iconx1, iconx2, iddesc, idlres, idnequ
-    integer :: idprn1, idprn2, idveds, idverf, idvref, iel, ier
-    integer :: ierd, igr, il, ilim, ilimnu, ilinu, ilive
+    integer :: idprn1, idprn2, idveds, idverf, idvref, iel
+    integer ::  igr, il, ilim, ilimnu, ilinu, ilive
     integer :: ilivec, imat, iresu, jnumsd, jprtk, jresl, jvale
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
     integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe
@@ -212,26 +212,19 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     knulil=nudev//'.NUME.LILI'
     call jeveuo(nudev//'.NUME.NUEQ', 'L', ianueq)
 !
-    call dismoi('F', 'NOM_MODELE', nudev, 'NUME_DDL', ibid,&
-                mo, ierd)
-    call dismoi('F', 'NOM_MAILLA', nudev, 'NUME_DDL', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_NO_SS_MAX', ma, 'MAILLAGE', nbnoss,&
-                kbid, ierd)
+    call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma)
+    call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
 !
 !     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
     nbnoss=max(nbnoss,100)
 !     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
     call wkvect('&&ASSMIV.NUMLOC', 'V V I', 3*nbnoss, ianulo)
 !
-    call dismoi('F', 'NOM_GD', nudev, 'NUME_DDL', ibid,&
-                nogdco, ierd)
-    call dismoi('F', 'NOM_GD_SI', nogdco, 'GRANDEUR', ibid,&
-                nogdsi, ierd)
-    call dismoi('F', 'NB_CMP_MAX', nogdsi, 'GRANDEUR', nmxcmp,&
-                kbid, ierd)
-    call dismoi('F', 'NUM_GD_SI', nogdsi, 'GRANDEUR', nugd,&
-                kbid, ierd)
+    call dismoi('NOM_GD', nudev, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
+    call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
+    call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
     nec=nbec(nugd)
     ncmp=nmxcmp
 !
@@ -239,8 +232,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !     -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
     call wkvect('&&ASSMIV.POSDDL', 'V V I', nmxcmp, iapsdl)
 !
-    call dismoi('F', 'NB_NO_MAILLA', mo, 'MODELE', nm,&
-                kbid, ier)
+    call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
 !
 !
 ! ---  RECUPERATION DE PRNO
@@ -273,8 +265,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
         rcoef=licoef(imat)
         vecel=zk24(ilivec+imat-1)(1:19)
 !
-        call dismoi('F', 'NOM_MODELE', vecel, 'VECT_ELEM', ibid,&
-                    mo2, ierd)
+        call dismoi('NOM_MODELE', vecel, 'VECT_ELEM', repk=mo2)
         if (mo2 .ne. mo) then
             call utmess('F', 'ASSEMBLA_5')
         endif

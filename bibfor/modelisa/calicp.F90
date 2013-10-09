@@ -66,7 +66,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     character(len=2) :: type_lagr
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
-    integer :: iocc, i_error, icoupl, ier
+    integer :: iocc, i_error, icoupl
     integer :: ndim, nliai, n1, nbec
     character(len=8) :: cmp_name, nomg
     integer :: jnom, jprnm, nb_cmp
@@ -107,8 +107,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 ! - Access to model
 !
     model = ligrmo(1:8)
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
-                k8dummy, ier)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'CHARGES2_6')
@@ -119,8 +118,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k8dummy)
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8dummy, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
@@ -225,7 +223,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
     call jedetr(list_pair)
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

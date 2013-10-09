@@ -2,7 +2,6 @@ subroutine xoripe(modele)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -26,6 +25,7 @@ subroutine xoripe(modele)
 #include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     character(len=8) :: modele
 !
 !
@@ -56,7 +56,7 @@ subroutine xoripe(modele)
 !
     real(kind=8) :: gbo(3), gpr(3), next(3), norme, lsn
     real(kind=8) :: co(3, 3), ab(3), ac(3), n2d(3), a(3), b(3), c(3)
-    integer :: ima, nbma, j, ier, kk, i, jmofis, ifis, jnfis, nfis, iad2
+    integer :: ima, nbma, j, kk, i, jmofis, ifis, jnfis, nfis, iad2
     integer :: jmail, nbmail, iret, jcoor, jm3d, ibid, jvecno
     integer :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
     integer :: jconx1, jconx2, ino, nuno, jtypma, jtmdim
@@ -65,7 +65,7 @@ subroutine xoripe(modele)
     integer :: s1, s2, jgrp, nmaenr, jlsnv, jlsnd, jlsnl
     integer :: nsignp, nsignm, nsignz, ihe, he, itypma
     integer :: ifiss, nfiss, mailvo(1)
-    character(len=8) :: noma, k8bid, typbo, fiss
+    character(len=8) :: noma, typbo, fiss
     character(len=2) :: kdim
     character(len=19) :: ligrel, chs(5), chlsn
     character(len=24) :: grmape, nomob, vecnor, grp(3)
@@ -89,12 +89,9 @@ subroutine xoripe(modele)
     call jeveuo(modele//'.FISS', 'L', jmofis)
 !
 !     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ier)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, ibid)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)

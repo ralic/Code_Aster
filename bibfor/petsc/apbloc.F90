@@ -47,8 +47,7 @@ subroutine apbloc(matass, solveu, tbloc)
 !----------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'NB_DDL_NOEUD', matass, 'MATR_ASSE', tbloc,&
-                kbid, ierd)
+    call dismoi('NB_DDL_NOEUD', matass, 'MATR_ASSE', repi=tbloc)
 !
 !     -- PRECONDITIONNEUR UTILISE
     call jeveuo(solveu//'.SLVK', 'L', jslvk)

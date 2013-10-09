@@ -43,7 +43,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: n, ibid, iret
+    integer :: n
     character(len=8) :: repons
 !
 ! ----------------------------------------------------------------------
@@ -60,8 +60,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
     call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n)
     if (nomo .ne. ' ') then
-        call dismoi('F', 'BESOIN_MATER', nomo, 'MODELE', ibid,&
-                    repons, iret)
+        call dismoi('BESOIN_MATER', nomo, 'MODELE', repk=repons)
         if ((n.eq.0) .and. (repons(1:3).eq.'OUI') .and. (option(1:1) .eq.'O')) then
             call utmess('A', 'CALCULEL3_40')
         endif
@@ -79,8 +78,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
     call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n)
     if (nomo .ne. ' ') then
-        call dismoi('F', 'EXI_RDM', nomo, 'MODELE', ibid,&
-                    repons, iret)
+        call dismoi('EXI_RDM', nomo, 'MODELE', repk=repons)
         if ((n.eq.0) .and. (repons(1:3).eq.'OUI') .and. (option(1:1) .eq.'O')) then
             call utmess('A', 'CALCULEL3_39')
         endif

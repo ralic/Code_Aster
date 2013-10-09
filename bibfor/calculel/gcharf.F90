@@ -2,7 +2,6 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                   charg)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -21,6 +20,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: char1, char2, charg
     integer :: ichar
     logical :: fonc1, fonc2
@@ -54,7 +54,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, jzcar1, nbma, p1, p2, nmazo, jdes1, jdes2, jdes
+    integer ::  jzcar1, nbma, p1, p2, nmazo, jdes1, jdes2, jdes
     integer :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
     integer :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
     integer :: k, jval1, icmp, jval2, kk
@@ -76,8 +76,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     call jeveuo(char1//'.NOMA', 'L', jma)
     ma=zk8(jma)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                k8b, iret)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
 ! --  1.1 LORS D'UNE COMBINAISON DE CHARGEMENT 'SCALAIRE'/'FONCTION'
 !         LE CHARGEMENT 'SCALAIRE' EST TRANSFORME EN CHARGEMENT
@@ -112,7 +111,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     do 5 ima = 1, nbma
         zi(jzcar1+ima-1)=0
         zi(jzcar2+ima-1)=0
- 5  end do
+  5 end do
 !
     call jeveuo(jexatr(charg1//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg1//'.LIMA', 'L', p1)
@@ -126,8 +125,8 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
             numa=zi(p1+zi(p2+izo-1)-1+ima-1)
             zi(jzcar1+numa-1)=izo
             call jenuno(jexnum(ma//'.NOMMAI', numa), k8b)
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
     call jeveuo(jexatr(charg2//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg2//'.LIMA', 'L', p1)
@@ -141,8 +140,8 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
             numa=zi(p1+zi(p2+izo-1)-1+ima-1)
             zi(jzcar2+numa-1)=izo
             call jenuno(jexnum(ma//'.NOMMAI', numa), k8b)
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 !
 ! --  1.3 TABLEAUX : ZONE_CARTE_1 x ZONE_CARTE_2 -> NB MAILLES AFFECTEES
 !                    ZONE_CARTE_1 x ZONE_CARTE_2 -> NUM DE LA ZONE
@@ -152,15 +151,15 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     do 50 izo2 = 1, nbzo2
         do 60 izo1 = 1, nbzo1
             zi(jmazo+nbzo1*(izo2-1)+izo1-1)=0
-60      continue
-50  end do
+ 60     continue
+ 50 end do
 !
     do 70 ima = 1, nbma
         nuzo1=zi(jzcar1+ima-1)
         nuzo2=zi(jzcar2+ima-1)
         ii=nbzo1*(nuzo2-1)+nuzo1
         zi(jmazo+ii-1)=zi(jmazo+ii-1)+1
-70  end do
+ 70 end do
 !
 !     NOMBRE DE ZONES AFFECTEES POUR LA NOUVELLE CARTE:
     nbzo=0
@@ -170,7 +169,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
             nbzo=nbzo+1
             zi(jnumz+izo-1)=nbzo
         endif
-80  end do
+ 80 end do
 !
 ! --  1.4 TABLEAU: MAILLES -> NUM_ZONE D'AFFECTATION (NOUVELLE CARTE)
     call wkvect('&&GCHARF_ZONE.CARTE', 'V V I', nbma, jzcar)
@@ -180,7 +179,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
         nuzo2=zi(jzcar2+ima-1)
         ii=nbzo1*(nuzo2-1)+nuzo1
         zi(jzcar+ima-1)=zi(jnumz+ii-1)
-85  end do
+ 85 end do
 !
 !
 ! --- 2. ALLOCATION DE LA NOUVELLE CARTE
@@ -203,7 +202,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
         zi(jdes-1+3+2*izo-1)= 3
         zi(jdes-1+3+2*izo) = izo
         zi(jdes-1+3+2*nbzo+izo)= zi(jdes1-1+3+2*nbzo1+1)
-90  end do
+ 90 end do
 !
 !     ALLOCATION DE VALE:
     call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmpmx)
@@ -239,9 +238,9 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                     k=k+1
                     zi(ilim+k-1)=ima
                 endif
-110          continue
+110         continue
         endif
-100  continue
+100 continue
 !
 !
 ! --  3.2 VALE
@@ -260,10 +259,10 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                         k=k+1
                         zr(jval+k-1)= zr(jval1+ncmpmx*(izo1-1)+icmp-1)&
                         + zr(jval2+ncmpmx*(izo2-1)+icmp-1)
-140                  continue
+140                 continue
                 endif
-130          continue
-120      end do
+130         continue
+120     end do
 !
 !     3.2.1 CHARGEMENTS 'FONCTION'
     else if (fonc1 .and. fonc2) then
@@ -297,10 +296,10 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                             call gchfus(val1, val2, nomfct)
                             zk8(jval+k-1)=nomfct
                         endif
-170                  continue
+170                 continue
                 endif
-160          continue
-150      continue
+160         continue
+150     continue
 !
     endif
 !

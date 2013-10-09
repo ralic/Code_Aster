@@ -110,16 +110,14 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !     -- CALCUL DE MA1, MA2, LIGREL :
     call jeexin(moa1//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
-        call dismoi('F', 'NOM_MAILLA', moa1, 'MODELE', ibid,&
-                    ma1, ie)
+        call dismoi('NOM_MAILLA', moa1, 'MODELE', repk=ma1)
     else
         ma1=moa1
     endif
 !
     call jeexin(moa2//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
-        call dismoi('F', 'NOM_MAILLA', moa2, 'MODELE', ibid,&
-                    ma2, ie)
+        call dismoi('NOM_MAILLA', moa2, 'MODELE', repk=ma2)
         mo2=moa2
         ligrel = mo2//'.MODELE'
 !
@@ -138,7 +136,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call rsorac(resu1, 'LONUTI', 0, r8b, kb,&
                     c16b, r8b, kb, tmod, 1,&
                     ibid)
-        nbordr=tmod(1)            
+        nbordr=tmod(1)
         if (nbordr .eq. 0) then
             call utmess('F', 'CALCULEL4_62', sk=resu1)
         endif
@@ -208,144 +206,144 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !     2- ON CALCULE LES CHAMPS RESULTATS :
 !     ------------------------------------
     ico = 0
-    do 30,isym = 1,nbsym
+    do 30 isym = 1, nbsym
 !
-    if (prfch2 .ne. '12345678.00000.NUME') then
+        if (prfch2 .ne. '12345678.00000.NUME') then
 !         ON PREND LA NUMEROTATION IMPOSEE
-        prfchn = prfch2
-!
-    else
-!         ON DEFINIT UNE NUMEROTATION 'BIDON"
-        noojb = '12345678.00000.NUME.PRNO'
-        call gnomsd(' ', noojb, 10, 14)
-        prfchn = noojb(1:19)
-    endif
-!
-    do 20,i = 1,nbordr
-    iordr = zi(jordr+i-1)
-    call rsexch(' ', resu1, nomsym(isym), iordr, ch1,&
-                iret)
-    if (iret .gt. 0) goto 20
-!
-!       -- PROJECTION DU CHAMP SI POSSIBLE :
-    call rsexch(' ', resu2, nomsym(isym), iordr, ch2,&
-                iret)
-    if (method .eq. 'SOUS_POINT') then
-        call pjspma(corres, ch1, ch2, prol0, ligrel,&
-                    noca, base, iret)
-    else
-        call pjxxch(corres, ch1, ch2, tychv, prfchn,&
-                    prol0, ligrel, base, iret)
-    endif
-    ASSERT(iret.eq.0.or.iret.eq.1.or.iret.eq.10)
-!         -- ELGA ET CART : ON NE FAIT RIEN :
-    if (iret .eq. 10) goto 20
-!
-    if (iret .gt. 0) then
-        if (acceno) then
-!             -- L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
-            typerr = 'F'
+            prfchn = prfch2
 !
         else
+!         ON DEFINIT UNE NUMEROTATION 'BIDON"
+            noojb = '12345678.00000.NUME.PRNO'
+            call gnomsd(' ', noojb, 10, 14)
+            prfchn = noojb(1:19)
+        endif
+!
+        do 20 i = 1, nbordr
+            iordr = zi(jordr+i-1)
+            call rsexch(' ', resu1, nomsym(isym), iordr, ch1,&
+                        iret)
+            if (iret .gt. 0) goto 20
+!
+!       -- PROJECTION DU CHAMP SI POSSIBLE :
+            call rsexch(' ', resu2, nomsym(isym), iordr, ch2,&
+                        iret)
+            if (method .eq. 'SOUS_POINT') then
+                call pjspma(corres, ch1, ch2, prol0, ligrel,&
+                            noca, base, iret)
+            else
+                call pjxxch(corres, ch1, ch2, tychv, prfchn,&
+                            prol0, ligrel, base, iret)
+            endif
+            ASSERT(iret.eq.0.or.iret.eq.1.or.iret.eq.10)
+!         -- ELGA ET CART : ON NE FAIT RIEN :
+            if (iret .eq. 10) goto 20
+!
+            if (iret .gt. 0) then
+                if (acceno) then
+!             -- L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
+                    typerr = 'F'
+!
+                else
 !             -- L'UTILISATEUR N'A PAS DEMANDE EXPLICITEMENT
 !                LA PROJECTION, ON SE CONTENTE D'UNE ALARME  :
-            typerr = 'A'
-        endif
-        valk(1) = nomsym(isym)
-        valk(2) = resu1
-        valk(3) = resu2
-        call utmess(typerr, 'CALCULEL4_63', nk=3, valk=valk, si=iordr)
-        goto 20
+                    typerr = 'A'
+                endif
+                valk(1) = nomsym(isym)
+                valk(2) = resu1
+                valk(3) = resu2
+                call utmess(typerr, 'CALCULEL4_63', nk=3, valk=valk, si=iordr)
+                goto 20
 !
-    endif
-    call rsnoch(resu2, nomsym(isym), iordr)
+            endif
+            call rsnoch(resu2, nomsym(isym), iordr)
 !
 !       -- ATTRIBUTION DES ATTRIBUTS DU CONCEPT RESULTAT
 !         EXTRACTION DES PARAMETRES MODAUX
-    if ((typres(1:9).eq.'MODE_MECA') .or. (typres(1:4) .eq.'BASE')) then
-        call vpcrea(0, resu2, ' ', ' ', ' ',&
-                    prfch2(1:8), ier)
-        call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
-                    0, sjv=iains1, styp=kb)
-        call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
-                    0, sjv=iains2, styp=kb)
-        zr(iains2) = zr(iains1)
+            if ((typres(1:9).eq.'MODE_MECA') .or. (typres(1:4) .eq.'BASE')) then
+                call vpcrea(0, resu2, ' ', ' ', ' ',&
+                            prfch2(1:8), ier)
+                call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
+                            0, sjv=iains1, styp=kb)
+                call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
+                            0, sjv=iains2, styp=kb)
+                zr(iains2) = zr(iains1)
 !
 !           RECOPIE DE NUME_MODE S'IL EXISTE:
-        call jenonu(jexnom(resu1//'           .NOVA', 'NUME_MODE'), inume)
-        if (inume .ne. 0) then
-            call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr,&
-                        0, sjv=iains1, styp=kb)
-            call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr,&
-                        0, sjv=iains2, styp=kb)
-            zi(iains2) = zi(iains1)
-        endif
+                call jenonu(jexnom(resu1//'           .NOVA', 'NUME_MODE'), inume)
+                if (inume .ne. 0) then
+                    call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr,&
+                                0, sjv=iains1, styp=kb)
+                    call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr,&
+                                0, sjv=iains2, styp=kb)
+                    zi(iains2) = zi(iains1)
+                endif
 !
-    else if (typres(1:9).eq.'MODE_STAT') then
-        call vpcrea(0, resu2, ' ', ' ', ' ',&
-                    prfch2(1:8), ier)
-        call rsadpa(resu1, 'L', 1, 'NOEUD_CMP', iordr,&
-                    0, sjv=iains1, styp=kb)
-        call rsadpa(resu2, 'E', 1, 'NOEUD_CMP', iordr,&
-                    0, sjv=iains2, styp=kb)
-        zk16(iains2) = zk16(iains1)
+            else if (typres(1:9).eq.'MODE_STAT') then
+                call vpcrea(0, resu2, ' ', ' ', ' ',&
+                            prfch2(1:8), ier)
+                call rsadpa(resu1, 'L', 1, 'NOEUD_CMP', iordr,&
+                            0, sjv=iains1, styp=kb)
+                call rsadpa(resu2, 'E', 1, 'NOEUD_CMP', iordr,&
+                            0, sjv=iains2, styp=kb)
+                zk16(iains2) = zk16(iains1)
 !
-    else if (typres.eq.'DYNA_HARMO') then
-        call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
-                    0, sjv=iains1, styp=kb)
-        call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
-                    0, sjv=iains2, styp=kb)
-        zr(iains2) = zr(iains1)
+            else if (typres.eq.'DYNA_HARMO') then
+                call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
+                            0, sjv=iains1, styp=kb)
+                call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
+                            0, sjv=iains2, styp=kb)
+                zr(iains2) = zr(iains1)
 !
-        elseif ((typres(1:4).eq.'EVOL') .or. (typres(1:4)&
+                elseif ((typres(1:4).eq.'EVOL') .or. (typres(1:4)&
             .eq.'DYNA')) then
-        call rsadpa(resu1, 'L', 1, 'INST', iordr,&
-                    0, sjv=iains1, styp=kb)
-        call rsadpa(resu2, 'E', 1, 'INST', iordr,&
-                    0, sjv=iains2, styp=kb)
-        zr(iains2) = zr(iains1)
+                call rsadpa(resu1, 'L', 1, 'INST', iordr,&
+                            0, sjv=iains1, styp=kb)
+                call rsadpa(resu2, 'E', 1, 'INST', iordr,&
+                            0, sjv=iains2, styp=kb)
+                zr(iains2) = zr(iains1)
 !
-    else
+            else
 !            ON NE FAIT RIEN
-    endif
+            endif
 !
-    if (nomcmd .eq. 'DEPL_INTERNE') then
-        ipar = 0
+            if (nomcmd .eq. 'DEPL_INTERNE') then
+                ipar = 0
 !
-    else
+            else
 !           REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
-        call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
-    endif
+                call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
+            endif
 !
 !
-    do 10 ind = 1, ipar
-        call rsadpa(resu1, 'L', 1, kpar(ind), iordr,&
-                    1, sjv=ipar1, styp=typ1)
-        call rsadpa(resu2, 'E', 1, kpar(ind), iordr,&
-                    0, sjv=ipar2, styp=typ2)
-        if (typ1(1:1) .eq. 'I') then
-            zi(ipar2) = zi(ipar1)
+            do 10 ind = 1, ipar
+                call rsadpa(resu1, 'L', 1, kpar(ind), iordr,&
+                            1, sjv=ipar1, styp=typ1)
+                call rsadpa(resu2, 'E', 1, kpar(ind), iordr,&
+                            0, sjv=ipar2, styp=typ2)
+                if (typ1(1:1) .eq. 'I') then
+                    zi(ipar2) = zi(ipar1)
 !
-        else if (typ1(1:1).eq.'R') then
-            zr(ipar2) = zr(ipar1)
+                else if (typ1(1:1).eq.'R') then
+                    zr(ipar2) = zr(ipar1)
 !
-        else if (typ1(1:2).eq.'K8') then
-            zk8(ipar2) = zk8(ipar1)
+                else if (typ1(1:2).eq.'K8') then
+                    zk8(ipar2) = zk8(ipar1)
 !
-        else if (typ1(1:3).eq.'K16') then
-            zk16(ipar2) = zk16(ipar1)
+                else if (typ1(1:3).eq.'K16') then
+                    zk16(ipar2) = zk16(ipar1)
 !
-        else if (typ1(1:3).eq.'K32') then
-            zk32(ipar2) = zk32(ipar1)
+                else if (typ1(1:3).eq.'K32') then
+                    zk32(ipar2) = zk32(ipar1)
 !
-        else
+                else
 !               ON NE FAIT RIEN
-        endif
-10  continue
-    ico = ico + 1
+                endif
+ 10         continue
+            ico = ico + 1
 !
-20  continue
-30  continue
+ 20     continue
+ 30 continue
 !
     if (ico .eq. 0) then
         call utmess('F', 'CALCULEL4_64')
@@ -360,7 +358,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
             call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i),&
                         0, sjv=jpara, styp=k8b)
             zk8(jpara)=mo2
-11      continue
+ 11     continue
     endif
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:

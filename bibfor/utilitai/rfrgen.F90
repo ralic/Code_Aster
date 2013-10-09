@@ -168,7 +168,7 @@ subroutine rfrgen(trange)
         do 58 ip = 1, nbpas
             zr(lpas+ip-1) = zr(ipas+ip-1)
 !            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
-58      continue
+ 58     continue
 !
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
         lfon = lvar + nbordr
@@ -180,13 +180,13 @@ subroutine rfrgen(trange)
                             zr(jinst+iordr), zr(lpas), 1, rep1, ierd)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = rep1(1)
-54          continue
+ 54         continue
         else
             do 56 iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = zr(lpas+iordr)
-56          continue
+ 56         continue
         endif
         call jedetr('&&RFRGEN.DT')
 !
@@ -213,24 +213,20 @@ subroutine rfrgen(trange)
                                 zr(jinst+iordr), zr(itresu), nbmode, zr(idvecf), ierd)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = zr(idvecf+numcmp-1)
-40              continue
+ 40             continue
             else
                 do 42 iordr = 0, nbordr-1
                     ii = zi(lordr+iordr)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = zr(itresu+nbmode*(ii-1)+numcmp-1)
-42              continue
+ 42             continue
             endif
         else
-            call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
-                        basemo, iret)
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        nume, iret)
-            call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
-                        noma, ie)
+            call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume)
+            call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=noma)
 !
-            call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
-                        k8b, ie)
+            call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=neq)
             call wkvect('&&RFRGEN.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
             call copmod(basemo, 'DEPL', neq, nume, nbmode,&
                         'R', zr( idbase), [cbid])
@@ -284,7 +280,7 @@ subroutine rfrgen(trange)
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
-50              continue
+ 50             continue
                 call jedetr('&&RFRGEN.VECTGENE')
 !
             else
@@ -294,7 +290,7 @@ subroutine rfrgen(trange)
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
-52              continue
+ 52             continue
             endif
             monmot(1) = 'NON'
             monmot(2) = 'NON'
@@ -311,7 +307,7 @@ subroutine rfrgen(trange)
                     call mdgep4(neq, nbexci, zr(ipsdel), zr(lvar+ iordr), zk8(jfon),&
                                 iddl, rep)
                     zr(lfon+iordr) = zr(lfon+iordr) + rep
-100              continue
+100             continue
             endif
             call jedetr('&&RFRGEN.VECT.PROPRE')
 !
@@ -323,14 +319,14 @@ subroutine rfrgen(trange)
                                 alpha, ier)
 !              --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT ---
                     zr(lfon+i) = zr(lfon+i) + alpha
-110              continue
+110             continue
             endif
         endif
 !     ---------------------------------------------------------------
     endif
     call jedetr(knume)
     call jedetr(kinst)
-9999  continue
+9999 continue
 !
     call foattr(' ', 1, nomfon)
 !

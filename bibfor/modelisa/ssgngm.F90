@@ -55,7 +55,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad2, ialgma, ialima, ialino, ianbno, iangno
-    integer :: ibid, ier, ierd, iocc, iret, j, jtrav
+    integer :: ibid, ier, iocc, iret, j, jtrav
     integer :: n1, nb, nbgma, nbgnaj, nbgno, nbma, nbnoto
     integer :: no
 !-----------------------------------------------------------------------
@@ -64,8 +64,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     grpno = noma//'.GROUPENO       '
     nbgnaj = 0
     selec = 'TOUS'
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoto,&
-                k8b, ierd)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoto)
     if (nbnoto .eq. 0) goto 60
 !
 !     ---  CAS : "TOUT_GROUP_MA"
@@ -76,7 +75,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
         do 10 i = 1, nbgma
             call jenuno(jexnum(grpma, i), zk24(ialgma-1+i))
-10      continue
+ 10     continue
         iangno = ialgma
 !
 !     ---  CAS : "GROUP_MA"
@@ -111,7 +110,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
                 ier = ier + 1
                 call utmess('E', 'ELEMENTS_62', sk=nomgma)
             endif
-20      continue
+ 20     continue
         ASSERT(ier.eq.0)
     endif
     if (nbgma .eq. 0) goto 60
@@ -142,12 +141,12 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             call jeveuo(jexnom(grpno, nomgno), 'E', iad2)
             do 40 j = 1, n1
                 zi(iad2-1+j) = zi(ialino-1+j)
-40          continue
+ 40         continue
             nbgnaj = nbgnaj + 1
         endif
-30  end do
+ 30 end do
 !
-60  continue
+ 60 continue
     call jedetr('&&SSGNGM.LISTE_GMA')
     call jedetr('&&SSGNGM.NOM_GNO')
     call jedetr('&&SSGNGM.LISTE_NO')

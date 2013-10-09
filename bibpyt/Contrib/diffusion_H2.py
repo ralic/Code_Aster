@@ -88,16 +88,16 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
    dt = TFIN-TINIT
 
   # Recuperation du modele a partir du resultat
-   iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESU_H2.nom,'RESULTAT')
+   iret,ibid,__n_modele = aster.dismoi('MODELE',RESU_H2.nom,'RESULTAT','F')
    __n_modele=__n_modele.rstrip()
    __MOTH = self.get_concept(__n_modele)
 
   # Recuperation du maillage a partir du resultat
-   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESU_H2.nom,'RESULTAT')
+   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESU_H2.nom,'RESULTAT','F')
    __MAIL = self.get_concept(nom_ma.strip())
 
   # Recuperation du modele mecanique a partir du resultat
-   iret,ibid,nom_momec = aster.dismoi('F','MODELE',RESUMECA.nom,'RESULTAT')
+   iret,ibid,nom_momec = aster.dismoi('MODELE',RESUMECA.nom,'RESULTAT','F')
    __MOME = self.get_concept(nom_momec.rstrip())
 
    # extraction du champ de cl instant -
@@ -237,12 +237,12 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
    # On boucle sur les mailles du groupe de mailles GRMAVOL
 
   # Recuperation du modele a partir du resultat
-   iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESU_H2.nom,'RESULTAT')
+   iret,ibid,__n_modele = aster.dismoi('MODELE',RESU_H2.nom,'RESULTAT','F')
    __n_modele=__n_modele.rstrip()
    __MOTH = self.get_concept(__n_modele)
 
   # Recuperation du maillage a partir du resultat
-   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESU_H2.nom,'RESULTAT')
+   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESU_H2.nom,'RESULTAT','F')
    __MAIL = self.get_concept(nom_ma.strip())
 
    nommai =__MAIL.sdj.NOMMAI.get()
@@ -310,16 +310,16 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
    dt = TFIN-TINIT
 
   # Recuperation du modele thermique a partir du resultat
-   iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESU_H2.nom,'RESULTAT')
+   iret,ibid,__n_modele = aster.dismoi('MODELE',RESU_H2.nom,'RESULTAT','F')
    __n_modele=__n_modele.rstrip()
    __MOTH = self.get_concept(__n_modele)
 
   # Recuperation du maillage a partir du resultat
-   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESU_H2.nom,'RESULTAT')
+   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESU_H2.nom,'RESULTAT','F')
    __MAIL = self.get_concept(nom_ma.strip())
 
   # Recuperation du modele mecanique a partir du resultat
-   iret,ibid,nom_momec = aster.dismoi('F','MODELE',RESUMECA.nom,'RESULTAT')
+   iret,ibid,nom_momec = aster.dismoi('MODELE',RESUMECA.nom,'RESULTAT','F')
    __MOME = self.get_concept(nom_momec.rstrip())
 
    # extraction du champ de Cl instant -
@@ -422,16 +422,16 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
    CALC_CHAMP = self.get_cmd('CALC_CHAMP')
 
   # Recuperation du modele a partir du resultat
-   iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESU_H2.nom,'RESULTAT')
+   iret,ibid,__n_modele = aster.dismoi('MODELE',RESU_H2.nom,'RESULTAT','F')
    __n_modele=__n_modele.rstrip()
    __MOTH = self.get_concept(__n_modele)
 
   # Recuperation du maillage a partir du resultat
-   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESU_H2.nom,'RESULTAT')
+   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',RESU_H2.nom,'RESULTAT','F')
    __MAIL = self.get_concept(nom_ma.strip())
 
   # Recuperation du modele mecanique a partir du resultat
-   iret,ibid,nom_momec = aster.dismoi('F','MODELE',RESUMECA.nom,'RESULTAT')
+   iret,ibid,nom_momec = aster.dismoi('MODELE',RESUMECA.nom,'RESULTAT','F')
    __MOME = self.get_concept(nom_momec.rstrip())
 
    # extraction du champ de Cl instant -

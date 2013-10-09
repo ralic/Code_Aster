@@ -48,10 +48,10 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 ! ----------------------------------------------------------------------
 !
     character(len=19) :: lisrel, stano
-    character(len=8) :: noma, nomo, k8bid, betaf, nomnoe(1), ddlh(1), ddle(1)
+    character(len=8) :: noma, nomo, betaf, nomnoe(1), ddlh(1), ddle(1)
     character(len=4) :: typval
     complex(kind=8) :: cbid
-    integer :: nrel, ifiss, jstano, ibid, ier, nbno, ino, istan, ndim(1)
+    integer :: nrel, ifiss, jstano, nbno, ino, istan, ndim(1)
     real(kind=8) :: betar, coefr(1)
 !
     data ddlh /'H1'/
@@ -75,12 +75,9 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
 ! --- MAILLAGE ET MODELE
 !
-    call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
-                nomo, ier)
-    call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibid,&
-                noma, ier)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ier)
+    call dismoi('NOM_MODELE', char(1:8), 'CHARGE', repk=nomo)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 !     ---------------------------------------
 ! --- BOUCLE SUR LES FISSURES

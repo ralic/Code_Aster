@@ -1,6 +1,6 @@
 subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
-                  nomfor, grdvie, forvie,forcri, fordef, typcha,&
-                  proaxe, instic, inscri, prec)
+                  nomfor, grdvie, forvie, forcri, fordef,&
+                  typcha, proaxe, instic, inscri, prec)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,8 +105,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
 ! RECUPERATION DU TYPE DE CALCUL MECANIQUE EFFECTUE
 !
-    call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
-                typres, ierd)
+    call dismoi('TYPE_RESU', nomsd, 'RESULTAT', repk=typres)
     if ((typres(1:9) .ne. 'EVOL_ELAS') .and. (typres(1:9) .ne. 'EVOL_NOLI')) then
         call utmess('F', 'PREPOST4_26')
     endif
@@ -117,8 +116,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig,&
                 iret)
 !
-    call dismoi('F', 'NOM_LIGREL', chsig, 'CHAM_ELEM', ibid,&
-                ligre, ierd)
+    call dismoi('NOM_LIGREL', chsig, 'CHAM_ELEM', repk=ligre)
     cesr = '&&PAQMAI.FACY'
     celbid = '&&PAQMAI.BID'
     call alchml(ligre, 'TOU_INI_ELGA', 'PFACY_R', 'V', celbid,&
@@ -134,7 +132,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, r8b, k8b, tord, 1,&
                 nbordr)
-    lordr=tord(1)            
+    lordr=tord(1)
 !
     if (nbordr .lt. 0) then
         ndim = -nbordr
@@ -171,8 +169,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 endif
             endif
         endif
-420  end do
-410  continue
+420 end do
+410 continue
 !
     if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
         call utmess('A', 'PREPOST4_48')
@@ -235,7 +233,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
         do 40 i = 1, nbmagm
             zi(jgrma-1 + i) = zi(jmail-1 + i)
-40      continue
+ 40     continue
     endif
 !
 !     VECTEUR CONTENANT LE NBR. DE PT. DE GAUSS DES MAILLES DU MAILLAGE
@@ -256,12 +254,12 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         if (zi(jcesd-1 + 5 + 4*(ima-1) + 1) .gt. nbpgmx) then
             nbpgmx = zi(jcesd-1 + 5 + 4*(ima-1) + 1)
         endif
-50  end do
+ 50 end do
     if (nommai .ne. '        ') then
         do 60 ima = 1, nbmagm
             nbpggm=nbpggm + zi(jcesd-1 + 5 + 4*(zi(jmail+ima-1)-1) +&
             1)
-60      continue
+ 60     continue
         write(6,*)'NOMBRE DE POINTS DE GAUSS DU GROUPE DE MAILLES ==>',&
      &              nbpggm
         write(6,*)' '
@@ -365,7 +363,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
             endif
         endif
 !
-100  end do
+100 end do
 !
     if (nbpaq .gt. nbpmax) then
         vali (1) = nbpmax
@@ -410,7 +408,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 ces1 = '&&PAQMAI.SIG_S1'
                 ces2 = '&&PAQMAI.SIG_ORDO'
                 call celces(chsig, 'V', ces1)
-                call cesred(ces1,0,[ibid],6,lsig,&
+                call cesred(ces1, 0, [ibid], 6, lsig,&
                             'V', ces2)
                 call jeexin(ces2(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
@@ -430,7 +428,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 ces3 = '&&PAQMAI.EPS_S3'
                 ces4 = '&&PAQMAI.EPS_ORDO'
                 call celces(cheps, 'V', ces3)
-                call cesred(ces3,0,[ibid],6,leps,&
+                call cesred(ces3, 0, [ibid], 6, leps,&
                             'V', ces4)
                 call jeexin(ces4(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
@@ -450,7 +448,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 ces5 = '&&PAQMAI.EPSP_S3'
                 ces6 = '&&PAQMAI.EPSP_ORDO'
                 call celces(chepsp, 'V', ces5)
-                call cesred(ces5,0,[ibid],6,leps,&
+                call cesred(ces5, 0, [ibid], 6, leps,&
                             'V', ces6)
                 call jeexin(ces5(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
@@ -473,7 +471,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                     ces7 = '&&PAQMAI.EPSPE_S3'
                     ces8 = '&&PAQMAI.EPSPE_ORDO'
                     call celces(cheppe, 'V', ces7)
-                    call cesred(ces7,0,[ibid],6,leps,&
+                    call cesred(ces7, 0, [ibid], 6, leps,&
                                 'V', ces8)
                     call jeexin(ces7(1:19)//'.CESV', iret)
                     if (iret .eq. 0) then
@@ -535,7 +533,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                     iordr-1)*tspaq ) = zr( jsigv -1 +&
                                     jad)
                                 endif
-360                          continue
+360                         continue
                         endif
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
@@ -555,7 +553,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                     iordr-1)*tspaq ) = zr( jepsv -1+&
                                     jad)
                                 endif
-380                          continue
+380                         continue
                         endif
 !
 ! BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
@@ -575,7 +573,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                     iordr-1)*tspaq ) = zr( jepspv -1+&
                                     jad)
                                 endif
-400                          continue
+400                         continue
                         endif
 !
 ! BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
@@ -596,25 +594,25 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                         (iordr-1)*tspaq ) = zr(&
                                         jeppev -1+jad)
                                     endif
-401                              continue
+401                             continue
                             else
                                 do 405 icmp = 1, 6
                                     zr( jrwork + (icmp+6+6-1) +(ipg-1)&
                                     *decal + kwork*sompgw*decal + (&
                                     iordr-1)*tspaq ) = 0.d0
-405                              continue
+405                             continue
                             endif
                         endif
 !
-340                  continue
+340                 continue
                 endif
                 if ((nommai .ne. '        ') .and. (n .lt. nbmagm)) then
                     n = n + 1
                 endif
 !
-320          continue
+320         continue
             nmemo = n
-300      continue
+300     continue
 !
 !         ENDIF
 !
@@ -628,7 +626,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         if (typcha .eq. 'PERIODIQUE') then
             call deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                         nmaini, nbmap, numpaq, tspaq, nommet,&
-                        nomcri, nomfor, grdvie, forvie, forcri, cesr)
+                        nomcri, nomfor, grdvie, forvie, forcri,&
+                        cesr)
 !
         else if (typcha .eq. 'NON_PERIODIQUE') then
             call avgrma(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr,&
@@ -637,15 +636,14 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                         cesr)
         endif
 !
-200  end do
+200 end do
 !
 !
 ! TRANSFORMATION D'UN CHAM_ELEM SIMPLE EN CHAM_ELEM
 !
     call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig,&
                 iret)
-    call dismoi('F', 'NOM_LIGREL', chsig, 'CHAM_ELEM', ibid,&
-                ligre, ierd)
+    call dismoi('NOM_LIGREL', chsig, 'CHAM_ELEM', repk=ligre)
     call cescel(cesr, ligre, 'TOU_INI_ELGA', ' ', 'NON',&
                 nncp, 'G', nomu, 'F', ibid)
 !

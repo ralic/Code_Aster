@@ -32,11 +32,9 @@ function xpheop(modele)
 !                -> 'RIGI_THER' POUR LA THERMIQUE
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
     character(len=24) :: pheno
 !
-    call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
-                pheno, ibid)
+    call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
     if (pheno .eq. 'MECANIQUE') then
         xpheop = 'FULL_MECA'
     else if (pheno.eq.'THERMIQUE') then

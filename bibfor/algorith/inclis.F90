@@ -65,9 +65,9 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 #include "asterfort/rotlis.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8) :: k8bid, nomres, matprj, ssta, sstb, intfa, intfb, nomg
+    character(len=8) ::  nomres, matprj, ssta, sstb, intfa, intfb, nomg
     character(len=24) :: fmlia, toto, fpliao, fplibo, fplian, fplibn
-    integer :: iada(3), iadb(3), numlis, zit(3), nbec, ierd, nbnoea, nbnoeb
+    integer :: iada(3), iadb(3), numlis, zit(3), nbec, nbnoea, nbnoeb
     integer :: nbcmpm, k, m1, n1, m2, n2, llplia, llplib, icompa, icompb, ldmat
     integer :: ldmat2, iadoa, iadob
     parameter      (nbcmpm=10)
@@ -82,8 +82,7 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 !
     toto='TATA'
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ierd)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -143,13 +142,13 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
                                 1)+icompa-1)* zr(ldmat2+(k-1)*iada(1)+&
                                 icompa-1)
                             endif
- 5                      continue
- 4                  continue
+  5                     continue
+  4                 continue
                     zr(ldmat+(k-1)*iadb(1)+icompb-1)=rbid
                 endif
- 3          continue
- 2      continue
- 1  end do
+  3         continue
+  2     continue
+  1 end do
 ! On corrige in fine la taille de la nouvelle matrice de liaison
     iada(1)=iadb(1)
     call jedetr(toto)

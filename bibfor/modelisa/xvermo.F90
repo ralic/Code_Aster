@@ -42,7 +42,7 @@ subroutine xvermo(nfiss, fiss, mod)
 !
 !
 !
-    integer :: ifiss, ib
+    integer :: ifiss
     character(len=8) :: modf, valk(3)
 !
 ! ----------------------------------------------------------------------
@@ -52,8 +52,7 @@ subroutine xvermo(nfiss, fiss, mod)
     do 10 ifiss = 1, nfiss
 !
 !       RECUPERATION DU MODELE ASSOCIE A LA FISSURE COURANTE
-        call dismoi('F', 'NOM_MODELE', fiss(ifiss), 'FISS_XFEM', ib,&
-                    modf, ib)
+        call dismoi('NOM_MODELE', fiss(ifiss), 'FISS_XFEM', repk=modf)
 !
 !       VERIFICATION DE LA COHERENCE
         if (mod .ne. modf) then
@@ -63,7 +62,7 @@ subroutine xvermo(nfiss, fiss, mod)
             call utmess('F', 'XFEM_39', nk=3, valk=valk)
         endif
 !
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

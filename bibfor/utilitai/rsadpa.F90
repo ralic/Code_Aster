@@ -62,9 +62,9 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 ! REMARQUE : CETTE ROUTINE NE FAIT PAS JEMARQ/JEDEMA POUR NE PAS
 !            INVALIDER LJEVEU
 !-----------------------------------------------------------------------
-    integer :: ibid, nbordr, nrang, jordr, i, ipara, ier, irang, ifr
+    integer ::  nbordr, nrang, jordr, i, ipara, irang, ifr
     integer :: vali(2), ljeveu(npara)
-    character(len=3)  :: ctype(npara)
+    character(len=3) :: ctype(npara)
     character(len=24) :: valk(3)
     character(len=16) :: param, k16b
     character(len=19) :: noms2
@@ -109,13 +109,12 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         call utmess('F', 'UTILITAI6_79', sk=valk(1), ni=2, vali=vali)
     endif
 !
-    do i = 1,npara
+    do i = 1, npara
         param = lpara(i)
         call jenonu(jexnom(noms2//'.NOVA', param), ipara)
         if (ipara .eq. 0) then
             ifr = iunifi('RESULTAT')
-            call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
-                        k16b, ier)
+            call dismoi('TYPE_RESU', nomsd, 'RESULTAT', repk=k16b)
             call jeimpo(ifr, noms2//'.NOVA', ' ')
             valk (1) = nomsd
             valk (2) = param
@@ -127,24 +126,24 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
                     ctype(i), ljeveu(i))
 !
     end do
-!    
+!
     ASSERT(EXCLUS2(tjv,sjv))
-    if ( present(tjv) ) then
-        do i=1,npara  
+    if (present(tjv)) then
+        do i = 1, npara
             tjv(i)=ljeveu(i)
         end do
-    else if ( present(sjv) ) then
+    else if (present(sjv)) then
         sjv=ljeveu(1)
     endif
     ASSERT(EXCLUS2(ttyp,styp))
-    if ( itype .gt. 0 ) then
-        if ( present(ttyp) ) then
-            do i=1,npara  
+    if (itype .gt. 0) then
+        if (present(ttyp)) then
+            do i = 1, npara
                 ttyp(i)=ctype(i)
             end do
-        else if ( present(styp) ) then  
+        else if (present(styp)) then
             styp=ctype(1)
-        endif 
-    endif 
+        endif
+    endif
 !
 end subroutine

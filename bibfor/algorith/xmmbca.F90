@@ -64,11 +64,10 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: ibid, sinco(1), nbma
+    integer ::  sinco(1), nbma
     integer :: jfiss
     character(len=19) :: xdonco, xindco, xmemco, xgliss, xcohes, ccohes
     character(len=16) :: option
-    character(len=8) :: k8bid
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
     character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
     character(len=19) :: fissno, heavno, heavfa
@@ -106,8 +105,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     else
         debug = .false.
     endif
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !

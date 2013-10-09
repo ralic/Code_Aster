@@ -68,8 +68,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
     integer :: jstfr, jliac, jliot, jtypl
     integer :: numddl, numnoe
     integer :: ino, iddl, posno
-    integer :: iret
-    character(len=8) :: nomnoe, k8bid
+    character(len=8) :: nomnoe
     integer :: neq, nesmax, nddl
     logical :: lctfd, llagrf
     integer :: zcoco
@@ -88,8 +87,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
@@ -118,7 +116,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
     do 20 ino = 1, nnoco
         nddl = nddl + ndimg
         zi(jnbddl+ino) = nddl
-20  end do
+ 20 end do
 !
 ! --- NUMEROS DES DDL
 !
@@ -160,7 +158,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
             endif
         endif
 !
-25  end do
+ 25 end do
 !
 ! --- TABLEAU DES POINTEURS POUR LES DDLS
 !

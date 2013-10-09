@@ -21,7 +21,6 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -34,6 +33,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+!
     character(len=8) :: modele, lchar(*)
     character(len=19) :: vecel
     character(len=24) :: mate
@@ -71,7 +71,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
     character(len=24) :: ligrmo, ligrch
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, icha, ierd, ilires, iret, jnomo
+    integer ::  icha, ilires, iret, jnomo
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -106,8 +106,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
             ligrmo = zk8(jnomo)//'.MODELE'
         endif
         do 10 icha = 1, nchar
-            call dismoi('F', 'TYPE_CHARGE', lchar(icha), 'CHARGE', ibid,&
-                        k8bid, ierd)
+            call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8bid)
             if (k8bid(5:7) .eq. '_FO') then
                 lfonc = .true.
             else
@@ -153,7 +152,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
                             'OUI')
                 call reajre(vecel, lchout(1), 'G')
             endif
-10      continue
+ 10     continue
     endif
 !
     call jedema()

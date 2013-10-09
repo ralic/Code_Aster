@@ -19,7 +19,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
@@ -59,7 +59,6 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
     integer :: icham
     character(len=8) :: lpain(1), lpaout(2)
     character(len=24) :: lchin(1), lchout(2)
-    integer :: ibid, iret
     character(len=19) :: ligrmo
     character(len=24) :: chgeom
     logical :: lsief, lvari, lstrx
@@ -97,13 +96,12 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
         if (nomcha .eq. 'SIEF_ELGA') lsief = .true.
         if (nomcha .eq. 'VARI_ELGA') lvari = .true.
         if (nomcha .eq. 'STRX_ELGA') lstrx = .true.
-10  end do
+ 10 end do
 !
 ! --- CREATION DES CHAMPS INITIAUX NULS POUR CONTRAINTES ET VAR. INT.
 !
     if (lvari .or. lsief) then
-        call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
-                    ligrmo, iret)
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
         call copisd('CHAM_ELEM_S', 'V', compor, sigm0)
         call copisd('CHAM_ELEM_S', 'V', compor, vari0)
         call megeom(modele, chgeom)
@@ -177,7 +175,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
             nomch0 = ' '
         endif
         zk24(jiolch+zioch*(icham-1)+2-1) = nomch0
-40  end do
+ 40 end do
 !
     call jedema()
 end subroutine

@@ -59,21 +59,19 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !            QUANTITES DEFINISSANT LA GEO DE LA FISS
 !     ------------------------------------------------------------------
 !
-    integer :: ino, nbno, jcoor, iret, i, j, ibid
+    integer :: ino, nbno, jcoor, i, j
     real(kind=8) :: p2d(2), p3d(3), norme, vect3(3), mat(3, 3), ploc(3)
     real(kind=8) :: h
     real(kind=8) :: nori(3), next(3), nmil(3), vseg(3), nseg
-    character(len=8) :: k8bid, fiss
+    character(len=8) ::  fiss
     character(len=16) :: valk(3), typdis, k16bid
 !
     call jemarq()
 !
     call getres(fiss, k16bid, k16bid)
-    call dismoi('F', 'TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', ibid,&
-                typdis, iret)
+    call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
@@ -117,7 +115,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
             do 21 i = 1, ndim
                 p3d(i)=zr(jcoor-1+3*(ino-1)+i)
-21          continue
+ 21         continue
 !
 !         BASE LOCALE : (VECT1,VECT2,VECT3)
             call normev(vect1, norme)
@@ -129,15 +127,15 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                 mat(1,i)=vect1(i)
                 mat(2,i)=vect2(i)
                 mat(3,i)=vect3(i)
-22          continue
+ 22         continue
 !
 !         PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
             do 23 i = 1, ndim
                 ploc(i)=0.d0
                 do 24 j = 1, ndim
                     ploc(i) = ploc(i) + mat(i,j) * (p3d(j)-noeud(j))
-24              continue
-23          continue
+ 24             continue
+ 23         continue
 !
 !         DISTANCE DU POINT A L'ELLIPSE / RECTANGLE
             if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'CYLINDRE') then
@@ -185,7 +183,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
             endif
 !
-20      continue
+ 20     continue
 !
     else if (geofis.eq.'DEMI_PLAN') then
 !
@@ -203,7 +201,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
             do 25 i = 1, ndim
                 p3d(i)=zr(jcoor-1+3*(ino-1)+i)
-25          continue
+ 25         continue
 !
 !         BASE LOCALE : (VECT2,VECT3,VECT1)
             call normev(vect1, norme)
@@ -215,15 +213,15 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                 mat(1,i)=vect2(i)
                 mat(2,i)=vect3(i)
                 mat(3,i)=vect1(i)
-26          continue
+ 26         continue
 !
 !         PROJECTION DU POINT 3D DANS LE REPERE LOCAL
             do 27 i = 1, 3
                 ploc(i)=0.d0
                 do 28 j = 1, 3
                     ploc(i) = ploc(i) + mat(i,j) * (p3d(j)-noeud(j))
-28              continue
-27          continue
+ 28             continue
+ 27         continue
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
             zr(jlnsv-1+(ino-1)+1)= ploc(3)
@@ -233,7 +231,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             zr(jltsv-1+(ino-1)+1)= ploc(1)
             zl(jltsl-1+(ino-1)+1)=.true.
 !
-29      continue
+ 29     continue
 !
     else if (geofis.eq.'SEGMENT') then
 !
@@ -249,7 +247,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             next(i) = vect2(i)
             nmil(i) = (nori(i) + next(i))/2
             vseg(i) = next(i)-nori(i)
-100      continue
+100     continue
 !
         nseg = sqrt(vseg(1)**2 + vseg(2)**2 + vseg(3)**2)
 !
@@ -258,7 +256,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             do 51 i = 1, ndim
                 p2d(i)=zr(jcoor-1+3*(ino-1)+i)
-51          continue
+ 51         continue
 !
             vect3(1) = 0.d0
             vect3(2) = 0.d0
@@ -272,7 +270,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             do 52 i = 1, 2
                 mat(1,i)=vseg(i)
                 mat(2,i)=vect2(i)
-52          continue
+ 52         continue
 !
 !         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
 !         POSITIONNE AU CENTRE DU SEGEMENT
@@ -280,8 +278,8 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                 ploc(i)=0.d0
                 do 54 j = 1, 2
                     ploc(i) = ploc(i) + mat(i,j) * (p2d(j)-nmil(j))
-54              continue
-53          continue
+ 54             continue
+ 53         continue
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             zr(jlnsv-1+(ino-1)+1)= ploc(2)
@@ -291,7 +289,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             zr(jltsv-1+(ino-1)+1)= abs(ploc(1)) - nseg/2
             zl(jltsl-1+(ino-1)+1)=.true.
 !
-50      continue
+ 50     continue
 !
 !
     else if (geofis.eq.'DEMI_DROITE'.or. geofis.eq.'DROITE') then
@@ -314,7 +312,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             do 36 i = 1, ndim
                 p2d(i)=zr(jcoor-1+3*(ino-1)+i)
-36          continue
+ 36         continue
 !
             vect3(1) = 0.d0
             vect3(2) = 0.d0
@@ -328,15 +326,15 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             do 37 i = 1, 2
                 mat(1,i)=vect1(i)
                 mat(2,i)=vect2(i)
-37          continue
+ 37         continue
 !
 !         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
             do 38 i = 1, 2
                 ploc(i)=0.d0
                 do 39 j = 1, 2
                     ploc(i) = ploc(i) + mat(i,j) * (p2d(j)-noeud(j))
-39              continue
-38          continue
+ 39             continue
+ 38         continue
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             zr(jlnsv-1+(ino-1)+1)= ploc(2)
@@ -357,7 +355,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
             endif
 !
-35      continue
+ 35     continue
 !
     endif
 !

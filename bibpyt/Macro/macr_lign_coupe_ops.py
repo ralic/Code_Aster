@@ -659,7 +659,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
     nomresu=RESULTAT.nom
     type_resu = AsType(RESULTAT).__name__
-    iret,ibid,n_modele = aster.dismoi('F','MODELE',nomresu,'RESULTAT')
+    iret,ibid,n_modele = aster.dismoi('MODELE',nomresu,'RESULTAT','F')
     n_modele=n_modele.strip()
     if n_modele in ('', '#AUCUN'):
        if MODELE == None:
@@ -670,7 +670,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
              l_mode_meca_sans_modele = True
              UTMESS('I','POST0_23',valk=nomresu)
        else : n_modele=MODELE.nom
-    iret,ibid,l_mailla = aster.dismoi('F','NOM_MAILLA',nomresu,'RESULTAT')
+    iret,ibid,l_mailla = aster.dismoi('NOM_MAILLA',nomresu,'RESULTAT','F')
 
   elif CHAM_GD != None:
     mcORDR['TOUT_ORDRE']='OUI'
@@ -700,12 +700,12 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                        NOM_CHAM=NOM_CHAM, TYPE_RESU=TYPE_RESU,
                        AFFE=_F(CHAM_GD=CHAM_GD,INST=0.),)
     RESULTAT=__resuch
-    iret,ibid,l_mailla = aster.dismoi('F','NOM_MAILLA',n_cham,'CHAMP')
+    iret,ibid,l_mailla = aster.dismoi('NOM_MAILLA',n_cham,'CHAMP','F')
 
   # Maillage sur lequel s'appuie le résultat à projeter
   n_mailla=l_mailla.strip()
   # le maillage est-il 2D ou 3D ?
-  iret,dime,kbid = aster.dismoi('F','DIM_GEOM',n_mailla,'MAILLAGE')
+  iret,dime,kbid = aster.dismoi('DIM_GEOM',n_mailla,'MAILLAGE','F')
   collgrma=aster.getcolljev(n_mailla.ljust(8)+'.GROUPEMA')
   typma=aster.getvectjev(n_mailla.ljust(8)+'.TYPMAIL')
   connex=aster.getcolljev(n_mailla.ljust(8)+'.CONNEX')

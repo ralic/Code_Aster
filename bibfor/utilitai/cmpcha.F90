@@ -2,7 +2,6 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
                   ncmpmx)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -13,6 +12,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomcha, nomcmp, corr1, corr2
     integer :: ncmp, ncmpmx
 ! ======================================================================
@@ -62,12 +62,11 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !    CORR2=(2,5)
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: ifm, niv, ibid, iret, nbgr, jceld, nec, jcmpgd, jnocmp
+    integer :: ifm, niv, nbgr, jceld, nec, jcmpgd, jnocmp
     integer :: jcorr1, igr, imolo, jmolo, gd, nbpt, ipt, k, iadg, icmp
     integer :: jdesc, long, jprno, jnueq, nbno, ino, ncmpp, jcorr2
     integer :: ngrmx, nbedit, igd, ient, debgd, dg(50), ior, kpt, kcmp
     logical :: diff
-    character(len=1) :: kbid
     character(len=8) :: nomgd, ma
     character(len=16) :: typsd
     character(len=19) :: ch19, profcn
@@ -76,28 +75,21 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     call infniv(ifm, niv)
     call jemarq()
 !
-    call dismoi('F', 'TYPE_CHAMP', nomcha, 'CHAMP', ibid,&
-                typsd, iret)
+    call dismoi('TYPE_CHAMP', nomcha, 'CHAMP', repk=typsd)
 !
     if (typsd .eq. 'NOEU') then
-        call dismoi('F', 'NOM_GD', ch19, 'CHAM_NO', ibid,&
-                    nomgd, ibid)
+        call dismoi('NOM_GD', ch19, 'CHAM_NO', repk=nomgd)
     else if (typsd(1:2).eq.'EL') then
-        call dismoi('F', 'NOM_GD', ch19, 'CHAM_ELEM', ibid,&
-                    nomgd, ibid)
+        call dismoi('NOM_GD', ch19, 'CHAM_ELEM', repk=nomgd)
     else if (typsd.eq.'CART') then
-        call dismoi('F', 'NOM_GD', ch19, 'CARTE', ibid,&
-                    nomgd, ibid)
+        call dismoi('NOM_GD', ch19, 'CARTE', repk=nomgd)
     else
         ASSERT(.false.)
     endif
 !
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ibid)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ibid)
-    call dismoi('F', 'NUM_GD', nomgd, 'GRANDEUR', gd,&
-                kbid, ibid)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
+    call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
 !
 !
@@ -107,19 +99,17 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !           POINTS DU CHAMP.
 !     ----------------------------------------------------------------
     ASSERT(nec.le.50)
-    do 10,k=1,50
-    dg(k)=0
-    10 end do
+    do 10 k = 1, 50
+        dg(k)=0
+ 10 end do
 !
 !
 !     -- 1.1 CAS DES CHAM_NO
 !     ----------------------------------------------------------------
     if (typsd .eq. 'NOEU') then
         call jeveuo(ch19//'.DESC', 'L', jdesc)
-        call dismoi('F', 'NOM_MAILLA', ch19, 'CHAM_NO', ibid,&
-                    ma, ibid)
-        call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                    kbid, ibid)
+        call dismoi('NOM_MAILLA', ch19, 'CHAM_NO', repk=ma)
+        call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
 !        -- 1.1.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
         if (zi(jdesc-1+2) .lt. 0) then
@@ -127,25 +117,24 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             call jelira(ch19//'.DESC', 'LONMAX', long)
             ASSERT(long.eq.(2+nec))
             iadg=jdesc-1+3
-            do 20,k=1,nec
-            dg(k)=zi(iadg-1+k)
-20          continue
+            do 20 k = 1, nec
+                dg(k)=zi(iadg-1+k)
+ 20         continue
 !
 !        -- 1.1.2 CAS DES CHAM_NO A PROF_CHNO:
         else
-            call dismoi('F', 'PROF_CHNO', ch19, 'CHAM_NO', ibid,&
-                        profcn, ibid)
+            call dismoi('PROF_CHNO', ch19, 'CHAM_NO', repk=profcn)
             call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
             call jeveuo(profcn//'.NUEQ', 'L', jnueq)
-            do 40,ino=1,nbno
-            ncmpp=zi(jprno-1+(ino-1)*(nec+2)+2)
-            if (ncmpp .ne. 0) then
-                iadg=jprno-1+(ino-1)*(nec+2)+3
-                do 30,k=1,nec
-                dg(k)=ior(dg(k),zi(iadg-1+k))
-30              continue
-            endif
-40          continue
+            do 40 ino = 1, nbno
+                ncmpp=zi(jprno-1+(ino-1)*(nec+2)+2)
+                if (ncmpp .ne. 0) then
+                    iadg=jprno-1+(ino-1)*(nec+2)+3
+                    do 30 k = 1, nec
+                        dg(k)=ior(dg(k),zi(iadg-1+k))
+ 30                 continue
+                endif
+ 40         continue
         endif
 !
 !
@@ -164,15 +153,15 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             diff=(zi(jmolo-1+4).gt.10000)
             nbpt=mod(zi(jmolo-1+4),10000)
 !
-            do 60,ipt=1,nbpt
-            kpt=1
-            if (diff) kpt=ipt
-            iadg=jmolo-1+4+(kpt-1)*nec+1
-            do 50,k=1,nec
-            dg(k)=ior(dg(k),zi(iadg-1+k))
-50          continue
-60          continue
-70      continue
+            do 60 ipt = 1, nbpt
+                kpt=1
+                if (diff) kpt=ipt
+                iadg=jmolo-1+4+(kpt-1)*nec+1
+                do 50 k = 1, nec
+                    dg(k)=ior(dg(k),zi(iadg-1+k))
+ 50             continue
+ 60         continue
+ 70     continue
 !
 !
 !     -- 1.3 CAS DES CARTES
@@ -187,9 +176,9 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
                 debgd=3+2*ngrmx+(igd-1)*nec+1
                 do 80 k = 1, nec
                     dg(k)=ior(dg(k),zi(jdesc-1+debgd-1+k))
-80              continue
+ 80             continue
             endif
-90      continue
+ 90     continue
 !
     else
         ASSERT(.false.)
@@ -206,7 +195,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             ncmp=ncmp+1
             zi(jcorr1-1+icmp)=ncmp
         endif
-100  end do
+100 end do
 !
 !
 !
@@ -215,13 +204,13 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     call wkvect(nomcmp, 'V V K8', ncmp, jnocmp)
     call wkvect(corr2, 'V V I', ncmp, jcorr2)
     kcmp=0
-    do 110,icmp=1,ncmpmx
-    if (zi(jcorr1-1+icmp) .gt. 0) then
-        kcmp=kcmp+1
-        zi(jcorr2-1+kcmp)=icmp
-        zk8(jnocmp-1+kcmp)=zk8(jcmpgd-1+icmp)
-    endif
-    110 end do
+    do 110 icmp = 1, ncmpmx
+        if (zi(jcorr1-1+icmp) .gt. 0) then
+            kcmp=kcmp+1
+            zi(jcorr2-1+kcmp)=icmp
+            zk8(jnocmp-1+kcmp)=zk8(jcmpgd-1+icmp)
+        endif
+110 end do
     ASSERT(kcmp.eq.ncmp)
 !
 !

@@ -107,14 +107,13 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     integer :: zsolal, zvalin
     parameter    (zsolal=17,zvalin=28)
 !
-    integer :: itrlmx, iterho, neq, act, opt, ldcopt, iret
+    integer :: itrlmx, iterho, neq, act, opt, ldcopt
     integer :: dimmem, nmax
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
     real(kind=8) :: rhom, rhoopt, rho
     real(kind=8) :: f0, fm, f, fopt, fcvg
     real(kind=8) :: parmul, relirl, sens
     real(kind=8) :: mem(2, 10)
-    character(len=8) :: k8bid
     logical :: stite, lnkry
     logical :: lgrot, lendo
     character(len=19) :: cnfins(2), cndirs(2), k19bla
@@ -152,8 +151,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     fopt = r8maem()
     k19bla = ' '
     ldccvg = -1
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call nmchai('VALINC', 'LONMAX', nmax)
     ASSERT(nmax.eq.zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
@@ -354,12 +352,12 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
         if (stite) then
             goto 100
         endif
-20  end do
+ 20 end do
     iterho = itrlmx
 !
 ! --- STOCKAGE DU RHO OPTIMAL ET DES CHAMPS CORRESPONDANTS
 !
-100  continue
+100 continue
 !
 ! --- AJUSTEMENT DE LA DIRECTION DE DESCENTE
 !
@@ -379,7 +377,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
     ldccvg = ldcopt
 !
-9999  continue
+9999 continue
 !
     conv(1) = iterho
     conv(2) = rhoopt

@@ -55,7 +55,6 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/matfpe.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -72,6 +71,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 #include "blas/dgesvd.h"
 !
 !
+!
 !-- VARIABLES EN ENTREES / SORTIE
     integer :: ddlmas, ddlsla, nbmoma, nbmosl, imast
     character(len=8) :: nomres, matprj, sst1, sst2, intf1, intf2
@@ -80,7 +80,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- VARIABLES DE LA ROUTINE
     integer :: ibid, i1, j1, k1, l1, lrot1, lrot2, ltran1, ltran2, nbno1, nbno2
     integer :: lnoma1, lnoma2, lcoor1, lcoor2, numno, lno1, lno2, dima, ldepen
-    integer :: ier, nbmast, nbslav, lnomas, lnosla, ldist, indmin, lphir, lvisla
+    integer ::  nbmast, nbslav, lnomas, lnosla, ldist, indmin, lphir, lvisla
     integer :: ltramo, lprojt, decal, lmats, lmatu, lmatv, lmsm1u, lvsm1u
     integer :: lindma, lindsl, lwork, jwork, possla, posmas, indsla
     integer(kind=4) :: info
@@ -115,7 +115,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
         ang2(i1)=zr(lrot2+i1-1)
         tr1(i1)=zr(ltran1+i1-1)
         tr2(i1)=zr(ltran2+i1-1)
-10  end do
+ 10 end do
 !
     call rotati(ang1, rot1)
     call rotati(ang2, rot2)
@@ -169,8 +169,8 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
             zr(lcoor1+(i1-1)*3+j1-1)=tr1(j1)+ rot1(j1,1)*zr(lnoma1+(&
             numno-1)*3)+ rot1(j1,2)*zr(lnoma1+(numno-1)*3+1)+ rot1(j1,&
             3)*zr(lnoma1+(numno-1)*3+2)
-30      continue
-20  end do
+ 30     continue
+ 20 end do
 !
     do 40 i1 = 1, nbno2
         numno=zi(lno2+(i1-1))
@@ -178,8 +178,8 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
             zr(lcoor2+(i1-1)*3+j1-1)=tr2(j1)+ rot2(j1,1)*zr(lnoma2+(&
             numno-1)*3)+ rot2(j1,2)*zr(lnoma2+(numno-1)*3+1)+ rot2(j1,&
             3)*zr(lnoma2+(numno-1)*3+2)
-50      continue
-40  end do
+ 50     continue
+ 40 end do
 !
 !--------------------------------------------------------------------C
 !--                                                                --C
@@ -193,12 +193,10 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     dima=5
 !-- ON AJUSTE EN FONCTION DE LA DIMENSION DU MAILLAGE
     if (imast .eq. 1) then
-        call dismoi('F', 'Z_CST', mail1, 'MAILLAGE', ibid,&
-                    k24bid, ier)
+        call dismoi('Z_CST', mail1, 'MAILLAGE', repk=k24bid)
         if (k24bid(1:3) .eq. 'OUI') dima=2
     else
-        call dismoi('F', 'Z_CST', mail2, 'MAILLAGE', ibid,&
-                    k24bid, ier)
+        call dismoi('Z_CST', mail2, 'MAILLAGE', repk=k24bid)
         if (k24bid(1:3) .eq. 'OUI') dima=2
     endif
 !-- ET DU NOMBRE DE NOEUDS MAITRES
@@ -250,7 +248,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                 dismin=zr(ldist+j1-1)
                 indmin=j1
             endif
-70      continue
+ 70     continue
 !
 !-- RECHERCHE DES DIMA PLUS PROCHES VOISINS
         if (dima .eq. 1) then
@@ -265,11 +263,11 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                         dismin=zr(ldist+k1-1)
                         indmin=k1
                     endif
-90              continue
+ 90             continue
                 zi(ldepen+(i1-1)*dima+j1)=indmin
-80          continue
+ 80         continue
         endif
-60  end do
+ 60 end do
 !
 !---------------------------------------------C
 !--                                         --C
@@ -336,13 +334,13 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
             zi(lvimas+i1-1)=posmas
             posmas=posmas+1
         endif
-65  end do
+ 65 end do
     do 75 i1 = 1, 6*nbslav
         if (zi(lindsl+i1-1) .gt. 0) then
             zi(lvisla+i1-1)=possla
             possla=possla+1
         endif
-75  end do
+ 75 end do
 !
 !------------------------------C
 !--                          --C
@@ -355,7 +353,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- INITIALISER A CHAQUE FOIS, PUISQUE LA SVD ECRASE TOUT...
         do 85 j1 = 1, dima*36
             zr(lphir+j1-1)=0.d0
-85      continue
+ 85     continue
 !
 !-- CONSTRUCTION DE LA MATRICE DE CORPS RIGIDE POUR LE NOEUD COURANT
         do 110 j1 = 1, dima
@@ -378,14 +376,14 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                     zr(lphir+decal+(k1-1)*7)=0.d0
                 endif
 !
-120          continue
+120         continue
             zr(lphir+decal+4)= dz
             zr(lphir+decal+5)= -dy
             zr(lphir+decal+9)= -dz
             zr(lphir+decal+11)= dx
             zr(lphir+decal+15)= dy
             zr(lphir+decal+16)=-dx
-110      continue
+110     continue
 !
 !-- CONSTRUCTION DE LA MATRICE D'OBSERVATION
 !
@@ -403,8 +401,8 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                     zr(lmsm1u+(k1-1)*6+j1-1)=(1/zr(lmats+j1-1))*&
                     zr(lmatu+(j1-1)*6+k1-1)
                 endif
-140          continue
-130      continue
+140         continue
+130     continue
 !
         do 150 k1 = 1, 6
             do 160 j1 = 1, 6*dima
@@ -413,9 +411,9 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                     zr(lvsm1u+(k1-1)*6*dima+j1-1)= zr(lvsm1u+(k1-1)*6*&
                     dima+j1-1)+ zr(lmatv+(j1-1)*6*dima+l1-1)* zr(&
                     lmsm1u+(k1-1)*6+l1-1)
-170              continue
-160          continue
-150      continue
+170             continue
+160         continue
+150     continue
 !
 !-- REMPLISSAGE DE LA MATRICE PROJETEE
 !-- ON VERIFIE A CHAQUE PASSAGE QUE LES DDL MAITRES
@@ -435,11 +433,11 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                             zr(lvsm1u+(j1-1)*6*dima+k1-1)* zr(ltramo+(&
                             l1-1)*ddlmas+indmas-1)
                         endif
-200                  continue
-190              continue
+200                 continue
+190             continue
             endif
-180      continue
-100  end do
+180     continue
+100 end do
 !
 !-- REACTIVATION DU TEST FPE
     call matfpe(1)

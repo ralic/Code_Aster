@@ -64,7 +64,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, iec, ieq, ipoint
-    integer :: iret, j, lddeeq, ldnueq, ldprno, linueq, llinsk
+    integer ::  j, lddeeq, ldnueq, ldprno, linueq, llinsk
     integer :: llnoms, llnueq, llprno, llref1, ltinse, lttds
     integer :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
     integer :: neqsec, nsecpr, ntail, numnos, numsec
@@ -72,7 +72,6 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     parameter    (nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, basmod, intf
-    character(len=8) :: k8bid
     character(len=19) :: numddl, profno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx)
@@ -94,18 +93,14 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                intf, iret)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                numddl, iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
 !
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8bid, iret)
-    call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
-                k8bid, iret)
+    call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
+    call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -119,8 +114,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !-------------RECUPERATION DIMENSION MAILLAGE SQUELETTE-----------------
 !
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !------------RECUPERATION DU .INV.SKELETON------------------------------
 !
@@ -133,8 +127,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
     call jeveuo(numddl//'.NUEQ', 'L', llnueq)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
 !     POUR STOCKAGE NOMBRE DE DDL GLOBAUX ENGENDRE PAR SECTEUR
@@ -150,7 +143,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
         nddlt=nddlt+zi(llprno+(numnos-1)*(2+nbec)+1)
         zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
         2+nbec)+1)
-10  continue
+ 10 continue
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
@@ -185,7 +178,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
         ntail=2*zi(lttds+i-1)
         call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
         zi(lttds+i-1)=0
-20  continue
+ 20 continue
 !
 !
 !---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
@@ -217,7 +210,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
         do 40 iec = 1, nbec
             zi(ldprno+(i-1)*(2+nbec)+1+iec)= zi(llprno+(numnos-1)*(2+&
             nbec)+1+iec)
-40      continue
+ 40     continue
         if (numsec .ne. nsecpr) then
             call jelibe(jexnum(indirf, nsecpr))
             nsecpr=numsec
@@ -237,8 +230,8 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
                 zi(ipoint+2)=icomp
                 zi(lttds+numsec-1)=zi(lttds+numsec-1)+1
             endif
-50      continue
-30  continue
+ 50     continue
+ 30 continue
 !
     call jelibe(jexnum(indirf, nsecpr))
 !

@@ -40,7 +40,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ibid, ier, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno, jnueq
+    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno, jnueq
     integer :: iad, tabec(10), iavald, nunoe, numdx, numdy, numdz, numdrx
     integer :: numdry, numdrz, nuddl, i, axyzm
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3), pscal
@@ -53,14 +53,10 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
     depla = deplaz
     epsi = 1.0d-6
 !
-    call dismoi('F', 'PROF_CHNO', deplaz, 'CHAM_NO', ibid,&
-                prno, ier)
-    call dismoi('F', 'NUM_GD', deplaz, 'CHAM_NO', gd,&
-                k8b, ier)
-    call dismoi('F', 'NOM_GD', deplaz, 'CHAM_NO', ibid,&
-                k8b, ier)
-    call dismoi('F', 'NOM_MAILLA', deplaz, 'CHAM_NO', ibid,&
-                nomail, ier)
+    call dismoi('PROF_CHNO', deplaz, 'CHAM_NO', repk=prno)
+    call dismoi('NUM_GD', deplaz, 'CHAM_NO', repi=gd)
+    call dismoi('NOM_GD', deplaz, 'CHAM_NO', repk=k8b)
+    call dismoi('NOM_MAILLA', deplaz, 'CHAM_NO', repk=nomail)
     if (k8b(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'POSTRELE_17')
     endif
@@ -94,7 +90,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
         xnormr = 0.0d0
         do 36 i = 1, 3
             xnormr = xnormr + axer(i)*axer(i)
-36      continue
+ 36     continue
         if (xnormr .lt. epsi) then
             call jenuno(jexnum(nomail//'.NOMNOE', nunoe), k8b)
             call utmess('F', 'POSTRELE_30', sk=k8b)
@@ -102,13 +98,13 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
         xnormr = sqrt( xnormr )
         do 38 i = 1, 3
             axer(i) = axer(i) / xnormr
-38      continue
+ 38     continue
         axet(1) = axez(2)*axer(3) - axez(3)*axer(2)
         axet(2) = axez(3)*axer(1) - axez(1)*axer(3)
         axet(3) = axez(1)*axer(2) - axez(2)*axer(1)
         do 40 i = 1, 3
             xnormr = xnormr + axet(i)*axet(i)
-40      continue
+ 40     continue
         xnormr = sqrt( xnormr )
         if (xnormr .lt. epsi) then
             call jenuno(jexnum(nomail//'.NOMNOE', nunoe), k8b)
@@ -118,11 +114,11 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
             pgl(1,i) = axer(i)
             pgl(2,i) = axez(i)
             pgl(3,i) = axet(i)
-34      continue
+ 34     continue
 !
         do 10 iec = 1, nec
             tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
-10      continue
+ 10     continue
         numdx = 0
         numdy = 0
         numdz = 0
@@ -161,19 +157,19 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
                     valer(3) = zr(iavald-1+numdrz)
                 endif
             endif
-20      continue
+ 20     continue
         if ((numdx+numdy+numdz) .eq. 0) goto 22
         call utpvgl(1, 3, pgl, valed, vald)
         if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
         if (numdy .ne. 0) zr(iavald-1+numdy) = vald(2)
         if (numdz .ne. 0) zr(iavald-1+numdz) = vald(3)
-22      continue
+ 22     continue
         if ((numdrx+numdry+numdrz) .eq. 0) goto 30
         call utpvgl(1, 3, pgl, valer, valr)
         if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
         if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
         if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
-30  end do
+ 30 end do
 !
     call jedema()
 end subroutine

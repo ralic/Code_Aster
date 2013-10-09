@@ -84,8 +84,7 @@ subroutine rvmima(nomres, iocc)
     call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
     if (n1 .ne. 0) then
         valk(2) = champ
-        call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
-                    tych, iret)
+        call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych)
         if (tych(1:4) .eq. 'NOEU') then
             call prexno(champ, iocc, nomax, cpmax, valmax,&
                         nomin, cpmin, valmin, noamax, cpamax,&
@@ -225,7 +224,7 @@ subroutine rvmima(nomres, iocc)
                     ik = ik + 1
                     valk(ik) = zk8(iadr)
                 endif
-1001          continue
+1001         continue
             call jedetr(nomjv)
         endif
 !
@@ -235,8 +234,7 @@ subroutine rvmima(nomres, iocc)
         call rsexch(' ', resu, nomcha, iord, champ,&
                     iret)
         if (iret .ne. 0) goto 100
-        call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
-                    tych, iret)
+        call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych)
 !
         if (tych(1:4) .eq. 'NOEU') then
             nbpar = nbpar + 1
@@ -323,11 +321,11 @@ subroutine rvmima(nomres, iocc)
             call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
 !
-100  end do
+100 end do
 !
     call jedetr(knum)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 !

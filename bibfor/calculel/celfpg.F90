@@ -1,7 +1,6 @@
 subroutine celfpg(celz, nomobj, iret)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -14,6 +13,7 @@ subroutine celfpg(celz, nomobj, iret)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: celz, nomobj
     integer :: iret
 ! ======================================================================
@@ -68,11 +68,11 @@ subroutine celfpg(celz, nomobj, iret)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: ma, nomgd, kbid
+    character(len=8) :: ma, nomgd
     character(len=16) :: nofpg
     character(len=19) :: cel, ligrel, ligrsv
     character(len=24) :: nomosv
-    integer :: jobj, ibid, nbma, jcelv, jceld, nec
+    integer :: jobj, nbma, jcelv, jceld, nec
     integer :: igr, iel, ialiel, illiel
     integer :: jcelk, nbgr, imolo, jmolo, numa, nbel, kfpg
     integer :: iexi
@@ -92,16 +92,11 @@ subroutine celfpg(celz, nomobj, iret)
 !
 !     1 CALCUL DE LIGREL,NBMA,NEC :
 !     --------------------------------------------------------
-    call dismoi('F', 'NOM_MAILLA', cel, 'CHAM_ELEM', ibid,&
-                ma, ibid)
-    call dismoi('F', 'NOM_LIGREL', cel, 'CHAM_ELEM', ibid,&
-                ligrel, ibid)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
-    call dismoi('F', 'NOM_GD', cel, 'CHAM_ELEM', ibid,&
-                nomgd, ibid)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ibid)
+    call dismoi('NOM_MAILLA', cel, 'CHAM_ELEM', repk=ma)
+    call dismoi('NOM_LIGREL', cel, 'CHAM_ELEM', repk=ligrel)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('NOM_GD', cel, 'CHAM_ELEM', repk=nomgd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
 !
 !     2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
@@ -129,35 +124,35 @@ subroutine celfpg(celz, nomobj, iret)
         call jeveuo(nomobj, 'L', jobj)
     endif
 !
-    do 20,igr=1,nbgr
-    nbel=nbelem(ligrel,igr)
-    imolo=zi(jceld-1+zi(jceld-1+4+igr)+2)
-    if (imolo .eq. 0) goto 20
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-    kfpg=zi(jmolo-1+4+nec+1)
-    if (kfpg .gt. 0) then
-        call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
-    else
-        call codent(kfpg, 'G', nofpg)
-    endif
-!
-    if (.not.lexi) then
-        do 10,iel=1,nbel
-        numa=numail(igr,iel)
-        if (numa .gt. 0) zk16(jobj-1+numa)=nofpg
-10      continue
-!
-    else
-        iel=1
-        numa=numail(igr,iel)
-        if (zk16(jobj-1+numa) .ne. nofpg) then
-            iret=1
-            goto 30
+    do 20 igr = 1, nbgr
+        nbel=nbelem(ligrel,igr)
+        imolo=zi(jceld-1+zi(jceld-1+4+igr)+2)
+        if (imolo .eq. 0) goto 20
+        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
+        kfpg=zi(jmolo-1+4+nec+1)
+        if (kfpg .gt. 0) then
+            call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
+        else
+            call codent(kfpg, 'G', nofpg)
         endif
-    endif
-    20 end do
+!
+        if (.not.lexi) then
+            do 10 iel = 1, nbel
+                numa=numail(igr,iel)
+                if (numa .gt. 0) zk16(jobj-1+numa)=nofpg
+ 10         continue
+!
+        else
+            iel=1
+            numa=numail(igr,iel)
+            if (zk16(jobj-1+numa) .ne. nofpg) then
+                iret=1
+                goto 30
+            endif
+        endif
+ 20 end do
 !
 !
-30  continue
+ 30 continue
     call jedema()
 end subroutine

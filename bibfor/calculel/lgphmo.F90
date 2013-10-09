@@ -1,7 +1,6 @@
 subroutine lgphmo(ma, ligrel, pheno, modeli)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -17,6 +16,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma
     character(len=*) :: ligrel, pheno, modeli
 ! ----------------------------------------------------------------------
@@ -45,10 +45,9 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !
 !
-    integer :: ibid, nbgrel, nbma, nbtm, jtyma, jlitm, ima, tm
+    integer ::  nbgrel, nbma, nbtm, jtyma, jlitm, ima, tm
     integer :: te, jliel, igr, ico, jphmod, kmod, jlgrf
     integer :: nbel
-    character(len=8) :: kbid
     character(len=19) :: ligr19, phen1
 ! ----------------------------------------------------------------------
 !
@@ -56,8 +55,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     ligr19=ligrel
     phen1=pheno
 !
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                kbid, ibid)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call jenonu(jexnom('&CATA.'//phen1(1:13)//'.MODL', modeli), kmod)
     ASSERT(kmod.gt.0)
     call jeveuo(jexnum('&CATA.'//phen1, kmod), 'L', jphmod)
@@ -69,22 +67,22 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     call jeveuo(ma//'.TYPMAIL', 'L', jtyma)
     call wkvect('&&LGPHMO.LITM', 'V V I', nbtm, jlitm)
     nbel=0
-    do 1, ima=1,nbma
-    tm= zi(jtyma-1+ima)
-    ASSERT(tm.gt.0)
-    te= zi(jphmod-1+tm)
-    if (te .gt. 0) then
-        nbel=nbel+1
-        zi(jlitm-1+tm)=zi(jlitm-1+tm)+1
-    endif
-    1 end do
+    do 1 ima = 1, nbma
+        tm= zi(jtyma-1+ima)
+        ASSERT(tm.gt.0)
+        te= zi(jphmod-1+tm)
+        if (te .gt. 0) then
+            nbel=nbel+1
+            zi(jlitm-1+tm)=zi(jlitm-1+tm)+1
+        endif
+  1 end do
 !
 !
 !     -- CALCUL DE NBGREL :
     nbgrel=0
-    do 2, tm=1,nbtm
-    if (zi(jlitm-1+tm) .gt. 0) nbgrel=nbgrel+1
-    2 end do
+    do 2 tm = 1, nbtm
+        if (zi(jlitm-1+tm) .gt. 0) nbgrel=nbgrel+1
+  2 end do
 !
 !
 !     -- ALLOCATION ET REMPLISSAGE DE L'OBJET .LIEL :
@@ -96,26 +94,26 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
     igr=0
     ico=0
-    do 3, tm=1,nbtm
-    if (zi(jlitm-1+tm) .gt. 0) then
-        igr=igr+1
-        te= zi(jphmod-1+tm)
-        ASSERT(te.gt.0)
-        nbel=0
-        do 4, ima=1,nbma
-        if (zi(jtyma-1+ima) .eq. tm) then
-            nbel=nbel+1
+    do 3 tm = 1, nbtm
+        if (zi(jlitm-1+tm) .gt. 0) then
+            igr=igr+1
+            te= zi(jphmod-1+tm)
+            ASSERT(te.gt.0)
+            nbel=0
+            do 4 ima = 1, nbma
+                if (zi(jtyma-1+ima) .eq. tm) then
+                    nbel=nbel+1
+                    ico=ico+1
+                    zi(jliel-1+ico)=ima
+                endif
+  4         continue
+            ASSERT(nbel.gt.0)
+            call jecroc(jexnum(ligr19//'.LIEL', igr))
+            call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1)
             ico=ico+1
-            zi(jliel-1+ico)=ima
+            zi(jliel-1+ico)=te
         endif
- 4      continue
-        ASSERT(nbel.gt.0)
-        call jecroc(jexnum(ligr19//'.LIEL', igr))
-        call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1)
-        ico=ico+1
-        zi(jliel-1+ico)=te
-    endif
-    3 end do
+  3 end do
 !
 !
 !     -- OBJET .LGRF :

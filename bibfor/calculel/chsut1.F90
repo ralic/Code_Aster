@@ -51,7 +51,7 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 !     ------------------------------------------------------------------
     character(len=19) :: chsa, chsb, chsp
     integer :: i1, i2, jcs1k, jcs1d, jcs1c, jcs2k, jcs2c, k, kk
-    integer :: iret, ibid, ncmpch
+    integer :: iret, ncmpch
 !
     character(len=8) :: nocmp, nomgd1, tsca1, tsca2
 !
@@ -98,10 +98,8 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 !
 !     2.1 : LES TYPES SCALAIRES DE NOMGD1 ET NOMGD2 SONT LES MEMES:
     nomgd1 = zk8(jcs1k-1+2)
-    call dismoi('F', 'TYPE_SCA', nomgd1, 'GRANDEUR', ibid,&
-                tsca1, ibid)
-    call dismoi('F', 'TYPE_SCA', nomgd2, 'GRANDEUR', ibid,&
-                tsca2, ibid)
+    call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca1)
+    call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca2)
     if (tsca1 .ne. tsca2) then
         valk(1)=tsca1
         valk(2)=tsca2
@@ -121,13 +119,13 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 !      -------------------------
     zk8(jcs2k-1+2) = nomgd2
     ncmpch = zi(jcs1d-1+2)
-    do 10,k = 1,ncmpch
-    nocmp = zk8(jcs1c-1+k)
-    kk = indik8(lcmp1,nocmp,1,ncmp)
+    do 10 k = 1, ncmpch
+        nocmp = zk8(jcs1c-1+k)
+        kk = indik8(lcmp1,nocmp,1,ncmp)
 !       SI KK.EQ.0 : ON NE SAIT PAS RENOMMER LA CMP
-    ASSERT(kk.ne.0)
-    zk8(jcs2c-1+k) = lcmp2(kk)
-    10 end do
+        ASSERT(kk.ne.0)
+        zk8(jcs2c-1+k) = lcmp2(kk)
+ 10 end do
 !
 !
 !

@@ -4,7 +4,6 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                   liggrd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -29,6 +28,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprls0.h"
+!
     real(kind=8) :: deltat, lcmin
     character(len=2) :: levset
     character(len=8) :: noma, fiss, fispre
@@ -87,7 +87,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, nbnom, iret, jconx1, jconx2, jmai, ibid, ndim, jlsno
+    integer :: ifm, niv, nbnom, jconx1, jconx2, jmai, ibid, ndim, jlsno
     integer :: jvi, jvil, jwi, jwil, jptf, jptfl, jgdf, jgdfl, jfel, jfell
     integer :: jfeld, jmeast, jmestl, jmestd, itemp, nbnoma, itypma, iadf
     integer :: iadmet, iaddfi, ino, ima, iadalp, nuno, nbma, jdelfi, jdefil
@@ -97,7 +97,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     real(kind=8) :: signls, sigmls, sdiff, lsprec, siglst, sdifft, lsnouv, ji(3)
     real(kind=8) :: dist, dismin
     character(len=3) :: iterk3
-    character(len=8) :: k8b, lpain(4), lpaout(2), typma
+    character(len=8) ::  lpain(4), lpaout(2), typma
     character(len=10) :: resk10, retk10
     character(len=19) :: mai, cnols, cnogls, celgls, chams, celdfi, cesdfi
     character(len=19) :: celalf, cesalf, cnsvi, cnswi, cnsptf, cnsgdf, cesptf
@@ -128,15 +128,13 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     write(ifm,*) '   UTILISATION DE LA METHODE SIMPLEXE'
 !
 !  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnom,&
-                k8b, iret)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnom)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jmai)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8b, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
@@ -219,7 +217,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                                                           &))
         zl(jptfl-1+node) = .true.
         zr(jptf-1+node) = signls
-10  end do
+ 10 end do
     cnoptf = '&&XPRREI.CNOPTF'
     call cnscno(cnsptf, ' ', 'NON', 'V', cnoptf,&
                 'F', ibid)
@@ -278,7 +276,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             zl(jwil-1+node) = .true.
             zr(jvi-1+node) = 0.d0
             zr(jwi-1+node) = 0.d0
-110      continue
+110     continue
 !
 !--------------------------------------
 !   CALCUL DE GRAND F SUR LES ELEMENTS
@@ -292,7 +290,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             zl(jgdfl-1+node) = .true.
             zr(jgdf-1+node) = signls
 !
-90      continue
+ 90     continue
         call cnscno(cnsgdf, ' ', 'NON', 'V', cnogdf,&
                     'F', ibid)
 !
@@ -373,8 +371,8 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !
                 zr(jwi-1+nuno) = zr(jwi-1+nuno) + zr(jalpha-1+iadalp) * zr(jmeast-1+iadmet)
 !
-130          continue
-120      continue
+130         continue
+120     continue
 !
 !-----------------------------------------------------------------------
 !
@@ -404,7 +402,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                 sdifft = sdifft + (lsnouv-lsprec)**2.0d0
                 siglst = siglst + lsprec**2.0d0
             endif
-200      continue
+200     continue
 !  CAS OU TOUS LES RESIDUS A ESTIMER SONT CALCULES
         if (sdiff .eq. 0.d0 .and. sigmls .eq. 0.d0) then
             residu(itemp) = 0.d0
@@ -471,7 +469,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                             do 175 j = 1, ndim
                                 ji(j) = zr( jcoor-1+3*(node-1)+j) - zr(jcoor-1+3*(nuno-1)+j )
                                 dist=dist+ji(j)**2
-175                          continue
+175                         continue
                             dist=dist**0.5d0
 !     On repere le noeud le plus proche
                             if (dist .lt. dismin) then
@@ -480,15 +478,15 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                             endif
                         endif
 !
-170                  continue
-160              continue
+170                 continue
+160             continue
 ! On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
                 lsprec = zr(jlsno-1+node)
                 lsnouv = zr(jlsno-1+node) -deltat*(zr(jvi-1+numin)/zr( jwi-1+numin))
                 zr(jlsno-1+node) = lsnouv
             endif
 !
-800      continue
+800     continue
 !
 !
 !---------------------------------------------------
@@ -531,9 +529,9 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !         WRITE(*,*)'Fin de l"iteration N.',ITEMP
 !         WRITE(*,*)'Valeur du residu:', RESIDU(ITEMP)
 !
-995  end do
+995 end do
 !-----FIN DE LA BOUCLE PRINCIPALE---------------------------------------
-999  continue
+999 continue
 !
 !-------------------------------------
 !     AFFICHAGE DES INFOS UTILISATEUR
@@ -546,7 +544,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     write(ifm,903)
     do 300 i = 1, itemp
         write(ifm,904)i,residu(i),resit(i)
-300  continue
+300 continue
     write(ifm,903)
 !      ENDIF
     call codent(itemp, 'D', iterk3)

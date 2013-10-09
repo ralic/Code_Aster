@@ -58,7 +58,7 @@ subroutine mmprel(char, noma, nomo, ligret)
     logical :: lfrot, laxis, lveri
     character(len=24) :: lismae, defico
     character(len=16) :: modeli, phenom
-    integer :: ibid, ier, jdecme, jlist, izone
+    integer ::  jdecme, jlist, izone
     integer :: nzoco, ndimg, nmaco, ntmaec
     integer :: imae, posmae, nummae, nbmae
     logical :: lallv
@@ -88,8 +88,7 @@ subroutine mmprel(char, noma, nomo, ligret)
 !
 ! --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION
 !
-    call dismoi('F', 'PHENOMENE', nomo, 'MODELE', ibid,&
-                phenom, ier)
+    call dismoi('PHENOMENE', nomo, 'MODELE', repk=phenom)
 !
 ! --- INFOS DE LA ZONE
 !
@@ -139,13 +138,13 @@ subroutine mmprel(char, noma, nomo, ligret)
                 posmae = jdecme+imae
                 nummae = zi(jmaco+posmae-1)
                 zi(jlist+imae-1) = nummae
-10          continue
+ 10         continue
             call ajellt(ligret, noma, nbmae, lismae, ' ',&
                         phenom, modeli, 0, ' ')
         endif
-20  end do
+ 20 end do
 !
-99  continue
+ 99 continue
 !
     call jedetr(lismae)
     call jedema()

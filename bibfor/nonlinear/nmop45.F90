@@ -153,8 +153,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     call jelira(matrig//'.VALM', 'TYPE', cval=ktyp)
 !
 !     --- RECUPERATION DE LA NUMEROTATION DE LA MATRICE DE RAIDEUR ---
-    call dismoi('F', 'NOM_NUME_DDL', matrig, 'MATR_ASSE', ibid,&
-                numedd, iret)
+    call dismoi('NOM_NUME_DDL', matrig, 'MATR_ASSE', repk=numedd)
 !
 !     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---s
 !
@@ -311,10 +310,10 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     do 10 ieq = 1, nbparr*mxresf
         zr(lresur+ieq-1) = undf
-10  end do
+ 10 end do
     do 20 ieq = 1, nbpari*mxresf
         zi(lresui+ieq-1) = indf
-20  end do
+ 20 end do
 !
 !     --- CAS REEL ET GENERALISE ---
     call wkvect('&&NMOP45.VECT_PROPRE', 'V V R', neq*nbvect, lvec)
@@ -352,7 +351,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     else
         do 30 i = 1, 8
             priram(i) = 0
-30      continue
+ 30     continue
     endif
 !     --- SORENSEN : CAS REEL GENERALISE ---
 !     CALCUL DES MODES PROPRES
@@ -430,7 +429,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
         zr(lresur-1+2*mxresf+imet) = 0.0d0
         zk24(lresuk-1+mxresf+imet) = 'SORENSEN'
-40  end do
+ 40 end do
 !
 !
     if (mod45 .ne. 'VIBR') then
@@ -441,7 +440,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         do 50 imet = 1, nconv
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
             zi(lresui-1+imet) = imet
-50      continue
+ 50     continue
     endif
 !
 !     ------------------------------------------------------------------
@@ -457,7 +456,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                 omemin) then
                 nconv = nconv - 1
             endif
-110      continue
+110     continue
         if (mfreq .ne. nconv) then
             call utmess('I', 'ALGELINE2_17')
         endif
@@ -491,7 +490,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     endif
 !
-80  continue
+ 80 continue
 !
 !
 ! --- MENAGE

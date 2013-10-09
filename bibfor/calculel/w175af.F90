@@ -41,7 +41,7 @@ subroutine w175af(modele, chfer1)
 ! BUT : CREER LE CHAMP DE DONNEES POUR CALC_FERRAILLAGE
 !
 !-----------------------------------------------------------------------
-    integer :: gd, ibid, nocc, ncmpmx, nbtou, iret
+    integer :: gd, nocc, ncmpmx, nbtou
     integer :: n1, n2, n3, n4, n5, n6, n7
     integer :: jncmp, jvalv, jmail, iocc, nbmail
     real(kind=8) :: valr
@@ -51,8 +51,7 @@ subroutine w175af(modele, chfer1)
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     ASSERT(noma.ne.' ')
 !
     call getfac('AFFE', nocc)
@@ -132,7 +131,7 @@ subroutine w175af(modele, chfer1)
                         limanu=zi(jmail))
             call jedetr(mesmai)
         endif
-30  continue
+ 30 continue
 !
     call jedetr(chfer1//'.NCMP')
     call jedetr(chfer1//'.VALV')

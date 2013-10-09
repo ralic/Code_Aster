@@ -72,7 +72,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: kbid, nomacr, rota
+    character(len=8) ::  nomacr, rota
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
 !
 !
@@ -81,28 +81,26 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 !     ----------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadesm, ialica, ialich, ianmcr, iaparr, iasssa
-    integer :: idres2, ierd, iret, j, jsma, long, nbsma
+    integer :: idres2, iret, j, jsma, long, nbsma
     integer :: nbssa, nddle, nddli, nddlt, nmxval
 !-----------------------------------------------------------------------
     if (statut(1:5) .eq. 'DEBUT') then
-        call dismoi('F', 'NB_SM_MAILLA', mo, 'MODELE', nbsma,&
-                    kbid, ierd)
-        call dismoi('F', 'NB_SS_ACTI', mo, 'MODELE', nbssa,&
-                    kbid, ierd)
+        call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
+        call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
         if (nbssa .gt. 0) then
             call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
             call jeveuo(ma//'.NOMACR', 'L', ianmcr)
             nmxval=0
-            do 1, jsma= 1, nbsma
-            if (zi(iasssa-1+jsma) .eq. 1) then
-                nomacr= zk8(ianmcr-1+jsma)
-                call jeveuo(nomacr//'.DESM', 'L', iadesm)
-                nddle = zi(iadesm-1+4)
-                nddli = zi(iadesm-1+5)
-                nddlt=nddli+nddle
-                nmxval= max(nmxval,nddlt)
-            endif
- 1          continue
+            do 1 jsma = 1, nbsma
+                if (zi(iasssa-1+jsma) .eq. 1) then
+                    nomacr= zk8(ianmcr-1+jsma)
+                    call jeveuo(nomacr//'.DESM', 'L', iadesm)
+                    nddle = zi(iadesm-1+4)
+                    nddli = zi(iadesm-1+5)
+                    nddlt=nddli+nddle
+                    nmxval= max(nmxval,nddlt)
+                endif
+  1         continue
             if (nmxval .gt. 0) then
                 call wkvect('&&SSVALV.VALEURS', 'V V R', nmxval, idresl)
 !           --          '&&SSVALV.VALTEMP' EST UN VECTEUR DE TRAVAIL :
@@ -147,9 +145,9 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 !
         if (rota(1:3) .eq. 'NON') then
 !         RECOPIE DU VECTEUR DEJA CONDENSE :
-            do 2, i=nddli+1,nddlt
-            zr(idresl-1+i)= zr(ialica-1+nddlt+i)
- 2          continue
+            do 2 i = nddli+1, nddlt
+                zr(idresl-1+i)= zr(ialica-1+nddlt+i)
+  2         continue
 !
         else if (rota(1:3).eq.'OUI') then
 !         ROTATION:
@@ -164,8 +162,8 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
                     lambda(i,j+3) = 0.d0
                     lambda(i+3,j) = 0.d0
                     lambda(i+3,j+3) = pgl(i,j)
-712              continue
-710          continue
+712             continue
+710         continue
 !
             if (zk8(ialich-1+1)(1:3) .eq. 'NON') then
 !

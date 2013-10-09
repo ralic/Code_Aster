@@ -70,7 +70,7 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iddeeq, iran, iret, j, k
+    integer :: i, ibid, iddeeq, iran, j, k
     integer :: ldk0aa, ldk0ai, ldk0aj, ldk0ii, ldk0ji, ldk0jj, ldkpaa
     integer :: ldkpai, ldkpaj, ldkpja, ldkpji, ldkpjj, ldm0ii, llcham
     integer :: lldesc, llkge, llmge, llnin, llnoa, llnod, llnog
@@ -93,13 +93,11 @@ subroutine prcymn(nomres, soumat, repmat)
     call jelibe(nomres//'.CYCL_REFE')
 !
 !
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                numddl, iret)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
 !
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid,&
-                raid, iret)
+    call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
@@ -212,8 +210,7 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 ! --- RECUPERATION NB EQUATIONS
 !
-    call dismoi('F', 'NB_EQUA', raid, 'MATR_ASSE', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', raid, 'MATR_ASSE', repi=neq)
     call jeveuo(numddl//'.DEEQ', 'L', iddeeq)
 !
 ! --- RECUPERATION DES NUMEROS D'INTERFACE DROITE ET GAUCHE

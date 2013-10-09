@@ -88,7 +88,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
 !-----------------------------------------------------------------------
     integer :: iadirg, iadrx, iadry, iadrz, iadx, iady, iadz
-    integer :: ibamo, icompt, idelat, ierd, igeo, ilires, ilmax
+    integer :: ibamo, icompt, idelat, igeo, ilires, ilmax
     integer :: imacl, imodg, ind, ior, iprs, irang, iret
     integer :: irot, itabl, itzsto, k, nbmo, nbmod, nbmodg
     integer :: nbsst, nn
@@ -135,10 +135,8 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
         call rsexch('F', bamo, 'DEPL', 1, nomcha,&
                     iret)
-        call dismoi('F', 'NOM_MAILLA', nomcha(1:19), 'CHAM_NO', ibid,&
-                    mailla, ierd)
-        call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
-                    maflui, ierd)
+        call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
+        call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
             call tabcor(model, mate, mailla, maflui, moint,&
                         num, ndble, icor)
@@ -168,7 +166,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
             reste(ior)=mod(tgeom(ior+3),deuxpi)
 !
- 3      continue
+  3     continue
 !
         if ((reste(1).eq.0.0d0) .and. (reste(2).eq.0.0d0) .and. (reste(3) .eq.0.0d0)) then
             norm2 = 0.0d0
@@ -184,7 +182,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call rsorac(bamo, 'LONUTI', ibid, bid, k8bid,&
                     cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
-        nbmodg=tmod(1)           
+        nbmodg=tmod(1)
 !
         zi(itabl+isst-1)=nbmodg
 !
@@ -226,20 +224,20 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! D UNE SOUS STRUCTURE A UNE AUTRE DES CHAMPS AUX NOEUDS
 ! CALCULES SUR UNE SEULE SOUS STRUCTURE
 !
-        do 2, imodg=1,nbmodg
-        icompt=icompt+1
+        do 2 imodg = 1, nbmodg
+            icompt=icompt+1
 !
-        if (repon(1:3) .eq. 'NON') then
-            if (zi(idelat+icompt-1) .ne. 1) goto 2
-        endif
+            if (repon(1:3) .eq. 'NON') then
+                if (zi(idelat+icompt-1) .ne. 1) goto 2
+            endif
 !
-        call trprot(model, bamo, tgeom, imodg, iadx,&
-                    iady, iadz, isst, iadrp, norm1,&
-                    norm2, ndble, num, nu, ma,&
-                    mate, moint, ilires, k, icor)
+            call trprot(model, bamo, tgeom, imodg, iadx,&
+                        iady, iadz, isst, iadrp, norm1,&
+                        norm2, ndble, num, nu, ma,&
+                        mate, moint, ilires, k, icor)
 !
 !
- 2      continue
+  2     continue
 !
 ! DESTRUCTION DU TABLEAU DES CORRESPONDANCES
 !
@@ -247,7 +245,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
         if (ndble .eq. 1) call jedetr('&&TABCOR.CORRE2')
 !
- 1  continue
+  1 continue
 !
 !----------------------------------------------------------------
 ! CALCUL DU NOMBRE DE MODES TOTAL
@@ -255,7 +253,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     nbmo=0
     do 4 isst = 1, nbsst
         nbmo=nbmo+zi(itabl+isst-1)
- 4  continue
+  4 continue
 !
 ! CREATION D UN TABLEAU DE VECTEURS CONTENANT LES NOMS DE TOUS
 ! LES VECTEURS DE DEPLACEMENTS ET DE PRESSION DE L ENSEMBLE
@@ -301,8 +299,8 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
             call rangen(nugene//'.NUME', i, j, irang)
             zi(iadirg+ind-1)=irang
 !
- 6      continue
- 5  continue
+  6     continue
+  5 continue
 !
 !
 ! --- MENAGE
@@ -316,7 +314,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call jedetr('&&CALMDG.TZSTO'//chaine)
         call jedetr('&&CALMDG.PRES'//chaine)
 !
- 7  continue
+  7 continue
 !
 !
     call jedetr('&&CALMDG.TABL_MODE')

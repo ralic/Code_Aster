@@ -76,7 +76,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     character(len=6) :: nompro
     parameter    (nompro = 'MESTAT')
-    integer :: nbval, ibid, ierd, jval, itps, itps0, iret, ninstc, neq
+    integer :: nbval, ibid, jval, itps, itps0, iret, ninstc, neq
     integer :: vali
     real(kind=8) :: time, instf, tps1(4), tps2(4), tps3(4), tcpu, partps(3)
     real(kind=8) :: valr(3)
@@ -134,8 +134,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
 !
 !     -- LE MATERIAU (ELAS) PEUT-IL CHANGER AU COURS DU TEMPS ?
-    call dismoi('F', 'ELAS_FO', mate, 'CHAM_MATER', ibid,&
-                repk, ierd)
+    call dismoi('ELAS_FO', mate, 'CHAM_MATER', repk=repk)
     matcst=(.not.(repk.eq.'OUI'))
 !
 ! 2.2. ==> NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE

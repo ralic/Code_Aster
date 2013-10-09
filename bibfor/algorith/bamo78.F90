@@ -139,12 +139,11 @@ subroutine bamo78(nomres, trange, typres)
     call rsorac(basemo, 'LONUTI', 0, r8bid, k8bid,&
                 c16bid, r8bid, k8bid, tmod, 1,&
                 ibid)
-    nbmode=tmod(1)            
+    nbmode=tmod(1)
 !
 ! --- NUME_DDL ATTACHE A LA BASE MODALE
 !
-    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                numedd, iret)
+    call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
 !
 ! --- NOUVELLE NUMEROTATION PAS NECESSAIRE ENCORE DANS REST_COND_TRAN
 !
@@ -157,13 +156,11 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- RECOPIE DES MODES PROPRES DANS UN VECTEUR DE TRAVAIL
 !
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     call wkvect('&&BAMO78.BASE', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
                 'R', zr(idbase), [cbid])
-    call dismoi('F', 'NOM_MODELE', numddl, 'NUME_DDL', ibid,&
-                modele, iret)
+    call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=modele)
 !
 ! --- CHAMPS SUR LESQUELS ON RESTITUE
 !
@@ -214,11 +211,11 @@ subroutine bamo78(nomres, trange, typres)
         call rsorac(nomres, 'DERNIER', ibid, r8bid, k8bid,&
                     c16bid, epsi, crit, tmod, 1,&
                     nbtrou)
-        nume0=tmod(1)            
+        nume0=tmod(1)
         call rsorac(nomres, 'INST', ibid, zr(jinst), k8bid,&
                     c16bid, epsi, crit, tmod, 1,&
                     nbtrou)
-        nume=tmod(1)            
+        nume=tmod(1)
         if (nbtrou .ne. 0) nume0 = nume
         nbins2 = nbinst + nume0
         call rsagsd(nomres, nbins2)
@@ -322,8 +319,7 @@ subroutine bamo78(nomres, trange, typres)
     chvref='&&BAMO78.VREF'
     rundf=r8vide()
     ligrel = modele//'.MODELE'
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                mesh, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE',repk=mesh)
     compor = mate(1:8)//'.COMPOR'
     call megeom(modele, chgeom)
     call mecara(carele(1:8), exicar, chcara)

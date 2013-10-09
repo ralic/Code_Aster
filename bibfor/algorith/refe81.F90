@@ -54,7 +54,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadref, ibid, ioc, iret, lddesc, lldesc
+    integer :: iadref, ioc, iret, lddesc, lldesc
     integer :: llref, nbval
 !-----------------------------------------------------------------------
     data bl8         /'        '/
@@ -71,8 +71,8 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     call getvid(' ', 'MATR_RIGI', nbval=0, nbret=ioc)
     ioc = -ioc
     if (ioc .eq. 0) then
-        call dismoi('C', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid,&
-                    raid, iret)
+        call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid, arret='C',&
+                    ier=iret)
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_RIGI', scal=raid, nbret=iret)
     else
@@ -85,8 +85,8 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     call getvid(' ', 'MATR_MASS', nbval=0, nbret=ioc)
     ioc = -ioc
     if (ioc .eq. 0) then
-        call dismoi('C', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
-                    mass, iret)
+        call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass, arret='C',&
+                    ier=iret)
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_MASS', scal=mass, nbret=iret)
     else
@@ -99,20 +99,20 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     call getvid(' ', 'MATR_AMOR', nbval=0, nbret=ioc)
     ioc = -ioc
     if (ioc .eq. 0) then
-        call dismoi('C', 'REF_AMOR_PREM', basmod, 'RESU_DYNA', ibid,&
-                    amor, iret)
+        call dismoi('REF_AMOR_PREM', basmod, 'RESU_DYNA', repk=amor, arret='C',&
+                    ier=iret)
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_AMOR', scal=amor, nbret=iret)
     else
         call utmess('F', 'ALGORITH14_16')
     endif
 !
-    call dismoi('C', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                numddl, iret)
-    call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                lintf, iret)
-    call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
-                typbas, iret)
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl, arret='C',&
+                ier=iret)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C',&
+                ier=iret)
+    call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=typbas, arret='C',&
+                ier=iret)
 !
 !
 ! --- RECUPERATION MAILLAGE
@@ -121,8 +121,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
         call jeveuo(lintf//'.IDC_REFE', 'L', llref)
         mailla = zk24(llref)
     else
-        call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                    mailla, iret)
+        call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
     endif
 !
 ! --- TRAITEMENT COHERENCE MATRICE ASSEMBLEES
@@ -130,16 +129,12 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 !
     if (raid .eq. bl8 .or. mass .eq. bl8) goto 10
 !
-    call dismoi('F', 'NOM_NUME_DDL', raid, 'MATR_ASSE', ibid,&
-                numddl, iret)
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                maillb, iret)
-    call dismoi('F', 'NOM_NUME_DDL', mass, 'MATR_ASSE', ibid,&
-                numbis, iret)
+    call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=numddl)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=maillb)
+    call dismoi('NOM_NUME_DDL', mass, 'MATR_ASSE', repk=numbis)
 !
     if (amor .ne. bl8) then
-        call dismoi('F', 'NOM_NUME_DDL', amor, 'MATR_ASSE', ibid,&
-                    numter, iret)
+        call dismoi('NOM_NUME_DDL', amor, 'MATR_ASSE', repk=numter)
     endif
 !
 ! --- CONTROLE DE LA COHERENCE DES MATRICES ASSEMBLEES
@@ -164,7 +159,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
         call utmess('F', 'ALGORITH14_23', nk=2, valk=valk)
     endif
 !
-10  continue
+ 10 continue
 !
 ! --- REMPLISSAGE DU .REFE
 !

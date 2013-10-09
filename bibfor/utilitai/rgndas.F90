@@ -1,8 +1,7 @@
 subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                   ligrel, infobl)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -14,6 +13,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
+!
     integer :: ieq
     character(len=*) :: nu, nomno, nomcmp, tyddl, ligrel, infobl
 ! person_in_charge: jacques.pellet at edf.fr
@@ -48,11 +48,11 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 ! OUT : LIGREL : NOM DU LIGREL SI LE NOEUD EST 'B' OU 'C' (BLANC SINON)
 ! OUT : INFOBL : INFORMATIONS COMPLEMENTAIRES
 ! ----------------------------------------------------------------------
-    integer :: ibid, gd, nec, jprno, jnueq, ico
-    integer :: jdesc, ier, nlili, i, ilo, nbno, ino, ideb, ncmp
+    integer ::  gd, nec, jprno, jnueq, ico
+    integer :: jdesc, nlili, i, ilo, nbno, ino, ideb, ncmp
     integer :: icmp, iieq, nuno, nucmp, ncmpmx, iadg1, jrefe
     integer :: inocmp, nuddl, neq, nusst, nulia, jdeeq, jorig, iexi
-    character(len=8) :: noma, k8b, nomno2, nomcm2, modgen, kn1, kn2
+    character(len=8) :: noma, nomno2, nomcm2, modgen, kn1, kn2
     character(len=19) :: nume
     logical :: trouve, lnuge
 !
@@ -77,10 +77,8 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 !     -- 1. CAS NUME_DDL :
 !     ---------------------
     if (.not.lnuge) then
-        call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
-                    noma, ier)
-        call dismoi('F', 'NUM_GD_SI', nu, 'NUME_DDL', gd,&
-                    k8b, ier)
+        call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=noma)
+        call dismoi('NUM_GD_SI', nu, 'NUME_DDL', repi=gd)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', inocmp)
         call jeveuo(nume//'.DEEQ', 'L', jdeeq)
@@ -121,10 +119,10 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                         goto 40
 !
                     endif
-10              continue
-20          continue
-30      continue
-40      continue
+ 10             continue
+ 20         continue
+ 30     continue
+ 40     continue
         ASSERT(trouve)
         ASSERT(nuno.gt.0)
 !
@@ -137,8 +135,8 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                 ico=ico+1
                 if (ico .eq. nucmp) goto 60
             endif
-50      continue
-60      continue
+ 50     continue
+ 60     continue
         ASSERT(icmp.le.ncmpmx)
         nomcmp=zk8(inocmp-1+icmp)
         ASSERT(nomcmp.eq.'LAGR')
@@ -205,6 +203,6 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
         endif
     endif
 !
-70  continue
+ 70 continue
     call jedema()
 end subroutine

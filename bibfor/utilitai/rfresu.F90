@@ -42,7 +42,7 @@ subroutine rfresu()
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: nbtrou, numer1(1), l, n1, iret, ivari
-    integer :: nm, ngm, npoint, np, nn, npr, ngn, ibid, ie
+    integer :: nm, ngm, npoint, np, nn, npr, ngn
     integer :: nres, ifm, niv, nusp
     real(kind=8) :: epsi
     character(len=8) :: k8b, crit, maille, noma, intres
@@ -103,10 +103,8 @@ subroutine rfresu()
         if (nbtrou .eq. 0) then
             call utmess('F', 'UTILITAI4_22', sk=nomcha)
         endif
-        call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
-                    noma, ie)
-        call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
-                    nomgd, ie)
+        call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=noma)
+        call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
         if (ngn .ne. 0) then
             call utnono(' ', noma, 'NOEUD', nogno, noeud,&
                         iret)

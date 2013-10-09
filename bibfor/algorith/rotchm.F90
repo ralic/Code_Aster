@@ -55,14 +55,14 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iax, ibid, icomp, ierd, inueq, j
+    integer :: i, iax, ibid, icomp, inueq, j
     integer :: k, llnueq, llprno, ltidec, nbcmp, nbcmpm, nbec
     integer :: nbnot, nbss, numsec
     real(kind=8) :: tetac, tetcou
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
     character(len=6) :: pgc
-    character(len=8) :: kbid, nomg
+    character(len=8) ::  nomg
     character(len=19) :: profno
     character(len=24) :: prno, nueq
     integer :: invsk(nbnot, 2), ieq(nbcmpm)
@@ -79,8 +79,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                kbid, ierd)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -124,7 +123,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
                 ieq(j)=0
                 udep(j)=0.d0
             endif
-20      continue
+ 20     continue
 !
 !
         do 30 j = 1, nbcmpm
@@ -132,11 +131,11 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
                 vale(ieq(j))=0.d0
                 do 40 k = 1, nbcmpm
                     vale(ieq(j))=vale(ieq(j))+tet0(j,k)*udep(k)
-40              continue
+ 40             continue
             endif
-30      continue
+ 30     continue
 !
-10  end do
+ 10 end do
 !
     call jedetr('&&'//pgc//'.DECODAGE')
 !

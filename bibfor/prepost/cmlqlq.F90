@@ -19,7 +19,6 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cmlqdi.h"
 #include "asterfort/cmlqma.h"
@@ -43,6 +42,7 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ndinit, nbma, lima(nbma)
     character(len=8) :: main, maout, prefix
 ! ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
 !
     integer :: nbtyma, ityp, jnoeu
     parameter    ( nbtyma = 27 )
-    integer :: jnomim, jnomip, jmilie, jdim, nbno, mxar, iret
+    integer :: jnomim, jnomip, jmilie, jdim, nbno, mxar
     integer :: nbnomi, nbtot, no, jcoor, nbnomx, nbmato, jtypma, jrefe
     integer :: defare(2, 0:12, nbtyma), reftyp(nbtyma), nbref(nbtyma)
     integer :: impmai(nbtyma)
@@ -148,7 +148,7 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
         ASSERT(nomast(ityp) .eq. kbid)
         call jeveuo(jexnum('&CATA.TM.NBNO', reftyp(ityp)), 'L', jnoeu)
         nbref(ityp) = zi(jnoeu)
-10  end do
+ 10 end do
 !
 ! --- DIMENSIONS DU PROBLEME
 !
@@ -194,7 +194,7 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
     do 5 no = 1, nbno
         call jenuno(jexnum(nomnoi, no), nomnd)
         call jecroc(jexnom(nomnoe, nomnd))
- 5  end do
+  5 end do
 !
 ! --- CHAM_GEOM : RECOPIE DE LA PARTIE COMMUNE
 !
@@ -212,8 +212,7 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
 !
 ! --- MISE A JOUR DES MAILLES
 !
-    call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nbnomx,&
-                kbid, iret)
+    call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
     typema = maout // '.TYPMAIL'
     connei = main //'.CONNEX'
     conneo = maout//'.CONNEX'

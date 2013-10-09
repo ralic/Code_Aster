@@ -103,7 +103,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     character(len=*) :: mate
     complex(kind=8) :: cbid
     integer :: iadg, iadx, iady, iadz, iaut, ichad, ichar
-    integer :: ichav, idsc, ierd, ilires, imodg, inoe, inomcd
+    integer :: ichav, idsc, ilires, imodg, inoe, inomcd
     integer :: inomcr, inomcv, inueq, iprn, iref, iret, ival
     integer :: ivaleu, k, nbchad, nbchar, nbchav, nbnoe, ncmp
     integer :: nec
@@ -148,17 +148,12 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
 ! CHANGEMENT DE VALEUR POUR DX ET DY (OU DZ)
 !
-    call dismoi('F', 'PROF_CHNO', nomcha, 'CHAM_NO', ibid,&
-                pchno, ierd)
-    call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
-                mailla, ierd)
-    call dismoi('F', 'NOM_GD', nomcha, 'CHAM_NO', ibid,&
-                gd, ierd)
-    call dismoi('F', 'NB_EC', gd, 'GRANDEUR', nec,&
-                k8bid, ierd)
+    call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=pchno)
+    call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=mailla)
+    call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=gd)
+    call dismoi('NB_EC', gd, 'GRANDEUR', repi=nec)
 !
-    call dismoi('F', 'NB_NO_MAILLA', mailla, 'MAILLAGE', nbnoe,&
-                k8bid, ierd)
+    call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbnoe)
 !
 !
     call jenonu(jexnom(pchno//'.LILI', '&MAILLA'), ibid)
@@ -321,8 +316,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 ! TEST POUR SAVOIR SI LE FLUIDE ET LA SOUS-STRUCTURE REPOSENT
 ! SUR LE MEME MAILLAGE OU NON
 !
-    call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
-                maflui, ierd)
+    call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
 !
 !
     chamnx='&&TRPROT.CHAMNX'

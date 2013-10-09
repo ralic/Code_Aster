@@ -45,7 +45,7 @@ subroutine rsmode(resu)
 !
 !    IN/JXVAR : RESU  NOM DU CONCEPT SD_RESULTAT
 !-----------------------------------------------------------------------
-    integer :: iret, ibid, neq, iordr, isymb, jordr, k, krang
+    integer :: iret, neq, iordr, isymb, jordr, k, krang
     integer :: nbnosy, nbordr, iexi, nbval, jliprf
     character(len=1) :: kbid, typ1
     character(len=8) :: resu8, nomgd, ma1, ma2
@@ -64,14 +64,13 @@ subroutine rsmode(resu)
     if (iexi .eq. 0) goto 50
 !
     nu=' '
-    call dismoi('C', 'NUME_DDL', resu, 'RESU_DYNA', ibid,&
-                nu, iret)
+    call dismoi('NUME_DDL', resu, 'RESU_DYNA', repk=nu, arret='C',&
+                ier=iret)
 !
     if (nu .eq. ' ') goto 50
 !
     prchn1=nu(1:8)//'.NUME'
-    call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
-                ma1, iret)
+    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=ma1)
 !
     champt='&&RSMODE.CHAMPT'
 !
@@ -88,16 +87,13 @@ subroutine rsmode(resu)
                         iret)
             if (iret .ne. 0) goto 30
 !
-            call dismoi('F', 'NOM_GD', nomcha, 'CHAM_NO', ibid,&
-                        nomgd, iret)
+            call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=nomgd)
             if (nomgd(1:5) .ne. 'DEPL_') goto 30
 !
-            call dismoi('F', 'PROF_CHNO', nomcha, 'CHAM_NO', ibid,&
-                        prchno, iret)
+            call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchno)
             if (prchno .eq. prchn1) goto 30
 !
-            call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
-                        ma2, iret)
+            call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=ma2)
             if (ma1 .ne. ma2) then
                 valk(1)=resu
                 valk(2)=ma1
@@ -114,8 +110,8 @@ subroutine rsmode(resu)
             call detrsd('CHAM_NO', nomcha)
             call copisd('CHAMP', 'G', champt, nomcha)
             call detrsd('CHAM_NO', champt)
-30      continue
-40  continue
+ 30     continue
+ 40 continue
 !
 !
 !     -- IL FAUT ENCORE DETRUIRE LES PROF_CHNO QUI ONT ETE CREES
@@ -128,12 +124,12 @@ subroutine rsmode(resu)
             call wkvect('&&RSMODES.LIPRFCN', 'V V K24', nbval, jliprf)
             call jelstc('G', resu8//'.PRFCN', 1, nbval, zk24(jliprf),&
                         nbval)
-            do 41, k=1,nbval
-            call detrsd('PROF_CHNO', zk24(jliprf-1+k)(1:19))
-41          continue
+            do 41 k = 1, nbval
+                call detrsd('PROF_CHNO', zk24(jliprf-1+k)(1:19))
+ 41         continue
         endif
     endif
 !
-50  continue
+ 50 continue
     call jedema()
 end subroutine

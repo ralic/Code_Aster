@@ -57,7 +57,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 !
     integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux, jrefa
     integer :: monit(12), jnumsd, n1, vali(2), compt
-    integer :: jmail, nbma, islvk, islvr, islvi, iret
+    integer :: jmail, nbma, islvk, islvr, islvi
     real(kind=8) :: eps
     character(len=4) :: klag2
     character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
@@ -109,8 +109,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 !         CAS PARTICULIER DU NUME_DDL_GENE
                 goto 70
             else if (zk24(jrefa+9)(1:4).eq.'NOEU') then
-                call dismoi('F', 'NOM_MODELE', matra, 'MATR_ASSE', ibid,&
-                            modele, iret)
+                call dismoi('NOM_MODELE', matra, 'MATR_ASSE', repk=modele)
             else
 ! --- CAS NON PREVU
                 ASSERT(.false.)
@@ -146,7 +145,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
                 compt=0
                 do 50 i = 1, nbma
                     if (zi(jnumsd-1+i) .eq. rang) compt=compt+1
-50              continue
+ 50             continue
             endif
         else
 !       -- CENTRALISE
@@ -155,14 +154,14 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             compt=0
             do 60 i = 1, nbma
                 if (zi(jmail-1+i) .ne. 0) compt=compt+1
-60          continue
+ 60         continue
         endif
     endif
 !
 !
 ! --- OBJETS DE MONITORING
 ! --- INDIRECTION SI ON N'A PAS PU LIRE LE MODELE (NUME_DDL_GENE)
-70  continue
+ 70 continue
     if (niv .ge. 2) then
         kmonit(1)='&MUMPS.INFO.MAILLE'
         kmonit(2)='&MUMPS.INFO.MEMOIRE'
@@ -183,7 +182,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             zi(monit(10)+i-1)=0
             zi(monit(11)+i-1)=0
             zi(monit(12)+i-1)=0
-110      continue
+110     continue
 ! -----
         zi(monit(9)+rang)=compt
         call asmpi_comm_jev('REDUCE', kmonit(9))
@@ -192,10 +191,10 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             iaux=0
             do 112 i = 1, nbproc
                 iaux=iaux+zi(monit(9)+i-1)
-112          continue
+112         continue
             do 114 i = 1, nbproc
                 zi(monit(9)+i-1)=iaux
-114          continue
+114         continue
         endif
     endif
 !

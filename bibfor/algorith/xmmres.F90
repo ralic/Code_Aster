@@ -18,9 +18,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -44,6 +43,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 #include "asterfort/xmmred.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
+!
     character(len=19) :: cnsinr
     character(len=19) :: veasse(*)
     character(len=19) :: depdel
@@ -71,14 +71,14 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     integer :: jcesl1, jcesl2, jcesl3, jcesl4, jcesl5, jtmdim, ndime
     integer :: jcesd1, jcesd2, jcesd3, jcesd4, jcesd5
     integer :: jcont, jconl, jfrot, jfrol, jdepl, jlagv
-    integer :: jcesk1, nbma, iret, ima, iad, i, ia, in, iadb, k
+    integer :: jcesk1, nbma, ima, iad, i, ia, in, iadb, k
     integer :: ninter, jmai, itypma, nuno, jconx1, jconx2, j, ndim
     integer :: jdepv, jcnsvr, jcnslr
     integer :: nsom, nosom(2), ar(12, 3), nbar, zresu
     integer :: zxain
     integer :: jxc
-    integer :: ibid, nbno
-    character(len=8) :: noma, k8bid, typma
+    integer ::  nbno
+    character(len=8) :: noma, typma
     character(len=19) :: depdes, depcn, fcont, fconts
     character(len=19) :: fctcn, ffrot, ffrots, ffrocn, lagcn
     character(len=19) :: faclos, aintes, pintes, basecs
@@ -107,10 +107,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     basecs = '&&XMMRES.BASECS'
     lstno = '&&XMMRES.LSTNO'
     cont = 0.d0
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
-                k8bid, ibid)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 ! --- ACCES SD CONTACT
 !
@@ -169,13 +167,11 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
     call jeveuo(faclos//'.CESK', 'L', jcesk1)
     noma = zk8(jcesk1-1+1)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                k8bid, iret)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma//'.TYPMAIL', 'L', jmai)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
 ! --- SD TEMPORAIRE POUR VERIF NOEUDS DEJA CALCULES
@@ -257,7 +253,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                             1, ndim*(i-1)+j, iad)
                 ASSERT(iad.gt.0)
                 xyz(j)=zr(jcesv3-1+iad)
-121          continue
+121         continue
 !
 !         RECUP DES NUMEROS GLOBAUX DES NOEUDS DE L'ARETE/NOEUD SOMMET
             if (in .gt. 0) then
@@ -296,7 +292,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !         C'EST FAUX MAIS C'ETAIT DEJA COMME CA
 !         IL FAUT RECUPERER LES FF DE FORMES
                 levels = levels + zr(jcesv5-1+iad)
-125          continue
+125         continue
             rr =sqrt(abs(levels))
 !
 !         RECUP NORMALE, VECTEURS TANGENTS AU POINT D'INTERSECTION
@@ -307,7 +303,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                 n(j) =zr(jcesv4-1+iadb-1+j)
                 tau1(j)=zr(jcesv4-1+iadb-1+ndim+j)
                 if (ndim .eq. 3) tau2(j)=zr(jcesv4-1+iadb-1+2*ndim+j)
-130          continue
+130         continue
 !
 !         INDICATEUR DE CONTACT
 !         IMPOSSIBLE A REMPLIR SI L'INTEGRATION N'EST PAS AUX NOEUDS
@@ -325,8 +321,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                         saut(j) = saut(j) - 2.d0 * ff(k) * rr * zr(jdepv-1+2*ndim*(nosom(k)-1)+nd&
                                   &im+j)
                     endif
-141              continue
-140          continue
+141             continue
+140         continue
             jeu = ddot(ndim,n,1,saut,1)
 !
 !         RNX, RNY, RNZ SONT LES 3 COMPOSANTES DE RNXYZ
@@ -344,8 +340,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                         rnxyz(j) = rnxyz(j) - ff(k) * rr * mult * zr(jcont-1+3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
                     endif
-145              continue
-144          continue
+145             continue
+144         continue
             call normev(rnxyz, rn)
             rnx = rnxyz(1)
             rny = rnxyz(2)
@@ -357,8 +353,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             do 150 j = 1, ndim
                 do 151 k = 1, ndim
                     glit(j)=glit(j)+p(j,k)*saut(k)
-151              continue
-150          continue
+151             continue
+150         continue
             call normev(glit, gli)
 !
 !         RTAX, RTAY, RTAZ, RTGX, RTGY, RTGZ
@@ -370,8 +366,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                     lagfro(j) = lagfro(j) + ff(k) * zr(jlagv-1+ndim*( nosom(k)-1)+2) * tau1(j)
                     if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * zr(jlagv-1+ndim*(nosom(k)-1)&
                                                  &+3) * tau2(j)
-163              continue
-164          continue
+163             continue
+164         continue
 !
             do 161 j = 1, ndim
                 do 162 k = 1, nsom
@@ -386,8 +382,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                         rtxyz(j) = rtxyz(j) - ff(k) * rr * mult * zr(jfrot-1+3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
                     endif
-162              continue
-161          continue
+162             continue
+161         continue
 !
 !         NORME DU SEMI-MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
             call normev(lagfro, lagsf)
@@ -455,9 +451,9 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             zl(jcnslr-1+zresu*(nuno-1)+27)=.true.
             zi(jdejca+nuno-1) = 1
 !
-120      continue
+120     continue
 !
-100  end do
+100 end do
 !
     call jedetr(fcont)
     call detrsd('CHAMP', fconts)

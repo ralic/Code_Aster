@@ -40,9 +40,9 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !     =================================================================
 !     ------------------------------------------------------------------
     integer :: jnom, jtail, jnfond, jbnfmu
-    integer :: ibid, iret, ifiss, ifon
+    integer ::  iret, ifiss, ifon
     integer :: ndim, nfiss, nfond, nbnol
-    character(len=8) :: k8b, fiss, mo, malini
+    character(len=8) ::  fiss, mo, malini
     character(len=19) :: nomta1, nomta2
     character(len=24) :: nom
 !
@@ -60,10 +60,8 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
     call jelira(nom, 'LONUTI', nfiss)
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE INITIAL
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                malini, iret)
-    call dismoi('F', 'DIM_GEOM', mo, 'MODELE', ndim,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=malini)
+    call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'MODELISA2_6')
     endif
@@ -82,7 +80,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                 mftot = mftot + nfond
                 nfcomf = nfcomf + nfond
             endif
-10      continue
+ 10     continue
 !
     else if (ndim.eq.3) then
 !
@@ -112,11 +110,11 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                         mftot = mftot + 1
                         nfcomf = nfcomf + 1
                     endif
-20              continue
+ 20             continue
                 nftot = nftot + zi(jtail + 1)
 !
             endif
-11      continue
+ 11     continue
     endif
 !
 end subroutine

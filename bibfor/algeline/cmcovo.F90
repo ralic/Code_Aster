@@ -70,10 +70,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     integer :: jnosto, jlisma, jnbnum, ino, jnorm
     integer :: jtypm, numa, nbno, lgno, inov, jnewm
     integer :: iret, jnonew, jvale, kvale, lgnu, lgpref, nbgrmv
-    integer :: typhex, typpen, iatyma, nbnomx, ier, imav, lgnd, nbgrmn
+    integer :: typhex, typpen, iatyma, nbnomx, imav, lgnd, nbgrmn
     integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg, jrefe
     integer :: nbmai, jgg, nbmat, jno, ima2
-    character(len=1) :: k1b
     character(len=8) :: knume, cdim, typm, ma1, ma2
     character(len=10) :: kangl
     character(len=24) :: normno, nonuma, grpmai, grpmav
@@ -146,13 +145,13 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         do 12 ino = 1, nbno
             zi(jnosto+zi(jopt+ino-1)-1) = 1
-12      continue
-10  end do
+ 12     continue
+ 10 end do
 !
     nnoaj = 0
     do 14 ino = 1, nbnin
         if (zi(jnosto+ino-1) .eq. 1) nnoaj = nnoaj+1
-14  end do
+ 14 end do
 !
 ! --- STOCKAGE DES ELEMENTS DE TRAVAIL
 !     --------------------------------
@@ -190,7 +189,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 coon4(ic)=0.0d0
             endif
 !
-24      continue
+ 24     continue
         call vdiff(3, coon3, coon1, n1n3)
         call vdiff(3, coon2, coon1, n1n2)
         call provec(n1n2, n1n3, nt)
@@ -216,7 +215,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             zr(jnorn+3*(numa-1)+2-1) = nt(2)
             zr(jnorn+3*(numa-1)+3-1) = nt(3)
         endif
-20  end do
+ 20 end do
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES ET DE LA
 !     LISTE DES MAILLES COMMUNE POUR UN NOEUD DONNE
@@ -229,8 +228,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             ino = zi(jopt+ij-1)
             zi(jnbnum+ino-1) = zi(jnbnum+ino-1) + 1
             zi(jlisma-1+27*(ino-1)+zi(jnbnum+ino-1)) = numa
-34      continue
-32  end do
+ 34     continue
+ 32 end do
 !
 ! --- ON MOYENNE LES NORMALES
 !
@@ -266,20 +265,20 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 valk(4) = kangl
                 call utmess('A', 'ALGELINE_15', nk=4, valk=valk)
             endif
-72      continue
+ 72     continue
 !
         do 74 ima = 2, nbnuma
             numa = zi(jlisma-1+27*(ino-1)+ima)
             zr(jnorm+3*(ino-1) ) = zr(jnorm+3* (ino-1) ) + zr(jnorn+3* (numa-1) )
             zr(jnorm+3*(ino-1)+1) = zr( jnorm+3* (ino-1)+1) + zr(jnorn+ 3*(numa-1)+1 )
             zr(jnorm+3*(ino-1)+2) = zr( jnorm+3* (ino-1)+2) + zr(jnorn+ 3*(numa-1)+2 )
-74      continue
+ 74     continue
 !
         zr(jnorm+3*(ino-1) ) =zr(jnorm+3*(ino-1) ) / nbnuma
         zr(jnorm+3*(ino-1)+1) =zr(jnorm+3*(ino-1)+1) / nbnuma
         zr(jnorm+3*(ino-1)+2) =zr(jnorm+3*(ino-1)+2) / nbnuma
         call normev(zr(jnorm+3*(ino-1)), norme)
-70  end do
+ 70 end do
 !
 !
     nbmat = nbmin + nbma
@@ -309,7 +308,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_5', sk=valk(1))
         endif
-40  end do
+ 40 end do
 !
 ! --- TRAITEMENT DES NOEUDS AJOUTES
 !
@@ -333,7 +332,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_5', sk=valk(1))
         endif
-50  end do
+ 50 end do
 !
 ! --- RECUPERATION DES COORDONNES DU MAIN ET CREATION
 ! --- DES COORDONNEES POUR MAOUT
@@ -354,7 +353,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
     do 60 i = 1, 3*nbnin
         zr(kvale+i-1) = zr(jvale+i-1)
-60  end do
+ 60 end do
 !
 ! --- POUR CHAQUE NOEUD A TRAITER ON TRANSLATE LES COORDONNEES
 !     DU NOUVEAU NOEUDS DE N
@@ -402,7 +401,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
             endif
         endif
-80  end do
+ 80 end do
 !
 ! ----------------------------------------------------------------------
 !     LE '.NOMMAI' ET LE '.CONNEX'
@@ -416,8 +415,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     call wkvect(typmai, 'G V I', nbmat, iatyma)
 !
 !     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
-    call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nbnomx,&
-                k1b, ier)
+    call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmat)
@@ -446,8 +444,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
         do 92 ino = 1, nbpt
             zi(jnpt-1+ino) = zi(jopt+ino-1)
-92      continue
-90  end do
+ 92     continue
+ 90 end do
 !
 ! --- TRAITEMENT DES MAILLES AJOUTEES
 !
@@ -488,10 +486,10 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 102 ino = 1, 4
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
-102          continue
+102         continue
             do 104 ino = 5, 8
                 call jenonu(jexnom(nomnoe, zk24(jnonew+zi(jopt-1+ino-4) -1)), zi(jnpt-1+ino))
-104          continue
+104         continue
             iq4 = iq4 + 1
 !
 !
@@ -505,16 +503,16 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 106 ino = 1, 3
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
-106          continue
+106         continue
             do 108 ino = 4, 6
                 call jenonu(jexnom(nomnoe, zk24(jnonew+zi(jopt-1+ino-3) -1)), zi(jnpt-1+ino))
 !
-108          continue
+108         continue
             it3 = it3 + 1
 !
         endif
 !
-100  end do
+100 end do
 !  -------------------------------------------------------------
 !                       CREATION DES GROUP_MA
 !  -------------------------------------------------------------
@@ -546,8 +544,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             do 112 j = 0, nbmai - 1
                 zi(jgg+j) = zi(jvg+j)
-112          continue
-110      continue
+112         continue
+110     continue
 !
         call getvtx('COQU_VOLU', 'NOM', iocc=1, scal=nomg, nbret=n1)
         call jeexin(jexnom(grpmai, nomg), iret)
@@ -562,7 +560,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
         do 120 j = 1, nbma
             zi(jgg+j-1) = zi(jnewm+j-1)
-120      continue
+120     continue
     endif
 !  -------------------------------------------------------------
 !                       CREATION DES GROUP_NO
@@ -590,8 +588,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 230 j = 0, nbno - 1
                 zi(jgg+j) = zi(jvg+j)
-230          continue
-240      continue
+230         continue
+240     continue
     endif
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :

@@ -73,7 +73,7 @@ subroutine sscgno(ma, nbgnin)
 !
 !-----------------------------------------------------------------------
     integer :: i, iagm1, iagm2, iagma, iagn2, iagno, ialii1
-    integer :: ialii2, ialik8, idlino, ierd, ifm, ign, ign1
+    integer :: ialii2, ialik8, idlino, ifm, ign, ign1
     integer :: ign2, ii, iii, ili1, ili2, ilnok8, im1
     integer :: ind1, ind2, ino, iocc, ireste, iret, jjj
     integer :: jnoeu, jnoeu2, jvale, kkk, maxcol, n, n1
@@ -175,19 +175,19 @@ subroutine sscgno(ma, nbgnin)
         n = ili1
         do 30 ii = 1, n
             zi(ialii1-1+ii) = zi(iagm1-1+ii)
-30      continue
+ 30     continue
 !
-        do 32,ign = 2,n3
-        call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
-        call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
-        call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
-        call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2,&
-                    zi( ialii2), nbis, ntrou)
-        n = ntrou
-        do 34 ii = 1, n
-            zi(ialii1-1+ii) = zi(ialii2-1+ii)
-34      continue
-32      continue
+        do 32 ign = 2, n3
+            call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
+            call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
+            call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
+            call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2,&
+                        zi( ialii2), nbis, ntrou)
+            n = ntrou
+            do 34 ii = 1, n
+                zi(ialii1-1+ii) = zi(ialii2-1+ii)
+ 34         continue
+ 32     continue
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
@@ -201,7 +201,7 @@ subroutine sscgno(ma, nbgnin)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
         do 36 ii = 1, n
             zi(iagma-1+ii) = zi(ialii1-1+ii)
-36      continue
+ 36     continue
         nbgnaj = nbgnaj + 1
         goto 100
     endif
@@ -226,29 +226,29 @@ subroutine sscgno(ma, nbgnin)
         n = ili1
         do 40 ii = 1, n
             zi(ialii1-1+ii) = zi(iagm1-1+ii)
-40      continue
+ 40     continue
 !
-        do 42,ign = 2,n4
-        call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
-        call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
-        call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
-        call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
-                    zi( ialii2), nbis, ntrou)
-!
-        if (ntrou .lt. 0) then
-            nbis = -2*ntrou
-            call jedetr('&&SSCGNO.LII2')
-            call wkvect('&&SSCGNO.LII2', 'V V I', nbis, ialii2)
+        do 42 ign = 2, n4
+            call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
+            call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
+            call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
             call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
-                        zi(ialii2), nbis, ntrou)
-            call jedetr('&&SSCGNO.LII1')
-            call wkvect('&&SSCGNO.LII1', 'V V I', nbis, ialii1)
-        endif
-        n = ntrou
-        do 44 ii = 1, n
-            zi(ialii1-1+ii) = zi(ialii2-1+ii)
-44      continue
-42      continue
+                        zi( ialii2), nbis, ntrou)
+!
+            if (ntrou .lt. 0) then
+                nbis = -2*ntrou
+                call jedetr('&&SSCGNO.LII2')
+                call wkvect('&&SSCGNO.LII2', 'V V I', nbis, ialii2)
+                call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
+                            zi(ialii2), nbis, ntrou)
+                call jedetr('&&SSCGNO.LII1')
+                call wkvect('&&SSCGNO.LII1', 'V V I', nbis, ialii1)
+            endif
+            n = ntrou
+            do 44 ii = 1, n
+                zi(ialii1-1+ii) = zi(ialii2-1+ii)
+ 44         continue
+ 42     continue
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
@@ -261,7 +261,7 @@ subroutine sscgno(ma, nbgnin)
             call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
             do 46 ii = 1, n
                 zi(iagma-1+ii) = zi(ialii1-1+ii)
-46          continue
+ 46         continue
             nbgnaj = nbgnaj + 1
         endif
         goto 100
@@ -287,19 +287,19 @@ subroutine sscgno(ma, nbgnin)
         n = ili1
         do 50 ii = 1, n
             zi(ialii1-1+ii) = zi(iagm1-1+ii)
-50      continue
+ 50     continue
 !
-        do 52,ign = 2,n5
-        call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
-        call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
-        call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
-        call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2,&
-                    zi( ialii2), nbis, ntrou)
-        n = ntrou
-        do 54 ii = 1, n
-            zi(ialii1-1+ii) = zi(ialii2-1+ii)
-54      continue
-52      continue
+        do 52 ign = 2, n5
+            call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
+            call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
+            call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
+            call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2,&
+                        zi( ialii2), nbis, ntrou)
+            n = ntrou
+            do 54 ii = 1, n
+                zi(ialii1-1+ii) = zi(ialii2-1+ii)
+ 54         continue
+ 52     continue
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
@@ -312,7 +312,7 @@ subroutine sscgno(ma, nbgnin)
             call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
             do 56 ii = 1, n
                 zi(iagma-1+ii) = zi(ialii1-1+ii)
-56          continue
+ 56         continue
             nbgnaj = nbgnaj + 1
         endif
         goto 100
@@ -396,7 +396,7 @@ subroutine sscgno(ma, nbgnin)
 !
             do 92 ii = 1, nbno
                 zi(iagma-1+ii) = zi(idlino-1+ii)
-92          continue
+ 92         continue
             nbgnaj = nbgnaj + 1
 !
         endif
@@ -412,8 +412,7 @@ subroutine sscgno(ma, nbgnin)
         call getvem(ma, 'NOEUD', motfac, 'NOEUD', iocc,&
                     iarg, n2, zk8(ilnok8), nb)
         call wkvect('&&SSCGNO.NOEUD', 'V V I', n2, jnoeu)
-        call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbnot,&
-                    k8b, ierd)
+        call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
         call wkvect('&&SSCGNO.NOEUD2', 'V V I', nbnot, jnoeu2)
 !         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
         nbno = 0
@@ -429,7 +428,7 @@ subroutine sscgno(ma, nbgnin)
             endif
             nbno = nbno + 1
             zi(jnoeu+nbno-1) = num
-20      continue
+ 20     continue
 !
         call jecroc(jexnom(grpnoe, nogno))
         call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, nbno))
@@ -437,7 +436,7 @@ subroutine sscgno(ma, nbgnin)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
         do 22 ino = 0, nbno - 1
             zi(iagma+ino) = zi(jnoeu+ino)
-22      continue
+ 22     continue
         nbgnaj = nbgnaj + 1
         call jedetr('&&SSCGNO.NOEUD')
         call jedetr('&&SSCGNO.NOEUD2')
@@ -483,9 +482,9 @@ subroutine sscgno(ma, nbgnin)
         n = ind2 - ind1 + 1
         do 82 ii = 1, n
             zi(iagno-1+ii) = zi(iagn2-2+ind1+ii)
-82      continue
+ 82     continue
         goto 100
-80      continue
+ 80     continue
         call getvtx(motfac, 'POSITION', iocc=iocc, scal=kpos, nbret=n6b)
         if (kpos .eq. 'INIT') then
             zi(iagno) = zi(iagn2)
@@ -521,7 +520,7 @@ subroutine sscgno(ma, nbgnin)
                 call jelira(jexnum(grpnoe, ii), 'LONUTI', nbno)
                 write (ifm,'(15X,A,2X,A24,5X,A,2X,I8,10X,A)') '!',&
                 nogno,'!', nbno,'!'
-200          continue
+200         continue
             write (ifm,'(15X,54(''-''),/)')
         endif
     endif
@@ -549,10 +548,10 @@ subroutine sscgno(ma, nbgnin)
                     kkk = kkk + 1
                     call jenuno(jexnum(nomnoe, zi(iagno-1+kkk)), nono)
                     card((iii-1)*10+1:) = ' '//nono//' '
-304              continue
+304             continue
                 write (ifm,'(A)') card(:10*nbcol)
-302          continue
-300      continue
+302         continue
+300     continue
         write (ifm,'(/,/)')
     endif
 !

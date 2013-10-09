@@ -73,7 +73,6 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
     character(len=19) :: cneltf, cneltc, cnfint
     character(len=19) :: depmoi, depdel, vitmoi, accmoi, vitplu
     character(len=8) :: noma
-    integer :: iret, ibid
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,8 +86,7 @@ subroutine nmfocc(phase, modele, mate, numedd, fonact,&
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !

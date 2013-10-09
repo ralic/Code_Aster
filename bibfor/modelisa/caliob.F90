@@ -79,7 +79,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
     character(len=24) :: list_node
     integer :: jlino, nb_node
-    integer :: ier, ino
+    integer ::  ino
     integer :: ndim, nbec
     integer :: nliai, nume_node
     integer :: i_angle, i_keyword, iocc, i_direct
@@ -88,7 +88,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     complex(kind=8) :: coefc, val_c
     character(len=2) :: typlag
     character(len=4) :: typcoe
-    character(len=8) :: k8bid, model, nomg
+    character(len=8) ::  model, nomg
     character(len=8) :: name_node
     character(len=16) :: keywordfact, keyword
     integer :: n_keyword
@@ -133,12 +133,10 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 ! - Information about <GRANDEUR>
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
 !
-    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
-                k8bid, ier)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
         call utmess('F', 'CHARGES2_6')
     endif

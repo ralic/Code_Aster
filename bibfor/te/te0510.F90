@@ -55,7 +55,7 @@ subroutine te0510(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, typma, noma, k8bid
+    character(len=8) :: elp, typma, noma
     integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
     integer :: jout1, jout2, jout3, jout4, jout5, jout6, jout7
     integer :: iadzi, iazk24
@@ -122,8 +122,7 @@ subroutine te0510(option, nomte)
     call tecael(iadzi, iazk24)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     noma=zk24(iazk24)
-    call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
-                k8bid, iret)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nmaabs=zi(iadzi)
 !
     call conare(typma, ar, nbar)
@@ -144,16 +143,16 @@ subroutine te0510(option, nomte)
     do 70 i = 1, 2*nfimax
         fisco(i)=0
         fisc(i)=0
-70  end do
+ 70 end do
     nn=nfimax*nbmax
     do 72 i = 1, nn
         pthea(i)=0
-72  end do
+ 72 end do
     if (nfiss .gt. 1) then
         call jevech('PFISCO', 'L', jfisco)
         do 73 i = 1, 2*nfiss
             fisco(i)=zi(jfisco-1+i)
-73      continue
+ 73     continue
         call jevech('PHEAVFA', 'E', jout7)
         call tecach('OOO', 'PHEAVFA', 'E', iret, nval=2,&
                     itab=jtab)
@@ -187,10 +186,10 @@ subroutine te0510(option, nomte)
 !       ET DÉCOUPAGE EN FACETTES
         do 81 i = 1, 2*nfiss
             fisc(i)=0
-81      continue
+ 81     continue
         ifisc = ifiss
         nfisc = 0
-80      continue
+ 80     continue
         if (fisco(2*ifisc-1) .gt. 0) then
 !       STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
             nfisc = nfisc+1
@@ -209,12 +208,12 @@ subroutine te0510(option, nomte)
                     nfisc2 = nfisc2 + 1
                     fisc(2*(nfisc+nfisc2-1)+1) = jfiss
                 endif
-30          continue
+ 30         continue
             if (kfiss .eq. ifiss) then
                 nfisc2 = nfisc2 + 1
                 fisc(2*(nfisc+nfisc2-1)+1) = jfiss
             endif
-20      continue
+ 20     continue
 !
         if (.not.iselli(elp) .and. ndim .le. 2) then
             call xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
@@ -230,7 +229,7 @@ subroutine te0510(option, nomte)
         if (nfiss .gt. 1 .and. nbtot .gt. 0) then
             do 109 i = 1, nbtot*nfiss
                 pthea(i)=0
-109          continue
+109         continue
         endif
 !       ARCHIVAGE DE PINTER, AINTER, GESCLA, GMAITR ET BASECO
 !
@@ -238,7 +237,7 @@ subroutine te0510(option, nomte)
             do 111 j = 1, ndim
                 ptree(j)=pinter(ndim*(i-1)+j)
                 zr(jout6-1+ncompp*(ifiss-1)+ndim*(i-1)+j) = ptree(j)
-111          continue
+111         continue
 !    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
             call reeref(elp, lbid, nnop, ibid, zr(igeom),&
                         ptree, 1, lbid, ndim, rbid,&
@@ -249,11 +248,11 @@ subroutine te0510(option, nomte)
 !
             do 112 jj = 1, ndim
                 zr(jout1-1+ncompp*(ifiss-1)+ndim*(i-1)+jj) = ptref(jj)
-112          continue
+112         continue
             do 113 j = 1, zxain-1
                 zr(jout2-1+ncompa*(ifiss-1)+zxain*(i-1)+j)= ainter(&
                 zxain*(i-1)+j)
-113          continue
+113         continue
 !
 !     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
 !     ND EST LA NORMALE À LA SURFACE : GRAD(LSN)
@@ -269,14 +268,14 @@ subroutine te0510(option, nomte)
                 do 115 k = 1, nnop
                     nd(j) = nd(j) + ff(k)*zr(jgrlsn-1+ndim*(nfiss*(k- 1)+ifiss-1)+j)
                     grlt(j) = grlt(j) + ff(k)*zr(jgrlst-1+ndim*(nfiss* (k-1)+ifiss-1)+j)
-115              continue
-114          continue
+115             continue
+114         continue
 !
             call normev(nd, norme)
             ps=ddot(ndim,grlt,1,nd,1)
             do 116 j = 1, ndim
                 tau1(j)=grlt(j)-ps*nd(j)
-116          continue
+116         continue
 !
             call normev(tau1, norme)
 !
@@ -305,7 +304,7 @@ subroutine te0510(option, nomte)
                 zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j+ndim)=&
                 tau1(j)
                 if (ndim .eq. 3) zr( jout5-1+ncompb*(ifiss-1)+ndim* ndim*(i-1)+j+2*ndim)=tau2(j )
-117          continue
+117         continue
 !
             if (nfiss .gt. 1) then
 !    CALCUL DES FONCTIONS HEAVISIDE AUX POINTS D'INTER
@@ -313,20 +312,20 @@ subroutine te0510(option, nomte)
                     lsn = 0
                     do 131 k = 1, nnop
                         lsn = lsn + ff(k) * zr(jlsn-1+nfiss*(k-1)+ jfiss)
-131                  continue
+131                 continue
                     if (abs(lsn) .gt. 1.d-11) then
                         pthea(nfiss*(i-1)+jfiss) = nint(sign(1.d0,lsn) )
                     endif
-130              continue
+130             continue
             endif
 !
-110      continue
+110     continue
 !
 !     ARCHIVAGE DE CFACE ET DE HEAVFA
         do 120 i = 1, nface
             do 121 j = 1, nptf
                 zi(jout3-1+ncompc*(ifiss-1)+nptf*(i-1)+j)=cface(i,j)
-121          continue
+121         continue
             if (nfiss .gt. 1) then
                 elim = .false.
                 elim2= .false.
@@ -344,14 +343,14 @@ subroutine te0510(option, nomte)
                             endif
                             if (he .eq. 0) he=pthea(nfiss*(cface(i,j)-1)+ jfiss )
 !
-123                      continue
+123                     continue
 !
 !    ESCLAVE = HE, MAITRE = HE
                         hescl = he
                         hmait = he
 !    ON MODIFIE LA VALEUR DANS LE CAS DE FONCTION JONCTION
                         kfiss = jfiss
-124                      continue
+124                     continue
                         if (fisco(2*(kfiss-1)+1) .gt. 0 .and. he .ne. 0) then
                             kcoef = fisco(2*(kfiss-1)+2)
                             kfiss = fisco(2*(kfiss-1)+1)
@@ -365,7 +364,7 @@ subroutine te0510(option, nomte)
                                 he = 0
                                 do 125 j = 1, nptf
                                     if (he .eq. 0) he=pthea( nfiss*( cface(i,j)-1)+kfiss)
-125                              continue
+125                             continue
                                 if (kcoef*he .eq. 1) then
                                     hescl = 0
                                     hmait = 0
@@ -380,18 +379,18 @@ subroutine te0510(option, nomte)
                     = hescl
                     zi(jout7-1+ncomph*(nfiss*(ifiss-1)+jfiss-1)+2*i)&
                     = hmait
-122              continue
+122             continue
                 if (elim2) then
                     call utmess('A', 'XFEM_45', sk=nomte)
                     goto 998
                 endif
             endif
-120      continue
+120     continue
 !
 !     ARCHIVAGE DE LONCHAM
 !
         zi(jout4+3*(ifiss-1)-1+2)=nface
-998      continue
+998     continue
         zi(jout4+3*(ifiss-1)-1+1)=ninter
 !
         zi(jout4+3*(ifiss-1)-1+3)=nptf
@@ -399,13 +398,13 @@ subroutine te0510(option, nomte)
         if (nfiss .eq. 1) then
             do 710 i = 1, 2*nfimax
                 fisco(i)=0
-710          continue
+710         continue
         endif
 !
 !
-10  end do
+ 10 end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

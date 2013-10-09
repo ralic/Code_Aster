@@ -79,9 +79,9 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! ----------------------------------------------------------------------
 !
     logical :: lctcc
-    integer :: ieq, iret, ibid, numins
+    integer :: ieq, ibid, numins
     integer :: iadia, neq, lres, neql
-    character(len=8) :: k8bid, kmatd
+    character(len=8) ::  kmatd
     integer :: jvalm, islvi, zislv1, zislv3
     integer :: ifm, niv
     character(len=16) :: optass
@@ -102,8 +102,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 !
     faccvg = -1
     numins = 1
-    call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
-                k8bid, iret)
+    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -130,8 +129,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 !
     if (lctcc) then
         call mtdsc2(matass, 'SXDI', 'L', iadia)
-        call dismoi('F', 'MATR_DISTR', matass, 'MATR_ASSE', ibid,&
-                    kmatd, ibid)
+        call dismoi('MATR_DISTR', matass, 'MATR_ASSE', repk=kmatd)
         if (kmatd .eq. 'OUI') then
             call jeveuo(matass//'.&INT', 'L', lres)
             neql = zi(lres+5)
@@ -143,7 +141,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
             if (zr(jvalm-1+zi(iadia-1+ieq)) .eq. 0.d0) then
                 zr(jvalm-1+zi(iadia-1+ieq)) = 1.d0
             endif
-10      continue
+ 10     continue
     endif
 !
 ! --- ON ACTIVE LA DETECTION DE SINGULARITE (NPREC=8)

@@ -210,8 +210,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
 ! 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
 !
-    call dismoi('C', 'SUR_OPTION', masse, 'MATR_ASSE', ibid,&
-                sop, ibid)
+    call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=sop, arret='C',&
+                ier=ibid)
     if (sop .eq. 'MASS_MECA_DIAG') then
         call extdia(masse, numedd, 2, zr(iwk1))
     else
@@ -234,9 +234,9 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 else
                     goto 152
                 endif
-151          continue
+151         continue
 !
-152          continue
+152         continue
 !
             do 153 iv1 = 1, neq
                 iv2=ieq-iv1
@@ -248,13 +248,13 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 else
                     goto 154
                 endif
-153          continue
+153         continue
 !
-154          continue
+154         continue
 !
         endif
 !
-15  end do
+ 15 end do
 !
 ! 1.6. ==> AFFECTATION DES VECTEURS INITIAUX
 !
@@ -265,7 +265,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         zr(jacce+ieq-1) = acc0(ieq)
         zr(jvmin1+ieq-1) = 1.d-15
         zr(jvmin2+ieq-1) = 1.d-15
-16  end do
+ 16 end do
 !
 ! 1.7. ==> --- ARCHIVAGE ---
 !
@@ -349,12 +349,12 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     dt2 = dti
     call uttcpu('CPU.DLADAP', 'INIT', ' ')
 !
-30  continue
+ 30 continue
 !
     if (ener) then
         do 434 ieq = 1, neq
             fexte(ieq)=fexte(ieq+neq)
-434      continue
+434     continue
     endif
 !
     if (temps .lt. tfin) then
@@ -371,7 +371,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
 !        --- DERNIER PAS DE TEMPS ? ---
         if (temps+dt2 .gt. tfin) dt2 = tfin-temps
-101      continue
+101     continue
         if (err .gt. 1.d0 .and. nr .lt. nrmax) then
             nbiter = nbiter + 1
             pas1 = (dt1+dt2)*0.5d0
@@ -381,7 +381,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 zr(jvit2+ieq) = zr(jvite+ieq) + pas1 * zr(jacce+ieq)
 !            --- DEPLACEMENTS AUX INSTANTS 'TEMPS+DT2' ---------
                 zr(jdep2+ieq) = zr(jdepl+ieq) + (dt2 * zr(jvit2+ieq))
-102          continue
+102         continue
 ! ------------- CALCUL DU SECOND MEMBRE F*
             r8val = temps+dt2
             call dlfext(nveca, nchar, r8val, neq, liad,&
@@ -389,9 +389,9 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                         mate, carele, numedd, zr(iforc1))
 !
             if (ener) then
-                do 433, ieq =1,neq
-                fexte(ieq+neq)=zr(iforc1+ieq-1)
-433              continue
+                do 433 ieq = 1, neq
+                    fexte(ieq+neq)=zr(iforc1+ieq-1)
+433             continue
             endif
 !
 ! ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
@@ -404,14 +404,14 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 zr(jacc2+ieq-1)=zr(iwk1+ieq-1)*zr(iforc1+ieq-1)
 !           --- VITESSE AUX INSTANTS 'TEMPS+DT2' ---
                 zr(jvip2+ieq-1)=zr(jvit2+ieq-1)+pas2*zr(jacc2+ieq-1)
-20          continue
+ 20         continue
 !
 !        --- CALCUL DE VMIN ---
             if (vvar(1:4) .eq. 'MAXI') then
                 do 109 ieq = 0, neq-1
                     rtmp = abs(zr(jvite+ieq)*1.d-02)
                     zr(jvmin+ieq) = max(zr(jvmin+ieq),rtmp)
-109              continue
+109             continue
             else if (vvar(1:4) .eq. 'NORM') then
                 do 110 ieq = 0, neq-1
                     if (zr(iwk1+ieq) .ne. 0.d0) then
@@ -423,7 +423,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                     rtmp = 1.d-15
                     zr(jvmin+ieq)=max(rtmp,zr(jvmin1+ieq),zr(jvmin2+&
                     ieq))
-110              continue
+110             continue
             endif
 !
 !        --- CALCUL DE FREQ. APPARENTE ET ERREUR ---
@@ -533,7 +533,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         goto 30
     endif
 !
-9999  continue
+9999 continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -544,7 +544,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
         do 41 , iexcl = 1,nbexcl
         typear(iexcl) = typ1(iexcl)
-41      continue
+ 41     continue
 !
         alarm = 0
         call dlarch(result, neq, istoc, iarchi, 'DERNIER(S)',&

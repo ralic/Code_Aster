@@ -249,7 +249,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 
   try :
      TEST_MAIL = args['TEST_MAIL']
-  except KeyError: 
+  except KeyError:
      TEST_MAIL = None
 
 #------------------------------------------------------------------
@@ -297,7 +297,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
        __Fis = [None]*(StepTot*len(FissAct))
        __Mod = [None]*StepTot
 
-       iret,ibid,mod_fiss = aster.dismoi('F','NOM_MODELE',FissAct[0].nom,'FISS_XFEM')
+       iret,ibid,mod_fiss = aster.dismoi('NOM_MODELE',FissAct[0].nom,'FISS_XFEM','F')
        MOD_FISS = self.get_concept(mod_fiss.strip())
 
        FissNou=[Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
@@ -349,9 +349,9 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               aster.affiche('MESSAGE',' ------------------------')
               aster.affiche('MESSAGE',' ')
 
-######## 
+########
 ######## CALCULS ET RECUPERATION DES PARAMETRES POUR LA PROPAGATION
-######## 
+########
 
 # CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET TEST_MAIL = 'NON'
 # CAS 3: METHODE_PROPA = 'MAILLAGE'
@@ -417,7 +417,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       Fondmult = fiss0.sdj.FONDMULT.get()
       Nbfond = len(Fondmult)/2
 
-      if (('NUME_FOND' in __tabsif.para and 
+      if (('NUME_FOND' in __tabsif.para and
           (max(__table['NUME_FOND']) != Nbfond or len(set(__table['NUME_FOND']))!= Nbfond))
        or ('NUME_FOND' not in __tabsif.para and Nbfond != 1 )):
          UTMESS('A','XFEM_42',valk = fiss0.get_name())
@@ -502,7 +502,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
           Fiss['NB_POINT_FOND']=None
 
 #       Stockage de Da/Dt et de beta en fonction de l'abscisse curviligne
-#       pour permettre ensuite de trouver ces parametres aux points "physiques" 
+#       pour permettre ensuite de trouver ces parametres aux points "physiques"
 #       par interpolation lineaire
         if Fiss['NB_POINT_FOND']!=None :
 
@@ -539,10 +539,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         else :
           # si modele 3D: il faut necessairement la colonne 'ABSC_CURV'
           if 'K3' in tab_cumul.para :
-            UTMESS('F','XFEM2_20')            
+            UTMESS('F','XFEM2_20')
           else :
             absc = [0.]*len(tab_cumul)
-      
+
         if 'NUME_FOND' in tab_cumul.para :
 #           cas d'un fond multiple
           tab_nume_fond  = tab_cumul.NUME_FOND.values()
@@ -554,10 +554,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         else :
 #           cas d'un fond unique
           tab_BETA[numfis][1]= [[absc[j],table_beta[j]] for j in range(n)]
-          tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)] 
+          tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]
 
       DETRUIRE(CONCEPT=_F(NOM=__TAB_DKEQ_VIT),INFO=1)
-      DETRUIRE(CONCEPT=_F(NOM=__COPIE_SIF),INFO=1)   
+      DETRUIRE(CONCEPT=_F(NOM=__COPIE_SIF),INFO=1)
 
 #   verification que la vitesse maximale est superieure a 0
     if max(Vmfiss.values())<eps :
@@ -577,7 +577,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 ########
 
 # CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET TEST_MAIL = 'NON'
-    if TEST_MAIL == 'NON':  
+    if TEST_MAIL == 'NON':
 
       for numfis, Fiss in enumerate(Fissures) :
 

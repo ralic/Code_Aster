@@ -66,7 +66,7 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     integer :: seq, adress, lgsn
     integer :: decal, global
     integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav
-    integer :: ibid, ierd, i
+    integer ::  i
     character(len=14) :: nu
 !
 !     ------------------------------------------------------------------
@@ -82,8 +82,7 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
         goto 9999
     endif
 !
-    call dismoi('F', 'NOM_NUME_DDL', nommat, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', nommat, 'MATR_ASSE', repk=nu)
     factol(1:19) = nommat
     factou(1:19) = nommat
     call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
@@ -117,13 +116,13 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
                     nbsn, neq, zi(supnd), zi(adress), zi4(global),&
                     zi(lgsn), factol, factou, xsol(1, i), zr(pointr),&
                     zi(nouv), zi(anc), zi(ad), zr(trav), typsym)
-110  end do
+110 end do
 !
     call jedetr('&&RLTFR8.POINTER.ADRESSE')
     call jedetr('&&RLTFR8.POINTER.TRAVAIL')
     call jedetr('&&RLTFR8.POINTER.REELS  ')
 !
-9999  continue
+9999 continue
     call jedema()
 !
 end subroutine

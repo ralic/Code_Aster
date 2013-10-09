@@ -134,8 +134,7 @@ subroutine op0100()
                 typfis, nomfis, fonoeu, chfond, basfon,&
                 taillr, config, lnoff, liss, ndeg)
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     nomno = noma//'.NOMNOE'
     coorn = noma//'.COORDO    .VALE'
     call jeveuo(coorn, 'L', iadrco)
@@ -191,8 +190,7 @@ subroutine op0100()
     symech='NON'
     call getvtx('THETA', 'SYME', iocc=1, scal=symech, nbret=ibid)
     if (typfis .eq. 'FONDFISS') then
-        call dismoi('F', 'SYME', nomfis, 'FOND_FISS', ibid,&
-                    symech, ier)
+        call dismoi('SYME', nomfis, 'FOND_FISS', repk=symech)
     endif
 !
 !     LE MOT-CLE THETA EST RENSEIGNE : ON CREE L'OBJET THETA (K24)
@@ -276,8 +274,7 @@ subroutine op0100()
 !     DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
     if (cas .eq. '3D_LOCAL' .and. typfis .eq. 'FISSURE') then
 !
-        call dismoi('F', 'TYPE_FOND', nomfis, 'FISS_XFEM', ibid,&
-                    typfon, ier)
+        call dismoi('TYPE_FOND', nomfis, 'FISS_XFEM', repk=typfon)
 !
         if (typfon .eq. 'FERME') then
             connex = .true.
@@ -295,15 +292,14 @@ subroutine op0100()
         call gveri3(chfond, taillr, config, lnoff, thlagr,&
                     thlag2, ndeg, trav1, trav2, trav3)
         call gcour3(thetai, noma, coorn, lnoff, trav1,&
-                    trav2, trav3, chfond, connex, grlt, thlagr,&
-                    thlag2, basfon, ndeg, milieu, pair,&
-                    ndimte)
+                    trav2, trav3, chfond, connex, grlt,&
+                    thlagr, thlag2, basfon, ndeg, milieu,&
+                    pair, ndimte)
 !
     else if (cas.eq.'3D_LOCAL'.and.typfis.eq.'FONDFISS') then
 !
 !       A FAIRE : DISMOI POUR RECUP CONNEX ET METTRE DANS CGLECT
-        call dismoi('F', 'TYPE_FOND', nomfis, 'FOND_FISS', ibid,&
-                    typfon, ier)
+        call dismoi('TYPE_FOND', nomfis, 'FOND_FISS', repk=typfon)
         if (typfon .eq. 'FERME') then
             connex = .true.
         else
@@ -413,9 +409,9 @@ subroutine op0100()
 !
                 call jedema()
 !
-312          continue
+312         continue
 !
-311      continue
+311     continue
 !
 !
         if (option(1:5) .eq. 'G_MAX') then
@@ -434,7 +430,7 @@ subroutine op0100()
                                 nbret=ier)
                     call getvr8('BORNES', 'VALE_MAX', iocc=i, scal=zr(ibor+ 2*(iord0-1)+1),&
                                 nbret=ier)
-313              continue
+313             continue
 !
                 if (cas .eq. '3D_LOCAL') then
                     call tbexve(table, 'G_BILI_LOCAL', '&&'//nompro// '.GBILIN', 'V', nbval,&
@@ -510,7 +506,7 @@ subroutine op0100()
                         lmelas, nomcas, lmoda, puls, milieu,&
                         connex)
 !
-33      continue
+ 33     continue
 !
 !
     else if (option .eq.'CALC_K_MAX') then
@@ -613,10 +609,10 @@ subroutine op0100()
                 ASSERT(.false.)
             endif
 !
-34          continue
+ 34         continue
 !
             call jedema()
-35      continue
+ 35     continue
 !
         if (incr) then
             call jeexin(resuc2//'           .ORDR', iret)

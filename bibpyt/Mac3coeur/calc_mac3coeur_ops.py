@@ -66,8 +66,8 @@ def calc_mac3coeur_ops(self, **args):
 
        _RESU_INI  = _DEFORMATION['RESU_INIT']
        if (_RESU_INI!=None):
-          iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',_RESU_INI.nom,'RESULTAT')
-          iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',_RESU_INI.nom,'RESULTAT')
+          iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',_RESU_INI.nom,'RESULTAT','F')
+          iret,ibid,nom_mo = aster.dismoi('NOM_MODELE',_RESU_INI.nom,'RESULTAT','F')
 
           if (_MA0!=None):
               UTMESS('A','COEUR0_1')
@@ -77,7 +77,7 @@ def calc_mac3coeur_ops(self, **args):
        else:
           _MA_N = _coeur.affectation_maillage(_MA0)
           _MO_N = _coeur.affectation_modele(_MA_N)
-       
+
        _coeur.recuperation_donnees_geom(_MA_N)
        _GFF  = _coeur.definition_geom_fibre()
        _CARA = _coeur.definition_cara_coeur(_MO_N,_GFF)
@@ -104,12 +104,12 @@ def calc_mac3coeur_ops(self, **args):
        _AF_MAC  = _coeur.definition_materiau(_MA_N,_GFF,_AVEC_CONTACT,_FLUENC,_CHTH)
        _AF_MSC  = _coeur.definition_materiau(_MA_N,_GFF,_SANS_CONTACT,_FLUENC,_CHTH)
        _PESANT  = _coeur.definition_pesanteur(_MO_N)
-       
+
        if _DEFORMATION['TYPE_MAINTIEN'] == 'DEPL_PSC' :
-         _F_EMBO  = _coeur.definition_effor_maintien(_MO_N)   
-       else :      
+         _F_EMBO  = _coeur.definition_effor_maintien(_MO_N)
+       else :
          _F_EMBO  = _coeur.definition_effor_maintien_force(_MO_N,_DEFORMATION['FORCE_MAINTIEN'])
-       
+
        _ARCH_1  = _coeur.definition_archimede1(_MO_N)
        _FOARCH_1= _coeur.definition_archimede2(_MO_N)
        _ARCH_F1 = _coeur.definition_temp_archimede()
@@ -126,12 +126,12 @@ def calc_mac3coeur_ops(self, **args):
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
-                                                     
+
                                                   _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
-                                                     
+
                                                   _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
@@ -217,7 +217,7 @@ def calc_mac3coeur_ops(self, **args):
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
                        );
-                       
+
        RESUC1 = STAT_NON_LINE( reuse = RESUC1,
                       MODELE      = _MO_N,
                       CHAM_MATER  = _AF_MSC,
@@ -272,12 +272,12 @@ def calc_mac3coeur_ops(self, **args):
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
-                                                     
+
                                                   _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
-                                                     
+
                                                   _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
@@ -328,10 +328,10 @@ def calc_mac3coeur_ops(self, **args):
                                   MAILLAGE_NP1 = _MA1,)
 
        _MVDEPL = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM ='DEPL', RESULTAT = __resuf)
-       
-       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',__resuf.nom,'RESULTAT')
+
+       iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',__resuf.nom,'RESULTAT','F')
        nom_ma = nom_ma.strip()
-       iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',__resuf.nom,'RESULTAT')
+       iret,ibid,nom_mo = aster.dismoi('NOM_MODELE',__resuf.nom,'RESULTAT','F')
        nom_mo = nom_mo.strip()
 
        _MO_NP1 = self.get_concept_by_type(nom_mo, modele_sdaster)
@@ -347,7 +347,7 @@ def calc_mac3coeur_ops(self, **args):
        _DILATP1  = _coeurp1.dilatation_cuve(_MO_NP1,_MA_NP1)
        _AFACNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_AVEC_CONTACT,_FLU_NP1,_CHTHNP1)
        _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_SANS_CONTACT,_FLU_NP1,_CHTHNP1)
-       
+
        _PESANT1  = _coeurp1.definition_pesanteur(_MO_NP1)
        _F_EMBO1  = _coeurp1.definition_effor_maintien(_MO_NP1)
        _ARCH_11  = _coeurp1.definition_archimede1(_MO_NP1)
@@ -366,12 +366,12 @@ def calc_mac3coeur_ops(self, **args):
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
-                                                     
+
                                                   _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
                                                      DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
-                                                     
+
                                                   _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
                                                      DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
                                                   _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',

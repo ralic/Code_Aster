@@ -16,9 +16,9 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 
-#include <stdio.h>
-
 #include "aster.h"
+
+#include <stdio.h>
 
 void DEFP(UTFLSH, utflsh, INTEGER *codret)
 {

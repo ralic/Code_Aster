@@ -57,7 +57,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 ! IN  : NOMO   : NOM DU MODELE
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, ifm, ioc, ixma, ixno
+    integer :: i, ier, ifm, ioc, ixma, ixno
     integer :: ixnw, j, jad, jdcmpo, jdco, jdgm, jdgn
     integer :: jdls, jdme, jdne, jdno, jdnw, jdor, jdtm
     integer :: jdvlvo, k, nbcar, nbmagr, nbmail, nbmtot, nbmtrd
@@ -143,7 +143,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 !                      SUR TOUTES LES MAILLES (REPERE LOCAL PAR DEFAUT)
     do 10 i = 1, nbmtot*3
         zr(jdor+i-1) = 0.d0
-10  end do
+ 10 end do
 !
     do 20 nummai = 1, nbmail
         nutyma = zi(jdtm+nummai-1)
@@ -157,7 +157,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
             do 22 i = 1, 3
                 x1(i) = zr(jdco+(no1-1)*3+i-1)
                 x2(i) = zr(jdco+(no2-1)*3+i-1)
-22          continue
+ 22         continue
             call vdiff(3, x2, x1, x3)
             if (abs(x3(1)) .gt. tsm .or. abs(x3(2)) .gt. tsm .or. abs(x3(3)) .gt. tsm) then
                 call angvx(x3, alpha, beta)
@@ -165,7 +165,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                 zr(jad+1) = zr(jad+1) + beta
             endif
         endif
-20  end do
+ 20 end do
 !
 ! --- AFFECTATION DES VALEURS LUES DANS L OBJET TAMPON :
 !     --------------------------------------------------
@@ -201,8 +201,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                                         jdno, jdco, ivr, nutyma, ntseg,&
                                         carori, nco, ier)
                         endif
-38                  continue
-36              continue
+ 38                 continue
+ 36             continue
             endif
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
@@ -218,7 +218,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                                     jdno, jdco, ivr, nutyma, ntseg,&
                                     carori, nco, ier)
                     endif
-40              continue
+ 40             continue
             endif
 !
 ! ---       SI DES MAILLES TARDIVES EXISTENT POUR CE MODELE :
@@ -233,14 +233,14 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                             numnoe = zi(jdgn+j-1)
                             do 46 k = 1, nbmtrd
                                 if (zi(jdnw+k*2-2) .eq. numnoe) numtrd= k+nbmail
-46                          continue
+ 46                         continue
                             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
                             jad = jdor + (numtrd*3) - 3
                             call affori('NOEUD', nomnoe, car(1), val, jad,&
                                         jdno, jdco, ivr, ntpoi, ntseg,&
                                         carori, nco, ier)
-44                      continue
-42                  continue
+ 44                     continue
+ 42                 continue
                 endif
 ! ---          "NOEUD" = TOUTES LES MAILLES TARDIVES POSSIBLES DE LA
 !                                                       LISTE DE NOEUDS
@@ -250,15 +250,15 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         call jenonu(jexnom(mlgnno, nomnoe), numnoe)
                         do 50 k = 1, nbmtrd
                             if (zi(jdnw+k*2-2) .eq. numnoe) numtrd=k+ nbmail
-50                      continue
+ 50                     continue
                         jad = jdor + (numtrd*3) - 3
                         call affori('NOEUD', nomnoe, car(1), val, jad,&
                                     jdno, jdco, ivr, ntpoi, ntseg,&
                                     carori, nco, ier)
-48                  continue
+ 48                 continue
                 endif
             endif
-30      continue
+ 30     continue
     endif
 !
     if (ier .ne. 0) then
@@ -283,8 +283,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                 endif
                 goto 60
             endif
-62      continue
-60  end do
+ 62     continue
+ 60 end do
 !++++++
     if (ixnw .ne. 0) then
         if (ivr(3) .eq. 1) write(ifm,1020)
@@ -305,8 +305,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                     endif
                     goto 64
                 endif
-66          continue
-64      continue
+ 66         continue
+ 64     continue
     endif
 !
     1000 format(/,3x,'<ANGL> ORIENTATIONS SUR LES MAILLES DE TYPE POUTRE,'&
@@ -345,8 +345,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         goto 68
                     endif
                 endif
-70          continue
-68      continue
+ 70         continue
+ 68     continue
 !
 ! ---    AFFECTATION DES MAILLES TARDIVES DU MODELE (TYPE DISCRET)
         do 72 i = 1, nbmtrd
@@ -361,14 +361,13 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                                 limanu=[-i])
                     goto 72
                 endif
-74          continue
-72      continue
+ 74         continue
+ 72     continue
     endif
 !
 !JMP AFFECTATION DES ELEMENTS TUYAUX
 !
-    call dismoi('F', 'EXI_TUYAU', nomo, 'MODELE', ibid,&
-                exituy, ibid)
+    call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
     if (exituy .eq. 'OUI') then
         call aceatu(noma, nomo, nbepo, ntyele, ivr,&
                     ifm, nbocc)

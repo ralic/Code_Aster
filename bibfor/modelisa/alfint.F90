@@ -75,7 +75,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     character(len=16) :: typres, nomcmd
     character(len=19) :: chwork
     integer :: nummat, ncmp, jnomrc, idvale, idvalw, i, nbpts, imate
-    integer :: nbec, k, ier, ec1, kk, igd, ngdmax, jdesc, jvale, jprol
+    integer :: nbec, k, ec1, kk, igd, ngdmax, jdesc, jvale, jprol
     real(kind=8) :: prec, undemi, tref, alfref(1), alphai, ti, tim1, tip1
     real(kind=8) :: alfim1, alfip1, dalref, tdef
 !
@@ -102,8 +102,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NOMMATER')
     call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', ncmp)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                k8b, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
     ngdmax=zi(jdesc-1+2)
 !     TREF EST SUR LE 1ER ENTIER CODE :
     ec1=zi(jdesc-1+3+2*ngdmax+nbec*(imate-1)+1)

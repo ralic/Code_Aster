@@ -1,7 +1,6 @@
 subroutine numoch(tlimat, nbmat, base, lmoch)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -10,6 +9,7 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: tlimat(*)
     integer :: nbmat
     character(len=1) :: base
@@ -49,12 +49,11 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     character(len=19) :: matel, nomli, resu
-    character(len=8) :: k8bid
 !----------------------------------------------------------------------
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, ideja, idiml, idlres, ied, ierd, ili
+    integer :: iad, ideja, idiml, idlres, ili
     integer :: ilmoch, imat, iresu, iret, n1, nbresu, nlmoch
 !
 !-----------------------------------------------------------------------
@@ -71,7 +70,7 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
         call jeveuo(matel//'.RELR', 'L', idlres)
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
         idiml = idiml + nbresu
-100  end do
+100 end do
 !
 !---- CREATION DU VECTEUR LMOCH
 !
@@ -79,17 +78,15 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
     nlmoch = 0
     do 110 imat = 1, nbmat
         matel = tlimat(imat)
-        call dismoi('F', 'NB_SS_ACTI', matel, 'MATR_ELEM', n1,&
-                    k8bid, ierd)
+        call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=n1)
 !
         if (n1 .gt. 0) then
-            call dismoi('F', 'NOM_MODELE', matel, 'MATR_ELEM', n1,&
-                        nomli, ied)
+            call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=nomli)
             nomli=nomli(1:8)//'.MODELE'
             ideja =0
             do 1001 ili = 1, nlmoch
                 if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1
-1001          continue
+1001         continue
             if (ideja .eq. 0) then
                 nlmoch = nlmoch + 1
                 zk24(ilmoch-1+nlmoch) = nomli
@@ -110,13 +107,13 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
             ideja =0
             do 1000 ili = 1, nlmoch
                 if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1
-1000          continue
+1000         continue
             if (ideja .eq. 0) then
                 nlmoch = nlmoch + 1
                 zk24(ilmoch-1+nlmoch) = nomli
             endif
-120      continue
-110  end do
+120     continue
+110 end do
     call jeecra(lmoch, 'LONUTI', nlmoch)
     call jedema()
 end subroutine

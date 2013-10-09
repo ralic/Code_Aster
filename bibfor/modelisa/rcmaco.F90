@@ -39,8 +39,8 @@ subroutine rcmaco(chmat, indmat, nbmat, imate)
 !
 !
 !
-    integer :: nbcmp, jdesc, igrp, ier
-    character(len=8) :: k8b, nommat, nomgd, materi
+    integer :: nbcmp, jdesc, igrp
+    character(len=8) ::  nommat, nomgd, materi
     character(len=19) :: codi
 !
     call jemarq()
@@ -50,8 +50,7 @@ subroutine rcmaco(chmat, indmat, nbmat, imate)
     nommat = materi
     call jeveuo(chmat(1:8)//'.CHAMP_MAT .DESC', 'L', jdesc)
     call jenuno(jexnum('&CATA.GD.NOMCMP', zi(jdesc)), nomgd)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmp,&
-                k8b, ier)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     if (imate .gt. 9999) then
         call utmess('F', 'CALCULEL6_11')
     endif

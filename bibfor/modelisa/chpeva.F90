@@ -64,8 +64,7 @@ subroutine chpeva(chou)
 !
     call getvid(' ', 'CHAM_F', scal=chin, nbret=ib)
 !
-    call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
-                nomgd, ib)
+    call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
     if (nomgd .ne. 'NEUT_F') then
         call utmess('F', 'MODELISA4_13')
     endif
@@ -81,29 +80,27 @@ subroutine chpeva(chou)
 !     CALCUL DE .LPARA2: NOMS DES CHAMP_S PARAMETRES POUR LES FONCTIONS
 ! ------------------------------------------------------------
     call wkvect('&&CHPEVA.LPARA2', 'V V K24', npara, jpara2)
-    call dismoi('F', 'TYPE_CHAMP', chin, 'CHAMP', ib,&
-                typ1, ib)
-    do 10,k = 1,npara
-    call dismoi('F', 'TYPE_CHAMP', zk8(jpara1-1+k), 'CHAMP', ib,&
-                typ2, ib)
-    if (typ1 .ne. typ2) then
-        call utmess('F', 'MODELISA4_14')
-    endif
+    call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=typ1)
+    do 10 k = 1, npara
+        call dismoi('TYPE_CHAMP', zk8(jpara1-1+k), 'CHAMP', repk=typ2)
+        if (typ1 .ne. typ2) then
+            call utmess('F', 'MODELISA4_14')
+        endif
 !
-    call codent(k, 'G', knum)
-    chs1 = '&&CHPEVA.'//knum
-    if (typ1 .eq. 'NOEU') then
-        call cnocns(zk8(jpara1-1+k), 'V', chs1)
+        call codent(k, 'G', knum)
+        chs1 = '&&CHPEVA.'//knum
+        if (typ1 .eq. 'NOEU') then
+            call cnocns(zk8(jpara1-1+k), 'V', chs1)
 !
-    else if (typ1.eq.'CART') then
-        call carces(zk8(jpara1-1+k), 'ELEM', ' ', 'V', chs1,&
-                    'A', ib)
+        else if (typ1.eq.'CART') then
+            call carces(zk8(jpara1-1+k), 'ELEM', ' ', 'V', chs1,&
+                        'A', ib)
 !
-    else if (typ1(1:2).eq.'EL') then
-        call celces(zk8(jpara1-1+k), 'V', chs1)
-    endif
-    zk24(jpara2-1+k) = chs1
-    10 end do
+        else if (typ1(1:2).eq.'EL') then
+            call celces(zk8(jpara1-1+k), 'V', chs1)
+        endif
+        zk24(jpara2-1+k) = chs1
+ 10 end do
 !
 !
 ! 3.  -- ON APPELLE LA ROUTINE D'EVAL APPROPRIEE :
@@ -120,8 +117,7 @@ subroutine chpeva(chou)
     else if (typ1(1:2).eq.'EL') then
         call celces(chin, 'V', chins)
         call ceseva(chins, npara, zk24(jpara2), chs2)
-        call dismoi('F', 'NOM_LIGREL', chin, 'CHAMP', ib,&
-                    ligrel, ib)
+        call dismoi('NOM_LIGREL', chin, 'CHAMP', repk=ligrel)
         call cescel(chs2, ligrel, ' ', ' ', 'NON',&
                     nncp, 'G', chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chins)
@@ -133,14 +129,14 @@ subroutine chpeva(chou)
 ! 7. MENAGE :
 ! -----------------------------------------------------
     call jedetr('&&CHPEVA.LPARA1')
-    do 20,k = 1,npara
-    if (typ1 .eq. 'NOEU') then
-        call detrsd('CHAM_NO_S', zk24(jpara2-1+k))
+    do 20 k = 1, npara
+        if (typ1 .eq. 'NOEU') then
+            call detrsd('CHAM_NO_S', zk24(jpara2-1+k))
 !
-    else
-        call detrsd('CHAM_ELEM_S', zk24(jpara2-1+k))
-    endif
-    20 end do
+        else
+            call detrsd('CHAM_ELEM_S', zk24(jpara2-1+k))
+        endif
+ 20 end do
     call jedetr('&&CHPEVA.LPARA2')
 !
     call jedema()

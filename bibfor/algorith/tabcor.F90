@@ -52,13 +52,12 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !---------------------------------------------------------------------
     integer :: nbvale, nbrefe, nbdesc, ibid, neq, nbno1
     integer :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
-    integer :: nec2, igeom1, igeom2, ierd, iprn2, inueq2, nbid
+    integer :: nec2, igeom1, igeom2, iprn2, inueq2, nbid
     integer :: ndble, nbptr
     real(kind=8) :: epsi, x1, y1, z1, x2, y2, z2
     real(kind=8) :: tailmi, dista2, tailm2
     character(len=2) :: model
     character(len=8) :: gd2, ma1, ma2
-    character(len=8) :: k8bid, repk
     character(len=14) :: num
     character(len=19) :: chnul, cn2, pchno2
     character(len=24) :: prchno
@@ -69,14 +68,12 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! RECUPERATION DE LA TAILLE DE REFERENCE
 !
     call getvr8(' ', 'DIST_REFE', scal=tailmi, nbret=nbid)
-    call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
-                repk, ierd)
+    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     tailm2=(epsi*tailmi)**2
 ! ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE
 !
     chnul='&&TABCOR.CHNUL'
-    call dismoi('F', 'NB_EQUA', num, 'NUME_DDL', neq,&
-                k8bid, ierd)
+    call dismoi('NB_EQUA', num, 'NUME_DDL', repi=neq)
     prchno = num//'.NUME'
     call crchno(chnul, prchno, 'TEMP_R', ma2, 'V',&
                 'R', nbno2, neq)
@@ -92,11 +89,9 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! PARCOURS DU MAILLAGE THERMIQUE D INTERFACE
 !
 !
-    call dismoi('F', 'NOM_GD', cn2, 'CHAM_NO', ibid,&
-                gd2, ierd)
+    call dismoi('NOM_GD', cn2, 'CHAM_NO', repk=gd2)
 !
-    call dismoi('F', 'NB_NO_MAILLA', ma1, 'MAILLAGE', nbno1,&
-                repk, ierd)
+    call dismoi('NB_NO_MAILLA', ma1, 'MAILLAGE', repi=nbno1)
 !
 ! CREATION D'UNE TABLE DE CORRESPONDANCES NOEUDS DE STRUCTURE
 ! AVEC NOEUDS DU FLUIDE DE L'INTERFACE (NOEUDS SIMPLES)
@@ -127,12 +122,10 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! RECUPERATION DES CARACTERISTIQUES DU CHAMP AUX NOEUDS DE
 ! L'INTERFACE
 !
-    call dismoi('F', 'PROF_CHNO', cn2, 'CHAM_NO', ibid,&
-                pchno2, ierd)
+    call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
     call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
-    call dismoi('F', 'NB_EC', gd2, 'GRANDEUR', nec2,&
-                repk, ierd)
+    call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)
     call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
 !
 ! RECUPERATION DES COORDONNEES DU MAILLAGE
@@ -144,56 +137,56 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
 ! AVEC LES NOEUDS DE L INTERFACE FLUIDE
 !
-    do 10, ino1 =1,nbno1
+    do 10 ino1 = 1, nbno1
 !
-    x1 = zr(igeom1 -1 + (ino1 -1)*3 +1)
-    y1 = zr(igeom1 -1 + (ino1 -1)*3 +2)
-    if (model .eq. '3D') then
-        z1 = zr(igeom1 -1 + (ino1 -1)*3 +3)
-    endif
+        x1 = zr(igeom1 -1 + (ino1 -1)*3 +1)
+        y1 = zr(igeom1 -1 + (ino1 -1)*3 +2)
+        if (model .eq. '3D') then
+            z1 = zr(igeom1 -1 + (ino1 -1)*3 +3)
+        endif
 !
 ! PARCOURS SUR LES NOEUDS DU MAILLAGE FLUIDE
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
 ! AVEC LES NOEUDS DE LA STRUCTURE ET ON RECOPIE
 ! LE NOEUD COINCIDENT DS LE TABLEAU DE CORRESPONDANCE
 !
-    nbptr=0
-    do 20, ino2 =1,nbno2
+        nbptr=0
+        do 20 ino2 = 1, nbno2
 !
-    ncmp2= zi(iprn2-1+ (ino2-1)* (nec2+2)+2)
-    if (ncmp2 .eq. 0) goto 20
+            ncmp2= zi(iprn2-1+ (ino2-1)* (nec2+2)+2)
+            if (ncmp2 .eq. 0) goto 20
 !
 ! CRITERE GEOMETRIQUE DE PROXIMITE
 !
-    x2 = zr(igeom2 -1 + (ino2 -1)*3 +1)
-    y2 = zr(igeom2 -1 + (ino2 -1)*3 +2)
-    if (model .eq. '3D') then
-        z2 = zr(igeom2 -1 + (ino2 -1)*3 +3)
-        dista2 = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2
-    else
-        dista2 = (x1-x2)**2 + (y1-y2)**2
-    endif
+            x2 = zr(igeom2 -1 + (ino2 -1)*3 +1)
+            y2 = zr(igeom2 -1 + (ino2 -1)*3 +2)
+            if (model .eq. '3D') then
+                z2 = zr(igeom2 -1 + (ino2 -1)*3 +3)
+                dista2 = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2
+            else
+                dista2 = (x1-x2)**2 + (y1-y2)**2
+            endif
 !
-    if (dista2 .lt. (tailm2)) then
+            if (dista2 .lt. (tailm2)) then
 !
 !
-        nbptr=nbptr+1
-        if (nbptr .eq. 1) then
-            zi(itb1+ino1-1)=ino2
-            if (ndble .eq. 0) goto 10
-        else
-            zi(itb2+ino1-1)=ino2
-            goto 10
-        endif
+                nbptr=nbptr+1
+                if (nbptr .eq. 1) then
+                    zi(itb1+ino1-1)=ino2
+                    if (ndble .eq. 0) goto 10
+                else
+                    zi(itb2+ino1-1)=ino2
+                    goto 10
+                endif
 !
 ! PAS DE RECHERCHE DE NOEUDS DOUBLES
 !
 !                 GOTO 10
-    endif
+            endif
 !
-20  continue
+ 20     continue
 !
-    10 end do
+ 10 end do
 !
 !
 !      IF (NDBLE.EQ.1) THEN

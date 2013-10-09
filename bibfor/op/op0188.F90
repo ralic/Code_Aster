@@ -52,7 +52,7 @@ subroutine op0188()
     integer :: jlst, jlsn, jnoeu, nbmac, jadr, adrvlc, acncin
     integer :: idlima, nbmazo
     real(kind=8) :: rayon, dist
-    character(len=8) :: fiss, modele, ma, k8b, chout
+    character(len=8) :: fiss, modele, ma, chout
     character(len=16) :: typdis, k16bid
     character(len=19) :: carte, cnslt, cnsln
     character(len=24) :: mafond, listma, cnxinv, lisnoz, lismaz
@@ -75,20 +75,15 @@ subroutine op0188()
     call getvr8(' ', 'RAYON', scal=rayon, nbret=ibid)
 !
 !     TYPE DE SD_FISS_XFEM EN ENTREE (FISSURE/INTERFACE)
-    call dismoi('F', 'TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', ibid,&
-                typdis, iret)
+    call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
 !
 !     MODELE ASSOCIE A LA FISSURE/INTERFACE
-    call dismoi('F', 'NOM_MODELE', fiss, 'FISS_XFEM', ibid,&
-                modele, iret)
+    call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=modele)
 !
 !     MAILLAGE ASSOCIE AU MODELE
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                ma, iret)
-    call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
-                k8b, iret)
-    call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
-                k8b, iret)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
 !     INITIALISATION DE LA CARTE AVEC LA VALEUR 0
     carte = chout
@@ -121,7 +116,7 @@ subroutine op0188()
     call jelira(mafond, 'LONMAX', nmafon)
     do 10 i = 1, nmafon
         zi(jma-1+i)=zi(jmafon-1+i)
-10  end do
+ 10 end do
 !
 !     ------------------------------------------------------------------
 !     3) REMPLISSAGE DE LA LISTE AVEC LES MAILLES DONT UN NOEUD EST
@@ -154,7 +149,7 @@ subroutine op0188()
             nbnozo = nbnozo + 1
             zi(jnoeu-1+nbnozo) = ino
         endif
-300  end do
+300 end do
 !
 !     EMULATION DE DEFI_GROUP/CREA_GROUP_MA/OPTION='APPUI'
     lismaz = '&&OP0188.LISMAZ'
@@ -178,8 +173,8 @@ subroutine op0188()
         do 320 j = 1, nbmac
             numa = zi(acncin+jadr-1+j-1)
             zi(idlima+numa-1) = 1
-320      continue
-310  end do
+320     continue
+310 end do
 !
 !     REMPLISSAGE DE LA LISTE A LA SUITE
     nbmazo = 0
@@ -188,7 +183,7 @@ subroutine op0188()
             nbmazo = nbmazo + 1
             zi(jma-1+nmafon+nbmazo)=i
         endif
-330  end do
+330 end do
 !
 !     NB DE MAILLES DANS LA LISTE
     nbmali = nmafon + nbmazo

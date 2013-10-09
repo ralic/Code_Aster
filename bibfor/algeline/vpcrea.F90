@@ -35,7 +35,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: iret, ibid, imat(3), i4, i
+    integer :: iret, imat(3), i4, i
     character(len=14) :: nume2, numat(3)
     character(len=19) :: numddl, numtmp, nomat(3)
     character(len=24) :: valk(4), matric(3), raide2, masse2, amor2
@@ -59,19 +59,18 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !     VERIFICATION DE LA COHERENCE DES MATRICES ET DE LA NUMEROTATION
     do 1 i = 1, 3
         if (imat(i) .ne. 0) then
-            call dismoi('F', 'NOM_NUME_DDL', nomat(i), 'MATR_ASSE', ibid,&
-                        numtmp, iret)
+            call dismoi('NOM_NUME_DDL', nomat(i), 'MATR_ASSE', repk=numtmp)
             numat(i)=numtmp(1:14)
         else
             numat(i)=' '
         endif
- 1  continue
+  1 continue
     if (i4 .ne. 0) then
         do 10 i = 1, 3
             if ((numat(i).ne.nume2) .and. (numat(i).ne.' ')) then
                 call utmess('F', 'ALGELINE3_60', sk=nomat(i))
             endif
-10      continue
+ 10     continue
         numddl=nume
     else
         do 100 i = 1, 3
@@ -81,10 +80,10 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
             else
                 numddl=' '
             endif
-100      continue
+100     continue
     endif
 !
-101  continue
+101 continue
 !
 !     --------------------------- REFD --------------------------------
 !     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
@@ -98,12 +97,9 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
         call refdaj('F', modes, -1, numddl, 'DYNAMIQUE',&
                     matric, iret)
     else
-        call dismoi('F', 'REF_RIGI_PREM', modes, 'RESU_DYNA', ibid,&
-                    raide2, iret)
-        call dismoi('F', 'REF_MASS_PREM', modes, 'RESU_DYNA', ibid,&
-                    masse2, iret)
-        call dismoi('F', 'REF_AMOR_PREM', modes, 'RESU_DYNA', ibid,&
-                    amor2, iret)
+        call dismoi('REF_RIGI_PREM', modes, 'RESU_DYNA', repk=raide2)
+        call dismoi('REF_MASS_PREM', modes, 'RESU_DYNA', repk=masse2)
+        call dismoi('REF_AMOR_PREM', modes, 'RESU_DYNA', repk=amor2)
         if ((raide.ne.raide2) .or. (masse.ne.masse2) .or. (amor.ne.amor2)) ier = 1
         if (ier .ne. 0) then
             valk(1) = modes

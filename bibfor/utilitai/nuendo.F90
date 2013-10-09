@@ -20,7 +20,6 @@ subroutine nuendo(numedd, sdnuen)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -38,6 +37,7 @@ subroutine nuendo(numedd, sdnuen)
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: numedd
     character(len=24) :: sdnuen
 !
@@ -56,13 +56,13 @@ subroutine nuendo(numedd, sdnuen)
 !
 !
 !
-    character(len=8) :: nocmp, nomgd, modele, noma, k8bid
+    character(len=8) :: nocmp, nomgd, modele, noma
     character(len=16) :: nomte
     character(len=19) :: ligrmo
     character(len=24) :: nolili, noliel
     integer :: nec, nbnoeu, ncmpmx
     integer :: nlili, nbno, neq, nbnoc
-    integer :: ier, ibid, ico
+    integer ::  ico
     integer :: ima, ino, idamg, i, k, inoc, ival, iadg
     integer :: itrav, iconex
     integer :: iancmp, ianueq, iaprno
@@ -77,18 +77,15 @@ subroutine nuendo(numedd, sdnuen)
 !
 ! --- MODELE ASSOCIE AU NUME_DDL
 !
-    call dismoi('F', 'NOM_MODELE', numedd, 'NUME_DDL', ibid,&
-                modele, ier)
+    call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
 !
 ! --- NOM DU MAILLAGE
 !
-    call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
-                noma, ier)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 ! --- NOMBRE DE NOEUDS DU MAILLAGE
 !
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoeu,&
-                k8bid, ier)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
 ! --- LIGREL DU MODELE
 !
@@ -116,10 +113,10 @@ subroutine nuendo(numedd, sdnuen)
                 call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
                 do 20 ino = 1, nbno
                     zi(itrav+zi(iconex+ino-1)-1) = 1
-20              continue
-130          continue
+ 20             continue
+130         continue
         endif
-140  end do
+140 end do
 !
 ! --- NOMBRE DE NOEUDS
 !
@@ -128,7 +125,7 @@ subroutine nuendo(numedd, sdnuen)
         if (zi(itrav+ino-1) .eq. 1) then
             nbnoc = nbnoc + 1
         endif
-30  end do
+ 30 end do
 !
 ! --- AFFICHAGE
 !
@@ -149,8 +146,7 @@ subroutine nuendo(numedd, sdnuen)
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R
 !
     nomgd = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                k8bid, ier)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iancmp)
     nocmp = 'DAMG'
@@ -169,7 +165,7 @@ subroutine nuendo(numedd, sdnuen)
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
-40  end do
+ 40 end do
     ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
@@ -192,15 +188,15 @@ subroutine nuendo(numedd, sdnuen)
             ico = 0
             do 70 i = 1, idamg-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
-70          continue
+ 70         continue
             zi(jnuen+ival+ico-1) = 1
         endif
-50  end do
+ 50 end do
 !
 ! --- MENAGE
     call jedetr('&&NUENDO.NOEUDS')
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

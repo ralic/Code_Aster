@@ -44,7 +44,7 @@ subroutine iredmi(macr)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i2, iam, icamor, icmass, icrigi, ier
+    integer :: i, i2, iam, icamor, icmass, icrigi
     integer :: iret, isamor, ismass, isrigi, ival1, ival2, ival3
     integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
     integer :: jrefe, jrigi, k, lamor, n1, n2
@@ -64,10 +64,8 @@ subroutine iredmi(macr)
     call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt)
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
 !
-    call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmode,&
-                k8b, ier)
-    call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
-                k8b, ier)
+    call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmode)
+    call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
     nbmodt = nbmode + nbmods
 !
     call jeveuo(mael//'.MAEL_MASS_REFE', 'L', jrefe)
@@ -116,15 +114,15 @@ subroutine iredmi(macr)
             zr(jmass+j-1+(i-1)*nbmode) = zr(ival1+k-1) + petir8
             zr(jrigi+i-1+(j-1)*nbmode) = zr(ival2+k-1) + petir8
             zr(jrigi+j-1+(i-1)*nbmode) = zr(ival2+k-1) + petir8
-21      continue
-20  continue
+ 21     continue
+ 20 continue
     do 22 j = nbmode+1, nbmodt
         do 23 i = 1, nbmode
             k = j*(j-1)/2 + i
             j2 = j - nbmode
             zr(icmass+j2-1+(i-1)*nbmods) = zr(ival1+k-1) + petir8
             zr(icrigi+j2-1+(i-1)*nbmods) = zr(ival2+k-1) + petir8
-23      continue
+ 23     continue
         do 24 i = nbmode+1, j
             k = j*(j-1)/2 + i
             i2 = i - nbmode
@@ -133,8 +131,8 @@ subroutine iredmi(macr)
             zr(ismass+j2-1+(i2-1)*nbmods) = zr(ival1+k-1) + petir8
             zr(isrigi+i2-1+(j2-1)*nbmods) = zr(ival2+k-1) + petir8
             zr(isrigi+j2-1+(i2-1)*nbmods) = zr(ival2+k-1) + petir8
-24      continue
-22  continue
+ 24     continue
+ 22 continue
 !
     call jeexin(mael//'.MAEL_AMOR_VALE', iret)
     if (iret .ne. 0) then
@@ -144,22 +142,22 @@ subroutine iredmi(macr)
                 k =j*(j-1)/2 + i
                 zr(lamor+i-1+(j-1)*nbmode) = zr(ival3+k-1) + petir8
                 zr(lamor+j-1+(i-1)*nbmode) = zr(ival3+k-1) + petir8
-31          continue
-30      continue
+ 31         continue
+ 30     continue
         do 32 j = nbmode+1, nbmodt
             do 33 i = 1, nbmode
                 k = j*(j-1)/2 + i
                 j2 = j - nbmode
                 zr(icamor+j2-1+(i-1)*nbmods) = zr(ival3+k-1) + petir8
-33          continue
+ 33         continue
             do 34 i = nbmode+1, j
                 k = j*(j-1)/2 + i
                 i2 = i - nbmode
                 j2 = j - nbmode
                 zr(isamor+i2-1+(j2-1)*nbmods) = zr(ival3+k-1) + petir8
                 zr(isamor+j2-1+(i2-1)*nbmods) = zr(ival3+k-1) + petir8
-34          continue
-32      continue
+ 34         continue
+ 32     continue
     else
         ival3 = 0
     endif
@@ -190,10 +188,10 @@ subroutine iredmi(macr)
             call wkvect('&&IREDMI.AMORTISSEMEN2', 'V V R', nbmode, jamo2)
             do 40 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamor+iam-1)
-40          continue
+ 40         continue
             do 42 iam = nbamor+1, nbmode
                 zr(jamo2+iam-1) = zr(jamor+nbamor-1)
-42          continue
+ 42         continue
             nbamor = nbmode
             jamor = jamo2
         endif
@@ -203,7 +201,7 @@ subroutine iredmi(macr)
                             lamor+(k-1)*(nbmode+1))/ (4.d0*pi*zr( jfreq+k-1)*zr(jmass+(k-1)*(nbmo&
                             &de+1))&
                             )
-44      continue
+ 44     continue
     endif
 !
     call iredm1(masse, noma, basemo, nbmode, nbmods,&

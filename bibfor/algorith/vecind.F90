@@ -58,7 +58,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     integer :: lvec, nbl, nbc, nindep, lwork, jwork, lmat, ltrav1, ltrav2
     integer :: ltrav3, jnsta, i1, k1, l1, iret, lcopy, force, indnz, vecnz
     integer(kind=4) :: info
-    integer :: ideeq, ibid
+    integer :: ideeq
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
     character(len=19) :: mat, nume
@@ -69,8 +69,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     indnz=0
     if (mat .ne. ' ') then
         call jeveuo(mat//'.&INT', 'L', lmat)
-        call dismoi('F', 'NOM_NUME_DDL', mat(1:8), 'MATR_ASSE', ibid,&
-                    nume, iret)
+        call dismoi('NOM_NUME_DDL', mat(1:8), 'MATR_ASSE', repk=nume)
         call jeveuo(nume(1:8)//'      .NUME.DEEQ', 'L', ideeq)
     endif
 !
@@ -100,7 +99,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !          CALL DAXPY(NBL,0.D0,ZR(LVEC+NBL*(I1-1)),1,
 !     &               ZR(LCOPY+NBL*(I1-1)),1)
         endif
-500  end do
+500 end do
 !
     do 510 l1 = 1, nbc
         if (mat .ne. ' ') then
@@ -115,8 +114,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
             rij=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(k1-1)),1)
             zr(jnsta+(l1-1)*nbc+k1-1)=rij
             zr(jnsta+(k1-1)*nbc+l1-1)=rij
-520      continue
-510  end do
+520     continue
+510 end do
 !
     if (force .ne. 1) then
 !-- UTILISE APRES LE GRAM SCHMIDT DANS ORTH99, POUR
@@ -133,16 +132,16 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
                         write(6,*)' ... ANNULATION DU VECTEUR ',k1
                         do 570 i1 = 1, nbl
                             zr(lvec+((k1-1)*nbl)+i1-1)=0.d0
-570                      continue
+570                     continue
                         do 580 i1 = 1, nbc
                             zr(jnsta+((k1-1)*nbc)+i1-1)=0.d0
                             zr(jnsta+((i1-1)*nbc)+k1-1)=0.d0
-580                      continue
+580                     continue
                     endif
-560              continue
+560             continue
             endif
 !
-550      continue
+550     continue
 !
         call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
                     nbret=iret)
@@ -153,14 +152,14 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
                     zi(vecnz+indnz)=i1
                     indnz=indnz+1
                 endif
-590          continue
+590         continue
 !
             do 600 i1 = 1, indnz
                 l1=zi(vecnz+i1-1)
                 if (i1 .ne. l1) then
                     call lceqvn(nbl, zr(lvec+nbl*(l1-1)), zr(lvec+nbl*( i1-1)))
                 endif
-600          continue
+600         continue
             nbc=indnz
         endif
     else
@@ -187,7 +186,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         norme=(nbc+0.d0)*zr(ltrav1)*1.d-16
         do 530 k1 = 1, nbc
             if (zr(ltrav1+k1-1) .gt. norme) nindep=nindep+1
-530      continue
+530     continue
 !
         call wkvect('&&VECIND.MODE_INTF_DEPL', 'V V R', nbl*nbc, lmat)
 !

@@ -56,12 +56,12 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE GRILLE
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, n3, n4, n5, jdls2
-    integer :: i, axyzm, nbmat, ier, nbma, n1f, n3f, iret
+    integer :: i, axyzm, nbmat, nbma, n1f, n3f, iret
     integer :: ima, nbno, jnuma, adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg, jdccf, jdvcf
     real(kind=8) :: ang(2), sl, ez, ctr, axey(3), xnorm, epsi
     real(kind=8) :: axex(3), vn1n2(3), vn1n3(3), vecnor(3)
-    character(len=8) :: k8b, slf, ezf
+    character(len=8) ::  slf, ezf
     character(len=19) :: cartgr, cartcf
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex, tmpncf, tmpvcf
     character(len=32) :: kjexn
@@ -70,8 +70,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     call jemarq()
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', axyzm)
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat0,&
-                k8b, ier)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
     call wkvect('&&ACEAGB.NUME_MA', 'V V I', nbmat0, jnuma)
     nomagr = noma//'.GROUPEMA'
     nomama = noma//'.NOMMAI'
@@ -109,8 +108,8 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 lcartf = .true.
                 goto 110
             endif
-100      continue
-110      continue
+100     continue
+110     continue
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
         if (lcartf) then
@@ -180,11 +179,11 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
             if (ng .gt. 0) then
                 do 20 i = 1, ng
                     call nocart(cartgr, 2, 5, groupma=zk24(jdls+i-1))
-20              continue
+ 20             continue
                 if (lcartf) then
                     do 25 i = 1, ng
                         call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
-25                  continue
+ 25                 continue
                 endif
             endif
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
@@ -208,14 +207,14 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                     do 122 ima = 0, nbma-1
                         numa = numa + 1
                         zi(jnuma+numa) = zi(jgrma+ima)
-122                  continue
-120              continue
+122                 continue
+120             continue
             else
                 nbmat = nm
                 do 130 ima = 0, nm-1
                     kjexn = jexnom(nomama,zk8(jdls2+ima))
                     call jenonu(kjexn, zi(jnuma+ima))
-130              continue
+130             continue
             endif
 !
             call normev(axey, xnorm)
@@ -236,7 +235,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                     noe1-1)+i-1)
                     vn1n3(i)= zr(axyzm+3*(noe3-1)+i-1) -zr(axyzm+3*(&
                     noe1-1)+i-1)
-202              continue
+202             continue
                 vecnor(1) = vn1n2(2)*vn1n3(3) - vn1n2(3)*vn1n3(2)
                 vecnor(2) = vn1n2(3)*vn1n3(1) - vn1n2(1)*vn1n3(3)
                 vecnor(3) = vn1n2(1)*vn1n3(2) - vn1n2(2)*vn1n3(1)
@@ -259,10 +258,10 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                     call nocart(cartcf, 3, 2, mode='NUM', nma=1,&
                                 limanu=[numa])
                 endif
-200          continue
+200         continue
         endif
 !
-10  end do
+ 10 end do
 !
     call jedetr('&&ACEAGB.NUME_MA')
     call jedetr('&&TMPGRILLE')

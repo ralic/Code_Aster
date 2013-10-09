@@ -77,8 +77,8 @@ subroutine calimc(chargz)
 !-----------------------------------------------------------------------
     integer :: i, i2, i3, iaconx, iadref, iaprno
     integer :: ibid, icmp, icmp2, idbase, idcoec, idcoer, idddl
-    integer :: iddl, iddl2, idimen, idirec, idnoeu, ierd, ii
-    integer :: imod, imod2, inoe, iocc, iret, j, j2
+    integer :: iddl, iddl2, idimen, idirec, idnoeu, ii
+    integer :: imod, imod2, inoe, iocc, j, j2
     integer :: j3, jj, jncmpd, jncmpi, k, lldef, n2
     integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
     integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq
@@ -146,19 +146,15 @@ subroutine calimc(chargz)
         call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                     cbid, rbid, k8b, nbmode, 1,&
                     ibid)
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                    numedd, iret)
-        call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
-                    mailla, iret)
-        call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
-                    lintf, iret)
+        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
+        call dismoi('NOM_MAILLA', numedd(1:14), 'NUME_DDL', repk=mailla)
+        call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=lintf)
 ! On recupere le nbre de noeuds presents dans interf_dyna
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! On recupere la liste des noeuds presents dans interf_dyna
         call jeveuo(lintf//'.IDC_DEFO', 'L', lldef)
 ! On recupere le nbre de modes statiques dans la base
-        call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
-                    k8b, ierd)
+        call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmdef)
         call jelira(macrel//'.LINO', 'LONMAX', nbntot)
         nbmdyn = nbmode(1)-nbmdef
         nec = nbmode(1)/nbntot
@@ -175,27 +171,24 @@ subroutine calimc(chargz)
             do 22 j = 1, nec
                 zk8(jncmpd+2*nec*(i-1)+2*j-2) = nomnol
                 zk8(jncmpd+2*nec*(i-1)+2*j-1) = liscmp(j)
-22          continue
-21      continue
+ 22         continue
+ 21     continue
         call wkvect('&&CALIMC.NCMPIN', 'V V K8', 2*nbnoe*nec, jncmpi)
         do 23 i = 1, nbnoe
             call jenuno(jexnum(mailla//'.NOMNOE', zi(lldef+i-1)), nomnol)
             do 24 j = 1, nec
                 zk8(jncmpi+2*nec*(i-1)+2*j-2) = nomnol
                 zk8(jncmpi+2*nec*(i-1)+2*j-1) = liscmp(j)
-24          continue
-23      continue
+ 24         continue
+ 23     continue
         numddl = numedd(1:14)
-        call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                    k8b, iret)
+        call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         call wkvect('&&CALIMC.BASE', 'V V R', nbmode(1)*neq, idbase)
         call copmod(basemo, 'DEPL', neq, numddl, nbmode(1),&
                     'R', zr(idbase), [cbid])
-        call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
-                    nogdsi, ierd)
+        call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nogdsi)
 !        NOGDSI = 'DEPL_R'
-        call dismoi('F', 'NB_EC', nogdsi, 'GRANDEUR', nbec,&
-                    k8b, ierd)
+        call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nbec)
         nprno = numddl//'.NUME.PRNO'
         call jeveuo(jexnum(nprno, 1), 'L', iaprno)
 !
@@ -264,8 +257,8 @@ subroutine calimc(chargz)
                         zk8(idnoeu+k-1) = nomnoe
                         zk8(idddl+k-1) = nomcmp
                         zr(idcoer+k-1) = vale
-28                  continue
-27              continue
+ 28                 continue
+ 27             continue
                 k = nbterm
                 nomnoe = zk8(jncmpi+2*nec*(i-1)+2*j-2)
                 nomcmp = zk8(jncmpi+2*nec*(i-1)+2*j-1)
@@ -279,10 +272,10 @@ subroutine calimc(chargz)
                             zr(idirec), nbterm, beta, betac, betaf,&
                             typcoe, typval, typlag, 0.d0, lisrel)
 !
-26          continue
-25      continue
+ 26         continue
+ 25     continue
         goto 102
-101      continue
+101     continue
 !
 !       CAS SOUPLE
 !
@@ -306,8 +299,8 @@ subroutine calimc(chargz)
                         zk8(idnoeu+k-1) = nomnoe
                         zk8(idddl+k-1) = nomcmp
                         zr(idcoer+k-1) = -zr(idbase+(imod-1)*neq+iddl- 1+icmp-1 )
-36                  continue
-35              continue
+ 36                 continue
+ 35             continue
                 do 37 ii = 1, nbndef
                     nomnoe = zk8(jncmpd+2*nec*(ii-1))
                     do 38 jj = 1, nec
@@ -331,22 +324,22 @@ subroutine calimc(chargz)
                                        idbase+(imod-1)*neq+ iddl2-1+icmp2-1)* zr(idbase+(imod2-1)&
                                        &* neq+iddl2-1+icmp2-1&
                                        )
-34                          continue
-33                      continue
+ 34                         continue
+ 33                     continue
                         zk8(idnoeu+k-1) = nomnoe
                         zk8(idddl+k-1) = nomcmp
                         zr(idcoer+k-1) = vale
-38                  continue
-37              continue
+ 38                 continue
+ 37             continue
 ! ---   AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !       ------------------------------------------
                 call afrela(zr(idcoer), zc(idcoec), zk8(idddl), zk8( idnoeu), zi(idimen),&
                             zr(idirec), nbterm, beta, betac, betaf,&
                             typcoe, typval, typlag, 0.d0, lisrel)
-32          continue
-31      continue
+ 32         continue
+ 31     continue
 !
-102      continue
+102     continue
 ! ---   MENAGE :
 !       ------
         call jedetr('&&CALIMC.LISNO')
@@ -359,7 +352,7 @@ subroutine calimc(chargz)
         call jedetr('&&CALIMC.NCMPIN')
         call jedetr('&&CALIMC.BASE')
 !
-30  continue
+ 30 continue
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
@@ -369,7 +362,7 @@ subroutine calimc(chargz)
 !     ------
     call jedetr(lisrel)
 !
-40  continue
+ 40 continue
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

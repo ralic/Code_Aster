@@ -56,8 +56,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: nbma, ibid
-    character(len=8) :: kbid
+    integer :: nbma
     character(len=19) :: ligrmo, xdonco, xseuco, cseuil
     character(len=19) :: lnno, ltno
     character(len=16) :: option
@@ -85,8 +84,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     else
         debug = .false.
     endif
-    call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
-                kbid, ibid)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -167,7 +165,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
 !
     call copisd('CHAMP_GD', 'V', lchout(1), xseuco)
 !
-9999  continue
+9999 continue
 !
     call jedema()
 end subroutine

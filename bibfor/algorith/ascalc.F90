@@ -96,7 +96,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 ! IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA
 ! IN  : F2GUP  : FREQUENCE F2 POUR LA METHODE DE GUPTA
 !     ------------------------------------------------------------------
-    integer :: ibid, id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
+    integer ::  id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
     integer :: jval, nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
     integer :: neq, jrep2, nbdis(nbsup), noc, ioc, jnoe1, n1, nno, is, ino, igr
     integer :: ngr, jgrn, jdgn, ier, ncompt, nintra
@@ -145,7 +145,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !  ---- LES REGROUPEMENTS EN INTRA-GROUPE
     do 50 is = 1, nbsup
         nbdis(is) = 0
-50  end do
+ 50 end do
     nintra = nbsup
     noc = nbsup
 !
@@ -173,13 +173,12 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                                     endif
                                     nbdis(is) = ioc
                                 endif
-103                          continue
-102                      continue
-101                  continue
+103                         continue
+102                     continue
+101                 continue
                     call jedetr('&&ASCALC.NOEUD')
                 else
-                    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                                noma, ier)
+                    call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
                     obj1 = noma//'.GROUPENO'
                     obj2 = noma//'.NOMNOE'
                     call getvem(noma, 'GROUP_NO', motfa1, 'GROUP_NO', ioc,&
@@ -209,19 +208,19 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                                             endif
                                             nbdis(is) = ioc
                                         endif
-113                                  continue
-112                              continue
-111                          continue
-110                      continue
+113                                 continue
+112                             continue
+111                         continue
+110                     continue
                         call jedetr('&&ASCALC.GROUP_NO')
                     endif
                 endif
-100          continue
+100         continue
             ncompt = 0
             if (noc .eq. 1) then
                 do 120 is = 1, nbsup
                     ncompt = ncompt + nbdis(is)
-120              continue
+120             continue
                 if (ncompt .eq. nbsup) then
                     call utmess('F', 'SEISME_30')
                 endif
@@ -234,13 +233,13 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                 ncompt = ncompt + 1
                 nbdis(is) = noc + ncompt
             endif
-130      continue
+130     continue
         nintra = noc + ncompt
     else
 !  ---- SI LES EXCITATIONS SONT CORRELEES ----
         do 140 is = 1, nbsup
             nbdis(is) = is
-140      continue
+140     continue
         nintra = nbsup
     endif
 !
@@ -312,7 +311,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                 call asdir(monoap, muapde, id, neq, nbsup,&
                            nsupp, tcosup, zr(jcrep), zr(jdir))
             endif
-20      continue
+ 20     continue
 !
 !        --- STOCKAGE ---
 !
@@ -342,7 +341,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
         call jedetr(kve4)
         call jedetr(kve5)
 !
-10  end do
+ 10 end do
 !
     call jedema()
 end subroutine

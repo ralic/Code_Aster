@@ -62,7 +62,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, iddn, idds, iec, ieq
-    integer :: ipoint, iret, j, k, lddeeq, ldinse, ldnueq
+    integer :: ipoint, j, k, lddeeq, ldinse, ldnueq
     integer :: ldprno, linueq, llinsk, llnueq, llprno, lttds, nbcmp
     integer :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
     integer :: ntail, numno, nusst
@@ -86,8 +86,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----RECUPERATION DU NOMBRE D'ENTIERS CODES DE LA GRANDEUR DEPL_R------
 !
-    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                k8bid, iret)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -98,8 +97,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----RECUPERATION DIMENSION MAILLAGE SQUELETTE-------------------------
 !
-    call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
-                k8bid, iret)
+    call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !-----RECUPERATION DU .INV.SKELETON-------------------------------------
 !
@@ -128,8 +126,8 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                 zi(lttds+i-1)=zi(lttds+i-1)+zi(llprno+(numno-1)*(2+&
                 nbec)+1)
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 !-----ALLOCATION DES DIVERS OBJETS-------------------------------------
 !
@@ -155,7 +153,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
             call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
             call jecroc(jexnum(indirf, i))
         endif
-40  end do
+ 40 end do
 !
 !-----REMPLISSAGE DES OBJETS EVIDENTS-----------------------------------
 !
@@ -205,7 +203,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                     do 80 iec = 1, nbec
                         zi(ldprno+(j-1)*(2+nbec)+1+iec)= zi(llprno+(&
                         numno-1)*(2+nbec)+1+iec)
-80                  continue
+ 80                 continue
                     iddn=0
                     do 90 k = 1, nbcmp
                         if (idec(k) .gt. 0) then
@@ -220,13 +218,13 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                             zi(ipoint+2)=icomp
                             idds=idds+1
                         endif
-90                  continue
+ 90                 continue
                 endif
-70          continue
+ 70         continue
             call jelibe(numddl//'.NUEQ')
             call jelibe(jexnum(indirf, i))
         endif
-60  end do
+ 60 end do
 !
 !-----SAUVEGARDE DES OBJETS---------------------------------------------
 !

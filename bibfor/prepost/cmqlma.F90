@@ -17,7 +17,6 @@ subroutine cmqlma(main, maout, nbma, mailq)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
@@ -32,6 +31,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbma, mailq(nbma)
     character(len=8) :: main, maout
 !
@@ -70,8 +70,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
     parameter(nbtyma=27)
     integer :: jdim, i, nbtma, jma, jtypm1, jtypm2, jconn1, jconn2
     integer :: tymal(nbtyma), num1, num2, nbnol(nbtyma), ityp, j, inom, nbnomx
-    integer :: iret, ndim, ij
-    character(len=1) :: kbid
+    integer ::  ndim, ij
     character(len=8) :: nomnoi
     character(len=24) :: connex, typma
 !
@@ -94,16 +93,15 @@ subroutine cmqlma(main, maout, nbma, mailq)
     call wkvect('&&CMQLMA.MAILLE', 'V V I', nbtma, jma)
     do 10 i = 1, nbtma
         zi(jma+i-1)=0
-10  end do
+ 10 end do
     do 20 i = 1, nbma
         zi(jma+mailq(i)-1)=1
-20  end do
+ 20 end do
 !
 !     CREATION DES OBJETS  '.TYPMAIL', '.CONNEX':
 !     -------------------------------------------
 !
-    call dismoi('F', 'NB_NO_MAX', '&CATA', 'CATALOGUE', nbnomx,&
-                kbid, iret)
+    call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
     call jecrec(maout//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 zi(jdim+2))
     ndim=nbnomx*zi(jdim+2)
@@ -142,8 +140,8 @@ subroutine cmqlma(main, maout, nbma, mailq)
             ij=zi(jconn1+j-1)
             call jenuno(jexnum(main//'.NOMNOE', ij), nomnoi)
             call jenonu(jexnom(maout//'.NOMNOE', nomnoi), zi(jconn2+j-1))
-40      continue
-30  end do
+ 40     continue
+ 30 end do
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(connex)

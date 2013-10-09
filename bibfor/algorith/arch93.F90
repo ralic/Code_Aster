@@ -108,14 +108,10 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
     nbmode = nbmodd + nbmodf + nbmoda + nbmoad + nbmodi
 !
-    call dismoi('F', 'NB_EQUA', raide, 'MATR_ASSE', neq,&
-                k8b, ierd)
-    call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', ibid,&
-                modele, ierd)
-    call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', ibid,&
-                chmat, ierd)
-    call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', ibid,&
-                carael, ierd)
+    call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
+    call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
+    call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat)
+    call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael)
 !
     call rscrsd('G', resu, concep, nbmode)
 !

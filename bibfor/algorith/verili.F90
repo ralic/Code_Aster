@@ -53,13 +53,13 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, idim1, idim2, ierd, ii, iret, j
+    integer :: i, idim1, idim2, ii, iret, j
     integer :: lldesc, lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
     integer :: nbecmx, nbnoe1, nbnoe2, numgd
 !-----------------------------------------------------------------------
     parameter (nbcmpm =  10)
     parameter (nbecmx =  10)
-    character(len=8) :: nomres, nomg, kbid
+    character(len=8) :: nomres, nomg
     character(len=24) :: fpli1, fpli2
     character(len=24) :: valk(6)
     character(len=8) :: sst1, sst2, intf1, intf2, blanc
@@ -77,8 +77,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
     nomg = 'DEPL_R'
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                kbid, ierd)
+    call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     endif
@@ -151,10 +150,10 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
                 call utmess('F', 'ALGORITH14_72', nk=6, valk=valk)
                 iret=iret+1
             endif
-20      continue
-10  end do
+ 20     continue
+ 10 end do
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

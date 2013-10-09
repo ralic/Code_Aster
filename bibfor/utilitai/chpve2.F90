@@ -37,7 +37,7 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
     integer :: ier, nbtyp
     character(len=*) :: tabtyp(nbtyp), nomch
 !
-    integer :: ibid, lc, i, j
+    integer ::  lc, i, j
     character(len=19) :: noch
     character(len=4) :: loch, tych
     character(len=8) :: gdch, nomgd, blan8
@@ -62,13 +62,11 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
                 gdch = chaine(j+1:11)
                 goto 30
             endif
-20      continue
-30      continue
+ 20     continue
+ 30     continue
 !
-        call dismoi('F', 'TYPE_CHAMP', noch, 'CHAMP', ibid,&
-                    tych, ibid)
-        call dismoi('F', 'NOM_GD', noch, 'CHAMP', ibid,&
-                    nomgd, ibid)
+        call dismoi('TYPE_CHAMP', noch, 'CHAMP', repk=tych)
+        call dismoi('NOM_GD', noch, 'CHAMP', repk=nomgd)
 !
         if ((loch(3:4).ne.'XX' .and. loch.eq.tych ) .or.&
             (loch(3:4) .eq.'XX' .and. loch(1:2).eq.tych(1:2))) then
@@ -77,8 +75,8 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
                 goto 40
             endif
         endif
-10  end do
-40  continue
+ 10 end do
+ 40 continue
 !
     if (ier .ne. 0) then
         valk = loch//'_'//gdch

@@ -40,7 +40,7 @@ subroutine cgvefo(option, typfis, nomfis)
 !    NOMFIS : NOM DE LA SD DECRIVANT LE FOND DE FISSURE
 ! ======================================================================
 !
-    integer :: ier, ibid
+    integer :: ier
     character(len=8) :: conf
 !
     call jemarq()
@@ -61,8 +61,7 @@ subroutine cgvefo(option, typfis, nomfis)
 !     (SI X-FEM OU THETA, LA CONFIG ET TOUJOURS COLLEE)
     if (typfis .eq. 'FONDFISS') then
 !
-        call dismoi('F', 'CONFIG_INIT', nomfis, 'FOND_FISS', ibid,&
-                    conf, ier)
+        call dismoi('CONFIG_INIT', nomfis, 'FOND_FISS', repk=conf)
 !
         if ((&
             option .eq. 'CALC_K_G' .or. option .eq. 'K_G_MODA' .or. option .eq.&

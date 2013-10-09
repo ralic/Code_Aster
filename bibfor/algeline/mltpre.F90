@@ -45,8 +45,8 @@ subroutine mltpre(mat19, renumz)
     character(len=1) :: base
     character(len=19) :: mat19, solv19
     character(len=14) :: nu
-    integer :: nec, ibid, ierd, i, icol
-    character(len=8) :: kbid, nomgd
+    integer :: nec, i, icol
+    character(len=8) ::  nomgd
     character(len=8) :: renum, renum2
     integer :: ismdi, ismhc, idelg, ideeq, iprno, diag, inueq, jsmde
     integer :: lgadjn, adjnc1, adjnc2, desc
@@ -112,15 +112,13 @@ subroutine mltpre(mat19, renumz)
     call uttcpu('CPU.RESO.3', 'DEBUT', ' ')
 !
 !
-    call dismoi('F', 'NOM_NUME_DDL', mat19, 'MATR_ASSE', ibid,&
-                nu, ierd)
+    call dismoi('NOM_NUME_DDL', mat19, 'MATR_ASSE', repk=nu)
     call jelira(nu//'.SMOS.SMDI', 'CLAS', cval=base)
 !
 !
 !     -- RENUM : RENUMEROTATION SOUHAITEE POUR LA RESOLUTION
     if (renumz .eq. ' ') then
-        call dismoi('F', 'SOLVEUR', mat19, 'MATR_ASSE', ibid,&
-                    solv19, ierd)
+        call dismoi('SOLVEUR', mat19, 'MATR_ASSE', repk=solv19)
         call jeveuo(solv19//'.SLVK', 'L', jslvk)
         ASSERT(zk24(jslvk-1+1).eq.'MULT_FRONT')
         renum=zk24(jslvk-1+4)
@@ -180,7 +178,7 @@ subroutine mltpre(mat19, renumz)
     neq = zi(jsmde-1+1)
     do 10 i = 1, neq
         ASSERT(zi(inueq+i-1).eq.i)
-10  end do
+ 10 end do
     call jelibe(nu//'.NUME.NUEQ')
     lmat = zi(ismdi+neq-1)
 !     LA STRUCTURE NOMADI A LA LONGUEUR EXACTE: LMAT
@@ -188,7 +186,7 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomadi, base//' V I ', lmat, ismhc)
     do 20 i = 0, lmat - 1
         zi(ismhc+i) = zi4(icol+i)
-20  end do
+ 20 end do
     call jelibe(nu//'.SMOS.SMHC')
     call jeveuo(mat19//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+10) .ne. 'NOEU') then
@@ -208,20 +206,18 @@ subroutine mltpre(mat19, renumz)
             if (ino .eq. 0) mrl = mrl + 1
         endif
 !
-30  end do
+ 30 end do
 !
 !     OBTENTION DE NEC
-    call dismoi('F', 'NOM_GD', nu, 'NUME_DDL', ibid,&
-                nomgd, ierd)
-    call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
-                kbid, ierd)
+    call dismoi('NOM_GD', nu, 'NUME_DDL', repk=nomgd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
     call wkvect(nomp01, base//' V I ', 5, desc)
     call wkvect(nomp02, base//' V I ', neq+1, diag)
 !     COPIE DE SMDI DANS DIAG
     do 40 i = 1, neq
         zi(diag+i) = zi(ismdi+i-1)
-40  end do
+ 40 end do
     call jelibe(nu//'.SMOS.SMDI')
     zi(diag) = 0
 !
@@ -263,7 +259,7 @@ subroutine mltpre(mat19, renumz)
     ier = 0
     if (nrl .ne. 0) lglist = lt
     call wkvect(nomdeb, ' V V I ', neq, deb)
-50  continue
+ 50 continue
     call wkvect(nomvoi, ' V V I ', lglist, vois1)
     call wkvect(nomsui, ' V V I ', lglist, suit1)
 !
@@ -305,7 +301,7 @@ subroutine mltpre(mat19, renumz)
 !
     call wkvect(nomp03, base//' V I ', neq+1, adress)
     lgadjn = 2* (lmat-neq)
-60  continue
+ 60 continue
     if (nrl .ne. 0) lgadjn = lgadjn + 2*lglist
 !     NRL EST LE NOMBRE DE RELATIONS LINEAIRES ENTRE DDL
 !     ON REND ARTIFICIELLEMENT UN LIEN ENTRE TOUS CES DL
@@ -334,7 +330,7 @@ subroutine mltpre(mat19, renumz)
 !
     do 70 i = 0, lgadjn - 1
         zi(i+adjnc2) = 0
-70  end do
+ 70 end do
     call wkvect(nomp20, base//' V I ', neq, seq)
     call wkvect(nomt04, ' V V I ', (neq+1), supnd2)
     call wkvect(nomt14, ' V V I ', neq, invp)
@@ -425,7 +421,7 @@ subroutine mltpre(mat19, renumz)
     call jeveuo(nomsui, 'L', suit2)
     do 80 i = 0, lgadjn - 1
         zi(i+adjnc1) = 0
-80  end do
+ 80 end do
 !---------------------------------------------------------------
 !     PREMLD  APPELLE CALADJ QUI FABRIQUE ADJNC1
 !     DONNEES
@@ -466,7 +462,7 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomp16, base//' V I ', nbsn, lgbloc)
     call wkvect(nomp17, base//' V I ', nbsn, ncbloc)
     call wkvect(nomp18, base//' V I ', nbsn, decal)
-90  continue
+ 90 continue
     call wkvect(nopglo, ' V V S ', lgind, global)
     call wkvect(noploc, ' V V S ', lgind, local)
     call preml2(neq, zi(diag), zi(ismhc), zi(idelg), zi(xadj1),&
@@ -530,10 +526,10 @@ subroutine mltpre(mat19, renumz)
     do 100 i = 0, lgind - 1
         zi4(globa+i) = zi4(global+i)
         zi4(loca+i) = zi4(local+i)
-100  end do
+100 end do
     call jedetr(nopglo)
     call jedetr(noploc)
-9999  continue
+9999 continue
 !
     call uttcpu('CPU.RESO.3', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')

@@ -52,7 +52,6 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
 !                 IMA_RE -> IMA
 !-------------------------------------------------------------------
 !
-    integer :: ibid
     integer :: iret, nncp
     character(len=16) :: option
     character(len=4) :: tych
@@ -64,8 +63,7 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
     ASSERT(noma.ne.nomare)
     ASSERT(ch1.ne.ch2)
 !
-    call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ibid,&
-                tych, ibid)
+    call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
 !
     ch1s='&&RDTCHP'//'.CH1S'
     ch2s='&&RDTCHP'//'.CH2S'
@@ -85,8 +83,7 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
         call rdtces(nomare, corrm, ch1s, 'V', ch2s,&
                     cret)
         if (cret .eq. 0) then
-            call dismoi('F', 'NOM_OPTION', ch1, 'CHAMP', ibid,&
-                        option, ibid)
+            call dismoi('NOM_OPTION', ch1, 'CHAMP', repk=option)
             call cescel(ch2s, ligrel, option, ' ', 'OUI',&
                         nncp, base, ch2, 'F', iret)
             ASSERT(iret.eq.0)

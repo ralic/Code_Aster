@@ -22,10 +22,10 @@ def get_nom_maillage_sdfiss(FISS) :
    import aster
    from Utilitai.Utmess     import  UTMESS
 
-   iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',FISS.nom,'FISS_XFEM')
+   iret,ibid,nom_mo = aster.dismoi('NOM_MODELE',FISS.nom,'FISS_XFEM','F')
    nom_mo=nom_mo.strip()
 
-   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',nom_mo,'MODELE')
+   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',nom_mo,'MODELE','F')
    return nom_ma.strip()
 
 
@@ -33,8 +33,8 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
    """
    Macro RAFF_XFEM
    Calcule un indicateur permettant de caracteriser une zone qui sera raffinee.
-   L'indicateur est soit la distance (au fond de fissure pour les fissures, 
-   a l'interface pour les interfaces), soit un indicateur binaire qui vaut 
+   L'indicateur est soit la distance (au fond de fissure pour les fissures,
+   a l'interface pour les interfaces), soit un indicateur binaire qui vaut
    1 dans la zone d'interet
    """
    import aster
@@ -101,7 +101,7 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
          # recuperation du type de discontinuite :'FISSURE' ou 'INTERFACE'
          # si FISSURE   : l'erreur est la distance au fond de fissure
          # si INTERFACE : l'erreur est la distance a l'interface
-         iret,ibid,typ_ds = aster.dismoi('F','TYPE_DISCONTINUITE',fiss.nom,'FISS_XFEM')
+         iret,ibid,typ_ds = aster.dismoi('TYPE_DISCONTINUITE',fiss.nom,'FISS_XFEM','F')
          typ_ds=typ_ds.rstrip()
 
          # extraction des champs level sets
@@ -217,12 +217,12 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
    # indicateur de type 'ZONE'
    elif TYPE == 'ZONE' :
 
-      # tant que la fiche 18995 n'est pas resolue, 
+      # tant que la fiche 18995 n'est pas resolue,
       # on interdit plusieurs fissures
       assert (nbfiss==1)
       chamout = RAFF_XFEM_ZONE(FISSURE=FISSURE[0],
-                               RAYON=args['RAYON'])           
-      
+                               RAYON=args['RAYON'])
+
       if nbfiss > 1 :
 
          __CERR= [None]*nbfiss

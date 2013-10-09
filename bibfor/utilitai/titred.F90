@@ -37,7 +37,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
     character(len=8) :: typesd
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ichoix, ierd, ldon, llon, mxdef
+    integer :: i, ichoix, ierd, ldon, llon, mxdef
     integer :: mxlig
 !-----------------------------------------------------------------------
     parameter            (mxdef=9 , mxlig= 8 )
@@ -152,13 +152,13 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
     if (niv .eq. 'T') then
         ichoix = 1
     else
-        call dismoi('C', 'TYPE_RESU', nomcon, 'RESULTAT', ibid,&
-                    typesd, ierd)
+        call dismoi('TYPE_RESU', nomcon, 'RESULTAT', repk=typesd, arret='C',&
+                    ier=ierd)
         if (ierd .ne. 0) then
             call utmess('F', 'UTILITAI4_99', sk=typesd)
         else if (typesd .eq. 'CHAMP') then
-            call dismoi('C', 'TYPE_CHAMP', nomcon, 'CHAMP', ibid,&
-                        typesd, ierd)
+            call dismoi('TYPE_CHAMP', nomcon, 'CHAMP', repk=typesd, arret='C',&
+                        ier=ierd)
             if (typesd(1:4) .eq. 'NOEU') then
                 ichoix = 2
             else if (typesd(1:2) .eq. 'EL') then
@@ -172,8 +172,8 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
                 call utmess('F', 'UTILITAI4_99', sk=typesd)
             endif
         else
-            call dismoi('C', 'TYPE_CHAMP', nomcha, 'CHAMP', ibid,&
-                        typesd, ierd)
+            call dismoi('TYPE_CHAMP', nomcha, 'CHAMP', repk=typesd, arret='C',&
+                        ier=ierd)
 !CCC +                                                             IERD)
             if (typesd(1:4) .eq. 'NOEU') then
                 ichoix = 4
@@ -222,7 +222,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
     do 10 i = 1, nbtitr
         zk80(ldon+i-1) = defaut(i,ichoix)
         zi(llon+i-1) = londef(i,ichoix)
-10  end do
+ 10 end do
 !_DEL WRITE(6,*)  ' FIN DU DEFAUT ----------------------------------- '
 !
     call jedema()

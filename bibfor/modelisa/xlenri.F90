@@ -51,7 +51,7 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 !
 !
 !
-    integer :: nbmae, nbnoe, n, ier, jmae, jnoe, i
+    integer :: nbmae, nbnoe, n, jmae, jnoe, i
     character(len=8) :: k8b
     integer :: iarg
 !
@@ -73,21 +73,19 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 !
 !       GROUP_MA_ENRI N'EST PAS RENSEIGNE : ON PREND TOUT LE MAILLAGE
 !
-        call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmae,&
-                    k8b, ier)
-        call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&
-                    k8b, ier)
+        call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmae)
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
 !
         call wkvect(lismae, 'V V I  ', nbmae, jmae)
         call wkvect(lisnoe, 'V V I  ', nbnoe, jnoe)
 !
         do 10 i = 1, nbmae
             zi(jmae-1+i)=i
-10      continue
+ 10     continue
 !
         do 20 i = 1, nbnoe
             zi(jnoe-1+i)=i
-20      continue
+ 20     continue
 !
     else
 !

@@ -21,7 +21,6 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -41,6 +40,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
 #include "asterfort/vrcins.h"
+!
     integer :: nchar
     real(kind=8) :: time
     character(len=*) :: modele, optioz, cara, mate
@@ -77,12 +77,12 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: icode, iret, ibid, i, ied, icha
+    integer :: icode, iret, i, icha
     integer :: ialir1, ilires, iarefe
     integer :: nh, nop
     integer :: nbres1
     character(len=2) :: codret
-    character(len=8) ::  nomgd
+    character(len=8) :: nomgd
     character(len=19) :: ligre1, chvarc
     character(len=24) :: rigich, massch, ligrmo, ligrch
     character(len=24) :: chgeom, chcara(18), chharm, argu
@@ -135,12 +135,11 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
             call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
             do 10 i = 1, nbres1
                 rigich = zk24(ialir1-1+i)
-                call dismoi('F', 'NOM_LIGREL', rigich(1:19), 'RESUELEM', ibid,&
-                            ligre1, ied)
+                call dismoi('NOM_LIGREL', rigich(1:19), 'RESUELEM', repk=ligre1)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 20
-10          continue
+ 10         continue
             ASSERT(.false.)
-20          continue
+ 20         continue
 !
 !
 !
@@ -157,12 +156,11 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
             call jelira(memass(1:19)//'.RELR', 'LONUTI', nbres1)
             do 30 i = 1, nbres1
                 massch = zk24(ialir1-1+i)
-                call dismoi('F', 'NOM_LIGREL', massch(1:19), 'RESUELEM', ibid,&
-                            ligre1, ied)
+                call dismoi('NOM_LIGREL', massch(1:19), 'RESUELEM', repk=ligre1)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 40
-30          continue
+ 30         continue
             ASSERT(.false.)
-40          continue
+ 40         continue
         endif
     endif
 !
@@ -199,8 +197,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     lchin(8) = rigich
 !
     if (rigich .ne. ' ') then
-        call dismoi('F', 'NOM_GD', rigich, 'RESUELEM', ibid,&
-                    nomgd, ied)
+        call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
         if (nomgd .eq. 'MDNS_R') lpain(8) = 'PRIGINS'
     endif
 !
@@ -268,7 +265,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
                         lpain, 1, lchout(3), lpaout(3), base,&
                         'OUI')
             call reajre(meamor, lchout(3), base)
-50      continue
+ 50     continue
     endif
 !
 !

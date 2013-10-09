@@ -21,7 +21,6 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -33,6 +32,7 @@ subroutine ss2mm2(mo, vecel, nomcas)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: mo, nomcas
     character(len=19) :: vecel
 ! ----------------------------------------------------------------------
@@ -53,22 +53,19 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: ma, kbid, nosma, nomacr
+    character(len=8) :: ma, nosma, nomacr
 !
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialsch, iamacr, iarefr, iasssa, ibid, ierd
+    integer :: i, ialsch, iamacr, iarefr, iasssa
     integer :: iret, nbsma, nbssa
 !-----------------------------------------------------------------------
     call jemarq()
-    call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
-                ma, ierd)
-    call dismoi('F', 'NB_SS_ACTI', mo, 'MODELE', nbssa,&
-                kbid, ierd)
-    call dismoi('F', 'NB_SM_MAILLA', mo, 'MODELE', nbsma,&
-                kbid, ierd)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
+    call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
 !
     if (nbssa .eq. 0) goto 9999
 !
@@ -90,22 +87,22 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
 !     -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES:
 !     ----------------------------------------------------------
-    do 3, i=1,nbsma
-    if (zi(iasssa-1+i) .eq. 0) goto 3
-    call jenuno(jexnum(ma//'.SUPMAIL', i), nosma)
-    nomacr= zk8(iamacr-1+i)
-    call jeexin(jexnom(nomacr//'.LICA', nomcas), iret)
-    if (iret .gt. 0) then
-        zi(ialsch-1+i)=1
-    else
-        zi(ialsch-1+i)=0
-    endif
-    3 end do
+    do 3 i = 1, nbsma
+        if (zi(iasssa-1+i) .eq. 0) goto 3
+        call jenuno(jexnum(ma//'.SUPMAIL', i), nosma)
+        nomacr= zk8(iamacr-1+i)
+        call jeexin(jexnom(nomacr//'.LICA', nomcas), iret)
+        if (iret .gt. 0) then
+            zi(ialsch-1+i)=1
+        else
+            zi(ialsch-1+i)=0
+        endif
+  3 end do
 !
 !
 !
 !
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

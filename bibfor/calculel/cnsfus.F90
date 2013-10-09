@@ -20,7 +20,6 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscre.h"
@@ -34,6 +33,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbchs
     character(len=*) :: lichs(nbchs), cns3z, base
     logical :: lcumul(nbchs), lcoc
@@ -69,10 +69,9 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ------------------------------------------------------------------
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
     integer :: jcn3d, jcn3v, jcn3l, jcn3c
-    integer :: ibid, jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
+    integer ::  jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1, jnucmp
     integer :: ino, coefi, k1, k3
-    character(len=1) :: kbid
     character(len=8) :: ma, nomgd, nocmp
     character(len=3) :: tsca
     character(len=19) :: cns1, cns3
@@ -98,10 +97,8 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     ncmp1 = zi(jcn1d-1+2)
 !
 !
-    call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
-                tsca, ibid)
-    call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
-                kbid, ibid)
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
 !
 !
@@ -111,35 +108,35 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- ON "COCHE" LES CMPS PRESENTES DANS LES CNS DE LICHS:
     call wkvect('&&CNSFUS.LICMP', 'V V K8', ncmpmx, jlicmp)
     call wkvect('&&CNSFUS.NUCMP', 'V V I', ncmpmx, jnucmp)
-    do 20,ichs = 1,nbchs
-    cns1 = lichs(ichs)
-    call jeveuo(cns1//'.CNSK', 'L', jcn1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcn1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcn1c)
+    do 20 ichs = 1, nbchs
+        cns1 = lichs(ichs)
+        call jeveuo(cns1//'.CNSK', 'L', jcn1k)
+        call jeveuo(cns1//'.CNSD', 'L', jcn1d)
+        call jeveuo(cns1//'.CNSC', 'L', jcn1c)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-    ASSERT(ma.eq.zk8(jcn1k-1+1))
+        ASSERT(ma.eq.zk8(jcn1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-    ASSERT(nomgd.eq.zk8(jcn1k-1+2))
+        ASSERT(nomgd.eq.zk8(jcn1k-1+2))
 !
-    ncmp1 = zi(jcn1d-1+2)
-    do 10,icmp1 = 1,ncmp1
-    nocmp = zk8(jcn1c-1+icmp1)
-    icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
-    zi(jnucmp-1+icmp) = 1
-10  continue
-    call jelibe(cns1//'.CNSK')
-    call jelibe(cns1//'.CNSD')
-    call jelibe(cns1//'.CNSC')
-    20 end do
+        ncmp1 = zi(jcn1d-1+2)
+        do 10 icmp1 = 1, ncmp1
+            nocmp = zk8(jcn1c-1+icmp1)
+            icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
+            zi(jnucmp-1+icmp) = 1
+ 10     continue
+        call jelibe(cns1//'.CNSK')
+        call jelibe(cns1//'.CNSD')
+        call jelibe(cns1//'.CNSC')
+ 20 end do
 !
     icmp3 = 0
-    do 30,icmp = 1,ncmpmx
-    if (zi(jnucmp-1+icmp) .eq. 1) then
-        icmp3 = icmp3 + 1
-        zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
-    endif
-    30 end do
+    do 30 icmp = 1, ncmpmx
+        if (zi(jnucmp-1+icmp) .eq. 1) then
+            icmp3 = icmp3 + 1
+            zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
+        endif
+ 30 end do
     ncmp3 = icmp3
 !
 !
@@ -155,89 +152,89 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     2- RECOPIE DE CNS1 DANS CNS3 :
 !     ------------------------------------------
-    do 60,ichs = 1,nbchs
-    cns1 = lichs(ichs)
+    do 60 ichs = 1, nbchs
+        cns1 = lichs(ichs)
 !
-    cumul = lcumul(ichs)
-    if (lcoc) then
-        coefc = lcoefc(ichs)
-    else
-        coefr = lcoefr(ichs)
-        if (tsca .eq. 'I') coefi = nint(coefr)
-    endif
-!
-    call jeveuo(cns1//'.CNSD', 'L', jcn1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcn1c)
-    call jeveuo(cns1//'.CNSV', 'L', jcn1v)
-    call jeveuo(cns1//'.CNSL', 'L', jcn1l)
-    ncmp1 = zi(jcn1d-1+2)
-!
-    do 50,icmp1 = 1,ncmp1
-    nocmp = zk8(jcn1c-1+icmp1)
-    icmp3 = indik8(zk8(jcn3c),nocmp,1,ncmp3)
-    ASSERT(icmp3.ne.0)
-!
-    do 40,ino = 1,nbno
-    k1 = (ino-1)*ncmp1 + icmp1
-    k3 = (ino-1)*ncmp3 + icmp3
-!
-!
-    if (zl(jcn1l-1+k1)) then
-!
-!             -- SI AFFECTATION :
-        if ((.not.cumul) .or. (.not.zl(jcn3l-1+k3))) then
-            zl(jcn3l-1+k3) = .true.
-!
-            if (tsca .eq. 'R') then
-                zr(jcn3v-1+k3) = coefr*zr(jcn1v-1+k1)
-            else if (tsca.eq.'I') then
-                zi(jcn3v-1+k3) = coefi*zi(jcn1v-1+k1)
-            else if (tsca.eq.'L') then
-                zl(jcn3v-1+k3) = zl(jcn1v-1+k1)
-            else if (tsca.eq.'C') then
-                if (lcoc) then
-                    zc(jcn3v-1+k3) = coefc*zc(jcn1v-1+k1)
-                else
-                    zc(jcn3v-1+k3) = coefr*zc(jcn1v-1+k1)
-                endif
-            else if (tsca.eq.'K8') then
-                zk8(jcn3v-1+k3) = zk8(jcn1v-1+k1)
-            else
-                ASSERT(.false.)
-            endif
-!
-!             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
+        cumul = lcumul(ichs)
+        if (lcoc) then
+            coefc = lcoefc(ichs)
         else
-            if (tsca .eq. 'R') then
-                zr(jcn3v-1+k3) = zr(jcn3v-1+k3) + coefr* zr(jcn1v-1+k1)
-            else if (tsca.eq.'C') then
-                if (lcoc) then
-                    zc(jcn3v-1+k3) = zc(jcn3v-1+k3) + coefc*zc(jcn1v-1+k1)
-                else
-                    zc(jcn3v-1+k3) = zc(jcn3v-1+k3) + coefr*zc(jcn1v-1+k1)
-                endif
-            else if (tsca.eq.'I') then
-                zi(jcn3v-1+k3) = zi(jcn3v-1+k3) + coefi* zi(jcn1v-1+k1)
-                else if ((tsca.eq.'L') .or. (tsca.eq.'K8'))&
-                        then
-!                 CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
-                ASSERT(.false.)
-            else
-                ASSERT(.false.)
-            endif
+            coefr = lcoefr(ichs)
+            if (tsca .eq. 'I') coefi = nint(coefr)
         endif
 !
-    endif
+        call jeveuo(cns1//'.CNSD', 'L', jcn1d)
+        call jeveuo(cns1//'.CNSC', 'L', jcn1c)
+        call jeveuo(cns1//'.CNSV', 'L', jcn1v)
+        call jeveuo(cns1//'.CNSL', 'L', jcn1l)
+        ncmp1 = zi(jcn1d-1+2)
 !
-40  continue
-50  continue
+        do 50 icmp1 = 1, ncmp1
+            nocmp = zk8(jcn1c-1+icmp1)
+            icmp3 = indik8(zk8(jcn3c),nocmp,1,ncmp3)
+            ASSERT(icmp3.ne.0)
 !
-    call jelibe(cns1//'.CNSD')
-    call jelibe(cns1//'.CNSC')
-    call jelibe(cns1//'.CNSV')
-    call jelibe(cns1//'.CNSL')
+            do 40 ino = 1, nbno
+                k1 = (ino-1)*ncmp1 + icmp1
+                k3 = (ino-1)*ncmp3 + icmp3
 !
-    60 end do
+!
+                if (zl(jcn1l-1+k1)) then
+!
+!             -- SI AFFECTATION :
+                    if ((.not.cumul) .or. (.not.zl(jcn3l-1+k3))) then
+                        zl(jcn3l-1+k3) = .true.
+!
+                        if (tsca .eq. 'R') then
+                            zr(jcn3v-1+k3) = coefr*zr(jcn1v-1+k1)
+                        else if (tsca.eq.'I') then
+                            zi(jcn3v-1+k3) = coefi*zi(jcn1v-1+k1)
+                        else if (tsca.eq.'L') then
+                            zl(jcn3v-1+k3) = zl(jcn1v-1+k1)
+                        else if (tsca.eq.'C') then
+                            if (lcoc) then
+                                zc(jcn3v-1+k3) = coefc*zc(jcn1v-1+k1)
+                            else
+                                zc(jcn3v-1+k3) = coefr*zc(jcn1v-1+k1)
+                            endif
+                        else if (tsca.eq.'K8') then
+                            zk8(jcn3v-1+k3) = zk8(jcn1v-1+k1)
+                        else
+                            ASSERT(.false.)
+                        endif
+!
+!             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
+                    else
+                        if (tsca .eq. 'R') then
+                            zr(jcn3v-1+k3) = zr(jcn3v-1+k3) + coefr* zr(jcn1v-1+k1)
+                        else if (tsca.eq.'C') then
+                            if (lcoc) then
+                                zc(jcn3v-1+k3) = zc(jcn3v-1+k3) + coefc*zc(jcn1v-1+k1)
+                            else
+                                zc(jcn3v-1+k3) = zc(jcn3v-1+k3) + coefr*zc(jcn1v-1+k1)
+                            endif
+                        else if (tsca.eq.'I') then
+                            zi(jcn3v-1+k3) = zi(jcn3v-1+k3) + coefi* zi(jcn1v-1+k1)
+                            else if ((tsca.eq.'L') .or. (tsca.eq.'K8'))&
+                        then
+!                 CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
+                            ASSERT(.false.)
+                        else
+                            ASSERT(.false.)
+                        endif
+                    endif
+!
+                endif
+!
+ 40         continue
+ 50     continue
+!
+        call jelibe(cns1//'.CNSD')
+        call jelibe(cns1//'.CNSC')
+        call jelibe(cns1//'.CNSV')
+        call jelibe(cns1//'.CNSL')
+!
+ 60 end do
 !
 !
 !     3- RECOPIE DE LA SD TEMPORAIRE DANS LE RESULTAT :

@@ -2,13 +2,13 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
                   noe, nbnoff, indic)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: noma
     character(len=19) :: macofo
     integer :: ndim, nbmac, tablev(2), noe(4, 4), nbnoff, indic(4)
@@ -50,9 +50,9 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
 !
 !       ----------------------------------------------------
 !
-    integer :: jmaco, iatyma, iamase, ityp, iret
+    integer :: jmaco, iatyma, iamase, ityp
     integer :: comp5, ima, inp, inq, compte, nn, i, j, ino1
-    character(len=8) :: k8b, type
+    character(len=8) ::  type
 !
 !     -----------------------------------------------------------------
 !
@@ -80,8 +80,7 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
             if ((zi(jmaco-1 + ima).ne.tablev(1)) .and. (zi(jmaco-1 + ima).ne.tablev(2))) then
                 ityp = iatyma-1+zi(jmaco-1 + ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-                call dismoi('F', 'NBNO_TYPMAIL', type, 'TYPE_MAILLE', nn,&
-                            k8b, iret)
+                call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
                 call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + ima) ), 'L', iamase)
 !           POUR CHAQUE NOEUD DE LA MAILLE INTERNE
                 do 142 i = 1, nn
@@ -92,16 +91,16 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
                                 compte = compte+1
                             endif
                         endif
-143                  continue
-142              continue
+143                 continue
+142             continue
             endif
 !         LES FACES A NE PAS PRENDRE EN COMPTE CAR INTERNE
             if (((nbnoff.gt.1).and.(compte.ge.3)) .or. ((nbnoff.eq.1) .and.(compte.ge.2))) then
                 comp5 = comp5 + 1
                 indic(comp5) = inp
             endif
-141      continue
-140  end do
+141     continue
+140 end do
 !
 !     CAS PARTICULIER OU AUCUNE MAILLE INTERNE N'EST PRESENTE
     if ((comp5.eq.0) .and. (nbmac.eq.2)) then
@@ -116,14 +115,14 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
                                     compte = compte+1
                                 endif
                             endif
-203                      continue
-202                  continue
+203                     continue
+202                 continue
                 endif
                 if (ndim .eq. 3 .and. compte .ge. 3 .or. ndim .eq. 2 .and. compte .ge. 2) then
                     indic(inp)=inq
                 endif
-201          continue
-200      continue
+201         continue
+200     continue
     endif
 !
 !
