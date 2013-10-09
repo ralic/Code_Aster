@@ -121,19 +121,19 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     nbdeb=nbnot
     nbfin=0
 !
-    do 10 j = 1, nbint
+    do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
         typcou=zk8(lltyp+j-1)
         if (typcou .eq. 'MNEAL   ') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
-            do 15 i = 1, nbnoe
+            do i = 1, nbnoe
                 ik=zi(llnoin+i-1)
                 nbfin=max(nbfin,ik)
                 nbdeb=min(nbdeb,ik)
- 15         continue
+            end do
             call jelibe(jexnum(intf//'.IDC_LINO', j))
         endif
- 10 end do
+    end do
 !
     call jelibe(intf//'.IDC_TYPE')
 !
@@ -147,7 +147,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !----------ALLOCATION DU VECTEUR DES DDL A IMPOSER A 1------------------
 !                    ET DES VALEURS DES PARAMETRES NOEUD_CMP
     ntail=nbmn*nbcmp
-    if (ntail .eq. 0) goto 9999
+    if (ntail .eq. 0) goto 999
 !
     temddl='&&'//pgc//'.LISTE.DDL'
     tempar='&&'//pgc//'.PARA.NOCMP'
@@ -168,14 +168,14 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     nbatta=0
 !
     if (nbmn .gt. 0) then
-        do 20 i = nbdeb, nbfin
+        do i = nbdeb, nbfin
 !**************************************************************
 !          ICOD=ZI(LLDES+2*NBNOT+I-1)
             call isdeco(zi(lldes+2*nbnot+(i-1)*nbec+1-1), idec, nbcmp)
 !**************************************************************
             ino=zi(lldes+i-1)
             call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
-            do 30 j = 1, nbcmp
+            do j = 1, nbcmp
                 if (idec(j) .eq. 1) then
                     nbatta=nbatta+1
                     nomcmp=zk8(llncmp+j-1)
@@ -183,8 +183,8 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
                     call cheddl(zi(lldeeq), neq, ino, j, zi(ltddl+nbatta- 1),&
                                 1)
                 endif
- 30         continue
- 20     continue
+            end do
+        end do
     endif
 !
 !
@@ -202,6 +202,6 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     call jelibe(deeq)
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

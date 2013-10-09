@@ -232,7 +232,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                         call utmess('F', 'FACTOR_72', sk=kvers)
                     end select
                 endif
-                goto 9999
+                goto 999
             endif
             if (zk24(jslvk-1+7)(1:3) .eq. 'OUI') then
                 prec='S'
@@ -254,7 +254,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     endif
 !
     kxmps=1
-    do 1 k = 1, nmxins
+    do k = 1, nmxins
 ! ----- ASTUCE POUR DETRUIRE TOUTES LES OCCURENCES (QQES SOIT LEUR
 !       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
         if (action(1:8) .eq. 'DETR_MAT') prec=precs(k)
@@ -290,17 +290,17 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                 goto 2
             endif
         endif
-  1 end do
-    if (action(1:5) .eq. 'DETR_') goto 9999
+    end do
+    if (action(1:5) .eq. 'DETR_') goto 999
 !
 !        Y-A-T-IL ENCORE UNE PLACE LIBRE ?
-    do 4 k = 1, nmxins
+    do k = 1, nmxins
         if (nomats(k) .eq. ' ') then
             kxmps=k
             call jelira(matas//'.VALM', 'TYPE', cval=rouc)
             goto 2
         endif
-  4 end do
+    end do
     call utmess('F', 'FACTOR_60')
   2 continue
 !
@@ -335,7 +335,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             if (.not.lpreco) then
                 call utmess('A', 'FACTOR_59')
             endif
-            goto 9999
+            goto 999
         else
             zk24(jrefa-1+8)='DECT'
         endif
@@ -443,7 +443,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         endif
     endif
 !
-9999 continue
+999 continue
     if ((iretz.ne.0) .and. (iretz.ne.1) .and. (iretz.ne.2)) then
 ! --- VALEUR ILLICITE
         ASSERT(.false.)

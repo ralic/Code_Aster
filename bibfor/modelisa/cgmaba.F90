@@ -225,7 +225,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- PARCOURS DES MAILLES DU MAILLAGE :
 !     --------------------------------
-    do 10 ima = 1, nbmai
+    do ima = 1, nbmai
 !
 ! ---     RECUPERATION DU NOM DE LA MAILLE :
 !         --------------------------------
@@ -248,7 +248,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! ---     BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 !         -----------------------------------------
-        do 20 ino = 1, nbno
+        do ino = 1, nbno
 !
 ! ---        NUMERO DU NOEUD :
 !            ---------------
@@ -292,7 +292,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
                 endif
             endif
 !
- 20     continue
+        end do
 !
         if (selec .eq. 'TOUS') then
             if (nbnod .eq. nbno) then
@@ -310,7 +310,8 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
             endif
         endif
 !
- 10 end do
+ 10     continue
+    end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

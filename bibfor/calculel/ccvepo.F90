@@ -64,7 +64,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 !   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer ::  ierd, jcha, ltymo, nbmaal
+    integer :: ierd, jcha, ltymo, nbmaal
     integer :: jlisma, n1, n2
 !
     character(len=8) :: k8b

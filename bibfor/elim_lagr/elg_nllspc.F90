@@ -1,6 +1,5 @@
 subroutine elg_nllspc(nbnz, ctemp, mat)
     implicit none
-! aslint: disable=W0104
 ! person_in_charge: mathieu.corus at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +27,12 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
 !--  IN : CTEMP  : VECTEUR CONTENANT LES TERMES DE LA COMBINAISON LIN.
 !--  IN : NOMMAT : NOM DU CONCEPT RECEVANT LA BASE DU NOYAU
 !--
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterc/r8prem.h"
+# include "asterfort/assert.h"
+# include "blas/ddot.h"
 !
-#   include "asterfort/assert.h"
-#   include "blas/ddot.h"
-#   include "asterc/r8prem.h"
-
+!
     integer :: nbnz
     real(kind=8) :: ctemp(nbnz), mat(nbnz, nbnz)
 !
@@ -45,7 +44,7 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
 !
 !
     i1=1
-100  continue
+100 continue
     if (abs(ctemp(i1)) .gt. prec) then
         indz=i1
         cmax=abs(ctemp(i1))
@@ -60,7 +59,7 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
         mat(1,1)=1.d0
     endif
 !
-    do 10 i1 = 2, nbnz
+    do i1 = 2, nbnz
 !
         if (abs(ctemp(i1)) .lt. prec) then
             mat(i1,i1)=1.d0
@@ -75,7 +74,7 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
                 mat(indz,i1)=1.d0
             endif
 !
-            do 20 j1 = 1, i1-1
+            do j1 = 1, i1-1
                 if (abs(mat(j1,j1)) .gt. prec) then
                     if (abs(mat(j1,i1)) .lt. prec) then
                         val=ddot(j1,mat(1,j1),1,mat(1,i1),1)
@@ -84,13 +83,13 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
                     endif
                 else
                     if (abs(mat(j1,i1)) .lt. prec) then
-                        write(unit,*),'PROBLEME DANS elg_nllspc.F - CAS NON PREVU'
+                        write(unit,*) 'PROBLEME DANS elg_nllspc.F - CAS NON PREVU'
                         ASSERT(.false.)
                     endif
                 endif
 !
 !
-20          continue
+            end do
 !
             val=ddot(i1-1,mat(1,i1),1,ctemp(1),1)
             mat(i1,i1)=-val/ctemp(i1)
@@ -98,14 +97,14 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
 !
             norm=sqrt(norm)
             if (norm .gt. prec) then
-                do 40 j1 = 1, i1
+                do j1 = 1, i1
                     mat(j1,i1)=mat(j1,i1)/norm
-40              continue
+                end do
             endif
 !
         endif
 !
-10  end do
+    end do
 !
 !      WRITE(6,*),'T :'
 !      DO 50 I1=1,NBNZ

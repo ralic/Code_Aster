@@ -141,21 +141,21 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     dimacv = 0
     call wkvect('&&ATASMO.ACOMPAC_NBT', 'V V I', nblig, jacnbt)
     call wkvect('&&ATASMO.ACOMPAC_1ER', 'V V I', nblig, jac1er)
-    do 20 j = 1, nmul
-        do 10 ilig = 1, nblia
+    do j = 1, nmul
+        do ilig = 1, nblia
             call jeveuo(jexnum(a, ilig+(j-1)*nblia), 'L', idligm)
             nddltm = apptr(ilig+1) - apptr(ilig)
             nddlt = 0
-            do 15 i = 1, nddltm
+            do i = 1, nddltm
                 if (zr(idligm-1+i) .ne. 0.d0) nddlt = nddlt + 1
- 15         continue
+            end do
 !           ASSERT(NDDLT.GT.0)
             zi(jacnbt-1+ilig+(j-1)*nblia) = nddlt
             zi(jac1er-1+ilig+(j-1)*nblia) = dimacv + 1
             dimacv = dimacv + nddlt
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
- 10     continue
- 20 end do
+        end do
+    end do
 !       ASSERT(DIMACV.GT.0)
     dimacv = max(dimacv,1)
 !
@@ -166,27 +166,27 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     call wkvect('&&ATASMO.ACOMPAC_I', 'V V I', dimacv, jaci)
     call wkvect('&&ATASMO.ACOMPAC_V', 'V V R', dimacv, jacv)
     k = 0
-    do 40 j = 1, nmul
-        do 30 ilig = 1, nblia
+    do j = 1, nmul
+        do ilig = 1, nblia
             call jeveuo(jexnum(a, ilig+(j-1)*nblia), 'L', idligm)
             nddlt = apptr(ilig+1) - apptr(ilig)
             jdecal = apptr(ilig)
             kdeb = k
-            do 35 i = 1, nddlt
+            do i = 1, nddlt
                 if (zr(idligm-1+i) .ne. 0.d0) then
                     k = k + 1
                     zi(jaci-1+k) = apddl(jdecal+i)
                     zr(jacv-1+k) = zr(idligm-1+i)
                 endif
- 35         continue
+            end do
 !         ON DOIT TRIER LE TABLEAU DES NUMEROS D'EQUATIONS
 !         CAR MOINSR S'ATTEND A UN TABLEAU ORDONNE
 !         LE TABLEAU DES VALEURS EST AUSSI PERMUTE POUR
 !         RESPECTER CE TRI
             call trir(zi(jaci+kdeb), zr(jacv+kdeb), 1, k-kdeb)
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
- 30     continue
- 40 end do
+        end do
+    end do
 !
 !
 !     4. OBJETS DU NUME_DDL : .SMHC ET .SMDI :
@@ -196,26 +196,26 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     call wkvect('&&ATASMO.LMBID', 'V V I', 1, idlm)
 !
 !     4.1 : ON FORCE LA PRESENCE DES TERMES DIAGONAUX:
-    do 50 ieq = 1, neq
+    do ieq = 1, neq
         zi(idlm) = ieq
         call moinsr(zi(idlm), 1, idlm, jsmdi, idsuiv,&
                     ksuiv, jhbid, khbid, iilib, iimax)
- 50 end do
+    end do
 !
 !
 !     4.2 : ON INSERE LES VRAIS TERMES :
-    do 70 ilig = 1, nblig
+    do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
         nddlt = zi(jacnbt-1+ilig)
         idlm = jaci - 1 + zi(jac1er-1+ilig)
 !
 !       -- INSERTION DES COLONNES DE L'ELEMENT DANS
 !           LA STRUCTURE CHAINEE
-        do 60 iddl = 0, nddlt - 1
+        do iddl = 0, nddlt - 1
             call moinsr(zi(idlm+iddl), iddl+1, idlm, jsmdi, idsuiv,&
                         ksuiv, jhbid, khbid, iilib, iimax)
- 60     continue
- 70 end do
+        end do
+    end do
 !
 !
 !     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
@@ -247,9 +247,9 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     zk24(jrefa-1+11) = 'MPI_COMPLET'
     kconl = ata//'.CONL'
     call wkvect(kconl, base//' V R', neq, jconl)
-    do 90 i = 1, neq
+    do i = 1, neq
         zr(jconl+i-1) = un
- 90 end do
+    end do
 !
 !
 !     7. OBJET: MATR_ASSE.VALM :
@@ -260,14 +260,14 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     call jeecra(kvalm, 'LONMAX', ncoef)
     call jecroc(jexnum(kvalm, 1))
     call jeveuo(jexnum(kvalm, 1), 'E', jvalm)
-    do 140 ilig = 1, nblig
+    do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
         nddlt = zi(jacnbt-1+ilig)
         idlm = jaci - 1 + zi(jac1er-1+ilig)
         decal = zi(jac1er-1+ilig)
 !
 !       -- CALCUL DE .VALM(II,JJ) :
-        do 130 j = 1, nddlt
+        do j = 1, nddlt
             vj = zr(jacv-1+decal-1+j)
             jj = zi(jaci-1+decal-1+j)
             ASSERT(jj.le.neq)
@@ -278,20 +278,20 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
                 ii1 = zi(jsmdi-1+jj-1) + 1
             endif
             ASSERT(ii2.ge.ii1)
-            do 120 i = 1, j
+            do i = 1, j
                 vi = zr(jacv-1+decal-1+i)
                 ii = zi(jaci-1+decal-1+i)
                 vij = vi*vj
 !           -- CUMUL DE VIJ DANS .VALM :
-                do 100 iii = ii1, ii2
+                do iii = ii1, ii2
                     if (zi4(jsmhc-1+iii) .eq. ii) goto 110
-100             continue
+                end do
                 ASSERT(.false.)
 110             continue
                 zr(jvalm-1+iii) = zr(jvalm-1+iii) + vij
-120         continue
-130     continue
-140 end do
+            end do
+        end do
+    end do
 !
 !
 !     9. MENAGE :

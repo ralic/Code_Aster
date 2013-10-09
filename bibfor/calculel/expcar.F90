@@ -59,7 +59,7 @@ subroutine expcar(carte)
 !-----------------------------------------------------------------------
     integer :: i1, i2, i3, i4, i5, iadesc, iadgp
     integer :: ialima, ianoli, ianoma, ianumt, iavale, iavalp, icode
-    integer ::  iedit, ient, igd, ima, iret, j
+    integer :: iedit, ient, igd, ima, iret, j
     integer :: nbedit, nbgdmx, nbma, nbmato, ncmpmx, nec, num1
     integer :: num2, numat
 !-----------------------------------------------------------------------
@@ -106,16 +106,16 @@ subroutine expcar(carte)
     call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit)
     call jeveuo(carte//'.NUMT', 'E', ianumt)
     nbmato = 0
-    do 1 iedit = 1, nbedit
+    do iedit = 1, nbedit
         icode = zi(iadesc-1+3+2* (iedit-1)+1)
         noli = zk24(ianoli-1+iedit)
         dejavu = .false.
-        do 2 j = iedit - 1, 1, -1
+        do j = iedit - 1, 1, -1
             if (noli .eq. zk24(ianoli-1+j)) then
                 dejavu = .true.
                 goto 3
             endif
-  2     continue
+        end do
   3     continue
         if (dejavu) then
             zi(ianumt-1+3* (iedit-1)+1) = zi(ianumt-1+3* (j-1)+1)
@@ -137,7 +137,7 @@ subroutine expcar(carte)
             zi(ianumt-1+3* (iedit-1)+2) = nbmato
             zi(ianumt-1+3* (iedit-1)+3) = 1
         endif
-  1 end do
+    end do
 !
 !     -- ALOCATION DES OBJETS DE TRAVAIL : .VALP ET .DGP
 !
@@ -152,7 +152,7 @@ subroutine expcar(carte)
 !     -------------------------------
 !
     nbgdmx = zi(iadesc-1+2)
-    do 11 iedit = 1, nbedit
+    do iedit = 1, nbedit
         i1 = iavale + (iedit-1)*ncmpmx
         i3 = iadesc - 1 + 3 + 2*nbgdmx + (iedit-1)*nec + 1
         num1 = zi(ianumt-1+ (iedit-1)*3+1)
@@ -169,7 +169,7 @@ subroutine expcar(carte)
 !           --I5 : ADRESSE DANS ZI DE LA LISTE DES MAILLES A TRAITER.
 !           --NBMA: NOMBRE DE MAILLES A TRAITER.
         endif
-        do 12 ima = 1, nbma
+        do ima = 1, nbma
             if (abs(icode) .eq. 1) then
                 numat = ima
             else
@@ -179,8 +179,8 @@ subroutine expcar(carte)
             i4 = iadgp - 1 + (numat-1)*nec + 1
             call mecumu(scal, ncmpmx, i1, i2, nec,&
                         zi(i3), zi(i4))
- 12     continue
- 11 end do
+        end do
+    end do
 !
 !
     call jedema()

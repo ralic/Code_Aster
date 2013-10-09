@@ -73,7 +73,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     real(kind=8) :: coef_real_unit
     integer :: jlino, jcoor, jprnm, jgeom2, jnom
     integer :: i_no, i_cmp, i
-    integer ::  cmp_index
+    integer :: cmp_index
     integer :: nbcmp, nbec
     integer :: numnoe_m
     real(kind=8) :: cent(3)

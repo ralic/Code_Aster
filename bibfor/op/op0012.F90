@@ -74,40 +74,40 @@ subroutine op0012()
     call getvid(' ', 'CHAR_CINE', nbval=0, nbret=nbchc)
     nbchc = -nbchc
 !     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
-    do 1 k = 1, nbmat
+    do k = 1, nbmat
         matel=zk24(jlimat-1+k)
         ASSERT(zk24(jlimat-1+k)(9:24).eq.' ')
         call jeexin(matel//'.RECC', iexi)
         if (iexi .gt. 0) then
             call jeveuo(matel//'.RECC', 'L', jrecc)
             call jelira(matel//'.RECC', 'LONMAX', nbchar)
-            do 2 j = 1, nbchar
+            do j = 1, nbchar
                 charge=zk8(jrecc-1+j)
                 call jeexin(charge//'.ELIM      .AFCK', iexi)
                 if (iexi .gt. 0) nbchc=nbchc+1
-  2         continue
+            end do
         endif
-  1 end do
+    end do
 !
     if (nbchc .gt. 0) then
         call wkvect(lchci, 'V V K24', nbchc, jlchci)
         call getvid(' ', 'CHAR_CINE', nbval=nbchc, vect=zk24(jlchci), nbret=ico)
-        do 3 k = 1, nbmat
+        do k = 1, nbmat
             matel=zk24(jlimat-1+k)
             call jeexin(matel//'.RECC', iexi)
             if (iexi .gt. 0) then
                 call jeveuo(matel//'.RECC', 'L', jrecc)
                 call jelira(matel//'.RECC', 'LONMAX', nbchar)
-                do 4 j = 1, nbchar
+                do j = 1, nbchar
                     charge=zk8(jrecc-1+j)
                     call jeexin(charge//'.ELIM      .AFCK', iexi)
                     if (iexi .gt. 0) then
                         ico=ico+1
                         zk24(jlchci-1+ico)=charge//'.ELIM'
                     endif
-  4             continue
+                end do
             endif
-  3     continue
+        end do
     endif
 !
 !
@@ -126,9 +126,9 @@ subroutine op0012()
                     lchci, 'ZERO', 'G', itysca, matas)
         zk24(islvk+5-1)=sym2(1:3)
         call jeveuo(matas//'           .LIME', 'E', ilimat)
-        do 5 k = 1, nbmat
+        do k = 1, nbmat
             zk24(ilimat-1+k)=zk24(jlimat-1+k)
-  5     continue
+        end do
     else
         call asmatr(nbmat, zk24(jlimat), ' ', nu, ' ',&
                     lchci, 'ZERO', 'G', itysca, matas)

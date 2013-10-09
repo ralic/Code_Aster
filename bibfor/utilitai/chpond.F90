@@ -112,7 +112,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
             ASSERT(iret2.eq.0)
             call jeveuo(vefch1, 'L', jch1)
             call jeveuo(vefch2, 'L', jch2)
-            do 5 ima = 1, nbma
+            do ima = 1, nbma
 !           -- IL NE FAUT VERIFIER QUE LES MAILLES AFFECTEES DE CHIN:
                 if (zk16(jch1+ima-1) .eq. ' ') goto 5
 !           -- IL NE FAUT VERIFIER QUE LES MAILLES POSTRAITEES:
@@ -130,7 +130,8 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                         call utmess('F', 'CALCULEL2_4', sk=zk16(jch1+ima- 1))
                     endif
                 endif
-  5         continue
+  5             continue
+            end do
             call jedetr(vefch1)
             call jedetr(vefch2)
         endif
@@ -168,22 +169,22 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         call jeexin(cespoi//'.PDSM', iexi)
         if (iexi .eq. 0) then
             call wkvect(cespoi//'.PDSM', 'V V R', nbma, jpdsm)
-            do 11 ima = 1, nbma
+            do ima = 1, nbma
                 ltest = .false.
                 if (peecal) then
                     if (zi(indma+ima-1) .eq. 1) ltest=.true.
                 endif
                 if ((.not.peecal) .or. ltest) then
                     nbpt=zi(jpoid-1+5+4*(ima-1)+1)
-                    do 21 ipt = 1, nbpt
+                    do ipt = 1, nbpt
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
                                     1, 1, iad2)
                         ASSERT(iad2.gt.0)
                         zr(jpdsm-1+ima)=zr(jpdsm-1+ima)+zr(jpoiv-1+&
                         iad2)
- 21                 continue
+                    end do
                 endif
- 11         continue
+            end do
         else
             call jeveuo(cespoi//'.PDSM', 'L', jpdsm)
         endif
@@ -196,7 +197,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
             nbpt =zi(jchsd-1+5+4*(ima-1)+1)
             nbsp =zi(jchsd-1+5+4*(ima-1)+2)
             nbcmp=zi(jchsd-1+5+4*(ima-1)+3)
-            do 20 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 if (tych .eq. 'ELGA') then
                     call cesexi('S', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad2)
@@ -214,8 +215,8 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                     poids=zr(jpdsm-1+ima)/nbpt
                 endif
 !
-                do 30 isp = 1, nbsp
-                    do 40 icmp = 1, nbcmp
+                do isp = 1, nbsp
+                    do icmp = 1, nbcmp
                         call cesexi('C', jchsd, jchsl, ima, ipt,&
                                     isp, icmp, iad1)
                         call cesexi('C', joutd, joutl, ima, ipt,&
@@ -228,9 +229,10 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                             ASSERT(iad3.gt.0)
                             zr(joutv-1+iad3)=zr(jchsv-1+iad1)*poids
                         endif
- 40                 continue
- 30             continue
- 20         continue
+ 40                     continue
+                    end do
+                end do
+            end do
         endif
     end do
 !

@@ -113,9 +113,9 @@ subroutine op0061()
                     typval)
         call jeveuo(nomvect, 'L', ivect)
         numrep=zi(ivect)
-        do 20 k = 2, ntab
+        do k = 2, ntab
             if (zi(ivect-1+k) .gt. numrep) numrep=zi(ivect-1+k)
- 20     continue
+        end do
         numrep=numrep+1
 !
         nomvect = '&&NUME_ORDRE'
@@ -123,9 +123,9 @@ subroutine op0061()
                     typval)
         call jeveuo(nomvect, 'L', ivect)
         num_lig = 0
-        do 21 k = 1, ntab
+        do k = 1, ntab
             if (zi(ivect-1+k) .eq. num_ordr) num_lig = k
- 21     continue
+        end do
         nbordr0=zi(ivect-1+ntab)
         if (num_lig .eq. 0) then
             call utmess('F', 'RUPTURE0_37', si=num_ordr)
@@ -169,7 +169,7 @@ subroutine op0061()
         call getfac('CHOC', nchoc)
         masse=zk24(zi(imat(2)+1))(1:19)
         call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
-        do 40 k = 1, nchoc
+        do k = 1, nchoc
             call getvtx('CHOC', 'GROUP_NO', iocc=k, scal=grno, nbret=ier)
             if (ier .eq. 1) then
                 call compno(mailla, 1, grno, nbno)
@@ -177,7 +177,7 @@ subroutine op0061()
                     call utmess('F', 'MECANONLINE9_68')
                 endif
             endif
- 40     continue
+        end do
         call wkvect(parcho//'.TYPE', 'V V K8', nchoc, ier)
         call wkvect(parcho//'.NOEU', 'V V K8', 2*nchoc, ier)
         call wkvect(parcho//'.RAID', 'V V R', nchoc, iraid)
@@ -297,11 +297,11 @@ subroutine op0061()
         if (cor) then
 ! ---       DIRECTION DE LA CONTINUATION (TANGENTE DE V(A))
             call dscal(ninc, 0.d0, zr(iutj), 1)
-            do 101 p = 1, ordman
+            do p = 1, ordman
                 ap=dble(p)*(amax**(p-1))
                 call daxpy(ninc, ap, zr(iups+p*ninc), 1, zr(iutj),&
                            1)
-101         continue
+            end do
 ! ---       CALCUL DE LA TANGENTE AU NOUVEAU POINT
             call mnltan(.true., imat, numdrv, matdrv, xcdl,&
                         parcho, adime, xvect, ninc, nd,&
@@ -321,32 +321,32 @@ subroutine op0061()
             endif
 !
 ! ---       REDIMENSIONNEMENT DES VECTEURS SOLUTIONS
-            do 11 i = 1, nbpt
-                do 111 p = 1, nd*(2*h+1)
+            do i = 1, nbpt
+                do p = 1, nd*(2*h+1)
                     zr(ius-1+(i-1)*ninc+p)=zr(ius-1+(i-1)*ninc+p)*zr(ijmax)
-111             continue
- 11         continue
-            do 12 i = 1, nbpt-1
+                end do
+            end do
+            do i = 1, nbpt-1
                 zr(ius-1+i*ninc)=zr(ius-1+i*ninc)*zr(iadim-1+3)
- 12         continue
+            end do
 ! ---       CALCUL DE L'ENERGIE MECANIQUE
             call mnleng(imat, xcdl, parcho, xus, ninc,&
                         nd, nchoc, h, nbpt, xeng)
-            do 13 i = 1, nbpt-1
+            do i = 1, nbpt-1
                 omega=zr(ius-1+i*ninc)
- 13         continue
+            end do
             if (info .eq. 2) then
                 write(ifres,904)
                 write(ifres,901) zr(ieng),zr(ius-1+ninc)/r8depi()
                 write(ifres,902) zr(ieng-1+(nbpt-1)),zr(ius-1+(nbpt-1)*ninc)/r8depi()
             endif
 ! ---       AJOUTER LES DDLS NON-ACTIFS
-            do 300 ii = 1, nbpt-1
+            do ii = 1, nbpt-1
                 p=(k-1)*(nbpt-1)*(neq*(2*h+1)+2)
                 p=p+(ii-1)*(neq*(2*h+1)+2)
-                do 310 j = 1, 2*h+1
+                do j = 1, 2*h+1
                     i=0
-                    do 320 jj = 1, neq
+                    do jj = 1, neq
                         if (zi(icdl-1+jj) .eq. 0) then
                             i=i+1
                             zr(isort-1+p+(j-1)*neq+jj)= zr(ius-1+(ii-1)*&
@@ -354,11 +354,11 @@ subroutine op0061()
                         else
                             zr(isort-1+p+(j-1)*neq+jj)=0.d0
                         endif
-320                 continue
-310             continue
+                    end do
+                end do
                 zr(isort-1+p+neq*(2*h+1)+1)=zr(ius-1+ii*ninc)/r8depi()
                 zr(isort-1+p+neq*(2*h+1)+2)=zr(ieng-1+ii)
-300         continue
+            end do
 ! ---       REMISE A ZERO DU VECTEUR RESULTAT
             if (k .ne. nbran) then
                 call dscal(ninc*nbpt, 0.d0, zr(ius), 1)

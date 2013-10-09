@@ -61,7 +61,7 @@ subroutine apalmc(kptsc)
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: low, high, ierr
-    integer ::  neq, bs
+    integer :: neq, bs
     Vec :: vtmp
     Mat :: a
     mpi_int :: mrank, msize

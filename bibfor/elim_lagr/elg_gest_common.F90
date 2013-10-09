@@ -18,17 +18,17 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-
-#   include "asterfort/assert.h"
-#   include "asterfort/utmess.h"
-
+!
+# include "asterfort/assert.h"
+# include "asterfort/utmess.h"
+!
     character(len=*) :: action, mat1, mat2, rigi1
 !--------------------------------------------------------------
 ! BUT :
 !   * Gestion des variables du COMMON ELIMLG.
 !   * Positionner l'indice KE du common ELIMLG correspondant
 !     à une matrice Aster
-
+!
 ! IN  : ACTION :
 !        / 'NOTE' : pour "déclarer" une nouvelle matrice
 !                   (appelée par exemple dans preres.f)
@@ -44,10 +44,10 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
 !               / ' '
 !               Cet argument ne sert que pour action='NOTE'
 !---------------------------------------------------------------
-
+!
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-
+!
 !================================================================
     integer :: k, ktrou, iprem
     PetscInt :: ierr
@@ -55,11 +55,11 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
     data iprem / 0 /
 !----------------------------------------------------------------
     iprem=iprem+1
-
+!
     ASSERT(action.eq.'NOTE' .or.action.eq.'CHERCHE'.or.action.eq.'EFFACE')
     if (action .ne. 'NOTE') ASSERT(rigi1.eq.' ')
-
-
+!
+!
 !     -- au 1er appel on initialise le COMMON :
 !     -----------------------------------------
     if (iprem .eq. 1) then
@@ -79,9 +79,9 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
         enddo
         ke=0
     endif
-
-
-
+!
+!
+!
     if (action .eq. 'NOTE') then
         ktrou=0
 !       -- on cherche une place libre
@@ -91,15 +91,15 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
                 goto 1
             endif
         enddo
- 1      continue
+  1     continue
         ASSERT(ktrou.gt.0)
         ke=ktrou
         nomelim(ke,1)=mat1
         nomelim(ke,2)=mat2
         nomelim(ke,3)=rigi1
     endif
-
-
+!
+!
     if (action .eq. 'CHERCHE') then
         ktrou=0
         do k = 1, 5
@@ -111,10 +111,10 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
         ASSERT(ktrou.gt.0)
         ASSERT(nomelim(ktrou, 2).eq.mat2)
         ke=ktrou
- 2      continue
+  2     continue
     endif
-
-
+!
+!
     if (action .eq. 'EFFACE') then
         ASSERT(mat1.eq.' ')
         ktrou=0
@@ -124,13 +124,13 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
                 goto 3
             endif
         enddo
- 3      continue
+  3     continue
         if (ktrou .eq. 0) goto 4
-
+!
         nomelim(ktrou,1)=' '
         nomelim(ktrou,2)=' '
         nomelim(ktrou,3)=' '
-
+!
         call MatDestroy(melim(ktrou)%kproj, ierr)
         call MatDestroy(melim(ktrou)%ctrans, ierr)
         call MatDestroy(melim(ktrou)%tfinal, ierr)
@@ -140,7 +140,7 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
         call VecDestroy(melim(ktrou)%vecb, ierr)
         call VecDestroy(melim(ktrou)%vecc, ierr)
         deallocate(melim(ktrou)%indred)
-
+!
         melim(ktrou)%kproj=0
         melim(ktrou)%ctrans=0
         melim(ktrou)%tfinal=0
@@ -150,15 +150,15 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
         melim(ktrou)%vecb=0
         melim(ktrou)%vecc=0
         nullify(melim(ktrou)%indred)
- 4      continue
+  4     continue
     endif
-
+!
 #else
     if (action .eq. 'EFFACE') then
-       ! rien a faire
+! rien a faire
     else
         call utmess('F', 'ELIMLAGR_1')
     endif
 #endif
-
+!
 end subroutine

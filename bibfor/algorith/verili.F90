@@ -107,7 +107,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
         call utmess('E', 'ALGORITH14_70', nk=4, valk=valk, ni=2,&
                     vali=vali)
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !--------RECUPERATION DU NUMERO DE GRANDEUR SOUS-JACENTE----------------
@@ -121,7 +121,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     call jeveuo(jexnum(fpli1, ii), 'L', llpl1)
     call jeveuo(jexnum(fpli2, ii), 'L', llpl2)
 !
-    do 10 i = 1, nbnoe1
+    do i = 1, nbnoe1
 !
         call isgeco(zi(llpl1+(i-1)*(nbec+1)+1), zi(llpl2+(i-1)*(nbec+ 1)+1), nbcmpm, -1, icodp)
         call isgeco(zi(llpl2+(i-1)*(nbec+1)+1), zi(llpl1+(i-1)*(nbec+ 1)+1), nbcmpm, -1, icodm)
@@ -129,7 +129,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
         call isdeco(icodm, idecm, nbcmpm)
         call isdeco(icodp, idecp, nbcmpm)
 !
-        do 20 j = 1, nbcmpm
+        do j = 1, nbcmpm
             if (idecp(j) .ne. 0) then
                 valk (1) = sst1
                 valk (2) = intf1
@@ -150,10 +150,10 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
                 call utmess('F', 'ALGORITH14_72', nk=6, valk=valk)
                 iret=iret+1
             endif
- 20     continue
- 10 end do
+        end do
+    end do
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

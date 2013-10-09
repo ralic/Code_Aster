@@ -199,7 +199,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- PARCOURS DES NOEUDS DU MAILLAGE :
 !     --------------------------------
     nbno = 0
-    do 10 ino = 1, nbnoe
+    do ino = 1, nbnoe
 !
 ! ---     COORDONNEES DU NOEUD :
 !         --------------------
@@ -258,7 +258,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
             endif
         endif
 !
- 10 end do
+    end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

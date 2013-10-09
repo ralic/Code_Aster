@@ -81,7 +81,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !
     integer :: i, ifm, niv, nbno, jltno, jlnno, ndim, j, jnodto, node, ier
     integer :: ibid, jbl, jbeta, jlistp, jcoor, pos, pos1, jvp
-    character(len=8) ::  lpain(2), lpaout(1)
+    character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
     real(kind=8) :: t1(3), n1(3), p1(3), deltaa, newlsn, newlst, cbeta, sbeta
@@ -121,7 +121,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(cnsln//'.CNSV', 'E', jlnno)
 !
 !     UPDATE THE LEVEL SETS FOR EACH NODE IN THE TORE
-    do 100 i = 1, nbno
+    do i = 1, nbno
 !
 !         RETREIVE THE NODE NUMBER
         node = zi(jnodto-1+i)
@@ -141,7 +141,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
         newlsn = 0.d0
         newlst = 0.d0
 !
-        do 105 j = 1, ndim
+        do j = 1, ndim
 !            NEW T-AXIS BY A RIGID ROTATION AT THE NEW CRACK TIP
             t1(j) = cbeta*zr(jbl-1+pos+ndim+j)+sbeta*zr(jbl-1+pos+j)
 !            NEW N-AXIS BY A RIGID ROTATION AT THE NEW CRACK TIP
@@ -151,7 +151,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !            NEW VALUES OF THE TWO LEVEL SETS
             newlsn = newlsn+(zr(jcoor-1+pos1+j)-p1(j))*n1(j)
             newlst = newlst+(zr(jcoor-1+pos1+j)-p1(j))*t1(j)
-105     continue
+        end do
 !
 !         MODIFY THE NORMAL LEVEL SET ONLY IN THE POINTS WHERE THE
 !         TANGENTIAL LEVEL SET IS POSITIVE
@@ -160,7 +160,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !         STORE THE NEW VALUE OF THE TANTENGIAL LEVEL SET
         zr(jltno-1+node) = newlst
 !
-100 end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES

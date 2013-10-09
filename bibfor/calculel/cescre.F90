@@ -94,7 +94,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=3) :: tsca
     character(len=4) :: typces
     character(len=8) :: ma, nomgd, nomcmp
@@ -151,9 +151,9 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
         ASSERT(nomgd(1:5).ne.'VARI_')
         ncmp2 = ncmpmx
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
-        do 10 k = 1, ncmp2
+        do k = 1, ncmp2
             zk8(jlicmp-1+k) = zk8(jcmpgd-1+k)
- 10     continue
+        end do
 !
     else if (ncmpg.gt.0) then
         call verigd(nomgd, licmp, ncmpg, iret)
@@ -161,22 +161,22 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !
         ncmp2 = ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
-        do 20 k = 1, ncmp2
+        do k = 1, ncmp2
             zk8(jlicmp-1+k) = licmp(k)
- 20     continue
+        end do
 !
     else if (ncmpg.lt.0) then
         ASSERT(nomgd(1:5).eq.'VARI_')
         ncmp2 = -ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
         nomcmp(1:1) = 'V'
-        do 30 k = 1, ncmp2
+        do k = 1, ncmp2
             call codent(k, 'G', nomcmp(2:8))
             zk8(jlicmp-1+k) = nomcmp
- 30     continue
+        end do
     endif
 !
-    do 40 icmp = 1, ncmp2
+    do icmp = 1, ncmp2
         if (nomgd(1:5) .ne. 'VARI_') then
             jcmp = indik8(zk8(jcmpgd),zk8(jlicmp-1+icmp),1,ncmpmx)
         else
@@ -191,16 +191,16 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
             valk(2) = nomgd
             call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
         endif
- 40 end do
+    end do
 !
 !
 !------------------------------------------------------------------
 !     2- CREATION DE CES.CESC :
 !     -------------------------------------------
     call wkvect(ces//'.CESC', base//' V K8', ncmp2, jcesc)
-    do 50 k = 1, ncmp2
+    do k = 1, ncmp2
         zk8(jcesc-1+k) = zk8(jlicmp-1+k)
- 50 end do
+    end do
 !
 !------------------------------------------------------------------
 !     3- CREATION DE CES.CESK:
@@ -220,7 +220,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     zi(jcesd-1+4) = 0
     zi(jcesd-1+5) = 0
     decal = 0
-    do 60 ima = 1, nbma
+    do ima = 1, nbma
 !
 !       -- CALCUL DE NPT(IMA):
         if (typces .eq. 'ELEM') then
@@ -259,7 +259,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
         zi(jcesd-1+3) = max(nptma,zi(jcesd-1+3))
         zi(jcesd-1+4) = max(nsptma,zi(jcesd-1+4))
         zi(jcesd-1+5) = max(ncmpma,zi(jcesd-1+5))
- 60 end do
+    end do
 !
 !     -- POUR POUVOIR CONTINUER SI DECAL=0 (CES VIDE):
     decal=max(decal,1)

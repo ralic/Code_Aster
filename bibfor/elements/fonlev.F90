@@ -57,7 +57,7 @@ subroutine fonlev(resu, noma, nbnoff)
     real(kind=8) :: d, prec, precr
     character(len=4) :: typma
     character(len=6) :: nompro
-    character(len=8) ::  maille, type, noeug, typmcl(2), motcle(2)
+    character(len=8) :: maille, type, noeug, typmcl(2), motcle(2)
     character(len=9) :: typlev(2), motfac, valk(2)
     character(len=24) :: nomobj, grouma, nommai, conec, trav, trav2
     parameter(prec=1.d-1)
@@ -86,7 +86,7 @@ subroutine fonlev(resu, noma, nbnoff)
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
 !
-    do 10 indice = 1, 2
+    do indice = 1, 2
         motfac=typlev(indice)
 !
 !       EVALUATION DU NOMBRE DE MAILLES ET CONSTRUCTION DU VECTEUR DE
@@ -96,7 +96,7 @@ subroutine fonlev(resu, noma, nbnoff)
         trav2 = '&&'//nompro//'.'//motfac//'2'
         call reliem(' ', noma, 'NO_MAILLE', motfac, 1,&
                     2, motcle, typmcl, trav, nbmal)
-        if (nbmal .eq. 0) goto 9999
+        if (nbmal .eq. 0) goto 999
         call wkvect(trav2, 'V V K24', nbmal, jjj2)
         call jeveuo(trav, 'L', jjj)
 !
@@ -124,13 +124,13 @@ subroutine fonlev(resu, noma, nbnoff)
 !      ----------------------------------------------------------------
 !       SI GROUP_MA
         if (nent .eq. 0) then
-            do 110 igr = 1, ngr
+            do igr = 1, ngr
 !
                 call jelira(jexnom(grouma, zk24(jjj2-1 + igr)), 'LONMAX', nbmai)
                 call jeveuo(jexnom(grouma, zk24(jjj2-1 + igr)), 'L', jadr)
 !
 !
-                do 105 i = 1, nbmai
+                do i = 1, nbmai
                     call jenuno(jexnum(nommai, zi(jadr-1 + i)), maille)
                     call jenonu(jexnom(nommai, maille), ibid)
                     ityp=iatyma-1+ibid
@@ -150,12 +150,12 @@ subroutine fonlev(resu, noma, nbnoff)
                         jmai1 = jmai1 + 1
                     endif
 !
-105             continue
+                end do
 !
-110         continue
+            end do
         else
 ! SI MAILLE
-            do 230 ino = 1, nbmal
+            do ino = 1, nbmal
                 call jenonu(jexnom(nommai, zk8(jjj-1 + ino)), ibid)
                 ityp=iatyma-1+ibid
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
@@ -172,7 +172,7 @@ subroutine fonlev(resu, noma, nbnoff)
                     zk8(jmai1) = zk8(jjj-1 + ino)
                     jmai1 = jmai1 + 1
                 endif
-230         continue
+            end do
 !
         endif
 !
@@ -183,18 +183,18 @@ subroutine fonlev(resu, noma, nbnoff)
         nomobj = resu//'.LEVRE'//motfac(7:9)//'.MAIL'
         call wkvect(nomobj, 'G V K8', nbmal, jmai2)
         k2 = 1
-        do 600 i = 1, nbmal-1
+        do i = 1, nbmal-1
             if (zk8(jmaii-1 + i) .ne. '0') then
                 zk8(jmai2-1 + k2) = zk8(jmaii-1 + i)
                 k2 = k2 + 1
-                do 605 j = i+1, nbmal
+                do j = i+1, nbmal
                     if (zk8(jmaii-1 + i) .eq. zk8(jmaii-1 + j)) then
                         zk8(jmaii-1 + j) = '0'
                         j2 = i
                     endif
-605             continue
+                end do
             endif
-600     continue
+        end do
         if (zk8(jmaii-1 + nbmal) .ne. '0') then
             zk8(jmai2-1 + k2) = zk8(jmaii-1 + nbmal)
             k2 = k2 + 1
@@ -223,9 +223,9 @@ subroutine fonlev(resu, noma, nbnoff)
             endif
         endif
         if (nbnoff .gt. 1) then
-            do 610 i = 1, nbnoff
+            do i = 1, nbnoff
                 compta = 0
-                do 620 j = 1, nbmal
+                do j = 1, nbmal
                     call jenuno(jexnum(nommai, zi(jadr-1 + j)), maille)
                     call jenonu(jexnom(nommai, maille), ibid)
                     ityp=iatyma-1+ibid
@@ -239,20 +239,21 @@ subroutine fonlev(resu, noma, nbnoff)
                     endif
                     call jeveuo(jexnum(conec, ibid), 'L', iamase)
                     call jenuno(jexnum(noma//'.NOMNOE', zi(iamase)), noeug)
-                    do 630 k = 1, nn
+                    do k = 1, nn
                         call jenuno(jexnum(noma//'.NOMNOE', zi( iamase-1 + k)), noeug)
                         if (noeug .eq. zk8(jnoe1-1 + i)) then
                             compta = compta + 1
                             goto 610
                         endif
-630                 continue
-620             continue
+                    end do
+                end do
                 if (compta .eq. 0) then
                     valk(1) = zk8(jnoe1-1 + i)
                     valk(2) = motfac
                     call utmess('F', 'RUPTURE0_72', nk=2, valk=valk)
                 endif
-610         continue
+610             continue
+            end do
         endif
 !
 !
@@ -263,7 +264,7 @@ subroutine fonlev(resu, noma, nbnoff)
 !
         call jedetr('&&'//nompro//'.MAIL')
 !
- 10 end do
+    end do
 ! ----------------------------------------------------------
 !    COMPARAISON LEVRE SUP / LEVRE INF AFIN DE S'ASSURER
 !    QU'ELLES N'ONT PAS DE MAILLES EN COMMUN
@@ -275,15 +276,15 @@ subroutine fonlev(resu, noma, nbnoff)
         call jeveuo(resu//'.LEVREINF.MAIL', 'L', jinf)
         call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas1)
         call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas2)
-        do 710 i = 1, nbmas1
-            do 715 j = 1, nbmas2
+        do i = 1, nbmas1
+            do j = 1, nbmas2
                 if (zk8(jsup-1 + i) .eq. zk8(jinf-1 + j)) then
                     call utmess('F', 'RUPTURE0_73', sk=zk8(jsup-1 + i))
                 endif
-715         continue
-710     continue
+            end do
+        end do
     endif
-9999 continue
+999 continue
 !
 !     LORSQUE LE FOND DE FISSURE EST DEFINI PAR FOND_INF ET FOND_SUP,
 !     ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
@@ -299,7 +300,7 @@ subroutine fonlev(resu, noma, nbnoff)
         d = d+abs(zr(jvale+3*(jufinf-1)+1)- zr(jvale+3*(juinf2-1)+1))
         d = d+abs(zr(jvale+3*(jufinf-1)+2)- zr(jvale+3*(juinf2-1)+2))
         precr = prec*d
-        do 555 ino = 1, nbnoff
+        do ino = 1, nbnoff
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jfinf-1+ino)), jufinf)
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jfsup-1+ino)), jufsup)
             d = abs(zr(jvale+3*(jufinf-1))- zr(jvale+3*(jufsup-1)))
@@ -310,7 +311,7 @@ subroutine fonlev(resu, noma, nbnoff)
                 valk(2) = zk8(jfsup+ino-1)
                 call utmess('F', 'RUPTURE0_69', nk=2, valk=valk)
             endif
-555     continue
+        end do
     endif
 !
     call jedema()

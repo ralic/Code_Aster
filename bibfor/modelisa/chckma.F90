@@ -103,7 +103,7 @@ subroutine chckma(nomu, dtol)
     nb200=0
     write(ifm,*) ' ====== VERIFICATION DU MAILLAGE ======'
     write(ifm,*)
-    do 10 ja = 1, nbnoeu
+    do ja = 1, nbnoeu
         iadr = zi(jdrvlc + ja-1)
         nbm = zi(jdrvlc + ja+1-1) - zi(jdrvlc + ja-1)
         if (nbm .gt. 200) then
@@ -112,7 +112,7 @@ subroutine chckma(nomu, dtol)
             write(ifm,*) 'NOEUD CONNECTANT PLUS DE 200 MAILLES: ',&
             noxa
         endif
-        do 11 imail = 1, nbm
+        do imail = 1, nbm
             numail = zi(jcncin+iadr-1+imail-1)
             if (numail .eq. 0) then
                 knso=knso+1
@@ -121,8 +121,8 @@ subroutine chckma(nomu, dtol)
                 write(ifm,*) ' LE NOEUD  '//noxa//' EST ORPHELIN'
                 alarme=.true.
             endif
- 11     continue
- 10 end do
+        end do
+    end do
     if (alarme) then
         call utmess('A', 'MODELISA4_6')
     endif
@@ -150,19 +150,19 @@ subroutine chckma(nomu, dtol)
     kmdb=0
     alarme = .false.
     erreur = .false.
-    do 100 ima = 1, nbmail
+    do ima = 1, nbmail
         nbnm = zi(ilconx-1+ima+1)-zi(ilconx+ima-1)
         iadr0 = zi(jdrvlc + zi(iaconx+1+it-1)-1)
         nbm0 = zi( jdrvlc + zi(iaconx+1+it-1)+1-1) - zi(jdrvlc + zi( iaconx+1+it-1)-1 )
         i=1
-        do 101 ja = 1, nbm0
+        do ja = 1, nbm0
             if (zi(jcncin+iadr0-1+ja-1) .ne. ima) then
                 tabma(i)=zi(jcncin+iadr0-1+ja-1)
                 i=i+1
             endif
 !         -- POUR NE PAS DEBORDER DE  TABMA :
             if (i .gt. 199) goto 99
-101     continue
+        end do
 !
 !     SI NBM0 DIFFERENT DE I : UN NOEUD DE LA MAILLE EST PRESENT
 !     PLUSIEURS FOIS DANS LA CONNECTIVITE DE CELLE CI
@@ -182,22 +182,22 @@ subroutine chckma(nomu, dtol)
 !     CONTIENNENT LE PREMIER NOEUD DE IMA
 !
         if (nbnm .gt. 1) then
-            do 102 i = 1, nbm0-1
+            do i = 1, nbm0-1
                 nbnm2 = zi(ilconx-1+tabma(i)+1)-zi(ilconx+tabma(i)-1)
 !
 !     COMPARAISON DES NOEUDS DE IMA AVEC CEUX DES MAILLES DE TABMA
 !     SI LES CARDINAUX SONT DEJA DIFFERENTS (NBNM) : ON SAUTE
 !
                 if ((nbnm2.eq.nbnm) .and. (tabma(i).lt.ima)) then
-                    do 103 j = 1, nbnm2
+                    do j = 1, nbnm2
                         k1=zi(iaconx-1+zi(ilconx+tabma(i)-1)+j-1)
                         indic=.false.
-                        do 104 l = 1, nbnm
+                        do l = 1, nbnm
                             k2=zi(iaconx-1+zi(ilconx+ima-1)+l-1)
                             if (k1 .eq. k2) indic=.true.
-104                     continue
+                        end do
                         if (.not.indic) goto 102
-103                 continue
+                    end do
                     kmdb=kmdb+1
                     if (kmdb .gt. nmdoub) then
                         nmdoub=2*nmdoub
@@ -215,7 +215,8 @@ subroutine chckma(nomu, dtol)
                     alarme=.true.
                 endif
 !
-102         continue
+102             continue
+            end do
 !
         else if (nbm0.gt.1) then
             call jenuno(jexnum(nommai, ima), noxa)
@@ -224,7 +225,7 @@ subroutine chckma(nomu, dtol)
 !
  99     continue
         it=it+nbnm
-100 end do
+    end do
     if (alarme) then
         call utmess('A', 'MODELISA4_8')
     endif
@@ -238,14 +239,14 @@ subroutine chckma(nomu, dtol)
 !
     it=0
     alarme = .false.
-    do 200 ima = 1, nbmail
+    do ima = 1, nbmail
         nbnm = zi(ilconx-1+ima+1)-zi(ilconx+ima-1)
         dm=r8maem()
         dp=r8miem()
         if (nbnm .gt. 1) then
 !
-            do 210 ja = 1, nbnm-1
-                do 220 jb = ja+1, nbnm
+            do ja = 1, nbnm-1
+                do jb = ja+1, nbnm
                     xa=zr(jcoor-1+3*(zi(iaconx+ja+it-1)-1)+1)
                     ya=zr(jcoor-1+3*(zi(iaconx+ja+it-1)-1)+2)
                     za=zr(jcoor-1+3*(zi(iaconx+ja+it-1)-1)+3)
@@ -255,8 +256,8 @@ subroutine chckma(nomu, dtol)
                     aplat = (xa-xb)**2 + (ya-yb)**2 + (za-zb)**2
                     if (aplat .lt. dm) dm=aplat
                     if (aplat .gt. dp) dp=aplat
-220             continue
-210         continue
+                end do
+            end do
             if (dp .gt. 0.d0) then
                 drap=sqrt(dm/dp)
                 if (drap .lt. dtol) then
@@ -274,7 +275,7 @@ subroutine chckma(nomu, dtol)
 !
         endif
         it=it+nbnm
-200 end do
+    end do
     if (alarme) then
         call utmess('A', 'MODELISA4_9')
     endif

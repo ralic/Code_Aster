@@ -69,7 +69,7 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer ::  imeth
+    integer :: imeth
     character(len=8) :: masse, rigid
     character(len=16) :: method
 !

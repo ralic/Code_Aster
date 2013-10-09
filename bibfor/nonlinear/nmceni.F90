@@ -87,7 +87,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 ! --- CALCUL DE LA NORME
 !
     if (isxfe) then
-        do 20 i = 1, neq
+        do i = 1, neq
             if (zi(ideeq-1 + 2*i ) .gt. 0) then
                 if (zr(jcoee+i-1) .eq. 0.d0) then
                     f = f + zr(jcoef+i-1)**2* (zr(jdepde-1+i)+rho*zr( jdu0-1+i)+ eta*zr(jdu1-1+i)&
@@ -96,23 +96,23 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
                     dn = 0.d0
                     dc = 0.d0
                     dp = 0.d0
-                    do 31 j = i+1, neq
+                    do j = i+1, neq
                         if (zr(jcoee+i-1) .eq. zr(jcoee+j-1)) then
                             dn = dn + zr(jcoef+i-1)*zr(jdepde+i-1)+ zr(jcoef+j-1)*zr(jdepde+j-1)
                             dc = dc + zr(jcoef+i-1)*zr(jdu0-1+i)+ zr(jcoef+j-1)*zr(jdu0-1+j)
                             dp = dp + zr(jcoef+i-1)*zr(jdu1-1+i)+ zr(jcoef+j-1)*zr(jdu1-1+j)
                         endif
- 31                 continue
+                    end do
                     f = f + (dn+rho*dc+eta*dp)**2
                 endif
             endif
- 20     end do
+        end do
     else
-        do 30 i = 1, neq
+        do i = 1, neq
             if (zi(ideeq-1 + 2*i + 2) .gt. 0) then
                 f = f + (zr(jdepde+i)+rho*zr(jdu0+i)+eta*zr(jdu1+i))** 2
             endif
- 30     continue
+        end do
     endif
     call jedema()
 end subroutine

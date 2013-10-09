@@ -83,7 +83,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
     call vrcins(modele, mateco, carael, time, chvarc(1:19),&
                 chdret)
 !
-    do 10 ipara = 1, nparin
+    do ipara = 1, nparin
         curcha = zk24(iaoplo+3*ipara-2)
         if (curcha .eq. chtime) then
             call jenonu(jexnom(resuin//'           .NOVA', 'INST'), iret)
@@ -166,6 +166,6 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
             call mearcc(option, modele, chsig, chsigf)
 !
         endif
- 10 end do
+    end do
 !
 end subroutine

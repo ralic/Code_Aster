@@ -85,7 +85,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
     nbarvi=nbarvi/2
     call nmaret(nbarvi, nno, ndim, nliseq, nbno,&
                 numnod, gro1, gro2)
-    do 1 i = 1, nddl
+    do i = 1, nddl
         compo = zk8(jlicmp-1+i)
         if (compo .eq. 'DX') zk8(jlicmp-1+i)='H1X'
         if (compo .eq. 'DY') zk8(jlicmp-1+i)='H1Y'
@@ -98,7 +98,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
             if (ndim .eq. 3) zk8(jlicmp+2)='H1Z'
             goto 2
         endif
-  1 end do
+    end do
   2 continue
     call jedetr(nliseq)
     call jedetr(nlisrl)

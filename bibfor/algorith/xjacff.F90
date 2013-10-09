@@ -67,7 +67,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
     real(kind=8) :: a(3), b(3), c(3), ab(3), ac(3), y(3), norme, nab, g(3)
     real(kind=8) :: rbid, xg(2), ksig(2)
-    real(kind=8) :: ff(27), rbid1(3), rbid2(3)
+    real(kind=8) :: ff(27)
     real(kind=8) :: grlt(3), norm2, ps, nd1(3)
     integer :: ibid, nbnomx, nnoc, nnos
     integer :: j, k, nnof, ipoidf, ivff, idfdef, ndimf
@@ -103,13 +103,13 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     call vecini(3, 0.d0, tau1)
     call vecini(3, 0.d0, tau2)
 !
-    do 20 j = 1, ndim
+    do j = 1, ndim
         a(j)=zr(jinter-1+ndim*(cface(ifa,1)-1)+j)
         b(j)=zr(jinter-1+ndim*(cface(ifa,2)-1)+j)
         c(j)=zr(jinter-1+ndim*(cface(ifa,3)-1)+j)
         ab(j)=b(j)-a(j)
         ac(j)=c(j)-a(j)
-20  end do
+    end do
 !
     call provec(ab, ac, nd)
     call normev(nd, norme)
@@ -130,10 +130,10 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
 !     COORDONNÉES RÉELLES 2D DU POINT DE GAUSS IPG
     call vecini(2, 0.d0, xg)
-    do 30 j = 1, nnof
+    do j = 1, nnof
         xg(1)=xg(1)+zr(ivff-1+nnof*(ipg-1)+j)*coor2d(2*j-1)
         xg(2)=xg(2)+zr(ivff-1+nnof*(ipg-1)+j)*coor2d(2*j)
-30  end do
+    end do
 !
 !     COORDONNÉES RÉELLES 3D DU POINT DE GAUSS
     g(1)=a(1)+ab(1)*xg(1)+y(1)*xg(2)
@@ -148,19 +148,19 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE LA FACETTE EN CE POINT DE GAUSS
     call elrfvf(elc, ksig, nbnomx, ff, ibid)
 !
-    do 40 j = 1, ndim
-        do 41 k = 1, nnof
+    do j = 1, ndim
+        do k = 1, nnof
             nd1(j) = nd1(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
             grlt(j)= grlt(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
             ndim)
-41      continue
-40  end do
+        end do
+    end do
 !
     call normev(nd1, norme)
     ps=ddot(ndim,grlt,1,nd1,1)
-    do 50 j = 1, ndim
+    do j = 1, ndim
         tau1(j)=grlt(j)-ps*nd1(j)
-50  end do
+    end do
 !
     call normev(tau1, norme)
 !
@@ -204,7 +204,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
                 'NON', xe, ffpc, dfdic, f,&
                 eps, grad)
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -59,9 +59,9 @@ subroutine cffoco(numedd, resoco, cnfoco)
 ! --- CALCUL DU VECT_ASSE
 !
     call jeveuo(resoco(1:14)//'.ATMU', 'L', jatmu)
-    do 10 i = 1, neq
+    do i = 1, neq
         zr(jcnco+i-1) = zr(jatmu+i-1)
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

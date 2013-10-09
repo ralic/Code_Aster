@@ -64,42 +64,42 @@ subroutine acnoex(noma, type, liste, nb, no1,&
     if (type .eq. 'TOUT') then
         call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbm, arret='C',&
                     ier=ir)
-        do 52 im = 1, nbm
+        do im = 1, nbm
             call jeveuo(jexnum(mlgcnx, im), 'L', jdno)
             nn1 = zi(jdno)
             nn2 = zi(jdno+1)
             zi(jnbn+nn1-1)=zi(jnbn+nn1-1)+1
             zi(jnbn+nn2-1)=zi(jnbn+nn2-1)+1
- 52     continue
+        end do
     else if (type.eq.'GRMA') then
-        do 53 ig = 1, nb
+        do ig = 1, nb
             call jeveuo(jexnom(mlggma, liste(ig)), 'L', jdgm)
             call jelira(jexnom(mlggma, liste(ig)), 'LONUTI', nm)
-            do 54 im = 1, nm
+            do im = 1, nm
                 img = zi(jdgm+im-1)
                 call jeveuo(jexnum(mlgcnx, img), 'L', jdno)
                 nn1 = zi(jdno)
                 nn2 = zi(jdno+1)
                 zi(jnbn+nn1-1)=zi(jnbn+nn1-1)+1
                 zi(jnbn+nn2-1)=zi(jnbn+nn2-1)+1
- 54         continue
- 53     continue
+            end do
+        end do
     else if (type.eq.'LIMA') then
-        do 55 im = 1, nb
+        do im = 1, nb
             call jenonu(jexnom(mlgnma, liste(im)), nummai)
             call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
             nn1 = zi(jdno)
             nn2 = zi(jdno+1)
             zi(jnbn+nn1-1)=zi(jnbn+nn1-1)+1
             zi(jnbn+nn2-1)=zi(jnbn+nn2-1)+1
- 55     continue
+        end do
     endif
 !
 !     RECHERCHE DES EXTREMITES DE L'ARC
 !
     no1 = 0
     no2 = 0
-    do 56 in = 1, nbn
+    do in = 1, nbn
         nn = zi(jnbn+in-1)
         if (nn .eq. 1) then
             if (no1 .eq. 0) then
@@ -111,7 +111,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
                 call utmess('E', 'MODELISA8_25', sk=valk)
             endif
         endif
- 56 end do
+    end do
 !
 !     CAS OU LES EXTREMITES DE L'ARC SONT IDENTIQUES
 !     ARC FERME

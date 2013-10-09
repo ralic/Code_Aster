@@ -72,16 +72,16 @@ subroutine acnoce(noma, type, liste, nb, coor,&
     if (type .eq. 'TOUT') then
         call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbm, arret='C',&
                     ier=ir)
-        do 52 im = 1, nbm
+        do im = 1, nbm
             call jeveuo(jexnum(mlgcnx, im), 'L', jdno)
             nn1 = zi(jdno)
             nn2 = zi(jdno+1)
-            do 42 i = 1, 3
+            do i = 1, 3
                 x1(i) = coor((nn1-1)*3+i)
                 x2(i) = coor((nn2-1)*3+i)
                 xc1(i) = x1(i)-xcen(i)
                 xc2(i) = x2(i)-xcen(i)
- 42         continue
+            end do
             xrc1 = padist( 3, x1, xcen )
             xrc2 = padist( 3, x2, xcen )
             if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
@@ -112,22 +112,22 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 valk = ' '
                 call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
             endif
- 52     continue
+        end do
     else if (type.eq.'GRMA') then
-        do 53 ig = 1, nb
+        do ig = 1, nb
             call jeveuo(jexnom(mlggma, liste(ig)), 'L', jdgm)
             call jelira(jexnom(mlggma, liste(ig)), 'LONUTI', nm)
-            do 54 im = 1, nm
+            do im = 1, nm
                 img = zi(jdgm+im-1)
                 call jeveuo(jexnum(mlgcnx, img), 'L', jdno)
                 nn1 = zi(jdno)
                 nn2 = zi(jdno+1)
-                do 44 i = 1, 3
+                do i = 1, 3
                     x1(i) = coor((nn1-1)*3+i)
                     x2(i) = coor((nn2-1)*3+i)
                     xc1(i) = x1(i)-xcen(i)
                     xc2(i) = x2(i)-xcen(i)
- 44             continue
+                end do
                 xrc1 = padist( 3, x1, xcen )
                 xrc2 = padist( 3, x2, xcen )
                 if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
@@ -158,20 +158,20 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                     valk = ' '
                     call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
                 endif
- 54         continue
- 53     continue
+            end do
+        end do
     else if (type.eq.'LIMA') then
-        do 55 im = 1, nb
+        do im = 1, nb
             call jenonu(jexnom(mlgnma, liste(im)), nummai)
             call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
             nn1 = zi(jdno)
             nn2 = zi(jdno+1)
-            do 45 i = 1, 3
+            do i = 1, 3
                 x1(i) = coor((nn1-1)*3+i)
                 x2(i) = coor((nn2-1)*3+i)
                 xc1(i) = x1(i)-xcen(i)
                 xc2(i) = x2(i)-xcen(i)
- 45         continue
+            end do
             xrc1 = padist( 3, x1, xcen )
             xrc2 = padist( 3, x2, xcen )
             if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
@@ -202,7 +202,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 valk = ' '
                 call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
             endif
- 55     continue
+        end do
     endif
     call jedema()
 end subroutine

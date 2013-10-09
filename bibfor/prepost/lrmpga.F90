@@ -311,18 +311,18 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
                 else if (codret.eq.1) then
 !  ===>         REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
 !               UNE PERMUTATION DANS LES PG MED/ASTER
-                    do 220 ipgm = 1, nbpg
+                    do ipgm = 1, nbpg
                         indpg(nutyma,ipgm)=zi(jperm+ipgm-1)
-220                 continue
+                    end do
                     zi(jngaok+j-1) = 1
                 else
 !  ===>         SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
 !              - ABSENCE DE LOCALISATION
 !              - L UN DES PG MED N A PAS ETE IDENTIFIE A UN PG ASTER
 !              - LES PG ASTER/MED CORRESPONDENT
-                    do 230 ipg = 1, nbpg
+                    do ipg = 1, nbpg
                         indpg(nutyma,ipg)=ipg
-230                 continue
+                    end do
                     zi(jngaok+j-1) = 1
                 endif
 !
@@ -337,10 +337,10 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
 !      REMPLISSAGE DU TABLEAU PGMAIL : PGMAIL(NUM_MAILLE_ASTER)=NBRE_PG
         if (zi(igr) .gt. 0) then
-            do 301 ima = 1, nbmag-1
+            do ima = 1, nbmag-1
                 pgmail(zi(igr+ima-1))=nbpg
                 pgmmil(zi(igr+ima-1))=nbpgm
-301         continue
+            end do
         endif
 !
     endif

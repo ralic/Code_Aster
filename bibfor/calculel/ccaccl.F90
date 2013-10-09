@@ -88,10 +88,10 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !
     call mecara(carael, exicar, chcara)
     if (exicar) then
-        do 10 ipara = 1, nbpain
+        do ipara = 1, nbpain
             curpar=lipain(ipara)
             if (curpar .eq. 'PCACOQU') lichin(ipara)=chcara(7)
- 10     continue
+        end do
     endif
 !
     if (option .eq. 'SIEQ_ELGA') then
@@ -119,10 +119,10 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !
     else if (option.eq.'VARI_ELNO') then
 !     -- POUR CETTE OPTION ON A BESOIN DE COMPOR :
-        do 20 ipara = 1, nbpain
+        do ipara = 1, nbpain
             curpar=lipain(ipara)
             if (curpar .eq. 'PCOMPOR') compor=lichin(ipara)
- 20     continue
+        end do
         call exisd('CARTE', compor, iret2)
         if (iret2 .ne. 1) then
             call utmess('A', 'CALCULEL2_86')

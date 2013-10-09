@@ -170,4 +170,4 @@ OPTION__
                           OUT__ NGEOMER  PGEOM_R  EEINST_R PINST_R  EENEUT_F PNEUT_F  EENEUT_R PNEUT_R  
                                 EEFGENO  PSIEF_R  ZVARINO  PVARI_R  
     VARI_ELNO          4  IN__  ZVARIPG  PVARIGR  
-                          OUT__ ZVARINO  PVARINR  
+                          OUT__ ZVARINO  PVARINR

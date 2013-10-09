@@ -1,4 +1,4 @@
-subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, &
+subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                   defo_comp, defo_comp_py)
 !
     implicit none
@@ -64,7 +64,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, 
     character(len=19) :: ligrmo
     integer :: nutyel
     integer :: j_cesd, j_cesl, j_cesv
-    integer :: ibid, iret, irett, ielem
+    integer ::  iret, irett, ielem
     integer :: iad
     integer :: j_repe, j_grel, j_elem_affe
     integer :: nb_elem_mesh, nb_elem, nb_elem_grel
@@ -111,7 +111,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s, 
 !
 ! ----- <CARTE> access
 !
-        call cesexi('C', j_cesd, j_cesl, nume_elem, 1, &
+        call cesexi('C', j_cesd, j_cesl, nume_elem, 1,&
                     1, 1, iad)
         if (iad .gt. 0) then
 !

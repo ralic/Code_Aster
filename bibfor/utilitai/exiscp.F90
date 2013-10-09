@@ -109,9 +109,9 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 ! --- NOM DES DDLS POUR CETTE GRANDEUR
 !
-    do 10 i = 1, nbcmp
+    do i = 1, nbcmp
         nomddl(i) = zk8(jnom-1+i)
- 10 end do
+    end do
 !
 ! --- INDICE DU DDL DANS LE TABLEAU NOMCMP
 !
@@ -144,7 +144,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 ! --- POUR CHAQUE NOEUD, ON VERIFIE SI LE DDL EST DESSUS
 !
-    do 20 i = 1, nbnd
+    do i = 1, nbnd
         if (typend .eq. 'NUM') then
             ino = numnd(i)
         else if (typend.eq.'NOM') then
@@ -159,7 +159,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
                 resu(i) = 0
             endif
         endif
- 20 end do
+    end do
 !
     call jedema()
 end subroutine

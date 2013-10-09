@@ -18,13 +18,13 @@ subroutine cfnumm(defico, posnma, numnma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24), intent(in) :: defico
-    integer, intent(in)  :: posnma
+    integer, intent(in) :: posnma
     integer, intent(out) :: numnma
 !
 ! ----------------------------------------------------------------------
@@ -43,7 +43,6 @@ subroutine cfnumm(defico, posnma, numnma)
 !
 !
 !
-    integer :: ima, posma
     character(len=24) :: contma
     integer :: jmaco
 !

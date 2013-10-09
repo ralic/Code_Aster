@@ -76,7 +76,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     integer :: ifm, niv
     logical :: debug
     integer :: ifmdbg, nivdbg
-    integer ::  nbma
+    integer :: nbma
     character(len=8) :: noma
     character(len=19) :: ligrel
     character(len=19) :: chmlcf

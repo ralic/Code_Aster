@@ -89,12 +89,12 @@ subroutine op0008()
         endif
 !
         modele = mo1
-        do 10 ich = 1, ncha
+        do ich = 1, ncha
             call dismoi('NOM_MODELE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
             if (k8bid .ne. modele) then
                 call utmess('F', 'CALCULEL3_89')
             endif
- 10     continue
+        end do
     endif
 !
 !
@@ -116,30 +116,30 @@ subroutine op0008()
 !
 !     -- VERIFICATION DES CHARGES:
     if ((suropt.eq.'CHAR_MECA') .or. (suropt.eq.'CHAR_MECA_LAGR')) then
-        do 20 ich = 1, ncha
+        do ich = 1, ncha
             call dismoi('TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
             if (k8bid(1:5) .ne. 'MECA_') then
                 call utmess('F', 'CALCULEL3_91')
             endif
- 20     continue
+        end do
     endif
 !
     if ((suropt.eq.'CHAR_THER')) then
-        do 30 ich = 1, ncha
+        do ich = 1, ncha
             call dismoi('TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
             if (k8bid(1:5) .ne. 'THER_') then
                 call utmess('F', 'CALCULEL3_92')
             endif
- 30     continue
+        end do
     endif
 !
     if ((suropt.eq.'CHAR_ACOU')) then
-        do 40 ich = 1, ncha
+        do ich = 1, ncha
             call dismoi('TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', repk=k8bid)
             if (k8bid(1:5) .ne. 'ACOU_') then
                 call utmess('F', 'CALCULEL3_93')
             endif
- 40     continue
+        end do
     endif
 !
 !

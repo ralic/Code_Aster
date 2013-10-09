@@ -128,7 +128,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     cnom = '&&CHPASS.CHAM_GD_LISTE'
     call wkvect(cnom, 'V V K24', nbocc, lnom)
 !
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !
 !       2.1 VERIFICATION DES CARACTERISTIQUES DU CHAMP :
 !       ------------------------------------------------
@@ -175,7 +175,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
             ASSERT(.false.)
         endif
 !
- 10 end do
+    end do
 !
 !
 !
@@ -206,7 +206,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !     4- BOUCLE SUR LES OCCURENCES DU MOT CLE "ASSE" :
 !     -----------------------------------------------------
     nchg = 0
-    do 20 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvid('ASSE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=ib)
         call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych2)
 !
@@ -328,7 +328,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
         call jedetr('&&CHPASS.LICMP')
         call jedetr('&&CHPASS.LICMP2')
- 20 end do
+    end do
 !
 !     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 !     ----------------------------------------------------

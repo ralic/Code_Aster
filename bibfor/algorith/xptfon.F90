@@ -137,10 +137,10 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !     1: LE PRODUIT SCALAIRE EST SUPERIEUR OU EGAL A 0
     call wkvect('&&XPTFON.NVDIR', 'V V I', nxptff, jnvdir)
 !
-    do 10 i = 1, nxptff
+    do i = 1, nxptff
         zl(jbord-1+i) = .false.
         zl(jborl-1+i) = .false.
- 10 end do
+    end do
 !
 !     COMPTEUR : NOMBRE DE POINTS DE FONFIS TROUVES
     ipt = 0
@@ -150,7 +150,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call wkvect(listpt, 'V V I', 2*nmafon, jlistp)
 !
 !     BOUCLE SUR LES MAILLES DE MAFOND
-    do 100 ima = 1, nmafon
+    do ima = 1, nmafon
 !
         nmaabs = zi(jmafon-1+(ima-1)+1)
         itypma = zi(jma-1+nmaabs)
@@ -166,16 +166,16 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         call wkvect('&&XPTFON.GRLSN', 'V V R', nbnoma*ndim, jglsn)
         call wkvect('&&XPTFON.GRLST', 'V V R', nbnoma*ndim, jglst)
         call wkvect('&&XPTFON.IGEOM', 'V V R', nbnoma*ndim, igeom)
-        do 110 ino = 1, nbnoma
+        do ino = 1, nbnoma
             nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
             zr(jlsn-1+ino) = zr(jlnsv-1+nuno)
             zr(jlst-1+ino) = zr(jltsv-1+nuno)
-            do 120 j = 1, ndim
+            do j = 1, ndim
                 zr(jglsn-1+ndim*(ino-1)+j) = zr(jgn-1+ndim*(nuno-1)+j)
                 zr(jglst-1+ndim*(ino-1)+j) = zr(jgt-1+ndim*(nuno-1)+j)
                 zr(igeom-1+ndim*(ino-1)+j) = zr(jcoor-1+3*(nuno-1)+j)
-120         continue
-110     continue
+            end do
+        end do
 !
 !       CALCUL DU CENTRE DE GRAVITE DE LA MAILLE
         call cengra(noma, nmaabs, coorg)
@@ -187,12 +187,12 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         iptbor(1)= 0
         iptbor(2)= 0
         nbptma = 0
-        do 130 i = 1, 3
+        do i = 1, 3
             indptf(i)=0
-130     continue
+        end do
 !
 !       BOUCLE SUR LES FACES
-        do 200 ifq = 1, nbf
+        do ifq = 1, nbf
 !         TYPE DE FACE
             if (fa(ifq,4) .eq. 0) then
                 alias = 'TR3'
@@ -217,7 +217,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 nunod = zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,4)-1)
             endif
 !
-            do 220 j = 1, ipt
+            do j = 1, ipt
                 indic=.false.
 !
 !           VERIFICATION POUR UN POINT INTERIEUR (cf Doc R7.02.12)
@@ -276,7 +276,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                     indipt = j
                     goto 300
                 endif
-220         continue
+            end do
 !
 !         CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
             ipt = ipt+1
@@ -286,15 +286,15 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !         STOCKAGE DES COORDONNEES DU POINT M,
 !         DE LA BASE LOCALE (GRADIENT DE LSN ET LST) ET
 !         DES NUMEROS DES SOMMETS DE LA FACE CONTENANT M
-            do 230 k = 1, ndim
+            do k = 1, ndim
                 zr(jfon-1+11*(ipt-1)+k) = m(k)
                 zr(jbas-1+2*ndim*(ipt-1)+k) = gln(k)
                 zr(jbas-1+2*ndim*(ipt-1)+k+ndim)= glt(k)
-230         continue
-            do 231 k = 1, 3
+            end do
+            do k = 1, 3
                 zr(jfon-1+11*(ipt-1)+4+k) = zi( jconx1-1+zi(jconx2+ nmaabs-1)+fa(ifq,k)-1 )
                 zr(jfon-1+11*(ipt-1)+8+k) = indptf(k)
-231         continue
+            end do
             if (alias .eq. 'QU4') then
                 zr(jfon-1+11*(ipt-1)+8) = zi( jconx1-1+zi(jconx2+ nmaabs-1)+fa(ifq,4)-1 )
             else
@@ -342,9 +342,9 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                     vecind(nbptma) = indipt
 !
                 else if (nbptma.gt.1) then
-                    do 240 j = 1, nbptma
+                    do j = 1, nbptma
                         if (indipt .eq. vecind(j)) goto 400
-240                 continue
+                    end do
 !             ORIENTATION DU FOND PAS POSSIBLE A REALISER
                     orient = .false.
 !
@@ -358,19 +358,20 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
                         write(ifm,797)
                         797           format(7x,'X',13x,'Y',13x,'Z')
-                        do 250 j = 1, nbptma
+                        do j = 1, nbptma
                             p(1) = zr(jfon-1+11*(vecind(j)-1)+1)
                             p(2) = zr(jfon-1+11*(vecind(j)-1)+2)
                             p(3) = zr(jfon-1+11*(vecind(j)-1)+3)
                             write(ifm,798)(p(k),k=1,3)
                             798             format(2x,3(e12.5,2x))
-250                     continue
+                        end do
                     endif
                 endif
             endif
 400         continue
 !       FIN BOUCLE SUR LES FACES DE LA MAILLE
-200     continue
+200         continue
+        end do
 !
 !       CALCUL DES VECTEURS DE PROPAGATION AUX EXTREMITES
         if ((ndim.eq.3) .and. (nbfacb.ne.0)) then
@@ -386,16 +387,16 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         call jedetr('&&XPTFON.IGEOM')
 !
 !     FIN BOUCLE SUR LES MAILLES
-100 end do
+    end do
 !
 !     NORMALISATION DES NOUVEAUX VECTEURS DE DIRECTION DE
 !     PROPAGATION
     if (ndim .eq. 3) then
-        do 500 k = 1, nxptff
+        do k = 1, nxptff
             if (zl(jbord-1+k)) then
                 call normev(zr(jbas-1+6*(k-1)+4), normi)
             endif
-500     continue
+        end do
 !
     endif
 !
@@ -408,13 +409,13 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         call utmess('I', 'XFEM_35')
         write(ifm,897)
         897   format(7x,'X',13x,'Y',13x,'Z')
-        do 600 i = 1, nfon
+        do i = 1, nfon
             p(1) = zr(jfon-1+11*(i-1)+1)
             p(2) = zr(jfon-1+11*(i-1)+2)
             p(3) = zr(jfon-1+11*(i-1)+3)
             write(ifm,898)(p(k),k=1,3)
             898     format(2x,3(e12.5,2x))
-600     continue
+        end do
     endif
 !
 !

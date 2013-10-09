@@ -59,7 +59,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
     real(kind=8) :: xorig(3), xoriv(3), sina, cosa, sinb, cosb, sing, cosg
     real(kind=8) :: epsi, coor(3, 3), vect(3), tot
     character(len=3) :: inum
-    character(len=8) ::  mailla, nomnoe
+    character(len=8) :: mailla, nomnoe
 !
 ! ****************** DEBUT DU CODE EXECUTABLE ************************
 !
@@ -69,14 +69,14 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
     xoriv(2) = 0.d0
     xoriv(3) = 0.d0
 !
-    do 10 i = 1, nbm
+    do i = 1, nbm
         depg(i) = 0.d0
- 10 end do
+    end do
 !
 ! 1. BOUCLE SUR LES NON-LINEARITES.
 !    ------------------------------
 !
-    do 20 ic = 1, nbnl
+    do ic = 1, nbnl
 !
 !  1.1.  CONVERSION DDLS GENERALISES -> DDLS PHYSIQUES.
 !        ----------------------------------------------
@@ -165,20 +165,20 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
         if (ino1 .ge. (nbno-1)) then
             ino1 = nbno - 2
         endif
-        do 12 k = 1, 3
-            do 11 j = 1, 3
+        do k = 1, 3
+            do j = 1, 3
                 coor(k,j) = zr(jcoor1+3*(ino1+k-2)+j-1)
- 11         continue
- 12     continue
+            end do
+        end do
         tot = 0.d0
-        do 13 j = 1, 3
+        do j = 1, 3
             vect(j) = coor(3,j) - coor(1,j)
             tot = tot + vect(j)*vect(j)
- 13     continue
+        end do
         tot = dble(sqrt(tot))
-        do 14 j = 1, 3
+        do j = 1, 3
             vect(j) = vect(j) / tot
- 14     continue
+        end do
 !
         call gloloc(vect, xoriv, sina, cosa, sinb,&
                     cosb, sing, cosg, xloc)
@@ -195,6 +195,6 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
             call utmess('A', 'ALGELINE_13', sk=inum)
         endif
 !
- 20 end do
+    end do
     call jedema()
 end subroutine

@@ -102,7 +102,7 @@ subroutine crlidd(nomres, mailla)
     nbmn=0
     nbau=0
     nbha=0
-    do 10 i = 1, nbint
+    do i = 1, nbint
         nomtyp=zk8(lltyp+i-1)
 !
 !    COMPTEUR CRAIG BAMPTON
@@ -133,7 +133,7 @@ subroutine crlidd(nomres, mailla)
             nbau=nbau+nbno
         endif
 !
- 10 end do
+    end do
 !
 !---------ALLOCATION DU VECTEUR DES NOEUDS CRAIG BAMPTON----------------
 !
@@ -178,7 +178,7 @@ subroutine crlidd(nomres, mailla)
     nbau=0
     nbha=0
 !
-    do 20 i = 1, nbint
+    do i = 1, nbint
         nomtyp=zk8(lltyp+i-1)
 !
 !    NOEUDS DE CRAIG BAMPTON
@@ -186,10 +186,10 @@ subroutine crlidd(nomres, mailla)
         if (nomtyp .eq. cb) then
             call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
-            do 30 j = 1, nbno
+            do j = 1, nbno
                 zi(ltcb+nbcb)=zi(llnin+j-1)
                 nbcb=nbcb+1
- 30         continue
+            end do
         endif
 !
 !    NOEUD DE MAC NEAL
@@ -197,10 +197,10 @@ subroutine crlidd(nomres, mailla)
         if (nomtyp .eq. mn) then
             call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
-            do 40 j = 1, nbno
+            do j = 1, nbno
                 zi(ltmn+nbmn)=zi(llnin+j-1)
                 nbmn=nbmn+1
- 40         continue
+            end do
         endif
 !
 !    NOEUD DE CB_HARMO
@@ -208,10 +208,10 @@ subroutine crlidd(nomres, mailla)
         if (nomtyp .eq. ha) then
             call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
-            do 50 j = 1, nbno
+            do j = 1, nbno
                 zi(ltha+nbha)=zi(llnin+j-1)
                 nbha=nbha+1
- 50         continue
+            end do
         endif
 !
 !    NOEUD DE AUCUN
@@ -219,13 +219,13 @@ subroutine crlidd(nomres, mailla)
         if (nomtyp .eq. au) then
             call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
-            do 60 j = 1, nbno
+            do j = 1, nbno
                 zi(ltau+nbau)=zi(llnin+j-1)
                 nbau=nbau+1
- 60         continue
+            end do
         endif
 !
- 20 end do
+    end do
 !
 !-------SUPPRESSION DES DOUBLES ET ORDRE DES LISTES TROUVEES------------
 !
@@ -295,7 +295,7 @@ subroutine crlidd(nomres, mailla)
 ! REMPLISSAGE COMME INDIQUE DANS L'ENTETE DES COLONNES 2 ET 3 DU
 ! DESCRIPTEUR DES DEFORMEES
 !
-    do 100 i = 1, nbint
+    do i = 1, nbint
         nomtyp=zk8(lltyp+i-1)
         call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         call jeveuo(jexnum(noeint, i), 'E', llnin)
@@ -307,7 +307,7 @@ subroutine crlidd(nomres, mailla)
 !
             nbtem=0
 !
-            do 110 j = 1, nbno
+            do j = 1, nbno
                 ino=zi(llnin+j-1)
                 call cheris(nbmn, zi(lldes+nbtem), ino, iran)
                 zi(llnin+j-1)=iran+nbtem
@@ -317,7 +317,7 @@ subroutine crlidd(nomres, mailla)
 !
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
-110         continue
+            end do
         endif
 !
 !    NOEUDS DE CRAIG BAMPTON
@@ -326,7 +326,7 @@ subroutine crlidd(nomres, mailla)
 !
             nbtem=nbmn
 !
-            do 120 j = 1, nbno
+            do j = 1, nbno
                 ino=zi(llnin+j-1)
                 call cheris(nbcb, zi(lldes+nbtem), ino, iran)
                 zi(llnin+j-1)=iran+nbtem
@@ -337,7 +337,7 @@ subroutine crlidd(nomres, mailla)
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
 !
-120         continue
+            end do
         endif
 !
 !    NOEUDS DE CRAIG-BAMPTON-HARMONIQUE
@@ -346,7 +346,7 @@ subroutine crlidd(nomres, mailla)
 !
             nbtem=nbmn+nbcb
 !
-            do 130 j = 1, nbno
+            do j = 1, nbno
                 ino=zi(llnin+j-1)
                 call cheris(nbha, zi(lldes+nbtem), ino, iran)
                 zi(llnin+j-1)=iran+nbtem
@@ -357,7 +357,7 @@ subroutine crlidd(nomres, mailla)
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
 !
-130         continue
+            end do
         endif
 !
 !    NOEUD DE AUCUN
@@ -366,7 +366,7 @@ subroutine crlidd(nomres, mailla)
 !
             nbtem=nbmn+nbcb+nbha
 !
-            do 140 j = 1, nbno
+            do j = 1, nbno
                 ino=zi(llnin+j-1)
                 call cheris(nbau, zi(lldes+nbtem), ino, iran)
                 zi(llnin+j-1)=iran+nbtem
@@ -377,10 +377,10 @@ subroutine crlidd(nomres, mailla)
                 iad=lldes+nbto*2+(iran-1)*nbec+nbtem-1+1
                 call isgeco(zi(ltmas+(j-1)*nbec), zi(iad), nbcmp, 1, zi( iad))
 !
-140         continue
+            end do
         endif
 !
-100 end do
+    end do
 !
 !---------SAUVEGARDE DE LA DEFINITION DES INTERFACES--------------------
 !

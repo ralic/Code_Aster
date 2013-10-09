@@ -79,7 +79,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     call wkvect('&&VECIND.VECTEURS_COPIES', 'V V R', nbl*nbc, lcopy)
     call wkvect('&&VECIND.VECTEURS_TEMP', 'V V R', nbl, ltrav1)
 !
-    do 500 i1 = 1, nbc
+    do i1 = 1, nbc
         if (mat .ne. ' ') then
             call zerlag(nbl, zi(ideeq), vectr=zr(lvec+nbl*(i1-1)))
             call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1,&
@@ -99,9 +99,9 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !          CALL DAXPY(NBL,0.D0,ZR(LVEC+NBL*(I1-1)),1,
 !     &               ZR(LCOPY+NBL*(I1-1)),1)
         endif
-500 end do
+    end do
 !
-    do 510 l1 = 1, nbc
+    do l1 = 1, nbc
         if (mat .ne. ' ') then
             call mrmult('ZERO', lmat, zr(lcopy+nbl*(l1-1)), zr(ltrav1), 1,&
                         .true.)
@@ -110,56 +110,56 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         endif
         norme=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(l1-1)),1)
         zr(jnsta+(l1-1)*(nbc+1))=norme
-        do 520 k1 = l1+1, nbc
+        do k1 = l1+1, nbc
             rij=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(k1-1)),1)
             zr(jnsta+(l1-1)*nbc+k1-1)=rij
             zr(jnsta+(k1-1)*nbc+l1-1)=rij
-520     continue
-510 end do
+        end do
+    end do
 !
     if (force .ne. 1) then
 !-- UTILISE APRES LE GRAM SCHMIDT DANS ORTH99, POUR
 !-- ELIMINER LES VECTEURS NON INDEPENDANTS
 !
-        do 550 l1 = 1, nbc
+        do l1 = 1, nbc
             norme=zr(jnsta+(l1-1)*(nbc+1))
 !
             if (norme .gt. 1.d-16) then
-                do 560 k1 = l1+1, nbc
+                do k1 = l1+1, nbc
                     rij=abs(zr(jnsta+(l1-1)*nbc+k1-1))
                     rij=rij/norme
                     if (rij .gt. 1.d-8) then
                         write(6,*)' ... ANNULATION DU VECTEUR ',k1
-                        do 570 i1 = 1, nbl
+                        do i1 = 1, nbl
                             zr(lvec+((k1-1)*nbl)+i1-1)=0.d0
-570                     continue
-                        do 580 i1 = 1, nbc
+                        end do
+                        do i1 = 1, nbc
                             zr(jnsta+((k1-1)*nbc)+i1-1)=0.d0
                             zr(jnsta+((i1-1)*nbc)+k1-1)=0.d0
-580                     continue
+                        end do
                     endif
-560             continue
+                end do
             endif
 !
-550     continue
+        end do
 !
         call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
                     nbret=iret)
         if ((iret .eq. 1) .and. (ortho.eq.'OUI')) then
 !-- SELECTION DES VECTEURS NON NULS POUR REMPLIR LA BASE
-            do 590 i1 = 1, nbc
+            do i1 = 1, nbc
                 if (zr(jnsta + (i1-1)*(nbc+1) ) .gt. 1d-10) then
                     zi(vecnz+indnz)=i1
                     indnz=indnz+1
                 endif
-590         continue
+            end do
 !
-            do 600 i1 = 1, indnz
+            do i1 = 1, indnz
                 l1=zi(vecnz+i1-1)
                 if (i1 .ne. l1) then
                     call lceqvn(nbl, zr(lvec+nbl*(l1-1)), zr(lvec+nbl*( i1-1)))
                 endif
-600         continue
+            end do
             nbc=indnz
         endif
     else
@@ -184,9 +184,9 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
         nindep=0
         norme=(nbc+0.d0)*zr(ltrav1)*1.d-16
-        do 530 k1 = 1, nbc
+        do k1 = 1, nbc
             if (zr(ltrav1+k1-1) .gt. norme) nindep=nindep+1
-530     continue
+        end do
 !
         call wkvect('&&VECIND.MODE_INTF_DEPL', 'V V R', nbl*nbc, lmat)
 !

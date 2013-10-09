@@ -59,7 +59,7 @@ subroutine caimch(chargz)
 ! ------ VARIABLES LOCALES
     character(len=2) :: typlag
     character(len=4) :: tych, typval, typcoe
-    character(len=8) ::  chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, poslag, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, prchno

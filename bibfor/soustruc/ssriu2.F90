@@ -130,10 +130,10 @@ subroutine ssriu2(nomu)
 !
     iblold = 0
     j = 0
-    do 50 iblph = 1, nblph
+    do iblph = 1, nblph
         call jecroc(jexnum(nomu//'.PHI_IE', iblph))
         call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'E', iaphi0)
-        do 30 iiblph = 1, nlblph
+        do iiblph = 1, nlblph
             j = j + 1
             if (j .gt. nddle) goto 40
             iaphie = iaphi0 + (iiblph-1)*nddli
@@ -148,29 +148,29 @@ subroutine ssriu2(nomu)
             k = 0
 !
             if (modif) then
-                do 210 i = nddli + j + 1 - schc, nddli
+                do i = nddli + j + 1 - schc, nddli
                     k = k + 1
                     zr(iaphie-1+i) = 0.d0
-210             continue
+                end do
             else
 !
 !CDIR$ IVDEP
-                do 10 i = nddli + j + 1 - schc, nddli
+                do i = nddli + j + 1 - schc, nddli
                     k = k + 1
                     zr(iaphie-1+i) = zr(jualf-1+scdi-schc+k)
- 10             continue
+                end do
 !
 !CDIR$ IVDEP
-                do 20 i = max(1, j+1-schc), j
+                do i = max(1, j+1-schc), j
                     ii = ((j-1)*j)/2 + i
                     zr(iakpee-1+ii) = zr(jualf-1+scdi+i-j)
- 20             continue
+                end do
             endif
 !
- 30     continue
+        end do
  40     continue
         call jelibe(jexnum(nomu//'.PHI_IE', iblph))
- 50 end do
+    end do
     if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 !
@@ -178,12 +178,12 @@ subroutine ssriu2(nomu)
 !     ----------------------------------------
     if (modif) then
     else
-        do 60 iblph = 1, nblph
+        do iblph = 1, nblph
             call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'E', iaphi0)
             call rldlr8(zk24(zi(lmat+1)), zi(iaschc), zi(iascdi), zi( iascbl), nddli,&
                         nbbloc, zr(iaphi0), nlblph)
             call jelibe(jexnum(nomu//'.PHI_IE', iblph))
- 60     continue
+        end do
     endif
 !
 !
@@ -193,7 +193,7 @@ subroutine ssriu2(nomu)
         call crmeri(promes, iakpee)
     else
         iblold = 0
-        do 110 j = 1, nddle
+        do j = 1, nddle
             iblo = zi(iascib-1+nddli+j)
             scdi = zi(iascdi-1+nddli+j)
             schc = zi(iaschc-1+nddli+j)
@@ -204,26 +204,26 @@ subroutine ssriu2(nomu)
             iblold = iblo
 !
             i = 0
-            do 100 iblph = 1, nblph
+            do iblph = 1, nblph
                 call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
-                do 80 iiblph = 1, nlblph
+                do iiblph = 1, nlblph
                     i = i + 1
                     if (i .gt. j) goto 90
                     iaphie = iaphi0 + (iiblph-1)*nddli
                     ii = (j* (j-1)/2) + i
                     kk = 0
 !CDIR$ IVDEP
-                    do 70 k = nddli + j + 1 - schc, nddli
+                    do k = nddli + j + 1 - schc, nddli
                         kk = kk + 1
                         zr(iakpee-1+ii) = zr(iakpee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
                                           &kk)
- 70                 continue
- 80             continue
+                    end do
+                end do
  90             continue
                 call jelibe(jexnum(nomu//'.PHI_IE', iblph))
-100         continue
+            end do
 !
-110     continue
+        end do
         if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 ! FIN TEST SUR MODIF

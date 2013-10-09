@@ -279,4 +279,4 @@ OPTION__
     VARI_ELNO        347  IN__  CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  
                           OUT__ ZVARINO  PVARINR  
     WEIBULL           -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX

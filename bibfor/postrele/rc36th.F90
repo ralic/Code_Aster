@@ -115,240 +115,241 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-    do 10, it1 = 1, nbths, 1
+    do it1 = 1, nbths, 1
 !
-    do 12, iocc = 1, nbreth, 1
+        do iocc = 1, nbreth, 1
 !
-    call getvis(motclf, 'NUME_RESU_THER', iocc=iocc, scal=ith, nbret=n1)
+            call getvis(motclf, 'NUME_RESU_THER', iocc=iocc, scal=ith, nbret=n1)
 !
-    iths = liths(it1)
-    if (ith .eq. iths) goto 14
-12  continue
-    vali(1) = iocc
-    vali(2) = iths
-    call utmess('F', 'POSTRCCM_23', ni=2, vali=vali)
-14  continue
+            iths = liths(it1)
+            if (ith .eq. iths) goto 14
+        end do
+        vali(1) = iocc
+        vali(2) = iths
+        call utmess('F', 'POSTRCCM_23', ni=2, vali=vali)
+ 14     continue
 !
-    call getvid(motclf, 'TABL_RESU_THER', iocc=iocc, scal=tbther, nbret=n1)
+        call getvid(motclf, 'TABL_RESU_THER', iocc=iocc, scal=tbther, nbret=n1)
 !        ON VERIFIE L'ORDRE DES NOEUDS DANS LA TABLE
-    call rcveri(tbther)
+        call rcveri(tbther)
 !
-    call tbexip(tbther, 'INST', exist, k8b)
-    if (.not. exist) then
-        valk(1) = tbther
-        valk(2) = 'INST'
-        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-    endif
-    call tbexip(tbther, 'ABSC_CURV', exist, k8b)
-    if (.not. exist) then
-        valk(1) = tbther
-        valk(2) = 'ABSC_CURV'
-        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-    endif
-    call tbexv1(tbther, 'INST', instan, 'V', nbinst,&
-                k8b)
-    call jeveuo(instan, 'L', jinst)
-    call tbexv1(tbther, 'ABSC_CURV', abscur, 'V', nbabsc,&
-                k8b)
-    call jeveuo(abscur, 'L', jabsc)
+        call tbexip(tbther, 'INST', exist, k8b)
+        if (.not. exist) then
+            valk(1) = tbther
+            valk(2) = 'INST'
+            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+        endif
+        call tbexip(tbther, 'ABSC_CURV', exist, k8b)
+        if (.not. exist) then
+            valk(1) = tbther
+            valk(2) = 'ABSC_CURV'
+            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+        endif
+        call tbexv1(tbther, 'INST', instan, 'V', nbinst,&
+                    k8b)
+        call jeveuo(instan, 'L', jinst)
+        call tbexv1(tbther, 'ABSC_CURV', abscur, 'V', nbabsc,&
+                    k8b)
+        call jeveuo(abscur, 'L', jabsc)
 !
-    call getvid(motclf, 'TABL_MOYE_THER', iocc=iocc, scal=tbmoye, nbret=n1)
+        call getvid(motclf, 'TABL_MOYE_THER', iocc=iocc, scal=tbmoye, nbret=n1)
 !
-    call tbexip(tbmoye, 'INST', exist, k8b)
-    if (.not. exist) then
-        valk(1) = tbmoye
-        valk(2) = 'INST'
-        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-    endif
+        call tbexip(tbmoye, 'INST', exist, k8b)
+        if (.not. exist) then
+            valk(1) = tbmoye
+            valk(2) = 'INST'
+            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
+        endif
 !
-    exist = .false.
-    call codent(iocc, 'D0', kioc)
-    nojvmy = '&&RC36TH_MOYENE_'//kioc
-    call jeexin(nojvmy, iret)
-    if (iret .eq. 0) then
-        call wkvect(nojvmy, 'V V R', 2*nbinst, jmoye)
-    else
-        exist = .true.
-    endif
-    nojvth = '&&RC36TH_TEMPER_'//kioc
-    if (iret .eq. 0) then
-        call wkvect(nojvth, 'V V R', 2*nbinst, jther)
-    else
-        exist = .true.
-    endif
-    if (exist) goto 22
+        exist = .false.
+        call codent(iocc, 'D0', kioc)
+        nojvmy = '&&RC36TH_MOYENE_'//kioc
+        call jeexin(nojvmy, iret)
+        if (iret .eq. 0) then
+            call wkvect(nojvmy, 'V V R', 2*nbinst, jmoye)
+        else
+            exist = .true.
+        endif
+        nojvth = '&&RC36TH_TEMPER_'//kioc
+        if (iret .eq. 0) then
+            call wkvect(nojvth, 'V V R', 2*nbinst, jther)
+        else
+            exist = .true.
+        endif
+        if (exist) goto 22
 !
-    do 20 i = 1, nbinst
-        inst = zr(jinst+i-1)
+        do i = 1, nbinst
+            inst = zr(jinst+i-1)
 !
 ! --------- ON RECUPERE TEMP_INT, TEMP_EXT
 !
-        nopara(1) = 'INST'
-        nopara(2) = 'ABSC_CURV'
-        vale(1) = inst
-        vale(2) = zr(jabsc)
-        call tbliva(tbther, 2, nopara, [ibid], vale,&
-                    [cbid], k8b, crit, prec, 'TEMP',&
-                    k8b, ibid, tint, cbid, k8b,&
-                    iret)
-        if (iret .ne. 0) then
-            valk (1) = tbther
-            valk (2) = 'TEMP'
-            valk (3) = nopara(1)
-            valk (4) = nopara(2)
-            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                        valr=vale)
-        endif
-        vale(2) = zr(jabsc+nbabsc-1)
-        call tbliva(tbther, 2, nopara, [ibid], vale,&
-                    [cbid], k8b, crit, prec, 'TEMP',&
-                    k8b, ibid, text, cbid, k8b,&
-                    iret)
-        if (iret .ne. 0) then
-            valk (1) = tbther
-            valk (2) = 'TEMP'
-            valk (3) = nopara(1)
-            valk (4) = nopara(2)
-            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                        valr=vale)
-        endif
-        zr(jther-1+2*(i-1)+1) = tint
-        zr(jther-1+2*(i-1)+2) = text
+            nopara(1) = 'INST'
+            nopara(2) = 'ABSC_CURV'
+            vale(1) = inst
+            vale(2) = zr(jabsc)
+            call tbliva(tbther, 2, nopara, [ibid], vale,&
+                        [cbid], k8b, crit, prec, 'TEMP',&
+                        k8b, ibid, tint, cbid, k8b,&
+                        iret)
+            if (iret .ne. 0) then
+                valk (1) = tbther
+                valk (2) = 'TEMP'
+                valk (3) = nopara(1)
+                valk (4) = nopara(2)
+                call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                            valr=vale)
+            endif
+            vale(2) = zr(jabsc+nbabsc-1)
+            call tbliva(tbther, 2, nopara, [ibid], vale,&
+                        [cbid], k8b, crit, prec, 'TEMP',&
+                        k8b, ibid, text, cbid, k8b,&
+                        iret)
+            if (iret .ne. 0) then
+                valk (1) = tbther
+                valk (2) = 'TEMP'
+                valk (3) = nopara(1)
+                valk (4) = nopara(2)
+                call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                            valr=vale)
+            endif
+            zr(jther-1+2*(i-1)+1) = tint
+            zr(jther-1+2*(i-1)+2) = text
 !
 ! --------- ON RECUPERE LES MOYENNES
 !
-        nopara(1) = 'INST'
-        nopara(2) = 'QUANTITE'
-        call tbliva(tbmoye, 2, nopara, [ibid], [inst],&
-                    [cbid], 'MOMENT_0', 'RELATIF', [epsi], 'TEMP',&
-                    k8b, ibid, ta, cbid, k8b,&
-                    iret)
-        if (iret .ne. 0) then
-            valk (1) = tbmoye
-            valk (2) = 'TEMP'
-            valk (3) = nopara(1)
-            valk (4) = nopara(2)
-            valk (5) = 'MOMENT_0'
-            call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
-        endif
-        call tbliva(tbmoye, 2, nopara, [ibid], [inst],&
-                    [cbid], 'MOMENT_1', 'RELATIF', [epsi], 'TEMP',&
-                    k8b, ibid, vmoy, cbid, k8b,&
-                    iret)
-        if (iret .ne. 0) then
-            valk (1) = tbmoye
-            valk (2) = 'TEMP'
-            valk (3) = nopara(1)
-            valk (4) = nopara(2)
-            valk (5) = 'MOMENT_1'
-            call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
-        endif
-        zr(jmoye-1+2*(i-1)+1) = ta
-        zr(jmoye-1+2*(i-1)+2) = vmoy
-20  continue
-22  continue
-!
-    call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
-!
-    if (nbtou .ne. 0) then
-        nbmail = nbmat
-        call wkvect(mesmai, 'V V I', nbmail, jmail)
-        do 30 ima = 1, nbmail
-            zi(jmail+ima-1) = ima
-30      continue
-    else
-        call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
-                    2, motcls, typmcs, mesmai, nbmail)
-        call jeveuo(mesmai, 'L', jmail)
-    endif
-!
-    call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
-    call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
-    if (n1+n2 .ne. 0) then
-        call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
-                    2, motcln, typmcn, mesnoe, nbnoeu)
-        call jeveuo(mesnoe, 'L', jnoeu)
-    else
-        nbnoeu = 0
-    endif
-!
-    if (nbnoeu .eq. 0) then
-        do 100 im = 1, nbmail
-            ima = zi(jmail+im-1)
-            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-            decal= zi(jcesd-1+5+4*(ima-1)+4)
-            do 110,ipt = 1,nbpt
-            icmp = 1
-            iad = decal + (ipt-1)*nbcmp + icmp
-            if (.not.zl(jcesl-1+iad)) then
-                zl (jcesl-1+iad) = .true.
-                zk24(jcesv-1+iad) = nojvth
-            else
-                vali(1) = iocs
-                vali(2) = ima
-                call utmess('F', 'POSTRCCM_24', ni=2, vali=vali)
+            nopara(1) = 'INST'
+            nopara(2) = 'QUANTITE'
+            call tbliva(tbmoye, 2, nopara, [ibid], [inst],&
+                        [cbid], 'MOMENT_0', 'RELATIF', [epsi], 'TEMP',&
+                        k8b, ibid, ta, cbid, k8b,&
+                        iret)
+            if (iret .ne. 0) then
+                valk (1) = tbmoye
+                valk (2) = 'TEMP'
+                valk (3) = nopara(1)
+                valk (4) = nopara(2)
+                valk (5) = 'MOMENT_0'
+                call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
             endif
-            icmp = 2
-            iad = decal + (ipt-1)*nbcmp + icmp
-            zl (jcesl-1+iad) = .true.
-            zk24(jcesv-1+iad) = nojvmy
-110          continue
-100      continue
-    else
-        do 200 im = 1, nbmail
-            ima = zi(jmail+im-1)
-            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-            decal= zi(jcesd-1+5+4*(ima-1)+4)
-            do 210,ipt = 1,nbpt
-            ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
-            do 220,in = 1,nbnoeu
-            if (zi(jnoeu+in-1) .eq. ino) then
-                icmp = 1
-                iad = decal + (ipt-1)*nbcmp + icmp
-                if (.not.zl(jcesl-1+iad)) then
+            call tbliva(tbmoye, 2, nopara, [ibid], [inst],&
+                        [cbid], 'MOMENT_1', 'RELATIF', [epsi], 'TEMP',&
+                        k8b, ibid, vmoy, cbid, k8b,&
+                        iret)
+            if (iret .ne. 0) then
+                valk (1) = tbmoye
+                valk (2) = 'TEMP'
+                valk (3) = nopara(1)
+                valk (4) = nopara(2)
+                valk (5) = 'MOMENT_1'
+                call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
+            endif
+            zr(jmoye-1+2*(i-1)+1) = ta
+            zr(jmoye-1+2*(i-1)+2) = vmoy
+        end do
+ 22     continue
+!
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+!
+        if (nbtou .ne. 0) then
+            nbmail = nbmat
+            call wkvect(mesmai, 'V V I', nbmail, jmail)
+            do ima = 1, nbmail
+                zi(jmail+ima-1) = ima
+            end do
+        else
+            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
+                        2, motcls, typmcs, mesmai, nbmail)
+            call jeveuo(mesmai, 'L', jmail)
+        endif
+!
+        call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
+        call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
+        if (n1+n2 .ne. 0) then
+            call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
+                        2, motcln, typmcn, mesnoe, nbnoeu)
+            call jeveuo(mesnoe, 'L', jnoeu)
+        else
+            nbnoeu = 0
+        endif
+!
+        if (nbnoeu .eq. 0) then
+            do im = 1, nbmail
+                ima = zi(jmail+im-1)
+                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+                decal= zi(jcesd-1+5+4*(ima-1)+4)
+                do ipt = 1, nbpt
+                    icmp = 1
+                    iad = decal + (ipt-1)*nbcmp + icmp
+                    if (.not.zl(jcesl-1+iad)) then
+                        zl (jcesl-1+iad) = .true.
+                        zk24(jcesv-1+iad) = nojvth
+                    else
+                        vali(1) = iocs
+                        vali(2) = ima
+                        call utmess('F', 'POSTRCCM_24', ni=2, vali=vali)
+                    endif
+                    icmp = 2
+                    iad = decal + (ipt-1)*nbcmp + icmp
                     zl (jcesl-1+iad) = .true.
-                    zk24(jcesv-1+iad) = nojvth
-                else
-                    vali(1) = iocs
-                    vali(2) = ima
-                    vali(3) = ino
-                    call utmess('F', 'POSTRCCM_25', ni=3, vali=vali)
-                endif
-                icmp = 2
-                iad = decal + (ipt-1)*nbcmp + icmp
-                zl (jcesl-1+iad) = .true.
-                zk24(jcesv-1+iad) = nojvmy
-                goto 210
-            endif
-220          continue
-210          continue
-200      continue
-    endif
+                    zk24(jcesv-1+iad) = nojvmy
+                end do
+            end do
+        else
+            do im = 1, nbmail
+                ima = zi(jmail+im-1)
+                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+                decal= zi(jcesd-1+5+4*(ima-1)+4)
+                do ipt = 1, nbpt
+                    ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
+                    do in = 1, nbnoeu
+                        if (zi(jnoeu+in-1) .eq. ino) then
+                            icmp = 1
+                            iad = decal + (ipt-1)*nbcmp + icmp
+                            if (.not.zl(jcesl-1+iad)) then
+                                zl (jcesl-1+iad) = .true.
+                                zk24(jcesv-1+iad) = nojvth
+                            else
+                                vali(1) = iocs
+                                vali(2) = ima
+                                vali(3) = ino
+                                call utmess('F', 'POSTRCCM_25', ni=3, vali=vali)
+                            endif
+                            icmp = 2
+                            iad = decal + (ipt-1)*nbcmp + icmp
+                            zl (jcesl-1+iad) = .true.
+                            zk24(jcesv-1+iad) = nojvmy
+                            goto 210
+                        endif
+                    end do
+210                 continue
+                end do
+            end do
+        endif
 !
-    call jedetr(instan)
-    call jedetr(abscur)
-    call jedetr(mesmai)
-    call jedetr(mesnoe)
+        call jedetr(instan)
+        call jedetr(abscur)
+        call jedetr(mesmai)
+        call jedetr(mesnoe)
 !
-    10 end do
+    end do
 !
 ! --- VERIF QUE TOUTES LES MAILLES ANALYSEES SONT AFFECTEES
 !
-    do 300 im = 1, nbma
+    do im = 1, nbma
         ima = listma(im)
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
         decal= zi(jcesd-1+5+4*(ima-1)+4)
-        do 310,ipt = 1,nbpt
-        do 320 icmp = 1, 2
-            iad = decal + (ipt-1)*nbcmp + icmp
-            if (.not.zl(jcesl-1+iad)) then
-                vali(1) = iocs
-                vali(2) = ima
-                call utmess('F', 'POSTRCCM_24', ni=2, vali=vali)
-            endif
-320      continue
-310      continue
-300  end do
+        do ipt = 1, nbpt
+            do icmp = 1, 2
+                iad = decal + (ipt-1)*nbcmp + icmp
+                if (.not.zl(jcesl-1+iad)) then
+                    vali(1) = iocs
+                    vali(2) = ima
+                    call utmess('F', 'POSTRCCM_24', ni=2, vali=vali)
+                endif
+            end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

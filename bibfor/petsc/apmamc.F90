@@ -146,9 +146,9 @@ subroutine apmamc(kptsc)
             endif
         end do
         jterm=jterm-1
-        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol,4)],&
+        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol, 4)],&
                           zr(jdval1), INSERT_VALUES, ierr)
-        call MatSetValues(a, 1, [int(jcol,4)], jterm, zi4(jdxi2),&
+        call MatSetValues(a, 1, [int(jcol, 4)], jterm, zi4(jdxi2),&
                           zr(jdval2), INSERT_VALUES, ierr)
         iterm=0
         jterm=0
@@ -171,7 +171,7 @@ subroutine apmamc(kptsc)
                 exit
             endif
         end do
-        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol,4)],&
+        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol, 4)],&
                           zr(jdval1), INSERT_VALUES, ierr)
         iterm=0
     end do

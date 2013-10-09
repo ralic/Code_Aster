@@ -141,7 +141,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
 !------------------------RECUPERATION DES RANG--------------------------
 !
-    do 20 i = 1, nbnoe
+    do i = 1, nbnoe
         if (ord .eq. 0) then
             inoe=zi(llnoe+i-1)
             nunoe=zi(lldesc+inoe-1)
@@ -157,7 +157,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
             nunoe=zi(lldesc+inoe-1)
             call isdeco(zi(llint4+(i-1)*nbec+1-1), idec, nbcmp)
         endif
-        do 30 j = 1, nbcmp
+        do j = 1, nbcmp
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) then
@@ -166,8 +166,8 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
                     ivddl(nbddl-nbdif)=iran(1)
                 endif
             endif
- 30     continue
- 20 continue
+        end do
+    end do
 !
     nbdif=-nbdif
 !

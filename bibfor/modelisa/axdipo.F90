@@ -70,7 +70,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     real(kind=8) :: sinb, sinb2, sing, sing2, tol
     real(kind=8) :: vdl(3), vdg(3)
 !-----------------------------------------------------------------------
-    character(len=8) ::  nomcmp(3)
+    character(len=8) :: nomcmp(3)
     character(len=16) :: nomele(nbtel)
     character(len=19) :: carte, ligrmo
     character(len=24) :: modmai, modnem, cadesc, captma, cavale

@@ -85,23 +85,24 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !            ET DE LICMPU : NUMEROS DES CMPS UTILISEES
 !     ------------------------------------------------------------
     ncmpu = 0
-    do 50 k = 1, ncmp
-        do 30 ima = 1, nbma
+    do k = 1, ncmp
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-            do 20 ipt = 1, nbpt
-                do 10 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, k, iad)
                     if (iad .gt. 0) goto 40
- 10             continue
- 20         continue
- 30     continue
+                end do
+            end do
+        end do
         goto 50
  40     continue
         ncmpu = ncmpu + 1
         licmpu(ncmpu) = k
- 50 end do
+ 50     continue
+    end do
 !
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -153,18 +154,18 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     else
         nbmai = nbmat
     endif
-    do 110 im = 1, nbmai
+    do im = 1, nbmai
         ima = im
         if (nbmat .ne. 0) ima = nummai(im)
         call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        do 100 ipt = 1, nbpt
-            do 90 isp = 1, nbsp
+        do ipt = 1, nbpt
+            do isp = 1, nbsp
 !
 !       -- ON N'ECRIT UN SOUS_POINT QUE S'IL EXISTE AU MOINS 1 CMP :
                 exicmp = .false.
-                do 60 ik = 1, ncmpu
+                do ik = 1, ncmpu
                     k = licmpu(ik)
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, k, iad)
@@ -172,13 +173,13 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
                         exicmp = .true.
                         goto 70
                     endif
- 60             continue
+                end do
  70             continue
                 if (.not.exicmp) goto 90
 !
 !
 !
-                do 80 ik = 1, ncmpu
+                do ik = 1, ncmpu
                     k = licmpu(ik)
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, k, iad)
@@ -211,7 +212,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !               -- ON MET LES VALEURS NON AFFECTEES A " " :
                         write (zk16(jlval-1+ik),'(A16)') ' '
                     endif
- 80             continue
+                end do
 !
 !
                 if (typces .eq. 'ELNO') then
@@ -230,9 +231,10 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
                     ik),ik=1,2*ncmpu)
                 endif
 !
- 90         continue
-100     continue
-110 end do
+ 90             continue
+            end do
+        end do
+    end do
 !
     call jedetr('&&CESIMP.LVALEURS')
     call jedema()

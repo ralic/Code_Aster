@@ -151,11 +151,11 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !     7-1) HTC : HAUTEUR CUMULEE DE KLISTE(JEQ)
 !     --------------------------------------------------------
     call wkvect('&&PROSMO.HTC', 'V V I', neq, jhtc)
-    do 20 i = 1, nbmat
+    do i = 1, nbmat
         mati = limat(i)
         call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numddi)
         call jeveuo(numddi//'.SMOS.SMDI', 'L', iadi)
-        do 10 jeq = 1, neq
+        do jeq = 1, neq
             if (jeq .eq. 1) then
                 nbter = 1
 !
@@ -163,9 +163,9 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                 nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
             endif
             zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
- 10     continue
+        end do
         call jelibe(numddi//'.SMOS.SMDI')
- 20 end do
+    end do
 !
 !     7-2) IBL : NUMERO DU BLOC DE KLISTE(JEQ) :
 !          PBL : POSITION DE L'EQUATION JEQ DANS LE BLOC IBL  :
@@ -174,7 +174,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call wkvect('&&PROSMO.PBL', 'V V I', neq, jpbl)
     ibl1 = 1
     lcumu = 0
-    do 30 jeq = 1, neq
+    do jeq = 1, neq
         htc=zi(jhtc-1+jeq)
         ASSERT(htc.le.lgbl)
 !       -- SI ON CHANGE DE BLOC :
@@ -185,7 +185,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
         zi(jibl-1+jeq) = ibl1
         zi(jpbl-1+jeq) = lcumu
         lcumu = lcumu + htc
- 30 end do
+    end do
 !
 !     7-3) ALLOCATION DE KLISTE :
 !     ------------------------------------------------------------
@@ -193,10 +193,10 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call jecrec(kliste, 'V V I', 'NU', 'DISPERSE', 'CONSTANT',&
                 ibl1)
     call jeecra(kliste, 'LONMAX', lgbl)
-    do 40 kbl = 1, ibl1
+    do kbl = 1, ibl1
         call jeveuo(jexnum(kliste, kbl), 'E', jbl1)
         call jelibe(jexnum(kliste, kbl))
- 40 end do
+    end do
 !
 !     7-4) REMPLISSAGE DE KLISTE :
 !     ------------------------------------------------------------
@@ -204,13 +204,13 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call wkvect('&&PROSMO.HTC', 'V V I', neq, jhtc)
     iblav = 1
     call jeveuo(jexnum(kliste, iblav), 'E', jbl1)
-    do 70 i = 1, nbmat
+    do i = 1, nbmat
         mati = limat(i)
         call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numddi)
         call jeveuo(numddi//'.SMOS.SMDI', 'L', iadi)
         call jeveuo(numddi//'.SMOS.SMHC', 'L', idhcoi)
         icum = 0
-        do 60 jeq = 1, neq
+        do jeq = 1, neq
             if (jeq .eq. 1) then
                 nbter = 1
 !
@@ -225,16 +225,16 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                 call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
                 iblav = ibl1
             endif
-            do 50 k = 1, nbter
+            do k = 1, nbter
                 zi(jbl1+zi(jpbl-1+jeq)+zi(jhtc-1+jeq)+k-1)=zi4(idhcoi+&
                 icum+ (k-1))
- 50         continue
+            end do
             icum = icum + nbter
             zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
- 60     continue
+        end do
         call jelibe(numddi//'.SMOS.SMDI')
         call jelibe(numddi//'.SMOS.SMHC')
- 70 end do
+    end do
     call jelibe(jexnum(kliste, iblav))
 !
 !
@@ -247,7 +247,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     lsmhc = 0
     iblav = 1
     call jeveuo(jexnum(kliste, iblav), 'E', jbl1)
-    do 80 jeq = 1, neq
+    do jeq = 1, neq
 !       LE BLOC CONTENANT JEQ DOIT-IL ETRE RAMENE EN MEMOIRE ?
         ibl1 = zi(jibl-1+jeq)
         if (iblav .ne. ibl1) then
@@ -268,7 +268,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             zi(ismdi+jeq-1) = zi(ismdi+ (jeq-1)-1) + nterm
         endif
         lsmhc = lsmhc + nterm
- 80 end do
+    end do
     call jelibe(jexnum(kliste, iblav))
 !
 !
@@ -279,7 +279,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     iblav = 1
     call jeveuo(jexnum(kliste, iblav), 'E', jbl1)
     l = 0
-    do 100 jeq = 1, neq
+    do jeq = 1, neq
 !       LE BLOC CONTENANT JEQ DOIT-IL ETRE RAMENE EN MEMOIRE ?
         ibl1 = zi(jibl-1+jeq)
         if (iblav .ne. ibl1) then
@@ -289,11 +289,11 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
         endif
 !
         nterm = zi(jhtc-1+jeq)
-        do 90 k = 1, nterm
+        do k = 1, nterm
             l = l + 1
             zi4(idsmhc-1+l) = zi(jbl1+zi(jpbl-1+jeq)-1+k)
- 90     continue
-100 end do
+        end do
+    end do
     call jelibe(jexnum(kliste, iblav))
     call jedetr(kliste)
     call jedetr('&&PROSMO.HTC')
@@ -332,9 +332,9 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call jecrec(kvalm, base//' V '//rouc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
     call jeecra(kvalm, 'LONMAX', itbloc)
-    do 110 kbloc = 1, nbloc
+    do kbloc = 1, nbloc
         call jecroc(jexnum(kvalm, kbloc))
-110 end do
+    end do
 !
 !
 !     13) CREATION ET AFFECTATION DU TABLEAU .REFA
@@ -357,7 +357,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     endif
     zk24(jrefa-1+10) = 'NOEU'
 !
-    do 120 i = 1, nbmat
+    do i = 1, nbmat
         mati = limat(i)
         krefi = mati//'.REFA'
         call jeveuo(krefi, 'L', idrefi)
@@ -366,16 +366,16 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             goto 130
 !
         endif
-120 end do
+    end do
 130 continue
 !
 !
 !     15) CREATION ET AFFECTATION DU VECTEUR .CONL
 !     =============================================
     call wkvect(kconl, base//' V R', neq, idconl)
-    do 140 ieq = 1, neq
+    do ieq = 1, neq
         zr(idconl+ieq-1) = 1.d0
-140 end do
+    end do
 !
     call jedema()
 !

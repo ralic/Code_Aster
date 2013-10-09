@@ -110,13 +110,13 @@ subroutine op0184()
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi)
     itest = 0
 !
-    do 50 ino = 1, nbnoas
-        do 10 i = 1, 3
+    do ino = 1, nbnoas
+        do i = 1, 3
             cm(i) = zr(iadrno+3*ino-3+i-1)
- 10     continue
+        end do
         imamin = 0
         d2min = 1.d10
-        do 40 imp = 1, nbmapl
+        do imp = 1, nbmapl
             nutyel = zi(jdme+imp-1)
             if (nutyel .eq. ntpoi) then
                 itest = -1
@@ -130,19 +130,20 @@ subroutine op0184()
             call jeveuo(jexnum(mlgcnx, imp), 'L', jdno)
             no1 = zi(jdno)
             no2 = zi(jdno+1)
-            do 30 i = 1, 3
+            do i = 1, 3
                 a(i) = zr(jdco+ (no1-1)*3+i-1)
                 b(i) = zr(jdco+ (no2-1)*3+i-1)
- 30         continue
+            end do
             call pj3da4(cm, a, b, la, lb,&
                         d2)
             if (d2 .lt. d2min) then
                 imamin = imp
                 d2min = d2
             endif
- 40     continue
+ 40         continue
+        end do
         zi(jnoma-1+ino) = imamin
- 50 end do
+    end do
 ! TEST SUR LA PRESENCE DE MAILLE PONCTUELLE
     if (itest .ne. 0) then
         call utmess('I', 'UTILITAI3_10')
@@ -320,18 +321,18 @@ subroutine op0184()
             if (kar .eq. '  2414') then
                 call utmess('F', 'UTILITAI3_14')
             endif
-            do 70 iord = 1, nbordr
+            do iord = 1, nbordr
                 if (zi(jnume+iord-1) .eq. numpas) goto 90
- 70         continue
+            end do
         else if (nbinst.ne.0) then
-            do 80 iord = 1, nbinst
+            do iord = 1, nbinst
                 tref = zr(jlist+iord-1)
                 if (crit(1:4) .eq. 'RELA') then
                     if (abs(tref-temps) .le. abs(epsi*temps)) goto 90
                 else if (crit(1:4).eq.'ABSO') then
                     if (abs(tref-temps) .le. abs(epsi)) goto 90
                 endif
- 80         continue
+            end do
         endif
         goto 60
     endif
@@ -358,7 +359,7 @@ subroutine op0184()
     goto 100
 110 continue
 !
-    do 140 igr = 1, nbgr
+    do igr = 1, nbgr
         idec = zi(jceld-1+zi(jceld-1+4+igr)+8)
         te = typele(ligrmo,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
@@ -366,12 +367,12 @@ subroutine op0184()
             nomte .eq. 'MEC3TR7H' .or. nomte .eq. 'MEC3QU9H') then
             nbelgr = nbelem(ligrmo,igr)
             call jeveuo(jexnum(noliel, igr), 'L', liel)
-            do 130 iel = 1, nbelgr
+            do iel = 1, nbelgr
                 ima = zi(liel-1+iel)
                 call jeveuo(jexnum(connex, ima), 'L', iadno)
                 call jelira(jexnum(connex, ima), 'LONMAX', nno)
                 iad = jcelv - 1 + idec - 1 + nno* (iel-1)
-                do 120 i = 1, nno
+                do i = 1, nno
                     ino = zi(iadno-1+i)
                     imapl = zi(jnoma+ino-1)
                     pres = zr(jpres-1+imapl)
@@ -379,10 +380,10 @@ subroutine op0184()
 !  ON NE MODIFIE SURTOUT PAS LA PRESSION LUE
 !  ==> LES TE SAVENT CE QU4ILS ONT A FAIRE
                     zr(iad+i) = pres
-120             continue
-130         continue
+                end do
+            end do
         endif
-140 end do
+    end do
 !
     nsymb = 'PRES'
     call rsexch(' ', resu, nsymb, ipas, nomch,&
@@ -402,9 +403,9 @@ subroutine op0184()
     call rsadpa(resu, 'E', 1, 'INST', ipas,&
                 0, sjv=jinst, styp=k8b)
     zr(jinst) = temps
-    do 150 i = 1, nbmapl
+    do i = 1, nbmapl
         zr(jpres-1+i) = 0.d0
-150 end do
+    end do
 !
     goto 60
 !
@@ -422,13 +423,13 @@ subroutine op0184()
     call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8b,&
                 cbid, epsi, crit, zi(lordr), nbordr,&
                 nbtrou)
-    do 170 iord = 1, nbordr
+    do iord = 1, nbordr
         call rsadpa(resu, 'L', 1, 'INST', zi(lordr+iord-1),&
                     0, sjv=jinst, styp=k8b)
         vali (1) = zi(lordr+iord-1)
         valr = zr(jinst)
         call utmess('I', 'UTILITAI8_9', si=vali(1), sr=valr)
-170 end do
+    end do
     call utmess('I', 'VIDE_1')
 !
     call titre()

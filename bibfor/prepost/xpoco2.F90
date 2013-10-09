@@ -59,7 +59,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !
 !
-    integer ::  i, j, ndim, nbcmp, jcnsd1, jcnsc1, jcnsv1, jcnsv2, jcnsl2
+    integer :: i, j, ndim, nbcmp, jcnsd1, jcnsc1, jcnsv1, jcnsv2, jcnsl2
     integer :: jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, iad1, iad2
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2
     integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
@@ -101,7 +101,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
         ndimc = 1
     endif
 !
-    do 100 i = 1, nbno
+    do i = 1, nbno
         if (dirno(i) .ne. 0) then
             if (lmeca) then
                 idecv2 = jcnsv2-1+2*ndimc*(dirno(i)-1)
@@ -110,12 +110,12 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                 idecv2 = jcnsv2-1+ndimc*(dirno(i)-1)
                 idecl2 = jcnsl2-1+ndimc*(dirno(i)-1)
             endif
-            do 110 j = 1, ndimc
+            do j = 1, ndimc
                 zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
                 zl(idecl2+j)=.true.
-110         continue
+            end do
         endif
-100 end do
+    end do
 !
     call gettco(resuco, tysd)
 !
@@ -147,7 +147,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
         iviex = iviex*iret
 !
 !
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             ima2 = dirma(ima)
 !
             if (ima2 .eq. 0) goto 10
@@ -169,8 +169,8 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                 ASSERT(ncmv1.le.ncmv2)
             endif
 !
-            do 20 ipg = 1, npg1
-                do 30 icmp = 1, ncmp1
+            do ipg = 1, npg1
+                do icmp = 1, ncmp1
                     call cesexi('C', jcesd1, jcesl1, ima, ipg,&
                                 1, icmp, iad1)
                     ASSERT(iad1.gt.0)
@@ -179,9 +179,9 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     ASSERT(iad2.gt.0)
                     zl(jcesl2-1+iad2) = .true.
                     zr(jcesv2-1+iad2) = zr(jcesv1-1+iad1)
- 30             continue
+                end do
                 if (iviex .ne. 0) then
-                    do 40 icmp = 1, ncmv1
+                    do icmp = 1, ncmv1
                         call cesexi('C', jcvid1, jcvil1, ima, ipg,&
                                     1, icmp, iad1)
                         ASSERT(iad1.gt.0)
@@ -191,10 +191,11 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                         iad2 = -iad2
                         zl(jcvil2-1+iad2) = .true.
                         zr(jcviv2-1+iad2) = zr(jcviv1-1+iad1)
- 40                 continue
+                    end do
                 endif
- 20         continue
- 10     continue
+            end do
+ 10         continue
+        end do
     endif
 !
 !
@@ -225,14 +226,14 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
         call jeveuo(comps2//'.CESV', 'E', jresv2)
         call jeveuo(comps2//'.CESL', 'E', jresl2)
 !
-        do 300 ima = 1, nbma
+        do ima = 1, nbma
 !
             ima2 = dirma(ima)
 !
 !         ON ZAPPE LES MAILLES NON CLASSIQUES
             if (ima2 .eq. 0) goto 300
 !
-            do 310 icmp = 1, nbcmp
+            do icmp = 1, nbcmp
 !
                 call cesexi('C', jresd1, jresl1, ima, 1,&
                             1, icmp, iadr1)
@@ -245,8 +246,9 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     zl(jresl2-1-iadr2) = .true.
                 endif
 !
-310         continue
-300     continue
+            end do
+300         continue
+        end do
 !
     endif
 !

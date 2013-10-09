@@ -19,13 +19,15 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-
+!
 #include "asterf.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/apmain.h"
-#include "asterfort/elg_apelim.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/elg_apelim.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -34,12 +36,10 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 #include "asterfort/mtmchc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
-#include "asterc/asmpi_comm.h"
 #include "blas/dcopy.h"
-
+!
     character(len=*) :: action, solvez, matasz, vcinez
-    real(kind=8) :: rsolu(*), r8
+    real(kind=8) :: rsolu(*)
     integer :: nbsol, istop, iret
 !-----------------------------------------------------------------------
 ! BUT : ROUTINE D'INTERFACE ENTRE CODE_ASTER ET LA BIBLIOTHEQUE PETSC
@@ -81,7 +81,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     VARIABLES LOCALES
     integer :: iprem, k, ibid, ierd, nglo, kdeb, jnequ
     integer :: jrefa, jtrav, kptsc
-    integer(kind=8) ::  n8
+    integer(kind=8) :: n8
     integer :: nbid
     PetscInt :: m, n
 !
@@ -105,13 +105,13 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     data iprem /0/
 !----------------------------------------------------------------
     call jemarq()
-
+!
     solveu = solvez
     matas = matasz
     vcine = vcinez
     iret = 0
-
-
+!
+!
 !   0. FERMETURE DE PETSC DANS FIN
 !   ------------------------------
     if (action .eq. 'FIN') then
@@ -122,10 +122,10 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !           se retrouver dans fin suite a une erreur dans l'initialisation
             iprem = 0
         endif
-        goto 9999
+        goto 999
     endif
-
-
+!
+!
     if (iprem .eq. 0) then
 !     --------------------
 !        -- quelques vérifications sur la cohérence Aster / Petsc :
@@ -155,15 +155,15 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         iprem = 1
     endif
     ASSERT(matas.ne.' ')
-
-
-
+!
+!
+!
 !   1. on ne veut pas de matrice complexe :
 !   ----------------------------------------
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
     if (rouc .ne. 'R') call utmess('F', 'PETSC_2')
-
-
+!
+!
 !   2. on cherche si la matrice est dans le common :
 !   -------------------------------------------------
 !   on teste le nom de la matrice, celui du nume_ddl,
@@ -171,7 +171,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     nglo = zi(jnequ)
-
+!
     kptsc=1
     do k = 1, nmxins
         if ((nomats(k).eq.matas) .and. (nonus (k).eq.nu )) then
@@ -184,11 +184,11 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             endif
         endif
     enddo
-
+!
     ASSERT(action.ne.'RESOUD')
-
-    if (action .eq. 'DETR_MAT') goto 9999
-
+!
+    if (action .eq. 'DETR_MAT') goto 999
+!
 !   y-a-t-il encore une place libre dans le common ?
 !   --------------------------------------------------
     do k = 1, nmxins
@@ -197,16 +197,16 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             goto 1
         endif
     end do
-
+!
     call utmess('F', 'PETSC_3')
-
-
-
-
+!
+!
+!
+!
 !   3. quelques verifications et petites actions :
 !   ----------------------------------------------
   1 continue
-
+!
     if (action .eq. 'PRERES') then
 !        -- remplissage du commun
         ASSERT(nomats(kptsc).eq.' ')
@@ -218,29 +218,29 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         nomats(kptsc) = matas
         nosols(kptsc) = solveu
         nonus(kptsc) = nu
-
+!
 !        -- verification que la matrice n'a pas ete factorisee
         call jeveuo(matas//'.REFA', 'E', jrefa)
         etamat = zk24(jrefa-1+8)(1:4)
         if (etamat .eq. 'DECT') then
             call utmess('A', 'PETSC_4')
-            goto 9999
+            goto 999
         else
             zk24(jrefa-1+8) = 'DECT'
         endif
-
+!
 !        -- elimination des ddls (affe_char_cine)
         ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
         if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(matas, 'ELIMF')
         ASSERT(zk24(jrefa-1+3).ne.'ELIML')
-
+!
     else if (action.eq.'RESOUD') then
         ASSERT(nbsol.ge.1)
         ASSERT((istop.eq.0).or.(istop.eq.2))
-
+!
     else if (action.eq.'DETR_MAT') then
 !        RIEN A VERIFIER
-
+!
     else if (action.eq.'ELIM_LAGR+R'.or.action.eq.'ELIM_LAGR-R') then
 !        -- remplissage du commun spetsc
         nomats(kptsc) = matas
@@ -252,13 +252,13 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             call elg_apelim(kptsc, .false.)
         endif
         iret=0
-        goto 9999
+        goto 999
     else
         ASSERT(.false.)
     endif
-
-
-
+!
+!
+!
 !   4. APPEL DE PETSC :
 !   -------------------
     if (action .eq. 'RESOUD') then
@@ -266,15 +266,17 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         do k = 1, nbsol
             kdeb = (k-1)*nglo+1
             call dcopy(nglo, rsolu(kdeb), 1, zr(jtrav), 1)
-            call apmain(action, kptsc, zr(jtrav), vcine, istop, iret)
+            call apmain(action, kptsc, zr(jtrav), vcine, istop,&
+                        iret)
             call dcopy(nglo, zr(jtrav), 1, rsolu(kdeb), 1)
         end do
         call jedetr('&&APETSC.TRAVAIL')
     else
-        call apmain(action, kptsc, rsolu, vcine, istop, iret)
+        call apmain(action, kptsc, rsolu, vcine, istop,&
+                    iret)
     endif
-
-9999 continue
+!
+999 continue
     call jedema()
 #else
     call utmess('F', 'FERMETUR_10')

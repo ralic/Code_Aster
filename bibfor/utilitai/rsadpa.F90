@@ -62,7 +62,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 ! REMARQUE : CETTE ROUTINE NE FAIT PAS JEMARQ/JEDEMA POUR NE PAS
 !            INVALIDER LJEVEU
 !-----------------------------------------------------------------------
-    integer ::  nbordr, nrang, jordr, i, ipara, irang, ifr
+    integer :: nbordr, nrang, jordr, i, ipara, irang, ifr
     integer :: vali(2), ljeveu(npara)
     character(len=3) :: ctype(npara)
     character(len=24) :: valk(3)

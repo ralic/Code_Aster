@@ -87,10 +87,10 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 ! --- CALCUL DU NOMBRE DE DDL ---
     nddl = 0
-    do 10 i = 1, nnodes
+    do i = 1, nnodes
         iold = zi(lcorr-1+i)
         nddl = nddl + zi(lprold+(iold-1)*ndi+1)
- 10 end do
+    end do
 !
 !
 !
@@ -114,9 +114,9 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     if (iret .ne. 0) then
         call jeveuo(jexnum(objet, 1), 'E', lprnew)
         call jelira(jexnum(objet, 1), 'LONMAX', nbval)
-        do 15 i = 1, nbval
+        do i = 1, nbval
             zi(lprnew-1+i) = 0
- 15     continue
+        end do
         call jeecra(jexnum(objet, 1), 'LONUTI', nnodes*ndi)
     else
         valk(1) = objet
@@ -125,7 +125,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 !
 !
-    do 60 iord = 1, nbord
+    do iord = 1, nbord
         call rsexch('F', result, 'DEPL', zi(lord-1+iord), chexin,&
                     iret)
         call rsexch('F', nomres, 'DEPL', zi(lord-1+iord), chexou,&
@@ -138,17 +138,17 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         zk24(lrefe+1) = nomres//'.PROFC.NUME'
 !
         ieq = 1
-        do 30 i = 1, nnodes
+        do i = 1, nnodes
             iold = zi(lcorr-1+i)
             ncmp = zi(lprold+(iold-1)*ndi+1)
             zi(lprnew+(i-1)*ndi) = ieq
             zi(lprnew+(i-1)*ndi+1) = ncmp
             zi(lprnew+(i-1)*ndi+2) = zi(lprold+(iold-1)*ndi+2)
-            do 20 k = 1, ncmp
+            do k = 1, ncmp
                 zi(lnunew-1+ieq) = ieq
                 ieq = ieq + 1
- 20         continue
- 30     continue
+            end do
+        end do
 !
 !     --- MISE A JOUR DU .VALE (DEPL_R) ---
         call jeexin(chexou//'.VALE', iret)
@@ -156,17 +156,17 @@ subroutine regres(nomres, mailsk, result, pfchn2)
             call jedetr(chexou//'.VALE')
             call wkvect(chexou//'.VALE', 'G V R', nddl, lvnew)
             call jeveuo(chexin//'.VALE', 'L', lvold)
-            do 50 i = 1, nnodes
+            do i = 1, nnodes
                 iold = zi(lcorr-1+i)
                 ncmp = zi(lprold+(iold-1)*ndi+1)
                 iadold = zi(lnuold-1+zi(lprold+(iold-1)*ndi))
                 iadnew = zi(lnunew-1+zi(lprnew+(i-1)*ndi))
-                do 40 j = 1, ncmp
+                do j = 1, ncmp
                     zr(lvnew-1+iadnew+j-1)=zr(lvold-1+iadold+j-1)
- 40             continue
- 50         continue
+                end do
+            end do
         endif
- 60 end do
+    end do
 !
 !  --- MISE A JOUR DU .PROFC.NUME.DEEQ ---
     objet = pfchn2//'.DEEQ'
@@ -179,14 +179,15 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         call utmess('F', 'ALGORITH14_30', sk=valk(1))
     endif
     ndeeq = 0
-    do 70 i = 1, nnodes
+    do i = 1, nnodes
         ncmp = zi(lprnew-1+(i-1)*ndi+2)
-        do 70 j = 1, ncmp
+        do j = 1, ncmp
             ndeeq = ndeeq + 1
             zi(ldeeq-1+ndeeq) = i
             ndeeq = ndeeq + 1
             zi(ldeeq-1+ndeeq) = j
- 70     continue
+        end do
+    end do
 !
     call jedema()
 end subroutine

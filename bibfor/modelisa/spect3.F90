@@ -43,6 +43,7 @@ function spect3(x, a, b, func, tol,&
 !
 ! ARGUMENTS
 ! ---------
+! aslint: disable=W0307
 #include "jeveux.h"
     integer :: nbp
     real(kind=8) :: x

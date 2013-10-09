@@ -35,7 +35,7 @@ subroutine te0085(option, nomte)
 ! ......................................................................
 !
     integer :: icodre(1)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, rx
+    real(kind=8) :: poids, rx
     integer :: nno, kp, k, npg, i, ivectu, ipesa
     integer :: ipoids, ivf, idfde, igeom, imate
 !
@@ -57,25 +57,25 @@ subroutine te0085(option, nomte)
                 ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
         k = nno*(kp-1)
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         poids = poids * rho(1) * zr(ipesa)
         if (lteatt(' ','AXIS','OUI')) then
             rx= 0.d0
-            do 102 i = 1, nno
+            do i = 1, nno
                 rx= rx+ zr(igeom+2*i-2)*zr(ivf+k+i-1)
-102          continue
+            end do
             poids = poids*rx
-            do 103 i = 1, nno
+            do i = 1, nno
                 zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
-103          continue
+            end do
         else
-            do 104 i = 1, nno
+            do i = 1, nno
                 zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids*zr(ipesa+ 1)*zr(ivf+k+i-1)
                 zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
-104          continue
+            end do
         endif
-101  end do
+    end do
 end subroutine

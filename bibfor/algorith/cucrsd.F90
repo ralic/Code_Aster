@@ -60,7 +60,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
 !
 !
     integer :: ifm, niv
-    character(len=8) ::  cmp, nomno
+    character(len=8) :: cmp, nomno
     integer :: ino, iddl, cddl
     character(len=24) :: ddlco, atmu, apjeu
     character(len=24) :: valk(2)
@@ -127,14 +127,14 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
     zi(jddl) = 0
     iddl = 1
 !
-    do 100 ino = 1, nnocu
+    do ino = 1, nnocu
 !
         numno = zi(jnoe+ino-1)
         call jenuno(jexnum(noeuma, numno), nomno)
         nbcmp = zi(jpoi+ino) - zi(jpoi+ino-1)
         jdecal = zi(jpoi+ino-1)
 !
-        do 200 icmp = jdecal, jdecal+nbcmp-1
+        do icmp = jdecal, jdecal+nbcmp-1
 !
             cmp = zk8(jcmpg-1+icmp)
 !
@@ -150,8 +150,8 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
                 zi(jddl+iddl) = cddl
                 iddl = iddl+1
             endif
-200     continue
-100 end do
+        end do
+    end do
     if ((iddl-1) .ne. ncmpg) then
         ASSERT(.false.)
     endif
@@ -234,9 +234,9 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
     call jecrec(cm1a, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 ncmpg)
     call jeecra(cm1a, 'LONMAX', neq)
-    do 40 i = 1, ncmpg
+    do i = 1, ncmpg
         call jecroc(jexnum(cm1a, i))
- 40 end do
+    end do
 !
 ! --- MATRICE DE LA LIAISON_UNILATERALE ACM1AT
 !

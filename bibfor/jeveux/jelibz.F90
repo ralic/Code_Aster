@@ -55,7 +55,7 @@ subroutine jelibz(clas)
      &               idmarq = 4   ,&
      &                 idnum  = 10 )
 ! ----------------------------------------------------------------------
-    integer :: ncla1, ncla2, ibacol, ibmarq, ic, id, iret, ix
+    integer :: ncla1, ncla2, ibacol, ibmarq, ic, id, ix
     integer :: j, k, marqi, iclasi
     character(len=32) :: crnom, d32
     character(len=1) :: kclas
@@ -71,8 +71,8 @@ subroutine jelibz(clas)
         ncla1 = index ( classe , kclas)
         ncla2 = ncla1
     endif
-    do 100 ic = ncla1, ncla2
-        do 150 j = 1, nremax(ic)
+    do ic = ncla1, ncla2
+        do j = 1, nremax(ic)
             crnom = rnom(jrnom(ic)+j)
             if (crnom(1:1) .eq. '?' .or. crnom(25:26) .eq. '$$') goto 150
 !          CALL JJCREN ( CRNOM , 0 , IRET )
@@ -95,18 +95,18 @@ subroutine jelibz(clas)
                     ix = iszon(jiszon + ibacol + idmarq)
                     ibmarq = iadm(jiadm(ic)+2*ix-1)
                     nmax = iszon(jiszon+ibacol+ivnmax )
-                    do 170 k = 1, nmax
+                    do k = 1, nmax
                         marqi = iszon(jiszon+ibmarq-1+2*k-1)
                         if (marqi .eq. -1) then
                             call jjlide('JELIBZ', crnom, 2)
                             goto 171
                         endif
-170                  continue
+                    end do
                 endif
 !
 ! ---------- COLLECTION CONTIGUE OU DISPERSEE ( OBJETS ATTRIBUTS )
 !
-                do 162 k = idnum, 1, -1
+                do k = idnum, 1, -1
                     id = iszon(jiszon + ibacol + k)
                     if (id .gt. 0) then
                         marqi = imarq(jmarq(ic)+2*id-1)
@@ -115,8 +115,8 @@ subroutine jelibz(clas)
                             goto 171
                         endif
                     endif
-162              continue
-171              continue
+                end do
+171             continue
             else
 !
 ! --------- OBJET SIMPLE
@@ -134,7 +134,8 @@ subroutine jelibz(clas)
                     call jjlide('JELIBZ', crnom, 1)
                 endif
             endif
-150      continue
-100  end do
+150         continue
+        end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

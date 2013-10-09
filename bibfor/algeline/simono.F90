@@ -77,26 +77,26 @@ subroutine simono()
 !
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
-    do 10 i = 1, nbdir
+    do i = 1, nbdir
         xnorm = xnorm + depl(i) * depl(i)
- 10 end do
+    end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
     endif
-    do 12 i = 1, nbdir
+    do i = 1, nbdir
         depl(i) = depl(i) / xnorm
- 12 end do
+    end do
 !
     call wkvect('&&SIMONO.VECTEUR', 'V V R', neq, jvec)
     call wkvect('&&SIMONO.DDL', 'V V I', neq*nbdir, jddl)
     call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
                 zi(jddl))
-    do 20 i = 1, nbdir
-        do 22 in = 0, neq-1
+    do i = 1, nbdir
+        do in = 0, neq-1
             zr(jvec+in) = zr(jvec+in) - zi(jddl+(i-1)*neq+in)*depl(i)
- 22     continue
- 20 end do
+        end do
+    end do
 !
 !     --- CREATION DU CHAMNO ---
 !

@@ -99,69 +99,69 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- TYPE DE NOEUD = 'HEAVISIDE'
 !     ============================
     if (typgrp .eq. 'HEAVISIDE') then
-        do 10 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
-            do 110 ino = 1, nbnot
+            do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 1) then
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-110         continue
+            end do
             call jedetr(stno)
- 10     continue
+        end do
 !
 ! --- TYPE DE NOEUD = 'CRACKTIP'
 !     ============================
     else if (typgrp.eq.'CRACKTIP') then
-        do 11 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
-            do 111 ino = 1, nbnot
+            do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 2) then
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-111         continue
+            end do
             call jedetr(stno)
- 11     continue
+        end do
 !
 ! --- TYPE DE NOEUD = 'MIXTE'
 !     ============================
     else if (typgrp.eq.'MIXTE') then
-        do 12 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
-            do 112 ino = 1, nbnot
+            do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 3) then
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-112         continue
- 12     continue
+            end do
+        end do
 !
 ! --- TYPE DE NOEUD = 'XFEM'
 !     ============================
     else if (typgrp.eq.'XFEM') then
-        do 13 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
-            do 113 ino = 1, nbnot
+            do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .ne. 0) then
                     nbno = nbno + 1
                     zi(jnoeu+nbno-1) = ino
                 endif
-113         continue
+            end do
             call jedetr(stno)
- 13     continue
+        end do
 !
 !
 ! --- TYPE DE NOEUD = 'TORE'
@@ -171,7 +171,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
         cnslt = '&&CGNOXF.CNSLT'
         cnsln = '&&CGNOXF.CNSLN'
 !
-        do 15 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
 !
 !           CHECK IF THE LOCALISATION HAS BEEN USED
@@ -226,13 +226,13 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                 call jeveuo(cnslt//'.CNSV', 'L', jlst)
                 call jeveuo(cnsln//'.CNSV', 'L', jlsn)
 !
-                do 116 ino = 1, nbnot
+                do ino = 1, nbnot
                     dist=zr(jlst-1+ino)**2+zr(jlsn-1+ino)**2
                     if (dist .le. rayon) then
                         nbno = nbno + 1
                         zi(jnoeu+nbno-1) = ino
                     endif
-116             continue
+                end do
 !
                 call jedetr(cnslt)
                 call jedetr(cnsln)
@@ -287,23 +287,23 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                 call jeexin(stnot, ibid)
                 if (ibid .gt. 0) then
                     call jeveuo(stnot, 'L', jstno)
-                    do 114 ino = 1, nbnot
+                    do ino = 1, nbnot
                         if (zl(jstno+ino-1)) then
                             nbno = nbno + 1
                             zi(jnoeu+nbno-1) = ino
                         endif
-114                 continue
+                    end do
                 else
 !                THE LOCALISATION HAS NOT BEEN USED. ZONE_MAJ IS
 !                COINCIDENT WITH THE WHOLE MODEL.
-                    do 115 ino = 1, nbnot
+                    do ino = 1, nbnot
                         nbno = nbno + 1
                         zi(jnoeu+nbno-1) = ino
-115                 continue
+                    end do
                 endif
             endif
 !
- 15     continue
+        end do
 !
     else
         ASSERT(.false.)
@@ -312,10 +312,10 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     if (nbno .ne. 0) then
         call wkvect(lisnoe, 'V V I', nbno, idlist)
 !
-        do 20 ino = 1, nbno
+        do ino = 1, nbno
             zi(idlist+ino-1)=zi(jnoeu+ino-1)
             call jenuno(jexnum(noma//'.NOMNOE', zi(idlist+ino-1)), nomnoe)
- 20     continue
+        end do
     endif
 !
 ! --- FIN

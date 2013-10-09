@@ -49,7 +49,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
 !
 !
-    character(len=8) ::  mod
+    character(len=8) :: mod
     character(len=24) :: nomo, phen, valk(2)
     character(len=19) :: ligrmo
     integer :: ibid

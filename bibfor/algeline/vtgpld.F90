@@ -128,8 +128,8 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 ! --- SI LE CHAMP EST A REPRESENTATION CONSTANTE
 !
     if (num .lt. 0) then
-        do 13 ino = 1, nbno
-            do 14 icmp = 1, 3
+        do ino = 1, nbno
+            do icmp = 1, 3
                 rdepla = zr(iavald-1+3*(ino-1)+icmp)
                 if (cumul .eq. 'CUMU') then
                     zr(iavalf-1+3*(ino-1)+icmp) = zr(iavali-1+3*(ino- 1)+icmp )+alpha*rdepla
@@ -138,8 +138,8 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                 else
                     ASSERT(.false.)
                 endif
- 14         continue
- 13     continue
+            end do
+        end do
     else
 !
 ! --- ON RECUPERE CE QUI CONCERNE LES NOEUDS DU MAILLAGE
@@ -147,12 +147,12 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
         call jelira(jexnum(nomnu(1:19)//'.PRNO', 1), 'LONMAX', ibid)
         ASSERT(ibid.ne.0)
         call jeveuo(jexnum(nomnu(1:19)//'.PRNO', 1), 'L', iaprno)
-        do 11 ino = 1, nbno
+        do ino = 1, nbno
             ival = zi(iaprno-1+(ino-1)*(nec+2)+1)
             ncmp = zi(iaprno-1+(ino-1)*(nec+2)+2)
             if (ncmp .ne. 0) then
                 icompt = 0
-                do 12 icmp = 1, 3
+                do icmp = 1, 3
                     if (exisdg(zi(iaprno-1+(ino-1)*(nec+2)+3),icmp)) then
                         icompt = icompt + 1
                         rdepla = zr(iavald-1+ival-1+icompt)
@@ -165,9 +165,9 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                             ASSERT(.false.)
                         endif
                     endif
- 12             continue
+                end do
             endif
- 11     continue
+        end do
     endif
 !
     call jedema()

@@ -18,32 +18,32 @@
 !----------------------------------------------------------------
 !    include necessaire a la gestion des instances PETSC
 !----------------------------------------------------------------
-#   include "finclude/petscsys.h"
-#   include "finclude/petscvec.h"
-#   include "finclude/petscmat.h"
-#   include "finclude/petscksp.h"
-#   include "finclude/petscpc.h"
-#   include "finclude/petscdmda.h"
-#   include "finclude/petscis.h"
-#   include "finclude/petscviewer.h"
-#   include "petsc_interfaces.h"
-
+# include "finclude/petscsys.h"
+# include "finclude/petscvec.h"
+# include "finclude/petscmat.h"
+# include "finclude/petscksp.h"
+# include "finclude/petscpc.h"
+# include "finclude/petscdmda.h"
+# include "finclude/petscis.h"
+# include "finclude/petscviewer.h"
+# include "petsc_interfaces.h"
+!
 !----------------------------------------------------------------
 !   spetsc : common pour les instances PETSC
-    integer      nmxins
-    parameter   (nmxins=5)
-    character*19 nomats(nmxins),nosols(nmxins)
-    character*14  nonus(nmxins)
-    Mat    ap(nmxins)
-    KSP    kp(nmxins)
-    Vec    b,x
-    common /spetsc/ ap,kp,b,x,nomats,nosols,nonus
-
+integer :: nmxins
+parameter   (nmxins=5)
+c :: haracter*19 nomats(nmxins), nosols(nmxins)
+c :: haracter*14 nonus(nmxins)
+Mat    ap(nmxins)
+KSP    kp(nmxins)
+Vec    b,x
+common /spetsc/ ap,kp,b,x,nomats,nosols,nonus
+!
 !----------------------------------------------------------------
 !   ldltsp : common pour le preconditionneur simple precision ldlt_sp
-    character(len=19) :: spsomu, spmat, spsolv
-    Vec :: xlocal, xglobal
-    VecScatter :: xscatt
-    common /ldltsp/xlocal,xscatt,xglobal,spsomu,spmat,spsolv
+character(len=19) :: spsomu, spmat, spsolv
+Vec :: xlocal, xglobal
+VecScatter :: xscatt
+common /ldltsp/xlocal,xscatt,xglobal,spsomu,spmat,spsolv
 !----------------------------------------------------------------
 #endif

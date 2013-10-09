@@ -75,7 +75,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call jedetr(cesz // '.C')
 !          ENDIF
         endif
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -110,7 +110,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call dismoi('NB_MA_MAILLA', nomma, 'MAILLAGE', repi=nbma)
             call wkvect('&&PRCOCH.INDIC_MAILLE', 'V V I', nbma, itrma)
 !
-            do 13 igr = 1, ngroup
+            do igr = 1, ngroup
                 call jeexin(jexnom(nomma//'.GROUPEMA', group(igr)), iret)
                 if (iret .eq. 0) then
                     valk = group(igr)
@@ -118,17 +118,17 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 else
                     call jelira(jexnom(nomma//'.GROUPEMA', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPEMA', group(igr)), 'L', iad)
-                    do 14 in = 1, nbn
+                    do in = 1, nbn
                         ima = zi(iad-1+in)
                         zi(itrma-1+ima) = 1
- 14                 continue
+                    end do
                 endif
- 13         continue
+            end do
 !
             nbtrou = 0
-            do 100 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
-100         continue
+            end do
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_4')
             endif
@@ -137,12 +137,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call wkvect(litrou, 'V V I', nbtrou, itbma)
 !         --- RANGEMENT DES NUMEROS DE MAILLES ---
             lma = 0
-            do 110 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(itrma-1+ima) .ne. 0) then
                     lma = lma + 1
                     zi(itbma-1+lma) = ima
                 endif
-110         continue
+            end do
             call cesred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
             call jedetr('&&PRCOCH.INDIC_MAILLE')
@@ -157,12 +157,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
         ncmpmx = zi(jcesd-1+2)
 !
-        do 5 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (zk8(jcesc-1+icmp) .eq. nocmp) then
                 numcmp=icmp
                 goto 6
             endif
-  5     continue
+        end do
 !
   6     continue
 !
@@ -173,18 +173,20 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
         nbval=0
         nbma = zi(jcesd-1+1)
 !
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
 !
 !
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
 !
-            do 10 ipt = 1, nbpt
-                do 10 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, numcmp, iad)
                     if (iad .gt. 0) nbval=nbval+1
- 10             continue
+                end do
+            end do
+        end do
 !
 !
         if (nbval .eq. 0) then
@@ -206,14 +208,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 ! -- 4EME ETAPE : REMPLISSAGE DES VECTEURS
         ival=0
-        do 20 ima = 1, nbma
+        do ima = 1, nbma
 !
 !
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
 !
-            do 20 ipt = 1, nbpt
-                do 20 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, numcmp, iad)
                     if (iad .gt. 0) then
@@ -231,7 +233,9 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                             zi(jsp-1+ival)=isp
                         endif
                     endif
- 20             continue
+                end do
+            end do
+        end do
 !
 !
 !
@@ -255,7 +259,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
             call wkvect('&&PRCOCH.INDIC_NOEUD', 'V V I', nbno, itrno)
 !
-            do 130 igr = 1, ngroup
+            do igr = 1, ngroup
                 call jeexin(jexnom(nomma//'.GROUPENO', group(igr)), iret)
                 if (iret .eq. 0) then
                     valk = group(igr)
@@ -263,17 +267,17 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 else
                     call jelira(jexnom(nomma//'.GROUPENO', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPENO', group(igr)), 'L', iad)
-                    do 140 in = 1, nbn
+                    do in = 1, nbn
                         ino = zi(iad-1+in)
                         zi(itrno-1+ino) = 1
-140                 continue
+                    end do
                 endif
-130         continue
+            end do
 !
             nbtrou = 0
-            do 1000 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
-1000         continue
+            end do
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_5')
             endif
@@ -282,12 +286,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             call wkvect(litrou, 'V V I', nbtrou, itbma)
 !         --- RANGEMENT DES NUMEROS DE NOEUDS ---
             lma = 0
-            do 1100 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi(itrno-1+ino) .ne. 0) then
                     lma = lma + 1
                     zi(itbma-1+lma) = ino
                 endif
-1100         continue
+            end do
             call cnsred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
             call jedetr('&&PRCOCH.INDIC_NOEUD')
@@ -306,12 +310,12 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
         if (numcmp .lt. 0) then
             goto 60
         endif
-        do 50 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (zk8(jcnsc-1+icmp) .eq. nocmp) then
                 numcmp=icmp
                 goto 60
             endif
- 50     continue
+        end do
 !
 !       SI LA COMPOSANTE DEMANDEE N EXISTE PAS, ERREUR FATALE
         call utmess('F', 'CHAMPS_3', sk=nocmp)
@@ -327,15 +331,15 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
         nbno = zi(jcnsd-1+1)
 !
         if (numcmp .lt. 0) then
-            do 70 icmp = 1, ncmpmx
-                do 71 ino = 1, nbno
+            do icmp = 1, ncmpmx
+                do ino = 1, nbno
                     if (zl(jcnsl-1+(ino-1)*ncmpmx+icmp)) nbval=nbval+ 1
- 71             continue
- 70         continue
+                end do
+            end do
         else
-            do 72 ino = 1, nbno
+            do ino = 1, nbno
                 if (zl(jcnsl-1+(ino-1)*ncmpmx+numcmp)) nbval=nbval+1
- 72         continue
+            end do
         endif
 !
 !
@@ -360,7 +364,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 ! -- 4EME ETAPE : REMPLISSAGE DES VECTEURS
         ival=0
-        do 200 ino = 1, nbno
+        do ino = 1, nbno
             if (numcmp .gt. 0) then
                 cmpmin=numcmp
                 cmpmax=numcmp
@@ -368,7 +372,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 cmpmin=1
                 cmpmax=ncmpmx
             endif
-            do 201 icmp = cmpmin, cmpmax
+            do icmp = cmpmin, cmpmax
                 if (zl(jcnsl-1+(ino-1)*ncmpmx+icmp)) then
                     ival=ival+1
                     if (tsca .eq. 'R') then
@@ -386,14 +390,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                         if (numcmp .lt. 0) zk8(jcmp-1+ival)=zk8(jcnsc-1+ icmp)
                     endif
                 endif
-201         continue
-200     continue
+            end do
+        end do
 !
     else
         ASSERT(.false.)
     endif
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

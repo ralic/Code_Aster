@@ -74,7 +74,7 @@ subroutine crprol()
     character(len=24) :: valk(2)
 !
     call jemarq()
-!    
+!
     cbid=(0.d0,0.d0)
     motfac = 'PROL_RTZ'
     call getres(resu, typres, nomcmd)
@@ -128,7 +128,7 @@ subroutine crprol()
     tabl2 = '&&RS1D3D.TABL2'
     cnsinr = '&&RS1D3D.CNSINR'
 !
-    do 1 iord = 1, nbinst
+    do iord = 1, nbinst
         call jemarq()
         call jerecu('V')
 !
@@ -165,14 +165,14 @@ subroutine crprol()
 !
         rmax = 0.0d0
         rmin = 1.d0/r8prem()
-        do 2 inoi = 1, nbnoi
+        do inoi = 1, nbnoi
             rval = zr(jtbcor - 1 + inoi)
             rmax = max(rval,rmax)
             rmin = min(rval,rmin)
             if (rmin .ne. 0.0d0) then
                 call utmess('F', 'ALGORITH12_69')
             endif
-  2     continue
+        end do
 !
 ! ------ ON TRIE PAR ORDRE CROISSANT
 !
@@ -194,7 +194,7 @@ subroutine crprol()
         call jeveuo(cnsinr//'.CNSL', 'E', jcnsle)
 !
         indice = 0
-        do 3 inof = 1, nbnof
+        do inof = 1, nbnof
             zl(jcnsle-1+(inof-1)+1) = .false.
             axet(1) = zr( axyzmf + 3*(inof-1) - 1 + 1 )
             axet(2) = zr( axyzmf + 3*(inof-1) - 1 + 2 )
@@ -212,7 +212,7 @@ subroutine crprol()
                 zi(jtbnoe-1+indice) = inof
                 goto 3
             endif
-            do 4 inoi = 1, nbnoi
+            do inoi = 1, nbnoi
                 if (rval .le. zr(jtbcor-1+zi(jtbres-1+inoi))) then
                     imin = zi(jtbres-1+inoi-1)
                     rmin = zr(jtbcor-1+imin)
@@ -220,7 +220,7 @@ subroutine crprol()
                     rmax = zr(jtbcor-1+imax)
                     goto 5
                 endif
-  4         continue
+            end do
             indice = indice + 1
             zr(jtbpdg-1+indice) = rval
             zi(jtbnoe-1+indice) = inof
@@ -233,8 +233,9 @@ subroutine crprol()
             zr(jcnsve-1+(inof-1)+1)=(1-lambda)*zr(jcnsvl-1+(imin-1)+1)&
             + lambda*zr(jcnsvl-1+(imax-1)+1)
             zl(jcnsle-1+(inof-1)+1) = .true.
-  3     continue
-        do 6 ordef = 1, indice
+  3         continue
+        end do
+        do ordef = 1, indice
             ino = zi(jtbnoe-1+ordef)
             rval = zr(jtbpdg-1+ordef)
             if (rval .lt. 0.0d0) then
@@ -284,7 +285,7 @@ subroutine crprol()
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 endif
             endif
-  6     continue
+        end do
 !
         call rsexch(' ', resu, 'TEMP', iord, cnoinr,&
                     ibid)
@@ -308,7 +309,7 @@ subroutine crprol()
         call jedetr(tabval)
 !
         call jedema()
-  1 end do
+    end do
     call jedetr(knum)
     call jedetr(tabpdg)
     call jedetr(tabnoe)

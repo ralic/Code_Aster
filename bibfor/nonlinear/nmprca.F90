@@ -160,8 +160,8 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if ((faccvg.eq.1) .or. (faccvg.eq.2)) goto 9999
-    if (ldccvg .eq. 1) goto 9999
+    if ((faccvg.eq.1) .or. (faccvg.eq.2)) goto 999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- CALCUL DU SECOND MEMBRE
 ! --- PRISE EN COMPTE DES CL DUALISEES
@@ -181,7 +181,7 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (rescvg .eq. 1) goto 9999
+    if (rescvg .eq. 1) goto 999
 !
 ! --- CORRECTION DU DEPLACEMENT DONNE POUR LE RENDRE
 ! --- CINEMATIQUEMENT ADMISSIBLE
@@ -194,14 +194,14 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 ! --- LES LAGRANGES NE SONT PAS MODIFIES
 !
-    do 10 i = 1, neq
+    do i = 1, neq
         if (zi(jnum+i-1) .eq. 0) then
             zr(jdep1+i-1) = zr(jdep1+i-1)+zr(jsol1+i-1)
             zr(jdep2+i-1) = zr(jsol2+i-1)
         endif
- 10 end do
+    end do
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

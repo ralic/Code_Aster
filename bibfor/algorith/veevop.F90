@@ -193,7 +193,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
     call liscrs(lisch2, nbchar, 'V')
 !
-    do 100 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- LECTURE NOM DE LA CHARGE (PROVENANT DE AFFE_CHAR_*)
 !
@@ -228,7 +228,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
                     motclc, prefob, typapp, nomfct, typfct,&
                     r8bid, ibid)
 !
-100 continue
+    end do
 !
 ! --- VERIFICATION DE LA LISTE DES CHARGES
 !

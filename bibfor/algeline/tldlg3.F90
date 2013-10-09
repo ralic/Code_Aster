@@ -306,7 +306,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             dmax=0.d0
             dmin=r8maem()
             nzero=0
-            do 10 ieq = ildeb, ilfin1
+            do ieq = ildeb, ilfin1
                 if (typvar .eq. 1) then
                     d1=abs(zr(jdigs-1+ieq)/zr(jdigs+neq-1+ieq))
                 else
@@ -324,7 +324,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                         ieq4=ieq
                     endif
                 endif
- 10         continue
+            end do
             ASSERT(dmax.gt.0)
             ndeci1=int(log10(dmax))
             ndeci2=int(log10(1.d0/dmin))

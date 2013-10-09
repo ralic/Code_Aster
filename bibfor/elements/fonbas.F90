@@ -54,7 +54,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, ifon, indica, indicb, ina, inb, ino
-    integer ::  iseg, jbas, jcoor
+    integer :: iseg, jbas, jcoor
     integer :: jgsl, jgsv, jlnsv, jlnsl, jltsv, jltsl, jtyp
     integer :: k, nbno, ndim, nseg
     real(kind=8) :: d, dmin, eps, norm2, s, sn, xln, xlt
@@ -62,7 +62,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
     real(kind=8) :: xab, yab, zab, xam, yam, zam, xnm, ynm, znm
     real(kind=8) :: n(3), nm(3), vdira(3), vnora(3), vdirb(3), vnorb(3)
     real(kind=8) :: vdirn(3), vnorn(3)
-    character(len=8) ::  licmp(9), typfon
+    character(len=8) :: licmp(9), typfon
     character(len=16) :: casfon
     character(len=19) :: cnsbas, cnsln, cnslt
 !
@@ -127,7 +127,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !     ------------------------------------------------------------------
 !
     eps = 1.d-12
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
 !
 !       COORD DU NOEUD M DU MAILLAGE
         xm = zr(jcoor+(ino-1)*3+1-1)
@@ -147,14 +147,14 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
             nm(2) = ym-n(2)
 !
 !         STOCKAGE DES VECTEURS DE LA BASE
-            do 110 k = 1, ndim
+            do k = 1, ndim
                 zr(jgsv-1+3*ndim*(ino-1)+k) = n(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k) = .true.
                 zr(jgsv-1+3*ndim*(ino-1)+k+2) = zr(jbas-1+k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+2) = .true.
                 zr(jgsv-1+3*ndim*(ino-1)+k+4) = zr(jbas-1+k+ndim)
                 zl(jgsl-1+3*ndim*(ino-1)+k+4) = .true.
-110         continue
+            end do
 !
 !         STOCKAGE DES LEVEL-SETS
             zr(jlnsv-1+(ino-1)+1)=nm(1)*zr(jbas-1+1)+nm(2)*zr(jbas-1+&
@@ -172,7 +172,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
             dmin = r8maem()
 !
 !         BOUCLE SUR LES "SEGMENTS" DU FOND DE FISSURE
-            do 100 iseg = 1, nseg
+            do iseg = 1, nseg
 !
                 if (casfon .eq. 'LINEAIRE') then
                     ina = iseg
@@ -226,7 +226,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
                     n(3) = s*zab+za
                 endif
 !
-100         continue
+            end do
 !
 !         CALCUL DES VECTEURS DE LA BASE LOCALE AU POINT PROJETE
 !         ------------------------------------------------------
@@ -235,7 +235,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
             nm(2) = ym-n(2)
             nm(3) = zm-n(3)
 !
-            do 200 k = 1, ndim
+            do k = 1, ndim
 !
                 vnora(k) = zr(jbas-1+6*(indica-1)+k)
                 vdira(k) = zr(jbas-1+6*(indica-1)+k+ndim)
@@ -252,7 +252,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
                 zr(jgsv-1+3*ndim*(ino-1)+k+6) = vnorn(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+6) = .true.
 !
-200         continue
+            end do
 !
 !         STOCKAGE DES LEVEL-SETS
             xln = nm(1)*vnorn(1)+nm(2)*vnorn(2)+nm(3)*vnorn(3)
@@ -270,7 +270,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !
         endif
 !
- 10 end do
+    end do
 !
 !
 ! --- CREATION DES CHAM_NO

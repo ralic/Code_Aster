@@ -75,14 +75,14 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
     integer :: iddl(2)
     character(len=3) :: kmod
-    character(len=8) ::  nompar(3)
+    character(len=8) :: nompar(3)
     character(len=14) :: numddl
     character(len=19) :: nomrc
     character(len=24) :: matria, coorno, rcvalk, rcvalr, nomgrp(*)
     character(len=32) :: grpno
 !
 !-----------------------------------------------------------------------
-    integer ::  icoor, icoq, idec, idecm, idecmn, idefm
+    integer :: icoor, icoq, idec, idecm, idecmn, idefm
     integer :: ifm, ifreba, imod, inmaxe, inmaxi, ino, inunoe
     integer :: inunoi, iok1, iok2, iok3, ipara, iret
     integer :: ivalk, ivalr, nbeq, nbnoex, nbnoin, nbnoto
@@ -143,7 +143,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     iok2 = 0
     iok3 = 0
     call jelira(rcvalr, 'LONUTI', nbpara)
-    do 10 ipara = 1, nbpara
+    do ipara = 1, nbpara
         if (zk8(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
             young1 = zr(ivalr+ipara-1)
@@ -154,7 +154,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             iok3 = 1
             rho1 = zr(ivalr+ipara-1)
         endif
- 10 continue
+    end do
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call utmess('F', 'ALGELINE_93')
     else if (young1.eq.0.d0) then
@@ -177,7 +177,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     iok2 = 0
     iok3 = 0
     call jelira(rcvalr, 'LONUTI', nbpara)
-    do 20 ipara = 1, nbpara
+    do ipara = 1, nbpara
         if (zk8(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
             young2 = zr(ivalr+ipara-1)
@@ -188,7 +188,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             iok3 = 1
             rho2 = zr(ivalr+ipara-1)
         endif
- 20 continue
+    end do
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call utmess('F', 'ALGELINE_96')
     else if (young2.eq.0.d0) then
@@ -213,15 +213,15 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !.....(LE TRIEDRE Z, X, Y EST DIRECT)
 !
     if (iaxe .eq. 2) then
-        do 30 imod = 1, nbm
+        do imod = 1, nbm
             idecm = 2 * nbnoto * (imod-1)
-            do 31 ino = 1, nbnoto
+            do ino = 1, nbnoto
                 idecmn = idecm + 2 * (ino-1)
                 rtemp = zr(idefm+idecmn)
                 zr(idefm+idecmn) = zr(idefm+idecmn+1)
                 zr(idefm+idecmn+1) = rtemp
- 31         continue
- 30     continue
+            end do
+        end do
     endif
 !
 !
@@ -254,7 +254,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     write(ifm,*)
 !
 !
-    do 40 imod = 1, nbm
+    do imod = 1, nbm
 !
         write(ifm,503) imod
         write(ifm,504)
@@ -266,7 +266,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
         dpmaxi = 0.d0
         inmaxi = 1
-        do 50 ino = 1, nbnoin
+        do ino = 1, nbnoin
             numnoe = zi(inunoi+ino-1)
             idec = 2*nbnoto*(imod-1)+2*(numnoe-1)
             dx1 = zr(idefm+idec)
@@ -276,13 +276,13 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                 dpmaxi = dpnorm
                 inmaxi = ino
             endif
- 50     continue
+        end do
 !
 ! ----- 5.2.DETECTION DU DEPLACEMENT MAXIMUM SUR LA COQUE EXTERNE
 !
         dpmaxe = 0.d0
         inmaxe = 1
-        do 60 ino = 1, nbnoex
+        do ino = 1, nbnoex
             numnoe = zi(inunoe+ino-1)
             idec = 2*nbnoto*(imod-1)+2*(numnoe-1)
             dx1 = zr(idefm+idec)
@@ -292,7 +292,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                 dpmaxe = dpnorm
                 inmaxe = ino
             endif
- 60     continue
+        end do
 !
 ! ----- 5.3.DETERMINATION DE L'ORDRE DE COQUE ET DES COEFFICIENTS DE
 ! -----     LA DEFORMEE AXIALE
@@ -375,7 +375,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         write(ifm,530)
         write(ifm,*)
 !
- 40 continue
+    end do
 !
 ! --- MENAGE
     call jedetr('&&MODCOQ.TEMP.DEFM')

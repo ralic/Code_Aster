@@ -18,11 +18,11 @@ subroutine nmmess(code, dp0, dp1, dp, func,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=
+! aslint: disable=W0307
     implicit none
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
     interface
         function func(x)
             real(kind=8) :: x
@@ -61,7 +61,7 @@ subroutine nmmess(code, dp0, dp1, dp, func,&
     real(kind=8) :: dpi, f0, f1, fp, fi
     real(kind=8) :: valr(2)
 !
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
     call tecael(iadzi, iazk24)
     nomail= zk24(iazk24-1+3)(1:8)
@@ -95,14 +95,14 @@ subroutine nmmess(code, dp0, dp1, dp, func,&
 !
     vali (1) = nbp
     call utmess(code//'+', 'ALGORITH15_52', si=vali(1))
-    do 10 i = 1, nbp
+    do i = 1, nbp
         dpi=dp0+i*(dp1-dp0)/nbp
         fi = func(dpi)
         valr (1) = dpi
         valr (2) = fi
         call utmess(code//'+', 'ALGORITH15_53', nr=2, valr=valr)
-10  end do
+    end do
 !
     call utmess(code, 'VIDE_1')
-9999  continue
+999 continue
 end subroutine

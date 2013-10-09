@@ -118,12 +118,12 @@ subroutine chcomb(tablez, nomaou)
 !
 ! --- CHANGEMENT D'ORIGINE DES COORDONNEES :
 !     ------------------------------------
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
 !
         idcoor = jcoor-1+dimcoo*(ino-1)
         zr(idcoor+1) = zr(idcoor+1) + xt
         zr(idcoor+2) = zr(idcoor+2) + yt
- 10 end do
+    end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

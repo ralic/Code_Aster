@@ -41,7 +41,7 @@ subroutine cestas(cesz)
 !     ------------------------------------------------------------------
     integer :: jcesk, jcesd, jcesv, jcesl, jcesc, nbma
     integer :: jce2d, jce2v, jce2l
-    integer ::  jnbpt, jnbsp, jnbcmp, icmp
+    integer :: jnbpt, jnbsp, jnbcmp, icmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad, iad2
     integer :: ncmp, nbcmp, nbpt2, nbsp2, nbcmp2
     character(len=1) :: base
@@ -83,7 +83,7 @@ subroutine cestas(cesz)
     call wkvect('&&CESTAS.NBSP', 'V V I', nbma, jnbsp)
     call wkvect('&&CESTAS.NBCMP', 'V V I', nbma, jnbcmp)
 !
-    do 40 ima = 1, nbma
+    do ima = 1, nbma
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
         nbcmp = zi(jcesd-1+5+4* (ima-1)+3)
@@ -91,9 +91,9 @@ subroutine cestas(cesz)
         nbsp2 = 0
         nbcmp2 = 0
 !
-        do 30 ipt = 1, nbpt
-            do 20 isp = 1, nbsp
-                do 10 icmp = 1, nbcmp
+        do ipt = 1, nbpt
+            do isp = 1, nbsp
+                do icmp = 1, nbcmp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
@@ -101,13 +101,13 @@ subroutine cestas(cesz)
                         nbsp2 = isp
                         nbcmp2 = icmp
                     endif
- 10             continue
- 20         continue
- 30     continue
+                end do
+            end do
+        end do
         zi(jnbpt-1+ima) = nbpt2
         zi(jnbsp-1+ima) = nbsp2
         zi(jnbcmp-1+ima) = nbcmp2
- 40 end do
+    end do
 !
 !
 !
@@ -125,14 +125,14 @@ subroutine cestas(cesz)
 !
 !     3- RECOPIE DES VALEURS DE CES DANS CES2 :
 !     -----------------------------------------------------------
-    do 80 ima = 1, nbma
+    do ima = 1, nbma
         nbpt = zi(jce2d-1+5+4* (ima-1)+1)
         nbsp = zi(jce2d-1+5+4* (ima-1)+2)
         nbcmp = zi(jce2d-1+5+4* (ima-1)+3)
 !
-        do 70 ipt = 1, nbpt
-            do 60 isp = 1, nbsp
-                do 50 icmp = 1, nbcmp
+        do ipt = 1, nbpt
+            do isp = 1, nbsp
+                do icmp = 1, nbcmp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, icmp, iad)
                     call cesexi('C', jce2d, jce2l, ima, ipt,&
@@ -164,10 +164,10 @@ subroutine cestas(cesz)
                             ASSERT(.false.)
                         endif
                     endif
- 50             continue
- 60         continue
- 70     continue
- 80 end do
+                end do
+            end do
+        end do
+    end do
 !
 !
 !

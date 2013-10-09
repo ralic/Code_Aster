@@ -110,16 +110,16 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     call jenonu(jexnom(repnom, sst2), nusst2)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst1), 'L', llrot1)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst2), 'L', llrot2)
-    do 10 i = 1, 3
+    do i = 1, 3
         rot1(i)=zr(llrot1+i-1)
         rot2(i)=zr(llrot2+i-1)
- 10 end do
+    end do
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst1), 'L', lltra1)
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst2), 'L', lltra2)
-    do 110 i = 1, 3
+    do i = 1, 3
         tra1(i)=zr(lltra1+i-1)
         tra2(i)=zr(lltra2+i-1)
-110 end do
+    end do
 !
 !-----CALCUL DES MATRICES DE ROTATION
 !
@@ -180,7 +180,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         else
             call utmess('F', 'ALGORITH16_44', nk=4, valk=valk)
         endif
-        goto 9999
+        goto 999
     endif
     nbno=nbno1
 !
@@ -210,39 +210,39 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     lcaram=0.d0
     ordre = .true.
 !
-    do 20 i = 1, nbno
+    do i = 1, nbno
 !     ---RECUPERATION DES COORDONNEES DES NOEUDS DE L'INTERFACE DROITE
 !
         inu1=zi(llint1-1+i)
         nuno1=zi(ldesc1+inu1-1)
 !
-        do 30 k = 1, 3
+        do k = 1, 3
             x1(k)=zr(llcoo1+(nuno1-1)*3+k-1)
- 30     continue
-        do 40 k = 1, 3
+        end do
+        do k = 1, 3
             xr1(k)=0.d0
-            do 50 l = 1, 3
+            do l = 1, 3
                 xr1(k)=xr1(k)+matro1(k,l)*x1(l)
- 50         continue
+            end do
             xr1(k)=xr1(k)+tra1(k)
- 40     continue
+        end do
 !
         dxr = 0.d0
-        do 120 j = 1, nbno
+        do j = 1, nbno
 !       ---RECUPERATION DES COORDONNEES DES NOEUDS DE L'INTERFACE GAUCHE
 !
             inu2=zi(llint2-1+j)
             nuno2=zi(ldesc2+inu2-1)
 !
             saut = .false.
-            do 60 k = 1, 3
+            do k = 1, 3
                 x2(k)=zr(llcoo2+(nuno2-1)*3+k-1)
- 60         continue
-            do 70 k = 1, 3
+            end do
+            do k = 1, 3
                 xr2(k)=0.d0
-                do 80 l = 1, 3
+                do l = 1, 3
                     xr2(k)=xr2(k)+matro2(k,l)*x2(l)
- 80             continue
+                end do
                 xr2(k)=xr2(k)+tra2(k)
                 if (j .ne. 1 .and. abs(xr2(k)-xr1(k)) .gt. dxr) then
 !               --- COMPARAISON COMPOSANTE AVEC DISTANCE --
@@ -254,15 +254,15 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                         goto 120
                     endif
                 endif
- 70         continue
+            end do
 !
 !          ---CALCUL DE LA DIFFERENCE DES DISTANCES NOEUD A NOEUD
 !
             if (.not.saut) then
                 dxrij=0.d0
-                do 90 k = 1, 3
+                do k = 1, 3
                     dxrij=dxrij+(xr1(k)-xr2(k))**2
- 90             continue
+                end do
                 dxrij=sqrt(dxrij)
                 if (j .eq. 1 .or. dxrij .lt. dxr) then
 !             --- CRITERE SUR DISTANCE (RECHERCHE DU MINIMUM)
@@ -276,17 +276,18 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             if (icrit .eq. 1 .and. j .eq. i) then
                 lcara1=0.d0
                 lcara2=0.d0
-                do 100 k = 1, 3
+                do k = 1, 3
                     lcara1=lcara1+xr1(k)**2
                     lcara2=lcara2+xr2(k)**2
-100             continue
+                end do
                 lcara1=sqrt(lcara1)
                 lcara2=sqrt(lcara2)
                 if (lcaram .lt. lcara1) lcaram=lcara1
                 if (lcaram .lt. lcara2) lcaram=lcara2
             endif
 !
-120     continue
+120         continue
+        end do
 !
 !
         if (dxrm .lt. dxr) dxrm=dxr
@@ -308,7 +309,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             valk (3) = nomnoi
 !
             call utmess('F', 'ALGORITH16_45', nk=3, valk=valk)
-            goto 9999
+            goto 999
         endif
         zi(llistb-1+jnode) = i
 !
@@ -316,7 +317,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !        ONT ETE DONNES DANS UN ORDRE DE NON CORRESPONDANCE
         if (jnode .ne. i) ordre = .false.
 !
- 20 end do
+    end do
 !
 !
 !-----VERIFICATION FINALE
@@ -328,7 +329,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             valk (3) = sst2
             valk (4) = intf2
             call utmess('F', 'ALGORITH16_46', nk=4, valk=valk)
-            goto 9999
+            goto 999
         endif
         dxrm=dxrm/lcaram
     endif
@@ -342,14 +343,14 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         else
             call utmess('F', 'ALGORITH16_47', nk=4, valk=valk)
         endif
-        goto 9999
+        goto 999
     endif
 !
     if (.not.ordre) then
 !
 !       --- LES NOEUDS NE SONT PAS EN VIS-A-VIS ---
 !           ON REGARDE D'ABORD SI LE TRI EST PLAUSIBLE
-        do 130 i = 1, nbno
+        do i = 1, nbno
             if (zi(llistb-1+zi(llista-1+i)) .ne. i) then
                 valk (1) = sst1
                 valk (2) = intf1
@@ -360,9 +361,9 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                 else
                     call utmess('F', 'ALGORITH16_48', nk=4, valk=valk)
                 endif
-                goto 9999
+                goto 999
             endif
-130     continue
+        end do
 !
 !        ON RECUPERE LE DESCRIPTEUR DE LA LIAISON COURANTE
         famli=modgen//'      .MODG.LIDF'
@@ -386,13 +387,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         call jeveuo(ordol, 'E', llint3)
 !
 !    ---  ON ORDONNE LES NOEUDS DE LLINT2 SUIVANT LLISTA
-        do 140 i = 1, nbno
+        do i = 1, nbno
 !         --- RECOPIE DE LLINT2 DANS LLISTB
             zi(llistb-1+i) = zi(llint2-1+i)
-140     continue
-        do 150 i = 1, nbno
+        end do
+        do i = 1, nbno
             zi(llint3-1+i) = zi(llistb-1+zi(llista-1+i))
-150     continue
+        end do
 !    ---  ON REORDONNE LES CODES DE CONDITIONS AUX LIMITES
 !         AFIN D'AVOIR UNE VERIFICATION CORRECTE DANS VERILI
         call jenonu(jexnom(lint2//'.IDC_NOMS', intf2), ibid)
@@ -401,13 +402,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         call jeveuo(ordod, 'E', llint4)
         call jedetr('&&VECOMO.LISTB')
         call wkvect('&&VECOMO.LISTB', 'V V I', nbno*nbec, llistb)
-        do 160 i = 1, nbno
+        do i = 1, nbno
 !         --- RECOPIE DE LDAC2 DANS LLISTB
             zi(llistb+(i-1)*nbec) = zi(ldac2+(i-1)*nbec)
-160     continue
-        do 170 i = 1, nbno
+        end do
+        do i = 1, nbno
             zi(llint4+(i-1)*nbec) = zi(llistb+(zi(llista-1+i)-1)*nbec)
-170     continue
+        end do
 !
     endif
 !
@@ -417,7 +418,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
     nliais=1
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

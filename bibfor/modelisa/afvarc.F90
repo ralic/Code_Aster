@@ -83,23 +83,23 @@ subroutine afvarc(chmat, nomail, nomode)
     call getvtx(' ', 'LIST_NOM_VARC', nbval=nmxfac, vect=livarc, nbret=n1)
     ASSERT(n1.gt.0)
     nbfac=n1
-    do 1 ifac = 1, nbfac
+    do ifac = 1, nbfac
         motfac(ifac)='VARC_'//livarc(ifac)
-  1 end do
+    end do
 !
     nbvarc = 0
     nbcvrc=0
-    do 20 ifac = 1, nbfac
+    do ifac = 1, nbfac
         mofac=motfac(ifac)
         ASSERT(mofac(1:5).eq.'VARC_')
         call getvtx(mofac, 'NOM_VARC', iocc=1, scal=novarc, nbret=n1)
         ASSERT(n1.eq.1)
         itrou=0
-        do 21 iocc = 1, nboccv
+        do iocc = 1, nboccv
             call getvtx('AFFE_VARC', 'NOM_VARC', iocc=iocc, scal=novar1, nbret=n1)
             ASSERT(n1.eq.1)
             if (novar1 .eq. novarc) itrou=1
- 21     continue
+        end do
         if (itrou .eq. 0) goto 20
         nbvarc = nbvarc + 1
         livarc(nbvarc) = novarc
@@ -108,8 +108,9 @@ subroutine afvarc(chmat, nomail, nomode)
         ASSERT(ncmp.lt.0)
         ncmp=-ncmp
         nbcvrc=nbcvrc+ncmp
- 20 end do
-    if (nbvarc .eq. 0) goto 9999
+ 20     continue
+    end do
+    if (nbvarc .eq. 0) goto 999
 !
 !
     cvnom = chmat//'.CVRCNOM'
@@ -127,7 +128,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !        REMPLISSAGE DE .CVRCNOM .CVRCVARC ...
 !     --------------------------------------------
     nbcvrc=0
-    do 90 kvarc = 1, nbvarc
+    do kvarc = 1, nbvarc
         mofac = limfac(kvarc)
 !
         cart1 = chmat//'.'//livarc(kvarc)//'.1'
@@ -139,15 +140,15 @@ subroutine afvarc(chmat, nomail, nomode)
         call jeveuo(cart2//'.NCMP', 'E', jncmp2)
         call jeveuo(cart2//'.VALV', 'E', jvalv2)
         nocmp1 = 'X'
-        do 30 k = 1, nmxcmp
+        do k = 1, nmxcmp
             call codent(k, 'G', nocmp1(2:8))
             zk8(jncmp1-1+k) = nocmp1
- 30     continue
+        end do
         nocmp2 = 'Z'
-        do 40 k = 1, 7
+        do k = 1, 7
             call codent(k, 'G', nocmp2(2:8))
             zk8(jncmp2-1+k) = nocmp2
- 40     continue
+        end do
 !
 !
 !       2.1 REPLISSAGE DE .CVRCNOM, .CVRCVARC, ...
@@ -160,12 +161,12 @@ subroutine afvarc(chmat, nomail, nomode)
         call getvtx(mofac, 'CMP_VARC', iocc=1, nbval=nmxcmp, vect=zk8(jcvnom+nbcvrc),&
                     nbret=n1)
         ASSERT(n1.eq.ncmp)
-        do 49 k = 1, ncmp
+        do k = 1, ncmp
             zk8(jcvvar+nbcvrc-1+k) = novarc
             zk8(jcvgd +nbcvrc-1+k) = nomgd
- 49     continue
+        end do
 !
-        do 80 iocc = 1, nboccv
+        do iocc = 1, nboccv
             call getvtx('AFFE_VARC', 'NOM_VARC', iocc=iocc, scal=novar2, nbret=n1)
             ASSERT(n1.eq.1)
             if (novar2 .ne. novarc) goto 80
@@ -183,9 +184,9 @@ subroutine afvarc(chmat, nomail, nomode)
                 vref=r8vide()
             endif
 !         -- IL FAUT RECOPIER VREF POUR TEMP QUI A PLUSIEURS CMPS :
-            do 60 k = 1, ncmp
+            do k = 1, ncmp
                 vrcref(k) = vref
- 60         continue
+            end do
 !
 !
 !         2.3 CALCUL DE EVOL,CHAMGD,NOMCHA ET VERIFICATIONS :
@@ -275,9 +276,9 @@ subroutine afvarc(chmat, nomail, nomode)
                 call gcncon('_', knumer)
                 carvid = knumer
                 ASSERT(ncmp.le.10)
-                do 31 k = 1, ncmp
+                do k = 1, ncmp
                     rcmp(k) = r8nnem()
- 31             continue
+                end do
                 call mecact('G', carvid, 'MAILLA', nomail, nomgd,&
                             ncmp=ncmp, lnomcmp=zk8(jcvcmp+nbcvrc), vr=rcmp)
 !
@@ -288,9 +289,9 @@ subroutine afvarc(chmat, nomail, nomode)
                 zk16(jvalv2-1+6) = ' '
                 zk16(jvalv2-1+7) = ' '
             endif
-            do 70 k = 1, ncmp
+            do k = 1, ncmp
                 zr(jvalv1-1+k) = vrcref(k)
- 70         continue
+            end do
 !
 !         TOUT='OUI' PAR DEFAUT :
             call getvtx('AFFE_VARC', 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
@@ -314,10 +315,11 @@ subroutine afvarc(chmat, nomail, nomode)
             endif
 !
 !
- 80     continue
+ 80         continue
+        end do
 !
         nbcvrc=nbcvrc+ncmp
- 90 end do
+    end do
 !
 !
 !     3. POUR NE PAS PENALISER LES CALCULS N'AYANT QUE LA COMPOSANTE
@@ -325,7 +327,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !     -----------------------------------------------------------------
     call wkvect('&&AFVARC.ADETR', 'V V I', nbcvrc, jadetr)
     nbdetr=0
-    do 91 k = 1, nbcvrc
+    do k = 1, nbcvrc
         novarc=zk8(jcvvar-1+k)
         nocvrc=zk8(jcvnom-1+k)
         if (novarc .eq. 'TEMP') then
@@ -334,8 +336,8 @@ subroutine afvarc(chmat, nomail, nomode)
                 zi(jadetr-1+k)=1
             endif
         endif
- 91 end do
-    if (nbdetr .eq. 0) goto 9999
+    end do
+    if (nbdetr .eq. 0) goto 999
 !
 !     3.1 PEUT-ON REELLEMENT SUPPRIMER CES CVRC ?
 !     -------------------------------------------
@@ -351,7 +353,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !     3.2 ON PARCOURT LES SD STOCKEES DANS LA CARTE ET ON REGARDE S'IL
 !         EXISTE D'AUTRES CMPS QUE TEMP ET LAGR :  LAUTR=.TRUE.
 !     --------------------------------------------------------------
-    do 93 k = 1, nbgdut
+    do k = 1, nbgdut
         k16a=zk16(jvale-1+ncmp*(k-1)+1)
         ASSERT(k16a.eq.'TEMP')
         k16a=zk16(jvale-1+ncmp*(k-1)+2)
@@ -363,14 +365,14 @@ subroutine afvarc(chmat, nomail, nomode)
             goto 94
         endif
 !
- 93 end do
+    end do
  94 continue
 !
 !     3.3 ON SUPPRIME CE QUI NE SERT A RIEN :
 !     ----------------------------------------
     if (ldetr) then
         ico=0
-        do 92 k = 1, nbcvrc
+        do k = 1, nbcvrc
             if (zi(jadetr-1+k) .eq. 0) then
                 ico=ico+1
                 zk8(jcvnom-1+ico)=zk8(jcvnom-1+k)
@@ -378,7 +380,7 @@ subroutine afvarc(chmat, nomail, nomode)
                 zk8(jcvgd-1+ico)=zk8(jcvgd-1+k)
                 zk8(jcvcmp-1+ico)=zk8(jcvcmp-1+k)
             endif
- 92     continue
+        end do
         ASSERT(ico.eq.nbcvrc-nbdetr)
         call juveca(cvnom, ico)
         call juveca(cvvar, ico)
@@ -387,7 +389,7 @@ subroutine afvarc(chmat, nomail, nomode)
     endif
 !
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

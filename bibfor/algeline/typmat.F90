@@ -52,7 +52,7 @@ function typmat(nbmat, tlimat)
 !     --  PAR DEFAUT LE TYPE DE MATRICE EST SYMETRIQUE
     itymat = 0
 !
-    do 10 i = 1, nbmat
+    do i = 1, nbmat
         matel = tlimat(i)
         call jeexin(matel//'.RELR', iexi)
         iexi=min(1,abs(iexi))
@@ -77,7 +77,8 @@ function typmat(nbmat, tlimat)
         call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
         if (itymat .eq. 1) goto 11
 !
- 10 end do
+ 10     continue
+    end do
  11 continue
 !
     if (itymat .eq. 0) then

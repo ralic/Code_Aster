@@ -130,7 +130,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     else
         call getres(cbid, cbid, nomcmd)
         call utmess('A', 'PREPOST_97', sk=type(1:1))
-        goto 9999
+        goto 999
     endif
 !
     call jeveuo(chamn//'.VALE', 'L', iavale)
@@ -179,20 +179,20 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     if (nbnot .eq. 0) then
 !       - IL N'Y A PAS EU DE SELECTION SUR ENTITES TOPOLOGIQUES EN
 !         OPERANDE DE IMPR_RESU => ON PREND TOUS LES NOEUDS DU MAILLAGE
-        do 11 ino = 1, nbno
+        do ino = 1, nbno
             call jenuno(jexnum(nomma//'.NOMNOE', ino), zk8(jno-1+ino))
             zi(jnu-1+ino) = ino
             nbnot2= nbno
- 11     continue
+        end do
 !
     else
 !       - IL Y A EU SELECTION SUR DES ENTITES TOPOLOGIQUES => ON NE
 !         PREND QUE LES NOEUDS DEMANDES (APPARTENANT A UNE LISTE DE
 !         NOEUDS, DE MAILLES, DE GPES DE NOEUDS OU DE GPES DE MAILLES)
-        do 12 ino = 1, nbnot
+        do ino = 1, nbnot
             zi(jnu-1+ino) = numnoe(ino)
             call jenuno(jexnum(nomma//'.NOMNOE', numnoe(ino)), zk8(jno- 1+ino))
- 12     continue
+        end do
         nbnot2= nbnot
     endif
 ! --- RECHERCHE DES COORDONNEES ET DE LA DIMENSION -----
@@ -244,13 +244,13 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
             call wkvect('&&IRDEPL.VALE', 'V V R', nuti, jvale)
 !
             if (partie .eq. 'REEL') then
-                do 10 i = 1, nuti
+                do i = 1, nuti
                     zr(jvale-1+i)=dble(zc(iavale-1+i))
- 10             continue
+                end do
             else if (partie.eq.'IMAG') then
-                do 20 i = 1, nuti
+                do i = 1, nuti
                     zr(jvale-1+i)=dimag(zc(iavale-1+i))
- 20             continue
+                end do
             else
                 call utmess('F', 'PREPOST2_4')
             endif
@@ -320,6 +320,6 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     call jedetr('&&IRDEPL.NOMNOE')
     call jedetr('&&IRDEPL.NUMNOE')
     call jedetr('&&IRDEPL.VALE')
-9999 continue
+999 continue
     call jedema()
 end subroutine

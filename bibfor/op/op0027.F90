@@ -105,9 +105,9 @@ subroutine op0027()
             zk24(ialime) = '                        '
 !
             call wkvect(nomres//'           .CONL', 'G V R', n, iaconl)
-            do 10 i = 1, n
+            do i = 1, n
                 zr(iaconl+i-1) = 1.0d0
-10          continue
+            end do
 !
             call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa2)
             zk24(jrefa2-1+11)='MPI_COMPLET'
@@ -120,9 +120,9 @@ subroutine op0027()
 !
         call jeveuo(jexnum(nommat//'           .VALM', 1), 'L', iak)
         call jeveuo(jexnum(nomres//'           .VALM', 1), 'E', iadr)
-        do 20 i = 1, m
+        do i = 1, m
             zr(iadr-1+i) = 0.d0
-20      continue
+        end do
 !
         call wkvect('&&OP0027.VECTTRA1', 'V V R', m, iadr1)
         call wkvect('&&OP0027.VECTTRA2', 'V V R', m, iadr2)
@@ -164,9 +164,9 @@ subroutine op0027()
 !
             call jeveuo(nommat//'.MAEL_RAID_VALE', 'L', iak)
             call jeveuo(nomres//'.MAEL_RAID_VALE', 'E', iadr)
-            do 30 i = 1, m
+            do i = 1, m
                 zr(iadr-1+i) = 0.d0
-30          continue
+            end do
 !
             call gematg(n, delta, zr(iak), zr(iadr), zr(iadr1),&
                         zr( iadr2))
@@ -176,9 +176,9 @@ subroutine op0027()
             if (iret .ne. 0) then
                 call jeveuo(nommat//'.MAEL_RAID_VALE', 'L', iak)
                 call jeveuo(nomres//'.MAEL_RAID_VALE', 'E', iadr)
-                do 35 i = 1, m
+                do i = 1, m
                     zr(iadr-1+i) = zr(iak-1+i)
-35              continue
+                end do
             endif
 !
         endif
@@ -191,9 +191,9 @@ subroutine op0027()
 !
             call jeveuo(nommat//'.MAEL_MASS_VALE', 'L', iak)
             call jeveuo(nomres//'.MAEL_MASS_VALE', 'E', iadr)
-            do 40 i = 1, m
+            do i = 1, m
                 zr(iadr-1+i) = 0.d0
-40          continue
+            end do
 !
             call gematg(n, delta, zr(iak), zr(iadr), zr(iadr1),&
                         zr( iadr2))
@@ -203,9 +203,9 @@ subroutine op0027()
             if (iret .ne. 0) then
                 call jeveuo(nommat//'.MAEL_MASS_VALE', 'L', iak)
                 call jeveuo(nomres//'.MAEL_MASS_VALE', 'E', iadr)
-                do 45 i = 1, m
+                do i = 1, m
                     zr(iadr-1+i) = zr(iak-1+i)
-45              continue
+                end do
             endif
 !
         endif
@@ -222,9 +222,9 @@ subroutine op0027()
 !
                 call jeveuo(nommat//'.MAEL_AMOR_VALE', 'L', iak)
                 call jeveuo(nomres//'.MAEL_AMOR_VALE', 'E', iadr)
-                do 50 i = 1, m
+                do i = 1, m
                     zr(iadr-1+i) = 0.d0
-50              continue
+                end do
 !
                 call gematg(n, delta, zr(iak), zr(iadr), zr(iadr1),&
                             zr(iadr2))
@@ -238,9 +238,9 @@ subroutine op0027()
                 if (iret .ne. 0) then
                     call jeveuo(nommat//'.MAEL_AMOR_VALE', 'L', iak)
                     call jeveuo(nomres//'.MAEL_AMOR_VALE', 'E', iadr)
-                    do 55 i = 1, m
+                    do i = 1, m
                         zr(iadr-1+i) = zr(iak-1+i)
-55                  continue
+                    end do
                 endif
             endif
         endif

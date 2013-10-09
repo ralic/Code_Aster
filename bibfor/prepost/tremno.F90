@@ -175,11 +175,11 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     nbcpac = 0
 !
-    do 300 i = 1, nbtcmp, 1
+    do i = 1, nbtcmp, 1
 !
         nbcpac = nbcpac + min(zi(apcmp + i-1),1)
 !
-300 end do
+    end do
 !
 !   CONSTRUCTION DU .NUND
 !   ---------------------
@@ -198,7 +198,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     libre = 1
 !
-    do 100 im = 1, nbtmai, 1
+    do im = 1, nbtmai, 1
 !
         if (zi(apadr + im-1) .ne. 0) then
 !
@@ -210,7 +210,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
         endif
 !
-100 end do
+    end do
 !
     nbtnd = libre - 1
 !
@@ -218,11 +218,11 @@ subroutine tremno(ncmp, nssche, nomsd)
     call jeecra(nnund, 'LONMAX', nbtnd)
     call jeveuo(nnund, 'E', anund)
 !
-    do 110 in = 1, nbtnd, 1
+    do in = 1, nbtnd, 1
 !
         zi(anund + in-1) = zi(aliste + in-1)
 !
-110 end do
+    end do
 !
     call jedetr('&&TREMNO.LISTE.ENTIER')
 !
@@ -234,7 +234,7 @@ subroutine tremno(ncmp, nssche, nomsd)
     call jecrec(nnuma, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbtnd)
 !
-    do 200 in = 1, nbtnd, 1
+    do in = 1, nbtnd, 1
 !
         n = zi(anund + in-1)
 !
@@ -245,7 +245,7 @@ subroutine tremno(ncmp, nssche, nomsd)
         lngm = 0
         lngv = 0
 !
-        do 250 im = 1, nbm, 1
+        do im = 1, nbm, 1
 !
             m = zi(adrm + im-1)
 !
@@ -256,7 +256,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
             endif
 !
-250     continue
+        end do
 !
         if (lngm .eq. 0) then
 !
@@ -276,7 +276,7 @@ subroutine tremno(ncmp, nssche, nomsd)
         ptm = 1
         ptv = 1
 !
-        do 210 im = 1, nbm, 1
+        do im = 1, nbm, 1
 !
             m = zi(adrm + im-1)
 !
@@ -312,11 +312,11 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
                     tsp = nbcpac*nbsp
 !
-                    do 231 ico = 1, nbco, 1
+                    do ico = 1, nbco, 1
 !
                         tco = nbsp*nbcpac*nbnm*(ico-1)
 !
-                        do 232 isp = 1, nbsp, 1
+                        do isp = 1, nbsp, 1
 !
                             zr(avacp + ptv-1) = zr(&
                                                 avale + zi(apadr+m- 1) + tco + (ndloc-1)*tsp + (i&
@@ -325,9 +325,9 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
                             ptv = ptv + 1
 !
-232                     continue
+                        end do
 !
-231                 continue
+                    end do
 !
 !
                     zi(anuma + ptm-1) = m
@@ -338,9 +338,9 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
             endif
 !
-210     continue
+        end do
 !
-200 end do
+    end do
 !
     call jedema()
 end subroutine

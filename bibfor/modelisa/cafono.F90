@@ -73,7 +73,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
     logical :: verif
-    character(len=8) ::  nomn, typmcl(2), typlag, valfof(nmocl)
+    character(len=8) :: nomn, typmcl(2), typlag, valfof(nmocl)
     character(len=16) :: motcle(nmocl), motclf, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
@@ -184,9 +184,9 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
     dgrd = r8dgrd()
     if (fonree .eq. 'FONC') then
-        do 10 i = 1, nbcomp*nbnoeu
+        do i = 1, nbcomp*nbnoeu
             zk8(jval-1+i) = '&FOZERO'
- 10     continue
+        end do
     endif
     nsurch = 0
 !
@@ -195,14 +195,14 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 ! --------------------------------------------------------------
 !
     do i = 1, nfono
-        do 20 ii = 1, nbcomp
+        do ii = 1, nbcomp
             forimp(ii) = 0
- 20     continue
+        end do
 !
         if (fonree .eq. 'REEL') then
-            do 30 j = 1, 6
+            do j = 1, 6
                 call getvr8(motclf, motcle(j), iocc=i, scal=valfor(j), nbret=forimp(j))
- 30         continue
+            end do
 !
             call getvr8(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8),&
                         nbret=nangl)
@@ -210,22 +210,22 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !              --- REPERE UTILISATEUR ---
                 valfor(7) = -1.d0
                 forimp(7) = 1
-                do 40 ii = 1, min(3, abs(nangl))
+                do ii = 1, min(3, abs(nangl))
                     valfor(7+ii) = valfor(7+ii)*dgrd
                     forimp(7+ii) = 1
- 40             continue
+                end do
             else
 !              --- REPERE GLOBAL ---
                 valfor(7) = 0.d0
             endif
 !
         else if (fonree.eq.'FONC') then
-            do 50 ii = 1, nbcomp
+            do ii = 1, nbcomp
                 valfof(ii) = '&FOZERO'
- 50         continue
-            do 60 j = 1, 6
+            end do
+            do j = 1, 6
                 call getvid(motclf, motcle(j), iocc=i, scal=valfof(j), nbret=forimp(j))
- 60         continue
+            end do
 !
             call getvid(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8),&
                         nbret=nangl)
@@ -233,9 +233,9 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !              --- REPERE UTILISATEUR ---
                 valfof(7) = 'UTILISAT'
                 forimp(7) = 1
-                do 70 ii = 1, min(3, abs(nangl))
+                do ii = 1, min(3, abs(nangl))
                     forimp(7+ii) = 1
- 70             continue
+                end do
             else
 !              --- REPERE GLOBAL ---
                 valfof(7) = 'GLOBAL'
@@ -254,14 +254,14 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
         if (nbno .eq. 0) goto 110
         call jeveuo(mesnoe, 'L', jno)
 !
-        do 100 jj = 1, nbno
+        do jj = 1, nbno
             call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
             zk8(jnono-1+ino) = zk8(jno-1+jj)
             call affono(zr(jval), zk8(jval), zi(jdesgi+ino-1), zi(jprnm- 1+(ino-1)*nbec+1),&
                         nbcomp, fonree, zk8(jno-1+jj), ino, nsurch,&
                         forimp, valfor, valfof, motcle, verif,&
                         nbec)
-100     continue
+        end do
 !
         call jedetr(mesnoe)
 110     continue
@@ -315,11 +315,11 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
             call jenonu(jexnom(nomnoe, nomn), in)
             idgex = jprnm - 1 + (in-1)*nbec + 1
 !
-            do 120 i = 1, 6
+            do i = 1, 6
                 if (exisdg(zi(idgex),i)) then
                     numel = ntypel(i)
                 endif
-120         continue
+            end do
             if ((exisdg(zi(idgex),6)) .and. (.not. (exisdg(zi(idgex), 4)))) then
                 numel = ncoq2d
             endif
@@ -332,13 +332,13 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
             if (fonree .eq. 'REEL') then
-                do 130 i = 1, nbcomp
+                do i = 1, nbcomp
                     zr(jvalv-1+i) = zr(jval-1+nbcomp* (ino-1)+i)
-130             continue
+                end do
             else
-                do 140 i = 1, nbcomp
+                do i = 1, nbcomp
                     zk8(jvalv-1+i) = zk8(jval-1+nbcomp* (ino-1)+i)
-140             continue
+                end do
             endif
 !
 !   ON CREE UNE CARTE POUR CHAQUE NOEUD AFFECTE ET ON NOTE TOUTES

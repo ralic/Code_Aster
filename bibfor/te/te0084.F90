@@ -45,7 +45,7 @@ subroutine te0084(option, nomte)
 !
     character(len=16) :: phenom
     integer :: icodre(1)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, rx, ry
+    real(kind=8) :: poids, rx, ry
     integer :: nno, kp, k, npg1, i, jgano, ndim, nnos
     integer :: ipoids, ivf, idfde
     real(kind=8) :: rho(1)

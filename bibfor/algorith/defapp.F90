@@ -79,25 +79,25 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
                     iarg, ngst, zk24(jgnst), ibid)
 ! PREMIERE BOUCLE POUR COMPTER LE NOMBRE DE NOEUDS
 !
-        do 40 iem = 1, ngst
+        do iem = 1, ngst
             karg = zk24(jgnst-1+iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno1 = nbno1 + nno
- 40     continue
+        end do
 !
         call wkvect('&&DEFAPP.NOST', 'V V I', nbno1, jnost)
 !
 ! DEUXIEME BOUCLE POUR RECUPERER LES NUMEROS DES NOEUDS
         nbno1 =0
-        do 60 iem = 1, ngst
+        do iem = 1, ngst
             karg = zk24(jgnst-1+iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
-            do 50 jno = 1, nno
+            do jno = 1, nno
                 zi(jnost-1+nbno1+jno) = zi(kno+jno-1)
- 50         continue
+            end do
             nbno1 = nbno1 +nno
- 60     continue
+        end do
     endif
 !
 ! TRAITEMENT DU GROUP_NO_APPUI
@@ -111,25 +111,25 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 !
 ! PREMIERE BOUCLE POUR COMPTER LE NOMBRE DE NOEUDS
 !
-        do 70 iem = 1, ngap
+        do iem = 1, ngap
             karg = zk24(jgnap-1+iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno2 = nbno2 + nno
- 70     continue
+        end do
 !
         call wkvect('&&DEFAPP.NOAP', 'V V I', nbno2, jnoap)
 !
 ! DEUXIEME BOUCLE POUR RECUPERER LES NUMEROS DES NOEUDS
         nbno2 = 0
-        do 80 iem = 1, ngap
+        do iem = 1, ngap
             karg = zk24(jgnap-1+iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
-            do 90 jno = 1, nno
+            do jno = 1, nno
                 zi(jnoap-1+nbno2+jno)= zi(kno+jno-1)
- 90         continue
+            end do
             nbno2 = nbno2 +nno
- 80     continue
+        end do
     endif
     if (nbno1 .ne. nbno2) then
         call utmess('F', 'ALGORITH2_62')
@@ -154,17 +154,17 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
     if (tsca .ne. 'R') then
         call utmess('F', 'ALGORITH2_63')
     endif
-    do 200 ino = 1, nbno
+    do ino = 1, nbno
         noap = zi(jnoap-1+ino)
         nost = zi(jnost -1 +ino)
-        do 100 icmp = 1, ncmp
+        do icmp = 1, ncmp
             if (zl(jcnsl-1+ (noap-1)*ncmp+icmp)) then
                 rdepla = zr(jcnsv-1+(nost-1)*ncmp+icmp)
                 zr(iavalf-1+3*(noap-1)+icmp)= zr(iavali-1+3*(noap-1)+&
                 icmp)+ alpha * rdepla
             endif
-100     continue
-200 continue
+        end do
+    end do
     call cnscno(chamns, ' ', 'NON', 'V', depla,&
                 'F', ibid)
 !

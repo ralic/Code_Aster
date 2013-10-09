@@ -147,7 +147,7 @@ subroutine rc36ma(nommat, noma)
     nocmp(8) = 'N_KE'
     nocmp(9) = 'TYPEKE'
 !
-    do 60 iocc = 1, nbsitu, 1
+    do iocc = 1, nbsitu, 1
 !
         call codent(iocc, 'D0', k8b)
 !
@@ -185,7 +185,7 @@ subroutine rc36ma(nommat, noma)
         nopb = 'TEMP'
         call getvr8(motcl1, 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
 !
-        do 50 im = 1, nbmail
+        do im = 1, nbmail
 !
             icmp = 1
 !
@@ -250,8 +250,8 @@ subroutine rc36ma(nommat, noma)
 !
             nbpt = zi(jcesda-1+5+4* (im-1)+1)
             isp = 1
-            do 20 ipt = 1, nbpt
-                do 10 icmp = 1, nbcmp
+            do ipt = 1, nbpt
+                do icmp = 1, nbcmp
                     call cesexi('S', jcesda, jcesla, im, ipt,&
                                 isp, icmp, iad)
                     if (iad .lt. 0) then
@@ -259,8 +259,8 @@ subroutine rc36ma(nommat, noma)
                         zl(jcesla-1+iad) = .true.
                     endif
                     zr(jcesva-1+iad) = para(icmp)
- 10             continue
- 20         continue
+                end do
+            end do
 !
 !   INTERPOLATION POUR TEMP_B
             call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
@@ -279,8 +279,8 @@ subroutine rc36ma(nommat, noma)
 !
             nbpt = zi(jcesdb-1+5+4* (im-1)+1)
             isp = 1
-            do 40 ipt = 1, nbpt
-                do 30 icmp = 1, nbcmp
+            do ipt = 1, nbpt
+                do icmp = 1, nbcmp
                     call cesexi('S', jcesdb, jceslb, im, ipt,&
                                 isp, icmp, iad)
                     if (iad .lt. 0) then
@@ -288,18 +288,18 @@ subroutine rc36ma(nommat, noma)
                         zl(jceslb-1+iad) = .true.
                     endif
                     zr(jcesvb-1+iad) = para(icmp)
- 30             continue
- 40         continue
+                end do
+            end do
 !
- 50     continue
+        end do
 !
         zk24(jchmat+2*iocc-1) = chmata
 !
         zk24(jchmat+2*iocc-2) = chmatb
 !
- 60 end do
+    end do
 !
-    do 160 iocc = 1, nbseis, 1
+    do iocc = 1, nbseis, 1
 !
         call codent(nbsitu+iocc, 'D0', k8b)
 !
@@ -337,7 +337,7 @@ subroutine rc36ma(nommat, noma)
         nopb = 'TEMP'
         call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempb, nbret=nb)
 !
-        do 150 im = 1, nbmail
+        do im = 1, nbmail
 !
             icmp = 1
 !
@@ -402,8 +402,8 @@ subroutine rc36ma(nommat, noma)
 !
             nbpt = zi(jcesda-1+5+4* (im-1)+1)
             isp = 1
-            do 120 ipt = 1, nbpt
-                do 110 icmp = 1, nbcmp
+            do ipt = 1, nbpt
+                do icmp = 1, nbcmp
                     call cesexi('S', jcesda, jcesla, im, ipt,&
                                 isp, icmp, iad)
                     if (iad .lt. 0) then
@@ -411,8 +411,8 @@ subroutine rc36ma(nommat, noma)
                         zl(jcesla-1+iad) = .true.
                     endif
                     zr(jcesva-1+iad) = para(icmp)
-110             continue
-120         continue
+                end do
+            end do
 !
 !   INTERPOLATION POUR TEMP_B
             call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
@@ -431,8 +431,8 @@ subroutine rc36ma(nommat, noma)
 !
             nbpt = zi(jcesdb-1+5+4* (im-1)+1)
             isp = 1
-            do 140 ipt = 1, nbpt
-                do 130 icmp = 1, nbcmp
+            do ipt = 1, nbpt
+                do icmp = 1, nbcmp
                     call cesexi('S', jcesdb, jceslb, im, ipt,&
                                 isp, icmp, iad)
                     if (iad .lt. 0) then
@@ -440,16 +440,16 @@ subroutine rc36ma(nommat, noma)
                         zl(jceslb-1+iad) = .true.
                     endif
                     zr(jcesvb-1+iad) = para(icmp)
-130             continue
-140         continue
+                end do
+            end do
 !
-150     continue
+        end do
 !
         zk24(jchmat+2*(nbsitu+iocc)-1) = chmata
 !
         zk24(jchmat+2*(nbsitu+iocc)-2) = chmatb
 !
-160 end do
+    end do
     call detrsd('CHAM_ELEM_S', chsma2)
 !
     call jedema()

@@ -113,17 +113,17 @@ subroutine cfcrli(noma, numedd, defico, resoco)
     call wkvect(nbddl, 'V V I', nnoco+1, jnbddl)
     zi(jnbddl) = 0
     nddl = 0
-    do 20 ino = 1, nnoco
+    do ino = 1, nnoco
         nddl = nddl + ndimg
         zi(jnbddl+ino) = nddl
- 20 end do
+    end do
 !
 ! --- NUMEROS DES DDL
 !
     ddlco = resoco(1:14)//'.DDLCO'
     call wkvect(ddlco, 'V V I', nddl, jddl)
 !
-    do 25 ino = 1, nnoco
+    do ino = 1, nnoco
         posno = ino
         call cfnomm(noma, defico, 'NOEU', posno, nomnoe)
 !
@@ -158,7 +158,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
             endif
         endif
 !
- 25 end do
+    end do
 !
 ! --- TABLEAU DES POINTEURS POUR LES DDLS
 !

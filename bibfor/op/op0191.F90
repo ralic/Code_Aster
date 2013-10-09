@@ -89,7 +89,7 @@ subroutine op0191()
     call getvid(' ', 'RESULTAT', scal=resuin, nbret=n0)
 !
     call jelira(resuin//'.DESC', 'NOMMAX', nbnosy)
-    if (nbnosy .eq. 0) goto 9999
+    if (nbnosy .eq. 0) goto 999
 !
 ! LE CONCEPT EST REENTRANT SI REPERE =
 !            'COQUE_INTR_UTIL' OU 'COQUE_UTIL_INTR'
@@ -134,14 +134,14 @@ subroutine op0191()
 !
     call rscrsd('G', resuou, tysd, nbordr)
 !
-    do 10 ioc = 1, nocc
+    do ioc = 1, nocc
 !
         call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type, nbret=n0)
         call getvtx('MODI_CHAM', 'NOM_CMP', iocc=ioc, nbval=0, nbret=n1)
         nbcmp = - n1
 !
-        do 12 iord = 1, nbordr
+        do iord = 1, nbordr
             call jemarq()
             call jerecu('V')
             iordr = zi(jordr-1+iord)
@@ -187,16 +187,16 @@ subroutine op0191()
             call rsnoch(resuou, option, iordr)
 !
             call jedema()
- 12     continue
- 10 continue
+        end do
+    end do
 !
     nompar = '&&OP0191.NOMS_PARA'
     call rsnopa(resuin, 2, nompar, nbac, nbpa)
     nbpara = nbac + nbpa
     call jeveuo(nompar, 'L', jpa)
-    do 20 iord = 1, nbordr
+    do iord = 1, nbordr
         iordr = zi(jordr-1+iord)
-        do 22 j = 1, nbpara
+        do j = 1, nbpara
             call rsadpa(resuin, 'L', 1, zk16(jpa+j-1), iordr,&
                         1, sjv=iadin, styp=type)
             call rsadpa(resuou, 'E', 1, zk16(jpa+j-1), iordr,&
@@ -218,14 +218,14 @@ subroutine op0191()
             else if (type(1:2).eq.'K8') then
                 zk8(iadou) = zk8(iadin)
             endif
- 22     continue
- 20 continue
+        end do
+    end do
 !
     call titre()
 !
     if (niv .eq. 2) call rsinfo(resuou, ifm)
 !
-9999 continue
+999 continue
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
@@ -238,11 +238,11 @@ subroutine op0191()
 !
     if (lreuse) then
 !
-        do 25 ioc = 1, nocc
+        do ioc = 1, nocc
 !
             call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
 !
-            do 30 iord = 1, nbordr
+            do iord = 1, nbordr
                 call jemarq()
                 call jerecu('V')
                 iordr = zi(jordr-1+iord)
@@ -267,8 +267,8 @@ subroutine op0191()
                 call detrsd('CHAMP', champ1)
                 call jedema()
 !
- 30         continue
- 25     continue
+            end do
+        end do
 !
         call detrsd('CHAMP', chams0)
         call detrsd('CHAMP', chams1)

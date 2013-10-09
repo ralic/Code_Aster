@@ -96,9 +96,9 @@ subroutine chcore(chou)
     valin(1:19)=chin
     call jeveuo(valin, 'L', jvalin)
 !
-    do 10 i = 1, nbval
+    do i = 1, nbval
         zc(jvale+i-1)=dcmplx(zr(jvalin+i-1),zero)
- 10 end do
+    end do
 !
 ! --- 2. CHANGEMENT DE LA GRANDEUR
 !     ----------------------------

@@ -25,7 +25,7 @@ subroutine meharm(modele, nh, chharm)
 !    CETTE ROUTINE GENERE UN CHAMP D'HARMONIQUE (CARTE CONSTANTE)
 !
 !-----------------------------------------------------------------------
-    integer ::  nh
+    integer :: nh
 !-----------------------------------------------------------------------
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     chharm = '&&MEHARM.NUME_HARM'

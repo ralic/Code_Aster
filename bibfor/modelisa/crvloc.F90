@@ -59,7 +59,7 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
     vgeloc(1)=nvtot
     if (nvtot .ge. 1) then
         vgeloc(2)=2+nvtot
-        do 20 iv = 1, nvtot
+        do iv = 1, nvtot
             ptvois=vgeloc(iv+1)
             mv=touvoi(iv,1)
 !
@@ -102,17 +102,17 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
             vgeloc(ptvois+1)=mv
             vgeloc(ptvois+2)=nbnomv
             vgeloc(ptvois+3)=nsco
-            do 10 is = 1, nsco
+            do is = 1, nsco
                 nuslo0=touvoi(iv,2+is)
                 nusglo=zi(adcom0+nuslo0-1)
                 vgeloc(ptvois+3+2*is-1)=nuslo0
                 call somloc(mv, adcomv, nbsomv, nusglo, nuslov)
                 vgeloc(ptvois+3+2*is)=nuslov
- 10         continue
+            end do
             if (iv .lt. nvtot) then
                 vgeloc(iv+2)=ptvois+4+2*nsco
             endif
- 20     continue
+        end do
     endif
 !
 end subroutine

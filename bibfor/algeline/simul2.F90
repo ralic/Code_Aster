@@ -51,7 +51,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
     integer :: lmat, neq, ibid, iordr(1), ier
     real(kind=8) :: r8b, epsi
-    character(len=8) ::  cmp(6), crit
+    character(len=8) :: cmp(6), crit
     character(len=24) :: valk(3)
     character(len=14) :: nume
     character(len=16) :: acces
@@ -85,10 +85,10 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
 !     --- ON BOUCLE SUR LES NOEUDS ---
 !
-    do 10 id = 1, nbdir
+    do id = 1, nbdir
         xd = dir(id)
         if (abs(xd) .gt. epsi) then
-            do 20 in = 1, nbno
+            do in = 1, nbno
                 acces(1:8 ) = nomnoe(in)
                 acces(9:16) = cmp(id)
 !
@@ -126,16 +126,17 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     call jeveuo(chamno//'.VALE', 'L', idmst)
 !
 !                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
-                    do 22 i = 0, neq-1
+                    do i = 0, neq-1
                         zr(idve+i) = -xd * zr(idmst+i)
- 22                 continue
+                    end do
                     call jelibe(chamno//'.VALE')
                     call mrmult('CUMU', lmat, zr(idve), zr(idchm), 1,&
                                 .true.)
                 endif
- 20         continue
+ 20             continue
+            end do
         endif
- 10 end do
+    end do
     if (ier .ne. 0) then
         call utmess('F', 'ALGELINE5_40')
     endif
@@ -144,9 +145,9 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     call typddl('BLOQ', nume, neq, zi(iddl), nba,&
                 nbb, nbl, nbliai)
 !
-    do 30 in = 0, neq-1
+    do in = 0, neq-1
         zr(idchm+in) = ( 1 - zi(iddl+in) ) * zr(idchm+in)
- 30 end do
+    end do
 !
 ! --- MENAGE
     call jelibe(resu2//'.VALE')

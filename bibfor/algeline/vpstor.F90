@@ -136,12 +136,12 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     endif
 !
 !     --- CONTROLE PREALABLE ---
-    do 20 imode = 1, nbmode
+    do imode = 1, nbmode
         jmode = resufi(imode,1)
         if (jmode .lt. 1 .and. ineg .gt. 0) then
             call utmess('A', 'ALGELINE3_79')
         endif
-20  continue
+    end do
 !
 !     --- STOCKAGE DES MODES ---
     call rsexis(modes, ier)
@@ -153,7 +153,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     imin = 1
     nmax = resufi(1,1)
     imax = 1
-    do 30 imode = 2, nbmode
+    do imode = 2, nbmode
         if (resufi(imode,1) .lt. nmin) then
             nmin = resufi(imode,1)
             imin = imode
@@ -162,7 +162,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
             nmax = resufi(imode,1)
             imax = imode
         endif
-30  continue
+    end do
     nmin1 = nmax
 !
 !     ON RECUPERE LE NOM DE LA MATRICE DE RAIDEUR AFIN DE
@@ -242,9 +242,9 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         endif
     endif
 !
-39  continue
+ 39 continue
 !
-    do 40 imode = 1, nbmode
+    do imode = 1, nbmode
 !
 !       STOCKAGE DES FREQUENCES PAR ORDRE CROISSANT DE NUMERO
         if (imode .eq. 1) then
@@ -252,12 +252,12 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         else if (imode.eq.nbmode) then
             kmode = imax
         else
-            do 42 lmode = 1, nbmode
+            do lmode = 1, nbmode
                 if (resufi(lmode,1) .gt. nmin .and. resufi(lmode,1) .lt. nmin1) then
                     nmin1 = resufi(lmode,1)
                     kmode = lmode
                 endif
-42          continue
+            end do
             nmin = nmin1
             nmin1 = nmax
         endif
@@ -367,17 +367,17 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                         0, sjv=ladpa, styp=k8b)
             zr(ladpa) = resufr(kmode,1)
         else
-            do 48 i = 5, nbpast
+            do i = 5, nbpast
                 irang = indk24(nopara(nbpari+nbpark+1),nopast(i),1, nbparr)
                 if (irang .gt. 0) then
                     call rsadpa(modes, 'E', 1, nopast(i), nordr,&
                                 0, sjv=ladpa, styp=k8b)
                     zr(ladpa) = resufr(kmode,irang)
                 endif
-48          continue
+            end do
         endif
 !
-40  continue
+    end do
 !
     call jedema()
 end subroutine

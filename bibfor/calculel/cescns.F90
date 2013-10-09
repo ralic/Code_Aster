@@ -147,18 +147,18 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     call jeveuo(cns//'.CNSL', 'E', jcnsl)
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
 !
-    do 40 icmp = 1, ncmp
+    do icmp = 1, ncmp
         call jedetr('&&CESCNS.NBNO')
         call wkvect('&&CESCNS.NBNO', 'V V I', nbnot, jnbno)
 !
-        do 20 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
             nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
 !
             ASSERT(nbno.eq.nbpt)
             if (nbsp .eq. 1) then
-                do 10 ino = 1, nbno
+                do ino = 1, nbno
                     call cesexi('C', jcesd, jcesl, ima, ino,&
                                 1, icmp, iad1)
                     if (iad1 .le. 0) goto 10
@@ -175,22 +175,24 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
                     endif
                     zi(jnbno-1+nuno) = zi(jnbno-1+nuno) + 1
 !
- 10             continue
+ 10                 continue
+                end do
             else
-                do 50 ino = 1, nbno
-                    do 60 ispt = 1, nbsp
+                do ino = 1, nbno
+                    do ispt = 1, nbsp
                         call cesexi('C', jcesd, jcesl, ima, ino,&
                                     ispt, icmp, iad1)
                         if (iad1 .le. 0) goto 60
                         nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                         ieq = (nuno-1)*ncmp + icmp
                         zl(jcnsl-1+ieq) = .false.
- 60                 continue
- 50             continue
+ 60                     continue
+                    end do
+                end do
             endif
- 20     continue
+        end do
 !
-        do 30 nuno = 1, nbnot
+        do nuno = 1, nbnot
             ieq = (nuno-1)*ncmp + icmp
             if (zl(jcnsl-1+ieq)) then
                 if (tsca .eq. 'R') then
@@ -199,9 +201,9 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
                     zc(jcnsv-1+ieq) = zc(jcnsv-1+ieq)/zi(jnbno-1+nuno)
                 endif
             endif
- 30     continue
+        end do
 !
- 40 end do
+    end do
 !
 !
 !     7- MENAGE :

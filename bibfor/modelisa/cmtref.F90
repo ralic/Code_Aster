@@ -55,7 +55,7 @@ subroutine cmtref(chmat, nomail)
     integer :: nccm1, nctrf, jncmp, jvalv, nucm1, nutrf, kk
     integer :: ico, nm, nbma, ninter, codint, jlint, ncm1, ntrf
     real(kind=8) :: tref, valr(2)
-    character(len=8) ::  mater, nocp
+    character(len=8) :: mater, nocp
     character(len=8) :: ktref, nomgd
     character(len=19) :: carcm1, carcm2, cartrf
 ! ----------------------------------------------------------------------
@@ -101,21 +101,22 @@ subroutine cmtref(chmat, nomail)
 !
 !     4) REMPLISSAGE DE CARCM2 :
 !     ---------------------------------------------------------------
-    do 40 kcm1 = 1, nbcm1
+    do kcm1 = 1, nbcm1
         codcm1 = zi(jdcm1-1+3+2* (kcm1-1)+1)
         ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
         nucm1 = zi(jdcm1-1+3+2* (kcm1-1)+2)
 !        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
         ico = 0
         nocp='MATXX'
-        do 20 kk = 1, 28
+        do kk = 1, 28
             mater = zk8(jvcm1-1+nccm1* (kcm1-1)+kk)
             if (mater .eq. ' ') goto 20
             ico = ico + 1
             zk8(jvalv-1+ico) = mater
             call codent(ico, 'G', nocp(4:5))
             zk8(jncmp+ico-1) = nocp
- 20     continue
+ 20         continue
+        end do
         nm = ico
         ASSERT(nm.gt.0 .and. nm.le.28)
         zk8(jncmp-1+nm+1) = 'LREF'
@@ -141,7 +142,7 @@ subroutine cmtref(chmat, nomail)
                         limanu=zi(jlcm1))
         endif
 !
-        do 30 ktrf = 1, nbtrf
+        do ktrf = 1, nbtrf
             codtrf = zi(jdtrf-1+3+2* (ktrf-1)+1)
             ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
             nutrf = zi(jdtrf-1+3+2* (ktrf-1)+2)
@@ -179,8 +180,9 @@ subroutine cmtref(chmat, nomail)
                             limanu=zi(jlint))
             endif
 !
- 30     continue
- 40 end do
+ 30         continue
+        end do
+    end do
 !
 !     5) RECOPIE DE CARCM2 DANS CARCM1 :
 !     ---------------------------------------------------------------

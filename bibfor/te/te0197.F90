@@ -44,7 +44,7 @@ subroutine te0197(option, nomte)
 !
     integer :: icodre(1)
     character(len=8) :: fami, poum
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r
+    real(kind=8) :: poids, r
     integer :: nno, kp, npg1, i, ndim, jgano, nnos
     integer :: ipoids, ivf, idfde, kpg, spt
     integer :: j_geom, j_rota, j_vect, j_mate

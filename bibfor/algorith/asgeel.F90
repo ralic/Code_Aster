@@ -37,7 +37,6 @@ subroutine asgeel(nomres, option, nugene)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -54,6 +53,7 @@ subroutine asgeel(nomres, option, nugene)
 #include "asterfort/mgutdm.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
 !
 !
     character(len=8) :: nomres, modgen
@@ -128,9 +128,9 @@ subroutine asgeel(nomres, option, nugene)
     neq=zi(lneq)
 !
     call wkvect(nomres//'           .CONL', 'G V R', neq, ldconl)
-    do 10 i1 = 1, neq
+    do i1 = 1, neq
         zr(ldconl+i1-1)=1.d0
-10  end do
+    end do
 !
 !-- RECUPERATION DES DIFFERENTS MACRO ELEMENTS
 !
@@ -143,7 +143,7 @@ subroutine asgeel(nomres, option, nugene)
     ddlcp=0
     nlt=0
     nmaddl=0
-    do 20 i1 = 1, nbsst
+    do i1 = 1, nbsst
         nbddl=zi(lsilia+i1-1)
         if (nbddl .gt. nmaddl) then
             nmaddl=nbddl
@@ -164,14 +164,14 @@ subroutine asgeel(nomres, option, nugene)
             zk8(lnomcr)=k8bid
         else
             exist=0
-            do 30 j1 = 1, nbmacr
+            do j1 = 1, nbmacr
                 if (zk8(lnomcr+j1-1) .eq. k8bid) then
                     exist=1
                     zi(limacr+i1-1)=j1
                     zi(limacr+nbsst+i1-1)=nbddl
                     zi(limacr+2*nbsst+i1-1)=nlt-nbddl
                 endif
-30          continue
+            end do
             if (exist .eq. 0) then
                 nbmacr=nbmacr+1
                 zi(limacr+i1-1)=nbmacr
@@ -180,13 +180,13 @@ subroutine asgeel(nomres, option, nugene)
                 zk8(lnomcr+nbmacr-1)=k8bid
             endif
         endif
-20  end do
+    end do
 !
 !
 !-- RECUPERATION DES MATRICES DES DIFERENTS MACROS ELEMENTS
 !
     call wkvect('&&ASGEEL.POINTEURS_MACRO', 'V V I', nbmacr, llmacr)
-    do 40 i1 = 1, nbmacr
+    do i1 = 1, nbmacr
         if (option .eq. 'RIGI_GENE') then
             call jeveuo(zk8(lnomcr+i1-1)//'.MAEL_RAID_VALE', 'L', lmacr)
             k1bid='K'
@@ -197,7 +197,7 @@ subroutine asgeel(nomres, option, nugene)
             call jeveuo(zk8(lnomcr+i1-1)//'.MAEL_AMOR_VALE', 'L', lmacr)
         endif
         zi(llmacr+i1-1)=lmacr
-40  end do
+    end do
 !
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nomres//'           .VALM', iret)
@@ -221,14 +221,14 @@ subroutine asgeel(nomres, option, nugene)
     call wkvect('&&ASGEEL.MATR_TEMP', 'V V R', nmaddl**2, ltemp)
     call wkvect('&&ASGEEL.PROJ_TEMP', 'V V R', nmaddl*neq, lproj)
 !
-    do 50 n1 = 1, nbsst
+    do n1 = 1, nbsst
         indmcr=zi(limacr+n1-1)
         nbddl=zi(limacr+nbsst+n1-1)
         decal=zi(limacr+2*nbsst+n1-1)
         lmacr=zi(llmacr+indmcr-1)
 !
 !-- ON RECOPIE LA MATRICE DU MACRO ELEMENT (STOCKAGE PLEIN)
-        do 60 j1 = 1, int(nbddl*(nbddl+1)/2)
+        do j1 = 1, int(nbddl*(nbddl+1)/2)
             temp=(sqrt(1.d0+8.d0*j1)-1.d0)/2.d0
             l1=int(temp)
             if (temp .gt. l1) then
@@ -237,26 +237,26 @@ subroutine asgeel(nomres, option, nugene)
             k1=j1-int(l1*(l1-1)/2)
             zr(ltemp+nbddl*(k1-1)+l1-1)=zr(lmacr+j1-1)
             zr(ltemp+nbddl*(l1-1)+k1-1)=zr(lmacr+j1-1)
-60      continue
+        end do
 !
 !-- ON FAIT K*T
-        do 70 i1 = 1, nbddl
-            do 80 j1 = 1, neq
+        do i1 = 1, nbddl
+            do j1 = 1, neq
                 zr(lproj+(j1-1)*nbddl+i1-1)=ddot(nbddl, zr(ltemp+(i1-&
                 1)*nbddl),1, zr(lselia+(j1-1)*nlt+decal),1)
-80          continue
-70      continue
+            end do
+        end do
 !
 !-- ON FAIT T^T*(K*T)
-        do 90 j1 = 1, neq
-            do 100 i1 = 1, j1
+        do j1 = 1, neq
+            do i1 = 1, j1
                 ind=int(((j1-1)*j1)/2)+i1-1
                 zr(lres+ind)=zr(lres+ind)+ddot(nbddl, zr(lproj+(j1-1)*&
                 nbddl),1, zr(lselia+(i1-1)*nlt+decal),1)
-100          continue
-90      continue
+            end do
+        end do
 !
-50  end do
+    end do
 !
     call jedetr('&&ASGEEL.POINTEURS_MACRO')
     call jedetr('&&ASGEEL.NOMS_MACRO')

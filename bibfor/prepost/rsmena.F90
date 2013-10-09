@@ -83,14 +83,14 @@ subroutine rsmena(resu)
     call jecreo('&&RSMENA.DICO', 'V N K24')
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
-    do 10 k = 1, n2
+    do k = 1, n2
         noobj=zk24(jlist-1+k)
         if (noobj(20:24) .eq. '.DEEQ') then
             nbcon=nbcon+1
             noco19=noobj(1:19)
             call jecroc(jexnom('&&RSMENA.DICO', noco19))
         endif
- 10 end do
+    end do
     if (nbcon .eq. 0) goto 50
 !
 !     1.2 ON "COCHE" LES  PROF_CHNO REFERENCES :
@@ -105,10 +105,10 @@ subroutine rsmena(resu)
                 ibid)
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)
 !
-    do 30 i = 1, nbnosy
+    do i = 1, nbnosy
         call jenuno(jexnum(res19//'.DESC', i), nomsym)
         call jeveuo(jexnum(res19//'.TACH', i), 'E', jtach)
-        do 20 j = 1, nbordr
+        do j = 1, nbordr
             if (zk24(jtach+j-1)(1:1) .eq. ' ') goto 20
             call rsexch('F', res19, nomsym, zi(jordr-1+j), cham,&
                         iret)
@@ -118,16 +118,18 @@ subroutine rsmena(resu)
             call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
             ASSERT(i1.gt.0 .and. i1.le.nbcon)
             zi(jcoche-1+i1)=1
- 20     continue
- 30 end do
+ 20         continue
+        end do
+ 30     continue
+    end do
 !
 !     1.2 ON DETRUIT LES  PROF_CHNO NON REFERENCES :
-    do 40 k = 1, nbcon
+    do k = 1, nbcon
         if (zi(jcoche-1+k) .eq. 0) then
             call jenuno(jexnum('&&RSMENA.DICO', k), noco19)
             call detrsd('PROF_CHNO', noco19)
         endif
- 40 end do
+    end do
  50 continue
 !
 !
@@ -141,14 +143,14 @@ subroutine rsmena(resu)
     call jecreo('&&RSMENA.DICO', 'V N K24')
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
-    do 60 k = 1, n2
+    do k = 1, n2
         noobj=zk24(jlist-1+k)
         if (noobj(20:24) .eq. '.LCHA') then
             nbcon=nbcon+1
             noco19=noobj(1:19)
             call jecroc(jexnom('&&RSMENA.DICO', noco19))
         endif
- 60 end do
+    end do
     if (nbcon .eq. 0) goto 90
 !
 !     2.2 ON "COCHE" LES  LISTE_CHARGE REFERENCES :
@@ -156,21 +158,22 @@ subroutine rsmena(resu)
     call jeveuo(res19//'.RS24', 'L', jrs24)
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)
 !
-    do 70 i = 1, n1
+    do i = 1, n1
         if (zk24(jrs24+i-1)(14:19) .ne. '.EXCIT') goto 70
         noco19=zk24(jrs24+i-1)(1:19)
         call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
         ASSERT(i1.gt.0 .and. i1.le.nbcon)
         zi(jcoche-1+i1)=1
- 70 end do
+ 70     continue
+    end do
 !
 !     2.3 ON DETRUIT LES  LISTE_CHARGE NON REFERENCES :
-    do 80 k = 1, nbcon
+    do k = 1, nbcon
         if (zi(jcoche-1+k) .eq. 0) then
             call jenuno(jexnum('&&RSMENA.DICO', k), noco19)
             call detrsd('LISTE_CHARGES', noco19)
         endif
- 80 end do
+    end do
  90 continue
 !
 !
@@ -184,23 +187,23 @@ subroutine rsmena(resu)
     call jecreo('&&RSMENA.DICO', 'V N K24')
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
-    do 100 k = 1, n2
+    do k = 1, n2
         noobj=zk24(jlist-1+k)
         if (noobj(20:24) .eq. '.LIEL') then
             nbcon=nbcon+1
             noco19=noobj(1:19)
             call jecroc(jexnom('&&RSMENA.DICO', noco19))
         endif
-100 end do
+    end do
     if (nbcon .eq. 0) goto 140
 !
 !     3.2 ON "COCHE" LES LIGREL REFERENCES :
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)
 !
-    do 120 i = 1, nbnosy
+    do i = 1, nbnosy
         call jenuno(jexnum(res19//'.DESC', i), nomsym)
         call jeveuo(jexnum(res19//'.TACH', i), 'E', jtach)
-        do 110 j = 1, nbordr
+        do j = 1, nbordr
             if (zk24(jtach+j-1)(1:1) .eq. ' ') goto 110
             call rsexch('F', res19, nomsym, zi(jordr-1+j), cham,&
                         iret)
@@ -209,16 +212,18 @@ subroutine rsmena(resu)
             call dismoi('NOM_LIGREL', cham, 'CHAMP', repk=noco19)
             call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
             if (i1 .gt. 0 .and. i1 .le. nbcon) zi(jcoche-1+i1)=1
-110     continue
-120 end do
+110         continue
+        end do
+120     continue
+    end do
 !
 !     3.2 ON DETRUIT LES LIGREL NON REFERENCES :
-    do 130 k = 1, nbcon
+    do k = 1, nbcon
         if (zi(jcoche-1+k) .eq. 0) then
             call jenuno(jexnum('&&RSMENA.DICO', k), noco19)
             call detrsd('LIGREL', noco19)
         endif
-130 end do
+    end do
 140 continue
 !
 !

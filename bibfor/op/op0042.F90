@@ -90,11 +90,11 @@ subroutine op0042()
                 prec, crit, iret)
     if (iret .eq. 10) then
         call utmess('A', 'CALCULEL4_8', sk=resuco)
-        goto 9999
+        goto 999
     endif
     if (iret .ne. 0) then
         call utmess('A', 'ALGORITH3_41')
-        goto 9999
+        goto 999
     endif
 !
 !     -- ON VEUT INTERDIRE LA REENTRANCE DE LA COMMANDE SI
@@ -132,7 +132,7 @@ subroutine op0042()
 !
     endif
 !
-9999 continue
+999 continue
 !
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE

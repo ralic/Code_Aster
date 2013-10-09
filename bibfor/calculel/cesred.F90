@@ -129,16 +129,16 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !        AUXQUELLES SONT ENLEVEES LES COMPOSANTES PRESENTES DANS LICMP
         call wkvect('&&CESRED.CMP2', 'V V K8', ncmp1, jce3c)
         ncmp2 = 0
-        do 200 icmp1 = 1, ncmp1
+        do icmp1 = 1, ncmp1
             loter = .false.
-            do 205 icmp3 = 1, -nbcmp
+            do icmp3 = 1, -nbcmp
                 if (zk8(jce1c-1+icmp1) .eq. licmp(icmp3)) loter = .true.
-205         continue
+            end do
             if (.not.loter) then
                 ncmp2 = ncmp2 +1
                 zk8(jce3c-1+ncmp2) = zk8(jce1c-1+icmp1)
             endif
-200     continue
+        end do
         ASSERT(ncmp2 .lt. ncmp1)
     endif
     ASSERT(ncmp2 .ne. 0)
@@ -151,22 +151,23 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     call wkvect('&&CESRED.NBCMP', 'V V I', nbmam, jnbcmp)
 !
     if (nbma .ne. 0) then
-        do 10 kma = 1, nbma
+        do kma = 1, nbma
             ASSERT(lima(kma).le.nbmam)
             if (lima(kma) .le. 0) goto 10
             zi(jnbpt-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+1)
             zi(jnbsp-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+2)
             zi(jnbcmp-1+lima(kma))=min(zi(jce1d-1+5+4*(lima(kma)-1)+3)&
             , ncmp2)
- 10     continue
+ 10         continue
+        end do
 !
     else
 !
-        do 11 ima = 1, nbmam
+        do ima = 1, nbmam
             zi(jnbpt-1+ima)=zi(jce1d-1+5+4*(ima-1)+1)
             zi(jnbsp-1+ima)=zi(jce1d-1+5+4*(ima-1)+2)
             zi(jnbcmp-1+ima)=min(zi(jce1d-1+5+4*(ima-1)+3),ncmp2)
- 11     continue
+        end do
     endif
 !
 !     3- CREATION DE CES2 :
@@ -194,36 +195,37 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !     4- ON TRANSFORME LIMA EN LISTE DE BOOLEENS:
 !     ------------------------------------------
     call wkvect('&&CESRED.EXIMA', 'V V L', nbmam, jexma)
-    do 20 kma = 1, nbmam
+    do kma = 1, nbmam
         zl(jexma-1+kma) = .false.
- 20 end do
+    end do
 !
     ASSERT(nbma.ge.0)
     if (nbma .eq. 0) then
-        do 30 kma = 1, nbmam
+        do kma = 1, nbmam
             zl(jexma-1+kma) = .true.
- 30     continue
+        end do
 !
     else
-        do 40 kma = 1, nbma
+        do kma = 1, nbma
             if (lima(kma) .le. 0) goto 40
             zl(jexma-1+lima(kma)) = .true.
- 40     continue
+ 40         continue
+        end do
     endif
 !
 !     5- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
-    do 80 icmp2 = 1, ncmp2
+    do icmp2 = 1, ncmp2
         nocmp = zk8(jce2c-1+icmp2)
         icmp1 = knindi(8,nocmp,zk8(jce1c),ncmp1)
         if (icmp1 .eq. 0) goto 80
 !
-        do 70 ima = 1, nbmam
+        do ima = 1, nbmam
             if (zl(jexma-1+ima)) then
                 nbpt = zi(jce2d-1+5+4* (ima-1)+1)
                 nbsp = zi(jce2d-1+5+4* (ima-1)+2)
-                do 60 ipt = 1, nbpt
-                    do 50 isp = 1, nbsp
+                do ipt = 1, nbpt
+                    do isp = 1, nbsp
                         call cesexi('C', jce1d, jce1l, ima, ipt,&
                                     isp, icmp1, iad1)
                         call cesexi('C', jce2d, jce2l, ima, ipt,&
@@ -254,12 +256,14 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
                             ASSERT(.false.)
                         endif
 !
- 50                 continue
- 60             continue
+ 50                     continue
+                    end do
+                end do
             endif
 !
- 70     continue
- 80 end do
+        end do
+ 80     continue
+    end do
 !
 !     6- MENAGE :
 !     -----------

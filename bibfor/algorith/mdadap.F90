@@ -181,17 +181,17 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     nbmod1 = neqgen - 1
     nbscho = nbsauv * 3 * nbchoc
     epsi = r8prem()
-    do 111 iapp = 1, palmax
+    do iapp = 1, palmax
         typal(iapp)='      '
         finpal(iapp)='   '
         cnpal(iapp)=' '
-111 end do
+    end do
     prdeff = .false.
 !
     if (lamor) then
-        do 100 im = 1, neqgen
+        do im = 1, neqgen
             amogen(im) = deux * amogen(im) * pulsat(im)
-100     continue
+        end do
     endif
 !
 !     --- RECUPERATION DES PARAMETRES D'ADAPTATION DU PAS
@@ -272,7 +272,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
     call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite),&
                 zr(jvint), iret, tinit)
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
     call dcopy(neqgen, zr(jvite), 1, zr(jvip1), 1)
     dt2 = dti
     dt1 = zero
@@ -295,14 +295,14 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !     RECUPERATION DES DONNEES SUR LES PALIERS
 !     -------------------------------------------------
         call jeveuo(cpal, 'L', iadrk)
-        do 21 iapp = 1, nbpal
+        do iapp = 1, nbpal
             fsauv(iapp,1)= 0.d0
             fsauv(iapp,2)= 0.d0
             fsauv(iapp,3)= 0.d0
             typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
             finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
             cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
- 21     continue
+        end do
     endif
     if (nbpal .ne. 0) nbchoc = 0
 !
@@ -379,7 +379,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !  MODIFICATION POUR ADAPT ORDRE1
             if ((dt1.le.1.d-13) .and. (method.eq.'ADAPT_ORDRE1')) pas1= dt2
 !
-            do 40 im = 0, nbmod1
+            do im = 0, nbmod1
 !              --- VITESSES GENERALISEES ---
                 zr(jvit2+im) = zr(jvite+im) + zr(jacce+im) * pas1
 !              --- DEPLACEMENTS GENERALISES ---
@@ -391,14 +391,14 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !  MODIFICATION POUR ADAPT ORDRE1
                     zr(jvip2+im) = zr(jvit2+im)
                 endif
- 40         continue
+            end do
 !
 !
 !        --- FORCES EXTERIEURES ---
 !
-            do 20 if = 0, neqgen-1
+            do if = 0, neqgen-1
                 zr(jfext+if) = zero
- 20         continue
+            end do
             if (nbexci .ne. 0) then
                 r8val = temps+dt2
                 call mdfext(r8val, r8bid1, neqgen, nbexci, idescf,&
@@ -523,20 +523,20 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
         if (vvar(1:4) .eq. 'NORM') then
             tmp = zero
-            do 28 iv = 0, nbmod1
+            do iv = 0, nbmod1
                 tmp = tmp+zr(jvit2+iv)**2
- 28         continue
+            end do
             tmp = sqrt(tmp)*0.01d0
-            do 27 iv = 0, nbmod1
+            do iv = 0, nbmod1
                 zr(jvmin+iv) = tmp
- 27         continue
+            end do
         else if (vvar(1:4) .eq. 'MAXI') then
-            do 26 iv = 0, nbmod1
+            do iv = 0, nbmod1
                 rint1 = zr(jvit2+iv)*0.01d0
                 rint2 = abs(rint1)
                 rint1 = zr(jvmin+iv)
                 zr(jvmin+iv) = max(rint1,rint2)
- 26         continue
+            end do
         endif
 !
 !           --- MISE A JOUR ---
@@ -622,7 +622,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                     valr=valr, num_except=28)
     endif
 !
-9999 continue
+999 continue
     call jedetr('&&MDADAP.DEPL')
     call jedetr('&&MDADAP.DEP2')
     call jedetr('&&MDADAP.VITE')

@@ -182,7 +182,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !     EACH NODE OF THE PHYSICAL MESH IS CONSIDERED
     eps = 1.d-12
-    do 2000 i = 1, nbno
+    do i = 1, nbno
 !
 !        COORDINATES OF NODE M
         xm=zr(jcoor-1+(i-1)*3+1)
@@ -194,14 +194,14 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             dmin = r8maem()
 !
 !          CONSIDER EACH POINT OF THE CRACK FRONT
-            do 2100 j = 1, nbptff-1
+            do j = 1, nbptff-1
 !
 !            CHECK IF THE CURRENT SEGMENT ON THE FRONT IS OUTSIDE THE
 !            MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE FORMING THE
 !            FRONT)
-                do 2113 fon = 1, numfon
+                do fon = 1, numfon
                     if (j .eq. zi(jfmult-1+2*fon)) goto 2100
-2113             continue
+                end do
 !
 !            COORD PT I, AND J
                 xi1 = zr(jfonf-1+4*(j-1)+1)
@@ -235,14 +235,15 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                     dmin = d
                 endif
 !
-2100         continue
+2100             continue
+            end do
 !
         else
 !
             dmin = r8maem()
 !
 !            2D CASE - ONLY ONE POINT AT THE CRACK TIP!
-            do 2114 j = 1, nbptff
+            do j = 1, nbptff
 !
                 xi1 = zr(jfonf-1+4*(j-1)+1)
                 yi1 = zr(jfonf-1+4*(j-1)+2)
@@ -253,7 +254,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
                 if (d .lt. dmin) dmin = d
 !
-2114         continue
+            end do
 !
         endif
 !
@@ -266,7 +267,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             zl(jnofla-1+i) = .true.
         endif
 !
-2000 end do
+    end do
 !
     nodfl1='&&XPRDOM.NODEFLAG1'
     call jedupo(nodfla, 'V', nodfl1, .false.)
@@ -275,7 +276,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !     ALL THE ELEMENTS CONTAINING THE SELECTED NODES MUST BE
 !     CONSIDERED. THEIR NODES MUST BE SELECTED.
     nodadj=0
-    do 1000 i = 1, nbno
+    do i = 1, nbno
 !
         if (zl(jnofl1-1+i)) then
 !
@@ -284,7 +285,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno)
             call jeveuo(jexnum(cnxinv, i), 'L', jelno)
 !
-            do 1150 j = 1, nbelno
+            do j = 1, nbelno
 !
                 numelm=zi(jelno-1+j)
 !
@@ -299,7 +300,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                     call jeveuo(jexnum('&CATA.TM.NBNO' , itypma), 'L', jaux)
 !
 !              RETRIEVE EACH NODE IN THE ELEMENT
-                    do 1700 k = 1, zi(jaux)
+                    do k = 1, zi(jaux)
 !
                         node = zi(jconx1-1+zi(jconx2-1+numelm)+k-1)
 !
@@ -314,15 +315,15 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
                         endif
 !
-1700                 continue
+                    end do
 !
                 endif
 !
-1150         continue
+            end do
 !
         endif
 !
-1000 end do
+    end do
 !
     call jedetr(nodfl1)
 !
@@ -335,7 +336,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !     TEMPORARY POINTER
     j=0
 !
-    do 1500 i = 1, nbno
+    do i = 1, nbno
 !
         if (zl(jnofla-1+i)) then
             j=j+1
@@ -343,7 +344,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             zi(jnto-1+j) = i
         endif
 !
-1500 end do
+    end do
 !
 !     DESTROY THE TEMPORARY OBJECTS
     call jedetr(nodfla)
@@ -374,11 +375,11 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     econs = '&&XPRDOM.ECONS'
     call wkvect(econs, 'V V L', dnbma, jecons)
 !
-    do 50 i = 1, dnbma
+    do i = 1, dnbma
         zl(jecons-1+i) = .false.
- 50 end do
+    end do
 !
-    do 100 i = 1, dnbno
+    do i = 1, dnbno
 !
         if (zr(jdisfr-1+i) .le. radtor) then
 !
@@ -387,7 +388,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
             call jelira(jexnum(dcnxin, i), 'LONMAX', nbelno)
             call jeveuo(jexnum(dcnxin, i), 'L', jelno)
 !
-            do 150 j = 1, nbelno
+            do j = 1, nbelno
 !
                 numelm = zi(jelno-1+j)
 !
@@ -399,18 +400,18 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !              MARK THE SELECTED ELEMENT
                 if (eldim .eq. ndim) zl(jecons-1+numelm) = .true.
 !
-150         continue
+            end do
 !
         endif
 !
-100 end do
+    end do
 !
 !     COUNT THE NUMBER OF ELEMENTS INVOLVED IN THE PROJECTION
     nbelpr = 0
 !
-    do 200 i = 1, dnbma
+    do i = 1, dnbma
         if (zl(jecons-1+i)) nbelpr = nbelpr+1
-200 end do
+    end do
 !
 !     STORE THE NUMBER OF THESE ELEMENTS ONLY. THESE INFORMATIONS ARE
 !     USED FOR THE PROJECTION
@@ -418,7 +419,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
     nbelpr = 0
 !
-    do 300 i = 1, dnbma
+    do i = 1, dnbma
 !
         if (zl(jecons-1+i)) then
 !
@@ -427,7 +428,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
         endif
 !
-300 end do
+    end do
 !
     call jedetr(econs)
 !

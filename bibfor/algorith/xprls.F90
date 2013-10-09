@@ -79,7 +79,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     integer :: i, ifm, niv, nbno, jltno, jlnno, jgrtno, jgrnno, ndim, j
     integer :: jelcal, jnodto, node, nbnoma, ier
     integer :: ibid, neleto, jdelta
-    character(len=8) ::  lpain(2), lpaout(1)
+    character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
     real(kind=8) :: normgn, normgt
@@ -158,7 +158,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(cnsvt//'.CNSV', 'L', jcnsvt)
 !
 !     ELABORATE EACH NODE IN THE TORE
-    do 400 i = 1, nbno
+    do i = 1, nbno
 !
 !         RETREIVE THE NODE NUMBER
         node = zi(jnodto-1+i)
@@ -195,7 +195,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !              TO THE EXISTING CRACK SURFACE. THEREFORE THE GRADIENT OF
 !              THE LEVEL SETS IS A GOOD CANDIDATE FOR THE LOCAL
 !              REFERENCE SYSTEM.
-            do 405 j = 1, ndim
+            do j = 1, ndim
                 if (normgn .gt. r8prem()) then
                     zr(jvnv-1+ndim*(node-1)+j) = zr(jcnsvn-1+node)* zr(jgrnno-1+ndim*(node-1)+j)/&
                                                  &normgn
@@ -209,21 +209,21 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
                 else
                     zr(jvtv-1+ndim*(node-1)+j) = 0.d0
                 endif
-405         continue
+            end do
 !
         else
 !
 !              IF THE TANGENTIAL LEVELSET IS POSITIVE, THE LOCAL
 !              REFERENCE SYSTEM CALCULATED PREVIOUSLY FROM THE
 !              INFORMATIONS ON THE CRACK FRONT CAN BE USED
-            do 406 j = 1, ndim
+            do j = 1, ndim
                 zr(jvnv-1+ndim*(node-1)+j) = zr(jcnsvn-1+node)* zr(jbl-1+2*ndim*(node-1)+j)
                 zr(jvtv-1+ndim*(node-1)+j) = zr(jcnsvt-1+node)* zr(jbl-1+2*ndim*(node-1)+ndim+j)
-406         continue
+            end do
 !
         endif
 !
-400 end do
+    end do
 !
 ! ***************************************************************
 ! UPDATE THE LEVEL SETS
@@ -243,7 +243,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(grln//'.CNSV', 'E', jgrnno)
 !
 !     UPDATE THE LEVEL SETS FOR EACH NODE IN THE TORE
-    do 100 i = 1, nbno
+    do i = 1, nbno
 !
 !         RETREIVE THE NODE NUMBER
         node = zi(jnodto-1+i)
@@ -251,7 +251,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
         vnscgn = 0.d0
         vtscgt = 0.d0
 !
-        do 105 j = 1, ndim
+        do j = 1, ndim
 !
 !            SCALAR PRODUCT BETWEEN THE NORMAL PROPAGATION SPEED
 !            VECTOR AND THE NORMAL GRADIENT
@@ -263,7 +263,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !
 !
 !
-105     continue
+        end do
 !
 !         UPDATE THE LEVEL SETS
         if (zr(jltno-1+node) .gt. r8prem()) then
@@ -276,7 +276,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
         node-1)+1)
 !
 !
-100 end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES

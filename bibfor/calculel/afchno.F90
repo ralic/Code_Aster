@@ -71,23 +71,23 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
     call jeveuo(chamno//'.PRNO', 'E', lprno)
     ii = 0
     idec = 1
-    do 100 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         zi(lprno-1+ (nec+2)*(ino-1)+1) = idec
         zi(lprno-1+ (nec+2)*(ino-1)+2) = nbcpno(ino)
-        do 102 inec = 1, nec
+        do inec = 1, nec
             ii = ii + 1
             zi(lprno-1+ (nec+2)*(ino-1)+2+inec) = desc(ii)
-102     continue
+        end do
         idec = idec + nbcpno(ino)
-100 end do
+    end do
 !
 !     --- AFFECTATION DU .VALE DE L'OBJET CHAMNO ---
 !
     call jeveuo(chamno//'.VALE', 'E', lvale)
     call jeveuo(chamno//'.NUEQ', 'E', lnueq)
-    do 110 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         i1 = zi(lprno-1+ (nec+2)*(ino-1)+1) + lnueq - 1
-        do 112 ic = 1, ncmpmx
+        do ic = 1, ncmpmx
             iec = ( ic - 1 ) / 30 + 1
             jj = ic - 30 * ( iec - 1 )
             ii = 2**jj
@@ -102,8 +102,8 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
                 endif
                 i1 = i1 + 1
             endif
-112     continue
-110 end do
+        end do
+    end do
 !
 !
 !     -- CALCUL DE L'OBJET .DEEQ :

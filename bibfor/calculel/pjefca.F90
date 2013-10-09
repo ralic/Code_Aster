@@ -99,7 +99,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !
         call wkvect('&&PJEFCA.LIMA1', 'V V I', nb1, iagma1)
         nbma1=0
-        do 10 kma = 1, nb1
+        do kma = 1, nb1
             if (nomo1 .ne. ' ') then
 !          -- SI C'EST UNE MAILLE DU MODELE :
                 if (zi(jrepe-1+2*(kma-1)+1) .gt. 0) then
@@ -110,7 +110,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
                 nbma1=nbma1+1
                 zi(iagma1-1+nbma1)=kma
             endif
- 10     continue
+        end do
     endif
 !
 !
@@ -132,11 +132,11 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !     -- ON PARCOURT LES MAILLES DE LIMA1 POUR DETERMINER
 !        LA PLUS GRANDE DIMENSION TOPOLOGIQUE : 3,2,1 : DITOPO
     ditopo=0
-    do 20 kma = 1, nbma1
+    do kma = 1, nbma1
         typm1=zi(jtypm1-1+zi(iagma1-1+kma))
         dim1=zi(jtmdim-1+typm1)
         ditopo=max(ditopo,dim1)
- 20 end do
+    end do
 !
     if (ditopo .eq. 3) then
         ASSERT(ndim.eq.3)

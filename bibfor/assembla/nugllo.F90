@@ -61,7 +61,7 @@ subroutine nugllo(nu, base, solveu)
     integer :: jadne, jadli, iel, igr, nel, k1, n1, j, ilib
     integer :: jdelgt, jddlp, nbproc, vali(1), jnugl, ieqg
 !
-    character(len=8) ::  noma, partit, mo
+    character(len=8) :: noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
     integer :: jprtk
@@ -178,12 +178,12 @@ subroutine nugllo(nu, base, solveu)
 !---- ALLOCATION DU PRNO DE NUML :
     call jecrec(nu//'.NUML.PRNO', base(1:1)//' V I ', 'NU', 'CONTIG', 'VARIABLE',&
                 nlili)
-    do 10 ili = 1, nlili
+    do ili = 1, nlili
         call jelira(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', n1)
         call jeecra(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', n1)
 !       -- CALCUL DU NOMBRE D'ENTIERS CODES :
         if (ili .eq. 1) nec=n1/nbnoma-2
- 10 end do
+    end do
 !
 !---- LECTURE DE LA CONNECTIVITE
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
@@ -201,13 +201,13 @@ subroutine nugllo(nu, base, solveu)
 !     QUI SERVIRA A CREER LE .NUEQ
 !     --------------------------------------------------------------
     numinc=1
-    do 100 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
         if (ili .eq. 2) ASSERT(nomlig.eq.ligrmo)
-        do 90 igr = 1, zzngel(ili)
+        do igr = 1, zzngel(ili)
             if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 90
             nel=zznelg(ili,igr)
-            do 80 iel = 1, nel
+            do iel = 1, nel
                 numa=zzliel(ili,igr,iel)
                 ASSERT(numa.ne.0)
                 if (.not.ldgrel) then
@@ -221,7 +221,7 @@ subroutine nugllo(nu, base, solveu)
                 if (numa .gt. 0) then
 !             -- MAILLE DU MAILLAGE :
                     nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
-                    do 40 ino = 1, nbno
+                    do ino = 1, nbno
                         nuno=zi(jconx1-1+zi(jconx2+numa-1)+ino-1)
                         if (zi(jtano+nuno-1) .eq. 1) goto 40
 !
@@ -230,23 +230,24 @@ subroutine nugllo(nu, base, solveu)
 !
                         zi(izzpr2(1,nuno,1))=numinc
                         zi(izzpr2(1,nuno,2))=nddl
-                        do 20 numec = 1, nec
+                        do numec = 1, nec
                             zi(izzpr2(1,nuno,2+numec))=zzprno(1,nuno,2+numec)
- 20                     continue
+                        end do
 !
-                        do 30 iddl = 1, nddl
+                        do iddl = 1, nddl
                             zi(jddlp+ddl1g+iddl-1)=1
                             zi(jtaeq+numinc-1+iddl-1)=ddl1g+iddl-1
- 30                     continue
+                        end do
                         numinc=numinc+nddl
                         zi(jtano+nuno-1)=1
- 40                 continue
+ 40                     continue
+                    end do
 !
                 else
 !             -- MAILLE TARDIVE :
                     numa=-numa
                     nbno=zznsup(ili,numa)
-                    do 70 k1 = 1, nbno
+                    do k1 = 1, nbno
                         nuno=zznema(ili,numa,k1)
                         if (nuno .lt. 0) then
                             nuno=-nuno
@@ -261,21 +262,24 @@ subroutine nugllo(nu, base, solveu)
                         zi(izzpr2(ilib,nuno,1))=numinc
                         nddl=zzprno(ilib,nuno,2)
                         zi(izzpr2(ilib,nuno,2))=nddl
-                        do 50 numec = 1, nec
+                        do numec = 1, nec
                             zi(izzpr2(ilib,nuno,2+numec))=zzprno(ilib,nuno, 2+numec)
- 50                     continue
-                        do 60 iddl = 1, nddl
+                        end do
+                        do iddl = 1, nddl
                             zi(jddlp+ddl1g+iddl-1)=1
                             zi(jtaeq+numinc-1+iddl-1)=ddl1g+iddl-1
                             zi(jdelgt+numinc-1+iddl-1)=zi(jdelgg+&
                             ddl1g-1+iddl-1)
- 60                     continue
+                        end do
                         numinc=numinc+nddl
- 70                 continue
+ 70                     continue
+                    end do
                 endif
- 80         continue
- 90     continue
-100 end do
+ 80             continue
+            end do
+ 90         continue
+        end do
+    end do
     neql=numinc-1
 !
 !
@@ -287,9 +291,9 @@ subroutine nugllo(nu, base, solveu)
 !
 !---- CREATION DU .NUML.DELG
     call wkvect(nu//'.NUML.DELG', base(1:1)//' V I', neql, jdelgl)
-    do 110 j = 1, neql
+    do j = 1, neql
         zi(jdelgl-1+j)=zi(jdelgt-1+j)
-110 end do
+    end do
 !
 !---- CREATION DU .NUML.NEQU
     call wkvect(nu//'.NUML.NEQU', base(1:1)//' V I', 2, j1)
@@ -299,23 +303,23 @@ subroutine nugllo(nu, base, solveu)
     call wkvect(nu//'.NUML.NULG', base(1:1)//' V I', neql, jnulg)
     call wkvect(nu//'.NUML.NUEQ', base(1:1)//' V I', neql, jnueql)
 !
-    do 140 ili = 1, nlili
+    do ili = 1, nlili
         call jelira(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', ntot)
         ntot=ntot/(nec+2)
 !
-        do 130 ino = 1, ntot
+        do ino = 1, ntot
             ddl1l=zzprn2(ili,ino,1)
             nddl=zzprn2(ili,ino,2)
-            do 120 iddl = 1, nddl
+            do iddl = 1, nddl
                 ieqg=zi(jtaeq+ddl1l-1+iddl-1)
                 ASSERT(ieqg.gt.0)
 !
                 zi(jnulg+ddl1l-1+iddl-1)=ieqg
                 zi(jnueql+ddl1l-1+iddl-1)=ddl1l+iddl-1
                 zi(jnugl+ieqg-1)=ddl1l-1+iddl
-120         continue
-130     continue
-140 end do
+            end do
+        end do
+    end do
 !
     call jeveuo(solveu//'.SLVK', 'L', jslvk)
 !     POUR PETSC ON A BESOIN D'INFORMATIONS SUPPLEMENTAIRES

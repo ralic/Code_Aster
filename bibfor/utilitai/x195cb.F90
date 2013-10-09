@@ -71,7 +71,7 @@ subroutine x195cb(tychr, nomgd, chou)
 !
 !     -- 2. CALCUL DU CONTENU DE CH2 :
 !     ---------------------------------
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvid('COMB', 'CHAM_GD', iocc=iocc, scal=ch1, nbret=ib)
 !
 !       -- QUELQUES VERIFICATIONS DE COHERENCE :
@@ -106,15 +106,15 @@ subroutine x195cb(tychr, nomgd, chou)
         call getvr8('COMB', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
         ASSERT(ib.eq.1)
         if (tsca .eq. 'R') then
-            do 11 k = 1, n1
+            do k = 1, n1
                 zr(jvale2-1+k)=zr(jvale2-1+k)+coefr*zr(jvale1-1+k)
- 11         continue
+            end do
         else if (tsca.eq.'C') then
-            do 12 k = 1, n1
+            do k = 1, n1
                 zc(jvale2-1+k)=zc(jvale2-1+k)+coefr*zc(jvale1-1+k)
- 12         continue
+            end do
         endif
- 10 end do
+    end do
 !
 !
 !     -- RECOPIE DE CH2 DANS CHOU :

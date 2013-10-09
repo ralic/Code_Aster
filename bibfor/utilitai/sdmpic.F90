@@ -58,7 +58,7 @@ subroutine sdmpic(typesd, nomsd)
     if (types2 .eq. 'CHAM_ELEM') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'CHAM_ELEM', repk=kmpic)
-        if (kmpic .eq. 'OUI') goto 9999
+        if (kmpic .eq. 'OUI') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.CELV')
         call jeveuo(k19//'.CELK', 'E', jcelk)
         zk24(jcelk-1+7)='MPI_COMPLET'
@@ -67,7 +67,7 @@ subroutine sdmpic(typesd, nomsd)
     else if (types2.eq.'RESUELEM') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
-        if (kmpic .eq. 'OUI') goto 9999
+        if (kmpic .eq. 'OUI') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
         call jeveuo(k19//'.NOLI', 'E', jnoli)
         zk24(jnoli-1+3)='MPI_COMPLET'
@@ -76,7 +76,7 @@ subroutine sdmpic(typesd, nomsd)
     else if (types2.eq.'MATR_ASSE') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'MATR_ASSE', repk=kmpic)
-        if (kmpic .eq. 'OUI') goto 9999
+        if (kmpic .eq. 'OUI') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.VALM')
 !
         call jeexin(k19//'.CCVA', iexi)
@@ -89,6 +89,6 @@ subroutine sdmpic(typesd, nomsd)
         ASSERT(.false.)
     endif
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

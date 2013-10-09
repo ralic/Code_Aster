@@ -35,10 +35,10 @@ subroutine crsint(solveu)
     integer :: islvk, islvr, islvi
 !----------------------------------------------------------------------
     call jemarq()
-    zslvk =  sdsolv('ZSLVK')
+    zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
     zslvi = sdsolv('ZSLVI')
-    call wkvect(solveu//'.SLVK','V V K24', zslvk, islvk)
+    call wkvect(solveu//'.SLVK', 'V V K24', zslvk, islvk)
     call wkvect(solveu//'.SLVR', 'V V R', zslvr, islvr)
     call wkvect(solveu//'.SLVI', 'V V I', zslvi, islvi)
 !

@@ -87,9 +87,9 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !     ------------------------------------------
     call jeveuo(corrn, 'L', jcorrn)
 !
-    do 20 icmp = 1, ncmp
+    do icmp = 1, ncmp
 !
-        do 10 ino2 = 1, nbno2
+        do ino2 = 1, nbno2
             ino1=zi(jcorrn-1+ino2)
             if (zl(jcn1l-1+(ino1-1)*ncmp+icmp)) then
                 zl(jcn2l-1+(ino2-1)*ncmp+icmp)=.true.
@@ -115,8 +115,8 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !
             endif
 !
- 10     continue
- 20 end do
+        end do
+    end do
 !
 !
     call jedema()

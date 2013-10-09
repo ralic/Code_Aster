@@ -142,10 +142,10 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
     call jeveuo(ddepl0(1:19)//'.VALE', 'E', jdep0)
     call jeveuo(ddepl1(1:19)//'.VALE', 'E', jdep1)
-    do 10 i = 1, neq
+    do i = 1, neq
         zr(jdep0+i-1) = rho * zr(jdu0+i-1)
         zr(jdep1+i-1) = zr(jdu1+i-1)
- 10 end do
+    end do
 !
     if (niv .ge. 2) then
         write (ifm,*) '<PILOTAGE> ...... SECOND MEMBRE DTAU : ',dtau

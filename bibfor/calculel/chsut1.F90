@@ -119,13 +119,13 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 !      -------------------------
     zk8(jcs2k-1+2) = nomgd2
     ncmpch = zi(jcs1d-1+2)
-    do 10 k = 1, ncmpch
+    do k = 1, ncmpch
         nocmp = zk8(jcs1c-1+k)
         kk = indik8(lcmp1,nocmp,1,ncmp)
 !       SI KK.EQ.0 : ON NE SAIT PAS RENOMMER LA CMP
         ASSERT(kk.ne.0)
         zk8(jcs2c-1+k) = lcmp2(kk)
- 10 end do
+    end do
 !
 !
 !

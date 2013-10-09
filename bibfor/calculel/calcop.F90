@@ -114,19 +114,19 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     nobase = '&&CALCOP'
 !
 !     ON CONSERVE CES OPTIONS POUR PERMETTRE LE CALCUL DANS STANLEY
-    if ((option.eq.'ERTH_ELEM') .or. (option.eq.'ERTH_ELNO')) goto 9999
+    if ((option.eq.'ERTH_ELEM') .or. (option.eq.'ERTH_ELNO')) goto 999
 !
     if ((option.eq.'ERME_ELEM') .or. (option.eq.'ERME_ELNO') .or. (option.eq.'QIRE_ELEM') .or.&
-        (option.eq.'QIRE_ELNO')) goto 9999
+        (option.eq.'QIRE_ELNO')) goto 999
 !
     if ((option.eq.'SIZ1_NOEU') .or. (option.eq.'SIZ2_NOEU') .or. (option.eq.'ERZ1_ELEM') .or.&
         (option.eq.'ERZ2_ELEM') .or. (option.eq.'QIZ1_ELEM') .or. (option.eq.'QIZ2_ELEM')) &
-    goto 9999
+    goto 999
 !
-    if ((option.eq.'SING_ELEM') .or. (option.eq.'SING_ELNO')) goto 9999
+    if ((option.eq.'SING_ELEM') .or. (option.eq.'SING_ELNO')) goto 999
 !
     call ccliop('OPTION', option, nobase, noliop, nopout)
-    if (nopout .eq. 0) goto 9999
+    if (nopout .eq. 0) goto 999
 !
     nonbor = nobase//'.NB_ORDRE'
     lacalc = nobase//'.ACALCULER'
@@ -197,7 +197,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
 !     PAR DEFAUT, ON DOIT TOUT CALCULER
 !     ON COMMENCE PAR CALCULER LA LISTE DE NUMEROS D'ORDRE
-    do 5 iop = 1, nopout
+    do iop = 1, nopout
         optio2 = zk24(jlisop+iop-1)(1:16)
 !
         optdem = .false.
@@ -206,21 +206,21 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         call cclord(iop, nbordr, lisord, nobase, optdem,&
                     minord, maxord, resuin, resuou, lisins)
         zi(jacalc-1+iop) = 1
-  5 end do
+    end do
 !
 !     PUIS ON RETIRE LES OPTIONS DONT LE CALCUL N'EST PAS UTILE
-    do 10 iop = nopout-1, 1, -1
+    do iop = nopout-1, 1, -1
         optio2 = zk24(jlisop+iop-1)(1:16)
 !
         call cclodr(iop, nbordr, lisord, nobase, minord,&
                     maxord, resuin, resuou, lacalc)
- 10 end do
+    end do
 !
 !
 !     COMME ON PARCOURT LES OPTIONS DANS L'ORDRE INVERSE DES DEPENDANCES
 !     ON SAIT QUE LES LISTES D'INSTANT SERONT CORRECTEMENT CREES
     nobaop = nobase//'.OP'
-    do 20 iop = 1, nopout
+    do iop = 1, nopout
         if (zi(jacalc-1+iop) .eq. 0) goto 20
         optio2 = zk24(jlisop+iop-1)(1:16)
 !
@@ -254,7 +254,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         codre2 = 0
         ligrel = ' '
         ligres = ' '
-        do 30 iordr = 1, nbordl
+        do iordr = 1, nbordl
             ligmod = .false.
             numord = zi(jlinst+iordr+2)
 !
@@ -307,9 +307,10 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
             call detrsd('CHAM_ELEM_S', chaout)
 !
             ligres = ligrel
- 30     continue
+        end do
 !
- 20 end do
+ 20     continue
+    end do
 !
     codret = 0
 !
@@ -319,7 +320,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     call ccnett(nobase, nopout)
     if (option(6:9) .eq. 'NOEU' .and. nbma .ne. 0) call jedetr(mesmai)
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

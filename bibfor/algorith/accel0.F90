@@ -122,7 +122,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
     if (faccvg .eq. 2) then
         call nulvec(accmoi)
         call utmess('A', 'MECANONLINE_69')
-        goto 9999
+        goto 999
     endif
 !
 ! --- CALCUL DU SECOND MEMBRE
@@ -142,7 +142,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
     if (rescvg .eq. 1) then
         call nulvec(accmoi)
         call utmess('A', 'MECANONLINE_70')
-        goto 9999
+        goto 999
     endif
 !
 ! --- DEPENDAMMENT DU SOLVEUR, TRAITEMENT PARTICULIER
@@ -153,7 +153,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 !
     call copisd('CHAMP_GD', 'V', depso1, accmoi)
 !
-9999 continue
+999 continue
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... ACCMOI : '

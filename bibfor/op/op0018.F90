@@ -139,7 +139,7 @@ subroutine op0018()
     call getfac('AFFE', nboc)
     call getfac('AFFE_SOUS_STRUC', nboc2)
 !
-    do 10 ioc = 1, nboc
+    do ioc = 1, nboc
         call codent(ioc, 'G', kioc)
 !
         call getvtx('AFFE', 'TOUT', iocc=ioc, nbval=0, nbret=nto)
@@ -157,7 +157,7 @@ subroutine op0018()
         ndgn=max(ndgn,-ngn)
         ndma=max(ndma,-nma)
         ndno=max(ndno,-nno)
- 10 end do
+    end do
 !
     ndmax1=max(ndgm,ndgn)
     ndmax2=max(ndma,ndno)
@@ -225,7 +225,7 @@ subroutine op0018()
 !
 !
 !
-    do 110 ioc = 1, nboc
+    do ioc = 1, nboc
         call getvtx('AFFE', 'PHENOMENE', iocc=ioc, scal=phenom, nbret=nph)
         call getvtx('AFFE', 'MODELISATION', iocc=ioc, nbval=10, vect=lmodel,&
                     nbret=nmo)
@@ -246,7 +246,7 @@ subroutine op0018()
         call getvem(noma, 'NOEUD', 'AFFE', 'NOEUD', ioc,&
                     iarg, ndmax, zk8(jdef2), nno)
 !
-        do 90 imodel = 1, nmo
+        do imodel = 1, nmo
             modeli=lmodel(imodel)
             call jenonu(jexnom('&CATA.'//phenom(1:13)//'.MODL', modeli), imodl)
             call jeveuo(jexnum('&CATA.'//phenom, imodl), 'L', jdpm)
@@ -265,7 +265,7 @@ subroutine op0018()
 !
             if (nto .ne. 0) then
                 lmail=.true.
-                do 20 numail = 1, nbmail
+                do numail = 1, nbmail
                     nutypm=zi(jdtm+numail-1)
                     if (zi(jdpm+nutypm-1) .gt. 0) then
                         zi(jdma+numail-1)=zi(jdpm+nutypm-1)
@@ -273,15 +273,15 @@ subroutine op0018()
                     endif
                     zi(jmut+numail-1)=1
                     if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail-1)= 1
- 20             continue
+                end do
             endif
 !
             if (ngm .ne. 0) then
                 lmail=.true.
-                do 40 i = 1, ngm
+                do i = 1, ngm
                     call jeveuo(jexnom(grpmai, zk24(jdef+i-1)), 'L', jdgm)
                     call jelira(jexnom(grpmai, zk24(jdef+i-1)), 'LONUTI', nbgrma)
-                    do 30 j = 1, nbgrma
+                    do j = 1, nbgrma
                         numail=zi(jdgm+j-1)
                         nutypm=zi(jdtm+numail-1)
                         if (zi(jdpm+nutypm-1) .gt. 0) then
@@ -290,13 +290,13 @@ subroutine op0018()
                         endif
                         zi(jmut+numail-1)=1
                         if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail- 1)=1
- 30                 continue
- 40             continue
+                    end do
+                end do
             endif
 !
             if (nma .ne. 0) then
                 lmail=.true.
-                do 50 i = 1, nma
+                do i = 1, nma
                     call jenonu(jexnom(nommai, zk8(jdef2+i-1)), numail)
                     nutypm=zi(jdtm+numail-1)
                     if (zi(jdpm+nutypm-1) .gt. 0) then
@@ -305,54 +305,54 @@ subroutine op0018()
                     endif
                     zi(jmut+numail-1)=1
                     if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail-1)= 1
- 50             continue
+                end do
             endif
 !
             if (ngn .ne. 0) then
                 lnoeu=.true.
-                do 70 i = 1, ngn
+                do i = 1, ngn
                     call jeveuo(jexnom(grpnoe, zk24(jdef+i-1)), 'L', jdgn)
                     call jelira(jexnom(grpnoe, zk24(jdef+i-1)), 'LONUTI', nbgrno)
-                    do 60 j = 1, nbgrno
+                    do j = 1, nbgrno
                         numnoe=zi(jdgn+j-1)
                         if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)= zi(jdpm+ ntypoi-1)
                         zi(jnut+numnoe-1)=1
- 60                 continue
- 70             continue
+                    end do
+                end do
             endif
 !
             if (nno .ne. 0) then
                 lnoeu=.true.
-                do 80 i = 1, nno
+                do i = 1, nno
                     call jenonu(jexnom(nomnoe, zk8(jdef2+i-1)), numnoe)
                     if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)=zi( jdpm+ ntypoi-1)
                     zi(jnut+numnoe-1)=1
- 80             continue
+                end do
             endif
 !
- 90     continue
+        end do
 !
 !       -- ON VERIFIE QU'A CHAQUE OCCURENCE DE AFFE, LES MAILLES
 !          "PRINCIPALES" ONT BIEN ETE AFFECTEES PAR DES ELEMENTS
 !          (PB DES MODELISATIONS A "TROUS") :
 !          ------------------------------------------------------
         ico=0
-        do 100 numail = 1, nbmail
+        do numail = 1, nbmail
             if ((zi(jmut2+numail-1).eq.1) .and. zi(jdma2+numail-1) .eq. 0) ico=ico+1
-100     continue
+        end do
         if (ico .gt. 0) then
             vali(1)=ioc
             vali(2)=ico
             vali(3)=d2
             call utmess('A', 'MODELISA8_70', ni=3, vali=vali)
         endif
-110 end do
+    end do
 !
 !
 ! --- VERIFICATION QUE LES MAILLES "UTILISATEUR" ONT ETE AFFECTEES
     nbmpcf=0
     nbmpaf=0
-    do 120 i = 1, nbmail
+    do i = 1, nbmail
         if (zi(jmut+i-1) .eq. 1) then
             if (zi(jdma+i-1) .eq. 0) then
                 nbmpaf=nbmpaf+1
@@ -367,12 +367,12 @@ subroutine op0018()
         else
             nbmpcf=nbmpcf+1
         endif
-120 end do
+    end do
 !
 ! --- VERIFICATION QUE LES NOEUDS "UTILISATEUR" ONT ETE AFFECTES
     nbnpcf=0
     nbnpaf=0
-    do 130 i = 1, nbnoeu
+    do i = 1, nbnoeu
         if (zi(jnut+i-1) .eq. 1) then
             if (zi(jdno+i-1) .eq. 0) then
                 nbnpaf=nbnpaf+1
@@ -385,7 +385,7 @@ subroutine op0018()
         else
             nbnpcf=nbnpcf+1
         endif
-130 end do
+    end do
 !
 ! ---   DIMENSIONNEMENT DES OBJETS LIEL ET NEMA
     nbmaaf=0
@@ -393,7 +393,7 @@ subroutine op0018()
     nutype=0
     nbgrel=0
 !
-    do 140 i = 1, nbmail
+    do i = 1, nbmail
         if (zi(jdma+i-1) .ne. 0) then
             nbmaaf=nbmaaf+1
             if (zi(jdma+i-1) .ne. nutype) then
@@ -401,7 +401,7 @@ subroutine op0018()
                 nbgrel=nbgrel+1
             endif
         endif
-140 end do
+    end do
 !
 !
     if (lmail) then
@@ -415,7 +415,7 @@ subroutine op0018()
 !
     nutype=0
 !
-    do 150 i = 1, nbnoeu
+    do i = 1, nbnoeu
         if (zi(jdno+i-1) .ne. 0) then
             nbnoaf=nbnoaf+1
             if (zi(jdno+i-1) .ne. nutype) then
@@ -423,7 +423,7 @@ subroutine op0018()
                 nbgrel=nbgrel+1
             endif
         endif
-150 end do
+    end do
 !
 !
     if (lnoeu) then
@@ -457,7 +457,7 @@ subroutine op0018()
     nmgrel=0
     numvec=0
 !
-    do 160 numail = 1, nbmail
+    do numail = 1, nbmail
         if (zi(jdma+numail-1) .ne. 0) then
             if (zi(jdma+numail-1) .ne. nutype .and. nutype .ne. 0) then
                 nugrel=nugrel+1
@@ -481,13 +481,13 @@ subroutine op0018()
             call jecroc(jexnum(cptlie, nugrel))
             call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
         endif
-160 end do
+    end do
 !
     nutype=0
     numsup=0
     nmgrel=0
 !
-    do 170 numnoe = 1, nbnoeu
+    do numnoe = 1, nbnoeu
         if (zi(jdno+numnoe-1) .ne. 0) then
             if (zi(jdno+numnoe-1) .ne. nutype .and. nutype .ne. 0) then
                 nugrel=nugrel+1
@@ -512,14 +512,14 @@ subroutine op0018()
             call jecroc(jexnum(cptlie, nugrel))
             call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
         endif
-170 end do
+    end do
 !
 ! ---   STOCKAGE DES NOUVELLES MAILLES DANS NEMA
 !
     if (nbnoaf .ne. 0) then
         numvec=0
         numsup=0
-        do 180 numnoe = 1, nbnoeu
+        do numnoe = 1, nbnoeu
             if (zi(jdno+numnoe-1) .ne. 0) then
                 zi(jdnw+numvec)=numnoe
                 zi(jdnw+numvec+1)=ntypoi
@@ -528,7 +528,7 @@ subroutine op0018()
                 call jecroc(jexnum(cptnem, numsup))
                 call jeecra(jexnum(cptnem, numsup), 'LONMAX', 2)
             endif
-180     continue
+        end do
     endif
 !
 190 continue

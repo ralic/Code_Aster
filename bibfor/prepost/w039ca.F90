@@ -57,7 +57,7 @@ subroutine w039ca(ifi, form)
 !
 !
     call getfac('CONCEPT', nocc)
-    do 10 iocc = 1, nocc
+    do iocc = 1, nocc
 !
 !       -- CHAM_MATER :
 !       ----------------
@@ -197,7 +197,7 @@ subroutine w039ca(ifi, form)
             call w039c1(charge//'.CHME.ONDE', ifi, form, ligrel, titre)
 !
         endif
- 10 end do
+    end do
 !
 !
 !

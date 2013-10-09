@@ -156,25 +156,25 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call wkvect('&&'//nompro//'.TYPEMA', 'V V K8', nbtm, iatyma)
 !
-    do 1 ity = 1, nbtm
+    do ity = 1, nbtm
         call jenuno(jexnum('&CATA.TM.NOMTM', ity), typema)
         zk8(iatyma-1+ity) = typema
-  1 end do
+    end do
 !
     call jelira('&CATA.GD.NOMGD', 'NOMMAX', nbgd)
     call wkvect('&&'//nompro//'.GD', 'V V K8', nbgd, iagd)
 !
-    do 2 igd = 1, nbgd
+    do igd = 1, nbgd
         call jenuno(jexnum('&CATA.GD.NOMGD', igd), gd)
         zk8(iagd-1+igd) = gd
-  2 end do
+    end do
 !
     call wkvect('&&'//nompro//'.NBCMP', 'V V I', nbgd, iacmp)
 !
-    do 3 igd = 1, nbgd
+    do igd = 1, nbgd
         call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp)
         zi(iacmp-1+igd) = ncmp
-  3 end do
+    end do
 !
     call jeveuo(ma//'.CONNEX', 'L', iconx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', iconx2)

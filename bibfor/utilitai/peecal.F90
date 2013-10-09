@@ -136,16 +136,16 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         call reliem(' ', noma, 'NU_MAILLE', 'INTEGRALE', iocc,&
                     2, motcle, typmcl, mesmai, nbmai)
         call jeveuo(mesmai, 'L', jmesma)
-        do 5 i = 1, nbma
+        do i = 1, nbma
             zi(indma+i-1)=0
-  5     continue
-        do 10 i = 1, nbmai
+        end do
+        do i = 1, nbmai
             zi(indma+zi(jmesma+i-1)-1)=1
- 10     continue
+        end do
     else
-        do 15 i = 1, nbma
+        do i = 1, nbma
             zi(indma+i-1)=1
- 15     continue
+        end do
     endif
 !
 !
@@ -184,11 +184,11 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         call jeveuo(cesout//'.CESC', 'L', jcmpgd)
     else
         call wkvect('&&PEECAL.LIST_CMP', 'V V K8', ncmpm, jcmpgd)
-        do 25 i = 1, ncmpm
+        do i = 1, ncmpm
             nomva = 'V'
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
- 25     continue
+        end do
     endif
 !
 !     - INFOS
@@ -199,19 +199,19 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
 !
 ! --- CALCUL DE L'INTEGRALE ET DE LA MOYENNE(=INTEGRALE/VOLUME):
-    do 30 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         nucmp=indik8(zk8(jcmpgd),nomcmp(icmp),1,ncmpm)
         val=0.d0
         vol=0.d0
         ico=0
-        do 35 ima = 1, nbma
+        do ima = 1, nbma
             if (zi(indma+ima-1) .ne. 1) goto 35
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
             if (nbsp .gt. 1) then
                 call utmess('F', 'UTILITAI8_60')
             endif
-            do 40 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)
                 ASSERT(iad.ge.0)
@@ -233,8 +233,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                 endif
                 ico=ico+1
                 vol=vol+volpt
- 40         continue
- 35     continue
+            end do
+ 35         continue
+        end do
         if (ico .eq. 0) then
             valk(3)=nomcmp(icmp)
             call utmess('F', 'UTILITAI7_12', nk=3, valk=valk)
@@ -245,7 +246,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         zk16(jintk+ind1+icmp-1)='INTE_'//nomcp2(icmp)
         zr(jintr+nbcmp+icmp+ind2)=val/vol
         zk16(jintk+ind1+nbcmp+icmp-1)='MOYE_'//nomcp2(icmp)
- 30 end do
+    end do
 !
 !
 ! --- ON AJOUTE LES PARAMETRES MANQUANTS DANS LA TABLE:
@@ -253,12 +254,12 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     if (.not.exist) then
         call tbajpa(resu, 1, zk16(jintk+ind1-1), 'K16')
     endif
-    do 45 icmp = 1, nbcmp*2
+    do icmp = 1, nbcmp*2
         call tbexip(resu, zk16(jintk+ind1+icmp-1), exist, k8b)
         if (.not.exist) then
             call tbajpa(resu, 1, zk16(jintk+ind1+icmp-1), 'R')
         endif
- 45 continue
+    end do
 !
 ! --- ON REMPLIT LA TABLE
     nbpara=ind1+nbcmp*2

@@ -148,9 +148,9 @@ subroutine pcldlt(matf, mat, niremp, bas)
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', jvalm)
     call wkvect('&&PCLDLT.VTRAVAIL', 'V V R', nequ, idv)
     dnorm = 0.d0
-    do 10 i = 1, nequ
+    do i = 1, nequ
         dnorm = max(abs(zr(jvalm-1+zi(jsmdi-1+i))),dnorm)
-10  end do
+    end do
     epsi = 1.d-16*dnorm
     call jelibe(jexnum(matas//'.VALM', 1))
 !
@@ -161,40 +161,40 @@ subroutine pcldlt(matf, mat, niremp, bas)
     nzmax = ncoef
     call wkvect('&&PCLDLT.SMDIF', 'V V I', nequ+1, jsmdi1)
 !
-    do 7778,k=1,2*niremp+2
-    call wkvect('&&PCLDLT.ICPD', 'V V I', nequ, jicpd)
-    call wkvect('&&PCLDLT.ICPLX', 'V V I', nequ+1, jicplx)
-    call jedetr('&&PCLDLT.SMHCF')
-    call wkvect('&&PCLDLT.SMHCF', 'V V S', 2*nzmax, jsmhc1)
-    call wkvect('&&PCLDLT.ICPCX', 'V V I', nzmax, jicpcx)
+    do k = 1, 2*niremp+2
+        call wkvect('&&PCLDLT.ICPD', 'V V I', nequ, jicpd)
+        call wkvect('&&PCLDLT.ICPLX', 'V V I', nequ+1, jicplx)
+        call jedetr('&&PCLDLT.SMHCF')
+        call wkvect('&&PCLDLT.SMHCF', 'V V S', 2*nzmax, jsmhc1)
+        call wkvect('&&PCLDLT.ICPCX', 'V V I', nzmax, jicpcx)
 !
-    call pcstru(nequ, zi(jsmdi), zi4(jsmhc), zi(jsmdi1), zi4(jsmhc1),&
-                zi(jicpd), zi(jicpcx), zi(jicplx), niremp, complt,&
-                nzmax, 0, ier)
+        call pcstru(nequ, zi(jsmdi), zi4(jsmhc), zi(jsmdi1), zi4(jsmhc1),&
+                    zi(jicpd), zi(jicpcx), zi(jicplx), niremp, complt,&
+                    nzmax, 0, ier)
 !
-    call jedetr('&&PCLDLT.ICPLX')
-    call jedetr('&&PCLDLT.ICPCX')
-    call jedetr('&&PCLDLT.ICPD')
-    if (ier .eq. 0) goto 7779
-    nzmax=ier
-    7778 end do
+        call jedetr('&&PCLDLT.ICPLX')
+        call jedetr('&&PCLDLT.ICPCX')
+        call jedetr('&&PCLDLT.ICPD')
+        if (ier .eq. 0) goto 7779
+        nzmax=ier
+    end do
     call utmess('F', 'ALGELINE3_24')
-7779  continue
+7779 continue
 !
 !
 !     -- ON MET A JOUR NUF.SMDI ET NUF.SMHC  :
 !     ------------------------------------------------
     call jeveuo(nuf//'.SMOS.SMDI', 'E', jsmdif)
-    do 20,k = 1,nequ
-    zi(jsmdif-1+k) = zi(jsmdi1-1+k)
-    20 end do
+    do k = 1, nequ
+        zi(jsmdif-1+k) = zi(jsmdi1-1+k)
+    end do
     call jedetr('&&PCLDLT.SMDIF')
 !
     call jedetr(nuf//'.SMOS.SMHC')
     call wkvect(nuf//'.SMOS.SMHC', base//' V S', nzmax, jsmhcf)
-    do 30,k = 1,nzmax
-    zi4(jsmhcf-1+k) = zi4(jsmhc1-1+k)
-    30 end do
+    do k = 1, nzmax
+        zi4(jsmhcf-1+k) = zi4(jsmhc1-1+k)
+    end do
     call jedetr('&&PCLDLT.SMHCF')
 !
 !

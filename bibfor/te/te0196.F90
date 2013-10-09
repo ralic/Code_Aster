@@ -34,7 +34,7 @@ subroutine te0196(option, nomte)
 ! ......................................................................
 !
     integer :: icodre(1)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r
+    real(kind=8) :: poids, r
     character(len=8) :: fami, poum
     integer :: nno, kp, npg1, i, ivectu, ipesa, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, imate, kpg, spt
@@ -42,7 +42,7 @@ subroutine te0196(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: k
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfde, jgano)
@@ -60,23 +60,23 @@ subroutine te0196(option, nomte)
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
-    do 101 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
         r = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102      continue
+        end do
         poids = poids*r
 !
         poids = poids*rho(1)
-        do 103 i = 1, nno
+        do i = 1, nno
             k=(kp-1)*nno
             zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids * zr(ipesa) * zr(ipesa+1) * zr(ivf+k+i-1)
             zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids * zr(ipesa) * zr(ipesa+2) * zr(ivf+k+i-1)
             zr(ivectu+3*i-1) = zr(ivectu+3*i-1) + poids * zr(ipesa) * zr(ipesa+3) * zr(ivf+k+i-1)
-103      continue
-101  end do
+        end do
+    end do
 end subroutine

@@ -125,13 +125,13 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 !        --- VERIFICATION SUR LES CMPS ---
         call jelira(jexnum(xdicmp, i), 'LONMAX', nbcmp)
         call jeveuo(jexnum(xdicmp, i), 'L', anumcp)
-        do 110 j = 1, nbcmp, 1
+        do j = 1, nbcmp, 1
             if (zi(anumcp + j-1) .eq. 0) then
                 call jeveuo(jexnum(xdncmp, i), 'L', anomcp)
                 nomcmp = zk8(anomcp + j-1)
                 call utmess('F', 'POSTRELE_48', sk=nomcmp, si=i)
             endif
-110     continue
+        end do
 !
 !        --- VERIFICATION DE CONCORDANCE DES MAILLAGES ---
         call dismoi('NOM_MAILLA', ncheff, 'CHAMP', repk=nmaich)
@@ -165,13 +165,13 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 call jeveuo('&&OP0051.NOM.GRPN', 'E', agrpnd)
                 call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=zk24(agrpnd),&
                             nbret=n1)
-                do 120 k = 1, nbgrpn, 1
+                do k = 1, nbgrpn, 1
                     nomgrn = zk24(agrpnd + k-1)
                     call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
                     if (n1 .eq. 0) then
                         call utmess('F', 'POSTRELE_50', sk=nomgrn, si=i)
                     endif
-120             continue
+                end do
                 call jedetr('&&OP0051.NOM.GRPN')
             endif
             if (nbneud .ne. 0) then
@@ -179,13 +179,13 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8( alneud),&
                             nbret=n1)
                 nrepnd = nmaich//'.NOMNOE'
-                do 130 k = 1, nbneud, 1
+                do k = 1, nbneud, 1
                     nomnd = zk8(alneud + k-1)
                     call jenonu(jexnom(nrepnd, nomnd), n1)
                     if (n1 .eq. 0) then
                         call utmess('F', 'POSTRELE_51', sk=nomnd, si=i)
                     endif
-130             continue
+                end do
                 call jedetr('&&OP0051.NOM.NEUD')
             endif
         endif

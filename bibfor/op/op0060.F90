@@ -92,7 +92,7 @@ subroutine op0060()
     integer :: nbsym, i, n1, n2
     integer :: lamor1, lamor, limpe, lfreq, nbfreq
     integer :: neq, nbmat
-    integer ::  jrefa
+    integer :: jrefa
     integer :: ifreq, ieq, inom, ier
     integer :: lsecmb, jsecmb, jsolut, jvezer
     integer :: icoef, icode

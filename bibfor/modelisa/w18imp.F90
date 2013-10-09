@@ -76,7 +76,7 @@ subroutine w18imp(ligrel, noma, nomo)
 !
     numvec=1
     typemo=' '
-    do 10 i = 1, nbgrel
+    do i = 1, nbgrel
         call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nmgrel)
         if (nmgrel .eq. 1) goto 9
         nutype=zi(jdli+numvec+nmgrel-2)
@@ -107,12 +107,13 @@ subroutine w18imp(ligrel, noma, nomo)
 !
   9     continue
         numvec=numvec+nmgrel
- 10 end do
+ 10     continue
+    end do
 !
 !
 !     -- 2. IMPRESSION DU NOMBRE D'ELEMENTS DE CHAQUE TYPE :
 !     -------------------------------------------------------
-    do 20 i = 1, nbte
+    do i = 1, nbte
         nbele=zi(jnbele-1+i)
         if (nbele .eq. 0) goto 20
 !
@@ -120,7 +121,8 @@ subroutine w18imp(ligrel, noma, nomo)
         typema=zk8(jtypma-1+i)
         typele=zk16(jtypel-1+i)
         write (ifm,9010)typemo,typele,typema,nbele
- 20 end do
+ 20     continue
+    end do
     write(ifm,9050)
 !
 !
@@ -129,7 +131,7 @@ subroutine w18imp(ligrel, noma, nomo)
     if (niv .eq. 2) then
         numvec=1
         typemo=' '
-        do 40 i = 1, nbgrel
+        do i = 1, nbgrel
             call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nmgrel)
             if (nmgrel .eq. 1) goto 39
             numail=zi(jdli+numvec-1)
@@ -155,7 +157,7 @@ subroutine w18imp(ligrel, noma, nomo)
                 write (ifm,9030)
             endif
             jc=0
-            do 30 j = jdli+numvec-1, jdli+numvec+nmgrel-3
+            do j = jdli+numvec-1, jdli+numvec+nmgrel-3
                 jc=jc+1
                 numail=zi(j)
                 if (numail .lt. 0) then
@@ -172,10 +174,10 @@ subroutine w18imp(ligrel, noma, nomo)
                 else
                     tabmai(jc)=nomail
                 endif
- 30         continue
+            end do
  39         continue
             numvec=numvec+nmgrel
- 40     continue
+        end do
         write(ifm,9050)
     endif
 !

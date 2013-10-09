@@ -136,7 +136,7 @@ subroutine ssdein(ul, ug, mail, nocas)
 !
 !     4-1- ON RECOPIE UG.VALE DANS Q_E:
 !     ---------------------------------
-    do 1 inoe = 1, nbnoet
+    do inoe = 1, nbnoet
         inog=zi(iasupm-1+inoe)
         inol= zi(iaconx-1+3*(inoe-1)+2)
         ili= zi(iaconx-1+3*(inoe-1)+1)
@@ -166,7 +166,7 @@ subroutine ssdein(ul, ug, mail, nocas)
             zr(iavall-1+ieql) = zr(iavalg-1+ieqg)
         endif
   2     continue
-  1 end do
+    end do
 !
 !
 !     4-2- ON CHANGE LE REPERE (ROTATION G->L ) : Q_E  --> Q_E :
@@ -180,19 +180,19 @@ subroutine ssdein(ul, ug, mail, nocas)
         angl(2) = zr(iaparr-1+14*(isma-1)+5)
         angl(3) = zr(iaparr-1+14*(isma-1)+6)
         call matrot(angl, pgl)
-        do 710 i = 1, 3
-            do 712 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 lambda(i,j) = pgl(i,j)
                 lambda(i,j+3) = 0.d0
                 lambda(i+3,j) = 0.d0
                 lambda(i+3,j+3) = pgl(i,j)
-712         continue
-710     continue
+            end do
+        end do
         call ssvaro(lambda, 'GL', .false., 'EXTE', nomacr,&
                     iavall, iavalp)
-        do 4 i = 1, nddle
+        do i = 1, nddle
             zr(iavall-1+nddli+i)= zr(iavalp-1+nddli+i)
-  4     continue
+        end do
         call jedetr('&&SSVARO.IINO')
     endif
 !
@@ -216,21 +216,21 @@ subroutine ssdein(ul, ug, mail, nocas)
                     call ssvaro(lambda, 'GL', .false., 'TOUS', nomacr,&
                                 ialica, iavalp)
                     call ssvau1(nomacr, iavalp, iavalp)
-                    do 5 i = 1, nddli
+                    do i = 1, nddli
                         zr(iavall-1+i)=zr(iavalp-1+i)
-  5                 continue
+                    end do
                 else
-                    do 6 i = 1, nddli
+                    do i = 1, nddli
                         zr(iavall-1+i)=zr(ialica-1+nddlt+i)
-  6                 continue
+                    end do
                 endif
 !
             else if (zk8(ialich-1+1)(1:3).eq.'OUI') then
 !
 !           -- LE CHARGEMENT EST "SUIVEUR" :
-                do 7 i = 1, nddli
+                do i = 1, nddli
                     zr(iavall-1+i)=zr(ialica-1+nddlt+i)
-  7             continue
+                end do
             else
                 call utmess('F', 'SOUSTRUC_47')
             endif
@@ -246,20 +246,20 @@ subroutine ssdein(ul, ug, mail, nocas)
     nlblph=lgblph/nddli
 !
     j=0
-    do 10 iblph = 1, nblph
+    do iblph = 1, nblph
         call jeveuo(jexnum(nomacr//'.PHI_IE', iblph), 'L', iaphi0)
-        do 11 iiblph = 1, nlblph
+        do iiblph = 1, nlblph
             j=j+1
             if (j .gt. nddle) goto 13
             iaphie=iaphi0+ (iiblph-1)*nddli
-            do 12 i = 1, nddli
+            do i = 1, nddli
                 zr(iavall-1+i)=zr(iavall-1+i) - zr(iaphie-1+i)* zr(&
                 iavall-1+nddli+j)
- 12         continue
- 11     continue
+            end do
+        end do
  13     continue
         call jelibe(jexnum(nomacr//'.PHI_IE', iblph))
- 10 end do
+    end do
 !
     call jedetr('&&SSDEIN.VALP')
 !

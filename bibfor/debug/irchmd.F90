@@ -38,7 +38,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
 !     SORTIES:
 !        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !
-    integer ::  numord
+    integer :: numord
 !
     character(len=8) :: typech, noresu, sdcarm
     character(len=16) :: nomsym

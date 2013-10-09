@@ -164,7 +164,7 @@ subroutine op0026()
     call getvid(' ', 'SIGM', scal=sigmoi, nbret=n1)
     call chpver('F', sigmoi, 'ELGA', 'SIEF_R', iret)
     call nmcha0('VALINC', 'SIGMOI', sigmoi, valinc)
-    l_etat_init =  n1.ne.0
+    l_etat_init = n1.ne.0
 !
 ! - Get internal variables
 !

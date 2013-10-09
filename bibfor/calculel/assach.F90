@@ -104,9 +104,9 @@ subroutine assach(preel2, pimag2, base2, chout2)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gdcpx), 'L', jncmpc)
 !
     ier=0
-    do 10 i = 1, nmax1
+    do i = 1, nmax1
         if (zk8(jncmpr-1+i) .ne. zk8(jncmpc-1+i)) ier=1
- 10 end do
+    end do
 !
     if (ier .ne. 0) then
         valk(1)=nomgdr
@@ -138,9 +138,9 @@ subroutine assach(preel2, pimag2, base2, chout2)
     call jelira(chout//'.CELV', 'LONMAX', nbvalc)
     ASSERT(nbvalr.eq.nbvalc)
 !
-    do 40 i = 1, nbvalr
+    do i = 1, nbvalr
         zc(jvale-1+i)=dcmplx(zr(ivalr-1+i),zr(ivali-1+i))
- 40 end do
+    end do
 !
     call dismoi('MPI_COMPLET', preel, 'CHAM_ELEM', repk=kmpicr)
     call dismoi('MPI_COMPLET', pimag, 'CHAM_ELEM', repk=kmpici)

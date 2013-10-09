@@ -63,7 +63,7 @@ subroutine fonnor(resu, noma, cnxinv)
     real(kind=8) :: vdir(2, 3), vnor(2, 3), norme, vecdir(3), hmax, hmaxpr
     real(kind=8) :: vect(3), sens
     character(len=6) :: nompro, tyfond
-    character(len=8) ::  typfon, noeua
+    character(len=8) :: typfon, noeua
     character(len=16) :: casfon
     character(len=19) :: basnof, basseg, macofo
     parameter    (nompro='FONNOR')
@@ -175,16 +175,16 @@ subroutine fonnor(resu, noma, cnxinv)
 !     1: LE PRODUIT SCALAIRE EST SUPERIEUR OU EGAL A 0
     call wkvect('&&FONNOR.NVDIR', 'V V I', nbnoff, jnvdir)
 !
-    do 10 i = 1, nbnoff
+    do i = 1, nbnoff
         zl(jborl-1+i)=.false.
- 10 end do
+    end do
 !
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES "SEGMENTS" DU FOND DE FISSURE
 !     ------------------------------------------------------------------
 !
-    do 100 iseg = 1, nseg
+    do iseg = 1, nseg
 !
 !       INDICES DES NOEUDS DU SEGMENT :
 !       NOEUDS SOMMETS (INA ET INB), NOEUD MILIEU (INC)
@@ -286,7 +286,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !         MOYENNE POUR LES NOEUDS SOMMETS INA ET INB
 !         DIRECT POUR LE NOEUD MILIEU INC
-            do 110 j = 1, 6
+            do j = 1, 6
 !
                 zr(jbasno-1+6*(ina-1)+j)=( zr(jbasno-1+6*(ina -1)+j)&
                 +zr(jbasse-1+6*(iseg-1)+j) )/2.d0
@@ -297,7 +297,7 @@ subroutine fonnor(resu, noma, cnxinv)
                 if (casfon .eq. 'QUADRATIQUE') zr(jbasno-1+6*(inc-1)+j) = zr(&
                                                                           jbasse-1+6*(iseg-1)+j)
 !
-110         continue
+            end do
 !
 !         NORMALISATIONS
 !         ZR(JBASNO-1+6*(INC-1)+J) DEJA NORMALISE
@@ -315,17 +315,17 @@ subroutine fonnor(resu, noma, cnxinv)
 !
         else if (ndim.eq.2) then
 !
-            do 120 j = 1, 4
+            do j = 1, 4
                 zr(jbasno-1+4*(ina-1)+j) = zr(jbasse-1+4*(iseg-1)+j)
-120         continue
+            end do
 !
         endif
 !
 !     DETERMINATION DE LA TAILLE DE MAILLE POUR LE NOEUD NA
 !     (ET LE NOEUD MILIEU INC EN QUADRATIQUE)
-        do 130 k = 1, ndim
+        do k = 1, ndim
             vecdir(k)=zr(jbasno-1+2*ndim*(ina-1)+k+ndim)
-130     continue
+        end do
 !
         call fonno7(noma, cnxinv, ndim, na, vecdir,&
                     hmax)
@@ -343,16 +343,16 @@ subroutine fonnor(resu, noma, cnxinv)
             zr(jtail-1+iseg) = hmax
         endif
 !
-100 end do
+    end do
 !
 !     DANS LE CAS D'UN FOND FERME: CORRECTION DE BASEFOND
 !     AUX NOEUDS EXTREMITES
     if ((tyfond.eq.'FERME') .and. (ndim.eq.3)) then
-        do 300 j = 1, 6
+        do j = 1, 6
             zr(jbasno-1+6*(1-1)+j)=(zr(jbasse-1+6*(1-1)+j) +zr(&
             jbasse-1+6*(nseg-1)+j))/2.d0
             zr(jbasno-1+6*(nbnoff-1)+j)=zr(jbasno-1+6*(1-1)+j)
-300     continue
+        end do
         call normev(zr(jbasno-1+6*(1-1)+1), norme)
         call normev(zr(jbasno-1+6*(1-1)+4), norme)
         call normev(zr(jbasno-1+6*(nbnoff-1)+1), norme)
@@ -362,9 +362,9 @@ subroutine fonnor(resu, noma, cnxinv)
 !     DETERMINATION DE LA TAILLE DE MAILLE POUR LE DERNIER NOEUD
     if (ndim .eq. 3) then
 !
-        do 200 k = 1, ndim
+        do k = 1, ndim
             vecdir(k)=zr(jbasno-1+2*ndim*(inb-1)+k+ndim)
-200     continue
+        end do
 !
         call fonno7(noma, cnxinv, ndim, nb, vecdir,&
                     hmax)

@@ -194,9 +194,9 @@ subroutine op0079()
 !     ATTENTION : ON NE TRAITE QUE LES NOMSY STOCKABLES DANS
 !     UN TRAN_GENE : DEPL, ACCE, VITE
 !
-    do 40 isym = 1, nbsym
+    do isym = 1, nbsym
 !
-        do 50 iord = 1, nbo
+        do iord = 1, nbo
 !
             nosy=nosyou(isym)
 !
@@ -220,7 +220,7 @@ subroutine op0079()
 ! --- PROJECTION D UN VECTEUR DE TYPE FORCE
 !
                 call wkvect('&&OP0079.VECTASSE', 'V V R', neq, idvect)
-                do 10 imod = 1, nbmode
+                do imod = 1, nbmode
 !
 !
 ! --------- RECOPIE DU IEME MODE DANS UN VECTEUR TEMP
@@ -237,7 +237,7 @@ subroutine op0079()
                     zr(ind) = ddot(neq,zr(idvect),1,zr(iadvec),1)
 !
 ! ------- LIBERATION DU VECTEUR TEMP
- 10             continue
+                end do
                 call jedetr('&&OP0079.VECTASSE')
             else
 !
@@ -249,7 +249,7 @@ subroutine op0079()
 !
 ! ----- CALCUL DE TMODE*MODE
 !
-                do 20 imod = 1, nbmode
+                do imod = 1, nbmode
 !
 ! ----- RECOPIE DU IEME MODE
 !
@@ -261,7 +261,7 @@ subroutine op0079()
 !
 !-------- PRODUIT SCALAIRE MODE(IMOD)*MODE(JMOD)
 !
-                    do 20 jmod = imod, nbmode
+                    do jmod = imod, nbmode
 !
 ! ------- RECOPIE DU JEME MODE
 !
@@ -275,11 +275,12 @@ subroutine op0079()
                         pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
                         zr(iamatr+imod+ (jmod-1)*nbmode-1) = pij
                         zr(iamatr+jmod+ (imod-1)*nbmode-1) = pij
- 20                 continue
+                    end do
+                end do
 !
 ! ----- CALCUL DE LA PROJECTION
 !
-                do 30 imod = 1, nbmode
+                do imod = 1, nbmode
 !
 ! ------- RECOPIE DU IEME MODE
 !
@@ -293,7 +294,7 @@ subroutine op0079()
 !
                     zr(idvec2+imod-1) = ddot(neq,zr(idvec1),1,zr( iadvec),1)
 !
- 30             continue
+                end do
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
 !
@@ -310,8 +311,9 @@ subroutine op0079()
                 if (typvec .eq. 'C') call jedetr('&&OP0079.VECTASC2')
             endif
 !
- 50     continue
- 40 continue
+        end do
+ 40     continue
+    end do
 !
     call jedema()
 end subroutine

@@ -134,13 +134,13 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     call wkvect('&&CNSCNO.TMP_NUCM1', 'V V I', ncmp1, jnucm1)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
-    do 10 icmp1 = 1, ncmp1
+    do icmp1 = 1, ncmp1
         nomcmp=zk8(jcnsc-1+icmp1)
         icmp=indik8(zk8(jcmpgd),nomcmp,1,ncmpmx)
         ASSERT(icmp.gt.0)
         zi(jnucmp-1+icmp)=icmp1
         zi(jnucm1-1+icmp1)=icmp
- 10 end do
+    end do
 !
 !
     if (prchnz .eq. ' ') then
@@ -188,9 +188,9 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 !       2.1 ON COMPTE LES CMPS PORTEES PAR CNS :
         neq2=0
-        do 20 k = 1, nbno*ncmp1
+        do k = 1, nbno*ncmp1
             if (zl(jcnsl-1+k)) neq2=neq2+1
- 20     continue
+        end do
         if (neq2 .eq. 0) then
             valk(1)=cns
             valk(2)=cno
@@ -204,8 +204,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 !       2.3 REMPLISSAGE DE .PRNO :
         call jeveuo(jexnum(prchno//'.PRNO', 1), 'E', jprn2)
-        do 40 ino = 1, nbno
-            do 30 icmp1 = 1, ncmp1
+        do ino = 1, nbno
+            do icmp1 = 1, ncmp1
                 if (zl(jcnsl-1+(ino-1)*ncmp1+icmp1)) then
                     icmp=zi(jnucm1-1+icmp1)
                     iec=(icmp-1)/30+1
@@ -216,14 +216,14 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                     zi(jprn2-1+((2+nec)*(ino-1))+2)=zi(jprn2-1+&
                     ((2+nec)*(ino-1))+2)+1
                 endif
- 30         continue
- 40     continue
+            end do
+        end do
 !
         ico=0
-        do 50 ino = 1, nbno
+        do ino = 1, nbno
             zi(jprn2-1+((2+nec)*(ino-1))+1)=ico+1
             ico=ico+zi(jprn2-1+((2+nec)*(ino-1))+2)
- 50     continue
+        end do
         call jelibe(prchno//'.PRNO')
 !
 !       2.4 CREATION  DE .DEEQ :
@@ -276,7 +276,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     call jeveuo(prchno//'.DEEQ', 'L', jdeeq)
     call wkvect(cno//'.VALE', base//' V '//tsca, neq2, jvale)
 !
-    do 60 ieq2 = 1, neq2
+    do ieq2 = 1, neq2
         ino=zi(jdeeq-1+2*(ieq2-1)+1)
         icmp=zi(jdeeq-1+2*(ieq2-1)+2)
         if (ino*icmp .gt. 0) then
@@ -371,7 +371,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                 endif
             endif
         endif
- 60 end do
+ 60     continue
+    end do
 !
 !
 !     7 - POUR ECONOMISER LES PROF_CHNO, ON REGARDE SI

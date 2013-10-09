@@ -110,7 +110,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iad, iarefr, icomp, idimli, idlres
-    integer ::  ili, imat, iresu, iret, iret1, n1
+    integer :: ili, imat, iresu, iret, iret1, n1
     integer :: nbgr, nbmo, nbresu, nbsup, ncmp
 !
 !-----------------------------------------------------------------------
@@ -127,7 +127,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
 !     -- VERIFICATION DES MATR_ELEM :
 !     -------------------------------
-    do 100 imat = 1, nbmat
+    do imat = 1, nbmat
         matel = zk24(ilimat+imat-1)(1:19)
         call jeexin(matel//'.RERR', iret1)
         ASSERT(iret1.gt.0)
@@ -162,7 +162,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
                 call utmess('F', 'ASSEMBLA_19')
             endif
         endif
-100 end do
+    end do
 !
 !     --SI IL EXISTE DES SOUS-STRUCTURES, ON COMPTE 1 LIGREL DE PLUS:
 !
@@ -195,13 +195,13 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
 !---- CALCUL DE LILI
 !
-    do 110 imat = 1, nbmat
+    do imat = 1, nbmat
         matel = zk24(ilimat+imat-1)(1:19)
         call jeexin(matel//'.RELR', iret)
         if (iret .eq. 0) goto 110
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
         if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
-        do 120 iresu = 1, nbresu
+        do iresu = 1, nbresu
             resu = zk24(idlres+iresu-1)
 !
             call jeexin(resu(1:19)//'.NOLI', iret)
@@ -221,17 +221,19 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
                 nlili = nlili + 1
                 call jecroc(jexnom(k24lil, nomli))
             endif
-120     continue
-110 end do
+120         continue
+        end do
+110     continue
+    end do
 !
 !     -- ON REGARDE SI ON DOIT AJOUTER LE LIGREL DE MODELE POUR LES
 !     -- SOUS-STRUCTURES:
     if (exiss2(1:3) .eq. 'OUI') then
         icomp=0
-        do 777 ili = 1, nlili
+        do ili = 1, nlili
             call jenuno(jexnum(k24lil, ili), nomli)
             if (nomli(1:8) .eq. modele) icomp =1
-777     continue
+        end do
         if (icomp .eq. 0) then
             nlili= nlili+1
             call jecroc(jexnom(k24lil, modele//'.MODELE'))
@@ -242,7 +244,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
     if (nlili .eq. 1) then
         if (kstop .eq. 'C') then
-            goto 9999
+            goto 999
         else
             ASSERT(kstop.eq.'F')
             call utmess('F', 'ASSEMBLA_20')
@@ -270,7 +272,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     zi(iadnem) = nbelm
     nbmo=0
     ilimo=0
-    do 200 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(k24lil, ili), nomli)
 !
 !---- CALCUL DU NBRE DE LIGRELS DE MODELE : NBMO ET DE ILIMO
@@ -314,6 +316,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
             zi(iadlie+3* (ili-1)+1) = 2**30
             zi(iadlie+3* (ili-1)+2) = 2**30
         endif
-200 end do
-9999 continue
+    end do
+999 continue
 end subroutine

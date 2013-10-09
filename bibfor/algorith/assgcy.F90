@@ -46,7 +46,6 @@ subroutine assgcy(nomres, nugene)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -57,6 +56,7 @@ subroutine assgcy(nomres, nugene)
 #include "asterfort/jexnum.h"
 #include "asterfort/ualfva.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, modgen
     character(len=14) :: nugene
     character(len=19) :: stolci, resu
@@ -101,9 +101,9 @@ subroutine assgcy(nomres, nugene)
     call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
     call wkvect(resu//'.CONL', 'G V R', neq, iaconl)
-    do 10 i = 1, neq
+    do i = 1, neq
         zr(iaconl+i-1) = 1.0d0
-10  end do
+    end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -124,7 +124,7 @@ subroutine assgcy(nomres, nugene)
     call jeveuo(stolci//'.SCBL', 'L', iscbl)
     call jeveuo(stolci//'.SCHC', 'L', ischc)
 !
-    do 20 iblo = 1, nbloc
+    do iblo = 1, nbloc
 !
         call jecroc(jexnum(resu//'.UALF', iblo))
         call jeveuo(jexnum(resu//'.UALF', iblo), 'E', ldblo)
@@ -134,14 +134,14 @@ subroutine assgcy(nomres, nugene)
         n1bloc = zi(iscbl+iblo-1)+1
         n2bloc = zi(iscbl+iblo)
 !    INITIALISATION DE LA MATRICE GENERALISEE
-        do 30 i = n1bloc, n2bloc
-            do 40 j = (i-zi(ischc+i-1)+1), i
+        do i = n1bloc, n2bloc
+            do j = (i-zi(ischc+i-1)+1), i
                 zr(ldblo+zi(iscdi+i-1)+j-i-1) = 0.d0
-40          continue
-30      continue
+            end do
+        end do
 !
         call jelibe(jexnum(resu//'.UALF', iblo))
-20  end do
+    end do
 !
     call ualfva(resu, 'G')
 !

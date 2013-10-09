@@ -46,7 +46,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !  NBMA          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer ::  nbmc, nbno, nci, adrvlc, acncin, i, j, nbmat, ityp
+    integer :: nbmc, nbno, nci, adrvlc, acncin, i, j, nbmat, ityp
     integer :: nuno, jadr, numa, idlist, jnoeu, idlima
     character(len=8) :: noma, motcle(2), tymocl(2)
     character(len=16) :: motfac
@@ -96,20 +96,20 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- TRAITEMENT DES NOEUDS "UTILISATEUR" :
 !     -----------------------------------
-    do 10 i = 1, nbno
+    do i = 1, nbno
         nuno = zi(jnoeu+i-1)
         nbma = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
         jadr = zi(adrvlc+nuno-1)
-        do 20 j = 1, nbma
+        do j = 1, nbma
             numa = zi(acncin+jadr-1+j-1)
             zi(idlima+numa-1) = 1
- 20     continue
- 10 end do
+        end do
+    end do
 !
     nbma = 0
-    do 30 i = 1, nbmat
+    do i = 1, nbmat
         if (zi(idlima+i-1) .eq. 1) nbma = nbma + 1
- 30 end do
+    end do
     if (nbma .eq. 0) then
         call utmess('F', 'MODELISA3_66')
     endif
@@ -119,12 +119,12 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !     -----------------
     call wkvect(lismai, 'V V I', nbma, idlist)
     nbma = 0
-    do 40 i = 1, nbmat
+    do i = 1, nbmat
         if (zi(idlima+i-1) .eq. 1) then
             nbma = nbma + 1
             zi(idlist+nbma-1) = i
         endif
- 40 end do
+    end do
 !
     call jedetr(listrv)
     call jedetr(mesnoe)

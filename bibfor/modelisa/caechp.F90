@@ -78,7 +78,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !
     motclf = 'ECHANGE_PAROI'
     call getfac(motclf, nechp)
-    if (nechp .eq. 0) goto 9999
+    if (nechp .eq. 0) goto 999
 !
     liel = ligrch
     liel(20:24) = '.LIEL'
@@ -87,7 +87,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !
 !     LE MOT-CLE COEF_H EST-IL PRESENT ?
     lcoefh=.false.
-    do 100 iocc = 1, nechp
+    do iocc = 1, nechp
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
         else if (fonree.eq.'FONC') then
@@ -97,7 +97,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
             lcoefh=.true.
             goto 200
         endif
-100 end do
+    end do
 200 continue
 !
 !     SI LE MOT-CLE COEF_H EST PRESENT, ON ALLOUE ET PREAPRE LA CARTE
@@ -120,7 +120,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 ! ----------------------------------------------------------------------
 ! --- BOUCLE SUR LES OCCURENCES DU MCF
 ! ----------------------------------------------------------------------
-    do 300 iocc = 1, nechp
+    do iocc = 1, nechp
 !
 !       RECUPERATION DU COEFFICIENT D'ECHANGE
         if (fonree .eq. 'REEL') then
@@ -130,9 +130,9 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
         endif
 !
 !       RECUPERATION DU VECTEUR DE TRANSLATION POUR PATRMA
-        do 301 i = 1, 3
+        do i = 1, 3
             t(i) = 0.0d0
-301     continue
+        end do
         call getvr8(motclf, 'TRAN', iocc=iocc, nbval=3, vect=t,&
                     nbret=nt)
         call getvid(motclf, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
@@ -220,7 +220,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                         llistt, nbtyp)
 !
 !         MISE A JOUR DE LIGRCH ET STOCKAGE DANS LA CARTE
-            do 400 j = 1, nbtyp
+            do j = 1, nbtyp
                 igrel = igrel+1
                 call jeveuo(jexnum(llistt, j), 'L', jlistt)
                 call paligi('THER', modl, ligrch, igrel, inema,&
@@ -236,7 +236,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                 endif
                 call nocart(carte, -3, ncmp, ligrel=ligrch, nma=nbm,&
                             limanu=zi(jligr))
-400         continue
+            end do
 !
 !         MENAGE
             call jedetr(llist1)
@@ -245,8 +245,8 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 ! ------
         endif
 !
-300 end do
+    end do
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

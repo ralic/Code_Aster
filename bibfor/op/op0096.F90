@@ -142,9 +142,9 @@ subroutine op0096()
 !
     if ((n1+n2) .eq. 0) then
         call wkvect(lismai, 'V V I', nbtma, jnuma)
-        do 400 i = 1, nbtma, 1
+        do i = 1, nbtma, 1
             zi(jnuma+i-1) = i
-400     continue
+        end do
     else
         motcle(1) = 'GROUP_MA'
         motcle(2) = 'MAILLE'
@@ -174,7 +174,7 @@ subroutine op0096()
         prec = 1.d-10
     endif
 !
-    do 100 isgt = 1, nbsgt, 1
+    do isgt = 1, nbsgt, 1
 !
         motcle(1) = 'ORIGINE'
         motcle(2) = 'NOEUD_ORIG'
@@ -190,27 +190,27 @@ subroutine op0096()
 !
         norm = zero
         k = 0
-        do 10 j = 1, 3, 1
+        do j = 1, 3, 1
             if (abs(sgtu(j)-sgtu(3+j)) .gt. norm) then
                 norm = abs( sgtu(j) - sgtu(3+j) )
                 k = j
             endif
- 10     continue
+        end do
         if (norm .le. epsi*sgtu(k)) then
             valk(1) = 'DEFI_SEGMENT'
             call utmess('F', 'INTEMAIL_27', sk=valk(1), si=isgt, sr=epsi)
         endif
 !
-        do 110 n = 1, nbnma, 1
+        do n = 1, nbnma, 1
             zr(axyzn + 3*(n-1)+1-1) = zero
             zr(axyzn + 3*(n-1)+2-1) = zero
             zr(axyzn + 3*(n-1)+3-1) = zero
-110     continue
+        end do
         call i3chgr(sgtu, sgtu(4), zr(axyzm), zr(axyzn), nbnma)
         rbi = zero
-        do 111 n = 1, 3, 1
+        do n = 1, 3, 1
             rbi = rbi + (sgtu(n+3)-sgtu(n))*(sgtu(n+3)-sgtu(n))
-111     continue
+        end do
         rbi = sqrt( rbi )
         sgt(1) = zero
         sgt(2) = zero
@@ -218,15 +218,15 @@ subroutine op0096()
         sgt(4) = zero
         sgt(5) = zero
         sgt(6) = rbi
-        do 112 n = 1, nbtma, 1
+        do n = 1, nbtma, 1
             zi(asucc + n-1) = 0
             zi(aprec + n-1) = 0
             zi(adesc + n-1) = 0
-112     continue
+        end do
         tete = nil
         queue = nil
 !
-        do 120 m = 1, nbtma, 1
+        do m = 1, nbtma, 1
             ima = zi(jnuma+m-1)
             call jeveuo(jexnum(nomail//'.CONNEX', ima), 'L', adrmc)
             call jelira(jexnum(nomail//'.CONNEX', ima), 'LONMAX', nbn)
@@ -251,7 +251,7 @@ subroutine op0096()
                     endif
                 endif
             endif
-120     continue
+        end do
 !
         call i3imas(epsi, nil, tete, queue, zi(asucc),&
                     zi(aprec), zi(adesc), zi(adescm), sgt, zi(aconec),&
@@ -285,7 +285,7 @@ subroutine op0096()
         n = 0
         m = 0
         long = 0
-        do 130 i = 1, nbsgel, 1
+        do i = 1, nbsgel, 1
             if (zi(atmp3 + i-1) .gt. 0) then
                 n = n + 1
                 m = m + 1
@@ -293,8 +293,8 @@ subroutine op0096()
                 long = long + l
                 zi(aindir + m-1) = i
             endif
-130     continue
-        do 135 i = 2, n, 1
+        end do
+        do i = 2, n, 1
             j = zi(aindir + i-1)
             t = zr(atmp1 + j-1)
             fini = .false.
@@ -313,12 +313,12 @@ subroutine op0096()
                 goto 136
             endif
             if (swap) then
-                do 137 m = i, l+1, -1
+                do m = i, l+1, -1
                     zi(aindir + m-1) = zi(aindir + m-2)
-137             continue
+                end do
                 zi(aindir + l-1) = j
             endif
-135     continue
+        end do
 !
         if (n .le. 0) then
             call codent(isgt, 'G', cnum)
@@ -339,9 +339,9 @@ subroutine op0096()
             nsds(14:24) = ' '
             zk24(asds + cpsgt-1) = nsds
             call wkvect(nsds(1:13)//'.DESC', 'G V R', 6, m)
-            do 105 i = 1, 6, 1
+            do i = 1, 6, 1
                 zr(m + i-1) = sgtu(i)
-105         continue
+            end do
             nsds1 = nsds (1:13)//'.SGTEL.ORIG'
             nsds2 = nsds (1:13)//'.SGTEL.EXTR'
             nsds3 = nsds (1:13)//'.SGTEL.TYPE'
@@ -370,7 +370,7 @@ subroutine op0096()
             call jecrec(nsds4, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                         n)
             call jeecra(nsds4, 'LONT', long)
-            do 140 i = 1, n, 1
+            do i = 1, n, 1
                 m = zi(aindir + i-1)
                 zr(asds1 + i-1) = zr(atmp1 + m-1)
                 zr(asds2 + i-1) = zr(atmp2 + m-1)
@@ -394,10 +394,10 @@ subroutine op0096()
                 call jecroc(jexnum(nsds4, i))
                 call jeecra(jexnum(nsds4, i), 'LONMAX', l)
                 call jeveuo(jexnum(nsds4, i), 'E', asds4)
-                do 145 j = 1, l, 1
+                do j = 1, l, 1
                     zi(asds4 + j-1) = zi(atmp4 + j-1)
-145             continue
-140         continue
+                end do
+            end do
 !
 !           --- DETERMINATION DU CMP_CNX ---
             m = 1
@@ -409,7 +409,7 @@ subroutine op0096()
             iao1 = zi(asds9)
             iae1 = zi(asds10)
             absce = zr(asds2)
-            do 150 i = 2, n, 1
+            do i = 2, n, 1
                 call jeveuo(jexnum(nsds4, i), 'L', asds4)
                 im2 = zi(asds4)
                 if2 = zi(asds5+i-1)
@@ -431,15 +431,15 @@ subroutine op0096()
                 if1 = zi(asds6+i-1)
                 im1 = im2
                 absce = zr(asds2+i-1)
-150         continue
+            end do
             zi(aindir + m) = n + 1
 !
             call wkvect(nsds11, 'G V I', m, asds11)
             call wkvect(nsds12, 'G V I', m, asds12)
-            do 155 i = 1, m, 1
+            do i = 1, m, 1
                 zi(asds11 + i-1) = zi(aindir + i-1)
                 zi(asds12 + i-1) = zi(aindir + i ) - 1
-155         continue
+            end do
             call jeveuo(nsds(1:13)//'.DESC', 'L', i)
             xa = zr(i + 1-1)
             ya = zr(i + 2-1)
@@ -451,11 +451,11 @@ subroutine op0096()
 !           --- ABSCISSES CURVILIGNES CROISSANTES ---
 !
             absce = zr(asds2+zi(asds11)-1)
-            do 160 i = 1, m, 1
+            do i = 1, m, 1
                 j1 = zi(asds11 + i-1)
                 if (i .eq. 1) j1 = j1 + 1
                 j2 = zi(asds12 + i-1)
-                do 162 j = j1, j2, 1
+                do j = j1, j2, 1
                     absco = zr(asds1+j-1)
                     if (abs(absce-absco) .gt. prec) then
                         call jeveuo(jexnum(nsds4, j), 'L', asds4)
@@ -473,8 +473,8 @@ subroutine op0096()
                         endif
                     endif
                     absce = zr(asds2+j-1)
-162             continue
-160         continue
+                end do
+            end do
 !
             if (info .ge. 2) then
                 write(ifm,1002) isgt
@@ -485,18 +485,18 @@ subroutine op0096()
                 write(ifm,1008) xa, ya, za
                 write(ifm,1010) xb, yb, zb
                 write(ifm,1012)
-                do 200 i = 1, m, 1
+                do i = 1, m, 1
                     j1 = zi(asds11 + i-1)
                     j2 = zi(asds12 + i-1)
-                    do 210 j = j1, j2, 1
+                    do j = j1, j2, 1
                         call jeveuo(jexnum(nsds4, j), 'L', asds4)
                         call jelira(jexnum(nsds4, j), 'LONMAX', l)
                         call jenuno(jexnum(nommai, zi(asds4)), nomm1)
                         if (l .ge. 2) then
                             nnbm = min( 7 , l-1 )
-                            do 212 inn = 1, nnbm
+                            do inn = 1, nnbm
                                 call jenuno(jexnum(nommai, zi(asds4+ inn)), nnmail(inn))
-212                         continue
+                            end do
                             write(ifm,1018)i,nomm1,zi(asds5+j-1),zi(&
                             asds9+j-1), zr(asds1+j-1), (nnmail(k),k =&
                             1,nnbm,1)
@@ -506,20 +506,20 @@ subroutine op0096()
                         endif
                         write(ifm,1016) zi(asds6+j-1), zi(asds10+j-1),&
                         zr(asds2+j-1)
-210                 continue
-200             continue
+                    end do
+                end do
             endif
         endif
         call jedetr('&&OP0096.VEC.IND.AUX')
-100 end do
+    end do
 !
     if (cpsgt .le. 0) then
         call utmess('F', 'INTEMAIL_11')
     else
         call wkvect(surfac//'.NSDS', 'G V K24', cpsgt, atmp1)
-        do 300 isgt = 1, cpsgt, 1
+        do isgt = 1, cpsgt, 1
             zk24(atmp1 + isgt-1) = zk24(asds + isgt-1)
-300     continue
+        end do
     endif
 !
     call i3drdm(descm)

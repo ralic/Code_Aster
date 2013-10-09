@@ -125,7 +125,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
             call jeveuo(lcharz//'.CHTH      .NOMO', 'L', jnomo)
             ligrmo = zk8(jnomo)//'.MODELE'
         endif
-        do 10 icha = 1, nchar
+        do icha = 1, nchar
             lcharz = lchar(icha)
             call dismoi('TYPE_CHARGE', lcharz, 'CHARGE', repk=k8bid)
             if (k8bid(5:7) .eq. '_FO') then
@@ -256,7 +256,7 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
                             'OUI')
                 call reajre(vecel, lchout(1), 'G')
             endif
- 10     continue
+        end do
     endif
 !
     call jedema()

@@ -81,7 +81,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
     logical :: lctcc
     integer :: ieq, ibid, numins
     integer :: iadia, neq, lres, neql
-    character(len=8) ::  kmatd
+    character(len=8) :: kmatd
     integer :: jvalm, islvi, zislv1, zislv3
     integer :: ifm, niv
     character(len=16) :: optass
@@ -137,11 +137,11 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
             neql = neq
         endif
         call jeveuo(jexnum(matass//'.VALM', 1), 'E', jvalm)
-        do 10 ieq = 1, neql
+        do ieq = 1, neql
             if (zr(jvalm-1+zi(iadia-1+ieq)) .eq. 0.d0) then
                 zr(jvalm-1+zi(iadia-1+ieq)) = 1.d0
             endif
- 10     continue
+        end do
     endif
 !
 ! --- ON ACTIVE LA DETECTION DE SINGULARITE (NPREC=8)

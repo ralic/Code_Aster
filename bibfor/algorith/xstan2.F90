@@ -71,7 +71,7 @@ subroutine xstan2(crimax, noma, modele)
     character(len=24) :: geom
     character(len=19) :: ces(7), cel(7), cnxinv, noxfem, cns2, ligrel
     character(len=16) :: notype
-    character(len=8) ::  typma, lirefe(10), elrefp
+    character(len=8) :: typma, lirefe(10), elrefp
     character(len=2) :: ch2
     real(kind=8) :: crit, vmoin, vplus, vtot
     integer :: jtypma, jcesd(7), jcesl(7), jcesv(7), iad
@@ -125,7 +125,7 @@ subroutine xstan2(crimax, noma, modele)
     cel(5) = modele//'.TOPOSE.PIN'
     cel(6) = modele//'.TOPOSE.PMI'
     cel(7) = modele//'.FISSNO'
-    do 10 i = 1, 7
+    do i = 1, 7
         call codent(i, 'G', ch2)
         ces(i) = '&&XSTAN2.CES'//ch2
         call jeexin(cel(i)//'.CELD', ier)
@@ -134,11 +134,12 @@ subroutine xstan2(crimax, noma, modele)
         call jeveuo(ces(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(ces(i)//'.CESL', 'L', jcesl(i))
         call jeveuo(ces(i)//'.CESV', 'E', jcesv(i))
- 10 end do
+ 10     continue
+    end do
 !
     cpt = 0
 !     BOUCLE SUR LES NOEUDS DU MAILLAGE
-    do 20 nuno = 1, nbno
+    do nuno = 1, nbno
         if (.not.zl(jnoxfl-1+2*nuno)) goto 20
 ! --- RECUP DU NUMERO LOCAL INO DU NOEUD NUNO DANS LA MAILLE X-FEM NUMA
         numa = zi(jnoxfv-1+2*(nuno-1)+1)
@@ -152,7 +153,7 @@ subroutine xstan2(crimax, noma, modele)
         call jeveuo(jexnum(cnxinv, nuno), 'L', adrma)
 !
 !       BOUCLE SUR LES DDL HEAVISIDE
-        do 40 iheav = 1, nheav
+        do iheav = 1, nheav
             if (nfiss .eq. 1) then
                 ifiss=1
             else
@@ -169,7 +170,7 @@ subroutine xstan2(crimax, noma, modele)
             vplus = 0
             vtot = 0
 !         BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
-            do 50 ima = 1, nbmano
+            do ima = 1, nbmano
                 numa2 = zi(adrma-1 + ima)
                 ndime = zi(jtmdim-1+zi(jtypma-1+numa2))
                 if (ndime .lt. ndim) goto 50
@@ -195,12 +196,12 @@ subroutine xstan2(crimax, noma, modele)
                 endif
 !           RECUP DU NUM DE FISS CORRESPONDANT À IHEAV DE NUNO DS NUMA2
 !           ET DU NUMERO LOCALE INOLOC DANS LA MAILLE
-                do 60 ino2 = 1, nbnoma
+                do ino2 = 1, nbnoma
                     if (zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
                         inoloc = ino2
                         goto 200
                     endif
- 60             continue
+                end do
                 ASSERT(.false.)
 200             continue
                 if (zi(jnbsp-1+numa2) .eq. 1) then
@@ -213,13 +214,13 @@ subroutine xstan2(crimax, noma, modele)
 !           CREATION DE VECTEUR DES COORDONNÉES DE LA MAILLE IMA
 !           AVEC DES VALEURS CONTIGUES
                 call wkvect(geom, 'V V R', ndim*nbnoma, igeom)
-                do 210 ino2 = 1, nbnoma
+                do ino2 = 1, nbnoma
                     nuno2=zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1)
-                    do 220 j = 1, ndim
+                    do j = 1, ndim
                         zr(igeom-1+ndim*(ino2-1)+j)=zr(jcoor-1+3*(&
                         nuno2-1)+j)
-220                 continue
-210             continue
+                    end do
+                end do
 !
 !           RECUPERATION DU NOMBRE TOTAL DE SOUS ELEMENTS
                 call cesexi('S', jcesd(1), jcesl(1), numa2, 1,&
@@ -238,17 +239,18 @@ subroutine xstan2(crimax, noma, modele)
                             jcesl(3), jcesv(3), numa2, ifiss, vmoin,&
                             vplus, vtot)
                 call jedetr(geom)
- 50         continue
+ 50             continue
+            end do
 !         CALCUL DU CRITERE
             crit=min(vmoin,vplus)/vtot
             if (crit .lt. crimax) then
                 cpt = cpt + 1
 !           BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
-                do 150 ima = 1, nbmano
+                do ima = 1, nbmano
                     numa2 = zi(adrma-1 + ima)
 !             MISE À ZÉRO DU STATUT DANS TOUS LES ÉLÉMENTS DU SUPPORT
                     nbnoma = zi(jconx2+numa2) - zi(jconx2+numa2-1)
-                    do 160 ino2 = 1, nbnoma
+                    do ino2 = 1, nbnoma
                         if (zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
                             if (zi(jnbsp-1+numa2) .eq. 1) then
                                 ifiss = 1
@@ -264,15 +266,17 @@ subroutine xstan2(crimax, noma, modele)
                             zi(jcesv(2)-1+iad) = 0
                             goto 150
                         endif
-160                 continue
+                    end do
                     ASSERT(.false.)
-150             continue
+150                 continue
+                end do
             endif
 !
- 40     continue
+ 40         continue
+        end do
 !       ELIMINATION DE LA LISTE DES NOEUDS XFEM SI NECESSAIRE
         lelim = .true.
-        do 140 iheav = 1, nheav
+        do iheav = 1, nheav
             if (nfiss .eq. 1) then
                 ifiss=1
             else
@@ -283,12 +287,13 @@ subroutine xstan2(crimax, noma, modele)
             call cesexi('S', jcesd(2), jcesl(2), numa, ino,&
                         ifiss, 1, iad)
             if (zi(jcesv(2)-1+iad) .ge. 1) lelim = .false.
-140     continue
+        end do
         if (lelim) then
             zl(jnoxfl-1+2*(nuno-1)+1) = .false.
             zl(jnoxfl-1+2*(nuno-1)+2) = .false.
         endif
- 20 end do
+ 20     continue
+    end do
 !
     write(ifm,*)'NOMBRE DE NOEUDS OU LES DDLS H SONT MIS A ZERO :',cpt
 !
@@ -306,10 +311,11 @@ subroutine xstan2(crimax, noma, modele)
 !
     call jedetr(cnxinv)
     call detrsd('CHAM_NO_S', cns2)
-    do 130 i = 1, 7
+    do i = 1, 7
         call jeexin(ces(i)//'.CESD', ier)
         if (ier .eq. 0) goto 130
         call detrsd('CHAM_ELEM_S', ces(i))
-130 end do
+130     continue
+    end do
     call jedema()
 end subroutine

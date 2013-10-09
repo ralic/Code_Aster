@@ -57,7 +57,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     real(kind=8) :: depi
     character(len=3) :: knusec
     character(len=6) :: kchiff
-    character(len=8) ::  nomres, mailla, nomcou
+    character(len=8) :: nomres, mailla, nomcou
     character(len=16) :: mcgrm, motfac, mcmail
     character(len=24) :: gpptnm, grmcou
 !-----------------------------------------------------------------------
@@ -132,9 +132,9 @@ subroutine cyc110(nomres, mailla, nbsect)
 !-------RECUPERATION NUMERO DES MAILLES DONNEES EN ARGUMENTS------------
 !
     if (ioctou .eq. 1) then
-        do 5 i = 1, nbtout
+        do i = 1, nbtout
             zi(ltnuma+i-1) = i
-  5     continue
+        end do
     else
         call recuma(mailla, nbma, nbgr, zk8(ltnmma), zk24(ltnmgr),&
                     nbskma, zi(ltnuma))
@@ -152,11 +152,11 @@ subroutine cyc110(nomres, mailla, nbsect)
 !-----------RECUPERATION DU NOMBRE A LA LOUCHE DES NOEUDS---------------
 !
     nbtemp = 0
-    do 10 i = 1, nbskma
+    do i = 1, nbskma
         numa = zi(ltnuma+i-1)
         call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
         nbtemp = nbtemp + nbno
- 10 end do
+    end do
 !
     nbskno = nbtemp
     ntacon = nbtemp
@@ -169,16 +169,16 @@ subroutine cyc110(nomres, mailla, nbsect)
 !----------RECUPERATION DES NUMEROS DES NOEUDS--------------------------
 !
     icomp = 0
-    do 20 i = 1, nbskma
+    do i = 1, nbskma
         numa = zi(ltnuma+i-1)
         call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
         call jeveuo(jexnum(mailla//'.CONNEX', numa), 'L', llcox)
-        do 30 j = 1, nbno
+        do j = 1, nbno
             icomp = icomp + 1
             zi(ltnuno+icomp-1) = zi(llcox+j-1)
- 30     continue
+        end do
 !
- 20 end do
+    end do
 !
 !
 !------------------------SUPPRESSION DES DOUBLES------------------------
@@ -278,7 +278,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
     call jeveuo(mailla//'.COORDO    .VALE', 'L', llcoo)
 !
-    do 50 i = 1, nbsect
+    do i = 1, nbsect
         teta = tetsec* (i-1)
 !
 !  CREATION NOM DES GROUPES
@@ -292,7 +292,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
 !   BOUCLE SUR NOEUD GENERIQUES SECTEUR
 !
-        do 60 j = 1, nbskno
+        do j = 1, nbskno
             numno = zi(ltnuno+j-1)
             ntemno = ntemno + 1
             call codent(ntemno, 'D0', kchiff)
@@ -316,11 +316,11 @@ subroutine cyc110(nomres, mailla, nbsect)
             zr(ldcoo+ (ntemno-1)*3+1) = ynew
             zr(ldcoo+ (ntemno-1)*3+2) = znew
 !
- 60     continue
+        end do
 !
 !    BOUCLE SUR LES ELEMENTS DU SECTEUR
 !
-        do 70 j = 1, nbskma
+        do j = 1, nbskma
             numma = zi(ltnuma+j-1)
             ntemna = ntemna + 1
             call codent(ntemna, 'D0', kchiff)
@@ -337,23 +337,23 @@ subroutine cyc110(nomres, mailla, nbsect)
             call jeecra(jexnum(nomres//'.CONNEX', ibid), 'LONUTI', nbcon)
             call jeveuo(jexnum(mailla//'.CONNEX', numma), 'L', llcona)
 !
-            do 80 k = 1, nbcon
+            do k = 1, nbcon
                 itcon = itcon + 1
                 ligne(1) = i
                 ligne(2) = zi(llcona+k-1)
                 call trnuli(zi(ldskin), nbnoto, 2, ligne, nunew)
                 zi(ldcone+itcon-1) = nunew
- 80         continue
+            end do
 !
             call jeveuo(mailla//'.TYPMAIL', 'L', iatyma)
             lltyp=iatyma-1+numma
             zi(ldtyp+ntemna-1) = zi(lltyp)
 !
- 70     continue
+        end do
 !
 !
 !
- 50 end do
+    end do
 !
 !-------------SAUVEGARDE ET DESTRUCTION DES OBJETS EVENTUELS------------
 !

@@ -17,7 +17,7 @@ subroutine zerofb(func, x1, x2, tol, itmax,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=
+! aslint: disable=W0307
     implicit none
 !
 #include "asterc/r8prem.h"

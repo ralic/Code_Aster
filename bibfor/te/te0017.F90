@@ -37,7 +37,7 @@ subroutine te0017(option, nomte)
 !
     integer :: ipoids, ivf, idfde, igeom, itemps, iforc, ier
     integer :: jgano, nno, ndl, kp, npg1, ii, i, l, ivectu, ndim, nnos
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, fx, fy, fz
+    real(kind=8) :: poids, fx, fy, fz
     real(kind=8) :: xx, yy, zz, valpar(4)
     character(len=8) :: nompar(4)
 !     ------------------------------------------------------------------
@@ -57,13 +57,13 @@ subroutine te0017(option, nomte)
     nompar(4) = 'INST'
 !
     ndl = 3*nno
-    do 20 i = 1, ndl
+    do i = 1, ndl
         zr(ivectu+i-1) = 0.0d0
-20  end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 50 kp = 1, npg1
+    do kp = 1, npg1
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -72,11 +72,11 @@ subroutine te0017(option, nomte)
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
-        do 30 i = 1, nno
+        do i = 1, nno
             xx = xx + zr(igeom+3*i-3)*zr(ivf+l+i-1)
             yy = yy + zr(igeom+3*i-2)*zr(ivf+l+i-1)
             zz = zz + zr(igeom+3*i-1)*zr(ivf+l+i-1)
-30      continue
+        end do
         valpar(1) = xx
         valpar(2) = yy
         valpar(3) = zz
@@ -87,14 +87,14 @@ subroutine te0017(option, nomte)
         call fointe('FM', zk8(iforc+2), 4, nompar, valpar,&
                     fz, ier)
 !
-        do 40 i = 1, nno
+        do i = 1, nno
             ii = 3* (i-1)
             zr(ivectu+ii ) = zr(ivectu+ii ) + poids*zr(ivf+l+i-1)*fx
             zr(ivectu+ii+1) = zr(ivectu+ii+1) + poids*zr(ivf+l+i-1)* fy
             zr(ivectu+ii+2) = zr(ivectu+ii+2) + poids*zr(ivf+l+i-1)* fz
 !
-40      continue
+        end do
 !
-50  end do
+    end do
 !
 end subroutine

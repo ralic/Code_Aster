@@ -128,32 +128,32 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !     2- ON TRANSFORME LINO EN LISTE DE BOOLEENS:
 !     ------------------------------------------
     call wkvect('&&CNSRED.EXINO', 'V V L', nbnom, jexno)
-    do 10 kno = 1, nbnom
+    do kno = 1, nbnom
         zl(jexno-1+kno) = .false.
- 10 end do
+    end do
 !
     ASSERT(nbno.ge.0)
     if (nbno .eq. 0) then
-        do 20 kno = 1, nbnom
+        do kno = 1, nbnom
             zl(jexno-1+kno) = .true.
- 20     continue
+        end do
 !
     else
-        do 30 kno = 1, nbno
+        do kno = 1, nbno
             zl(jexno-1+lino(kno)) = .true.
- 30     continue
+        end do
     endif
 !
 !     3- REMPLISSAGE DES OBJETS .CNSL ET .CNSV :
 !     ------------------------------------------
 !
-    do 50 icmp2 = 1, ncmp2
+    do icmp2 = 1, ncmp2
         nocmp = zk8(jcn2c-1+icmp2)
         icmp1 = indik8(zk8(jcn1c),nocmp,1,ncmp1)
         if (icmp1 .eq. 0) goto 50
 !
 !
-        do 40 ino = 1, nbnom
+        do ino = 1, nbnom
             if (zl(jexno-1+ino)) then
                 if (zl(jcn1l-1+ (ino-1)*ncmp1+icmp1)) then
                     zl(jcn2l-1+ (ino-1)*ncmp2+icmp2) = .true.
@@ -175,8 +175,9 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
                 endif
             endif
 !
- 40     continue
- 50 end do
+        end do
+ 50     continue
+    end do
 !
 !
 !     5- MENAGE :

@@ -58,7 +58,7 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
         lnch = getexm ( mcf, 'NOM_CHAM' )
         if (lnch .eq. 1) then
             call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=option, nbret=nc)
-            if (option(6:9) .eq. 'NOEU') goto 9999
+            if (option(6:9) .eq. 'NOEU') goto 999
         endif
 !
         if (nomgd .eq. 'SIEF_R') then
@@ -73,5 +73,5 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
             option = 'FORC_NOEU_FORC  '
         endif
     endif
-9999 continue
+999 continue
 end subroutine

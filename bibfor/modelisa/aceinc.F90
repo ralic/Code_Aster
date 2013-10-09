@@ -104,9 +104,9 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 !
     call wkvect('&&TMPINC', 'V V K24', lmax, jdls)
 !
-    do 10 mcl = 1, nbmcf
+    do mcl = 1, nbmcf
         if (mcl .eq. 12) goto 10
-        do 20 ioc = 1, nbocc(mcl)
+        do ioc = 1, nbocc(mcl)
             call codent(ioc, 'G', kioc)
             ng = 0
             nm = 0
@@ -148,10 +148,10 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 if (mcl .eq. 2) locaco = .true.
                 if (mcl .eq. 11) locagb = .true.
                 if (mcl .eq. 14) locamb = .true.
-                do 34 i = 1, ng
+                do i = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
                     call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
-                    do 36 j = 1, nbmagr
+                    do j = 1, nbmagr
                         nummai = zi(jdgm+j-1)
                         call jenuno(jexnum(mlgnma, nummai), nommai)
                         nutyel = zi(jdme+nummai-1)
@@ -160,8 +160,8 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                                     nbeco, nbeca, nbeba, nbema, nbegb,&
                                     nbemb, nutyel, ntyele, car, ncara,&
                                     ivr, kioc, ier)
- 36                 continue
- 34             continue
+                    end do
+                end do
             endif
 !
 ! ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
@@ -169,7 +169,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 if (mcl .eq. 2) locaco = .true.
                 if (mcl .eq. 11) locagb = .true.
                 if (mcl .eq. 14) locamb = .true.
-                do 46 i = 1, nm
+                do i = 1, nm
                     nommai = zk24(jdls+i-1)
                     call jenonu(jexnom(mlgnma, nommai), nummai)
                     nutyel = zi(jdme+nummai-1)
@@ -178,7 +178,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                                 nbeco, nbeca, nbeba, nbema, nbegb,&
                                 nbemb, nutyel, ntyele, car, ncara,&
                                 ivr, kioc, ier)
- 46             continue
+                end do
             endif
 !
 ! ---     MAILLES TARDIVES EXISTENT POUR CE MODELE :
@@ -186,15 +186,15 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 !
 ! ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
                 if (nj .gt. 0) then
-                    do 48 i = 1, nj
+                    do i = 1, nj
                         call jeveuo(jexnom(mlggno, zk24(jdls+i-1)), 'L', jdgn)
                         call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr)
-                        do 50 j = 1, nbnogr
+                        do j = 1, nbnogr
                             numnoe = zi(jdgn+j-1)
                             if (mcl .ne. 4) then
-                                do 52 k = 1, nbmtrd
+                                do k = 1, nbmtrd
                                     if (zi(jdnw+k*2-2) .eq. numnoe) zi(jdln+k-1 )=-mcl
- 52                             continue
+                                end do
                             endif
                             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
                             nutyel = zi(jdne+numnoe-1)
@@ -202,30 +202,31 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                                         nbeco, nbeca, nbeba, nbema, nbegb,&
                                         nbemb, nutyel, ntyele, car, ncara,&
                                         ivr, kioc, ier)
- 50                     continue
- 48                 continue
+                        end do
+                    end do
                 endif
 !
 ! ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
                 if (nn .gt. 0) then
-                    do 58 i = 1, nn
+                    do i = 1, nn
                         nomnoe = zk24(jdls+i-1)
                         call jenonu(jexnom(mlgnno, nomnoe), numnoe)
                         if (mcl .ne. 4) then
-                            do 60 k = 1, nbmtrd
+                            do k = 1, nbmtrd
                                 if (zi(jdnw+k*2-2) .eq. numnoe) zi(jdln+ k-1 )=-mcl
- 60                         continue
+                            end do
                         endif
                         nutyel = zi(jdne+numnoe-1)
                         call vafcar('NOEUD', mclf(mcl), nomnoe, nbepo, nbedi,&
                                     nbeco, nbeca, nbeba, nbema, nbegb,&
                                     nbemb, nutyel, ntyele, car, ncara,&
                                     ivr, kioc, ier)
- 58                 continue
+                    end do
                 endif
             endif
- 20     continue
- 10 end do
+        end do
+ 10     continue
+    end do
 !
 ! --- AUCUNE MAILLE TARDIVE N'EXISTE SUR CE MODELE :
     call dismoi('EXI_TUYAU', nomo, 'MODELE', repk=exituy)
@@ -240,54 +241,54 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 !
 ! --- VERIFICATION QUE TOUS LES ELEMENTS SONT AFFECTES :
 !     --------------------------------------------------
-    do 80 nummai = 1, nbmail
+    do nummai = 1, nbmail
         call jenuno(jexnum(mlgnma, nummai), nommai)
         if (nbocc(1) .ne. 0) then
-            do 81 i = 1, nbepo
+            do i = 1, nbepo
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_38', sk=nommai)
                 endif
- 81         continue
+            end do
         endif
         if (nbocc(3) .ne. 0 .or. nbocc(10) .ne. 0 .or. nbocc(15) .ne. 0) then
-            do 82 i = nbepo+1, nbepo+nbedi
+            do i = nbepo+1, nbepo+nbedi
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_39', sk=nommai)
                 endif
- 82         continue
+            end do
         endif
         if (nbocc(6) .ne. 0) then
-            do 84 i = nbepo+nbedi+nbeco+1, nbepo+nbedi+nbeco+nbeca
+            do i = nbepo+nbedi+nbeco+1, nbepo+nbedi+nbeco+nbeca
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_40', sk=nommai)
                 endif
- 84         continue
+            end do
         endif
         if (nbocc(7) .ne. 0) then
-            do 85 i = nbepo+nbedi+nbeco+nbeca+1, nbepo+nbedi+nbeco+ nbeca+nbeba
+            do i = nbepo+nbedi+nbeco+nbeca+1, nbepo+nbedi+nbeco+ nbeca+nbeba
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_41', sk=nommai)
                 endif
- 85         continue
+            end do
         endif
         if (nbocc(12) .ne. 0) then
-            do 88 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbtel
+            do i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbtel
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_42', sk=nommai)
                 endif
- 88         continue
+            end do
         endif
- 80 end do
+    end do
     if (ixnw .ne. 0) then
-        do 100 k = 1, nbmtrd
+        do k = 1, nbmtrd
             numnoe = zi(jdnw+k*2-2)
             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
-            do 102 i = nbepo+1, nbepo+nbedi
+            do i = nbepo+1, nbepo+nbedi
                 if (zi(jdln+k-1) .eq. ntyele(i)) then
                     call utmess('A', 'MODELISA_43', sk=nomnoe)
                 endif
-102         continue
-100     continue
+            end do
+        end do
     endif
 !
     call jedetr('&&TMPINC')

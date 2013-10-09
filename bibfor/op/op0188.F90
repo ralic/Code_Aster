@@ -114,9 +114,9 @@ subroutine op0188()
 !
     call jeveuo(mafond, 'L', jmafon)
     call jelira(mafond, 'LONMAX', nmafon)
-    do 10 i = 1, nmafon
+    do i = 1, nmafon
         zi(jma-1+i)=zi(jmafon-1+i)
- 10 end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     3) REMPLISSAGE DE LA LISTE AVEC LES MAILLES DONT UN NOEUD EST
@@ -139,7 +139,7 @@ subroutine op0188()
 !
 !     REMPLISSAGE DE LA LISTE DES NOEUDS QUI SONT LA ZONE
     nbnozo=0
-    do 300 ino = 1, nbno
+    do ino = 1, nbno
         if (typdis .eq. 'FISSURE') then
             dist=sqrt(zr(jlst-1+ino)**2+zr(jlsn-1+ino)**2)
         else if (typdis.eq.'INTERFACE') then
@@ -149,7 +149,7 @@ subroutine op0188()
             nbnozo = nbnozo + 1
             zi(jnoeu-1+nbnozo) = ino
         endif
-300 end do
+    end do
 !
 !     EMULATION DE DEFI_GROUP/CREA_GROUP_MA/OPTION='APPUI'
     lismaz = '&&OP0188.LISMAZ'
@@ -166,24 +166,24 @@ subroutine op0188()
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', adrvlc)
     call jeveuo(jexnum(cnxinv, 1), 'L', acncin)
 !
-    do 310 i = 1, nbnozo
+    do i = 1, nbnozo
         nuno = zi(jnoeu+i-1)
         nbmac = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
         jadr = zi(adrvlc+nuno-1)
-        do 320 j = 1, nbmac
+        do j = 1, nbmac
             numa = zi(acncin+jadr-1+j-1)
             zi(idlima+numa-1) = 1
-320     continue
-310 end do
+        end do
+    end do
 !
 !     REMPLISSAGE DE LA LISTE A LA SUITE
     nbmazo = 0
-    do 330 i = 1, nbma
+    do i = 1, nbma
         if (zi(idlima+i-1) .eq. 1) then
             nbmazo = nbmazo + 1
             zi(jma-1+nmafon+nbmazo)=i
         endif
-330 end do
+    end do
 !
 !     NB DE MAILLES DANS LA LISTE
     nbmali = nmafon + nbmazo

@@ -56,7 +56,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
     integer :: jcncin, jconx1, jconx2, jcoor, jdrvlc, k
     integer :: nbar, nbmaca, ndime, nno, nno1, nno2, numac
     real(kind=8) :: coor(3), vect(3), p, cos70, cosinu, normv
-    character(len=8) ::  type
+    character(len=8) :: type
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -82,7 +82,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
 !
     hmax=r8prem()
 !
-    do 10 ima = 1, nbmaca
+    do ima = 1, nbmaca
 !       NUMERO DE LA MAILLE
         numac = zi(jcncin-1 + adra+ima-1)
         ityp = iatyma-1+numac
@@ -95,7 +95,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
         call conare(type, ar, nbar)
 !
 !       BOUCLE SUR LE NOMBRE D'ARETES DE LA MAILLE NUMAC
-        do 100 iar = 1, nbar
+        do iar = 1, nbar
 !
             ino1 = ar(iar,1)
             nno1 = zi(jconx1-1 + zi(jconx2+numac-1) +ino1-1)
@@ -111,9 +111,9 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
             endif
 !
 !          VECTEUR REPRESENTANT L'ARETE NA-NNO
-            do 110 k = 1, ndim
+            do k = 1, ndim
                 vect(k) = zr(jcoor-1+ (nno-1)*3+k) - coor(k)
-110         continue
+            end do
 !
 !          PROJECTION DE L'ARETE SUR LE VECTEUR TANGENT
             p = ddot(ndim,vect,1,vecdir,1)
@@ -130,9 +130,11 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
             p = abs(p)
             if (p .ge. hmax) hmax = p
 !
-100     continue
+100         continue
+        end do
 !
- 10 end do
+ 10     continue
+    end do
 !
     if (hmax .le. r8prem()) then
         call utmess('A', 'RUPTURE0_49')

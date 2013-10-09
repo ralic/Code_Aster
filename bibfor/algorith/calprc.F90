@@ -56,6 +56,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
     complex(kind=8) :: xprod, dcmplx, cbid
     integer :: ldref, nbdef, ntail, ldres, ier, lmat, neq
     integer :: iddeeq, idbase, ltvec1, ltvec2, i, j, k, iad, lddes
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !
 !-----------------------------------------------------------------------
@@ -109,26 +110,26 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
 ! --- PROJECTION SUR DEFORMEES
 !
-    do 10 i = 1, nbdef
+    do i = 1, nbdef
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
-        do 20 j = 1, neq
+        do j = 1, neq
             zc(ltvec1+j-1)=dcmplx(zr(idbase+(i-1)*neq+j-1),0.d0)
- 20     continue
+        end do
         call mcmult('ZERO', lmat, zc(ltvec1), zc(ltvec2), 1,&
                     .true.)
         call zeclag(zc(ltvec2), neq, zi(iddeeq))
-        do 21 j = 1, neq
- 21     continue
+        do j = 1, neq
+        end do
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE
 !
         xprod=dcmplx(0.d0,0.d0)
-        do 30 j = 1, neq
+        do j = 1, neq
             xprod=xprod+ zc(ltvec2-1+j)*dcmplx(zr(idbase+(i-1)*neq-1+&
             j),0.d0)
- 30     continue
+        end do
 !
         iad = i*(i+1)/2
         zc(ldres+iad-1) = xprod
@@ -136,18 +137,18 @@ subroutine calprc(nomres, classe, basmod, nommat)
 ! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
 !
         if (i .lt. nbdef) then
-            do 40 j = i+1, nbdef
+            do j = i+1, nbdef
                 xprod=dcmplx(0.d0,0.d0)
-                do 50 k = 1, neq
+                do k = 1, neq
                     xprod=xprod+ zc(ltvec2-1+k)*dcmplx(zr(idbase+(j-1)&
                     *neq-1+k),0.d0)
- 50             continue
+                end do
                 iad = i+(j-1)*j/2
                 zc(ldres+iad-1) = xprod
- 40         continue
+            end do
         endif
 !
- 10 end do
+    end do
 !
     call jedetr('&&'//pgc//'.VECT1')
     call jedetr('&&'//pgc//'.VECT2')

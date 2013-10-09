@@ -85,13 +85,13 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
         call jeveuo(nu//'.SMOS.SMDI', 'L', jsxdi)
         call jeveuo(jexnum(noma19//'.VALM', 1), 'L', iavale)
         if (typvar .eq. 1) then
-            do 40 i = 1, neq
+            do i = 1, neq
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))
- 40         continue
+            end do
         else if (typvar.eq.2) then
-            do 50 i = 1, neq
+            do i = 1, neq
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
- 50         continue
+            end do
         else
             ASSERT(.false.)
         endif
@@ -106,24 +106,24 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     call jeveuo(nu//'.SLCS.SCBL', 'L', jscbl)
     call jeveuo(nu//'.SLCS.SCIB', 'L', jscib)
     nbbloc = zi(jscib-1+ilfin)
-    do 30 ibloc = 1, nbbloc
+    do ibloc = 1, nbbloc
         call jeveuo(jexnum(noma19//'.UALF', ibloc), 'L', iavale)
         idern = zi(jscbl-1+ibloc+1)
         ASSERT(idern.le.neq)
         iprem = zi(jscbl-1+ibloc) + 1
         if (typvar .eq. 1) then
-            do 10 i = iprem, idern
+            do i = iprem, idern
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))
- 10         continue
+            end do
         else if (typvar.eq.2) then
-            do 20 i = iprem, idern
+            do i = iprem, idern
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
- 20         continue
+            end do
         else
             ASSERT(.false.)
         endif
         call jelibe(jexnum(noma19//'.UALF', ibloc))
- 30 end do
+    end do
 !
 !
 !
@@ -140,7 +140,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     if (niv .gt. 1) then
         diamax = 0.d0
         diamin = r8maem()
-        do 70 i = 1, neq
+        do i = 1, neq
             if (typvar .eq. 1) then
                 vabs=abs(zr(iadigs-1+i))
             else
@@ -150,7 +150,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
             if (vabs .ne. 0.d0) diamin = min(diamin,vabs)
 !
 !
- 70     continue
+        end do
         write (ifm,*) '<FACTOR> AVANT FACTORISATION :'
         write (ifm,*) '<FACTOR>   NB EQUATIONS : ',neq
         write (ifm,*) '<FACTOR>   TERME DIAGONAL MAXIMUM :  ',diamax

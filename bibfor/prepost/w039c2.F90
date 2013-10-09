@@ -39,7 +39,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
 !
 !
     integer :: nec, ncmpmx, kcmp, jcmp, nzonmx, dec1, ico, debgd
-    character(len=8) ::  tsca, nocmp
+    character(len=8) :: tsca, nocmp
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -55,7 +55,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
     write (ifr,1005)'VALEUR =',dble(nuzone)
     debgd=3+2*nzonmx+(nuzone-1)*nec+1
     ico=0
-    do 10 kcmp = 1, ncmpmx
+    do kcmp = 1, ncmpmx
         if (exisdg(zi(jdesc-1+debgd),kcmp)) then
             ico=ico+1
             nocmp=zk8(jcmp-1+kcmp)
@@ -84,7 +84,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
                 ASSERT(.false.)
             endif
         endif
- 10 end do
+    end do
 !
     1001 format (4x,a8,1x,a1,1x,1pd11.3)
     1002 format (4x,a8,1x,a1,1x,2(1pd11.3))

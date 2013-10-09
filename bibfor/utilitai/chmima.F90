@@ -106,15 +106,15 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
     call jeveuo(nocha2(1:19)//sufv, 'E', nvale)
 !
     call wkvect('&&CHMIMA.INST', 'V V I', neq, inumer)
-    do 1 i = 1, neq
+    do i = 1, neq
         zi(inumer+i-1) = zi(jordr)
-  1 end do
+    end do
 !
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE ---
 !
     if (typma .eq. 'MAXI    ') then
 !
-        do 10 i = 2, nbordr
+        do i = 2, nbordr
 !
 !         - RECUPERATION DU CHAMP DE TYPE NOMSY
 !           CORRESPONDANT AU NUMERO D'ORDRE COURANT
@@ -126,18 +126,18 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
             call jeveuo(chextr//sufv, 'L', ivale)
 !
-            do 12 j = 1, neq
+            do j = 1, neq
                 if (zr(ivale+j-1) .gt. zr(nvale+j-1)) then
                     zr(nvale+j-1) = zr(ivale+j-1)
                     zi(inumer+j-1) = zi(jordr+i-1)
                 endif
- 12         continue
+            end do
 !
- 10     continue
+        end do
 !
     else if (typma.eq.'MAXI_ABS') then
 !
-        do 20 i = 2, nbordr
+        do i = 2, nbordr
 !
 !         - RECUPERATION DU CHAMP DE TYPE NOMSY
 !           CORRESPONDANT AU NUMERO D'ORDRE COURANT
@@ -149,19 +149,19 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
             call jeveuo(chextr//sufv, 'L', ivale)
 !
-            do 22 j = 1, neq
+            do j = 1, neq
 !
                 if (abs(zr(ivale+j-1)) .gt. abs(zr(nvale+j-1))) then
                     zr(nvale+j-1) = zr(ivale+j-1)
                     zi(inumer+j-1) = zi(jordr+i-1)
                 endif
- 22         continue
+            end do
 !
- 20     continue
+        end do
 !
     else if (typma.eq.'MINI    ') then
 !
-        do 30 i = 2, nbordr
+        do i = 2, nbordr
 !
 !         - RECUPERATION DU CHAMP DE TYPE NOMSY
 !           CORRESPONDANT AU NUMERO D'ORDRE COURANT
@@ -173,19 +173,19 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
             call jeveuo(chextr//sufv, 'L', ivale)
 !
-            do 32 j = 1, neq
+            do j = 1, neq
 !
                 if (zr(ivale+j-1) .lt. zr(nvale+j-1)) then
                     zr(nvale+j-1) = zr(ivale+j-1)
                     zi(inumer+j-1) = zi(jordr+i-1)
                 endif
- 32         continue
+            end do
 !
- 30     continue
+        end do
 !
     else if (typma.eq.'MINI_ABS') then
 !
-        do 40 i = 2, nbordr
+        do i = 2, nbordr
 !
 !         - RECUPERATION DU CHAMP DE TYPE NOMSY
 !           CORRESPONDANT AU NUMERO D'ORDRE COURANT
@@ -197,15 +197,15 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
             call jeveuo(chextr//sufv, 'L', ivale)
 !
-            do 42 j = 1, neq
+            do j = 1, neq
 !
                 if (abs(zr(ivale+j-1)) .lt. abs(zr(nvale+j-1))) then
                     zr(nvale+j-1) = zr(ivale+j-1)
                     zi(inumer+j-1) = zi(jordr+i-1)
                 endif
- 42         continue
+            end do
 !
- 40     continue
+        end do
 !
     else if (typma.eq.'NORM_TRA') then
         call rsexch('F', nomsd, noms2, zi(jordr), chextr,&
@@ -216,9 +216,9 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
         nomnoe = noma//'.NOMNOE'
 !
-        do 56 j = 0, neq-1
+        do j = 0, neq-1
             zr(nvale+j) = zr(ivale+j)
- 56     continue
+        end do
         if (nbordr .eq. 1) goto 58
 !
         call wkvect('&&CHMIMA.DDL.DX', 'V V I', nbnoe, jddlx)
@@ -229,7 +229,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
         call wkvect('&&CHMIMA.DDL.DRZ', 'V V I', nbnoe, jdlrz)
         call wkvect('&&CHMIMA.VALE_P.NT', 'V V R', nbnoe, jvpnt)
 !
-        do 50 in = 0, nbnoe-1
+        do in = 0, nbnoe-1
             call jenuno(jexnum(nomnoe, in+1), nomn)
             call posddl('CHAM_NO', chextr, nomn, 'DX', inoe,&
                         zi(jddlx+in))
@@ -260,9 +260,9 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             if (zi(jdlrx+in) .ne. 0) zr(nvale+zi(jdlrx+in)-1) = zr( ivale+zi( jdlrx+in)-1 )
             if (zi(jdlry+in) .ne. 0) zr(nvale+zi(jdlry+in)-1) = zr( ivale+zi( jdlry+in)-1 )
             if (zi(jdlrz+in) .ne. 0) zr(nvale+zi(jdlrz+in)-1) = zr( ivale+zi( jdlrz+in)-1 )
- 50     continue
+        end do
 !
-        do 52 i = 2, nbordr
+        do i = 2, nbordr
             call rsexch('F', nomsd, noms2, zi(jordr+i-1), chextr,&
                         iret)
             call dismoi('PROF_CHNO', chextr, 'CHAM_NO', repk=prn2)
@@ -271,7 +271,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             endif
             call jeveuo(chextr//'.VALE', 'L', ivale)
 !
-            do 54 in = 0, nbnoe-1
+            do in = 0, nbnoe-1
                 x = zr(ivale+zi(jddlx+in)-1)
                 y = zr(ivale+zi(jddly+in)-1)
                 if (zi(jddlz+in) .ne. 0) then
@@ -292,9 +292,9 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
                     if (zi(jdlry+in) .ne. 0) zr(nvale+zi(jdlry+in)- 1) = zr(ivale+zi(jdlry+in)-1)
                     if (zi(jdlrz+in) .ne. 0) zr(nvale+zi(jdlrz+in)- 1) = zr(ivale+zi(jdlrz+in)-1)
                 endif
- 54         continue
+            end do
 !
- 52     continue
+        end do
         call jedetr('&&CHMIMA.VALE_P.NT')
 !
     endif
@@ -303,7 +303,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
     if (valeur(1:4) .eq. 'INST') then
         if (typma .eq. 'NORM_TRA') then
             if (nbordr .ne. 1) then
-                do 102 in = 0, nbnoe-1
+                do in = 0, nbnoe-1
                     call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+zi( jddlx+in)-1),&
                                 0, sjv=iad, styp=ctyp)
                     zr(nvale+zi(jddlx+in)-1) = zr(iad)
@@ -312,7 +312,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
                     if (zi(jdlrx+in) .ne. 0) zr(nvale+zi(jdlrx+in)- 1) = zr(iad)
                     if (zi(jdlry+in) .ne. 0) zr(nvale+zi(jdlry+in)- 1) = zr(iad)
                     if (zi(jdlrz+in) .ne. 0) zr(nvale+zi(jdlrz+in)- 1) = zr(iad)
-102             continue
+                end do
                 call jedetr('&&CHMIMA.DDL.DX')
                 call jedetr('&&CHMIMA.DDL.DY')
                 call jedetr('&&CHMIMA.DDL.DZ')
@@ -320,18 +320,18 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
                 call jedetr('&&CHMIMA.DDL.DRY')
                 call jedetr('&&CHMIMA.DDL.DRZ')
             else
-                do 110 j = 0, neq-1
+                do j = 0, neq-1
                     call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+j),&
                                 0, sjv=iad, styp=ctyp)
                     zr(nvale+j) = zr(iad)
-110             continue
+                end do
             endif
         else
-            do 120 j = 0, neq-1
+            do j = 0, neq-1
                 call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+j),&
                             0, sjv=iad, styp=ctyp)
                 zr(nvale+j) = zr(iad)
-120         continue
+            end do
         endif
     else
         if (typma .eq. 'NORM_TRA') then

@@ -115,12 +115,12 @@ subroutine calamo(nomres, classe, basmod)
         vali (3) = idiff
         call utmess('A', 'ALGORITH15_91', ni=3, vali=vali)
         call wkvect('&&CALAMO.COEFF2', 'V V R', nbmod, lamo2)
-        do 20 iam = 1, nbamor
+        do iam = 1, nbamor
             zr(lamo2+iam-1) = zr(lamor+iam-1)
- 20     continue
-        do 22 iam = nbamor, nbmod
+        end do
+        do iam = nbamor, nbmod
             zr(lamo2+iam-1) = zr(lamor+nbamor-1)
- 22     continue
+        end do
         lamor = lamo2
 !
     else if (nbamor.eq.nbmod) then
@@ -129,7 +129,7 @@ subroutine calamo(nomres, classe, basmod)
                     nbret=ioc)
     endif
 !
-    do 10 i = 1, nbmod
+    do i = 1, nbmod
         iad = i* (i+1)/2
         call rsadpa(basmod, 'L', 1, 'FREQ', i,&
                     0, sjv=lfreq, styp=k8bid)
@@ -137,7 +137,7 @@ subroutine calamo(nomres, classe, basmod)
                     0, sjv=lmgen, styp=k8bid)
         coeff = 4.d0*pi*zr(lfreq)*zr(lamor+i-1)*zr(lmgen)
         zr(ldres+iad-1) = coeff
- 10 end do
+    end do
 !
 !
 ! --- MENAGE
@@ -145,8 +145,8 @@ subroutine calamo(nomres, classe, basmod)
     call jedetr('&&CALAMO.COEFF')
     call jedetr('&&CALAMO.COEFF2')
 !
-    goto 9999
+    goto 999
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -49,7 +49,7 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     integer :: nbloc, ibloc, icmp, ncmp, ino, nbno, nbec, ii
     integer :: jcnsd, jcnsv, jcnsl, jafci, jafcv, iaprnm, jcnsc, kcmp
     integer :: jcmp, ncmpmx, jcorr
-    character(len=8) ::  nomo
+    character(len=8) :: nomo
     character(len=19) :: chci, cns
     character(len=24) :: cafci, cafcv
 !
@@ -83,19 +83,19 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call wkvect('&&CHCSUR.CORRES', 'V V I', ncmpmx, jcorr)
-    do 10 kcmp = 1, ncmpmx
+    do kcmp = 1, ncmpmx
         icmp = indik8(zk8(jcnsc),zk8(jcmp-1+kcmp),1,ncmp)
         zi(jcorr-1+kcmp)=icmp
- 10 end do
+    end do
 !
 !
 !     -- CALCUL DE NBLOC :
     nbloc = 0
-    do 100 icmp = 1, ncmp
-        do 110 ino = 1, nbno
+    do icmp = 1, ncmp
+        do ino = 1, nbno
             if (zl(jcnsl+(ino-1)*ncmp+icmp-1)) nbloc = nbloc + 1
-110     continue
-100 end do
+        end do
+    end do
 !
 !
 !     -- CREATION DE LA SD
@@ -111,9 +111,9 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 !
 !     -- ON REMPLIT LES OBJETS .AFCI .AFCV
     ibloc = 0
-    do 120 ino = 1, nbno
+    do ino = 1, nbno
         ii = 0
-        do 122 kcmp = 1, ncmpmx
+        do kcmp = 1, ncmpmx
             if (exisdg(zi(iaprnm-1+nbec*(ino-1)+1),kcmp)) then
                 ii = ii + 1
                 icmp=zi(jcorr-1+kcmp)
@@ -133,8 +133,9 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
                     endif
                 endif
             endif
-122     continue
-120 end do
+122         continue
+        end do
+    end do
 !
     if (ibloc .eq. 0) then
         call utmess('F', 'CALCULEL_9')

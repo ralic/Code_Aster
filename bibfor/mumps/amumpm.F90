@@ -214,12 +214,12 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! --- bascule, on laisse 'LAGR2' par defaut (pour l'instant)
         select case(klag2(1:5))
         case('LAGR2')
-            eli2lg=.true.
+        eli2lg=.true.
         case('OUI','NON','XXXX')
-            eli2lg=.false.
-        case default
-            ASSERT(.false.)
-        end select
+        eli2lg=.false.
+    case default
+        ASSERT(.false.)
+    end select
 !
 ! --- CALCUL DE NZ2
         nz=zi(jsmdi-1+n)

@@ -50,7 +50,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     integer :: nma, ima, inopou, iconex, nbno, ier, i, j, ntseg3, jdtm, nutyma
     integer :: idesc, ncmpmx, ivale, iptma, igd, idebgd, jcoor
     integer :: inopo1, inopo2, icoude, nno, ntseg4
-    character(len=8) ::  nomgd, nocmp(3), noepo1, noepo2, typrac
+    character(len=8) :: nomgd, nocmp(3), noepo1, noepo2, typrac
     character(len=19) :: chcara
     real(kind=8) :: coorif(3), gpl(3), gpg(3), pgl(3, 3)
     real(kind=8) :: el1(3), el2(3), el3(3), coono1(3), coono2(3), e1(3), nore1
@@ -66,10 +66,10 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nma)
     ima = 0
     call jenonu(jexnom(noma//'.NOMNOE', noepou), inopou)
-    do 55 i = 1, nma
+    do i = 1, nma
         call jeveuo(jexnum(noma//'.CONNEX', i), 'L', iconex)
         call jelira(jexnum(noma//'.CONNEX', i), 'LONMAX', nbno)
-        do 56 j = 1, nbno
+        do j = 1, nbno
             if (zi(iconex+j-1) .eq. inopou) then
                 if (ima .eq. 0) then
                     ima = i
@@ -79,8 +79,8 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
                     call utmess('F', 'MODELISA6_36', sk=noepou)
                 endif
             endif
- 56     continue
- 55 end do
+        end do
+    end do
 !
 !     VERIFICATION QUE LA MAILLE IMA EST UN SEG3
 !

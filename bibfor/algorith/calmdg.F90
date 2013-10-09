@@ -122,7 +122,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
     ilires=0
     icompt=0
-    do 1 isst = 1, nbsst
+    do isst = 1, nbsst
         k=0
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
         macel=zk8(imacl)
@@ -162,11 +162,11 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
         deuxpi = 4.0d0 * acos ( 0.0d0 )
 !
-        do 3 ior = 1, 3
+        do ior = 1, 3
 !
             reste(ior)=mod(tgeom(ior+3),deuxpi)
 !
-  3     continue
+        end do
 !
         if ((reste(1).eq.0.0d0) .and. (reste(2).eq.0.0d0) .and. (reste(3) .eq.0.0d0)) then
             norm2 = 0.0d0
@@ -224,7 +224,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! D UNE SOUS STRUCTURE A UNE AUTRE DES CHAMPS AUX NOEUDS
 ! CALCULES SUR UNE SEULE SOUS STRUCTURE
 !
-        do 2 imodg = 1, nbmodg
+        do imodg = 1, nbmodg
             icompt=icompt+1
 !
             if (repon(1:3) .eq. 'NON') then
@@ -237,7 +237,8 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
                         mate, moint, ilires, k, icor)
 !
 !
-  2     continue
+  2         continue
+        end do
 !
 ! DESTRUCTION DU TABLEAU DES CORRESPONDANCES
 !
@@ -245,15 +246,15 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
         if (ndble .eq. 1) call jedetr('&&TABCOR.CORRE2')
 !
-  1 continue
+    end do
 !
 !----------------------------------------------------------------
 ! CALCUL DU NOMBRE DE MODES TOTAL
 !
     nbmo=0
-    do 4 isst = 1, nbsst
+    do isst = 1, nbsst
         nbmo=nbmo+zi(itabl+isst-1)
-  4 continue
+    end do
 !
 ! CREATION D UN TABLEAU DE VECTEURS CONTENANT LES NOMS DE TOUS
 ! LES VECTEURS DE DEPLACEMENTS ET DE PRESSION DE L ENSEMBLE
@@ -283,13 +284,13 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     call jeveut('&&TABIRG', 'E', iadirg)
 !
     ind=0
-    do 5 i = 1, nbsst
+    do i = 1, nbsst
 !
 ! NB DE MODES PAR SST
 !
         nbmod=zi(itabl+i-1)
 !
-        do 6 j = 1, nbmod
+        do j = 1, nbmod
 !
             ind=ind+1
             zk24(itxsto+ind-1)=zk24(zi(iadrx+i-1)+j-1)
@@ -299,14 +300,14 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
             call rangen(nugene//'.NUME', i, j, irang)
             zi(iadirg+ind-1)=irang
 !
-  6     continue
-  5 continue
+        end do
+    end do
 !
 !
 ! --- MENAGE
 !
     chaine = 'CBIDON'
-    do 7 isst = 1, nbsst
+    do isst = 1, nbsst
 !
         call codent(isst, 'D0', chaine(1:6))
         call jedetr('&&CALMDG.TXSTO'//chaine)
@@ -314,7 +315,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call jedetr('&&CALMDG.TZSTO'//chaine)
         call jedetr('&&CALMDG.PRES'//chaine)
 !
-  7 continue
+    end do
 !
 !
     call jedetr('&&CALMDG.TABL_MODE')

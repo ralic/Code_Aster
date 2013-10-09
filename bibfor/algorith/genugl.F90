@@ -111,14 +111,14 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !-----BOUCLE DE COMPTAGE DES DDL FINAUX---------------------------------
 !
     nddlt=0
-    do 10 i = 1, nbsst
+    do i = 1, nbsst
         kbid='  '
         call mgutdm(modgen, kbid, i, 'NOM_NUME_DDL', ibid,&
                     numddl)
         numddl(15:19)='.NUME'
         call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
-        do 20 j = 1, nbnot
+        do j = 1, nbnot
             nusst=zi(llinsk+j-1)
             numno=zi(llinsk+nbnot+j-1)
             if (nusst .eq. i) then
@@ -126,8 +126,8 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                 zi(lttds+i-1)=zi(lttds+i-1)+zi(llprno+(numno-1)*(2+&
                 nbec)+1)
             endif
- 20     continue
- 10 end do
+        end do
+    end do
 !
 !-----ALLOCATION DES DIVERS OBJETS-------------------------------------
 !
@@ -147,13 +147,13 @@ subroutine genugl(profno, indirf, modgen, mailsk)
     call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbsst)
 !
-    do 40 i = 1, nbsst
+    do i = 1, nbsst
         ntail=2*zi(lttds+i-1)
         if (ntail .gt. 0) then
             call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
             call jecroc(jexnum(indirf, i))
         endif
- 40 end do
+    end do
 !
 !-----REMPLISSAGE DES OBJETS EVIDENTS-----------------------------------
 !
@@ -170,7 +170,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !  BOUCLE SUR LES SST DU MODELE GENERALISE
 !
-    do 60 i = 1, nbsst
+    do i = 1, nbsst
         nbcou=zi(lttds+i-1)
         idds=0
 !
@@ -188,7 +188,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !  BOUCLE SUR LES DDL GLOBAUX
 !
-            do 70 j = 1, nbnot
+            do j = 1, nbnot
                 nusst=zi(llinsk+j-1)
 !
 !  TEST SI LE NOEUD GLOBAL EST ENGENDRE PAR LA SST
@@ -200,12 +200,12 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                     call isdeco(zi(llprno+(numno-1)*(2+nbec)+2), idec, nbcmp)
                     zi(ldprno+(j-1)*(2+nbec))=icomp+1
                     zi(ldprno+(j-1)*(2+nbec)+1)=nbddl
-                    do 80 iec = 1, nbec
+                    do iec = 1, nbec
                         zi(ldprno+(j-1)*(2+nbec)+1+iec)= zi(llprno+(&
                         numno-1)*(2+nbec)+1+iec)
- 80                 continue
+                    end do
                     iddn=0
-                    do 90 k = 1, nbcmp
+                    do k = 1, nbcmp
                         if (idec(k) .gt. 0) then
                             iddn=iddn+1
                             icomp=icomp+1
@@ -218,13 +218,13 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                             zi(ipoint+2)=icomp
                             idds=idds+1
                         endif
- 90                 continue
+                    end do
                 endif
- 70         continue
+            end do
             call jelibe(numddl//'.NUEQ')
             call jelibe(jexnum(indirf, i))
         endif
- 60 end do
+    end do
 !
 !-----SAUVEGARDE DES OBJETS---------------------------------------------
 !

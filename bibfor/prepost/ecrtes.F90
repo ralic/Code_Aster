@@ -126,7 +126,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
         if (nbac .eq. 0) then
             anatyp = 1
         else
-            do 20 i = 1, nbac
+            do i = 1, nbac
                 if (zk16(jpar-1+i) .eq. 'INST') then
                     anatyp = 4
                     goto 21
@@ -136,7 +136,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                 else if (zk16(jpar-1+i).eq.'FREQ') then
                     anatyp = 5
                 endif
- 20         continue
+            end do
         endif
     endif
  21 continue

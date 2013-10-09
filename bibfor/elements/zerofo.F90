@@ -1,6 +1,6 @@
 subroutine zerofo(func, x0, xap, epsi, nitmax,&
                   solu, iret, n)
-! aslint: disable=
+! aslint: disable=W0307
     implicit none
 !
     interface

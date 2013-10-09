@@ -90,7 +90,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     integer :: rang, nbproc, iret, ifm, niv
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
-    character(len=8) ::  partit
+    character(len=8) :: partit
     character(len=14) :: nudev
     character(len=19) :: vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
@@ -108,7 +108,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     integer :: i, i1, iad, iad1, iadlie, iadnem, ianueq
     integer :: ianulo, iapsdl, iconx1, iconx2, iddesc, idlres, idnequ
     integer :: idprn1, idprn2, idveds, idverf, idvref, iel
-    integer ::  igr, il, ilim, ilimnu, ilinu, ilive
+    integer :: igr, il, ilim, ilimnu, ilinu, ilive
     integer :: ilivec, imat, iresu, jnumsd, jprtk, jresl, jvale
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
     integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe

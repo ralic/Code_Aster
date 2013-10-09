@@ -117,19 +117,20 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 ! NOMBRE DE NOEUDS A AFFECTER
 !
     nbnaff = 0
-    do 10 ino1 = 1, nbno
+    do ino1 = 1, nbno
         ncmp1= zi(iprn1-1+ (ino1-1)* (nec+2)+2)
         if (ncmp1 .eq. 0) goto 10
         ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
         ieq1 = zi(inueq1-1+ival1-1+1)
         val = zr(iaval1-1+ieq1)
         if (abs(val) .lt. tmin) nbnaff=nbnaff+1
- 10 end do
+ 10     continue
+    end do
 !
 !
 !
     nbnrcp = 0
-    do 1 ino2 = 1, nbno
+    do ino2 = 1, nbno
 !
         ival2 = zi(iprn2-1+ (ino2-1)* (nec+2)+1)
         ncmp2 = zi(iprn2-1+ (ino2-1)* (nec+2)+2)
@@ -177,7 +178,8 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
         endif
 !
 !
-  1 end do
+  1     continue
+    end do
 !
     if ((nbnrcp.lt.nbnaff) .and. (nbnrcp.gt.(nbnaff/2))) then
 !

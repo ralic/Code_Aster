@@ -99,29 +99,29 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
     call wkvect('&&XPRFON.JBASO', 'V V R8', 6*nbptff, jbaso)
     call wkvect('&&XPRFON.JVITO', 'V V R8', nbptff, jvito)
     call wkvect('&&XPRFON.JBETAO', 'V V R8', nbptff, jbetao)
-    do 333 j = 1, nbptff
-        do 334 i = 1, 4
+    do j = 1, nbptff
+        do i = 1, 4
             zr(jfono-1+4*(j-1)+i)=zr(jfonf-1+4*(j-1)+i)
-334     continue
-        do 335 i = 1, 6
+        end do
+        do i = 1, 6
             zr(jbaso-1+6*(j-1)+i)=zr(jbasef-1+6*(j-1)+i)
-335     continue
+        end do
         zr(jvito-1+(j-1)+1)=zr(jvit-1+(j-1)+1)
         zr(jbetao-1+(j-1)+1)=zr(jbeta-1+(j-1)+1)
-333 end do
-    do 336 i = 1, numfon
+    end do
+    do i = 1, numfon
         zi(jfmulo-1+2*(i-1)+1)=zi(jfmult-1+2*(i-1)+1)
         zi(jfmulo-1+2*(i-1)+2)=zi(jfmult-1+2*(i-1)+2)
-336 end do
+    end do
     mem(1)=1.d0/r8prem()
 !
 ! VERIFICATION DU BON ORDONNANCEMENT DES DIFFERENTS FONDS
-    do 700 i = 1, numfon
-        do 505 j = 1, nptfg-1
-            do 222 k = 1, 4
+    do i = 1, numfon
+        do j = 1, nptfg-1
+            do k = 1, 4
                 a1(k)=zr(jfong-1+4*(j-1)+k)
                 b1(k)=zr(jfong-1+4*(j+1-1)+k)
-222         continue
+            end do
             normab=(b1(1)-a1(1))**2+(b1(2)-a1(2))**2+ (b1(3)-a1(3))**&
             2
 !   ON EXTRAIT LES COORDONNEES DU PREMIER POINT DU FOND DE FISSURE
@@ -142,9 +142,9 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             if (abs(coeffk) .gt. 1.d0) then
                 if (abs(coeffk) .lt. mem(1)) then
                     mem(1)=abs(coeffk)
-                    do 328 k = 1, 4
+                    do k = 1, 4
                         mem(k+1)=a1(k)
-328                 continue
+                    end do
                 endif
                 goto 505
             else
@@ -152,18 +152,19 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
                 mem(1)=1.d0/r8prem()
                 goto 66
             endif
-505     continue
-        do 329 k = 1, 4
+505         continue
+        end do
+        do k = 1, 4
             a1(k)=mem(k+1)
-329     continue
+        end do
         call vecini(4, 0.d0, mem)
         mem(1)=1.d0/r8prem()
  66     continue
-        do 506 j = 1, nptfg-1
-            do 223 k = 1, 4
+        do j = 1, nptfg-1
+            do k = 1, 4
                 a2(k)=zr(jfong-1+4*(j-1)+k)
                 b2(k)=zr(jfong-1+4*(j+1-1)+k)
-223         continue
+            end do
             normab=(b1(1)-a1(1))**2+(b1(2)-a1(2))**2+ (b1(3)-a1(3))**&
             2
 !  ON EXTRAIT LES COORDONNEES DU DERNIER POINT DU FOND DE FISSURE
@@ -188,19 +189,20 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             if (abs(coeffk) .gt. 1.d0) then
                 if (abs(coeffk) .lt. mem(1)) then
                     mem(1)=abs(coeffk)
-                    do 326 k = 1, 4
+                    do k = 1, 4
                         mem(k+1)=b2(k)
-326                 continue
+                    end do
                 endif
                 goto 506
             else
                 goto 67
             endif
-506     continue
+506         continue
+        end do
 !
-        do 327 k = 1, 4
+        do k = 1, 4
             b2(k)=mem(k+1)
-327     continue
+        end do
  67     continue
         call vecini(4, 0.d0, mem)
         mem(1)=1.d0/r8prem()
@@ -209,34 +211,34 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
         zr(jmemo-1+5*(i-1)+3)= b2(4)
         zr(jmemo-1+5*(i-1)+4)= dble(zi(jfmulo-1+(2*i-1)))
         zr(jmemo-1+5*(i-1)+5)= dble(zi(jfmulo-1+(2*i)))
-700 end do
+    end do
 !
 ! ON TRIE LE VECTEUR JMEMO
 ! (DE L'ABSCISSE CURV. LA PLUS PETITE A LA PLUS GRANDE)
-    do 655 i = 1, numfon-1
-        do 755 j = i+1, numfon
+    do i = 1, numfon-1
+        do j = i+1, numfon
             if (zr(jmemo-1+5*(j-1)+2) .lt. zr(jmemo-1+5*(i-1)+2)) then
-                do 855 k = 1, 5
+                do k = 1, 5
                     memo(k) = zr(jmemo-1+5*(i-1)+k)
-855             continue
-                do 955 k = 1, 5
+                end do
+                do k = 1, 5
                     zr(jmemo-1+5*(i-1)+k) = zr(jmemo-1+5*(j-1)+k)
-955             continue
-                do 956 k = 1, 5
+                end do
+                do k = 1, 5
                     zr(jmemo-1+5*(j-1)+k) = memo(k)
-956             continue
+                end do
             endif
-755     continue
-655 end do
+        end do
+    end do
 !
-    do 708 i = 1, numfon
+    do i = 1, numfon
         zi(jfmulo-1+2*(i-1)+1)=nint(zr(jmemo-1+5*(i-1)+4))
         zi(jfmulo-1+2*(i-1)+2)=nint(zr(jmemo-1+5*(i-1)+5))
-708 end do
+    end do
 !
     ivalue=0
 !
-    do 709 i = 1, numfon
+    do i = 1, numfon
         npoino=zi(jfmulo-1+2*i)
         nponop=zi(jfmulo-1+2*i-1)
 !
@@ -245,37 +247,37 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             zi(jfmulo-1+2*(i-1)+2)=ivalue+1+(npoino-nponop)
             npoinp=zi(jfmult-1+2*(nint(zr(jmemo-1+5*(i-1)+1)))-1)
             nval=zi(jfmulo-1+2*(i-1)+1)
-            do 710 j = 1, (npoino-nponop)+1
-                do 711 k = 1, 4
+            do j = 1, (npoino-nponop)+1
+                do k = 1, 4
                     zr(jfono-1+4*(nval+j-2)+k)= zr(jfonf-1+4*(npoinp+&
                     j-2)+k)
-711             continue
-                do 712 k = 1, 6
+                end do
+                do k = 1, 6
                     zr(jbaso-1+6*(nval+j-2)+k)= zr(jbasef-1+6*(npoinp+&
                     j-2)+k)
-712             continue
+                end do
                 zr(jvito-1+(nval+j-2)+1)=zr(jvit-1+(npoinp+j-2)+1)
                 zr(jbetao-1+(nval+j-2)+1)=zr(jbeta-1+(npoinp+j-2)+1)
-710         continue
+            end do
         endif
         npoino=zi(jfmulo-1+2*i)
         ivalue=npoino
-709 end do
+    end do
 !
-    do 136 i = 1, numfon
+    do i = 1, numfon
         zi(jfmult-1+2*(i-1)+1)=zi(jfmulo-1+2*(i-1)+1)
         zi(jfmult-1+2*(i-1)+2)=zi(jfmulo-1+2*(i-1)+2)
-136 end do
-    do 133 j = 1, nbptff
-        do 134 i = 1, 4
+    end do
+    do j = 1, nbptff
+        do i = 1, 4
             zr(jfonf-1+4*(j-1)+i)=zr(jfono-1+4*(j-1)+i)
-134     continue
-        do 135 i = 1, 6
+        end do
+        do i = 1, 6
             zr(jbasef-1+6*(j-1)+i)=zr(jbaso-1+6*(j-1)+i)
-135     continue
+        end do
         zr(jvit-1+(j-1)+1)=zr(jvito-1+(j-1)+1)
         zr(jbeta-1+(j-1)+1)=zr(jbetao-1+(j-1)+1)
-133 end do
+    end do
 !
 !     ON VERIFIE QUE LA LECTURE DES POINTS DES FRONTS SE FAIT DANS
 !     LE MEME SENS. POUR CELA ON VERIFIE LA COHERENCE AVEC LE SENS
@@ -283,7 +285,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !
     vect1=zr(jmemo-1+3)-zr(jmemo-1+2)
 !
-    do 177 i = 2, numfon
+    do i = 2, numfon
         vect2=zr(jmemo-1+5*(i-1)+3)-zr(jmemo-1+5*(i-1)+2)
         prosca=vect1*vect2
 !
@@ -291,31 +293,31 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !     ON DOIT CHANGER LE SENS DE LECTURE
             nbnol = zi(jfmult+2*i-1)-zi(jfmult+2*i-2)
             npoin=zi(jfmult-1+2*(i-1))
-            do 802 j = 1, nbnol+1
-                do 804 k = 1, 4
+            do j = 1, nbnol+1
+                do k = 1, 4
                     zr(jfono-1+4*(j-1)+k) = zr(jfonf-1+4*(npoin+j-1)+ k)
-804             continue
-                do 806 k = 1, 6
+                end do
+                do k = 1, 6
                     zr(jbaso-1+6*(j-1)+k) = zr(jbasef-1+6*(npoin+j-1)+ k)
-806             continue
+                end do
                 zr(jvito-1+(j-1)+1)=zr(jvit-1+(npoin+j-1)+1)
                 zr(jbetao-1+(j-1)+1)=zr(jbeta-1+(npoin+j-1)+1)
-802         continue
+            end do
 !
-            do 803 j = 1, nbnol+1
-                do 805 k = 1, 4
+            do j = 1, nbnol+1
+                do k = 1, 4
                     zr(jfonf-1+4*(npoin+j-1)+k)= zr(jfono-1+4*(nbnol-&
                     j+1)+k)
-805             continue
-                do 807 k = 1, 6
+                end do
+                do k = 1, 6
                     zr(jbasef-1+6*(npoin+j-1)+k)= zr(jbaso-1+6*(nbnol-&
                     j+1)+k)
-807             continue
+                end do
                 zr(jvit-1+(npoin+j-1)+1)=zr(jvito-1+(nbnol-j+1)+1)
                 zr(jbeta-1+(npoin-j-1)+1)=zr(jbetao-1+(nbnol-j+1)+1)
-803         continue
+            end do
         endif
-177 end do
+    end do
 !
     call jedetr('&&XPRFON.MEMO')
     call jedetr('&&XPRFON.JFONO')

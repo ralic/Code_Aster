@@ -78,7 +78,7 @@ subroutine trchno(ific, nocc)
     irefrr=1
     irefcr=1
 !
-    do 100 iocc = 1, nocc
+    do iocc = 1, nocc
         lign1 = ' '
         lign2 = ' '
         testok = 'NOOK'
@@ -297,7 +297,8 @@ subroutine trchno(ific, nocc)
             endif
         endif
         write (ific,*)' '
-100 end do
+100     continue
+    end do
 !
     1160 format(1x,a80,a)
     1200 format(1x,2(a80),a)

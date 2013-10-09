@@ -107,10 +107,10 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
                 nmafon, nmaen1, nmaen2, nmaen3)
 !
 !     S'IL N'Y A PAS DE MAILLES DE FOND, ON SORT
-    if (nmafon .eq. 0) goto 9999
+    if (nmafon .eq. 0) goto 999
 !
 !     SI NB_COUCH N'EST PAS DEFINI, ON SORT
-    if (ncouch .eq. 0) goto 9999
+    if (ncouch .eq. 0) goto 999
 !
 !     2) POUR TENIR COMPTE DE L'ENRICHISSEMENT GEOMETRIQUE A NB_COUCH
 !     ------------------------------------------------------------
@@ -125,7 +125,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
 !       CALCUL DE HFF : TAILLE MINIMALE D'UNE MAILLE DE MAFON
         hff = r8maem()
-        do 400 j = 1, nmafon
+        do j = 1, nmafon
             ima = zi(jmafon-1+j)
             itypma=zi(jma-1+ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
@@ -133,18 +133,18 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !         CONSTRUCTION DES COORDONNES DE LA MAILLE
             nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
             call wkvect('&&XSTAMA.MACOORD', 'V V R', ndim*nbnoma, jcoord)
-            do 401 ino = 1, nbnoma
+            do ino = 1, nbnoma
                 nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
-                do 402 idim = 1, ndim
+                do idim = 1, ndim
                     zr(jcoord-1+ndim*(ino-1)+idim)=zr(igeom-1+3*(nuno-&
                     1)+idim)
-402             continue
-401         continue
+                end do
+            end do
 !
             call loncar(ndim, typma, zr(jcoord), diam)
             call jedetr('&&XSTAMA.MACOORD')
             hff = min(hff,diam)
-400     continue
+        end do
 !
         rayon = hff*ncouch
         write(ifm,*)'LE RAYON D ENRICHISSEMENT EQUIVALENT EST ',rayon
@@ -154,7 +154,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !       SI ANCIEN STANO = 1 -> 3
         call jelira(lisnoe, 'LONMAX', nbnoe)
         call jeveuo(lisnoe, 'L', jdlino)
-        do 410 ino = 1, nbnoe
+        do ino = 1, nbnoe
             nabs=zi(jdlino-1+(ino-1)+1)
             if (stano(nabs) .le. 1) then
                 lsn=zr(jlnsv-1+(nabs-1)+1)
@@ -163,7 +163,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
                     stano(nabs) = stano(nabs) + 2
                 endif
             endif
-410     continue
+        end do
 !
         call jerazo('&&XENRCH.MAFOND', nmafis, 1)
         call jerazo('&&XENRCH.MAENR1', nbma, 1)
@@ -177,7 +177,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
     endif
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

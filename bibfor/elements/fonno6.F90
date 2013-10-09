@@ -80,7 +80,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
     real(kind=8) :: vecdir(ndim), vecnor(ndim), vnprec(ndim)
     real(kind=8) :: p, prvd1, prvd2
     character(len=6) :: syme
-    character(len=8) ::  type
+    character(len=8) :: type
     parameter    (angmax=2.5d0)
 !
 !     -----------------------------------------------------------------
@@ -157,28 +157,28 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
             call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
 !         BOUCLE SUR LES MAILLES DES LEVRES POUR TROUVER LE BON COTE
-            do 200 i = 1, nblev
+            do i = 1, nblev
                 call jenonu(jexnom(noma//'.NOMMAI', zk8(jmale-1 + i)), iret)
                 call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
                 ityp = iatyma-1+iret
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                 call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
-                do 210 inp = 1, 2
+                do inp = 1, 2
                     compt=0
-                    do 220 j = 1, nn
-                        do 230 ino = 1, nbnoel
+                    do j = 1, nn
+                        do ino = 1, nbnoel
                             if (zi(iamase-1 + j) .eq. noe(indr(inp),ino)) then
                                 compt = compt+1
                             endif
-230                     continue
-220                 continue
+                        end do
+                    end do
 !             ON A TROUVE UNE FACE COINCIDENTE A UNE LEVRE, ON SORT
                     if (compt .eq. nbnoel) then
                         ifl = inp
                         goto 300
                     endif
-210             continue
-200         continue
+                end do
+            end do
 !
 !       SI LES LEVRES NE SONT PAS DONNEES, ON TENTE AVEC DTAN_ORIG
         else if (itano.ne.0) then
@@ -214,10 +214,10 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         nnor = sqrt(&
                ( vnor(1,1)+vnor(2,1))**2 + (vnor(1,2)+vnor(2,2)) **2 + (vnor(1,3)+vnor(2,3) )**2)
 !
-        do 310 i = 1, ndim
+        do i = 1, ndim
             vecdir(i) = (vdir(1,i)+vdir(2,i))/ndir
             vecnor(i) = sens*(vnor(1,i)+vnor(2,i))/nnor
-310     continue
+        end do
 !
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
@@ -225,9 +225,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
             p = ddot(ndim,vecnor,1,vect,1)
             if (p .lt. 0.d0) then
                 sens = -1.d0
-                do 320 i = 1, ndim
+                do i = 1, ndim
                     vecnor(i) = sens*vecnor(i)
-320             continue
+                end do
             endif
         endif
 !
@@ -267,10 +267,10 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
         nnor = sqrt( vnor(ifl,1)**2 + vnor(ifl,2)**2 + vnor(ifl,3)**2 )
 !
-        do 330 i = 1, ndim
+        do i = 1, ndim
             vecdir(i) = vdir(ifl,i)/ndir
             vecnor(i) = sens*vnor(ifl,i)/nnor
-330     continue
+        end do
 !
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
@@ -278,9 +278,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
             p = ddot(ndim,vecnor,1,vect,1)
             if (p .lt. 0.d0) then
                 sens = -1.d0
-                do 340 i = 1, ndim
+                do i = 1, ndim
                     vecnor(i) = sens*vecnor(i)
-340             continue
+                end do
             endif
         endif
 !
@@ -296,9 +296,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         if (s .le. 0.d0) then
             call utmess('A', 'RUPTURE0_35', nr=3, valr=vecdir)
         endif
-        do 410 i = 1, ndim
+        do i = 1, ndim
             vecdir(i) = zr(jtano-1+i)
-410     continue
+        end do
     endif
 !
 !     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
@@ -307,19 +307,19 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         if (s .le. 0.d0) then
             call utmess('A', 'RUPTURE0_36', nr=3, valr=vecdir)
         endif
-        do 420 i = 1, ndim
+        do i = 1, ndim
             vecdir(i) = zr(jtane-1+i)
-420     continue
+        end do
     endif
 !
 !
 !     5) ECRITURE DE LA BASE PAR SEGMENT DU FOND
 !     -------------------------------------------
 !
-    do 510 i = 1, ndim
+    do i = 1, ndim
         zr(jbasse-1+2*ndim*(iseg-1)+i) = vecnor(i)
         zr(jbasse-1+2*ndim*(iseg-1)+i+ndim) = vecdir(i)
-510 continue
+    end do
 !
 !
 !     6) VERIF QUE LE VECTEUR NORMAL N'EST PAS TROP DIFFERENT DU
@@ -328,9 +328,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
     if (iseg .gt. 1) then
 !       RECUP DU VECTEUR NORMAL PRECEDENT
-        do 610 i = 1, ndim
+        do i = 1, ndim
             vnprec(i) = zr(jbasse-1+2*ndim*(iseg-2)+i)
-610     continue
+        end do
         s = ddot(ndim,vecnor,1,vnprec,1)
         beta = trigom('ACOS',s)*180.d0/r8pi()
         if (abs(beta) .gt. 10.d0) then

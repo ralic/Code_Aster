@@ -104,7 +104,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 ! --- CALCUL DE L'ANGLE
 !
     if (isxfe) then
-        do 26 i = 1, neq
+        do i = 1, neq
             if (zi(ideeq-1+2*i) .gt. 0) then
                 if (zr(jcoee+i-1) .eq. 0.d0) then
                     sca = sca + zr(jdepol+i-1)* zr(jcoef+i-1)**2*(zr( jdepde+i-1) + rho*zr(jdu0+i&
@@ -117,28 +117,28 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
                     dn = 0.d0
                     dc = 0.d0
                     dp = 0.d0
-                    do 30 j = i+1, neq
+                    do j = i+1, neq
                         if (zr(jcoee+i-1) .eq. zr(jcoee+j-1)) then
                             da = da + zr(jcoef+i-1)*zr(jdepol+i-1)+ zr(jcoef+j-1)*zr(jdepol+j-1)
                             dn = dn + zr(jcoef+i-1)*zr(jdepde+i-1)+ zr(jcoef+j-1)*zr(jdepde+j-1)
                             dc = dc + zr(jcoef+i-1)*zr(jdu0-1+i)+ zr(jcoef+j-1)*zr(jdu0-1+j)
                             dp = dp + zr(jcoef+i-1)*zr(jdu1-1+i)+ zr(jcoef+j-1)*zr(jdu1-1+j)
                         endif
- 30                 continue
+                    end do
                     sca = sca + da*(dn+rho*dc+eta*dp)
                     nodup1 = nodup1 + (dn+rho*dc+eta*dp)**2
                     nodup2 = nodup2 + da**2
                 endif
             endif
- 26     end do
+        end do
         nodup = nodup1*nodup2
     else
-        do 25 i = 1, neq
+        do i = 1, neq
             coef = zr(jplsl-1+i)
             sca = sca + (zr(jdepol+i-1)*(zr(jdepde+i-1) + rho*zr(jdu0+ i-1) + eta*zr(jdu1+i-1))&
                   )*coef
             nodup = nodup + ( zr(jdepde+i-1) + rho*zr(jdu0+i-1) + eta*zr(jdu1+i-1))**2
- 25     continue
+        end do
     endif
 !
     if (nodup .eq. 0.d0) then

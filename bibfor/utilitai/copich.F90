@@ -55,7 +55,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, prno3, ch1, ch2
     character(len=24) :: noojb
-    integer ::  iret1, iret2, jad
+    integer :: iret1, iret2, jad
     integer :: nuprf
     logical :: leco
 !-----------------------------------------------------------------------

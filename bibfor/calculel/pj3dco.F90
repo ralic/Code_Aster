@@ -67,7 +67,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !
 !
 !
-    character(len=8) ::  m1, m2, nono2
+    character(len=8) :: m1, m2, nono2
     character(len=16) :: cortr3
     character(len=14) :: boite
     integer :: nbtm, nbtmx
@@ -124,7 +124,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !           V(1+6(I-1)+6) : NUMERO DU TETRAEDRE DANS LA MAILLE
     call jeveuo(m1//'.TYPMAIL', 'L', iatym1)
     ico=0
-    do 51 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 51
         itypm=zi(iatym1-1+ima)
 !       -- TETRA :
@@ -144,7 +144,8 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
         else
             ASSERT(.false.)
         endif
- 51 end do
+ 51     continue
+    end do
     call wkvect('&&PJXXCO.TETR4', 'V V I', 1+6*ico, iatr3)
     zi(iatr3-1+1)=ico
     if (ico .eq. 0) then
@@ -154,7 +155,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(m1//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
-    do 52 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 52
         itypm=zi(iatym1-1+ima)
 !
@@ -257,7 +258,8 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
             zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
             zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
         endif
- 52 end do
+ 52     continue
+    end do
 !
 !
 !     3. ON MET LES TETR4 EN BOITES :
@@ -344,7 +346,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     idecal=0
     nbnod = 0
     nbnodm = 0
-    do 6 ino2 = 1, nno2
+    do ino2 = 1, nno2
         if (zi(ialin2-1+ino2) .eq. 0) goto 6
         call pj3dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
@@ -367,12 +369,13 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !
         zi(iaconb-1+ino2)=4
         zi(iacotr-1+ino2)=itr3
-        do 61 k = 1, 4
+        do k = 1, 4
             zi(iaconu-1+idecal+k)= zi(iatr3+6*(itr3-1)+k)
             zr(iacocf-1+idecal+k)= cobary(k)
- 61     continue
+        end do
         idecal=idecal+zi(iaconb-1+ino2)
-  6 end do
+  6     continue
+    end do
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
 !     A CE MOMENT DE L'ALGORITHME, L'ALARME EST PEUT ETRE INJUSTIFIEE

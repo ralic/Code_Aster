@@ -36,7 +36,7 @@ subroutine te0056(option, nomte)
 !.......................................................................
 !
     character(len=8) :: nompar(4)
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, sourc, theta
+    real(kind=8) :: poids, sourc, theta
     real(kind=8) :: valpar(4), xx, yy, zz
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, nno, kp, npg1, i, ivectt, isour, itemps
@@ -60,13 +60,13 @@ subroutine te0056(option, nomte)
     nompar(3) = 'Z'
     nompar(4) = 'INST'
 !
-    do 20 i = 1, nno
+    do i = 1, nno
         zr(ivectt-1+i) = 0.0d0
-20  end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 50 kp = 1, npg1
+    do kp = 1, npg1
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
@@ -76,11 +76,11 @@ subroutine te0056(option, nomte)
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
-        do 30 i = 1, nno
+        do i = 1, nno
             xx = xx + zr(igeom+3*i-3)*zr(ivf+l+i-1)
             yy = yy + zr(igeom+3*i-2)*zr(ivf+l+i-1)
             zz = zz + zr(igeom+3*i-1)*zr(ivf+l+i-1)
-30      continue
+        end do
         valpar(1) = xx
         valpar(2) = yy
         valpar(3) = zz
@@ -97,10 +97,10 @@ subroutine te0056(option, nomte)
         sourc = theta*sounp1 + (1.0d0-theta)*soun
 !
 !CDIR$ IVDEP
-        do 40 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*sourc*zr(ivf+l+i- 1)
-40      continue
+        end do
 !
-50  end do
+    end do
 !
 end subroutine

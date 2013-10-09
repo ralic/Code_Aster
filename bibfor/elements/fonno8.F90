@@ -54,7 +54,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
     integer :: jcoor, jconx, jfon, jmale
     integer :: nblev, nn, nn2, nbnott(3)
     real(kind=8) :: xg, yg, zg
-    character(len=8) ::  type
+    character(len=8) :: type
 !
 !     -----------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
 !     DETERMINATION D'UN VECTEUR ALLANT DU PREMIER NOEUD DU FOND
 !     FISSURE A UN NOEUD DE LA LEVRE_SUP
 !
-    do 200 inp = 1, 2
+    do inp = 1, 2
 !
         call jeveuo(jexnum(noma//'.CONNEX', tablev(inp)), 'L', jconx)
         itypma = iatyma-1+tablev(inp)
@@ -79,7 +79,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypma)), type)
         call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn2)
 !
-        do 210 ilev = 1, nblev
+        do ilev = 1, nblev
             comp = 0
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jmale-1+ilev)), iret)
             call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
@@ -88,16 +88,16 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
             call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
 !
-            do 220 inn = 1, nn
-                do 230 inn2 = 1, nn2
+            do inn = 1, nn
+                do inn2 = 1, nn2
                     if (zi(jconx-1+inn2) .eq. zi(iamase-1 + inn)) then
                         comp=comp+1
                         if (comp .eq. nn) goto 300
                     endif
-230             continue
-220         continue
-210     continue
-200 end do
+                end do
+            end do
+        end do
+    end do
 !
 300 continue
 !
@@ -107,11 +107,11 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
     xg=0
     yg=0
     zg=0
-    do 240 inn2 = 1, nbnott(1)
+    do inn2 = 1, nbnott(1)
         xg=xg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 1)
         yg=yg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 2)
         zg=zg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 3)
-240 end do
+    end do
 !
     call jeexin(resu//'.FOND.NOEU', ifon)
     if (ifon .ne. 0) then

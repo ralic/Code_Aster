@@ -127,7 +127,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: nbtyar
     parameter ( nbtyar = 6 )
     integer :: igrpa, ipepa
-    integer ::  ibmat, iddeeq, ierr
+    integer :: ibmat, iddeeq, ierr
     integer :: igrel, iexci, iexcl
     integer :: ifimpe
     integer :: idepl1, idepla
@@ -215,7 +215,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
     call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
     repk = 'NON'
-    do 103 igrel = 1, nbgrel
+    do igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
         call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
         itypel = zi(ialiel-1+nel)
@@ -224,7 +224,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
             repk = 'OUI'
             goto 1039
         endif
-103 end do
+    end do
 !
     if (repk .eq. 'NON') then
         limped = .false.
@@ -466,7 +466,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     ipas = 0
     call uttcpu('CPU.DLNEWI.1', 'INIT', ' ')
     call uttcpu('CPU.DLNEWI.2', 'INIT', ' ')
-    do 32 igrpa = 1, nbgrpa
+    do igrpa = 1, nbgrpa
 !
 ! 3.2.1. ==> PREALABLES
 !
@@ -584,7 +584,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
 !
- 32 end do
+    end do
 !
 3900 continue
 !

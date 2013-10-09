@@ -111,22 +111,22 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         call dismoi('NB_MA_MAILLA', noma1, 'MAILLAGE', repi=nbma1)
         call dismoi('NB_MA_MAILLA', noma2, 'MAILLAGE', repi=nbma2)
         call wkvect('&&RDTRES.CORRM_INV', 'V V I', nbma1, jcoinv)
-        do 10 ima2 = 1, nbma2
+        do ima2 = 1, nbma2
             ima1=zi(jcorrm-1+ima2)
             ASSERT(ima1.gt.0)
             zi(jcoinv-1+ima1)=ima2
- 10     continue
+        end do
 !
         call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
-        do 30 igr = 1, nbgrel
+        do igr = 1, nbgrel
             call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
-            do 20 iel = 1, n1-1
+            do iel = 1, n1-1
                 ima1=zi(j1-1+iel)
                 ima2=zi(jcoinv-1+ima1)
                 zi(j1-1+iel)=ima2
- 20         continue
- 30     continue
+            end do
+        end do
 !
 !       1.2.4  OBJETS A DETRUIRE :
         call jedetr(ligrel//'.NEMA')
@@ -143,17 +143,17 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !              A IRCHME / ELGA :
         model2=resu2
         call wkvect(model2//'.MAILLE', 'V V I', nbma2, jmail2)
-        do 31 igr = 1, nbgrel
+        do igr = 1, nbgrel
             call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
             ite=zi(j1-1+n1)
-            do 21 iel = 1, n1-1
+            do iel = 1, n1-1
                 ima2=zi(j1-1+iel)
                 ASSERT(ima2.gt.0)
                 ASSERT(ima2.le.nbma2)
                 zi(jmail2-1+ima2)=ite
- 21         continue
- 31     continue
+            end do
+        end do
 !
 !
     else
@@ -187,9 +187,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                 nbsym, acceno)
     ASSERT(nbsym.gt.0)
     cret=0
-    do 50 isym = 1, nbsym
+    do isym = 1, nbsym
         redpos=.true.
-        do 40 i = 1, nbordr
+        do i = 1, nbordr
             iordr=zi(jordr+i-1)
             call rsexch(' ', resu1, nomsym(isym), iordr, chp,&
                         iret)
@@ -205,11 +205,12 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
             else
                 redpos=.false.
             endif
- 40     continue
+ 40         continue
+        end do
         if (.not.redpos) then
             call utmess('A', 'CALCULEL4_7', sk=nomsym( isym))
         endif
- 50 end do
+    end do
 !
 !
 !     4- ON RECOPIE LES VARIABLES D'ACCES :
@@ -217,9 +218,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     call rsnopa(resu1, 2, '&&RDTRES.NOMS_PARA', nbac, nbpa)
     nbpara=nbac+nbpa
     call jeveuo('&&RDTRES.NOMS_PARA', 'L', jpa)
-    do 70 i = 1, nbordr
+    do i = 1, nbordr
         iordr=zi(jordr+i-1)
-        do 60 j = 1, nbpara
+        do j = 1, nbpara
             nopara=zk16(jpa-1+j)
 !
 !         -- CERTAINS PARAMETRES NE DOIVENT PAS ETRE RECOPIES:
@@ -255,8 +256,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
             else
                 ASSERT(.false.)
             endif
- 60     continue
- 70 end do
+ 60         continue
+        end do
+    end do
     call jedetr('&&RDTRES.NOMS_PARA')
     call jedetr('&&RDTRES.NUME_ORDRE')
     call jedetr('&&RDTRES.CORRM_INV')

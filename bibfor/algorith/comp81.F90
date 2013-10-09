@@ -145,13 +145,13 @@ subroutine comp81(nomres, basmod, raidf, noma)
     nbno = n1/(nec+2)
     k=1
     ncmpmx = 0
-    do 553 i = 1, nbno
+    do i = 1, nbno
         nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
         if (nunot .ne. 0) then
             nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
             ncmpmx = max(ncmpmx,nueq)
         endif
-553 continue
+    end do
 ! ON VA CHOISIR PLUSIEURS NOEUDS QUI NE SONT PAS PRESENTS DANS
 ! L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL
 ! AU NBRE DE MODES DYNAMIQUES
@@ -161,16 +161,16 @@ subroutine comp81(nomres, basmod, raidf, noma)
         call jelira(jexnom(noma//'.GROUPENO', gnex), 'LONUTI', nbno2)
         call jeveuo(jexnom(noma//'.GROUPENO', gnex), 'L', ldgn0)
         call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
-        do 557 j = 1, nbno2
+        do j = 1, nbno2
             zi(ldgn+j-1)=zi(ldgn0+j-1)
-557     continue
+        end do
     else
         nbno2=nbnoe
         if (nbno2 .ne. 0) then
             call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
-            do 558 j = 1, nbno2
+            do j = 1, nbno2
                 zi(ldgn+j-1)=zi(lldef+j-1)
-558         continue
+            end do
         else
             call wkvect('&&COMP81.NEUEXC', 'V V I', 1, ldgn)
             zi(ldgn) = 0
@@ -187,20 +187,21 @@ subroutine comp81(nomres, basmod, raidf, noma)
         goto 554
     endif
     call wkvect(nomres//'.NEUBID', 'V V I', nbndyn, inebid)
-    do 555 i = 1, nbno
+    do i = 1, nbno
         nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
         if (nunot .ne. 0) then
             nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
             if (nueq .eq. ncmpmx) then
-                do 556 j = 1, nbno2
+                do j = 1, nbno2
                     if (i .eq. zi(ldgn+j-1)) goto 555
-556             continue
+                end do
                 zi(inebid+k-1)= i
                 if (k .eq. nbndyn) goto 554
                 k=k+1
             endif
         endif
-555 continue
+555     continue
+    end do
 !
 554 continue
     if (nbmdef .ne. 0) then
@@ -218,35 +219,36 @@ subroutine comp81(nomres, basmod, raidf, noma)
             nbnot = nbno2 + nbndyn
             call juveca('&&COMP81.NEUEXC', nbnot)
             call jeveuo('&&COMP81.NEUEXC', 'E', ldgn)
-            do 651 j = nbno2+1, nbnot
+            do j = nbno2+1, nbnot
                 zi(ldgn+j-1)=zi(inebid+j-1-nbno2)
-651         continue
+            end do
             nbno2 = nbnot
         endif
         call wkvect('&&COMP81.NOSTDY', 'V V I', nbndef, instdy)
         k=1
-        do 655 i = 1, nbno
+        do i = 1, nbno
             nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
             if (nunot .ne. 0) then
                 nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
                 if (nueq .eq. ncmpmx) then
-                    do 656 j = 1, nbno2
+                    do j = 1, nbno2
                         if (i .eq. zi(ldgn+j-1)) goto 655
-656                 continue
+                    end do
                     zi(instdy+k-1)= i
                     if (k .eq. nbndef) goto 654
                     k=k+1
                 endif
             endif
-655     continue
+655         continue
+        end do
 !
 654     continue
     else
         if (nbnoe .ne. 0) then
             call wkvect('&&COMP81.NOSTDY', 'V V I', nbnoe, instdy)
-            do 658 j = 1, nbnoe
+            do j = 1, nbnoe
                 zi(instdy+j-1)=zi(lldef+j-1)
-658         continue
+            end do
         else
             call wkvect('&&COMP81.NOSTDY', 'V V I', 1, instdy)
             zi(instdy) = 0
@@ -304,27 +306,27 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !     CREATION DU .LINO
 ! **********************
     call wkvect(nomres//'.LINO', 'G V I', nbndef+nbndyn, iaconx)
-    do 665 i = 1, nbndyn
+    do i = 1, nbndyn
         zi(iaconx+i-1)=zi(inebid+i-1)
-665 continue
-    do 666 i = nbndyn+1, nbndef+nbndyn
+    end do
+    do i = nbndyn+1, nbndef+nbndyn
         zi(iaconx+i-1)=zi(instdy+i-nbndyn-1)
-666 continue
+    end do
 !
 ! **********************
 !     CREATION DU .CONX
 ! **********************
     call wkvect(nomres//'.CONX', 'G V I', 3*(nbndef+nbndyn), iacon1)
-    do 667 i = 1, nbndyn
+    do i = 1, nbndyn
         zi(iacon1+3*i-3)=1
         zi(iacon1+3*i-2)=zi(inebid+i-1)
         zi(iacon1+3*i-1)=0
-667 continue
-    do 668 i = nbndyn+1, nbndef+nbndyn
+    end do
+    do i = nbndyn+1, nbndef+nbndyn
         zi(iacon1+3*i-3)=1
         zi(iacon1+3*i-2)=zi(instdy+i-nbndyn-1)
         zi(iacon1+3*i-1)=0
-668 continue
+    end do
 669 continue
 !
 ! **********************
@@ -346,7 +348,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
         call jeecra(nomres//'.LICA', 'LONMAX', 2*nbmtot)
         call jeecra(nomres//'.LICH', 'LONMAX', 2)
 !
-        do 670 iocc = 1, nocc
+        do iocc = 1, nocc
             call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
             call getvid('CAS_CHARGE', 'VECT_ASSE_GENE', iocc=iocc, scal=vectas, nbret=n1)
             call jecroc(jexnom(nomres//'.LICA', nomcas))
@@ -355,14 +357,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
             call jeveuo(jexnum(nomres//'.LICA', icas), 'E', ialica)
             call jeveuo(jexnum(nomres//'.LICH', icas), 'E', ialich)
             call jeveuo(vectas//'           .VALE', 'L', ival)
-            do 671 ie = 1, nbmtot
+            do ie = 1, nbmtot
                 zr(ialica+ie-1) = zr(ival+ie-1)
                 zr(ialica+nbmtot+ie-1) = zr(ival+ie-1)
-671         continue
+            end do
             zk8(ialich)='NON_SUIV'
             zk8(ialich+1)=vectas
             zi(iadesm-1+7)=icas
-670     continue
+        end do
     endif
 !
 ! --- MENAGE

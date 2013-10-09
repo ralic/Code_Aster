@@ -107,7 +107,7 @@ subroutine xtopoc(modele)
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
 !
-    do 20 i = 1, 7
+    do i = 1, 7
         call cescre('V', champ(i), 'ELEM', noma, 'DCEL_I',&
                     2, licmp, [0], [-1], [-2])
         call jeveuo(champ(i)//'.CESD', 'L', jcesd)
@@ -116,15 +116,15 @@ subroutine xtopoc(modele)
 !
 ! --- REMPLISSAGE DES SOUS-POINTS DE CHAMP(I)
 !
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             call cesexi('S', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
             zi(jcesv-1-iad) = zi(jnbsp-1+ima)
             if (i .eq. 7) zi(jcesv-1-iad) = zi(jnbsp-1+ima)**2
- 10     continue
+        end do
 !
- 20 end do
+    end do
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !

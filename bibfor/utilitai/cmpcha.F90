@@ -99,9 +99,9 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !           POINTS DU CHAMP.
 !     ----------------------------------------------------------------
     ASSERT(nec.le.50)
-    do 10 k = 1, 50
+    do k = 1, 50
         dg(k)=0
- 10 end do
+    end do
 !
 !
 !     -- 1.1 CAS DES CHAM_NO
@@ -117,24 +117,24 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             call jelira(ch19//'.DESC', 'LONMAX', long)
             ASSERT(long.eq.(2+nec))
             iadg=jdesc-1+3
-            do 20 k = 1, nec
+            do k = 1, nec
                 dg(k)=zi(iadg-1+k)
- 20         continue
+            end do
 !
 !        -- 1.1.2 CAS DES CHAM_NO A PROF_CHNO:
         else
             call dismoi('PROF_CHNO', ch19, 'CHAM_NO', repk=profcn)
             call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
             call jeveuo(profcn//'.NUEQ', 'L', jnueq)
-            do 40 ino = 1, nbno
+            do ino = 1, nbno
                 ncmpp=zi(jprno-1+(ino-1)*(nec+2)+2)
                 if (ncmpp .ne. 0) then
                     iadg=jprno-1+(ino-1)*(nec+2)+3
-                    do 30 k = 1, nec
+                    do k = 1, nec
                         dg(k)=ior(dg(k),zi(iadg-1+k))
- 30                 continue
+                    end do
                 endif
- 40         continue
+            end do
         endif
 !
 !
@@ -144,7 +144,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
         call jeveuo(ch19//'.CELD', 'L', jceld)
         nbgr=zi(jceld-1+2)
 !
-        do 70 igr = 1, nbgr
+        do igr = 1, nbgr
             imolo=zi(jceld-1+zi(jceld-1+4+igr)+2)
             if (imolo .eq. 0) goto 70
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
@@ -153,15 +153,16 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             diff=(zi(jmolo-1+4).gt.10000)
             nbpt=mod(zi(jmolo-1+4),10000)
 !
-            do 60 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 kpt=1
                 if (diff) kpt=ipt
                 iadg=jmolo-1+4+(kpt-1)*nec+1
-                do 50 k = 1, nec
+                do k = 1, nec
                     dg(k)=ior(dg(k),zi(iadg-1+k))
- 50             continue
- 60         continue
- 70     continue
+                end do
+            end do
+ 70         continue
+        end do
 !
 !
 !     -- 1.3 CAS DES CARTES
@@ -170,15 +171,15 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
         call jeveuo(ch19//'.DESC', 'L', jdesc)
         ngrmx=zi(jdesc-1+2)
         nbedit=zi(jdesc-1+3)
-        do 90 igd = 1, nbedit
+        do igd = 1, nbedit
             ient=zi(jdesc-1+3+2*igd)
             if (ient .ne. 0) then
                 debgd=3+2*ngrmx+(igd-1)*nec+1
-                do 80 k = 1, nec
+                do k = 1, nec
                     dg(k)=ior(dg(k),zi(jdesc-1+debgd-1+k))
- 80             continue
+                end do
             endif
- 90     continue
+        end do
 !
     else
         ASSERT(.false.)
@@ -190,12 +191,12 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !     --------------------
     call wkvect(corr1, 'V V I', ncmpmx, jcorr1)
     ncmp=0
-    do 100 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (exisdg(dg(1),icmp)) then
             ncmp=ncmp+1
             zi(jcorr1-1+icmp)=ncmp
         endif
-100 end do
+    end do
 !
 !
 !
@@ -204,13 +205,13 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     call wkvect(nomcmp, 'V V K8', ncmp, jnocmp)
     call wkvect(corr2, 'V V I', ncmp, jcorr2)
     kcmp=0
-    do 110 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (zi(jcorr1-1+icmp) .gt. 0) then
             kcmp=kcmp+1
             zi(jcorr2-1+kcmp)=icmp
             zk8(jnocmp-1+kcmp)=zk8(jcmpgd-1+icmp)
         endif
-110 end do
+    end do
     ASSERT(kcmp.eq.ncmp)
 !
 !

@@ -80,7 +80,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
 ! ----------------------------------------------------------------------
     integer :: nbchmx
 !-----------------------------------------------------------------------
-    integer ::  iret3, k
+    integer :: iret3, k
 !-----------------------------------------------------------------------
     parameter (nbchmx=2)
     integer :: nligr(nbchmx)
@@ -119,7 +119,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
         lpain(2) = 'PTEMPSR'
         lchin(2) = time
 !
-        do 20 icha = 1, nchar
+        do icha = 1, nchar
             nomcha = lchar(icha)
             ligrel(2) = nomcha(1:8)//'.CHTH.LIGRE'
             call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=k8bid)
@@ -130,7 +130,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
                 option = 'RIGI_THER_    _R'
                 lpain(3) = '      R'
             endif
-            do 10 k = 1, nbchmx
+            do k = 1, nbchmx
                 lchin(3) = nomcha//'.CHTH'//nomchp(k)//'.DESC'
                 call jeexin(lchin(3), iret3)
                 if (iret3 .gt. 0) then
@@ -143,8 +143,8 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
                                 'OUI')
                     call reajre(matel, lchout(1), base)
                 endif
- 10         continue
- 20     continue
+            end do
+        end do
     endif
     call jedema()
 end subroutine

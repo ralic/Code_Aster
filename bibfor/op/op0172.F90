@@ -139,15 +139,16 @@ subroutine op0172()
     call wkvect('&&OP0172.NUME_2', 'V V I', nbmod2, jnume)
     nbmode = 1
     zi(jnume) = zi(jnuor)
-    do 10 i = 2, nbmod2
+    do i = 2, nbmod2
         if (zi(jnuor+i-1) .eq. zi(jnume+nbmode-1)) goto 10
         nbmode = nbmode + 1
         zi(jnume+nbmode-1) = zi(jnuor+i-1)
- 10 continue
+ 10     continue
+    end do
 !
     nomob1 = '&&OP0172.FREQ'
     call wkvect(nomob1, 'V V R', nbmode, jfreq)
-    do 12 i = 1, nbmode
+    do i = 1, nbmode
         call tbliva(enerpo, 1, 'NUME_ORDRE', zi(jnume+i-1), [r8b],&
                     [c16b], k8b, k8b, [r8b], 'FREQ',&
                     ctype, ibid, zr(jfreq+i-1), c16b, k8b,&
@@ -157,7 +158,7 @@ subroutine op0172()
         else
             call utmess('F', 'PREPOST4_18')
         endif
- 12 continue
+    end do
 !
 !
 !--------RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
@@ -211,14 +212,14 @@ subroutine op0172()
     call compno(noma, nbgr, zk24(idgn), nbno)
     call wkvect('&&OP0172.NOEUD', 'V V I', nbno, idno)
     ii = -1
-    do 20 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrno, zk24(idgn+i-1)), 'L', ldgn)
-        do 22 in = 0, nb-1
+        do in = 0, nb-1
             ii = ii + 1
             zi(idno+ii) = zi(ldgn+in)
- 22     continue
- 20 continue
+        end do
+    end do
     goto 111
 114 continue
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
@@ -232,24 +233,25 @@ subroutine op0172()
     call wkvect('&&OP0172.PARNO', 'V V I', nbnoeu, idn2)
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
                 iarg, nbgr, zk24(idgm), nbv)
-    do 21 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
-        do 23 in = 0, nb-1
+        do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 24 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(idn2+inoe-1) = zi(idn2+inoe-1) + 1
- 24         continue
- 23     continue
- 21 continue
+            end do
+        end do
+    end do
     ii = 0
-    do 25 ij = 1, nbnoeu
+    do ij = 1, nbnoeu
         if (zi(idn2+ij-1) .eq. 0) goto 25
         ii = ii + 1
         zi(idno+ii-1) = ij
- 25 continue
+ 25     continue
+    end do
     nbno = ii
     call jedetr('&&OP0172.GROUP_MA')
 111 continue
@@ -309,32 +311,32 @@ subroutine op0172()
 !
 113 continue
 !
-    do 51 i = 1, nbmode
+    do i = 1, nbmode
         if (method .eq. 'DEPL') then
             call rsexch('F', meca, 'DEPL', zi(jnume+i-1), nomch1,&
                         iret)
             nomch1 = nomch1(1:19)//'.VALE'
             call jeveuo(nomch1, 'L', iadmo1)
-            do 52 ino = 1, nbno
+            do ino = 1, nbno
                 inoe = zi(idno+ino-1)
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 if (ncmp .ne. ncompo) then
                     call utmess('F', 'PREPOST4_22')
                 endif
-                do 53 ic = 1, ncmp
+                do ic = 1, ncmp
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr(&
                                                    idepmo+(ic-1)* nbmode+i-1&
                                                    ) + zr(iadmo1+iddl+ic-1&
                                                    )
- 53             continue
- 52         continue
+                end do
+            end do
         else if (method.eq.'RIGI_PARASOL') then
             call rsexch('F', meca, 'DEPL', zi(jnume+i-1), nomch1,&
                         iret)
             nomch1 = nomch1(1:19)//'.VALE'
             call jeveuo(nomch1, 'L', iadmo1)
-            do 72 ino = 1, nbno
+            do ino = 1, nbno
                 inoe = zi(idno+ino-1)
 !            CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
@@ -342,43 +344,43 @@ subroutine op0172()
                 if (ncmp .ne. ncompo) then
                     call utmess('F', 'PREPOST4_22')
                 endif
-                do 73 ic = 1, ncmp
+                do ic = 1, ncmp
                     valr(ic) = zr(iadmo1+iddl+ic-1)*zr(irigno+6*(ino- 1)+ic-1)
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr( idepmo+(ic-1)* nbmode+i-1 ) + valr(ic )
- 73             continue
+                end do
                 a(1) = zr(jcoor+3*(inoe-1)+1-1) - xg
                 a(2) = zr(jcoor+3*(inoe-1)+2-1) - yg
                 a(3) = zr(jcoor+3*(inoe-1)+3-1) - zg
-                do 74 ic = 1, 3
+                do ic = 1, 3
                     b(ic) = valr(ic)
- 74             continue
+                end do
                 call provec(a, b, c)
-                do 75 ic = 4, ncmp
+                do ic = 4, ncmp
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr( idepmo+(ic-1)* nbmode+i-1 ) + c(ic-3 )
- 75             continue
- 72         continue
+                end do
+            end do
         endif
- 51 continue
+    end do
 !
     if (ncmp .eq. 6) write(ifr,1000)
     if (ncmp .eq. 3) write(ifr,2000)
-    do 54 i = 1, nbmode
+    do i = 1, nbmode
         if (method .eq. 'DEPL') then
-            do 55 ic = 1, ncmp
+            do ic = 1, ncmp
                 zr(idepmo+(ic-1)*nbmode+i-1) = zr(idepmo+(ic-1)* nbmode+i-1 )/nbno
                 zr(ienemo+(ic-1)*nbmode+i-1) = 0.5d0* rigi(ic)*zr( idepmo+(ic-1)*nbmode+i-1)**2
                 zr(ienmot+i-1) = zr(ienemo+(ic-1)*nbmode+i-1) + zr( ienmot+i-1)
- 55         continue
+            end do
         else if (method.eq.'RIGI_PARASOL') then
-            do 76 ic = 1, ncmp
+            do ic = 1, ncmp
                 zr(ienemo+(ic-1)*nbmode+i-1) = 0.5d0* zr(idepmo+(ic-1) *nbmode+i-1 )**2/rigi(ic)
                 zr(ienmot+i-1) = zr(ienemo+(ic-1)*nbmode+i-1) + zr( ienmot+i-1)
- 76         continue
+            end do
         endif
         f = zr(jfreq+i-1)
         write(ifr,1001) f,(zr(ienemo+(ic-1)*nbmode+i-1),ic=1,ncmp),&
         zr(ienmot+i-1)
- 54 continue
+    end do
 !
 !        --- ON RECUPERE LES SOUS_STRUC ET LEURS AMOR ---
 !
@@ -411,13 +413,13 @@ subroutine op0172()
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
 !
     valek(1) = 'NUME_ORDRE'
-    do 60 imod = 1, nbmode
+    do imod = 1, nbmode
 !
         im = zi(jnume+imod-1)
         f = zr(jfreq+imod-1)
         enesol = zero
 !
-        do 61 i = 1, nbga
+        do i = 1, nbga
 !
             valek(2) = 'LIEU'
             call tbliva(enerpo, 2, valek, [im], [r8b],&
@@ -430,13 +432,13 @@ subroutine op0172()
 !
             zr(iamomo+imod-1) = zr(iamomo+imod-1) + 1.0d-2*poucen*zr( idam+i-1)
             enesol = enesol + poucen
- 61     continue
+        end do
 !
         enesol = 1.d0 - 1.0d-2*enesol
 !
         zr(iamomo+imod-1) = zr(iamomo+imod-1) + amosol*enesol
 !
-        do 62 ic = 1, ncmp
+        do ic = 1, ncmp
             call fointe('F ', amogeo(ic), 1, ['FREQ'], [f],&
                         amoge, ire)
             if (rep .eq. 'OUI') amoge = amoge / 2.d0
@@ -445,7 +447,7 @@ subroutine op0172()
                                                                             &)* nbmode+imod-1) *e&
                                                                             &nesol/zr(ienmot+imod&
                                                                             &-1)
- 62     continue
+        end do
 !
         amomo = zr(iamomo+imod-1)
         if (amomo .gt. seuil) then
@@ -455,14 +457,14 @@ subroutine op0172()
             vali = imod
             call utmess('I', 'PREPOST5_64', si=vali, nr=2, valr=valrr)
         endif
- 60 continue
+    end do
 !
     write(ifr,1002)
-    do 64 imod = 1, nbmode
+    do imod = 1, nbmode
         write(ifr,1003) imod, zr(jfreq+imod-1), zr(iamomo+imod-1)
- 64 continue
+    end do
 !
-    goto 9999
+    goto 999
 9998 continue
     nbmode = 0
     pi = r8pi()
@@ -475,26 +477,26 @@ subroutine op0172()
     call mginfo(meca, nume, nbmode, neq)
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
     write(ifr,1002)
-    do 11 imod = 1, nbmode
+    do imod = 1, nbmode
         call rsadpa(meca, 'L', 1, 'FREQ', imod,&
                     0, sjv=jfreq, styp=k8b)
         omega=2.d0*pi*zr(jfreq)
         zr(iamomo+imod-1) = 0.5d0*(alfa*omega+beta/omega)
         write(ifr,1003) imod, zr(jfreq), zr(iamomo+imod-1)
- 11 continue
-9999 continue
+    end do
+999 continue
     nbvale = nbmode
     if (nbvale .gt. 1) then
         call wkvect(resu//'           .LPAS', 'G V R', nbvale-1, jpas)
         call wkvect(resu//'           .NBPA', 'G V I', nbvale-1, jnbp)
         call wkvect(resu//'           .BINT', 'G V R', nbvale, jbor)
         call wkvect(resu//'           .VALE', 'G V R', nbvale, jval)
-        do 70 i = 1, nbvale-1
+        do i = 1, nbvale-1
             zr(jpas+i-1) = zr(iamomo+i) - zr(iamomo+i-1)
             zi(jnbp+i-1) = 1
             zr(jbor+i-1) = zr(iamomo+i-1)
             zr(jval+i-1) = zr(iamomo+i-1)
- 70     continue
+        end do
         zr(jbor+nbvale-1) = zr(iamomo+nbvale-1)
         zr(jval+nbvale-1) = zr(iamomo+nbvale-1)
     else

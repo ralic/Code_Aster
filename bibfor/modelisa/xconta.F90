@@ -109,7 +109,7 @@ subroutine xconta(char, noma, nomo, ndim)
 !
 ! --- CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT
 !
-    do 220 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 ! --- FISSURE COURANTE
 !
@@ -135,7 +135,7 @@ subroutine xconta(char, noma, nomo, ndim)
                     nliseq)
 !
         call xbarvi(noma, nomo, fiscou, faclon, ainter)
-220 end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

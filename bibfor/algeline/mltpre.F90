@@ -46,7 +46,7 @@ subroutine mltpre(mat19, renumz)
     character(len=19) :: mat19, solv19
     character(len=14) :: nu
     integer :: nec, i, icol
-    character(len=8) ::  nomgd
+    character(len=8) :: nomgd
     character(len=8) :: renum, renum2
     integer :: ismdi, ismhc, idelg, ideeq, iprno, diag, inueq, jsmde
     integer :: lgadjn, adjnc1, adjnc2, desc
@@ -138,7 +138,7 @@ subroutine mltpre(mat19, renumz)
         renum2=zk8(jrenu)
         if (renum .eq. renum2) then
 !         -- IL N'Y A RIEN A FAIRE :
-            goto 9999
+            goto 999
         else
             call detrsd('MLTF', nu//'.MLTF')
         endif
@@ -176,17 +176,17 @@ subroutine mltpre(mat19, renumz)
     call jeveuo(nu//'.SMOS.SMDE', 'L', jsmde)
 !
     neq = zi(jsmde-1+1)
-    do 10 i = 1, neq
+    do i = 1, neq
         ASSERT(zi(inueq+i-1).eq.i)
- 10 end do
+    end do
     call jelibe(nu//'.NUME.NUEQ')
     lmat = zi(ismdi+neq-1)
 !     LA STRUCTURE NOMADI A LA LONGUEUR EXACTE: LMAT
 !     ET N' EST PAS SURDIMENSIONNEE COMME SMOS.SMHC
     call wkvect(nomadi, base//' V I ', lmat, ismhc)
-    do 20 i = 0, lmat - 1
+    do i = 0, lmat - 1
         zi(ismhc+i) = zi4(icol+i)
- 20 end do
+    end do
     call jelibe(nu//'.SMOS.SMHC')
     call jeveuo(mat19//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+10) .ne. 'NOEU') then
@@ -200,13 +200,13 @@ subroutine mltpre(mat19, renumz)
 !     CALCUL DE MRL, NBRE MAXIMUM DE RELATIONS LINEAIRES
 !     SERT A DIMENSIONNER AU PLUS JUSTE LE TABLEAU RL
     mrl = 1
-    do 30 iddl = 1, neq
+    do iddl = 1, neq
         if (zi(idelg+iddl-1) .ne. 0) then
             ino = zi(ideeq+2* (iddl-1))
             if (ino .eq. 0) mrl = mrl + 1
         endif
 !
- 30 end do
+    end do
 !
 !     OBTENTION DE NEC
     call dismoi('NOM_GD', nu, 'NUME_DDL', repk=nomgd)
@@ -215,9 +215,9 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomp01, base//' V I ', 5, desc)
     call wkvect(nomp02, base//' V I ', neq+1, diag)
 !     COPIE DE SMDI DANS DIAG
-    do 40 i = 1, neq
+    do i = 1, neq
         zi(diag+i) = zi(ismdi+i-1)
- 40 end do
+    end do
     call jelibe(nu//'.SMOS.SMDI')
     zi(diag) = 0
 !
@@ -328,9 +328,9 @@ subroutine mltpre(mat19, renumz)
     if (lgadjn .le. 0) lgadjn=1
     call wkvect(nomad2, ' V V I ', lgadjn, adjnc2)
 !
-    do 70 i = 0, lgadjn - 1
+    do i = 0, lgadjn - 1
         zi(i+adjnc2) = 0
- 70 end do
+    end do
     call wkvect(nomp20, base//' V I ', neq, seq)
     call wkvect(nomt04, ' V V I ', (neq+1), supnd2)
     call wkvect(nomt14, ' V V I ', neq, invp)
@@ -419,9 +419,9 @@ subroutine mltpre(mat19, renumz)
     call jeveuo(nomdeb, 'L', deb)
     call jeveuo(nomvoi, 'L', vois2)
     call jeveuo(nomsui, 'L', suit2)
-    do 80 i = 0, lgadjn - 1
+    do i = 0, lgadjn - 1
         zi(i+adjnc1) = 0
- 80 end do
+    end do
 !---------------------------------------------------------------
 !     PREMLD  APPELLE CALADJ QUI FABRIQUE ADJNC1
 !     DONNEES
@@ -523,13 +523,13 @@ subroutine mltpre(mat19, renumz)
     lgind = zi(adress+nbsn) - 1
     call wkvect(nomglo, base//' V S ', lgind, globa)
     call wkvect(nomloc, base//' V S ', lgind, loca)
-    do 100 i = 0, lgind - 1
+    do i = 0, lgind - 1
         zi4(globa+i) = zi4(global+i)
         zi4(loca+i) = zi4(local+i)
-100 end do
+    end do
     call jedetr(nopglo)
     call jedetr(noploc)
-9999 continue
+999 continue
 !
     call uttcpu('CPU.RESO.3', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')

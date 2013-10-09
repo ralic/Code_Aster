@@ -92,7 +92,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     typel1 = 0
     nbtyel = 0
     itype = 0
-    do 10 i = 1, nbmail
+    do i = 1, nbmail
         numail = lismai(i)
         igrel = zi(jrepe+2*(numail-1))
         if (igrel .eq. 0) then
@@ -110,12 +110,12 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
             zi(jnel-1+itype) = 1
             zi(jtyp-1+nbtyel) = typele
         endif
- 10 end do
+    end do
 !
     nbmam = 0
-    do 12 i = 1, nbtyel
+    do i = 1, nbtyel
         nbmam = max ( nbmam, zi(jnel-1+i) )
- 12 end do
+    end do
 !
 ! --- OBJET LIEL
 !     ----------
@@ -130,22 +130,22 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 !     ---------------------------------------
     numvec = 0
     numail = 0
-    do 20 i = 1, nbtyel
+    do i = 1, nbtyel
         nmel = zi(jnel-1+i)
 !
         call jecroc(jexnum(cptlie, i))
         call jeecra(jexnum(cptlie, i), 'LONMAX', nmel+1)
 !
-        do 22 j = 1, nmel
+        do j = 1, nmel
             numvec = numvec + 1
             numail = numail + 1
             zi(jdli+numvec-1) = lismai(numail)
- 22     continue
+        end do
 !
         numvec = numvec + 1
         zi(jdli+numvec-1) = zi(jtyp-1+i)
 !
- 20 end do
+    end do
 !
     call jedetr('&&EXLIM1.TYPE_NOMBRE')
 !

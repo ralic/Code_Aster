@@ -18,19 +18,19 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-
-#   include "jeveux.h"
-#   include "asterfort/assert.h"
-#   include "asterfort/dismoi.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/nudlg2.h"
-#   include "asterfort/utmess.h"
-
+!
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/dismoi.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/nudlg2.h"
+# include "asterfort/utmess.h"
+!
     character(len=19) :: matas1
     integer :: nsecm
-    real(kind=8) :: rsolu2(*), rsolu1(*), val
+    real(kind=8) :: rsolu2(*), rsolu1(*)
 !--------------------------------------------------------------
 ! BUT :
 !   calculer les solutions complètes (RSOLU1) correspondant aux
@@ -48,8 +48,8 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-#   include "asterfort/elg_allocvr.h"
-#   include "asterfort/elg_calcxl.h"
+# include "asterfort/elg_allocvr.h"
+# include "asterfort/elg_calcxl.h"
 !
 !================================================================
     character(len=1) :: kbid

@@ -71,7 +71,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     integer :: nbmamx, nbgmmx, imxno, imxgn, imxma, imxgm, idebu, jnunot
     integer :: iutil
 !
-    character(len=8) ::  nomma
+    character(len=8) :: nomma
     character(len=24) :: texte
 !
     call jemarq()
@@ -176,9 +176,9 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !         - NOMBRE TOTAL DE NOEUDS DU MAILLAGE NOMMA = NBNOE
             call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoe)
             call wkvect('&&IRTOPO.IND_NOEU', 'V V I', nbnoe, jindno)
-            do 70 ino = 1, nbnoe
+            do ino = 1, nbnoe
                 zi(jindno+ino-1)=0
- 70         continue
+            end do
         endif
 !
 !       ***  SELECTION SUR DES NOEUDS OU GROUPES DE NOEUDS
@@ -222,12 +222,12 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
             endif
             call wkvect('&&IRTOPO.FILTRE_NO', 'V V I', nbnos, jnofi)
             ii=0
-            do 490 ino = 1, nbnos
+            do ino = 1, nbnos
                 if (zi(jindno+zi(jnunos+ino-1)-1) .eq. 0) then
                     ii=ii+1
                     zi(jnofi+ii-1)=zi(jnunos+ino-1)
                 endif
-490         continue
+            end do
             nbnos=ii
             nbnoto = nbnoto + nbnos
         endif
@@ -235,7 +235,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         if (nbno .ne. 0 .or. nbgrn .ne. 0 .or. nbma .ne. 0 .or. nbgrm .ne. 0) then
             if (nbnou .eq. 0 .and. nbmato .eq. 0) then
                 codret=1
-                goto 9999
+                goto 999
             endif
         endif
 !
@@ -247,15 +247,15 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         endif
         if (nbnou .gt. 0) then
 !         - LISTE DES NUMEROS DE NOEUDS
-            do 500 ino = 1, nbnou
+            do ino = 1, nbnou
                 zi(jnunot-1+ino)=zi(jnunou-1+ino)
-500         continue
+            end do
         endif
         if (nbnos .gt. 0) then
 !         - SUIVIE DE LA LISTE DES NUMEROS DE NOEUDS SOMMETS
-            do 501 ino = 1, nbnos
+            do ino = 1, nbnos
                 zi(jnunot-1+nbnou+ino)= zi(jnofi-1+ino)
-501         continue
+            end do
         endif
     endif
 !
@@ -275,7 +275,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         if (nbnomx .ne. 0) then
             idebu = 12
             imxno = imxno+1
-            do 800 ino = 1, nbno
+            do ino = 1, nbno
                 texte = zk8(jlno-1+ino)
                 iutil = lxlgut(texte)
                 if (iutil .ne. 0) then
@@ -287,12 +287,12 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-800         continue
+            end do
         endif
         if (nbgnmx .ne. 0) then
             idebu = 12
             imxgn = imxgn + 1
-            do 810 igrn = 1, nbgrn
+            do igrn = 1, nbgrn
                 texte = zk24(jlgrn-1+igrn)
                 iutil = lxlgut(texte)
                 if (iutil .ne. 0) then
@@ -304,12 +304,12 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-810         continue
+            end do
         endif
         if (nbgmmx .ne. 0) then
             idebu = 12
             imxgm = imxgm + 1
-            do 820 igrm = 1, nbgrm
+            do igrm = 1, nbgrm
                 texte = zk24(jlgrm-1+igrm)
                 iutil = lxlgut(texte)
                 if (iutil .ne. 0) then
@@ -320,12 +320,12 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-820         continue
+            end do
         endif
         if (nbmamx .ne. 0) then
             idebu = 12
             imxma = imxma + 1
-            do 830 ima = 1, nbma
+            do ima = 1, nbma
                 texte = zk8(jlma-1+ima)
                 iutil = lxlgut(texte)
                 if (iutil .ne. 0) then
@@ -337,7 +337,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
-830         continue
+            end do
         endif
         call jeveuo('&&IRTOPO.LIST_TOPO', 'L', jtopo)
         if (imxno .ne. 0 .or. imxgn .ne. 0 .or. imxma .ne. 0 .or. imxgm .ne. 0) then
@@ -361,7 +361,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         endif
         write(ifichi,'(A)')
     endif
-9999 continue
+999 continue
     call jedetr('&&IRTOPO.LIST_TOPO')
     call jedetr('&&IRTOPO.LIST_GRNO')
     call jedetr('&&IRTOPO.NOM_GRNO')

@@ -62,7 +62,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer ::  idcoor, idlino, iocc, iret, nangle
+    integer :: idcoor, idlino, iocc, iret, nangle
     integer :: nb, nbno, nbnoe, ndim, ndim1, nprec, nv
     integer :: nvect
     real(kind=8) :: prec, xnorm, xnorm2, zero

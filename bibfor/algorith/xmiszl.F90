@@ -95,20 +95,21 @@ subroutine xmiszl(vecinc, defico, noma)
 !
     call wkvect('&&XMISZL.NNO', 'V V I', 20*ntmae, jtab)
 !
-    do 10 imae = 1, ntmae
+    do imae = 1, ntmae
         posmae = imae
         nummae = zi(jmaesx+zmesx*(posmae-1)+1-1)
         call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
         call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nno)
-        do 20 ino = 1, nno
+        do ino = 1, nno
             numno = zi(jconx1-1+zi(jconx2+nummae-1)+ino-1)
-            do 30 i = 1, nbno
+            do i = 1, nbno
                 if (numno .eq. zi(jtab+i-1)) goto 20
- 30         continue
+            end do
             nbno = nbno+1
             zi(jtab+nbno-1) = numno
- 20     continue
- 10 end do
+ 20         continue
+        end do
+    end do
 !
 ! --- EXTRACTION CHAM_NO_S VECTEUR DES INCONNUES
 !
@@ -134,11 +135,11 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 ! --- MISE A ZERO LAGRANGIENS
 !
-    do 11 ino = 1, nbno
+    do ino = 1, nbno
         zr(jcns1b-1+zi(jtab+ino-1)) = 0.d0
         zr(jcns1d-1+zi(jtab+ino-1)) = 0.d0
         zr(jcns1e-1+zi(jtab+ino-1)) = 0.d0
- 11 end do
+    end do
 !
 ! --- FUSION CHAM_NO_S POUR CREATION CHAM_NO_S CNS1C
 !

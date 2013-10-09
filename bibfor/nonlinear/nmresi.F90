@@ -1,11 +1,11 @@
 subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                   sddyna, sdconv, sdimpr, defico, resoco,&
-                  matass, numins, conv, resigr, eta, &
+                  matass, numins, conv, resigr, eta,&
                   comref, valinc, solalg, veasse, measse,&
-                  vrela, vmaxi, vchar, vresi, vrefe, &
+                  vrela, vmaxi, vchar, vresi, vrefe,&
                   vinit, vcomp, vfrot, vgeom)
 !
-    implicit     none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -104,14 +104,14 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     integer :: jccid, jfint, jdiri, jfext, jvcfo, jrefe, jiner, jvcf1
     integer :: ifm, niv, nocc
     integer :: neq
-    character(len=8) ::  noddlm
+    character(len=8) :: noddlm
     logical :: ldyna, lstat, lcine, lctcc
     character(len=19) :: profch, foiner
     character(len=19) :: commoi, depmoi
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
     integer :: jdeeq, jfnod, jbudi, jdfdo, jdipi
-    integer ::  ieq
+    integer :: ieq
     logical :: lrefe, linit, lcmp
     real(kind=8) :: val1, val4, val5
     real(kind=8) :: maxres

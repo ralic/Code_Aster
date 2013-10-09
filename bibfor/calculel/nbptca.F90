@@ -53,7 +53,7 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  iret, nbma, ima, jcesd, jnbpt, jnbno, iacnx1, ilcnx1, nbno
+    integer :: iret, nbma, ima, jcesd, jnbpt, jnbno, iacnx1, ilcnx1, nbno
     character(len=8) :: ma
     character(len=19) :: cel, ces
 !     ------------------------------------------------------------------
@@ -75,11 +75,11 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
     else
         call celces(cel, 'V', ces)
         call jeveuo(ces//'.CESD', 'L', jcesd)
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(jcesd-1+5+4* (ima-1)+1)
             nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
             zi(jnbno-1+ima) = nbno
- 10     continue
+        end do
 !
     endif
 !

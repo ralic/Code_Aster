@@ -46,9 +46,9 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
 ! ----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  jprno, nec, tabec(10), i, idec, inuddl, iad, iec, ino
+    integer :: jprno, nec, tabec(10), i, idec, inuddl, iad, iec, ino
     integer :: ncmpmx, jnoeu, ncmp, icmp, nunoe, jneq, jcmp, j, nbcmp
-    character(len=8) ::  motcls(4), typmcl(4), nomgd, nomnoe, nomcmp
+    character(len=8) :: motcls(4), typmcl(4), nomgd, nomnoe, nomcmp
     character(len=19) :: prno
 !     ------------------------------------------------------------------
 !
@@ -82,36 +82,37 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
 !
     neq = 0
     ncmp = 0
-    do 10 i = 1, nbnoeu
+    do i = 1, nbnoeu
         ino = zi(jnoeu+i-1)
-        do 12 iec = 1, nec
+        do iec = 1, nec
             tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
- 12     continue
+        end do
         nbcmp = 0
-        do 14 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(tabec,icmp)) then
                 nbcmp = nbcmp + 1
-                do 16 j = 1, ncmp
+                do j = 1, ncmp
                     if (zk8(jcmp+j-1) .eq. zk8(iad-1+icmp)) goto 14
- 16             continue
+                end do
                 ncmp = ncmp + 1
                 zk8(jcmp-1+ncmp) = zk8(iad-1+icmp)
             endif
- 14     continue
+ 14         continue
+        end do
         neq = neq + nbcmp
- 10 end do
+    end do
 !
     call wkvect(objve3, 'V V I', nbnoeu*ncmp, jneq)
     call wkvect(objve4, 'V V I', neq, inuddl)
 !
     idec = 0
-    do 20 i = 1, nbnoeu
+    do i = 1, nbnoeu
         ino = zi(jnoeu+i-1)
         call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
-        do 22 iec = 1, nec
+        do iec = 1, nec
             tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
- 22     continue
-        do 24 icmp = 1, ncmpmx
+        end do
+        do icmp = 1, ncmpmx
             if (exisdg(tabec,icmp)) then
                 idec = idec + 1
                 nomcmp = zk8(iad-1+icmp)
@@ -122,14 +123,15 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
                     call posddl('CHAM_NO', chamno, nomnoe, nomcmp, nunoe,&
                                 zi(inuddl+idec-1))
                 endif
-                do 26 j = 1, ncmp
+                do j = 1, ncmp
                     if (zk8(jcmp+j-1) .eq. zk8(iad-1+icmp)) then
                         zi(jneq-1+(i-1)*ncmp+j) = 1
                         goto 24
                     endif
- 26             continue
+                end do
             endif
- 24     continue
- 20 end do
+ 24         continue
+        end do
+    end do
 !
 end subroutine

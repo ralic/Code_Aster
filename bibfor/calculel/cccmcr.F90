@@ -77,7 +77,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !     SI LE CHAMP A TRANSFORMER NE PORTE PAS DE COMPOSANTES
 !     SUR LA MAILLE ON DOIT LE PASSER
     nbpt1 = zi(jcesdd-1+5+4*(numma-1)+3)
-    if (nbpt1 .eq. 0) goto 9999
+    if (nbpt1 .eq. 0) goto 999
     codret = 0
 !
 !     RECUPERATION DE LA MODELISATION
@@ -96,12 +96,12 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !
         ino1 = zi(jconx1+posin-1)
         ino2 = zi(jconx1+posin)
-        do 70 idir = 1, 3
+        do idir = 1, 3
             coordc(idir,1) = zr(jcoord+3*(ino2-1)+idir-1)
- 70     continue
-        do 80 idir = 1, 3
+        end do
+        do idir = 1, 3
             coordc(idir,2) = zr(jcoord+3*(ino1-1)+idir-1)
- 80     continue
+        end do
 !
 !       LECTURE DE GAMMA DANS .CARORIEN
         call cesexi('S', jcesd, jcesl, numma, 1,&
@@ -119,16 +119,16 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !
         if (nbnol .lt. 7) then
             codret = 1
-            goto 9999
+            goto 999
         endif
         inos = 0
-        do 160 ino2 = 1, nbnol
+        do ino2 = 1, nbnol
             nuno = zi(jconx1+posin+ino2-2)
             if (nuno .eq. ino) inos = ino2
-            do 150 idir = 1, 3
+            do idir = 1, 3
                 coordc(idir,ino2) = zr(jcoord+3*(nuno-1)+idir-1)
-150         continue
-160     continue
+            end do
+        end do
         ASSERT(inos.ne.0)
 !
 !       RECHERCHE DE ALPHA ET BETA DANS .CARCOQUE
@@ -149,12 +149,12 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
     .or.(modeli(1:4).eq.'DKTG') .or.(modeli(1:3).eq.'Q4G') .or.(&
     modeli.eq.'COQUE') .or.(modeli.eq.'GRILLE') ) then
 !
-        do 50 ino2 = 1, nbnol
+        do ino2 = 1, nbnol
             nuno = zi(jconx1+posin+ino2-2)
-            do 60 idir = 1, 3
+            do idir = 1, 3
                 coordc(idir,ino2) = zr(jcoord+3*(nuno-1)+idir-1)
- 60         continue
- 50     continue
+            end do
+        end do
 !
 !       RECHERCHE DE ALPHA ET BETA DANS .CARCOQUE
         call cesexi('S', jcesdc, jceslc, numma, 1,&
@@ -190,6 +190,6 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

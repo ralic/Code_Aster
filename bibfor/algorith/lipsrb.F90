@@ -80,7 +80,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- VARIABLES DE LA ROUTINE
     integer :: ibid, i1, j1, k1, l1, lrot1, lrot2, ltran1, ltran2, nbno1, nbno2
     integer :: lnoma1, lnoma2, lcoor1, lcoor2, numno, lno1, lno2, dima, ldepen
-    integer ::  nbmast, nbslav, lnomas, lnosla, ldist, indmin, lphir, lvisla
+    integer :: nbmast, nbslav, lnomas, lnosla, ldist, indmin, lphir, lvisla
     integer :: ltramo, lprojt, decal, lmats, lmatu, lmatv, lmsm1u, lvsm1u
     integer :: lindma, lindsl, lwork, jwork, possla, posmas, indsla
     integer(kind=4) :: info
@@ -110,12 +110,12 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     call jenonu(jexnom(nomres//'      .MODG.SSNO', sst2), ibid)
     call jeveuo(jexnum(nomres//'      .MODG.SSTR', ibid), 'L', ltran2)
 !
-    do 10 i1 = 1, 3
+    do i1 = 1, 3
         ang1(i1)=zr(lrot1+i1-1)
         ang2(i1)=zr(lrot2+i1-1)
         tr1(i1)=zr(ltran1+i1-1)
         tr2(i1)=zr(ltran2+i1-1)
- 10 end do
+    end do
 !
     call rotati(ang1, rot1)
     call rotati(ang2, rot2)
@@ -163,23 +163,23 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     call wkvect('&&LIPSRB.COORD_INT2', 'V V R', 3*nbno2, lcoor2)
 !
 !-- ROTATION ET TRANSLATION DES NOEUDS
-    do 20 i1 = 1, nbno1
+    do i1 = 1, nbno1
         numno=zi(lno1+(i1-1))
-        do 30 j1 = 1, 3
+        do j1 = 1, 3
             zr(lcoor1+(i1-1)*3+j1-1)=tr1(j1)+ rot1(j1,1)*zr(lnoma1+(&
             numno-1)*3)+ rot1(j1,2)*zr(lnoma1+(numno-1)*3+1)+ rot1(j1,&
             3)*zr(lnoma1+(numno-1)*3+2)
- 30     continue
- 20 end do
+        end do
+    end do
 !
-    do 40 i1 = 1, nbno2
+    do i1 = 1, nbno2
         numno=zi(lno2+(i1-1))
-        do 50 j1 = 1, 3
+        do j1 = 1, 3
             zr(lcoor2+(i1-1)*3+j1-1)=tr2(j1)+ rot2(j1,1)*zr(lnoma2+(&
             numno-1)*3)+ rot2(j1,2)*zr(lnoma2+(numno-1)*3+1)+ rot2(j1,&
             3)*zr(lnoma2+(numno-1)*3+2)
- 50     continue
- 40 end do
+        end do
+    end do
 !
 !--------------------------------------------------------------------C
 !--                                                                --C
@@ -232,12 +232,12 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- ALLOCATION DE LA MATRICE DES DISTANCES
     call wkvect('&&LIPSRB.DIST_NOEUDS', 'V V R', nbmast, ldist)
 !
-    do 60 i1 = 1, nbslav
+    do i1 = 1, nbslav
 !-- DISTANCE AU NOEUD ESCLAVE COURANT
         dismax=0.d0
         dismin=1.d16
 !
-        do 70 j1 = 1, nbmast
+        do j1 = 1, nbmast
             zr(ldist+j1-1)= (zr(lnosla+(i1-1)*3)- zr(lnomas+(j1-1)*3))&
             **2+ (zr(lnosla+(i1-1)*3+1)- zr(lnomas+(j1-1)*3+1))**2+&
             (zr(lnosla+(i1-1)*3+2)- zr(lnomas+(j1-1)*3+2))**2
@@ -248,26 +248,26 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                 dismin=zr(ldist+j1-1)
                 indmin=j1
             endif
- 70     continue
+        end do
 !
 !-- RECHERCHE DES DIMA PLUS PROCHES VOISINS
         if (dima .eq. 1) then
             zi(ldepen+i1-1)=indmin
         else
             zi(ldepen+(i1-1)*dima)=indmin
-            do 80 j1 = 1, dima-1
+            do j1 = 1, dima-1
                 zr(ldist+indmin-1)=dismax
                 dismin=dismax
-                do 90 k1 = 1, nbmast
+                do k1 = 1, nbmast
                     if (zr(ldist+k1-1) .lt. dismin) then
                         dismin=zr(ldist+k1-1)
                         indmin=k1
                     endif
- 90             continue
+                end do
                 zi(ldepen+(i1-1)*dima+j1)=indmin
- 80         continue
+            end do
         endif
- 60 end do
+    end do
 !
 !---------------------------------------------C
 !--                                         --C
@@ -329,18 +329,18 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     posmas=1
     call wkvect('&&LIPSRB.IND_INT_MAST', 'V V I', 6*nbmast, lvimas)
     call wkvect('&&LIPSRB.IND_INT_SLAV', 'V V I', 6*nbslav, lvisla)
-    do 65 i1 = 1, 6*nbmast
+    do i1 = 1, 6*nbmast
         if (zi(lindma+i1-1) .gt. 0) then
             zi(lvimas+i1-1)=posmas
             posmas=posmas+1
         endif
- 65 end do
-    do 75 i1 = 1, 6*nbslav
+    end do
+    do i1 = 1, 6*nbslav
         if (zi(lindsl+i1-1) .gt. 0) then
             zi(lvisla+i1-1)=possla
             possla=possla+1
         endif
- 75 end do
+    end do
 !
 !------------------------------C
 !--                          --C
@@ -349,20 +349,20 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !------------------------------C
     call jeveuo(tramod, 'L', ltramo)
 !
-    do 100 i1 = 1, nbslav
+    do i1 = 1, nbslav
 !-- INITIALISER A CHAQUE FOIS, PUISQUE LA SVD ECRASE TOUT...
-        do 85 j1 = 1, dima*36
+        do j1 = 1, dima*36
             zr(lphir+j1-1)=0.d0
- 85     continue
+        end do
 !
 !-- CONSTRUCTION DE LA MATRICE DE CORPS RIGIDE POUR LE NOEUD COURANT
-        do 110 j1 = 1, dima
+        do j1 = 1, dima
             numno=zi(ldepen+(i1-1)*dima+j1-1)-1
             dx=(zr(lnomas+numno*3)- zr(lnosla+(i1-1)*3))
             dy=(zr(lnomas+numno*3+1)- zr(lnosla+(i1-1)*3+1))
             dz=(zr(lnomas+numno*3+2)- zr(lnosla+(i1-1)*3+2))
             decal=(j1-1)*36
-            do 120 k1 = 1, 6
+            do k1 = 1, 6
 !
 !-- POUR RECONSTRUIRE LES ROTATIONS, ON GARDE TOUTES LES COMPOSANTES
 !-- SI LES NOEUDS DE L'INTERFACE MAITRE PORTENT LES DDL DRX DRY ET DRZ
@@ -376,14 +376,14 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                     zr(lphir+decal+(k1-1)*7)=0.d0
                 endif
 !
-120         continue
+            end do
             zr(lphir+decal+4)= dz
             zr(lphir+decal+5)= -dy
             zr(lphir+decal+9)= -dz
             zr(lphir+decal+11)= dx
             zr(lphir+decal+15)= dy
             zr(lphir+decal+16)=-dx
-110     continue
+        end do
 !
 !-- CONSTRUCTION DE LA MATRICE D'OBSERVATION
 !
@@ -393,38 +393,38 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !
 !-- VOIR A RAJOUTER UN TEST EN FONCTION DE LA DIMENSION DU MAILLAGE,
 !-- POUR LE RECOLLEMENT DES INTERFACES
-        do 130 k1 = 1, 6
-            do 140 j1 = 1, 6
+        do k1 = 1, 6
+            do j1 = 1, 6
 !-- TEST SUR LA VALEUR SINGULIERE, POUR LIMITER LES PB DE
 !-- CONDITIONNEMENT
                 if (abs(zr(lmats+j1-1)) .gt. 1.d-10) then
                     zr(lmsm1u+(k1-1)*6+j1-1)=(1/zr(lmats+j1-1))*&
                     zr(lmatu+(j1-1)*6+k1-1)
                 endif
-140         continue
-130     continue
+            end do
+        end do
 !
-        do 150 k1 = 1, 6
-            do 160 j1 = 1, 6*dima
+        do k1 = 1, 6
+            do j1 = 1, 6*dima
                 zr(lvsm1u+(k1-1)*6*dima+j1-1)=0.d0
-                do 170 l1 = 1, 6
+                do l1 = 1, 6
                     zr(lvsm1u+(k1-1)*6*dima+j1-1)= zr(lvsm1u+(k1-1)*6*&
                     dima+j1-1)+ zr(lmatv+(j1-1)*6*dima+l1-1)* zr(&
                     lmsm1u+(k1-1)*6+l1-1)
-170             continue
-160         continue
-150     continue
+                end do
+            end do
+        end do
 !
 !-- REMPLISSAGE DE LA MATRICE PROJETEE
 !-- ON VERIFIE A CHAQUE PASSAGE QUE LES DDL MAITRES
 !-- ET ESCLAVES EXISTENT DANS LA DEFINITION DES INTERFACES
 !
-        do 180 j1 = 1, 6
+        do j1 = 1, 6
             indsla=zi(lvisla+(i1-1)*6+j1-1)
             if (indsla .gt. 0) then
-                do 190 l1 = 1, nbmoma
+                do l1 = 1, nbmoma
                     zr(lprojt+(l1-1)*ddlsla+indsla-1)=0.d0
-                    do 200 k1 = 1, 6*dima
+                    do k1 = 1, 6*dima
                         numno=zi(ldepen +(i1-1)*dima+int((k1-1)/6))
                         indmas=zi(lvimas+(numno-1)*6+mod(k1-1,6))
                         if (indmas .gt. 0) then
@@ -433,11 +433,11 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
                             zr(lvsm1u+(j1-1)*6*dima+k1-1)* zr(ltramo+(&
                             l1-1)*ddlmas+indmas-1)
                         endif
-200                 continue
-190             continue
+                    end do
+                end do
             endif
-180     continue
-100 end do
+        end do
+    end do
 !
 !-- REACTIVATION DU TEST FPE
     call matfpe(1)

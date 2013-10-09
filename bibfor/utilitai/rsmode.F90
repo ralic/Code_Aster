@@ -78,10 +78,10 @@ subroutine rsmode(resu)
     call jelira(resu19//'.ORDR', 'LONUTI', nbordr)
     call jelira(resu19//'.DESC', 'NOMUTI', nbnosy)
 !
-    do 40 isymb = 1, nbnosy
+    do isymb = 1, nbnosy
         call jenuno(jexnum(resu19//'.DESC', isymb), nomsym)
 !
-        do 30 krang = 1, nbordr
+        do krang = 1, nbordr
             iordr=zi(jordr-1+krang)
             call rsexch(' ', resu, nomsym, iordr, nomcha,&
                         iret)
@@ -110,8 +110,9 @@ subroutine rsmode(resu)
             call detrsd('CHAM_NO', nomcha)
             call copisd('CHAMP', 'G', champt, nomcha)
             call detrsd('CHAM_NO', champt)
- 30     continue
- 40 continue
+ 30         continue
+        end do
+    end do
 !
 !
 !     -- IL FAUT ENCORE DETRUIRE LES PROF_CHNO QUI ONT ETE CREES
@@ -124,9 +125,9 @@ subroutine rsmode(resu)
             call wkvect('&&RSMODES.LIPRFCN', 'V V K24', nbval, jliprf)
             call jelstc('G', resu8//'.PRFCN', 1, nbval, zk24(jliprf),&
                         nbval)
-            do 41 k = 1, nbval
+            do k = 1, nbval
                 call detrsd('PROF_CHNO', zk24(jliprf-1+k)(1:19))
- 41         continue
+            end do
         endif
     endif
 !

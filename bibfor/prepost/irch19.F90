@@ -78,7 +78,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     character(len=8) :: tych, nomgd, nomsd8
     character(len=19) :: ch19
     character(len=24) :: valk(2), tyres
-    integer ::  ifi, numcmp(nbcmp)
+    integer :: ifi, numcmp(nbcmp)
 !
 !     PASSAGE DANS DES VARIABLES FIXES
 !
@@ -91,7 +91,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 !
     if ((tych(1:4).eq.'NOEU') .or. (tych(1:2).eq.'EL')) then
     else if (tych(1:4).eq. 'CART') then
-        goto 9999
+        goto 999
     else
         valk(1) = tych
         valk(2) = ch19
@@ -132,7 +132,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
                     lmax, lmin, lresu, formr, ncmp,&
                     numcmp, nive)
     endif
-9999 continue
-
-
+999 continue
+!
+!
 end subroutine

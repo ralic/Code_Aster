@@ -107,7 +107,7 @@ subroutine etenca(chinz, ligrlz, iret)
     endif
 !
 !       -- LA CARTE EST DEJA ETENDUE:
-    if (.not.lalloc) goto 9999
+    if (.not.lalloc) goto 999
 !
 !
 !     ----MISE EN MEMOIRE DE LA COLLECTION .LIMA :
@@ -121,7 +121,7 @@ subroutine etenca(chinz, ligrlz, iret)
 !     ----REMPLISSAGE DES OBJETS PTMA ET PTMS:
     call jeveuo(chin//'.DESC', 'L', desc)
     nbedit = zi(desc-1+3)
-    do 60 igd = 1, nbedit
+    do igd = 1, nbedit
         code = zi(desc-1+3+2*igd-1)
         ient = zi(desc-1+3+2*igd)
 !
@@ -136,15 +136,15 @@ subroutine etenca(chinz, ligrlz, iret)
 !
 !        ------ GROUPE PREDEFINI "TOUT":
         if (code .eq. 1) then
-            do 10 i = 1, nma
+            do i = 1, nma
                 zi(ptma-1+i) = igd
- 10         continue
+            end do
             goto 60
         endif
         if ((code.eq.-1) .and. bonlig) then
-            do 20 i = 1, nms
+            do i = 1, nms
                 zi(ptms-1+i) = igd
- 20         continue
+            end do
             goto 60
         endif
 !
@@ -153,10 +153,10 @@ subroutine etenca(chinz, ligrlz, iret)
             ASSERT(jmalut.ne.0)
             nb=zi(jmalut-1+ient)
             call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', grpma)
-            do 30 i = 1, nb
+            do i = 1, nb
                 ii = zi(grpma-1+i)
                 zi(ptma-1+ii) = igd
- 30         continue
+            end do
             goto 60
         endif
 !
@@ -166,7 +166,7 @@ subroutine etenca(chinz, ligrlz, iret)
             lima=ialima+zi(illima-1+ient)-1
 !
             if (code .gt. 0) then
-                do 40 i = 1, nb
+                do i = 1, nb
                     ii = zi(lima-1+i)
                     if (ii .le. 0) then
                         valk = chin
@@ -176,19 +176,20 @@ subroutine etenca(chinz, ligrlz, iret)
                         call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
                     endif
                     zi(ptma-1+ii) = igd
- 40             continue
+                end do
             else
                 if (bonlig) then
-                    do 50 i = 1, nb
+                    do i = 1, nb
                         ii = zi(lima-1+i)
                         ASSERT(ii.lt.0)
                         zi(ptms-1-ii) = igd
- 50                 continue
+                    end do
                 endif
             endif
             goto 60
         endif
- 60 end do
-9999 continue
+ 60     continue
+    end do
+999 continue
     call jedema()
 end subroutine

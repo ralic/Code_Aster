@@ -57,30 +57,30 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
     nume2=nume(1:14)
 !
 !     VERIFICATION DE LA COHERENCE DES MATRICES ET DE LA NUMEROTATION
-    do 1 i = 1, 3
+    do i = 1, 3
         if (imat(i) .ne. 0) then
             call dismoi('NOM_NUME_DDL', nomat(i), 'MATR_ASSE', repk=numtmp)
             numat(i)=numtmp(1:14)
         else
             numat(i)=' '
         endif
-  1 continue
+    end do
     if (i4 .ne. 0) then
-        do 10 i = 1, 3
+        do i = 1, 3
             if ((numat(i).ne.nume2) .and. (numat(i).ne.' ')) then
                 call utmess('F', 'ALGELINE3_60', sk=nomat(i))
             endif
- 10     continue
+        end do
         numddl=nume
     else
-        do 100 i = 1, 3
+        do i = 1, 3
             if (imat(i) .ne. 0) then
                 numddl=numat(i)
                 goto 101
             else
                 numddl=' '
             endif
-100     continue
+        end do
     endif
 !
 101 continue

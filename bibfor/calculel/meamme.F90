@@ -133,11 +133,11 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
         if (iret .gt. 0) then
             call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
             call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
-            do 10 i = 1, nbres1
+            do i = 1, nbres1
                 rigich = zk24(ialir1-1+i)
                 call dismoi('NOM_LIGREL', rigich(1:19), 'RESUELEM', repk=ligre1)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 20
- 10         continue
+            end do
             ASSERT(.false.)
  20         continue
 !
@@ -154,11 +154,11 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
         if (iret .gt. 0) then
             call jeveuo(memass(1:19)//'.RELR', 'L', ialir1)
             call jelira(memass(1:19)//'.RELR', 'LONUTI', nbres1)
-            do 30 i = 1, nbres1
+            do i = 1, nbres1
                 massch = zk24(ialir1-1+i)
                 call dismoi('NOM_LIGREL', massch(1:19), 'RESUELEM', repk=ligre1)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 40
- 30         continue
+            end do
             ASSERT(.false.)
  40         continue
         endif
@@ -247,7 +247,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 ! --- RIGIDITE HYSTERETIQUE :
 !
     if (option .eq. 'RIGI_MECA_HYST') then
-        do 50 icha = 1, nchar
+        do icha = 1, nchar
             ligrch = lchar(icha) (1:8)//'.CHME.LIGRE'
             argu = lchar(icha) (1:8)//'.CHME.LIGRE.LIEL'
             call jeexin(argu, iret)
@@ -265,7 +265,8 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
                         lpain, 1, lchout(3), lpaout(3), base,&
                         'OUI')
             call reajre(meamor, lchout(3), base)
- 50     continue
+ 50         continue
+        end do
     endif
 !
 !

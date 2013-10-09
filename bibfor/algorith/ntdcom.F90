@@ -49,12 +49,12 @@ subroutine ntdcom(evolsc)
         call getfac(motcle, iocc)
         lrela = .false.
         lsech = .false.
-        do 100 k = 1, iocc
+        do k = 1, iocc
             call getvtx(motcle, 'RELATION', iocc=k, scal=comp, nbret=n1)
             if (comp(1:10) .eq. 'SECH_NAPPE') lsech = .true.
             if (comp(1:12) .eq. 'SECH_GRANGER') lsech = .true.
             if (comp(1:5) .ne. 'SECH_') lrela = .true.
-100     end do
+        end do
 !
         if (lsech .and. lrela) then
             call utmess('F', 'ALGORITH8_96')

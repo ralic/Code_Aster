@@ -62,7 +62,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=3) :: tsca
     character(len=4) :: typces
     character(len=8) :: ma1, ma2, nomgd
@@ -185,35 +185,35 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     call wkvect('&&CESPRJ.IDECAL', 'V V I', nbno2, jdecal)
     idecal = 0
 !
-    do 10 ino2 = 1, nbno2
+    do ino2 = 1, nbno2
         nbno1 = zi(iaconb-1+ino2)
         zi(jdecal-1+ino2) = idecal
         idecal = idecal + nbno1
- 10 end do
+    end do
     call jeveuo(ma2//'.CONNEX', 'L', iacnx2)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', ilcnx2)
 !
 !
-    do 70 ima2 = 1, nbmam2
+    do ima2 = 1, nbmam2
         nbno2 = zi(jce2d-1+5+4* (ima2-1)+1)
-        do 60 ino2 = 1, nbno2
+        do ino2 = 1, nbno2
             nuno2 = zi(iacnx2+zi(ilcnx2-1+ima2)-2+ino2)
             nbno1 = zi(iaconb-1+nuno2)
             ima1 = zi(iacom1-1+nuno2)
             idecal = zi(jdecal-1+nuno2)
-            do 50 icmp = 1, ncmpmx
+            do icmp = 1, ncmpmx
 ! ================================================================
 ! --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE
 !     PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
 !  EN PRINCIPE, C'EST TOUJOURS LE CAS POUR LES CHAM_ELEM
 ! ================================================================
                 ico = 0
-                do 20 ino1 = 1, nbno1
+                do ino1 = 1, nbno1
                     call cesexi('C', jce1d, jce1l, ima1, ino1,&
                                 1, icmp, iad1)
                     coef1 = zr(iacocf+idecal-1+ino1)
                     if (iad1 .gt. 0) ico = ico + 1
- 20             continue
+                end do
                 if (ico .eq. 0) goto 50
                 if (ico .lt. nbno1) goto 50
 !
@@ -224,32 +224,33 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !
                 if (tsca .eq. 'R') then
                     v2 = 0.d0
-                    do 30 ino1 = 1, nbno1
+                    do ino1 = 1, nbno1
                         coef1 = zr(iacocf+idecal-1+ino1)
                         call cesexi('C', jce1d, jce1l, ima1, ino1,&
                                     1, icmp, iad1)
                         ASSERT(iad1.gt.0)
                         v1 = zr(jce1v-1+iad1)
                         v2 = v2 + coef1*v1
- 30                 continue
+                    end do
                     zr(jce2v-1-iad2) = v2
 !
                 else if (tsca.eq.'C') then
                     v2c = dcmplx(0.d0,0.d0)
-                    do 40 ino1 = 1, nbno1
+                    do ino1 = 1, nbno1
                         coef1 = zr(iacocf+idecal-1+ino1)
                         call cesexi('C', jce1d, jce1l, ima1, ino1,&
                                     1, icmp, iad1)
                         ASSERT(iad1.gt.0)
                         v1c = zc(jce1v-1+iad1)
                         v2c = v2c + coef1*v1c
- 40                 continue
+                    end do
                     zc(jce2v-1-iad2) = v2c
                 endif
 !
- 50         continue
- 60     continue
- 70 end do
+ 50             continue
+            end do
+        end do
+    end do
 !
 !
 !     -- VERIFICATION DE LA QUALITE DE CES2:

@@ -37,7 +37,7 @@ subroutine te0177(option, nomte)
 !
     integer :: kp, i, j, k, ij, imattt, igeom, imate
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r
+    real(kind=8) :: poids, r
     integer :: icodre(1)
     complex(kind=8) :: valres(1)
 !
@@ -51,24 +51,25 @@ subroutine te0177(option, nomte)
     call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres,&
                 icodre, 1)
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         if (lteatt(' ','AXIS','OUI')) then
             r = 0.d0
-            do 102 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102          continue
+            end do
             poids = poids*r
         endif
 !
         ij = imattt - 1
-        do 103 i = 1, nno
-            do 103 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 ij = ij + 1
                 zc(ij) = zc(ij)+poids*((1.0d0,0.0d0)/(valres(1)**2))*zr(ivf+k+i-1)*zr(ivf+k+j-1)
-103          continue
-101  end do
+            end do
+        end do
+    end do
 !
 end subroutine

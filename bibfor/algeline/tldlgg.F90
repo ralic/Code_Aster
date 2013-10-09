@@ -28,7 +28,7 @@ subroutine tldlgg(istop, lmat, ildeb, ilfin, ndigit,&
     character(len=8) :: renum
     character(len=16) :: metres
     character(len=19) :: noma19, solveu
-    integer ::  istop, lmat, ildeb, ilfin, ndigit
+    integer :: istop, lmat, ildeb, ilfin, ndigit
     integer :: ndeci, isingu, npvneg, iret
 !
 !     ------------------------------------------------------------------

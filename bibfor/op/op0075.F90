@@ -63,19 +63,19 @@ subroutine op0075()
     if (nbcham .lt. 0) then
         call utmess('E', 'ALGORITH9_44')
     else
-        do 20 i = 1, nbcham
-            do 10 j = i+1, nbcham
+        do i = 1, nbcham
+            do j = i+1, nbcham
                 if (champ(i) .eq. champ(j)) then
                     call utmess('E', 'ALGORITH9_30')
                 endif
- 10         continue
+            end do
             if (champ(i) .eq. 'ACCE_ABSOLU') then
                 call getvid(' ', 'ACCE_MONO_APPUI', scal=k8bid, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('E', 'ALGORITH9_45')
                 endif
             endif
- 20     continue
+        end do
     endif
 !
 !     --- CREATION DU .REFN DU PROFIL :
@@ -172,15 +172,15 @@ subroutine op0075()
     if ((concep(1:9).eq.'MODE_GENE')) then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
-        do 50 iord = 1, nbord
+        do iord = 1, nbord
             call rsadpa(resin, 'L', 3, param, zi(jord+iord-1),&
                         0, tjv=lpain, styp=k8bid)
             call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
                         0, tjv=lpaout, styp=k8bid)
-            do 40 i = 1, 3
+            do i = 1, 3
                 zk8(lpaout(i))=zk8(lpain(i))
- 40         continue
- 50     continue
+            end do
+        end do
     endif
 !
     call jedema()

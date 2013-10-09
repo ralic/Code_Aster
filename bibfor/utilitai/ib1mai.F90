@@ -19,11 +19,11 @@ subroutine ib1mai()
 !
     implicit none
 #include "aster_constant.h"
+#include "asterfort/ststat.h"
 !     INITIALISATION, COMME IB0MAI, POUR LA PARTIE FORTRAN 90
 !
 !     LE JOUR OU ON FERA D'AUTRES INITIALISATIONS, IL FAUT CREER
 !     UNE ROUTINE STINIT() A APPELER DANS UTMESG
 !     (QUI APPELLE IB1MAI POUR LE MOMENT)
-#include "asterfort/ststat.h"
     call ststat(ST_OK)
 end subroutine

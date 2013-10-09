@@ -207,7 +207,7 @@ subroutine op0072()
 ! --- PROJECTION D UN VECTEUR DE TYPE FORCE
 !
         call wkvect('&&OP0072.VECTASSE', 'V V R', neq, idvect)
-        do 10 i = 1, nbmode
+        do i = 1, nbmode
 !
 ! --------- RECOPIE DU IEME MODE
 !
@@ -223,12 +223,12 @@ subroutine op0072()
             if (typvec .eq. 'R') then
                 zr(iavale+i-1) = ddot(neq,zr(idvect),1,zr(iadvec),1)
             else
-                do 666 j = 1, neq
+                do j = 1, neq
                     zc(idvec3+j-1)=dcmplx(zr(idvect+j-1),zero)
-666             continue
+                end do
                 zc(iavale+i-1) = zdotc(neq,zc(idvec3),1,zc(iadvec),1)
             endif
- 10     continue
+        end do
     else
 !
 ! --- PROJECTION D UN VECTEUR DE TYPE DEPL OU VITE
@@ -242,7 +242,7 @@ subroutine op0072()
 !
 ! ----- CALCUL DE TMODE*MODE
 !
-        do 20 i = 1, nbmode
+        do i = 1, nbmode
 !
 ! ----- RECOPIE DU IEME MODE
 !
@@ -254,7 +254,7 @@ subroutine op0072()
 !
 !-------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
-            do 20 j = i, nbmode
+            do j = i, nbmode
 !
 ! ------- RECOPIE DU JEME MODE
 !
@@ -268,11 +268,12 @@ subroutine op0072()
                 pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
                 zr(iamatr+i+ (j-1)*nbmode-1) = pij
                 zr(iamatr+j+ (i-1)*nbmode-1) = pij
- 20         continue
+            end do
+        end do
 !
 ! ----- CALCUL DE LA PROJECTION
 !
-        do 30 i = 1, nbmode
+        do i = 1, nbmode
 !
 ! ------- RECOPIE DU IEME MODE
 !
@@ -287,12 +288,12 @@ subroutine op0072()
             if (typvec .eq. 'R') then
                 zr(idvec2+i-1) = ddot(neq,zr(idvec1),1,zr(iadvec),1)
             else
-                do 667 j = 1, neq
+                do j = 1, neq
                     zc(idvec3+j-1)=dcmplx(zr(idvec1+j-1),zero)
-667             continue
+                end do
                 zc(idvec4+i-1) = zdotc(neq,zc(idvec3),1,zc(iadvec),1)
             endif
- 30     continue
+        end do
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
 !

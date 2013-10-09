@@ -114,16 +114,16 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 !
     call jeveuo(mailla//'.COORDO    .VALE', 'L', jcoor)
 !
-    do 10 il = 1, nbnli
+    do il = 1, nbnli
         noecho(il,3) = numddl(1:8)
         noecho(il,4) = mailla
         noecho(il,7) = numddl(1:8)
         noecho(il,8) = mailla
- 10 end do
+    end do
 !
     iliai = 0
     motfac = 'CHOC'
-    do 100 i = 1, nbocc
+    do i = 1, nbocc
         ioc = i
         if (i .gt. nbchoc+nbsism) then
             motfac = 'FLAMBAGE'
@@ -143,7 +143,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call wkvect('&&MDCHST.MAILLE', 'V V K8', nmliai, jmail)
                 call getvem(mailla, 'MAILLE', motfac, 'MAILLE', ioc,&
                             iarg, nmliai, zk8(jmail), ibid)
-                do 110 im = 1, nmliai
+                do im = 1, nmliai
                     mamai = zk8(jmail-1+im)
                     call jenonu(jexnom(mailla//'.NOMMAI', mamai), numai)
                     call jeveuo(jexnum(mailla//'.CONNEX', numai), 'L', jmama)
@@ -158,7 +158,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama+1)), noecho(iliai, 5))
                     call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                                 ier)
-110             continue
+                end do
                 call jedetr('&&MDCHST.MAILLE')
                 goto 102
             endif
@@ -171,12 +171,12 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call wkvect('&&MDCHST.GROUP_MA', 'V V K24', ngrm, jmail)
                 call getvem(mailla, 'GROUP_MA', motfac, 'GROUP_MA', ioc,&
                             iarg, ngrm, zk24(jmail), ibid)
-                do 120 ig = 1, ngrm
+                do ig = 1, ngrm
                     mamai = zk24(jmail-1+ig)
                     call jelira(jexnom(mailla//'.GROUPEMA', mamai), 'LONMAX', nmgr)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', mamai), 'L', kma)
                     nmliai = nmliai + nmgr
-                    do 122 im = 1, nmgr
+                    do im = 1, nmgr
                         numai = zi(kma-1+im)
                         call jeveuo(jexnum(mailla//'.CONNEX', numai), 'L', jmama)
                         call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbnma)
@@ -191,8 +191,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                         call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama+ 1)), noecho(iliai, 5))
                         call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                                     ier)
-122                 continue
-120             continue
+                    end do
+                end do
                 call jedetr('&&MDCHST.GROUP_MA')
                 goto 102
             endif
@@ -272,14 +272,14 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 102     continue
 !
         iliai = iliai - max(1,nmliai)
-        do 130 il = 1, max(1, nmliai)
+        do il = 1, max(1, nmliai)
             iliai = iliai + 1
             call jenonu(jexnom(mailla//'.NOMNOE', noecho(iliai, 1)), ino1)
             call jenonu(jexnom(mailla//'.NOMNOE', noecho(iliai, 5)), ino2)
-            do 132 j = 1, 3
+            do j = 1, 3
                 parcho(iliai,7+j) = zr(jcoor+3*(ino1-1)+j-1)
                 parcho(iliai,10+j) = zr(jcoor+3*(ino2-1)+j-1)
-132         continue
+            end do
 !
             ktang = 0.d0
             ctang = 0.d0
@@ -396,9 +396,9 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             call mdchan(motfac, ioc, iliai, mdgene, typnum,&
                         repere, xjeu, nbnli, noecho, parcho)
 !
-130     continue
+        end do
 !
-100 end do
+    end do
 !    COUPLAGE EDYOS
     if (nbpal .gt. 0) then
         cpal = 'C_PAL'
@@ -409,12 +409,12 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
         comp(5)='DRY'
         comp(6)='DRZ'
         call jeveuo(cpal, 'L', iadrk)
-        do 21 ipal = 1, nbpal
+        do ipal = 1, nbpal
             noecho(ipal,1)=zk8(iadrk+(ipal-1)+2*palmax)(1:dimnas)
             noecho(ipal,5)=noecho(ipal,1)
             cnpal(ipal)=zk8(iadrk+(ipal-1)+2*palmax)(1:dimnas)
- 21     continue
-        do 22 ipal = 1, nbpal
+        end do
+        do ipal = 1, nbpal
             call utnono(' ', mailla, 'NOEUD', cnpal(ipal), nomno1,&
                         iret)
             if (iret .eq. 10) then
@@ -425,12 +425,12 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 valk (2) = nomno1
                 call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
             endif
-            do 23 ipat = 1, 6
+            do ipat = 1, 6
                 call posddl('NUME_DDL', numddl, nomno1, comp(ipat), nno,&
                             nddl)
                 ddlcho(6*(ipal-1)+ipat) = nddl
- 23         continue
- 22     continue
+            end do
+        end do
     endif
 ! FIN PALIERS EDYOS
 !
@@ -440,7 +440,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     comp(2)='DRY'
     comp(3)='DRZ'
     if (nbrfis .gt. 0) then
-        do 61 i = 1, nbrfis
+        do i = 1, nbrfis
             iliai = iliai + 1
             call getvem(mailla, 'NOEUD', motfac, 'NOEUD_D', i,&
                         iarg, 1, nomno1, ibid)
@@ -476,30 +476,30 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 endif
             endif
 !
-            do 63 ipat = 1, 3
+            do ipat = 1, 3
                 call posddl('NUME_DDL', numddl, nomno1, comp(ipat), nn1,&
                             nddl1)
                 call posddl('NUME_DDL', numddl, nomno2, comp(ipat), nn2,&
                             nddl2)
                 ddlcho(iliai-1+6*(i-1)+ipat) = nddl1
                 ddlcho(iliai-1+6*(i-1)+ipat+3) = nddl2
- 63         continue
+            end do
 !
 !
 ! DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
             compt1=0
             compt2=0
             call jelira(mailla//'.CONNEX', 'NMAXOC', nbmail)
-            do 66 numai = 1, nbmail
+            do numai = 1, nbmail
                 call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbno)
                 if ((nbno.gt.1) .and. (nbno.lt.4)) then
                     call jeveuo(jexnum(mailla//'.CONNEX', numai), 'L', ibid)
-                    do 77 j1 = 1, nbno
+                    do j1 = 1, nbno
                         if (zi(ibid+j1-1) .eq. nn1) then
                             memail=.false.
-                            do 78 j2 = 1, nbno
+                            do j2 = 1, nbno
                                 if (zi(ibid+j2-1) .eq. nn2) memail= .true.
- 78                         continue
+                            end do
                             if (.not.memail) then
                                 compt1=compt1+1
                                 if (j1 .eq. 1) bono1=zi(ibid+1)
@@ -508,25 +508,25 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                         endif
                         if (zi(ibid+j1-1) .eq. nn2) then
                             memail=.false.
-                            do 79 j2 = 1, nbno
+                            do j2 = 1, nbno
                                 if (zi(ibid+j2-1) .eq. nn1) memail= .true.
- 79                         continue
+                            end do
                             if (.not.memail) then
                                 compt2=compt2+1
                                 if (j1 .eq. 1) bono2=zi(ibid+1)
                                 if (j1 .eq. 2) bono2=zi(ibid)
                             endif
                         endif
- 77                 continue
+                    end do
                 endif
- 66         continue
+            end do
             ASSERT(compt1 .ge. 1)
             ASSERT(compt2 .ge. 1)
 !
-            do 89 j = 1, 3
+            do j = 1, 3
                 axe(j)=zr(jcoor+3*(bono1-1)+j-1) - zr(jcoor+3*(bono2-&
                 1)+j-1)
- 89         continue
+            end do
 !
 ! ORIENTATION DU ROTOR
             call angvx(axe, alpha, beta)
@@ -535,7 +535,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             parcho(iliai,19) = sin(beta)
             parcho(iliai,20) = cos(beta)
 !
- 61     end do
+        end do
     endif
 !
 ! FIN ROTOR FISSURE

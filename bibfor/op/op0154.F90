@@ -173,7 +173,7 @@ subroutine op0154()
     if (nbocc .ne. 0) then
         geomi = ma//'.COORDO'
         bidim = .false.
-        do 10 i = 1, nbocc
+        do i = 1, nbocc
             call getvr8('ROTATION', 'POIN_1', iocc=i, nbval=0, nbret=dim)
             call getvr8('ROTATION', 'ANGLE', iocc=i, scal=angl, nbret=n1)
             call getvr8('ROTATION', 'POIN_2', iocc=i, nbval=0, nbret=n2)
@@ -198,7 +198,7 @@ subroutine op0154()
                 endif
             endif
             call rotama(geomi, pt, dir, angl, bidim)
- 10     continue
+        end do
     endif
 !
 !
@@ -207,7 +207,7 @@ subroutine op0154()
     call getfac('SYMETRIE', nbocc)
     if (nbocc .ne. 0) then
         geomi = ma//'.COORDO'
-        do 20 i = 1, nbocc
+        do i = 1, nbocc
             call getvr8('SYMETRIE', 'POINT', iocc=i, nbval=0, nbret=dim)
             call getvr8('SYMETRIE', 'AXE_1', iocc=i, nbval=0, nbret=n1)
             call getvr8('SYMETRIE', 'AXE_2', iocc=i, nbval=0, nbret=n2)
@@ -249,7 +249,7 @@ subroutine op0154()
                 perp(3) = axe1(1)*axe2(2) - axe1(2)*axe2(1)
             endif
             call symema(geomi, perp, pt)
- 20     continue
+        end do
     endif
 !
 !

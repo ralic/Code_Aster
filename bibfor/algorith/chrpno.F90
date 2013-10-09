@@ -134,34 +134,35 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 !    SI UNE DES COMPOSANTES EST ABSENTE SUR UN NOEUD
 !    IL EST IGNORE
 !
-    do 110 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         if (nbn .ne. 0) then
             inoe = zi(idnoeu+ino-1)
         else
             inoe = ino
         endif
-        do 111 ii = 1, nbcmp
+        do ii = 1, nbcmp
             if (.not.zl(jcnsl-1+(inoe-1)*nbcmp+ii)) goto 112
-111     continue
+        end do
         goto 110
 112     continue
-        do 114 ii = 1, nbcmp
+        do ii = 1, nbcmp
             zl(jcnsl-1+(inoe-1)*nbcmp+ii)=.false.
-114     continue
-110 end do
+        end do
+110     continue
+    end do
 !
-    do 1 i = 1, 6
+    do i = 1, 6
         valed(i) = 0.0d0
         valer(i) = 0.0d0
         valet(i) = 0.0d0
-  1 end do
-    do 2 i = 1, 3
+    end do
+    do i = 1, 3
         axer(i) = 0.0d0
         axet(i) = 0.0d0
         axez(i) = 0.0d0
         orig(i) = 0.0d0
         angnot(i) = 0.0d0
-  2 end do
+    end do
     licmpu(1) = 1
     licmpu(2) = 2
     licmpu(3) = 3
@@ -202,7 +203,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
         endif
         call matrot(angnot, pgl)
         if (type(1:4) .eq. 'TENS') then
-            do 10 ino = 1, nbnoeu
+            do ino = 1, nbnoeu
                 if (nbn .ne. 0) then
                     inoe = zi(idnoeu+ino-1)
                 else
@@ -211,9 +212,9 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 if (.not.zl(jcnsl-1+(inoe-1)*nbcmp+1)) goto 10
                 if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 11 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valet(ii)=zr(jcnsv-1+(inoe-1)*nbcmp+ii)
- 11                 continue
+                    end do
                     valed(1) = valet(1)
                     valed(2) = valet(4)
                     valed(3) = valet(2)
@@ -227,14 +228,14 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     valer(4) = valet(2)
                     valer(5) = valet(4)
                     valer(6) = valet(5)
-                    do 12 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(ii)
- 12                 continue
+                    end do
                 else
 ! CHAMP COMPLEXE
-                    do 211 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valetc(ii)=zc(jcnsv-1+(inoe-1)*nbcmp+ii)
-211                 continue
+                    end do
                     valed(1) = dble(valetc(1))
                     valed(2) = dble(valetc(4))
                     valed(3) = dble(valetc(2))
@@ -262,16 +263,17 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     valei(4) = valet(2)
                     valei(5) = valet(4)
                     valei(6) = valet(5)
-                    do 212 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zc(jcnsv-1+(inoe-1)*nbcmp+ii) = dcmplx( valer( ii),valei(ii))
-212                 continue
+                    end do
 !
                 endif
 !
- 10         continue
+ 10             continue
+            end do
         else
 ! VECTEUR
-            do 13 ino = 1, nbnoeu
+            do ino = 1, nbnoeu
                 if (nbn .ne. 0) then
                     inoe = zi(idnoeu+ino-1)
                 else
@@ -280,24 +282,24 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 if (.not.zl(jcnsl-1+(inoe-1)*nbcmp+1)) goto 13
                 if (tsca .eq. 'R') then
 ! VECTEUR REEL
-                    do 14 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valed(ii)=zr(jcnsv-1+(inoe-1)*nbcmp+ii)
- 14                 continue
+                    end do
                     if (ndim .eq. 3) then
                         call utpvgl(1, nbcmp, pgl, valed, valer)
                     else
                         call ut2vgl(1, nbcmp, pgl, valed, valer)
                     endif
-                    do 15 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(ii)
- 15                 continue
+                    end do
                 else
 ! VECTEUR COMPLEXE
-                    do 214 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valetc(ii)=zc(jcnsv-1+(inoe-1)*nbcmp+ii)
                         valed(ii) = dble(valetc(ii))
                         valet(ii) = dimag(valetc(ii))
-214                 continue
+                    end do
                     if (ndim .eq. 3) then
                         call utpvgl(1, nbcmp, pgl, valed, valer)
                         call utpvgl(1, nbcmp, pgl, valet, valei)
@@ -305,12 +307,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                         call ut2vgl(1, nbcmp, pgl, valed, valer)
                         call ut2vgl(1, nbcmp, pgl, valet, valei)
                     endif
-                    do 215 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zc(jcnsv-1+(inoe-1)*nbcmp+ii) = dcmplx( valer( ii),valei(ii))
-215                 continue
+                    end do
 !
                 endif
- 13         continue
+ 13             continue
+            end do
         endif
     else if (repere(1:5).eq.'COQUE') then
         call utmess('F', 'ALGORITH2_3')
@@ -352,7 +355,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 licmpu(4)=5
             endif
 !
-            do 16 ino = 1, nbnoeu
+            do ino = 1, nbnoeu
                 if (nbn .ne. 0) then
                     inoe = zi(idnoeu+ino-1)
                 else
@@ -381,35 +384,36 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     call jeveuo(ma//'.CONNEX', 'L', jconx1)
                     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
                     ipt2=0
-                    do 17 inel = 1, nbma
+                    do inel = 1, nbma
                         nbpt = zi(jconx2-1+inel+1)-zi(jconx2-1+inel)
-                        do 18 ipt = 1, nbpt
+                        do ipt = 1, nbpt
                             inot = zi(jconx1-1+zi(jconx2-1+inel)+ipt- 1)
                             if (inot .eq. inoe) then
                                 axer(1) = 0.0d0
                                 axer(2) = 0.0d0
                                 axer(3) = 0.0d0
-                                do 19 ipt2 = 1, nbpt
+                                do ipt2 = 1, nbpt
                                     inot = zi( jconx1-1 + zi(jconx2-1+ inel)+ipt2-1 )
                                     axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
                                     axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
                                     if (ndim .eq. 3) then
                                         axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
                                     endif
- 19                             continue
+                                end do
                                 axer(1) = axer(1)/nbpt
                                 axer(2) = axer(2)/nbpt
                                 axer(3) = axer(3)/nbpt
                                 goto 17
                             endif
- 18                     continue
- 17                 continue
+                        end do
+ 17                     continue
+                    end do
 !
 !                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                     if (ipt2 .eq. 0) then
-                        do 117 ii = 1, nbcmp
+                        do ii = 1, nbcmp
                             zl(jcnsl-1+(inoe-1)*nbcmp+ii)=.false.
-117                     continue
+                        end do
                         goto 16
                     endif
 !
@@ -435,17 +439,17 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 call provec(axez, axer, axet)
                 xnormr = 0.0d0
                 call normev(axet, xnormr)
-                do 20 i = 1, 3
+                do i = 1, 3
                     pgl(1,i) = axer(i)
                     pgl(2,i) = axez(i)
                     pgl(3,i) = axet(i)
- 20             continue
+                end do
                 if (.not.zl(jcnsl-1+(inoe-1)*nbcmp+1)) goto 16
                 if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 21 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valet(ii)=zr(jcnsv-1+(inoe-1)*nbcmp+ii)
- 21                 continue
+                    end do
                     valed(1) = valet(1)
                     valed(2) = valet(4)
                     valed(3) = valet(2)
@@ -459,15 +463,15 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     valer(4) = valet(2)
                     valer(5) = valet(4)
                     valer(6) = valet(5)
-                    do 22 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zr(jcnsv-1+(inoe-1)*nbcmp+ii)=valer(licmpu(ii)&
                         )
- 22                 continue
+                    end do
                 else
 ! CHAMP COMPLEXE
-                    do 311 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valetc(ii)=zc(jcnsv-1+(inoe-1)*nbcmp+ii)
-311                 continue
+                    end do
                     valed(1) = dble(valetc(1))
                     valed(2) = dble(valetc(4))
                     valed(3) = dble(valetc(2))
@@ -495,12 +499,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     valei(4) = valet(2)
                     valei(5) = valet(4)
                     valei(6) = valet(5)
-                    do 312 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zc(jcnsv-1+(inoe-1)*nbcmp+ii) = dcmplx( valer( ii),valei(ii))
-312                 continue
+                    end do
 !
                 endif
- 16         continue
+ 16             continue
+            end do
         else
 ! VECTEUR
             if (ndim .eq. 2) then
@@ -509,7 +514,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 licmpu(3)=2
             endif
 !
-            do 23 ino = 1, nbnoeu
+            do ino = 1, nbnoeu
                 if (nbn .ne. 0) then
                     inoe = zi(idnoeu+ino-1)
                 else
@@ -538,34 +543,35 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     call jeveuo(ma//'.CONNEX', 'L', jconx1)
                     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
                     ipt2=0
-                    do 24 inel = 1, nbma
+                    do inel = 1, nbma
                         nbpt = zi(jconx2-1+inel+1)-zi(jconx2-1+inel)
-                        do 25 ipt = 1, nbpt
+                        do ipt = 1, nbpt
                             inot = zi(jconx1-1+zi(jconx2-1+inel)+ipt- 1)
                             if (inot .eq. inoe) then
                                 axer(1) = 0.0d0
                                 axer(2) = 0.0d0
                                 axer(3) = 0.0d0
-                                do 26 ipt2 = 1, nbpt
+                                do ipt2 = 1, nbpt
                                     inot = zi( jconx1-1 + zi(jconx2-1+ inel)+ipt2-1 )
                                     axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
                                     axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
                                     if (ndim .eq. 3) then
                                         axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
                                     endif
- 26                             continue
+                                end do
                                 axer(1) = axer(1)/nbpt
                                 axer(2) = axer(2)/nbpt
                                 axer(3) = axer(3)/nbpt
                                 goto 24
                             endif
- 25                     continue
- 24                 continue
+                        end do
+ 24                     continue
+                    end do
 !                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                     if (ipt2 .eq. 0) then
-                        do 124 ii = 1, nbcmp
+                        do ii = 1, nbcmp
                             zl(jcnsl-1+(inoe-1)*nbcmp+ii)=.false.
-124                     continue
+                        end do
                         goto 23
                     endif
                     axer(1) = axer(1) - orig(1)
@@ -588,33 +594,33 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     endif
                 endif
                 call provec(axez, axer, axet)
-                do 27 i = 1, 3
+                do i = 1, 3
                     pgl(1,i) = axer(i)
                     pgl(2,i) = axez(i)
                     pgl(3,i) = axet(i)
- 27             continue
+                end do
                 if (.not.zl(jcnsl-1+(inoe-1)*nbcmp+1)) goto 23
                 if (tsca .eq. 'R') then
 ! VECTEUR REEL
-                    do 28 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valed(ii)=zr(jcnsv-1+(inoe-1)*nbcmp+ii)
- 28                 continue
+                    end do
                     if (ndim .eq. 3) then
                         call utpvgl(1, nbcmp, pgl, valed, valer)
                     else
                         call ut2vgl(1, nbcmp, pgl, valed, valer)
                     endif
-                    do 29 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zr(jcnsv-1+(inoe-1)*nbcmp+ii)=valer(licmpu(ii)&
                         )
- 29                 continue
+                    end do
                 else
 ! VECTEUR COMPLEXE
-                    do 328 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         valetc(ii)=zc(jcnsv-1+(inoe-1)*nbcmp+ii)
                         valed(ii) = dble(valetc(ii))
                         valet(ii) = dimag(valetc(ii))
-328                 continue
+                    end do
                     if (ndim .eq. 3) then
                         call utpvgl(1, nbcmp, pgl, valed, valer)
                         call utpvgl(1, nbcmp, pgl, valet, valei)
@@ -622,13 +628,14 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                         call ut2vgl(1, nbcmp, pgl, valed, valer)
                         call ut2vgl(1, nbcmp, pgl, valet, valei)
                     endif
-                    do 329 ii = 1, nbcmp
+                    do ii = 1, nbcmp
                         zc(jcnsv-1+(inoe-1)*nbcmp+ii) = dcmplx( valer( ii),valei(ii))
-329                 continue
+                    end do
 !
                 endif
 !
- 23         continue
+ 23             continue
+            end do
         endif
     endif
     call cnscno(chams1, ' ', 'NON', 'G', champ1,&

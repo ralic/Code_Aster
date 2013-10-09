@@ -98,27 +98,27 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     call exisd('CHAM_ELEM_S', cesmod, iret)
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
             zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
- 10     continue
+        end do
     else
-        do 20 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = 1
             zi(jnbsp-1+ima) = 1
- 20     continue
+        end do
     endif
 !
 !
     if (typces .eq. 'ELEM') then
-        do 30 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = 1
             zi(jnbsp-1+ima) = 1
- 30     continue
+        end do
     else if (typces.eq.'ELNO') then
-        do 40 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(jconx2+ima) - zi(jconx2+ima-1)
- 40     continue
+        end do
     endif
 !
 !
@@ -168,7 +168,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !
 !     6- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
-    do 120 ima = 1, nbma
+    do ima = 1, nbma
         ient = zi(jptma-1+ima)
         if (ient .eq. 0) goto 120
 !
@@ -178,7 +178,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
 !
         ico = 0
-        do 110 kcmp = 1, ncmp
+        do kcmp = 1, ncmp
             cmp = zi(jcorr2-1+kcmp)
             if (.not. (exisdg(zi(jdesc-1+debgd),cmp))) goto 110
             ico = ico + 1
@@ -188,8 +188,8 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
             ASSERT(cmp2.gt.0)
             ASSERT(cmp2.le.ncmp)
 !
-            do 100 ipt = 1, nbpt
-                do 90 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, cmp2, iad)
                     ASSERT(iad.le.0)
@@ -219,11 +219,13 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
                     else
                         ASSERT(.false.)
                     endif
- 90             continue
-100         continue
-110     continue
+                end do
+            end do
+110         continue
+        end do
 !
-120 end do
+120     continue
+    end do
 !
 !
 !     7- RETASSAGE DE CES :

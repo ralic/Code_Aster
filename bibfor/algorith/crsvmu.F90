@@ -143,18 +143,18 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
                 ASSERT(zi(jnumsd-1+n1).eq.nbproc)
                 nbma=n1-1
                 compt=0
-                do 50 i = 1, nbma
+                do i = 1, nbma
                     if (zi(jnumsd-1+i) .eq. rang) compt=compt+1
- 50             continue
+                end do
             endif
         else
 !       -- CENTRALISE
             call jeveuo(modele//'.MAILLE', 'L', jmail)
             call jelira(modele//'.MAILLE', 'LONMAX', nbma)
             compt=0
-            do 60 i = 1, nbma
+            do i = 1, nbma
                 if (zi(jmail-1+i) .ne. 0) compt=compt+1
- 60         continue
+            end do
         endif
     endif
 !
@@ -175,26 +175,26 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
         call wkvect(kmonit(10), 'V V I', nbproc, monit(10))
         call wkvect(kmonit(11), 'V V I', nbproc, monit(11))
         call wkvect(kmonit(12), 'V V I', nbproc, monit(12))
-        do 110 i = 1, nbproc
+        do i = 1, nbproc
             zi(monit(1)+i-1)=0
             zi(monit(2)+i-1)=0
             zi(monit(9)+i-1)=0
             zi(monit(10)+i-1)=0
             zi(monit(11)+i-1)=0
             zi(monit(12)+i-1)=0
-110     continue
+        end do
 ! -----
         zi(monit(9)+rang)=compt
         call asmpi_comm_jev('REDUCE', kmonit(9))
 ! ----- CORRECTION SI MODAL
         if (eximo2 .eq. 1) then
             iaux=0
-            do 112 i = 1, nbproc
+            do i = 1, nbproc
                 iaux=iaux+zi(monit(9)+i-1)
-112         continue
-            do 114 i = 1, nbproc
+            end do
+            do i = 1, nbproc
                 zi(monit(9)+i-1)=iaux
-114         continue
+            end do
         endif
     endif
 !

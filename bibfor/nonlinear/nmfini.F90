@@ -111,9 +111,9 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     call jeveuo(fammoi//'.VALE', 'L', ifammo)
     call nmchex(valinc, 'VALINC', 'FLIMOI', flimoi)
     call jeveuo(flimoi//'.VALE', 'L', iflimo)
-    do 10 iaux = 1, neq
+    do iaux = 1, neq
         zr(ifexmo-1+iaux)=zr(ifammo-1+iaux)+zr(iflimo-1+iaux)
- 10 end do
+    end do
 !
 ! --- AJOUT DU TERME C.V
 !
@@ -126,9 +126,9 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call wkvect('&&NMFINI.CV', 'V V R', neq, icv)
         call mrmult('ZERO', iamort, zr(ivitmo), zr(icv), 1,&
                     .true.)
-        do 20 iaux = 1, neq
+        do iaux = 1, neq
             zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(icv-1+iaux)
- 20     continue
+        end do
         call jedetr('&&NMFINI.CV')
     endif
 !
@@ -143,9 +143,9 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call wkvect('&&NMFINI.MA', 'V V R', neq, ima)
         call mrmult('ZERO', imasse, zr(iaccmo), zr(ima), 1,&
                     .true.)
-        do 30 iaux = 1, neq
+        do iaux = 1, neq
             zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(ima-1+iaux)
- 30     continue
+        end do
         call jedetr('&&NMFINI.MA')
     endif
 !
@@ -161,17 +161,17 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
                 nbvect, ltypve, lcalve, loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)
     call jeveuo(cnfnod//'.VALE', 'L', icnfno)
-    do 40 iaux = 1, neq
+    do iaux = 1, neq
         zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(icnfno-1+iaux)
- 40 end do
+    end do
 !
 ! --- INITIALISATION DES FORCES INTERNES
 !
     call nmchex(valinc, 'VALINC', 'FNOMOI', fnomoi)
     call jeveuo(fnomoi//'.VALE', 'E', ifnomo)
-    do 50 iaux = 1, neq
+    do iaux = 1, neq
         zr(ifnomo-1+iaux) = zr(icnfno-1+iaux)
- 50 end do
+    end do
 !
     call jedema()
 !

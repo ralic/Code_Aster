@@ -44,11 +44,11 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: cns
-    integer ::  nbno, jcnsk, jcnsd
+    integer :: nbno, jcnsk, jcnsd
     integer :: jcnsc, k, jcnsl, jcnsv, iret
 !     ------------------------------------------------------------------
 !
@@ -90,9 +90,9 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
 !     4- CREATION DE CNS.CNSC:
 !     ------------------------
     call wkvect(cns//'.CNSC', base//' V K8', ncmp, jcnsc)
-    do 10 k = 1, ncmp
+    do k = 1, ncmp
         zk8(jcnsc-1+k) = licmp(k)
- 10 end do
+    end do
 !
 !------------------------------------------------------------------
 !     5- CREATION DE CNS.CNSL:

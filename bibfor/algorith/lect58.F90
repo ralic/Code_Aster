@@ -130,7 +130,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
     call wkvect(vori, 'V V I', nbnmes*6, lori)
 !
 !  BOUCLE SUR LES CHAMPS
-    do 500 inoch = 1, nbnoch
+    do inoch = 1, nbnoch
         nbmesu = 0
         nomsym = linoch(inoch)
         if (nomsym .eq. 'SIEF_NOEU') icham0 = 2
@@ -154,9 +154,9 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
         endif
 !
 ! LECTURE DE L'ENTETE DU DATASET
-        do 20 irec = 1, nbrec
+        do irec = 1, nbrec
             read (ideas,'(A80)',err=160) rec(irec)
- 20     end do
+        end do
 !
 ! RECHERCHE DU NOMBRE DE VALEURS CONTENUES DANS LE DATASET
         irec = 7
@@ -346,7 +346,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
             write(ifres,1002) nomsym
             1002  format('AUCUN CHAMP ',a16,' TROUVE')
             call utmess('A', 'ALGORITH5_6')
-            goto 9999
+            goto 999
         endif
 !
 ! CREATION DE SD_RESULTAT DYNA_TRANS / DYNA_HARMO / HARM_GENE : TYPRES
@@ -365,7 +365,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 !
         vudef = .false.
         vucont = .false.
-        do 200 numord = 1, nbabs
+        do numord = 1, nbabs
             rval = zr(labs-1 +numord)
             call numeok(acces, numord, rval, listr8, listis,&
                         precis, crit, epsi, astock)
@@ -374,7 +374,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                             cns)
                 call jeveuo(cns//'.CNSV', 'E', jcnsv)
                 call jeveuo(cns//'.CNSL', 'E', jcnsl)
-                do 303 imes = 1, nbmesu
+                do imes = 1, nbmesu
                     icmp = zi(lori-1 + imes)
                     ival = nbabs*(imes-1) + numord
                     ino = zi(lcorr-1 + imes)
@@ -415,13 +415,13 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 ! TRAITEMENT DES ORIENTATIONS POUR DEPL
                         call getfac('REDEFI_ORIENT', nbocc)
                         if (nbocc .gt. 0) then
-                            do 304 iocc = 1, nbocc
+                            do iocc = 1, nbocc
                                 motcle(1) = 'NOEUD'
                                 tymocl(1) = 'NOEUD'
                                 call reliem(' ', mailla, 'NU_NOEUD', 'REDEFI_ORIENT', iocc,&
                                             1, motcle, tymocl, '&&DEFDIR', nbno2)
                                 call jeveuo('&&DEFDIR', 'L', iagno2)
-                                do 305 i = 1, nbno2
+                                do i = 1, nbno2
                                     if (zi(iagno2-1 +i) .eq. ino) then
                                         call getvis('REDEFI_ORIENT', 'CODE_DIR', iocc=iocc,&
                                                     scal=icmpm, nbret=ibid)
@@ -439,9 +439,9 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                                             endif
                                         endif
                                     endif
-305                             continue
+                                end do
                                 call jedetr('&&DEFDIR')
-304                         continue
+                            end do
                         endif
 ! FIN TRAITEMENT DES ORIENTATIONS POUR DEPL
                     endif
@@ -469,7 +469,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                         zr(jcnsv-1 + (ino-1)*ncmp+icmp) = rval
                         zl(jcnsl-1 + (ino-1)*ncmp+icmp) = .true.
                     endif
-303             continue
+                end do
 !
 ! RECUPERATION DU NOM DU CHAMP POUR NUMORD : NOMCH
                 call rsexch(' ', nomres, nomsym, numord, nomch,&
@@ -490,12 +490,12 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                 call detrsd('CHAM_NO_S', cns)
             endif
 ! FIN BOUCLE SUR NUMERO ORDRE
-200     end do
+        end do
 !
-9999     continue
+999     continue
 !
 ! FIN BOUCLE SUR LES CHAMPS DEMANDES
-500 end do
+    end do
 !
     call jedetr(vabs)
     call jedetr(vori)

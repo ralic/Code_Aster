@@ -66,7 +66,7 @@ subroutine te0036(option, nomte)
 #include "blas/ddot.h"
 !
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
-    character(len=8) ::  elref
+    character(len=8) :: elref
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
     integer :: jpmilt, irese, nfiss, ifiss, jfisno, jtab(7), ncomp

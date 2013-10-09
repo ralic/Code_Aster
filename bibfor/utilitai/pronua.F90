@@ -97,7 +97,7 @@ subroutine pronua(method, nuag1, nuag2)
 !        ENTRE LES NUMEROS DE CMPS DE NUAG2 ET CEUX DE NUAG1 :
 !        -----------------------------------------------------
     call wkvect('&&PRONUA.CORRESP', 'V V I', nc2, iacorr)
-    do 1 i2 = 1, nc2
+    do i2 = 1, nc2
         ii2=zi(inuai2-1+5+i2)
         i1=indiis(zi(inuai1-1+6),ii2,1,nc1)
         if (i1 .eq. 0) then
@@ -105,7 +105,7 @@ subroutine pronua(method, nuag1, nuag2)
         else
             zi(iacorr-1+i2) = i1
         endif
-  1 end do
+    end do
 !
 !
 !     SI LES OBJETS .NUAL N'EXISTENT PAS, ON LES CREE :
@@ -113,9 +113,9 @@ subroutine pronua(method, nuag1, nuag2)
     call jeexin(nua1//'.NUAL', iret)
     if (iret .eq. 0) then
         call wkvect(nua1//'.NUAL', 'V V L', nc1*np1, inual1)
-        do 50 i = 1, nc1*np1
+        do i = 1, nc1*np1
             zl(inual1-1+i)=.true.
- 50     continue
+        end do
     else
         call jeveuo(nua1//'.NUAL', 'L', inual1)
     endif
@@ -123,9 +123,9 @@ subroutine pronua(method, nuag1, nuag2)
     call jeexin(nua2//'.NUAL', iret)
     if (iret .eq. 0) then
         call wkvect(nua2//'.NUAL', 'V V L', nc2*np2, inual2)
-        do 51 i = 1, nc2*np2
+        do i = 1, nc2*np2
             zl(inual2-1+i)=.true.
- 51     continue
+        end do
     else
         call jeveuo(nua2//'.NUAL', 'L', inual2)
     endif
@@ -135,19 +135,19 @@ subroutine pronua(method, nuag1, nuag2)
 !     ON POURRA NE CALCULER L'OBJET .DREF QU'UNE SEULE FOIS
 !     -------------------------------------------------
     ldref=.true.
-    do 71 ip1 = 2, np1
-        do 72 ic1 = 1, nc1
+    do ip1 = 2, np1
+        do ic1 = 1, nc1
             if (zl(inual1-1+(ip1-1)*nc1+ic1) .neqv. zl(inual1-1+(ip1-2) *nc1+ic1)) then
                 ldref=.false.
                 goto 73
             endif
- 72     continue
- 71 end do
+        end do
+    end do
  73 continue
 !
 !     BOUCLE SUR LES CMPS DE NUAG2 :
 !     ------------------------------
-    do 20 ic2 = 1, nc2
+    do ic2 = 1, nc2
         ic1 = zi(iacorr-1+ic2)
 !
 !       CALCUL EVENTUEL DES DISTANCES DE REFERENCE :
@@ -159,7 +159,7 @@ subroutine pronua(method, nuag1, nuag2)
 !
         if (tysca .eq. 'R') then
 !       ----------------------
-            do 10 ip2 = 1, np2
+            do ip2 = 1, np2
                 if (zl(inual2-1+ (ip2-1)*nc2+ic2)) then
                     call nuainr(method, np1, nx1, nc1, ic1,&
                                 zr(inuax1), zl(inual1), zr(inuav1), zr(inuax2-1+ (ip2-1)*nx2+ 1),&
@@ -168,13 +168,13 @@ subroutine pronua(method, nuag1, nuag2)
                 else
                     zr(inuav2-1+ (ip2-1)*nc2+ic2) = 0.d0
                 endif
- 10         continue
+            end do
 !
         else
             call utmess('F', 'UTILITAI3_93')
         endif
 !
- 20 end do
+    end do
 !
 !
 !     MENAGE :

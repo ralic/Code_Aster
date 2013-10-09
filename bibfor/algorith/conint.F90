@@ -77,7 +77,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     integer :: nbvois, iret, nbvmax, lcoord, lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3)
-    character(len=8) ::  nomma
+    character(len=8) :: nomma
     character(len=19) :: prgene, prno, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
 !
@@ -167,7 +167,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     neq=0
     nozero=0
     nbvmax=0
-    do 10 i1 = 2, nnoint
+    do i1 = 2, nnoint
         l1=nnoint-i1+1
         noeu=zi(lnddli+l1)
         nbvois=0
@@ -177,13 +177,13 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
         neq=neq+neqddl
         nozero=nozero+int((neqddl*(neqddl+1))/2)
 !
-        do 20 j1 = 1, nnoint-i1+1
+        do j1 = 1, nnoint-i1+1
             noeuco=zi(lnddli+j1-1)
             icon1=zi(lprno+(noeuco-1)*(2+nbec))
             icon2=icon1+zi(lprno+(noeuco-1)*(2+nbec)+1)-1
             numno=0
 !
-            do 30 k1 = zi(lsmdi+ipos1), zi(lsmdi+ipos2)
+            do k1 = zi(lsmdi+ipos1), zi(lsmdi+ipos2)
                 if ((zi4(lsmhc+k1-1) .ge. icon1) .and. (zi4(lsmhc+k1- 1) .le. icon2) .and.&
                     (numno .eq. 0)) then
                     nbvois=nbvois+1
@@ -193,15 +193,15 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                     nozero=nozero+zi(lprno+(noeuco-1)*(2+nbec)+1)*&
                     neqddl
                 endif
- 30         continue
- 20     continue
+            end do
+        end do
 !
         zi(lconnc+l1)=nbvois
         if (nbvois .gt. nbvmax) then
             nbvmax=nbvois
         endif
 !
- 10 end do
+    end do
 !
 !-----------------------------C
 !--                         --C
@@ -220,12 +220,12 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     call wkvect(prgene//'.NUEQ', 'V V I', neq, ldnueq)
     call wkvect(prgene//'.DELG', 'V V I', neq, lddelg)
 !
-    do 40 i1 = 1, neq
+    do i1 = 1, neq
         zi(ldnueq+i1-1)=i1
         zi(lddelg+i1-1)=0
         zi(lddeeq+(i1-1)*2)=i1
         zi(lddeeq+(i1-1)*2+1)=1
- 40 end do
+    end do
 !
 !-- CONSTRUCTION DU .SMDE
     call wkvect(nume91//'.SMOS.SMDE', 'V V I', 6, ibid)
@@ -240,44 +240,44 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     call jeveuo('&&MOIN93.IND_NOEUD', 'E', lindno)
     call jeveuo('&&MOIN93.IPOS_DDL_INTERF', 'E', lipos)
     j1=0
-    do 50 i1 = 1, nnoint
+    do i1 = 1, nnoint
         zi(lindno+zi(lnddli+i1-1)-1)=i1
         zi(lipos+i1-1)=j1
         j1=j1+zi(lnddli+2*nnoint+i1-1)
- 50 end do
+    end do
 !
     ismhc=0
     indeq=0
 !
-    do 60 i1 = 1, nnoint
+    do i1 = 1, nnoint
         no1=zi(lnddli+i1-1)
         nbvois=zi(lconnc+i1-1)
         neqddl=6
 !
-        do 70 j1 = 1, neqddl
+        do j1 = 1, neqddl
 !
 !-- ON REMPLIT LES CONNECTIONS NOEUD COURANT / NOEUDS PRECEDENTS
-            do 80 k1 = 1, nbvois
+            do k1 = 1, nbvois
                 no2=zi(lconnc+i1-1+k1*nnoint)
                 neqd2=6
                 indddl=zi(lipos+zi(lindno+no2-1)-1)
 !
-                do 90 l1 = 1, neqd2
+                do l1 = 1, neqd2
                     zi4(lsmhc+ismhc)=indddl+l1
                     ismhc=ismhc+1
- 90             continue
- 80         continue
+                end do
+            end do
 !
 !-- ON REMPLIT LE BLOC DIAGONAL DU NOEUD COURANT
             indddl=zi(lipos+i1-1)
-            do 100 l1 = 1, j1
+            do l1 = 1, j1
                 zi4(lsmhc+ismhc)=indddl+l1
                 ismhc=ismhc+1
-100         continue
+            end do
             zi(lsmdi+indeq)=ismhc
             indeq=indeq+1
- 70     continue
- 60 end do
+        end do
+    end do
 !
 !-- CREATION DU SOLVEUR
     solveu=nume91//'.SOLV'
@@ -308,10 +308,10 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     mindis=1.d16
     maxdis=0.d0
 !
-    do 110 i1 = 1, nnoint
+    do i1 = 1, nnoint
         no1=zi(lnddli+i1-1)
         nbvois=zi(lconnc+i1-1)
-        do 120 j1 = 1, nbvois
+        do j1 = 1, nbvois
             no2=zi(lconnc+i1-1+j1*nnoint)
             dist=(zr(lcoord+(no2-1)*3)-zr(lcoord+(no1-1)*3))**2+&
             (zr(lcoord+(no2-1)*3+1)-zr(lcoord+(no1-1)*3+1))**2+&
@@ -323,8 +323,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             if (dist .gt. maxdis) then
                 maxdis=dist
             endif
-120     continue
-110 end do
+        end do
+    end do
     rayon=(mindis+maxdis)/20
 !
 !
@@ -344,10 +344,10 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !
     long=sqrt(ptref(1)**2+ptref(2)**2+ptref(3)**2)
     temp=1.d0
-    do 130 i1 = 1, nnoint
+    do i1 = 1, nnoint
         no1=zi(lnddli+i1-1)
         nbvois=zi(lconnc+i1-1)
-        do 140 j1 = 1, nbvois
+        do j1 = 1, nbvois
             no2=zi(lconnc+i1-1+j1*nnoint)
             direc(1)=zr(lcoord+(no2-1)*3)-zr(lcoord+(no1-1)*3)
             direc(2)=zr(lcoord+(no2-1)*3+1)-zr(lcoord+(no1-1)*3+1)
@@ -361,8 +361,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             if (dist .lt. temp) then
                 temp=dist
             endif
-140     continue
-130 continue
+        end do
+    end do
     if (temp .lt. long*1.d-10) then
         goto 135
     endif
@@ -381,19 +381,19 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     call jeveuo(jexnum(raiint//'.VALM', 1), 'E', lraint)
     call jeveuo(jexnum(ssami//'.VALM', 1), 'E', lmaint)
 !
-    do 150 i1 = 1, nnoint
+    do i1 = 1, nnoint
 !
         nbvois=zi(lconnc+i1-1)
-        do 160 j1 = 1, nbvois
+        do j1 = 1, nbvois
             no1=zi(lnddli+i1-1)
             no2=zi(lconnc+i1-1+j1*nnoint)
 !
 !-- CONSTRUCTION DES MATRICES ELEMENTAIRES
-            do 170 k1 = 1, 3
+            do k1 = 1, 3
                 direc(k1)=zr(lcoord+(no2-1)*3+k1-1)- zr(lcoord+(no1-1)&
                 *3+k1-1)
                 vtest(k1)=ptref(k1)-zr(lcoord+(no1-1)*3+k1-1)
-170         continue
+            end do
 !
             call matint(kr, mr, direc, vtest, rayon)
             no1=i1
@@ -406,56 +406,56 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !
 !-- REMPLISSAGE DES BLOCS SUR LA DIAGONALE
 !
-            do 180 k1 = 1, neqddl
+            do k1 = 1, neqddl
                 ipos1=zi(lipos+no1-1)+k1
                 ipos2=zi(lsmdi+ipos1-1)-1
                 m1=zi(lnddli+nnoint*(2+k1)+no1-1)
-                do 190 l1 = 1, k1
+                do l1 = 1, k1
                     n1=zi(lnddli+nnoint*(2+l1)+no1-1)
                     zr(lraint+ipos2-k1+l1)=zr(lraint+ipos2-k1+l1)+&
                     kr(n1,m1)
                     zr(lmaint+ipos2-k1+l1)=zr(lmaint+ipos2-k1+l1)+&
                     mr(n1,m1)
-190             continue
-180         continue
-            do 200 k1 = 1, neqd2
+                end do
+            end do
+            do k1 = 1, neqd2
                 ipos1=zi(lipos+no2-1)+k1
                 ipos2=zi(lsmdi+ipos1-1)-1
                 m1=6+zi(lnddli+nnoint*(2+k1)+no2-1)
-                do 210 l1 = 1, k1
+                do l1 = 1, k1
                     n1=6+zi(lnddli+nnoint*(2+l1)+no1-1)
                     zr(lraint+ipos2-k1+l1)=zr(lraint+ipos2-k1+l1)+&
                     kr(n1,m1)
                     zr(lmaint+ipos2-k1+l1)=zr(lmaint+ipos2-k1+l1)+&
                     mr(n1,m1)
-210             continue
-200         continue
+                end do
+            end do
 !
 !-- REMPLISSAGE DU BLOC DE COUPLAGE
 !
             ipos1=zi(lsmdi+ zi(lipos+no1-1) -1 )
             ipos2=zi(lsmdi+ zi(lipos+no1-1) )-ipos1
             m1=zi(lipos+no2-1)+1
-            do 220 l1 = 1, ipos2-1
+            do l1 = 1, ipos2-1
                 if (zi4(lsmhc+ipos1+l1-1) .eq. m1) then
                     indeq=l1
                 endif
-220         continue
+            end do
 !
-            do 230 k1 = 1, neqddl
+            do k1 = 1, neqddl
                 ipos1=zi(lsmdi+ zi(lipos+no1-1)+k1-2 )
                 m1=zi(lnddli+nnoint*(2+k1)+no2-1)
-                do 240 l1 = 1, neqd2
+                do l1 = 1, neqd2
                     n1=6+zi(lnddli+nnoint*(2+l1)+no1-1)
                     zr(lraint+ipos1+indeq+l1-2)= zr(lraint+ipos1+&
                     indeq+l1-2)+ kr(m1,n1)
                     zr(lmaint+ipos1+indeq+l1-2)= zr(lmaint+ipos1+&
                     indeq+l1-2)+ mr(m1,n1)
-240             continue
-230         continue
+                end do
+            end do
 !
-160     continue
-150 end do
+        end do
+    end do
 !
 !---------C
 !--     --C

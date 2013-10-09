@@ -145,9 +145,9 @@ subroutine nmmoam(sdammz, nbmoda)
             call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam, nbret=n)
             call jelira(listam//'           .VALE', 'LONMAX', ival=nbamor)
             call jeveuo(listam//'           .VALE', 'L', iamor)
-            do 30 iam = 1, nbmoda
+            do iam = 1, nbmoda
                 zr(jamor+iam-1) = zr(iamor+iam-1)
- 30         continue
+            end do
         endif
 !
         if (nbamor .gt. nbmoda) then
@@ -155,12 +155,12 @@ subroutine nmmoam(sdammz, nbmoda)
         endif
         if (nbamor .lt. nbmoda) then
             call wkvect('&&NMMOAM.AMORTISSEMEN2', 'V V R', nbmoda, jamo2)
-            do 40 iam = 1, nbamor
+            do iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamor+iam-1)
- 40         continue
-            do 42 iam = nbamor+1, nbmoda
+            end do
+            do iam = nbamor+1, nbmoda
                 zr(jamo2+iam-1) = zr(jamor+nbamor-1)
- 42         continue
+            end do
             nbamor = nbmoda
             jamor = jamo2
         endif
@@ -172,7 +172,7 @@ subroutine nmmoam(sdammz, nbmoda)
 ! ---  3/ AMORTISSEMENT MODAL
 !
     call wkvect(sdammo(1:19)//'.VALM', 'V V R', 3*nbmoda, jvalmo)
-    do 10 imode = 1, nbmoda
+    do imode = 1, nbmoda
         call rsadpa(modmec, 'L', 1, 'MASS_GENE', imode,&
                     0, sjv=jmasg, styp=k8bid)
         zr(jvalmo+3*(imode-1)+1-1) = zr(jmasg)
@@ -180,13 +180,13 @@ subroutine nmmoam(sdammz, nbmoda)
                     0, sjv=jfreq, styp=k8bid)
         zr(jvalmo+3*(imode-1)+2-1) = zr(jfreq)*2.d0*pi
         zr(jvalmo+3*(imode-1)+3-1) = zr(jamor+imode-1)
- 10 continue
+    end do
 !
 ! --- CREATION BASE MODALE
 !
     call wkvect(sdammo(1:19)//'.BASM', 'V V R', nbmoda*neq, jbasmo)
     call wkvect('&&NMMOAM.VECT1', 'V V R', neq, ltvec)
-    do 11 imode = 1, nbmoda
+    do imode = 1, nbmoda
         call rsexch('F', modmec, 'DEPL', imode, nomcha,&
                     iret)
         call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
@@ -195,7 +195,7 @@ subroutine nmmoam(sdammz, nbmoda)
         call mrmult('ZERO', lmat, zr(ltvec), zr(jbasmo+(imode-1)*neq), 1,&
                     .true.)
         call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
- 11 continue
+    end do
 !
 ! --- MENAGE
 !

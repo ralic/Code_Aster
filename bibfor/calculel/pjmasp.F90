@@ -129,21 +129,22 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call wkvect(corres//'.PJEF_SP', 'V V I', nbma*nbpgmx* nbspmx*3, jpo2)
 !
     ipo=1
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         nbpt=zi(jcesd-1+5+4*(ima-1)+1)
         nbsp=zi(jcesd-1+5+4*(ima-1)+2)
 !          IF (NBPT.LT.1) GOTO 100
         if (nbsp .lt. 1) goto 100
-        do 90 ipg = 1, nbpt
-            do 95 isp = 1, nbsp
+        do ipg = 1, nbpt
+            do isp = 1, nbsp
                 zi(jpo2-1+ipo)=ima
                 zi(jpo2-1+ipo+1)=ipg
                 zi(jpo2-1+ipo+2)=isp
                 ipo=ipo+3
- 95         continue
- 90     continue
+            end do
+        end do
         nbnosp=nbnosp+nbpt*nbsp
-100 end do
+100     continue
+    end do
 !
 !     3. CREATION DU .DIME DU NOUVEAU MAILLAGE
 !        IL Y A AUTANT DE MAILLES QUE DE NOEUDS
@@ -164,15 +165,15 @@ subroutine pjmasp(moa2, masp, corres, noca)
 !
 !
     nom(1:1)='N'
-    do 110 k = 1, nbnosp
+    do k = 1, nbnosp
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(masp//'.NOMNOE', nom))
-110 end do
+    end do
     nom(1:1)='M'
-    do 120 k = 1, nbnosp
+    do k = 1, nbnosp
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(masp//'.NOMMAI', nom))
-120 end do
+    end do
 !
 !
 !
@@ -187,14 +188,14 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
 !
     nuno2=0
-    do 130 ima = 1, nbnosp
+    do ima = 1, nbnosp
         zi(iatypm-1+ima)=ipoi1
         nno2=1
         call jecroc(jexnum(masp//'.CONNEX', ima))
         call jeecra(jexnum(masp//'.CONNEX', ima), 'LONMAX', nno2)
         nuno2=nuno2+1
         zi(ibid-1+nuno2)=nuno2
-130 end do
+    end do
 !
 !
 !
@@ -209,26 +210,27 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call wkvect(masp//'.COORDO    .VALE', 'V V R', 3*nbnosp, j1)
 !
     ino2p=0
-    do 160 ima = 1, nbma
+    do ima = 1, nbma
         nbpt=zi(jcesd-1+5+4*(ima-1)+1)
         nbsp=zi(jcesd-1+5+4*(ima-1)+2)
         nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
         if (nbpt .eq. 0) goto 160
         ASSERT(nbcmp.eq.3)
-        do 150 ipt = 1, nbpt
-            do 145 isp = 1, nbsp
+        do ipt = 1, nbpt
+            do isp = 1, nbsp
                 ino2p=ino2p+1
-                do 140 icmp = 1, 3
+                do icmp = 1, 3
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
                     endif
-140             continue
-145         continue
-150     continue
+                end do
+            end do
+        end do
 !
-160 end do
+160     continue
+    end do
     ASSERT(ino2p.eq.nbnosp)
 !
 !

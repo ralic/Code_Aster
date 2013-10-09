@@ -61,6 +61,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     character(len=24) :: nomres
     character(len=24) :: valk
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
     data pgc /'INER81'/
@@ -117,14 +118,14 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !
 ! --- CALCUL DES FORCES D'INERTIES
 !
-    do 30 if = 1, 3
+    do if = 1, 3
 !
 !     --- MODE RIGIDE EN DX , DY , DZ
 !
         ia = (if-1)*neq
-        do 10 ieq = 0, neq-1
+        do ieq = 0, neq-1
             zr(ltvec1+ieq) = zi(ltvec3+ia+ieq)
- 10     continue
+        end do
 !
 !     --- MULTIPLICATION DU MODE RIGIDE PAR LA MATRICE MASSE
 !
@@ -134,13 +135,13 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !     --- PROJECTION SUR LES MODES PROPRES ET LES DEFORMEES NON MODALES
 !
         iad = (if-1)*nbdef
-        do 20 i = 1, nbdef
+        do i = 1, nbdef
             call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(ltvec1), 1)
             call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
             zr(ldres+iad+i-1) = ddot(neq,zr(ltvec1),1,zr(ltvec2),1)
- 20     continue
+        end do
 !
- 30 end do
+    end do
 !
 ! --- DESTRUCTION VECTEURS DE TRAVAIL
 !

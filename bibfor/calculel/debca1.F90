@@ -221,9 +221,9 @@ subroutine debca1(nomop, ligrel, nin)
 !
 !     -- INITIALISATION DU COMMON CAII12 :
 !     -------------------------------------
-    do 10 i = 1, 512
+    do i = 1, 512
         caindz(i)=1
- 10 end do
+    end do
 !
 !     -- INITIALISATION DU COMMON CAII13 :
 !     -------------------------------------
@@ -249,16 +249,16 @@ subroutine debca1(nomop, ligrel, nin)
     if (iret .eq. 0) then
         call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
         call wkvect('&&CALCUL.NOMOP', 'V V K16', nbopt, ianoop)
-        do 20 i = 1, nbopt
+        do i = 1, nbopt
             call jenuno(jexnum('&CATA.OP.NOMOPT', i), nomop2)
             zk16(ianoop-1+i)=nomop2
- 20     continue
+        end do
         call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
         call wkvect('&&CALCUL.NOMTE', 'V V K16', nbte, ianote)
-        do 30 i = 1, nbte
+        do i = 1, nbte
             call jenuno(jexnum('&CATA.TE.NOMTE', i), nomte)
             zk16(ianote-1+i)=nomte
- 30     continue
+        end do
     else
         call jeveuo('&&CALCUL.NOMOP', 'L', ianoop)
         call jeveuo('&&CALCUL.NOMTE', 'L', ianote)

@@ -141,4 +141,4 @@ OPTION__
                           OUT__ EDEPLPG  PDEPL_R  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  
                                 EPRESGA  PPRES_R  
     TOU_INI_ELNO      99  IN__  
-                          OUT__ ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  EPRESNO  PPRES_R  
+                          OUT__ ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  EPRESNO  PPRES_R

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,14 +14,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine elg_comptt(c,t,nbeq,clag1)
-#             ifdef _HAVE_PETSC
-                  Mat :: c,t
-#             else
-                  integer :: c,t
-#             endif
-              integer :: nbeq
-              integer :: clag1
-            end subroutine elg_comptt
-          end interface
+interface
+    subroutine elg_comptt(c, t, nbeq, clag1)
+# ifdef _HAVE_PETSC
+        Mat :: c, t
+        # else
+        integer :: c, t
+        # endif
+        integer :: nbeq
+        integer :: clag1
+    end subroutine elg_comptt
+end interface

@@ -61,7 +61,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     character(len=24) :: linuma, linute
     character(len=19) :: ces1, ces2, ces3, ces4, ces5
     character(len=16) :: option
-    character(len=8) ::  licmp(4), ma, nomgd, tsca, typces
+    character(len=8) :: licmp(4), ma, nomgd, tsca, typces
     character(len=8) :: nompar
     integer :: iret, nbma, nbmat, numa, jnbpt, kma
     integer :: nbpt, ksp1, ksp2, kpt, kcmp, nncp
@@ -144,12 +144,13 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call jelira(ces3//'.CESC', 'LONMAX', ncmp)
     typces=zk8(jce3k-1+3)
     call wkvect('&&W155CH.NBPT', 'V V I', nbmat, jnbpt)
-    do 10 kma = 1, nbma
+    do kma = 1, nbma
         numa=zi(jlima-1+kma)
         if (numa .le. 0) goto 10
         nbpt=zi(jce3d-1+5+4*(numa-1)+1)
         zi(jnbpt-1+numa)=nbpt
- 10 end do
+ 10     continue
+    end do
 !
 !
 !     4. ALLOCATION ET CALCUL DE CHEXTR :
@@ -159,7 +160,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call jeveuo(ces4//'.CESD', 'L', jce4d)
     call jeveuo(ces4//'.CESV', 'L', jce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)
-    do 40 kma = 1, nbma
+    do kma = 1, nbma
         numa=zi(jlima-1+kma)
         if (numa .le. 0) goto 40
         ASSERT(numa.le.nbmat)
@@ -169,8 +170,8 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
                     jce5l, jce5v, ksp1, ksp2, c1,&
                     c2, iret)
         if (iret .eq. 1) goto 40
-        do 30 kpt = 1, nbpt
-            do 20 kcmp = 1, ncmp
+        do kpt = 1, nbpt
+            do kcmp = 1, ncmp
                 call cesexi('C', jce3d, jce3l, numa, kpt,&
                             ksp1, kcmp, iad1)
                 call cesexi('C', jce3d, jce3l, numa, kpt,&
@@ -192,9 +193,10 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
                     endif
                     zl(jce4l-1+iad4)=.true.
                 endif
- 20         continue
- 30     continue
- 40 end do
+            end do
+        end do
+ 40     continue
+    end do
 !
 !     4.5 CES4 -> CHEXTR :
 !     ------------------------------------

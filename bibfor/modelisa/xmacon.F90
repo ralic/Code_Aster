@@ -132,7 +132,7 @@ subroutine xmacon(char, noma, nomo)
 ! --- NOMBRE TOTAL DES MAILLES ESCLAVES DE CONTACT.
 !
     ntmae = 0
-    do 110 ima = 1, nbma
+    do ima = 1, nbma
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         if (iad .gt. 0) then
@@ -141,15 +141,15 @@ subroutine xmacon(char, noma, nomo)
 !          CALL TEATTR(TYPELE,'S','XFEM',ENR,IBID)
 !          IF (ENR(3:3).EQ.'C'.OR.ENR(4:4).EQ.'C') THEN
             nfiss = zi(jcesd-1+5+4*(ima-1)+2)
-            do 120 ifiss = 1, nfiss
+            do ifiss = 1, nfiss
                 call cesexi('C', jcesd2, jcesl2, ima, 1,&
                             ifiss, 1, iad2)
                 ninter = zi(jcesv2-1+iad2)
                 if (ninter .gt. 0) ntmae=ntmae+1
-120         continue
+            end do
 !          ENDIF
         endif
-110 end do
+    end do
 !
 !
 ! --- CREATION DU TABLEAU DES MAILLES ESCLAVES
@@ -162,7 +162,7 @@ subroutine xmacon(char, noma, nomo)
 !
     posmae = 0
 !
-    do 200 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! --- ON RECUPERE LE NOMBRE DE POINTS D'INTEGRATION PAR FACETTE
         if (ndim .eq. 2) then
@@ -176,19 +176,19 @@ subroutine xmacon(char, noma, nomo)
         call xmelin(elrefe, typint, nnint)
 !
         nomzon = zk8(jfimai-1+izone)
-        do 210 ima = 1, nbma
+        do ima = 1, nbma
 ! --- ON VERIFIE QUE C'EST UNE MAILLE X-FEM AVEC CONTACT
             call cesexi('C', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
             if (iad .eq. 0) goto 210
 ! --- RECUPERATION DU NUMÉRO DE FISSURE LOCAL
             nfiss = zi(jcesd-1+5+4*(ima-1)+2)
-            do 220 ifiss = 1, nfiss
+            do ifiss = 1, nfiss
                 call cesexi('C', jcesd, jcesl, ima, 1,&
                             ifiss, 1, iad1)
                 nomfis = zk8(jcesv-1+iad1)
                 if (nomzon .eq. nomfis) goto 230
-220         continue
+            end do
 ! --- ON SORT SI LA MAILLE NE CONTIENT PAS LA FISSURE EN COURS
             goto 210
 230         continue
@@ -239,8 +239,9 @@ subroutine xmacon(char, noma, nomo)
                 zi(jmaesx+zmesx*(posmae-1)+3-1) = 1
                 zi(jmaesx+zmesx*(posmae-1)+4-1) = -1*statut
             endif
-210     continue
-200 end do
+210         continue
+        end do
+    end do
 !
 ! --- NOMBRE DE MAILLES ESCLAVES
 !

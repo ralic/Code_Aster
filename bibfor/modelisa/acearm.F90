@@ -118,20 +118,20 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
 !     PAR DEFAUT POUR M, A, K :
 !        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
     call infdis('DIMC', dimcar, r8bid, k8bid)
-    do 200 i = 1, 3
+    do i = 1, 3
         zk8(jdcinf+i-1) = 'REP'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i-1), zk8(jdcinf+i-1))
         zk8(jdcinf+i+2) = 'SYM'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
         zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-200 end do
+    end do
     zk8(jdcinf+9) = 'ETAK    '
     call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
     zk8(jdcinf+10) = 'TYDI    '
     call infdis('INIT', ibid, zr(jdvinf+10), zk8(jdcinf+10))
 !
-    do 220 i = 1, 3
+    do i = 1, 3
         cart(i) = nomu//'.CARDISC'//kma(i)
         tmpnd(i) = cart(i)//'.NCMP'
         tmpvd(i) = cart(i)//'.VALV'
@@ -142,10 +142,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         endif
         call jeveuo(tmpnd(i), 'E', jdc(i))
         call jeveuo(tmpvd(i), 'E', jdv(i))
-220 end do
+    end do
 !
 ! --- BOUCLE SUR LES OCCURENCES DE DISCRET
-    do 30 ioc = 1, nbocc
+    do ioc = 1, nbocc
         eta = 0.0d0
 !        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
         irep = 1
@@ -159,9 +159,9 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         call getvr8('RIGI_MISS_3D', 'FREQ_EXTR', iocc=ioc, scal=freq, nbret=nfr)
         call getvtx('RIGI_MISS_3D', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
         call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', iocc=ioc, scal=nogl, nbret=ngl)
-        do 32 i = 1, nrd
+        do i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
- 32     continue
+        end do
         if (ivr(3) .eq. 1) then
             write(impr,1000)rep,ioc
             1000      format(/,3x,&
@@ -185,11 +185,11 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
             nbpo = nma
             call rigmi1(noma, nogp, ifreq, nfreq, impris,&
                         zr(irgma), zr(irgm3), zr(irpto))
-            do 21 in = 0, nma-1
+            do in = 0, nma-1
                 call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
                 zk8(itbmp+in) = nommai
- 21         continue
-            do 41 i = 1, nbpo
+            end do
+            do i = 1, nbpo
                 iv = 1
                 jd = itbmp + i - 1
                 call affdis(ndim, irep, eta, cara, zr(irgma+3*i-3),&
@@ -222,7 +222,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
                             limano=[zk8(jd)])
- 41         continue
+            end do
 !
         endif
 !
@@ -232,12 +232,12 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
             call jelira(jexnom(noma//'.GROUPEMA', nogl), 'LONMAX', nma)
             call jeveuo(jexnom(noma//'.GROUPEMA', nogl), 'L', ldgm)
             nbli = nma
-            do 22 in = 0, nma-1
+            do in = 0, nma-1
                 call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
                 zk8(itbmp+in) = nommai
- 22         continue
+            end do
             call r8inir(3, 0.d0, vale, 1)
-            do 42 i = 1, nbli
+            do i = 1, nbli
                 iv = 1
                 jd = itbmp + i - 1
                 vale(1)=-zr(irgm2+3*i-3)*coef
@@ -273,9 +273,9 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1,&
                             limano=[zk8(jd)])
- 42         continue
+            end do
         endif
- 30 end do
+    end do
 !
     call jedetr('&&TMPRIGMA')
     call jedetr('&&TMPRIGM2')
@@ -284,10 +284,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     call jedetr('&&TMPRILTO')
     call jedetr('&&TMPTABMP')
     call jedetr('&&ACEARM.RIGM')
-    do 240 i = 1, 3
+    do i = 1, 3
         call jedetr(tmpnd(i))
         call jedetr(tmpvd(i))
-240 end do
+    end do
     call jedetr(tmcinf)
     call jedetr(tmvinf)
 !

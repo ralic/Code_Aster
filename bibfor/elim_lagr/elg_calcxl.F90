@@ -18,7 +18,10 @@ subroutine elg_calcxl(x1, vlag)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jemarq.h"
 !----------------------------------------------------------------
 ! Calcul des coefficients de Lagrange pour ELIM_LAGR='OUI'
 !     IN  : Vec X1    (solution sur les dds physiques)
@@ -29,20 +32,17 @@ subroutine elg_calcxl(x1, vlag)
 !     calculés par :
 !       L = (R'*R) \ A*(b - B*x)
 !----------------------------------------------------------------
-#   include "asterfort/assert.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-
+!
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-#   include "asterfort/elg_allocvr.h"
-#   include "asterfort/elg_resodr.h"
-
+# include "asterfort/elg_allocvr.h"
+# include "asterfort/elg_resodr.h"
+!
     Vec :: x1, vlag
 !
 !================================================================
     integer(kind=8) :: ilt
-    PetscInt ::  n1, n2, n3
+    PetscInt :: n1, n2, n3
     PetscInt :: ierr
     PetscScalar :: xx(1), m1
     PetscOffset :: xidxay, xidxl
@@ -95,10 +95,10 @@ subroutine elg_calcxl(x1, vlag)
 !
 !
     call jedema()
-
+!
 #else
     integer(kind=8) :: x1, vlag
     ASSERT(.false.)
 #endif
-
+!
 end subroutine

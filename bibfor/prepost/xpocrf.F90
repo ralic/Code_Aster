@@ -55,7 +55,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     integer :: jtypm2, jnom
     character(len=2) :: chn1, chn2
     character(len=6) :: chn
-    character(len=8) ::  fiss, mo
+    character(len=8) :: fiss, mo
     character(len=19) :: nomtab, coord2
     character(len=24) :: nom, nogno, nogma
 !
@@ -83,22 +83,22 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     if ((nftot.gt.0) .and. (mftot.gt.0)) then
 !
 !       ATTRIBUTION DU NOM DES NOEUDS DU FOND DE FISSURE
-        do 10 ino = 1, nftot
+        do ino = 1, nftot
             call codent(ino, 'G', chn)
             call jecroc(jexnom(maxfem//'.NOMNOE', 'NF'//chn))
- 10     continue
+        end do
 !       ATTRIBUTION DU NOM DES MAILLES DU FOND DE FISSURE
-        do 20 ima = 1, mftot
+        do ima = 1, mftot
             call codent(ima, 'G', chn)
             call jecroc(jexnom(maxfem//'.NOMMAI', 'MF'//chn))
- 20     continue
+        end do
 !
         ncompt = 0
         icompt = 0
         coord2= maxfem//'.COORDO'
         call jeveuo(coord2//'.VALE', 'E', iacoo2)
 !
-        do 30 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
 !
             fiss = zk8(jnom)
             call jeexin(fiss//'.FONDFISS', iret)
@@ -118,7 +118,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                 endif
                 nfond = zi(jva0-1+nfon)
                 call codent(ifiss, 'D0', chn1)
-                do 31 ifon = 1, nfond
+                do ifon = 1, nfond
 !
                     call codent(ifon, 'D0', chn2)
                     nogma = 'MF_'//chn1//'_'//chn2
@@ -152,13 +152,13 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 !
 !           COORDONNEES DES NOEUDS
                     if (ndim .eq. 3) then
-                        do 311 ifon2 = 1, ntail
+                        do ifon2 = 1, ntail
                             ifon1 = ifon2+zi(jfmult-1+2*ifon-1)-1
                             ino = nnntot-nftot+ifon1+ncompt
                             zr(iacoo2+3*(ino-1)-1+1) = zr(jva1-1+ ifon1)
                             zr(iacoo2+3*(ino-1)-1+2) = zr(jva2-1+ ifon1)
                             zr(iacoo2+3*(ino-1)-1+3) = zr(jva3-1+ ifon1)
-311                     continue
+                        end do
                     else
                         ifon1 = zi(jfmult-1+2*ifon-1)
                         ino = nnntot-nftot+ifon1+ncompt
@@ -167,7 +167,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                     endif
 !
 !           CONNEXITE DES NOEUDS
-                    do 312 ifon2 = 1, ntail
+                    do ifon2 = 1, ntail
                         ifon1 = ifon2+zi(jfmult-1+2*ifon-1)-1
                         ino = nnntot-nftot+ifon1+ncompt
                         if (ndim .eq. 3) then
@@ -177,9 +177,9 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                                 zi(jtypm2-1+ima) = ntseg2
                                 call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 2)
                                 call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
-                                do 3121 j = 1, 2
+                                do j = 1, 2
                                     zi(jconx-1+j)=ino+j-2
-3121                             continue
+                                end do
                                 icompt = icompt + 1
                                 zi(iagma-1+ifon2-1) = ima
                             endif
@@ -193,13 +193,13 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                             zi(iagma-1+ifon2) = ima
                         endif
                         zi(iagno-1+ifon2) = ino
-312                 continue
+                    end do
 !
- 31             continue
+                end do
                 ncompt = ncompt + nfon
             endif
 !
- 30     continue
+        end do
 !
 !
     endif

@@ -65,7 +65,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
     character(len=8) :: mesh, name_elem
     integer :: nutyel
     integer :: j_cesd, j_cesl, j_cesv
-    integer :: ibid, iret, irett, ielem
+    integer ::  iret, irett, ielem
     integer :: iad
     integer :: j_mail, j_elem_affe
     integer :: nb_elem_mesh, nb_elem
@@ -114,7 +114,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! ----- <CARTE> access
 !
-        call cesexi('C', j_cesd, j_cesl, nume_elem, 1, &
+        call cesexi('C', j_cesd, j_cesl, nume_elem, 1,&
                     1, 1, iad)
         if (iad .gt. 0) then
 !
@@ -163,7 +163,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                     if (irett .eq. 0) then
                         texte(1) = type_elem
                         texte(2) = rela_comp
-                        call utmess('A', 'COMPOR1_49',nk=2, valk=texte)
+                        call utmess('A', 'COMPOR1_49', nk=2, valk=texte)
                     endif
                 endif
             endif

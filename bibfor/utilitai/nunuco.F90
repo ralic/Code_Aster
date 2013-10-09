@@ -61,7 +61,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
     logical :: lxfcm
     integer :: nec, nbnoeu, ncmpmx
     integer :: nlili, neq
-    integer ::  ico
+    integer :: ico
     integer :: ilagc, ilagf1, ilagf2
     integer :: ino, i, k, inoc, ival, iadg
     integer :: jcmp, ianueq, iaprno
@@ -118,11 +118,12 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
     call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
-    do 40 i = 1, nlili
+    do i = 1, nlili
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
- 40 end do
+ 40     continue
+    end do
     ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
@@ -135,32 +136,32 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
     inoc = 0
     if (lxfcm) goto 999
-    do 50 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         inoc = inoc + 1
         ival = zi(iaprno+(ino-1)*(nec+2)+1-1)
         iadg = iaprno+(ino-1)*(nec+2)+3-1
         if (exisdg(zi(iadg),ilagc)) then
             ico = 0
-            do 70 i = 1, ilagc-1
+            do i = 1, ilagc-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
- 70         continue
+            end do
             zi(jnuco+ival+ico-1) = 1
         endif
         if (exisdg(zi(iadg),ilagf1)) then
             ico = 0
-            do 71 i = 1, ilagf1-1
+            do i = 1, ilagf1-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
- 71         continue
+            end do
             zi(jnuco+ival+ico-1) = 1
         endif
         if (exisdg(zi(iadg),ilagf2)) then
             ico = 0
-            do 72 i = 1, ilagf2-1
+            do i = 1, ilagf2-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
- 72         continue
+            end do
             zi(jnuco+ival+ico-1) = 1
         endif
- 50 end do
+    end do
 !
 999 continue
 !

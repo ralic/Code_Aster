@@ -291,48 +291,245 @@ class PARAMETRES :
           for mod_fonte in ['normal', 'bold']:
              liste_fontes.append( type_fonte + ' ' + str(taille_fonte) + ' ' + mod_fonte )
 
-    dparam={
+    dparam = {
+        # Mode graphique
+        'mode_graphique' : {
+            'label': _(u"Mode"),
+            'val': 'Gmsh/Xmgrace',
+            'type': 'liste',
+            'section': 'MODE_GRAPHIQUE',
+            'val_possible': ["Gmsh/Xmgrace", "Salome"],
+            'bulle': _(u"Mode graphique"),
+        }, 
 
-      # Mode graphique
-      'mode_graphique'        : { 'label': _(u"Mode"),                             'val': 'Gmsh/Xmgrace',     'type': 'liste',          'section': 'MODE_GRAPHIQUE',                                      'val_possible': ["Gmsh/Xmgrace", "Salome"],      'bulle': _(u"Mode graphique"), },
+        # Parametres IHM et Serveur Aster
+        'fonte' : {
+            'label': _(u"Fontes"),
+            'val': 'arial 10 normal',
+            'type': 'liste',
+            'section': 'PARAMETRES',
+            'bulle': _(u"Les fontes de l'application"),
+            'val_possible': liste_fontes,
+        }, 
+        'grace' : {
+            'label':  _(u"Xmgrace"),
+            'val': 'xmgrace',
+            'type': 'fichier',
+            'section': 'PARAMETRES',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'bulle': _(u"Serveur de calcul : Chemin vers l'application Xmgrace"),
+        }, 
+        'smbclient' : {
+            'label':  _(u"Smbclient"),
+            'val': 'smbclient',
+            'type': 'fichier',
+            'section': 'PARAMETRES',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['WINDOWS'],
+            'bulle': _(u"Serveur de calcul : Chemin vers l'application Smbclient (pour Profil Windows)"),
+        }, 
+        'gmsh' : {
+            'label':  _(u"Gmsh"),
+            'val': 'gmsh',
+            'type': 'fichier',
+            'section': 'PARAMETRES',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'bulle': _(u"Serveur de calcul : Chemin vers l'application Gmsh"),
+        }, 
 
-      # Parametres IHM et Serveur Aster
-      'fonte'                 : { 'label': _(u"Fontes"),                           'val': 'arial 10 normal',  'type': 'liste',          'section': 'PARAMETRES',                                                                                           'bulle': _(u"Les fontes de l'application"), 'val_possible': liste_fontes, },
-      'grace'                 : { 'label': _(u"Xmgrace"),                          'val': 'xmgrace',          'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Serveur de calcul : Chemin vers l'application Xmgrace"), },
-      'smbclient'             : { 'label': _(u"Smbclient"),                        'val': 'smbclient',        'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Serveur de calcul : Chemin vers l'application Smbclient (pour Profil Windows)"), },
-      'gmsh'                  : { 'label': _(u"Gmsh"),                             'val': 'gmsh',             'type': 'fichier',        'section': 'PARAMETRES',      'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Serveur de calcul : Chemin vers l'application Gmsh"), },
+        # Parametres Graphiques specifiques a Gmsh, Xmgrace, Salome
+        'TAILLE_MIN' : {
+            'label':  _(u"Gmsh : Taille minimale"),
+            'val': 0.,
+            'type': types.FloatType,
+            'section': 'VISUALISATION',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'bulle': '',
+        }, 
+        'SHRINK' : {
+            'label':  _(u"Gmsh : Shrink"),
+            'val': 1.,
+            'type': types.FloatType,
+            'section': 'VISUALISATION',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'bulle': _(u"Parametre pour Gmsh : SHRINK\n\n"
+                       u"Facteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."),
+        }, 
+        'SKIN' : {
+            'label':  _(u"Gmsh : Affichage sur la peau"),
+            'val': 'non',
+            'type': 'liste',
+            'section': 'VISUALISATION',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'val_possible': ["oui", "non"],
+            'bulle': _(u"Parametre pour Gmsh : affichage sur la peau uniquement."),
+        }, 
+        'version_fichier_gmsh' : {
+            'label':  _(u"Gmsh : Version du fichier"),
+            'val': '1.2',
+            'type': 'liste',
+            'section': 'VISUALISATION',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'val_possible': ["1.0", "1.2"],
+            'bulle': _(u"Parametre pour Gmsh : version du fichier resultat."),
+        }, 
+        'Visualiseur' : {
+            'label':  _(u"Salome : Visualiseur"),
+            'val': 'PARAVIZ',
+            'type': 'liste',
+            'section': 'VISUALISATION',
+            'mode_graphique': ['Salome'],
+            'val_possible': ["POSTPRO", "PARAVIZ"],
+            'bulle': _(u"Parametre pour Salome : visualisation dans POSTPRO ou PARAVIZ."),
+        }, 
 
-      # Parametres Graphiques specifiques a Gmsh, Xmgrace, Salome
-      'TAILLE_MIN'            : { 'label': _(u"Gmsh : Taille minimale"),           'val': 0.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': '', },
-      'SHRINK'                : { 'label': _(u"Gmsh : Shrink"),                    'val': 1.,                 'type': types.FloatType,  'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'],                                                  'bulle': _(u"Parametre pour Gmsh : SHRINK\n\nFacteur de réduction homothétique permettant d'assurer la non interpénétration des mailles."), },
-      'SKIN'                  : { 'label': _(u"Gmsh : Affichage sur la peau"),     'val': 'non',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["oui", "non"],                  'bulle': _(u"Parametre pour Gmsh : affichage sur la peau uniquement."), },
-      'version_fichier_gmsh'  : { 'label': _(u"Gmsh : Version du fichier"),        'val': '1.2',              'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Gmsh/Xmgrace'], 'val_possible': ["1.0", "1.2"],                  'bulle': _(u"Parametre pour Gmsh : version du fichier resultat."), },
-      'Visualiseur'           : { 'label': _(u"Salome : Visualiseur"),             'val': 'PARAVIZ',          'type': 'liste',          'section': 'VISUALISATION',   'mode_graphique': ['Salome'],       'val_possible': ["POSTPRO", "PARAVIZ"],          'bulle': _(u"Parametre pour Salome : visualisation dans POSTPRO ou PARAVIZ."), },
+        # Parametres du Poste de travail de l'utilisateur, de la machine des Services Salome ou Gmsh
+        'mode' : {
+            'label':  _('Mode'),
+            'val': 'LOCAL',
+            'type': 'liste',
+            'section': 'CONFIG',
+            'val_possible': ["LOCAL", "DISTANT", "WINDOWS"],
+            'bulle': '',
+        }, 
+        'machine_visu' : {
+            'label':  _(u"Machine de visualisation"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Adresse du poste de travail"),
+        }, 
 
-      # Parametres du Poste de travail de l'utilisateur, de la machine des Services Salome ou Gmsh
-      'mode'                  : { 'label': _('Mode'),                              'val': 'LOCAL',            'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["LOCAL", "DISTANT", "WINDOWS"], 'bulle': '', },
-      'machine_visu'          : { 'label': _(u"Machine de visualisation"),         'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],      'bulle': _(u"Adresse du poste de travail"), },
+        'machine_gmsh' : {
+            'label':  _(u"Machine de Gmsh"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Machine hebergeant le service graphique Gmsh."),
+        }, 
+        'machine_gmsh_login' : {
+            'label':  _(u"Login"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Login"),
+        }, 
+        'machine_gmsh_exe' : {
+            'label':  _(u"Machine Gmsh : chemin vers gmsh"),
+            'val': 'gmsh',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Adresse du poste de travail"),
+        }, 
 
-      'machine_gmsh'          : { 'label': _(u"Machine de Gmsh"),                  'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Machine hebergeant le service graphique Gmsh."), },
-      'machine_gmsh_login'    : { 'label': _(u"Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Login"), },
-      'machine_gmsh_exe'      : { 'label': _(u"Machine Gmsh : chemin vers gmsh"),  'val': 'gmsh',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['DISTANT'],                 'bulle': _(u"Adresse du poste de travail"), },
+        'machine_salome' : {
+            'label':  _(u"Machine de Salome"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Salome'],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Machine hebergeant le service graphique Salome."),
+        }, 
+        'machine_salome_login' : {
+            'label':  _(u"Login"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Salome'],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Login"),
+        }, 
+        'machine_salome_port' : {
+            'label':  _(u"Port de Salome"),
+            'val': '2810',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Salome'],
+            'mode': ['LOCAL',
+            'DISTANT'],
+            'bulle': _(u"Port de Salome sur la machine hebergeant le service Salome."),
+        }, 
+        'machine_salome_runscript' : {
+            'label':  _(u"Lanceur runSalomeScript"),
+            'val': os.path.join(aster_core.get_option('repout'),
+            'runSalomeScript'),
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Salome'],
+            'mode': ['LOCAL',
+            'DISTANT'],
+            'bulle': _(u"Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."),
+        }, 
 
-      'machine_salome'        : { 'label': _(u"Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _(u"Machine hebergeant le service graphique Salome."), },
-      'machine_salome_login'  : { 'label': _(u"Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _(u"Login"), },
-      'machine_salome_port'   : { 'label': _(u"Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Port de Salome sur la machine hebergeant le service Salome."), },
-      'machine_salome_runscript' : { 'label': _(u"Lanceur runSalomeScript"),       'val': os.path.join(aster_core.get_option('repout'), 'runSalomeScript'),
-                                                                                                              'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
+        'machine_win' : {
+            'label':  _(u"Machine Windows/Samba"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['WINDOWS'],
+            'bulle': _(u"Machine hebergeant le partage Windows/Samba."),
+        }, 
+        'partage_win_nom' : {
+            'label':  _(u"Nom de partage Windows/Samba"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['WINDOWS'],
+            'bulle': _(u"Nom de partage Windows/Samba"),
+        }, 
+        'partage_win_login' : {
+            'label':  _(u"Nom d'utilisateur du partage"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['WINDOWS'],
+            'bulle': _(u"Partage Windows/Samba : nom d'utilisateur"),
+        }, 
+        'partage_win_pass' : {
+            'label':  _(u"Mot de passe du partage"),
+            'val': '',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace'],
+            'mode': ['WINDOWS'],
+            'bulle': _(u"Partage Windows/Samba : mot de passe"),
+        }, 
 
-      'machine_win'           : { 'label': _(u"Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Machine hebergeant le partage Windows/Samba."), },
-      'partage_win_nom'       : { 'label': _(u"Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Nom de partage Windows/Samba"), },
-      'partage_win_login'     : { 'label': _(u"Nom d'utilisateur du partage"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Partage Windows/Samba : nom d'utilisateur"), },
-      'partage_win_pass'      : { 'label': _(u"Mot de passe du partage"),          'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _(u"Partage Windows/Samba : mot de passe"), },
+        'protocole' : {
+            'label':  _(u"Protocole reseau"),
+            'val': 'rcp/rsh',
+            'type': 'liste',
+            'section': 'CONFIG',
+            'val_possible': ["rcp/rsh", "scp/ssh"],
+            'mode': ['DISTANT'],
+            'bulle': _(u"Protocole de transfert reseau. \nLes .rhosts ou clés SSH doivent etre à jours."),
+        }, 
 
-      'protocole'             : { 'label': _(u"Protocole reseau"),                 'val': 'rcp/rsh',          'type': 'liste',          'section': 'CONFIG',                                              'val_possible': ["rcp/rsh", "scp/ssh"], 'mode': ['DISTANT'], 'bulle': _(u"Protocole de transfert reseau. \nLes .rhosts ou clés SSH doivent etre à jours."), },
+        'tmp' : {
+            'label':  _(u"Repertoire temporaire"),
+            'val': '/tmp',
+            'type': 'texte',
+            'section': 'CONFIG',
+            'mode_graphique': ['Gmsh/Xmgrace',
+            'Salome'],
+            'mode': ['LOCAL',
+            'DISTANT'],
+            'bulle': _(u"Repertoire temporaire"),
+        }, 
 
-      'tmp'                   : { 'label': _(u"Repertoire temporaire"),            'val': '/tmp',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace', 'Salome'],   'mode': ['LOCAL', 'DISTANT'],        'bulle': _(u"Repertoire temporaire"), },
-
-           }
+    }
 
 
 # Champs Bulle particulierement longs

@@ -168,18 +168,18 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
         call dismoi('NB_NO_MAILLA', nomaas, 'MAILLAGE', repi=nbno)
         call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
         call wkvect('&&IRCMPR.NOEU_CENTR', 'V V I', nbno, jnoce)
-        do 5 i = 1, nbno
+        do i = 1, nbno
             zi(jnoce+i-1)=0
-  5     continue
+        end do
 !
-        do 10 i = 1, nbma
+        do i = 1, nbma
             if (zi(iadtyp+i-1) .eq. ipe18) then
                 jco=iadcnx+zi(ilcnx+i-1)-1
-                do 16 j = 1, 3
+                do j = 1, 3
                     zi(jnoce+zi(jco+15+j-1)-1)=1
- 16             continue
+                end do
             endif
- 10     continue
+        end do
 !
 ! 1.3.2. ==> COMPLEMENTS POUR DES CHAMPS AUX ELEMENTS
 !
@@ -188,13 +188,13 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
         call jeveuo(nomaas//'.TYPMAIL', 'L', adtypm)
         call jelira(nomaas//'.TYPMAIL', 'LONUTI', nbmail)
         call wkvect('&&IRCMPR.TYPMA', 'V V I', nbmail, adtyp2)
-        do 20 ima = 1, nbmail
+        do ima = 1, nbmail
             if (zi(adtypm+ima-1) .eq. ipe18) then
                 zi(adtyp2+ima-1)=ipe15
             else
                 zi(adtyp2+ima-1)=zi(adtypm+ima-1)
             endif
- 20     continue
+        end do
         if (typech(1:4) .eq. 'ELGA') then
             call jeveuo(modele//'.MAILLE', 'L', adefma)
         endif

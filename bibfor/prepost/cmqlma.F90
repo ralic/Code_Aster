@@ -70,7 +70,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
     parameter(nbtyma=27)
     integer :: jdim, i, nbtma, jma, jtypm1, jtypm2, jconn1, jconn2
     integer :: tymal(nbtyma), num1, num2, nbnol(nbtyma), ityp, j, inom, nbnomx
-    integer ::  ndim, ij
+    integer :: ndim, ij
     character(len=8) :: nomnoi
     character(len=24) :: connex, typma
 !
@@ -91,12 +91,12 @@ subroutine cmqlma(main, maout, nbma, mailq)
     call jeveuo(main//'.DIME', 'L', jdim)
     nbtma=zi(jdim+2)
     call wkvect('&&CMQLMA.MAILLE', 'V V I', nbtma, jma)
-    do 10 i = 1, nbtma
+    do i = 1, nbtma
         zi(jma+i-1)=0
- 10 end do
-    do 20 i = 1, nbma
+    end do
+    do i = 1, nbma
         zi(jma+mailq(i)-1)=1
- 20 end do
+    end do
 !
 !     CREATION DES OBJETS  '.TYPMAIL', '.CONNEX':
 !     -------------------------------------------
@@ -114,7 +114,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !     NUM2:NOMBRE DE NOEUDS DE LA MAILLE LINEARISEE
 !
 !     ON PARCOURT LES MAILLES DU MAILLAGE
-    do 30 i = 1, nbtma
+    do i = 1, nbtma
         num1=zi(inom+zi(jtypm1+i-1)-1)
 !
 !        '.TYPMAIL':
@@ -136,12 +136,12 @@ subroutine cmqlma(main, maout, nbma, mailq)
         call jeecra(jexnum(connex, i), 'LONMAX', num2)
         call jeveuo(jexnum(connex, i), 'E', jconn2)
         call jeveuo(jexnum(main//'.CONNEX', i), 'L', jconn1)
-        do 40 j = 1, num2
+        do j = 1, num2
             ij=zi(jconn1+j-1)
             call jenuno(jexnum(main//'.NOMNOE', ij), nomnoi)
             call jenonu(jexnom(maout//'.NOMNOE', nomnoi), zi(jconn2+j-1))
- 40     continue
- 30 end do
+        end do
+    end do
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(connex)

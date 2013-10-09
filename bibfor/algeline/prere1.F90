@@ -136,7 +136,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
         nprec = zi(islvi-1+1)
         if (istopz .eq. -9999) istopz = zi(islvi-1+3)
         renum=' '
-        if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)
+        if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)(1:8)
         if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) then
             call utmess('F', 'ALGELINE5_74')
         endif

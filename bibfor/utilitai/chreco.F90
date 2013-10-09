@@ -100,7 +100,7 @@ subroutine chreco(chou)
     call getvtx(' ', 'PARTIE', scal=partie, nbret=iret)
 !
     c1=180.d0/r8pi()
-    do 10 i = 1, nbval
+    do i = 1, nbval
         if (partie .eq. 'REEL') then
             zr(jvale+i-1)=dble(zc(jvalin+i-1))
         else if (partie.eq.'IMAG') then
@@ -112,7 +112,7 @@ subroutine chreco(chou)
             y=dimag(zc(jvalin+i-1))
             zr(jvale+i-1)=atan2(y,x)*c1
         endif
- 10 end do
+    end do
 !
 ! --- 2. CHANGEMENT DE LA GRANDEUR
 !     ----------------------------

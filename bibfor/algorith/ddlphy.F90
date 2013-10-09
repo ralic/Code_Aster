@@ -59,15 +59,15 @@ subroutine ddlphy(depplu, neq, vect, desc)
 !
     call jemarq()
 !
-    do 5 iaux = 1, 200
+    do iaux = 1, 200
         exclus(iaux)=' '
-  5 end do
+    end do
     call wkvect('VECTMP', 'V V R', neq, ivect2)
-    do 10 iaux = 1, neq
+    do iaux = 1, neq
         zr(ivect2-1+iaux)=vect(iaux)
         vect(iaux)=0.d0
         desc(iaux)=' '
- 10 end do
+    end do
     call dismoi('NOM_GD', depplu, 'CHAM_NO', repk=nomgd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
@@ -79,22 +79,22 @@ subroutine ddlphy(depplu, neq, vect, desc)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
     nbexcl=0
 !
-    do 20 iaux = 1, nbnot
+    do iaux = 1, nbnot
 !       DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD
         jdg = jprno - 1 + (iaux-1)*(2+nec) + 1 + 2
 !       INDIRECTION VERS LE .NUEQ
         inueq = zi(jprno - 1 + (iaux-1)*(2+nec) + 1)
 !       POSITIONS DES DDL PHYSIQUES DANS LE DG
-        do 21 jaux = 1, ncmpmx
+        do jaux = 1, ncmpmx
             pos = iposdg(zi(jdg),jaux)
             if (pos .ne. 0) then
 !           A EXCLURE OU CONSERVER
                 garder=.true.
-                do 22 kaux = 1, nbexcl
+                do kaux = 1, nbexcl
                     if (exclus(kaux) .eq. zk8(jnocmp-1+jaux)) then
                         garder=.false.
                     endif
- 22             continue
+                end do
 !           ADRESSE DU DDL DANS LE .VALE
                 ival = zi(jnueq - 1 + inueq - 1 + pos)
                 desc(ival) = zk8(jnocmp-1+jaux)
@@ -102,8 +102,8 @@ subroutine ddlphy(depplu, neq, vect, desc)
                     vect(ival) = zr(ivect2-1+ival)
                 endif
             endif
- 21     continue
- 20 end do
+        end do
+    end do
 !
     call jedetr('VECTMP')
 !

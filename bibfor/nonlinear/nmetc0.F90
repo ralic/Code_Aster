@@ -91,12 +91,12 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
     lsief = .false.
     lvari = .false.
     lstrx = .false.
-    do 10 icham = 1, nbcham
+    do icham = 1, nbcham
         nomcha = zk24(jiolch+zioch*(icham-1)+1-1)
         if (nomcha .eq. 'SIEF_ELGA') lsief = .true.
         if (nomcha .eq. 'VARI_ELGA') lvari = .true.
         if (nomcha .eq. 'STRX_ELGA') lstrx = .true.
- 10 end do
+    end do
 !
 ! --- CREATION DES CHAMPS INITIAUX NULS POUR CONTRAINTES ET VAR. INT.
 !
@@ -130,7 +130,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
 !
 ! --- NOM DU CHAMP NUL
 !
-    do 40 icham = 1, nbcham
+    do icham = 1, nbcham
         nomcha = zk24(jiolch+zioch*(icham-1)+1-1)
         nomch0 = ' '
         if (nomcha .eq. 'DEPL') then
@@ -175,7 +175,7 @@ subroutine nmetc0(modele, sdieto, compor, resoco, nbcham,&
             nomch0 = ' '
         endif
         zk24(jiolch+zioch*(icham-1)+2-1) = nomch0
- 40 end do
+    end do
 !
     call jedema()
 end subroutine

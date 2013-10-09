@@ -55,7 +55,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic
     character(len=19) :: matas
-    integer ::  jrefa, jsmdi, jsmhc, jvtemp, neq
+    integer :: jrefa, jsmdi, jsmhc, jvtemp, neq
 !
     call jemarq()
     prepo2=prepos

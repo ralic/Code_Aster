@@ -197,12 +197,12 @@ subroutine op0111()
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 1 !
 !     ! ======================================= !
-    do 10 icmp = 1, 3
+    do icmp = 1, 3
         ddldep(icmp) = 0
         ddlvit(icmp) = 0
         ddlacc(icmp) = 0
- 10 end do
-    do 20 icmp = 1, nbcmp
+    end do
+    do icmp = 1, nbcmp
         if (idepl .eq. 1) then
             if (zk8(jdepsc-1+icmp) .eq. 'DX') ddldep(1) = icmp
             if (zk8(jdepsc-1+icmp) .eq. 'DY') ddldep(2) = icmp
@@ -218,7 +218,7 @@ subroutine op0111()
             if (zk8(jaccsc-1+icmp) .eq. 'DY') ddlacc(2) = icmp
             if (zk8(jaccsc-1+icmp) .eq. 'DZ') ddlacc(3) = icmp
         endif
- 20 end do
+    end do
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 2 !
 !     ! ======================================= !
@@ -229,27 +229,27 @@ subroutine op0111()
     call wkvect('&&OP0111.DEPL', 'V V R', 3*nbno2, jdepl)
     call wkvect('&&OP0111.VITE', 'V V R', 3*nbno2, jvite)
     call wkvect('&&OP0111.ACCE', 'V V R', 3*nbno2, jacce)
-    do 30 ino2 = 1, nbno2
-        do 40 icmp = 1, 3
+    do ino2 = 1, nbno2
+        do icmp = 1, 3
             zr(jdepl-1+3*(ino2-1)+icmp) = 0.d0
             zr(jvite-1+3*(ino2-1)+icmp) = 0.d0
             zr(jacce-1+3*(ino2-1)+icmp) = 0.d0
- 40     continue
- 30 end do
+        end do
+    end do
 !     Condition if pour le cas ETAT_INIT == None
     if (nbno1 .gt. 0) then
         idecal = 0
         ilengt = 0
         grpno = ma2//'.GROUPENO'
-        do 50 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc=iocc, scal=nomgno, nbret=ibid)
             call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2)
             call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
-            do 60 jj = 1, nbno2
+            do jj = 1, nbno2
                 ino2 = zi(ialin2-1+jj)
-                do 70 ii = 1, zi(jaconb-1+ilengt+jj)
+                do ii = 1, zi(jaconb-1+ilengt+jj)
                     ino1 = zi(jaconu-1+idecal+ii)
-                    do 80 icmp = 1, 3
+                    do icmp = 1, 3
                         if (ddldep(icmp) .ne. 0) then
                             icmpg = ddldep(icmp)+nbcmp*(ino1-1)
                             if (zl(jdepsl-1+icmpg)) then
@@ -277,12 +277,12 @@ subroutine op0111()
                                                               )
                             endif
                         endif
- 80                 continue
- 70             continue
+                    end do
+                end do
                 idecal = idecal + zi(jaconb-1+ilengt+jj)
- 60         continue
+            end do
             ilengt = ilengt + nbno2
- 50     continue
+        end do
     endif
 !     ! ================================ !
 !     ! ENVOI DES GRANDEURS CINEMATIQUES !

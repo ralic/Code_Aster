@@ -94,16 +94,17 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
         call jeveuo(cnsinr//'.CNSL', 'L', jcsl)
         call jeveuo(cnsinr//'.CNSD', 'L', jcsd)
         ncmp = zi(jcsd-1+2)
-        do 10 i = 1, nbcmp
+        do i = 1, nbcmp
             noddl = nocmp(i)
-            do 12 j = 1, ncmp
+            do j = 1, ncmp
                 if (zk8(jcsc-1+j) .eq. noddl) then
                     zi(jcmp-1+i) = j
                     goto 10
                 endif
- 12         continue
+            end do
             call utmess('F', 'CALCULEL6_88', sk=noddl)
- 10     continue
+ 10         continue
+        end do
         call jelira(cnsinr//'.CNSV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CNSV', 'LONMAX', neq)
         neq = neq / ncmp
@@ -113,7 +114,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             valk(2) = type
             valk(3) = typrez
             call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
-            goto 9999
+            goto 999
         endif
 !
     else if (tych(1:2).eq.'EL') then
@@ -125,16 +126,17 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
         call jeveuo(cnsinr//'.CESL', 'L', jcsl)
         call jeveuo(cnsinr//'.CESD', 'L', jcsd)
         ncmp = zi(jcsd-1+2)
-        do 20 i = 1, nbcmp
+        do i = 1, nbcmp
             noddl = nocmp(i)
-            do 22 j = 1, ncmp
+            do j = 1, ncmp
                 if (zk8(jcsc-1+j) .eq. noddl) then
                     zi(jcmp-1+i) = j
                     goto 20
                 endif
- 22         continue
+            end do
             call utmess('F', 'CALCULEL6_88', sk=noddl)
- 20     continue
+ 20         continue
+        end do
         call jelira(cnsinr//'.CESV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CESV', 'LONMAX', neq)
         neq = neq / ncmp
@@ -144,7 +146,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             valk(2) = type
             valk(3) = typrez
             call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
-            goto 9999
+            goto 999
         endif
     else
         write(ific,*) 'NOOK '
@@ -158,51 +160,51 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
-            do 102 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 100 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         vali = vali + abs( zi(jcsv-1+ind) )
                     endif
-100             continue
-102         continue
+                end do
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
 !
         else if (typtes .eq. 'SOMM') then
             vali = 0
-            do 112 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 110 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         vali = vali + zi(jcsv-1+ind)
                     endif
-110             continue
-112         continue
+                end do
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
 !
         else if (typtes .eq. 'MAX') then
-            do 122 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 120 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valii = zi(jcsv-1+ind)
                         goto 124
                     endif
-120             continue
+                end do
 124             continue
-                do 126 k = j+1, neq
+                do k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valii = max( valii , zi(jcsv-1+ind) )
                     endif
-126             continue
+                end do
                 if (i .eq. 1) then
                     vali=valii
                     icmp=1
@@ -212,30 +214,30 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-122         continue
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
             lign2(nl2+17:nl2+17)='.'
 !
         else if (typtes .eq. 'MIN') then
-            do 132 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 130 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valii = zi(jcsv-1+ind)
                         goto 134
                     endif
-130             continue
+                end do
 134             continue
-                do 136 k = j+1, neq
+                do k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valii = min( valii , zi(jcsv-1+ind) )
                         icmp=vnocmp
                     endif
-136             continue
+                end do
                 if (i .eq. 1) then
                     vali=valii
                     icmp=1
@@ -245,7 +247,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-132         continue
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -253,55 +255,55 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
         else
             write(ific,*) 'NOOK '
             call utmess('A', 'CALCULEL5_12')
-            goto 9999
+            goto 999
         endif
 !
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
-            do 202 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 200 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valr = valr + abs( zr(jcsv-1+ind) )
                     endif
-200             continue
-202         continue
+                end do
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
-            do 212 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 210 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valr = valr + zr(jcsv-1+ind)
                     endif
-210             continue
-212         continue
+                end do
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
         else if (typtes .eq. 'MAX') then
-            do 222 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 220 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = zr(jcsv-1+ind)
                         goto 224
                     endif
-220             continue
+                end do
 224             continue
-                do 226 k = j+1, neq
+                do k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = max( valrr , zr(jcsv-1+ind) )
                     endif
-226             continue
+                end do
                 if (i .eq. 1) then
                     valr=valrr
                     icmp=1
@@ -311,29 +313,29 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-222         continue
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
             lign2(nl2+17:nl2+17)='.'
 !
         else if (typtes .eq. 'MIN') then
-            do 232 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 230 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = zr(jcsv-1+ind)
                         goto 234
                     endif
-230             continue
+                end do
 234             continue
-                do 236 k = j+1, neq
+                do k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valrr = min( valrr , zr(jcsv-1+ind) )
                     endif
-236             continue
+                end do
                 if (i .eq. 1) then
                     valr=valrr
                     icmp=1
@@ -343,7 +345,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                         icmp=i
                     endif
                 endif
-232         continue
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -351,42 +353,42 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
         else
             write(ific,*) 'NOOK '
             call utmess('A', 'CALCULEL5_12')
-            goto 9999
+            goto 999
         endif
 !
     else if (type .eq. 'C') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
-            do 302 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 300 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valr = valr + abs( zc(jcsv-1+ind) )
                     endif
-300             continue
-302         continue
+                end do
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
         else if (typtes .eq. 'SOMM') then
             valc = dcmplx(0.d0,0.d0)
-            do 312 i = 1, nbcmp
+            do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
-                do 310 j = 1, neq
+                do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
                         valc = valc + zc(jcsv-1+ind)
                     endif
-310             continue
-312         continue
+                end do
+            end do
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
         else
             write(ific,*) 'NOOK '
             call utmess('A', 'CALCULEL5_12')
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -420,7 +422,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                 epsi, crit, ific, llab, ssigne)
 !
     call detrsd('CHAM_NO_S', cnsinr)
-9999 continue
+999 continue
     call jedetr('&&UTEST4_CMP')
 !
     1160 format(1x,a80,a)

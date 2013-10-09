@@ -93,11 +93,11 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 !     -- LE RESUELEM DOIT-IL ETRE CREE ?
 !     ----------------------------------
     iparmx = 0
-    do 10 igr = 1, ngrel
+    do igr = 1, ngrel
         te = typele(ligrel,igr)
         ipar = inpara(opt,te,'OUT',nompar)
         iparmx = max(iparmx,ipar)
- 10 end do
+    end do
     if (iparmx .eq. 0) goto 30
 !
 !
@@ -138,10 +138,10 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
         call jecrec(nochou//'.RSVI', bas2//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                     ngrel)
         lontot=0
-        do 22 igr = 1, ngrel
+        do igr = 1, ngrel
             nel = nbelem(ligrel,igr)
             lontot=lontot+nel+1
- 22     continue
+        end do
         call jeecra(nochou//'.RSVI', 'LONT', lontot, ' ')
     endif
 !
@@ -151,7 +151,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
     call jeveuo(nochou//'.DESC', 'E', desc)
     zi(desc-1+1) = gd
     zi(desc-1+2) = ngrel
-    do 20 igr = 1, ngrel
+    do igr = 1, ngrel
         nel = nbelem(ligrel,igr)
         te = typele(ligrel,igr)
         ipar = inpara(opt,te,'OUT',nompar)
@@ -184,15 +184,15 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
                 lontot=0
                 zi(jrsvi-1+1)=lontot+1
                 dim1=digde3(mode,'L')
-                do 21 iel = 1, nel
+                do iel = 1, nel
                     lon1=digde4(igr,iel,opt,ipar,dim1,codvoi)
                     lontot=lontot+lon1
                     zi(jrsvi-1+iel+1)=lontot+1
- 21             continue
+                end do
                 call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', lontot)
             endif
         endif
- 20 end do
+    end do
  30 continue
     call jedema()
 end subroutine

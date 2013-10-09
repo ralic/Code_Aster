@@ -127,7 +127,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! --- BOUCLE SUR LES ZONES
 !
     ip = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! ----- INFORMATION SUR LA ZONE
 !
@@ -150,7 +150,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
@@ -171,7 +171,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
 ! ------- BOUCLE SUR LES POINTS
 !
-            do 30 iptm = 1, nptm
+            do iptm = 1, nptm
 !
 ! --------- INFOS APPARIEMENT
 !
@@ -225,10 +225,10 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
                 ip = ip + 1
 !
- 30         continue
- 20     continue
+            end do
+        end do
  25     continue
- 10 end do
+    end do
 !
 ! --- NOMBRE TOTAL DE NOEUDS EN CONTACT
 !

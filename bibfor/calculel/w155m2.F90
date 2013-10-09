@@ -53,7 +53,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     character(len=24) :: linuma, linute, valk(5)
     character(len=19) :: ces1, ces2, ces3, ces4
     character(len=16) :: option
-    character(len=8) ::  licmp(4), ma, nomgd, tsca, nompar
+    character(len=8) :: licmp(4), ma, nomgd, tsca, nompar
     character(len=3) :: exituy
     integer :: iret, nbma, nbmat, numa, kma
     integer :: nbpt, kpt, kcmp, nncp, jlite
@@ -127,30 +127,30 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     call jeveuo(ces4//'.CESV', 'L', jce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)
     call jeveuo(ces4//'.CESC', 'L', jce4c)
-    do 10 kcmp = 1, ncmp
+    do kcmp = 1, ncmp
         if (zk8(jce3c-1+kcmp) .eq. nocmp) then
             nucmp=kcmp
             goto 20
 !
         endif
- 10 end do
+    end do
     valk(1)=nocmp
     valk(2)=nomsym
     call utmess('F', 'CALCULEL2_18', nk=2, valk=valk)
 !
  20 continue
-    do 60 kma = 1, nbma
+    do kma = 1, nbma
         numa=zi(jlima-1+kma)
         ASSERT(numa.ge.1 .and. numa.le.nbmat)
         nbpt=zi(jce3d-1+5+4*(numa-1)+1)
         nbsp=zi(jce3d-1+5+4*(numa-1)+2)
         if (nbsp .eq. 0) goto 60
 !
-        do 50 kpt = 1, nbpt
+        do kpt = 1, nbpt
 !         -- 4.1 CALCUL DE VMIMA ET ISP :
 !            VMIMA : VALEUR MIN/MAX ATTEINTE SUR LES SOUS-POINTS
 !            ISP   : NUMERO DU SOUS-POINT REALISANT LE MIN/MAX
-            do 30 ksp = 1, nbsp
+            do ksp = 1, nbsp
                 call cesexi('C', jce3d, jce3l, numa, kpt,&
                             ksp, nucmp, iad1)
                 if (iad1 .gt. 0) then
@@ -175,14 +175,14 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
                         endif
                     endif
                 endif
- 30         continue
+            end do
 !
 !         -- 4.2  CALCUL DE NUCOU, NUSEC, ... A PARTIR DE ISP :
             call w155m3(numa, jce2d, jce2l, jce2v, isp,&
                         nucou, nusec, nufib, posic, posis)
 !
 !         -- 4.3 STOCKAGE DE VMIMA, NUCOU, NUSEC, ...
-            do 40 kcmp2 = 1, 6
+            do kcmp2 = 1, 6
                 call cesexi('C', jce4d, jce4l, numa, kpt,&
                             1, kcmp2, iad4)
                 ASSERT(iad4.gt.0)
@@ -207,9 +207,10 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
                 else
                     ASSERT(.false.)
                 endif
- 40         continue
- 50     continue
- 60 end do
+            end do
+        end do
+ 60     continue
+    end do
 !
 !
 !     5 CES4 -> CHEXTR :

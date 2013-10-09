@@ -99,24 +99,24 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
             maifis = '.MAILFISS.HECT'
         endif
 ! ---   BOUCLE SUR TOUTES LES FISSURES
-        do 10 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             call jeveuo(fiss//maifis, 'L', zi(jtem3-1+ifiss))
             call jelira(fiss//maifis, 'LONMAX', n)
             zi(jtem4-1+ifiss) = n
             nbma = nbma + n
- 10     continue
+        end do
 ! ---   CREATION ET REMPLISSAGE DU VECTEUR DE SORTIE
         if (nbma .gt. 0) then
             call wkvect(lismai, 'V V I', nbma, idlist)
-            do 40 ifiss = 1, nfiss
+            do ifiss = 1, nfiss
                 jlmas = zi(jtem3-1+ifiss)
-                do 20 i = 1, zi(jtem4-1+ifiss)
+                do i = 1, zi(jtem4-1+ifiss)
                     nbmala = nbmala + 1
                     zi(idlist+nbmala-1) = zi(jlmas+i-1)
                     call jenuno(jexnum(noma//'.NOMMAI', zi(jlmas+i-1)), nomail)
- 20             continue
- 40         continue
+                end do
+            end do
         endif
         call jedetr('&&CGMAXF.TEM3')
         call jedetr('&&CGMAXF.TEM4')
@@ -152,7 +152,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         nbmalo = 0
 !
 !       POUR CHAQUE FISSURE
-        do 50 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
@@ -164,33 +164,33 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
             call jeveuo(lismar, 'L', jlmas)
 !
 !         POUR CHAQUE MAILLE XFEM DE LA FISSURE COURANTE
-            do 51 ii = 1, nbmala
+            do ii = 1, nbmala
 !           RECUPERATION DES NOEUDS
                 call gmgnre(noma, nbnot, zi(jtem3), zi(jlmas+ii-1), 1,&
                             zi(jtem4), nbno, 'TOUS')
 !           TRI DES NOEUDS SELON LEUR STATUS XFEM
                 test = 1
-                do 511 ino = 1, nbno
+                do ino = 1, nbno
                     valeno = zi(jstno+zi(jtem4+ino-1)-1)
                     if (valeno .eq. 0) then
                         test = 0
                     endif
-511             continue
+                end do
 !           MAILLES QUI REPOSENT SUR LES NOEUDS AU STATUS <> 0
                 if (test .eq. 1) then
                     nbmalo = nbmalo + 1
                     zi(jtem5+nbmalo-1) = zi(jlmas+ii-1)
                     call jenuno(jexnum(noma//'.NOMMAI', zi(jtem5+ nbmalo-1)), nomail)
                 endif
- 51         continue
+            end do
             call jedetr(lismar)
             call jedetr(lisman)
             call jedetr(stno)
- 50     continue
+        end do
         call wkvect(lismai, 'V V I', nbmalo, idlist)
-        do 60 ima = 1, nbmalo
+        do ima = 1, nbmalo
             zi(idlist-1+ima) = zi(jtem5-1+ima)
- 60     continue
+        end do
         call jedetr('&&CGMAXF.TEM3')
         call jedetr('&&CGMAXF.TEM4')
         call jedetr('&&CGMAXF.TEM5')

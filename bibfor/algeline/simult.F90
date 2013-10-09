@@ -79,16 +79,16 @@ subroutine simult()
 !
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
-    do 10 i = 1, nbdir
+    do i = 1, nbdir
         xnorm = xnorm + depl(i) * depl(i)
- 10 end do
+    end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
     endif
-    do 12 i = 1, nbdir
+    do i = 1, nbdir
         depl(i) = depl(i) / xnorm
- 12 end do
+    end do
 !
 !     --- ON RECUPERE LES MODES STATIQUES ---
 !
@@ -121,15 +121,15 @@ subroutine simult()
         magrno = mailla//'.GROUPENO'
         manono = mailla//'.NOMNOE'
         ii = -1
-        do 20 i = 1, nbgr
+        do i = 1, nbgr
             call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb)
             call jeveuo(jexnom(magrno, zk24(idgn+i-1)), 'L', ldgn)
-            do 22 in = 0, nb-1
+            do in = 0, nb-1
                 call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                 ii = ii + 1
                 zk8(idno+ii) = nomnoe
- 22         continue
- 20     continue
+            end do
+        end do
     endif
     call simul2(resu, nomcmd, masse, modsta, nbdir,&
                 depl, zk8(idno), nbno)

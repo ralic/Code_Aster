@@ -99,7 +99,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
     grpno = noma//'.GROUPENO'
 !
     if (nomcmd .ne. 'CALC_G') then
-        do 1 iocc = 1, nocc
+        do iocc = 1, nocc
 !
             call getvem(noma, 'GROUP_NO', motfac(1:l), 'GROUP_NO', iocc,&
                         iarg, 0, k8bid, ngro)
@@ -112,7 +112,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 nent = -nent
             endif
 !
-  1     continue
+        end do
 !
         ndim = max(ngro,nent)
 !
@@ -127,7 +127,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
         ndim = 1
     endif
 !
-    do 2 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         call getvr8(motfac(1:l), 'MODULE', iocc=iocc, scal=module, nbret=nbm)
         call getvr8(motfac(1:l), 'R_INF', iocc=iocc, scal=rinf, nbret=nbm)
@@ -146,7 +146,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
             call getvem(noma, 'GROUP_NO', motfac(1:l), 'GROUP_NO', iocc,&
                         iarg, ndim, zk24(jjj2), ngr)
 !
-            do 3 igr = 1, ngr
+            do igr = 1, ngr
 !
                 call jeexin(jexnom(grpno, zk24(jjj2+igr-1)), iret)
 !
@@ -165,14 +165,14 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                     endif
 !
                 endif
-  3         continue
+            end do
 !
 ! MOT CLE NOEUD
 !
             call getvem(noma, 'NOEUD', motfac(1:l), 'NOEUD', iocc,&
                         iarg, ndim, zk8(jjj), nno)
 !
-            do 6 i = 1, nno
+            do i = 1, nno
                 if (nno .gt. 1) then
                     call utmess('F', 'RUPTURE1_10')
                 else
@@ -187,7 +187,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                     endif
 !
                 endif
-  6         continue
+            end do
 !
         else
             call getvr8(motfac(1:l), 'R_INF_FO', iocc=iocc, scal=rbid, nbret=ibid)
@@ -238,7 +238,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 call utmess('I', 'RUPTURE1_5', nr=2, valr=valr)
             endif
         endif
-  2 end do
+    end do
 !
 ! DESTRUCTION DE L'OBJET DE TRAVAIL
 !

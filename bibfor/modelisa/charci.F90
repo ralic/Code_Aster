@@ -190,15 +190,15 @@ subroutine charci(chcine, mfact, mo, type)
 !     ON DETERMINE LE PLUS GRAND NUMERO DE CMP ELIMINEE
 !     ---------------------------------------------------------
     icmpmx=0
-    do 101 ioc = 1, noc
+    do ioc = 1, noc
         call getmjm(mfac, ioc, mxcmp, chcino, chcity,&
                     nbobm)
         ASSERT(nbobm.gt.0)
-        do 111 iddl = 1, nbobm
+        do iddl = 1, nbobm
             icmp = indik8( zk8(jcmp), chcino(iddl)(1:8), 1, nbcmp )
             icmpmx=max(icmpmx,icmp)
-111     continue
-101 end do
+        end do
+    end do
     ASSERT(icmpmx.gt.0)
     call cnscre(ma, gdcns, icmpmx, zk8(jcmp), 'V',&
                 cns)
@@ -208,7 +208,7 @@ subroutine charci(chcine, mfact, mo, type)
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
     call jeveuo(cns//'.CNSL', 'E', jcnsl)
 !
-    do 100 ioc = 1, noc
+    do ioc = 1, noc
 !
 ! ----- NOEUDS A CONTRAINDRE :
         call reliem(' ', ma, 'NU_NOEUD', mfac, ioc,&
@@ -224,11 +224,11 @@ subroutine charci(chcine, mfact, mo, type)
         call wkvect(cnuddl, ' V V K8', nbobm, idnddl)
         call wkvect(cvlddl, ' V V '//typ, nbobm, idvddl)
         nbddl = 0
-        do 110 iddl = 1, nbobm
+        do iddl = 1, nbobm
             k16b = chcino(iddl)
-            do 112 i = 1, 5
+            do i = 1, 5
                 if (k16b .eq. motcle(i)) goto 110
-112         continue
+            end do
 !
             zk8(idnddl+nbddl) = k16b(1:8)
 !
@@ -239,10 +239,10 @@ subroutine charci(chcine, mfact, mo, type)
 ! ------- VERIFICATION DE LA COMPOSANTE SUR LES NOEUDS XFEM
             if (lxfem) then
                 if (k16b(1:1) .eq. 'D') then
-                    do 113 ino = 1, nbno
+                    do ino = 1, nbno
                         nuno = zi(idino-1+ino)
                         ASSERT(.not.zl(jnoxfl-1+2*nuno))
-113                 continue
+                    end do
                 endif
             endif
 !
@@ -256,12 +256,13 @@ subroutine charci(chcine, mfact, mo, type)
                 call getvid(mfac, k16b, iocc=ioc, scal=zk8(idvddl+nbddl), nbret=ila)
             endif
             nbddl = nbddl+1
-110     continue
+110         continue
+        end do
 !
 ! --- ON RECHERCHE SI UNE QUAND ON A DES FONCT. IL Y EN A UNE = F(TPS)
 !
         if (type .eq. 'F') then
-            do 120 i = 1, nbddl
+            do i = 1, nbddl
                 nprol(1:8) = zk8(idvddl-1+i)
                 call jeveuo(nprol, 'L', idprol)
                 if (zk24(idprol+2) .eq. 'INST') then
@@ -272,49 +273,50 @@ subroutine charci(chcine, mfact, mo, type)
                     zk8(jafck)(5:7) = '_FT'
                     goto 122
                 endif
-120         continue
+            end do
         endif
 122     continue
 !
 ! ----- AFFECTATION DANS LE CHAM_NO_S
 !
         if (type .eq. 'R') then
-            do 130 cmp = 1, nbddl
+            do cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
                 icmp = indik8( zk8(jcmp), k8b, 1, nbcmp )
-                do 132 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(idino-1+ino)
                     zr(jcnsv+(nuno-1)*icmpmx+icmp-1) = zr(idvddl-1+ cmp)
                     zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-132             continue
-130         continue
+                end do
+            end do
         else if (type .eq. 'C') then
-            do 140 cmp = 1, nbddl
+            do cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
                 icmp = indik8( zk8(jcmp), k8b, 1, nbcmp )
-                do 142 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(idino-1+ino)
                     zc(jcnsv+(nuno-1)*icmpmx+icmp-1) = zc(idvddl-1+ cmp)
                     zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-142             continue
-140         continue
+                end do
+            end do
         else if (type .eq. 'F') then
-            do 150 cmp = 1, nbddl
+            do cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
                 icmp = indik8( zk8(jcmp), k8b, 1, nbcmp )
-                do 152 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(idino-1+ino)
                     zk8(jcnsv+(nuno-1)*icmpmx+icmp-1) = zk8(idvddl-1+ cmp)
                     zl(jcnsl+(nuno-1)*icmpmx+icmp-1) = .true.
-152             continue
-150         continue
+                end do
+            end do
         endif
 !
         call jedetr(cino)
         call jedetr(cnuddl)
         call jedetr(cvlddl)
 !
-100 end do
+100     continue
+    end do
 200 continue
 !
 !

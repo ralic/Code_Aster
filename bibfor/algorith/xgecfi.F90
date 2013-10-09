@@ -115,12 +115,12 @@ subroutine xgecfi(modele, depgeo)
         call jeveuo(newges//'.CESD', 'L', jcesd)
         call jeveuo(newges//'.CESV', 'E', jcesv)
         call jeveuo(newges//'.CESL', 'E', jcesl)
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             call cesexi('S', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
             zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+2)
- 10     continue
+        end do
         call copisd('CHAM_ELEM_S', 'V', newges, newgem)
         call detrsd('CHAM_ELEM_S', '&&XGECFI.GESCLO')
     endif

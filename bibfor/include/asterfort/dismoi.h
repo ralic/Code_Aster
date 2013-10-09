@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,14 +14,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine dismoi(questi,nomob,typeco,repi,repk,arret,ier)
-              character(len=*), intent(in) :: questi
-              character(len=*), intent(in) :: nomob
-              character(len=*), intent(in) :: typeco
-              integer ,optional, intent(out) :: repi
-              character(len=*) ,optional, intent(out) :: repk
-              character(len=*) ,optional, intent(in) :: arret
-              integer ,optional, intent(out) :: ier
-            end subroutine dismoi
-          end interface 
+interface 
+    subroutine dismoi(questi, nomob, typeco, repi, repk,&
+                      arret, ier)
+        character(len=*), intent(in) :: questi
+        character(len=*), intent(in) :: nomob
+        character(len=*), intent(in) :: typeco
+        integer, optional, intent(out) :: repi
+        character(len=*), optional, intent(out) :: repk
+        character(len=*), optional, intent(in) :: arret
+        integer, optional, intent(out) :: ier
+    end subroutine dismoi
+end interface 

@@ -33,8 +33,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/appcrs.h"
 #include "asterfort/apsolu.h"
 #include "asterfort/apvsmb.h"
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infniv.h"
@@ -314,7 +314,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !         --------------------------------
 !
 !        -- EN CAS D'ERREUR DANS LES ITERATIONS DE KRYLOV ON SAUTE ICI
-999      continue
+999     continue
         call VecDestroy(b, ierr)
         ASSERT(ierr.eq.0)
         call VecDestroy(x, ierr)

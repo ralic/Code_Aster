@@ -112,33 +112,34 @@ subroutine mearcc(option, mo, chin, chout)
     call wkvect('&&MEARCC.PT3D', 'V V I', nbma*nbnomx, jpt3d)
     call jeveuo(ma//'.CONNEX', 'L', jcnx)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         jco3=jcnx+zi(jlcnx-1+zi(jma3d+ima-1))-1
         jco2=jcnx+zi(jlcnx-1+zi(jma2d+ima-1))-1
         npt3=zi(jcesd3-1+5+4*(zi(jma3d+ima-1)-1)+1)
         npt2=zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
         k=0
-        do 110 ipt2 = 1, npt2
+        do ipt2 = 1, npt2
             ino2=zi(jco2+ipt2-1)
-            do 111 ipt3 = 1, npt3
+            do ipt3 = 1, npt3
                 ino3=zi(jco3+ipt3-1)
                 if (ino3 .eq. ino2) then
                     k=k+1
                     zi(jpt3d+nbnomx*(ima-1)+k-1)=ipt3
                     goto 110
                 endif
-111         continue
-110     continue
-100 continue
+            end do
+110         continue
+        end do
+    end do
 !
 !
 !     REMPLISSAGE DU CHAMP SIMPLE 3D
-    do 200 ima = 1, nbma
+    do ima = 1, nbma
         npt=zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma2d+ima-1)), k8b)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma3d+ima-1)), k8b)
-        do 210 ipt = 1, npt
-            do 220 icp = 1, nbcmp
+        do ipt = 1, npt
+            do icp = 1, nbcmp
                 nucmp=indik8( zk8(jcesc3), comp(icp), 1, zi(jcesd3+1)&
                 )
 !
@@ -157,9 +158,9 @@ subroutine mearcc(option, mo, chin, chout)
                             1, nucmp, iad2)
                 zr(jcesv2-iad2-1)=zr(jcesv3+iad3-1)
                 zl(jcesl2-iad2-1)=.true.
-220         continue
-210     continue
-200 end do
+            end do
+        end do
+    end do
 !
     call cesred(chous, nbma, zi(jma2d), 0, [k8b],&
                 'V', chous)

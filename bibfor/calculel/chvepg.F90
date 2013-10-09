@@ -78,7 +78,7 @@ subroutine chvepg(chel1, chel2)
     call jeveuo('&&CHVEPG.FAPG1', 'L', j1)
     call jeveuo('&&CHVEPG.FAPG2', 'L', j2)
     call jelira('&&CHVEPG.FAPG1', 'LONMAX', nbma)
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         fpg1 = zk16(j1-1+ima)
         fpg2 = zk16(j2-1+ima)
         if ((fpg1.ne.' ') .and. (fpg2.ne.' ') .and. (fpg2.ne.fpg1)) then
@@ -88,7 +88,7 @@ subroutine chvepg(chel1, chel2)
             valk(3) = fpg2
             call utmess('F', 'CALCULEL_91', nk=3, valk=valk)
         endif
- 10 end do
+    end do
 !
     call jedetr('&&CHVEPG.FAPG1')
     call jedetr('&&CHVEPG.FAPG2')

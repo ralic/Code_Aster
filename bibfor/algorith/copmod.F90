@@ -179,7 +179,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !  ____________________________________________________________________
 !
 !     3.1 - BOUCLE SUR LES MODES DE LA BASE
-    do 10 i = 1, nbmode
+    do i = 1, nbmode
 !       3.1.1 - EXTRAIRE LE NOM DU CHAMP D'INTERET (NOMCHA)
         call rsexch('F', basemo, champ, i, nomcha,&
                     iret)
@@ -235,7 +235,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
             endif
         endif
 !
- 10 end do
+    end do
 !     FIN DE LA BOUCLE (3.1) SUR LES MODES
 !  ____________________________________________________________________
 !

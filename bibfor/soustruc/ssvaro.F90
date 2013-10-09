@@ -136,15 +136,17 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     -2 CALCUL DE L2 = L OU LT :
 !     ------------------------
     if (sens2 .eq. 'LG') then
-        do 77 i = 1, 6
-            do 77 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 l2(i,j)=l(i,j)
- 77         continue
+            end do
+        end do
     else if (sens2.eq.'GL') then
-        do 88 i = 1, 6
-            do 88 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 l2(i,j)=l(j,i)
- 88         continue
+            end do
+        end do
     else
         call utmess('F', 'SOUSTRUC_75', sk=sens2)
     endif
@@ -201,7 +203,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     --------------------
     nunold=0
     ino=0
-    do 2 ieq = ieqdeb, nddlt
+    do ieq = ieqdeb, nddlt
         nuno =zi(iadeeq-1+2*(ieq-1)+1)
         icmp=zi(iadeeq-1+2*(ieq-1)+2)
         if ((icmp.le.0) .or. (icmp.eq.nulag)) then
@@ -224,7 +226,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
         endif
 !
         dmi=0
-        do 21 ieqp = ieq+1, nddlt
+        do ieqp = ieq+1, nddlt
             nunop =zi(iadeeq-1+2*(ieqp-1)+1)
             if (nunop .ne. nuno) goto 22
             icmpp=zi(iadeeq-1+2*(ieqp-1)+2)
@@ -262,14 +264,15 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
                     call utmess('F', 'SOUSTRUC_77')
                 endif
             endif
- 21     continue
+        end do
 !
  22     continue
         di= ieqp-ieq
         if (di .gt. 10) ASSERT(.false.)
         zi(iaiino-1+3*(ino-1)+2)= di
         zi(iaiino-1+3*(ino-1)+3)= dmi
-  2 end do
+  2     continue
+    end do
     nbno=ino
 !
 !
@@ -277,13 +280,13 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !        ("LAGR","PRES","DDNDZ","PHI",...  )
 !     ----------------------------------------------------------------
     if (matrix) then
-        do 31 k = 1, long
+        do k = 1, long
             zr(iadm2-1+k)=zr(iadm1-1+k)
- 31     continue
+        end do
     else
-        do 32 k = ieqdeb, nddlt
+        do k = ieqdeb, nddlt
             zr(iadm2-1+k)=zr(iadm1-1+k)
- 32     continue
+        end do
     endif
 !
 !
@@ -294,104 +297,108 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     -7-1 CALCUL DE M2(I,J)= LIT*M1(I,J)*LJ:
 !        (I ET J SONT DES NOEUDS !)
 !     -----------------------------------------
-        do 1 j = 1, nbno
+        do j = 1, nbno
             j1= zi(iaiino-1+3*(j-1)+1)
             dj= zi(iaiino-1+3*(j-1)+2)
             dmj= zi(iaiino-1+3*(j-1)+3)
 !
 !       -7-2 CALCUL DE LJ :
 !       -----------------
-            do 11 ii = 1, dj
-                do 11 jj = 1, dj
+            do ii = 1, dj
+                do jj = 1, dj
                     lj(ii,jj)=0.0d0
- 11             continue
-            do 12 jj = 1, dj
+                end do
+            end do
+            do jj = 1, dj
                 lj(jj,jj)=1.0d0
- 12         continue
-            do 13 ii = 1, dmj
-                do 13 jj = 1, dmj
+            end do
+            do ii = 1, dmj
+                do jj = 1, dmj
                     lj(ii,jj)=l2(ii,jj)
- 13             continue
+                end do
+            end do
 !
-            do 14 i = 1, j
+            do i = 1, j
                 i1= zi(iaiino-1+3*(i-1)+1)
                 di= zi(iaiino-1+3*(i-1)+2)
                 dmi= zi(iaiino-1+3*(i-1)+3)
 !
 !         -7-3 CALCUL DE LI :
 !         -----------------
-                do 141 ii = 1, di
-                    do 141 jj = 1, di
+                do ii = 1, di
+                    do jj = 1, di
                         li(ii,jj)=0.0d0
-141                 continue
-                do 142 jj = 1, di
+                    end do
+                end do
+                do jj = 1, di
                     li(jj,jj)=1.0d0
-142             continue
-                do 143 ii = 1, dmi
-                    do 143 jj = 1, dmi
+                end do
+                do ii = 1, dmi
+                    do jj = 1, dmi
                         li(ii,jj)=l2(ii,jj)
-143                 continue
+                    end do
+                end do
 !
 !         -7-4 RECOPIE DE M1(I,J) DANS P1:
 !         ------------------------------
                 if (i .lt. j) then
-                    do 144 jj = 1, dj
-                        do 1441 ii = 1, di
+                    do jj = 1, dj
+                        do ii = 1, di
                             p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
-1441                     continue
-144                 continue
+                        end do
+                    end do
                 else
-                    do 145 jj = 1, dj
-                        do 1451 ii = 1, jj
+                    do jj = 1, dj
+                        do ii = 1, jj
                             p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
-1451                     continue
-                        do 1452 ii = jj+1, di
+                        end do
+                        do ii = jj+1, di
                             p1(ii,jj)=zr(m1t(i1-1+ii,j1-1+jj))
-1452                     continue
-145                 continue
+                        end do
+                    end do
                 endif
 !
 !         -7-5 P2=P1*L2(J):
 !         --------------
-                do 146 ii = 1, di
-                    do 1461 jj = 1, dj
+                do ii = 1, di
+                    do jj = 1, dj
                         p2(ii,jj)=0.0d0
-                        do 1462 k = 1, dj
+                        do k = 1, dj
                             p2(ii,jj)=p2(ii,jj)+p1(ii,k)*lj(k,jj)
-1462                     continue
-1461                 continue
-146             continue
+                        end do
+                    end do
+                end do
 !
 !         -7-6 P1=LT2(I)*P2:
 !         ---------------
-                do 147 ii = 1, di
-                    do 1471 jj = 1, dj
+                do ii = 1, di
+                    do jj = 1, dj
                         p1(ii,jj)=0.0d0
-                        do 1472 k = 1, di
+                        do k = 1, di
                             p1(ii,jj)=p1(ii,jj)+li(k,ii)*p2(k,jj)
-1472                     continue
-1471                 continue
-147             continue
+                        end do
+                    end do
+                end do
 !
 !         -7-7 RECOPIE DE P1 DANS M2(I,J):
 !         ------------------------------
                 if (i .lt. j) then
-                    do 148 jj = 1, dj
-                        do 1481 ii = 1, di
+                    do jj = 1, dj
+                        do ii = 1, di
                             zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
-1481                     continue
-148                 continue
+                        end do
+                    end do
                 else
-                    do 149 jj = 1, dj
-                        do 1491 ii = 1, jj
+                    do jj = 1, dj
+                        do ii = 1, jj
                             zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
-1491                     continue
-149                 continue
+                        end do
+                    end do
                 endif
 !
 !
- 14         continue
-  1     continue
+            end do
+        end do
     endif
 !
 !
@@ -404,16 +411,16 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     -- CALCUL DE V2(I)= L2T(I)*V1(I)
 !        (I EST UN NOEUD !)
 !     -----------------------------------------
-        do 5 i = 1, nbno
+        do i = 1, nbno
             i1= zi(iaiino-1+3*(i-1)+1) + (ieqdeb-1)
             dmi= zi(iaiino-1+3*(i-1)+3)
-            do 51 ii = 1, dmi
+            do ii = 1, dmi
                 zr(v2(i1-1+ii))=0.0d0
-                do 511 k = 1, dmi
+                do k = 1, dmi
                     zr(v2(i1-1+ii))=zr(v2(i1-1+ii))+l2(k,ii)*zr(v1(i1-1+k))
-511             continue
- 51         continue
-  5     continue
+                end do
+            end do
+        end do
     endif
 !
 !

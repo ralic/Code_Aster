@@ -58,7 +58,7 @@ subroutine mmprel(char, noma, nomo, ligret)
     logical :: lfrot, laxis, lveri
     character(len=24) :: lismae, defico
     character(len=16) :: modeli, phenom
-    integer ::  jdecme, jlist, izone
+    integer :: jdecme, jlist, izone
     integer :: nzoco, ndimg, nmaco, ntmaec
     integer :: imae, posmae, nummae, nbmae
     logical :: lallv
@@ -112,7 +112,7 @@ subroutine mmprel(char, noma, nomo, ligret)
 ! --- AJOUT DES ELEMENTS TARDIFS AU LIGREL
 !
     call wkvect(lismae, 'V V I', ntmaec, jlist)
-    do 20 izone = 1, nzoco
+    do izone = 1, nzoco
         lfrot = mminfl(defico,'FROTTEMENT_ZONE',izone)
         lveri = mminfl(defico,'VERIF',izone )
         if (ndimg .eq. 2) then
@@ -134,15 +134,15 @@ subroutine mmprel(char, noma, nomo, ligret)
         if (.not.lveri) then
             nbmae = mminfi(defico,'NBMAE' ,izone )
             jdecme = mminfi(defico,'JDECME' ,izone )
-            do 10 imae = 1, nbmae
+            do imae = 1, nbmae
                 posmae = jdecme+imae
                 nummae = zi(jmaco+posmae-1)
                 zi(jlist+imae-1) = nummae
- 10         continue
+            end do
             call ajellt(ligret, noma, nbmae, lismae, ' ',&
                         phenom, modeli, 0, ' ')
         endif
- 20 end do
+    end do
 !
  99 continue
 !

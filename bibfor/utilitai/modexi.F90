@@ -71,7 +71,7 @@ subroutine modexi(modelz, nomodz, iexi)
             call utmess('F', 'UTILITAI_1')
         endif
         nomodl=' '
-        do 10 igrel = 1, nbgrel
+        do igrel = 1, nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
             call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel= zi(ialiel -1 +nel)
@@ -82,7 +82,7 @@ subroutine modexi(modelz, nomodz, iexi)
                 iexi = 1
                 goto 20
             endif
- 10     continue
+        end do
  20     continue
     endif
     call jedema()

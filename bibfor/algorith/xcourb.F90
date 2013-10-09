@@ -49,7 +49,7 @@ subroutine xcourb(basloc, noma, modele, courb)
     integer :: ino, i, j, nbno, ibid, nchin
     integer :: jrsv, jrsl, jgl, jgb
     real(kind=8) :: el1(3), el2(3), el3(3), p(3, 3), invp(3, 3), norme
-    character(len=8) ::  lpain(2), lpaout(1), licmp(9)
+    character(len=8) :: lpain(2), lpaout(1), licmp(9)
     character(len=19) :: cnsr, matpas, cnsg
     character(len=24) :: lchin(2), lchout(1), ligrmo
 !
@@ -82,40 +82,41 @@ subroutine xcourb(basloc, noma, modele, courb)
     call jeveuo(cnsr//'.CNSV', 'E', jrsv)
     call jeveuo(cnsr//'.CNSL', 'E', jrsl)
 !
-    do 100 ino = 1, nbno
+    do ino = 1, nbno
 !       ON VÉRIFIE QUE LE NOEUD A BIEN UNE VALEUR DE GRADLST ASSOCIÉE
         if (.not.zl(jgl-1+3*3*(ino-1)+4)) goto 100
-        do 110 i = 1, 3
+        do i = 1, 3
             el1(i) = zr(jgb-1+3*3*(ino-1)+i+3)
             el2(i) = zr(jgb-1+3*3*(ino-1)+i+6)
-110     continue
+        end do
 !
 !       NORMALISATION DE LA BASE
         call normev(el1, norme)
         call normev(el2, norme)
         call provec(el1, el2, el3)
 !       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        do 120 i = 1, 3
+        do i = 1, 3
             p(i,1)=el1(i)
             p(i,2)=el2(i)
             p(i,3)=el3(i)
-120     continue
+        end do
 !       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TP
-        do 130 i = 1, 3
-            do 140 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 invp(i,j)=p(j,i)
-140         continue
-130     continue
-        do 150 i = 1, 3
+            end do
+        end do
+        do i = 1, 3
             zr(jrsv-1+9*(ino-1)+i)=invp(i,1)
             zl(jrsl-1+9*(ino-1)+i)=.true.
             zr(jrsv-1+9*(ino-1)+i+3)=invp(i,2)
             zl(jrsl-1+9*(ino-1)+i+3)=.true.
             zr(jrsv-1+9*(ino-1)+i+6)=invp(i,3)
             zl(jrsl-1+9*(ino-1)+i+6)=.true.
-150     continue
+        end do
 !
-100 end do
+100     continue
+    end do
     matpas='&&XCOURB.MATPAS'
     call cnscno(cnsr, ' ', 'NON', 'V', matpas,&
                 'F', ibid)

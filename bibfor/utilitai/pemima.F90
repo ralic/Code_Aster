@@ -133,13 +133,13 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     --- ON PARCOURT LES OCCURENCES DU MOT CLE 'MINMAX':
 !     =====================================================
 !
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !
 !
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ===================================
 !
-        do 5 inum = 1, nbordr
+        do inum = 1, nbordr
 !
 !
             if (indch .eq. 0) then
@@ -206,7 +206,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                 call wkvect('&&PEMIMA_GMA', 'V V K8', nbgma, jgma)
                 call getvtx('MINMAX', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk8(jgma),&
                             nbret=n1)
-                do 20 igm = 1, nbgma
+                do igm = 1, nbgma
                     call jelira(jexnom(mailla//'.GROUPEMA', zk8(jgma+ igm-1)), 'LONMAX', nma,&
                                 k8b)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', zk8(jgma+ igm-1)), 'L', jnuma)
@@ -218,15 +218,16 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                         call pemaxn(resu, nomcha, grpma, zk8(jgma+igm-1), modele,&
                                     cham, nbcmp, zk8(jcmp), numo, inst)
                     endif
- 20             continue
+                end do
                 call jedetr('&&PEMIMA_GMA')
             endif
 !
             call jedetr('&&PEMIMA.CMP')
 !
-  5     continue
+        end do
 !
- 10 continue
+ 10     continue
+    end do
 !
     call jedema()
 !

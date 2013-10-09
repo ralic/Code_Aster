@@ -73,9 +73,9 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     if (n1 .eq. 1) then
         call jelira(noma//'.GROUPEMA', 'NMAXOC', nbgma)
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
-        do 10 i = 1, nbgma
+        do i = 1, nbgma
             call jenuno(jexnum(grpma, i), zk24(ialgma-1+i))
- 10     continue
+        end do
         iangno = ialgma
 !
 !     ---  CAS : "GROUP_MA"
@@ -103,14 +103,14 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             iangno = ialgma
         endif
         ier = 0
-        do 20 i = 1, nbgma
+        do i = 1, nbgma
             nomgma = zk24(ialgma-1+i)
             call jeexin(jexnom(grpma, nomgma), iret)
             if (iret .eq. 0) then
                 ier = ier + 1
                 call utmess('E', 'ELEMENTS_62', sk=nomgma)
             endif
- 20     continue
+        end do
         ASSERT(ier.eq.0)
     endif
     if (nbgma .eq. 0) goto 60
@@ -122,7 +122,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 ! ---------------------------------------------------------------------
 !     -- ON AJOUTE LES NOUVEAUX GROUPES:
 !
-    do 30 i = 1, nbgma
+    do i = 1, nbgma
         nomgma = zk24(ialgma-1+i)
         call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
@@ -139,12 +139,12 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             call jeecra(jexnom(grpno, nomgno), 'LONMAX', max(n1, 1))
             call jeecra(jexnom(grpno, nomgno), 'LONUTI', n1)
             call jeveuo(jexnom(grpno, nomgno), 'E', iad2)
-            do 40 j = 1, n1
+            do j = 1, n1
                 zi(iad2-1+j) = zi(ialino-1+j)
- 40         continue
+            end do
             nbgnaj = nbgnaj + 1
         endif
- 30 end do
+    end do
 !
  60 continue
     call jedetr('&&SSGNGM.LISTE_GMA')

@@ -68,9 +68,9 @@ subroutine nmrecz(numedd, cndiri, cnfint, cnfext, ddepla,&
     call jeveuo(ddepla(1:19)//'.VALE', 'L', jddepl)
 !
     fonc = 0.d0
-    do 10 ieq = 1, neq
+    do ieq = 1, neq
         fonc = fonc + zr(jddepl+ieq-1) * (zr(jfint+ieq-1)+ zr(jdiri+ ieq-1)- zr(jfext+ieq-1))
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

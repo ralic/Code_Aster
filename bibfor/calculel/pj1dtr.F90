@@ -98,7 +98,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     call wkvect(corres//'.PJEF_NB', 'V V I', nno2, i2conb)
     call wkvect(corres//'.PJEF_M1', 'V V I', nno2, i2com1)
     ideca2=0
-    do 10 ino2 = 1, nno2
+    do ino2 = 1, nno2
 !       ITR : SEG2 ASSOCIE A INO2
         itr=zi(i1cotr-1+ino2)
         if (itr .eq. 0) goto 10
@@ -108,7 +108,8 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
         ideca2=ideca2+nbno
- 10 end do
+ 10     continue
+    end do
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
     endif
@@ -121,7 +122,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     call wkvect(corres//'.PJEF_CO', 'V V R', 3*nno2, i2coco)
     ideca1=0
     ideca2=0
-    do 20 ino2 = 1, nno2
+    do ino2 = 1, nno2
 !       ITR : SEG2 ASSOCIE A INO2
         itr = zi(i1cotr-1+ino2)
         if (itr .eq. 0) goto 20
@@ -142,10 +143,10 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !             DE REFERENCE : KSI
 !     -----------------------------------------------------------
         ksi=0.d0
-        do 771 kk = 1, 2
+        do kk = 1, 2
             x1 = crrefe(ndim*(kk-1)+1)
             ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-771     continue
+        end do
         x(1) = ksi
         zr(i2coco-1+3*(ino2-1)+1)=x(1)
 !
@@ -154,16 +155,17 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI
 !       -------------------------------------------------------
         call elrfvf(elrefa, x, 27, ff, nno)
-        do 22 ino = 1, nbno
+        do ino = 1, nbno
             nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
- 22     continue
+        end do
 !
         ideca1=ideca1+2
         ideca2=ideca2+nbno
 !
- 20 end do
+ 20     continue
+    end do
 !
     call jedema()
 end subroutine

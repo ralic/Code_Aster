@@ -52,7 +52,7 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
 !
     integer :: jmaco, iatyma, iamase, ityp
     integer :: comp5, ima, inp, inq, compte, nn, i, j, ino1
-    character(len=8) ::  type
+    character(len=8) :: type
 !
 !     -----------------------------------------------------------------
 !
@@ -71,9 +71,9 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
     indic(4)=0
     comp5=0
 !     ON BALAYE LES MAILLES CONNECTEES AU NOEUD INO
-    do 140 ima = 1, nbmac
+    do ima = 1, nbmac
 !       POUR CHAQUE FACE RETENUE
-        do 141 inp = 1, 4
+        do inp = 1, 4
             compte=0
 !         ON NE CONSIDERE QUE LES MAILLES INTERNES AFIN D'ELIMINER
 !         LES FACES (EN 3D) OU LES SEGMENTS INTERNES (EN 2D)
@@ -83,46 +83,46 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
                 call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
                 call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + ima) ), 'L', iamase)
 !           POUR CHAQUE NOEUD DE LA MAILLE INTERNE
-                do 142 i = 1, nn
+                do i = 1, nn
 !             ON COMPTE LE NOMBRE DE NOEUDS COMMUN AVEC LA FACE INP
-                    do 143 ino1 = 1, 4
+                    do ino1 = 1, 4
                         if (noe(inp,ino1) .ne. 0) then
                             if (zi(iamase-1+i) .eq. noe(inp,ino1)) then
                                 compte = compte+1
                             endif
                         endif
-143                 continue
-142             continue
+                    end do
+                end do
             endif
 !         LES FACES A NE PAS PRENDRE EN COMPTE CAR INTERNE
             if (((nbnoff.gt.1).and.(compte.ge.3)) .or. ((nbnoff.eq.1) .and.(compte.ge.2))) then
                 comp5 = comp5 + 1
                 indic(comp5) = inp
             endif
-141     continue
-140 end do
+        end do
+    end do
 !
 !     CAS PARTICULIER OU AUCUNE MAILLE INTERNE N'EST PRESENTE
     if ((comp5.eq.0) .and. (nbmac.eq.2)) then
-        do 200 inp = 1, 4
-            do 201 inq = 1, 4
+        do inp = 1, 4
+            do inq = 1, 4
                 compte = 0
                 if (inp .ne. inq) then
-                    do 202 i = 1, 4
-                        do 203 j = 1, 4
+                    do i = 1, 4
+                        do j = 1, 4
                             if (noe(inp,i) .ne. 0) then
                                 if (noe(inp,i) .eq. noe(inq,j)) then
                                     compte = compte+1
                                 endif
                             endif
-203                     continue
-202                 continue
+                        end do
+                    end do
                 endif
                 if (ndim .eq. 3 .and. compte .ge. 3 .or. ndim .eq. 2 .and. compte .ge. 2) then
                     indic(inp)=inq
                 endif
-201         continue
-200     continue
+            end do
+        end do
     endif
 !
 !

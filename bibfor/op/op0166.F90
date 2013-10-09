@@ -244,7 +244,7 @@ subroutine op0166()
     endif
 !
 !     3.1 : SI TYPCAL='1', IL FAUT S'ARRETER LA :
-    if (typcal .eq. '1') goto 9999
+    if (typcal .eq. '1') goto 999
 !
 !
 !
@@ -411,7 +411,7 @@ subroutine op0166()
                     'G', noca, method)
     endif
 !
-9999 continue
+999 continue
 !
     if (typcal .ne. '2') then
         call detrsd('CORRESP_2_MAILLA', lcorre(1))

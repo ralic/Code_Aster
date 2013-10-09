@@ -174,7 +174,7 @@ subroutine appcrs(kptsc, lmd)
         endif
     endif
 !
-999  continue
+999 continue
 !
     call jedema()
 !

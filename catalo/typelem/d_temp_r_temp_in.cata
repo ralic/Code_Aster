@@ -48,4 +48,4 @@ OPTION__
     THER_DDLI_R        2  IN__  MDDLIMR  PDDLIMR  
                           OUT__ MVECTTR  PVECTTR  
     THER_DDLM_R        2  IN__  MDDLMUR  PDDLMUR  
-                          OUT__ MMATTTR  PMATTTR  
+                          OUT__ MMATTTR  PMATTTR

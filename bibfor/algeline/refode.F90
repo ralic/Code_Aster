@@ -50,7 +50,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
     character(len=1) :: base
     character(len=4) :: docu
     character(len=5) :: refe, desc, vale
-    character(len=8) ::  noma, nomgd
+    character(len=8) :: noma, nomgd
     character(len=19) :: ch19, ligrel
     logical :: lmeca, lther
 !     ------------------------------------------------------------------
@@ -116,9 +116,9 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
     endif
 !
     call jeecra(ch19//desc, 'DOCU', cval=docu)
-    do 10 i = 0, nbdesc-1
+    do i = 0, nbdesc-1
         zi(kdesc+i) = zi(jdesc+i)
- 10 end do
+    end do
     call jelibe(ch19//desc)
 !
 !
@@ -126,16 +126,16 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
     if (docu .eq. 'CHNO') then
         call jeveuo(zk24(jrefe+1)(1:19)//'.PRNO', 'L', jprno)
-        do 20 i = 0, nbrefe-1
+        do i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
- 20     continue
+        end do
         call jelibe(ch19//'.REFE')
         call dismoi('NOM_MAILLA', nomch(1), 'CHAMP', repk=noma)
         call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu)
 !
 !        --- BOUCLE SUR LES CHAMPS A RECOMBINER ---
 !
-        do 100 im = 1, nbcmb
+        do im = 1, nbcmb
             ang = angle * dble(nuharm(im))
             ch19 = nomch(im)
             call jeveuo(ch19//vale, 'L', jvale)
@@ -144,29 +144,29 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
                 if (tyharm(im)(1:4) .eq. 'SYME') then
 !
-                    do 110 ino = 1, nbnoeu
+                    do ino = 1, nbnoeu
                         i = zi(jprno+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
                             zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* cos(ang)* zr(jvale+i+2)
                             zr(lvale+i+3) = zr(lvale+i+3) - coef(im)* sin(ang)* zr(jvale+i+3)
                         endif
-110                 continue
+                    end do
 !
                 else if (tyharm(im)(1:4).eq.'ANTI') then
 !
-                    do 112 ino = 1, nbnoeu
+                    do ino = 1, nbnoeu
                         i = zi(jprno+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
                             zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* sin(ang)* zr(jvale+i+2)
                             zr(lvale+i+3) = zr(lvale+i+3) + coef(im)* cos(ang)* zr(jvale+i+3)
                         endif
-112                 continue
+                    end do
 !
                 else if (tyharm(im)(1:4).eq.'TOUS') then
 !
-                    do 114 ino = 1, nbnoeu
+                    do ino = 1, nbnoeu
                         i = zi(jprno+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
@@ -176,7 +176,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             zr(lvale+i+3) = zr(lvale+i+3) + coef(im)* cos(ang)*zr(jvale+i+3) - co&
                                             &ef(im)*sin(ang) *zr(jvale+i+3)
                         endif
-114                 continue
+                    end do
 !
                 endif
 !
@@ -184,43 +184,43 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
                 if (tyharm(im)(1:4) .eq. 'SYME') then
 !
-                    do 120 ino = 1, nbnoeu
+                    do ino = 1, nbnoeu
                         i = zi(jprno+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
                         endif
-120                 continue
+                    end do
 !
                 else if (tyharm(im)(1:4).eq.'ANTI') then
 !
-                    do 122 ino = 1, nbnoeu
+                    do ino = 1, nbnoeu
                         i = zi(jprno+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
                         endif
-122                 continue
+                    end do
 !
                 else if (tyharm(im)(1:4).eq.'TOUS') then
 !
-                    do 124 ino = 1, nbnoeu
+                    do ino = 1, nbnoeu
                         i = zi(jprno+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
                                             &ef(im)*cos(ang) *zr(jvale+i+1)
                         endif
-124                 continue
+                    end do
 !
                 endif
             endif
-100     continue
+        end do
 !
     else if (docu.eq.'CHML') then
-        do 22 i = 0, nbrefe-1
+        do i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
- 22     continue
+        end do
         call jelibe(ch19//'.CELK')
 !
-        do 200 im = 1, nbcmb
+        do im = 1, nbcmb
             i1 = -1
             ang = angle * dble(nuharm(im))
             ch19 = nomch(im)
@@ -235,7 +235,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
             nbgr = zi(jceld-1+2)
             ligrel = zk24(jcelk)(1:19)
 !
-            do 210 igrel = 1, nbgr
+            do igrel = 1, nbgr
                 mode=zi(jceld-1+zi(jceld-1+4+igrel) +2)
                 if (mode .eq. 0) goto 210
                 nbscal = digdel(mode)
@@ -252,9 +252,9 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
                     if (tyharm(im)(1:4) .eq. 'SYME') then
 !
-                        do 220 k = 1, nbelgr
+                        do k = 1, nbelgr
                             ic = -1
-                            do 222 ip = 1, nbpt
+                            do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
@@ -279,14 +279,14 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-222                         continue
-220                     continue
+                            end do
+                        end do
 !
                     else if (tyharm(im)(1:4).eq.'ANTI') then
 !
-                        do 230 k = 1, nbelgr
+                        do k = 1, nbelgr
                             ic = -1
-                            do 232 ip = 1, nbpt
+                            do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
@@ -311,14 +311,14 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-232                         continue
-230                     continue
+                            end do
+                        end do
 !
                     else if (tyharm(im)(1:4).eq.'TOUS') then
 !
-                        do 260 k = 1, nbelgr
+                        do k = 1, nbelgr
                             ic = -1
-                            do 262 ip = 1, nbpt
+                            do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
@@ -349,8 +349,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
                                                &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
                                                &-1+idecgr+(k-1)*nbscal+ic)
-262                         continue
-260                     continue
+                            end do
+                        end do
                     endif
 !
                 else if (lther) then
@@ -359,9 +359,9 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
                     if (tyharm(im)(1:4) .eq. 'SYME') then
 !
-                        do 240 k = 1, nbelgr
+                        do k = 1, nbelgr
                             ic = -1
-                            do 242 ip = 1, nbpt
+                            do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
@@ -374,14 +374,14 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-242                         continue
-240                     continue
+                            end do
+                        end do
 !
                     else if (tyharm(im)(1:4).eq.'ANTI') then
 !
-                        do 250 k = 1, nbelgr
+                        do k = 1, nbelgr
                             ic = -1
-                            do 252 ip = 1, nbpt
+                            do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
@@ -394,14 +394,14 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
                                                &gr+(k-1)* nbscal+ic)
-252                         continue
-250                     continue
+                            end do
+                        end do
 !
                     else if (tyharm(im)(1:4).eq.'TOUS') then
 !
-                        do 270 k = 1, nbelgr
+                        do k = 1, nbelgr
                             ic = -1
-                            do 272 ip = 1, nbpt
+                            do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
@@ -417,21 +417,22 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                                 zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
                                                &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
                                                &-1+idecgr+(k-1)*nbscal+ic)
-272                         continue
-270                     continue
+                            end do
+                        end do
                     endif
                 endif
-210         continue
+210             continue
+            end do
             call jelibe(ch19//desc)
             call jelibe(ch19//'.CELK')
             call jelibe(ch19//vale)
 !
-200     continue
+        end do
     endif
 !
-    do 500 ival = 0, nbvale-1
+    do ival = 0, nbvale-1
         zr(kvale+ival) = zr(lvale+ival)
-500 end do
+    end do
     ch19 = chpres
     call jelibe(ch19//vale)
     call jedetr('&&REFODE.VALE')

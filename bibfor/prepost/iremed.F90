@@ -154,12 +154,12 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !
 !     --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
 !
-    do 20 isy = 1, nbcham
+    do isy = 1, nbcham
         cresav=0
 !
 !       --- BOUCLE SUR LA LISTE DES NUMEROS D'ORDRE
 !
-        do 21 iordr = 1, nbordr
+        do iordr = 1, nbordr
 !
 !         --- SI VARIABLE DE TYPE RESULTAT = RESULTAT COMPOSE :
 !             VERIFICATION CORRESPONDANCE ENTRE NUMERO D'ORDRE
@@ -223,7 +223,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !         --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CHAM19
             call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
             if ((typech(1:4).eq. 'CART'.and.nomgd(6:7).ne.'R') .or. nomgd .eq. 'COMPOR') &
-            goto 9999
+            goto 999
 !
             if (nbrcmp .ne. 0) then
                 if ((nomgd.eq.'VARI_R') .and. (typech(1:2).eq.'EL')) then
@@ -240,9 +240,9 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                 call mdnoch(nochmd, lnochm, lresu, saux08, nosy16,&
                             codret)
             else
-                do 10 i = 1, 64
+                do i = 1, 64
                     nochmd(i:i) = ' '
- 10             continue
+                end do
                 i = lxlgut(nommed)
                 nochmd(1:i) = nommed(1:i)
             endif
@@ -254,7 +254,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                 if (zk24(jcelk+1) .eq. 'INI_SP_MATER') then
                     call utmess('A', 'MED2_9', sk=nosy16)
                     codret = 0
-                    goto 9999
+                    goto 999
                 endif
             endif
 !
@@ -267,7 +267,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                         nbnoec, linoec, nbmaec, limaec, lvarie,&
                         sdcarm, codret)
 !
-9999         continue
+999         continue
 !
             if (codret .ne. 0 .and. codret .ne. 100) then
                 valk(1) = cham19
@@ -278,7 +278,8 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !
  22         continue
 !
- 21     continue
+ 21         continue
+        end do
         if (cresav .eq. 100) then
             valk(1) = nosy16
             call utmess('I', 'MED_30', sk=valk(1))
@@ -288,7 +289,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
         endif
         lfirst=.false.
 !
- 20 end do
+    end do
 !
     call detrsd('CHAM_ELEM_S', cesnsp)
     call detrsd('CHAM_ELEM_S', cescoq)

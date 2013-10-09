@@ -43,4 +43,4 @@ OPTION__
     CHAR_ACOU_VNOR_C 179  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  EVITENC  PVITENC  
                           OUT__ MVECTTC  PVECTTC  
     COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
+                          OUT__ EGGEOP_R PCOORPG

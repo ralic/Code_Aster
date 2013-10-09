@@ -47,9 +47,9 @@ subroutine detmat()
 !       -- on detruit l'eventuelle instance mumps associee a ldlt_sp
         call dismoi('SOLVEUR', matass, 'MATR_ASSE', repk=solveu, arret='C',&
                     ier=ier)
-    if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX' .and. solveu(1:4) .ne. ' ') then
-        call detlsp(matass, solveu)
-    endif
+        if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX' .and. solveu(1:4) .ne. ' ') then
+            call detlsp(matass, solveu)
+        endif
 !
 !       --  on detruit les matr_asse ainsi que les
 !           eventuelles instances mumps et petsc

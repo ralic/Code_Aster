@@ -1,25 +1,24 @@
 subroutine elg_preres(solve1, base, iret, matpre, matas1,&
-                    npvneg, istop)
-
+                      npvneg, istop)
+!
     implicit none
-! aslint: disable=W0104
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/copisd.h"
+# include "asterfort/elg_calc_matk_red.h"
+# include "asterfort/elg_gest_common.h"
+# include "asterfort/gcncon.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jedetr.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/prere1.h"
 !-----------------------------------------------------------------------
 ! But : faire "preres" si ELIM_MAGR='OUI'
 !-----------------------------------------------------------------------
-#   include "asterfort/assert.h"
-#   include "asterfort/copisd.h"
-#   include "asterfort/elg_gest_common.h"
-#   include "asterfort/elg_calc_matk_red.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/gcncon.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/prere1.h"
-
-    character(len=19) :: matas1,solve1
-    character(len=*) :: base,matpre
+!
+    character(len=19) :: matas1, solve1
+    character(len=*) :: base, matpre
     integer :: istop, iret
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,8 +36,8 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    character(len=19) :: matas2,solve2
-    integer jslvk2,jrefa2,npvneg
+    character(len=19) :: matas2, solve2
+    integer :: jslvk2, jrefa2, npvneg
 !
 !
     call jemarq()
@@ -56,11 +55,11 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
     zk24(jslvk2-1+13)='NON'
     call jeveuo(matas2//'.REFA', 'E', jrefa2)
     zk24(jrefa2-1+7)=solve2
-
+!
 !   --  ON APPELLE PRERE1 AVEC MATAS2 ET SOLVE2 :
     call prere1(' ', base, iret, matpre, matas2,&
                 npvneg, istop)
-
-
+!
+!
     call jedema()
-    end
+end

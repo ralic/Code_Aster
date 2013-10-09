@@ -96,7 +96,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !
 !     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ
     eps = 1.d-12
-    do 200 i = 1, nbptfd
+    do i = 1, nbptfd
 !
 !        COORDINATES OF THE POINT M OF THE FRONT FISDIS
         xm=zr(jfond-1+4*(i-1)+1)
@@ -107,14 +107,14 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
         dmin = r8maem()
 !
 !        BOUCLE SUR PT DE FONFIS
-        do 210 j = 1, nbptfr
+        do j = 1, nbptfr
 !
 !           CHECK IF THE CURRENT SEGMENT ON THE FRONT IS OUTSIDE THE
 !           MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE FORMING THE
 !           FRONT)
-            do 213 fon = 1, numfon
+            do fon = 1, numfon
                 if ((j.eq.zi(jfmult-1+2*fon)) .and. (j.lt.nbptfr)) goto 210
-213         continue
+            end do
 !
 !           COORD PT I, ET J
             xi1 = zr(jfonr-1+4*(j-1)+1)
@@ -152,12 +152,13 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
             d = (xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm)
             if (d .lt. dmin) dmin=d
 !
-210     continue
+210         continue
+        end do
 !
         if (dmin .gt. dismax) dismax=dmin
         if (dmin .lt. dismin) dismin=dmin
 !
-200 end do
+    end do
 !
     dismax=sqrt(dismax)
     dismin=sqrt(dismin)

@@ -41,7 +41,7 @@ subroutine te0065(option, nomte)
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres), lielrf(nbfamx)
     character(len=16) :: phenom
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, volume
+    real(kind=8) :: poids, volume
     real(kind=8) :: x(27), y(27), z(27), xg, yg, zg, matine(6)
     real(kind=8) :: rhopou, rhoflu, tpg, valres(nbres), ayz, ycell, rapp, yf
     integer :: ipoids, ivf, idfde, igeom, nbv, lsect, lcorr
@@ -120,29 +120,29 @@ subroutine te0065(option, nomte)
     endif
 !
 !
-    do 20 i = 1, nno
+    do i = 1, nno
         x(i) = zr(igeom+3* (i-1))
         y(i) = zr(igeom+3*i-2)
         z(i) = zr(igeom+3*i-1)
-20  end do
+    end do
 !
     call jevech('PMASSINE', 'E', lcastr)
-    do 30 i = 0, 3
+    do i = 0, 3
         zr(lcastr+i) = zero
-30  end do
-    do 40 i = 1, 6
+    end do
+    do i = 1, 6
         matine(i) = zero
-40  end do
+    end do
 !
 !     --- BOUCLE SUR LES POINTS DE GAUSS
     volume = 0.d0
-    do 70 kp = 1, npg
+    do kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
         volume = volume + poids
-        do 60 i = 1, nno
+        do i = 1, nno
 !           --- CDG ---
             zr(lcastr+1) = zr(lcastr+1) + poids*x(i)*zr(ivf+l+i-1)
             zr(lcastr+2) = zr(lcastr+2) + poids*y(i)*zr(ivf+l+i-1)
@@ -151,19 +151,19 @@ subroutine te0065(option, nomte)
             xxi = 0.d0
             yyi = 0.d0
             zzi = 0.d0
-            do 50 j = 1, nno
+            do j = 1, nno
                 xxi = xxi + x(i)*zr(ivf+l+i-1)*x(j)*zr(ivf+l+j-1)
                 yyi = yyi + y(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
                 zzi = zzi + z(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
                 matine(2) = matine(2) + poids*x(i)*zr(ivf+l+i-1)*y(j)* zr(ivf+l+j-1)
                 matine(4) = matine(4) + poids*x(i)*zr(ivf+l+i-1)*z(j)* zr(ivf+l+j-1)
                 matine(5) = matine(5) + poids*y(i)*zr(ivf+l+i-1)*z(j)* zr(ivf+l+j-1)
-50          continue
+            end do
             matine(1) = matine(1) + poids* (yyi+zzi)
             matine(3) = matine(3) + poids* (xxi+zzi)
             matine(6) = matine(6) + poids* (xxi+yyi)
-60      continue
-70  end do
+        end do
+    end do
 !
     xg = zr(lcastr+1)/volume
     yg = zr(lcastr+2)/volume

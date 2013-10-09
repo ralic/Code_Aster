@@ -75,7 +75,7 @@ subroutine op0039()
 !     --- RECUPERATION DU NOMBRE DE MISES EN FACTEUR DU MOT-CLE RESU ---
     call getfac('RESU', nocc)
 !
-    do 100 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx('RESU', 'NOEUD_CMP', iocc=iocc, nbval=0, nbret=nmo)
         if (nmo .ne. 0) then
             nn = nmo / 2
@@ -83,7 +83,7 @@ subroutine op0039()
                 call utmess('F', 'PREPOST3_65')
             endif
         endif
-100 end do
+    end do
 !
 !     -----------------
 !     --- LE MODELE ---
@@ -112,16 +112,16 @@ subroutine op0039()
 !       -- SI RESTREINT, IL FAUT VERIFIER QUE RESU/RESULTAT EST
 !          TOUJOURS FOURNI :
         ASSERT(nocc.le.9)
-        do 74 iocc = 1, nocc
+        do iocc = 1, nocc
             call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
             if (nresu .eq. 0) then
                 call utmess('F', 'CALCULEL4_5')
             endif
- 74     continue
+        end do
 !
 !       -- ON VERIFIE QUE TOUS LES RESUR ONT LE MEME MAILLAGE
         call dismoi('NOM_MAILLA', resur(1), 'RESULTAT', repk=noma)
-        do 76 iocc = 2, nocc
+        do iocc = 2, nocc
             call dismoi('NOM_MAILLA', resur(iocc), 'RESULTAT', repk=noma2)
             ASSERT(noma2.ne.' ')
             if (noma2 .ne. noma) then
@@ -131,7 +131,7 @@ subroutine op0039()
                 valk(4)=noma2
                 call utmess('F', 'CALCULEL4_2', nk=4, valk=valk)
             endif
- 76     continue
+        end do
 !
 !       -- ON VA FABRIQUER :
 !          NOMARE : 1 SD_MAILLAGE "RESTREINT"
@@ -142,12 +142,12 @@ subroutine op0039()
         call rdtmai(noma, nomare, 'V', corrn, corrm,&
                     'V', 0, [0])
 !
-        do 77 iocc = 1, nocc
+        do iocc = 1, nocc
             call codent(iocc, 'D', k1occ)
             resure(iocc)='&RESUR'//k1occ//'_'
             call rdtres(resur(iocc), resure(iocc), noma, nomare, corrn,&
                         corrm, iocc)
- 77     continue
+        end do
     endif
 !
 !     ---------------------------------------------
@@ -234,7 +234,7 @@ subroutine op0039()
         numemo = 0
         nomjv = '&&OP0039.NOM_MODELE'
         infmai = 0
-        do 200 iocc = 1, nocc
+        do iocc = 1, nocc
             if (numemo .eq. 0) then
                 if (lmod) then
                     nbmodl = 1
@@ -243,10 +243,10 @@ subroutine op0039()
                     call jeveuo(nomjv, 'E', jmodl)
                     zk24(jmodl) = modele//'.MODELE'
                 endif
-                do 202 ioc2 = 1, nocc
+                do ioc2 = 1, nocc
                     call getvid('RESU', 'RESULTAT', iocc=ioc2, scal=resu, nbret=nresu)
                     if (nresu .ne. 0) call rscrmo(ioc2, resu, nomjv)
-202             continue
+                end do
                 numemo = numemo + 1
             endif
 !
@@ -264,7 +264,7 @@ subroutine op0039()
                             modele, nive, infmai, formr)
                 numemo = numemo + 1
             endif
-200     continue
+        end do
 !
         if (numemo .le. 1) then
             call utmess('F', 'PREPOST3_67')
@@ -278,7 +278,7 @@ subroutine op0039()
     if (form(1:4) .eq. 'GMSH') then
         lmail=.false.
         lresu=.false.
-        do 220 iocc = 1, nocc
+        do iocc = 1, nocc
             call getvid('RESU', 'MAILLAGE', iocc=iocc, scal=noma, nbret=nmail)
             call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resu, nbret=nresu)
             call getvid('RESU', 'CHAM_GD', iocc=iocc, scal=resu, nbret=ncham)
@@ -287,22 +287,23 @@ subroutine op0039()
                 goto 220
             endif
             if (nmail .ne. 0) lmail=.true.
-220     continue
+220         continue
+        end do
         if (lmail .and. lresu) then
             call utmess('A', 'PREPOST3_68')
-            goto 9999
+            goto 999
         endif
     endif
     lgmsh = .false.
 !
 !     --- BOUCLE SUR LE NOMBRE DE MISES EN FACTEUR ---
 !     -----------------------------------------------------------------
-    do 10 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         call irmfac(iocc, form, ifi, nive, versio,&
                     modele, noma, nomare, resure(iocc), lgmsh)
 !
- 10 end do
+    end do
     if (lcasts) then
         ibid=5
         write(ifc,'(A,I4)') ' ENREGISTREMENT DE TYPE',ibid
@@ -316,6 +317,6 @@ subroutine op0039()
     call w039ca(ifi, form)
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

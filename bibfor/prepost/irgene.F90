@@ -83,11 +83,11 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
         endif
 !
         cecr = 'L'
-        do 100 iord = 1, nbordr
+        do iord = 1, nbordr
             write(ifi,2000)
             call irpara(resu, form, ifi, 1, ordr(iord),&
                         npara, zk16( jpara), cecr)
-            do 110 isy = 1, nbnosy
+            do isy = 1, nbnosy
                 call rsexch(' ', resu, nosy(isy), ordr(iord), noch19,&
                             iret)
                 if (iret .eq. 0) then
@@ -99,8 +99,8 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                     write(ifi,'(1X,A)') (zk80(jtitr+i-1),i=1,nbtitr)
                     call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
                 endif
-110         continue
-100     continue
+            end do
+        end do
         call jedetr('&&IRGENE.PARAMETRE')
         call jeexin(nomst, iret)
         if (iret .ne. 0) call jedetr(nomst)
@@ -150,10 +150,10 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
         zk24(krefe) = basemo
         zk24(krefe+1) = nuddl
 !
-        do 200 i = 1, nbdisc
+        do i = 1, nbdisc
             iord = nume(i)
             write(ifi,2000)
-            do 210 isy = 1, nbnosy
+            do isy = 1, nbnosy
                 call jeexin(gene//'.'//nosy(isy)(1:4), iret)
                 if (iret .eq. 0) goto 210
                 write(ifi,2010)
@@ -172,16 +172,17 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                     endif
                 endif
                 call jeveuo(gene//'.'//nosy(isy)(1:4), 'L', itresu)
-                do 220 im = 0, nbmode-1
+                do im = 0, nbmode-1
                     if (itcal .eq. 1) then
                         zc(kvale+im) = zc(itresu+(iord-1)*nbmode+im)
                     else
                         zr(kvale+im) = zr(itresu+(iord-1)*nbmode+im)
                     endif
-220             continue
+                end do
                 call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
-210         continue
-200     continue
+210             continue
+            end do
+        end do
         call jedetr(noch19//'.DESC')
         call jedetr(noch19//'.REFE')
         call jedetr(noch19//'.VALE')

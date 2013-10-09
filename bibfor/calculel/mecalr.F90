@@ -198,9 +198,9 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
         call rsnopa(resuco, 2, nompar, nbac, nbpa)
         nbpara=nbac+nbpa
         call jeveuo(nompar, 'L', jpa)
-        do 30 iaux = 1, nbordr
+        do iaux = 1, nbordr
             iordr=zi(jordr+iaux-1)
-            do 20 j = 1, nbpara
+            do j = 1, nbpara
                 call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
                             1, sjv=iadin, styp=type)
                 call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
@@ -222,8 +222,8 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 else if (type(1:2).eq.'K8') then
                     zk8(iadou)=zk8(iadin)
                 endif
- 20         continue
- 30     continue
+            end do
+        end do
     endif
 !
 !    ------------------------------------------------------------------
@@ -233,7 +233,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 !
 !============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
-    do 660 iopt = 1, nbopt
+    do iopt = 1, nbopt
         option=zk16(jopt+iopt-1)
         if (option .eq. ' ') goto 660
 !
@@ -260,7 +260,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
         if (option .eq. 'SIZ1_NOEU' .or. option .eq. 'SIZ2_NOEU') then
 !
 !
-            do 160 iaux = 1, nbordr
+            do iaux = 1, nbordr
                 call jemarq()
                 call jerecu('V')
                 iordr=zi(jordr+iaux-1)
@@ -289,7 +289,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 call rsnoch(leres1, option, iordr)
 150             continue
                 call jedema()
-160         continue
+            end do
 !
 !    ------------------------------------------------------------------
 !    -- OPTIONS DES INDICATEURS D'ERREURS
@@ -376,7 +376,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 ! 3 - BOUCLE SUR LES INSTANTS DEMANDES
 !
-            do 260 iaux = 1, nbordr
+            do iaux = 1, nbordr
                 call jemarq()
                 iordr=zi(jordr+iaux-1)
 !
@@ -476,7 +476,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 250             continue
                 call jedema()
-260         continue
+            end do
 !
 ! 4 - DESTRUCTION DES OBJETS TEMPORAIRES
 !
@@ -488,7 +488,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !    -- OPTION "SING_ELNO"
 !    ------------------------------------------------------------------
         else if (option.eq.'SING_ELNO') then
-            do 280 iaux = 1, nbordr
+            do iaux = 1, nbordr
                 call jemarq()
                 iordr=zi(jordr+iaux-1)
 !
@@ -526,7 +526,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 270             continue
                 call jedema()
-280         continue
+            end do
 !
 !      -----------------------------------------------------------------
 !
@@ -534,7 +534,8 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             call utmess('A', 'CALCULEL3_22', sk=option)
         endif
 !
-660 end do
+660     continue
+    end do
 !
 !============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
 !

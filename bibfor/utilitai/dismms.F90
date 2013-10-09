@@ -20,7 +20,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/dismme.h"
@@ -31,6 +30,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -113,7 +113,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         if (ierd .ne. 0) goto 999
 !
         nbddl = zi(jprno-1+2)
-        do 100 ieq = 2, neq
+        do ieq = 2, neq
             numno = zi(jdeeq-1+(ieq -1)* 2 +1)
             nbddlc=-1
             if (numno .gt. 0) then
@@ -124,9 +124,9 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
                 repi = -1
                 goto 200
             endif
-100      continue
+        end do
         repi = nbddl
-200      continue
+200     continue
 !
     else if (questi.eq.'SOLVEUR') then
         if (zk24(jrefa-1+7) .ne. ' ') then
@@ -185,17 +185,18 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         p1=' '
         p2=' '
         ier=0
-        do 1, i=1,nblime
-        if (zk24(ialime-1+i) .eq. ' ') goto 1
-        call dismme(questi, zk24(ialime-1+i)(1:19), ibid, p1, ierd)
-        if (p1 .ne. ' ') then
-            if (p2 .eq. ' ') then
-                p2=p1
-            else
-                if (p1 .ne. p2) ier=1
+        do i = 1, nblime
+            if (zk24(ialime-1+i) .eq. ' ') goto 1
+            call dismme(questi, zk24(ialime-1+i)(1:19), ibid, p1, ierd)
+            if (p1 .ne. ' ') then
+                if (p2 .eq. ' ') then
+                    p2=p1
+                else
+                    if (p1 .ne. p2) ier=1
+                endif
             endif
-        endif
- 1      continue
+  1         continue
+        end do
         if (ier .eq. 0) then
             repk=p2
         else
@@ -207,6 +208,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     endif
 !
     repkz = repk
-999  continue
+999 continue
     call jedema()
 end subroutine

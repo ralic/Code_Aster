@@ -47,7 +47,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !      FONREE : FONC OU REEL
 ! ======================================================================
 ! ======================================================================
-    integer ::  n1, n2, n3, nflux, jvalv, jncmp, iocc
+    integer :: n1, n2, n3, nflux, jvalv, jncmp, iocc
     integer :: nbtou, nbma, jma, ncmp
     character(len=8) :: k8b, mod, typmcl(2)
     character(len=16) :: motclf, motcle(2), modeli

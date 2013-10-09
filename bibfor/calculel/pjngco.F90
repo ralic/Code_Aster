@@ -79,20 +79,20 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     endif
 !
 !      -- ON CALCULE LES LISTES DE NOEUDS DANS DES LISTES TEMPORAIRES :
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
         call codent(ioc, 'D0', num)
         lno1='&&PJNGCO.'//num//'.LNO1'
         call utnuav(noma1, 1, ioc, lno1)
         lno2='&&PJNGCO.'//num//'.LNO2'
         call utnuav(noma2, 2, ioc, lno2)
- 10 end do
+    end do
 !
 !
 !      -- ON RECOPIE LES LISTES DANS .PJNG_I1/2 :
     call wkvect('&&PJNGCO.NB1NB2', 'V V I', 2*nbocc, jnb12)
     lon1=0
     lon2=0
-    do 20 ioc = 1, nbocc
+    do ioc = 1, nbocc
         call codent(ioc, 'D0', num)
         lno1='&&PJNGCO.'//num//'.LNO1'
         lno2='&&PJNGCO.'//num//'.LNO2'
@@ -102,7 +102,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         zi(jnb12-1+2*(ioc-1)+2)=nb2
         lon1=lon1+nb1
         lon2=lon2+nb2
- 20 end do
+    end do
 !
     call wkvect(corr16//'.PJNG_I1', bas1//' V I', 1+nbocc+lon1, jngi1)
     zi(jngi1-1+1)=nbocc
@@ -110,7 +110,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     zi(jngi2-1+1)=nbocc
     idec1=1+nbocc
     idec2=1+nbocc
-    do 30 ioc = 1, nbocc
+    do ioc = 1, nbocc
         call codent(ioc, 'D0', num)
         lno1='&&PJNGCO.'//num//'.LNO1'
         lno2='&&PJNGCO.'//num//'.LNO2'
@@ -124,18 +124,18 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         idec2=idec2+nb2
         zi(jngi1-1+1+ioc)=nb1
         zi(jngi2-1+1+ioc)=nb2
- 30 end do
+    end do
 !
 !
 !
 !        -- MENAGE :
-    do 40 ioc = 1, nbocc
+    do ioc = 1, nbocc
         call codent(ioc, 'D0', num)
         lno1='&&PJNGCO.'//num//'.LNO1'
         lno2='&&PJNGCO.'//num//'.LNO2'
         call jedetr(lno1)
         call jedetr(lno2)
- 40 end do
+    end do
 !
  50 continue
     call jedema()

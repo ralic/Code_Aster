@@ -116,7 +116,7 @@ subroutine mdtr74(nomres)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iam, iamog, ibid, icoupl, idiff
-    integer ::  ier, ifimp, ifm, ig, iindic, im
+    integer :: ier, ifimp, ifm, ig, iindic, im
     integer :: indic, ioc, iparch, iptcho, iret, irfimp
     integer :: ng1, ng2, nng1, nng0, nng2, jrefag, jscdeg, jgyog, jrgyg
     integer :: isoupl, itrans, itrloc, ivchoc, iveci1, ivecr1

@@ -36,7 +36,7 @@ subroutine te0079(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: elrefe, alias8
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r
+    real(kind=8) :: poids, r
     real(kind=8) :: coorse(18), vectt(9)
     integer :: ndim, nno, nnos, kp, npg, i, k, ivectt, isour
     integer :: ipoids, ivf, idfde, igeom, jgano
@@ -63,42 +63,43 @@ subroutine te0079(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i)=0.d0
-10  end do
+    end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    do 100 ise = 1, nse
+    do ise = 1, nse
 !
-        do 105 i = 1, nno
-            do 105 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-105          continue
+            end do
+        end do
 !
-        do 101 kp = 1, npg
+        do kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
                         poids)
             if (lteatt(' ','AXIS','OUI')) then
                 r = 0.d0
-                do 102 i = 1, nno
+                do i = 1, nno
                     r = r + coorse(2*(i-1)+1)*zr(ivf+k+i-1)
-102              continue
+                end do
                 poids = poids*r
             endif
 !DIR$ IVDEP
 !CC      write(6,*)  '--->>> ZR(ISOUR+',KP,'-1) = ', ZR(ISOUR+KP-1)
 !
-            do 103 i = 1, nno
+            do i = 1, nno
                 k=(kp-1)*nno
                 vectt(c(ise,i)) = vectt( c(ise,i)) + poids * zr(ivf+k+ i-1) * zr(isour+kp-1 )
-103          continue
-101      continue
-100  end do
+            end do
+        end do
+    end do
 !
-    do 200 i = 1, nnop2
+    do i = 1, nnop2
         zr(ivectt-1+i)=vectt(i)
-200  end do
+    end do
 !
 end subroutine

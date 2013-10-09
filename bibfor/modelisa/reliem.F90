@@ -77,7 +77,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     integer :: ibid, ient, jprnm
     integer :: itrno, itrma, ima, ino, nbma, nbno, nbnoma, imo, ier, jmodel
     integer :: lma, lno, itbma, itbno, iret, inoem, ntou, k, ifm, niv
-    character(len=8) ::  type2, oui, noent, nomgd
+    character(len=8) :: type2, oui, noent, nomgd
     character(len=16) :: motfac, motcle, typmcl, phenom
     character(len=19) :: ligrel
     character(len=24) :: karg
@@ -98,7 +98,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     endif
 !
     type2 = typem(4:)
-    do 10 imo = 1, nbmocl
+    do imo = 1, nbmocl
         motcle = limocl(imo)
         typmcl = tymocl(imo)
         if (typmcl .eq. 'NOEUD' .or. typmcl .eq. 'GROUP_NO') then
@@ -109,7 +109,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         typmcl.ne.'TOUT') then
             ASSERT(.false.)
         endif
- 10 end do
+    end do
 !
 !     --- EN CAS D'EXISTENCE DE L'OBJET, ON LE DETRUIT ---
 !
@@ -126,12 +126,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     call wkvect('&&RELIEM.INDIC_NOEUD', 'V V S', nbno, itrno)
 !
-    do 20 k = 1, nbma
+    do k = 1, nbma
         zi4(itrma-1+k) = 0
- 20 end do
-    do 30 k = 1, nbno
+    end do
+    do k = 1, nbno
         zi4(itrno-1+k) = 0
- 30 end do
+    end do
 !
 !
 !
@@ -139,7 +139,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !         PAR MARQUAGE DANS LES TABLEAUX DE TRAVAIL         ---
 !
 !
-    do 90 imo = 1, nbmocl
+    do imo = 1, nbmocl
         motcle = limocl(imo)
         typmcl = tymocl(imo)
 !
@@ -149,7 +149,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             call getvtx(motfac, motcle, iocc=iocc, scal=oui, nbret=ntou)
             if (ntou .gt. 0) then
                 if (type2 .eq. 'MAILLE') then
-                    do 40 k = 1, nbma
+                    do k = 1, nbma
                         if (modele .ne. ' ') then
                             if (zi(jmodel-1+k) .ne. 0) then
                                 zi4(itrma-1+k) = 1
@@ -157,12 +157,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                         else
                             zi4(itrma-1+k) = 1
                         endif
- 40                 continue
+                    end do
                 endif
                 if (type2 .eq. 'NOEUD') then
-                    do 50 k = 1, nbno
+                    do k = 1, nbno
                         zi4(itrno-1+k) = 1
- 50                 continue
+                    end do
                 endif
             endif
             goto 90
@@ -183,7 +183,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                         iarg, nem, zk24(inoem), nem)
         endif
 !
-        do 80 iem = 1, nem
+        do iem = 1, nem
             if (typmcl(1:6) .ne. 'GROUP_') then
                 karg = zk8(inoem-1+iem)
             else
@@ -206,10 +206,10 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                     ASSERT(nma.eq.ibid)
                 endif
 !
-                do 60 jma = 1, nma
+                do jma = 1, nma
                     ima = zi(kma-1+jma)
                     zi4(itrma-1+ima) = 1
- 60             continue
+                end do
 !
             else if (typmcl.eq.'NOEUD') then
                 call jenonu(jexnom(ma//'.NOMNOE', karg), ino)
@@ -227,28 +227,29 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                     ASSERT(nno.eq.ibid)
                 endif
 !
-                do 70 jno = 1, nno
+                do jno = 1, nno
                     ino = zi(kno-1+jno)
                     zi4(itrno-1+ino) = 1
- 70             continue
+                end do
             endif
- 80     continue
+        end do
         call jedetr('&&RELIEM.NOM_EM')
- 90 end do
+ 90     continue
+    end do
 !
 !     --- AJOUT DES NOEUDS DE LA LISTE DES MAILLES A CELLE DES NOEUDS
 !
     if (type2 .eq. 'NOEUD') then
-        do 110 ima = 1, nbma
+        do ima = 1, nbma
             if (zi4(itrma-1+ima) .ne. 0) then
                 call jeveuo(jexnum(ma//'.CONNEX', ima), 'L', iacnex)
                 call jelira(jexnum(ma//'.CONNEX', ima), 'LONMAX', nbnoma)
-                do 100 ino = 1, nbnoma
+                do ino = 1, nbnoma
                     numno = zi(iacnex-1+ino)
                     zi4(itrno-1+numno) = 1
-100             continue
+                end do
             endif
-110     continue
+        end do
     endif
 !
 !
@@ -258,9 +259,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !        --- COMPTAGE DES MAILLES ---
 !
         nbtrou = 0
-        do 120 ima = 1, nbma
+        do ima = 1, nbma
             if (zi4(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
-120     continue
+        end do
         if (nbtrou .eq. 0) goto 200
 !
 !
@@ -271,12 +272,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !           --- RANGEMENT DES NUMEROS DE MAILLES ---
             lma = 0
-            do 130 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     lma = lma + 1
                     zi(itbma-1+lma) = ima
                 endif
-130         continue
+            end do
 !
         else
             call wkvect(litrou, 'V V K8', nbtrou, itbma)
@@ -284,12 +285,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !           --- RANGEMENT DES NOMS DE MAILLES ---
             lma = 0
-            do 140 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     lma = lma + 1
                     call jenuno(jexnum(ma//'.NOMMAI', ima), zk8(itbma-1+ lma))
                 endif
-140         continue
+            end do
         endif
 !
 !
@@ -298,7 +299,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !       ----------------------------------------------------
         if (modele .ne. ' ') then
             ier = 0
-            do 150 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     if (zi(jmodel-1+ima) .eq. 0) then
                         ier = ier + 1
@@ -306,7 +307,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                         write (ifm,*) ' MAILLE : ',noent
                     endif
                 endif
-150         continue
+            end do
             if (ier .ne. 0) then
                 call utmess('F', 'MODELISA6_96', sk=motfac, si=ier)
             endif
@@ -319,9 +320,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !        --- COMPTAGE DES NOEUDS ---
 !
         nbtrou = 0
-        do 160 ino = 1, nbno
+        do ino = 1, nbno
             if (zi4(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
-160     continue
+        end do
         if (nbtrou .eq. 0) goto 200
 !
 !
@@ -332,12 +333,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !           --- RANGEMENT DES NUMEROS DE NOEUDS ---
             lno = 0
-            do 170 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi4(itrno-1+ino) .ne. 0) then
                     lno = lno + 1
                     zi(itbno-1+lno) = ino
                 endif
-170         continue
+            end do
 !
         else
             call wkvect(litrou, 'V V K8', nbtrou, itbno)
@@ -345,12 +346,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !           --- RANGEMENT DES NOMS DE NOEUDS ---
             lno = 0
-            do 180 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi4(itrno-1+ino) .ne. 0) then
                     lno = lno + 1
                     call jenuno(jexnum(ma//'.NOMNOE', ino), zk8(itbno-1+ lno))
                 endif
-180         continue
+            end do
         endif
 !
 !       -- ON VERIFIE QUE LES NOEUDS FONT PARTIE DU MODELE :
@@ -362,18 +363,19 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
             call jeveuo(ligrel//'.PRNM', 'L', jprnm)
             ier = 0
-            do 191 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi4(itrno-1+ino) .ne. 0) then
-                    do 190 ient = 1, nbenc
+                    do ient = 1, nbenc
                         if (zi(jprnm-1+nbenc*(ino-1)+ient) .ne. 0) goto 191
-190                 continue
+                    end do
 !             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
 !             ASSOCIEE AU PHENOMENE
                     ier = ier + 1
                     call jenuno(jexnum(ma//'.NOMNOE', ino), noent)
                     write (ifm,*) ' NOEUD : ',noent
                 endif
-191         continue
+191             continue
+            end do
             if (ier .ne. 0) then
                 call utmess('F', 'MODELISA6_13', sk=motfac, si=ier)
             endif

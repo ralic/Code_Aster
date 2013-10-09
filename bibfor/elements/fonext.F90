@@ -77,7 +77,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     integer :: nunoa, nunob, nunoc, numpt
     integer :: ibid3(12, 3), inobor(2), fa(6, 4)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
-    character(len=8) ::  typma
+    character(len=8) :: typma
     logical :: fabord, nofac
 !     -----------------------------------------------------------------
 !
@@ -97,7 +97,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     call jeveuo(jexnum(cnxinv, inoext), 'L', jmanoe)
 !
 !     BOUCLE SUR LE NOMBRE DE MAILLES CONNECTEES AU NOEUD EXTREMITE
-    do 1000 ima = 1, nmanoe
+    do ima = 1, nmanoe
         nmaext=zi(jmanoe-1+(ima-1)+1)
 !
         itypma=zi(jma-1+nmaext)
@@ -114,17 +114,17 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
         inobor(1)=0
         inobor(2)=0
 !       BOUCLE SUR LE NOMBRE DE FACES DE LA MAILLE
-        do 1100 ifa = 1, nbf
+        do ifa = 1, nbf
             nbno = 4
             if (fa(ifa,4) .eq. 0) nbno = 3
             nofac=.false.
 !         BOUCLE SUR LE NOMBRE DE NOEUDS DE LA FACE
-            do 1110 ino = 1, nbno
+            do ino = 1, nbno
                 nuno = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,ino)-1)
                 if (nuno .eq. inoseg) goto 1100
                 if (nuno .eq. inoext) nofac=.true.
 !         FIN BOUCLE SUR LES NOEUDS
-1110         continue
+            end do
 !
             if (nofac) then
                 nunoa = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,1)-1)
@@ -156,13 +156,15 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
                 endif
             endif
 !       FIN BOUCLE SUR LES FACES
-1100     continue
+1100         continue
+        end do
         if (nbfacb .ne. 0) then
             call xextre(inobor, vectn, nbfacb, jbasno, jborl,&
                         jdirol, jnvdir)
         endif
 !     FIN BOUCLE SUR LES MAILLES
-1000 end do
+1000     continue
+    end do
 !
     call normev(zr(jbasno-1+6*(numpt-1)+4), norme)
 !

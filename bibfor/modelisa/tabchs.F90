@@ -75,7 +75,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
     integer :: jcolma, jcolno, jcolpt, jcolsp, ipt
     integer :: icmp, ili, iret, jind, jobj2, jobj3, jpg
-    character(len=8) ::  nono, tsca, noma
+    character(len=8) :: nono, tsca, noma
     character(len=24) :: objlg, objr, objtmp
     character(len=24) :: valk(3)
     logical :: lmail, lnoeu, lpoin, lspoin
@@ -192,14 +192,14 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     call wkvect('&&TABCHS.NCMP1', 'V V K24', nbcol, jcmp)
     call wkvect('&&TABCHS.NCMP2', 'V V I', nbcol, jind)
     ncmp=0
-    do 10 i = 1, nbcol
+    do i = 1, nbcol
         if (zk24(jtblp+4*(i-1)) .ne. 'MAILLE' .and. zk24(jtblp+4*(i-1)) .ne. 'NOEUD' .and.&
             zk24(jtblp+4*(i-1)) .ne. 'POINT' .and. zk24(jtblp+4*(i-1)) .ne. 'SOUS_POINT') then
             ncmp=ncmp+1
             zk24(jcmp+ncmp-1)=zk24(jtblp+4*(i-1))
             zi(jind+ncmp-1)=i
         endif
- 10 continue
+    end do
 !
 !     ON VERIFIE QUE LE NOM ET LE TYPE DES COMPOSANTES
 !        DE LA TABLE CORRESPONDENT A LA GRANDEUR LUE
@@ -221,12 +221,12 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
         call jeveuo(chs//'.CNSV', 'E', jcnsv)
         call jeveuo(chs//'.CNSL', 'E', jcnsl)
 !
-        do 30 icmp = 1, ncmp
+        do icmp = 1, ncmp
             objlg=zk24(jtblp+4*(zi(jind+icmp-1)-1)+3)
             call jeveuo(objlg, 'L', jobj2)
             objr=zk24(jtblp+4*(zi(jind+icmp-1)-1)+2)
             call jeveuo(objr, 'L', jobj3)
-            do 20 ili = 1, nblig
+            do ili = 1, nblig
                 if (zi(jobj2+ili-1) .eq. 1) then
                     nono=zk8(jcolno+ili-1)
                     call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
@@ -234,8 +234,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     zr(jcnsv+(nuno-1)*ncmp+icmp-1)=zr(jobj3+ili-1)
                     zl(jcnsl+(nuno-1)*ncmp+icmp-1)=.true.
                 endif
- 20         continue
- 30     continue
+            end do
+        end do
 !
 !
 !
@@ -250,7 +250,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 ASSERT(.not.lpoin)
                 call wkvect('&&TABCHS.POINT', 'V V I', nblig, jcolpt)
             endif
-            do 40 ili = 1, nblig
+            do ili = 1, nblig
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 nbno=zi(jcon2-1+numa+1)-zi(jcon2-1+numa)
@@ -273,7 +273,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     call utmess('F', 'MODELISA9_5', nk=3, valk=valk, ni=2,&
                                 vali=vali)
                 endif
- 40         continue
+            end do
         endif
 !
 !
@@ -282,7 +282,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
         if (lspoin) then
             call wkvect('&&TABCHS.SP_TOT', 'V V I', nbma, jsp)
             nbssp=1
-            do 50 ili = 1, nblig
+            do ili = 1, nblig
                 ksp=zi(jcolsp+ili-1)
                 ASSERT(ksp.gt.0)
                 nbssp=max(nbssp,ksp)
@@ -290,7 +290,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 ASSERT(numa.gt.0)
                 zi(jsp-1+numa)=max(zi(jsp-1+numa),ksp)
- 50         continue
+            end do
         else
             nbssp=1
         endif
@@ -300,13 +300,13 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !       (&&TABCHS.PG_TOT):
         if (typchs .eq. 'ELGA') then
             call wkvect('&&TABCHS.PG_TOT', 'V V I', nbma, jpg)
-            do 60 ili = 1, nblig
+            do ili = 1, nblig
                 kpt=zi(jcolpt+ili-1)
                 ASSERT(kpt.gt.0)
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 zi(jpg-1+numa)=max(zi(jpg-1+numa),kpt)
- 60         continue
+            end do
         endif
 !
 !
@@ -337,13 +337,13 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
         call jeveuo(chs//'.CESC', 'L', jcesc)
 !
 !
-        do 80 icmp = 1, ncmp
+        do icmp = 1, ncmp
             objlg=zk24(jtblp+4*(zi(jind+icmp-1)-1)+3)
             call jeveuo(objlg, 'L', jobj2)
             objr=zk24(jtblp+4*(zi(jind+icmp-1)-1)+2)
             call jeveuo(objr, 'L', jobj3)
 !
-            do 70 ili = 1, nblig
+            do ili = 1, nblig
                 if (zi(jobj2+ili-1) .eq. 0) goto 70
 !
                 noma=zk8(jcolma+ili-1)
@@ -377,8 +377,9 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 endif
                 zr(jcesv+iad-1)=zr(jobj3+ili-1)
                 zl(jcesl+iad-1)=.true.
- 70         continue
- 80     continue
+ 70             continue
+            end do
+        end do
     endif
 !
     call jedetr('&&TABCHS.MAILLE')

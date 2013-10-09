@@ -153,14 +153,14 @@ subroutine ssdt74(nomres, nomcmd)
     call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=namor)
     if (nexcit .ne. 0) then
         call wkvect('&&SSDT74.NOMVEC', 'V V K8', nexcit, jvec)
-        do 10 i = 1, nexcit
+        do i = 1, nexcit
             call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen, nbret=nv)
             zk8(jvec-1+i) = vecgen
- 10     continue
+        end do
     endif
     if (nexcir .ne. 0) then
         call wkvect('&&SSDT74.NOMVER', 'V V K8', nexcir, jvecr)
-        do 11 i = 1, nexcir
+        do i = 1, nexcir
             call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resgen, nbret=nv)
             zk8(jvecr-1+i) = resgen
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
@@ -170,7 +170,7 @@ subroutine ssdt74(nomres, nomcmd)
             if (bamo1 .ne. bamo2) then
                 call utmess('F', 'ALGORITH17_18', si=i)
             endif
- 11     continue
+        end do
     endif
 !
 !     --- NUMEROTATION GENERALISEE ET NOMBRE DE MODES ---
@@ -183,7 +183,7 @@ subroutine ssdt74(nomres, nomcmd)
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     nbmode = 0
     nbmody = 0
-    do 20 k = 1, nbsst
+    do k = 1, nbsst
         kbid = '        '
         call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                     basemo)
@@ -191,7 +191,7 @@ subroutine ssdt74(nomres, nomcmd)
         nbmode = nbmode + nbbas
         call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
         nbmody = nbmody + nbbas
- 20 continue
+    end do
     nbmost = nbmode - nbmody
     call jeveuo(numgen//'.SLCS.SCDE', 'L', jscde)
     neqgen = zi(jscde-1+1)
@@ -207,28 +207,28 @@ subroutine ssdt74(nomres, nomcmd)
     call extdia(masgen, numg24, 1, zr(jmasg))
     call extdia(riggen, numg24, 1, zr(jraig))
 !
-    do 31 k = 1, neqgen
+    do k = 1, neqgen
         zr(jpuls+k-1) = 0
         zr(jpul2+k-1) = 0
- 31 continue
+    end do
     nbmodi = 0
-    do 30 k = 1, nbsst
+    do k = 1, nbsst
         kbid = '        '
         call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                     basemo)
         call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
-        do 33 i = 1, nbbas
+        do i = 1, nbbas
             omeg2 = abs(zr(jraig+nbmodi+i-1)/zr(jmasg+nbmodi+i-1))
             zr(jpuls+nbmodi+i-1) = sqrt(omeg2)
             zr(jpul2+nbmodi+i-1) = omeg2
- 33     continue
+        end do
         call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
         nbmodi = nbmodi + nbbas
- 30 continue
+    end do
 !
     if (namor .ne. 0) then
         call extdia(amogen, numg24, 1, zr(jamog))
-        do 40 i = 1, neqgen
+        do i = 1, neqgen
             if (zr(jpuls+i-1) .gt. r8prem()) then
                 acrit = deux*sqrt(zr(jmasg+i-1)*zr(jraig+i-1))
                 agene = zr(jamog+i-1)
@@ -241,7 +241,7 @@ subroutine ssdt74(nomres, nomcmd)
                                 valr=valr)
                 endif
             endif
- 40     continue
+        end do
     endif
 !
 !     --- VERIFICATION DES DONNEES GENERALISEES ---
@@ -318,9 +318,9 @@ subroutine ssdt74(nomres, nomcmd)
 ! ----- L'AMORTISSEMENT ASSOCIE AUX "LAGRANGE"
 !
         call jeveuo(amotem//'           .CONL', 'E', jconl)
-        do 50 i = 1, neqgen
+        do i = 1, neqgen
             zr(jconl-1+i) = zr(jconl-1+i)/deux
- 50     continue
+        end do
     endif
 !
 !     --- RECUPERATION DES DESCRIPTEURS DES MATRICES ---

@@ -84,10 +84,11 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    do 10 i = 1, nl
-        do 10 j = 1, nc
+    do i = 1, nl
+        do j = 1, nc
             flex(i,j)=0.d0
- 10     continue
+        end do
+    end do
 !
 ! --- RECUPERATION CONCEPTS AMONT
 !
@@ -104,7 +105,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     call jeveuo(intf//'.IDC_TYPE', 'L', lltyp)
     typint=zk8(lltyp+numc-1)
     call jelibe(intf//'.IDC_TYPE')
-    if (typint .eq. 'AUCUN   ') goto 9999
+    if (typint .eq. 'AUCUN   ') goto 999
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL
 !
@@ -156,9 +157,9 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call bmradi(basmod, kbid, '        ', numl, nl,&
                     zi(ltextl), ibid)
     else
-        do 45 i = 1, neq
+        do i = 1, neq
             zi(ltextl+i-1)=i
- 45     continue
+        end do
     endif
 !
     if (numl .gt. 0) then
@@ -169,7 +170,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 ! --- EXTRACTION PARTIE INTERFACE DE FLEXIBILITE
 !
-    do 60 i = 1, nc
+    do i = 1, nc
         call wkvect('&&'//pgc//'.VECT', 'V V R', neq, ltvec)
         iord=zi(ltorc+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
@@ -177,21 +178,21 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
-        do 70 j = 1, nl
+        do j = 1, nl
 !
 !  EXTRACTION DDL
 !
             iran=zi(ltextl+j-1)
             xx=zr(ltvec+iran-1)
             flex(j,i)=xx
- 70     continue
+        end do
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
- 60 continue
+    end do
 !
 ! --- SUPPRESSION CONTRIBUTION STATIQUE DES MODES CONNUS
 !
-    do 80 i = 1, nbmod
+    do i = 1, nbmod
 !
         call rsadpa(basmod, 'L', 1, 'RIGI_GENE', i,&
                     0, sjv=ldkge, styp=k8bid)
@@ -205,22 +206,22 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
-        do 90 j = 1, nc
-            do 95 k = 1, nl
+        do j = 1, nc
+            do k = 1, nl
                 jj=zi(ltextc+j-1)
                 kk=zi(ltextl+k-1)
                 toto=zr(ltvec+jj-1)*zr(ltvec+kk-1)/xkgen
                 flex(k,j)=flex(k,j)-toto
- 95         continue
- 90     continue
+            end do
+        end do
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
- 80 continue
+    end do
 !
     call jedetr('&&'//pgc//'.ORDREC')
     call jedetr('&&'//pgc//'.EXTRACC')
     call jedetr('&&'//pgc//'.EXTRACL')
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -79,13 +79,13 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
         call wkvect(lismae, 'V V I  ', nbmae, jmae)
         call wkvect(lisnoe, 'V V I  ', nbnoe, jnoe)
 !
-        do 10 i = 1, nbmae
+        do i = 1, nbmae
             zi(jmae-1+i)=i
- 10     continue
+        end do
 !
-        do 20 i = 1, nbnoe
+        do i = 1, nbnoe
             zi(jnoe-1+i)=i
- 20     continue
+        end do
 !
     else
 !

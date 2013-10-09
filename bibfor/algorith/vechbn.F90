@@ -51,7 +51,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iliai, inoeu, jlino1, jlino2, jnoeu1, jnoeu2
-    integer ::  ldefo1, ldefo2, lliai, llino1, llino2
+    integer :: ldefo1, ldefo2, lliai, llino1, llino2
     integer :: llnom1, llnom2, lmacr1, lmacr2, lrefe1, lrefe2, nbliai
     integer :: nbnoeu
 !-----------------------------------------------------------------------
@@ -62,7 +62,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
     k8bid = '        '
     call jelira(mdliai, 'NUTIOC', nbliai)
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
         call jeveuo(jexnum(mdliai, iliai), 'L', lliai)
         ss1 = zk8(lliai)
         ss2 = zk8(lliai+2)
@@ -99,7 +99,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 ! ------- LES NOEUDS NOMNO1 ET NOMNO2 SONT-ILS LIAISONNES
 !
-            do 20 inoeu = 1, nbnoeu
+            do inoeu = 1, nbnoeu
                 jlino1 = zi(llino1-1+inoeu)
                 jlino2 = zi(llino2-1+inoeu)
                 jnoeu1 = zi(ldefo1+jlino1-1)
@@ -125,11 +125,11 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
                 endif
 !
- 20         continue
+            end do
 !
         endif
 !
- 10 continue
+    end do
 !
     call jedema()
 end subroutine

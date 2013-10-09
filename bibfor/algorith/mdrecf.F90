@@ -84,7 +84,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     integer :: jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  iddeeq, ieq, ii, iinst, imod
+    integer :: iddeeq, ieq, ii, iinst, imod
     integer :: imodco, inum, iret, jdepl, jmod, jordr
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
@@ -115,7 +115,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
 ! --- EXCITATIONS SOUS LE MOT-CLE EXCIT
 !
-    do 10 i = 1, nexci
+    do i = 1, nexci
 !
         call getvis('EXCIT', 'NUME_ORDRE', iocc=i, scal=inum, nbret=nf)
         call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=veasge, nbret=l1)
@@ -240,22 +240,22 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call rsexch('F', modcor, 'DEPL', i, chamno,&
                             iret)
                 call jeveuo(chamno//'.VALE', 'L', imodco)
-                do 30 ieq = 1, neq
+                do ieq = 1, neq
                     zr(jpsdel+ieq-1+(i-1)*neq) = zr(imodco+ieq-1)
- 30             continue
-                do 40 nm = 1, nbmode
+                end do
+                do nm = 1, nbmode
                     coef = zr(iadvec(i)+nm-1)/riggen(nm)
                     call rsexch('F', basemo, 'DEPL', nm, chamn2,&
                                 iret)
                     call jeveuo(chamn2//'.VALE', 'L', imod)
-                    do 50 ieq = 1, neq
+                    do ieq = 1, neq
                         zr(jpsdel+ieq-1+(i-1)*neq) = zr(&
                                                      jpsdel+ieq-1+(i-1)* neq&
                                                      ) - coef*zr(imod+ieq-1&
                                                      )
- 50                 continue
+                    end do
                     call jelibe(chamn2//'.VALE')
- 40             continue
+                end do
                 call jelibe(chamno//'.VALE')
 !
 !           --- MISE A ZERO DES DDL DE LAGRANGE
@@ -265,7 +265,8 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 ASSERT(.false.)
             endif
         endif
- 10 continue
+ 10     continue
+    end do
 !
 !
 ! --- EXCITATIONS SOUS LE MOT-CLE EXCIT_RESU
@@ -274,7 +275,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 ! (MC NUME_ORDRE), ASSOCIEES A UNE FONCTION MULTIPLICATRICE
 !
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
-    do 11 i = 1, nexcir
+    do i = 1, nexcir
 !
         call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resu, nbret=l1)
         call getvr8('EXCIT_RESU', 'COEF_MULT', iocc=i, scal=alpha, nbret=m1)
@@ -287,15 +288,15 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
         ii = nexci+nbmode*(i-1)
         call codent(i, 'D0', ires)
 !
-        do 21 jmod = 1, nbmode
+        do jmod = 1, nbmode
             call codent(jmod, 'D0', imo)
             nomfon(ii+jmod) = 'FON'//ires//imo
             nofk19 = nomfon(ii+jmod)
             call wkvect(nofk19//'.VALE', 'V V R8', 2*ninst, jvale)
-            do 31 iinst = 1, ninst
+            do iinst = 1, ninst
                 zr(jvale-1+iinst) = zr(jinst-1+iinst)
                 zr(jvale-1+ninst+iinst) = alpha* zr( jdepl-1+nbmode*( iinst-1)+jmod)
- 31         continue
+            end do
 !
             call wkvect(nofk19//'.PROL', 'V V K24', 6, jprol)
             zk24(jprol-1+1)='FONCTION'
@@ -310,9 +311,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
             inumor(ii+jmod)=zi(jordr-1+jmod)
             idescf(ii+jmod)=2
 !
- 21     continue
+        end do
 !
- 11 continue
+    end do
 !
     call jedema()
 end subroutine

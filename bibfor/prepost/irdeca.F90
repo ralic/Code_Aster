@@ -84,20 +84,20 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     else
         inum = 0
     endif
-    do 1 i = 1, ncmpmx
+    do i = 1, ncmpmx
         zl(iltabl+i-1)=.false.
- 1  end do
+    end do
     iad = 1
     nbcmp = 0
     blanc = '      '
 !
 ! RECHERCHE DU NOMBRE DE SOUS OBJETS ET DES COMPOSANTES ASSOCIEES
 !
-    do 2 inno = 1, nbno
+    do inno = 1, nbno
         ino = numnoe(inno)
-        do 3 iec = 1, nec
+        do iec = 1, nec
             dg(iec)=prno((ino-1)*(nec+2)+2+iec)
- 3      continue
+        end do
 !
 !        NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !        IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -107,7 +107,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
         if (ncmp .eq. 0) goto 2
 !
         if (nbcput .ne. 0) then
-            do 30 icm = 1, nbcput
+            do icm = 1, nbcput
                 if (nomgd .eq. 'VARI_R') then
                     call lxliis(ncmput(icm)(2:8), ivari, iret)
                     if ((ncmput(icm)(1:1).ne.'V') .or. (iret.ne.0)) then
@@ -118,25 +118,27 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
                     zl(iltabl+ivari-1)= .true.
                     goto 30
                 else
-                    do 32 icmp = 1, ncmpmx
+                    do icmp = 1, ncmpmx
                         if (ncmput(icm) .eq. ncmpgd(icmp)) then
                             zl(iltabl+icmp-1)= .true.
                             goto 30
                         endif
-32                  continue
+                    end do
                 endif
                 valk (1) = ncmput(icm)
                 valk (2) = nomgd
                 call utmess('A', 'PREPOST5_25', nk=2, valk=valk)
-30          continue
+ 30             continue
+            end do
         else
-            do 4 icmp = 1, ncmpmx
+            do icmp = 1, ncmpmx
                 if (exisdg(dg,icmp)) zl(iltabl+icmp-1)= .true.
- 4          continue
+            end do
         endif
- 2  end do
+  2     continue
+    end do
 !
-    do 5 i = 1, ncmpmx
+    do i = 1, ncmpmx
         if (zl(iltabl+i-1)) then
             if (ncmpgd(i) .eq. 'DX') then
                 nbcmp = nbcmp+1
@@ -181,7 +183,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
                 iad = iad+1
             endif
         endif
- 5  end do
+    end do
 !
 ! ---- ECRITURE DE L'EN-TETE -----
 !
@@ -218,10 +220,10 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     if (nive .eq. 3) write(ifi,'(16(I5))') iun,nbno,nbcmp
     if (nive .eq. 10) write(ifi,'(10(I8))') iun,nbno,nbcmp
     izero = 0
-    do 10 i = 1, nbcmp
+    do i = 1, nbcmp
         zi(ibi-1+i) = izero
         zk8(inom-1+i) = nomvar(i)
-10  end do
+    end do
     write(ifi,'(16(1X,A4))') (zk8(inom-1+i)(1:4),i=1,nbcmp)
     if (nive .eq. 3) write(ifi,'(16(I5))') (zi(ibi-1+i),i=1,nbcmp)
     if (nive .eq. 10) write(ifi,'(10(I8))') (zi(ibi-1+i),i=1,nbcmp)
@@ -238,34 +240,36 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     call wkvect('&&IRDECA.VALE', 'V V R', ncmpmx*nbno, irval)
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS CASTEM ----
-    do 25 ic = 1, ncmpmx*nbno
+    do ic = 1, ncmpmx*nbno
         zr(irval-1+ic) = 0.0d0
-25  end do
+    end do
     iadr = irval - 1
-    do 12 inno = 1, nbno
+    do inno = 1, nbno
         ino = numnoe(inno)
-        do 17 iec = 1, nec
+        do iec = 1, nec
             dg(iec)=prno((ino-1)*(nec+2)+2+iec)
-17      continue
+        end do
         ival = prno((ino-1)* (nec+2)+1)
         ncmp = prno((ino-1)* (nec+2)+2)
         if (ncmp .eq. 0) goto 12
 !
         icompt = 0
-        do 14 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(dg,icmp)) then
                 icompt = icompt+1
-                do 13 icmc = 1, nbcmp
+                do icmc = 1, nbcmp
                     icmcca = ipcmp (icmc)
                     if (icmp .eq. icmcca) then
                         iadr = irval-1+(icmc-1)*nbno
                         zr(iadr+ino) = vale(nueq(ival-1+icompt))
                         goto 14
                     endif
-13              continue
+                end do
             endif
-14      continue
-12  end do
+ 14         continue
+        end do
+ 12     continue
+    end do
     write(ifi,'(3(1X,E21.13E3))') (zr(irval-1+i),i=1,nbcmp*nbno)
     if (.not.lresu) zi(jlast-1+4)=inum
     call jedetr('&&IRDECA.VALE')

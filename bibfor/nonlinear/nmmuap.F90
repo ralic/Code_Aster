@@ -51,7 +51,7 @@ subroutine nmmuap(sddyna)
     character(len=14) :: numddl
     character(len=24) :: deeq, matric
     integer :: nbmd, neq, na, nd, nbexci, nf, nv
-    integer ::  i
+    integer :: i
     integer :: iddeeq
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
     integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
@@ -85,7 +85,7 @@ subroutine nmmuap(sddyna)
     call wkvect(mamula, 'V V I', nbexci, jmltap)
     call wkvect(mapsid, 'V V R8', nbexci*neq, jpsdel)
 !
-    do 10 i = 1, nbexci
+    do i = 1, nbexci
         call getvtx('EXCIT', 'MULT_APPUI', iocc=i, scal=rep, nbret=nd)
         if (rep(1:3) .eq. 'OUI') then
             zi(jmltap+i-1) = 1
@@ -121,7 +121,7 @@ subroutine nmmuap(sddyna)
 !
             call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(i-1)*neq))
         endif
- 10 continue
+    end do
 !
     call jedema()
 end subroutine

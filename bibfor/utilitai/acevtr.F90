@@ -70,7 +70,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
         endif
         nomodl=' '
         ierr=0
-        do 10 igrel = 1, nbgrel
+        do igrel = 1, nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
             call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel= zi(ialiel -1 +nel)
@@ -83,7 +83,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
                     kmai=zi(ialiel)
                     goto 20
                 else
-                    do 1 kma = 1, nn
+                    do kma = 1, nn
                         if (ityp .eq. 1) then
                             call jenonu(jexnom(noma//'.NOMMAI', noms( kma)), ima)
                         else
@@ -91,10 +91,10 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
                         endif
                         call testli(ima, zi(ialiel), nel-1, kmai, ierr)
                         if (ierr .eq. 1) goto 20
-  1                 continue
+                    end do
                 endif
             endif
- 10     continue
+        end do
     endif
  20 continue
 !     IF (IERR.EQ.1)  WRITE(*,*) 'KMAI',KMAI,'IGREL',IGREL,

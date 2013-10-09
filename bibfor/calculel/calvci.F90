@@ -93,7 +93,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
     call jemarq()
-    if (nbchci .eq. 0) goto 9999
+    if (nbchci .eq. 0) goto 999
     vcine = nomci
     nu = nomnu
     vvale = vcine//'.VALE'
@@ -129,7 +129,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !
 !
 ! --- BOUCLE SUR LES CHARGES CINEMATIQUES :
-    do 1 ichcin = 1, nbchci
+    do ichcin = 1, nbchci
         charci = lchci(ichcin)
         call jeveuo(charci//'.AFCK', 'L', jafck)
         phen=zk8(jafck-1+1)(1:4)
@@ -175,7 +175,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !       -- CAS DES VALEURS REELLES :
 !       ---------------------------------
         if (typval .eq. 'R') then
-            do 10 nimp = 1, nbimp
+            do nimp = 1, nbimp
                 n =3*(nimp-1)+jafci
 !           -- NI : NUMERO DU NOEUD
                 ni = zi(n+1)
@@ -230,7 +230,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                 endif
 !
                 zi(jdlci-1+nueq) = 1
- 10         continue
+            end do
 !
 !
 !
@@ -239,7 +239,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
         else if (typval.eq.'C') then
             ASSERT(phen.eq.'CIAC')
             ASSERT(.not.fonc)
-            do 20 nimp = 1, nbimp
+            do nimp = 1, nbimp
                 n =3*(nimp-1)+jafci
                 ni = zi(n+1)
                 nddl = zi(n+2)
@@ -247,15 +247,15 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                 nueq =zi(jnueq-1+ zi(jprno+nn)+nddl-1)
                 zc(ivvale-1+nueq) = zc(jafcv-1+nimp)
                 zi(jdlci-1+nueq) = 1
- 20         continue
+            end do
 !
 !
         else
             ASSERT(.false.)
         endif
-  1 end do
+    end do
 !
-9999 continue
+999 continue
 !
     call detrsd('CHAMP', cnsimp)
     call jedema()

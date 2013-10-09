@@ -72,7 +72,7 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
     call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
 !
-    do 20 in = 1, nbnoe
+    do in = 1, nbnoe
         nomno = lnonoe(in)
         call jenonu(jexnom(nomma//'.NOMNOE', nomno), nunoe)
         if (nunoe .eq. 0) then
@@ -82,10 +82,10 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
         endif
         ieq = zi(iaprno-1+(nec+2)*(nunoe-1)+1)
         nbcmp = zi(iaprno-1+(nec+2)*(nunoe-1)+2)
-        do 22 i = 1, nbcmp
+        do i = 1, nbcmp
             ivec(ieq+i-1) = 1
- 22     continue
- 20 end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

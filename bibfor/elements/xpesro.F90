@@ -72,7 +72,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: fe(4), poids, r
-    real(kind=8) :: rbid, rbid1(4), rbid2(4), rbid3(4)
+    real(kind=8) :: rbid
     character(len=8) :: elrese(6), fami(6)
     logical :: grdepl, axi
     integer :: irese
@@ -108,15 +108,15 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT COURANT
 !     ------------------------------------------------------------------
 !
-    do 10 kpg = 1, npgbis
+    do kpg = 1, npgbis
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LA CONFIG RÉELLE DU SE : XG
         call vecini(ndim, 0.d0, xg)
-        do 101 i = 1, ndim
-            do 102 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
-102          continue
-101      continue
+            end do
+        end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
         call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
@@ -128,17 +128,19 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, poids)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, poids)
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+                                     poids)
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+                                     poids)
 !
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
 !       ET DU DEPL. RADIAL
         if (axi) then
             r = 0.d0
-            do 1000 ino = 1, nnop
+            do ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-1000          continue
+            end do
 !
 !
 !
@@ -156,10 +158,10 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !         LEVEL SETS AU POINT DE GAUSS
             lsng = 0.d0
             lstg = 0.d0
-            do 103 ino = 1, nnop
+            do ino = 1, nnop
                 lsng = lsng + zr(jlsn-1+ino) * ff(ino)
                 lstg = lstg + zr(jlst-1+ino) * ff(ino)
-103          continue
+            end do
 !
 !         COORDONNÉES POLAIRES DU POINT
             rg=sqrt(lsng**2+lstg**2)
@@ -175,42 +177,42 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !       ------------------------------------------
 !
         call vecini(ndim, 0.d0, forvol)
-        do 104 ino = 1, nnop
-            do 105 j = 1, ndim
+        do ino = 1, nnop
+            do j = 1, ndim
                 forvol(j)=forvol(j)+fno(ndim*(ino-1)+j)*ff(ino)
-105          continue
-104      continue
+            end do
+        end do
 !
 !
 !       CALCUL EFFECTIF DU SECOND MEMBRE
 !       --------------------------------
 !
         pos=0
-        do 108 ino = 1, nnop
+        do ino = 1, nnop
 !
 !         TERME CLASSIQUE
-            do 109 j = 1, ndim
+            do j = 1, ndim
                 pos=pos+1
                 zr(ivectu-1+pos) = zr(ivectu-1+pos) + forvol(j)*poids* ff(ino)
-109          continue
+            end do
 !
 !         TERME HEAVISIDE
-            do 113 ig = 1, nfh
+            do ig = 1, nfh
                 if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ig)
-                do 110 j = 1, ndim
+                do j = 1, ndim
                     pos=pos+1
                     zr(ivectu-1+pos) = zr(ivectu-1+pos) + zi(jheavt-1+ (ifiss-1)*ncomp+ise)*forvo&
                                        &l(j)*poids*ff(ino)
-110              continue
-113          continue
+                end do
+            end do
 !
 !         TERME SINGULIER
-            do 111 ig = 1, nfe
-                do 112 j = 1, ndim
+            do ig = 1, nfe
+                do j = 1, ndim
                     pos=pos+1
                     zr(ivectu-1+pos) = zr(ivectu-1+pos) + fe(ig)* forvol(j)*poids*ff(ino)
-112              continue
-111          continue
+                end do
+            end do
 !
 !         ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
             if (.not.iselli(elrefp) .and. ndim .eq. 2) then
@@ -220,10 +222,10 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
             endif
 !
 !
-108      continue
+        end do
 !
 !
-10  end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     FIN BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT

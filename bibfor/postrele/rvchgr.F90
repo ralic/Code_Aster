@@ -92,7 +92,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
         if (k8b(1:3) .eq. 'NON') then
             iret = 0
             call utmess('A', 'POSTRELE_28')
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -104,7 +104,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
             valk (1) = courbe
             valk (2) = repere
             call utmess('A', 'POSTRELE_29', nk=2, valk=valk)
-            goto 9999
+            goto 999
         endif
 !
         call jeveuo(courbe//'.TYPCOURBE', 'L', i)
@@ -164,7 +164,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !
     endif
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -54,7 +54,7 @@ subroutine meonme(modele, nchar, lchar, mate, matel)
     logical :: lfonc
 !
 !-----------------------------------------------------------------------
-    integer ::  icha, icode, ilires, iret
+    integer :: icha, icode, ilires, iret
 !-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
@@ -87,7 +87,7 @@ subroutine meonme(modele, nchar, lchar, mate, matel)
         lpain(3) = 'PMATERC'
         lchin(3) = mate
 !
-        do 10 icha = 1, nchar
+        do icha = 1, nchar
             call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8b)
             if (k8b(5:7) .eq. '_FO') then
                 lfonc = .true.
@@ -113,7 +113,7 @@ subroutine meonme(modele, nchar, lchar, mate, matel)
                             'OUI')
                 call reajre(matel, lchout(1), 'G')
             endif
- 10     continue
+        end do
     endif
     call jedema()
 end subroutine

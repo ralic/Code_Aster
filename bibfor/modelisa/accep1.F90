@@ -117,7 +117,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         call getvid(' ', 'CHAM_NO', nbval=ncham, vect=zk8(icham), nbret=nn)
     endif
 ! BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
-    do 70 i = 1, nbm
+    do i = 1, nbm
         call codent(i, 'D0', incr)
         vetel = '&&V.M'//incr(5:7)
         lchout(1) = vetel//'.VE000'
@@ -137,7 +137,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call detrsd('CARTE', chharm)
- 70 continue
+    end do
     if (ncham .gt. 0) call jedetr('&&ACCEP1.VEC')
 !
 !
@@ -150,10 +150,10 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     ngrel = nbgrel(ligrmo)
 !
     nbelto = 0
-    do 80 igr = 1, ngrel
+    do igr = 1, ngrel
         nbelgr = nbelem(ligrmo,igr)
         nbelto = nbelto + nbelgr
- 80 continue
+    end do
 !
 ! TAILLE DU TABLEAU
 !          NTAIL=16*NBELTO*NBM
@@ -164,19 +164,19 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 ! CONSTITUTION D'UN TABLEAU CONTENANT COORDONNEES DES PTS DE GAUSS
 ! AINSI QUE LA VALEUR DU MODE
     ii = 1
-    do 120 imo = 1, nbm
+    do imo = 1, nbm
         imode = 'CHBIDON'
         call codent(imo, 'D0', imode)
-        do 110 igr = 1, ngrel
+        do igr = 1, ngrel
             nbelgr = nbelem(ligrmo,igr)
             call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', igr), 'L', ialiel)
-            do 100 iel = 1, nbelgr
+            do iel = 1, nbelgr
                 ima = zi(ialiel-1+iel)
                 ielem = 'BID'
                 call codent(ima, 'D0', ielem)
                 call jeveuo('&&329.M'//imode//'.EL'//ielem, 'L', ive)
                 call jelira('&&329.M'//imode//'.EL'//ielem, 'LONMAX', n1)
-                do 90 ipg = 1, n1
+                do ipg = 1, n1
                     zr(itab+ii-1) = zr(ive+ipg-1)
                     ii = ii + 1
                     if (mod(ii,6) .eq. 5) then
@@ -219,10 +219,10 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                             endif
                         endif
                     endif
- 90             continue
-100         continue
-110     continue
-120 continue
+                end do
+            end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

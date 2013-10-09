@@ -49,7 +49,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     character(len=14) :: numddl
     character(len=24) :: nomcha, matria, nomnoe
 !-----------------------------------------------------------------------
-    integer ::  icham, im, imod, lnoe
+    integer :: icham, im, imod, lnoe
     integer :: neq
 !-----------------------------------------------------------------------
     data iddl    /1,2,3,4,5,6/
@@ -71,14 +71,14 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     nomnoe = mailla//'.NOMNOE'
     call jelira(nomnoe, 'NOMUTI', lnoe)
 !
-    do 10 im = 1, nbm
+    do im = 1, nbm
         write(nomcha(14:16),'(I3.3)') nuor(im)
         call jeveuo(nomcha, 'E', icham)
         zi(imod) = nuor(im)
         call extmod(base, numddl, zi(imod), 1, zr(icham),&
                     neq, lnoe, iddl, 6)
         call jelibe(nomcha)
- 10 continue
+    end do
 !
 !     MENAGE
     call jedetr('&&CPDEPL.TEMP.NUOR')

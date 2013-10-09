@@ -51,9 +51,9 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel, ibid
+    integer :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel
     integer :: j_elem_affe, j_mail
-    character(len=8) :: mesh, k8bid, dmo, dma
+    character(len=8) :: mesh, dmo, dma
     character(len=16) :: notype, typmod
 !
 ! --------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 ! - Access to model and mesh
 !
     call jeveuo(model//'.MAILLE', 'L', j_mail)
-    call dismoi('NOM_MAILLA', model(1:8), 'MODELE',repk=mesh)
+    call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
 ! - Mesh affectation
@@ -92,8 +92,8 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 ! ----- Access to element type
 !
         nutyel = zi(j_mail-1+nume_elem)
-
-        if (nutyel.ne.0) then
+!
+        if (nutyel .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
             call teattr(notype, 'S', 'DIM_TOPO_MODELI', dmo, iret)
             call teattr(notype, 'S', 'DIM_TOPO_MAILLE', dma, iret)

@@ -196,16 +196,16 @@ subroutine op0081()
         call remp81(nomres//'.MAEL_MASS', lmass, basmod, nbmod)
 !
 ! ---   RIGI_GENE : LES CALCULER A PARTIR DE MASSE_GENE ET FREQ
-        do 30 imod = 1, nbmod
+        do imod = 1, nbmod
             zr(lrigi-1+imod) = 4*pi**2*zr(lrigi-1+imod)**2 *zr(lmass- 1+imod)
- 30     continue
+        end do
         call remp81(nomres//'.MAEL_RAID', lrigi, basmod, nbmod)
 !
 ! ---   AMOR_GENE : LES CALCULER APARTIR D'AMOR_REDUIT, MASSE ET RIGI
         if (ioca .ne. 0) then
-            do 40 imod = 1, nbmod
+            do imod = 1, nbmod
                 zr(lamor-1+imod) = 2*zr(lamor-1+imod)*sqrt(zr(lrigi-1+ imod)* zr(lmass-1+imod))
- 40         continue
+            end do
             call remp81(nomres//'.MAEL_AMOR', lamor, basmod, nbmod)
         endif
 !
@@ -219,9 +219,9 @@ subroutine op0081()
 ! ---   LE VEC DES MASSES EFFE EST REMPLI A 0, ON EMET UNE ALARME
 !       (ON NE PEUT PAS LE REMPLIR, ON NE CONNAIT PAS LA MAT DE MASSE)
         call utmess('A', 'ALGORITH17_32', sk=' ')
-        do 50 imod = 1, 3*nbmod
+        do imod = 1, 3*nbmod
             zr(ldres-1+imod) = 0.d0
- 50     continue
+        end do
 !
 !
     endif

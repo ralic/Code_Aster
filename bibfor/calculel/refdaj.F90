@@ -154,9 +154,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !     1.3 - TYPE DE RESULTAT A TRAITER, CAS D'UN CONCEPT RE-ENTRANT
     if (.not.(newref)) then
         oktres = .false.
-        do 12 ibid = 1, 10
+        do ibid = 1, 10
             if (typres .eq. accres(ibid)) oktres = .true.
- 12     continue
+        end do
         if (.not.(oktres)) then
             if (arret .eq. 'F') ASSERT(.false.)
             codret = 0
@@ -166,13 +166,13 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !
 !     1.4 - TYPE DE REFERENCE A AJOUTER
     oktref = .false.
-    do 15 ibid = 1, 5
+    do ibid = 1, 5
         if (typref .eq. accref(ibid)) then
             indref = ibid
             oktref = .true.
             goto 16
         endif
- 15 continue
+    end do
  16 continue
     if (.not.(oktref)) then
         if (arret .eq. 'F') ASSERT(.false.)
@@ -190,9 +190,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
                     nbinit)
         call jeecra(corefd, 'LONT', nbinit*5, k8bid)
 !       INITIALISATION DES ELEMENTS DE .INDI A (-100)
-        do 17 ibid = 1, nbinit
+        do ibid = 1, nbinit
             zi(jbid+ibid-1) = -100
- 17     continue
+        end do
         if (typref .eq. 'INIT') then
             codret = 1
             goto 27
@@ -216,14 +216,14 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !             2. NUMEROTATION IDENTIQUE
 !             3. PREMIERE ENTREE IDENTIQUE
     if (nbrefs .ge. 1) then
-        do 20 ibid = 1, nbrefs
+        do ibid = 1, nbrefs
             call jeveuo(jexnum(corefd, ibid), 'E', jrefe)
             if ((typre .eq. zk24(jrefe)) .and. (numer .eq. zk24(jrefe+1)) .and.&
                 (conre(1).eq. zk24(jrefe+2))) then
 !               --- ALORS METTRE A JOUR L'ENTREE DU .REFD
-                do 21 jbid = 1, lonref(indref)
+                do jbid = 1, lonref(indref)
                     zk24(jrefe+jbid+1) = conref(jbid)
- 21             continue
+                end do
 !               --- VERIFIER EGALEMENT ET METTRE A JOUR LE .INDI SI LE NOMBRE DE
 !                 - NUMEROS D'ORDRES INITIAL N'A PAS ETE CORRECTEMENT RENSEIGNE
 !                 - (N2 - N1 = -1 / APPEL A REFDAJ AVEC NBCHAM = -1 )
@@ -238,7 +238,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
                 codret = 1
                 goto 27
             endif
- 20     continue
+        end do
     endif
 !
 !   2.2.2 - RAJOUTER UN OBJET A LA COLLECTION .REFD AVEC LES INFOS
@@ -267,13 +267,13 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     call jeveuo(jexnum(corefd, nbrefs+1), 'E', jrefe)
     zk24(jrefe) = typre
     zk24(jrefe+1) = numer1
-    do 25 ibid = 1, lonref(indref)
+    do ibid = 1, lonref(indref)
         zk24(jrefe+ibid+1) = conref(ibid)
- 25 continue
+    end do
     if (lonref(indref) .lt. 3) then
-        do 26 ibid = lonref(indref)+1, 3
+        do ibid = lonref(indref)+1, 3
             zk24(jrefe+ibid+1) = bl24
- 26     continue
+        end do
     endif
     codret = 1
 !

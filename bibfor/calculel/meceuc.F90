@@ -76,7 +76,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     character(len=19) :: lchinr(nin), lchini(nin)
     character(len=16) :: optio2
     character(len=8) :: nomgd
-    integer ::  k, iexi, iexi1, iexi2
+    integer :: k, iexi, iexi1, iexi2
     integer :: inddec(nin)
     logical :: lcmplx, lsspt, ldbg, lopdec
 ! ----------------------------------------------------------------------
@@ -111,7 +111,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
         call calcul(stop, optio2, ligrel, nin, lchin,&
                     lpain, nou, lchou, lpaou, base,&
                     'OUI')
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -119,7 +119,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !           SI OUI, IL FAUT LES DECOUPER
 !     -----------------------------------------------------------
     lcmplx=.false.
-    do 1 k = 1, nin
+    do k = 1, nin
         inddec(k)=0
         if (lpain(k) .eq. ' ') goto 1
         ch19=lchin(k)
@@ -143,7 +143,8 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
             chdecr(k)=chr
             chdeci(k)=chi
         endif
-  1 end do
+  1     continue
+    end do
 !
 !
 !     -- 2. S'IL N'Y A AUCUN CHAMP COMPLEXE, C'EST FACILE :
@@ -152,7 +153,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
         call calcul(stop, optio2, ligrel, nin, lchin,&
                     lpain, nou, lchou, lpaou, base,&
                     'OUI')
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -165,7 +166,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !
 !     -- 4.0 ON PREPARE LCHINR ET LCHINI :
 !     ------------------------------------
-    do 2 k = 1, nin
+    do k = 1, nin
         if (inddec(k) .eq. 0) then
             lchinr(k)=lchin(k)
             lchini(k)=lchin(k)
@@ -173,7 +174,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
             lchinr(k)=chdecr(k)
             lchini(k)=chdeci(k)
         endif
-  2 end do
+    end do
 !
 !
 !     -- 4.1 APPEL A CALCUL AVEC LES PARTIES REELLES :
@@ -226,12 +227,12 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !     -- 7. MENAGE :
 !     --------------
 9998 continue
-    do 3 k = 1, nin
+    do k = 1, nin
         if (inddec(k) .ne. 0) then
             call detrsd('CHAMP', chdecr(k))
             call detrsd('CHAMP', chdeci(k))
         endif
-  3 end do
+    end do
 !
     call detrsd('CHAMP', ch1)
     call detrsd('CHAMP', ch2)
@@ -239,6 +240,6 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
     call detrsd('CHAM_ELEM_S', ch2)
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

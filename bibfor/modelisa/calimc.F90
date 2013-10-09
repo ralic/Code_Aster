@@ -125,7 +125,7 @@ subroutine calimc(chargz)
 !
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_MACREL :
 !     -------------------------------------------------------
-    do 30 iocc = 1, nliai
+    do iocc = 1, nliai
 !
 ! ---   ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
 ! ---   APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
@@ -165,22 +165,22 @@ subroutine calimc(chargz)
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
         call wkvect('&&CALIMC.NCMPSD', 'V V K8', 2*nbmdef, jncmpd)
         call jeveuo(macrel//'.LINO', 'L', iaconx)
-        do 21 i = 1, nbndef
+        do i = 1, nbndef
             i2 = i+nbndyn
             call jenuno(jexnum(mailla//'.NOMNOE', zi(iaconx+i2-1)), nomnol)
-            do 22 j = 1, nec
+            do j = 1, nec
                 zk8(jncmpd+2*nec*(i-1)+2*j-2) = nomnol
                 zk8(jncmpd+2*nec*(i-1)+2*j-1) = liscmp(j)
- 22         continue
- 21     continue
+            end do
+        end do
         call wkvect('&&CALIMC.NCMPIN', 'V V K8', 2*nbnoe*nec, jncmpi)
-        do 23 i = 1, nbnoe
+        do i = 1, nbnoe
             call jenuno(jexnum(mailla//'.NOMNOE', zi(lldef+i-1)), nomnol)
-            do 24 j = 1, nec
+            do j = 1, nec
                 zk8(jncmpi+2*nec*(i-1)+2*j-2) = nomnol
                 zk8(jncmpi+2*nec*(i-1)+2*j-1) = liscmp(j)
- 24         continue
- 23     continue
+            end do
+        end do
         numddl = numedd(1:14)
         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         call wkvect('&&CALIMC.BASE', 'V V R', nbmode(1)*neq, idbase)
@@ -232,8 +232,8 @@ subroutine calimc(chargz)
 !
 !       CAS RIGIDE
 !
-        do 25 i = 1, nbnoe
-            do 26 j = 1, nec2
+        do i = 1, nbnoe
+            do j = 1, nec2
                 k = 0
                 nomnoe = zk8(jncmpi+2*nec*(i-1)+2*j-2)
                 nomcmp = zk8(jncmpi+2*nec*(i-1)+2*j-1)
@@ -247,8 +247,8 @@ subroutine calimc(chargz)
                 iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                 nueq = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                 if (icmp .gt. nueq) goto 26
-                do 27 ii = 1, nbndef
-                    do 28 jj = 1, nec
+                do ii = 1, nbndef
+                    do jj = 1, nec
                         k = k + 1
                         nomnoe = zk8(jncmpd+2*nec*(ii-1)+2*jj-2)
                         nomcmp = zk8(jncmpd+2*nec*(ii-1)+2*jj-1)
@@ -257,8 +257,8 @@ subroutine calimc(chargz)
                         zk8(idnoeu+k-1) = nomnoe
                         zk8(idddl+k-1) = nomcmp
                         zr(idcoer+k-1) = vale
- 28                 continue
- 27             continue
+                    end do
+                end do
                 k = nbterm
                 nomnoe = zk8(jncmpi+2*nec*(i-1)+2*j-2)
                 nomcmp = zk8(jncmpi+2*nec*(i-1)+2*j-1)
@@ -272,22 +272,23 @@ subroutine calimc(chargz)
                             zr(idirec), nbterm, beta, betac, betaf,&
                             typcoe, typval, typlag, 0.d0, lisrel)
 !
- 26         continue
- 25     continue
+ 26             continue
+            end do
+        end do
         goto 102
 101     continue
 !
 !       CAS SOUPLE
 !
-        do 31 i = 1, nbndef
-            do 32 j = 1, nec
+        do i = 1, nbndef
+            do j = 1, nec
                 k = 0
                 imod = nbmdyn+(i-1)*nec+j
-                do 35 i2 = 1, nbnoe
+                do i2 = 1, nbnoe
                     nomnoe = zk8(jncmpi+2*nec*(i2-1))
                     call jenonu(jexnom(mailla//'.NOMNOE', nomnoe), inoe)
                     iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
-                    do 36 j2 = 1, nec
+                    do j2 = 1, nec
                         k = k + 1
                         nomcmp = zk8(jncmpi+2*nec*(i2-1)+2*j2-1)
                         if (nomcmp .eq. 'DX') icmp = 1
@@ -299,20 +300,20 @@ subroutine calimc(chargz)
                         zk8(idnoeu+k-1) = nomnoe
                         zk8(idddl+k-1) = nomcmp
                         zr(idcoer+k-1) = -zr(idbase+(imod-1)*neq+iddl- 1+icmp-1 )
- 36                 continue
- 35             continue
-                do 37 ii = 1, nbndef
+                    end do
+                end do
+                do ii = 1, nbndef
                     nomnoe = zk8(jncmpd+2*nec*(ii-1))
-                    do 38 jj = 1, nec
+                    do jj = 1, nec
                         k = k + 1
                         nomcmp = zk8(jncmpd+2*nec*(ii-1)+2*jj-1)
                         imod2 = nbmdyn+(ii-1)*nec+jj
                         vale = zero
-                        do 33 i3 = 1, nbnoe
+                        do i3 = 1, nbnoe
                             nmnoe2 = zk8(jncmpi+2*nec*(i3-1))
                             call jenonu(jexnom(mailla//'.NOMNOE', nmnoe2), inoe)
                             iddl2 = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
-                            do 34 j3 = 1, nec
+                            do j3 = 1, nec
                                 nmcmp2 = zk8(jncmpi+2*nec*(i3-1)+2*j3- 1)
                                 if (nmcmp2 .eq. 'DX') icmp2 = 1
                                 if (nmcmp2 .eq. 'DY') icmp2 = 2
@@ -324,20 +325,20 @@ subroutine calimc(chargz)
                                        idbase+(imod-1)*neq+ iddl2-1+icmp2-1)* zr(idbase+(imod2-1)&
                                        &* neq+iddl2-1+icmp2-1&
                                        )
- 34                         continue
- 33                     continue
+                            end do
+                        end do
                         zk8(idnoeu+k-1) = nomnoe
                         zk8(idddl+k-1) = nomcmp
                         zr(idcoer+k-1) = vale
- 38                 continue
- 37             continue
+                    end do
+                end do
 ! ---   AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !       ------------------------------------------
                 call afrela(zr(idcoer), zc(idcoec), zk8(idddl), zk8( idnoeu), zi(idimen),&
                             zr(idirec), nbterm, beta, betac, betaf,&
                             typcoe, typval, typlag, 0.d0, lisrel)
- 32         continue
- 31     continue
+            end do
+        end do
 !
 102     continue
 ! ---   MENAGE :
@@ -352,7 +353,7 @@ subroutine calimc(chargz)
         call jedetr('&&CALIMC.NCMPIN')
         call jedetr('&&CALIMC.BASE')
 !
- 30 continue
+    end do
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------

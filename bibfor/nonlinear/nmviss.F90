@@ -159,7 +159,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     coef1 = (instap-instd)/pas
     coef2 = 1.d0-coef1
 !
-    do 30 iordr = 1, nume+1-nume0
+    do iordr = 1, nume+1-nume0
         iarc = iordr+nume0
         iarc2 = nume+1-iordr
         call rsexch('F', result, 'DEPL', iarc2, chamnd,&
@@ -191,8 +191,8 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
         endif
 !
         ifreq = int(inst*(1.d0+prec)/pas)+1
-        do 31 id1 = 1, nbmode
-            do 32 id2 = 1, nbmode
+        do id1 = 1, nbmode
+            do id2 = 1, nbmode
                 impe12=0.5d0* (zr(jrigt+(ifreq-1)*nbmode*nbmode+(id2-&
                 1)*nbmode+id1-1)+ zr(jrigt+(ifreq-1)*nbmode*nbmode+(&
                 id1-1)*nbmode+id2-1))
@@ -220,9 +220,9 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
                                   ldnew+zi(ieqint+id1-1)-1)= zr( ldnew+zi(ieqint+id1-1)-1)-impe12&
                                   &* zr(ivav2+zi(ieqint+ id2-1)-1&
                                   )*coef2
- 32         continue
- 31     continue
- 30 end do
+            end do
+        end do
+    end do
 !
 ! --- LECTURE FORCES
 !
@@ -230,10 +230,10 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
         call wkvect(tabfor, 'V V R', nbmode, jfor)
         call irmit2(nbmode, unitef, instap, tabfor)
         call jeveuo(tabfor, 'L', jfor)
-        do 36 id1 = 1, nbmode
+        do id1 = 1, nbmode
             zr(ldnew+zi(ieqint+id1-1)-1)= zr(ldnew+zi(ieqint+id1-1)-1)&
             +zr(jfor+id1-1)
- 36     continue
+        end do
     endif
 !
  99 continue

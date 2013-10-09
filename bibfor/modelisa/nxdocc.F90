@@ -3,9 +3,9 @@ subroutine nxdocc(model, compor)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/comp_init.h"
 #include "asterfort/comp_ther_read.h"
 #include "asterfort/comp_ther_save.h"
-#include "asterfort/comp_init.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -44,7 +44,6 @@ subroutine nxdocc(model, compor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, ibid
     integer :: nb_cmp
     character(len=8) :: mesh
     character(len=19) :: list_vale
@@ -55,9 +54,9 @@ subroutine nxdocc(model, compor)
 !
 ! - Initializations
 !
-    compor      = '&&NXDOCC.COMPOR'
+    compor = '&&NXDOCC.COMPOR'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    list_vale   = '&&LIST_VALE'
+    list_vale = '&&LIST_VALE'
 !
 ! - Read informations from command file
 !
@@ -76,5 +75,5 @@ subroutine nxdocc(model, compor)
     call jedetr(list_vale)
 !
     call jedema()
-
+!
 end subroutine

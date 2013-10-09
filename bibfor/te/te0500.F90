@@ -80,7 +80,7 @@ subroutine te0500(option, nomte)
     real(kind=8) :: valrr3(nbrr3), valrr2(nbrr1), valrr4(nbrr3)
     real(kind=8) :: longc, presc, myoung
     real(kind=8) :: valpar(1), time, raux, rholiq, viscli, permin
-    real(kind=8) :: fluhpx, fluhmx, fluhpy, fluhmy, rbid81(9)
+    real(kind=8) :: fluhpx, fluhmx, fluhpy, fluhmy
     real(kind=8) :: tertps
 !
     logical :: laxi, perman, vf

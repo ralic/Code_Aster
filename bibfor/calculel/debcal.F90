@@ -76,7 +76,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     integer :: iachii, iachik, iachix
     integer :: ianoop, ianote, nbobtr, iaobtr, nbobmx
     integer :: ibid, nbpara, iret, j
-    integer ::  jpar, igd, nec, ncmpmx, iii, num
+    integer :: jpar, igd, nec, ncmpmx, iii, num
     integer :: iarefe, ianbno, jproli, ianueq, iret1
     integer :: iret2
     character(len=8) :: k8bi, typsca
@@ -99,13 +99,13 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 !
 !     -- VERIFICATION QUE LES CHAMPS "IN" ONT DES NOMS LICITES:
 !     ---------------------------------------------------------
-    do 10 i = 1, nin
+    do i = 1, nin
         nompar=lpain(i)
         call chlici(nompar, 8)
         if (nompar .ne. ' ') then
             call chlici(lchin(i), 19)
         endif
- 10 end do
+    end do
 !
 !
 !     -- VERIFICATION DE L'EXISTENCE DES CHAMPS "IN"
@@ -113,7 +113,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     call wkvect('&&CALCUL.LCHIN_EXI', 'V V L', max(1, nin), iachix)
     nbobtr=nbobtr+1
     zk24(iaobtr-1+nbobtr)='&&CALCUL.LCHIN_EXI'
-    do 20 i = 1, nin
+    do i = 1, nin
         chin=lchin(i)
         zl(iachix-1+i)=.true.
         if (lpain(i)(1:1) .eq. ' ') then
@@ -125,13 +125,13 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
             call jeexin(chin//'.CELD', iret2)
             if ((iret1+iret2) .eq. 0) zl(iachix-1+i)=.false.
         endif
- 20 end do
+    end do
 !
 !
 !     -- ON VERIFIE QUE LES CHAMPS "IN" ONT UN MAILLAGE SOUS-JACENT
 !        IDENTIQUE AU MAILLAGE ASSOCIE AU LIGREL :
 !     -------------------------------------------------------------
-    do 30 i = 1, nin
+    do i = 1, nin
         chin=lchin(i)
         if (.not.(zl(iachix-1+i))) goto 30
         call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
@@ -142,22 +142,24 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
             valk(4)=ma
             call utmess('F', 'CALCULEL2_27', nk=4, valk=valk)
         endif
- 30 end do
+ 30     continue
+    end do
 !
 !
 !     -- VERIFICATION QUE LES CHAMPS "OUT" SONT DIFFERENTS
 !        DES CHAMPS "IN"
 !     ---------------------------------------------------
-    do 50 i = 1, nout
+    do i = 1, nout
         chou=lchout(i)
-        do 40 j = 1, nin
+        do j = 1, nin
             chin=lchin(j)
             if (.not.zl(iachix-1+j)) goto 40
             if (chin .eq. chou) then
                 call utmess('F', 'CALCULEL2_28', sk=chou)
             endif
- 40     continue
- 50 end do
+ 40         continue
+        end do
+    end do
 !
 !
 !     INITIALISATION DU COMMON CAII04 :
@@ -169,7 +171,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     nbobtr=nbobtr+1
     zk24(iaobtr-1+nbobtr)='&&CALCUL.LCHIN_K8'
     nbpara = zi(iaopds-1+2) + zi(iaopds-1+3)
-    do 60 i = 1, nin
+    do i = 1, nin
         chin=lchin(i)
 !
 !        -- SI LE CHAMP EST BLANC OU S'IL N'EXISTE PAS
@@ -315,7 +317,8 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
                 zi(iachii-1+11*(i-1)+11)=1
             endif
         endif
- 60 end do
+ 60     continue
+    end do
 !
     goto 80
 !

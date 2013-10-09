@@ -113,12 +113,12 @@ subroutine mdveri()
 !
     call getfac('EXCIT', nbexc)
     kf = 0
-    do 20 i = 1, nbexc
+    do i = 1, nbexc
         call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=0, nbret=nm)
         if (nm .ne. 0) then
             kf = kf+1
         endif
-20  end do
+    end do
     if (kf .ne. 0 .and. method(1:4) .eq. 'ITMI') then
         call utmess('E', 'ALGORITH5_78')
     endif
@@ -136,7 +136,7 @@ subroutine mdveri()
 !
 !     COHERENCE SOUS LE MC EXCIT/VECT_ASSE_GENE ET LES MATRICES
     basemo=ref1(1:8)
-    do 21 i = 1, nbexc
+    do i = 1, nbexc
         call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=ibid, vect=channo,&
                     nbret=nm)
         if (nm .ne. 0) then
@@ -146,7 +146,7 @@ subroutine mdveri()
                 call utmess('E', 'ALGORITH5_42')
             endif
         endif
-21  end do
+    end do
 !
 !
 !

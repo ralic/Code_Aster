@@ -62,9 +62,9 @@ subroutine cffofr(numedd, resoco, cnfofr)
     call jeexin(resoco(1:14)//'.AFMU', iconta)
     if (iconta .ne. 0) then
         call jeveuo(resoco(1:14)//'.AFMU', 'L', jafmu)
-        do 10 i = 1, neq
+        do i = 1, neq
             zr(jcnfr+i-1) = zr(jafmu+i-1)
- 10     continue
+        end do
     endif
 !
     call jedema()

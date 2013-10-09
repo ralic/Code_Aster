@@ -109,7 +109,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
 ! --- MISE A JOUR DEPL/VITE/ACCE
 !
     icomp = 0
-    do 20 i = 1, neq
+    do i = 1, neq
         if (zi(indro+i-1) .eq. 0) then
             zr(jdepde+i-1) = zr(jdepde+i-1) + zr(jddepl+i-1)
             zr(jdepp+i-1) = zr(jdepp+i-1) + zr(jddepl+i-1)
@@ -133,7 +133,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
         else
             ASSERT(.false.)
         endif
- 20 end do
+    end do
 !
     call jedema()
 end subroutine

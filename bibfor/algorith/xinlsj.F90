@@ -79,36 +79,37 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- RECHERCHE DU NUMÉRO DU NOEUD NUNO LE PLUS PROCHE DU POINT
 !
     dmin = r8maem()
-    do 100 ino = 1, nbno
+    do ino = 1, nbno
         dist = padist(ndim,point,zr(iadrco+(ino-1)*3+1-1))
         if (dist .lt. dmin) then
             nuno = ino
             dmin = dist
         endif
-100 end do
+    end do
 !
 ! --- ON AJOUTE LES FISSURES DECLARÉES DANS LE MOT CLÉ JONCTION
     cpt = 0
-    do 50 ifiss = 1, nfiss
-        do 110 ifis2 = ifiss+1, nfiss
+    do ifiss = 1, nfiss
+        do ifis2 = ifiss+1, nfiss
             call jeexin(zk8(jfiss-1+ifis2)//'.JONFISS', iret)
             if (iret .ne. 0) then
                 call jeveuo(zk8(jfiss-1+ifis2)//'.JONFISS', 'L', jjon3)
                 call jelira(zk8(jfiss-1+ifis2)//'.JONFISS', 'LONMAX', nfis3)
-                do 120 ifis3 = 1, nfis3
+                do ifis3 = 1, nfis3
 ! --- SI IFISS EST CONTENU DANS LES FISSURES SUIVANTES : ON SORT
 ! --- ELLE SERA AJOUTÉ DANS LA BOUCLE 60
                     if (zk8(jjon3-1+ifis3) .eq. zk8(jfiss-1+ifiss)) goto 50
-120             continue
+                end do
             endif
-110     continue
+        end do
         cpt = cpt +1
         nomfis(cpt) = zk8(jfiss-1+ifiss)
         call cnocns(nomfis(cpt)//'.LNNO', 'V', cnsln)
         call jeveuo(cnsln//'.CNSV', 'L', jcnsvn)
         ASSERT(zr(jcnsvn-1+nuno).ne.0.d0)
         coefln(cpt) = nint(sign(1.d0,-1.d0*zr(jcnsvn-1+nuno)))
- 50 end do
+ 50     continue
+    end do
 !
     nfini = 1
     nfiss = cpt
@@ -117,34 +118,35 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- SAUF CELLES QUI CONTIENNENT LA FISSURE FISS EN COURS
 !
  90 continue
-    do 60 ifiss = nfini, nfiss
+    do ifiss = nfini, nfiss
         call jeexin(nomfis(ifiss)//'.JONFISS', iret)
         if (iret .ne. 0) then
             call jeveuo(nomfis(ifiss)//'.JONFISS', 'L', jjonf)
             call jeveuo(nomfis(ifiss)//'.JONCOEF', 'L', jjonc)
             call jelira(nomfis(ifiss)//'.JONFISS', 'LONMAX', nfis2)
 ! --- BOUCLE SUR LES FISSURES CONNECTES À IFISS
-            do 70 ifis2 = 1, nfis2
+            do ifis2 = 1, nfis2
 ! --- ON VERIFIE QUE LA FISSURE CONNECTEE NE CONTIENT PAS CELLE EN COURS
                 call jeexin(zk8(jjonf-1+ifis2)//'.JONFISS', iret)
                 if (iret .ne. 0) then
                     call jeveuo(zk8(jjonf-1+ifis2)//'.JONFISS', 'L', jjon3)
                     call jelira(zk8(jjonf-1+ifis2)//'.JONFISS', 'LONMAX', nfis3)
-                    do 75 ifis3 = 1, nfis3
+                    do ifis3 = 1, nfis3
                         if (zk8(jjon3-1+ifis3) .eq. fiss) goto 70
- 75                 continue
+                    end do
                 endif
 ! --- ON VERIFIE QU'ON A PAS DEJA STOCKÉ LA FISSURE DANS LA LISTE
-                do 80 ifis3 = 1, cpt
+                do ifis3 = 1, cpt
                     if (zk8(jjonf-1+ifis2) .eq. nomfis(ifis3)) goto 70
- 80             continue
+                end do
 ! --- ON AJOUTE LES FISSURES CONNECTÉS À LA LISTE
                 cpt = cpt+1
                 nomfis(cpt) = zk8(jjonf-1+ifis2)
                 coefln(cpt) = zi(jjonc-1+ifis2)
- 70         continue
+ 70             continue
+            end do
         endif
- 60 end do
+    end do
     nfini = nfiss+1
     nfiss = cpt
     if (nfini .le. nfiss) goto 90
@@ -156,16 +158,16 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     joncoe = fiss(1:8)//'.JONCOEF'
     call wkvect(jonfis, 'G V K8', nfiss, jjonf)
     call wkvect(joncoe, 'G V I', nfiss, jjonc)
-    do 40 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
         zk8(jjonf-1+ifiss) = nomfis(ifiss)
         zi(jjonc-1+ifiss) = coefln(ifiss)
- 40 end do
+    end do
 !
     call wkvect('&&XINLSJ.LICMP', 'V V K8', 2*nfiss, jncmp)
-    do 10 ifiss = 1, 2*nfiss
+    do ifiss = 1, 2*nfiss
         call codent(ifiss, 'G', ch)
         zk8(jncmp-1+ifiss) = 'X'//ch
- 10 end do
+    end do
 !
 ! --- CRÉATION DE LA SD CNSLJ : LSJ(IFISS,1) = COEF*LSN(IFISS)
 !                               LSJ(IFISS,2) = LST(IFISS)
@@ -174,12 +176,12 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
                 cnslj)
     call jeveuo(cnslj//'.CNSV', 'E', jcnsv)
     call jeveuo(cnslj//'.CNSL', 'E', jcnsl)
-    do 20 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
         call cnocns(nomfis(ifiss)//'.LNNO', 'V', cnsln)
         call jeveuo(cnsln//'.CNSV', 'L', jcnsvn)
         call cnocns(nomfis(ifiss)//'.LTNO', 'V', cnslt)
         call jeveuo(cnslt//'.CNSV', 'L', jcnsvt)
-        do 30 ino = 1, nbno
+        do ino = 1, nbno
             zl(jcnsl-1+2*nfiss*(ino-1)+2*(ifiss-1)+1) = .true.
             zr(jcnsv-1+2*nfiss*(ino-1)+2*(ifiss-1)+1) = coefln(ifiss)* zr(jcnsvn-1+ino)
             zl(jcnsl-1+2*nfiss*(ino-1)+2*(ifiss-1)+2) = .true.
@@ -189,8 +191,8 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- CRITERE SUR LA LST POUR LES FISS NON DECLAREES PAR L'UTILISATEUR
                 zr(jcnsv-1+2*nfiss*(ino-1)+2*(ifiss-1)+2) = zr(jcnsvt- 1+ino)
             endif
- 30     continue
- 20 end do
+        end do
+    end do
 !
     call jedetr('&&XINLSJ.FISS')
     call jedetr('&&XINLSJ.COEF')

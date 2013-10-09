@@ -136,7 +136,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
     endif
 !
-    do 20 ifis = 1, nfis
+    do ifis = 1, nfis
 !
         call jeveuo(mox//'.FISS', 'L', jmofis)
         nomfis = zk8(jmofis-1 + ifis)
@@ -149,29 +149,29 @@ subroutine xconno(mox, chfis, base, opt, param,&
         call jeveuo(cns//'.CNSV', 'L', jcnsv)
         call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-        do 1000 ii = 1, 3
+        do ii = 1, 3
 !         COPIER LE CHAMP 'CHFIS'
 !         POUR LES MAILLES '.HEAV','.CTIP' ET '.HECT'
             call jeexin(grp(ii), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(ii), 'L', jg)
                 call jelira(grp(ii), 'LONMAX', nmaenr)
-                do 120 i = 1, nmaenr
+                do i = 1, nmaenr
                     ima = zi(jg-1+i)
                     nbnom = zi(jlcnx+ima)-zi(jlcnx-1+ima)
                     itypma=zi(jtypma-1+ima)
                     ndime= zi(jtmdim-1+itypma)
-                    do 1210 jj = 1, nbnom
+                    do jj = 1, nbnom
                         ino = zi(jmacnx + zi(jlcnx-1+ima)-2+jj)
-                        do 1220 icmp = 1, ncmp1
+                        do icmp = 1, ncmp1
 !
 !                 POUR CHAQUE TYPE 'R', I', 'L', 'K8', SI LE CHAM_NO
 !                 A DEJE ETE REMPLI, ON INCREMENTE LE SOUS POINT
-                            do 100 kk = 1, zi(jnbsp-1+ima)
+                            do kk = 1, zi(jnbsp-1+ima)
                                 call cesexi('S', jcesd, jcesl, ima, jj,&
                                             kk, icmp, iad)
                                 if (iad .lt. 0) goto 110
-100                         continue
+                            end do
                             ASSERT(.false.)
 110                         continue
                             if (tsca .eq. 'R') then
@@ -203,10 +203,10 @@ subroutine xconno(mox, chfis, base, opt, param,&
                                 ASSERT(.false.)
                             endif
 !
-1220                     continue
-1210                 continue
+                        end do
+                    end do
                     if (lstno) then
-                        do 130 kk = 1, zi(jnbsp-1+ima)
+                        do kk = 1, zi(jnbsp-1+ima)
                             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                         kk, 1, iad)
                             if (iad .lt. 0) then
@@ -214,14 +214,15 @@ subroutine xconno(mox, chfis, base, opt, param,&
                                 zk8(jcesv2-1-iad) = nomfis
                                 goto 120
                             endif
-130                     continue
+                        end do
                     endif
-120             continue
+120                 continue
+                end do
             endif
-1000     continue
+        end do
 !
         call detrsd('CHAM_NO_S', cns)
- 20 end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

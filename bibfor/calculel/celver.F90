@@ -76,11 +76,11 @@ subroutine celver(celz, typver, arret, iret)
 !     --------------------------------
         ngrel = zi(jceld-1+2)
         iprem = 0
-        do 20 igr = 1, ngrel
+        do igr = 1, ngrel
             imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
             if (imolo .eq. 0) goto 20
             nel = zi(jceld-1+zi(jceld-1+4+igr)+1)
-            do 10 iel = 1, nel
+            do iel = 1, nel
                 ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
                 iprem = iprem + 1
                 if (iprem .eq. 1) then
@@ -94,8 +94,9 @@ subroutine celver(celz, typver, arret, iret)
                         endif
                     endif
                 endif
- 10         continue
- 20     continue
+            end do
+ 20         continue
+        end do
 !
 !
     else if (typver.eq.'NBSPT_1') then
@@ -121,25 +122,25 @@ subroutine celver(celz, typver, arret, iret)
         knan = '???'
 !
         if (tsca .eq. 'R') then
-            do 80 k = 1, nb1
+            do k = 1, nb1
                 if (iisnan(zr(jcelv-1+k)) .eq. 1) lnan=.true.
- 80         continue
+            end do
         else if (tsca.eq.'C') then
-            do 81 k = 1, nb1
+            do k = 1, nb1
                 if (iisnan(dble(zc(jcelv-1+k))) .eq. 1) lnan=.true.
- 81         continue
+            end do
         else if (tsca.eq.'I') then
-            do 82 k = 1, nb1
+            do k = 1, nb1
                 if (zi(jcelv-1+k) .eq. inan) lnan=.true.
- 82         continue
+            end do
         else if (tsca.eq.'K8') then
-            do 83 k = 1, nb1
+            do k = 1, nb1
                 if (zk8(jcelv-1+k) .eq. knan) lnan=.true.
- 83         continue
+            end do
         else if (tsca.eq.'K24') then
-            do 84 k = 1, nb1
+            do k = 1, nb1
                 if (zk24(jcelv-1+k) .eq. knan) lnan=.true.
- 84         continue
+            end do
         else
             ASSERT(.false.)
         endif

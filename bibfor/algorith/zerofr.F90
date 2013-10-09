@@ -16,7 +16,7 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
+! aslint: disable=W0307
     implicit none
 !
 #include "asterfort/assert.h"

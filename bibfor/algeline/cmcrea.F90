@@ -66,7 +66,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     integer :: jdim, ityin, ityout
     integer :: iret, i, ib
 !
-    character(len=8) ::  knum8, prefix, nomma
+    character(len=8) :: knum8, prefix, nomma
     character(len=24) :: linoma, liconn, lityma, lingma, ligpma
     character(len=24) :: valk, gno1, gno2
     character(len=24) :: dimin, dimout, nmain, nmaout, tmain, tmaout, conin
@@ -111,14 +111,14 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     call wkvect(lityma, 'V V K24', nbocc, jltyma)
     call wkvect(lingma, 'V V K24', nbocc, jlngma)
     call wkvect(ligpma, 'V V K24', nbocc, jlgpma)
-    do 10 i = 1, nbocc
+    do i = 1, nbocc
         call codent(i, 'D0', knum8)
         zk24(jlnoma-1 + i) = linoma(1:15) // '.' // knum8
         zk24(jlconn-1 + i) = liconn(1:15) // '.' // knum8
         zk24(jltyma-1 + i) = lityma(1:15) // '.' // knum8
         zk24(jlngma-1 + i) = lingma(1:15) // '.' // knum8
         zk24(jlgpma-1 + i) = ligpma(1:15) // '.' // knum8
- 10 end do
+    end do
 !
 !
 ! ----------------------------------------------------------------------
@@ -126,7 +126,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !           PARCOURS DES OCCURENCES DES MOTS-CLES FACTEURS
 ! ----------------------------------------------------------------------
 !
-    do 20 i = 1, nbocc
+    do i = 1, nbocc
 !
         if (motfac(i) .eq. 'CREA_FISS') then
 !
@@ -144,7 +144,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
             call utmess('F', 'ALGELINE_18', sk=motfac(i))
         endif
 !
- 20 end do
+    end do
 !
 !
 ! ----------------------------------------------------------------------
@@ -153,7 +153,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
     nbmaaj = 0
     nbgmaj = 0
-    do 30 i = 1, nbocc
+    do i = 1, nbocc
 !
 !      NOMBRE DE MAILLES AJOUTEES
         call jeexin(zk24(jlnoma-1+i), iret)
@@ -169,7 +169,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
             nbgmaj = nbgmaj + nbgm
         endif
 !
- 30 end do
+    end do
 !
     nbmato = nbmain + nbmaaj
     nbgmto = nbgmin + nbgmaj
@@ -194,19 +194,19 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     nmaout = maout//'.NOMMAI'
     call jecreo(nmaout, 'G N K8')
     call jeecra(nmaout, 'NOMMAX', nbmato)
-    do 100 ma = 1, nbmain
+    do ma = 1, nbmain
         call jenuno(jexnum(nmain, ma), nomma)
         call jecroc(jexnom(nmaout, nomma))
-100 end do
+    end do
 !
 !    OBJET .TYPMAIL
     tmain = main //'.TYPMAIL'
     tmaout = maout//'.TYPMAIL'
     call wkvect(tmaout, 'G V I', nbmato, ityout)
     call jeveuo(tmain, 'L', ityin)
-    do 110 ma = 1, nbmain
+    do ma = 1, nbmain
         zi(ityout-1+ma) = zi(ityin-1+ma)
-110 end do
+    end do
 !
 !    OBJET .CONNEX
     conin = main //'.CONNEX'
@@ -214,15 +214,15 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     call jecrec(conout, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)
     call jeecra(conout, 'LONT', nbnomx*nbmato, ' ')
-    do 120 ma = 1, nbmain
+    do ma = 1, nbmain
         call jelira(jexnum(conin , ma), 'LONMAX', nbno)
         call jeecra(jexnum(conout, ma), 'LONMAX', nbno)
         call jeveuo(jexnum(conin , ma), 'L', jadin)
         call jeveuo(jexnum(conout, ma), 'E', jadout)
-        do 130 no = 0, nbno-1
+        do no = 0, nbno-1
             zi(jadout+no) = zi(jadin+no)
-130     continue
-120 end do
+        end do
+    end do
 !
 !    OBJET .GROUPMA
     gmain = main //'.GROUPEMA'
@@ -232,7 +232,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     call jeecra(gmaptr, 'NOMMAX', nbgmto)
     call jecrec(gmaout, 'G V I', 'NO '//gmaptr, 'DISPERSE', 'VARIABLE',&
                 nbgmto)
-    do 140 gm = 1, nbgmin
+    do gm = 1, nbgmin
         call jenuno(jexnum(gmain , gm), nomgma)
         call jecroc(jexnom(gmaout, nomgma))
         call jelira(jexnum(gmain , gm), 'LONUTI', nbma)
@@ -240,10 +240,10 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
         call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnum(gmain , gm), 'L', jadin)
         call jeveuo(jexnom(gmaout, nomgma), 'E', jadout)
-        do 150 ma = 0, nbma - 1
+        do ma = 0, nbma - 1
             zi(jadout+ma) = zi(jadin+ma)
-150     continue
-140 end do
+        end do
+    end do
 !
 !    DUPLICATION A L'IDENTIQUE .NOMNOE, .GROUPENO, .COORDO
 !    (TANT QUE D'AUTRES MOTS CLES NE SONT PAS TRAITES)
@@ -264,7 +264,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 ! - AJOUT DES NOUVELLES MAILLES, DES NOUVEAUX GROUP_MA
 !
     numaco = nbmain
-    do 200 i = 1, nbocc
+    do i = 1, nbocc
 !
 !  -    AJOUT DE NOUVELLES MAILLES
         nbma = 0
@@ -274,7 +274,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
             call jeveuo(zk24(jlnoma-1+i), 'L', jnoma)
             call jeveuo(zk24(jltyma-1+i), 'L', jtyma)
             call jeveuo(zk24(jlconn-1+i), 'L', jconn)
-            do 300 ma = 1, nbma
+            do ma = 1, nbma
 !
 !          INSERTION DANS LE .NOMMAI
                 nomma = zk8(jnoma-1 + ma)
@@ -293,11 +293,11 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                 nbno = zi(jconn)
                 call jeecra(jexnum(conout, ma+numaco), 'LONMAX', nbno)
                 call jeveuo(jexnum(conout, ma+numaco), 'E', jadout)
-                do 310 no = 1, nbno
+                do no = 1, nbno
                     zi(jadout-1+no) = zi(jconn+no)
-310             continue
+                end do
                 jconn = jconn + 1 + nbno
-300         continue
+            end do
         endif
 !
 !
@@ -307,7 +307,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
             call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm)
             call jeveuo(zk24(jlngma-1+i), 'L', jngma)
             call jeveuo(zk24(jlgpma-1+i), 'L', jgpma)
-            do 400 gm = 1, nbgm
+            do gm = 1, nbgm
 !
 !          INSERTION DANS LE .GROUPEMA
                 nomgma = zk24(jngma-1 + gm)
@@ -324,18 +324,18 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                 call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma)
                 call jeveuo(jexnom(gmaout, nomgma), 'E', jadout)
 !
-                do 410 ma = 1, nbma
+                do ma = 1, nbma
                     numa = zi(jgpma+ma)
                     if (numa .le. 0) numa = -numa + numaco
                     zi(jadout-1+ma) = numa
-410             continue
+                end do
                 jgpma = jgpma + 1 + nbma
 !
-400         continue
+            end do
         endif
 !
         numaco = numaco + nbma
-200 end do
+    end do
 !
 !     -- RETASSAGE  DE CONOUT (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(conout)

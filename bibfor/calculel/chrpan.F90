@@ -53,7 +53,7 @@ subroutine chrpan(modele, carte, chelem)
     character(len=24) :: mesmai, ligrmo
 ! --- ------------------------------------------------------------------
     call getfac('AFFE', nrep)
-    if (nrep .eq. 0) goto 9999
+    if (nrep .eq. 0) goto 999
 ! --- ------------------------------------------------------------------
 ! --- PASSAGE PAR UN CHAM_ELEM_S
     k8b = ' '
@@ -83,7 +83,7 @@ subroutine chrpan(modele, carte, chelem)
     mesmai = '&&CHRPAN.MES_MAILLES'
 !
 ! --- ------------------------------------------------------------------
-    do 10 ioc = 1, nrep
+    do ioc = 1, nrep
         call getvtx('AFFE', 'MAILLE', iocc=ioc, nbval=0, nbret=n1)
         call getvtx('AFFE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=n2)
         if (n1+n2 .eq. 0) then
@@ -108,7 +108,7 @@ subroutine chrpan(modele, carte, chelem)
             ang(2)= ang(2)*180.d0/r8pi()
         endif
 !
-        do 30 ima = 1, nbma
+        do ima = 1, nbma
             if (ltout) then
                 numma = ima
             else
@@ -135,11 +135,11 @@ subroutine chrpan(modele, carte, chelem)
                 zr(icesv-1+iad2) = ang(2)
             endif
 !
- 30     continue
+        end do
 !
         if (.not. ltout) call jedetr(mesmai)
 !
- 10 end do
+    end do
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call cescel(chelms, ligrmo, 'REPE_GENE', 'PANGREP', 'NON',&
@@ -147,5 +147,5 @@ subroutine chrpan(modele, carte, chelem)
 !
     call detrsd('CHAM_ELEM_S', chelms)
 !
-9999 continue
+999 continue
 end subroutine

@@ -56,7 +56,7 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
     real(kind=8) :: ca(3), sa(3), rot(3)
 !
 !-----------------------------------------------------------------------
-    integer ::  ino1, nbid
+    integer :: ino1, nbid
 !-----------------------------------------------------------------------
     call jemarq()
     call getvr8(' ', 'DIST_REFE', scal=tailmi, nbret=nbid)
@@ -82,7 +82,7 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
 !
     nbante=0
 !
-    do 1 ino1 = 1, nbno
+    do ino1 = 1, nbno
 !
         x1 = zr(igeom -1 + (ino1 -1)*3 +1)
         y1 = zr(igeom -1 + (ino1 -1)*3 +2)
@@ -139,7 +139,7 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
 !
         endif
 !
-  1 end do
+    end do
 !
     call jedema()
 end subroutine

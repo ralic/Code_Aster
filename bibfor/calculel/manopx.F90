@@ -75,7 +75,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer ::  iopt, iopt1, nute, numc, igr, nbgrel
+    integer :: iopt, iopt1, nute, numc, igr, nbgrel
     integer :: jecono, imolo, jmolo, nec, kfpg
     integer :: igd, jpnlfp, nblfpg, jnolfp, nbfam, jfpgl
     integer :: k, nuflpg, nufgpg
@@ -99,12 +99,12 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 !     ------------------------------------------------------------------
     exixfm='NON'
     call wkvect(kecono, 'V V I', nbgrel, jecono)
-    do 1 igr = 1, nbgrel
+    do igr = 1, nbgrel
         zi(jecono-1+igr)=1
-  1 end do
+    end do
     call jenonu(jexnom('&CATA.OP.NOMOPT', 'XFEM_XPG'), iopt1)
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
-    do 2 igr = 1, nbgrel
+    do igr = 1, nbgrel
         nute = typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
 !
@@ -128,7 +128,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
             nbfam=nbfam-1
             call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
             elrefe=zk8(jfpgl-1+nbfam+1)
-            do 3 k = 1, nbfam
+            do k = 1, nbfam
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
                 nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
                 nufgpg = zi(jnolfp-1+nuflpg)
@@ -137,7 +137,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
                     exixfm='OUI'
                     zi(jecono-1+igr)=0
                 endif
-  3         continue
+            end do
 !
 !       -- FAMILLE "ORDINAIRE"
         else
@@ -148,8 +148,9 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
             endif
         endif
 !
-  2 end do
-    if (exixfm .eq. 'NON') goto 9999
+  2     continue
+    end do
+    if (exixfm .eq. 'NON') goto 999
 !
 !
 !     2. CALCUL DE CHSGEO :
@@ -176,6 +177,6 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     call celces(chgeom, 'V', chsgeo)
     call detrsd('CHAMP', chgeom)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

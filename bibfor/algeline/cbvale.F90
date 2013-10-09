@@ -119,23 +119,23 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 ! --- MISE A ZERO DE LA MATRICE RESULTAT :
 !     ----------------------------------------
     if (typres .eq. 'R') then
-        do 10 ival = jvamr1, jvamr1 + lgbloc - 1
+        do ival = jvamr1, jvamr1 + lgbloc - 1
             zr(ival) = zero
- 10     continue
+        end do
         if (.not.symr) then
-            do 20 ival = jvamr2, jvamr2 + lgbloc - 1
+            do ival = jvamr2, jvamr2 + lgbloc - 1
                 zr(ival) = zero
- 20         continue
+            end do
         endif
 !
     else if (typres.eq.'C') then
-        do 30 ival = jvamr1, jvamr1 + lgbloc - 1
+        do ival = jvamr1, jvamr1 + lgbloc - 1
             zc(ival) = czero
- 30     continue
+        end do
         if (.not.symr) then
-            do 40 ival = jvamr2, jvamr2 + lgbloc - 1
+            do ival = jvamr2, jvamr2 + lgbloc - 1
                 zc(ival) = czero
- 40         continue
+            end do
         endif
     endif
 !
@@ -143,7 +143,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 ! --- BOUCLE SUR LES MATRICES A COMBINER ---
 !     ----------------------------------------
     iconst = 1
-    do 50 imat = 1, nbcomb
+    do imat = 1, nbcomb
         if (typcst(imat) .eq. 'R') then
             r8cst = const(iconst)
             c8cst = dcmplx(r8vide(),r8vide())
@@ -230,7 +230,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
         call jelibe(jexnum(valmi, 1))
         if (.not.symi) call jelibe(jexnum(valmi, 2))
- 50 end do
+    end do
 !
 !
 !

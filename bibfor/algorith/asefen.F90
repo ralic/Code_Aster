@@ -89,7 +89,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=1, nbval=0, nbret=ns)
     if (ns .ne. 0) then
         call getfac(motfac, ncas)
-        do 2 ioc = 1, ncas
+        do ioc = 1, ncas
             call getvtx(motfac, 'NOEUD_REFE', iocc=ioc, scal=noeref, nbret=nnr)
             if (nnr .ne. 0) inorf = 1
             call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
@@ -101,7 +101,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                 call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
                 call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
                 call getvr8(motfac, 'DZ', iocc=ioc, scal=dz, nbret=nz)
-                do 22 ino = 1, nno
+                do ino = 1, nno
                     noeu = zk8(jnoe+ino-1)
                     call jenonu(jexnom(obj2, noeu), iret)
                     if (iret .eq. 0) then
@@ -112,21 +112,22 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                         goto 22
                     endif
                     if (nx .ne. 0) then
-                        do 72 is = 1, nsupp(1)
+                        do is = 1, nsupp(1)
                             if (nomsup(is,1) .eq. noeu) depsup(is,1) = dx
- 72                     continue
+                        end do
                     endif
                     if (ny .ne. 0) then
-                        do 74 is = 1, nsupp(2)
+                        do is = 1, nsupp(2)
                             if (nomsup(is,2) .eq. noeu) depsup(is,2) = dy
- 74                     continue
+                        end do
                     endif
                     if (nz .ne. 0) then
-                        do 76 is = 1, nsupp(3)
+                        do is = 1, nsupp(3)
                             if (nomsup(is,3) .eq. noeu) depsup(is,3) = dz
- 76                     continue
+                        end do
                     endif
- 22             continue
+ 22                 continue
+                end do
                 call jedetr('&&ASEFEN.NOEUD')
 !
             else
@@ -140,7 +141,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                 call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
                 call getvr8(motfac, 'DZ', iocc=ioc, scal=dz, nbret=nz)
 !
-                do 26 igr = 1, ngr
+                do igr = 1, ngr
                     grnoeu = zk24(jgrn+igr-1)
                     call jeexin(jexnom(obj1, grnoeu), iret)
                     if (iret .eq. 0) then
@@ -152,26 +153,27 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     else
                         call jelira(jexnom(obj1, grnoeu), 'LONUTI', nn)
                         call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
-                        do 28 ino = 1, nn
+                        do ino = 1, nn
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
                             if (nx .ne. 0) then
-                                do 82 is = 1, nsupp(1)
+                                do is = 1, nsupp(1)
                                     if (nomsup(is,1) .eq. noeu) depsup( is,1) = dx
- 82                             continue
+                                end do
                             endif
                             if (ny .ne. 0) then
-                                do 84 is = 1, nsupp(2)
+                                do is = 1, nsupp(2)
                                     if (nomsup(is,2) .eq. noeu) depsup( is,2) = dy
- 84                             continue
+                                end do
                             endif
                             if (nz .ne. 0) then
-                                do 86 is = 1, nsupp(3)
+                                do is = 1, nsupp(3)
                                     if (nomsup(is,3) .eq. noeu) depsup( is,3) = dz
- 86                             continue
+                                end do
                             endif
- 28                     continue
+                        end do
                     endif
- 26             continue
+ 26                 continue
+                end do
 !
                 call jedetr('&&ASEFEN.GROUP_NO')
 !
@@ -185,43 +187,44 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     valk(1) = noeref
                     valk(2) = noma
                     call utmess('E', 'SEISME_1', nk=2, valk=valk)
-                    goto 9999
+                    goto 999
                 endif
                 if (ire2 .ne. 0) then
                     call jeveuo(jexnom(obj1, noeref), 'L', jdgn)
                     call jenuno(jexnum(obj2, zi(jdgn)), noeref)
                 endif
-                do 90 idi = 1, 3
+                do idi = 1, 3
                     if (ndir(idi) .eq. 1) then
-                        do 92 is = 1, nsupp(idi)
+                        do is = 1, nsupp(idi)
                             if (nomsup(is,idi) .eq. noeref) then
-                                do 94 in = 1, nsupp(idi)
+                                do in = 1, nsupp(idi)
                                     depsup(in,idi) = depsup(in,idi) - depsup(is,idi)
- 94                             continue
+                                end do
                                 goto 90
                             endif
- 92                     continue
+                        end do
                         ier = ier + 1
                         call utmess('E', 'SEISME_3', sk=noeref)
-                        goto 9999
+                        goto 999
                     endif
- 90             continue
+ 90                 continue
+                end do
             endif
 !
-  2     continue
+        end do
     else
-        do 116 is = 1, nsupp(id)
+        do is = 1, nsupp(id)
             depsup(is,id) = 0.d0
-116     continue
+        end do
     endif
 !
     cmp = nomcmp(id)
-    do 11 is = 1, nbsup
-        do 12 in = 1, neq
+    do is = 1, nbsup
+        do in = 1, neq
             zr(jrepmo-1+in + (is-1)*neq) = 0.d0
- 12     continue
- 11 end do
-    do 110 is = 1, nsupp(id)
+        end do
+    end do
+    do is = 1, nsupp(id)
         noeu = nomsup(is,id)
         monacc = noeu//cmp
         xx1 = depsup(is,id)
@@ -241,28 +244,28 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 !
             if (muapde) then
                 ioc = nbdis(is)
-                do 112 in = 1, neq
+                do in = 1, neq
                     xxx = zr(jvale+in-1) * xx1
                     zr(jrepmo-1+in+(ioc-1)*neq) = zr(jrepmo-1+in+(ioc- 1)*neq ) + xxx
-112             continue
+                end do
             else
-                do 114 in = 1, neq
+                do in = 1, neq
                     xxx = zr(jvale+in-1) * xx1
                     recmod(1,in,id) = recmod(1,in,id) + xxx*xxx
-114             continue
+                end do
             endif
         endif
-110 end do
+    end do
     if (muapde) then
-        do 111 ioc = 1, nintra
-            do 113 in = 1, neq
+        do ioc = 1, nintra
+            do in = 1, neq
                 xxx = zr(jrepmo-1+in+(ioc-1)*neq)
                 recmod(ioc,in,id) = recmod(ioc,in,id) + xxx*xxx
-113         continue
-111     continue
+            end do
+        end do
     endif
 !
-9999 continue
+999 continue
 !
     call jedetr('&&ASEFEN.REPMO')
 !

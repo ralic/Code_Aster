@@ -48,7 +48,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
 !                = 0 : LE MODELE CONTIENT DES ELEMENTS FINIS
 !                = 1 : LE MODELE NE CONTIENT PAS D'ELEMENTS FINIS
 !     ------------------------------------------------------------------
-    character(len=8) ::  nomo, noma, nomacr, exiele
+    character(len=8) :: nomo, noma, nomacr, exiele
     character(len=24) :: chgeom, chharm
     logical :: exicar
 !
@@ -74,7 +74,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
 !        --- BOUCLE SUR LES (SUPER)MAILLES ---
         ier=0
         if (option(1:9) .eq. 'MASS_MECA') then
-            do 10 ima = 1, nbsma
+            do ima = 1, nbsma
                 if (zi(iasssa-1+ima) .eq. 1) then
                     nomacr=zk8(ianmcr-1+ima)
                     call jeexin(nomacr//'.MAEL_MASS_VALE', iexi)
@@ -83,12 +83,12 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                         call utmess('E', 'CALCULEL3_31', sk=nomacr)
                     endif
                 endif
- 10         continue
+            end do
             if (ier .gt. 0) then
                 call utmess('F', 'CALCULEL3_32')
             endif
         else if (option(1:9).eq.'RIGI_MECA') then
-            do 20 ima = 1, nbsma
+            do ima = 1, nbsma
                 if (zi(iasssa-1+ima) .eq. 1) then
                     nomacr=zk8(ianmcr-1+ima)
                     call jeexin(nomacr//'.MAEL_RAID_VALE', iexi)
@@ -97,12 +97,12 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                         call utmess('E', 'CALCULEL3_33', sk=nomacr)
                     endif
                 endif
- 20         continue
+            end do
             if (ier .gt. 0) then
                 call utmess('F', 'CALCULEL3_34')
             endif
         else if (option(1:9).eq.'AMOR_MECA') then
-            do 30 ima = 1, nbsma
+            do ima = 1, nbsma
                 if (zi(iasssa-1+ima) .eq. 1) then
                     nomacr=zk8(ianmcr-1+ima)
                     call jeexin(nomacr//'.MAEL_AMOR_VALE', iexi)
@@ -111,7 +111,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                         call utmess('E', 'CALCULEL6_80', sk=nomacr)
                     endif
                 endif
- 30         continue
+            end do
             if (ier .gt. 0) then
                 call utmess('F', 'CALCULEL6_81')
             endif

@@ -58,7 +58,7 @@ subroutine trcart(ific, nocc)
 !
     motcle = 'CARTE'
 !
-    do 100 iocc = 1, nocc
+    do iocc = 1, nocc
         lign1 = ' '
         lign2 = ' '
         noddl = ' '
@@ -145,7 +145,7 @@ subroutine trcart(ific, nocc)
         endif
         write (ific,*)' '
 !
-100 end do
+    end do
 !
 !
     call jedema()

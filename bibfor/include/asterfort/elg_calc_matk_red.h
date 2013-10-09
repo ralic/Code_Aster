@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,12 +14,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine elg_calc_matk_red(mat1z,solv1z,mat2z,bas1,lqr)
-              character(len=*) :: mat1z
-              character(len=*) :: solv1z
-              character(len=*) :: mat2z
-              character(len=1) :: bas1
-              logical :: lqr
-            end subroutine elg_calc_matk_red
-          end interface
+interface
+    subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
+        character(len=*) :: mat1z
+        character(len=*) :: solv1z
+        character(len=*) :: mat2z
+        character(len=1) :: bas1
+        logical :: lqr
+    end subroutine elg_calc_matk_red
+end interface

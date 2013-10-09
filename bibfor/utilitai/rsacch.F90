@@ -51,7 +51,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
 ! ---------------------------------------------------------------------
 !
 !
-    integer ::  iret, itab, i, numord, loncmp, icmp, c, j
+    integer :: iret, itab, i, numord, loncmp, icmp, c, j
     character(len=4) :: typech
     character(len=8) :: comp
     character(len=19) :: nomsd, champ, chs
@@ -68,12 +68,12 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
     call rschor(nomsd, nomch, nbord, tabord, iret)
 !    RECOPIE DES NUMEROS D'ORDRE
     call jeveuo(tabord, 'L', itab)
-    do 10 i = 1, nbord
+    do i = 1, nbord
         liord(i) = zi(itab-1 + i)
- 10 end do
+    end do
 !    COMPOSANTES DU CHAMP
     nbcmp = 0
-    do 20 i = 1, nbord
+    do i = 1, nbord
 !      EXTRACTION DU CHAMP AU NUMERO D'ORDRE COURANT
         numord = zi(itab-1 + i)
         call rsexch('F', nomsd, nomch, numord, champ,&
@@ -93,18 +93,20 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
             goto 20
         endif
 !      STOCKAGE DES NOUVELLES COMPOSANTES
-        do 30 c = 1, loncmp
+        do c = 1, loncmp
             comp = zk8(icmp-1 + c)
-            do 40 j = 1, nbcmp
+            do j = 1, nbcmp
                 if (comp .eq. liscmp(j)) goto 30
- 40         continue
+            end do
             nbcmp = nbcmp + 1
             ASSERT(nbcmp.le.500)
             liscmp(nbcmp) = comp
- 30     continue
+ 30         continue
+        end do
 !      DESTRUCTION DU CHAMP_S
         call detrsd('CHAMP_GD', chs)
- 20 end do
+ 20     continue
+    end do
     call jedetr(tabord)
     call jedema()
 end subroutine

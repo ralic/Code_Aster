@@ -50,7 +50,7 @@ subroutine te0082(option, nomte)
     character(len=3) :: stopz
     integer :: icodre(1)
 !      CHARACTER*4        FAMI
-    real(kind=8) :: valres(1), dfdx(9), dfdy(9), poids, r, r8b=0.d0, vfi, vfj
+    real(kind=8) :: valres(1), poids, r, vfi, vfj
     real(kind=8) :: matp(18, 18), matv(171), masvit(18), masdep(18)
     real(kind=8) :: vect1(18), vect2(18)
     integer :: nno, kp, nnos, npg2, ii, jj, i, j, k, imatuu, jgano
@@ -92,20 +92,20 @@ subroutine te0082(option, nomte)
                     poids)
         if (lteatt(' ','AXIS','OUI')) then
             r = 0.0d0
-            do 20 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-20          continue
+            end do
             poids = poids*r
         endif
         poids = poids*valres(1)
 !
         kd1 = 2
         kd2 = 1
-        do 30 i = 1, 2*nno, 2
+        do i = 1, 2*nno, 2
             kd1 = kd1+2*i-3
             kd2 = kd2+2*i-1
             ii = (i+1)/2
-            do 40 j = 1, i, 2
+            do j = 1, i, 2
                 jj = (j+1)/2
                 ij1 = kd1+j-1
                 ij2 = kd2+j-1
@@ -113,27 +113,27 @@ subroutine te0082(option, nomte)
                 vfj = zr(ivf+k+jj-1)
                 matv(ij1 ) = matv(ij1 ) + poids*vfi*vfj
                 matv(ij2+1) = matv(ij2+1) + poids*vfi*vfj
-40          continue
-30      continue
+            end do
+        end do
     end do
 !
     if (option .eq. 'MASS_MECA') then
         call jevech('PMATUUR', 'E', imatuu)
         if (idec .eq. 0) then
-            do 100 i = 1, nvec
+            do i = 1, nvec
                 zr(imatuu+i-1) = matv(i)
-100          continue
+            end do
         else
-            do 101 k = 1, nno
-                do 102 n1 = 1, 2
+            do k = 1, nno
+                do n1 = 1, 2
                     i = 2*k+n1-2
                     if (k .le. nnos) then
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
                     endif
-                    do 103 l = 1, nno
-                        do 104 n2 = 1, 2
+                    do l = 1, nno
+                        do n2 = 1, 2
                             j = 2*l+n2-2
                             if (j .gt. i) goto 105
                             if (l .le. nnos) then
@@ -142,11 +142,11 @@ subroutine te0082(option, nomte)
                                 j2 = j+idec*nnos
                             endif
                             zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1) /2+j)
-104                      continue
-103                  continue
-105                  continue
-102              continue
-101          continue
+                        end do
+                    end do
+105                 continue
+                end do
+            end do
         endif
 !
     else if (option .eq. 'M_GAMMA') then
@@ -156,12 +156,12 @@ subroutine te0082(option, nomte)
         if (idec .eq. 0) then
             call pmavec('ZERO', nddl, matp, zr(iacce), zr(ivect))
         else
-            do 120 k = 1, nddl
+            do k = 1, nddl
                 vect1(k) = 0.0d0
                 vect2(k) = 0.0d0
-120          continue
-            do 111 k = 1, nno
-                do 112 n1 = 1, 2
+            end do
+            do k = 1, nno
+                do n1 = 1, 2
                     i = 2*k+n1-2
                     if (k .le. nnos) then
                         i2 = i+idec*(k-1)
@@ -169,11 +169,11 @@ subroutine te0082(option, nomte)
                         i2 = i+idec*nnos
                     endif
                     vect1(i) = zr(iacce+i2-1)
-112              continue
-111          continue
+                end do
+            end do
             call pmavec('ZERO', nddl, matp, vect1, vect2)
-            do 113 k = 1, nno
-                do 114 n1 = 1, 2
+            do k = 1, nno
+                do n1 = 1, 2
                     i = 2*k+n1-2
                     if (k .le. nnos) then
                         i2 = i+idec*(k-1)
@@ -181,8 +181,8 @@ subroutine te0082(option, nomte)
                         i2 = i+idec*nnos
                     endif
                     zr(ivect+i2-1) = vect2(i)
-114              continue
-113          continue
+                end do
+            end do
         endif
 !
 ! OPTION ECIN_ELEM : CALCUL DE L'ENERGIE CINETIQUE

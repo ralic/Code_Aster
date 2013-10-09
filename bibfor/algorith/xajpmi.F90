@@ -59,12 +59,12 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
 !     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
     deja = .false.
 !
-    do 100 i = 1, ipt
-        do 99 j = 1, ndim
+    do i = 1, ipt
+        do j = 1, ndim
             p(j) = list(ndim*(i-1)+j)
- 99     continue
+        end do
         if (padist(ndim,p,newpt) .lt. (longar*1.d-6)) deja = .true.
-100 end do
+    end do
 !
     if (.not. deja) then
 !       CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
@@ -72,9 +72,9 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
         cpt = cpt + 1
 !       TROP DE POINTS DANS LA LISTE
         ASSERT(ipt .le. long)
-        do 101 j = 1, ndim
+        do j = 1, ndim
             list(ndim*(ipt-1)+j) = newpt(j)
-101     continue
+        end do
     endif
 !
     call jedema()

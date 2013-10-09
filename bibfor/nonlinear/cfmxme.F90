@@ -57,8 +57,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=8) :: k8bid
-    integer :: iret, neq,  ntpc
+    integer ::  neq, ntpc
     logical :: ldyna, lnoeu
     character(len=24) :: mdecol, etatct
     integer :: jmdeco, jetat

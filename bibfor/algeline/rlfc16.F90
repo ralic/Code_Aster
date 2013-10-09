@@ -61,7 +61,7 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     integer :: decal, global
     integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav
     integer :: lgblma, points
-    integer ::  i
+    integer :: i
     character(len=14) :: nu
 !
 !     ------------------------------------------------------------------
@@ -92,9 +92,9 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     nbsn = zi(desc+1)
     nbloc= zi(desc+2)
     lgblma=0
-    do 1 i = 0, nbloc-1
+    do i = 0, nbloc-1
         if (zi(lgbloc+i) .gt. lgblma) lgblma = zi(lgbloc+i)
-  1 end do
+    end do
     call wkvect('&&RLFC16.ALLEUR.VALF ', ' V V C ', lgblma, points)
 !
 !                                ALLOCATION TABLEAU REEL PROVISOIRE
@@ -105,12 +105,12 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     call jeveuo(nu//'.MLTF.GLOB', 'L', global)
 !
     call jedetr('&&RLFC16.ALLEUR.VALF ')
-    do 110 i = 1, nbsol
+    do i = 1, nbsol
         call mltdca(nbloc, zi(lgbloc), zi(ncbloc), zi(decal), zi(seq),&
                     nbsn, neq, zi(supnd), zi(adress), zi4(global),&
                     zi(lgsn), factol, factou, cxsol(1, i), zc(pointr),&
                     zi(nouv), zi(anc), zi(ad), zc(trav), typsym)
-110 end do
+    end do
 !
     call jedetr('&&RLFC16.POINTER.ADRESSE')
     call jedetr('&&RLFC16.POINTER.TRAVAIL')

@@ -403,7 +403,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
     endif
 !
-3333  continue
+3333 continue
 !
 ! =====================================================================
 ! 3. ON TRAITE LA PARTIE HYDRAULIQUE
@@ -466,7 +466,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 ! ONT ETE DECLARES EXPLICITEMENT DANS LES COMMANDES.
 !
                 if (fluxhf .eq. '&FOZERO') then
-                    goto 9999
+                    goto 999
                 endif
 !
                 flagh = .false.
@@ -600,6 +600,6 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
     endif
 !
-9999  continue
+999 continue
 !
 end subroutine

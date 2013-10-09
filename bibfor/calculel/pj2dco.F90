@@ -67,7 +67,7 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
 !
 !
 !
-    character(len=8) ::  m1, m2, nono2
+    character(len=8) :: m1, m2, nono2
     character(len=14) :: boite
     character(len=16) :: cortr3
     integer :: nbtm, nbtmx
@@ -122,7 +122,7 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
 !           V(1+4(I-1)+4) : NUMERO DE LA MAILLE MERE DU IEME TRIA3
     call jeveuo(m1//'.TYPMAIL', 'L', iatym1)
     ico=0
-    do 51 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 51
         itypm=zi(iatym1-1+ima)
         if (itypm .eq. nutm(1)) then
@@ -140,7 +140,8 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
         else
             ASSERT(.false.)
         endif
- 51 end do
+ 51     continue
+    end do
     call wkvect('&&PJXXCO.TRIA3', 'V V I', 1+4*ico, iatr3)
     zi(iatr3-1+1)=ico
     if (ico .eq. 0) then
@@ -150,7 +151,7 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(m1//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
-    do 52 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 52
         itypm=zi(iatym1-1+ima)
 !       -- CAS DES TRIANGLES :
@@ -174,7 +175,8 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
             zi(iatr3+(ico-1)*4+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
             zi(iatr3+(ico-1)*4+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
         endif
- 52 end do
+ 52     continue
+    end do
 !
 !
 !     3. ON MET LES TRIA3 EN BOITES :
@@ -256,7 +258,7 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
     idecal=0
     nbnod = 0
     nbnodm = 0
-    do 6 ino2 = 1, nno2
+    do ino2 = 1, nno2
         if (zi(ialin2-1+ino2) .eq. 0) goto 6
         call pj2dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
@@ -279,12 +281,13 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
 !
         zi(iaconb-1+ino2)=3
         zi(iacotr-1+ino2)=itr3
-        do 61 k = 1, 3
+        do k = 1, 3
             zi(iaconu-1+idecal+k)= zi(iatr3+4*(itr3-1)+k)
             zr(iacocf-1+idecal+k)= cobary(k)
- 61     continue
+        end do
         idecal=idecal+zi(iaconb-1+ino2)
-  6 end do
+  6     continue
+    end do
 !
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:

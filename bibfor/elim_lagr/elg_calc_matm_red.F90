@@ -18,26 +18,26 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "jeveux.h"
-#   include "asterfort/assert.h"
-#   include "asterfort/copisd.h"
-#   include "asterfort/dismoi.h"
-#   include "asterfort/gcncon.h"
-#   include "asterfort/jecrec.h"
-#   include "asterfort/jecreo.h"
-#   include "asterfort/jecroc.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jeecra.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jenuno.h"
-#   include "asterfort/jerazo.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/jexnom.h"
-#   include "asterfort/jexnum.h"
-#   include "asterfort/utmess.h"
-#   include "asterfort/wkvect.h"
-    character(len=19) :: matas1, matas2, ligrmo
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/copisd.h"
+# include "asterfort/dismoi.h"
+# include "asterfort/gcncon.h"
+# include "asterfort/jecrec.h"
+# include "asterfort/jecreo.h"
+# include "asterfort/jecroc.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jedetr.h"
+# include "asterfort/jeecra.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jenuno.h"
+# include "asterfort/jerazo.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/jexnom.h"
+# include "asterfort/jexnum.h"
+# include "asterfort/utmess.h"
+# include "asterfort/wkvect.h"
+    character(len=19) :: matas1, matas2
     character(len=1) :: bas1
 !--------------------------------------------------------------
 ! BUT :
@@ -94,7 +94,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     if (zk24(jrefa2-1+9) .ne. 'MS') call utmess('F', 'ELIMLAGR_5')
     if (zk24(jrefa2-1+10) .ne. 'NOEU') call utmess('F', 'ELIMLAGR_6')
     ASSERT(zk24(jrefa2-1+11).eq.'MPI_COMPLET')
-
+!
 !     -- la matrice MATAS2 n'est pas concernée par ELIM_LAGR :
     zk24(jrefa2-1+19)=' '
     zk24(jrefa2-1+20)=matas1

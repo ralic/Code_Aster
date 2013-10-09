@@ -141,7 +141,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     if (tsca .ne. 'R' .and. tsca .ne. 'C') then
 !        -- ON NE TRAITE QUE LES CHAMPS R/C :
         iret = 1
-        goto 9999
+        goto 999
     endif
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
@@ -157,22 +157,22 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
     licmp = '&&LICMP'
     call wkvect(licmp, 'V V K8', 3*ncmp, lcmp)
-    do 230 icmp = 1, ncmp
+    do icmp = 1, ncmp
         zk8(lcmp-1+icmp)=zk8(jcns1c-1+icmp)
-230 continue
+    end do
     ncmp2 = ncmp
-    do 220 iddl = 1, nbmesu
+    do iddl = 1, nbmesu
         kcmp = zk8(lrange-1+iddl)
         newk = .true.
-        do 210 icmp = 1, ncmp2
+        do icmp = 1, ncmp2
             ksto = zk8(lcmp-1+icmp)
             if (kcmp .eq. ksto) newk = .false.
-210     continue
+        end do
         if (newk) then
             ncmp2 = ncmp2+1
             zk8(lcmp-1+ncmp2) = kcmp
         endif
-220 continue
+    end do
 !
     call cnscre(ma3, nomgd, ncmp2, zk8(lcmp), base,&
                 cns2)
@@ -203,66 +203,66 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     trav = '&TRAV'
     call wkvect(trav, 'V V R', nbmesu*nddle, ltrav)
 ! CALCUL DU PRODUIT : PHI*VSU
-    do 410 iddl = 1, nbmesu
-        do 420 jddl = 1, nddle
+    do iddl = 1, nbmesu
+        do jddl = 1, nddle
             ipos = (jddl-1)*nbmesu+iddl
             zr(ltrav-1+ipos) = 0.d0
-            do 430 imod = 1, nbord
+            do imod = 1, nbord
                 iposi = (imod-1)*nbmesu+iddl
                 iposj = (jddl-1)*nbord+imod
                 zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lmesu-1+ iposi)*zr(lvsu-1+iposj)
-430         continue
-420     continue
-410 continue
+            end do
+        end do
+    end do
 !
 !
 ! INITIALISATION A ZERO
     v2=0.d0
     v2c = dcmplx(0.d0,0.d0)
 !
-    do 110 iddl = 1, nbmesu
+    do iddl = 1, nbmesu
         ino2 = zi(lnoeud-1+iddl)
-        do 70 icmp = 1, ncmp2
+        do icmp = 1, ncmp2
             zl(jcns2l-1+ (ino2-1)*ncmp2+icmp)=.true.
             if (tsca .eq. 'R') then
                 zr(jcns2v-1+ (ino2-1)*ncmp2+icmp)=v2
             else
                 zc(jcns2v-1+ (ino2-1)*ncmp2+icmp)=v2c
             endif
- 70     continue
-110 continue
+        end do
+    end do
 !
 !
 ! PROJECTION DU CHAMP SUIVANT LA DIRECTION DE MESURE
 !
-    do 100 iddl = 1, nbmesu
+    do iddl = 1, nbmesu
         ino2 = zi(lnoeud-1+iddl)
         kcmp2 = zk8(lrange-1+iddl)
 !
-        do 50 icmp = 1, ncmp2
+        do icmp = 1, ncmp2
             if (zk8(jcns2c-1+icmp) .eq. kcmp2) then
                 icmp2=icmp
                 goto 60
             endif
- 50     continue
+        end do
  60     continue
 !
         v2=0.d0
         v2c = dcmplx(0.d0,0.d0)
 !
-        do 200 jddl = 1, nddle
+        do jddl = 1, nddle
             ino1 = zi(lnoeum-1+jddl)
             kcmp = zk8(lrangm-1+jddl)
 ! ICI ON SUPPOSE QUE LES NOEUDS INTERFACES ONT LE MEME NOM
             call jenuno(jexnum(ma2//'.NOMNOE', ino1), nono)
             call jenonu(jexnom(ma1//'.NOMNOE', nono), ino1)
 !
-            do 150 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 if (zk8(jcns1c-1+icmp) .eq. kcmp) then
                     icmp1=icmp
                     goto 160
                 endif
-150         continue
+            end do
 160         continue
 !
             coef1 = zr(ltrav-1+(jddl-1)*nbmesu+iddl)
@@ -275,7 +275,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 v2c=v2c+coef1*v1c
             endif
 !
-200     continue
+        end do
 !
         zl(jcns2l-1+ (ino2-1)*ncmp2+icmp2)=.true.
         if (tsca .eq. 'R') then
@@ -311,12 +311,12 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             endif
 !
             if (axe) then
-                do 250 icmp = 1, ncmp2
+                do icmp = 1, ncmp2
                     if (zk8(jcns2c-1+icmp) .eq. dir) then
                         icmpd=icmp
                         goto 260
                     endif
-250             continue
+                end do
 260             continue
 !
                 zl(jcns2l-1+ (ino2-1)*ncmp2+icmpd)=.true.
@@ -328,13 +328,13 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             endif
         endif
 !
-100 continue
+    end do
 !
     call jedetr(trav)
     call jedetr(licmp)
 !
     iret = 0
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -90,8 +90,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival
     logical :: ltypr
-    real(kind=8) :: rbid, rr4max, raux, rmin, rmax, rtest, valr(2)
+    real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
     call jemarq()

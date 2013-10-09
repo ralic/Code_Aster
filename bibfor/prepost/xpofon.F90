@@ -40,9 +40,9 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !     =================================================================
 !     ------------------------------------------------------------------
     integer :: jnom, jtail, jnfond, jbnfmu
-    integer ::  iret, ifiss, ifon
+    integer :: iret, ifiss, ifon
     integer :: ndim, nfiss, nfond, nbnol
-    character(len=8) ::  fiss, mo, malini
+    character(len=8) :: fiss, mo, malini
     character(len=19) :: nomta1, nomta2
     character(len=24) :: nom
 !
@@ -68,7 +68,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !
     if (ndim .eq. 2) then
 !
-        do 10 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             fiss = zk8(jnom)
             call jeexin(fiss//'.FONDFISS', iret)
             if (iret .ne. 0) then
@@ -80,11 +80,11 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                 mftot = mftot + nfond
                 nfcomf = nfcomf + nfond
             endif
- 10     continue
+        end do
 !
     else if (ndim.eq.3) then
 !
-        do 11 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
 !
             fiss = zk8(jnom)
             call jeexin(fiss//'.FONDFISS', iret)
@@ -100,7 +100,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !
                 nfond = zi(jnfond)
                 ngfon = ngfon + nfond
-                do 20 ifon = 1, nfond
+                do ifon = 1, nfond
                     nbnol = zi(jbnfmu + 2*ifon -1) - zi(jbnfmu + 2* ifon -2)
                     if (nbnol .ne. 0) then
                         mftot = mftot + nbnol
@@ -110,11 +110,11 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                         mftot = mftot + 1
                         nfcomf = nfcomf + 1
                     endif
- 20             continue
+                end do
                 nftot = nftot + zi(jtail + 1)
 !
             endif
- 11     continue
+        end do
     endif
 !
 end subroutine

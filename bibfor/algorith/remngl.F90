@@ -219,26 +219,26 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----CLASSEMENT DES MODES PROPRES--------------------------------------
 !
     nbmoc = 0
-    do 5 iddi = 1, nbdia
+    do iddi = 1, nbdia
         nbmoc = nbmoc + zi(lldiam+nbdia+iddi-1)
-  5 continue
+    end do
     call wkvect('&&REMNGL.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNGL.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
     call ordr8(zr(llfreq), nbmoc, zi(ltorto))
     nborc = 0
-    do 6 ii = 1, nbmoc
+    do ii = 1, nbmoc
         iormo = zi(ltorto+ii-1)
         icomp = 0
         idicou = 0
-        do 7 jj = 1, nbdia
+        do jj = 1, nbdia
             icomp = icomp + zi(lldiam+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
-  7     continue
+        end do
         nborc = nborc + 1
         zi(ltorf+iormo-1) = nborc
         idiam = zi(lldiam+idicou-1)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
-  6 continue
+    end do
     call jedetr('&&REMNGL.ORDRE.TMPO')
 !
 !-----RECUPERATION DES MODES COMPLEXES----------------------------------
@@ -248,9 +248,9 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----CALCUL DU TETA DE CHAQUE SECTEUR----------------------------------
 !
     call wkvect('&&REMNGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
-    do 8 i = 1, nbsec
+    do i = 1, nbsec
         zr(lttsc+i-1) = depi*(i-1) / nbsec
-  8 continue
+    end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
@@ -267,7 +267,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  BOUCLE SUR LES DIAMETRES NODAUX
 !
-    do 10 idi = 1, nbdia
+    do idi = 1, nbdia
 !
 !  CALCUL DU DEPHASAGE INTER-SECTEUR
 !
@@ -277,7 +277,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  BOUCLE SUR LES MODES PROPRES DU DIAMETRE COURANT
 !
-        do 15 i = 1, zi(lldiam+nbdia+idi-1)
+        do i = 1, zi(lldiam+nbdia+idi-1)
             icomp = icomp + 1
             inum = inum +1
             iorc = zi(ltorf+icomp-1)
@@ -335,25 +335,25 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  BOUCLE SUR LES SECTEURS
 !
-            do 20 k = 1, nbsec
+            do k = 1, nbsec
                 if (k .gt. 1) then
                     dephco = dephc
                 else
                     dephco = dcmplx(1.d0,0.d0)
                 endif
-                do 30 j = 1, neqsec
+                do j = 1, neqsec
                     zc(ltveco+j-1) = zc(ltveco+j-1)*dephco
                     zr(ltvere+j-1) = dble(zc(ltveco+j-1))
- 30             continue
+                end do
                 call jeveuo(jexnum(indirf, k), 'L', ltinds)
                 call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
                 nddcou = nddcou/2
-                do 40 j = 1, nddcou
+                do j = 1, nddcou
                     ieqi = zi(ltinds+(j-1)*2)
                     ieqf = zi(ltinds+(j-1)*2+1)
                     zr(llcham+ieqf-1) = zr(ltvere+ieqi-1)*fact
- 40             continue
- 20         continue
+                end do
+            end do
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
@@ -416,25 +416,25 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  BOUCLE SUR LES SECTEURS
 !
-                do 50 k = 1, nbsec
+                do k = 1, nbsec
                     if (k .gt. 1) then
                         dephco = dephc
                     else
                         dephco = dcmplx(1.d0,0.d0)
                     endif
-                    do 60 j = 1, neqsec
+                    do j = 1, neqsec
                         zc(ltveco+j-1) = zc(ltveco+j-1)*dephco
                         zr(ltvere+j-1) = dimag(zc(ltveco+j-1))
- 60                 continue
+                    end do
                     call jeveuo(jexnum(indirf, k), 'L', ltinds)
                     call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
                     nddcou = nddcou / 2
-                    do 70 j = 1, nddcou
+                    do j = 1, nddcou
                         ieqi = zi(ltinds+(j-1)*2)
                         ieqf = zi(ltinds+(j-1)*2+1)
                         zr(llcham+ieqf-1) = zr(ltvere+ieqi-1)*fact
- 70                 continue
- 50             continue
+                    end do
+                end do
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
@@ -443,8 +443,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
             endif
 !
- 15     continue
- 10 continue
+        end do
+    end do
 !
     call jedetr('&&REMNGL.VEC.TRAVC')
     call jedetr('&&REMNGL.VEC.COMP')

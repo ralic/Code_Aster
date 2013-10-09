@@ -36,9 +36,9 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 #include "asterfort/mstget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer ::  neq, lmatm
+    integer :: neq, lmatm
     real(kind=8) :: coef(3), xnorm
-    character(len=8) ::  monaxe
+    character(len=8) :: monaxe
     character(len=14) :: nume
     character(len=16) :: nomcmd
     character(len=19) :: raide, raidfa, masse, matpre
@@ -64,12 +64,12 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
     call jeveuo(masse(1:19)//'.&INT', 'E', lmatm)
 !
-    do 30 i = 1, nbpsmo
+    do i = 1, nbpsmo
         call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
         if (na .ne. 0) nbmoda = nbmoda - na
         call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=0, nbret=nd)
         if (nd .ne. 0) nbmoda = nbmoda + 1
- 30 continue
+    end do
 !
     if (nbmoda .ne. 0) then
         call wkvect('&&OP0093.COEFFICIENT', 'V V R', 3*nbmoda, jcoef)
@@ -83,7 +83,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
     imod = 0
     nbacc = 0
-    do 32 i = 1, nbpsmo
+    do i = 1, nbpsmo
 !
 !-- PSEUDO MODE AUTOUR D'UN AXE
         call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
@@ -94,7 +94,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
             call wkvect('&&OP0093.AXE', 'V V K8', nnaxe, jaxe)
             call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=nnaxe, vect=zk8(jaxe),&
                         nbret=na)
-            do 34 ia = 1, nnaxe
+            do ia = 1, nnaxe
                 monaxe = zk8(jaxe+ia-1)
                 if (monaxe(1:1) .eq. 'X') then
                     imod = imod + 1
@@ -115,7 +115,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
                     zr(jcoef+ind+2-1) = 0.d0
                     zr(jcoef+ind+3-1) = 1.d0
                 endif
- 34         continue
+            end do
             call jedetr('&&OP0093.AXE')
         endif
 !
@@ -126,23 +126,23 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
             nbacc = nbacc + 1
             accuni = .true.
             xnorm = 0.d0
-            do 36 id = 1, 3
+            do id = 1, 3
                 xnorm = xnorm + coef(id)*coef(id)
- 36         continue
+            end do
             if (xnorm .le. 0.d0) then
                 call utmess('F', 'ALGELINE2_78')
             endif
             xnorm = 1.d0 / sqrt(xnorm)
-            do 38 id = 1, 3
+            do id = 1, 3
                 coef(id) = coef(id) * xnorm
- 38         continue
+            end do
             imod = imod + 1
             ind = 3 * ( imod - 1 )
             zr(jcoef+ind+1-1) = coef(1)
             zr(jcoef+ind+2-1) = coef(2)
             zr(jcoef+ind+3-1) = coef(3)
         endif
- 32 end do
+    end do
 !
 !--------------------------C
 !--                      --C
@@ -160,9 +160,9 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     if (nbacc .ne. nbpsmo) then
         call wkvect(ddlac, 'V V I', neq, lddad)
         call mstget(nomcmd, masse, 'PSEUDO_MODE', nbpsmo, zi(lddad))
-        do 24 ii = 0, neq-1
+        do ii = 0, neq-1
             nbmoad = nbmoad + zi(lddad+ii)
- 24     continue
+        end do
         call wkvect(moaimp, 'V V R', neq*nbmoad, lmoad)
         call modsta('ACCD', raidfa, matpre, solveu, lmatm,&
                     nume, zi(lddad), [0.d0], neq, nbmoad,&

@@ -40,7 +40,7 @@ subroutine rcmaco(chmat, indmat, nbmat, imate)
 !
 !
     integer :: nbcmp, jdesc, igrp
-    character(len=8) ::  nommat, nomgd, materi
+    character(len=8) :: nommat, nomgd, materi
     character(len=19) :: codi
 !
     call jemarq()

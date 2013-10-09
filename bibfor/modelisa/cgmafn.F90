@@ -250,7 +250,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- PARCOURS DES MAILLES DU MAILLAGE :
 !     --------------------------------
-    do 10 ima = 1, nbmai
+    do ima = 1, nbmai
 !
 ! ---     RECUPERATION DU NOM DE LA MAILLE :
 !         --------------------------------
@@ -353,7 +353,8 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             nbma = nbma + 1
             zi(idlima+nbma-1) = ima
         endif
- 10 end do
+ 10     continue
+    end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

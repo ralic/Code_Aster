@@ -137,7 +137,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
 ! AVEC LES NOEUDS DE L INTERFACE FLUIDE
 !
-    do 10 ino1 = 1, nbno1
+    do ino1 = 1, nbno1
 !
         if (zi(icor(1)+ino1-1) .eq. 0) goto 10
 !
@@ -206,7 +206,8 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
         endif
 !
 !
- 10 end do
+ 10     continue
+    end do
 !
 ! --- MENAGE
 !

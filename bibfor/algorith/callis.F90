@@ -128,7 +128,7 @@ subroutine callis(nomres)
 !
     nbbloc=0
 !
-    do 10 i = 1, nblis
+    do i = 1, nblis
 !
 !   *******************************************
 !  RECUPERATION DES DONNEES SOUS-STRUCTURES
@@ -469,7 +469,7 @@ subroutine callis(nomres)
 !
         endif
 !
- 10 end do
+    end do
 !
 !   DESTRUCTIONS COLLECTIONS VOLATILES DE TRAVAIL
 !

@@ -92,10 +92,10 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) ::  mo1, mo2
+    character(len=8) :: mo1, mo2
     character(len=8) :: notm(nbtmx)
 !
-    integer ::  nno1, nno2, nma1, nma2, i, k, j
+    integer :: nno1, nno2, nma1, nma2, i, k, j
     integer :: ima, nbno, ino, nuno, ino2, kk, ima1
     integer :: ialim1, iad, long, ialin1, iacnx1, ilcnx1, ialin2
     integer :: iexi
@@ -185,9 +185,9 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
         ASSERT(.false.)
     endif
 !
-    do 10 k = 1, nbtm
+    do k = 1, nbtm
         call jenonu(jexnom('&CATA.TM.NOMTM', notm(k)), nutm(k))
- 10 end do
+    end do
 !
 !
 !
@@ -197,23 +197,23 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     if (mo1 .ne. ' ') then
         call jeveuo(mo1//'.MAILLE', 'L', iad)
         call jelira(mo1//'.MAILLE', 'LONMAX', long)
-        do 20 i = 1, long
+        do i = 1, long
             if (zi(iad-1+i) .ne. 0) zi(ialim1-1+i)=1
- 20     continue
+        end do
     else
-        do 30 i = 1, nma1
+        do i = 1, nma1
             zi(ialim1-1+i)=1
- 30     continue
+        end do
     endif
 !
     call jeveuo(ma1//'.TYPMAIL', 'L', iad)
-    do 50 j = 1, nbtm
-        do 40 i = 1, nma1
+    do j = 1, nbtm
+        do i = 1, nma1
             if (zi(iad-1+i) .eq. nutm(j)) zi(ialim1-1+i)=zi(ialim1-1+i)+ 1
- 40     continue
- 50 end do
+        end do
+    end do
 !
-    do 60 i = 1, nma1
+    do i = 1, nma1
         if (zi(ialim1-1+i) .eq. 1) then
             zi(ialim1-1+i)=0
         else if (zi(ialim1-1+i).eq.2) then
@@ -221,15 +221,15 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
         else if (zi(ialim1-1+i).gt.2) then
             ASSERT(.false.)
         endif
- 60 end do
+    end do
 !
     if (mocle .eq. 'PARTIE') then
-        do 70 ima1 = 1, nbma1
+        do ima1 = 1, nbma1
             zi(ialim1-1+lima1(ima1))=2*zi(ialim1-1+lima1(ima1))
- 70     continue
-        do 80 ima1 = 1, nma1
+        end do
+        do ima1 = 1, nma1
             zi(ialim1-1+ima1)=zi(ialim1-1+ima1)/2
- 80     continue
+        end do
     endif
 !
 !
@@ -238,14 +238,15 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     call wkvect('&&PJXXCO.LINO1', 'V V I', nno1, ialin1)
     call jeveuo(ma1//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    do 100 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 100
         nbno=zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
-        do 90 ino = 1, nbno
+        do ino = 1, nbno
             nuno=zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
             zi(ialin1-1+nuno)=1
- 90     continue
-100 end do
+        end do
+100     continue
+    end do
 !
 !
 !     4 : NOEUDS UTILES DE MOA2 :
@@ -255,23 +256,23 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     if (mo2 .ne. ' ') then
         call jeveuo(mo2//'.NOEUD_UTIL', 'L', iad)
         if (mocle .eq. 'TOUT') then
-            do 110 ino = 1, nno2
+            do ino = 1, nno2
                 if (zi(iad-1+ino) .ne. 0) zi(ialin2-1+ino)=1
-110         continue
+            end do
         else if (mocle.eq.'PARTIE') then
-            do 120 ino2 = 1, nbno2
+            do ino2 = 1, nbno2
                 if (zi(iad-1+lino2(ino2)) .ne. 0) zi(ialin2-1+lino2(ino2) )=1
-120         continue
+            end do
         endif
     else
         if (mocle .eq. 'TOUT') then
-            do 130 ino = 1, nno2
+            do ino = 1, nno2
                 zi(ialin2-1+ino)=1
-130         continue
+            end do
         else if (mocle.eq.'PARTIE') then
-            do 140 ino2 = 1, nbno2
+            do ino2 = 1, nbno2
                 zi(ialin2-1+lino2(ino2))=1
-140         continue
+            end do
         endif
     endif
 !
@@ -279,9 +280,9 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
 !     ON ARRETE S'IL N'Y A PAS DE NOEUDS "2" :
 !     ------------------------------------------------
     kk=0
-    do 150 k = 1, nno2
+    do k = 1, nno2
         if (zi(ialin2-1+k) .gt. 0) kk=kk+1
-150 end do
+    end do
     if (kk .eq. 0) then
         call utmess('F', 'CALCULEL4_54')
     endif

@@ -157,16 +157,16 @@ subroutine chcoma(tablez, nomaou)
 !
 ! --- CHANGEMENT D'ORIGINE DES COORDONNEES :
 !     ------------------------------------
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
 !
         idcoor = jcoor-1+dimcoo*(ino-1)
         zr(idcoor+1) = zr(idcoor+1) - yg
         zr(idcoor+2) = zr(idcoor+2) - zg
- 10 end do
+    end do
 !
 ! --- ROTATION D'ANGLE ALPHA DES AXES :
 !     -------------------------------
-    do 20 ino = 1, nbno
+    do ino = 1, nbno
 !
         idcoor = jcoor-1+dimcoo*(ino-1)
         yabs = zr(idcoor+1)
@@ -174,7 +174,7 @@ subroutine chcoma(tablez, nomaou)
 !
         zr(idcoor+1) = p(1,1)*yabs + p(2,1)*zabs
         zr(idcoor+2) = p(1,2)*yabs + p(2,2)*zabs
- 20 end do
+    end do
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

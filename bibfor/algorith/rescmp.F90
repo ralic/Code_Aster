@@ -64,7 +64,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
     integer :: cmpmax
     integer :: jvcfos
     character(len=19) :: cfnos, cfnint, cfndir, cfnfex
-    integer ::  i, k
+    integer :: i, k
     real(kind=8) :: resim, fonam, res
     integer :: jcnsd, jfints, jdiris, jfexts, jcnsl, jcnsc
     integer :: jcnsk, licmpu(999)
@@ -115,31 +115,32 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
 ! --- NB DE CMP DANS LE CHAMP
 !
     nbcmpu = 0
-    do 30 inc = 1, nbcmp
-        do 10 ino = 1, nbno
+    do inc = 1, nbcmp
+        do ino = 1, nbno
             if (zl(jcnsl-1+(ino-1)*nbcmp+inc)) goto 20
- 10     continue
+        end do
         goto 30
  20     continue
         nbcmpu = nbcmpu + 1
         ASSERT(nbcmpu.lt.999)
         licmpu(nbcmpu) = inc
- 30 end do
+ 30     continue
+    end do
 !
     if (nbcmpu .gt. nddmax) ASSERT(.false.)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'R') ASSERT(.false.)
 !
-    do 31 inc = 1, nbcmpu
+    do inc = 1, nbcmpu
         nomddl(inc) = zk8(jcnsc-1+licmpu(inc))
         maxddf(inc) = 0.d0
         maxddr(inc) = 0.d0
         numnod(inc) = 0
- 31 end do
+    end do
 !
 !
-    do 28 ino = 1, nbno
-        do 29 inc = 1, nbcmpu
+    do ino = 1, nbno
+        do inc = 1, nbcmpu
             k = licmpu(inc)
             if (zl(jcnsl-1+(ino-1)*nbcmp+k)) then
                 i = nbcmp*(ino-1)+k
@@ -152,12 +153,12 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
                 endif
                 maxddf(inc)=max(fonam,maxddf(inc))
             endif
- 29     continue
- 28 end do
+        end do
+    end do
     maxres=0.d0
 !
 !
-    do 50 inc = 1, nbcmpu
+    do inc = 1, nbcmpu
         if (maxddf(inc) .gt. 0.d0) then
             res = maxddr(inc)/maxddf(inc)
         else
@@ -167,7 +168,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
             maxres = res
             cmpmax = inc
         endif
- 50 end do
+    end do
 !
 !  POUR INFO SI BESOIN NUMDDL  : NUMERO DU DDL PENALISANT
 !    NUMDDL   = NUMN(CMPMAX)

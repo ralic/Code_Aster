@@ -42,7 +42,7 @@ subroutine cnocns(cnoz, basez, cnsz)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: cno, cns, profcn
@@ -111,8 +111,8 @@ subroutine cnocns(cnoz, basez, cnsz)
 !     2.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
 !     ---------------------------------------------------
     if (profcn .eq. ' ') then
-        do 60 ino = 1, nbno
-            do 50 icmp1 = 1, ncmp1
+        do ino = 1, nbno
+            do icmp1 = 1, ncmp1
                 zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
                 ieq = (ino-1)*ncmp1 + icmp1
 !
@@ -129,8 +129,8 @@ subroutine cnocns(cnoz, basez, cnsz)
                 else
                     ASSERT(.false.)
                 endif
- 50         continue
- 60     continue
+            end do
+        end do
 !
 !
 !     2.2 CAS DES CHAM_NO A PROF-CHNO
@@ -139,7 +139,7 @@ subroutine cnocns(cnoz, basez, cnsz)
         call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=profcn)
         call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
         call jeveuo(profcn//'.NUEQ', 'L', jnueq)
-        do 80 ino = 1, nbno
+        do ino = 1, nbno
 !
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !         IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -150,7 +150,7 @@ subroutine cnocns(cnoz, basez, cnsz)
             iadg = jprno - 1 + (ino-1)* (nec+2) + 3
 !
             ico = 0
-            do 70 kcmp = 1, ncmp1
+            do kcmp = 1, ncmp1
                 icmp=zi(jcorr2-1+kcmp)
                 if (exisdg(zi(iadg),icmp)) then
                     ico = ico + 1
@@ -174,8 +174,9 @@ subroutine cnocns(cnoz, basez, cnsz)
                         ASSERT(.false.)
                     endif
                 endif
- 70         continue
- 80     continue
+            end do
+ 80         continue
+        end do
     endif
 !------------------------------------------------------------------
 !

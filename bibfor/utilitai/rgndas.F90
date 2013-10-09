@@ -48,7 +48,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 ! OUT : LIGREL : NOM DU LIGREL SI LE NOEUD EST 'B' OU 'C' (BLANC SINON)
 ! OUT : INFOBL : INFORMATIONS COMPLEMENTAIRES
 ! ----------------------------------------------------------------------
-    integer ::  gd, nec, jprno, jnueq, ico
+    integer :: gd, nec, jprno, jnueq, ico
     integer :: jdesc, nlili, i, ilo, nbno, ino, ideb, ncmp
     integer :: icmp, iieq, nuno, nucmp, ncmpmx, iadg1, jrefe
     integer :: inocmp, nuddl, neq, nusst, nulia, jdeeq, jorig, iexi
@@ -101,16 +101,16 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
         ASSERT(nlili.gt.1)
         nec=nbec(gd)
         trouve=.false.
-        do 30 i = 2, nlili
+        do i = 2, nlili
             call jenuno(jexnum(nume//'.LILI', i), ligrel)
             call jelira(jexnum(nume//'.PRNO', i), 'LONMAX', ilo)
             if (ilo .le. 0) goto 30
             call jeveuo(jexnum(nume//'.PRNO', i), 'L', jprno)
             nbno=ilo/(nec+2)
-            do 20 ino = 1, nbno
+            do ino = 1, nbno
                 ideb=zi(jprno-1+(ino-1)*(nec+2)+1)
                 ncmp=zi(jprno-1+(ino-1)*(nec+2)+2)
-                do 10 icmp = 1, ncmp
+                do icmp = 1, ncmp
                     iieq=zi(jnueq-1+ideb-1+icmp)
                     if (ieq .eq. iieq) then
                         trouve=.true.
@@ -119,9 +119,10 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                         goto 40
 !
                     endif
- 10             continue
- 20         continue
- 30     continue
+                end do
+            end do
+ 30         continue
+        end do
  40     continue
         ASSERT(trouve)
         ASSERT(nuno.gt.0)
@@ -130,12 +131,12 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 !       -- CALCUL DE NOMCMP :
         iadg1=jprno-1+(nuno-1)*(nec+2)+3
         ico=0
-        do 50 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(zi(iadg1),icmp)) then
                 ico=ico+1
                 if (ico .eq. nucmp) goto 60
             endif
- 50     continue
+        end do
  60     continue
         ASSERT(icmp.le.ncmpmx)
         nomcmp=zk8(inocmp-1+icmp)

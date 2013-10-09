@@ -125,7 +125,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     booneg = .false.
     boopos = .false.
     nbmcfl = 1
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         if (iad .gt. 0) then
@@ -146,7 +146,8 @@ subroutine pascou(mate, carele, sddyna, sddisc)
                 dtcou = valeur
             endif
         endif
- 10 end do
+ 10     continue
+    end do
 !
     call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
 !
@@ -178,7 +179,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
             endif
         endif
 !
-        do 20 i = 1, nbinst-1
+        do i = 1, nbinst-1
             if (zr(jinst-1+i+1)-zr(jinst-1+i) .gt. dtcou) then
                 if (stocfl(1:3) .eq. 'OUI') then
                     call utmess('F', 'DYNAMIQUE_2')
@@ -186,7 +187,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
                     call utmess('A', 'DYNAMIQUE_2')
                 endif
             endif
- 20     continue
+        end do
 !
     else if (stocfl(1:3).eq.'OUI') then
         call utmess('F', 'DYNAMIQUE_4')

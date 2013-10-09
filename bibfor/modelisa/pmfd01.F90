@@ -50,7 +50,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     integer :: jnbfib, jpoint, jcarfi, jces1d, jces1v, jces1l, jnbfig
     integer :: iad, icmp, ncarfi, point, ima, ibid, nbma
     integer :: nb1, ispt, nncp, ifib, ig, nbgf, nbfig, nug, ipos, iret
-    character(len=1) ::  ki1
+    character(len=1) :: ki1
     character(len=2) :: ki2
     character(len=19) :: ces1, lichs(2), ces3, ligrmo, cel
     logical :: lcumul(2), exipmf
@@ -58,6 +58,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     character(len=8) :: licmp(2+99)
     complex(kind=8) :: cbid
     integer :: ngmxel, nbcp, jsp
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !     ------------------------------------------------------------------
 !
@@ -97,34 +98,34 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     licmp(1)='NBFIBR'
     licmp(2)='NBGRFI'
     if (ngmxel .le. 9) then
-        do 2 ig = 1, ngmxel
+        do ig = 1, ngmxel
             call codent(ig, 'G', ki1)
             licmp(2+ig)='NUG'//ki1
-  2     continue
+        end do
     else if (ngmxel.le.99) then
-        do 3 ig = 1, 9
+        do ig = 1, 9
             call codent(ig, 'G', ki1)
             licmp(2+ig)='NUG'//ki1
-  3     continue
-        do 4 ig = 10, ngmxel
+        end do
+        do ig = 10, ngmxel
             call codent(ig, 'G', ki2)
             licmp(2+ig)='NUG'//ki2
-  4     continue
+        end do
     endif
     call cescre('V', ces1, 'ELEM', noma, 'NBSP_I',&
                 nbcp, licmp, [-1], [-1], [-nbcp])
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
     call jeveuo(ces1//'.CESV', 'E', jces1v)
-    do 10 ima = 1, nbma
-        do 12 icmp = 1, nbcp
+    do ima = 1, nbma
+        do icmp = 1, nbcp
             call cesexi('C', jces1d, jces1l, ima, 1,&
                         1, icmp, iad)
             ASSERT(iad.lt.0)
             zl(jces1l-1-iad) = .true.
             zi(jces1v-1-iad) = zi(jnbfib-1+(ima-1)*nbcp+icmp)
- 12     continue
- 10 end do
+        end do
+    end do
 !
 ! --- 2.1.2. FUSION DE CES1 AVEC CESDEC :
 !     --------------------------------------
@@ -152,9 +153,9 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
 !
 ! on fait un vecteur uniquement avec les nb de fibres
     call wkvect('&&PMFD01.NBSP', 'V V I', nbma, jsp)
-    do 70 ima = 1, nbma
+    do ima = 1, nbma
         zi(jsp-1+ima)=zi(jnbfib+(ima-1)*nbcp)
- 70 end do
+    end do
 !
     licmp(1)='XG'
     licmp(2)='YG'
@@ -164,27 +165,27 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
     call jeveuo(ces1//'.CESV', 'E', jces1v)
-    do 40 ima = 1, nbma
+    do ima = 1, nbma
         ipos=jnbfib+(ima-1)*nbcp
         nbgf=zi(ipos+1)
         ispt=0
-        do 37 ig = 1, nbgf
+        do ig = 1, nbgf
             nug = zi(ipos+1+ig)
             nbfig = zi(jnbfig-1+nug)
             point = zi(jpoint-1+nug)
-            do 35 ifib = 1, nbfig
+            do ifib = 1, nbfig
                 ispt=ispt+1
-                do 30 icmp = 1, ncarfi
+                do icmp = 1, ncarfi
                     call cesexi('C', jces1d, jces1l, ima, 1,&
                                 ispt, icmp, iad)
 !              ASSERT(IAD.LT.0)
                     zl(jces1l-1-iad) = .true.
                     zr(jces1v-1-iad)=zr(jcarfi-1+point-1+(ifib-1)*&
                     ncarfi+icmp)
- 30             continue
- 35         continue
- 37     continue
- 40 end do
+                end do
+            end do
+        end do
+    end do
 !
     cel = carele//'.CAFIBR'
     call cescel(ces1, ligrmo, 'TOU_INI_ELEM', ' ', 'NON',&

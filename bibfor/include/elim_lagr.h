@@ -17,26 +17,26 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !----------------------------------------------------------------
 #include "aster_petsc.h"
-
+!
 !----------------------------------------------------------------------
 !  Common utilisé par la fonctionnalité ELIM_LAGR='OUI'
-
+!
 !     -- Le type mat_elim_lagr regroupe les matrices et vecteurs PETSC
 !        nécessaires pour ELIM_LAGR='OUI' (pour une matrice Aster).
-      type mat_elim_lagr
-      sequence
-        Mat :: kproj
-        Mat :: ctrans
-        Mat :: tfinal
-        Mat :: rct
-        Mat :: matb
-        Vec :: vx0
-        Vec :: vecb
-        Vec :: vecc
-        integer*4, dimension(:), pointer :: indred
-        logical :: lqr ! .true. => on veut la matrice r
-      end type
-
+type mat_elim_lagr
+sequence
+Mat :: kproj
+Mat :: ctrans
+Mat :: tfinal
+Mat :: rct
+Mat :: matb
+Vec :: vx0
+Vec :: vecb
+Vec :: vecc
+integer*4, dimension(:), pointer :: indred
+logical :: lqr ! .true. => on veut la matrice r
+end type
+!
 !     -- on prévoit de pouvoir utiliser simultanément ELIM_LAGR='OUI'
 !        avec 5 matrices Aster différentes.
 !     MELIM(5) stocke les 5 (éventuels) mat_elim_lagr
@@ -52,16 +52,16 @@
 !        beaucoup de soins.
 !     Aujourd'hui, KE est positionné au début de preres.f et au début
 !     de resoud.f via la routine elima0.F
-
+!
 !     Le "ménage" (désallocation des matrices PETSc) est fait en
 !     appelant ELIMA0('EFFACE',...)
-
-
-      integer*4 :: ke
-      type (mat_elim_lagr) :: melim(5)
-      character*24         :: nomelim(5,3)
-
-      common /elimlg/ nomelim,melim,ke
+!
+!
+integer*4 :: ke
+type (mat_elim_lagr) :: melim(5)
+character*24 :: nomelim(5, 3)
+!
+common /elimlg/ nomelim,melim,ke
 !----------------------------------------------------------------------
 ! Notations :
 !-------------

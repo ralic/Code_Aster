@@ -104,12 +104,13 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gdre), 'L', jncmpr)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jncmpc)
 !
-    do 10 i = 1, nmax1
+    do i = 1, nmax1
         if (zk8(jncmpr-1+i) .ne. zk8(jncmpc-1+i)) then
             ier=1
             goto 10
         endif
- 10 end do
+ 10     continue
+    end do
 !
     if (ier .ne. 0) then
         valk(1) = nomgd
@@ -136,10 +137,10 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         call wkvect(chreel//'.VALE', base//' V R', nbval, jvaler)
         call wkvect(chimag//'.VALE', base//' V R', nbval, jvalei)
 !
-        do 20 i = 1, nbval
+        do i = 1, nbval
             zr(jvaler-1+i)=dble(zc(ivale-1+i))
             zr(jvalei-1+i)=dimag(zc(ivale-1+i))
- 20     continue
+        end do
 !
 !
 !
@@ -187,10 +188,10 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         call jeveuo(chimag//'.CELV', 'E', jcelvi)
 !
 !
-        do 50 i = 1, nbval
+        do i = 1, nbval
             zr(jcelvr-1+i)=dble(zc(icelv-1+i))
             zr(jcelvi-1+i)=dimag(zc(icelv-1+i))
- 50     continue
+        end do
 !
 !     -- CART :
 !     -------------------
@@ -215,10 +216,10 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         call wkvect(chreel//'.VALE', base//' V R', nbval, jvaler)
         call wkvect(chimag//'.VALE', base//' V R', nbval, jvalei)
 !
-        do 60 i = 1, nbval
+        do i = 1, nbval
             zr(jvaler-1+i)=dble(zc(ivale-1+i))
             zr(jvalei-1+i)=dimag(zc(ivale-1+i))
- 60     continue
+        end do
 !
     endif
 !

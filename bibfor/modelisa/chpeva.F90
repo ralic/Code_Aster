@@ -81,7 +81,7 @@ subroutine chpeva(chou)
 ! ------------------------------------------------------------
     call wkvect('&&CHPEVA.LPARA2', 'V V K24', npara, jpara2)
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=typ1)
-    do 10 k = 1, npara
+    do k = 1, npara
         call dismoi('TYPE_CHAMP', zk8(jpara1-1+k), 'CHAMP', repk=typ2)
         if (typ1 .ne. typ2) then
             call utmess('F', 'MODELISA4_14')
@@ -100,7 +100,7 @@ subroutine chpeva(chou)
             call celces(zk8(jpara1-1+k), 'V', chs1)
         endif
         zk24(jpara2-1+k) = chs1
- 10 end do
+    end do
 !
 !
 ! 3.  -- ON APPELLE LA ROUTINE D'EVAL APPROPRIEE :
@@ -129,14 +129,14 @@ subroutine chpeva(chou)
 ! 7. MENAGE :
 ! -----------------------------------------------------
     call jedetr('&&CHPEVA.LPARA1')
-    do 20 k = 1, npara
+    do k = 1, npara
         if (typ1 .eq. 'NOEU') then
             call detrsd('CHAM_NO_S', zk24(jpara2-1+k))
 !
         else
             call detrsd('CHAM_ELEM_S', zk24(jpara2-1+k))
         endif
- 20 end do
+    end do
     call jedetr('&&CHPEVA.LPARA2')
 !
     call jedema()

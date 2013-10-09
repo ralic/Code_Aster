@@ -166,7 +166,7 @@ subroutine op0014()
         call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps, nbret=ibid)
         call getvtx(' ', 'ELIM_LAGR', scal=klag2, nbret=ibid)
         ASSERT(klag2.eq.'NON' .or. klag2.eq.'LAGR2')
-
+!
         call getvtx(' ', 'GESTION_MEMOIRE', scal=kooc, nbret=ibid)
         call jeveuo(solveu//'.SLVI', 'E', jslvi)
         call jeveuo(solveu//'.SLVK', 'E', jslvk)

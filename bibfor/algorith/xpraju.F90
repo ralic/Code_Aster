@@ -85,7 +85,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
     vmax = 0.d0
 !
 !   BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
-    do 100 i = 1, nbno
+    do i = 1, nbno
 !
         if (zl(jlisno-1+i)) then
 !
@@ -118,7 +118,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !
         endif
 !
-100 end do
+    end do
 !
     if (niv .ge. 1) then
         write(ifm,*)'   NOMBRE DE NOEUDS DONT VN EST ANNULEE :',cptzo

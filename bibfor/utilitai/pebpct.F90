@@ -76,7 +76,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
 !     ------------------------------------------------------------------
 !
-    integer ::  nbmat, i, nbintv, jcesc
+    integer :: nbmat, i, nbintv, jcesc
     integer :: jcesv, jcesl, jcesd, jcesk, jpoiv, jpoil, jpoid, jpdsm, jval
     integer :: jvol
     integer :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
@@ -139,7 +139,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     k=0
 !
 !     ON REMPLIT LES TABLEAUX VAL ET VOL
-    do 35 i = 1, nbma
+    do i = 1, nbma
 !
         ima=zi(jnuma+i-1)
         nbpt=zi(jcesd-1+5+4*(ima-1)+1)
@@ -148,7 +148,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
             call utmess('F', 'UTILITAI8_60')
         endif
 !
-        do 40 ipt = 1, nbpt
+        do ipt = 1, nbpt
 !
             call cesexi('C', jcesd, jcesl, ima, ipt,&
                         1, nucmp, iad)
@@ -209,9 +209,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
             endif
 !
- 40     continue
+        end do
 !
- 35 end do
+    end do
 !
 !     NOMBRE DE VALEURS STOCKEES
     nbval=k
@@ -230,9 +230,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
         valmax=borne(2)
 !     CAS OU AUCUNE VALEUR N'A ETE TROUVEE
     else if (abs(valmin-valmax).le.r8miem()) then
-        do 45 i = 1, nbintv
+        do i = 1, nbintv
             borpct(3*(i-1)+3)=100.d0/nbintv
- 45     continue
+        end do
         goto 100
     endif
 !
@@ -240,41 +240,41 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     if (lseuil) then
         ASSERT(nbintv .eq. 2)
         pas = seuil
-        do 50 i = 1, nbintv
+        do i = 1, nbintv
             borpct(3*(i-1)+1)=p0
             borpct(3*(i-1)+2)=pas
             p0=seuil
             pas=valmax
- 50     end do
+        end do
     else
         pas=(valmax-valmin)/nbintv
-        do 51 i = 1, nbintv
+        do i = 1, nbintv
             borpct(3*(i-1)+1)=p0
             borpct(3*(i-1)+2)=p0+pas
             p0=p0+pas
- 51     end do
+        end do
     endif
 !
 ! --- AJOUT DES VOLUMES DANS 'BORPCT' EN FONCTION DES VALEURS
 !     DE LA COMPOSANTE
-    do 60 j = 1, nbval
+    do j = 1, nbval
         if (zr(jval+j-1) .lt. borpct(2)) then
             borpct(3)=borpct(3)+zr(jvol+j-1)
         endif
- 60 end do
-    do 70 i = 2, nbintv-1
-        do 75 j = 1, nbval
+    end do
+    do i = 2, nbintv-1
+        do j = 1, nbval
             if (zr(jval+j-1) .lt. borpct(3*(i-1)+2) .and. zr(jval+j-1) .ge.&
                 borpct(3*(i-1)+1)) then
                 borpct(3*(i-1)+3)=borpct(3*(i-1)+3)+zr(jvol+j-1)
             endif
- 75     continue
- 70 end do
-    do 80 j = 1, nbval
+        end do
+    end do
+    do j = 1, nbval
         if (zr(jval+j-1) .ge. borpct(3*(nbintv-1)+1)) then
             borpct(3*(nbintv-1)+3)=borpct(3*(nbintv-1)+3)+zr(jvol+j-1)
         endif
- 80 end do
+    end do
 !
     if (norme(1:7) .eq. 'RELATIF') then
         pdiv=voltot
@@ -282,9 +282,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
         pdiv=1.d0
     endif
 !
-    do 90 i = 1, nbintv
+    do i = 1, nbintv
         borpct(3*(i-1)+3)=100*borpct(3*(i-1)+3)/pdiv
- 90 end do
+    end do
 !
 100 continue
 !

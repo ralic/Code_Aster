@@ -34,7 +34,7 @@ subroutine te0055(option, nomte)
 #include "asterfort/jevech.h"
 !
     character(len=16) :: nomte, option
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: poids
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, nno, kp, npg1, i, ivectt, isour
 !
@@ -50,22 +50,22 @@ subroutine te0055(option, nomte)
     call jevech('PSOURCR', 'L', isour)
     call jevech('PVECTTR', 'E', ivectt)
 !
-    do 20 i = 1, nno
+    do i = 1, nno
         zr(ivectt-1+i) = 0.0d0
-20  end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 40 kp = 1, npg1
+    do kp = 1, npg1
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !CDIR$ IVDEP
-        do 30 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(isour-1+kp)*zr( ivf+l+i-1)
-30      continue
+        end do
 !
-40  end do
+    end do
 !
 end subroutine

@@ -68,7 +68,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
         call jeexin(ma//'.TYPL', iret)
         if (iret .gt. 0) call jeveuo(ma//'.TYPL', 'L', iatypl)
     else
-        goto 9999
+        goto 999
     endif
 !
 !     -- L'OBJET SUIVANT CONTIENDRA EN REGARD DES NUMEROS DE NOEUDS
@@ -85,7 +85,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !     -- BOUCLE SUR LES (SUPER)MAILLES
 !     --------------------------------
     icol= 0
-    do 21 ima = 1, nbsma
+    do ima = 1, nbsma
         exilag=.false.
         if (zi(iasssa-1+ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
@@ -93,7 +93,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
 !         -- ON REGARDE LES NUMEROS PHYSIQUES MAX ET MIN DE LA MAILLE:
             iprem =0
-            do 22 i = 1, nbnm
+            do i = 1, nbnm
                 ino=zi(iamail-1+i)
                 if ((ino.gt.0) .and. (ino.le.nm)) then
                     iprem=iprem+1
@@ -110,14 +110,14 @@ subroutine relagm(mo, ma, nm, nl, newn,&
                 else
                     icol=icol+1
                 endif
- 22         continue
+            end do
 !
 !
 !         -- ON SE SERT DE LA FIN DU VECTEUR .NEWN POUR STOCKER EN FACE
 !         DE CHAQUE LAGRANGE LE NUMERO DU NOEUD PHYSIQUE PRES DUQUEL
 !         ON DOIT LE DEPLACER (+INOMAX : DERRIERE) (-INOMIN : DEVANT)
 !
-            do 23 i = 1, nbnm
+            do i = 1, nbnm
                 ino=zi(iamail-1+i)
                 if (ino .gt. nm) then
                     exilag=.true.
@@ -130,7 +130,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
                         ASSERT(.false.)
                     endif
                 endif
- 23         continue
+            end do
 !
             if (exilag) then
                 zi(iaavap-1+inomin)= 1
@@ -139,58 +139,58 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
         endif
 !
- 21 end do
+    end do
 !
-    if (icol .eq. 0) goto 9999
+    if (icol .eq. 0) goto 999
 !
 !
 !     -- ON REMPLIT .OLDT AVEC LES NOEUDS DE .OLDN ET LES LAGRANGES:
 !     -------------------------------------------------------------
     ico= 0
-    do 31 i = 1, nm
+    do i = 1, nm
         iold=oldn(i)
         if (iold .eq. 0) goto 32
         if (zi(iaavap-1+iold) .eq. 1) then
 !
-            do 33 il = 1, nl
+            do il = 1, nl
                 if (newn(nm+il) .eq. -iold) then
                     ico = ico+1
                     zi(iaoldt-1+ico)=nm+il
                 endif
- 33         continue
+            end do
 !
             ico = ico+1
             zi(iaoldt-1+ico)=iold
 !
-            do 34 il = 1, nl
+            do il = 1, nl
                 if (newn(nm+il) .eq. +iold) then
                     ico = ico+1
                     zi(iaoldt-1+ico)=nm+il
                 endif
- 34         continue
+            end do
 !
         else
             ico = ico+1
             zi(iaoldt-1+ico)=iold
         endif
- 31 end do
+    end do
  32 continue
     nbnore= ico
 !
 !     -- ON RECOPIE .OLDT DANS .OLDN ET ON REMET .NEWN A JOUR :
 !     ---------------------------------------------------------
-    do 41 i = 1, nbnoma
+    do i = 1, nbnoma
         newn(i) =0
         oldn(i) =0
- 41 end do
+    end do
 !
-    do 42 i = 1, nbnore
+    do i = 1, nbnore
         oldn(i) = zi(iaoldt-1+i)
         newn(zi(iaoldt-1+i)) =i
- 42 end do
+    end do
 !
 !
-9999 continue
+999 continue
 !
     call jedetr('&&RELAGM.AVAP')
     call jedetr('&&RELAGM.OLDT')

@@ -220,7 +220,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !   BOUCLE SUR LE LIGRELS
 !
-    do 10 i = 1, nbprno
+    do i = 1, nbprno
         call jenuno(jexnum(prgene//'.LILI', i), nomprn)
         call jelira(jexnum(prgene//'.PRNO', i), 'LONMAX', ntprno)
         ntprno=ntprno/2
@@ -236,11 +236,11 @@ subroutine assgen(nomres, option, nugene)
 !     BOUCLE SUR LES ELEMENTS DU LIGREL COURANTS
 !           MATRICE PROJETEE=1BLOC
 !
-            do 20 j = 1, ntprno
+            do j = 1, ntprno
                 icomp=icomp+1
                 zi(ltinbl+(j-1)*2)=icomp
                 zi(ltinbl+(j-1)*2+1)=1
-20          continue
+            end do
 !
 !
 ! TEST SI ON EST SUR DES LAGRANGES ET SI L'OPTION EST RIGI_GENE
@@ -257,7 +257,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !    BOUCLE SUR LES ELEMENTS DU LIGREL COURANTS
 !
-            do 30 j = 1, ntprno
+            do j = 1, ntprno
 ! NUMERO DE BLOCS MATRICE LIAISON 1
                 zi(ltinbl+(j-1)*3)=icomp+1
                 icomp=icomp+1
@@ -267,12 +267,12 @@ subroutine assgen(nomres, option, nugene)
 ! NUMERO LAGRANGE-LAGRANGE
                 zi(ltinbl+(j-1)*3+2)=icomp+1
                 icomp=icomp+1
-30          continue
+            end do
 !
             call jelibe(modgen//'      .MODG.LIPR')
 !
         endif
-10  end do
+    end do
 !
 !   NOMBRE DE BLOC ELEMENTAIRES A ASSEMBLER
     nbblel=icomp
@@ -294,7 +294,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !      BOUCLE SUR LES LIGRELS
 !
-    do 40 i = 1, nbprno
+    do i = 1, nbprno
 !
         call jenuno(jexnum(tmrep, i), nomprn)
 !
@@ -310,7 +310,7 @@ subroutine assgen(nomres, option, nugene)
                     tmnobl, tmadbl, zk24(ltnomb), zi(ltnumb), zr(ldconl),&
                     zr(ltconl))
 !
-40  end do
+    end do
 !
 !
     call jedetr(tminbl)
@@ -321,9 +321,9 @@ subroutine assgen(nomres, option, nugene)
 !  CONDITIONNEMENT = MAX(BLOC PHYSIQUE)/MAX(BLOC LAGRANGE)
 !
     xmaxbl=0.d0
-    do 60 i = 1, nbblel
+    do i = 1, nbblel
         xmaxbl=max(xmaxbl,abs(zr(ltconl+i-1)))
-60  end do
+    end do
 !
     if (xmaxbl .gt. epsi) then
         ssconl=ssmax/xmaxbl
@@ -334,33 +334,33 @@ subroutine assgen(nomres, option, nugene)
     valr = ssconl
     call utmess('I', 'ALGORITH14_79', sr=valr)
 !
-    do 70 i = 1, nbblel
+    do i = 1, nbblel
         if (zr(ltconl+i-1) .ne. zero) then
             zr(ltconl+i-1)=ssconl
         else
             zr(ltconl+i-1)=un
         endif
-70  end do
-    do 80 i = 1, neq
+    end do
+    do i = 1, neq
         if (zr(ldconl+i-1) .ne. zero) then
             zr(ldconl+i-1)=ssconl
         else
             zr(ldconl+i-1)=un
         endif
-80  end do
+    end do
 !
 !-----------------------------------ASSEMBLAGE--------------------------
 !
 !    BOUCLE SUR LES BLOCS RESULTATS
 !
-    do 100 iblo = 1, nbloc
+    do iblo = 1, nbloc
 !
         call jecroc(jexnum(nomres//'           .UALF', iblo))
         call jeveuo(jexnum(nomres//'           .UALF', iblo), 'E', ldblo)
 !
 !    BOUCLE SUR LES BLOCS ELEMENTAIRES
 !
-        do 110 iblel = 1, nbblel
+        do iblel = 1, nbblel
 !
 ! PRISE EN COMPTE DU CONDITIONNEMENT
 !
@@ -382,11 +382,11 @@ subroutine assgen(nomres, option, nugene)
             call jelibe(jexnum(tmadbl, iblel))
             call jelibe(jexnum(tmnobl, iblel))
 !
-110      continue
+        end do
 !
         call jelibe(jexnum(nomres//'           .UALF', iblo))
 !
-100  end do
+    end do
 !
     call ualfva(nomres, 'G')
 !

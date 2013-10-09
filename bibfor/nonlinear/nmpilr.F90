@@ -101,7 +101,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 !
 ! --- CALCUL
 !
-    do 10 ieq = 1, neq
+    do ieq = 1, neq
 !
 ! ----- SI CHARGEMENT CINEMATIQUE: ON IGNORE LA VALEUR DU RESIDU
 !
@@ -118,7 +118,7 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
                  )&
                  )
  15     continue
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

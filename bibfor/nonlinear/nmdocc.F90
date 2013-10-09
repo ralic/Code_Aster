@@ -16,7 +16,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,6 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cmp, nbocc
-    integer :: iret, ibid
     character(len=8) :: mesh
     character(len=19) :: list_vale, comp_elas, full_elem_s
     character(len=19) :: list_vari_name
@@ -67,10 +66,10 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Initializations
 !
-    compor         = '&&NMDOCC.COMPOR'
-    list_vale      = '&&NMDOCC.LIST_VALE'
-    comp_elas      = '&&NMDOCC.COMP_ELAS'
-    full_elem_s    = '&&NMDOCC.FULL_ELEM'
+    compor = '&&NMDOCC.COMPOR'
+    list_vale = '&&NMDOCC.LIST_VALE'
+    comp_elas = '&&NMDOCC.COMP_ELAS'
+    full_elem_s = '&&NMDOCC.FULL_ELEM'
     list_vari_name = '&&NMDOCC.LIST_VARI'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
@@ -85,7 +84,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 ! - Read informations from command file
 !
     call comp_meca_read(list_vale, l_etat_init, nbocc)
-    if (nbocc.eq.0) goto 99
+    if (nbocc .eq. 0) goto 99
 !
 ! - Create <CARTE> of FULL_MECA option for checking
 !

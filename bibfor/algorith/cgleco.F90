@@ -1,4 +1,4 @@
-subroutine cgleco(resu, modele, mate, iord0, typfis, &
+subroutine cgleco(resu, modele, mate, iord0, typfis,&
                   compor, incr)
     implicit none
 !
@@ -6,11 +6,11 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
 #include "asterfort/assert.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meca_elas.h"
-#include "asterfort/nmdocc.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gverlc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/nmdocc.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
@@ -59,7 +59,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbcomp, ibid, iret, nb_cmp
+    integer :: nbcomp, iret, nb_cmp
     character(len=16) :: keywordfact
     character(len=24) :: repk
     character(len=8) :: mesh
@@ -72,7 +72,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
 ! - Initializations
 !
     limpel = .false.
-    incr   = .false.
+    incr = .false.
     nbcomp = 0
     keywordfact = 'COMPORTEMENT'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
@@ -125,7 +125,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis, &
 ! - Check is CALG_G COMPOR <CARTE> is coherent with result COMPOR <CARTE>
 !
     call gverlc(resu, compor, iord0)
-
+!
 ! - No XFEM for GTP
 !
     if (incr .and. typfis .eq. 'FISSURE') then

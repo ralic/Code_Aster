@@ -94,17 +94,17 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca1)
     ASSERT(tsca1.eq.'R')
 !
-    do 10 k = 1, ncmp
+    do k = 1, ncmp
         ASSERT(zk8(jcnsc1-1+k).eq.zk8(jcnsc2-1+k))
- 10 end do
+    end do
 !
 !
 !     CALCUL DE LA SOMME DES PRODUITS DES CMPS :
 !     -------------------------------------------
     pscal=0.d0
     ier=0
-    do 30 ino = 1, nbno
-        do 20 k = 1, ncmp
+    do ino = 1, nbno
+        do k = 1, ncmp
             if (zl(jcnsl1-1+(ino-1)*ncmp+k)) then
                 if (.not.zl(jcnsl2-1+(ino-1)*ncmp+k)) then
                     ier=1
@@ -121,8 +121,8 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 !
                 endif
             endif
- 20     continue
- 30 end do
+        end do
+    end do
 !
  40 continue
     call jedema()

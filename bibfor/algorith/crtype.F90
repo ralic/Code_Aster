@@ -118,7 +118,7 @@ subroutine crtype()
     profch = ' '
     call wkvect('&&CRTYPE.CHAMPS', 'V V K8', nbfac, jcham)
 !
-    do 80 iocc = 1, nbfac
+    do iocc = 1, nbfac
         modele = ' '
         call getvid('AFFE', 'MODELE', iocc=iocc, scal=modele, nbret=n1)
         materi = blan8
@@ -164,7 +164,7 @@ subroutine crtype()
 !
 !        CALCUL DE LFONC ET TYPEGD
         lfonc = .false.
-        do 10 i = 24, 1, -1
+        do i = 24, 1, -1
             if (k24(i:i) .eq. ' ') goto 10
             if (k24(i-1:i) .eq. '_F') then
                 if (k24(1:7) .ne. 'CHAM_NO') then
@@ -180,7 +180,8 @@ subroutine crtype()
                 call utmess('F', 'ALGORITH2_46', sk=k24)
             endif
             goto 20
- 10     continue
+ 10         continue
+        end do
  20     continue
 !
         if (k24(1:7) .eq. 'CHAM_NO') then
@@ -212,7 +213,7 @@ subroutine crtype()
                 call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
                 if (n0 .ne. 0) then
                     j = 0
-                    do 100 i = 1, numini
+                    do i = 1, numini
                         call rsadpa(resu, 'L', 1, 'NUME_MODE', i,&
                                     0, sjv=jnmo, styp=k8b)
                         nmode = zi(jnmo)
@@ -220,7 +221,7 @@ subroutine crtype()
                             numini = nume
                             j = j+1
                         endif
-100                 continue
+                    end do
                     if (j .eq. 0) numini = numini+1
                 else
                     numini = numini + 1
@@ -316,7 +317,7 @@ subroutine crtype()
                         ibid)
 !
             ivmx = rsmxno(resu)
-            do 30 k = 1, nbinst
+            do k = 1, nbinst
                 if (nbv(1) .gt. 0) then
                     call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b,&
                                 cbid, prec, criter, tnum, 1,&
@@ -333,7 +334,7 @@ subroutine crtype()
                 else
                     zi(jcpt+k-1) = nume
                 endif
- 30         continue
+            end do
         else
 !           MOT CLE LIST_INST/LIST_FREQ PRESENT :
             n1 = 0
@@ -380,7 +381,7 @@ subroutine crtype()
             call wkvect(lcpt, 'V V I', nbinst, jcpt)
             ivmx = rsmxno(resu)
             j = 0
-            do 40 k = 1, nbval
+            do k = 1, nbval
                 if (k .lt. numini) goto 40
                 if (k .gt. numfin) goto 40
                 j = j + 1
@@ -401,7 +402,8 @@ subroutine crtype()
                 else
                     zi(jcpt+j-1) = nume
                 endif
- 40         continue
+ 40             continue
+            end do
         endif
 !
 !        DANS LE CAS DES FONCTIONS, LA PROGRAMMATION N'EST VALABLE QUE
@@ -444,7 +446,7 @@ subroutine crtype()
             kjexn = jexnom('&CATA.GD.NOMCMP',nogdsi)
             call jeveuo(kjexn, 'L', icmpi)
             call jelira(kjexn, 'LONMAX', nbcmpi)
-            do 300 j = 1, nbcmpi
+            do j = 1, nbcmpi
                 if (zk8(icmpi+j-1) .ne. zk8(icmpd+j-1)) then
                     valkk(1) = typegd
                     valkk(2) = nogdsi
@@ -452,10 +454,10 @@ subroutine crtype()
                     valkk(4) = zk8(icmpi+j-1)
                     call utmess('F', 'CALCULEL2_5', nk=4, valk=valkk)
                 endif
-300         continue
+            end do
         endif
 !
-        do 70 j = 1, nbinst
+        do j = 1, nbinst
             if (j .ge. 2) call jemarq()
             call jerecu('V')
             icompt = zi(jcpt+j-1)
@@ -510,7 +512,7 @@ subroutine crtype()
                 call wkvect(nomch//'.VALE', 'G V R', lg, jc)
 !              CHAM_NO DE FONCTIONS A EVALUER
                 call jeveuo(nomch//'.VALE', 'E', jc)
-                do 60 l = 1, lg
+                do l = 1, lg
                     nomf = zk8(jnomf+l-1)
                     if (nomf .eq. ' ') goto 60
                     call jeveuo(nomf//'           .PROL', 'L', lprol)
@@ -518,7 +520,7 @@ subroutine crtype()
                                 nomp)
                     ino = zi(jdeeq+2* (l-1))
                     if (ino .eq. 0) goto 60
-                    do 50 ip = 1, nbpf
+                    do ip = 1, nbpf
                         if (nomp(ip) .eq. 'INST') then
                             valpu(ip) = tps
                         else if (nomp(ip).eq.'X') then
@@ -530,10 +532,11 @@ subroutine crtype()
                         else
                             call utmess('F', 'ALGORITH2_50')
                         endif
- 50                 continue
+                    end do
                     call fointe('F', nomf, nbpf, nomp, valpu,&
                                 zr(jc+l-1), ier)
- 60             continue
+ 60                 continue
+                end do
             endif
 !
             call rsnoch(resu, nsymb, icompt)
@@ -544,10 +547,11 @@ subroutine crtype()
                         excit)
             if (j .ge. 2) call jedema()
 !
- 70     continue
+        end do
         call jedetr(linst)
         call jedetr(lcpt)
- 80 continue
+ 80     continue
+    end do
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
     if (typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' .or. typres(1:10)&

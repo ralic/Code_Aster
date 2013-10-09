@@ -152,21 +152,21 @@ subroutine macr78(nomres, trange, typres)
         nbtdyn = nbntot
     else
         nbtdyn = nbndyn
-        do 23 i = nbmdyn+1, nbmode
+        do i = nbmdyn+1, nbmode
             call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', i,&
                         0, sjv=lnocmp, styp=k8b)
             zk8(jnocmp+2*i-2) = zk16(lnocmp)(1:8)
             zk8(jnocmp+2*i-1) = zk16(lnocmp)(9:16)
- 23     continue
+        end do
     endif
 !
-    do 21 i = 1, nbtdyn
+    do i = 1, nbtdyn
         call jenuno(jexnum(mailla//'.NOMNOE', zi(iaconx+i-1)), nomnol)
-        do 22 j = 1, nec
+        do j = 1, nec
             zk8(jnocmp+2*nec*(i-1)+2*j-2) = nomnol
             zk8(jnocmp+2*nec*(i-1)+2*j-1) = nomcmp(j)
- 22     continue
- 21 continue
+        end do
+    end do
 !        CALL GETVID(' ','NUME_DDL',1,IARG,1,K8B,IBID)
 !        IF (IBID.NE.0) THEN
 !          CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
@@ -190,7 +190,7 @@ subroutine macr78(nomres, trange, typres)
             call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         else
             call utmess('A', 'ALGORITH10_93')
-            goto 9999
+            goto 999
         endif
     endif
     knume = '&&MACR78.NUM_RANG'
@@ -228,8 +228,8 @@ subroutine macr78(nomres, trange, typres)
     call dismoi('PROF_CHNO', cham19, 'CHAMP', repk=nprno)
     nprno = nprno(1:19)//'.PRNO'
     call jeveuo(jexnum(nprno, 1), 'L', iaprno)
-    do 300 i = 1, nbcham
-        do 310 iarc0 = 1, nbinst
+    do i = 1, nbcham
+        do iarc0 = 1, nbinst
             inu0 = zi(jnume+iarc0-1)
             inum = zi(jordr+inu0-1)
             iarch = iarc0-1
@@ -237,7 +237,7 @@ subroutine macr78(nomres, trange, typres)
                         iret)
             nomcha = nomcha(1:19)//'.VALE'
             call jeveuo(nomcha, 'L', ivale)
-            do 24 im = 1, nbmode
+            do im = 1, nbmode
                 nomnol = zk8(jnocmp+2*im-2)
                 call jenonu(jexnom(maya//'.NOMNOE', nomnol), inoe)
                 if (zk8(jnocmp+2*im-1) .eq. 'DX') icmp = 1
@@ -248,7 +248,7 @@ subroutine macr78(nomres, trange, typres)
                 if (zk8(jnocmp+2*im-1) .eq. 'DRZ') icmp = 6
                 iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                 zr(jrestr+im-1) = zr(ivale+iddl-1+icmp-1)
- 24         continue
+            end do
             call rsexch(' ', nomres, champ(i)(1:4), iarch, chamno,&
                         iret)
             call vtcreb(chamno, numedd, 'G', 'R', neq)
@@ -275,8 +275,8 @@ subroutine macr78(nomres, trange, typres)
                             0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
             endif
-310     continue
-300 continue
+        end do
+    end do
 !
     call refdcp(basemo, nomres)
 !
@@ -290,7 +290,7 @@ subroutine macr78(nomres, trange, typres)
     call jedetr('&&MACR78.RESTR')
 !
     call titre()
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

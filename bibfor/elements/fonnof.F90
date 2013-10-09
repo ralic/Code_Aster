@@ -64,7 +64,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro
-    character(len=8) ::  critn
+    character(len=8) :: critn
     character(len=24) :: msup, minf, fonnoe, nomnoe
 !
 ! DEB-------------------------------------------------------------------
@@ -122,18 +122,18 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     call wkvect('&&'//nompro//'_NOEU_NORM_SUP', 'V V I', nbnoe, jnols)
 !
     call wkvect('&&'//nompro//'_MAILLE_LEV_SUP', 'V V I', nbma, jlima)
-    do 10 im = 1, nbma
+    do im = 1, nbma
         call jenonu(jexnom(noma//'.NOMMAI', zk8(jsup-1 + im)), zi( jlima-1 + im))
- 10 end do
+    end do
     call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma,&
                 zi(jnols), nbnols, 'TOUS')
 !
     call wkvect('&&PKFOND_COOR_LEV_SUP', 'V V R', 3*nbnols, jcoors)
-    do 11 in = 1, nbnols
+    do in = 1, nbnols
         zr(jcoors-1+3*(in-1)+1) = zr(igeom-1+3*(zi(jnols-1+in)-1)+1)
         zr(jcoors-1+3*(in-1)+2) = zr(igeom-1+3*(zi(jnols-1+in)-1)+2)
         zr(jcoors-1+3*(in-1)+3) = zr(igeom-1+3*(zi(jnols-1+in)-1)+3)
- 11 end do
+    end do
 !
     call jedetr('&&'//nompro//'_TRAV')
 !
@@ -148,18 +148,18 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
         call wkvect('&&'//nompro//'_TRAV', 'V V I', nbnoe, idlino)
         call wkvect('&&'//nompro//'_NOEU_NORM_INF', 'V V I', nbnoe, jnoli)
         call wkvect('&&'//nompro//'_MAILLE_LEV_INF', 'V V I', nbma, jlima)
-        do 20 im = 1, nbma
+        do im = 1, nbma
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jinf-1 + im)), zi(jlima-1 + im))
- 20     continue
+        end do
         call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma,&
                     zi(jnoli), nbnoli, 'TOUS')
 !
         call wkvect('&&PKFOND_COOR_LEV_INF', 'V V R', 3*nbnoli, jcoori)
-        do 21 in = 1, nbnoli
+        do in = 1, nbnoli
             zr(jcoori-1+3*(in-1)+1) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 1)
             zr(jcoori-1+3*(in-1)+2) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 2)
             zr(jcoori-1+3*(in-1)+3) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 3)
- 21     continue
+        end do
         call jedetr('&&'//nompro//'_TRAV')
     endif
 !
@@ -177,7 +177,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     endif
 !
 !
-    do 200 inoff = 1, nbnoft
+    do inoff = 1, nbnoft
 !
 !        DETERMINATION DU PLAN ORTHOGONAL AU FOND DE FISSURE
 !        ET PASSANT PAR LE NOEUD COURANT
@@ -229,7 +229,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
 ! identification noeuds sur bon cote de la levre (cas fond ferme)
 ! a partir du noeud le plus proche du fond
-            do 310 in = 1, nbtrli
+            do in = 1, nbtrli
                 ino = jnoli+zi(jinti-1 + in)-1
                 if (zi(ino) .eq. nuno) goto 310
                 x2 = zr(igeom-1+3*(zi(ino)-1)+1)
@@ -240,13 +240,14 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                     dmin = d
                     numun = zi(ino)
                 endif
-310         continue
+310             continue
+            end do
 !
             vectan(1) = zr(igeom-1+3*(numun-1)+1)-x1
             vectan(2) = zr(igeom-1+3*(numun-1)+2)-y1
             vectan(3) = zr(igeom-1+3*(numun-1)+3)-z1
 !
-            do 320 in = 1, nbtrli
+            do in = 1, nbtrli
                 ino = jnoli+zi(jinti-1 + in)-1
                 if (zi(ino) .eq. nuno) goto 320
                 x2 = zr(igeom-1+3*(zi(ino)-1)+1)
@@ -264,15 +265,16 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                         numfin = zi(ino)
                     endif
                 endif
-320         continue
+320             continue
+            end do
 !
             preco = prec*10
             call oreino(noma, zi(jti), nbi, nuno, numfin,&
                         zr(igeom), critn, preco, iera, iret)
 !
-            do 330 in = 1, min(nbi, 20)
+            do in = 1, min(nbi, 20)
                 call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1 + 20*(inoff-1)+in))
-330         continue
+            end do
 !
             call jedetr('&&PKFOND_INTERS_INF')
             call jedetr('&&PKFOND_TRAV_INF')
@@ -306,7 +308,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
 ! identification noeuds sur bon cote de la levre (cas fond ferme)
 ! a partir du noeud le plus proche du fond
-        do 210 in = 1, nbtrls
+        do in = 1, nbtrls
             ino = jnols+zi(jints-1 + in)-1
             if (zi(ino) .eq. nuno) goto 210
             x2 = zr(igeom-1+3*(zi(ino)-1)+1)
@@ -317,13 +319,14 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                 dmin = d
                 numun = zi(ino)
             endif
-210     continue
+210         continue
+        end do
 !
         vectan(1) = zr(igeom-1+3*(numun-1)+1)-x1
         vectan(2) = zr(igeom-1+3*(numun-1)+2)-y1
         vectan(3) = zr(igeom-1+3*(numun-1)+3)-z1
 !
-        do 220 in = 1, nbtrls
+        do in = 1, nbtrls
             ino = jnols+zi(jints-1 +in)-1
             if (zi(ino) .eq. nuno) goto 220
             x2 = zr(igeom-1+3*(zi(ino)-1)+1)
@@ -340,19 +343,21 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
                     numfin = zi(ino)
                 endif
             endif
-220     continue
+220         continue
+        end do
         preco = prec*10
         call oreino(noma, zi(jts), nbs, nuno, numfin,&
                     zr(igeom), critn, preco, iera, iret)
 !
-        do 230 in = 1, min(nbs, 20)
+        do in = 1, min(nbs, 20)
             call jenuno(jexnum(nomnoe, zi(jts-1 + in)), zk8(inols-1 + 20*(inoff-1)+in))
-230     continue
+        end do
 !
         call jedetr('&&PKFOND_INTERS_SUP')
         call jedetr('&&PKFOND_TRAV_SUP')
 !
-200 end do
+200     continue
+    end do
 !
     call jedema()
 end subroutine

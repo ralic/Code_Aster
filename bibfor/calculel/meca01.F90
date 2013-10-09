@@ -403,7 +403,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (iret .eq. 0) then
             codret = 1
             call jedema()
-            goto 9999
+            goto 999
         endif
 !
 ! 2.2.10. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
@@ -481,7 +481,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         lipacr(1)='NUME_ORDR'
         lipacr(2)='OPTION'
 !
-        call tbliva(tabp, npacri, lipacr,  [iordr], [rbid],&
+        call tbliva(tabp, npacri, lipacr, [iordr], [rbid],&
                     [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO',&
                     ctype, vali, erp, valc, valk(1),&
                     iret)
@@ -568,7 +568,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (iret .eq. 0) then
             codret = 1
             call jedema()
-            goto 9999
+            goto 999
         endif
 !
 ! 4.2.12. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
@@ -713,7 +713,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (iret .gt. 0) then
             call utmess('A', 'CALCULEL3_7', sk=option)
             codret = 2
-            goto 9999
+            goto 999
         endif
 !
 !
@@ -754,6 +754,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

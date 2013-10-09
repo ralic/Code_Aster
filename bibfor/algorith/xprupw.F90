@@ -247,11 +247,11 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !     MESH
     call jeveuo(grlr, 'L', jgrlr)
     jref = jgrlr+1
-    do 100 i = 1, 3
+    do i = 1, 3
         ref(i,1) = zr(jref-1+3*(i-1)+1)
         ref(i,2) = zr(jref-1+3*(i-1)+2)
         ref(i,3) = zr(jref-1+3*(i-1)+3)
-100 end do
+    end do
 !
 !     DECLARE SOME DATA STRUCTURES FOR THE EVALUATION OF THE GRADIENT
     cnols = '&&XPRUPW.CNOLS'
@@ -310,13 +310,13 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !     MINIMIZATION LOOP
 !     THIS LOOP IS RUN ITRMAX TIMES. IF THE CONVERGENCE IS ACHIEVED
 !     BEFORE THIS NUMBER OF REPETITIONS, THE LOOP IS BROKEN ANYWAY.
-    do 1000 i = 1, itrmax
+    do i = 1, itrmax
 !
         resglo(i) = 0
         restor = 0
 !
 !        LOOP ON EACH NODE OF THE MESH
-        do 1100 k = 1, nbno
+        do k = 1, nbno
 !
 !           RETREIVE THE NODE NUMBER
             node = zi(jnodto-1+k)
@@ -378,7 +378,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !           EVALUATION OF THE DIRECTIONAL DERIVATIVES OF THE LEVEL SET
 !           (ALONG X, Y AND Z)
             vtmp = 0
-            do 1150 j = 1, ndim
+            do j = 1, ndim
 !
                 if (vxyz(j) .ge. 0) then
 !
@@ -472,7 +472,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !
                 endif
 !
-1150         continue
+            end do
 !
             if (reinit) then
 !              SUBTRACT f(x) IN THE REINITIALIZATION CASE.
@@ -482,7 +482,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
                 zr(jtempv-1+k) = vtmp
             endif
 !
-1100     continue
+        end do
 !
 !        LAST STEP: EVALUATE THE NEW VALUE OF THE LEVEL SET AT EACH
 !        NODE. EVALUATE ALSO THE LOCAL AND GLOBAL RESIDUALS
@@ -490,7 +490,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
         sumlsl = 0
         dlsg = 0
         dlsl = 0
-        do 1050 k = 1, nbno
+        do k = 1, nbno
 !
 !           RETREIVE THE NODE NUMBER
             node = zi(jnodto-1+k)
@@ -513,7 +513,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !
             endif
 !
-1050     continue
+        end do
 !
 !        EVALUATION OF THE GRADIENT OF THE NEW LEVEL SET
         call cnscno(cnsls, ' ', 'NON', 'V', cnols,&
@@ -584,7 +584,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
             goto 2000
         endif
 !
-1000 end do
+    end do
 !
 2000 continue
 !

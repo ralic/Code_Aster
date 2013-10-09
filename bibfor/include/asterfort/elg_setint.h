@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,20 +14,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine elg_setint(inda,nba,indb,nbb,indc,nbc,remp)
-              integer, intent(in) :: nbb
-              integer, intent(in) :: nba
-#             ifdef _HAVE_PETSC
-                  PetscInt  :: inda(nba)
-                  PetscInt  :: indb(nbb)
-                  PetscInt  :: indc(min(nba,nbb))
-#             else
-                  integer(kind=4) :: inda(nba)
-                  integer(kind=4) :: indb(nbb)
-                  integer(kind=4) :: indc(min(nba,nbb))
-#             endif
-              integer, intent(out) :: nbc
-              character(len=6) :: remp
-            end subroutine elg_setint
-          end interface
+interface
+    subroutine elg_setint(inda, nba, indb, nbb, indc,&
+                          nbc, remp)
+        integer, intent(in) :: nbb
+        integer, intent(in) :: nba
+# ifdef _HAVE_PETSC
+        PetscInt :: inda(nba)
+        PetscInt :: indb(nbb)
+        PetscInt :: indc(min(nba, nbb))
+        # else
+        integer(kind=4) :: inda(nba)
+        integer(kind=4) :: indb(nbb)
+        integer(kind=4) :: indc(min(nba, nbb))
+        # endif
+        integer, intent(out) :: nbc
+        character(len=6) :: remp
+    end subroutine elg_setint
+end interface

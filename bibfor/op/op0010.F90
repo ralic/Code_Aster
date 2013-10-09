@@ -159,12 +159,12 @@ subroutine op0010()
 !
     numfis=0
 !     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
-    do 1 crack = 1, nfiss
+    do crack = 1, nfiss
 !
         ncrack = zk8(jfiss-1+crack)
         if (ncrack .eq. fispre) numfis=crack
 !
-  1 end do
+    end do
 !
     if (numfis .eq. 0) then
         msgout(1) = fispre
@@ -377,9 +377,9 @@ subroutine op0010()
         call jeveuo(vbeta, 'L', jbeta)
         call jelira(vbeta, 'LONMAX', j)
         bmax = 0.d0
-        do 500 i = 1, j
+        do i = 1, j
             if (abs(zr(jbeta-1+i)) .gt. bmax) bmax=abs(zr(jbeta-1+i))
-500     continue
+        end do
 !        THE CHECK IS MADE ONLY IF THE ANGLE IS GREATER THAN 3 DEGREES
 !        AND LOWER OF 90 DEGREES
         if ((bmax.lt.1.57d0) .and. (bmax.gt.5.2d-2)) then
@@ -825,9 +825,9 @@ subroutine op0010()
         call jeveuo(ndomp, 'L', ibid)
         call jelira(ndomp, 'LONMAX', j)
 !
-        do 1001 i = 1, j
+        do i = 1, j
             zl(iret-1+zi(ibid-1+i)) = .true.
-1001     continue
+        end do
 !
     endif
 !
@@ -884,7 +884,7 @@ subroutine op0010()
         call jeveuo(grln//'.CNSV', 'E', jgln)
         call jeveuo(grln//'.CNSL', 'E', jglnl)
 !
-        do 2000 i = 1, nbno
+        do i = 1, nbno
 !
             if (.not.zl(jlisno-1+i)) then
                 zr(jglt-1+ndim*(i-1)+1) = zr(jgltp-1+ndim*(i-1)+1)
@@ -907,7 +907,7 @@ subroutine op0010()
 !
             endif
 !
-2000     continue
+        end do
 !
         call jedetr(grltc)
         call jedetr(grlnc)

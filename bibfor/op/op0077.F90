@@ -92,13 +92,13 @@ subroutine op0077()
     if (nbcham .lt. 0) then
         call utmess('E', 'ALGORITH9_44')
     else
-        do 20 i = 1, nbcham
-            do 10 j = i+1, nbcham
+        do i = 1, nbcham
+            do j = i+1, nbcham
                 if (champ(i) .eq. champ(j)) then
                     call utmess('E', 'ALGORITH9_30')
                 endif
- 10         continue
- 20     continue
+            end do
+        end do
     endif
 !
 !
@@ -309,13 +309,13 @@ subroutine op0077()
 !-- RECUPERATION DES INFOS CARA_ELEM / MATER / MODELE POUR LES SST
 !-- DANS LE .REFM DANS LE MACRO ELEMENT CORRESPONDANT
             call jeveuo(zk8(lmacr)//'.REFM', 'L', lrefm)
-            do 50 iord = 1, nbord
+            do iord = 1, nbord
                 call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
                             0, tjv=lpaout, styp=k8b)
                 zk8(lpaout(1))=zk8(lrefm)
                 zk8(lpaout(2))=zk8(lrefm+2)
                 zk8(lpaout(3))=zk8(lrefm+3)
- 50         continue
+            end do
         endif
 !
     endif

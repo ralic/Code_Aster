@@ -43,7 +43,7 @@ subroutine mvnume(depmoi, depdel, depplu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret
+    integer :: iret
     character(len=19) :: pfchn1, pfchn2
     character(len=1) :: typcst(2), typech(2), typres
     real(kind=8) :: const(2)

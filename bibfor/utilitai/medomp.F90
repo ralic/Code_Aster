@@ -131,14 +131,14 @@ subroutine medomp(result, modele, mate, carele, nh)
         numord = numlu
         call rslesd(result, numord, modele, materi, carele,&
                     k19bid, iexcit)
-        do 99 iordr = 2, nbordr
+        do iordr = 2, nbordr
             numord = zi(jordr+iordr-1)
             call rslesd(result, numord, modnew, materi, carele,&
                         k19bid, iexcit)
             if (modnew .ne. modele) then
                 call utmess('F', 'POSTELEM_23')
             endif
- 99     continue
+        end do
         call jedetr(knum)
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT

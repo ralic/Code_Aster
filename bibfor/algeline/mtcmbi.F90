@@ -103,9 +103,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     call wkvect('&&MTCMBI', 'V V I', neq, lddl)
     call pteddl('NUME_DDL', nume, 1, nomddl, neq,&
                 zi(lddl))
-    do 10 i = 0, neq - 1
+    do i = 0, neq - 1
         zi(lddl+i) = 1 - zi(lddl+i)
- 10 end do
+    end do
 !
 !
 !
@@ -115,18 +115,18 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     endif
 !
     if (typmat(1:1) .eq. 'R') then
-        do 20 ival = iatres, iatres + lgbloc - 1
+        do ival = iatres, iatres + lgbloc - 1
             zr(ival) = zero
- 20     continue
+        end do
         if (.not.matsym) then
-            do 30 ival = iatrei, iatrei + lgbloc - 1
+            do ival = iatrei, iatrei + lgbloc - 1
                 zr(ival) = zero
- 30         continue
+            end do
         endif
     else
-        do 40 ival = iatres, iatres + lgbloc - 1
+        do ival = iatres, iatres + lgbloc - 1
             zc(ival) = czero
- 40     continue
+        end do
     endif
 !
     call jeveuo(jexnum(valm, 1), 'L', iatmat)
@@ -138,31 +138,31 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     if (typmat(1:1) .eq. 'R') then
         kin = 0
         idebli = 1
-        do 120 iequa = 1, neq
+        do iequa = 1, neq
             ifinli = zi(jsmdi+iequa-1)
-            do 110 ind = idebli, ifinli
+            do ind = idebli, ifinli
                 kin = kin + 1
                 ilig=zi4(jsmhc-1+kin)
                 icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)),1)
                 zr(iatres+kin-1) = zr(iatres+kin-1) + zr(iatmat+kin-1) *icoef*coef
-110         continue
+            end do
             idebli = zi(jsmdi+iequa-1) + 1
-120     continue
+        end do
 !
 !
     else if (typmat(1:1).eq.'C') then
         kin = 0
         idebli = 1
-        do 160 iequa = 1, neq
+        do iequa = 1, neq
             ifinli = zi(jsmdi+iequa-1)
-            do 150 ind = idebli, ifinli
+            do ind = idebli, ifinli
                 kin = kin + 1
                 ilig=zi4(jsmhc-1+kin)
                 icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)),1)
                 zc(iatres+kin-1) = zc(iatres+kin-1) + zc(iatmat+kin-1) *icoef*ccoef
-150         continue
+            end do
             idebli = zi(jsmdi+iequa-1) + 1
-160     continue
+        end do
     endif
 !
 !

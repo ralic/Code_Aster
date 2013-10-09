@@ -32,7 +32,7 @@ subroutine te0263(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r
+    real(kind=8) :: poids, r
     integer :: nno, kp, npg1, i, k, ivectt, isour, ndim, jgano, nnos
     integer :: ipoids, ivf, idfde, igeom
 !
@@ -46,20 +46,20 @@ subroutine te0263(option, nomte)
     call jevech('PSOURCR', 'L', isour)
     call jevech('PVECTTR', 'E', ivectt)
 !
-    do 101 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
         r = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102      continue
+        end do
         poids = poids*r
 !CDIR$ IVDEP
-        do 103 i = 1, nno
+        do i = 1, nno
             k=(kp-1)*nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids * zr(ivf+k+i-1) * zr(isour+kp-1)
-103      continue
-101  end do
+        end do
+    end do
 end subroutine

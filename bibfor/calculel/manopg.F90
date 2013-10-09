@@ -89,11 +89,11 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !     ------------------------------------------------------------------
     integer :: nbpgmx, nbnomx, nbfamx, nbflmx
     parameter (nbpgmx=27,nbnomx=27,nbfamx=20,nbflmx=20)
-    integer ::  nbma, ima, jcesd, jcesl, jcesv, iad, jnbpg
+    integer :: nbma, ima, jcesd, jcesl, jcesv, iad, jnbpg
     integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl, jpnlfp
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
     integer :: jceld, nbgrel, nel, nute, imolo, jmolo, jecono
-    integer ::  igr, iel, jmaref, lont1
+    integer :: igr, iel, jmaref, lont1
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
     integer :: nblfpg, jnolfp, nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
@@ -158,7 +158,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jecrec(ligre1//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbgrel)
     lont1=0
-    do 883 igr = 1, nbgrel
+    do igr = 1, nbgrel
         econom=zi(jecono-1+igr).eq.1
         nel = nbelem(ligrel,igr)
         if (econom .and. nel .gt. 1) then
@@ -166,10 +166,10 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
         else
             lont1=lont1+nel+1
         endif
-883 end do
+    end do
 !
     call jeecra(ligre1//'.LIEL', 'LONT', lont1, ' ')
-    do 881 igr = 1, nbgrel
+    do igr = 1, nbgrel
         econom=zi(jecono-1+igr).eq.1
         nel = nbelem(ligrel,igr)
         if (econom .and. nel .gt. 1) then
@@ -179,7 +179,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
             zi(jliel1-1+1)=zi(jliel-1+1)
             zi(jliel1-1+2)=zi(jliel-1+nel+1)
-            do 882 iel = 1, nel
+            do iel = 1, nel
                 ima=zi(jliel-1+iel)
                 if (ima .lt. 0) goto 882
                 if (iel .eq. 1) then
@@ -187,21 +187,23 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 else
                     zi(jmaref-1+ima)=-zi(jliel-1+1)
                 endif
-882         continue
+882             continue
+            end do
         else
             call jecroc(jexnum(ligre1//'.LIEL', igr))
             call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', nel+1)
             call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
             zi(jliel1-1+nel+1)=zi(jliel-1+nel+1)
-            do 884 iel = 1, nel
+            do iel = 1, nel
                 zi(jliel1-1+iel)=zi(jliel-1+iel)
                 ima=zi(jliel-1+iel)
                 if (ima .lt. 0) goto 884
                 zi(jmaref-1+ima)=+zi(jliel-1+iel)
-884         continue
+884             continue
+            end do
         endif
-881 end do
+    end do
     call jedupo(ligrel//'.LGRF', 'V', ligre1//'.LGRF', .false.)
     call jedupo(ligrel//'.NBNO', 'V', ligre1//'.NBNO', .false.)
 !
@@ -218,10 +220,10 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !     ---------------------------------------------------------------
     call wkvect(obdime, 'V V I', nbma, jdime)
     ncpmax=0
-    do 77 ima = 1, nbma
+    do ima = 1, nbma
         zi(jdime-1+ima)= zi(jnbpg-1+ima)*zi(jnbno-1+ima) +2
         ncpmax=max(ncpmax,zi(jdime-1+ima))
- 77 end do
+    end do
     call cescre('V', mnoga, 'ELEM', ma, 'VARI_R',&
                 -ncpmax, ' ', [-1], [-1], zi(jdime))
 !
@@ -247,7 +249,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jeveuo(mnoga//'.CESV', 'E', jcesv)
 !
 !
-    do 1 igr = 1, nbgrel
+    do igr = 1, nbgrel
         econom=zi(jecono-1+igr).eq.1
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
         nel = nbelem(ligrel,igr)
@@ -275,7 +277,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
             ASSERT(nbfam.le.nbflmx)
             call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
             elrefe=zk8(jfpgl-1+nbfam+1)
-            do 18 k = 1, nbfam
+            do k = 1, nbfam
                 lielrf(k)=elrefe
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
                 nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
@@ -283,7 +285,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
                 ASSERT(elrefe.eq.nofpg(1:8))
                 lifapg(k)=nofpg(9:16)
- 18         continue
+            end do
 !
 !       -- FAMILLE "ORDINAIRE"
         else
@@ -297,7 +299,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !       4.2 BOUCLE SUR LA/LES FAMILLE(S) :
 !       ------------------------------------------
         nbpgt=0
-        do 2 kfam = 1, nbfam
+        do kfam = 1, nbfam
             elrefe=lielrf(kfam)
             famil=lifapg(kfam)
 !
@@ -322,7 +324,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
 !         4.2.3 ECRITURE DANS MANOPG :
 !         ------------------------------------------
-            do 3 iel = 1, nel
+            do iel = 1, nel
                 ima=zi(jliel-1+iel)
                 if (ima .lt. 0) goto 3
 !
@@ -357,7 +359,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 iad=iad0+2+nbpgt*nno
 !
 !           -- LES NNO*NPG AUTRES CMPS :
-                do 20 kp = 1, npg
+                do kp = 1, npg
                     if (famil(1:4) .eq. 'XFEM') then
                         ASSERT(.not.econom)
                         nbpt = zi(jcesgd-1+5+4* (ima-1)+1)
@@ -371,16 +373,18 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                     else
                         call elrfvf(elrefe, xpg(ndim*(kp-1)+1), nbnomx, ff, nno)
                     endif
-                    do 10 ino = 1, nno
+                    do ino = 1, nno
                         zl(jcesl-1+iad-1+nno*(kp-1)+ino) = .true.
                         zr(jcesv-1+iad-1+nno*(kp-1)+ino) = ff(ino)
- 10                 continue
- 20             continue
+                    end do
+                end do
 !
-  3         continue
+  3             continue
+            end do
             nbpgt=nbpgt+npg
-  2     continue
-  1 end do
+        end do
+  1     continue
+    end do
 !
 !
     call detrsd('CHAMP', celmod)

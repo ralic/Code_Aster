@@ -128,4 +128,4 @@ OPTION__
                                 ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
     TOU_INI_ELNO      99  IN__  
                           OUT__ ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  
-                                ECONTNO  PSIEF_R  ZVARINO  PVARI_R  
+                                ECONTNO  PSIEF_R  ZVARINO  PVARI_R

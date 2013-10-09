@@ -81,6 +81,7 @@ subroutine rfrgen(trange)
     integer :: nfonct, ngn, numcmp
     real(kind=8) :: alpha, epsi, rep, rep1(1)
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -100,11 +101,11 @@ subroutine rfrgen(trange)
 !CC  FONCTIONNALITE NON DEVELOPPEE
             ASSERT(.false.)
         endif
-        goto 9999
+        goto 999
 ! TRAITEMENT DU HARM_GENE
     else if (tysd .eq. 'HARM_GENE') then
         call rfhge2(trange)
-        goto 9999
+        goto 999
     endif
 ! TRAITEMENT DU TRAN_GENE
     resu = trange
@@ -165,28 +166,28 @@ subroutine rfrgen(trange)
 ! NORMALEMENT ON SORT LE dt SI ADAPT. MAIS AVEC DYNA_GENE ON PEUT
 ! TOUJOURS LE SORTIR
         call wkvect('&&RFRGEN.DT', 'V V R', nbpas, lpas)
-        do 58 ip = 1, nbpas
+        do ip = 1, nbpas
             zr(lpas+ip-1) = zr(ipas+ip-1)
 !            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
- 58     continue
+        end do
 !
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
         lfon = lvar + nbordr
         if (intres(1:3) .ne. 'NON') then
             call jeveuo(resu//'.DISC', 'L', idinsg)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg)
-            do 54 iordr = 0, nbordr-1
+            do iordr = 0, nbordr-1
                 call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg),&
                             zr(jinst+iordr), zr(lpas), 1, rep1, ierd)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = rep1(1)
- 54         continue
+            end do
         else
-            do 56 iordr = 0, nbordr-1
+            do iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = zr(lpas+iordr)
- 56         continue
+            end do
         endif
         call jedetr('&&RFRGEN.DT')
 !
@@ -208,18 +209,18 @@ subroutine rfrgen(trange)
                 call jeveuo(resu//'.DISC', 'L', idinsg)
                 call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 call wkvect('&&RFRGEN.VECTGENF', 'V V R', nbmode, idvecf)
-                do 40 iordr = 0, nbordr-1
+                do iordr = 0, nbordr-1
                     call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
                                 zr(jinst+iordr), zr(itresu), nbmode, zr(idvecf), ierd)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = zr(idvecf+numcmp-1)
- 40             continue
+                end do
             else
-                do 42 iordr = 0, nbordr-1
+                do iordr = 0, nbordr-1
                     ii = zi(lordr+iordr)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = zr(itresu+nbmode*(ii-1)+numcmp-1)
- 42             continue
+                end do
             endif
         else
             call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
@@ -262,7 +263,7 @@ subroutine rfrgen(trange)
                 if (nomcha(1:4) .ne. 'ACCE') then
 !           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
                     call utmess('F', 'UTILITAI4_26')
-                    goto 9999
+                    goto 999
                 endif
                 zk24(lpro+3)(5:8) = '_ABS'
             endif
@@ -273,24 +274,24 @@ subroutine rfrgen(trange)
                 call jeveuo(resu//'.DISC', 'L', idinsg)
                 call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 call wkvect('&&RFRGEN.VECTGENE', 'V V R', nbmode, idvecg)
-                do 50 iordr = 0, nbordr-1
+                do iordr = 0, nbordr-1
                     call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
                                 zr(jinst+iordr), zr(itresu), nbmode, zr(idvecg), ierd)
                     call mdgep2(neq, nbmode, zr(idbase), zr(idvecg), iddl,&
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
- 50             continue
+                end do
                 call jedetr('&&RFRGEN.VECTGENE')
 !
             else
-                do 52 iordr = 0, nbordr-1
+                do iordr = 0, nbordr-1
                     ii = zi(lordr+iordr)
                     call mdgep2(neq, nbmode, zr(idbase), zr(itresu+ nbmode*(ii-1)), iddl,&
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
- 52             continue
+                end do
             endif
             monmot(1) = 'NON'
             monmot(2) = 'NON'
@@ -303,30 +304,30 @@ subroutine rfrgen(trange)
                 call jeveuo(resu//'.IPSD', 'L', ipsdel)
                 call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci)
                 nbexci = nbexci / 2
-                do 100 iordr = 0, nbordr-1
+                do iordr = 0, nbordr-1
                     call mdgep4(neq, nbexci, zr(ipsdel), zr(lvar+ iordr), zk8(jfon),&
                                 iddl, rep)
                     zr(lfon+iordr) = zr(lfon+iordr) + rep
-100             continue
+                end do
             endif
             call jedetr('&&RFRGEN.VECT.PROPRE')
 !
 !        --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT ---
             if (nfonct .ne. 0) then
-                do 110 i = 0, nbordr-1
+                do i = 0, nbordr-1
                     iret = 0
                     call fointe('F', fonct, 1, 'INST', zr(jinst+i),&
                                 alpha, ier)
 !              --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT ---
                     zr(lfon+i) = zr(lfon+i) + alpha
-110             continue
+                end do
             endif
         endif
 !     ---------------------------------------------------------------
     endif
     call jedetr(knume)
     call jedetr(kinst)
-9999 continue
+999 continue
 !
     call foattr(' ', 1, nomfon)
 !

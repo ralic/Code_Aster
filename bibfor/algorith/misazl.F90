@@ -51,7 +51,7 @@ subroutine misazl(vecinc, defico)
 !
     integer :: nnoco, ntnoe
     integer :: ino, nbno, nec, ncmpmx, numno(1)
-    integer ::  ino_ind(1)
+    integer :: ino_ind(1)
     integer :: jnocmp, jprno, jnueq, jvale, jdg
     integer :: numlc, numlf1, numlf2
     integer :: poslc, poslf1, poslf2

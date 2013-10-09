@@ -40,8 +40,8 @@ subroutine imppiv(nu, ieq)
 ! IN  : NU     : NOM D'UN NUME_DDL OU D'UN PROF_CHNO
 ! IN  : IEQ    : NUMERO D'UNE EQUATION DANS UN SYSTEME ASSEMBLE
 ! ----------------------------------------------------------------------
-    integer ::  gd, nec, jprno, jnueq, ifm
-    integer ::  nlili, i, ilo, nbno, ino, ideb, ncmp, icmp, iieq, nuli
+    integer :: gd, nec, jprno, jnueq, ifm
+    integer :: nlili, i, ilo, nbno, ino, ideb, ncmp, icmp, iieq, nuli
     integer :: nuno
     integer :: nbmas, k, kk, jnuno, kno
     character(len=8) :: noma, nomeq, nomno
@@ -63,16 +63,16 @@ subroutine imppiv(nu, ieq)
 !
     call jelira(prno//'.PRNO', 'NMAXOC', nlili)
     trouve = .false.
-    do 10 i = 1, nlili
+    do i = 1, nlili
         call jenuno(jexnum(prno//'.LILI', i), ligrel)
         call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ilo)
         if (ilo .eq. 0) goto 10
         call jeveuo(jexnum(prno//'.PRNO', i), 'L', jprno)
         nbno = ilo / ( nec + 2 )
-        do 20 ino = 1, nbno
+        do ino = 1, nbno
             ideb = zi(jprno-1+(ino-1)*(nec+2)+1)
             ncmp = zi(jprno-1+(ino-1)*(nec+2)+2)
-            do 30 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 iieq = zi(jnueq-1+ideb-1+icmp)
                 if (ieq .eq. iieq) then
                     trouve = .true.
@@ -80,9 +80,10 @@ subroutine imppiv(nu, ieq)
                     nuno = ino
                     goto 9998
                 endif
- 30         continue
- 20     continue
- 10 end do
+            end do
+        end do
+ 10     continue
+    end do
 !
 9998 continue
 !
@@ -101,25 +102,26 @@ subroutine imppiv(nu, ieq)
     write(ifm,*) 'IMPRESSION DE LA LISTE DES NOEUDS IMPLIQUES'
     write(ifm,*) 'DANS LA RELATION LINEAIRE SURABONDANTE:'
 !
-    do 777 k = 1, nbmas
+    do k = 1, nbmas
         call jelira(jexnum(ligrel//'.NEMA', k), 'LONMAX', nbno)
 !       -- L'OBJET .NEMA CONTIENT LE TYPE_MAILLE AU BOUT :
         if (nbno .eq. 0) goto 777
         nbno=nbno-1
         call jeveuo(jexnum(ligrel//'.NEMA', k), 'L', jnuno)
         trouve=.false.
-        do 778 kk = 1, nbno
+        do kk = 1, nbno
             if (zi(jnuno-1+kk) .eq. -nuno) trouve=.true.
-778     continue
+        end do
         if (.not.trouve) goto 777
-        do 779 kk = 1, nbno
+        do kk = 1, nbno
             kno=zi(jnuno-1+kk)
             if (kno .gt. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', kno), nomno)
                 write(ifm,*) '   - NOEUD: ',nomno
             endif
-779     continue
-777 end do
+        end do
+777     continue
+    end do
     write(ifm,*) ' '
 !
     call jedema()

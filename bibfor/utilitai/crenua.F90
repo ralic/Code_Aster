@@ -35,7 +35,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 ! IN  NC     : NOMBRE MAX DE CMP PORTES PAR LES POINTS
 ! IN  LNUAL  : CREATION OU NON DU .NUAL
 !     ------------------------------------------------------------------
-    integer ::  i, ndim
+    integer :: i, ndim
     character(len=4) :: type
     character(len=19) :: knuage
 !     ------------------------------------------------------------------
@@ -73,9 +73,9 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
     if (lnual) then
         ndim = nc * np
         call wkvect(knuage//'.NUAL', 'V V L', ndim, jnual)
-        do 10 i = 1, ndim
+        do i = 1, ndim
             zl(jnual+i-1) = .false.
- 10     continue
+        end do
     endif
 !
     call jedema()

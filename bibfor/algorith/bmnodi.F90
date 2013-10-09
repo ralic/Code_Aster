@@ -157,20 +157,20 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !
 ! RECUPERATION NUMERO ORDRE  DEFORMEES
 !
-    do 20 i = 1, nbnoe
+    do i = 1, nbnoe
         inoe=zi(llnoe+i-1)
         iordef=zi(lldes+nbnot+inoe-1)+nbmod
         call isdeco(zi(lldes+2*nbnot+(inoe-1)*nbec+1-1), idec, nbcmp)
 !
-        do 30 j = 1, nbcmp
+        do j = 1, nbcmp
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) ivcord(nbdef-nbdif)=iordef
                 iordef=iordef+1
             endif
- 30     continue
+        end do
 !
- 20 continue
+    end do
 !
     nbdif=-nbdif
 !

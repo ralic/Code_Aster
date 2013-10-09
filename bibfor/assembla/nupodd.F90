@@ -52,7 +52,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer ::  nbma, nbnoma, jprtk, jnumsd
+    integer :: nbma, nbnoma, jprtk, jnumsd
     integer :: nlili, ili, igr, nel, iel, numa, jnequ, jpddl, nbno, ino
     integer :: nuno, iddl, nddl, ddl1g, jnugl, numpro, curpro, k1, n1
     integer :: ddl1l, ilib, neql, jconx1, jconx2, idprn1, idprn2
@@ -161,17 +161,17 @@ subroutine nupodd(nu, base, rang, nbproc)
     neql=zi(jnequ)
     call wkvect(nu//'.NUML.PDDL', base(1:1)//' V I', neql, jpddl)
     call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
-    do 10 iddl = 0, neql-1
+    do iddl = 0, neql-1
         zi(jpddl+iddl)=nbproc+1
- 10 end do
+    end do
 !
 !---- CREATION DU TABLEAU DE POSSESSION DES DDL LOCAUX
-    do 100 ili = 2, nlili
+    do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
         if (ili .eq. 2) ASSERT(nomlig.eq.ligrmo)
-        do 90 igr = 1, zzngel(ili)
+        do igr = 1, zzngel(ili)
             nel=zznelg(ili,igr)
-            do 80 iel = 1, nel
+            do iel = 1, nel
                 numa=zzliel(ili,igr,iel)
                 ASSERT(numa.ne.0)
 !
@@ -183,7 +183,7 @@ subroutine nupodd(nu, base, rang, nbproc)
                     endif
 !             -- MAILLE DU MAILLAGE :
                     nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
-                    do 40 ino = 1, nbno
+                    do ino = 1, nbno
                         nuno=zi(jconx1-1+zi(jconx2+numa-1)+ino-1)
 !
                         ddl1g=zzprno(1,nuno,1)
@@ -198,10 +198,11 @@ subroutine nupodd(nu, base, rang, nbproc)
                             goto 40
                         endif
 !
-                        do 30 iddl = 1, nddl
+                        do iddl = 1, nddl
                             zi(jpddl+ddl1l+iddl-2)=curpro
- 30                     continue
- 40                 continue
+                        end do
+ 40                     continue
+                    end do
 !
                 else
                     if (ldgrel) then
@@ -212,7 +213,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 !             -- MAILLE TARDIVE :
                     numa=-numa
                     nbno=zznsup(ili,numa)
-                    do 70 k1 = 1, nbno
+                    do k1 = 1, nbno
                         nuno=zznema(ili,numa,k1)
                         if (nuno .lt. 0) then
                             nuno=-nuno
@@ -231,16 +232,18 @@ subroutine nupodd(nu, base, rang, nbproc)
                             goto 70
                         endif
 !
-                        do 60 iddl = 1, nddl
+                        do iddl = 1, nddl
                             ddl1l=zi(jnugl+ddl1g+iddl-2)
                             if (ddl1l .eq. 0) goto 60
                             zi(jpddl+ddl1l-1)=curpro
- 60                     continue
- 70                 continue
+ 60                         continue
+                        end do
+ 70                     continue
+                    end do
                 endif
- 80         continue
- 90     continue
-100 end do
+            end do
+        end do
+    end do
 !
 !---- DETERMINATION DU GRAPH DE COMMUNICATION ET DES RACCORDS
     call nugrco(nu, base)

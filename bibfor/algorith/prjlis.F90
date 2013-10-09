@@ -75,7 +75,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !
 !
     character(len=4) :: zcst
-    character(len=8) ::  linta, lintb, moda, modb, maa, mab, intfa, intfb
+    character(len=8) :: linta, lintb, moda, modb, maa, mab, intfa, intfb
     character(len=8) :: matprj, nonob, nonoa, nomg, modgen, ssta, sstb
     character(len=16) :: tymocl(2), motcle(2), motfac, corres
     character(len=24) :: inta, intb, fpliao, fplibo, toto, geoma, geomb
@@ -163,11 +163,11 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     call wkvect(toto, 'V V R', nbnob*nbnoa, itemtm)
 !
 ! Initialisation de la matrice d'observation
-    do 445 inob = 1, nbnob
-        do 444 inoa = 1, nbnoa
+    do inob = 1, nbnob
+        do inoa = 1, nbnoa
             zr(itemtm+(inob-1)*nbnoa+inoa-1)=0.d0
-444     continue
-445 end do
+        end do
+    end do
 !
 ! Remplissage et impression de la matrice d'observation
     idecal = 0
@@ -175,7 +175,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     nbterm=0
     iinob=1
 ! boucle sur l'ensemble des noeuds du modele maitre
-    do 10 inob = 1, nbnob2
+    do inob = 1, nbnob2
 ! on recupere le nombre de noeuds maitre lie au noeud esclave courant
         nnoa = zi(iaconb+inob-1)
         nbterm=nnoa+1
@@ -192,12 +192,12 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
                 write (ifm,1001) -1.d0,nonob
             endif
 ! boucle sur le nombre de noeud maitre lie au noeud esclave courant
-            do 30 inoa = 1, nnoa
+            do inoa = 1, nnoa
                 nunoa = zi(iaconu+idecal-1+inoa)
                 coefa = zr(iacocf+idecal-1+inoa)
                 call jenuno(jexnum(maa//'.NOMNOE', nunoa), nonoa)
 ! boucle sur le nombre de noeud maitre present dans l'interface
-                do 40 j = 1, nbnoa
+                do j = 1, nbnoa
 ! si le noeud maitre courant est present dans la liste des noeuds
 ! maitres d'interface on stocke la valeur du coefficient
                     nunoa2=zi(llinta+j-1)
@@ -213,15 +213,15 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
                             write (ifm,1001) coefa,nonoa
                         endif
                     endif
- 40             continue
- 30         continue
+                end do
+            end do
             if (niv .eq. 2) then
                 write (ifm,*) '_RELA = ',beta
             endif
             idecal = idecal+nnoa
             iinob=iinob+1
         endif
- 10 end do
+    end do
 !
 ! ************************************************************
 ! Recuperation des donnees par composantes
@@ -236,35 +236,35 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !
     call wkvect(matprj, 'G V R', iada(1)*iadb(1), itemcm)
 ! Initialisation de la matrice d'observation
-    do 446 inob = 1, iadb(1)
-        do 447 inoa = 1, iada(1)
+    do inob = 1, iadb(1)
+        do inoa = 1, iada(1)
             zr(itemcm+(inob-1)*iada(1)+inoa-1)=0.d0
-447     continue
-446 end do
+        end do
+    end do
 !
-    do 110 inob = 1, nbnob
+    do inob = 1, nbnob
         iadob=zi(llplib+(inob-1)*(1+nbec))
         call isdeco(zi(llplib+(inob-1)*(1+nbec)+1), idecob, nbcmpm)
         icompb=iadob-1
-        do 120 i = 1, nbcmpm
+        do i = 1, nbcmpm
             if (idecob(i) .gt. 0) then
                 icompb=icompb+1
-                do 130 inoa = 1, nbnoa
+                do inoa = 1, nbnoa
                     iadoa=zi(llplia+(inoa-1)*(1+nbec))
                     call isdeco(zi(llplia+(inoa-1)*(1+nbec)+1), idecoa, nbcmpm)
                     icompa=iadoa-1
-                    do 140 j = 1, nbcmpm
+                    do j = 1, nbcmpm
                         if ((idecoa(j).gt.0) .and. (i.eq.j)) then
 ! On se limite au repere globaux
                             icompa=icompa+i
                             zr(itemcm+(icompb-1)*iada(1)+icompa-1)=&
                             zr(itemtm+(inob-1)*nbnoa+inoa-1)
                         endif
-140                 continue
-130             continue
+                    end do
+                end do
             endif
-120     continue
-110 end do
+        end do
+    end do
 !
 !
 ! ************************************************************

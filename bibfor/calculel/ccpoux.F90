@@ -119,9 +119,9 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         call jeveuo(chamgd(1:19)//'.VALE', 'L', ldepl)
         call rsadpa(resuin, 'L', 1, 'OMEGA2', nordre,&
                     0, sjv=lfreq, styp=k8b)
-        do 20 ii = 0, neq - 1
+        do ii = 0, neq - 1
             zr(lvale+ii) = -zr(lfreq)*zr(ldepl+ii)
- 20     continue
+        end do
         call jelibe(chamgd(1:19)//'.VALE')
     else if (typesd.eq.'DYNA_TRANS') then
         call jeveuo(chdynr//'.VALE', 'E', lvale)
@@ -130,15 +130,15 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     ier)
         if (ier .eq. 0) then
             call jeveuo(chacce//'.VALE', 'L', lacce)
-            do 30 ii = 0, neq - 1
+            do ii = 0, neq - 1
                 zr(lvale+ii) = zr(lacce+ii)
- 30         continue
+            end do
             call jelibe(chacce//'.VALE')
         else
             call utmess('A', 'CALCULEL3_1')
-            do 40 ii = 0, neq - 1
+            do ii = 0, neq - 1
                 zr(lvale+ii) = zero
- 40         continue
+            end do
         endif
     else if (typesd.eq.'DYNA_HARMO') then
         call jeveuo(chdynr//'.VALE', 'E', lvale)
@@ -147,15 +147,15 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     ier)
         if (ier .eq. 0) then
             call jeveuo(chacce//'.VALE', 'L', lacce)
-            do 50 ii = 0, neq - 1
+            do ii = 0, neq - 1
                 zc(lvale+ii) = zc(lacce+ii)
- 50         continue
+            end do
             call jelibe(chacce//'.VALE')
         else
             call utmess('A', 'CALCULEL3_1')
-            do 60 ii = 0, neq - 1
+            do ii = 0, neq - 1
                 zc(lvale+ii) = czero
- 60         continue
+            end do
         endif
     endif
 !
@@ -200,7 +200,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     (typesd.ne.'EVOL_ELAS')) then
                     call utmess('A', 'CALCULEL3_4')
                     iret = 1
-                    goto 9999
+                    goto 999
                 endif
             endif
         endif
@@ -231,7 +231,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 else
                     call utmess('A', 'CALCULEL3_2')
                     iret = 1
-                    goto 9999
+                    goto 999
                 endif
             else if (typesd.eq.'EVOL_ELAS') then
                 typcoe = 'R'
@@ -244,18 +244,18 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 else
                     call utmess('A', 'CALCULEL3_3')
                     iret = 1
-                    goto 9999
+                    goto 999
                 endif
             endif
         endif
     endif
 !
     ch5 = '.    '
-    do 10 i = 1, 11
+    do i = 1, 11
         tps(i) = zero
         tpf(i) = '&FOZERO'
         tpc(i) = czero
- 10 end do
+    end do
 !
     nochi1 = charge//'.CHME.F1D1D.DESC'
     exif1d = .false.
@@ -266,7 +266,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
     endif
 !
-    do 70 ipara = 1, nbpain
+    do ipara = 1, nbpain
         curpar = lipain(ipara)
         ch5 = '.    '
         if ((curpar.eq.'PCOEFFR') .and. (typcoe.eq.'R')) then
@@ -366,9 +366,9 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             call mecact('V', nochin, 'MODELE', ligrmo, 'NEUT_K24',&
                         ncmp=1, nomcmp='Z1', sk=suropt)
         endif
- 70 end do
+    end do
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

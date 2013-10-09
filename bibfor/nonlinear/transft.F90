@@ -103,7 +103,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
 !
     nomsym(1) = 'DEPL'
 !
-    do 200 itps = 1, nt
+    do itps = 1, nt
         temps = (itps-1)*deltat
 !
         iarchi = iarchi + 1
@@ -124,7 +124,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
 211     continue
 !
         call rsnoch(nomres, nomsym(1), iarchi)
-200 continue
+    end do
 !
     call jedema()
 end subroutine

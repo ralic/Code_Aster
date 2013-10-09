@@ -145,14 +145,14 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
 ! --- VERIFICATION QUE LE CATALOGUE DES TYPES DE MAILLE N'A PAS ETE
 !     MODIFIE
 !
-    do 10 ityp = 1, nbtyma
+    do ityp = 1, nbtyma
         impmai(ityp) = 0
         call jenuno(jexnum('&CATA.TM.NOMTM', ityp), kbid)
 ! VERIFICATION COHERENCE CATALOGUE FORTRAN
         ASSERT(nomast(ityp) .eq. kbid)
         call jeveuo(jexnum('&CATA.TM.NBNO', reftyp(ityp)), 'L', jnoeu)
         nbref(ityp) = zi(jnoeu)
- 10 end do
+    end do
 !
 ! --- DIMENSIONS DU PROBLEME
 !
@@ -195,10 +195,10 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
     call jecreo(nomnoe, 'G N K8')
     call jeecra(nomnoe, 'NOMMAX', nbtot)
 !
-    do 5 no = 1, nbno
+    do no = 1, nbno
         call jenuno(jexnum(nomnoi, no), nomnd)
         call jecroc(jexnom(nomnoe, nomnd))
-  5 end do
+    end do
 !
 ! --- CHAM_GEOM : RECOPIE DE LA PARTIE COMMUNE
 !

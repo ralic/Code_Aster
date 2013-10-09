@@ -37,11 +37,10 @@ subroutine op0036()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, ibid, ni, nr, nk, i, j, ir, jvale, jp, ndim, jt
+    integer :: iocc, ni, nr, nk, i, j, ir, jvale, jp, ndim, jt
     integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jprol, jd
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jtrav5, npar
     integer :: longco, nocc3
-    real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: kbid
     character(len=3) :: ntyp
@@ -51,6 +50,7 @@ subroutine op0036()
     character(len=24) :: trav, ldbl, indic, ltyp, work
     character(len=24) :: vectcr, vectci
     integer :: ivcr, ivci
+    cbid = dcmplx(0.d0, 0.d0)
     data typarr / 'R'       , 'R'       /
     data typarc / 'R'       , 'R'       , 'R'       /
 !
@@ -79,7 +79,7 @@ subroutine op0036()
         call wkvect(ltyp, 'V V K8', nocc, jy)
         dimmax=0
 !
-        do 50 iocc = 1, nocc
+        do iocc = 1, nocc
             call getvtx('LISTE', 'PARA', iocc=iocc, scal=nmpar, nbret=jp)
             zk16(jd+iocc-1)=nmpar
             call getvis('LISTE', 'LISTE_I', iocc=iocc, nbval=0, nbret=ni)
@@ -96,9 +96,9 @@ subroutine op0036()
                 longco=0
                 call getvis('LISTE', 'NUME_LIGN', iocc=iocc, nbval=-nindi, vect=zi(iii),&
                             nbret=ir)
-                do 55 i = 1, -nindi
+                do i = 1, -nindi
                     longco=max(longco,zi(iii+i-1))
-55              continue
+                end do
                 call jedetr(indic)
                 zi(jlng+iocc-1)=longco
             else
@@ -120,24 +120,24 @@ subroutine op0036()
                 endif
             endif
 !
-50      continue
+        end do
 !
 !       ---CREATION DE LA TABLE
         call tbcrsv(resu, 'G', nocc, zk16(jd), zk8(jy),&
                     dimmax)
 !
-        do 200 iocc = 1, nocc
+        do iocc = 1, nocc
             call getvis('LISTE', 'LISTE_I', iocc=iocc, nbval=0, nbret=ni)
             call getvis('LISTE', 'NUME_LIGN', iocc=iocc, nbval=0, nbret=nindi)
             call getvr8('LISTE', 'LISTE_R', iocc=iocc, nbval=0, nbret=nr)
             call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=0, nbret=nk)
             call getvtx('LISTE', 'PARA', iocc=iocc, scal=nmpar, nbret=jp)
-            do 150 j = 1, nocc
+            do j = 1, nocc
                 nmpar1=zk16(jd+j-1)
                 if ((nmpar.eq.nmpar1) .and. (j.ne.iocc)) then
                     call utmess('F', 'UTILITAI2_76')
                 endif
-150          continue
+            end do
 !
             if (nindi .ne. 0) then
                 nindi=-nindi
@@ -146,9 +146,9 @@ subroutine op0036()
                             nbret=ir)
             else
                 call wkvect(indic, 'V V I', (-ni-nr-nk), iii)
-                do 175 i = 1, (-ni-nr-nk)
+                do i = 1, (-ni-nr-nk)
                     zi(iii+i-1)=i
-175              continue
+                end do
             endif
 !
 !           LISTE D'ENTIERS :
@@ -205,7 +205,7 @@ subroutine op0036()
             endif
             call jedetr(trav)
             call jedetr(indic)
-200      continue
+        end do
 !
 !     ==============
 ! --- CAS : FONCTION
@@ -246,10 +246,10 @@ subroutine op0036()
             vectci='&&OP0036.VCI'
             call wkvect(vectcr, 'V V R', ndim/3, ivcr)
             call wkvect(vectci, 'V V R', ndim/3, ivci)
-            do 301 i = 1, ndim/3
+            do i = 1, ndim/3
                 zr(ivcr+i-1)= zr(jvale-1+ndim/3+2*i-1)
                 zr(ivci+i-1)= zr(jvale-1+ndim/3+2*i)
-301          continue
+            end do
             call tbajco(resu, nmparc(1), 'R', ndim/3, [0],&
                         zr(jvale), [cbid], kbid, 'R', [-1])
             call tbajco(resu, nmparc(2), 'R', ndim/3, [0],&

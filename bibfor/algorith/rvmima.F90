@@ -152,7 +152,7 @@ subroutine rvmima(nomres, iocc)
         else
             call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
-        goto 9999
+        goto 999
     endif
 !
 ! ----- TRAITEMENT DU RESULTAT  -----
@@ -177,7 +177,7 @@ subroutine rvmima(nomres, iocc)
     nopara(3) = 'NOM_CHAM'
     valk(3) = nomcha
 !
-    do 100 i100 = 1, nbordr
+    do i100 = 1, nbordr
         iord = zi(jordr+i100-1)
 !
         ik = 3
@@ -193,7 +193,7 @@ subroutine rvmima(nomres, iocc)
         call rsnopa(resu, 0, nomjv, nbacc, ibid)
         if (nbacc .ne. 0) then
             call jeveuo(nomjv, 'L', jaces)
-            do 1001 iac = 1, nbacc
+            do iac = 1, nbacc
                 call rsadpa(resu, 'L', 1, zk16(jaces-1+iac), iord,&
                             1, sjv=iadr, styp=ctype)
                 call tbexip(nomres, zk16(jaces-1+iac), exist, typpar)
@@ -224,7 +224,7 @@ subroutine rvmima(nomres, iocc)
                     ik = ik + 1
                     valk(ik) = zk8(iadr)
                 endif
-1001         continue
+            end do
             call jedetr(nomjv)
         endif
 !
@@ -321,11 +321,12 @@ subroutine rvmima(nomres, iocc)
             call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
 !
-100 end do
+100     continue
+    end do
 !
     call jedetr(knum)
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

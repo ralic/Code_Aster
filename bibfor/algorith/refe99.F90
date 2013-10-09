@@ -101,15 +101,15 @@ subroutine refe99(nomres)
         nbli = -nbli
         if (nbli .eq. 0) then
 !           Select all modes from each modal base
-            do 2 i = 1, nbmome
+            do i = 1, nbmome
                 zi(ltnbmax+i-1) = 9999
-  2         continue
+            end do
         else if (nbli .eq. 1) then
 !           Apply the single NMAX_MODE criterion to all of the modal base
             call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nbmax, nbret=ier)
-            do 3 i = 1, nbmome
+            do i = 1, nbmome
                 zi(ltnbmax+i-1) = nbmax
-  3         continue
+            end do
         else if (nbli .eq. nbmome) then
 !           Use the NMAX_MODE criteria, defined for each modal base separately
             call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax),&
@@ -121,7 +121,7 @@ subroutine refe99(nomres)
             call utmess('F', 'ALGORITH14_31', ni=2, vali=vali)
         endif
 !
-        do 10 i = 1, nbmome
+        do i = 1, nbmome
             momeca = zk8(ltmome-1+i)
             call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid)
             call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass)
@@ -159,7 +159,7 @@ subroutine refe99(nomres)
             concep(1) = intf
             call refdaj('F', nomres, 0, numddl, 'INTERF_DYNA',&
                         concep, ier)
- 10     continue
+        end do
 !
     endif
 !
@@ -208,15 +208,15 @@ subroutine refe99(nomres)
             nbli = -nbli
             if (nbli .eq. 0) then
 !               Select all modes from each modal base
-                do 12 i = 1, nbmome
+                do i = 1, nbmome
                     zi(ltnbmax+i-1) = 9999
- 12             continue
+                end do
             else if (nbli .eq. 1) then
 !               Apply the single NMAX_MODE criterion to all of the modal base
                 call getvis('RITZ', 'NMAX_MODE', iocc=1, scal=nbmax, nbret=ibid)
-                do 13 i = 1, nbmome
+                do i = 1, nbmome
                     zi(ltnbmax+i-1) = nbmax
- 13             continue
+                end do
             else if (nbli .eq. nbmome) then
 !               Use the NMAX_MODE criteria, defined for each modal base separately
                 call getvis('RITZ', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax),&
@@ -229,7 +229,7 @@ subroutine refe99(nomres)
             endif
 !
             nbmod1 = 0
-            do 20 i = 1, nbmome
+            do i = 1, nbmome
                 momeca = zk8(ltmome-1+i)
                 call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid)
                 call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass)
@@ -258,7 +258,7 @@ subroutine refe99(nomres)
                 concep(3) = amor
                 call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE',&
                             concep, ier)
- 20         continue
+            end do
         endif
         if (imint .gt. 0) then
 !           Treating the MODE_INTF kw (2nd RITZ entry) for the static modes

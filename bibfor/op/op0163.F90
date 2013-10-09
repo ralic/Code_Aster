@@ -46,7 +46,7 @@ subroutine op0163()
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
 !
-    integer ::  itresr(3), itresi(3)
+    integer :: itresr(3), itresi(3)
     character(len=4) :: type(3)
     character(len=8) :: k8b, nomres
     character(len=8) :: mael, basemo
@@ -66,6 +66,7 @@ subroutine op0163()
     integer :: j, jinst, jnume, jrefe, linst, lval1
     integer :: lval2, lvale, nbcham, nbinst, nbmodd, nbmode, nbmods
     integer :: nbsauv, nbsto, neq, nf, nmm, nti, nu
+    cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
     data  refe  /'                  _REFE'/
@@ -139,9 +140,9 @@ subroutine op0163()
     call wkvect('&&OP0163.ACCEI', 'V V R', nbsto, itresi(3))
     call wkvect(knume, 'V V I', nbinst, jnume)
     call wkvect(kinst, 'V V R8', nbinst, jinst)
-    do 60 iord = 0, nbinst-1
+    do iord = 0, nbinst-1
         zi(jnume+iord) = iord + 1
- 60 continue
+    end do
     read(ifmis,1001) (zr(jinst+iord-1),iord=1,nbinst)
     read(ifmis,1001) ((zr(itresr(1)+j-1+(zi(jnume+i-1)-1)*nbmode),&
      &             j=1,nbmodd),i=1,nbinst)
@@ -179,9 +180,9 @@ subroutine op0163()
         call vtcrem(chamn1, matrm, 'V', 'R')
         call vtcrem(chamn2, matrm, 'V', 'R')
     endif
-    do 90 i = 0, nbinst-1
+    do i = 0, nbinst-1
         iarch = iarch + 1
-        do 92 ich = 1, nbcham
+        do ich = 1, nbcham
             call rsexch(' ', nomres, type(ich), iarch, chamno,&
                         iret)
             if (iret .eq. 0) then
@@ -208,16 +209,16 @@ subroutine op0163()
                             zr(lval1))
                 call mdgeph(neq, nbmode, zr(idbase), zr(idresi+(zi( jnume+i)-1)*nbmode),&
                             zr(lval2))
-                do 93 ie = 1, neq
+                do ie = 1, neq
                     zc(lvale+ie-1) = dcmplx(zr(lval1+ie-1),zr(lval2+ ie-1))
- 93             continue
+                end do
             else
                 call mdgeph(neq, nbmode, zr(idbase), zr(idresr+(zi( jnume+i)-1)*nbmode),&
                             zr(lvale))
             endif
             call jelibe(chamno)
             call rsnoch(nomres, type(ich), iarch)
- 92     continue
+        end do
         if (typres .eq. 'DYNA_HARMO') then
             call rsadpa(nomres, 'E', 1, 'FREQ', iarch,&
                         0, sjv=linst, styp=k8b)
@@ -226,7 +227,7 @@ subroutine op0163()
                         0, sjv=linst, styp=k8b)
         endif
         zr(linst) = zr(jinst+i)
- 90 continue
+    end do
 !
     matric(1) = matrk
     matric(2) = matrm

@@ -48,7 +48,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
 !     ------------------------------------------------------------------
     integer :: ibid, gd, iec, nec, ncmpmx, icmpre, icmp, jprno, jnueq, iad
     integer :: tabec(10)
-    character(len=8) ::  nomma, nomcmp, ncmp
+    character(len=8) :: nomma, nomcmp, ncmp
     character(len=19) :: prno
 !     ------------------------------------------------------------------
     call jemarq()
@@ -69,7 +69,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
     endif
 !
     call jenonu(jexnom(nomma//'.NOMNOE', noeud), nunoe)
-    if (nunoe .eq. 0) goto 9999
+    if (nunoe .eq. 0) goto 999
 !
     ncmp = cmp
     nuddl = 0
@@ -82,12 +82,12 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
     ASSERT(nec .le. 10)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
-    do 10 iec = 1, nec
+    do iec = 1, nec
         tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
- 10 end do
+    end do
 !
     icmpre = 0
-    do 20 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (exisdg(tabec,icmp)) then
             icmpre = icmpre + 1
             nomcmp = zk8(iad-1+icmp)
@@ -96,9 +96,9 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
                 goto 22
             endif
         endif
- 20 end do
+    end do
  22 continue
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

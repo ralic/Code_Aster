@@ -86,7 +86,7 @@ subroutine rsinfo(nomcon, ifi)
     call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) then
         call utmess('A', 'UTILITAI4_34', sk=nomd2)
-        goto 9999
+        goto 999
     endif
 !
 ! 1.2. ==> CONSTANTES
@@ -105,7 +105,7 @@ subroutine rsinfo(nomcon, ifi)
 !                                 9012345678901234
     call jeexin(nomd2(1:8)//'           .DESC', j)
     if (j .eq. 0) then
-        goto 9999
+        goto 999
     endif
 !
 ! 2.2. ==> NUMEROS D'ORDRE
@@ -136,11 +136,11 @@ subroutine rsinfo(nomcon, ifi)
     call wkvect('&&'//nompro//'.NOM_SYMBOL', 'V V K16', nbnosy, lnosy)
     call wkvect('&&'//nompro//'.NUM_SYMBOL', 'V V K16', nbnosy, latac)
     inomsy = 0
-    do 241 isy = 1, nbnosy
+    do isy = 1, nbnosy
         call jenuno(jexnum(nomd2//'.DESC', isy), nomsym)
         call jenonu(jexnom(nomd2//'.DESC', nomsym), ibid)
         call jeveuo(jexnum(nomd2//'.TACH', ibid), 'L', iatach)
-        do 2411 i = 1, nbordt
+        do i = 1, nbordt
             if (zk24(iatach-1+i)(1:1) .ne. ' ') then
                 inomsy = inomsy + 1
                 lg = lxlgut( nomsym )
@@ -149,8 +149,9 @@ subroutine rsinfo(nomcon, ifi)
                 zk16(latac+inomsy-1) = nomsym
                 goto 241
             endif
-2411     continue
-241 continue
+        end do
+241     continue
+    end do
 !
     if (inomsy .eq. 0) then
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES: AUCUN'
@@ -162,7 +163,7 @@ subroutine rsinfo(nomcon, ifi)
     longt = 17 * inomsy
     if (longt .gt. 2000) then
         call utmess('A', 'UTILITAI4_36')
-        goto 9999
+        goto 999
     endif
     call codent(longt, 'G', nomb1)
     form2 = '(1X,''!'',1X,I10,1X,''!'',A'//nomb1//')'
@@ -172,11 +173,11 @@ subroutine rsinfo(nomcon, ifi)
 !
     call wkvect('&&'//nompro//'.TIRET', 'V V K16', max(inomsy, 1), ltirt)
     call wkvect('&&'//nompro//'.POINT', 'V V K16', max(inomsy, 1), lpoin)
-    do 242 i = 1, inomsy
+    do i = 1, inomsy
 !                          1234567890123456
         zk16(ltirt+i-1) = '----------------'
         zk16(lpoin+i-1) = '      ...       '
-242 end do
+    end do
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
     write (ifi,form1) 'NUME_ORDRE', ( zk16(lnosy+j-1), j=1,inomsy )
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
@@ -184,14 +185,14 @@ subroutine rsinfo(nomcon, ifi)
     chain1 = ' '
     chain3 = ' '
 !
-    do 243 i = 1, nbordt
+    do i = 1, nbordt
         chain2 = ' '
         chain4 = ' '
         ipcd = 1
 !
 ! RECHERCHE DES NOMS SYMBOLIQUES POUR LE NUMERO D'ORDRE COURANT, I
 !
-        do 2431 isy = 1, inomsy
+        do isy = 1, inomsy
             ipcf = ipcd + 16 - 1
             nomsym = zk16(latac+isy-1)
             call rsexch(' ', nomd2, nomsym, zi(lres+i-1), noch19,&
@@ -210,7 +211,7 @@ subroutine rsinfo(nomcon, ifi)
             chain2(ipcd:ipcd) = '!'
             chain4(ipcd:ipcd) = '!'
             ipcd = ipcd + 1
-2431     continue
+        end do
 !
 ! ECRITURE : ON ECRIT TOUJOURS LA PREMIERE ET LA DERNIERE LIGNE. AU
 !            MILIEU, ON N'ECRIT QUE SI LE TEXTE A CHANGE.
@@ -257,7 +258,7 @@ subroutine rsinfo(nomcon, ifi)
         chain1(1:longt) = chain2(1:longt)
         chain3(1:longt) = chain4(1:longt)
 !
-243 end do
+    end do
 !
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
 !
@@ -278,7 +279,7 @@ subroutine rsinfo(nomcon, ifi)
     call jeveuo('&&'//nompro//'.NOMS_PARA', 'L', jpa)
     if (nbac .ne. 0) then
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE VARIABLES D''ACCES:'
-        do 25 iac = 1, nbac
+        do iac = 1, nbac
             call rsadpa(nomd2, 'L', 1, zk16(jpa-1+iac), zi(lres),&
                         1, sjv=iad, styp=ctype)
             if (ctype(1:1) .eq. 'I') then
@@ -298,7 +299,7 @@ subroutine rsinfo(nomcon, ifi)
             else if (ctype(1:2).eq.'K8') then
                 write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K8'
             endif
- 25     continue
+        end do
     endif
 !
 !     ------------------------------------------------------------------
@@ -309,8 +310,8 @@ subroutine rsinfo(nomcon, ifi)
         call wkvect('&&'//nompro//'.NOM_PARA', 'V V K16', nbpa, lnopa)
         call wkvect('&&'//nompro//'.NUM_PARA', 'V V K16', nbpa, lnupa)
         ipar = 0
-        do 261 i = 1, nbordt
-            do 2611 j = 1, nbpa
+        do i = 1, nbordt
+            do j = 1, nbpa
                 nopara = zk16(jpa-1+j+nbac)
                 call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
                             1, sjv=iad, styp=ctype)
@@ -324,14 +325,15 @@ subroutine rsinfo(nomcon, ifi)
                 lg = lxlgut( nopara )
                 lb = ( 16 - lg ) / 2
                 nopar2 = blanc(1:lb)//nopara
-                do 2612 k = 1, ipar
+                do k = 1, ipar
                     if (zk16(lnopa+k-1) .eq. nopar2) goto 2611
-2612             continue
+                end do
                 ipar = ipar + 1
                 zk16(lnopa+ipar-1) = nopar2
                 zk16(lnupa+ipar-1) = nopara
-2611         continue
-261     continue
+2611             continue
+            end do
+        end do
 !
         call codent(ipar, 'D', nomb1)
         form1 = '(1X,''!'',1X,A10,1X,'//nomb1//'(''!'',A16),''!'')'
@@ -341,10 +343,10 @@ subroutine rsinfo(nomcon, ifi)
 !
         call wkvect('&&'//nompro//'.TIRET', 'V V K16', max(ipar, 1), ltirt)
         call wkvect('&&'//nompro//'.POINT', 'V V K16', max(ipar, 1), lpoin)
-        do 262 i = 1, ipar
+        do i = 1, ipar
             zk16(ltirt+i-1) = '----------------'
             zk16(lpoin+i-1) = '      ...       '
-262     continue
+        end do
 !
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE PARAMETRES:'
         write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,ipar )
@@ -352,12 +354,12 @@ subroutine rsinfo(nomcon, ifi)
         write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,ipar )
 !
         chain1 = ' '
-        do 263 i = 1, nbordt
+        do i = 1, nbordt
 ! RECHERCHE DES NOMS DES PARAMETRES POUR LE NUMERO D'ORDRE COURANT, I
 !
             chain2 = ' '
             ipcd = 1
-            do 2631 j = 1, ipar
+            do j = 1, ipar
                 ipcf = ipcd + 15
                 nopara = zk16(lnupa+j-1)
                 call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
@@ -384,7 +386,7 @@ subroutine rsinfo(nomcon, ifi)
                 ipcd = ipcf + 1
                 chain2(ipcd:ipcd) = '!'
                 ipcd = ipcd + 1
-2631         continue
+            end do
 !
 ! ECRITURE : ON ECRIT TOUJOURS LA PREMIERE ET LA DERNIERE LIGNE. AU
 !            MILIEU, ON N'ECRIT QUE SI LE TEXTE A CHANGE.
@@ -427,7 +429,7 @@ subroutine rsinfo(nomcon, ifi)
                 ii = i
             endif
             chain1 = chain2
-263     continue
+        end do
         write (ifi,form1) '----------', ( zk16(ltirt+k-1), k=1,ipar )
         call jedetr('&&'//nompro//'.TIRET')
         call jedetr('&&'//nompro//'.POINT')
@@ -443,6 +445,6 @@ subroutine rsinfo(nomcon, ifi)
 !
 ! 3. LA FIN
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

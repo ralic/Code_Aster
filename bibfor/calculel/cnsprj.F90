@@ -145,10 +145,10 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !     5- CALCUL DES VALEURS DE CNS2 :
 !     -------------------------------
     idecal = 0
-    do 50 ino2 = 1, nbno2
+    do ino2 = 1, nbno2
         nbno1 = zi(iaconb-1+ino2)
         if (nbno1 .eq. 0) goto 50
-        do 40 icmp = 1, ncmp
+        do icmp = 1, ncmp
 !
 !          -- ON COMPTE (ICO1) LES NOEUDS PORTANT LE DDL :
 !             ON COMPTE AUSSI (ICO2) CEUX DONT LE COEF EST > 0
@@ -159,7 +159,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
             vrmoy = 0.d0
             vcmoy = dcmplx(0.d0,0.d0)
             coetot = 0.d0
-            do 10 ino1 = 1, nbno1
+            do ino1 = 1, nbno1
                 nuno1 = zi(iaconu+idecal-1+ino1)
                 coef1 = zr(iacocf+idecal-1+ino1)
                 if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
@@ -175,7 +175,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
                         vcmoy = vcmoy + zc(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
                     endif
                 endif
- 10         continue
+            end do
             if (ico1 .eq. 0) goto 40
             zl(jcns2l-1+ (ino2-1)*ncmp+icmp) = .true.
 !
@@ -219,7 +219,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !
             if (tsca .eq. 'R') then
                 v2 = 0.d0
-                do 20 ino1 = 1, nbno1
+                do ino1 = 1, nbno1
                     nuno1 = zi(iaconu+idecal-1+ino1)
                     coef1 = zr(iacocf+idecal-1+ino1)
                     if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
@@ -228,12 +228,12 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
                             v2 = v2 + coef1*v1
                         endif
                     endif
- 20             continue
+                end do
                 zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2/coetot
 !
             else if (tsca.eq.'C') then
                 v2c = dcmplx(0.d0,0.d0)
-                do 30 ino1 = 1, nbno1
+                do ino1 = 1, nbno1
                     nuno1 = zi(iaconu+idecal-1+ino1)
                     coef1 = zr(iacocf+idecal-1+ino1)
                     if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
@@ -242,12 +242,14 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
                             v2c = v2c + coef1*v1c
                         endif
                     endif
- 30             continue
+                end do
                 zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2c/coetot
             endif
- 40     continue
+ 40         continue
+        end do
         idecal = idecal + nbno1
- 50 end do
+ 50     continue
+    end do
 !
  60 continue
     call jedema()

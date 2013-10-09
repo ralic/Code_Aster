@@ -62,7 +62,7 @@ subroutine apbloc(matass, solveu, tbloc)
 !   -- Si ELIM_LAGR='OUI', comme on va eliminer certains ddls,
 !      il n'est pas sur que tbloc soit valide
     if (leliml) tbloc=1
-
+!
     call jedema()
 !
 #endif

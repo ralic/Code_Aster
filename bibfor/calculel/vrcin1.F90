@@ -126,7 +126,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         nbk80=0
         lonk80=5
         call wkvect('&&VRCIN1.LK80', 'V V K80', lonk80, jlk80)
-        do 1 k = 1, nbcvrc
+        do k = 1, nbcvrc
             if (zk8(jcvvar-1+k) .eq. varc) goto 1
             varc=zk8(jcvvar-1+k)
             cart2 = chmat//'.'//varc//'.2'
@@ -137,7 +137,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call jeveuo(ces1//'.CESD', 'L', jcesd1)
             call jeveuo(ces1//'.CESL', 'L', jcesl1)
             call jeveuo(ces1//'.CESV', 'L', jcesv1)
-            do 2 ima = 1, nbma
+            do ima = 1, nbma
                 call cesexi('C', jcesd1, jcesl1, ima, 1,&
                             1, 1, iad)
                 if (iad .le. 0) goto 2
@@ -170,17 +170,19 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
                     call jeveuo('&&VRCIN1.LK80', 'E', jlk80)
                 endif
                 zk80(jlk80-1+nbk80)=k80
-  2         continue
+  2             continue
+            end do
             call detrsd('CHAM_ELEM_S', ces1)
-  1     end do
+  1         continue
+        end do
 !
         nbchs=nbk80
         if (nbchs .eq. 0) then
             call jedetr('&&VRCIN1.LK80')
-            goto 9999
+            goto 999
         endif
         call wkvect(chmat//'.LISTE_SD', 'V V K16', 7*nbchs, jlissd)
-        do 3 ichs = 1, nbchs
+        do ichs = 1, nbchs
             k80=zk80(jlk80-1+ichs)
             zk16(jlissd-1+7*(ichs-1)+1)=k80(1:8)
             zk16(jlissd-1+7*(ichs-1)+2)=k80(9:16)
@@ -189,7 +191,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             zk16(jlissd-1+7*(ichs-1)+5)=k80(41:48)
             zk16(jlissd-1+7*(ichs-1)+6)=k80(49:56)
             zk16(jlissd-1+7*(ichs-1)+7)=k80(57:64)
-  3     end do
+        end do
         call jedetr('&&VRCIN1.LK80')
     endif
 !
@@ -230,7 +232,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     if (iret .eq. 0) call manopg(ligrmo, 'INIT_VARC', 'PVARCPR', mnoga)
 !
 !
-    do 5 ichs = 1, nbchs
+    do ichs = 1, nbchs
         call codent(ichs, 'D0', chs(13:15))
         zk24(jlisch-1+ichs)=chs
         tysd=zk16(jlissd-1+7*(ichs-1)+1)(1:8)
@@ -260,7 +262,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             ASSERT(iret.le.12)
             if (iret .ge. 10) then
                 codret = 'NO'
-                goto 9999
+                goto 999
             endif
         else
             ASSERT(tysd.eq.'CHAMP')
@@ -343,8 +345,8 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !
 !
         if (tysd .eq. 'EVOL') call detrsd('CHAMP', nomch)
-  5 end do
+    end do
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

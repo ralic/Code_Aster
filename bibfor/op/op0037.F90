@@ -138,9 +138,9 @@ subroutine op0037()
         nbparr = nbpamr - 9
         nbpark = nbpamk
         nbpara = nbpamt - 9
-        do 1 i = 1, nbpara
+        do i = 1, nbpara
             nopara(i) = noparm(i)
- 1      continue
+        end do
     else if (typcon(1:9) .eq. 'MODE_MECA') then
         nomsy = 'DEPL'
 !        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
@@ -162,18 +162,18 @@ subroutine op0037()
             nbparr = nbpamr - 9
             nbpara = nbpamt - 9
         endif
-        do 2 i = 1, nbpara
+        do i = 1, nbpara
             nopara(i) = noparm(i)
- 2      continue
+        end do
     else if (typcon(1:10) .eq. 'MODE_FLAMB') then
         nomsy = 'DEPL'
         nbpari = nbpafi
         nbparr = nbpafr
         nbpark = nbpafk
         nbpara = nbpaft
-        do 3 i = 1, nbpara
+        do i = 1, nbpara
             nopara(i) = noparf(i)
- 3      continue
+        end do
     else
         call utmess('F', 'ALGELINE2_33', sk=typcon)
     endif
@@ -192,7 +192,7 @@ subroutine op0037()
             call utmess('I', 'ALGELINE7_5', sk=modein)
             call utmess('I', 'ALGELINE7_6')
         endif
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -206,7 +206,7 @@ subroutine op0037()
     call rsorac(modein, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, 0.0d0, k8b, zi(lnumor), nbmod,&
                 nbtrou)
-    do 77 im = 1, nbmod
+    do im = 1, nbmod
         call rsexch(' ', modein, 'DEPL', zi(lnumor+im-1), k19b,&
                     iret)
         call jeexin(k19b//'.PAPA', iret)
@@ -222,7 +222,7 @@ subroutine op0037()
         call jelira(k19b//'.VALE', 'TYPE', cval=typmod)
         if (typmod .eq. 'C') lcmplx = .true.
 !
-77  continue
+    end do
 !
 !     --- INITIALISATION ---
     norm = ' '
@@ -326,7 +326,7 @@ subroutine op0037()
         xmastr = 1.d0
     endif
 !
-100  continue
+100 continue
 !
 !     --- OPTION DE NORMALISATION  ---
     method = '                        '
@@ -447,7 +447,7 @@ subroutine op0037()
             call utmess('F', 'ALGELINE2_37')
         endif
         ideb = ifin + 1
-        do 50 ic = 1, ncmp
+        do ic = 1, ncmp
             lg = lxlgut(zk8(lcmp+ic-1))
             ifin = ideb + lg
             if (ifin .gt. 24) then
@@ -456,8 +456,8 @@ subroutine op0037()
             endif
             method(ideb:ifin) = ' '//zk8(lcmp+ic-1)(1:lg)
             ideb = ideb + lg + 1
-50      continue
-52      continue
+        end do
+ 52     continue
     endif
 !
     call getvtx(' ', 'AVEC_CMP', nbval=0, nbret=l)
@@ -468,7 +468,7 @@ subroutine op0037()
         call wkvect('&&OP0037.LISTE.CMP', 'V V K8', ncmp, lcmp)
         call getvtx(' ', 'AVEC_CMP', nbval=ncmp, vect=zk8(lcmp), nbret=l)
         ideb = 10
-        do 30 ic = 1, ncmp
+        do ic = 1, ncmp
             lg = lxlgut(zk8(lcmp+ic-1))
             ifin = ideb + lg
             if (ifin .gt. 24) then
@@ -477,8 +477,8 @@ subroutine op0037()
             endif
             method(ideb:ifin) = ' '//zk8(lcmp+ic-1)(1:lg)
             ideb = ideb + lg + 1
-30      continue
-32      continue
+        end do
+ 32     continue
     endif
 !
     call getvtx(' ', 'SANS_CMP', nbval=0, nbret=l)
@@ -489,7 +489,7 @@ subroutine op0037()
         call wkvect('&&OP0037.LISTE.CMP', 'V V K8', ncmp, lcmp)
         call getvtx(' ', 'SANS_CMP', nbval=ncmp, vect=zk8(lcmp), nbret=l)
         ideb = 10
-        do 40 ic = 1, ncmp
+        do ic = 1, ncmp
             lg = lxlgut(zk8(lcmp+ic-1))
             ifin = ideb + lg
             if (ifin .gt. 24) then
@@ -498,29 +498,29 @@ subroutine op0037()
             endif
             method(ideb:ifin) = ' '//zk8(lcmp+ic-1)(1:lg)
             ideb = ideb + lg + 1
-40      continue
-42      continue
+        end do
+ 42     continue
     endif
 !
     if (niv .ge. 1) then
         call utmess('I', 'ALGELINE7_5', sk=modein)
         if (lbasm) then
             call utmess('I', 'ALGELINE7_7')
-            do 79 im = 1, nbmod
+            do im = 1, nbmod
                 valk(1) = method
                 vali = zi(lnumor+im-1)
                 call utmess('I', 'ALGELINE7_8', sk=valk(1), si=vali)
-79          continue
+            end do
         else
             call utmess('I', 'ALGELINE7_9')
-            do 78 im = 1, nbmod
+            do im = 1, nbmod
                 call rsadpa(modein, 'L', 1, 'NORME', zi(lnumor+im-1),&
                             0, sjv=ladpa, styp=k8b)
                 valk(1) = zk24(ladpa)
                 valk(2) = method
                 vali = zi(lnumor+im-1)
                 call utmess('I', 'ALGELINE7_10', nk=2, valk=valk, si=vali)
-78          continue
+            end do
         endif
     endif
 !
@@ -554,16 +554,16 @@ subroutine op0037()
             call pteddl('CHAM_NO', chamno, ncmp, zk8(lcmp), neq,&
                         zi(lddl))
         endif
-        do 20 ic = 2, ncmp
+        do ic = 2, ncmp
             ind = (ic-1)*neq
-            do 21 ie = 0, neq-1
+            do ie = 0, neq-1
                 zi(lddl+ie)= max(zi(lddl+ind+ie),zi(lddl+ie))
-21          continue
-20      continue
+            end do
+        end do
         if (norm .eq. 'SANS_CMP' .or. norm .eq. 'EUCL') then
-            do 22 ie = 0, neq-1
+            do ie = 0, neq-1
                 zi(lddl+ie)= 1-zi(lddl+ie)
-22          continue
+            end do
             if (norm .eq. 'SANS_CMP') norm='AVEC_CMP'
         endif
     else if (norm.eq.'POINT') then
@@ -575,9 +575,9 @@ subroutine op0037()
 !     --- CALCUL DU NOMBRE DE COMPOSANTES ACTIVES ---
     if (ncmp .gt. 0) then
         ncmpac = 0
-        do 120 ieq = 0, neq-1
+        do ieq = 0, neq-1
             ncmpac = ncmpac + zi(lddl+ieq)
-120      continue
+        end do
         if (ncmpac .lt. 1) then
             call utmess('F', 'ALGELINE2_41')
         endif
@@ -701,16 +701,16 @@ subroutine op0037()
         call utmess('F', 'ALGELINE2_44', sk=typmod)
     endif
 !
-    do 60 im = 1, nbmode
+    do im = 1, nbmode
         call rsadpa(modeou, 'E', 1, 'NORME', zi(lnumor+im-1),&
                     0, sjv=lnorm, styp=k8b)
         zk24(lnorm) = method
-60  continue
+    end do
 !
 !     --- ON MET UN TITRE ----
     call titre()
 !
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

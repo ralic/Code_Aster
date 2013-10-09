@@ -63,6 +63,7 @@ subroutine diag99(nomres)
     character(len=14) :: nu
     character(len=24) :: masse, numddl, mailla
     character(len=19) :: chamol, chamne
+    cbid = dcmplx(0.d0, 0.d0)
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -117,11 +118,11 @@ subroutine diag99(nomres)
     call wkvect('&&DIAG99.TRAV3', 'V V R', nbstat, jtrav3)
     call wkvect('&&DIAG99.TRAV4', 'V V I', neq, jtrav4)
 !
-    do 10 j = 1, nbstat
+    do j = 1, nbstat
 !
         call vecini(neq, 0.d0, zr(jtrav1))
 !
-        do 20 i = 1, nbmode
+        do i = 1, nbmode
 !
 ! --------- PRODUIT MASSE*MODE PROPRE I
             call mrmult('ZERO', lmasse, zr(idmode+(i-1)*neq), zr( jtrav2), 1,&
@@ -133,20 +134,20 @@ subroutine diag99(nomres)
 ! --------- PRODUIT (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
 ! --------- PUIS
 ! --------- SOMME (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
-            do 30 k = 1, neq
+            do k = 1, neq
                 zr(jtrav1+(k-1)) = zr( jtrav1+(k-1)) + r8scal * zr( idmode+(i-1)*neq+(k-1) )
- 30         continue
- 20     continue
+            end do
+        end do
 !
-        do 40 k = 1, neq
+        do k = 1, neq
             zr(jnsta+(j-1)*neq+(k-1)) = zr( idstat+(j-1)*neq+(k-1)) - zr(jtrav1+(k-1) )
- 40     continue
+        end do
 !
- 10 continue
+    end do
 !
-    do 50 i = 1, neq
+    do i = 1, neq
         zi(jtrav4+i-1) = 1
- 50 continue
+    end do
     alpha = 0.717d0
 !
     call vpgskp(neq, nbstat, zr(jnsta), alpha, lmasse,&
@@ -156,7 +157,7 @@ subroutine diag99(nomres)
     call rscrsd('G', nomres, 'MODE_MECA', nbord)
 !
     iorne =0
-    do 80 i = 1, nbmode
+    do i = 1, nbmode
         iorol = zi(jordm+i-1)
         iorne = iorne+1
 !
@@ -209,9 +210,9 @@ subroutine diag99(nomres)
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
- 80 continue
+    end do
 !
-    do 90 i = 1, nbstat
+    do i = 1, nbstat
         iorol = zi(jords+i-1)
         iorne = iorne+1
 !
@@ -257,11 +258,11 @@ subroutine diag99(nomres)
                     ier)
         call vtcrem(chamol, masse, 'G', 'R')
         call jeveuo(chamol//'.VALE', 'E', jvale)
-        do 111 ieq = 1, neq
+        do ieq = 1, neq
             zr(jvale+ieq-1) = zr(jnsta+(i-1)*neq+ieq-1)
-111     continue
+        end do
         call rsnoch(nomres, 'DEPL', iorne)
- 90 continue
+    end do
 !
     call jedetr('&&DIAG99.TRAV1')
     call jedetr('&&DIAG99.TRAV2')

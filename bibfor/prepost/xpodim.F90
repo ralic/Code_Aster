@@ -195,9 +195,9 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             call jelira(logrma, 'LONMAX', nbgma)
             call jelira(malini//'.GROUPEMA', 'NUTIOC', nbgma1)
             ASSERT(nbgma.eq.nbgma1)
-            do 30 i = 1, nbgma
+            do i = 1, nbgma
                 if (zi(jlogma-1+i) .ne. 0) nbgma2 = nbgma2 + 1
- 30         continue
+            end do
         endif
         if (nbgma2 .ne. 0) then
             gpptnm = maxfem//'.PTRNOMMAI'
@@ -209,7 +209,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             if (igma1 .ne. 0) then
                 call wkvect(dirgrm, 'V V I', nbgma, jdirgr)
                 cptgr2 = 0
-                do 31 i = 1, nbgma
+                do i = 1, nbgma
                     if (zi(jlogma-1+i) .ne. 0) then
                         call jenuno(jexnum(malini//'.GROUPEMA', i), nogma)
                         call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
@@ -220,7 +220,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                         call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONUTI', n)
                         write(ifm,808) nogma,n
                     endif
- 31             continue
+                end do
             endif
         endif
         write(ifm,*)' '
@@ -291,10 +291,10 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         if (xismec()) then
 !         CAS DE LA MECANIQUE
             zi(jcnsd2-1+2)=2*ndim
-            do 20 i = 1, 2*ndim
+            do i = 1, 2*ndim
                 if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep3(i)
                 if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep2(i)
- 20         continue
+            end do
         else
 !         CAS DE LA THERMIQUE
             zi(jcnsd2-1+2)=1
@@ -337,10 +337,10 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                 nmaxcm = zi(jcvid1-1 +5)
                 call wkvect('&&XPODIM.NBPT', 'V V I', nbma2, jnbpt)
 !
-                do 10 i = 1, nbma2
+                do i = 1, nbma2
                     zi(jnbpt-1+i) = zi(jcesd2-1+5 + 4*(i-1) + 1)
 !
- 10             continue
+                end do
 !
                 call cescre('V', cesvi2, 'ELGA', maxfem, 'VARI_R',&
                             -nmaxcm, ' ', zi(jnbpt), [-nmaxsp], [-nmaxcm])

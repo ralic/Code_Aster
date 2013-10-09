@@ -50,7 +50,7 @@ subroutine op0038()
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 !
-    integer ::  ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
+    integer :: ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
 !
     real(kind=8) :: time, rundf
 !

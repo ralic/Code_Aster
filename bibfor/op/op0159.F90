@@ -46,11 +46,12 @@ subroutine op0159()
     character(len=8) :: matr
     character(len=3) :: type, typ1
     integer :: lmat, nimpo, idvalc, jrefa, neq1, jval2, jtrav
-    integer ::  ifm, niv, neq, jvals, nb, imd, ier
+    integer :: ifm, niv, neq, jvals, nb, imd, ier
 !
     character(len=8) :: xsol, secmbr, vcine
     character(len=16) :: concep, nomcmd, metres
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
     call jemarq()
 !

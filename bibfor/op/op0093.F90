@@ -52,7 +52,7 @@ subroutine op0093()
     integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, nbmodd
     integer :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
     integer :: nbmoda, nbmoin, nbmodi, massfa
-    character(len=8) ::  resu, nomma
+    character(len=8) :: resu, nomma
     character(len=14) :: nume
     character(len=16) :: nomcmd, concep
     character(len=19) :: raide, masse, amor, numedd, matpre, solveu, raidfa
@@ -155,9 +155,9 @@ subroutine op0093()
     if (nbmost .gt. 0) then
         call wkvect(ddlcb, 'V V I', neq, lddld)
         call mstget(nomcmd, raide, 'MODE_STAT', nbmost, zi(lddld))
-        do 10 i = 0, neq-1
+        do i = 0, neq-1
             nbmodd = nbmodd + zi(lddld+i)
- 10     continue
+        end do
         call wkvect(mocb, 'V V R', neq*nbmodd, lmodd)
         call modsta('DEPL', raidfa, matpre, solveu, ibid,&
                     nume, zi(lddld), [0.d0], neq, nbmodd,&
@@ -168,9 +168,9 @@ subroutine op0093()
     if (nbfona .gt. 0) then
         call wkvect(ddlmn, 'V V I', neq, lddlf)
         call mstget(nomcmd, raide, 'FORCE_NODALE', nbfona, zi(lddlf))
-        do 20 i = 0, neq-1
+        do i = 0, neq-1
             nbmodf = nbmodf + zi(lddlf+i)
- 20     continue
+        end do
         call wkvect(moatta, 'V V R', neq*nbmodf, lmodf)
         call modsta('FORC', raidfa, matpre, solveu, ibid,&
                     nume, zi(lddlf), [0.d0], neq, nbmodf,&

@@ -64,7 +64,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer ::  sinco(1), nbma
+    integer :: sinco(1), nbma
     integer :: jfiss
     character(len=19) :: xdonco, xindco, xmemco, xgliss, xcohes, ccohes
     character(len=16) :: option

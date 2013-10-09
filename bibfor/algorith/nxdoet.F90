@@ -164,7 +164,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
 ! --- BOUCLE SUR LES CHAMPS A LIRE
 !
-    do 10 icham = 1, nbcham
+    do icham = 1, nbcham
 !
 ! ------- ETAT INITIAL DEFINI PAR UN CONCEPT DE TYPE EVOL_THER
 !
@@ -213,10 +213,10 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
                 call getvr8(motfac, 'VALE', iocc=1, scal=tempct, nbret=nocc)
                 if (nocc .gt. 0) then
                     initpr = 1
-                    do 222 i = 1, neq
+                    do i = 1, neq
                         zr(jtemp+i-1) = tempct
                         zk24(jiolch+zioch*(icham-1)+4-1) = 'VALE'
-222                 continue
+                    end do
                 endif
 !
             else
@@ -227,7 +227,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 ! ------- LECTURE DU CHAMP - VERIFICATIONS
 !
         call ntetl3(result, sdieto, icham, tempct)
- 10 end do
+    end do
 !
  99 continue
 !

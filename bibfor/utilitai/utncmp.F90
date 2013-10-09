@@ -41,12 +41,12 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !
 !     ------------------------------------------------------------------
 !
-    integer ::  jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
     integer :: jcmp, iad, kcmp, igr, mode, nnoe, jceld, nbgrel, irepe, nbel
     integer :: jmod, imodel, ilong, idescr, jdesc, nb
     character(len=4) :: tych
     character(len=24) :: valk(2)
-    character(len=8) ::  noma
+    character(len=8) :: noma
     character(len=19) :: ch19, prno, noligr
 !     ------------------------------------------------------------------
     call jemarq()
@@ -75,35 +75,37 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !AS OU LE CHAMP EST A PROFIL CONSTANT (CHAMP DE GEOMETRIE)
             call jeveuo(ch19//'.DESC', 'L', jdesc)
             ncmp = - zi(jdesc+1)
-            do 32 iec = 1, nec
+            do iec = 1, nec
                 tabec(iec)= zi(jdesc+1+iec)
- 32         continue
+            end do
             nb = 0
-            do 34 icmp = 1, ncmpmx
+            do icmp = 1, ncmpmx
                 if (exisdg(tabec,icmp)) then
-                    do 36 j = 1, ncmp
+                    do j = 1, ncmp
                         if (zi(jcmp+j-1) .eq. icmp) goto 34
- 36                 continue
+                    end do
                     nb = nb + 1
                     zi(jcmp+nb-1) = icmp
                 endif
- 34         continue
+ 34             continue
+            end do
         else
             call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-            do 10 ino = 1, nnoe
-                do 12 iec = 1, nec
+            do ino = 1, nnoe
+                do iec = 1, nec
                     tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
- 12             continue
-                do 14 icmp = 1, ncmpmx
+                end do
+                do icmp = 1, ncmpmx
                     if (exisdg(tabec,icmp)) then
-                        do 16 j = 1, ncmp
+                        do j = 1, ncmp
                             if (zi(jcmp+j-1) .eq. icmp) goto 14
- 16                     continue
+                        end do
                         ncmp = ncmp + 1
                         zi(jcmp+ncmp-1) = icmp
                     endif
- 14             continue
- 10         continue
+ 14                 continue
+                end do
+            end do
         endif
 !
 !     ==================================================================
@@ -117,22 +119,24 @@ subroutine utncmp(cham19, ncmp, nomobj)
         call jeveuo(noligr//'.REPE', 'L', irepe)
         call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
         call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
-        do 20 igr = 1, nbgrel
+        do igr = 1, nbgrel
             mode=zi(jceld-1+zi(jceld-1+4+igr) +2)
             if (mode .eq. 0) goto 20
             jmod = imodel+zi(ilong-1+mode)-1
             nec = nbec( zi(jmod-1+2))
             call dgmode(mode, imodel, ilong, nec, tabec)
-            do 22 icmp = 1, ncmpmx
+            do icmp = 1, ncmpmx
                 if (exisdg( tabec , icmp )) then
-                    do 24 j = 1, ncmp
+                    do j = 1, ncmp
                         if (zi(jcmp+j-1) .eq. icmp) goto 22
- 24                 continue
+                    end do
                     ncmp = ncmp + 1
                     zi(jcmp+ncmp-1) = icmp
                 endif
- 22         continue
- 20     continue
+ 22             continue
+            end do
+ 20         continue
+        end do
 !
     else
         valk(1) = tych
@@ -145,9 +149,9 @@ subroutine utncmp(cham19, ncmp, nomobj)
     endif
 !
     call wkvect(nomobj, 'V V K8', ncmp, kcmp)
-    do 30 icmp = 1, ncmp
+    do icmp = 1, ncmp
         zk8(kcmp+icmp-1) = zk8(iad-1+zi(jcmp+icmp-1))
- 30 end do
+    end do
     call jedetr('&&UTNCMP.ICMP')
 !
     call jedema()

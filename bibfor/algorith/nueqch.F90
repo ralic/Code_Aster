@@ -60,11 +60,11 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 !
     character(len=19) :: pfchno
     character(len=8) :: nomgd
-    integer ::  nbcmpx, ncmp, ico, itrou
+    integer :: nbcmpx, ncmp, ico, itrou
     integer :: icmp, ino, idc, nec
     integer :: jcmp, jnueq, jprno
     logical :: exis
-    character(len=8) ::  nom
+    character(len=8) :: nom
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,11 +80,11 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
     call jeveuo(pfchno//'.PRNO', 'L', jprno)
     call jeveuo(pfchno//'.NUEQ', 'L', jnueq)
 !
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         nom = nomcmp(ino)
         idc = indik8(zk8(jcmp),nom ,1,ncmp)
         ico = 0
-        do 100 icmp = 1, nbcmpx
+        do icmp = 1, nbcmpx
             if (exisdg(zi(jprno-1+(nec+2)*(numno(ino)-1)+2+1),icmp)) then
                 ico = ico + 1
                 exis = .true.
@@ -102,7 +102,7 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
                     endif
                 endif
             endif
-100     continue
+        end do
         if (erreur .ne. ' ') then
             call utmess(erreur, 'MECANONLINE5_50', sk=nom)
         endif
@@ -112,7 +112,7 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
         else
             nueq(ino) = zi( jnueq-1+zi(jprno-1+ (nec+2)*(numno(ino)-1)+ 1)+itrou-1)
         endif
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

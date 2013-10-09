@@ -83,7 +83,7 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
     endif
 !
 !     BOUCLE SUR LES PARAMETRES DE L'OPTION
-    do 10 ipara = 1, nparin
+    do ipara = 1, nparin
         nochin = ' '
 !
         nbpain = nbpain + 1
@@ -154,7 +154,8 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
             nochin = mateco//zk24(iaoplo+3*ipara-2)
         endif
         lichin(nbpain) = nochin
- 10 end do
+ 10     continue
+    end do
 !
     call jedema()
 !

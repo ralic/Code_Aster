@@ -105,9 +105,9 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     --- LA DIRECTION DE THETA EST DONNEE, ON LA NORME ---
 !
         norme = 0.d0
-        do 1 i = 1, 2
+        do i = 1, 2
             norme = norme + dir(i)*dir(i)
-  1     continue
+        end do
         norme = sqrt(norme)
         dir(1) = dir(1)/norme
         dir(2) = dir(2)/norme
@@ -172,7 +172,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 ! BOUCLE SUR LES AUTRES NOEUDS COURANTS DU MAILLAGE
 !
-    do 500 i = 1, nbel
+    do i = 1, nbel
         if (i .ne. num) then
             xm = coor((i-1)*3+1)
             ym = coor((i-1)*3+2)
@@ -215,7 +215,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                 zr(itheta+(i-1)*2+2-1) = (1-alpha)*valy
             endif
         endif
-500 end do
+    end do
 !
     if (.not.ldirec) call detrsd('CHAM_NO_S', chgrs)
 !

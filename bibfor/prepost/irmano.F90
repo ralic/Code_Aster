@@ -46,7 +46,7 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  ima, imai, ino, inoe, ipoin, jconx
+    integer :: ima, imai, ino, inoe, ipoin, jconx
     integer :: jnunos, jpoin, nbnoe, num
 !-----------------------------------------------------------------------
     call jemarq()
@@ -57,28 +57,28 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoe)
     call wkvect('&&IRMANO.NUMNOS', 'V V I', nbnoe, jnunos)
 !     --- INITIALISATION DU TABLEAU DE TRAVAIL &&IRMANO.NUMNOS ----
-    do 10 ino = 1, nbnoe
+    do ino = 1, nbnoe
         zi(jnunos-1+ino) = 0
- 10 end do
+    end do
 !     --- RECHERCHE DES NOEUDS SOMMETS ----
     call jeveuo(nomma//'.CONNEX', 'L', jconx)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpoin)
-    do 12 ima = 1, nbma
+    do ima = 1, nbma
         imai=numai(ima)
         ipoin= zi(jpoin-1+imai)
         nnoe = zi(jpoin-1+imai+1)-ipoin
-        do 22 inoe = 1, nnoe
+        do inoe = 1, nnoe
             num=zi(jconx-1+ipoin-1+inoe)
             zi(jnunos-1+num) =1
- 22     continue
- 12 continue
+        end do
+    end do
 !  --- STOCKAGE DES NOEUDS PRESENTS SUR LA LISTE DES MAILLES---
-    do 32 inoe = 1, nbnoe
+    do inoe = 1, nbnoe
         if (zi(jnunos-1+inoe) .eq. 1) then
             nbnos=nbnos+1
             numnos(nbnos)=inoe
         endif
- 32 continue
+    end do
 !
     call jedetr('&&IRMANO.NUMNOS')
     call jedema()

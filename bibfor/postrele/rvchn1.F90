@@ -70,11 +70,11 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
     call jedupo(depla//'.VALE', 'V', nomjv, .false.)
     call jeveuo(nomjv, 'E', iavald)
 !
-    do 30 ino = 1, nbno
+    do ino = 1, nbno
         nunoe = numnd(ino)
-        do 10 iec = 1, nec
+        do iec = 1, nec
             tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
- 10     continue
+        end do
         numdx = 0
         numdy = 0
         numdz = 0
@@ -88,7 +88,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
         valer(2) = 0.0d0
         valer(3) = 0.0d0
         icompt = 0
-        do 20 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(tabec,icmp)) then
                 icompt = icompt + 1
                 nomcmp = zk8(iad-1+icmp)
@@ -113,7 +113,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
                     valer(3) = zr(iavald-1+numdrz)
                 endif
             endif
- 20     continue
+        end do
         if ((numdx+numdy+numdz) .eq. 0) goto 22
         call utpvgl(1, 3, pgl, valed, vald)
         if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
@@ -125,7 +125,8 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
         if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
         if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
         if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
- 30 end do
+ 30     continue
+    end do
 !
     call jedema()
 end subroutine

@@ -54,7 +54,7 @@ subroutine rcmfmc(chmatz, chmacz)
     integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
     integer :: inbmat
     character(len=4) :: knumat
-    character(len=8) ::  chmat, nomgd
+    character(len=8) :: chmat, nomgd
     character(len=19) :: codi
     character(len=19) :: chemat, chmace
 !     ------------------------------------------------------------------
@@ -109,9 +109,9 @@ subroutine rcmfmc(chmatz, chmacz)
 !     --- CODAGE DU MATERIAU ---
 !     -------------------------------------------------
     icompt=0
-    do 10 i = 1, nbval
+    do i = 1, nbval
         if (zk8(jchev-1+i) .ne. ' ') icompt=icompt+1
- 10 end do
+    end do
     ASSERT(icompt.gt.0)
 !
     call jedetr(chmat//'.MATE_CODE.GRP')
@@ -121,9 +121,9 @@ subroutine rcmfmc(chmatz, chmacz)
 !
     icompt=0
     inbmat=0
-    do 40 i = 1, nbgrp
+    do i = 1, nbgrp
 !        -- IL NE PEUT PAS Y AVOIR PLUS DE 28 MATERIAUX
-        do 20 j = 1, 28
+        do j = 1, 28
             k=(i-1)*nbcmp+j
             if (zk8(jchev-1+k) .eq. 'TREF=>') goto 30
             if (zk8(jchev-1+k) .ne. ' ') then
@@ -131,17 +131,17 @@ subroutine rcmfmc(chmatz, chmacz)
                 icompt=icompt+1
                 inbmat=inbmat+1
             endif
- 20     continue
+        end do
  30     continue
         zi(ingrp-1+i)=inbmat
         inbmat=0
- 40 end do
+    end do
 !
     codi=' '
     call jeveuo(chmat//'.MATE_CODE.GRP', 'L', igrp)
     call jeveuo(chmat//'.MATE_CODE.NGRP', 'L', ingrp)
     icompt=0
-    do 50 kk = 1, nbgrp
+    do kk = 1, nbgrp
         nbmat=zi(ingrp-1+kk)
         if (nbmat .eq. 0) goto 50
         call rcmaco(chmat(1:8), icompt, nbmat, kk)
@@ -153,7 +153,8 @@ subroutine rcmfmc(chmatz, chmacz)
         codi(9:13)='.'//knumat
         call jeveuo(codi//'.CODI', 'L', zi(jvale+kk-1))
         icompt=icompt+nbmat
- 50 end do
+ 50     continue
+    end do
 !
 !
  90 continue

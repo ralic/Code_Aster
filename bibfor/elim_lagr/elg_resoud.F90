@@ -1,28 +1,27 @@
-subroutine elg_resoud(matas1, chcine, nsecm,&
-                  chsecm, chsolu, base, rsolu, csolu,&
-                  criter, prepos, istop, iret)
+subroutine elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
+                      base, rsolu, csolu, criter, prepos,&
+                      istop, iret)
     implicit none
-! aslint: disable=W0104
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/copisd.h"
+# include "asterfort/dismoi.h"
+# include "asterfort/elg_calc_rhs_red.h"
+# include "asterfort/elg_calc_solu.h"
+# include "asterfort/elg_gest_common.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jedetr.h"
+# include "asterfort/jelira.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/resou1.h"
+# include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
 ! But : faire "resoud" si ELIM_MAGR='OUI'
 !-----------------------------------------------------------------------
-#   include "asterfort/assert.h"
-#   include "asterfort/copisd.h"
-#   include "asterfort/dismoi.h"
-#   include "asterfort/elg_gest_common.h"
-#   include "asterfort/elg_calc_rhs_red.h"
-#   include "asterfort/elg_calc_solu.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/resou1.h"
-#   include "asterfort/uttcpu.h"
-
+!
     character(len=19) :: matas1
-    character(len=*) ::  chcine
+    character(len=*) :: chcine
     integer :: nsecm
     character(len=*) :: chsecm, chsolu, base
     real(kind=8) :: rsolu(*)
@@ -47,24 +46,24 @@ subroutine elg_resoud(matas1, chcine, nsecm,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer :: ibid, jsolu1, jsolu2, jsecm, jrefa1, nsecmb
+    integer ::  jsolu1, jsolu2, jsecm, jrefa1, nsecmb
     character(len=19) :: matas2, secm19, solve2, solu19
     character(len=24) :: solu2
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-
-
+!
+!
     call jeveuo(matas1//'.REFA', 'L', jrefa1)
     matas2=zk24(jrefa1-1+19)(1:19)
     ASSERT(matas2.ne.' ')
     call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solve2)
-
+!
 !   -- mise a  jour du COMMON ELIMLG :
 !   ---------------------------------------------
     call elg_gest_common('CHERCHE', matas1, matas2, ' ')
-
-
+!
+!
 !   -- Second-membre(s) : passage complet -> reduit :
 !   --------------------------------------------------
     solu2='&&ELG_RESOUD.SOLU2'
@@ -76,8 +75,8 @@ subroutine elg_resoud(matas1, chcine, nsecm,&
         ASSERT(nsecm.gt.0)
         call elg_calc_rhs_red(matas1, nsecm, rsolu, solu2)
     endif
-
-
+!
+!
 !   -- on appelle resou1 avec le(s) second-membre(s) reduit(s) :
 !   ------------------------------------------------------------
     call jeveuo(solu2, 'E', jsolu2)
@@ -85,8 +84,8 @@ subroutine elg_resoud(matas1, chcine, nsecm,&
     call resou1(matas2, ' ', solve2, chcine, nsecmb,&
                 ' ', ' ', 'V', zr(jsolu2), csolu,&
                 criter, prepos, istop, iret)
-
-
+!
+!
 !   -- Solution(s) : passage reduit -> complet :
 !   ---------------------------------------------
     if (nsecm .eq. 0) then

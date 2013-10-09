@@ -95,7 +95,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
     lcontx = zi(jxc) .ge. 1
     if (.not.lcontx) then
-        goto 9999
+        goto 999
     endif
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
@@ -165,7 +165,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
 !
     call copisd('CHAMP_GD', 'V', lchout(1), xseuco)
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

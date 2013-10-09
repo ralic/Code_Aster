@@ -1,8 +1,7 @@
 subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
                   nbmode, nbloc, nterm)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -12,6 +11,7 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
 #include "asterfort/jexnum.h"
 #include "asterfort/ualfva.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmode, nbloc, nterm
     real(kind=8) :: vale(*)
     character(len=19) :: matgen
@@ -53,9 +53,9 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
     zk24(ialime) = '                        '
 !
     call wkvect(matrge//'.CONL', 'G V R', nbmode, iaconl)
-    do 10 i = 1, nbmode
+    do i = 1, nbmode
         zr(iaconl+i-1) = 1.0d0
-10  end do
+    end do
 !
     call wkvect(matrge//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -74,12 +74,12 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
     call jeveuo(jexnum(matrge//'.UALF', iblo), 'E', ldblo)
 !
     nterm = 0
-    do 20 i = 1, nbmode
-        do 22 j = 1, i
+    do i = 1, nbmode
+        do j = 1, i
             nterm = nterm + 1
             zr(ldblo+nterm-1) = vale( j + (i-1)*nbmode )
-22      continue
-20  end do
+        end do
+    end do
 !
     call ualfva(matrge, 'G')
 !

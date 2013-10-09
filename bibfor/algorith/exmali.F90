@@ -104,19 +104,19 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
 !-------------------------EXTRACTION------------------------------------
 !
-    do 10 i = 1, nbdef
+    do i = 1, nbdef
 !
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
 !
-        do 20 j = 1, nbddl
+        do j = 1, nbddl
             iran=zi(ltrang+j-1)
             iad=ldmat+((i-1)*nbddl)+j-1
             zr(iad)=zr(llcham+iran-1)
- 20     continue
+        end do
 !
 !
- 10 continue
+    end do
 !
 !
     call jedetr('&&'//pgc//'.RAN.DDL')

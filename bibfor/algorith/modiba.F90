@@ -149,8 +149,8 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     if (itypfl .eq. 3) ivit = numvit
     chamfl(1:13) = basefl(1:8)//'.C01.'
 !
-    do 10 j = 1, nbmfl
-        do 20 i = 1, nbnuor
+    do j = 1, nbmfl
+        do i = 1, nbnuor
             numod = nuor(i)
 !
             if (numo(j) .eq. numod) then
@@ -191,19 +191,20 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                     write(chamfl(14:19),'(2I3.3)') numod,numvit
                     call jeveuo(chamfl(1:19)//'.VALE', 'L', ivale)
                     icm = 0
-                    do 30 ieq = 1, neq
-                        do 32 k = 1, 6
+                    do ieq = 1, neq
+                        do k = 1, 6
                             if (zi(ideeq+(2*ieq)-1) .eq. iddl(k)) then
                                 icm = icm + 1
                                 zr(lmod+neq*(i-1)+ieq-1) = zr(ivale+ icm-1)
                                 goto 30
                             endif
- 32                     continue
- 30                 continue
+                        end do
+ 30                     continue
+                    end do
                 endif
             endif
- 20     continue
- 10 continue
+        end do
+    end do
 !
 !     --- ON NORMALISE 'SANS_CMP: LAGR'
 !
@@ -213,9 +214,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
         call wkvect('&&MODIBA.POSITION.DDL', 'V V I', neq, lddl)
         call pteddl('CHAM_NO', nomcha, 1, 'LAGR    ', neq,&
                     zi(lddl))
-        do 40 ieq = 0, neq-1
+        do ieq = 0, neq-1
             zi(lddl+ieq)= 1 - zi(lddl+ieq)
- 40     continue
+        end do
         call wkvect('&&MODIBA.COEF_MODE', 'V V R', nbmode, lcoef)
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&

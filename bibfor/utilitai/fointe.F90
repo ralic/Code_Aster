@@ -126,7 +126,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     chvale = nomfon//'.VALE'
     chpara = nomfon//'.PARA'
 !
-    do 10 i = 1, mxsave
+    do i = 1, mxsave
         if (nomfon .eq. svnomf(i)) then
             isave = i
             lprol=iaprol(isave)
@@ -136,7 +136,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
             nbvn=lupara(isave)
             goto 11
         endif
-10  end do
+    end do
 !
 !
     call jeveut(chprol, 'L', lprol)
@@ -147,7 +147,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
         if (ier .gt. 0) then
             ier = 200
         endif
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -182,7 +182,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     svinte(isave) = zk24(lprol+1)
     svprgd(isave) = zk24(lprol+4)(1:2)
 !
-11  continue
+ 11 continue
 !
 !     --- CAS PARTICULIER DES CONSTANTES ---
     if (svtypf(isave) .eq. 'C') then
@@ -199,20 +199,20 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 !     --- VERIFICATION DE LA VALIDITE DES PARAMETRES ----
     if (nomfon .eq. svnomf(isave)) then
         if (nbpu .eq. svnbpa(isave)) then
-            do 15 i = 1, svnbpa(isave)
+            do i = 1, svnbpa(isave)
                 if (nompu(i) .ne. svnomp(i,isave)) then
                     goto 19
                 else
                     svpar(i,isave)=i
                 endif
-15          continue
+            end do
 !           --- SI SUCCES ALORS ON SAUTE LES VERIFICATIONS ----
             goto 30
         endif
     endif
 !
 !     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
-19  continue
+ 19 continue
     call fonbpa(nomfon, zk24(lprol), cbid, mxpara, svnbpa(isave),&
                 svnomp(1, isave))
     if (nbpu .lt. svnbpa(isave)) then
@@ -223,9 +223,9 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
         call utmess('A', 'FONCT0_14', ni=2, vali=vali)
         goto 9998
     endif
-    do 20 i = 1, svnbpa(isave)
+    do i = 1, svnbpa(isave)
         svpar(i,isave)=0
-        do 21 nupar = 1, nbpu
+        do nupar = 1, nbpu
             if (nompu(nupar) .eq. svnomp(i,isave)) then
                 if (svpar(i,isave) .eq. 0) then
                     svpar(i,isave)=nupar
@@ -236,7 +236,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                     goto 9998
                 endif
             endif
-21      continue
+        end do
         if (svpar(i,isave) .eq. 0) then
             ier = 130
             call utmess('A+', 'FONCT0_9', sk=nomfon)
@@ -244,10 +244,10 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
             call utmess('A', 'FONCT0_17', nk=nbpu, valk=nompu)
             goto 9998
         endif
-20  end do
+    end do
 !
 !     ------------------------ INTERPOLATION --------------------------
-30  continue
+ 30 continue
 !
     if (svtypf(isave) .eq. 'F') then
 !
@@ -332,9 +332,9 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
         goto 9998
     endif
 !
-9998  continue
+9998 continue
     svnomf(isave) = nomfon
-9999  continue
+999 continue
 !
     if (ier .ne. 0) then
         if (codme2(1:1) .ne. ' ') then

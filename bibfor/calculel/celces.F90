@@ -51,7 +51,7 @@ subroutine celces(celz, basez, cesz)
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=3) :: tsca
     character(len=4) :: typces, kmpic
     character(len=8) :: ma, nomgd
@@ -142,14 +142,14 @@ subroutine celces(celz, basez, cesz)
 !     ---------------------------------------------------------
     call wkvect('&&CELCES.NBPT', 'V V I', nbma, jnbpt)
     call wkvect('&&CELCES.NBSPT', 'V V I', nbma, jnbspt)
-    do 50 numa = 1, nbma
+    do numa = 1, nbma
         zi(jnbspt-1+numa) = 1
- 50 end do
+    end do
     call wkvect('&&CELCES.NBCMP', 'V V I', nbma, jnbcmp)
     nptmx = 0
     ncdymx = 0
 !
-    do 90 igr = 1, nbgr
+    do igr = 1, nbgr
         nbel = nbelem(ligrel,igr)
         imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
         if (imolo .eq. 0) goto 90
@@ -165,19 +165,19 @@ subroutine celces(celz, basez, cesz)
 !       -- CALCUL DE NCMPM : NUMERO MAX DES CMPS PORTEES
 !          PAR LES ELEMENTS DU GREL
         ncmpm = 0
-        do 70 ipt = 1, nbpt
+        do ipt = 1, nbpt
             k = 1
             if (diff) k = ipt
             iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-            do 60 icmp = 1, ncmpmx
+            do icmp = 1, ncmpmx
                 if (exisdg(zi(iadg),icmp)) then
                     ncmpm = max(ncmpm,icmp)
                 endif
- 60         continue
- 70     continue
+            end do
+        end do
 !
 !
-        do 80 iel = 1, nbel
+        do iel = 1, nbel
             numa = numail(igr,iel)
             if (numa .lt. 0) goto 80
 !
@@ -198,8 +198,10 @@ subroutine celces(celz, basez, cesz)
                 zi(jnbcmp-1+numa) = zi(jcorr1-1+ncmpm)
             endif
 !
- 80     continue
- 90 end do
+ 80         continue
+        end do
+ 90     continue
+    end do
     ASSERT(nptmx.ne.0)
 !
 !
@@ -224,7 +226,7 @@ subroutine celces(celz, basez, cesz)
 !     ----------------------------
         call wkvect('&&CELCES.LONG_PT', 'V V I', nptmx, jlpt)
         call wkvect('&&CELCES.LONG_PT_CUMU', 'V V I', nptmx, jlcupt)
-        do 170 igr = 1, nbgr
+        do igr = 1, nbgr
             imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
             if (imolo .eq. 0) goto 170
 !
@@ -236,45 +238,45 @@ subroutine celces(celz, basez, cesz)
 !
 !         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
-            do 110 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 ico = 0
                 k = 1
                 if (diff) k = ipt
                 iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-                do 100 kcmp = 1, ncmp
+                do kcmp = 1, ncmp
                     icmp = zi(jcorr2-1+kcmp)
                     if (exisdg(zi(iadg),icmp)) ico = ico + 1
-100             continue
+                end do
                 zi(jlpt-1+ipt) = ico
-110         continue
+            end do
 !
             cumu = 0
-            do 120 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 zi(jlcupt-1+ipt) = cumu
                 cumu = cumu + zi(jlpt-1+ipt)
-120         continue
+            end do
 !
 !
-            do 160 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 k = 1
                 if (diff) k = ipt
                 iadg = jmolo - 1 + 4 + (k-1)*nec + 1
                 ico = 0
-                do 150 kcmp = 1, ncmp
+                do kcmp = 1, ncmp
                     icmp = zi(jcorr2-1+kcmp)
                     if (exisdg(zi(iadg),icmp)) then
                         ico = ico + 1
                         icmp1 = zi(jcorr1-1+icmp)
                         ASSERT(icmp1.eq.kcmp)
 !
-                        do 140 iel = 1, nbel
+                        do iel = 1, nbel
                             numa = numail(igr,iel)
                             if (numa .lt. 0) goto 140
 !
                             nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
                             adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
 !
-                            do 130 ispt = 1, nbspt
+                            do ispt = 1, nbspt
                                 call cesexi('S', jcesd, jcesl, numa, ipt,&
                                             ispt, icmp1, iad)
                                 iad = abs(iad)
@@ -300,18 +302,20 @@ subroutine celces(celz, basez, cesz)
                                 else
                                     ASSERT(.false.)
                                 endif
-130                         continue
-140                     continue
+                            end do
+140                         continue
+                        end do
                     endif
-150             continue
-160         continue
-170     continue
+                end do
+            end do
+170         continue
+        end do
 !
 !
     else
 !       -- CAS DE VARI_* :
 !       -------------------
-        do 220 igr = 1, nbgr
+        do igr = 1, nbgr
             imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
             if (imolo .eq. 0) goto 220
 !
@@ -324,16 +328,16 @@ subroutine celces(celz, basez, cesz)
             ASSERT(nbpt.eq.lgcata)
             nbel = nbelem(ligrel,igr)
 !
-            do 210 iel = 1, nbel
+            do iel = 1, nbel
                 numa = numail(igr,iel)
                 if (numa .lt. 0) goto 210
 !
                 nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
                 ncdyn = max(zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+ 2),1)
                 adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
-                do 200 ipt = 1, nbpt
-                    do 190 ispt = 1, nbspt
-                        do 180 icmp = 1, ncdyn
+                do ipt = 1, nbpt
+                    do ispt = 1, nbspt
+                        do icmp = 1, ncdyn
 !
                             call cesexi('S', jcesd, jcesl, numa, ipt,&
                                         ispt, icmp, iad)
@@ -347,11 +351,13 @@ subroutine celces(celz, basez, cesz)
                             else
                                 ASSERT(.false.)
                             endif
-180                     continue
-190                 continue
-200             continue
-210         continue
-220     continue
+                        end do
+                    end do
+                end do
+210             continue
+            end do
+220         continue
+        end do
     endif
 !
 !

@@ -123,7 +123,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
      &               //' ',lcmin
     endif
 !
-    if (method .eq. 'GEOMETRI') goto 9999
+    if (method .eq. 'GEOMETRI') goto 999
 !
 !  RECUPERATION DU RAYON DU TORE OU L'ON ESTIME LE RESIDU
     call getvr8(' ', 'RAYON', scal=rayon, nbret=iret)
@@ -172,7 +172,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !     ON REPERE LES NOEUDS SOMMETS (DONT LE GRADIENT DE LS EST NUL)
 !------------------------------------------------------------------
     call wkvect(noesom, 'V V L', nbno, jnosom)
-    do 100 ino = 1, nbno
+    do ino = 1, nbno
         zl(jnosom-1+ino) = .true.
         call jenuno(jexnum(noma //'.NOMNOE', ino), nomno)
         if (nomno(1:2) .eq. 'NS') zl(jnosom-1+ino) = .false.
@@ -184,7 +184,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !  LES NOEUDS DONT LE GRADIENT DE LS EST NUL SONT DES NOEUDS MILIEUX
 !         IF (NORMGR.LT.R8PREM()) ZL(JNOSOM-1+INO) = .FALSE.
 !
-100 end do
+    end do
 !
 !-----------------------------------------------------------------
 !     ON REPERE LES NOEUDS SUR LESQUELS LE RESIDU DOIT ETRE ESTIME
@@ -194,19 +194,19 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     call wkvect(maiff, 'V V R', nbma*3, jmaiff)
 !
     nbmaff = 0
-    do 200 ima = 1, nbma
+    do ima = 1, nbma
         coupln = .false.
         couplt = .false.
         nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
 !  ON PARCOURS LES ARETES DE L'ELEMENT
-        do 210 inoa = 1, nbnoma-1
+        do inoa = 1, nbnoma-1
             nunoa = zi(jconx1-1+zi(jconx2+ima-1)+inoa-1)
 !  ON ECARTE LES NOEUDS MILIEUX
             if (.not.zl(jnosom-1+nunoa)) goto 210
             lsna = zr(jlnno-1+nunoa)
             lsta = zr(jltno-1+nunoa)
 !
-            do 220 inob = inoa+1, nbnoma
+            do inob = inoa+1, nbnoma
                 nunob = zi(jconx1-1+zi(jconx2+ima-1)+inob-1)
 !  ON ECARTE LES NOEUDS MILIEUX
                 if (.not.zl(jnosom-1+nunob)) goto 220
@@ -216,44 +216,46 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                 if ((lsna*lsnb) .le. 0.d0) coupln=.true.
                 if ((lsta*lstb) .le. 0.d0) couplt=.true.
 !
-220         continue
-210     continue
+220             continue
+            end do
+210         continue
+        end do
 !
 !  SI LA MAILLE EST COUPEE PAR LES ISOZEROS DE LS ET LT
         if (coupln .and. couplt) then
             nbmaff = nbmaff + 1
 !
 !  ON REPERE LE BARYCENTRE DES NOEUDS DE LA MAILLE
-            do 230 i = 1, 3
+            do i = 1, 3
                 zr(jmaiff-1+3*(nbmaff-1)+i) = 0.d0
-230         continue
-            do 240 inoa = 1, nbnoma
+            end do
+            do inoa = 1, nbnoma
                 nunoa = zi(jconx1-1+zi(jconx2+ima-1)+inoa-1)
-                do 245 i = 1, 3
+                do i = 1, 3
                     zr(jmaiff-1+3*(nbmaff-1)+i) = zr(&
                                                   jmaiff-1+3*( nbmaff-1)+i) + zr(jcoor-1+3*(nunoa&
                                                   &-1)+i&
                                                   ) / nbnoma
-245             continue
-240         continue
+                end do
+            end do
         endif
 !
-200 end do
+    end do
 !
     nnores=0
     call wkvect(noresi, 'V V L', nbno, jnresi)
-    do 250 ino = 1, nbno
+    do ino = 1, nbno
         zl(jnresi-1+ino) = .false.
 !  ON ECARTE LES NOEUDS MILIEUX
         if (.not.zl(jnosom-1+ino)) goto 250
-        do 260 i = 1, 3
+        do i = 1, 3
             p(i) = zr(jcoor-1+3*(ino-1)+i)
-260     continue
+        end do
 !
-        do 270 ima = 1, nbmaff
-            do 275 i = 1, 3
+        do ima = 1, nbmaff
+            do i = 1, 3
                 ff(i) = zr(jmaiff-1+3*(ima-1)+i)
-275         continue
+            end do
             dist = padist(3,p,ff)
             if (dist .le. (rayon+damax)) then
 !  LE NOEUD EST PROCHE D'UNE MAILLE DU FOND DE FISSURE
@@ -261,15 +263,16 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                 nnores = nnores+1
                 goto 250
             endif
-270     continue
-250 end do
+        end do
+250     continue
+    end do
 !      IF (NIV.GT.1)
     write(ifm,*)'   NOMBRE DE NOEUDS POUR L'''&
      &                         //'ESTIMATION DES RESIDUS :',nnores
 !
     call jedetr(maiff)
 !
-9999 continue
+999 continue
 !
 !-----------------------------------------------------------------------
 !     FIN

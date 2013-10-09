@@ -166,14 +166,14 @@ subroutine cresol(solveu)
     else
         ASSERT(.false.)
     endif
-
+!
 !
 !   --  ELIM_LAGR='OUI' ? :
 !   -----------------------
     if (getexm(nomsol,'ELIM_LAGR') .eq. 1) then
         call getvtx(nomsol, 'ELIM_LAGR', iocc=1, scal=kellag, nbret=n1)
-        if (n1.eq.1) then
-            if (kellag.ne.'OUI') kellag='NON'
+        if (n1 .eq. 1) then
+            if (kellag .ne. 'OUI') kellag='NON'
         else
             kellag='NON'
         endif

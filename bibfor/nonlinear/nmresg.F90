@@ -57,7 +57,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 !
 !
 !
-    integer ::  ier
+    integer :: ier
     integer :: ifonc, imode, imode2
     integer :: neq, nbgene, nbmodp
     integer :: j2memb, jaccp, jaccg
@@ -147,32 +147,32 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
             call jeveuo(fongen, 'L', jfonge)
             call jeveuo(forgen, 'L', jforge)
             call jeveuo(valfon, 'E', jvalfo)
-            do 14 ifonc = 1, nbgene
+            do ifonc = 1, nbgene
                 call fointe('F ', zk24(jfonge+ifonc-1)(1:8), 1, ['INST'], [instap],&
                             zr(jvalfo+ifonc-1), ier)
- 14         continue
+            end do
         endif
 !
 ! --- CALCUL DES FORCES MODALES
 !
-        do 11 imode = 1, nbmodp
+        do imode = 1, nbmodp
             zr(jfmoda+imode-1) = ddot( neq,zr(jbasmo+(imode-1)*neq),1, zr(j2memb),1)
-            do 12 imode2 = 1, nbmodp
+            do imode2 = 1, nbmodp
                 zr(jfmoda+imode-1) = zr(jfmoda+imode-1) - zr(jrigge+( imode2-1)*nbmodp+imode-1)*z&
                                      &r(jdepgp+imode2-1) - zr( jamoge+(imode2-1)*nbmodp+imode-1)*&
                                      &zr(jvitgp+imode2-1)
- 12         continue
-            do 15 ifonc = 1, nbgene
+            end do
+            do ifonc = 1, nbgene
                 zr(jfmoda+imode-1) = zr(jfmoda+imode-1) + zr(jforge+( ifonc-1)*nbmodp+imode-1)*zr&
                                      &(jvalfo+ifonc-1)
- 15         continue
- 11     continue
+            end do
+        end do
 !
 ! --- CALCUL DES ACCELERATIONS GENERALISEES
 !
-        do 71 imode = 1, nbmodp
+        do imode = 1, nbmodp
             zr(jaccgp+imode-1) = zr(jfmoda+imode-1)/zr(jmasge+imode-1)
- 71     continue
+        end do
 !
         jaccg = jaccgp
 !
@@ -185,15 +185,15 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 !
 ! --- CALCUL DES FORCES GENERALISEES
 !
-        do 13 imode = 1, nbmodp
+        do imode = 1, nbmodp
             zr(jfmoda+imode-1) = ddot( neq,zr(jbasmo+(imode-1)*neq),1, zr(j2memb),1)
- 13     continue
+        end do
 !
 ! --- CALCUL DES ACCELERATIONS GENERALISEES
 !
-        do 74 imode = 1, nbmodp
+        do imode = 1, nbmodp
             zr(jacccn+imode-1) = zr(jfmoda+imode-1)/zr(jmasge+imode-1)
- 74     continue
+        end do
 !
         jaccg = jacccn
 !

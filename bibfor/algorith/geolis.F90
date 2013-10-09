@@ -76,7 +76,7 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     zero = 0.0d0
     un = 1.0d0
 !
-    do 1 k = 1, 3
+    do k = 1, 3
 !
         tra1(k) = zero
         tra2(k) = zero
@@ -85,7 +85,7 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
         centr1(k) = zero
         centr2(k) = zero
 !
-        do 2 kk = 1, 3
+        do kk = 1, 3
             if (k .eq. kk) then
                 rot1(k,k) = un
                 rot2(k,k) = un
@@ -95,8 +95,8 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
                 rot2(k,kk) = zero
                 rot2(kk,k) = zero
             endif
-  2     continue
-  1 end do
+        end do
+    end do
 !
 !
 !
@@ -107,16 +107,16 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     call jenonu(jexnom(repnom, sst2), nusst2)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst1), 'L', llrot1)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst2), 'L', llrot2)
-    do 10 i = 1, 3
+    do i = 1, 3
         angl1(i)=zr(llrot1+i-1)*r8dgrd()
         angl2(i)=zr(llrot2+i-1)*r8dgrd()
- 10 end do
+    end do
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst1), 'L', lltra1)
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst2), 'L', lltra2)
-    do 110 i = 1, 3
+    do i = 1, 3
         tra1(i)=zr(lltra1+i-1)
         tra2(i)=zr(lltra2+i-1)
-110 end do
+    end do
 !
     call matrot(angl1, rot1)
     call matrot(angl2, rot2)
@@ -144,14 +144,14 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     call gmgnre(mail1, nno1, zi(ialino), zi(iagma1), nmga1,&
                 zi(ialino+nno1), nbno1, 'TOUS')
 !
-    do 40 ino1 = 1, nbno1
+    do ino1 = 1, nbno1
         nuno1 = zi(ialino+nno1+ino1-1)
         call parotr(mail1, iageo1, nuno1, 0, centr1,&
                     rot1, tra1, coor1)
-        do 50 k = 1, 3
+        do k = 1, 3
             zr(igeom1+3*(nuno1-1)+k-1) = coor1(k)
- 50     continue
- 40 end do
+        end do
+    end do
 !
 ! --- DETERMINATION DES COORDONNEES TRANSFORMEES ESCLAVE :
 !     ---------------------------------------------------
@@ -170,14 +170,14 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !     Recuperation des numeros des noeuds esclaves
     call jenonu(jexnom(lint2 //'.IDC_NOMS', intf2), ibid)
 !
-    do 41 ino2 = 1, nbno2
+    do ino2 = 1, nbno2
         nuno2 = zi(lnuno2+ino2-1)
         call parotr(mail2, iageo2, nuno2, 0, centr2,&
                     rot2, tra2, coor2)
-        do 51 k = 1, 3
+        do k = 1, 3
             zr(igeom2+3*(nuno2-1)+k-1) = coor2(k)
- 51     continue
- 41 end do
+        end do
+    end do
 !
     call jedetr(toto)
     call jedema()

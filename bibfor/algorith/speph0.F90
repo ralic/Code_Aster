@@ -87,17 +87,17 @@ subroutine speph0(nomu, table)
         if (toutor .eq. 'OUI') then
             nbmode=nbmod1
             call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmod1, ilmode)
-            do 11 im = 1, nbmod1
+            do im = 1, nbmod1
                 zi(ilmode-1+im)=im
                 zi(ilmode-1+im)=zi(lnumor+im-1)
- 11         continue
+            end do
         else
             call getvr8(' ', 'BANDE', nbval=2, vect=bande, nbret=ibid)
             if (ibid .eq. 0) then
                 call utmess('F', 'ALGORITH10_61')
             endif
             call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmod1, ilmode)
-            do 10 im = 1, nbmod1
+            do im = 1, nbmod1
                 imod1 = zi(lnumor+im-1)
                 call rsadpa(modmec, 'L', 1, 'FREQ', imod1,&
                             0, sjv=iad, styp=k8b)
@@ -106,7 +106,7 @@ subroutine speph0(nomu, table)
                     nbmode = nbmode + 1
                     zi(ilmode-1+nbmode) = imod1
                 endif
- 10         continue
+            end do
             if (nbmode .eq. 0) then
                 call utmess('F', 'ALGORITH10_31')
             endif
@@ -118,11 +118,11 @@ subroutine speph0(nomu, table)
         endif
         call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmode, ilmode)
         call getvis(' ', 'NUME_ORDRE', nbval=nbmode, vect=zi(ilmode), nbret=ibid)
-        do 20 im = 1, nbmode
+        do im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1) then
                 call utmess('F', 'ALGORITH10_32')
             endif
- 20     continue
+        end do
     endif
 !
     napexc = 0
@@ -159,11 +159,11 @@ subroutine speph0(nomu, table)
     call jelira(chnumi, 'LONMAX', mxval)
     call jeveuo(table//'.REFE', 'L', lrefe)
     idim0 = 0
-    do 200 i1 = 1, mxval
+    do i1 = 1, mxval
         if (zi(lnumi-1+i1) .ge. idim0) then
             idim0 = zi(lnumi-1+i1)
         endif
-200 continue
+    end do
 !
     if (idim1 .ne. idim0) then
         call utmess('F', 'ALGORITH10_63')
@@ -229,7 +229,7 @@ subroutine speph0(nomu, table)
     call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
-        do 30 i = 1, nbn
+        do i = 1, nbn
             noeud = zk8(inoen+i-1)
             cmp = zk8(icmpn+i-1)
             call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
@@ -242,7 +242,7 @@ subroutine speph0(nomu, table)
                 call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
             zi(inddl+i-1) = iddl
- 30     continue
+        end do
 !
     else if (typcha(1:9).eq.'CHAM_ELEM') then
         if (nbmail .eq. 0) then
@@ -251,7 +251,7 @@ subroutine speph0(nomu, table)
         call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=noma)
         nupo = 0
         ivari = 1
-        do 40 i = 1, nbn
+        do i = 1, nbn
             maille = zk8(imain+i-1)
             noeud = zk8(inoen+i-1)
             cmp = zk8(icmpn+i-1)
@@ -264,7 +264,7 @@ subroutine speph0(nomu, table)
                 call utmess('F', 'ALGORITH10_73', nk=3, valk=valk)
             endif
             zi(inddl+i-1) = iddl
- 40     continue
+        end do
     else
         call utmess('F', 'CALCULEL_17')
     endif
@@ -296,7 +296,7 @@ subroutine speph0(nomu, table)
     idim = nbmr*nbn
     call wkvect('&&SPEPH0_CHAM', 'V V R', idim, icham)
 !
-    do 60 imr = 1, napex1
+    do imr = 1, napex1
         noeud = zk8(ilnoex+imr-1)
         cmp = zk8(ilcpex+imr-1)
         acces = noeud//cmp
@@ -312,25 +312,25 @@ subroutine speph0(nomu, table)
         call rsexch('F', modsta, optch1, numod, cham19,&
                     iret)
         call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
-        do 50 in = 1, nbn
+        do in = 1, nbn
             icham1 = icham + nbn* (imr-1) + in - 1
             zr(icham1) = zr(isip+zi(inddl+in-1)-1)
- 50     continue
- 60 continue
+        end do
+    end do
 !
     call dismoi('TYPE_BASE', modmec, 'RESU_DYNA', repk=typba, arret='C',&
                 ier=iret)
 !
-    do 90 imr = 1, nbmod1
+    do imr = 1, nbmod1
         numod = zi(ilmode+imr-1)
         call rsexch('F', modmec, optch1, numod, cham19,&
                     iret)
         call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
         if (typmec .eq. 'MODE_MECA_C') then
-            do 70 in = 1, nbn
+            do in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
                 zr(icham1) = dble(zc(isip+zi(inddl+in-1)-1))
- 70         continue
+            end do
 !  -------------------------------
 !  si base modale, alors les nume_ddl des differents modes peuvent
 !              etres differents
@@ -338,35 +338,35 @@ subroutine speph0(nomu, table)
         else if (typba(1:1).ne.' ') then
             call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
             if (typcha(1:7) .eq. 'CHAM_NO') then
-                do 71 in = 1, nbn
+                do in = 1, nbn
                     noeud = zk8(inoen+in-1)
                     cmp = zk8(icmpn+in-1)
                     call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
                                 iddl)
                     icham1 = icham + nbn* (imr-1) + in - 1
                     zr(icham1) = zr(isip+iddl-1)
- 71             continue
+                end do
             else if (typcha(1:9).eq.'CHAM_ELEM') then
                 call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=noma)
                 nupo = 0
                 ivari = 1
-                do 72 i = 1, nbn
+                do i = 1, nbn
                     maille = zk8(imain+i-1)
                     noeud = zk8(inoen+i-1)
                     cmp = zk8(icmpn+i-1)
                     call utchdl(cham19, noma, maille, noeud, nupo,&
                                 0, ivari, cmp, iddl)
                     zr(icham1) = zr(isip+iddl-1)
- 72             continue
+                end do
             endif
 !  -------------------------------
         else
-            do 80 in = 1, nbn
+            do in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
                 zr(icham1) = zr(isip+zi(inddl+in-1)-1)
- 80         continue
+            end do
         endif
- 90 continue
+    end do
 !
 !     --- CREATION DE LA TABLE DE SORTIE ---
 !
@@ -381,9 +381,9 @@ subroutine speph0(nomu, table)
     call wkvect('&&SPEPH0.TEMP.FONR', 'V V R', nbpf*nbfo1, ifor)
     call wkvect('&&SPEPH0.TEMP.FONI', 'V V R', nbpf*nbfo1, ifoi)
 !
-    do 100 if1 = 1, nbpf
+    do if1 = 1, nbpf
         zr(lfreqs+if1-1) = zr(lfreq+if1-1)
-100 continue
+    end do
 !
     call speph2(movrep, napexc, nbmode, nbpf, intmod,&
                 table, zr(ifor), zr(ifoi))

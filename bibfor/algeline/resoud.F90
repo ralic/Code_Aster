@@ -2,22 +2,22 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                   chsecm, chsolu, base, rsolu, csolu,&
                   criter, prepos, istop, iret)
     implicit none
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/copisd.h"
+# include "asterfort/dismoi.h"
+# include "asterfort/elg_calc_solu.h"
+# include "asterfort/elg_kellag.h"
+# include "asterfort/elg_resoud.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jedetr.h"
+# include "asterfort/jelira.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/resou1.h"
+# include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
-#   include "asterfort/assert.h"
-#   include "asterfort/copisd.h"
-#   include "asterfort/dismoi.h"
-#   include "asterfort/elg_kellag.h"
-#   include "asterfort/elg_calc_solu.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/resou1.h"
-#   include "asterfort/elg_resoud.h"
-#   include "asterfort/uttcpu.h"
-
+!
     character(len=*) :: matass, matpre, solveu, chcine
     integer :: nsecm
     character(len=*) :: chsecm, chsolu, base
@@ -91,10 +91,8 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 ! cette routine est une surcouche de la routine resou1.
 ! elle est necessaire pour traiter le cas elim_lagr='oui'
 ! ----------------------------------------------------------------------
-    integer :: ibid, jslvk1, jsolu1, jsolu2, n1, jsecm, jrefa1, nsecmb
-    character(len=19) :: matas1, matas2, secm19, solve1, solve2, solu19
-    character(len=3) :: kellag, kbid
-    character(len=24) :: solu2
+    character(len=19) :: matas1, solve1
+    character(len=3) :: kellag
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -102,8 +100,8 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
     matas1=matass
     solve1=solveu
-
-
+!
+!
 !   1. CALCUL DE KELLAG :
 !   -------------------------------------
     call elg_kellag(matas1, solve1, kellag)
@@ -116,12 +114,12 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                     chsecm, chsolu, base, rsolu, csolu,&
                     criter, prepos, istop, iret)
     else
-        call elg_resoud(matas1, chcine, nsecm,&
-                    chsecm, chsolu, base, rsolu, csolu,&
-                    criter, prepos, istop, iret)
+        call elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
+                        base, rsolu, csolu, criter, prepos,&
+                        istop, iret)
     endif
-
-
+!
+!
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
     call jedema()

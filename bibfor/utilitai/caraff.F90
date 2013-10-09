@@ -92,16 +92,16 @@ subroutine caraff(noma, gran, base, cartz)
     if (gran .eq. 'VAR2_R') then
         rvid=r8vide()
         nbcmp = ncmpmx
-        do 10 k = 1, ncmpmx
+        do k = 1, ncmpmx
             zk8(jncmp-1+k) = zk8(iad-1+k)
             zr(jvalv-1+k) = rvid
- 10     continue
+        end do
         call nocart(carte, 1, nbcmp)
     endif
 !
 !     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------
-    do 30 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -162,7 +162,8 @@ subroutine caraff(noma, gran, base, cartz)
                         limanu=zi(jmail))
             call jedetr(mesmai)
         endif
- 30 end do
+ 30     continue
+    end do
 !
     call tecart(carte)
     call jedetr(carte//'.NCMP')

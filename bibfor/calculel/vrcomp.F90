@@ -194,7 +194,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         ASSERT(noma.eq.zk8(jcopmk-1+1))
 !
         kma=0
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             exim=zi(jrepm-1+2*(ima-1)+1).gt.0
             exip=zi(jrepp-1+2*(ima-1)+1).gt.0
             kma=kma+1
@@ -231,13 +231,14 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
                 endif
                 goto 80
             endif
- 10     continue
+ 10         continue
+        end do
     endif
 !
 !
 !     2.  ON VERIFIE LES NOMBRES DE SOUS-POINTS ET DE CMPS :
 !     ------------------------------------------------------------
-    do 40 ima = 1, nbma
+    do ima = 1, nbma
         exim=zi(jrepm-1+2*(ima-1)+1).gt.0
         exip=zi(jrepp-1+2*(ima-1)+1).gt.0
         call cesexi('C', jdceld, jdcell, ima, 1,&
@@ -306,9 +307,9 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
                                 1, 1, iad2)
                     ASSERT(iad2.gt.0)
                     tounul=0
-                    do 20 k = 1, nbpgm*nbspp
+                    do k = 1, nbpgm*nbspp
                         if (zr(jce2v-1+iad2+k-1) .ne. 0.d0) tounul=1
- 20                 continue
+                    end do
                     if (tounul .eq. 0) goto 30
                 endif
             endif
@@ -326,7 +327,8 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
             vali(2)=ncmpp
             call utmess('A', 'CALCULEL3_48', sk=nomail, ni=2, vali=vali)
         endif
- 40 continue
+ 40     continue
+    end do
     goto 90
 !
 !

@@ -103,10 +103,10 @@ subroutine ddlact(nomres, numddl)
 !----------------COMPTAGE DU NOMBRE MAX DE NOEUDS DES INTERFACE---------
 !
     nomax=0
-    do 10 i = 1, nbint
+    do i = 1, nbint
         call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         nomax=max(nomax,nbno)
- 10 end do
+    end do
 !
 !---------CREATION DU NOM DE LA MATRICE DESCRIPTIVE DES DDL-------------
 !
@@ -127,19 +127,19 @@ subroutine ddlact(nomres, numddl)
 !
 !-----------------------BOUCLE SUR LES INTERFACES-----------------------
 !
-    do 20 i = 1, nbint
+    do i = 1, nbint
         call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         call jeveuo(jexnum(noeint, i), 'L', llnoe)
         call jeveuo(jexnum(actint, i), 'E', ldact)
 !
-        do 30 j = 1, nbno
+        do j = 1, nbno
             ino=zi(llnoe+j-1)
             zi(ltnono+j-1)=zi(lldes+ino-1)
-            do 40 iec = 1, nbec
+            do iec = 1, nbec
                 zi(ltcono+(j-1)*nbec+iec-1)= zi(lldes+2*nbnot+(ino-1)*&
                 nbec+iec-1)
- 40         continue
- 30     continue
+            end do
+        end do
 !
         call recddl(nbcmp, zi(ltnono), nbno, nbec, zi(lldeeq),&
                     neq, zi(ltmat), zi(ltidec))
@@ -162,9 +162,9 @@ subroutine ddlact(nomres, numddl)
 !--  TEST SUR LA PRESENCE DE DDL ACTIFS
 !
         actifs=0.d0
-        do 50 j = 1, nbno*nbec
+        do j = 1, nbno*nbec
             actifs=actifs+zi(ldact+j-1)**2
- 50     continue
+        end do
 !
         if (actifs .lt. 1) then
             call utmess('F', 'SOUSTRUC2_8')
@@ -173,7 +173,7 @@ subroutine ddlact(nomres, numddl)
         call jelibe(jexnum(actint, i))
         call jelibe(jexnum(noeint, i))
 !
- 20 end do
+    end do
 !
     call jelibe(deeq)
     call jedetr(temdec)

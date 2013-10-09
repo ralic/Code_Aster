@@ -150,9 +150,9 @@ subroutine op0150()
         if (nbnoch .gt. 100) then
             nbnoch = -nbnoch
         else
-            do 10 i = 1, nbnoch
+            do i = 1, nbnoch
                 call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=i, scal=linoch(i), nbret=n1)
- 10         continue
+            end do
         endif
     else
         call getvtx(' ', 'NOM_CHAM', nbval=100, vect=linoch, nbret=nbnoch)
@@ -269,7 +269,7 @@ subroutine op0150()
     if (iret .gt. 0) acce = 'FREQ'
 !
 !- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
-    do 30 ich = 1, nbnoch
+    do ich = 1, nbnoch
         resu19=resu
         call jenonu(jexnom(resu19//'.DESC', linoch(ich)), iexi)
         if (iexi .eq. 0) then
@@ -277,7 +277,7 @@ subroutine op0150()
             valk (2) = linoch(ich)
             call utmess('F', 'UTILITAI8_24', nk=2, valk=valk)
         endif
- 30 continue
+    end do
 !
 !
 !
@@ -322,11 +322,12 @@ subroutine op0150()
 !
         call getvtx(' ', 'NOM_FICHIER', scal=fich, nbret=nfic)
         ll = len(fich)
-        do 40 i = 1, ll
+        do i = 1, ll
             if (fich(i:i) .ne. ' ') goto 40
             long = i - 1
             goto 50
- 40     continue
+ 40         continue
+        end do
  50     continue
 !
 !     --- LECTURE
@@ -352,7 +353,7 @@ subroutine op0150()
         endif
 !
         lprem = .true.
-        do 260 i = 1, nbnoch
+        do i = 1, nbnoch
             option = ' '
             param = ' '
 !
@@ -417,7 +418,7 @@ subroutine op0150()
                         nnu, nis, nto, jnume, jlist,&
                         noma, nbcmpv, ncmpva, ncmpvm, prolz,&
                         iinst, crit, epsi, linoch, acce)
-260     continue
+        end do
 !
 !     POUR LES FORMATS NON PREVUS
 !     ===========================
@@ -460,20 +461,20 @@ subroutine op0150()
 !     --------------------------------------------
     if (nivinf .ge. 2) then
         write (ifm,*) ' LECTURE DES CHAMPS:'
-        do 270 ich = 1, nbnoch
+        do ich = 1, nbnoch
             write (ifm,*) '    CHAMP : ',linoch(ich)
-270     continue
+        end do
 !
         call wkvect('&&'//nompro//'.NUME_ORDR', 'V V I', nbordr, lordr)
         call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8bid,&
                     cbid, epsi, crit, zi(lordr), nbordr,&
                     nbtrou)
-        do 280 iord = 1, nbordr
+        do iord = 1, nbordr
             call rsadpa(resu, 'L', 1, acce, zi(lordr+iord-1),&
                         0, sjv=jinst, styp=k8bid)
             write (ifm,*) '    NUMERO D''ORDRE : ',zi(lordr+iord-1),&
      &        '    '//acces//' : ',zr(jinst)
-280     continue
+        end do
     endif
 !
     call titre()

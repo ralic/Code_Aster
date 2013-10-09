@@ -90,7 +90,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     character(len=24) :: modele
     integer :: jinfc, jchar, jchar2, iarefe
     integer :: nbchar
-    integer ::  i
+    integer :: i
     character(len=16) :: optmat
     character(len=19) :: depmoi, sigplu, vitplu, vitmoi, accmoi, strplu
     character(len=19) :: depdel
@@ -143,9 +143,9 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     if (nbchar .ne. 0) then
         call jeveuo(charge, 'L', jchar)
         call wkvect('&&NMCALC.LISTE_CHARGE', 'V V K8', nbchar, jchar2)
-        do 10 i = 1, nbchar
+        do i = 1, nbchar
             zk8(jchar2-1+i) = zk24(jchar-1+i) (1:8)
- 10     continue
+        end do
     else
         call wkvect('&&NMCALC.LISTE_CHARGE', 'V V K8', 1, jchar2)
     endif

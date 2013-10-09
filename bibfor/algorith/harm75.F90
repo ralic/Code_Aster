@@ -82,6 +82,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
     integer :: n1, n2, n3, n4, j3refe, idec, idefm, idinsg, idresu
     integer :: nbfreq, neq, nbnoeu, ncmp
+    cbid = dcmplx(0.d0, 0.d0)
 ! ------------------------------------------------------------------
     data chamno   /'&&HARM75.CHAMNO'/
     data blanc    /'        '/
@@ -109,7 +110,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         nbcham = -n1
         call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
-        do 11 i = 1, nbcham
+        do i = 1, nbcham
             if (champ(i)(1:4) .eq. 'DEPL') then
                 type(i) = 'DEPL            '
             else if (champ(i)(1:4).eq.'VITE') then
@@ -119,7 +120,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             else
 !           CHAMP IGNORE
             endif
- 11     continue
+        end do
     endif
 !
 !
@@ -247,7 +248,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     call jeveuo(hrange//'.DISC', 'L', idinsg)
     call jelira(hrange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&HARM75.VECTGENE', 'V V C', nbmode, idvecg)
-    do 210 ich = 1, nbcham
+    do ich = 1, nbcham
         leffor=.true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE') &
         leffor=.false.
@@ -273,7 +274,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                         'R', zr(idbase), [cbid])
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
-            do 110 j = 1, nbmode
+            do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
                             iret)
                 call jeexin(nomcha(1:19)//'.VALE', ibid)
@@ -284,15 +285,15 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                 endif
                 call jeveuo(nomcha, 'L', idefm)
                 idec = 0
-                do 120 i = 1, nbnoeu
-                    do 122 jc = 1, ncmp
+                do i = 1, nbnoeu
+                    do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
                             idec = idec + 1
                             zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
-122                 continue
-120             continue
-110         continue
+                    end do
+                end do
+            end do
         endif
 ! FIN DE LA RECUPERATION DE LA BASE MODALE
 !
@@ -301,7 +302,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         iarchi = 0
         idresu = itresu(ich)
         prems=.true.
-        do 200 i = 0, nbfreq-1
+        do i = 0, nbfreq-1
             iarchi = iarchi + 1
             call rsexch(' ', nomres, type(ich), iarchi, chamno,&
                         iret)
@@ -361,9 +362,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
-200     continue
+        end do
         call jedetr('&&HARM75.BASE')
-210 continue
+    end do
 !
     if (mode .eq. ' ') call refdcp(basemo, nomres)
 !

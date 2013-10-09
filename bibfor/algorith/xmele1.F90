@@ -157,7 +157,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! ---  BOUCLE SUR LES FISSURES
 !
-        do 11 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
 !
 ! --- RECUPERATION NOMBRE DE POINTS DE GAUSS PAR FACETTE
 !
@@ -178,7 +178,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- BOUCLE SUR LES MAILLES DE CONTACT DE LA FISSURE
 !
-            do 10 i = 1, nmaenr
+            do i = 1, nmaenr
                 ima = zi(jgrp-1+i)
                 ASSERT(ima.le.nbma)
 ! --- NOMBRE DE FISSURES VUE PAR LA MAILLE
@@ -187,7 +187,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                 ASSERT(nfisc.eq.nfisc2)
                 nface = 0
 ! --- BOUCLE SUR CES FISSURES
-                do 12 ifima = 1, nfisc
+                do ifima = 1, nfisc
                     call cesexi('S', jcesd1, jcesl1, ima, 1,&
                                 ifima, 1, iad)
                     nomfi2 = zk8(jcesv1-1+iad)
@@ -204,9 +204,9 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                         ASSERT(nface.le.6)
                         zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+nface*nnint
                     endif
- 12             continue
- 10         continue
- 11     continue
+                end do
+            end do
+        end do
 !
         if (param .eq. 'PCOHES') then
             call cescre('V', chelsi, 'ELEM', noma, nomgd,&
@@ -230,7 +230,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ENRICHISSEMENT DU CHAM_ELEM_S POUR LA MULTIFISSURATION
 !
-    do 110 ifis = 1, nfiss
+    do ifis = 1, nfiss
 !
 ! --- ACCES FISSURE COURANTE
 !
@@ -274,14 +274,14 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
             if (iret .ne. 0) then
                 call jeveuo(grp, 'L', jgrp)
                 call jelira(grp, 'LONMAX', nmaenr)
-                do 120 i = 1, nmaenr
+                do i = 1, nmaenr
                     ima = zi(jgrp-1+i)
 !
 ! --- INDICE LOCAL DE LA FISSURE COURANTE
 ! --- ET DECALAGE CORRESPONDANT
 !
                     nfisc = zi(jcesd1-1+5+4*(ima-1)+2)
-                    do 15 ifima = 1, nfisc
+                    do ifima = 1, nfisc
                         call cesexi('S', jcesd1, jcesl1, ima, 1,&
                                     ifima, 1, iad)
                         nomfi2 = zk8(jcesv1-1+iad)
@@ -291,28 +291,28 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                             nface = zi(jcesv2-1+iad)
                             npg = nface*nnint
                         endif
- 15                 continue
+                    end do
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
-                    do 150 ispt = 1, npg
-                        do 151 icmp = 1, ncmp
+                    do ispt = 1, npg
+                        do icmp = 1, ncmp
                             call cesexi('S', jcesd, jcesl, ima, 1,&
                                         zi(jnbsp-1+ima)+ispt, icmp, iad)
                             zl(jcesl-1+abs(iad)) = .true.
                             if (isint) zi(jcesv-1+abs(iad)) = 1
                             if (.not.isint) zr(jcesv-1+abs(iad)) = valr
-151                     continue
-150                 continue
+                        end do
+                    end do
 !
 ! --- INCREMENTATION REPERAGE POUR LES FISSURES SUIVANTES
 !
                     zi(jnbsp-1+ima) = zi(jnbsp-1+ima) + npg
 !
-120             continue
+                end do
             endif
         endif
-110 end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

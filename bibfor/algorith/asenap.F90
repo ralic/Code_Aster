@@ -89,7 +89,7 @@ subroutine asenap(masse)
     call jecrec('&&ASENAP.LISTCAS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbocc)
 !
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=nt)
         if (nt .ne. 0) then
             call getfac('DEPL_MULT_APPUI', ncas)
@@ -99,10 +99,10 @@ subroutine asenap(masse)
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
-            do 12 icas = 1, ncas
+            do icas = 1, ncas
                 call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=icas, scal=nucas, nbret=ibid)
                 zi(jcas+icas-1) = nucas
- 12         continue
+            end do
         else
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=0, nbret=nc)
             nc=-nc
@@ -115,7 +115,7 @@ subroutine asenap(masse)
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=nc, vect=zi(jcas))
             ncas =ncas+nc
         endif
- 10 end do
+    end do
 !
 !
 ! -- CREATION DU VECTEUR TYPE_COMBI DE TOUTES LES OCCURRENCES
@@ -123,13 +123,13 @@ subroutine asenap(masse)
 !
     call wkvect('&&ASENAP.TYPE', 'V V I', nbocc, jtyp)
 !
-    do 20 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvtx(motfac, 'TYPE_COMBI', iocc=iocc, scal=ctyp, nbret=nc)
         if (ctyp .eq. 'QUAD') zi(jtyp+iocc-1) = 1
         if (ctyp .eq. 'LINE') zi(jtyp+iocc-1) = 2
         if (ctyp .eq. 'ABS') zi(jtyp+iocc-1) = 3
 !
- 20 end do
+    end do
 !
 !
 ! -- CREATION DE LA COLLECTION QUI CONTIENT LES NOEUDS
@@ -152,7 +152,7 @@ subroutine asenap(masse)
     call wkvect('&&ASENAP.DREF', 'V V R', 3*nocas, jdref)
 !
     mesnoe = '&&ASENAP.NOEUDS'
-    do 30 icas = 1, nocas
+    do icas = 1, nocas
         call getvis(motfac, 'NUME_CAS', iocc=icas, scal=nucas, nbret=nc)
 !
 ! INITIALISATION DU DEPLACEMENT DE  NOEUD_REFE
@@ -177,9 +177,9 @@ subroutine asenap(masse)
         call jeecra(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno)
         call jeecra(jexnom('&&ASENAP.LINOEU', knum), 'LONUTI', nbno)
         call jeveuo(jexnom('&&ASENAP.LINOEU', knum), 'E', jno)
-        do 34 ino = 1, nbno
+        do ino = 1, nbno
             zk8(jno+ino-1) = zk8(jnoeu+ino-1)
- 34     continue
+        end do
 ! -- STOCKAGE DES NOEUD REFE
         zi(jref+icas-1)= 0
 !
@@ -194,7 +194,7 @@ subroutine asenap(masse)
                 valk(1) = noref
                 valk(2) = noma
                 call utmess('E', 'SEISME_1', nk=2, valk=valk)
-                goto 9999
+                goto 999
             endif
 !
             zk24(jnref+icas-1) = noref
@@ -208,14 +208,14 @@ subroutine asenap(masse)
         call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', 3*nbno)
         call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONUTI', 3*nbno)
         call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'E', jdir)
-        do 36 ino = 1, 3*nbno
+        do ino = 1, 3*nbno
             zr(jdir+ino-1)= epsima
- 36     continue
+        end do
         call getvr8(motfac, 'DX', iocc=icas, scal=dx, nbret=nx)
         call getvr8(motfac, 'DY', iocc=icas, scal=dy, nbret=ny)
         call getvr8(motfac, 'DZ', iocc=icas, scal=dz, nbret=nz)
 !
-        do 38 ino = 1, nbno
+        do ino = 1, nbno
             if (nx .ne. 0) zr(jdir+3*(ino-1))= dx
             if (ny .ne. 0) zr(jdir+3*(ino-1)+1) = dy
             if (nz .ne. 0) zr(jdir+3*(ino-1)+2)= dz
@@ -233,13 +233,13 @@ subroutine asenap(masse)
                 icas+2-1)
             endif
 !
- 38     continue
- 30 end do
+        end do
+    end do
 !
 !
     call jedetr(mesnoe)
 !
-9999 continue
+999 continue
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
     endif

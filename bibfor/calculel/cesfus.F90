@@ -73,7 +73,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ------------------------------------------------------------------
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
     integer :: jce3d, jce3v, jce3l, jce3c, vali(3)
-    integer ::  jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
+    integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1, jnucmp, jnbpt, jnbsp, jnbcmp, jcrcmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, coefi, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
@@ -116,22 +116,22 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     else
         ncmpmx = 0
-        do 20 ichs = 1, nbchs
+        do ichs = 1, nbchs
             ces1 = lichs(ichs)
             call jeveuo(ces1//'.CESC', 'L', jce1c)
             call jelira(ces1//'.CESC', 'LONMAX', n1)
-            do 10 k = 1, n1
+            do k = 1, n1
                 read (zk8(jce1c-1+k) (2:),'(I7)') icmp
                 ncmpmx = max(ncmpmx,icmp)
- 10         continue
- 20     continue
+            end do
+        end do
 !
         call wkvect('&&CESFUS.LISVARI', 'V V K8', ncmpmx, jcmpgd)
-        do 30 k = 1, ncmpmx
+        do k = 1, ncmpmx
             nomcmp = 'V'
             call codent(k, 'G', nomcmp(2:8))
             zk8(jcmpgd-1+k) = nomcmp
- 30     continue
+        end do
     endif
 !
 !
@@ -142,7 +142,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     --------------------------------------------------------
     call wkvect('&&CESFUS.NBPT', 'V V I', nbma, jnbpt)
     call wkvect('&&CESFUS.NBSP', 'V V I', nbma, jnbsp)
-    do 60 ichs = 1, nbchs
+    do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESK', 'L', jce1k)
         call jeveuo(ces1//'.CESD', 'L', jce1d)
@@ -155,12 +155,12 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         ASSERT(typces.eq.zk8(jce1k-1+3))
 !
         if (ichs .eq. 1) then
-            do 40 ima = 1, nbma
+            do ima = 1, nbma
                 zi(jnbpt-1+ima) = zi(jce1d-1+5+4* (ima-1)+1)
                 zi(jnbsp-1+ima) = zi(jce1d-1+5+4* (ima-1)+2)
- 40         continue
+            end do
         else
-            do 50 ima = 1, nbma
+            do ima = 1, nbma
                 nbpt = zi(jce1d-1+5+4* (ima-1)+1)
                 nbsp = zi(jce1d-1+5+4* (ima-1)+2)
                 ncmp = zi(jce1d-1+5+4* (ima-1)+3)
@@ -189,11 +189,12 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                 else
                     if (nbsp .ne. 0) zi(jnbsp-1+ima)=nbsp
                 endif
- 50         continue
+ 50             continue
+            end do
         endif
         call jelibe(ces1//'.CESK')
         call jelibe(ces1//'.CESD')
- 60 end do
+    end do
 !
 !
 !
@@ -203,31 +204,31 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- ON "COCHE" LES CMPS PRESENTES DANS LES CES DE LICHS:
     call wkvect('&&CESFUS.LICMP', 'V V K8', ncmpmx, jlicmp)
     call wkvect('&&CESFUS.NUCMP', 'V V I', ncmpmx, jnucmp)
-    do 80 ichs = 1, nbchs
+    do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESK', 'L', jce1k)
         call jeveuo(ces1//'.CESD', 'L', jce1d)
         call jeveuo(ces1//'.CESC', 'L', jce1c)
 !
         ncmp1 = zi(jce1d-1+2)
-        do 70 icmp1 = 1, ncmp1
+        do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
 !
             icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
             zi(jnucmp-1+icmp) = 1
- 70     continue
+        end do
         call jelibe(ces1//'.CESK')
         call jelibe(ces1//'.CESD')
         call jelibe(ces1//'.CESC')
- 80 end do
+    end do
 !
     icmp3 = 0
-    do 90 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (zi(jnucmp-1+icmp) .eq. 1) then
             icmp3 = icmp3 + 1
             zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
         endif
- 90 end do
+    end do
     ncmp3 = icmp3
 !
 !
@@ -237,31 +238,32 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     call wkvect('&&CESFUS.NBCMP', 'V V I', nbma, jnbcmp)
     call wkvect('&&CESFUS.CORR_CMP', 'V V I', ncmpmx, jcrcmp)
 !
-    do 120 ichs = 1, nbchs
+    do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESD', 'L', jce1d)
         call jeveuo(ces1//'.CESC', 'L', jce1c)
 !
         ncmp1 = zi(jce1d-1+2)
-        do 100 icmp1 = 1, ncmp1
+        do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
             icmp3 = indik8(zk8(jlicmp),nocmp,1,ncmp3)
             zi(jcrcmp-1+icmp1) = icmp3
-100     continue
+        end do
 !
-        do 110 ima = 1, nbma
+        do ima = 1, nbma
             ncmp1 = zi(jce1d-1+5+4* (ima-1)+3)
             if (ncmp1 .eq. 0) goto 110
             ASSERT(ncmp1.ge.0)
-            do 111 icmp1 = 1, ncmp1
+            do icmp1 = 1, ncmp1
                 icmp3 = zi(jcrcmp-1+icmp1)
                 zi(jnbcmp-1+ima) = max(icmp3,zi(jnbcmp-1+ima))
-111         continue
-110     continue
+            end do
+110         continue
+        end do
 !
         call jelibe(ces1//'.CESD')
         call jelibe(ces1//'.CESC')
-120 end do
+    end do
 !
 !
 !     4- ALLOCATION DE CES3 :
@@ -278,7 +280,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     5- RECOPIE DE CES1 DANS CES3 :
 !     ------------------------------------------
-    do 170 ichs = 1, nbchs
+    do ichs = 1, nbchs
         ces1 = lichs(ichs)
 !
         call jeveuo(ces1//'.CESD', 'L', jce1d)
@@ -295,14 +297,14 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             if (tsca .eq. 'I') coefi = nint(coefr)
         endif
 !
-        do 160 icmp1 = 1, ncmp1
+        do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
             icmp3 = indik8(zk8(jce3c),nocmp,1,ncmp3)
-            do 150 ima = 1, nbma
+            do ima = 1, nbma
                 nbpt = zi(jce3d-1+5+4* (ima-1)+1)
                 nbsp = zi(jce3d-1+5+4* (ima-1)+2)
-                do 140 ipt = 1, nbpt
-                    do 130 isp = 1, nbsp
+                do ipt = 1, nbpt
+                    do isp = 1, nbsp
                         call cesexi('C', jce1d, jce1l, ima, ipt,&
                                     isp, icmp1, iad1)
                         call cesexi('C', jce3d, jce3l, ima, ipt,&
@@ -362,17 +364,18 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                         endif
 !
 !
-130                 continue
-140             continue
-150         continue
-160     continue
+130                     continue
+                    end do
+                end do
+            end do
+        end do
 !
         call jelibe(ces1//'.CESD')
         call jelibe(ces1//'.CESC')
         call jelibe(ces1//'.CESV')
         call jelibe(ces1//'.CESL')
 !
-170 end do
+    end do
 !
 !
 !     6- RECOPIE DE LA SD TEMPORAIRE DANS LE RESULTAT :

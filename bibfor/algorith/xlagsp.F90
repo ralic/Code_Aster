@@ -82,7 +82,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: jconx1, jconx2, jmail
     integer :: npil
     real(kind=8) :: c(ndim), cc(ndim)
-    character(len=8) ::  typma
+    character(len=8) :: typma
     integer :: ifm, niv
     character(len=19) :: tabno, tabint, tabcri
     integer :: jtabno, jtabin, jtabcr
@@ -189,7 +189,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- REPERAGE NUM LOCAL DE FISSURE POUR CHAQUE MAILLE
 ! --- ENRICHIE
 !
-    do 10 k = 1, 3
+    do k = 1, 3
         call jeexin(grp(k), iret)
         if (iret .eq. 0) goto 10
         call jeveuo(grp(k), 'L', jgrp)
@@ -197,13 +197,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- BOUCLE SUR LES MAILLES DU GROUPE
 !
-        do 11 ienr = 1, nmaenr
+        do ienr = 1, nmaenr
             ima = zi(jgrp-1+ienr)
             if (lmulti) then
                 zi(jnbpt-1+ima) = zi(jnbpt-1+ima)+1
             endif
- 11     continue
- 10 end do
+        end do
+ 10     continue
+    end do
 !
 ! --- RECUP MAILLES DE CONTACT
 !
@@ -215,7 +216,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- BOUCLE SUR LES MAILLES DE CONTACT
 !
-    do 100 ienr = 1, nmaenr
+    do ienr = 1, nmaenr
         ima = zi(jgrp-1+ienr)
         if (lmulti) ifiss = zi(jnbpt-1+ima)
         itypma = zi(jma-1+ima)
@@ -241,7 +242,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- BOUCLE SUR LES POINTS D'INTERSECTIONS
 !
-        do 110 pint = 1, ninter
+        do pint = 1, ninter
 !
 ! --- NUMERO DE L'ARETE INTERSECTEES
 !
@@ -279,13 +280,13 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- EST-CE QUE L'ARETE EST DEJA VUE ?
 !
-            do 120 i = 1, nbarto
+            do i = 1, nbarto
 !             ARETE DEJA VUE
                 if (nunoa .eq. zi(jtabno-1+3*(i-1)+1) .and. nunob .eq. zi( jtabno-1+3*(i-1)+2)) &
                 goto 110
                 if (nunoa .eq. zi(jtabno-1+3*(i-1)+2) .and. nunob .eq. zi( jtabno-1+3*(i-1)+1)) &
                 goto 110
-120         continue
+            end do
 !
 ! --- NOUVELLE ARETE
 !
@@ -294,17 +295,18 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             zi(jtabno-1+3*(nbarto-1)+1) = nunoa
             zi(jtabno-1+3*(nbarto-1)+2) = nunob
             zi(jtabno-1+3*(nbarto-1)+3) = nunom
-            do 130 i = 1, ndim
+            do i = 1, ndim
                 call cesexi('S', jcesd4, jcesl4, ima, 1,&
                             ifiss, ndim*(pint- 1)+i, iad4)
                 ASSERT(iad4.gt.0)
                 c(i) = zr(jcesv4-1+iad4)
                 zr(jtabin-1+ndim*(nbarto-1)+i) = c(i)
-130         continue
+            end do
 !
-110     continue
+110         continue
+        end do
 !
-100 continue
+    end do
  99 continue
 !
 !
@@ -313,31 +315,31 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !     SOMME DES LONGUEURS DES ARETES DES FACETTES
 !     DE CONTACT CONNECTEES A CHAQUE ARETE
 !
-    do 200 ia = 1, nbarto
+    do ia = 1, nbarto
         nunoa = zi(jtabno-1+3*(ia-1)+1)
         nunob = zi(jtabno-1+3*(ia-1)+2)
         nunom = zi(jtabno-1+3*(ia-1)+3)
-        do 210 i = 1, ndim
+        do i = 1, ndim
             c(i)=zr(jtabin-1+ndim*(ia-1)+i)
-210     continue
+        end do
         dist1=r8maem()
         dist2=r8maem()
         ia1=0
         ia2=0
 !
-        do 220 iia = 1, nbarto
+        do iia = 1, nbarto
             nunoaa = zi(jtabno-1+3*(iia-1)+1)
             nunobb = zi(jtabno-1+3*(iia-1)+2)
             if ((nunoa.eq.nunoaa.and.nunob.ne.nunobb) .or.&
                 ( nunoa.eq.nunobb.and.nunob.ne.nunoaa)) then
 !           NUNOA CONNECTE LES DEUX ARETES
-                do 300 i = 1, ndim
+                do i = 1, ndim
                     cc(i)=zr(jtabin-1+ndim*(iia-1)+i)
-300             continue
+                end do
                 lon=0.d0
-                do 310 i = 1, ndim
+                do i = 1, ndim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
-310             continue
+                end do
                 lon=sqrt(lon)
                 if (lon .lt. dist1) then
                     dist1=lon
@@ -347,20 +349,20 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             if ((nunoa.ne.nunoaa.and.nunob.eq.nunobb) .or.&
                 ( nunoa.ne.nunobb.and.nunob.eq.nunoaa)) then
 !           NUNOB CONNECTE LES DEUX ARETES
-                do 320 i = 1, ndim
+                do i = 1, ndim
                     cc(i)=zr(jtabin-1+ndim*(iia-1)+i)
-320             continue
+                end do
                 lon=0.d0
-                do 330 i = 1, ndim
+                do i = 1, ndim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
-330             continue
+                end do
                 lon=sqrt(lon)
                 if (lon .lt. dist2) then
                     dist2=lon
                     ia2=iia
                 endif
             endif
-220     continue
+        end do
         lon=0.d0
         if (ia2 .ne. 0) then
             lon=lon+dist2
@@ -371,7 +373,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
         zr(jtabcr-1+1*(ia-1)+1)=lon
 !
-200 end do
+    end do
 !
 ! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !

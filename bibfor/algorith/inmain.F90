@@ -31,7 +31,6 @@ subroutine inmain(nommat, neq, nozero)
 !
 !-- VARIABLES EN ENTREES / SORTIE
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -41,6 +40,7 @@ subroutine inmain(nommat, neq, nozero)
 #include "asterfort/jemarq.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: neq, nozero
     character(len=19) :: nommat
 !
@@ -72,9 +72,9 @@ subroutine inmain(nommat, neq, nozero)
 !
 !-- CREATION DU .CONL
     call wkvect(nommat//'.CONL', 'V V R', neq, j1)
-    do 10 i1 = 1, neq
+    do i1 = 1, neq
         zr(j1+i1-1)=1.d0
-10  end do
+    end do
 !
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nommat//'.VALM', iret)

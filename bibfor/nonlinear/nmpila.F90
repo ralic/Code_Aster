@@ -104,7 +104,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
 ! --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
 !
     if (isxfe) then
-        do 20 i = 1, neq
+        do i = 1, neq
             if (zr(jcoee+i-1) .eq. 0.d0) then
                 r0 = r0 + zr(jcoef+i-1)**2* (zr(jdepde+i-1)+zr(jdep0+ i-1))**2
                 r1 = r1 + zr(jcoef+i-1)**2* (zr(jdepde+i-1)+zr(jdep0+ i-1))*zr(jdep1+i-1)
@@ -112,24 +112,24 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
             else
                 d0 = 0.d0
                 d1 = 0.d0
-                do 30 j = i+1, neq
+                do j = i+1, neq
                     if (zr(jcoee+i-1) .eq. zr(jcoee+j-1)) then
                         d0 = d0 + zr(jcoef+i-1)*(zr(jdepde+i-1)+zr( jdep0+i-1))+ zr(jcoef+j-1)*(z&
                              &r(jdepde+j-1)+zr( jdep0+j-1))
                         d1 = d1 + zr(jcoef+i-1)*zr(jdep1+i-1)+ zr(jcoef+j-1)*zr(jdep1+j-1)
                     endif
- 30             continue
+                end do
                 r0 = r0 + d0**2
                 r1 = r1 + d1*d0
                 r2 = r2 + d1**2
             endif
- 20     continue
+        end do
     else
-        do 10 i = 1, neq
+        do i = 1, neq
             r0 = r0 + zr(jcoef+i-1) * (zr(jdepde+i-1)+zr(jdep0+i-1))** 2
             r1 = r1 + zr(jcoef+i-1) * (zr(jdepde+i-1)+zr(jdep0+i-1))* zr(jdep1+i-1)
             r2 = r2 + zr(jcoef+i-1) * zr(jdep1+i-1) * zr(jdep1+i-1)
- 10     continue
+        end do
     endif
 !
     r1 = 2.d0*r1

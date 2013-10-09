@@ -141,10 +141,10 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             jcoorc = jcoor
         endif
 !
-        do 1 ino = 1, nbnoc
-            do 12 dimno = 1, ndim
+        do ino = 1, nbnoc
+            do dimno = 1, ndim
                 valpu(dimno)=zr(jcoorc-1+3*(ino-1)+dimno)
- 12         continue
+            end do
             call fointe('F ', nfong, ndim, nompu, valpu,&
                         xln, ibid)
             if (callst) then
@@ -157,7 +157,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             zr(jltsv-1+(ino-1)+1)=xlt
             zl(jltsl-1+(ino-1)+1)=.true.
             zl(jlnsl-1+(ino-1)+1)=.true.
-  1     continue
+        end do
 !
     else if (meth.eq.'GROUP_MA') then
 !
@@ -242,7 +242,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         if (callst) call jeveuo(chslst//'.CNSV', 'L', jctv)
         if (callst) call jeveuo(chslst//'.CNSL', 'L', jctl)
 !
-        do 60 ino = 1, nbno
+        do ino = 1, nbno
 !           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
             ASSERT(zl(jcnl+ino-1))
             if (callst) ASSERT(zl(jctl+ino-1))
@@ -251,7 +251,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             if (callst) zr(jltsv-1+(ino-1)+1)=zr(jctv+ino-1)
             if (.not.callst) zr(jltsv-1+(ino-1)+1)= -1.d0
             zl(jltsl-1+(ino-1)+1)=.true.
- 60     continue
+        end do
 !
         call jedetr(chslsn)
         if (callst) call jedetr(chslst)

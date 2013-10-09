@@ -148,17 +148,17 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             call jeveuo(ordol, 'L', l1)
             call wkvect('&&VECTEUR_NOEUDS_TEMP', 'V V I', nbno1, m1)
             call wkvect('&&VECTEUR_INDICES_TEMP', 'V V I', nbno1, n1)
-            do 10 i1 = 1, nbno1
+            do i1 = 1, nbno1
                 zi(m1+i1-1)=zi(lnoeu1+i1-1)
-                do 20 j1 = 1, nbno1
+                do j1 = 1, nbno1
                     if (zi(l1+i1-1) .eq. zi(llint1+j1-1)) then
                         zi(n1+i1-1)=j1
                     endif
- 20             continue
- 10         continue
-            do 30 i1 = 1, nbno1
+                end do
+            end do
+            do i1 = 1, nbno1
                 zi(lnoeu1+i1-1)=zi(m1+zi(n1+i1-1)-1)
- 30         continue
+            end do
             call jedetr('&&VECTEUR_NOEUDS_TEMP')
             call jedetr('&&VECTEUR_INDICES_TEMP')
         endif
@@ -185,18 +185,18 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- ON NE TRAITE QUE LES DDL DX DY DZ DRX DRY ET DRZ
 !-- RENVOYER UNE ERREUR OU UN WARNING SINON
     ddla1=0
-    do 40 i1 = 1, nbno1
+    do i1 = 1, nbno1
         ipos1=zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec))
         call isdeco(zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec)+2), deco, nbcmpm)
         ipos2=0
-        do 50 k1 = 1, 6
+        do k1 = 1, 6
             if (iret .eq. 0) then
                 zi(lindi1+(i1-1)*6+k1-1)=(ipos1+ipos2)*deco(k1)
             endif
             ipos2=ipos2+deco(k1)
             ddla1=ddla1+deco(k1)
- 50     continue
- 40 end do
+        end do
+    end do
 !
 !-- ALLOCATION DE LA PLACE POUR LES MATRICES TEMPORAIRES
     maint1='&&MATR_TEMP_MO_INT1'
@@ -225,21 +225,21 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
         call wkvect(maint1, 'V V R', nbddl1*ddla1, lmain1)
 !
         if (ddla1 .eq. nbddl1) then
-            do 260 j1 = 1, ddla1
+            do j1 = 1, ddla1
                 zr(lmain1+(j1-1)*(ddla1+1))=1.0d0
-260         continue
+            end do
         endif
         if (2*ddla1 .eq. nbddl1) then
             l1=0
             m1=0
-            do 270 j1 = 1, ddla1
+            do j1 = 1, ddla1
                 zr(lmain1+(j1-1)*nbddl1+l1+m1)=1.0d0
                 l1=l1+1
                 if (l1 .eq. 3) then
                     m1=m1+6
                     l1=0
                 endif
-270         continue
+            end do
         endif
         if ((ddla1-nbddl1)*(2*ddla1-nbddl1) .ne. 0) then
             write(6,*)'SEULS LES ELEMENTS PORTANT (DX,DY,DZ) OU ',&
@@ -258,9 +258,9 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !--  => IL FAUT CONSTRUIRE LA MATRICE INVERSE
         call jenonu(jexnom(nomres//'      .MODG.SSNO', sst2), ibid)
         call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', leuler)
-        do 75 i1 = 1, 3
+        do i1 = 1, 3
             euler(i1)=-zr(leuler+i1-1)
- 75     continue
+        end do
 !
         call rotati(euler, rota)
 !        CALL WKVECT('&&ROTLIR.MATR_ROTATION','V V R',
@@ -269,7 +269,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !
 !-- REMPLISSAGE DE LA MATRICE DE ROTATION
 !        DO 280 I1=1,DDLA1
-        do 280 i1 = 1, 3
+        do i1 = 1, 3
             j1=((i1-1)/3)+1
             l1=i1-(j1-1)*3
 !
@@ -280,7 +280,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             zr(ibid+(j1-1)*3+1)=rota(2,l1)
             zr(ibid+(j1-1)*3+2)=rota(3,l1)
 !
-280     continue
+        end do
 !
 !
 !
@@ -293,9 +293,9 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- CALCUL DE MATRICE DE ROTATION POUR LA SOUS STRUCTURE
         call jenonu(jexnom(nomres//'      .MODG.SSNO', sst1), ibid)
         call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', leuler)
-        do 65 i1 = 1, 3
+        do i1 = 1, 3
             euler(i1)=zr(leuler+i1-1)
- 65     continue
+        end do
         call rotati(euler, rota)
 !
 !-- ALLOCATION DE LA PLACE POUR LES MATRICES TEMPORAIRES
@@ -304,7 +304,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- EXTRACTION ET ROTATION DE LA TRACE DES MODES SUR L'INTERFACE
 !
         call jeveuo(jexnum(bamo1//'           .TACH', 1), 'L', lmod1)
-        do 80 i1 = 1, nbeq1
+        do i1 = 1, nbeq1
             kint = zk24(lmod1+i1-1)(1:19)
             call jeveuo(kint//'.VALE', 'L', ibid)
 !
@@ -314,10 +314,10 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !
             norme=0.d0
             length=0
-            do 90 j1 = 1, nbno1
+            do j1 = 1, nbno1
 !-- REMPLISSAGE TEMPORAIRE DE LA RESTRICTION DU MODE AUX 6 DDL
 !-- DU NOEUD J1
-                do 100 k1 = 1, 6
+                do k1 = 1, 6
                     if (zi(lindi1+(j1-1)*6+k1-1) .gt. 0) then
                         zr(lresmo+k1-1)= zr(ibid+zi(lindi1+(j1-1)*6+&
                         k1-1)-1)
@@ -326,17 +326,17 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
                     else
                         zr(lresmo+k1-1)=0.d0
                     endif
-100             continue
+                end do
 !
 !-- ROTATION DU VECTEUR RESTRICTION
-                do 110 k1 = 1, 6
+                do k1 = 1, 6
                     l1=int(mod(k1-1,3)+1)
                     m1=int(int((k1-1)/3)*3)
                     zr(lmain1+(i1-1)*nbddl1+(j1-1)*6+k1-1)= rota(l1,1)&
                     *zr(lresmo+m1)+ rota(l1,2)*zr(lresmo+m1+1)+&
                     rota(l1,3)*zr(lresmo+m1+2)
-110             continue
- 90         continue
+                end do
+            end do
 !
 !-- ON ANNULE BRUTALEMENT LES DEPLACEMENTS DES MODES
 !--   DONT ON PENSE QUE L'INTERFACE EST FIXE
@@ -346,16 +346,16 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             nortot=sqrt(ddot(lonmod,zr(ibid-1),1,zr(ibid-1),1))
 !
             if (sqrt(norme)/length .lt. 100.d0*r8prem()*nortot) then
-                do 101 k1 = 1, nbddl1
+                do k1 = 1, nbddl1
                     zr(lmain1+(i1-1)*nbddl1+k1-1)=0.d0
-101             continue
+                end do
             endif
 !
- 80     continue
+        end do
 !
     else
 !-- POUR EVITER DES CALCULS
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -364,16 +364,16 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
     call wkvect(tramo1, 'V V R', ddla1*nbeq1, lact1)
     call codent(numlia, 'D0', k1bid)
 !
-    do 180 j1 = 1, nbeq1
+    do j1 = 1, nbeq1
         ibid=0
-        do 190 i1 = 1, nbddl1
+        do i1 = 1, nbddl1
             if (zi(lindi1+i1-1) .gt. 0) then
                 zr(lact1+ddla1*(j1-1)+ibid)= zr(lmain1+nbddl1*(j1-1)+&
                 i1-1)
                 ibid=ibid+1
             endif
-190     continue
-180 end do
+        end do
+    end do
 !
 !
 !
@@ -384,7 +384,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !--     --C
 !---------C
 !
-9999 continue
+999 continue
     call jedetr(restmo)
     call jedema()
 end subroutine

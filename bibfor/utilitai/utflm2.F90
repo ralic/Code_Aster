@@ -95,10 +95,10 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 ! ------RECUPERATION DE TOUS LES TYPES DE MAILLE
 !        ET DE LEUR DIMENSION TOPOLOGIQUE
 !
-        do 10 i = 1, nbtyp
+        do i = 1, nbtyp
             call jenuno(jexnum('&CATA.TM.NOMTM', i), zk8(itypma-1+i))
             call dismoi('DIM_TOPO', zk8(itypma-1+i), 'TYPE_MAILLE', repi=zi(idimto-1+i))
- 10     continue
+        end do
     endif
 !
 !
@@ -110,7 +110,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
     nbtrou = 0
     ii = 1
-    do 20 i = 1, nbma
+    do i = 1, nbma
 !
 ! ------RECUPERATION DU TYPE DE LA MAILLE I
 !
@@ -134,17 +134,17 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
                 ii = ii + 1
             endif
         endif
- 20 end do
+    end do
 !
-    if (nbtrou .eq. 0) goto 9999
+    if (nbtrou .eq. 0) goto 999
 !
 ! ----SI LA LISTE N'EST PAS VIDE ON RECOPIE DANS TATROU DE TAILLE NBMA
 !
-    do 30 itrou = 1, nbtrou
+    do itrou = 1, nbtrou
         tatrou(itrou) = zi(itempo-1+itrou)
- 30 end do
+    end do
 !
-9999 continue
+999 continue
 !
     call jedetr('&&UTFLM2.TYPE_MAILLE')
     call jedetr('&&UTFLM2.DIME_TOPO')

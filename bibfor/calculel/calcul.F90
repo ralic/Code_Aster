@@ -69,19 +69,19 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/vrcdec.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zechlo.h"
-
-        integer, intent(in) :: nou
-        integer, intent(in) :: nin
-        character(len=1), intent(in) :: stop
-        character(len=*), intent(in) :: optio
-        character(len=*), intent(in) :: ligrlz
-        character(len=*), intent(in) :: lchin(*)
-        character(len=*), intent(in) :: lpain(*)
-        character(len=*), intent(in) :: lchou(*)
-        character(len=*), intent(in) :: lpaou(*)
-        character(len=*), intent(in) :: base
-        character(len=*), intent(in) :: mpic
-
+!
+    integer, intent(in) :: nou
+    integer, intent(in) :: nin
+    character(len=1), intent(in) :: stop
+    character(len=*), intent(in) :: optio
+    character(len=*), intent(in) :: ligrlz
+    character(len=*), intent(in) :: lchin(*)
+    character(len=*), intent(in) :: lpain(*)
+    character(len=*), intent(in) :: lchou(*)
+    character(len=*), intent(in) :: lpaou(*)
+    character(len=*), intent(in) :: base
+    character(len=*), intent(in) :: mpic
+!
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !        STOP   :  /'S' : ON S'ARRETE SI AUCUN ELEMENT FINI DU LIGREL

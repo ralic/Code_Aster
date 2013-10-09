@@ -52,7 +52,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !
 !
-    integer ::  iret, jptma, ima, nbma, izone, nuzone
+    integer :: iret, jptma, ima, nbma, izone, nuzone
     integer :: jcesv, jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi
     integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, jzones, kzone, kcmp
     character(len=19) :: cart1, cel2, ces2

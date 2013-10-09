@@ -121,7 +121,7 @@ subroutine imbamo(nomres)
 !
     call utmess('I', 'ALGELINE6_5')
 !
-    do 10 i = 1, nbtot
+    do i = 1, nbtot
 !
         call rsadpa(nomres, 'L', nbpabm, bmpara, i,&
                     0, tjv=ldpar, styp=k8bid)
@@ -149,7 +149,7 @@ subroutine imbamo(nomres)
             call utmess('I', 'ALGELINE6_7', nk=3, valk=valk, si=vali(1))
 !
         endif
- 10 continue
+    end do
 !
     call jedema()
 end subroutine

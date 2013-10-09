@@ -92,14 +92,14 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     call jeveuo(numr//'.SMOS.SMDI', 'L', jsmdir)
     call jeveuo(jexnum(valmr, 1), 'E', jvlmr1)
     if (typres(1:1) .eq. 'R') then
-        do 10 k = 1, lgbloc
+        do k = 1, lgbloc
             zr(jvlmr1-1+k) = zero
- 10     continue
+        end do
         if (.not.symr) then
             call jeveuo(jexnum(valmr, 2), 'E', jvlmr2)
-            do 20 k = 1, lgbloc
+            do k = 1, lgbloc
                 zr(jvlmr2-1+k) = zero
- 20         continue
+            end do
         endif
 !
     else
@@ -110,7 +110,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 ! --- BOUCLE SUR LES MATRICES A COMBINER :
 !     ----------------------------------
     iconst = 1
-    do 30 imat = 1, nbcomb
+    do imat = 1, nbcomb
         ASSERT(typcst(imat).eq.'R')
         mati = zk24(zi(lmat(imat)+1))
         call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numi)
@@ -144,7 +144,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         iconst = iconst + 1
         call jelibe(jexnum(valmi, 1))
         if (.not.symi) call jelibe(jexnum(valmi, 2))
- 30 end do
+    end do
 !
     call jedetr('&&CBVAL2')
 !

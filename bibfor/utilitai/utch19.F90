@@ -53,7 +53,7 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
 ! OUT : IER    : CODE RETOUR.
 ! ----------------------------------------------------------------------
 !
-    integer ::  icmp, jcelv
+    integer :: icmp, jcelv
     real(kind=8) :: r1, r2
     character(len=1) :: typrez
     character(len=4) :: type, kmpic

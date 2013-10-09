@@ -93,7 +93,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
     call wkvect('&&SFIFJ.SPHI', 'V V K24', nbm, isncha)
 !
 ! BOUCLE SUR LES NUMEROS D'ORDRE
-    do 10 idm = 1, nbm
+    do idm = 1, nbm
         call codent(idm, 'D', chaine)
 ! NCHESC : CHAM_ELEM_S COMPLEXE. UNIQUEMENT POUR INITIALISATION
         nchesc='&&SFIFJ.SPHI.'//chaine
@@ -123,7 +123,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
         call detrsd('CHAM_ELEM_S', nches1)
         call detrsd('CHAM_ELEM', nchelc)
         call detrsd('CHAM_ELEM', nchel1)
- 10 end do
+    end do
 !
     phiout='&&SFIFJ.PHI'
     sphout='&&SFIFJ.SPHI'

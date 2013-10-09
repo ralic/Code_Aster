@@ -44,8 +44,8 @@ subroutine op0183()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nmdome.h"
 #include "asterfort/nmdocc.h"
+#include "asterfort/nmdome.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/refdcp.h"
@@ -197,9 +197,9 @@ subroutine op0183()
                 call jeveuo(charge, 'L', iachar)
                 call jedetr('&&'//nompro//'.L_CHARGE')
                 call wkvect('&&'//nompro//'.L_CHARGE', 'V V K8', nbchar, ichar)
-                do 20 ii = 1, nbchar
+                do ii = 1, nbchar
                     zk8(ichar-1+ii)=zk24(iachar-1+ii)(1:8)
- 20             continue
+                end do
             else
                 ichar=1
             endif
@@ -318,9 +318,9 @@ subroutine op0183()
         call jelira(zk24(jfo)(1:19)//'.VALE', 'LONMAX', lvafon)
         call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
 !
-        do 30 j = 0, lonch-1
+        do j = 0, lonch-1
             zr(jnoch+j)=zr(jfono+j)
- 30     continue
+        end do
 !
         call rsnoch(resuc1, 'DEPL', iordr)
         call nmdome(modele, mater, carac, infcha, resuc1(1:8),&

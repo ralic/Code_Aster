@@ -106,9 +106,9 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     call jeveuo('&&XMELE2.HEAV      .CESD', 'L', jcesd)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call wkvect('&&XMELE2.NBSP', 'V V I', nbma, jnbsp)
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         zi(jnbsp-1+ima) = zi(jcesd-1+5+4*(ima-1)+2)
- 10 end do
+    end do
 !
 !
 !
@@ -132,7 +132,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ENRICHISSEMENT DU CHAM_ELEM POUR LA MULTIFISSURATION
 !
-    do 110 ifis = 1, nfiss
+    do ifis = 1, nfiss
 !
 ! --- ACCES FISSURE COURANTE
 !
@@ -164,31 +164,31 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
         if (iret .ne. 0) then
             call jeveuo(grp, 'L', jgrp)
             call jelira(grp, 'LONMAX', nmaenr)
-            do 120 i = 1, nmaenr
+            do i = 1, nmaenr
                 ima = zi(jgrp-1+i)
 !
 ! --- RECUPERATION DU NUMÉRO DE SOUS POINT ISPT
 !
-                do 130 ispt = 1, zi(jnbsp-1+ima)
+                do ispt = 1, zi(jnbsp-1+ima)
                     call cesexi('S', jcesd, jcesl, ima, 1,&
                                 ispt, 1, iad)
                     if (iad .lt. 0) goto 140
-130             continue
+                end do
                 ASSERT(.false.)
 140             continue
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
-                do 150 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
                     call cesexi('S', jcesd, jcesl, ima, 1,&
                                 ispt, icmp, iad)
                     zl(jcesl-1-iad) = .true.
                     zr(jcesv-1-iad) = coef(icmp)
-150             continue
-120         continue
+                end do
+            end do
         endif
 !
-110 end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

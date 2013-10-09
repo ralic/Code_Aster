@@ -137,7 +137,7 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
 ! AVEC LES NOEUDS DE L INTERFACE FLUIDE
 !
-    do 10 ino1 = 1, nbno1
+    do ino1 = 1, nbno1
 !
         x1 = zr(igeom1 -1 + (ino1 -1)*3 +1)
         y1 = zr(igeom1 -1 + (ino1 -1)*3 +2)
@@ -151,7 +151,7 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! LE NOEUD COINCIDENT DS LE TABLEAU DE CORRESPONDANCE
 !
         nbptr=0
-        do 20 ino2 = 1, nbno2
+        do ino2 = 1, nbno2
 !
             ncmp2= zi(iprn2-1+ (ino2-1)* (nec2+2)+2)
             if (ncmp2 .eq. 0) goto 20
@@ -184,9 +184,11 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !                 GOTO 10
             endif
 !
- 20     continue
+ 20         continue
+        end do
 !
- 10 end do
+ 10     continue
+    end do
 !
 !
 !      IF (NDBLE.EQ.1) THEN

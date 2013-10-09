@@ -122,7 +122,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     ASSERT(ddlexc.eq.' '.or.ddlexc.eq.'LAGR')
     call wkvect('&&MTCMBL.LISPOINT', 'V V I', nbcomb, idlima)
     reutil=.false.
-    do 10 i = 1, nbcomb
+    do i = 1, nbcomb
         ASSERT(typcst(i).eq.'R'.or.typcst(i).eq.'C')
         mati=limat(i)
         call jeveuo(mati//'.REFA', 'L', jrefai)
@@ -141,7 +141,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         endif
 !        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.
- 10 end do
+    end do
 !
 !
 !     -- SI LA MATRICE RESULTAT EST L'UNE DE CELLES A COMBINER,
@@ -170,7 +170,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         matd = .true.
         zk24(jrefar-1+11)='MATR_DISTR'
     endif
-    do 19 i = 2, nbcomb
+    do i = 2, nbcomb
         mati=limat(i)
         call dismoi('MPI_COMPLET', mati, 'MATR_ASSE', repk=kmpic)
         if (kmpic .ne. kmpic1) then
@@ -187,14 +187,14 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         else
             if (matd) ASSERT(.false.)
         endif
- 19 end do
+    end do
 !
 !
 ! --- VERIF. DE LA COHERENCE DES NUMEROTATIONS DES MATRICES A COMBINER
 !     ------------------------------------------------------------------
     call jeveuo(mat1//'.REFA', 'L', jrefa1)
     ier1 = 0
-    do 20 i = 2, nbcomb
+    do i = 2, nbcomb
         mati=limat(i)
         call jeveuo(mati//'.REFA', 'L', jrefai)
         if (zk24(jrefa1-1+2) .ne. zk24(jrefai-1+2)) ier1 = 1
@@ -209,7 +209,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
                 call utmess('F', 'ALGELINE2_10', nk=2, valk=valk)
             endif
         endif
- 20 end do
+    end do
 !
 !
 !

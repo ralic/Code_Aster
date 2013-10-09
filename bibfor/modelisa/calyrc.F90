@@ -59,7 +59,7 @@ subroutine calyrc(chargz)
 !-----------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
-    integer ::  jnoma, nnomx, idmax, idnomn, idcoef, jcmuc, idnomd
+    integer :: jnoma, nnomx, idmax, idnomn, idcoef, jcmuc, idnomd
     integer :: idirec, idimen, iagma1, iagma2, nbma1, nbma2
     integer :: nbno2, idcal1, idcal2, nul
     integer :: iconb1, iconu1, icocf1, iconb2, iconu2, icocf2
@@ -76,7 +76,7 @@ subroutine calyrc(chargz)
     character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe, typlia
-    character(len=8) ::  noma, mo, m8blan
+    character(len=8) :: noma, mo, m8blan
     character(len=8) :: kbeta, nono1, nono2, charge, cmp, ddl2, listyp(10)
     character(len=16) :: motfac, cores1, cores2, tymocl(4), motcle(4), nomcmd
     character(len=19) :: ligrmo

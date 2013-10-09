@@ -134,7 +134,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     iret1 = 0
     iret2 = 0
     iret3 = 0
-    do 10 i = 1, ncharp
+    do i = 1, ncharp
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.F1D2D', iret1)
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.F2D3D', iret2)
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.PRESS', iret3)
@@ -161,7 +161,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                 call utmess('F', 'CALCULEL4_67')
             endif
         endif
- 10 end do
+    end do
 !
 ! ------- FIN TEST SUR LE TYPE DE CHARGE DES BORDS POUR LE PB. PRIMAL
 !
@@ -177,7 +177,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     iret4 = 0
     iret5 = 0
     iret6 = 0
-    do 11 i = 1, nchard
+    do i = 1, nchard
         call exisd('CHAMP_GD', lchard(i)//'.CHME.F1D2D', iret4)
         call exisd('CHAMP_GD', lchard(i)//'.CHME.F2D3D', iret5)
         call exisd('CHAMP_GD', lchard(i)//'.CHME.PRESS', iret6)
@@ -204,7 +204,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                 call utmess('F', 'CALCULEL4_68')
             endif
         endif
- 11 end do
+    end do
 !
 ! ------- FIN TEST SUR LE TYPE DE CHARGE DES BORDS POUR LE PB. DUAL
 !
@@ -404,7 +404,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     chfop2 = ' '
     chfop3 = ' '
     typcp3 = '        '
-    do 20 i = 1, ncharp
+    do i = 1, ncharp
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.PESAN', iret7)
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.ROTAT', iret8)
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.F2D2D', iret9)
@@ -427,7 +427,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
             typcp3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOP3//' ET '//TYPCP3
         endif
- 20 end do
+    end do
 !
 ! ------- FIN TEST SUR LES CHARGEMENTS VOLUMIQUES POUR LE PB. PRIMAL ---
 !
@@ -444,7 +444,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     chfod3 = ' '
     typcd3 = '        '
 !
-    do 21 i = 1, nchard
+    do i = 1, nchard
         call exisd('CHAMP_GD', lchard(i)//'.CHME.PESAN', iret11)
         call exisd('CHAMP_GD', lchard(i)//'.CHME.ROTAT', iret12)
         call exisd('CHAMP_GD', lchard(i)//'.CHME.F2D2D', iret13)
@@ -467,7 +467,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
             typcd3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOD3//' ET '//TYPCD3
         endif
- 21 end do
+    end do
 !
 ! ------- FIN TEST SUR LES CHARGEMENTS VOLUMIQUES POUR LE PB. DUAL ---
 !

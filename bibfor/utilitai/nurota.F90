@@ -69,7 +69,7 @@ subroutine nurota(numedd, compor, sdnuro)
     character(len=24) :: nolili, noliel
     integer :: nec, nbma, nbnoeu, ngdmax, ncmpmx
     integer :: nlili, nbno, nequa, nbnoc
-    integer ::  iret, ico
+    integer :: iret, ico
     integer :: ima, igd, ino, idebgd, idrz, i, k, inoc, ival, iadg
     integer :: itrav, idesc, ivale, iptma, iconex
     integer :: indro, iancmp, ianueq, iaprno

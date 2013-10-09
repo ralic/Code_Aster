@@ -79,7 +79,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=4) :: docu
     character(len=8) :: typmcl(2), nomres
     character(len=16) :: motcle(2), nomcmd, typres
-    character(len=8) ::  nomma, nomno, ttgrma, ttgrno, valk(2)
+    character(len=8) :: nomma, nomno, ttgrma, ttgrno, valk(2)
     character(len=24) :: nommai, nomnoe, grpnoe, cooval, cooref, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm
@@ -112,9 +112,9 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     else
         nbmaou=nbmal
         call wkvect('&&RDTMAI.NUM_MAIL_IN', 'V V I', nbmaou, jnuma)
-        do 11 k = 1, nbmaou
+        do k = 1, nbmaou
             zi(jnuma-1+k)=lima(k)
- 11     continue
+        end do
     endif
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoin)
@@ -155,19 +155,19 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     nbnoou=0
-    do 20 ima = 1, nbmaou
+    do ima = 1, nbmaou
         numa=zi(jnuma+ima-1)
         zi(jwk3+numa-1)=ima
         nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
-        do 10 ino = 1, nbno
+        do ino = 1, nbno
             nuno=zi(jconx1-1+zi(jconx2+numa-1)+ino-1)
             if (zi(jwk1+nuno-1) .eq. 0) then
                 nbnoou=nbnoou+1
                 zi(jwk1+nuno-1)=nbnoou
                 zi(jwk2+nbnoou-1)=nuno
             endif
- 10     continue
- 20 end do
+        end do
+    end do
 !
 !
 ! -2- CREATION DU NOUVEAU MAILLAGE
@@ -197,17 +197,17 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 ! --- OBJET .NOMMAI
     call jecreo(nommai, base//' N K8')
     call jeecra(nommai, 'NOMMAX', nbmaou)
-    do 30 ima = 1, nbmaou
+    do ima = 1, nbmaou
         call jenuno(jexnum(noma//'.NOMMAI', zi(jnuma+ima-1)), nomma)
         call jecroc(jexnom(nommai, nomma))
- 30 end do
+    end do
 !
 ! --- OBJET .TYPMAIL
     call wkvect(typmai, base//' V I', nbmaou, itypou)
     call jeveuo(noma//'.TYPMAIL', 'L', itypin)
-    do 40 ima = 1, nbmaou
+    do ima = 1, nbmaou
         zi(itypou-1+ima)=zi(itypin-1+zi(jnuma+ima-1))
- 40 end do
+    end do
 !
 ! --- OBJET .CONNEX
     call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
@@ -215,23 +215,23 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
     call jeecra(connex, 'LONT', nbnomx*nbmaou, ' ')
-    do 60 ima = 1, nbmaou
+    do ima = 1, nbmaou
         call jelira(jexnum(noma//'.CONNEX', zi(jnuma+ima-1)), 'LONMAX', nbno)
         call jeecra(jexnum(connex, ima), 'LONMAX', nbno)
         call jeveuo(jexnum(noma//'.CONNEX', zi(jnuma+ima-1)), 'L', jadin)
         call jeveuo(jexnum(connex, ima), 'E', jadou)
-        do 50 ino = 1, nbno
+        do ino = 1, nbno
             zi(jadou+ino-1)=zi(jwk1+zi(jadin+ino-1)-1)
- 50     continue
- 60 end do
+        end do
+    end do
 !
 ! --- OBJET .NOMNOE
     call jecreo(nomnoe, base//' N K8')
     call jeecra(nomnoe, 'NOMMAX', nbnoou)
-    do 70 ino = 1, nbnoou
+    do ino = 1, nbnoou
         call jenuno(jexnum(noma//'.NOMNOE', zi(jwk2+ino-1)), nomno)
         call jecroc(jexnom(nomnoe, nomno))
- 70 end do
+    end do
 !
 ! --- OBJET .COORDO.VALE
     call jecreo(cooval, base//' V R')
@@ -240,13 +240,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call jeecra(cooval, 'DOCU', cval=docu)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcorin)
     call jeveuo(cooval, 'E', jcorou)
-    do 80 ino = 1, nbnoin
+    do ino = 1, nbnoin
         if (zi(jwk1+ino-1) .ne. 0) then
             zr(jcorou+3*(zi(jwk1+ino-1)-1))=zr(jcorin+3*(ino-1))
             zr(jcorou+3*(zi(jwk1+ino-1)-1)+1)=zr(jcorin+3*(ino-1)+1)
             zr(jcorou+3*(zi(jwk1+ino-1)-1)+2)=zr(jcorin+3*(ino-1)+2)
         endif
- 80 end do
+    end do
 !
 !
 ! --- OBJET COORDO.DESC
@@ -284,7 +284,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call jeecra(ptngrm, 'NOMMAX', nbgma)
         call jecrec(grpmai, base//' V I', 'NO '//ptngrm, 'DISPERSE', 'VARIABLE',&
                     nbgma)
-        do 100 igm = 1, nbgma
+        do igm = 1, nbgma
             nomgma=zk24(jgma+igm-1)
             call jecroc(jexnom(grpmai, nomgma))
             call jelira(jexnom(noma//'.GROUPEMA', nomgma), 'LONUTI', nbma)
@@ -292,10 +292,10 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             call jeecra(jexnom(grpmai, nomgma), 'LONUTI', nbma)
             call jeveuo(jexnom(noma//'.GROUPEMA', nomgma), 'L', jadin)
             call jeveuo(jexnom(grpmai, nomgma), 'E', jadou)
-            do 90 ima = 1, nbma
+            do ima = 1, nbma
                 zi(jadou+ima-1)=zi(jwk3+zi(jadin+ima-1)-1)
- 90         continue
-100     continue
+            end do
+        end do
     else
 !       TOUT_GROUP_MA='OUI'
         call jelira(noma//'.GROUPEMA', 'NOMUTI', nbgmin)
@@ -303,7 +303,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call wkvect('&&RDTMAI_NB_MA_PAR_GRMA', 'V V I', nbgmin, jnmpg)
         nbgmnv=0
         if (lcaay) nbgmnv=nbgmin
-        do 120 igm = 1, nbgmin
+        do igm = 1, nbgmin
             call jeveuo(jexnum(noma//'.GROUPEMA', igm), 'L', jadin)
             call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbma)
             nmpg=0
@@ -312,7 +312,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 lvide=.false.
                 zi(jgmanv-1+igm)=igm
             endif
-            do 110 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(jwk3+zi(jadin+ima-1)-1) .ne. 0) then
                     if (lvide) then
                         nbgmnv=nbgmnv+1
@@ -321,7 +321,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     endif
                     nmpg=nmpg+1
                 endif
-110         continue
+            end do
             if (.not.lvide) then
                 if (.not.lcaay) then
                     zi(jnmpg+nbgmnv-1)=nmpg
@@ -329,12 +329,12 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     zi(jnmpg+igm-1)=nmpg
                 endif
             endif
-120     continue
+        end do
         call jecreo(ptngrm, base//' N K24')
         call jeecra(ptngrm, 'NOMMAX', nbgmnv)
         call jecrec(grpmai, base//' V I', 'NO '//ptngrm, 'DISPERSE', 'VARIABLE',&
                     nbgmnv)
-        do 140 igm = 1, nbgmnv
+        do igm = 1, nbgmnv
             call jenuno(jexnum(noma//'.GROUPEMA', zi(jgmanv+igm-1)), nomgma)
             call jecroc(jexnom(grpmai, nomgma))
             call jelira(jexnom(noma//'.GROUPEMA', nomgma), 'LONUTI', nbma)
@@ -344,13 +344,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             call jeveuo(jexnom(noma//'.GROUPEMA', nomgma), 'L', jadin)
             call jeveuo(jexnom(grpmai, nomgma), 'E', jadou)
             k=0
-            do 130 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(jwk3+zi(jadin+ima-1)-1) .ne. 0) then
                     k=k+1
                     zi(jadou+k-1)=zi(jwk3+zi(jadin+ima-1)-1)
                 endif
-130         continue
-140     continue
+            end do
+        end do
     endif
 141 continue
 !
@@ -382,7 +382,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call wkvect('&&RDTMAI_GRNO_NON_VIDES', 'V V I', nbnoou, jgnonv)
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbnoou, jnnpg)
         nbgnnv=0
-        do 160 ign = 1, nbgno
+        do ign = 1, nbgno
             call jenonu(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), numgno)
             if (numgno .eq. 0) then
                 valk(1) = zk24(jnugn+ign-1)
@@ -393,7 +393,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             call jelira(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), 'LONMAX', nbno)
             nnpg=0
             lvide=.true.
-            do 150 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi(jwk1+zi(jadin+ino-1)-1) .ne. 0) then
                     if (lvide) then
                         nbgnnv=nbgnnv+1
@@ -402,9 +402,9 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     endif
                     nnpg=nnpg+1
                 endif
-150         continue
+            end do
             if (.not.lvide) zi(jnnpg+nbgnnv-1)=nnpg
-160     continue
+        end do
 !
     else
 !       TOUT_GROUP_NO='OUI'
@@ -413,7 +413,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbgnin, jnnpg)
         nbgnnv=0
         if (lcaay) nbgnnv=nbgnin
-        do 180 ign = 1, nbgnin
+        do ign = 1, nbgnin
             call jeveuo(jexnum(noma//'.GROUPENO', ign), 'L', jadin)
             call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbno)
             nnpg=0
@@ -422,7 +422,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 lvide=.false.
                 zi(jgnonv-1+ign)=ign
             endif
-            do 170 ino = 1, nbno
+            do ino = 1, nbno
                 if (zi(jwk1+zi(jadin+ino-1)-1) .ne. 0) then
                     if (lvide) then
                         nbgnnv=nbgnnv+1
@@ -431,7 +431,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     endif
                     nnpg=nnpg+1
                 endif
-170         continue
+            end do
             if (.not.lvide) then
                 if (.not.lcaay) then
                     zi(jnnpg+nbgnnv-1)=nnpg
@@ -439,7 +439,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                     zi(jnnpg+ign-1)=nnpg
                 endif
             endif
-180     continue
+        end do
     endif
 !
 !     SI AUCUN GROUPE DE NOEUD N'EST A CREER, ON SORT
@@ -449,7 +449,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call jeecra(ptngrn, 'NOMMAX', nbgnnv)
     call jecrec(grpnoe, base//' V I', 'NO '//ptngrn, 'DISPERSE', 'VARIABLE',&
                 nbgnnv)
-    do 200 ign = 1, nbgnnv
+    do ign = 1, nbgnnv
         call jenuno(jexnum(noma//'.GROUPENO', zi(jgnonv+ign-1)), nomgno)
         call jecroc(jexnom(grpnoe, nomgno))
         call jelira(jexnom(noma//'.GROUPENO', nomgno), 'LONUTI', nbno)
@@ -459,13 +459,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call jeveuo(jexnom(noma//'.GROUPENO', nomgno), 'L', jadin)
         call jeveuo(jexnom(grpnoe, nomgno), 'E', jadou)
         k=0
-        do 190 ino = 1, nbno
+        do ino = 1, nbno
             if (zi(jwk1+zi(jadin+ino-1)-1) .ne. 0) then
                 k=k+1
                 zi(jadou+k-1)=zi(jwk1+zi(jadin+ino-1)-1)
             endif
-190     continue
-200 end do
+        end do
+    end do
 210 continue
 !
     call cargeo(nomare)
@@ -482,12 +482,12 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     endif
     if (corrm .ne. ' ') then
         call wkvect(corrm, bascor//' V I', nbmaou, jcorrm)
-        do 220 imain = 1, nbmain
+        do imain = 1, nbmain
             imaou=zi(jwk3-1+imain)
             if (imaou .ne. 0) then
                 zi(jcorrm-1+imaou)=imain
             endif
-220     continue
+        end do
     endif
 !
     call jedetr('&&RDTMAI_WORK_1')

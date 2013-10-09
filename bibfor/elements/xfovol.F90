@@ -75,7 +75,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: valpar(ndim+1), fe(4), poids
-    real(kind=8) :: rbid, rbid1(4), rbid2(4), rbid3(4)
+    real(kind=8) :: rbid
     character(len=8) :: elrese(6), fami(6), nompar(ndim+1)
     logical :: grdepl, axi
     parameter      (mxstac=1000)
@@ -112,15 +112,15 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT
 !     ------------------------------------------------------------------
 !
-    do 10 kpg = 1, npgbis
+    do kpg = 1, npgbis
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LA CONFIG RÉELLE DU SE : XG
         call vecini(ndim, 0.d0, xg)
-        do 101 i = 1, ndim
-            do 102 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
-102          continue
-101      continue
+            end do
+        end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
         call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
@@ -132,8 +132,10 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, poids)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, poids)
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+                                     poids)
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+                                     poids)
 !
 !
 !       CALCUL DES FONCTIONS D'ENRICHISSEMENT
@@ -143,10 +145,10 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !         LEVEL SETS AU POINT DE GAUSS
             lsng = 0.d0
             lstg = 0.d0
-            do 103 ino = 1, nnop
+            do ino = 1, nnop
                 lsng = lsng + zr(jlsn-1+ino) * ff(ino)
                 lstg = lstg + zr(jlst-1+ino) * ff(ino)
-103          continue
+            end do
 !
 !         COORDONNÉES POLAIRES DU POINT
             rg=sqrt(lsng**2+lstg**2)
@@ -165,9 +167,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
         if (fonc) then
 !
 !         FORCE AU PG COURANT A PARTIR DE LA FORCE FONCTION PAR ELEMENT
-            do 107 i = 1, ndim
+            do i = 1, ndim
                 valpar(i) = xg(i)
-107          continue
+            end do
             valpar(ndim+1) = zr(itemps)
             nompar(1)='X'
             nompar(2)='Y'
@@ -192,17 +194,17 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
             if (fono) then
 !           FORCE AU PG COURANT A PARTIR DE LA FORCE AUX NOEUDS
-                do 104 ino = 1, nnop
-                    do 105 j = 1, ndim
+                do ino = 1, nnop
+                    do j = 1, ndim
                         forvol(j)=forvol(j)+zr(iforc-1+ndim*(ino-1)+j)&
                         *ff(ino)
-105                  continue
-104              continue
+                    end do
+                end do
             else
 !           FORCE FOURNIE AU PG
-                do 106 j = 1, ndim
+                do j = 1, ndim
                     forvol(j) = zr(iforc+j-1)
-106              continue
+                end do
             endif
 !
         endif
@@ -212,29 +214,29 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !       --------------------------------
 !
         pos=0
-        do 108 ino = 1, nnop
+        do ino = 1, nnop
 !
 !         TERME CLASSIQUE
-            do 109 j = 1, ndim
+            do j = 1, ndim
                 pos=pos+1
                 zr(ivectu-1+pos) = zr(ivectu-1+pos) + forvol(j)*poids* ff(ino)
 !
-109          continue
+            end do
 !
 !         TERME HEAVISIDE
-            do 110 j = 1, ddlh
+            do j = 1, ddlh
                 pos=pos+1
                 zr(ivectu-1+pos) = zr(ivectu-1+pos) + he*forvol(j)* poids*ff(ino)
 !
-110          continue
+            end do
 !
 !         TERME SINGULIER
-            do 111 ig = 1, nfe
-                do 112 j = 1, ndim
+            do ig = 1, nfe
+                do j = 1, ndim
                     pos=pos+1
                     zr(ivectu-1+pos) = zr(ivectu-1+pos) + fe(ig)* forvol(j)*poids*ff(ino)
-112              continue
-111          continue
+                end do
+            end do
 !
 !         ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
             if (.not.iselli(elrefp) .and. ndim .eq. 2) then
@@ -243,10 +245,10 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                 pos = pos + ddlc
             endif
 !
-108      continue
+        end do
 !
 !
-10  end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     FIN BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT

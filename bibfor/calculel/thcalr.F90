@@ -153,7 +153,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 !
 !
 !============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
-    do 120 iopt = 1, nbopt
+    do iopt = 1, nbopt
         option=zk16(jopt+iopt-1)
 !
         call jeveuo(knum, 'L', jordr)
@@ -220,10 +220,10 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 write (ifm,*)&
      &        '* QUE LA DERNIERE OCCURENCE DE AFFE_CHAR_THER*'
                 write (ifm,*)'  LISTE DES CHARGEMENTS :'
-                do 20 bufin1 = 1, nchar
+                do bufin1 = 1, nchar
                     write (ifm,*)'                        ',&
      &          zk8(jcha+bufin1-1)
- 20             continue
+                end do
                 write (ifm,*)'  CL DE FLUX RETENUE      ',nomgdf
                 write (ifm,*)'  CL D''ECHANGE RETENUE    ',nomgdh
                 write (ifm,*)'  SOURCE RETENUE          ',nomgds
@@ -232,7 +232,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
             endif
 !
 ! BOUCLE SUR LES PAS DE TEMPS
-            do 30 iaux = 1, nbordr
+            do iaux = 1, nbordr
                 call jemarq()
                 call jerecu('V')
                 iordr=zi(jordr+iaux-1)
@@ -324,7 +324,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                     insold=inst
                 endif
                 call jedema()
- 30         continue
+            end do
 ! DESTRUCTION DES OBJETS JEVEUX VOLATILES
             call jedetr(cartef//'.PTMA')
             call jedetr(carteh//'.PTMA')
@@ -339,7 +339,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 !
         else if (option.eq.'ERTH_ELNO') then
 !
-            do 50 iaux = 1, nbordr
+            do iaux = 1, nbordr
                 call jemarq()
                 call jerecu('V')
                 iordr=zi(jordr+iaux-1)
@@ -355,14 +355,15 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 call rsnoch(leres1, option, iordr)
  40             continue
                 call jedema()
- 50         continue
+            end do
 !
 !    ------------------------------------------------------------------
         else
             call utmess('A', 'CALCULEL3_22', sk=option)
         endif
 !
-120 end do
+120     continue
+    end do
 !       ====== FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =======
 !
     if (newcal) then
@@ -370,9 +371,9 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
         call rsnopa(resuco, 2, nompar, nbac, nbpa)
         nbpara=nbac+nbpa
         call jeveuo(nompar, 'L', jpa)
-        do 140 iaux = 1, nbordr
+        do iaux = 1, nbordr
             iordr=zi(jordr+iaux-1)
-            do 130 j = 1, nbpara
+            do j = 1, nbpara
                 call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
                             1, sjv=iadin, styp=type)
                 call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
@@ -394,8 +395,8 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 else if (type(1:2).eq.'K8') then
                     zk8(iadou)=zk8(iadin)
                 endif
-130         continue
-140     continue
+            end do
+        end do
     endif
 !
 !

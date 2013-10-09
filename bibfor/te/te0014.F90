@@ -46,7 +46,7 @@ subroutine te0014(option, nomte)
     character(len=16) :: phenom
     real(kind=8) :: amm(81, 81), ft(81), x(27), y(27), z(27)
     real(kind=8) :: xi, xij
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: poids
     real(kind=8) :: rho(1), om1, om2, om3, omm, omo, rri
     integer :: ipoids, ivf, idfde
     integer :: jgano, ndl, nno, kp, npg, ii, jj, i, j

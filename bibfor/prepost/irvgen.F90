@@ -86,15 +86,15 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
         endif
         ir = 0
         im = 0
-        do 10 i = 1, nbmode
+        do i = 1, nbmode
             imode = zi(jdeeq+2*(i-1)+1-1)
             istru = zi(jdeeq+2*(i-1)+2-1)
             if (istru .lt. 0) goto 10
             im = im + 1
             if (nbcmpg .gt. 0) then
-                do 12 j = 1, nbcmpg
+                do j = 1, nbcmpg
                     if (im .eq. cmpg(j)) goto 14
- 12             continue
+                end do
                 goto 10
  14             continue
             endif
@@ -131,8 +131,9 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
                 endif
             endif
             ir = ir + 1
-            if (ir .eq. nbcmpg) goto 9999
- 10     continue
+            if (ir .eq. nbcmpg) goto 999
+ 10         continue
+        end do
     else
 !
 !      --- CALCUL TRADITIONNEL ---
@@ -186,14 +187,14 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             endif
         endif
         ir = 0
-        do 20 i = 1, nbmode
+        do i = 1, nbmode
             call rsadpa(mode, 'L', 1, 'TYPE_MODE', i,&
                         0, sjv=iad, styp=k8b)
             dynsta=zk16(iad)(1:8)
             if (nbcmpg .gt. 0) then
-                do 22 j = 1, nbcmpg
+                do j = 1, nbcmpg
                     if (i .eq. cmpg(j)) goto 24
- 22             continue
+                end do
                 goto 20
  24             continue
             endif
@@ -247,11 +248,12 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
                 endif
             endif
             ir = ir + 1
-            if (ir .eq. nbcmpg) goto 9999
- 20     continue
+            if (ir .eq. nbcmpg) goto 999
+ 20         continue
+        end do
     endif
 !
-9999 continue
+999 continue
 !
     1010 format(/,' NUME_CMP   VALEUR        BASE_MODALE  ',&
      &         'TYPE_MODE     FREQUENCE    APPLICATION')

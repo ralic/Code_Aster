@@ -96,7 +96,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     parameter(nbecmx=10)
 !
     character(len=1) :: bas, ktyp
-    character(len=8) ::  ma, mo, mo2, nogdsi, nogdco, nomcas, partit
+    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas, partit
     character(len=14) :: nudev
     character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu
     character(len=24) :: kmaila, k24prn, knueq
@@ -106,7 +106,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     integer :: iamail, iancmp, ianmcr, ianueq, ianulo, iaprol, iapsdl, iasssa
     integer :: ichar, icmp, iconx1, iconx2, iddesc, idlres
     integer :: idprn1, idprn2, jresl, idveds, idverf, idvref, iec, iel
-    integer ::  igr, il, ilim, ilimnu
+    integer :: igr, il, ilim, ilimnu
     integer :: ilinu, ilive, ilivec, ima, imat, inold
     integer :: iresu, iret, j, jec, jnumsd, jvale, k1
     integer :: lgncmp, mode, n1, nbchar, nbelm, nbnoss

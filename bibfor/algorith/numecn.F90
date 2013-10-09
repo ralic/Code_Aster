@@ -73,17 +73,17 @@ subroutine numecn(modele, champ, nume)
     else
 !       ON N'AJOUTE QUE LES LIGRELS QUI EXISTENT ENCORE :
         nb2=0
-        do 10 i1 = 2, nb1
+        do i1 = 2, nb1
             call jenuno(jexnum(prfchn//'.LILI', i1), nomlig)
             call jeexin(nomlig//'.LIEL', iret)
             if (iret .ne. 0) then
                 if (nomlig .ne. mo//'.MODELE') nb2=nb2+1
             endif
- 10     continue
+        end do
         call wkvect(lligr, 'V V K24', nb2+1, jlligr)
         i2=1
         zk24(jlligr-1+i2) = mo//'.MODELE'
-        do 11 i1 = 2, nb1
+        do i1 = 2, nb1
             call jenuno(jexnum(prfchn//'.LILI', i1), nomlig)
             call jeexin(nomlig//'.LIEL', iret)
             if (iret .ne. 0) then
@@ -92,7 +92,7 @@ subroutine numecn(modele, champ, nume)
                     zk24(jlligr-1+i2) = nomlig
                 endif
             endif
- 11     continue
+        end do
     endif
 !
 !

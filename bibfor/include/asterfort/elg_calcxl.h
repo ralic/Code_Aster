@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,12 +14,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine elg_calcxl(x1,vlag)
-#             ifdef _HAVE_PETSC
-                  Vec :: x1, vlag
-#             else
-                  integer :: x1, vlag
-#             endif
-            end subroutine elg_calcxl
-          end interface
+interface
+    subroutine elg_calcxl(x1, vlag)
+# ifdef _HAVE_PETSC
+        Vec :: x1, vlag
+        # else
+        integer :: x1, vlag
+        # endif
+    end subroutine elg_calcxl
+end interface

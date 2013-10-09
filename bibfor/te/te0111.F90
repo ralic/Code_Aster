@@ -35,7 +35,7 @@ subroutine te0111(option, nomte)
 !
     integer :: icodre(1)
     character(len=4) :: fami
-    real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r
+    real(kind=8) :: a(3, 3, 9, 9), poids, r
     integer :: nno, kp, npg2, i, j, imatuu, nnos, ndim, jgano
     integer :: ipoids, ivf, idfde, igeom, imate
 !
@@ -57,33 +57,36 @@ subroutine te0111(option, nomte)
     omega2 = zr(irota+2) * zr(irota)
     omega3 = zr(irota+3) * zr(irota)
 !
-    do 113 k = 1, 3
-        do 113 l = 1, 3
-            do 113 i = 1, nno
-                do 113 j = 1, i
+    do k = 1, 3
+        do l = 1, 3
+            do i = 1, nno
+                do j = 1, i
                     a(k,l,i,j) = 0.d0
-113              continue
+                end do
+            end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 kp = 1, npg2
+    do kp = 1, npg2
 !
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
         r = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102      continue
+        end do
         poids = poids*r
         call rcvalb(fami, kp, 1, '+', zi(imate),&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'RHO', rho, icodre, 1)
 !
-        do 106 i = 1, nno
+        do i = 1, nno
 !
-            do 107 j = 1, i
+            do j = 1, i
 !
                 wij = rho(1) * poids * zr(ivf+l+i-1) * zr(ivf+l+j-1)
 !
@@ -99,29 +102,32 @@ subroutine te0111(option, nomte)
 !
                 a(3,2,i,j) = a(3,2,i,j) + omega2 * omega3 * wij
 !
-107          continue
+            end do
 !
-106      continue
+        end do
 !
-101  end do
+    end do
 !
-    do 108 i = 1, nno
-        do 109 j = 1, i
+    do i = 1, nno
+        do j = 1, i
             a(1,2,i,j) = a(2,1,i,j)
             a(1,3,i,j) = a(3,1,i,j)
             a(2,3,i,j) = a(3,2,i,j)
-109      continue
-108  continue
+        end do
+    end do
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 !
-    do 112 k = 1, 3
-        do 112 l = 1, 3
-            do 112 i = 1, nno
+    do k = 1, 3
+        do l = 1, 3
+            do i = 1, nno
                 ik = ((3*i+k-4) * (3*i+k-3)) / 2
-                do 112 j = 1, i
+                do j = 1, i
                     ijkl = ik + 3 * (j-1) + l
                     zr(imatuu+ijkl-1) = a(k,l,i,j)
-112              continue
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

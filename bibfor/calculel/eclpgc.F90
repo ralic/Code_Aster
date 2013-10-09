@@ -190,9 +190,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
         ncmp=mxvari
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg2), 'L', jnocmp)
         call wkvect('&&ECLPGC.CORR1', 'V V I', ncmp, jcorr1)
-        do 77 k = 1, ncmp
+        do k = 1, ncmp
             zi(jcorr1-1+k)=k
- 77     continue
+        end do
     endif
     ASSERT(ncmp.le.mxcmp)
 !
@@ -218,7 +218,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
     ima=0
     nbgr=nbgrel(ligrel)
-    do 80 igr = 1, nbgr
+    do igr = 1, nbgr
         moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
         if (moloc1 .eq. 0) goto 80
 !
@@ -262,26 +262,26 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !            ----------------------------------------------------------
         if (lvari) then
             nddl=mxvari
-            do 20 k = 1, nddl
+            do k = 1, nddl
                 nuddl(k)=k
- 20         continue
+            end do
         else
             nddl=0
-            do 30 k = 1, ncmpmx
+            do k = 1, ncmpmx
                 if (exisdg(zi(iamol1-1+4+1),k)) then
                     nddl=nddl+1
                     nuddl(nddl)=zi(jcorr1-1+k)
                 endif
- 30         continue
+            end do
         endif
 !
 !
 !          -- BOUCLE SUR TOUS LES POINTS DE GAUSS DU GREL :
 !          ------------------------------------------------
-        do 70 iel = 1, nbelgr
+        do iel = 1, nbelgr
             if (lvari) nddl=zi(jceld1-1+zi(jceld1-1+4+igr)+4+ 4*(iel- 1)+2)
 !
-            do 60 kse = 1, nse1
+            do kse = 1, nse1
 !            -- AU POINT DE GAUSS IIPG CORRESPOND LA MAILLE NUMERO IMA
 !               DANS MA2.
                 iipg=corsel(kse)
@@ -291,9 +291,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                 if (nbno .gt. 27) then
                     call utmess('F', 'CALCULEL2_43')
                 endif
-                do 50 ino = 1, nbno
+                do ino = 1, nbno
                     inogl=numglm(ima,ino)
-                    do 40 iddl = 1, nddl
+                    do iddl = 1, nddl
                         ideca2=ncmp*(inogl-1)+nuddl(iddl)
                         jval2=jcnsv2-1+ideca2
                         zl(jcnsl2-1+ideca2)=.true.
@@ -301,11 +301,12 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                         1)+4)
                         zr(jval2)=zr(jcelv1-1+adiel-1+nddl*(iipg-1)+&
                         iddl)
- 40                 continue
- 50             continue
- 60         continue
- 70     continue
- 80 end do
+                    end do
+                end do
+            end do
+        end do
+ 80     continue
+    end do
 !
 !     -- ON ESSAYE DE FAIRE UN PEU DE PLACE EN MEMOIRE :
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B1')

@@ -114,10 +114,10 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     call jeveuo(mesnoe, 'L', j1)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
     call wkvect('&&CGMAAP.NOEUDS', 'V V I', nbnot, jnoeu)
-    do 1 k = 1, nbno
+    do k = 1, nbno
         nuno=zi(j1-1+k)
         zi(jnoeu-1+nuno)=1
-  1 end do
+    end do
 !
     call jeveuo(noma//'.CONNEX', 'L', iacnx)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx)
@@ -128,7 +128,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !     --  ON DETERMINE LE NOMBRE DE NOEUDS 'SOMMET' POUR CHAQUE MAILLE
         call jeveuo(noma//'.TYPMAIL', 'L', ityp)
 !
-        do 10 i = 1, nbmala
+        do i = 1, nbmala
             ima=zi(jmala+i-1)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp+ima-1)), typma)
 !
@@ -149,13 +149,13 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
             else if (typma(1:4).eq.'HEXA') then
                 zi(jnnma+i-1)=8
             endif
- 10     continue
+        end do
 !
     else if (typapp.eq.'TOUT'.or.typapp.eq.'MAJORITE') then
-        do 20 i = 1, nbmala
+        do i = 1, nbmala
             ima=zi(jmala+i-1)
             zi(jnnma+i-1)=zi(ilcnx+ima)-zi(ilcnx+ima-1)
- 20     continue
+        end do
     else
         ASSERT(.false.)
     endif
@@ -164,17 +164,17 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !     A CHAQUE TYPE D'APPUI:
 !     ---------------------------------------------------
     nbma=0
-    do 30 i = 1, nbmala
+    do i = 1, nbmala
         nno=zi(jnnma+i-1)
         if (nno .eq. 0) goto 30
 !
         ima=zi(jmala+i-1)
         jco=iacnx+zi(ilcnx+ima-1)-1
         ii=0
-        do 40 j = 1, nno
+        do j = 1, nno
             nuno=zi(jco+j-1)
             if (zi(jnoeu-1+nuno) .eq. 1) ii=ii+1
- 40     continue
+        end do
 !
         if (typapp .eq. 'TOUT' .or. typapp .eq. 'SOMMET') then
             if (ii .eq. nno) then
@@ -187,16 +187,17 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
                 zi(jlmas+nbma-1)=ima
             endif
         endif
- 30 continue
+ 30     continue
+    end do
 !
 ! --- CREATION ET REMPLISSAGE DU VECTEUR DE SORTIE
 !     --------------------------------------------
 333 continue
     if (nbma .gt. 0) then
         call wkvect(lismai, 'V V I', nbma, idlist)
-        do 50 i = 1, nbma
+        do i = 1, nbma
             zi(idlist+i-1) = zi(jlmas+i-1)
- 50     continue
+        end do
     endif
 !
 ! --- FIN

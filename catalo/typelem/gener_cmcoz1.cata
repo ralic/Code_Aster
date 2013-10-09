@@ -78,4 +78,4 @@ OPTION__
                                 NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PVITE_P  
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
     SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM   
-                          OUT__ MMATUUR  PSYM     
+                          OUT__ MMATUUR  PSYM

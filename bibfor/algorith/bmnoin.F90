@@ -107,7 +107,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
     if (nbnoi .eq. 0) then
         nbdif=nbnoe
-        goto 9999
+        goto 999
     else
         nbeffi=min(nbnoi,nbnoe)
         nbdif=nbnoi
@@ -123,16 +123,16 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
 !  COMPTAGE
 !
-    do 20 i = 1, nbeffi
+    do i = 1, nbeffi
         inoe=zi(llint+i-1)
         numcou=zi(lldes+inoe-1)
         nbdif=nbdif-1
         if (nbdif .ge. 0) numnoe(nbnoi-nbdif)=numcou
- 20 continue
+    end do
 !
     nbdif=-nbdif
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

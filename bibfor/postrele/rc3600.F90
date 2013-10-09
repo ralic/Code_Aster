@@ -90,9 +90,9 @@ subroutine rc3600()
     if (nbtou .ne. 0) then
         nbma = nbmat
         call wkvect(mesmai, 'V V I', nbma, jma)
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             zi(jma+ima-1) = ima
- 10     continue
+        end do
     else
         call reliem(' ', noma, 'NU_MAILLE', motclf, 1,&
                     2, motcls, typmcs, mesmai, nbma)

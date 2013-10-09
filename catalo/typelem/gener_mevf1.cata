@@ -52,4 +52,4 @@ OPTION__
     RIGI_MECA        427  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
                           OUT__ MMATUNS  PMATUNS  
     VERI_JACOBIEN    328  IN__  NGEOMER  PGEOMER  
-                          OUT__ ECODRET  PCODRET  
+                          OUT__ ECODRET  PCODRET

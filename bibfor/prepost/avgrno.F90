@@ -80,7 +80,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
-    integer :: i, ibid, jvectn, jvectu, jvectv
+    integer :: i, jvectn, jvectu, jvectv
     integer :: jcnrd, jcnrl, jcnrv, iret, icesd, icesl, icesv
     integer :: tneces, tdisp2(1), jvecno, n, k
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
@@ -117,7 +117,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !-----------------------------------------------------------------------
 !
     call jemarq()
-
+!
 !
 ! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
 ! CONSTRUCTION DU VECTEUR U DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
@@ -186,7 +186,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     k = 1
     ideb = 1
     dim = 627
-    do 300 j = 1, 18
+    do j = 1, 18
         gamma=(j-1)*dgam*(pi/180.0d0)
         dphi=tab1(j)*(pi/180.0d0)
         ngam=tab2(j)
@@ -197,7 +197,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
                     n, k, dim, zr( jvectn), zr(jvectu),&
                     zr(jvectv))
 !
-300  end do
+    end do
 !
 ! CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
 ! NOEUDS DU PAQUET DE MAILLES.
@@ -216,7 +216,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         call jeveuo(typma, 'L', jtypma)
     endif
 !
-    do 400 inop = nnoini, nnoini+(nbnop-1)
+    do inop = nnoini, nnoini+(nbnop-1)
 !
         if (inop .gt. nnoini) then
             kwork = 1
@@ -240,11 +240,11 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
             optio = 'DOMA_NOEUD'
 !
 !
-            do 410, i=1, nbma
-            call rnomat(icesd, icesl, icesv, i, nomcri,&
-                        adrma, jtypma, k, optio, vala,&
-                        valb, coefpa, nommat)
-410          continue
+            do i = 1, nbma
+                call rnomat(icesd, icesl, icesv, i, nomcri,&
+                            adrma, jtypma, k, optio, vala,&
+                            valb, coefpa, nommat)
+            end do
 !
 !
 !
@@ -280,13 +280,13 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !     POUR CHAQUE POINT DE GAUSS DE CHAQUE MAILLE LE DOMMAGE_MAX ET LE
 !     VECTEUR NORMAL ASSOCIE.
 !
-        do 600 icmp = 1, 24
+        do icmp = 1, 24
             vresu(icmp) = 0.0d0
-600      continue
+        end do
 !
-        do 601 icmp = 1, 7
+        do icmp = 1, 7
             resu(icmp) = 0.0d0
-601      continue
+        end do
 !
         vresu(2) = nxm(1)
         vresu(3) = nym(1)
@@ -308,15 +308,16 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
             goto 400
         else
 !
-            do 610 icmp = 1, 24
+            do icmp = 1, 24
                 jad = 24*(nunoe-1) + icmp
                 zl(jcnrl - 1 + jad) = .true.
                 zr(jcnrv - 1 + jad) = vresu(icmp)
-610          continue
+            end do
 !
         endif
 !
-400  end do
+400     continue
+    end do
 !
 ! MENAGE
 !

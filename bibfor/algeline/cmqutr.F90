@@ -55,7 +55,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
     integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
     logical :: logic
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=24) :: valk
     character(len=8) :: typm, nima
     character(len=16) :: knume
@@ -133,7 +133,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     iq8 = 0
     iq9 = 0
     nbmail = nbmat
-    do 10 im = 1, nbma
+    do im = 1, nbma
         ima = nummai(im)
 !
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+ima-1)), typm)
@@ -156,7 +156,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             iq9 = iq9 + 1
             zi(jdec-1+ima) = 6
         endif
- 10 end do
+    end do
 !
     if (niv .ge. 1) then
         write(ifm,1000) 1
@@ -211,18 +211,18 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         call jecrec(grpmai, base//' V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbgrm)
 !     --- BCLE SUR LES GROUP_MA DU MAILLAGE INITIAL
-        do 421 i = 1, nbgrm
+        do i = 1, nbgrm
             call jenuno(jexnum(grpmav, i), nomg)
             call jeveuo(jexnum(grpmav, i), 'L', jgrma)
             call jelira(jexnum(grpmav, i), 'LONUTI', ival=nbmag)
             nbma2 = nbmag
 !        --- BCLE SUR LES MAILLES DU GROUP_MA
-            do 4210 j = 1, nbmag
+            do j = 1, nbmag
                 im = zi(jgrma-1+j)
                 if (zi(jdec-1+im) .ne. 0) then
                     nbma2 = nbma2 - 1 + zi(jdec-1+im)
                 endif
-4210         continue
+            end do
             call jecroc(jexnom(grpmai, nomg))
 !        --- LE NOUVEAU GROUP_MA CONTIENDRA NBMA2 MAILLES
             call jeecra(jexnom(grpmai, nomg), 'LONMAX', ival=max(1, nbma2))
@@ -232,7 +232,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 write(ifm,*) 'GROUP_MA '//nomg,' (',i,') PASSE DE ',&
                 nbmag,' A ',nbma2,' MAILLES'
             endif
-421     continue
+        end do
 !     --- VECTEUR POUR STOCKER TEMPORAIREMENT LA LISTE DES GROUP_MA
 !         D'UNE MAILLE
         call wkvect('&&CMQUTR.LISTE_GROUP_MA ', 'V V I', nbmag, jlgrma)
@@ -245,7 +245,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     lgpref = lxlgut(prefix)
     imav = ndinit - 1
 !
-    do 500 ima = 1, nbmat
+    do ima = 1, nbmat
 !
         ind = zi(jtypm+ima-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', ind), typm)
@@ -282,14 +282,14 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
             call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
-            do 521 ino = 1, nbpt
+            do ino = 1, nbpt
                 zi(jnpt-1+ino) = zi(jopt+ino-1)
-521         continue
+            end do
 !
 ! 5.2.2. ==> MISE DES GROUPES DE MAILLES
 !
             if (igrma .ne. 0 .and. ier .eq. 0 .and. nbgm .gt. 0) then
-                do 522 i = 1, nbgm
+                do i = 1, nbgm
                     ig = zi(jlgrma-1+i)
                     call jeveuo(jexnum(grpmai, ig), 'E', jgrma)
                     call jelira(jexnum(grpmai, ig), 'LONUTI', ival=im)
@@ -297,7 +297,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !                  print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                     zi(jgrma-1+im) = ima2
                     call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
-522             continue
+                end do
             endif
 !
 ! 5.3. ==> LA MAILLE IMA DOIT ETRE DECOUPE
@@ -306,7 +306,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
             nbpt = 3
             nbtri = zi(jdec-1+ima)
-            do 530 i = 1, nbtri
+            do i = 1, nbtri
                 imav = imav + 1
                 call codent(imav, 'G', knume)
                 lgnd = lxlgut(knume)
@@ -327,13 +327,13 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
                 call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)
                 call jeveuo(jexnum(connex, ima2), 'E', jnpt)
-                do 5300 ino = 1, nbpt
+                do ino = 1, nbpt
 !              --- TABLEAU DE DECOUPAGE SELON LE TYPE
                     zi(jnpt-1+ino) = zi(jopt-1+tdec(ind, i, ino))
-5300             continue
+                end do
 !
                 if (igrma .ne. 0 .and. ier .eq. 0 .and. nbgm .gt. 0) then
-                    do 5301 j = 1, nbgm
+                    do j = 1, nbgm
                         ig = zi(jlgrma-1+j)
                         call jeveuo(jexnum(grpmai, ig), 'E', jgrma)
                         call jelira(jexnum(grpmai, ig), 'LONUTI', ival=im)
@@ -341,16 +341,16 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !                     print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                         zi(jgrma-1+im) = ima2
                         call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
-5301                 continue
+                    end do
                 endif
 !
-530         continue
+            end do
 !
         endif
 !
 !  --- MAILLE SUIVANTE
 !
-500 end do
+    end do
 !
 !====
 ! 6. LE .GROUPENO REPRIS A L'IDENTIQUE
@@ -365,7 +365,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         call jeecra(gpptnn, 'NOMMAX', ival=nbgrno)
         call jecrec(grpnoe, base//' V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     nbgrno)
-        do 20 i = 1, nbgrno
+        do i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
             call jelira(jexnum(grpnov, i), 'LONUTI', ival=nbno)
@@ -380,10 +380,10 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', ival=max(1, nbno))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', ival=nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
-            do 22 j = 1, nbno
+            do j = 1, nbno
                 zi(jgg-1+j) = zi(jvg-1+j)
- 22         continue
- 20     continue
+            end do
+        end do
     endif
 !
 !

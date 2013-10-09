@@ -152,9 +152,9 @@ subroutine mlfc16(nommat, npivot, neq, typsym, eps,&
     lonmat = zi(desc+4)
     call jelibe(nomp01)
     call wkvect(nomadj, ' V V I ', lonmat, adjnit)
-    do 1 i = 0, lonmat-1
+    do i = 0, lonmat-1
         zi(adjnit+i)=zi(adinit+i)
-  1 end do
+    end do
     call jelibe(nomadi)
 !
 !
@@ -167,16 +167,16 @@ subroutine mlfc16(nommat, npivot, neq, typsym, eps,&
     call jedisp(2, it)
 !
     mxbloc = 0
-    do 20 i = 1, nbloc
+    do i = 1, nbloc
         mxbloc = max(mxbloc,zi(lgbloc+i-1))
- 20 end do
+    end do
     lpmax = zi(lgsn)
     mxmate= lpmax*(lpmax+1)/2
-    do 10 i = 1, nbsn-1
+    do i = 1, nbsn-1
         ln = zi(lgsn+i)
         mxmate = max(mxmate,ln*(ln+1)/2)
         lpmax = max(lpmax,ln)
- 10 end do
+    end do
     if (niv .ge. 2) then
         write (ifm,*) ' AVANT FACTORISATION '//'LONGUEURS DISPONIBLES ',&
      &        it(1),'ET ',it(2),'LONGUEUR DE LA PILE ',lgpile,&
@@ -241,31 +241,31 @@ subroutine mlfc16(nommat, npivot, neq, typsym, eps,&
 !     --- CREATION D'UN TABLEAU POUR STOCKER LA DIAGONALE
     call wkvect(nomdia, 'V V C', neq, ldiag)
     isnd = 0
-    do 50 ib = 1, nbloc
+    do ib = 1, nbloc
         call jeveuo(jexnum(factol, ib), 'L', ifac)
         adfac0 = ifac - 1
 !
-        do 40 nc = 1, zi(ncbloc+ib-1)
+        do nc = 1, zi(ncbloc+ib-1)
             isnd = isnd + 1
             sni = zi(seq+isnd-1)
             long =zi(adress+sni) - zi(adress+sni-1)
-            do 30 k = 1, zi(lgsn+sni-1)
+            do k = 1, zi(lgsn+sni-1)
                 adfac = adfac0 + (k-1)*long + k
                 zc(ldiag-1+zi(supnd-1+sni)+k-1) = zc(adfac)
- 30         continue
+            end do
             adfac0 = adfac0 + long*zi(lgsn+sni-1)
- 40     continue
+        end do
         call jelibe(jexnum(factol, ib))
- 50 end do
+    end do
 !     PIVOTS NEGATIFS :
-    do 60 i = 1, neq
+    do i = 1, neq
         if (abs(zc(ldiag+i-1)) .lt. 0.d0) npivot = npivot - 1
- 60 end do
+    end do
     call jeveuo(noma19//'.DIGS', 'E', iadigs)
-    do 70 i = 1, neq
+    do i = 1, neq
         j = zi(anc-1+i)
         zc(iadigs-1+neq+j) = zc(ldiag+i-1)
- 70 end do
+    end do
 !
 !
 !

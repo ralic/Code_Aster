@@ -34,7 +34,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
 !
 !
-    integer ::  ncmp1, ncmp2, ino1, ino2, jcn1k, jcn1d, jcn1c, jcn1v, jcn1l
+    integer :: ncmp1, ncmp2, ino1, ino2, jcn1k, jcn1d, jcn1c, jcn1v, jcn1l
     integer :: icmp1, jcn2k, jcn2d, jcn2c, jcn2v, jcn2l, icmp2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
@@ -67,12 +67,12 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    do 10 ino2 = 1, nbno
+    do ino2 = 1, nbno
 !
         ino1 = linoeu(ino2)
         if (ino1 .eq. 0) goto 10
 !
-        do 20 icmp2 = 1, ncmp2
+        do icmp2 = 1, ncmp2
 !
             nocmp = zk8(jcn2c-1+icmp2)
 !
@@ -96,9 +96,11 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
                 ASSERT(.false.)
             endif
 !
- 20     continue
+ 20         continue
+        end do
 !
- 10 end do
+ 10     continue
+    end do
 !
     call jedema()
 end subroutine

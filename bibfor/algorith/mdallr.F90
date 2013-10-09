@@ -82,7 +82,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 ! recuperation des parametres a garder dans le modele gene
     call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
 !
-    do 100 imode = 1, nbsauv
+    do imode = 1, nbsauv
 !        --- VECTEUR PROPRE ---
         call rsexch(' ', resu2, 'DEPL', imode, chamge,&
                     ier)
@@ -101,16 +101,16 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
         endif
         call jeecra(chamge//'.DESC', 'DOCU', cval='VGEN')
         call jeveuo(chamge//'.VALE', 'E', lvale)
-        do 110 ier = 1, nbmode
+        do ier = 1, nbmode
             if (.not. zcmplx) then
                 zr(lvale+ier-1) = vecpr8(ier,imode)
             else
                 zc(lvale+ier-1) = vecpc8(ier,imode)
             endif
-110      continue
+        end do
         call rsnoch(resu2, 'DEPL', imode)
 !
-        do 200 i = 1, ipar
+        do i = 1, ipar
             call rsadpa(resu1, 'L', 1, kpar(i), imode,&
                         1, sjv=ipar1, styp=typ)
             call rsadpa(resu2, 'E', 1, kpar(i), imode,&
@@ -126,8 +126,8 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
             else if (typ(1:3) .eq. 'K32') then
                 zk32(ipar2) = zk32(ipar1)
             endif
-200      continue
-100  end do
+        end do
+    end do
 !
     call vpcrea(0, resu2, ' ', ' ', ' ',&
                 ' ', ier)

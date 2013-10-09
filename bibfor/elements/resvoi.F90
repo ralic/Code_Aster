@@ -112,14 +112,14 @@ subroutine resvoi(moz, maz, chvoiz)
 !
     troisd = .false.
     call jeveuo(typmai, 'L', iatyma)
-    do 500 ima = 1, nbma
+    do ima = 1, nbma
         iad=iatyma-1+ima
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
         if (typema(1:2) .eq. 'TE' .or. typema(1:2) .eq. 'PE' .or. typema(1:2) .eq. 'HE') then
             troisd = .true.
             goto 600
         endif
-500 end do
+    end do
     if (nbma .lt. 1) goto 700
 !
 !
@@ -259,7 +259,7 @@ subroutine resvoi(moz, maz, chvoiz)
 !               ELLES POSSEDENT AUSSI LE DEUXIEME ET LE TROISIEME.
                     if (ino4 .ne. 0) then
 !
-                        do 806 ima4 = 1, nbmav4
+                        do ima4 = 1, nbmav4
                             numav4 = zi(iamav4-1+ima4)
                             if (numav4 .eq. numav1) then
 !
@@ -280,7 +280,7 @@ subroutine resvoi(moz, maz, chvoiz)
                                 zi(iaval2+ifa+7) = typ
                                 goto 803
                             endif
-806                     continue
+                        end do
 !
                     else
 !
@@ -338,7 +338,7 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 ! ----------- BOUCLE SUR LES MAILLES -------------------------------
 !
-        do 601 ima = 1, nbma
+        do ima = 1, nbma
 !
 !       SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
             igrel = zi(iarepe-1+2*(ima-1)+1)
@@ -365,12 +365,12 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 ! ---------- BOUCLE SUR LES SOMMETS DE LA MAILLE -------------------
 !
-            do 602 ino = 1, nbs
+            do ino = 1, nbs
                 call jelira(jexnum(coninv, zi(jad-1+ino)), 'LONMAX', nbmav1)
                 call jeveuo(jexnum(coninv, zi(jad-1+ino)), 'L', iamav1)
 !
                 nbvois = 0
-                do 603 kma = 1, nbmav1
+                do kma = 1, nbmav1
                     numav1 = zi(iamav1-1+kma)
                     if (numav1 .ne. ima) then
 !
@@ -383,7 +383,7 @@ subroutine resvoi(moz, maz, chvoiz)
                         call jelira(jexnum(coninv, zi(jad-1+ino2)), 'LONMAX', nbmav2)
                         call jeveuo(jexnum(coninv, zi(jad-1+ino2)), 'L', iamav2)
 !
-                        do 604 jma = 1, nbmav2
+                        do jma = 1, nbmav2
                             numav2 = zi(iamav2-1+jma)
                             if (numav2 .eq. numav1) then
 !
@@ -405,9 +405,10 @@ subroutine resvoi(moz, maz, chvoiz)
 !
                                 goto 603
                             endif
-604                     continue
+                        end do
                     endif
-603             continue
+603                 continue
+                end do
                 if (nbvois .gt. 1) then
                     call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
                     valk(1)=nomma
@@ -416,14 +417,15 @@ subroutine resvoi(moz, maz, chvoiz)
                     call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
                     ASSERT(.false.)
                 endif
-602         continue
+            end do
 !
 ! --------- STOCKAGE DU NUMERO DE L'ELEMENT ET DE SON TYPE -------------
 !
             zi(iaval1+14*(iel-1)) = ima
             typ = zi(iad)
             zi(iaval1+14*(iel-1)+7) = typ
-601     end do
+601         continue
+        end do
     endif
     call jedetr('&&RESVOI.LONGCONINV')
     call jedetr('&&RESVOI.CONINV')

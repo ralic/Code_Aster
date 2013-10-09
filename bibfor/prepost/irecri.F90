@@ -135,8 +135,8 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
         endif
         nbchca = 0
         call wkvect('&&IRECRI.CHAM.CASTEM', 'V V K16', nbcham, jcham)
-        do 50 icha = 1, nbcham
-            do 51 iord = 1, nbordr
+        do icha = 1, nbcham
+            do iord = 1, nbordr
                 call rsexch(' ', nomco, cham(icha), ordr(iord), noch19,&
                             iret)
                 if (iret .eq. 0) then
@@ -148,8 +148,9 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                         goto 50
                     endif
                 endif
- 51         continue
- 50     continue
+            end do
+ 50         continue
+        end do
         knacc = '&&IRECRI.NOM_ACCES '
         call rsnopa(nomco, 0, knacc, nbacc, ibid)
         call jeexin(knacc, iret)
@@ -179,7 +180,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !     *******************************************
         nbrk16 = 0
 !
-        do 21 iordr = 1, nbordr
+        do iordr = 1, nbordr
             call jemarq()
             call jerecu('V')
 !       --- FORMAT 'CASTEM'
@@ -208,7 +209,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !
 !       --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
             if (nbcham .ne. 0) then
-                do 20 isy = 1, nbcham
+                do isy = 1, nbcham
                     if (lresu) then
 !           * RESULTAT COMPOSE
 !             - VERIFICATION EXISTENCE DANS LA SD RESULTAT NOMCON
@@ -257,7 +258,8 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                                 numnoe, nbmat, nummai, nbcmp, nomcmp,&
                                 lsup, borsup, linf, borinf, lmax,&
                                 lmin, lresu, formr, nive)
- 20             continue
+ 20                 continue
+                end do
             endif
 !
 !       --- IMPRESSION  DE LA TABLE SI FORMAT 'CASTEM'
@@ -304,7 +306,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
             endif
  22         continue
             call jedema()
- 21     end do
+        end do
 !
         if (lresu .and. form .eq. 'CASTEM' .and. nbordr .ne. 0) then
             zi(jlast-1+7) = zi(jlast-1+1)

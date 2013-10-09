@@ -123,9 +123,9 @@ subroutine pmfd00()
         call jeveuo(vpoint, 'L', jpoint)
 !        NOMBRE TOTAL DE FIBRES SUR TOUS LES GROUPES
         nbfib=0
-        do 10 ig = 1, nbgf
+        do ig = 1, nbgf
             nbfib=nbfib+zi(jnbfg-1+ig)
- 10     continue
+        end do
     endif
 !
     modnom = nomo//'.MODELE    .LGRF'
@@ -140,7 +140,7 @@ subroutine pmfd00()
     call getfac('GRILLE', nbocc2)
     call getfac('POUTRE', nbocc3)
     call getfac('MEMBRANE', nbocc4)
-    if ((nbocc0+nbocc1+nbocc2+nbocc3+nbocc4) .eq. 0) goto 9999
+    if ((nbocc0+nbocc1+nbocc2+nbocc3+nbocc4) .eq. 0) goto 999
 !     2EME CHANCE :
     call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
     ligrmo = modele//'.MODELE'
@@ -148,7 +148,7 @@ subroutine pmfd00()
     call alchml(ligrmo, 'TOU_INI_ELEM', 'PNBSP_I', 'V', celbid,&
                 iret, ' ')
     call detrsd('CHAM_ELEM', celbid)
-    if (iret .eq. 1) goto 9999
+    if (iret .eq. 1) goto 999
 !     S'IL N'Y A PAS D'ELEMENTS PMF, ON SAUTE :
     if (nbocc0 .eq. 0) goto 200
 !
@@ -174,10 +174,10 @@ subroutine pmfd00()
     call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
 !
     valmi = 0
-    do 100 ioc = 1, nbocc0
-        do 110 ig = 1, ngmxel
+    do ioc = 1, nbocc0
+        do ig = 1, ngmxel
             nugrp(ig)=0
-110     continue
+        end do
         call reliem(nomo, noma, 'NU_MAILLE', 'MULTIFIBRE', ioc,&
                     2, ltymcl, ltymcl, '&&PMFD00.MAILLSEP', nmailp)
         call jeveuo('&&PMFD00.MAILLSEP', 'L', jmp)
@@ -193,45 +193,45 @@ subroutine pmfd00()
 ! ---    NOMBRE DE FIBRES DE L'ENSEMBLE DES GROUPES
 !        ON NOTE LES NUMEROS DE GROUPES
         nbfib=0
-        do 120 ig = 1, ngf
+        do ig = 1, ngf
             call jenonu(jexnom(rnomgf, zk24(jngf+ig-1)), ng)
             nbfib = nbfib+zi(jnbfg+ng-1)
             nugrp(ig) = ng
-120     continue
+        end do
 !
 !        ON AFFECTE LES ELEMENTS POUTRES CONCERNES PAR CETTE OCCURENCE
 !        POUR CHAQUE EL : NB DE FIBRE, NB DE GROUPES DE FIBRES
 !        ET NUMERO DES GROUPES
-        do 130 jj = 1, nmailp
+        do jj = 1, nmailp
             numail = zi(jmp+jj-1)
             ipos = jnf+(numail-1)*(2+ngmxel)
             zi(ipos) = nbfib
             zi(ipos+1) = ngf
-            do 131 ig = 1, ngmxel
+            do ig = 1, ngmxel
                 zi(ipos+1+ig) = nugrp(ig)
-131         continue
-130     continue
+            end do
+        end do
 !
 !        INTEGRATION POUR TOUS LES GROUPES DE CETTE OCCURENCE
-        do 135 ii = 1, 6
+        do ii = 1, 6
             casect(ii)=zero
-135     continue
-        do 140 ig = 1, ngf
+        end do
+        do ig = 1, ngf
             ig1 = nugrp(ig)
             nbfig = zi(jnbfg -1+ig1)
             ipoint = zi(jpoint-1+ig1)
             call pmfitg(nbfig, ncarfi, zr(jcarfi+ipoint-1), carg)
-            do 141 ii = 1, 6
+            do ii = 1, 6
                 casect(ii) = casect(ii) + carg(ii)
-141         continue
-140     continue
+            end do
+        end do
 !
 !        BOUCLE SUR LES MAILLES
-        do 150 ima = 1, nmailp
+        do ima = 1, nmailp
             nummai=zi(jmp + ima -1)
 !           RECHERCHE DE LA ZONE COMTENANT NUMMAI
             iasbon = 0
-            do 155 ii = 1, iasedi
+            do ii = 1, iasedi
                 icode = zi(idesc+3+2*(ii-1))
                 izone = zi(idesc+3+2*(ii-1)+1)
 !              SI C'EST UNE LISTE DE MAILLE
@@ -252,13 +252,13 @@ subroutine pmfd00()
                     ASSERT(.false.)
                 endif
 !              MAILLE DANS LISTE OU GROUPE DE MAILLE DE CETTE ZONE
-                do 152 jj = 1, nbmaza
+                do jj = 1, nbmaza
                     if (nummai .eq. zi(ilima+jj-1)) then
                         iasbon = ii
                         goto 160
                     endif
-152             continue
-155         continue
+                end do
+            end do
             if (iasbon .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 call utmess('F', 'ALGELINE_34', sk=valmk(1))
@@ -340,8 +340,8 @@ subroutine pmfd00()
                 call utmess('E', 'MODELISA8_5', nk=2, valk=valmk, si=valmi,&
                             nr=4, valr=valmr)
             endif
-150     continue
-100 end do
+        end do
+    end do
     if (valmi .ne. 0) then
         call utmess('F', 'MODELISA8_6')
     endif
@@ -364,6 +364,6 @@ subroutine pmfd00()
         call imprsd('CHAMP', carele//'.CANBSP', 6, 'INFO=2')
         call imprsd('CHAMP', carele//'.CAFIBR', 6, 'INFO=2')
     endif
-9999 continue
+999 continue
     call jedema()
 end subroutine

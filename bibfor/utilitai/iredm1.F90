@@ -74,6 +74,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     integer :: nm, nn, nti, nu
     real(kind=8) :: zero
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
     imess = iunifi('MESSAGE')
@@ -179,94 +180,96 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     nbma3 = 0
     nbma4 = 0
     nbma5 = 0
-    do 70 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
         nbma = nbma + nb
-        do 72 in = 0, nb-1
+        do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_36')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 74 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
- 74         continue
- 72     continue
- 70 continue
-    do 80 i = 1, nbgr2
+            end do
+        end do
+    end do
+    do i = 1, nbgr2
         call jelira(jexnom(magrma, zk24(idgm2+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm2+i-1)), 'L', ldgm)
         nbma2 = nbma2 + nb
-        do 82 in = 0, nb-1
+        do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_37')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 84 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
- 84         continue
- 82     continue
- 80 continue
-    do 90 i = 1, nbgr3
+            end do
+        end do
+    end do
+    do i = 1, nbgr3
         call jelira(jexnom(magrma, zk24(idgm3+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm3+i-1)), 'L', ldgm)
         nbma3 = nbma3 + nb
-        do 92 in = 0, nb-1
+        do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_38')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 94 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
- 94         continue
- 92     continue
- 90 continue
-    do 100 i = 1, nbgr4
+            end do
+        end do
+    end do
+    do i = 1, nbgr4
         call jelira(jexnom(magrma, zk24(idgm4+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm4+i-1)), 'L', ldgm)
         nbma4 = nbma4 + nb
-        do 102 in = 0, nb-1
+        do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_39')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 104 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
-104         continue
-102     continue
-100 continue
-    do 110 i = 1, nbgr5
+            end do
+        end do
+    end do
+    do i = 1, nbgr5
         call jelira(jexnom(magrma, zk24(idgm5+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm5+i-1)), 'L', ldgm)
         nbma5 = nbma5 + nb
-        do 112 in = 0, nb-1
+        do in = 0, nb-1
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             inoe = zi(ldnm)
             zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
-112     continue
-110 continue
+        end do
+    end do
 !
     nbno = 0
-    do 105 ij = 1, nbnoeu
+    do ij = 1, nbnoeu
         if (zi(iparno+ij-1) .eq. 0) goto 105
         nbno = nbno + 1
-105 continue
+105     continue
+    end do
 !
     call wkvect('&&IREDM1.NOEUD', 'V V I', nbno, idno)
     ii = 0
-    do 106 ij = 1, nbnoeu
+    do ij = 1, nbnoeu
         if (zi(iparno+ij-1) .eq. 0) goto 106
         ii = ii + 1
         zi(idno+ii-1) = ij
-106 continue
+106     continue
+    end do
 !
 !
 !     --- ECRITURE DESCRIPTION NOEUDS STRUCTURE ---
@@ -277,125 +280,125 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     nec = nbec(gd)
     write(imess,'(1X,I6,1X,''NOEUDS'')') nbno
     write(ifmis,'(''NOEU'',1X,I6)') nbno
-    do 40 ino = 1, nbno
+    do ino = 1, nbno
         inoe = zi(idno+ino-1)
         ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
         write(ifmis,'(3(1X,1PE12.5))') ( zr(jcoor+3*(inoe-1)+in-1) ,&
         in=1,3 )
- 40 continue
+    end do
     write(imess,'(1X,I6,1X,''ELEMENTS SOLSTRU'')') nbma
     write(ifmis,'(''ELEM'',1X,I6)') nbma
-    do 21 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
-        do 23 in = 0, nb-1
-            do 26 k = 1, 8
+        do in = 0, nb-1
+            do k = 1, 8
                 tabl(k) = 0
                 tab2(k) = 0
- 26         continue
+            end do
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 25 nn = 1, nm
-                do 27 ij = 1, nbno
+            do nn = 1, nm
+                do ij = 1, nbno
                     if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
- 27             continue
+                end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .gt. 3) tabl(2*nn-nm) = tab2(nn)
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
- 25         continue
+            end do
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
- 23     continue
- 21 continue
+        end do
+    end do
     write(imess,'(1X,I6,1X,''ELEMENTS FLUSTRU'')') nbma2
     if (nbma2 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma2
-    do 121 i = 1, nbgr2
+    do i = 1, nbgr2
         call jelira(jexnom(magrma, zk24(idgm2+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm2+i-1)), 'L', ldgm)
-        do 123 in = 0, nb-1
-            do 126 k = 1, 8
+        do in = 0, nb-1
+            do k = 1, 8
                 tabl(k) = 0
                 tab2(k) = 0
-126         continue
+            end do
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 125 nn = 1, nm
-                do 127 ij = 1, nbno
+            do nn = 1, nm
+                do ij = 1, nbno
                     if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
-127             continue
+                end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .gt. 3) tabl(2*nn-nm) = tab2(nn)
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
-125         continue
+            end do
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
-123     continue
-121 continue
+        end do
+    end do
     write(imess,'(1X,I6,1X,''ELEMENTS FLUSOL'')') nbma3
     if (nbma3 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma3
-    do 131 i = 1, nbgr3
+    do i = 1, nbgr3
         call jelira(jexnom(magrma, zk24(idgm3+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm3+i-1)), 'L', ldgm)
-        do 133 in = 0, nb-1
-            do 136 k = 1, 8
+        do in = 0, nb-1
+            do k = 1, 8
                 tabl(k) = 0
                 tab2(k) = 0
-136         continue
+            end do
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 135 nn = 1, nm
-                do 137 ij = 1, nbno
+            do nn = 1, nm
+                do ij = 1, nbno
                     if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
-137             continue
+                end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .gt. 3) tabl(2*nn-nm) = tab2(nn)
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
-135         continue
+            end do
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
-133     continue
-131 continue
+        end do
+    end do
     write(imess,'(1X,I6,1X,''ELEMENTS LIBRE'')') nbma4
     if (nbma4 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma4
-    do 141 i = 1, nbgr4
+    do i = 1, nbgr4
         call jelira(jexnom(magrma, zk24(idgm4+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm4+i-1)), 'L', ldgm)
-        do 143 in = 0, nb-1
-            do 146 k = 1, 8
+        do in = 0, nb-1
+            do k = 1, 8
                 tabl(k) = 0
                 tab2(k) = 0
-146         continue
+            end do
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 145 nn = 1, nm
-                do 147 ij = 1, nbno
+            do nn = 1, nm
+                do ij = 1, nbno
                     if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
-147             continue
+                end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .gt. 3) tabl(2*nn-nm) = tab2(nn)
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
-145         continue
+            end do
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
-143     continue
-141 continue
+        end do
+    end do
     write(imess,'(1X,I6,1X,''POINTS CONTROLE'')') nbma5
     if (nbma5 .ne. 0) write(ifmis,'(''POINT'',1X,I6)') nbma5
-    do 151 i = 1, nbgr5
+    do i = 1, nbgr5
         call jelira(jexnom(magrma, zk24(idgm5+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm5+i-1)), 'L', ldgm)
-        do 153 in = 0, nb-1
+        do in = 0, nb-1
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 157 ij = 1, nbno
+            do ij = 1, nbno
                 if (zi(ldnm) .eq. zi(idno+ij-1)) inoe = ij
-157         continue
+            end do
             write(ifmis,'(1X,I6)') inoe
-153     continue
-151 continue
+        end do
+    end do
 !
     call wkvect('&&IREDM1.BASEMO', 'V V R', nbmodt*neq, idbase)
     call copmod(basemo, 'DEPL', neq, nume, nbmodt,&
@@ -407,10 +410,10 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     call wkvect('&&IREDM1.VECT2', 'V V R', neq, iadmo2)
 !
     if (typi(1:5) .ne. 'CRAIG' .or. impmec .eq. 'OUI') then
-        do 50 j = 1, nbmode
+        do j = 1, nbmode
             call dcopy(neq, zr(idbase+(j-1)*neq), 1, zr(iadmo1), 1)
             write(ifmis,'(''MODE DYNA INTER'',1X,I6)') j
-            do 52 ino = 1, nbno
+            do ino = 1, nbno
                 inoe = zi(idno+ino-1)
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
@@ -421,8 +424,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                     write(ifmis,1100) ( zr(iadmo1+iddl+ic-1), ic=1,&
                     ncmp )
                 endif
- 52         continue
- 50     continue
+            end do
+        end do
     endif
 !
     if (formim .eq. '1PE16.9') then
@@ -442,11 +445,11 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     endif
 !
     if (typi(1:5) .ne. 'CRAIG' .or. impmod .eq. 'OUI') then
-        do 60 j = 1, nbmods
+        do j = 1, nbmods
             j2 = j + nbmode
             call dcopy(neq, zr(idbase+(j2-1)*neq), 1, zr(iadmo2), 1)
             write(ifmis,'(''MODE STAT INTER'',1X,I6)') j
-            do 62 ino = 1, nbno
+            do ino = 1, nbno
                 inoe = zi(idno+ino-1)
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
@@ -457,8 +460,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                     write(ifmis,1100) ( zr(iadmo2+iddl+ic-1) , ic=1,&
                     ncmp )
                 endif
- 62         continue
- 60     continue
+            end do
+        end do
     endif
     if (formim .eq. '1PE16.9') then
         write(ifmis,1000) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&

@@ -41,7 +41,7 @@ subroutine te0080(option, nomte)
     integer :: nnop2, c(6, 9), ise, nse, nbres, jgano, ibid
     parameter         ( nbres=3 )
     character(len=8) :: nompar(nbres), elrefe, alias8
-    real(kind=8) :: valpar(nbres), dfdx(9), dfdy(9), poids, r, z, sour
+    real(kind=8) :: valpar(nbres), poids, r, z, sour
     real(kind=8) :: coorse(18), vectt(9), theta, soun, sounp1
 !
 !
@@ -67,27 +67,28 @@ subroutine te0080(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i)=0.d0
-10  end do
+    end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    do 100 ise = 1, nse
-        do 105 i = 1, nno
-            do 105 j = 1, 2
+    do ise = 1, nse
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-105          continue
-        do 101 kp = 1, npg
+            end do
+        end do
+        do kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
                         poids)
             r = 0.d0
             z = 0.d0
-            do 102 i = 1, nno
+            do i = 1, nno
                 r = r + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
                 z = z + coorse(2*(i-1)+2) * zr(ivf+k+i-1)
-102          continue
+            end do
             if (lteatt(' ','AXIS','OUI')) poids = poids*r
             valpar(1) = r
             valpar(2) = z
@@ -103,15 +104,15 @@ subroutine te0080(option, nomte)
             endif
             sour = theta*sounp1 + (1.0d0-theta)*soun
 !DIR$ IVDEP
-            do 103 i = 1, nno
+            do i = 1, nno
                 k=(kp-1)*nno
                 vectt(c(ise,i)) = vectt(c(ise,i)) + poids * zr(ivf+k+ i-1 ) * sour
-103          continue
-101      continue
-100  end do
+            end do
+        end do
+    end do
 !
-    do 200 i = 1, nnop2
+    do i = 1, nnop2
         zr(ivectt-1+i)=vectt(i)
-200  end do
+    end do
 !
 end subroutine

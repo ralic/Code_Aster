@@ -75,7 +75,7 @@ subroutine caliel(fonrez, chargz)
     k19b = ' '
 !
     call getfac(motfac, nliai)
-    if (nliai .eq. 0) goto 9999
+    if (nliai .eq. 0) goto 999
 !
 ! --- NOM DE LA LISTE DE RELATIONS
 !
@@ -98,7 +98,7 @@ subroutine caliel(fonrez, chargz)
     call nueffe('&&CALIEL.LIGRMO', 'VV', numddl, 'SANS', mo8bla,&
                 k19b, ibid)
 !
-    do 10 iocc = 1, nliai
+    do iocc = 1, nliai
         call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
         if (option .eq. '3D_POU') then
             call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
@@ -113,7 +113,7 @@ subroutine caliel(fonrez, chargz)
         else if (option.eq.'COQ_TUYAU') then
             call rapoco(numddl, iocc, fonrez, lisrel, chargz)
         endif
- 10 end do
+    end do
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
@@ -126,6 +126,6 @@ subroutine caliel(fonrez, chargz)
     call jedetr('&&CALIEL.LIGRMO')
     call jedetr('&&CALIEL.NUMED')
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

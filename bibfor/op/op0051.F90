@@ -134,7 +134,7 @@ subroutine op0051()
 !====
 !============ DEBUT DE LA BOUCLE SUR LES POST-TRAITEMENTS ==============
 !
-    do 3 iocc = 1, nbpost, 1
+    do iocc = 1, nbpost, 1
 !
         call getvtx('ACTION', 'OPERATION', iocc=iocc, scal=k16, nbret=iret)
         if (k16(1:7) .eq. 'EXTREMA') then
@@ -289,13 +289,13 @@ subroutine op0051()
                     call jeveuo(ncheff//'.TYPACCE', 'L', jtac)
                     call jeveuo(ncheff//'.VALACCE', 'L', jvac)
 !
-                    do 400 ivchf = 1, nbvchf, 1
+                    do ivchf = 1, nbvchf, 1
 !
                         call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
                         call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
 !
 !
-                        do 410 ichef = 1, nbchef
+                        do ichef = 1, nbchef
 !
                             nch19 = zk24(jchef + ichef-1)(1:19)
 !
@@ -303,9 +303,9 @@ subroutine op0051()
                                         ncheff, xnomcp, resuco, nch19, nlsmac,&
                                         nlsnac, latabl, xnovar)
 !
-410                     continue
+                        end do
 !
-400                 continue
+                    end do
 !
                 endif
 !
@@ -328,7 +328,8 @@ subroutine op0051()
         endif
 !
 !
-  3 end do
+  3     continue
+    end do
 !
 !============= FIN DE LA BOUCLE SUR LES POST-TRAITEMENTS ===============
 !

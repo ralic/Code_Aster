@@ -88,12 +88,12 @@ subroutine rvmoye(nomres, iocc)
             nopara(nbpar) = 'CMP'
             nbpar = nbpar + 1
             nopara(nbpar) = 'MOYENNE'
-            do 10 icmp = 1, nbcmp
+            do icmp = 1, nbcmp
                 valk(3) = nocmp(icmp)
                 valr(1) = som(icmp)
                 call tbajli(nomres, nbpar, nopara, vali, valr,&
                             [c16b], valk, 0)
- 10         continue
+            end do
 !
         else if (tych(1:2).eq.'EL') then
             call utmess('F', 'ALGORITH17_5')
@@ -101,7 +101,7 @@ subroutine rvmoye(nomres, iocc)
         else
             call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
-        goto 9999
+        goto 999
     endif
 !
 ! ----- TRAITEMENT DU RESULTAT  -----
@@ -128,7 +128,7 @@ subroutine rvmoye(nomres, iocc)
     nopara(nbpar) = 'NOM_CHAM'
     valk(3) = nomcha
 !
-    do 101 i100 = 1, nbordr
+    do i100 = 1, nbordr
         iord = zi(jordr + i100-1)
 !
         ik = 3
@@ -144,7 +144,7 @@ subroutine rvmoye(nomres, iocc)
         call rsnopa(resu, 0, nomjv, nbacc, ibid)
         if (nbacc .ne. 0) then
             call jeveuo(nomjv, 'L', jaces)
-            do 1001 iac = 1, nbacc
+            do iac = 1, nbacc
                 call rsadpa(resu, 'L', 1, zk16(jaces-1+iac), iord,&
                             1, sjv=iadr, styp=ctype)
                 call tbexip(nomres, zk16(jaces-1+iac), exist, typpar)
@@ -175,7 +175,7 @@ subroutine rvmoye(nomres, iocc)
                     ik = ik + 1
                     valk(ik) = zk8(iadr)
                 endif
-1001         continue
+            end do
             call jedetr(nomjv)
         endif
 !
@@ -189,7 +189,7 @@ subroutine rvmoye(nomres, iocc)
 !
             call prmono(champ, iocc, som, nbcmp, nocmp)
 !
-            do 11 icmp = 1, nbcmp
+            do icmp = 1, nbcmp
                 nbpar = nbpar + 1
                 nopara(nbpar) = 'CMP'
                 ik = ik + 1
@@ -200,7 +200,7 @@ subroutine rvmoye(nomres, iocc)
                 valr(ir) = som(icmp)
                 call tbajli(nomres, nbpar, nopara, vali, valr,&
                             [c16b], valk, 0)
- 11         continue
+            end do
 !
         else if (tych(1:2).eq.'EL') then
             call utmess('F', 'ALGORITH17_5')
@@ -208,11 +208,12 @@ subroutine rvmoye(nomres, iocc)
             call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
 !
-101 end do
+101     continue
+    end do
 !
     call jedetr(knum)
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

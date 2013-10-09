@@ -129,7 +129,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call jeveuo('&&OP0091.MODE_INTF_DEPL', 'E', lsecme)
 !
 !-- BOUCLE SUR LES MODES
-    do 80 j1 = 1, nbmod
+    do j1 = 1, nbmod
         call jeveuo(zk24(tach1+j1-1)(1:19)//'.VALE', 'L', ibid)
 !
 !-- RECOPIE DANS UN VECTEUR DE TRAVAIL
@@ -142,16 +142,16 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         call lceqvn(nbeq1, zr(lcopy1), zr(lmod1))
 !
 !-- ANNULATION DES COMPOSANTES ASSOCIEES AUX INTERFACES
-        do 90 k1 = 1, nbint
+        do k1 = 1, nbint
             indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
             call jeveuo(indin1, 'L', llint1)
             call jelira(indin1, 'LONMAX', nbddl1)
-            do 140 l1 = 1, nbddl1
+            do l1 = 1, nbddl1
                 if (zi(llint1+l1-1) .gt. 0) then
                     zr(lmod1+zi(llint1+l1-1)-1)=0
                 endif
-140         continue
- 90     continue
+            end do
+        end do
 !
 !-- CALCUL DES TRAVAUX
         call mrmult('ZERO', zi(lmass+isst1-1), zr(lcopy1), zr(leff1), 1,&
@@ -177,21 +177,21 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !
 !-- DIFFERENTIATION DES SECONDS MEMBRES : INTERFACE / INTERIEUR
 !
-        do 160 k1 = 1, nbint
+        do k1 = 1, nbint
             indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
             call jeveuo(indin1, 'L', llint1)
             call jelira(indin1, 'LONMAX', nbddl1)
-            do 170 l1 = 1, nbddl1
+            do l1 = 1, nbddl1
                 ibid=zi(llint1+l1-1)
                 if (ibid .gt. 0) then
                     zr(lsecme+nbeq1*(j1-1)+ibid-1)=0
                     zr(lsecme+nbeq1*(nbmod+j1-1)+ibid-1)=zr(leff1+&
                     ibid-1)
                 endif
-170         continue
-160     continue
+            end do
+        end do
 !
 !
- 80 continue
+    end do
 !
 end subroutine

@@ -114,7 +114,7 @@ subroutine xoripe(modele)
 !     INITIALISATION DU NOMBRE DE MAILLES DE LA LISTE
     nbmail=0
 !
-    do 20 ifis = 1, nfis
+    do ifis = 1, nfis
 !
         fiss = zk8(jmofis-1 + ifis)
 !
@@ -124,7 +124,7 @@ subroutine xoripe(modele)
         grp(3) = fiss//'.MAILFISS.HECT'
 !
 !       BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
-        do 100 kk = 1, 3
+        do kk = 1, 3
 !
             call jeexin(grp(kk), iret)
             if (iret .ne. 0) then
@@ -132,7 +132,7 @@ subroutine xoripe(modele)
                 call jelira(grp(kk), 'LONMAX', nmaenr)
 !
 !           BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
-                do 120 i = 1, nmaenr
+                do i = 1, nmaenr
                     ima = zi(jgrp-1+i)
 !             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
                     ndime= zi(jtmdim-1+zi(jtypma-1+ima))
@@ -140,12 +140,12 @@ subroutine xoripe(modele)
                         nbmail=nbmail+1
                         zi(jmail-1+nbmail)=ima
                     endif
-120              continue
+                end do
 !
             endif
-100      continue
+        end do
 !
-20  end do
+    end do
     if (nbmail .eq. 0) goto 999
 !
 !     ------------------------------------------------------------------
@@ -168,7 +168,7 @@ subroutine xoripe(modele)
     vecnor='&&XORIPE.VECNOR'
     call wkvect(vecnor, 'V V R', nbmail*ndim, jvecno)
 !
-    do 300 ima = 1, nbmail
+    do ima = 1, nbmail
 !       NUMEROS DES MAILLES PRINCIPALE ET DE BORD
         numab=zi(jmail-1+ima)
         numapr=zi(jm3d-1+ima)
@@ -179,32 +179,32 @@ subroutine xoripe(modele)
 !
 !       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
         call vecini(3, 0.d0, gbo)
-        do 310 ino = 1, nbnobo
+        do ino = 1, nbnobo
             nuno=zi(jconx1-1+zi(jconx2+numab-1)+ino-1)
-            do 311 j = 1, ndim
+            do j = 1, ndim
                 gbo(j)=gbo(j)+zr(jcoor-1+3*(nuno-1)+j)/nbnobo
-311          continue
-310      continue
+            end do
+        end do
 !
 !     GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
         call vecini(3, 0.d0, gpr)
-        do 320 ino = 1, nbnopr
+        do ino = 1, nbnopr
             nuno=zi(jconx1-1+zi(jconx2+numapr-1)+ino-1)
-            do 321 j = 1, ndim
+            do j = 1, ndim
                 gpr(j)=gpr(j)+zr(jcoor-1+3*(nuno-1)+j)/nbnopr
-321          continue
-320      continue
+            end do
+        end do
 !
 !       NORMALE EXTERIEURE : NEXT = GBO - GPR
         call vecini(3, 0.d0, next)
         call vdiff(3, gbo, gpr, next)
         call normev(next, norme)
 !
-        do 330 j = 1, ndim
+        do j = 1, ndim
             zr(jvecno-1+ndim*(ima-1)+j)=next(j)
-330      continue
+        end do
 !
-300  end do
+    end do
 !
 !
 !
@@ -228,16 +228,16 @@ subroutine xoripe(modele)
     call celces(loncha, 'V', chs(3))
     call celces(heav, 'V', chs(4))
 !
-    do 40 ich = 1, 4
+    do ich = 1, 4
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
         call jeveuo(chs(ich)//'.CESV', 'E', jcesv(ich))
         call jeveuo(chs(ich)//'.CESL', 'L', jcesl(ich))
-40  end do
+    end do
 !
-    do 400 ima = 1, nbmail
-        do 401 j = 1, ndim
+    do ima = 1, nbmail
+        do j = 1, ndim
             next(j)=zr(jvecno-1+ndim*(ima-1)+j)
-401      continue
+        end do
 !
         numab =zi(jmail-1+ima)
 ! --- CA NE SERT A RIEN DE RECUPERER NDIME CAR ON A SELECTIONNÉ NUMAB
@@ -265,10 +265,10 @@ subroutine xoripe(modele)
         nse=zi(jcesv(3)-1+iad)
 !
 !         BOUCLE SUR LES NSE SOUS-ELEMENTS
-        do 420 ise = 1, nse
+        do ise = 1, nse
 !
 !         CO(J,IN) : JEME COORDONNEE DU INEME SOMMET DU SOUS-ELEMENT
-            do 421 in = 1, nbnose
+            do in = 1, nbnose
                 icmp=nbnose*(ise-1)+in
                 call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
                             1, icmp, id( in))
@@ -276,24 +276,24 @@ subroutine xoripe(modele)
                 if (ino .lt. 1000) then
                     nuno=zi(jconx1-1+zi(jconx2+numab-1)+ino-1)
 !
-                    do 422 j = 1, ndim
+                    do j = 1, ndim
                         co(j,in)=zr(jcoor-1+3*(nuno-1)+j)
-422                  continue
+                    end do
                 else if (ino.gt.1000 .and. ino.lt.2000) then
-                    do 423 j = 1, ndim
+                    do j = 1, ndim
                         icmp=ndim*(ino-1000-1)+j
                         call cesexi('S', jcesd(1), jcesl(1), numab, 1,&
                                     1, icmp, iad)
                         co(j,in)=zr(jcesv(1)-1+iad)
-423                  continue
+                    end do
                 endif
-421          continue
+            end do
 !
-            do 430 j = 1, ndim
+            do j = 1, ndim
                 a(j) = co(j,1)
                 b(j) = co(j,2)
                 if (ndim .eq. 3) c(j) = co(j,3)
-430          continue
+            end do
             if (ndim .eq. 2) then
                 a(3) = 0.d0
                 b(3) = 0.d0
@@ -330,7 +330,7 @@ subroutine xoripe(modele)
 !
 !         ON MODIFIE HEAVISIDE SI BORD COINCIDANT AVEC INTERFACE
 !         RECUPERATION DE LA VALEUR DE LA FONCTION HEAVISIDE
-            do 450 ifiss = 1, nfiss
+            do ifiss = 1, nfiss
                 ihe = ise
                 call cesexi('S', jcesd(4), jcesl(4), numab, 1,&
                             ifiss, ihe, iad)
@@ -344,7 +344,7 @@ subroutine xoripe(modele)
                     nsignm=0
                     nsignz=0
 !             LSN SUR LES NOEUDS SOMMETS DE LA MAILLE PRINCIPALE
-                    do 440 ino = 1, nbnott(1)
+                    do ino = 1, nbnott(1)
                         call cesexi('S', jlsnd, jlsnl, numapr, ino,&
                                     ifiss, 1, iad2)
 !                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
@@ -352,7 +352,7 @@ subroutine xoripe(modele)
                         if (lsn .gt. 0.d0) nsignp = nsignp +1
                         if (lsn .eq. 0.d0) nsignz = nsignz +1
                         if (lsn .lt. 0.d0) nsignm = nsignm +1
-440                  continue
+                    end do
                     ASSERT(nsignz.ne.0)
 !             REMARQUE : LES DEUX TESTS SUIVANTS NE SONT PAS CORRECTS
 !             VOIR FICHE 13265
@@ -362,11 +362,11 @@ subroutine xoripe(modele)
                     if (nsignp .gt. 0) zi(jcesv(4)-1+iad)= 1
                     if (nsignm .gt. 0) zi(jcesv(4)-1+iad)=-1
                 endif
-450          continue
+            end do
 !
-420      continue
+        end do
 !
-400  end do
+    end do
 !
 !     ON SAUVE LES NOUVEAUX CHAM_ELEM MODIFIES A LA PLACE DES ANCIENS
     call cescel(chs(2), ligrel, 'TOPOSE', 'PCNSETO', 'OUI',&
@@ -380,7 +380,7 @@ subroutine xoripe(modele)
     call jedetr('&&XORIPE.NU_MAILLE_3D')
     call jedetr('&&XORIPE.VECNOR')
 !
-999  continue
+999 continue
 !
     write(ifm,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES :',nseori
 !

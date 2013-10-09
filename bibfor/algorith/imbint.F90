@@ -135,7 +135,7 @@ subroutine imbint(nomres, ifm)
 !
 !  BOUCLE SUR LES INTERFACES
 !
-    do 10 i = 1, nbint
+    do i = 1, nbint
         write(ifm,*) ' '
         write(ifm,*) ' '
         typcou=zk8(lltyp+i-1)
@@ -152,16 +152,16 @@ subroutine imbint(nomres, ifm)
 !
 !  BOUCLE SUR LES NOEUDS DE L'INTERFACE COURANTE
 !
-        do 20 j = 1, nbno
+        do j = 1, nbno
             ipoin=zi(llnoe+j-1)
             call isdeco(zi(llact+(j-1)*nbec+1-1), idec, nbcmp)
             idda=1
-            do 25 k = 1, nbcmp
+            do k = 1, nbcmp
                 if (idec(k) .gt. 0) then
                     chaine(idda:idda+7)=zk8(llncmp+k-1)
                     idda=idda+8
                 endif
- 25         continue
+            end do
             idda=idda-1
             ino=zi(lldes+ipoin-1)
             call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
@@ -197,7 +197,7 @@ subroutine imbint(nomres, ifm)
                 ifau=max(ifau,ipoin)
             endif
 !
- 20     continue
+        end do
         write(ifm,*)'  '
         call bmnodi('        ', nomres, '         ', i, 0,&
                     ibid(1), nbdef)
@@ -206,7 +206,7 @@ subroutine imbint(nomres, ifm)
         write(ifm,*)'  '
         call jelibe(jexnum(ddact, i))
         call jelibe(jexnum(noeint, i))
- 10 end do
+    end do
 !
     write(ifm,*) ' '
     write(ifm,*) ' '
@@ -218,11 +218,11 @@ subroutine imbint(nomres, ifm)
 !
     if (idau .eq. 1) then
         write(ifm,*)' PAS DE DEFORMEES STATIQUES A CALCULER'
-        goto 9999
+        goto 999
     endif
     write(ifm,*) ' '
     ncomp=0
-    do 40 i = 1, nbnot
+    do i = 1, nbnot
         write(ifm,*) ' '
         if (i .ge. idmn .and. i .le. ifmn) tydef='MODE D''ATTACHE'
         if (i .ge. idcb .and. i .le. ifcb) tydef='MODE CONTRAINT'
@@ -230,19 +230,19 @@ subroutine imbint(nomres, ifm)
         ino=zi(lldes+i-1)
         call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
         call isdeco(zi(lldes+nbnot*2+(i-1)*nbec+1-1), idec, nbcmp)
-        do 50 j = 1, nbcmp
+        do j = 1, nbcmp
             if (idec(j) .gt. 0) then
                 typ=zk8(llncmp+j-1)
                 ncomp=ncomp+1
                 write(ifm,*)'DEFORMEE: ',ncomp,flec,nomnoe,' ',typ,' ',tydef
             endif
- 50     continue
- 40 continue
+        end do
+    end do
 !
     write(ifm,*)' '
     write(ifm,*)'----------------------------------------------------'
     write(ifm,*)' '
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

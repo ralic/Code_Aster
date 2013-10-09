@@ -51,7 +51,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     integer :: nbcar
     parameter     (nbcar=100)
     integer :: ier, i3d, i2d, ndim, nbmtrd, ioc, ng, nm, nj, nn, ncar, icar
-    integer :: ii, nbma, ialima, nbnogr, kk, ibid
+    integer :: ii, nbma, ialima, nbnogr, kk
     integer :: ixnw, jdnw, jddi, jdls, jdgn
     character(len=8) :: k8b, nomu, car(nbcar)
     character(len=16) :: concep, cmd
@@ -84,7 +84,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 !
 !
 ! --- BOUCLE SUR LES OCCURENCES DE DISCRET
-    do 30 ioc = 1, nbocc
+    do ioc = 1, nbocc
         call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc,&
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc,&
@@ -97,21 +97,21 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
                     nbret=ncar)
 !
         if (ncar .gt. ncar) ASSERT(.false.)
-        do 25 icar = 1, ncar
+        do icar = 1, ncar
             if (car(icar)(3:4) .eq. 'TR') goto 28
-25      continue
+        end do
 !
         goto 30
-28      continue
+ 28     continue
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
         if (ng .gt. 0) then
-            do 38 ii = 1, ng
+            do ii = 1, ng
                 call jelira(jexnom(grpma, zk24(jdls+ii-1)), 'LONUTI', nbma)
                 call jeveuo(jexnom(grpma, zk24(jdls+ii-1)), 'L', ialima)
                 call acevtr(noma, nomo, 2, zk24(1), zi(ialima),&
                             nbma, ndim)
-38          continue
+            end do
         endif
 !
 ! ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
@@ -125,7 +125,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 ! ---       "GROUP_NO" = TOUTES LES MAILLES TARDIVES  DE LA LISTE
 !                                                  DE GROUPES DE NOEUDS
             if (nj .gt. 0) then
-                do 42 ii = 1, nj
+                do ii = 1, nj
                     call jeveuo(jexnom(mlggno, zk24(jdls+ii-1)), 'L', jdgn)
                     call jelira(jexnom(mlggno, zk24(jdls+ii-1)), 'LONUTI', nbnogr)
                     call crlinu('NUM', mlgnno, nbnogr, zi(jdgn), k8b,&
@@ -134,7 +134,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
                         call acevtr(noma, nomo, 2, zk24(1), zi(jddi),&
                                     kk, ndim)
                     endif
-42              continue
+                end do
             endif
 ! ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             if (nn .gt. 0) then
@@ -146,7 +146,8 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
                 endif
             endif
         endif
-30  end do
+ 30     continue
+    end do
 !
     if (ixnw .ne. 0) call jedetr(tmpdis)
     call jedetr('&&TMPDISCRET')

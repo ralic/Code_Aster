@@ -1,8 +1,8 @@
 subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
-                  nonu)
+                      nonu)
     implicit none
 ! aslint: disable=W0104
-
+!
 ! person_in_charge: mathieu.corus at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,20 +20,20 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "jeveux.h"
-#   include "blas/dgemv.h"
-#   include "asterc/r8prem.h"
-#   include "asterc/asmpi_comm.h"
-#   include "asterfort/assert.h"
-#   include "asterfort/jedetr.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/elg_nllspc.h"
-#   include "asterfort/wkvect.h"
-#   include "asterfort/infniv.h"
+# include "jeveux.h"
+# include "asterc/asmpi_comm.h"
+# include "asterc/r8prem.h"
+# include "asterfort/assert.h"
+# include "asterfort/elg_nllspc.h"
+# include "asterfort/infniv.h"
+# include "asterfort/jedetr.h"
+# include "asterfort/jeveuo.h"
+# include "asterfort/wkvect.h"
+# include "blas/dgemv.h"
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-
+!
     Mat :: c, t
     integer :: nbeq, clag1, nbnvco
     character(len=14) :: nonu
@@ -45,7 +45,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     integer(kind=4) :: nbnzc
     integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nbcont
     integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib, ltcon, nzmax
-    integer :: nvcont,ifm,niv
+    integer :: nvcont, ifm, niv
     real(kind=8) :: eps, norm, cmax, normc
     logical :: info2
     mpi_int :: mpicow
@@ -76,17 +76,17 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
     call jeveuo(nonu//'.NUME.DELG', 'L', ldelg)
     nzmax=0
-    do 10 i1 = 1, nbeq
+    do i1 = 1, nbeq
         zi4(contr+i1-1)=0
         if (zi(ldelg+i1-1) .eq. 0) then
-            call MatSetValues(t, 1, [int(i1-1,4)], 1, [int(i1-1,4)],&
+            call MatSetValues(t, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
                               [1.d0], INSERT_VALUES, ierr)
         else
-            call MatSetValues(t, 1, [int(i1-1,4)], 1, [int(i1-1,4)],&
+            call MatSetValues(t, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
                               [0.d0], INSERT_VALUES, ierr)
         endif
         if (zi4(nnzt+i1-1) .gt. nzmax) nzmax=zi4(nnzt+i1-1)
-10  end do
+    end do
     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
 !--
@@ -106,7 +106,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--                            --!
 !--------------------------------!
 !
-    do 20 i1 = 1, clag1
+    do i1 = 1, clag1
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,'(A14,I3)'),' CONTRAINTE : ',i1
@@ -120,27 +120,27 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !-- Normalement, les lignes de C sont deja normees
         nbnz=0
         norm=0.d0
-        do 30 j1 = 1, nbnzc
+        do j1 = 1, nbnzc
             norm=norm+zr(valrow+j1-1)**2
-30      continue
+        end do
         norm=sqrt(norm)
         normc=norm
-        do 40 j1 = 1, nbnzc
+        do j1 = 1, nbnzc
             if (abs(zr(valrow+j1-1))/norm .gt. eps) then
                 zi4(indnz+nbnz)=j1-1
                 zr(ctemp+nbnz)=zr(valrow+j1-1)/norm
                 nbnz=nbnz+1
             endif
-40      continue
+        end do
 !--
 !-- Recopie de la contrainte, en normalisant
         call VecSet(c_temp, 0.d0, ierr)
         call VecSet(v_temp, 0.d0, ierr)
-        do 50 j1 = 1, nbnz
+        do j1 = 1, nbnz
             numcon=zi4(nzrow+zi4(indnz+j1-1))
-            call VecSetValues(c_temp, 1, [int(numcon,4)], zr(ctemp+j1-1), INSERT_VALUES,&
+            call VecSetValues(c_temp, 1, [int(numcon, 4)], zr(ctemp+j1-1), INSERT_VALUES,&
                               ierr)
-50      continue
+        end do
         call VecAssemblyBegin(c_temp, ierr)
         call VecAssemblyEnd(c_temp, ierr)
 !--
@@ -161,7 +161,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
         cmax=0.d0
         imax=0
         if (nbnz .gt. 1) then
-            do 60 j1 = 1, nbnz
+            do j1 = 1, nbnz
                 numcon=zi4(nzrow+zi4(indnz+j1-1))
                 iscons=zi4(contr + numcon)
                 if (iscons .eq. 0) then
@@ -177,7 +177,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     zr(lccon+nbcont)=zr(ctemp+j1-1)
                     nbcont=nbcont+1
                 endif
-60          continue
+            end do
 !
             if (nbcont .eq. 0) then
 !-----------------------------------------------------------------------
@@ -187,17 +187,17 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !-----------------------------------------------------------------------
                 call elg_nllspc(nbnz, zr(lclib), zr(ltlib))
 !            CALL JEVEUO('&&APELIM.T_LIB.CON','E',LTLIB)
-                do 70 j1 = 1, nbnz
+                do j1 = 1, nbnz
                     numcon=zi4(nzrow + zi4(indnz+j1-1))
-                    do 80 k1 = 1, nbnz
+                    do k1 = 1, nbnz
                         icol=zi4(nzrow + zi4(indnz+k1-1))
-                        call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                        call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                           [zr(ltlib+ nbnz*(k1-1)+j1-1)], INSERT_VALUES, ierr)
                         zr(ltlib+nbnz*(k1-1)+j1-1)=0.d0
-80                  continue
+                    end do
                     zi4(contr + numcon) = 1
                     zr(lclib+j1-1)=0.d0
-70              continue
+                end do
 !
                 call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
                 call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
@@ -220,20 +220,20 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
 !-- On reinitialise la sous matrice de T
 !--
-                    do 75 j1 = 1, nbnz
+                    do j1 = 1, nbnz
                         numcon=zi4(nzrow + zi4(indnz+j1-1))
-                        do 85 k1 = 1, nbnz
+                        do k1 = 1, nbnz
                             icol=zi4(nzrow + zi4(indnz+k1-1))
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                                   [1.d0], INSERT_VALUES, ierr)
                             else
-                                call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                                   [0.d0], INSERT_VALUES, ierr)
                             endif
-85                      continue
+                        end do
                         zi4(contr + numcon) = 0
-75                  continue
+                    end do
 !
                     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
                     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
@@ -271,11 +271,11 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     nbnvco=nbnvco+1
                     goto 1235
                 endif
-                do 90 j1 = 1, nbcont
+                do j1 = 1, nbcont
                     icol=zi4(indcon+j1-1)
-                    call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                    call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                       [-zr(lwork1+ j1-1)/zr(lclib+imax)], INSERT_VALUES, ierr)
-90              continue
+                end do
 !
 !
 !--
@@ -283,17 +283,17 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
                 call elg_nllspc(nblib, zr(lclib), zr(ltlib))
 !            CALL JEVEUO('&&APELIM.T_LIB.CON','E',LTLIB)
-                do 100 j1 = 1, nblib
+                do j1 = 1, nblib
                     numcon=zi4(indlib+j1-1)
-                    do 110 k1 = 1, nblib
+                    do k1 = 1, nblib
                         icol=zi4(indlib+k1-1)
-                        call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                        call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                           [zr(ltlib+ nblib*(k1-1)+j1-1)], INSERT_VALUES, ierr)
                         zr(ltlib+nblib*(k1-1)+j1-1)=0.d0
-110                  continue
+                    end do
                     zi4(contr + numcon) = 1
                     zr(lclib+j1-1)=0.d0
-100              continue
+                end do
 !
                 call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
                 call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
@@ -318,30 +318,30 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     nbnvco=nbnvco+1
 !
                     numcon=zi4(indlib+imax)
-                    do 95 j1 = 1, nbcont
+                    do j1 = 1, nbcont
                         icol=zi4(indcon+j1-1)
-                        call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                        call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                           [0.d0], INSERT_VALUES, ierr)
-95                  continue
+                    end do
 !
 !
-                    do 105 j1 = 1, nblib
+                    do j1 = 1, nblib
                         numcon=zi4(indlib+j1-1)
-                        do 115 k1 = 1, nblib
+                        do k1 = 1, nblib
                             icol=zi4(indlib+k1-1)
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                                   [1.d0], INSERT_VALUES, ierr)
                             else
-                                call MatSetValues(t, 1, [int(numcon,4)], 1, [int(icol,4)],&
+                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                                   [0.d0], INSERT_VALUES, ierr)
                             endif
-115                      continue
+                        end do
 !-- On laisse garde le "tag" sur les DDL, sinon, ca fout le bordel
 !-- pour le comptage. C'est pas optimal, mais ca marche
 !                ZI4(CONTR + NUMCON) = 0
 !
-105                  continue
+                    end do
 !
                     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
                     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
@@ -364,7 +364,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
             numcon=zi4(nzrow+zi4(indnz))
             iscons=zi4(contr + numcon)
             if (iscons .eq. 0) then
-                call MatSetValues(t, 1, [int(numcon,4)], 1, [int(numcon,4)],&
+                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(numcon, 4)],&
                                   [0.d0], INSERT_VALUES, ierr)
                 zi4(contr + numcon) = 1
                 call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
@@ -383,20 +383,20 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
 !-- Si la contrainte est deja verifiee, on arrive direct la
 !--
-1235      continue
+1235     continue
 !
 !        call MatRestoreRow(C,I1-1,int(nbnzc),ZI4(NZROW),ZR(VALROW),ierr)
 !
-20  end do
-
-
-
+    end do
+!
+!
+!
     call jedetr('&&ELG_REMPLT.C_I1.CON')
     call jedetr('&&ELG_REMPLT.C_I1.LIB')
     call jedetr('&&ELG_REMPLT.VEC_WORK1')
     call jedetr('&&ELG_REMPLT.T_CON.CON')
     call jedetr('&&ELG_REMPLT.T_LIB.CON')
-
+!
 #else
     integer(kind=8) :: c, t
     integer :: nbeq, clag1, nbnvco

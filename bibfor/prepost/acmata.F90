@@ -1,21 +1,20 @@
-subroutine acmata(nbordr, kwork,&
-                  sompgw, jrwork, tspaq, ipg,&
-                  nommet, vrespc)
-    implicit   none
+subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
+                  ipg, nommet, vrespc)
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/r8pi.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
-#include "asterfort/jedetr.h"
+#include "asterc/r8pi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jedisp.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/raycir.h"
 #include "asterfort/taurlo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/utmess.h"
+!
     integer :: nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg
     character(len=16) :: nommet
@@ -70,7 +69,7 @@ subroutine acmata(nbordr, kwork,&
     integer :: jvecn2, jvecu2, jvecv2, jvecn1, jvecu1, jvecv1
     integer :: adrs, decal, tab2(18), vali(2), ideb, ngam, jresun
     integer :: tneces, tdisp(1), jvecno, tnecno, jnorma, dectau
-    integer :: jdtaum,  jvectn, jvectu, jvectv
+    integer :: jdtaum, jvectn, jvectu, jvectv
 !
     real(kind=8) :: dgam, pi, dphi, tab1(18)
     real(kind=8) :: epsilo, gamma
@@ -97,9 +96,9 @@ subroutine acmata(nbordr, kwork,&
 !
     pi = r8pi()
 !-----------------------------------------------------------------------
-    
+!
     call jemarq()
-
+!
 ! PROJECTION DE L'HISTORIQUE DU STRESS ET STRAIN DANS UN PLAN.
 !
 ! CONSTRUCTION DU VECTEUR CONTENANT DELTA_TAU_MAX
@@ -116,17 +115,17 @@ subroutine acmata(nbordr, kwork,&
     call wkvect('&&ACMATA.VECT_NORMA', 'V V R', 630, jvectn)
     call wkvect('&&ACMATA.VECT_TANGU', 'V V R', 630, jvectu)
     call wkvect('&&ACMATA.VECT_TANGV', 'V V R', 630, jvectv)
-
+!
     tneces = 209*nbordr*2
     tnecno = 209*nbordr
-
+!
     call jedisp(1, tdisp)
     tdisp(1) = (tdisp(1) * loisem()) / lor8em()
     if (tdisp(1) .lt. tneces) then
         vali (1) = tdisp(1)
         vali (2) = tneces
         call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
-
+!
     else
         call wkvect('&&ACMATA.VECT_NORMA3', 'V V R', tneces, jvecno)
         call wkvect('&&ACMATA.VECT_NORMA4', 'V V R', tnecno, jnorma)
@@ -138,7 +137,7 @@ subroutine acmata(nbordr, kwork,&
     k = 1
     ideb = 1
     dim = 627
-    do 300 j = 1, 18
+    do j = 1, 18
         gamma=(j-1)*dgam*(pi/180.0d0)
         dphi=tab1(j)*(pi/180.0d0)
         phi0=dphi/2.0d0
@@ -148,8 +147,8 @@ subroutine acmata(nbordr, kwork,&
                     n, k, dim, zr( jvectn), zr(jvectu),&
                     zr(jvectv))
 !
-300  end do
-
+    end do
+!
     call wkvect('&&ACMATA.VECT_NORMA1', 'V V R', 27, jvecn1)
     call wkvect('&&ACMATA.VECT_TANGU1', 'V V R', 27, jvecu1)
     call wkvect('&&ACMATA.VECT_TANGV1', 'V V R', 27, jvecv1)
@@ -170,8 +169,8 @@ subroutine acmata(nbordr, kwork,&
     dectau = 0
 !
     call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                kwork, sompgw, jrwork, tspaq, ipg,dectau,&
-                jvecno, jnorma)
+                kwork, sompgw, jrwork, tspaq, ipg,&
+                dectau, jvecno, jnorma)
 !
 !
 ! CALCMAX DES DELTA_TAU MAX ET DU VECTEUR NORMAL ASSOCIE POUR
@@ -193,7 +192,7 @@ subroutine acmata(nbordr, kwork,&
     mnmax(1) = 1
     mnmax(2) = 1
 !
-    do 430 i = 1, nbvec
+    do i = 1, nbvec
         if (zr(jdtaum + (i-1)) .gt. epsilo) then
             if ((zr(jdtaum + (i-1))-dtaum(1))/zr(jdtaum + (i-1)) .gt. epsilo) then
                 dtaum(2) = dtaum(1)
@@ -207,7 +206,7 @@ subroutine acmata(nbordr, kwork,&
                 mnmax(2) = i
             endif
         endif
-430  end do
+    end do
 !
 ! 4/ 1-ER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 !    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 2
@@ -217,7 +216,7 @@ subroutine acmata(nbordr, kwork,&
     phydrm = 0.0d0
     dim = 27
 !
-    do 440 k = 1, 2
+    do k = 1, 2
         norm(k) = 0.0d0
         normax(k) = 0.0d0
         snorm(k) = 0.0d0
@@ -261,25 +260,25 @@ subroutine acmata(nbordr, kwork,&
 !
             nbvec = 7
             call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,dectau,&
-                        jvpg2, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg2, jnorma)
         else
             dgam2 = 2.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
-            do 460 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-2)*dgam2
 !
                 call vecnuv(1, 3, gamma, phim, dphi2,&
                             n, 2, dim, zr(jvecn2), zr(jvecu2),&
                             zr(jvecv2))
 !
-460          continue
+            end do
 !
             nbvec = 9
             call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg, dectau,&
-                        jvpg2, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg2, jnorma)
         endif
 !
 ! 4-1/E A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
@@ -296,12 +295,12 @@ subroutine acmata(nbordr, kwork,&
         dtaum(k) = 0.0d0
         mnmax(k) = 1
 !
-        do 480 i = 1, nbvec
+        do i = 1, nbvec
             if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
                 dtaum(k) = zr(jdtaum + (i-1))
                 mnmax(k) = i
             endif
-480      continue
+        end do
 !
 ! 5/ 2-EXIME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 !    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 1
@@ -343,25 +342,25 @@ subroutine acmata(nbordr, kwork,&
 !
             nbvec = 7
             call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg, dectau,&
-                        jvpg1, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg1, jnorma)
         else
             dgam2 = 1.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
-            do 510 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-2)*dgam2
 !
                 call vecnuv(1, 3, gamma, phim, dphi2,&
                             n, 2, dim, zr(jvecn1), zr(jvecu1),&
                             zr(jvecv1))
 !
-510          continue
+            end do
 !
             nbvec = 9
             call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg, dectau,&
-                        jvpg1, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg1, jnorma)
         endif
 !
 ! 5-1/E A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
@@ -379,12 +378,12 @@ subroutine acmata(nbordr, kwork,&
         dtaum(k) = 0.0d0
         mnmax(k) = 1
 !
-        do 530 i = 1, nbvec
+        do i = 1, nbvec
             if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
                 dtaum(k) = zr(jdtaum + (i-1))
                 mnmax(k) = i
             endif
-530      continue
+        end do
 !
         nxm(k) = zr(jvecn1 + (mnmax(k)-1)*3)
         nym(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 1)
@@ -423,25 +422,25 @@ subroutine acmata(nbordr, kwork,&
 !
             nbvec = 7
             call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg, dectau, &
-                        jvpg1, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg1, jnorma)
         else
             dgam2 = 0.5d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
-            do 550 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-2)*dgam2
 !
                 call vecnuv(1, 3, gamma, phim, dphi2,&
                             n, 2, dim, zr(jvecn2), zr(jvecu2),&
                             zr(jvecv2))
 !
-550          continue
+            end do
 !
             nbvec = 9
             call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg, dectau, &
-                        jvpg2, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg2, jnorma)
         endif
 !
 !
@@ -459,12 +458,12 @@ subroutine acmata(nbordr, kwork,&
         dtaum(k) = 0.0d0
         mnmax(k) = 1
 !
-        do 580 i = 1, nbvec
+        do i = 1, nbvec
             if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
                 dtaum(k) = zr(jdtaum + (i-1))
                 mnmax(k) = i
             endif
-580      continue
+        end do
 !
         nxm(k) = zr(jvecn2 + (mnmax(k)-1)*3)
         nym(k) = zr(jvecn2 + (mnmax(k)-1)*3 + 1)
@@ -502,25 +501,25 @@ subroutine acmata(nbordr, kwork,&
 !
             nbvec = 7
             call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,dectau, &
-                        jvpg1, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg1, jnorma)
         else
             dgam2 = 1.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
-            do 570 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-2)*dgam2
 !
                 call vecnuv(1, 3, gamma, phim, dphi2,&
                             n, 2, dim, zr(jvecn1), zr(jvecu1),&
                             zr(jvecv1))
 !
-570          continue
+            end do
 !
             nbvec = 9
             call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,dectau, &
-                        jvpg1, jnorma)
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        dectau, jvpg1, jnorma)
         endif
 !
 ! CALCLA CONTRAINTE NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
@@ -556,18 +555,18 @@ subroutine acmata(nbordr, kwork,&
         dtaum(k) = 0.0d0
         mnmax(k) = 1
 !
-        do 590 i = 1, nbvec
+        do i = 1, nbvec
             if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
                 dtaum(k) = zr(jdtaum + (i-1))
                 mnmax(k) = i
             endif
-590      continue
+        end do
 !
         nxm(k) = zr(jvecn1 + (mnmax(k)-1)*3)
         nym(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 1)
         nzm(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 2)
 !
-        do 540 i = 1, nbordr
+        do i = 1, nbordr
             decal = 18
 !           ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
             adrs = (i-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
@@ -638,13 +637,13 @@ subroutine acmata(nbordr, kwork,&
             endif
 !
             sepnmx(k) = sepnmx(k) + epnorm(k)
-540      continue
+        end do
 !
         normoy(k) = snorm(k)/nbordr
         epnmoy(k) = sepnmx(k)/nbordr
 !
 !
-440  end do
+    end do
 !
 ! CONSON D'UN CHAM_ELEM SIMPLE PUIS D'UN CHAM_ELEM CONTENANT
 ! POURE POINT DE GAUSS DE CHAQUE MAILLE MAX DE DTAU_MAX ET LE
@@ -676,14 +675,14 @@ subroutine acmata(nbordr, kwork,&
     vrespc(23) = 0.0d0
     vrespc(24) = 0.0d0
 !
-
+!
     call jedetr('&&ACMATA.DTAU_MAX')
     call jedetr('&&ACMATA.RESU_N')
 !
     call jedetr('&&ACMATA.VECT_NORMA')
     call jedetr('&&ACMATA.VECT_TANGU')
     call jedetr('&&ACMATA.VECT_TANGV')
-
+!
     call jedetr('&&ACMATA.VECT_NORMA1')
     call jedetr('&&ACMATA.VECT_TANGU1')
     call jedetr('&&ACMATA.VECT_TANGV1')
@@ -692,13 +691,13 @@ subroutine acmata(nbordr, kwork,&
     call jedetr('&&ACMATA.VECT_TANGV2')
     call jedetr('&&ACMATA.VECTPG1')
     call jedetr('&&ACMATA.VECTPG2')
-
+!
     call jedetr('&&ACMATA.VECT_NORMA3')
     call jedetr('&&ACMATA.VECT_NORMA4')
     call jedema()
-
-
+!
+!
 !     call jedetr('&&ACMATA.VECTNOD')
 !     call jedetr('&&ACMATA.NORMALD')
-
+!
 end subroutine

@@ -42,7 +42,7 @@ subroutine te0191(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: phenom
     integer :: icodre(1)
-    real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r, rho(1)
+    real(kind=8) :: a(3, 3, 9, 9), poids, r, rho(1)
     real(kind=8) :: matp(27, 27), matv(378)
     integer :: nno, kp, nnos, npg2, i, j, k, l, imatuu, nddl, nvec, iacce, ivect
     integer :: ipoids, ivf, idfde, igeom, imate, ijkl, ik, kpg, spt
@@ -62,39 +62,42 @@ subroutine te0191(option, nomte)
                 ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
-    do 113 k = 1, 3
-        do 113 l = 1, 3
-            do 113 i = 1, nno
-                do 113 j = 1, i
+    do k = 1, 3
+        do l = 1, 3
+            do i = 1, nno
+                do j = 1, i
                     a(k,l,i,j) = 0.0d0
-113              continue
+                end do
+            end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 kp = 1, npg2
+    do kp = 1, npg2
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
         r = 0.0d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102      continue
+        end do
         poids = poids*r*rho(1)
 !
-        do 106 i = 1, nno
-            do 107 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 a(1,1,i,j) = a(1,1,i,j) + poids * zr(ivf+k+i-1) * zr( ivf+k+j-1)
-107          continue
-106      continue
-101  end do
+            end do
+        end do
+    end do
 !
-    do 108 i = 1, nno
-        do 109 j = 1, i
+    do i = 1, nno
+        do j = 1, i
             a(2,2,i,j) = a(1,1,i,j)
             a(3,3,i,j) = a(1,1,i,j)
-109      continue
-108  end do
+        end do
+    end do
 !
     if (option .eq. 'MASS_MECA') then
 !
@@ -102,32 +105,36 @@ subroutine te0191(option, nomte)
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 !
-        do 112 k = 1, 3
-            do 112 l = 1, 3
-                do 112 i = 1, nno
+        do k = 1, 3
+            do l = 1, 3
+                do i = 1, nno
                     ik = ((3*i+k-4) * (3*i+k-3)) / 2
-                    do 112 j = 1, i
+                    do j = 1, i
                         ijkl = ik + 3 * (j-1) + l
                         zr(imatuu+ijkl-1) = a(k,l,i,j)
-112                  continue
+                    end do
+                end do
+            end do
+        end do
 !
     else if (option .eq. 'M_GAMMA') then
 !
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
-        do 210 k = 1, nvec
+        do k = 1, nvec
             matv(k) = 0.0d0
-210      continue
-        do 212 k = 1, 3
-            do 212 l = 1, 3
-                do 214 i = 1, nno
+        end do
+        do k = 1, 3
+            do l = 1, 3
+                do i = 1, nno
                     ik = ((3*i+k-4) * (3*i+k-3)) / 2
-                    do 216 j = 1, i
+                    do j = 1, i
                         ijkl = ik + 3 * (j-1) + l
                         matv(ijkl) = a(k,l,i,j)
-216                  continue
-214              continue
-212          continue
+                    end do
+                end do
+            end do
+        end do
         call vecma(matv, nvec, matp, nddl)
         call pmavec('ZERO', nddl, matp, zr(iacce), zr(ivect))
 !

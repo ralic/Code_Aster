@@ -420,4 +420,4 @@ OPTION__
     WEIBULL          331  IN__  CCOMPOR  PCOMPOR  ECONTPG  PCONTRG  EDEFOPG  PDEFORR  EDOMGGA  PDOMMAG  
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR  
                                 ZVARIPG  PVARIPG  
-                          OUT__ EDOMGGA  PSIGISG  EWEIBUL  PWEIBUL  
+                          OUT__ EDOMGGA  PSIGISG  EWEIBUL  PWEIBUL

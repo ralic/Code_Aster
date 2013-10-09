@@ -92,9 +92,9 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     ASSERT(type.eq.'R')
     call jeveuo(cham2//'.VALE', 'E', jvale)
     if (type .eq. 'R') then
-        do 10 ieq = 0, nbeq-1
+        do ieq = 0, nbeq-1
             zr(jvale+ieq)=0.d0
- 10     continue
+        end do
     else
         ASSERT(.false.)
     endif
@@ -107,7 +107,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
         lno2='&&OP0166.LNO2'
         idec1=1+nbocc
         idec2=1+nbocc
-        do 20 ioc = 1, nbocc
+        do ioc = 1, nbocc
             nb1=zi(jngi1-1+1+ioc)
             nb2=zi(jngi2-1+1+ioc)
             call wkvect(lno1, 'V V I', nb1, jlno1)
@@ -125,7 +125,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
             call jedetr(lno2)
             idec1=idec1+nb1
             idec2=idec2+nb2
- 20     continue
+        end do
 !
     else
         call chpnua(nx, cham1, ' ', nuage1)

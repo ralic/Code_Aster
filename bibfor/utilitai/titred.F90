@@ -219,10 +219,10 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
     call wkvect('&&TITRE .TAMPON.ENTREE', 'V V K80', nbtitr, ldon)
     call wkvect('&&TITRE .LONGUEUR     ', 'V V I  ', nbtitr, llon)
 !-DEL WRITE(6,*)  ' DEBUT DU DEFAUT NUMERO ',ICHOIX,'---------------- '
-    do 10 i = 1, nbtitr
+    do i = 1, nbtitr
         zk80(ldon+i-1) = defaut(i,ichoix)
         zi(llon+i-1) = londef(i,ichoix)
- 10 end do
+    end do
 !_DEL WRITE(6,*)  ' FIN DU DEFAUT ----------------------------------- '
 !
     call jedema()

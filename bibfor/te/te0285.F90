@@ -43,7 +43,7 @@ subroutine te0285(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
     real(kind=8) :: rho(1), xg, yg, depi, zero
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9)
-    real(kind=8) :: matine(6), r8b, xxi, xyi, yyi, volume
+    real(kind=8) :: matine(6), xxi, xyi, yyi, volume
     real(kind=8) :: ixrp2, iyrp2, xp(9), yp(9), xpg, ypg
     integer :: icodre(1)
     character(len=8) :: elrefe
@@ -84,35 +84,35 @@ subroutine te0285(option, nomte)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)
-    do 10 i = 1, nno
+    do i = 1, nno
         x(i) = zr(igeom-2+2*i)
         y(i) = zr(igeom-1+2*i)
         xp(i) = zero
         yp(i) = zero
-10  end do
+    end do
 !
-    do 20 i = 0, 3
+    do i = 0, 3
         zr(lcastr+i) = zero
-20  end do
-    do 22 i = 1, 6
+    end do
+    do i = 1, 6
         matine(i) = zero
-22  end do
+    end do
 !
 !     --- BOUCLE SUR LES POINTS DE GAUSS ---
     volume = zero
-    do 100 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy)
         if (lteatt(' ','AXIS','OUI')) then
             r = zero
-            do 102 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom-2+2*i)*zr(ivf+k+i-1)
-102          continue
+            end do
             poids = poids*r
         endif
         volume = volume + poids
-        do 104 i = 1, nno
+        do i = 1, nno
 !           --- CDG ---
             zr(lcastr+1) = zr(lcastr+1)+poids*x(i)*zr(ivf+k+i-1)
             zr(lcastr+2) = zr(lcastr+2)+poids*y(i)*zr(ivf+k+i-1)
@@ -120,16 +120,16 @@ subroutine te0285(option, nomte)
             xxi = 0.d0
             xyi = 0.d0
             yyi = 0.d0
-            do 106 j = 1, nno
+            do j = 1, nno
                 xxi = xxi + x(i)*zr(ivf+k+i-1)*x(j)*zr(ivf+k+j-1)
                 xyi = xyi + x(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
                 yyi = yyi + y(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
-106          continue
+            end do
             matine(1) = matine(1) + poids*yyi
             matine(2) = matine(2) + poids*xyi
             matine(3) = matine(3) + poids*xxi
-104      continue
-100  end do
+        end do
+    end do
 !
     if (lteatt(' ','AXIS','OUI')) then
         xg = zero
@@ -171,30 +171,30 @@ subroutine te0285(option, nomte)
 ! --- CALCUL DE IXRP2 = SOMME((Y*(X**2 + Y**2).DS) ET
 ! --- CALCUL DE IYRP2 = SOMME((X*(X**2 + Y**2).DS) :
 !     --------------------------------------------
-        do 110 i = 1, nno
+        do i = 1, nno
             xp(i) = x(i) - xg
             yp(i) = y(i) - yg
-110      continue
+        end do
 !
         ixrp2 = zero
         iyrp2 = zero
 !
-        do 120 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1) * nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
 !
             xpg = zero
             ypg = zero
-            do 130 i = 1, nno
+            do i = 1, nno
                 xpg = xpg + xp(i)*zr(ivf+k+i-1)
                 ypg = ypg + yp(i)*zr(ivf+k+i-1)
-130          continue
+            end do
 !
             ixrp2 = ixrp2 + xpg*(xpg*xpg + ypg*ypg)*poids
             iyrp2 = iyrp2 + ypg*(xpg*xpg + ypg*ypg)*poids
 !
-120      continue
+        end do
 !
         zr(lcastr+10) = ixrp2
         zr(lcastr+11) = iyrp2

@@ -149,7 +149,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
         nbcham = -n1
         call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
 ! ----   BOUCLE SUR LES CHAMPS DEMANDES
-        do 69 i = 1, nbcham
+        do i = 1, nbcham
 !
             if (champ(i) .eq. 'DEPL') then
                 chmp(i) = 'DEPL'
@@ -179,7 +179,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 ! ----        SI LE CHAMP N'EST PAS DEPL,VITE OU ACCE ON PLANTE
                 call utmess('F', 'ALGORITH10_16')
             endif
- 69     continue
+        end do
     endif
 !     NOMBRE DE CHAMPS SYMBOLIQUES CALCULES.
 !     ON S'ASSURE QUE LEUR NOMBRE EST NON NUL.
@@ -207,12 +207,12 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call wkvect('&&'//pgc//'ROTX', 'V V R', nbsst, ltrotx)
     call wkvect('&&'//pgc//'ROTY', 'V V R', nbsst, ltroty)
     call wkvect('&&'//pgc//'ROTZ', 'V V R', nbsst, ltrotz)
-    do 15 i = 1, nbsst
+    do i = 1, nbsst
         call jeveuo(jexnum(modgen//'      .MODG.SSOR', i), 'L', llrot)
         zr(ltrotz+i-1) = zr(llrot)
         zr(ltroty+i-1) = zr(llrot+1)
         zr(ltrotx+i-1) = zr(llrot+2)
- 15 continue
+    end do
 !
 ! --- CREATION DU PROF-CHAMNO
     call genugl(profno, indirf, modgen, mailsk)
@@ -262,9 +262,9 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
-        do 10 i = 1, nbsst
+        do i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
- 10     continue
+        end do
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V C', neqet, lmoet)
     endif
 !
@@ -287,21 +287,21 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !        CALL JEEXIN(HARMGE//'.ORDR',IRET)
 !        IF (IRET.NE.0.AND.ZI(JNUME).EQ.1) IARCHI=0
 !
-        do 50 i = 0, nbfreq-1
+        do i = 0, nbfreq-1
             iarchi = iarchi + 1
 !
-            do 52 ich = 1, nbcham
+            do ich = 1, nbcham
                 idresu = itresu(ich)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
-                    do 22 i1 = 1, neqet
+                    do i1 = 1, neqet
                         zc(lmoet+i1-1)=dcmplx(0.d0,0.d0)
-                        do 33 k1 = 1, neqred
+                        do k1 = 1, neqred
                             zc(lmoet+i1-1)=zc(lmoet+i1-1)+ zr(lmapro+(&
                             k1-1)*neqet+i1-1)* zc(idresu+k1-1+(zi(&
                             jnume+i)-1)*neqred)
- 33                     continue
- 22                 continue
+                        end do
+                    end do
                 endif
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
@@ -317,7 +317,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 ! --- BOUCLE SUR LES SOUS-STRUCTURES
 !
-                do 54 k = 1, nbsst
+                do k = 1, nbsst
                     call jeexin(jexnum(indirf, k), iret)
 !
 ! --- TEST SI LA SST GENERE DES DDL GLOBAUX
@@ -329,16 +329,16 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                         if (elim .ne. 0) then
                             call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
                             ieq=0
-                            do 43 i1 = 1, k-1
+                            do i1 = 1, k-1
                                 ieq=ieq+zi(lsilia+i1-1)
- 43                         continue
+                            end do
                         else
                             numsst=k
 !  RECUPERATION DU NUMERO TARDIF DE LA SST
                             nutars = 0
-                            do 44 j = 1, nbsst
+                            do j = 1, nbsst
                                 if (zi(llors+j-1) .eq. numsst) nutars=j
- 44                         continue
+                            end do
                             ieq=zi(llprs+(nutars-1)*2)
                         endif
                         k8bid = '  '
@@ -353,7 +353,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 ! --- BOUCLE SUR LES MODES PROPRES DE LA BASE
 !
-                        do 58 j = 1, nbbas
+                        do j = 1, nbbas
                             call dcapno(basmod, 'DEPL', j, chamba)
                             call jeveuo(chamba, 'L', llchab)
 !
@@ -366,23 +366,23 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
-                            do 60 l = 1, neqs
+                            do l = 1, neqs
                                 zc(ltvec+l-1)=zc(ltvec+l-1)+zr(llchab+&
                                 l-1)*zc(iad)
- 60                         continue
- 58                     continue
+                            end do
+                        end do
                         call jeveuo(jexnum(indirf, numsst), 'L', llind)
                         call jelira(jexnum(indirf, numsst), 'LONMAX', nbcou)
                         nbcou = nbcou/2
-                        do 65 l = 1, nbcou
+                        do l = 1, nbcou
                             idep = zi(llind+(l-1)*2)
                             iar = zi(llind+(l-1)*2+1)
                             zc(ldnew+iar-1) = zc(ltvec+idep-1)
- 65                     continue
+                        end do
                         call jedetr('&&'//pgc//'.TRAV')
                     endif
 !
- 54             continue
+                end do
                 call rsnoch(nomres, chmp(ich), iarchi)
 !
 ! --- ROTATION DU CHAMP AUX NOEUDS
@@ -394,11 +394,11 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 call rotchc(profno, zc(ldnew), zr(ltrotx), nbsst, zi( llinsk),&
                             nbnot, nbcmp, 1)
 !
- 52         continue
+            end do
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
- 50     continue
+        end do
 !
     endif
 !
@@ -410,9 +410,9 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call jedetr('&&'//pgc//'ROTZ')
     call jedetr('&&'//pgc//'.INDIR.SST')
 !
-    goto 9999
+    goto 999
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

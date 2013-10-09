@@ -124,9 +124,9 @@ subroutine regeec(nomres, resgen, nomsst)
         call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
 !
         nutars=0
-        do 10 i = 1, nbsst
+        do i = 1, nbsst
             if (zi(llors+i-1) .eq. nusst) nutars=i
- 10     continue
+        end do
 !
 !
         call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
@@ -138,11 +138,11 @@ subroutine regeec(nomres, resgen, nomsst)
 !
         call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
         call jeveuo(sst, 'L', ibid)
-        do 12 i1 = 1, nbsst
+        do i1 = 1, nbsst
             if (nomsst .eq. zk8(ibid+i1-1)) then
                 nusst=i1
             endif
- 12     continue
+        end do
         neqet=0
         ieq=0
 !
@@ -152,14 +152,14 @@ subroutine regeec(nomres, resgen, nomsst)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
         ibid=1
-        do 11 i = 1, nbsst
+        do i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
- 11     continue
+        end do
 !
         ieq=0
-        do 41 i1 = 1, nusst-1
+        do i1 = 1, nusst-1
             ieq=ieq+zi(lsilia+i1-1)
- 41     continue
+        end do
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
 !
     endif
@@ -214,9 +214,9 @@ subroutine regeec(nomres, resgen, nomsst)
         call getvis(' ', 'NUME_ORDRE', nbval=nbmod(1), vect=zi(jbid), nbret=nno)
     else
         call wkvect('&&REGEEC.NUME', 'V V I', nbmod(1), jbid)
-        do 2 i = 1, nbmod(1)
+        do i = 1, nbmod(1)
             zi(jbid+i-1) = i
-  2     continue
+        end do
     endif
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
@@ -228,7 +228,7 @@ subroutine regeec(nomres, resgen, nomsst)
     call jeveuo(numgen//'.NUEQ', 'L', llnueq)
 !
 ! --- BOUCLE SUR LES MODES A RESTITUER
-    do 20 i = 1, nbmod(1)
+    do i = 1, nbmod(1)
         iord = zi(jbid+i-1)
 !
 ! ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
@@ -236,13 +236,13 @@ subroutine regeec(nomres, resgen, nomsst)
         call jeveuo(chamol, 'L', llchol)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then
-            do 21 i1 = 1, neqet
+            do i1 = 1, neqet
                 zr(lmoet+i1-1)=0.d0
-                do 31 k1 = 1, neqred
+                do k1 = 1, neqred
                     zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
                     neqet+i1-1)* zr(llchol+k1-1)
- 31             continue
- 21         continue
+                end do
+            end do
             llchol=lmoet
         endif
 !
@@ -266,21 +266,21 @@ subroutine regeec(nomres, resgen, nomsst)
         else
             ibid=nbddg
         endif
-        do 30 j = 1, ibid
+        do j = 1, ibid
             call dcapno(basmod, depl, j, chamba)
             call jeveuo(chamba, 'L', llchab)
 !
 ! ------- BOUCLE SUR LES EQUATIONS PHYSIQUES
-            do 40 k = 1, neq
+            do k = 1, neq
                 if (elim .ne. 0) then
                     iad=llchol+ieq+j-1
                 else
                     iad=llchol+zi(llnueq+ieq+j-2)-1
                 endif
                 zr(ldnew+k-1) = zr(ldnew+k-1) + zr(llchab+k-1)*zr(iad)
- 40         continue
+            end do
             call jelibe(chamba)
- 30     continue
+        end do
         call rsnoch(nomres, depl, i)
         call rsadpa(nomres, 'E', 6, nompar, i,&
                     0, tjv=iadpar, styp=kbid)
@@ -292,7 +292,7 @@ subroutine regeec(nomres, resgen, nomsst)
         zk16(iadpar(6)) = 'MODE_DYN'
 !
         call jelibe(chamol)
- 20 continue
+    end do
 !
     call jelibe(numgen//'.NUEQ')
     call jedetr('&&REGEEC.NUME')

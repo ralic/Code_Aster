@@ -32,11 +32,10 @@ subroutine trabck(cmess, iexit)
     character(len=*) :: cmess
     integer(kind=4) :: iexit
 !   Dummy argument si HAVE_TRACEBACKQQ n'est pas defini
-    integer :: dummy
 #if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
     call TRACEBACKQQ(string=cmess, USER_EXIT_CODE=iexit)
 #elif HAVE_BACKTRACE == 1
-    call backtrace
+    call backtrace()
 #else
 !   ON NE PEUT PAS APPELER UTMESS (RECURSIVITE)
     write(6,*) 'Traceback is not provided by the compiler'

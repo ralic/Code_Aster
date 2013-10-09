@@ -77,7 +77,7 @@ subroutine xaint2(noma, modele)
 !
     character(len=24) :: grp(3)
     character(len=19) :: ces(5), cel(5), cnxinv, ligrel
-    character(len=8) ::  typma, nomfis
+    character(len=8) :: typma, nomfis
     character(len=2) :: ch2
     integer :: jtypma, jcesd(5), jcesl(5), jcesv(5), iad, iret
     integer :: jxc, itypma, nncp, ibid, ier
@@ -125,7 +125,7 @@ subroutine xaint2(noma, modele)
     cel(3) = modele//'.STNO'
     cel(4) = modele//'.FISSNO'
     cel(5) = modele//'.TOPOFAC.HE'
-    do 10 i = 1, 5
+    do i = 1, 5
         call codent(i, 'G', ch2)
         ces(i) = '&&XAINT2.CES'//ch2
         call jeexin(cel(i)//'.CELD', ier)
@@ -134,7 +134,8 @@ subroutine xaint2(noma, modele)
         call jeveuo(ces(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(ces(i)//'.CESL', 'L', jcesl(i))
         call jeveuo(ces(i)//'.CESV', 'E', jcesv(i))
- 10 end do
+ 10     continue
+    end do
 !
 ! --- COMPTEUR LOCAL DES FISSURES DANS LES ÉLÉMENTS
 !
@@ -145,33 +146,33 @@ subroutine xaint2(noma, modele)
     call jeveuo(modele//'.NFIS', 'L', jnfis)
     nfis = zi(jnfis)
     call jeveuo(modele//'.FISS', 'L', jmofis)
-    do 20 ifis = 1, nfis
+    do ifis = 1, nfis
         nomfis = zk8(jmofis-1 + ifis)
         grp(1)=nomfis//'.MAILFISS.HEAV'
         grp(2)=nomfis//'.MAILFISS.CTIP'
         grp(3)=nomfis//'.MAILFISS.HECT'
 !       BOUCLE SUR LES GROUPES
-        do 100 igrp = 1, 3
+        do igrp = 1, 3
             call jeexin(grp(igrp), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(igrp), 'L', jg)
                 call jelira(grp(igrp), 'LONMAX', nmaenr)
 !           BOUCLE SUR LES MAILLES DU GROUPE
-                do 120 i = 1, nmaenr
+                do i = 1, nmaenr
                     ima = zi(jg-1+i)
 !             ON INCRÉMENTE LE COMPTEUR LOCAL
                     zi(jnbsp2-1+ima) = zi(jnbsp2-1+ima)+1
-120             continue
+                end do
             endif
-100     continue
+        end do
 !       BOUCLE SUR LES GROUPES
-        do 200 igrp = 1, 3
+        do igrp = 1, 3
             call jeexin(grp(igrp), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(igrp), 'L', jg)
                 call jelira(grp(igrp), 'LONMAX', nmaenr)
 !           BOUCLE SUR LES MAILLES DU GROUPE
-                do 220 i = 1, nmaenr
+                do i = 1, nmaenr
                     ima = zi(jg-1+i)
                     itypma=zi(jtypma-1+ima)
                     ndime= zi(jtmdim-1+itypma)
@@ -196,7 +197,7 @@ subroutine xaint2(noma, modele)
 !
                     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                     call conare(typma, ar, nbar)
-                    do 230 inter = 1, ninter
+                    do inter = 1, ninter
 !               BOUCLE SUR LES ARETES DE L'ÉLÉMENT CONTENANT LA JONCTION
                         call cesexi('S', jcesd(2), jcesl(2), ima, 1,&
                                     ifiss, (inter-1)*zxain+1, iad)
@@ -204,20 +205,20 @@ subroutine xaint2(noma, modele)
                         if (ia .eq. 0 .or. ia .gt. 0 .and. verif) goto 230
                         ia = abs(ia)
 !               RÉCUP DES NOEUDS J DE L'ARETE
-                        do 232 j = 1, 2
+                        do j = 1, 2
                             ino(j) = ar(ia,j)
                             nuno(j) = zi(jconx1-1+zi(jconx2+ima-1)+ ino(j)-1)
                             elim(j) = .false.
-232                     continue
+                        end do
 !
-                        do 235 j = 1, 2
+                        do j = 1, 2
 !       RECUPERATION DU NOMBRE DE DDL HEAVISIDES ACTIFS SUR LE NOEUD J
                             nfh = 0
-                            do 240 ifis2 = 1, nfiss
+                            do ifis2 = 1, nfiss
                                 call cesexi('S', jcesd(3), jcesl(3), ima, ino(j),&
                                             ifis2, 1, iad)
                                 if (zi(jcesv(3)-1+iad) .eq. 1) nfh = nfh + 1
-240                         continue
+                            end do
                             ASSERT(nfh.gt.1)
 !
 !     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
@@ -225,7 +226,7 @@ subroutine xaint2(noma, modele)
                             call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup)
                             call jeveuo(jexnum(cnxinv, nuno(j)), 'L', jmasup)
                             heav = 0
-                            do 250 k = 1, nmasup
+                            do k = 1, nmasup
                                 ima2 = zi(jmasup-1+k)
                                 itypma=zi(jtypma-1+ima2)
                                 ndime= zi(jtmdim-1+itypma)
@@ -238,18 +239,18 @@ subroutine xaint2(noma, modele)
                                 if (zi(jcesv(1)-1+iad) .eq. 0) goto 250
 !      RECUPÉRATION DU NUMÉRO DE NOEUD INO2 CORRESPONDANT À J DANS IMA2
                                 call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', nno2)
-                                do 260 ino2 = 1, nno2
+                                do ino2 = 1, nno2
                                     nngl=zi(jconx1-1+zi(jconx2+ima2-1)&
                                     +ino2-1)
                                     if (nngl .eq. nuno(j)) goto 270
-260                             continue
+                                end do
 270                             continue
 !
 !     CALCUL DE LA VALEUR DE LA FONCTION HEAVISIDE EN TRINAIRE :
 !     HE =(-1,0 OU 1) EN IFH DONNE (0,1 OU 2) POUR LA IFH-1 TRICIMALE
 !
                                 he = 0
-                                do 280 ifh = 1, nfh
+                                do ifh = 1, nfh
 !     NUMÉRO DE FISSURE ASSOCIÉ À NUNO(J) ET IFH DANS IMA2
                                     call cesexi('S', jcesd(4), jcesl(4), ima2, ino2,&
                                                 ifh, 1, iad)
@@ -262,17 +263,18 @@ subroutine xaint2(noma, modele)
                                     call cesexi('S', jcesd(5), jcesl(5), ima2, 1,&
                                                 nfis2*(ifis2-1)+ifis3, 2, iad)
                                     he = he + ( 1+zi(jcesv(5)-1+iad))* 3**(nfh+ifh-1)
-280                             continue
+                                end do
                                 if (heav .eq. 0) heav = he
 !     SI LA FONC HEAV EST DIFF D'UN ELEM À L'AUTRE, ON DÉSATCTIVE LE NO
                                 if (heav .ne. he) elim(j) = .true.
-250                         continue
+250                             continue
+                            end do
 !
-235                     continue
+                        end do
 !     ELIM = TT <=> L'ARETE DOIT ÊTRE ENTIÈREMENT ÉLIMINÉE
 !     SINON IL FAUDRA RECONSIDÉRER PROPREMENT L'ELIM COMPLÈTE DE L'ARETE
                         ASSERT(verif.eqv.(elim(1).and.elim(2)))
-                        do 300 j = 1, 2
+                        do j = 1, 2
                             if (.not.elim(j)) goto 300
 !
 !     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
@@ -281,7 +283,7 @@ subroutine xaint2(noma, modele)
                             call jeveuo(jexnum(cnxinv, nuno(j)), 'L', jmasup)
 !
 !                 BOUCLE SUR LES ELEM CONEXES
-                            do 350 k = 1, nmasup
+                            do k = 1, nmasup
                                 ima2 = zi(jmasup-1+k)
                                 itypma=zi(jtypma-1+ima2)
                                 ndime= zi(jtmdim-1+itypma)
@@ -294,7 +296,7 @@ subroutine xaint2(noma, modele)
                                 ninte2 = zi(jcesv(1)-1+iad)
 !
 !                   BOUCLE SUR LES ARETES AINTER
-                                do 360 inte2 = 1, ninte2
+                                do inte2 = 1, ninte2
                                     call cesexi('S', jcesd(2), jcesl(2), ima2, 1,&
                                                 ifis2, (inte2-1)*zxain+1, iad)
                                     ia = abs(nint(zr(jcesv(2)-1+iad)))
@@ -322,15 +324,20 @@ subroutine xaint2(noma, modele)
                                             zr(jcesv(2)-1+iad) = ar(ia,1)
                                         endif
                                     endif
-360                             continue
-350                         continue
-300                     continue
-230                 continue
+360                                 continue
+                                end do
+350                             continue
+                            end do
+300                         continue
+                        end do
+230                     continue
+                    end do
 !
-220             continue
+220                 continue
+                end do
             endif
-200     continue
- 20 end do
+        end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM POUR MODELE.TOPOFAC.AI
 !
@@ -341,11 +348,12 @@ subroutine xaint2(noma, modele)
 !
     call jedetr(cnxinv)
     call jedetr('&&XAIN2.NBSP')
-    do 130 i = 1, 5
+    do i = 1, 5
         call jeexin(ces(i)//'.CESD', ier)
         if (ier .eq. 0) goto 130
         call detrsd('CHAM_ELEM_S', ces(i))
-130 end do
+130     continue
+    end do
 !
 999 continue
 !

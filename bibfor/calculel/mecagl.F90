@@ -182,7 +182,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                 call utmess('F', 'RUPTURE1_12')
             else if (inga.eq.0) then
                 ligrmo = modele//'.MODELE'
-                call detrsd('CHAMP',celmod)
+                call detrsd('CHAMP', celmod)
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
                 call chpchd(chsigi, 'ELNO', celmod, 'NON', 'V',&

@@ -38,7 +38,7 @@ subroutine rfnoch()
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: ifm, niv
-    integer ::  n, nc, ng, int, ind, nsst, iret
+    integer :: n, nc, ng, int, ind, nsst, iret
     character(len=8) :: k8b, noma, sst, basemo, noeud, intitu
     character(len=24) :: valk(2), nogno
     character(len=16) :: parax, paray, nomcmd, typcon

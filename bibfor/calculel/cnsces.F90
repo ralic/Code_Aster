@@ -120,29 +120,29 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !
 !     -- PAR DEFAUT : NBSP=1
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         zi(jnbsp-1+ima) = 1
- 10 end do
+    end do
 !
     call exisd('CHAM_ELEM_S', cesmod, iret)
     ASSERT((typces.ne.'ELGA') .or. (iret.gt.0))
 !
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
-        do 20 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
             zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
- 20     continue
+        end do
     endif
 !
     if (typces .eq. 'ELEM') then
-        do 30 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = 1
- 30     continue
+        end do
     else if (typces.eq.'ELNO') then
-        do 40 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
- 40     continue
+        end do
     else if (typces.eq.'ELGA') then
 !       DEJA FAIT GRACE A CESMOD
     else
@@ -167,76 +167,79 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
     if (typces .eq. 'ELEM') then
 !     --------------------------
-        do 100 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
             nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
-            do 90 icmp = 1, ncmp
+            do icmp = 1, ncmp
 !
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                 ico = 0
-                do 50 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
- 50             continue
+                end do
                 if (ico .ne. nbno) goto 90
 !
 !         -- CALCUL DE LA MOYENNE ARITHMETIQUE :
                 v = 0.d0
-                do 60 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) then
                         v = v + zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
                     endif
- 60             continue
+                end do
                 v = v/nbno
 !
 !
-                do 80 ipt = 1, nbpt
-                    do 70 isp = 1, nbsp
+                do ipt = 1, nbpt
+                    do isp = 1, nbsp
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     isp, icmp, iad)
                         ASSERT(iad.lt.0)
                         zl(jcesl-1-iad) = .true.
                         zr(jcesv-1-iad) = v
- 70                 continue
- 80             continue
- 90         continue
-100     continue
+                    end do
+                end do
+ 90             continue
+            end do
+        end do
 !
 !
     else if (typces.eq.'ELNO') then
 !     --------------------------
-        do 150 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
             nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
             ASSERT(nbno.eq.nbpt)
 !
-            do 140 icmp = 1, ncmp
+            do icmp = 1, ncmp
 !
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                 ico = 0
-                do 110 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
-110             continue
+                end do
                 if (ico .ne. nbno) goto 140
 !
-                do 130 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                     if (.not.zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) goto 130
                     v = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
-                    do 120 isp = 1, nbsp
+                    do isp = 1, nbsp
                         call cesexi('C', jcesd, jcesl, ima, ino,&
                                     isp, icmp, iad)
                         ASSERT(iad.lt.0)
                         zl(jcesl-1-iad) = .true.
                         zr(jcesv-1-iad) = v
-120                 continue
-130             continue
-140         continue
-150     continue
+                    end do
+130                 continue
+                end do
+140             continue
+            end do
+        end do
 !
 !
     else if (typces.eq.'ELGA') then
@@ -248,7 +251,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
         call jeveuo(mnoga//'.CESV', 'L', mnogav)
         ASSERT(zk8(mnogak).eq.ma)
 !
-        do 210 ima = 1, nbma
+        do ima = 1, nbma
             call cesexi('C', mnogad, mnogal, ima, 1,&
                         1, 1, iad)
             if (iad .le. 0) goto 210
@@ -271,35 +274,37 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
             ASSERT(nbno.eq.nbno2)
             ASSERT(nbpg.eq.nbpg2)
 !
-            do 200 icmp = 1, ncmp
+            do icmp = 1, ncmp
 !
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                 ico = 0
-                do 160 ino = 1, nbno
+                do ino = 1, nbno
                     nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
-160             continue
+                end do
                 if (ico .ne. nbno) goto 200
 !
-                do 190 ipg = 1, nbpg
+                do ipg = 1, nbpg
                     v = 0.d0
-                    do 170 ino = 1, nbno
+                    do ino = 1, nbno
                         nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
                         v1 = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
                         v = v + v1*zr(mnogav-1+iad+1+nbno* (ipg-1)+ ino)
-170                 continue
+                    end do
 !
-                    do 180 isp = 1, nbsp
+                    do isp = 1, nbsp
                         call cesexi('C', jcesd, jcesl, ima, ipg,&
                                     isp, icmp, iad1)
                         ASSERT(iad1.lt.0)
                         zl(jcesl-1-iad1) = .true.
                         zr(jcesv-1-iad1) = v
-180                 continue
-190             continue
+                    end do
+                end do
 !
-200         continue
-210     continue
+200             continue
+            end do
+210         continue
+        end do
 !
     endif
 !

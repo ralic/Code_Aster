@@ -65,7 +65,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 !     IN  INST    : INSTANT
 !     ------------------------------------------------------------------
 !
-    integer ::  nbma, i, jcesv, jcesl, jcesd
+    integer :: nbma, i, jcesv, jcesl, jcesd
     integer :: jcesk, jcmpgd, ncmpm, jcesc
     integer :: icmp, nbpara, nbno
     integer :: ino, nmin, nmax, npara, nbcmpm
@@ -122,22 +122,22 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
         call jeveuo(cesout//'.CNSC', 'L', jcmpgd)
     else
         call wkvect('&&PEMAXC.LIST_CMP', 'V V K8', ncmpm, jcmpgd)
-        do 25 i = 1, ncmpm
+        do i = 1, ncmpm
             nomva = 'V'
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
- 25     continue
+        end do
     endif
 !
     npara=4*nbcmp
     nbcmpm=zi(jcesd+1)
 !
-    do 30 i = 1, nbcmp
+    do i = 1, nbcmp
         vmin=r8maem()
         vmax=-r8maem()
         icmp=indik8(zk8(jcesc),nomcmp(i),1,nbcmpm)
         ASSERT(icmp.ge.0)
-        do 36 ino = 1, nbno
+        do ino = 1, nbno
             if (zl(jcesl+(ino-1)*nbcmpm+icmp-1)) then
                 if (vmax .lt. zr(jcesv+(ino-1)*nbcmpm+icmp-1)) then
                     vmax=zr(jcesv+(ino-1)*nbcmpm+icmp-1)
@@ -148,7 +148,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
                     nmin=ino
                 endif
             endif
- 36     continue
+        end do
         mima(1+2*(i-1)+1)=vmax
         mima(1+2*(i-1)+2)=vmin
         call jenuno(jexnum(nomnoe, nmin), knmin)
@@ -171,7 +171,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
         endif
 !
 !
- 30 end do
+    end do
 !
 ! --- ON REMPLIT LA TABLE
     nbpara=4+npara

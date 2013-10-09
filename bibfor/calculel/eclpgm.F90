@@ -169,7 +169,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
         ico=0
         nch2=nch
         call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
-        do 30 ich = 1, nch2
+        do ich = 1, nch2
             if (lisch(ich)(6:9) .ne. 'ELGA') then
                 call utmess('F', 'CALCULEL2_41')
             endif
@@ -194,7 +194,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                 call utmess('F', 'CALCULEL2_33', nk=2, valk=valk)
             endif
             call jeveuo(nomobj, 'L', jobj)
- 30     continue
+ 30         continue
+        end do
 !        -- ON N'A PAS TROUVE DE CHAMP ELGA CORRECT :
         if (ico .eq. 0) nch2=0
     endif
@@ -216,7 +217,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     nbse = 0
     nbpi = 0
     nbno2t = 0
-    do 1 igr = 1, nbgrel(ligrel)
+    do igr = 1, nbgrel(ligrel)
         te = typele(ligrel,igr)
         nbelgr = nbelem(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
@@ -237,10 +238,11 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                     nse1, corsel)
         nbse = nbse+nbelgr*nse1
         nbpi = nbpi+nbelgr*npoini
-        do 500 kse = 1, nse1
+        do kse = 1, nse1
             nbno2t = nbno2t+nbelgr*nbno2(kse)
-500     continue
-  1 end do
+        end do
+  1     continue
+    end do
 !
 !
 !     2. ON ALLOUE 4 OBJETS DE TRAVAIL (+ MAILLAGE//'.TYPMAIL') :
@@ -272,7 +274,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     nuse = 0
     nupoin = 0
     nuno2 = 0
-    do 2 igr = 1, nbgrel(ligrel)
+    do igr = 1, nbgrel(ligrel)
         te = typele(ligrel,igr)
         nbelgr = nbelem(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
@@ -293,51 +295,52 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                     nse1, corsel)
         if (nse1 .eq. 0) goto 2
 !
-        do 3 iel = 1, nbelgr
+        do iel = 1, nbelgr
 !          ON RECUPERE LE NUMERO DE LA MAILLE ET LE NUMERO
 !          DE SES SOMMETS :
             ima = numail(igr,iel)
-            do 31 ino1 = 1, nbnoma(ima)
+            do ino1 = 1, nbnoma(ima)
                 tabno(ino1)=numglm(ima,ino1)
- 31         continue
+            end do
 !
 !          -- CALCUL DES COORDONNEES DES POINT_I :
-            do 32 ipoini = 1, npoini
+            do ipoini = 1, npoini
                 nupoin=nupoin+1
-                do 33 k = 1, dimgeo
+                do k = 1, dimgeo
                     x=0.d0
-                    do 34 iterm = 1, nterm1(ipoini)
+                    do iterm = 1, nterm1(ipoini)
                         x=x+csomm1(ipoini,iterm)* zr(iacoor-1+3*(&
                         tabno(nsomm1(ipoini,iterm))-1)+k)
- 34                 continue
+                    end do
                     zr(iagepi-1+(nupoin-1)*dimgeo+k)=x
- 33             continue
- 32         continue
+                end do
+            end do
 !
 !          -- STOCKAGE DES NUMEROS DES POINT_I DES SOUS-ELEMENTS
 !             ET DE LEURS COORDONNEES :
-            do 40 kse = 1, nse1
+            do kse = 1, nse1
                 nuse=nuse+1
                 zi(iatypm-1+nuse)=tyma(kse)
                 zi(ianno2-1+nuse)=nbno2(kse)
                 nno2=nbno2(kse)
-                do 41 ino2 = 1, nno2
+                do ino2 = 1, nno2
                     nuno2=nuno2+1
                     zi(iacose-1+nuno2)=connx(ino2,kse)+ nupoin-npoini
                     nupoi2=zi(iacose-1+nuno2)
-                    do 779 k = 1, dimgeo
+                    do k = 1, dimgeo
                         zr(iagese-1+(nuno2-1)*dimgeo+k)= zr(iagepi-1+(&
                         nupoi2-1)*dimgeo+k)
-779                 continue
- 41             continue
+                    end do
+                end do
 !           DANS LE CAS DU QUADRILATERE ON CONTROLE L'APPLATISSEMENT
                 if (nno2 .eq. 4) then
                     call eclapp(dimgeo, nno2, lonmin, zr(iagese+(nuno2- 4)*dimgeo))
                 endif
- 40         continue
+            end do
 !
-  3     continue
-  2 end do
+        end do
+  2     continue
+    end do
 !
     call jedetr(nomobj)
 !
@@ -363,15 +366,15 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail)
 !
     nom(1:1)='N'
-    do 51 k = 1, nbnoeu
+    do k = 1, nbnoeu
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(ma2//'.NOMNOE', nom))
- 51 end do
+    end do
     nom(1:1)='M'
-    do 52 k = 1, nbmail
+    do k = 1, nbmail
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(ma2//'.NOMMAI', nom))
- 52 end do
+    end do
 !
 !
 !     3.3 CREATION DES OBJETS  .CONNEX ET .TYPMAIL
@@ -382,15 +385,15 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call jeveuo(ma2//'.CONNEX', 'E', ibid)
 !
     nuno2=0
-    do 53 ima = 1, nbmail
+    do ima = 1, nbmail
         nno2=zi(ianno2-1+ima)
         call jecroc(jexnum(ma2//'.CONNEX', ima))
         call jeecra(jexnum(ma2//'.CONNEX', ima), 'LONMAX', nno2)
-        do 54 ino2 = 1, nno2
+        do ino2 = 1, nno2
             nuno2=nuno2+1
             zi(ibid-1+nuno2)=nuno2
- 54     continue
- 53 end do
+        end do
+    end do
 !
 !
 !
@@ -402,26 +405,26 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call jeveuo(ma2//'.COORDO    .REFE', 'E', jrefe)
     zk24(jrefe-1+1)=ma2
 !
-    do 56 k = 1, dimgeo
+    do k = 1, dimgeo
         nuno2=0
-        do 57 ima = 1, nbmail
+        do ima = 1, nbmail
             nno2=zi(ianno2-1+ima)
 !         -- ON FAIT UN PETIT "SHRINK" SUR LES MAILLES :
             xc=0.d0
-            do 58 ino = 1, nno2
+            do ino = 1, nno2
                 nuno2=nuno2+1
                 xc= xc+zr(iagese-1+(nuno2-1)*dimgeo+k)/dble(nno2)
- 58         continue
+            end do
             nuno2=nuno2-nno2
 !
-            do 59 ino = 1, nno2
+            do ino = 1, nno2
                 nuno2=nuno2+1
                 xm= zr(iagese-1+(nuno2-1)*dimgeo+k)
                 xm=xc+shrink*(xm-xc)
                 zr(ibid-1+(nuno2-1)*3+k)=xm
- 59         continue
- 57     continue
- 56 end do
+            end do
+        end do
+    end do
 !
 !
 !

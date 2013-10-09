@@ -58,10 +58,10 @@ subroutine w039c4(carte, ifi, form)
     call jemarq()
 !
 ! --- SI CE N'EST PAS AU FORMAT MED
-    if (form .ne. 'MED') goto 9999
+    if (form .ne. 'MED') goto 999
 ! --- SI LA CARTE N'EXISTE PAS
     call exisd('CARTE', carte, iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
     cart1=carte
 ! --- QUE DES REELS
@@ -115,6 +115,6 @@ subroutine w039c4(carte, ifi, form)
 !
     call detrsd('CHAM_ELEM_S', chels1)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

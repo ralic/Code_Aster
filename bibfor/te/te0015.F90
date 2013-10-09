@@ -40,7 +40,7 @@ subroutine te0015(option, nomte)
     integer :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: rho(1), coef
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: poids
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, imate, ipesa, ivectu, nnos
     integer :: ndim, nno, npg, ndl, kp, l, i, ii, j
@@ -64,13 +64,13 @@ subroutine te0015(option, nomte)
                 1, 'RHO', rho, icodre(1), 1)
 !
     ndl = 3*nno
-    do 10 i = 1, ndl
+    do i = 1, ndl
         zr(ivectu+i-1) = 0.0d0
-10  end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 40 kp = 1, npg
+    do kp = 1, npg
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -78,16 +78,16 @@ subroutine te0015(option, nomte)
 !
         coef = rho(1)*poids*zr(ipesa)
 !
-        do 30 i = 1, nno
+        do i = 1, nno
             ii = 3* (i-1)
 !
-            do 20 j = 1, 3
+            do j = 1, 3
                 zr(ivectu+ii+j-1) = zr(ivectu+ii+j-1) + coef*zr(ivf+l+ i-1)*zr(ipesa+j)
-20          continue
+            end do
 !
-30      continue
+        end do
 !
-40  end do
+    end do
 !
 !
 end subroutine

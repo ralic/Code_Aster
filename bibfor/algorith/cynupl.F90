@@ -127,13 +127,13 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !--------------BOUCLE DE COMPTAGE DES DDL FINAUX------------------------
 !
     nddlt=0
-    do 10 i = 1, nbnot
+    do i = 1, nbnot
         numsec=zi(llinsk+i-1)
         numnos=zi(llinsk+nbnot+i-1)
         nddlt=nddlt+zi(llprno+(numnos-1)*(2+nec)+1)
         zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
         2+nec)+1)
- 10 end do
+    end do
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
@@ -161,12 +161,12 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
                 nbsec)
 !
 !
-    do 20 i = 1, nbsec
+    do i = 1, nbsec
         call jecroc(jexnum(indirf, i))
         ntail=2*zi(lttds+i-1)
         call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
         zi(lttds+i-1)=0
- 20 end do
+    end do
 !
 !
 !---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
@@ -183,7 +183,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     nsecpr=1
     call jeveuo(jexnum(indirf, nsecpr), 'E', ltinse)
     icomp=0
-    do 30 i = 1, nbnot
+    do i = 1, nbnot
 !
         numsec=zi(llinsk+i-1)
         numnos=zi(llinsk+nbnot+i-1)
@@ -193,17 +193,17 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
         zi(ldprno+(i-1)*(2+nec))=icomp+1
         zi(ldprno+(i-1)*(2+nec)+1)=nbddl
-        do 40 iec = 1, nec
+        do iec = 1, nec
             zi(ldprno+(i-1)*(2+nec)+1+iec)= zi(llprno+(numnos-1)*(2+&
             nec)+1+iec)
- 40     continue
+        end do
         if (numsec .ne. nsecpr) then
             call jelibe(jexnum(indirf, nsecpr))
             nsecpr=numsec
             call jeveuo(jexnum(indirf, nsecpr), 'E', ltinse)
         endif
         iad=0
-        do 50 j = 1, nbcmp
+        do j = 1, nbcmp
             if (idec(j) .gt. 0) then
                 iad=iad+1
                 icomp=icomp+1
@@ -216,8 +216,8 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
                 zi(ipoint+2)=icomp
                 zi(lttds+numsec-1)=zi(lttds+numsec-1)+1
             endif
- 50     continue
- 30 end do
+        end do
+    end do
 !
     call jelibe(jexnum(indirf, nsecpr))
 !

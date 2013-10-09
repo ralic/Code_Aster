@@ -63,7 +63,7 @@ subroutine ssafmo(mo)
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('AFFE_SOUS_STRUC', nboc)
-    if (nboc .eq. 0) goto 9999
+    if (nboc .eq. 0) goto 999
 !
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('NB_SM_MAILLA', ma, 'MAILLAGE', repi=nbsma)
@@ -79,9 +79,9 @@ subroutine ssafmo(mo)
 !     ----------------------
     call getvtx('AFFE_SOUS_STRUC', 'TOUT', iocc=ioc, scal=kbid, nbret=n1)
     if (n1 .eq. 1) then
-        do 1 i = 1, nbsma
+        do i = 1, nbsma
             zi(iasssa-1+i)=1
-  1     continue
+        end do
         nbss= nbsma
         goto 9998
     endif
@@ -93,7 +93,7 @@ subroutine ssafmo(mo)
     call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', iocc=ioc, nbval=-n1, vect=zk8(ialmai),&
                 nbret=n2)
     nbss= -n1
-    do 2 i = 1, -n1
+    do i = 1, -n1
         nosma=zk8(ialmai-1+i)
         call jenonu(jexnom(ma//'.SUPMAIL', nosma), imas)
         if (imas .eq. 0) then
@@ -103,7 +103,7 @@ subroutine ssafmo(mo)
         else
             zi(iasssa-1+imas)=1
         endif
-  2 end do
+    end do
 !
 !     -- ON REMPLIT LES 3 DERNIERES VALEURS:
 !     --------------------------------------
@@ -116,6 +116,6 @@ subroutine ssafmo(mo)
     if (iret .gt. 0) call jedetr('&&SSAFMO.LMAI')
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

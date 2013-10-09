@@ -2,7 +2,6 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                   neq, nbmo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
@@ -21,6 +20,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/ddot.h"
+!
     integer :: neq, nbmo
     character(len=8) :: matras, nomres, basemo
     character(len=14) :: nu, nugene
@@ -57,6 +57,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     character(len=16) :: typbas
     character(len=19) :: matr, resu
     logical :: lsym
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -88,9 +89,9 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     zk24(ialime)=' '
 !
     call wkvect(resu//'.CONL', 'G V R', nueq, iaconl)
-    do 10 i = 1, nueq
+    do i = 1, nueq
         zr(iaconl+i-1)=1.0d0
-10  end do
+    end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -135,7 +136,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !     -- CAS DES MATRICES SYMETRIQUES :
 !     ----------------------------------
     if (lsym) then
-        do 40 iblo = 1, nbloc
+        do iblo = 1, nbloc
 !
             call jecroc(jexnum(resu//'.UALF', iblo))
             call jeveuo(jexnum(resu//'.UALF', iblo), 'E', ldblo)
@@ -147,7 +148,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
             n1bloc=zi(jscbl+iblo-1)+1
             n2bloc=zi(jscbl+iblo)
 !
-            do 30 i = n1bloc, n2bloc
+            do i = n1bloc, n2bloc
                 nbj=i-zi(jschc+i-1)+1
                 ASSERT(nbj.eq.1 .or. nbj.eq.i)
 !
@@ -157,7 +158,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                 call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
-                do 20 j = nbj, i
+                do j = nbj, i
 !
 ! ------------ PRODUIT SCALAIRE VECTASS * MODE
                     pij=ddot(neq,zr(idbase+(j-1)*neq),1,zr(idvec2),1)
@@ -165,10 +166,10 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 ! ------------ STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
                     zr(ldblo+zi(jscdi+i-1)+j-i-1)=pij
 !
-20              continue
-30          continue
+                end do
+            end do
             call jelibe(jexnum(resu//'.UALF', iblo))
-40      continue
+        end do
 !
 !
     else
@@ -184,13 +185,13 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
         ASSERT(n1bloc.eq.1)
         ASSERT(n2bloc.eq.nueq)
 !
-        do 60 i = 1, nueq
+        do i = 1, nueq
             nbj=i-zi(jschc+i-1)+1
             ASSERT(nbj.eq.1)
             call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
                         .true.)
             call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
-            do 50 j = 1, nueq
+            do j = 1, nueq
                 pij=ddot(neq,zr(idbase+(j-1)*neq),1,zr(idvec2),1)
                 if (j .le. i) then
                     zr(ldblo1+zi(jscdi+i-1)+j-i-1)=pij
@@ -198,8 +199,8 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                 if (j .ge. i) then
                     zr(ldblo2+zi(jscdi+j-1)+i-j-1)=pij
                 endif
-50          continue
-60      continue
+            end do
+        end do
     endif
 !
 !

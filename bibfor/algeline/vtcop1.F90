@@ -46,7 +46,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
 !
 !
-    integer ::  iret, ieq1, ieq2, neq1, jvale1, jvale2, jtrav2
+    integer :: iret, ieq1, ieq2, neq1, jvale1, jvale2, jtrav2
     integer :: neq2, jdesc1, jdesc2, jrefe1, jrefe2, jdeeq1, jdeeq2
     integer :: nnomx, ncpmx, jtrav1, nuno2, nucp2, nuno1, nucp1, jdeeq
     integer :: jcmpgd, ncmpmx, icmp
@@ -77,21 +77,21 @@ subroutine vtcop1(chin, chout, kstop, codret)
         call jeveuo(pfchno//'.DEEQ', 'L', jdeeq)
         if (typ1 .eq. typ2) then
             if (typ1 .eq. 'R') then
-                do 10 ieq1 = 0, neq1-1
+                do ieq1 = 0, neq1-1
                     if (zi(jdeeq-1+2*ieq1+2) .le. 0) then
                         zr(jvale2+ieq1) = 0.d0
                     else
                         zr(jvale2+ieq1) = zr(jvale1+ieq1)
                     endif
- 10             continue
+                end do
             else if (typ1 .eq. 'C') then
-                do 12 ieq1 = 0, neq1-1
+                do ieq1 = 0, neq1-1
                     if (zi(jdeeq-1+2*ieq1+2) .le. 0) then
                         zc(jvale2+ieq1) = dcmplx(0.d0,0.d0)
                     else
                         zc(jvale2+ieq1) = zc(jvale1+ieq1)
                     endif
- 12             continue
+                end do
             else
                 valk(1) = ch1
                 valk(2) = ch2
@@ -100,13 +100,13 @@ subroutine vtcop1(chin, chout, kstop, codret)
             endif
         else
             if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
-                do 14 ieq1 = 0, neq1-1
+                do ieq1 = 0, neq1-1
                     if (zi(jdeeq-1+2*ieq1+2) .le. 0) then
                         zc(jvale2+ieq1) = dcmplx(0.d0,0.d0)
                     else
                         zc(jvale2+ieq1) = zr(jvale1+ieq1)
                     endif
- 14             continue
+                end do
             else
                 valk(1) = ch1
                 valk(2) = typ1
@@ -115,7 +115,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
             endif
         endif
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -153,29 +153,29 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
     nnomx=0
     ncpmx=0
-    do 16 ieq2 = 1, neq2
+    do ieq2 = 1, neq2
         nnomx= max(nnomx,zi(jdeeq2-1+2*(ieq2-1)+1))
         ncpmx= max(ncpmx,zi(jdeeq2-1+2*(ieq2-1)+2))
- 16 end do
+    end do
 !
 !
 !     2.2 ON REMPLIT UN OBJET DE TRAVAIL :
 !     ------------------------------------
     call wkvect('&&VTCOP1.TRAV1', 'V V I', nnomx*ncpmx, jtrav1)
     call wkvect('&&VTCOP1.TRAV2', 'V V L', neq2, jtrav2)
-    do 18 ieq2 = 1, neq2
+    do ieq2 = 1, neq2
         nuno2=zi(jdeeq2-1+2*(ieq2-1)+1)
         nucp2=zi(jdeeq2-1+2*(ieq2-1)+2)
         if (nucp2 .gt. 0) zi(jtrav1-1+(nuno2-1)*ncpmx+nucp2)=ieq2
         zl(jtrav2-1+ieq2)=.false.
- 18 end do
+    end do
 !
 !
 !     2.3 ON RECOPIE LES VALEURS DE CH1 DANS CH2 :
 !     -------------------------------------------
     if (typ1 .eq. typ2) then
         if (typ1 .eq. 'R') then
-            do 20 ieq1 = 1, neq1
+            do ieq1 = 1, neq1
                 nuno1=zi(jdeeq1-1+2*(ieq1-1)+1)
                 nucp1=zi(jdeeq1-1+2*(ieq1-1)+2)
                 if ((nucp1.gt.0) .and. (nuno1.le.nnomx) .and. ( nucp1.le.ncpmx)) then
@@ -185,9 +185,9 @@ subroutine vtcop1(chin, chout, kstop, codret)
                         zr(jvale2-1+ieq2)=zr(jvale1-1+ieq1)
                     endif
                 endif
- 20         continue
+            end do
         else if (typ1 .eq. 'C') then
-            do 22 ieq1 = 1, neq1
+            do ieq1 = 1, neq1
                 nuno1=zi(jdeeq1-1+2*(ieq1-1)+1)
                 nucp1=zi(jdeeq1-1+2*(ieq1-1)+2)
                 if ((nucp1.gt.0) .and. (nuno1.le.nnomx)) then
@@ -197,7 +197,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
                         zc(jvale2-1+ieq2)=zc(jvale1-1+ieq1)
                     endif
                 endif
- 22         continue
+            end do
         else
             valk(1) = ch1
             valk(2) = ch2
@@ -206,7 +206,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
         endif
 !
     else if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
-        do 24 ieq1 = 1, neq1
+        do ieq1 = 1, neq1
             nuno1=zi(jdeeq1-1+2*(ieq1-1)+1)
             nucp1=zi(jdeeq1-1+2*(ieq1-1)+2)
             if ((nucp1.gt.0) .and. (nuno1.le.nnomx)) then
@@ -216,7 +216,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
                     zc(jvale2-1+ieq2)=zr(jvale1-1+ieq1)
                 endif
             endif
- 24     continue
+        end do
 !
     else
         valk(1) = ch1
@@ -234,7 +234,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     icmp=-200
     icmp=indik8(zk8(jcmpgd),'LAGR',1,ncmpmx)
 !
-    do 19 ieq2 = 1, neq2
+    do ieq2 = 1, neq2
         nuno2=zi(jdeeq2-1+2*(ieq2-1)+1)
         nucp2=zi(jdeeq2-1+2*(ieq2-1)+2)
 !       NUCP2.NE.ICMP == GLUTE POUR LA SOUS-STRUCTURATION STATIQUE
@@ -245,10 +245,10 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 codret = 1
             endif
         endif
- 19 end do
+    end do
     call jedetr('&&VTCOP1.TRAV1')
     call jedetr('&&VTCOP1.TRAV2')
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -80,11 +80,11 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn
     character(len=24) :: basfon
     character(len=19) :: cnsgt, grlt
-    character(len=8) ::  resu, noma
+    character(len=8) :: resu, noma
     character(len=6) :: kiord
 !
     integer :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
-    integer ::  imodu, nbre, iret, numa, ndimte, jgt
+    integer :: imodu, nbre, iret, numa, ndimte, jgt
     integer :: nbno, ifon, i, idesc, irefe, j, jresu, k, jgtl
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
@@ -145,7 +145,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
 ! BOUCLE GENERALE SUR LES NDIMTE+1 CHAMPS_NO A CREER
 !
-    do 999 k = 1, ndimte+1
+    do k = 1, ndimte+1
 !
         call codent(k, 'D0', kiord)
         chamno = resu(1:8)//'_CHAM'//kiord//'     '
@@ -225,7 +225,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE
 !         POUR CALCULER PROJ(M)=N
 !
-            do 500 i = 1, nbno
+            do i = 1, nbno
                 if (debug) write(6,*)'NOEUD MAIL',i
 !             COORD DU NOEUD M DU MAILLAGE
                 xm = zr(iadrco+(i-1)*3+1-1)
@@ -236,7 +236,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                 jmin = 0
                 smin = 0.d0
 !              BOUCLE SUR PT DE FONFIS (ALGO VOIR )
-                do 600 j = 1, lnoff-1
+                do j = 1, lnoff-1
 !               COORD PT I, ET J
                     xi1 = zr(ifon-1+4*(j-1)+1)
                     yi1 = zr(ifon-1+4*(j-1)+2)
@@ -273,7 +273,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                         jmin = j
                         smin = s
                     endif
-600             continue
+                end do
 !
                 rii = (1-smin)*zr(iadrt1+jmin-1)+smin*zr(iadrt1+jmin+ 1-1)
                 rsi = (1-smin)*zr(iadrt2+jmin-1)+smin*zr(iadrt2+jmin+ 1-1)
@@ -361,10 +361,10 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !
                     endif
                 endif
-500         continue
+            end do
         endif
 !
-999 end do
+    end do
 !
     call jedema()
 !

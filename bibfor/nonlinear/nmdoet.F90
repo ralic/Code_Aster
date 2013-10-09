@@ -213,7 +213,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 !
 ! --- BOUCLE SUR LES CHAMPS A LIRE
 !
-    do 10 icham = 1, nbcham
+    do icham = 1, nbcham
         result = evol(1:8)
 !
 ! ----- LECTURE DU CHAMP - ETAT_INIT/SDRESU
@@ -229,7 +229,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         call nmetl3(modele, compor, evonol, result, numein,&
                     sdieto, leinit, icham)
 !
- 10 end do
+    end do
 !
 ! --- VERIFICATION COMPATIBILITE PILOTAGE
 !
@@ -246,9 +246,9 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         call jeveuo(dep1(1:19)//'.VALE', 'L', jdep1)
         call jeveuo(dep2(1:19)//'.VALE', 'L', jdep2)
         call jeveuo(depold(1:19)//'.VALE', 'E', jdepol)
-        do 156 i = 1, neq
+        do i = 1, neq
             zr(jdepol-1+i) = zr(jdep1-1+i) - zr(jdep2-1+i)
-156     continue
+        end do
         call jeveuo(sdpilo(1:19)//'.PLIR', 'E', jplir)
         call rsadpa(result, 'L', 1, 'COEF_MULT', numein,&
                     0, sjv=jinst, styp=k8bid)
@@ -274,7 +274,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 !
 ! --- CAS DE LA DYNAMIQUE: VITESSE ET ACCELERATION INITIALES
 !
-    do 30 icham = 1, nbcham
+    do icham = 1, nbcham
         nomchs = zk24(jiolch+zioch*(icham-1)+1-1)
         lzero = zk24(jiolch+zioch*(icham-1)+4-1).eq.'ZERO'
         if (nomchs .eq. 'VITE') then
@@ -288,7 +288,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
                 lacc0 = .true.
             endif
         endif
- 30 end do
+    end do
 !
 ! --- PROJECTION MODALE EN EXPLICITE
 !

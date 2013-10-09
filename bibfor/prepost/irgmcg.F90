@@ -81,7 +81,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
     integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
     integer :: iq
-    integer ::  nbcmp, ipoin, iret, jcesc, jcesl
+    integer :: nbcmp, ipoin, iret, jcesc, jcesl
     integer :: jtabc, jtabd, jtabv, jtabl, jcesk, jcesd, jtype
     integer :: icmp, jncmp, ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
@@ -111,7 +111,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
     nbcmp = 0
 !
-    do 60 ior = 1, nbord2
+    do ior = 1, nbord2
         if (lresu) then
             call rsexch(' ', nomcon, chamsy, ordr(ior), noch19,&
                         iret)
@@ -148,39 +148,41 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
             nbcmp = zi(jcesd-1+2)
             ncmpu = 0
             call wkvect('&&IRGMCG.NOCMP', 'V V K8', nbcmp, jncmp)
-            do 50 icmp = 1, nbcmp
-                do 30 ima = 1, nbma
+            do icmp = 1, nbcmp
+                do ima = 1, nbma
                     nbpt = zi(jcesd-1+5+4* (ima-1)+1)
                     nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-                    do 20 ipt = 1, nbpt
-                        do 10 isp = 1, nbsp
+                    do ipt = 1, nbpt
+                        do isp = 1, nbsp
                             call cesexi('C', jcesd, jcesl, ima, ipt,&
                                         isp, icmp, iad)
                             if (iad .gt. 0) goto 40
- 10                     continue
- 20                 continue
- 30             continue
+                        end do
+                    end do
+                end do
                 goto 50
  40             continue
                 ncmpu = ncmpu + 1
                 zk8(jncmp+ncmpu-1) = zk8(jcesc-1+icmp)
- 50         continue
+ 50             continue
+            end do
         else
             if (zi(zi(jtabd+ior-1)-1+2) .ne. nbcmp) then
                 call utmess('F', 'PREPOST2_53')
             endif
         endif
 !
- 60 end do
+ 60     continue
+    end do
 !
 ! --- RECUPERATION DU TABLEAU DE CORRESPONDANCE ENTRE NUMERO DES
 !     NOUVELLES MAILLES ET NUMERO DE LA MAILLE INITIALE
 !     CREE PAR IRGMMA
 !     ***************
     call jeveuo(numold, 'L', jnumol)
-    do 101 i = 1, ntyele
+    do i = 1, ntyele
         nbel2(i)=0
-101 end do
+    end do
 !
 ! --- BOUCLE SUR LE NOMBRE DE COMPOSANTES DU CHAM_ELEM
 !     *************************************************
@@ -190,15 +192,15 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
         nbcmpd = nbcmpi
     endif
 !
-    do 270 k = 1, nbcmpd
+    do k = 1, nbcmpd
 !
         if (nbcmpi .ne. 0) then
-            do 70 ix = 1, nbcmp
+            do ix = 1, nbcmp
                 if (zk8(jncmp+ix-1) .eq. nomcmp(k)) then
                     icmp = ix
                     goto 80
                 endif
- 70         continue
+            end do
             k8b = nomcmp(k)
             call utmess('F', 'PREPOST2_54', sk=k8b)
  80         continue
@@ -214,7 +216,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
 ! ----- BOUCLE SUR LES ELEMENTS DANS L'ORDRE DONNE PAR IRGMOR
 !
-        do 120 ine = 1, neletr
+        do ine = 1, neletr
 !         I=NUM DE L'ELEMENT DANS LE CATALOGUE
             i=tord(ine)
             if (nbel(i) .ne. 0) then
@@ -222,16 +224,16 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !           NBNO=NBRE DE NOEUDS DE CET ELEMENT
                 nbno = typd(i,3)
                 call jeveuo(nobj(i), 'L', jel(i))
-                do 1201 iq = 1, nbel(i)
+                do iq = 1, nbel(i)
                     ima = zi(jel(i)-1+iq)
                     call irgmg1(zi(jnumol), ima, nbord2, zi(jtabd), zi( jtabl),&
                                 zi(jtabv), partie, jtype, nbno, icmp,&
                                 ifi, iwri, iadmax)
                     iadmm = max(iadmax,iadmm)
-1201             continue
+                end do
                 if (iadmm .gt. 0) nbel2(i) = nbel(i)
             endif
-120     continue
+        end do
 !
 !
 ! ----- ECRITURE DE L'ENTETE DE View
@@ -245,36 +247,36 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
 ! ----- BOUCLE SUR LES ELEMENTS DANS L'ORDRE DONNE PAR IRGMOR
 !
-        do 130 ine = 1, neletr
+        do ine = 1, neletr
 !         I=NUM DE L'ELEMENT DANS LE CATALOGUE
             i=tord(ine)
             if (nbel2(i) .ne. 0) then
 !           NBNO=NBRE DE NOEUDS DE CET ELEMENT
                 nbno = typd(i,3)
                 call jeveuo(nobj(i), 'L', jel(i))
-                do 1301 iq = 1, nbel(i)
+                do iq = 1, nbel(i)
                     ima = zi(jel(i)-1+iq)
                     ipoin = point(ima)
-                    do 1302 inoe = 1, nbno
+                    do inoe = 1, nbno
                         listno(inoe) = connx(ipoin-1+inoe)
-1302                 continue
-                    do 1303 j = 1, 3
+                    end do
+                    do j = 1, 3
                         write(ifi,1000) (coord(3*(listno(inoe)-1)+j),&
                         inoe=1,nbno)
-1303                 continue
+                    end do
                     call irgmg1(zi(jnumol), ima, nbord2, zi(jtabd), zi( jtabl),&
                                 zi(jtabv), partie, jtype, nbno, icmp,&
                                 ifi, iwri, iadmax)
-1301             continue
+                end do
             endif
-130     continue
+        end do
 !
 ! ----- FIN D'ECRITURE DE View
 !       **********************
 !
         write (ifi,1010) '$EndView'
 !
-270 end do
+    end do
 !
     call jedetr('&&IRGMCG.CESC')
     call jedetr('&&IRGMCG.CESD')

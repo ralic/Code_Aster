@@ -107,12 +107,12 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
     icomp=0
     nbacti=0
 !
-    do 10 i = 1, nbnoa
+    do i = 1, nbnoa
         inu=zi(llnoa+i-1)
 !*************************************************************
 !        ICOD=ZI(LLDESC+2*NBNOT+INU-1)
         call isdeco(zi(lldesc+2*nbnot+(inu-1)*nbec+1-1), idec, nbcmp)
-        do 20 j = 1, nbcmp
+        do j = 1, nbcmp
 !*************************************************************
             okass=.false.
             if (idec(j) .gt. 0) then
@@ -134,8 +134,8 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
                 nbacti=nbacti+1
                 if (nbacti .le. nblis) lisnu(nbacti)=icomp
             endif
- 20     continue
- 10 continue
+        end do
+    end do
 !
     call jedema()
 end subroutine

@@ -372,9 +372,9 @@ subroutine op0186()
         call jeveuo(vtemp(1:19)//'.VALE', 'L', jtemp)
 !
 ! SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
-        do 30 k = 1, neq
+        do k = 1, neq
             zr(jtempm+k-1) = zr(jtempm+k-1) + rho*zr(jtempp+k-1)
- 30     continue
+        end do
     endif
 !
     write (ifm,&
@@ -446,9 +446,9 @@ subroutine op0186()
     call jeveuo(vtempm(1:19)//'.VALE', 'L', jtempp)
     call jeveuo(vtemp(1:19)//'.VALE', 'E', jtemp)
 ! VTEMPM --> VTEMP
-    do 145 k = 1, neq
+    do k = 1, neq
         zr(jtemp+k-1) = zr(jtempp+k-1)
-145 continue
+    end do
     call uttcpu('CPU.OP0186.3', 'FIN', ' ')
     call uttcpr('CPU.OP0186.3', 4, tps3)
 !

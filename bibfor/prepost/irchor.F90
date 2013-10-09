@@ -82,7 +82,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !
     character(len=1) :: k1bid
     character(len=3) :: toupar, toucha
-    character(len=8) ::  resmed, crit, nomgd
+    character(len=8) :: resmed, crit, nomgd
     character(len=19) :: noch19, knum
     character(len=24) :: valk(6)
 !
@@ -125,9 +125,9 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !         - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
             call jelira(leresu//'           .DESC', 'NOMUTI', nbnosy)
             call wkvect(nchsym, 'V V K16', nbnosy, jnosy)
-            do 12 isy = 1, nbnosy
+            do isy = 1, nbnosy
                 call jenuno(jexnum(leresu//'           .DESC', isy), zk16(jnosy-1+isy))
- 12         continue
+            end do
         else if (n21.gt.0 .and. toucha.eq.'NON') then
             nbnosy=0
             jnosy =1
@@ -157,7 +157,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
             call wkvect(nchsym, 'V V K16', nbcmdu, jnosy)
             call wkvect(novcmp, 'V V K80', nbcmdu, jncmed)
             nbnosy=nbcmdu
-            do 13 isy = 1, nbcmdu
+            do isy = 1, nbcmdu
                 call jenuno(jexnum(leresu//'           .DESC', isy), zk16(jnosy-1+isy))
                 zk80(jncmed+isy-1)='________'
                 nchar=lxlgut(resmed)
@@ -165,7 +165,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                 nchar=lxlgut(zk16(jnosy-1+isy))
                 zk80(jncmed+isy-1)(9:8+nchar)=zk16(jnosy-1+isy)(1:&
                 nchar)
- 13         continue
+            end do
         endif
 !
 !       --- ON REGARDE QUELS SONT LES NOM_CMP A IMPRIMER:
@@ -194,13 +194,13 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !       *** SI PB ON PASSE AU FACTEUR SUIVANT DE IMPR_RESU
         if (iret .ne. 0) then
             codret = 1
-            goto 9999
+            goto 999
         endif
         call jeveuo(knum, 'L', jordr)
 !
         if (n22 .lt. 0) then
-            do 16 innosy = 0, nbnosy-1
-                do 14 jnordr = 0, nbordr-1
+            do innosy = 0, nbnosy-1
+                do jnordr = 0, nbordr-1
                     call rsexch(' ', leresu, zk16(jnosy+innosy), zi(jordr+jnordr), noch19,&
                                 iret)
                     if (iret .ne. 0) then
@@ -208,12 +208,12 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                         vali = zi(jordr+jnordr)
                         call utmess('A', 'POSTRELE_41', sk=valk(1), si=vali)
                     endif
- 14             continue
- 16         continue
+                end do
+            end do
             if (afaire) then
-                do 15 icmp = 0, nvcmp-1
+                do icmp = 0, nvcmp-1
                     nbcmpt = 0
-                    do 17 innosy = 0, nbnosy-1
+                    do innosy = 0, nbnosy-1
                         call rsexch(' ', leresu, zk16(jnosy+innosy), zi( jordr), noch19,&
                                     iret)
                         if (iret .eq. 0) then
@@ -228,13 +228,14 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                             call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
                             call irvcmp(ncmpmx, zk8(iad), zk8(jvcmp+ icmp), nbcmpt)
                         endif
- 17                 continue
+ 17                     continue
+                    end do
                     if (nbcmpt .eq. 0) then
                         valk (1) = zk8(jvcmp+icmp)
                         valk (2) = k1bid
                         call utmess('A', 'PREPOST5_61', nk=2, valk=valk)
                     endif
- 15             continue
+                end do
             endif
         endif
 !
@@ -270,7 +271,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !     - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
     call irparb(leresu, nparam, zk16(jpa), nnopar, nbpara)
 !
-9999 continue
+999 continue
     call jedetr('&&IRCHOR.VERI_NOM_CMP')
     call jedetr('&&IRCHOR.NOMUTI_PARA')
 !

@@ -79,7 +79,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     logical :: lnewma, ltheta, lkrenk
     real(kind=8) :: coerig, coeamo, coemas
     real(kind=8) :: coeext, coeint, coeequ, coeex2
-    integer ::  imode
+    integer :: imode
     integer :: neq, nbmodp
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
     real(kind=8) :: coedep, coevit, coeacc
@@ -555,10 +555,10 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 !
 ! --- PREDICTION DEPLACEMENT GENERALISE
 !
-        do 54 imode = 1, nbmodp
+        do imode = 1, nbmodp
             zr(jdepgp+imode-1) = zr(jdepgm+imode-1) + coefd(2)*zr( jvitgm+imode-1) + coefd(3)*zr(&
                                  &jaccgm+imode-1)
- 54     continue
+        end do
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... PRED. DEPL. GENE'
             call nmdebg('VECT', depgep, ifm)

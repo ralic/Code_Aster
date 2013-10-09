@@ -93,16 +93,16 @@ subroutine cfcrma(neqmat, noma, resoco)
 ! --- CREATION .SCHC
 !
     call wkvect(stoc(1:19)//'.SCHC', 'V V I', neqmat, jschc)
-    do 5 ieq = 1, neqmat
+    do ieq = 1, neqmat
         zi(jschc+ieq-1) = ieq
- 5  end do
+    end do
 !
 ! --- CREATION .SCDI
 !
     call wkvect(stoc(1:19)//'.SCDI', 'V V I', neqmat, jscdi)
-    do 6 ieq = 1, neqmat
+    do ieq = 1, neqmat
         zi(jscdi+ieq-1) = ieq*(ieq+1)/2
- 6  end do
+    end do
 !
 ! --- LA TAILLE DE BLOC DOIT ETRE SUPERIEURE A HMAX
 ! --- POUR CONTENIR AU MOINS LA DERNIERE COLONNE
@@ -141,7 +141,7 @@ subroutine cfcrma(neqmat, noma, resoco)
 !
 ! --- CALCUL DU NOMBRE DE BLOCS ET MISE A JOUR DE SCDI
 !
-    do 180 ieq = 2, neqmat
+    do ieq = 2, neqmat
         ntblc = ntblc + zi(jschc+ieq-1)
         if (ntblc .le. itbloc) then
 !         ON PEUT TOUJOURS AJOUTER LA COLONNE DANS LE BLOC
@@ -164,7 +164,7 @@ subroutine cfcrma(neqmat, noma, resoco)
             nblc = nblc + 1
             zi(jscdi+ieq-1) = zi(jschc+ieq-1)
         endif
-180  end do
+    end do
 !
     if (zi(jscdi-1+neqmat) .ge. tbmax) then
         tbmax = zi(jscdi-1+neqmat)
@@ -189,14 +189,14 @@ subroutine cfcrma(neqmat, noma, resoco)
     iblc = 1
     ntblc = zi(jschc)
 !
-    do 190 ieq = 2, neqmat
+    do ieq = 2, neqmat
         ntblc = ntblc + zi(jschc+ieq-1)
         if (ntblc .gt. itbloc) then
             ntblc = zi(jschc+ieq-1)
             zi(jscbl+iblc) = ieq - 1
             iblc = iblc + 1
         endif
-190  end do
+    end do
     ASSERT(iblc.eq.nblc)
     zi(jscbl+nblc) = neqmat
 !
@@ -204,13 +204,13 @@ subroutine cfcrma(neqmat, noma, resoco)
 !
     call wkvect(stoc(1:19)//'.SCIB', 'V V I', neqmat, jscib)
     icompt = 0
-    do 210 iblc = 1, nblc
+    do iblc = 1, nblc
         nbcol = zi(jscbl+iblc) - zi(jscbl+iblc-1)
-        do 200 icol = 1, nbcol
+        do icol = 1, nbcol
             icompt = icompt + 1
             zi(jscib-1+icompt) = iblc
-200      continue
-210  end do
+        end do
+    end do
     ASSERT(icompt.eq.neqmat)
 !
 ! --- CREATION .SCDE
@@ -245,9 +245,9 @@ subroutine cfcrma(neqmat, noma, resoco)
     call jecrec(macont(1:19)//'.UALF', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblc)
     call jeecra(macont(1:19)//'.UALF', 'LONMAX', ival=tbmax)
-    do 4 iblc = 1, nblc
+    do iblc = 1, nblc
         call jecroc(jexnum(macont(1:19)//'.UALF', iblc))
- 4  end do
+    end do
 !
 ! ----------------------------------------------------------------------
     call jedema()

@@ -126,9 +126,9 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         nbpara=nbac+nbpa
 !
         call jeveuo(nompar, 'L', jpara)
-        do 40 iaux = 1, nbordr
+        do iaux = 1, nbordr
             iordr=zi(jordr+iaux-1)
-            do 50 j = 1, nbpara
+            do j = 1, nbpara
                 call rsadpa(resuin, 'L', 1, zk16(jpara+j-1), iordr,&
                             1, sjv=iadin, styp=type)
                 call rsadpa(resuou, 'E', 1, zk16(jpara+j-1), iordr,&
@@ -151,8 +151,8 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
                 else if (type(1:2).eq.'K8') then
                     zk8(iadou)=zk8(iadin)
                 endif
- 50         continue
- 40     continue
+            end do
+        end do
         call jedetr(nompar)
     endif
 !
@@ -163,7 +163,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     call jeveuo(lisopt, 'L', jopt)
 !
 !     BOUCLE SUR LES OPTIONS DEMANDEES PAR L'UTILISATEUR
-    do 20 iopt = 1, nbropt
+    do iopt = 1, nbropt
 !
         option=zk16(jopt+iopt-1)
         if (option .eq. ' ') goto 20
@@ -178,7 +178,8 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 !
             if (iret .ne. 0) ASSERT(.false.)
         endif
- 20 end do
+ 20     continue
+    end do
 !
  30 continue
 !

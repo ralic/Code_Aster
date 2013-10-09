@@ -193,7 +193,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
             call wkvect(baseno//'.ADVECASS', 'V V I  ', nveca, iaadve)
 !
             indic = 0
-            do 312 ivec = 1, nveca
+            do ivec = 1, nveca
                 indic = indic + 1
 3121             continue
                 call getvid('EXCIT', 'VECT_ASSE', iocc=indic, scal=channo, nbret=iaux)
@@ -216,7 +216,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
                         call focste(zk24(ialifo+ivec-1), 'INST', rval, 'V')
                     endif
                 endif
-312         continue
+            end do
 !
 !
         endif
@@ -248,11 +248,11 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
     if (nchar .ne. 0) then
         call jeveuo(infoch, 'L', jinf)
         call jeveuo(charge, 'L', ialich)
-        do 32 ich = 1, nchar
+        do ich = 1, nchar
             if (zi(jinf+nchar+ich) .eq. 6) then
                 nondp = nondp + 1
             endif
- 32     continue
+        end do
     endif
 !
     if (nveca .ne. 0 .and. nchar .ne. 0) then
@@ -268,12 +268,12 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
     else
         call wkvect(baseno//'.ONDP', 'V V K8', nondp, iondp)
         nond = 0
-        do 33 ich = 1, nchar
+        do ich = 1, nchar
             if (zi(jinf+nchar+ich) .eq. 6) then
                 nond = nond + 1
                 zk8(iondp+nond-1) = zk24(ialich+ich-1)(1:8)
             endif
- 33     continue
+        end do
     endif
 !
 !

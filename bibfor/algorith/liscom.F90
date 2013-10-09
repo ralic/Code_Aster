@@ -48,7 +48,7 @@ subroutine liscom(nomo, codarr, lischa)
 !
     integer :: ichar, nbchar
     character(len=8) :: modch2, charge, modch1
-    integer ::  genrec
+    integer :: genrec
     logical :: lveag, lveas
 !
 ! ----------------------------------------------------------------------
@@ -78,7 +78,7 @@ subroutine liscom(nomo, codarr, lischa)
 !
 ! --- BOUCLE SUR LES CHARGES
 !
-    do 10 ichar = 2, nbchar
+    do ichar = 2, nbchar
         call lislch(lischa, ichar, charge)
         call lislco(lischa, ichar, genrec)
         lveag = lisico('VECT_ASSE_GENE',genrec)
@@ -91,7 +91,7 @@ subroutine liscom(nomo, codarr, lischa)
                 endif
             endif
         endif
- 10 continue
+    end do
 !
 999 continue
 !

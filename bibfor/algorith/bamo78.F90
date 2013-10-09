@@ -13,8 +13,8 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/dismoi.h"
 #include "asterfort/dyna_comp_fuse.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -319,7 +319,7 @@ subroutine bamo78(nomres, trange, typres)
     chvref='&&BAMO78.VREF'
     rundf=r8vide()
     ligrel = modele//'.MODELE'
-    call dismoi('NOM_MAILLA', modele, 'MODELE',repk=mesh)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     compor = mate(1:8)//'.COMPOR'
     call megeom(modele, chgeom)
     call mecara(carele(1:8), exicar, chcara)
@@ -382,15 +382,15 @@ subroutine bamo78(nomres, trange, typres)
 !
             call rsnoch(nomres, option, iarc2)
         end do
-
+!
         call rsexch('F', sdnoli, 'COMPORTEMENT', nume, chel1,&
                     iret)
         call rsexch(' ', nomres, 'COMPORTEMENT', iarc2, chamel,&
                     iret)
         if (iret .eq. 0) call detrsd('CHAMP_GD', chamel)
-
+!
         call dyna_comp_fuse(mesh, chel1, chamel)
-
+!
         call rsnoch(nomres, 'COMPORTEMENT', iarc2)
     end do
 !

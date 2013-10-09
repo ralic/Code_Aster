@@ -108,9 +108,9 @@ subroutine regene(nomres, resgen, profno)
         call getvis(' ', 'NUME_ORDRE', nbval=nbmod, vect=zi(jbid), nbret=nno)
     else
         call wkvect('&&REGENE.NUME', 'V V I', nbmod, jbid)
-        do 2 i = 1, nbmod
+        do i = 1, nbmod
             zi(jbid+i-1) = i
-  2     continue
+        end do
     endif
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
@@ -200,7 +200,7 @@ subroutine regene(nomres, resgen, profno)
 !
 ! ------ BOUCLE SUR LES MODES A RESTITUER
 !
-        do 10 i = 1, nbmod
+        do i = 1, nbmod
             iord = zi(jbid+i-1)
 !
 ! --------- REQUETE NOM ET ADRESSE CHAMNO GENERALISE
@@ -246,7 +246,7 @@ subroutine regene(nomres, resgen, profno)
             zk16(iadpar(7)) = 'MODE_DYN'
 !
             call jelibe(chamol)
- 10     continue
+        end do
 !-----------------------------------------------------------------------
     else
 !-----------------------------------------------------------------------
@@ -272,7 +272,7 @@ subroutine regene(nomres, resgen, profno)
 !CC ---- RESTITUTION PROPREMENT DITE
 !C
 !
-        do 20 i = 1, nbmod
+        do i = 1, nbmod
             iord = zi(jbid+i-1)
 !
 ! --------- REQUETE NOM ET ADRESSE CHAMOL GENERALISE
@@ -319,7 +319,7 @@ subroutine regene(nomres, resgen, profno)
             zk16(iadpar(7)) = 'MODE_DYN'
 !
             call jelibe(chamol)
- 20     continue
+        end do
 !
         if (iret1 .ne. 0) then
             matric(1) = ' '

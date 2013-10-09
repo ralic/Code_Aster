@@ -109,14 +109,14 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !  VERIFICATION DE L'UNICITE DU MODELE DANS LE RESULTAT
 !  SINON ON ARRETE EN ERREUR FATALE
 !
-            do 99 iordr = 2, nbordr
+            do iordr = 2, nbordr
                 nuord = zi(jordr+iordr-1)
                 call rslesd(result, nuord, modnew, materi, cara,&
                             excit, iexcit)
                 if (modnew .ne. modele) then
                     call utmess('F', 'CALCULEL7_3')
                 endif
- 99         continue
+            end do
         else
             call rslesd(result, nuord, modele, materi, cara,&
                         excit, iexcit)
@@ -171,13 +171,13 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !     -- ON VERIFIE QUE LES CHARGES PORTENT TOUTES SUR LE MEME MODELE.
         if (ncha .gt. 0) then
             call dismoi('NOM_MODELE', zk8(icha), 'CHARGE', repk=nomo)
-            do 10 i = 1, ncha
+            do i = 1, ncha
                 call dismoi('NOM_MODELE', zk8(icha-1+i), 'CHARGE', repk=k8b)
                 if (k8b .ne. nomo) then
                     ier = ier + 1
                     call utmess('E', 'CALCULEL3_41')
                 endif
- 10         continue
+            end do
 !
 !        --- ON VERIFIE QUE LES CHARGES PORTENT SUR LE MODELE
 !                               EVENTUELEMENT DONNE EN ARGUMENT ---
@@ -188,14 +188,14 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !
 !        --- VERIFICATION DU TYPE DE CHARGEMENT ---
             call dismoi('TYPE_CHARGE', zk8(icha), 'CHARGE', repk=ctyp)
-            do 20 i = 1, ncha
+            do i = 1, ncha
                 call dismoi('TYPE_CHARGE', zk8(icha-1+i), 'CHARGE', repk=k8b)
                 if ((k8b(1:4).ne.'MECA') .and. (k8b(1:4).ne.'CIME') .and.&
                     (k8b(1:4).ne.'THER') .and. (k8b(1:4).ne.'ACOU')) then
                     ier = ier + 1
                     call utmess('E', 'CALCULEL3_43')
                 endif
- 20         continue
+            end do
         endif
     else
 !
@@ -210,7 +210,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                     ier=ierd)
         ctyp=phenom(1:4)
         in=0
-        do 50 i = 1, ncha
+        do i = 1, ncha
             call jeexin(zk24(jlcha+i-1)(1:8)//'.TYPE', ie)
 !          ON TESTE SI LA CHARGE EST NON VIDE
             if (ie .ne. 0) then
@@ -221,17 +221,17 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                     in=in+1
                 endif
             endif
- 50     continue
+        end do
         ncha=in
 !
 !        ON VERIFIE QUE LES CHARGES RECUPEREES REPOSENT
 !        TOUTES SUR LE MEME MODELE
-        do 60 i = 1, ncha
+        do i = 1, ncha
             call dismoi('NOM_MODELE', zk8(icha+i-1), 'CHARGE', repk=nomo)
             if (nomo .ne. modele) then
                 call utmess('F', 'CALCULEL3_44')
             endif
- 60     continue
+        end do
     endif
 !
     if (ier .ne. 0) then

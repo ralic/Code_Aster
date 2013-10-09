@@ -108,13 +108,13 @@ subroutine xtopoi(noma, modele)
 ! --- REMPLISSAGE DES SOUS POINT DE HEAVTO
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         call cesexi('S', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         zl(jcesl-1-iad) = .true.
         zi(jcesv-1-iad) = zi(jnbsp-1+ima)
 !
- 10 end do
+    end do
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !

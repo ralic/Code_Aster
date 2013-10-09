@@ -60,7 +60,7 @@ subroutine initel(ligrel)
     parameter (nmaxob=30)
     integer :: adobj(nmaxob)
     character(len=24) :: noobj(nmaxob)
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=8) :: exiele, ma, prin, nomail, resuco
     character(len=16) :: nomte, nomcmd, typcon
 ! ----------------------------------------------------------------------
@@ -79,10 +79,10 @@ subroutine initel(ligrel)
     endif
 !
     call jelira(ligrel//'.LIEL', 'NUTIOC', ngr)
-    do 10 igr = 1, ngr
+    do igr = 1, ngr
         call inigrl(ligrel, igr, nmaxob, adobj, noobj,&
                     nbobj)
- 10 end do
+    end do
  20 continue
 !
 !
@@ -108,26 +108,28 @@ subroutine initel(ligrel)
 !
 !     -- ON COCHE LES NOEUDS PORTES PAR LES ELEMENTS PRINCIPAUX :
     call wkvect('&&INITEL.PRIN', 'V V I', nbno, jprin)
-    do 50 igr = 1, ngr
+    do igr = 1, ngr
         nute = typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
         call dismoi('CALC_RIGI', nomte, 'TYPE_ELEM', repk=prin)
         if (prin .ne. 'OUI') goto 50
         nbel = nbelem(ligrel,igr)
-        do 40 iel = 1, nbel
+        do iel = 1, nbel
             numa = zi(jliel-1+zi(jlliel+igr-1)+iel-1)
             if (numa .lt. 0) goto 40
             nbnoma = zi(iconx2+numa) - zi(iconx2+numa-1)
-            do 30 ino = 1, nbnoma
+            do ino = 1, nbnoma
                 nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
                 zi(jprin-1+nuno) = 1
- 30         continue
- 40     continue
- 50 end do
+            end do
+ 40         continue
+        end do
+ 50     continue
+    end do
 !
 !     -- ON VERIFIE LES NOEUDS DES ELEMENTS NON-PRINCIPAUX (BORD)
     nbprin=0
-    do 80 igr = 1, ngr
+    do igr = 1, ngr
         nute = typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
         call dismoi('CALC_RIGI', nomte, 'TYPE_ELEM', repk=prin)
@@ -136,21 +138,23 @@ subroutine initel(ligrel)
             if (nbel .gt. 0) nbprin=1
             goto 80
         endif
-        do 70 iel = 1, nbel
+        do iel = 1, nbel
             numa = zi(jliel-1+zi(jlliel+igr-1)+iel-1)
             if (numa .lt. 0) goto 70
             nbnoma = zi(iconx2+numa) - zi(iconx2+numa-1)
-            do 60 ino = 1, nbnoma
+            do ino = 1, nbnoma
                 nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
                 if (zi(jprin-1+nuno) .ne. 1) then
                     call jenuno(jexnum(ma//'.NOMMAI', numa), nomail)
                     call utmess('A', 'CALCULEL2_63', sk=nomail)
                     goto 71
                 endif
- 60         continue
+            end do
  71         continue
- 70     continue
- 80 end do
+ 70         continue
+        end do
+ 80     continue
+    end do
 !
 !     -- SI C'EST LE LIGREL DU MODELE, ON VERIFIE QU'IL EXISTE AU MOINS
 !        UN ELEMENT PRINCIPAL (QUI CALCULE DE LA RIGIDITE):

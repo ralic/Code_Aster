@@ -77,6 +77,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
     integer :: j3refe, jc, jinst, jnume, linst, llcha
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
     integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data blanc    /'        '/
 !      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
@@ -244,7 +245,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
     call jeveuo(trange//'.DISC', 'L', idinsg)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&TRAN77.VECTGENE', 'V V R', nbmode, idvecg)
-    do 210 ich = 1, nbcham
+    do ich = 1, nbcham
         leffor=.true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or.&
             type(ich) .eq. 'ACCE_ABSOLU') leffor=.false.
@@ -267,7 +268,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
             call copmod(basemo, typcha, neq, numddl, nbmode,&
                         'R', zr(idbase), [cbid])
         else
-            do 110 j = 1, nbmode
+            do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
                             iret)
                 call jeexin(nomcha(1:19)//'.VALE', ibid)
@@ -278,15 +279,15 @@ subroutine tran77(nomres, typres, nomin, basemo)
                 endif
                 call jeveuo(nomcha, 'L', idefm)
                 idec = 0
-                do 120 i = 1, nbnoeu
-                    do 122 jc = 1, ncmp
+                do i = 1, nbnoeu
+                    do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
                             idec = idec + 1
                             zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
-122                 continue
-120             continue
-110         continue
+                    end do
+                end do
+            end do
         endif
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
@@ -294,7 +295,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
             if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
         endif
         idresu = itresu(ich)
-        do 200 i = 0, nbinst-1
+        do i = 0, nbinst-1
             iarchi = iarchi + 1
             call rsexch(' ', nomres, type(ich), iarchi, chamno,&
                         iret)
@@ -348,9 +349,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
-200     continue
+        end do
         call jedetr('&&TRAN77.BASE')
-210 continue
+    end do
 !
 !
 !

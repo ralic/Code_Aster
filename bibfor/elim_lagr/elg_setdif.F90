@@ -1,5 +1,5 @@
 subroutine elg_setdif(inda, nba, indb, nbb, indc,&
-                  nbc, remp)
+                      nbc, remp)
     implicit none
 ! aslint: disable=W0104
 ! person_in_charge: mathieu.corus at edf.fr
@@ -19,7 +19,7 @@ subroutine elg_setdif(inda, nba, indb, nbb, indc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "asterfort/assert.h"
+# include "asterfort/assert.h"
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
     integer :: nba, nbb, nbc
@@ -86,7 +86,7 @@ subroutine elg_setdif(inda, nba, indb, nbb, indc,&
     nbc=0
     if (remp .eq. 'COMPTE') then
 !
-10      continue
+ 10     continue
         if (inda(ia) .lt. indb(ib)) then
             ic=ic+1
             nbc=nbc+1
@@ -107,7 +107,7 @@ subroutine elg_setdif(inda, nba, indb, nbb, indc,&
 !
     else if (remp .eq. 'REMPLI') then
 !
-20      continue
+ 20     continue
         if (inda(ia) .lt. indb(ib)) then
             indc(ic)=inda(ia)
             inda(ic)=ia
@@ -126,7 +126,7 @@ subroutine elg_setdif(inda, nba, indb, nbb, indc,&
         endif
 !
         if (ia .le. nba) then
-30          continue
+ 30         continue
             indc(ic)=inda(ia)
             inda(ic)=ia
             ia=ia+1
@@ -151,8 +151,8 @@ subroutine elg_setdif(inda, nba, indb, nbb, indc,&
 !C      WRITE(6,*),'INDA :',INDA(1:NBC)
 !C      WRITE(6,*),' ** Fin modif ** '
 !
-999  continue
-
+999 continue
+!
 #else
     integer :: nba, nbb, nbc
     integer(kind=4) :: inda(nba), indb(nbb), indc(min(nba, nbb))

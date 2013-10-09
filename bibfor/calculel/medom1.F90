@@ -128,13 +128,13 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
             endif
             call wkvect(kcha//'.LCHA', 'V V K8', n5, icha)
             call wkvect(kcha//'.FCHA', 'V V K8', n5, ikf)
-            do 20 iexcit = 1, n5
+            do iexcit = 1, n5
                 call getvid('EXCIT', 'CHARGE', iocc=iexcit, scal=zk8(icha+ iexcit-1), nbret=n)
                 call getvid('EXCIT', 'FONC_MULT', iocc=iexcit, scal=k8b, nbret=n)
                 if (n .ne. 0) then
                     zk8(ikf+iexcit-1) = k8b
                 endif
- 20         continue
+            end do
         else
             call jeexin(kcha//'.LCHA', iret)
             if (iret .ne. 0) then
@@ -148,12 +148,12 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
         if (ncha .gt. 0) then
 !           VERIFICATION QUE LES CHARGES PORTENT SUR LE MEME MODELE.
             call dismoi('NOM_MODELE', zk8(icha), 'CHARGE', repk=nomo)
-            do 30 i = 1, ncha
+            do i = 1, ncha
                 call dismoi('NOM_MODELE', zk8(icha-1+i), 'CHARGE', repk=k8b)
                 if (k8b .ne. nomo) then
                     call utmess('F', 'CALCULEL3_41')
                 endif
- 30         continue
+            end do
 !           VERIFICATION QUE LES CHARGES PORTENT SUR LE MODELE
             if (n1 .ne. 0 .and. modele .ne. nomo) then
                 call utmess('F', 'CALCULEL3_42')
@@ -179,7 +179,7 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
         call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
         ctyp=phenom(1:4)
         in=0
-        do 50 i = 1, ncha
+        do i = 1, ncha
 !           ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
             call dismoi('TYPE_CHARGE', zk24(jlcha+i-1), 'CHARGE', repk=k8b, arret='C',&
                         ier=ie)
@@ -188,7 +188,7 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
                 zk8(ikf+in) = zk24(jfcha+i-1)(1:8)
                 in=in+1
             endif
- 50     continue
+        end do
         ncha=in
 !
     endif

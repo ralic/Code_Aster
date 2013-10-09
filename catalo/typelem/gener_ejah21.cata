@@ -48,4 +48,4 @@ OPTION__
                                 CTEMPSR  PTEMPSR  
                           OUT__ MVECTUR  PVECTUR  
     CHAR_MECA_FLUX_R 314  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
-                          OUT__ MVECTUR  PVECTUR  
+                          OUT__ MVECTUR  PVECTUR

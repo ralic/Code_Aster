@@ -72,19 +72,20 @@ subroutine cnsimp(cnsz, unite)
 !            ET DE LICMPU : NUMEROS DES CMPS UTILISEES
 !     ------------------------------------------------------------
     ncmpu = 0
-    do 30 k = 1, ncmp
-        do 10 ino = 1, nbno
+    do k = 1, ncmp
+        do ino = 1, nbno
             if (zl(jcnsl-1+ (ino-1)*ncmp+k)) goto 20
- 10     continue
+        end do
         goto 30
  20     continue
         ncmpu = ncmpu + 1
         ASSERT(ncmpu.le.997)
         licmpu(ncmpu) = k
- 30 end do
+ 30     continue
+    end do
 !
 !     -- LE CHAMP EST VIDE : ON SORT
-    if (ncmpu .eq. 0) goto 9999
+    if (ncmpu .eq. 0) goto 999
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT((tsca.eq.'R') .or. (tsca.eq.'K8') .or. (tsca.eq.'I') .or. (tsca.eq.'C'))
@@ -123,25 +124,25 @@ subroutine cnsimp(cnsz, unite)
 !
 !     4- ECRITURE DES VALEURS :
 !     ---------------------------------------
-    do 70 ino = 1, nbno
+    do ino = 1, nbno
         call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
 !
 !       -- ON N'ECRIT UN NOEUD QUE S'IL EXISTE AU MOINS 1 CMP :
         exicmp = .false.
-        do 40 ik = 1, ncmpu
+        do ik = 1, ncmpu
             k = licmpu(ik)
             if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
                 exicmp = .true.
                 goto 50
             endif
- 40     continue
+        end do
  50     continue
         if (.not.exicmp) goto 70
 !
 !
 !
 !       -- ON MET LES VALEURS NON AFFECTEES A " " :
-        do 60 ik = 1, ncmpu
+        do ik = 1, ncmpu
             k = licmpu(ik)
             if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
                 if (tsca .eq. 'R') then
@@ -167,7 +168,7 @@ subroutine cnsimp(cnsz, unite)
                     write (zk16(jlval-1+2*(ik-1)+2),'(A16)') ' '
                 endif
             endif
- 60     continue
+        end do
         if (tsca .ne. 'C') then
             write (unite,fmt2) nomno, (zk16(jlval-1+ik),ik=1,ncmpu)
         else
@@ -175,9 +176,10 @@ subroutine cnsimp(cnsz, unite)
             zk16(jlval-1+2*(ik-1)+2),ik=1,ncmpu)
         endif
 !
- 70 end do
+ 70     continue
+    end do
 !
-9999 continue
+999 continue
 !
     call jedetr('&&CNSIMP.LVALEURS')
     call jedema()

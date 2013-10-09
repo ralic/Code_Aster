@@ -67,11 +67,11 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !       LOGRMA : LONGUEUR DES NOUVEAUX GROUP_MA
 !       LISTGR : LISTE DES GROUPES CONTENANT CHAQUE MAILLE
 !
-    integer ::  nbma, isepma, jcesd, jcesl, iad, ima, jcesv
+    integer :: nbma, isepma, jcesd, jcesl, iad, ima, jcesv
     integer :: nbman, nbmac, nbmax, ngr, igr, j1, n1, nbelt, iel, nsetot
     integer :: imac, imax, jmac, jmax, nnntot, ncotot, nse, n, nbgma
     integer :: jtmdim, ndime, jtypm, iret1, jlogma, jtma
-    character(len=8) ::  massmo, typma
+    character(len=8) :: massmo, typma
     character(len=19) :: ces, ligrel
     character(len=24) :: sepmai, liel
     parameter     (massmo = 'NON')
@@ -97,17 +97,18 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     ligrel=mo//'.MODELE'
     liel=ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', ngr)
-    do 100 igr = 1, ngr
+    do igr = 1, ngr
         call jeveuo(jexnum(liel, igr), 'L', j1)
         call jelira(jexnum(liel, igr), 'LONMAX', n1)
         nbelt=n1-1
-        do 110 iel = 1, nbelt
+        do iel = 1, nbelt
             ima=zi(j1-1+iel)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtma-1+ima)), typma)
             if (typma .eq. 'POI1') goto 100
             zi(isepma-1+ima)=-1
-110     continue
-100 end do
+        end do
+100     continue
+    end do
 !
     ces = '&&XPOSEP.TOPOSE.LON'
     call celces(mo//'.TOPOSE.LON', 'V', ces)
@@ -134,7 +135,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     ncotot = 0
 !
 !     BOUCLE SUR LES MAILLES
-    do 200 ima = 1, nbma
+    do ima = 1, nbma
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtma-1+ima)), typma)
 !
 !       SI MASSMO = 'NON' : ON ZAPPE LES MAILLES SANS MODELE
@@ -187,7 +188,8 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !
         endif
 !
-200 end do
+200     continue
+    end do
 !
 !     NOMBRE DE MAILLES NON TRAITEES
     nbman = nbma - nbmac - nbmax
@@ -202,7 +204,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !     CREATION DES 2 GROUPES DE MAILLES DE SORTIE
     if (nbmac .ne. 0) call wkvect(mailc, 'V V I', nbmac, jmac)
     if (nbmax .ne. 0) call wkvect(mailx, 'V V I', nbmax, jmax)
-    do 300 ima = 1, nbma
+    do ima = 1, nbma
         if (zi(isepma-1+ima) .eq. 1) then
             imac = imac + 1
             zi(jmac-1+imac) = ima
@@ -210,7 +212,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             imax = imax + 1
             zi(jmax-1+imax) = ima
         endif
-300 end do
+    end do
 !
     call jedetr(sepmai)
 !

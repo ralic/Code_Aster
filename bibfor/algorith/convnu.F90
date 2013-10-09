@@ -64,7 +64,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iran(1), ityp, ldcvn, lldein, lldeou
-    integer ::  neqin, neqout, nuno
+    integer :: neqin, neqout, nuno
 !-----------------------------------------------------------------------
     data ibid/0/
 !-----------------------------------------------------------------------
@@ -105,7 +105,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !------------------BOUCLE SUR LES DDL-----------------------------------
 !
-    do 10 i = 1, neqout
+    do i = 1, neqout
         nuno=zi(lldeou+2*(i-1))
         ityp=zi(lldeou+2*(i-1)+1)
         if (ityp .gt. 0) then
@@ -121,7 +121,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
             endif
         endif
 !
- 10 end do
+    end do
 !
 !--------------------------TRAITEMENT ERREUR EVENTUELLE----------------
 !

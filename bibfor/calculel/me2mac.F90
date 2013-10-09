@@ -71,7 +71,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
     character(len=24) :: ligrmo, ligrch
 !
 !-----------------------------------------------------------------------
-    integer ::  icha, ilires, iret, jnomo
+    integer :: icha, ilires, iret, jnomo
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -105,7 +105,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
             call jeveuo(lchar(1)//'.CHAC      .NOMO', 'L', jnomo)
             ligrmo = zk8(jnomo)//'.MODELE'
         endif
-        do 10 icha = 1, nchar
+        do icha = 1, nchar
             call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8bid)
             if (k8bid(5:7) .eq. '_FO') then
                 lfonc = .true.
@@ -152,7 +152,7 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
                             'OUI')
                 call reajre(vecel, lchout(1), 'G')
             endif
- 10     continue
+        end do
     endif
 !
     call jedema()

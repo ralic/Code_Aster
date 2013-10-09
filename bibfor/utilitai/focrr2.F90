@@ -171,13 +171,13 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     call wkvect('&&FOCRR2.LEXI', 'V V L', nbordr, ialexi)
     call jenonu(jexnom(resu//'.DESC', nomcha), ibid)
     call jeveuo(jexnum(resu//'.TACH', ibid), 'L', iatach)
-    do 10 i = 1, nbordr
+    do i = 1, nbordr
         if (zk24(iatach-1+i) (1:1) .eq. ' ') then
             zl(ialexi-1+i) = .false.
         else
             zl(ialexi-1+i) = .true.
         endif
- 10 end do
+    end do
 !
     rval = zr(jinst)
     call rsbary(zr(jlir8), nbordr, .false., zl(ialexi), rval,&
@@ -205,7 +205,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
         endif
         iddl2 = iddl1
-        do 20 iordr = 0, nbinst - 1
+        do iordr = 0, nbinst - 1
             call jemarq()
 !
             rval = zr(jinst+iordr)
@@ -292,7 +292,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             iddl1 = iddl2
  22         continue
             call jedema()
- 20     continue
+        end do
 !
 !               ----- EXTRACTION SUR UN "CHAM_ELEM" -----
 !
@@ -326,7 +326,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
         call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=type)
 !
         ii = 0
-        do 30 iordr = 0, nbinst - 1
+        do iordr = 0, nbinst - 1
             call jemarq()
 !
             rval = zr(jinst+iordr)
@@ -401,7 +401,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !
  32         continue
             call jedema()
- 30     continue
+        end do
     endif
 !
 ! --- MENAGE

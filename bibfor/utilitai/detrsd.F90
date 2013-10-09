@@ -7,6 +7,7 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/assert.h"
 #include "asterfort/detrs2.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/elg_gest_common.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -15,7 +16,6 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/elg_gest_common.h"
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
 ! ======================================================================

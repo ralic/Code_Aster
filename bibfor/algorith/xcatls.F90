@@ -63,7 +63,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
     real(kind=8) :: p2d(2), p3d(3), norme, vect3(3), mat(3, 3), ploc(3)
     real(kind=8) :: h
     real(kind=8) :: nori(3), next(3), nmil(3), vseg(3), nseg
-    character(len=8) ::  fiss
+    character(len=8) :: fiss
     character(len=16) :: valk(3), typdis, k16bid
 !
     call jemarq()
@@ -110,12 +110,12 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !       SI FISSURE :
 !       COTE   =  COTE DE LA FISSURE ('IN' OU 'OUT')
 !
-        do 20 ino = 1, nbno
+        do ino = 1, nbno
 !
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
-            do 21 i = 1, ndim
+            do i = 1, ndim
                 p3d(i)=zr(jcoor-1+3*(ino-1)+i)
- 21         continue
+            end do
 !
 !         BASE LOCALE : (VECT1,VECT2,VECT3)
             call normev(vect1, norme)
@@ -123,19 +123,19 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             call provec(vect1, vect2, vect3)
 !
 !         MATRICE DE PASSAGE LOC-GLOB
-            do 22 i = 1, ndim
+            do i = 1, ndim
                 mat(1,i)=vect1(i)
                 mat(2,i)=vect2(i)
                 mat(3,i)=vect3(i)
- 22         continue
+            end do
 !
 !         PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
-            do 23 i = 1, ndim
+            do i = 1, ndim
                 ploc(i)=0.d0
-                do 24 j = 1, ndim
+                do j = 1, ndim
                     ploc(i) = ploc(i) + mat(i,j) * (p3d(j)-noeud(j))
- 24             continue
- 23         continue
+                end do
+            end do
 !
 !         DISTANCE DU POINT A L'ELLIPSE / RECTANGLE
             if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'CYLINDRE') then
@@ -183,7 +183,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
             endif
 !
- 20     continue
+        end do
 !
     else if (geofis.eq.'DEMI_PLAN') then
 !
@@ -196,12 +196,12 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !        (NORMALE AU FOND : DIRECTION DE PROPAGATION POTENTIELLE)
 !       NOEUD = NOEUD DU FOND DE FISSURE
 !
-        do 29 ino = 1, nbno
+        do ino = 1, nbno
 !
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
-            do 25 i = 1, ndim
+            do i = 1, ndim
                 p3d(i)=zr(jcoor-1+3*(ino-1)+i)
- 25         continue
+            end do
 !
 !         BASE LOCALE : (VECT2,VECT3,VECT1)
             call normev(vect1, norme)
@@ -209,19 +209,19 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             call provec(vect1, vect2, vect3)
 !
 !         MATRICE DE PASSAGE LOC-GLOB
-            do 26 i = 1, 3
+            do i = 1, 3
                 mat(1,i)=vect2(i)
                 mat(2,i)=vect3(i)
                 mat(3,i)=vect1(i)
- 26         continue
+            end do
 !
 !         PROJECTION DU POINT 3D DANS LE REPERE LOCAL
-            do 27 i = 1, 3
+            do i = 1, 3
                 ploc(i)=0.d0
-                do 28 j = 1, 3
+                do j = 1, 3
                     ploc(i) = ploc(i) + mat(i,j) * (p3d(j)-noeud(j))
- 28             continue
- 27         continue
+                end do
+            end do
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
             zr(jlnsv-1+(ino-1)+1)= ploc(3)
@@ -231,7 +231,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             zr(jltsv-1+(ino-1)+1)= ploc(1)
             zl(jltsl-1+(ino-1)+1)=.true.
 !
- 29     continue
+        end do
 !
     else if (geofis.eq.'SEGMENT') then
 !
@@ -242,21 +242,21 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !       VECT1 = NOEUD DU FOND ORIGINE
 !       VECT2 = NOEUD DU FOND EXTREMITE
 !
-        do 100 i = 1, 3
+        do i = 1, 3
             nori(i) = vect1(i)
             next(i) = vect2(i)
             nmil(i) = (nori(i) + next(i))/2
             vseg(i) = next(i)-nori(i)
-100     continue
+        end do
 !
         nseg = sqrt(vseg(1)**2 + vseg(2)**2 + vseg(3)**2)
 !
-        do 50 ino = 1, nbno
+        do ino = 1, nbno
 !
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
-            do 51 i = 1, ndim
+            do i = 1, ndim
                 p2d(i)=zr(jcoor-1+3*(ino-1)+i)
- 51         continue
+            end do
 !
             vect3(1) = 0.d0
             vect3(2) = 0.d0
@@ -267,19 +267,19 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             call provec(vect3, vseg, vect2)
 !
 !         MATRICE DE PASSAGE LOC-GLOB
-            do 52 i = 1, 2
+            do i = 1, 2
                 mat(1,i)=vseg(i)
                 mat(2,i)=vect2(i)
- 52         continue
+            end do
 !
 !         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
 !         POSITIONNE AU CENTRE DU SEGEMENT
-            do 53 i = 1, 2
+            do i = 1, 2
                 ploc(i)=0.d0
-                do 54 j = 1, 2
+                do j = 1, 2
                     ploc(i) = ploc(i) + mat(i,j) * (p2d(j)-nmil(j))
- 54             continue
- 53         continue
+                end do
+            end do
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             zr(jlnsv-1+(ino-1)+1)= ploc(2)
@@ -289,7 +289,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             zr(jltsv-1+(ino-1)+1)= abs(ploc(1)) - nseg/2
             zl(jltsl-1+(ino-1)+1)=.true.
 !
- 50     continue
+        end do
 !
 !
     else if (geofis.eq.'DEMI_DROITE'.or. geofis.eq.'DROITE') then
@@ -307,12 +307,12 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !         VECT1 = VECTEUR DIRECTEUR DE LA  DROITE
 !         NOEUD = UN POINT DE LA DROITE
 !
-        do 35 ino = 1, nbno
+        do ino = 1, nbno
 !
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
-            do 36 i = 1, ndim
+            do i = 1, ndim
                 p2d(i)=zr(jcoor-1+3*(ino-1)+i)
- 36         continue
+            end do
 !
             vect3(1) = 0.d0
             vect3(2) = 0.d0
@@ -323,18 +323,18 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             call provec(vect3, vect1, vect2)
 !
 !         MATRICE DE PASSAGE LOC-GLOB
-            do 37 i = 1, 2
+            do i = 1, 2
                 mat(1,i)=vect1(i)
                 mat(2,i)=vect2(i)
- 37         continue
+            end do
 !
 !         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
-            do 38 i = 1, 2
+            do i = 1, 2
                 ploc(i)=0.d0
-                do 39 j = 1, 2
+                do j = 1, 2
                     ploc(i) = ploc(i) + mat(i,j) * (p2d(j)-noeud(j))
- 39             continue
- 38         continue
+                end do
+            end do
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             zr(jlnsv-1+(ino-1)+1)= ploc(2)
@@ -355,7 +355,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
             endif
 !
- 35     continue
+        end do
 !
     endif
 !

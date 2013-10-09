@@ -33,7 +33,7 @@ subroutine lrvemo(modele)
 !-----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer ::  n1
+    integer :: n1
 !
     character(len=8) :: chanom, typech
     character(len=16) :: typres, pheno, valk(2), nomcmd, tych

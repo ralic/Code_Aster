@@ -100,16 +100,16 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
     if (ier .eq. 0) then
 !       LE FOND DE FISSURE N'EXISTE PAS (CAS D'UNE INTERFACE)
 !       ON MET TOUT A ZERO ET ON SORT
-        do 10 ino = 1, nbno
-            do 20 j = 1, ndim
+        do ino = 1, nbno
+            do j = 1, ndim
                 zr(jgsv-1+3*ndim*(ino-1)+j)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j)=.true.
                 zr(jgsv-1+3*ndim*(ino-1)+j+ndim)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j+ndim)=.true.
                 zr(jgsv-1+3*ndim*(ino-1)+j+2*ndim)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j+2*ndim)=.true.
- 20         continue
- 10     continue
+            end do
+        end do
         goto 999
     endif
 !
@@ -125,7 +125,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
 !     CALCUL DES PROJETÉS DES NOEUDS SUR LE FOND DE FISSURE
     eps = 1.d-12
-    do 100 ino = 1, nbno
+    do ino = 1, nbno
         if (.not. zl(jgtl-1+ndim*(ino-1)+1)) goto 100
 !       COORD DU NOEUD M DU MAILLAGE
         xm = zr(iadrco+(ino-1)*3+1-1)
@@ -136,7 +136,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !       BOUCLE SUR PT DE FONFIS
         if (ndim .eq. 2) npoint = nfon
         if (ndim .eq. 3) npoint = nfon-1
-        do 110 j = 1, npoint
+        do j = 1, npoint
             if (ndim .eq. 2) then
 !           COORD PT N
                 xn = zr(ifon-1+4*(j-1)+1)
@@ -179,9 +179,9 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
                 a(2)=yn
                 a(3)=zn
             endif
-110     continue
+        end do
 !       STOCKAGE DU PROJETÉ ET DES GRADIENTS
-        do 120 j = 1, ndim
+        do j = 1, ndim
             zr(jgsv-1+3*ndim*(ino-1)+j)=a(j)
             zl(jgsl-1+3*ndim*(ino-1)+j)=.true.
             zr(jgsv-1+3*ndim*(ino-1)+j+ndim)=zr(jgt-1+ndim*(ino-1)+j)
@@ -189,8 +189,9 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
             zr(jgsv-1+3*ndim*(ino-1)+j+2*ndim)=zr(jgn-1+ndim*(ino-1)+&
             j)
             zl(jgsl-1+3*ndim*(ino-1)+j+2*ndim)=.true.
-120     continue
-100 end do
+        end do
+100     continue
+    end do
 !
 999 continue
 !

@@ -76,7 +76,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
     call jedupo(depla//'.VALE', 'V', nomjv, .false.)
     call jeveuo(nomjv, 'E', iavald)
 !
-    do 30 ino = 1, nbno
+    do ino = 1, nbno
 !
         nunoe = numnd(ino)
 !
@@ -88,37 +88,37 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
         axer(2) = axer(2) - pscal*axez(2)
         axer(3) = axer(3) - pscal*axez(3)
         xnormr = 0.0d0
-        do 36 i = 1, 3
+        do i = 1, 3
             xnormr = xnormr + axer(i)*axer(i)
- 36     continue
+        end do
         if (xnormr .lt. epsi) then
             call jenuno(jexnum(nomail//'.NOMNOE', nunoe), k8b)
             call utmess('F', 'POSTRELE_30', sk=k8b)
         endif
         xnormr = sqrt( xnormr )
-        do 38 i = 1, 3
+        do i = 1, 3
             axer(i) = axer(i) / xnormr
- 38     continue
+        end do
         axet(1) = axez(2)*axer(3) - axez(3)*axer(2)
         axet(2) = axez(3)*axer(1) - axez(1)*axer(3)
         axet(3) = axez(1)*axer(2) - axez(2)*axer(1)
-        do 40 i = 1, 3
+        do i = 1, 3
             xnormr = xnormr + axet(i)*axet(i)
- 40     continue
+        end do
         xnormr = sqrt( xnormr )
         if (xnormr .lt. epsi) then
             call jenuno(jexnum(nomail//'.NOMNOE', nunoe), k8b)
             call utmess('F', 'POSTRELE_31', sk=k8b)
         endif
-        do 34 i = 1, 3
+        do i = 1, 3
             pgl(1,i) = axer(i)
             pgl(2,i) = axez(i)
             pgl(3,i) = axet(i)
- 34     continue
+        end do
 !
-        do 10 iec = 1, nec
+        do iec = 1, nec
             tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
- 10     continue
+        end do
         numdx = 0
         numdy = 0
         numdz = 0
@@ -132,7 +132,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
         valer(2) = 0.0d0
         valer(3) = 0.0d0
         icompt = 0
-        do 20 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(tabec,icmp)) then
                 icompt = icompt + 1
                 nomcmp = zk8(iad-1+icmp)
@@ -157,7 +157,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
                     valer(3) = zr(iavald-1+numdrz)
                 endif
             endif
- 20     continue
+        end do
         if ((numdx+numdy+numdz) .eq. 0) goto 22
         call utpvgl(1, 3, pgl, valed, vald)
         if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
@@ -169,7 +169,8 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
         if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
         if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
         if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
- 30 end do
+ 30     continue
+    end do
 !
     call jedema()
 end subroutine

@@ -74,7 +74,6 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: f(3, 3), eps(6)
     real(kind=8) :: tmp1, fe(4), baslog(9)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: dfdx(4), dfdy(4), dfdz(4)
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: grad(3, 3), rbid
     real(kind=8) :: rac2
@@ -103,15 +102,15 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
-    do 100 kpg = 1, npg
+    do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 110 i = 1, ndim
-            do 111 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(3*(n-1)+i)
-111          continue
-110      continue
+            end do
+        end do
 !
 !       JUSTE POUR CALCULER LES FF
         call reeref(elrefp, .false., nnop, nnops, zr(igeom),&
@@ -126,13 +125,13 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
             call vecini(9, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 113 ino = 1, nnop
+            do ino = 1, nnop
                 lsng = lsng + lsn(ino) * ff(ino)
                 lstg = lstg + lst(ino) * ff(ino)
-                do 114 i = 1, 9
+                do i = 1, 9
                     baslog(i) = baslog(i) + basloc(9*(ino-1)+i) * ff( ino)
-114              continue
-113          continue
+                end do
+            end do
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             call xcalfe(he, lsng, lstg, baslog, fe,&
@@ -158,8 +157,8 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !       ON ENVOIE DFDM3D AVEC LES COORD DU SS-ELT
         call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
                     jac)
-        do 127 i = 1, ndim
-            do 128 n = 1, nnop
+        do i = 1, ndim
+            do n = 1, nnop
 !----------LA PARTIE CORRESPOINDANTE AU FF CLASSIQUES
                 cpt= 1
                 pff(cpt,n,i) = dfdi(n,i)
@@ -169,18 +168,18 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                     pff(cpt,n,i) = dfdi(n,i)*he
                 endif
 !----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT CRACK-TIP
-                do 126 ig = 1, nfe
+                do ig = 1, nfe
                     cpt =cpt+1
                     pff(cpt,n,i) = dfdi(n,i)*fe(ig)+ff(n)*dgdgl(ig,i)
-126              continue
+                end do
                 ASSERT(cpt.eq.ddldn)
-128          continue
-127      continue
+            end do
+        end do
 !
-        do 240 n = 1, nnop
-            do 241 m = 1, n
-                do 242 i = 1, ddldn
-                    do 243 j = 1, ddldn
+        do n = 1, nnop
+            do m = 1, n
+                do i = 1, ddldn
+                    do j = 1, ddldn
                         tmp1 = sig(&
                                (kpg-1)*6+1)*pff(i, n, 1)*pff(j, m, 1) + sig((kpg-1)*6+2)*pff(i,&
                                n, 2)*pff(j, m, 2) + sig((kpg-1)*6+3)*pff(i, n, 3)*pff(j, m,&
@@ -198,18 +197,18 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                             j1 = ddldn
                         endif
                         if (j .le. j1) then
-                            do 244 ij = 1, ndim
+                            do ij = 1, ndim
                                 kkd = (ddls*(n-1)+(i-1)*ndim+ij-1) * (ddls*(n-1)+(i-1)*ndim+ij&
                                       ) /2
                                 kk = kkd + ddls*(m-1)+(j-1)*ndim+ij
                                 matuu(kk) = matuu(kk) + tmp1*jac
-244                          continue
+                            end do
                         endif
-243                  continue
-242              continue
-241          continue
-240      continue
+                    end do
+                end do
+            end do
+        end do
 !
-100  end do
+    end do
 !
 end subroutine

@@ -128,9 +128,9 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP: (+1)
         idecal = 0
-        do 2 iicmp = 1, icmp
+        do iicmp = 1, icmp
             if (exisdg(zi(iadesc+2),iicmp)) idecal = idecal + 1
-  2     continue
+        end do
 !
         if (exisdg(zi(iadesc+2),icmp)) then
             if (type .eq. 'R') then
@@ -153,7 +153,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
         call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid)
         if (ibid .eq. 0) then
             write (ific,*) testok,' : 2'
-            goto 9999
+            goto 999
         endif
         call jeveuo(jexnum(prchno//'.PRNO', 1), 'L', iaprno)
         call jeveuo(prchno//'.NUEQ', 'L', ianueq)
@@ -166,14 +166,14 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
         iadg = iaprno - 1 + (ino-1)* (nec+2) + 3
         if (ncmp .eq. 0) then
             write (ific,*) testok,' : 3'
-            goto 9999
+            goto 999
         endif
 !
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP:
         idecal = 0
-        do 1 iicmp = 1, icmp
+        do iicmp = 1, icmp
             if (exisdg(zi(iadg),iicmp)) idecal = idecal + 1
-  1     continue
+        end do
 !
         if (exisdg(zi(iadg),icmp)) then
             if (type .eq. 'R') then
@@ -190,6 +190,6 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
             call utmess('F', 'CALCULEL6_93')
         endif
     endif
-9999 continue
+999 continue
     call jedema()
 end subroutine

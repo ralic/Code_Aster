@@ -63,7 +63,7 @@ subroutine impe81(nomres, impe, basemo)
     real(kind=8) :: partr, parti, partr0, parti0
     real(kind=8) :: amso, dpi, freq
 !
-    character(len=8) ::  blanc
+    character(len=8) :: blanc
     character(len=16) :: typres, nomcom
     character(len=19) :: impini
     character(len=19) :: impk, impm, impc
@@ -125,11 +125,11 @@ subroutine impe81(nomres, impe, basemo)
     if (nk .ne. 0) call jeveuo(jexnum(impk//'.VALM', 1), 'L', ldblok)
     if (nm .ne. 0) call jeveuo(jexnum(impm//'.VALM', 1), 'L', ldblom)
     if (nc .ne. 0) call jeveuo(jexnum(impc//'.VALM', 1), 'L', ldbloc)
-    do 30 i = 1, nbmode
+    do i = 1, nbmode
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
-        do 40 j = 1, i
+        do j = 1, i
 !
 !
             zr(ldresr+i*(i-1)/2+j-1) = 0.d0
@@ -159,8 +159,8 @@ subroutine impe81(nomres, impe, basemo)
                 endif
             endif
 !
- 40     continue
- 30 continue
+        end do
+    end do
 !
 ! --- CREATION DU .DESC
 !

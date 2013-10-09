@@ -66,7 +66,7 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     integer :: seq, adress, lgsn
     integer :: decal, global
     integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav
-    integer ::  i
+    integer :: i
     character(len=14) :: nu
 !
 !     ------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
 !        LA RESOLUTION PAR BLOCS :
     if (nbsol .gt. 4) then
         call rlbfr8(nommat, neq, xsol, nbsol, typsym)
-        goto 9999
+        goto 999
     endif
 !
     call dismoi('NOM_NUME_DDL', nommat, 'MATR_ASSE', repk=nu)
@@ -111,18 +111,18 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     call wkvect('&&RLTFR8.POINTER.ADRESSE', 'V V I', neq, ad)
     call wkvect('&&RLTFR8.POINTER.TRAVAIL', 'V V R', neq, trav)
 !
-    do 110 i = 1, nbsol
+    do i = 1, nbsol
         call mltdra(nbloc, zi(lgbloc), zi(ncbloc), zi(decal), zi(seq),&
                     nbsn, neq, zi(supnd), zi(adress), zi4(global),&
                     zi(lgsn), factol, factou, xsol(1, i), zr(pointr),&
                     zi(nouv), zi(anc), zi(ad), zr(trav), typsym)
-110 end do
+    end do
 !
     call jedetr('&&RLTFR8.POINTER.ADRESSE')
     call jedetr('&&RLTFR8.POINTER.TRAVAIL')
     call jedetr('&&RLTFR8.POINTER.REELS  ')
 !
-9999 continue
+999 continue
     call jedema()
 !
 end subroutine

@@ -79,9 +79,9 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     if (mater(17,1) .eq. un) then
 !
         trdeps = zero
-        do 5 i = 1, ndi
+        do i = 1, ndi
             trdeps = trdeps + deps(i)
- 5      continue
+        end do
 !
 !        COEF = YOUNG*D13 /(UN-N)/(UN-DEUX*POISSO) * TRDEPS
         coef = young*d13 /(un-deux*poisso) * trdeps
@@ -112,9 +112,9 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     endif
 !
     i1d = zero
-    do 10 i = 1, ndi
+    do i = 1, ndi
         i1d = i1d + d13*sigd(i)
-10  continue
+    end do
 !
     i1d =i1d -piso
 !
@@ -124,7 +124,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     endif
     if (trdeps .eq. zero) then
         i1f = i1d
-        goto 9999
+        goto 999
     endif
 !
 ! ---> COEF < 0 => ON VERIFIE UN CRITERE APPROXIMATIF
@@ -146,7 +146,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     if (n .eq. zero) then
         i1f = i1d + coef
         if (i1f .ge. zero) tract = .true.
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -160,7 +160,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
         x(1) = i1d
         y(1) = coef*(x(1)/pa)**n
         icmpt = 1
-45      continue
+ 45     continue
         x(2) = alpha*x(1)
         y(2) = coef*(x(2)/pa)**n - x(2) + i1d
 !
@@ -206,14 +206,14 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
     prec = crit(3)
     icmpt = 0
 !
-41  continue
-    do 40 i = 1, niter
+ 41 continue
+    do i = 1, niter
 !
         if (abs(y(4)/pa) .lt. prec) goto 50
         call zeroco(x, y)
         y(4) = coef*(x(4)/pa)**n - x(4) + i1d
 !
-40  continue
+    end do
 !
     icmpt = icmpt+1
     if (icmpt .lt. 5) goto 41
@@ -231,10 +231,10 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
         theta = zero
     endif
 !
-50  continue
+ 50 continue
 !
     i1f = (un-theta)*(coef*(i1d/pa)**n + i1d) + theta*x(4) +piso
     if (i1f .ge. piso) tract = .true.
 !
-9999  continue
+999 continue
 end subroutine

@@ -46,7 +46,7 @@ subroutine te0253(option, nomte)
     character(len=16) :: nomte, option
     real(kind=8) :: valres(nbres), a(2, 2, 9, 9)
     real(kind=8) :: b(18, 18), ul(18), c(171)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, rho, celer
+    real(kind=8) :: poids, rho, celer
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: nno, kp, npg, ik, ijkl, i, j, imatuu
     integer :: ivectu, jcret, ndim, jgano, nnos
@@ -83,16 +83,19 @@ subroutine te0253(option, nomte)
     celer = valres(2)
 !
 !     INITIALISATION DE LA MATRICE A
-    do 112 k = 1, 2
-        do 112 l = 1, 2
-            do 112 i = 1, nno
-                do 112 j = 1, i
+    do k = 1, 2
+        do l = 1, 2
+            do i = 1, nno
+                do j = 1, i
                     a(k,l,i,j) = 0.d0
-112              continue
+                end do
+            end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
 !
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -104,33 +107,36 @@ subroutine te0253(option, nomte)
 !
         if (lteatt(' ','AXIS','OUI')) then
             r = 0.d0
-            do 102 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102          continue
+            end do
             poids = poids*r
         endif
 !
-        do 106 i = 1, nno
-            do 107 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 a(1,1,i,j) = a(1,1,i,j) + poids * zr(ivf+k+i-1) * zr( ivf+k+j-1) / rho / celer/ce&
                              &ler
 !
-107          continue
+            end do
 !
-106      continue
+        end do
 !
-101  end do
+    end do
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 !
-    do 111 k = 1, 2
-        do 111 l = 1, 2
-            do 111 i = 1, nno
+    do k = 1, 2
+        do l = 1, 2
+            do i = 1, nno
                 ik = ((2*i+k-3) * (2*i+k-2)) / 2
-                do 111 j = 1, i
+                do j = 1, i
                     ijkl = ik + 2 * (j-1) + l
                     c(ijkl) = a(k,l,i,j)
-111              continue
+                end do
+            end do
+        end do
+    end do
 !
     nno2 = nno*2
     nt2 = nno*(nno2+1)
@@ -138,42 +144,43 @@ subroutine te0253(option, nomte)
     if (option(1:9) .ne. 'FULL_MECA' .and. option(1:9) .ne. 'RIGI_MECA') goto 9998
     if (option .eq. 'RIGI_MECA_HYST') then
         call jevech('PMATUUC', 'E', imatuu)
-        do 115 i = 1, nt2
+        do i = 1, nt2
             zc(imatuu+i-1)=dcmplx(c(i),0.d0)
-115      continue
+        end do
     else
         call jevech('PMATUUR', 'E', imatuu)
-        do 114 i = 1, nt2
+        do i = 1, nt2
             zr(imatuu+i-1)=c(i)
-114      continue
+        end do
     endif
-9998  continue
+9998 continue
 !
     if (option .ne. 'FULL_MECA' .and. option .ne. 'RAPH_MECA' .and. option .ne. 'FORC_NODA') &
-    goto 9999
+    goto 999
     call jevech('PVECTUR', 'E', ivectu)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    do 113 i = 1, nno2
+    do i = 1, nno2
         zr(ivectu+i-1) = 0.d0
         ul(i)=zr(ideplm+i-1)+zr(ideplp+i-1)
-113  end do
+    end do
 !
     nn = 0
-    do 120 n1 = 1, nno2
-        do 121 n2 = 1, n1
+    do n1 = 1, nno2
+        do n2 = 1, n1
             nn = nn + 1
             b(n1,n2) = c(nn)
             b(n2,n1) = c(nn)
-121      continue
-120  end do
+        end do
+    end do
 !
-    do 130 n1 = 1, nno2
-        do 130 n2 = 1, nno2
+    do n1 = 1, nno2
+        do n2 = 1, nno2
             zr(ivectu+n1-1) = zr(ivectu+n1-1)+b(n1,n2)*ul(n2)
-130      continue
+        end do
+    end do
 !
-9999  continue
+999 continue
     if (option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = 0

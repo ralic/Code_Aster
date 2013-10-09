@@ -40,7 +40,7 @@ subroutine varaff(noma, gran, base, ceselz)
 !  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP POUR VARI_R
 !  - CREER LE CHAM_ELEM_S / ELEM  (CESELZ)
 !-----------------------------------------------------------------------
-    integer ::  nocc, nbtou, n1
+    integer :: nocc, nbtou, n1
     integer :: iad, k, iocc, nbmail
     character(len=8) :: kbid, typmcl(2)
     character(len=6) :: knuva
@@ -76,26 +76,26 @@ subroutine varaff(noma, gran, base, ceselz)
 !     0- CALCUL DU PLUS GRAND NUMERO DE VARI UTILISE (NUVAMX):
 !     --------------------------------------------------------
     nuvamx=0
-    do 29 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
                     nbret=n1)
         ASSERT(n1.gt.0)
-        do 28 k = 1, n1
+        do k = 1, n1
             ASSERT(zk8(jlnovx-1+k)(1:1).eq.'V')
             read (zk8(jlnovx-1+k)(2:8),'(I7)') nuva
             nuvamx=max(nuvamx,nuva)
- 28     continue
- 29 end do
+        end do
+    end do
     ASSERT(nuvamx.gt.0)
 !
 !
 !     1- ALLOCATION DE CESELM
 !     --------------------------------------------
     call wkvect('&&VARAFF.LNOVA', 'V V K8', nuvamx, jlnova)
-    do 27 k = 1, nuvamx
+    do k = 1, nuvamx
         call codent(k, 'G', knuva)
         zk8(jlnova-1+k)='V'//knuva
- 27 end do
+    end do
     ceselm = ceselz
 !     -- REMARQUE : LES CMPS SERONT DANS L'ORDRE V1,V2,...
     call cescre(base, ceselm, 'ELEM', noma, 'VARI_R',&
@@ -108,7 +108,7 @@ subroutine varaff(noma, gran, base, ceselz)
 !
 !     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------
-    do 30 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -139,10 +139,10 @@ subroutine varaff(noma, gran, base, ceselz)
             call jeveuo(mesmai, 'L', jmesma)
         endif
 !
-        do 31 kvari = 1, n1
+        do kvari = 1, n1
             read (zk8(jlnovx-1+kvari)(2:8),'(I7)') nuva
             ASSERT(nuva.gt.0.and.nuva.le.nuvamx)
-            do 32 k = 1, nbmail
+            do k = 1, nbmail
                 if (ltou) then
                     numa=k
                 else
@@ -157,11 +157,11 @@ subroutine varaff(noma, gran, base, ceselz)
 !           -- RECOPIE DE LA VALEUR:
                 zl(jcesl-1-iad) = .true.
                 zr(jcesv-1-iad) = zr(jlvavx-1+kvari)
- 32         continue
- 31     continue
+            end do
+        end do
 !
         call jedetr(mesmai)
- 30 end do
+    end do
 !
 !
     call jedetr('&&VARAFF.LNOVX')

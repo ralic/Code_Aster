@@ -69,7 +69,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 !
 !-----------------------------------------------------------------------
     integer :: iadesc, iancmp, iarefe, iavale, icmp, iec
-    integer ::  igd, iiec, ino, itrou, nbcmp2, nbno
+    integer :: igd, iiec, ino, itrou, nbcmp2, nbno
     integer :: nec
 !-----------------------------------------------------------------------
     call jemarq()
@@ -87,7 +87,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iancmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2)
-    do 1 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         nocmp=licmp(icmp)
         itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
         if (itrou .eq. 0) then
@@ -95,7 +95,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
             valk(2) = gd2
             call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
         endif
-  1 end do
+    end do
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec)
     call dismoi('TYPE_SCA', gd2, 'GRANDEUR', repk=tysca)
     if (tysca(1:1) .ne. 'R') then
@@ -119,21 +119,21 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     call jeecra(ch19//'.DESC', 'DOCU', cval='CHNO')
     zi(iadesc-1+1)=igd
     zi(iadesc-1+2)=-nbcmp
-    do 2 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         nocmp=licmp(icmp)
         itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
         iec=(itrou-1)/30 +1
         iiec=itrou-(iec-1)*30
         zi(iadesc-1+2+iec)=ior(zi(iadesc-1+2+iec),2**iiec)
-  2 end do
+    end do
 !
 !     OBJET: .VALE
 !     ------------
-    do 3 icmp = 1, nbcmp
-        do 4 ino = 1, nbno
+    do icmp = 1, nbcmp
+        do ino = 1, nbno
             zr(iavale-1+(ino-1)*nbcmp+icmp)=rcmp(icmp)
-  4     continue
-  3 end do
+        end do
+    end do
 !
 !
     call jedema()

@@ -177,16 +177,16 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
 !-LECTURE DE L'ENTETE DU DATASET
 !
-    do 20 irec = 1, nbrec
+    do irec = 1, nbrec
         read (mfich,'(A80)',end=160) rec(irec)
- 20 end do
+    end do
 !
 !-TRAITEMENT DE L'ENTETE : ON RECHERCHE SI LE CONTENU EST
 ! CONFORME A CELUI PRESENT DANS LA SD FORMAT_IDEAS
 !
-    do 30 ich = 1, nbnoch
+    do ich = 1, nbnoch
         if (zi(lfinum-1+ich) .eq. numdat) goto 40
- 30 end do
+    end do
     goto 10
 !
  40 continue
@@ -205,7 +205,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 rbid, trouve)
 !
     chamok = .false.
-    do 70 ich = 1, nbnoch
+    do ich = 1, nbnoch
         if (.not.chamok) then
             valatt = zi(lfipar-1+ (ich-1)*800+(irec-1)*40+4)
             if (valatt .eq. 9999) then
@@ -223,21 +223,22 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                     chamok = .true.
                 endif
             else
-                do 60 irec = 1, nbrec
-                    do 50 ifield = 1, nbfiel
+                do irec = 1, nbrec
+                    do ifield = 1, nbfiel
                         valatt = zi(lfipar-1+ (ich-1)*800+ (irec-1)* 40+ifield)
                         if (valatt .ne. 9999) then
                             call decod1(rec, irec, ifield, valatt, trouve)
                             if (.not.trouve) goto 70
                         endif
- 50                 continue
- 60             continue
+                    end do
+                end do
                 chamok = .true.
                 nomch = linoch(ich)
                 numch = ich
             endif
         endif
- 70 end do
+ 70     continue
+    end do
     if (.not.chamok) goto 10
 !
 !- TRAITEMENT DU NUMERO D'ORDRE, DE L'INSTANT OU DE LA FREQUENCE
@@ -373,12 +374,12 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
         nbcmp = zi(lfinbc-1+numch)
 !
         nbcmp1 = 0
-        do 80 icmp = 1, nbcmp
+        do icmp = 1, nbcmp
             if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
                 nbcmp1 = nbcmp1 + 1
                 licmp(nbcmp1) = zk8(lficmp-1+ (numch-1)*1000+icmp)
             endif
- 80     continue
+        end do
 !
         if (tychid .eq. 'NOEU') then
 !
@@ -411,15 +412,15 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 call utmess('I', 'PREPOST_13', sk=nomch)
                 call jelira(chs//'.CNSV', 'LONMAX', nbval)
                 if (zcmplx) then
-                    do 85 iaux = 1, nbval
+                    do iaux = 1, nbval
                         zc(jcnsv-1+iaux) = dcmplx(0.d0,0.d0)
                         zl(jcnsl-1+iaux) = .true.
- 85                 continue
+                    end do
                 else
-                    do 86 iaux = 1, nbval
+                    do iaux = 1, nbval
                         zr(jcnsv-1+iaux) = 0.d0
                         zl(jcnsl-1+iaux) = .true.
- 86                 continue
+                    end do
                 endif
             endif
 !
@@ -452,24 +453,24 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
             if (zcmplx) then
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,2*nbcmid)
                 icmp1 = 0
-                do 100 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
                     icmp2 = icmp*2
                     if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
                         icmp1 = icmp1 + 1
                         zc(jcnsv-1+idecal+icmp1) = dcmplx( val(icmp2-1) , val(icmp2))
                         zl(jcnsl-1+idecal+icmp1) = .true.
                     endif
-100             continue
+                end do
             else
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,nbcmid)
                 icmp1 = 0
-                do 110 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
                     if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
                         icmp1 = icmp1 + 1
                         zr(jcnsv-1+idecal+icmp1) = val(icmp)
                         zl(jcnsl-1+idecal+icmp1) = .true.
                     endif
-110             continue
+                end do
             endif
             goto 90
 ! - LECTURE DU CHAMP ELEMENT
@@ -497,20 +498,20 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
             endif
             itype=zi(jtypm-1+ielast)
 !
-            do 140 knoide = 1, nbnoe
+            do knoide = 1, nbnoe
 !
 !           -- CALCUL DE KNOAST :
-                do 141 iast = 1, nbnoe
+                do iast = 1, nbnoe
                     isup=zi(jperm-1+maxnod*(itype-1)+iast)
                     if (isup .eq. knoide) goto 142
-141             continue
+                end do
                 call utmess('F', 'PREPOST3_40')
 142             continue
                 knoast=iast
 !
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,nbcmid)
                 icmp1 = 0
-                do 130 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
                     if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
                         icmp1 = icmp1 + 1
                         call cesexi('S', jcesd, jcesl, ielast, knoast,&
@@ -518,8 +519,8 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                         zr(jcesv-1+abs(kk)) = val(icmp)
                         zl(jcesl-1+abs(kk)) = .true.
                     endif
-130             continue
-140         continue
+                end do
+            end do
 !
             goto 120
         else if (tychid.eq.'ELGA') then

@@ -60,7 +60,7 @@ subroutine iredsu(macr, form, ifc, versio)
 !
     integer :: nive
     integer :: i, icol, idrx, idry, idrz, idx, idy, idz
-    integer ::  iero, ifor, im, imat
+    integer :: iero, ifor, im, imat
     integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
     integer :: j, k, m2, nbordr, nstat
     integer :: jmasg, jmasj, jmst, jordr, jnoeu, jpars, jpari

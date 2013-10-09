@@ -141,7 +141,7 @@ subroutine te0491(option, nomte)
     real(kind=8) :: omega, p, poids, psi, rbid, rp
     real(kind=8) :: rprim, sigeq, sigy, tempg, trepsm, trois, trsig
     real(kind=8) :: un, undemi, untier, volume, welas, wtotal, zero
-    real(kind=8) :: valres(5), dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: valres(5)
     real(kind=8) :: sigma(nbsgm), epsdv(nbsgm)
     real(kind=8) :: epsel(nbsgm), epspla(nbsgm), x(nbsgm)
     real(kind=8) :: epsim(nbsgm), sigmm(nbsgm), delta(nbsgm)
@@ -200,11 +200,11 @@ subroutine te0491(option, nomte)
     xyz(1) = 0.d0
     xyz(2) = 0.d0
     xyz(3) = 0.d0
-    do 180 i = 1, nno
-        do 190 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-190      continue
-180  end do
+        end do
+    end do
 !
     call ortrep(zi(imate), ndim, xyz, repere)
 !
@@ -324,16 +324,16 @@ subroutine te0491(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !
-        do 120 igau = 1, npg1
+        do igau = 1, npg1
 !
             omega = zero
             psi = zero
 !
 ! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
-            do 50 i = 1, nbsig
+            do i = 1, nbsig
                 sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-50          continue
+            end do
 !
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
@@ -461,33 +461,33 @@ subroutine te0491(option, nomte)
 !             NI VMIS_ISOT_ NI ELAS
 !
                     if (idconm .ne. 0) then
-                        do 80 i = 1, nbsig
+                        do i = 1, nbsig
                             sigmm(i) = zr(idsigm+ (igau-1)*nbsig+i-1)
-80                      continue
+                        end do
                     endif
 !
 ! ---         TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
 !             ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
 !             NI VMIS_ISOT_ NI ELAS
 !
-                    do 90 i = 1, nbsig
+                    do i = 1, nbsig
                         epsi(i) = epss(i+ (igau-1)*nbsig)
-90                  continue
+                    end do
 !
 ! ---         TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION PRECEDENT
 !             ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
 !             NI VMIS_ISOT_ NI ELAS
 !
                     if (ideplm .ne. 0) then
-                        do 100 i = 1, nbsig
+                        do i = 1, nbsig
                             epsim(i) = epssm(i+ (igau-1)*nbsig)
-100                      continue
+                        end do
                     endif
 !
                     if ((idconm.ne.0) .and. (ideplm.ne.0)) then
-                        do 110 i = 1, nbsig
+                        do i = 1, nbsig
                             delta(i) = epsi(i) - epsim(i)
-110                      continue
+                        end do
 !
 !---             CALCUL DES TERMES A SOMMER
 !
@@ -668,7 +668,8 @@ subroutine te0491(option, nomte)
                 indigl = indigl + (un-psi/omega)*poids
             endif
 !
-120      continue
+120         continue
+        end do
 !
 ! ----  RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
 ! ----  AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
@@ -696,7 +697,7 @@ subroutine te0491(option, nomte)
 !
 ! ---    BOUCLE SUR LES POINTS D'INTEGRATION
 !
-        do 170 igau = 1, npg1
+        do igau = 1, npg1
 !
 ! ---      RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
 !
@@ -713,9 +714,9 @@ subroutine te0491(option, nomte)
 !
 ! ---      TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
-            do 140 i = 1, nbsig
+            do i = 1, nbsig
                 sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-140          continue
+            end do
 !
 ! ---      CALCUL DES DEFORMATIONS ELASTIQUES AU POINT
 ! ---      D'INTEGRATION COURANT EN CONSIDERANT LE MATERIAU ISOTROPE :
@@ -751,12 +752,12 @@ subroutine te0491(option, nomte)
 !
             if (compor(1) .eq. 'VMIS_CINE_LINE') then
                 nbsig2 = 7
-                do 150 i = 1, nbsig
+                do i = 1, nbsig
                     x(i) = zr(idvari+ (igau-1)*nbsig2+i-1)
-150              continue
-                do 160 i = 1, nbsig
+                end do
+                do i = 1, nbsig
                     sigma(i) = sigma(i) - x(i)
-160              continue
+                end do
             endif
 !
 ! ---      CALCUL DU TRAVAIL PLASTIQUE AU POINT D'INTEGRATION COURANT :
@@ -855,7 +856,7 @@ subroutine te0491(option, nomte)
                 indigl = indigl + (un-eplast/eplaeq)*poids
             endif
 !
-170      continue
+        end do
 !
 ! ----   RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
 ! ----   AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR

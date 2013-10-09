@@ -71,7 +71,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
         if (chmat .ne. chmats) goto 5
         if (carele .ne. carels) goto 5
         if (chvref .ne. chvres) goto 5
-        goto 9999
+        goto 999
     endif
   5 continue
 !     -- SAUVERGARDE DES ARGUMENTS POUR LE PROCHAIN APPEL
@@ -85,11 +85,11 @@ subroutine vrcref(modele, chmat, carele, chvref)
     celmod='&&VRCREF.CELMOD'
     ligrmo=modele//'.MODELE'
     call jeexin(ligrmo//'.LIEL', iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
     call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
                 iret, ' ')
     call detrsd('CHAMP', celmod)
-    if (iret .eq. 1) goto 9999
+    if (iret .eq. 1) goto 999
 !
 !
     call jeexin(chmat//'.CVRCVARC', iret)
@@ -98,12 +98,12 @@ subroutine vrcref(modele, chmat, carele, chvref)
     if (iret .gt. 0) then
         call jeveuo(chmat//'.CVRCVARC', 'L', jcvrc)
         call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
-        do 10 k = 1, nbcvrc
+        do k = 1, nbcvrc
             if (zk8(jcvrc-1+k) .ne. ' ') then
                 avrc=.true.
                 goto 11
             endif
- 10     continue
+        end do
 !
  11     continue
     endif
@@ -112,7 +112,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 !
 !     -- CAS : PAS DE AFFE_VARC :
 !     ------------------------------------------
-    if (.not.avrc) goto 9999
+    if (.not.avrc) goto 999
 !
 !     -- CAS AFFE_VARC  :
 !     ------------------------
@@ -144,7 +144,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     call jeveuo(dceli//'.CESV', 'E', jdclv)
     nbma = zi(jdcld-1+1)
 !
-    do 170 ima = 1, nbma
+    do ima = 1, nbma
         nbpt = zi(jdcld-1+5+4* (ima-1)+1)
         nbsp = max(1,zi(jdcld-1+5+4* (ima-1)+2))
         ASSERT(nbpt.eq.1)
@@ -152,7 +152,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
         call cesexi('C', jdcld, jdcll, ima, 1,&
                     1, 2, iad)
         if (iad .gt. 0) zi(jdclv-1+iad)=nbcvrc
-170 end do
+    end do
 !
     call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
                 iret, dceli)
@@ -167,16 +167,16 @@ subroutine vrcref(modele, chmat, carele, chvref)
     call jeveuo(csvref//'.CESL', 'E', jcesl)
     call jeveuo(csvref//'.CESV', 'E', jcesv)
     call jelira(csvref//'.CESL', 'LONMAX', n1)
-    do 777 k = 1, n1
+    do k = 1, n1
         zl(jcesl-1+k)=.false.
-777 end do
+    end do
 !
 !
 !
 !     2. REMPLISSAGE DE CSVREF.CESV :
 !     ------------------------------------------
     varc=' '
-    do 1 k = 1, nbcvrc
+    do k = 1, nbcvrc
         if (zk8(jcvvar-1+k) .eq. varc) goto 1
         varc=zk8(jcvvar-1+k)
         cart1 = chmat//'.'//varc//'.1'
@@ -194,11 +194,11 @@ subroutine vrcref(modele, chmat, carele, chvref)
 !
 !       -- CALCUL DE NCMP
         ncmp=0
-        do 69 k2 = k, nbcvrc
+        do k2 = k, nbcvrc
             if (zk8(jcvvar-1+k2) .eq. varc) ncmp=ncmp+1
- 69     continue
+        end do
 !
-        do 70 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
 !
@@ -207,9 +207,9 @@ subroutine vrcref(modele, chmat, carele, chvref)
             if (iad .le. 0) goto 70
             valref=zr(jcesv1-1+iad)
 !
-            do 60 ipt = 1, nbpt
-                do 50 isp = 1, nbsp
-                    do 51 icmp = 1, ncmp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
+                    do icmp = 1, ncmp
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     isp, k-1+ icmp, iad)
                         ASSERT(iad.le.0)
@@ -217,12 +217,15 @@ subroutine vrcref(modele, chmat, carele, chvref)
                         iad=-iad
                         zl(jcesl-1+iad)=.true.
                         zr(jcesv-1+iad)=valref
- 51                 continue
- 50             continue
- 60         continue
- 70     continue
+ 51                     continue
+                    end do
+                end do
+            end do
+ 70         continue
+        end do
         call detrsd('CHAMP', ces1)
-  1 end do
+  1     continue
+    end do
 !
 !
 !     3. RECOPIE DU CHAMP SIMPLE DANS LE CHAMP CHVREF
@@ -235,6 +238,6 @@ subroutine vrcref(modele, chmat, carele, chvref)
                 nncp, 'V', chvref, 'F', ibid)
     call detrsd('CHAM_ELEM_S', csvref)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

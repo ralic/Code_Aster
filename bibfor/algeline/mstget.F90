@@ -114,7 +114,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
         call utmess('F', 'ALGELINE2_5')
     endif
 !
-    do 10 i = 1, nbind
+    do i = 1, nbind
         if (motfac(1:11) .eq. 'PSEUDO_MODE') then
             call getvtx(motfac, 'AXE', iocc=i, nbval=0, nbret=na)
             call getvtx(motfac, 'DIRECTION', iocc=i, nbval=0, nbret=nd)
@@ -150,16 +150,16 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
             call compno(nomma, nbgr, zk24(idgn), nnoe)
             call wkvect('&&MSTGET.POSITION.NOEUD', 'V V K8', nnoe, jnoe)
             ii = -1
-            do 18 ing = 1, nbgr
+            do ing = 1, nbgr
                 nomgr = zk24(idgn+ing-1)
                 call jelira(jexnom(magrno, nomgr), 'LONUTI', nb)
                 call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
-                do 20 in = 0, nb-1
+                do in = 0, nb-1
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                     ii = ii + 1
                     zk8(jnoe+ii) = nomnoe
- 20             continue
- 18         continue
+                end do
+            end do
             call wkvect('&&MSTGET.LISTE.NOEUD', 'V V I', neq, lnoe)
             call noeddl(nume, nnoe, zk8(jnoe), neq, zi(lnoe))
         endif
@@ -168,9 +168,9 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
         call getvtx(motfac, 'TOUT_CMP', iocc=i, nbval=0, nbret=ntc)
         if (ntc .ne. 0) then
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq, lcmp)
-            do 26 ieq = 0, neq-1
+            do ieq = 0, neq-1
                 zi(lcmp+ieq) = 1
- 26         continue
+            end do
         endif
 !
         call getvtx(motfac, 'AVEC_CMP', iocc=i, nbval=0, nbret=nac)
@@ -182,12 +182,12 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq*ncmp, lcmp)
             call pteddl('NUME_DDL', nume, ncmp, zk8(jcmp), neq,&
                         zi(lcmp))
-            do 28 ic = 2, ncmp
+            do ic = 2, ncmp
                 ind = (ic-1)*neq
-                do 30 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     zi(lcmp+ieq)= max(zi(lcmp+ind+ieq),zi(lcmp+ieq))
- 30             continue
- 28         continue
+                end do
+            end do
         endif
 !
         call getvtx(motfac, 'SANS_CMP', iocc=i, nbval=0, nbret=nsc)
@@ -201,22 +201,22 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq*ncmp, lcmp)
             call pteddl('NUME_DDL', nume, ncmp, zk8(jcmp), neq,&
                         zi(lcmp))
-            do 32 ic = 2, ncmp
+            do ic = 2, ncmp
                 ind = (ic-1)*neq
-                do 34 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     zi(lcmp+ieq)= max(zi(lcmp+ind+ieq),zi(lcmp+ieq))
- 34             continue
- 32         continue
-            do 36 ieq = 0, neq-1
+                end do
+            end do
+            do ieq = 0, neq-1
                 zi(lcmp+ieq)= 1 - zi(lcmp+ieq)
- 36         continue
+            end do
         endif
 !
 !        --- ON VERIFIE :
 !               POUR DDL_IMPO TOUS LES DDL DONNES SONT BLOQUES
 !               POUR FORCE_NODALE TOUS LES DDL DONNES SONT LIBRES
 !
-        do 38 ieq = 0, neq-1
+        do ieq = 0, neq-1
             ii = ieq + 1
             imode = zi(lnoe+ieq) * zi(lcmp+ieq)
             iii = zi(jind2+ieq) * imode
@@ -231,7 +231,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                 imode = 0
             endif
             ddlsta(ii)= max(ddlsta(ii),imode)
- 38     continue
+        end do
 !
 !        --- NETTOYAGE ---
 !
@@ -247,7 +247,8 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
         call jeexin('&&MSTGET.NOM.CMP', iret)
         if (iret .gt. 0) call jedetr('&&MSTGET.NOM.CMP')
 !
- 10 end do
+ 10     continue
+    end do
     call jedetr('&&MSTGET.LISTE.LAGRAN')
     call jedetr('&&MSTGET.LISTE.BLOQUE')
     call jedetr('&&MSTGET.LISTE.ACTIF')

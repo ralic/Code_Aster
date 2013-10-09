@@ -72,7 +72,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) ::  nomacr, rota
+    character(len=8) :: nomacr, rota
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
 !
 !
@@ -91,7 +91,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
             call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
             call jeveuo(ma//'.NOMACR', 'L', ianmcr)
             nmxval=0
-            do 1 jsma = 1, nbsma
+            do jsma = 1, nbsma
                 if (zi(iasssa-1+jsma) .eq. 1) then
                     nomacr= zk8(ianmcr-1+jsma)
                     call jeveuo(nomacr//'.DESM', 'L', iadesm)
@@ -100,7 +100,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
                     nddlt=nddli+nddle
                     nmxval= max(nmxval,nddlt)
                 endif
-  1         continue
+            end do
             if (nmxval .gt. 0) then
                 call wkvect('&&SSVALV.VALEURS', 'V V R', nmxval, idresl)
 !           --          '&&SSVALV.VALTEMP' EST UN VECTEUR DE TRAVAIL :
@@ -145,9 +145,9 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 !
         if (rota(1:3) .eq. 'NON') then
 !         RECOPIE DU VECTEUR DEJA CONDENSE :
-            do 2 i = nddli+1, nddlt
+            do i = nddli+1, nddlt
                 zr(idresl-1+i)= zr(ialica-1+nddlt+i)
-  2         continue
+            end do
 !
         else if (rota(1:3).eq.'OUI') then
 !         ROTATION:
@@ -156,14 +156,14 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
             angl(2) = zr(iaparr-1+14*(isma-1)+5)
             angl(3) = zr(iaparr-1+14*(isma-1)+6)
             call matrot(angl, pgl)
-            do 710 i = 1, 3
-                do 712 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     lambda(i,j) = pgl(i,j)
                     lambda(i,j+3) = 0.d0
                     lambda(i+3,j) = 0.d0
                     lambda(i+3,j+3) = pgl(i,j)
-712             continue
-710         continue
+                end do
+            end do
 !
             if (zk8(ialich-1+1)(1:3) .eq. 'NON') then
 !

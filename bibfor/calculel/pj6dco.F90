@@ -71,7 +71,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
 !
 !
 !
-    character(len=8) ::  m1, m2, nono2, alarme
+    character(len=8) :: m1, m2, nono2, alarme
     character(len=14) :: boite
     character(len=16) :: cortr3
     integer :: nbtm, nbtmx
@@ -124,7 +124,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
 !           V(1+3(I-1)+3) : NUMERO DE LA MAILLE MERE DU IEME SEG2
     call jeveuo(m1//'.TYPMAIL', 'L', iatym1)
     ico=0
-    do 51 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 51
         itypm=zi(iatym1-1+ima)
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
@@ -135,14 +135,15 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
                 call utmess('F', 'CALCULEL4_55')
             endif
         endif
- 51 end do
+ 51     continue
+    end do
     call wkvect('&&PJXXCO.SEG2', 'V V I', 1+3*ico, iatr3)
     zi(iatr3-1+1)=ico
 !
     call jeveuo(m1//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
-    do 52 ima = 1, nma1
+    do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 52
         itypm=zi(iatym1-1+ima)
 !       -- CAS DES SEGMENTS :
@@ -152,7 +153,8 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
             zi(iatr3+(ico-1)*3+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
             zi(iatr3+(ico-1)*3+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
         endif
- 52 end do
+ 52     continue
+    end do
 !
 !
 !     3. ON MET LES SEG2 EN BOITES :
@@ -240,7 +242,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     loin2=.false.
     nbnod = 0
     nbnodm = 0
-    do 6 ino2 = 1, nno2
+    do ino2 = 1, nno2
         if (zi(ialin2-1+ino2) .eq. 0) goto 6
         call pj6dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
@@ -263,12 +265,13 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
         endif
         zi(iaconb-1+ino2)=2
         zi(iacotr-1+ino2)=itr3
-        do 61 k = 1, 2
+        do k = 1, 2
             zi(iaconu-1+idecal+k)= zi(iatr3+3*(itr3-1)+k)
             zr(iacocf-1+idecal+k)= cobary(k)
- 61     continue
+        end do
         idecal=idecal+zi(iaconb-1+ino2)
-  6 end do
+  6     continue
+    end do
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
     if (loin2) then
@@ -279,7 +282,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
         endif
 !
         if (alarme .eq. 'OUI') then
-            do 70 ii = 1, nbnod
+            do ii = 1, nbnod
                 ino2m = tino2m(ii)
                 call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
                 umessr(1) = zr(iacoo2+3*(ino2m-1) )
@@ -287,7 +290,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
                 umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
                 umessr(4) = tdmin2(ii)
                 call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
- 70         continue
+            end do
             call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
             call utmess('A', 'CALCULEL5_48', sk=nono2, si=nbnodm, sr=tdmin2(1))
         endif

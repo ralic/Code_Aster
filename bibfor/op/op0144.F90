@@ -85,6 +85,7 @@ subroutine op0144()
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
     real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas
+    ibid = 0
 !
 !-----------------------------------------------------------------------
     data         nomcmp /'DX      ','DY      ','DZ      ',&
@@ -164,9 +165,9 @@ subroutine op0144()
     numo = nomu//'.NUMO'
     call wkvect(numo, 'G V I', nbno, inumo)
     if (tmode) then
-        do 10 i = 1, nbno
+        do i = 1, nbno
             zi(inumo+i-1) = i
- 10     continue
+        end do
     else
         call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbno, vect=zi(inumo))
     endif
@@ -181,9 +182,9 @@ subroutine op0144()
     else if (nbconn.eq.0) then
         calcul(1)=.true.
         call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amor)
-        do 20 i = 1, nbno
+        do i = 1, nbno
             zr(iamor+i-1) = amor
- 20     continue
+        end do
     endif
 !
     if (nbconn .ne. 0) then
@@ -215,9 +216,9 @@ subroutine op0144()
         zr(ivite) = vmoy
     else
         vpas = (vmax-vmin)/(nbpv-1)
-        do 30 iv = 1, nbpv
+        do iv = 1, nbpv
             zr(ivite+iv-1) = vmin + (iv-1)*vpas
- 30     continue
+        end do
     endif
 !
 ! --- 2.2.CREATION DE L'OBJET .FREQ
@@ -287,16 +288,16 @@ subroutine op0144()
 !
     call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
     call wkvect('&&OP0144.DESC_NOEUD', 'V V I', nec*nbnoeu, jdesc)
-    do 40 ino = 1, nbnoeu
-        do 50 icmp = 1, 6
+    do ino = 1, nbnoeu
+        do icmp = 1, 6
             j = indik8(zk8(iacmp),nomcmp(icmp),1,nbcomp)
             if (j .ne. 0) then
                 iec = (j-1)/30 + 1
                 jj = j - 30*(iec-1)
                 zi(jdesc+(ino-1)*nec+iec-1) = ior( zi(jdesc+(ino-1)* nec+iec-1), 2**jj )
             endif
- 50     continue
- 40 continue
+        end do
+    end do
 !
 ! --- 6.2.CREATION DE LA STRUCTURE TABLE
 !
@@ -323,12 +324,12 @@ subroutine op0144()
 !
     nomcha(1:13) = nomu(1:8)//'.C01.'
 !
-    do 60 io = 1, nbno
+    do io = 1, nbno
 !
         write(nomvar,'(I3.3)') zi(inumo+io-1)
         nomcha(14:16) = nomvar(1:3)
 !
-        do 70 ipar = 1, nbpar
+        do ipar = 1, nbpar
 !
             write(nompar,'(I3.3)') ipar
             nomcha(17:24) = nompar(1:3)//'     '
@@ -360,15 +361,15 @@ subroutine op0144()
                 call jeveuo(cham19//'.PRNO', 'E', jprno)
                 idec = 1
                 ii = 0
-                do 80 ino = 1, nbnoeu
+                do ino = 1, nbnoeu
                     zi(jprno-1+(nec+2)*(ino-1)+1) = idec
                     zi(jprno-1+(nec+2)*(ino-1)+2) = 6
-                    do 90 inec = 1, nec
+                    do inec = 1, nec
                         ii = ii + 1
                         zi(jprno-1+(nec+2)*(ino-1)+2+inec) = zi(jdesc+ ii-1)
- 90                 continue
+                    end do
                     idec = idec + 6
- 80             continue
+                end do
                 prchno = cham19
 !
 !           -- CALCUL DE L'OBJET .DEEQ :
@@ -385,9 +386,9 @@ subroutine op0144()
                 zk24(jcrefe+1) = prchno
             endif
 !
- 70     continue
+        end do
 !
- 60 continue
+    end do
 !
 !
 ! --- 7.LANCEMENT DU CALCUL EN FONCTION DU TYPE DE LA CONFIGURATION ---

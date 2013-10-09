@@ -48,4 +48,4 @@ OPTION__
     CHAR_MECA_FF1D3D  34  IN__  MFORCEF  PFF1D3D  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR  
                           OUT__ MVECTUR  PVECTUR  
     CHAR_MECA_FR1D3D  34  IN__  MFORCER  PFR1D3D  MGEOMER  PGEOMER  
-                          OUT__ MVECTUR  PVECTUR  
+                          OUT__ MVECTUR  PVECTUR

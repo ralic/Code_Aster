@@ -18,10 +18,10 @@ subroutine elg_resodr(lt, c, z)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "asterfort/assert.h"
-#   include "asterfort/utmess.h"
+# include "asterfort/assert.h"
+# include "asterfort/utmess.h"
 #ifdef _HAVE_PETSC
-#   include "elim_lagr.h"
+# include "elim_lagr.h"
     Mat :: lt
     real(kind=8) :: c(*), z(*)
 !----------------------------------------------------------------

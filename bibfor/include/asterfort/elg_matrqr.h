@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,14 +14,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine elg_matrqr(ct,r,nbphys,nblag)
-#             ifdef _HAVE_PETSC
-                  Mat :: ct,r
-#             else
-                  integer :: ct, r
-#             endif
-              integer :: nbphys
-              integer :: nblag
-            end subroutine elg_matrqr
-          end interface
+interface
+    subroutine elg_matrqr(ct, r, nbphys, nblag)
+# ifdef _HAVE_PETSC
+        Mat :: ct, r
+        # else
+        integer :: ct, r
+        # endif
+        integer :: nbphys
+        integer :: nblag
+    end subroutine elg_matrqr
+end interface

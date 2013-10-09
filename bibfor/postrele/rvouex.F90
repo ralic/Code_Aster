@@ -157,8 +157,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
                 nbr=nbcmp1
                 if (zk8(jcmp1) .eq. 'VARI') nbr=nbvari
-                do 102 i = 1, nbcmp
-                    do 103 j = 1, nbr
+                do i = 1, nbcmp
+                    do j = 1, nbr
                         if (zk8(jcmp1) .eq. 'VARI') then
                             call codent(j, 'G', num)
                             nomvar = 'V'//num
@@ -166,12 +166,13 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                         else
                             if (zk8(jcmp-1+i) .eq. zk8(jcmp1-1+j)) goto 102
                         endif
-103                 continue
+                    end do
                     valk(1) = zk8(jcmp-1+i)
                     valk(2) = nchsym
                     valk(3) = resuco
                     call utmess('F', 'POSTRELE_65', nk=3, valk=valk)
-102             continue
+102                 continue
+                end do
             endif
 !
             call utmach(nchp19, nbcmp, zk8(jcmp), 'NU', malist,&
@@ -235,34 +236,34 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', adrvlc)
                 call jeveuo(jexnum(ncncin, 1), 'L', acncin)
 !
-                do 100 in = 1, nbnac, 1
+                do in = 1, nbnac, 1
                     n = zi(alsnac + in-1)
                     nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
                     adr = zi(adrvlc + n-1)
 !
                     call i2trgi(zi(aliste), zi(acncin + adr-1), nbm, libre)
 !
-100             continue
+                end do
 !
                 nbmac = libre - 1
                 libre = 1
 !
                 call jeveuo(nchp19//'.CELD', 'L', jceld)
 !
-                do 110 i = 1, nbmac, 1
+                do i = 1, nbmac, 1
                     m = zi(aliste + i-1)
                     if (nbtrou .ne. 0) then
-                        do 112 ii = 1, nbtrou
+                        do ii = 1, nbtrou
                             if (m .eq. zi(jmmail+ii-1)) goto 114
-112                     continue
+                        end do
                         goto 110
 114                     continue
                     endif
                     if (m .ne. 0) then
                         if (nbmalu .ne. 0) then
-                            do 402 j = 1, nbmalu, 1
+                            do j = 1, nbmalu, 1
                                 if (m .eq. zi(jnuma+j-1)) goto 404
-402                         continue
+                            end do
                             goto 110
 404                         continue
                         endif
@@ -273,7 +274,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                             libre = libre + 1
                         endif
                     endif
-110             continue
+110                 continue
+                end do
 !
                 nbmac = libre - 1
 !
@@ -281,9 +283,9 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
                     call wkvect(lstmac, 'V V I', nbmac, alsmac)
 !
-                    do 120 i = 1, nbmac, 1
+                    do i = 1, nbmac, 1
                         zi(alsmac + i-1) = zi(aliste + i-1)
-120                 continue
+                    end do
 !
                 else
 !

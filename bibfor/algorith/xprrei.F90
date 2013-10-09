@@ -97,7 +97,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     real(kind=8) :: signls, sigmls, sdiff, lsprec, siglst, sdifft, lsnouv, ji(3)
     real(kind=8) :: dist, dismin
     character(len=3) :: iterk3
-    character(len=8) ::  lpain(4), lpaout(2), typma
+    character(len=8) :: lpain(4), lpaout(2), typma
     character(len=10) :: resk10, retk10
     character(len=19) :: mai, cnols, cnogls, celgls, chams, celdfi, cesdfi
     character(len=19) :: celalf, cesalf, cnsvi, cnswi, cnsptf, cnsgdf, cesptf
@@ -209,7 +209,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                 cnsptf)
     call jeveuo(cnsptf//'.CNSV', 'E', jptf)
     call jeveuo(cnsptf//'.CNSL', 'E', jptfl)
-    do 10 i = 1, nbno
+    do i = 1, nbno
 !        RETREIVE THE NODE NUMBER
         node = zi(jnodto-1+i)
         signls=0.d0
@@ -217,7 +217,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                                                           &))
         zl(jptfl-1+node) = .true.
         zr(jptf-1+node) = signls
- 10 end do
+    end do
     cnoptf = '&&XPRREI.CNOPTF'
     call cnscno(cnsptf, ' ', 'NON', 'V', cnoptf,&
                 'F', ibid)
@@ -268,20 +268,20 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !
 !-----BOUCLE PRINCIPALE-------------------------------------------------
 !
-    do 995 itemp = 1, itermx
-        do 110 i = 1, nbno
+    do itemp = 1, itermx
+        do i = 1, nbno
 !           RETREIVE THE NODE NUMBER
             node = zi(jnodto-1+i)
             zl(jvil-1+node) = .true.
             zl(jwil-1+node) = .true.
             zr(jvi-1+node) = 0.d0
             zr(jwi-1+node) = 0.d0
-110     continue
+        end do
 !
 !--------------------------------------
 !   CALCUL DE GRAND F SUR LES ELEMENTS
 !--------------------------------------
-        do 90 i = 1, nbno
+        do i = 1, nbno
 !           RETREIVE THE NODE NUMBER
             node = zi(jnodto-1+i)
             signls=0.d0
@@ -290,7 +290,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             zl(jgdfl-1+node) = .true.
             zr(jgdf-1+node) = signls
 !
- 90     continue
+        end do
         call cnscno(cnsgdf, ' ', 'NON', 'V', cnogdf,&
                     'F', ibid)
 !
@@ -345,7 +345,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !     CALCUL DES CHAMPS NODAUX VI ET WI
 !---------------------------------------
 !   BOUCLE SUR LES MAILLES DU MAILLAGE
-        do 120 i = 1, nbma
+        do i = 1, nbma
 !           RETREIVE THE ELEMENT NUMBER
             ima = zi(jelcal-1+i)
             nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
@@ -361,7 +361,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                         1, 1, iadmet)
             call cesexi('S', jdefid, jdefil, ima, 1,&
                         1, 1, iaddfi)
-            do 130 ino = 1, nbnoma
+            do ino = 1, nbnoma
                 call cesexi('S', jalphd, jalphl, ima, ino,&
                             1, 1, iadalp)
                 nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
@@ -371,8 +371,9 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !
                 zr(jwi-1+nuno) = zr(jwi-1+nuno) + zr(jalpha-1+iadalp) * zr(jmeast-1+iadmet)
 !
-130         continue
-120     continue
+            end do
+120         continue
+        end do
 !
 !-----------------------------------------------------------------------
 !
@@ -383,7 +384,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
         sdiff = 0.d0
         sdifft = 0.d0
         siglst = 0.d0
-        do 200 i = 1, nbno
+        do i = 1, nbno
 !           RETREIVE THE NODE NUMBER
             node = zi(jnodto-1+i)
 !  ON ECARTE LES NOEUDS MILIEUX
@@ -402,7 +403,8 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                 sdifft = sdifft + (lsnouv-lsprec)**2.0d0
                 siglst = siglst + lsprec**2.0d0
             endif
-200     continue
+200         continue
+        end do
 !  CAS OU TOUS LES RESIDUS A ESTIMER SONT CALCULES
         if (sdiff .eq. 0.d0 .and. sigmls .eq. 0.d0) then
             residu(itemp) = 0.d0
@@ -419,7 +421,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !     CALCUL DES NOEUDS DONT WI=0
 !---------------------------------
 !
-        do 800 i = 1, nbno
+        do i = 1, nbno
 !           RETREIVE THE NODE NUMBER
             node = zi(jnodto-1+i)
 !  ON ECARTE LES NOEUDS MILIEUX
@@ -439,7 +441,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                 if (((nmanoi.gt.2).and.(ndim.eq.2)) .or. ((nmanoi.gt.4) .and.(ndim.eq.3))) &
                 goto 800
                 numin = 0
-                do 160 imai = 1, nmanoi
+                do imai = 1, nmanoi
                     numai = zi(jmanoi-1+imai)
                     itypma = zi(jmai-1+numai)
                     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
@@ -459,17 +461,17 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !   (On cherche a appliquer une reinitialisation aux mailles de bord
 !   et uniquement a elles!)
 !
-                    do 170 ino = 1, nbnoma
+                    do ino = 1, nbnoma
                         nuno=zi(jconx1-1+zi(jconx2+numai-1)+ino-1)
                         if (.not.zl(jnosom-1+nuno)) goto 170
 !
                         if (abs(zr(jwi-1+nuno)) .gt. r8prem()) then
 !
                             dist=0.d0
-                            do 175 j = 1, ndim
+                            do j = 1, ndim
                                 ji(j) = zr( jcoor-1+3*(node-1)+j) - zr(jcoor-1+3*(nuno-1)+j )
                                 dist=dist+ji(j)**2
-175                         continue
+                            end do
                             dist=dist**0.5d0
 !     On repere le noeud le plus proche
                             if (dist .lt. dismin) then
@@ -478,15 +480,18 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                             endif
                         endif
 !
-170                 continue
-160             continue
+170                     continue
+                    end do
+160                 continue
+                end do
 ! On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
                 lsprec = zr(jlsno-1+node)
                 lsnouv = zr(jlsno-1+node) -deltat*(zr(jvi-1+numin)/zr( jwi-1+numin))
                 zr(jlsno-1+node) = lsnouv
             endif
 !
-800     continue
+800         continue
+        end do
 !
 !
 !---------------------------------------------------
@@ -529,7 +534,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !         WRITE(*,*)'Fin de l"iteration N.',ITEMP
 !         WRITE(*,*)'Valeur du residu:', RESIDU(ITEMP)
 !
-995 end do
+    end do
 !-----FIN DE LA BOUCLE PRINCIPALE---------------------------------------
 999 continue
 !
@@ -542,9 +547,9 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     write(ifm,901)
     write(ifm,902)
     write(ifm,903)
-    do 300 i = 1, itemp
+    do i = 1, itemp
         write(ifm,904)i,residu(i),resit(i)
-300 continue
+    end do
     write(ifm,903)
 !      ENDIF
     call codent(itemp, 'D', iterk3)

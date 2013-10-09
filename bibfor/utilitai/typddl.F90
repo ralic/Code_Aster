@@ -99,10 +99,10 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
 !
         call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(nprno, ibid), 'L', aprno)
-        do 5 i = 1, neq
+        do i = 1, neq
             tabddl(i) = 1
-  5     end do
-        do 10 i = 1, neq
+        end do
+        do i = 1, neq
             n = zi(adeeq + 2*i-1)
             if (n .eq. 0) then
                 nbliai = nbliai + 1
@@ -112,28 +112,28 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nd = zi(adeeq + 2*i-2)
                 ideb = zi(aprno + (nec+2)*(nd-1) + 1-1)
                 ico = 0
-                do 15 icmp = 1, -n - 1
+                do icmp = 1, -n - 1
                     if (exisdg(zi(aprno+(nec+2)*(nd-1)+ 3-1),icmp)) then
                         ico = ico + 1
                     endif
- 15             continue
+                end do
                 iddl = ideb + ico
                 tabddl(iddl) = -1
             endif
- 10     end do
+        end do
 !
     else
 !
 ! CAS DE LA NUMEROTATION GENERALISEE
 !
-        do 11 i = 1, neq
+        do i = 1, neq
             n=zi(adeeq+2*i-1)
             if (n .gt. 0) then
                 tabddl(i)=i
             else
                 tabddl(i)=0
             endif
- 11     end do
+        end do
 !
         call jeveuo(nume//'.NUME.REFN', 'L', jrefe)
         call gettco(zk24(jrefe), typrep)
@@ -145,7 +145,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
             if (nbsst .gt. 2) then
                 call jeveuo(jexnum(norig, ibid), 'L', jorig)
                 call jeveuo(jexnum(nprno, ibid), 'L', jprno)
-                do 23 i = 1, nbsst
+                do i = 1, nbsst
                     nusst = zi(jorig-1+i)
                     kbid = '        '
                     call mgutdm(modgen, kbid, nusst, 'NOM_BASE_MODALE', ibid,&
@@ -153,10 +153,10 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbdefo)
                     n1ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)- nbdefo
                     n2ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)-1
-                    do 24 j = n1ddl, n2ddl
+                    do j = n1ddl, n2ddl
                         tabddl(j)=-j
- 24                 continue
- 23             continue
+                    end do
+                end do
             endif
         endif
 !
@@ -167,7 +167,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
     nbbloq = 0
     nblagr = 0
     if (choix .eq. 'ACTI') then
-        do 12 i = 1, neq
+        do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
                 nbacti = nbacti + 1
@@ -179,9 +179,9 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 0
             endif
- 12     continue
+        end do
     else if (choix.eq.'BLOQ') then
-        do 14 i = 1, neq
+        do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
                 nbacti = nbacti + 1
@@ -193,9 +193,9 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 1
             endif
- 14     continue
+        end do
     else if (choix .eq. 'LAGR') then
-        do 16 i = 1, neq
+        do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
                 nbacti = nbacti + 1
@@ -207,9 +207,9 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 0
             endif
- 16     continue
+        end do
     else if (choix .eq. 'ACBL') then
-        do 18 i = 1, neq
+        do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
                 nbacti = nbacti + 1
@@ -221,9 +221,9 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 1
             endif
- 18     continue
+        end do
     else if (choix .eq. 'ACLA') then
-        do 20 i = 1, neq
+        do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
                 nbacti = nbacti + 1
@@ -235,9 +235,9 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 0
             endif
- 20     continue
+        end do
     else if (choix .eq. 'BLLA') then
-        do 22 i = 1, neq
+        do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
                 nbacti = nbacti + 1
@@ -249,7 +249,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 nbbloq = nbbloq + 1
                 tabddl(i) = 1
             endif
- 22     continue
+        end do
     else
         call utmess('F', 'UTILITAI5_3', sk=choix)
     endif

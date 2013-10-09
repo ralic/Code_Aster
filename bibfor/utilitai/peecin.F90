@@ -192,24 +192,24 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        --- ON RECUPERE LES FREQUENCES ---
         call jenonu(jexnom(resul//'           .NOVA', 'FREQ'), iret)
         if (iret .ne. 0) then
-            do 10 iord = 1, nbordr
+            do iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'FREQ', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
- 10         continue
+            end do
         endif
 !            CAS CALCUL TRANSITOIRE
 !            RECUPERATION DES INSTANTS
         call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
         if (iret .ne. 0) then
             exitim = .true.
-            do 20 iord = 1, nbordr
+            do iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
- 20         continue
+            end do
         endif
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbparr, noparr, typarr)
@@ -220,7 +220,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     call mecact('V', chmasd, 'MAILLA', noma, 'POSI',&
                 ncmp=1, nomcmp='POS', si=inume)
 !
-    do 70 iord = 1, nbordr
+    do iord = 1, nbordr
         call jemarq()
         call jerecu('V')
         numord = zi(jord+iord-1)
@@ -307,7 +307,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        --- ON CALCULE L'ENERGIE TOTALE ---
         call peenca(chelem, nbpaep, varpep, 0, [ibid])
 !
-        do 60 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvtx(option(1:9), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
                         iarg, 0, k8b, nm)
@@ -333,7 +333,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                 call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&
                             iarg, nbgrma, zk24(jgr), ng)
                 valk2(2) = 'GROUP_MA'
-                do 40 ig = 1, nbgrma
+                do ig = 1, nbgrma
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
@@ -357,7 +357,8 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                         call tbajli(resu, nbpard, nopard, [numord], varpep,&
                                     [c16b], valk2, 0)
                     endif
- 40             continue
+ 40                 continue
+                end do
                 call jedetr('&&PEECIN_GROUPM')
             endif
             if (nm .ne. 0) then
@@ -366,7 +367,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                 call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
                             iarg, nbma, zk8(jma), nm)
                 valk(2) = 'MAILLE'
-                do 50 im = 1, nbma
+                do im = 1, nbma
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
@@ -385,14 +386,15 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                         call tbajli(resu, nbpard, nopard, [numord], varpep,&
                                     [c16b], valk, 0)
                     endif
- 50             continue
+ 50                 continue
+                end do
                 call jedetr('&&PEECIN_MAILLE')
             endif
- 60     continue
+        end do
         call jedetr('&&PEECIN.PAR')
  72     continue
         call jedema()
- 70 continue
+    end do
 !
  80 continue
     call jedetr(knum)

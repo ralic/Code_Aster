@@ -374,9 +374,9 @@ subroutine op0044()
                     nbret=l)
 !         --- CONTROLE DE FREQUENCE NEGATIVE ---
         ierfr = 0
-        do 4 ifreq = 0, nfreq - 1
+        do ifreq = 0, nfreq - 1
             if (zr(lborne+ifreq) .lt. 0.d0) ierfr = ierfr + 1
-  4     continue
+        end do
         if (ierfr .gt. 0) then
             call utmess('A', 'ALGELINE2_59', sk=typevp)
         endif
@@ -407,14 +407,14 @@ subroutine op0044()
 !        (AM0 , FR0)   (AM1  , FR1)   (AM2,   FR2)   ETC  ETC
 !
         depi = r8depi()
-        do 6 ifreq = 0, nfreq-1
+        do ifreq = 0, nfreq-1
             am = zr(lamort+ifreq)
             fr = zr(lfreq+ifreq)
             omeg = fr * depi
             am = -abs(am*omeg)/sqrt(1.d0-am*am)
             zr(lborne+2*ifreq) = am
             zr(lborne+2*ifreq+1) = omeg
-  6     continue
+        end do
     endif
 !
 !     ------------------------------------------------------------------
@@ -425,7 +425,7 @@ subroutine op0044()
     call wkvect('&&OP0044.DDL.BLOQ.CINE', 'V V I', neq, lprod)
     call vpddl(raide, masse, neq, nblagr, nbcine,&
                neqact, zi(lddl), zi(lprod), ierd)
-    if (ierd .ne. 0) goto 9999
+    if (ierd .ne. 0) goto 999
 !
 !     ==================================================================
 !
@@ -442,9 +442,9 @@ subroutine op0044()
 !
 !         --- PASSAGE EN OMEGA**2 ---
         if (nfreq .ne. 0) then
-            do 100 ifreq = 0, nbmod - 1
+            do ifreq = 0, nbmod - 1
                 zr(lborne+ifreq) = omega2(zr(lborne+ifreq))
-100         continue
+            end do
         endif
 !
         omgmax=zr(lborne+nbmod-1)
@@ -479,12 +479,12 @@ subroutine op0044()
 !
 !     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 !
-            do 110 ieq = 1, nbparr*mxresf
+            do ieq = 1, nbparr*mxresf
                 zr(lresur+ieq-1) = undf
-110         continue
-            do 112 ieq = 1, nbpari*mxresf
+            end do
+            do ieq = 1, nbpari*mxresf
                 zi(lresui+ieq-1) = indf
-112         continue
+            end do
 !
             ndim = 2*nfreqb + nfreq
             call wkvect(work(1), ' V V R ', ndim, jvalp)
@@ -508,9 +508,9 @@ subroutine op0044()
                 endif
             endif
 !
-            do 120 ifreq = 0, nbmod-1
+            do ifreq = 0, nbmod-1
                 zr(jvalp+ifreq) = zr(lborne+ifreq)
-120         continue
+            end do
 !
 !           --- CALCUL DES FREQUENCES PAR DICHOTOMIE
             call vpdich(lraide, lmasse, ldynam, tolsep, nitsep,&
@@ -532,7 +532,7 @@ subroutine op0044()
 !        --- CAS QUADRATIQUE ---
 !
         if (lamor .ne. 0) then
-            do 130 ifreq = 0, nbmod - 1
+            do ifreq = 0, nbmod - 1
                 zr(lresur+mxresf+ifreq) = sqrt(zr(lresur+mxresf+ifreq) )
                 am = 0.02d0
                 omeg = zr(lresur+mxresf+ifreq)
@@ -542,7 +542,7 @@ subroutine op0044()
                 zr(lresur+4*mxresf+ifreq) = 0.0d0
                 zr(lresur+5*mxresf+ifreq) = 0.0d0
                 zr(lresur+6*mxresf+ifreq) = 0.0d0
-130         continue
+            end do
 !
         endif
 !
@@ -551,15 +551,15 @@ subroutine op0044()
         if ((lamor.ne.0) .and. optior .eq. 'AJUSTE') then
             call wkvect('&&OP0044.VP.MULLER', 'V V C', 3*mxresf, lvalp)
             kfreq = 0
-            do 140 ifreq = 0, nbmod-1
+            do ifreq = 0, nbmod-1
                 omeg = zr(lresur+mxresf+ifreq)
-                do 142 i = 1, 3
+                do i = 1, 3
                     kfreq = kfreq + 1
                     rbid = omeg+zfr(i)
                     am = -abs(zam(i)*rbid)/sqrt(1.d0-zam(i)*zam(i))
                     zc(lvalp+kfreq-1) = dcmplx(am,omeg)
-142             continue
-140         continue
+                end do
+            end do
 !
             call wp1mul(lmasse, lamor, lraide, zc(lvalp), tolaju,&
                         nitaju, nbmod, mxresf, nbmod, zi(lresui),&
@@ -585,30 +585,30 @@ subroutine op0044()
 !
 !     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 !
-        do 200 ieq = 1, nbparr*mxresf
+        do ieq = 1, nbparr*mxresf
             zr(lresur+ieq-1) = undf
-200     continue
-        do 202 ieq = 1, nbpari*mxresf
+        end do
+        do ieq = 1, nbpari*mxresf
             zi(lresui+ieq-1) = indf
-202     continue
+        end do
 !
         call wkvect('&&OP0044.POSITION', 'V V I', nbmod, jieme)
 !
 !        --- REMPLISSAGE DU RESUFREQ ET PASSAGE EN OMEGA**2 ---
-        do 210 ifreq = 0, nbmod-1
+        do ifreq = 0, nbmod-1
             zi(jieme+ifreq) = ifreq+1
             zi(lresui+ifreq) = 0
             zr(lresur+ifreq) = zr(lborne+ifreq)
             zr(lresur+2*mxresf+ifreq) = 0.0d0
-210     continue
+        end do
         if (nfreq .ne. 0) then
-            do 211 ifreq = 0, nbmod -1
+            do ifreq = 0, nbmod -1
                 zr(lresur+mxresf+ifreq) = omega2(zr(lborne+ifreq))
-211         continue
+            end do
         else
-            do 212 ifreq = 0, nbmod -1
+            do ifreq = 0, nbmod -1
                 zr(lresur+mxresf+ifreq) = zr(lborne+ifreq)
-212         continue
+            end do
         endif
 !
 !     ------------------------------------------------------------------
@@ -625,16 +625,16 @@ subroutine op0044()
 !
 !     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 !
-        do 300 ieq = 1, nbparr*mxresf
+        do ieq = 1, nbparr*mxresf
             zr(lresur+ieq-1) = undf
-300     continue
-        do 302 ieq = 1, nbpari*mxresf
+        end do
+        do ieq = 1, nbpari*mxresf
             zi(lresui+ieq-1) = indf
-302     continue
+        end do
 !
         depi = r8depi()
         k = -1
-        do 310 ifreq = 0, nfreq-1
+        do ifreq = 0, nfreq-1
             zi(lresui+ifreq) = ifreq+1
             k = k + 1
             zr(lresur+ifreq) = zr(lborne+k)
@@ -649,7 +649,7 @@ subroutine op0044()
                 raux2=sqrt(1.d0-am*am)
                 zr(lresur+2*mxresf+ifreq)=raux1/raux2
             endif
-310     continue
+        end do
         nblagr = 0
         nbmod = nfreq
 !
@@ -689,9 +689,9 @@ subroutine op0044()
 !
     if ((typres.eq.'DYNAMIQUE') .and. (optiof.ne.'PROCHE') .and. (lamor.eq.0)) then
 !
-        do 400 ifreq = 0, nbmod-1
+        do ifreq = 0, nbmod-1
             zi(lresui+ifreq) = zi(lresui+ifreq) - nblagr
-400     continue
+        end do
 !
 !
     endif
@@ -758,7 +758,7 @@ subroutine op0044()
 !
 !
 !     ------------------------------------------------------------------
-9999 continue
+999 continue
 !
 !     --- DESTRUCTION DE LA MATRICE DYNAMIQUE
     call detrsd('MATR_ASSE', dynam)

@@ -67,7 +67,7 @@ subroutine ss2mm2(mo, vecel, nomcas)
     call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
 !
-    if (nbssa .eq. 0) goto 9999
+    if (nbssa .eq. 0) goto 999
 !
     call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
     call jeveuo(ma//'.NOMACR', 'L', iamacr)
@@ -87,7 +87,7 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
 !     -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES:
 !     ----------------------------------------------------------
-    do 3 i = 1, nbsma
+    do i = 1, nbsma
         if (zi(iasssa-1+i) .eq. 0) goto 3
         call jenuno(jexnum(ma//'.SUPMAIL', i), nosma)
         nomacr= zk8(iamacr-1+i)
@@ -97,12 +97,13 @@ subroutine ss2mm2(mo, vecel, nomcas)
         else
             zi(ialsch-1+i)=0
         endif
-  3 end do
+  3     continue
+    end do
 !
 !
 !
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

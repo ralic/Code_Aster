@@ -222,21 +222,21 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     if (ncorr .eq. 0) then
 !       LES GRANDEURS G1 ET G2 DOIVENT ETRE IDENTIQUES
         ASSERT(gd1.eq.gd2)
-        do 5 i2 = 1, ncmmx2
+        do i2 = 1, ncmmx2
             zi(icorr2-1+i2)=i2
-  5     continue
+        end do
     else
         ASSERT(ncorr.eq.2*(ncorr/2))
-        do 4 i = 1, ncorr/2
+        do i = 1, ncorr/2
             cmp1=tcorr(2*(i-1)+1)
             cmp2=tcorr(2*(i-1)+2)
             j1=indik8(zk8(iacmp1),cmp1,1,ncmmx1)
             j2=indik8(zk8(iacmp2),cmp2,1,ncmmx2)
             if (j2 .ne. 0) zi(icorr2-1+j2)=j1
-  4     continue
+        end do
     endif
 !
-    do 1 ino = 1, nbno
+    do ino = 1, nbno
         ival1 = zi(iprn1-1+ (ino-1)* (nec1+2)+1)
         ival2 = zi(iprn2-1+ (ino-1)* (nec2+2)+1)
         ncmp1 = zi(iprn1-1+ (ino-1)* (nec1+2)+2)
@@ -245,7 +245,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
         iadg2 = iprn2 - 1 + (ino-1)* (nec2+2) + 3
         if (ncmp1*ncmp2 .eq. 0) goto 1
         ico2=0
-        do 2 i2 = 1, ncmmx2
+        do i2 = 1, ncmmx2
             if (exisdg(zi(iadg2),i2)) then
                 ico2=ico2+1
                 i1=zi(icorr2-1+i2)
@@ -254,9 +254,9 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
                     ico1=0
                 else
                     ico1=0
-                    do 3 j1 = 1, i1
+                    do j1 = 1, i1
                         if (exisdg(zi(iadg1),j1)) ico1=ico1+1
-  3                 continue
+                    end do
                 endif
 !
                 if (ico1 .gt. 0) then
@@ -267,8 +267,9 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
                 endif
 !
             endif
-  2     continue
-  1 end do
+        end do
+  1     continue
+    end do
 !
     call jedetr('&&CHNUCN.CORR2')
 !

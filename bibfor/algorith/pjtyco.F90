@@ -115,8 +115,8 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !
 !
 !       -- DETERMINATION DE LNOEU
-        do 20 isym = 1, nbsym
-            do 10 i = 1, nbordr
+        do isym = 1, nbsym
+            do i = 1, nbordr
                 iordr=zi(jordr+i-1)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
@@ -130,12 +130,13 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
                     endif
                 endif
 !
- 10         continue
- 20     continue
+            end do
+ 20         continue
+        end do
 !
 !       -- DETERMINATION DE LELNO
-        do 40 isym = 1, nbsym
-            do 30 i = 1, nbordr
+        do isym = 1, nbsym
+            do i = 1, nbordr
                 iordr=zi(jordr+i-1)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
@@ -149,12 +150,13 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
                     endif
                 endif
 !
- 30         continue
- 40     continue
+            end do
+ 40         continue
+        end do
 !
 !       -- DETERMINATION DE LELEM
-        do 60 isym = 1, nbsym
-            do 50 i = 1, nbordr
+        do isym = 1, nbsym
+            do i = 1, nbordr
                 iordr=zi(jordr+i-1)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
@@ -168,12 +170,13 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
                     endif
                 endif
 !
- 50         continue
- 60     continue
+            end do
+ 60         continue
+        end do
 !
 !       -- DETERMINATION DE LELGA
-        do 80 isym = 1, nbsym
-            do 70 i = 1, nbordr
+        do isym = 1, nbsym
+            do i = 1, nbordr
                 iordr=zi(jordr+i-1)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
@@ -187,8 +190,9 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
                     endif
                 endif
 !
- 70         continue
- 80     continue
+            end do
+ 80         continue
+        end do
     endif
 !
     call jedema()

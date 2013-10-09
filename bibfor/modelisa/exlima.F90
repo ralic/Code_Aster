@@ -47,7 +47,7 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
 !     -----------------------------------------------------------------
 !
-    integer ::  n1, jma, nbma
+    integer :: n1, jma, nbma
     character(len=8) :: modele, noma
     character(len=16) :: motfac, motcle(2), typmcl(2), oper, k16b
     character(len=19) :: ligrmo
@@ -113,13 +113,13 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
     call jeveuo(lismai, 'L', jma)
     call exlim1(zi(jma), nbma, modele, base, ligrel)
     call jedetr(lismai)
-    goto 9999
+    goto 999
 !
 !
 9998 continue
     ligrel = ligrmo
 !
-9999 continue
+999 continue
 !
 !
 end subroutine

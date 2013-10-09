@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,22 +14,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine resou1(matass,matpre,solveu,chcine,nsecm,chsecm, &
-     &chsolu,base,rsolu,csolu,criter,prepos,istop,iret)
-              character(*) :: matass
-              character(*) :: matpre
-              character(*) :: solveu
-              character(*) :: chcine
-              integer :: nsecm
-              character(*) :: chsecm
-              character(*) :: chsolu
-              character(*) :: base
-              real(kind=8) :: rsolu(*)
-              complex(kind=8) :: csolu(*)
-              character(*) :: criter
-              logical :: prepos
-              integer :: istop
-              integer :: iret
-            end subroutine resou1
-          end interface 
+interface 
+    subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
+                      chsecm, chsolu, base, rsolu, csolu,&
+                      criter, prepos, istop, iret)
+        character(*) :: matass
+        character(*) :: matpre
+        character(*) :: solveu
+        character(*) :: chcine
+        integer :: nsecm
+        character(*) :: chsecm
+        character(*) :: chsolu
+        character(*) :: base
+        real(kind=8) :: rsolu(*)
+        complex(kind=8) :: csolu(*)
+        character(*) :: criter
+        logical :: prepos
+        integer :: istop
+        integer :: iret
+    end subroutine resou1
+end interface 

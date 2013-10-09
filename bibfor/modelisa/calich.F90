@@ -64,7 +64,7 @@ subroutine calich(chargz)
 ! ------ VARIABLES LOCALES
     character(len=2) :: typlag
     character(len=4) :: tych, typval, typcoe
-    character(len=8) ::  chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, poslag, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, prchno
@@ -116,7 +116,7 @@ subroutine calich(chargz)
 !
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_CHAMNO :
 !     -------------------------------------------------------
-    do 30 iocc = 1, nliai
+    do iocc = 1, nliai
 !
 ! ---   ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
 ! ---   APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
@@ -210,11 +210,11 @@ subroutine calich(chargz)
 ! ---   DETERMINATION DU NOMBRE DE COMPOSANTES NON-NULLES DU CHAM_NO
 !       ------------------------------------------------------------
         k = 0
-        do 10 i = 1, nequa
+        do i = 1, nequa
             if (zr(idvale+i-1) .ne. zero) then
                 k = k + 1
             endif
- 10     continue
+        end do
 !
         nbterm = k
 !
@@ -244,7 +244,7 @@ subroutine calich(chargz)
 !
 ! ---   BOUCLE SUR LES TERMES DU CHAM_NO
 !
-        do 20 iequa = 1, nequa
+        do iequa = 1, nequa
 !
 ! ---     INO  : NUMERO DU NOEUD INO CORRESPONDANT AU DDL IEQUA
 !
@@ -274,7 +274,7 @@ subroutine calich(chargz)
                 endif
             endif
 !
- 20     continue
+        end do
 !
         nbterm = k
 !
@@ -293,7 +293,7 @@ subroutine calich(chargz)
         call jedetr('&&CALICH.DIRECT')
         call jedetr('&&CALICH.DIME')
 !
- 30 end do
+    end do
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------

@@ -73,7 +73,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !                 'MIN'/'MAX' EST ATTEINT
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer ::  iret
+    integer :: iret
     integer :: longt
     character(len=8) :: kmpic, typ1, nomgd, tsca, tych
     integer :: jcesd, jcesl, jcesc, jcesv, nel, iel, nbpt, nbsspt, ncmp
@@ -138,27 +138,27 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !     INITIALISATION DE TNCOMP CONTENANT LES INDICES
 !     DES CMP
 !     ----------------------------------
-    do 10 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         tncomp(icmp)=0
- 10 end do
+    end do
 !
     ncmp=zi(jcesd-1+2)
-    do 30 icmp = 1, ncmp
-        do 20 iicmp = 1, nbcmp
+    do icmp = 1, ncmp
+        do iicmp = 1, nbcmp
             if (lcmp(iicmp) .eq. zk8(jcesc-1+icmp)) then
                 tncomp(iicmp)=icmp
             endif
- 20     continue
- 30 end do
+        end do
+    end do
 !
 !
 !     COMPARAISON NOCMP AVEC TTES LES
 !     AUTRES AFIN DE RECUPERER LE NUM DE LA COMPOSANTE
 !     RECUPERE L'INDEX DE LA COMPOSANTE A TESTER DANS LE CHAMP
     ncp=0
-    do 40 icmp = 1, ncmp
+    do icmp = 1, ncmp
         if (zk8(jcesc-1+icmp) .eq. nocmp) ncp=icmp
- 40 end do
+    end do
 !
 !     -- CAS : TOUTES LES MAILLES :
 !     -----------------------------
@@ -172,7 +172,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     endif
 !
 !
-    do 80 iel = 1, nel
+    do iel = 1, nel
 !
         if (nbmail .le. 0) then
             iel1=iel
@@ -186,8 +186,8 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
         ncmp=zi(jcesd-1+5+4*(iel1-1)+3)
 !
 !
-        do 70 ipt = 1, nbpt
-            do 60 isp = 1, nbsspt
+        do ipt = 1, nbpt
+            do isp = 1, nbsspt
                 call cesexi('C', jcesd, jcesl, iel1, ipt,&
                             isp, ncp, iadr1)
                 if (iadr1 .gt. 0) then
@@ -202,7 +202,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                     if ((.not.lmax) .and. (valr.lt.vmima)) copi=.true.
                     if (copi) then
                         vmima=valr
-                        do 50 iicmp = 1, nbcmp
+                        do iicmp = 1, nbcmp
                             call cesexi('C', jcesd, jcesl, iel1, ipt,&
                                         isp, tncomp(iicmp), iadr2)
                             if (iadr2 .eq. 0) then
@@ -210,12 +210,12 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                             else
                                 vr(iicmp)=zr(jcesv-1+iadr2)
                             endif
- 50                     continue
+                        end do
                     endif
                 endif
- 60         continue
- 70     continue
- 80 end do
+            end do
+        end do
+    end do
 !
 !
     call detrsd('CHAMP', chams)

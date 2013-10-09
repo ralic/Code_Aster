@@ -77,7 +77,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     integer :: nsom, nosom(2), ar(12, 3), nbar, zresu
     integer :: zxain
     integer :: jxc
-    integer ::  nbno
+    integer :: nbno
     character(len=8) :: noma, typma
     character(len=19) :: depdes, depcn, fcont, fconts
     character(len=19) :: fctcn, ffrot, ffrots, ffrocn, lagcn
@@ -202,7 +202,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
 ! --- BOUCLE SUR LES MAILLES
 !
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
 !
         itypma=zi(jmai-1+ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
@@ -222,7 +222,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
         ninter = zi(jcesv1-1+iad)
 !
 !       BOUCLE SUR LES POINTS D'INTERSECTION
-        do 120 i = 1, ninter
+        do i = 1, ninter
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+1, iad)
             ASSERT(iad.gt.0)
@@ -248,12 +248,12 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
 !         RECUPERATION DES COORDONNES DU POINT D'INTERSECTION
             xyz(3)=0.d0
-            do 121 j = 1, ndim
+            do j = 1, ndim
                 call cesexi('S', jcesd3, jcesl3, ima, 1,&
                             1, ndim*(i-1)+j, iad)
                 ASSERT(iad.gt.0)
                 xyz(j)=zr(jcesv3-1+iad)
-121         continue
+            end do
 !
 !         RECUP DES NUMEROS GLOBAUX DES NOEUDS DE L'ARETE/NOEUD SOMMET
             if (in .gt. 0) then
@@ -286,32 +286,32 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             if (zi(jdejca+nuno-1) .eq. 1) goto 120
 !         RACINE DE R AU POINT D'INTERSECTION
             levels = 0.d0
-            do 125 k = 1, nsom
+            do k = 1, nsom
                 call cesexi('C', jcesd5, jcesl5, ima, k,&
                             1, 1, iad)
 !         C'EST FAUX MAIS C'ETAIT DEJA COMME CA
 !         IL FAUT RECUPERER LES FF DE FORMES
                 levels = levels + zr(jcesv5-1+iad)
-125         continue
+            end do
             rr =sqrt(abs(levels))
 !
 !         RECUP NORMALE, VECTEURS TANGENTS AU POINT D'INTERSECTION
             n(3)=0.d0
             tau1(3)=0.d0
 !
-            do 130 j = 1, ndim
+            do j = 1, ndim
                 n(j) =zr(jcesv4-1+iadb-1+j)
                 tau1(j)=zr(jcesv4-1+iadb-1+ndim+j)
                 if (ndim .eq. 3) tau2(j)=zr(jcesv4-1+iadb-1+2*ndim+j)
-130         continue
+            end do
 !
 !         INDICATEUR DE CONTACT
 !         IMPOSSIBLE A REMPLIR SI L'INTEGRATION N'EST PAS AUX NOEUDS
 !
 !         JEU
             call vecini(ndim, 0.d0, saut)
-            do 140 j = 1, ndim
-                do 141 k = 1, nsom
+            do j = 1, ndim
+                do k = 1, nsom
 !             DDL HEAVISIDE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+j)) then
                         saut(j) = saut(j) - 2.d0 * ff(k) * zr(jdepv-1+ 2*ndim*(nosom(k)-1)+j)
@@ -321,14 +321,14 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                         saut(j) = saut(j) - 2.d0 * ff(k) * rr * zr(jdepv-1+2*ndim*(nosom(k)-1)+nd&
                                   &im+j)
                     endif
-141             continue
-140         continue
+                end do
+            end do
             jeu = ddot(ndim,n,1,saut,1)
 !
 !         RNX, RNY, RNZ SONT LES 3 COMPOSANTES DE RNXYZ
             call vecini(3, 0.d0, rnxyz)
-            do 144 j = 1, ndim
-                do 145 k = 1, nsom
+            do j = 1, ndim
+                do k = 1, nsom
                     rnxyz(j) = rnxyz(j) + ff(k) * mult * zr(jcont-1+3* ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+ndim+1)) then
@@ -340,8 +340,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                         rnxyz(j) = rnxyz(j) - ff(k) * rr * mult * zr(jcont-1+3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
                     endif
-145             continue
-144         continue
+                end do
+            end do
             call normev(rnxyz, rn)
             rnx = rnxyz(1)
             rny = rnxyz(2)
@@ -350,27 +350,27 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !         GLIX, GLIY, GLI
             call vecini(3, 0.d0, glit)
             call xmafr1(ndim, n, p)
-            do 150 j = 1, ndim
-                do 151 k = 1, ndim
+            do j = 1, ndim
+                do k = 1, ndim
                     glit(j)=glit(j)+p(j,k)*saut(k)
-151             continue
-150         continue
+                end do
+            end do
             call normev(glit, gli)
 !
 !         RTAX, RTAY, RTAZ, RTGX, RTGY, RTGZ
             call vecini(3, 0.d0, rtxyz)
             call vecini(3, 0.d0, lagfro)
 !
-            do 164 j = 1, ndim
-                do 163 k = 1, nsom
+            do j = 1, ndim
+                do k = 1, nsom
                     lagfro(j) = lagfro(j) + ff(k) * zr(jlagv-1+ndim*( nosom(k)-1)+2) * tau1(j)
                     if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * zr(jlagv-1+ndim*(nosom(k)-1)&
                                                  &+3) * tau2(j)
-163             continue
-164         continue
+                end do
+            end do
 !
-            do 161 j = 1, ndim
-                do 162 k = 1, nsom
+            do j = 1, ndim
+                do k = 1, nsom
                     rtxyz(j) = rtxyz(j) + ff(k) * mult * zr(jfrot-1+3* ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+ndim+1)) then
@@ -382,8 +382,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                         rtxyz(j) = rtxyz(j) - ff(k) * rr * mult * zr(jfrot-1+3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
                     endif
-162             continue
-161         continue
+                end do
+            end do
 !
 !         NORME DU SEMI-MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
             call normev(lagfro, lagsf)
@@ -451,9 +451,11 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             zl(jcnslr-1+zresu*(nuno-1)+27)=.true.
             zi(jdejca+nuno-1) = 1
 !
-120     continue
+120         continue
+        end do
 !
-100 end do
+100     continue
+    end do
 !
     call jedetr(fcont)
     call detrsd('CHAMP', fconts)

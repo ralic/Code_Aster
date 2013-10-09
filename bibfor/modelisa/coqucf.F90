@@ -66,7 +66,7 @@ subroutine coqucf(nomu)
     cartcf = nomu//'.CARCOQUF'
     call exisd('CARTE', cartcf, iret)
 !     SI LA CARTE DE FONCTIONS N'EXISTE PAS : RIEN A FAIRE
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
 ! --- CARTE POUR LES VALEURS REELLES
     cartco = nomu//'.CARCOQUE'
@@ -111,7 +111,7 @@ subroutine coqucf(nomu)
     endif
 !
     iret = 0
-    do 100 ii = 1, nbcmpf
+    do ii = 1, nbcmpf
         nmcmpf = zk8(jcescf+ii-1)
         jj = indik8( zk8(jcesco) , nmcmpf, 1 , nbcmpo )
         if (jj .ne. 0) then
@@ -123,7 +123,7 @@ subroutine coqucf(nomu)
         else
             iret = iret + 1
         endif
-100 end do
+    end do
     ASSERT(iret.eq.0)
 !
 ! --- INFORMATIONS SUR LE MAILLAGE
@@ -151,9 +151,9 @@ subroutine coqucf(nomu)
         write(ifm,'(A)') 'VALEURS DES FONCTIONS'
         write(ifm,90)
     endif
-    do 200 ii = 1, nbmail
+    do ii = 1, nbmail
         lcoor = .false.
-        do 210 jj = 1, nbcmpf
+        do jj = 1, nbcmpf
             nmcmpf = zk8(jcescf+jj-1)
             call cesexi('C', jcesdf, jceslf, ii, 1,&
                         1, jj, iad)
@@ -167,14 +167,14 @@ subroutine coqucf(nomu)
                         nbno = iadr2 - iadr1
                         adrm = jconne-1+iadr1
 !                    CENTRE DE GRAVITE DE LA MAILLE
-                        do 250 icompo = 1, 3
+                        do icompo = 1, 3
                             valr(icompo) = 0.0d0
-                            do 240 inoeu = 1, nbno
+                            do inoeu = 1, nbno
                                 nunoe = zi(adrm-1+inoeu)
                                 valr(icompo) = valr(icompo) + zr( igeom+3*(nunoe-1)+icompo-1)
-240                         continue
+                            end do
                             valr(icompo) = valr(icompo)/nbno
-250                     continue
+                        end do
                     endif
                     call fointe('F', nomfct, 3, nomval, valr,&
                                 fresu, iret)
@@ -189,8 +189,8 @@ subroutine coqucf(nomu)
                     zr(jcesvo-1+iad) = fresu
                 endif
             endif
-210     continue
-200 end do
+        end do
+    end do
 !
 !     DESTRUCTION DE LA CARTE DES REELS, DES FONCTIONS
     call detrsd('CARTE', cartco)
@@ -206,6 +206,6 @@ subroutine coqucf(nomu)
     91 format("'",i7,"_",i1,"' : [ [",3(e18.10,","),"], '",&
      &       a,"' ,",e18.10,"],")
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

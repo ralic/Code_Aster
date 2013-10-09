@@ -129,12 +129,12 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !
 !       --- VERIFIER LA VALIDITE DE LA REQUETE
         oktref = .false.
-        do 10 ibid = 1, 6
+        do ibid = 1, 6
             if (typref .eq. accref(ibid)) then
                 oktref = .true.
                 intyre = ibid
             endif
- 10     continue
+        end do
         if (.not.(oktref)) goto 99
 !
 !       --- LIRE ET VERIFIER LA VALIDITE DE L'INDICE D'OCCURENCE
@@ -160,7 +160,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !
 !       --- CHERCHER L'ENTREE DE REFERENCE DANS LA COLLECTION REFD
         repi = 0
-        do 20 ibid = inddeb, indfin, senpar
+        do ibid = inddeb, indfin, senpar
             call jeveuo(jexnum(resdyn//'           .REFD', ibid), 'L', jref)
             if (cortre(intyre) .eq. zk24(jref)) then
                 repi = repi+1
@@ -171,7 +171,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
                     goto 88
                 endif
             endif
- 20     continue
+        end do
 !
 !       --- TRAITEMENT SPECIAL POUR LA QUESTION : REF_****_NOMB
         if (numocc .eq. 0) goto 88
@@ -192,12 +192,12 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
         indcha = 1
         read(numcha,'(i8)') indcha
         index = 0
-        do 40 ibid = 1, nbrefs
+        do ibid = 1, nbrefs
             if (indcha .le. zi(jind+ibid-1)) then
                 index = ibid
                 goto 41
             endif
- 40     continue
+        end do
  41     continue
 !       --- SI LE NUMERO DU CHAMP N'EST PAS VALIDE PAR RAPPORT AU .INDI
         if ((index .eq. 0) .and. (zi(jind) .eq. -1)) then
@@ -227,10 +227,10 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
         numddl = zk24(jref+1)
 !
         repi = 1
-        do 50 ibid = 1, nbrefs
+        do ibid = 1, nbrefs
             call jeveuo(jexnum(resdyn//'           .REFD', ibid), 'L', jref)
             if (numddl .ne. zk24(jref+1)) repi = repi +1
- 50     continue
+        end do
         repk = numddl
         goto 88
 !

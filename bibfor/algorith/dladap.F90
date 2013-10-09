@@ -218,13 +218,13 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         call utmess('F', 'ALGORITH3_13')
     endif
 !
-    do 15 ieq = 1, neq
+    do ieq = 1, neq
 !
         if (zr(iwk1+ieq-1) .ne. 0.d0) then
 !
             zr(iwk1+ieq-1)=1.0d0/zr(iwk1+ieq-1)
             nddl = zi(adeeq + 2*ieq-1)
-            do 151 iv1 = 1, neq
+            do iv1 = 1, neq
                 iv2=ieq+iv1
                 if (iv2 .le. neq) then
                     if (zi(adeeq+2*iv2-1) .eq. nddl) then
@@ -234,11 +234,11 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 else
                     goto 152
                 endif
-151         continue
+            end do
 !
 152         continue
 !
-            do 153 iv1 = 1, neq
+            do iv1 = 1, neq
                 iv2=ieq-iv1
                 if (iv2 .gt. 0) then
                     if (zi(adeeq+2*iv2-1) .eq. nddl) then
@@ -248,24 +248,24 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 else
                     goto 154
                 endif
-153         continue
+            end do
 !
 154         continue
 !
         endif
 !
- 15 end do
+    end do
 !
 ! 1.6. ==> AFFECTATION DES VECTEURS INITIAUX
 !
-    do 16 ieq = 1, neq
+    do ieq = 1, neq
         zr(jdepl+ieq-1) = dep0(ieq)
         zr(jvite+ieq-1) = vit0(ieq)- 0.5d0*dti*acc0(ieq)
         zr(jvip1+ieq-1) = vit0(ieq)
         zr(jacce+ieq-1) = acc0(ieq)
         zr(jvmin1+ieq-1) = 1.d-15
         zr(jvmin2+ieq-1) = 1.d-15
- 16 end do
+    end do
 !
 ! 1.7. ==> --- ARCHIVAGE ---
 !
@@ -352,9 +352,9 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
  30 continue
 !
     if (ener) then
-        do 434 ieq = 1, neq
+        do ieq = 1, neq
             fexte(ieq)=fexte(ieq+neq)
-434     continue
+        end do
     endif
 !
     if (temps .lt. tfin) then
@@ -376,12 +376,12 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             nbiter = nbiter + 1
             pas1 = (dt1+dt2)*0.5d0
             pas2 = dt2*0.5d0
-            do 102 ieq = 0, neq-1
+            do ieq = 0, neq-1
 !            --- VITESSES AUX INSTANTS INTERMEDIAIRES ------
                 zr(jvit2+ieq) = zr(jvite+ieq) + pas1 * zr(jacce+ieq)
 !            --- DEPLACEMENTS AUX INSTANTS 'TEMPS+DT2' ---------
                 zr(jdep2+ieq) = zr(jdepl+ieq) + (dt2 * zr(jvit2+ieq))
-102         continue
+            end do
 ! ------------- CALCUL DU SECOND MEMBRE F*
             r8val = temps+dt2
             call dlfext(nveca, nchar, r8val, neq, liad,&
@@ -389,9 +389,9 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                         mate, carele, numedd, zr(iforc1))
 !
             if (ener) then
-                do 433 ieq = 1, neq
+                do ieq = 1, neq
                     fexte(ieq+neq)=zr(iforc1+ieq-1)
-433             continue
+                end do
             endif
 !
 ! ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
@@ -400,20 +400,20 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
 ! ------------- RESOLUTION DE M . A = F ET CALCUL DE VITESSE STOCKEE
 !           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
-            do 20 ieq = 1, neq
+            do ieq = 1, neq
                 zr(jacc2+ieq-1)=zr(iwk1+ieq-1)*zr(iforc1+ieq-1)
 !           --- VITESSE AUX INSTANTS 'TEMPS+DT2' ---
                 zr(jvip2+ieq-1)=zr(jvit2+ieq-1)+pas2*zr(jacc2+ieq-1)
- 20         continue
+            end do
 !
 !        --- CALCUL DE VMIN ---
             if (vvar(1:4) .eq. 'MAXI') then
-                do 109 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     rtmp = abs(zr(jvite+ieq)*1.d-02)
                     zr(jvmin+ieq) = max(zr(jvmin+ieq),rtmp)
-109             continue
+                end do
             else if (vvar(1:4) .eq. 'NORM') then
-                do 110 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     if (zr(iwk1+ieq) .ne. 0.d0) then
                         zr(jvmin1+ieq)=1.d-02*zr(jvit2+(zi(jind1+ieq)-&
                         1))
@@ -423,7 +423,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                     rtmp = 1.d-15
                     zr(jvmin+ieq)=max(rtmp,zr(jvmin1+ieq),zr(jvmin2+&
                     ieq))
-110             continue
+                end do
             endif
 !
 !        --- CALCUL DE FREQ. APPARENTE ET ERREUR ---
@@ -522,7 +522,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 call uttcpu('CPU.DLADAP', 'FIN', ' ')
                 call uttcpr('CPU.DLADAP', 4, tps1)
                 if (tps1(1) .le. max(tjob/100.d0,15.d0)) then
-                    goto 9999
+                    goto 999
                 endif
                 if (tps1(4) .eq. 0.d0) tps1(4)=1.d-02
                 nbpasc = int(1.d-02 * (tjob/tps1(4)))+1
@@ -533,7 +533,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         goto 30
     endif
 !
-9999 continue
+999 continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT

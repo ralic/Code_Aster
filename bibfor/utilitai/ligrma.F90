@@ -45,7 +45,7 @@ subroutine ligrma(ma, listgr)
 !   OUT
 !       LISTGR  : LISTE DES GROUPES DE MAILLES
 !
-    integer ::  nbma, iret, nbgma, i, iagma, n, ii, ima, jlong, jlist
+    integer :: nbma, iret, nbgma, i, iagma, n, ii, ima, jlong, jlist
     integer :: nbmat, jcpt
     character(len=24) :: long, vcpt
 !
@@ -68,38 +68,38 @@ subroutine ligrma(ma, listgr)
     if (iret .gt. 0) call jelira(ma//'.GROUPEMA', 'NUTIOC', nbgma)
 !
 !     ON PARCOURT LES GROUPES DE MAILLES ET ON REMPLIT L'OBJET LONG
-    do 10 i = 1, nbgma
+    do i = 1, nbgma
         call jeveuo(jexnum(ma//'.GROUPEMA', i), 'L', iagma)
         call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n)
-        do 11 ii = 1, n
+        do ii = 1, n
             ima=zi(iagma-1+ii)
             zi(jlong-1+ima)=zi(jlong-1+ima)+1
             nbmat = nbmat +1
- 11     continue
- 10 end do
+        end do
+    end do
 !
 !     CREATION DE LA COLLECTION CONTINUE A NBMA LIGNES DE LONGUEUR
 !     TOTALE EGALE A NBMAT
     call jecrec(listgr, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbma)
     call jeecra(listgr, 'LONT', nbmat)
-    do 20 ima = 1, nbma
+    do ima = 1, nbma
         call jeecra(jexnum(listgr, ima), 'LONMAX', zi(jlong-1+ima))
         call jecroc(jexnum(listgr, ima))
- 20 end do
+    end do
 !
 !     REMPLISSAGE DE LISTGR AVEC LES NUMEROS DES GROUPES
-    do 30 i = 1, nbgma
+    do i = 1, nbgma
         call jeveuo(jexnum(ma//'.GROUPEMA', i), 'L', iagma)
         call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n)
-        do 31 ii = 1, n
+        do ii = 1, n
             ima=zi(iagma-1+ii)
             call jeveuo(jexnum(listgr, ima), 'E', jlist)
 !         ON AJOUTE LE GROUPE I A LA LISTE DES GROUPES POUR CETTE MAILLE
             zi(jcpt-1+ima) = zi(jcpt-1+ima) + 1
             zi(jlist-1+zi(jcpt-1+ima)) = i
- 31     continue
- 30 end do
+        end do
+    end do
 !
     call jedetr(long)
     call jedetr(vcpt)

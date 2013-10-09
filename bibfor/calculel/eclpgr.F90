@@ -93,7 +93,7 @@ subroutine eclpgr()
 !
 !     -- ON CALCULE LES CHAM_NO RESULTATS :
 !     --------------------------------------
-    do 20 isy = 1, nbsy
+    do isy = 1, nbsy
 !
 !       -- ON SUPPOSE QUE TOUS LES INSTANTS ONT LE MEME PROFIL :
 !          PRCHNO
@@ -107,7 +107,7 @@ subroutine eclpgr()
         endif
         nomsy2 = nomsy1
 !
-        do 10 i = 1, nbordr
+        do i = 1, nbordr
             iordr=zi(jordr+i-1)
             call rsexch(' ', evo1, nomsy1, iordr, ch1,&
                         iret)
@@ -131,21 +131,22 @@ subroutine eclpgr()
             call eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                         nomfpg)
             call rsnoch(resu, nomsy2, iordr)
- 10     continue
+ 10         continue
+        end do
         call jedetr(nomfpg)
- 20 end do
+    end do
 !
 !
 !       -- ON RECOPIE LE PARAMETRE "INST" :
 !       -----------------------------------
-    do 30 i = 1, nbordr
+    do i = 1, nbordr
         iordr=zi(jordr+i-1)
         call rsadpa(evo1, 'L', 1, 'INST', iordr,&
                     0, sjv=iains1, styp=kbid)
         call rsadpa(resu, 'E', 1, 'INST', iordr,&
                     0, sjv=iains2, styp=kbid)
         zr(iains2)=zr(iains1)
- 30 end do
+    end do
 !
 !
 ! --- MENAGE

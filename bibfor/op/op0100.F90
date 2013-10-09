@@ -167,7 +167,7 @@ subroutine op0100()
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
 !     -> COMPOR, INCR
-    call cgleco(resu, modele, mate, iord0, typfis, &
+    call cgleco(resu, modele, mate, iord0, typfis,&
                 compor(1:19), incr)
 !
 !     ATTENTION, INCR EST MAL GERE : VOIR MECAGL !!
@@ -352,7 +352,7 @@ subroutine op0100()
 !       3.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
 !       --------------------------------------------------------------
 !
-        do 311 i = 1, nbord
+        do i = 1, nbord
 !
             iord1 = zi(ivec-1+i)
             call medomg(resu, iord1, modele, mate, lischa)
@@ -371,7 +371,7 @@ subroutine op0100()
                 nomcas=zk16(iad)
             endif
 !
-            do 312 j = 1, i
+            do j = 1, i
                 call jemarq()
                 call jerecu('V')
                 if (nbord .eq. 1) then
@@ -409,9 +409,10 @@ subroutine op0100()
 !
                 call jedema()
 !
-312         continue
+            end do
 !
-311     continue
+311         continue
+        end do
 !
 !
         if (option(1:5) .eq. 'G_MAX') then
@@ -424,13 +425,13 @@ subroutine op0100()
             if (nborn .ne. 0) then
                 nbco = 2*nborn
                 call wkvect('&&'//nompro//'.COUPLES_BORNES', 'V V R8', nbco, ibor)
-                do 313 i = 1, nborn
+                do i = 1, nborn
                     call getvis('BORNES', 'NUME_ORDRE', iocc=i, scal=iord0, nbret=ier)
                     call getvr8('BORNES', 'VALE_MIN', iocc=i, scal=zr(ibor+ 2*(iord0-1)),&
                                 nbret=ier)
                     call getvr8('BORNES', 'VALE_MAX', iocc=i, scal=zr(ibor+ 2*(iord0-1)+1),&
                                 nbret=ier)
-313             continue
+                end do
 !
                 if (cas .eq. '3D_LOCAL') then
                     call tbexve(table, 'G_BILI_LOCAL', '&&'//nompro// '.GBILIN', 'V', nbval,&
@@ -469,7 +470,7 @@ subroutine op0100()
         basloc=nomfis//'.BASLOC'
         call xcourb(basloc, noma, modele, courb)
 !
-        do 33 i = 1, nbord
+        do i = 1, nbord
             iord = zi(ivec-1+i)
             call medomg(resu, iord, modele, mate, lischa)
             call rsexch('F', resu, 'DEPL', iord, depla,&
@@ -506,7 +507,8 @@ subroutine op0100()
                         lmelas, nomcas, lmoda, puls, milieu,&
                         connex)
 !
- 33     continue
+ 33         continue
+        end do
 !
 !
     else if (option .eq.'CALC_K_MAX') then
@@ -543,7 +545,7 @@ subroutine op0100()
                         nbropt)
         endif
 !
-        do 35 i = 1, nbord
+        do i = 1, nbord
             call jemarq()
             call jerecu('V')
             iord = zi(ivec-1+i)
@@ -612,7 +614,7 @@ subroutine op0100()
  34         continue
 !
             call jedema()
- 35     continue
+        end do
 !
         if (incr) then
             call jeexin(resuc2//'           .ORDR', iret)

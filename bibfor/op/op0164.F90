@@ -49,7 +49,7 @@ subroutine op0164()
 !
     integer :: n1, n2, n4, jscde
     real(kind=8) :: partr, parti, inst
-    character(len=8) ::  nomres, basemo, numgen
+    character(len=8) :: nomres, basemo, numgen
     character(len=16) :: typres, nomcom, typbas, k16nom, typbin, tissf, tsym
     character(len=19) :: resu, stolci
     character(len=14) :: nugene
@@ -62,7 +62,7 @@ subroutine op0164()
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iaconl, iadesc, ialime, ic
-    integer ::  ifmis, ifr, ifreq, ii, j, jfrq
+    integer :: ifmis, ifr, ifreq, ii, j, jfrq
     integer :: jj, jrefa, jri2, jrig, jrit, ldblo, ldblo2
     integer :: nbmodd, nbmode, nbmods, nfr, nfreq, nit, nsaut
     integer :: nterm, nueq
@@ -118,12 +118,13 @@ subroutine op0164()
         call wkvect(tabrit, 'V V R', nbmode*nbmode, jrit)
         call irmitm(nbmode, ifmis, inst, tabrit)
         call jeveuo(tabrit, 'L', jrit)
-        do 20 i1 = 1, nbmode
-            do 20 i2 = 1, nbmode
+        do i1 = 1, nbmode
+            do i2 = 1, nbmode
                 zr(jrig+2*(i2-1)*nbmode+2*i1-2)=zr(jrit+(i2-1)*nbmode+&
                 i1-1)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1)=0.d0
- 20         continue
+            end do
+        end do
         call jedetr(tabrit)
         goto 21
     endif
@@ -137,14 +138,14 @@ subroutine op0164()
         rewind ifmis
         read(ifmis,'(A72)') texte
         if (texte(1:4) .eq. 'XXXX') goto 4
-        do 1 i2 = 1, nbmode
-            do 1 i1 = 1, nbmode
+        do i2 = 1, nbmode
+            do i1 = 1, nbmode
                 nsaut = nfreq
                 if (ic .ge. 1) nsaut = nfreq-1
                 if (i1 .eq. 1 .and. i2 .eq. 1) nsaut = ifreq
-                do 2 i = 1, nsaut
+                do i = 1, nsaut
                     read(ifmis,'(A72)') texte
-  2             continue
+                end do
                 read(ifmis,*) (a(j),j=1,3)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-2) = a(2)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1) = -a(3)
@@ -163,7 +164,8 @@ subroutine op0164()
                                                       &*i1-1) -zr(jrig+2*(i2- 1)*nbmode+2*i1-1)&
                                                       )
                 endif
-  1         continue
+            end do
+        end do
   4     continue
     else
         rewind ifmis
@@ -179,7 +181,7 @@ subroutine op0164()
         ic=1
         call wkvect(tabfrq, 'V V R', nfreq, jfrq)
         read(ifmis) (zr(jfrq+ifr-1),ifr=1,nfreq)
-        do 3 i = 1, nfreq
+        do i = 1, nfreq
             a(1) = zr(jfrq+i-1)
             if (freq .le. (a(1) + 1.d-6)) then
                 ifreq = i
@@ -194,20 +196,20 @@ subroutine op0164()
                 endif
                 goto 7
             endif
-  3     continue
+        end do
         ifreq = nfreq
         ic = 0
   7     continue
-        do 5 i = 1, ifreq-1
+        do i = 1, ifreq-1
             read(ifmis) a(1)
-  5     continue
+        end do
         read(ifmis) ((zr(jrig+2*(i2-1)*nbmode+2*i1-2), zr(jrig+2*(i2-&
         1)*nbmode+2*i1-1), i1=1,nbmode),i2=1,nbmode)
         if (ic .ge. 1) then
             read(ifmis) ((zr(jri2+2*(i2-1)*nbmode+2*i1-2), zr(jri2+2*(&
             i2-1)*nbmode+2*i1-1), i1=1,nbmode),i2=1,nbmode)
-            do 8 i1 = 1, nbmode
-                do 8 i2 = 1, nbmode
+            do i1 = 1, nbmode
+                do i2 = 1, nbmode
                     zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr(&
                                                       jrig+2*(i2-1) *nbmode+2*i1-2) + (freq-zr(jf&
                                                       &rq+ifreq-1))/(zr( jfrq+ifreq)-zr(jfrq+ifre&
@@ -220,13 +222,15 @@ subroutine op0164()
                                                       &q-1)) * (zr(jri2+2*(i2-1)* nbmode+2*i1-1) &
                                                       &-zr(jrig+2*(i2-1)*nbmode+2*i1-1)&
                                                       )
-  8             continue
+                end do
+            end do
         endif
-        do 6 i1 = 1, nbmode
-            do 6 i2 = 1, nbmode
+        do i1 = 1, nbmode
+            do i2 = 1, nbmode
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1)= -zr(jrig+2*(i2-1)*&
                 nbmode+2*i1-1)
-  6         continue
+            end do
+        end do
     endif
  21 continue
 !
@@ -254,9 +258,9 @@ subroutine op0164()
     zk24(ialime) = '                        '
 !
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
-    do 10 i = 1, nueq
+    do i = 1, nueq
         zc(iaconl+i-1) = dcmplx(1.0d0,0.0d0)
- 10 end do
+    end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -297,14 +301,14 @@ subroutine op0164()
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
 !
-    do 30 i = 1, nueq
+    do i = 1, nueq
 !
         ii = i - nbmodd
         if (lissf .and. i .le. nbmodd) ii = i+nbmods
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
-        do 40 j = 1, i
+        do j = 1, i
             jj = j - nbmodd
             if (lissf .and. j .le. nbmodd) jj = j+nbmods
 !
@@ -333,8 +337,8 @@ subroutine op0164()
                 endif
             endif
 !
- 40     continue
- 30 end do
+        end do
+    end do
     call jelibe(jexnum(resu//'.VALM', 1))
     if (.not.lsym) call jelibe(jexnum(resu//'.VALM', 2))
     call jedetr(tabrig)

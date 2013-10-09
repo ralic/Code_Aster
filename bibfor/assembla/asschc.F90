@@ -69,11 +69,11 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
 !
 !     -- IL N'Y A PEUT-ETRE AUCUN DDL A ELIMINER (CHAR_CINE VIDES) :
     nimp=0
-    do 19 ich = 1, nbchc
+    do ich = 1, nbchc
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
         nimp = nimp + zi(jafci)
- 19 end do
+    end do
     if (nimp .eq. 0) goto 40
 !
 !
@@ -101,25 +101,26 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
 !
     call jeveuo(jexnum(nu//'.NUME.PRNO', 1), 'L', idprno)
     nelim=0
-    do 20 ich = 1, nbchc
+    do ich = 1, nbchc
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
         nimp = zi(jafci)
-        do 10 imp = 1, nimp
+        do imp = 1, nimp
             ino = zi(jafci+3* (imp-1)+1)
             iddl = zi(jafci+3* (imp-1)+2)
             ieq = zi(idprno-1+ (nec+2)* (ino-1)+1) + iddl - 1
             zi(jccid-1+ieq) = 1
- 10     continue
- 20 end do
+        end do
+    end do
 !
     nelim=0
-    do 30 ieq = 1, neq
+    do ieq = 1, neq
         if (imatd .ne. 0) then
             if (zi(jnugl+ieq-1) .eq. 0) goto 30
         endif
         if (zi(jccid-1+ieq) .eq. 1) nelim=nelim+1
- 30 end do
+ 30     continue
+    end do
     zi(jccid-1+neq+1) = nelim
     if (nelim .gt. 0) zk24(jrefa-1+3)='ELIML'
 !

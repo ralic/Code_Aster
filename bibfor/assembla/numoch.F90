@@ -62,7 +62,7 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
 !---- CALCUL DU NBRE MAX DE MODELES ET DE CHARGES
 !
     idiml = 2
-    do 100 imat = 1, nbmat
+    do imat = 1, nbmat
         matel = tlimat(imat)
         call jeexin(matel//'.RELR', iret)
         if (iret .eq. 0) goto 100
@@ -70,13 +70,14 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
         call jeveuo(matel//'.RELR', 'L', idlres)
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
         idiml = idiml + nbresu
-100 end do
+100     continue
+    end do
 !
 !---- CREATION DU VECTEUR LMOCH
 !
     call wkvect(lmoch, base//' V K24', idiml, ilmoch)
     nlmoch = 0
-    do 110 imat = 1, nbmat
+    do imat = 1, nbmat
         matel = tlimat(imat)
         call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=n1)
 !
@@ -84,9 +85,9 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
             call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=nomli)
             nomli=nomli(1:8)//'.MODELE'
             ideja =0
-            do 1001 ili = 1, nlmoch
+            do ili = 1, nlmoch
                 if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1
-1001         continue
+            end do
             if (ideja .eq. 0) then
                 nlmoch = nlmoch + 1
                 zk24(ilmoch-1+nlmoch) = nomli
@@ -98,22 +99,24 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
 !
         call jeveuo(matel//'.RELR', 'L', idlres)
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
-        do 120 iresu = 1, nbresu
+        do iresu = 1, nbresu
             resu = zk24(idlres+iresu-1)
             call jeexin(resu//'.NOLI', iret)
             if (iret .eq. 0) goto 120
             call jeveuo(resu//'.NOLI', 'L', iad)
             nomli = zk24(iad)
             ideja =0
-            do 1000 ili = 1, nlmoch
+            do ili = 1, nlmoch
                 if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1
-1000         continue
+            end do
             if (ideja .eq. 0) then
                 nlmoch = nlmoch + 1
                 zk24(ilmoch-1+nlmoch) = nomli
             endif
-120     continue
-110 end do
+120         continue
+        end do
+110     continue
+    end do
     call jeecra(lmoch, 'LONUTI', nlmoch)
     call jedema()
 end subroutine

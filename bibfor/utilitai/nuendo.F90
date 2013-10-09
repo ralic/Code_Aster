@@ -62,7 +62,7 @@ subroutine nuendo(numedd, sdnuen)
     character(len=24) :: nolili, noliel
     integer :: nec, nbnoeu, ncmpmx
     integer :: nlili, nbno, neq, nbnoc
-    integer ::  ico
+    integer :: ico
     integer :: ima, ino, idamg, i, k, inoc, ival, iadg
     integer :: itrav, iconex
     integer :: iancmp, ianueq, iaprno
@@ -99,7 +99,7 @@ subroutine nuendo(numedd, sdnuen)
 !
     nbgr = nbgrel(ligrmo)
     noliel = ligrmo//'.LIEL'
-    do 140 igr = 1, nbgr
+    do igr = 1, nbgr
         te = typele(ligrmo,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
         nbelgr = nbelem(ligrmo,igr)
@@ -107,25 +107,25 @@ subroutine nuendo(numedd, sdnuen)
         if (nomte .eq. 'MNDPTR6' .or. nomte .eq. 'MNDPQS8' .or. nomte .eq. 'MNAXTR6' .or.&
             nomte .eq. 'MNAXQS8' .or. nomte .eq. 'MNVG_HEXA20' .or. nomte .eq.&
             'MNVG_TETRA10' .or. nomte .eq. 'MNVG_PENTA15') then
-            do 130 iel = 1, nbelgr
+            do iel = 1, nbelgr
                 ima = zi(liel-1+iel)
                 call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
                 call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
-                do 20 ino = 1, nbno
+                do ino = 1, nbno
                     zi(itrav+zi(iconex+ino-1)-1) = 1
- 20             continue
-130         continue
+                end do
+            end do
         endif
-140 end do
+    end do
 !
 ! --- NOMBRE DE NOEUDS
 !
     nbnoc = 0
-    do 30 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         if (zi(itrav+ino-1) .eq. 1) then
             nbnoc = nbnoc + 1
         endif
- 30 end do
+    end do
 !
 ! --- AFFICHAGE
 !
@@ -140,7 +140,7 @@ subroutine nuendo(numedd, sdnuen)
     if (nbnoc .gt. 0) then
         call wkvect(sdnuen, 'V V I', neq, jnuen)
     else
-        goto 9999
+        goto 999
     endif
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R
@@ -161,11 +161,12 @@ subroutine nuendo(numedd, sdnuen)
 !
     call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
-    do 40 i = 1, nlili
+    do i = 1, nlili
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
- 40 end do
+ 40     continue
+    end do
     ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
@@ -177,7 +178,7 @@ subroutine nuendo(numedd, sdnuen)
 ! --- AFFECTATION DU TABLEAU DES NUMEROS DES INCONNUES
 !
     inoc = 0
-    do 50 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         if (zi(itrav+ino-1) .eq. 0) goto 50
         inoc = inoc + 1
         ival = zi(iaprno+(ino-1)*(nec+2)+1-1)
@@ -186,17 +187,18 @@ subroutine nuendo(numedd, sdnuen)
         if (exisdg(zi(iadg),idamg)) then
 !
             ico = 0
-            do 70 i = 1, idamg-1
+            do i = 1, idamg-1
                 if (exisdg(zi(iadg),i)) ico = ico + 1
- 70         continue
+            end do
             zi(jnuen+ival+ico-1) = 1
         endif
- 50 end do
+ 50     continue
+    end do
 !
 ! --- MENAGE
     call jedetr('&&NUENDO.NOEUDS')
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

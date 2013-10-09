@@ -161,7 +161,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 !
 !GN      WRITE(6,*) 'NCHAR =', NCHAR
     iret1 = 0
-    do 12 i = 1, nchar
+    do i = 1, nchar
         iret2 = 0
         do 121 , j = 1 , ntychx
         call exisd('CHAMP_GD', lchar(i)//'.CHME.'//ktych(j), iret)
@@ -174,7 +174,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             call utmess('A', 'INDICATEUR_6', sk=lchar(i))
             iret1 = iret1 + 1
         endif
- 12 end do
+    end do
 !
 !     ON VERIFIE QU'UN TYPE DE CHARGE N'EST PAS PRESENT 2 FOIS
 !     REMARQUE : SAUF POUR DU DIRICHLET (CIMPO)
@@ -203,7 +203,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     nomgd2 = ' '
     nomgd3 = ' '
 !
-    do 21 i = 1, nchar
+    do i = 1, nchar
 !GN        WRITE(6,*) 'CHARGE A ANALYSER : ',LCHAR(I)
 !GN      CALL UTIMSD(6,1,.TRUE.,.TRUE.,LCHAR(I)//'.CHME',1,' ')
 !
@@ -248,7 +248,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             endif
         endif
 !
- 21 end do
+    end do
 !
     call jeveuo(ligrel(1:19)//'.REPE', 'L', iarepe)
 !
@@ -407,7 +407,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     chfor3 = ' '
     typc3 = '        '
 !
-    do 22 i = 1, nchar
+    do i = 1, nchar
 !GN        CALL UTIMSD(6,1,.TRUE.,.TRUE.,LCHAR(I),1,' ')
         call exisd('CHAMP_GD', lchar(i)//'.CHME.PESAN', iret4)
         call exisd('CHAMP_GD', lchar(i)//'.CHME.ROTAT', iret5)
@@ -433,7 +433,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             typc3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOR3//' ET '//TYPC3
         endif
- 22 end do
+    end do
 !
 !====
 ! 5. PARAMETRES DU CALCUL

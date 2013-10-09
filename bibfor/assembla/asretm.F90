@@ -60,25 +60,25 @@ subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
     icoefl = 0
     if (.false.) then
 !     -- RECHERCHE BESTIALE :
-        do 10 i = 1, ncoefc
+        do i = 1, ncoefc
             if (zi4(jsmhc-1+icoefc+i) .eq. ili) then
                 icoefl = i
                 goto 20
             endif
-10      continue
+        end do
 !
     else
 !       -- RECHERCHE PAR DICHOTOMIE :
         ideb=1
         ifin=ncoefc
-11      continue
+ 11     continue
         if (ifin-ideb .lt. 5) then
-            do 12 i = ideb, ifin
+            do i = ideb, ifin
                 if (zi4(jsmhc-1+icoefc+i) .eq. ili) then
                     icoefl = i
                     goto 20
                 endif
-12          continue
+            end do
         endif
         imil=(ideb+ifin)/2
         if (zi4(jsmhc-1+icoefc+imil) .gt. ili) then
@@ -91,7 +91,7 @@ subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
 !     IF (ICOEFL.EQ.0 )  CALL UTMESS('F','MODELISA_67')
 !
 !
-20  continue
+ 20 continue
 !
 !     -- NBTERM COMPTE LES REELS TRAITES:
     nbterm = nbterm + 1

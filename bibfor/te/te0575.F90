@@ -69,7 +69,6 @@ subroutine te0575(option, nomte)
     real(kind=8) :: xyzgau(3), bary(3), f(3, 3)
     real(kind=8) :: epssm(mxcmel), sigmm(nbcont), sigma(nbcont)
     real(kind=8) :: integ1, integ2, integ, epsbid(6), dfdbid(27*3)
-    real(kind=8) :: dfdx(9), dfdy(9)
     character(len=4) :: fami
     character(len=16) :: compor(3)
     logical :: grand, axi
@@ -94,9 +93,9 @@ subroutine te0575(option, nomte)
     nharm = zero
     enelem = zero
 !
-    do 10 i = 1, nbnomx
+    do i = 1, nbnomx
         enerpg(i) = zero
-10  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -115,11 +114,11 @@ subroutine te0575(option, nomte)
         bary(1) = 0.d0
         bary(2) = 0.d0
         bary(3) = 0.d0
-        do 150 i = 1, nno
-            do 140 idim = 1, ndim
+        do i = 1, nno
+            do idim = 1, ndim
                 bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/ nno
-140          continue
-150      continue
+            end do
+        end do
 !
         call ortrep(zi(imate), ndim, bary, repere)
 !
@@ -233,7 +232,7 @@ subroutine te0575(option, nomte)
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 !      ===================================
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
         k=(igau-1)*nno
 !
@@ -248,15 +247,15 @@ subroutine te0575(option, nomte)
         axi=.false.
         if ((lteatt(' ','AXIS','OUI')) .or. (lteatt(' ','FOURIER', 'OUI'))) then
             rayon = zero
-            do 41 i = 1, nno
+            do i = 1, nno
                 rayon = rayon + zr(ivf+k+i-1)*zr(igeom+ndim*(i-1))
-41          continue
+            end do
             poids=poids*rayon
             axi=.true.
         endif
-        do 30 isig = 1, nbsig
+        do isig = 1, nbsig
             epsi(isig) = zero
-30      continue
+        end do
 !
 !  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
 !  --      COURANT
@@ -265,14 +264,14 @@ subroutine te0575(option, nomte)
         xyzgau(2) = zero
         xyzgau(3) = zero
 !
-        do 40 i = 1, nno
+        do i = 1, nno
 !
-            do 50 idim = 1, ndim
+            do idim = 1, ndim
                 xyzgau(idim) = xyzgau(idim) + zr(ivf+i+nno*(igau-1)-1) * zr(igeom-1+idim+ndim*(i-&
                                &1))
-50          continue
+            end do
 !
-40      continue
+        end do
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE :
 !        ==========================================================
@@ -280,9 +279,9 @@ subroutine te0575(option, nomte)
 !
 ! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
-            do 51 i = 1, nbsig
+            do i = 1, nbsig
                 sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-51          continue
+            end do
 !
 !
 ! ---     CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
@@ -306,7 +305,7 @@ subroutine te0575(option, nomte)
 !  --      TEMPS COURANT ET AU PAS DE TEMPS PRECEDENT S'IL Y A LIEU,
 !  --      AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
-            do 80 i = 1, nbsig
+            do i = 1, nbsig
                 epsi(i) = epss(i+(igau-1)*nbsig)
                 if (ideplm .ne. 0) then
                     epsim(i) = epssm(i+(igau-1)*nbsig)
@@ -315,16 +314,16 @@ subroutine te0575(option, nomte)
                 if (idsigm .ne. 0) then
                     sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
                 endif
-80          continue
+            end do
 !
             if (ideplm .ne. 0) then
-                do 90 i = 1, nbsig
+                do i = 1, nbsig
                     delta(i) = epsi(i) - epsim(i)
-90              continue
+                end do
             else
-                do 91 i = 1, nbsig
+                do i = 1, nbsig
                     delta(i) = 0.d0
-91              continue
+                end do
             endif
 !
 !  --      CALCUL DES TERMES A SOMMER POUR OBTENIR LA DENSITE
@@ -359,7 +358,7 @@ subroutine te0575(option, nomte)
 !
         endif
 !
-20  end do
+    end do
 !
 ! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
 ! ---- ELASTIQUE EN SORTIE
@@ -374,9 +373,9 @@ subroutine te0575(option, nomte)
 ! ---   OPTION ETOT_ELGA
 !       ================
         if (option .eq. 'ETOT_ELGA') then
-            do 100 igau = 1, npg
+            do igau = 1, npg
                 zr(idener+igau-1)=zr(idenem+igau-1)+enerpg(igau)
-100          continue
+            end do
 !
 ! ---   OPTION ETOT_ELEM
 !       ================
@@ -388,9 +387,9 @@ subroutine te0575(option, nomte)
 ! ---   OPTION ENEL_ELGA
 !       ================
         if (option .eq. 'ENEL_ELGA') then
-            do 200 igau = 1, npg
+            do igau = 1, npg
                 zr(idener+igau-1) = enerpg(igau)
-200          continue
+            end do
         endif
     endif
 !

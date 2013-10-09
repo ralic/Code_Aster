@@ -90,7 +90,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     integer :: iret, ifimed
     integer :: i
     integer :: ipas, iaux2
-    integer ::  j
+    integer :: j
     integer :: mfich, jinst, itps
     integer :: ifm, nivinf, jrefe, jnuom
     integer :: nbma, jnbpgm, jnbpmm, ordins
@@ -202,7 +202,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             typent = edmail
         endif
 !
-        do 230 letype = 1, nbtyp
+        do letype = 1, nbtyp
             iaux = renumd(letype)
             typgom = typgeo(iaux)
             ifimed = 0
@@ -213,14 +213,14 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                 call jeveuo(prefix//'.NUME', 'L', inum)
                 goto 240
             endif
-230     continue
+        end do
 !
 !         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
 !         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
         if (typcha(1:4) .eq. 'ELNO') then
             typent = edmail
             call utmess('A', 'MED_53', sk=nochmd)
-            do 231 letype = 1, nbtyp
+            do letype = 1, nbtyp
                 iaux = renumd(letype)
                 typgom = typgeo(iaux)
                 ifimed = 0
@@ -231,7 +231,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                     call jeveuo(prefix//'.NUME', 'L', inum)
                     goto 240
                 endif
-231         continue
+            end do
         endif
 !
     endif
@@ -246,13 +246,13 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !         DETERMINATION DES NUMEROS D'ORDRE MED : ZI(JNUOM)
     if (nnu .ne. 0) then
         call wkvect('&&OP0150_NUMORD_MED', 'V V I', npas, jnuom)
-        do 242 j = 1, npas
+        do j = 1, npas
             if (zi(inum+2*j-1) .ne. ednono) then
                 zi(jnuom+j-1)=zi(inum+2*j-1)
             else if (zi(inum+2*(j-1)).ne.ednono) then
                 zi(jnuom+j-1)=zi(inum+2*(j-1))
             endif
-242     continue
+        end do
     endif
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
@@ -264,7 +264,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !     CET ENTIER SERT A AVOIR LA CERTITUDE QUE LE .ORDR PRODUIT
 !     EN SORTIE DE LIRE_RESU SERA STRICTEMENT CROISSANT
     ordins = 1
-    do 250 itps = 1, npas0
+    do itps = 1, npas0
         chanom = '&&LRFMED.TEMPOR'
         k64b = ' '
 !
@@ -356,7 +356,8 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             zr(jinst) = zr(ipas-1+itps)
         endif
         call detrsd('CHAMP_GD', chanom)
-250 end do
+250     continue
+    end do
     call jedetr('&&OP0150_NBPG_MAILLE')
     call jedetr('&&OP0150_NBPG_MED')
     call jedetr(ncmpva)

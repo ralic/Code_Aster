@@ -87,7 +87,7 @@ subroutine orth99(nomres, ritz)
         if (ortho .eq. 'OUI     ') then
             call getvid(' ', 'MATRICE', scal=matras, nbret=n1)
         else
-            goto 9999
+            goto 999
         endif
     else
         call getvid('ORTHO_BASE', 'MATRICE', iocc=1, scal=matras, nbret=n1)
@@ -154,9 +154,9 @@ subroutine orth99(nomres, ritz)
     call wkvect('&&ORTH99.TRAV3', 'V V R', nbmode, jtrav3)
     call wkvect('&&ORTH99.TRAV4', 'V V I', neq, jtrav4)
 !
-    do 50 i = 1, neq
+    do i = 1, neq
         zi(jtrav4+i-1) = 1
- 50 continue
+    end do
 !
     if (matr .eq. ' ') then
 ! ORTHONORMALISATION L2
@@ -175,9 +175,9 @@ subroutine orth99(nomres, ritz)
     call jeexin(nomres//'           .DESC', ier)
     if (ier .ne. 0) then
         call wkvect('&&ORTH99.VECT_TEMP', 'V V I', nbmode, ibid)
-        do 10 i = 1, nbmode
+        do i = 1, nbmode
             zi(ibid+i-1)=zi(jordm+i-1)
- 10     continue
+        end do
         jordm=ibid
 !
 !       Save the old REFD information in a temporary location
@@ -200,7 +200,7 @@ subroutine orth99(nomres, ritz)
 !
 !
     iorne =0
-    do 80 i = 1, nbmode
+    do i = 1, nbmode
         iorol = zi(jordm+i-1)
         iorne = iorne+1
 !
@@ -208,9 +208,9 @@ subroutine orth99(nomres, ritz)
                     ier)
         call vtcrem(chamol, matras, 'G', 'R')
         call jeveuo(chamol//'.VALE', 'E', jvale)
-        do 111 ieq = 1, neq
+        do ieq = 1, neq
             zr(jvale+ieq-1) = zr(idmode+(i-1)*neq+ieq-1)
-111     continue
+        end do
         call rsnoch(nomres, 'DEPL', iorne)
 !
         call rsadpa(base, 'L', 1, 'NUME_MODE', iorol,&
@@ -254,7 +254,7 @@ subroutine orth99(nomres, ritz)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
- 80 continue
+    end do
 !
 !
     call jedetr('&&ORTH99.TRAV1')
@@ -264,7 +264,7 @@ subroutine orth99(nomres, ritz)
     call jedetr('&&ORTH99.VECT_TEM')
 !
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

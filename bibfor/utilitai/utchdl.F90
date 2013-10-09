@@ -126,7 +126,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         valk(2) = nomgd
         call utmess(aof, 'UTILITAI5_30', nk=2, valk=valk)
         iddl=0
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -138,7 +138,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         valk(2) = nommaz
         call utmess(aof, 'UTILITAI5_31', nk=2, valk=valk)
         iddl=0
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -204,12 +204,12 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     if (ispt .gt. nbspt) then
         call utmess(aof, 'UTILITAI5_36')
         iddl=0
-        goto 9999
+        goto 999
     endif
     if ((nusp.eq.0) .and. (nbspt.gt.1)) then
         call utmess(aof, 'CALCULEL_1', si=nbspt)
         iddl=0
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -228,27 +228,27 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
             vali(2)=nbpt
             call utmess(aof, 'UTILITAI5_37', ni=2, vali=vali)
             iddl=0
-            goto 9999
+            goto 999
         endif
         call wkvect('&&UTCHDL.LONG_PT', 'V V I', nbpt, jlpt)
         call wkvect('&&UTCHDL.LONG_PT_CUMU', 'V V I', nbpt, jlcupt)
 !
 !         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
-        do 20 ipt = 1, nbpt
+        do ipt = 1, nbpt
             ico = 0
             k = 1
             if (diff) k = ipt
             iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-            do 10 kcmp = 1, ncmpmx
+            do kcmp = 1, ncmpmx
                 if (exisdg(zi(iadg),kcmp)) then
                     ico = ico + 1
                     zk8(incmp+ico-1) = zk8(iancmp+kcmp-1)
                     if (nocmp .eq. zk8(incmp+ico-1)) trouve = .true.
                 endif
- 10         continue
+            end do
             zi(jlpt-1+ipt) = ico
- 20     continue
+        end do
         if ((.not.trouve) .and. (.not.nogran)) then
             call utmess(aof, 'UTILITAI5_38', sk=nocmp)
         endif
@@ -256,18 +256,18 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !
 !
         cumu = 0
-        do 30 ipt = 1, nbpt
+        do ipt = 1, nbpt
             zi(jlcupt-1+ipt) = cumu
             cumu = cumu + zi(jlpt-1+ipt)
- 30     continue
+        end do
 !
 !
-        do 50 ipt = 1, nbpt
+        do ipt = 1, nbpt
             k = 1
             if (diff) k = ipt
             iadg = jmolo - 1 + 4 + (k-1)*nec + 1
             ico = 0
-            do 40 kcmp = 1, ncmpmx
+            do kcmp = 1, ncmpmx
                 if (exisdg(zi(iadg),kcmp)) then
                     ico = ico + 1
 !
@@ -276,11 +276,11 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
                     if ((ipt.eq.nupo2) .and. (kcmp.eq.icmp)) goto 60
 !
                 endif
- 40         continue
- 50     continue
+            end do
+        end do
 !       -- ON N'A PAS TROUVE LE POINT LE SOUS-POINT OU LA COMPOSANTE :
         iddl=0
-        goto 9999
+        goto 999
  60     continue
 !
 !
@@ -302,7 +302,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
             vali (2) = icmp
             call utmess(aof, 'UTILITAI7_5', sk=valk(1), ni=2, vali=vali)
             iddl=0
-            goto 9999
+            goto 999
         else
 !
             if ((ispt.le.nbspt) .and. (ipt.le.nbpt)) then
@@ -314,7 +314,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     endif
 !
 !
-9999 continue
+999 continue
     call jedetr('&&UTCHDL.LONG_PT')
     call jedetr('&&UTCHDL.LONG_PT_CUMU')
     call jedetr('&&UTCHDL.N_CMP')

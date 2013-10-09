@@ -70,7 +70,7 @@ subroutine nudlg2(nu)
     nu14=nu
 !
     call jeexin(nu14//'.NUME.DLG2', iexi)
-    if (iexi .gt. 0) goto 9999
+    if (iexi .gt. 0) goto 999
 !
     call dismoi('NB_EQUA', nu14, 'NUME_DDL', repi=neq)
     call dismoi('NOM_GD', nu14, 'NUME_DDL', repk=nogd)
@@ -83,7 +83,7 @@ subroutine nudlg2(nu)
     call wkvect(nu14//'.NUME.DLG2', 'V V I', neq, jdlg2)
 !
 !
-    do 31 ili = 2, nbligr
+    do ili = 2, nbligr
         call jenuno(jexnum(nu14//'.NUME.LILI', ili), ligr19)
         call jeexin(ligr19//'.LGNS', iexi)
         if (iexi .eq. 0) goto 31
@@ -95,7 +95,7 @@ subroutine nudlg2(nu)
         call jelira(jexnum(nu14//'.NUME.PRNO', ili), 'LONMAX', n4)
         if (n4 .eq. 0) goto 31
         call jeveuo(jexnum(nu14//'.NUME.PRNO', ili), 'L', jprno)
-        do 21 ima = 1, nbma
+        do ima = 1, nbma
             nn=zznsup(ili,ima)
             if (nn .eq. 3) then
                 n1=zznema(ili,ima,1)
@@ -112,12 +112,13 @@ subroutine nudlg2(nu)
                     zi(jdlg2-1+nueq3)=nueq2
                 endif
             endif
- 21     continue
- 31 end do
+        end do
+ 31     continue
+    end do
 !
 !
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

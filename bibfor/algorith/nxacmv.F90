@@ -324,16 +324,16 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
         if (typcum .eq. 2) then
             do 23002 , k = 0, loncm1
             zr(j2nd+k) = zr(j2nd1+k) + zr(j2nd2+k)
-23002          continue
+23002         continue
         else if (typcum.eq.3) then
             do 23003 , k = 0, loncm1
             zr(j2nd+k) = zr(j2nd1+k) + zr(j2nd2+k) + zr(j2nd3+k)
-23003          continue
+23003         continue
         else if (typcum.eq.33) then
             do 23033 , k = 0, loncm1
             zr(j2nd+k) = zr(j2nd1+k) + zr(j2nd2+k) + zr(j2nd3+k)
             zr(j2ni+k) = zr(j2ni1+k) + zr(j2ni2+k) + zr(j2ni3+k)
-23033          continue
+23033         continue
         else
             ASSERT(.false.)
         endif

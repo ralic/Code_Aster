@@ -252,7 +252,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     rho = sens
     act = 1
 !
-    do 20 iterho = 0, itrlmx
+    do iterho = 0, itrlmx
 !
 ! ----- CALCUL DE L'INCREMENT DE DEPLACEMENT TEMPORAIRE
 !
@@ -317,7 +317,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
             if (iterho .gt. 0) then
                 goto 100
             else
-                goto 9999
+                goto 999
             endif
         endif
 !
@@ -352,7 +352,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
         if (stite) then
             goto 100
         endif
- 20 end do
+    end do
     iterho = itrlmx
 !
 ! --- STOCKAGE DU RHO OPTIMAL ET DES CHAMPS CORRESPONDANTS
@@ -377,7 +377,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
     ldccvg = ldcopt
 !
-9999 continue
+999 continue
 !
     conv(1) = iterho
     conv(2) = rhoopt

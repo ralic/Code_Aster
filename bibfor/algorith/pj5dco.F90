@@ -61,7 +61,7 @@ subroutine pj5dco(mo1, mo2, corres)
     integer :: numano(nbmail), nunoe(nbmail)
     real(kind=8) :: a(nbdim), b(nbdim), m(nbdim), un, deux
     real(kind=8) :: dpmin, l1, l2, xabs, dp, am(nbdim), bm(nbdim), a1, a2, dist
-    character(len=8) ::  m1, m2
+    character(len=8) :: m1, m2
     character(len=16) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: noeud1, noeud2, cobar1, cobar2
     character(len=24) :: coormo, coorme
@@ -86,13 +86,13 @@ subroutine pj5dco(mo1, mo2, corres)
 !     --------------------------------------------------------
 !
 !     Initialisation des A, B et M
-    do 771 i = 1, nbdim
+    do i = 1, nbdim
         a(i) = 0.d0
         b(i) = 0.d0
         m(i) = 0.d0
         am(i) = 0.d0
         bm(i) = 0.d0
-771 end do
+    end do
 !
     coormo = m1//'.COORDO    .VALE'
     call jeveuo(coormo, 'L', jcoo1)
@@ -111,12 +111,12 @@ subroutine pj5dco(mo1, mo2, corres)
     lisou1 = 'NOEUD_MODELE_VIS'
     lisou2 = 'NOEUD_MESURE_VIS'
 !
-    do 60 inode = 1, nno1
+    do inode = 1, nno1
         call jenuno(jexnum (m1//'.NOMNOE', inode), zk8(llin1-1+inode))
- 60 end do
-    do 61 inode = 1, nno2
+    end do
+    do inode = 1, nno2
         call jenuno(jexnum (m2//'.NOMNOE', inode), zk8(llin2-1+inode))
- 61 end do
+    end do
 !
     call pacoa2(lisin1, lisin2, nno1, nno2, m1,&
                 m2, lisou1, lisou2, nbtr)
@@ -144,11 +144,11 @@ subroutine pj5dco(mo1, mo2, corres)
 !
 !     2. RECHECHE DE LA MAILLE LE PLUS PROCHE DU NOEUD MESURE
 !     ------------------------------------------------
-    do 62 inode = 1, nbtr
+    do inode = 1, nbtr
         call jenonu(jexnom(m2//'.NOMNOE', zk8(out2-1+inode)), numnoe)
-        do 22 i = 1, nbdim
+        do i = 1, nbdim
             m(i) = zr(jcoo2-1 +(numnoe-1)*nbdim+i)
- 22     continue
+        end do
 !
         call jenonu(jexnom(m1//'.NOMNOE', zk8(out1-1+inode)), numnoe)
         call exmano(m1, numnoe, numano, nbmano)
@@ -156,31 +156,31 @@ subroutine pj5dco(mo1, mo2, corres)
             call utmess('F', 'ALGORITH9_92')
         endif
         dpmin = r8maem()
-        do 63 ima = 1, nbmano
+        do ima = 1, nbmano
             imail = numano(ima)
             nbno=zi(ilcnx1-1 +imail+1)-zi(ilcnx1-1 +imail)
 !     THEORIQUEMENT NBNO = 2 (POUR SEG2)
-            do 31 ino = 1, nbno
+            do ino = 1, nbno
                 nunoe(ino)=zi(iacnx1-1 +zi(ilcnx1-1 +imail)-1+ino)
- 31         continue
-            do 32 i = 1, nbdim
+            end do
+            do i = 1, nbdim
                 a(i) = zr(jcoo1-1 +(nunoe(1)-1)*nbdim+i)
                 b(i) = zr(jcoo1-1 +(nunoe(2)-1)*nbdim+i)
- 32         continue
+            end do
 !
 !     3. CALCUL DE LA DISTANCE NOEUD-MAILLE (AM + BM)
 !     ------------------------------------------------
-            do 33 i = 1, nbdim
+            do i = 1, nbdim
                 am(i)=m(i)-a(i)
                 bm(i)=m(i)-b(i)
- 33         continue
+            end do
 !
             a1 = 0.d0
             a2 = 0.d0
-            do 34 i = 1, nbdim
+            do i = 1, nbdim
                 a1= a1 + am(i)*am(i)
                 a2= a2 + bm(i)*bm(i)
- 34         continue
+            end do
             dist = sqrt(a1)+sqrt(a2)
 !
             if (dist .lt. dpmin) then
@@ -195,7 +195,7 @@ subroutine pj5dco(mo1, mo2, corres)
                 zr(lco1-1 +inode) = l1
                 zr(lco2-1 +inode) = l2
             endif
- 63     continue
+        end do
 !
 !     5. APPLICATION FONCTION DE FORME (ELEMENT ISOPARAMETRIQUE)
 !     ---------------------------------------------------
@@ -203,7 +203,7 @@ subroutine pj5dco(mo1, mo2, corres)
         xabs = -un*zr(lco1-1 +inode) + un*zr(lco2-1 +inode)
         zr(lco1-1 +inode) = (un-xabs)/deux
         zr(lco2-1 +inode) = (un+xabs)/deux
- 62 end do
+    end do
 !
 !     6. CREATION DE LA SD CORRESP_2_MAILLA : CORRES
 !     ---------------------------------------------------
@@ -216,18 +216,18 @@ subroutine pj5dco(mo1, mo2, corres)
     zk24(j2xxk1-1 +2)=m2
     zk24(j2xxk1-1 +3)='COLLOCATION'
 !
-    do 10 ino = 1, nno2
+    do ino = 1, nno2
         zi(i2conb-1 +ino)=2
- 10 end do
+    end do
 !
     idecal=0
-    do 20 ino = 1, nno2
+    do ino = 1, nno2
         zi(i2conu-1 +idecal+1)=zi(lno1-1 +ino)
         zi(i2conu-1 +idecal+2)=zi(lno2-1 +ino)
         zr(i2cocf-1 +idecal+1)=zr(lco1-1 +ino)
         zr(i2cocf-1 +idecal+2)=zr(lco2-1 +ino)
         idecal = idecal+zi(i2conb-1 +ino)
- 20 end do
+    end do
 !
 !
     call jedetr(lisin1)

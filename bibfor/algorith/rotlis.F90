@@ -104,9 +104,9 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !
     call jenonu(jexnom(nomres//'      .MODG.SSNO', sst), ibid)
     call jeveuo(jexnum(nomres//'      .MODG.SSOR', ibid), 'L', llrot)
-    do 10 i = 1, 3
+    do i = 1, 3
         rot(i)=zr(llrot+i-1)
- 10 end do
+    end do
 !
 ! --- CALCUL DE LA MATRICE DE ROTATION
 !
@@ -160,7 +160,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !
 !  BOUCLE SUR LES NOEUDS DU PROFIL
 !
-    do 100 i = 1, nbnoe
+    do i = 1, nbnoe
         iadn=zi(llplin+(i-1)*(1+nbec))
         call isdeco(zi(llplin+(i-1)*(1+nbec)+1), idecn, nbcmpm)
         iado=zi(llplio+(i-1)*(1+nbec))
@@ -168,41 +168,41 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !
 !  BOUCLE SUR LES DEFORMEES DE LA BASE
 !
-        do 110 j = 1, nbcoln
+        do j = 1, nbcoln
             icompo=iado-1
             icompn=iadn-1
 !
 !  BOUCLE SUR LES COMPOSANTES DE DEPART: NON ORIENTEES
 !  INITIALISATION VALEURS
 !
-            do 120 k = 1, nbcmpm
+            do k = 1, nbcmpm
                 if (idecn(k) .gt. 0) then
                     icompn=icompn+1
                     xn(k)=zr(llmat+(j-1)*nblign+icompn-1)
                 else
                     xn(k)=zero
                 endif
-120         continue
+            end do
 !
 !  ROTATION DU DELACEMENT NODAL MODAL
 !
-            do 140 k = 1, nbcmpm
+            do k = 1, nbcmpm
                 xo(k)=zero
-                do 150 l = 1, nbcmpm
+                do l = 1, nbcmpm
                     xo(k)=xo(k)+matrot(k,l)*xn(l)
-150             continue
-140         continue
+                end do
+            end do
 !
 !  BOUCLE SUR LES COMPOSANTES ORIENTEES: RECUPERATION VALEURS
 !
-            do 130 k = 1, nbcmpm
+            do k = 1, nbcmpm
                 if (ideco(k) .gt. 0) then
                     icompo=icompo+1
                     zr(ldmat+(j-1)*nbligo+icompo-1)=xo(k)*fact
                 endif
-130         continue
-110     continue
-100 continue
+            end do
+        end do
+    end do
 !
     call jedetr(nomatn)
 !

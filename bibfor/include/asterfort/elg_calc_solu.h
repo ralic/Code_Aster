@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,11 +14,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine elg_calc_solu(matas1,nsecm,rsolu2,rsolu1)
-              character(len=19) :: matas1
-              integer :: nsecm
-              real(kind=8) :: rsolu2(*)
-              real(kind=8) :: rsolu1(*)
-            end subroutine elg_calc_solu
-          end interface 
+interface 
+    subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
+        character(len=19) :: matas1
+        integer :: nsecm
+        real(kind=8) :: rsolu2(*)
+        real(kind=8) :: rsolu1(*)
+    end subroutine elg_calc_solu
+end interface 

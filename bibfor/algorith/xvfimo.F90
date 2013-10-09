@@ -53,9 +53,9 @@ function xvfimo(modele, fiss)
 !
     xvfimo=.false.
 !
-    do 10 i = 1, nfiss
+    do i = 1, nfiss
         if (fiss .eq. zk8(jfiss-1+i)) xvfimo=.true.
- 10 end do
+    end do
 !
     call jedema()
 !

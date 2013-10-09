@@ -209,9 +209,9 @@ subroutine op0141()
     endif
     call wkvect('&&OP0141.TYPE_PARA', 'V V K8 ', nbpara, ityp)
     call wkvect('&&OP0141.NOM_PARA', 'V V K16', nbpara, inom)
-    do 20 i = 1, 2
+    do i = 1, 2
         zk8(ityp+i-1)='I'
- 20 continue
+    end do
     if (zcmplx) then
         call wkvect('&&OP0141.MAC', 'V V R', 1, indv)
     else
@@ -247,15 +247,15 @@ subroutine op0141()
                     'C', [rbid], zc(idbas2))
 !
 ! BOUCLE DE CALCUL DES MACS
-        do 30 i = 1, nbmod1
+        do i = 1, nbmod1
             pii=0.d0
             if (matr .ne. ' ') then
                 call mcmult('ZERO', imatra, zc(idbas1+(i-1)*neq), zc( idvec1), 1,&
                             .true.)
 !
-                do 10 iddl = 1, neq
+                do iddl = 1, neq
                     if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0,0.d0)
- 10             continue
+                end do
 !
             else
                 call zcopy(neq, zc(idbas1+(i-1)*neq), 1, zc(idvec1), 1)
@@ -263,57 +263,57 @@ subroutine op0141()
 !
 ! PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
             ztemp = dcmplx(0.0d0,0.0d0)
-            do 112 iddl = 1, neq
+            do iddl = 1, neq
                 ztemp = ztemp + zc( idbas1+(i-1)*neq-1+iddl)*dconjg(zc( idvec1-1+iddl))
-112         continue
+            end do
             pii = abs(ztemp)
 !
             zi(ind)=i
 !
-            do 40 j = 1, nbmod2
+            do j = 1, nbmod2
                 pij=0.d0
                 pjj=0.d0
                 if (matr .ne. ' ') then
                     call mcmult('ZERO', imatra, zc(idbas2+(j-1)*neq), zc(idvec2), 1,&
                                 .true.)
 !
-                    do 50 iddl = 1, neq
+                    do iddl = 1, neq
                         if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0,0.d0)
- 50                 continue
+                    end do
 !
                 else
                     call zcopy(neq, zc(idbas2+(j-1)*neq), 1, zc(idvec2), 1)
                 endif
 !
                 ztemp = dcmplx(0.0d0,0.0d0)
-                do 114 iddl = 1, neq
+                do iddl = 1, neq
                     ztemp = ztemp + zc( idbas2+(j-1)*neq-1+iddl)* dconjg(zc(idvec2-1+iddl))
-114             continue
+                end do
                 pjj = abs(ztemp)
 !
                 if (ieri) then
-                    do 115 iddl = 1, neq
+                    do iddl = 1, neq
                         zc(idbas3-1+iddl)=zc(idbas1+(i-1)*neq-1+iddl)&
                         -zc(idbas2+(j-1)*neq-1+iddl)
-115                 continue
+                    end do
                     call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1,&
                                 .true.)
-                    do 116 iddl = 1, neq
+                    do iddl = 1, neq
                         if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0,0.d0)
-116                 continue
+                    end do
 !
                     ztemp = dcmplx(0.0d0,0.0d0)
-                    do 117 iddl = 1, neq
+                    do iddl = 1, neq
                         ztemp = ztemp + zc(idbas3-1+iddl)*dconjg(zc( idvec3-1+iddl))
-117                 continue
+                    end do
                     pij = abs(ztemp)
 !
                     pij = (pij**2) / (pii**2 + pjj**2)
                 else
                     ztemp = dcmplx(0.0d0,0.0d0)
-                    do 113 iddl = 1, neq
+                    do iddl = 1, neq
                         ztemp = ztemp + zc( idbas1+(i-1)*neq-1+iddl)* dconjg(zc(idvec2-1+iddl) )
-113                 continue
+                    end do
                     pij = abs(ztemp)
                     pij = (pij**2) / (pii * pjj)
                 endif
@@ -322,8 +322,8 @@ subroutine op0141()
                 zr(indv)=pij
                 call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
                             [cbid], k8b, 0)
- 40         continue
- 30     continue
+            end do
+        end do
 !
     else
 !
@@ -340,7 +340,7 @@ subroutine op0141()
                     'R', zr(idbas2), [cbid])
 !
 ! BOUCLE DE CALCUL DES MACS
-        do 130 i = 1, nbmod1
+        do i = 1, nbmod1
             pii=0.d0
             if (matr .ne. ' ') then
                 call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1,&
@@ -354,7 +354,7 @@ subroutine op0141()
 !
             zi(ind)=i
 !
-            do 140 j = 1, nbmod2
+            do j = 1, nbmod2
                 pij=0.d0
                 pjj=0.d0
                 if (matr .ne. ' ') then
@@ -392,8 +392,8 @@ subroutine op0141()
                 zr(indv)=pij
                 call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
                             [cbid], k8b, 0)
-140         continue
-130     continue
+            end do
+        end do
 !
     endif
 !  FIN TEST SUR TYPE DE VECTEURS (C/R)

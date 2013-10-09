@@ -1,5 +1,5 @@
 subroutine elg_setint(inda, nba, indb, nbb, indc,&
-                  nbc, remp)
+                      nbc, remp)
     implicit none
 ! aslint: disable=W0104
 ! person_in_charge: mathieu.corus at edf.fr
@@ -19,17 +19,17 @@ subroutine elg_setint(inda, nba, indb, nbb, indc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "asterfort/assert.h"
-
+# include "asterfort/assert.h"
+!
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-    integer, intent(in)    ::  nba
-    integer, intent(in)    ::  nbb
-    integer, intent(out) ::  nbc
-
+    integer, intent(in) :: nba
+    integer, intent(in) :: nbb
+    integer, intent(out) :: nbc
+!
     PetscInt :: inda(nba), indb(nbb), indc(min(nba, nbb))
     character(len=6) :: remp
-
+!
 ! person_in_charge: mathieu.corus at edf.fr
 !
 !-- INTERSECTION DE DEUX VECTEURS D'INDICES
@@ -68,9 +68,9 @@ subroutine elg_setint(inda, nba, indb, nbb, indc,&
     integer :: ia, ib, ic
 !
     nbc=0
-
-    if (nba .eq. 0 .or. nbb .eq. 0)  goto 999
-
+!
+    if (nba .eq. 0 .or. nbb .eq. 0) goto 999
+!
 !
 !     WRITE(6,*),'--------',REMP
 !     WRITE(6,*),'NBA=',NBA
@@ -88,7 +88,7 @@ subroutine elg_setint(inda, nba, indb, nbb, indc,&
         else
             ia=1
             ib=1
-10          continue
+ 10         continue
 !
             if (inda(ia) .eq. indb(ib)) then
                 nbc=nbc+1
@@ -119,7 +119,7 @@ subroutine elg_setint(inda, nba, indb, nbb, indc,&
             ib=1
             ic=1
 !
-20          continue
+ 20         continue
 !
 !
             if (inda(ia) .eq. indb(ib)) then
@@ -156,8 +156,8 @@ subroutine elg_setint(inda, nba, indb, nbb, indc,&
 !     WRITE(6,*),' '
 !     WRITE(6,*),' ** FIN MODIF ** '
 !
-999  continue
-
+999 continue
+!
 #else
     integer :: nba, nbb, nbc
     integer(kind=4) :: inda(nba), indb(nbb), indc(min(nba, nbb))

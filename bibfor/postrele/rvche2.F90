@@ -47,7 +47,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     integer :: jceld, gd, iad, ncmpmx, nec, tabec(10), iavale, iacelk
     integer :: irepe, im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
     integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
-    integer ::  numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
+    integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
     integer :: jligr, jpnt, ipoin, ianoma, nunoe, axyzm, jcnx, imodel, ilong
     integer :: ind
     real(kind=8) :: sg(6), sl(6), pgl(3, 3), pscal
@@ -111,7 +111,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
 !
     call jeveuo(nomma//'.COORDO    .VALE', 'L', axyzm)
 !
-    do 20 im = 1, nbel
+    do im = 1, nbel
         imail = numail(im)
         igrel = zi(irepe-1+2*(imail-1)+1)
         ielg = zi(irepe-1+2*(imail-1)+2)
@@ -129,17 +129,17 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
         iel = zi(jligr-1+ipoin+ielg-1)
         nnoe = zi(jpnt-1+iel+1) - zi(jpnt-1+iel)
         ncmpp = 0
-        do 22 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg( tabec, icmp )) then
                 ncmpp = ncmpp + 1
             endif
- 22     continue
+        end do
         npcalc = nscal / ncmpp
         ncou = npcalc / nnoe
         debugr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
         iachml = debugr + nsca*(ielg-1)
-        do 30 icou = 1, ncou
-            do 32 ino = 1, nnoe
+        do icou = 1, ncou
+            do ino = 1, nnoe
 !
                 nunoe = zi(jcnx-1+zi(jpnt-1+iel)-1+ino)
                 inivid = .false.
@@ -147,9 +147,9 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     ind = indiis ( nnoeud, nunoe, 1, nbnac )
                     if (ind .eq. 0) then
                         inivid = .true.
-                        do 730 i = 1, 6
+                        do i = 1, 6
                             sl(i) = r8vide()
-730                     continue
+                        end do
                         goto 732
                     endif
                 endif
@@ -162,9 +162,9 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                 axer(2) = axer(2) - pscal*axez(2)
                 axer(3) = axer(3) - pscal*axez(3)
                 xnormr = 0.0d0
-                do 40 i = 1, 3
+                do i = 1, 3
                     xnormr = xnormr + axer(i)*axer(i)
- 40             continue
+                end do
                 if (xnormr .lt. epsi) then
                     call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
                     call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
@@ -174,15 +174,15 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     call utmess('F', 'POSTRELE_27', nk=2, valk=valk, sr=valr)
                 endif
                 xnormr = 1.0d0 / sqrt( xnormr )
-                do 42 i = 1, 3
+                do i = 1, 3
                     axer(i) = axer(i) * xnormr
- 42             continue
+                end do
                 axet(1) = axez(2)*axer(3) - axez(3)*axer(2)
                 axet(2) = axez(3)*axer(1) - axez(1)*axer(3)
                 axet(3) = axez(1)*axer(2) - axez(2)*axer(1)
-                do 44 i = 1, 3
+                do i = 1, 3
                     xnormr = xnormr + axet(i)*axet(i)
- 44             continue
+                end do
                 xnormr = sqrt( xnormr )
                 if (xnormr .lt. epsi) then
                     call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
@@ -192,11 +192,11 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     valr = zr(axyzm+3*(nunoe-1))
                     call utmess('F', 'POSTRELE_27', nk=2, valk=valk, sr=valr)
                 endif
-                do 46 i = 1, 3
+                do i = 1, 3
                     pgl(1,i) = axer(i)
                     pgl(2,i) = axez(i)
                     pgl(3,i) = axet(i)
- 46             continue
+                end do
 !
                 sg(1) = 0.0d0
                 sg(2) = 0.0d0
@@ -215,7 +215,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                 nuddl = iachml-1+ncmpp*icoef*(ino-1) +(icou-1)*ncmpp* icoef*nnoe
 !
                 icmpt = 0
-                do 34 icmp = 1, ncmpmx
+                do icmp = 1, ncmpmx
                     if (exisdg( tabec, icmp )) then
                         icmpt = icmpt + 1
                         nomcmp = zk8(iad-1+icmp)
@@ -250,7 +250,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                             sg(5) = zr(iavale-1+numyz)
                         endif
                     endif
- 34             continue
+                end do
 !
                 if (.not. inivid) then
                     call utpsgl(1, 3, pgl, sg, sl)
@@ -263,11 +263,12 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                 if (numxz .ne. 0) zr(iavale-1+numxz) = sl(4)
                 if (numyz .ne. 0) zr(iavale-1+numyz) = sl(5)
 !
- 32         continue
+            end do
 !
- 30     continue
+        end do
 !
- 20 end do
+ 20     continue
+    end do
 !
     call jedema()
 end subroutine

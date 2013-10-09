@@ -36,7 +36,7 @@ subroutine te0016(option, nomte)
 !
     integer :: ipoids, ivf, idfde, igeom, iforc
     integer :: jgano, nno, ndl, kp, npg, ii, i, l, ivectu, ndim, nnos
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, fx, fy, fz
+    real(kind=8) :: poids, fx, fy, fz
 !     ------------------------------------------------------------------
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
@@ -47,13 +47,13 @@ subroutine te0016(option, nomte)
     call tefrep(option, nomte, 'PFR3D3D', iforc)
 !
     ndl = 3*nno
-    do 20 i = 1, ndl
+    do i = 1, ndl
         zr(ivectu+i-1) = 0.0d0
-20  end do
+    end do
 !
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
-    do 50 kp = 1, npg
+    do kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
@@ -62,20 +62,20 @@ subroutine te0016(option, nomte)
         fx = 0.0d0
         fy = 0.0d0
         fz = 0.0d0
-        do 30 i = 1, nno
+        do i = 1, nno
             ii = 3*(i-1)
             fx = fx + zr(ivf-1+l+i)*zr(iforc+ii )
             fy = fy + zr(ivf-1+l+i)*zr(iforc+ii+1)
             fz = fz + zr(ivf-1+l+i)*zr(iforc+ii+2)
-30      continue
+        end do
 !
-        do 40 i = 1, nno
+        do i = 1, nno
             ii = 3* (i-1)
             zr(ivectu+ii ) = zr(ivectu+ii ) + poids*zr(ivf+l+i-1)*fx
             zr(ivectu+ii+1) = zr(ivectu+ii+1) + poids*zr(ivf+l+i-1)* fy
             zr(ivectu+ii+2) = zr(ivectu+ii+2) + poids*zr(ivf+l+i-1)* fz
-40      continue
-50  end do
+        end do
+    end do
 !
 !
 end subroutine

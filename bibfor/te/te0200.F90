@@ -40,7 +40,7 @@ subroutine te0200(option, nomte)
 !
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, z, tx, ty, tz
+    real(kind=8) :: poids, r, z, tx, ty, tz
     integer :: nno, kp, npg1, i, itemps, ifr2d, ivectu, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, ndim
 !
@@ -57,16 +57,16 @@ subroutine te0200(option, nomte)
     valpar(3) = zr(itemps)
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 101 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         r = 0.d0
         z = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
             z = z + zr(igeom+2*i-1)*zr(ivf+k+i-1)
-102      continue
+        end do
         poids = poids*r
         valpar(1) = r
         valpar(2) = z
@@ -76,11 +76,11 @@ subroutine te0200(option, nomte)
                     ty, icode)
         call fointe('FM', zk8(ifr2d+2), 3, nompar, valpar,&
                     tz, icode)
-        do 103 i = 1, nno
+        do i = 1, nno
             k=(kp-1)*nno
             zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids * tx * zr(ivf+ k+i-1)
             zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids * ty * zr(ivf+ k+i-1)
             zr(ivectu+3*i-1) = zr(ivectu+3*i-1) + poids * tz * zr(ivf+ k+i-1)
-103      continue
-101  end do
+        end do
+    end do
 end subroutine

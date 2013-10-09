@@ -76,7 +76,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     integer :: admodl, lcmodl
     integer :: lshift
     character(len=1) :: base
-    character(len=8) ::  noma, nomgd, exiel, nomacr, moloc
+    character(len=8) :: noma, nomgd, exiel, nomacr, moloc
     character(len=16) :: nomte
     character(len=14) :: num2
     character(len=16) :: phenom
@@ -132,7 +132,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !     -- DETERMINATION DE LA GRANDEUR NOMGD A PARTIR DE MOLOC :
 !     ---------------------------------------------------------
     if (exiel(1:3) .eq. 'OUI') then
-        do 10 igr = 1, nbgrel(ligrel)
+        do igr = 1, nbgrel(ligrel)
             ite = typele(ligrel,igr)
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
             call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//moloc), imode)
@@ -141,7 +141,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                 call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), nomgd)
                 goto 20
             endif
- 10     continue
+        end do
 !       -- IL PEUT ARRIVER QUE NBGREL=0. ON S'EN SORT AVEC MOLOC :
         if (moloc .eq. 'DDL_MECA') then
             nomgd='DEPL_R'
@@ -207,7 +207,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     call jeveuo(ligrel(1:19)//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(ligrel(1:19)//'.LIEL', 'LONCUM'), 'L', illiel)
 !
-    do 80 igr = 1, nbgrel(ligrel)
+    do igr = 1, nbgrel(ligrel)
 !
 ! ---   CALCUL DE IMODE (MODE_LOCAL) :
 !       ------------------------------
@@ -219,30 +219,30 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         if (imode .gt. 0) then
             nnoe = nbno(imode)
             nel = nbelem(ligrel,igr)
-            do 70 j = 1, nel
+            do j = 1, nel
                 numa = numail(igr,j)
                 if (numa .gt. 0) then
 !
 ! ---          IL S'AGIT D'UNE MAILLE PHYSIQUE DU MAILLAGE :
 !              -------------------------------------------
-                    do 40 k = 1, nnoe
+                    do k = 1, nnoe
                         nunoel = numglm(numa,k)
-                        do 30 l = 1, nec
+                        do l = 1, nec
                             iec = entcod(admodl,lcmodl,nec,imode,k,l)
                             zi(iaprnm-1+nec* (nunoel-1)+ l) = ior(&
                                                               zi( iaprnm-1+nec* ( nunoel-1)+l ),&
                                                               iec&
                                                               )
- 30                     continue
- 40                 continue
+                        end do
+                    end do
                 else
 !
 ! ---          IL S'AGIT D'UNE MAILLE TARDIVE :
 !              ------------------------------
                     numa = -numa
-                    do 60 k = 1, nnoe
+                    do k = 1, nnoe
                         nunoel = numgls(numa,k)
-                        do 50 l = 1, nec
+                        do l = 1, nec
                             iec = entcod(admodl,lcmodl,nec,imode,k,l)
                             if (nunoel .gt. 0) then
                                 zi(iaprnm-1+nec* (nunoel-1)+l) =&
@@ -253,12 +253,12 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                                 ior(zi(iaprns-1+nec* (-nunoel-1)+l),&
                                 iec)
                             endif
- 50                     continue
- 60                 continue
+                        end do
+                    end do
                 endif
- 70         continue
+            end do
         endif
- 80 end do
+    end do
 !
  90 continue
 !
@@ -285,7 +285,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
         icodla = lshift(1,icmp)
 !
-        do 120 ima = 1, nbsma
+        do ima = 1, nbsma
             nomacr = zk8(ianmcr-1+ima)
             call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
             call jeveuo(nomacr//'.CONX', 'L', iaconx)
@@ -294,7 +294,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                 call jeveuo(jexnum(noma//'.SUPMAIL', ima), 'L', iamail)
                 call jelira(jexnum(noma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
-                do 110 i = 1, nbnm
+                do i = 1, nbnm
                     ino = zi(iamail-1+i)
                     inold = zi(iaconx-1+3* (i-1)+2)
                     if (ino .gt. nm) then
@@ -306,19 +306,19 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! ---        CAS D'UN NOEUD PHYSIQUE DU MAILLAGE :
 !            -----------------------------------
-                        do 100 iec = 1, nec
+                        do iec = 1, nec
                             zi(iaprnm-1+nec* (ino-1)+iec) = ior(&
                                                             zi(iaprnm-1+ nec* (ino-1)+iec),&
                                                             zi(&
                                                             iaprno-1+ ( nec+2)* (inold-1)+2+ iec)&
                                                             )
-100                     continue
+                        end do
                     else
                         call utmess('F', 'CALCULEL2_24')
                     endif
-110             continue
+                end do
             endif
-120     continue
+        end do
     endif
     call jedetr('&MAILLA            .NOMA')
 !

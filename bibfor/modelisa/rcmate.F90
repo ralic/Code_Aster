@@ -40,7 +40,7 @@ subroutine rcmate(chmat, nomail, nomode)
     integer :: nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, nbcmp
     integer :: jad
     character(len=4) :: oui
-    character(len=8) ::  nommat, typmcl(2)
+    character(len=8) :: nommat, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=24) :: chamat, mesmai
 ! ----------------------------------------------------------------------
@@ -55,9 +55,9 @@ subroutine rcmate(chmat, nomail, nomode)
     call dismoi('NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', repi=nbcmp)
     ASSERT(nbcmp.eq.30)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'L', jad)
-    do 5 i = 1, nbcmp
+    do i = 1, nbcmp
         zk8(jncmp-1+i) = zk8(jad-1+i)
-  5 end do
+    end do
 !
     call getfac('AFFE', nocc)
 !
@@ -68,7 +68,7 @@ subroutine rcmate(chmat, nomail, nomode)
 !
     mesmai = '&&RCMATE.MES_MAILLES'
 !
-    do 10 i = 1, nocc
+    do i = 1, nocc
         call getvid('AFFE', 'MATER', iocc=i, scal=nommat, nbret=nm)
         if (nm .lt. -1) nm = -nm
         ASSERT(nm.le.nbcmp)
@@ -86,7 +86,7 @@ subroutine rcmate(chmat, nomail, nomode)
                 call jedetr(mesmai)
             endif
         endif
- 10 end do
+    end do
 !
     call jedetr(chamat(1:19)//'.VALV')
     call jedetr(chamat(1:19)//'.NCMP')

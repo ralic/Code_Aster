@@ -40,7 +40,7 @@ subroutine te0054(option, nomte)
     integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option, phenom
-    real(kind=8) :: valpar, dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: valpar, poids
     real(kind=8) :: cp(1), deltat
     integer :: ipoids, ivf, idfde, igeom, imate, ll, ndim
     integer :: jgano, nno, kp, npg2, ij, i, j, imattt, itemps
@@ -76,21 +76,21 @@ subroutine te0054(option, nomte)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 40 kp = 1, npg2
+    do kp = 1, npg2
 !
         ll = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
-        do 30 i = 1, nno
+        do i = 1, nno
 !
-            do 20 j = 1, i
+            do j = 1, i
                 ij = (i-1)*i/2 + j
                 zr(imattt+ij-1)=zr(imattt+ij-1) + cp(1)/deltat*poids* zr(ivf+ll+i-1)* zr(ivf+ll+j-1)
 !
-20          continue
-30      continue
+            end do
+        end do
 !
-40  end do
+    end do
 !
 end subroutine

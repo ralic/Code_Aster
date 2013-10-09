@@ -111,7 +111,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! --- BOUCLE SUR LES ZONES
 !
     iptc = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -127,7 +127,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
 !
 ! ------- POSITION DE LA MAILLE ESCLAVE
 !
@@ -139,7 +139,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! ------- BOUCLE SUR LES POINTS
 !
-            do 30 iptm = 1, nptm
+            do iptm = 1, nptm
 !
 ! --------- INFOS
 !
@@ -160,10 +160,10 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
- 30         continue
- 20     continue
+            end do
+        end do
  25     continue
- 10 end do
+    end do
 !
 999 continue
 !

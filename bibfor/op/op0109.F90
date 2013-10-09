@@ -134,7 +134,7 @@ subroutine op0109()
     call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
     call rsutnu(meca, ' ', 0, knume, nbordr,&
                 prec, crit, iret)
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
     call jeveuo(knume, 'L', jordr)
     call dismoi('REF_MASS_PREM', meca, 'RESU_DYNA', repk=masse, arret='C',&
                 ier=iret)
@@ -174,12 +174,12 @@ subroutine op0109()
         endif
         if (nbamor .lt. nbmode) then
             call wkvect('&&OP0109.AMORTISSEMEN2', 'V V R', nbmode, jamo2)
-            do 10 iam = 1, nbamor
+            do iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamor+iam-1)
- 10         continue
-            do 12 iam = nbamor, nbmode
+            end do
+            do iam = nbamor, nbmode
                 zr(jamo2+iam-1) = zr(jamor+nbamor-1)
- 12         continue
+            end do
             nbamor = nbmode
             jamor = jamo2
         endif
@@ -194,13 +194,13 @@ subroutine op0109()
             endif
             call jeveuo(liar//'.VALE', 'L', jarm)
             call wkvect('&&OP0109.AMORTISSEMENT', 'V V R', nbmode, jamor)
-            do 14 iam = 1, nbamor
+            do iam = 1, nbamor
                 zr(jamor+iam-1) = zr(jarm+iam-1)
- 14         continue
+            end do
             if (nbamor .lt. nbmode) then
-                do 16 iam = nbamor, nbmode
+                do iam = nbamor, nbmode
                     zr(jamor+iam-1) = zr(jarm+nbamor-1)
- 16             continue
+                end do
             endif
             nbamor = nbmode
         else
@@ -236,9 +236,9 @@ subroutine op0109()
         valk (3) = zk16(jopt)
         vali (1) = nbmode
         call utmess('I', 'SEISME_15', nk=3, valk=valk, si=vali(1))
-        do 15 j = 2, nbopt
+        do j = 2, nbopt
             call utmess('I', 'SEISME_16', sk=zk16(jopt+j-1))
- 15     continue
+        end do
         if (nna .ne. 0) then
             call utmess('I', 'SEISME_17', sk=nature)
         endif
@@ -317,9 +317,9 @@ subroutine op0109()
         calmas = .true.
         xmastr = zero
         xcumul = zero
-        do 20 id = 1, 3
+        do id = 1, 3
             if (zi(jdir+id-1) .eq. 1) then
-                do 22 im = 1, nbmode
+                do im = 1, nbmode
                     masmod = zr(lval+nbmode*(1+id)+im-1)
                     masuni = zr(lval+nbmode*(7+id)+im-1)
                     if (masuni .ne. rundef) then
@@ -330,11 +330,11 @@ subroutine op0109()
                         xmastr = 1.d0
                         goto 24
                     endif
- 22             continue
+                end do
                 xmastr = xmastr / xcumul
                 goto 24
             endif
- 20     continue
+        end do
  24     continue
     endif
 !
@@ -353,10 +353,10 @@ subroutine op0109()
         cumul(1) = zero
         cumul(2) = zero
         cumul(3) = zero
-        do 30 im = 1, nbmode
+        do im = 1, nbmode
             ii = 0
             freq = zr(lval+im-1)
-            do 32 id = 1, 3
+            do id = 1, 3
                 if (zi(jdir+id-1) .eq. 1) then
                     facpar = zr(lval+nbmode*(4+id)+im-1)
                     masmod = zr(lval+nbmode*(1+id)+im-1)
@@ -386,18 +386,18 @@ subroutine op0109()
                         endif
                     endif
                 endif
- 32         continue
- 30     continue
+            end do
+        end do
         if (calmas) write(ifm,1160) xmastr
         write(ifm,1162)
-        do 34 id = 1, 3
+        do id = 1, 3
             xfm = mastot(id) / xmastr
             if (calmas) then
                 if (zi(jdir+id-1) .eq. 1) write(ifm, 1166) dir(id), mastot(id), xfm
             else
                 if (zi(jdir+id-1) .eq. 1) write(ifm,1164)dir(id),mastot( id)
             endif
- 34     continue
+        end do
     endif
 !     --- RECUPERATION DES MODES STATIQUES ---
     call getvtx(' ', 'MULTI_APPUI', nbval=0, nbret=nret1)
@@ -453,7 +453,7 @@ subroutine op0109()
     if (ndepl .ne. 0) call asimpr(nbsup, zi(jcsu), zk8(jkno))
 !
 !
-9999 continue
+999 continue
     call titre()
 !
 !

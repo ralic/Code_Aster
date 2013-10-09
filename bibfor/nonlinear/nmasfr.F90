@@ -57,7 +57,7 @@ subroutine nmasfr(defico, resoco, matass)
     character(len=14) :: numedf
     character(len=24) :: nosdco
     integer :: jnosdc
-    integer ::  nbliac
+    integer :: nbliac
     character(len=19) :: matrcf
     character(len=24) :: limat(2)
     real(kind=8) :: coefmu(2)
@@ -74,10 +74,10 @@ subroutine nmasfr(defico, resoco, matass)
     lmodim = cfdisl(defico,'MODI_MATR_GLOB')
     nbliac = cfdisd(resoco,'NBLIAC')
     if (nbliac .eq. 0) then
-        goto 9999
+        goto 999
     endif
     if (.not.lmodim) then
-        goto 9999
+        goto 999
     endif
 !
     if (niv .ge. 2) then
@@ -104,7 +104,7 @@ subroutine nmasfr(defico, resoco, matass)
     call detrsd('MATR_ASSE', matrcf)
     call detrsd('NUME_DDL', numedf)
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

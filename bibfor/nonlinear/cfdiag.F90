@@ -56,9 +56,9 @@ subroutine cfdiag(lmat, xmax)
     call jeveuo(jexnum(mat//'.VALM', 1), 'L', jvalm)
 !
     neq=zi(lmat+2)
-    do 20 ieq = 1, neq
+    do ieq = 1, neq
         iadia = jvalm + zi(jsmdi+ieq-1) - 1
         xmax = max ( xmax , zr(iadia) )
- 20 end do
+    end do
     call jedema()
 end subroutine

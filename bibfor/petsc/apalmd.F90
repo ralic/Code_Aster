@@ -52,7 +52,7 @@ subroutine apalmd(kptsc)
     integer :: jsmdi, jsmhc, jidxd, jidxo, ndprop, procol, jidxdc, jidxoc
     integer :: k, nzdeb, nzfin, jcolg, iligl, jaux
     integer :: prolig, iligg, iaux, numpro, jjoint, jvaleu, numloc
-    integer :: lgenvo, numglo,  comple
+    integer :: lgenvo, numglo, comple
     mpi_int :: mpicou
 !
 !

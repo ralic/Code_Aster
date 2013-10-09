@@ -50,7 +50,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
 !-----------------------------------------------------------------------
 !
-    integer ::  i, nchei, ncmp, jvale, jvalv, jncmp, iocc, nxx, nyy, nzz
+    integer :: i, nchei, ncmp, jvale, jvalv, jncmp, iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
     integer :: nbtou, nbma, jma
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
@@ -110,13 +110,13 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
         zk8(jncmp-1+15) = 'KXY'
     endif
     if (fonree .eq. 'REEL') then
-        do 10 i = 1, ncmp
+        do i = 1, ncmp
             zr(jvalv-1+i) = 0.d0
- 10     continue
+        end do
     else
-        do 12 i = 1, ncmp
+        do i = 1, ncmp
             zk8(jvalv-1+i) = '&FOZERO'
- 12     continue
+        end do
     endif
     call nocart(carte, 1, ncmp)
 !
@@ -126,7 +126,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
 !
-    do 20 iocc = 1, nchei
+    do iocc = 1, nchei
 !
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'EPXX', iocc=iocc, scal=epxx, nbret=nxx)
@@ -145,9 +145,9 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             call getvr8(motclf, 'KYY', iocc=iocc, scal=xkyy, nbret=nkyy)
             call getvr8(motclf, 'KXY', iocc=iocc, scal=xkxy, nbret=nkxy)
 !
-            do 22 i = 1, ncmp
+            do i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
- 22         continue
+            end do
 !
             if (nxx .ne. 0) zr(jvalv-1+1) = epxx
             if (nyy .ne. 0) zr(jvalv-1+2) = epyy
@@ -175,9 +175,9 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             call getvid(motclf, 'EPXY', iocc=iocc, scal=kepxy, nbret=nxy)
             call getvid(motclf, 'EPXZ', iocc=iocc, scal=kepxz, nbret=nxz)
             call getvid(motclf, 'EPYZ', iocc=iocc, scal=kepyz, nbret=nyz)
-            do 111 i = 1, ncmp
+            do i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
-111         continue
+            end do
             if (nxx .ne. 0) zk8(jvalv-1+1) = kepxx
             if (nyy .ne. 0) zk8(jvalv-1+2) = kepyy
             if (nzz .ne. 0) zk8(jvalv-1+3) = kepzz
@@ -200,7 +200,8 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
                         limanu=zi(jma))
             call jedetr(mesmai)
         endif
- 20 end do
+ 20     continue
+    end do
 !
     call jedema()
 end subroutine

@@ -515,11 +515,11 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !         CREATION DU TABLEAU DEFINISSANT LE NBRE DE PG PAR MAIL
 !         CREATION D'UN TABLEAU DE CORRESPONDANCE ENTRE LES PG MED/ASTER
 !
-    do 5 i = 1, ntypel
-        do 6 j = 1, npgmax
+    do i = 1, ntypel
+        do j = 1, npgmax
             indpg(i,j)=0
-  6     continue
-  5 end do
+        end do
+    end do
 !
     if (typech(1:4) .eq. 'NOEU') then
         call cnscre(nomaas, nomgd, ncmprf, zk8(jnocmp), 'V',&
@@ -657,21 +657,21 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
         call wkvect('&&'//nompro//'.NUM.'//nomtyp(ltyp(letype)), 'V V I', nbty(letype), jnumty)
         k=0
         if (lgproa .eq. 0) then
-            do 72 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(jtypma+ima-1) .eq. ltyp(letype)) then
                     if (jmaill .eq. 0 .or. (jmaill.ne.0.and.zi(jmaill+ ima-1).ne.0)) then
                         k=k+1
                         zi(jnumty+k-1)=ima
                     endif
                 endif
- 72         continue
+            end do
             if (k .ne. nbty(letype)) then
                 call utmess('F', 'MED_58')
             endif
         else
             k=0
             cptyma=1
-            do 73 ima = 1, nbma
+            do ima = 1, nbma
                 if (zi(jtypma+ima-1) .eq. ltyp(letype)) then
                     if (zi(jntpro+k) .eq. cptyma) then
                         if (jmaill .eq. 0 .or. (jmaill.ne.0.and.zi( jmaill+ima-1).ne.0)) then
@@ -681,7 +681,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                     endif
                     cptyma=cptyma+1
                 endif
- 73         continue
+            end do
             if (k .ne. lgprof) then
                 call utmess('F', 'MED_58')
             endif

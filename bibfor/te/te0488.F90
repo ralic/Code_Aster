@@ -41,7 +41,7 @@ subroutine te0488(option, nomte)
     integer :: jgano, nno, kp, ipoids, ivf, igeom
     integer :: npg, nnos, icopg, ino, ndim, idfde
 !
-    real(kind=8) :: xx, yy, zz, rbid81(81), poids, cova(3, 3), metr(2, 2), jac
+    real(kind=8) :: xx, yy, zz, poids, cova(3, 3), metr(2, 2), jac
     integer :: inbf, nbc, icoq, decpo, ic, ispc, jtab(7), nbsp, iret
     real(kind=8) :: epais, excen, bas, epc, pgl(3, 3), gm1(3), gm2(3)
     integer :: lzi, lzr, nb1, nb2
@@ -117,16 +117,16 @@ subroutine te0488(option, nomte)
     endif
 !
 ! BOUCLE POINT DE GAUSS
-    do 20 kp = 1, npg
+    do kp = 1, npg
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
-        do 10 ino = 1, nno
+        do ino = 1, nno
             xx = xx + zr(igeom+3* (ino-1)+0)*zr(ivf+ (kp-1)*nno+ino-1)
             yy = yy + zr(igeom+3* (ino-1)+1)*zr(ivf+ (kp-1)*nno+ino-1)
             zz = zz + zr(igeom+3* (ino-1)+2)*zr(ivf+ (kp-1)*nno+ino-1)
-10      continue
+        end do
         if (ndim .eq. 3) then
 !         -- CAS DES ELEMENTS 3D
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -151,15 +151,15 @@ subroutine te0488(option, nomte)
                 gm2(2)=vectt(3,2)
                 gm2(3)=vectt(3,3)
             endif
-            do 30 ic = 1, nbc
-                do 32 ispc = 1, 3
+            do ic = 1, nbc
+                do ispc = 1, 3
                     hh=bas+dble(ic-1)*epc+dble(ispc-1)*epc/2.d0
                     zr(icopg+decpo+(ic-1)*12+(ispc-1)*4+0) = xx + hh* gm2(1)
                     zr(icopg+decpo+(ic-1)*12+(ispc-1)*4+1) = yy + hh* gm2(2)
                     zr(icopg+decpo+(ic-1)*12+(ispc-1)*4+2) = zz + hh* gm2(3)
                     zr(icopg+decpo+(ic-1)*12+(ispc-1)*4+3) = poids* epc*poidc( ispc)
-32              continue
-30          continue
+                end do
+            end do
         else if (grille) then
             zr(icopg+4*(kp-1)+0) = xx+ excen*gm2(1)
             zr(icopg+4*(kp-1)+1) = yy+ excen*gm2(2)
@@ -171,6 +171,6 @@ subroutine te0488(option, nomte)
             zr(icopg+4*(kp-1)+2) = zz
             zr(icopg+4*(kp-1)+3) = poids
         endif
-20  end do
+    end do
 !
 end subroutine

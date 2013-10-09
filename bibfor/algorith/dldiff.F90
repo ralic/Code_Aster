@@ -182,12 +182,12 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
     dt1 = zr(jlpas)
     r8bid = dt1/2.d0
-    do 15 ieq = 1, neq
+    do ieq = 1, neq
         if (zr(iwk1+ieq-1) .ne. 0.d0) then
             zr(iwk1+ieq-1)=1.0d0/zr(iwk1+ieq-1)
         endif
         vit0(1+ieq) = vit0(1+ieq) - r8bid*acc0(1+ieq)
- 15 end do
+    end do
 !
 ! 1.6. ==> --- ARCHIVAGE ---
 !
@@ -284,7 +284,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     call extdia(rigid, numedd, 2, zr(iwk2))
     ibid=0
     dtmax=dt
-    do 312 ieq = 1, neq
+    do ieq = 1, neq
         if (zr(iwk1+ieq-1) .ne. 0.d0) then
             omeg = sqrt( zr(iwk2+ieq-1) * zr(iwk1+ieq-1) )
             dtm = 5.d-02*deuxpi/omeg
@@ -293,7 +293,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
                 ibid=1
             endif
         endif
-312 continue
+    end do
 !
     if (ibid .eq. 1) then
         vali(1) = nint((tf-t0)/dtmax)

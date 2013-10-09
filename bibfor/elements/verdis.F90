@@ -43,8 +43,8 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !     IER   : ERREUR PRECEDENTE + NOUVELLE ERREUR
 !
 ! --- ------------------------------------------------------------------
-    character(len=8) ::  kmess
-    integer ::  ibid, dimmai, dimmod
+    character(len=8) :: kmess
+    integer :: ibid, dimmai, dimmod
 ! --- ------------------------------------------------------------------
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE

@@ -128,7 +128,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
             call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
         endif
         ii = 0
-        do 10 iordr = 1, nbordr
+        do iordr = 1, nbordr
             call jemarq()
 !
 !           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
@@ -167,7 +167,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                 call jelibe(cham19//'.VALE')
             endif
             call jedema()
- 10     continue
+        end do
 !
     else if (typcha(1:9).eq.'CHAM_ELEM') then
         noeuz = noeud
@@ -198,7 +198,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
         call dismoi('NOM_GD', cham19, 'CHAM_ELEM', repk=nogd)
         call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=type)
         ii = 0
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
             call jemarq()
 !
 !           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
@@ -223,7 +223,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                 endif
             endif
             call jedema()
- 20     continue
+        end do
     else
         call utmess('F', 'UTILITAI_94', sk=typcha)
     endif

@@ -55,7 +55,7 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
     real(kind=8) :: zero
     parameter    (zero = 0.d0)
 !
-    integer ::  neq, ie, iex
+    integer :: neq, ie, iex
     real(kind=8) :: instap
     real(kind=8) :: coef1, coef2, coef3
     character(len=19) :: depent, vitent, accent
@@ -111,7 +111,7 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
     call r8inir(neq, zero, zr(jviten), 1)
     call r8inir(neq, zero, zr(jaccen), 1)
 !
-    do 910 iex = 1, nbexci
+    do iex = 1, nbexci
         if (zi(jmltap+iex-1) .eq. 1) then
             call fointe('F ', zk8(jnodep+iex-1), 1, ['INST'], [instap],&
                         coef1, ie)
@@ -124,12 +124,12 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
             coef2 = zero
             coef3 = zero
         endif
-        do 810 ie = 1, neq
+        do ie = 1, neq
             zr(jdepen+ie-1) = zr(jdepen+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef1
             zr(jviten+ie-1) = zr(jviten+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef2
             zr(jaccen+ie-1) = zr(jaccen+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef3
-810     continue
-910 end do
+        end do
+    end do
 !
 ! --- AFFICHAGE
 !

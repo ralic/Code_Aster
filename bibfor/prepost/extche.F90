@@ -253,11 +253,11 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
     if (indic .eq. 'NOMME') then
 !
-        do 10 m = 1, nbm, 1
+        do m = 1, nbm, 1
 !
             call jenonu(jexnom(nmaila//'.NOMMAI', nmaile(m)), nummai(m))
 !
- 10     continue
+        end do
 !
     endif
 !
@@ -298,16 +298,16 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
             call getvr8(mcf, 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
                         nbret=n1)
             xnormz = zero
-            do 20 i = 1, 3
+            do i = 1, 3
                 xnormz = xnormz + axez(i)*axez(i)
- 20         continue
+            end do
             if (xnormz .lt. epsi) then
                 call utmess('F', 'PREPOST_38')
             endif
             xnormz = 1.0d0/sqrt(xnormz)
-            do 30 i = 1, 3
+            do i = 1, 3
                 axez(i) = axez(i)*xnormz
- 30         continue
+            end do
             call rvche2(nchmel, nomjv, nbm, nummai, orig,&
                         axez, nbnac, nnoeud)
             call jeveuo(nomjv, 'L', avale)
@@ -368,9 +368,9 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   -------------------------------------------------
 !
     call wkvect(npcmp, 'V V I', nbtcmp, apcmp)
-    do 40 i = 1, nbc, 1
+    do i = 1, nbc, 1
         zi(apcmp+zi(anumcp+i-1)-1) = i
- 40 end do
+    end do
 !
 !   CONSTRUCTION DES POINTEURS SUR : NBR DE NDS, DE COUCHES ET DE SSPT
 !   ------------------------------------------------------------------
@@ -381,7 +381,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
     nbval = 0
 !
-    do 50 m = 1, nbm, 1
+    do m = 1, nbm, 1
 !
         numm = nummai(m)
         grel = zi(arepe+2* (numm-1)+1-1)
@@ -413,7 +413,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
         zi(apnsp+numm-1) = nbsp
         nbval = nbval + nbn*nbc*nbco*nbsp
 !
- 50 end do
+    end do
 !
 !   CONSTRUCTION DU POINTEUR SUR LES ADR DES SGT EXTRAITS PAR MAILLES
 !   -----------------------------------------------------------------
@@ -424,14 +424,14 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
     zi(apadr+numm-1) = 1
 !
-    do 60 m = 2, nbm, 1
+    do m = 2, nbm, 1
 !
         numm = nummai(m-1)
 !
         zi(apadr+nummai(m)-1) = zi(apadr+numm-1) + nbc*zi(apnbn+numm- 1)*zi(apnsp+numm-1)* zi(apn&
                                 &co+numm-1)
 !
- 60 end do
+    end do
 !
 !   CONSTRUCTION DE LA TABLE DES VALEURS DES CMP EXTRAITES
 !   ------------------------------------------------------
@@ -442,7 +442,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbm)
 !
-    do 70 m = 1, nbm, 1
+    do m = 1, nbm, 1
 !
         call jecroc(jexnum(nperr, m))
         call jeecra(jexnum(nperr, m), 'LONMAX', nbc)
@@ -469,7 +469,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
         endif
 !
- 70 end do
+    end do
 !
     if (utili) call jedetr(nomjv)
     call jedetr('&&EXTRCHE.NUMCP')

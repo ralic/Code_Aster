@@ -49,7 +49,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
     integer :: i, j, jf, numert(12, 3), nbft, numero(6, 4), nbf
     integer :: compte, ima, nn, inp, compt(2), compf
     integer :: numerf(4, 2)
-    character(len=8) ::  type
+    character(len=8) :: type
 !
 !     -----------------------------------------------------------------
 !
@@ -60,12 +60,12 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
     compte=0
-    do 10 i = 1, 4
-        do 11 j = 1, 4
+    do i = 1, 4
+        do j = 1, 4
             noe(i,j)=0
- 11     continue
- 10 end do
-    do 130 ima = 1, 2
+        end do
+    end do
+    do ima = 1, 2
         ityp = iatyma-1+tablev(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
         call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
@@ -77,32 +77,32 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
             call confac(type, numert, nbft, numero, nbf)
 !         RECHERCHE DES INDICES LOCAUX
             i = 1
-            do 131 inp = 1, nn
+            do inp = 1, nn
                 if ((zi(iamase-1+inp).eq.na) .or. (zi(iamase-1+inp) .eq.nb)) then
                     compt(i) = inp
                     i = i+1
                 endif
-131         continue
+            end do
 !         RECHERCHE DE LA FACE
-            do 132 inp = 1, nbf
+            do inp = 1, nbf
                 compf = 0
-                do 133 i = 1, 4
+                do i = 1, 4
                     if ((numero(inp,i).eq.compt(1)) .or. (numero(inp,i) .eq.compt(2))) then
                         compf = compf + 1
                     endif
-133             continue
+                end do
                 if (compf .eq. 2) then
 !             RECUPERATION DES NOEUDS SOMMETS DE LA FACE INP
                     compte = compte + 1
-                    do 134 jf = 1, 4
+                    do jf = 1, 4
                         if (numero(inp,jf) .ne. 0) then
                             noe(compte,jf) = zi(iamase-1+numero(inp, jf))
                         else
                             noe(compte,jf) = 0
                         endif
-134                 continue
+                    end do
                 endif
-132         continue
+            end do
 !
 !
 !       EN 2D
@@ -129,30 +129,30 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
             endif
 !         RECHERCHE DES INDICES LOCAUX
             i = 1
-            do 135 inp = 1, nn
+            do inp = 1, nn
                 if (zi(iamase-1+inp) .eq. na) then
                     compt(i) = inp
                     i = i+1
                 endif
-135         continue
+            end do
 !         RECHERCHE DE LA FACE OU ARETE
-            do 136 inp = 1, 4
+            do inp = 1, 4
                 compf = 0
-                do 137 i = 1, 2
+                do i = 1, 2
                     if (numerf(inp,i) .eq. compt(1)) then
                         compf = compf + 1
                     endif
-137             continue
+                end do
                 if (compf .eq. 1) then
 !             RECUPERATION DES NOEUDS SOMMETS DE LA FACE INP
                     compte = compte + 1
-                    do 138 jf = 1, 2
+                    do jf = 1, 2
                         noe(compte,jf) = zi(iamase-1+numerf(inp,jf))
-138                 continue
+                    end do
                 endif
-136         continue
+            end do
         endif
-130 end do
+    end do
 !
     call jedema()
 end subroutine

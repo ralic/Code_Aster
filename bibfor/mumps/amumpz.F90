@@ -79,7 +79,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     type (zmumps_struc) , pointer :: zmpsk
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
-    character(len=1) ::  rouc, type, prec
+    character(len=1) :: rouc, type, prec
     character(len=5) :: etam, klag2
     character(len=8) :: ktypr
     character(len=12) :: usersm, k12bid
@@ -195,7 +195,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !        ON RECUPERE ET STOCKE DS SD_SOLVEUR LE NUMERO DE VERSION
 !        LICITE
 !       ----------------------------------------------------------
-        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
+        call amumpu(3, type, kxmps, k12bid, ibid,&
+                    lbid, kvers, ibid)
         zk24(jslvk-1+12)=kvers
 !
 !       -----------------------------------------------------
@@ -203,19 +204,19 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       -----------------------------------------------------
         ldet=.false.
         if (zi(jslvi-1+5) .eq. 1) then
-            select case(kvers)
-            case('4.10.0')
+            select case (kvers)
+                case('4.10.0')
 ! --- ON DEBRANCHE ELIM_LAGR='LAGR2' CAR CELA FAUSSE LA VALEUR DU DETER
 ! --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
-            if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
-                call utmess('I', 'FACTOR_88')
-            endif
-            zk24(jslvk-1+6)='NON'
-            klag2='NON'
-            lbis=.false.
-            ldet=.true.
-            case('4.9.2')
-            call utmess('F', 'FACTOR_87', sk=kvers)
+                if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
+                    call utmess('I', 'FACTOR_88')
+                endif
+                zk24(jslvk-1+6)='NON'
+                klag2='NON'
+                lbis=.false.
+                ldet=.true.
+                case('4.9.2')
+                call utmess('F', 'FACTOR_87', sk=kvers)
             end select
         endif
 !
@@ -233,13 +234,13 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
 !       -----------------------------------------------------
         if (zi(jslvi-1+4) .eq. 1) then
-            select case(kvers)
-            case('4.10.0')
-            zmpsk%icntl(31)=1
-            case('4.9.2')
-            if ((niv.ge.2) .and. (.not.lpreco)) then
-                call utmess('I', 'FACTOR_86', sk=kvers)
-            endif
+            select case (kvers)
+                case('4.10.0')
+                zmpsk%icntl(31)=1
+                case('4.9.2')
+                if ((niv.ge.2) .and. (.not.lpreco)) then
+                    call utmess('I', 'FACTOR_86', sk=kvers)
+                endif
             end select
         endif
 !
@@ -255,7 +256,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
             ifactm=1
         endif
 !
-10      continue
+ 10     continue
         call amumpt(2, kmonit, temps, rang, nbproc,&
                     kxmps, lquali, type, ietdeb, ietrat,&
                     rctdeb, ldist)
@@ -294,8 +295,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-         if (.not.lpb13) call amumpu(1, 'Z', kxmps, usersm, ibid,lbid, k24bid, nbfact)
-
+        if (.not.lpb13) call amumpu(1, 'Z', kxmps, usersm, ibid,&
+                                    lbid, k24bid, nbfact)
+!
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE
         if (usersm(1:4) .eq. 'EVAL') goto 99
@@ -425,12 +427,14 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       ------------------------------------------------
 !        DETECTION DE SINGULARITE SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(2, 'Z', kxmps, k12bid, nprec, lresol, k24bid, ibid)
+        call amumpu(2, 'Z', kxmps, k12bid, nprec,&
+                    lresol, k24bid, ibid)
 !
 !       ------------------------------------------------
 !        RECUPERATION DU DETERMINANT SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(4, 'Z', kxmps, k12bid, ibid, lbid, k24bid, ibid)
+        call amumpu(4, 'Z', kxmps, k12bid, ibid,&
+                    lbid, k24bid, ibid)
 !
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES

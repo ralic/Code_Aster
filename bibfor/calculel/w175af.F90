@@ -93,7 +93,7 @@ subroutine w175af(modele, chfer1)
 !
 !     3- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------
-    do 30 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         call getvr8('AFFE', 'ENROBG', iocc=iocc, scal=zr(jvalv-1+2), nbret=n1)
         call getvr8('AFFE', 'CEQUI', iocc=iocc, scal=zr(jvalv-1+3), nbret=n2)
@@ -131,7 +131,7 @@ subroutine w175af(modele, chfer1)
                         limanu=zi(jmail))
             call jedetr(mesmai)
         endif
- 30 continue
+    end do
 !
     call jedetr(chfer1//'.NCMP')
     call jedetr(chfer1//'.VALV')

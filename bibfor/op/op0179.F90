@@ -58,7 +58,7 @@ subroutine op0179()
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, iadesc, iarefe, iavale, ic, icf
-    integer ::  ifmis, ifreq, ii, j, jri2, jrig
+    integer :: ifmis, ifreq, ii, j, jri2, jrig
     integer :: nbmodd, nbmods, nbmodt, nc, nf, nfr, nfreq
     integer :: nsau0, nsaut
     real(kind=8) :: freq
@@ -129,13 +129,13 @@ subroutine op0179()
     else
         nsau0 = (ic-1)*(nfreq+1)*nbmode
     endif
-    do 1 i1 = 1, nbmode
+    do i1 = 1, nbmode
         nsaut = nfreq
         if (icf .ge. 1) nsaut = nfreq-1
         if (i1 .eq. 1) nsaut = ifreq + nsau0
-        do 2 i = 1, nsaut
+        do i = 1, nsaut
             read(ifmis,'(A72)') texte
-  2     continue
+        end do
         read(ifmis,*) (a(j),j=1,3)
         if (nomcha .eq. 'VITE') then
             coef = -1.d0/(dpi*a(1))
@@ -181,7 +181,7 @@ subroutine op0179()
             zr(jrig+2*i1-1) = zr(jrig+2*i1-1) + (freq-a(1))/(a2(1)-a( 1)) * (zr(jri2+2*i1-1)-zr(j&
                               &rig+2*i1-1))
         endif
-  1 end do
+    end do
   4 continue
 !
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
@@ -215,7 +215,7 @@ subroutine op0179()
     endif
 !
 !
-    do 20 i = 1, nbmodt
+    do i = 1, nbmodt
 !
         ii = i - nbmodd
         if (lissf .and. i .le. nbmodd) ii = i+nbmods
@@ -233,7 +233,7 @@ subroutine op0179()
             zc(iavale+i-1) = dcmplx(partr,parti)
 !
         endif
- 20 end do
+    end do
 !
     call jedetr(tabrig)
 !

@@ -62,7 +62,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
     character(len=6) :: pgc
-    character(len=8) ::  nomg
+    character(len=8) :: nomg
     character(len=19) :: profno
     character(len=24) :: prno, nueq
     integer :: invsk(nbnot, 2), ieq(nbcmpm)
@@ -101,7 +101,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
     call intet0(tetcou, tet0, iax)
 !
 !
-    do 10 i = 1, nbnot
+    do i = 1, nbnot
 !
         numsec=invsk(i,1)
         tetac=tetss(numsec)
@@ -114,7 +114,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
         call isdeco(zi(llprno+(nbec+2)*(i-1)+2), zi(ltidec), nbcmp)
         icomp=0
 !
-        do 20 j = 1, nbcmpm
+        do j = 1, nbcmpm
             if (zi(ltidec+j-1) .gt. 0) then
                 icomp=icomp+1
                 ieq(j)=zi(llnueq+inueq+icomp-2)
@@ -123,19 +123,19 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
                 ieq(j)=0
                 udep(j)=0.d0
             endif
- 20     continue
+        end do
 !
 !
-        do 30 j = 1, nbcmpm
+        do j = 1, nbcmpm
             if (ieq(j) .gt. 0) then
                 vale(ieq(j))=0.d0
-                do 40 k = 1, nbcmpm
+                do k = 1, nbcmpm
                     vale(ieq(j))=vale(ieq(j))+tet0(j,k)*udep(k)
- 40             continue
+                end do
             endif
- 30     continue
+        end do
 !
- 10 end do
+    end do
 !
     call jedetr('&&'//pgc//'.DECODAGE')
 !

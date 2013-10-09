@@ -85,7 +85,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     exicar=.false.
     call getvid('RESU', 'RESULTAT', iocc=1, nbval=0, nbret=n0)
     call getvid('RESU', 'CHAM_GD', iocc=1, nbval=0, nbret=n4)
-    do 60 i = 1, nbval
+    do i = 1, nbval
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
             call dismoi('TYPE_CHAMP', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=tych)
             call dismoi('NOM_MAILLA', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=noma)
@@ -128,7 +128,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
             endif
             goto 61
         endif
- 60 end do
+    end do
  61 continue
 !
 !  --- 2. RECUPERATION DES NOEUDS,MAILLES
@@ -146,9 +146,9 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
         call getvtx('RESU', 'TOUT', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call wkvect(mesnoe, 'V V I', nbno, jlno)
-            do 70 i = 1, nbno
+            do i = 1, nbno
                 zi(jlno+i-1)=i
- 70         continue
+            end do
         else
             call reliem(' ', noma, 'NU_NOEUD', 'RESU', 1,&
                         4, motcle, typmcl, mesnoe, nbno)
@@ -173,9 +173,9 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
         call getvtx('RESU', 'TOUT', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call wkvect(mesmai, 'V V I', nbma, jlma)
-            do 80 i = 1, nbma
+            do i = 1, nbma
                 zi(jlma+i-1)=i
- 80         continue
+            end do
         else
             call reliem(' ', noma, 'NU_MAILLE', 'RESU', 1,&
                         2, motcle, typmcl, mesmai, nbma)

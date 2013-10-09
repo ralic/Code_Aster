@@ -105,7 +105,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8) :: eps, xm, ym, zm, dmin, smin, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
-    character(len=8) ::  typcmp(6), method
+    character(len=8) :: typcmp(6), method
     integer :: jvff, jbasef, jbl, jdis, k
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
@@ -319,9 +319,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     call wkvect(delta, 'V V R8', 2*nbno, jdelta)
 !
 !    Initialisation du vecteur delta
-    do 742 i = 1, 2*nbno
+    do i = 1, 2*nbno
         zr(jdelta+i-1)=0.d0
-742 continue
+    end do
 !
 ! ***************************************************************
 ! ELABORATE EACH POINT ON THE CRACK FRONT IN ORDER TO CALCULATE
@@ -332,7 +332,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !   THE CRACK FRONT
 ! ***************************************************************
 !
-    do 100 i = 1, nbptff
+    do i = 1, nbptff
 !
 !        ***************************************************************
 !        CALCULATE THE NORMAL AND THE TANGENTIAL PROPAGATION SPEED AT
@@ -443,10 +443,10 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !        CALCULATE THE PROPAGATION SPEED VECTOR V IN THE GLOBAL
 !        REFERENCE SYSTEM USED FOR THE MESH
-        do 50 j = 1, ndim
+        do j = 1, ndim
             zr(jvff-1+ndim*(i-1)+j) = zr(jvnff-1+i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+ zr(jvtff&
                                       &-1+i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
- 50     continue
+        end do
 !
 !        ***************************************************************
 !        EVALUATE THE EULER AXIS AND ANGLE FOR THE ROTATION BETWEEN
@@ -516,7 +516,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
         endif
 !
-100 end do
+    end do
 !
 ! ***************************************************************
 ! ELABORATE EACH NODE IN THE MESH IN ORDER TO CALCULATE THE FOLLOWING:
@@ -539,7 +539,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ(V)=V
     eps = 1.d-12
-    do 200 i = 1, nbno
+    do i = 1, nbno
 !
 !        COORD DU NOEUD M DU MAILLAGE
         xm=zr(jcoor-1+(i-1)*3+1)
@@ -553,15 +553,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             jmin = 0
             smin = 0.d0
 !          BOUCLE SUR PT DE FONFIS
-            do 210 j = 1, nbptff-1
+            do j = 1, nbptff-1
 !
                 if (.not.fvirtu) then
 !               CHECK IF THE CURRENT SEGMENT ON THE FRONT IS OUTSIDE
 !               THE MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE
 !               FORMING THE FRONT)
-                    do 213 fon = 1, numfon
+                    do fon = 1, numfon
                         if (j .eq. zi(jfmult-1+2*fon)) goto 210
-213                 continue
+                    end do
                 endif
 !
 !            COORD PT I, ET J
@@ -602,14 +602,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     zr(jdis-1+3*(i-1)+2) = ym-yn
                     zr(jdis-1+3*(i-1)+3) = zm-zn
                 endif
-210         continue
+210             continue
+            end do
 !
         else
 !
             dmin = r8maem()
 !
 !            2D CASE - ONLY ONE POINT AT THE CRACK TIP!
-            do 214 j = 1, nbptff
+            do j = 1, nbptff
 !
                 xi1 = zr(jfonf-1+4*(j-1)+1)
                 yi1 = zr(jfonf-1+4*(j-1)+2)
@@ -630,7 +631,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     zr(jlistp-1+3*(i-1)+3) = zi1
                 endif
 !
-214         continue
+            end do
 !
         endif
 !
@@ -653,13 +654,13 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             if (.not.fvirtu) then
                 jlimsx = 0
                 jlimdx = 0
-                do 205 fon = 1, numfon
+                do fon = 1, numfon
                     if ((jmin.ge.zi(jfmult-1+2*fon-1)) .and. ( jmin.le.zi(jfmult-1+2*fon))) then
                         jlimsx = zi(jfmult-1+2*fon-1)
                         jlimdx = zi(jfmult-1+2*fon)-1
                         goto 204
                     endif
-205             continue
+                end do
             else
                 jlimsx = 1
                 jlimdx = zi(jfmult-1+2*numfon)-1
@@ -670,7 +671,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 204         continue
 !
 !           SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
-            do 206 j = 1, maxite
+            do j = 1, maxite
 !
 !              COORDINATES OF THE POINT AT THE END OF THE CRACK FRONT
 !              SEGMENT
@@ -802,7 +803,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
                 dprec=d
 !
-206         continue
+            end do
 !
 207         continue
 !
@@ -834,13 +835,14 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !            FRONT VIRTUEL A L'INTERIEUR D'UN TROU (SEGMENT DU FRONT
 !            VIRTUEL DE TYPES 2 ET 3)
 !
-                do 861 k = 1, (numfon-1)
+                do k = 1, (numfon-1)
                     if ((jmin.eq.(zi(nfv+2*k-1)-1)) .or. (jmin.eq.(zi( nfv+2*k)))) then
                         fonvir=.true.
                     else
                         goto 861
                     endif
-861             continue
+861                 continue
+                end do
 !
 !         2: SI OUI, ON CALCULE LA CORRECTION A APPORTER
 !
@@ -884,7 +886,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     pi(3) = zm-zr(cfv+4*(nbptff-2)-1+3)
                     zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
                 else
-                    do 61 k = 1, (numfon-1)
+                    do k = 1, (numfon-1)
 !            Le point est projete sur un segment virtuel de type 1
                         if ((jmin) .eq. (zi(nfv+2*k-1)-1)) then
                             pi(1) = xm-zr(cfv-1+4*(jmin-1)+1)
@@ -923,7 +925,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                             endif
                             goto 61
                         endif
- 61                 continue
+ 61                     continue
+                    end do
                 endif
             endif
 !
@@ -1071,7 +1074,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !           Calcul de la correction a apporter au level set pour les
 !           vecteurs projetes sur le front virtuel( SEGMENT DE TYPE 2)
 !
-                do 864 k = 1, (numfon-1)
+                do k = 1, (numfon-1)
                     if ((jmin) .eq. (zi(nfv+2*k-1))) then
 !
                         lsnth(1)= zr(jdis-1+3*(i-1)+1)*zr(jbl-1+2*&
@@ -1088,7 +1091,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                         zr(jdelta+2*(i-1)+1)= lstth(1)-zr(lst+i-1)
 !
                     endif
-864             continue
+                end do
             endif
         endif
 !
@@ -1127,7 +1130,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         zr(jcnsb+i-1) = betap
 !
 !
-200 end do
+    end do
 !
 ! ***************************************************************
 ! PRINT SOME INFORMATIONS
@@ -1138,9 +1141,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         write(ifm,*) ' '
         write(ifm,*) 'VITESSE DE PROPAGATION EN FOND DE FISSURE'
 !
-        do 310 i = 1, nbptff
+        do i = 1, nbptff
 !
-            do 312 j = 1, numfon
+            do j = 1, numfon
 !
                 if (i .eq. zi(jfmult-1+2*j-1)) then
                     write(ifm,*) ' '
@@ -1149,12 +1152,12 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
      &               //'BETA          VT            VN'
                 endif
 !
-312         continue
+            end do
 !
             write(ifm,311) i,zr(jvit-1+i),zr(jbeta-1+i),zr(jvtff+i-1),&
             zr(jvnff+i-1)
 !
-310     continue
+        end do
 !
         311     format(4x,i2,4x,4(1pd12.5,3x))
         313     format(1x,' FOND DE FISSURE ',i2)

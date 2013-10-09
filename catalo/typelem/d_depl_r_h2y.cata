@@ -59,4 +59,4 @@ OPTION__
     MECA_DDLI_R        2  IN__  MDDLIMR  PDDLIMR  
                           OUT__ MVECTUR  PVECTUR  
     MECA_DDLM_R        2  IN__  MDDLMUR  PDDLMUR  
-                          OUT__ MMATUUR  PMATUUR  
+                          OUT__ MMATUUR  PMATUUR

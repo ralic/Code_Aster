@@ -150,7 +150,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     endif
 !
     ordini = 1
-    do 420 k = 2, nbordr
+    do k = 2, nbordr
         iord = zi(jordr-1+k)
         call rsadpa(nomsd, 'L', 1, 'INST', iord,&
                     0, sjv=jinst, styp=kbid)
@@ -169,7 +169,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 endif
             endif
         endif
-420 end do
+    end do
 410 continue
 !
     if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
@@ -231,9 +231,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         call jedetr('&&PAQMAI.NBMAGR')
         call wkvect('&&PAQMAI.NBMAGR', 'V V I', nbmagm, jgrma)
 !
-        do 40 i = 1, nbmagm
+        do i = 1, nbmagm
             zi(jgrma-1 + i) = zi(jmail-1 + i)
- 40     continue
+        end do
     endif
 !
 !     VECTEUR CONTENANT LE NBR. DE PT. DE GAUSS DES MAILLES DU MAILLAGE
@@ -248,18 +248,18 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     nbpgt = 0
     nbpggm = 0
 !
-    do 50 ima = 1, nbma
+    do ima = 1, nbma
         zi(jnbpg - 1 + ima) = zi(jcesd-1 + 5 + 4*(ima-1) + 1)
         nbpgt = nbpgt + zi(jcesd-1 + 5 + 4*(ima-1) + 1)
         if (zi(jcesd-1 + 5 + 4*(ima-1) + 1) .gt. nbpgmx) then
             nbpgmx = zi(jcesd-1 + 5 + 4*(ima-1) + 1)
         endif
- 50 end do
+    end do
     if (nommai .ne. '        ') then
-        do 60 ima = 1, nbmagm
+        do ima = 1, nbmagm
             nbpggm=nbpggm + zi(jcesd-1 + 5 + 4*(zi(jmail+ima-1)-1) +&
             1)
- 60     continue
+        end do
         write(6,*)'NOMBRE DE POINTS DE GAUSS DU GROUPE DE MAILLES ==>',&
      &              nbpggm
         write(6,*)' '
@@ -313,7 +313,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     numpaq = 0
     nmapaq = 0
 !
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         tpaq = tpaq + zi(jnbpg - 1 + ima)*nbordr*nbcmp
         nmapaq = nmapaq + 1
 !
@@ -363,7 +363,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
             endif
         endif
 !
-100 end do
+    end do
 !
     if (nbpaq .gt. nbpmax) then
         vali (1) = nbpmax
@@ -379,7 +379,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     sompgs = 0
     nmemo = 0
 !
-    do 200 numpaq = 1, nbpaq
+    do numpaq = 1, nbpaq
         call jerazo('&&PAQMAI.RWORK', tdisp(1), 1)
         tpaq = zi(jnbpaq + (numpaq-1)*4 + 1)
         nmaini = zi(jnbpaq + (numpaq-1)*4 + 2)
@@ -391,7 +391,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
             sompgi = sompgs
         endif
 !
-        do 300 iordr = 1, nbordr
+        do iordr = 1, nbordr
             if ((numpaq .gt. 1) .and. (iordr .eq. 1)) then
                 ninit = nmemo
             else if ((numpaq .eq. 1) .and. (iordr .eq. 1)) then
@@ -493,7 +493,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
             kwork = 0
             decal = 18
 !
-            do 320 imap = nmaini, nmaini+(nbmap-1)
+            do imap = nmaini, nmaini+(nbmap-1)
                 if ((imap .gt. nmaini) .and. (numpaq .eq. 1)) then
                     sompgs = sompgs + zi(jnbpg + imap-2)
                     kwork = 1
@@ -513,12 +513,12 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 if ((nommai .ne. '        ') .and. (imap .ne. zi(jgrma+n-1))) then
                     n = n - 1
                 else
-                    do 340 ipg = 1, nbpg
+                    do ipg = 1, nbpg
 !
 ! BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                         if (crsigm) then
 !
-                            do 360 icmp = 1, 6
+                            do icmp = 1, 6
                                 call cesexi('C', jsigd, jsigl, imap, ipg,&
                                             1, icmp, jad)
                                 if (jad .le. 0) then
@@ -533,12 +533,12 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                     iordr-1)*tspaq ) = zr( jsigv -1 +&
                                     jad)
                                 endif
-360                         continue
+                            end do
                         endif
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
                         if (crepst) then
-                            do 380 icmp = 1, 6
+                            do icmp = 1, 6
                                 call cesexi('C', jepsd, jepsl, imap, ipg,&
                                             1, icmp, jad)
                                 if (jad .le. 0) then
@@ -553,12 +553,12 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                     iordr-1)*tspaq ) = zr( jepsv -1+&
                                     jad)
                                 endif
-380                         continue
+                            end do
                         endif
 !
 ! BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
                         if (crepsp) then
-                            do 400 icmp = 1, 6
+                            do icmp = 1, 6
                                 call cesexi('C', jepspd, jepspl, imap, ipg,&
                                             1, icmp, jad)
                                 if (jad .le. 0) then
@@ -573,13 +573,13 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                     iordr-1)*tspaq ) = zr( jepspv -1+&
                                     jad)
                                 endif
-400                         continue
+                            end do
                         endif
 !
 ! BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
                         if (crepse) then
                             if (valep .eq. 0) then
-                                do 401 icmp = 1, 6
+                                do icmp = 1, 6
                                     call cesexi('C', jepped, jeppel, imap, ipg,&
                                                 1, icmp, jad)
                                     if (jad .le. 0) then
@@ -594,25 +594,25 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                         (iordr-1)*tspaq ) = zr(&
                                         jeppev -1+jad)
                                     endif
-401                             continue
+                                end do
                             else
-                                do 405 icmp = 1, 6
+                                do icmp = 1, 6
                                     zr( jrwork + (icmp+6+6-1) +(ipg-1)&
                                     *decal + kwork*sompgw*decal + (&
                                     iordr-1)*tspaq ) = 0.d0
-405                             continue
+                                end do
                             endif
                         endif
 !
-340                 continue
+                    end do
                 endif
                 if ((nommai .ne. '        ') .and. (n .lt. nbmagm)) then
                     n = n + 1
                 endif
 !
-320         continue
+            end do
             nmemo = n
-300     continue
+        end do
 !
 !         ENDIF
 !
@@ -636,7 +636,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                         cesr)
         endif
 !
-200 end do
+200     continue
+    end do
 !
 !
 ! TRANSFORMATION D'UN CHAM_ELEM SIMPLE EN CHAM_ELEM

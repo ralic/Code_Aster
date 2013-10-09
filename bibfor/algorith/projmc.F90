@@ -2,7 +2,6 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
                   neq, nbmo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/copmod.h"
 #include "asterfort/jecrec.h"
@@ -19,6 +18,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 #include "asterfort/ualfva.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zeclag.h"
+!
     integer :: neq, nbmo
     character(len=8) :: matras, nomres, basemo
     character(len=14) :: nu
@@ -55,6 +55,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     character(len=19) :: resu
     real(kind=8) :: zero
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -79,9 +80,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     zk24(ialime) = '                        '
 !
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
-    do 10 i = 1, nueq
+    do i = 1, nueq
         zc(iaconl+i-1) = dcmplx(1.0d0,0.0d0)
-10  end do
+    end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -117,7 +118,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     call jeveuo(nomsto//'.SCBL', 'L', jscbl)
     call jeveuo(nomsto//'.SCHC', 'L', jschc)
 !
-    do 20 iblo = 1, nbloc
+    do iblo = 1, nbloc
 !
         call jecroc(jexnum(resu//'.UALF', iblo))
         call jeveuo(jexnum(resu//'.UALF', iblo), 'E', ldblo)
@@ -129,11 +130,11 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
         n1bloc = zi(jscbl+iblo-1)+1
         n2bloc = zi(jscbl+iblo)
 !
-        do 30 i = n1bloc, n2bloc
+        do i = n1bloc, n2bloc
 !
-            do 32 k = 1, neq
+            do k = 1, neq
                 zc(idvec2+k-1)=dcmplx(zr(idbase+(i-1)*neq+k-1),zero)
-32          continue
+            end do
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
 !
@@ -143,23 +144,23 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
-            do 40 j = (i-zi(jschc+i-1)+1), i
+            do j = (i-zi(jschc+i-1)+1), i
 !
 ! ----------- PRODUIT SCALAIRE VECTASS * MODE
 !
                 pij = dcmplx(zero,zero)
-                do 42 k = 1, neq
+                do k = 1, neq
                     pij = pij + zc(idvec3+k-1)* dcmplx(zr(idbase+(j-1) *neq+k-1),zero)
-42              continue
+                end do
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 !
                 zc(ldblo+zi(jscdi+i-1)+j-i-1) = pij
 !
-40          continue
-30      continue
+            end do
+        end do
         call jelibe(jexnum(resu//'.UALF', iblo))
-20  end do
+    end do
 !
     call jedetr('&&PROJMC.VECTASS2')
     call jedetr('&&PROJMC.VECTASS3')

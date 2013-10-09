@@ -65,7 +65,7 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 #include "asterfort/rotlis.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8) ::  nomres, matprj, ssta, sstb, intfa, intfb, nomg
+    character(len=8) :: nomres, matprj, ssta, sstb, intfa, intfb, nomg
     character(len=24) :: fmlia, toto, fpliao, fplibo, fplian, fplibn
     integer :: iada(3), iadb(3), numlis, zit(3), nbec, nbnoea, nbnoeb
     integer :: nbcmpm, k, m1, n1, m2, n2, llplia, llplib, icompa, icompb, ldmat
@@ -118,37 +118,37 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 !
 !
 ! boucle sur nombre de mode de la structure maitre
-    do 1 k = 1, iada(2)
+    do k = 1, iada(2)
 ! boucle sur nombre de noeuds d'interface de la structure esclave
-        do 2 m1 = 1, nbnoeb
+        do m1 = 1, nbnoeb
             iadob=zi(llplib+(m1-1)*(1+nbec))
             call isdeco(zi(llplib+(m1-1)*(1+nbec)+1), idecob, nbcmpm)
             icompb=iadob-1
 ! boucle sur nombre de composante de la structure esclave
-            do 3 n1 = 1, nbcmpm
+            do n1 = 1, nbcmpm
                 if (idecob(n1) .gt. 0) then
 ! boucle sur nombre de noeuds d'interface de la structure maitre
                     icompb=icompb+1
                     rbid=0.d0
-                    do 4 m2 = 1, nbnoea
+                    do m2 = 1, nbnoea
                         iadoa=zi(llplia+(m2-1)*(1+nbec))
                         call isdeco(zi(llplia+(m2-1)*(1+nbec)+1), idecoa, nbcmpm)
 ! boucle sur nombre de composante de la structure maitre
                         icompa=iadoa-1
-                        do 5 n2 = 1, nbcmpm
+                        do n2 = 1, nbcmpm
                             if ((idecoa(n2).gt.0) .and. (n1.eq.n2)) then
                                 icompa=icompa+n2
                                 rbid=rbid+ zr(itemcm+(icompb-1)*iada(&
                                 1)+icompa-1)* zr(ldmat2+(k-1)*iada(1)+&
                                 icompa-1)
                             endif
-  5                     continue
-  4                 continue
+                        end do
+                    end do
                     zr(ldmat+(k-1)*iadb(1)+icompb-1)=rbid
                 endif
-  3         continue
-  2     continue
-  1 end do
+            end do
+        end do
+    end do
 ! On corrige in fine la taille de la nouvelle matrice de liaison
     iada(1)=iadb(1)
     call jedetr(toto)

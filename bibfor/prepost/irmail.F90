@@ -60,7 +60,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     character(len=*) :: form
 !---------------- VARIABLES LOCALES ------------------------------------
 !
-    integer ::  ifi, igm, ign
+    integer :: ifi, igm, ign
     integer :: ima, ino, iret
     integer :: jcod1, jcod2, jcodd, jconx
     integer :: jcoor, jnogm, jnogn
@@ -115,13 +115,13 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     call wkvect('&&IRMAIL.NOMMAI', 'V V K8', nbmai, jnomai)
     call wkvect('&&IRMAIL.NOMNOE', 'V V K8', nbnoe, jnonoe)
 !       - RECUPERATION DES NOMS DES MAILLES
-    do 10 ima = 1, nbmai
+    do ima = 1, nbmai
         call jenuno(jexnum(noma//'.NOMMAI', ima), zk8(jnomai-1+ima))
- 10 end do
+    end do
 !       - RECUPERATION DES NOMS DES NOEUDS
-    do 20 ino = 1, nbnoe
+    do ino = 1, nbnoe
         call jenuno(jexnum(noma//'.NOMNOE', ino), zk8(jnonoe-1+ino))
- 20 end do
+    end do
 !       - TEST EXISTENCE DE GROUPES DE NOEUDS
     call jeexin(noma//'.GROUPENO', iret)
     if (iret .ne. 0) then
@@ -129,9 +129,9 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
         call jelira(noma//'.GROUPENO', 'NUTIOC', nbgrn)
         if (nbgrn .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRNO', 'V V K24', nbgrn, jnogn)
-            do 30 ign = 1, nbgrn
+            do ign = 1, nbgrn
                 call jenuno(jexnum(noma//'.GROUPENO', ign), zk24(jnogn- 1+ign))
- 30         continue
+            end do
         else
 !           - SI PAS DE GROUPE DE NOEUDS - NOMBRE DE GROUPES = 0
             nbgrn=0
@@ -147,9 +147,9 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
         call jelira(noma//'.GROUPEMA', 'NUTIOC', nbgrm)
         if (nbgrm .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRMA', 'V V K24', nbgrm, jnogm)
-            do 40 igm = 1, nbgrm
+            do igm = 1, nbgrm
                 call jenuno(jexnum(noma//'.GROUPEMA', igm), zk24(jnogm- 1+igm))
- 40         continue
+            end do
         else
             nbgrm=0
         endif

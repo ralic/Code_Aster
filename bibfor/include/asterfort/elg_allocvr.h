@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,13 +14,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine elg_allocvr(vect1,n1)
-#             ifdef _HAVE_PETSC
-                  Vec :: vect1
-#             else
-                  integer :: vect1
-#             endif
-              integer :: n1
-            end subroutine elg_allocvr
-          end interface
+interface
+    subroutine elg_allocvr(vect1, n1)
+# ifdef _HAVE_PETSC
+        Vec :: vect1
+        # else
+        integer :: vect1
+        # endif
+        integer :: n1
+    end subroutine elg_allocvr
+end interface

@@ -140,19 +140,19 @@ subroutine te0510(option, nomte)
     if (nfiss .gt. nfimax) then
         call utmess('F', 'XFEM2_6', ni=2, vali=vali)
     endif
-    do 70 i = 1, 2*nfimax
+    do i = 1, 2*nfimax
         fisco(i)=0
         fisc(i)=0
- 70 end do
+    end do
     nn=nfimax*nbmax
-    do 72 i = 1, nn
+    do i = 1, nn
         pthea(i)=0
- 72 end do
+    end do
     if (nfiss .gt. 1) then
         call jevech('PFISCO', 'L', jfisco)
-        do 73 i = 1, 2*nfiss
+        do i = 1, 2*nfiss
             fisco(i)=zi(jfisco-1+i)
- 73     continue
+        end do
         call jevech('PHEAVFA', 'E', jout7)
         call tecach('OOO', 'PHEAVFA', 'E', iret, nval=2,&
                     itab=jtab)
@@ -178,15 +178,15 @@ subroutine te0510(option, nomte)
 !
 ! --- BOUCLE SUR LES FISSURES
 !
-    do 10 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
         nface = 0
         nptf = 0
 ! ----------------------------------------------------------------------
 !       RECHERCHE DES INTERSECTIONS ARETES-FISSURE
 !       ET DÉCOUPAGE EN FACETTES
-        do 81 i = 1, 2*nfiss
+        do i = 1, 2*nfiss
             fisc(i)=0
- 81     continue
+        end do
         ifisc = ifiss
         nfisc = 0
  80     continue
@@ -200,20 +200,20 @@ subroutine te0510(option, nomte)
         endif
 !
         nfisc2 = 0
-        do 20 jfiss = ifiss+1, nfiss
+        do jfiss = ifiss+1, nfiss
 !       STOCKAGE DES FISSURES QUI SE BRANCHENT SUR IFISS
             kfiss = fisco(2*jfiss-1)
-            do 30 i = nfisc+1, nfisc+nfisc2
+            do i = nfisc+1, nfisc+nfisc2
                 if (fisc(2*(i-1)+1) .eq. kfiss) then
                     nfisc2 = nfisc2 + 1
                     fisc(2*(nfisc+nfisc2-1)+1) = jfiss
                 endif
- 30         continue
+            end do
             if (kfiss .eq. ifiss) then
                 nfisc2 = nfisc2 + 1
                 fisc(2*(nfisc+nfisc2-1)+1) = jfiss
             endif
- 20     continue
+        end do
 !
         if (.not.iselli(elp) .and. ndim .le. 2) then
             call xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
@@ -227,17 +227,17 @@ subroutine te0510(option, nomte)
             nbtot=ninter
         endif
         if (nfiss .gt. 1 .and. nbtot .gt. 0) then
-            do 109 i = 1, nbtot*nfiss
+            do i = 1, nbtot*nfiss
                 pthea(i)=0
-109         continue
+            end do
         endif
 !       ARCHIVAGE DE PINTER, AINTER, GESCLA, GMAITR ET BASECO
 !
-        do 110 i = 1, nbtot
-            do 111 j = 1, ndim
+        do i = 1, nbtot
+            do j = 1, ndim
                 ptree(j)=pinter(ndim*(i-1)+j)
                 zr(jout6-1+ncompp*(ifiss-1)+ndim*(i-1)+j) = ptree(j)
-111         continue
+            end do
 !    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
             call reeref(elp, lbid, nnop, ibid, zr(igeom),&
                         ptree, 1, lbid, ndim, rbid,&
@@ -246,13 +246,13 @@ subroutine te0510(option, nomte)
                         'NON', ptref, ff, dfdi, rbid3,&
                         rbid6, rbid3)
 !
-            do 112 jj = 1, ndim
+            do jj = 1, ndim
                 zr(jout1-1+ncompp*(ifiss-1)+ndim*(i-1)+jj) = ptref(jj)
-112         continue
-            do 113 j = 1, zxain-1
+            end do
+            do j = 1, zxain-1
                 zr(jout2-1+ncompa*(ifiss-1)+zxain*(i-1)+j)= ainter(&
                 zxain*(i-1)+j)
-113         continue
+            end do
 !
 !     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
 !     ND EST LA NORMALE À LA SURFACE : GRAD(LSN)
@@ -264,18 +264,18 @@ subroutine te0510(option, nomte)
             call vecini(3, 0.d0, nd)
             call vecini(3, 0.d0, grlt)
 !
-            do 114 j = 1, ndim
-                do 115 k = 1, nnop
+            do j = 1, ndim
+                do k = 1, nnop
                     nd(j) = nd(j) + ff(k)*zr(jgrlsn-1+ndim*(nfiss*(k- 1)+ifiss-1)+j)
                     grlt(j) = grlt(j) + ff(k)*zr(jgrlst-1+ndim*(nfiss* (k-1)+ifiss-1)+j)
-115             continue
-114         continue
+                end do
+            end do
 !
             call normev(nd, norme)
             ps=ddot(ndim,grlt,1,nd,1)
-            do 116 j = 1, ndim
+            do j = 1, ndim
                 tau1(j)=grlt(j)-ps*nd(j)
-116         continue
+            end do
 !
             call normev(tau1, norme)
 !
@@ -298,52 +298,52 @@ subroutine te0510(option, nomte)
                 call provec(nd, tau1, tau2)
             endif
 !
-            do 117 j = 1, ndim
+            do j = 1, ndim
                 zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j)&
                 =nd(j)
                 zr(jout5-1+ncompb*(ifiss-1)+ndim*ndim*(i-1)+j+ndim)=&
                 tau1(j)
                 if (ndim .eq. 3) zr( jout5-1+ncompb*(ifiss-1)+ndim* ndim*(i-1)+j+2*ndim)=tau2(j )
-117         continue
+            end do
 !
             if (nfiss .gt. 1) then
 !    CALCUL DES FONCTIONS HEAVISIDE AUX POINTS D'INTER
-                do 130 jfiss = 1, nfiss
+                do jfiss = 1, nfiss
                     lsn = 0
-                    do 131 k = 1, nnop
+                    do k = 1, nnop
                         lsn = lsn + ff(k) * zr(jlsn-1+nfiss*(k-1)+ jfiss)
-131                 continue
+                    end do
                     if (abs(lsn) .gt. 1.d-11) then
                         pthea(nfiss*(i-1)+jfiss) = nint(sign(1.d0,lsn) )
                     endif
-130             continue
+                end do
             endif
 !
-110     continue
+        end do
 !
 !     ARCHIVAGE DE CFACE ET DE HEAVFA
-        do 120 i = 1, nface
-            do 121 j = 1, nptf
+        do i = 1, nface
+            do j = 1, nptf
                 zi(jout3-1+ncompc*(ifiss-1)+nptf*(i-1)+j)=cface(i,j)
-121         continue
+            end do
             if (nfiss .gt. 1) then
                 elim = .false.
                 elim2= .false.
-                do 122 jfiss = 1, nfiss
+                do jfiss = 1, nfiss
                     if (jfiss .eq. ifiss) then
 !    ESCLAVE = -1, MAITRE = +1
                         hescl = -1
                         hmait = +1
                     else
                         he = 0
-                        do 123 j = 1, nptf
+                        do j = 1, nptf
                             if (pthea(nfiss*(cface(i,j)-1)+jfiss) .ne. 0 .and.&
                                 pthea(nfiss*(cface(i,j)-1)+ jfiss) .ne. he .and. he .ne. 0) then
                                 elim = .true.
                             endif
                             if (he .eq. 0) he=pthea(nfiss*(cface(i,j)-1)+ jfiss )
 !
-123                     continue
+                        end do
 !
 !    ESCLAVE = HE, MAITRE = HE
                         hescl = he
@@ -362,9 +362,9 @@ subroutine te0510(option, nomte)
                             else
 !    SI PAS BRANCHÉ ET PAS DU BON CÔTÉ, MISE À ZÉRO DES DEUX CÔTÉS
                                 he = 0
-                                do 125 j = 1, nptf
+                                do j = 1, nptf
                                     if (he .eq. 0) he=pthea( nfiss*( cface(i,j)-1)+kfiss)
-125                             continue
+                                end do
                                 if (kcoef*he .eq. 1) then
                                     hescl = 0
                                     hmait = 0
@@ -379,13 +379,13 @@ subroutine te0510(option, nomte)
                     = hescl
                     zi(jout7-1+ncomph*(nfiss*(ifiss-1)+jfiss-1)+2*i)&
                     = hmait
-122             continue
+                end do
                 if (elim2) then
                     call utmess('A', 'XFEM_45', sk=nomte)
                     goto 998
                 endif
             endif
-120     continue
+        end do
 !
 !     ARCHIVAGE DE LONCHAM
 !
@@ -396,13 +396,13 @@ subroutine te0510(option, nomte)
         zi(jout4+3*(ifiss-1)-1+3)=nptf
 !
         if (nfiss .eq. 1) then
-            do 710 i = 1, 2*nfimax
+            do i = 1, 2*nfimax
                 fisco(i)=0
-710         continue
+            end do
         endif
 !
 !
- 10 end do
+    end do
 !
 999 continue
 !

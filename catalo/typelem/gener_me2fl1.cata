@@ -51,4 +51,4 @@ OPTION__
     IMPE_MECA        258  IN__  NGEOMER  PGEOMER  EIMPEDR  PIMPEDR  CMATERC  PMATERC  
                           OUT__ MMATUUR  PMATUUR  
     ONDE_FLUI        372  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  EONDEPR  PONDECR  
-                          OUT__ MMATUUR  PMATUUR  
+                          OUT__ MMATUUR  PMATUUR

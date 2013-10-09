@@ -65,7 +65,7 @@ function mmmaxi(modelz, lisma, nbma)
     character(len=16) :: notype, maisup
     character(len=24) :: typele
     integer :: numail, nutyel
-    integer ::  ima
+    integer :: ima
     integer :: numsup, nbaxis, mailvo(1)
     integer :: jmaisu, ilmail, itypel, jcoor
 !
@@ -96,7 +96,7 @@ function mmmaxi(modelz, lisma, nbma)
 !
     call jeveuo(typele, 'L', itypel)
 !
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         numsup = zi(jmaisu-1+ima)
         if (numsup .ne. 0) then
             nutyel = zi(itypel-1+numsup)
@@ -109,12 +109,13 @@ function mmmaxi(modelz, lisma, nbma)
         if (nutyel .eq. 0) then
             goto 100
         endif
-50      continue
+ 50     continue
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
         if (lteatt(notype,'AXIS','OUI')) then
             nbaxis = nbaxis +1
         endif
-100  end do
+100     continue
+    end do
 !
     if (nbaxis .eq. nbma) then
         mmmaxi = .true.

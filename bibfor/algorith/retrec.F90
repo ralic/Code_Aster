@@ -184,9 +184,9 @@ subroutine retrec(nomres, resgen, nomsst)
         call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
 !
         nutars=0
-        do 20 i = 1, nbsst
+        do i = 1, nbsst
             if (zi(llors+i-1) .eq. nusst) nutars=i
- 20     continue
+        end do
 !
 !
 ! --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
@@ -206,14 +206,14 @@ subroutine retrec(nomres, resgen, nomsst)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
         ibid=1
-        do 11 i = 1, nbsst
+        do i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
- 11     continue
+        end do
 !
         ieq=0
-        do 41 i1 = 1, nusst-1
+        do i1 = 1, nusst-1
             ieq=ieq+zi(lsilia+i1-1)
- 41     continue
+        end do
 !
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
     endif
@@ -276,10 +276,10 @@ subroutine retrec(nomres, resgen, nomsst)
             call wkvect('&&RETREC.VECTGENE', 'V V R', neqgen, idvecg)
         endif
 !
-        do 30 i = 0, nbinst-1
+        do i = 0, nbinst-1
             iarchi = iarchi + 1
 !
-            do 32 ich = 1, nbcham
+            do ich = 1, nbcham
                 idresu = itresu(ich)
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
@@ -296,18 +296,18 @@ subroutine retrec(nomres, resgen, nomsst)
                             zr(jinst+i), zr(idresu), neqgen, zr(idvecg), ier)
 !
                 if (elim .ne. 0) then
-                    do 21 i1 = 1, neqet
+                    do i1 = 1, neqet
                         zr(lmoet+i1-1)=0.d0
-                        do 31 k1 = 1, neqred
+                        do k1 = 1, neqred
                             zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(&
                             k1-1)*neqet+i1-1)* zr(idvecg+k1-1)
- 31                     continue
- 21                 continue
+                        end do
+                    end do
                 endif
 !
 ! --- BOUCLE SUR LES MODES PROPRES DE LA BASE
 !
-                do 50 j = 1, nbddg
+                do j = 1, nbddg
                     call dcapno(basmod, 'DEPL', j, chamba)
                     call jeveuo(chamba, 'L', llchab)
 !
@@ -319,40 +319,40 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
-                    do 60 k = 1, neq
+                    do k = 1, neq
                         zr(ldnew+k-1)=zr(ldnew+k-1)+zr(llchab+k-1)*zr(&
                         iad)
- 60                 continue
+                    end do
                     call jelibe(chamba)
- 50             continue
+                end do
                 call jelibe(chamno)
                 call rsnoch(nomres, chmp(ich), iarchi)
- 32         continue
+            end do
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
- 30     continue
+        end do
 !
     else
         call jeexin(trange//'.ORDR', iret)
         if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi=-1
 !
-        do 40 i = 0, nbinst-1
+        do i = 0, nbinst-1
             iarchi = iarchi + 1
 !
-            do 42 ich = 1, nbcham
+            do ich = 1, nbcham
                 idresu = itresu(ich)
 !
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
-                    do 22 i1 = 1, neqet
+                    do i1 = 1, neqet
                         zr(lmoet+i1-1)=0.d0
-                        do 33 k1 = 1, neqred
+                        do k1 = 1, neqred
                             zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(&
                             k1-1)*neqet+i1-1)* zr(idresu+k1-1+(zi(&
                             jnume+i)-1)*neqred)
- 33                     continue
- 22                 continue
+                        end do
+                    end do
                 endif
 !
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
@@ -369,7 +369,7 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 ! --- BOUCLE SUR LES MODES PROPRES DE LA BASE
 !
-                do 70 j = 1, nbddg
+                do j = 1, nbddg
                     call dcapno(basmod, 'DEPL', j, chamba)
                     call jeveuo(chamba, 'L', llchab)
 !
@@ -382,19 +382,19 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
-                    do 80 k = 1, neq
+                    do k = 1, neq
                         zr(ldnew+k-1)=zr(ldnew+k-1)+zr(llchab+k-1)*zr(&
                         iad)
- 80                 continue
+                    end do
                     call jelibe(chamba)
- 70             continue
+                end do
                 call jelibe(chamno)
                 call rsnoch(nomres, chmp(ich), iarchi)
- 42         continue
+            end do
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
- 40     continue
+        end do
 !
     endif
 !
@@ -407,8 +407,8 @@ subroutine retrec(nomres, resgen, nomsst)
     call jedetr('&&RETREC.INSTANT')
     call jedetr('&&RETREC.VECTGENE')
 !
-    goto 9999
+    goto 999
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

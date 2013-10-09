@@ -45,12 +45,12 @@ subroutine op0162()
 #include "blas/ddot.h"
 !
     integer :: ierd, gd
-    character(len=8) ::  resu, masse, noma, vect, typi
+    character(len=8) :: resu, masse, noma, vect, typi
     character(len=14) :: nume
     character(len=16) :: concep, nomcmd, k16nom
     character(len=19) :: fonc
     character(len=24) :: refe, vale, deeq, type
-    character(len=24) ::  nomch0
+    character(len=24) :: nomch0
     character(len=8) :: mael, basemo, nomfon, interf
     character(len=80) :: titre
     real(kind=8) :: petir8, di(6)
@@ -66,6 +66,7 @@ subroutine op0162()
     integer :: nfo, niv, nmm, nsourf, nsours, nti, nu
 !
     real(kind=8) :: coef, pij, t
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data  refe  /'                  _REFE'/
     data  vale  /'                   .VALE'/
@@ -187,14 +188,14 @@ subroutine op0162()
 !
     call wkvect('&&OP0162.VECT1', 'V V R', neq, iadmo1)
     call wkvect('&&OP0162.VECT2', 'V V R', neq, iadmo2)
-    do 70 ic = 1, ncharb
+    do ic = 1, ncharb
         call getvid('EXCIT', 'VECT_ASSE', iocc=ic, scal=vect, nbret=n)
         if (n .ne. 0) then
             call chpver('F', vect, 'NOEU', 'DEPL_R', ierd)
         endif
         vale(1:8) = vect
         call jeveuo(vale, 'L', idvec1)
-        do 71 j = 1, nbmode
+        do j = 1, nbmode
 !
 !-----      RECOPIE DU JEME MODE
 !
@@ -208,8 +209,8 @@ subroutine op0162()
 !
             pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
             zr(jvect+j-1) = pij + petir8
- 71     continue
-        do 72 j = 1, nbmods
+        end do
+        do j = 1, nbmods
 !
 !-----      RECOPIE DU JEME MODE
 !
@@ -224,7 +225,7 @@ subroutine op0162()
 !
             pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
             zr(isvect+j-1) = pij + petir8
- 72     continue
+        end do
         if (niv .gt. 1) write(ifm,'(''DYNA CHAR'',1x,i6)') ic
         if (niv .gt. 1) write(ifm,'(6(1x,1pe12.5))') (zr(jvect+k-1),k=1, nbmode )
         if (niv .gt. 1) write(ifm,'(''STAT CHAR'',1x,i6)') ic
@@ -256,13 +257,13 @@ subroutine op0162()
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
  81     continue
- 70 continue
+    end do
 9998 continue
     call getfac('EXCIT_SOL', nchars)
     write(ifmis,'(''SOLS'',1x,i6)') nchars
     write(ifm,'(''SOLS'',1x,i6)') nchars
-    if (nchars .eq. 0) goto 9999
-    do 73 ic = 1, nchars
+    if (nchars .eq. 0) goto 999
+    do ic = 1, nchars
         call getvr8('EXCIT_SOL', 'DIRECTION', iocc=ic, nbval=3, vect=di(1),&
                     nbret=n)
         call getvtx('EXCIT_SOL', 'NOM_CHAM', iocc=ic, scal=typi, nbret=n)
@@ -283,14 +284,14 @@ subroutine op0162()
         write(ifmis,'(''FONC SOLS'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
- 73 continue
-9999 continue
+    end do
+999 continue
 !
     call getfac('SOURCE_SOL', nsours)
     if (nsours .eq. 0) goto 9995
     write(ifmis,'(''SOUS'',1x,i6)') nsours
     write(ifm,'(''SOUS'',1x,i6)') nsours
-    do 74 ic = 1, nsours
+    do ic = 1, nsours
 !         IC = 1
         call getvr8('SOURCE_SOL', 'POINT', iocc=ic, nbval=3, vect=di(1),&
                     nbret=n)
@@ -314,14 +315,14 @@ subroutine op0162()
         write(ifmis,'(''FONC SOUS'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
- 74 continue
+    end do
 9995 continue
 !
     call getfac('SOURCE_FLUIDE', nsourf)
     if (nsourf .eq. 0) goto 9996
     write(ifmis,'(''SOUF'',1x,i6)') nsourf
     write(ifm,'(''SOUF'',1x,i6)') nsourf
-    do 75 ic = 1, nsourf
+    do ic = 1, nsourf
 !         IC = 1
         call getvr8('SOURCE_FLUIDE', 'POINT', iocc=ic, nbval=3, vect=di(1),&
                     nbret=n)
@@ -343,7 +344,7 @@ subroutine op0162()
         write(ifmis,'(''FONC SOUF'',2(1x,i6))') ic,nbval
         write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
- 75 continue
+    end do
 9996 continue
 !
     call jedema()

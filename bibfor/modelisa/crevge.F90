@@ -85,7 +85,7 @@ subroutine crevge(ligrel, bas1)
 !
     troisd=.false.
     call jeveuo(typmai, 'L', iatyma)
-    do 10 m0 = 1, nbma
+    do m0 = 1, nbma
         iad=iatyma-1+m0
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typem0)
         call dimmai(typem0, dimma)
@@ -94,7 +94,7 @@ subroutine crevge(ligrel, bas1)
             goto 20
 !
         endif
- 10 end do
+    end do
  20 continue
     if (troisd) then
         dim=3
@@ -133,7 +133,7 @@ subroutine crevge(ligrel, bas1)
 !
 ! --------- BOUCLE SUR LES MAILLES  ----------------
 !
-    do 70 m0 = 1, nbma
+    do m0 = 1, nbma
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+m0)), typem0)
         call dimmai(typem0, dimma)
 !
@@ -142,11 +142,11 @@ subroutine crevge(ligrel, bas1)
         if (dimma .eq. dim) then
 ! --------- REMISE ZERO TOUVOI
             nvtot=0
-            do 40 iv = 1, nvoima
-                do 30 is = 1, nscoma+2
+            do iv = 1, nvoima
+                do is = 1, nscoma+2
                     touvoi(iv,is)=0
- 30             continue
- 40         continue
+                end do
+            end do
             call jeveuo(jexnum(connex, m0), 'L', adcom0)
             call nbsomm(typem0, nbsom0)
 !
@@ -154,13 +154,13 @@ subroutine crevge(ligrel, bas1)
 !
 ! --------- BOUCLE SUR LES SOMMETS  ----------------
 !
-            do 60 is = 1, nbsom0
+            do is = 1, nbsom0
                 no=jexnum(coninv,zi(adcom0-1+is))
 !  NBMR NOMBRE DE MAILLES RELIEES AU SOMMET
                 call jelira(no, 'LONMAX', nbmr)
                 call jeveuo(no, 'L', admar)
                 if (nbmr .gt. 1) then
-                    do 50 ir = 1, nbmr
+                    do ir = 1, nbmr
 !  NUMAR NUMERO DE LA MAILLE RELIEE AU SOMMET
                         numar=zi(admar-1+ir)
                         call jenuno(jexnum( '&CATA.TM.NOMTM', zi(iatyma- 1+numar)), typemr)
@@ -174,9 +174,9 @@ subroutine crevge(ligrel, bas1)
                             call adlivo(numar, is, nvtot, nvoima, nscoma,&
                                         touvoi)
                         endif
- 50                 continue
+                    end do
                 endif
- 60         continue
+            end do
             call dimvoi(nvtot, nvoima, nscoma, touvoi, dimvlo)
         else
 !
@@ -186,14 +186,14 @@ subroutine crevge(ligrel, bas1)
             dimvlo=1
         endif
         zi(iaddvo+m0)=zi(iaddvo+m0-1)+dimvlo
- 70 end do
+    end do
 !
 !  ON PEUT MAINTENANT ALLOUER ET REMPLIR CET OBJET
 !
     call wkvect(elvois, bas1//' V I', zi(iaddvo+nbma), iadvoi)
 ! --------- BOUCLE SUR LES MAILLES  ----------------
 !
-    do 120 m0 = 1, nbma
+    do m0 = 1, nbma
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+m0)), typem0)
         call dimmai(typem0, dimma)
 !
@@ -202,23 +202,23 @@ subroutine crevge(ligrel, bas1)
         if (dimma .eq. dim) then
 ! --------- REMISE ZERO TOUVOI
             nvtot=0
-            do 90 iv = 1, nvoima
-                do 80 is = 1, nscoma+2
+            do iv = 1, nvoima
+                do is = 1, nscoma+2
                     touvoi(iv,is)=0
- 80             continue
- 90         continue
+                end do
+            end do
             call jeveuo(jexnum(connex, m0), 'L', adcom0)
             call nbsomm(typem0, nbsom0)
 !
 ! --------- BOUCLE SUR LES SOMMETS  ----------------
 !
-            do 110 is = 1, nbsom0
+            do is = 1, nbsom0
                 no=jexnum(coninv,zi(adcom0-1+is))
 !  NBMR NOMBRE DE MAILLES RELIEES AU SOMMET
                 call jelira(no, 'LONMAX', nbmr)
                 call jeveuo(no, 'L', admar)
                 if (nbmr .gt. 1) then
-                    do 100 ir = 1, nbmr
+                    do ir = 1, nbmr
 !  NUMAR NUMERO DE LA MAILLE RELIEE AU SOMMET
                         numar=zi(admar-1+ir)
                         call jenuno(jexnum( '&CATA.TM.NOMTM', zi(iatyma- 1+numar)), typemr)
@@ -228,9 +228,9 @@ subroutine crevge(ligrel, bas1)
                             call adlivo(numar, is, nvtot, nvoima, nscoma,&
                                         touvoi)
                         endif
-100                 continue
+                    end do
                 endif
-110         continue
+            end do
             iad=iadvoi+zi(iaddvo+m0-1)
             call crvloc(dim, adcom0, iatyma, connex, zi(iad),&
                         nvtot, nvoima, nscoma, touvoi)
@@ -241,7 +241,7 @@ subroutine crevge(ligrel, bas1)
 !
             zi(iadvoi+zi(iaddvo+m0-1))=0
         endif
-120 end do
+    end do
 !
 !
 !      CALL IMPVOI(' VGE EN FIN DE CREVGE ',NBMA,IADDVO,IADVOI)

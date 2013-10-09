@@ -60,7 +60,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid(1), icomp, iloci, ilocj, inoa
-    integer ::  j, k, lldesc, llnoa, nbcmp
+    integer :: j, k, lldesc, llnoa, nbcmp
     integer :: nbcpmx, nbdax, nbdcou, nbec, nbnoa, nbnot, nbsec
     integer :: nbtet, noer, nta, numa
     real(kind=8) :: angle, pi, x

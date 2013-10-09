@@ -90,7 +90,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     character(len=24) :: stok4, dire4, coorn, nomno, dire5, indicg
     character(len=24) :: absgam
     character(len=16) :: k16b, nomcmd
-    character(len=8) ::  fond, resu, noma, nomo, k8b
+    character(len=8) :: fond, resu, noma, nomo, k8b
     character(len=6) :: kiord
 !
     integer :: nbnoeu, iadrt1, iadrt2, iadrt3, itheta
@@ -127,9 +127,9 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
     numgam = '&&COURON.NUMGAMM0'
     call wkvect(numgam, 'V V I', nbnoeu, iadnum)
-    do 550 j = 1, nbnoeu
+    do j = 1, nbnoeu
         call jenonu(jexnom(nomno, zk8(iadrno+j-1)), zi(iadnum+j-1))
-550 end do
+    end do
 !
 ! RECUPERATION DES DIRECTIONS AUX EXTREMITES DE GAMM0
 !
@@ -190,15 +190,15 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     if (nbr8 .ne. 0) then
 !
         norme = 0.d0
-        do 991 i = 1, 3
+        do i = 1, 3
             norme = norme + dir(i)*dir(i)
-991     continue
+        end do
         norme = sqrt(norme)
-        do 1 i = 1, nbnoeu
+        do i = 1, nbnoeu
             zr(in2+(i-1)*3+1-1) = dir(1)/norme
             zr(in2+(i-1)*3+2-1) = dir(2)/norme
             zr(in2+(i-1)*3+3-1) = dir(3)/norme
-  1     continue
+        end do
         call dismoi('ELEM_VOLU_QUAD', nomo, 'MODELE', repk=repk)
         if (repk .eq. 'OUI') then
             milieu = .true.
@@ -226,7 +226,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
 ! LES DIRECTIONS OBTENUES POUR CHAQUE LEVRE SONT MOYENNEES ET NORMEES
 !
-                do 2 i = 1, nbnoeu
+                do i = 1, nbnoeu
                     dirx = zr(idiri+(i-1)*3+1-1)
                     diry = zr(idiri+(i-1)*3+2-1)
                     dirz = zr(idiri+(i-1)*3+3-1)
@@ -237,9 +237,9 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(in2+(i-1)*3+1-1) = vecx/norme
                     zr(in2+(i-1)*3+2-1) = vecy/norme
                     zr(in2+(i-1)*3+3-1) = vecz/norme
-  2             continue
+                end do
             else
-                do 22 i = 1, nbnoeu
+                do i = 1, nbnoeu
                     dirx = zr(idirs+(i-1)*3+1-1)
                     diry = zr(idirs+(i-1)*3+2-1)
                     dirz = zr(idirs+(i-1)*3+3-1)
@@ -247,7 +247,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(in2+(i-1)*3+1-1) = dirx/norme
                     zr(in2+(i-1)*3+2-1) = diry/norme
                     zr(in2+(i-1)*3+3-1) = dirz/norme
- 22             continue
+                end do
             endif
         else if (ienorm.ne.0) then
             call dismoi('ELEM_VOLU_QUAD', nomo, 'MODELE', repk=repk)
@@ -265,11 +265,11 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 milieu = .false.
             endif
             call jeveuo(fond//'.BASEFOND', 'L', jvect)
-            do 23 i = 1, nbnoff
+            do i = 1, nbnoff
                 zr(in2+(i-1)*3+1-1) = zr(jvect-1+6*(i-1)+4)
                 zr(in2+(i-1)*3+2-1) = zr(jvect-1+6*(i-1)+5)
                 zr(in2+(i-1)*3+3-1) = zr(jvect-1+6*(i-1)+6)
- 23         continue
+            end do
         endif
 !
 !  ON RECUPERE LES DIRECTIONS UTILISATEUR AUX EXTREMITES DU FOND
@@ -340,7 +340,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
 ! CREATION DES NDIMTE+1 CHAMPS_NO ET VALEUR SUR GAMMA0
 !
-    do 400 k = 1, ndimte+1
+    do k = 1, ndimte+1
         call codent(k, 'D0', kiord)
         chamno = resu(1:8)//'_CHAM'//kiord//'     '
         zk24(jresu+k-1) = chamno
@@ -375,13 +375,13 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
             if (thlag2) then
 !
-                do 3 i = 1, nbnoeu
+                do i = 1, nbnoeu
                     num = zi(iadnum+i-1)
                     zr(itheta+(num-1)*3+1-1) = 0.d0
                     zr(itheta+(num-1)*3+2-1) = 0.d0
                     zr(itheta+(num-1)*3+3-1) = 0.d0
                     zi(indic+num-1) = 1
-  3             continue
+                end do
                 call gabscu(nbnoeu, coorn, nomno, chfond, xl,&
                             absgam)
                 call jeveuo(absgam, 'L', iadabs)
@@ -482,7 +482,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 endif
                 i1 = 1
                 if (milieu) i1 = 3
-                do 4 i = (-1*i1), i1
+                do i = (-1*i1), i1
                     if (.not. (&
                         ((k.eq. 1) .and. (i.lt. 0)) .or. ((k.eq. ndimte) .and. (i.gt. 0))&
                         .or. ((k.eq. ( ndimte-1)) .and. (i.gt. 2) .and. pair)&
@@ -493,11 +493,11 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                         zr(itheta+(num-1)*3+2-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+2-1)
                         zr(itheta+(num-1)*3+3-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+3-1)
                     endif
-  4             continue
+                end do
                 if (connex .and. ((k.eq. 1) .or. (k.eq. ndimte))) then
                     if (k .eq. 1) kno = nbnoeu
                     if (k .eq. ndimte) kno = 1
-                    do 401 i = (-1*i1), i1
+                    do i = (-1*i1), i1
                         if (.not. (&
                             ((k.eq. 1) .and. (i.gt. 0)) .or.&
                             ((k.eq. ndimte) .and. (i.lt. 0))&
@@ -508,18 +508,18 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                             zr(itheta+(num-1)*3+2-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+2-1)
                             zr(itheta+(num-1)*3+3-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+3-1)
                         endif
-401                 continue
+                    end do
                 endif
 !
             else if (thlagr) then
 !
-                do 31 i = 1, nbnoeu
+                do i = 1, nbnoeu
                     num = zi(iadnum+i-1)
                     zr(itheta+(num-1)*3+1-1) = 0.d0
                     zr(itheta+(num-1)*3+2-1) = 0.d0
                     zr(itheta+(num-1)*3+3-1) = 0.d0
                     zi(indic+num-1) = 1
- 31             continue
+                end do
                 num = zi(iadnum+k-1)
                 iadrtt = iadrt3 + (k-1)*nbnoeu + k - 1
                 zr(iadrtt) = 1.d0
@@ -546,30 +546,30 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(1-1) *3+3-1)
                 endif
             else
-                do 41 i = 1, nbnoeu
+                do i = 1, nbnoeu
                     num = zi(iadnum+i-1)
                     iadrtt = iadrt3 + (k-1)*nbnoeu + i - 1
                     zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(i-1) *3+1-1)
                     zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(i-1) *3+2-1)
                     zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(i-1) *3+3-1)
                     zi(indic+num-1) = 1
- 41             continue
+                end do
             endif
         else
 !     STOCKAGE DE LA DIRECTION DU CHAMPS THETA SUR LE FOND DE FISSURE
-            do 450 i = 1, nbnoeu
+            do i = 1, nbnoeu
                 num = zi(iadnum+i-1)
                 zr(itheta+(num-1)*3+1-1) = zr(in2+(i-1)*3+1-1)
                 zr(itheta+(num-1)*3+2-1) = zr(in2+(i-1)*3+2-1)
                 zr(itheta+(num-1)*3+3-1) = zr(in2+(i-1)*3+3-1)
-450         continue
+            end do
         endif
-400 end do
+    end do
 !
 !         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE SANS GAMMO
 !         POUR CALCULER PROJ(M)=N
 !
-    do 500 i = 1, nbel
+    do i = 1, nbel
         if (zi(indic+i-1) .ne. 1) then
             xm = zr(iadrco+(i-1)*3+1-1)
             ym = zr(iadrco+(i-1)*3+2-1)
@@ -577,7 +577,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
             dmin = r8maem()
             jmin = 0
             smin = 0.d0
-            do 600 j = 1, nbnoeu-1
+            do j = 1, nbnoeu-1
                 xi1 = zr(iadrco+(zi(iadnum+j-1)-1)*3+1-1)
                 yi1 = zr(iadrco+(zi(iadnum+j-1)-1)*3+2-1)
                 zi1 = zr(iadrco+(zi(iadnum+j-1)-1)*3+3-1)
@@ -608,11 +608,11 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     jmin = j
                     smin = s
                 endif
-600         continue
+            end do
             rii = (1-smin)*zr(iadrt1+jmin-1)+smin*zr(iadrt1+jmin+1-1)
             rsi = (1-smin)*zr(iadrt2+jmin-1)+smin*zr(iadrt2+jmin+1-1)
             alpha = (dmin-rii)/(rsi-rii)
-            do 700 k = 1, ndimte+1
+            do k = 1, ndimte+1
                 call codent(k, 'D0', kiord)
                 chamno = resu(1:8)//'_CHAM'//kiord//'     '
                 chamno(20:24) = '.VALE'
@@ -647,9 +647,9 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     zr(itheta+(i-1)*3+2-1) = 0.d0
                     zr(itheta+(i-1)*3+3-1) = 0.d0
                 endif
-700         continue
+            end do
         endif
-500 end do
+    end do
 !
 !
 ! DESTRUCTION D'OBJETS DE TRAVAIL

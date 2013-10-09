@@ -3,9 +3,9 @@ subroutine mtdorc(model, compor)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/comp_init.h"
 #include "asterfort/comp_meta_read.h"
 #include "asterfort/comp_meta_save.h"
-#include "asterfort/comp_init.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -45,7 +45,6 @@ subroutine mtdorc(model, compor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, ibid
     integer :: nb_cmp
     character(len=8) :: mesh
     character(len=19) :: list_vale
@@ -57,7 +56,7 @@ subroutine mtdorc(model, compor)
 ! - Initializations
 !
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    list_vale   = '&&LIST_VALE'
+    list_vale = '&&LIST_VALE'
 !
 ! - Create COMPOR <CARTE>
 !
@@ -76,5 +75,5 @@ subroutine mtdorc(model, compor)
     call jedetr(list_vale)
 !
     call jedema()
-
+!
 end subroutine

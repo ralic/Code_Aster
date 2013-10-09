@@ -15,13 +15,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
+    subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
                       repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
-                      type_coef, type_vale, type_lagr, epsi, lisrez)
+                      type_coef, vale_type, type_lagr, epsi, lisrez)
         integer, intent(in) :: nbterm
         real(kind=8), intent(in) :: coef_real(nbterm)
         complex(kind=8), intent(in) :: coef_cplx(nbterm)
-        character(len=8), intent(in) :: ddl_name(nbterm)
+        character(len=8), intent(in) :: dof_name(nbterm)
         character(len=8), intent(in) :: node_name(nbterm)
         integer, intent(in) :: repe_type(nbterm)
         real(kind=8), intent(in) :: repe_defi(3, nbterm)
@@ -29,7 +29,7 @@ interface
         complex(kind=8), intent(in) :: vale_cplx
         character(len=*), intent(in) :: vale_func
         character(len=4), intent(in) :: type_coef
-        character(len=4), intent(in) :: type_vale
+        character(len=4), intent(in) :: vale_type
         character(len=2), intent(in) :: type_lagr
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: lisrez

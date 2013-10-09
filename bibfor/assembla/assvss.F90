@@ -74,7 +74,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     integer :: ialcha, iamail, iancmp, ianmcr, ianueq, ianulo, iaprol
     integer :: iapsdl, iasssa, ichar, icmp, iconx1, iconx2, idnequ
     integer :: idprn1, idprn2, idresl, idveds, idverf, idvref, iec
-    integer ::  ierd, il, ilim, ilimnu, ilivec, ima
+    integer :: ierd, il, ilim, ilimnu, ilivec, ima
     integer :: inold, iret, jec, k1, lgncmp, n1, nbchar
     integer :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
     integer :: nddl1, nequa, nm, nmxcmp, nnoe, nugd

@@ -127,7 +127,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             nexci=0
         endif
         if (nexci .gt. 0) then
-            do 20 iexc = 1, nexci
+            do iexc = 1, nexci
                 call getvid('EXCIT', 'CHARGE', iocc=iexc, scal=k24bid, nbret=nocc)
 !
 ! --- GLUTE POUR LE CAS DEFI_CABLE_BP: MELANGE
@@ -143,7 +143,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 if ((nocc.eq.1) .and. (iret2.ne.0)) then
                     nchar = nchar + 1
                 endif
- 20         continue
+            end do
         else
 ! --- CAS OU LE CHARGEMENT PEUT NE PAS ETRE OBLIGATOIRE (DYNA_NON_LINE)
 !     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
@@ -167,7 +167,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             nchar1 = nchar
             nchar2 = 0
             call jeveuo(excit(1:19)//'.LCHA', 'L', jlcha)
-            do 22 ich = 1, nchar1
+            do ich = 1, nchar1
                 nomcha = zk24(jlcha-1+ich)(1:8)
 !
                 call jeexin(nomcha//'.CHME.SIGIN', iret)
@@ -178,7 +178,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                         nchar2 = nchar2 + 1
                     endif
                 endif
- 22         continue
+            end do
 !
             if (nchar1 .ne. nchar2) then
                 nchar3 = max(nchar2,1)
@@ -186,7 +186,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 call lisccr(lisch2, nchar3, 'V')
                 incha1 = 0
 !
-                do 24 ich = 1, nchar1
+                do ich = 1, nchar1
                     nbinfo = 1
                     call liscli(excit, ich, nomch1, nomfc1, nbinfo,&
                                 infoc1, ival1)
@@ -196,7 +196,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                                     infoc1, ival1)
                     endif
 !
- 24             continue
+                end do
                 nchar = nchar2
                 excit = lisch2
             endif
@@ -218,18 +218,18 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 ! ----- BOUCLE SUR LES CHARGES
 !
-        do 130 ich = 1, nchar
+        do ich = 1, nchar
             if (iexcit .eq. 1) then
                 indic = indic + 1
  30             continue
                 call getvid('EXCIT', 'CHARGE', iocc=indic, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     call getvid('EXCIT', 'CHARGE', iocc=indic, scal=nomcha, nbret=n1)
-                    do 131 ichd = 1, nchar
+                    do ichd = 1, nchar
                         if (nomcha .eq. zk8(jlisdb+ichd-1)) then
                             call utmess('E', 'CHARGES_1', sk=nomcha)
                         endif
-131                 continue
+                    end do
                 else
                     indic = indic + 1
                     goto 30
@@ -365,7 +365,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
 ! ------- CHARGE DE TYPE NEUMANN
 !
-            do 70 itych = 1, nbtych
+            do itych = 1, nbtych
                 if (nomlig(itych) .eq. '.VEASS') then
                     suffix = '     '
                 else
@@ -410,7 +410,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     ASSERT(nbinfo.lt.nbinmx)
                     lisinf(nbinfo) = infoch
                 endif
- 70         continue
+            end do
 !
 ! ------- CHARGE DE TYPE EVOL_CHAR
 !
@@ -466,7 +466,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
             infc = 0
             infoch = 'RIEN'
-            do 80 j = 1, nbchmx
+            do j = 1, nbchmx
                 lchin(1:17) = ligrch(1:13)//'.FL1'
                 call codent(j, 'D0', lchin(18:19))
                 lchin = lchin(1:19)//'.DESC'
@@ -476,7 +476,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 else
                     goto 90
                 endif
- 80         continue
+            end do
  90         continue
             if (infc .ne. 0) then
                 ival = max(infmax,infc)
@@ -496,7 +496,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                             lisinf, ival)
             endif
 !
-130     continue
+        end do
 !
 ! ---- PILOTAGE POSSIBLE SI IL YA DES CHARGES PILOTEES !
 !

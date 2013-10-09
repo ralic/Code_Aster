@@ -94,15 +94,15 @@ subroutine gesdef(nomres, numddl)
 !
 !---------------COMPTAGE DES NOEUDS DES DIVERS TYPES INTERFACE----------
 !
-    do 5 i = 1, 4
+    do i = 1, 4
         ikyp(i) = 0
-  5 end do
+    end do
 !
-    do 10 i = 1, nbnot
+    do i = 1, nbnot
         ik = zi(lldes+nbnot+i-1)
         ik = -ik
         ikyp(ik) = ikyp(ik) + 1
- 10 end do
+    end do
 !
     nomax = max(ikyp(1),ikyp(2))
     nomax = max(nomax,ikyp(3))

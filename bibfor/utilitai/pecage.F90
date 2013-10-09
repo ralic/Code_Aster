@@ -64,6 +64,7 @@ subroutine pecage(resu, modele, nbocc)
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
     logical :: nsymx, nsymy
+    ibid = 0
 !     ------------------------------------------------------------------
     data noparr/'LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',&
      &     'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',&
@@ -137,15 +138,15 @@ subroutine pecage(resu, modele, nbocc)
                 [c16b], noma, 0)
 !
     call wkvect('&&PECAGE.TRAV1', 'V V R', mxvale, lvale)
-    do 40 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !
         call getvtx('CARA_GEOM', 'TOUT', iocc=iocc, nbval=0, nbret=nt)
         call getvtx('CARA_GEOM', 'GROUP_MA', iocc=iocc, nbval=0, nbret=ng)
         call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=0, nbret=nm)
 !
-        do 10 i = 1, nbparr
+        do i = 1, nbparr
             valpar(i) = r8vide()
- 10     continue
+        end do
         valk(1) = '????????'
         valk(2) = '????????'
 !
@@ -168,7 +169,7 @@ subroutine pecage(resu, modele, nbocc)
             call getvtx('CARA_GEOM', 'GROUP_MA', iocc=iocc, nbval=nbgrma, vect=zk24(jgr),&
                         nbret=ng)
             valk(2) = 'GROUP_MA'
-            do 20 ig = 1, nbgrma
+            do ig = 1, nbgrma
                 call jeexin(jexnom(mlggma, zk24(jgr+ig-1)), iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'UTILITAI3_46', sk=zk24(jgr+ig-1))
@@ -189,7 +190,8 @@ subroutine pecage(resu, modele, nbocc)
                 valk(1) = zk24(jgr+ig-1)
                 call tbajli(resu, nbparc, noparr, [ibid], valpar,&
                             [c16b], valk, 0)
- 20         continue
+ 20             continue
+            end do
             call jedetr('&&PECAGE_GROUPM')
         endif
 !
@@ -199,7 +201,7 @@ subroutine pecage(resu, modele, nbocc)
             call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=nbmail, vect=zk8(jma),&
                         nbret=nm)
             valk(2) = 'MAILLE'
-            do 30 im = 1, nbmail
+            do im = 1, nbmail
                 call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)
                 if (iret .eq. 0) then
                     call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
@@ -215,11 +217,12 @@ subroutine pecage(resu, modele, nbocc)
                 valk(1) = zk8(jma+im-1)
                 call tbajli(resu, nbparc, noparr, [ibid], valpar,&
                             [c16b], valk, 0)
- 30         continue
+ 30             continue
+            end do
 !
             call jedetr('&&PECAGE_MAILLE')
         endif
- 40 end do
+    end do
 !
     call detrsd('CHAM_ELEM', '&&PECAGE.CARA_GEOM')
     call jedetr('&&PECAGE.TRAV1')

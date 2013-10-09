@@ -91,10 +91,10 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
     call wkvect(mailto, 'V V I', nbma2d*2, jmato)
 !
-    do 20 ima = 1, nbma2d
+    do ima = 1, nbma2d
         zi(jmato-1+ima) = zi(jma2d-1+ima)
         zi(jmato-1+nbma2d+ima) = zi(jma3d-1+ima)
- 20 end do
+    end do
 !
     call jedetr(mesmai)
     call jedetr(limamo)

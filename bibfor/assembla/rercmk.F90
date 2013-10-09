@@ -62,7 +62,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) ::  exiele
+    character(len=8) :: exiele
     character(len=24) :: nomli2
     character(len=19) :: nomlig
 !
@@ -159,17 +159,17 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         goto 12
     endif
 !
-    do 11 ima = 1, nbsma
+    do ima = 1, nbsma
         if (zi(iasssa-1+ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
-            do 13 i = 1, nbnm
+            do i = 1, nbnm
                 ino=zi(iamail-1+i)
                 iino=ino
                 if (ino .le. 0) then
                     call utmess('F', 'ASSEMBLA_36')
                 endif
-                do 14 j = i+1, nbnm
+                do j = i+1, nbnm
                     jno=zi(iamail-1+j)
                     jjno=jno
                     jrang= indiis(zi(iacoin+zi(ialcoi-1+iino)-1)&
@@ -186,10 +186,10 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
                         zi(iacoin+zi(ialcoi-1+jjno)-1+ irempl-1)=&
                         iino
                     endif
- 14             continue
- 13         continue
+                end do
+            end do
         endif
- 11 end do
+    end do
 !
  12 continue
 !
@@ -215,10 +215,10 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         call jeveuo(jexatr(nomlig//'.NEMA', 'LONCUM'), 'L', ilnema)
     endif
 !
-    do 31 igrel = 1, nbgrel
+    do igrel = 1, nbgrel
         nbel= zi(illiel-1+igrel+1)-zi(illiel-1+igrel) -1
         iagrel= ialiel + zi(illiel-1+igrel) -1
-        do 32 iel = 1, nbel
+        do iel = 1, nbel
             ima= zi(iagrel -1 +iel)
             if (ima .gt. 0) then
                 nbnm= zi(ilconx-1+ima+1)-zi(ilconx-1+ima)
@@ -228,12 +228,12 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
                 iamail = ianema + zi(ilnema-1-ima) -1
             endif
 !
-            do 33 i = 1, nbnm
+            do i = 1, nbnm
                 ino=zi(iamail-1+i)
                 iino= ino
                 if (ino .lt. 0) iino=nbnoma+nbnot-ino
 !
-                do 34 j = i+1, nbnm
+                do j = i+1, nbnm
                     jno=zi(iamail-1+j)
                     jjno= jno
                     if (jno .lt. 0) jjno=nbnoma+nbnot-jno
@@ -252,10 +252,10 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
                         zi(iacoin+zi(ialcoi-1+jjno)-1+ irempl-1)=&
                             iino
                     endif
- 34             continue
- 33         continue
- 32     continue
- 31 continue
+                end do
+            end do
+        end do
+    end do
 !
     call jeveuo(nomlig//'.NBNO', 'L', ianbno)
     nbnot= nbnot+zi(ianbno)
@@ -278,7 +278,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !     "I= MIN(NBCO)"
 !     ----------------------------------------------------------------
     i=0
-    do 51 k = 1, nbntt
+    do k = 1, nbntt
         if (zi(iaexi1+k) .eq. 0) goto 51
         if (zi(ianew1-1+k) .ne. 0) goto 51
         if (i .eq. 0) then
@@ -286,7 +286,8 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         else
             if (zi(ianbco-1+k) .lt. zi(ianbco-1+i)) i=k
         endif
- 51 end do
+ 51     continue
+    end do
     ASSERT(i.ne.0)
 !
     iinew=iinew+1
@@ -300,13 +301,13 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     longi= zi(ianbco-1+i)
     call renuu1(zi(iacoin-1+zi(ialcoi-1+i)), longi, zi(iaordo), longo, zi(ianbco),&
                 zi(ianew1))
-    do 101 j = 1, longo
+    do j = 1, longo
         iinew=iinew+1
         zi(ianew1-1+zi(iaordo-1+j))=iinew
         zi(iaold1-1+iinew)=zi(iaordo-1+j)
 !        -- SI ON A RENUMEROTE TOUS LES NOEUDS ATTENDUS, ON SORT :
         if (iinew .eq. nbntre) goto 200
-101 end do
+    end do
     ico=ico+1
     i=zi(iaold1-1+ico)
     if (i .eq. 0) then
@@ -324,7 +325,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     call jeveuo(nu//'.NEWN', 'E', ianewn)
 !
     icol=0
-    do 2 i = 1, nbntt
+    do i = 1, nbntt
         iio1 = zi(iaold1-1+i)
         if (iio1 .eq. 0) goto 3
         if (iio1 .gt. nm) then
@@ -339,19 +340,20 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
             endif
             zi(ianewn-1+iio1)=i-icol
         endif
-  2 end do
+    end do
   3 continue
 !     -- NBNMRE EST LE NOMBRE DE NOEUDS PHYSIQUES A RENUMEROTER
     nbnmre= iio2
 !
 !     -- ON FINIT EN "REVERSANT" LE TOUT :
 !     ------------------------------------
-    do 300 i = 1, nm
+    do i = 1, nm
         if (zi(ianewn-1+i) .eq. 0) goto 300
         newnno = nbnmre+1-zi(ianewn-1+i)
         zi(ianewn-1+i)= newnno
         zi(iaoldn-1+newnno)= i
-300 end do
+300     continue
+    end do
 !
 !
 !     -- ON ECRIT LES LARGEURS DE BANDE MOYENNES AVANT ET APRES:
@@ -365,13 +367,13 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     nbi=0
     ll1=0
     ll2=0
-    do 600 i = 1, nm
+    do i = 1, nm
         if (zi(iaexi1+i) .eq. 0) goto 600
         nbi= nbi+1
         nbco= zi(ianbco-1+i)
         l1=1
         l2=1
-        do 601 j = 1, nbco
+        do j = 1, nbco
             n1i=i
             n1j=zi(iacoin-2+zi(ialcoi-1+i)+j)
             if (n1j .gt. nm) goto 601
@@ -380,10 +382,12 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
             n2i= zi(ianewn-1+n1i)
             n2j= zi(ianewn-1+n1j)
             l2= max(l2,(n2i-n2j)+1)
-601     continue
+601         continue
+        end do
         ll1=ll1+l1
         ll2=ll2+l2
-600 end do
+600     continue
+    end do
     if (niv .ge. 1) then
         write(ifm,*)'   --- HAUTEUR DE COLONNE MOYENNE (EN NOEUDS)'
         write(ifm,*)'        (EN NE TENANT COMPTE QUE DES NOEUDS '&

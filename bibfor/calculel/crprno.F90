@@ -37,7 +37,7 @@ subroutine crprno(champ, base, nbnoeu, nequa)
 #include "asterfort/dismoi.h"
     integer :: nbnoeu, nequa, nec
     character(len=*) :: champ, base
-    character(len=8) ::  gran
+    character(len=8) :: gran
 !     ------------------------------------------------------------------
     call dismoi('NOM_GD', champ, 'CHAM_NO', repk=gran)
     call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)

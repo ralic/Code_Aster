@@ -57,7 +57,7 @@ subroutine xprmil(noma, cnslt, cnsln)
     integer :: ifm, niv, nbma, jma, jconx1, jconx2, jlnno, jltno, ima
     integer :: ar(12, 3), nbar, ia, na, nb, nunoa, nunob, nmil, nunom
     real(kind=8) :: lsna, lsnb, lsta, lstb
-    character(len=8) ::  typma
+    character(len=8) :: typma
     character(len=19) :: mai
 !
 !-----------------------------------------------------------------------
@@ -78,7 +78,7 @@ subroutine xprmil(noma, cnslt, cnsln)
     call jeveuo(cnslt//'.CNSV', 'E', jltno)
 !
 !     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
 !
         if (ismali(typma)) goto 100
@@ -86,7 +86,7 @@ subroutine xprmil(noma, cnslt, cnsln)
         call conare(typma, ar, nbar)
 !
 !       BOUCLE SUR LES ARETES DE LA MAILLE
-        do 110 ia = 1, nbar
+        do ia = 1, nbar
 !       ON RECUPERE LES NUMEROS DES 2 NOEUDS DE L'ARETE
             na=ar(ia,1)
             nb=ar(ia,2)
@@ -107,8 +107,9 @@ subroutine xprmil(noma, cnslt, cnsln)
             zr(jlnno-1+(nunom-1)+1) = (lsna+lsnb)/2.d0
             zr(jltno-1+(nunom-1)+1) = (lsta+lstb)/2.d0
 !
-110     continue
-100 end do
+        end do
+100     continue
+    end do
 !
 !-----------------------------------------------------------------------
 !     FIN

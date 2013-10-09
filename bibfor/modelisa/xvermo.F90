@@ -49,7 +49,7 @@ subroutine xvermo(nfiss, fiss, mod)
 !
     call jemarq()
 !
-    do 10 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 !       RECUPERATION DU MODELE ASSOCIE A LA FISSURE COURANTE
         call dismoi('NOM_MODELE', fiss(ifiss), 'FISS_XFEM', repk=modf)
@@ -62,7 +62,7 @@ subroutine xvermo(nfiss, fiss, mod)
             call utmess('F', 'XFEM_39', nk=3, valk=valk)
         endif
 !
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

@@ -41,7 +41,7 @@ subroutine cnonor(nomo, gran, base, cno)
 ! ======================================================================
 ! BUT :     COMMANDE : CREA_CHAMP/OPERATION:'NORMALE'
 ! ----------------------------------------------------------------------
-    integer ::  nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
+    integer :: nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
     integer :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
     integer :: ic, iec, iand, jlma, jnunoe, jnorm, jnno, jval, jnbca, jdesc
     real(kind=8) :: valr(3)

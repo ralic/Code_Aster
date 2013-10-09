@@ -147,9 +147,9 @@ subroutine ritz99(nomres)
 !
         if (nbmod1 .gt. 0) then
             call wkvect(trang1, 'V V I', nbmod1, lrang1)
-            do 31 ii = 1, nbmod1
+            do ii = 1, nbmod1
                 zi(lrang1+ii-1)=ii
- 31         continue
+            end do
             inord=1
             call moco99(nomres, resul1, nbmod1, zi(lrang1), inord,&
                         .true.)
@@ -157,9 +157,9 @@ subroutine ritz99(nomres)
         endif
         if (nbmodb .gt. 0) then
             call wkvect(trang2, 'V V I', nbmodb, lrang2)
-            do 32 ii = 1, nbmodb
+            do ii = 1, nbmodb
                 zi(lrang2+ii-1)=ii
- 32         continue
+            end do
             call moco99(nomres, resul2, nbmodb, zi(lrang2), inord,&
                         .false.)
             call jedetr(trang2)
@@ -220,7 +220,7 @@ subroutine ritz99(nomres)
         nbmoda=0
         call getvis('RITZ', 'NMAX_MODE', iocc=1, scal=nbmod1, nbret=ibi5)
         call wkvect(tempi2, 'V V I', nbgl, lnbm)
-        do 30 i = 1, nbgl
+        do i = 1, nbgl
             call rsorac(zk8(idgl+i-1), 'LONUTI', ibid, bid, k8b,&
                         cbid, ebid, 'ABSOLU', nbold, 1,&
                         nbid)
@@ -231,14 +231,14 @@ subroutine ritz99(nomres)
                 nbmoda = nbmoda+min(zi(idor+i-1),nbold(1))
                 zi(lnbm+i-1)=min(zi(idor+i-1),nbold(1))
             endif
- 30     continue
+        end do
     endif
 !
     if (nbmoda .gt. 0) then
         call wkvect(trang1, 'V V I', nbmoda, lrang1)
-        do 10 ii = 1, nbmoda
+        do ii = 1, nbmoda
             zi(lrang1+ii-1)=ii
- 10     continue
+        end do
     endif
 !
     if (.not.seul) then
@@ -253,9 +253,9 @@ subroutine ritz99(nomres)
         endif
         if (nbmodb .gt. 0) then
             call wkvect(trang2, 'V V I', nbmodb, lrang2)
-            do 11 ii = 1, nbmodb
+            do ii = 1, nbmodb
                 zi(lrang2+ii-1)=ii
- 11         continue
+            end do
         endif
     else
         nbmodb=0
@@ -281,43 +281,43 @@ subroutine ritz99(nomres)
             call wkvect('&&RITZ99.AMORTI', 'V V R8', nbmoda, jamog)
 !
             call jeveuo(listam//'           .VALE', 'L', iamog)
-            do 33 iam = 1, nbmoda
+            do iam = 1, nbmoda
                 zr(jamog+iam-1) = zr(iamog+iam-1)
- 33         continue
+            end do
         else if (nbamor.lt.nbmoda) then
             call wkvect('&&RITZ99.AMORTI', 'V V R8', nbamor, jamog)
             call jeveuo(listam//'           .VALE', 'L', iamog)
-            do 41 iam = 1, nbamor
+            do iam = 1, nbamor
                 zr(jamog+iam-1) = zr(iamog+iam-1)
- 41         continue
+            end do
             idiff = nbmoda - nbamor
             vali (1) = idiff
             vali (2) = nbmoda
             vali (3) = idiff
             call utmess('I', 'ALGORITH16_19', ni=3, vali=vali)
             call wkvect('&&RITZ99.AMORTI2', 'V V R8', nbmoda, jamo2)
-            do 51 iam = 1, nbamor
+            do iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamog+iam-1)
- 51         continue
-            do 61 iam = nbamor + 1, nbmoda
+            end do
+            do iam = nbamor + 1, nbmoda
                 zr(jamo2+iam-1) = zr(jamog+nbamor-1)
- 61         continue
+            end do
             jamog = jamo2
         else if (nbamor.eq.nbmoda) then
             call wkvect('&&RITZ99.AMORTI', 'V V R8', nbamor, jamog)
             call jeveuo(listam//'           .VALE', 'L', iamog)
-            do 71 iam = 1, nbamor
+            do iam = 1, nbamor
                 zr(jamog+iam-1) = zr(iamog+iam-1)
- 71         continue
+            end do
         endif
 !   ----ON AJOUTE LA LIST_AMOR COMME VALEURS DU PARAM 'AMOR_REDUIT'
 !       DU RESULT1 (SI UN SEUL MODE_MECA)
         if (nbgl .eq. 1) then
-            do 81 iam = 1, nbmoda
+            do iam = 1, nbmoda
                 call rsadpa(resul1, 'E', 1, 'AMOR_REDUIT', iam,&
                             0, sjv=iamor, styp=k8b)
                 zr(iamor) = zr(jamog+iam-1)
- 81         continue
+            end do
         endif
     endif
 !
@@ -347,11 +347,11 @@ subroutine ritz99(nomres)
             call dismoi('REF_AMOR_PREM', resul1, 'RESU_DYNA', repk=amor1, arret='C',&
                         ier=ier)
         else if (nbgl.gt.1) then
-            do 20 i = 1, nbgl
+            do i = 1, nbgl
                 call moco99(nomres, zk8(idgl+i-1), zi(lnbm+i-1), zi( lrang1), inord,&
                             .true.)
                 resul1 = zk8(idgl+i-1)
- 20         continue
+            end do
             inord = inord + nbmoda
         endif
 !

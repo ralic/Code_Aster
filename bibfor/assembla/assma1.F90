@@ -28,7 +28,6 @@ subroutine assma1(matas, ldist)
 !                     DONNEE INCOMPLETE PAR PROC
 !---------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/echmat.h"
 #include "asterfort/jedema.h"
@@ -38,12 +37,13 @@ subroutine assma1(matas, ldist)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: matas
 !---------------------------------------------------------------
     logical :: lmnsy, exilag, ldist
     integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
     integer :: ilig, jcol, kterm, nlong, jrefa, nvale, jvalm1, jvalm2, jconl
-    character(len=1) ::  ktyp, base1
+    character(len=1) :: ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
     real(kind=8) :: rmin, rmax, rcoef
@@ -101,12 +101,13 @@ subroutine assma1(matas, ldist)
 !
 !     CALCUL DE EXILAG : .TRUE. : IL EXISTE DES DDLS DE LAGRANGE
     exilag=.false.
-    do 10,jcol=1,n
-    if (zi(jdelgl-1+jcol) .lt. 0) then
-        exilag=.true.
-        goto 10
-    endif
-    10 end do
+    do jcol = 1, n
+        if (zi(jdelgl-1+jcol) .lt. 0) then
+            exilag=.true.
+            goto 10
+        endif
+ 10     continue
+    end do
     if (imatd .ne. 0) then
         exilag=.true.
     endif
@@ -127,39 +128,39 @@ subroutine assma1(matas, ldist)
 !
 ! ---------------------------------------------------------------
     call wkvect(mat19//'.CONL', base1//' V R', ng, jconl)
-    do 20,jcol=1,ng
-    if (zi(jdelgg-1+jcol) .eq. 0) then
-        zr(jconl-1+jcol)=1.d0
-    else
-        zr(jconl-1+jcol)=rcoef
-    endif
-    20 end do
+    do jcol = 1, ng
+        if (zi(jdelgg-1+jcol) .eq. 0) then
+            zr(jconl-1+jcol)=1.d0
+        else
+            zr(jconl-1+jcol)=rcoef
+        endif
+    end do
 !
 !
 ! 4.  MISE A L'ECHELLE DE LA MATRICE
 ! ---------------------------------------------------------------
     jcol=1
-    do 30,kterm=1,nz
-    if (zi(jsmdi-1+jcol) .lt. kterm) jcol=jcol+1
-    ilig=zi4(jsmhc-1+kterm)
-    if (zi(jdelgl-1+jcol)+zi(jdelgl-1+ilig) .lt. 0) then
-        if (ktyp .eq. 'R') then
-            zr(jvalm1-1+kterm)=rcoef*zr(jvalm1-1+kterm)
-        else
-            zc(jvalm1-1+kterm)=rcoef*zc(jvalm1-1+kterm)
-        endif
-        if (lmnsy) then
+    do kterm = 1, nz
+        if (zi(jsmdi-1+jcol) .lt. kterm) jcol=jcol+1
+        ilig=zi4(jsmhc-1+kterm)
+        if (zi(jdelgl-1+jcol)+zi(jdelgl-1+ilig) .lt. 0) then
             if (ktyp .eq. 'R') then
-                zr(jvalm2-1+kterm)=rcoef*zr(jvalm2-1+kterm)
+                zr(jvalm1-1+kterm)=rcoef*zr(jvalm1-1+kterm)
             else
-                zc(jvalm2-1+kterm)=rcoef*zc(jvalm2-1+kterm)
+                zc(jvalm1-1+kterm)=rcoef*zc(jvalm1-1+kterm)
+            endif
+            if (lmnsy) then
+                if (ktyp .eq. 'R') then
+                    zr(jvalm2-1+kterm)=rcoef*zr(jvalm2-1+kterm)
+                else
+                    zc(jvalm2-1+kterm)=rcoef*zc(jvalm2-1+kterm)
+                endif
             endif
         endif
-    endif
-    30 end do
+    end do
     ASSERT(jcol.eq.n)
 !
 !
-40  continue
+ 40 continue
     call jedema()
 end subroutine

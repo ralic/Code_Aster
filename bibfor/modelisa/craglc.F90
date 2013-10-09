@@ -54,7 +54,7 @@ subroutine craglc(long, ligrch)
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
 !-----------------------------------------------------------------------
-    integer ::  idlgns, idnbno, iret, lonema
+    integer :: idlgns, idnbno, iret, lonema
     integer :: longma, longut, lonlig, lont, nbeldi, nbelma, nbelut
     integer :: nbmata, nbnomx
 !-----------------------------------------------------------------------

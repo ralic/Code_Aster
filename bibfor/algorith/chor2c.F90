@@ -81,7 +81,7 @@ subroutine chor2c(lischa, vecele)
 !
 ! --- BOUCLES SUR LES CHAMNO
 !
-    do 10 ivec = 1, nbvec
+    do ivec = 1, nbvec
 !
 ! ----- NOM DU RESU_ELEM
 !
@@ -134,15 +134,15 @@ subroutine chor2c(lischa, vecele)
 ! ------- CREATION CHAMNO A VALEURS COMPLEXES
 !
             call wkvect(chamno//'.VALE', 'V V C', nbvale, jcn)
-            do 20 ivale = 1, nbvale
+            do ivale = 1, nbvale
                 zc(jcn+ivale-1) = dcmplx(zr(kvale+ivale-1),0.d0)
- 20         continue
+            end do
 !
 ! ------- CHANGEMENT DE LA REFERENCE A LA GRANDEUR
 !
             call sdchgd(chamno, 'C')
         endif
- 10 end do
+    end do
 !
     call jedetr('&&CHOR2C.COPIE_TRAVAIL')
     call jedema()

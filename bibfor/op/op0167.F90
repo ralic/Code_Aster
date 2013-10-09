@@ -167,10 +167,10 @@ subroutine op0167()
         endif
         call wkvect('&&OP0167.NOMMC', 'V V K16', nbjoin, jnommc)
         call wkvect('&&OP0167.OCCMC', 'V V I', nbjoin, joccmc)
-        do 10 i = 1, nbjoin
+        do i = 1, nbjoin
             zk16(jnommc-1+i)='CREA_FISS'
             zi(joccmc-1+i)=i
- 10     continue
+        end do
 !
         call cmcrea(nomain, nomaou, nbjoin, zk16(jnommc), zi(joccmc))
         goto 350
@@ -225,7 +225,7 @@ subroutine op0167()
 !          TRAITEMENT DES MOTS CLES "PENTA15_18","HEXA20_27"
 ! ----------------------------------------------------------------------
 !
-    do 77 k = 1, 2
+    do k = 1, 2
         if (k .eq. 1) motfac='HEXA20_27'
         if (k .eq. 2) motfac='PENTA15_18'
         call getfac(motfac, nbmoma)
@@ -276,7 +276,7 @@ subroutine op0167()
             endif
             goto 350
         endif
- 77 end do
+    end do
 !
 ! ----------------------------------------------------------------------
 !          TRAITEMENT DU MOT CLE "QUAD_LINE"
@@ -328,13 +328,13 @@ subroutine op0167()
         endif
 !
         iqtr=0
-        do 20 iocc = 1, nbmoma
+        do iocc = 1, nbmoma
             call getvtx('MODI_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
             if (option .eq. 'QUAD_TRIA3') then
                 iqtr=iqtr+1
                 iocct=iocc
             endif
- 20     continue
+        end do
 !
         if (iqtr .eq. 0) then
             goto 30
@@ -504,7 +504,7 @@ subroutine op0167()
         call wkvect(nume2, 'V V I', nbmaiv, jnu2)
 !
         iad=1
-        do 60 iocc = 1, nbmoma
+        do iocc = 1, nbmoma
             call getvtx('MODI_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
             zi(jiad+iocc-1)=1
             call getvtx('MODI_MAILLE', 'PREF_NOEUD', iocc=iocc, nbval=0, nbret=n1)
@@ -528,10 +528,10 @@ subroutine op0167()
             call wkvect(lisi, 'V V I', zi(jiad+iocc-1)-1, jlii)
             call wkvect(lisk, 'V V K8', zi(jiad+iocc-1)-1, jlik)
 !
-            do 40 ii = 1, zi(jiad+iocc-1)-1
+            do ii = 1, zi(jiad+iocc-1)-1
                 zi(jlii+ii-1)=zi(jmomnu+ii-1)
                 zk8(jlik+ii-1)=zk8(jmomno+ii-1)
- 40         continue
+            end do
             call cocali(momuto, lisi, 'I')
             call cocali(momoto, lisk, 'K8')
             iaa=iad
@@ -540,9 +540,9 @@ subroutine op0167()
 ! LE PREFIXE EST LE MEME POUR TOUS LES NOEUDS ENTRE
 ! L'ANCIENNE ET LA NOUVELLE ADRESSE
 !
-            do 50 ii = iaa, iad-1
+            do ii = iaa, iad-1
                 zk8(jpr2+ii-1)=zk8(jpro+iocc-1)
- 50         continue
+            end do
 !
 ! LE PREF_NUME EST A DEFINIR POUR LE PREMIER NOEUD
 ! LES AUTRES SE TROUVENT EN INCREMENTANT
@@ -561,7 +561,8 @@ subroutine op0167()
                     write (ifm,9010)zi(jiad+iocc-1)-1,'SEG3','SEG4'
                 endif
             endif
- 60     continue
+ 60         continue
+        end do
 !
         call jeveuo(momuto, 'L', jmomtu)
         call jeveuo(momoto, 'L', jmomto)
@@ -586,7 +587,7 @@ subroutine op0167()
         call wkvect(crmanu, 'V V I', nbmaiv, jcrmnu)
         call wkvect(crmano, 'V V K8', nbmaiv, jcrmno)
         nbmaj1=0
-        do 70 iocc = 1, nbcrma
+        do iocc = 1, nbcrma
             nbmst=nbmaj1
             call palim3('CREA_MAILLE', iocc, nomain, crmanu, crmano,&
                         nbmaj1)
@@ -594,7 +595,7 @@ subroutine op0167()
                 write (ifm,9040)iocc
                 write (ifm,9050)nbmaj1-nbmst
             endif
- 70     continue
+        end do
         call jeveuo(crmanu, 'L', jcrmnu)
         call jeveuo(crmano, 'L', jcrmno)
     endif
@@ -614,10 +615,10 @@ subroutine op0167()
         call wkvect(crgrnu, 'V V I', nbmaiv, jcrgnu)
         call wkvect(crgrno, 'V V K8', nbmaiv, jcrgno)
         nbmaj2=0
-        do 80 iocc = 1, nbgrma
+        do iocc = 1, nbgrma
             call palim3('CREA_GROUP_MA', iocc, nomain, crgrnu, crgrno,&
                         nbmaj2)
- 80     continue
+        end do
         call jeveuo(crgrnu, 'L', jcrgnu)
         call jeveuo(crgrno, 'L', jcrgno)
     endif
@@ -651,18 +652,18 @@ subroutine op0167()
         call wkvect('&&OP0167.IND_NOEUD', 'V V I', nbnoev, jtrno)
         call wkvect('&&OP0167.NOM_NOEUD', 'V V K8', nbnoev, jnono)
 !
-        do 100 iocc = 1, nbcrp1
+        do iocc = 1, nbcrp1
             call reliem(' ', nomain, 'NO_NOEUD', motfac, iocc,&
                         nbmc, motcle, tymocl, nomjv, nbno)
             call jeveuo(nomjv, 'L', jnoeu)
-            do 90 i = 0, nbno-1
+            do i = 0, nbno-1
                 call jenonu(jexnom(nomnov, zk8(jnoeu+i)), ino)
                 zi(jtrno-1+ino)=1
- 90         continue
-100     continue
+            end do
+        end do
 !
 !        --- VERIFICATION QUE LE NOM N'EXISTE PAS ET COMPTAGE---
-        do 110 ima = 1, nbnoev
+        do ima = 1, nbnoev
             if (zi(jtrno+ima-1) .eq. 0) goto 110
             call jenuno(jexnum(nomnov, ima), newmai)
             call jenonu(jexnom(nommav, newmai), ibid)
@@ -674,7 +675,8 @@ subroutine op0167()
                 valk(2)=newmai
                 call utmess('A', 'ALGELINE4_43', nk=2, valk=valk)
             endif
-110     continue
+110         continue
+        end do
     endif
 !
 ! ----------------------------------------------------------------------
@@ -687,7 +689,7 @@ subroutine op0167()
 !
         call jecreo(nomnoe, 'G N K8')
         call jeecra(nomnoe, 'NOMMAX', nbnot, ' ')
-        do 120 ino = 1, nbnoev
+        do ino = 1, nbnoev
             call jenuno(jexnum(nomnov, ino), nomg)
             call jeexin(jexnom(nomnoe, nomg), iret)
             if (iret .eq. 0) then
@@ -696,8 +698,8 @@ subroutine op0167()
                 valk(1)=nomg
                 call utmess('F', 'ALGELINE4_5', sk=valk(1))
             endif
-120     continue
-        do 130 ino = nbnoev+1, nbnot
+        end do
+        do ino = nbnoev+1, nbnot
 ! TRAITEMENT DES NOEUDS AJOUTES
 ! ON CODE LE NUMERO DU NOEUD COURANT
             call codent(zi(jnu2+ino-nbnoev-1), 'G', knume)
@@ -722,13 +724,13 @@ subroutine op0167()
                 valk(1)=nomg
                 call utmess('F', 'ALGELINE4_5', sk=valk(1))
             endif
-130     continue
+        end do
 !
         call jeveuo(coovav, 'L', jvale)
         call wkvect(cooval, 'G V R8', 3*nbnot, kvale)
-        do 140 i = 0, 3*nbnoev-1
+        do i = 0, 3*nbnoev-1
             zr(kvale+i)=zr(jvale+i)
-140     continue
+        end do
         call jelira(coovav, 'DOCU', cval=cdim)
         call jeecra(cooval, 'DOCU', cval=cdim)
     else
@@ -799,7 +801,7 @@ subroutine op0167()
     call wkvect('&&OP0167.NOMNUM', 'V V I', nbmain, jnonum)
     dimcon = 0
     decala = 0
-    do 180 ima = 1, nbmaiv
+    do ima = 1, nbmaiv
         call jenuno(jexnum(nommav, ima), nomg)
         call jeexin(jexnom(nommai, nomg), iret)
         if (iret .eq. 0) then
@@ -818,13 +820,13 @@ subroutine op0167()
         call jelira(jexnum(connev, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connev, ibid), 'L', jopt)
         nbptt=nbpt
-        do 150 in = 1, nbnoaj
+        do in = 1, nbnoaj
             if (ima .eq. zi(jmomtu+in-1)) then
                 nbptt=nbpt+1
                 goto 160
 !
             endif
-150     continue
+        end do
 160     continue
         call jenonu(jexnom(nommai, nomg), ibid)
         dimcon = dimcon+nbptt
@@ -832,11 +834,11 @@ subroutine op0167()
         zi(jnnomb+ima-1) = nbpt
         zi(jadrjv+ima-1) = jopt
         zi(jnonum+ima-1) = ibid
-180 end do
+    end do
 !
     decala = decala + nbmaiv
 !
-    do 200 ima = 1, nbmaj1
+    do ima = 1, nbmaj1
         newmai=zk8(jcrmno+ima-1)
         inumol=zi(jcrmnu+ima-1)
         call jeexin(jexnom(nommai, newmai), iret)
@@ -860,11 +862,11 @@ subroutine op0167()
         zi(jnnoma+decala+ima-1) = nbpt
         zi(jadrjv+decala+ima-1) = jopt
         zi(jnonum+decala+ima-1) = ibid
-200 end do
+    end do
 !
     decala = decala + nbmaj1
 !
-    do 220 ima = 1, nbmaj2
+    do ima = 1, nbmaj2
         newmai=zk8(jcrgno+ima-1)
         inumol=zi(jcrgnu+ima-1)
         call jeexin(jexnom(nommai, newmai), iret)
@@ -888,51 +890,51 @@ subroutine op0167()
         zi(jnnoma+decala+ima-1) = nbpt
         zi(jadrjv+decala+ima-1) = jopt
         zi(jnonum+decala+ima-1) = ibid
-220 end do
+    end do
 !
     dimcon = dimcon+nbmaj3
     call jeecra(connex, 'LONT', dimcon)
 !
     decala = 0
-    do 500 ima = 1, nbmaiv
+    do ima = 1, nbmaiv
         nbptt = zi(jnnoma+decala+ima-1)
         nbpt = zi(jnnomb+decala+ima-1)
         jopt = zi(jadrjv+decala+ima-1)
         ibid = zi(jnonum+decala+ima-1)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbptt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
-        do 510 ino = 0, nbpt-1
+        do ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
-510     continue
-500 end do
+        end do
+    end do
 !
     decala = decala + nbmaiv
 !
-    do 520 ima = 1, nbmaj1
+    do ima = 1, nbmaj1
         nbpt = zi(jnnoma+decala+ima-1)
         jopt = zi(jadrjv+decala+ima-1)
         ibid = zi(jnonum+decala+ima-1)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
-        do 530 ino = 0, nbpt-1
+        do ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
-530     continue
-520 end do
+        end do
+    end do
 !
     decala = decala + nbmaj1
 !
-    do 540 ima = 1, nbmaj2
+    do ima = 1, nbmaj2
         nbpt = zi(jnnoma+decala+ima-1)
         jopt = zi(jadrjv+decala+ima-1)
         ibid = zi(jnonum+decala+ima-1)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
-        do 550 ino = 0, nbpt-1
+        do ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
-550     continue
-540 end do
+        end do
+    end do
 !
-    do 230 ima = 1, nbmaj3
+    do ima = 1, nbmaj3
         newmai=zk8(jnono+ima-1)
         call jenonu(jexnom(nommai, newmai), ibid)
         if (ibid .ne. 0) goto 230
@@ -953,7 +955,8 @@ subroutine op0167()
         call jeecra(jexnum(connex, ibid), 'LONMAX', 1)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         call jenonu(jexnom(nomnoe, newmai), zi(jnpt))
-230 end do
+230     continue
+    end do
     call jedetr('&&OP0167.NBNOMA')
     call jedetr('&&OP0167.NBNOMB')
     call jedetr('&&OP0167.ADRJVX')
@@ -972,7 +975,7 @@ subroutine op0167()
         call jeecra(gpptnm, 'NOMMAX', nbgrmn, ' ')
         call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbgrmn)
-        do 250 i = 1, nbgrmv
+        do i = 1, nbgrmv
             call jenuno(jexnum(grpmav, i), nomg)
             call jeexin(jexnom(grpmai, nomg), iret)
             if (iret .eq. 0) then
@@ -987,11 +990,11 @@ subroutine op0167()
             call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
-            do 240 j = 0, nbma-1
+            do j = 0, nbma-1
                 zi(jgg+j)=zi(jvg+j)
-240         continue
-250     continue
-        do 270 i = 1, nbgrma
+            end do
+        end do
+        do i = 1, nbgrma
             call getvtx('CREA_GROUP_MA', 'NOM', iocc=i, scal=nomg, nbret=n1)
             ASSERT(n1.eq.1)
             call jeexin(jexnom(grpmai, nomg), iret)
@@ -1008,10 +1011,10 @@ subroutine op0167()
             call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2, 1))
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmaj2)
             call jeveuo(jexnom(grpmai, nomg), 'E', iagma)
-            do 260 ima = 0, nbmaj2-1
+            do ima = 0, nbmaj2-1
                 call jenonu(jexnom(nommai, zk8(jcrgno+ima)), zi(iagma+ ima))
-260         continue
-270     continue
+            end do
+        end do
     endif
 !
 ! ----------------------------------------------------------------------
@@ -1025,7 +1028,7 @@ subroutine op0167()
         call jeecra(gpptnn, 'NOMMAX', nbgrno, ' ')
         call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     nbgrno)
-        do 290 i = 1, nbgrno
+        do i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
             call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
@@ -1039,10 +1042,10 @@ subroutine op0167()
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno, 1))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
-            do 280 j = 0, nbno-1
+            do j = 0, nbno-1
                 zi(jgg+j)=zi(jvg+j)
-280         continue
-290     continue
+            end do
+        end do
     endif
 !
     if (nbmoma .ne. 0) call cmmoma(nomaou, momuto, nbnoev, nbnoaj)
@@ -1054,10 +1057,10 @@ subroutine op0167()
 !
     if (nbcrp1 .ne. 0) then
         nbgrma=0
-        do 300 iocc = 1, nbcrp1
+        do iocc = 1, nbcrp1
             call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) nbgrma=nbgrma+1
-300     continue
+        end do
         if (nbgrma .ne. 0) then
             call jeexin(grpmai, iret)
             if (iret .eq. 0) then
@@ -1076,7 +1079,7 @@ subroutine op0167()
                 call jeecra(gpptnm, 'NOMMAX', nbgrmt, ' ')
                 call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                             nbgrmt)
-                do 320 i = 1, nbgma
+                do i = 1, nbgma
                     call jenuno(jexnum(grpmav, i), nomg)
                     call jeexin(jexnom(grpmai, nomg), iret)
                     if (iret .eq. 0) then
@@ -1091,12 +1094,12 @@ subroutine op0167()
                     call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
                     call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
-                    do 310 j = 0, nbma-1
+                    do j = 0, nbma-1
                         zi(jgg+j)=zi(jvg+j)
-310                 continue
-320             continue
+                    end do
+                end do
             endif
-            do 340 iocc = 1, nbcrp1
+            do iocc = 1, nbcrp1
                 call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, scal=nogma, nbret=n1)
@@ -1118,15 +1121,15 @@ subroutine op0167()
                     call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma, 1))
                     call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nogma), 'E', iagma)
-                    do 330 ima = 0, nbma-1
+                    do ima = 0, nbma-1
                         call jenonu(jexnom(nommai, zk8(jmail+ima)), zi( iagma+ima))
-330                 continue
+                    end do
                     if (niv .ge. 1) then
                         write (ifm,9020)iocc
                         write (ifm,9030)nogma,nbma
                     endif
                 endif
-340         continue
+            end do
         endif
     endif
 ! ----------------------------------------------------------------------

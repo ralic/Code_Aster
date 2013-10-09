@@ -57,7 +57,7 @@ subroutine fornpd(option, nomte)
     real(kind=8) :: btdm(4, 3, 42), btds(4, 2, 42)
     real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
     real(kind=8) :: btdf(3, 42), btild(5, 42)
-    real(kind=8) :: epais, x
+    real(kind=8) :: epais
     real(kind=8) :: rotfm(9)
     real(kind=8) :: deplm(42), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sgmtd(5)
@@ -119,9 +119,9 @@ subroutine fornpd(option, nomte)
     call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm,&
                 rotfm)
 !
-    do 35 i = 1, 5*nb1+2
+    do i = 1, 5*nb1+2
         effint(i)=0.d0
-35  end do
+    end do
 !
     if (option .eq. 'REFE_FORC_NODA') then
         call r8inir(nb1*5, 0.d0, ftemp, 1)
@@ -129,8 +129,8 @@ subroutine fornpd(option, nomte)
 !
     kwgt=0
     kpgs=0
-    do 100 icou = 1, nbcou
-        do 100 inte = 1, npge
+    do icou = 1, nbcou
+        do inte = 1, npge
             if (inte .eq. 1) then
                 zic = zmin + (icou-1)*hic
                 coef = 1.d0/3.d0
@@ -146,7 +146,7 @@ subroutine fornpd(option, nomte)
 !
 !   CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
-            do 120 intsr = 1, npgsr
+            do intsr = 1, npgsr
                 call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr,&
                             zr(lzr), hepa, vectn, vectg, vectt,&
                             hsfm, hss)
@@ -157,9 +157,9 @@ subroutine fornpd(option, nomte)
                 call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                             hepa, vectpt, hsj1m, hsj1s, btdm,&
                             btds)
-120          continue
+            end do
 !
-            do 150 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
                 call mahsf(1, nb1, zr(jgeom), ksi3s2, intsn,&
                            zr(lzr), hepa, vectn, vectg, vectt,&
@@ -197,20 +197,21 @@ subroutine fornpd(option, nomte)
 !
                     call r8inir(5, 0.d0, sigtmp, 1)
 !
-                    do 155 i = 1, 5
+                    do i = 1, 5
                         sigtmp(i)=sigref
                         call epseff('EFFORI', nb1, [0.d0], btild, sigtmp,&
                                     [0.d0], wgt, effint)
                         sigtmp(i)=0.d0
-                        do 156 j = 1, nb1*5
+                        do j = 1, nb1*5
                             ftemp(j) = ftemp(j)+abs(effint(j))
-156                      continue
-155                  continue
+                        end do
+                    end do
 !
                 endif
 !
-150          continue
-100      continue
+            end do
+        end do
+    end do
 !
 !      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
 !
@@ -224,9 +225,9 @@ subroutine fornpd(option, nomte)
 !-- EXPANSION DU CHAMP
     call vexpan(nb1, effint, vecl)
 !
-    do 17 i = 1, 6*nb1
+    do i = 1, 6*nb1
         vecll(i)=vecl(i)
-17  end do
+    end do
     vecll(6*nb1+1)=effint(5*nb1+1)
     vecll(6*nb1+2)=effint(5*nb1+2)
 !        VECLL(6*NB1+3)=0.D0
@@ -234,24 +235,24 @@ subroutine fornpd(option, nomte)
 !     ICI PAS DE CONTRIBUTION DES DDL DE LA ROTATION FICTIVE DANS EFFINT
 !
     zero=0.d0
-    do 18 i = 1, nb1
+    do i = 1, nb1
         vecll(6*i)=zero*rotfm(i)
-18  end do
+    end do
     i=nb2
     vecll(6*nb1+3)=zero*rotfm(nb2)
 !
 !     TRANFORMATION DANS REPERE GLOBAL PUIS STOCKAGE
 !
-    do 105 ib = 1, nb2
-        do 106 i = 1, 2
-            do 107 j = 1, 3
+    do ib = 1, nb2
+        do i = 1, 2
+            do j = 1, 3
                 vecpt(ib,i,j)=vectpt(ib,i,j)
-107          end do
-106      end do
+            end do
+        end do
         vecpt(ib,3,1)=vectn(ib,1)
         vecpt(ib,3,2)=vectn(ib,2)
         vecpt(ib,3,3)=vectn(ib,3)
-105  end do
+    end do
 !
     call jevech('PVECTUR', 'E', ivectu)
 !

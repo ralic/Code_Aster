@@ -108,6 +108,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     character(len=24) :: name_ancr, name_anc1, name_anc2
     integer :: nume_cabl, nume_cabl0
     integer :: jlces, jll, jlr, nbchs
+    cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
 !

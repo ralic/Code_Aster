@@ -116,9 +116,9 @@ subroutine vecgen(nomres, numeg)
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
-        do 9 i = 1, nbsst
+        do i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
-  9     continue
+        end do
     endif
 !
 !     1/ LECTURE ET STOCKAGE DES INFORMATIONS
@@ -218,7 +218,7 @@ subroutine vecgen(nomres, numeg)
     motfac = 'CHAR_SOUS_STRUC'
 !
 !     BOUCLE SUR LES SOUS-STRUCTURES CHARGEES
-    do 10 i = 1, nbchar
+    do i = 1, nbchar
 !
 !-----------------------------------------------------------------------
 !     B/ RECUPERATION DU NOM DE LA SOUS-STRUCTURE ET ECRITURE DANS
@@ -318,7 +318,7 @@ subroutine vecgen(nomres, numeg)
 !
 !     COPIE DU NUME_DDL DANS LE .LICH
         zk8(ldnddl+i-1) = nubamo(1:8)
- 10 continue
+    end do
 !
 !     ECRITURE DU .REFE
     zk24(llref) = modgen
@@ -334,7 +334,7 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
 !     BOUCLES SUR LES SOUS-STRUCTURES CHARGEES
 !-----------------------------------------------------------------------
-    do 50 i = 1, nbchar
+    do i = 1, nbchar
 !
 !-----------------------------------------------------------------------
 !     2.1/ RECUPERATION D'INFORMATIONS DE BASE
@@ -385,7 +385,7 @@ subroutine vecgen(nomres, numeg)
         call jeveuo(jexnom(chaval, nomsst), 'E', iavale)
 !
 !     BOUCLE SUR LES MODES
-        do 20 j = 1, nbmod
+        do j = 1, nbmod
 !
 !     EXTRACTION DU CHAMP DE DEPLACEMENTS ASSOCIE AU MODE J
             call rsexch('F', basmod, 'DEPL', j, nomcha,&
@@ -402,9 +402,9 @@ subroutine vecgen(nomres, numeg)
 !     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
             zr(iavale+j-1) = ddot(neq,zr(idvect),1,zr(ladrve),1)
 !
- 20     continue
+        end do
         call jedetr('&&'//pgc//'.VECTA')
- 50 continue
+    end do
 !
 !     3/ ASSEMBLAGE
 !     =============
@@ -417,7 +417,7 @@ subroutine vecgen(nomres, numeg)
     call jeveuo(jexnom(chalis, 'SOUSSTR'), 'L', ldstr)
 !
 !     BOUCLE SUR LES SOUS-STRUCTURES CHARGEES
-    do 200 i = 1, nbchar
+    do i = 1, nbchar
 !
 !     RECUPERATION DU NOM DE LA SOUS-STRUCTURE ET DU CHARGEMENT
 !     PROJETE ASSOCIE.
@@ -428,11 +428,11 @@ subroutine vecgen(nomres, numeg)
             call jenonu(jexnom(modgen//'      .MODG.SSNO', nomsst), nusst)
         else
 !     CAS OU ON RECOURS A L'ELIMINATION
-            do 60 i1 = 1, nbsst
+            do i1 = 1, nbsst
                 if (zk8(lsst+i1-1) .eq. nomsst) then
                     nusst=i1
                 endif
- 60         continue
+            end do
         endif
 !
 !     RECUPERATION DU D.D.L. GENERALISE DE DEPART ET DU NOMBRE TOTAL
@@ -444,9 +444,9 @@ subroutine vecgen(nomres, numeg)
 !     CAS OU ON RECOURS A L'ELIMINATION
             nddl0=0
             nbmod=0
-            do 70 i1 = 1, nusst-1
+            do i1 = 1, nusst-1
                 nddl0 = nddl0 + zi(lsilia+i1-1)
- 70         continue
+            end do
             nbmod = zi(lsilia+nusst-1)
         endif
 !
@@ -458,22 +458,22 @@ subroutine vecgen(nomres, numeg)
 !
 !     BOUCLE SUR LES MODES DE LA SOUS-STRUCTURE
         if (elim .eq. 0) then
-            do 80 j = 1, nbmod
+            do j = 1, nbmod
                 ipos=(nddl0 - 1) + (j - 1)
                 zr(lrval+ipos) = zr(lrval+ipos) + zr(idvale+j-1)
- 80         continue
+            end do
         else
 !     CAS OU ON RECOURS A L'ELIMINATION
 !     ON RE PROJETTE SUR LA BASE T : F_proj = T^t * (Phi^t * F)
-            do 100 j1 = 1, neqred
+            do j1 = 1, neqred
                 zr(lrval+j1-1)=0.0d0
-                do 90 i1 = 1, nbmod
+                do i1 = 1, nbmod
                     zr(lrval+j1-1) = zr(lrval+j1-1) + zr(idvale+i1-1)* zr(lmapro+(j1-1)*neqet+ndd&
                                      &l0+i1-1)
- 90             continue
-100         continue
+                end do
+            end do
         endif
-200 continue
+    end do
 !
     call jedema()
 end subroutine

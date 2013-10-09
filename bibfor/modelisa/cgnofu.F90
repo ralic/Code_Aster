@@ -56,14 +56,14 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! ----------------------------------------------------------------------
     real(kind=8) :: vecori(3)
 !
-    integer ::  nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j, idcoor
+    integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j, idcoor
     integer :: jmail, jnotr, idlino, jtrav, jnobe, idnono, ino1, ino2, ino
     integer :: jnord, nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
     real(kind=8) :: rfut, rfut2, lfut, lcumul, xc1h, xc2h, r, c2nb(3), lc1nb, x
     real(kind=8) :: y, z, xmin, xmax, lc2nb, c2h(3), ymin, ymax, zmin, zmax
     real(kind=8) :: hnb(3), c1h(3), l12
-    character(len=8) ::  noma, prefix, typm, ndorig, ndextr
+    character(len=8) :: noma, prefix, typm, ndorig, ndextr
     character(len=16) :: motfac, motcle(3), typmcl(3)
     character(len=24) :: lisnoe, mesmai, lisnom, mafour
 !     ------------------------------------------------------------------
@@ -152,7 +152,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !     -----------------------------------------
 !
     irest = 0
-    do 100 i = 1, nbnc-1
+    do i = 1, nbnc-1
 !
 ! ------ RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU SEGMENT :
 !        ---------------------------------------------------------
@@ -189,7 +189,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
         endif
         l12 = sqrt(lc1c2)
         if ((lcumul+l12) .ge. lfut) then
-            if (irest .ne. 0) goto 9999
+            if (irest .ne. 0) goto 999
             irest = irest + 1
             c1c2(1) = c1c2(1) / l12
             c1c2(2) = c1c2(2) / l12
@@ -211,7 +211,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !        DONT LES DIMENSIONS SONT XMAX,XMIN, YMAX,YMIN, ZMAX,ZMIN :
 !        --------------------------------------------------------
         nbnor = 0
-        do 110 j = 1, nbnb
+        do j = 1, nbnb
             ino = zi(jnobe+j-1)
             x = zr(idcoor-1+3*(ino-1)+1)
             y = zr(idcoor-1+3*(ino-1)+2)
@@ -221,11 +221,11 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
                 nbnor = nbnor + 1
                 zi(jnord+nbnor-1) = ino
             endif
-110     continue
+        end do
 !
 ! ------ PARCOURS DES NOEUDS DE LA BOITE A INTERSECTER :
 !        ---------------------------------------------
-        do 120 j = 1, nbnor
+        do j = 1, nbnor
             ino = zi(jnord+j-1)
 !
             nb(1) = zr(idcoor-1+3*(ino-1)+1)
@@ -277,23 +277,23 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
                 endif
             endif
 !
-120     continue
+        end do
 !
-100 end do
+    end do
 !
-9999 continue
+999 continue
 !
 ! --- ON COMPTE LES NOEUDS ET ON LES AFFECTE A LISNOE
 !
     call wkvect(lisnoe, 'V V I', nbnot, idlino)
 !
     nbno = 0
-    do 200 i = 1, nbnot
+    do i = 1, nbnot
         if (zi(jnotr+i-1) .eq. 1) then
             nbno = nbno + 1
             zi(idlino+nbno-1) = i
         endif
-200 end do
+    end do
 !
     call jedetr(mesmai)
     call jedetr('&&CGNOFU.TRAVAIL')

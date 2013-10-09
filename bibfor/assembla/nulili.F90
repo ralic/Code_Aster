@@ -120,9 +120,9 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !
     lligr2='&&NULILI.LLIGR2'
     call wkvect(lligr2, 'V V K24', nligr, jligr2)
-    do 662 k = 1, nligr
+    do k = 1, nligr
         zk24(jligr2-1+k) =zk24(illigr-1+k)
-662 end do
+    end do
     call jeecra(lligr2, 'LONUTI', nligr)
     nlili = nligr+1
     if (nlili .eq. 1) then
@@ -147,7 +147,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !
 !---- CHARGEMENT DE LILI, ADNE, ADLI
 !
-    do 10 iligr = 1, nligr
+    do iligr = 1, nligr
         nomli = zk24(jligr2+iligr-1)
 !
 !---- VERIFICATION DE L'UNICITE DU PHENOMENE
@@ -206,7 +206,8 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
         zi(iadlie+3* (iligr)+1) = iad
         call jeveut(jexatr(nomli(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
         zi(iadlie+3* (iligr)+2) = iad
- 10 end do
+ 10     continue
+    end do
 !
 !
     call dismoi('NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', repi=nbelm)
@@ -219,7 +220,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
         call dismoi('NOM_GD', pheno, 'PHENOMENE', repk=nomgds)
     else
         ligrel = zk24(jligr2-1+1)
-        do 20 igr = 1, nbgrel(ligrel)
+        do igr = 1, nbgrel(ligrel)
             ite = typele(ligrel,igr)
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
             call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//moloc), imode)
@@ -228,7 +229,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
                 call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), nomgds)
                 goto 30
             endif
- 20     continue
+        end do
         ASSERT(.false.)
  30     continue
     endif

@@ -188,18 +188,18 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     call jeveuo(chams1//'.CESV', 'E', jcesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
 !
-    do 1 i = 1, 6
+    do i = 1, 6
         valed(i) = 0.0d0
         valer(i) = 0.0d0
         valet(i) = 0.0d0
-  1 end do
-    do 2 i = 1, 3
+    end do
+    do i = 1, 3
         axer(i) = 0.0d0
         axet(i) = 0.0d0
         axez(i) = 0.0d0
         orig(i) = 0.0d0
         angnot(i) = 0.0d0
-  2 end do
+    end do
     licmpu(1) = 1
     licmpu(2) = 2
     licmpu(3) = 3
@@ -241,7 +241,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         call matrot(angnot, pgl)
         if (type(1:4) .eq. 'TENS') then
 ! TENSEUR
-            do 10 inel = 1, nbmail
+            do inel = 1, nbmail
                 if (nbm .ne. 0) then
                     imai = zi(idmail+inel-1)
                 else
@@ -251,9 +251,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                 if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 11 ipt = 1, nbpt
-                        do 12 isp = 1, nbsp
-                            do 13 ii = 1, ncmp
+                    do ipt = 1, nbpt
+                        do isp = 1, nbsp
+                            do ii = 1, ncmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -261,7 +261,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 10
                                 endif
- 13                         continue
+                            end do
                             valed(1) = valet(1)
                             valed(2) = valet(4)
                             valed(3) = valet(2)
@@ -275,7 +275,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                             valer(4) = valet(2)
                             valer(5) = valet(4)
                             valer(6) = valet(5)
-                            do 14 ii = 1, nbcmp
+                            do ii = 1, nbcmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -283,14 +283,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 10
                                 endif
- 14                         continue
- 12                     continue
- 11                 continue
+                            end do
+                        end do
+                    end do
                 else
 ! CHAMP COMPLEXE
-                    do 111 ipt = 1, nbpt
-                        do 112 isp = 1, nbsp
-                            do 113 ii = 1, ncmp
+                    do ipt = 1, nbpt
+                        do isp = 1, nbsp
+                            do ii = 1, ncmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -298,7 +298,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 10
                                 endif
-113                         continue
+                            end do
                             valed(1) = dble(valetc(1))
                             valed(2) = dble(valetc(4))
                             valed(3) = dble(valetc(2))
@@ -327,7 +327,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                             valei(5) = valet(4)
                             valei(6) = valet(5)
 !
-                            do 114 ii = 1, nbcmp
+                            do ii = 1, nbcmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -335,14 +335,15 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 10
                                 endif
-114                         continue
-112                     continue
-111                 continue
+                            end do
+                        end do
+                    end do
                 endif
- 10         continue
+ 10             continue
+            end do
         else
 !  VECTEUR
-            do 15 inel = 1, nbmail
+            do inel = 1, nbmail
                 if (nbm .ne. 0) then
                     imai = zi(idmail+inel-1)
                 else
@@ -352,9 +353,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                 if (tsca .eq. 'R') then
 ! CHAMP REEL
-                    do 16 ipt = 1, nbpt
-                        do 17 isp = 1, nbsp
-                            do 18 ii = 1, ncmp
+                    do ipt = 1, nbpt
+                        do isp = 1, nbsp
+                            do ii = 1, ncmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -362,13 +363,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 15
                                 endif
- 18                         continue
+                            end do
                             if (ndim .eq. 3) then
                                 call utpvgl(1, ncmp, pgl, valed, valer)
                             else
                                 call ut2vgl(1, ncmp, pgl, valed, valer)
                             endif
-                            do 19 ii = 1, nbcmp
+                            do ii = 1, nbcmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -376,14 +377,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 15
                                 endif
- 19                         continue
- 17                     continue
- 16                 continue
+                            end do
+                        end do
+                    end do
                 else
 ! CHAMP COMPLEXE
-                    do 116 ipt = 1, nbpt
-                        do 117 isp = 1, nbsp
-                            do 118 ii = 1, ncmp
+                    do ipt = 1, nbpt
+                        do isp = 1, nbsp
+                            do ii = 1, ncmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -393,7 +394,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 15
                                 endif
-118                         continue
+                            end do
                             if (ndim .eq. 3) then
                                 call utpvgl(1, ncmp, pgl, valed, valer)
                                 call utpvgl(1, ncmp, pgl, valet, valei)
@@ -401,7 +402,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 call ut2vgl(1, ncmp, pgl, valed, valer)
                                 call ut2vgl(1, ncmp, pgl, valet, valei)
                             endif
-                            do 119 ii = 1, nbcmp
+                            do ii = 1, nbcmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -409,11 +410,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 15
                                 endif
-119                         continue
-117                     continue
-116                 continue
+                            end do
+                        end do
+                    end do
                 endif
- 15         continue
+ 15             continue
+            end do
         endif
         call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
         call cescel(chams1, ligrel, option, ' ', 'OUI',&
@@ -480,7 +482,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !
             if (tych(1:4) .eq. 'ELNO') then
 !
-                do 20 inel = 1, nbmail
+                do inel = 1, nbmail
                     if (nbm .ne. 0) then
                         imai = zi(idmail+inel-1)
                     else
@@ -489,16 +491,16 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                     nbpt = zi(jcesd-1+5+4* (imai-1)+1)
                     nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                     ncmp = zi(jcesd-1+5+4* (imai-1)+3)
-                    do 21 ipt = 1, nbpt
-                        do 22 isp = 1, nbsp
+                    do ipt = 1, nbpt
+                        do isp = 1, nbsp
                             test = .true.
-                            do 23 ii = 1, ncmp
+                            do ii = 1, ncmp
                                 call cesexi('S', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
                                     test = .false.
                                 endif
- 23                         continue
+                            end do
                             if (test) goto 20
                             ino = zi(jconx1-1+zi(jconx2+imai-1)+ipt-1)
                             axer(1) = zr(axyzm+3*(ino-1) ) - orig(1)
@@ -524,14 +526,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 axer(1) = 0.0d0
                                 axer(2) = 0.0d0
                                 axer(3) = 0.0d0
-                                do 24 ipt2 = 1, nbpt
+                                do ipt2 = 1, nbpt
                                     inot = zi(jconx1-1+zi(jconx2+imai- 1)+ipt2-1)
                                     axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
                                     axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
                                     if (ndim .eq. 3) then
                                         axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
                                     endif
- 24                             continue
+                                end do
                                 axer(1) = axer(1)/nbpt - orig(1)
                                 axer(2) = axer(2)/nbpt - orig(2)
                                 axer(3) = axer(3)/nbpt - orig(3)
@@ -554,14 +556,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                             call provec(axez, axer, axet)
                             xnormr = 0.0d0
                             call normev(axet, xnormr)
-                            do 26 i = 1, 3
+                            do i = 1, 3
                                 pgl(1,i) = axer(i)
                                 pgl(2,i) = axez(i)
                                 pgl(3,i) = axet(i)
- 26                         continue
+                            end do
                             if (tsca .eq. 'R') then
 ! CHAMP REEL
-                                do 27 ii = 1, ncmp
+                                do ii = 1, ncmp
                                     call cesexi('S', jcesd, jcesl, imai, ipt,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -569,7 +571,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 20
                                     endif
- 27                             continue
+                                end do
                                 valed(1) = valet(1)
                                 valed(2) = valet(4)
                                 valed(3) = valet(2)
@@ -583,7 +585,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 valer(4) = valet(2)
                                 valer(5) = valet(4)
                                 valer(6) = valet(5)
-                                do 28 ii = 1, nbcmp
+                                do ii = 1, nbcmp
                                     call cesexi('C', jcesd, jcesl, imai, ipt,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -591,10 +593,10 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 20
                                     endif
- 28                             continue
+                                end do
                             else
 ! CHAMP COMPLEXE
-                                do 213 ii = 1, ncmp
+                                do ii = 1, ncmp
                                     call cesexi('C', jcesd, jcesl, imai, ipt,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -602,7 +604,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 20
                                     endif
-213                             continue
+                                end do
                                 valed(1) = dble(valetc(1))
                                 valed(2) = dble(valetc(4))
                                 valed(3) = dble(valetc(2))
@@ -631,7 +633,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 valei(5) = valet(4)
                                 valei(6) = valet(5)
 !
-                                do 214 ii = 1, nbcmp
+                                do ii = 1, nbcmp
                                     call cesexi('C', jcesd, jcesl, imai, ipt,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -639,11 +641,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 20
                                     endif
-214                             continue
+                                end do
                             endif
- 22                     continue
- 21                 continue
- 20             continue
+                        end do
+                    end do
+ 20                 continue
+                end do
 !
             else if (tych(1:4).eq.'ELGA') then
 !        ----------------------------
@@ -653,7 +656,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 call jeveuo(manoga//'.CESV', 'L', mnogav)
                 ASSERT(zk8(mnogak).eq.ma)
 !
-                do 120 inel = 1, nbmail
+                do inel = 1, nbmail
                     if (nbm .ne. 0) then
                         imai = zi(idmail+inel-1)
                     else
@@ -686,40 +689,40 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !
 !  RECUP DES COORDONNEES DES NOEUDS
 !
-                    do 130 ino = 1, nbno
+                    do ino = 1, nbno
                         nuno = zi(jconx1-1+zi(jconx2+imai-1)+ino-1)
                         x(ino) = zr(axyzm+3*(nuno-1) )
                         y(ino) = zr(axyzm+3*(nuno-1)+1)
                         z(ino) = zr(axyzm+3*(nuno-1)+2)
-130                 continue
+                    end do
 !
 !  CALCUL DES COORDONNEES DES POINTS DE GAUSS DE LA MAILLE COURANTE
 !
-                    do 140 ipg = 1, nbpg
+                    do ipg = 1, nbpg
                         xx=0.d0
                         yy=0.d0
                         zz=0.d0
                         iadr=mnogav-1+iad+1+nbno*(ipg-1)
-                        do 141 ino = 1, nbno
+                        do ino = 1, nbno
                             xx = xx + x(ino)*zr(iadr+ino)
                             yy = yy + y(ino)*zr(iadr+ino)
                             zz = zz + z(ino)*zr(iadr+ino)
-141                     continue
+                        end do
                         xpg(ipg) = xx
                         ypg(ipg) = yy
                         zpg(ipg) = zz
-140                 continue
+                    end do
 !
-                    do 121 ipg = 1, nbpg
-                        do 122 isp = 1, nbsp
+                    do ipg = 1, nbpg
+                        do isp = 1, nbsp
                             test = .true.
-                            do 123 ii = 1, ncmp
+                            do ii = 1, ncmp
                                 call cesexi('S', jcesd, jcesl, imai, ipg,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
                                     test = .false.
                                 endif
-123                         continue
+                            end do
                             if (test) goto 120
                             axer(1) = xpg(ipg) - orig(1)
                             axer(2) = ypg(ipg) - orig(2)
@@ -756,14 +759,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                             call provec(axez, axer, axet)
                             xnormr = 0.0d0
                             call normev(axet, xnormr)
-                            do 126 i = 1, 3
+                            do i = 1, 3
                                 pgl(1,i) = axer(i)
                                 pgl(2,i) = axez(i)
                                 pgl(3,i) = axet(i)
-126                         continue
+                            end do
                             if (tsca .eq. 'R') then
 ! CHAMP REEL
-                                do 127 ii = 1, ncmp
+                                do ii = 1, ncmp
                                     call cesexi('S', jcesd, jcesl, imai, ipg,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -771,7 +774,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 120
                                     endif
-127                             continue
+                                end do
                                 valed(1) = valet(1)
                                 valed(2) = valet(4)
                                 valed(3) = valet(2)
@@ -785,7 +788,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 valer(4) = valet(2)
                                 valer(5) = valet(4)
                                 valer(6) = valet(5)
-                                do 128 ii = 1, nbcmp
+                                do ii = 1, nbcmp
                                     call cesexi('C', jcesd, jcesl, imai, ipg,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -793,10 +796,10 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 120
                                     endif
-128                             continue
+                                end do
                             else
 ! CHAMP COMPLEXE
-                                do 313 ii = 1, ncmp
+                                do ii = 1, ncmp
                                     call cesexi('C', jcesd, jcesl, imai, ipg,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -804,7 +807,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 120
                                     endif
-313                             continue
+                                end do
                                 valed(1) = dble(valetc(1))
                                 valed(2) = dble(valetc(4))
                                 valed(3) = dble(valetc(2))
@@ -833,7 +836,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 valei(5) = valet(4)
                                 valei(6) = valet(5)
 !
-                                do 314 ii = 1, nbcmp
+                                do ii = 1, nbcmp
                                     call cesexi('C', jcesd, jcesl, imai, ipg,&
                                                 isp, ii, iad)
                                     if (iad .gt. 0) then
@@ -841,11 +844,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                     else
                                         goto 120
                                     endif
-314                             continue
+                                end do
                             endif
-122                     continue
-121                 continue
-120             continue
+                        end do
+                    end do
+120                 continue
+                end do
             endif
         else
 ! VECTEUR
@@ -854,7 +858,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 licmpu(2)=3
                 licmpu(3)=2
             endif
-            do 29 inel = 1, nbmail
+            do inel = 1, nbmail
                 if (nbm .ne. 0) then
                     imai = zi(idmail+inel-1)
                 else
@@ -862,16 +866,16 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 endif
                 nbpt = zi(jcesd-1+5+4* (imai-1)+1)
                 nbsp = zi(jcesd-1+5+4* (imai-1)+2)
-                do 30 ipt = 1, nbpt
-                    do 31 isp = 1, nbsp
+                do ipt = 1, nbpt
+                    do isp = 1, nbsp
                         test = .true.
-                        do 32 ii = 1, ncmp
+                        do ii = 1, ncmp
                             call cesexi('C', jcesd, jcesl, imai, ipt,&
                                         isp, ii, iad)
                             if (iad .gt. 0) then
                                 test = .false.
                             endif
- 32                     continue
+                        end do
                         if (test) goto 29
                         ino = zi(jconx1-1+zi(jconx2+imai-1)+ipt-1)
                         axer(1) = zr(axyzm+3*(ino-1) ) - orig(1)
@@ -897,14 +901,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                             axer(1) = 0.0d0
                             axer(2) = 0.0d0
                             axer(3) = 0.0d0
-                            do 33 ipt2 = 1, nbpt
+                            do ipt2 = 1, nbpt
                                 inot = zi(jconx1-1+zi(jconx2+imai-1)+ ipt2-1)
                                 axer(1) = axer(1) + zr(axyzm+3*(inot- 1) )
                                 axer(2) = axer(2) + zr(axyzm+3*(inot- 1)+1)
                                 if (ndim .eq. 3) then
                                     axer(3) = axer(3) + zr(axyzm+3*( inot-1)+2)
                                 endif
- 33                         continue
+                            end do
                             axer(1) = axer(1)/nbpt - orig(1)
                             axer(2) = axer(2)/nbpt - orig(2)
                             axer(3) = axer(3)/nbpt - orig(3)
@@ -927,14 +931,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                         call provec(axez, axer, axet)
                         xnormr = 0.0d0
                         call normev(axet, xnormr)
-                        do 35 i = 1, 3
+                        do i = 1, 3
                             pgl(1,i) = axer(i)
                             pgl(2,i) = axez(i)
                             pgl(3,i) = axet(i)
- 35                     continue
+                        end do
                         if (tsca .eq. 'R') then
 ! CHAMP REEL
-                            do 36 ii = 1, ncmp
+                            do ii = 1, ncmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -942,13 +946,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 29
                                 endif
- 36                         continue
+                            end do
                             if (ndim .eq. 3) then
                                 call utpvgl(1, 3, pgl, valed, valer)
                             else
                                 call ut2vgl(1, 3, pgl, valed, valer)
                             endif
-                            do 37 ii = 1, nbcmp
+                            do ii = 1, nbcmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -956,10 +960,10 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 29
                                 endif
- 37                         continue
+                            end do
                         else
 ! CHAMP COMPLEXE
-                            do 136 ii = 1, ncmp
+                            do ii = 1, ncmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -969,7 +973,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 29
                                 endif
-136                         continue
+                            end do
                             if (ndim .eq. 3) then
                                 call utpvgl(1, 3, pgl, valed, valer)
                                 call utpvgl(1, 3, pgl, valet, valei)
@@ -977,7 +981,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 call ut2vgl(1, 3, pgl, valed, valer)
                                 call ut2vgl(1, 3, pgl, valet, valei)
                             endif
-                            do 137 ii = 1, nbcmp
+                            do ii = 1, nbcmp
                                 call cesexi('C', jcesd, jcesl, imai, ipt,&
                                             isp, ii, iad)
                                 if (iad .gt. 0) then
@@ -986,12 +990,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                                 else
                                     goto 29
                                 endif
-137                         continue
+                            end do
                         endif
 !
- 31                 continue
- 30             continue
- 29         continue
+                    end do
+                end do
+ 29             continue
+            end do
         endif
         call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
         call cescel(chams1, ligrel, option, ' ', 'OUI',&

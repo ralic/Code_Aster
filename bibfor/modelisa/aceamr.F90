@@ -129,20 +129,20 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !     PAR DEFAUT POUR M, A, K :
 !        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
     call infdis('DIMC', dimcar, r8bid, k8bid)
-    do 200 i = 1, 3
+    do i = 1, 3
         zk8(jdcinf+i-1) = 'REP'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i-1), zk8(jdcinf+i-1))
         zk8(jdcinf+i+2) = 'SYM'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
         zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-200 end do
+    end do
     zk8(jdcinf+9) = 'ETAK    '
     call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
     zk8(jdcinf+10) = 'TYDI    '
     call infdis('INIT', ibid, zr(jdvinf+10), zk8(jdcinf+10))
 ! --- CREATION DES CARTES
-    do 220 i = 1, 3
+    do i = 1, 3
         cart(i) = nomu//'.CARDISC'//kma(i)
         tmpnd(i) = cart(i)//'.NCMP'
         tmpvd(i) = cart(i)//'.VALV'
@@ -153,13 +153,13 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
         endif
         call jeveuo(tmpnd(i), 'E', jdc(i))
         call jeveuo(tmpvd(i), 'E', jdv(i))
-220 end do
+    end do
 !
 !     RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ibid, niv)
 !
 ! --- BOUCLE SUR LES OCCURRENCES DE MASS_AJOU
-    do 30 ioc = 1, nbocc
+    do ioc = 1, nbocc
         eta = 0.0d0
 !        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
         irep = 1
@@ -174,9 +174,9 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !         CALL GETVTX('MASS_AJOU','REPERE'  ,IOC,IARG,1,REP,NREP)
         call getvtx('MASS_AJOU', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
 !
-        do 32 i = 1, nrd
+        do i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
- 32     continue
+        end do
 !        UNITE POUR IMPRIMER LES VALEUR DES DISCRETS
 !         CALL GETVIS('MASS_AJOU','UNITE',IOC,IARG,1,IBID,IER)
         iunite = 6
@@ -191,7 +191,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
         car(1)='M_T_N'
 !
 !         II = 0
-        do 34 nc = 1, ncarac
+        do nc = 1, ncarac
             transl=.true.
 !
             if (transl) then
@@ -203,9 +203,9 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                 ASSERT(.false.)
             endif
 !
-            do 255 ino = 1, nbno
+            do ino = 1, nbno
                 zk8(itbmp + ino - 1) = ' '
-255         continue
+            end do
 !
 !
 !
@@ -223,7 +223,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                 endif
 !
 !
-                do 22 in = 0, nma-1
+                do in = 0, nma-1
 !                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                     call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
                     call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
@@ -232,23 +232,24 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                     if (nbnma .ne. nbnoeu) then
                         call utmess('F', 'MODELISA_20', sk=nommai)
                     endif
-                    do 25 inbn = 1, nbnma
+                    do inbn = 1, nbnma
                         inoe = zi(ldnm+inbn-1)
                         call jenuno(jexnum(mlgnno, inoe), nomnoe)
-                        do 24 ino = 1, nbno
+                        do ino = 1, nbno
                             if (zk8(itbno+ino-1) .eq. nomnoe) then
                                 zk8(itbmp+ino-1) = nommai
 !
                                 goto 22
                             endif
- 24                     continue
- 25                 continue
+                        end do
+                    end do
 !                 SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
 !                 A LA SURFACE, ET CE N'EST PAS NORMAL
                     write(ifm,*)'GROUP_MA :', (' '//zk24(jdls+ii-1),&
                     ii=1,ng)
                     call utmess('F', 'MODELISA_21', sk=nomnoe)
- 22             continue
+ 22                 continue
+                end do
 !              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
                 lorep = 5
                 if (irep .eq. 1) lorep = 6
@@ -257,16 +258,16 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !            VERIF QU'UN DISCRET EST FIXE A CHACUN DES NOEUDS DU RADIER
 !            (UNE SEULE FOIS PAR OCCURRENCE DE MASS_AJOU)
                 if (nc .eq. 1) then
-                    do 227 ino = 1, nbno
+                    do ino = 1, nbno
                         if (zk8(itbmp + ino - 1) .eq. ' ') then
                             call jenuno(jexnum(mlgnno, ino), nomnoe)
                             call utmess('F', 'MODELISA2_8', sk=nomnoe)
                         endif
-227                 continue
+                    end do
                 endif
 !
                 if (iunite .gt. 0 .and. niv .eq. 2) then
-                    do 27 i = 1, nbno
+                    do i = 1, nbno
                         iv = 1
                         jd = itbmp + i - 1
                         jn = itbno + i - 1
@@ -277,10 +278,10 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                                 jj=0,5), repdis(irep)(1:lorep)
                             endif
                         endif
- 27                 continue
+                    end do
                 endif
 !
-                do 28 i = 1, nbno
+                do i = 1, nbno
                     iv = 1
                     jd = itbmp + i - 1
                     jn = itbno + i - 1
@@ -305,11 +306,12 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                                 limano=[zk8(jd)])
                     call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
                                 limano=[zk8(jd)])
- 28             continue
+                end do
             endif
- 34     continue
+        end do
 !
- 30 end do
+ 30     continue
+    end do
 !
     call jedetr('&&TMPDISCRET')
     call jedetr('&&TMPTABNO')
@@ -319,10 +321,10 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     call getfac('RIGI_PARASOL', nborp)
     call getfac('RIGI_MISS_3D', nborm)
     if (nborp .eq. 0 .and. nborm .eq. 0) then
-        do 240 i = 1, 3
+        do i = 1, 3
             call jedetr(tmpnd(i))
             call jedetr(tmpvd(i))
-240     continue
+        end do
         call jedetr(tmcinf)
         call jedetr(tmvinf)
     endif

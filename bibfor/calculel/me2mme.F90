@@ -106,7 +106,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=2) :: codret
     integer :: nbin
 !-----------------------------------------------------------------------
-    integer ::  icha, ier, ifla, ilires, iret
+    integer :: icha, ier, ifla, ilires, iret
     integer :: j, jveass, nh
 !-----------------------------------------------------------------------
     parameter(nbin=43)
@@ -131,10 +131,10 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     matel=matelz
     base=basez
 !
-    do 10 i = 1, nbin
+    do i = 1, nbin
         lchin(i)=' '
         lpain(i)=' '
- 10 end do
+    end do
 !
     chvarc='&&ME2MME.VARC'
     chvref='&&ME2MME.VARC.REF'
@@ -273,7 +273,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !
 !
-    do 50 icha = 1, nchar
+    do icha = 1, nchar
         call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=kbid)
         if (kbid(5:7) .eq. '_FO') then
             lfonc=.true.
@@ -544,7 +544,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 ! ====================================================================
 !         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
 !
-        do 20 j = 1, 99
+        do j = 1, 99
             lchin(13)(1:17)=ligrch(1:13)//'.FL1'
             call codent(j, 'D0', lchin(13)(18:19))
             lchin(13)=lchin(13)(1:19)//'.DESC'
@@ -572,7 +572,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
             call reajre(matel, lchout(1), base)
- 20     continue
+        end do
  30     continue
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.PRESS', iret)
@@ -652,7 +652,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         call nmdepr(modele, ligrmo, cara, charge, 1,&
                     time, resufv)
 !
-        do 40 i = 1, 3
+        do i = 1, 3
             call exisd('CHAMP_GD', resufv(i), iret)
             if (iret .ne. 0) then
                 ilires=ilires+1
@@ -661,7 +661,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                 call detrsd('CHAMP_GD', resufv(i))
                 call reajre(matel, lchout(1), base)
             endif
- 40     continue
+        end do
         call jedetr(charge)
 !
 ! ====================================================================
@@ -682,7 +682,8 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         endif
 !
 ! ====================================================================
- 50 end do
+ 50     continue
+    end do
 !
 !
 ! ====================================================================

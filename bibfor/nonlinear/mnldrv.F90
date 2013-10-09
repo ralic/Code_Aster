@@ -150,7 +150,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call jeveuo(numdrv//'.SMOS.SMDI', 'E', ismdi)
         call dismoi('NOM_NUME_DDL', matk, 'MATR_ASSE', repk=numedd)
         neq = zi(imat(1)+2)
-        do 10 j = 1, ninc
+        do j = 1, ninc
 ! ---     MISE A ZERO DES VECTEURS TEMPORAIRES
             call dscal(ninc, 0.d0, zr(idrvj), 1)
             call dscal(ninc-1, 0.d0, zr(itemp), 1)
@@ -180,7 +180,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ---     STOCKAGE MORSE
 ! ---     ON STOCKE LES VALEURS NON NULLES DE LA PARTIE TRIANGULAIRE
 ! ---     INFERIEURE DE LA MATRICE
-            do 11 i = j+1, ninc
+            do i = j+1, ninc
                 if (abs(zr(idrvj-1+i)) .gt. eps) then
                     ninf=ninf+1
 ! ---         ON VERIFIE QUE LA TAILLE APPROXIMATIVE DES VECTEURS
@@ -204,12 +204,12 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ---         2/ ON RECUPERE LA VALEUR ASSOCIE A CETTE CLE
                     zr(ivinf-1+ninf)=zr(idrvj-1+i)
                 endif
- 11         continue
+            end do
 ! ---     3/ ON INDIQUE LE NOMBRE DE TERMES NON NULS POUR CETTE COLONNE
             zi(ininf-1+j)=ninf
 ! ---     ON STOCKE LES VALEURS (NON NULLES) DE LA MATRICE DANS LES
 ! ---     VECTEURS TEMPORAIRES
-            do 12 i = 1, j
+            do i = 1, j
 ! ---       LA DIAGONALE EST TOUJOURS SOTCKEE (POUR LA PARTIE
 ! ---       SUPERIEURE ET INFERIEURE)
                 if (i .eq. j) then
@@ -302,9 +302,9 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         zr(ivat2-1+ndrdv)=zr(ivinf-1+ind)
                     endif
                 endif
- 12         continue
+            end do
             zi(ismdi-1+j)=ndrdv
- 10     continue
+        end do
         call jeveuo(numdrv//'.SMOS.SMDE', 'E', ismde)
         zi(ismde-1+2)=ndrdv
 ! ---   DESTRUCTION DES CHAMPS A REMPLIR
@@ -323,9 +323,9 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call wkvect(numdrv//'.SMOS.SMHC', 'V V S', ndrdv, ismhc)
         call dcopy(ndrdv, zr(ivat1), 1, zr(ival1), 1)
         call dcopy(ndrdv, zr(ivat2), 1, zr(ival2), 1)
-        do 30 i = 1, ndrdv
+        do i = 1, ndrdv
             zi4(ismhc-1+i)=zi(ismct-1+i)
- 30     continue
+        end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------

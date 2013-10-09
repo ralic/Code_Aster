@@ -88,7 +88,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     character(len=24) :: chtim2
     character(len=24) :: chgeom, chcara(18), chtime, ligrel
     character(len=24) :: ligrmo, ligrch, evolch
-    integer ::  iret, ier, i, k, icha, inum
+    integer :: iret, ier, i, k, icha, inum
     integer :: somme
     logical :: lbid, prem
     integer :: jchar, jinf, jlme

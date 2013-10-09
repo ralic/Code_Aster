@@ -177,7 +177,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! 6.2 PULSATIONS ET MASSES MODALES
 !     STRUCTURE NON COUPLEE AVEC LE FLUIDE
 !
-    do 10 im = 1, nbmode
+    do im = 1, nbmode
         call rsadpa(nombm, 'L', 1, 'OMEGA2', im,&
                     0, sjv=lomeg, styp=k8b)
         zr(jpuls+im-1) = sqrt ( zr(lomeg) )
@@ -185,7 +185,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                     0, sjv=lmasg, styp=k8b)
         zr(jmasg+im-1) = zr(lmasg)
         zl(jlocf+im-1) = .false.
- 10 continue
+    end do
 !
 ! 6.3 AMORTISSEMENTS MODAUX
 !     STRUCTURE NON COUPLEE AVEC LE FLUIDE
@@ -212,9 +212,9 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                             nbret=ib)
             else
                 call jeveuo(listam//'           .VALE', 'L', lamog)
-                do 20 iam = 1, nbmode
+                do iam = 1, nbmode
                     zr(jamog+iam-1) = zr(lamog+iam-1)
- 20             continue
+                end do
             endif
         else
             idiff = nbmode - nbamor
@@ -227,18 +227,18 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                             nbret=ib)
             else
                 call jeveuo(listam//'           .VALE', 'L', lamog)
-                do 30 iam = 1, nbamor
+                do iam = 1, nbamor
                     zr(jamog+iam-1) = zr(lamog+iam-1)
- 30             continue
+                end do
             endif
             xamor = zr(jamog+nbamor-1)
-            do 31 iam = nbamor+1, nbmode
+            do iam = nbamor+1, nbmode
                 zr(jamog+iam-1) = xamor
- 31         continue
+            end do
         endif
-        do 40 im = 1, nbmode
+        do im = 1, nbmode
             zr(jamo1+im-1) = 2.0d0 * zr(jamog+im-1) * zr(jmasg+im-1) * zr(jpuls+im-1)
- 40     continue
+        end do
     endif
 !
 ! 6.4 DEFORMEES MODALES
@@ -257,7 +257,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
     call jeveuo(basefl//'.FREQ', 'L', kfreq)
     call jeveuo(basefl//'.MASG', 'L', kmasg)
-    do 50 j = 1, nbmcfc
+    do j = 1, nbmcfc
         im = zi(knumo+j-1)
         if (im .le. nbmode) then
             if (zr(kfreq+2*(j-1)+2*nbmcfc*(numvif-1)) .lt. 0.0d0) then
@@ -274,7 +274,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             zr(jamo1+im-1) = 2.0d0 * zr(jamog+im-1) * zr(jmasg+im-1) * zr(jpuls+im-1)
             zl(jlocf+im-1) = .true.
         endif
- 50 continue
+    end do
 !
 !
 ! 7.  RECUPERATION DES CARACTERISTIQUES DE LA CONFIGURATION ETUDIEE
@@ -282,9 +282,9 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! 7.1 CREATION DES OBJETS DE STOCKAGE
 !
     call wkvect('&&MDITMI.NUOR', 'V V I', nbmode, jnuor)
-    do 60 j = 1, nbmode
+    do j = 1, nbmode
         zi(jnuor+j-1) = j
- 60 continue
+    end do
 !
     if (itypfl .eq. 1) then
         call wkvect('&&MDITMI.TEMP.IRES', 'V V I', nbnoeu, lires)

@@ -91,4 +91,4 @@ OPTION__
     RIGI_THER_COEH_R 104  IN__  CCOEFHR  PCOEFHR  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
                           OUT__ MMATTTR  PMATTTR  
     WEIBULL           -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
+                          OUT__ XXXXXX   XXXXXX

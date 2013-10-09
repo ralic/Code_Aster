@@ -69,6 +69,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     integer :: neq, ntail
     real(kind=8) :: xprod
     complex(kind=8) :: cbid
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data pgc/'CALPRO'/
 !-----------------------------------------------------------------------
@@ -129,7 +130,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! --- PROJECTION SUR DEFORMEES
 !
-    do 10 i = 1, nbdef
+    do i = 1, nbdef
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
@@ -146,14 +147,14 @@ subroutine calpro(nomres, classe, basmod, nommat)
 ! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
 !
         if (i .lt. nbdef) then
-            do 20 j = i+1, nbdef
+            do j = i+1, nbdef
                 xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(j-1)*neq),1)
                 iad = i+(j-1)*j/2
                 zr(ldres+iad-1) = xprod
- 20         continue
+            end do
         endif
 !
- 10 end do
+    end do
 !
     call jedetr('&&'//pgc//'.VECT1')
 !

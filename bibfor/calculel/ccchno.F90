@@ -110,7 +110,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
         valk(3)=resuin
         valk(4)=resuou
         call utmess('A', 'CALCCHAMP_2', nk=4, valk=valk, si=numord)
-        goto 9999
+        goto 999
     endif
     call celces(chelem, 'V', chams0)
     if (nbma .ne. 0) then
@@ -138,10 +138,10 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
             call dismoi('EXI_COQ3D', ligrel, 'LIGREL', repk=erdm)
             if (erdm .eq. 'OUI' .and. ligmod) then
                 call jelira(ligrel(1:19)//'.LIEL', 'NUTIOC', ngr)
-                do 10 igr = 1, ngr
+                do igr = 1, ngr
                     call inigrl(ligrel, igr, nmaxob, adobj, noobj,&
                                 nbobj)
- 10             continue
+                end do
             endif
         endif
         if (carael .ne. ' ') call ccvrrl(nomail, modele, carael, mesmai, chams0,&
@@ -164,7 +164,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     call detrsd('CHAM_ELEM_S', chams0)
     call detrsd('CHAM_NO_S', chams1)
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

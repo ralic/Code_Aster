@@ -43,7 +43,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !
 !
-    integer ::  lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, neq1
+    integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, neq1
     parameter     ( mxddl=6 )
     character(len=8) :: nomddl(mxddl)
     character(len=14) :: nume
@@ -84,14 +84,14 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     neq1=neq-1
     rmin=100.d0*r8miem()
     rmax=0.01d0*r8maem()
-    do 100 iddl = 1, 3
+    do iddl = 1, 3
         ia = (iddl-1)*neq
-        do 110 ieq = 0, neq1
+        do ieq = 0, neq1
             zr(laux1+ieq) = zi(lddl+ia+ieq)
-110     continue
+        end do
         call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
                     .false.)
-        do 200 ivect = 1, nbvect
+        do ivect = 1, nbvect
             rval = ddot(neq,vect(1,ivect),1,zr(laux2),1)
             raux = masgen(ivect)
             if (abs(raux) .lt. rmin) then
@@ -102,8 +102,8 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                 masmod(ivect,iddl) = rval * raux
                 facpar(ivect,iddl) = raux
             endif
-200     continue
-100 end do
+        end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     ----------------- DESTRUCTION DES VECTEURS DE TRAVAIL ------------

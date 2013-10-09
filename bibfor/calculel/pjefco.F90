@@ -165,7 +165,7 @@ subroutine pjefco(moa1, moa2, corres, base)
             call utmess('F', 'CALCULEL4_17')
         endif
 !
-        do 30 iocc = 1, nbocc
+        do iocc = 1, nbocc
 !
 !           -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
 !           ----------------------------------------------
@@ -242,7 +242,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call jedetr('&&PJEFCO.LIMANU1')
             call jedetr('&&PJEFCO.LINONU2')
- 30     continue
+        end do
         call copisd('CORRESP_2_MAILLA', 'V', corre2, corres)
         call detrsd('CORRESP_2_MAILLA', corre1)
         call detrsd('CORRESP_2_MAILLA', corre2)

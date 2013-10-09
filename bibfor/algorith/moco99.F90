@@ -89,7 +89,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
 ! --- CAS DE L'ABSENCE D'UN MODE_MECA
 !
-    if (resul .eq. '          ' .or. nbmod .eq. 0) goto 9999
+    if (resul .eq. '          ' .or. nbmod .eq. 0) goto 999
 !
 !
 ! --- DETERMINATION DU NOMBRE DE MODES DANS LA STRUCTURE A POINTER
@@ -105,7 +105,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     endif
     nbmod=min(nbmod,nbold(1))
 !
-    if (nbmod .eq. 0) goto 9999
+    if (nbmod .eq. 0) goto 999
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
     call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=interf, arret='C',&
@@ -133,7 +133,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     call jelira(resul//'           .DESC', 'NOMMAX', nbcham)
 !
     call jeveuo(resul//'           .ORDR', 'L', jordr)
-    do 10 i = 1, nbmod
+    do i = 1, nbmod
 !       LRANG : CONTIENT DES NUMEROS DE RANGEMENT : 1,2, ..., NBMOD
         ASSERT(lrang(i).eq.i)
         iorol=zi(jordr-1+lrang(i))
@@ -141,7 +141,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 ! ------BOUCLE SUR LA LISTE DE CHAMPS AFIN D'IDENTIFIER CEUX QUI
 !       SONT PRESENTES DANS L'ANCIEN RESULT
 !
-        do 30 ii = 1, nbcham
+        do ii = 1, nbcham
 ! ----- RECUPERATION DU NOM DU CHAMP POSSIBLE DE LA SD
             call jenuno(jexnum(resul//'           .DESC', ii), chmeca)
 !
@@ -156,7 +156,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                 endif
                 call rsnoch(nomres, chmeca, iorne)
             endif
- 30     continue
+        end do
 !
         if (typres .ne. 'MODE_MECA') goto 11
 !
@@ -248,8 +248,8 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
         iorne=iorne+1
 !
- 10 continue
+    end do
 !
 !
-9999 continue
+999 continue
 end subroutine

@@ -59,7 +59,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ier, ik, ino, inord
-    integer ::  j, jj, lldeeq, lldes, llfreq, llncmp
+    integer :: j, jj, lldeeq, lldes, llfreq, llncmp
     integer :: llnoin, lltyp, lmat, ltddl, ltpar, nbcb, nbcmp
     integer :: nbcont, nbcpmx, nbdeb, nbec, nbfin, nbint, nbnoe
     integer :: nbnot, neq, ntail1, ntail2, numgd
@@ -132,19 +132,19 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     nbdeb=nbnot
     nbfin=0
 !
-    do 10 j = 1, nbint
+    do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
         typcou=zk8(lltyp+j-1)
         if (typcou .eq. 'CB_HARMO') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
-            do 15 i = 1, nbnoe
+            do i = 1, nbnoe
                 ik=zi(llnoin+i-1)
                 nbfin=max(nbfin,ik)
                 nbdeb=min(nbdeb,ik)
- 15         continue
+            end do
             call jelibe(jexnum(intf//'.IDC_LINO', j))
         endif
- 10 end do
+    end do
 !
     call jelibe(intf//'.IDC_TYPE')
 !
@@ -163,7 +163,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !  TAILLE DOUBLE CAR PRESENCE EVENTUELLE DE DOUBLE LAGRANGE POUR LE
 !   BLOCAGE
 !
-    if (ntail1 .eq. 0) goto 9999
+    if (ntail1 .eq. 0) goto 999
 !
 !
     call jeveuo(intf//'.IDC_DY_FREQ', 'L', llfreq)
@@ -199,14 +199,14 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     nbcont=0
 !
     if (nbcb .gt. 0) then
-        do 20 i = nbdeb, nbfin
+        do i = nbdeb, nbfin
 !**************************************************************
 !          ICOD=ZI(LLDES+2*NBNOT+I-1)
             call isdeco(zi(lldes+2*nbnot+(i-1)*nbec+1-1), idec, nbcmp)
 !**************************************************************
             ino=zi(lldes+i-1)
             call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
-            do 30 j = 1, nbcmp
+            do j = 1, nbcmp
                 if (idec(j) .eq. 1) then
                     jj=-j
                     nbcont=nbcont+1
@@ -216,8 +216,8 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
                     call cheddl(zi(lldeeq), neq, ino, jj, zi(iad),&
                                 2)
                 endif
- 30         continue
- 20     continue
+            end do
+        end do
     endif
 !
 !
@@ -234,6 +234,6 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     call jelibe(deeq)
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

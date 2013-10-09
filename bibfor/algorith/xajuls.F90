@@ -86,7 +86,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
 !     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
 !
-    do 200 ima = 1, nbma
+    do ima = 1, nbma
         nmaabs=ima
         itypma=zi(jma-1+ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
@@ -106,7 +106,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !       (UNIQUEMENT LES NOEUDS SOMMETS) ET FIT TO VERTEX LES NOEUDS
 !       SOMMETS
 !
-        do 210 ia = 1, nbar
+        do ia = 1, nbar
             na=ar(ia,1)
             nb=ar(ia,2)
             nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
@@ -157,9 +157,9 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 endif
             endif
 !
-210     continue
+        end do
 !
-        do 230 ia = 1, nbar
+        do ia = 1, nbar
             na=ar(ia,1)
             nb=ar(ia,2)
             nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
@@ -201,9 +201,10 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 endif
             endif
 !
-230     continue
+        end do
 !
-200 end do
+200     continue
+    end do
 !
 !-----------------------------------------------------------------------
 !     FIN

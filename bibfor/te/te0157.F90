@@ -42,7 +42,7 @@ subroutine te0157(option, nomte)
     parameter         ( nbres=2 )
     real(kind=8) :: valres(nbres)
     real(kind=8) :: rho, xg, yg, depi, zero
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9), volume
+    real(kind=8) :: poids, r, x(9), y(9), volume
     real(kind=8) :: matine(6), xxi, yyi, xyi
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres), fami, poum
@@ -71,34 +71,34 @@ subroutine te0157(option, nomte)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)
-    do 10 i = 1, nno
+    do i = 1, nno
         x(i) = zr(igeom-2+2*i)
         y(i) = zr(igeom-1+2*i)
-10  end do
+    end do
 !
     call jevech('PMASSINE', 'E', lcastr)
-    do 20 i = 0, 3
+    do i = 0, 3
         zr(lcastr+i) = zero
-20  end do
-    do 22 i = 1, 6
+    end do
+    do i = 1, 6
         matine(i) = zero
-22  end do
+    end do
 !
 !     --- BOUCLE SUR LES POINTS DE GAUSS ---
     volume = zero
-    do 100 kp = 1, npg2
+    do kp = 1, npg2
         k = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         if (lteatt(' ','AXIS','OUI')) then
             r = zero
-            do 102 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom-2+2*i)*zr(ivf+k+i-1)
-102          continue
+            end do
             poids = poids*r
         endif
         volume = volume + poids
-        do 104 i = 1, nno
+        do i = 1, nno
 !           --- CDG ---
             zr(lcastr+1) = zr(lcastr+1)+poids*x(i)*zr(ivf+k+i-1)
             zr(lcastr+2) = zr(lcastr+2)+poids*y(i)*zr(ivf+k+i-1)
@@ -106,16 +106,16 @@ subroutine te0157(option, nomte)
             xxi = 0.d0
             xyi = 0.d0
             yyi = 0.d0
-            do 106 j = 1, nno
+            do j = 1, nno
                 xxi = xxi + x(i)*zr(ivf+k+i-1)*x(j)*zr(ivf+k+j-1)
                 xyi = xyi + x(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
                 yyi = yyi + y(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
-106          continue
+            end do
             matine(1) = matine(1) + poids*yyi
             matine(2) = matine(2) + poids*xyi
             matine(3) = matine(3) + poids*xxi
-104      continue
-100  end do
+        end do
+    end do
 !
     if (lteatt(' ','AXIS','OUI')) then
         yg = zr(lcastr+2) / volume

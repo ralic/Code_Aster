@@ -58,11 +58,11 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
      &                     'BX' , 'REP' , 'ALPHA' , 'BETA' , 'GAMMA' /
 !    -------------------------------------------------------------------
     call jemarq()
-    do 10 i = 1, 11
+    do i = 1, 11
         tps(i) = 0.d0
         tpf(i) = '&FOZERO'
         tpc(i) = ( 0.d0 , 0.d0 )
- 10 end do
+    end do
     ligrmo = modele(1:8)//'.MODELE'
     chdepl = chdep2
     ch5 = '.    '

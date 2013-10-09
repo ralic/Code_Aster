@@ -19,7 +19,7 @@ function spect2(a, b, xlc, vitn, rhoe,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-------------------------------------------------------------------
-! aslint: disable=
+! aslint: disable=W0307
     implicit none
 !                                 B  F2(X)
 ! DESCRIPTION : CALCULE DINTEG = S  S func(X,Y) DY   DX

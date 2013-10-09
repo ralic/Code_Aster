@@ -145,9 +145,9 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         endif
 !
         call wkvect(licham, 'V V K16', nbcham, jlicha)
-        do 10 i = 1, nbcham
+        do i = 1, nbcham
             zk16(jlicha-1+i)=linom(i)
- 10     continue
+        end do
 !
 !     ----------------------------------------------------------------
     endif

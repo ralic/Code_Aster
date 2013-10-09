@@ -37,7 +37,7 @@ subroutine te0021(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: a(3, 3, 27, 27)
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: poids
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, i, j, imatuu, kpg, spt
 !
@@ -65,26 +65,26 @@ subroutine te0021(option, nomte)
     omega2 = zr(irota+2)*zr(irota)
     omega3 = zr(irota+3)*zr(irota)
 !
-    do 50 k = 1, 3
-        do 40 l = 1, 3
-            do 30 i = 1, nno
-                do 20 j = 1, i
+    do k = 1, 3
+        do l = 1, 3
+            do i = 1, nno
+                do j = 1, i
                     a(k,l,i,j) = 0.d0
-20              continue
-30          continue
-40      continue
-50  end do
+                end do
+            end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 80 kp = 1, npg2
+    do kp = 1, npg2
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
 !
-        do 70 i = 1, nno
-            do 60 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 wij = rho(1)*poids*zr(ivf+l+i-1)*zr(ivf+l+j-1)
                 a(1,1,i,j) = a(1,1,i,j) - (omega2**2+omega3**2)*wij
                 a(2,2,i,j) = a(2,2,i,j) - (omega1**2+omega3**2)*wij
@@ -92,30 +92,30 @@ subroutine te0021(option, nomte)
                 a(2,1,i,j) = a(2,1,i,j) + omega1*omega2*wij
                 a(3,1,i,j) = a(3,1,i,j) + omega1*omega3*wij
                 a(3,2,i,j) = a(3,2,i,j) + omega2*omega3*wij
-60          continue
-70      continue
-80  end do
+            end do
+        end do
+    end do
 !
-    do 100 i = 1, nno
-        do 90 j = 1, i
+    do i = 1, nno
+        do j = 1, i
             a(1,2,i,j) = a(2,1,i,j)
             a(1,3,i,j) = a(3,1,i,j)
             a(2,3,i,j) = a(3,2,i,j)
-90      continue
-100  end do
+        end do
+    end do
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 !
-    do 140 k = 1, 3
-        do 130 l = 1, 3
-            do 120 i = 1, nno
+    do k = 1, 3
+        do l = 1, 3
+            do i = 1, nno
                 ik = ((3*i+k-4)* (3*i+k-3))/2
-                do 110 j = 1, i
+                do j = 1, i
                     ijkl = ik + 3* (j-1) + l
                     zr(imatuu+ijkl-1) = a(k,l,i,j)
-110              continue
-120          continue
-130      continue
-140  end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

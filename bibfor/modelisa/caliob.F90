@@ -79,7 +79,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
     character(len=24) :: list_node
     integer :: jlino, nb_node
-    integer ::  ino
+    integer :: ino
     integer :: ndim, nbec
     integer :: nliai, nume_node
     integer :: i_angle, i_keyword, iocc, i_direct
@@ -88,7 +88,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     complex(kind=8) :: coefc, val_c
     character(len=2) :: typlag
     character(len=4) :: typcoe
-    character(len=8) ::  model, nomg
+    character(len=8) :: model, nomg
     character(len=8) :: name_node
     character(len=16) :: keywordfact, keyword
     integer :: n_keyword

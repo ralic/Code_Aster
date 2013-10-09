@@ -49,7 +49,7 @@ subroutine xfisno(noma, modelx)
     integer :: jlcnx, jnbsp, jnbsp2, jcesfd, jcesfl, jcesfv, jcesd, jcesl, jcesv
     integer :: jcesd2, jcesv2, jcesl2, jxc
     integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
-    integer ::  ibid, iad, nncp
+    integer :: ibid, iad, nncp
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
     logical :: lcont
 !     ------------------------------------------------------------------
@@ -115,21 +115,21 @@ subroutine xfisno(noma, modelx)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
 !
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         nfiss = zi(jnbsp-1+ima)
         nheav = zi(jnbsp2-1+ima)
         if (nfiss .ge. 2) then
             nbno = zi(jlcnx+ima)-zi(jlcnx-1+ima)
-            do 20 ino = 1, nbno
+            do ino = 1, nbno
 !
 ! --- PREMIERE PASSE, ON REMPLIT AVEC LES HEAVISIDES ACTIFS
 !
-                do 30 ifiss = 1, nfiss
+                do ifiss = 1, nfiss
                     call cesexi('S', jcesfd, jcesfl, ima, ino,&
                                 ifiss, 1, iad)
                     ASSERT(iad.gt.0)
                     if (zi(jcesfv-1+iad) .eq. 1) then
-                        do 40 iheav = 1, nheav
+                        do iheav = 1, nheav
                             call cesexi('S', jcesd, jcesl, ima, ino,&
                                         iheav, 1, iad)
                             if (iad .lt. 0) then
@@ -144,18 +144,19 @@ subroutine xfisno(noma, modelx)
                                 endif
                                 goto 30
                             endif
- 40                     continue
+                        end do
                     endif
- 30             continue
+ 30                 continue
+                end do
 !
 ! --- DEUXIEME PASSE, ON REMPLIT AVEC LES HEAVISIDES INACTIFS
 !
-                do 50 ifiss = 1, nfiss
+                do ifiss = 1, nfiss
                     call cesexi('S', jcesfd, jcesfl, ima, ino,&
                                 ifiss, 1, iad)
                     ASSERT(iad.gt.0)
                     if (zi(jcesfv-1+iad) .eq. 0) then
-                        do 60 iheav = 1, nheav
+                        do iheav = 1, nheav
                             call cesexi('S', jcesd, jcesl, ima, ino,&
                                         iheav, 1, iad)
                             if (iad .lt. 0) then
@@ -170,16 +171,17 @@ subroutine xfisno(noma, modelx)
                                 endif
                                 goto 50
                             endif
- 60                     continue
+                        end do
                     endif
- 50             continue
+ 50                 continue
+                end do
 !
 ! --- FIN DES DEUX PASSES, FISSNO EST DEFINI ENTIEREMENT POUR LE NOEUD
 ! ---                      HEAVNO N'EST PAS COMPLET
 !
- 20         continue
+            end do
         endif
- 10 end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

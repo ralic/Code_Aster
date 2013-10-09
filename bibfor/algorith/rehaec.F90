@@ -133,7 +133,7 @@ subroutine rehaec(nomres, resgen, nomsst)
         nbcham = -n1
         call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
 ! ----   BOUCLE SUR LES CHAMPS DEMANDES
-        do 69 i = 1, nbcham
+        do i = 1, nbcham
 !
             if (champ(i) .eq. 'DEPL') then
                 chmp(i) = 'DEPL'
@@ -163,7 +163,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! ----        SI LE CHAMP N'EST PAS DEPL,VITE OU ACCE ON PLANTE
                 call utmess('F', 'ALGORITH10_16')
             endif
- 69     continue
+        end do
     endif
 !
 !     NOMBRE DE CHAMPS SYMBOLIQUES CALCULES.
@@ -210,9 +210,9 @@ subroutine rehaec(nomres, resgen, nomsst)
         call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
 !
         nutars=0
-        do 20 i = 1, nbsst
+        do i = 1, nbsst
             if (zi(llors+i-1) .eq. nusst) nutars=i
- 20     continue
+        end do
 !
 !
 ! --- NOMBRE DE MODES ET NUMERO DU PREMIER DDL DE LA SOUS-STRUCTURE
@@ -232,14 +232,14 @@ subroutine rehaec(nomres, resgen, nomsst)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
         ibid=1
-        do 11 i = 1, nbsst
+        do i = 1, nbsst
             neqet=neqet+zi(lsilia+i-1)
- 11     continue
+        end do
 !
         ieq=0
-        do 41 i1 = 1, nusst-1
+        do i1 = 1, nusst-1
             ieq=ieq+zi(lsilia+i1-1)
- 41     continue
+        end do
 !
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V C', neqet, lmoet)
     endif
@@ -297,22 +297,22 @@ subroutine rehaec(nomres, resgen, nomsst)
     else
         call jeexin(harmge//'.ORDR', iret)
 !
-        do 40 i = 0, nbfreq-1
+        do i = 0, nbfreq-1
             iarchi = iarchi + 1
 !
-            do 42 ich = 1, nbcham
+            do ich = 1, nbcham
                 idresu = itresu(ich)
 !
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
-                    do 22 i1 = 1, neqet
+                    do i1 = 1, neqet
                         zc(lmoet+i1-1)=dcmplx(0.d0,0.d0)
-                        do 33 k1 = 1, neqred
+                        do k1 = 1, neqred
                             zc(lmoet+i1-1)=zc(lmoet+i1-1)+ zr(lmapro+(&
                             k1-1)*neqet+i1-1)* zc(idresu+k1-1+(zi(&
                             jnume+i)-1)*neqred)
- 33                     continue
- 22                 continue
+                        end do
+                    end do
                 endif
 !
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
@@ -329,7 +329,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- BOUCLE SUR LES MODES PROPRES DE LA BASE
 !
-                do 70 j = 1, nbddg
+                do j = 1, nbddg
                     call dcapno(basmod, 'DEPL', j, chamba)
                     call jeveuo(chamba, 'L', llchab)
 !
@@ -342,19 +342,19 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
-                    do 80 k = 1, neq
+                    do k = 1, neq
                         zc(ldnew+k-1)=zc(ldnew+k-1)+zr(llchab+k-1)*zc(&
                         iad)
- 80                 continue
+                    end do
                     call jelibe(chamba)
- 70             continue
+                end do
                 call jelibe(chamno)
                 call rsnoch(nomres, chmp(ich), iarchi)
- 42         continue
+            end do
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
- 40     continue
+        end do
 !
     endif
 !
@@ -364,8 +364,8 @@ subroutine rehaec(nomres, resgen, nomsst)
     call jedetr('&&RETREC.NUM_RANG')
     call jedetr('&&RETREC.FREQ')
 !
-    goto 9999
+    goto 999
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

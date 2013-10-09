@@ -140,11 +140,11 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 !
 ! --- LECTURE DE L'ISOMETRIE DE TRANSFORMATION SI ELLE EXISTE
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         t(i) = 0.0d0
         theta(i) = 0.0d0
         centre(i) = 0.0d0
- 10 continue
+    end do
 !
     call getvr8(motfac, 'TRAN', iocc=iocc, nbval=3, vect=t,&
                 nbret=nt)
@@ -222,12 +222,12 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 !
     zi(idconi) = lonlis
 !
-    do 20 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(idlou1+i-1)), ino1)
         call jenonu(jexnom(noeuma, zk8(idlou2+i-1)), ino2)
         zi(idconi+2*(i-1)+1) = ino1
         zi(idconi+2*(i-1)+2) = ino2
- 20 end do
+    end do
 !
 ! --- CONSTITUTION DE LA S.D. CONR CONTENANT LES NORMALES
 ! --- AUX NOEUDS

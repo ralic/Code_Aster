@@ -49,7 +49,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !
 !
-    integer ::  jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
+    integer :: jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
     integer :: vali(4)
     character(len=14) :: nume
     parameter (mxddl=1)
@@ -78,14 +78,14 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !       --- CALCUL DU NOMBRE DE 'LAGRANGE': NBLAGR
     nblagr = 0
-    do 10 ieq = 1, neq
+    do ieq = 1, neq
         nblagr = nblagr + dlagr(ieq)
- 10 end do
+    end do
 !
 !       --- INVERSION : DLAGR = 0 SI LAGRANGE ET 1 SINON
-    do 20 ieq = 1, neq
+    do ieq = 1, neq
         dlagr(ieq) = abs(dlagr(ieq)-1)
- 20 end do
+    end do
 !
 !     --- DETECTION DES DDL BLOQUES PAR AFFE_CHAR_CINE ---
 !     ----------------------------------------------------
@@ -98,23 +98,23 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     nbcine = 0
     if (iercon .ne. 0) then
         call jeveuo(masse//'.CCID', 'E', jccid)
-        do 30 ieq = 1, neq
+        do ieq = 1, neq
             dbloq(ieq) = dbloq(ieq)*abs(zi(jccid+ieq-1)-1)
- 30     continue
+        end do
 !
 !       --- CALCUL DU NOMBRE DE DDL BLOQUE PAR CETTE METHODE : NCINE ---
-        do 40 ieq = 1, neq
+        do ieq = 1, neq
             nbcine = nbcine + zi(jccid+ieq-1)
- 40     continue
+        end do
     endif
 !
 !     --- SI NUMEROTATION GENERALISEE : PAS DE DDLS BLOQUES ---
 !     ---------------------------------------------------------
     call jenonu(jexnom(nume//'.NUME.LILI', '&SOUSSTR'), nbprno)
     if (nbprno .ne. 0) then
-        do 50 ieq = 1, neq
+        do ieq = 1, neq
             dbloq(ieq) = 1
- 50     continue
+        end do
     endif
 !
 !     ----------------- CALCUL DU NOMBRE DE DDL ACTIFS -----------------

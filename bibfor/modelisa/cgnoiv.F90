@@ -96,7 +96,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
 !
     call wkvect('&&CGNOIV.LISNO', 'V V I', nbnot, jtrav)
-    do 10 ino = 1, nbnot
+    do ino = 1, nbnot
         if (.not.zl(jcn2l-1+(ino-1)*ncmp+1)) goto 10
         if (tsca .eq. 'R') then
             v1=zr(jcn2v-1+(ino-1)*ncmp+1)
@@ -107,16 +107,17 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
             nbno=nbno+1
             zi(jtrav-1+nbno)=ino
         endif
- 10 end do
+ 10     continue
+    end do
 !
 !
 !
 ! --- ALLOCATION DU VECTEUR DES NUMEROS DES MAILLES RETENUES
 !     --------------------------------------------------------
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
-    do 20 k = 1, nbno
+    do k = 1, nbno
         zi(jlisno-1+k)=zi(jtrav-1+k)
- 20 end do
+    end do
 !
 !
 ! --- MENAGE :

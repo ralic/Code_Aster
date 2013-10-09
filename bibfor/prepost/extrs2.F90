@@ -98,14 +98,14 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
         corrm=noma2//'.CRMA'
     endif
 !
-    do 30 i = 1, nbnosy
+    do i = 1, nbnosy
 !
         call jenuno(jexnum(resuin//'.DESC', i), nomsym)
-        do 10 j = 1, nbexcl
+        do j = 1, nbexcl
             if (chexcl(j) .eq. nomsym) goto 30
- 10     continue
+        end do
 !
-        do 20 j = 1, nbordr
+        do j = 1, nbordr
             if (nuarch(j) .eq. 0) goto 20
             call rsexch(' ', resuin, nomsym, nuordr(j), chamin,&
                         ire1)
@@ -134,13 +134,15 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                 call copisd('CHAMP_GD', 'G', chamin, chamou)
             endif
             call rsnoch(resuou, nomsym, nuordr(j))
- 20     continue
- 30 end do
+ 20         continue
+        end do
+ 30     continue
+    end do
 !
 !
-    do 50 i = 1, nbordr
+    do i = 1, nbordr
         if (nuarch(i) .eq. 0) goto 50
-        do 40 j = 1, nbacc
+        do j = 1, nbacc
             nopara = nomacc(j)
             call rsadpa(resuin, 'L', 1, nopara, nuordr(i),&
                         1, sjv=iadin, styp=type)
@@ -167,8 +169,9 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             else if (type(1:2).eq.'K8') then
                 zk8(iadou) = zk8(iadin)
             endif
- 40     continue
- 50 end do
+        end do
+ 50     continue
+    end do
 !
     call jedema()
 !

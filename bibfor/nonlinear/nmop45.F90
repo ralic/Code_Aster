@@ -308,12 +308,12 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
 !     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 !
-    do 10 ieq = 1, nbparr*mxresf
+    do ieq = 1, nbparr*mxresf
         zr(lresur+ieq-1) = undf
- 10 end do
-    do 20 ieq = 1, nbpari*mxresf
+    end do
+    do ieq = 1, nbpari*mxresf
         zi(lresui+ieq-1) = indf
- 20 end do
+    end do
 !
 !     --- CAS REEL ET GENERALISE ---
     call wkvect('&&NMOP45.VECT_PROPRE', 'V V R', neq*nbvect, lvec)
@@ -349,9 +349,9 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         priram(7) = 0
         priram(8) = 2
     else
-        do 30 i = 1, 8
+        do i = 1, 8
             priram(i) = 0
- 30     continue
+        end do
     endif
 !     --- SORENSEN : CAS REEL GENERALISE ---
 !     CALCUL DES MODES PROPRES
@@ -424,12 +424,12 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         call vpordi(1, 0, nconv, zr(lresur+mxresf), zr(lvec),&
                     neq, zi(lresui))
     endif
-    do 40 imet = 1, nconv
+    do imet = 1, nconv
         zi(lresui-1+mxresf+imet) = 0
         zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
         zr(lresur-1+2*mxresf+imet) = 0.0d0
         zk24(lresuk-1+mxresf+imet) = 'SORENSEN'
- 40 end do
+    end do
 !
 !
     if (mod45 .ne. 'VIBR') then
@@ -437,10 +437,10 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         iordre = 0
         call vpordo(ityp, iordre, nconv, zr(lresur+mxresf), zr(lvec),&
                     neq)
-        do 50 imet = 1, nconv
+        do imet = 1, nconv
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
             zi(lresui-1+imet) = imet
- 50     continue
+        end do
     endif
 !
 !     ------------------------------------------------------------------
@@ -451,12 +451,12 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     mfreq = nconv
     if (option .eq. 'BANDE') then
-        do 110 ifreq = mfreq - 1, 0
+        do ifreq = mfreq - 1, 0
             if (zr(lresur+mxresf+ifreq) .gt. omemax .or. zr(lresur+ mxresf+ifreq) .lt.&
                 omemin) then
                 nconv = nconv - 1
             endif
-110     continue
+        end do
         if (mfreq .ne. nconv) then
             call utmess('I', 'ALGELINE2_17')
         endif

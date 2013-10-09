@@ -106,10 +106,10 @@ subroutine celcel(transf, cel1, base, cel2)
 !       ---------------------------------------------------
         call wkvect('&&CELCEL.NBPT', 'V V I', nbma, jnbpt)
         call wkvect('&&CELCEL.NBSPT', 'V V I', nbma, jnbspt)
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(jcesd1-1+5+4* (ima-1)+1)
             zi(jnbspt-1+ima) = zi(jcesd1-1+5+4* (ima-1)+2)
- 10     continue
+        end do
 !
 !       2.2 : ALLOCATION DE CES2 :
 !       ---------------------------------------------------
@@ -124,15 +124,15 @@ subroutine celcel(transf, cel1, base, cel2)
 !
 !       3- ON RECOPIE LES VALEURS DE CES1 DANS CES2 :
 !       ---------------------------------------------
-        do 50 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd1-1+5+4* (ima-1)+1)
             nbspt = zi(jcesd1-1+5+4* (ima-1)+2)
 !
             ncmp2 = zi(jcesd2-1+5+4* (ima-1)+3)
 !
-            do 40 ipt = 1, nbpt
-                do 30 ispt = 1, nbspt
-                    do 20 icmp = 1, ncmp2
+            do ipt = 1, nbpt
+                do ispt = 1, nbspt
+                    do icmp = 1, ncmp2
                         call cesexi('C', jcesd1, jcesl1, ima, ipt,&
                                     ispt, icmp, iad1)
                         call cesexi('C', jcesd2, jcesl2, ima, ipt,&
@@ -145,10 +145,10 @@ subroutine celcel(transf, cel1, base, cel2)
                         else
                             zr(jcesv2-1-iad2) = 0.d0
                         endif
- 20                 continue
- 30             continue
- 40         continue
- 50     continue
+                    end do
+                end do
+            end do
+        end do
 !
 !
 !
@@ -182,23 +182,23 @@ subroutine celcel(transf, cel1, base, cel2)
 !       -- ON MET A ZERO LE MODE LOCAL DES GRELS QUI ONT DES
 !          SOUS-POINTS :
         ico=0
-        do 70 igrel = 1, nbgrel
+        do igrel = 1, nbgrel
             debugr = zi(jceld2-1+4+igrel)
             nbel = zi(jceld2-1+debugr+1)
             imolo = zi(jceld2-1+debugr+2)
             if (imolo .gt. 0) then
                 nbspmx = 0
-                do 60 iel = 1, nbel
+                do iel = 1, nbel
                     nbsp = zi(jceld2-1+debugr+4+4* (iel-1)+1)
                     nbspmx = max(nbspmx,nbsp)
- 60             continue
+                end do
                 if (nbspmx .gt. 1) then
                     zi(jceld2-1+debugr+2) = 0
                 else
                     ico=ico+1
                 endif
             endif
- 70     continue
+        end do
         if (ico .eq. 0) then
             valk(1)=cel1
             valk(2)=nomgd

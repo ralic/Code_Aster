@@ -139,13 +139,13 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
     k1 = 1
     nutyp1 = zi(idlity)
-    do 10 i = 1, nbmato
+    do i = 1, nbmato
         nutype = zi(idlity+i-1)
         if (nutype .ne. nutyp1) then
             nutyp1 = nutype
             k1 = k1 + 1
         endif
- 10 end do
+    end do
 !
 ! --- ON CREE LE .LIEL SI LE NOMBRE DE MAILLES EST NON NUL :
 !     ----------------------------------------------------
@@ -182,7 +182,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---   BOUCLE SUR LE NOMBRE D'AFFECTATIONS DU LIGRET PAR DES MAILLES :
 !       -------------------------------------------------------------
-        do 20 i = 1, nbmato
+        do i = 1, nbmato
 !
             nutype = zi(idlity+i-1)
 !
@@ -204,10 +204,10 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !           ---------------------------------------
                 call jeveuo(jexnum(ligrel//'.LIEL', k), 'E', idligi)
 !
-                do 30 j = 1, nbmaty
+                do j = 1, nbmaty
                     ij = ij + 1
                     zi(idligi+j-1) = zi(idlima+ij-1)
- 30             continue
+                end do
 !
                 zi(idligi+nbmaty) = nutyp1
                 nutyp1 = nutype
@@ -222,7 +222,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
  32         continue
 !
- 20     continue
+        end do
 !
         if (nutyp1 .ne. 0) then
             k = k + 1
@@ -239,10 +239,10 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !           ---------------------------------------
             call jeveuo(jexnum(ligrel//'.LIEL', k), 'E', idligi)
 !
-            do 31 j = 1, nbmaty
+            do j = 1, nbmaty
                 ij = ij + 1
                 zi(idligi+j-1) = zi(idlima+ij-1)
- 31         continue
+            end do
 !
             zi(idligi+nbmaty) = nutyp1
         endif
@@ -256,7 +256,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---   BOUCLE SUR LE NOMBRE D'AFFECTATIONS DU LIGRET PAR DES NOEUDS :
 !       ------------------------------------------------------------
-        do 50 i = 1, nbapno
+        do i = 1, nbapno
 !
 ! ---     NOMBRE DE NOEUDS POUR LA IEME OCCURENCE :
 !         ---------------------------------------
@@ -274,13 +274,13 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !         ---------------------------------------
             call jeveuo(jexnum(ligrel//'.LIEL', i+k), 'E', idligi)
 !
-            do 60 j = 1, nbno
+            do j = 1, nbno
                 zi(idligi+j-1) = -j
- 60         continue
+            end do
 !
             zi(idligi+nbno) = nutype
 !
- 50     continue
+        end do
 !
     endif
 !
@@ -297,7 +297,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---   BOUCLE SUR LE NOMBRE D'AFFECTATIONS DU LIGRET PAR DES NOEUDS :
 !       ------------------------------------------------------------
-        do 70 i = 1, nbnoto
+        do i = 1, nbnoto
 !
 ! ---     NOMBRE DE NOEUDS POUR LA IEME OCCURENCE :
 !         ---------------------------------------
@@ -323,7 +323,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
             zi(idnema+1-1) = zi(idlino+zi(idpono+i-1))
             zi(idnema+2-1) = 1
 !
- 70     continue
+        end do
 !
     endif
 !

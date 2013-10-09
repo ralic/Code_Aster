@@ -34,6 +34,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 !
 !
 #include "jeveux.h"
+#include "asterfort/cresol.h"
 #include "asterfort/crnslv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -46,7 +47,6 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/cresol.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     character(len=8) :: k8bid
     integer :: lddesc, ldnequ, jrefn, lddeeq, lddelg, jnslv
     integer :: ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, k, ismde
-
+!
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES PARAMETRES ET CREATION DU SOLVEUR
 ! ----------------------------------------------------------------------
@@ -84,10 +84,10 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     zk24(jrefn+1)='DEPL_R'
 ! --- DEEQ
     call wkvect(prgene//'.DEEQ', 'V V I', ninc*2, lddeeq)
-    do 30 k = 1, ninc
+    do k = 1, ninc
         zi(lddeeq-1+(k-1)*2+1)=k
         zi(lddeeq-1+(k-1)*2+2)=1
-30  continue
+    end do
 ! --- DELG
     call wkvect(prgene//'.DELG', 'V V I', ninc, lddelg)
 ! --- LILI
@@ -97,9 +97,9 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     call jecroc(jexnom(prgene//'.LILI', 'LIAISONS'))
 ! --- NUEQ
     call wkvect(prgene//'.NUEQ', 'V V I', ninc, ldnueq)
-    do 20 k = 1, ninc
+    do k = 1, ninc
         zi(ldnueq-1+k)=k
-20  continue
+    end do
 ! --- PRNO
     call jecrec(prgene//'.PRNO', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 2)
@@ -150,5 +150,5 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     call wkvect(matdrv//'.DESC', 'V V I', 3, mdesc)
     zi(mdesc-1+1)=2
     zi(mdesc-1+3)=2
-
+!
 end subroutine

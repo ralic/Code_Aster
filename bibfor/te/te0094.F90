@@ -38,7 +38,7 @@ subroutine te0094(option, nomte)
     integer :: nbres, jgano, ipoids, ivf, idfde, igeom
     parameter     ( nbres=3 )
     real(kind=8) :: valpar(nbres)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, z, tx, ty
+    real(kind=8) :: poids, r, z, tx, ty
     character(len=8) :: nompar(nbres)
 !     ------------------------------------------------------------------
 !
@@ -54,16 +54,16 @@ subroutine te0094(option, nomte)
     valpar(3) = zr(itemps)
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         r = 0.d0
         z = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
             z = z + zr(igeom+2*i-1)*zr(ivf+k+i-1)
-102      continue
+        end do
         if (lteatt(' ','AXIS','OUI')) poids = poids*r
         valpar(1) = r
         valpar(2) = z
@@ -71,9 +71,9 @@ subroutine te0094(option, nomte)
                     tx, icode)
         call fointe('FM', zk8(ifr2d+1), 3, nompar, valpar,&
                     ty, icode)
-        do 103 i = 1, nno
+        do i = 1, nno
             zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids * tx * zr(ivf+ k+i-1)
             zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids * ty * zr(ivf+ k+i-1)
-103      continue
-101  end do
+        end do
+    end do
 end subroutine

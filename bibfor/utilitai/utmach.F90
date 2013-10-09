@@ -72,7 +72,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     typem = typemz
 !
     nbtrou = 0
-    if (ncmp .eq. 0) goto 9999
+    if (ncmp .eq. 0) goto 999
 !
     chtra1 = '&&UTMACH.CHAMP_COP'
     chtra2 = '&&UTMACH.CHAMP_RED'
@@ -80,20 +80,21 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=docu)
     call dismoi('NUM_GD', champ, 'CHAMP', repi=gd)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
-    if (nomgd(1:6) .eq. 'VARI_R') goto 9999
+    if (nomgd(1:6) .eq. 'VARI_R') goto 999
 !
 ! --- VERIFICATION QUE LES COMPOSANTES SONT DANS LE CHAMP
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     ier = 0
-    do 2 icp = 1, ncmp
-        do 4 icmp = 1, ncmpmx
+    do icp = 1, ncmp
+        do icmp = 1, ncmpmx
             if (nocmp(icp) .eq. zk8(iad+icmp-1)) goto 2
-  4     continue
+        end do
         ier = ier + 1
         call utmess('E', 'UTILITAI5_48', sk=nocmp(icp))
-  2 end do
+  2     continue
+    end do
     if (ier .ne. 0) then
         call utmess('F', 'PREPOST_60')
     endif
@@ -115,12 +116,12 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         nomobj = zk8(jcesk-1+1)//'.NOMMAI         '
         nbent = zi(jcesd-1+1)
         call wkvect('&&UTMACH.LIST_ENT', 'V V I', nbent, jent)
-        do 10 i = 1, nbent
+        do i = 1, nbent
             nbpt = zi(jcesd-1+5+4* (i-1)+1)
             nbsp = zi(jcesd-1+5+4* (i-1)+2)
-            do 12 ipt = 1, nbpt
-                do 14 isp = 1, nbsp
-                    do 16 icp = 1, ncmp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
+                    do icp = 1, ncmp
                         call cesexi('C', jcesd, jcesl, i, ipt,&
                                     isp, icp, iad)
                         if (iad .gt. 0) then
@@ -128,10 +129,11 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                             goto 10
                         else
                         endif
- 16                 continue
- 14             continue
- 12         continue
- 10     continue
+                    end do
+                end do
+            end do
+ 10         continue
+        end do
         call detrsd('CHAM_ELEM_S', chtra1)
         call detrsd('CHAM_ELEM_S', chtra2)
 !
@@ -147,14 +149,15 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         nomobj = zk8(jcesk-1+1)//'.NOMNOE         '
         nbent = zi(jcesd-1+1)
         call wkvect('&&UTMACH.LIST_ENT', 'V V I', nbent, jent)
-        do 20 i = 1, nbent
-            do 22 icp = 1, ncmp
+        do i = 1, nbent
+            do icp = 1, ncmp
                 if (zl(jcesl-1+(i-1)*ncmp+icp)) then
                     zi(jent+i-1) = 1
                     goto 20
                 endif
- 22         continue
- 20     continue
+            end do
+ 20         continue
+        end do
         call detrsd('CHAM_NO_S', chtra1)
         call detrsd('CHAM_NO_S', chtra2)
 !
@@ -178,31 +181,31 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     endif
 !
     nbtrou = 0
-    do 100 i = 1, nbent
+    do i = 1, nbent
         if (zi(jent+i-1) .eq. 1) nbtrou = nbtrou + 1
-100 end do
+    end do
 !
     if (typem .eq. 'NU') then
 !          ---------------
         call wkvect(litrou, 'V V I', nbtrou, idlist)
         nbtrou = 0
-        do 110 i = 1, nbent
+        do i = 1, nbent
             if (zi(jent+i-1) .eq. 1) then
                 nbtrou = nbtrou + 1
                 zi(idlist+nbtrou-1) = i
             endif
-110     continue
+        end do
 !
     else if (typem .eq. 'NO') then
 !              ---------------
         call wkvect(litrou, 'V V K8', nbtrou, idlist)
         nbtrou = 0
-        do 120 i = 1, nbent
+        do i = 1, nbent
             if (zi(jent+i-1) .eq. 1) then
                 nbtrou = nbtrou + 1
                 call jenuno(jexnum(nomobj, zi(jent+i-1)), zk8(idlist+ nbtrou-1))
             endif
-120     continue
+        end do
 !
     else
         call utmess('F', 'PREPOST3_6', sk=typem)
@@ -210,7 +213,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 !
     call jedetr('&&UTMACH.LIST_ENT')
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

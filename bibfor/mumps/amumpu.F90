@@ -1,4 +1,5 @@
-subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
+subroutine amumpu(option, type, kxmps, usersm, nprec,&
+                  lresol, kvers, nbfact)
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -91,8 +92,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
     real(kind=8) :: rval(2), rval1, rval2, rval1b, rval2b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1
-    integer ::  info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
-    integer ::  tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
+    integer :: info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
+    integer :: tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
     integer :: pid
     mpi_int :: mpicou
@@ -100,7 +101,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
     character(len=2) :: fstring
     character(len=8) :: k8tab(2)
     character(len=10) :: strpid
-    character(len=24) :: kpiv, valk(2), ksizemu
+    character(len=24) :: kpiv, ksizemu
     character(len=80) :: nvers
 !
     call jemarq()
@@ -114,84 +115,84 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
     nvers(1:80)=''
     if (option .ne. 31) then
 ! --- OCCURENCE DE MUMPS EXISTE DEJA DS UN VECTEUR XMPS
-        select case(type)
-        case ('S')
-        smpsk=>smps(kxmps)
-        lpara=(smpsk%nprocs.gt.1)
-        nbproc=smpsk%nprocs
-        rang=smpsk%myid
-        nvers=smpsk%version_number
-        n=smpsk%n
-        case ('C')
-        cmpsk=>cmps(kxmps)
-        lpara=(cmpsk%nprocs.gt.1)
-        nbproc=cmpsk%nprocs
-        rang=cmpsk%myid
-        nvers=cmpsk%version_number
-        n=cmpsk%n
-        case ('D')
-        dmpsk=>dmps(kxmps)
-        lpara=(dmpsk%nprocs.gt.1)
-        nbproc=dmpsk%nprocs
-        rang=dmpsk%myid
-        nvers=dmpsk%version_number
-        n=dmpsk%n
-        case ('Z')
-        zmpsk=>zmps(kxmps)
-        lpara=(zmpsk%nprocs.gt.1)
-        nbproc=zmpsk%nprocs
-        rang=zmpsk%myid
-        nvers=zmpsk%version_number
-        n=zmpsk%n
+        select case (type)
+            case ('S')
+            smpsk=>smps(kxmps)
+            lpara=(smpsk%nprocs.gt.1)
+            nbproc=smpsk%nprocs
+            rang=smpsk%myid
+            nvers=smpsk%version_number
+            n=smpsk%n
+            case ('C')
+            cmpsk=>cmps(kxmps)
+            lpara=(cmpsk%nprocs.gt.1)
+            nbproc=cmpsk%nprocs
+            rang=cmpsk%myid
+            nvers=cmpsk%version_number
+            n=cmpsk%n
+            case ('D')
+            dmpsk=>dmps(kxmps)
+            lpara=(dmpsk%nprocs.gt.1)
+            nbproc=dmpsk%nprocs
+            rang=dmpsk%myid
+            nvers=dmpsk%version_number
+            n=dmpsk%n
+            case ('Z')
+            zmpsk=>zmps(kxmps)
+            lpara=(zmpsk%nprocs.gt.1)
+            nbproc=zmpsk%nprocs
+            rang=zmpsk%myid
+            nvers=zmpsk%version_number
+            n=zmpsk%n
         case default
-        ASSERT(.false.)
+            ASSERT(.false.)
         end select
     else
 ! ---- ON CREE PUIS DETRUIT UNE OCCURENCE MUMPS TEMPORAIRE
         kxmps=1
-        select case(type)
-        case ('S')
-        smpsk=>smps(kxmps)
-        smpsk%comm=mpicou
-        smpsk%sym=0
-        smpsk%par=1
-        smpsk%job=-1
-        call smumps(smpsk)
-        nvers=smpsk%version_number
-        smpsk%job=-2
-        call smumps(smpsk)
-        case ('C')
-        cmpsk=>cmps(kxmps)
-        cmpsk%comm=mpicou
-        cmpsk%sym=0
-        cmpsk%par=1
-        cmpsk%job=-1
-        call cmumps(cmpsk)
-        nvers=cmpsk%version_number
-        cmpsk%job=-2
-        call cmumps(cmpsk)
-        case ('D')
-        dmpsk=>dmps(kxmps)
-        dmpsk%comm=mpicou
-        dmpsk%sym=0
-        dmpsk%par=1
-        dmpsk%job=-1
-        call dmumps(dmpsk)
-        nvers=dmpsk%version_number
-        dmpsk%job=-2
-        call dmumps(dmpsk)
-        case ('Z')
-        zmpsk=>zmps(kxmps)
-        zmpsk%comm=mpicou
-        zmpsk%sym=0
-        zmpsk%par=1
-        zmpsk%job=-1
-        call zmumps(zmpsk)
-        nvers=zmpsk%version_number
-        zmpsk%job=-2
-        call zmumps(zmpsk)
+        select case (type)
+            case ('S')
+            smpsk=>smps(kxmps)
+            smpsk%comm=mpicou
+            smpsk%sym=0
+            smpsk%par=1
+            smpsk%job=-1
+            call smumps(smpsk)
+            nvers=smpsk%version_number
+            smpsk%job=-2
+            call smumps(smpsk)
+            case ('C')
+            cmpsk=>cmps(kxmps)
+            cmpsk%comm=mpicou
+            cmpsk%sym=0
+            cmpsk%par=1
+            cmpsk%job=-1
+            call cmumps(cmpsk)
+            nvers=cmpsk%version_number
+            cmpsk%job=-2
+            call cmumps(cmpsk)
+            case ('D')
+            dmpsk=>dmps(kxmps)
+            dmpsk%comm=mpicou
+            dmpsk%sym=0
+            dmpsk%par=1
+            dmpsk%job=-1
+            call dmumps(dmpsk)
+            nvers=dmpsk%version_number
+            dmpsk%job=-2
+            call dmumps(dmpsk)
+            case ('Z')
+            zmpsk=>zmps(kxmps)
+            zmpsk%comm=mpicou
+            zmpsk%sym=0
+            zmpsk%par=1
+            zmpsk%job=-1
+            call zmumps(zmpsk)
+            nvers=zmpsk%version_number
+            zmpsk%job=-2
+            call zmumps(zmpsk)
         case default
-        ASSERT(.false.)
+            ASSERT(.false.)
         end select
     endif
 !
@@ -201,23 +202,23 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
     if (option .eq. 1) then
 !
 ! ---   INITS. PROPRE A L'OPTION
-        select case(type)
-        case ('S')
-        info16=smpsk%infog(16)
-        info26=smpsk%infog(26)
-        info3=smpsk%infog(3)*4
-        case ('C')
-        info16=cmpsk%infog(16)
-        info26=cmpsk%infog(26)
-        info3=cmpsk%infog(3)*8
-        case ('D')
-        info16=dmpsk%infog(16)
-        info26=dmpsk%infog(26)
-        info3=dmpsk%infog(3)*8
-        case ('Z')
-        info16=zmpsk%infog(16)
-        info26=zmpsk%infog(26)
-        info3=zmpsk%infog(3)*16
+        select case (type)
+            case ('S')
+            info16=smpsk%infog(16)
+            info26=smpsk%infog(26)
+            info3=smpsk%infog(3)*4
+            case ('C')
+            info16=cmpsk%infog(16)
+            info26=cmpsk%infog(26)
+            info3=cmpsk%infog(3)*8
+            case ('D')
+            info16=dmpsk%infog(16)
+            info26=dmpsk%infog(26)
+            info3=dmpsk%infog(3)*8
+            case ('Z')
+            info16=zmpsk%infog(16)
+            info26=zmpsk%infog(26)
+            info3=zmpsk%infog(3)*16
         end select
         if (info3 .lt. 0) then
             info3=-info3/nbproc
@@ -298,97 +299,97 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
             ASSERT(.false.)
         endif
 !
-        select case(usersm)
-        case('IN_CORE')
+        select case (usersm)
+            case('IN_CORE')
 ! --------------
 ! ---   IN-CORE
 ! --------------
-        icn22=0
-        icn23=0
-        if ((tmax.lt.info16) .and. (lpeak)) then
-            vali(1)=info16
-            vali(2)=icoefm
-            vali(3)=tmax
-            vali(4)=nbfact
-            call utmess('A', 'FACTOR_74', ni=4, vali=vali)
-        endif
-        case ('OUT_OF_CORE')
+            icn22=0
+            icn23=0
+            if ((tmax.lt.info16) .and. (lpeak)) then
+                vali(1)=info16
+                vali(2)=icoefm
+                vali(3)=tmax
+                vali(4)=nbfact
+                call utmess('A', 'FACTOR_74', ni=4, vali=vali)
+            endif
+            case ('OUT_OF_CORE')
 ! ------------------
 ! ---   OUT-OF-CORE
 !-------------------
-        icn22=1
-        icn23=0
-        if ((tmax.lt.info26) .and. (lpeak)) then
-            vali(1)=info26
-            vali(2)=icoefm
-            vali(3)=tmax
-            vali(4)=nbfact
-            call utmess('A', 'FACTOR_75', ni=4, vali=vali)
-        endif
-        case ('AUTO')
+            icn22=1
+            icn23=0
+            if ((tmax.lt.info26) .and. (lpeak)) then
+                vali(1)=info26
+                vali(2)=icoefm
+                vali(3)=tmax
+                vali(4)=nbfact
+                call utmess('A', 'FACTOR_75', ni=4, vali=vali)
+            endif
+            case ('AUTO')
 ! -----------------------------------------------------------------
 ! ----- STRATEGIE DECIDEE EN FONCTION DES CAPACITES MACHINES ET DES
 ! ----- CONSOMMATIONS REQUISES PAR MUMPS
 ! -----------------------------------------------------------------
-        if (tmax .ge. info16) then
-            icn22=0
-            icn23=max(int(0.95*tmax),info16)-(nsizema+execmu)
-        else
-            call jjldyn(0, -1, ltot)
-            k8tab(1)='MEM_TOTA'
-            k8tab(2)='VMSIZE'
-            call utgtme(2, k8tab, rval, iret)
-            rval1b=rval(1)
-            rval2b=rval(2)
-            if (iret .eq. 0) then
-                tmaxb=int(rval1b-rval2b)/nbfact
-            else
-                ASSERT(.false.)
-            endif
-            if (niv .ge. 2) then
-                vali(1)=int(rval1b-rval1)
-                call utmess('I', 'FACTOR_51', si=vali(1))
-            endif
-            if (tmaxb .ge. info16) then
+            if (tmax .ge. info16) then
                 icn22=0
-                icn23=max(int(0.95*tmaxb),info16)-(nsizema+execmu)
-            else if ((tmaxb.ge.info26).and.(tmaxb.lt.info16)) then
-                icn22=1
-                icn23=max(int(0.95*tmaxb),info26)-(nsizema+execmu)
+                icn23=max(int(0.95*tmax),info16)-(nsizema+execmu)
             else
-                vali(1)=tmax
-                vali(2)=tmaxb
-                vali(3)=info16
-                vali(4)=info26
-                vali(5)=icoefm
-                vali(6)=nbfact
-                call utmess('F', 'FACTOR_76', ni=6, vali=vali)
+                call jjldyn(0, -1, ltot)
+                k8tab(1)='MEM_TOTA'
+                k8tab(2)='VMSIZE'
+                call utgtme(2, k8tab, rval, iret)
+                rval1b=rval(1)
+                rval2b=rval(2)
+                if (iret .eq. 0) then
+                    tmaxb=int(rval1b-rval2b)/nbfact
+                else
+                    ASSERT(.false.)
+                endif
+                if (niv .ge. 2) then
+                    vali(1)=int(rval1b-rval1)
+                    call utmess('I', 'FACTOR_51', si=vali(1))
+                endif
+                if (tmaxb .ge. info16) then
+                    icn22=0
+                    icn23=max(int(0.95*tmaxb),info16)-(nsizema+execmu)
+                else if ((tmaxb.ge.info26).and.(tmaxb.lt.info16)) then
+                    icn22=1
+                    icn23=max(int(0.95*tmaxb),info26)-(nsizema+execmu)
+                else
+                    vali(1)=tmax
+                    vali(2)=tmaxb
+                    vali(3)=info16
+                    vali(4)=info26
+                    vali(5)=icoefm
+                    vali(6)=nbfact
+                    call utmess('F', 'FACTOR_76', ni=6, vali=vali)
+                endif
             endif
-        endif
-        case ('EVAL')
+            case ('EVAL')
 ! --------------------------------------------------
 ! ---   OPTION DE PRE-EVALUATION DES CONSOS MEMOIRE
 ! --------------------------------------------------
-        icn22=-1
-        icn23=-1
-        k8tab(1)='CUSE_JV'
-        k8tab(2)='RLQ_MEM'
-        call utgtme(2, k8tab, rval, iret)
-        iaux1=int(rval(1)+rval(2))
-        vali(1)=n
-        vali(2)=max(iaux1,1)
-        vali(3)=max(info16*nbfact,1)
-        vali(4)=max(info26*nbfact,1)
-        vali(5)=max(info3*nbfact,1)
-        vali(6)=vali(2)+vali(3)
-        vali(7)=vali(2)+vali(4)
-        vali(8)=nbfact
-        call utmess('I', 'FACTOR_81', ni=8, vali=vali)
-        if (.not.lpeak) then
-            call utmess('A', 'FACTOR_83')
-        endif
+            icn22=-1
+            icn23=-1
+            k8tab(1)='CUSE_JV'
+            k8tab(2)='RLQ_MEM'
+            call utgtme(2, k8tab, rval, iret)
+            iaux1=int(rval(1)+rval(2))
+            vali(1)=n
+            vali(2)=max(iaux1,1)
+            vali(3)=max(info16*nbfact,1)
+            vali(4)=max(info26*nbfact,1)
+            vali(5)=max(info3*nbfact,1)
+            vali(6)=vali(2)+vali(3)
+            vali(7)=vali(2)+vali(4)
+            vali(8)=nbfact
+            call utmess('I', 'FACTOR_81', ni=8, vali=vali)
+            if (.not.lpeak) then
+                call utmess('A', 'FACTOR_83')
+            endif
         case default
-        ASSERT(.false.)
+            ASSERT(.false.)
         end select
 ! --- CORRECTIF POUR BENEFICIER DES BOUCLES DE RATTRAPAGE SI VMPEAK
 ! --- NON EVALUABLE ET GESTION_MEMOIRE='AUTO'
@@ -396,23 +397,23 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
 !
 ! ---  MODIFICATION DU PARAMETRAGE MUMPS POUR LA SUITE DU PROCESSUS
 ! ---- (FACTORISATION NUMERIQUE + SOLVE)
-        select case(type)
-        case ('S')
-        smpsk%icntl(22)=to_mumps_int(icn22)
-        smpsk%icntl(23)=to_mumps_int(icn23)
-        smpsk%ooc_tmpdir='.'
-        case ('C')
-        cmpsk%icntl(22)=to_mumps_int(icn22)
-        cmpsk%icntl(23)=to_mumps_int(icn23)
-        cmpsk%ooc_tmpdir='.'
-        case ('D')
-        dmpsk%icntl(22)=to_mumps_int(icn22)
-        dmpsk%icntl(23)=to_mumps_int(icn23)
-        dmpsk%ooc_tmpdir='.'
-        case ('Z')
-        zmpsk%icntl(22)=to_mumps_int(icn22)
-        zmpsk%icntl(23)=to_mumps_int(icn23)
-        zmpsk%ooc_tmpdir='.'
+        select case (type)
+            case ('S')
+            smpsk%icntl(22)=to_mumps_int(icn22)
+            smpsk%icntl(23)=to_mumps_int(icn23)
+            smpsk%ooc_tmpdir='.'
+            case ('C')
+            cmpsk%icntl(22)=to_mumps_int(icn22)
+            cmpsk%icntl(23)=to_mumps_int(icn23)
+            cmpsk%ooc_tmpdir='.'
+            case ('D')
+            dmpsk%icntl(22)=to_mumps_int(icn22)
+            dmpsk%icntl(23)=to_mumps_int(icn23)
+            dmpsk%ooc_tmpdir='.'
+            case ('Z')
+            zmpsk%icntl(22)=to_mumps_int(icn22)
+            zmpsk%icntl(23)=to_mumps_int(icn23)
+            zmpsk%ooc_tmpdir='.'
         end select
 !
         if (niv .ge. 2) then
@@ -463,19 +464,19 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
     else if (option.eq.2) then
 !
 ! ---   INITS. PROPRE A L'OPTION
-        select case(type)
-        case ('S')
-        info28=smpsk%infog(28)
-        info12=smpsk%infog(12)
-        case ('C')
-        info28=cmpsk%infog(28)
-        info12=cmpsk%infog(12)
-        case ('D')
-        info28=dmpsk%infog(28)
-        info12=dmpsk%infog(12)
-        case ('Z')
-        info28=zmpsk%infog(28)
-        info12=zmpsk%infog(12)
+        select case (type)
+            case ('S')
+            info28=smpsk%infog(28)
+            info12=smpsk%infog(12)
+            case ('C')
+            info28=cmpsk%infog(28)
+            info12=cmpsk%infog(12)
+            case ('D')
+            info28=dmpsk%infog(28)
+            info12=dmpsk%infog(12)
+            case ('Z')
+            info28=zmpsk%infog(28)
+            info12=zmpsk%infog(12)
         end select
 !
         if (nprec .ge. 0) then
@@ -500,23 +501,23 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
                     endif
                     if (rang .eq. 0) then
 ! ---   KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
-                        select case(type)
-                        case ('S')
-                        do i = 1, info28
-                            zi(ipiv+1+i)=smpsk%pivnul_list(i)
-                        enddo
-                        case ('C')
-                        do i = 1, info28
-                            zi(ipiv+1+i)=cmpsk%pivnul_list(i)
-                        enddo
-                        case ('D')
-                        do i = 1, info28
-                            zi(ipiv+1+i)=dmpsk%pivnul_list(i)
-                        enddo
-                        case ('Z')
-                        do i = 1, info28
-                            zi(ipiv+1+i)=zmpsk%pivnul_list(i)
-                        enddo
+                        select case (type)
+                            case ('S')
+                            do i = 1, info28
+                                zi(ipiv+1+i)=smpsk%pivnul_list(i)
+                            enddo
+                            case ('C')
+                            do i = 1, info28
+                                zi(ipiv+1+i)=cmpsk%pivnul_list(i)
+                            enddo
+                            case ('D')
+                            do i = 1, info28
+                                zi(ipiv+1+i)=dmpsk%pivnul_list(i)
+                            enddo
+                            case ('Z')
+                            do i = 1, info28
+                                zi(ipiv+1+i)=zmpsk%pivnul_list(i)
+                            enddo
                         end select
                     endif
 ! ---   BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
@@ -543,10 +544,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
 !
         kvers=''
         kvers=trim(adjustl(nvers))
-        select case(kvers)
-        case('4.9.2','4.10.0')
+        select case (kvers)
+            case('4.9.2','4.10.0')
         case default
-        call utmess('F', 'FACTOR_72', sk=kvers)
+            call utmess('F', 'FACTOR_72', sk=kvers)
         end select
 !
 !       ------------------------------------------------
@@ -555,27 +556,27 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
     else if (option.eq.4) then
 !
 ! ---   INITS. PROPRE A L'OPTION
-        select case(type)
-        case ('S')
-        rinf12=smpsk%rinfog(12)
-        rinf13=smpsk%rinfog(13)
-        info34=smpsk%infog(34)
-        icnt33=smpsk%icntl(33)
-        case ('C')
-        rinf12=cmpsk%rinfog(12)
-        rinf13=cmpsk%rinfog(13)
-        info34=cmpsk%infog(34)
-        icnt33=cmpsk%icntl(33)
-        case ('D')
-        rinf12=dmpsk%rinfog(12)
-        rinf13=dmpsk%rinfog(13)
-        info34=dmpsk%infog(34)
-        icnt33=dmpsk%icntl(33)
-        case ('Z')
-        rinf12=zmpsk%rinfog(12)
-        rinf13=zmpsk%rinfog(13)
-        info34=zmpsk%infog(34)
-        icnt33=zmpsk%icntl(33)
+        select case (type)
+            case ('S')
+            rinf12=smpsk%rinfog(12)
+            rinf13=smpsk%rinfog(13)
+            info34=smpsk%infog(34)
+            icnt33=smpsk%icntl(33)
+            case ('C')
+            rinf12=cmpsk%rinfog(12)
+            rinf13=cmpsk%rinfog(13)
+            info34=cmpsk%infog(34)
+            icnt33=cmpsk%icntl(33)
+            case ('D')
+            rinf12=dmpsk%rinfog(12)
+            rinf13=dmpsk%rinfog(13)
+            info34=dmpsk%infog(34)
+            icnt33=dmpsk%icntl(33)
+            case ('Z')
+            rinf12=zmpsk%rinfog(12)
+            rinf13=zmpsk%rinfog(13)
+            info34=zmpsk%infog(34)
+            icnt33=zmpsk%icntl(33)
         end select
         if (icnt33 .eq. 1) then
             kpiv='&&AMUMP.DETERMINANT'

@@ -113,7 +113,7 @@ subroutine orilgm(noma)
 ! --- TRAITEMENT DE 'ORIE_PEAU_2D' :
 !     ----------------------------
 !
-    do 100 iocc = 1, nbf1
+    do iocc = 1, nbf1
         call getvem(noma, 'GROUP_MA', mofa2d, 'GROUP_MA', iocc,&
                     iarg, 0, k8b, ng)
         ng = -ng
@@ -130,31 +130,31 @@ subroutine orilgm(noma)
                         iarg, ngs, zk24(jgs), ngs)
             call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
             call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
-            do 101 ima = 1, nbmato
+            do ima = 1, nbmato
                 zi(jjv+ima-1)=0
-101         continue
-            do 102 igr = 1, ngs
+            end do
+            do igr = 1, ngs
                 gmat = zk24(jgs+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
                 call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
-                do 103 ima = 1, nbmavi
+                do ima = 1, nbmavi
                     zi(jjv+zi(jmavi+ima-1)-1)=1
-103             continue
-102         continue
+                end do
+            end do
 !          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMASU
             nbmasu=0
-            do 104 ima = 1, nbmato
+            do ima = 1, nbmato
                 nbmasu=nbmasu+zi(jjv+ima-1)
-104         continue
+            end do
 !          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMASU)
             call wkvect('&&ORILGM.GROUP_MA_SURF', 'V V I', nbmasu, jmasu)
             k=0
-            do 105 ima = 1, nbmato
+            do ima = 1, nbmato
                 if (zi(jjv+ima-1) .eq. 1) then
                     k=k+1
                     zi(jmasu+k-1)=ima
                 endif
-105         continue
+            end do
             call jedetr('&&ORILGM.WORK3')
             call jedetr('&&ORILGM.WORK2')
         else
@@ -162,7 +162,7 @@ subroutine orilgm(noma)
             call wkvect('&&ORILGM.GROUP_MA_SURF', 'V V I', 1, jmasu)
         endif
 !
-        do 110 igr = 1, ng
+        do igr = 1, ng
             gmat = zk24(jjj+igr-1)
             call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
             call jeveuo(jexnom(grmama, gmat), 'L', jgro)
@@ -173,15 +173,15 @@ subroutine orilgm(noma)
             norit = norit + norien
             write(ifm,1100) norien
             if (ntrait .ne. 0) write(ifm,1110) ntrait
-110     continue
+        end do
         call jedetr('&&ORILGM.WORK')
         call jedetr('&&ORILGM.GROUP_MA_SURF')
-100 end do
+    end do
 !
 ! --- TRAITEMENT DE 'ORIE_PEAU_3D' :
 !     ----------------------------
 !
-    do 200 iocc = 1, nbf2
+    do iocc = 1, nbf2
         call getvem(noma, 'GROUP_MA', mofa3d, 'GROUP_MA', iocc,&
                     iarg, 0, k8b, ng)
         ng = -ng
@@ -199,31 +199,31 @@ subroutine orilgm(noma)
                         iarg, ngv, zk24(jgv), ngv)
             call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
             call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
-            do 201 ima = 1, nbmato
+            do ima = 1, nbmato
                 zi(jjv+ima-1)=0
-201         continue
-            do 202 igr = 1, ngv
+            end do
+            do igr = 1, ngv
                 gmat = zk24(jgv+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
                 call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
-                do 203 ima = 1, nbmavi
+                do ima = 1, nbmavi
                     zi(jjv+zi(jmavi+ima-1)-1)=1
-203             continue
-202         continue
+                end do
+            end do
 !          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMAVO
             nbmavo=0
-            do 204 ima = 1, nbmato
+            do ima = 1, nbmato
                 nbmavo=nbmavo+zi(jjv+ima-1)
-204         continue
+            end do
 !          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMAVO)
             call wkvect('&&ORILGM.GROUP_MA_VOLU', 'V V I', nbmavo, jmavo)
             k=0
-            do 205 ima = 1, nbmato
+            do ima = 1, nbmato
                 if (zi(jjv+ima-1) .eq. 1) then
                     k=k+1
                     zi(jmavo+k-1)=ima
                 endif
-205         continue
+            end do
             call jedetr('&&ORILGM.WORK3')
             call jedetr('&&ORILGM.WORK2')
         else
@@ -232,7 +232,7 @@ subroutine orilgm(noma)
         endif
 !
 !
-        do 210 igr = 1, ng
+        do igr = 1, ng
             gmat = zk24(jjj+igr-1)
             call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
             call jeveuo(jexnom(grmama, gmat), 'L', jgro)
@@ -243,15 +243,15 @@ subroutine orilgm(noma)
             norit = norit + norien
             write(ifm,1100) norien
             if (ntrait .ne. 0) write(ifm,1110) ntrait
-210     continue
+        end do
         call jedetr('&&ORILGM.WORK')
         call jedetr('&&ORILGM.GROUP_MA_VOLU')
-200 end do
+    end do
 !
 ! --- TRAITEMENT DE 'ORIE_NORM_COQUE':
 !     -------------------------------
 !
-    do 300 iocc = 1, nbf3
+    do iocc = 1, nbf3
         orivec = .false.
         call getvr8(mofb3d, 'VECT_NORM', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -286,7 +286,7 @@ subroutine orilgm(noma)
         call getvem(noma, 'GROUP_MA', mofb3d, 'GROUP_MA', iocc,&
                     iarg, ng, zk24(jjj), ng)
         if (orivec) then
-            do 310 igr = 1, ng
+            do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
@@ -296,9 +296,9 @@ subroutine orilgm(noma)
                             noeud)
                 norit = norit + norien
                 write(ifm,1100) norien
-310         continue
+            end do
         else
-            do 320 igr = 1, ng
+            do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
@@ -307,15 +307,15 @@ subroutine orilgm(noma)
                 call ornorm(noma, zi(jgro), nbmail, reorie, norien)
                 norit = norit + norien
                 write(ifm,1100) norien
-320         continue
+            end do
         endif
         call jedetr('&&ORILGM.WORK')
-300 end do
+    end do
 !
 ! --- TRAITEMENT DE 'ORIE_LIGNE':
 !     ------------------------------
 !
-    do 400 iocc = 1, ncf3
+    do iocc = 1, ncf3
         orivec = .false.
         call getvr8(mofc3d, 'VECT_TANG', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -350,7 +350,7 @@ subroutine orilgm(noma)
         call getvem(noma, 'GROUP_MA', mofc3d, 'GROUP_MA', iocc,&
                     iarg, ng, zk24(jjj), ng)
         if (orivec) then
-            do 410 igr = 1, ng
+            do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
@@ -360,9 +360,9 @@ subroutine orilgm(noma)
                             noeud)
                 norit = norit + norien
                 write(ifm,1100) norien
-410         continue
+            end do
         else
-            do 420 igr = 1, ng
+            do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
@@ -371,10 +371,10 @@ subroutine orilgm(noma)
                 call ornorm(noma, zi(jgro), nbmail, reorie, norien)
                 norit = norit + norien
                 write(ifm,1100) norien
-420         continue
+            end do
         endif
         call jedetr('&&ORILGM.WORK')
-400 end do
+    end do
 !
     if (norit .ne. 0) write(ifm,1010) norit
 !

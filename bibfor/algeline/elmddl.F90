@@ -48,7 +48,7 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  ieq, ifm, niv, i, inter(neq)
+    integer :: ieq, ifm, niv, i, inter(neq)
     character(len=14) :: nume
 !
 ! ----------------------------------------------------------------------
@@ -60,14 +60,14 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
     nbddl = 0
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
-    do 5 ieq = 1, neq
+    do ieq = 1, neq
         vecddl(ieq) = 1
-  5 end do
+    end do
 !
 ! --- CALCUL DU NOMBRE DE DDL A ELIMINER
 !
     if (nddle .gt. 0) then
-        do 10 i = 1, nddle
+        do i = 1, nddle
 !
 ! ------- RECUPERATION DES POSITIONS DES DDL
 !
@@ -76,9 +76,9 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
 ! ------- CALCUL DU NOMBRE DE 'DDL': NBDDL
 !
-            do 20 ieq = 1, neq
+            do ieq = 1, neq
                 nbddl = nbddl + inter(ieq)
- 20         continue
+            end do
 !
 ! ------- STOP SI ON CHERCHE A ELIM UN DDL ABSENT DE LA MODELISATION
 !
@@ -88,15 +88,15 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
 ! ------- INVERSION : INTER = 0 SI DDL TROUVE ET 1 SINON
 !
-            do 30 ieq = 1, neq
+            do ieq = 1, neq
                 inter(ieq) = abs(inter(ieq)-1)
- 30         continue
+            end do
 !
-            do 40 ieq = 1, neq
+            do ieq = 1, neq
                 vecddl(ieq) = vecddl(ieq)*inter(ieq)
- 40         continue
+            end do
 !
- 10     continue
+        end do
     endif
 !
 ! --- IMPRESSION DES DDL
@@ -104,9 +104,9 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
     if (niv .ge. 1) then
         if (nbddl .gt. 0) then
             write (ifm,*) option
-            do 6 i = 1, nddle
+            do i = 1, nddle
                 write (ifm,9010) ddl(i)
-  6         continue
+            end do
             write (ifm,9050) nbddl
             write (ifm,9060)
         else

@@ -103,10 +103,10 @@ subroutine defint(mailla, nomres)
 !
     nbint=0
 !
-    do 10 i = 1, ioc
+    do i = 1, ioc
         call getvtx(int, nom, iocc=i, scal=kar80, nbret=nbval)
         if (nbval .gt. 0) nbint=nbint+1
- 10 end do
+    end do
 !
 !------------ALLOCATION REPERTOIRES DES NOMS D'INTERFACE ---------------
 !
@@ -148,7 +148,7 @@ subroutine defint(mailla, nomres)
 !
     if (ioc .gt. 1) then
 !
-        do 20 i = 2, ioc
+        do i = 2, ioc
             call getvtx(int, nom, iocc=i, scal=kar80, nbret=nbval)
             nomcou=kar80
             call jeexin(jexnom(notint, nomcou), iret)
@@ -176,7 +176,7 @@ subroutine defint(mailla, nomres)
 !
             nbgr=nbgr-nbvag
             nbno=nbno-nbvan
- 20     continue
+        end do
 !
     endif
 !
@@ -227,7 +227,7 @@ subroutine defint(mailla, nomres)
     call jecrec(noeint, 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbint)
 !
-    do 30 i = 1, nbint
+    do i = 1, nbint
         ideb=zi(ltgui+i-1)
         ifin=zi(ltgui+nbint+i-1)
 !
@@ -242,13 +242,13 @@ subroutine defint(mailla, nomres)
 !---------SOUS-BOUCLE COMPTAGE NOMBRE DE NOEUDS DE CHAQUE INTERFACE-----
 !
         nbno=0
-        do 40 j = ideb, ifin
+        do j = ideb, ifin
             call getvtx(int, no, iocc=j, nbval=0, nbret=nbvan)
             call getvtx(int, grno, iocc=j, nbval=maxgr, vect=zk24(ltlgr),&
                         nbret=nbvag)
             call compno(mailla, nbvag, zk24(ltlgr), nbuf)
             nbno=nbno-nbvan+nbuf
- 40     continue
+        end do
 !
 !-------ALLOCATION DES VECTEURS NUMERO NOEUDS INTERFACES----------------
 !                     MASQUE,DDL ACTIFS
@@ -271,7 +271,7 @@ subroutine defint(mailla, nomres)
 !        ET STOCKAGES DES MASQUES ET DDL ACTIFS POUR INTERFACES
 !
         nbpre=0
-        do 50 j = ideb, ifin
+        do j = ideb, ifin
             call getvtx(int, no, iocc=j, nbval=maxno, vect=zk8(ltlno),&
                         nbret=nbvan)
             call getvtx(int, grno, iocc=j, nbval=maxgr, vect=zk24(ltlgr),&
@@ -285,15 +285,15 @@ subroutine defint(mailla, nomres)
                         0, icodma)
             call defdda(nbec, nbcmp, numgd, ideb, 'DDL_ACTIF',&
                         1, icodac)
-            do 55 k = 1, nbcou
-                do 56 iec = 1, nbec
+            do k = 1, nbcou
+                do iec = 1, nbec
                     zi(ldact+nbpre+(k-1)*nbec+iec-1) = icodac(iec)
                     zi(ltmas+nbpre+(k-1)*nbec+iec-1) = icodma(iec)
- 56             continue
- 55         continue
+                end do
+            end do
             nbpre=nbpre+nbcou*nbec
- 50     continue
- 30 end do
+        end do
+    end do
 !
 !------SAUVEGARDE DES OBJECT EN GLOBALE SAUF CEUX A MODIFIER------------
 !

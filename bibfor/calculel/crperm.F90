@@ -126,7 +126,7 @@ subroutine crperm()
         call utmess('F', 'CALCULEL5_73', nk=2, valk=valk)
     endif
 !
-    do 100 ic = 1, nbcham
+    do ic = 1, nbcham
         call rsexch('F', resu1, cham(ic), iord1(1), ch1,&
                     iret)
         call rsexch('F', resu2, cham(ic), iord2, ch2,&
@@ -162,7 +162,7 @@ subroutine crperm()
             chsi2(ic) = chs2
         endif
 !
-100 end do
+    end do
 !
 !
     linoeu = '&&CRPERM.LISTE_NOEU'
@@ -174,7 +174,7 @@ subroutine crperm()
 ! --- BOUCLE SUR LES TRANSLATIONS A EFFECTUER :
 !     ---------------------------------------
 !
-    do 10 ip = 1, nbperm
+    do ip = 1, nbperm
 !
         call getvem(ma1, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_INIT', ip,&
                     iarg, 1, gma1, n1)
@@ -197,7 +197,7 @@ subroutine crperm()
         call jeveuo(lima1, 'L', jlim1)
         call jeveuo(lima2, 'L', jlim2)
 !
-        do 20 ic = 1, nbcham
+        do ic = 1, nbcham
 !
             chs1 = chsi1(ic)
             chs2 = chsi2(ic)
@@ -212,15 +212,15 @@ subroutine crperm()
 !
             endif
 !
- 20     continue
+        end do
 !
         call jedetr(lima1)
         call jedetr(lima2)
         call jedetr(linoeu)
 !
- 10 end do
+    end do
 !
-    do 110 ic = 1, nbcham
+    do ic = 1, nbcham
         call rsexch('F', resu2, cham(ic), iord2, ch2,&
                     iret)
         chs1 = chsi1(ic)
@@ -239,7 +239,7 @@ subroutine crperm()
             call detrsd('CHAM_ELEM_S', chs1)
             call detrsd('CHAM_ELEM_S', chs2)
         endif
-110 end do
+    end do
 !
     call jedema()
 end subroutine

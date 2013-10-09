@@ -61,7 +61,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     integer :: noe1, noe2, noe3, iarg, jdccf, jdvcf
     real(kind=8) :: ang(2), sl, ez, ctr, axey(3), xnorm, epsi
     real(kind=8) :: axex(3), vn1n2(3), vn1n3(3), vecnor(3)
-    character(len=8) ::  slf, ezf
+    character(len=8) :: slf, ezf
     character(len=19) :: cartgr, cartcf
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex, tmpncf, tmpvcf
     character(len=32) :: kjexn
@@ -101,14 +101,14 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     lcartf = .false.
     if (iret .eq. 0) then
 ! ------ DOIT-ON CREER LA CARTE DE FONCTION
-        do 100 ioc = 1, nbocc
+        do ioc = 1, nbocc
             call getvid('GRILLE', 'SECTION_FO', iocc=ioc, scal=slf, nbret=n1f)
             call getvid('GRILLE', 'EXCENTREMENT_FO', iocc=ioc, scal=ezf, nbret=n3f)
             if (n1f+n3f .ne. 0) then
                 lcartf = .true.
                 goto 110
             endif
-100     continue
+        end do
 110     continue
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
@@ -133,7 +133,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     call wkvect('&&TMPGRILLE2', 'V V K8', lmax, jdls2)
 !
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS : CARTGR, CARTCF
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
         ang(1) = 0.0d0
         ang(2) = 0.0d0
         sl = 0.0d0
@@ -177,13 +177,13 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
         if (n5 .eq. 0) then
 ! ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             if (ng .gt. 0) then
-                do 20 i = 1, ng
+                do i = 1, ng
                     call nocart(cartgr, 2, 5, groupma=zk24(jdls+i-1))
- 20             continue
+                end do
                 if (lcartf) then
-                    do 25 i = 1, ng
+                    do i = 1, ng
                         call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
- 25                 continue
+                    end do
                 endif
             endif
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
@@ -199,29 +199,29 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
             if (ng .gt. 0) then
                 nbmat = 0
                 numa = -1
-                do 120 igr = 0, ng-1
+                do igr = 0, ng-1
                     kjexn = jexnom(nomagr,zk24(jdls+igr))
                     call jelira(kjexn, 'LONMAX', nbma)
                     call jeveuo(kjexn, 'L', jgrma)
                     nbmat = nbmat + nbma
-                    do 122 ima = 0, nbma-1
+                    do ima = 0, nbma-1
                         numa = numa + 1
                         zi(jnuma+numa) = zi(jgrma+ima)
-122                 continue
-120             continue
+                    end do
+                end do
             else
                 nbmat = nm
-                do 130 ima = 0, nm-1
+                do ima = 0, nm-1
                     kjexn = jexnom(nomama,zk8(jdls2+ima))
                     call jenonu(kjexn, zi(jnuma+ima))
-130             continue
+                end do
             endif
 !
             call normev(axey, xnorm)
             if (xnorm .lt. epsi) then
                 call utmess('F', 'MODELISA_10')
             endif
-            do 200 ima = 1, nbmat
+            do ima = 1, nbmat
                 numa = zi(jnuma+ima-1)
                 kjexn = jexnum(connex,numa)
                 call jelira(kjexn, 'LONMAX', nbno)
@@ -230,12 +230,12 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 noe1 = zi(adrm+1-1)
                 noe2 = zi(adrm+2-1)
                 noe3 = zi(adrm+3-1)
-                do 202 i = 1, 3
+                do i = 1, 3
                     vn1n2(i)= zr(axyzm+3*(noe2-1)+i-1) -zr(axyzm+3*(&
                     noe1-1)+i-1)
                     vn1n3(i)= zr(axyzm+3*(noe3-1)+i-1) -zr(axyzm+3*(&
                     noe1-1)+i-1)
-202             continue
+                end do
                 vecnor(1) = vn1n2(2)*vn1n3(3) - vn1n2(3)*vn1n3(2)
                 vecnor(2) = vn1n2(3)*vn1n3(1) - vn1n2(1)*vn1n3(3)
                 vecnor(3) = vn1n2(1)*vn1n3(2) - vn1n2(2)*vn1n3(1)
@@ -258,10 +258,10 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                     call nocart(cartcf, 3, 2, mode='NUM', nma=1,&
                                 limanu=[numa])
                 endif
-200         continue
+            end do
         endif
 !
- 10 end do
+    end do
 !
     call jedetr('&&ACEAGB.NUME_MA')
     call jedetr('&&TMPGRILLE')

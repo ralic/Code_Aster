@@ -76,12 +76,12 @@ subroutine xfisco(noma, modelx)
 !
 ! --- BOUCLE SUR LES MAILLES
 !
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         nfiss = zi(jnbsp-1+ima)
 !
 ! --- BOUCLE SUR LES FISSURE DE LA MAILLE
 !
-        do 110 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         ifiss, 1, iad)
             ASSERT(iad.gt.0)
@@ -94,7 +94,7 @@ subroutine xfisco(noma, modelx)
 !
 ! --- BOUCLE SUR LES FISSURES DE LA MAILLE IFIS3, AUTRE QUE IFISS
 !
-                do 130 ifis3 = 1, nfiss
+                do ifis3 = 1, nfiss
                     if (ifis3 .eq. ifiss) goto 130
 !
 ! --- RECUPERATION DU NOM GLOBALE  NOMFI3 DE IFIS3
@@ -105,7 +105,7 @@ subroutine xfisco(noma, modelx)
 !
 ! --- ON REGARDE SI LA FISSURE NOMFI3 EST CONNECTÉ À NOMFIS
 !
-                    do 120 ifis2 = 1, nfis2
+                    do ifis2 = 1, nfis2
                         if (zk8(jjonf-1+ifis2) .eq. nomfi3) then
                             if (ifis3 .gt. ifiss) then
                                 valk(1) = nomfis
@@ -134,8 +134,9 @@ subroutine xfisco(noma, modelx)
                             zl(jcesl-1-iad) = .true.
                             zi(jcesv-1-iad) = zi(jjonc-1+ifis2)
                         endif
-120                 continue
-130             continue
+                    end do
+130                 continue
+                end do
             endif
 !
 ! --- SI ON A RIEN TROUVER
@@ -151,9 +152,9 @@ subroutine xfisco(noma, modelx)
                 zl(jcesl-1-iad) = .true.
                 zi(jcesv-1-iad) = 0
             endif
-110     continue
+        end do
 !
-100 end do
+    end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !

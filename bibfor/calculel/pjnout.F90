@@ -37,7 +37,7 @@ subroutine pjnout(modele)
 !     NOEUD_UTIL(INO) = 0 =>: SINON
 !     ------------------------------------------------------------------
 !
-    character(len=8) ::  noma
+    character(len=8) :: noma
     integer :: nbnoeu, jnout, ima, nbno, j, jmaill, nbmail
 !     ------------------------------------------------------------------
 !
@@ -62,13 +62,14 @@ subroutine pjnout(modele)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', iconx2)
     call jeveuo(modele//'.MAILLE', 'L', jmaill)
 !
-    do 280 ima = 1, nbmail
+    do ima = 1, nbmail
         if (zi(jmaill+ima-1) .eq. 0) goto 280
         nbno = zznbne(ima)
-        do 270 j = 1, nbno
+        do j = 1, nbno
             zi(jnout-1+zzconx(ima,j)) = 1
-270     continue
-280 end do
+        end do
+280     continue
+    end do
 290 continue
 !
     call jedema()

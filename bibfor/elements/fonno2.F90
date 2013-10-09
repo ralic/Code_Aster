@@ -54,7 +54,7 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
     integer :: jmaco, iatyma, jno1, jno2, typ11, typ22
     integer :: inp, inq, inr, ins, nbno1, nbno2
     integer :: comp2, comp3, comp4
-    character(len=8) ::  typ1, typ2
+    character(len=8) :: typ1, typ2
     character(len=9) :: valk(1)
 !
 !     -----------------------------------------------------------------
@@ -69,7 +69,7 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
     call jeveuo(macofo, 'L', jmaco)
 !
     comp4=0
-    do 120 inp = 1, nbmac
+    do inp = 1, nbmac
         comp3=0
         call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + inp)), 'L', jno1)
 !       NOMBRE DE NOEUDS LA MAILLE
@@ -78,7 +78,7 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
         call dismoi('NBNO_TYPMAIL', typ1, 'TYPE_MAILLE', repi=nbno1)
 !       POUR CHAQUE MAILLE VOISINE (NOEUD FOND COMMUN ET MEME
 !       DIMENSION TOPO
-        do 121 inq = 1, nbmac
+        do inq = 1, nbmac
             comp2=0
             call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + inq)), 'L', jno2)
             typ22= iatyma-1+zi(jmaco-1 + inq)
@@ -86,13 +86,13 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
             call dismoi('NBNO_TYPMAIL', typ2, 'TYPE_MAILLE', repi=nbno2)
 !         ON COMPTE LE NOMBRE DE NOEUDS COMMUNS AFIN D'ISOLER
 !         LES MAILLES DE BORD
-            do 122 inr = 1, nbno1
-                do 123 ins = 1, nbno2
+            do inr = 1, nbno1
+                do ins = 1, nbno2
                     if (zi(jno1-1+inr) .eq. zi(jno2-1+ins)) then
                         comp2=comp2+1
                     endif
-123             continue
-122         continue
+                end do
+            end do
 !         SI LES DEUX MAILLES ONT DES NOEUDS EN COMMUN EN DEHORS DU
 !         FOND MAIS PAS TOUS
             if (( (nbnoff.eq.1) .and. (comp2.ne.nbno1) .and. ( comp2.ge.nbnose) ) .or.&
@@ -100,14 +100,14 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
                 (nbmac.eq.1)) then
                 comp3=comp3+1
             endif
-121     continue
+        end do
 !       ON GARDE LES MAILLES CONNECTEES QU'A 1 SEULE AUTRE MAILLE
         if (comp3 .eq. 1) then
             comp4=comp4+1
             ASSERT(comp4.le.2)
             tablev(comp4)=zi(jmaco-1 + inp)
         endif
-120 end do
+    end do
 !
 !     SI AUCUNE MAILLE DE CE TYPE N'EST TROUVE
     if (comp4 .eq. 0) then

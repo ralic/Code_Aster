@@ -51,7 +51,7 @@ subroutine mpjeft(corres)
 !
 !
     character(len=4) :: cdim1, exivol, exipou, exirdm, exipla, exicoq
-    character(len=8) ::  noma1, noma2, model1, model2, labk8
+    character(len=8) :: noma1, noma2, model1, model2, labk8
     character(len=8) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: tymocl(2), motcle(2)
     integer :: ndim, ncas, n1, nbocc, iocc, nbno2, nuno1, nuno2
@@ -179,10 +179,10 @@ subroutine mpjeft(corres)
         zk24(jxxk1-1 +2)=noma2
         zk24(jxxk1-1 +3)='ELEM'
 !
-        do 10 ino = 1, nbnmes
+        do ino = 1, nbnmes
             zi(iaconb-1 +ino)=1
             zr(iacocf-1 +ino)=1.d0
- 10     continue
+        end do
 !
 ! CREATION DES LISTES DE NOEUDS UTILISEES
 ! ***************************************
@@ -203,17 +203,17 @@ subroutine mpjeft(corres)
 ! ********************************************************
         call wkvect(lisin1, 'V V K8', nbnmes, llin1)
 !
-        do 60 ino = 1, nbnmes
+        do ino = 1, nbnmes
             call jenuno(jexnum (noma2//'.NOMNOE', ino), zk8(llin1-1+ ino))
- 60     continue
+        end do
 !
 ! ALLOCATION ET REMPLISSAGE DE LA LISTE DES NOEUDS NUMERIQUES
 ! ***********************************************************
         call wkvect(lisin2, 'V V K8', nbncal, llin2)
 !
-        do 61 ino = 1, nbncal
+        do ino = 1, nbncal
             call jenuno(jexnum (noma1//'.NOMNOE', ino), zk8(llin2-1+ ino))
- 61     continue
+        end do
 !
 ! RECHERCHE DES NOEUDS EN VIS-A-VIS
 ! *********************************
@@ -226,9 +226,9 @@ subroutine mpjeft(corres)
             call utmess('F', 'ALGORITH6_20')
         endif
 !
-        do 62 ino = 1, nbnmes
+        do ino = 1, nbnmes
             call jenonu(jexnom (noma1//'.NOMNOE', zk8(llou2-1+ino)), zi(iaconu-1+ino))
- 62     continue
+        end do
 !
         call jedetr(lisin1)
         call jedetr(lisin2)
@@ -245,7 +245,7 @@ subroutine mpjeft(corres)
 !       CORRESPONDANCE MANUELLE SUR CERTAINS NOEUDS
 !       ------------------------
 !
-        do 30 iocc = 1, nbocc
+        do iocc = 1, nbocc
 !
 !        -- RECUPERATION DE LA LISTE DE NOEUDS LNO1 (CALCUL):
 !        ----------------------------------------------
@@ -290,21 +290,21 @@ subroutine mpjeft(corres)
 !
 ! RECUPERATION DE LA DIMENSION DE PJEF_NU OU PJEF_CF
             idecal = 0
-            do 51 i = 1, nbnmes
+            do i = 1, nbnmes
                 idecal = idecal + zi(iaconb-1 +i)
- 51         continue
+            end do
 ! CREATION DES VECTEURS TAMPON
             call wkvect('TAMPON1', 'V V I', nbnmes, it1)
             call wkvect('TAMPON2', 'V V I', idecal, it2)
             call wkvect('TAMPON3', 'V V R', idecal, it3)
 ! RECOPIE DE PJEF_NB PJEF_NU ET PJEF_CF
-            do 52 i = 1, nbnmes
+            do i = 1, nbnmes
                 zi(it1-1 +i) = zi(iaconb-1 +i)
- 52         continue
-            do 53 i = 1, idecal
+            end do
+            do i = 1, idecal
                 zi(it2-1 +i) = zi(iaconu-1 +i)
                 zr(it3-1 +i) = zr(iacocf-1 +i)
- 53         continue
+            end do
 ! DESTRUCTION DES ANCIENS PJEF_NB PJEF_NU ET PJEF_CF
             call jedetr(corres//'.PJEF_NB')
             call jedetr(corres//'.PJEF_NU')
@@ -312,9 +312,9 @@ subroutine mpjeft(corres)
 !
 !        -- DECALAGE DES DONNEES
             idecal = 0
-            do 31 i = 1, nuno2 - 1
+            do i = 1, nuno2 - 1
                 idecal = idecal + zi(it1-1 +i)
- 31         continue
+            end do
 !
             nbold = zi(it1-1 +nuno2)
             zi(it1-1 + nuno2)=1
@@ -322,14 +322,14 @@ subroutine mpjeft(corres)
             zr(it3-1 + idecal+1)= 1.d0
 !
             ndecal = 0
-            do 32 i = nuno2 +1, nbnmes
+            do i = nuno2 +1, nbnmes
                 ndecal = ndecal + zi(it1-1 + i)
- 32         continue
+            end do
 !
-            do 33 i = 1, ndecal
+            do i = 1, ndecal
                 zi(it2-1+idecal+1+i) = zi(it2-1+idecal+nbold+i)
                 zr(it3-1+idecal+1+i) = zr(it3-1+idecal+nbold+i)
- 33         continue
+            end do
 !
 ! CREATION DES NOUVEAUX OBJETS
             nbold = idecal + 1 + ndecal
@@ -337,13 +337,13 @@ subroutine mpjeft(corres)
             call wkvect(corres//'.PJEF_NU', 'V V I', nbold, iaconu)
             call wkvect(corres//'.PJEF_CF', 'V V R', nbold, iacocf)
 ! RECOPIE DES DONNEES
-            do 54 i = 1, nbnmes
+            do i = 1, nbnmes
                 zi(iaconb-1 + i) = zi(it1-1 +i)
- 54         continue
-            do 55 i = 1, nbold
+            end do
+            do i = 1, nbold
                 zi(iaconu-1 + i) = zi(it2-1 +i)
                 zr(iacocf-1 + i) = zr(it3-1 +i)
- 55         continue
+            end do
 !
 ! DESTRUCTION DES VECTEURS TAMPON
             call jedetr('TAMPON1')
@@ -354,7 +354,7 @@ subroutine mpjeft(corres)
             call jedetr('&&PJEFTE.LINONU1')
             call jedetr('&&PJEFTE.LINONU2')
 !
- 30     continue
+        end do
 !
     endif
 !
@@ -367,17 +367,17 @@ subroutine mpjeft(corres)
     call jeveuo(corres//'.PJEF_CF', 'L', iacocf)
 !
     kk = 0
-    do 40 i = 1, nbnmes
+    do i = 1, nbnmes
         call jenuno(jexnum(noma2//'.NOMNOE', i), labk8)
         write(ifres,1000) labk8
         nbno1 = zi(iaconb-1 +i)
-        do 41 iocc = 1, nbno1
+        do iocc = 1, nbno1
             kk = kk + 1
             call jenuno(jexnum(noma1//'.NOMNOE', zi(iaconu-1+kk)), labk8)
             coef = zr(iacocf-1 +kk)
             write(ifres,1001) labk8,coef
- 41     continue
- 40 end do
+        end do
+    end do
 !
     1000 format (' NOEUD MESURE :  ',a8)
     1001 format ('       ',a8,'    POIDS : ',d12.5)

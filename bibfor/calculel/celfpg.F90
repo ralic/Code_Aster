@@ -124,7 +124,7 @@ subroutine celfpg(celz, nomobj, iret)
         call jeveuo(nomobj, 'L', jobj)
     endif
 !
-    do 20 igr = 1, nbgr
+    do igr = 1, nbgr
         nbel=nbelem(ligrel,igr)
         imolo=zi(jceld-1+zi(jceld-1+4+igr)+2)
         if (imolo .eq. 0) goto 20
@@ -137,10 +137,10 @@ subroutine celfpg(celz, nomobj, iret)
         endif
 !
         if (.not.lexi) then
-            do 10 iel = 1, nbel
+            do iel = 1, nbel
                 numa=numail(igr,iel)
                 if (numa .gt. 0) zk16(jobj-1+numa)=nofpg
- 10         continue
+            end do
 !
         else
             iel=1
@@ -150,7 +150,8 @@ subroutine celfpg(celz, nomobj, iret)
                 goto 30
             endif
         endif
- 20 end do
+ 20     continue
+    end do
 !
 !
  30 continue

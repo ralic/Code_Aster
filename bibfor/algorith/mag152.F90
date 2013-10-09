@@ -82,7 +82,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
         somme = 0
 !
-        do 20 iblo = 1, nbloc
+        do iblo = 1, nbloc
 !
 !----------------------------------------------------------------
 !
@@ -92,10 +92,10 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
             n2bloc = zi(iscbl+iblo)
 !
 !
-            do 10 i = n1bloc, n2bloc
+            do i = n1bloc, n2bloc
                 somme = somme + zi(ischc+i-1)
-10          continue
-20      continue
+            end do
+        end do
 !
         write (6,*) 'SOMME=',somme
         if ((nueq* (nueq+1)/2) .ne. somme) then
@@ -157,9 +157,9 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
         zk24(ialime) = '  '
     endif
 !
-    do 30 i = 1, nueq
+    do i = 1, nueq
         zr(iaconl+i-1) = 1.0d0
-30  end do
+    end do
 !
     call jedema()
 end subroutine

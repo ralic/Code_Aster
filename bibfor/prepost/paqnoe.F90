@@ -146,7 +146,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 c16b, r8b, k8b, zi(jordr), ndim,&
                 nbordr)
     ordini = 1
-    do 400 k = 2, nbordr
+    do k = 2, nbordr
         iord = zi(jordr-1+k)
         call rsadpa(nomsd, 'L', 1, 'INST', iord,&
                     0, sjv=jinst, styp=kbid)
@@ -165,7 +165,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 endif
             endif
         endif
-400 end do
+    end do
 410 continue
 !
     if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
@@ -260,7 +260,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     numpaq = 0
     nnopaq = 0
 !
-    do 100 ino = 1, nbno
+    do ino = 1, nbno
         tpaq = tpaq + nbordr*nbcmp
         nnopaq = nnopaq + 1
 !
@@ -307,7 +307,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
             endif
         endif
 !
-100 end do
+    end do
 !
     if (nbpaq .gt. nbpmax) then
         vali (1) = nbpmax
@@ -319,14 +319,14 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
 !  <<REMPLISSAGE>> DU VECTEUR DE TRAVAIL
 !
-    do 200 numpaq = 1, nbpaq
+    do numpaq = 1, nbpaq
         call jerazo('&&PAQNOE.RWORK', tdisp(1), 1)
         tpaq = zi(jpaqno + (numpaq-1)*4 + 1)
         nnoini = zi(jpaqno + (numpaq-1)*4 + 2)
         nbnop = zi(jpaqno + (numpaq-1)*4 + 3)
         tspaq = tpaq/nbordr
 !
-        do 300 iordr = 1, nbordr
+        do iordr = 1, nbordr
 !
 ! IF CRITERE CONTIENT CONTRAINTE
             if (crsigm) then
@@ -429,7 +429,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
             kwork = 0
             somnow = 0
 !
-            do 320 inop = nnoini, nnoini+(nbnop-1)
+            do inop = nnoini, nnoini+(nbnop-1)
                 if (inop .gt. nnoini) then
                     kwork = 1
                     somnow = somnow + 1
@@ -439,7 +439,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
 ! BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                 if (crsigm) then
-                    do 340 icmp = 1, 6
+                    do icmp = 1, 6
                         if (zl(jsigl + (icmp-1) + (nunoe-1)*6)) then
                             zr( jrwork + (icmp-1) + kwork*somnow*18 +&
                             (iordr-1)*tspaq ) = zr( jsigv + (icmp-1) +&
@@ -449,12 +449,12 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         else
                             call utmess('F', 'PREPOST4_30')
                         endif
-340                 continue
+                    end do
                 endif
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
                 if (crepst) then
-                    do 360 icmp = 1, 6
+                    do icmp = 1, 6
                         if (zl(jepsl + (icmp-1) + (nunoe-1)*6)) then
                             zr( jrwork + (icmp+6-1) + kwork*somnow*18&
                             + (iordr-1)*tspaq ) = zr( jepsv + (icmp-1)&
@@ -464,12 +464,12 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         else
                             call utmess('F', 'PREPOST4_35')
                         endif
-360                 continue
+                    end do
                 endif
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
                 if (crepsp) then
-                    do 380 icmp = 1, 6
+                    do icmp = 1, 6
                         if (zl(jepspl + (icmp-1) + (nunoe-1)*6)) then
                             zr( jrwork + (icmp+6+6-1) + kwork*somnow*&
  18                          + (iordr-1)*tspaq ) = zr( jepspv + (&
@@ -479,13 +479,13 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         else
                             call utmess('F', 'PREPOST4_35')
                         endif
-380                 continue
+                    end do
                 endif
 !
                 if (creppe) then
                     if (valep .eq. 0) then
 !
-                        do 390 icmp = 1, 6
+                        do icmp = 1, 6
                             if (zl(jeppel + (icmp-1) + (nunoe-1)*6)) then
                                 zr( jrwork + (icmp+6+6-1) + kwork*&
                                 somnow*18 + (iordr-1)*tspaq ) =&
@@ -495,18 +495,18 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             else
                                 call utmess('F', 'PREPOST4_35')
                             endif
-390                     continue
+                        end do
 !
                     else
-                        do 395 ic = 1, 6
+                        do ic = 1, 6
                             zr( jrwork + (ic+6+6-1) + kwork*somnow*18&
                             + (iordr-1)*tspaq ) = 0.d0
-395                     continue
+                        end do
                     endif
                 endif
 !
-320         continue
-300     continue
+            end do
+        end do
 !
 !
 !
@@ -537,7 +537,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                         k8b, cnsr, post, resu)
         endif
 !
-200 end do
+200     continue
+    end do
 !
 ! TRANSFORMATION D'UN CHAM_NO SIMPLE EN CHAM_NO
 !

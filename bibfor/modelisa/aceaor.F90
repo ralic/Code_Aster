@@ -141,11 +141,11 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 !
 ! --- INITIALISATION DES VALEURS DES ANGLES NAUTIQUES PAR DEFAUT
 !                      SUR TOUTES LES MAILLES (REPERE LOCAL PAR DEFAUT)
-    do 10 i = 1, nbmtot*3
+    do i = 1, nbmtot*3
         zr(jdor+i-1) = 0.d0
- 10 end do
+    end do
 !
-    do 20 nummai = 1, nbmail
+    do nummai = 1, nbmail
         nutyma = zi(jdtm+nummai-1)
         jad = jdor + (nummai*3) - 3
 !
@@ -154,10 +154,10 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
             call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
             no1 = zi(jdno)
             no2 = zi(jdno+1)
-            do 22 i = 1, 3
+            do i = 1, 3
                 x1(i) = zr(jdco+(no1-1)*3+i-1)
                 x2(i) = zr(jdco+(no2-1)*3+i-1)
- 22         continue
+            end do
             call vdiff(3, x2, x1, x3)
             if (abs(x3(1)) .gt. tsm .or. abs(x3(2)) .gt. tsm .or. abs(x3(3)) .gt. tsm) then
                 call angvx(x3, alpha, beta)
@@ -165,12 +165,12 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                 zr(jad+1) = zr(jad+1) + beta
             endif
         endif
- 20 end do
+    end do
 !
 ! --- AFFECTATION DES VALEURS LUES DANS L OBJET TAMPON :
 !     --------------------------------------------------
     if (nbocc(4) .ne. 0) then
-        do 30 ioc = 1, nbocc(4)
+        do ioc = 1, nbocc(4)
             call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc,&
                         iarg, lmax, zk24(jdls), ng)
             call getvem(noma, 'MAILLE', 'ORIENTATION', 'MAILLE', ioc,&
@@ -187,10 +187,10 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 ! ---       "GROUP_MA" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DES
 !                                                    GROUPES DE MAILLES
             if (ng .gt. 0) then
-                do 36 i = 1, ng
+                do i = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
                     call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
-                    do 38 j = 1, nbmagr
+                    do j = 1, nbmagr
                         nummai = zi(jdgm+j-1)
                         call jenuno(jexnum(mlgnma, nummai), nommai)
                         call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
@@ -201,13 +201,13 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                                         jdno, jdco, ivr, nutyma, ntseg,&
                                         carori, nco, ier)
                         endif
- 38                 continue
- 36             continue
+                    end do
+                end do
             endif
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
             if (nm .gt. 0) then
-                do 40 i = 1, nm
+                do i = 1, nm
                     nommai = zk24(jdls+i-1)
                     call jenonu(jexnom(mlgnma, nommai), nummai)
                     call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
@@ -218,7 +218,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                                     jdno, jdco, ivr, nutyma, ntseg,&
                                     carori, nco, ier)
                     endif
- 40             continue
+                end do
             endif
 !
 ! ---       SI DES MAILLES TARDIVES EXISTENT POUR CE MODELE :
@@ -226,39 +226,39 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 ! ----         "GROUP_NO" = TOUTES LES MAILLES TARDIVES POSSIBLES DE LA
 !                                            LISTE DE GROUPES DE NOEUDS
                 if (nj .gt. 0) then
-                    do 42 i = 1, nj
+                    do i = 1, nj
                         call jeveuo(jexnom(mlggno, zk24(jdls+i-1)), 'L', jdgn)
                         call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr)
-                        do 44 j = 1, nbnogr
+                        do j = 1, nbnogr
                             numnoe = zi(jdgn+j-1)
-                            do 46 k = 1, nbmtrd
+                            do k = 1, nbmtrd
                                 if (zi(jdnw+k*2-2) .eq. numnoe) numtrd= k+nbmail
- 46                         continue
+                            end do
                             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
                             jad = jdor + (numtrd*3) - 3
                             call affori('NOEUD', nomnoe, car(1), val, jad,&
                                         jdno, jdco, ivr, ntpoi, ntseg,&
                                         carori, nco, ier)
- 44                     continue
- 42                 continue
+                        end do
+                    end do
                 endif
 ! ---          "NOEUD" = TOUTES LES MAILLES TARDIVES POSSIBLES DE LA
 !                                                       LISTE DE NOEUDS
                 if (nn .gt. 0) then
-                    do 48 i = 1, nn
+                    do i = 1, nn
                         nomnoe = zk24(jdls+i-1)
                         call jenonu(jexnom(mlgnno, nomnoe), numnoe)
-                        do 50 k = 1, nbmtrd
+                        do k = 1, nbmtrd
                             if (zi(jdnw+k*2-2) .eq. numnoe) numtrd=k+ nbmail
- 50                     continue
+                        end do
                         jad = jdor + (numtrd*3) - 3
                         call affori('NOEUD', nomnoe, car(1), val, jad,&
                                     jdno, jdco, ivr, ntpoi, ntseg,&
                                     carori, nco, ier)
- 48                 continue
+                    end do
                 endif
             endif
- 30     continue
+        end do
     endif
 !
     if (ier .ne. 0) then
@@ -268,9 +268,9 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 ! --- IMPRESSION DES VALEURS DES ORIENTATIONS SI DEMANDE
     nocaor = 0
     if (ivr(3) .eq. 1) write(ifm,1000)
-    do 60 nummai = 1, nbmail
+    do nummai = 1, nbmail
         nutyel = zi(jdme+nummai-1)
-        do 62 j = 1, nbtel
+        do j = 1, nbtel
             if (nutyel .eq. ntyele(j)) then
                 nocaor = nocaor + 1
                 if (ivr(3) .eq. 1) then
@@ -283,15 +283,16 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                 endif
                 goto 60
             endif
- 62     continue
- 60 end do
+        end do
+ 60     continue
+    end do
 !++++++
     if (ixnw .ne. 0) then
         if (ivr(3) .eq. 1) write(ifm,1020)
-        do 64 i = 1, nbmtrd
+        do i = 1, nbmtrd
             numnoe = zi(jdnw+i*2-2)
             nutyel = zi(jdne+numnoe-1)
-            do 66 j = nbepo+1, nbepo + nbedi
+            do j = nbepo+1, nbepo + nbedi
                 if (nutyel .eq. ntyele(j)) then
                     nocaor = nocaor + 1
                     if (ivr(3) .eq. 1) then
@@ -305,8 +306,9 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                     endif
                     goto 64
                 endif
- 66         continue
- 64     continue
+            end do
+ 64         continue
+        end do
     endif
 !
     1000 format(/,3x,'<ANGL> ORIENTATIONS SUR LES MAILLES DE TYPE POUTRE,'&
@@ -329,9 +331,9 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
         zk8(jdcmpo+2) = 'GAMMA'
 !
 ! ---    AFFECTATION DES MAILLES DU MAILLAGE (POUTRE, BARRE OU DISCRET)
-        do 68 nummai = 1, nbmail
+        do nummai = 1, nbmail
             nutyel = zi(jdme+nummai-1)
-            do 70 j = 1, nbtel
+            do j = 1, nbtel
                 if (nutyel .eq. ntyele(j)) then
 ! ---    RECUPERATION DES NUMEROS DES NOMS DES ELEMENTS
                     call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
@@ -345,14 +347,15 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         goto 68
                     endif
                 endif
- 70         continue
- 68     continue
+            end do
+ 68         continue
+        end do
 !
 ! ---    AFFECTATION DES MAILLES TARDIVES DU MODELE (TYPE DISCRET)
-        do 72 i = 1, nbmtrd
+        do i = 1, nbmtrd
             numnoe = zi(jdnw+i*2-2)
             nutyel = zi(jdne+numnoe-1)
-            do 74 j = nbepo+1, nbepo + nbedi
+            do j = nbepo+1, nbepo + nbedi
                 if (nutyel .eq. ntyele(j)) then
                     zr(jdvlvo) = zr(jdor+(i+nbmail)*3-3)
                     zr(jdvlvo+1) = zr(jdor+(i+nbmail)*3-2)
@@ -361,8 +364,9 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                                 limanu=[-i])
                     goto 72
                 endif
- 74         continue
- 72     continue
+            end do
+ 72         continue
+        end do
     endif
 !
 !JMP AFFECTATION DES ELEMENTS TUYAUX

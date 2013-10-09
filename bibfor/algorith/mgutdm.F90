@@ -139,10 +139,10 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
     else
         repk = questi
         call utmess('F', 'UTILITAI_49', sk=repk)
-        goto 9999
+        goto 999
     endif
 !
-9999 continue
+999 continue
     repkz = repk
     call jedema()
 end subroutine

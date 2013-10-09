@@ -70,7 +70,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
 !     ------------------
     character(len=8) :: rota
     character(len=16) :: optio2
-    character(len=8) ::  nomacr
+    character(len=8) :: nomacr
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
     character(len=24) :: nomob
 !-----------------------------------------------------------------------
@@ -89,7 +89,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
             call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
             call jeveuo(ma//'.NOMACR', 'L', ianmcr)
             nmxval=0
-            do 10 jsma = 1, nbsma
+            do jsma = 1, nbsma
                 if (zi(iasssa-1+jsma) .eq. 1) then
                     nomacr=zk8(ianmcr-1+jsma)
                     call jeveuo(nomacr//'.DESM', 'L', iadesm)
@@ -99,7 +99,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
                     ndim=nddle*(nddle+1)/2
                     nmxval=max(nmxval,ndim)
                 endif
- 10         continue
+            end do
             if (nmxval .gt. 0) then
                 call wkvect('&&SSVALM.VALEURS', 'V V R', nmxval, jresl)
             endif
@@ -148,9 +148,9 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
 !
         if (rota(1:3) .eq. 'NON') then
 !         RECOPIE:
-            do 20 i = 1, nbvel
+            do i = 1, nbvel
                 zr(jresl-1+i)=zr(iavmat-1+i)
- 20         continue
+            end do
         else if (rota(1:3).eq.'OUI') then
 !         ROTATION:
             call jeveuo(ma//'.PARA_R', 'L', iaparr)
@@ -158,14 +158,14 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
             angl(2)=zr(iaparr-1+14*(isma-1)+5)
             angl(3)=zr(iaparr-1+14*(isma-1)+6)
             call matrot(angl, pgl)
-            do 40 i = 1, 3
-                do 30 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     lambda(i,j)=pgl(i,j)
                     lambda(i,j+3)=0.d0
                     lambda(i+3,j)=0.d0
                     lambda(i+3,j+3)=pgl(i,j)
- 30             continue
- 40         continue
+                end do
+            end do
             call ssvaro(lambda, 'LG', .true., 'EXTE', nomacr,&
                         iavmat, jresl)
         else

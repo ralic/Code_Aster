@@ -68,7 +68,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !     IN  IOCC    : NUMERO DE L'OCCURENCE
 !     ------------------------------------------------------------------
 !
-    integer ::  nbma, nbmai, i, jcesv, jcesl, jcesd
+    integer :: nbma, nbmai, i, jcesv, jcesl, jcesd
     integer :: nucmp, jcesk, jcmpgd, ncmpm, iad, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara, nbno
     integer :: nmin, nmax, npara, pmax, pmin
@@ -104,16 +104,16 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
         call reliem(' ', noma, 'NU_MAILLE', 'MINMAX', iocc,&
                     1, motcle, typmcl, mesmai, nbmai)
         call jeveuo(mesmai, 'L', jmesma)
-        do 5 i = 1, nbma
+        do i = 1, nbma
             zi(indma+i-1)=0
-  5     continue
-        do 10 i = 1, nbmai
+        end do
+        do i = 1, nbmai
             zi(indma+zi(jmesma+i-1)-1)=1
- 10     continue
+        end do
     else
-        do 15 i = 1, nbma
+        do i = 1, nbma
             zi(indma+i-1)=1
- 15     continue
+        end do
     endif
 !
     nompar(1)  ='CHAMP_GD'
@@ -147,24 +147,24 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
         call jeveuo(cesout//'.CESC', 'L', jcmpgd)
     else
         call wkvect('&&PEMAXC.LIST_CMP', 'V V K8', ncmpm, jcmpgd)
-        do 25 i = 1, ncmpm
+        do i = 1, ncmpm
             nomva = 'V'
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
- 25     continue
+        end do
     endif
 !
-    do 30 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         nucmp=indik8(zk8(jcmpgd),nomcmp(icmp),1,ncmpm)
         vmin=r8maem()
         vmax=-r8maem()
 !
-        do 35 ima = 1, nbma
+        do ima = 1, nbma
             if (zi(indma+ima-1) .ne. 1) goto 35
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
             ASSERT(nbsp.eq.1)
-            do 40 ipt = 1, nbpt
+            do ipt = 1, nbpt
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)
                 if (iad .gt. 0) then
@@ -179,8 +179,9 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
                         pmin=ipt
                     endif
                 endif
- 40         continue
- 35     continue
+            end do
+ 35         continue
+        end do
 !
         nompar(4+6*(icmp-1)+1)='MAX_'//nomcmp(icmp)
         nompar(4+6*(icmp-1)+2)='MA_MAX_'//nomcmp(icmp)
@@ -209,7 +210,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+5), 'K16')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+6), 'I')
         endif
- 30 end do
+    end do
 !
     npara=6*nbcmp
     ptmax(1)=nuord

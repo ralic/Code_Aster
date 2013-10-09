@@ -62,7 +62,7 @@ subroutine te0576(option, nomte)
     real(kind=8) :: nharm, deux, integ1, integ2, integ, r
     real(kind=8) :: epsim(nbcont), delta(nbcont), epss(mxcmel)
     real(kind=8) :: epssm(mxcmel), sigmm(nbcont), sigma(nbcont), f(3, 3)
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, epsbid(6), dfdbid(27*3)
+    real(kind=8) :: poids, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
     character(len=16) :: compor(3)
     logical :: grand
@@ -87,9 +87,9 @@ subroutine te0576(option, nomte)
     nharm = zero
     enelem = zero
 !
-    do 20 i = 1, nbnomx
+    do i = 1, nbnomx
         enerpg(i) = zero
-20  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -107,11 +107,11 @@ subroutine te0576(option, nomte)
         xyz(1) = zero
         xyz(2) = zero
         xyz(3) = zero
-        do 150 i = 1, nno
-            do 140 idim = 1, ndim
+        do i = 1, nno
+            do idim = 1, ndim
                 xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140          continue
-150      continue
+            end do
+        end do
         call ortrep(zi(imate), ndim, xyz, repere)
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
@@ -216,16 +216,16 @@ subroutine te0576(option, nomte)
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 !      ===================================
-    do 110 igau = 1, npg1
+    do igau = 1, npg1
 !
 !  --    CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !        -------------------------------------------------
         call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),&
                     poids)
 !
-        do 30 isig = 1, nbsig
+        do isig = 1, nbsig
             epsi(isig) = zero
-30      continue
+        end do
 !
 !  --      COORDONNEES AU POINT D'INTEGRATION
 !  --      COURANT
@@ -234,14 +234,14 @@ subroutine te0576(option, nomte)
         xyzgau(2) = zero
         xyzgau(3) = zero
 !
-        do 50 i = 1, nno
+        do i = 1, nno
 !
-            do 40 idim = 1, ndim
+            do idim = 1, ndim
                 xyzgau(idim) = xyzgau(idim) + zr(ivf+i+nno* (igau-1)- 1)*zr(igeom+idim+ ndim* (i-&
                                &1)-1)
-40          continue
+            end do
 !
-50      continue
+        end do
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE :
 !        ==========================================================
@@ -249,9 +249,9 @@ subroutine te0576(option, nomte)
 !
 ! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
-            do 51 i = 1, nbsig
+            do i = 1, nbsig
                 sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-51          continue
+            end do
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
             call nmgeom(3, nno, .false., grand, zr(igeom),&
@@ -274,7 +274,7 @@ subroutine te0576(option, nomte)
 !  --      TEMPS COURANT ET AU PAS DE TEMPS PRECEDENT S'IL Y A LIEU,
 !  --      AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
-            do 80 i = 1, nbsig
+            do i = 1, nbsig
                 epsi(i) = epss(i+ (igau-1)*nbsig)
                 if (ideplm .ne. 0) then
                     epsim(i) = epssm(i+ (igau-1)*nbsig)
@@ -283,16 +283,16 @@ subroutine te0576(option, nomte)
                 if (idsigm .ne. 0) then
                     sigmm(i) = zr(idsigm+ (igau-1)*nbsig+i-1)
                 endif
-80          continue
+            end do
 !
             if (ideplm .ne. 0) then
-                do 90 i = 1, nbsig
+                do i = 1, nbsig
                     delta(i) = epsi(i) - epsim(i)
-90              continue
+                end do
             else
-                do 100 i = 1, nbsig
+                do i = 1, nbsig
                     delta(i) = 0.d0
-100              continue
+                end do
             endif
 !
 !  --      CALCUL DES TERMES A SOMMER POUR OBTENIR LA DENSITE
@@ -321,7 +321,7 @@ subroutine te0576(option, nomte)
 !
         endif
 !
-110  end do
+    end do
 !
 ! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
 ! ---- ELASTIQUE EN SORTIE
@@ -336,9 +336,9 @@ subroutine te0576(option, nomte)
 ! ----   OPTION ETOT_ELGA
 !        ================
         if (option .eq. 'ETOT_ELGA') then
-            do 120 igau = 1, npg1
+            do igau = 1, npg1
                 zr(idener+igau-1)=zr(idenem+igau-1)+enerpg(igau)
-120          continue
+            end do
 !
 ! ----   OPTION ETOT_ELEM
 !        ================
@@ -350,9 +350,9 @@ subroutine te0576(option, nomte)
 ! ----   OPTION ENEL_ELGA
 !        ================
         if (option .eq. 'ENEL_ELGA') then
-            do 220 igau = 1, npg1
+            do igau = 1, npg1
                 zr(idener+igau-1) = enerpg(igau)
-220          continue
+            end do
         endif
     endif
 end subroutine

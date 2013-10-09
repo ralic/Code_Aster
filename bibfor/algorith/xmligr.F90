@@ -119,9 +119,9 @@ subroutine xmligr(noma, nomo, resoco)
 ! --- INITIALISATIONS
 !
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    do 10 k = 1, nbtyp
+    do k = 1, nbtyp
         compt(k) = 0
- 10 end do
+    end do
     nbpc = nint(zr(jtabf-1+1))
     ligrxf = zk24(jnosdc+3-1)(1:19)
 !
@@ -140,13 +140,13 @@ subroutine xmligr(noma, nomo, resoco)
 ! --- ON COMPTE LE NOMBRE DE NOEUDS A STOCKER AU TOTAL
 !
     long = nbpc
-    do 20 ipc = 1, nbpc
+    do ipc = 1, nbpc
         nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
         nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
         call xmelel(ndim, jmail, jtymai, nummae, nummam,&
                     imod, iatt, imail, nno)
         long = long+nno(1)+nno(2)
- 20 end do
+    end do
 !
 ! --- PAS DE NOEUDS TARDIFS
 !
@@ -163,7 +163,7 @@ subroutine xmligr(noma, nomo, resoco)
                 nbpc)
     call jeecra(ligrxf//'.NEMA', 'LONT', long)
     nbgrel = 0
-    do 50 ipc = 1, nbpc
+    do ipc = 1, nbpc
         nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
         nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
         call xmelel(ndim, jmail, jtymai, nummae, nummam,&
@@ -185,15 +185,15 @@ subroutine xmligr(noma, nomo, resoco)
 !
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE ESCLAVE
 !
-        do 30 ino = 1, nno(1)
+        do ino = 1, nno(1)
             zi(jad-1+ino) = zi(iacnx1+zi(ilcnx1-1+nummae)-2+ino)
- 30     continue
+        end do
 !
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 !
-        do 40 ino = 1, nno(2)
+        do ino = 1, nno(2)
             zi(jad-1+nno(1)+ino) = zi(iacnx1+zi(ilcnx1-1+nummam)-2+ ino)
- 40     continue
+        end do
 !
 ! --- TYPE D'ÉLÉMENT TARDIF
 !
@@ -204,18 +204,19 @@ subroutine xmligr(noma, nomo, resoco)
         else
             nomte=nomte(1:7)//'_XH'
         endif
-        do 60 k = 1, nbgrel
+        do k = 1, nbgrel
             if (nomte .eq. nomte2(k)) then
                 compt(k) = compt(k)+1
                 zi(jtynma-1+ipc)=k
                 goto 50
             endif
- 60     continue
+        end do
         nbgrel = nbgrel+1
         nomte2(nbgrel) = nomte
         compt(nbgrel) = 1
         zi(jtynma-1+ipc)=nbgrel
- 50 end do
+ 50     continue
+    end do
     ASSERT(nbgrel.ne.0)
 !
 ! --- CREATION DE L'OBJET .LIEL
@@ -226,7 +227,7 @@ subroutine xmligr(noma, nomo, resoco)
     long = nbgrel + nbpc
     call jeecra(ligrxf//'.LIEL', 'LONT', long)
     ico = 0
-    do 90 k = 1, nbgrel
+    do k = 1, nbgrel
         ico = ico + 1
         call jecroc(jexnum(ligrxf//'.LIEL', ico))
         call jeecra(jexnum(ligrxf//'.LIEL', ico), 'LONMAX', compt(k)+1)
@@ -236,13 +237,13 @@ subroutine xmligr(noma, nomo, resoco)
         zi(jad-1+compt(k)+1) = ityte
 !
         jco = 0
-        do 80 ipc = 1, nbpc
+        do ipc = 1, nbpc
             if (zi(jtynma-1+ipc) .eq. k) then
                 jco = jco + 1
                 zi(jad-1+jco) = -ipc
             endif
- 80     continue
- 90 end do
+        end do
+    end do
 !
 ! --- IMPRESSIONS
 !

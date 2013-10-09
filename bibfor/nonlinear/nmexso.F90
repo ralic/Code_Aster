@@ -57,7 +57,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
 !
     character(len=15) :: sdexso
     character(len=19) :: sdexsz
-    character(len=8) ::  cnfsol
+    character(len=8) :: cnfsol
     character(len=8) :: nomacr
     character(len=24) :: magrno, maille, nprno
     character(len=24) :: tabequ, tabfrq, tabinf, nomres
@@ -143,26 +143,26 @@ subroutine nmexso(noma, result, sddyna, numedd)
     call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nprno, ibid), 'L', aprno)
     nddint = 0
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         inoe = zi(idno+ino-1)
         ncmp = zi(aprno + (nec+2)*(inoe-1) + 2 - 1 )
         nddint = nddint+ncmp
- 10 end do
+    end do
 !
 ! --- TABLEAU DES NUMEROS D EQUATION ACTIFS DE L INTERFACE
 !
     tabequ = sdexso(1:15)//'.EQINT'
     call wkvect(tabequ, 'V V I', nddint, ieqint)
     iddint=0
-    do 20 ino = 1, nbno
+    do ino = 1, nbno
         inoe = zi(idno+ino-1)
         ncmp = zi(aprno + (nec+2)*(inoe-1) + 2 - 1 )
         iddl = zi(aprno + (nec+2)*(inoe-1) + 1 - 1 )
-        do 21 icmp = 1, ncmp
+        do icmp = 1, ncmp
             iddint = iddint+1
             zi(ieqint+iddint-1) = iddl+icmp-1
- 21     continue
- 20 end do
+        end do
+    end do
 !
 ! --- OUVERTURE DES FICHIERS
 !
@@ -205,9 +205,9 @@ subroutine nmexso(noma, result, sddyna, numedd)
 ! --- TABLEAU DES FREQUENCES
 !
     call wkvect(tabfrq, 'V V R', nfreq, jfrq)
-    do 110 ifreq = 1, nfreq
+    do ifreq = 1, nfreq
         zr(jfrq+ifreq-1) = (ifreq-1)*pas
-110 end do
+    end do
 !
 ! --- VERIFICATIONS
 !
@@ -250,11 +250,11 @@ subroutine nmexso(noma, result, sddyna, numedd)
     tabrig = sdexso(1:15)//'.RIGT'
     call wkvect(tabrig, 'V V R', nbmod2*nfreq, jrig)
     if (uniter .ne. 0) then
-        do 120 ifreq = 1, nfreq
+        do ifreq = 1, nfreq
             read(uniter,*) rinst
             read(uniter,1000) ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)&
             *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-120     continue
+        end do
     endif
 !
 ! --- LECTURE MATRICE REDUITE MASSE A L'INTERFACE
@@ -262,11 +262,11 @@ subroutine nmexso(noma, result, sddyna, numedd)
     tabmas = sdexso(1:15)//'.MAST'
     call wkvect(tabmas, 'V V R', nbmod2*nfreq, jmas)
     if (unitem .ne. 0) then
-        do 130 ifreq = 1, nfreq
+        do ifreq = 1, nfreq
             read(unitem,*) rinst
             read(unitem,1000) ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)&
             *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-130     continue
+        end do
     endif
 !
 ! --- LECTURE MATRICE REDUITE AMORTISSEMENT A L'INTERFACE
@@ -274,11 +274,11 @@ subroutine nmexso(noma, result, sddyna, numedd)
     tabamo = sdexso(1:15)//'.AMOT'
     call wkvect(tabamo, 'V V R', nbmod2*nfreq, jamo)
     if (unitea .ne. 0) then
-        do 140 ifreq = 1, nfreq
+        do ifreq = 1, nfreq
             read(unitea,*) rinst
             read(unitea,1000) ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)&
             *nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-140     continue
+        end do
     endif
 !
     call jedetr(tabfrq)

@@ -4,12 +4,12 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -56,10 +56,10 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
     integer :: j_mail, j_elem_affe
     integer :: nb_elem_mesh, nb_elem
     integer :: nume_elem
-    integer :: ibid, ielem, iret
+    integer ::  ielem
     integer :: nutyel
     character(len=16) :: modeli
-    character(len=8) :: mesh, k8dummy, name_elem
+    character(len=8) :: mesh, name_elem
     character(len=24) :: valk(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -100,43 +100,42 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
         if (nutyel .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
             call dismoi('MODELISATION', notype, 'TYPE_ELEM', repk=modeli)
-            if ((rela_thmc(1:3)  .eq. 'GAZ') .or. &
-                (rela_thmc(1:9)  .eq. 'LIQU_SATU') .or.&
+            if ((rela_thmc(1:3) .eq. 'GAZ') .or. (rela_thmc(1:9) .eq. 'LIQU_SATU') .or.&
                 (rela_thmc(1:12) .eq. 'LIQU_GAZ_ATM')) then
-                if ((modeli(1:6).ne.'3D_THM')    .and. (modeli(1:5) .ne.'3D_HM')      .and.&
-                    (modeli(1:5).ne.'3D_HS')     .and. (modeli(1:8).ne.'AXIS_THM')    .and.&
-                    (modeli(1:7) .ne.'AXIS_HM')  .and. (modeli(1:10).ne.'D_PLAN_THM') .and.&
-                    (modeli(1:9).ne.'D_PLAN_HS') .and. (modeli(1: 9).ne.'D_PLAN_HM')  .and.&
-                    (modeli(1:8) .ne.'PLAN_JHM') .and. (modeli(1:8).ne.'AXIS_JHM')    .and.&
+                if ((modeli(1:6).ne.'3D_THM') .and. (modeli(1:5) .ne.'3D_HM') .and.&
+                    (modeli(1:5).ne.'3D_HS') .and. (modeli(1:8).ne.'AXIS_THM') .and.&
+                    (modeli(1:7) .ne.'AXIS_HM') .and. (modeli(1:10).ne.'D_PLAN_THM') .and.&
+                    (modeli(1:9).ne.'D_PLAN_HS') .and. (modeli(1: 9).ne.'D_PLAN_HM') .and.&
+                    (modeli(1:8) .ne.'PLAN_JHM') .and. (modeli(1:8).ne.'AXIS_JHM') .and.&
                     (modeli.ne.'#PLUSIEURS')) then
                     valk(1) = rela_thmc
                     valk(2) = modeli
                     call utmess('F', 'THM1_35', nk=2, valk=valk)
                 endif
-            elseif ((rela_thmc(1:13).eq.'LIQU_VAPE_GAZ').or.&
+                elseif ((rela_thmc(1:13).eq.'LIQU_VAPE_GAZ').or.&
                     (rela_thmc(1:8).eq.'LIQU_GAZ')) then
-                if ((modeli(1:6).ne.'3D_THH')      .and. (modeli(1:6) .ne.'3D_HHM')  .and.&
-                    (modeli(1:5).ne.'3D_HH')       .and. (modeli(1:8).ne.'AXIS_THH') .and.&
-                    (modeli(1:8) .ne.'AXIS_HHM')   .and. (modeli(1:7).ne.'AXIS_HH')  .and.&
-                    (modeli(1:10).ne.'D_PLAN_THH') .and. (modeli( 1:10).ne.'D_PLAN_HHM') .and.&
-                    (modeli(1:9) .ne.'D_PLAN_HH')  .and. (modeli.ne.'#PLUSIEURS')) then
+                if ((modeli(1:6).ne.'3D_THH') .and. (modeli(1:6) .ne.'3D_HHM') .and.&
+                    (modeli(1:5).ne.'3D_HH') .and. (modeli(1:8).ne.'AXIS_THH') .and.&
+                    (modeli(1:8) .ne.'AXIS_HHM') .and. (modeli(1:7).ne.'AXIS_HH') .and.&
+                    (modeli(1:10).ne.'D_PLAN_THH') .and. (modeli( 1:10).ne.'D_PLAN_HHM')&
+                    .and. (modeli(1:9) .ne.'D_PLAN_HH') .and. (modeli.ne.'#PLUSIEURS')) then
                     valk(1) = rela_thmc
                     valk(2) = modeli
                     call utmess('F', 'THM1_35', nk=2, valk=valk)
                 endif
             else if (rela_thmc(1:9).eq.'LIQU_VAPE') then
-                if ((modeli(1:6).ne.'3D_THV')       .and. (modeli(1:8) .ne.'AXIS_THV') .and.&
+                if ((modeli(1:6).ne.'3D_THV') .and. (modeli(1:8) .ne.'AXIS_THV') .and.&
                     (modeli(1:10) .ne.'D_PLAN_THV') .and. (modeli.ne.'#PLUSIEURS')) then
                     valk(1) = rela_thmc
                     valk(2) = modeli
                     call utmess('F', 'THM1_35', nk=2, valk=valk)
                 endif
             else if (rela_thmc(1:16).eq.'LIQU_AD_GAZ_VAPE') then
-                if ((modeli(1:9).ne.'AXIS_HH2M') .and. (modeli(1:9) .ne.'AXIS_THH2') .and. &
-                    (modeli(1:8).ne.'AXIS_HH2') .and.(modeli(1:11).ne.'D_PLAN_HH2M') .and. &
-                    (modeli(1:11).ne.'D_PLAN_THH2') .and.(modeli(1:11) .ne.'D_PLAN_THH2') .and.&
-                    (modeli(1:10) .ne.'D_PLAN_HH2') .and. (modeli(1:7).ne.'3D_HH2M')      .and. &
-                    (modeli(1:7).ne.'3D_THH2') .and. (modeli(1:6) .ne.'3D_HH2')    .and.&
+                if ((modeli(1:9).ne.'AXIS_HH2M') .and. (modeli(1:9) .ne.'AXIS_THH2') .and.&
+                    (modeli(1:8).ne.'AXIS_HH2') .and. (modeli(1:11).ne.'D_PLAN_HH2M') .and.&
+                    (modeli(1:11).ne.'D_PLAN_THH2') .and. (modeli(1:11) .ne.'D_PLAN_THH2')&
+                    .and. (modeli(1:10) .ne.'D_PLAN_HH2') .and. (modeli(1:7).ne.'3D_HH2M')&
+                    .and. (modeli(1:7).ne.'3D_THH2') .and. (modeli(1:6) .ne.'3D_HH2') .and.&
                     (modeli.ne.'#PLUSIEURS')) then
                     valk(1) = rela_thmc
                     valk(2) = modeli

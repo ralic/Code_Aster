@@ -199,16 +199,16 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     call jeveuo(chs(11)//'.CESL', 'L', jcesl(11))
 !      ENDIF
 !
-    do 10 ich = 1, 4
+    do ich = 1, 4
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
         call jeveuo(chs(ich)//'.CESV', 'E', jcesv(ich))
         call jeveuo(chs(ich)//'.CESL', 'L', jcesl(ich))
- 10 end do
-    do 11 ich = 6, 7
+    end do
+    do ich = 6, 7
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
         call jeveuo(chs(ich)//'.CESV', 'E', jcesv(ich))
         call jeveuo(chs(ich)//'.CESL', 'L', jcesl(ich))
- 11 end do
+    end do
 !
     call jeveuo(malini//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(malini//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -344,7 +344,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !                   BOUCLE SUR LES MAILLES DE MAILX
 !     ------------------------------------------------------------------
 !
-    do 100 i = 1, nbmax
+    do i = 1, nbmax
 !
         ima = zi(jmax-1+i)
 !
@@ -413,12 +413,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       AVEC DES VALEURS CONTIGUES
         geom = '&&XPOAJD.GEOM'
         call wkvect(geom, 'V V R', ndim*n, igeom)
-        do 20 in = 1, n
+        do in = 1, n
             ino=zi(jconx1-1+zi(jconx2+ima-1)+in-1)
-            do 21 j = 1, ndim
+            do j = 1, ndim
                 zr(igeom-1+ndim*(in-1)+j)=zr(iacoo1-1+3*(ino-1)+j)
- 21         continue
- 20     continue
+            end do
+        end do
 !
         if (.not.opmail) then
 !         TYPE DE LA MAILLE PARENT
@@ -495,8 +495,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call wkvect(lst, 'V V R', n*nfiss, jlst)
         call wkvect(lsn, 'V V R', n*nfiss, jlsn)
         call wkvect(hea, 'V V I', nfiss, jhea)
-        do 30 ifiss = 1, nfiss
-            do 40 j = 1, n
+        do ifiss = 1, nfiss
+            do j = 1, n
                 call cesexi('C', jcesd(6), jcesl(6), ima, j,&
                             ifiss, 1, iad)
                 ASSERT(iad.gt.0)
@@ -505,8 +505,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                             ifiss, 1, iad)
                 ASSERT(iad.gt.0)
                 zr(jlst-1+(j-1)*nfiss+ifiss) = zr(jcesv(7)-1+iad)
- 40         continue
- 30     continue
+            end do
+        end do
 !
 !       RECUPERATION DE LA CONNECTIVITÉ DES FISSURES
         if (.not.opmail .and. nfh .gt. 0) then
@@ -514,19 +514,19 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             if (nfh .gt. nfiss) nfh = nfiss
             fisno = '&&XPOAJD.FISNO'
             call wkvect(fisno, 'V V I', n*nfh, jfisno)
-            do 60 j = 1, n
+            do j = 1, n
                 if (nfiss .eq. 1) then
                     zi(jfisno-1+j) = 1
                 else if (nfiss.gt.1) then
                     nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)
-                    do 50 ifh = 1, nfh
+                    do ifh = 1, nfh
                         call cesexi('C', jcesd(8), jcesl(8), ima, j,&
                                     ifh, 1, iad)
                         ASSERT(iad.gt.0)
                         zi(jfisno-1+(j-1)*nfh+ifh) = zi(jcesv(8)-1+ iad)
- 50                 continue
+                    end do
                 endif
- 60         continue
+            end do
         endif
 !
 ! ----- ON AJOUTE LES NOUVELLES MAILLES ET LES NOUVEAUX NOEUDS
@@ -539,10 +539,10 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         nnose = tabse(ndime+irese)
 !
 !         BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-        do 140 ise = 1, nse
-            do 150 ifiss = 1, nfiss
+        do ise = 1, nse
+            do ifiss = 1, nfiss
                 zi(jhea-1+ifiss) = zi(jcesv(4)-1+iad4-1+ncomp*(ifiss- 1)+ise)
-150         continue
+            end do
             jcnse = jcesv(2)-1+iad2
             call xpoajm(maxfem, jtypm2, itypse(ndime+irese), jcnse, ise,&
                         n, nnose, prefno, jdirno, nse,&
@@ -571,7 +571,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
                 endif
             endif
-140     continue
+        end do
 !
         if (opmail) ASSERT(inn.eq.nnn)
 !
@@ -582,7 +582,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jedetr(hea)
         if (.not.opmail .and. nfh .gt. 0) call jedetr(fisno)
 !
-100 end do
+100     continue
+    end do
 !
 !     CREATION DU GROUPE DES NOEUDS SITUES SUR LA FISSURE
 !     PORTANT DES DDLS DE CONTACT
@@ -599,9 +600,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, nbnofi))
         call jeecra(jexnom(grpnoe, nogno), 'LONUTI', nbnofi)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagno)
-        do 210 j = 1, nbnofi
+        do j = 1, nbnofi
             zi(iagno-1+j) = zi(inofi-1+j)
-210     continue
+        end do
     endif
 !      IF (OPMAIL.AND.NBNOLA.GT.0) THEN
 !        NOGNO=NOGRLA
@@ -612,12 +613,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !          ZI(IAGNOL-1+J) = ZI(INOLA-1+J)
 ! 211    CONTINUE
 !      ENDIF
-    do 300 ich = 1, 4
+    do ich = 1, 4
         call detrsd('CHAM_ELEM_S', chs(ich))
-300 end do
-    do 310 ich = 6, 11
+    end do
+    do ich = 6, 11
         call detrsd('CHAM_ELEM_S', chs(ich))
-310 end do
+    end do
 !
     if (opmail) call jedetr(mailx)
     if (opmail) call jedetr(linofi)

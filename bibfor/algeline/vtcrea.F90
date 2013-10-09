@@ -75,9 +75,9 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 !     --- RECOPIE DE L'OBJET .REFE MODELE :
     refe(1:19) = champ
     call wkvect(refe, classe//' V K24', 4, lchamp)
-    do 10 i = 1, 2
+    do i = 1, 2
         zk24(lchamp-1+i) = crefe(i)
- 10 end do
+    end do
 !
 !     -- CREATION DE L'OBJET .DESC :
     desc(1:19) = champ

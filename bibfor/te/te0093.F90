@@ -34,7 +34,7 @@ subroutine te0093(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, i, k, kp, ii, iforc, ivectu
     integer :: ipoids, ivf, idfde, igeom, jgano
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, fx, fy
+    real(kind=8) :: poids, r, fx, fy
 !     ------------------------------------------------------------------
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
@@ -44,7 +44,7 @@ subroutine te0093(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
     call tefrep(option, nomte, 'PFR2D2D', iforc)
 !
-    do 201 kp = 1, npg
+    do kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
@@ -52,23 +52,23 @@ subroutine te0093(option, nomte)
 !      --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
         fx = 0.d0
         fy = 0.d0
-        do 213 i = 1, nno
+        do i = 1, nno
             ii = 2 * (i-1)
             fx = fx + zr(ivf+k+i-1) * zr(iforc+ii )
             fy = fy + zr(ivf+k+i-1) * zr(iforc+ii+1)
-213      continue
+        end do
 !
         if (lteatt(' ','AXIS','OUI')) then
             r = 0.d0
-            do 202 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-202          continue
+            end do
             poids = poids*r
         endif
-        do 203 i = 1, nno
+        do i = 1, nno
             zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids * fx * zr(ivf+ k+i-1)
             zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids * fy * zr(ivf+ k+i-1)
-203      continue
-201  end do
+        end do
+    end do
 !
 end subroutine

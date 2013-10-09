@@ -63,7 +63,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     integer :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, nt, nbval
     character(len=1) :: tsca
     character(len=3) :: prol0
-    character(len=8) ::  kbid, typmcl(4)
+    character(len=8) :: kbid, typmcl(4)
     character(len=16) :: motcle(4)
     character(len=19) :: cnos
     character(len=24) :: valk(2), mesnoe, mescmp, prchno
@@ -94,7 +94,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !  -- DANS LE MOT-CLE FACTEUR AFFE
 !     ----------------------------
     call getfac('AFFE', nocc)
-    do 20 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
         call getvr8('AFFE', 'VALE', iocc=iocc, nbval=0, nbret=nbvar)
         call getvis('AFFE', 'VALE_I', iocc=iocc, nbval=0, nbret=nbvai)
@@ -114,7 +114,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
         ASSERT(nbcmp.gt.0)
         call wkvect('&&CNOAFF.LISTE_COMP', 'V V K8', nbcmp, jcmp)
         call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp))
-        do 21 i = 1, nbcmp
+        do i = 1, nbcmp
             call vericp(zk8(jcmpmx), zk8(jcmp+i-1), ncmpmx, iret)
             if (iret .ne. 0) then
                 vali = iocc
@@ -122,10 +122,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
                 valk (2) = zk8(jcmp+i-1)
                 call utmess('F', 'UTILITAI6_4', nk=2, valk=valk, si=vali)
             endif
- 21     continue
+        end do
         call jedetr('&&CNOAFF.LISTE_COMP')
 !
- 20 end do
+    end do
 !
 !
 ! --- 3. PREPARATION AVANT LA CREATION DU CHAMP
@@ -135,27 +135,27 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !     ----------------------
     mescmp = '&&CNOAFF.MES_CMP'
     call wkvect(mescmp, 'V V K8', ncmpmx, jcmpt)
-    do 30 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=ncmp)
         ncmp=-ncmp
         call wkvect('&&CNOAFF.TMP', 'V V K8', ncmp, jtmp)
         call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jtmp))
         if (iocc .eq. 1) then
-            do 31 i = 1, ncmp
+            do i = 1, ncmp
                 zk8(jcmpt+i-1)=zk8(jtmp+i-1)
- 31         continue
+            end do
             nt=ncmp
         else
-            do 32 i = 1, ncmp
+            do i = 1, ncmp
                 j=indik8(zk8(jcmpt),zk8(jtmp+i-1),1,nt)
                 if (j .eq. 0) then
                     zk8(jcmpt+nt)=zk8(jtmp+i-1)
                     nt=nt+1
                 endif
- 32         continue
+            end do
         endif
         call jedetr('&&CNOAFF.TMP')
- 30 end do
+    end do
     nbcmpt=nt
 !
 !
@@ -186,7 +186,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    do 50 iocc = 1, nocc
+    do iocc = 1, nocc
 !
 !  --    NOEUDS CONCERNES
 !        ----------------
@@ -195,9 +195,9 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbnoe=nbno
             call jedetr(mesnoe)
             call wkvect(mesnoe, 'V V I', nbnoe, jlno)
-            do 51 i = 1, nbnoe
+            do i = 1, nbnoe
                 zi(jlno+i-1)=i
- 51         continue
+            end do
         else
             call reliem(' ', noma, 'NU_NOEUD', 'AFFE', iocc,&
                         4, motcle, typmcl, mesnoe, nbnoe)
@@ -231,15 +231,15 @@ subroutine cnoaff(noma, nomgd, base, cno)
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V R', nbvar, jval)
             call getvr8('AFFE', 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jval))
-            do 52 i = 1, ncmp
+            do i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
-                do 53 j = 1, nbnoe
+                do j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zr(jcnsv+nbcmpt*(ino-1)+icmp-1)=zr(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
- 53             continue
- 52         continue
+                end do
+            end do
             call jedetr('&&CNOAFF.VAL_IOCC')
 !
 !   -    TYPE "I" :
@@ -252,15 +252,15 @@ subroutine cnoaff(noma, nomgd, base, cno)
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V I', nbvai, jval)
             call getvis('AFFE', 'VALE_I', iocc=iocc, nbval=nbvai, vect=zi(jval),&
                         nbret=nbval)
-            do 54 i = 1, ncmp
+            do i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
-                do 55 j = 1, nbnoe
+                do j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zi(jcnsv+nbcmpt*(ino-1)+icmp-1)=zi(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
- 55             continue
- 54         continue
+                end do
+            end do
             call jedetr('&&CNOAFF.VAL_IOCC')
 !
 !   -    TYPE "C" :
@@ -272,15 +272,15 @@ subroutine cnoaff(noma, nomgd, base, cno)
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V C', nbvac, jval)
             call getvc8('AFFE', 'VALE_C', iocc=iocc, nbval=nbvac, vect=zc(jval))
-            do 56 i = 1, ncmp
+            do i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
-                do 57 j = 1, nbnoe
+                do j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zc(jcnsv+nbcmpt*(ino-1)+icmp-1)=zc(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
- 57             continue
- 56         continue
+                end do
+            end do
             call jedetr('&&CNOAFF.VAL_IOCC')
 !
 !   -    TYPE "F" :
@@ -292,19 +292,19 @@ subroutine cnoaff(noma, nomgd, base, cno)
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V K8', nbvak, jval)
             call getvid('AFFE', 'VALE_F', iocc=iocc, nbval=nbvak, vect=zk8(jval))
-            do 58 i = 1, ncmp
+            do i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
-                do 59 j = 1, nbnoe
+                do j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zk8(jcnsv+nbcmpt*(ino-1)+icmp-1)=zk8(jval+i-1)
                     zl(jcnsl+nbcmpt*(ino-1)+icmp-1)=.true.
- 59             continue
- 58         continue
+                end do
+            end do
             call jedetr('&&CNOAFF.VAL_IOCC')
         endif
 !
- 50 end do
+    end do
 !
 !
 ! --- 5. PASSAGE DU CHAM_NO_S AU CHAM_NO :

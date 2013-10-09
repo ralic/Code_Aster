@@ -40,4 +40,4 @@ OPTION__
     CHAR_MECA_FORC_F   1  IN__  MFORCEF  PFORNOF  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR  
                           OUT__ MVECTUR  PVECTUR  
     CHAR_MECA_FORC_R   1  IN__  MFORCER  PFORNOR  MGEOMER  PGEOMER  
-                          OUT__ MVECTUR  PVECTUR  
+                          OUT__ MVECTUR  PVECTUR

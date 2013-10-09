@@ -28,7 +28,7 @@ subroutine op0050()
 #include "asterfort/i2segm.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/utmess.h"
-    integer ::  nbparm, nbpars, nbpara, n1
+    integer :: nbparm, nbpars, nbpara, n1
     character(len=8) :: k8b, nomail
 !----------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine op0050()
     call getfac('DEFI_CHEMIN', nbparm)
     if (nbparm .gt. 0) then
         call i2chem(nomail, nbparm)
-        goto 9999
+        goto 999
     endif
 !----------------------------------------------------------------------
 !
@@ -64,9 +64,9 @@ subroutine op0050()
     call getfac('DEFI_ARC', nbpara)
     if (nbpars .gt. 0 .or. nbpara .gt. 0) then
         call i2segm(nomail, nbpars, nbpara)
-        goto 9999
+        goto 999
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

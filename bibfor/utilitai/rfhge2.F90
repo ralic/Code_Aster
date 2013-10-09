@@ -49,7 +49,7 @@ subroutine rfhge2(harmge)
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "HARM_GENE"
 !     ------------------------------------------------------------------
     character(len=4) :: interp(2)
-    character(len=8) ::  crit, noeud, cmp, noma, basemo
+    character(len=8) :: crit, noeud, cmp, noma, basemo
     character(len=8) :: intres
     character(len=14) :: nume
     character(len=16) :: nomcmd, typcon, nomcha
@@ -66,6 +66,7 @@ subroutine rfhge2(harmge)
     integer :: n3, nbinsg, nbmode, nbordr
     integer :: neq, ngn, numcmp
     real(kind=8) :: epsi
+    cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -141,7 +142,7 @@ subroutine rfhge2(harmge)
             call utmess('E', 'ALGORITH11_79')
         else
 ! ---   CAS OU ON N'INTERPOLE PAS
-            do 41 iordr = 0, nbordr-1
+            do iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 crep = zc(itresu+nbmode*(ii-1)+numcmp-1)
@@ -149,7 +150,7 @@ subroutine rfhge2(harmge)
                 jj = jj +1
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
- 41         continue
+            end do
         endif
     else
 !
@@ -194,7 +195,7 @@ subroutine rfhge2(harmge)
             call jeveuo(resu//'.DISC', 'L', idinsg)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             call wkvect('&&RFHGE2.VECTGENE', 'V V C', nbmode, idvecg)
-            do 50 iordr = 0, nbordr-1
+            do iordr = 0, nbordr-1
 !             EXTRACTION ET INTERPOLATION
                 call zxtrac(intres, epsi, crit, nbinsg, zr(idinsg),&
                             zr(jinst+iordr), zc(itresu), nbmode, zc(idvecg), ierd)
@@ -207,12 +208,12 @@ subroutine rfhge2(harmge)
                 jj = jj +1
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
- 50         continue
+            end do
             call jedetr('&&RFHGE2.VECTGENE')
 !
         else
 ! ---   CAS OU ON N'INTERPOLE PAS
-            do 51 iordr = 0, nbordr-1
+            do iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
 !             PASSAGE EN BASE PHYSIQUE
                 call mdgep5(neq, nbmode, zr(idbase), zc(itresu+nbmode*( ii-1)), iddl,&
@@ -222,7 +223,7 @@ subroutine rfhge2(harmge)
                 jj = jj +1
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
- 51         continue
+            end do
 !
         endif
     endif

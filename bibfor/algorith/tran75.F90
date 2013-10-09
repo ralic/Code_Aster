@@ -121,16 +121,16 @@ subroutine tran75(nomres, typres, nomin, basemo)
         nbdir = -nbd
         call getvr8(' ', 'DIRECTION', nbval=nbdir, vect=depl, nbret=nbd)
         xnorm = 0.d0
-        do 10 id = 1, nbdir
+        do id = 1, nbdir
             xnorm = xnorm + depl(id) * depl(id)
- 10     continue
+        end do
         xnorm = sqrt(xnorm)
         if (xnorm .lt. r8prem()) then
             call utmess('F', 'ALGORITH9_81')
         endif
-        do 12 id = 1, nbdir
+        do id = 1, nbdir
             depl(id) = depl(id) / xnorm
- 12     continue
+        end do
 !
     endif
 !
@@ -259,14 +259,14 @@ subroutine tran75(nomres, typres, nomin, basemo)
         else
             call wkvect('&&TRAN75.PSI_DELTA', 'V V R', neq, jpsdel)
             idec = 0
-            do 100 i = 1, nbnoeu
-                do 102 j = 1, ncmp
+            do i = 1, nbnoeu
+                do j = 1, ncmp
                     if (zi(inoecp-1+(i-1)*ncmp+j) .eq. 1) then
                         idec = idec + 1
                         zr(jpsdel+idec-1) = zr(ipsdel+zi(inuddl+idec- 1)-1)
                     endif
-102             continue
-100         continue
+                end do
+            end do
             call wkvect('&&TRAN75.VAL2', 'V V R', neq, lval2)
             lpsdel = jpsdel
         endif
@@ -320,7 +320,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&TRAN75.VECTGENE', 'V V R', nbmode, idvecg)
     neq0 = neq
-    do 210 ich = 1, nbcham
+    do ich = 1, nbcham
         leffor=.true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or.&
             type(ich) .eq. 'ACCE_ABSOLU') leffor=.false.
@@ -349,7 +349,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
                         'R', zr(idbase), [cbid])
         else
-            do 110 j = 1, nbmode
+            do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
                             ir)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
@@ -366,15 +366,15 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 nomcha(20:24)='.VALE'
                 call jeveuo(nomcha, 'L', idefm)
                 idec = 0
-                do 120 i = 1, nbnoeu
-                    do 122 jc = 1, ncmp
+                do i = 1, nbnoeu
+                    do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
                             idec = idec + 1
                             zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
-122                 continue
-120             continue
-110         continue
+                    end do
+                end do
+            end do
         endif
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
@@ -383,7 +383,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         endif
         idresu = itresu(ich)
         prems=.true.
-        do 200 i = 0, nbinst-1
+        do i = 0, nbinst-1
             iarchi = iarchi + 1
             call rsexch(' ', nomres, type(ich), iarchi, chamno,&
                         ir)
@@ -442,9 +442,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 if (type(ich) .eq. 'ACCE_ABSOLU') call mdgep3(neq, nbexci, zr(lpsdel),&
                                                               zr(jinst+i), zk8(jnoacc),&
                                                               zr(lval2))
-                do 240 ie = 1, neq
+                do ie = 1, neq
                     zr(lvale+ie-1)=zr(lvale+ie-1)+zr(lval2+ie-1)
-240             continue
+                end do
             endif
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
             if (type(ich) .eq. 'ACCE_ABSOLU' .and. nfonct .ne. 0) then
@@ -456,14 +456,14 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 call wkvect('&&TRAN75.DDL', 'V V I', neq*nbdir, jddl)
                 call pteddl('NUME_DDL', numddl, nbdir, nomcmp, neq,&
                             zi( jddl))
-                do 250 id = 1, nbdir
-                    do 252 ie = 0, neq-1
+                do id = 1, nbdir
+                    do ie = 0, neq-1
                         zr(jvec+ie) = zr(jvec+ie) + zi(jddl+neq*(id-1) +ie)*alpha*depl(id)
-252                 continue
-250             continue
-                do 254 ie = 0, neq-1
+                    end do
+                end do
+                do ie = 0, neq-1
                     zr(lvale+ie) = zr(lvale+ie) + zr(jvec+ie)
-254             continue
+                end do
                 call jedetr('&&TRAN75.VECTEUR')
                 call jedetr('&&TRAN75.DDL')
             endif
@@ -471,9 +471,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
-200     continue
+        end do
         call jedetr('&&TRAN75.BASE')
-210 continue
+    end do
 !
 !
     if (mode .eq. blanc) then

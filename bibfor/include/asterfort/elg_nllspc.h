@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,10 +14,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine elg_nllspc(nbnz,ctemp,mat)
-              integer :: nbnz
-              real(kind=8) :: ctemp(nbnz)
-              real(kind=8) :: mat(nbnz,nbnz)
-            end subroutine elg_nllspc
-          end interface 
+interface 
+    subroutine elg_nllspc(nbnz, ctemp, mat)
+        integer :: nbnz
+        real(kind=8) :: ctemp(nbnz)
+        real(kind=8) :: mat(nbnz, nbnz)
+    end subroutine elg_nllspc
+end interface 

@@ -85,7 +85,7 @@ subroutine momaba(mailla)
         call utmess('F', 'ALGORITH6_16')
     endif
 !
-    do 140 i = 1, nbma
+    do i = 1, nbma
         ityp=jtyma-1+zi(jnuma+i-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
 !
@@ -105,14 +105,14 @@ subroutine momaba(mailla)
             call utmess('F', 'ALGORITH6_17')
         endif
 !
-        do 130 j = 1, nbmat
+        do j = 1, nbmat
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyma-1+j)), type)
             call jeveuo(jexnum(connex, j), 'L', jpoin)
 !
 ! --------- TRIA6 , TRIA7
             if (type .eq. 'TRIA6' .or. type .eq. 'TRIA7') then
                 nbno=3
-                do 20 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
@@ -124,7 +124,7 @@ subroutine momaba(mailla)
                             goto 130
 !
                         else
-                            do 10 i2 = 1, nbno
+                            do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
                                     call bartri(i1, i2, zr(jcoor), zi( jpoin))
@@ -135,16 +135,16 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
- 10                         continue
+                            end do
                         endif
                     endif
- 20             continue
+                end do
 !
 ! --------- QUAD8 , QUAD9
             else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
                 nbno=4
-                do 40 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
@@ -156,7 +156,7 @@ subroutine momaba(mailla)
                             goto 130
 !
                         else
-                            do 30 i2 = 1, nbno
+                            do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
                                     call barqua(i1, i2, zr(jcoor), zi( jpoin))
@@ -167,16 +167,16 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
- 30                         continue
+                            end do
                         endif
                     endif
- 40             continue
+                end do
 !
 ! --------- TETRA10
             else if (type.eq.'TETRA10') then
                 nbno=4
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 60 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
@@ -188,7 +188,7 @@ subroutine momaba(mailla)
                             goto 130
 !
                         else
-                            do 50 i2 = 1, nbno
+                            do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
                                     call bartet(i1, i2, zr(jcoor), zi( jpoin))
@@ -199,16 +199,16 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
- 50                         continue
+                            end do
                         endif
                     endif
- 60             continue
+                end do
 !
 ! --------- PENTA15 , PENTA18
             else if (type.eq.'PENTA15' .or. type.eq.'PENTA18') then
                 nbno=6
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 80 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
@@ -220,7 +220,7 @@ subroutine momaba(mailla)
                             goto 130
 !
                         else
-                            do 70 i2 = 1, nbno
+                            do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
                                     call barpen(i1, i2, zr(jcoor), zi( jpoin))
@@ -231,16 +231,16 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
- 70                         continue
+                            end do
                         endif
                     endif
- 80             continue
+                end do
 !
 ! --------- PYRAM13
             else if (type.eq.'PYRAM13') then
                 nbno=5
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 100 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
@@ -252,7 +252,7 @@ subroutine momaba(mailla)
                             goto 130
 !
                         else
-                            do 90 i2 = 1, nbno
+                            do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
                                     call barpyr(i1, i2, zr(jcoor), zi( jpoin))
@@ -263,16 +263,16 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
- 90                         continue
+                            end do
                         endif
                     endif
-100             continue
+                end do
 !
 ! --------- HEXA20 , HEXA27
             else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
                 nbno=8
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 120 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
@@ -284,7 +284,7 @@ subroutine momaba(mailla)
                             goto 130
 !
                         else
-                            do 110 i2 = 1, nbno
+                            do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
                                     call barhex(i1, i2, zr(jcoor), zi( jpoin))
@@ -295,18 +295,19 @@ subroutine momaba(mailla)
                                     goto 130
 !
                                 endif
-110                         continue
+                            end do
                         endif
                     endif
-120             continue
+                end do
 !
             else
 !
             endif
 !
-130     continue
+130         continue
+        end do
 !
-140 end do
+    end do
 !
     call jedetr(nomjv)
     call jedetr('&&MOMABA_MAILLE')
@@ -322,9 +323,9 @@ subroutine momaba(mailla)
 !     ON STOCKE LES COORDONNEES DES NOEUDS DU FOND DE FISSURE AVANT
 !     LEURS MODIFICATIONS
     call wkvect('&&COORD_NOEUDS', 'V V R', ndim, jcon)
-    do 160 i = 1, ndim
+    do i = 1, ndim
         zr(jcon+i-1)=zr(jconm+i-1)
-160 end do
+    end do
 !
     motcle(1)='GROUP_NO_FOND'
     tymocl(1)='GROUP_NO'
@@ -347,7 +348,7 @@ subroutine momaba(mailla)
 ! --- TRAITEMENT DES NOEUDS
 !
     ncount=0
-    do 240 i = 1, nbma
+    do i = 1, nbma
         n1=zi(jnuma+i-1)
         n2=0
         if (niv .eq. 2) then
@@ -355,14 +356,14 @@ subroutine momaba(mailla)
             write (ifm,*)'TRAITEMENT DU NOEUD ',k8b
         endif
         lnmf=.true.
-        do 230 j = 1, nbmat
+        do j = 1, nbmat
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyma-1+j)), type)
             call jeveuo(jexnum(connex, j), 'L', jpoin)
 !
 ! --------- TRIA6 , TRIA7
             if (type .eq. 'TRIA6' .or. type .eq. 'TRIA7') then
                 nbno=3
-                do 170 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
@@ -374,13 +375,13 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-170             continue
+                end do
 !
 ! --------- QUAD8 , QUAD9
             else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
                 nbno=4
-                do 180 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
@@ -392,13 +393,13 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-180             continue
+                end do
 !
 ! --------- TETRA10
             else if (type.eq.'TETRA10') then
                 nbno=4
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 190 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
@@ -410,13 +411,13 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-190             continue
+                end do
 !
 ! --------- PENTA15
             else if (type.eq.'PENTA15') then
                 nbno=6
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 200 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
@@ -428,13 +429,13 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-200             continue
+                end do
 !
 ! --------- PYRAM13
             else if (type.eq.'PYRAM13') then
                 nbno=5
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 210 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
@@ -446,13 +447,13 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-210             continue
+                end do
 !
 ! --------- HEXA20 , HEXA27
             else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
                 nbno=8
                 call jeveuo(jexnum(connex, j), 'L', jpoin)
-                do 220 i1 = 1, nbno
+                do i1 = 1, nbno
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
@@ -464,13 +465,14 @@ subroutine momaba(mailla)
                         goto 230
 !
                     endif
-220             continue
+                end do
 !
             else
 !
             endif
 !
-230     continue
+230         continue
+        end do
 !
         if (lnmf) then
 !         ON STOCKE LES NOEUDS MILIEU DU FOND DE FISSURE
@@ -478,16 +480,16 @@ subroutine momaba(mailla)
             ncount=ncount+1
         endif
 !
-240 end do
+    end do
 !
-    do 250 i = 1, ncount
+    do i = 1, ncount
 !       ON REAJUSTE LES COORDONNEES DES NOEUDS MILIEU
 !       DU FOND DE FISSURE
         nn=3*(zi(jnbma+i-1)-1)
         zr(jcoor+nn)=zr(jcon+nn)
         zr(jcoor+nn+1)=zr(jcon+nn+1)
         zr(jcoor+nn+2)=zr(jcon+nn+2)
-250 end do
+    end do
 !
     if (.not.lmodi) then
         call utmess('F', 'ALGORITH16_72')

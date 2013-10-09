@@ -148,29 +148,29 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
 !
     if (typces .eq. 'ELEM') then
-        do 10 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = 1
             zi(jnbsp-1+ima) = 1
             zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
- 10     continue
+        end do
 !
     else if (typces.eq.'ELNO') then
-        do 20 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
             zi(jnbsp-1+ima) = zi(jces1d-1+5+4* (ima-1)+2)
             zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
- 20     continue
+        end do
 !
     else if (typces.eq.'ELGA') then
         call exisd('CHAM_ELEM_S', cesmod, iret)
 !       TEST ARGUMENT CESMOD OBLIGATOIRE
         ASSERT(iret.gt.0)
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
-        do 30 ima = 1, nbma
+        do ima = 1, nbma
             zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
             zi(jnbsp-1+ima) = zi(jces1d-1+5+4* (ima-1)+2)
             zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
- 30     continue
+        end do
 !
     else
         ASSERT(.false.)
@@ -201,7 +201,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         call jeveuo(mnoga//'.CESV', 'L', mnogav)
         ASSERT(zk8(mnogak).eq.ma)
 !
-        do 90 ima = 1, nbma
+        do ima = 1, nbma
             call cesexi('C', mnogad, mnogal, ima, 1,&
                         1, 1, iad)
             if (iad .le. 0) goto 90
@@ -227,71 +227,73 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
             ASSERT(nbno.eq.nbno2)
             ASSERT(nbpg.eq.nbpg2)
 !
-            do 80 icmp = 1, ncmp
-                do 70 isp = 1, nbsp
+            do icmp = 1, ncmp
+                do isp = 1, nbsp
 !
 !             - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                     ico = 0
-                    do 40 ino = 1, nbno
+                    do ino = 1, nbno
                         call cesexi('C', jces1d, jces1l, ima, ino,&
                                     isp, icmp, iad1)
                         if (iad1 .gt. 0) ico = ico + 1
- 40                 continue
+                    end do
                     if (ico .ne. nbno) goto 70
 !
                     if (tsca .eq. 'R') then
-                        do 60 ipg = 1, nbpg
+                        do ipg = 1, nbpg
                             vr = 0.d0
-                            do 50 ino = 1, nbno
+                            do ino = 1, nbno
                                 call cesexi('C', jces1d, jces1l, ima, ino,&
                                             isp, icmp, iad1)
                                 v1r = zr(jces1v-1+iad1)
                                 vr = vr + v1r*zr(mnogav-1+iad+1+nbno* (ipg-1)+ino)
- 50                         continue
+                            end do
 !
                             call cesexi('C', jcesd, jcesl, ima, ipg,&
                                         isp, icmp, iad1)
                             ASSERT(iad1.lt.0)
                             zl(jcesl-1-iad1) = .true.
                             zr(jcesv-1-iad1) = vr
- 60                     continue
+                        end do
 !
                     else if (tsca.eq.'C') then
-                        do 61 ipg = 1, nbpg
+                        do ipg = 1, nbpg
                             vc = dcmplx(0.d0,0.d0)
-                            do 51 ino = 1, nbno
+                            do ino = 1, nbno
                                 call cesexi('C', jces1d, jces1l, ima, ino,&
                                             isp, icmp, iad1)
                                 v1c = zc(jces1v-1+iad1)
                                 vc = vc + v1c*zr(mnogav-1+iad+1+nbno* (ipg-1)+ino)
- 51                         continue
+                            end do
 !
                             call cesexi('C', jcesd, jcesl, ima, ipg,&
                                         isp, icmp, iad1)
                             ASSERT(iad1.lt.0)
                             zl(jcesl-1-iad1) = .true.
                             zc(jcesv-1-iad1) = vc
- 61                     continue
+                        end do
                     endif
- 70             continue
+ 70                 continue
+                end do
 !
- 80         continue
- 90     continue
+            end do
+ 90         continue
+        end do
 !
 !
     else if ((typce1.eq.'ELEM') .and. (typces(1:2).eq.'EL')) then
 !     ------------------------------------------------------
-        do 130 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
 !
-            do 120 icmp = 1, ncmp
-                do 110 isp = 1, nbsp1
+            do icmp = 1, ncmp
+                do isp = 1, nbsp1
                     call cesexi('C', jces1d, jces1l, ima, 1,&
                                 isp, icmp, iad1)
                     if (iad1 .le. 0) goto 110
 !
-                    do 100 ipt = 1, nbpt
+                    do ipt = 1, nbpt
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     isp, icmp, iad)
                         ASSERT(iad.lt.0)
@@ -301,29 +303,30 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                         else if (tsca.eq.'C') then
                             zc(jcesv-1-iad) = zc(jces1v-1+iad1)
                         endif
-100                 continue
-110             continue
+                    end do
+110                 continue
+                end do
 !
-120         continue
-130     continue
+            end do
+        end do
 !
 !
     else if ((typce1(1:2).eq.'EL') .and. (typces.eq.'ELEM')) then
 !     ------------------------------------------------------
-        do 170 ima = 1, nbma
+        do ima = 1, nbma
             nbpt1 = zi(jces1d-1+5+4* (ima-1)+1)
             nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
             if ((nbpt1*nbsp1) .eq. 0) goto 170
 !
-            do 160 icmp = 1, ncmp
-                do 150 isp = 1, nbsp1
+            do icmp = 1, ncmp
+                do isp = 1, nbsp1
                     if (tsca .eq. 'R') then
                         vr = 0.d0
                     else if (tsca.eq.'C') then
                         vc = dcmplx(0.d0,0.d0)
                     endif
                     nbv = 0
-                    do 140 ipt1 = 1, nbpt1
+                    do ipt1 = 1, nbpt1
                         call cesexi('C', jces1d, jces1l, ima, ipt1,&
                                     isp, icmp, iad1)
                         if (iad1 .le. 0) goto 140
@@ -333,7 +336,8 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                         else if (tsca.eq.'C') then
                             vc = vc + zc(jces1v-1+iad1)
                         endif
-140                 continue
+140                     continue
+                    end do
 !
 !             -- ON N'AFFECTE DE VALEUR A LA MAILLE QUE SI TOUS
 !                LES POINTS ONT CONTRIBUE :
@@ -348,9 +352,10 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                             zc(jcesv-1-iad) = vc/dble(nbv)
                         endif
                     endif
-150             continue
-160         continue
-170     continue
+                end do
+            end do
+170         continue
+        end do
 !
 !
     else if ((typce1.eq.'ELGA') .and. (typces.eq.'ELNO')) then

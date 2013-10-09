@@ -143,10 +143,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     endif
 !
     call jeveuo(matyma, 'L', ltyp)
-    do 20 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 22 in = 0, nb-1
+        do in = 0, nb-1
             numa=zi(ldgm+in)
             ASSERT(numa.gt.0)
             call jelira(jexnum(manoma, numa), 'LONMAX', nm)
@@ -165,12 +165,12 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             else
                 call utmess('F', 'MODELISA6_29')
             endif
-            do 24 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
- 24         continue
- 22     continue
- 20 end do
+            end do
+        end do
+    end do
     ASSERT(appui.ne.-1)
 !
     call wkvect('&&RAIREP.COENO', 'V V R', noemax, icoef)
@@ -185,17 +185,17 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     call wkvect('&&RAIREP.SURMAI', 'V V R', nbma, isurma)
     im = 0
     surtot = zero
-    do 21 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 23 in = 0, nb-1
+        do in = 0, nb-1
             im = im + 1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             xc = zero
             yc = zero
             hc = zero
-            do 25 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(idno+inoe-1) = zi(idno+inoe-1) + 1
                 x(nn) = zr(jcoor+3*(inoe-1)+1-1)
@@ -204,7 +204,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
- 25         continue
+            end do
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -250,29 +250,30 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             endif
             surtot = surtot + zr(isurma+im-1)
             zr(isurma+im-1) = zr(isurma+im-1)/nm
- 23     continue
- 21 end do
+        end do
+    end do
 !
 !     CALCUL DES PONDERATIONS ELEMENTAIRES
 !
     im = 0
-    do 31 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 33 in = 0, nb-1
+        do in = 0, nb-1
             im = im + 1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 35 nn = 1, nm
-                do 37 ij = 1, noemax
+            do nn = 1, nm
+                do ij = 1, noemax
                     if (zi(idno+ij-1) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         zr(icoef+ij-1) = zr(icoef+ij-1) + zr(isurma+ im-1)/surtot
                     endif
- 37             continue
- 35         continue
- 33     continue
- 31 end do
+ 37                 continue
+                end do
+            end do
+        end do
+    end do
     nbma = im
 !
 !     CALCUL DES RAIDEURS DE ROTATION
@@ -285,7 +286,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     rig46 = zero
     rig56 = zero
     rig3 = 0.d0
-    do 50 ij = 1, noemax
+    do ij = 1, noemax
         if (zi(idno+ij-1) .eq. 0) goto 50
         ii = ii + 1
         xx = zr(jcoor+3*(ij-1)+1-1) - xg
@@ -303,7 +304,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             rig3 = rig3 + (rigi(2)*xx**2+rigi(1)*yy**2)*zr(icoef+ij-1)
         endif
 !
- 50 end do
+ 50     continue
+    end do
     nbno = ii
 !
     trans=(km(1:7) .eq. 'K_T_D_N').or.(km(1:7) .eq. 'K_T_D_L').or.&
@@ -339,7 +341,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     endif
 !
     ii = 0
-    do 51 ij = 1, noemax
+    do ij = 1, noemax
         if (zi(idno+ij-1) .eq. 0) goto 51
         ii = ii + 1
         r1 = rigi(1)*zr(icoef+ij-1)
@@ -390,7 +392,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
- 51 end do
+ 51     continue
+    end do
 !
     call jedetr('&&RAIREP.COEGRO')
     call jedetr('&&RAIREP.FONGRO')

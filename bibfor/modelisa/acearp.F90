@@ -164,20 +164,20 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !     PAR DEFAUT POUR M, A, K :
 !        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
     call infdis('DIMC', dimcar, r8bid, k8bid)
-    do 200 i = 1, 3
+    do i = 1, 3
         zk8(jdcinf+i-1) = 'REP'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i-1), zk8(jdcinf+i-1))
         zk8(jdcinf+i+2) = 'SYM'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+2), zk8(jdcinf+i+2))
         zk8(jdcinf+i+5) = 'DIS'//kma(i)//'    '
         call infdis('INIT', ibid, zr(jdvinf+i+5), zk8(jdcinf+i+5))
-200 end do
+    end do
     zk8(jdcinf+9) = 'ETAK    '
     call infdis('INIT', ibid, zr(jdvinf+9), zk8(jdcinf+9))
     zk8(jdcinf+10) = 'TYDI    '
     call infdis('INIT', ibid, zr(jdvinf+10), zk8(jdcinf+10))
 ! --- CREATION DES CARTES
-    do 220 i = 1, 3
+    do i = 1, 3
         cart(i) = nomu//'.CARDISC'//kma(i)
         tmpnd(i) = cart(i)//'.NCMP'
         tmpvd(i) = cart(i)//'.VALV'
@@ -188,7 +188,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
         endif
         call jeveuo(tmpnd(i), 'E', jdc(i))
         call jeveuo(tmpvd(i), 'E', jdv(i))
-220 end do
+    end do
 !
 !     RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ibid, niv)
@@ -197,7 +197,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 ! I AMOR (POUR EPX)
     ia = 0
 ! --- BOUCLE SUR LES OCCURRENCES DE RIGI_PARASOL
-    do 30 ioc = 1, nbocc
+    do ioc = 1, nbocc
         eta = 0.0d0
 !        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
         irep = 1
@@ -216,9 +216,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
             call getvtx('RIGI_PARASOL', 'GROUP_MA_SEG2', iocc=ioc, scal=nogp, nbret=ngp)
         endif
         if (nrep .ne. 0) then
-            do 32 i = 1, nrd
+            do i = 1, nrd
                 if (rep .eq. repdis(i)) irep = i
- 32         continue
+            end do
         endif
 !        POUR EUROPLEXUS
         lbid = .false.
@@ -245,7 +245,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
         if (ng .le. 0) goto 30
 !
         ii = 0
-        do 34 nc = 1, ncarac
+        do nc = 1, ncarac
             if ((nc.eq.2) .and. (car(1)(1:1).eq.car(2)(1:1))) then
                 call utmess('F', 'MODELISA_16')
             endif
@@ -265,9 +265,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 if (ii+3 .gt. nval) then
                     call utmess('F', 'DISCRETS_21')
                 endif
-                do 132 j = 1, 3
+                do j = 1, 3
                     vale(j) = val(ii+j)
-132             continue
+                end do
                 call rairep(noma, ioc, car(nc), vale, ng,&
                             zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto),&
                             zr(iamto), rirot, ndim)
@@ -277,9 +277,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 if (ii+6 .gt. nval) then
                     call utmess('F', 'DISCRETS_21')
                 endif
-                do 131 j = 1, 6
+                do j = 1, 6
                     vale(j) = val(ii+j)
-131             continue
+                end do
                 call rairep(noma, ioc, car(nc), vale, ng,&
                             zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto),&
                             zr(iamto), rirot, ndim)
@@ -288,27 +288,27 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 ASSERT(.false.)
             endif
 !
-            do 255 ino = 1, nbno
+            do ino = 1, nbno
                 zk8(itbmp + ino - 1) = ' '
-255         continue
+            end do
 !
 !
             if (ixnw .ne. 0 .and. ngp .eq. 0) then
-                do 39 i = 1, nbno
+                do i = 1, nbno
                     itrou = 0
-                    do 100 k = 1, nbmtrd
+                    do k = 1, nbmtrd
                         numnoe = zi(jdnw+k*2-2)
                         call jenuno(jexnum(mlgnno, numnoe), nomnoe)
                         if (zk8(itbno+i-1) .eq. nomnoe) then
                             itrou = 1
                             goto 101
                         endif
-100                 continue
+                    end do
 101                 continue
                     if (itrou .eq. 0) then
                         call utmess('F', 'MODELISA_18', sk=zk8(itbno+i-1))
                     endif
- 39             continue
+                end do
             else if (ixnw.eq.0.and.ngp.eq.0) then
                 call utmess('F', 'MODELISA_19')
             endif
@@ -331,7 +331,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 endif
 !
 !
-                do 22 in = 0, nma-1
+                do in = 0, nma-1
 !                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                     call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
                     call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
@@ -340,23 +340,24 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                     if (nbnma .ne. nbnoeu) then
                         call utmess('F', 'MODELISA_20', sk=nommai)
                     endif
-                    do 25 inbn = 1, nbnma
+                    do inbn = 1, nbnma
                         inoe = zi(ldnm+inbn-1)
                         call jenuno(jexnum(mlgnno, inoe), nomnoe)
-                        do 24 ino = 1, nbno
+                        do ino = 1, nbno
                             if (zk8(itbno+ino-1) .eq. nomnoe) then
                                 zk8(itbmp+ino-1) = nommai
 !
                                 goto 22
                             endif
- 24                     continue
- 25                 continue
+                        end do
+                    end do
 !                 SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
 !                 A LA SURFACE, ET CE N'EST PAS NORMAL
                     write(ifm,*)'GROUP_MA :', (' '//zk24(jdls+ii-1),&
                     ii=1,ng)
                     call utmess('F', 'MODELISA_21', sk=nomnoe)
- 22             continue
+ 22                 continue
+                end do
 !              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
 !              IFR = IUNIFI('RESULTAT')
                 lorep = 5
@@ -373,16 +374,16 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !            VERIF QU'UN DISCRET EST FIXE A CHACUN DES NOEUDS DU RADIER
 !            (UNE SEULE FOIS PAR OCCURRENCE DE RIGI_PARASOL)
                 if (nc .eq. 1) then
-                    do 227 ino = 1, nbno
+                    do ino = 1, nbno
                         if (zk8(itbmp + ino - 1) .eq. ' ') then
                             call jenuno(jexnum(mlgnno, ino), nomnoe)
                             call utmess('F', 'MODELISA2_8', sk=nomnoe)
                         endif
-227                 continue
+                    end do
                 endif
 !
                 if (iunite .gt. 0) then
-                    do 27 i = 1, nbno
+                    do i = 1, nbno
                         iv = 1
                         jd = itbmp + i - 1
                         jn = itbno + i - 1
@@ -407,10 +408,10 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 jj=0,5), repdis(irep)(1:lorep)
                             endif
                         endif
- 27                 continue
+                    end do
                 endif
 !
-                do 28 i = 1, nbno
+                do i = 1, nbno
                     iv = 1
                     jd = itbmp + i - 1
                     jn = itbno + i - 1
@@ -420,31 +421,31 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !
                             if (car(nc)(1:3) .eq. 'K_T') then
                                 if (transl) then
-                                    do 666 jj = 0, 2
+                                    do jj = 0, 2
                                         zr(irepv+6*ir+jj)=zr(irgno+6*&
                                         i-6+jj)
                                         zr(irepv+6*ir+3+jj)=0.d0
-666                                 continue
+                                    end do
                                 else
-                                    do 667 jj = 0, 5
+                                    do jj = 0, 5
                                         zr(irepv+6*ir+jj)=zr(irgno+6*&
                                         i-6+jj)
-667                                 continue
+                                    end do
                                 endif
                                 zk8(irepn+ir) = zk8(jn)
                                 ir = ir + 1
                             else if (car(nc)(1:3) .eq. 'A_T') then
                                 if (transl) then
-                                    do 668 jj = 0, 2
+                                    do jj = 0, 2
                                         zr(iaepv+6*ia+jj)=zr(irgno+6*&
                                         i-6+jj)
                                         zr(iaepv+6*ia+3+jj)=0.d0
-668                                 continue
+                                    end do
                                 else
-                                    do 669 jj = 0, 5
+                                    do jj = 0, 5
                                         zr(iaepv+6*ia+jj)=zr(irgno+6*&
                                         i-6+jj)
-669                                 continue
+                                    end do
                                 endif
                                 zk8(iaepn+ia) = zk8(jn)
                                 ia = ia + 1
@@ -475,7 +476,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 limano=[zk8(jd)])
                     call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
                                 limano=[zk8(jd)])
- 28             continue
+                end do
             else
                 lokm = 0
                 if (transl) lokm = 7
@@ -489,7 +490,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                         write(iunite,1006) car(nc)(1:lokm), rirot(1),&
                         rirot(2),rirot(3)
                     endif
-                    do 35 i = 1, nbno
+                    do i = 1, nbno
                         iv = 1
                         jd = itbno + i - 1
                         if (transl) then
@@ -501,9 +502,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                             car(nc)(1:lokm), (zr(irgno+6*i-6+jj),jj=0,&
                             5), repdis(irep)(1:lorep)
                         endif
- 35                 continue
+                    end do
                 endif
-                do 36 i = 1, nbno
+                do i = 1, nbno
                     iv = 1
                     jd = itbno + i - 1
                     call crlinu('NOM', mlgnno, 1, [ibid], zk8(jd),&
@@ -527,13 +528,14 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 limanu=zi(jddi))
                     call nocart(cart(l), -3, ncmp, ligrel=ligmo, nma=kk,&
                                 limanu=zi(jddi))
- 36             continue
+                end do
             endif
- 34     continue
+        end do
         if (ii .ne. nval) then
             call utmess('F', 'DISCRETS_21')
         endif
- 30 end do
+ 30     continue
+    end do
 !
     if (ixnw .ne. 0) call jedetr(tmpdis)
     call jedetr('&&TMPDISCRET')
@@ -544,10 +546,10 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     call jedetr('&&TMPTABMP')
     call getfac('RIGI_MISS_3D', nborm)
     if (nborm .eq. 0) then
-        do 240 i = 1, 3
+        do i = 1, 3
             call jedetr(tmpnd(i))
             call jedetr(tmpvd(i))
-240     continue
+        end do
         call jedetr(tmcinf)
         call jedetr(tmvinf)
     endif

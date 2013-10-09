@@ -2,6 +2,7 @@ subroutine encadr(func, x1, x2, f1, f2,&
                   niter, xmult, iret)
     implicit none
 !
+! aslint: disable=W0307
     interface
         function func(x)
             real(kind=8) :: x

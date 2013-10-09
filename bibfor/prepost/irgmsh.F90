@@ -86,15 +86,15 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 ! --- RECUPERATION DU MAILLAGE, NB_MAILLE, ...
 !
     if (lresu) then
-        do 30 ior = 1, nbordr
-            do 32 ich = 1, nbcham
+        do ior = 1, nbordr
+            do ich = 1, nbcham
                 call rsexch(' ', nomcon, cham(ich), ordr(ior), noch19,&
                             iret)
                 if (iret .eq. 0) goto 34
- 32         continue
- 30     continue
+            end do
+        end do
         call utmess('A', 'PREPOST2_59')
-        goto 9999
+        goto 999
  34     continue
     else
         noch19 = nomcon
@@ -119,19 +119,19 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !           ON PREFERE INST :
         call jenonu(jexnom(noco19//'.NOVA', 'INST'), iret)
         if (iret .ne. 0) then
-            do 20 ior = 1, nbordr
+            do ior = 1, nbordr
                 call rsadpa(nomcon, 'L', 1, 'INST', ordr(ior),&
                             0, sjv=iad, styp=k8b)
                 zr(jpara+ior-1) = zr(iad)
- 20         continue
+            end do
         else
             call jenonu(jexnom(noco19//'.NOVA', 'FREQ'), iret)
             if (iret .ne. 0) then
-                do 22 ior = 1, nbordr
+                do ior = 1, nbordr
                     call rsadpa(nomcon, 'L', 1, 'FREQ', ordr(ior),&
                                 0, sjv=iad, styp=k8b)
                     zr(jpara+ior-1) = zr(iad)
- 22             continue
+                end do
             endif
         endif
     else
@@ -141,10 +141,10 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 ! --- TRANSFORMATION DU MAILLAGE EN MAILLAGE SUPPORTE PAR GMSH
 !
 ! --- INIT
-    do 101 i = 1, ntyele
+    do i = 1, ntyele
         nbel(i) = 0
         nobj(i) = ' '
-101 end do
+    end do
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2' ), typseg)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
@@ -173,7 +173,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !
 ! --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
 !
-    do 10 ich = 1, nbcham
+    do ich = 1, nbcham
 !
         if (lresu) then
 !        --VERIFICATION DE L'EXISTENCE DU CHAMP CHAM(ICH) DANS LA
@@ -233,21 +233,22 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             valk2(2) = tych
             call utmess('I', 'PREPOST2_60', nk=2, valk=valk2)
         endif
- 10 end do
+ 10     continue
+    end do
 !
 ! --- MENAGE
 !
-    do 102 i = 1, ntyele
+    do i = 1, ntyele
         if (nobj(i) .ne. ' ') then
             call jedetr(nobj(i))
         endif
-102 end do
+    end do
 !
     call detrsd('MAILLAGE', nomaou)
     call jedetr(nomaou//'.NUMOLD')
     call jedetr('&&IRGMSH.PARA')
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

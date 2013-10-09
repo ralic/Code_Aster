@@ -133,14 +133,15 @@ subroutine ssdege(nomu)
 !     --------------------------------------------------------
     call jeveuo(nomo//'.MODELE    .PRNM', 'L', iaprnm)
     lmess=.false.
-    do 11 ii = 1, nbnoto
+    do ii = 1, nbnoto
         ino=zi(iaexte-1+ii)
-        do 12 iec = 1, nbec
+        do iec = 1, nbec
             if (zi(iaprnm-1+nbec*(ino-1)+iec) .ne. 0) goto 11
             zi(iaexte-1+ii)=0
             lmess=.true.
- 12     continue
- 11 end do
+        end do
+ 11     continue
+    end do
     if (lmess) then
         call utmess('A', 'SOUSTRUC_41')
     endif

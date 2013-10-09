@@ -92,7 +92,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     call wkvect(nvchef, 'V V K24', nbpost, avchef)
     call wkvect(nvcodo, 'V V I', nbpost, avcodo)
     kordre = '&&RVGARG.NUMEORDR'
-    do 100 iocc = 1, nbpost, 1
+    do iocc = 1, nbpost, 1
         n1 = 0
         n2 = 0
         call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=0, nbret=n3)
@@ -132,11 +132,11 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                     call rsorac(nresu, 'TOUT_ORDRE', 0, rbid, k8b,&
                                 cbid, rbid, 'RELATIF', zi(jordr), n3,&
                                 ibid)
-                    do 10 j = 1, n3
+                    do j = 1, n3
                         call rsexch(' ', nresu, nchsym, zi(jordr+j-1), naux24,&
                                     n2)
                         if (n2 .eq. 0) goto 12
- 10                 continue
+                    end do
  12                 continue
                     call jedetr(kordre)
                 else
@@ -228,9 +228,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                     call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbnc)
                     call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbnc)
                     call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
-                    do 112 i = 1, nbnc
+                    do i = 1, nbnc
                         zi(jxvar+i-1) = numecp(i)
-112                 continue
+                    end do
                     nbcmp = 1
                     zk8(ancpu1) = 'VARI'
                 else
@@ -241,9 +241,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
                 call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbcmp)
                 call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
-                do 110 i = 1, nbcmp, 1
+                do i = 1, nbcmp, 1
                     zk8(anomcp + i-1) = zk8(ancpu1 + i-1)
-110             continue
+                end do
                 call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbcmp, zi(anumcp))
                 call jedetr('&&OP0051.NOMCMP.USER')
             else if (nbtcp .ne. 0) then
@@ -258,9 +258,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
                 call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbc)
                 call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
-                do 120 i = 1, nbc, 1
+                do i = 1, nbc, 1
                     zk8(anomcp + i-1) = zk8(ancpu2 + i-1)
-120             continue
+                end do
                 call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbc, zi(anumcp))
                 call jedetr(nomobj)
                 if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
@@ -281,6 +281,6 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 zi (anumcp) = -1
             endif
         endif
-100 end do
+    end do
     call jedema()
 end subroutine

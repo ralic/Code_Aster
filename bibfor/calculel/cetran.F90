@@ -35,7 +35,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
 !
 !
-    integer ::  nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
+    integer :: nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
     integer :: iad2, jce1k, jce1d, jce1c, jce1v, jce1l, icmp1, jce2k, jce2d
     integer :: jce2c, jce2v, jce2l, icmp2, ima, ima1, ima2
     character(len=3) :: tsca
@@ -70,7 +70,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
 !
         ima1 = lima1(ima)
         ima2 = lima2(ima)
@@ -83,16 +83,16 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
         ASSERT(nbpt2.eq.nbpt)
         ASSERT(nbsp2.eq.nbsp)
 !
-        do 20 icmp2 = 1, ncmp2
+        do icmp2 = 1, ncmp2
 !
             nocmp = zk8(jce2c-1+icmp2)
 !
             icmp1 = indik8( zk8(jce1c), nocmp, 1, ncmp1 )
             if (icmp1 .eq. 0) goto 20
 !
-            do 30 ipt = 1, nbpt
+            do ipt = 1, nbpt
 !
-                do 40 isp = 1, nbsp
+                do isp = 1, nbsp
 !
                     call cesexi('C', jce1d, jce1l, ima1, ipt,&
                                 isp, icmp1, iad1)
@@ -118,13 +118,15 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
                         ASSERT(.false.)
                     endif
 !
- 40             continue
+ 40                 continue
+                end do
 !
- 30         continue
+            end do
 !
- 20     continue
+ 20         continue
+        end do
 !
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

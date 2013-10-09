@@ -135,7 +135,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     psourc='PSOURCR'
 !
 ! BOUCLE SUR LES AFFE_CHAR_THER
-    do 10 i = 1, nchar
+    do i = 1, nchar
 ! INIT.
         cartf = lchar(i)//'.CHTH.FLURE'
         carth = lchar(i)//'.CHTH.COEFH'
@@ -209,7 +209,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         endif
 !
 ! FIN BOUCLE AFFE_CHAR_THER
- 10 end do
+    end do
 !
     call jedema()
 !

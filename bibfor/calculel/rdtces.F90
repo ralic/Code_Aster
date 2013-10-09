@@ -50,7 +50,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
     integer :: jcorrm, nbma2, jnbpt, jnbsp, jnbcmp
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, ima1, ima2, nbpt, nbsp, iad1
     integer :: jce2d, jce2v, jce2l, jce2c
-    integer ::  ipt, isp, iad2
+    integer :: ipt, isp, iad2
     integer :: ncmp, icmp
     character(len=8) :: nomgd, typces
     character(len=3) :: tsca
@@ -87,7 +87,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
     call wkvect('&&CESRED.NBSP', 'V V I', nbma2, jnbsp)
     call wkvect('&&CESRED.NBCMP', 'V V I', nbma2, jnbcmp)
     isvide=.true.
-    do 10 ima2 = 1, nbma2
+    do ima2 = 1, nbma2
         ima1=zi(jcorrm-1+ima2)
         zi(jnbpt-1+ima2)=zi(jce1d-1+5+4*(ima1-1)+1)
         zi(jnbsp-1+ima2)=zi(jce1d-1+5+4*(ima1-1)+2)
@@ -96,7 +96,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
             .ne. 0) then
             isvide=.false.
         endif
- 10 end do
+    end do
     if (isvide) goto 60
     codret=0
 !
@@ -114,14 +114,14 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !
 !     4- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
-    do 50 icmp = 1, ncmp
+    do icmp = 1, ncmp
 !
-        do 40 ima2 = 1, nbma2
+        do ima2 = 1, nbma2
             ima1=zi(jcorrm-1+ima2)
             nbpt=zi(jce2d-1+5+4*(ima2-1)+1)
             nbsp=zi(jce2d-1+5+4*(ima2-1)+2)
-            do 30 ipt = 1, nbpt
-                do 20 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jce1d, jce1l, ima1, ipt,&
                                 isp, icmp, iad1)
                     call cesexi('C', jce2d, jce2l, ima2, ipt,&
@@ -153,11 +153,12 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
                         ASSERT(.false.)
                     endif
 !
- 20             continue
- 30         continue
+ 20                 continue
+                end do
+            end do
 !
- 40     continue
- 50 end do
+        end do
+    end do
 !
 !
 !     5- MENAGE :

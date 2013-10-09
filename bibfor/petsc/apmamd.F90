@@ -154,9 +154,9 @@ subroutine apmamd(kptsc)
                 zi4(jdxi1+iterm-1)=iligg-1
             endif
         end do
-        call MatSetValues(a, jterm, zi4(jdxi2), 1, [int(jcolg-1,4)],&
+        call MatSetValues(a, jterm, zi4(jdxi2), 1, [int(jcolg-1, 4)],&
                           zr(jdval2), ADD_VALUES, ierr)
-        call MatSetValues(a, 1, [int(jcolg-1,4)], iterm, zi4(jdxi1),&
+        call MatSetValues(a, 1, [int(jcolg-1, 4)], iterm, zi4(jdxi1),&
                           zr(jdval1), ADD_VALUES, ierr)
         iterm=0
         jterm=0

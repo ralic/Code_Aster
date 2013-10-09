@@ -116,11 +116,11 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !     1- LE CHAM_ELEM DOIT-IL ETRE CREE ?
 !     ----------------------------------
     modmx = 0
-    do 10 igrel = 1, ngrel
+    do igrel = 1, ngrel
         te = typele(ligrel,igrel)
         mode = modat2(iopt,te,nompar)
         modmx = max(modmx,mode)
- 10 end do
+    end do
     if (modmx .eq. 0) then
         iret = 1
         goto 60
@@ -184,9 +184,9 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !     4- OBJET .CELD :
 !     -------------------
     neltot = 0
-    do 20 igrel = 1, ngrel
+    do igrel = 1, ngrel
         neltot = neltot + nbelem(ligrel,igrel)
- 20 end do
+    end do
 !
     long = 4 + ngrel + 4*ngrel + 4*neltot
     call wkvect(cel//'.CELD', base//' V I', long, jceld)
@@ -204,7 +204,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     debgrl = 4 + ngrel
 !
     iprem = 0
-    do 40 igrel = 1, ngrel
+    do igrel = 1, ngrel
         nel = nbelem(ligrel,igrel)
         te = typele(ligrel,igrel)
         mode = modat2(iopt,te,nompar)
@@ -240,7 +240,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
             lgcata = digdel(mode)
             zi(jceld-1+debgrl+3) = lgcata
 !
-            do 30 iel = 1, nel
+            do iel = 1, nel
 !
 !           4.1 CALCUL DE NBSPT ET NCDYN POUR CHAQUE ELEMENT :
 !           --------------------------------------------------
@@ -294,13 +294,13 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
                 zi(jceld-1+debgrl+4+ (iel-1)*4+3) = lgchel
                 zi(jceld-1+debgrl+4+ (iel-1)*4+4) = ncmpv
                 ncmpv = ncmpv + lgchel
- 30         continue
+            end do
 !
         endif
 !
         zi(jceld-1+debgrl+4) = ncmpv - ncmpv2
         debgrl = debgrl + 4 + 4*nel
- 40 end do
+    end do
 !
 !
 !     5- OBJET .CELV:

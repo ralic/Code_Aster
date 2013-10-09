@@ -129,14 +129,14 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
         call dismoi('NB_MA_MAILLA', nomo2, 'MODELE', repi=nbma)
 !
-        do 40 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             ASSERT(nbpt.eq.1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
             ASSERT(nbsp.eq.1)
 !
-            do 30 ipt = 1, nbpt
-                do 20 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, 1, iad)
                     zi(jcesv-1-iad)=0
@@ -145,9 +145,9 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
                                 isp, 2, iad)
                     zi(jcesv-1-iad)=nbmax
                     zl(jcesl-1-iad)=.true.
- 20             continue
- 30         continue
- 40     continue
+                end do
+            end do
+        end do
 !
         call alchml(ligrel, option, nompar, 'V', cel2,&
                     iret, dcel)
@@ -194,12 +194,12 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !     -------------------------------
     call jeveuo(corres//'.PJEF_EL', 'L', jpo)
 !
-    do 92 icmp1 = 1, ncmp1
+    do icmp1 = 1, ncmp1
         icmp2 = indik8( zk8(jce2c),zk8(jcns1c-1+icmp1), 1, ncmp2 )
         if (icmp2 .eq. 0) goto 92
         ASSERT(zk8(jce2c-1+icmp2).eq.zk8(jcns1c-1+icmp1))
 !       -- nbno1 est le nombre de pseudo-noeuds du maillage 2
-        do 98 ipo = 1, nbno1
+        do ipo = 1, nbno1
             ima=zi(jpo-1+2*ipo-1)
             ipt= zi(jpo-1+2*ipo)
             call cesexi('C', jce2d, jce2l, ima, ipt,&
@@ -210,8 +210,10 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
             zr(jce2v-1+iad2)=zr(jcns1v+(ipo-1)*ncmp1+icmp1-1)
             zl(jce2l-1+iad2)=.true.
- 98     continue
- 92 end do
+ 98         continue
+        end do
+ 92     continue
+    end do
 !
 !
     call jedema()

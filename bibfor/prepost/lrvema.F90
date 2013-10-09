@@ -145,42 +145,42 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
     call wkvect('&&LRVERIMO_NBETYP1', 'V V I', ntymax, jnbtyp)
     call wkvect('&&LRVERIMO_NBETYP2', 'V V I', ntymax, jnbty2)
-    do 10 i = 1, ntymax
+    do i = 1, ntymax
         zi(jnbtyp+i-1)=0
         if (nummed(i) .ne. 0) then
             call as_mmhnme(idfimd, nomamd, edconn, edmail, nummed(i),&
                            ednoda, nmatyp, iret)
             zi(jnbtyp+i-1)=nmatyp
         endif
- 10 end do
+    end do
 !
     call as_mficlo(idfimd, iret)
     call dismoi('NB_MA_MAILLA', nomail, 'MAILLAGE', repi=nbma)
     call wkvect('&&LRVERIMO_NBMA_TYP', 'V V I', nbma, jmatyp)
-    do 20 i = 1, nbma
+    do i = 1, nbma
         zi(jmatyp+i-1)=0
- 20 end do
+    end do
 !
     call jeveuo(nomail//'.TYPMAIL', 'L', jtymas)
-    do 30 i = 1, nbma
+    do i = 1, nbma
         zi(jmatyp+i-1)=nummed(zi(jtymas+i-1))
- 30 end do
+    end do
 !
-    do 50 i = 1, ntymax
+    do i = 1, ntymax
         nbtym=0
         zi(jnbty2+i-1)=nbtym
         if (nummed(i) .ne. 0) then
-            do 60 j = 1, nbma
+            do j = 1, nbma
                 if (zi(jmatyp+j-1) .eq. nummed(i)) then
                     nbtym=nbtym+1
                 endif
- 60         continue
+            end do
         endif
         zi(jnbty2+i-1)=nbtym
- 50 end do
+    end do
 !
     lfirst=.true.
-    do 70 i = 1, ntymax
+    do i = 1, ntymax
         if (nummed(i) .ne. 0) then
             if (zi(jnbtyp+i-1) .ne. zi(jnbty2+i-1) .and. lfirst) then
                 lfirst=.false.
@@ -197,7 +197,7 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
             endif
         endif
- 70 end do
+    end do
 !
     call jedetr('&&LRVERIMO_NBETYP1')
     call jedetr('&&LRVERIMO_NBETYP2')

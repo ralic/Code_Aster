@@ -78,7 +78,7 @@ subroutine cesver(cesz)
 !     -- ON NE TRAITE QUE LES CHAMPS ELNO OU ELGA :
     if (typces .eq. 'ELNO' .or. typces .eq. 'ELGA') then
     else
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -88,25 +88,25 @@ subroutine cesver(cesz)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     if (tsca .eq. 'R' .or. tsca .eq. 'C') then
     else
-        goto 9999
+        goto 999
     endif
 !
 !
 !
 !     1- PARCOURS DES VALEURS DU CHAMP :
 !     ----------------------------------
-    do 80 icmp = 1, ncmp
+    do icmp = 1, ncmp
         rmi2=1.d200
         rma2=-1.d200
         rdispx=0.d0
-        do 70 ima = 1, nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             lexima=.false.
 !         -- ON NE REGARDE QUE LE 1ER SOUS-POINT :
-            do 50 isp = 1, 1
+            do isp = 1, 1
                 rmi1=1.d200
                 rma1=-1.d200
-                do 60 ipt = 1, nbpt
+                do ipt = 1, nbpt
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, icmp, iad)
                     if (iad .le. 0) goto 60
@@ -121,7 +121,8 @@ subroutine cesver(cesz)
                     rma1=max(rma1,r1)
                     rmi2=min(rmi2,r1)
                     rma2=max(rma2,r1)
- 60             continue
+ 60                 continue
+                end do
                 if (lexima) then
                     rdisp=rma1-rmi1
                 else
@@ -131,8 +132,8 @@ subroutine cesver(cesz)
                     rdispx=rdisp
                     ima1=ima
                 endif
- 50         continue
- 70     continue
+            end do
+        end do
 !
         rmax=max(abs(rmi2),abs(rma2))
         if (rdispx .gt. 0.1d0*rmax) then
@@ -147,9 +148,9 @@ subroutine cesver(cesz)
                         valr=valr)
         endif
 !
- 80 end do
+    end do
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

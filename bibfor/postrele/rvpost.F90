@@ -112,9 +112,9 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
         call jelira(jexnum(xnomcp, iocc), 'LONMAX', nbcac)
         call wkvect(lscpcd, 'V V K8', nbcac, jcmpcd)
         call wkvect('&&RVPOST.VAL.DIR', 'V V R', 3, jdir)
-        do 10 i = 1, nbcac, 1
+        do i = 1, nbcac, 1
             zk8(jcmpcd + i-1) = zk8(jnomcp + i-1)
- 10     continue
+        end do
         gd = zi(n1 + 1-1)
         if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'B',&
                                     ncheff)
@@ -194,7 +194,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !
                 if (iret .ne. 0) then
                     sdpost = '&&RVPOST.FINAL.POST'
-                    do 100 isd = 1, nbsd, 1
+                    do isd = 1, nbsd, 1
                         if (repere(1:1) .ne. 'G' .and. .not.tridim) then
                             call jeveuo(jexnum(sdnewr//'.VEC1', isd), 'L', jvec1)
                             call jeveuo(jexnum(sdnewr//'.VEC2', isd), 'L', jvec2)
@@ -259,7 +259,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                         call jedetr(sdpost//'.NOCP')
                         call jedetr(sdpost//'.PNCO')
                         call jedetr(sdpost//'.PNSP')
-100                 continue
+                    end do
 !
                 endif
                 call jeexin(sdnewr//'.VEC1', n1)
@@ -270,7 +270,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                 call jelira(sdlieu, 'LONMAX', n)
                 call jeveuo(sdlieu, 'L', n1)
                 call jeveuo(sdeval, 'L', n2)
-                do 20 i = 1, n, 1
+                do i = 1, n, 1
                     lieu = zk24(n1 + i-1)(1:19)
                     eval = zk24(n2 + i-1)(1:19)
                     call jedetr(lieu//'.ABSC')
@@ -283,7 +283,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                     if (n3 .ne. 0) then
                         call jedetr(eval//'.MAIL')
                     endif
- 20             continue
+                end do
                 call jedetr(sdlieu)
                 call jedetr(sdeval)
             endif

@@ -46,7 +46,7 @@ subroutine lisccp(phenom, lischa)
 ! ----------------------------------------------------------------------
 !
     integer :: ichar, nbchar
-    integer ::  genrec
+    integer :: genrec
     character(len=8) :: phecha, charge
     logical :: lok
     logical :: lveac, lveag, lveas
@@ -62,7 +62,7 @@ subroutine lisccp(phenom, lischa)
 !
 ! - BOUCLE SUR LES CHARGES
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
         lok = .false.
 !
 ! ----- CODE DU GENRE DE LA CHARGE
@@ -101,7 +101,7 @@ subroutine lisccp(phenom, lischa)
         if (.not.lok) then
             call utmess('F', 'CHARGES5_4', sk=charge)
         endif
- 10 continue
+    end do
 !
 999 continue
 !

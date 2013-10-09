@@ -76,9 +76,9 @@ subroutine amogen(mat19)
                         nbret=nbid)
         else
             call jeveuo(listam//'           .VALE', 'L', iamog)
-            do 30 i = 1, n
+            do i = 1, n
                 zr(jamog+i-1) = zr(iamog+i-1)
-30          continue
+            end do
         endif
     else
         call wkvect('&&AMORMA.AMORTI', 'V V R8', n, jamog)
@@ -87,14 +87,14 @@ subroutine amogen(mat19)
                         nbret=nbid)
         else
             call jeveuo(listam//'           .VALE', 'L', iamog)
-            do 40 i = 1, nbamor
+            do i = 1, nbamor
                 zr(jamog+i-1) = zr(iamog+i-1)
-40          continue
+            end do
         endif
         if (nbamor .lt. n) then
-            do 41 i = nbamor+1, n
+            do i = nbamor+1, n
                 zr(jamog+i-1) = zr(jamog+nbamor-1)
-41          continue
+            end do
 !
             idiff = n - nbamor
             vali (1) = idiff
@@ -131,21 +131,21 @@ subroutine amogen(mat19)
 !
     zk24(ialime) = '                        '
 !
-    do 170 i = 1, n
+    do i = 1, n
         zr(iaconl+i-1) = 1.0d0
-170  end do
+    end do
 !
     iblo=1
     call jeveuo(jexnum(masse//'           .VALM', iblo), 'L', iam)
     call jeveuo(jexnum(raid//'           .VALM', iblo), 'E', iak)
     call jeveuo(jexnum(mat19//'.VALM', iblo), 'E', iamat)
-    do 180 i = 1, m
+    do i = 1, m
         zr(iamat-1+i)=0d0
-180  end do
+    end do
     kmin=0.d0
     kmax=0.00001d0
     valmin=1.d-4
-    do 190 i = 1, n
+    do i = 1, n
         if (m .eq. n*(n+1)/2) then
             j=i*(i+1)/2-1
         else if (m.eq.n) then
@@ -160,7 +160,8 @@ subroutine amogen(mat19)
             kmax=max(kmax,zr(iak+j))
         endif
         zr(iamat+j)=2.0d0*zr(jamog+i-1)*sqrt(abs(zr(iam+j)*zr(iak+j)))
-190  end do
+190     continue
+    end do
     rk=kmin/kmax
     if (abs(rk) .ge. valmin) then
         call utmess('A', 'PREPOST4_20')

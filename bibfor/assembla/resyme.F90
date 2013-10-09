@@ -66,7 +66,7 @@ subroutine resyme(resu1z, basez, resu2z)
     character(len=16) :: phenom, option
     character(len=19) :: resl1, resl2, resul1, resul2
     character(len=19) :: ligrel
-    integer ::  nbresu, idlre1, idlre2, iresu, iret, kresu
+    integer :: nbresu, idlre1, idlre2, iresu, iret, kresu
     integer :: jresl1, jresl2, igr, nbgr
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -108,7 +108,7 @@ subroutine resyme(resu1z, basez, resu2z)
 !       --------------------------------
 !
     kresu=0
-    do 20 iresu = 1, nbresu
+    do iresu = 1, nbresu
         resl1 = zk24(idlre1+iresu-1)(1:19)
         call jeexin(resl1//'.RESL', iret)
         if (iret .ne. 0) then
@@ -127,17 +127,17 @@ subroutine resyme(resu1z, basez, resu2z)
                 call jeveuo(resl2//'.DESC', 'L', jresl2)
                 nbgr=zi(jresl1-1+2)
                 ASSERT(nbgr.eq.zi(jresl2-1+2))
-                do 21 igr = 1, nbgr
+                do igr = 1, nbgr
                     if (zi(jresl1-1+2+igr) .gt. 0) then
                         ASSERT(zi(jresl2-1+2+igr).ne.0)
                     endif
- 21             continue
+                end do
             else
                 call copisd('CHAMP_GD', base, resl1, resl2)
             endif
             zk24(idlre2+kresu-1) = resl2
         endif
- 20 end do
+    end do
     call jeecra(resul2//'.RELR', 'LONUTI', kresu)
 !
 !

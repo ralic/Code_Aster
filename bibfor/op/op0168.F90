@@ -111,7 +111,7 @@ subroutine op0168()
         call wkvect('&&OP0168.NOM_MODE', 'V V K8', nbfilt, jnom)
         call jecrec(kmode, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                     nbfilt)
-        do 10 i = 1, nbfilt
+        do i = 1, nbfilt
             call getvid('FILTRE_MODE', 'MODE', iocc=i, scal=modein, nbret=n1)
             call jelira(modein//'           .ORDR', 'LONUTI', iret)
             if (iret .eq. 0) goto 10
@@ -151,9 +151,9 @@ subroutine op0168()
             call getvtx('FILTRE_MODE', 'TOUT_ORDRE', iocc=i, scal=ouinon, nbret=n1)
             if (n1 .ne. 0 .and. ouinon .eq. 'OUI') then
                 nbmode = nbmodt
-                do 12 j = 1, nbmode
+                do j = 1, nbmode
                     zi(jordr+j-1) = zi(jor+j-1)
- 12             continue
+                end do
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -167,18 +167,19 @@ subroutine op0168()
                 call getvis('FILTRE_MODE', 'NUME_ORDRE', iocc=i, nbval=nbmodu, vect=zi(jme),&
                             nbret=n2)
                 nbmode = 0
-                do 20 j = 1, nbmodu
-                    do 22 k = 1, nbmodt
+                do j = 1, nbmodu
+                    do k = 1, nbmodt
                         if (zi(jme+j-1) .eq. zi(jor+k-1)) then
                             nbmode = nbmode + 1
                             zi(jordr+nbmode-1) = zi(jme+j-1)
                             goto 20
                         endif
- 22                 continue
+                    end do
                     valk(1) = modein
                     vali(1) = zi(jme+j-1)
                     call utmess('A', 'ALGELINE4_55', sk=valk(1), si=vali(1))
- 20             continue
+ 20                 continue
+                end do
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_MODE')
@@ -193,18 +194,18 @@ subroutine op0168()
                 call getvis('FILTRE_MODE', 'NUME_MODE', iocc=i, nbval=nbmodu, vect=zi(jme),&
                             nbret=n3)
                 nbmode = 0
-                do 30 j = 1, nbmodt
+                do j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'NUME_MODE', iord,&
                                 0, sjv=jadr, styp=k8b)
                     nume = zi(jadr)
-                    do 32 k = 1, nbmodu
+                    do k = 1, nbmodu
                         if (nume .eq. zi(jme+k-1)) then
                             nbmode = nbmode + 1
                             zi(jordr+nbmode-1) = iord
                         endif
- 32                 continue
- 30             continue
+                    end do
+                end do
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_MODE')
@@ -219,17 +220,18 @@ subroutine op0168()
                 call getvis('FILTRE_MODE', 'NUME_MODE_EXCLU', iocc=i, nbval=nbme, vect=zi(jme),&
                             nbret=n4)
                 nbmode = 0
-                do 40 j = 1, nbmodt
+                do j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'NUME_MODE', iord,&
                                 0, sjv=jadr, styp=k8b)
                     nume = zi(jadr)
-                    do 42 k = 1, nbme
+                    do k = 1, nbme
                         if (nume .eq. zi(jme+k-1)) goto 40
- 42                 continue
+                    end do
                     nbmode = nbmode + 1
                     zi(jordr+nbmode-1) = iord
- 40             continue
+ 40                 continue
+                end do
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -245,7 +247,7 @@ subroutine op0168()
                 fremin = fremin - prec
                 fremax = fremax + prec
                 nbmode = 0
-                do 50 j = 1, nbmodt
+                do j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'FREQ', iord,&
                                 0, sjv=jadr, styp=k8b)
@@ -254,7 +256,7 @@ subroutine op0168()
                         nbmode = nbmode + 1
                         zi(jordr+nbmode-1) = iord
                     endif
- 50             continue
+                end do
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -270,7 +272,7 @@ subroutine op0168()
                 call getvr8('FILTRE_MODE', 'SEUIL_Z', iocc=i, scal=seuil, nbret=n10)
                 nbmode = 0
                 if (critfi .eq. 'MASS_EFFE_UN' .and. typcon(1:9) .eq. 'MODE_MECA') then
-                    do 60 j = 1, nbmodt
+                    do j = 1, nbmodt
                         iord = zi(jor+j-1)
                         call rsadpa(modein, 'L', 3, nompar, iord,&
                                     0, tjv=lpar, styp=k8b)
@@ -302,18 +304,18 @@ subroutine op0168()
                             endif
                         endif
 !
- 60                 continue
+                    end do
                 endif
                 if (critfi .eq. 'MASS_GENE') then
                     mastot = zero
-                    do 61 j = 1, nbmodt
+                    do j = 1, nbmodt
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
                         call rsadpa(modein, 'L', 1, nompav, iord,&
                                     0, sjv=lpar(1), styp=k8b)
                         mastot = mastot + zr(lpar(1))
- 61                 continue
-                    do 62 j = 1, nbmodt
+                    end do
+                    do j = 1, nbmodt
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
                         call rsadpa(modein, 'L', 1, nompav, iord,&
@@ -323,14 +325,15 @@ subroutine op0168()
                             nbmode = nbmode + 1
                             zi(jordr+nbmode-1) = iord
                         endif
- 62                 continue
+                    end do
                 endif
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
                 goto 10
             endif
- 10     continue
+ 10         continue
+        end do
     endif
 !
 !     --- STOCKAGE ---
@@ -341,7 +344,7 @@ subroutine op0168()
     call rscrsd('G', modeou, typcon, ndimt)
     iprec = 0
     nomsy = 'DEPL'
-    do 100 i = 1, nbmr
+    do i = 1, nbmr
         call jemarq()
         call jerecu('V')
         modein = zk8(jnom+i-1)
@@ -383,7 +386,7 @@ subroutine op0168()
         call jedetr(kvalk)
 102     continue
         call jedema()
-100 continue
+    end do
 !
 !     --- ON ALARME SI NUME_MODE IDENTIQUE ---
 !
@@ -395,12 +398,12 @@ subroutine op0168()
     call rsorac(modeou, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbmode,&
                 ibid)
-    do 200 j = 1, nbmode
+    do j = 1, nbmode
         iord = zi(jordr+j-1)
         call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
                     0, sjv=jadr, styp=k8b)
         nume1 = zi(jadr)
-        do 210 k = j+1, nbmode
+        do k = j+1, nbmode
             iord = zi(jordr+k-1)
             call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
                         0, sjv=jadr, styp=k8b)
@@ -410,8 +413,8 @@ subroutine op0168()
                 vali(2) = iord
                 call utmess('A', 'ALGELINE4_57', ni=2, vali=vali)
             endif
-210     continue
-200 continue
+        end do
+    end do
 !
 !     --- LES IMPRESSIONS ---
 !
@@ -439,7 +442,7 @@ subroutine op0168()
             cumulx = 0.d0
             cumuly = 0.d0
             cumulz = 0.d0
-            do 300 j = 1, nbmode
+            do j = 1, nbmode
                 iord = zi(jordr+j-1)
                 call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
                             0, sjv=jadr, styp=k8b)
@@ -474,7 +477,7 @@ subroutine op0168()
                     call utmess('I', 'ALGELINE6_53', ni=2, vali=vali, nr=4,&
                                 valr=valr)
                 endif
-300         continue
+            end do
         endif
         if (critfi .eq. 'MASS_GENE') then
             if (ouinon .eq. 'OUI') then
@@ -483,7 +486,7 @@ subroutine op0168()
                 call utmess('I', 'ALGELINE6_56')
             endif
             cumulx = 0.d0
-            do 301 j = 1, nbmode
+            do j = 1, nbmode
                 iord = zi(jordr+j-1)
                 call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
                             0, sjv=jadr, styp=k8b)
@@ -508,7 +511,7 @@ subroutine op0168()
                     call utmess('I', 'ALGELINE6_57', ni=2, vali=vali, nr=2,&
                                 valr=valr)
                 endif
-301         continue
+            end do
         endif
     endif
 !

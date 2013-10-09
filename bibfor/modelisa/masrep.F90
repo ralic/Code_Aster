@@ -109,10 +109,10 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     endif
 !
     call jeveuo(matyma, 'L', ltyp)
-    do 20 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 22 in = 0, nb-1
+        do in = 0, nb-1
             numa=zi(ldgm+in)
             ASSERT(numa.gt.0)
             call jelira(jexnum(manoma, numa), 'LONMAX', nm)
@@ -131,12 +131,12 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             else
                 call utmess('F', 'MODELISA6_29')
             endif
-            do 24 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
- 24         continue
- 22     continue
- 20 end do
+            end do
+        end do
+    end do
     ASSERT(appui.ne.-1)
 !
     call wkvect('&&MASREP.COENO', 'V V R', noemax, icoef)
@@ -169,17 +169,17 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     surtyy = zero
     surtyz = zero
     surtzz = zero
-    do 21 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 23 in = 0, nb-1
+        do in = 0, nb-1
             im = im + 1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             xc = zero
             yc = zero
             hc = zero
-            do 25 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 zi(idno+inoe-1) = zi(idno+inoe-1) + 1
                 x(nn) = zr(jcoor+3*(inoe-1)+1-1)
@@ -188,7 +188,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
- 25         continue
+            end do
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -250,8 +250,8 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 zr(isurm5+im-1) = zr(isurma+im-1)*c(2)*c(3)/nm
                 zr(isurm6+im-1) = zr(isurma+im-1)*c(3)*c(3)/nm
             endif
- 23     continue
- 21 end do
+        end do
+    end do
 !
     write(iunite,1010) surtxx,surtxy,surtxz,surtyy,surtyz,surtzz
 !
@@ -259,15 +259,15 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !     CALCUL DES PONDERATIONS ELEMENTAIRES
 !
     im = 0
-    do 31 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 33 in = 0, nb-1
+        do in = 0, nb-1
             im = im + 1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 35 nn = 1, nm
-                do 37 ij = 1, noemax
+            do nn = 1, nm
+                do ij = 1, noemax
                     if (zi(idno+ij-1) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         if (lvale) then
@@ -282,14 +282,15 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                             zr(icoezz+ij-1) = zr(icoezz+ij-1) + zr( isurm6+im-1)
                         endif
                     endif
- 37             continue
- 35         continue
- 33     continue
- 31 end do
+ 37                 continue
+                end do
+            end do
+        end do
+    end do
     nbma = im
 !
     ii = 0
-    do 51 ij = 1, noemax
+    do ij = 1, noemax
         if (zi(idno+ij-1) .eq. 0) goto 51
         ii = ii + 1
         if (lvale) then
@@ -336,7 +337,8 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
- 51 end do
+ 51     continue
+    end do
     nbno = ii
 !
     call jedetr('&&MASREP.FONGRO')

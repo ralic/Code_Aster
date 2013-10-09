@@ -107,7 +107,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     3- ON MET EN MEMOIRE LES OBJETS UTILES DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------------
     call wkvect('&&CNSEVA.JAD1', 'V V I', 4*npara, jad1)
-    do 10 ipara = 1, npara
+    do ipara = 1, npara
         p = lpara(ipara)
         call jeveuo(p//'.CNSK', 'L', jpk)
         call jeveuo(p//'.CNSD', 'L', jpd)
@@ -128,7 +128,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
         zi(jad1-1+4* (ipara-1)+2) = jpd
         zi(jad1-1+4* (ipara-1)+3) = jpl
         zi(jad1-1+4* (ipara-1)+4) = jpv
- 10 end do
+    end do
 !
 !
 !
@@ -137,8 +137,8 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     ON BOUCLE D'ABORD SUR LES CMPS POUR AVOIR PLUS DE CHANCES
 !     DE FAIRE PLUSIEURS FOINTE SUCCESSIFS AVEC LA MEME FONCTION.
 !
-    do 50 k = 1, ncmp
-        do 40 ino = 1, nbno
+    do k = 1, ncmp
+        do ino = 1, nbno
             if (zl(jfl-1+ (ino-1)*ncmp+k)) then
                 zl(jrl-1+ (ino-1)*ncmp+k) = .true.
                 fo = zk8(jfv-1+ (ino-1)*ncmp+k)
@@ -147,13 +147,13 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !           4.1 FABRICATION DE LA LISTE DES PARAMETRES POUR FOINTE:
 !           -------------------------------------------------------
                 nbpu = 0
-                do 30 ipara = 1, npara
+                do ipara = 1, npara
                     jpc = zi(jad1-1+4* (ipara-1)+1)
                     jpd = zi(jad1-1+4* (ipara-1)+2)
                     jpl = zi(jad1-1+4* (ipara-1)+3)
                     jpv = zi(jad1-1+4* (ipara-1)+4)
                     ncmp2 = zi(jpd-1+2)
-                    do 20 k2 = 1, ncmp2
+                    do k2 = 1, ncmp2
                         if (zl(jpl-1+ (ino-1)*ncmp2+k2)) then
                             nbpu = nbpu + 1
                             if (nbpu .gt. nbpumx) then
@@ -170,8 +170,8 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
                             nompu(nbpu) = zk8(jpc-1+k2)
                             valpu(nbpu) = zr(jpv-1+ (ino-1)*ncmp2+k2)
                         endif
- 20                 continue
- 30             continue
+                    end do
+                end do
 !
 !
 !           4.2 APPEL A FOINTE :
@@ -189,8 +189,9 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
                 zr(jrv-1+ (ino-1)*ncmp+k) = x
 !
             endif
- 40     continue
- 50 end do
+ 40         continue
+        end do
+    end do
 !
 !
 !     5- MENAGE :

@@ -105,12 +105,12 @@ subroutine caliai(fonree, charge)
 !        DE GROUP_NO OU DE NOEUD
 !        --------------------------------------------------
     ndim1 = 0
-    do 10 i = 1, nliai
+    do i = 1, nliai
         call getvtx(motfac, mogrou, iocc=i, nbval=0, nbret=nent)
         ndim1 = max(ndim1,-nent)
         call getvtx(motfac, motcle, iocc=i, nbval=0, nbret=nent)
         ndim1 = max(ndim1,-nent)
- 10 end do
+    end do
 !
     trav = '&&CALIAI.'//motfac
     call wkvect(trav, 'V V K24', ndim1, jjj)
@@ -121,11 +121,11 @@ subroutine caliai(fonree, charge)
 !        RELATION LINEAIRE
 !        -------------------------------------------------------
     ndim2 = ndim1
-    do 40 iocc = 1, nliai
+    do iocc = 1, nliai
         call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
                     nbret=ngr)
         nbgt = 0
-        do 20 igr = 1, ngr
+        do igr = 1, ngr
             call jeexin(jexnom(grouno, zk24(jjj+igr-1)), iret)
             if (iret .eq. 0) then
                 valk(1) = zk24(jjj+igr-1)
@@ -135,11 +135,11 @@ subroutine caliai(fonree, charge)
                 call jelira(jexnom(grouno, zk24(jjj+igr-1)), 'LONUTI', n1)
                 nbgt = nbgt + n1
             endif
- 20     continue
+        end do
         ndim2 = max(ndim2,nbgt)
         call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
                     nbret=nno)
-        do 30 ino = 1, nno
+        do ino = 1, nno
             call jenonu(jexnom(noeuma, zk24(jjj+ino-1)), iret)
             if (iret .eq. 0) then
                 valk(1) = motcle
@@ -147,8 +147,8 @@ subroutine caliai(fonree, charge)
                 valk(3) = noma
                 call utmess('F', 'MODELISA2_96', nk=3, valk=valk)
             endif
- 30     continue
- 40 end do
+        end do
+    end do
 !
 !     -- ALLOCATION DE TABLEAUX DE TRAVAIL
 !    -------------------------------------
@@ -164,7 +164,7 @@ subroutine caliai(fonree, charge)
 !     BOUCLE SUR LES RELATIONS LINEAIRES
 !     -----------------------------------
     call getres(char, concep, oper)
-    do 80 i = 1, nliai
+    do i = 1, nliai
         call getvr8(motfac, 'COEF_MULT', iocc=i, nbval=ndim2, vect=zr(jcmur),&
                     nbret=n2)
         if (oper .eq. 'AFFE_CHAR_MECA_F') then
@@ -184,9 +184,9 @@ subroutine caliai(fonree, charge)
 !        SUR LE DDL 'TEMP'
         if (n1 .eq. 0 .and. typcha(1:4) .eq. 'THER') then
             n1 = ndim2
-            do 50 k = 1, n1
+            do k = 1, n1
                 zk8(jddl-1+k) = 'TEMP'
- 50         continue
+            end do
         endif
 !
         if (n1 .ne. (n2+n3)) then
@@ -222,10 +222,10 @@ subroutine caliai(fonree, charge)
             call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
                         iarg, ng, zk24(jlist1), n)
             indnoe = 0
-            do 70 j = 1, ng
+            do j = 1, ng
                 call jeveuo(jexnom(grouno, zk24(jlist1-1+j)), 'L', jgr0)
                 call jelira(jexnom(grouno, zk24(jlist1-1+j)), 'LONUTI', n)
-                do 60 k = 1, n
+                do k = 1, n
                     in = zi(jgr0-1+k)
                     indnoe = indnoe + 1
                     call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
@@ -238,8 +238,8 @@ subroutine caliai(fonree, charge)
                                     vale, ier)
                         zr(jcmur-1+indnoe)=vale
                     endif
- 60             continue
- 70         continue
+                end do
+            end do
 !
 !           -- ON VERIFIE QUE LE NOMBRE DE NOEUDS DES GROUP_NO
 !              EST EGAL AU NOMBRE DE DDLS DE LA RELATION :
@@ -267,7 +267,7 @@ subroutine caliai(fonree, charge)
                 call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
                             iarg, nbno, zk8(jlist2), n)
                 if (typco2 .eq. 'FONC') then
-                    do 100 k = 1, n
+                    do k = 1, n
                         call jenonu(jexnom(noma//'.NOMNOE', zk8(jlist2- 1+k)), in)
                         valpar(1) = zr(jcoor-1+3*(in-1)+1)
                         valpar(2) = zr(jcoor-1+3*(in-1)+2)
@@ -275,7 +275,7 @@ subroutine caliai(fonree, charge)
                         call fointe('F', zk8(jcmuf-1+k), 3, nompar, valpar,&
                                     vale, ier)
                         zr(jcmur-1+k)=vale
-100                 continue
+                    end do
                 endif
             endif
 !
@@ -292,7 +292,7 @@ subroutine caliai(fonree, charge)
                         typcoe, typval, typlag, 0.d0, lisrel)
         endif
 !
- 80 end do
+    end do
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------

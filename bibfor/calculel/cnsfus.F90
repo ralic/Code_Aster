@@ -69,7 +69,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ------------------------------------------------------------------
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
     integer :: jcn3d, jcn3v, jcn3l, jcn3c
-    integer ::  jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
+    integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1, jnucmp
     integer :: ino, coefi, k1, k3
     character(len=8) :: ma, nomgd, nocmp
@@ -108,7 +108,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- ON "COCHE" LES CMPS PRESENTES DANS LES CNS DE LICHS:
     call wkvect('&&CNSFUS.LICMP', 'V V K8', ncmpmx, jlicmp)
     call wkvect('&&CNSFUS.NUCMP', 'V V I', ncmpmx, jnucmp)
-    do 20 ichs = 1, nbchs
+    do ichs = 1, nbchs
         cns1 = lichs(ichs)
         call jeveuo(cns1//'.CNSK', 'L', jcn1k)
         call jeveuo(cns1//'.CNSD', 'L', jcn1d)
@@ -120,23 +120,23 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         ASSERT(nomgd.eq.zk8(jcn1k-1+2))
 !
         ncmp1 = zi(jcn1d-1+2)
-        do 10 icmp1 = 1, ncmp1
+        do icmp1 = 1, ncmp1
             nocmp = zk8(jcn1c-1+icmp1)
             icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
             zi(jnucmp-1+icmp) = 1
- 10     continue
+        end do
         call jelibe(cns1//'.CNSK')
         call jelibe(cns1//'.CNSD')
         call jelibe(cns1//'.CNSC')
- 20 end do
+    end do
 !
     icmp3 = 0
-    do 30 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (zi(jnucmp-1+icmp) .eq. 1) then
             icmp3 = icmp3 + 1
             zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
         endif
- 30 end do
+    end do
     ncmp3 = icmp3
 !
 !
@@ -152,7 +152,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     2- RECOPIE DE CNS1 DANS CNS3 :
 !     ------------------------------------------
-    do 60 ichs = 1, nbchs
+    do ichs = 1, nbchs
         cns1 = lichs(ichs)
 !
         cumul = lcumul(ichs)
@@ -169,12 +169,12 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         call jeveuo(cns1//'.CNSL', 'L', jcn1l)
         ncmp1 = zi(jcn1d-1+2)
 !
-        do 50 icmp1 = 1, ncmp1
+        do icmp1 = 1, ncmp1
             nocmp = zk8(jcn1c-1+icmp1)
             icmp3 = indik8(zk8(jcn3c),nocmp,1,ncmp3)
             ASSERT(icmp3.ne.0)
 !
-            do 40 ino = 1, nbno
+            do ino = 1, nbno
                 k1 = (ino-1)*ncmp1 + icmp1
                 k3 = (ino-1)*ncmp3 + icmp3
 !
@@ -226,15 +226,15 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
                 endif
 !
- 40         continue
- 50     continue
+            end do
+        end do
 !
         call jelibe(cns1//'.CNSD')
         call jelibe(cns1//'.CNSC')
         call jelibe(cns1//'.CNSV')
         call jelibe(cns1//'.CNSL')
 !
- 60 end do
+    end do
 !
 !
 !     3- RECOPIE DE LA SD TEMPORAIRE DANS LE RESULTAT :

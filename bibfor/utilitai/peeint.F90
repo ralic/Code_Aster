@@ -160,7 +160,7 @@ subroutine peeint(resu, modele, nbocc)
         call copisd('CHAMP', 'V', chamg, tmpcha)
     endif
 !
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !
 !     --- VERIFICATION SI ON VA TRAITER DES ELEMENTS DE STRUCTURE
 !     ===========================================================
@@ -176,7 +176,7 @@ subroutine peeint(resu, modele, nbocc)
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ===================================
 !
-        do 5 inum = 1, nbordr
+        do inum = 1, nbordr
 !
 !         --- SI RESULTAT ---
 !         --- NUME_ORDRE, INST ---
@@ -232,11 +232,11 @@ subroutine peeint(resu, modele, nbocc)
                 call wkvect('&&PEEINT.CMP1', 'V V K8', ncmpm, jlicm1)
                 call jedetr('&&PEEINT.CMP2')
                 call wkvect('&&PEEINT.CMP2', 'V V K8', ncmpm, jlicm2)
-                do 15 i = 1, ncmpm
+                do i = 1, ncmpm
                     call codent(i, 'G', ki)
                     zk8(jlicm2+i-1)='X'//ki(1:len(ki))
                     zk8(jlicm1+i-1)=zk8(jlicmp+i-1)
- 15             continue
+                end do
                 call chsut1(chamtm, 'NEUT_R', ncmpm, zk8(jlicm1), zk8(jlicm2),&
                             'V', chamtm)
                 cham3='&&PEEINT.CHAM_3'
@@ -282,15 +282,15 @@ subroutine peeint(resu, modele, nbocc)
 !
 !         COMPOSANTES A AFFICHER DANS LA TABLE: ZK8(JCPINI)
             call wkvect('&&PEEINT.CMP_INIT', 'V V K8', nbcmp, jcpini)
-            do 50 i = 1, nbcmp
+            do i = 1, nbcmp
                 zk8(jcpini+i-1)=zk8(jcmp+i-1)
- 50         continue
+            end do
 !
             if (toneut) then
-                do 55 i = 1, nbcmp
+                do i = 1, nbcmp
                     nucmp=indik8(zk8(jlicm1),zk8(jcpini+i-1),1,ncmpm)
                     zk8(jcmp+i-1)=zk8(jlicm2+nucmp-1)
- 55             continue
+                end do
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNE : MOT-CLE 'TOUT'
@@ -310,14 +310,14 @@ subroutine peeint(resu, modele, nbocc)
                 call wkvect('&&PEEINT_GMA', 'V V K24', nbgma, jgma)
                 call getvtx('INTEGRALE', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk24(jgma),&
                             nbret=n1)
-                do 20 igm = 1, nbgma
+                do igm = 1, nbgma
                     call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgma+ igm-1)), 'LONMAX', nma,&
                                 k8b)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', zk24(jgma+ igm-1)), 'L', jnuma)
                     call peecal(tych, resu, nomcha, grpma, zk24(jgma+igm- 1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
                                 zk8(jcpini), numo, inst, iocc)
- 20             continue
+                end do
                 call jedetr('&&PEEINT_GMA')
             endif
 !
@@ -329,12 +329,12 @@ subroutine peeint(resu, modele, nbocc)
                 call wkvect('&&PEEINT_MAIL', 'V V K8', nma, jma)
                 call getvtx('INTEGRALE', 'MAILLE', iocc=iocc, nbval=nma, vect=zk8(jma),&
                             nbret=n1)
-                do 30 im = 1, nma
+                do im = 1, nma
                     call jenonu(jexnom(mailla//'.NOMMAI', zk8(jma+im-1) ), numa)
                     call peecal(tych, resu, nomcha, maille, zk8(jma+im-1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
                                 zk8(jcpini), numo, inst, iocc)
- 30             continue
+                end do
                 call jedetr('&&PEEINT_MAIL')
             endif
 !
@@ -343,9 +343,10 @@ subroutine peeint(resu, modele, nbocc)
 !
 !
 !
-  5     end do
+        end do
 !
- 10 end do
+ 10     continue
+    end do
 !
     if (nr .eq. 0) then
         call detrsd('CHAMP', tmpcha)

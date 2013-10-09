@@ -90,7 +90,7 @@ subroutine clas99(nomres)
     nbmod = 0
     nbmoma = 0
 !
-    do 5 i = 1, nbmome
+    do i = 1, nbmome
         call rsorac(zk8(ltmome-1+i), 'LONUTI', ibid, bid, kbid,&
                     cbid, ebid, 'ABSOLU', nbmodo, 1,&
                     nbid)
@@ -108,12 +108,12 @@ subroutine clas99(nomres)
         zi(ltnbmo+i-1) = nbmodo(1)
         nbmoma = max(nbmoma,nbmodo(1))
         nbmod = nbmod+nbmodo(1)
-  5 continue
+    end do
 !
     call wkvect('&&CLAS99.NUME.RANG', 'V V I', nbmoma, lrang)
-    do 10 ii = 1, nbmoma
+    do ii = 1, nbmoma
         zi(lrang+ii-1)=ii
- 10 continue
+    end do
 !
 !
 ! --- DETERMINATION NOMBRE TOTAL DE MODES ET DEFORMEES
@@ -136,10 +136,10 @@ subroutine clas99(nomres)
 ! --- COPIE DES MODES DYNAMIQUES
 !
     inor=1
-    do 6 i = 1, nbmome
+    do i = 1, nbmome
         call moco99(nomres, zk8(ltmome+i-1), zi(ltnbmo+i-1), zi(lrang), inor,&
                     .true.)
-  6 continue
+    end do
     if (nbmoma .gt. 0) call jedetr('&&CLAS99.NUME.ORD')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.MODE_MECA')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.NBMOD')

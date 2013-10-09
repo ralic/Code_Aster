@@ -58,7 +58,7 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 !
 !
     integer :: jdepes, jinces, jold
-    integer ::  neq
+    integer :: neq
     character(len=19) :: depold
     integer :: ifm, niv
     real(kind=8) :: instam, instap, instaa, coef

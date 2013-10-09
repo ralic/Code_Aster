@@ -48,4 +48,4 @@ OPTION__
     ACOU_DDLI_F        2  IN__  MDDLIMF  PDDLIMF  MGEOMER  PGEOMER  MTEMPSR  PTEMPSR  
                           OUT__ MVECTTC  PVECTTC  
     ACOU_DDLM_C        2  IN__  MDDLMUC  PDDLMUC  
-                          OUT__ MMATTTC  PMATTTC  
+                          OUT__ MMATTTC  PMATTTC

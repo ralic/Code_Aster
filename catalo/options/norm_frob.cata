@@ -27,4 +27,3 @@ OPTION__
         PCALCI   NEUT_I << FLAG IF NORM OR NORM*NORM >>
    OUT__
         PNORME NEUT_R ELEM__
-

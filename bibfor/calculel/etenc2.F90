@@ -81,15 +81,15 @@ subroutine etenc2(cartz, iret)
 !     2- REMPLISSAGE DE .PTMA :
 !     ----------------------------------------
     nbedit = zi(desc-1+3)
-    do 40 igd = 1, nbedit
+    do igd = 1, nbedit
         code = zi(desc-1+3+2*igd-1)
         ient = zi(desc-1+3+2*igd)
 !
 !        ------ GROUPE PREDEFINI "TOUT":
         if (code .eq. 1) then
-            do 10 i = 1, nbma
+            do i = 1, nbma
                 zi(jptma-1+i) = igd
- 10         continue
+            end do
             goto 40
         endif
         if ((code.eq.-1)) iret = 1
@@ -98,10 +98,10 @@ subroutine etenc2(cartz, iret)
         if (code .eq. 2) then
             call jelira(jexnum(ma//'.GROUPEMA', ient), 'LONUTI', nb)
             call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', grpma)
-            do 20 i = 1, nb
+            do i = 1, nb
                 ii = zi(grpma-1+i)
                 zi(jptma-1+ii) = igd
- 20         continue
+            end do
             goto 40
         endif
 !
@@ -110,7 +110,7 @@ subroutine etenc2(cartz, iret)
             call jelira(jexnum(cart//'.LIMA', ient), 'LONMAX', nb)
             call jeveuo(jexnum(cart//'.LIMA', ient), 'L', lima)
             if (code .gt. 0) then
-                do 30 i = 1, nb
+                do i = 1, nb
                     ii = zi(lima-1+i)
                     if (ii .le. 0) then
                         valk = cart
@@ -120,13 +120,14 @@ subroutine etenc2(cartz, iret)
                         call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
                     endif
                     zi(jptma-1+ii) = igd
- 30             continue
+                end do
             else
                 iret = 1
             endif
             goto 40
         endif
- 40 end do
+ 40     continue
+    end do
  50 continue
 !
 !

@@ -75,7 +75,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     else
         call getres(k8b, k8b, nomcmd)
         call utmess('A', 'PREPOST_97', sk=type(1:1))
-        goto 9999
+        goto 999
     endif
 !
     call jeveuo(chamn//'.DESC', 'L', iadesc)
@@ -85,7 +85,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
 !     --- ON VERIFIE QUE TOUS LES CHAMPS SONT IDENTIQUES
 !
-    do 10 i = 1, nstat
+    do i = 1, nstat
         chamn = chamno(i)
         call jeveuo(chamn//'.DESC', 'L', iadesc)
         gdi = zi(iadesc-1+1)
@@ -100,7 +100,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         if (typi .ne. type) then
             call utmess('F', 'PREPOST2_69')
         endif
- 10 end do
+    end do
 !
 !     --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR NOMGD
     nec = nbec(gd)
@@ -125,10 +125,10 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     --- CREATION LISTES DES NOMS ET DES NUMEROS DES NOEUDS A IMPRIMER
     call wkvect('&&IRMAD0.NOMNOE', 'V V K8', nbno, jno)
     call wkvect('&&IRMAD0.NUMNOE', 'V V I', nbno, jnu)
-    do 20 ino = 1, nbno
+    do ino = 1, nbno
         call jenuno(jexnum(nomma//'.NOMNOE', ino), zk8(jno-1+ino))
         zi(jnu-1+ino) = ino
- 20 end do
+    end do
 !
     if (num .ge. 0) then
         ncmpmx = 6
@@ -145,6 +145,6 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     call jedetr('&&IRMAD0.NOMNOE')
     call jedetr('&&IRMAD0.NUMNOE')
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

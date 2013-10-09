@@ -74,7 +74,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
     integer :: nxmafi, nxptff
 !
-    integer ::  nbno, ino, imae, nmafon, jfon, jtail, nfon
+    integer :: nbno, ino, imae, nmafon, jfon, jtail, nfon
     integer :: jfono, jbaso, jtailo
     integer :: jcoor, jstano, jfonmu
     integer :: jensv, jensl, nbma
@@ -146,9 +146,9 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     endif
     if (niv .ge. 3) then
         call utmess('I', 'XFEM_26')
-        do 110 imae = 1, nmafis
+        do imae = 1, nmafis
             write(ifm,*)' ',zi(jmafis-1+imae)
-110     continue
+        end do
     endif
 !
 !--------------------------------------------------------------------
@@ -205,20 +205,20 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                 cnsen)
     call jeveuo(cnsen//'.CNSV', 'E', jensv)
     call jeveuo(cnsen//'.CNSL', 'E', jensl)
-    do 210 ino = 1, nbno
+    do ino = 1, nbno
         zi(jensv-1+(ino-1)+1)=zi(jstano-1+(ino-1)+1)
         zl(jensl-1+(ino-1)+1)=.true.
-210 end do
+    end do
 !
 !     ENREGISTREMENT DU CHAM_NO SIMPLE REEL (POUR VISUALISATION)
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsenr)
     call jeveuo(cnsenr//'.CNSV', 'E', jensvr)
     call jeveuo(cnsenr//'.CNSL', 'E', jenslr)
-    do 211 ino = 1, nbno
+    do ino = 1, nbno
         zr(jensvr-1+(ino-1)+1)=zi(jstano-1+(ino-1)+1)
         zl(jenslr-1+(ino-1)+1)=.true.
-211 end do
+    end do
 !
 !     POUR UNE INTERFACE, ON PASSE DIRECTEMENT A LA CREATION DE LA SD
     if (typdis .eq. 'INTERFACE') then
@@ -314,16 +314,16 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
             call utmess('F', 'XFEM_11')
         endif
         nbfond = nfon
-        do 999 i = 1, nfon
-            do 11 k = 1, 2
+        do i = 1, nfon
+            do k = 1, 2
                 zr(jfon-1+4*(i-1)+k) = zr(jfono-1+11*(i-1)+k)
                 zr(jbas-1+4*(i-1)+k) = zr(jbaso-1+4*(i-1)+k)
                 zr(jbas-1+4*(i-1)+k+2) = zr(jbaso-1+4*(i-1)+k+2)
- 11         continue
+            end do
             zr(jtail-1+i) = zr(jtailo-1+i)
             zi(jfonmu-1+2*(i-1)+1)=i
             zi(jfonmu-1+2*(i-1)+2)=i
-999     continue
+        end do
     endif
 !
 !     IMPRESSION DES POINTS DE FOND DE FISSURE (2D/3D)
@@ -335,7 +335,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
     numfon=1
 !
-    do 799 i = 1, nfon
+    do i = 1, nfon
         q(1)=zr(jfon-1+4*(i-1)+1)
         q(2)=zr(jfon-1+4*(i-1)+2)
         if (ndim .eq. 3) then
@@ -350,7 +350,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
         if (ndim .eq. 2) write(ifm,798)(q(k),k=1,2)
         if (ndim .eq. 3) write(ifm,798)(q(k),k=1,4)
         if (zi(jfonmu-1+2*(numfon-1)+2) .eq. i) numfon=numfon+1
-799 end do
+    end do
 !
     797 format(7x,'X',13x,'Y',13x,'Z',13x,'S')
 !

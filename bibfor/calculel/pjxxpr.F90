@@ -206,7 +206,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !     2- ON CALCULE LES CHAMPS RESULTATS :
 !     ------------------------------------
     ico = 0
-    do 30 isym = 1, nbsym
+    do isym = 1, nbsym
 !
         if (prfch2 .ne. '12345678.00000.NUME') then
 !         ON PREND LA NUMEROTATION IMPOSEE
@@ -219,7 +219,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
             prfchn = noojb(1:19)
         endif
 !
-        do 20 i = 1, nbordr
+        do i = 1, nbordr
             iordr = zi(jordr+i-1)
             call rsexch(' ', resu1, nomsym(isym), iordr, ch1,&
                         iret)
@@ -316,7 +316,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
             endif
 !
 !
-            do 10 ind = 1, ipar
+            do ind = 1, ipar
                 call rsadpa(resu1, 'L', 1, kpar(ind), iordr,&
                             1, sjv=ipar1, styp=typ1)
                 call rsadpa(resu2, 'E', 1, kpar(ind), iordr,&
@@ -339,11 +339,12 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 else
 !               ON NE FAIT RIEN
                 endif
- 10         continue
+            end do
             ico = ico + 1
 !
- 20     continue
- 30 continue
+ 20         continue
+        end do
+    end do
 !
     if (ico .eq. 0) then
         call utmess('F', 'CALCULEL4_64')
@@ -354,11 +355,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     if (mo2 .ne. ' ') then
         call jeveuo(resu2//'           .ORDR', 'L', jordr)
         call jelira(resu2//'           .ORDR', 'LONUTI', nbordr)
-        do 11 i = 1, nbordr
+        do i = 1, nbordr
             call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i),&
                         0, sjv=jpara, styp=k8b)
             zk8(jpara)=mo2
- 11     continue
+        end do
     endif
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:

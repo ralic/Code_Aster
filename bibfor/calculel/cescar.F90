@@ -46,7 +46,7 @@ subroutine cescar(cesz, cartz, basz)
     integer :: jncmp, jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
     integer :: jlima, k, jvals, nbpaqu, nbcmps, jnoms, vali(3)
     logical :: idprec, premie
-    character(len=1) ::  base
+    character(len=1) :: base
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: cart, ces1
@@ -95,7 +95,7 @@ subroutine cescar(cesz, cartz, basz)
 !     -- NBCMPS : NOMBRE DE CMPS DU PAQUET
     nbcmps=0
 !
-    do 80 ima = 1, nbmam
+    do ima = 1, nbmam
         nbpt=zi(jce1d-1+5+4*(ima-1)+1)
         nbsp=zi(jce1d-1+5+4*(ima-1)+2)
         ncmp=zi(jce1d-1+5+4*(ima-1)+3)
@@ -112,7 +112,7 @@ subroutine cescar(cesz, cartz, basz)
 !
 !       -- NCMPMA : NBRE DE CMPS SUR LA MAILLE :
         ncmpma=0
-        do 10 kcmp = 1, ncmp
+        do kcmp = 1, ncmp
             call cesexi('C', jce1d, jce1l, ima, 1,&
                         1, kcmp, iad1)
             ASSERT(iad1.ne.0)
@@ -140,7 +140,7 @@ subroutine cescar(cesz, cartz, basz)
                     ASSERT(.false.)
                 endif
             endif
- 10     continue
+        end do
         if (ncmpma .eq. 0) goto 80
 !
 !
@@ -153,7 +153,7 @@ subroutine cescar(cesz, cartz, basz)
         else
 !         -- LA MAILLE EST-ELLE COMME LA MAILLE SAUVEGARDEE ?
             if (ncmpma .ne. nbcmps) goto 30
-            do 20 k = 1, nbcmps
+            do k = 1, nbcmps
                 if (zk8(jnoms-1+k) .ne. zk8(jncmp-1+k)) goto 30
                 if (tsca .eq. 'R') then
                     if (zr(jvals-1+k) .ne. zr(jvalv-1+k)) goto 30
@@ -172,7 +172,7 @@ subroutine cescar(cesz, cartz, basz)
                 else if (tsca.eq.'K80') then
                     if (zk80(jvals-1+k) .ne. zk80(jvalv-1+k)) goto 30
                 endif
- 20         continue
+            end do
             idprec=.true.
             goto 40
 !
@@ -188,7 +188,7 @@ subroutine cescar(cesz, cartz, basz)
 !            - PUIS IL FAUT SAUVEGARDER LA NOUVELLE MAILLE
 !          -----------------------------------------------------
             if (.not.premie) then
-                do 50 k = 1, nbcmps
+                do k = 1, nbcmps
                     zk8(jncmp-1+k)=zk8(jnoms-1+k)
                     if (tsca .eq. 'R') then
                         zr(jvalv-1+k)=zr(jvals-1+k)
@@ -207,14 +207,14 @@ subroutine cescar(cesz, cartz, basz)
                     else if (tsca.eq.'K80') then
                         zk80(jvalv-1+k)=zk80(jvals-1+k)
                     endif
- 50             continue
+                end do
                 call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
                             limanu=zi(jlima))
 !
 !           -- POUR FAIRE LE NOCART, ON A DU ECRASER JVALV.
 !           -- IL FAUT LE RETABLIR :
                 ncmpma=0
-                do 60 kcmp = 1, ncmp
+                do kcmp = 1, ncmp
                     call cesexi('C', jce1d, jce1l, ima, 1,&
                                 1, kcmp, iad1)
                     ASSERT(iad1.ne.0)
@@ -240,12 +240,12 @@ subroutine cescar(cesz, cartz, basz)
                             zk80(jvalv-1+ncmpma)=zk80(jce1v-1+iad1)
                         endif
                     endif
- 60             continue
+                end do
             endif
 !
             premie=.false.
             nbcmps=ncmpma
-            do 70 k = 1, nbcmps
+            do k = 1, nbcmps
                 zk8(jnoms-1+k)=zk8(jncmp-1+k)
                 if (tsca .eq. 'R') then
                     zr(jvals-1+k)=zr(jvalv-1+k)
@@ -264,7 +264,7 @@ subroutine cescar(cesz, cartz, basz)
                 else if (tsca.eq.'K80') then
                     zk80(jvals-1+k)=zk80(jvalv-1+k)
                 endif
- 70         continue
+            end do
             nbpaqu=1
             zi(jlima-1+nbpaqu)=ima
 !
@@ -276,10 +276,11 @@ subroutine cescar(cesz, cartz, basz)
             zi(jlima-1+nbpaqu)=ima
         endif
 !
- 80 end do
+ 80     continue
+    end do
 !
 !     -- IL NE FAUT PAS OUBLIER LE DERNIER PAQUET :
-    do 90 k = 1, nbcmps
+    do k = 1, nbcmps
         zk8(jncmp-1+k)=zk8(jnoms-1+k)
         if (tsca .eq. 'R') then
             zr(jvalv-1+k)=zr(jvals-1+k)
@@ -298,7 +299,7 @@ subroutine cescar(cesz, cartz, basz)
         else if (tsca.eq.'K80') then
             zk80(jvalv-1+k)=zk80(jvals-1+k)
         endif
- 90 end do
+    end do
     call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
                 limanu=zi(jlima))
 !

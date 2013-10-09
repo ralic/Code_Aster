@@ -49,7 +49,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer ::  neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
+    integer :: neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
     integer :: linddl, lddld, nbnoeu, lprno, nnoint, ipos1, ipos2, numno, nbcmpm
     integer :: nbec, nddlin, lnoint, connec, lconnc, sizeco, lintrf, linlag
     integer :: lipos, lfreq
@@ -58,7 +58,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
     integer :: deco(nbcmpm)
     real(kind=8) :: rbid, shift
 !
-    character(len=8) ::  nomma
+    character(len=8) :: nomma
     character(len=14) :: nume, nume91
     character(len=16) :: nomcmd
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint, raidfa
@@ -91,11 +91,11 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
     nnoint=0
     numno=0
 !
-    do 10 i1 = 1, nbnoeu
+    do i1 = 1, nbnoeu
         ipos1=zi(lprno+(i1-1)*(2+nbec))
         ipos2=zi(lprno+(i1-1)*(2+nbec)+1)
         if (ipos1 .gt. 0) then
-            do 15 j1 = 1, ipos2
+            do j1 = 1, ipos2
                 if (zi(lddld+ipos1-1+j1-1) .gt. 0) then
                     nddlin=nddlin+1
                     if (numno .eq. 0) then
@@ -103,10 +103,10 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
                         nnoint=nnoint+1
                     endif
                 endif
- 15         continue
+            end do
             numno=0
         endif
- 10 end do
+    end do
 !
 !-- RECUPERATION DES NOEUDS D'INTERFACE
     noddli='&&MOIN93.NOEUDS_DDL_INT'
@@ -119,12 +119,12 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
     k1=0
     numno=0
     m1=0
-    do 20 i1 = 1, nbnoeu
+    do i1 = 1, nbnoeu
         ipos1=zi(lprno+(i1-1)*(2+nbec))
         ipos2=zi(lprno+(i1-1)*(2+nbec)+1)
         if (ipos1 .gt. 0) then
 !
-            do 25 j1 = 1, ipos2
+            do j1 = 1, ipos2
 !
                 if (zi(lddld+ipos1-1+j1-1) .gt. 0) then
 !-- RECHERCHE DES DDL D'INTERFACE
@@ -146,23 +146,23 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
                         zi(lnoint+k1+2*nnoint)=6
                         call isdeco(zi(lprno+(i1-1)*(2+nbec)+2), deco, nbcmpm)
                         l1=1
-                        do 30 n1 = 1, 6
+                        do n1 = 1, 6
                             if (deco(n1)*zi(lddld+ipos1-1+n1-1) .gt. 0) then
                                 zi(lintrf+m1-1+l1-1)=k1*6+n1
                                 l1=l1+1
                             endif
                             zi(lnoint+k1+(2+n1)*nnoint)=n1
 !
- 30                     continue
+                        end do
                         k1=k1+1
 !
                     endif
                 endif
 !
- 25         continue
+            end do
             numno=0
         endif
- 20 end do
+    end do
 !
     call wkvect('&&MOIN93.IND_NOEUD', 'V V I', zi(lnoint+nnoint-1), lindno)
 !
@@ -195,9 +195,9 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
     call jeveuo(vefreq, 'L', lfreq)
 !
 !
-    do 60 ieq = 1, nbmoin
+    do ieq = 1, nbmoin
         write(6,'(I10,4X,F12.2)')ieq,zr(lfreq+ieq-1)
- 60 end do
+    end do
 !
 !----------------------------------------C
 !--                                    --C

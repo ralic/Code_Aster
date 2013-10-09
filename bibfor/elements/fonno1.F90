@@ -49,7 +49,7 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
 !
     integer :: jdrvlc, iatyma, jmaco, iamase, jcncin, ityp
     integer :: nbmaca, adra, comp1, ima, numac, ino1, ndime, nn
-    character(len=8) ::  type
+    character(len=8) :: type
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -70,7 +70,7 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
     call wkvect(macofo, 'V V I', nbmaca, jmaco)
 !
     comp1=0
-    do 10 ima = 1, nbmaca
+    do ima = 1, nbmaca
 !       NUMERO DE LA MAILLE
         numac = zi(jcncin-1 + adra+ima-1)
         ityp = iatyma-1+numac
@@ -86,14 +86,15 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
 !         EN 3D ON DOIT AVOIR AUSSI LE NOEUD NB
             call jeveuo(jexnum(noma//'.CONNEX', numac), 'L', iamase)
             call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
-            do 100 ino1 = 1, nn
+            do ino1 = 1, nn
                 if (zi(iamase-1 + ino1) .eq. nb) then
                     comp1=comp1+1
                     zi(jmaco-1+comp1)=numac
                 endif
-100         continue
+            end do
         endif
- 10 end do
+ 10     continue
+    end do
 !
 !     NB MAILLES CONNECTEES AU SEGMENT
     nbmac = comp1

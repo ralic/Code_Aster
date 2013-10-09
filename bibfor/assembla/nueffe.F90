@@ -83,7 +83,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    character(len=8) ::  nomcmp
+    character(len=8) :: nomcmp
     character(len=8) :: mailla
     character(len=14) :: nu
     character(len=16) :: nomte

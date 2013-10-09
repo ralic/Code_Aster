@@ -20,7 +20,6 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dismlg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -28,6 +27,7 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: repi, ierd, n1
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -65,11 +65,11 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
         call jelira(nomob//'.NUEQ', 'LONMAX', nequ)
         call jelira(nomob//'.LILI', 'NUTIOC', nlili)
         nbddlb=0
-        do 10 i = 2, nlili
+        do i = 2, nlili
             call jenuno(jexnum(nomob//'.LILI', i), noligr)
             call dismlg('NB_NO_SUP', noligr, nbnos, repk, ierd)
             nbddlb=nbddlb+ nbnos
-10      continue
+        end do
         repi=nequ-3*(nbddlb/2)
 !
 !
@@ -99,10 +99,10 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
         call dismlg(questi, noligr, repi, repk, ierd)
         goto 99
 !
-98      continue
+ 98     continue
         repk= ' '
         ierd=1
-99      continue
+ 99     continue
 !
 !
     else

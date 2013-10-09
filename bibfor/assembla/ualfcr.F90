@@ -109,19 +109,19 @@ subroutine ualfcr(mataz, basz)
     call jecrec(matas//'.UALF', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nblocm*nbloc)
     call jeecra(matas//'.UALF', 'LONMAX', itbloc)
-    do 3 ibloc = 1, nblocm*nbloc
+    do ibloc = 1, nblocm*nbloc
         call jecroc(jexnum(matas//'.UALF', ibloc))
-  3 end do
+    end do
 !
 !
 !
 !     2. REMPLISSAGE DE .UALF :
 !     ----------------------------------------
-    do 10 kblocm = 1, nblocm
+    do kblocm = 1, nblocm
         call jeveuo(jexnum(matas//'.VALM', kblocm), 'L', jvalm)
         ibloav=0+nbloc*(kblocm-1)
         ismdi0=0
-        do 1 ieq = 1, neq
+        do ieq = 1, neq
             iscdi=zi(jscdi-1+ieq)
             ibloc=zi(jscib-1+ieq)+nbloc*(kblocm-1)
 !
@@ -137,7 +137,7 @@ subroutine ualfcr(mataz, basz)
             ismdi=zi(jsmdi-1+ieq)
             nbterm=ismdi-ismdi0
 !
-            do 2 kterm = 1, nbterm
+            do kterm = 1, nbterm
                 ilig=zi4(jsmhc-1+ismdi0+kterm)
                 if (tyrc .eq. 'R') then
                     zr(jualf-1+ iscdi +ilig-ieq)=zr(jvalm-1+ismdi0+&
@@ -146,12 +146,12 @@ subroutine ualfcr(mataz, basz)
                     zc(jualf-1+ iscdi +ilig-ieq)=zc(jvalm-1+ismdi0+&
                     kterm)
                 endif
-  2         continue
+            end do
             ASSERT(ilig.eq.ieq)
 !
             ismdi0=ismdi
-  1     continue
- 10 end do
+        end do
+    end do
 !
 !
     call jedema()

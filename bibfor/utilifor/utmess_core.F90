@@ -23,6 +23,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 #include "asterc/isjvup.h"
 #include "asterc/uexcep.h"
 #include "asterc/utprin.h"
+#include "asterfort/asmpi_warn.h"
 #include "asterfort/assert.h"
 #include "asterfort/ib1mai.h"
 #include "asterfort/jedema.h"
@@ -32,7 +33,6 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jevema.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/asmpi_warn.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/post_op.h"
 #include "asterfort/trabck.h"
@@ -196,9 +196,9 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !
 !             REMONTER LES N JEDEMA COURT-CIRCUITES
                 call jevema(imaap)
-                do 10 i = imaap, 1, -1
+                do i = imaap, 1, -1
                     call jedema()
-10              continue
+                end do
 !
             endif
 !
@@ -218,7 +218,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     endif
 !
     if (lerror) recurs = 0
-999  continue
+999 continue
     if (isjvup() .eq. 1 .and. .not. lstop) then
         call jedema()
     endif

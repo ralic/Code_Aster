@@ -151,4 +151,4 @@ OPTION__
                           OUT__ ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  
                                 ECONTNO  PSIEF_R  ZVARINO  PVARI_R  
     VARI_ELNO        122  IN__  CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  
-                          OUT__ ZVARINO  PVARINR  
+                          OUT__ ZVARINO  PVARINR

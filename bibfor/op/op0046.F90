@@ -65,7 +65,7 @@ subroutine op0046()
     parameter ( nompro = 'OP0046' )
 !
     integer :: ibid, nh, nbchre, n1, n4, n5, n7
-    integer ::  iordr, nbmax, nchar, jchar
+    integer :: iordr, nbmax, nchar, jchar
     integer :: iocc, nfon, iainst, iret, i, jordr, nbuti
     integer :: ifm, niv, ier
 !

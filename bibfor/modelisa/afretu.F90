@@ -82,7 +82,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD NOEPOU
 !        DE TUYAU SUR LE DDL NOMDDL
 !
-    do 10 i = 1, lonlis
+    do i = 1, lonlis
         call jenonu(jexnom(noeuma, klisno(i)), ino)
 !           ADRESSE DE LA PREMIERE CMP DU NOEUD INO DANS LES CHAMNO
         ival = iprno((ino-1)* (nbec+2)+1)
@@ -101,13 +101,13 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
         zr(jliscr+3* (i-1)+1-1) = zr(idch1+ival-1+idec+0)
         zr(jliscr+3* (i-1)+2-1) = zr(idch1+ival-1+idec+1)
         zr(jliscr+3* (i-1)+3-1) = zr(idch1+ival-1+idec+2)
- 10 end do
+    end do
 !
-    do 20 i = 1, nbcoef
+    do i = 1, nbcoef
         zk8(jlisno+3*lonlis+i-1) = noepou
         zk8(jlisdl+3*lonlis+i-1) = nomddl(i)
         zr(jliscr+3*lonlis+i-1) = coef(i)
- 20 end do
+    end do
 !
     call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
                 zr(jlisdi), nbterm, beta, betac, betaf,&

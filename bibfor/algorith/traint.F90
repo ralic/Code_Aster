@@ -126,10 +126,10 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         ibid=zi(lnusst)
         isst1=0
         isst2=0
-        do 60 j1 = 1, ibid
+        do j1 = 1, ibid
             if (sst1 .eq. zk8(lnosst+j1-1)) isst1=j1
             if (sst2 .eq. zk8(lnosst+j1-1)) isst2=j1
- 60     continue
+        end do
         if (isst1 .eq. 0) then
             zi(lnusst)=zi(lnusst)+1
             zi(lnusst+zi(lnusst))=zi(lnusst)
@@ -157,7 +157,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     endif
 !
 !-- RECUPERATION DE LA SST ESCLAVE EN FONCTION DU NUMERO DE LA LIAISON
-    do 400 j1 = 1, zi(lnusst)
+    do j1 = 1, zi(lnusst)
         if (imast1 .eq. 1) then
             if (sst1 .eq. zk8(lnosst+j1-1)) then
                 zi(lslast+i1-1)=zi(lnusst+j1)
@@ -174,7 +174,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 zi(lmasst+i1-1)=zi(lnusst+j1)
             endif
         endif
-400 end do
+    end do
 !
 !-- OBSERVATION DE L'INTERFACE MAITRE
 !
@@ -225,11 +225,11 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
     mraid=zk24(lbid+1)(1:8)
     call dismoi('NOM_NUME_DDL', mraid, 'MATR_ASSE', repk=nume91)
-    do 410 k1 = 1, nbddl
+    do k1 = 1, nbddl
         if (zi(llint+k1-1) .gt. 0) then
             call ddllag(nume91, zi(llint+k1-1), nbeq, zi(lag1+k1-1), zi(lag2+k1-1))
         endif
-410 end do
+    end do
 !
 !  STOCKAGES DES EFFORTS
     call wkvect('&&OP0091.MODE_SST1', 'V V R', nbeq1, lmod1)
@@ -268,7 +268,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !--
 !-- BOUCLE SUR LES MODES PROPRES
 !--
-    do 120 j1 = 1, nbmod
+    do j1 = 1, nbmod
 !--
 !-- SST1
 !--
@@ -287,14 +287,14 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !-- EXTRACTION DES COMPOSANTES ASSOCIEES A L'INTERFACE
         ibid=0
-        do 130 k1 = 1, nbddl1
+        do k1 = 1, nbddl1
             if (zi(llint1+k1-1) .gt. 0) then
                 zr(lmod1+zi(llint1+k1-1)-1)=zr(lcopy1+zi(llint1+k1-1)-&
                 1)
                 zr(lobs1+ibid)=zr(lcopy1+zi(llint1+k1-1)-1)
                 ibid=ibid+1
             endif
-130     continue
+        end do
 !
 !-- CALCUL DU TRAVAIL
         call mrmult('ZERO', zi(lmass+isst1-1), zr(lcopy1), zr(leff1), 1,&
@@ -323,14 +323,14 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !-- EXTRACTION DES COMPOSANTES ASSOCIEES A L'INTERFACE
         ibid=0
-        do 150 k1 = 1, nbddl2
+        do k1 = 1, nbddl2
             if (zi(llint2+k1-1) .gt. 0) then
                 zr(lmod2+zi(llint2+k1-1)-1)=zr(lcopy2+zi(llint2+k1-1)-&
                 1)
                 zr(lobs2+ibid)=zr(lcopy2+zi(llint2+k1-1)-1)
                 ibid=ibid+1
             endif
-150     continue
+        end do
 !
 !--
 !-- CALCUL DE L'EFFORT RESIDUEL
@@ -361,20 +361,20 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
             ibid=lobs1
         endif
 !
-        do 300 k1 = 1, nl
+        do k1 = 1, nl
 !-- STOCKAGE DE LA PROJECTION DES MVTS MAITRES SUR L'INT. ESCLAVE
-            do 310 l1 = 1, nc
+            do l1 = 1, nc
                 zr(lesc+(k1-1)+(j1-1)*nl)=zr(lesc+(k1-1)+(j1-1)*nl)+&
                 zr(lmaobs+(k1-1)+(l1-1)*nl)*zr(lbid+l1-1)
-310         continue
+            end do
 !-- STOCKAGE DES MVTS DE L'INT. ESCLAVE POUR EXPANSION
             zr(lmast+(k1-1)+(j1-1)*nl)=zr(ibid+k1-1)
-300     continue
+        end do
 !
 !-- DEPLACEMENT IMPOSE DE L'INTERFACE ESCLAVE
 !
         l1=0
-        do 420 k1 = 1, nbddl
+        do k1 = 1, nbddl
             if (zi(llint+k1-1) .gt. 0) then
                 zr(ldepsl+zi(lag1+k1-1)-1+nbeq*(j1-1))= zr(lesc+l1+(&
                 j1-1)*nl)
@@ -382,7 +382,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 j1-1)*nl)
                 l1=l1+1
             endif
-420     continue
+        end do
 !
 !--
 !-- CALCUL DU TRAVAIL ASSOCIE AU DEPLACEMENT DIFERENTIEL DE L'INTERFACE
@@ -395,24 +395,24 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
             l1=0
             if (imast1 .eq. -1) then
 !
-                do 430 k1 = 1, nbddl
+                do k1 = 1, nbddl
                     if (zi(llint+k1-1) .gt. 0) then
                         travk=travk +( zr(lobs2+l1) - zr(lesc+l1+(j1-&
                         1)*nl) )* (zr(leff2+zi(llint+k1-1)-1)-zr(&
                         lomeg+j1-1)* zr(lefi2+zi(llint+k1-1)-1))
                         l1=l1+1
                     endif
-430             continue
+                end do
 !
             else
-                do 431 k1 = 1, nbddl
+                do k1 = 1, nbddl
                     if (zi(llint+k1-1) .gt. 0) then
                         travk=travk +( zr(lobs1+l1) - zr(lesc+l1+(j1-&
                         1)*nl) )* (zr(leff1+zi(llint+k1-1)-1)-zr(&
                         lomeg+j1-1)* zr(lefi1+zi(llint+k1-1)-1))
                         l1=l1+1
                     endif
-431             continue
+                end do
 !
             endif
             if (zr(lomeg+j1-1) .gt. 1) travk=travk/zr(lomeg+j1-1)
@@ -423,6 +423,6 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         endif
 !
 !
-120 end do
+    end do
 !
 end subroutine

@@ -61,7 +61,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 ! OUT : NSUPP  : NOMBRE DE SUPPORTS PAR DIRECTION
 ! IN  : KNOEU  : NOM DU VECTEUR DES NOMS DES SUPPORTS
 !     ------------------------------------------------------------------
-    integer ::  ier, im1, im2, ioc, nm, nn, ng, nbocc, jasy, neq, jddl1
+    integer :: ier, im1, im2, ioc, nm, nn, ng, nbocc, jasy, neq, jddl1
     integer :: nba, nbbloq, nbl, nbliai, jnno, jnsp, jdsp, jesp, jspe, jnas, noc
     character(len=5) :: motfac
     character(len=8) :: k8b, noma
@@ -91,7 +91,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 !     --- VERIFICATION DES APPUIS ---
     motfac = 'EXCIT'
     call getfac(motfac, nbocc)
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
 !
         call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
         if (nn .ne. 0 .and. monoap) then
@@ -104,7 +104,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
             ier = ier + 1
             call utmess('E', 'SEISME_8')
         endif
- 10 end do
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')

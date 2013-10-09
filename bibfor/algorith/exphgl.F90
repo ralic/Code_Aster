@@ -121,9 +121,9 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !-----CALCUL DU TETA DE CHAQUE SECTEUR----------------------------------
 !
     call wkvect('&&EXPHGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
-    do 8 i = 1, nbsec
+    do i = 1, nbsec
         zr(lttsc+i-1) = depi*(i-1) / nbsec
-  8 end do
+    end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
@@ -142,7 +142,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  BOUCLE SUR LES MODES PROPRES DU DIAMETRE COURANT
 !
-    do 15 i = 1, nbmode
+    do i = 1, nbmode
         icomp = icomp + 1
         call rsexch('F', modcyc, 'DEPL', i, nomchc,&
                     iret)
@@ -195,11 +195,11 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  BOUCLE SUR LES SECTEURS
 !
-        do 20 k = 1, nbsec
+        do k = 1, nbsec
             call jeveuo(jexnum(indirf, k), 'L', ltinds)
             call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
             nddcou = nddcou/2
-            do 40 j = 1, nddcou
+            do j = 1, nddcou
                 ieqi = zi(ltinds+(j-1)*2)
                 ieqf = zi(ltinds+(j-1)*2+1)
                 if (ires2 .ne. 0) then
@@ -210,8 +210,8 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
                 else
                     zr(llcham+ieqf-1) = zr(ltveco+ieqi-1)
                 endif
- 40         continue
- 20     continue
+            end do
+        end do
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
@@ -222,7 +222,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
         if (ires2 .ne. 0) then
             call jelibe(nomchs(1:19)//'.VALE')
         endif
- 15 end do
+    end do
 !
     call jedetr('&&EXPHGL.VEC.REEL')
     call jedetr('&&EXPHGL.ORDRE.FREQ')

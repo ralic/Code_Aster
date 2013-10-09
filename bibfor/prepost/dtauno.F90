@@ -1,7 +1,7 @@
 subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                   nnoini, nbnop, tspaq, nommet, nomcri,&
-                  nomfor, grdvie, forvie, forcri, nommai, cnsr,&
-                  nommap, post, valpar, vresu)
+                  nomfor, grdvie, forvie, forcri, nommai,&
+                  cnsr, nommap, post, valpar, vresu)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,10 +84,10 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !    NOEUDS DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer ::  ki, l, jcnrd, jcnrl, jcnrv, ibidno
+    integer :: ki, l, jcnrd, jcnrl, jcnrv, ibidno
     integer :: iret, nbma, adrma, icesd, icesl, icesv
     integer :: inop, nunoe
-    integer :: jtypma, ibid
+    integer :: jtypma
     integer :: icmp, kwork, somnow, cnbno
     integer :: vali(2), jad, ima
     integer :: icodwo
@@ -106,7 +106,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     call jemarq()
 !
-
+!
 ! OBTENTION DES ADRESSES '.CESD', '.CESL' ET '.CESV' DU CHAMP SIMPLE
 ! DESTINE A RECEVOIR LES RESULTATS : DTAUM, ....
     if (.not. post) then
@@ -148,7 +148,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     endif
 !
-    do 400 inop = nnoini, nnoini+(nbnop-1)
+    do inop = nnoini, nnoini+(nbnop-1)
 !
         if (inop .gt. nnoini) then
             kwork = 1
@@ -169,11 +169,11 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
             ki = 0
             optio = 'DOMA_NOEUD'
-            do 410, ima=1, nbma
-            call rnomat(icesd, icesl, icesv, ima, nomcri,&
-                        adrma, jtypma, ki, optio, vala,&
-                        valb, coefpa, nommat)
-410          continue
+            do ima = 1, nbma
+                call rnomat(icesd, icesl, icesv, ima, nomcri,&
+                            adrma, jtypma, ki, optio, vala,&
+                            valb, coefpa, nommat)
+            end do
 !
             call rcpare(nommat, 'FATIGUE', 'WOHLER', icodwo)
             if (icodwo .eq. 1) then
@@ -204,23 +204,22 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
 !
 ! REMPACER PAR ACMATA
-        call acgrdo(nbordr, ordini,&
-                    kwork, somnow, jrwork, tspaq, ibidno,&
-                    nommet, nommat,&
-                    nomcri, vala, coefpa, nomfor, grdvie,&
-                    forvie,forcri, valpar, vresu)
+        call acgrdo(nbordr, ordini, kwork, somnow, jrwork,&
+                    tspaq, ibidno, nommet, nommat, nomcri,&
+                    vala, coefpa, nomfor, grdvie, forvie,&
+                    forcri, valpar, vresu)
 !
 ! AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
         if (.not. post) then
-            do 550 icmp = 1, 24
+            do icmp = 1, 24
                 jad = 24*(nunoe-1) + icmp
                 zl(jcnrl - 1 + jad) = .true.
                 zr(jcnrv - 1 + jad) = vresu(icmp)
 !
-550          continue
+            end do
         endif
 !
-400  end do
+    end do
 !
 ! MENAGE
 !
@@ -228,7 +227,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
         call detrsd('CHAM_ELEM_S', cesmat)
     endif
 !
-
+!
     call jedetr('&&DTAUNO.CNCINV')
 !
     call jedema()

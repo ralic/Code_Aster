@@ -48,39 +48,39 @@ subroutine trvpmd(np1, n, m, rr, loc,&
     nsaut = 0
     call vecini(np1, 0.d0, tp)
     call vecini(np1, 0.d0, rtp)
-    do 100 i = 1, np1
+    do i = 1, np1
         npoint(i) = 0
         lpoint(i) = 0
-100  end do
+    end do
 !
 ! --- RECHERCHE DU POSITIONNEMENT DES MODES SELECTIONNES
 !
     if (ideb .lt. n) then
 !
- 1      continue
+  1     continue
         ideb = ideb + ll
 !
         j = j + 1
 !
-        do 2 i = ideb, n
+        do i = ideb, n
             if (loc(i)) then
                 ideb = i
                 goto 3
             endif
- 2      end do
+        end do
 !
- 3      continue
+  3     continue
 !
-        do 4 i = ideb, n
+        do i = ideb, n
             if (loc(i)) then
                 ifin = n+1
             else
                 ifin = i
                 goto 5
             endif
- 4      end do
+        end do
 !
- 5      continue
+  5     continue
 !
         ll = ifin - ideb
         npoint(j) = ideb
@@ -94,7 +94,7 @@ subroutine trvpmd(np1, n, m, rr, loc,&
 !
     endif
 !
- 6  continue
+  6 continue
 !
     if (j .eq. 1) then
         jmax = j
@@ -106,23 +106,23 @@ subroutine trvpmd(np1, n, m, rr, loc,&
 !
     lsom=0
 !
-    do 7 j = 1, jmax
+    do j = 1, jmax
         lsom = lsom + lpoint(j)
- 7  end do
+    end do
 !
     if (lsom .ne. m) then
 !CCC COMMENTAIRE CDURAND :
 ! TRES CURIEUX, ON IMPRIME UN MESSAGE D ERREUR ... ET ON SORT
 ! COMME SI DE RIEN N ETAIT, SANS UTMESS, SANS ASSERT
         write(6,*) 'ERREUR SUR LE NOMBRE DE MODES SELECTIONNES'
-        goto 9999
+        goto 999
     endif
 !
 ! --- REMPLISSAGE DU TABLEAU RTP COMPORTANT UNIQUEMENT
 !     LES MODES SELECTIONNES
 !
 !
-    do 8 j = 1, jmax
+    do j = 1, jmax
 !
         if (j .gt. 1) then
             nsaut = nsaut + lpoint(j-1)
@@ -131,30 +131,30 @@ subroutine trvpmd(np1, n, m, rr, loc,&
         npdeb = npoint(j)
         npfin = npoint(j) + lpoint(j) - 1
 !
-        do 9 i = npdeb, npfin
+        do i = npdeb, npfin
             tp(i-npdeb+nsaut+1) = rr(i)
- 9      continue
+        end do
 !
- 8  end do
+    end do
 !
-    do 10 i = 1, m
+    do i = 1, m
         rtp(i) = tp(i)
-10  end do
+    end do
 !
 ! --- TRI DES MODES SELECTIONNES PAR VALEURS PROPRES CROISSANTES
 !
     call indexx(m, rtp, indxf)
-    do 11 i = 1, m
+    do i = 1, m
         tp(i) = rtp(indxf(i))
-11  end do
+    end do
 !
-    do 12 i = 1, n
+    do i = 1, n
         rr(i) = 0.0d0
-12  end do
+    end do
 !
-    do 13 i = 1, m
+    do i = 1, m
         rr(i) = tp(i)
-13  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

@@ -117,7 +117,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !     3- ON MET EN MEMOIRE LES OBJETS UTILES DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------------
     call wkvect('&&CESEVA.JAD1', 'V V I', 4*npara, jad1)
-    do 10 ipara = 1, npara
+    do ipara = 1, npara
         p = lpara(ipara)
         call jeveuo(p//'.CESK', 'L', jpk)
         call jeveuo(p//'.CESD', 'L', jpd)
@@ -138,19 +138,19 @@ subroutine ceseva(cesf, npara, lpara, cesr)
         zi(jad1-1+4* (ipara-1)+2) = jpd
         zi(jad1-1+4* (ipara-1)+3) = jpl
         zi(jad1-1+4* (ipara-1)+4) = jpv
- 10 end do
+    end do
 !
 !     4- EVALUATION DES FONCTIONS :
 !     ---------------------------------------
 !     ON BOUCLE D'ABORD SUR LES CMPS POUR AVOIR PLUS DE CHANCES
 !     DE FAIRE PLUSIEURS FOINTE SUCCESSIFS AVEC LA MEME FONCTION.
 !
-    do 70 k = 1, ncmp
-        do 60 ima = 1, nbma
+    do k = 1, ncmp
+        do ima = 1, nbma
             nbpt = zi(jfd-1+5+4* (ima-1)+1)
             nbsp = zi(jfd-1+5+4* (ima-1)+2)
-            do 50 ipt = 1, nbpt
-                do 40 isp = 1, nbsp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
                     call cesexi('C', jfd, jfl, ima, ipt,&
                                 isp, k, iadf)
                     if (iadf .le. 0) goto 40
@@ -167,13 +167,13 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !           4.1 FABRICATION DE LA LISTE DES PARAMETRES POUR FOINTE:
 !           -------------------------------------------------------
                     nbpu = 0
-                    do 30 ipara = 1, npara
+                    do ipara = 1, npara
                         jpc = zi(jad1-1+4* (ipara-1)+1)
                         jpd = zi(jad1-1+4* (ipara-1)+2)
                         jpl = zi(jad1-1+4* (ipara-1)+3)
                         jpv = zi(jad1-1+4* (ipara-1)+4)
                         ncmp2 = zi(jpd-1+2)
-                        do 20 k2 = 1, ncmp2
+                        do k2 = 1, ncmp2
                             call cesexi('C', jpd, jpl, ima, ipt,&
                                         isp, k2, iadp)
                             if (iadp .le. 0) goto 20
@@ -198,8 +198,9 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
                             zk8(jnompu-1+nbpu) = zk8(jpc-1+k2)
                             zr(jvalpu-1+nbpu) = zr(jpv-1+iadp)
- 20                     continue
- 30                 continue
+ 20                         continue
+                        end do
+                    end do
 !
 !
 !           4.2 APPEL A FOINTE :
@@ -216,10 +217,11 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !           --------------------------
                     zr(jrv-1-iadr) = x
 !
- 40             continue
- 50         continue
- 60     continue
- 70 end do
+ 40                 continue
+                end do
+            end do
+        end do
+    end do
 !
     call cestas(cesr)
 !

@@ -45,7 +45,6 @@ subroutine nmdocr(model, carcri)
 !
     character(len=24) :: list_vale
     character(len=8) :: mesh
-    integer :: ibid, iret
     integer :: nb_cmp, nbocc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,7 +54,7 @@ subroutine nmdocr(model, carcri)
 ! - Initializations
 !
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    carcri    = '&&NMDOCR.CARCRI'
+    carcri = '&&NMDOCR.CARCRI'
     list_vale = '&&NMDOCR.LIST_VALE'
 !
 ! - Create CARCRI <CARTE>
@@ -65,7 +64,7 @@ subroutine nmdocr(model, carcri)
 ! - Read informations from command file
 !
     call carc_read(list_vale, nbocc)
-    if (nbocc.eq.0) goto 99
+    if (nbocc .eq. 0) goto 99
 !
 ! - Save and check informations in CARCRI <CARTE>
 !
@@ -78,4 +77,3 @@ subroutine nmdocr(model, carcri)
 !
     call jedema()
 end subroutine
-

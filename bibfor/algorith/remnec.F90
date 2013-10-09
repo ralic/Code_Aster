@@ -195,7 +195,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
     nbmoc = 0
     nbmor = 0
-    do 5 iddi = 1, nbdia
+    do iddi = 1, nbdia
         nbtmp = zi(lldiam+nbdia+iddi-1)
         nbmoc = nbmoc + nbtmp
         idia = zi(lldiam+iddi-1)
@@ -204,7 +204,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
         else
             nbmor = nbmor + 2*nbtmp
         endif
-  5 continue
+    end do
     call wkvect('&&REMNEC.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNEC.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
     call ordr8(zr(llfreq), nbmoc, zi(ltorto))
@@ -217,19 +217,19 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !-------DETERMINATION DES FUTUR NUMERO ORDRES DE MODES REELS------------
 !
     nborc = 0
-    do 6 ii = 1, nbmoc
+    do ii = 1, nbmoc
         iormo = zi(ltorto+ii-1)
         icomp = 0
         idicou = 0
-        do 7 jj = 1, nbdia
+        do jj = 1, nbdia
             icomp = icomp + zi(lldiam+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
-  7     continue
+        end do
         nborc = nborc + 1
         zi(ltorf+iormo-1) = nborc
         idiam = zi(lldiam+idicou-1)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
-  6 continue
+    end do
     call jedetr('&&REMNEC.ORDRE.TMPO')
 !
 !---------------------RECUPERATION DES MODES COMPLEXES------------------
@@ -244,7 +244,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 ! --- BOUCLE SUR LES NOMBRE DE DIAMETRES
 !
-    do 10 idi = 1, nbdia
+    do idi = 1, nbdia
 !
 ! ----- CALCUL DEPHASAGE DU SECTEUR DEMANDE
 !
@@ -257,7 +257,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 ! ----- BOUCLE SUR MODES DU NOMBRE DE DIAMETRE COURANT
 !
-        do 15 i = 1, zi(lldiam+nbdia+idi-1)
+        do i = 1, zi(lldiam+nbdia+idi-1)
 !
             icomp = icomp + 1
             inum = inum + 1
@@ -275,10 +275,10 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
             call genecy(zc(ltveco), zc(ltveco), neq, lmass, para,&
                         nbsec, beta, beta, zc(ltvezt))
 !
-            do 20 j = 1, neq
+            do j = 1, neq
                 zc(ltveco+j-1) = zc(ltveco+j-1)*dephc
                 zr(ltvere+j-1) = dble(zc(ltveco+j-1))
- 20         continue
+            end do
 !
 ! ------- RESTITUTION DU MODE PROPRES REEL (PARTIE RELLE)
 !
@@ -322,9 +322,9 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
             if (idiam .ne. 0 .and. idiam .ne. mdiapa) then
 !
-                do 30 j = 1, neq
+                do j = 1, neq
                     zr(ltvere+j-1) = dimag(zc(ltveco+j-1))
- 30             continue
+                end do
                 iorc = iorc + 1
                 inum = inum + 1
 !
@@ -365,9 +365,9 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
             endif
 !
- 15     continue
+        end do
 !
- 10 continue
+    end do
 !
     call jedetr('&&REMNEC.VEC.TRAVC')
     call jedetr('&&REMNEC.VEC.COMP')

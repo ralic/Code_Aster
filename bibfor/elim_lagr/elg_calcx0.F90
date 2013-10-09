@@ -1,6 +1,5 @@
 subroutine elg_calcx0()
     implicit none
-! aslint: disable=W0104
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +17,10 @@ subroutine elg_calcx0()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jemarq.h"
 !----------------------------------------------------------------
 !
 !     Resolution de x0 = A \ c par :
@@ -36,12 +38,9 @@ subroutine elg_calcx0()
 !     * Vec Vx0  (solution)
 !       Vx0 utilisé est ELIMLG/Vx0
 !----------------------------------------------------------------
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/assert.h"
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-#   include "asterfort/elg_resodr.h"
+# include "asterfort/elg_resodr.h"
 !
 !================================================================
     integer(kind=8) :: ilt

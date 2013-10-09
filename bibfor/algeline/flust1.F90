@@ -180,20 +180,20 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST1.POSITION.DDL', 'V V I', neq, lddl)
     call pteddl('NUME_DDL', numddl, 1, depl, neq,&
                 zi(lddl))
-    do 80 ieq = 0, neq-1
+    do ieq = 0, neq-1
         zr(laux1+ieq) = zi(lddl+ieq)
- 80 end do
+    end do
     call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
                 .true.)
-    do 100 im = 1, nbm
+    do im = 1, nbm
         ior = nuor(im)
         call rsexch('F', base, 'DEPL', ior, vale(1:19),&
                     iret)
         call jeveuo(vale, 'L', lvale)
         rval1 = 0.0d0
-        do 90 ieq = 0, neq-1
+        do ieq = 0, neq-1
             rval1 = rval1 + zr(lvale+ieq)*zr(laux2+ieq)*zr(lvale+ieq)
- 90     continue
+        end do
         zr(kmasg+im-1) = rval1
 !
         call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
@@ -204,7 +204,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
         fact(3*(im-1)+1) = zr(lfact ) * masg(im)
         fact(3*(im-1)+2) = zr(lfact+1) * masg(im)
         fact(3*(im-1)+3) = zr(lfact+2) * masg(im)
-100 end do
+    end do
 !
 !
 ! --- 3.REMPLISSAGE DES OBJETS .VALE DES CHAMPS DE DEPLACEMENTS ---
@@ -220,11 +220,11 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
         if (icoupl .eq. 1) then
 !
             call wkvect('&&FLUST1.TEMP.AMFR', 'V V R', 2*nbm, iamfr)
-            do 110 im = 1, nbm
+            do im = 1, nbm
                 imod = nuor(im)
                 zr(iamfr+im-1) = 4.d0*pi*zr(ifreqi+imod-1)*amor(im)* zr(kmasg+im-1)
                 zr(iamfr+nbm+im-1) = zr(ifreqi+imod-1)
-110         continue
+            end do
 !
             nt = 2
             lvale = 2*nt*nt + 10*nt + 2
@@ -241,14 +241,14 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !
 !-------REMPLISSAGE DE L'OBJET .FREQ
 !
-            do 140 iv = 1, npv
-                do 130 im = 1, nbm
+            do iv = 1, npv
+                do im = 1, nbm
                     imod = nuor(im)
                     ind = 2*nbm*(iv-1)+2*(im-1)+1
                     freq(ind) = zr(ifreqi+imod-1)
                     freq(ind+1) = amor(im)
-130             continue
-140         continue
+                end do
+            end do
 !
         endif
     endif

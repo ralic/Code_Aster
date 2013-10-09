@@ -53,7 +53,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
     integer :: jnueq, nlili, jprno, nbno, ival, ncmp, icompt
     integer :: icmp, ieq, nucmp, jdeeq, nleq, numno, jlili, ino
     integer :: ieql, jnugl, imatd, iexi, jdesc
-    character(len=8) ::  nomma
+    character(len=8) :: nomma
     character(len=19) :: nomnu, prno
     character(len=24) :: nolili
     logical :: matd, lnuge
@@ -61,11 +61,11 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !
     call jemarq()
 !
-    do 20 i = 1, neq
-        do 10 j = 1, nbcmp
+    do i = 1, neq
+        do j = 1, nbcmp
             ivec(i,j)=0
- 10     continue
- 20 end do
+        end do
+    end do
 !
     nomnu(1:14)=num
     nomnu(15:19)='.NUME'
@@ -106,14 +106,14 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
         call wkvect('&&PTEDDL.NUME_CMP', 'V V I', ncmpmx, jnucmp)
-        do 30 i = 0, ncmpmx-1
+        do i = 0, ncmpmx-1
             zi(jnucmp+i)=indik8(lnocmp,zk8(iad+i),1,nbcmp)
- 30     continue
+        end do
 !
         call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
         call jelira(prno//'.PRNO', 'NMAXOC', nlili)
-        do 70 i = 1, nlili
+        do i = 1, nlili
             call jenuno(jexnum(prno//'.LILI', i), nolili)
             call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ibid)
             if (ibid .eq. 0) goto 70
@@ -127,19 +127,19 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
                 call jeveuo(nolili(1:19)//'.NBNO', 'L', jlili)
                 nbno=zi(jlili-1+1)
             endif
-            do 60 ino = 1, nbno
+            do ino = 1, nbno
 !           NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !           IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
                 ival=zi(jprno-1+(ino-1)*(nec+2)+1)
                 ncmp=zi(jprno-1+(ino-1)*(nec+2)+2)
                 if (ncmp .eq. 0) goto 60
-                do 40 iec = 1, nec
+                do iec = 1, nec
                     tabec(iec)=zi(jprno-1+(ino-1)*(nec+2)+2+iec)
- 40             continue
+                end do
                 if (ncmp .eq. 0) goto 60
 !
                 icompt=0
-                do 50 icmp = 1, ncmpmx
+                do icmp = 1, ncmpmx
                     if (exisdg(tabec,icmp)) then
                         icompt=icompt+1
                         ieq=zi(jnueq-1+ival-1+icompt)
@@ -151,9 +151,11 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
                         endif
                         if (nucmp .gt. 0) ivec(ieql,nucmp)=1
                     endif
- 50             continue
- 60         continue
- 70     continue
+                end do
+ 60             continue
+            end do
+ 70         continue
+        end do
         call jedetr('&&PTEDDL.NUME_CMP')
 !
 !
@@ -168,13 +170,13 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
         nleq=nleq/2
 !       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
         ASSERT(nleq.eq.neq)
-        do 90 ieq = 1, neq
+        do ieq = 1, neq
             numno=zi(jdeeq+2*ieq-1)
-            do 80 j = 1, nbcmp
+            do j = 1, nbcmp
                 if (lnocmp(j) .eq. 'LAGR' .and. numno .lt. 0) ivec(ieq,j)= 1
                 if (lnocmp(j) .eq. 'GENE' .and. numno .gt. 0) ivec(ieq,j)= 1
- 80         continue
- 90     continue
+            end do
+        end do
     endif
 !
     call jedema()

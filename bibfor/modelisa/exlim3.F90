@@ -50,7 +50,7 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
 !     -----------------------------------------------------------------
 !
-    integer ::  n1, nbma, nocc, nbmat, iocc, jnuma, jlima1
+    integer :: n1, nbma, nocc, nbmat, iocc, jnuma, jlima1
     integer :: k, numa, jlima
     character(len=8) :: modele, noma, k8bid
     character(len=16) :: motfac, motcle(2), typmcl(2)
@@ -78,10 +78,10 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !     --  SI ON DOIT TOUT PRENDRE , LIGREL = LIGRMO
 !     ------------------------------------------------------
     if (getexm(motfac,'TOUT') .eq. 1) then
-        do 10 iocc = 1, nocc
+        do iocc = 1, nocc
             call getvtx(motfac, 'TOUT', iocc=iocc, scal=k8bid, nbret=n1)
             if (n1 .eq. 1) goto 60
- 10     continue
+        end do
     endif
 !
 !
@@ -96,33 +96,33 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
     typmcl(1)='GROUP_MA'
     typmcl(2)='MAILLE'
 !
-    do 30 iocc = 1, nocc
+    do iocc = 1, nocc
         call reliem(modele, noma, 'NU_MAILLE', motfac, iocc,&
                     2, motcle(1), typmcl(1), '&&EXLIM3.LIMA1', nbma)
         ASSERT(nbma.gt.0)
         call jeveuo('&&EXLIM3.LIMA1', 'L', jlima1)
-        do 20 k = 1, nbma
+        do k = 1, nbma
             numa=zi(jlima1-1+k)
             zi(jnuma-1+numa)=1
- 20     continue
+        end do
         call jedetr('&&EXLIM3.LIMA1')
- 30 end do
+    end do
 !
 !
 !     -- ON FABRIQUE LA LISTE DES NUMEROS DE MAILLES POUR EXLIM1 :
 !     ------------------------------------------------------------
     nbma=0
-    do 40 k = 1, nbmat
+    do k = 1, nbmat
         if (zi(jnuma-1+k) .eq. 1) nbma=nbma+1
- 40 end do
+    end do
     call wkvect('&&EXLIM3.LIMA', 'V V I', nbma, jlima)
     nbma=0
-    do 50 k = 1, nbmat
+    do k = 1, nbmat
         if (zi(jnuma-1+k) .eq. 1) then
             nbma=nbma+1
             zi(jlima-1+nbma)=k
         endif
- 50 end do
+    end do
     call jedetr('&&EXLIM3.NUMA')
 !
 !

@@ -224,7 +224,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 !
     if (ncmpve .gt. 80) then
         call utmess('A', 'MED_99', sk=nochmd)
-        goto 9999
+        goto 999
     endif
 !
 !     ON REMPLACE LES NOMS DES COMPOSANTES
@@ -233,14 +233,15 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
         call jeveuo(etiqcp, 'L', jnocm2)
         call jelira(etiqcp, 'LONMAX', nbcmp2)
         nbcmp2=nbcmp2/2
-        do 10 icmp1 = 1, ncmpve
-            do 20 icmp2 = 1, nbcmp2
+        do icmp1 = 1, ncmpve
+            do icmp2 = 1, nbcmp2
                 if (zk16(jnocm1+icmp1-1) .eq. zk16(jnocm2+2*(icmp2-1))) then
                     zk16(jnocm1+icmp1-1) = zk16(jnocm2+2*icmp2-1)
                     goto 10
                 endif
- 20         continue
- 10     continue
+            end do
+ 10         continue
+        end do
     endif
 !
 ! 3.2. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -335,7 +336,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 ! 6. LA FIN
 !====
 !
-9999 continue
+999 continue
     if (nivinf .gt. 1) then
         write (ifm,*) ' '
     endif

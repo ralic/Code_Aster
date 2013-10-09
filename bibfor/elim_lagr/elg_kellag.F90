@@ -1,23 +1,22 @@
 subroutine elg_kellag(matass, solveu, kellag)
     implicit none
-! aslint: disable=W0104
-#   include "jeveux.h"
+# include "jeveux.h"
+# include "asterfort/assert.h"
+# include "asterfort/dismoi.h"
+# include "asterfort/jedema.h"
+# include "asterfort/jelira.h"
+# include "asterfort/jemarq.h"
+# include "asterfort/jeveuo.h"
 !-----------------------------------------------------------------------
 ! But : determiner si la fonctionnalite ELIM_LAGR est demandee
 !-----------------------------------------------------------------------
-    character(len=*), intent(in)  :: matass
-    character(len=*), intent(in)  :: solveu
+    character(len=*), intent(in) :: matass
+    character(len=*), intent(in) :: solveu
     character(len=3), intent(out) :: kellag
-
+!
 !-----------------------------------------------------------------------
-#   include "asterfort/assert.h"
-#   include "asterfort/jeveuo.h"
-#   include "asterfort/jelira.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/dismoi.h"
 ! ----------------------------------------------------------------------
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +33,8 @@ subroutine elg_kellag(matass, solveu, kellag)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-
-    integer :: ibid, jslvk1, n1
+!
+    integer ::  jslvk1, n1
     character(len=19) :: matas1, solve1
     character(len=3) :: kbid
 ! ----------------------------------------------------------------------
@@ -53,7 +52,6 @@ subroutine elg_kellag(matass, solveu, kellag)
     ASSERT(n1.eq.13)
     kellag=zk24(jslvk1-1+13)(1:3)
     ASSERT(kellag.eq.' '.or.kellag.eq.'OUI'.or.kellag.eq.'NON')
-
+!
     call jedema()
-    end
-
+end

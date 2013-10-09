@@ -38,7 +38,7 @@ subroutine op0015()
 #include "asterfort/resoud.h"
 #include "asterfort/titre.h"
 !
-    integer ::  ifm, niv, nb, j1, mxiter, ier
+    integer :: ifm, niv, nb, j1, mxiter, ier
     character(len=8) :: xsol, secmbr, matr, vcine, matf, metres, kvari
     character(len=16) :: concep, nomcmd
     character(len=19) :: solve1, solve2

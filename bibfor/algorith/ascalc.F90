@@ -96,7 +96,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 ! IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA
 ! IN  : F2GUP  : FREQUENCE F2 POUR LA METHODE DE GUPTA
 !     ------------------------------------------------------------------
-    integer ::  id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
+    integer :: id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
     integer :: jval, nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
     integer :: neq, jrep2, nbdis(nbsup), noc, ioc, jnoe1, n1, nno, is, ino, igr
     integer :: ngr, jgrn, jdgn, ier, ncompt, nintra
@@ -143,9 +143,9 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !  ----         CAS DECORRELE            ----
 !  ---- INITIALISATION DU TABLEAU CONCERNANT
 !  ---- LES REGROUPEMENTS EN INTRA-GROUPE
-    do 50 is = 1, nbsup
+    do is = 1, nbsup
         nbdis(is) = 0
- 50 end do
+    end do
     nintra = nbsup
     noc = nbsup
 !
@@ -155,27 +155,27 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
         call getfac(motfa1, noc)
 !  ---- SI GROUP_APPUI EST PRESENT ----
         if (noc .ne. 0) then
-            do 100 ioc = 1, noc
+            do ioc = 1, noc
                 call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     nno = -n1
                     call wkvect('&&ASCALC.NOEUD', 'V V K8', nno, jnoe1)
                     call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe1),&
                                 nbret=n1)
-                    do 101 ino = 1, nno
+                    do ino = 1, nno
                         noeu = zk8(jnoe1+ino-1)
                         call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
-                        do 102 is = 1, nbsup
-                            do 103 id = 1, 3
+                        do is = 1, nbsup
+                            do id = 1, 3
                                 if (nomsup((id-1)*nbsup+is) .eq. noeu) then
                                     if (nbdis(is) .ne. 0) then
                                         call utmess('F', 'SEISME_29')
                                     endif
                                     nbdis(is) = ioc
                                 endif
-103                         continue
-102                     continue
-101                 continue
+                            end do
+                        end do
+                    end do
                     call jedetr('&&ASCALC.NOEUD')
                 else
                     call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
@@ -188,7 +188,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                         call wkvect('&&ASCALC.GROUP_NO', 'V V K24', ngr, jgrn)
                         call getvem(noma, 'GROUP_NO', motfa1, 'GROUP_NO', ioc,&
                                     iarg, ngr, zk24(jgrn), n1)
-                        do 110 igr = 1, ngr
+                        do igr = 1, ngr
                             grnoeu = zk24(jgrn+igr-1)
                             call jeexin(jexnom(obj1, grnoeu), iret)
                             if (iret .eq. 0) then
@@ -198,29 +198,29 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                             call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                             call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
 !
-                            do 111 ino = 1, nno
+                            do ino = 1, nno
                                 call jenuno(jexnum(obj2, zi(jdgn+ino-1) ), noeu)
-                                do 112 is = 1, nbsup
-                                    do 113 id = 1, 3
+                                do is = 1, nbsup
+                                    do id = 1, 3
                                         if (nomsup((id-1)*nbsup+is) .eq. noeu) then
                                             if (nbdis(is) .ne. 0) then
                                                 call utmess('F', 'SEISME_29')
                                             endif
                                             nbdis(is) = ioc
                                         endif
-113                                 continue
-112                             continue
-111                         continue
-110                     continue
+                                    end do
+                                end do
+                            end do
+                        end do
                         call jedetr('&&ASCALC.GROUP_NO')
                     endif
                 endif
-100         continue
+            end do
             ncompt = 0
             if (noc .eq. 1) then
-                do 120 is = 1, nbsup
+                do is = 1, nbsup
                     ncompt = ncompt + nbdis(is)
-120             continue
+                end do
                 if (ncompt .eq. nbsup) then
                     call utmess('F', 'SEISME_30')
                 endif
@@ -228,24 +228,24 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
         endif
 !  ---- SI GROUP_APPUI EST ABSENT ----
         ncompt = 0
-        do 130 is = 1, nbsup
+        do is = 1, nbsup
             if (nbdis(is) .eq. 0) then
                 ncompt = ncompt + 1
                 nbdis(is) = noc + ncompt
             endif
-130     continue
+        end do
         nintra = noc + ncompt
     else
 !  ---- SI LES EXCITATIONS SONT CORRELEES ----
-        do 140 is = 1, nbsup
+        do is = 1, nbsup
             nbdis(is) = is
-140     continue
+        end do
         nintra = nbsup
     endif
 !
 !
 !     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
-    do 10 iopt = 1, nbopt
+    do iopt = 1, nbopt
         nomsy = knomsy(iopt)
         nomsy2 = nomsy
         if (nomsy(1:4) .eq. 'VITE') nomsy2 = 'DEPL'
@@ -268,7 +268,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !        ---------------------------------------------------------------
 !
 !        --- BOUCLE SUR LES DIRECTIONS ----
-        do 20 id = 1, 3
+        do id = 1, 3
             if (ndir(id) .eq. 1) then
 !
 !              --- CALCUL DES REPONSE MODALES ---
@@ -311,7 +311,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                 call asdir(monoap, muapde, id, neq, nbsup,&
                            nsupp, tcosup, zr(jcrep), zr(jdir))
             endif
- 20     continue
+        end do
 !
 !        --- STOCKAGE ---
 !
@@ -341,7 +341,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
         call jedetr(kve4)
         call jedetr(kve5)
 !
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

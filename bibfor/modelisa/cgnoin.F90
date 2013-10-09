@@ -147,12 +147,12 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 !
     nbno=0
-    do 20 ino2 = 1, nbno2
+    do ino2 = 1, nbno2
         if (zi(jpjnb-1+ino2) .gt. 0) then
             nbno=nbno+1
             zi(jtrav-1+nbno)=ino2
         endif
- 20 end do
+    end do
 !
 !
 !
@@ -160,9 +160,9 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- ALLOCATION DU VECTEUR DES NUMEROS DES MAILLES RETENUES
 !     --------------------------------------------------------
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
-    do 30 i = 1, nbno
+    do i = 1, nbno
         zi(jlisno-1+i)=zi(jtrav-1+i)
- 30 end do
+    end do
 !
     call jedetr('&&CGNOIN.LITRAV')
     call jedetr(mesma1)

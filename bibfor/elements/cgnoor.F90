@@ -124,10 +124,10 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     endif
     call jeveuo(mesmai, 'L', jmail)
     call wkvect(mafour, 'V V I', nbma, jcour2)
-    do 10 im = 1, nbma
+    do im = 1, nbma
         call jenonu(jexnom(nommai, zk8(jmail-1+im)), ima)
         zi(jcour2-1+im)=ima
- 10 end do
+    end do
 !
 !
 !     ------------------------------------------------------------------
@@ -136,7 +136,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     ------------------------------------------------------------------
     typmp=' '
     ier=0
-    do 20 im = 1, nbma
+    do im = 1, nbma
         nomma=zk8(jmail-1+im)
         call jeexin(jexnom(nommai, nomma), existe)
         if (existe .eq. 0) then
@@ -161,7 +161,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
             endif
             typmp=typm
         endif
- 20 end do
+    end do
     if (ier .gt. 0) then
         call utmess('F', 'ELEMENTS5_15', si=iocc)
     endif
@@ -221,26 +221,26 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     ------------------------------------------------------------------
     call wkvect('&&CGNOOR.NOEUDS_EXTREM', 'V V I', 2*nbma, jcour1)
     call wkvect('&&CGNOOR.TYPE_NOEUD', 'V V I', nbnot, jcour4)
-    do 30 im = 1, nbma
+    do im = 1, nbma
         call i2extf(zi(jcour2-1+im), 1, conec(1:15), typp(1:16), nig,&
                     nid)
         zi(jcour1-1+im)=nig
         zi(jcour1-1+nbma+im)=nid
         zi(jcour4-1+nig)=zi(jcour4-1+nig)+1
         zi(jcour4-1+nid)=zi(jcour4-1+nid)+1
- 30 end do
+    end do
 !
 !
 ! --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
     n1=0
     n2=0
     bug=.false.
-    do 40 im = 1, nbnot
+    do im = 1, nbnot
 !        COMPTAGE DES EXTREMITES
         if (zi(jcour4-1+im) .eq. 1) n1=n1+1
 !        COMPTAGE NOEUDS APPARTENANT A PLUS DE DEUX MAILLES
         if (zi(jcour4-1+im) .gt. 2) n2=n2+1
- 40 end do
+    end do
 !     IL NE PEUT Y AVOIR QUE 2 NOEUDS EXTREMITES
     if (n1 .gt. 2) bug=.true.
 !     IL NE DOIT PAS Y AVOIR DE NOEUDS APPARTENANT A PLUS DE DEUX
@@ -276,10 +276,10 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
         trouv=0
-        do 50 im = 1, nbma
+        do im = 1, nbma
             if (zi(jcour1-1+im) .eq. nunori) trouv=trouv+1
             if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
- 50     continue
+        end do
 !
         if (trouv .eq. 0) then
             call utmess('F', 'ELEMENTS_68', sk=ndorig)
@@ -307,10 +307,10 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
         trouv=0
-        do 51 im = 1, nbma
+        do im = 1, nbma
             if (zi(jcour1-1+im) .eq. nunori) trouv=trouv+1
             if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
- 51     continue
+        end do
 !
         if (trouv .eq. 0) then
             call utmess('F', 'ELEMENTS_68', sk=ndorig)
@@ -336,28 +336,28 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     ------------------------------------------------------------------
         call wkvect('&&CGNOOR.NOEUD_APPARIES', 'V V I', 2*nbma, jcour3)
 !       LISTE DES NOEUDS DEJA APPARIES
-        do 60 in = 1, nbma*2
+        do in = 1, nbma*2
             zi(jcour3-1+in)=0
- 60     continue
+        end do
 !
 !       PARCOURS DE L'ENSEMBLE DES NOEUDS
-        do 90 in = 1, nbma*2
+        do in = 1, nbma*2
             if (zi(jcour3-1+in) .ne. 0) goto 80
             nunori=zi(jcour1-1+in)
 !
-            do 70 nd = in+1, nbma*2
+            do nd = in+1, nbma*2
                 if (zi(jcour1-1+nd) .eq. nunori) then
                     zi(jcour3-1+nd)=1
                     goto 80
 !
                 endif
- 70         continue
+            end do
 !
 !         NUNORI N'APPARAIT QU'UNE FOIS : C'EST L'ORIGINE
             goto 100
 !
  80         continue
- 90     continue
+        end do
         call utmess('F', 'ELEMENTS_71')
 !
 100     continue

@@ -145,7 +145,7 @@ subroutine crmema(promes, iampee)
         call jeveuo(basemo//'           .ORDR', 'L', lord)
         ch1s='&BASEIT.CH1S'
 !
-        do 220 imod = 1, nbvecb
+        do imod = 1, nbvecb
             call rsexch('F', basemo, nomchp, zi(lord-1+imod), chamno,&
                         iret)
 !
@@ -175,7 +175,7 @@ subroutine crmema(promes, iampee)
 !
             call jeveuo(nu//'.DEEQ', 'L', iadeeq)
 !
-            do 850 iddl = 1, nddle
+            do iddl = 1, nddle
                 ino=zi(iadeeq-1+nddli*2+(iddl-1)*2+1)
                 ico=zi(iadeeq-1+nddli*2+(iddl-1)*2+2)
                 if (imod .eq. 1) then
@@ -185,9 +185,9 @@ subroutine crmema(promes, iampee)
                 endif
                 ipos = (imod-1)*nddle + iddl
                 zr(lredi-1 +ipos) = zr(jcnsv-1 +(ino-1)*nbcmpi+ico)
-850         continue
+            end do
 !
-220     continue
+        end do
 !
         call jeecra(vnoeud, 'LONUTI', nddle)
         call jeecra(vrange, 'LONUTI', nddle)
@@ -226,22 +226,22 @@ subroutine crmema(promes, iampee)
 !
         call wkvect(wks, 'V V R', nbmesu, lwks)
 !
-        do 83 iddl = 1, nbmesu
-            do 84 jddl = 1, nbmesu
+        do iddl = 1, nbmesu
+            do jddl = 1, nbmesu
                 ipos = (jddl-1)*nbmesu+iddl
                 if (iddl .eq. jddl) then
                     zr(isol-1 +ipos) = 1.d0
                 else
                     zr(isol-1 +ipos) = 0.d0
                 endif
- 84         continue
- 83     continue
+            end do
+        end do
 !
         eps = 1.d2*r8prem()
         call wkvect(trav, 'V V R', nbvecb*nbmesu, ltrav)
-        do 85 iddl = 1, nbvecb*nbmesu
+        do iddl = 1, nbvecb*nbmesu
             zr(ltrav-1+iddl) = zr(lred-1+iddl)
- 85     continue
+        end do
 !
         call rslsvd(nbmesu, nbmesu, nbvecb, zr(ltrav), zr(lvals),&
                     zr(lu), zr(lv), nbmesu, zr(isol), eps,&
@@ -254,13 +254,13 @@ subroutine crmema(promes, iampee)
 !
         call wkvect(trav, 'V V R', nbvecb*nbmesu, ltrav)
 !
-        do 630 imod = 1, nbvecb
-            do 650 jddl = 1, nbmesu
+        do imod = 1, nbvecb
+            do jddl = 1, nbmesu
                 ipos = (jddl-1)*nbmesu+imod
                 iposj = (jddl-1)*nbvecb+imod
                 zr(ltrav-1+iposj) = zr(isol-1+ipos)
-650         continue
-630     continue
+            end do
+        end do
 !
         call jedetr(vals)
         call jedetr(u)
@@ -271,17 +271,17 @@ subroutine crmema(promes, iampee)
 !
 ! FIN CALCUL PSEUDO INVERSE BASE REDUITE AUX DDL MESURE (LTRAV)
 !
-        do 250 iddl = 1, nddle
-            do 260 jddl = 1, nbmesu
+        do iddl = 1, nddle
+            do jddl = 1, nbmesu
                 ipos = (jddl-1)*nddle + iddl
                 zr(lint-1+ipos) = 0.d0
-                do 270 imod = 1, nbvecb
+                do imod = 1, nbvecb
                     iposi = (imod-1)*nddle+iddl
                     iposj = (jddl-1)*nbvecb+imod
                     zr(lint-1+ipos) = zr(lint-1+ipos) + zr(lredi-1+ iposi)*zr(ltrav-1+iposj)
-270             continue
-260         continue
-250     continue
+                end do
+            end do
+        end do
 !
         call jedetr(trav)
 !
@@ -299,17 +299,17 @@ subroutine crmema(promes, iampee)
 ! CALCUL DU PRODUIT TIT*PHIid : LTRAV
         call wkvect(trav, 'V V R', nddle*nbord, ltrav)
 !
-        do 300 iddl = 1, nddle
-            do 310 jmod = 1, nbord
+        do iddl = 1, nddle
+            do jmod = 1, nbord
                 ipos = (jmod-1)*nddle + iddl
                 zr(ltrav-1+ipos) = 0.d0
-                do 320 jddl = 1, nbmesu
+                do jddl = 1, nbmesu
                     iposi = (jddl-1)*nddle+iddl
                     iposj = (jmod-1)*nbmesu+jddl
                     zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lint-1+ iposi)*zr(lmesu-1+iposj)
-320             continue
-310         continue
-300     continue
+                end do
+            end do
+        end do
 !
         call jedetr(mesint)
 !
@@ -327,16 +327,16 @@ subroutine crmema(promes, iampee)
 !
         call wkvect(wks, 'V V R', nddle, lwks)
 !
-        do 183 iddl = 1, nddle
-            do 184 jddl = 1, nddle
+        do iddl = 1, nddle
+            do jddl = 1, nddle
                 ipos = (jddl-1)*nddle+iddl
                 if (iddl .eq. jddl) then
                     zr(isol-1 +ipos) = 1.d0
                 else
                     zr(isol-1 +ipos) = 0.d0
                 endif
-184         continue
-183     continue
+            end do
+        end do
 !
 ! CALCUL DE L'INVERSE DU PRODUIT TIT*PHIid : LVSU
 !
@@ -352,13 +352,13 @@ subroutine crmema(promes, iampee)
 !
         call jedetr(wks)
 !
-        do 130 imod = 1, nbord
-            do 150 jddl = 1, nddle
+        do imod = 1, nbord
+            do jddl = 1, nddle
                 ipos = (jddl-1)*nbord+imod
                 iposj = (jddl-1)*nddle+imod
                 zr(lvsu-1+ipos) = zr(isol-1+iposj)
-150         continue
-130     continue
+            end do
+        end do
 !
         call jeecra(vsu, 'LONUTI', nbord*nddle)
 !
@@ -382,17 +382,17 @@ subroutine crmema(promes, iampee)
     call wkvect(trav, 'V V R', nddle*nbord, ltrav)
     call wkvect(wks, 'V V R', nbord*nddle, lwks)
 !
-    do 570 imod = 1, nbord
+    do imod = 1, nbord
         call rsadpa(modmes, 'L', 1, 'MASS_GENE', imod,&
                     0, sjv=ipuls, styp=k8bid)
         masg = zr(ipuls)
-        do 560 iddl = 1, nddle
+        do iddl = 1, nddle
             ipos = (iddl-1)*nbord+imod
             iposi = (imod-1)*nddle+iddl
             zr(ltrav-1+iposi)=zr(lvsu-1+ipos)*sqrt(masg)
             zr(lwks-1+ipos)=zr(lvsu-1+ipos)*sqrt(masg)
-560     continue
-570 end do
+        end do
+    end do
 !
 ! ===============================
 ! CALCUL DES TERMES DE LA <MATRICE ELEMENTAIRE>
@@ -401,27 +401,27 @@ subroutine crmema(promes, iampee)
     maelm = nomres//'.MAEL_M'
     call wkvect(maelm, 'V V R', nddle*nddle, lmaelm)
 !
-    do 420 iddl = 1, nddle
-        do 430 jddl = 1, nddle
+    do iddl = 1, nddle
+        do jddl = 1, nddle
             ipos = (jddl-1)*nddle+iddl
             zr(lmaelm-1+ipos) = 0.d0
-            do 450 imod = 1, nbord
+            do imod = 1, nbord
                 iposi = (imod-1)*nddle+iddl
                 iposj = (jddl-1)*nbord+imod
                 zr(lmaelm-1+ipos) = zr(lmaelm-1+ipos) + zr(ltrav-1+ iposi)*zr(lwks-1+iposj)
-450         continue
-430     continue
-420 end do
+            end do
+        end do
+    end do
 !
 ! RANGEMENT DES RESULTATS DANS IAMPEE
 !
-    do 700 iddl = 1, nddle
-        do 710 jddl = 1, iddl
+    do iddl = 1, nddle
+        do jddl = 1, iddl
             ipos = (iddl-1)*iddl/2 + jddl
             iposi = (jddl-1)*nddle + iddl
             zr(iampee-1+ipos) = zr(lmaelm-1+iposi)
-710     continue
-700 end do
+        end do
+    end do
 !
     call jedetr(trav)
     call jedetr(wks)

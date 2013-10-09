@@ -40,7 +40,7 @@ subroutine te0264(option, nomte)
     parameter         ( nbres=3 )
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, z, sour
+    real(kind=8) :: poids, r, z, sour
     integer :: nno, kp, npg1, i, k, itemps, ivectt, isour, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, ndim
 !
@@ -57,16 +57,16 @@ subroutine te0264(option, nomte)
     nompar(2) = 'Y'
     nompar(3) = 'INST'
 !
-    do 101 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         r = 0.d0
         z = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*(i-1) )*zr(ivf+k+i-1)
             z = z + zr(igeom+2*(i-1)+1)*zr(ivf+k+i-1)
-102      continue
+        end do
         poids = poids*r
         valpar(1) = r
         valpar(2) = z
@@ -78,8 +78,8 @@ subroutine te0264(option, nomte)
                     soun, icode)
         sour = theta*sounp1 + (1.0d0-theta)*soun
 !CDIR$ IVDEP
-        do 103 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids * zr(ivf+k+i-1) * sour
-103      continue
-101  end do
+        end do
+    end do
 end subroutine

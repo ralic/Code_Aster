@@ -150,11 +150,11 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 ! RECUPERATION RANG DDL
 !
-    do 20 i = 1, nbnoe
+    do i = 1, nbnoe
         inoe=zi(llnoe+i-1)
         nunoe=zi(lldes+inoe-1)
         call isdeco(zi(lldes+2*nbnot+(inoe-1)*nbec+1-1), idec, nbcmp)
-        do 30 j = 1, nbcmp
+        do j = 1, nbcmp
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) then
@@ -163,8 +163,8 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
                     ivddl(nbddl-nbdif)=iran(1)
                 endif
             endif
- 30     continue
- 20 continue
+        end do
+    end do
 !
     nbdif=-nbdif
 !
