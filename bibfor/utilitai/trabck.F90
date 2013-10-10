@@ -31,6 +31,9 @@ subroutine trabck(cmess, iexit)
     implicit none
     character(len=*) :: cmess
     integer(kind=4) :: iexit
+#if HAVE_BACKTRACE != 1
+    integer :: dummy
+#endif
 !   Dummy argument si HAVE_TRACEBACKQQ n'est pas defini
 #if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
     call TRACEBACKQQ(string=cmess, USER_EXIT_CODE=iexit)

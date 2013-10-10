@@ -18,9 +18,9 @@ interface
     subroutine elg_comptt(c, t, nbeq, clag1)
 # ifdef _HAVE_PETSC
         Mat :: c, t
-        # else
+# else
         integer :: c, t
-        # endif
+# endif
         integer :: nbeq
         integer :: clag1
     end subroutine elg_comptt

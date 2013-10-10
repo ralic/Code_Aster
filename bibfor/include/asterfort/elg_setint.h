@@ -23,11 +23,11 @@ interface
         PetscInt :: inda(nba)
         PetscInt :: indb(nbb)
         PetscInt :: indc(min(nba, nbb))
-        # else
+# else
         integer(kind=4) :: inda(nba)
         integer(kind=4) :: indb(nbb)
         integer(kind=4) :: indc(min(nba, nbb))
-        # endif
+# endif
         integer, intent(out) :: nbc
         character(len=6) :: remp
     end subroutine elg_setint

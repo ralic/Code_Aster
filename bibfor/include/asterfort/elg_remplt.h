@@ -19,9 +19,9 @@ interface
                           nonu)
 # ifdef _HAVE_PETSC
         Mat :: c, t
-        # else
+# else
         integer :: c, t
-        # endif
+# endif
         integer :: nbeq
         integer :: clag1
         integer :: nbnvco

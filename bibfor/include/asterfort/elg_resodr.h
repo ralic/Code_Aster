@@ -18,9 +18,9 @@ interface
     subroutine elg_resodr(lt, c, z)
 # ifdef _HAVE_PETSC
         Mat :: lt
-        # else
+# else
         integer :: lt
-        # endif
+# endif
         real(kind=8) :: c(*)
         real(kind=8) :: z(*)
     end subroutine elg_resodr

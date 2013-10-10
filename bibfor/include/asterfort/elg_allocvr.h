@@ -18,9 +18,9 @@ interface
     subroutine elg_allocvr(vect1, n1)
 # ifdef _HAVE_PETSC
         Vec :: vect1
-        # else
+# else
         integer :: vect1
-        # endif
+# endif
         integer :: n1
     end subroutine elg_allocvr
 end interface

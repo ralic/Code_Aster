@@ -59,6 +59,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     character(len=1) :: kbid
     character(len=8) :: ma, nomgds
     character(len=14) :: nu1, nu2
+    character(len=19) :: ligrmo
     integer :: ibid, ico, kdiag, neq2, nnz2
     integer :: ilig, jcol, jnzcol, jsmdi2, ndiag, k, jsmhc2
     integer :: jvalm2, jrefa2, j1, ier, ieq1, ieq2, nbnl, nbno

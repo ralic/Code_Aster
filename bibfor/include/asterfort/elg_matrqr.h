@@ -16,11 +16,11 @@
 !
 interface
     subroutine elg_matrqr(ct, r, nbphys, nblag)
-# ifdef _HAVE_PETSC
+#ifdef _HAVE_PETSC
         Mat :: ct, r
-        # else
+#else
         integer :: ct, r
-        # endif
+#endif
         integer :: nbphys
         integer :: nblag
     end subroutine elg_matrqr

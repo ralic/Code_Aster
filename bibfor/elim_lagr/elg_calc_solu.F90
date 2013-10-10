@@ -55,6 +55,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     character(len=1) :: kbid
     character(len=14) :: nu1, nu2
     character(len=19) :: matas2
+    real(kind=8) :: val
     integer :: jrefa1, ibid
     integer :: neq1, neq2, ico, ieq2
     integer :: k1, k2, jdelg1, jdlg2, jconl1

@@ -82,6 +82,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     integer :: iprem, k, ibid, ierd, nglo, kdeb, jnequ
     integer :: jrefa, jtrav, kptsc
     integer(kind=8) :: n8
+    real(kind=8) :: r8
     integer :: nbid
     PetscInt :: m, n
 !

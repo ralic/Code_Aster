@@ -18,8 +18,8 @@ interface
     subroutine elg_calcxl(x1, vlag)
 # ifdef _HAVE_PETSC
         Vec :: x1, vlag
-        # else
+# else
         integer :: x1, vlag
-        # endif
+# endif
     end subroutine elg_calcxl
 end interface
