@@ -21,139 +21,102 @@
 #       If this message is emitted: No word lists can be found for the language "XX",
 #       you must also install the dictionnary for the language "XX" (*.per).
 
-DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
-      PAR_LOT='OUI')
+DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 
-import os
-os.environ['LANG'] = 'fr_FR.utf8'
-# remove all LC_xxxx variables
-keys = [k for k in os.environ.keys() if k.startswith('LC_')]
-for k in keys:
-    del os.environ[k]
-
-import os.path as osp
-from glob import glob
-
-from Utilitai.Utmess import UTMESS
-import Messages
-MSGDIR = osp.dirname(Messages.__file__)
+# Que faire en cas d'erreur avec ce test ?
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# Dans l'output de l'exécution, on trouvera des lignes d'impression lors de la vérification
+# de chaque catalogue de messages :
+#       <fr> checking jeveux1...
+# Puis, s'il y a des mots qui ne sont pas dans le dictionnaire, il y a deux alarmes :
+#
+# - Cette alarme liste les mots inconnus du dictionnaire pour chaque message.
+#   Dans cet exemple, c'est le message numéro 2 du catalogue dvp.py qui est en cause.
+#
+#   !--------------------------------------------------
+#   ! <A> <CATAMESS_1>
+#   !
+#   ! Erreur lors de la vérification des messages.
+#   ! Liste des alarmes et des erreurs par message
+#   !
+#   ! <fr> dvp: dvp_2: unknown words ('floating',)
+#   ! ...
+#
+# - Cette alarme fournit la liste des tous les mots inconnus :
+#
+#   !--------------------------------------------------
+#   ! <A> <CATAMESS_1>
+#   !
+#   ! Erreur lors de la vérification des messages.
+#   ! Liste des nouvelles erreurs introduites à corriger :
+#   !
+#   ! ['CELK', 'DRDY', 'DRDYB', 'LIGREL', 'LILI', 'dmax', ...
+#
+# Le test est alors NOOK de ces N mots inconnus.
+#
+#
+# Le dictionnaire contient les termes en français, ainsi que les mots-clés du catalogue
+# de commandes. Cependant, il y a quelques subtilités dans nos messages qui obligent à
+# découper les mots dès qu'il y a un caractère spécial (les signes de ponctuation,
+# les chiffres mais aussi le signe "-" ou "'"), ce qui n'est conforme aux règles.
+# Par exemple: "sous-jacent" sera vérifié en deux fois "sous" et "jacent" (qui n'existe
+# pas et a donc été ajouté). Contacter le responsable du test si vous êtes dans ce cas.
+#
+# Mots inconnus du dictionnaire malgré tout acceptés pour le moment.
+# L'objectif est bien sûr de réduire cette liste !
+# Vous ne devez pas ajoutés de mots à cette liste. Il faut corriger le texte
+# du message incriminé ou bien mettre un ASSERT(condition) si cela concerne
+# uniquement le développeur.
+previous_errors = [
+    'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS', 'ASCSEP',
+    'BiCG', 'CHARAC', 'CHARACTER', 'CHNO', 'CHPVER',
+    'CINX', 'CINx', 'CLO', 'COMBU', 'CVRC', 'DEEQ', 'DELG',
+    'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
+    'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'ECLAU', 'EDITGD', 'EFNEMA',
+    'ELREFA', 'ELREFE', 'ETENCA', 'FATEMI', 'FINSF', 'FLAHQR',
+    'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE', 'GL', 'GREL',
+    'HDFCRF', 'HEXS', 'ICHIN', 'ICOEF', 'IDDL',
+    'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA',
+    'KMOD', 'KSIB', 'KTILDA', 'LCDPPA', 'LIBRARY', 'LIGREL',
+    'LMAT', 'LONCUM', 'LONT', 'LTNT', 'Map', 'NBCMP', 'NBDDL',
+    'NBMECA', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
+    'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
+    'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL',
+    'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
+    'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
+    'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
+    'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
+    'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
+    'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
+    'USASTE', 'UTTCPU', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
+    'XOUS', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc',
+    'autor', 'breakdown','cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq',
+    'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn',
+    'deltat', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa',
+    'er', 'error', 'etanca', 'etenca', 'exchml', 'exe', 'export',
+    'flag', 'floating', 'fointa', 'fonree', 'grels', 'indn', 'ipos',
+    'ligrel', 'lkcaln', 'lmat', 'longt', 'majpad', 'mem',
+    'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
+    'nomres', 'nomta', 'nomtyp', 'not', 'nt', 'number', 'nume',
+    'numeli', 'overflow', 'phenomene', 'pnosym', 'pos',
+    'raymin', 'rcmaco', 'relcom',
+    'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch',
+    'skin', 'tbliva', 'tmax', 'tmin', 'typelem', 'typesd',
+    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect',
+    'CELK', 'DRDY', 'DRDYB', 'LIGREL', 'LILI', 'dmax', 'elem', 'ep', 'erjac', 'gl',
+    'kr', 'lg', 'lt', 'nmax', 'nume', 'resuelem', 'resultat', 'sd', 'vect',
+    # pour comport2 qui écrit un morceau de fichier de commandes
+    'EXZ', 'EYZ', 'EZZ',
+    ]
 
 # this replaces 'import supv002a.33'
 execfile('fort.33', globals())
 
-checker = Checker()
-
-LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, '*.py'))]
-#LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, 'sup*.py'))]
-
-# check default/native messages
-check_catamess(checker, 'fr', LCATA)
-# check translated messages in english
-check_catamess(checker, 'en', LCATA)
-
-nbwrn = checker.count_unknown_words()
-warns = checker.get_warnings() + """\nNumber of unknown words : %d""" % nbwrn
-nberr = checker.count_errors()
-errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
-
-# Mots-cles inconnus du dictionnaire malgre tout acceptes pour le moment
-# L'objectif est bien sur de reduire cette liste !
-# Permet d'afficher la liste des nouveaux mots interdits ajoutes.
-previous_errors = set([
-    'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS.F', 'ASCSEP', 'AU-YANG',
-    'BiCG', 'CHARAC', 'CHARACTER', 'CHNO', 'CHPVER',
-    'CINX', 'CINx', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DEEQ', 'DELG',
-    'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
-    'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'ECLAU', 'EDITGD', 'EFNEMA',
-    'ELREFA', 'ELREFE', 'ETENCA', 'FATEMI', 'FINSF', 'FLAHQR',
-    'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE.INDIRECT', 'GL', 'GREL',
-    'HDFCRF', 'HEXS', 'HUJCI', 'HUJCRI', 'HUJDDD', 'HUJDP', 'HUJELA', 'HUJIID', 'HUJJID',
-    'HUJKSI', 'HUJNVI', 'HUJPLA', 'HUJPOT', 'HUJTEL', 'HUJTID', 'ICHIN', 'ICOEF', 'IDDL',
-    'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA', 'K.PHI',
-    'K.U', 'KMOD', 'KSIB', 'KTILDA', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
-    'LMAT', 'LONCUM', 'LONT', 'LTNT', 'Map', 'NBCMP', 'NBDDL',
-    'NBMECA', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
-    'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
-    'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUME.LILI',
-    'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
-    'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
-    'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
-    'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
-    'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
-    'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
-    'USASTE.F', 'UTTCPU', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
-    'XOUS', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc.F',
-    'autor', 'breakdown','cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq.f',
-    'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn', "d'ACIER",
-    'deltat', 'dfdi', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa', 'elrefe', 'ep',
-    'er', 'error', 'etanca', 'etenca', 'exchml.f', 'exe', 'export',
-    'flag', 'floating', 'fointa', 'fonree', 'gl', 'grels',
-    'i.e', 'indn', 'ipos', 'kr', "l'AXE", "l'EVOL", 'lg',
-    'ligrel', 'lkcaln', 'lkdhds', 'lkds', 'lklmat', 'lmat', 'longt', 'majpad',
-    'materiau.nomrc', 'mdump', 'medconforme', 'medimport', 'mem', 'memjeveux',
-    'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
-    'nomres', 'nomta', 'nomte', 'nomtyp', 'not', 'nt', 'number', 'nume',
-    'numeli', 'overflow', 'phenomene', 'pnosym', 'post',
-    'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
-    'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
-    'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
-    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx',
-    'xxxxxx.py',
-    # pour comport2 qui écrit un morceau de fichier de commandes
-    'EXZ', 'EYZ', 'EZZ',
-    ])
-
-current_errors = checker.get_unknown_words()
-new = list(set(current_errors).difference(previous_errors))
-new.sort()
-nbnew = len(new)
-correct = list(previous_errors.difference(current_errors))
-correct.sort()
-
-if nbnew > 0:
-    UTMESS('F', 'SUPERVIS2_5',
-           valk=("supv002a",
-                 "Liste des nouvelles erreurs introduites a corriger :",
-                 str(new)))
-UTMESS('A', 'SUPERVIS2_5',
-       valk=("supv002a",
-             "Liste des mots inconnus des dictionnaires :",
-             str(current_errors)))
-UTMESS('A', 'SUPERVIS2_5',
-       valk=("supv002a",
-             "Liste des erreurs qui n'apparaissent plus :",
-             str(correct)))
-if nberr > 0:
-    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", errors, ""))
-if nbwrn > 0:
-    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", warns, ""))
-#mods = checker.get_modules()
-
-tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,
-           NOM_PARA='NBERR',
-           TABLE=tab,)
-
-tnew = CREA_TABLE(LISTE=_F(PARA='NBNEW_ERR', LISTE_I=nbnew))
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,
-           NOM_PARA='NBNEW_ERR',
-           TABLE=tnew,)
-
-tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=286,
-           VALE_REFE_I=0,
-           PRECISION=286,
-           NOM_PARA='NBWARN',
-           TABLE=tabw,
-           )
+# TEST_TABLE are included in the "macro-command"
+SUPV002(ERREUR=previous_errors,
+        # print all unknown words returns by aspell
+        #INFO=2,
+        )
 
 FIN()

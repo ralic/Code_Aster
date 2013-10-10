@@ -20,12 +20,12 @@
 cata_msg={
 
 1: _(u"""
- HUJPLA :: nombre de variables internes incorrect:
+ HUJEUX : nombre de variables internes incorrect:
            NVI > NVIMAX
 """),
 
 2: _(u"""
- HUJDDD :: on ne calcule pas DPSIDS pour K=4.
+ HUJEUX : on ne calcule pas DPSIDS pour K=4.
            - vérifiez la programmation -
 """),
 
@@ -47,25 +47,25 @@ cata_msg={
 """),
 
 4: _(u"""
- HUJEUX :: les modélisations autorisées sont 3D D_PLAN ou AXIS
+ HUJEUX : les modélisations autorisées sont 3D D_PLAN ou AXIS
 """),
 
 5: _(u"""
- HUJEUX :: K différent de NBMECA pour le mécanisme isotrope
+ HUJEUX : K différent de NBMECA pour le mécanisme isotrope
            - vérifiez la programmation -
 """),
 
 6: _(u"""
- HUJEUX :: erreur inversion par pivot de Gauss
+ HUJEUX : erreur inversion par pivot de Gauss
 """),
 
 7: _(u"""
- HUJCRI :: EPSI_VP est trop grand:
+ HUJEUX : EPSI_VP est trop grand:
            l'exponentielle explose
 """),
 
 8: _(u"""
- HUJEUX :: mécanisme indéterminé
+ HUJEUX : mécanisme indéterminé
            - vérifiez la programmation -
 """),
 
@@ -77,20 +77,20 @@ localement via ITER_INTE_PAS.
 """),
 
 10: _(u"""
- HUJKSI :: mot-clé inconnu
+ HUJEUX : mot-clé inconnu
 """),
 
 11: _(u"""
- HUJNVI :: modélisation inconnue
+ HUJEUX : modélisation inconnue
 """),
 
 12: _(u"""
- HUJCI1 :: l'incrément de déformation est nul:
+ HUJEUX : l'incrément de déformation est nul:
            on ne peut pas trouver le zéro de la fonction.
 """),
 
 14: _(u"""
- HUJTID :: erreur dans le calcul de la matrice tangente
+ HUJEUX : erreur dans le calcul de la matrice tangente
 """),
 
 15: _(u"""
@@ -105,45 +105,45 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 17 : _(u"""
-  HUJCI1 :: Soit le zéro n'existe pas, soit il se trouve hors des
+  HUJEUX : Soit le zéro n'existe pas, soit il se trouve hors des
             bornes admissibles.
 """),
 
 18 : _(u"""
-  HUJCI1 :: Cas de traction à l'instant moins.
+  HUJEUX : Cas de traction à l'instant moins.
 """),
 
 19 : _(u"""
-  MONOCRISTAL :: écrouissage cinématique non trouvé.
+  MONOCRISTAL : écrouissage cinématique non trouvé.
 """),
 
 20 : _(u"""
-  MONOCRISTAL :: écoulement non trouvé.
+  MONOCRISTAL : écoulement non trouvé.
 """),
 
 21 : _(u"""
-  MONOCRISTAL :: écrouissage isotrope non trouvé.
+  MONOCRISTAL : écrouissage isotrope non trouvé.
 """),
 
 23 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec
+  MONOCRISTAL : la matrice d'interaction est définie avec
   4 coefficients. Ceci n'est applicable qu'avec 24 systèmes de
   glissement (famille BCC24).
 """),
 
 24 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec
+  MONOCRISTAL : la matrice d'interaction est définie avec
   6 coefficients. Ceci n'est applicable qu'avec 12 systèmes de
   glissement.
 """),
 
 25 : _(u"""
-  MONOCRISTAL :: la matrice d'interaction est définie avec
-  un nombre de coefficients incorrect :: il en faut 1, ou 4, ou 6.
+  MONOCRISTAL : la matrice d'interaction est définie avec
+  un nombre de coefficients incorrect : il en faut 1, ou 4, ou 6.
 """),
 
 26: _(u"""
- LETK - lklmat :: paramètres de la loi LETK non cohérents
+ LETK : paramètres de la loi LETK non cohérents
 """),
 
 27 : _(u"""
@@ -155,60 +155,60 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 29: _(u"""
- LETK - lkdhds :: division par zéro - entrée en plasticité avec un déviateur  nul.
+ LETK : division par zéro - entrée en plasticité avec un déviateur  nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 30: _(u"""
- LETK - lkds2h :: division par zéro - entrée en plasticité avec un déviateur nul.
+ LETK : division par zéro - entrée en plasticité avec un déviateur nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 31: _(u"""
- LETK - lkcaln :: division par zéro - entrée en plasticité avec un déviateur nul.
+ LETK - lkcaln : division par zéro - entrée en plasticité avec un déviateur nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
 32: _(u"""
- VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.
+ VISC_CINx_CHAB : pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.
  Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
 """),
 
 33: _(u"""
- NMHUJ :: ELAS/ELAS_ORTH :: erreur de lecture des propriétés matériaux.
+ NMHUJ : ELAS/ELAS_ORTH : erreur de lecture des propriétés matériaux.
 """),
 
 34: _(u"""
- HUJTID :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 35: _(u"""
- HUJDP :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 36: _(u"""
- HUJTEL :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 37: _(u"""
- HUJPOT :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 38: _(u"""
- HUJJID :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 39: _(u"""
- HUJIID :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 40: _(u"""
- HUJELA :: ELAS/ELAS_ORTH :: cas non prévu.
+ HUJEUX : ELAS/ELAS_ORTH : cas non prévu.
 """),
 
 
 41: _(u"""
- CAM_CLAY ::
+ CAM_CLAY :
  Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
  La subdivision du pas de temps au niveau global est déclenchée.
  Il faut pour cela l'autoriser avec la commande DEFI_LIST_INST.
@@ -219,7 +219,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 42: _(u"""
- CAM_CLAY ::  KCAM et PTRAC doivent vérifier la relation suivante :
+ CAM_CLAY :  KCAM et PTRAC doivent vérifier la relation suivante :
 
               KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/KAPA * PTRAC
 """),

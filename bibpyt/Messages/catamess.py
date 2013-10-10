@@ -20,6 +20,13 @@
 # ce catalogue est réservé à Utmess !
 cata_msg={
 
+1 :_(u"""
+Erreur lors de la vérification des messages.
+%(k1)s
+
+%(k2)s
+"""),
+
 6: _(u"""
 Fin à la suite de message(s) <E>
 """),

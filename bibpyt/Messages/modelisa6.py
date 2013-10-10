@@ -261,10 +261,6 @@ Solution : Il faut dédoubler le noeud.
  la limite d'élasticité est déjà renseignée dans ELAS_META
 """),
 
-63 : _(u"""
- objet  %(k1)s .materiau.nomrc non trouvé
-"""),
-
 64 : _(u"""
  type sd non traité:  %(k1)s
 """),

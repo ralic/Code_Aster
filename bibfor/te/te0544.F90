@@ -68,12 +68,8 @@ subroutine te0544(option, nomte)
     call elref4(lielrf(2), 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    if (nno .gt. 27) then
-        call utmess('F', 'ELEMENTS4_31')
-    endif
-    if (npg .gt. 27) then
-        call utmess('F', 'ELEMENTS4_31')
-    endif
+    ASSERT(nno .le. 27)
+    ASSERT(npg .le. 27)
 !
 !
 ! - PARAMETRES EN ENTREE

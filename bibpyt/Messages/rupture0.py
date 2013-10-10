@@ -140,7 +140,7 @@ le maillage de manière à rendre les mailles proches du fond de fissure de tail
 """),
 
 18: _(u"""
-Problème à la récupération du modèle dans la sd résultat fournie.
+Problème à la récupération du modèle dans la structure de données résultat fournie.
 -> Risque et Conseil :
 Veuillez vérifier que le concept fourni au mot-clé RESULTAT correspond
 au résultat à considérer.
@@ -227,7 +227,7 @@ Cela peut être dû au fait :
 """),
 
 35: _(u"""
-Attention, le vecteur tangent au 1er noeud du fond de fissure (DTAN_ORIG) est dans le sens
+Attention, le vecteur tangent au premier noeud du fond de fissure (DTAN_ORIG) est dans le sens
 opposé à celui calculé automatiquement (%(r1)f %(r2)f %(r3)f).
 Cela est probablement une erreur, qui peut conduire à des résultats faux.
 -> Risque et Conseil :

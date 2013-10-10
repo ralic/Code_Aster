@@ -189,7 +189,7 @@ cata_msg = {
 """),
 
 64 : _(u"""
- un seul ELAS svp
+ Il ne faut qu'un comportement élastique.
 """),
 
 65 : _(u"""

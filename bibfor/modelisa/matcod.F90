@@ -4,6 +4,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterfort/alfint.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
@@ -126,9 +127,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
     do 100 l = 1, nbmat
         nommat=zk8(igrp+indmat+l-1)
         call jeexin(nommat//'.MATERIAU.NOMRC', iret)
-        if (iret .eq. 0) then
-            call utmess('F', 'MODELISA6_63', sk=nommat)
-        endif
+        ASSERT(iret .ne. 0)
         call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', zi(jnbcm+l-1))
         call jeveut(nommat//'.MATERIAU.NOMRC', 'L', zi(jnomr+l-1))
         nbv = 0

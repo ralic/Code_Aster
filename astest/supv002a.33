@@ -8,14 +8,20 @@ import gettext
 import tempfile
 from subprocess import Popen, PIPE
 from functools import partial
+from glob import glob
+import traceback
+import multiprocessing as MPR
+import Queue
+import time
+import signal
 
 from Noyau.N_types import is_int
-from Utilitai.Utmess import MessageLog
+from Utilitai.Utmess import UTMESS, MessageLog
 from Execution.i18n import localization as LO
 from Execution.strfunc import ufmt, convert
+import Messages
 
-MSG_ENCODING = 'iso-8859-1'
-
+ENCODING = "utf-8"
 VALUES = MessageLog.default_args.copy()
 VALUES['ktout'] = 'xxxxxx'
 
@@ -29,16 +35,29 @@ RE_UNAUTH = [
     re.compile('([*#=\+\-!/\?<>&@]{4})', re.M),
 ]
 
-loginfo = partial(aster.affiche, 'MESSAGE')
+try:
+    import aster
+    loginfo = partial(aster.affiche, 'MESSAGE')
+except ImportError:
+    def loginfo(msg):
+        print msg
+logdbg = None
 
-class Checker:
+class Checker(object):
     """A simple checker object."""
-    def __init__(self):
+    def __init__(self, aspell):
         self.err = []
         self.wrn = []
+        self.allwarns = []
         self.lang = None
         self.mod = None
         self.words = set()
+        self.allwords = set()
+        self.ignored = set()
+        self.aspell = aspell
+
+    def set_ignored(self, errors):
+        self.ignored = set(errors)
 
     def set_current_lang(self, lang):
         self.lang = lang
@@ -56,8 +75,12 @@ class Checker:
         self.wrn.append((self.lang, self.mod, error))
 
     def warning_spell(self, idmess, words):
-        self.warning("%s: unknown words %s" % (idmess, tuple(words)))
-        self.words.update(words)
+        msg = "%s: unknown words %s" % (idmess, tuple(words))
+        if set(words).difference(self.ignored):
+            self.warning(msg)
+            self.words.update(words)
+        self.allwarns.append((self.lang, self.mod, msg))
+        self.allwords.update(words)
 
     def count_errors(self):
         return len(self.err)
@@ -73,8 +96,17 @@ class Checker:
         txt = ["<%s> %s: %s" % wrn for wrn in self.wrn]
         return os.linesep.join(txt)
 
+    def get_all_warnings(self):
+        txt = ["<%s> %s: %s" % wrn for wrn in self.allwarns]
+        return os.linesep.join(txt)
+
     def get_unknown_words(self):
         lw = list(self.words)
+        lw.sort()
+        return lw
+
+    def get_all_words(self):
+        lw = list(self.allwords)
         lw.sort()
         return lw
 
@@ -84,11 +116,109 @@ class Checker:
         lmod.sort()
         return lmod
 
+def read_file(stream, queue):
+    """Read on stream and put lines into queue"""
+    while True:
+        line = stream.readline().strip()
+        logdbg and logdbg("aspell outputs: %r" % line)
+        queue.put(line)
+
+class AspellCall(object):
+    """A pipe to call aspell"""
+    def __init__(self, personal_dict, lang, encoding):
+        """Open the pipe"""
+        cmd = ['aspell', 'pipe',
+               '--encoding=%s' % encoding,'--lang=%s' % lang]
+        if osp.exists(personal_dict):
+            cmd.append('--personal=%s' % personal_dict)
+        logdbg and logdbg('command: ' + ' '.join(cmd))
+        self.lang = lang
+        self.pipe = Popen(cmd, stdin=PIPE, stdout=PIPE)
+        self.inp = self.pipe.stdin
+        self.out = self.pipe.stdout
+        self.queue = MPR.Queue()
+        self.rdr = MPR.Process(target=read_file, args=(self.out, self.queue))
+        self.rdr.start()
+        init = self.queue.get()
+        assert 'aspell' in init.lower(), \
+            'aspell probably failed to start: \n%s' % init
+        flags = re.M | re.I
+        sep = r' *&@+-~#!%^,.;?:/§*\"\'|`\()[]{}<>²_$£øµ=0123456789'
+        self._rxcl1 = re.compile('[%s]+' % re.escape(sep), flags)
+        self._rxcl2 = re.compile('\s[0-9\.]+\s', flags)
+        self._rxcl3 = re.compile("\s[a-z]\s", flags)
+        self._rxspl = re.compile('[%s]+' % re.escape(sep), flags)
+
+    def __del__(self):
+        """Close the pipe"""
+        self.close()
+
+    def close(self):
+        """Close the pipe"""
+        self.inp.close()
+        self.out.close()
+        self.rdr.terminate()
+        self.pipe.terminate()
+
+    def _clean(self, string):
+        """clean 'string' before passing it to aspell"""
+        if type(string) is not unicode:
+            string = unicode(string, ENCODING)
+        string = ' '.join(string.strip().split())
+        string = self._rxcl1.sub(' ', string)
+        string = self._rxcl2.sub(' ', string)
+        string = self._rxcl3.sub(' ', string)
+        uwords = self._rxspl.split(string.strip())
+        uwords = [i for i in uwords if i and not i[0].isdigit()]
+        string = ' '.join([i.encode(ENCODING) for i in uwords if len(i) > 1])
+        return string.strip()
+
+    def send(self, string):
+        """Send 'string' and return the response of aspell"""
+        string = self._clean(string)
+        logdbg and logdbg('check: %r' % string)
+        self.inp.write(string + os.linesep)
+        words = string.split()
+        logdbg and logdbg('words: %r' % words)
+        resp = []
+        if not words:
+            return words, resp
+        while True:
+            try:
+                resp.append(self.queue.get_nowait())
+                #logdbg and logdbg('returns: %r' % resp[-1])
+            except Queue.Empty:
+                if len(resp) == 0 or resp[-1] != '':
+                    continue
+                break
+        if len(resp) != len(words) + 1:
+            loginfo("warning: expected answer of aspell:\n words=%r\n resp=%r" \
+                    % (words, resp))
+        #logdbg and logdbg('resp: %r' % zip(words, resp))
+        return words, resp
+
+    def check(self, string):
+        """Return the unknown words"""
+        words, resp = self.send(string)
+        unknown = [w for w, r in zip(words, resp) if r.strip() != '*']
+        return unknown
+
 def get_cata_msg(catamess):
-    d = {}
-    mod = __import__('Messages.%s' % catamess, d, d, [catamess])
-    reload(mod)
-    cata_msg = getattr(mod, 'cata_msg', {})
+    """Import a messages file"""
+    cata_msg = {}
+    try:
+        d = {}
+        mod = __import__('Messages.%s' % catamess, d, d, [catamess])
+        reload(mod)
+        cata_msg = getattr(mod, 'cata_msg', {})
+    except UnicodeDecodeError, exc:
+        UTMESS('F', 'CATAMESS_1',
+               valk=("Encodage invalide pour le fichier de messages : '%s'" % catamess,
+                     traceback.format_exc()))
+    except Exception, exc:
+        UTMESS('F', 'CATAMESS_1',
+               valk=("Nom du fichier de messages : '%s'" % catamess,
+                     traceback.format_exc()))
     return cata_msg
 
 def check_format(checker, catamess, idmess, msg, typ):
@@ -134,9 +264,12 @@ def check_msg(checker, catamess, msg, key, lang):
     for typ in ('integer', 'real', 'string', 'other1', 'other2'):
         check_format(checker, catamess, idmess, msg, typ)
     if txt and lang == 'fr':
-        pwl = get_personal_dict()
-        if pwl:
-            check_spelling(checker, catamess, txt, key, lang)
+        logdbg and logdbg('idmess: %s' % idmess)
+        unknown = checker.aspell.check(txt)
+        if unknown:
+            idmess = "%s_%s" % (catamess, key)
+            unknown = [convert(word) for word in unknown]
+            checker.warning_spell(idmess, unknown)
 
 _pws = None
 def get_personal_dict(name='dict'):
@@ -146,7 +279,7 @@ def get_personal_dict(name='dict'):
         return _pws
     fd, fname = tempfile.mkstemp(dir=os.getcwd())
     fobj = os.fdopen(fd, 'w')
-    cnt = ['personal_ws-1.1 fr 0 utf-8', ]
+    cnt = ['personal_ws-1.1 fr 0 %s' % ENCODING, ]
     templ = osp.join(os.environ['ASTER_ROOT'], 'share', 'codeaster', 'code_aster_%s.aspell.per')
     cata = templ % 'cata'
     if osp.exists(cata):
@@ -158,40 +291,12 @@ def get_personal_dict(name='dict'):
         # ignore the first line
         cnt.extend(open(cawl, 'r').read().splitlines()[1:])
         _pws = fname
-    fobj.write(os.linesep.join(cnt))
+    fobj.write(os.linesep.join([line for line in cnt if line.strip()]))
     fobj.close()
     return _pws
 
-def check_spelling(checker, catamess, msg, key, lang, encoding=None):
-    """Check the spelling of the message."""
-    if catamess == 'debug':
-        return
-    idmess = "%s_%s" % (catamess, key)
-    pwl = get_personal_dict()
-    cmd = [
-        'aspell', 'list',
-        '--lang=%s' % lang,
-        #'--master=%s' % lang,
-    ]
-    if encoding:
-        cmd.append('--encoding=%s' % encoding)
-    if osp.exists(pwl):
-        cmd.append('--personal=%s' % pwl)
-    if type(msg) not in (str, unicode):
-        checker.error("error (%s): invalid message type: %s" % (key, type(msg)))
-        return
-    echo = Popen(['echo', convert(msg)], stdout=PIPE, close_fds=True)
-    ps = Popen(cmd, stdin=echo.stdout, stdout=PIPE, stderr=PIPE)
-    echo.stdout.close()
-    out, err = ps.communicate()
-    if ps.returncode != 0:
-        checker.error("error (%s): spelling failed with error message: %s" % (key, err))
-    unknown = out.split()
-    if unknown:
-        unknown = [convert(word) for word in unknown]
-        checker.warning_spell(idmess, unknown)
-
 def check_catamess(checker, lang, l_cata):
+    """Check all the messages files"""
     checker.set_current_lang(lang)
     checker.set_current_mod('-')
     loginfo("<i18n> lang=%s, domain=%s, localedir=%s" % (LO.current_lang, LO.domain, LO.localedir))
@@ -201,7 +306,7 @@ def check_catamess(checker, lang, l_cata):
         return
     pwl = get_personal_dict()
     if not pwl and lang == 'fr':
-        checker.warning("Code_Aster personal dict not found: %s" % pwl)
+        checker.error("Code_Aster personal dict not found: %s" % pwl)
     for catamess in l_cata:
         checker.set_current_mod(catamess)
         loginfo("<%s> checking %s..." % (lang, catamess))
@@ -210,3 +315,126 @@ def check_catamess(checker, lang, l_cata):
             if type(msg) == dict:
                 msg  = msg['message']
             check_msg(checker, catamess, msg, key, lang)
+
+def timekeeper(pid, delay):
+    """Kill 'pid' if it times out"""
+    time.sleep(delay)
+    UTMESS('E', 'CATAMESS_1',
+           valk=("""
+The process %d timed out after %d seconds.
+
+It probably blocks reading the response of aspell on its stdout...
+Try run with INFO=2 to have all the details.
+""" % (pid, delay), """Interruption : kill the main process!"""))
+    os.kill(pid, signal.SIGTERM)
+
+def supv002_ops(self, ERREUR, **kwargs):
+    """Fake macro-command to check messages"""
+    global logdbg
+    if kwargs.get('INFO') == 2:
+        logdbg = loginfo
+    if not kwargs.get('unittest'):
+        self.set_icmd(1)
+        CREA_TABLE = self.get_cmd('CREA_TABLE')
+        TEST_TABLE = self.get_cmd('TEST_TABLE')
+    # existing errors
+    previous_errors = set(ERREUR)
+    os.environ['LANG'] = 'fr_FR.utf8'
+    # remove all LC_xxxx variables
+    keys = [k for k in os.environ.keys() if k.startswith('LC_')]
+    for k in keys:
+        del os.environ[k]
+    msgdir = osp.dirname(Messages.__file__)
+    LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, '*.py'))]
+    #LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, 'mecanonline9.py'))]
+
+    # start the timekeeper
+    ptk = MPR.Process(target=timekeeper, args=(os.getpid(), 60))
+    ptk.start()
+    aspell = AspellCall(get_personal_dict(), 'fr', ENCODING)
+    checker = Checker(aspell)
+    checker.set_ignored(ERREUR)
+    # check default/native messages
+    check_catamess(checker, 'fr', LCATA)
+    # check translated messages in english
+    check_catamess(checker, 'en', LCATA)
+    # close aspell
+    aspell.close()
+    # stop the timekeeper
+    ptk.terminate()
+
+    nberr = checker.count_errors()
+    errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
+    allw = checker.get_all_words()
+    nbwrn = len(allw)
+    warns = checker.get_warnings()
+    torm = list(previous_errors.difference(allw))
+    torm.sort()
+    new = checker.get_unknown_words()
+    nbnew = len(new)
+    
+    if kwargs.get('unittest'):
+        print warns
+        print errors
+        return 1
+
+    if nberr > 0:
+        UTMESS('A', 'CATAMESS_1', valk=("%6d erreurs" % nberr, errors))
+    if kwargs.get('INFO') == 2:
+        warns = checker.get_all_warnings()
+    if warns:
+        UTMESS('A', 'CATAMESS_1',
+               valk=("Liste des alarmes et des erreurs par message", warns))
+    if nbnew > 0:
+        UTMESS('A', 'CATAMESS_1',
+               valk=("Liste des nouvelles erreurs introduites à corriger :",
+                     str(new)))
+    if torm:
+        UTMESS('A', 'CATAMESS_1',
+               valk=("Liste des erreurs qui n'apparaissent plus "
+                     "(à supprimer du mot-clé ERREUR) :", str(torm)))
+
+    __tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
+
+    TEST_TABLE(REFERENCE='ANALYTIQUE',
+               VALE_CALC_I=0,
+               VALE_REFE_I=0,
+               NOM_PARA='NBERR',
+               TABLE=__tab,)
+
+    __tnew = CREA_TABLE(LISTE=_F(PARA='NBNEW_ERR', LISTE_I=nbnew))
+
+    TEST_TABLE(REFERENCE='ANALYTIQUE',
+               VALE_CALC_I=0,
+               VALE_REFE_I=0,
+               NOM_PARA='NBNEW_ERR',
+               TABLE=__tnew,)
+
+    __tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
+
+    TEST_TABLE(CRITERE='ABSOLU',
+               REFERENCE='ANALYTIQUE',
+               VALE_CALC_I=len(previous_errors),
+               VALE_REFE_I=0,
+               PRECISION=len(previous_errors),
+               NOM_PARA='NBWARN',
+               TABLE=__tabw,
+               )
+    return 0
+
+if __name__ != '__main__':
+    SUPV002 = MACRO(nom='SUPV002', op=supv002_ops,
+                    ERREUR = SIMP(statut='o',typ='TXM', max='**',),
+                    INFO = SIMP(statut='f',typ='I', defaut=1, into=(1, 2),),
+    )
+else:
+    # run as unittest
+    # PYTHONPATH=$PYTHONPATH:/home/courtois/dev/codeaster/install/std/lib/python2.7/site-packages
+    # ASTER_ROOT=/opt/aster
+    # python -i astest/supv002a.33
+    #logdbg = loginfo
+    #aspell = AspellCall(get_personal_dict(), 'fr', 'utf-8')
+    #unk = aspell.check("On ne peut pas vérifier les fotes d'orthografe.")
+    #assert len(unk) == 2, unk
+    #del aspell
+    supv002_ops(None, [], unittest=True)

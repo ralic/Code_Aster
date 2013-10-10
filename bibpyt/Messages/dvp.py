@@ -31,44 +31,44 @@
 cata_msg={
 
 1 : _(u"""
-   Erreur de programmation.
+Erreur de programmation.
 
-   Condition non respectée:
-        %(k1)s
-   Fichier %(k2)s, ligne %(i1)d
+Condition non respectée:
+    %(k1)s
+Fichier %(k2)s, ligne %(i1)d
 """),
 
 2 : _(u"""
-   Erreur numérique (floating point exception).
+Erreur numérique (floating point exception).
 """),
 
 3 : _(u"""
-   Erreur de programmation : Nom de grandeur inattendu : %(k1)s
-   Routine : %(k2)s
+Erreur de programmation : Nom de grandeur inattendu : %(k1)s
+Routine : %(k2)s
 """),
 
 4 : _(u"""
-   On ne sait pas traiter ce type d'élément : %(k1)s
+On ne sait pas traiter ce type d'élément : %(k1)s
 """),
 
 5 : _(u"""
- Erreur de programmation :
-  On ne trouve pas le triplet ( %(k1)s )
-  correspondant à (nomte elrefe famille).
- Conseils :
-  Vérifiez le catalogue d'éléments.
-  L'elrefe ou la famille de points de Gauss ne sont pas définis.
+Erreur de programmation :
+    On ne trouve pas le triplet ( %(k1)s )
+    correspondant à (terme élémentaire, élément de référence, famille).
+Conseils :
+    Vérifiez le catalogue d'éléments.
+    L'élément de référence ou la famille de points de Gauss ne sont pas définis.
 """),
 
 9 : _(u"""
-   Erreur de programmation dans un module Python. 
-   Condition non respectée : %(k2)s
+Erreur de programmation dans un module Python. 
+Condition non respectée : %(k2)s
 
       %(k1)s
 """),
 
 97 : _(u"""
-   Erreur signalée dans la bibliothèque MED
+Erreur signalée dans la bibliothèque MED
      nom de l'utilitaire : %(k1)s
              code retour : %(i1)d
 """),

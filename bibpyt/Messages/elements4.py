@@ -44,10 +44,6 @@ cata_msg = {
   Il faut que sous COMPORTEMENT le mot clef RELATION='MULTIFIBRE'.
 """),
 
-31 : _(u"""
- dfdi mal dimensionnée
-"""),
-
 32 : _(u"""
  vous utilisez le mot clé LIAISON_ELEM avec l'option COQ_POU: l'épaisseur des éléments de bord de coque n'a pas été affectée.
 """),
