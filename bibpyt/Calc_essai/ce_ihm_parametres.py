@@ -777,9 +777,11 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         @param  visuType:      type de visualisation
         """
         if self.param_visu.type_visu.get()=='mac' :
-            script = './Python/Templates/salomeScriptMac.py'
+            script = './Python/Templates/salomeParaviz.py'
+            choix = 'ISO'
         elif self.param_visu.type_visu.get()=='deformee' :
-            script = './Python/Templates/salomeScript.py'
+            script = './Python/Templates/salomeParaviz.py'
+            choix = 'DEPL'
         else:
             print "Le type de deformee a visualiser n'a pas ete defini"
         if not self.study_name:
@@ -789,8 +791,8 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         dSALOME = { 'CHEMIN_SCRIPT'    : script,
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_ENTREE'  : [ medFilePath ],
-                    'NOM_PARA'         : [ 'STUDY' ],
-                    'VALE'             : [ self.study_name ],
+                    'NOM_PARA'         : [ 'CHOIX', 'STUDY' ],
+                    'VALE'             : [ choix, self.study_name ],
                   }
 
         EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
@@ -859,7 +861,7 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
 
         self.defi_fichier()
         fw=open('fort.%s' %self.unite_logique, 'w')
-        fw.write( str(table) )
+        fw.write( str(table).replace(" "+legende_x,"#"+legende_x) )
         fw.close()
 
         # recuperation des noms des etudes Salome ouvertes
@@ -882,7 +884,7 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         @param  visuType:      type de visualisation
         """
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeScript.py',
+        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeParaviz.py',
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_ENTREE'  : [ medFilePath ],
                     #'SALOME_RUNAPPLI'  : self.salome_runscript,
