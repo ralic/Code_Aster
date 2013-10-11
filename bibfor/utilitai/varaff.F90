@@ -19,7 +19,6 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=1) :: base
     character(len=8) :: noma, gran
     character(len=*) :: ceselz
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +50,7 @@ subroutine varaff(noma, gran, base, ceselz)
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
     logical :: ltou
-!     ------------------------------------------------------------------
+!   ------------------------------------------------------------------
     call jemarq()
 !
     if (noma .eq. ' ') then
@@ -152,11 +151,13 @@ subroutine varaff(noma, gran, base, ceselz)
 !
                 call cesexi('C', jcesd, jcesl, numa, 1,&
                             1, nuva, iad)
-                ASSERT(iad.lt.0)
+                ASSERT(iad.ne.0)
+!               -- On peut vouloir surcharger :
+                iad=abs(iad)
 !
-!           -- RECOPIE DE LA VALEUR:
-                zl(jcesl-1-iad) = .true.
-                zr(jcesv-1-iad) = zr(jlvavx-1+kvari)
+!               -- RECOPIE DE LA VALEUR:
+                zl(jcesl-1+iad) = .true.
+                zr(jcesv-1+iad) = zr(jlvavx-1+kvari)
             end do
         end do
 !

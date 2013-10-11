@@ -1111,5 +1111,41 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      VALE_REFE=-6830.1270000000004,),
           )
 
+
+#-------------------------------------------------------------------------------------
+# Validation de la creation d'un cham_elem_elga_vari_r sur les sous-points :
+# ----------------
+
+vaini=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO_D_EM, INFO=1,
+                 AFFE_SP=_F(CARA_ELEM=CA_D_EM,),
+                 AFFE=(
+                     _F(TOUT='OUI',  NOM_CMP=('V1',), VALE=(1.e-5,)),
+                     _F(MAILLE='M1', NOM_CMP=('V1',), VALE=(3.e-5,)),
+                 ))
+TEST_RESU(CHAM_ELEM=_F( CHAM_GD = vaini, MAILLE='M1', POINT=2, SOUS_POINT=92,
+          REFERENCE='ANALYTIQUE', NOM_CMP = 'V1', VALE_REFE=3.e-5, VALE_CALC=3.e-5,))
+
+
+
+# Le champ de variables internes initiales ne modifie pas le resultat :
+XXX1  =STAT_NON_LINE(MODELE     = MO_D_EM,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_D_EM,
+                     ETAT_INIT = _F(VARI=vaini,),
+                     EXCIT      = (_F(CHARGE = CL_D_EM),
+                                   _F(CHARGE = CH_D_EM),),
+                     COMPORTEMENT  =  _F(RELATION   = 'MULTIFIBRE',
+                                     DEFORMATION = 'PETIT',
+                                     GROUP_MA    = 'POUD',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+   );
+TEST_RESU(RESU=_F(GROUP_NO='B', INST=1.0,  RESULTAT=XXX1, NOM_CHAM='DEPL', NOM_CMP='DY',
+                  REFERENCE='AUTRE_ASTER', VALE_REFE=0.043854790675854002,
+                  VALE_CALC=0.043854790675854002,
+                  ),
+          )
+#-------------------------------------------------------------------------------------
+
 #
 FIN()

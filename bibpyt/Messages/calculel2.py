@@ -206,7 +206,7 @@ Erreur utilisateur :
 
 Risques et conseils :
   Si le problème concerne les mots clés ORIE_PEAU_3D (ou ORIE_PEAU_2D)
-  de la commande MODI_MAILLAGE, vous pouvez utiliser les mots clés 
+  de la commande MODI_MAILLAGE, vous pouvez utiliser les mots clés
   GROUP_MA_VOLU (ou GROUP_MA_SURF) pour éviter de traiter certaines mailles.
 """),
 
@@ -310,6 +310,14 @@ Erreur utilisateur :
 56: _(u"""
   erreur lors d'une extraction:
   le champ associe au paramètre :  %(k1)s  n'est pas dans la liste des champs paramètres.
+"""),
+
+57: _(u"""
+  Erreur utilisateur dans la commande CREA_CHAMP :
+    On demande la duplication du champ sur les sous-points mais le champ a déja des sous-points.
+
+  Conseil :
+    Il ne faut pas utiliser le mot clé AFFE_SP dans cette commande.
 """),
 
 

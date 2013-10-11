@@ -278,18 +278,16 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
                 endif
             end do
         end do
-!       -- ON N'A PAS TROUVE LE POINT LE SOUS-POINT OU LA COMPOSANTE :
+!       -- on n'a pas trouve le point le sous-point ou la composante :
         iddl=0
         goto 999
  60     continue
 !
 !
-!     6.2 CAS : NOMGD = VARI_R :
-!     ----------------------------
+!   6.2 CAS : NOMGD = VARI_R :
+!   ----------------------------
     else
         lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
-! LE CAS ZI(JMOLO-1+4).GT.10000
-! N EST PAS PREVU : REALISER L EVOLUTION
         ASSERT(zi(jmolo-1+4).le.10000)
         nbpt = mod(zi(jmolo-1+4),10000)
         ASSERT(nbpt.eq.lgcata)

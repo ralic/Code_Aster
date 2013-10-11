@@ -73,7 +73,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !     TYPE     IN  K16  : TYPE DU CHAMP :'TENS' 'VECT' OU 'COQUE'
 !     NOMCH    IN  K16  : NOM DE CHAMP
 !     CHAMP0   IN  K16  : NOM DU CHAMP IN
-! ----------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
     integer :: i, ii, ino, iad, ipt, isp

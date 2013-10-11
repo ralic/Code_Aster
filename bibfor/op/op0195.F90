@@ -23,6 +23,7 @@ subroutine op0195()
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
+#include "asterc/getfac.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/caraff.h"
@@ -37,8 +38,10 @@ subroutine op0195()
 #include "asterfort/cnocns.h"
 #include "asterfort/cnonor.h"
 #include "asterfort/cnscno.h"
+#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/duplisp.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -55,13 +58,13 @@ subroutine op0195()
 #include "asterfort/utmess.h"
 #include "asterfort/varaff.h"
 #include "asterfort/x195cb.h"
-    integer :: n1, ib, ifm, niv, iret, i11, i12, test, ibid
+    integer :: n1, ib, ifm, niv, iret, i11, i12, test, ibid, nocc
     character(len=3) :: prol0
     character(len=4) :: tychr, tych
-    character(len=8) :: kbid, mo, ma, chou, nomgd, nomgd2
+    character(len=8) :: kbid, mo, ma, chou, nomgd, nomgd2, carel
     character(len=8) :: tsca, nogd, nomgd1, nompar, ma2, ta
     character(len=16) :: tychr1, opera, optio2, typco, option
-    character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin
+    character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
     character(len=8) :: nu1
 !     -----------------------------------------------------------------
     logical :: dbg
@@ -284,7 +287,7 @@ subroutine op0195()
     endif
 !
 !
-! 4.  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
+! 4.1  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
 ! --------------------------------------------------------------
     if (tychr .eq. 'NOEU') then
         call getvid(' ', 'CHAM_NO', scal=ch1, nbret=i11)
@@ -313,7 +316,7 @@ subroutine op0195()
                 call utmess('F', 'UTILITAI6_5', nk=2, valk=valk)
             endif
   1         continue
-!
+
             call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
             if (prchn1 .ne. prchn2) then
                 cns1 = '&&OP0195.CNS1'
@@ -327,18 +330,33 @@ subroutine op0195()
             endif
         endif
     endif
-!
-!
+
+
+! 4.2  SI ON A CREE UN CHAM_ELEM, ON PEUT VOULOIR AFFECTER TOUS LES SOUS-POINTS :
+! -------------------------------------------------------------------------------
+    if (tychr(1:2) .eq. 'EL') then
+        call getfac('AFFE_SP', nocc)
+        if (nocc.eq.1) then
+            call getvid('AFFE_SP', 'CARA_ELEM', iocc=1, scal=carel)
+            chou2='&&OP0195.CHOU2'
+            call duplisp(chou, chou2, carel, 'V')
+            call detrsd('CHAMP', chou)
+            call copisd('CHAMP', 'G', chou2, chou)
+            call detrsd('CHAMP', chou2)
+        endif
+    endif
+
+
 ! 5.  AJOUT DU TITRE :
 ! -----------------------------------------------------
     call titre()
-!
-!
+
+
 ! 6.  SI INFO:2    ON IMPRIME LE CHAMP RESULTAT :
 ! ----------------------------------------------
     if (niv .eq. 2) call imprsd('CHAMP', chou, ifm, 'CHAMP RESULTAT DE LA COMMANDE CREA_CHAMP :')
-!
-!
+
+
 ! 7.  VERIFICATION PROL_ZERO='NON' POUR LES CHAM_ELEM :
 ! ------------------------------------------------------
     if ((tychr(1:2).eq.'EL') .and. (prol0.eq.'NAN')) then
@@ -348,8 +366,8 @@ subroutine op0195()
         call cheksd(chou, 'SD_CHAM_ELEM', iret)
         ASSERT(iret.eq.0)
     endif
-!
-!
+
+
 ! 8.  VERIFICATION DE LA COHERENCE DU MAILLAGE SOUS-JACENT :
 ! ---------------------------------------------------------
     if (ma .ne. ' ') then
@@ -360,8 +378,8 @@ subroutine op0195()
             call utmess('F', 'CALCULEL4_78', nk=2, valk=valk)
         endif
     endif
-!
-!
+
+
 ! 9.  VERIFICATION DE LA COHERENCE DU CHAMP CREE AVEC TYPE_CHAM :
 ! ---------------------------------------------------------------
     call dismoi('TYPE_CHAMP', chou, 'CHAMP', repk=tych)
@@ -370,15 +388,15 @@ subroutine op0195()
         valk(2)=tych
         call utmess('F', 'CALCULEL4_70', nk=2, valk=valk)
     endif
-!
+
     call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
     if (nogd .ne. nomgd) then
         valk(1)=nomgd
         valk(2)=nogd
         call utmess('F', 'CALCULEL4_71', nk=2, valk=valk)
     endif
-!
-!
+
+
     call jedema()
-!
+
 end subroutine

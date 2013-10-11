@@ -57,6 +57,14 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
          OPTION         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),),
 
 
+#        Si creation d'un cham_elem avec sous-points, pour que tous les sous-points
+#        soient affectes : on duplique la valeur sur tous les sous-points
+#        ------------------------------------------------------------------
+         AFFE_SP         =FACT(statut='f',max=1,
+             CARA_ELEM          =SIMP(statut='o',typ=cara_elem,min=1,max=1),
+                             ),
+
+
 #        LE MOT-CLE OPERATION EST OBLIGATOIRE. IL PERMET LE BON AIGUILLAGE.
 #        ------------------------------------------------------------------
          OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE","R2C","C2R","COMB") ),
