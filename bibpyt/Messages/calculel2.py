@@ -314,7 +314,7 @@ Erreur utilisateur :
 
 57: _(u"""
   Erreur utilisateur dans la commande CREA_CHAMP :
-    On demande la duplication du champ sur les sous-points mais le champ a déja des sous-points.
+    On demande l'affectation du champ sur les sous-points mais le champ a déjà des sous-points.
 
   Conseil :
     Il ne faut pas utiliser le mot clé AFFE_SP dans cette commande.

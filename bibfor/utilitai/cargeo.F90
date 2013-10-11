@@ -43,8 +43,6 @@ subroutine cargeo(mailla)
 !  Y_MAX    : ORDONNEE MAXIMALE DES NOEUDS DU MAILLAGE
 !  Z_MIN    : COTE MINIMALE DES NOEUDS DU MAILLAGE
 !  Z_MAX    : COTE MAXIMALE DES NOEUDS DU MAILLAGE
-!  APPLAT_Z : = ( Z_MAX - Z_MIN ) / D
-!             AVEC D = MAX((X_MAX-X_MIN),(Y_MAX-Y_MIN),1.D-100)
 !  AR_MIN   : LONGUEUR DE LA PLUS PETITE ARRETE DU MAILLAGE (NON NULLE)
 !  AR_MAX   : LONGUEUR DE LA PLUS GRANDE ARRETE DU MAILLAGE
 !
@@ -53,8 +51,8 @@ subroutine cargeo(mailla)
 !
     integer :: nbnoeu, jvale, jdime, nbmail, i, nbpara, nbpart, ibid, im, jtypm
     integer :: jcone, n, iret
-    parameter    ( nbpara = 9 )
-    real(kind=8) :: applat, xmax, ymax, zmax, xmin, ymin, zmin, vale(nbpara)
+    parameter    ( nbpara = 8 )
+    real(kind=8) :: xmax, ymax, zmax, xmin, ymin, zmin, vale(nbpara)
     real(kind=8) :: armin, armax, x(8), y(8), z(8), d1, d2, d3, d4
     complex(kind=8) :: c16b
     character(len=8) :: k8b, ma, nopara(nbpara), typara(nbpara), typm
@@ -63,8 +61,8 @@ subroutine cargeo(mailla)
     character(len=24) :: nodime, connex, coordo, typmai
 !
     data nopara / 'X_MIN' , 'X_MAX' , 'Y_MIN' , 'Y_MAX' , 'Z_MIN' ,&
-     &              'Z_MAX' , 'APPLAT_Z' , 'AR_MIN' , 'AR_MAX' /
-    data typara / 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
+     &              'Z_MAX' , 'AR_MIN' , 'AR_MAX' /
+    data typara / 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
 ! DEB------------------------------------------------------------------
 !
     call jemarq()
@@ -91,23 +89,21 @@ subroutine cargeo(mailla)
     xmin = xmax
     ymin = ymax
     zmin = zmax
-    do 10 i = 2, nbnoeu
+    do i = 2, nbnoeu
         xmax = max ( xmax , zr(jvale+3*(i-1) ) )
         xmin = min ( xmin , zr(jvale+3*(i-1) ) )
         ymax = max ( ymax , zr(jvale+3*(i-1)+1) )
         ymin = min ( ymin , zr(jvale+3*(i-1)+1) )
         zmax = max ( zmax , zr(jvale+3*(i-1)+2) )
         zmin = min ( zmin , zr(jvale+3*(i-1)+2) )
-10  end do
+    end do
     d1 = max( (xmax-xmin) , (ymax-ymin) , 1.d-100 )
-    applat = ( zmax - zmin ) / d1
     vale(1) = xmin
     vale(2) = xmax
     vale(3) = ymin
     vale(4) = ymax
     vale(5) = zmin
     vale(6) = zmax
-    vale(7) = applat
 !
     call jeexin(connex, iret)
     if (iret .eq. 0) then
@@ -120,7 +116,7 @@ subroutine cargeo(mailla)
     armin = r8gaem()
     armax = 0.d0
     call jeveuo(typmai, 'L', jtypm)
-    do 20 im = 1, nbmail
+    do im = 1, nbmail
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+im-1)), typm)
         call jeveuo(jexnum(connex, im), 'L', jcone)
         if (typm(1:3) .eq. 'POI') then
@@ -243,10 +239,10 @@ subroutine cargeo(mailla)
             armin = rminsp( armin , d1 , d2 , d3 , d4 )
             armax = max ( armax , d1 , d2 , d3 , d4 )
         endif
-20  end do
+    end do
     if (armin .eq. r8gaem()) armin = 0.d0
-    vale(8) = sqrt( armin )
-    vale(9) = sqrt( armax )
+    vale(7) = sqrt( armin )
+    vale(8) = sqrt( armax )
 !
 100  continue
 !
