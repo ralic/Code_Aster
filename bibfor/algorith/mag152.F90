@@ -35,7 +35,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: indice, imodeg
-    integer :: jrefa, i, iscbl, iaconl
+    integer :: jrefa, i, iscbl, iaconl, iadesc
     integer :: ialime, iblo
     integer :: ischc
     integer :: somme
@@ -128,6 +128,12 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
         call wkvect(nomres//'           .CONL', 'G V R', nueq, iaconl)
 !
     endif
+!
+! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
+    call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
+    zi(iadesc) = 2
+    zi(iadesc+1) = ntbloc
+    zi(iadesc+2) = 2
 !
 ! ----------- REMPLISSAGE DU .REFA ET DU .LIME---------------
 !---------------------ET DU .CONL ---------------------------

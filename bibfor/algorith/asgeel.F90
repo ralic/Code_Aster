@@ -66,7 +66,7 @@ subroutine asgeel(nomres, option, nugene)
     integer :: ibid, i1, j1, k1, l1, n1, lres, neq, lneq, lproj, nbddl, indsst
     integer :: lsst, llref, nbmacr, exist, lnomcr, limacr, lmacr, llmacr, indmcr
     integer :: decal, ddlcp, lselia, nlt, ind, ldconl, iret, nmaddl, ltemp
-    integer :: jrefa, ldlim, nbsst, lsilia
+    integer :: jrefa, ldlim, nbsst, lsilia, iadesc
     character(len=8) :: kbid, k8bid
     character(len=1) :: k1bid
 !-----------C
@@ -199,6 +199,12 @@ subroutine asgeel(nomres, option, nugene)
         zi(llmacr+i1-1)=lmacr
     end do
 !
+! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
+    call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
+    zi(iadesc) = 2
+    zi(iadesc+1) = neq
+    zi(iadesc+2) = 2
+
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nomres//'           .VALM', iret)
     ASSERT(iret.eq.0)

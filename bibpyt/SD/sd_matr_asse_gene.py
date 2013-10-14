@@ -26,7 +26,7 @@ class sd_matr_asse_gene(sd_matr_asse_com):
 #-----------------------------------------
     nomj = SDNom(fin=19)
 
-    DESC = Facultatif(AsVI(lonmax=3,)) # PB_JACOT : n'existe pas toujours : exemple : fdlv105a
+    DESC = AsVI(lonmax=3,)
 
     def exists(self):
         return self.REFA.exists

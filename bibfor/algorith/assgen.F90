@@ -83,7 +83,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iblel, iblo, icomp, j, jrefa
+    integer :: i, ibid, iblel, iblo, icomp, j, jrefa, iadesc
     integer :: jscde, ldblo, ldconl, ldlim, llorl, llprof, llref
     integer :: ltadbl, ltconl, ltinbl, ltnobl, ltnomb, ltnumb, nbblel
     integer :: nblia, nbloc, nbprno, nbsst, nbterm, neq, ntbloc
@@ -165,6 +165,12 @@ subroutine assgen(nomres, option, nugene)
                     nbloc)
     endif
     call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
+!
+! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
+    call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
+    zi(iadesc) = 2
+    zi(iadesc+1) = neq
+    zi(iadesc+2) = 2
 !
 !------------------CREATION DU NOM A CONCATENER-------------------------
 !   POUR RECUPERER LE NOM DES MATRICES PROJETEES
