@@ -215,7 +215,6 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
    if INTERSPECTRE !=None :
 
       INTE_SPEC=INTERSPECTRE['INTE_SPEC']
-      TOUT_ORDRE=INTERSPECTRE['TOUT_ORDRE']
 
       NUME_ORDRE_I=INTERSPECTRE['NUME_ORDRE_I']
       NOEUD_I=INTERSPECTRE['NOEUD_I']
@@ -278,38 +277,9 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
         tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
 
 #     ------------------------------------------------------------------
-#     Cas de tous les indices centraux
+#     Cas de tous les indices
 
-      elif OPTION!=None :
-
-         if NUME_ORDRE_I :
-            l_ind_i = aster.getvectjev(intespec+'.NUMI')
-            l_ind_j = aster.getvectjev(intespec+'.NUMJ')
-            # paramètres fixes de la table
-            tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
-         elif NOEUD_I :
-            l_ind_i = aster.getvectjev(intespec+'.NOEI')
-            l_ind_j = aster.getvectjev(intespec+'.NOEJ')
-            if len(l_ind_i) != len(l_ind_j) :
-               UTMESS('F','PROBA0_8')
-            l_cmp_i = aster.getvectjev(intespec+'.CMPI')
-            l_cmp_j = aster.getvectjev(intespec+'.CMPJ')
-            if (len(l_ind_i) != len(l_cmp_i) or len(l_ind_j) != len(l_cmp_j)) :
-               UTMESS('F','PROBA0_10')
-            l_l=zip(zip(l_ind_i,l_cmp_i),zip(l_ind_j,l_cmp_j))
-            l_ind_i=[]
-            l_ind_j=[]
-            l_cmp_i=[]
-            l_cmp_j=[]
-            for ai,aj in l_l :
-                if ai==aj :
-                   l_ind_i.append(ai[0])
-                   l_ind_j.append(aj[0])
-                   l_cmp_i.append(ai[1])
-                   l_cmp_j.append(aj[1])
-            # paramètres fixes de la table
-            tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
-         else: #TOUT_ORDRE
+      elif OPTION=='TOUT' :
            if aster.getvectjev(intespec+'.NUMI'):
              l_ind_i = aster.getvectjev(intespec+'.NUMI')
              l_ind_j = aster.getvectjev(intespec+'.NUMJ')
@@ -319,6 +289,27 @@ def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
              l_ind_j = aster.getvectjev(intespec+'.NOEJ')
              l_cmp_i = aster.getvectjev(intespec+'.CMPI')
              l_cmp_j = aster.getvectjev(intespec+'.CMPJ')
+             tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
+
+#     ------------------------------------------------------------------
+#     Cas de tous les indices centraux
+
+      elif OPTION=='DIAG' :
+           if aster.getvectjev(intespec+'.NUMI'):
+             l_ind_i_all = aster.getvectjev(intespec+'.NUMI')
+             l_ind_j_all = aster.getvectjev(intespec+'.NUMJ')
+             l_ind_i = [ind for i,ind in enumerate(l_ind_i_all) if l_ind_j_all[i]==ind]
+             l_ind_j = l_ind_i
+             tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
+           if aster.getvectjev(intespec+'.NOEI'):
+             l_ind_i_all = aster.getvectjev(intespec+'.NOEI')
+             l_ind_j_all = aster.getvectjev(intespec+'.NOEJ')
+             l_ind_i = [ind for i,ind in enumerate(l_ind_i_all) if l_ind_j_all[i]==ind]
+             l_ind_j = l_ind_i
+             l_cmp_i_all = aster.getvectjev(intespec+'.CMPI')
+             l_cmp_j_all = aster.getvectjev(intespec+'.CMPJ')
+             l_cmp_i = [cmpi for i,cmpi in enumerate(l_cmp_i_all) if l_cmp_j_all[i]==cmpi]
+             l_cmp_j = l_cmp_i
              tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
 
 #     ------------------------------------------------------------------

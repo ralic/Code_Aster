@@ -201,8 +201,7 @@ for i in range(len(vite)):
                )
 
   DYN0[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(
-             INTE_SPEC=RPP0[i], 
-            TOUT_ORDRE='OUI',
+             INTE_SPEC=RPP0[i],
                 OPTION='DIAG'
                ))
 
@@ -217,8 +216,7 @@ DYN1=POST_DYNA_ALEA(INTERSPECTRE=_F(
           NOEUD_I=('N_02_030','N_02_030','N_02_031' ),
           NOEUD_J=('N_02_030','N_02_031','N_02_031'),
           NOM_CMP_I=('DX','DX', 'DX',)   ,
-          NOM_CMP_J=('DX','DX', 'DX',)   ,               
-#          TOUT_ORDRE='OUI',
+          NOM_CMP_J=('DX','DX', 'DX',)   ,
           ),
           INFO=2,)
 

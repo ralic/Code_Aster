@@ -278,9 +278,8 @@ REPP0=REST_SPEC_PHYS(
 )
 
 DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
-                     INTE_SPEC=REPP0, 
-                      TOUT_ORDRE='OUI',
-                          OPTION='DIAG'
+                     INTE_SPEC=REPP0,
+                        OPTION='DIAG'
 ))
 
 #
