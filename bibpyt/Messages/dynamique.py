@@ -155,6 +155,24 @@ cata_msg={
     Intervalle des fréquences: %(r1)f
 """),
 
+25 : _(u"""
+ La fréquence d'actualisation de FORCE_SOL n'est pas cohérente avec la fréquence d'archivage des résultats dans
+ DYNA_NON_LINE.
+"""),
+
+26 : _(u"""
+ Deux des fréquences %(r1)f Hz et %(r2)f HZ de la liste LIST_RAFFINE sont proches.
+Les intervalles de raffinement entourant ces deux valeurs se chevauchent.
+Si une valeur du premier intervalle est trop proche d'une valeur du deuxième
+intervalle (écart inférieur à PAS_MINI), l'une des deux sera supprimée de la liste.
+"""),
+
+27 : _(u"""
+ L'écart entre les fréquences %(r1)f Hz et %(r2)f Hz est inférieur à PAS_MINI. Toutefois on conserve 
+ces deux valeurs car l'une d'elles peut correspondre à une fréquence de résonance"
+"""),
+
+
 30 : _(u"""
  La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est incohérente avec
 celle choisie précédemment.
@@ -165,9 +183,5 @@ celle choisie précédemment.
 celle choisie précédemment.
 """),
 
-25 : _(u"""
- La fréquence d'actualisation de FORCE_SOL n'est pas cohérente avec la fréquence d'archivage des résultats dans
- DYNA_NON_LINE.
-"""),
 
 }
