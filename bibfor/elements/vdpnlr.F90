@@ -15,7 +15,6 @@ subroutine vdpnlr(option, nomte, codret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
 ! aslint: disable=W1501
     implicit none
 !
@@ -251,7 +250,7 @@ subroutine vdpnlr(option, nomte, codret)
         nomres(1) = 'E'
         nomres(2) = 'NU'
     else
-        call utmess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_45', sk=phenom)
     endif
 !______________________________________________________________________
 !
@@ -399,16 +398,16 @@ subroutine vdpnlr(option, nomte, codret)
     call r8inir(8 * 3, 0.d0, vecu, 1)
     call r8inir(8 * 3, 0.d0, vecum, 1)
 !
-    do 101 in = 1, nb1
-        do 111 ii = 1, 3
+    do in = 1, nb1
+        do ii = 1, 3
 !
             vecu ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) + ii&
             ) + zr ( iup - 1 + 6 * ( in - 1 ) + ii )
             vecum ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) + ii&
             )
 !
-111      continue
-101  end do
+         end do
+     end do
 !
 !---- ROTATION TOTALE AUX NOEUDS
 !
@@ -421,23 +420,23 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------- NOEUD DE SERENDIP
 !
-        do 201 in = 1, nb1
-            do 211 ii = 1, 3
+        do in = 1, nb1
+            do ii = 1, 3
                 vecthe ( in , ii ) = zr ( iup - 1 + 6 * ( in - 1 ) +&
                 ii + 3 )
                 vecthm ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) +&
                 ii + 3 )
-211          continue
-201      continue
+             end do
+         end do
 !
 !------- SUPERNOEUD
 !
-        do 221 ii = 1, 3
+        do ii = 1, 3
             vecthe ( nb2, ii ) = zr ( iup - 1 + 6 * ( nb1 ) + ii&
             )
             vecthm ( nb2, ii ) = zr ( ium - 1 + 6 * ( nb1 ) + ii&
             )
-221      continue
+        end do
 !
     else
 !
@@ -445,23 +444,23 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------- NOEUDS DE SERENDIP
 !
-        do 202 in = 1, nb1
-            do 212 ii = 1, 3
+        do in = 1, nb1
+            do ii = 1, 3
                 vecthe ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) +&
                 ii + 3 ) + zr ( iup - 1 + 6 * ( in - 1 ) + ii + 3 )
                 vecthm ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) +&
                 ii + 3 )
-212          continue
-202      continue
+            end do
+        end do
 !
 !--------- SUPERNOEUD
 !
-        do 222 ii = 1, 3
+        do ii = 1, 3
             vecthe ( nb2, ii ) = zr ( ium - 1 + 6 * ( nb1 ) + ii&
             ) + zr ( iup - 1 + 6 * ( nb1 ) + ii )
             vecthm ( nb2, ii ) = zr ( ium - 1 + 6 * ( nb1 ) + ii&
             )
-222      continue
+        end do
 !
     endif
 !
@@ -504,11 +503,11 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !==== BOUCLE SUR LES COUCHES
 !
-    do 600 icou = 1, nbcou
+    do icou = 1, nbcou
 !
 !======= BOUCLE SUR LES POINTS D INTEGRATION SUR L EPAISSEUR
 !
-        do 610 inte = 1, npge
+        do inte = 1, npge
 !
 !---------- POSITION SUR L EPAISSEUR ET POIDS D INTEGRATION
 !
@@ -538,7 +537,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !========== 1 ERE BOUCLE SUR POINTS INTEGRATION REDUITE SURFACE MOYENNE
 !
-            do 620 intsr = 1, npgsr
+            do intsr = 1, npgsr
 !
                 call vectgt(0, nb1, zr ( igeom ), ksi3s2, intsr,&
                             zr ( lzr ), epais, vectn, vectg, vectt)
@@ -599,7 +598,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !========== FIN 1 ERE BOUCLE NPGSR
 !
-620          continue
+            end do
 !---------- INITIALISATION DES CONTRAINTES A LISSER
 !
             if (option ( 1 : 16 ) .eq. 'RIGI_MECA_TANG' .or. option ( 1 : 9 ) .eq. 'FULL_MECA') &
@@ -607,7 +606,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !========== BOUCLE SUR POINTS INTEGRATION NORMALE SURFACE MOYENNE
 !
-            do 630 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
 !C
                 call vectgt(1, nb1, zr ( igeom ), ksi3s2, intsn,&
@@ -688,9 +687,9 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------------ INCREMENENT DE DEFORMATION
 !
-                do 635 i = 1, 5
+                do i = 1, 5
                     detild(i) = etild(i)-etildm(i)
-635              continue
+                end do
 !
                 eps2d(1) = etildm(1)
                 eps2d(2) = etildm(2)
@@ -710,9 +709,9 @@ subroutine vdpnlr(option, nomte, codret)
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS INSTANT MOINS
 !
                 k1=6*((intsn-1)*npge*nbcou + (icou-1)*npge +inte - 1)
-                do 636 i = 1, 3
+                do i = 1, 3
                     sign(i) = zr( icontm - 1 + k1 + i )
-636              continue
+                end do
                 sign(4) = zr( icontm - 1 + k1 + 4 )*rac2
 !
 ! - LOI DE COMPORTEMENT
@@ -734,7 +733,7 @@ subroutine vdpnlr(option, nomte, codret)
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
                 else
-                    call utmess('F', 'ELEMENTS_42')
+                    call utmess('F', 'ELEMENTS_45', sk=phenom)
                 endif
 !
                 call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
@@ -787,10 +786,11 @@ subroutine vdpnlr(option, nomte, codret)
                     dtild(5,4) = 0.d0
                     dtild(5,5) = cisail*kappa/2.d0
 !
-                    do 750 i = 1, 5
-                        do 750 j = 1, 5
+                    do i = 1, 5
+                        do j = 1, 5
                             matc(i,j) = dtild(i,j)
-750                      continue
+                        end do
+                    end do
 !
                 endif
 !
@@ -842,17 +842,17 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------------- INTEGRATION DES CONTRAINTES LISSEES
 !
-                    do 700 kntsr = 1, npgsr
+                    do kntsr = 1, npgsr
 !
-                        do 710 i = 1, 5
+                        do i = 1, 5
 !
                             stlis ( i , kntsr ) = stlis ( i , kntsr )&
                             + zr ( lzr - 1 + 702 + 4 * ( intsn - 1 ) +&
                             kntsr ) * stild ( i ) * zr ( lzr - 1 +&
-127                           + intsn - 1 )
+                            127 + intsn - 1 )
 !
-710                      continue
-700                  continue
+                         end do
+                    end do
 !
 !------------- KM ( 6 * NB1 + 3 , 6 * NB1 + 3 )  =     INTEGRALE  DE
 !                ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * MATC ( 5 , 5 ) *
@@ -931,14 +931,14 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !========== FIN BOUCLE NPGSN
 !
-630          continue
+            end do
 !
             if (option ( 1 : 16 ) .eq. 'RIGI_MECA_TANG' .or. option ( 1 : 9 ) .eq.&
                 'FULL_MECA') then
 !
 !========== 2 EME BOUCLE SUR POINTS INTEGRATION REDUITE SURFACE MOYENNE
 !
-                do 640 intsr = 1, npgsr
+                do intsr = 1, npgsr
 !
                     call vectgt(0, nb1, zr ( igeom ), ksi3s2, intsr,&
                                 zr ( lzr ), epais, vectn, vectg, vectt)
@@ -957,9 +957,9 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------------- RESTITUTION DES CONTRAINTES LISSEES MEMBRANE FLEXION
 !
-                    do 800 i = 1, 3
+                    do i = 1, 3
                         stild ( i ) = stlis ( i , intsr )
-800                  continue
+                    end do
 !
 !------------- ANNULATION DU SHEAR
 !
@@ -995,9 +995,9 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !------------- RESTITUTION DES CONTRAINTES LISSEES DE SHEAR
 !
-                    do 850 i = 4, 5
+                    do i = 4, 5
                         stild ( i ) = stlis ( i , intsr )
-850                  continue
+                    end do
 !
 !------------- BARS ( 9 , 9 )
 !
@@ -1017,31 +1017,31 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !========== FIN 2 EME BOUCLE NPGSR
 !
-640              continue
+                end do
 !
             endif
 !
 !-------- FIN BOUCLE NPGE
 !
-610      continue
+          end do
 !
 !---- FIN BOUCLE NBCOU
 !
-600  end do
+     end do
 !
     if (option ( 1 : 16 ) .eq. 'RIGI_MECA_TANG' .or. option ( 1 : 9 ) .eq. 'FULL_MECA') then
 !
 !------- AFFECTATION DE LA RIGIDITE GEOMETRIQUE
 !
-        do 400 jd = 1, ( 6 * nb1 + 3 ) * ( 6 * nb1 + 3 )
+        do jd = 1, ( 6 * nb1 + 3 ) * ( 6 * nb1 + 3 )
             zr ( imatun - 1 + jd ) = zr ( imatun - 1 + jd ) + vrignc (&
             jd ) - vrigni ( jd ) + vrigri ( jd ) + vrigrc ( jd )
 !
-400      continue
+        end do
 !
 !------- AFFECTATION DE LA RIGIDITE NON CLASSIQUE RIGNC ( 3 , 3 )
 !
-        do 500 in = 1, nb2
+        do in = 1, nb2
 !
 !---------- MATRICE ANTISYMETRIQUE    ANTZI ( 3 , 3 ) AU NOEUD
 !
@@ -1049,9 +1049,9 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !---------- TRANSFOR DE NORMALE ET SA MATRICE ANTISYM AU NOEUD
 !
-            do 520 ii = 1, 3
+            do ii = 1, 3
                 vecni ( ii ) = vecnph ( in , ii )
-520          continue
+            end do
 !
             call antisy(vecni, 1.d0, antni)
 !
@@ -1093,7 +1093,7 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !            ENDIF
 !
-500      continue
+         end do
 !
 !------- ROTATION DE TOUTE LA MATRICE AU REPERE LOCAL
 !
@@ -1112,14 +1112,14 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !++++++++ BOUCLE SUR LES NOEUDS DE ROTATION
 !
-    do 900 in = 1, nb2
+    do in = 1, nb2
 !
 !+++++++++++ ROTATION AUTOUR DE LA NORMALE INITIALE
 !
-        do 910 ii = 1, 3
+        do ii = 1, 3
             vecni ( ii ) = vectn ( in , ii )
             theta ( ii ) = vecthe ( in , ii )
-910      continue
+        end do
 !
         thetan=ddot(3,theta,1,vecni,1)
 !
@@ -1149,30 +1149,30 @@ subroutine vdpnlr(option, nomte, codret)
 !-------------- AFFECTATION
 !
 !-------------- NOEUDS DE SERENDIP
-                do 331 jj = 1, 3
+                do jj = 1, 3
                     j = 6 * ( in - 1 ) + jj + 3
-                    do 341 ii = 1, 3
+                    do ii = 1, 3
                         i = 6 * ( in - 1 ) + ii + 3
                         zr ( imatun - 1 + ( 6 * nb1 + 3 ) * ( j - 1 )&
                         + i ) = zr ( imatun - 1 + ( 6 * nb1 + 3 ) * (&
                         j - 1 ) + i ) + knn * term ( ii ) * term&
                         ( jj )
-341                  continue
-331              continue
+                    end do
+                end do
 !
             else
 !
 !-------------- SUPERNOEUD
-                do 351 jj = 1, 3
+                do jj = 1, 3
                     j = 6 * nb1 + jj
-                    do 361 ii = 1, 3
+                    do ii = 1, 3
                         i = 6 * nb1 + ii
                         zr ( imatun - 1 + ( 6 * nb1 + 3 ) * ( j - 1 )&
                         + i ) = zr ( imatun - 1 + ( 6 * nb1 + 3 ) * (&
                         j - 1 ) + i ) + knn * term ( ii ) * term&
                         ( jj )
-361                  continue
-351              continue
+                    end do
+                end do
 !
             endif
 !
@@ -1184,28 +1184,28 @@ subroutine vdpnlr(option, nomte, codret)
 !
             if (in .le. nb1) then
 !
-                do 920 ii = 1, 3
+                do ii = 1, 3
 !
                     zr ( ivectu - 1 + 6 * ( in - 1 ) + ii + 3 ) =&
                     zr ( ivectu - 1 + 6 * ( in - 1 ) + ii + 3 ) +&
                     knn * term(ii) * thetan
 !
-920              continue
+                end do
 !
             else
 !
-                do 930 ii = 1, 3
+                do ii = 1, 3
                     zr ( ivectu - 1 + 6 * ( in - 1 ) + ii ) = zr (&
                     ivectu - 1 + 6 * ( in - 1 ) + ii ) + knn * term(&
                     ii) * thetan
-930              continue
+                end do
 !
             endif
 !
 !
         endif
 !
-900  continue
+     end do
 !
 !
 ! FIN

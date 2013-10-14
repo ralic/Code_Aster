@@ -16,16 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
-                      nb2, xi, depl, btild, indith,&
-                      alpha, tempga, epsiln, sigma, vectt)
-        character(len=*) :: nomte
+    subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
+                      indith, alpha, tempga, epsiln, sigma,&
+                      vectt)
         integer :: kwgt
-        integer :: inte
-        integer :: intsn
         integer :: nb1
         integer :: nb2
-        real(kind=8) :: xi(3, *)
         real(kind=8) :: depl(*)
         real(kind=8) :: btild(5, 42)
         integer :: indith

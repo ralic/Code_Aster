@@ -29,7 +29,7 @@ subroutine matrth(fami, npg, young, nu, alpha,&
 #include "asterfort/utmess.h"
     integer :: iret
 !
-    real(kind=8) :: valres(26), valpar
+    real(kind=8) :: valres(26)
     integer :: icodre(26)
     character(len=8) :: nomres(26), nompar
     character(len=10) :: phenom
@@ -59,12 +59,12 @@ subroutine matrth(fami, npg, young, nu, alpha,&
 !
         call moytem(fami, npg, 3*zi(jcou), '+', temp,&
                     iret)
-        call rcvala(zi(jmate), ' ', phenom, 1, 'TEMP',&
+        call rcvala(zi(jmate), ' ', phenom, 1, nompar,&
                     [temp], 3, nomres, valres, icodre,&
                     1)
         if (icodre(3) .ne. 0) then
             indith = -1
-            goto 9999
+            goto 999
         endif
 !
 !     MATERIAU ISOTROPE
@@ -77,23 +77,23 @@ subroutine matrth(fami, npg, young, nu, alpha,&
         nomres(1)='ALPHA_L'
         nomres(2)='ALPHA_T'
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, 0, nompar, [valpar],&
+                    ' ', phenom, 0, nompar, [temp],&
                     2, nomres, valres, icodre, 1)
         if (icodre(1) .ne. 0) then
             indith = -1
-            goto 9999
+            goto 999
         else
             if ((valres(1).eq.0.d0) .and. (valres(2).eq.0.d0)) then
                 indith = -1
-                goto 9999
+                goto 999
             else
                 call utmess('F', 'ELEMENTS2_33')
             endif
         endif
     else
-        call utmess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_45', sk=phenom)
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

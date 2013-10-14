@@ -138,27 +138,27 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 ! A= RMOY, H = EPAISSEUR, L = LONGUEUR
 !
 !
-    do 10 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
-10  end do
+    end do
 !
 !  LES POIDS POUR L'INTEGRATION DANS L'EPAISSEUR
 !
     poicou(1) = 1.d0/3.d0
-    do 20 i = 1, nbcou - 1
+    do i = 1, nbcou - 1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
-20  end do
+    end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
 !
 !  LES POIDS POUR L'INTEGRATION SUR LA CIRCONFERENCE
 !
     poisec(1) = 1.d0/3.d0
-    do 30 i = 1, nbsec - 1
+    do i = 1, nbsec - 1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
-30  end do
+    end do
     poisec(2*nbsec) = 4.d0/3.d0
     poisec(2*nbsec+1) = 1.d0/3.d0
 !
@@ -213,14 +213,14 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
     call matini(nbrddl, nbrddl, 0.d0, ktild)
 !
-    do 50 i = 1, nbrddl
+    do i = 1, nbrddl
         effint(i) = 0.d0
-50  end do
+    end do
 !
-    do 80 i = 1, nbrddl
+    do i = 1, nbrddl
         deplm(i) = zr(ideplm-1+i)
         deplp(i) = zr(ideplp-1+i)
-80  end do
+    end do
     if (icoude .eq. 0) then
         call vlggl(nno, nbrddl, pgl, deplm, 'GL',&
                    pass, vtemp)
@@ -244,11 +244,11 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 ! BOUCLE SUR LES POINTS DE GAUSS
 !
     kpgs = 0
-    do 140 igau = 1, npg
+    do igau = 1, npg
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-        do 130 icou = 1, 2*nbcou + 1
+        do icou = 1, 2*nbcou + 1
             if (mmt .eq. 0) then
                 r = a
             else
@@ -257,7 +257,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-            do 120 isect = 1, 2*nbsec + 1
+            do isect = 1, 2*nbsec + 1
                 kpgs = kpgs + 1
                 if (icoude .eq. 0) then
 !
@@ -303,9 +303,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
 !  RAPPEL DU VECTEUR CONTRAINTE
 !
-                do 100 i = 1, 3
+                do i = 1, 3
                     sign(i) = zr(icontm-1+k1+i)
-100              continue
+                end do
                 sign(4) = zr(icontm-1+k1+4)*rac2
 !
 !
@@ -323,7 +323,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
                 else
-                    call utmess('F', 'ELEMENTS_42')
+                    call utmess('F', 'ELEMENTS_44', sk=phenom)
                 endif
 !
                 call rcvalb('RIGI', igau, ksp, '+', zi(imate),&
@@ -370,9 +370,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
                 if (vecteu) then
 !
-                    do 110 i = 1, 3
+                    do i = 1, 3
                         zr(icontp-1+k1+i) = sigma(i)
-110                  continue
+                    end do
                     zr(icontp-1+k1+4) = sigma(4)/rac2
                     zr(icontp-1+k1+5) = cisail*gxz/2.d0
                     zr(icontp-1+k1+6) = 0.d0
@@ -389,9 +389,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
                 endif
 !
-120          continue
-130      continue
-140  end do
+            end do
+        end do
+    end do
 !
 ! STOCKAGE DE LA MATRICE DE RIGIDITE
     if (matric) then
@@ -416,9 +416,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
             call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                         pgl4, effint, 'LG', pass, vtemp)
         endif
-        do 150,i = 1,nbrddl
-        zr(ivectu-1+i) = effint(i)
-150      continue
+        do i = 1,nbrddl
+           zr(ivectu-1+i) = effint(i)
+        end do
     endif
 !
 end subroutine

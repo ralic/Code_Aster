@@ -1,6 +1,6 @@
-subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
-                  nb2, xi, depl, btild, indith,&
-                  alpha, tempga, epsiln, sigma, vectt)
+subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
+                  indith, alpha, tempga, epsiln, sigma,&
+                  vectt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,25 +24,24 @@ subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
 !
 #include "asterfort/jevech.h"
 #include "asterfort/matrc.h"
-    character(len=*) :: nomte
-    real(kind=8) :: xi(3, *), depl(*), btild(5, 42), matc(5, 5), tempga(*)
+    real(kind=8) :: depl(*), btild(5, 42), matc(5, 5), tempga(*)
     real(kind=8) :: vectt(3, 3)
     real(kind=8) :: epsi(5), epstot(5), sigm(5), epsiln(6, *), sigma(6, *)
     real(kind=8) :: kappa
 !
 !-----------------------------------------------------------------------
-    integer :: i, indith, inte, intsn, jcara, k, kwgt
+    integer :: i, indith, jcara, k, kwgt
     integer :: nb1, nb2
     real(kind=8) :: alpha, deux
 !-----------------------------------------------------------------------
     deux = 2.0d0
 !
-    do 10 i = 1, 5
+    do i = 1, 5
         epsi(i)=0.d0
-        do 20 k = 1, 5*nb1+2
+        do k = 1, 5*nb1+2
             epsi(i)=epsi(i)+btild(i,k)*depl(k)
-20      end do
-10  end do
+        end do
+    end do
 !
     epsiln(1,kwgt)=epsi(1)
     epsiln(2,kwgt)=epsi(2)
@@ -54,18 +53,18 @@ subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
     call jevech('PCACOQU', 'L', jcara)
     kappa = zr(jcara+3)
 !
-    call matrc(nomte, nb2, kappa, matc, vectt)
+    call matrc(nb2, kappa, matc, vectt)
 !
     if (indith .eq. -1) then
 !
 !     PAS DE CONTRAINTES THERMIQUES
 !
-        do 30 i = 1, 5
+        do i = 1, 5
             sigm(i)=0.d0
-            do 40 k = 1, 5
+            do k = 1, 5
                 sigm(i)=sigm(i)+matc(i,k)*epsi(k)
-40          end do
-30      end do
+            end do
+        end do
 !
     else if (indith.eq.0) then
 !
@@ -84,12 +83,12 @@ subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
         epstot(4)=epsi(4)
         epstot(5)=epsi(5)
 !
-        do 35 i = 1, 5
+        do i = 1, 5
             sigm(i)=0.d0
-            do 45 k = 1, 5
+            do k = 1, 5
                 sigm(i)=sigm(i)+matc(i,k)*epstot(k)
-45          end do
-35      end do
+            end do
+        end do
 !
     endif
 !

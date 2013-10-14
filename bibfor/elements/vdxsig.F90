@@ -111,9 +111,9 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
     kwgt=0
     kpgs=0
 !
-    do 90 icou = 1, nbcou
+    do icou = 1, nbcou
 !
-        do 100 inte = 1, npge
+        do inte = 1, npge
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
@@ -127,7 +127,7 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                 ksi3s2 = zmin + hic + (icou-1)*hic
             endif
 !
-            do 150 intsr = 1, npgsr
+            do intsr = 1, npgsr
                 call mahsms(0, nb1, xi, ksi3s2, intsr,&
                             zr(lzr), epais, vectn, vectg, vectt,&
                             hsfm, hss)
@@ -138,9 +138,9 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                 call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                             epais, vectpt, hsj1m, hsj1s, btdm,&
                             btds)
-150          continue
+            end do
 !
-            do 200 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
 !     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
@@ -188,35 +188,35 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                     indith=-1
                 endif
 !
-                call vdesga(nomte, kwgt, inte, intsn, nb1,&
-                            nb2, xi, depl, btild, indith,&
-                            alpha, tem, eps, sig, vectt)
+                call vdesga(kwgt, nb1, nb2, depl, btild,&
+                            indith, alpha, tem, eps, sig,&
+                            vectt)
 !
                 kpgs = kpgs+1
                 k1=6*((intsn-1)*npge*nbcou+npge*(icou-1)+inte - 1)
                 if (option .eq. 'EPSI_ELGA') then
-                    do 34 i = 1, 6
+                    do i = 1, 6
                         sigmpg(k1+i) = eps(i+6*(kpgs-1))
-34                  continue
+                    end do
                 else if (option.eq.'SIEF_ELGA') then
-                    do 35 i = 1, 6
+                    do i = 1, 6
                         sigmpg(k1+i) = sig(i+6*(kpgs-1))
-35                  continue
+                    end do
                 endif
 !
-200          continue
-100      end do
-90  end do
+             end do
+         end do
+    end do
 !
     kwgt=0
     kpgs=0
 !
-    do 101 inte = 1, npge
+    do inte = 1, npge
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
         ksi3s2=epsval(inte)/2.d0
-        do 151 intsr = 1, npgsr
+        do intsr = 1, npgsr
             call mahsms(0, nb1, xi, ksi3s2, intsr,&
                         zr(lzr), epais, vectn, vectg, vectt,&
                         hsfm, hss)
@@ -274,12 +274,12 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                 tempga(kwgt)=0.d0
             endif
 !
-            call vdesga(nomte, kwgt, inte, intsr, nb1,&
-                        nb2, xi, depl, btild, indith,&
-                        alpha, tempga, epsiln, sigma, vectt)
+            call vdesga(kwgt, nb1, nb2, depl, btild,&
+                        indith, alpha, tempga, epsiln, sigma,&
+                        vectt)
 !
-151      end do
-101  end do
+         end do
+     end do
 !
     if (option(1:9) .eq. 'EFGE_ELNO') then
 !
@@ -292,16 +292,16 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR :
 !     --------------------------------------------------------------
     k = 0
-    do 110 intsr = 1, npgsr
+    do intsr = 1, npgsr
         call vectgt(0, nb1, xi, zero, intsr,&
                     zr(lzr), epais, vectn, vectg, vectt)
 !
-        do 120 j = 1, 3
-            do 130 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k = k + 1
                 zr(lzr+2000+k-1) = vectt(i,j)
-130          continue
-120      continue
-110  end do
+            end do
+         end do
+     end do
 !
 end subroutine

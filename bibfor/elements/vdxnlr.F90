@@ -95,12 +95,12 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     npgsn = zi(lzi-1+4)
 !
     nddle = 5*nb1 + 2
-    do 20 i = 1, nddle
-        do 10 j = 1, nddle
+    do i = 1, nddle
+        do j = 1, nddle
             ktild(i,j) = 0.d0
-10      continue
+        end do
         effint(i) = 0.d0
-20  end do
+    end do
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
@@ -168,7 +168,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     call rccoma(zi(imate), 'ELAS', 1, phenom, valret(1))
 !
     if (phenom .ne. 'ELAS') then
-        call utmess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_45', sk=phenom)
     endif
 !
 !===============================================================
@@ -182,8 +182,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
     kwgt = 0
     kpgs = 0
-    do 140 icou = 1, nbcou
-        do 130 inte = 1, npge
+    do icou = 1, nbcou
+        do inte = 1, npge
             if (inte .eq. 1) then
                 zic = zmin + (icou-1)*hic
                 coef = 1.d0/3.d0
@@ -198,7 +198,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
-            do 60 intsr = 1, npgsr
+            do intsr = 1, npgsr
                 call mahsms(0, nb1, xi, ksi3s2, intsr,&
                             zr(lzr), hic, vectn, vectg, vectt,&
                             hsfm, hss)
@@ -209,9 +209,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                 call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                             hic, vectpt, hsj1m, hsj1s, btdm,&
                             btds)
-60          continue
+            end do
 !
-            do 120 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
 !     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
@@ -260,9 +260,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
                 k1=6*((intsn-1)*npge*nbcou + (icou-1)*npge +inte - 1)
                 k2 = lgpg* (intsn-1) + (npge* (icou-1)+inte-1)*nbvari
-                do 80 i = 1, 3
+                do i = 1, 3
                     sign(i) = zr(icontm-1+k1+i)
-80              continue
+                end do
                 sign(4) = zr(icontm-1+k1+4)*rac2
 ! - LOI DE COMPORTEMENT
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
@@ -282,7 +282,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
                 else
-                    call utmess('F', 'ELEMENTS_42')
+                    call utmess('F', 'ELEMENTS_45', sk=phenom)
                 endif
 !
                 call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
@@ -297,7 +297,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                     if (codret .ne. 1) then
                         codret=cod
                     endif
-                    if (cod .eq. 1) goto 9999
+                    if (cod .eq. 1) goto 999
                 endif
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
@@ -338,18 +338,18 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                     call btkb(5, 42, nddle, dtild, btild,&
                               wmatcb, ktildi)
 !
-                    do 100 i = 1, nddle
-                        do 90 j = 1, nddle
+                    do i = 1, nddle
+                        do j = 1, nddle
                             ktild(i,j) = ktild(i,j) + ktildi(i,j)
-90                      continue
-100                  continue
+                        end do
+                    end do
                 endif
 !
                 if (vecteu) then
 !
-                    do 110 i = 1, 3
+                    do i = 1, 3
                         zr(icontp-1+k1+i) = sigma(i)
-110                  continue
+                    end do
                     zr(icontp-1+k1+4) = sigma(4)/rac2
                     zr(icontp-1+k1+5) = cisail*kappa*gxz/2.d0
                     zr(icontp-1+k1+6) = cisail*kappa*gyz/2.d0
@@ -366,9 +366,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
                 endif
 !
-120          continue
-130      continue
-140  end do
+             end do
+         end do
+     end do
 !
     if (matric) then
 !
@@ -389,34 +389,34 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 !
         call vexpan(nb1, effint, vecl)
 !
-        do 150 i = 1, 6*nb1
+        do i = 1, 6*nb1
             vecll(i) = vecl(i)
-150      continue
+        end do
         vecll(6*nb1+1) = effint(5*nb1+1)
         vecll(6*nb1+2) = effint(5*nb1+2)
         vecll(6*nb1+3) = 0.d0
 !
 !     CONTRIBUTION DES DDL DE LA ROTATION FICTIVE DANS EFFINT
 !
-        do 160 i = 1, nb1
+        do i = 1, nb1
             vecll(6*i) = crf* (rotfcm(i)+rotfcp(i))
-160      continue
+        end do
         i = nb2
         vecll(6*nb1+3) = crf* (rotfcm(nb2)+rotfcp(nb2))
 !     TRANFORMATION DANS REPERE GLOBAL PUIS STOCKAGE
-        do 190 ib = 1, nb2
-            do 180 i = 1, 2
-                do 170 j = 1, 3
+        do ib = 1, nb2
+            do i = 1, 2
+                do j = 1, 3
                     vecpt(ib,i,j) = vectpt(ib,i,j)
-170              continue
-180          continue
+                end do
+            end do
             vecpt(ib,3,1) = vectn(ib,1)
             vecpt(ib,3,2) = vectn(ib,2)
             vecpt(ib,3,3) = vectn(ib,3)
-190      continue
+        end do
 !
         call trnflg(nb2, vecpt, vecll, zr(ivectu))
     endif
 !
-9999  continue
+999 continue
 end subroutine

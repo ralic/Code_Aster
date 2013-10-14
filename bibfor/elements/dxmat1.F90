@@ -99,7 +99,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
         nomres(5) = 'ALPHA'
 !
     else
-        call utmess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_44', sk=phenom)
     endif
 !
 !===============================================================

@@ -196,7 +196,7 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
             nomres(34) = 'ALPHA   '
         endif
     else
-        call utmess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42', sk=phenom)
     endif
 !
 !===============================================================

@@ -76,19 +76,19 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
     call vectan(nb1, nb2, xi, zr(lzr), vecta,&
                 vectn, vectpt)
 !
-    do 5 i = 1, nddle
-        do 6 j = 1, nddle
+    do i = 1, nddle
+        do j = 1, nddle
             ktild(i,j)=0.d0
- 6      end do
- 5  end do
+        end do
+    end do
 !
     kwgt=0
-    do 100 inte = 1, npge
+    do inte = 1, npge
         ksi3s2=epsval(inte)/2.d0
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
-        do 150 intsr = 1, npgsr
+        do intsr = 1, npgsr
             call mahsms(0, nb1, xi, ksi3s2, intsr,&
                         zr(lzr), epais, vectn, vectg, vectt,&
                         hsfm, hss)
@@ -99,7 +99,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
             call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                         epais, vectpt, hsj1m, hsj1s, btdm,&
                         btds)
-150      end do
+        end do
 !
 !
 !---- POUR L ENERGIE DE DEFORMATION DE MEMBRANE PAS DE CISAILLEMENT
@@ -116,7 +116,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !
         endif
 !
-        do 200 intsn = 1, npgsn
+        do intsn = 1, npgsn
 !
 !     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
@@ -145,21 +145,21 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
             call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
                         btdm, btdf, btds, btild)
 !
-            call matrc(nomte, nb2, kappa, matc, vectt)
+            call matrc(nb2, kappa, matc, vectt)
 !
             call dscal(25, wgt, matc, 1)
 !
             call btkb(5, 42, nddle, matc, btild,&
                       wmatcb, ktildi)
 !
-            do 11 i = 1, nddle
-                do 12 j = 1, nddle
+            do i = 1, nddle
+                do j = 1, nddle
                     ktild(i,j)=ktild(i,j)+ktildi(i,j)
-12              end do
-11          end do
+                end do
+            end do
 !
-200      end do
-100  end do
+         end do
+     end do
 !
 !     EXPANSION DE LA MATRICE : AJOUTER DE LA ROTATION FICTIVE
 !

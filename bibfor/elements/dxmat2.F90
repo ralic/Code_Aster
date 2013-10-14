@@ -157,7 +157,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
         nomres(10) = 'CISA_T  '
         nomres(11) = 'ALPHA   '
     else
-        call utmess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_44', sk=phenom)
     endif
 !
 !===============================================================

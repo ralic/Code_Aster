@@ -16,8 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine matrc(nomte, nno, kcis, matc, vectt)
-        character(len=*) :: nomte
+    subroutine matrc(nno, kcis, matc, vectt)
         integer :: nno
         real(kind=8) :: kcis
         real(kind=8) :: matc(5, 5)
