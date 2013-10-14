@@ -1,4 +1,4 @@
-subroutine assach(preel2, pimag2, base2, chout2)
+subroutine assach(preel2, pimag2, base2, chout2, parout)
     implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -18,7 +18,9 @@ subroutine assach(preel2, pimag2, base2, chout2)
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 !
-    character(len=*) :: chout2, preel2, pimag2, base2
+    character(len=*), intent(in) :: preel2, pimag2, base2
+    character(len=*) :: chout2
+    character(len=8), intent(in), optional :: parout
     character(len=19) :: chout, preel, pimag
     character(len=1) :: base
 ! ----------------------------------------------------------------------
@@ -118,7 +120,12 @@ subroutine assach(preel2, pimag2, base2, chout2)
     ligrel=zk24(jcelkr)
     option=zk24(jcelkr+1)
 !
-    param=nopar2(option,nomcpx,'OUT')
+    if (present(parout)) then
+        param=parout
+    else
+        param=nopar2(option,nomcpx,'OUT')
+    endif
+
     call exisd('CHAM_ELEM_S', preel, iret)
     if (iret .gt. 0) then
         call alchml(ligrel, option, param, base, chout,&

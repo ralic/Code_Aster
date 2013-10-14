@@ -109,7 +109,11 @@ MODE_LOCAL__
                                         QX       QY       )
     EDEFGPG  = EPSI_R   ELGA__ MASS    (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
+    EDEFGPC  = EPSI_C   ELGA__ MASS    (EXX      EYY      EXY      KXX      KYY      KXY
+                                        GAX      GAY      )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
+                                        GAX      GAY      )
+    EDEFGNC  = EPSI_C   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
@@ -259,9 +263,11 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR
     REPERE_LOCAL     134  IN__  CCACOQU  PCACOQU  NGEOMER  PGEOMER
                           OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
-    REPE_GENE        443  IN__  CCAORIE  PANGREP  CCACOQU  PCACOQU  EDEFGPG  PDGGAIN  EDEFGNO  PDGNOIN
-                                EEFGEPGR PEFGAIN  EEFGENOR PEFNOIN  NGEOMER  PGEOMER
-                          OUT__ EDEFGPG  PDGGAOUT EDEFGNO  PDGNOOUT EEFGEPGR PEFGAOUT EEFGENOR PEFNOOUT
+    REPE_GENE        443  IN__  CCAORIE  PANGREP  CCACOQU  PCACOQU  EDEFGPG  PDGGAIN  EDEFGPC  PDGGAINC
+                                EDEFGNO  PDGNOIN  EDEFGNC  PDGNOINC EEFGEPGR PEFGAIN  EEFGEPGC PEFGAINC
+                                EEFGENOR PEFNOIN  EEFGENOC PEFNOINC NGEOMER  PGEOMER
+                          OUT__ EDEFGPG  PDGGAOUT EDEFGPC  PDGGAOUC EDEFGNO  PDGNOOUT EDEFGNC  PDGNOOUC
+                                EEFGEPGR PEFGAOUT EEFGEPGC PEFGAOUC EEFGENOR PEFNOOUT EEFGENOC PEFNOOUC
     REPE_TENS        443  IN__  CCAORIE  PANGREP  CCACOQU  PCACOQU  ECONTPG  PCOGAIN  ESIGMNOR PCONOIN
                                 EDEFOPG  PDEGAIN  EDEFONO  PDENOIN  NGEOMER  PGEOMER
                           OUT__ ECONTPG  PCOGAOUT ESIGMNOR PCONOOUT EDEFOPG  PDEGAOUT EDEFONO  PDENOOUT

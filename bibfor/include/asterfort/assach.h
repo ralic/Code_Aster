@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine assach(preel2, pimag2, base2, chout2)
-        character(len=*) :: preel2
-        character(len=*) :: pimag2
-        character(len=*) :: base2
+    subroutine assach(preel2, pimag2, base2, chout2, parout)
+        character(len=*), intent(in) :: preel2
+        character(len=*), intent(in) :: pimag2
+        character(len=*), intent(in) :: base2
         character(len=*) :: chout2
+        character(len=8), intent(in), optional :: parout
     end subroutine assach
 end interface

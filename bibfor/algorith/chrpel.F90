@@ -21,6 +21,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/angvxy.h"
+#include "asterfort/assach.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -52,6 +53,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reliem.h"
+#include "asterfort/sepach.h"
 #include "asterfort/ut2vgl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
@@ -94,10 +96,10 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     complex(kind=8) :: valetc(6)
     character(len=3) :: tsca
     character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, param
-    character(len=8) :: lpain(4), paout, licmp(3)
+    character(len=8) :: lpain(4), paout, licmp(3), nomgdr, paoutc
     character(len=16) :: option, motcle(2), nomch2
     character(len=19) :: chams1, chams0, ligrel, manoga, canbsp
-    character(len=19) :: changl, carte
+    character(len=19) :: changl, carte, chr, chi, ch1, ch2
     character(len=24) :: mesmai, chgeom, lchin(4), chaout
     character(len=24) :: valk(3), chcara(18)
 !
@@ -1041,23 +1043,30 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         lpain(3) = 'PANGREP'
         lchin(3) = changl
         lchin(4) = champ0
+
+        call dismoi('NOM_GD',lchin(4),'CHAMP',repk=nomgdr)
         if (type .eq. 'COQUE_GENE') then
             option = 'REPE_GENE'
             if (nomch .eq. 'EFGE_ELGA') then
                 lpain(4) = 'PEFGAIN'
                 paout = 'PEFGAOUT'
+                if (nomgdr(5:6).eq.'_C') paoutc = 'PEFGAOUC'
             else if (nomch.eq.'EFGE_ELNO') then
                 lpain(4) = 'PEFNOIN'
                 paout = 'PEFNOOUT'
+                if (nomgdr(5:6).eq.'_C') paoutc = 'PEFNOOUC'
             else if (nomch.eq.'DEGE_ELGA') then
                 lpain(4) = 'PDGGAIN'
                 paout = 'PDGGAOUT'
+                if (nomgdr(5:6).eq.'_C') paoutc = 'PDGGAOUC'
             else if (nomch.eq.'DEGE_ELNO') then
                 lpain(4) = 'PDGNOIN'
                 paout = 'PDGNOOUT'
+                if (nomgdr(5:6).eq.'_C') paoutc = 'PDGNOOUC'
             else if (nomch.eq.'SIEF_ELGA') then
                 lpain(4) = 'PEFGAIN'
                 paout = 'PEFGAOUT'
+                if (nomgdr(5:6).eq.'_C') paoutc = 'PEFGAOUC'
             else
                 call utmess('F', 'ELEMENTS5_51', sk=nomch)
             endif
@@ -1095,9 +1104,28 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         endif
         chaout = chams1
         call copisd('CHAM_ELEM_S', 'V', canbsp, chaout)
-        call calcul('S', option, ligrel, 4, lchin,&
-                    lpain, 1, chaout, paout, 'V',&
-                    'OUI')
+
+        if (nomgdr(5:6).eq.'_C') then
+            chr='&&CHRPEL.CHR'
+            chi='&&CHRPEL.CHI'
+            ch1='&&CHRPEL.CH1'
+            ch2='&&CHRPEL.CH2'
+            call sepach(carele,lchin(4),'V',chr,chi)
+            lchin(4)=chr
+            call calcul('S', option, ligrel, 4, lchin,&
+                    lpain, 1, ch1, paout, 'V','OUI')
+            lchin(4)=chi
+            call calcul('S', option, ligrel, 4, lchin,&
+                    lpain, 1, ch2, paout, 'V','OUI')
+            call assach(ch1,ch2,'V',chaout,parout=paoutc)
+            call detrsd('CHAMP',chr)
+            call detrsd('CHAMP',chi)
+            call detrsd('CHAMP',ch1)
+            call detrsd('CHAMP',ch2)
+        else
+            call calcul('S', option, ligrel, 4, lchin,&
+                    lpain, 1, chaout, paout, 'V','OUI')
+        endif
         call detrsd('CHAM_ELEM_S', chaout)
         call copisd('CHAMP_GD', 'G', chaout, champ1)
     endif
