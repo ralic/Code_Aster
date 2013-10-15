@@ -21,7 +21,15 @@ DEBUT(CODE=_F(NOM='SSNP131A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
 
 #
 MA=LIRE_MAILLAGE(FORMAT='MED',);
-
+        
+MA=DEFI_GROUP(reuse =MA,
+               MAILLAGE=MA,
+               CREA_GROUP_NO=_F(
+                                NOM='LIGBE2',
+                                OPTION='PLAN',
+                                POINT=(0,0),
+                                VECT_NORMALE=(0,1),
+                                PRECISION=0.000010),);
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
@@ -112,7 +120,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 # ----------------------------------------------------------------------
 
 COND_LIM=AFFE_CHAR_CINE(MODELE=MOD,
-                        MECA_IMPO=(_F(GROUP_NO='LIGBE',
+                        MECA_IMPO=(_F(GROUP_NO='LIGBE2',
                                      DY=0.0,),
                                   _F(GROUP_NO='PGOUP',
                                      DX=0.0,),),);
@@ -223,5 +231,8 @@ TEST_TABLE(CRITERE='RELATIF',
                    _F(NOM_PARA='ZONE',
                       VALE_K = 'COPS_3'),)
            )
-
+IMPR_TABLE(TABLE=TESTSCOP,
+           UNITE=8)
+IMPR_TABLE(TABLE=TESTCOP,
+           UNITE=9)
 FIN()
