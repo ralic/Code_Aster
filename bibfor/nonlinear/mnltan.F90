@@ -1,8 +1,6 @@
 subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
                   parcho, adime, xvect, ninc, nd,&
                   nchoc, h, hf, xtang)
-! aslint: disable=W1306
-!
     implicit none
 !
 ! ======================================================================
@@ -72,24 +70,24 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: i, itang, iret, ib
-    real(kind=8) :: vecplu(ninc), norme
+    integer :: i, itang, iret, ib, ivplu
+    real(kind=8) :: norme
     complex(kind=8) :: cbid
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
-!    call jxveri(' ', ' ')
+! ----------------------------------------------------------------------
+! --- CREATION VECTEURS TEMPORAIRES
+! ----------------------------------------------------------------------
+    call wkvect('&&mnltan.b', 'V V R', ninc, ib)
+    call wkvect('&&mnltan.vecplu', 'V V R', ninc, ivplu)
 ! ----------------------------------------------------------------------
 ! --- CREATION D'UN VECTEUR ALEATOIRE (A AJOUTER A LA DERNIERE LIGNE
 ! ---                                          DE LA MATRICE JACOBIENNE)
 ! ----------------------------------------------------------------------
     do i = 1, ninc
-        call getran(vecplu(i))
+        call getran(zr(ivplu-1+i))
     end do
-! ----------------------------------------------------------------------
-! --- CREATION D'UN VECTEUR TEMPORAIRE
-! ----------------------------------------------------------------------
-    call wkvect('&&MNLTAN.B', 'V V R', ninc, ib)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DU VECTEUR TANGENT
 ! ----------------------------------------------------------------------
@@ -98,7 +96,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! --- CALCUL (OU RECUPERATION) DE LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
     call mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
-                parcho, adime, xvect, vecplu, ninc,&
+                parcho, adime, xvect, zr(ivplu), ninc,&
                 nd, nchoc, h, hf)
 ! ----------------------------------------------------------------------
 ! --- ON CREE UN VECTEUR [0 ... 0 1]
@@ -119,7 +117,8 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- ON DETRUIT LE VECTEUR TEMPORAIRE
 ! ----------------------------------------------------------------------
-    call jedetr('&&MNLTAN.B')
+    call jedetr('&&mnltan.b')
+    call jedetr('&&mnltan.vecplu')
 !
     call jedema()
 !

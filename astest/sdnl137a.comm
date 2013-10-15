@@ -86,13 +86,13 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
                        SOLVEUR=_F(METHODE='MUMPS',),
                       );
 
-ndiscr=1
+ndiscr=10
 decal=0.1*jeu
 
 hu=1
 hf=201
 eta=2.5e-5
-nbranch=25
+nbranch=10
 
 MNL=MODE_NON_LINE(ETAT_INIT=_F(MODE_LINE = MODES,NUME_ORDRE = 1,
                                DIR_EVOLUTION =-1,),
@@ -129,42 +129,32 @@ MNL=MODE_NON_LINE(ETAT_INIT=_F(MODE_LINE = MODES,NUME_ORDRE = 1,
 
 #IMPR_TABLE(TABLE = MNL)
 
-TTTS =CALC_TABLE(TABLE=MNL,
-                 ACTION=(
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'GT',
-                          VALE=11.5,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'LT',
-                          VALE=12.8,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'GT',
-                          VALE=4e-4,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'LT',
-                          VALE=5e-4,),
-                 ),)
+ENRGC=RECU_FONCTION(TABLE=MNL,
+                    PARA_X='FREQUENCE',
+                    PARA_Y='ENERGIE',
+                    INTERPOL=('LOG',),
+                    )
+FREQC=RECU_FONCTION(TABLE=MNL,
+                    PARA_Y='FREQUENCE',
+                    PARA_X='ENERGIE',
+                    INTERPOL=('LOG',),
+                    )
 
-#IMPR_TABLE(TABLE = TTTS)
-#valeurs calculees sur machine locale
-fi = 11.9664953639255
-ei = 4.35944621218825E-4
+##valeurs calculees sur machine locale
+fi=5.25698E+00  
+ei=7.83624E-05
 
-TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'FREQUENCE',
-           FILTRE=_F(NOM_PARA='STABILITE',
-                     VALE_K='NON_EVALUE',),
-             VALE_CALC= fi,
-             TOLE_MACHINE=1.E-02,  # variation du point de controle en fonction de la machine
-             REFERENCE = 'AUTRE_ASTER',
-             VALE_REFE= fi,
-             PRECISION = 1.E-2,
-              )
+TEST_FONCTION(VALEUR=_F(VALE_PARA=fi,
+                       VALE_CALC=ei,
+                       REFERENCE='AUTRE_ASTER',
+                       VALE_REFE=ei,
+                       FONCTION=ENRGC,),
+             )
 
-TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'ENERGIE',
-           FILTRE=_F(NOM_PARA='STABILITE',
-                     VALE_K='NON_EVALUE',),
-             VALE_CALC= ei,
-             TOLE_MACHINE=1.E-02,  # variation du point de controle en fonction de la machine
-             REFERENCE = 'AUTRE_ASTER',
-             VALE_REFE= ei,
-             PRECISION = 1.E-2,
-              )
-
-
+TEST_FONCTION(VALEUR=_F(VALE_PARA=ei,
+                       VALE_CALC=fi,
+                       REFERENCE='AUTRE_ASTER',
+                       VALE_REFE=fi,
+                       FONCTION=FREQC,),
+             )
 FIN()

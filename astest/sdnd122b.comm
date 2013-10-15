@@ -21,9 +21,8 @@ import math
 m=1.
 k = 10.
 
-DEBUT(PAR_LOT='NON',  # a cause de EXTR_TABLE pour TEST_RESU
-      CODE=_F(NOM='SDND122B',NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F( SDVERI     = 'OUI',),
+DEBUT( CODE=_F(NOM='SDND122B',NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM='FONCT0_62',  #abscisses re-ordonnees dues a table enrichie (reuse)
      )
 
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
@@ -75,7 +74,7 @@ MODES=MODE_ITER_SIMULT(MATR_RIGI=K,
 hu=5;
 hf=200;
 nbranch=105;
-ndiscr=1;
+ndiscr=10;
 kchoc = 50.
 jeu = 0.01
 
@@ -102,6 +101,12 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
                  INFO=1,
                  )
 
+FREQC=RECU_FONCTION(TABLE=MNL,
+                    PARA_X='ENERGIE',
+                    PARA_Y='FREQUENCE',
+                    INTERPOL=('LIN',),
+                    )
+
 #test recuperation caracteristiques de choc
 CHOCX = EXTR_TABLE(TABLE=MNL,
                      TYPE_RESU = 'TABLE_SDASTER',
@@ -111,43 +116,36 @@ CHOCX = EXTR_TABLE(TABLE=MNL,
                     )
 #IMPR_TABLE(TABLE=CHOCX)
 
-MNL = CALC_STABILITE(reuse=MNL,MODE_NON_LINE=MNL,
-                     FILTRE=_F( FREQ_MIN = 0.64, FREQ_MAX =0.65,),
+MNL2 = CALC_STABILITE(MODE_NON_LINE=MNL,
+                     FILTRE=_F( NUME_ORDRE = 1000,),
                    )
 
 #IMPR_TABLE(TABLE=MNL)
 
-TTESTS =CALC_TABLE(TABLE=MNL,
-                 ACTION=(
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'GT',
-                          VALE=0.644,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'LT',
-                          VALE=0.6475,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'GT',
-                          VALE=6.2e-3,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'LT',
-                          VALE=6.9e-3,),
-                 ),) 
+#valeurs calculees sur machine locale
+es=0.00658129654238
+fs=0.64708839499999993
 
-#IMPR_TABLE(TABLE=TTESTS)
-tab = TTESTS.EXTR_TABLE()
-es = tab.ENERGIE[0]
-fs = tab.FREQUENCE[0]
-
+#calcul analytique
 e_tilda = es/(k*jeu*jeu)
-tau_1 = 2*math.acos(-1/math.sqrt(2*e_tilda))
-tau_2 = 2*math.sqrt(k/(k+kchoc))*math.acos(math.sqrt(k/(2*e_tilda*(k+kchoc))))
+tau_1 = 2.*math.acos(-1./math.sqrt(2.*e_tilda))
+tau_2 = 2.*math.sqrt(k/(k+kchoc))*math.acos(math.sqrt(k/(2.*e_tilda*(k+kchoc))))
 tau_p = tau_1+tau_2
 T = math.sqrt(m/k)*tau_p
-fsc = 1/(T)
+fsc = 1./T
 
-TEST_TABLE( TABLE   = TTESTS,NOM_PARA  = 'FREQUENCE',
+TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
+                       VALE_CALC=fs,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=fsc,
+                       FONCTION=FREQC,),
+             )
+
+TEST_TABLE( TABLE   = MNL2,NOM_PARA  = 'NUME_ORDRE',
            FILTRE=_F(NOM_PARA='STABILITE',
                      VALE_K='STABLE',),
-             VALE_CALC= fs,
-             REFERENCE = 'ANALYTIQUE',
-             VALE_REFE= fsc,
-             PRECISION = 5.e-3,
+             VALE_CALC_I= 1000,
               )
+
 
 FIN();

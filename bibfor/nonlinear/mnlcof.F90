@@ -2,8 +2,6 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
                   adime, xvecu0, xtang, ninc, nd,&
                   nchoc, h, hf, ordman, xups,&
                   xfpnla, lbif, nextr, epsbif)
-! aslint: disable=W1306
-!
     implicit none
 !
 ! ======================================================================
@@ -85,11 +83,8 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! --- DECLARATION DES VARIABLES LOCALES POUR EXTRACTION GEOMETRIQUE
 ! ----------------------------------------------------------------------
     integer :: k
-!    parameter ( nextr = 3 )
-!      PARAMETER ( NEXTR = 4 )
-!      PARAMETER ( NEXTR = 3 )
-    real(kind=8) :: alpha(nextr), ratio(nextr), ecar(nextr-1)
-    real(kind=8) :: nratio, necar, ac, nudom
+    integer :: ialpha, iratio, iecar
+    real(kind=8) :: nvec, nratio, necar, ac, nudom
     complex(kind=8) :: cbid
     cbid = dcmplx(0.d0, 0.d0)
 !
@@ -158,35 +153,34 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- EXTRACTION SERIE GEOMETRIQUE
 ! ----------------------------------------------------------------------
+    call wkvect('&&MNLCOF.ALPHA', 'V V R', nextr, ialpha)
+    call wkvect('&&MNLCOF.RATIO', 'V V R', nextr, iratio)
+    call wkvect('&&MNLCOF.ECAR', 'V V R', nextr-1, iecar)
     do k = 1, nextr
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
-        alpha(k)=ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),1,&
-        zr(iups+(ordman-k+1-1)*ninc),1)
-        alpha(k)=alpha(k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
+        zr(ialpha-1+k)=ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),1, zr(iups+(ordman-k+1-1)*ninc),1)
+        zr(ialpha-1+k)=zr(ialpha-1+k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
         1, zr(iups+(ordman-k+2-1)*ninc),1)
         call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
-        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),&
-                   1)
-        ratio(k)=dnrm2(ninc,zr(ivecu1),1)/dnrm2(ninc, zr(iups+(&
-        ordman-k+1-1)*ninc),1)
+        call daxpy(ninc, -zr(ialpha-1+k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),1)
+        nvec=dnrm2(ninc, zr(ivecu1), 1)
+        zr(iratio-1+k)=nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
         if (k .gt. 1) then
-            ecar(k-1)=(alpha(k-1)-alpha(k))/alpha(k-1)
+            zr(iecar-1+k-1)=(zr(ialpha-1+k-1)-zr(ialpha-1+k))/zr(ialpha-1+k-1)
         endif
     end do
-    nratio=dnrm2(nextr,ratio,1)
-    necar=dnrm2(nextr-1,ecar,1)
+    nratio=dnrm2(nextr,zr(iratio),1)
+    necar=dnrm2(nextr-1,zr(iecar),1)
     if (nratio .lt. epsbif .and. necar .lt. epsbif) then
         lbif=.true.
-        ac=ddot(ninc,zr(iups+ordman*ninc),1, zr(iups+(ordman-1)*&
-        ninc),1)
-        ac=ac/ddot(ninc,zr(iups+ordman*ninc),1, zr(iups+ordman*&
-        ninc),1)
+        call dscal(ninc, 0.d0, zr(ivecu1), 1)
+        ac=ddot(ninc,zr(iups+ordman*ninc),1, zr(iups+(ordman-1)*ninc),1)
+        ac=ac/ddot(ninc,zr(iups+ordman*ninc),1, zr(iups+ordman*ninc),1)
         call dcopy(ninc, zr(iups+ordman*ninc), 1, zr(ivecu1), 1)
         call dscal(ninc, ac**ordman, zr(ivecu1), 1)
         nudom=dnrm2(ninc,zr(ivecu1),1)
         do k = 1, ordman
-            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc),&
-                       1)
+            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc), 1)
         end do
     endif
 !
@@ -207,12 +201,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ---   VECU2 = UPS(:,ORDMAN+2-R)
         call dcopy(ninc, zr(iups+(ordman+1-r)*ninc), 1, zr(ivecu2), 1)
 ! ---   Q(VECU1,VECU2)
-        call mnlqnl(imat, xcdl, parcho, adime, xvecu1,&
-                    xvecu2, ninc, nd, nchoc, h,&
-                    hf, xqnl)
+        call mnlqnl(imat, xcdl, parcho, adime, xvecu1, xvecu2, ninc, nd, nchoc, h, hf, xqnl)
 !       AJOUT DES DEUX VECTEURS DANS XFPNLA
-        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla),&
-                   1)
+        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla), 1)
     end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES
@@ -221,6 +212,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     call jedetr(xvecu2)
     call jedetr('&&MNLCOF.FPNL')
     call jedetr(xqnl)
+    call jedetr('&&MNLCOF.ALPHA')
+    call jedetr('&&MNLCOF.RATIO')
+    call jedetr('&&MNLCOF.ECAR')
 !
     call jedema()
 !

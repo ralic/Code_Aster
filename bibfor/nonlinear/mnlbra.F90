@@ -60,7 +60,6 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 ! ----------------------------------------------------------------------
     integer :: ius, iups, ifpnla, i, k
     real(kind=8) :: norme, a
-    real(kind=8) :: amaxt
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -80,11 +79,9 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 !
     if (norme .eq. 0.d0) then
         call utmess('F', 'MECANONLINE9_61')
-        amaxt = 1.d0
     else
-        amaxt = (epsman/norme)**(1.d0/(ordman+1))
+        amax = (epsman/norme)**dble(1.d0/(ordman+1))
     endif
-    amax=amaxt
 ! ----------------------------------------------------------------------
 ! --- ON RECOPIE LE POINT INITIAL
 ! ----------------------------------------------------------------------
@@ -93,9 +90,9 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 ! --- ON CALCUL LA BRANCHE
 ! ----------------------------------------------------------------------
     do i = 2, nbpt
-        a=amax*(dble(i)-1)/(dble(nbpt)-1)
+        a=amax*dble(i-1)/dble(nbpt-1)
         do k = 0, ordman
-            call daxpy(ninc, a**k, zr(iups+k*ninc), 1, zr(ius+(i-1)*ninc),&
+            call daxpy(ninc, a**dble(k), zr(iups+k*ninc), 1, zr(ius+(i-1)*ninc),&
                        1)
         end do
     end do

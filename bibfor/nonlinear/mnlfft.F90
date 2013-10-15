@@ -1,7 +1,4 @@
-subroutine mnlfft(n, x, y, h, nt,&
-                  ind)
-! aslint: disable=W1306
-
+subroutine mnlfft(n, x, y, h, nt,ind)
     implicit none
 !
 ! ======================================================================
@@ -46,35 +43,42 @@ subroutine mnlfft(n, x, y, h, nt,&
 !
 ! --- DECLARATION PARAMETRES D'APPELS
 !
+#include "jeveux.h"
+#include "blas/zdscal.h"
 #include "asterfort/fft.h"
-#include "asterc/iisnan.h"
-    integer :: n, h, nt, ind, k, iadd, j
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
+    integer :: n, h, nt, ind
     real(kind=8) :: x(n*(2*h+1)), y(n*nt)
-    complex(kind=8) :: xft(nt), xf(n*nt), yf(nt), i
+!
+    integer :: k, iadd, j
+    integer :: ixf, iyf, ixft
+!
+    call jemarq()
 !
 ! --- INITIALISATION DES VECTEURS DE TRAVAIL ET DE L'IMAGINAIRE PUR I
 !
-    xf = 0.d0
-    yf = 0.d0
-    i = (0.d0,1.d0)
+    call wkvect('&&mnlfft.xf', 'V V C', n*nt, ixf)
+    call wkvect('&&mnlfft.yf', 'V V C', nt, iyf)
+    call wkvect('&&mnlfft.xft', 'V V C', nt, ixft)
     if (ind .eq. 0) then
 ! ---   REECRITURE COMPATIBLE AVEC LA DFT
 ! ---   APPLICATION DE L'IFFT
         do 10 k = 1, n
-            do 40 j = 1, nt
-                xft(j)=(0.d0,0.d0)
-40          continue
+            call zdscal(nt, 0.d0, zc(ixft), 1)
 !
-            xft(1)=nt*x(k)
+            zc(ixft)=nt*x(k)
             do 30 j = 1, h
-                xft(j+1)=(nt/2.d0)*(x(j*n+k)+i*x(n*(h+j)+k))
-                xft(nt-j+1)=(nt/2.d0)*(x(j*n+k)-i*x(n*(h+j)+k))
+                zc(ixft-1+j+1)=dcmplx((nt/2.d0)*x(j*n+k),(nt/2.d0)*x(n*(h+j)+k))
+                zc(ixft-1+nt-j+1)=dcmplx((nt/2.d0)*x(j*n+k),-(nt/2.d0)*x(n*(h+j)+k))
 30          continue
 !
-            call fft(xft, nt, -1)
+            call fft(zc(ixft), nt, -1)
             do 11 j = 1, nt
                 iadd = (j-1)*n+k
-                y(iadd) = dble(xft(j))
+                y(iadd) = dble(zc(ixft-1+j))
 11          continue
 10      continue
 !
@@ -82,17 +86,22 @@ subroutine mnlfft(n, x, y, h, nt,&
 ! ---   APPLICATION DE LA FFT
         do 50 k = 1, n
             do 51 j = 1, nt
-                yf(j)=y((j-1)*n+k)+i*0.d0
+                zc(iyf-1+j)=dcmplx(y((j-1)*n+k),0.d0)
 51          continue
 !
-            call fft(yf, nt, 1)
+            call fft(zc(iyf), nt, 1)
 !
-            x(k)=dble(yf(1))/nt
+            x(k)=dble(zc(iyf))/nt
             do 52 j = 1, h
-                x(j*n+k)=2.d0*dble(yf(j+1))/nt
-                x((h+j)*n+k)=2.d0*aimag(yf(j+1))/nt
+                x(j*n+k)=2.d0*dble(zc(iyf-1+j+1))/nt
+                x((h+j)*n+k)=2.d0*aimag(zc(iyf-1+j+1))/nt
 52          continue
 50      continue
     endif
 !
+    call jedetr('&&mnlfft.xf')
+    call jedetr('&&mnlfft.yf')
+    call jedetr('&&mnlfft.xft')
+!
+    call jedema()
 end subroutine

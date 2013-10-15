@@ -1,7 +1,5 @@
 subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
                   nd, nchoc, h, nbpt, xeng)
-! aslint: disable=W1306
-
     implicit none
 !
 ! ======================================================================
@@ -71,8 +69,9 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    real(kind=8) :: x(nd*(2*h+1)), pi, y(nd), dy(nd), ky(nd), mdy(nd)
+    real(kind=8) :: pi
     real(kind=8) :: omega, alpha, jeu, rayon, origx, origy, ratio
+    integer :: ix, iy, idy, imdy, iky
     integer :: ius, ieng, k, icdl, neq, iye, idye, ikye, imdye, i
     integer :: ityp, inddl, ireg, ijeu, iraid, iorig, nddl, nddlx, nddly
 !
@@ -95,32 +94,39 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------
+    call wkvect('&&MNLENG.X', 'V V R', nd*(2*h+1), ix)
+    call wkvect('&&MNLENG.Y', 'V V R', nd, iy)
+    call wkvect('&&MNLENG.DY', 'V V R', nd, idy)
+    call wkvect('&&MNLENG.MDY', 'V V R', nd, imdy)
+    call wkvect('&&MNLENG.KY', 'V V R', nd, iky)
+!
     call wkvect('&&MNLENG.YE', 'V V R', neq, iye)
     call wkvect('&&MNLENG.DYE', 'V V R', neq, idye)
     call wkvect('&&MNLENG.KYE', 'V V R', neq, ikye)
     call wkvect('&&MNLENG.MDYE', 'V V R', neq, imdye)
     do 100 ind = 1, nbpt-1
+        call dscal(nd*(2*h+1), 0.d0, zr(ix), 1)
+        call dscal(nd, 0.d0, zr(iy), 1)
+        call dscal(nd, 0.d0, zr(idy), 1)
+        call dscal(nd, 0.d0, zr(imdy), 1)
+        call dscal(nd, 0.d0, zr(iky), 1)
+!
         omega=zr(ius-1+ind*ninc)
-        call dcopy(nd*(2*h+1), zr(ius+(ind-1)*ninc), 1, x, 1)
+        call dcopy(nd*(2*h+1), zr(ius+(ind-1)*ninc), 1, zr(ix), 1)
 ! ----------------------------------------------------------------------
 ! --- PASSAGE EN TEMPOREL (t=T/4)
 ! ----------------------------------------------------------------------
 ! ---   PI
         pi=r8pi()
-        call dcopy(nd, x, 1, y, 1)
-        dy=0.d0
+        call dcopy(nd, zr(ix), 1, zr(iy), 1)
         ratio=4.d0
         do 10 k = 1, h
 ! ---     COS
-            call daxpy(nd, cos(2*k*pi/ratio), x(nd*k+1), 1, y,&
-                       1)
-            call daxpy(nd, k*omega*cos(2*k*pi/ratio), x(nd*(h+k)+1), 1, dy,&
-                       1)
+            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy),1)
+            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy),1)
 ! ---     SIN
-            call daxpy(nd, sin(2*k*pi/ratio), x(nd*(h+k)+1), 1, y,&
-                       1)
-            call daxpy(nd, -k*omega*sin(2*k*pi/ratio), x(nd*k+1), 1, dy,&
-                       1)
+            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy),1)
+            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy),1)
 10      continue
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE K*Y ET M*DY
@@ -133,47 +139,47 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         do 20 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
-                zr(iye-1+k)=y(i)
-                zr(idye-1+k)=dy(i)
+                zr(iye-1+k)=zr(iy-1+i)
+                zr(idye-1+k)=zr(idy-1+i)
             endif
 20      continue
         call mrmult('ZERO', imat(1), zr(iye), zr(ikye), 1,&
                     .false.)
         call mrmult('ZERO', imat(2), zr(idye), zr(imdye), 1,&
                     .false.)
-        call dscal(nd, 0.d0, ky, 1)
-        call dscal(nd, 0.d0, mdy, 1)
+        call dscal(nd, 0.d0, zr(iky), 1)
+        call dscal(nd, 0.d0, zr(imdy), 1)
         i=0
         do 30 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
-                ky(i)=zr(ikye-1+k)
-                mdy(i)=zr(imdye-1+k)
+                zr(iky-1+i)=zr(ikye-1+k)
+                zr(imdy-1+i)=zr(imdye-1+k)
             endif
 30      continue
-        e=ddot(nd,y,1,ky,1)/2
-        e=e+ddot(nd,dy,1,mdy,1)/2
+        e=ddot(nd, zr(iy),1,zr(iky),1)/2
+        e=e+ddot(nd,zr(idy),1,zr(imdy),1)/2
         do 40 k=1,nchoc
             alpha=zr(iraid-1+k)
             jeu=zr(ijeu-1+k)
             if(zk8(ityp-1+k)(1:4).eq.'PLAN') then
                 nddl=zi(inddl-1+6*(k-1)+1)
-                if(y(nddl).gt.jeu) then
-                    e=e+0.5*alpha*(y(nddl)-jeu)**2
+                if(zr(iy-1+nddl).gt.jeu) then
+                    e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
                 endif
             else if(zk8(ityp-1+k)(1:7).eq.'BI_PLAN') then
                 nddl=zi(inddl-1+6*(k-1)+1)
-                if(y(nddl).gt.jeu) then
-                    e=e+0.5*alpha*(y(nddl)-jeu)**2
-                else if(y(nddl).lt.(-1.d0*jeu)) then
-                    e=e+0.5*alpha*(y(nddl)+jeu)**2
+                if(zr(iy-1+nddl).gt.jeu) then
+                    e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
+                else if(zr(iy-1+nddl).lt.(-1.d0*jeu)) then
+                    e=e+0.5*alpha*(zr(iy-1+nddl)+jeu)**2
                 endif
             else if(zk8(ityp-1+k)(1:6).eq.'CERCLE') then
                 nddlx=zi(inddl-1+6*(k-1)+1)
                 nddly=zi(inddl-1+6*(k-1)+2)
                 origx=zr(iorig-1+3*(k-1)+1)
                 origy=zr(iorig-1+3*(k-1)+2)
-                rayon=sqrt((y(nddlx)-origx)**2+(y(nddly)-origy)**2)
+                rayon=sqrt((zr(iy-1+nddlx)-origx)**2+(zr(iy-1+nddly)-origy)**2)
                 if(rayon.gt.jeu) then
                     e=e+alpha*(rayon-jeu)**2
                 endif
@@ -181,6 +187,12 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 40      continue
         zr(ieng-1+ind)=e
 100  continue
+!
+    call jedetr('&&MNLENG.X')
+    call jedetr('&&MNLENG.Y')
+    call jedetr('&&MNLENG.DY')
+    call jedetr('&&MNLENG.MDY')
+    call jedetr('&&MNLENG.KY')
 !
     call jedetr('&&MNLENG.YE')
     call jedetr('&&MNLENG.DYE')

@@ -21,7 +21,7 @@ m=1.
 beta=1.
 
 DEBUT(CODE=_F(NOM='SDND123A',NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F( SDVERI     = 'OUI',),
+      IGNORE_ALARM='FONCT0_62',  #abscisses re-ordonnees dues a table enrichie (reuse)
      )
 
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
@@ -67,7 +67,7 @@ M=ASSE_MATRICE(MATR_ELEM=Me,
 hu=33;
 hf=151;
 nbranch=12;
-ndiscr=1;
+ndiscr=10;
 
 MODES=MODE_ITER_SIMULT(MATR_RIGI=K,
                        MATR_MASS=M,
@@ -84,7 +84,7 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
                             NB_PAS_MAN=ndiscr,
                             NB_BRANCHE=nbranch,
                             NB_ORDRE_MAN=20,
-                            PREC_MAN=1.E-14,  # conseil PREC_MAN << NEWTON
+                            PREC_MAN=1.E-14,
                             PREC_NEWTON=1.E-09,
                             ITER_NEWTON_MAXI=15),
                  ETAT_INIT=_F(MODE_LINE = MODES,NUME_ORDRE = 2,
@@ -124,48 +124,36 @@ TTTS = CALC_STABILITE(MODE_NON_LINE=MNL, #PRECISION = 1.e-3,
                      FILTRE=_F( NUME_ORDRE = (9,10,11,),),
                    )
 
-TTTS =CALC_TABLE(reuse=TTTS,TABLE=TTTS,
-                 ACTION=(
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'GT',
-                          VALE=0.2578,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'LT',
-                          VALE=0.2580,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'GT',
-                          VALE=1.00,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'LT',
-                          VALE=1.30,),
-                 ),)
-
 #IMPR_TABLE(TABLE=TTTS)
 
-#calcule sur machine locale
-fs=0.25790528513017497
-es= 1.19767334221795
-
-TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'FREQUENCE',
-           FILTRE=_F(NOM_PARA='STABILITE',
-                     VALE_K='STABLE',),
-             VALE_CALC= fs,
-             TOLE_MACHINE=1.E-02,  # variation du point de controle en fonction de la machine
-             REFERENCE = 'AUTRE_ASTER',
-             VALE_REFE= fs,
-             PRECISION = 1.E-2,
-              )
-
-TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'ENERGIE',
-           FILTRE=_F(NOM_PARA='STABILITE',
-                     VALE_K='STABLE',),
-             VALE_CALC= es,
-             TOLE_MACHINE=1.E-02,  # variation du point de controle en fonction de la machine
-             REFERENCE = 'AUTRE_ASTER',
-             VALE_REFE= es,
-             PRECISION = 1.E-2,
-              )
-
-MODE_20 = REST_MODE_NONL(MODE_NON_LINE=TTTS,
-                     TYPE_RESU = 'MODE_MECA',
-                     NUME_ORDRE = 10,
+ENRGC=RECU_FONCTION(TABLE=MNL,
+                    PARA_X='FREQUENCE',
+                    PARA_Y='ENERGIE',
+                    INTERPOL=('LOG',),
+                    )
+FREQC=RECU_FONCTION(TABLE=MNL,
+                    PARA_Y='FREQUENCE',
+                    PARA_X='ENERGIE',
+                    INTERPOL=('LIN',),
                     )
 
+#valeurs calculees sur machine locale
+fs=0.25790528513017497
+es=1.19768
+
+TEST_FONCTION(VALEUR=_F(VALE_PARA=fs,
+                       VALE_CALC=es,
+                       TOLE_MACHINE=5.E-05,  # valeur tres sensible en fonction de la machine
+                       REFERENCE='AUTRE_ASTER',
+                       VALE_REFE=es,
+                       FONCTION=ENRGC,),
+             )
+
+TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
+                       VALE_CALC=fs,
+                       VALE_REFE=fs,
+                       REFERENCE='AUTRE_ASTER',
+                       FONCTION=FREQC,),
+             )
 FIN();
 

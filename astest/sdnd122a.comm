@@ -21,9 +21,8 @@ import math
 m=1.
 k = 10.
 
-DEBUT(PAR_LOT='NON',  # a cause de EXTR_TABLE pour TEST_RESU
-      CODE=_F(NOM='SDND122A',NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F( SDVERI     = 'OUI',),
+DEBUT(CODE=_F(NOM='SDND122A',NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM='FONCT0_62',  #abscisses re-ordonnees dues a table enrichie (reuse)
      )
 
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
@@ -117,38 +116,30 @@ MNL = CALC_STABILITE(reuse=MNL,MODE_NON_LINE=MNL,
 
 #IMPR_TABLE(TABLE=MNL)
 
+FREQC=RECU_FONCTION(TABLE=MNL,
+                    PARA_X='ENERGIE',
+                    PARA_Y='FREQUENCE',
+                    INTERPOL=('LOG',),
+                    )
 
-TTESTS =CALC_TABLE(TABLE=MNL,
-                 ACTION=(
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'GT',
-                          VALE=0.644,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'LT',
-                          VALE=0.6475,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'GT',
-                          VALE=6.2e-3,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'LT',
-                          VALE=6.9e-3,),
-                 ),) 
+#valeurs calculees sur machine locale
+es=0.00650108331626
+fs=0.6467033
 
-#IMPR_TABLE(TABLE=TTESTS)
-tab = TTESTS.EXTR_TABLE()
-es = tab.ENERGIE[0]
-fs = tab.FREQUENCE[0]
-
+#calcul analytique
 e_tilda = es/(k*jeu*jeu)
-tau_1 = 2*math.acos(-1/math.sqrt(2*e_tilda))
-tau_2 = 2*math.sqrt(k/(k+kchoc))*math.acos(math.sqrt(k/(2*e_tilda*(k+kchoc))))
+tau_1 = 2.*math.acos(-1./math.sqrt(2.*e_tilda))
+tau_2 = 2.*math.sqrt(k/(k+kchoc))*math.acos(math.sqrt(k/(2.*e_tilda*(k+kchoc))))
 tau_p = tau_1+tau_2
 T = math.sqrt(m/k)*tau_p
-fsc = 1/(T)
+fsc = 1./T
 
-TEST_TABLE( TABLE   = TTESTS,NOM_PARA  = 'FREQUENCE',
-           FILTRE=_F(NOM_PARA='STABILITE',
-                     VALE_K='STABLE',),
-             VALE_CALC= fs,
-             REFERENCE = 'ANALYTIQUE',
-             VALE_REFE= fsc,
-              )
+TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
+                       VALE_CALC=fs,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=fsc,
+                       FONCTION=FREQC,),
+             )
 
 #test manipulation table_container par CALC_TABLE
 TCOMPR =CALC_TABLE(TABLE=MNL,

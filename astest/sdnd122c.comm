@@ -21,9 +21,7 @@ import math
 m=1.
 k = 10.
 
-DEBUT(PAR_LOT='NON',  # a cause de EXTR_TABLE pour TEST_RESU
-      CODE=_F(NOM='SDND122C',NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F( SDVERI     = 'OUI',),
+DEBUT(CODE=_F(NOM='SDND122C',NIV_PUB_WEB='INTERNET'),
      )
 
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
@@ -122,37 +120,28 @@ TCOMPR = MODE_NON_LINE(
 
 #IMPR_TABLE(TABLE=TCOMPR)
 
-TTTS =CALC_TABLE(TABLE=TCOMPR,
-                 ACTION=(
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'GT',
-                          VALE=0.644,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('FREQUENCE'),CRIT_COMP = 'LT',
-                          VALE=0.6475,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'GT',
-                          VALE=6.2e-3,),
-                       _F(OPERATION='FILTRE',NOM_PARA=('ENERGIE'),CRIT_COMP = 'LT',
-                          VALE=6.9e-3,),
-                 ),)
+FREQC=RECU_FONCTION(TABLE=TCOMPR,
+                    PARA_X='ENERGIE',
+                    PARA_Y='FREQUENCE',
+                    INTERPOL=('LIN',),
+                    )
 
-#IMPR_TABLE(TABLE=TTTS)
-tab = TTTS.EXTR_TABLE()
-es = tab.ENERGIE[0]
-fs = tab.FREQUENCE[0]
+es=0.00647656819016
+fs=0.64658517
 
+#calcul analytique
 e_tilda = es/(k*jeu*jeu)
-tau_1 = 2*math.acos(-1/math.sqrt(2*e_tilda))
-tau_2 = 2*math.sqrt(k/(k+kchoc))*math.acos(math.sqrt(k/(2*e_tilda*(k+kchoc))))
+tau_1 = 2.*math.acos(-1./math.sqrt(2.*e_tilda))
+tau_2 = 2.*math.sqrt(k/(k+kchoc))*math.acos(math.sqrt(k/(2.*e_tilda*(k+kchoc))))
 tau_p = tau_1+tau_2
 T = math.sqrt(m/k)*tau_p
-fsc = 1/(T)
+fsc = 1./T
 
-TEST_TABLE( TABLE   = TTTS,NOM_PARA  = 'FREQUENCE',
-           FILTRE=_F(NOM_PARA='STABILITE',
-                     VALE_K='NON_EVALUE',),
-             VALE_CALC= fs,
-             REFERENCE = 'ANALYTIQUE',
-             VALE_REFE= fsc,
-             PRECISION = 5.e-3,
-              )
+TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
+                       VALE_CALC=fs,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=fsc,
+                       FONCTION=FREQC,),
+             )
 
 FIN();
