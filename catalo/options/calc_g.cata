@@ -54,5 +54,6 @@ OPTION__
         PLONGCO  N120_I
         PPMILTO  N120_R
         PBASECO  N120_R
+        PSIGING  SIEF_R
    OUT__
 PGTHETA G ELEM__

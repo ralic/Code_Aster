@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -324,9 +325,9 @@ cata_msg={
       JONCTION=_F(FISSURE=%(k2)s,POINT=...) lorsqu'on appelle DEFI_FISS_XFEM pour définir %(k3)s.
 """),
 
-48: _(u"""
-     Le calcul de G avec X-FEM est impossible avec un comportement incrémental.
-"""),
+#48: _(u"""
+     #Le calcul de G avec X-FEM est impossible avec un comportement incrémental.
+#"""),
 
 49: _(u"""
      Le calcul de G avec X-FEM est impossible en grandes déformations.

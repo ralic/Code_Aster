@@ -19,7 +19,8 @@ interface
     subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                       ise, nfh, ddlc, ddlm, nfe,&
                       basloc, nnop, idepl, lsn, lst,&
-                      igthet, fno, nfiss, jfisno)
+                      igthet, fno, nfiss, jfisno, isig,&
+                      incr)
         integer :: nfiss
         integer :: nnop
         integer :: ndim
@@ -39,5 +40,7 @@ interface
         integer :: igthet
         real(kind=8) :: fno(ndim*nnop)
         integer :: jfisno
+        integer :: isig
+        logical :: incr
     end subroutine xgelem
 end interface

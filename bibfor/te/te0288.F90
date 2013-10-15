@@ -63,6 +63,8 @@ subroutine te0288(option, nomte)
     character(len=16) :: compor(4)
     logical :: grand, incr
 !
+    integer :: isig
+!
     data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
     data    nomres /'E','NU','ALPHA'/
@@ -112,12 +114,16 @@ subroutine te0288(option, nomte)
     incr = compor(4).eq.'COMP_INCR'
     grand = compor(3).eq.'GROT_GDEP'
 !
-    if (incr) then
-        call utmess('F', 'XFEM_48')
-    endif
+!    if (incr) then
+!        call utmess('F', 'XFEM_48')
+!    endif
     if (grand) then
         call utmess('F', 'XFEM_49')
     endif
+!
+!
+!     RECUPERATION CONTRAINTE INITIALE
+    if (incr) call jevech('PSIGING', 'L', isig)
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G SUR L'ELEMENT MASSIF
@@ -171,7 +177,8 @@ subroutine te0288(option, nomte)
         call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
                     zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst),&
-                    igthet, fno, nfiss, jfisno)
+                    igthet, fno, nfiss, jfisno, isig,&
+                    incr)
 !
 !
 110  end do
@@ -246,6 +253,7 @@ subroutine te0288(option, nomte)
     endif
 !
 !     BOUCLE SUR LES FACETTES
+!
     do 200 ifa = 1, nface
         call xsifle(ndim, ifa, jptint, jaint, cface,&
                     igeom, nfh, singu, nfe, ddlc,&

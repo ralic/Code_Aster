@@ -1,7 +1,8 @@
 subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, idepl, lsn, lst,&
-                  igthet, fno, nfiss, jfisno)
+                  igthet, fno, nfiss, jfisno, isig,&
+                  incr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,6 +38,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/nmelnl.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
@@ -49,6 +52,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop)
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
+    integer :: isig
+    logical :: incr
 !
 !    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE
 !                          PAR LA METHODE ENERGETIQUE G-THETA
@@ -92,8 +97,16 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: tfor, dsidep(6, 6)
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
-    logical :: grdepl, cp, axi
+    logical :: grdepl, cp,  axi
     integer :: irese, ddli, nnoi, indeni, ibid, nnops, fisno(nnop, nfiss), ifiss
+!
+!
+    real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), dfdi2(27)
+    real(kind=8) :: mu, nu(1), e(1)
+    integer :: ij, l, i1, icodre(1), ncmp
+    character(len=16) :: phenom
+!
+!
 !
     parameter      (mxstac=1000)
 !
@@ -102,6 +115,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !
     call jemarq()
+
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
@@ -124,6 +138,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     tcla = 0.d0
     tthe = 0.d0
     tfor = 0.d0
+    tini = 0.d0
 !
     if (lteatt(' ','C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
@@ -148,6 +163,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                 ibid, ibid, ibid, ibid, ibid)
 !
     axi = lteatt(' ','AXIS','OUI')
+!
+!     NOMBRE DE COMPOSANTES DES TENSEURS
+    ncmp = 2*ndim
 !
     call jevech('PTHETAR', 'L', ithet)
     call jevech('PMATERC', 'L', imate)
@@ -200,10 +218,18 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !     ------------------------------------------------------------------
 !
     do kpg = 1, npgbis
+        l = (kpg-1)*nno
 !
 !       INITIALISATIONS
         call vecini(12, 0.d0, dtdm)
         call vecini(12, 0.d0, dudm)
+        do 12 i = 1, ncmp
+            sigin(i) = 0.d0
+            epsref(i)= 0.d0
+            do 13 j = 1, 3
+                dsigin(i,j) = 0.d0
+13          continue
+12      continue
 !
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
@@ -430,8 +456,63 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     typmod, matcod, compor, crit, oprupt,&
                     eps, sigl, rbid, dsidep, energi)
 !
+!       --------------------------------------------------
+!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM_INIT DE CA
+!       --------------------------------------------------
+!
+        if (incr) then
+            do 460 i = 1, nnop
+                i1 = i-1
+!
+!           CALCUL DE SIGMA INITIAL
+                ij = isig+ncmp*i1-1
+                do 440 j = 1, ncmp
+                    sigin(j) = sigin(j)+ zr(ij+j)*zr(ivf+l+i1)
+440             continue
+!
+!           CALCUL DU GRADIENT DE SIGMA INITIAL
+                do 455 j = 1, ncmp
+                    do 450 k = 1, ndim
+                        dsigin(j,k)=dsigin(j,k)+zr(ij+j)*dfdi(i,k)
+450                 continue
+455             continue
+460         continue
+
+!
+!         TRAITEMENTS PARTICULIERS DES TERMES CROISES
+            do 463 i = 4, ncmp
+                sigin(i) = sigin(i)*rac2
+                do 462 j = 1, ndim
+                    dsigin(i,j) = dsigin(4,1)*rac2
+462             continue
+463         continue
+!
+!         CALCUL DE LA DEFORMATION DE REFERENCE
+            call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
+            call rcvala(matcod, ' ', phenom, 1, ' ',&
+                        [rbid], 1, 'NU', nu(1), icodre(1),&
+                        1)
+            call rcvala(matcod, ' ', phenom, 1, ' ',&
+                        [rbid], 1, 'E', e(1), icodre(1),&
+                        1)
+!
+            mu = e(1)/(2.d0*(1.d0+nu(1)))
+!
+            epsref(1)=-(1.d0/e(1))*(sigin(1)-(nu(1)*(sigin(2)+sigin(3))))
+            epsref(2)=-(1.d0/e(1))*(sigin(2)-(nu(1)*(sigin(3)+sigin(1))))
+            epsref(3)=-(1.d0/e(1))*(sigin(3)-(nu(1)*(sigin(1)+sigin(2))))
+            epsref(4)=-(1.d0/mu)*sigin(4)
+            epsref(5)=-(1.d0/mu)*sigin(5)
+            epsref(6)=-(1.d0/mu)*sigin(6)
+!
+!         ENERGIE ELASTIQUE (expression WADIER)
+            do 465 i = 1, ncmp
+                energi(1) = energi(1) + (eps(i)-0.5d0*epsref(i))* sigin(i)
+465         continue
+        endif
+!
 !       -----------------------------------------------------------
-!       6) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
+!       7) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
 !       -----------------------------------------------------------
 !
         call vecini(12, 0.d0, dfdm)
@@ -505,13 +586,30 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             tfor = tfor + dudm(i,4)* (prod + dfdm(i,4)*divt) * poids
         end do
 !
+!       =======================================================
+!       TERME CONTRAINTE INITIALE SIGIN
+!       =======================================================
+!
+        if (incr) then
+            prod1=0.d0
+            do 670 i = 1, ncmp
+                do 660 j = 1, ndim
+!                     prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*theta(&
+!                     j)
+                    prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*dtdm(j,4)
+660              continue
+670          continue
+            tini = tini + prod1*poids
+        endif
     end do
 !
 !     ------------------------------------------------------------------
 !     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 !     ------------------------------------------------------------------
 !
-    zr(igthet) = zr(igthet) + tcla + tthe + tfor
+!      ZR(IGTHET) = ZR(IGTHET) + TCLA + TTHE + TFOR + TINI
+!
+    zr(igthet) = zr(igthet) + tcla + tthe + tfor + tini
 !
     call jedema()
 end subroutine
