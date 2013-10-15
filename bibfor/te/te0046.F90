@@ -59,7 +59,7 @@ subroutine te0046(option, nomte)
 !      DATA    HE / -1.D0 , 1.D0/
 !
     character(len=8) :: elrefp, elrese(6), fami(6), enr
-    real(kind=8) :: xg(3), xe(3), ff(27), rbid, coorse(81)
+    real(kind=8) :: xg(3), xe(3), ff(27), coorse(81)
     integer :: ibid, ndim, nnop, nno, npg, ivf
     integer :: nfh, nfe, singu, ddlc, jpmilt, irese
     integer :: jpintt, jcnset, jheavt, jlonch, igeom, jout
@@ -155,12 +155,7 @@ subroutine te0046(option, nomte)
 210          continue
 !
 !         COORDONNEES DU PG DANS L'ELEMENT DE REF PARENT : XE
-            call reeref(elrefp, axi, nnop, ibid, zr(igeom),&
-                        xg, 1, .false., ndim, rbid,&
-                        rbid, rbid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, rbid, rbid,&
-                        'NON', xe, ff, rbid, rbid,&
-                        rbid, rbid)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !         NUMERO DE CE POINT DE GAUSS DANS LA FAMILLE 'XFEM'
             ipg= (ise-1) * npg + kpg

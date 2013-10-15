@@ -78,7 +78,7 @@ subroutine te0536(option, nomte)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call xrigel(nno, nfh*ndim, nfe, ddlc, ddlm,&
+    call xrigel(nno, nfh*ndim, nfe, ddlc,&
                 igeom, jpintt, zi(jcnset), zi(jheavt), zi(jlonch),&
                 zr(jbaslo), zr(jlsn), zr(jlst), zr(icont), zr(imatuu),&
                 jpmilt)

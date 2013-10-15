@@ -10,7 +10,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 #include "asterfort/jemarq.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/reere3.h"
+#include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
@@ -51,19 +51,15 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !
 !
     real(kind=8) :: a(3), b(3), c(3), ab(3), ac(3), nd(3), norme, nab, y(3)
-    real(kind=8) :: an(ndim), coloc(2), r0, r1, r2, r3, rbid, xe(3), n(ndim)
-    integer :: j, igeolo, ino, ibid
+    real(kind=8) :: an(ndim), coloc(2), xe(3), n(ndim)
+    integer :: j, igeolo, ino
     character(len=24) :: geomlo
 !
     call jemarq()
 !
 !     CAS DES ELEMENTS PRINCIPAUX : C SIMPLE, ON APPELLE REEREF
     if (ndim .eq. ndime) then
-        call reere3(elrefp, nnop, igeom, co, r0,&
-                    .false., ndim, r1, ibid, ibid,&
-                    ibid, ibid, ibid, r2, r3,&
-                    'NON', xe, ff, r0, r0,&
-                    r0, r0)
+        call reeref(elrefp, nnop, zr(igeom), co, ndim, xe, ff)
 !
 !
 !     CAS DES ELEMENTS DE BORDS : C PLUS COMPLIQUÉ
@@ -116,11 +112,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 116      continue
         coloc(1)=ddot(ndim,an,1,ab,1)
         if (ndime .eq. 2) coloc(2)=ddot(ndim,an,1,y,1)
-        call reere3(elrefp, nnop, igeolo, coloc, rbid,&
-                    .false., ndime, rbid, ibid, ibid,&
-                    ibid, ibid, ibid, rbid, rbid,&
-                    'NON', xe, ff, rbid, rbid,&
-                    rbid, rbid)
+        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime, xe, ff)
 !
         call jedetr(geomlo)
 !

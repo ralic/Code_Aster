@@ -18,6 +18,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
+#include "asterfort/xcinem.h"
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
     integer :: nfh, ddlc, nfe, nfiss, fisno(nnop, nfiss)
     character(len=8) :: elrefp, elrese, typmod(*)
@@ -145,12 +146,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 110      continue
 !
 !       CALCUL DES FF
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
@@ -188,12 +184,10 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    r, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                    r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, eps, grad)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)

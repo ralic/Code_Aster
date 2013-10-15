@@ -1,4 +1,4 @@
-subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
+subroutine xxbsig(elrefp, elrese, ndim, coorse,&
                   igeom, he, nfh, ddlc, ddlm,&
                   nfe, basloc, nnop, npg, sigma,&
                   compor, idepl, lsn, lst, nfiss,&
@@ -18,6 +18,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcinem.h"
     integer :: ndim, nfe, nfh, nfiss, nnop, npg
     integer :: ddlc, ddlm, fisno(nnop, nfiss)
     integer :: codopt, idepl, igeom, ivectu
@@ -25,7 +26,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: lsn(nnop), lst(nnop)
     real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
     character(len=8) :: elrefp, elrese
-    character(len=16) :: option, compor(4)
+    character(len=16) :: compor(4)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +51,6 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !     BUT:  CALCUL  DU PRODUIT BT. SIGMA SUR UN SOUS-ELEMENT X-FEM
 !.......................................................................
 !
-! IN  OPTION  : NOM DE L'OPTION CALCULEE PAR LE TE APPELANT
 ! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
@@ -68,7 +68,9 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 ! IN  IDEPL   : ADRESSE DU DEPLACEMENT A PARTIR DE LA CONF DE REF
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
-! IN  CODOPT  : CODE DE L OPTION, 0:REFE_FORC_NODA, 1:FORC_NODA
+! IN  CODOPT  : CODE DE L OPTION, POUR DIMENSIONNER LE TABLEAU SIGMA
+!                 0 : REFE_FORC_NODA 
+!                 1 : FORC_NODA,CHAR_MECA_TEMP_R
 !
 ! OUT IVECTU  : ADRESSE DU VECTEUR BT.SIGMA
 !
@@ -84,8 +86,6 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: r
     logical :: grdepl, axi
 !
-    character(len=3) :: cinem
-!
     real(kind=8) :: rac2
     data     rac2 / 1.4142135623731d0 /
 !--------------------------------------------------------------------
@@ -93,15 +93,6 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !     ATTENTION, EN 3D, ZR(IDEPL) ET ZR(VECTU) SONT DIMENSIONNÉS DE
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
 !     NOEUDS MILIEU
-!
-!     INITIALISATION POUR APPEL A REEREF() SELON LE NOM DE L'OPTION
-    if (option .eq. 'FORC_NODA       ') then
-        cinem = 'OUI'
-    else if (option.eq.'CHAR_MECA_TEMP_R') then
-        cinem = 'INI'
-    else
-        ASSERT(.false.)
-    endif
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
     ddld = ndim*(1+nfh+nfe)
@@ -145,12 +136,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !
 !       JUSTE POUR CALCULER LES FF
 !
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    r, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    rbid6, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !
         if (nfe .gt. 0) then
@@ -195,12 +181,10 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    r, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    cinem, xe, ff, dfdi, f,&
-                    rbid6, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                    r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, rbid6, rbid33)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !

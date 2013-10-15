@@ -75,7 +75,7 @@ subroutine te0036(option, nomte)
     integer :: nfh, nfe, nse, ise
     integer :: in, ino, iadzi, iazk24, jstno
     integer :: iforc, iret, ig, pos, ndime, nddl, ddls
-    real(kind=8) :: y(3), xg(4), rbid, fe(4), xe(2), lsng, lstg, rg, tg
+    real(kind=8) :: y(3), xg(4), fe(4), xe(2), lsng, lstg, rg, tg
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
     real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81), mat(1)
@@ -373,12 +373,7 @@ subroutine te0036(option, nomte)
 !
 !         JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
 !
-            call reeref(elrefp, axi, nnop, ibid, geomlo,&
-                        gloc, 1, .false., ndime, rbid,&
-                        rbid, rbid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, rbid, rbid,&
-                        'NON', xe, ff, rbid, rbid,&
-                        rbid, rbid)
+            call reeref(elrefp, nnop, geomlo, gloc, ndime, xe, ff)
 !
 !         COORDONNES REELLES DU POINT DE GAUSS
             call vecini(4, 0.d0, xg)

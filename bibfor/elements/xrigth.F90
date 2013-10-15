@@ -57,7 +57,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/reeret.h"
+#include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
@@ -168,9 +168,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 1210          continue
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call vecini(ndim, 0.d0, xe)
-            call reeret(elrefp, nnop, zr(igeom), xg, ndim,&
-                        'OUI', xe, ff, dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then

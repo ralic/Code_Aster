@@ -19,6 +19,7 @@ subroutine te0541(option, nomte)
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/iselli.h"
@@ -41,7 +42,7 @@ subroutine te0541(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
-    integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icontt
+    integer :: jpmilt, ddlm, nfiss, jfisno, icontt
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu, itab(1)
     integer :: iret, k, itemps
@@ -64,7 +65,7 @@ subroutine te0541(option, nomte)
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-!     RECUPERATION DES XHAMPS IN ET OUT
+!     RECUPERATION DES CHAMPS IN ET OUT
     call tecach('ONO', 'PCOMPOR', 'L', iret, iad=itab(1))
     do k = 1, 4
         if (iret .eq. 0) then
@@ -73,6 +74,9 @@ subroutine te0541(option, nomte)
             compor(k) = ' '
         endif
     end do
+!     X-FEM AVEC VARC TEMP UNIQUEMENT EN HPP
+    ASSERT(compor(3).eq.'PETIT' .or. compor(3).eq.' ')
+!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PVECTUR', 'E', ivectu)
@@ -100,10 +104,10 @@ subroutine te0541(option, nomte)
                 zr(itemps), nbsig, zr(icontt))
 !
 !     CALCUL DU VECTEUR \INT BT*SIGMA_THERMIQUE
-    call xbsig(option, ndim, nno, nfh, nfe,&
+    call xbsig(ndim, nno, nfh, nfe,&
                ddlc, ddlm, igeom, compor, jpintt,&
                zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt),&
-               nbsig, ideplm, zr(jlsn), zr(jlst), ivectu,&
+               nbsig, ibid, zr(jlsn), zr(jlst), ivectu,&
                jpmilt, nfiss, jfisno)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT

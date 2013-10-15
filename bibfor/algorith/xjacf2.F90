@@ -75,12 +75,9 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     integer :: i, j, k, nnof, ipoidf, ivff, idfdef
     logical :: axi
     character(len=8) :: k8bid
-    integer :: ddlh, nfe, ddls, ddlm
-    real(kind=8) :: he, fe(4), dgdgl(4, 3)
-    real(kind=8) :: xe(3), f(3, 3), dfdic(27, 3)
-    real(kind=8) :: eps(6), grad(3, 3)
+    real(kind=8) :: xe(3)
     integer :: ibid, ibid2, ibid3, nptfmx
-    real(kind=8) :: dfdx(3), rbid, rbid2, rbid3, rbid4
+    real(kind=8) :: dfdx(3), rbid2, rbid3, rbid4
 !
     parameter       (nbnomx = 27, nptfmx=4)
     real(kind=8) :: coor2d(nptfmx*3), coor1d(6)
@@ -206,12 +203,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 !     CALCUL DES FF DE L'ÉLÉMENT PARENT EN CE POINT DE GAUSS
     call elelin(3, elrefp, k8bid, ibid, nnos)
-    call reeref(elrefp, axi, nno, nnos, zr(igeom),&
-                g, 0, .false., ndim, he,&
-                rbid, rbid, ibid, ibid, ddlh,&
-                nfe, ddls, ddlm, fe, dgdgl,&
-                'DFF', xe, ffp, dfdi, f,&
-                eps, grad)
+    call reeref(elrefp, nno, zr(igeom), g, ndim, xe, ffp, dfdi=dfdi)
 !
     if (elrefc .eq. elrefp) goto 999
     if (elrefc(1:3) .eq. 'NON') goto 999
@@ -219,12 +211,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, axi, nnoc, nnoc, zr(igeom),&
-                g, 0, .false., ndim, he,&
-                rbid, rbid, ibid, ibid, ddlh,&
-                nfe, ddls, ddlm, fe, dgdgl,&
-                'NON', xe, ffpc, dfdic, f,&
-                eps, grad)
+    call reeref(elrefc, nnoc, zr(igeom), g, ndim, xe, ffpc)
 !
 999 continue
 !

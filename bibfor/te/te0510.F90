@@ -61,10 +61,10 @@ subroutine te0510(option, nomte)
     integer :: ninter, nface, cface(5, 3), nmaabs
     integer :: i, j, k, jj, nnop
     real(kind=8) :: nd(3), grlt(3), tau1(3), tau2(3), norme, ps
-    real(kind=8) :: norm2, ptree(3), ptref(3), rbid, rbid6(6), rbid3(3, 3)
-    real(kind=8) :: ff(20), dfdi(20, 3), lsn
+    real(kind=8) :: norm2, ptree(3), ptref(3)
+    real(kind=8) :: lsn
     integer :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
-    logical :: lbid, elim, elim2
+    logical :: elim, elim2
     integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc
     integer :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
     integer :: nfisc, ifisc, nfisc2, nn, vali(2)
@@ -88,6 +88,9 @@ subroutine te0510(option, nomte)
     parameter    (nbmax=18)
     integer :: pthea(nfimax*nbmax)
 !
+    integer :: nnopma
+    parameter    (nnopma=20)
+    real(kind=8) :: ff(nnopma)
 !......................................................................
 !     LES TABLEAUX FISC, FISCO, PTHEA, PINTER, AINTER ONT ETE ALLOUE DE
 !     FACON STATIQUE POUR OPTIMISER LE CPU (CAR LES APPELS A WKVECT
@@ -103,6 +106,7 @@ subroutine te0510(option, nomte)
     call elref1(elp)
     call elref4(elp, 'RIGI', ndim, nnop, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
+    ASSERT(nnop .le. nnopma)
 !
 !     RECUPERATION DES ENTRÉES / SORTIE
     call jevech('PGEOMER', 'L', igeom)
@@ -236,12 +240,7 @@ subroutine te0510(option, nomte)
                 zr(jout6-1+ncompp*(ifiss-1)+ndim*(i-1)+j) = ptree(j)
             end do
 !    ON TRANFORME LES COORDONNÉES RÉELES EN COORD. DANS L'ÉLÉMENT DE REF
-            call reeref(elp, lbid, nnop, ibid, zr(igeom),&
-                        ptree, 1, lbid, ndim, rbid,&
-                        rbid, rbid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, rbid, rbid3,&
-                        'NON', ptref, ff, dfdi, rbid3,&
-                        rbid6, rbid3)
+            call reeref(elp, nnop, zr(igeom), ptree, ndim, ptref, ff)
 !
             do jj = 1, ndim
                 zr(jout1-1+ncompp*(ifiss-1)+ndim*(i-1)+jj) = ptref(jj)

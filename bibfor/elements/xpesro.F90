@@ -72,7 +72,6 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: fe(4), poids, r
-    real(kind=8) :: rbid
     character(len=8) :: elrese(6), fami(6)
     logical :: grdepl, axi
     integer :: irese
@@ -119,12 +118,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, 1, grdepl, ndim, rbid,&
-                    rbid, rbid, ibid, ibid, ibid,&
-                    ibid, ibid, ibid, rbid, rbid,&
-                    'NON', xe, ff, rbid, rbid,&
-                    rbid, rbid)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT

@@ -1,5 +1,5 @@
 subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
-                  he, ddlh, ddlc, ddlm, nfe,&
+                  he, ddlh, ddlc, nfe,&
                   basloc, nnop, npg, lsn, lst,&
                   sig, matuu)
 !
@@ -15,7 +15,6 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
     integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe
-    integer :: ddlm
     character(len=8) :: elrefp
     character(len=8) :: elrese
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
@@ -79,7 +78,6 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     logical :: axi
 !
     integer :: ibid
-    real(kind=8) :: rbid
     data     rac2 / 1.4142135623731d0 /
 !
 !
@@ -117,12 +115,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, 1, .false., ndim, he,&
-                    rbid, rbid, ibid, ibid, ddlh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, rbid,&
-                    rbid, rbid)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE AU POINT DE GAUSS
@@ -149,12 +142,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, 1, .false., ndim, he,&
-                    rbid, rbid, ibid, ibid, ddlh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'DFF', xe, ff, dfdi, rbid,&
-                    rbid, rbid)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF

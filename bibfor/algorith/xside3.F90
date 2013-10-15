@@ -19,6 +19,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcinem.h"
     integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, ddls, nfe
     integer :: nfiss, fisno(nnop, nfiss), idepl, idecpg
     character(len=8) :: elrefp, elrese
@@ -148,12 +149,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, .false., nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
@@ -177,12 +173,10 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS
-        call reeref(elrefp, .false., nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(.false., nnop, nnops, idepl, grdepl, ndim, he,&
+                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, eps, grad)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)

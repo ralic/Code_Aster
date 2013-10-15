@@ -44,6 +44,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcinem.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
     character(len=8) :: elrefp
@@ -240,12 +241,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DES FF
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
@@ -386,12 +382,10 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         end do
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnos, idepl, grdepl, ndim, he,&
+                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, eps, grad)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         do i = 1, ndim

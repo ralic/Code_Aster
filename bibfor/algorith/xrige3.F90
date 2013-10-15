@@ -1,5 +1,5 @@
 subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
-                  ddlh, ddlc, ddlm, nfe, basloc,&
+                  ddlh, ddlc, nfe, basloc,&
                   nnop, npg, lsn, lst, sig,&
                   matuu)
 !
@@ -70,12 +70,10 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
     integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ij, ibid
     integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
-    integer :: nnops, ddlm
-    real(kind=8) :: f(3, 3), eps(6)
+    integer :: nnops
     real(kind=8) :: tmp1, fe(4), baslog(9)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, ndim), dgdgl(4, 3)
-    real(kind=8) :: grad(3, 3), rbid
     real(kind=8) :: rac2
     data    rac2 / 1.4142135623731d0 /
 !--------------------------------------------------------------------
@@ -113,12 +111,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, .false., nnop, nnops, zr(igeom),&
-                    xg, ibid, .false., ndim, he,&
-                    rbid, rbid, ibid, ibid, ddlh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
@@ -145,12 +138,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
 !
-        call reeref(elrefp, .false., nnop, nnops, zr(igeom),&
-                    xg, ibid, .false., ndim, he,&
-                    rbid, rbid, ibid, ibid, ddlh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'DFF', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ET LES DERIVEES DES FONCTIONS DE FORME,

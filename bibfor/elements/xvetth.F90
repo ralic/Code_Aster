@@ -58,7 +58,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/reeret.h"
+#include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
@@ -86,12 +86,10 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
     real(kind=8) :: rhocp, dtem(ndim), r
     integer :: ivf, kpg, ibid, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl
-    integer :: mxstac, icodre(2), spt, ipoids, idfde, nosema, idim, ipos, codret
+    integer :: mxstac, icodre(2), spt, ipoids, idfde, idim, ipos, codret
 !
     parameter (mxstac=1000)
 !     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)
-    parameter (nosema = 6)
-!
 !
     data    elrese /'SE2','TR3','TE4'/
     data    fami   /'BID','XINT','XINT'/
@@ -172,9 +170,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
             end do
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call vecini(ndim, 0.d0, xe)
-            call reeret(elrefp, nnop, zr(igeom), xg, ndim,&
-                        'OUI', xe, ff, dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then

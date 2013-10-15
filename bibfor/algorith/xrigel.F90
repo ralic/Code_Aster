@@ -1,4 +1,4 @@
-subroutine xrigel(nnop, ddlh, nfe, ddlc, ddlm,&
+subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                   igeom, jpintt, cnset, heavt, lonch,&
                   basloc, lsn, lst, sig, matuu,&
                   jpmilt)
@@ -13,7 +13,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, ddlm,&
 #include "asterfort/nbsigm.h"
 #include "asterfort/xrige2.h"
 #include "asterfort/xrige3.h"
-    integer :: nnop, igeom, ddlm
+    integer :: nnop, igeom
     integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
     integer :: jpintt, jpmilt
     real(kind=8) :: lsn(nnop)
@@ -138,14 +138,14 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, ddlm,&
         if (ndim .eq. 3) then
             ASSERT(nbsig.eq.6)
             call xrige3(elrefp, ndim, coorse, igeom, he,&
-                        ddlh, ddlc, ddlm, nfe, basloc,&
+                        ddlh, ddlc, nfe, basloc,&
                         nnop, npg, lsn, lst, sig(idebs+1),&
                         matuu)
 !
         else if (ndim.eq.2) then
             ASSERT(nbsig.eq.4)
             call xrige2(elrefp, elrese(ndim+irese), ndim, coorse, igeom,&
-                        he, ddlh, ddlc, ddlm, nfe,&
+                        he, ddlh, ddlc, nfe,&
                         basloc, nnop, npg, lsn, lst,&
                         sig( idebs+1), matuu)
 !

@@ -22,6 +22,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcinem.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
     integer :: nfiss, fisno(nnop, nfiss), idecpg
@@ -92,7 +93,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6), fe(4), baslog(3*ndim)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: rbid, rbid33(3, 3), rbid1(1)
+    real(kind=8) :: rbid33(3, 3), rbid1(1)
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop), dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r, ur
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3), deplb1(3, 27), deplb2(3, 27)
@@ -155,12 +156,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         end do
 !
 !             JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
@@ -213,19 +209,14 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, DEPS ET EPS
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, ideplp, grdepl, ndim, he,&
-                    r, ur, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    deps, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
+                    r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, deps, rbid33) 
 !
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    r, ur, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    eps, rbid33)
+        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                    r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, eps, rbid33)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !

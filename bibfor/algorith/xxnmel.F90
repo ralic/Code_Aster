@@ -20,6 +20,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcinem.h"
     integer :: nnop, nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
     integer :: lgpg, ndim, nfe, nfh, npg
@@ -92,8 +93,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg, r8bid
-    real(kind=8) :: rbid
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
     real(kind=8) :: dgdgl(4, 3), pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+nfe), nnop)
@@ -156,12 +156,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !       JUSTE POUR CALCULER LES FF
 !
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, r8bid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !
         if (nfe .gt. 0) then
@@ -219,21 +214,18 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' .or.&
             option(1: 9) .eq. 'RAPH_MECA') then
-            call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                        xg, idepl, grdepl, ndim, he,&
-                        r, ur, fisno, nfiss, nfh,&
-                        nfe, ddls, ddlm, fe, dgdgl,&
-                        'OUI', xe, ff, dfdi, f,&
-                        eps, rbid33)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                        r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                        fe, dgdgl, ff, dfdi, f, eps, rbid33)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
-            call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                        xg, idepl, .false., ndim, he,&
-                        r, ur, fisno, nfiss, nfh,&
-                        nfe, ddls, ddlm, fe, dgdgl,&
-                        'INI', xe, ff, dfdi, f,&
-                        eps, rbid33)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call xcinem(axi, nnop, nnops, idepl, .false., ndim, he,&
+                        r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                        fe, dgdgl, ff, dfdi, f, eps, rbid33) 
+            call vecini(6, 0.d0, eps)
         endif
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES

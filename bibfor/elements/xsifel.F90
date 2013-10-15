@@ -49,6 +49,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcinem.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
     character(len=8) :: elrefp
@@ -100,7 +101,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: dgdpo(4, 2), dgdlo(4, 3), courb(3, 3, 3), du1dm(3, 3)
     real(kind=8) :: du2dm(3, 3)
     real(kind=8) :: du3dm(3, 3), grad(ndim, ndim), dudm(3, 3), poids
-    real(kind=8) :: rbid
     real(kind=8) :: dtdm(3, 3), tzero(3), dzero(3, 4), lsng, lstg, th
     real(kind=8) :: dudme(3, 4), dtdme(3, 4), du1dme(3, 4), du2dme(3, 4)
     real(kind=8) :: du3dme(3, 4)
@@ -272,12 +272,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 101      continue
 !
 !       CALCUL DES FF
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
@@ -430,12 +425,10 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
 !
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    r, ur, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                    r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, eps, grad)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         do 230 i = 1, ndim

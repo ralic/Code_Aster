@@ -94,7 +94,7 @@ subroutine te0542(option, nomte)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PSTANO', 'L', jstno)
 !       CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
-        call xbsig(option, ndim, nno, nfh, nfe,&
+        call xbsig(ndim, nno, nfh, nfe,&
                    ddlc, ddlm, igeom, zk16( icompo), jpintt,&
                    zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm),&
                    nbsig, ideplm, zr(jlsn), zr(jlst), ivectu,&

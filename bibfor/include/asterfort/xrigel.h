@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xrigel(nnop, ddlh, nfe, ddlc, ddlm,&
+    subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                       igeom, jpintt, cnset, heavt, lonch,&
                       basloc, lsn, lst, sig, matuu,&
                       jpmilt)
@@ -24,7 +24,6 @@ interface
         integer :: ddlh
         integer :: nfe
         integer :: ddlc
-        integer :: ddlm
         integer :: igeom
         integer :: jpintt
         integer :: cnset(128)

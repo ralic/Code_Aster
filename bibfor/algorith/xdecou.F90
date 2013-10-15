@@ -67,14 +67,14 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !
     real(kind=8) :: a(3), b(3), c(3), lsna, lsnb, tampor(4)
     real(kind=8) :: lsnc, somlsn(nfisc+1), ff(nnop)
-    real(kind=8) :: rbid, rbid2(ndim)
+    real(kind=8) :: rbid2(ndim)
     integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
     integer :: ia, i, j, ipt, ibid, pp, pd, k, ptmax
     integer :: ndime, iter, a1, a2
     integer :: mxstac
     character(len=8) :: typma
     integer :: zxain
-    logical :: lbid, axi, papillon
+    logical :: axi, papillon
     parameter      (mxstac=1000)
 !
 ! ----------------------------------------------------------------------
@@ -148,12 +148,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
                 a(i)=pintt(ndim*(na-1001)+i)
 310          continue
 !           CALCUL DES FF
-            call reeref(elp, axi, nnop, ibid, zr(igeom),&
-                        a, 1, lbid, ndim, rbid,&
-                        rbid, rbid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, rbid, rbid,&
-                        'NON', rbid2, ff, rbid, rbid,&
-                        rbid, rbid)
+            call reeref(elp, nnop, zr(igeom), a, ndim, rbid2, ff)
 !           INTERPOLATION LSN
             do 320 j = 1, nnop
                 do 325 i = 1, nfisc
@@ -200,12 +195,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             lsna=lsn((na-1)*nfiss+ifiss)
         else
 !         CALCUL DES FF
-            call reeref(elp, axi, nnop, ibid, zr(igeom),&
-                        a, 1, lbid, ndim, rbid,&
-                        rbid, rbid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, rbid, rbid,&
-                        'NON', rbid2, ff, rbid, rbid,&
-                        rbid, rbid)
+            call reeref(elp, nnop, zr(igeom), a, ndim, rbid2, ff)
 !         INTERPOLATION LSN
             lsna=0
             do 10 i = 1, nnop
@@ -217,12 +207,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             lsnb=lsn((nb-1)*nfiss+ifiss)
         else
 !         CALCUL DES FF
-            call reeref(elp, axi, nnop, ibid, zr(igeom),&
-                        b, 1, lbid, ndim, rbid,&
-                        rbid, rbid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, rbid, rbid,&
-                        'NON', rbid2, ff, rbid, rbid,&
-                        rbid, rbid)
+            call reeref(elp, nnop, zr(igeom), b, ndim, rbid2, ff)
 !         INTERPOLATION LSN
             lsnb=0
             do 20 i = 1, nnop
@@ -252,12 +237,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 130              continue
                 if (nfiss .ge. 2) then
 !         CALCUL DES FF
-                    call reeref(elp, axi, nnop, ibid, zr(igeom),&
-                                c, 1, lbid, ndim, rbid,&
-                                rbid, rbid, ibid, ibid, ibid,&
-                                ibid, ibid, ibid, rbid, rbid,&
-                                'NON', rbid2, ff, rbid, rbid,&
-                                rbid, rbid)
+                    call reeref(elp, nnop, zr(igeom), c, ndim, rbid2, ff)
 !         INTERPOLATION LSN
                     lsnc=0
                     iter = 0

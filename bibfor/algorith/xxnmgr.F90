@@ -24,6 +24,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcinem.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfiss, fisno(nnop, nfiss), idecpg
     integer :: nfh, ddlc, ddlm, nfe
@@ -168,12 +169,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
         if (nfe .gt. 0) then
 !         JUSTE POUR CALCULER LES FF
-            call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                        xg, idepl, grdepl, ndim, he,&
-                        rbid, rbid, fisno, nfiss, nfh,&
-                        nfe, ddls, ddlm, fe, dgdgl,&
-                        'NON', xe, ff, dfdi, fm,&
-                        epsm, rbid33)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
             call vecini(3*ndim, 0.d0, baslog)
@@ -203,20 +199,15 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, EPSM ET EPSP
 !       CALCUL EN T-
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, idepl, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, fm,&
-                    epsm, rbid33)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, fm, epsm, rbid33)
 !
 !       CALCUL EN T+
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, ideplp, grdepl, ndim, he,&
-                    rbid, rbid, fisno, nfiss, nfh,&
-                    nfe, ddls, ddlm, fe, dgdgl,&
-                    'OUI', xe, ff, dfdi, f,&
-                    epsp, rbid33)
+        call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
+                    rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                    fe, dgdgl, ff, dfdi, f, epsp, rbid33) 
 !
 !       CALCUL DE DEPS POUR LDC
         do i = 1, 6

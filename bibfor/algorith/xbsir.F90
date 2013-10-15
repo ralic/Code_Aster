@@ -68,8 +68,6 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
 !     VARIABLES LOCALES
     real(kind=8) :: he(nfiss), coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6)
-    character(len=16) :: option
-    parameter    (option='FORC_NODA')
     integer :: nse, jtab(2), ncomp, iret
     integer :: ise, in, ino, npg, j, codopt
     integer :: irese, nno, fisno(nnop, nfiss), ifiss, ig, ibid
@@ -149,7 +147,7 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
             ASSERT(nbsig.eq.4)
         endif
 !
-        call xxbsig(option, elrefp, elrese(ndim+irese), ndim, coorse,&
+        call xxbsig(elrefp, elrese(ndim+irese), ndim, coorse,&
                     igeom, he, nfh, ddlc, ddlm,&
                     nfe, basloc, nnop, npg, sigref,&
                     compor, idepl, lsn, lst, nfiss,&

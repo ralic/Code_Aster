@@ -75,7 +75,6 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: valpar(ndim+1), fe(4), poids
-    real(kind=8) :: rbid
     character(len=8) :: elrese(6), fami(6), nompar(ndim+1)
     logical :: grdepl, axi
     parameter      (mxstac=1000)
@@ -123,12 +122,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
         end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
-        call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
-                    xg, 1, grdepl, ndim, rbid,&
-                    rbid, rbid, ibid, ibid, ibid,&
-                    ibid, ibid, ibid, rbid, rbid,&
-                    'NON', xe, ff, rbid, rbid,&
-                    rbid, rbid)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT

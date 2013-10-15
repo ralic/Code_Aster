@@ -17,7 +17,7 @@
 !
 interface
     subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
-                      he, ddlh, ddlc, ddlm, nfe,&
+                      he, ddlh, ddlc, nfe,&
                       basloc, nnop, npg, lsn, lst,&
                       sig, matuu)
         integer :: nnop
@@ -29,7 +29,6 @@ interface
         real(kind=8) :: he
         integer :: ddlh
         integer :: ddlc
-        integer :: ddlm
         integer :: nfe
         real(kind=8) :: basloc(6*nnop)
         integer :: npg

@@ -57,7 +57,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/reeret.h"
+#include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
@@ -76,7 +76,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     logical :: axi
     real(kind=8) :: baslog(3*ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
-    real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
+    real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
     real(kind=8) :: he
     real(kind=8) :: ffenr(nnop, 1+nfh+nfe), deltat, valpar(1), valres(1), jac
     real(kind=8) :: rhocp
@@ -171,9 +171,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 1210          continue
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call vecini(ndim, 0.d0, xe)
-            call reeret(elrefp, nnop, zr(igeom), xg, ndim,&
-                        'OUI', xe, ff, dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then

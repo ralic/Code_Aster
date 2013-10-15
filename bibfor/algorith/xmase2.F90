@@ -8,7 +8,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/elref5.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/reere3.h"
+#include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
     integer :: ndim, igeom, imate, nnop, npg, ddlh, ddlc, nfe
@@ -68,11 +68,11 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
     integer :: nno, nnos, npgbis, ddlt, ddld, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
 !
-    real(kind=8) :: f(3, 3), eps(6), rho(1)
+    real(kind=8) :: rho(1)
     real(kind=8) :: fe(4), baslog(6)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: dfdi(nnop, ndim), dgdgl(4, 3)
-    real(kind=8) :: enr(nnop, ndim+ddlh+ndim*nfe), grad(3, 3)
+    real(kind=8) :: dgdgl(4, 3)
+    real(kind=8) :: enr(nnop, ndim+ddlh+ndim*nfe)
     real(kind=8) :: depl0(ndim+ddlh+ndim*nfe+ddlc, nnop)
 !
     character(len=16) :: phenom
@@ -110,11 +110,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reere3(elrefp, nnop, igeom, xg, depl0,&
-                    .false., ndim, he, [0], 0,&
-                    ddlh, nfe, ddlt, fe, dgdgl,&
-                    'NON', xe, ff, dfdi, f,&
-                    eps, grad)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
         if (nfe .gt. 0) then
 !         BASE LOCALE AU POINT DE GAUSS
@@ -137,15 +133,6 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
             ASSERT(iret.ne.0)
 !
         endif
-!
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
-!       ET CALCUL DE FF, DFDI, ET EPS
-!
-        call reere3(elrefp, nnop, igeom, xg, depl0,&
-                    .false., ndim, he, [0], 0,&
-                    ddlh, nfe, ddlt, fe, dgdgl,&
-                    'DFF', xe, ff, dfdi, f,&
-                    eps, grad)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !

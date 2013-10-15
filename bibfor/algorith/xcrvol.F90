@@ -38,8 +38,8 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !
     real(kind=8) :: co(ndim+1, ndim), mat(ndim, ndim), vse, bary(ndim)
     real(kind=8) :: point(ndim)
-    real(kind=8) :: rbid, ff(nbnoma), dfdi(nbnoma, ndim), xe(ndim), deriv
-    integer :: ise, ino2, i, j, iad, ibid, k
+    real(kind=8) :: ff(nbnoma), dfdi(nbnoma, ndim), xe(ndim), deriv
+    integer :: ise, ino2, i, j, iad, k
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,12 +91,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !
 !        CALCUL DES DERIVEES DES FONCTIONS DE FORME
 !
-        call reeref(elrefp, .false., nbnoma, ibid, zr(igeom),&
-                    bary, 1, .false., ndim, rbid,&
-                    rbid, rbid, ibid, ibid, ibid,&
-                    ibid, ibid, ibid, rbid, rbid,&
-                    'DFF', xe, ff, dfdi, rbid,&
-                    rbid, rbid)
+        call reeref(elrefp, nbnoma, zr(igeom), bary, ndim, xe, ff, dfdi=dfdi)
         deriv =0.d0
         do 190 i = 1, ndim
             deriv = max(abs(dfdi(inoloc,i)),deriv)
@@ -108,12 +103,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
                 do 210 j = 1, ndim
                     point(j) = (bary(j)+co(k,j))/2
 210              continue
-                call reeref(elrefp, .false., nbnoma, ibid, zr(igeom),&
-                            point, ibid, .false., ndim, rbid,&
-                            rbid, rbid, ibid, ibid, ibid,&
-                            ibid, ibid, ibid, rbid, rbid,&
-                            'DFF', xe, ff, dfdi, rbid,&
-                            rbid, rbid)
+                call reeref(elrefp, nbnoma, zr(igeom), point, ndim, xe, ff, dfdi=dfdi)
                 do 220 i = 1, ndim
                     deriv = max(abs(dfdi(inoloc,i)),deriv)
 220              continue

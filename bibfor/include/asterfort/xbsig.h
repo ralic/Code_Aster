@@ -15,14 +15,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xbsig(option, ndim, nnop, nfh, nfe,&
+    subroutine xbsig(ndim, nnop, nfh, nfe,&
                      ddlc, ddlm, igeom, compor, jpintt,&
                      cnset, heavt, lonch, basloc, sigma,&
                      nbsig, idepl, lsn, lst, ivectu,&
                      jpmilt, nfiss, jfisno)
         integer :: nfiss
         integer :: nnop
-        character(len=16) :: option
         integer :: ndim
         integer :: nfh
         integer :: nfe

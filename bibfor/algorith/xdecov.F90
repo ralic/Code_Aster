@@ -65,12 +65,12 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps, geom(3)
-    real(kind=8) :: somlsn(nfisc+1), ff(nnop), rbid, rbid2(ndim)
+    real(kind=8) :: somlsn(nfisc+1), ff(nnop), rbid2(ndim)
     integer :: in, inh, i, j, ar(12, 3), nbar, ise, ibid, npent(18)
     integer :: a1, a2, a3, a4, a, b, c, d, ndime
     character(len=8) :: typma, elrese(3)
     integer :: zxain, mxstac
-    logical :: lbid, axi
+    logical :: axi
     parameter      (mxstac=1000)
 !
     data            elrese /'SEG2','TRIA3','TETRA4'/
@@ -467,12 +467,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !           CALCUL DES FF
 !
 !
-                call reeref(elp, axi, nnop, ibid, zr(igeom),&
-                            geom, 1, lbid, ndim, rbid,&
-                            rbid, rbid, ibid, ibid, ibid,&
-                            ibid, ibid, ibid, rbid, rbid,&
-                            'NON', rbid2, ff, rbid, rbid,&
-                            rbid, rbid)
+                call reeref(elp, nnop, zr(igeom), geom, ndim, rbid2, ff)
 !
                 do 350 j = 1, nnop
                     do 355 i = 1, nfisc
