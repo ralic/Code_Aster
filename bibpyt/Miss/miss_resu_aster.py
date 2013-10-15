@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-"""Module permettant de lire le fichier produit par IMPR_MACR_ELEM/IMPR_MISS_3D
+"""Module permettant de lire le fichier produit par IMPR_MACR_ELEM
 et de produire une structure pour écrire les fichiers en entrées de Miss.
 
 Cette structure est potentiellement volumineuse et sera donc détruite dès que possible.
@@ -38,7 +38,7 @@ except ImportError:
     from Execution.E_Exception import error as AsterError
 
 class ResuAsterReader(object):
-    """Lit le fichier issu de IMPR_MACR_ELEM/IMPR_MISS_3D."""
+    """Lit le fichier issu de IMPR_MACR_ELEM"""
     def __init__(self, nbgrp):
         """Initialisation
         `nbgrp` est le nombre de groupes de mailles décrits

@@ -18,14 +18,6 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg={
-1: _(u"""
-Longueur de LFREQ_LISTE incorrecte.
-"""),
-
-2: _(u"""
-Longueur de CONTR_LISTE incorrecte.
-"""),
-
 3 : _(u"""
 Il faut une et une seule couche avec SUBSTRATUM="OUI".
 """),
@@ -88,22 +80,6 @@ par pas de %(r3).4f Hz, soit %(i1)d fréquences.
 14 : _(u"""
 Les %(i1)d fréquences du calcul Miss sont :
     %(k1)s
-"""),
-
-15 : _(u"""
-L'utilisation de MACRO_MISS_3D est déconseillée et maintenant exclue du périmètre
-qualifié de Code_Aster.
-
-Certaines fonctionnalités ne sont pas encore disponibles dans CALC_MISS.
-Pour celles-ci, il faut encore utiliser MACRO_MISS_3D. Il s'agit :
-    - des ondes inclinées,
-    - des sources ponctuelles,
-    - de l'interaction sol, fluide, structure.
-"""),
-
-16 : _(u"""
-Dans le cas présent (MODULE='MISS_IMPE' et ISSF='NON'), CALC_MISS répond à votre besoin.
-Nous vous conseillons d'utiliser dorénavant CALC_MISS.
 """),
 
 17 : _(u"""
