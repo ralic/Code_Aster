@@ -91,6 +91,7 @@ class MISS_PARAMETER(object):
             '_calc_forc' : False,
             '_hasPC' : False,
             '_nbPC' : 0,
+            '_nbfreq' : 0,
         }
         self._keywords = {}
         # une seule occurence du mcfact
@@ -166,8 +167,8 @@ class MISS_PARAMETER(object):
         if self['ISSF'] != 'NON':
             if self['GROUP_MA_FLU_STR'] is None:
                 UTMESS('F', 'MISS0_22')
-            if self['_hasPC']:
-                UTMESS('F', 'MISS0_23')
+        if self.get('GROUP_MA_CONTROL') is not None:
+            assert self['INST_FIN'] is not None, "INST_FIN obligatoire"
 
     def __iter__(self):
         """Itérateur simple sur le dict des mots-clés"""

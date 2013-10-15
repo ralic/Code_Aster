@@ -33,4 +33,4 @@ def compress64(uncompressed):
 def difftxt(old, new, fromfile='old', tofile='new'):
     """diff of string"""
     return ''.join(difflib.unified_diff(old.splitlines(1), new.splitlines(1),
-                            fromfile=fromfile, tofile=tofile))
+                                        fromfile=fromfile, tofile=tofile))

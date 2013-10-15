@@ -487,7 +487,6 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
                l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw['METHODE'] == 'NIGAM':
         # appel à SPEC_OSCI
-           print 'amor, norme', l_amor, kw['NORME']
            spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
                                            l_freq, l_amor)
            for iamor in range(len(l_amor)):
@@ -531,7 +530,6 @@ class CalcFonction_DSP(CalcFonctionOper):
             SRO_args['LIST_FREQ']=l_freq
             SRO_args['PAS']=None
 
-        print 'SRO_args', SRO_args
         f_dsp, f_sro_ref=SRO2DSP(f_in, **SRO_args ) 
         self.resu = t_fonction(f_dsp.vale_x/deuxpi, f_dsp.vale_y * deuxpi, para=f_in.para)
 

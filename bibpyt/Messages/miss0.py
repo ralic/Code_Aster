@@ -143,9 +143,4 @@ En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés
 GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois obligatoires.
 """),
 
-23 : _(u"""Le calcul d'interaction sol, structure, fluide (ISSF='OUI')
-n'est pas compatible avec le post-traitement aux points de contrôle
-(présence de GROUP_MA_CONTROL).
-"""),
-
 }

@@ -1,4 +1,5 @@
-# TITRE ANALYSE MODALE ET HARMONIQUE D UN BARRAGE EN INTERACTION
+# TITRE Analyse modale et harmonique d'un barrage en interaction
+#       sol-fluide-structure avec points de controle
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,11 +16,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#  SOL-FLUIDE-STRUCTURE
 
-DEBUT(CODE=_F(NOM='FDLV112B',
+DEBUT(CODE=_F(NOM='FDLV112E',
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 
@@ -34,7 +34,9 @@ mail=CREA_MAILLAGE(MAILLAGE=mail0,
                    CREA_POI1=(_F(NOM_GROUP_MA='PBASE',
                                  NOEUD='N316',),
                               _F(NOM_GROUP_MA='PFONDAT',
-                                 GROUP_MA='SURFBAS2',),),);
+                                 GROUP_MA='SURFBAS2',),
+                              _F(NOM_GROUP_MA='PC',
+                                 GROUP_NO=('PC1','PC2','PC3',),),),);
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
@@ -69,7 +71,10 @@ modele=AFFE_MODELE(MAILLAGE=mail,
                             MODELISATION='3D',),
                          _F(GROUP_MA='PBASE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),
+                         _F(GROUP_MA='PC',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),);
 
 #
 
@@ -91,7 +96,13 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                                  _F(REPERE='GLOBAL',
                                     CARA='K_TR_D_N',
                                     GROUP_MA='PBASE',
-                                    VALE=(0.,0.,0.,0.,0.,0.,),),),);
+                                    VALE=(0.,0.,0.,0.,0.,0.,),),
+                                 _F(CARA='M_T_D_N',
+                                    GROUP_MA='PC',
+                                    VALE=0.,),
+                                 _F(CARA='K_T_D_N',
+                                    GROUP_MA='PC',
+                                    VALE=(0.,0.,0.,),),),);
 
 #
 #========================================
@@ -104,13 +115,17 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
 #-----------------------------------------
 
 cond_lim=AFFE_CHAR_MECA(MODELE=modele,
-                        DDL_IMPO=_F(NOEUD='N316',
-                                    DX=0.,
-                                    DY=0.,
-                                    DZ=0.,
-                                    DRX=0.,
-                                    DRY=0.,
-                                    DRZ=0.,),
+                        DDL_IMPO=(_F(NOEUD='N316',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,
+                                     DRX=0.,
+                                     DRY=0.,
+                                     DRZ=0.,),
+                                  _F(GROUP_NO=('PC1','PC2','PC3',),
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),),
                         LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),);
 
 #
@@ -260,205 +275,152 @@ TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
                                 NUME_MATE=2,),),
                      TITRE='SOL HOMOGENE',);
 
-CALC_MISS(TYPE_RESU='FICHIER',
-          PROJET='FDLV112B',
-          VERSION='V6.6',
-          TABLE_SOL=TABSOL,
-          MACR_ELEM_DYNA=mael,
-          GROUP_MA_INTERF='SURFBAS2',
-          GROUP_MA_FLU_STR='IFLUSTR2',
-          GROUP_MA_FLU_SOL='IFLUSOL2',
-          GROUP_MA_SOL_SOL='SLIBREM2',
-          UNITE_IMPR_ASTER=26,
-          UNITE_RESU_IMPE=25,
-          UNITE_RESU_FORC=28,
-          PARAMETRE=_F(FREQ_MIN=0.1,
-                       FREQ_MAX=3.0,
-                       FREQ_PAS=2.9,
-                       Z0=5.0,
-                       SURF='NON',
-                       ISSF='OUI',
-                       ALGO='REGU',
-                       OFFSET_MAX=1000,
-                       OFFSET_NB=5000,),);
+tfin = 4.0
+df = 1.0 / tfin
+fmax = 50.0
+pas1 = 1.0E-2
+omega = 31.416
 
-nddlgen=NUME_DDL_GENE(BASE=bamo,
-                      STOCKAGE='PLEIN',);
+ltps=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=tfin,
+                                  PAS=pas1,),)
 
-rigigen=PROJ_MATR_BASE(BASE=bamo,
-                       NUME_DDL_GENE=nddlgen,
-                       MATR_ASSE=MATRIGI,);
+fonsin = FORMULE(NOM_PARA='INST',
+                 VALE='sin(omega*INST) ')
 
-massgen=PROJ_MATR_BASE(BASE=bamo,
-                       NUME_DDL_GENE=nddlgen,
-                       MATR_ASSE=MATMASS,);
+accsin=CALC_FONC_INTERP(FONCTION=fonsin,
+                        NOM_PARA='INST',
+                        NOM_RESU='EVOL',
+                        LIST_PARA=ltps)
+tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
+                 PROJET='FDLV112E',
+                 VERSION='V6.6',
+                 TABLE_SOL=TABSOL,
+                 MACR_ELEM_DYNA=mael,
+                 GROUP_MA_INTERF='SURFBAS2',
+                 GROUP_MA_FLU_STR='IFLUSTR2',
+                 GROUP_MA_FLU_SOL='IFLUSOL2',
+                 GROUP_MA_SOL_SOL='SLIBREM2',
+                 GROUP_MA_CONTROL='PC',
+                 PARAMETRE=_F(FREQ_MIN=0.1,
+                              FREQ_MAX=3.0,
+                              FREQ_PAS=2.9,
+                              Z0=5.0,
+                              SURF='NON',
+                              ISSF='OUI',
+                              ALGO='REGU',
+                              OFFSET_MAX=1000,
+                              OFFSET_NB=5000,),
+                   ACCE_Z=accsin,
+                   INST_FIN=tfin,
+                   PAS_INST=pas1,
+                   NORME=9.81,
+                   AMOR_SPEC_OSCI=(0.02, 0.05, 0.07),
+                   INFO=2)
 
-imp=LIRE_IMPE_MISS(BASE=bamo,
-                   NUME_DDL_GENE=nddlgen,
-                   FREQ_EXTR=3.,
-                   UNITE_RESU_IMPE=25,
-                   ISSF='OUI',);
+ftx1 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_X',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC1'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
 
-imp0=LIRE_IMPE_MISS(BASE=bamo,
-                    NUME_DDL_GENE=nddlgen,
-                    FREQ_EXTR=0.1,
-                    UNITE_RESU_IMPE=25,
-                    ISSF='OUI',);
+ftz1 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_Z',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC1'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
 
-impe=LIRE_IMPE_MISS(BASE=bamo,
-                    NUME_DDL_GENE=nddlgen,
-                    FREQ_EXTR=3.,
-                    UNITE_RESU_IMPE=25,
-                    ISSF='OUI',
-                    SYME='OUI',);
+ftz2 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_Z',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC2'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
 
-impe0=LIRE_IMPE_MISS(BASE=bamo,
-                     NUME_DDL_GENE=nddlgen,
-                     FREQ_EXTR=0.1,
-                     UNITE_RESU_IMPE=25,
-                     ISSF='OUI',
-                     SYME='OUI',);
+ftz3 = EXTR_TABLE(TABLE     = tabctr,
+                  TYPE_RESU = 'FONCTION_C',
+                  NOM_PARA  = 'FONC_Z',
+                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                               VALE_K   = 'PC3'),
+                            _F(NOM_PARA = 'NOM_CHAM',
+                               VALE_K   = 'TRANSFERT'),
+                            _F(NOM_PARA = 'NOM_PARA',
+                               VALE_K   = 'FREQ'),),)
 
-forc=LIRE_FORC_MISS(BASE=bamo,
-                    NUME_DDL_GENE=nddlgen,
-                    FREQ_EXTR=3.,
-                    NOM_CMP='DX',
-                    NOM_CHAM='ACCE',
-                    ISSF='OUI',
-                    UNITE_RESU_FORC=28,);
+TEST_FONCTION(VALEUR=_F(
+    FONCTION=ftz1,
+    NOM_PARA='FREQ',
+    VALE_PARA=3.0,
+    VALE_CALC_C=0.98252000+6.917140E-03j,
+))
 
-forc0=LIRE_FORC_MISS(BASE=bamo,
-                     NUME_DDL_GENE=nddlgen,
-                     FREQ_EXTR=0.1,
-                     NOM_CMP='DX',
-                     NOM_CHAM='ACCE',
-                     ISSF='OUI',
-                     UNITE_RESU_FORC=28,);
+TEST_FONCTION(VALEUR=_F(
+    FONCTION=ftz3,
+    NOM_PARA='FREQ',
+    VALE_PARA=1.5,
+    VALE_CALC_C=-8.917660E-03+5.644430E-03j,
+    # TOLE_MACHINE en raison des variations observées sur miss
+    TOLE_MACHINE=1.1E-5,
+))
 
-rito=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='REEL',
-                               MATR_ASSE=impe0,
-                               COEF_R=1.0,),
-                            _F(MATR_ASSE=rigigen,
-                               COEF_R=1.0,),),
-                    SANS_CMP='LAGR',);
+acce_z1 = EXTR_TABLE(TABLE     = tabctr,
+                     TYPE_RESU = 'FONCTION_SDASTER',
+                     NOM_PARA  = 'FONC_Z',
+                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                                  VALE_K   = 'PC1'),
+                             _F(NOM_PARA   = 'NOM_CHAM',
+                                  VALE_K   = 'ACCE'),
+                             _F(NOM_PARA   = 'NOM_PARA',
+                                  VALE_K   = 'INST'),),)
 
-mato=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='REEL',
-                               MATR_ASSE=impe0,
-                               COEF_R=2.814e-3,),
-                            _F(PARTIE='REEL',
-                               MATR_ASSE=impe,
-                               COEF_R=-2.814e-3,),
-                            _F(MATR_ASSE=massgen,
-                               COEF_R=1.0,),),
-                    SANS_CMP='LAGR',);
+acce_z2 = EXTR_TABLE(TABLE     = tabctr,
+                     TYPE_RESU = 'FONCTION_SDASTER',
+                     NOM_PARA  = 'FONC_Z',
+                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                                  VALE_K   = 'PC2'),
+                             _F(NOM_PARA   = 'NOM_CHAM',
+                                  VALE_K   = 'ACCE'),
+                             _F(NOM_PARA   = 'NOM_PARA',
+                                  VALE_K   = 'INST'),),)
 
-amto=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='IMAG',
-                               MATR_ASSE=impe,
-                               COEF_R=5.30e-2,),
-                            _F(PARTIE='IMAG',
-                               MATR_ASSE=impe0,
-                               COEF_R=-5.30e-2,),),
-                    SANS_CMP='LAGR',);
+acce_z3 = EXTR_TABLE(TABLE     = tabctr,
+                     TYPE_RESU = 'FONCTION_SDASTER',
+                     NOM_PARA  = 'FONC_Z',
+                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                                  VALE_K   = 'PC3'),
+                             _F(NOM_PARA   = 'NOM_CHAM',
+                                  VALE_K   = 'ACCE'),
+                             _F(NOM_PARA   = 'NOM_PARA',
+                                  VALE_K   = 'INST'),),)
 
-modgen=MODE_ITER_SIMULT(MATR_RIGI=rito,
-                        MATR_MASS=mato,
-                        CALC_FREQ=_F(OPTION='BANDE',
-                                     FREQ=(1.,20.,),),
-                        VERI_MODE=_F(STOP_ERREUR='NON',),);
-##
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.20417e-4,
+                         VALE_PARA=0.,
+                         FONCTION=acce_z1,),
+                      _F(VALE_CALC=2.01229e-04,
+                         VALE_PARA=1.66666666667e-01,
+                         FONCTION=acce_z2,),
+                      ),
+              )
 
+IMPR_FONCTION(COURBE=(_F(FONCTION=ftz1),
+                      _F(FONCTION=ftz2),
+                      _F(FONCTION=ftz3),),
+              UNITE=6)
 
-MODEF=REST_GENE_PHYS(RESU_GENE=modgen,
-                     TOUT_ORDRE='OUI',
-                     NOM_CHAM='DEPL',);
-
-TEST_RESU(RESU=(_F(RESULTAT=MODEF,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   CRITERE='RELATIF',
-                   VALE_CALC=3.58165193504,),
-                _F(RESULTAT=MODEF,
-                   NUME_ORDRE=2,
-                   PARA='FREQ',
-                   CRITERE='RELATIF',
-                   VALE_CALC=3.64911997809,),
-                _F(RESULTAT=MODEF,
-                   NUME_ORDRE=3,
-                   PARA='FREQ',
-                   CRITERE='RELATIF',
-                   VALE_CALC=4.9566445617,),
-                _F(RESULTAT=MODEF,
-                   NUME_ORDRE=4,
-                   PARA='FREQ',
-                   CRITERE='RELATIF',
-                   VALE_CALC=6.24930188781,),
-                _F(RESULTAT=MODEF,
-                   NUME_ORDRE=5,
-                   PARA='FREQ',
-                   CRITERE='RELATIF',
-                   VALE_CALC=7.45692990834,),),);
-
-imto=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp,
-                               COEF_C=(1+0j),),
-                            _F(MATR_ASSE=rigigen,
-                               COEF_C=(1+0.1j),),),
-                    SANS_CMP='LAGR',);
-
-imto0=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp0,
-                                COEF_C=(1+0j),),
-                             _F(MATR_ASSE=rigigen,
-                                COEF_C=(1+0.1j),),),
-                     SANS_CMP='LAGR',);
-
-dyge=DYNA_VIBRA(BASE_CALCUL='GENE',
-                TYPE_CALCUL='HARM',
-                MATR_MASS=massgen,
-                MATR_RIGI=imto,
-                FREQ=3.,
-                EXCIT=_F(VECT_ASSE_GENE=forc,
-                         COEF_MULT=1.0,),
-                SOLVEUR=_F(METHODE='LDLT',),);
-
-dyge0=DYNA_VIBRA(BASE_CALCUL='GENE',
-                 TYPE_CALCUL='HARM',
-                 MATR_MASS=massgen,
-                 MATR_RIGI=imto0,
-                 FREQ=0.1,
-                 EXCIT=_F(VECT_ASSE_GENE=forc0,
-                          COEF_MULT=1.0,),
-                 SOLVEUR=_F(METHODE='LDLT',),);
-
-dyha=REST_GENE_PHYS(RESU_GENE=dyge,
-                    NOM_CHAM=('DEPL','VITE','ACCE',),);
-
-dyha0=REST_GENE_PHYS(RESU_GENE=dyge0,
-                     NOM_CHAM=('DEPL','VITE','ACCE',),);
-
-dx253=RECU_FONCTION(RESULTAT=dyha,
-                    NOM_CHAM='ACCE',
-                    NOM_CMP='DX',
-                    NOEUD='N253',);
-
-dx253_0=RECU_FONCTION(RESULTAT=dyha0,
-                      NOM_CHAM='ACCE',
-                      NOM_CMP='DX',
-                      NOEUD='N253',);
-
-mdx253=CALC_FONCTION(EXTRACTION=_F(FONCTION=dx253,
-                                   PARTIE='MODULE',),);
-
-mdx253_0=CALC_FONCTION(EXTRACTION=_F(FONCTION=dx253_0,
-                                     PARTIE='MODULE',),);
-
-# VALEURS DE NON REGRESSION CORRIGEES SUITE A LA FICHE 16690
-
-TEST_FONCTION(VALEUR=(_F(FONCTION=mdx253,
-                         VALE_PARA=3.0,
-                         VALE_CALC=5.688324,),
-                      _F(FONCTION=mdx253_0,
-                         VALE_PARA=0.1,
-                         TOLE_MACHINE=0.0001,
-                         VALE_CALC=1.001351,),),);
+IMPR_FONCTION(COURBE=(_F(FONCTION=acce_z1,),
+                      _F(FONCTION=acce_z2,),
+                      _F(FONCTION=acce_z3,),),
+              UNITE=6,)
 
 FIN();
-#CHECKSUM:e58c588108ac5cafa08b970c60460011  -:FIN CHECKSUM

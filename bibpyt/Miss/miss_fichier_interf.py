@@ -26,8 +26,8 @@
 import os
 from functools import partial
 
+from Miss.miss_domain import MissDomains
 from Miss.miss_utils import dict_format, en_ligne
-
 
 def fichier_mvol(struct):
     """Produit le contenu du fichier de maillage mvol.
@@ -46,10 +46,19 @@ def fichier_mvol(struct):
 
 def fichier_chp(param, struct):
     """Produit le contenu du fichier chp"""
-    idvol = 2
-    if param['_hasPC']:
-        idvol = 3
-    cont = ["GROUPE    1   %d" % idvol,]
+    domain = MissDomains(param['_hasPC'], param["ISSF"] == "OUI")
+    group = domain.group
+    cont = []
+    # groupes des interfaces (sol-struct + struct OU fluide-struct)
+    grp = "GROUPE %4d" % group['sol-struct']
+    if group.get('fluide-struct'):
+        grp += "%4d" % group['fluide-struct']
+        if domain.def_all_domains:
+            grp += "%4d" % group['struct']
+    else:
+        grp += "%4d" % group['struct']
+    # modes statiques
+    cont.append(grp)
     cont.append(("MODE   " + dict_format["sI"]) % struct.mode_stat_nb)
     fmt_ligne = partial(en_ligne, format=dict_format['sR'], cols=3,
                                   format_ligne="%(index_1)6d%(valeurs)s")
@@ -57,17 +66,24 @@ def fichier_chp(param, struct):
     for i in range(struct.mode_stat_nb):
         cont.extend(fmt_ligne(struct.mode_stat_vale[i*mult:(i+1)*mult]))
         cont.append("FIN")
-    cont.append("GROUPE    %d" % idvol)
+    # groupes des interfaces (struct OU fluide-struct)
+    # pas l'interface sol-struct car hypothèse d'encastrement
+    grp = "GROUPE "
+    if group.get('fluide-struct'):
+        grp += "%4d" % group['fluide-struct']
+        if domain.def_all_domains:
+            grp += "%4d" % group['struct']
+    else:
+        grp += "%4d" % group['struct']
+    # modes dynamiques
+    cont.append(grp)
     cont.append(("MODE   " + dict_format["sI"]) % struct.mode_dyna_nb)
     mult = struct.noeud_nb * 3
     for i in range(struct.mode_dyna_nb):
         cont.extend(fmt_ligne(struct.mode_dyna_vale[i*mult:(i+1)*mult]))
         cont.append("FIN")
-    if param['_hasPC']:
-        cont.append("GROUPE    2")
-        cont.append("LIBRE")
     if param["ISSF"] == "OUI":
-        cont.append("GROUPE    3")
+        cont.append("GROUPE %4d" % group['sol-fluide'])
         if param['ALLU'] != 0.:
             refl = param['ALLU']
             kimp = refl / (2. - refl)
@@ -75,8 +91,11 @@ def fichier_chp(param, struct):
             cont.append("FLUI " + simp + " BEM")
         else: 
             cont.append("DEPN  BEM") 
-        cont.append("GROUPE    4")    
+        cont.append("GROUPE %4d" % group['sol libre'])    
         cont.append("LIBRE")    
+    if param['_hasPC']:
+        cont.append("GROUPE %4d" % group['pc'])
+        cont.append("LIBRE")
     cont.append("FINC")
     cont.append("EOF")
     cont.append("")

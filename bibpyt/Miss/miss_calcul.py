@@ -34,7 +34,7 @@ from math import cos, sin, pi
 
 import aster_core
 import aster
-from Cata.cata import MACR_ELEM_DYNA, IMPR_MACR_ELEM
+from Cata.cata import _F, MACR_ELEM_DYNA, IMPR_MACR_ELEM
 
 from Utilitai.Utmess          import UTMESS
 from Utilitai.System          import ExecCommand
@@ -113,7 +113,7 @@ class CALCUL_MISS(object):
         
         copie_fichier(self._fichier_tmp("in"), osp.join(self.param['_WRKDIR'], "MISS.IN"))
         cmd = osp.join(aster_core.get_option('repout'), "run_miss3d") + " " + self.param['VERSION']
-        
+        iret = 4
         try:
             os.chdir(self.param['_WRKDIR'])
             if self.verbose:
@@ -133,8 +133,9 @@ class CALCUL_MISS(object):
         miss_out = ""
         if osp.exists(self._fichier_tmp("OUT")):
             miss_out = open(self._fichier_tmp("OUT"), "r").read()
-        is_ok = iret == 0 and miss_out.find("INSUFFISAN") < 0
-        if not is_ok:
+        is_ok = iret == 0 and \
+            (miss_out.find("INSUFFISAN") < 0 and miss_out.find("*** STOP") < 0)
+        if not is_ok or self.verbose:
             aster.affiche("MESSAGE", miss_out)
         if not is_ok:
             UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
@@ -203,13 +204,20 @@ class CALCUL_MISS(object):
         if self.param['_hasPC']:
             grma = self.param['GROUP_MA_CONTROL']
             self.param.set('_nbPC', get_number_PC(self.parent, mael, grma))
+        other_groups = {}
+        if self.param['ISSF'] == 'OUI':
+            other_groups = _F(
+                GROUP_MA_FLU_STR=self.param['GROUP_MA_FLU_STR'],
+                GROUP_MA_FLU_SOL=self.param['GROUP_MA_FLU_SOL'],
+                GROUP_MA_SOL_SOL=self.param['GROUP_MA_SOL_SOL'],)
         IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
                        FORMAT='MISS_3D',
                        GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
                        GROUP_MA_CONTROL=self.param.get('GROUP_MA_CONTROL'),
                        FORMAT_R='1PE16.9',
                        SOUS_TITRE='PRODUIT PAR CALC_MISS',
-                       UNITE=ulaster,)
+                       UNITE=ulaster,
+                       **other_groups)
         UL.EtatInit()
         copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
         self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))
@@ -312,34 +320,6 @@ class CALCUL_MISS_IMPE(CALCUL_MISS):
 class CALCUL_MISS_ISSF(CALCUL_MISS):
     """Définition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
     option_calcul = 'MISS_IMPE'
-
-    def cree_resultat_aster(self):
-        """Produit le(s) fichier(s) issu(s) d'Aster."""
-        self._dbg_trace("Start")
-        UL = UniteAster()
-        ulaster = UL.Libre(action='ASSOCIER')
-        mael = self.param['MACR_ELEM_DYNA']
-        if mael is None:
-            opts = {}
-            if self.param['MATR_RIGI']:
-                opts['MATR_RIGI'] = self.param['MATR_RIGI']
-            if self.param['MATR_MASS']:
-                opts['MATR_MASS'] = self.param['MATR_MASS']
-            __mael = MACR_ELEM_DYNA(BASE_MODALE=self.param['BASE_MODALE'],
-                                    **opts)
-            mael = __mael
-        IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
-                       FORMAT='MISS_3D',
-                       GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
-                       GROUP_MA_FLU_STR=self.param['GROUP_MA_FLU_STR'],
-                       GROUP_MA_FLU_SOL=self.param['GROUP_MA_FLU_SOL'],
-                       GROUP_MA_SOL_SOL=self.param['GROUP_MA_SOL_SOL'],                         
-                       SOUS_TITRE='PRODUIT PAR CALC_MISS',
-                       UNITE=ulaster,)
-        UL.EtatInit()
-        copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
-        self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))
-        self._dbg_trace("Stop")
 
 
 class CALCUL_MISS_POST(CALCUL_MISS):
