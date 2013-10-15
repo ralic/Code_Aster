@@ -44,7 +44,6 @@ subroutine te0599(option, nomte)
     integer :: ndim, nfh, nfe, ibid, igeom, nnop, jptint, jaint, jcface
     integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
     integer :: itemp, ivectt, nddlno
-    real(kind=8) :: mat(1)
     character(len=8) :: elrefp
     character(len=4) :: fonree
 !
@@ -109,7 +108,7 @@ subroutine te0599(option, nomte)
 ! ----------------------------------------------------------------------
 !
     call xthddl(nfh, nddlno, nnop, zi(jstno), option,&
-                nomte, mat, zr(ivectt))
+                nomte, vect=zr(ivectt))
 !
 999 continue
 !

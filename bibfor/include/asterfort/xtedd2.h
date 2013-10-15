@@ -19,24 +19,24 @@ interface
                       option, lesclx, lmaitx, lcontx, stano,&
                       lact, jddle, jddlm, nfhe, nfhm,&
                       lmulti, heavno, mmat, vtmp)
-        integer :: ndim
-        integer :: jnne(3)
-        integer :: ndeple
-        integer :: jnnm(3)
-        integer :: nddl
-        character(len=16) :: option
-        logical :: lesclx
-        logical :: lmaitx
-        logical :: lcontx
-        integer :: stano(*)
-        integer :: lact(8)
-        integer :: jddle(2)
-        integer :: jddlm(2)
-        integer :: nfhe
-        integer :: nfhm
-        logical :: lmulti
-        integer :: heavno(8)
-        real(kind=8) :: mmat(336, 336)
-        real(kind=8) :: vtmp(336)
+        integer, intent(in) :: ndim
+        integer, intent(in) :: jnne(3)
+        integer, intent(in) :: ndeple
+        integer, intent(in) :: jnnm(3)
+        integer, intent(in) :: nddl
+        character(len=16), intent(in) :: option
+        logical, intent(in) :: lesclx
+        logical, intent(in) :: lmaitx
+        logical, intent(in) :: lcontx
+        integer, intent(in) :: stano(*)
+        integer, intent(in) :: lact(8)
+        integer, intent(in) :: jddle(2)
+        integer, intent(in) :: jddlm(2)
+        integer, intent(in) :: nfhe
+        integer, intent(in) :: nfhm
+        logical, intent(in) :: lmulti
+        integer, intent(in) :: heavno(8)
+        real(kind=8), optional, intent(out) :: mmat(336, 336)
+        real(kind=8), optional, intent(out) :: vtmp(336)
     end subroutine xtedd2
 end interface

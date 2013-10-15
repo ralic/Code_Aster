@@ -1,7 +1,7 @@
 subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                   nno, nnos, stano, lcontx, matsym,&
-                  option, nomte, mat, vect, ddlm,&
-                  nfiss, jfisno)
+                  option, nomte, ddlm, nfiss, jfisno,&
+                  mat, vect)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,11 +30,12 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/teattr.h"
-    integer :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
-    logical :: matsym, lcontx
-    character(len=16) :: option, nomte
-    real(kind=8) :: mat(*), vect(*)
-    integer :: ddlm, nfiss, jfisno
+    integer, intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
+    logical, intent(in) :: matsym, lcontx
+    character(len=16), intent(in) :: option, nomte
+    integer, intent(in) :: ddlm, nfiss, jfisno
+    real(kind=8), optional, intent(inout) :: mat(*)
+    real(kind=8), optional, intent(out) :: vect(*)
 !     BUT: SUPPRIMER LES DDLS "EN TROP" (VOIR BOOK III 09/06/04
 !                                         ET  BOOK IV  30/07/07)
 !
@@ -66,12 +67,69 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     parameter    (ddlmax=1053)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical :: lelim, lmultc
+    logical :: lelim, lmultc, lmat, lvec
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------
 !
     call jemarq()
+!
+!-------------------------------------------------------------
+!   NOMS DES OPTIONS AUTORISEES
+!-------------------------------------------------------------
+!
+    lmat = .false.
+    lvec = .false.
+!
+!   OPTIONS RELATIVES A UNE MATRICE
+    if (     option .eq. 'FULL_MECA'&
+        .or. option .eq. 'RIGI_MECA_GE'&
+        .or. option .eq. 'RIGI_MECA_TANG'&
+        .or. option .eq. 'RIGI_MECA'&
+        .or. option .eq. 'RIGI_CONT'&
+        .or. option .eq. 'RIGI_FROT'&
+        .or. option .eq. 'MASS_MECA') lmat = .true.
+!
+!   OPTIONS RELATIVES A UN VECTEUR
+    if (     option .eq. 'FULL_MECA'&
+        .or. option .eq. 'RAPH_MECA'&
+        .or. option .eq. 'FORC_NODA'&
+        .or. option .eq. 'CHAR_MECA_PRES_R'&
+        .or. option .eq. 'CHAR_MECA_PRES_F'&
+        .or. option .eq. 'CHAR_MECA_FR2D3D'&
+        .or. option .eq. 'CHAR_MECA_FR1D2D'&
+        .or. option .eq. 'CHAR_MECA_FF2D3D'&
+        .or. option .eq. 'CHAR_MECA_FF1D2D'&
+        .or. option .eq. 'CHAR_MECA_CONT'&
+        .or. option .eq. 'CHAR_MECA_FROT'&
+        .or. option .eq. 'CHAR_MECA_FR3D3D'&
+        .or. option .eq. 'CHAR_MECA_FR2D2D'&
+        .or. option .eq. 'CHAR_MECA_FF3D3D'&
+        .or. option .eq. 'CHAR_MECA_FF2D2D'&
+        .or. option .eq. 'CHAR_MECA_PESA_R'&
+        .or. option .eq. 'CHAR_MECA_ROTA_R'&
+        .or. option .eq. 'CHAR_MECA_TEMP_R'&
+        .or. option .eq. 'CHAR_MECA_EFON_R'&
+        .or. option .eq. 'CHAR_MECA_EFON_F') lvec = .true.
+!
+    ASSERT(lmat .or. lvec)
+!
+!-------------------------------------------------------------
+!   VERIFICATION DE LA COHERENCE OPTION / ARGUMENTS OPTIONNELS
+!-------------------------------------------------------------
+!
+    if (present(mat) .and. present(vect)) then
+        ASSERT(lmat .and. lvec)
+    elseif (present(mat) .and. .not.present(vect)) then
+        ASSERT(lmat .and. .not.lvec)
+    elseif (.not.present(mat) .and. present(vect)) then
+        ASSERT(.not.lmat .and. lvec)
+!   AU MOINS UN DES 2 ARGUMENTS mat OU vect EST OBLIGATOIRE
+    else
+        ASSERT(.false.)
+    endif
+!
+!-------------------------------------------------------------
 !
 ! --- CONECTIVITÉ DES FISSURE ET DES DDL HEAVISIDES
 !
@@ -206,9 +264,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !     POUR LES OPTIONS CONCERNANT DES MATRICES :
 !        CALCUL DU COEFFICIENT DIAGONAL POUR
 !        L'ELIMINATION DES DDLS HEAVISIDE
-        if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option .eq.&
-            'FULL_MECA' .or. option .eq. 'RIGI_CONT' .or. option .eq. 'RIGI_FROT' .or.&
-            option .eq. 'MASS_MECA') then
+        if (lmat) then
             dmin=r8maem()
             dmax=-r8maem()
             do i = 1, nddl
@@ -236,9 +292,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
         do i = 1, nddl
             if (posddl(i) .eq. 0) goto 199
-            if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option&
-                .eq. 'FULL_MECA' .or. option .eq. 'RIGI_CONT' .or. option .eq. 'RIGI_FROT'&
-                .or. option .eq. 'MASS_MECA') then
+            if (lmat) then
                 do j = 1, nddl
                     if (matsym) then
                         if (j .lt. i) mat((i-1)*i/2+j) = 0.d0
@@ -251,16 +305,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                     endif
                 enddo
             endif
-            if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA' .or. option .eq.&
-                'FORC_NODA' .or. option .eq. 'CHAR_MECA_PRES_R' .or. option .eq.&
-                'CHAR_MECA_PRES_F' .or. option .eq. 'CHAR_MECA_FR2D3D' .or. option .eq.&
-                'CHAR_MECA_FR1D2D' .or. option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq.&
-                'CHAR_MECA_FF1D2D' .or. option .eq. 'CHAR_MECA_CONT' .or. option .eq.&
-                'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq.&
-                'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FF3D3D' .or. option .eq.&
-                'CHAR_MECA_FF2D2D' .or. option .eq. 'CHAR_MECA_PESA_R' .or. option .eq.&
-                'CHAR_MECA_ROTA_R' .or. option .eq. 'CHAR_MECA_TEMP_R' .or. option .eq.&
-                'CHAR_MECA_EFON_R' .or. option .eq.'CHAR_MECA_EFON_F') vect(i) = 0.d0
+            if (lvec) vect(i) = 0.d0
 199         continue
        enddo
 !

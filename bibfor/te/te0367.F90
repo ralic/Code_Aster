@@ -84,7 +84,7 @@ subroutine te0367(option, nomte)
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrc, dlagrf(2)
     logical :: lfrott, lpenaf, lpenac, lesclx, lmaitx, lcontx
-    real(kind=8) :: vtmp(n), mmat(336, 336)
+    real(kind=8) :: vtmp(n)
     integer :: contac, ibid, npte
     integer :: ndeple, ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
@@ -357,7 +357,7 @@ subroutine te0367(option, nomte)
     call xtedd2(ndim, nne, ndeple, nnm, nddl,&
                 option, lesclx, lmaitx, lcontx, zi(jstno),&
                 lact, ddle, ddlm, nfhe, nfhm,&
-                lmulti, zi(jheano), mmat, vtmp)
+                lmulti, zi(jheano), vtmp=vtmp)
 !
 !
 ! --- RECOPIE VALEURS FINALES

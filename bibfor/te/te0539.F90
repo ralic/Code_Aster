@@ -328,10 +328,28 @@ subroutine te0539(option, nomte)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
     endif
-    call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false., matsym,&
-                option, nomte, zr(imatuu), zr(ivectu), ddlm,&
-                nfiss, jfisno)
+!
+!   OPTIONS RELATIVES A UNE MATRICE UNIQUEMENT
+    if     (option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
+        call xteddl(ndim, nfh, nfe, ddls, nddl,&
+                    nno, nnos, zi(jstno), .false., matsym,&
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    mat=zr(imatuu))        
+!   OPTIONS RELATIVES A UN VECTEUR UNIQUEMENT
+    elseif (option .eq. 'RAPH_MECA') then
+        call xteddl(ndim, nfh, nfe, ddls, nddl,&
+                    nno, nnos, zi(jstno), .false., matsym,&
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    vect=zr(ivectu))
+!   OPTIONS RELATIVES A UNE MATRICE ET UN VECTEUR
+    elseif (option .eq. 'FULL_MECA') then
+        call xteddl(ndim, nfh, nfe, ddls, nddl,&
+                    nno, nnos, zi(jstno), .false., matsym,&
+                    option, nomte, ddlm, nfiss, jfisno,&
+                    mat=zr(imatuu), vect=zr(ivectu))
+    else
+        ASSERT(.false.)
+    endif
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call jevech('PCODRET', 'E', jcret)

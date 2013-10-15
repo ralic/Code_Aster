@@ -40,7 +40,6 @@ subroutine te0538(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
     integer :: nnos, nfiss, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
-    real(kind=8) :: vect(1)
 !
 !
 !
@@ -83,7 +82,7 @@ subroutine te0538(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nno, nnos, zi(jstno), .false., .true.,&
-                option, nomte, zr(imatuu), vect, ddlm,&
-                nfiss, jfisno)
+                option, nomte, ddlm,&
+                nfiss, jfisno, mat=zr(imatuu))
 !
 end subroutine

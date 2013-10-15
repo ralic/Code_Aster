@@ -17,24 +17,24 @@
 interface
     subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                       nno, nnos, stano, lcontx, matsym,&
-                      option, nomte, mat, vect, ddlm,&
-                      nfiss, jfisno)
-        integer :: nfiss
-        integer :: nno
-        integer :: ndim
-        integer :: nfh
-        integer :: nfe
-        integer :: ddls
-        integer :: nddl
-        integer :: nnos
-        integer :: stano(*)
-        logical :: lcontx
-        logical :: matsym
-        character(len=16) :: option
-        character(len=16) :: nomte
-        real(kind=8) :: mat(*)
-        real(kind=8) :: vect(*)
-        integer :: ddlm
-        integer :: jfisno
+                      option, nomte, ddlm,&
+                      nfiss, jfisno, mat, vect)
+        integer, intent(in) :: nfiss
+        integer, intent(in) :: nno
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nfh
+        integer, intent(in) :: nfe
+        integer, intent(in) :: ddls
+        integer, intent(in) :: nddl
+        integer, intent(in) :: nnos
+        integer, intent(in) :: stano(*)
+        logical, intent(in) :: lcontx
+        logical, intent(in) :: matsym
+        character(len=16), intent(in) :: option
+        character(len=16), intent(in) :: nomte
+        integer, intent(in) :: ddlm
+        integer, intent(in) :: jfisno
+        real(kind=8), optional, intent(inout) :: mat(*)
+        real(kind=8), optional, intent(out) :: vect(*)
     end subroutine xteddl
 end interface

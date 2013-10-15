@@ -78,7 +78,7 @@ subroutine te0036(option, nomte)
     real(kind=8) :: y(3), xg(4), fe(4), xe(2), lsng, lstg, rg, tg
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
-    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81), mat(1)
+    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81)
     real(kind=8) :: ad(3), ae(3), af(3)
     logical :: lbid, axi
     real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
@@ -527,8 +527,8 @@ subroutine te0036(option, nomte)
     endif
     call xteddl(ndim, nfh, nfe, ddls, nddl,&
                 nnop, nnops, zi(jstno), .false., lbid,&
-                option, nomte, mat, zr(ires), ddls,&
-                nfiss, jfisno)
+                option, nomte, ddls,&
+                nfiss, jfisno, vect=zr(ires))
 !
 !-----------------------------------------------------------------------
 !     FIN

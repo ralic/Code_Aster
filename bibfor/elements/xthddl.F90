@@ -26,9 +26,10 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/teattr.h"
-    integer :: nfh, nddlno, nno, stano(*)
-    character(len=16) :: option, nomte
-    real(kind=8) :: mat(*), vect(*)
+    integer, intent(in) :: nfh, nddlno, nno, stano(*)
+    character(len=16), intent(in) :: option, nomte
+    real(kind=8), optional, intent(inout) :: mat(*)
+    real(kind=8), optional, intent(out) :: vect(*)
 !
 !     BUT: THERMIQUE + ELEMENTS X-FEM LINEAIRES, SUPPRIMER LES DDL "EN
 !          TROP" (ATTENTION STOCKAGE SYMETRIQUE POUR LA MATRICE "MAT")
@@ -42,7 +43,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 ! IN       NOMTE  : NOM DU TYPE ELEMENT
 !
 ! IN/OUT   MAT    : MATRICE DE RIGIDITE OU DE MASSE
-! IN/OUT   VECT   : VECTEUR SECOND MEMBRE
+! OUT      VECT   : VECTEUR SECOND MEMBRE
 !
 !-----------------------------------------------------------------------
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
@@ -53,14 +54,51 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     parameter    (ddlmax=24)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical :: lelim
+    logical :: lelim, lmat, lvec
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------
 !
     call jemarq()
 !
-!     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
+!-------------------------------------------------------------
+!   NOMS DES OPTIONS AUTORISEES
+!-------------------------------------------------------------
+!
+    lmat = .false.
+    lvec = .false.
+!
+!   OPTIONS RELATIVES A UNE MATRICE
+    if     (     option .eq. 'RIGI_THER'&
+            .or. option .eq. 'RIGI_THER_PARO_F'&
+            .or. option .eq. 'RIGI_THER_PARO_R'&
+            .or. option .eq. 'MASS_THER'        ) then 
+        lmat = .true.
+!   OPTIONS RELATIVES A UN VECTEUR
+    elseif (     option .eq. 'CHAR_THER_EVOL'&
+            .or. option .eq. 'CHAR_THER_PARO_F'&
+            .or. option .eq. 'CHAR_THER_PARO_R' ) then
+        lvec = .true.
+    else
+        ASSERT(.false.)
+    endif
+!
+!-------------------------------------------------------------
+!   VERIFICATION DE LA COHERENCE OPTION / ARGUMENTS OPTIONNELS
+!-------------------------------------------------------------
+!
+    if (present(mat) .and. .not.present(vect)) then
+        ASSERT(lmat .and. .not.lvec)
+    elseif (.not.present(mat) .and. present(vect)) then
+        ASSERT(.not.lmat .and. lvec)
+!   EXACTEMENT UN DES 2 ARGUMENTS mat OU vect EST OBLIGATOIRE
+    else
+        ASSERT(.false.)
+    endif
+!
+!-------------------------------------------------------------
+!
+! --- TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
 !
     call teattr(nomte, 'S', 'XFEM', tyenel, ier)
     if (tyenel(1:2) .eq. 'XH') ielim=1
@@ -136,8 +174,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !     POUR LES OPTIONS CONCERNANT DES MATRICES :
 !       CALCUL DU COEFFICIENT DIAGONAL POUR
 !       L'ELIMINATION DES DDLS HEAVISIDE
-        if (option(1:9 ) .eq. 'RIGI_THER' .or. option(1:16) .eq. 'RIGI_THER_PARO_F' .or.&
-            option(1:16) .eq. 'RIGI_THER_PARO_R' .or. option(1:9 ) .eq. 'MASS_THER') then
+        if (lmat) then
             dmin=r8maem()
             dmax=-r8maem()
             do 110 i = 1, nddl
@@ -158,10 +195,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !           MISE A ZERO DES TERMES HORS DIAGONAUX (I,J)
 !           ET MISE A UN DES TERMES DIAGONAUX (I,I)
 !           (ATTENTION AU STOCKAGE SYMETRIQUE)
-            if (option(1:9 ) .eq. 'RIGI_THER' .or. option(1:16) .eq. 'RIGI_THER_PARO_F'&
-                .or. option(1:16) .eq. 'RIGI_THER_PARO_R' .or. option(1:9 ) .eq.&
-                'MASS_THER') then
-!
+            if (lmat) then
                 do 210 j = 1, nddl
                     if (j .lt. i) mat((i-1)*i/2+j) = 0.d0
                     if (j .eq. i) mat((i-1)*i/2+j) = codia
@@ -170,8 +204,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
             endif
 !         POUR LES OPTIONS CONCERNANT DES VECTEURS :
 !           MISE A ZERO DES TERMES I
-            if (option(1:14) .eq. 'CHAR_THER_EVOL' .or. option(1:16) .eq. 'CHAR_THER_PARO_F'&
-                .or. option(1:16) .eq. 'CHAR_THER_PARO_R') vect(i) = 0.d0
+            if (lvec) vect(i) = 0.d0
 200      continue
 !
     endif

@@ -1,5 +1,5 @@
 subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
-                  option, lesclx, lmaitx, lcontx, stano,&
+                   option, lesclx, lmaitx, lcontx, stano,&
                   lact, jddle, jddlm, nfhe, nfhm,&
                   lmulti, heavno, mmat, vtmp)
 !
@@ -33,12 +33,13 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 #include "asterfort/indent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: ndim, jnnm(3), nddl, stano(*), lact(8)
-    character(len=16) :: option
-    real(kind=8) :: mmat(336, 336), vtmp(336)
-    logical :: lesclx, lmaitx, lcontx, lmulti
-    integer :: jnne(3), ndeple, jddle(2)
-    integer :: jddlm(2), nfhe, nfhm, heavno(8)
+    integer, intent(in) :: ndim, jnnm(3), nddl, stano(*), lact(8)
+    character(len=16), intent(in) :: option
+    logical, intent(in) :: lesclx, lmaitx, lcontx, lmulti
+    integer, intent(in) :: jnne(3), ndeple, jddle(2)
+    integer, intent(in) :: jddlm(2), nfhe, nfhm, heavno(8)
+    real(kind=8), optional, intent(out) :: mmat(336, 336)
+    real(kind=8), optional, intent(out) :: vtmp(336)
 !
 ! IN   NDIM   : DIMENSION DE L'ESPACE
 ! IN   NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
@@ -61,10 +62,45 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
     parameter     (ddlmax=336)
     integer :: ddlms, ddlmm, ifh, posddl(ddlmax)
     real(kind=8) :: dmax
+    logical :: lmat, lvec
 !
 !----------------------------------------------------------------------
 !
     call jemarq()
+!
+!-------------------------------------------------------------
+!   NOMS DES OPTIONS AUTORISEES
+!-------------------------------------------------------------
+!
+    lmat = .false.
+    lvec = .false.
+!
+!   OPTIONS RELATIVES A UNE MATRICE
+    if     (     option .eq. 'RIGI_CONT'&
+            .or. option .eq. 'RIGI_FROT') then 
+        lmat = .true.
+!   OPTIONS RELATIVES A UN VECTEUR
+    elseif (     option .eq. 'CHAR_MECA_CONT'&
+            .or. option .eq. 'CHAR_MECA_FROT') then
+        lvec = .true.
+    else
+        ASSERT(.false.)
+    endif
+!
+!-------------------------------------------------------------
+!   VERIFICATION DE LA COHERENCE OPTION / ARGUMENTS OPTIONNELS
+!-------------------------------------------------------------
+!
+    if (present(mmat) .and. .not.present(vtmp)) then
+        ASSERT(lmat .and. .not.lvec)
+    elseif (.not.present(mmat) .and. present(vtmp)) then
+        ASSERT(.not.lmat .and. lvec)
+!   EXACTEMENT UN DES 2 ARGUMENTS mmat OU vtmp EST OBLIGATOIRE
+    else
+        ASSERT(.false.)
+    endif
+!
+!----------------------------------------------------------------------
 !
     nnes=jnne(2)
     nnem=jnne(3)
@@ -153,7 +189,8 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 110      continue
     endif
 !
-    if (option .eq. 'RIGI_CONT' .or. option .eq. 'RIGI_FROT') then
+! --- POUR LES OPTIONS RELATIVES AUX MATRICES
+    if (lmat) then
 ! --- CALCUL DU COEFFICIENT DIAGONAL POUR
 ! --- L'ELIMINATION DES DDLS HEAVISIDE
 ! --- MISE A ZERO DES TERMES HORS DIAGONAUX (I,J)
@@ -174,8 +211,8 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 90          continue
 80      continue
 !
-        else if (option.eq.'CHAR_MECA_CONT' .or.&
-     &         option.eq.'CHAR_MECA_FROT') then
+! --- POUR LES OPTIONS RELATIVES AUX VECTEURS
+    else if (lvec) then
 ! --- MISE A ZERO DES TERMES I
         do 100 i = 1, nddl
             if (posddl(i) .eq. 0) goto 100
