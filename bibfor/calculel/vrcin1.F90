@@ -90,7 +90,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !
     integer :: n1, ibid, nbma, jcesd1, jcesl1, jcesv1, iad, lonk80, jcvvar
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
-    integer :: nbcvrc, jcvgd, jlisch, nval1, nval2
+    integer :: nbcvrc, jcvgd, jlisch, nval1
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
     character(len=8) :: ma2
     character(len=8) :: nomgd, nomgd2, tych, nomsd
@@ -145,9 +145,9 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
                 tysd=zk16(jcesv1-1+iad+2)(1:8)
                 nomsd =zk16(jcesv1-1+iad+3)(1:8)
                 nomsym=zk16(jcesv1-1+iad+4)
-                prolga=zk16(jcesv1-1+iad+5)
-                proldr=zk16(jcesv1-1+iad+6)
-                finst =zk16(jcesv1-1+iad+7)
+                prolga=zk16(jcesv1-1+iad+5)(1:8)
+                proldr=zk16(jcesv1-1+iad+6)(1:8)
+                finst =zk16(jcesv1-1+iad+7)(1:8)
                 ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
                 if (tysd .eq. 'VIDE') goto 2
 !
@@ -244,9 +244,9 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !           -- SI TYSD='EVOL', ON INTERPOLE AU TEMPS INST
             nomevo=zk16(jlissd-1+7*(ichs-1)+2)(1:8)
             nomsym=zk16(jlissd-1+7*(ichs-1)+3)
-            prolga=zk16(jlissd-1+7*(ichs-1)+5)
-            proldr=zk16(jlissd-1+7*(ichs-1)+6)
-            finst =zk16(jlissd-1+7*(ichs-1)+7)
+            prolga=zk16(jlissd-1+7*(ichs-1)+5)(1:8)
+            proldr=zk16(jlissd-1+7*(ichs-1)+6)(1:8)
+            finst =zk16(jlissd-1+7*(ichs-1)+7)(1:8)
             nomch='&&VRCIN1.NOMCH'
 !
 !           -- PRISE EN COMPTE DE L'EVENTUELLE TRANSFORMATION DU TEMPS
@@ -303,20 +303,20 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V',&
                         chs)
             call detrsd('CHAM_NO_S', cns1)
-!
+
         else if ((tych.eq.'ELNO').or.(tych.eq.'ELEM')) then
             ces1='&&VRCIN1.CES1'
             call celces(nomch, 'V', ces1)
             call cesces(ces1, 'ELGA', cesmod, mnoga, ' ',&
                         'V', chs)
             call detrsd('CHAM_ELEM_S', ces1)
-!
+
         else if (tych.eq.'ELGA') then
-!            2.2.3
-!            -- CAS OU LE CHAMP PROVIENT DE PROJ_CHAMP /
-!               METHODE='SOUS_POINT'.
-!            2.2.3.1 :
-!               ON VERIFIE QUE LE CHAMP EST BIEN PREPARE :
+!           2.2.3
+!           -- CAS OU LE CHAMP PROVIENT DE PROJ_CHAMP /
+!              METHODE='SOUS_POINT'.
+!           2.2.3.1 :
+!              ON VERIFIE QUE LE CHAMP EST BIEN PREPARE :
             call dismoi('NOM_LIGREL', nomch, 'CHAM_ELEM', repk=ligr1)
             if (ligr1 .ne. ligrmo) then
                 valk(1)=nomch
@@ -324,20 +324,17 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
                 valk(3)=ligrmo
                 call utmess('F', 'CALCULEL4_25', nk=3, valk=valk)
             endif
-!
+
             call dismoi('NOM_OPTION', nomch, 'CHAM_ELEM', repk=optio1)
             if (optio1 .ne. 'INI_SP_MATER') then
                 valk(1)=nomch
                 valk(2)=optio1
                 call utmess('F', 'CALCULEL4_26', nk=2, valk=valk)
             endif
-!
-            call jelira(nomch//'.CELV', 'LONMAX', nval2)
-            ASSERT(nval1.eq.nval2)
-!
+
 !            2.2.3.2 : SIMPLE RECOPIE
             call celces(nomch, 'V', chs)
-!
+
         else
             ASSERT(.false.)
         endif
