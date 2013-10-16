@@ -515,9 +515,9 @@ class CalcFonction_DSP(CalcFonctionOper):
         f_in = self._lf[0]
         vale_freq=f_in.vale_x 
         vale_sro=f_in.vale_y
+        F_MIN=f_in.vale_x[0]
         f_in=t_fonction(NP.insert(vale_freq, 0, 0.0), NP.insert(vale_sro,0,0.0) , para=f_in.para)       
         deuxpi =2.*math.pi
-        F_MIN=f_in.vale_x[0]
         FREQ_COUP = deuxpi * kw['FREQ_COUP']
         SRO_args={'TSM':kw['DUREE'], 'FCOUP':FREQ_COUP, 'NORME':kw['NORME'], 'AMORT':kw['AMOR_REDUIT'],'FCORNER':0.0, 'FMIN':F_MIN,}
         if kw['FREQ_PAS'] != None:

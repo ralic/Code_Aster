@@ -659,8 +659,8 @@ def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
 
    ind_opt=NP.argmin(NP.array(errmult)  )
    f_dsp_opt=l_dsp[ind_opt]
-   if FCORNER>0.0 and ind_opt>0:
-      f_dsp_opt=dsp_filtre_CP(f_dsp_opt,FCORNER)
+#   if FCORNER>0.0 and ind_opt>0:
+#      f_dsp_opt=dsp_filtre_CP(f_dsp_opt,FCORNER)
    valesro_opt=l_sro[ind_opt]
 
 

@@ -477,7 +477,7 @@ frapp=10.61
 
 TEST_TABLE(CRITERE='RELATIF',           
             REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-3,VALE_REFE=sigma,
-           VALE_CALC=0.79191046259888,
+           VALE_CALC=0.79190006472530,
            NOM_PARA='ECART',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -488,7 +488,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=9.8569009086324,
+           VALE_CALC=9.8571964660693,
            NOM_PARA='FREQ_APPAR',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -499,7 +499,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.62712218077357,
+           VALE_CALC=0.62710571251193,
            NOM_PARA='LAMBDA_00',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -510,7 +510,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=31.316044161346,
+           VALE_CALC=31.317117860375,
            NOM_PARA='LAMBDA_01',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -521,7 +521,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=2405.4297592059,
+           VALE_CALC=2405.5108436427,
            NOM_PARA='LAMBDA_02',
            TABLE=POST_DSP,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE_I',
@@ -533,12 +533,12 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE( REFERENCE='SOURCE_EXTERNE',
            PRECISION=1.E-3 ,  VALE_REFE= sigma,       
-           VALE_CALC=0.79184501086193,
+           VALE_CALC=0.79183512654125,
            NOM_PARA='ECART_TYPE',
            TABLE=ECT,)
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-3 ,VALE_REFE= sigma,  
-           VALE_CALC=0.79184501506711,
+           VALE_CALC=0.79183513071683,
            NOM_PARA='RMS',
            TABLE=RMS,)
 
@@ -548,11 +548,11 @@ TEST_FONCTION(VALEUR=(   _F(VALE_CALC=0.31839631, VALE_REFE=0.3183,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.0),
                          FONCTION=SRON, REFERENCE='AUTRE_ASTER',),
 
-                        _F(VALE_CALC=0.19069752   ,   VALE_REFE=0.20346056    ,                          
+                        _F(VALE_CALC=0.19070041   ,   VALE_REFE=0.20346056    ,                          
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          FONCTION=SRON, REFERENCE='AUTRE_ASTER',PRECISION=0.1 ,),
 
-                        _F(VALE_CALC= 0.26478773  ,  VALE_REFE=0.2650  ,                       
+                        _F(VALE_CALC= 0.26478768   ,  VALE_REFE=0.2650  ,                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 2.0),
                          FONCTION=SRON, REFERENCE='AUTRE_ASTER',),
                          ),)
