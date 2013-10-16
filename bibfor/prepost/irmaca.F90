@@ -8,6 +8,8 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 #include "asterfort/gicoor.h"
 #include "asterfort/irmac2.h"
 #include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -15,19 +17,22 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcaps.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+
     character(len=8) :: noma
     character(len=24) :: nogn(*), nogm(*)
     real(kind=8) :: coordo(*)
     integer :: connex(*), typma(*), point(*), ifc, nive
     logical :: lmod
-!     ------------------------------------------------------------------
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,12 +74,11 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
     real(kind=8) :: rbid
     character(len=8) :: ktype, kbid, gtype
     character(len=9) :: toto
-    character(len=24) :: nolili, nomjv, nomob
-!     ------------------------------------------------------------------
+    character(len=24) :: nolili, nomjv, nomob, nogrno
 !
 !-----------------------------------------------------------------------
     integer :: i, iacorr, iad, iagrma, iagrno, idep, ideu
-    integer :: idi, iel, igm, ign, igr, igre, igrel
+    integer :: idi, iel, igm, ign, igr, igre, igrel, iexi
     integer :: ij, ijk, ijp, ilong, ima, imodl, imoin
     integer :: ino, inumm, iobj, iplu, ipog, ipoin, ipoin1
     integer :: ipoin2, iret, iso, itrdeu, itrtro, ity, ityca
@@ -160,7 +164,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         write (ifc,'(A,I4,A,I5,A,I5)')  ' PILE NUMERO',izero,&
      &     'NBRE OBJETS NOMMES',nbobjn,'NBRE OBJETS',nno
         if (nbobjn .ne. 0) then
-            write(ifc,1002) (zk24(jnn-1+i),i=1,nbobjn)
+            write(ifc,1002) (zk24(jnn-1+i)(1:8),i=1,nbobjn)
             write(ifc,1003) (zi(jgn-1+i),i=1,nbobjn)
         endif
         call wkvect('&&IRMACA.COOR', 'V V R', (ndim+1)*nno, jcoo)
@@ -187,7 +191,13 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 !
     if (nbgrn .ne. 0) then
         ijp = 0
+        call jecreo('&&IRMACA.NOGNOK8','V N K8')
+        call jeecra('&&IRMACA.NOGNOK8','NOMMAX',nbgrn)
         do 51 ign = 1, nbgrn
+            call jenuno(jexnum(noma//'.GROUPENO', ign),nogrno)
+            call jenonu(jexnom('&&IRMACA.NOGNOK8',nogrno(1:8)),iexi)
+            if (iexi.ne.0) call utmess('F','PREPOST5_47',sk=nogrno(1:8))
+            call jecroc(jexnom('&&IRMACA.NOGNOK8',nogrno(1:8)))
             call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
             if (nbn .ne. 1) then
                 ijp =ijp+1
@@ -198,6 +208,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 call lxcaps(zk24(jno2-1+ijp))
             endif
 51      continue
+        call jedetr('&&IRMACA.NOGNOK8')
     endif
 !
     nbgma = 0
@@ -222,6 +233,8 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 itype = typma(ima)
                 if (.not.zl(jjl-1+itype)) then
                     call jenuno(jexnum('&CATA.TM.NOMTM', itype), kbid)
+                    call jeexin('&&IRMA.G.'//nogm(igm)(1:8)//kbid(1:7),iret)
+                    if (iret.gt.0) call utmess('F','PREPOST5_47',sk=nogm(igm)(1:8))
                     call wkvect('&&IRMA.G.'//nogm(igm)(1:8)//kbid(1:7), 'V V I', nbm,&
                                 zi(jjm-1+itype))
                     zl(jjl-1+itype) = .true.
@@ -368,24 +381,24 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         if (nive .eq. 3) then
             write (ifc,'(A,I4,A,I5,A,I5)') ' PILE NUMERO',iplu,&
             'NBRE OBJETS NOMMES',nbgma+nbgno+2,'NBRE OBJETS',nbtot+1
-            write(ifc,1002) (zk24(jno2-1+i),i=1,nbgma+nbgno+2)
+            write(ifc,1002) (zk24(jno2-1+i)(1:8),i=1,nbgma+nbgno+2)
             write(ifc,1003) (zi(jpos-1+i),i=1,nbgma+nbgno+2)
         else if (nive.eq.10) then
             write (ifc,'(A,I4,A,I8,A,I8)') ' PILE NUMERO',iplu,&
             'NBRE OBJETS NOMMES',nbgma+nbgno+2,'NBRE OBJETS',nbtot+1
-            write(ifc,1002) (zk24(jno2-1+i),i=1,nbgma+nbgno+2)
+            write(ifc,1002) (zk24(jno2-1+i)(1:8),i=1,nbgma+nbgno+2)
             write(ifc,1005) (zi(jpos-1+i),i=1,nbgma+nbgno+2)
         endif
     else
         if (nive .eq. 3) then
             write (ifc,'(A,I4,A,I5,A,I5)') ' PILE NUMERO',iplu,&
             'NBRE OBJETS NOMMES',nbgma+nbgno+1,'NBRE OBJETS',nbtot+1
-            write(ifc,1002) (zk24(jno2-1+i),i=1,nbgma+nbgno+1)
+            write(ifc,1002) (zk24(jno2-1+i)(1:8),i=1,nbgma+nbgno+1)
             write(ifc,1003) (zi(jpos-1+i),i=1,nbgma+nbgno+1)
         else if (nive.eq.10) then
             write (ifc,'(A,I4,A,I8,A,I8)') ' PILE NUMERO',iplu,&
             'NBRE OBJETS NOMMES',nbgma+nbgno+1,'NBRE OBJETS',nbtot+1
-            write(ifc,1002) (zk24(jno2-1+i),i=1,nbgma+nbgno+1)
+            write(ifc,1002) (zk24(jno2-1+i)(1:8),i=1,nbgma+nbgno+1)
             write(ifc,1005) (zi(jpos-1+i),i=1,nbgma+nbgno+1)
         endif
     endif
@@ -448,8 +461,6 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 85          continue
 87          continue
             nomob =zk24(jnom-1+nbgno+ijk)
-            if (nomob(9:24) .ne. ' ') write(6,*) 'DEBUG NOMOB= >',nomob, '<'
-            ASSERT(nomob(9:24).eq.' ')
             if (igm .le. nbgrm) then
                 toto = '&&IRMA.G.'
             else
@@ -592,7 +603,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         write (ifc,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',itrdeu,&
      &     'NBRE OBJETS NOMMES',nbobjn,'NBRE OBJETS',nno
         if (nbobjn .ne. 0) then
-            write(ifc,1002) (zk24(jnn-1+i),i=1,nbobjn)
+            write(ifc,1002) (zk24(jnn-1+i)(1:8),i=1,nbobjn)
             write(ifc,1005) (zi(jgn-1+i),i=1,nbobjn)
         endif
         write (ifc,'(I8)') nno
@@ -624,7 +635,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
     call jedetr('&&GILIRE.CORR_ASTER_GIBI')
 !
     1001 format (3(1x,d21.14))
-    1002 format (8(1x,a24))
+    1002 format (8(1x,a8))
     1003 format (16(i5))
     1005 format (10(i8))
 !

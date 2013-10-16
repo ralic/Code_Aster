@@ -34,7 +34,7 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 
 4 : _(u"""
  Il n'existe aucun noeud lié à la liste de de mailles ou au groupe de mailles fournit à IMPR_RESU.
- 
+
  Conseil : Vérifiez les mots-clés MAILLE ou GROUP_MA fournit à IMPR_RESU.
 """),
 
@@ -103,6 +103,14 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 
 46 : _(u"""
  élément inconnu dans le fichier IDEAS élément numéro :  %(i1)d
+"""),
+
+47 : _(u"""
+ Erreur d'utilisation IMPR_RESU FORMAT='CASTEM' :
+   Le format CASTEM n'autorise pas les noms de groupes de plus de
+   8 caractères. Les noms plus longs sont tronqués.
+   Ici, deux groupes sont identiques si on les tronquent : %(k1)s
+   
 """),
 
 
