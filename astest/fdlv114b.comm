@@ -1,0 +1,276 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# TITRE MODES COUPLES FLUIDE-STRUCTURE D'UN RESERVOIR CYLINDRIQUE
+# TEST DE CALC_CHAM_FLUI
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM=('MODELE1_63','MODELE1_64','SUPERVIS_1'),
+      PAR_LOT='NON')
+# IGNORE_ALARM SYSTEMATIQUE POUR LE CALCUL DES MASSES AJOUTEES 3D
+# IGNORE_ALARM SUPERVIS POUR METHODE PYTHON D'EXTRACTION DES MATRICES GENERALISEES
+
+# FREQUENCE MAX DES MODES EN AIR
+# DOIT VALOIR 300 Hz POUR UN CALCUL PRECIS
+FMAX = 30.0;
+
+
+ma=LIRE_MAILLAGE(FORMAT='MED',);
+
+ma=DEFI_GROUP(MAILLAGE=ma,reuse=ma,CREA_GROUP_NO=_F(NOM='PTEST',INTERSEC=('N_CL_FIX','N_POST_1')))
+
+mo=AFFE_MODELE(MAILLAGE=ma,
+               AFFE=_F(GROUP_MA='STRU_2D',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DKT',),);
+
+mat=DEFI_MATERIAU(ELAS=_F(E=1.95E11,
+                          NU=0.3,
+                          RHO=7850.,),);
+
+chmt_mat=AFFE_MATERIAU(MAILLAGE=ma,
+                       AFFE=_F(GROUP_MA='STRU_2D',
+                               MATER=mat,),);
+
+# ANCRAGE DU RESERVOIR + BLOQUAGE DE 2 GENERATRICES POUR EVITER UNE SYMETRIE => TEST UNIQUE
+aff_meca=AFFE_CHAR_MECA(MODELE=mo,
+                        DDL_IMPO=(_F(GROUP_NO='N_CL_FIX',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),
+                                  _F(GROUP_NO=('N_POST_2','N_POST_4'),
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,)))
+
+aff_car=AFFE_CARA_ELEM(MODELE=mo,
+                       COQUE=_F(GROUP_MA='STRU_2D',
+                                EPAIS=0.015,
+                                COQUE_NCOU=1,),);
+
+ASSEMBLAGE(MODELE=mo,
+           CHAM_MATER=chmt_mat,
+           CARA_ELEM=aff_car,
+           CHARGE=aff_meca,
+           NUME_DDL=CO('nddl'),
+           MATR_ASSE=(_F(MATRICE=CO('matrigi'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('matmass'),
+                         OPTION='MASS_MECA',),),);
+
+MASSINER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                   MODELE=mo,
+                   CHAM_MATER=chmt_mat,
+                   CARA_ELEM=aff_car,);
+
+IMPR_TABLE(TABLE=MASSINER,
+           UNITE=8,
+           NOM_PARA=('LIEU','ENTITE','MASSE',),);
+
+modes=CALC_MODES(MATR_RIGI=matrigi,
+                 MATR_MASS=matmass,
+                 VERI_MODE=_F(STOP_ERREUR='NON', STURM='NON', ),
+                 OPTION='BANDE',
+                 FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN', SEUIL=0.000001, ),
+                 CALC_FREQ=_F(FREQ=(0.0,FMAX,), ),
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN', ),
+                 NORM_MODE=_F(INFO=1, NORME='TRAN_ROTA',),
+                 )
+
+
+TABFREQ = RECU_TABLE(CO=modes, NOM_PARA=('FREQ','MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',))
+IMPR_TABLE(TABLE=TABFREQ)
+
+w2=(2.*pi*TABFREQ['FREQ',1])**2
+print 'Omega**2', w2
+
+# Calcul des matrices de masse et de raideur generalisees 
+
+numgen=NUME_DDL_GENE(BASE=modes,
+                     STOCKAGE='PLEIN',);
+
+mgene=PROJ_MATR_BASE(BASE=modes,
+                     NUME_DDL_GENE=numgen,
+                     MATR_ASSE=matmass,);
+
+riggen=PROJ_MATR_BASE(BASE=modes,
+                      NUME_DDL_GENE=numgen,
+                      MATR_ASSE=matrigi,);
+
+# Calcul de la matrice de masse ajoutee
+
+EAU = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1000.))
+
+MATFLUI = AFFE_MATERIAU(MAILLAGE=ma,
+                        AFFE=_F( GROUP_MA=( 'VOL_FLU', 'STRU_2D'), MATER=EAU),)
+
+MODELFLU = AFFE_MODELE(MAILLAGE=ma,
+                           AFFE=_F( GROUP_MA=( 'VOL_FLU', 'STRU_2D'), 
+                                    MODELISATION='3D',
+                                    PHENOMENE='THERMIQUE'), )
+
+MODINTER = AFFE_MODELE(MAILLAGE=ma,
+                           AFFE=_F(GROUP_MA='STRU_2D',
+                                   MODELISATION='3D',
+                                   PHENOMENE='THERMIQUE'), )
+
+PRESIMPO = AFFE_CHAR_THER(MODELE=MODELFLU, TEMP_IMPO=_F(TEMP=0.0, GROUP_NO=('N_SF_LIB', ),))
+
+massaj = CALC_MATR_AJOU(MODELE_INTERFACE=MODINTER,
+                        MODELE_FLUIDE=MODELFLU,
+                        NUME_DDL_GENE=numgen,
+                        OPTION='MASS_AJOU',
+                        CHARGE=PRESIMPO,
+                        NOEUD_DOUBLE='NON',
+                        MODE_MECA=modes,
+                        CHAM_MATER=MATFLUI,
+                        )
+
+# Calcul de la matrice de masse totale de la structure (matrice de  
+# masse generalisee plus matrice de masse ajoutee)
+
+mastot=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=massaj,
+                                 COEF_R=1.,),
+                              _F(MATR_ASSE=mgene,
+                                 COEF_R=1.,),),);
+
+# Calcul des modes de la structure immergee
+
+modhumi=CALC_MODES(MATR_RIGI=riggen,
+                 VERI_MODE=_F(STOP_ERREUR='NON', STURM='NON', ),
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=(0.0,FMAX), ),
+                   MATR_MASS=mastot,
+                   )
+
+mode_mou=REST_GENE_PHYS(RESU_GENE=modhumi,
+                        MODE_MECA=modes,
+                        TOUT_CHAM='OUI',);
+
+
+TFREMOU = RECU_TABLE(CO=mode_mou, NOM_PARA=('FREQ','MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',))
+IMPR_TABLE(TABLE=TFREMOU)
+
+# TEST DE NON REGRESSION SUR LA PREMIERE FREQUENCE
+TEST_RESU(RESU=_F(RESULTAT=mode_mou,
+                  NUME_MODE=1,
+                  PARA='FREQ',
+                  VALE_CALC=0.926198837826,
+                  ))
+
+METHER=CALC_MATR_ELEM(OPTION='RIGI_THER', MODELE=MODELFLU, CHAM_MATER=MATFLUI, CHARGE=PRESIMPO,)
+
+NUDDLT=NUME_DDL(MATR_RIGI=METHER,)
+
+RIGITH=ASSE_MATRICE(MATR_ELEM=METHER, NUME_DDL =NUDDLT,);
+
+
+#  >--------- FACTORISATION (OBLIGATOIRE) DE LA MATRICE DE RIGIDITE  -----------<
+RIGITH=FACTORISER(reuse=RIGITH,  MATR_ASSE=RIGITH   )
+
+  
+#  >--------- APPEL AU NOUVEL OPERATEUR FORTRAN CALC_CHAM_FLUI  -----------<
+result = CALC_CHAM_FLUI(RIGI_THER = RIGITH,
+                        MODE_MECA = modes,
+                        POTENTIEL = 'DEPL',
+                        EXCIT = _F(CHARGE=PRESIMPO,))
+
+# TEST DES RESULTATS SUR LA MASSE AJOUTEE DU PREMIER MODE
+DEPROJ=PROJ_CHAMP(RESULTAT=result,
+                   MAILLAGE_1=ma,
+                   MODELE_2=mo,
+                   NOM_CHAM='TEMP',);
+
+TEMPREP1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                    OPERATION='EXTR',
+                    RESULTAT=DEPROJ,
+                    NOM_CHAM='TEMP',
+                    NUME_ORDRE=0,);
+
+REP0=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_R', OPERATION='AFFE', MODELE=mo, 
+                 AFFE=(
+                       _F( TOUT='OUI', NOM_CMP='PRES',VALE=0.0),),)
+
+PRE1=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_R', OPERATION='ASSE', MODELE=mo, 
+                 ASSE=(
+                       _F( TOUT='OUI', CHAM_GD=REP0, ),
+                       _F( TOUT='OUI', CHAM_GD=TEMPREP1, NOM_CMP=('TEMP'), NOM_CMP_RESU=('PRES',)),))
+
+PRP1=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_CHAR',
+               NOM_CHAM='PRES',
+               AFFE=(
+                     _F(CHAM_GD=PRE1, INST=0.0, ),
+                    ) );
+
+CHARP1=AFFE_CHAR_MECA(MODELE=mo, EVOL_CHAR=PRP1,);
+
+PRASS1=MECA_STATIQUE(MODELE=mo, CHAM_MATER=chmt_mat, CARA_ELEM=aff_car, 
+                     EXCIT=(_F(CHARGE=CHARP1), _F(CHARGE=aff_meca)))
+
+PRASS1 = CALC_CHAMP(MODELE=mo, RESULTAT=PRASS1, reuse=PRASS1, FORCE='FORC_NODA')
+
+FEXT1 = CREA_CHAMP(OPERATION='EXTR',
+                   TYPE_CHAM='NOEU_DEPL_R',
+                   NOM_CHAM='FORC_NODA',
+                   RESULTAT=PRASS1,
+                   NUME_DDL=nddl)
+
+V1 = PROJ_VECT_BASE(BASE=modes, VECT_ASSE=FEXT1,
+                    NUME_DDL_GENE=numgen,
+                    )
+
+# INTERCOMPARAISON ENTRE LE RESULTAT ISSU DE MACRO_MATR_AJOU ET CELUI CALCULE
+# A PARTIR DE LA PRESSION ISSUE DE CALC_CHAM_FLUI
+matr=massaj.EXTR_MATR_GENE()
+m00 = matr[0,0]
+f0=DEFI_FONCTION(NOM_PARA='X',VALE=(0.,m00))
+TEST_FONCTION(VALEUR=_F(FONCTION=f0,VALE_PARA=0.,REFERENCE='AUTRE_ASTER',VALE_REFE=96633.,VALE_CALC=96633.68698054   ))
+
+v1=V1.EXTR_VECT_GENE_R()
+f1=DEFI_FONCTION(NOM_PARA='X',VALE=(0.,v1[0]))
+TEST_FONCTION(VALEUR=_F(FONCTION=f1,VALE_PARA=0.,REFERENCE='AUTRE_ASTER',VALE_REFE=-96633.,VALE_CALC=-96631.51545700  ))
+
+
+
+# TEST DE L'OPTION PRESSION
+PRESS = CALC_CHAM_FLUI(RIGI_THER = RIGITH,
+                       MODE_MECA = modes,
+                       POTENTIEL = 'PRESS',
+                       EXCIT = _F(CHARGE=PRESIMPO,))
+
+
+# Test de pression : non regression
+PresNRG = -16.8694999772
+TEST_RESU(RESU=_F(RESULTAT=result,NUME_ORDRE=0,GROUP_NO='PTEST',NOM_CHAM='TEMP',NOM_CMP='TEMP',VALE_CALC= PresNRG ))
+
+# on deduit une valeur de pression de l'autre par un facteur Omega**2
+TEST_RESU(RESU=_F(RESULTAT=PRESS,NUME_ORDRE=0,GROUP_NO='PTEST',NOM_CHAM='TEMP',NOM_CMP='TEMP',VALE_CALC=-5669.98243895     , VALE_REFE=w2*PresNRG,  REFERENCE='AUTRE_ASTER'))
+
+# TEST DE L'OPTION VITESSE
+FCONST = DEFI_CONSTANTE(VALE=1.)
+VITESS = CALC_CHAM_FLUI(RIGI_THER = RIGITH,
+                        MODE_MECA = modes,
+                        COEF_MULT = 1.0,
+                        POTENTIEL = 'VITE',
+                        EXCIT = _F(CHARGE=PRESIMPO,FONC_MULT=FCONST))
+
+# facteur Omega entre deplacement et vitesse
+TEST_RESU(RESU=_F(RESULTAT=VITESS,NUME_ORDRE=0,GROUP_NO='PTEST',NOM_CHAM='TEMP',NOM_CMP='TEMP',VALE_CALC=-309.27296782      , VALE_REFE=sqrt(w2)*PresNRG, REFERENCE='AUTRE_ASTER'))
+
+
+FIN();
+
