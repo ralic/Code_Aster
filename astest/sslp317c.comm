@@ -17,8 +17,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      DEBUG=_F(SDVERI='OUI'),
-      PAR_LOT='NON')
+      DEBUG=_F(SDVERI='OUI'),)
 
 # MODELISATION C : RAFFINEMENT AVEC UN CRITERE BINAIRE
 
@@ -117,30 +116,19 @@ for i_raff in range(nb_iter) :
 # impression du dernier maillage
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))
 
-# on aimerait bien faire un TEST_RESU mais TEST_RESU ne fonctionne pas sur les cartes
-# faut attendre la resolution de la fiche 18997
-# ni CREA_TABLE...
-# alors on bidouille un truc en python : 
-# creation d'une table contenant le plus petit diametre non nul
+# test sur le plus petit diametre non nul
 
-diam=aster.getvectjev("DIAM_4             .VALE        ")
+TABDIAM = CREA_TABLE(RESU=_F(CHAM_GD=DIAM[4],
+                             TOUT='OUI',
+                             TOUT_CMP='OUI',),)
 
-def notzero(n):
-   return n !=0
-
-diam=filter(notzero,diam)
-
-d = min(diam)
-
-TAB=CREA_TABLE(LISTE=_F(LISTE_R=(d,),
-                        PARA='DIAM'))
-
-IMPR_TABLE(TABLE=TAB)
+IMPR_TABLE(TABLE=TABDIAM)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC= 4.41941738E-03,
            VALE_REFE=4.4194173824159229E-3,
-           NOM_PARA='DIAM',
-           TABLE=TAB,)
+           NOM_PARA='X1',
+           TYPE_TEST='MIN',
+           TABLE=TABDIAM,)
 
 FIN();
