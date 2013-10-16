@@ -17,7 +17,7 @@
 # ======================================================================
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
-DEBUT(CODE=_F(NOM='SSNP152H',NIV_PUB_WEB='INTERNET',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),IGNORE_ALARM=('CONTACT3_16'));
 # IGNORE_ALARM=('CONTACT3_16') : utilisation d'un schema de Gauss pour le contact
 

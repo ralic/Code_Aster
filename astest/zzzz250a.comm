@@ -20,7 +20,7 @@
 #                    de ORIE_PEAU_3D/GROUP_MA_VOLU
 # ---------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ250A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                             NU=0.0,),);

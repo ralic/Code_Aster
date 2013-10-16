@@ -24,7 +24,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3)
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SDLS505C',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 #
 MA=LIRE_MAILLAGE(FORMAT='MED',);
@@ -147,9 +147,3 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   PRECISION=0.125,))
 
 FIN();
-
-
-
-
-
-

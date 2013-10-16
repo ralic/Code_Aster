@@ -26,7 +26,7 @@
 # ----------------------------------------------------------------------
 # person_in_charge: sebastien.fayolle at edf.fr
 
-DEBUT(CODE=_F(NOM='SSNV112N',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'));
 

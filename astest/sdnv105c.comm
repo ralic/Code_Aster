@@ -25,7 +25,7 @@
 
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(CODE=_F(NOM='SDNV105c',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'));
 

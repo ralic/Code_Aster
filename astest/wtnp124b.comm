@@ -18,7 +18,7 @@
 #                               PAR LA SEULE FORCE DE GRAVITE
 #                       MODELISATION VF DECENTRE ARETE (VFDA)
 #
-DEBUT(CODE=_F(NOM='WTNP124B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 import sys
 import string

@@ -17,7 +17,7 @@
 # ======================================================================
 #
 # Pour des raisons de performances, on force SDVERI='NON'. 
-DEBUT(CODE=_F(NOM='SDLS114A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='NON'))
 
 # DEFINITION DES PARAMETRES DU CALCUL

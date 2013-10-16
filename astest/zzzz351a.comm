@@ -23,7 +23,7 @@
 # selon que l'on utilise (ou non) la commande ELIM_LAGR.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ351A',NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
      #IGNORE_ALARM=('ALGELINE5_15','ALGELINE5_23','DISCRETS_27',),
       )
 
@@ -78,4 +78,3 @@ if 1 :
 
 
 FIN();
-

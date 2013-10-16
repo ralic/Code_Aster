@@ -62,7 +62,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    jdc.info_level = INFO
    jdc.hist_etape = (DEBUG != None and DEBUG['HIST_ETAPE'] == 'OUI')
    if CODE != None:
-      jdc.fico = CODE['NOM']
+      jdc.fico = 'TEST'
    if aster_exists:
       if LANG:
          from Execution.i18n import localization

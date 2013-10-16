@@ -21,7 +21,7 @@
 # Dans ce cas de test, on simule un cas avec les deux lois de
 # comportement DRUCKER-PRAGER en condition associee et non-associee
 # =====================================================================
-DEBUT(CODE=_F(NOM='SSND104B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 MAILLAGE = LIRE_MAILLAGE( );

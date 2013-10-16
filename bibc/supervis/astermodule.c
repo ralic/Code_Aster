@@ -52,12 +52,6 @@ static int jeveux_status = 0;
 static PyObject *commande       = (PyObject*)0 ;
 static PyObject *pile_commandes = (PyObject*)0 ;
 
-/* NomCas est initialise dans aster_debut() */
-/* NomCas est initialise a blanc pour permettre la recuperation de la
-   trace des commandes lors de l'appel a debut ou poursuite. On ne connait
-   pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
-static char *NomCas          = "        ";
-
 
 INTEGER DEF0(ISJVUP, isjvup)
 {
@@ -797,18 +791,6 @@ void DEFSSPPPPP(GETVIS_WRAP,getvis_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mfc);
         FreeStr(mcs);
-        return ;
-}
-
-
-/* ------------------------------------------------------------------ */
-void DEFS(GETVLI,getvli, _OUT char *cas , _IN STRING_SIZE lcas )
-{
-        /*
-        Cette fonction est destinee a etre utilisee pour le fichier "*.code" (fort.15)
-        */
-                                                        AS_ASSERT(NomCas!=(char*)0) ;
-        CopyCStrToFStr(cas, NomCas, lcas);
         return ;
 }
 
@@ -2367,40 +2349,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-int RecupNomCas(void)
-{
-   /* recuperation du nom du cas */
-   INTEGER un          = 1 ;
-   INTEGER *iocc       = (INTEGER*)&un ;
-   INTEGER *iarg       = (INTEGER*)&un ;
-   INTEGER *mxval      = (INTEGER*)&un ;
-   INTEGER nbval       = 1 ;
-   int lng;
-   INTEGER longueur;
-   INTEGER taille = 80; // taille max
-                                                   AS_ASSERT(commande!=(PyObject*)0);
-   CALL_GETLTX ( "CODE","NOM",iocc,&taille,mxval, &longueur ,&nbval) ;
-   lng = (int)longueur;
-   if(nbval == 0){
-      /* Le mot cle NOM n'a pas ete fourni on donne un nom
-         par defaut au nom du cas */
-      NomCas = strdup("??????");
-   }
-   else if(nbval > 0){
-                                                   AS_ASSERT(lng>0);
-      NomCas = MakeBlankFStr(lng);
-                                                   AS_ASSERT(NomCas!=(char*)0);
-      CALL_GETVTX("CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval);
-   }
-   else{
-      /* Erreur  */
-      PyErr_SetString(PyExc_KeyError, "Erreur a la recuperation du nom du cas");
-      return -1;
-   }
-   return 0;
-}
-
-/* ------------------------------------------------------------------ */
 static PyObject * aster_poursu(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2437,13 +2385,6 @@ PyObject *args;
             raiseException();
         }
         endTry();
-        /* On recupere le nom du cas */
-        if (RecupNomCas() == -1) {
-            /* Erreur a la recuperation */
-            /* On depile l'appel */
-            commande = depile();
-            return NULL;
-        }
         /* On depile l'appel */
         commande = depile();
         Py_INCREF(Py_None);
@@ -2483,13 +2424,6 @@ PyObject *args;
             raiseException();
         }
         endTry();
-        /* On recupere le nom du cas */
-        if (RecupNomCas() == -1) {
-            /* Erreur a la recuperation */
-            /* On depile l'appel */
-            commande = depile();
-            return NULL;
-        }
         /* On depile l'appel */
         commande = depile();
         Py_INCREF(Py_None);

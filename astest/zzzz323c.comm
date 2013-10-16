@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='ZZZZ323C',NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 
 # MODELISATIONS COQUES ET GRILLES QUADRATIQUES
 MA1=LIRE_MAILLAGE(    UNITE=20 )

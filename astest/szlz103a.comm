@@ -17,7 +17,7 @@
 # ======================================================================
 # CAS TEST DOM3 DU MANUEL DE VALIDATION DE POSTDAM VERSION 1.0
 
-DEBUT(  CODE=_F(  NOM = 'SZLZ103A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TAUN=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(   0.,           4.,

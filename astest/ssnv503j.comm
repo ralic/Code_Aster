@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV503J', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA_0=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED');
 

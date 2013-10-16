@@ -20,7 +20,7 @@
 #   HOEK-BROWN MODIFIE NON DRAINE POUR UN CONFINEMENT DE 5 MPa
 # ======================================================================
 
-DEBUT(   CODE=_F(NOM = 'WTNV129A',NIV_PUB_WEB='INTERNET',
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET',
 VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 

@@ -19,7 +19,7 @@
 
 
 # CALCUL AVEC BASCULES DE SCHEMA
-DEBUT(CODE=_F(NOM='SDNV100J',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('DYNAMIQUE_3'),);
 
 from Contrib.macro_bascule_schema_cata import MACRO_BASCULE_SCHEMA

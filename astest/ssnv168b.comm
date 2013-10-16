@@ -20,7 +20,7 @@
 #                DRUCKER-PRAGER A ECROUISSAGE NEGATIF
 #                PARABOLIQUE POUR UN CONFINEMENT DE 2 MPA
 # ======================================================================
-DEBUT(CODE=_F(NOM='SSNV168B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 #***********************************************************************

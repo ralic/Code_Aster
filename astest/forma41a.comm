@@ -18,7 +18,7 @@
 #  MODELISATION A : CALCUL ELASTIQUE
 #--------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='FORMA41A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
 
 #--------------------------------------------------------------
 # 1 - MAILLAGE ET MODELE

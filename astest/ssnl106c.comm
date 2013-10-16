@@ -20,7 +20,7 @@
 # MODELISATION POU_D_ E. DEUX SECTIONS : RECTANGLE ET CERCLE
 # --------------------------------------------------------------------
 
-DEBUT( CODE=_F(  NOM = 'SSNL106C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
 
 #------- MAILLAGE FILAIRE DE LA POUTRE
 

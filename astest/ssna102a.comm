@@ -22,7 +22,7 @@
 #########################################
 
 
-DEBUT(CODE=_F(NOM='SSNA102A',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 DEBUG=_F(SDVERI='OUI'),
 IGNORE_ALARM=('CONTACT_93'))
 

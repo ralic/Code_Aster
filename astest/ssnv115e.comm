@@ -19,7 +19,7 @@
 #=======================================================================
 #
 
-DEBUT(CODE=_F(NOM='SSNV115E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 2000.,        NU = 0.3000),
 #                      ECRO_LINE:( D_SIGM_EPSI:10.5E+4, SY:55.E+2) );

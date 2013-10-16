@@ -17,7 +17,7 @@
 # ======================================================================
 # METHODE PAR REACTUALISATION DES LEVEL SET - FISSURE INITIALE INCLINEE
 
-DEBUT(CODE=_F(NOM='SSLV314A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM='XFEM2_18',)
 
 #----------------------------------------------

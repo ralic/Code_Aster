@@ -18,7 +18,7 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNL101B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=5.E5,

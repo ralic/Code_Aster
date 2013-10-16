@@ -25,7 +25,7 @@
 # ********************************************************************
 # ********************************************************************
 
-DEBUT(CODE=_F(NOM='SSNP102B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',   )
 

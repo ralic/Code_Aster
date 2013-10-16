@@ -18,7 +18,7 @@
 
 # 2 processeurs
 
-DEBUT(CODE=_F(NOM='WTNV136C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',))
 
 import sys
 import string

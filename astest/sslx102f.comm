@@ -17,7 +17,7 @@
 # ======================================================================
 # MODELISATION 3D - TUYAU - RELATIONS LINEAIRES 3D-TUYAU
 #======================================================================
-DEBUT(CODE=_F(NOM='SSLX102F', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 EP=0.00818
 

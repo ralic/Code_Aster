@@ -17,7 +17,7 @@
 # ======================================================================
 # TEST DE PERFORMANCE ANCIENNEMENT NOMME SSLV130K
 
-DEBUT(CODE=_F(NOM='GCPC002C',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);

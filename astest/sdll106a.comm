@@ -20,7 +20,7 @@
 #***** UNE FONCTION DE FORME                                    *******
 #**********************************************************************
 
-DEBUT(CODE=_F(NOM='SDLL106A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #**********************************************************************
 #** MAILLAGE, MATERIAU, CONDITIONS AUX LIMITES , ASSEMBLAGE************

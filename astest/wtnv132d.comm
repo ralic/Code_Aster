@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNV132D', NIV_PUB_WEB='INTERNET',
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON'),IGNORE_ALARM='CALCULEL4_9');
 
 # Redimensionnement du probleme hydromecanique

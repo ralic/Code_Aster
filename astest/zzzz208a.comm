@@ -24,7 +24,7 @@
 import numpy as NP
 import numpy.linalg as LA
 
-DEBUT(CODE=_F(NOM='ZZZZ208A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 #******************************
 # DEBUT CLASSIQUE D'UNE ETUDE *
 #******************************

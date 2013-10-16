@@ -18,7 +18,7 @@
 # person_in_charge: aimery.assire at edf.fr
 import numpy as NP
 
-DEBUT(CODE=_F(NOM='ZZZZ159E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 parametres = [['SIGY__',190.,5.,500.]]

@@ -28,7 +28,7 @@
 #                         A EFFORT DE PESANTEUR SUIVANT X
 #======================================================================
 #
-DEBUT(CODE=_F(NOM='SSLL400A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 MA=LIRE_MAILLAGE(  )

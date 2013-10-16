@@ -19,7 +19,7 @@
 # MAILLES : HEXA20, PENTA15 (ET QUAD8)
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLA05A',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
 # LECTURE DU MAILLAGE --------------------------------------------------

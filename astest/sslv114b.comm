@@ -24,7 +24,7 @@
 #----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F(  NOM = 'SSLV114B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATER=DEFI_MATERIAU(  ELAS=_F(  E = 0.,   NU = 0.) )
 

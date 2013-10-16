@@ -18,7 +18,7 @@
 # ======================================================================
 import math
 
-DEBUT(PAR_LOT='OUI',CODE=_F(NOM='SSNV231B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(PAR_LOT='OUI',CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
 
 #Nombre de calculs : INCO_GD, INCO_LOG, INCO_LUP
 nb_calcul=3

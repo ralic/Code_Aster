@@ -18,7 +18,7 @@
 # person_in_charge: mohamed.torkhani at edf.fr
 #
 
-DEBUT( CODE=_F(NOM='SDNL133D', NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
        PAR_LOT='NON')
 
 # les parametres de reference Cadyro

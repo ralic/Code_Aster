@@ -44,7 +44,7 @@ R_ELA_ISO = .01      ;   # on desactive le mecanisme isotrope
 import pdb
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(CODE=_F(NOM='WDNP101A', NIV_PUB_WEB='INTERNET',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       IGNORE_ALARM='CALCULEL4_9',DEBUG=_F(SDVERI='NON'));
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );

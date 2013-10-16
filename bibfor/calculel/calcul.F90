@@ -26,7 +26,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvli.h"
 #include "asterc/indik8.h"
 #include "asterfort/alchlo.h"
 #include "asterfort/alrslt.h"
@@ -144,7 +143,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: iel, numc
     integer :: i, ipar, nin2, nin3, nou2, nou3, jtypma, jprti, jprtk
     character(len=1) :: base2
-    character(len=8) :: nompar, cas, exiele, k8bid, partit, tych
+    character(len=8) :: nompar, exiele, k8bid, partit, tych
     character(len=10) :: k10b
     character(len=16) :: k16bid, cmde
     character(len=20) :: k20b1, k20b2, k20b3, k20b4
@@ -199,7 +198,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), opt)
 !
 !     -- POUR SAVOIR L'UNITE LOGIQUE OU ECRIRE LE FICHIER ".CODE" :
-    call getvli(cas)
     iuncod = iunifi('CODE')
     if (iuncod .gt. 0) call getres(k8bid, k16bid, cmde)
 !
@@ -418,7 +416,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !         6.2 ECRITURE AU FORMAT ".CODE" DU COUPLE (OPTION,TYPE_ELEM)
             if (iuncod .gt. 0) then
-                k10b = cas
+                k10b = 'TEST'
                 k20b1 = '&&CALCUL'
                 k20b2 = option
                 k20b3 = nomte

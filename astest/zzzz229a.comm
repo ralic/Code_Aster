@@ -31,7 +31,7 @@
 #---------------------------------------------------------------------------------------
 
 
-DEBUT(  CODE=_F(NOM='ZZZZ229A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # pour tester la commande COPIER/listr8_sdaster :
 XXX0=DEFI_LIST_REEL(VALE=(0.,),)

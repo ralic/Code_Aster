@@ -17,7 +17,7 @@
 # ======================================================================
 # tps_job 480 mem_job 32Mo ncpus 1 liste_test S
 
-DEBUT(CODE=_F( NOM = 'SSNL119B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 # lecture maillage lineique
 MAPOU=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);

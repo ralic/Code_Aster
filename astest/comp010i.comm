@@ -23,7 +23,7 @@
 #=====================================================================
 
 
-DEBUT(CODE=_F(NOM='COMP010I',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 
 TREF = 20.

@@ -18,7 +18,7 @@
 # wtnp121n.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 # VALIDATION DE LA MODELISATION HYDRAULIQUE SATUREE H EN 3D
 
-DEBUT(CODE=_F(NOM='WTNP121N', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #                     donnees

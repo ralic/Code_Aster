@@ -23,7 +23,7 @@
 #             13 NOEUDS  2 MAILLES QUAD8
 #======================================================================
 
-DEBUT( CODE=_F( NOM = 'HSNV103B',NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
         BASE=_F(  FICHIER = 'GLOBALE', LONG_REPE = 7000)
 ,DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU

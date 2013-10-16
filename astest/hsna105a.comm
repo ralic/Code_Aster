@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: sebastien.fayolle at edf.fr
 
-DEBUT(CODE=_F(NOM='HSNA105A', NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',);
 
 TFIN = 20.
 NB_PAS = 40

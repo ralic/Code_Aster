@@ -33,7 +33,7 @@
 #   pouvant servir de champ de variables internes initiales pour STAT_NON_LINE
 # ----------------------------------------------------------------
 
-DEBUT( CODE=_F(  NOM = 'ZZZZ130A',NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
 IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),
 DEBUG=_F(SDVERI='OUI'))
 

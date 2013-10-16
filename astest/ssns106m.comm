@@ -20,7 +20,7 @@
 #            MAILLAGE     : TRIA3
 #            CHARGEMENT   : CYCLIQUE CISAILLEMENT/FLEXION
 
-DEBUT(CODE=_F(NOM='SSNS106E',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 EP = 0.1;

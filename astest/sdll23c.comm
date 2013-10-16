@@ -23,7 +23,7 @@
 # ----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F(  NOM = 'SDLL23C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='UTILITAI4_2')
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='UTILITAI4_2')
 
 MAILLAGE=LIRE_MAILLAGE( )
 

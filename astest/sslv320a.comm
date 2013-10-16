@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: daniele.colombo at ifpen.fr
 
-DEBUT(CODE=_F(NOM='SSLV320A', NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69'),
       DEBUG=_F(SDVERI='OUI'),)
 
 # XFEM_69 EST IGNORE PARCE QUE CETTE ALARME NE S'APPLIQUE PAS A CE CAS TEST

@@ -19,7 +19,7 @@
 # MAILLES : QUAD9 , SEG3
 #
 
-DEBUT(CODE=_F( NOM = 'TTNL302A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

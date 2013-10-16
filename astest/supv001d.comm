@@ -22,7 +22,7 @@ from Noyau.N_info import (message, ALL, SUPERV, LEVEL,
 #message.extend_message(SUPERV, stack_header_callback)
 #message.set_level(ALL, LEVEL.DEBUG)
 
-DEBUT(CODE=_F(NOM='SUPV001D', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',)
 
 niter = 5000

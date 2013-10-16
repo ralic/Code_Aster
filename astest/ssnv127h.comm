@@ -17,7 +17,7 @@
 # ======================================================================
 #       CAS_TEST SSNV127: 2D (Q8), METHODE CONTINUE
 
-DEBUT(CODE=_F(NOM='SSNV127H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #PRE_GIBI();
 

@@ -40,7 +40,7 @@ volu = 0.5*troisk/deuxmu
 comp = 0
 
 
-DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
       MESURE_TEMPS=_F(MOYENNE='NON'))
 
 # -----------------------------------------------------

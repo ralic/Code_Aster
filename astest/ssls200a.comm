@@ -27,7 +27,7 @@
 #      MECANIQUE THERMO LINEAIRE, MODELISATION='DKT','COQUE_3D', ...
 # =========================================================================
 
-DEBUT(CODE=_F(NOM='SSLS200A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

@@ -28,7 +28,7 @@
 #     'K_TR_L' REPERE LOCAL  +  'K_TR_N' LOCAL  +  'M_TR_N' LOCAL
 #=======================================================================
 
-DEBUT(  CODE=_F( NOM = 'SDLD02D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
 

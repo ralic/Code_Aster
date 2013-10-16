@@ -17,7 +17,7 @@
 import numpy as NP
 import math 
 
-POURSUITE(CODE=_F(NOM='SSLV104A'),PAR_LOT='NON',
+POURSUITE(CODE='OUI', PAR_LOT='NON',
           DEBUG=_F(SDVERI='OUI',),
 )
 

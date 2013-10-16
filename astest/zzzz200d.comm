@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ200D', NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='MODELISA4_9', DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='MODELISA4_9', DEBUG=_F(SDVERI='NON'))
 
 #'MODELISA4_9'='PRESENCE DE MAILLES APPLATIES'
 # Les mailles concernees sont des seg2 entre deux noeuds coincidents

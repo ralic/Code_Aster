@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-DEBUT(CODE=_F(NOM='SUPV001F', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 
 import numpy as NP

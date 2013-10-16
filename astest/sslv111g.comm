@@ -19,7 +19,7 @@
 # MODELISATION 1 : ELEMENTS MECANIQUE 3D PENTA6
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLV111G',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',));
 

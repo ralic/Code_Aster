@@ -22,7 +22,7 @@
 #     MODELISATION PAR DES ELEMENTS POUTRES
 #     -------------------------------------
 
-DEBUT(CODE=_F(NOM='FORMA02D',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 

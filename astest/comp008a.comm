@@ -20,7 +20,7 @@
 # CAS-TEST DE REFERENCE : SSLS101E
 #=====================================================================
 
-DEBUT(CODE=_F(NOM='COMP008A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 TINF1=45

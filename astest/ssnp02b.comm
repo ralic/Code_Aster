@@ -20,7 +20,7 @@
 # ELEMENTS TRIA6 + SEG3 POUR LE CHARGEMENT
 #.....................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNP02B',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAYA=LIRE_MAILLAGE( )
 

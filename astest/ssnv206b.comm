@@ -20,7 +20,7 @@
 # ======================================================================
 #         DU CIH LETK CONFINEMENT DE 5 MPa (IMPLICITE)
 # ======================================================================
-DEBUT(CODE=_F(NOM='SSNV206B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************
 #    MAILLAGE + MODELE

@@ -1,5 +1,5 @@
 
-DEBUT(CODE=_F(NOM='SDLV123B',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # TITRE DYNAMIQUE D'UNE FISSURE FINIE STATIONNAIRE DANS UN MILIEU
 # ======================================================================

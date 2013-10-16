@@ -18,7 +18,7 @@
 # ELEMENT SHB6 - V.D TRINH 2009
 
 #
-DEBUT(CODE=_F(NOM='SSNS109B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),);
 

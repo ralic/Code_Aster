@@ -18,7 +18,7 @@
 
 # cas sans contact, correspondant a la solution pseudo-analytique
 
-DEBUT(CODE=_F(NOM='SSNP505A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 # nbre de raffinements et pourcentage a rafiner
 nb_raff = 3

@@ -17,7 +17,7 @@
 # ======================================================================
 #CAS_TEST__: SDLS07B
 
-DEBUT(CODE=_F(NOM='SDLS07B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAT=DEFI_MATERIAU(ELAS=_F( E = 2.E11, NU = 0.3, RHO = 7800.))
 

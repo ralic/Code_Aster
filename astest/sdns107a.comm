@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: sebastien.fayolle at edf.fr
 
-DEBUT(CODE=_F(NOM='SDNS107A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 #-----------------------------------------------------------------------

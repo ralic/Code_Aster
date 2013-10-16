@@ -23,7 +23,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(TRIA3)
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSLS503A',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 MA=LIRE_MAILLAGE(FORMAT='MED', )

@@ -18,7 +18,7 @@
 
 from Contrib.veri_matr_tang import VERI_MATR_TANG
 
-DEBUT(CODE=_F(NOM='COMP002J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
 );
 
 # donnee materiau et fonction

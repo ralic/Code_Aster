@@ -18,7 +18,7 @@
 # (CALCUL D_PLAN_THH2D)
 
 
-DEBUT(CODE=_F(NOM='WTNP103A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 ####################################
 #############################
 ############################

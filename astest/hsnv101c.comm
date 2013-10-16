@@ -23,7 +23,7 @@
 #             15 NOEUDS  4 MAILLES TRI6
 #======================================================================
 
-DEBUT( CODE=_F( NOM = 'HSNV101C',NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
         BASE=_F(  FICHIER = 'GLOBALE', LONG_REPE = 13000)
 ,DEBUG=_F(SDVERI='OUI'))
 

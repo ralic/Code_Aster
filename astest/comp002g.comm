@@ -18,7 +18,7 @@
 # ======================================================================
 #......................................................................
 
-DEBUT(CODE=_F(NOM='COMP002G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
 #parametres vitesse de sollicitation
 vitesse = 1.e-5

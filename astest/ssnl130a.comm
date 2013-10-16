@@ -18,7 +18,7 @@
 # ======================================================================
 # CAS_TEST__:SSNL130A
 #
-DEBUT(CODE=_F(NOM='SSNL130A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 
 mail=LIRE_MAILLAGE(FORMAT='MED',);
 

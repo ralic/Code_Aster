@@ -50,7 +50,7 @@ print '>> Onde %s CS= %f CP= %f' %(Onde,CS,CP)
 # ------------------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NOM='WDNP102B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
 
 INV_K_EAU = 1.E-5 ;
 

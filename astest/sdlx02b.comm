@@ -17,7 +17,7 @@
 # ======================================================================
 #
 
-DEBUT(CODE=_F(NOM='SDLX02B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 

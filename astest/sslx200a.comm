@@ -24,7 +24,7 @@
 #   L'ON A ENCASTRE
 ###################################################################
 
-DEBUT(CODE=_F(NOM='SSLX200A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 200000.,   NU = 0.3,
                                   RHO = 10000.) )

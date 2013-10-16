@@ -19,7 +19,7 @@
 # ELASTOPLASTICITE  ECROUISSAGE ISOTROPE VON MISES
 #......................................................................
 
-DEBUT(CODE=_F(NOM='COMP001H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IGNORE_ALARM=('ELEMENTS3_11'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IGNORE_ALARM=('ELEMENTS3_11'));
 
 # donnee materiau et fonction
 

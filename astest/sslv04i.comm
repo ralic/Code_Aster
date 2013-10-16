@@ -28,7 +28,7 @@
 #             BORDAB=GRNM11     FACEEF=GRMA12     FACEAE=GRMA13
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLV04I',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

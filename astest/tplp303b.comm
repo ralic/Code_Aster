@@ -19,7 +19,7 @@
 # MAILLES : TRIA6 QUAD8
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLP303B',NIV_PUB_WEB='INTERNET'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

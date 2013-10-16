@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr 
 #
-DEBUT(CODE=_F(NOM='zzzz317c',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
 #
 from math import pi,sqrt,log,exp, ceil
 import numpy as NP

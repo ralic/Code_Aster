@@ -22,7 +22,7 @@
 # - Le premier pas reste elastique, le deuxieme plastifie la poutre
 #
 
-DEBUT(CODE=_F(NOM='SSNL122A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # Lecture du maillage
 MA = LIRE_MAILLAGE()

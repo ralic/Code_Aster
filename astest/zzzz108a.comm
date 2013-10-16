@@ -18,7 +18,7 @@
 # person_in_charge: Georges-cc.devesa at edf.fr
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ108A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),)
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED', );
 MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAIL0,

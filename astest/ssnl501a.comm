@@ -24,7 +24,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_C_PLAN'
 #---------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SSNL501A',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
 MAIL=LIRE_MAILLAGE();
 MOD=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',

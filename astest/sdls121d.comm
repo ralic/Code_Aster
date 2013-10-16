@@ -18,7 +18,7 @@
 import numpy as NP
 
 # Pour des raisons de performances, on force SDVERI='NON'. 
-DEBUT(CODE=_F(NOM='SDLS121D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
       PAR_LOT='NON',
       IGNORE_ALARM='SUPERVIS_1', #PAR_LOT = NON a cause de EXTR_TABLE
       DEBUG=_F(SDVERI='NON'));

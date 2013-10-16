@@ -18,7 +18,7 @@
 # person_in_charge: mohamed.torkhani at edf.fr
 #
 
-DEBUT( CODE=_F(NOM='SDNL133C', NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM=('MODELISA4_9',) )
 
 tfin = 1.;

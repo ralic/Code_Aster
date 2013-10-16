@@ -18,7 +18,7 @@
 # ======================================================================
 # ELEMENT SHB8PS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
 
-DEBUT(CODE=_F(NOM='SSLS124A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 YG = 200000000000.0;

@@ -17,7 +17,7 @@
 # ======================================================================
 # QUART DE FISSURE. CALCUL DE G BILINEAIRE ET DE G_MAX LOCAL
 
-DEBUT(CODE=_F(NOM='SSLV134F',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);

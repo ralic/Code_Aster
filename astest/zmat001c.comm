@@ -23,7 +23,7 @@
 #     (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 3D
 #----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZMAT001C',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),
       DEBUG=_F(SDVERI='OUI',),);

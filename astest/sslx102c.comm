@@ -17,7 +17,7 @@
 # ======================================================================
 # MODELISATION TUYAU_6M
 
-DEBUT(CODE=_F(NOM='SSLX102C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),  )
 

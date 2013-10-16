@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP160B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',));
 
 ##############
 # appel du fichier contenant la macro de calcul du chargement pour la diffusion H2

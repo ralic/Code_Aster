@@ -18,7 +18,7 @@
 # ======================================================================
 #       D4UN MATERIAU DE TYPE MOONEY-RIVLIN
 
-DEBUT(CODE=_F(NOM='SSNV227A',NIV_PUB_WEB='INTERNET',
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI'))
 
 Mesh=LIRE_MAILLAGE(FORMAT='MED',NOM_MED='Mblock');

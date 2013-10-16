@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 #  MODELISATION B : CALCUL CHAINE THERMO-HYDRATATION-SECHAGE-MECANIQUE
-DEBUT(CODE=_F(NOM='FORMA41B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
 
 #--------------------------------------------------------------
 # 1 - MAILLAGE ET MODELE

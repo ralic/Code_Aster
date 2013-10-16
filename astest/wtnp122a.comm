@@ -17,7 +17,7 @@
 # ======================================================================
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 1D
 
-DEBUT(CODE=_F(NOM='WTNP122A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 #=============================================================

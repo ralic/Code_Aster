@@ -17,7 +17,7 @@
 # ======================================================================
 
 # Pour des raisons de performances, on force SDVERI='NON'. 
-DEBUT(   CODE=_F( NOM = 'SDNX101C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
 MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0,

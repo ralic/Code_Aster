@@ -23,7 +23,7 @@
 #=====================================================================
 
 
-DEBUT(CODE=_F(NOM='COMP010H',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
 
 #=====================================================================
 #               INITIALISATIONS

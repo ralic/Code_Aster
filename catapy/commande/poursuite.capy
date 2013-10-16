@@ -94,11 +94,8 @@ POURSUITE=MACRO(nom="POURSUITE",
            BORNE           =SIMP(statut='f',typ='I',val_min=0,defaut=900) ),
 #          valeur en pourcentage du temps maximum bornée à 900 secondes
 
-         CODE            =FACT("définition d'un nom pour l'ensemble d'une étude",
-                               statut='f',min=1,max=1,
-           NOM             =SIMP(statut='o',typ='TXM'),
-         ),
-
+         CODE            =SIMP(statut='f',typ='TXM',into=('OUI', 'NON'),defaut='NON',
+                               fr="paramètre réservé aux cas-tests"),
 
          IGNORE_ALARM = SIMP(statut='f', typ='TXM', max='**', fr="Alarmes que l'utilisateur souhaite délibérément ignorer"),
 

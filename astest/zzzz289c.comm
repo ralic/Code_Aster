@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: sebastien.fayolle at edf.fr
 
-DEBUT(CODE=_F(NOM='ZZZZ289C',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 #ON LIT UN MAILLAGE QUADRATIQUE EN TETRA10 POUR TESTER LES ELEM

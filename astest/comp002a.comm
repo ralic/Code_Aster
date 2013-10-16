@@ -19,7 +19,7 @@
 #       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
 #----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='COMP002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 
 

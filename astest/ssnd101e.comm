@@ -29,7 +29,7 @@
 #
 # --------------------------------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSND101A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
     IGNORE_ALARM='MODELISA4_8'
 )
 
@@ -167,4 +167,3 @@ for inst,dx,force in ResultatZ:
     )
 
 FIN()
-

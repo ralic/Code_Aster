@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr
 #
-DEBUT(CODE=_F(NOM='zzzz317e',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 #
 ################################################
 #

@@ -18,7 +18,7 @@
 # ======================================================================
 # ELEMENTS  : HEXA20
 
-DEBUT(CODE=_F(NOM='SDLL403A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=7.E10,
                             NU=0.3,

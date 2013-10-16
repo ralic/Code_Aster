@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: sebastien.fayolle at edf.fr
 
-DEBUT(CODE=_F(NOM='SDNV103G',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);

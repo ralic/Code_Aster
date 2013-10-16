@@ -24,7 +24,7 @@
 # REF: PAS DE REF BIBLIO MAIS CALCUL ANALYTIQUE
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SDLD103A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
           BASE=_F( FICHIER = 'GLOBALE',  LONG_REPE = 20000)
         )
 

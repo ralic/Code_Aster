@@ -37,7 +37,7 @@ import aster_core
 #  underscore k compris.
 import os
 
-DEBUT(CODE=_F(NOM='DEMO006A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON')
 
 MAIL=[None]*10

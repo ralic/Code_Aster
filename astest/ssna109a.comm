@@ -18,7 +18,7 @@
 # person_in_charge: jean-michel.proix at edf.fr
 
 
-DEBUT(CODE=_F(NOM='SSNA109A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 MAILLAGE=LIRE_MAILLAGE();

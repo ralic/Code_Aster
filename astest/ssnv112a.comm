@@ -29,7 +29,7 @@
 # GRMA: FACEEF     FACEAE   FACEAB   FACSUP   FACINF VOLUME
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV112A',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(FORMAT='MED');

@@ -23,7 +23,7 @@
 #    (SEG4 ; 3 MODES DE FOURIER)
 #---------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SDLX02F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 MA=LIRE_MAILLAGE(FORMAT='MED', )
 

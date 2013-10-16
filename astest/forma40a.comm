@@ -18,7 +18,7 @@
 # ======================================================================
 # MODELISATION A : 3D + GRILLE_MEMBRANE
 
-DEBUT(CODE=_F(NOM='FORMA40A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
 #-----------------------------------------------------------------------
 # LECTURE ET ENRICHISSEMENT DU MAILLAGE

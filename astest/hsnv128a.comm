@@ -17,7 +17,7 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='HSNV128A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D

@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSLL107G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 MATER=DEFI_MATERIAU(ELAS=_F(E = 1234567.890,  NU = 0.3))
 

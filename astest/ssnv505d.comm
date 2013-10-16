@@ -24,7 +24,7 @@
 #
 
 
-DEBUT(CODE=_F( NOM = 'SSNV505D',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
 
 # ---------------------  MAILLAGE ----------------
 MAILL1=LIRE_MAILLAGE(FORMAT='MED',);

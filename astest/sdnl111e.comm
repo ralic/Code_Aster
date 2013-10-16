@@ -19,7 +19,7 @@
 # Etude du choc de deux poutres maillees 3D
 # en traction compression.
 #
-DEBUT( CODE=_F( NOM ='SDNL111E',NIV_PUB_WEB='INTERNET'),)
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 

@@ -17,7 +17,7 @@
 # ======================================================================
 #CAS_TEST__: SDLS07A
 
-DEBUT(CODE=_F(NOM='SDLS07A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # UN HUITIEME DE SPHERE
 

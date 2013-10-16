@@ -28,7 +28,7 @@ def Pcdesat(PR,SR,n,S) :
       PC=PR*((S1**(-usm)-1.e0)**(usn))
       return(PC)
 
-DEBUT(CODE=_F(NOM='WTNP123E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #======================================
 #     CHOIX DE LA METHODE

@@ -18,7 +18,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='ZZZZ100A', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM=('FONCT0_62'),    # test VERIF='NON' pour DFR1 et DFC1
       DEBUG=_F(SDVERI='NON'))
 

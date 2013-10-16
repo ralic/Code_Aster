@@ -19,7 +19,7 @@
 #         - MODELISATION AVEC DES ELEMENTS 'DKT'(TRI3)
 #---------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SSLS118C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
 MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_MA=_F(TOUT='OUI',

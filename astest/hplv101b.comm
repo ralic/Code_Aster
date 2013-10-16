@@ -29,7 +29,7 @@
 #     Z /      1.0 M
 #          !---------!
 #======================================================================
-DEBUT(CODE=_F(NOM='HPLV101B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 # MATERIAU ISOTROPE
@@ -510,4 +510,3 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=TTOO,)
 
 FIN( )
-

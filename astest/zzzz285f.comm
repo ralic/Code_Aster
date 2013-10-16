@@ -17,7 +17,7 @@
 # ======================================================================
 #       PROJECTION D'UN MAILLAGE SUR LUI-MEME
 
-DEBUT(CODE=_F( NOM = 'ZZZZ285F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
 
 
 # F2 : formule utilisee pour calculer l'erreur relative :

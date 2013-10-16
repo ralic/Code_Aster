@@ -25,7 +25,7 @@
 ##############################
 
 
-DEBUT(CODE=_F(NOM='SDLD30A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 M2 = 10.0;

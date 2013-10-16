@@ -23,7 +23,7 @@
 import numpy as NP
 from math import atan
 
-DEBUT(CODE=_F(NOM='zzzz180a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 #

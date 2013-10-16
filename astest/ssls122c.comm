@@ -101,7 +101,7 @@ alpha=0.
 beta=0.
 #---------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLS122C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2);
 

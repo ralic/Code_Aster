@@ -21,7 +21,7 @@
 #       If this message is emitted: No word lists can be found for the language "XX",
 #       you must also install the dictionnary for the language "XX" (*.per).
 
-DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 
 # Que faire en cas d'erreur avec ce test ?
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

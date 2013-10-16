@@ -22,7 +22,7 @@
 #
 #=====================================================================
 
-DEBUT(CODE=_F(NOM='COMP009A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE();
 

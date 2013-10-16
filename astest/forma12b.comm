@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: emmanuel.boyere at edf.fr
 
-DEBUT(CODE=_F(NOM='FORMA12B',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 

@@ -17,7 +17,7 @@
 # ======================================================================
 #       CAS_TEST SSNV209A: 2D, ELEMENTS Q4, METHODE CONTINUE
 
-DEBUT(CODE=_F(NOM='SSNV209A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #......................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4

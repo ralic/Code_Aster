@@ -28,7 +28,7 @@
 # Mailles QUAD4 et TRIA3
 #-----------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ333A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
 # Dimensions de la plaque
 Longueur  = 2.5

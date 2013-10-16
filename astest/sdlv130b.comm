@@ -17,7 +17,7 @@
 # ======================================================================
 #       VALIDATION DU CALCUL MODAL AVEC X-FEM
 
-DEBUT(CODE=_F(NOM='SDLV130B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON',),
       DEBUG=_F(SDVERI='OUI',),);

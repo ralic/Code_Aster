@@ -25,7 +25,7 @@
 #  - MODELISATION AVEC DES ELEMENTS DST(QUAD4) 
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SDLS502B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 PLAQ_MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);

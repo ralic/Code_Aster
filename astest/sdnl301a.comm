@@ -17,7 +17,7 @@
 # ======================================================================
 # CAS_TEST__:SDNL301A
 
-DEBUT(CODE=_F(NOM='SDNL301A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #----- GRANDEURS PHYSIQUE: UNITE MKS ---
 

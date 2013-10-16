@@ -26,7 +26,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(NOM='SSLV110B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('RUPTURE0_55'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('RUPTURE0_55'))
 
 # l'alarme RUPTURE0_55 est ignoree car le resultat dans calc_g provient de crea_resu
 # et crea_resu ne permet pas d'affecter des charges

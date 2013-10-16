@@ -21,7 +21,7 @@
 import numpy as NP
 from Utilitai.Table import Table
 
-DEBUT(CODE=_F(NOM='SDLL128A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),
               PAR_LOT='NON',

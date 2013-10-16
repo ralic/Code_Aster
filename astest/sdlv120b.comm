@@ -23,7 +23,7 @@
 # CAS 2D
 #=======================================================================
 
-DEBUT(CODE=_F( NOM = 'SDLV120B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 

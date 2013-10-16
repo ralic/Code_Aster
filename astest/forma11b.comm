@@ -28,7 +28,7 @@
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='FORMA11B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # LECTURE MAILLAGE ET AFFECTATION MATERIAU/MODELE
 ACIER=DEFI_MATERIAU(ELAS=_F(E=1.E8,

@@ -24,7 +24,7 @@
 #   MODELISATION AVEC DES ELEMENTS 'TUYAU' (SEG4; 3 MODES DE FOURIER)
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSNL503C',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 MAIL=LIRE_MAILLAGE(FORMAT='MED', )

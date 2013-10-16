@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNP131B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON'));
 

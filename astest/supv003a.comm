@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-DEBUT(CODE=_F(NOM='SUPV003A', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',
       LANG='EN')
 

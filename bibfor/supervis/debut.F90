@@ -23,7 +23,6 @@ subroutine debut()
 !        IBBASE  IBCATA
 !     ------------------------------------------------------------------
 !
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/prhead.h"
 #include "asterfort/foint0.h"
@@ -32,6 +31,7 @@ subroutine debut()
 #include "asterfort/getvtx.h"
 #include "asterfort/ibbase.h"
 #include "asterfort/ibcata.h"
+#include "asterfort/ibcode.h"
 #include "asterfort/ibdbgs.h"
 #include "asterfort/ibfhdf.h"
 #include "asterfort/ibtcpu.h"
@@ -45,15 +45,14 @@ subroutine debut()
 !
     fichdf=' '
 !
-! --- ERREUR / ERREUR_F :
-!     MOT-CLE CODE PRESENT ?
-    call getfac('CODE', ncode)
+!   ERREUR / ERREUR_F : mot-cle CODE present ?
+    call ibcode(ncode)
     if (ncode .ne. 0) then
         cmpdef = 'ABORT'
     else
         call prhead(3)
         cmpdef = 'EXCEPTION'
-!        FERMETURE DU .CODE (OUVERT PAR IB0MAI)
+!       fermeture du .code (ouvert par ib0mai)
         call ulopen(-15, ' ', ' ', ' ', ' ')
     endif
     call getvtx('ERREUR', 'ERREUR_F', iocc=1, scal=cmput, nbret=n)

@@ -22,7 +22,7 @@
 #=======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSLL11D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MATER=DEFI_MATERIAU( ELAS=_F(  RHO = 1.E04,  E = 1.962E11, NU = 0.3,
                                  AMOR_ALPHA = 0.1,  AMOR_BETA = 0.1)  )

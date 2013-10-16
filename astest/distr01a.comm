@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
-DEBUT(CODE=_F(NOM='DISTR01A',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # Lance tel quel ce test effectue un cas de calcul (dont les valeurs

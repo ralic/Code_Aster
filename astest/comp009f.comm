@@ -19,7 +19,7 @@
 # CAS-TEST DE REFERENCE : SSNL112E
 #=====================================================================
 
-DEBUT(CODE=_F(NOM='COMP009F',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 MA=LIRE_MAILLAGE();

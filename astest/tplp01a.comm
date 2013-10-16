@@ -19,7 +19,7 @@
 # MAILLES : QUAD8
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLP01A',NIV_PUB_WEB='INTERNET'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

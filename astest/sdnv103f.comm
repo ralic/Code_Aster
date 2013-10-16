@@ -17,7 +17,7 @@
 # ======================================================================
 #       CAS-TEST SDNV103D (3D), METHODE CONTINUE
 
-DEBUT(CODE=_F(NOM='SDNV103F',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
            IGNORE_ALARM=('CONTACT2_14'),
            DEBUG=_F(SDVERI='OUI'))
 

@@ -24,7 +24,7 @@
 #-------------------------------------------------------------------------------
 #                            PREALABLES
 #-------------------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='TPLL01J', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON',), DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON',), DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',)
 # Concepts a chaque iteration
 nbcalc = 2
 M=[None]*nbcalc

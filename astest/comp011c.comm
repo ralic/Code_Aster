@@ -22,7 +22,7 @@
 #
 #=====================================================================
 
-DEBUT(CODE=_F(NOM='COMP011C',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 MA=LIRE_MAILLAGE();

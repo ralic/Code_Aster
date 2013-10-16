@@ -26,7 +26,7 @@
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES
 #                           PAR CE TEST
 
-DEBUT(CODE=_F(NOM='SSNS106I',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 # PARAMETRES

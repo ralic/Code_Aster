@@ -17,7 +17,7 @@
 # ======================================================================
 # ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 
-DEBUT(CODE=_F(NOM='FORMA10B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 #  SDVERI='NON' pour des raisons de cout CPU
 Pilote = 'PNG';
 

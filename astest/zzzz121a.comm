@@ -28,7 +28,7 @@
 # option PAR_LOT='NON' indispensable pour affecter des valeurs de
 # tables dans des variables PYTHON (paragraphe 4.9)
 #
-DEBUT(CODE=_F(NOM='ZZZZ121A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 # 1. Definition des materiaux
 #
 MATER1=DEFI_MATERIAU(

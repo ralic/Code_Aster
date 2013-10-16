@@ -21,7 +21,7 @@
 # CALCUL TRANSITOIRE SUR BASE MODALE AVEC DYNA_TRAN_EXPLI
 # ----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SDND102D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 MAILLAGE=LIRE_MAILLAGE()

@@ -22,7 +22,7 @@
 #                 B :   ETUDE DU CAS AVEC FLUIDE
 #--------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SDLV111B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
 

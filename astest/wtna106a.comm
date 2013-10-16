@@ -18,7 +18,7 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNA106A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 ####################################
 ##### PERMEABILITE RELATIVE AU LIQ.ET SA DERIVEE (BO)

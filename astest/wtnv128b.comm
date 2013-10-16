@@ -19,7 +19,7 @@
 # ======================================================================
 #         MODIFIE NON DRAINE POUR UN CONFINEMENT DE 5 MPa
 # ======================================================================
-DEBUT(CODE=_F(NOM='WTNV128B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 BIDON=DEFI_CONSTANTE(    VALE=1.)

@@ -17,7 +17,7 @@
 # ======================================================================
 # VITESSE ACCELERATION
 #
-DEBUT(CODE=_F(NOM='SDLX300A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 MA=LIRE_MAILLAGE(FORMAT='MED', )

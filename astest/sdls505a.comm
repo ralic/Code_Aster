@@ -25,7 +25,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_3D'(TRIA7)
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SDLS505A',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 #
 MA=LIRE_MAILLAGE(FORMAT='MED',);

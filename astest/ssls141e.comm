@@ -35,7 +35,7 @@
 #
 # ______________________________________________________________________
 
-DEBUT(CODE=_F(NOM='SSLS141E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), )
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), )
 
 h = 0.8;     # epaisseur
 hs2 = h/2

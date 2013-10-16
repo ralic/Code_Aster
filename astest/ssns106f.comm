@@ -23,7 +23,7 @@
 #            MAILLAGE     : TRIA3
 #            CHARGEMENT   : CYCLIQUE TRACTION - COMPRESSION
 
-DEBUT(CODE=_F(NOM='SSNS106F',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

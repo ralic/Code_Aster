@@ -18,7 +18,7 @@
 #            INJECTION DE GAZ DANS UN BARREAU SATURE EN EAU PURE
 #
 #
-DEBUT(CODE=_F(NOM='WTNP120B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #=============================================================
 #=============================================================
 METHODE='VFDA'

@@ -19,7 +19,7 @@
 #relation = 'ELAS'
 
 
-DEBUT(CODE=_F(NOM='SSNP110C',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
       DEBUG=_F(SDVERI='OUI',),);

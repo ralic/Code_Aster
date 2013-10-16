@@ -22,7 +22,7 @@
 # CAS_TEST__: SDLV301A
 #################################################################
 #
-DEBUT(CODE=_F( NOM = 'SDLV301A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM="ALGORITH16_57",)
 
 #

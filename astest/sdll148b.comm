@@ -18,7 +18,7 @@
 # person_in_charge: irmela.zentner at edf.fr
 
 
-DEBUT( CODE=_F( NOM = 'SDLL148B',NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #--------------------------------------------
 # MODELISATION B : EXCITATION DE TYPE CORCOS

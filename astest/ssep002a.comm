@@ -33,7 +33,7 @@ d_sigm_epsi = 0.
 #--------------------------------
 T_FIN = 1.
 
-DEBUT(CODE=_F(NOM='ssep002a', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('MODELISA4_6',))
 
 

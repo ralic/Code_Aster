@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV157K',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 TOTO=LIRE_MAILLAGE(FORMAT='MED',INFO=2,);
 TOTO=DEFI_GROUP(reuse =TOTO,
                 MAILLAGE=TOTO,

@@ -17,7 +17,7 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP15H',NIV_PUB_WEB='INTERNET',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='NON',),
       IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS3_77',),);
 

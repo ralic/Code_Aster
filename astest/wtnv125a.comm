@@ -19,7 +19,7 @@
 # ======================================================================
 # (CALCUL 3D_HHD)
 
-DEBUT(CODE=_F(NOM='WTNV125A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 

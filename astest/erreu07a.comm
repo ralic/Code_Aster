@@ -22,7 +22,7 @@
 #   * ETAT_INIT / EVOL_NOLI + INST
 #   * ETAT_INIT / DEPL + SIGM + VARI
 #-----------------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='ERREU07A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       ERREUR=_F(ERREUR_F='EXCEPTION',),
       PAR_LOT='NON',)
 

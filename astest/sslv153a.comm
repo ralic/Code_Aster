@@ -34,7 +34,7 @@
 # termes de saut avec l'exterieur : on ne controle plus l'ecart entre la
 # contrainte calculee et le contrainte voulue, 0.
 
-DEBUT(CODE=_F(NOM='SSLV153A',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 ###########################################################################
 

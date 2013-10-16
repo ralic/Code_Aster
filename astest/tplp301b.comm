@@ -17,7 +17,7 @@
 # ======================================================================
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLP301B',NIV_PUB_WEB='INTERNET'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV173I', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       MESURE_TEMPS=_F(MOYENNE='NON'))
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',INFO=1);

@@ -23,7 +23,7 @@
 #     (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 3D
 #----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZMAT001B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------------------------------
 # Exemple que l'on pourrait developper pour automatiser la lecture

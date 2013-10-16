@@ -87,7 +87,7 @@ ENER     = [None]*nb_calc1
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='FORMA21B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DU MATERIAU (ACIER 16MND5)
 ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,ALPHA=0.),);

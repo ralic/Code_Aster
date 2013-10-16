@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: daniele.colombo at ifpen.fr
 
-DEBUT(CODE=_F(NOM='SSLV320D', NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('HOMARD0_9'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('HOMARD0_9'),
       DEBUG=_F(SDVERI='OUI'),)
 
 # ON IGNORE L'ALARM HOMARD0_9 CAR ON SAIT BIEN CE QU'ON FAIT ;-)
@@ -371,4 +371,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MAX',
            TABLE=TB_FOND2,)
 
-FIN();  
+FIN();

@@ -17,7 +17,7 @@
 # ======================================================================
 # CAS_TEST__:SDNL32A
 
-DEBUT( CODE=_F(  NOM = 'SDNL32A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 POUTRE=LIRE_MAILLAGE( )
 

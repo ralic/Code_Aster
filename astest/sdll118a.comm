@@ -27,7 +27,7 @@
 # person_in_charge: hassan.berro at edf.fr
 #
 
-DEBUT(   CODE=_F(  NOM = 'SDLL118A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 #
 

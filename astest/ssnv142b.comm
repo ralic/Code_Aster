@@ -19,7 +19,7 @@
 # CYLINDRE AXISYMETRIQUE EN FLUAGE : FLUAGE DE GRANGER
 # -----------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV142B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

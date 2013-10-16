@@ -22,7 +22,7 @@
 #            Comportement GLRC_DM
 #            Amortissement de Rayleigh
 
-DEBUT(CODE=_F(NOM='SDNS106C',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 EP=0.1
 t1=2.5E-3

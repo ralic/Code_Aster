@@ -21,7 +21,7 @@
 #         - MODELISATION AVEC DES ELEMENTS 'DST'(QUAD4)
 #---------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SSLS504A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 #

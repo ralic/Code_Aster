@@ -17,7 +17,7 @@
 # ======================================================================
 #       PROJECTION SUR UN MAILLAGE DIFFERENT
 
-DEBUT(CODE=_F( NOM = 'ZZZZ285E',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 IGNORE_ALARM=('CALCULEL5_7'),DEBUG=_F(SDVERI='OUI'))
 
 

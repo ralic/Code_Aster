@@ -18,7 +18,7 @@
 # ======================================================================
 # FROTTEMENT AVEC DES ELEMENTS X-FEM QUADRATIQUES
 
-DEBUT(CODE=_F(NOM='SSNV508E', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 

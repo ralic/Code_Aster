@@ -18,7 +18,7 @@
 # ======================================================================
 #       METHODE PAR MODELISATION COMPLETE DE LA ROUE
 
-DEBUT(CODE=_F(NOM='SDLL133A',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED',);

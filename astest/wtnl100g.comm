@@ -17,7 +17,7 @@
 # ======================================================================
 # tps_job 180 mem_job 200Mo ncpus 1 liste_test R
 
-DEBUT(CODE=_F(NOM='WTNL100G',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED');

@@ -17,7 +17,7 @@
 # ======================================================================
 #
 
-DEBUT(CODE=_F(NOM='TPLL01F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PHI0=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=0.0           )
 

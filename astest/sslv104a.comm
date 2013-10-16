@@ -17,7 +17,7 @@
 # ======================================================================
 import math
 
-DEBUT(CODE=_F(NOM='SSLV104A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 MAILET=LIRE_MAILLAGE(  UNITE=20)

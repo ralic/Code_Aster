@@ -21,7 +21,7 @@
 # TEST NAFEMS SSNP14B POINTS A,B,C - ELEMENTS PENTA6
 #......................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNP14B',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAYA=LIRE_MAILLAGE( )
 

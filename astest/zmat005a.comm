@@ -18,7 +18,7 @@
 # ======================================================================
 # PROBLEME IDENTIQUE A HSNV121A
 
-DEBUT(CODE=_F(NOM='ZMAT005A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

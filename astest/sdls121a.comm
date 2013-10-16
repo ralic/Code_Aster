@@ -18,7 +18,7 @@
 # ======================================================================
 import numpy as NP
 
-DEBUT(CODE=_F(NOM='SDLS121A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 IGNORE_ALARM=('RECAL0_43'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 

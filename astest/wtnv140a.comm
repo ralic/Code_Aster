@@ -17,7 +17,7 @@
 import numpy as np
 import numpy.linalg as ln
 
-DEBUT(CODE=_F(NOM='WTNV140A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
 
 
 ## ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)

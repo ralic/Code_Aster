@@ -24,7 +24,7 @@
 #                           REFROIDISSEMENT-RECHAUFFEMENT EQUIVALENT A
 #                           TRACTION - COMPRESSION DE LA MODELISATION A
 
-DEBUT(CODE=_F(NOM='SSNS106L',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

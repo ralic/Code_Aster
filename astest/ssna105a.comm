@@ -18,7 +18,7 @@
 # ======================================================================
 # CONTACT
 
-DEBUT(CODE=_F(NOM='SSNA105A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,

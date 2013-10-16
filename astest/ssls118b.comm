@@ -19,7 +19,7 @@
 #         - MODELISATION AVEC DES ELEMENTS 'DSQ'(QUA4)
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLS118B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 

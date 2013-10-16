@@ -31,7 +31,7 @@
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='FORMA11A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
               IMPR_MACRO='OUI')
 
 # LECTURE ET INFO MAILLAGE

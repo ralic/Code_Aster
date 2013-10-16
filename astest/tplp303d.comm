@@ -21,7 +21,7 @@
 # LES CALCULS SONT EFFECTUES EN DEGRE F ET EN FEET
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLP303D',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

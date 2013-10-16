@@ -19,7 +19,7 @@
 #         - MODELISATION AVEC DES ELEMENTS 'DST'(TRI3)
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLS118D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
 

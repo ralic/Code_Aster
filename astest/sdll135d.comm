@@ -17,7 +17,7 @@
 # ======================================================================
 # MODELISATION TUYAU_6M
 
-DEBUT(CODE=_F(NOM='SDLL135D',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);

@@ -28,7 +28,7 @@
 # 2eme PASSE
 #
 
-POURSUITE(CODE=_F(NOM='WTNL100E',),
+POURSUITE(CODE='OUI',
           DEBUG=_F(SDVERI='OUI',),);
 
 RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],

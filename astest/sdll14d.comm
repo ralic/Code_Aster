@@ -22,7 +22,7 @@
 #  - CALCUL DE LA PLUS GRANDE FREQUENCE PROPRE
 #    AVEC L'OPTION 'PLUS_GRANDE'
 #---------------------------------------------------------------------
-DEBUT( CODE=_F( NOM = 'SDLL14D',NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
        IGNORE_ALARM=('ALGELINE3_58','ALGELINE4_68'),)
 
 #

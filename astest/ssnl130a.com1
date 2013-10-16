@@ -28,7 +28,7 @@ def Deplacer(t,x,y,z):
    return (t-1.0)*0.5E-02
 
 
-POURSUITE(CODE=_F(NOM='SSNL130A'),FORMAT_HDF='OUI')
+POURSUITE(CODE='OUI',FORMAT_HDF='OUI')
 
 Aresu=STAT_NON_LINE(
    MODELE=model,

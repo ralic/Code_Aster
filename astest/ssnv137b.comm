@@ -19,7 +19,7 @@
 #-----------------------------------------------------------------------
 #
 
-DEBUT(IMPR_MACRO='OUI',   CODE=_F(  NOM = 'SSNV137B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(IMPR_MACRO='OUI',   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 

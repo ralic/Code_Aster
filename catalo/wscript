@@ -5,7 +5,7 @@ import os.path as osp
 import shutil
 from functools import partial
 from itertools import chain
-from waflib import TaskGen, Logs, Utils, Errors, Task
+from waflib import TaskGen, Logs, Utils, Errors, Task, Context
 
 def build(self):
     env = self.all_envs[self.variant]
@@ -141,8 +141,11 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     cmdexe = [python, osp.join(python_path, pyfile)] + args
     cmds = ' '.join(cmdenv + cmdexe)
     Logs.debug('os environ: %r' % environ)
+    kwargs['output'] = Context.BOTH
     try:
-        self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
+        out, err = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
+        #Logs.warn(out)
+        #Logs.warn(err)
     except Exception, err:
         Logs.warn('stdout: %s' % err.stdout)
         Logs.warn('stderr: %s' % err.stderr)

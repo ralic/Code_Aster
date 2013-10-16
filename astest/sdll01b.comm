@@ -21,7 +21,7 @@
 # POINTS    A: N100    B: N200    C: N300   D: N400
 # ====================================================================
 
-DEBUT(CODE=_F(NOM='SDLL01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED', )
 

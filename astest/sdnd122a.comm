@@ -21,7 +21,7 @@ import math
 m=1.
 k = 10.
 
-DEBUT(CODE=_F(NOM='SDND122A',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM='FONCT0_62',  #abscisses re-ordonnees dues a table enrichie (reuse)
      )
 

@@ -23,7 +23,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'DST'(TRIA3)
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSLS503C',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 #PRE_IDEAS ();

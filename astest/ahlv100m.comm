@@ -19,7 +19,7 @@
 #-----------------------------------------------------
 
 
-DEBUT(CODE=_F(NOM='AHLV100M',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 # MAILLAGE

@@ -20,7 +20,7 @@
 #   HOEK-BROWN MODIFIE POUR UN OCNFINEMENT DE 5 MPA
 # ======================================================================
 CONFINEMENT=5.0;
-DEBUT(CODE=_F(NOM='SSNA116A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************
 #    MAILLAGE + MODELE

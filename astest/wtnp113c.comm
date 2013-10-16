@@ -21,7 +21,7 @@
 #                    TEST32 ALLIANCES
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'WTNP113C',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 ####################################
 #   OPERATIONS SUR LE MAILLAGE

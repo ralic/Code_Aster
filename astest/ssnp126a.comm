@@ -17,7 +17,7 @@
 # ======================================================================
 #       (liaison acier - beton) en 2D plan
 
-DEBUT(CODE=_F(NOM='ssnp126a',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 

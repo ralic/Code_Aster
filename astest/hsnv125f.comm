@@ -21,7 +21,7 @@
 # person_in_charge: jean-michel.proix at edf.fr
 
 
-DEBUT(CODE=_F(NOM='HSNV125F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 TITRE='PHI2AS TEST2 CINEMATIQUE LINEAIRE'

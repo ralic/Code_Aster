@@ -29,7 +29,7 @@ T0 =1.
 
 from numpy import array
 
-POURSUITE(CODE=_F(NOM='WTNV132D'),PAR_LOT='NON')
+POURSUITE(CODE='OUI',PAR_LOT='NON')
 
 #       ---------------
 # FIN-  Post-traitement

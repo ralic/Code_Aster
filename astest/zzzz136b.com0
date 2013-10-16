@@ -31,7 +31,7 @@
 #                       D'UN VECTEUR
 #
 
-POURSUITE(CODE=_F(  NOM = 'ZZZZ136B'))
+POURSUITE(CODE='OUI')
 
 #######################################################################
 #            I -  VALIDATION POST_RELEVE_T  EN 2D                     #

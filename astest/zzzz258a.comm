@@ -39,7 +39,7 @@
 #        'RIEN'             ->   'VMIS_CINE_LINE'  (AJOUT D'ELEMENTS)
 
 #-----------------------------------------------------------------------------
-DEBUT(CODE=_F(NOM='ZZZZ258A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED', )

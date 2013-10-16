@@ -24,7 +24,7 @@
 # POINTS:   A:N59  B:N53  E:N56  C:N12  D:N18
 #======================================================================
 
-DEBUT(CODE=_F(NOM='SSLV07A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA1=LIRE_MAILLAGE( UNITE = 19 )
 

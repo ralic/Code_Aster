@@ -20,7 +20,7 @@
 #   HOEK-BROWN MODIFIE POUR UN CONFINEMENT DE 25 MPA
 # ======================================================================
 
-DEBUT(   CODE=_F(NOM = 'SSNV184C',
+DEBUT(   CODE=_F(
 NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************

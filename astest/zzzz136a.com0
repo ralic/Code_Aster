@@ -31,7 +31,7 @@
 #       POST-TRAITEMENT D'UN TENSEUR
 #                       D'UN VECTEUR
 #
-POURSUITE(CODE=_F(  NOM = 'ZZZZ136A'))
+POURSUITE(CODE='OUI')
 
 #######################################################################
 #            I -  VALIDATION POST_RELEVE_T  EN 3D                     #

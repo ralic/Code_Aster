@@ -25,7 +25,7 @@
 # CHARGEMENT   : ON FAIT 4 CAS DE CHARGE (0., 10., 100., 1000.)
 #=======================================================================
 
-DEBUT(CODE=_F(NOM='SDLL101A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE();
 

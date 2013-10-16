@@ -22,7 +22,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_C_PLAN'
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLL102H',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

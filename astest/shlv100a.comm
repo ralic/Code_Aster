@@ -38,7 +38,7 @@
 # GRMA: FACEEF         FACEAE
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SHLV100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(FORMAT='MED',);
 

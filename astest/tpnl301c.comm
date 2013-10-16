@@ -18,7 +18,7 @@
 # CAS TEST TPNL301C
 # person_in_charge: jessica.haelewyn at edf.fr
 
-DEBUT(CODE=_F(NOM='TPNL301C',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

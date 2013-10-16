@@ -17,7 +17,7 @@
 # ======================================================================
 # METHODE PAR PROJECTION SUR UN MAILLAGE - FISSURE DROITE EN MODE 1 PUR
 
-DEBUT(CODE=_F(NOM='SSLV314C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
 
 #----------------------------------------------
 #                 MAILLAGE

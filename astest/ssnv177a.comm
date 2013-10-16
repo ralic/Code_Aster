@@ -35,7 +35,7 @@
 #----------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NOM='SSNV177A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON')
 
 import aster_core

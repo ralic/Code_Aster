@@ -19,7 +19,7 @@
 # CUBE 3D EN FLUAGE : FLUAGE DE GRANGER
 # -----------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV142D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(UNITE=20,
                 FORMAT='MED',);

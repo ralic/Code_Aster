@@ -29,7 +29,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(NOM='SSLV04E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 M0=LIRE_MAILLAGE(FORMAT='MED',)
 

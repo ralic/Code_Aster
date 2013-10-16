@@ -1,4 +1,4 @@
-POURSUITE(CODE=_F(NOM='ZZZZ177A'), PAR_LOT='NON')
+POURSUITE(CODE='OUI', PAR_LOT='NON')
 # TITRE Validation elementaire du tri sur les tables
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 #

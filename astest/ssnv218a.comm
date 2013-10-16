@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'SSNV218A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',
       IGNORE_ALARM=('RUPTURE0_91','RUPTURE1_42', 'RUPTURE1_47'),
 );
 

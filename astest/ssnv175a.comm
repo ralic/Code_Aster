@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT( CODE=_F( NOM = 'SSNV175A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),);
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),);
 TOTO=LIRE_MAILLAGE(FORMAT='MED',);
 TOTO=DEFI_GROUP(reuse =TOTO,
                 MAILLAGE=TOTO,

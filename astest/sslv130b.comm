@@ -30,7 +30,7 @@
 # GRMA: FACEEF     FACEAE     FACESUP   FACEINF
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLV130B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

@@ -19,7 +19,7 @@
 # ELASTOPLASTICITE  ECROUISSAGE COMBINE VON MISES
 #......................................................................
 
-DEBUT(CODE=_F(NOM='COMP001D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
 # donnee materiau et fonction
 

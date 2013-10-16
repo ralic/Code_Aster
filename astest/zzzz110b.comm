@@ -18,7 +18,7 @@
 # ======================================================================
 #CAS_TEST__: ZZZZ110B
 
-DEBUT(CODE=_F(NOM='ZZZZ110B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 
 # 1ER CALCUL SUR LE MAILLAGE MA1 :
 # --------------------------------

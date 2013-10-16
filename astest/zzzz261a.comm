@@ -18,7 +18,7 @@
 #----------------------------------------------------------------------------------
 
 # person_in_charge: jacques.pellet at edf.fr
-DEBUT(  CODE=_F(NOM='ZZZZ261A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-------------------------------------------------------------------------------------
 # description du test :

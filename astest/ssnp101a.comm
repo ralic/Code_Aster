@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP101A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 2D DEF. PLANES
 # LOI DE LEMAITRE

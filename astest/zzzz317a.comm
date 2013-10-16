@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr 
-DEBUT(CODE=_F(NOM='zzzz317a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 #
 #
 from math import pi,sqrt,log,exp, ceil

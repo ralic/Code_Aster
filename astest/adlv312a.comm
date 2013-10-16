@@ -19,7 +19,7 @@
 # REFERENCE : SAMCEF
 #--------------------------------------------------------------
 
-DEBUT(CODE=_F( NOM = 'ADLV312A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 

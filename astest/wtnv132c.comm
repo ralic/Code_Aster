@@ -53,7 +53,7 @@ list_no_later_dro = ['N13','N14','N15','N16','N17','N18','N19','N20',
                      'N21','N22','N46'];
 
 
-DEBUT(CODE=_F(NOM='WTNV132C', NIV_PUB_WEB='INTERNET',
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON'),IGNORE_ALARM='CALCULEL4_9');
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );

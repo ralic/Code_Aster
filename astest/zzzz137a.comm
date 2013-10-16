@@ -46,7 +46,7 @@
 #    MECA_STATIQUE, STAT_NON_LINE, DYNA_NON_LINE, DYNA_VIBRA
 #----------------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ137A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_IDEAS(UNITE_IDEAS=19,UNITE_MAILLAGE=20)
 

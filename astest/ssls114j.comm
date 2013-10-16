@@ -17,7 +17,7 @@
 # ======================================================================
 # COQUE_C_PLAN
 
-DEBUT(CODE=_F(NOM='SSLS114J',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

@@ -20,7 +20,7 @@
 # UNITES ANGLAISES + SYMETRIE X=Y + QUE DES Q8
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLP303G',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

@@ -17,7 +17,7 @@
 # ======================================================================
 #       METHODE PAR SYMETRIE CYCLIQUE DYNAMIQUE
 
-DEBUT(CODE=_F(NOM='SDLL133B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #*********************************************
 # DEFINITION DES PARAMETRES GLOBAUX DE L'ETUDE

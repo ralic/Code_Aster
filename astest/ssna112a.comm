@@ -18,7 +18,7 @@
 #       pour le etude de la liaison acier et beton
 
 
-DEBUT(CODE=_F(NOM='ssna112a', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MALLA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),FORMAT='MED',
                     INFO = 2,);

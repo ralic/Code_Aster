@@ -17,7 +17,7 @@
 # ======================================================================
 # MODELISATION B : DKT
 
-DEBUT(CODE=_F(NOM='SSLS135A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MeshLin=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,)
 

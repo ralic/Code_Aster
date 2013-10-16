@@ -33,7 +33,7 @@ make_shared("libumat1.so", "fort.22.f")
 make_shared("libumat2.so", "fort.23.f")
 
 
-DEBUT(CODE=_F(NOM='UMAT002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
 
 # donnee materiau et fonction
 

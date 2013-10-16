@@ -24,7 +24,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_D_PLAN'
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSLS501A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 PRE_IDEAS()

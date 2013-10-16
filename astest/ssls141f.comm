@@ -37,7 +37,7 @@
 #
 # ______________________________________________________________________
 
-DEBUT(CODE=_F(NOM='SSLS141F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), )
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), )
 
 h = 0.8;     # epaisseur
 hs2 = h/2
@@ -209,4 +209,4 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.
                      NOM_CMP='MXX',
                      REFERENCE='ANALYTIQUE',),);                     
 
-FIN()                     
+FIN()

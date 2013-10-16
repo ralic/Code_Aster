@@ -22,7 +22,7 @@
 #===========================================
 
 
-DEBUT(CODE=_F(NOM='SSNP115B', NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
 
 # Renommage des groupes uniquement pour tester LIRE_MAILLAGE
 MAIL = LIRE_MAILLAGE(

@@ -25,7 +25,7 @@
 #    DE FLAMBEMENT
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SDLS504A',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 MA=LIRE_MAILLAGE(FORMAT='MED', )
 
 #
@@ -270,4 +270,4 @@ TEST_RESU(RESU=(_F(RESULTAT = RESULT1,
 #
 FIN()
 #
-# 
+#

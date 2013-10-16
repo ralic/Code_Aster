@@ -17,7 +17,7 @@
 # ======================================================================
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(CODE=_F(NOM='SSNP158A',NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='NON'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='NON'));
 
 NbIncr=20
 DT=10./NbIncr

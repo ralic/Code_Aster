@@ -19,7 +19,7 @@
 # MODELISATION 1 : ELEMENTS MECANIQUE C_PLAN QUAD9
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLV111E',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

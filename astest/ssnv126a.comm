@@ -55,7 +55,7 @@
 #----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(NOM='SSNV126A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #----------------------------------------------------------------------
 #              TEST MODELE VENDOCHAB 3D
 #      PAS DE CHARGEMENT THERMIQUE (ALPHA = 0 )

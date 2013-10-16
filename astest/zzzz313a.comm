@@ -38,7 +38,7 @@ def store(lst, array):
     if array.dtype == NP.complex:
         lst.extend(array.imag.ravel())
 
-DEBUT(CODE=_F(NOM='ZZZZ313A', NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 vale = []
 

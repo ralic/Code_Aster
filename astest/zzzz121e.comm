@@ -71,7 +71,7 @@
 # . Information
 # . 2 adaptations avec des variantes
 
-DEBUT(CODE=_F(NOM='ZZZZ121E',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),
       DEBUG=_F(SDVERI='OUI',),);

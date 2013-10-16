@@ -20,7 +20,7 @@
 #      (CALCUL AXIS_HH2MD)
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNA104B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(

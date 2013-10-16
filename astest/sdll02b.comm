@@ -27,7 +27,7 @@
 #    RECHERCHE DES ELEMENTS PROPRES : METHODE JACOBI
 #=======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SDLL02B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
 

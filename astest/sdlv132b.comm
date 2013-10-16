@@ -19,7 +19,7 @@
 #          CREA_ELEM_SSD ET ASSE_ELEM_SSD ET SANS LE CALCUL DIRECT)
 #
 
-DEBUT(CODE=_F(NOM='SDLV132B',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),
               PAR_LOT='OUI',

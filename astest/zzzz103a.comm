@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: j-pierre.lefebvre at edf.fr
 
-DEBUT(CODE=_F(NOM='ZZZZ103A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(ENVIMA='TEST', SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(ENVIMA='TEST', SDVERI='OUI'))
 
 '''
 Ce fichier de commande permet d'imprimer les valeurs associees aux constantes numeriques 

@@ -25,7 +25,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(QUAD4)
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNL501C',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 MAIL_C=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);

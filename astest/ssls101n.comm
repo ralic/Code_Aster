@@ -26,7 +26,7 @@
 # la valeur est analytique. La solution est tres bonne.
 #--------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLS101N',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 T=0.1
 R=1.

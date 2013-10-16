@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: daniele.colombo at ifpen.fr
 
-DEBUT(CODE=_F(NOM='SSLV316E', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
 
 #----------------------------------------------
 #                 MAILLAGE

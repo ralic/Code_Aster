@@ -24,7 +24,7 @@
 # PARALLELE: VALEUR CONSEILLEE 2 PROCS
 #########################################################################
 
-DEBUT(CODE=_F(NOM='MUMPS03A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED', )

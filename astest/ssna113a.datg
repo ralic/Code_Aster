@@ -53,4 +53,4 @@ elim 0.001 stot;
 titre 'Eprouvette AE10-6'(nbno stot)'noeuds';
 sauv format stot; 
 trac stot;                                                               
-*fin;                                                        
+*fin;

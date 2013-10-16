@@ -20,7 +20,7 @@
 m=1.
 beta=1.
 
-DEBUT(CODE=_F(NOM='SDND123A',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM='FONCT0_62',  #abscisses re-ordonnees dues a table enrichie (reuse)
      )
 
@@ -156,4 +156,3 @@ TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
                        FONCTION=FREQC,),
              )
 FIN();
-

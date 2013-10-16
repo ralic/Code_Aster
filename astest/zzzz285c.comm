@@ -17,7 +17,7 @@
 # ======================================================================
 #       PROJECTION SUR UN MAILLAGE DIFFERENT
 
-DEBUT(CODE=_F( NOM = 'ZZZZ285C',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 IGNORE_ALARM=('MODELISA8_70','CALCULEL2_63',),DEBUG=_F(SDVERI='OUI'))
 
 # F2 : formule utilisee pour calculer l'erreur relative :

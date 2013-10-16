@@ -22,7 +22,7 @@
 #   HOEK-BROWN MODIFIE POUR UN CONFINEMENT DE 12 MPa
 # ======================================================================
 CONFINEMENT=12.0;
-DEBUT(   CODE=_F(NOM = 'SSNA116B',NIV_PUB_WEB='INTERNET',
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET',
 VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************

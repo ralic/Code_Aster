@@ -35,7 +35,7 @@ T_FIN=2. ;
 # LINE_QUAD est necesaire dans le fichier comm si le maillage produit par salome
 # est lineaire
 
-DEBUT(CODE=_F(NOM='ssep001b', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('MODELISA4_6',))
 
 MAL=LIRE_MAILLAGE(FORMAT='MED');

@@ -21,7 +21,7 @@
 # MODELISATION C_PLAN : COUPLAGE FLUAGE PROPRE UMLV ET MAZARS
 # ----------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV169F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 heure = 3600.
 jour = 24. * heure

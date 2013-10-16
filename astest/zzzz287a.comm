@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NOM='ZZZZ287A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI'),
       DEBUG=_F(SDVERI='OUI'),

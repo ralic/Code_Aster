@@ -22,7 +22,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'POU_D_TGM'
 #---------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SSNL501F',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
     DEBUG=_F(SDVERI='OUI')
 )
 

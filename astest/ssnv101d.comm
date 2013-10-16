@@ -44,7 +44,7 @@
 #
 #----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SSNV101D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CARRE=LIRE_MAILLAGE(     )
 

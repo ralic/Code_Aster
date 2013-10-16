@@ -17,7 +17,7 @@
 # Suite à issue19402, on vérifie :
 #   - que l'objet aster.error est présent dans le pick.1,
 #   - et qu'on peut donc poursuivre le calcul.
-POURSUITE(CODE=_F(NOM='ERREU09A'),
+POURSUITE(CODE='OUI',
           PAR_LOT='OUI',);
 
 is_ok = int(isinstance(err, aster.error))

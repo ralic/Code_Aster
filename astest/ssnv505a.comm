@@ -22,7 +22,7 @@
 # MAILLAGE : ELEMENT 3D QUADRANGLE A 9 NOEUDS
 # UNITES   : NEWTON , MILLIMETRE , SECONDE (N,MM,S)
 #
-DEBUT(CODE=_F( NOM = 'SSNV505A',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
 #......................................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D QUA8
 #                                MODELISATION COQUES_3D (QUA9)

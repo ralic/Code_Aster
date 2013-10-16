@@ -18,7 +18,7 @@
 #=======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSLL14A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON')
 MA=LIRE_MAILLAGE( FORMAT='MED' )
 MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
                     DETR_GROUP_NO=_F(NOM=('PORTI1','PORTI3',),),

@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
-DEBUT(CODE=_F(NOM='ZZZZ315A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #------------------------------------------------------------------------------------------
 # Le but du test est de valider la programmation de la commande PROD_MATR_CHAM pour les

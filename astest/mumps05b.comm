@@ -51,7 +51,7 @@ meth_renum = 'METIS';
 # Mode verbeux 1/2
 niv_info = 2
 #
-DEBUT(CODE=_F( NOM = 'MUMPS05B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # pour obtenir un maillage quadratique :
 #----------------------------------------

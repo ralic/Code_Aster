@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='FORMA04B',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',DEBUG=_F(SDVERI='OUI'))
 # On ignore l'alarme concernant VALE_CONT qui n'est pas cree
 
 # -- Parametres du calcul

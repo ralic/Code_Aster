@@ -25,7 +25,7 @@
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES
 #                           A PARTIR DES TESTS SSNS106A ET SSNS106B
 
-DEBUT(CODE=_F(NOM='SSNS106J',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 EP = 0.1;

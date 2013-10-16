@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'SSNV189B',NIV_PUB_WEB='INTERNET') );
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') );
 
 
 maillage=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(APLAT=1.E-3,),);

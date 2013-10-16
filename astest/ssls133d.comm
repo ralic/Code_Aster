@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSLS133D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #YG : Module d'Young, L: longueur, b: largeur, h1: epaisseur initiale,
 #h12: epaisseur a mi longueur, h2: epaisseur finale, F: effort

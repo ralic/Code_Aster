@@ -18,7 +18,7 @@
 # ======================================================================
 #       (3D ET FORCE_INTERNE)
 
-DEBUT(CODE=_F(NOM='SSLV303C',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);

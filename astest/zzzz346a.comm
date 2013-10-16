@@ -17,7 +17,7 @@
 # ======================================================================
 # zzzz346a.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NOM='ZZZZ346A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 PRE_GIBI();
 

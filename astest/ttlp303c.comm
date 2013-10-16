@@ -19,7 +19,7 @@
 # MAILLES : QUAD9
 #
 
-DEBUT(  CODE=_F( NOM = 'TTLP303C',NIV_PUB_WEB='INTERNET'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

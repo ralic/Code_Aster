@@ -23,7 +23,7 @@
 # GROUPES DE MAILLES:           PRES_REP : BOUT
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV108C',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 PRE_GMSH()

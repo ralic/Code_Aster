@@ -24,7 +24,7 @@
 #  - MODELISATION AVEC DES ELEMENTS 'DKT'(QUAD4)
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SDLS503B',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 #PRE_IDEAS ();
@@ -193,4 +193,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 FIN()
-

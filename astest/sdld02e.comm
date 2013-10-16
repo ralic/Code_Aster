@@ -28,7 +28,7 @@
 #    'K_T_D_L' REPERE LOCAL + 'M_T_D_N' GLOBAL + 'K_T_D_N'  LOCAL
 #=======================================================================
 
-DEBUT(CODE=_F(NOM='SDLD02E',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

@@ -19,7 +19,7 @@
 #**        CALCUL DE REPONSE A DES SOURCES FLUIDES*********************
 #**********************************************************************
 
-DEBUT(CODE=_F( NOM = 'SDLL105A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #**********************************************************************
 #**LECTURE DU MAILLAGE*************************************************

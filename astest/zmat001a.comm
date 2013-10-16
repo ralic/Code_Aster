@@ -48,7 +48,7 @@
 #
 #----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZMAT001A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------------------------------
 # Exemple que l'on pourrait developper pour automatiser la lecture

@@ -25,7 +25,7 @@
 
 import numpy
 
-DEBUT(CODE=_F(NOM='WTNV141B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 ######################
 # Parametres physiques

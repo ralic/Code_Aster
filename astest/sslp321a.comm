@@ -18,7 +18,7 @@
 # person_in_charge: samuel.geniaut at edf.fr
 # MODELISATION A : METHODE MAILLAGE
 
-DEBUT(CODE=_F(NOM='SSLP321A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------
 #                 MAILLAGE

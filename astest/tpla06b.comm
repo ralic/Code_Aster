@@ -19,7 +19,7 @@
 # MAILLES : TRIA3 (ET SEG2)
 #
 
-DEBUT(  CODE=_F( NOM = 'TPLA06B',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
 # LECTURE DU MAILLAGE --------------------------------------------------

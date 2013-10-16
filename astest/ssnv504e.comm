@@ -17,7 +17,7 @@
 # ======================================================================
 #       ELEMENTS DE CONTACT SEG3, GLISSIERE EN METHODE 'CONTRAINTES'
 
-DEBUT(CODE=_F(NOM='SSNV504E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES

@@ -17,7 +17,7 @@
 # ======================================================================
 #             TEST PERMETTANT LA POURSUITE D'UN CALCUL
 
-DEBUT(CODE=_F(NOM='TPLV105A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

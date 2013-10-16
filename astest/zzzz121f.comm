@@ -28,7 +28,7 @@
 #
 # option PAR_LOT='NON' indispensable pour la boucle
 #
-DEBUT(CODE=_F(NOM='ZZZZ121F', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='NON')
 #
 # 1. Declaration et dimensionnement a 10 du tableau M des concepts maillage
 #    On affecte les valeurs a None (peu importe)

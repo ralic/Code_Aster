@@ -21,7 +21,7 @@
 #     MODELISATION PAR DES ELEMENTS HEXAEDRES
 #     ---------------------------------------
 
-POURSUITE(CODE=_F(NOM='FORMA02B',),);
+POURSUITE(CODE='OUI');
 
 FYC=AFFE_CHAR_MECA(MODELE=MODELE,
                    FORCE_FACE=_F(GROUP_MA='EFOND',

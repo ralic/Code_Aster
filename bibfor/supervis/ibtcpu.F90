@@ -1,12 +1,12 @@
 subroutine ibtcpu(ier)
     implicit none
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gtoptr.h"
 #include "asterc/rdtmax.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/ibcode.h"
 #include "asterfort/utmess.h"
     integer :: ier
 !     ------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine ibtcpu(ier)
     ASSERT(iret.eq.0)
     itpmax = nint(tpmax)
 !
-    call getfac('CODE', iret)
+    call ibcode(iret)
 !
     call getvis('RESERVE_CPU', 'VALE', iocc=1, scal=lcpu, nbret=l1)
     call getvr8('RESERVE_CPU', 'POURCENTAGE', iocc=1, scal=pccpu, nbret=l2)

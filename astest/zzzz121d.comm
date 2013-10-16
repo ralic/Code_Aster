@@ -55,7 +55,7 @@
 #   Remarque : les groupes GNP10, GNP12 et GNP13 sont equivalents
 #              aux groupes GNP10, GNP12 et GNP13 de sslv111a.
 
-DEBUT(CODE=_F(NOM='ZZZZ121D',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 #

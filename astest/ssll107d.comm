@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSLL107D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TCARS=MACR_CARA_POUTRE(    SYME_Z='OUI',FORMAT='MED',
                               ORIG_INER=(0., -0.025,) )

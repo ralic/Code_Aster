@@ -17,7 +17,7 @@
 # ======================================================================
 # CALCUL DE K AVEC CALC_G
 
-DEBUT(CODE=_F(NOM='SSLP315A', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
       
 nb_pas = 4

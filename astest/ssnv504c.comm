@@ -27,7 +27,7 @@
 #
 
 
-DEBUT(CODE=_F(NOM='SSNV504C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #......................................................................
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
 #......................................................................

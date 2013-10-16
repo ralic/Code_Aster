@@ -20,7 +20,7 @@
 # person_in_charge: aimery.assire at edf.fr
 import numpy as NP
 
-DEBUT(CODE=_F(NOM='ZZZZ159B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 parametres =[['YOUN__',100000.,50000.,150000.],['DSDE__',2000.,500.,10000.],['SIGY__',30.,5.,500.]]
 

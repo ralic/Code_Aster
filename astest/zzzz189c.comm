@@ -138,7 +138,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
 
 # ATTENTION : PAR_LOT='NON' est necessaire car ce test
 # utilise des commandes Python
-DEBUT(CODE=_F(NOM='ZZZZ189C',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 #
 

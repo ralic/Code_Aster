@@ -17,7 +17,7 @@
 # ======================================================================
 
 # MODELISATION K : MAILLE PYRAMIDES GENEREES PAR HOMARD
-DEBUT(CODE=_F(NOM='SSNV173K', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-------------------------------------------------------------------
 #      PREPARATION DU MAILLAGE AVEC DES PYRA

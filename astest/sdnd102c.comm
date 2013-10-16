@@ -23,7 +23,7 @@
 #
 # ----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SDND102C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' A CAUSE DU SUR-COUT CPU
 
 MAILLAGE=LIRE_MAILLAGE()

@@ -27,7 +27,7 @@
 #- MODELISATION AVEC DES ELEMENTS 'COQUE_3D' (QUAD9)
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSNL502B',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 PRE_IDEAS ()

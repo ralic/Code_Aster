@@ -18,7 +18,7 @@
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 3D
 #    MODELISATION VF DECENTRE MAILLE (VFDM)
 
-DEBUT(CODE=_F(NOM='WTNP121I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #=============================================================
@@ -309,6 +309,3 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
         )
 
 FIN();
-
-
-

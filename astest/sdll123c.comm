@@ -134,7 +134,7 @@ def EXTR_MATR(matrrr,option) :
                                 rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
                 return rig11
 
-DEBUT( CODE=_F(NOM='SDLL123C', NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
        PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 aster_core.matfpe(-1)
 

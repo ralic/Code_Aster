@@ -19,7 +19,7 @@
 # ELEMENTS HEXA20 ET QUAD8 POUR APPLICATION DU FLUX
 #.....................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNV301A',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 

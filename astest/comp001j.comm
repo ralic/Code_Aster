@@ -20,7 +20,10 @@
 
 
 
-DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI',);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='OUI',
+      DEBUG=_F(SDVERI='NON'),
+      IMPR_MACRO='OUI',);
 
 # donnee materiau et fonction
 

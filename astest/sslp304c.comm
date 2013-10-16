@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MODELISATION COQUE_3D
-DEBUT( CODE=_F(  NOM = 'SSLP304C',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 MAINI=LIRE_MAILLAGE(FORMAT='MED',)
 

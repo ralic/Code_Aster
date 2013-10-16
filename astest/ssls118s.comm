@@ -19,7 +19,7 @@
 #         - MODELISATION AVEC DES ELEMENTS 'Q4GG'(QUAD4)
 #---------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NOM='SSLS118S',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 EP=0.1;            # Epaisseur
 AX=0.;             # Taux de ferraillage
 AY=0.;             # Taux de ferraillage

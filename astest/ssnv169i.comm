@@ -21,7 +21,7 @@
 # MODELISATION C_PLAN : COUPLAGE FLUAGE PROPRE UMLV ET MAZARS VERSION GRAD_EPSI
 # ----------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV169I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
 heure = 3600.
 jour = 24. * heure

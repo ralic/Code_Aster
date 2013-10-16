@@ -17,7 +17,7 @@
 # ======================================================================
 # DE LA FISSURE (CALCUL G,K1,K2 )
 #
-DEBUT(CODE=_F(NOM='SSLP101E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',  )
 

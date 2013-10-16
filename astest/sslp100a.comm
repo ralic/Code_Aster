@@ -22,7 +22,7 @@
 #======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'SSLP100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 ZERO=DEFI_CONSTANTE(VALE=0.0)
 DEUX=DEFI_CONSTANTE(VALE=2.0)
 FONC=FORMULE(NOM_PARA=('X','Y'),VALE='-X+Y')

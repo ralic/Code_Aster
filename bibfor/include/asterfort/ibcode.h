@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine getvli(cas)
-        character(len=8) :: cas
-    end subroutine getvli
+    subroutine ibcode(ncode)
+        integer, intent(out) :: ncode
+    end subroutine ibcode
 end interface

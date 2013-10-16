@@ -18,7 +18,7 @@
 # IDENTIQUE A HSNV100G MAIS AVEC TEST DE AFFE_VARC DANS SIMU_POIN_MAT
 ## person_in_charge: jean-michel.proix at edf.fr
 
-DEBUT(CODE=_F(NOM='HSNV100J', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 
 #......................................................................
 # CAS TEST THERMOPLASTICITE ELEMENTAIRE

@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # VERIFIER QUE LA POURSUITE EST POSSIBLE
-POURSUITE(CODE=_F(NOM='ERREU05A'),
+POURSUITE(CODE='OUI',
               PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1')
 # ALARME 'SUPERVIS_1' : Pour pouvoir vérifier que le calcul initial
 #                       a bien été interrompu après un pas de temps.

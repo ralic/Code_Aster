@@ -17,7 +17,7 @@
 # ======================================================================
 #
 
-DEBUT(CODE=_F( NOM = 'TPLL01G',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ACIER=DEFI_MATERIAU(  THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
 

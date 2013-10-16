@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: jean-michel.proix at edf.fr
 
-DEBUT(CODE=_F(NOM='SSND109A',
+DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 TFIN = 2.5;
 

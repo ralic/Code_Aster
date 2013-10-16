@@ -22,7 +22,7 @@
 #                                                 REF: SFM.VPCS SDLD21
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SDLD21B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON')
 
 MA=LIRE_MAILLAGE( )

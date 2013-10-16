@@ -17,7 +17,7 @@
 # ======================================================================
 # EN THM ( CAS TEST HM EN MECANIQUE PURE )
 
-DEBUT(CODE=_F(NOM='WTNP114A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAILIN=LIRE_MAILLAGE(FORMAT='MED',);
 

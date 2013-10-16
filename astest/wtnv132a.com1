@@ -27,7 +27,7 @@
 # a un autre maillage.
 
 
-POURSUITE(CODE=_F(NOM='WTNV132A'),PAR_LOT='NON')
+POURSUITE(CODE='OUI',PAR_LOT='NON')
 
 #       ---------------
 # FIN-  Post-traitement

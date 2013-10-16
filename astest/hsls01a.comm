@@ -20,7 +20,7 @@
 # ET MODELISEE EN DKT- DKQ - DST - DSQ - Q4G
 #====================================================================
 
-DEBUT(CODE=_F(NOM='HSLS01A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED', )
 

@@ -25,7 +25,7 @@
 #
 import numpy as NP
 
-DEBUT( CODE=_F( NOM = 'SDLV131D',NIV_PUB_WEB='INTERNET'),
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
        DEBUG=_F(SDVERI='OUI'),
        IMPR_MACRO='NON',
        PAR_LOT='OUI',

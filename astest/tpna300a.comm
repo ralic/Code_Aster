@@ -19,7 +19,7 @@
 # MAILLES : QUAD4 , TRIA3
 #
 
-DEBUT(  CODE=_F( NOM = 'TPNA300A',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
 # LECTURE DU MAILLAGE ----------------------------------------------

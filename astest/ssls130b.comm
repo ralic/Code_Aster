@@ -17,7 +17,7 @@
 # ======================================================================
 #       METHODE DE ZOOM STRUCTURALE
 
-DEBUT(CODE=_F(NOM='SSLS130B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #***************************************
 # CALCUL INITIAL SUR MAILLAGE 'GROSSIER'

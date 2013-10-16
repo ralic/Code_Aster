@@ -63,7 +63,7 @@ elif test == 101: # with nbproc=1
     err_f = 'ABORT'
 
 
-DEBUT(CODE=_F(NOM='SUPV003C', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',
       ERREUR=_F(ERREUR_F=err_f))
 

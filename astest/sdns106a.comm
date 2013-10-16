@@ -24,7 +24,7 @@
 #            Dynamique explicite
 #            grands deplacements
 
-DEBUT(CODE=_F(NOM='SDNS106A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 EP=0.1

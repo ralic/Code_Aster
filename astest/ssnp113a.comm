@@ -28,7 +28,7 @@
 #               2 - direction (DEPSxx,DEPSyy,DEPSxy)=(1, 1.5, 1) jusqu a EPSxx=0.0015
 # ________________________________________________________
 
-DEBUT(CODE=_F(NOM='SSNP113A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 MAIL=LIRE_MAILLAGE();
 MODELE=AFFE_MODELE(AFFE    =_F(TOUT = 'OUI',

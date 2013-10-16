@@ -18,7 +18,7 @@
 
 # REFERENCE : CALCULS AVEC ABAQUS, SYSTUS, SAMCEF
 
-DEBUT(CODE=_F(NOM='SSNA102E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------

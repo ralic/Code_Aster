@@ -18,7 +18,7 @@
 #        MODELISATION AXIS_SI
 #====================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNA113A',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
 
 MAIL = LIRE_MAILLAGE(FORMAT='MED',);
 

@@ -19,7 +19,7 @@
 #  ANALYSE SPECTRALE MONO SUPPORTEE AVEC
 #  CORRECTION STATIQUE
 #
-POURSUITE(CODE=_F(  NOM = 'SDLD301A'));
+POURSUITE(CODE='OUI');
 
 #-----------------------------------------------------------------------
 #

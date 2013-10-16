@@ -17,7 +17,7 @@
 # ======================================================================
 #CAS TEST DE METHODES DE COMPTAGE POSTDAM
 
-DEBUT(CODE=_F(NOM='SZLZ102A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
                            VALE=(  0.,           0.,

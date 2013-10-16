@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 #------------------------------------------------------
-DEBUT(CODE=_F(NOM='ERREU06A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       ERREUR=_F(ERREUR_F='EXCEPTION',),
       PAR_LOT='NON',
      )

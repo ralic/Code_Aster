@@ -33,7 +33,7 @@ motscles = {}
 if interactif:
     motscles = { 'PAR_LOT' : 'NON' }
 
-DEBUT(CODE=_F(NOM='DEMO001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='OUI'),
       **motscles)
 

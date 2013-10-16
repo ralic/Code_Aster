@@ -27,7 +27,7 @@
 #    RECHERCHE DES ELEMENTS PROPRES : METHODE TRI_DIAG
 #=======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SDLL02A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
 

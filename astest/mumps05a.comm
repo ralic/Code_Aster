@@ -51,7 +51,7 @@ pcent_pivot=50
 # Mode verbeux 1/2
 niv_info = 2
 #
-DEBUT(CODE=_F( NOM = 'MUMPS05A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
             MESURE_TEMPS=_F(NIVE_DETAIL=2))
 
 # pour obtenir un maillage quadratique :

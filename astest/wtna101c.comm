@@ -20,7 +20,7 @@
 #                DRUCKER-PRAGER A ECROUISSAGE NEGATIF
 #                PARABOLIQUE POUR UN CONFINEMENT DE 2 MPA  (3D_HM)
 # ======================================================================
-DEBUT(CODE=_F(NOM='WTNA101C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 VISCOLIQ = DEFI_CONSTANTE( VALE=1.E-3)
 

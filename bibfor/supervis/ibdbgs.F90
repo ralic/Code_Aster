@@ -31,6 +31,7 @@ subroutine ibdbgs()
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/ibcode.h"
 #include "asterfort/impvem.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -57,7 +58,7 @@ subroutine ibdbgs()
     tbloc=800.d0
 !
 !     -- WARNING SUR LES MOTS-CLES CODE ET DEBUG
-    call getfac('CODE', ncode)
+    call ibcode(ncode)
     call getfac('DEBUG', ndbg)
     if (ncode .gt. 0 .or. ndbg .gt. 0) then
         call utmess('I', 'SUPERVIS_22')

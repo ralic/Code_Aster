@@ -18,7 +18,7 @@
 # MODELISATION 2D AXI   (10 MAILLES QUAD8)
 #======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV147B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -159,4 +159,3 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=11,
           )
 
 FIN()
-

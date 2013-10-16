@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV193A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
 #              IGNORE_ALARM=('MECANONLINE5_4',),
 DEBUG=_F(SDVERI='OUI'))

@@ -20,7 +20,7 @@
 # ELEMENTS QUAD4
 #.....................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNP303C',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAYA=LIRE_MAILLAGE( )
 

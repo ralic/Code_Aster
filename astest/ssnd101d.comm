@@ -27,7 +27,7 @@
 #
 # --------------------------------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSND101A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
     IGNORE_ALARM='MODELISA4_8'
 )
 
@@ -277,4 +277,3 @@ TEST_TABLE(
 )
 IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABRZ0,FORMAT_R='E20.13')
 FIN()
-

@@ -18,7 +18,7 @@
 # FICHIER MODELE GEVIBUS
 # person_in_charge: andre.adobes at edf.fr
 
-DEBUT( CODE=_F( NOM = 'SDLL117A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
 
 #
 

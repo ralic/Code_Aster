@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'SSNV187C',NIV_PUB_WEB='INTERNET') );
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') );
 
 PRE_GMSH();
 

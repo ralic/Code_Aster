@@ -22,7 +22,7 @@ import aster_core
 # ILLUSTRATION  DE DYNA_NON_LINE ET DE POST_TRAITEMENT NUMERIQUE
 # TRACE DE COURBE AVEC XMGRACE
 
-DEBUT(CODE=_F(NOM='DEMO002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 
 ##############################################################################################
 # Ce fichier demontre les possibilites de couplage entre Python (et tous ses outils annexes)

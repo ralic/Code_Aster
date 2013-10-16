@@ -19,7 +19,7 @@
 #         - MODELISATION AVEC DES ELEMENTS TRI6 'COQUE_3D'
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSLS118H',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

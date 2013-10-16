@@ -18,7 +18,7 @@
 # MODELISATION 3D  POINTS   F'=NO2958   B5'=NO2974
 #======================================================================
 
-DEBUT(CODE=_F(NOM='GCPC001a',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'));
 

@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'EFICA02A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT="NON",DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT="NON",DEBUG=_F(SDVERI='OUI'))
 
 #######################################################################
 # cas test du superviseur dedie a l appel de la methode getvectjev    #

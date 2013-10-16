@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: romeo.fernandes at edf.fr
 
-DEBUT(CODE=_F(NOM='SSLV117A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

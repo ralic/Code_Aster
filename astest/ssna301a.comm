@@ -20,7 +20,7 @@
 # ELEMENTS QUAD8 ET SEG3 POUR APPLICATION DE LA PRESSION
 #.....................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNA301A',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 

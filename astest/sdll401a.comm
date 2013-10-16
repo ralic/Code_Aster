@@ -19,7 +19,7 @@
 # MODELISATION POU_D_T
 #======================================================================
 #
-DEBUT(CODE=_F(NOM='SDLL401A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
    IGNORE_ALARM='UTILITAI4_1');
 
 #

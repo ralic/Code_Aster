@@ -19,7 +19,7 @@
 # MAILLAGE : 25 mailles dans le sens circonferentiel
 #            500 mailles suivant la longueur
 
-DEBUT(CODE=_F(NOM='SDLL135F',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 
 rayon_ext   = 0.16

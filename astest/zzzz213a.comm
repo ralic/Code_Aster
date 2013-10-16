@@ -25,7 +25,7 @@
 #              DY(E)=1.5       (SOLUTION)
 #--------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ213A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), ERREUR=_F(ERREUR_F='EXCEPTION'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), ERREUR=_F(ERREUR_F='EXCEPTION'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 
 fmt_raison='-'*80+"""
 

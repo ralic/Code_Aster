@@ -17,7 +17,7 @@
 # ======================================================================
 #
 
-DEBUT(CODE=_F(NOM='ZZZZ314D',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(FORMAT='MED',)
 

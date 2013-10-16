@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT( CODE=_F(  NOM = 'ZZZZ108B',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED', );
 MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAIL0,
@@ -320,4 +320,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.998536,
                       ),
               )
 
-FIN( );                                       
+FIN( );

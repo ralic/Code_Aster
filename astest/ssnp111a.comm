@@ -22,7 +22,7 @@
 # ELEMENTS QUAD8, QUAD9, TRIA6
 #.....................................................................
 
-DEBUT(CODE=_F(NOM='SSNP111A',
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 

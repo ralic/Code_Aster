@@ -19,7 +19,7 @@
 # MAILLES : QUAD8 , TRIA6  (ET SEG3)
 #
 
-DEBUT(  CODE=_F(  NOM = 'TTLV01C',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
 # LECTURE DU MAILLAGE --------------------------------------------------

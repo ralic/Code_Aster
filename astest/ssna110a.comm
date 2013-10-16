@@ -19,7 +19,7 @@
 # person_in_charge: aimery.assire at edf.fr
 import numpy as NP
 
-DEBUT(CODE=_F( NOM = 'SSNA110A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 
 parametres =[
              ['R0__',100.,0.01,1000.],

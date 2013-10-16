@@ -18,7 +18,7 @@
 #    LINEAIRE SOUMIS A UN CHOC DE PRESSION EN 3D
 #    MODELISATION EF (EF)
 
-DEBUT(CODE=_F(NOM='WTNP121H', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #=============================================================
 #=============================================================

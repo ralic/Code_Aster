@@ -18,7 +18,7 @@
 # ======================================================================
 import numpy as NP
 
-DEBUT(CODE=_F(NOM='SDLS121B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 # On ajoute les commandes correspondant au modeles experimental

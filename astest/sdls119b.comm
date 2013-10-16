@@ -17,7 +17,7 @@
 # ======================================================================
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'));
 #
 import aster
