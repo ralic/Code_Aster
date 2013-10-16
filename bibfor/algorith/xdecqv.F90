@@ -1,10 +1,9 @@
 subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                   ninter, npts, ainter, nse, cnse,&
-                  heav, nsemax)
+                  heav, nsemax, pinter, pintt)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elref4.h"
@@ -12,11 +11,14 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndcent.h"
+#include "asterfort/provec.h"
 #include "asterfort/tecael.h"
+#include "asterfort/xpente.h"
 #include "asterfort/xxmmvd.h"
-    integer :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 6)
+#include "blas/ddot.h"
+    integer :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 10)
     integer :: nsemax
-    real(kind=8) :: lsn(*), ainter(*), heav(*),lsnbc
+    real(kind=8) :: lsn(*), ainter(*), heav(*), pinter(*), pintt(*)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,8 +36,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
-!
+!           BUT:       DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
 !     ENTREE
 !       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 !       IT       : INDICE DU TETRA EN COURS
@@ -46,17 +47,18 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
 !                  SOMMET
 !       AINTER   : INFOS ARETE CORRESPONDATE AU PT INTERSECTION
-!
 !     SORTIE
 !       NSE      : NOMBRE DE SOUS-ÉLÉMENTS (TÉTRAS)
 !       CNSE     : CONNECTIVITÉ DES SOUS-ÉLÉMENTS (TÉTRAS)
 !       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ÉLÉMENT
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: x(3), xlsn, lsnk
+    real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps
+    real(kind=8) :: lsnbc
     integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim, ibid
-    integer :: a1, a2, a, b, c, iadzi, iazk24, ndime, jdim
-    integer :: k, e, e2, nnop
+    integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime, jdim, n(18)
+    integer :: d, e, f, g, h, l, ia, ip1
+    integer :: nnop
     integer :: zxain
     character(len=8) :: typma, noma, elrese(3)
     logical :: cut
@@ -72,58 +74,23 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     noma=zk24(iazk24)
     call jeveuo(noma//'.DIME', 'L', jdim)
     ndim=zi(jdim-1+6)
-!
-!     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
-!     NDIM EST LA DIMENSION DU MAILLAGE
-!     NDIME EST DIMENSION DE L'ELEMENT FINI
-!     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
-!     NDIME = 2 ALORS QUE NDIM = 3
-!
+    nse=0
     do 10 in = 1, 6
-        do 20 j = 1, 6
+        do 20 j = 1, 10
             cnse(in,j)=0
 20      continue
 10  continue
 !
     typma=elrese(ndime)
 !
-!     CALCUL DES COORDONNEES ET LSN DU NOEUD 9
-    if (nnop .eq. 8) then
-        call ndcent(igeom, lsn, x, xlsn)
-    endif
-!
     call conare(typma, ar, nbar)
 !
+!     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
     cut=.false.
-    i=1
-!     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
- 1  continue
-    if (i .lt. nnose) then
-        if (cnset(nnose*(it-1)+i) .eq. 9 .or. lsn(cnset(nnose*(it-1)+i)) .eq. 0.d0) then
-            i=i+1
-            goto 1
-        endif
-    endif
-!     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-    k=i+1
+    do 30 ia = 1, nbar
+      if(lsn(cnset(nnose*(it-1)+ar(ia,1)))*lsn(cnset(nnose*(it-1)+ar(ia,2))) &
+                        .lt. 0.d0) cut=.true.
 30  continue
-    if (k .le. nnose) then
-!       RECUPERATION DE LSN(K) :
-!         - CAS PARTICULIER DU NOEUD CENTRAL D'UN Q9
-        if (cnset(nnose*(it-1)+k) .eq. 9) then
-            lsnk=xlsn
-!         - CAS GENERAL
-        else
-            lsnk=lsn(cnset(nnose*(it-1)+k))
-        endif
-!
-        if (lsn(cnset(nnose*(it-1)+i))*lsnk .lt. 0.d0) then
-            cut=.true.
-        else
-            k=k+1
-            goto 30
-        endif
-    endif
 !
 !     STOCKAGE DE LA CONNECTIVITE D'UN SOUS-ELEMENT NON COUPE
     if (.not.cut) then
@@ -147,17 +114,12 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(1,in)=cnset(nnose*(it-1)+in)
 40          continue
 !
-        else if (ninter .eq.2) then
+        else if (ninter .eq. 2) then
             a1=nint(ainter(zxain*(1-1)+1))
             a2=nint(ainter(zxain*(2-1)+1))
             if (npts .eq. 0) then
-!         DECOUPAGE EN 3 ELEMENTS
-!         3 SEUL ELEMENT
                 nse=3
                 ASSERT(a1.ne.0)
-!           101 ET 102 LES 2 POINTS D'INTERSECTION
-!           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
-!
                 do 50 i = 1, 2
                     do 51 j = 1, 2
                         if (ar(a1,i) .eq. ar(a2,j)) then
@@ -188,36 +150,36 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(3,6)=206
 !
             else if (npts .eq.1) then
-!         DECOUPAGE EN 2 ELEMENTS
-!         2 SEUL ELEMENT
                 nse=2
                 ASSERT(a1.eq.0.and.a2.ne.0)
 !           101 ET 102 LES 2 POINTS D'INTERSECTION
 !           CNSE(1,1)=101
+                ip1=nint(ainter(zxain*(npts-1)+2))
                 b = ar(a2,1)
                 c = ar(a2,2)
-                if (a2 .eq. 1) then
-                    e=6
-                    e2=5
-                else if (a2.eq.2) then
-                    e=4
-                    e2=6
-                else if (a2.eq.3) then
-                    e=5
-                    e2=4
-                endif
-                cnse(1,1)=nint(ainter(zxain*(npts-1)+2))
+                e=0
+                f=0
+                do 52 i=1,3
+                 do 53 j=1,2
+                   if (cnset(nnose*(it-1)+ar(i,j)).eq.ip1.and.&
+                      ar(i,3-j).eq.b) e= ar(i,3) 
+                    if (cnset(nnose*(it-1)+ar(i,j)).eq.ip1.and.&
+                      ar(i,3-j).eq.c) f= ar(i,3)            
+53                continue
+52              continue
+                ASSERT((e*f).gt.0)
+                cnse(1,1)=ip1
                 cnse(1,2)=102
                 cnse(1,3)=cnset(nnose*(it-1)+b)
                 cnse(1,4)=203
                 cnse(1,5)=202
                 cnse(1,6)=cnset(nnose*(it-1)+e)
-                cnse(2,1)=nint(ainter(zxain*(npts-1)+2))
+                cnse(2,1)=ip1
                 cnse(2,2)=102
                 cnse(2,3)=cnset(nnose*(it-1)+c)
                 cnse(2,4)=203
                 cnse(2,5)=201
-                cnse(2,6)=cnset(nnose*(it-1)+e2)
+                cnse(2,6)=cnset(nnose*(it-1)+f)
 !
             else if (npts .ge.2) then
 !         PAS DE DECOUPAGE
@@ -284,9 +246,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
             endif
 !           ENDIF SUR NPTS DE NINTER=3
-!
         else
-!
 !         1 SEUL ELEMENT
             nse=1
             do 100 in = 1, nnose
@@ -332,10 +292,338 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 120          continue
 !
         endif
+!
+    else if (ndime .eq. 3 .and. cut) then
+!
+        if (ninter .lt. 3) then
+!
+!       1Â°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
+!       ---------------------------------------------
+!
+!         INTER DOUTEUSE
+            ASSERT(npts.eq.ninter)
+!         ON A UN SEUL ELEMENT
+            nse=1
+            do 200 in = 1, nnose
+                cnse(1,in)=cnset(nnose*(it-1)+in)
+200          continue
+!
+        else if (ninter.eq.3) then
+!
+!         2Â°) AVEC TROIS POINTS D'INTERSECTION
+!         ------------------------------------
+            a1=nint(ainter(zxain*(1-1)+1))
+            a2=nint(ainter(zxain*(2-1)+1))
+            a3=nint(ainter(zxain*(3-1)+1))
+!
+            if (npts .eq. 3) then
+!           ON A UN SEUL ELEMENT
+                nse=1
+                do 210 in = 1, nnose
+                    cnse(1,in)=cnset(nnose*(it-1)+in)
+210              continue
+!
+            else if (npts .eq. 2) then
+!           ON A UN SEUL ELEMENT
+                nse=1
+                do 220 in = 1, nnose
+                    cnse(1,in)=cnset(nnose*(it-1)+in)
+220              continue
+!
+            else if (npts.eq.1) then
+!           ON A TROIS SOUS-ELEMENTS
+                nse=3
+                ASSERT(a1.eq.0.and.a2.ne.0.and.a3.ne.0)
+                ip1=nint(ainter(2))
+!           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
+                a=0
+                b=0
+                c=0
+                e=0
+                f=0
+                g=0
+                h=0
+                do 35 i = 1, 2
+                    do 45 j = 1, 2
+                        if (ar(a2,i) .eq. ar(a3,j)) then
+                            a=ar(a2,i)
+                            b=ar(a2,3-i)
+                            c=ar(a3,3-j)
+                        endif
+45                  continue
+35              continue
+                do 36 i = 1, 6
+                    do 46 j = 1, 2
+                       if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
+                       if (ar(i,j) .eq. b .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) f=ar(i,3)
+                       if (ar(i,j) .eq. c .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) g=ar(i,3)
+                       if (ar(i,j) .eq. a .and. cnset(nnose*(it-1)+ar(i,3-j)) .eq. ip1) h=ar(i,3)
+46                  continue
+36              continue
+                ASSERT((a*b*c*e*f*g*h).gt.0)
+!           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPÉ
+                cnse(1,1)=ip1
+                cnse(1,2)=102
+                cnse(1,3)=103
+                cnse(1,4)=cnset(nnose*(it-1)+a)
+                cnse(1,5)=205
+                cnse(1,6)=206
+                cnse(1,7)=207
+                cnse(1,8)=cnset(nnose*(it-1)+h)
+                cnse(1,9)=202
+                cnse(1,10)=204
+                cnse(2,1)=ip1
+                cnse(2,2)=102
+                cnse(2,3)=103
+                cnse(2,4)=cnset(nnose*(it-1)+c)
+                cnse(2,5)=205
+                cnse(2,6)=206
+                cnse(2,7)=207
+                cnse(2,8)=cnset(nnose*(it-1)+g)
+                cnse(2,9)=208
+                cnse(2,10)=203
+                cnse(3,1)=ip1
+                cnse(3,2)=102
+                cnse(3,3)=cnset(nnose*(it-1)+b)
+                cnse(3,4)=cnset(nnose*(it-1)+c)
+                cnse(3,5)=205
+                cnse(3,6)=201
+                cnse(3,7)=cnset(nnose*(it-1)+f)
+                cnse(3,8)=cnset(nnose*(it-1)+g)
+                cnse(3,9)=208
+                cnse(3,10)=cnset(nnose*(it-1)+e)
+!
+            else if (npts.eq.0) then
+                nse=4
+                ASSERT(a1.ne.0.and.a2.ne.0.and.a3.ne.0)
+                a=0
+                b=0
+                c=0
+                d=0
+                e=0
+                f=0
+                g=0
+                do 38 i = 1, 2
+                    do 48 j = 1, 2
+                        if (ar(a1,i) .eq. ar(a2,j)) then
+                            a=ar(a1,i)
+                            b=ar(a1,3-i)
+                            c=ar(a2,3-j)
+                        endif
+48                  continue
+38              continue
+                do 39 i = 1, 2
+                    if (ar(a3,i) .eq. a) d=ar(a3,3-i)
+39              continue
+                do 59 i = 1, 6
+                    do 69 j = 1, 2
+                        if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
+                        if (ar(i,j) .eq. c .and. ar(i,3-j) .eq. d) f=ar(i,3)
+                        if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. d) g=ar(i,3)
+69                  continue
+59              continue
+                ASSERT((a*b*c*d*e*f*g).gt.0)
+!           ON A QUATRE SOUS-ELEMENTS
+                cnse(1,1)=101
+                cnse(1,2)=102
+                cnse(1,3)=103
+                cnse(1,4)=cnset(nnose*(it-1)+a)
+                cnse(1,5)=207
+                cnse(1,6)=208
+                cnse(1,7)=209
+                cnse(1,8)=202
+                cnse(1,9)=204
+                cnse(1,10)=206
+!
+                n(1)=101
+                n(2)=102
+                n(3)=103
+                n(4)=cnset(nnose*(it-1)+b)
+                n(5)=cnset(nnose*(it-1)+c)
+                n(6)=cnset(nnose*(it-1)+d)
+                n(7)=207
+                n(8)=208
+                n(9)=209
+                n(10)=201
+                n(11)=203
+                n(12)=205
+                n(13)=cnset(nnose*(it-1)+e)
+                n(14)=cnset(nnose*(it-1)+f)
+                n(15)=cnset(nnose*(it-1)+g)
+                n(16)=210
+                n(17)=211
+                n(18)=212
+                call xpente(2, cnse, n)
+            endif
+!
+        else if (ninter.eq.4) then
+!
+               a1=nint(ainter(zxain*(1-1)+1))
+               a2=nint(ainter(zxain*(2-1)+1))
+               a3=nint(ainter(zxain*(3-1)+1))
+               a4=nint(ainter(zxain*(4-1)+1))
+!
+           if (npts.eq.2) then
+!            ON A DEUX SOUS-ELEMENTS
+               nse=2
+!            LES DEUX PREMIERS NOEUDS STOCKES SONT FORCEMNT DES NOEUDS SOMMETS ET LES AUTRES NON
+               ASSERT(a1.eq.0.and.a2.eq.0.and.a3.gt.0.and.a4.gt.0)
+               a=ar(a3,1)
+               b=ar(a3,2)
+               c=nint(ainter(2))
+               d=nint(ainter(zxain+2))
+               do 771 i=1,6
+                 do 772 j=1,2
+                   if (cnset(nnose*(it-1)+ar(i,j)).eq.c.and.&
+                      cnset(nnose*(it-1)+ar(i,3-j)).eq.d) e=ar(i,3)             
+772              continue
+771            continue
+               do 773 i=1,6
+                 do 774 j=1,2
+                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and. ar(i,3-j) .eq. a) f=ar(i,3)
+                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. d .and. ar(i,3-j) .eq. a) g=ar(i,3)
+                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. c .and. ar(i,3-j) .eq. b) h=ar(i,3)
+                   if (cnset(nnose*(it-1)+ar(i,j)) .eq. d .and. ar(i,3-j) .eq. b) l=ar(i,3)
+774              continue
+773            continue
+               ASSERT((e*f*g*h*l).gt.0)
+                cnse(1,1)=nint(ainter(2))
+                cnse(1,2)=nint(ainter(zxain+2))
+                cnse(1,3)=103
+                cnse(1,4)=cnset(nnose*(it-1)+a)
+                cnse(1,5)=cnset(nnose*(it-1)+e)
+                cnse(1,6)=204
+                cnse(1,7)=203
+                cnse(1,8)=cnset(nnose*(it-1)+f)
+                cnse(1,9)=cnset(nnose*(it-1)+g)
+                cnse(1,10)=201
+                cnse(2,1)=nint(ainter(2))
+                cnse(2,2)=nint(ainter(zxain+2))
+                cnse(2,3)=103
+                cnse(2,4)=cnset(nnose*(it-1)+b)
+                cnse(2,5)=cnset(nnose*(it-1)+e)
+                cnse(2,6)=204
+                cnse(2,7)=203
+                cnse(2,8)=cnset(nnose*(it-1)+h)
+                cnse(2,9)=cnset(nnose*(it-1)+l)
+                cnse(2,10)=202
+!           
+            elseif (npts .eq.0) then
+            nse=6
+            ASSERT((a1*a2*a3*a4).ne.0)
+            a=0
+            b=0
+            c=0
+            d=0
+            e=0
+            f=0
+            do 78 i = 1, 2
+                do 88 j = 1, 2
+                    if (ar(a1,i) .eq. ar(a2,j)) then
+                        a=ar(a1,i)
+                        b=ar(a1,3-i)
+                        c=ar(a2,3-j)
+                    endif
+                    if (ar(a3,i).eq.ar(a4,j)) d=ar(a3,i)
+88              continue
+78          continue
+            do 79 i = 1, 6
+                do 89 j = 1, 2
+                    if (ar(i,j) .eq. b .and. ar(i,3-j) .eq. c) e=ar(i,3)
+                    if (ar(i,j) .eq. a .and. ar(i,3-j) .eq. d) f=ar(i,3)
+89              continue
+79          continue
+            ASSERT((a*b*c*d*e*f).gt.0)
+            n(1)=104
+            n(2)=102
+            n(3)=cnset(nnose*(it-1)+c)
+            n(4)=103
+            n(5)=101
+            n(6)=cnset(nnose*(it-1)+b)
+            n(7)=210
+            n(8)=203
+            n(9)=207
+            n(10)=211
+            n(11)=209
+            n(12)=cnset(nnose*(it-1)+e)
+            n(13)=212
+            n(14)=201
+            n(15)=205
+            n(16)=213
+            n(17)=214
+            n(18)=216
+            call xpente(1, cnse, n)
+            n(1)=cnset(nnose*(it-1)+a)
+            n(2)=101
+            n(3)=102
+            n(4)=cnset(nnose*(it-1)+d)
+            n(5)=103
+            n(6)=104
+            n(7)=202
+            n(8)=209
+            n(9)=204
+            n(10)=cnset(nnose*(it-1)+f)
+            n(11)=212
+            n(12)=210
+            n(13)=206
+            n(14)=211
+            n(15)=208
+            n(16)=217
+            n(17)=213
+            n(18)=215
+            call xpente(4, cnse, n)
+            endif
+        endif
     endif
 !
-! --------------------------------------------------------------------
-!             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
+!-----------------------------------------------------------------------
+!     VÃRIFICATION DU SENS DES SOUS-ÃLÃMENTS TETRA
+!                  ALGO BOOK III (28/04/04)
+!-----------------------------------------------------------------------
+!
+    if (ndime .eq. 3) then
+        do 500 ise = 1, nse
+            do 505 in = 1, 4
+                inh=cnse(ise,in)
+                if (inh .lt. 100) then
+                    do 510 j = 1, 3
+                        xyz(in,j)=zr(igeom-1+ndim*(inh-1)+j)
+510                  continue
+                else if (inh.gt.100.and.inh.lt.1000) then
+                    do 511 j = 1, 3
+                        xyz(in,j)=pinter(ndim*(inh-100-1)+j)
+511                  continue
+                else
+                    do 512 j = 1, 3
+                        xyz(in,j)=pintt(ndim*(inh-1001)+j)
+512                  continue
+                endif
+505          continue
+            do 506 j = 1, 3
+                ab(j)=xyz(2,j)-xyz(1,j)
+                ac(j)=xyz(3,j)-xyz(1,j)
+                ad(j)=xyz(4,j)-xyz(1,j)
+506          continue
+            call provec(ab, ac, vn)
+            ps=ddot(3,vn,1,ad,1)
+            if (ps .lt. 0) then
+!          MAUVAIS SENS DU TETRA, ON INVERSE LES NOEUDS 3 ET 4
+                inh=cnse(ise,3)
+                cnse(ise,3)=cnse(ise,4)
+                cnse(ise,4)=inh
+!          ON INVERSE AUSSI LES NOEUDS MILIEUX 9 ET 6 PUIS 7 ET 8
+                inh=cnse(ise,9)
+                cnse(ise,9)=cnse(ise,6)
+                cnse(ise,6)=inh
+                inh=cnse(ise,7)
+                cnse(ise,7)=cnse(ise,8)
+                cnse(ise,8)=inh
+            endif
+500      continue   
+    endif
+!
+!-----------------------------------------------------------------------
+!             MATRICE DES COORDONNÃES ET FONCTION HEAVYSIDE
 !             ALGO BOOK III (28/04/04)
 ! --------------------------------------------------------------------
 !

@@ -75,6 +75,9 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 ! --- RECUPERATION TOPOLOGIE FACETTES
 ! --- DECALAGE D INDICE POUR TOPOFAC (MULTIFISSURATION)
 !
+!   INITIALISATION
+    rela=0.d0
+!
     ninter=zi(jlonch+3*(ifiss-1)-1+1)
     if (ninter .eq. 0) goto 99
 !

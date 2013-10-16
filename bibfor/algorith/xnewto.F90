@@ -1,20 +1,25 @@
-subroutine xnewto(elp, name, num, nno, ndim,&
-                  ptint, tabco, jtabls, ipp, ip,&
-                  s, itemax, epsmax, ksi)
-! aslint: disable=W1306
+subroutine xnewto(elp, name, num, nno, n,&
+                  ndime, ptint, ndim, tabco, pmilie, tabls,&
+                  tab, ipp, ip, s, itemax,&
+                  epsmax, ksi)
     implicit none
 !
+#include "jeveux.h"
 #include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdelt1.h"
 #include "asterfort/xdelt2.h"
-    integer :: num, ndim, ipp, ip, nno, jtabls
-    real(kind=8) :: ksi(ndim), s, ptint(*), tabco(*)
+#include "asterfort/xdelt3.h"
+#include "asterfort/xdelt4.h"
+#include "asterfort/xdelt5.h"
+    integer :: num, ndime, ndim, ipp, ip, nno, n(3)
+    real(kind=8) :: s, ptint(*), tabco(*), tabls(*), tab(8, ndim), pmilie(*)
     integer :: itemax
-    real(kind=8) :: epsmax
+    real(kind=8) :: epsmax, ksi(ndim)
     character(len=6) :: name
     character(len=8) :: elp
 !
@@ -44,18 +49,21 @@ subroutine xnewto(elp, name, num, nno, ndim,&
 !       S       : ABSCISSE CURVILIGNE DU POINT SUR L'ARETE
 !       ITEMAX  : NOMBRE MAXI D'ITERATIONS DE NEWTON
 !       EPSMAX  : RESIDU POUR CONVERGENCE DE NEWTON
+!       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
+!       PMILIE  : LES COORDONNES DES POINTS MILIEUX
 !
 !     SORTIE
 !       KSI     : COORDONNEES DE REFERENCE DU POINT
 !     --------------------------------------------------------------
 !
     real(kind=8) :: eps
-    real(kind=8) :: test, epsrel, epsabs, refe
+    real(kind=8) :: test, epsrel, epsabs, refe, itermin
     integer :: iter, i
     real(kind=8) :: zero
     parameter    (zero=0.d0)
     real(kind=8) :: dist, dmin
-    real(kind=8) :: delta(ndim), ksim(ndim)
+    real(kind=8) :: ksi2(ndime),delta(ndime), ksim(ndime)
+    data  itermin/2/
 !
 ! ------------------------------------------------------------------
 !
@@ -63,8 +71,9 @@ subroutine xnewto(elp, name, num, nno, ndim,&
 !
 ! --- POINT DE DEPART
 !
-    call vecini(ndim, zero, ksi)
-    call vecini(ndim, zero, delta)
+    call vecini(ndime, zero, ksi2)
+!
+    call vecini(ndime, zero, delta)
     iter = 0
     epsabs = epsmax/100.d0
     epsrel = epsmax
@@ -81,38 +90,48 @@ subroutine xnewto(elp, name, num, nno, ndim,&
 ! --- CALCUL DE LA QUANTITE A MINIMISER
 !
     if (name .eq. 'XMILFI') then
-        call xdelt2(elp, nno, ndim, ksi, ptint,&
-                    tabco, jtabls, ipp, ip, delta)
+        call xdelt2(elp, nno, n, ndime, ksi2,&
+                    ptint, ndim, tabco, tabls, ipp, ip,&
+                    delta)
     else if (name.eq. 'XINVAC') then
-        call xdelt1(num, ndim, ksi(1), tabco, s,&
+        call xdelt1(num, ndim, ksi2(1), tabco, s,&
                     delta(1))
+    else if (name.eq. 'XINTAR') then
+        call xdelt3(ndim, ksi2, tabls, delta(1))
+    else if (name.eq. 'XCENFI') then
+        ASSERT(ndim.eq.3)
+        call xdelt4(elp, nno, ndim, ksi2, ptint,&
+                    pmilie, tabco, tabls, delta)
+    else if (name.eq. 'XMILFA') then
+        call xdelt5(elp, nno, n, ndime, ksi2,&
+                    tabco, ndim, tab, delta)
     endif
 !
 ! --- ACTUALISATION
 !
-    do 30 i = 1, ndim
-        ksi(i) = ksi(i) - delta(i)
-30  end do
+    do i = 1, ndime
+        ksi2(i) = ksi2(i) - delta(i)
+   end do
 !
     iter = iter + 1
 !
-    do 40 i = 1, ndim
+    do  i = 1, ndim
         dist = delta(i)*delta(i)
-40  end do
+    end do
     dist = sqrt(dist)
 !
     if (dist .le. dmin) then
-        do 50 i = 1, ndim
-            ksim(i) = ksi(i)
-50      continue
+        do  i = 1, ndime
+            ksim(i) = ksi2(i)
+        end do
     endif
 !
 ! --- CALCUL DE LA REFERENCE POUR TEST DEPLACEMENTS
 !
     refe = zero
-    do 60 i = 1, ndim
-        refe = refe + ksi(i)*ksi(i)
-60  end do
+    do  i = 1, ndime
+        refe = refe + ksi2(i)*ksi2(i)
+    end do
     if (refe .le. epsrel) then
         refe = 1.d0
         eps = epsabs
@@ -123,27 +142,34 @@ subroutine xnewto(elp, name, num, nno, ndim,&
 ! --- CALCUL POUR LE TEST DE CONVERGENCE
 !
     test = zero
-    do 70 i = 1, ndim
+    do  i = 1, ndime
         test = test + delta(i)*delta(i)
-70  end do
+    end do
     test = sqrt(test/refe)
 !
 ! --- EVALUATION DE LA CONVERGENCE
+!
+    if(iter .le. itermin) goto 20
 !
     if ((test.gt.eps) .and. (iter.lt.itemax)) then
         goto 20
     else if ((iter.ge.itemax).and.(test.gt.eps)) then
         call utmess('F', 'XFEM_67')
-        do 80 i = 1, ndim
-            ksi(i) = ksim(i)
-80      end do
+        do  i = 1, ndime
+            ksi2(i) = ksim(i)
+        end do
     endif
 !
 ! --- FIN DE LA BOUCLE
 !
-    do 90 i = 1, ndim
-        ksi(i)=ksi(i)-delta(i)
-90  end do
+    do  i = 1, ndime
+        ksi2(i)=ksi2(i)-delta(i)
+    end do
 !
+!   GESTION DU CAS NDIME<NDIM
+    call vecini(ndim, zero, ksi)
+    do  i=1, ndime
+        ksi(i)=ksi2(i)
+    enddo
     call jedema()
 end subroutine

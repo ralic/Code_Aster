@@ -40,6 +40,6 @@ OPTION__
         PLSN     NEUT_R                     << SPECIFIQUE X-FEM >>
         PLST     NEUT_R                     << SPECIFIQUE X-FEM >>
         PSTANO   N120_I                     << SPECIFIQUE X-FEM >>
-        PPMILTO  N120_R                     << SPECIFIQUE X-FEM >>
+        PPMILTO  N480_R                     << SPECIFIQUE X-FEM >>
    OUT__
         PVECTUR VDEP_R RESL__

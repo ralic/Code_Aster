@@ -11,7 +11,6 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
     real(kind=8) :: ksi, tabar(*)
     real(kind=8) :: delta, s
     integer :: num, ndim
-!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,23 +64,23 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
     call vecini(ndim, 0.d0, pt2)
     call vecini(ndim, 0.d0, pt3)
 !
-    do 101 i = 1, ndim
+    do  i = 1, ndim
         pt1(i)=tabar(i)
         pt2(i)=tabar(ndim+i)
         pt3(i)=tabar(2*ndim+i)
-101  end do
+    end do
 !
-    do 102 i = 1, ndim
+    do  i = 1, ndim
         coef1 = coef1 + (pt1(i)-2*pt3(i)+pt2(i))* (pt1(i)-2*pt3(i)+ pt2(i))
-102  end do
+    end do
 !
-    do 103 i = 1, ndim
+    do  i = 1, ndim
         coef2 = coef2 + (pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
-103  end do
+    end do
 !
-    do 104 i = 1, ndim
+    do  i = 1, ndim
         coef3 = coef3 + (pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
-104  end do
+    end do
 !
     d = coef2*coef2 - 4*coef1*coef3
 !

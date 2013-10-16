@@ -176,8 +176,12 @@ subroutine xstan2(crimax, noma, modele)
                 if (ndime .lt. ndim) goto 50
                 itypma = zi(jtypma-1+numa2)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-                if ((.not.ancien) .and. ndim .eq. 2 .and. (.not.ismali(typma) )) then
+                if ((.not.ancien) .and. (.not.ismali(typma) )) then
+                  if (ndim .eq. 2) then
                     nnose = 6
+                  else
+                    nnose = 10
+                  endif
                 else
                     nnose = ndim+1
                 endif

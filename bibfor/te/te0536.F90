@@ -2,7 +2,9 @@ subroutine te0536(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/xrigel.h"
@@ -35,7 +37,7 @@ subroutine te0536(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    character(len=8) :: lag, enr
+    character(len=8) :: lag, enr, elrefp
     integer :: jgano, nno, npg, imatuu, ndim
     integer :: ipoids, ivf, idfde, igeom, icont
     integer :: nnos
@@ -45,6 +47,7 @@ subroutine te0536(option, nomte)
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
+    call elref1(elrefp)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !      FAMI='RIGI'
@@ -69,9 +72,8 @@ subroutine te0536(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC') .and. ndim .le. 2) call jevech(&
-                                                                           'PPMILTO', 'L',&
-                                                                           jpmilt)
+    if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC')&
+        .and. .not.iselli(elrefp)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
     call jevech('PMATUUR', 'E', imatuu)

@@ -1,4 +1,4 @@
-subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
+subroutine xcface(lsn, lst, jgrlsn, igeom,&
                   enr, nfiss, ifiss, fisco, nfisc,&
                   noma, nmaabs, pinter, ninter, ainter,&
                   nface, nptf, cface)
@@ -11,7 +11,6 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -28,7 +27,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
     real(kind=8) :: lsn(*), lst(*), pinter(*), ainter(*)
     integer :: jgrlsn, igeom, ninter, nface, cface(5, 3), nptf
     integer :: nfiss, ifiss, fisco(*), nfisc, nmaabs
-    character(len=8) :: elref, noma
+    character(len=8) :: noma
     character(len=16) :: enr
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -52,7 +51,6 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !                      ET LE PLAN DE FISSURE ET DÉCOUPAGE EN FACETTES
 !
 !     ENTREE
-!       ELREF    : ELEMENT DE REFERENCE
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
 !       LST      : VALEURS DE LA LEVEL SET TANGENTE
 !       JGRLSN   : ADRESSE DU GRADIENT DE LA LEVEL SET NORMALE
@@ -85,7 +83,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
     integer :: j, ar(12, 3), nbar, na, nb, nc, ins
     integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos
     integer :: iadzi, iazk24, ndim, ptmax
-    character(len=8) :: typma, elp
+    character(len=8) :: typma
     integer :: zxain
     logical :: lcont, lajpa, lajpb, lajpc
 ! ----------------------------------------------------------------------
@@ -100,7 +98,6 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
     minlsn = 1*r8maem()
 !
     zxain = xxmmvd('ZXAIN')
-    call elref1(elp)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 ibid, ibid, ibid, ibid, ibid)
 !
@@ -132,7 +129,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
     call conare(typma, ar, nbar)
 !
 !       BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
-    do 100 ia = 1, nbar
+    do  ia = 1, nbar
 !
 !       NUM NO DE L'ELEMENT
         na=ar(ia,1)
@@ -148,7 +145,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
             do 110 i = 1, ndim
                 a(i)=zr(igeom-1+ndim*(na-1)+i)
                 b(i)=zr(igeom-1+ndim*(nb-1)+i)
-110          continue
+110         continue
             if (ndim .lt. 3) then
                 a(3)=0.d0
                 b(3)=0.d0
@@ -239,7 +236,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
                                    alpha)
         endif
 !
-100  end do
+     end do
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS INTERSECTÉES
     if (nfisc .gt. 0) then

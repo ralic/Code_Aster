@@ -123,8 +123,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     integer :: iviex, iret, jtypma, jconq1, jconq2, jcnsk1, jxc
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
 !
-    data  typese /'SEG2','TRIA3','TETRA4','SEG3','TRIA6','TETRA4'/
-    data  tabse  /   2  ,   3   ,   4    ,   3  ,   6   ,   4    /
+    data  typese /'SEG2','TRIA3','TETRA4','SEG3','TRIA6','TETRA10'/
+    data  tabse  /   2  ,   3   ,   4    ,   3  ,   6   ,   10    /
 !
     call jemarq()
 !
@@ -451,7 +451,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         ASSERT(iad1.gt.0)
 !
 !       RECUPERATION DES COORDONNEES DES POINTS MILIEUX
-        if (.not.iselli(elrefp) .and. ndim .le. 2) then
+        if (.not.iselli(elrefp)) then
             call cesexi('C', jcesd(9), jcesl(9), ima, 1,&
                         1, 1, iad9)
             ASSERT(iad9.gt.0)
@@ -531,7 +531,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 ! ----- ON AJOUTE LES NOUVELLES MAILLES ET LES NOUVEAUX NOEUDS
 !
-        if (.not.iselli(elrefp) .and. ndim .le. 2) then
+        if (.not.iselli(elrefp)) then
             irese = 3
         else
             irese = 0

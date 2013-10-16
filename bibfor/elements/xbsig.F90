@@ -76,7 +76,7 @@ subroutine xbsig(option, ndim, nnop, nfh, nfe,&
     integer :: ise, in, ino, npg, j, codopt
     integer :: irese, nno, fisno(nnop, nfiss), ifiss, ig, ibid
 !
-    data          elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data          elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data          fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -90,7 +90,7 @@ subroutine xbsig(option, ndim, nnop, nfh, nfe,&
     ncomp = jtab(2)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0

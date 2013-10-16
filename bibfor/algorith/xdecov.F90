@@ -21,8 +21,8 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 #include "blas/ddot.h"
     real(kind=8) :: lsn(*), pintt(*), pinter(*), ainter(*)
     integer :: ndim, nnop, nnose, it, cnset(*), heavt(*), ncomp, igeom
-    integer :: ninter, npts, nfiss, ifiss, nse, cnse(6, 6), fisco(*), nfisc
-    integer :: nsemax
+    integer :: ninter, npts, nfiss, ifiss, nse, cnse(6, 10), fisco(*)
+    integer :: nsemax, nfisc
     real(kind=8) :: heav(*)
     character(len=8) :: elp
 !     ------------------------------------------------------------------
@@ -66,8 +66,8 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps, geom(3)
     real(kind=8) :: somlsn(nfisc+1), ff(nnop), rbid, rbid2(ndim)
-    integer :: in, inh, i, j, ar(12, 3), nbar, ise, ibid
-    integer :: a1, a2, a3, a4, a, b, c, ndime
+    integer :: in, inh, i, j, ar(12, 3), nbar, ise, ibid, npent(18)
+    integer :: a1, a2, a3, a4, a, b, c, d, ndime
     character(len=8) :: typma, elrese(3)
     integer :: zxain, mxstac
     logical :: lbid, axi
@@ -227,6 +227,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
     else if (ndime.eq.3) then
 !
+        do 98 i = 1, 18
+            npent(i)=0
+98      continue
         if (ninter .lt. 3) then
 !
 !       1Â°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
@@ -305,37 +308,38 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             else if (npts.eq.0) then
 !           ON A QUATRE SOUS-ELEMENTS
                 nse=4
+                a=0
+                b=0
+                c=0
+                d=0
+                do 38 i = 1, 2
+                    do 48 j = 1, 2
+                        if (ar(a1,i) .eq. ar(a2,j)) then
+                            a=ar(a1,i)
+                            b=ar(a1,3-i)
+                            c=ar(a2,3-j)
+                        endif
+48                  continue
+38              continue
+                do 39 i = 1, 2
+                    if (ar(a3,i) .ne. a) then
+                        d=ar(a3,i)
+                    endif
+39              continue
+                ASSERT((a*b*c*d).gt.0)
+!
                 cnse(1,1)=101
                 cnse(1,2)=102
                 cnse(1,3)=103
+                cnse(1,4)=cnset(nnose*(it-1)+a)
 !
-!           ON A 4 CONFIG POSSIBLES :
-                if (a1 .eq. 1 .and. a2 .eq. 2 .and. a3 .eq. 3) then
-!             CONFIGURATION NÂ°1
-                    cnse(1,4)=cnset(nnose*(it-1)+1)
-                    call xpente(2, cnse, 103, 101, 102,&
-                                cnset(nnose*(it-1)+ 4), cnset(nnose*(it-1)+2),&
-                                cnset(nnose*(it-1)+3))
-                else if (a1.eq.1.and.a2.eq.4.and.a3.eq.5) then
-!             CONFIGURATION NÂ°2
-                    cnse(1,4)=cnset(nnose*(it-1)+2)
-                    call xpente(2, cnse, cnset(nnose*(it-1)+1), cnset( nnose*(it-1)+3),&
-                                cnset(nnose*(it-1)+4), 101, 102, 103)
-                else if (a1.eq.2.and.a2.eq.4.and.a3.eq.6) then
-!             CONFIGURATION NÂ°3
-                    cnse(1,4)=cnset(nnose*(it-1)+3)
-                    call xpente(2, cnse, cnset(nnose*(it-1)+4), cnset( nnose*(it-1)+2),&
-                                cnset(nnose*(it-1)+1), 103, 102, 101)
-                else if (a1.eq.3.and.a2.eq.5.and.a3.eq.6) then
-!             CONFIGURATION NÂ°4
-                    cnse(1,4)=cnset(nnose*(it-1)+4)
-                    call xpente(2, cnse, cnset(nnose*(it-1)+1), cnset( nnose*(it-1)+2),&
-                                cnset(nnose*(it-1)+3), 101, 102, 103)
-                else
-!             PROBLEME DE DECOUPAGE Ã 3 POINTS
-                    ASSERT(a1.eq.1.and.a2.eq.2.and.a3.eq.3)
-                endif
-!
+                npent(1)=103
+                npent(2)=101
+                npent(3)=102
+                npent(4)=cnset(nnose*(it-1)+d)
+                npent(5)=cnset(nnose*(it-1)+b)
+                npent(6)=cnset(nnose*(it-1)+c)
+                call xpente(2, cnse, npent)
             endif
 !
         else if (ninter.eq.4) then
@@ -349,28 +353,38 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
 !         ON A SIX SOUS-ELEMENTS (DANS TOUS LES CAS ?)
             nse=6
-            if (a1 .eq. 1 .and. a2 .eq. 2 .and. a3 .eq. 5 .and. a4 .eq. 6) then
-!          CONFIGURATION NÂ°1
-                call xpente(1, cnse, 104, 102, cnset(nnose*(it-1)+3),&
-                            103, 101, cnset(nnose*(it-1)+2))
-                call xpente(4, cnse, cnset(nnose*(it-1)+1), 101, 102,&
-                            cnset(nnose*(it-1)+4), 103, 104)
-            else if (a1.eq.1.and.a2.eq.3.and.a3.eq.4.and.a4.eq.6) then
-!          CONFIGURATION NÂ°2
-                call xpente(1, cnse, 101, cnset(nnose*(it-1)+2), 103,&
-                            102, cnset(nnose*(it-1)+4), 104)
-                call xpente(4, cnse, 102, 101, cnset(nnose*(it-1)+1),&
-                            104, 103, cnset(nnose*(it-1)+3))
-            else if (a1.eq.2.and.a2.eq.3.and.a3.eq.4.and.a4.eq.5) then
-!          CONFIGURATION NÂ°3
-                call xpente(1, cnse, 101, 103, cnset(nnose*(it-1)+3),&
-                            102, 104, cnset(nnose*(it-1)+4))
-                call xpente(4, cnse, cnset(nnose*(it-1)+2), 104, 103,&
-                            cnset(nnose*(it-1)+1), 102, 101)
-            else
-!          PROBLEME DE DECOUPAGE A 4 POINTS
-                ASSERT(a1.eq.1.and.a2.eq.2.and.a3.eq.5.and.a4.eq.6)
-            endif
+            ASSERT((a1*a2*a3*a4).gt.0)
+            a=0
+            b=0
+            c=0
+            d=0
+            do 78 i = 1, 2
+                do 88 j = 1, 2
+                    if (ar(a1,i) .eq. ar(a2,j)) then
+                        a=ar(a1,i)
+                        b=ar(a1,3-i)
+                        c=ar(a2,3-j)
+                    endif
+                    if (ar(a3,i).eq.ar(a4,j)) then
+                        d=ar(a3,i)
+                    endif
+88              continue
+78          continue
+            ASSERT((a*b*c*d).gt.0)
+            npent(1)=104
+            npent(2)=102
+            npent(3)=cnset(nnose*(it-1)+c)
+            npent(4)=103
+            npent(5)=101
+            npent(6)=cnset(nnose*(it-1)+b)
+            call xpente(1, cnse, npent)
+            npent(1)=cnset(nnose*(it-1)+a)
+            npent(2)=101
+            npent(3)=102
+            npent(4)=cnset(nnose*(it-1)+d)
+            npent(5)=103
+            npent(6)=104
+            call xpente(4, cnse, npent)
         endif
     endif
 !
@@ -382,7 +396,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     if (ndime .eq. 3) then
 !
         do 200 ise = 1, nse
-            do 210 in = 1, nnose
+            do 210 in = 1, 4
                 inh=cnse(ise,in)
                 if (inh .lt. 100) then
                     do 220 j = 1, 3

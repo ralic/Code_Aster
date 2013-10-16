@@ -253,7 +253,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CONVERGENCE=_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=50,
                                    RESI_GLOB_RELA=1.E-6),
-                    SOLVEUR=_F(METHODE='MUMPS',
+                    SOLVEUR=_F(METHODE='MUMPS',NPREC=9,
 
                                RESI_RELA=-1.),
                     NEWTON=_F(REAC_ITER=1),

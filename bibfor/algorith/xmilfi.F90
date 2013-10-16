@@ -1,6 +1,5 @@
-subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
-                  jtabls, ipp, ip, milfi)
-! aslint: disable=W1306
+subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
+                  jtabco, jtabls, ipp, ip, milfi)
     implicit none
 !
 #include "jeveux.h"
@@ -9,7 +8,7 @@ subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xnewto.h"
-    integer :: ndim, nno, jtabco, jtabls, ipp, ip
+    integer :: ndim, ndime, nno, jtabco, jtabls, ipp, ip, n(3)
     character(len=8) :: elp
     real(kind=8) :: milfi(ndim), ptint(*)
 !
@@ -39,12 +38,13 @@ subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
 !       JTABLS  : ADRESSE DES LSN DES NOEUDS DE L'ELEMENT
 !       IPP     : NUMERO NOEUD PREMIER POINT INTER
 !       IP      : NUMERO NOEUD DEUXIEME POINT INTER
+!       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
 !     SORTIE
 !       MILFI   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: ksi(ndim)
-    real(kind=8) :: epsmax, rbid
+    real(kind=8) :: epsmax, rbid, tab(8, ndim), rbid3(3)
     integer :: ibid, itemax
     character(len=6) :: name
 !
@@ -58,9 +58,10 @@ subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
 !
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
-    call xnewto(elp, name, ibid, nno, ndim,&
-                ptint, zr(jtabco), jtabls, ipp, ip,&
-                rbid, itemax, epsmax, ksi)
+    call xnewto(elp, name, ibid, nno, n,&
+                ndime, ptint, ndim, zr(jtabco), rbid3, zr(jtabls),&
+                tab, ipp, ip, rbid, itemax,&
+                epsmax, ksi)
 !
     ASSERT(ksi(1).ge.-1.d0 .and. ksi(1).le.1.d0)
     ASSERT(ksi(2).ge.-1.d0 .and. ksi(2).le.1.d0)

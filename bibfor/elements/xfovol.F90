@@ -80,7 +80,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     logical :: grdepl, axi
     parameter      (mxstac=1000)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 !
@@ -98,7 +98,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     axi = lteatt(' ','AXIS','OUI')
 !
 !     SOUS-ELEMENT DE REFERENCE
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0
@@ -239,7 +239,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
             end do
 !
 !         ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
-            if (.not.iselli(elrefp) .and. ndim .eq. 2) then
+            if (.not.iselli(elrefp)) then
                 if (ino .le. nnops) pos = pos + ddlc
             else
                 pos = pos + ddlc

@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine ndcent(igeom, lsn, x, xlsn)
+interface 
+    subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
         integer :: igeom
-        real(kind=8) :: lsn(8)
-        real(kind=8) :: x(3)
-        real(kind=8) :: xlsn
+        integer :: ndim
+        real(kind=8) :: lsn(*)
+        integer :: nnc
+        real(kind=8) :: tx(3, 7)
+        real(kind=8) :: txlsn(7)
     end subroutine ndcent
-end interface
+end interface 

@@ -49,7 +49,7 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   N120_I
-        PPMILTO  N120_R
+        PPMILTO  N480_R
         PFISNO   NEUT_I
        <<  CADRE X-FEM : PPINTTO : COORDONNEES DES POINTS D INTERSECTION
                          PHEAVTO : VALEURS DE L HEAVISIDE SUR LES SS-ELTS

@@ -116,7 +116,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     parameter      (mxstac=1000)
 !
     data     nomres /'E','NU','ALPHA'/
-    data     elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data     elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data     fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
     call jemarq()
@@ -148,7 +148,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
     axi = lteatt(' ','AXIS','OUI')
 !
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0
@@ -175,7 +175,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     if (iret .ne. 0) tref = 0.d0
 !
 !     TEMPERATURE AUX NOEUDS PARENT
-    do ino = 1, nnop
+    do  ino = 1, nnop
         call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
                     1, tpn(ino), iret)
         if (iret .ne. 0) tpn(ino) = 0.d0
@@ -183,30 +183,30 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !     FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT ET PAR FISSURE
 !
-    do ifiss = 1, nfiss
+    do  ifiss = 1, nfiss
         he(ifiss) = zi(jheavt-1+ncomp*(ifiss-1)+ise)
     end do
 !
 !     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
 !     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
     if (nfiss .eq. 1) then
-        do ino = 1, nnop
+        do 40 ino = 1, nnop
             fisno(ino,1) = 1
-        end do
+40      continue
     else
-        do ig = 1, nfh
+        do 50 ig = 1, nfh
 !    ON REMPLIT JUSQU'A NFH <= NFISS
-            do ino = 1, nnop
+            do 60 ino = 1, nnop
                 fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-            end do
-        end do
+60          continue
+50      continue
     endif
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 !     ------------------------------------------------------------------
 !
-    do kpg = 1, npgbis
+    do 10 kpg = 1, npgbis
 !
 !       INITIALISATIONS
         call vecini(9, 0.d0, dtdm)
@@ -265,11 +265,11 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         call vecini(ndim, 0.d0, xg)
-        do i = 1, ndim
-            do n = 1, nno
+        do 101 i = 1, ndim
+            do 102 n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
-            end do
-        end do
+102          continue
+101      continue
 !
 !       CALCUL DES FF
         call reeref(elrefp, axi, nnop, nnops, zr(igeom),&
@@ -281,10 +281,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                                     poids)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                                     poids)
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, poids)
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, poids)
 !
 !       --------------------------------------
 !       1) COORDONNÉES POLAIRES ET BASE LOCALE
@@ -295,31 +293,31 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(3, 0.d0, e2)
         lsng=0.d0
         lstg=0.d0
-        do ino = 1, nnop
+        do 100 ino = 1, nnop
             lsng = lsng + lsn(ino) * ff(ino)
             lstg = lstg + lst(ino) * ff(ino)
-            do i = 1, ndim
+            do 110 i = 1, ndim
                 e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff( ino)
                 e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff( ino)
-            end do
-        end do
+110          continue
+100      continue
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
 !       ET DU DEPL. RADIAL
         if (axi) then
             r = 0.d0
             ur = 0.d0
-            do ino = 1, nnop
+            do 114 ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
                 ur = ur + ff(ino)*zr(idepl-1+ddls*(ino-1)+1)
-                do ig = 1, nfh
+                do 115 ig = 1, nfh
                     ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim* ig+1) *he(fisno(ino,ig))
-                end do
-                do ig = 1, nfe
+115              continue
+                do 116 ig = 1, nfe
                     ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*( nfh+ig)+1) *fe(ig)
-                end do
+116              continue
 !
-            end do
+114          continue
 !
             if (axi) then
                 poids= poids * r
@@ -336,18 +334,18 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
         call vecini(9, 0.d0, p)
-        do i = 1, ndim
+        do 120 i = 1, ndim
             p(i,1)=e1(i)
             p(i,2)=e2(i)
             p(i,3)=e3(i)
-        end do
+120      continue
 !
 !       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-        do i = 1, 3
-            do j = 1, 3
+        do 130 i = 1, 3
+            do 131 j = 1, 3
                 invp(i,j)=p(j,i)
-            end do
-        end do
+131          continue
+130      continue
 !
 !       COORDONNÉES POLAIRES DU POINT
         rg=sqrt(lsng**2+lstg**2)
@@ -377,7 +375,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(ndim, 0.d0, depla)
 !
 !       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
-        do in = 1, nnop
+        do 200 in = 1, nnop
             if (in .le. nnops) then
                 nnon=0
                 ddln=ddls
@@ -389,45 +387,45 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
             cpt=0
 !         DDLS CLASSIQUES
-            do i = 1, ndim
+            do 201 i = 1, ndim
                 cpt=cpt+1
                 depla(i) = depla(i) + ff(in) * zr(idepl-1+indenn+cpt)
-            end do
+201          continue
 !         DDLS HEAVISIDE
-            do ig = 1, nfh
-                do i = 1, ndim
+            do 202 ig = 1, nfh
+                do 203 i = 1, ndim
                     cpt=cpt+1
                     depla(i) = depla(i) + he(fisno(in,ig)) * ff(in) * zr(idepl-1+indenn+cpt)
-                end do
-            end do
+203              continue
+202          continue
 !         DDL ENRICHIS EN FOND DE FISSURE
-            do ig = 1, nfe
-                do i = 1, ndim
+            do 204 ig = 1, nfe
+                do 205 i = 1, ndim
                     cpt=cpt+1
                     depla(i) = depla(i) + fe(ig) * ff(in) * zr(idepl- 1+indenn+cpt)
-                end do
-            end do
-        end do
+205              continue
+204          continue
+200      continue
 !
 !       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
         call xderfe(rg, tg, dgdpo)
 !
 !       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
-        do i = 1, 4
+        do 210 i = 1, 4
             dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
             dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
             dgdlo(i,3)=0.d0
-        end do
+210      continue
 !
 !       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
-        do i = 1, 4
-            do j = 1, 3
+        do 220 i = 1, 4
+            do 221 j = 1, 3
                 dgdgl(i,j)=0.d0
-                do k = 1, 3
+                do 222 k = 1, 3
                     dgdgl(i,j)=dgdgl(i,j)+dgdlo(i,k)*invp(k,j)
-                end do
-            end do
-        end do
+222              continue
+221          continue
+220      continue
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
@@ -440,29 +438,29 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     eps, grad)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
-        do i = 1, ndim
-            do j = 1, ndim
+        do 230 i = 1, ndim
+            do 231 j = 1, ndim
                 dudm(i,j)=grad(i,j)
-            end do
-        end do
+231          continue
+230      continue
 !
 !       ------------------------------------------------
 !       3) CALCUL DU CHAMP THETA ET DE SA DERIVEE (DTDM)
 !       ------------------------------------------------
 !
-        do i = 1, ndim
+        do 300 i = 1, ndim
 !
             theta(i)=0.d0
-            do ino = 1, nnop
+            do 301 ino = 1, nnop
                 theta(i) = theta(i) + ff(ino) * zr(ithet-1+ndim*(ino- 1)+i)
-            end do
+301          continue
 !
-            do j = 1, ndim
-                do ino = 1, nnop
+            do 310 j = 1, ndim
+                do 311 ino = 1, nnop
                     dtdm(i,j) = dtdm(i,j) + zr(ithet-1+ndim*(ino-1)+i) * dfdi(ino,j)
-                end do
-            end do
-        end do
+311              continue
+310          continue
+300      continue
 !
 !       --------------------------------------------------
 !       4) CALCUL DU CHAMP DE TEMPERATURE ET DE SA DERIVEE
@@ -475,12 +473,12 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         ttrgu = tempg - tref
         ttrgv = 0.d0
 !
-        do i = 1, ndim
+        do 400 i = 1, ndim
             tgudm(i)=0.d0
-            do ino = 1, nnop
+            do 401 ino = 1, nnop
                 tgudm(i) = tgudm(i) + dfdi(ino,i) * tpn(ino)
-            end do
-        end do
+401          continue
+400      continue
 !
 !       ------------------------------------------------
 !       5) CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
@@ -494,13 +492,13 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             lcour=.true.
 !         RECUPERATION DU TENSEUR DE COURBURE
             call jevech('PCOURB', 'L', icour)
-            do i = 1, ndim
-                do j = 1, ndim
+            do 500 i = 1, ndim
+                do 501 j = 1, ndim
                     courb(i,1,j)=zr(icour-1+ndim*(i-1)+j)
                     courb(i,2,j)=zr(icour-1+ndim*(i+3-1)+j)
                     courb(i,3,j)=zr(icour-1+ndim*(i+6-1)+j)
-                end do
-            end do
+501              continue
+500          continue
         endif
 !
         call chauxi(ndim, mu, ka, rg, tg,&
@@ -511,13 +509,13 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(ndim, 0.d0, u1)
         call vecini(ndim, 0.d0, u2)
         call vecini(ndim, 0.d0, u3)
-        do i = 1, ndim
-            do j = 1, ndim
+        do 510 i = 1, ndim
+            do 511 j = 1, ndim
                 u1(i) = u1(i) + p(i,j) * u1l(j)
                 u2(i) = u2(i) + p(i,j) * u2l(j)
                 if (ndim .eq. 3) u3(i) = u3(i) + p(i,j) * u3l(j)
-            end do
-        end do
+511          continue
+510      continue
 !
 !
 !       -----------------------------------------------------------
@@ -525,15 +523,15 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       -----------------------------------------------------------
 !
         call vecini(12, 0.d0, dfdm)
-        do ino = 1, nnop
-            do j = 1, ndim
-                do k = 1, ndim
+        do 600 ino = 1, nnop
+            do 610 j = 1, ndim
+                do 620 k = 1, ndim
                     dfdm(j,k) = dfdm(j,k) + fno(ndim*(ino-1)+j)*dfdi( ino,k)
-                end do
+620              continue
 !           VALEUR DE LA FORCE DANS LA QUATRIEME COLONNE :
                 dfdm(j,4) = dfdm(j,4) + fno(ndim*(ino-1)+j)*ff(ino)
-            end do
-        end do
+610          continue
+600      continue
 !
         if (axi) then
             dfdm(3,3)= dfdm(1,4)/r
@@ -555,20 +553,20 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(12, 0.d0, du1dme)
         call vecini(12, 0.d0, du2dme)
         call vecini(12, 0.d0, du3dme)
-        do i = 1, ndim
-            do j = 1, ndim
+        do 700 i = 1, ndim
+            do 701 j = 1, ndim
                 dudme(i,j) = dudm(i,j)
                 dtdme(i,j) = dtdm(i,j)
                 du1dme(i,j) = du1dm(i,j)
                 du2dme(i,j) = du2dm(i,j)
                 du3dme(i,j) = du3dm(i,j)
-            end do
+701          continue
             dudme(i,4) = depla(i)
             dtdme(i,4) = theta(i)
             du1dme(i,4) = u1(i)
             du2dme(i,4) = u2(i)
             du3dme(i,4) = u3(i)
-        end do
+700      continue
 !
         if (axi) then
             dudme(3,3) = dudme(1,4)/r
@@ -644,7 +642,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
         endif
 !
-    end do
+10  end do
 !
 !     ------------------------------------------------------------------
 !     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA

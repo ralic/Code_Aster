@@ -52,51 +52,57 @@ subroutine abscvl(ndim, tabar, xg, s)
 !     TABAR : XE2=-1  /  XE1= 1  /  XE3= 0
 !     XE2 ETANT LE POINT D'ORIGINE
 !
-!      RTECHERCHE DE LA MONOTONIE SUR X ET Y
-    k=0
-  1 continue
-    k=k+1
-    a = tabar(k)+tabar(ndim+k)-2*tabar(2*ndim+k)
-    b = tabar(ndim+k)-tabar(k)
+!      RECHERCHE DE LA MONOTONIE SUR CHAQUE AXE
+
+!   recherche d'un axe sur lequel projete le SE3
+    xgg=0.d0
+
+    do 10 k=1, ndim
+      a = tabar(k)+tabar(ndim+k)-2*tabar(2*ndim+k)
+      b = tabar(ndim+k)-tabar(k)
 !
-    if (abs(a) .le. 1.d-6) then
+      if (abs(a) .le. 1.d-6) then
         if (abs(b) .gt. 1.d-6) then
 !         JE BALANCE SUR K
-            tabelt(1)=tabar(k)
-            tabelt(2)=tabar(ndim+k)
-            tabelt(3)=tabar(2*ndim+k)
-            xgg =xg(k)
-            goto 2
+          tabelt(1)=tabar(k)
+          tabelt(2)=tabar(ndim+k)
+          tabelt(3)=tabar(2*ndim+k)
+          xgg =xg(k)
+!         on a trouve un axe sur lequel projete le SE3
+          exit
         else if (abs(b).le.1.d-6) then
-            if (k .eq. 1) then
-                goto 1
-            else if (k.eq.2) then
-!             LES 3 POINTS SONT CONFONDUS!
-                call utmess('F', 'XFEM_66')
-            endif
+          if (k .lt. ndim) then
+!           on teste l'axe suivant
+            goto 10
+          else if (k.eq.ndim) then
+!           LES 3 POINTS SONT CONFONDUS!
+            call utmess('F', 'XFEM_66')
+          endif
         endif
-    else if (abs(a).gt.1.d-6) then
+      else if (abs(a).gt.1.d-6) then
         ksider = -b/a
         if (ksider .gt. -1.d0 .and. ksider .lt. 1.d0) then
-            if (k .eq. 1) then
-                goto 1
-            else if (k.eq.2) then
-!            L'ARETE EST TROP ARRONDIE :
-!            IL Y A 2 SOLUTIONS SUIVANT X ET 2 SUIVANT Y
-                call utmess('F', 'XFEM_66')
-            endif
+          if (k .lt. ndim) then
+!           on teste l'axe suivant
+            cycle
+          else if (k.eq.ndim) then
+!           L'ARETE EST TROP ARRONDIE :
+!           IL Y A 2 SOLUTIONS SUIVANT CHAQUE AXE
+            call utmess('F', 'XFEM_66')
+          endif
         else if (ksider.gt.1.d0 .or. ksider.lt.-1.d0) then
-            tabelt(1)=tabar(k)
-            tabelt(2)=tabar(ndim+k)
-            tabelt(3)=tabar(2*ndim+k)
-            xgg =xg(k)
-            goto 2
+          tabelt(1)=tabar(k)
+          tabelt(2)=tabar(ndim+k)
+          tabelt(3)=tabar(2*ndim+k)
+          xgg =xg(k)
+!         on a trouve un axe sur lequel projete le SE3
+          exit
         endif
-    endif
+      endif
 !
-  2 continue
+10  end do
 !
-!     ALIAS DE L'ARETE (QUADRATIQUE)
+!   ALIAS DE L'ARETE (QUADRATIQUE)
     elp='SE3'
 !
 !     CALCUL COORDONNEES DE REF (ETA) DE XGG SUR L'ARETE

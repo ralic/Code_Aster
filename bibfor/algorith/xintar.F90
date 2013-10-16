@@ -1,19 +1,14 @@
-subroutine xintar(elp, ndim, ia, tabco, tabls,&
-                  intar)
-! aslint: disable=W1306
+subroutine xintar(lsna, lsnb, lsnm, a, b,&
+                  m, ndim, intar)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
-    integer :: ia, ndim
-    character(len=8) :: elp
-    real(kind=8) :: intar(ndim), tabco(*), tabls(*)
+#include "asterfort/xnewto.h"
+    integer :: ndim
+    real(kind=8) :: lsna, lsnb, lsnm, a(3), b(3), m(3), intar(3)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,162 +30,49 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
 !                      ET LA FISSURE
 !
 !     ENTREE
-!       ELP     : TYPE DE L'ELEMENT
-!       IA      : NUMERO DE L'ARETE REPEREE SUR L'ELEMENT
-!       TABCO   : COORDONNEES DES NOEUDS DE L'ELEMENT
-!       TABLS   : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
-!
+!       LSNA    :VALEURS DES LEVELSET DES NOEUDS DE L'ELEMENT
+!       LSNB    :VALEURS DES LEVELSET DES NOEUDS DE L'ELEMENT
+!       LSNC    :VALEURS DES LEVELSET DES NOEUDS DE L'ELEMENT
+!       A       :COORDONNEES DES NOEUDS DE L'ELEMENT
+!       B       :COORDONNEES DES NOEUDS DE L'ELEMENT
+!       M       :COORDONNEES DES NOEUDS DE L'ELEMENT
+!       NDIM    :DIMENSION TOPOLOGIQUE DU MAILLAGE
 !     SORTIE
-!       INTAR   : COORDONNÉES DES POINTS D'INTERSECTION
+!       INTAR   : COORDONNEES DES POINTS D'INTERSECTION
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: c1, c2, c3, a, b, c, d, sol, sol1, sol2, min, max
-    real(kind=8) :: xe(ndim), crival
-    integer :: nno
-    parameter       (crival=1.d-8)
+    character(len=8) :: elp
+    character(len=6) :: name
+    real(kind=8) :: lsnl(3), col(ndim*3)
+    real(kind=8) :: epsmax, rbid, xe(ndim), tab(8, ndim)
+    integer :: nno, itemax, i, ibid, n(3)
+    parameter       (elp='SE3')
 !
 !---------------------------------------------------------------------
 !     DEBUT
 !---------------------------------------------------------------------
     call jemarq()
 !
-    sol=0.d0
-    sol1=0.d0
-    sol2=0.d0
-    call vecini(ndim, 0.d0, xe)
+    itemax=500
+    epsmax=1.d-9
+    name='XINTAR'
+    nno=3
 !
-    if (elp .eq. 'TR6') then
-        max=1.d0
-        min=0.d0
-        if (ia .eq. 1) then
-! ARETE 1-2-4
-            c1=tabls(2)
-            c2=tabls(4)
-            c3=tabls(1)
-        else if (ia.eq.2) then
-! ARETE 2-3-5
-            c1=tabls(2)
-            c2=tabls(5)
-            c3=tabls(3)
-        else if (ia.eq.3) then
-! ARETE 3-1-6
-            c1=tabls(3)
-            c2=tabls(6)
-            c3=tabls(1)
-        endif
-        a = 2*c1-4*c2+2*c3
-        b = -c1+4*c2-3*c3
-        c = c3
+    lsnl(1)=lsna
+    lsnl(2)=lsnb
+    lsnl(3)=lsnm
 !
-    else if (elp.eq.'SE3') then
-        max=1.d0
-        min=-1.d0
-        c1=tabls(1)
-        c2=tabls(2)
-        c3=tabls(3)
-        a = c1/2+c2/2-c3
-        b = (c2-c1)/2
-        c = c3
+    do 100 i = 1, ndim
+        col(i)=a(i)
+        col(ndim+i)=b(i)
+        col(ndim*2+i)=m(i)
+100  end do
 !
-    else if (elp.eq.'QU8') then
-        max=1.d0
-        min=-1.d0
-        if (ia .eq. 1) then
-! ARETE 1-2-5
-            c1=tabls(1)
-            c2=tabls(2)
-            c3=tabls(5)
-        else if (ia.eq.2) then
-! ARETE 2-3-6
-            c1=tabls(2)
-            c2=tabls(3)
-            c3=tabls(6)
-        else if (ia.eq.3) then
-! ARETE 3-4-7
-            c1=tabls(4)
-            c2=tabls(3)
-            c3=tabls(7)
-        else if (ia.eq.4) then
-! ARETE 4-1-8
-            c1=tabls(1)
-            c2=tabls(4)
-            c3=tabls(8)
-        endif
-        a = c1/2+c2/2-c3
-        b = -c1/2+c2/2
-        c = c3
-!
-    else
-        ASSERT(1.eq.2)
-    endif
-!
-    d = b*b-4*a*c
-!
-    if (abs(a) .le. crival .and. abs(b) .gt. crival) then
-        sol=-c/b
-    else if (abs(a).gt.crival) then
-        if (abs(d) .le. r8prem()) then
-            sol=-b/(2*a)
-        else if (d.gt.r8prem()) then
-            sol1=(-b-sqrt(d))/(2*a)
-            sol2=(-b+sqrt(d))/(2*a)
-            if (sol1 .gt. min .and. sol1 .lt. max) then
-                sol=sol1
-            else
-                if (sol2 .gt. min .and. sol2 .lt. max) then
-                    sol=sol2
-                else
-                    ASSERT(1.eq.2)
-                endif
-            endif
-        else if (d.lt.-r8prem()) then
-!       LE POLYNOME N'A PAS DE SOLUTION
-            call utmess('F', 'XFEM_65')
-        endif
-    endif
-!
-    if (elp .eq. 'TR6') then
-        nno=6
-        if (ia .eq. 1) then
-! ARETE 1-2-4
-            xe(1)=sol
-        else if (ia.eq.2) then
-! ARETE 2-3-5
-            xe(1)=sol
-            xe(2)=1-xe(1)
-        else if (ia.eq.3) then
-! ARETE 3-1-6
-            xe(2)=sol
-        endif
-!
-    else if (elp.eq.'SE3') then
-        nno=3
-        xe(1)=sol
-!
-    else if (elp.eq.'QU8') then
-        nno=8
-        if (ia .eq. 1) then
-! ARETE 1-2-5
-            xe(1)=sol
-            xe(2)=-1
-        else if (ia.eq.2) then
-! ARETE 2-3-6
-            xe(1)=1
-            xe(2)=sol
-        else if (ia.eq.3) then
-! ARETE 3-4-7
-            xe(1)=sol
-            xe(2)=1
-        else if (ia.eq.4) then
-! ARETE 4-1-8
-            xe(1)=-1
-            xe(2)=sol
-        endif
-    else
-        ASSERT(1.eq.2)
-    endif
-!
-    call reerel(elp, nno, ndim, tabco, xe,&
+    call xnewto(elp, name, ibid, nno, n,&
+                ndim, [rbid], ndim, [rbid], col, lsnl,&
+                tab, ibid, ibid, rbid, itemax,&
+                epsmax, xe)
+    call reerel(elp, nno, ndim, col, xe,&
                 intar)
 !
 !---------------------------------------------------------------------

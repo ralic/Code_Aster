@@ -101,7 +101,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     integer :: irese, ddli, nnoi, indeni, ibid, nnops, fisno(nnop, nfiss), ifiss
 !
 !
-    real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), dfdi2(27)
+    real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6)
     real(kind=8) :: mu, nu(1), e(1)
     integer :: ij, l, i1, icodre(1), ncmp
     character(len=16) :: phenom
@@ -110,12 +110,11 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
     parameter      (mxstac=1000)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 !
     call jemarq()
-
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
@@ -125,7 +124,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
     grdepl=.false.
 !
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0

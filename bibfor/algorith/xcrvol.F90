@@ -24,6 +24,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/iselli.h"
 #include "asterfort/reeref.h"
@@ -47,6 +48,8 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !       RECUPERATION DES COORDONNEES DES NOEUDS DU SOUS ELEMENT
         do 80 i = 1, ndim+1
             ino2 = zi(jcnse-1+nnose*(ise-1)+i)
+            ! on ne recupere pas les noeuds milieux
+            ASSERT(ino2 .le. 2000)
             if (ino2 .gt. 1000) then
                 do 90 j = 1, ndim
                     co(i,j)=zr(jpint-1+ndim*(ino2-1000-1)+j)

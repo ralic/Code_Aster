@@ -2,7 +2,9 @@ subroutine te0539(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmtstm.h"
@@ -44,7 +46,7 @@ subroutine te0539(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     character(len=8) :: typmod(2), enr, lag
-    character(len=16) :: compor(4)
+    character(len=16) :: compor(4), elref
 !      CHARACTER*4 FAMI
     integer :: jgano, nno, npg, i, imatuu, lgpg, ndim, lgpg1, iret, nfiss
     integer :: ipoids, ivf, idfde, igeom, imate
@@ -62,6 +64,7 @@ subroutine te0539(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
+    call elref1(elref)
 !      FAMI='RIGI'
 !     MATNS MAL DIMENSIONNEE
     ASSERT(nno.le.27)
@@ -127,7 +130,8 @@ subroutine te0539(option, nomte)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. ndim .le. 2) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
+         .and..not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !

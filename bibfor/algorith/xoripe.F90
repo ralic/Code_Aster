@@ -59,6 +59,7 @@ subroutine xoripe(modele)
     integer :: ima, nbma, j, kk, i, jmofis, ifis, jnfis, nfis, iad2
     integer :: jmail, nbmail, iret, jcoor, jm3d, ibid, jvecno
     integer :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
+    integer :: nbnos, id4, id6
     integer :: jconx1, jconx2, ino, nuno, jtypma, jtmdim
     integer :: ich, jcesd(5), jcesv(5), jcesl(5), iad, nse, ise, in
     integer :: ndime, icmp, ndim, id(3), intemp, nseori, ifm, niv, nncp
@@ -70,6 +71,7 @@ subroutine xoripe(modele)
     character(len=19) :: ligrel, chs(5), chlsn
     character(len=24) :: grmape, nomob, vecnor, grp(3)
     character(len=19) :: pintto, cnseto, loncha, heav
+    logical :: quadratique
     integer :: itypbo
 !
 ! ----------------------------------------------------------------------
@@ -249,13 +251,25 @@ subroutine xoripe(modele)
 !
         itypma=zi(jtypma-1+numapr)
         call panbno(itypma, nbnott)
+        quadratique=.false.
         if (ndim .eq. 2) then
             itypbo=zi(jtypma-1+numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
             nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
             nbnose=nbnobo
+            nbnos=nbnobo
         else
-            nbnose=3
+            itypbo=zi(jtypma-1+numab)
+            call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
+            nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
+            if (nbnobo.gt.4) then 
+               nbnose=6
+               quadratique=.true.
+            else
+               nbnose=3
+               quadratique=.false.
+            endif
+            nbnos=3
         endif
 !
 !       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT
@@ -268,7 +282,7 @@ subroutine xoripe(modele)
         do ise = 1, nse
 !
 !         CO(J,IN) : JEME COORDONNEE DU INEME SOMMET DU SOUS-ELEMENT
-            do in = 1, nbnose
+            do in = 1, nbnos
                 icmp=nbnose*(ise-1)+in
                 call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
                             1, icmp, id( in))
@@ -326,6 +340,20 @@ subroutine xoripe(modele)
                 intemp=zi(jcesv(2)-1+id(s1))
                 zi(jcesv(2)-1+id(s1))=zi(jcesv(2)-1+id(s2))
                 zi(jcesv(2)-1+id(s2))=intemp
+                if (quadratique) then
+!            ON INVERSE LES NOEUDS MILIEUX 4 ET 6 EN 3D)
+!               RECUPERATION DE LA CONNECTIVITE :
+                  icmp=nbnose*(ise-1)+4
+                  call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
+                            1, icmp, id4)
+                  icmp=nbnose*(ise-1)+6
+                  call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
+                            1, icmp, id6)
+!               INVERSION  DE LA CONNECTIVITE :
+                  intemp=zi(jcesv(2)-1+id4)
+                  zi(jcesv(2)-1+id4)=zi(jcesv(2)-1+id6)
+                  zi(jcesv(2)-1+id6)=intemp
+                endif
             endif
 !
 !         ON MODIFIE HEAVISIDE SI BORD COINCIDANT AVEC INTERFACE
@@ -380,7 +408,7 @@ subroutine xoripe(modele)
     call jedetr('&&XORIPE.NU_MAILLE_3D')
     call jedetr('&&XORIPE.VECNOR')
 !
-999 continue
+999  continue
 !
     write(ifm,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES :',nseori
 !

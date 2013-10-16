@@ -53,7 +53,7 @@ MODE_LOCAL__
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
-    E22NEUTR = N120_R   ELEM__         (X[22]    )
+    E22NEUTR = N480_R   ELEM__         (X[22]    )
     E36NEUI  = N480_I   ELEM__         (X[36]    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )

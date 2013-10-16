@@ -1410,6 +1410,17 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X(120) : composante 120
 >>
     N120_R   = R    X[120]
+
+<<  N480_R Type:R Grandeur ''neutre'' de type reel
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)  : composante 1
+       ...
+       X(480) : composante 480
+>>
+    N480_R   = R    X[480]
+
 %
 %
 <<  NOMMATER Type:K8 Nom des materiaux

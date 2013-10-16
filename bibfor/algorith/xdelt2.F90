@@ -1,17 +1,21 @@
-subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
-                  tabco, jtabls, ipp, ip, delta)
-! aslint: disable=W1306
+subroutine xdelt2(elp, nno, n, ndime, ksi,&
+                  ptint, ndim, tabco, tabls, ipp, ip,&
+                  delta)
     implicit none
 !
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/elrfdf.h"
-#include "asterfort/elrfvf.h"
-    integer :: ndim, nno, jtabls, ipp, ip
-    real(kind=8) :: ksi(ndim), delta(ndim), ptint(*), tabco(*)
+#   include "jeveux.h"
+#   include "asterc/r8prem.h"
+#   include "asterfort/assert.h"
+#   include "asterfort/elraca.h"
+#   include "asterfort/elrfdf.h"
+#   include "asterfort/elrfvf.h"
+#   include "asterfort/matini.h"
+#   include "asterfort/matinv.h"
+#   include "asterfort/provec.h"
+#   include "asterfort/vecini.h"
+    integer :: ndime, ndim, nno, ipp, ip, n(3)
+    real(kind=8) :: ksi(ndime), delta(ndime), ptint(*), tabco(*), tabls(*)
     character(len=8) :: elp
-!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,11 +36,14 @@ subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
 !                    DES COORDONNEES DU PT MILIEU DE LA FISSURE
 !
 !     ENTREE
+!       ELP     : TYPE DE L'ELEMENT
+!       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
 !       NDIM    : DIMENSION TOPOLOGIQUE DU MAILLAGE
 !       KSI     : COORDONNEES DE REFERENCE DU POINT
-!       PINTER  : COORDONNÉES DES POINTS D'INTERSECTION
+!       PTINT  : COORDONNÉES DES POINTS D'INTERSECTION
 !       TABCO   : COORDONNEES DES NOEUDS DE L'ELEMENT
-!       JTABLS  : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
+!       TABLS   : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
+!       NNO     : NOMBRE DE NOEUX DE L'ELEMENT
 !
 !     SORTIE
 !       DELTA   : QUANTITE A MINIMISER
@@ -44,13 +51,20 @@ subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
 !
     integer :: nbnomx
     parameter     (nbnomx = 27)
+    integer :: nbfamx
+    parameter     (nbfamx = 20)
 !
+    character(len=8) :: fapg(nbfamx)
+    integer :: ibid, ibid2, nnos, nbfpg, nbpg(nbfamx)
+    real(kind=8) :: vol, refcoo(3*nbnomx)
     real(kind=8) :: ff(nno), dff(3, nbnomx)
-    integer :: i, nderiv
-    real(kind=8) :: c, d, delta3, pint1(ndim), pint2(ndim)
-    real(kind=8) :: fctf, fctg
-    real(kind=8) :: d1fctf, d1fctg
-    real(kind=8) :: d2fctf, d2fctg
+    integer :: i, j, k, nderiv
+    real(kind=8) :: p(ndim), m(ndim), nor(ndim)
+    real(kind=8) :: pint1(ndim), pint2(ndim)
+    real(kind=8) :: r(ndime), det, dx
+    real(kind=8) :: jac(ndime, ndime), inv(ndime, ndime)
+    real(kind=8) :: v1(3), v2(3), nf(3)
+!
 !
 !......................................................................
 !
@@ -58,85 +72,106 @@ subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
 ! --- DANS LA MAILLE
 !
 !
-    fctf = 0.d0
-    fctg = 0.d0
-    d1fctf = 0.d0
-    d2fctf = 0.d0
-    d1fctg = 0.d0
-    d2fctg = 0.d0
-    do 10 i = 1, ndim
+    call vecini(ndim, 0.d0, pint1)
+    call vecini(ndim, 0.d0, pint2)
+!
+    do  i = 1, ndim
         pint1(i)=ptint(ndim*(ipp-1)+i)
         pint2(i)=ptint(ndim*(ip-1)+i)
-10  end do
+    end do
 !
 !     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
     call elrfvf(elp, ksi, nbnomx, ff, nno)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfdf(elp, ksi, ndim*nbnomx, dff, nno,&
+    call elrfdf(elp, ksi, ndime*nbnomx, dff, nno,&
                 nderiv)
 !
-! --- CALCUL DE FCTF EN KSI
-! ---           FCTF : MEDIATRICE DU SEGMENT PASSANT PAR LES 2 PTS INTER
+    call vecini(ndime, 0.d0, r)
+    call matini(ndime, ndime, 0.d0, jac)
+! --- CALCUL DE R1,DERIVEES PREMIERES DE R1 EN KSI
+! ---           R1 : LEVEL SET NORMALE
+    do  j = 1, nno
+        r(1)=r(1)+ff(j)*tabls(j)
+        do 70 i = 1, ndime
+            jac(1,i)=jac(1,i)+dff(i,j)*tabls(j)
+70      continue
+    end do
+!
+    call vecini(ndim, 0.d0, m)
+    call vecini(ndim, 0.d0, nor)
+    call vecini(ndim, 0.d0, p)
+!
+! --- CALCUL DE R2 EN KSI
+! ---           R2 : PLAN MEDIATEUR PASSANT PAR LES 2 PTS INTER
 !               SPECIFIQUE NDIM=2
-!     SI SEGMENT HORIZONTAL --> MEDIATRICE VERTICALE
-    if (pint1(2) .eq. pint2(2)) then
-!        CHAQUE POINT DE LA MEDIATRICE VERIFIE X = C (SOIT X-C=0)
-!                   C = (XI+XII)/2
+!
+!     CHAQUE POINT P(X,Y,Z) DU PLAN MEDIATEUR VERIFIE NOR*MP=0
+!                   M=((XI+XII)/2,(YI+YII)/2,(ZI+ZII)/2)
 !                   X = SUM(FF*TABCO(1))
-        c = (pint1(1)+pint2(1))/2
-        do 101 i = 1, nno
-            fctf = fctf + ff(i)*tabco(ndim*(i-1)+1)
-101      continue
-        fctf = fctf - c
+!                   Y = SUM(FF*TABCO(1))
+!                   Z = SUM(FF*TABCO(1))
+!                   NOR = (XII-XI,YII-YI,ZII-ZI)
 !
-!        CALCUL DES DERIVEES PREMIERES DE F EN KSI
-        do 102 i = 1, nno
-            d1fctf = d1fctf + dff(1,i)*tabco(ndim*(i-1)+1)
-            d2fctf = d2fctf + dff(2,i)*tabco(ndim*(i-1)+1)
-102      continue
+    do  i = 1, ndim
+        do 30 j = 1, nno
+            p(i)=p(i)+ff(j)*tabco(ndim*(j-1)+i)
+30      continue
+        m(i)=0.5d0*(pint1(i)+pint2(i))
+        nor(i)=pint2(i)-pint1(i)
+        r(2)=r(2)+(p(i)-m(i))*nor(i)
+    end do
 !
-!     SI SEGMENT NON HORIZONTAL --> MEDIATRICE INCLINEE
-    else
-!     CHAQUE POINT DE LA MEDIATRICE VERIFIE Y = C*X+D (SOIT Y-C*X-D=0)
-!                   C = -(XII-XI)/YII-YI
-!                   D = Y-C*X = (YII+YI)/2 - C*(XII+XI)/2
-!                   X = SUM(FF*TABCO(1))
-!                   Y = SUM(FF*TABCO(2))
+!     CALCUL DES DERIVEES PREMIERES DE R2 EN KSI
+    do  i = 1, ndime
+        do 45 k = 1, ndim
+            dx=0.d0
+            do 50 j = 1, nno
+                dx=dx+dff(i,j)*tabco(ndim*(j-1)+k)
+50          continue
+            jac(2,i)=jac(2,i)+dx*nor(k)
+45      continue
+    end do
 !
-        c = pint1(1)-pint2(1)
-        c = c/(pint2(2)-pint1(2))
+! --- CALCUL DE R3,DR2 EN KSI EN FONTION DE LA FACE A APPARTENIR
+! ---           R3 : LA COTE DE L'ELEMENT ENFANT
 !
-        d = (pint2(2)+pint1(2))/2
-        d = d-c*(pint1(1)+pint2(1))/2
+    if (ndime .eq. 3) then
+! --- RECUPERATION DES COORDONNEES DANS L'ESPACE DE REFERENCE DES
+! --- NOEUDS DE L'ELEMENT PARENT
+        call vecini(3*nbnomx, 0.d0, refcoo)
+        call elraca(elp, ibid, ibid2, nnos, nbfpg,&
+                    fapg, nbpg, refcoo, vol)
 !
-        do 103 i = 1, nno
-            fctf = fctf + ff(i)*(tabco(ndim*(i-1)+2)- c*tabco(ndim*(i- 1)+1))
-103      continue
+! ---  CALCUL DES VECTEURS N(1)N(2) ET N(1)N(3)
+        call vecini(3, 0.d0, v1)
+        call vecini(3, 0.d0, v2)
+        do 80 i = 1, ndim
+            v1(i)=refcoo(ndim*(n(2)-1)+i) - refcoo(ndim*(n(1)-1)+i)
+            v2(i)=refcoo(ndim*(n(3)-1)+i) - refcoo(ndim*(n(1)-1)+i)
+80      continue
 !
-        fctf = fctf - d
+! calcul de la NORMALE a la face
+        call provec(v1, v2, nf)
 !
-!        CALCUL DES DERIVEES PREMIERES DE F EN KSI
-        do 104 i = 1, nno
-            d1fctf = d1fctf + dff(1,i)*(tabco(ndim*(i-1)+2)- c*tabco( ndim*(i-1)+1))
-            d2fctf = d2fctf + dff(2,i)*(tabco(ndim*(i-1)+2)- c*tabco( ndim*(i-1)+1))
-104      continue
-!
+        do 110 i = 1, ndim
+            r(3)=r(3)+nf(i)*(ksi(i)-refcoo(ndim*(n(1)-1)+i))
+            jac(3,i)=nf(i)
+110      continue
     endif
 !
-! --- CALCUL DE FCTG,D1FCTG,D2FCTG EN KSI
-! ---           FCTG : LEVEL SET NORMALE
-    do 105 i = 1, nno
-        fctg = fctg + ff(i)*zr(jtabls-1+i)
-        d1fctg = d1fctg + dff(1,i)*zr(jtabls-1+i)
-        d2fctg = d2fctg + dff(2,i)*zr(jtabls-1+i)
-105  continue
+    det=0.d0
+    call matini(ndime, ndime, 0.d0, inv)
+! --- CALCUL L'INVERSE DE LA MATRICE JACOBIENNE
+    call matinv('S', ndime, jac, inv, det)
 !
-! --- CALCUL DES QUANTITES A MINIMISER
+    call vecini(ndime, 0.d0, delta)
+! --- CALCUL DES QUANTITES A ANNULER
 !     CALCUL DE DELTAS
-    delta3 = d1fctf*d2fctg - d2fctf*d1fctg
-    ASSERT(abs(delta3).gt.r8prem())
-    delta(1) = (fctf*d2fctg - fctg*d2fctf) / delta3
-    delta(2) = (fctg*d1fctf - fctf*d1fctg) / delta3
+    do  i = 1, ndime
+        do 100 j = 1, ndime
+            delta(i)=delta(i)+inv(i,j)*r(j)
+100      continue
+    end do
 !
 end subroutine

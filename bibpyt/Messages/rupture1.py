@@ -277,13 +277,13 @@ ou à partir des contraintes recalculées avec la loi de comportement
 hypothèses.
 """),
 
-#43: _(u"""
-#Le calcul de G avec une modélisation X-FEM n'est pas possible avec une loi de comportement
-#élastoplastique.
-#--> Risques & conseils :
-#Remplacer si possible le comportement élastoplastique par un comportement
-#élastique non linéaire.
-#"""),
+43: _(u"""
+Le calcul de G avec une modélisation X-FEM n'est pas possible avec une loi de comportement
+élastoplastique.
+--> Risques & conseils :
+Remplacer si possible le comportement élastoplastique par un comportement
+élastique non linéaire.
+"""),
 
 44: _(u"""
 Les paramètres K1 et/ou K2 et/ou G sont absents du tableau des facteurs d'intensité des

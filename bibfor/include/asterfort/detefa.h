@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pipeba(ndim, mate, sup, sud, vim,&
-                      dtau, copilo)
-        integer :: ndim
-        integer :: mate
-        real(kind=8) :: sup(ndim)
-        real(kind=8) :: sud(ndim)
-        real(kind=8) :: vim
-        real(kind=8) :: dtau
-        real(kind=8) :: copilo(2, 3)
-    end subroutine pipeba
+    subroutine detefa(nnose, pi1, pi2, it, typma,&
+                  ainter, cnset, n)
+        integer :: nnose
+        integer :: pi1
+        integer :: pi2
+        integer :: it
+        character(len=8) :: typma
+        real(kind=8) :: ainter(*)
+        integer :: cnset(*)
+        integer :: n(3)
+    end subroutine detefa
 end interface

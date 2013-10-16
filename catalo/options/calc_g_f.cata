@@ -54,7 +54,7 @@ OPTION__
         PAINTER  N120_R
         PCFACE   N120_I
         PLONGCO  N120_I
-        PPMILTO  N120_R
+        PPMILTO  N480_R
         PBASECO  N120_R
    OUT__
 PGTHETA G ELEM__

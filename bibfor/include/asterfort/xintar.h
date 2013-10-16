@@ -16,13 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xintar(elp, ndim, ia, tabco, tabls,&
-                      intar)
+    subroutine xintar(lsna, lsnb, lsnm, a, b,&
+                      m, ndim, intar)
         integer :: ndim
-        character(len=8) :: elp
-        integer :: ia
-        real(kind=8) :: tabco(*)
-        real(kind=8) :: tabls(*)
-        real(kind=8) :: intar(ndim)
+        real(kind=8) :: lsna
+        real(kind=8) :: lsnb
+        real(kind=8) :: lsnm
+        real(kind=8) :: a(3)
+        real(kind=8) :: b(3)
+        real(kind=8) :: m(3)
+        real(kind=8) :: intar(3)
     end subroutine xintar
 end interface

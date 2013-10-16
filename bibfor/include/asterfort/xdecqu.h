@@ -17,14 +17,13 @@
 !
 interface
     subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
-                      jgrlsn, igeom, pinter, ninter, npts,&
-                      ainter, pmilie, nmilie, mfis)
+                      igeom, pinter, ninter, npts, ainter,&
+                      pmilie, nmilie, mfis)
         integer :: ndim
         integer :: nnose
         integer :: it
         integer :: cnset(*)
         integer :: jlsn
-        integer :: jgrlsn
         integer :: igeom
         real(kind=8) :: pinter(*)
         integer :: ninter

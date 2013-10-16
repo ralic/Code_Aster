@@ -127,10 +127,12 @@ MAILLE__ TRIA6      6       DIM__  2   CODE__  'TR6'
          FAMILLE__ FPG3NOS     6
          FAMILLE__ FPG4        4
          FAMILLE__ FPG6        6
+         FAMILLE__ FPG7        7
          FAMILLE__ FPG12       12
          FAMILLE__ FPG13       13
          FAMILLE__ FPG16       16
          FAMILLE__ XFEM72      72
+         FAMILLE__ SIMP        6
 
 MAILLE__ TRIA66     12      DIM__  2   CODE__  'T66'
    ELREFE__ V_TRIA66

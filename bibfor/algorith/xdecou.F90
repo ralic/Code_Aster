@@ -52,7 +52,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !       LSN      : VALEURS DE LA LEVEL SET NORMALE
 !       FISCO    :
 !       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
-!       NFIS ???     : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
+!       NFIS     : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
 !       NFISS
 !       IFISS
 !       LONREF   :
@@ -70,11 +70,11 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     real(kind=8) :: rbid, rbid2(ndim)
     integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
     integer :: ia, i, j, ipt, ibid, pp, pd, k, ptmax
-    integer :: ndime, iter
+    integer :: ndime, iter, a1, a2
     integer :: mxstac
     character(len=8) :: typma
     integer :: zxain
-    logical :: lbid, axi
+    logical :: lbid, axi, papillon
     parameter      (mxstac=1000)
 !
 ! ----------------------------------------------------------------------
@@ -307,5 +307,33 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 203      continue
 200  end do
 !
+!      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
+!      IP1 IP2 ET IP3 ONT UN SOMMET EN COMMUN
+!      IP1 ET IP4 N ONT PAS DE SOMMET COMMUN
+    if (ninter .eq. 4 .and. npts.eq.0) then
+        a1=nint(ainter(1))
+        do 220 ia = 2,3
+          a2=nint(ainter(zxain*(ia-1)+1))
+          papillon=.true.
+          do 224 i = 1,2
+            do 225 j = 1,2            
+              if(ar(a1,i).eq.ar(a2,j)) papillon=.false.
+225         continue          
+224       continue
+          if(papillon) then
+!        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C
+            do 226 k = 1,(zxain-1)
+              tampor(k)=ainter(zxain*(ia-1)+k)
+              ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
+              ainter(zxain*(4-1)+k)=tampor(k)
+226         continue
+            do 227 k = 1, ndim
+              tampor(k)=pinter(ndim*(ia-1)+k)
+              pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
+              pinter(ndim*(4-1)+k)=tampor(k)
+227         continue
+          endif
+220     continue
+    endif
     call jedema()
 end subroutine

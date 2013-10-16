@@ -59,30 +59,19 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     real(kind=8) :: vol, x(3*nbnomx)
     integer :: nbfpg, nbpg(nbfamx), ndiml, nnol, nnosl
 !
-    integer :: ima, ibid, ncmp, icmp, ino, isp, nno
+    integer :: ima, ncmp, icmp, ino, isp, nno
     integer :: nbma, iret
     integer :: npg, ipg, nujni, nbobj
     integer :: jces1k, jces1d, jces1l, jces1v, jces1c, iad1, nbpt1, nbsp1
     integer :: jces2d, jces2l, jces2v, iad2, nbpt2, nbsp2
     integer :: jmat, jganol, ivfl, jdfd2l, jcoopl, ipoidl, npgl, lonfam
     integer :: ifam, decal, jvr, idfdel, nufpg, avance, jnofpg
-    character(len=1) :: kbid
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=16) :: schema
     character(len=24) :: liobj(10)
     real(kind=8) :: vrpg(nbpgmx), vrno(nbnomx), sr
     complex(kind=8) :: vcpg(nbpgmx), vcno(nbnomx), sc
-!
-!
-!
-!
-    integer :: ndim
-    integer :: nnos, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
-    integer :: nblfpg
-!
-!
-!
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -133,105 +122,16 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     schema = ' '
     avance = 0
 !
-    do 110,ima = 1,nbma
-    if (zk16(jnofpg-1+ima) .eq. ' ') goto 110
-    if (schema .eq. ' ') schema = zk16(jnofpg-1+ima)
-    if (zk16(jnofpg-1+ima) .ne. schema) goto 110
+    do ima = 1, nbma
+        if (zk16(jnofpg-1+ima) .eq. ' ') goto 110
+        if (schema .eq. ' ') schema = zk16(jnofpg-1+ima)
+        if (zk16(jnofpg-1+ima) .ne. schema) goto 110
 !
-    avance = avance + 1
-    schema = zk16(jnofpg-1+ima)
-    elrf = schema(1:8)
-    fapg1 = schema(9:16)
-    zk16(jnofpg-1+ima) = ' '
-!
-!
-!
-!
-!
-!
-    if (schema(9:12) .eq. 'XFEM') then
-!
-!           3.1 : CALCUL DE LA MATRICE DE PASSAGE GA->NO
-!                 (ON NE LE FAIT QUE POUR LA 1ERE MAILLE DU SCHEMA)
-!           OUT : NPG,NNO,JMAT
-!           --------------------------------------------------------
-!
-        if (avance .eq. 1) then
-            ASSERT(schema(1:8).eq.elrf)
-            call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
-                        fapg, nbpg, x, vol)
-            ASSERT(nbfpg.lt.nbfamx)
-            nufpg = indik8(fapg1,fapg1,1,nbfpg)
-            ASSERT(nufpg.gt.0)
-            call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
-            decal = 0
-            do 145 ifam = 1, nufpg - 1
-                npgl = nbpg(ifam)
-!
-                lonfam = npgl
-                lonfam = lonfam + npgl*ndiml
-                lonfam = lonfam + npgl*nnol
-                lonfam = lonfam + npgl*nnol*ndiml
-                lonfam = lonfam + npgl*nnol*ndiml*ndiml
-                lonfam = lonfam + 2 + npgl*nnol
-!
-                decal = decal + lonfam
-145          continue
-!
-            npgl = nbpg(nufpg)
-!
-            ipoidl = jvr + decal
-            jcoopl = ipoidl + npgl
-            ivfl = jcoopl + npgl*ndiml
-            idfdel = ivfl + npgl*nnol
-            jdfd2l = idfdel + npgl*nnol*ndiml
-            jganol = jdfd2l + npgl*nnol*ndiml*ndiml
-!
-            ndim = ndiml
-            nnos = nnosl
-            nno = nnol
-            npg = npgl
-            ipoids = ipoidl
-            jcoopg = jcoopl
-            ivf = ivfl
-            idfde = idfdel
-            jdfd2 = jdfd2l
-            jgano = jganol
-!
-            ASSERT(nno.le.nbnomx)
-            ASSERT(npg.le.nbpgmx)
-        endif
-!
-        nbpt1 = zi(jces1d-1+5+4* (ima-1)+1)
-        nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
-        nbpt2 = zi(jces2d-1+5+4* (ima-1)+1)
-        nbsp2 = zi(jces2d-1+5+4* (ima-1)+2)
-        ASSERT(nbsp1.eq.nbsp2)
-        ASSERT(nbpt2.eq.nno)
-!
-!
-        do 300 icmp = 1, ncmp
-            call cesexi('C', jces1d, jces1l, ima, 1,&
-                        1, icmp, iad1)
-            if (iad1 .le. 0) goto 300
-            do 290 isp = 1, nbsp1
-                do 280 ino = 1, nno
-                    call cesexi('C', jces2d, jces2l, ima, ino,&
-                                isp, icmp, iad2)
-                    ASSERT(iad2.lt.0)
-                    if (tsca .eq. 'R') then
-                        zr(jces2v-1-iad2) = 0.d0
-                    else
-                        zc(jces2v-1-iad2) = 0.d0
-                    endif
-                    zl(jces2l-1-iad2) = .true.
-280              continue
-290          continue
-300      continue
-        goto 110
-!
-!
-    else
+        avance = avance + 1
+        schema = zk16(jnofpg-1+ima)
+        elrf = schema(1:8)
+        fapg1 = schema(9:16)
+        zk16(jnofpg-1+ima) = ' '
 !
 !
 !           3.1 : CALCUL DE LA MATRICE DE PASSAGE GA->NO
@@ -249,7 +149,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
             call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
 !
             decal = 0
-            do 20 ifam = 1, nufpg - 1
+            do ifam = 1, nufpg - 1
                 npgl = nbpg(ifam)
 !
                 lonfam = npgl
@@ -260,7 +160,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
                 lonfam = lonfam + 2 + npgl*nnol
 !
                 decal = decal + lonfam
- 20         continue
+            end do
 !
             npgl = nbpg(nufpg)
 !
@@ -289,15 +189,15 @@ subroutine cesgno(ces1, celfpg, base, ces2)
         ASSERT(nbpt2.eq.nno)
 !
 !
-        do 100 icmp = 1, ncmp
+        do icmp = 1, ncmp
             call cesexi('C', jces1d, jces1l, ima, 1,&
                         1, icmp, iad1)
             if (iad1 .le. 0) goto 100
 !
-            do 90 isp = 1, nbsp1
+            do isp = 1, nbsp1
 !
 !               -- RECOPIE DANS VXPG :
-                do 30 ipg = 1, npg
+                do ipg = 1, npg
                     call cesexi('C', jces1d, jces1l, ima, ipg,&
                                 isp, icmp, iad1)
                     ASSERT(iad1.gt.0)
@@ -307,32 +207,31 @@ subroutine cesgno(ces1, celfpg, base, ces2)
                     else
                         vcpg(ipg) = zc(jces1v-1+iad1)
                     endif
- 30             continue
+                end do
 !
 !               -- MULTIPLICATION :
                 if (tsca .eq. 'R') then
-                    do 50 ino = 1, nno
+                    do ino = 1, nno
                         sr = 0.d0
-                        do 40 ipg = 1, npg
+                        do ipg = 1, npg
                             sr = sr + zr(jmat-1+ (ipg-1)*npg+ino)* vrpg(ipg)
- 40                     continue
+                        end do
                         vrno(ino) = sr
- 50                 continue
+                    end do
 !
                 else
-                    do 70 ino = 1, nno
+                    do ino = 1, nno
                         sc = dcmplx(0.d0,0.d0)
-                        do 60 ipg = 1, npg
+                        do ipg = 1, npg
                             sc = sc + zr(jmat-1+ (ipg-1)*npg+ino)* vcpg(ipg)
- 60                     continue
+                        end do
                         vcno(ino) = sc
- 70                 continue
+                    end do
                 endif
-
 !
 !
 !               -- RECOPIE DE VXNO :
-                do 80 ino = 1, nno
+                do ino = 1, nno
                     call cesexi('C', jces2d, jces2l, ima, ino,&
                                 isp, icmp, iad2)
                     ASSERT(iad2.lt.0)
@@ -342,16 +241,13 @@ subroutine cesgno(ces1, celfpg, base, ces2)
                         zc(jces2v-1-iad2) = vcno(ino)
                     endif
                     zl(jces2l-1-iad2) = .true.
-80              continue
-90          continue
-100      continue
+                end do
+            end do
+100         continue
+        end do
 !
-!
-    endif
-!
-!
-!
-    110 end do
+110     continue
+    end do
     if (avance .gt. 0) goto 10
 !
 !

@@ -16,17 +16,22 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xnewto(elp, name, num, nno, ndim,&
-                      ptint, tabco, jtabls, ipp, ip,&
-                      s, itemax, epsmax, ksi)
+    subroutine xnewto(elp, name, num, nno, n,&
+                      ndime, ptint, ndim, tabco, pmilie, tabls,&
+                      tab, ipp, ip, s, itemax,&
+                      epsmax, ksi)
+        integer :: ndime
         integer :: ndim
         character(len=8) :: elp
         character(len=6) :: name
         integer :: num
         integer :: nno
+        integer :: n(3)
         real(kind=8) :: ptint(*)
         real(kind=8) :: tabco(*)
-        integer :: jtabls
+        real(kind=8) :: pmilie(*)
+        real(kind=8) :: tabls(*)
+        real(kind=8) :: tab(8, ndim)
         integer :: ipp
         integer :: ip
         real(kind=8) :: s

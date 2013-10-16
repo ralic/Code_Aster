@@ -96,7 +96,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
     integer :: ibid, nbsig, idecpg, jtab(2), ncomp, iret
     integer :: irese, nno, ig, ifiss, fisno(nnop, nfiss)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 !     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
@@ -114,7 +114,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
                 ibid, ibid, ibid, ibid, ibid)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0

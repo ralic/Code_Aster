@@ -47,21 +47,17 @@ subroutine xmilar(ndim, pinter, tabar, areint, milara,&
     real(kind=8) :: c(ndim)
     real(kind=8) :: s, sc, s1
     real(kind=8) :: ksi1, ksia(ndim), ksib(ndim)
-    integer :: k, j, nno
+    integer :: k, nno
     character(len=8) :: elp
     parameter     (elp='SE3', nno=3)
 !
 ! --------------------------------------------------------------------
-    call jemarq()
+    call jemarq()   
 !
 !     RECUPERATION DES COORDONNES DU PT INTER
-    do 100 j = 1, 3
-        if (areint .eq. j) then
-            do 200 k = 1, ndim
-                c(k)=pinter((j-1)*ndim+k)
-200          continue
-        endif
-100  end do
+      do 200 k = 1, ndim
+          c(k)=pinter((areint-1)*ndim+k)
+200    continue
 !
 !     TABAR : KSI2=-1  /  KSI1= 1  /  KSI3= 0
 !     KSI2 ETANT LE POINT D'ORIGINE

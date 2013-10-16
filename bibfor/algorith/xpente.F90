@@ -1,12 +1,10 @@
-subroutine xpente(pl, cnse, n1, n2, n3,&
-                  n4, n5, n6)
+subroutine xpente(pl, cnse, n)
     implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: pl, n1, n2, n3, n4, n5, n6, cnse(6, 4)
-!     ------------------------------------------------------------------
+    integer :: pl, n(18), cnse(6, 10)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +27,7 @@ subroutine xpente(pl, cnse, n1, n2, n3,&
 !
 !     ENTREE
 !       PL                : PLACE DU 1ER SOUS-TETRA DANS CNSE
-!       N1,N2,N3,N4,N5,N6 : NUMEROS DES NOEUDS DU PENTA
+!       N1,N2,N3,N4,...N18 : NUMEROS DES NOEUDS DU PENTA
 !
 !     SORTIE
 !       CNSE      : CONNECTIVITE NOMBRE DE SOUS-ÉLÉMENTS (TÉTRAS)
@@ -40,20 +38,39 @@ subroutine xpente(pl, cnse, n1, n2, n3,&
     call jemarq()
 !
 !     ON REMPLIT 3 SOUS TETRAS DE CNSE À PARTIR DE LA PLACE PL
-    cnse(pl,1)=n1
-    cnse(pl,2)=n5
-    cnse(pl,3)=n2
-    cnse(pl,4)=n6
 !
-    cnse(pl+1,1)=n4
-    cnse(pl+1,2)=n5
-    cnse(pl+1,3)=n1
-    cnse(pl+1,4)=n6
+    cnse(pl,1)=n(1)
+    cnse(pl,2)=n(5)
+    cnse(pl,3)=n(2)
+    cnse(pl,4)=n(6)
+    cnse(pl,5)=n(16)
+    cnse(pl,6)=n(11)
+    cnse(pl,7)=n(7)
+    cnse(pl,8)=n(18)
+    cnse(pl,9)=n(14)
+    cnse(pl,10)=n(17)
 !
-    cnse(pl+2,1)=n1
-    cnse(pl+2,2)=n2
-    cnse(pl+2,3)=n3
-    cnse(pl+2,4)=n6
+    cnse(pl+1,1)=n(4)
+    cnse(pl+1,2)=n(5)
+    cnse(pl+1,3)=n(1)
+    cnse(pl+1,4)=n(6)
+    cnse(pl+1,5)=n(13)
+    cnse(pl+1,6)=n(16)
+    cnse(pl+1,7)=n(10)
+    cnse(pl+1,8)=n(15)
+    cnse(pl+1,9)=n(14)
+    cnse(pl+1,10)=n(18)
+!
+    cnse(pl+2,1)=n(1)
+    cnse(pl+2,2)=n(2)
+    cnse(pl+2,3)=n(3)
+    cnse(pl+2,4)=n(6)
+    cnse(pl+2,5)=n(7)
+    cnse(pl+2,6)=n(8)
+    cnse(pl+2,7)=n(9)
+    cnse(pl+2,8)=n(18)
+    cnse(pl+2,9)=n(17)
+    cnse(pl+2,10)=n(12)
 !
     call jedema()
 end subroutine

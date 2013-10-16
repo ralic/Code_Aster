@@ -482,10 +482,11 @@ if type_cas == 'cas_test' :
    TEST_TABLE(CRITERE='RELATIF',
               REFERENCE='SOURCE_EXTERNE',
               PRECISION=0.050000000000000003,
-              VALE_CALC=1.687273117724E-04,
+              VALE_CALC=1.6871621587627E-04,
               VALE_REFE=1.7330000000000001E-4,
               NOM_PARA='COOR_Y',
               TYPE_TEST='MAX',
               TABLE=TB_FOND,)
 
 FIN();
+

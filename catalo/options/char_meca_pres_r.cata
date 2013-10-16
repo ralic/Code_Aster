@@ -37,7 +37,7 @@ OPTION__
         PCFACE   N120_I
         PLONGCO  N120_I
         PSTANO   N120_I
-        PPMILTO  N120_R
+        PPMILTO  N480_R
         PBASECO  N120_R
         PFISNO   NEUT_I
    OUT__

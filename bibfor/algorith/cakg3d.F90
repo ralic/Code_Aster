@@ -121,7 +121,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=24) :: chthet, chtime
     character(len=24) :: abscur, pavolu, papres, pa2d3d
     character(len=24) :: chsig, chepsp, chvari, type, pepsin, livk(nbmxpa)
-    character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno
+    character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno, pmilto
 !
 ! ----------------------------------------------------------------------
 !
@@ -197,6 +197,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     cnseto = modele(1:8)//'.TOPOSE.CNS'
     heavto = modele(1:8)//'.TOPOSE.HEA'
     loncha = modele(1:8)//'.TOPOSE.LON'
+    pmilto = modele(1:8)//'.TOPOSE.PMI'
 !     ON NE PREND PAS LES LSN ET LST DU MODELE
 !     CAR LES CHAMPS DU MODELE SONT DEFINIS QUE AUTOUR DE LA FISSURE
 !     OR ON A BESOIN DE LSN ET LST MEME POUR LES
@@ -288,8 +289,10 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             lpain(26) = 'PBASECO'
             lchin(26) = modele(1:8)//'.TOPOFAC.BA'
         endif
+       lpain(27) = 'PPMILTO'
+       lchin(27) = pmilto
 !
-        nchin = 26
+        nchin = 27
 !
         ligrmo = modele//'.MODELE'
 !

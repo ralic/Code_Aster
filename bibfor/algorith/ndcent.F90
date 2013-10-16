@@ -1,12 +1,16 @@
-subroutine ndcent(igeom, lsn, x, xlsn)
+subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/matini.h"
 #include "asterfort/reereg.h"
-    integer :: igeom
-    real(kind=8) :: x(3), lsn(8), xlsn
+#include "asterfort/reerel.h"
+#include "asterfort/vecini.h"
+    integer :: igeom, nnc, ndim
+    real(kind=8) :: tx(3, 7), lsn(*), txlsn(7)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,41 +28,114 @@ subroutine ndcent(igeom, lsn, x, xlsn)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!       CALCUL DES COORDONNEES ET DE LA LSN DU NOEUD MILIEU
-!       DE LA DIAGONALE DROITE D'UN QUAD8
+!       CALCUL DES COORDONNEES ET DE LA LSN DES NOEUDS MILIEUX
+!       CENTRAUX D UN ELEMENT QUADRATIQUE
 !
 !     ENTREE
 !       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
 !       LSN      : LSN DES NOEUDS DE L'ELT PARENT
 !     SORTIE
-!       X        : COORDONNEES DU NOEUD CENTRAL (MILIEU DE L'ARETE 2-4)
-!       XLSN     : LSN DU NOEUD CENTRAL (MILIEU DE L'ARETE 2-4)
-!......................................................................
+!       X        : COORDONNEES DES NOEUDS MILIEUX CENTRAUX
+!       XLSN     : LSN AUX NOEUDS MILIEUX CENTRAUX
+!       NNC      : NOMBRE DE NOEUDS MILIEUX CENTRAUX
 !
-    integer :: i, iret, nno, ndim, nbnomx, ibid
-    real(kind=8) :: ff(8), xe(3)
+    integer :: nbnomx
+    parameter     (nbnomx = 20)
+    integer :: i, j, nnop, ibid
+    real(kind=8) :: ff(nbnomx), xlsn, xe(3)
     character(len=8) :: elp
-    parameter     (nbnomx = 8)
 !
-!......................................................................
 !
-    elp='QU8'
-    call elref4(elp, 'RIGI', ndim, nno, ibid,&
+    call elref1(elp)
+    call elref4(elp, 'RIGI', ibid, nnop, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
+    call matini(3, 7, 0.d0, tx)
+    call vecini(7, 0.d0, txlsn)
 !
-!      CALCUL DES COORDONNEES DU MILIEU DE [AB]
-    do 10 i = 1, ndim
-        x(i)=(zr(igeom-1+ndim*(2-1)+i)+zr(igeom-1+ndim*(4-1)+i))/2
-10  continue
+!     INITIALIASATION PAR DEFAUT DU NOMBRE DE NOEUDS CENTRAUX A ZERO
+!     (E.G. TRIANGLES ET TETRAHEDRES)
+    nnc=0
 !
-!     CALCUL DE LA LSN DU MILIEU DE [AB]
-    call reereg('S', elp, nno, zr(igeom), x,&
-                ndim, xe, iret)
-    call elrfvf(elp, xe, nbnomx, ff, nno)
+!     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 'H20'
+    if (nnop .eq. 20) then
+        nnc=7
+        tx(1,1)=0.d0
+        tx(2,1)=0.d0
+        tx(3,1)=-1.0
+        tx(1,2)=0.d0
+        tx(2,2)=-1.0
+        tx(3,2)=0.d0
+        tx(1,3)=1.0
+        tx(2,3)=0.d0
+        tx(3,3)=0.d0
+        tx(1,4)=0.d0
+        tx(2,4)=1.0
+        tx(3,4)=0.d0
+        tx(1,5)=-1.0
+        tx(2,5)=0.d0
+        tx(3,5)=0.d0
+        tx(1,6)=0.d0
+        tx(2,6)=0.d0
+        tx(3,6)=1.0
+        tx(1,7)=0.d0
+        tx(2,7)=0.d0
+        tx(3,7)=0.d0
 !
-    xlsn = 0
-    do 50 i = 1, nno
-        xlsn = xlsn + ff(i)*lsn(i)
-50  continue
+!     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 'P15'
+    else if (nnop.eq.15) then
+        nnc=3
+        tx(1,1)=0.d0
+        tx(2,1)=0.5
+        tx(3,1)=0.5
+        tx(1,2)=0.d0
+        tx(2,2)=0.d0
+        tx(3,2)=0.5
+        tx(1,3)=0.d0
+        tx(2,3)=0.5
+        tx(3,3)=0.d0
 !
+!     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 'P13'
+    else if (nnop.eq.13) then
+        nnc=1
+        tx(1,1)=0.d0
+        tx(2,1)=0.d0
+        tx(3,1)=0.d0
+!     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 2D 'QU8'
+    else if ((nnop.eq.8).and.(ndim.eq.2)) then
+        nnc=1
+        tx(1,1)=0.d0
+        tx(2,1)=0.d0
+!     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 3D 'QU8'
+    else if ((nnop.eq.8).and.(ndim.eq.3)) then
+        nnc=1
+        tx(1,1)=0.d0
+        tx(2,1)=0.d0
+        tx(3,1)=0.d0
+    endif
+!
+!.....................................................................
+!     CALCUL DE LA LSN DU MILIEU 
+!
+    do 10 j = 1, nnc
+        do 11 i = 1, ndim
+            xe(i)=tx(i,j)
+11      continue
+!
+        call elrfvf(elp, xe, nbnomx, ff, ibid)
+        xlsn = 0
+        do 12 i = 1, nnop
+            xlsn = xlsn + ff(i)*lsn(i)
+12      continue
+        txlsn(j)=xlsn
+10  end do
+!
+!.....................................................................
+!      CALCUL DES COORDONNES DANS L ELEMENT REEL
+    do 20 j = 1, nnc
+        call reerel(elp, nnop, ndim, zr(igeom), tx(1:ndim,j),&
+                    xe)
+        do 21 i = 1, ndim
+            tx(i,j)=xe(i)
+21      continue
+20  continue 
 end subroutine

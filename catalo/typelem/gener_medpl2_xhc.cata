@@ -91,7 +91,7 @@ MODE_LOCAL__
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
     E20NEUTR = NEUT_R   ELEM__         (X[20]    )
-    E22NEUTR = N120_R   ELEM__         (X[22]    )
+    E22NEUTR = N480_R   ELEM__         (X[22]    )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )

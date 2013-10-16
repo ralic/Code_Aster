@@ -47,7 +47,7 @@ MODE_LOCAL__
 
     E9NEUTR = N120_R    ELEM__         (X[9])
     E10NEUTR = N120_R   ELEM__         (X[10])
-    E22NEUTR = N120_R   ELEM__         (X[22])
+    E22NEUTR = N480_R   ELEM__         (X[22])
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )

@@ -36,9 +36,17 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !
     call jemarq()
 !
+! --- POUR LES TETRA10
+!
+    if (ndime .eq. 3) then
+! 
+       if (ninter.eq.3 .and. npts.eq.2) then
+            call utmess('F', 'XFEM_64')
+       endif
+!
 ! --- POUR LES TRIA6
 !
-    if (ndime .eq. 2) then
+    else if (ndime .eq. 2) then
 !
 ! PLUTOT QUE DE VERIFIER LES SEULES CONFIGURATIONS QUE L'ON RETIENT
 ! ON EXCLUT CELLES QUE L'ON NE VEUT PAS POUR AVOIR UNE MEILLEURE

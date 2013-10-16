@@ -45,7 +45,7 @@ MODE_LOCAL__
     E6NEUTI = N480_I    ELEM__         (X[6])
     E8NEUTI = N120_I    ELEM__         (X[8])
 
-    E4NEUTR = N120_R    ELEM__         (X[4])
+    E4NEUTR = N480_R    ELEM__         (X[4])
     E6NEUTR = N120_R    ELEM__         (X[6])
     E15NEUTR = N120_R    ELEM__        (X[15])
     E12NEUTR = NEUT_R   ELEM__         (X[12])

@@ -78,11 +78,12 @@ subroutine te0036(option, nomte)
     real(kind=8) :: y(3), xg(4), rbid, fe(4), xe(2), lsng, lstg, rg, tg
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
-    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(6), geomlo(81), mat(1)
+    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81), mat(1)
+    real(kind=8) :: ad(3), ae(3), af(3)
     logical :: lbid, axi
     real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
     integer :: kk
-    data          elrese /'SE2','TR3','SE3','TR3'/
+    data          elrese /'SE2','TR3','SE3','TR6'/
 !
 !-----------------------------------------------------------------------
 !     INITIALISATIONS
@@ -107,7 +108,7 @@ subroutine te0036(option, nomte)
 !     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
 !
 !     SOUS-ELEMENT DE REFERENCE
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=2
     else
         irese=0
@@ -184,7 +185,8 @@ subroutine te0036(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ier)
     if (ier .eq. 0 .and. nomte(3:4) .ne. 'AX' .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. ndim .le. 2) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
+         .and..not.iselli(elref))&
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -227,25 +229,38 @@ subroutine te0036(option, nomte)
                 c(j)=coorse(ndim*(3-1)+j)
             endif
             if (ndim .eq. 3) c(j)=coorse(ndim*(3-1)+j)
-            if (ndim .eq. 3) ac(j)=c(j)-a(j)
-        end do
+            if (ndim .eq. 3) then 
+                ac(j)=c(j)-a(j)
+                if (.not.iselli(elref)) then
+                   ad(j)=coorse(ndim*(4-1)+j)-a(j)
+                   ae(j)=coorse(ndim*(5-1)+j)-a(j)
+                   af(j)=coorse(ndim*(6-1)+j)-a(j)
+                endif
+            endif
+         end do
 !
+        call vecini(12, 0.d0, coorlo)
         if (ndime .eq. 2) then
 !         CREATION DU REPERE LOCAL 2D : (AB,Y)
             call provec(ab, ac, nd)
             call normev(nd, norme)
             call normev(ab, nab)
             call provec(nd, ab, y)
-        endif
-!
-!       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
-        if (ndime .eq. 2) then
+!       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL         
             coorlo(1)=0.d0
             coorlo(2)=0.d0
             coorlo(3)=nab
             coorlo(4)=0.d0
             coorlo(5)=ddot(3,ac,1,ab,1)
             coorlo(6)=ddot(3,ac,1,y ,1)
+            if (.not. iselli(elref)) then
+            coorlo(7)=ddot(3,ad,1,ab,1)
+            coorlo(8)=ddot(3,ad,1,y,1)
+            coorlo(9)=ddot(3,ae,1,ab,1)
+            coorlo(10)=ddot(3,ae,1,y,1)
+            coorlo(11)=ddot(3,af,1,ab,1)
+            coorlo(12)=ddot(3,af,1,y,1)
+            endif           
         else if (ndime.eq.1) then
             if (iselli(elref)) then
 !         EN LINEAIRE 2D
@@ -267,11 +282,11 @@ subroutine te0036(option, nomte)
                 coorlo(2)=0.d0
                 coorlo(3)=nab
                 coorlo(4)=0.d0
-                coorlo(5)=nab/2
+                coorlo(5)=nab/2.d0
                 coorlo(6)=0.d0
                 seg(1)=0.d0
                 seg(2)=nab
-                seg(3)=nab/2
+                seg(3)=nab/2.d0
                 call normev(ab, nab)
             endif
         endif
@@ -309,7 +324,7 @@ subroutine te0036(option, nomte)
 !         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             if (ndime .eq. 2) then
                 call dfdm2d(nno, kpg, ipoids, idfde, coorlo,&
-                            poids, rb1, rb2)
+                            poids)
             else if (ndime.eq.1) then
                 kk = (kpg-1)*nno
                 call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorlo, rb1,&

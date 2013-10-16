@@ -152,9 +152,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     incr=0
     if (lincr) incr=1
-!     if (incr .ne. 0 .and. lxfem) then
-!         call utmess('F', 'RUPTURE1_43')
-!     endif
+    if (incr .ne. 0 .and. lxfem) then
+        call utmess('F', 'RUPTURE1_43')
+    endif
 !
     if (incr .ne. 0) then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
@@ -348,18 +348,13 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !       CHAMP DE CONTRAINTE INITIALE
             if (nsig .ne. 0) then
+                lpain(nchin+1) = 'PSIGINR'
                 if (inga .eq. 0) then
-                    lpain(nchin+1) = 'PSIGINR'
                     lchin(nchin+1)=sigout
-                    nchin = nchin + 1
-                    lpain(nchin+1) = 'PSIGING'
-                    lchin(nchin+1)= chsigi
-                    nchin = nchin + 1
                 else
-                    lpain(nchin+1) = 'PSIGINR'
                     lchin(nchin+1) = chsigi
-                    nchin = nchin + 1
                 endif
+                nchin = nchin + 1
             endif
         endif
         if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F') then

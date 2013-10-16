@@ -38,6 +38,7 @@ ENTETE__ ELEMENT__ MEAXTR6_XT      MAILLE__ TRIA6
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6
 ENTETE__ ELEMENT__ MEAXQU8_XT      MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG9   NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM144  FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
+   ELREFE__  TR6       GAUSS__  RIGI=FPG6  XINT=FPG12
    ELREFE__  TR3       GAUSS__  RIGI=FPG6  XINT=FPG12
    ATTRIBUT__  XFEM=XT
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
@@ -75,7 +76,7 @@ MODE_LOCAL__
     E15NEUTR = N120_R   ELEM__         (X[15]    )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
     E20NEUTR = NEUT_R   ELEM__         (X[20]    )
-    E22NEUTR = N120_R   ELEM__         (X[22]    )
+    E22NEUTR = N480_R   ELEM__         (X[22]    )
     E36NEUI  = N480_I   ELEM__         (X[36]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4

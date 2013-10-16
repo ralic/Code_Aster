@@ -34,6 +34,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/ismali.h"
 #include "asterfort/ligrma.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -162,16 +163,14 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             nsetot = nsetot + nse
 !         AUGMENTATION DU NOMBRE DE NOUVEAUX NOEUDS (NNNTOT)
             nnntot = nnntot + zi(jcesv-1+iad+2)
-!         AUGMENTATION DU NOMBRE DE NOEUDS DANS LA CONNECTIVITE TOT
-            if (typma .eq. 'SEG3') then
-                ncotot = ncotot + nse * 3
-            else if (typma.eq.'TRIA6') then
-                ncotot = ncotot + nse * 6
-            else if (typma.eq.'QUAD8') then
-                ncotot = ncotot + nse * 6
-            else
+!         AUGMENTATION DU NOMBRE DE NOEUDS DANS LA CONNECTIVITE TOT   
+            if (ismali(typma)) then
                 ncotot = ncotot + nse * (ndime + 1)
-            endif
+            else 
+                if(ndime.eq.1) ncotot = ncotot + nse * 3
+                if(ndime.eq.2) ncotot = ncotot + nse * 6
+                if(ndime.eq.3) ncotot = ncotot + nse * 10
+            endif 
 !
 !         AUGMENTATION DE LA TAILLE DES GROUP_MA
             call xpogma(nbgma, nse, listgr, ima, jlogma)

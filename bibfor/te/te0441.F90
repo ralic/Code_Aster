@@ -57,7 +57,7 @@ subroutine te0441(option, nomte)
     character(len=16) :: phenom
     logical :: lbid
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
 !
 !-----------------------------------------------------------------------
@@ -70,7 +70,7 @@ subroutine te0441(option, nomte)
                 ibid, ibid, ibid, ibid, ibid)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0
@@ -99,7 +99,8 @@ subroutine te0441(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. ndim .le. 2) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
+        .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !

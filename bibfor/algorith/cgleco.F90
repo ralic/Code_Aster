@@ -128,9 +128,9 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
 !
 ! - No XFEM for GTP
 !
-!   if (incr .and. typfis .eq. 'FISSURE') then
-!       call utmess('F', 'RUPTURE1_43')
-!   endif
+    if (incr .and. typfis .eq. 'FISSURE') then
+        call utmess('F', 'RUPTURE1_43')
+    endif
 !
     call jedema()
 !

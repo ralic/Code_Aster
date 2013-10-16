@@ -1,17 +1,15 @@
 subroutine xinvac(elp, ndim, tabar, s, ksi)
-! aslint: disable=W1306
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterc/r8prem.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xnewto.h"
     integer :: ndim
     real(kind=8) :: s, ksi(ndim), tabar(*)
     character(len=8) :: elp
-!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,8 +40,8 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 !
     real(kind=8) :: coef1, coef2, coef3, ptint(1)
     real(kind=8) :: pt1(ndim), pt2(ndim), pt3(ndim)
-    real(kind=8) :: d, epsmax
-    integer :: itemax, i, ibid, num
+    real(kind=8) :: d, epsmax, tab(8, ndim), rbid3(3)
+    integer :: itemax, i, ibid, num, ibid3(3)
     character(len=6) :: name
 !
 !.....................................................................
@@ -63,23 +61,23 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
     call vecini(ndim, 0.d0, pt2)
     call vecini(ndim, 0.d0, pt3)
 !
-    do 101 i = 1, ndim
+    do i = 1, ndim
         pt1(i)=tabar(i)
         pt2(i)=tabar(ndim+i)
         pt3(i)=tabar(2*ndim+i)
-101  end do
+    end do
 !
-    do 102 i = 1, ndim
+    do  i = 1, ndim
         coef1 = coef1 + (pt1(i)-2*pt3(i)+pt2(i))* (pt1(i)-2*pt3(i)+ pt2(i))
-102  end do
+    end do
 !
-    do 103 i = 1, ndim
+    do i = 1, ndim
         coef2 = coef2 + (pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
-103  end do
+    end do
 !
-    do 104 i = 1, ndim
+    do  i = 1, ndim
         coef3 = coef3 + (pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
-104  end do
+    end do
 !
     d = coef2*coef2 - 4*coef1*coef3
 !
@@ -96,9 +94,10 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
             num=3
         endif
 !
-        call xnewto(elp, name, num, ibid, ndim,&
-                    ptint, tabar, ibid, ibid, ibid,&
-                    s, itemax, epsmax, ksi)
+        call xnewto(elp, name, num, ibid, ibid3,&
+                    ndim, ptint, ndim, tabar, rbid3, rbid3,&
+                    tab, ibid, ibid, s, itemax,&
+                    epsmax, ksi)
     endif
 !
     call jedema()

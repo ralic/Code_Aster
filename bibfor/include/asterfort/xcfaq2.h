@@ -15,22 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
-                      nmaabs, ptint, ninter, ainter, nface,&
-                      nptf, cface, nbtot)
+                      nmaabs, pinter, ninter, ainter, nface,&
+                      nptf, cface, nbtot, nfiss, ifiss)
         integer :: jlsn
         integer :: jlst
         integer :: jgrlsn
         integer :: igeom
         character(len=8) :: noma
         integer :: nmaabs
-        real(kind=8) :: ptint(*)
+        real(kind=8) :: pinter(*)
         integer :: ninter
         real(kind=8) :: ainter(*)
         integer :: nface
         integer :: nptf
         integer :: cface(5, 3)
         integer :: nbtot
+        integer :: nfiss
+        integer :: ifiss
     end subroutine xcfaq2
 end interface

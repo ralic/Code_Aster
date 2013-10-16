@@ -66,7 +66,7 @@ subroutine te0046(option, nomte)
     integer :: i, j, nse, ise, in, ino, ipg, kpg
     logical :: axi
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
     call jemarq()
@@ -83,7 +83,7 @@ subroutine te0046(option, nomte)
     axi = lteatt(' ','AXIS','OUI')
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0
@@ -108,7 +108,8 @@ subroutine te0046(option, nomte)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. ndim .le. 2) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
+        .and..not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PXFGEOM', 'E', jout)

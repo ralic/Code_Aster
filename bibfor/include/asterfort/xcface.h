@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
+    subroutine xcface(lsn, lst, jgrlsn, igeom,&
                       enr, nfiss, ifiss, fisco, nfisc,&
                       noma, nmaabs, pinter, ninter, ainter,&
                       nface, nptf, cface)

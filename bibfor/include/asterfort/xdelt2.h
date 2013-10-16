@@ -15,18 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
-                      tabco, jtabls, ipp, ip, delta)
+interface 
+    subroutine xdelt2(elp, nno, n, ndime, ksi,&
+                      ptint, ndim, tabco, tabls, ipp, ip,&
+                      delta)
+        integer :: ndime
         integer :: ndim
         integer :: nno
         character(len=8) :: elp
+        integer :: n(3)
         real(kind=8) :: ksi(ndim)
         real(kind=8) :: ptint(*)
         real(kind=8) :: tabco(*)
-        integer :: jtabls
+        real(kind=8) :: tabls(*)
         integer :: ipp
         integer :: ip
         real(kind=8) :: delta(ndim)
     end subroutine xdelt2
-end interface
+end interface 

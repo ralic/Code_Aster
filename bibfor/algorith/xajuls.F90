@@ -168,8 +168,19 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
             if (.not. ismali(typma)) then
                 nm=ar(ia,3)
                 nunom=zi(jconx1-1+zi(jconx2+nmaabs-1)+nm-1)
+!
+                lsna=zr(jlnsv-1+(nunoa-1)+1)
+                lsnb=zr(jlnsv-1+(nunob-1)+1)
+!
                 lsnm=zr(jlnsv-1+(nunom-1)+1)
                 lstm=zr(jltsv-1+(nunom-1)+1)
+!            REAJUSTEMENT DES CONFIGURATIONS RENTRANTES
+!                if ((lsna*lsnb).ge.0.d0.and.(lsna*lsnm).le.0.d0) &
+!                   zr(jlnsv-1+(nunom-1)+1)=0.d0
+                if (lsna.eq.0.d0.and.lsnb.eq.0.d0.and.lsnm.ne.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
+                if ((lsna*lsnm).lt.0.d0.and.(lsnb*lsnm).lt.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
+                if (lsna.eq.0.d0.and.(lsnb*lsnm).lt.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
+                if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
 !
                 if (zr(jlnsv-1+(nunoa-1)+1) .eq. 0.d0 .and. zr(jlnsv-1+( nunob-1)+1) .eq.&
                     0.d0) then

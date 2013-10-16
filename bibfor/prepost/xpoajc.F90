@@ -87,8 +87,6 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
         goto 999
     endif
 !
-    ASSERT(npg2.eq.1 .or. npg2.eq.3)
-!
     ncmp2 = zi(jcesd2-1+5+4* (nbmac +inmtot-1)+3)
 !
     ASSERT(ncmp1.eq.ncmp2)
@@ -98,7 +96,6 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
         npgv2 = zi(jcvid2-1+5+4* (nbmac +inmtot-1)+1)
         ncmv2 = zi(jcvid2-1+5+4* (nbmac +inmtot-1)+3)
 !
-        ASSERT(npgv2.eq.1 .or.npgv2.eq.3)
         ASSERT(npg2.eq.npgv2)
         ASSERT(ncmv1.le.ncmv2)
     else

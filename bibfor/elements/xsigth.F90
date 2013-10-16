@@ -63,7 +63,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
     character(len=16) :: phenom, option
 !
     parameter    (option='CHAR_MECA_TEMP_R')
-    data          elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data          elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data          fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 ! ----------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
     r8bi7(1) = 1.d0
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0

@@ -104,7 +104,7 @@ subroutine te0382(option, nomte)
     character(len=24) :: valk(2)
 !
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 ! ----------------------------------------------------------------------
@@ -158,7 +158,7 @@ subroutine te0382(option, nomte)
 !
 ! --- SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IDFSE
 !
-    if (.not.iselli(elrefe) .and. ndim .le. 2) then
+    if (.not.iselli(elrefe)) then
         irese=3
     else
         irese=0

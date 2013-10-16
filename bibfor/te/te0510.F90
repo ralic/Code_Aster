@@ -2,7 +2,6 @@ subroutine te0510(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/conare.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
@@ -55,11 +54,11 @@ subroutine te0510(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, typma, noma
+    character(len=8) :: elp, noma
     integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
     integer :: jout1, jout2, jout3, jout4, jout5, jout6, jout7
     integer :: iadzi, iazk24
-    integer :: ninter, nface, cface(5, 3), ar(12, 3), nbar, nmaabs
+    integer :: ninter, nface, cface(5, 3), nmaabs
     integer :: i, j, k, jj, nnop
     real(kind=8) :: nd(3), grlt(3), tau1(3), tau2(3), norme, ps
     real(kind=8) :: norm2, ptree(3), ptref(3), rbid, rbid6(6), rbid3(3, 3)
@@ -120,12 +119,10 @@ subroutine te0510(option, nomte)
     call jevech('PGESCLA', 'E', jout6)
 !
     call tecael(iadzi, iazk24)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     noma=zk24(iazk24)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nmaabs=zi(iadzi)
 !
-    call conare(typma, ar, nbar)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
     if (enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') then
 ! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
@@ -218,9 +215,9 @@ subroutine te0510(option, nomte)
         if (.not.iselli(elp) .and. ndim .le. 2) then
             call xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                         nmaabs, pinter, ninter, ainter, nface,&
-                        nptf, cface, nbtot)
+                        nptf, cface, nbtot, nfiss, ifiss)
         else
-            call xcface(elp, zr(jlsn), zr(jlst), jgrlsn, igeom,&
+            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom,&
                         enr, nfiss, ifiss, fisc, nfisc,&
                         noma, nmaabs, pinter, ninter, ainter,&
                         nface, nptf, cface)

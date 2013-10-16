@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
-                      jtabls, ipp, ip, milfi)
+    subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
+                      jtabco, jtabls, ipp, ip, milfi)
+        integer :: ndime
         integer :: ndim
+        integer :: n(3)
         character(len=8) :: elp
         integer :: nno
         real(kind=8) :: ptint(*)

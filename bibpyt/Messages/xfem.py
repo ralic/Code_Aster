@@ -414,12 +414,6 @@ cata_msg={
      - l'élément ne peut être découpé selon la configuration de fissure qui le traverse
 """),
 
-65: _(u"""
-  -> ---Éléments XFEM quadratiques 2D---
-     On recherche un point de la courbe d'isovaleur zéro de la level-set normale découpant l'arête
-     d'un sous élément qui n'existe pas.
-"""),
-
 66: _(u"""
   -> ---Éléments XFEM quadratiques 2D---
      Le calcul d'abscisse curviligne sur une arête quadratique ne peut aboutir pour l'une des

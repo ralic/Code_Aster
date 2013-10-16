@@ -18,7 +18,7 @@
 interface
     subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                       ninter, npts, ainter, nse, cnse,&
-                      heav, nsemax)
+                      heav, nsemax, pinter, pintt)
         integer :: nnose
         integer :: it
         integer :: cnset(*)
@@ -27,6 +27,8 @@ interface
         integer :: ninter
         integer :: npts
         real(kind=8) :: ainter(*)
+        real(kind=8) :: pinter(*)
+        real(kind=8) :: pintt(*)
         integer :: nse
         integer :: cnse(6, 6)
         real(kind=8) :: heav(*)

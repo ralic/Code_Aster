@@ -15,16 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine xpente(pl, cnse, n1, n2, n3,&
-                      n4, n5, n6)
+interface 
+    subroutine xpente(pl, cnse, n)
         integer :: pl
-        integer :: cnse(6, 4)
-        integer :: n1
-        integer :: n2
-        integer :: n3
-        integer :: n4
-        integer :: n5
-        integer :: n6
+        integer :: cnse(6, 10)
+        integer :: n(18)
     end subroutine xpente
-end interface
+end interface 

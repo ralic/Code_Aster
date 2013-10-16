@@ -21,6 +21,7 @@ subroutine te0541(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/teattr.h"
@@ -89,7 +90,8 @@ subroutine te0541(option, nomte)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. ndim .le. 2) &
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
+        .and..not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !

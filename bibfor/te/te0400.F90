@@ -60,7 +60,7 @@ subroutine te0400(option, nomte)
     character(len=8) :: elrese(6), fami(6), elrefp
     integer :: vcninx(990)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
 !
 ! ----------------------------------------------------------------------
@@ -74,7 +74,7 @@ subroutine te0400(option, nomte)
                 ibid, ibid, ibid, ibid, ibid)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
+    if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0
