@@ -89,11 +89,9 @@ Conseil :
 
 """),
 
-18 : _(u"""
-Alarme utilisateur :
-  Vous voulez imposer le ddl %(k1)s sur le noeud %(k2)s,
-  Mais ce ddl n'existe pas sur ce noeud.
-"""),
+
+
+
 
 19 : _(u"""
  problème à l'appel de ALCHML pour  %(k1)s

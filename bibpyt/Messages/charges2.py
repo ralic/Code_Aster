@@ -86,7 +86,7 @@ Pour le chargement de type LIAISON_CHAMNO, tous les coefficients donnés par le 
 """),
 
 26: _(u"""
- Il est impossible de calculer la normale de la maille %(k1)s . 
+ Il est impossible de calculer la normale de la maille %(k1)s .
  Il y a un problème dans la définition de vos mailles: des arêtes doivent être confondues.
 """),
 
@@ -126,7 +126,7 @@ Suggestion :
 """),
 
 34: _(u"""
- Les relations suivantes sont redondantes et donc supprimées en appliquant le principe de 
+ Les relations suivantes sont redondantes et donc supprimées en appliquant le principe de
 surcharge.
 """),
 
@@ -148,7 +148,7 @@ le repère local pour appliquer DDL_POUTRE.
 """),
 
 39 : _(u"""
- Le repère local que vous avez défini ne contient pas de maille attachée au noeud <%(k1)s>. 
+ Le repère local que vous avez défini ne contient pas de maille attachée au noeud <%(k1)s>.
 Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
  Revoyez la définition de votre repère local.
 """),
@@ -168,19 +168,25 @@ Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
 cas d'un modèle à %(i2)d dimensions.
 """),
 
+
+
+
+
+
 45: _(u"""
- Aucun noeud affecté ne connaît le DDL de nom <%(k1)s>
+Erreur utilisateur :
+  Vous voulez contraindre le ddl %(k1)s sur un ensemble de noeuds,
+  Mais ce ddl n'existe sur aucun de ces noeuds.
 """),
 
-
 46 : _(u"""
- Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP), 
+ Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP),
  on a un problème dans le cas 3d où les noeuds sont alignés car deux noeuds sont confondus.
 """),
 
 47 : _(u"""
- Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP), 
- on a un problème dans le cas 3d où les noeuds forment un triangle. 
+ Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP),
+ on a un problème dans le cas 3d où les noeuds forment un triangle.
  Le système résultant n'est pas inversible. Le triangle est trop distordu, revoyez votre maillage.
 """),
 
@@ -193,16 +199,16 @@ cas d'un modèle à %(i2)d dimensions.
 """),
 
 50: _(u"""
- On ne trouve pas de noeud assez près du noeud %(k1)s . 
+ On ne trouve pas de noeud assez près du noeud %(k1)s .
 """),
 
 51 : _(u"""
- Il y a un conflit dans les vis-à-vis des noeuds. 
+ Il y a un conflit dans les vis-à-vis des noeuds.
  Le noeud  %(k1)s est à la fois le vis-à-vis du noeud %(k2)s et du noeud %(k3)s.
 """),
 
 52 : _(u"""
- Il y a un conflit dans les vis-à-vis des noeuds. 
+ Il y a un conflit dans les vis-à-vis des noeuds.
  Le noeud  %(k1)s n'est l'image d'aucun noeud par la correspondance inverse.
 """),
 
