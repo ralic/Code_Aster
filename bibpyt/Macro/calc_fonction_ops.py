@@ -34,10 +34,10 @@ from Cata_Utils.t_fonction import (
     homo_support_nappe, enveloppe, fractile,
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
-from Utilitai import liss_enveloppe
-from Utilitai.gauss_process  import  ACCE2SRO,  DSP2SRO, SRO2DSP
+from Utilitai import liss_enveloppe as LISS
+from Utilitai.gauss_process import ACCE2SRO, DSP2SRO, SRO2DSP
 
-from Utilitai.Utmess import  UTMESS
+from Utilitai.Utmess import UTMESS, ASSERT
 from Macro.defi_inte_spec_ops import tocomplex
 
 def calc_fonction_ops(self, **args):
@@ -110,9 +110,9 @@ class CalcFonctionOper(object):
     def build_result(self):
         """Create the result function"""
         macr = self.macro
-        DEFI_FONCTION  = macr.get_cmd('DEFI_FONCTION')
-        IMPR_FONCTION  = macr.get_cmd('IMPR_FONCTION')
-        DEFI_NAPPE     = macr.get_cmd('DEFI_NAPPE')
+        DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        IMPR_FONCTION = macr.get_cmd('IMPR_FONCTION')
+        DEFI_NAPPE = macr.get_cmd('DEFI_NAPPE')
         macr.DeclareOut('result', macr.sd)
         # common keywords to DEFI_FONCTION & DEFI_NAPPE
         para = self.resu.para
@@ -413,35 +413,33 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
         else:
             l_freq = []
             for i in range(56):
-                l_freq.append( 0.2 + 0.050 * i)
-            for i in range( 8):
-                l_freq.append( 3.0 + 0.075 * i)
+                l_freq.append(0.2 + 0.050 * i)
+            for i in range(8):
+                l_freq.append(3.0 + 0.075 * i)
             for i in range(14):
-                l_freq.append( 3.6 + 0.100 * i)
+                l_freq.append(3.6 + 0.100 * i)
             for i in range(24):
-                l_freq.append( 5.0 + 0.125 * i)
+                l_freq.append(5.0 + 0.125 * i)
             for i in range(28):
-                l_freq.append( 8.0 + 0.250 * i)
-            for i in range( 6):
+                l_freq.append(8.0 + 0.250 * i)
+            for i in range(6):
                 l_freq.append(15.0 + 0.500 * i)
-            for i in range( 4):
-                l_freq.append(18.0 + 1.000 * i)
+            for i in range(4):
+                l_freq.append(18.0 + 1.0 * i)
             for i in range(10):
                 l_freq.append(22.0 + 1.500 * i)
             texte = []
             for i in range(len(l_freq) / 5):
                 texte.append(' %f %f %f %f %f' % tuple(l_freq[i * 5:i * 5 + 5]))
-            UTMESS('I', 'FONCT0_32', valk=os.linesep.join(texte))
+            UTMESS('I', 'FONCT0_32', vali=len(l_freq), valk=os.linesep.join(texte))
         if min(l_freq) < 1.E-10:
             UTMESS('F', 'FONCT0_43')
         self._dat['FREQ'] = l_freq
         # check
         if abs(kw['NORME']) < 1.E-10:
             UTMESS('S', 'FONCT0_33')
-        if kw['NATURE_FONC'] != 'ACCE' and kw['NATURE_FONC'] != 'DSP':
-            UTMESS('S', 'FONCT0_34')
         if kw['NATURE_FONC'] == 'DSP':
-            if kw['METHODE'] != 'RICE': UTMESS('S', 'FONCT0_35')
+            ASSERT(kw['METHODE'] == 'RICE')
 
     def _run(self):
         """SPEC_OSCI"""
@@ -450,8 +448,6 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
         l_freq, l_amor = self._dat['FREQ'], self._dat['AMOR']
         kw = self.kw
         l_fonc_f = []
-
-
         # construction de la nappe
         vale_para = l_amor
         para = {
@@ -467,73 +463,65 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
             'PROL_DROITE' : 'CONSTANT',
             'PROL_GAUCHE' : 'EXCLU',
             'NOM_RESU'    : kw['NATURE'] }
-
         if kw['NATURE'] == 'DEPL':
             ideb = 0
         elif kw['NATURE'] == 'VITE':
             ideb = 1
         else:
+            ASSERT(kw['NATURE'] == 'ACCE')
             ideb = 2
-
         if kw['METHODE'] == 'RICE':
-           # appel à DSP2SRO
-           if kw['NATURE_FONC'] != 'DSP':
-              UTMESS('S', 'FONCT0_35')
-           deuxpi=2.*math.pi
-           f_dsp=t_fonction(f_in.vale_x*deuxpi, f_in.vale_y/deuxpi, f_in.para)
-           for iamor in l_amor:
-               spectr = DSP2SRO(f_dsp, iamor, kw['DUREE'],l_freq, ideb)
-               vale_y = spectr.vale_y / kw['NORME']
-               l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+            # appel à DSP2SRO
+            ASSERT(kw['NATURE_FONC'] == 'DSP')
+            deuxpi = 2. * math.pi
+            f_dsp = t_fonction(f_in.vale_x * deuxpi, f_in.vale_y / deuxpi, f_in.para)
+            for iamor in l_amor:
+                spectr = DSP2SRO(f_dsp, iamor, kw['DUREE'],l_freq, ideb)
+                vale_y = spectr.vale_y / kw['NORME']
+                l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw['METHODE'] == 'NIGAM':
-        # appel à SPEC_OSCI
-           spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
-                                           l_freq, l_amor)
-           for iamor in range(len(l_amor)):
-               vale_y = spectr[iamor, ideb, :] / kw['NORME']
-               l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
-
+            # appel à SPEC_OSCI
+            ASSERT(kw['NATURE_FONC'] == 'ACCE')
+            spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y, l_freq, l_amor)
+            for iamor in range(len(l_amor)):
+                vale_y = spectr[iamor, ideb, :] / kw['NORME']
+                l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw['METHODE'] == 'HARMO':
-        # appel à ACCE2DSP
-           for iamor in l_amor:
-               spectr = ACCE2SRO(f_in, iamor, l_freq,ideb)
-               vale_y = spectr.vale_y / kw['NORME']
-               l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
-
+            # appel à ACCE2DSP
+            ASSERT(kw['NATURE_FONC'] == 'ACCE')
+            for iamor in l_amor:
+                spectr = ACCE2SRO(f_in, iamor, l_freq, ideb)
+                vale_y = spectr.vale_y / kw['NORME']
+                l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         self.resu = t_nappe(vale_para, l_fonc_f, para)
 
 class CalcFonction_DSP(CalcFonctionOper):
-    """DSP"""    
-    def _build_data(self):
-        """Read keywords to build the data"""
-        CalcFonctionOper._build_list_fonc(self)
-        kw = self.kw
+    """DSP"""
     def _run(self):
-        import aster_fonctions
-        """DSP""" 
+        """DSP"""
         kw = self.kw
         f_in = self._lf[0]
-        vale_freq=f_in.vale_x 
-        vale_sro=f_in.vale_y
-        F_MIN=f_in.vale_x[0]
-        f_in=t_fonction(NP.insert(vale_freq, 0, 0.0), NP.insert(vale_sro,0,0.0) , para=f_in.para)       
-        deuxpi =2.*math.pi
-        FREQ_COUP = deuxpi * kw['FREQ_COUP']
-        SRO_args={'TSM':kw['DUREE'], 'FCOUP':FREQ_COUP, 'NORME':kw['NORME'], 'AMORT':kw['AMOR_REDUIT'],'FCORNER':0.0, 'FMIN':F_MIN,}
+        vale_freq = f_in.vale_x
+        vale_sro = f_in.vale_y
+        f_min = f_in.vale_x[0]
+        f_in = t_fonction(NP.insert(vale_freq, 0, 0.0),
+                          NP.insert(vale_sro, 0, 0.0),
+                          para=f_in.para)
+        deuxpi = 2. * math.pi
+        freq_coup = deuxpi * kw['FREQ_COUP']
+        SRO_args = {
+            'TSM' : kw['DUREE'], 'FCOUP' : freq_coup, 'NORME' : kw['NORME'],
+            'AMORT' : kw['AMOR_REDUIT'], 'FCORNER' : 0.0, 'FMIN' : f_min
+        }
         if kw['FREQ_PAS'] != None:
- #             FREQ_COUP = deuxpi * kw['FREQ_COUP']
-            l_freq =None 
-            SRO_args['PAS']= kw['FREQ_PAS']
+            SRO_args['PAS'] = kw['FREQ_PAS']
         elif kw['LIST_FREQ'] != None:
             l_freq = kw['LIST_FREQ'].Valeurs()
-            assert l_freq[0]>0.0, "LIST_FREQ: il faut des valeurs >0.0"
-            SRO_args['LIST_FREQ']=l_freq
-            SRO_args['PAS']=None
-
-        f_dsp, f_sro_ref=SRO2DSP(f_in, **SRO_args ) 
-        self.resu = t_fonction(f_dsp.vale_x/deuxpi, f_dsp.vale_y * deuxpi, para=f_in.para)
-
-
+            ASSERT(l_freq[0] > 0.0, "LIST_FREQ: il faut des valeurs positives")
+            SRO_args['LIST_FREQ'] = l_freq
+            SRO_args['PAS'] = None
+        f_dsp, f_sro_ref = SRO2DSP(f_in, **SRO_args)
+        self.resu = t_fonction(f_dsp.vale_x / deuxpi, f_dsp.vale_y * deuxpi, para=f_in.para)
 
 class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
     """LISS_ENVELOP"""
@@ -545,17 +533,15 @@ class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
         """LISS_ENVELOP"""
         f_in = self._lf[0]
         kw = self.kw
-        sp_nappe = liss_enveloppe.nappe(
-            listFreq=f_in.l_fonc[0].vale_x,
-            listeTable=[f.vale_y for f in f_in.l_fonc],
-            listAmor=f_in.vale_para,
-            entete="")
-        sp_lisse = liss_enveloppe.lissage(
-            nappe=sp_nappe,
-            fmin=kw['FREQ_MIN'],
-            fmax=kw['FREQ_MAX'],
-            elarg=kw['ELARG'],
-            tole_liss=kw['TOLE_LISS'])
+        sp_nappe = LISS.nappe(listFreq=f_in.l_fonc[0].vale_x,
+                              listeTable=[f.vale_y for f in f_in.l_fonc],
+                              listAmor=f_in.vale_para,
+                              entete="")
+        sp_lisse = LISS.lissage(nappe=sp_nappe,
+                                fmin=kw['FREQ_MIN'],
+                                fmax=kw['FREQ_MAX'],
+                                elarg=kw['ELARG'],
+                                tole_liss=kw['TOLE_LISS'])
         para_fonc = f_in.l_fonc[0].para
         l_fonc_f = []
         for val in sp_lisse.listTable:

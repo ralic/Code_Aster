@@ -227,24 +227,16 @@ Remontée d'erreur (pour aider à l'analyse) :
 """),
 
 31 : _(u"""
-   Génération par défaut de 3 amortissements :[%(r1)f,%(r2)f,%(r3)f]
+   Génération par défaut de trois amortissements :[%(r1)f, %(r2)f, %(r3)f]
 """),
 
 32 : _(u"""
-   Génération par défaut de 150 fréquences :
+   Génération par défaut de %(i1)dfréquences :
    %(k1)s
 """),
 
 33 : _(u"""
    SPEC_OSCI, la norme ne peut être nulle.
-"""),
-
-34 : _(u"""
-   SPEC_OSCI, le type de la fonction doit être ACCE ou DSP.
-"""),
-
-35 : _(u"""
-   SPEC_OSCI, il faut choisir METHODE='RICE' pour une DSP.
 """),
 
 36 : _(u"""
