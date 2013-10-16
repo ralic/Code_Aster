@@ -96,8 +96,10 @@ subroutine op0188()
     call nocart(carte, 1, ncmp)
 !
 !     CREATION DE LA LISTE DES MAILLES QUI AURONT LA VALEUR 1
+!     on surdimensionne a 2 fois NBMA car au pire on a NMAFOND = NBMA 
+!     et NBMAZO = NBMA
     listma = '&&OP0188.LISTMA'
-    call wkvect(listma, 'V V I', nbma, jma)
+    call wkvect(listma, 'V V I', 2*nbma, jma)
 !
 !     -------------------------------------------------------------
 !     2) REMPLISSAGE DE LA LISTE AVEC LES MAILLES CONTENANT LE FOND
@@ -107,13 +109,19 @@ subroutine op0188()
     if (typdis .eq. 'FISSURE') then
         mafond = fiss//'.MAILFISS.MAFOND'
     else if (typdis.eq.'INTERFACE') then
-        mafond = fiss//'.MAILFISS  .HEAV'
+        mafond = fiss//'.MAILFISS.HEAV'
     else
         ASSERT(.false.)
     endif
 !
-    call jeveuo(mafond, 'L', jmafon)
-    call jelira(mafond, 'LONMAX', nmafon)
+    call jeexin(mafond, iret)
+    if (iret .eq. 0) then
+        nmafon = 0
+    else
+        call jeveuo(mafond, 'L', jmafon)
+        call jelira(mafond, 'LONMAX', nmafon)
+    endif
+!
     do i = 1, nmafon
         zi(jma-1+i)=zi(jmafon-1+i)
     end do

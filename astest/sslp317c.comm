@@ -97,9 +97,7 @@ for i_raff in range(nb_iter) :
                                      PFON_ORIG  = (-0.3, 0.25, 0.),
                                      PFON_EXTR  = (-0.1, 0.25, 0.),))
 
-   CHERR = RAFF_XFEM(FISSURE=FISS3,TYPE='ZONE',RAYON=r_raff)
-#   CHERR = RAFF_XFEM(FISSURE=(FISS1,FISS2,FISS3,FISS4),TYPE='ZONE',RAYON=r_raff)
-
+   CHERR = RAFF_XFEM(FISSURE=(FISS1,FISS2,FISS3,FISS4),TYPE='ZONE',RAYON=r_raff)
    # definition du type du maillage n+1
    MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
    DIAM[i_raff+1]=CO('DIAM_%d' % (i_raff+1))

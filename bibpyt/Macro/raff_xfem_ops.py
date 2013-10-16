@@ -217,32 +217,23 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
    # indicateur de type 'ZONE'
    elif TYPE == 'ZONE' :
 
-      # tant que la fiche 18995 n'est pas resolue,
-      # on interdit plusieurs fissures
-      assert (nbfiss==1)
-      chamout = RAFF_XFEM_ZONE(FISSURE=FISSURE[0],
-                               RAYON=args['RAYON'])
+      __CERR= [None]*nbfiss
+      list_asse = []
 
-      if nbfiss > 1 :
+      for i in range(0,nbfiss) :
+         __CERR[i] = RAFF_XFEM_ZONE(FISSURE=FISSURE[i],
+                                    RAYON=args['RAYON'])
+         list_asse.append( {'CHAM_GD' : __CERR[i],
+                            'COEF_R'  : 1.,
+                            'CUMUL'   : 'OUI',
+                            'TOUT'    : 'OUI'     })
 
-         __CERR= [None]*nbfiss
-
-         for i in range(0,nbfiss) :
-            __CERR[i] = RAFF_XFEM_ZONE(FISSURE=FISSURE[i],
-                                       RAYON=args['RAYON'])
-
-         # champ de sortie
-         chamout=CREA_CHAMP(TYPE_CHAM='CART_NEUT_R',
-                            OPERATION='ASSE',
-                            MAILLAGE=MA,
-                            ASSE=(_F(CHAM_GD=__CERR[0],
-                                     COEF_R=1.,
-                                     TOUT='OUI'),
-                                  _F(CHAM_GD=__CERR[1],
-                                     COEF_R=1.,
-                                     TOUT='OUI')
-                                 )
-                            )
+      # champ de sortie
+      chamout=CREA_CHAMP(TYPE_CHAM='CART_NEUT_R',
+                         OPERATION='ASSE',
+                         MAILLAGE=MA,
+                         ASSE=list_asse
+                         )
 
 
 
