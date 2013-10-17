@@ -340,6 +340,21 @@ def makeXMGRACEdeforme(unit,name,typeAC,coeur,valdefac):
         'uteur (m))"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n'%(name))
     xmgrfile.close()
 
+def PostForme(l_f,meth):
+   """ post-traite la forme suivant une methode (Damac pour le moment) d'apres une liste de fleches en mm"""
+   
+   if meth=='DAMAC' : 
+      A1 = abs(min(l_f))
+      A2 = abs(max(l_f))
+      if (A1 <= 0.5) or (A2 <=0.5) :
+         forme = 'C'
+      else :
+         forme = 'S'
+   
+   assert(meth=='DAMAC')
+
+   return forme
+
 
 def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
@@ -453,6 +468,7 @@ def post_mac3coeur_ops(self, **args):
        valdirYac={}
        valdirZac={}
        valrho={}
+       valforme={}
 
        UTMESS('I','COEUR0_6')
        POSITION = _coeur.get_geom_coeur()
@@ -474,7 +490,7 @@ def post_mac3coeur_ops(self, **args):
           
           tab1 = _TAB1.EXTR_TABLE()
           
-          IMPR_TABLE(TABLE=_TAB1)
+          #IMPR_TABLE(TABLE=_TAB1)
           
           l_x_tmp  = tab1.COOR_X.values()
           l_dy_tmp = tab1.DY.values()
@@ -512,11 +528,21 @@ def post_mac3coeur_ops(self, **args):
           l_fnor_mm = [1000.*fnor for fnor in l_fnor]
           rho_mm = 1000.*rho
           
+          # calcul des formes (important : a partir des fleches en mm )
+          formeY = PostForme(l_fy_mm,'DAMAC')
+          formeZ = PostForme(l_fz_mm,'DAMAC')
+          if formeY==formeZ : 
+             forme = '2'+formeY
+          else : 
+             forme = 'CS'   
+          
           # creation des dictionnaires                   
           valdefac[name_AC_aster]  = l_fnor
           valdirYac[name_AC_aster] = l_fy_mm
           valdirZac[name_AC_aster] = l_fz_mm
           valrho[name_AC_aster] = rho_mm
+          valforme[name_AC_aster]= [formeY,formeZ,forme] 
+          print 'valforme ',[formeY,formeZ,forme] 
           k=k+1
 
        for attr in POST_DEF:
@@ -580,14 +606,13 @@ def post_mac3coeur_ops(self, **args):
              l_MinY= []
              l_MaxY= []
              l_CCY= []
+             l_formeX= []
+             l_formeY= []
+             l_forme= []
 
              for name in POSITION :
                 name_AC_aster = name[0]+'_'+name[1]
                 name_AC_damac = _coeur.position_todamac(name_AC_aster)
-
-#                print 'hello name ',name
-#                print 'hello name_AC_aster ',name_AC_aster
-#                print 'hello name_AC_damac ',name_AC_damac
 
                 cycle=1
                 repere='non_renseigne'
@@ -619,9 +644,9 @@ def post_mac3coeur_ops(self, **args):
                 MinY = min( valdirZac[name_AC_aster] )
                 MaxY = max( valdirZac[name_AC_aster] )
                 CCY  = MaxY - MinY
-#                FormeX
-#                FormeY
-#                Forme                
+                FormeX = valforme[name_AC_aster][0]
+                FormeY = valforme[name_AC_aster][1]
+                Forme  = valforme[name_AC_aster][2]
 
                 l_nom_AC.append(name_AC_damac)
                 l_cycle.append(cycle)
@@ -654,6 +679,9 @@ def post_mac3coeur_ops(self, **args):
                 l_MinY.append(MinY) 
                 l_MaxY.append(MaxY) 
                 l_CCY.append(CCY)
+                l_formeX.append(FormeX)
+                l_formeY.append(FormeY)
+                l_forme.append(Forme)
 
              # creation de la table de sortie
              _TABOUT = CREA_TABLE(LISTE=(_F(LISTE_K=l_nom_AC ,PARA='NOM_AC'),
@@ -687,6 +715,9 @@ def post_mac3coeur_ops(self, **args):
                                          _F(LISTE_R=l_MinY,PARA='Min_Y'),
                                          _F(LISTE_R=l_MaxY,PARA='Max_Y'),
                                          _F(LISTE_R=l_CCY,PARA='CC_Y'),
+                                         _F(LISTE_K=l_formeX ,PARA='Forme_X'),
+                                         _F(LISTE_K=l_formeY ,PARA='Forme_Y'),
+                                         _F(LISTE_K=l_forme  ,PARA='Forme'),
                                           )
                                   )
 
