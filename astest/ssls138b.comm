@@ -316,4 +316,86 @@ TEST_RESU(RESU=(_F(GROUP_NO='POINT',
                 ),
           )
 
+# on refait l'étude avec l'affectation MAILLE au lieu de GROUP_MA dans AFFE_CARA_ELEM
+# mais on ne teste que les déplacements
+CARA2=AFFE_CARA_ELEM(MODELE = MODE,
+                    MEMBRANE =(_F(MAILLE     = ('M21','M22','M23','M24','M25',
+                                                'M26','M27','M28','M29','M30',
+                                                'M31','M32','M33','M34','M35',
+                                                'M36','M37','M38','M39','M40',
+                                                'M41','M42','M43','M44','M45',),
+                                  ANGL_REP     = (90., 0.,))))
+
+R_TRAC2=STAT_NON_LINE(MODELE      = MODE,
+                     CHAM_MATER  = MATE,
+                     CARA_ELEM   = CARA2,
+                     EXCIT       =_F(CHARGE = CL_TRAC,),
+                     COMPORTEMENT =(_F(GROUP_MA       = ('FACE'),
+                                      RELATION       = 'ELAS')),
+                     INCREMENT   =_F(LIST_INST = LINST),
+                     NEWTON      =_F(MATRICE   = 'TANGENTE',
+                                     REAC_ITER = 1,),
+                     CONVERGENCE =_F(RESI_REFE_RELA = 1.E-6,
+                                     EPSI_REFE      = 1.,
+                                     ITER_GLOB_MAXI = 30,),)
+
+R_CISA2=STAT_NON_LINE(MODELE      = MODE,
+                     CHAM_MATER  = MATE,
+                     CARA_ELEM   = CARA2,
+                     EXCIT       =_F(CHARGE = CL_CISA,),
+                     COMPORTEMENT =(_F(GROUP_MA       = ('FACE'),
+                                      RELATION       = 'ELAS')),
+                     INCREMENT   =_F(LIST_INST = LINST),
+                     NEWTON      =_F(MATRICE   = 'TANGENTE',
+                                     REAC_ITER = 1,),
+                     CONVERGENCE =_F(RESI_REFE_RELA = 1.E-6,
+                                     EPSI_REFE      = 1.,
+                                     ITER_GLOB_MAXI = 30,),)
+# -----------
+# DEPLACEMENT
+# -----------
+
+TEST_RESU(RESU=(_F(GROUP_NO='POINT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=R_TRAC2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.37500000000,
+                   VALE_REFE=0.375,
+                   PRECISION=1.E-10,),
+                _F(GROUP_NO='POINT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=R_TRAC2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.12500000000,
+                   VALE_REFE=-0.125,
+                   TOLE_MACHINE=1.E-10,
+                   PRECISION=1.E-10,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='POINT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=R_CISA2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.50000000000,
+                   VALE_REFE=0.5,
+                   PRECISION=1.E-10,),
+                _F(GROUP_NO='POINT',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=R_CISA2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.50000000000,
+                   VALE_REFE=0.5,
+                   TOLE_MACHINE=1.E-10,
+                   PRECISION=1.E-10,),
+                ),
+          )
 FIN()
