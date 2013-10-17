@@ -346,6 +346,7 @@ def post_mac3coeur_ops(self, **args):
     import aster
     from Accas import _F
     from Utilitai.Utmess import  UTMESS
+    from math import sqrt
 
     CREA_CHAMP    = self.get_cmd('CREA_CHAMP')
     CREA_TABLE    = self.get_cmd('CREA_TABLE')
@@ -443,20 +444,15 @@ def post_mac3coeur_ops(self, **args):
           elif (_typ_post=='TABLE'):
              IMPR_TABLE(UNITE=_unit,TABLE=_TAB3)
 
+
+
+
     if (POST_DEF != None) :
+
        valdefac={}
        valdirYac={}
        valdirZac={}
-
-       _formule = FORMULE(NOM_PARA=('DY','DZ'),VALE='1000.*sqrt(DY*DY+DZ*DZ)')
-       _formuleY = FORMULE(NOM_PARA=('DY'),VALE='1000.*DY')
-       _formuleZ = FORMULE(NOM_PARA=('DZ'),VALE='1000.*DZ')
-
-       post_table=0
-       for attr in POST_DEF:
-          _typ_post   = attr['FORMAT']
-          if (_typ_post=='TABLE'):
-              post_table=1
+       valrho={}
 
        UTMESS('I','COEUR0_6')
        POSITION = _coeur.get_geom_coeur()
@@ -473,14 +469,54 @@ def post_mac3coeur_ops(self, **args):
                              
           _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
                              ACTION = (_F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
-                                       _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA='DEFmm'),
-                                       _F(OPERATION='OPER',FORMULE=_formuleY,NOM_PARA='DYmm'),
-                                       _F(OPERATION='OPER',FORMULE=_formuleZ,NOM_PARA='DZmm')))
+                                       ))
 
+          
           tab1 = _TAB1.EXTR_TABLE()
-          valdefac[name_AC_aster]  = tab1.DEFmm.values()
-          valdirYac[name_AC_aster] = tab1.DYmm.values()
-          valdirZac[name_AC_aster] = tab1.DZmm.values()
+          
+          IMPR_TABLE(TABLE=_TAB1)
+          
+          l_x_tmp  = tab1.COOR_X.values()
+          l_dy_tmp = tab1.DY.values()
+          l_dz_tmp = tab1.DZ.values()
+          
+          # on reduit les listes en supprimant les doublons
+          nb_grilles = len(l_x_tmp)/4.
+          assert (nb_grilles==int(nb_grilles))
+          nb_grilles=int(nb_grilles)
+          l_x  = [l_x_tmp[4*i] for i in range(nb_grilles)]
+          l_dy = [l_dy_tmp[4*i] for i in range(nb_grilles)]
+          l_dz = [l_dz_tmp[4*i] for i in range(nb_grilles)]
+                    
+          # on applique la formule des fleches
+          l_fy=[]
+          l_fz=[]
+          for i in range(nb_grilles) :
+            fy = l_dy[i] - l_dy[0] - (l_dy[-1]-l_dy[0])/(l_x[-1]-l_x[0]) * (l_x[i]-l_x[0])
+            l_fy.append( fy )
+            fz = l_dz[i] - l_dz[0] - (l_dz[-1]-l_dz[0])/(l_x[-1]-l_x[0]) * (l_x[i]-l_x[0])
+            l_fz.append( fz )
+
+          # on applique la formule de Rho
+          rho=0.
+          for i in range(nb_grilles):
+             for j in range(nb_grilles):
+                rho=max(rho, sqrt((l_fy[i]-l_fy[j])**2+(l_fz[i]-l_fz[j])**2) )
+
+          # on applique la formule de la norme des fleches
+          l_fnor = [sqrt(l_fy[i]**2+l_fz[i]**2) for i in range(nb_grilles)]
+
+          # on passe en mm
+          l_fy_mm = [1000.*fy for fy in l_fy]
+          l_fz_mm = [1000.*fz for fz in l_fz]
+          l_fnor_mm = [1000.*fnor for fnor in l_fnor]
+          rho_mm = 1000.*rho
+          
+          # creation des dictionnaires                   
+          valdefac[name_AC_aster]  = l_fnor
+          valdirYac[name_AC_aster] = l_fy_mm
+          valdirZac[name_AC_aster] = l_fz_mm
+          valrho[name_AC_aster] = rho_mm
           k=k+1
 
        for attr in POST_DEF:
@@ -555,27 +591,27 @@ def post_mac3coeur_ops(self, **args):
 
                 cycle=1
                 repere='non_renseigne'
-                def_max = max( valdefac[name_AC_aster] )
-                XG1 =valdirYac[name_AC_aster][4*( 1-1)]
-                XG2 =valdirYac[name_AC_aster][4*( 2-1)]
-                XG3 =valdirYac[name_AC_aster][4*( 3-1)]
-                XG4 =valdirYac[name_AC_aster][4*( 4-1)]
-                XG5 =valdirYac[name_AC_aster][4*( 5-1)]
-                XG6 =valdirYac[name_AC_aster][4*( 6-1)]
-                XG7 =valdirYac[name_AC_aster][4*( 7-1)]
-                XG8 =valdirYac[name_AC_aster][4*( 8-1)]
-                XG9 =valdirYac[name_AC_aster][4*( 9-1)]
-                XG10=valdirYac[name_AC_aster][4*(10-1)]
-                YG1 =valdirZac[name_AC_aster][4*( 1-1)]
-                YG2 =valdirZac[name_AC_aster][4*( 2-1)]
-                YG3 =valdirZac[name_AC_aster][4*( 3-1)]
-                YG4 =valdirZac[name_AC_aster][4*( 4-1)]
-                YG5 =valdirZac[name_AC_aster][4*( 5-1)]
-                YG6 =valdirZac[name_AC_aster][4*( 6-1)]
-                YG7 =valdirZac[name_AC_aster][4*( 7-1)]
-                YG8 =valdirZac[name_AC_aster][4*( 8-1)]
-                YG9 =valdirZac[name_AC_aster][4*( 9-1)]
-                YG10=valdirZac[name_AC_aster][4*(10-1)]
+                def_max = valrho[name_AC_aster]
+                XG1 =valdirYac[name_AC_aster][ 1-1]
+                XG2 =valdirYac[name_AC_aster][ 2-1]
+                XG3 =valdirYac[name_AC_aster][ 3-1]
+                XG4 =valdirYac[name_AC_aster][ 4-1]
+                XG5 =valdirYac[name_AC_aster][ 5-1]
+                XG6 =valdirYac[name_AC_aster][ 6-1]
+                XG7 =valdirYac[name_AC_aster][ 7-1]
+                XG8 =valdirYac[name_AC_aster][ 8-1]
+                XG9 =valdirYac[name_AC_aster][ 9-1]
+                XG10=valdirYac[name_AC_aster][10-1]
+                YG1 =valdirZac[name_AC_aster][ 1-1]
+                YG2 =valdirZac[name_AC_aster][ 2-1]
+                YG3 =valdirZac[name_AC_aster][ 3-1]
+                YG4 =valdirZac[name_AC_aster][ 4-1]
+                YG5 =valdirZac[name_AC_aster][ 5-1]
+                YG6 =valdirZac[name_AC_aster][ 6-1]
+                YG7 =valdirZac[name_AC_aster][ 7-1]
+                YG8 =valdirZac[name_AC_aster][ 8-1]
+                YG9 =valdirZac[name_AC_aster][ 9-1]
+                YG10=valdirZac[name_AC_aster][10-1]
                 Milieu = 'non_renseigne'
                 MinX = min( valdirYac[name_AC_aster] )
                 MaxX = max( valdirYac[name_AC_aster] )
