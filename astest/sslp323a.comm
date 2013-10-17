@@ -45,21 +45,12 @@ MAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                               MATER=ACIER,),);
 
 #***********************************
-# CHARGEMENTS ET CONDITIONS AUX LIMITES
+# DISCRETISATION TEMPORELLE
 #***********************************
-
-BLOC=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO=('AXE',),
-                                 DX=0,
-                                 DY=0,),
-                                 _F(GROUP_NO=('P_SUP',),
-                                 DX=0,),),
-                                 );
 
 LINST=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=_F(JUSQU_A=1,
                                       NOMBRE=1,),);
-
 
 #***********************************
 # DEFINITION DES FISSURES
@@ -90,6 +81,7 @@ Fiss[1]=DEFI_FISS_XFEM(MODELE=MO,
 
 ModX = [None]*NPS
 ChgX = [None]*NPS
+BLOC = [None]*NPS
 CHRX = [None]*NPS
 ResX = [None]*NPS
 SIF = [None]*NPS
@@ -106,6 +98,14 @@ for i in range(1,NPS-1) :
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=Fiss[i],);
 
+    BLOC[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                           DDL_IMPO=(_F(GROUP_NO=('AXE',),
+                                        DX=0,
+                                        DY=0,),
+                                        _F(GROUP_NO=('P_SUP',),
+                                        DX=0,),),
+                                        );
+
     CHRX[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                        ROTATION=_F(VITESSE = PULSE,
                                    AXE = (0.,0.,1.,),
@@ -115,7 +115,7 @@ for i in range(1,NPS-1) :
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=MAT,
                          EXCIT=(_F(CHARGE=CHRX[i],),
-                                _F(CHARGE=BLOC,),
+                                _F(CHARGE=BLOC[i],),
                                 ),
                          );
 

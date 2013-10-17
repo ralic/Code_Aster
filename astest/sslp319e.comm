@@ -50,22 +50,6 @@ champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
                               MATER=steel,),);
 
 #***********************************
-# CHARGEMENTS ET CONDITIONS AUX LIMITES
-#***********************************
-
-vinc=AFFE_CHAR_MECA(MODELE=plate,
-                    DDL_IMPO=(_F(GROUP_NO='incastro',
-                                 DX=0,
-                                 DY=0,),
-                              _F(GROUP_NO='carrello',
-                                 DY=0,),),);
-
-force=AFFE_CHAR_MECA(MODELE=plate,
-                     PRES_REP=_F(GROUP_MA='force',
-                                 PRES=-1E6,),);
-
-
-#***********************************
 # DEFINITION DES FISSURES
 #***********************************
 
@@ -103,6 +87,8 @@ FissL[1]=DEFI_FISS_XFEM(MODELE=plate,
 # PROPAGATION DES FISSURES
 #****************************
 
+force = [None]*NPS
+vinc = [None]*NPS
 ModX = [None]*NPS
 ChgX = [None]*NPS
 ResX = [None]*NPS
@@ -122,11 +108,21 @@ for i in range(1,NPS-1) :
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=plate,
                          FISSURE=(FissL[i],FissR[i]),);
 
+    vinc[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                           DDL_IMPO=(_F(GROUP_NO='incastro',
+                                        DX=0,
+                                        DY=0,),
+                                     _F(GROUP_NO='carrello',
+                                        DY=0,),),);
+
+    force[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                            PRES_REP=_F(GROUP_MA='force',
+                                        PRES=-1E6,),);
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=champma,
-                         EXCIT=(_F(CHARGE=force,),
-                                _F(CHARGE=vinc,),
+                         EXCIT=(_F(CHARGE=force[i],),
+                                _F(CHARGE=vinc[i],),
                                 ),
                          INST=1,);
 

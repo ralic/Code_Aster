@@ -90,17 +90,14 @@ FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE,
 #----------------------------------------------
 
 PRES=-1.E6
-CH=AFFE_CHAR_MECA(MODELE=MODELE,
-                   PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
-                   DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
-                             _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
-                             _F(GROUP_NO='P4',DY=0.0,),),);
+
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
 #----------------------------------------------
 
 MODELX = [None]*nbcalc
 CHXFEM = [None]*nbcalc
+CH = [None]*nbcalc
 RESU = [None]*nbcalc
 SIF = [None]*nbcalc
 LSN = [None]*nbcalc
@@ -114,11 +111,16 @@ for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);
 
+   CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
+                        PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
+                        DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
+                                  _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
+                                  _F(GROUP_NO='P4',DY=0.0,),),);
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
-                                _F(CHARGE=CH,),),
+                                _F(CHARGE=CH[i],),),
                          INST=1.0,
                          SOLVEUR=_F(METHODE='MULT_FRONT',
                                     NPREC=12,),

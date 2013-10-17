@@ -53,24 +53,12 @@ champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
                               MATER=steel,),);
 
 #***********************************
-# CHARGEMENTS ET CONDITIONS AUX LIMITES
+# DISCRETISATION EN TEMPS
 #***********************************
-
-vinc=AFFE_CHAR_MECA(MODELE=plate,
-                    DDL_IMPO=(_F(GROUP_NO='incastro',
-                                 DX=0,
-                                 DY=0,),
-                              _F(GROUP_NO='carrello',
-                                 DY=0,),),);
-
-force=AFFE_CHAR_MECA(MODELE=plate,
-                     PRES_REP=_F(GROUP_MA='force',
-                                 PRES=-1E6,),);
 
 TimeStep=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=_F(JUSQU_A=1,
                                       NOMBRE=1,),);
-
 
 #***********************************
 # DEFINITION DE LA FISSURE
@@ -107,6 +95,8 @@ FOND2=FORMULE(NOM_PARA='NUME_ORDRE',
 # PROPAGATION DE LA FISSURE
 #****************************
 
+force = [None]*NPS
+vinc = [None]*NPS
 ModX = [None]*NPS
 ChgX = [None]*NPS
 ResX = [None]*NPS
@@ -125,11 +115,21 @@ for i in range(1,NPS-1) :
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=plate,
                          FISSURE=Fiss[i]);
 
+    vinc[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                           DDL_IMPO=(_F(GROUP_NO='incastro',
+                                        DX=0,
+                                        DY=0,),
+                                     _F(GROUP_NO='carrello',
+                                        DY=0,),),);
+
+    force[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                            PRES_REP=_F(GROUP_MA='force',
+                                        PRES=-1E6,),);
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=champma,
-                         EXCIT=(_F(CHARGE=force,),
-                                _F(CHARGE=vinc,),
+                         EXCIT=(_F(CHARGE=force[i],),
+                                _F(CHARGE=vinc[i],),
                                 ),
                          );
 

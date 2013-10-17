@@ -5,7 +5,6 @@ subroutine medomg(result, numord, modele, mate, lischa)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lisccm.h"
@@ -60,7 +59,6 @@ subroutine medomg(result, numord, modele, mate, lischa)
     character(len=19) :: lisold
     integer :: iexcit, iret, nbchar
     character(len=1) :: base, codarr
-    logical :: lxfem
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,16 +98,6 @@ subroutine medomg(result, numord, modele, mate, lischa)
 !
     if (iexcit .eq. 1) then
         call lislec(motfac, phenom, base, lischa)
-    endif
-!
-! - GLUTE: LEVEE ERREUR FATALE POUR XFEM (VOIR 20956)
-!
-    call exixfe(modele, iret)
-    lxfem = iret.ne.0
-    if (lxfem) then
-        codarr = 'A'
-    else
-        codarr = 'F'
     endif
 !
     call lisnnb(lischa, nbchar)

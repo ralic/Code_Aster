@@ -51,16 +51,6 @@ mod=AFFE_MODELE(MAILLAGE=poutre,
                          MODELISATION='D_PLAN',),),);
 
 # *********************************************
-# CHARGEMENTS ET CONDITION AUX LIMITES
-# *********************************************
-
-cauxl=AFFE_CHAR_MECA(MODELE=mod,
-                     DDL_IMPO=(_F(GROUP_NO='VincSx',DX=0.,DY=0.,),
-                               _F(GROUP_NO='VincDx',DY=0.,),),
-                     FORCE_NODALE=_F(GROUP_NO='Forza',FY=-1000.,)
-                     );
-
-# *********************************************
 # DEFINITION DE LA FISSURE DANS LE MODELE
 # *********************************************
 
@@ -89,6 +79,7 @@ fiss[0] = DEFI_FISS_XFEM(MODELE=mod,
 # PROPAGATION DE LA FISSURE
 # *********************************************
 
+cauxl = [None]*NPS
 ModX = [None]*NPS
 ChgX = [None]*NPS
 ResX = [None]*NPS
@@ -124,10 +115,15 @@ for i in range(0,NPS) :
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=mod,
                              FISSURE=fiss[i],);
 
+    cauxl[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
+                            DDL_IMPO=(_F(GROUP_NO='VincSx',DX=0.,DY=0.,),
+                                      _F(GROUP_NO='VincDx',DY=0.,),),
+                            FORCE_NODALE=_F(GROUP_NO='Forza',FY=-1000.,)
+                            );
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                           CHAM_MATER=champma,
-                          EXCIT=(_F(CHARGE=cauxl,),
+                          EXCIT=(_F(CHARGE=cauxl[i],),
                                  ),
                      INFO=1,
                      );
