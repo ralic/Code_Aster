@@ -103,6 +103,14 @@ def perm_mac3coeur_ops(self, **args):
     indice = 0
 
     # calcul bidon aster pour initialisation de donnees
+    
+    compor =  [_F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, DEFORMATION='GROT_GDEP',),
+               _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
+               _F(RELATION='DIS_CHOC',   GROUP_MA ='RES_TOT',),
+               _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+               _F(RELATION='VMIS_ISOT_TRAC',GROUP_MA ='MAINTIEN',DEFORMATION='PETIT',),]
+
+    
     _BIDON = STAT_NON_LINE( MODELE     = _MO_NP1,
                               CHAM_MATER  = _AFSCNP1,
                               CARA_ELEM   = _CARANP1,
@@ -175,16 +183,19 @@ def perm_mac3coeur_ops(self, **args):
     RESU_F = CREA_RESU( OPERATION = 'AFFE',
                     TYPE_RESU = 'EVOL_NOLI',
                     NOM_CHAM  = 'DEPL',
-                    AFFE      = _F(CHAM_GD=_RES_DEP,INST=0.0,MODELE=_MO_NP1,));
+                    COMPORTEMENT = compor,
+                    AFFE      = _F(CHAM_GD=_RES_DEP,INST=0.0,MODELE=_MO_NP1,CARA_ELEM=_CARANP1,CHAM_MATER  = _AFSCNP1,));
 
     RESU_F = CREA_RESU( reuse     = RESU_F,
                     OPERATION = 'AFFE',
                     TYPE_RESU = 'EVOL_NOLI',
                     NOM_CHAM  = 'SIEF_ELGA',
-                    AFFE      = _F(CHAM_GD=_RES_SIG,INST=0.0,MODELE=_MO_NP1,));
+                    COMPORTEMENT = compor,
+                    AFFE      = _F(CHAM_GD=_RES_SIG,INST=0.0,MODELE=_MO_NP1,CARA_ELEM=_CARANP1,CHAM_MATER  = _AFSCNP1,));
 
     RESU_F = CREA_RESU( reuse     = RESU_F,
                     OPERATION = 'AFFE',
                     TYPE_RESU = 'EVOL_NOLI',
                     NOM_CHAM  = 'VARI_ELGA',
-                    AFFE      = _F(CHAM_GD=_RES_VAR,INST=0.0,MODELE=_MO_NP1,));
+                    COMPORTEMENT = compor,
+                    AFFE      = _F(CHAM_GD=_RES_VAR,INST=0.0,MODELE=_MO_NP1,CARA_ELEM=_CARANP1,CHAM_MATER  = _AFSCNP1,));
