@@ -197,6 +197,8 @@ class TableBase(object):
             txt.extend(['#TITRE '+lig for lig in self.titr.split('\n')])
          else:
             txt.extend([dform['ccom']+lig for lig in self.titr.split('\n')])
+      if ' ' not in dform['csep']:
+          lspa = [i.strip() for i in lspa]
       txt.append(dform['ccpara'] + dform['csep'].join(lspa))
       if ASTER and typdef:
          txt.append(stype)
