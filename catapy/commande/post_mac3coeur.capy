@@ -48,7 +48,6 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                                    ),
                  
                  b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr="Paramètres pour le format TABLE",
-                       NOM_CMP      = SIMP(statut='o',typ='TXM',into=("DY","DZ","NORME")),
                                    ),
                  
 

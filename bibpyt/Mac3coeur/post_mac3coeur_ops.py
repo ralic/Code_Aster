@@ -463,41 +463,24 @@ def post_mac3coeur_ops(self, **args):
        k=0
        dim=len(POSITION)
        for name in POSITION:
-          real_name = name[0]+'_'+name[1]
-          _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='DEPL',INST=_inst,NOM_CMP=('DY','DZ'),GROUP_MA='GR_'+real_name))
+          name_AC_aster = name[0]+'_'+name[1]
+          _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
+                                     NOM_CHAM='DEPL',
+                                     INST=_inst,
+                                     NOM_CMP=('DY','DZ'),
+                                     GROUP_MA='GR_'+name_AC_aster)
+                             )
+                             
           _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
                              ACTION = (_F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
-                                       _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA='DEF_'+real_name),
-                                       _F(OPERATION='OPER',FORMULE=_formuleY,NOM_PARA='DY_'+real_name),
-                                       _F(OPERATION='OPER',FORMULE=_formuleZ,NOM_PARA='DZ_'+real_name)))
-
-          if (post_table==1):
-             if (len(valdefac)==0):
-                _TABDEF = CALC_TABLE(TABLE  =  _TAB1,
-                                     ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','DEF_'+real_name))))
-                _TABDY  = CALC_TABLE(TABLE  =  _TAB1,
-                                     ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','DY_'+real_name))))
-                _TABDZ  = CALC_TABLE(TABLE  =  _TAB1,
-                                     ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','DZ_'+real_name))))
-             else:
-                _TABTMPD = CALC_TABLE(TABLE  =  _TAB1,
-                                      ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','DEF_'+real_name))))
-                _TABDEF  = CALC_TABLE(TABLE  =  _TABDEF,
-                                      ACTION = (_F(OPERATION='COMB',TABLE=_TABTMPD,NOM_PARA='COOR_X')))
-                _TABTMPY = CALC_TABLE(TABLE  =  _TAB1,
-                                      ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','DY_'+real_name))))
-                _TABDY   = CALC_TABLE(TABLE  =  _TABDY,
-                                      ACTION = (_F(OPERATION='COMB',TABLE=_TABTMPY,NOM_PARA='COOR_X')))
-                _TABTMPZ = CALC_TABLE(TABLE  =  _TAB1,
-                                      ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','DZ_'+real_name))))
-                _TABDZ   = CALC_TABLE(TABLE  =  _TABDZ,
-                                      ACTION = (_F(OPERATION='COMB',TABLE=_TABTMPZ,NOM_PARA='COOR_X')))
+                                       _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA='DEFmm'),
+                                       _F(OPERATION='OPER',FORMULE=_formuleY,NOM_PARA='DYmm'),
+                                       _F(OPERATION='OPER',FORMULE=_formuleZ,NOM_PARA='DZmm')))
 
           tab1 = _TAB1.EXTR_TABLE()
-          tab1.Renomme('DEF_'+real_name, 'P_DEF')
-          valdefac[real_name]  = tab1.P_DEF.values()
-          valdirYac[real_name] = tab1.DY.values()
-          valdirZac[real_name] = tab1.DZ.values()
+          valdefac[name_AC_aster]  = tab1.DEFmm.values()
+          valdirYac[name_AC_aster] = tab1.DYmm.values()
+          valdirZac[name_AC_aster] = tab1.DZmm.values()
           k=k+1
 
        for attr in POST_DEF:
@@ -530,11 +513,150 @@ def post_mac3coeur_ops(self, **args):
 
           elif (_typ_post=='TABLE'):
 
-             _NOM_CMP    = attr['NOM_CMP']
+             l_nom_AC=[]
+             l_cycle = []
+             l_repere = []
+             l_def_max=[]
+             l_XG1= []
+             l_XG2= []
+             l_XG3= []
+             l_XG4= []
+             l_XG5= []
+             l_XG6= []
+             l_XG7= []
+             l_XG8= []
+             l_XG9= []
+             l_XG10= []
+             l_YG1= []
+             l_YG2= []
+             l_YG3= []
+             l_YG4= []
+             l_YG5= []
+             l_YG6= []
+             l_YG7= []
+             l_YG8= []
+             l_YG9= []
+             l_YG10= []
+             l_milieu= []
+             l_MinX= []
+             l_MaxX= []
+             l_CCX= []
+             l_MinY= []
+             l_MaxY= []
+             l_CCY= []
 
-             if (_NOM_CMP=='NORME'):
-                IMPR_TABLE(UNITE=_unit,TABLE=_TABDEF)
-             if (_NOM_CMP=='DY'):
-                IMPR_TABLE(UNITE=_unit,TABLE=_TABDY)
-             if (_NOM_CMP=='DZ'):
-                IMPR_TABLE(UNITE=_unit,TABLE=_TABDZ)
+             for name in POSITION :
+                name_AC_aster = name[0]+'_'+name[1]
+                name_AC_damac = _coeur.position_todamac(name_AC_aster)
+
+#                print 'hello name ',name
+#                print 'hello name_AC_aster ',name_AC_aster
+#                print 'hello name_AC_damac ',name_AC_damac
+
+                cycle=1
+                repere='non_renseigne'
+                def_max = max( valdefac[name_AC_aster] )
+                XG1 =valdirYac[name_AC_aster][4*( 1-1)]
+                XG2 =valdirYac[name_AC_aster][4*( 2-1)]
+                XG3 =valdirYac[name_AC_aster][4*( 3-1)]
+                XG4 =valdirYac[name_AC_aster][4*( 4-1)]
+                XG5 =valdirYac[name_AC_aster][4*( 5-1)]
+                XG6 =valdirYac[name_AC_aster][4*( 6-1)]
+                XG7 =valdirYac[name_AC_aster][4*( 7-1)]
+                XG8 =valdirYac[name_AC_aster][4*( 8-1)]
+                XG9 =valdirYac[name_AC_aster][4*( 9-1)]
+                XG10=valdirYac[name_AC_aster][4*(10-1)]
+                YG1 =valdirZac[name_AC_aster][4*( 1-1)]
+                YG2 =valdirZac[name_AC_aster][4*( 2-1)]
+                YG3 =valdirZac[name_AC_aster][4*( 3-1)]
+                YG4 =valdirZac[name_AC_aster][4*( 4-1)]
+                YG5 =valdirZac[name_AC_aster][4*( 5-1)]
+                YG6 =valdirZac[name_AC_aster][4*( 6-1)]
+                YG7 =valdirZac[name_AC_aster][4*( 7-1)]
+                YG8 =valdirZac[name_AC_aster][4*( 8-1)]
+                YG9 =valdirZac[name_AC_aster][4*( 9-1)]
+                YG10=valdirZac[name_AC_aster][4*(10-1)]
+                Milieu = 'non_renseigne'
+                MinX = min( valdirYac[name_AC_aster] )
+                MaxX = max( valdirYac[name_AC_aster] )
+                CCX  = MaxX - MinX
+                MinY = min( valdirZac[name_AC_aster] )
+                MaxY = max( valdirZac[name_AC_aster] )
+                CCY  = MaxY - MinY
+#                FormeX
+#                FormeY
+#                Forme                
+
+                l_nom_AC.append(name_AC_damac)
+                l_cycle.append(cycle)
+                l_repere.append(repere)
+                l_def_max.append(def_max)
+                l_XG1.append(XG1) 
+                l_XG2.append(XG2) 
+                l_XG3.append(XG3) 
+                l_XG4.append(XG4) 
+                l_XG5.append(XG5) 
+                l_XG6.append(XG6) 
+                l_XG7.append(XG7) 
+                l_XG8.append(XG8) 
+                l_XG9.append(XG9) 
+                l_XG10.append(XG10) 
+                l_YG1.append(YG1) 
+                l_YG2.append(YG2) 
+                l_YG3.append(YG3) 
+                l_YG4.append(YG4) 
+                l_YG5.append(YG5) 
+                l_YG6.append(YG6) 
+                l_YG7.append(YG7) 
+                l_YG8.append(YG8) 
+                l_YG9.append(YG9) 
+                l_YG10.append(YG10) 
+                l_milieu.append(Milieu) 
+                l_MinX.append(MinX) 
+                l_MaxX.append(MaxX) 
+                l_CCX.append(CCX ) 
+                l_MinY.append(MinY) 
+                l_MaxY.append(MaxY) 
+                l_CCY.append(CCY)
+
+             # creation de la table de sortie
+             _TABOUT = CREA_TABLE(LISTE=(_F(LISTE_K=l_nom_AC ,PARA='NOM_AC'),
+                                         _F(LISTE_I=l_cycle,PARA='Cycle'),
+                                         _F(LISTE_K=l_repere,PARA='Repere',TYPE_K='K16'),
+                                         _F(LISTE_R=l_def_max,PARA='Ro'),
+                                         _F(LISTE_R=l_XG1,PARA='XG1'),
+                                         _F(LISTE_R=l_XG2,PARA='XG2'),
+                                         _F(LISTE_R=l_XG3,PARA='XG3'),
+                                         _F(LISTE_R=l_XG4,PARA='XG4'),
+                                         _F(LISTE_R=l_XG5,PARA='XG5'),
+                                         _F(LISTE_R=l_XG6,PARA='XG6'),
+                                         _F(LISTE_R=l_XG7,PARA='XG7'),
+                                         _F(LISTE_R=l_XG8,PARA='XG8'),
+                                         _F(LISTE_R=l_XG9,PARA='XG9'),
+                                         _F(LISTE_R=l_XG10,PARA='XG10'),
+                                         _F(LISTE_R=l_YG1,PARA='YG1'),
+                                         _F(LISTE_R=l_YG2,PARA='YG2'),
+                                         _F(LISTE_R=l_YG3,PARA='YG3'),
+                                         _F(LISTE_R=l_YG4,PARA='YG4'),
+                                         _F(LISTE_R=l_YG5,PARA='YG5'),
+                                         _F(LISTE_R=l_YG6,PARA='YG6'),
+                                         _F(LISTE_R=l_YG7,PARA='YG7'),
+                                         _F(LISTE_R=l_YG8,PARA='YG8'),
+                                         _F(LISTE_R=l_YG9,PARA='YG9'),
+                                         _F(LISTE_R=l_YG10,PARA='YG10'),
+                                         _F(LISTE_K=l_milieu,PARA='Milieu',TYPE_K='K16'),
+                                         _F(LISTE_R=l_MinX,PARA='Min_X'),
+                                         _F(LISTE_R=l_MaxX,PARA='Max_X'),
+                                         _F(LISTE_R=l_CCX,PARA='CC_X'),
+                                         _F(LISTE_R=l_MinY,PARA='Min_Y'),
+                                         _F(LISTE_R=l_MaxY,PARA='Max_Y'),
+                                         _F(LISTE_R=l_CCY,PARA='CC_Y'),
+                                          )
+                                  )
+
+             # impression de la table de sortie
+             IMPR_TABLE(TABLE=_TABOUT,
+                        FORMAT_R='F5.1',
+                        UNITE=_unit,
+#                        SEPARATEUR='\t',
+                        )
