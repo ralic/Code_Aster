@@ -72,7 +72,7 @@ Conseils :
 """),
 
 8: _(u"""
-  Les types ne correspondent pas.
+  Le type du paramètre (%(k1)s) ne correspond pas au mot-clé VALE_* utilisé.
 """),
 
 

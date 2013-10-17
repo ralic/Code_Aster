@@ -328,6 +328,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='NSUP',),
            )
 
+TEST_TABLE(TABLE=tp5,
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE_K='nouveau',
+           VALE_CALC_K='nouveau',
+           NOM_PARA='PARA',
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='NSUP',))
+
 IMPR_TABLE(TABLE=tp6,
            FORMAT='ASTER',
            UNITE=39)

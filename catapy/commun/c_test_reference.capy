@@ -22,7 +22,7 @@ def C_TEST_REFERENCE(keyword, max=1):       #COMMUN#
                        'TABLE', 'FONCTION', 'FICHIER')
     with_int     = keyword not in ('FONCTION', 'FICHIER')
     with_complex = keyword not in ('OBJET', 'FICHIER')
-    with_string  = keyword in ('FICHIER', )
+    with_string  = keyword in ('FICHIER', 'TABLE')
     vale_abs     = keyword not in ('CARTE', 'FICHIER')
     type_test    = keyword not in ('CARTE', 'GENE', 'OBJET')
     multi_prec   = keyword in ('RESU', 'GENE')
