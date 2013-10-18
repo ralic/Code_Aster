@@ -45,7 +45,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     integer(kind=4) :: nbnzc
     integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nbcont
     integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib, ltcon, nzmax
-    integer :: nvcont, ifm, niv
+    integer :: nvcont, ifm, niv, nblibt
     real(kind=8) :: eps, norm, cmax, normc
     logical :: info2
     mpi_int :: mpicow
@@ -158,9 +158,14 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
         nbcont=0
         nblib=0
+        nblibt=0
         cmax=0.d0
         imax=0
+        
         if (nbnz .gt. 1) then
+            do j1 = 1, nbnz
+                if (zi4(contr + numcon) .eq. 0) nblibt=nblibt+1
+            end do
             do j1 = 1, nbnz
                 numcon=zi4(nzrow+zi4(indnz+j1-1))
                 iscons=zi4(contr + numcon)
@@ -173,8 +178,10 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                         imax=nblib-1
                     endif
                 else
-                    zi4(indcon+nbcont)=numcon
-                    zr(lccon+nbcont)=zr(ctemp+j1-1)
+                    if (nblibt .gt. 0) then 
+                      zi4(indcon+nbcont)=numcon
+                      zr(lccon+nbcont)=zr(ctemp+j1-1)
+                    endif
                     nbcont=nbcont+1
                 endif
             end do
