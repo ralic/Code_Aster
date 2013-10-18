@@ -69,9 +69,8 @@ cata_msg={
 """),
 
 12: _(u"""
- Vous avez demandé l'affectation d'un modèle sur un %(k1)s,
- or le maillage %(k2)s n'en contient aucun.
- L'affectation du modèle n'est donc pas possible.
+ L'opération demandée sur le %(k1)s n'est pas possible
+ car le maillage %(k2)s n'en contient aucun.
 """),
 
 13: _(u"""
