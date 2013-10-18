@@ -875,7 +875,14 @@ U=STAT_NON_LINE(            MODELE=MO,
 
 CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
-
+SIGMINI0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                    PROL_ZERO='OUI',
+                    AFFE_SP=_F(CARA_ELEM=CARE,),
+                    OPERATION='AFFE',
+                    MODELE=MO,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP='SIXX',
+                            VALE=0.,),);
 
 V=STAT_NON_LINE(            MODELE=MO,
                         CHAM_MATER=CHMAT3,
@@ -883,6 +890,7 @@ V=STAT_NON_LINE(            MODELE=MO,
                              EXCIT=_F( CHARGE = CHDI3),
                          COMPORTEMENT=_F( RELATION = 'ELAS',
                                        DEFORMATION = 'GROT_GDEP', ),
+                         ETAT_INIT=_F(SIGM=SIGMINI0,),
                          INCREMENT=_F( LIST_INST = L_INST),
                             NEWTON=_F( MATRICE = 'ELASTIQUE',
                                        REAC_ITER = 1),
@@ -900,6 +908,7 @@ W=STAT_NON_LINE(           MODELE=MO,
                              EXCIT=_F( CHARGE = CHDI3),
                          COMPORTEMENT=_F( RELATION = 'ELAS',
                                        DEFORMATION = 'GROT_GDEP', ),
+                         ETAT_INIT=_F(SIGM=SIGMINI0,),
                          INCREMENT=_F( LIST_INST = L_INST),
                             NEWTON=_F( MATRICE = 'ELASTIQUE',
                                        REAC_ITER = 1),
