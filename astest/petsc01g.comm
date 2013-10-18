@@ -16,8 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -60,7 +59,7 @@ VECAS1=MECA_STATIQUE(MODELE=MO,
                      SOLVEUR=_F(METHODE='PETSC',
                                 ALGORITHME='CR',
                                 PRE_COND='JACOBI',
-                                RESI_RELA=1.E-8,),);
+                                RESI_RELA=1.E-9,),);
 
 VECAS2=MECA_STATIQUE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -68,7 +67,7 @@ VECAS2=MECA_STATIQUE(MODELE=MO,
                      SOLVEUR=_F(METHODE='PETSC',
                                 ALGORITHME='CR',
                                 PRE_COND='SOR',
-                                RESI_RELA=1.E-8,),);
+                                RESI_RELA=1.E-9,),);
 
 VECAS3=MECA_STATIQUE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -76,7 +75,7 @@ VECAS3=MECA_STATIQUE(MODELE=MO,
                      SOLVEUR=_F(METHODE='PETSC',
                                 ALGORITHME='CR',
                                 PRE_COND='SANS',
-                                RESI_RELA=1.E-8,),);
+                                RESI_RELA=1.E-9,),);
 
 VECAS4=MECA_STATIQUE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -84,7 +83,7 @@ VECAS4=MECA_STATIQUE(MODELE=MO,
                      SOLVEUR=_F(METHODE='PETSC',
                                 ALGORITHME='GCR',
                                 PRE_COND='ML',
-                                RESI_RELA=1.E-8,),);
+                                RESI_RELA=1.E-9,),);
 
 VECAS5=MECA_STATIQUE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -92,7 +91,7 @@ VECAS5=MECA_STATIQUE(MODELE=MO,
                      SOLVEUR=_F(METHODE='PETSC',
                                 ALGORITHME='GCR',
                                 PRE_COND='BOOMER',
-                                RESI_RELA=1.E-8,),);
+                                RESI_RELA=1.E-9,),);
 
 TEST_RESU(RESU=(_F(RESULTAT=VECAS1,
                    NUME_ORDRE=1,
@@ -108,7 +107,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2958',
-                   VALE_CALC=1.0295779405179E-04,
+                   VALE_CALC=1.0295822241367E-04,
                    VALE_REFE=0.00010296,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),
@@ -135,7 +134,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2974',
-                   VALE_CALC=-2.917242203793E-05,
+                   VALE_CALC=-2.9173031424908E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),),);
@@ -154,7 +153,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2958',
-                   VALE_CALC=1.0295812307502E-04,
+                   VALE_CALC=1.0295822692745E-04,
                    VALE_REFE=0.00010296,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),
@@ -181,7 +180,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2974',
-                   VALE_CALC=-2.9172702914009E-05,
+                   VALE_CALC=-2.9172977747888E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),),);
@@ -191,7 +190,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS3,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    NOEUD='NO2958',
-                   VALE_CALC=9.9992930442993E-03,
+                   VALE_CALC=9.9999927775877E-03,
                    VALE_REFE=0.01,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),
@@ -227,7 +226,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS3,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2974',
-                   VALE_CALC=-2.917303619321E-05,
+                   VALE_CALC=-2.9172935816513E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),),);
@@ -273,7 +272,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS4,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2974',
-                   VALE_CALC=-2.9173072619796E-05,
+                   VALE_CALC=-2.9172963561701E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),),);
@@ -319,7 +318,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS5,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2974',
-                   VALE_CALC=-2.9173098098205E-05,
+                   VALE_CALC=-2.9172964264745E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),),);
