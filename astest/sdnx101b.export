@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sdnx101b.comm D 1
-F mmed sdnx101b.mmed D 20
+F mmed sdnx101a.mmed D 20

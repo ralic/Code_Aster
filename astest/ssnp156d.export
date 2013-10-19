@@ -5,6 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist C
 
-F comm ssnp156d.comm D 1
+F comm ssnp156c.comm D 1
 F comm ssnp156d.com1 D 1
 F mmed ssnp156b.mmed D 20

@@ -17,7 +17,7 @@
 #
 # person_in_charge: mathieu.courtois at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON',)
 
 # form n'est utilisable que dans l'INCLUDE, la ou est defini 'para'

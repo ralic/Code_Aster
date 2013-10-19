@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssna119c.comm D 1
-F datg ssna119c.datg D 16
-F mmed ssna119c.mmed D 20
+F mmed ssna119b.mmed D 20

@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist R 
 
 F comm ssnv224b.comm D 1
-F datg ssnv224b.datg D 16
-F mmed ssnv224b.mmed D 20
+F mmed ssnv223b.mmed D 20
