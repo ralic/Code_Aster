@@ -39,6 +39,7 @@ subroutine calich(chargz)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
@@ -135,7 +136,7 @@ subroutine calich(chargz)
 !       ----------------------
         call getvid(motfac, 'CHAM_NO', iocc=iocc, scal=chamno, nbret=nb)
         if (nb .eq. 0) then
-            call utmess('F', 'MODELISA2_98')
+            call utmess('F', 'CHARGES2_10')
         endif
 !
         cham19(1:8) = chamno
@@ -144,24 +145,19 @@ subroutine calich(chargz)
 !       -------------------------------------
         call jeexin(cham19//'.VALE', iret)
         if (iret .eq. 0) then
-            call utmess('F', 'MODELISA2_99')
+            call utmess('F', 'CHARGES2_11')
         endif
 !
 ! ---   VERIFICATION DU TYPE DU CHAMP
 !       -----------------------------
         call dismoi('TYPE_CHAMP', chamno, 'CHAM_NO', repk=tych)
-!
-        if (tych .ne. 'NOEU') then
-            call utmess('F', 'MODELISA3_1')
-        endif
+        ASSERT(tych.eq.'NOEU')
 !
 ! ---   RECUPERATION DE LA VALEUR DU SECOND MEMBRE DE LA RELATION
 ! ---   LINEAIRE
 !       --------
         call getvr8(motfac, 'COEF_IMPO', iocc=iocc, scal=beta, nbret=nb)
-        if (nb .eq. 0) then
-            call utmess('F', 'MODELISA3_2')
-        endif
+        ASSERT(nb.ne.0)
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
 !       ----------------------------------------------
@@ -171,9 +167,7 @@ subroutine calich(chargz)
 ! ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 !       --------------------------------------------------
         call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-        if (nbec .gt. 10) then
-            call utmess('F', 'MODELISA2_87', sk=nomgd)
-        endif
+        ASSERT(nbec.le.10)
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO
 !       -------------------------------------------
@@ -217,6 +211,10 @@ subroutine calich(chargz)
         end do
 !
         nbterm = k
+
+        if (nbterm.eq.0) then
+            call utmess('F', 'CHARGES2_12')
+        endif
 !
 ! ---   CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION
 ! ---   DE LA LISTE_RELA

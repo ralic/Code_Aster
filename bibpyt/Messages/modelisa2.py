@@ -339,11 +339,5 @@ Les mots-clés admissibles pour définir la seconde liste de noeuds sous le mot-
   Assemblage de maillages : Présence de noeuds confondus dans la zone à coller GROUP_MA_1.
 """),
 
-98: _(u"""
- on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linéaire.
-"""),
 
-99: _(u"""
- il faut que le CHAM_NO dont les termes servent de coefficients à la relation linéaire à écrire ait été défini.
-"""),
 }

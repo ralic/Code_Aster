@@ -19,13 +19,7 @@
 
 cata_msg={
 
-1: _(u"""
- on doit donner un CHAM_NO après le mot clé CHAM_NO derrière le mot facteur LIAISON_CHAMNO .
-"""),
 
-2: _(u"""
- il faut définir la valeur du second membre de la relation linéaire après le mot clé COEF_IMPO derrière le mot facteur LIAISON_CHAMNO .
-"""),
 
 8: _(u"""
  Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :

@@ -56,6 +56,18 @@ Pour un chargement de type LIAISON_COQUE, il faut avoir autant de noeuds dans le
    - Si la distance entre les deux surfaces à apparier est grande devant leurs dimensions, précisez l'isométrie qui permet de les superposer par l'intermédiaire des mots-clés CENTRE, ANGL_NAUT et TRAN.
 """),
 
+10: _(u"""
+Pour le chargement de type LIAISON_CHAMNO, on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linéaire.
+"""),
+
+11: _(u"""
+Pour le chargement de type LIAISON_CHAMNO, il faut que le CHAM_NO dont les termes servent de coefficients à la relation linéaire à écrire ait été défini.
+"""),
+
+12: _(u"""
+Pour le chargement de type LIAISON_CHAMNO, tous les coefficients donnés par le mot-clef CHAM_NO sont nuls.
+"""),
+
 17: _(u"""
  Pour le chargement courant, la liste des noeuds donnée est réduite à un seul terme et l'on ne fait aucun traitement.
 """),
