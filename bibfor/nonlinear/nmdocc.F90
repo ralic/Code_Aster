@@ -16,6 +16,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/nocart.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,6 +81,10 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 ! - Set ELASTIQUE COMPOR
 !
     call comp_meca_elas(compor, nb_cmp)
+!
+! - Default ELASTIQUE COMPOR <CARTE> on all mesh
+!
+    call nocart(compor, 1, nb_cmp)
 !
 ! - Read informations from command file
 !

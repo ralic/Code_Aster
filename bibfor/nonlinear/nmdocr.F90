@@ -10,6 +10,7 @@ subroutine nmdocr(model, carcri)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/nocart.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +61,10 @@ subroutine nmdocr(model, carcri)
 ! - Create CARCRI <CARTE>
 !
     call carc_init(mesh, carcri, nb_cmp)
+!
+! - Default CARCRI <CARTE> on all mesh
+!
+    call nocart(carcri, 1, nb_cmp)
 !
 ! - Read informations from command file
 !
