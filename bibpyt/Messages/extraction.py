@@ -68,7 +68,7 @@ Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de
 """),
 
 21 : _(u"""
- La composante %(k2)s sur la maille %(k1)s sur le point d'intégration %(i1)d et le SOUS_POINT %(k1)s n'existe pas.
+ La composante %(k2)s sur la maille %(k1)s sur le point d'intégration %(i1)d et le SOUS_POINT %(i2)d n'existe pas.
 """),
 
 99: _(u"""
