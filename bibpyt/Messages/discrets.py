@@ -37,10 +37,8 @@ Il n'y a pas de comportement non-linéaire possible en rotation
 ou suivant Z en 2D.
 """),
 
-4: _(u"""
-Pour l'élément discret.
-Le pas de temps est devenu trop petit : %(r1)12.5E .
-"""),
+
+
 
 5: _(u"""
 Pour l'élément discret %(k5)s .

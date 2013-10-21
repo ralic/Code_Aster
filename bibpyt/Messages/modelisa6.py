@@ -78,14 +78,8 @@ cata_msg = {
  en dimension : 3D, 2D ou AXIS.
 """),
 
-17 : _(u"""
- La maille  %(k1)s du GROUP_MA  %(k2)s donné après le mot-clé  %(k3)s n'a pas un
- type géométrique autorisé
-"""),
 
-18 : _(u"""
- la maille  %(k1)s donnée après le mot-clé  %(k2)s n'a pas un type géométrique autorisé
-"""),
+
 
 20 : _(u"""
  ce type de maille n'est pas encore traité :  %(k1)s

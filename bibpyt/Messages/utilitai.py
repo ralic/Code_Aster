@@ -355,9 +355,8 @@ Erreur utilisateur :
  méthode d'intégration inexistante.
 """),
 
-83 : _(u"""
- interpolation par défaut "linéaire"
-"""),
+
+
 
 84 : _(u"""
  interpolation  %(k1)s  non implantée
