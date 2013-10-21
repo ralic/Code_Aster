@@ -178,47 +178,34 @@ def macr_ecrevisse_ops(self, reuse,
         try :
           idx_last = _list_numordre_prec.index(nume_ordre)
         except :
-          print 'numero d ordre pas calcule'
+          UTMESS('F','ECREVISSE0_25', vali=nume_ordre)
 
         _inst_init = _list_precedente[idx_last]
         new_list   = _list_precedente[0:idx_last+1]
 
-        print 'new_list',      new_list
-        print 'liste_inst',liste_inst
         try:
             # si l'instant est dans la liste, on recupere l'index
             _idx = liste_inst.index(_inst_init)
             _idx += 1
-            print 'je suis la'
         except:
             # on cherche le plus proche
             _idx = 0
             found = False
             if _inst_init >= liste_inst[-1]:
-              print 'error'
+              UTMESS('F','ECREVISSE0_26', valr = [liste_inst[-1], _inst_init] )
 
             for t in liste_inst:
-                print 't', t
-                print 't > _inst_init:', t > _inst_init
                 if t > _inst_init:
-                    print 'Pluto' 
                     found = True
                     break
                 _idx += 1
-                print '_idx', _idx
-                print 'found', found
 
-        print '_idx', _idx
-        print 'nume_ordre', nume_ordre
         # liste precedent jusqu'a l'instant a recalculer (inclus, ca permet de gerer
         # le cas ou l'instant a recalculer n'est pas dans la nouvelle liste : il sera ajoute)
-
         # on lui ajoute la nouvelle liste a partir du l'instant a recalculer
-
         new_list.extend( liste_inst[_idx:] )
         liste_inst = copy.copy(new_list)
 
-        print 'liste_inst',liste_inst 
 
     ########################################################################################
     # Debut boucle sur la liste d'instant
@@ -653,7 +640,7 @@ def macr_ecrevisse_ops(self, reuse,
                 # A t'on le droit de decouper, par rapport au nombre de division
                 if ( NbIter > MacrNbDecoupage ):
                     FinBoucle = True
-                    UTMESS('A','ECREVISSE0_30', valr=[inst,inst_p_un], 
+                    UTMESS('A','ECREVISSE0_30', valr=[inst,inst_p_un],
                            vali=[MacrNbDecoupage])
                     break
                 #

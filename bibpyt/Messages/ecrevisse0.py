@@ -122,6 +122,15 @@ cata_msg={
  ERREUR : copie %(k1)s --> %(k2)s
 """),
 
+25: _(u"""
+ ERREUR : le numéro d'ordre %(i1)d pour l'état initial n'existe pas.
+"""),
+
+26: _(u"""
+ ERREUR : le dernier instant %(r1)f de la liste précède ou est égal à l'instant de l'état initial %(r2)f.
+ On ne fait pas la poursuite.
+"""),
+
 30: _(u"""
  Nombre de découpage d'un pas de temps atteint. On arrête le processus.
  Tous les instants converges sont conserves.
