@@ -297,6 +297,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODEZ,
                    VALE_CALC=112.10649804259,
+                   TOLE_MACHINE=1.E-5,      # ajustement pour calibre7
                    VALE_REFE=112.106,),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
