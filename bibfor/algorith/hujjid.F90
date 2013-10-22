@@ -205,7 +205,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
             call hujksi('DKSIDR', mater, rc(k), dksidr(k), iret)
             call hujksi('KSI   ', mater, rc(k), ksi(k), iret)
             if (iret .eq. 1) goto 1000
-            ad(k) = deux*(acyc+ksi(k)*(amon-acyc))
+            ad(k) = acyc+ksi(k)*(amon-acyc)
 !
             th(1) = vind(4*indi(k)-9)
             th(2) = vind(4*indi(k)-8)
