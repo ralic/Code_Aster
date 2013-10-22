@@ -24,14 +24,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 # MAILLAGE
 #
-
-
-MAYA=LIRE_MAILLAGE(FORMAT='MED',)
+MAYA=LIRE_MAILLAGE(FORMAT='MED')
 
 #
 # DEFINITION DU MODELE
 #
-
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
                             AFFE=_F(  TOUT = 'OUI',
                                    PHENOMENE = 'ACOUSTIQUE',
@@ -41,7 +38,6 @@ MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
 #
 # DEFINITION DU MATERIAU
 #
-
 AIR=DEFI_MATERIAU(   FLUIDE=_F(  RHO = 1.3,
                                   CELE_C = ('RI',343.0,0.,))
                       )
@@ -54,7 +50,6 @@ MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
 #
 # CONDITIONS AUX LIMITES
 #
-
 VITE=AFFE_CHAR_ACOU(       MODELE=MODEL,
                           VITE_FACE=_F(  GROUP_MA = 'VELO',
                                       VNOR = ('RI',0.014,0.0,))
@@ -68,7 +63,6 @@ IMPE=AFFE_CHAR_ACOU(       MODELE=MODEL,
 #
 # ASSEMBLAGE
 #
-
 ASSEMBLAGE(       MODELE=MODEL,
                         CHARGE=IMPE,
                     CHAM_MATER=MATER,
@@ -82,7 +76,6 @@ ASSEMBLAGE(       MODELE=MODEL,
 #
 # CALCUL DES MODES
 #
-
 MATASKR=COMB_MATR_ASSE(    COMB_R=_F(  MATR_ASSE = MATK,
                                        PARTIE = 'REEL',
                                        COEF_R = 1.)
@@ -145,7 +138,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #
 #  REPONSE HARMONIQUE
 #
-
 HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                            MATR_MASS=MATM,
                            MATR_RIGI=MATK,
@@ -157,6 +149,11 @@ HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                                        PUIS_PULS = 1)
                        )
 
+HARMO=CALC_CHAMP(reuse=HARMO,
+                 TOUT_ORDRE='OUI',
+                 RESULTAT=HARMO,
+                 ACOUSTIQUE=('INTE_ELNO'),);
+                 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC_C=-6.242513168+-3.18009781E-04j,
                    VALE_REFE_C=('RI', -6.2426000000000004, 0.0),
@@ -200,5 +197,91 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000001',
+                   NOM_CMP='INTX_R',
+                   VALE_CALC=0.044996936276933,
+                   VALE_REFE=0.0437,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.03,
+                   MAILLE='MA000016',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000033',
+                   NOM_CMP='INTX_R',
+                   VALE_CALC=0.044996936151537,
+                   VALE_REFE=0.0437,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.03,
+                   MAILLE='MA000016',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000002',
+                   NOM_CMP='INTX_R',
+                   VALE_CALC=0.044996938694216,
+                   VALE_REFE=0.0437,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.03,
+                   MAILLE='MA000030',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000034',
+                   NOM_CMP='INTX_R',
+                   VALE_CALC=0.044996931141534,
+                   VALE_REFE=0.0437,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=0.03,
+                   MAILLE='MA000030',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000001',
+                   NOM_CMP='INTX_I',
+                   VALE_REFE=0.0,
+                   VALE_CALC=3.2567361620622E-04,
+                   PRECISION=3.5E-4,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='ABSOLU',
+                   MAILLE='MA000016',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000033',
+                   NOM_CMP='INTX_I',
+                   VALE_CALC=3.2567420238154E-04,
+                   VALE_REFE=0.0,
+                   PRECISION=3.5E-4,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='ABSOLU',
+                   MAILLE='MA000016',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000002',
+                   NOM_CMP='INTX_I',
+                   VALE_CALC=-3.2337062265822E-04,
+                   VALE_REFE=0.0,
+                   PRECISION=3.5E-4,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='ABSOLU',
+                   MAILLE='MA000030',),
+                _F(NUME_ORDRE=1,
+                   RESULTAT=HARMO,
+                   NOM_CHAM='INTE_ELNO',
+                   NOEUD='NO000034',
+                   NOM_CMP='INTX_I',
+                   VALE_CALC=-3.2339589853508E-04,
+                   VALE_REFE=0.0,
+                   PRECISION=3.5E-4,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='ABSOLU',
+                   MAILLE='MA000030',),
+                ),
+          )
+
 FIN()
-#
