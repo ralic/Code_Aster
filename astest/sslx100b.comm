@@ -121,8 +121,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
 DEP=MECA_STATIQUE(MODELE=MO,
                   CHAM_MATER=CHMA,
                   CARA_ELEM=CARA,
-                  EXCIT=_F(CHARGE=CHME,),
-                  SOLVEUR=_F(ELIM_LAGR='OUI',),);
+                  EXCIT=_F(CHARGE=CHME,),);
 
 
 CALC_CHAMP(reuse = DEP,  RESULTAT=DEP,
