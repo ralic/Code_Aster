@@ -126,6 +126,11 @@ TTTS = CALC_STABILITE(MODE_NON_LINE=MNL, #PRECISION = 1.e-3,
 
 #IMPR_TABLE(TABLE=TTTS)
 
+MODE_20 = REST_MODE_NONL(MODE_NON_LINE=TTTS,
+                     TYPE_RESU = 'MODE_MECA',
+                     NUME_ORDRE = 10,
+                    )
+
 ENRGC=RECU_FONCTION(TABLE=MNL,
                     PARA_X='FREQUENCE',
                     PARA_Y='ENERGIE',
