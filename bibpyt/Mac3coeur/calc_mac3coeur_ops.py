@@ -89,6 +89,7 @@ def calc_mac3coeur_ops(self, **args):
        _CH_TRNO,_CH_TRFX,_HYDR_1,_FOHYDR_1=_coeur.lire_resu_thyc(_MO_N,nomfich)
 
        _fluence   = _DEFORMATION['NIVE_FLUENCE']
+       _is_archimede   = _DEFORMATION['ARCHIMEDE']
 
        _AVEC_CONTACT = 'OUI'
        _SANS_CONTACT = 'NON'
@@ -112,7 +113,7 @@ def calc_mac3coeur_ops(self, **args):
 
        _ARCH_1  = _coeur.definition_archimede1(_MO_N)
        _FOARCH_1= _coeur.definition_archimede2(_MO_N)
-       _ARCH_F1 = _coeur.definition_temp_archimede()
+       _ARCH_F1 = _coeur.definition_temp_archimede(_is_archimede)
        _HYDR_F1 = _coeur.definition_temp_hydro_axiale()
        _F_TRAN1 = _coeur.definition_effort_transverse()
 

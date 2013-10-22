@@ -55,6 +55,20 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                                        
                                        ),
                    
-                                 ),
+               # choix de la poussée d'Archimède dans le cas mono-assemblage
+               b_archimede_mono = BLOC(condition = "TYPE_COEUR == 'MONO'",
+
+                    ARCHIMEDE = SIMP(statut='o',typ='TXM',into=("OUI","NON"), ),
+                    
+                                       ),
+
+               # choix de la poussée d'Archimède dans le cas d'un coeur à plusieurs assemblages
+               b_archimede_coeur = BLOC(condition = "TYPE_COEUR != 'MONO'",
+
+                    ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI"),defaut="OUI" ),
+                    
+                                       ),
+                       
+                       ),
 
 );

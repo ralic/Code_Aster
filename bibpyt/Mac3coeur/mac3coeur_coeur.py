@@ -445,14 +445,30 @@ class Coeur(object):
         _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE,FORCE_POUTRE = mcf)
         return _FOARCH_1
 
-    def definition_temp_archimede(self):
-        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+    def definition_temp_archimede(self,_is_archimede):
         """ Valeur  a froid (20 degres) de la force d'Archimede = 860/985.46*1000.52 """
-        ARCHFR1 = 873.  # Valeur en arret a froid (20 degres)
-        ARCHFR2 = 860.  # Valeur en arret a froid (60 degres)
-        ARCHCH  = 620.  # Valeur a chaud (307 degres)   
 
-        _ARCH_F1 = DEFI_FONCTION( NOM_PARA = 'INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+        DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
+
+        assert (_is_archimede in ('OUI','NON'))
+
+        # cas ou la force d'archimede est activee
+        if _is_archimede == 'OUI' :
+
+          ARCHFR1 = 873.  # Valeur en arret a froid (20 degres)
+          ARCHFR2 = 860.  # Valeur en arret a froid (60 degres)
+          ARCHCH  = 620.  # Valeur a chaud (307 degres)   
+
+        # cas ou la force d'archimede n'est pas activee
+        elif _is_archimede == 'NON' :
+
+          ARCHFR1 = 0.  
+          ARCHFR2 = 0.  
+          ARCHCH  = 0.  
+
+        _ARCH_F1 = DEFI_FONCTION( NOM_PARA = 'INST',
+                                  PROL_DROITE='CONSTANT',
+                                  PROL_GAUCHE='CONSTANT',
                                   VALE     = ( self.temps_simu['T0'],ARCHFR1,
                                                self.temps_simu['T1'],ARCHFR1,
                                                self.temps_simu['T2'],ARCHFR2,
@@ -461,6 +477,7 @@ class Coeur(object):
                                                self.temps_simu['T7'],ARCHFR2,
                                                self.temps_simu['T8'],ARCHFR1,
                                                self.temps_simu['T9'],ARCHFR1,),);
+                                               
         return _ARCH_F1
 
     def definition_temp_hydro_axiale(self):
