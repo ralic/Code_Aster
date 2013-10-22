@@ -310,7 +310,7 @@ cata_msg = {
 """),
 
 54 : _(u"""
-  -> Le modèle fourni à LIRE_RESU n'est pas cohérent avec le type de structure
+  -> Le maillage fourni à LIRE_RESU n'est pas cohérent avec le type de structure
      de données résultat que vous souhaitez produire.
 """),
 
@@ -359,11 +359,11 @@ cata_msg = {
 
 61 : _(u"""
      Le maillage contenu dans le fichier MED contient plus de mailles
-     que celui associé au maillage fourni par le modèle.
+     que celui associé au maillage en entrée de la commande.
      Par exemple, on dénombre %(i1)d mailles de types %(k1)s dans le maillage
-     MED, alors que le modèle n'en contient que %(i2)d !
+     MED, alors que le maillage aster n'en contient que %(i2)d !
   -> Risque & Conseil :
-     Veuillez vérifier que le modèle fourni ne résulte pas d'une restriction,
+     Veuillez vérifier que le maillage fourni ne résulte pas d'une restriction,
      ou que l'un des maillages est quadratique et l'autre linéaire.
 """),
 
