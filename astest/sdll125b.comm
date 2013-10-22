@@ -148,7 +148,7 @@ DEBV=0.0;
 FINV=60000;
 PASV = 5000.0;
 VIT=NP.arange(DEBV,FINV+1,PASV);
-nbF=20;
+nbF=14;
 nbF_camp=10;
 nbV=len(VIT);
 
