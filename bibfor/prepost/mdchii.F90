@@ -122,55 +122,56 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     ilocal = .true.
     numsau = 0
 !
-    do 12 , iaux = 1 , nbcham
+    do iaux = 1 , nbcham
 !
 ! 1.2.1. ==> NBCMFI : NOMBRE DE COMPOSANTES DANS LE FICHIER POUR
 !                     LE CHAMP NUMERO IAUX
 !
-    call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
-    if (codret .ne. 0) then
-        saux08='mfdnfc'
-        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+        call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
+        if (codret .ne. 0) then
+            saux08='mfdnfc'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
 !
 ! 1.2.2. ==> POUR LE CHAMP NUMERO IAUX, ON RECUPERE :
 !            SAUX64 : NOM DU CHAMP
 !            ZK16(ADNCMP) : NOM DE SES NBCMFI COMPOSANTES
 !            ZK16(ADUCMP) : UNITES DE SES NBCMFI COMPOSANTES
 !
-    call codent(iaux, 'G', saux08)
-    call wkvect('&&'//nompro//'N'//saux08, 'V V K16', nbcmfi, adncmp)
-    call wkvect('&&'//nompro//'U'//saux08, 'V V K16', nbcmfi, aducmp)
-!                 12345678901234567890123456789012
-    saux64 = '                                        '//'                      '
-    call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
-                   zk16(aducmp), nseqca, codret)
-    if (codret .ne. 0 .or. jaux .ne. mfloat) then
-        if (codret .ne. 0) then
-            saux08='mfdfdi'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        call codent(iaux, 'G', saux08)
+        call wkvect('&&'//nompro//'N'//saux08, 'V V K16', nbcmfi, adncmp)
+        call wkvect('&&'//nompro//'U'//saux08, 'V V K16', nbcmfi, aducmp)
+        saux64 = ' '
+        call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
+                       zk16(aducmp), nseqca, codret)
+        if (codret .ne. 0 .or. jaux .ne. mfloat) then
+            if (codret .ne. 0) then
+                saux08='mfdfdi'
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            endif
 !         TYPE INCORRECT
-        if (jaux .ne. mfloat) then
-            vali (1) = jaux
-            call utmess('A+', 'MED_84', si=vali(1))
-            call utmess('F', 'MED_75')
+            if (jaux .ne. mfloat) then
+                vali (1) = jaux
+                call utmess('A+', 'MED_84', si=vali(1))
+                call utmess('F', 'MED_75')
+            endif
         endif
-    endif
 !
 ! 1.2.3. ==> COMPARAISON DU NOM DU CHAMP
 !
-    jaux = lxlgut(saux64)
+        jaux = lxlgut(saux64)
 !
-    if (jaux .eq. lnochm) then
-        if (saux64(1:jaux) .eq. nochmd(1:lnochm)) then
-            numsau = iaux
-            existc = 1
+        if (jaux .eq. lnochm) then
+            if (saux64(1:jaux) .eq. nochmd(1:lnochm)) then
+                numsau = iaux
+                existc = 1
+            endif
         endif
-    endif
 !
-    12 end do
-    ASSERT(numsau.ne.0)
+    end do
+    if (numsau.eq.0) then
+        call utmess('F', 'MED_43', sk=nochmd(1:lnochm))
+    endif
 !
     if (existc .ne. 1) then
         call as_mfdnfd(idfimd, nchmed, codret)

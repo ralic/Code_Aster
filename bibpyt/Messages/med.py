@@ -259,9 +259,9 @@ cata_msg = {
   -> Le type d'entité  %(k1)s  est inconnu.
 """),
 
-
-
-
+43 : _(u"""
+  Le champ %(k1)s est introuvable dans le fichier MED.
+"""),
 
 44 : _(u"""
   -> Pas d'écriture pour  %(k1)s
