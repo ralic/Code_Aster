@@ -152,12 +152,6 @@ DYN_FX=CALC_CHAMP(MODELE=MO,
                             FONC_MULT=fCOS,),),
                   CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=DYNFX),);
-
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=DYN_FX),);
-
 #
 # EFFORT NORMAL A X = 0
 #
