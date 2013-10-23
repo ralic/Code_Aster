@@ -94,4 +94,12 @@ format MED.
   Cette impression n'est pas possible au format MED.
 """),
 
+10 : _(u"""
+  L'utilisation des mots-clés RESTREINT et IMPR_NOM_VARI en même
+  temps est interdite.
+
+  Conseil : Utilisez CREA_MAILLAGE et EXTR_RESU afin de pouvoir
+            contourner cette limitation.
+"""),
+
 }

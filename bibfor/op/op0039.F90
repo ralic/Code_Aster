@@ -50,13 +50,14 @@ subroutine op0039()
 #include "asterfort/utmess.h"
 #include "asterfort/w039ca.h"
 #include "asterfort/wkvect.h"
-    integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive
+    integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive, nvari
     integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret, ndim
     integer :: jlast, jmodl, nmo, nn, nmod, nforma, ngibi, ifimed, codret
 !
     real(kind=8) :: versi2, eps
 !
     character(len=1) :: k1occ, saux01
+    character(len=3) :: variel
     character(len=8) :: modele, noma, noma2, form, nomare, nomsq
     character(len=8) :: resu, nomab, resure(9), resur(9), saux08
     character(len=16) :: fich, formr
@@ -116,6 +117,10 @@ subroutine op0039()
             call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
             if (nresu .eq. 0) then
                 call utmess('F', 'CALCULEL4_5')
+            endif
+            call getvtx('RESU', 'IMPR_NOM_VARI', iocc=iocc, scal=variel, nbret=nvari)
+            if ( variel.eq.'OUI' ) then
+                call utmess('F', 'MED2_10')
             endif
         end do
 !
