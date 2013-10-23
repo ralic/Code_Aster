@@ -147,7 +147,7 @@ DYN_FX=CALC_CHAMP(MODELE=MO,
                   CARA_ELEM=CAREL,
                   RESULTAT=DYNFX,
                   EXCIT=(
-                         #_F(CHARGE=BLODDL1,),
+                         _F(CHARGE=BLODDL1,),
                          _F(CHARGE=REPFX,
                             FONC_MULT=fCOS,),),
                   CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
