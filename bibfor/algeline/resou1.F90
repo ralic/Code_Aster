@@ -118,8 +118,6 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     call jemarq()
     call infniv(ifm, niv)
     call jedbg2(idbgav, 0)
-    call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
-    call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
     matr19 = matass
     mpre19 = matpre
@@ -299,8 +297,6 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     if (dbg .and. (nsecm.eq.0)) call dbgobj(csol19//'.VALE', 'OUI', 6, '&&RESOU1 SOLU')
 !
 !
-    call uttcpu('CPU.RESO.1', 'FIN', ' ')
-    call uttcpu('CPU.RESO.5', 'FIN', ' ')
     call jedbg2(ibid, idbgav)
     call jedema()
 end subroutine

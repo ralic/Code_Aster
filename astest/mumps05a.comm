@@ -52,7 +52,7 @@ pcent_pivot=50
 niv_info = 2
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-            MESURE_TEMPS=_F(NIVE_DETAIL=2))
+            MESURE_TEMPS=_F(NIVE_DETAIL=2, MOYENNE='OUI',))
 
 # pour obtenir un maillage quadratique :
 #----------------------------------------

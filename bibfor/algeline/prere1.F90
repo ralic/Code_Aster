@@ -86,8 +86,6 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
     call jemarq()
     call jedbg2(idbgav, 0)
     call infniv(ifm, niv)
-    call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
-    call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
 !
 !     COHERENCE DES VALEURS DE ISTOPZ (NIVEAU DEVELOPPEUR)
     istopz=istop
@@ -179,7 +177,5 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 !
 !
     call jedbg2(ibid, idbgav)
-    call uttcpu('CPU.RESO.1', 'FIN', ' ')
-    call uttcpu('CPU.RESO.4', 'FIN', ' ')
     call jedema()
 end subroutine
