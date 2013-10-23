@@ -1,0 +1,225 @@
+# TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# SOIT DE TRACTION-COMPRESSION, SOIT DE TORSION.
+# MODELISATION POU_D_T
+#======================================================================
+#
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
+   IGNORE_ALARM='UTILITAI4_1');
+
+#
+MA=LIRE_MAILLAGE();
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='TOUT',
+                               TOUT='OUI',),);
+
+#
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='POU_D_T',),);
+
+#
+MATR=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                           NU=0.3,
+                           RHO=7800.,),);
+
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATR,),);
+
+#
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     POUTRE=_F(GROUP_MA='TOUT',
+                               SECTION='CERCLE',
+                               CARA=('R','EP',),
+                               VALE=(0.01E0,0.01E0,),),);
+
+#
+# CHARGEMENT REPARTI
+#
+# INCLINAISON DE LA POUTRE PRISE EGALE A 20 SENS TRIGO PAR RAPPORT A X
+#
+F1=DEFI_FONCTION(
+                 NOM_PARA='X',
+                 VALE=(-1.,939.6926208,
+                       1.,939.6926208,
+                       ),
+                 INTERPOL='LIN',);
+
+F2=DEFI_FONCTION(
+                 NOM_PARA='Y',
+                 VALE=(-1.,342.0201433,
+                       1.,342.0201433,
+                       ),
+                 INTERPOL='LIN',);
+
+#
+
+BLODDL1=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(NOEUD='N01',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,
+                                    DRX=0.,
+                                    DRY=0.,
+                                    DRZ=0.,),
+                                 _F(NOEUD='N03',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,
+                                    DRX=0.,
+                                    DRY=0.,
+                                    DRZ=0.,),),);
+
+#
+REPFX=AFFE_CHAR_MECA_F(MODELE=MO,
+                       FORCE_POUTRE=_F(TOUT='OUI',
+                                       FX=F1,
+                                       FY=F2,),);
+
+#
+MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,);
+
+#
+KELEM1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                      MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=CAREL,
+                      CHARGE=BLODDL1,);
+
+#
+NUMEROTA=NUME_DDL(MATR_RIGI=KELEM1,);
+
+#
+MMATR1=ASSE_MATRICE(MATR_ELEM=MELEM,
+                    NUME_DDL=NUMEROTA,);
+
+#
+KMATR1=ASSE_MATRICE(MATR_ELEM=KELEM1,
+                    NUME_DDL=NUMEROTA,);
+
+#
+L_TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=1.,
+                                     NOMBRE=3,),);
+
+#
+fCOS = FORMULE(VALE='cos(INST) ',
+               NOM_PARA='INST',);
+
+fSIN = FORMULE(VALE='sin(INST) ',
+               NOM_PARA='INST',);
+
+#
+DYNFX=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=(_F(CHARGE=BLODDL1,),
+                           _F(CHARGE=REPFX,
+                              FONC_MULT=fCOS,),),
+                    LIST_INST=L_TEMPS,);
+
+#
+DYN_FX=CALC_CHAMP(MODELE=MO,
+                  CHAM_MATER=CHMAT,
+                  CARA_ELEM=CAREL,
+                  RESULTAT=DYNFX,
+                  EXCIT=(
+                         #_F(CHARGE=BLODDL1,),
+                         _F(CHARGE=REPFX,
+                            FONC_MULT=fCOS,),),
+                  CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=DYNFX),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=DYN_FX),);
+
+#
+# EFFORT NORMAL A X = 0
+#
+# T = 0.3333 S
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=DYN_FX,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N01',
+                  NOM_CMP='N',
+                  VALE_REFE=472.478,
+                  VALE_CALC=472.478,
+                  PRECISION=1.E-05,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE='RELATIF',
+                  MAILLE='S01',),
+          )
+
+#
+# T = 0.6666 S
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=DYN_FX,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N01',
+                  NOM_CMP='N',
+                  VALE_REFE=392.944,
+                  VALE_CALC=392.94400000000002,
+                  PRECISION=1.E-05,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE='RELATIF',
+                  MAILLE='S01',),
+          )
+
+#
+# EFFORT NORMAL A X = 0.5
+#
+# T = 0.3333 S
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  RESULTAT=DYN_FX,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N02',
+                  NOM_CMP='N',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='S01',),
+          )
+
+#
+# T = 0.6666 S
+#
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  RESULTAT=DYN_FX,
+                  NOM_CHAM='EFGE_ELNO',
+                  NOEUD='N02',
+                  NOM_CMP='N',
+                  VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
+                  MAILLE='S01',),
+          )
+
+FIN();
+
+#
