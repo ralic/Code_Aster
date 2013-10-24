@@ -14,11 +14,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 #include "jeveux.h"
 #include "asterc/etausr.h"
+#include "asterfort/amgene.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/magene.h"
 #include "asterfort/mdarnl.h"
 #include "asterfort/mdfext.h"
 #include "asterfort/mdfnli.h"
@@ -123,14 +125,20 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     character(len=3) :: finpal(palmax)
     character(len=8) :: cnpal(palmax)
     real(kind=8) :: fsauv(palmax, 3)
+!   ------------------------------------------------------------------------------------
+!   Definition of statement functions giving the appropriate (i,j) term in the mass, 
+!   rigidity and damping matrices
+#define mgen(row,col) magene(row, col, masgen, nbmode, ' ', 'DEVOGE') 
+#define agen(row,col) amgene(row, col, amogen, nbmode, ' ', 'DEVOGE', .FALSE.)
+!   ------------------------------------------------------------------------------------
 !
     call jemarq()
     zero = 0.d0
     jvint = 1
     call wkvect('&&MDDEVO.BID', 'V V R8', nbmode, jbid1)
-    do 10 i = 1, nbmode
+    do i = 1, nbmode
         zr(jbid1+i-1)=zero
-10  end do
+    end do
     r8bid2=zero
     r8bid3=zero
     r8bid4=zero
@@ -223,22 +231,20 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                 cnpal, prdeff, r8b2, fsauv)
 !
 !     --- INITIALISATION DE L'ALGORITHME ---
-    do 100 im = 0, nbmod1
+    do im = 0, nbmod1
         im1 = im + 1
-        amogen(im1) = deux * pulsat(im1) * amogen(im1)
+        amogen(im1) = deux * pulsat(im1) * agen(im1,im1)
         zr(jfex1+im) = zr(jfex2+im)
-        g2 = ( zr(jfex2+im) / masgen(im1) ) - pulsa2(im1)*zr(jdep2+im)
-        zr(jdep1+im) = zr(jdep2+im) - dt1*zr(jvit2+im) + dt6 * ( g2 - amogen(im1)*zr(jvit2+im) )
-        g1 = (zr(jfex1+im) / masgen(im1)) - pulsa2(im1)*zr(jdep1+im)
-        zr(jvit1+im) = (&
-                       1.d0 / (&
-                       4.d0 - dt * amogen(im1) ) ) * ( zr(jvit2+im)*( 4.d0 + dt*amogen(im1) ) - d&
-                       &t * ( g1 + g2&
-                       )&
-                       )
-        zr(jacce+im) = g2 - amogen(im1)*zr(jvit2+im)
+        g2 = ( zr(jfex2+im) / mgen(im1,im1) ) - pulsa2(im1)*zr(jdep2+im)
+        zr(jdep1+im) = zr(jdep2+im) - dt1*zr(jvit2+im) + &
+                       dt6 * ( g2 - agen(im1,im1)*zr(jvit2+im) )
+        g1 = (zr(jfex1+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep1+im)
+        zr(jvit1+im) = ( 1.d0 / (4.d0 - dt * agen(im1,im1) ) ) &
+                          * ( zr(jvit2+im)*( 4.d0 + dt*agen(im1,im1) ) &
+                            - dt * ( g1 + g2) )
+        zr(jacce+im) = g2 - agen(im1,im1)*zr(jvit2+im)
 !
-100  end do
+    end do
 !
 !     --- ARCHIVAGE DONNEES INITIALES ---
     tarchi = tinit
@@ -258,25 +264,25 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !     --- BOUCLE TEMPORELLE ---
 !
-    do 30 i = 1, nbpas
+    do i = 1, nbpas
 !
         if (i .eq. 1 .or. mod(i,n100) .eq. 0) call uttcpu('CPU.MDDEVO', 'DEBUT', ' ')
 !
-        do 32 im = 0, nbmod1
+        do im = 0, nbmod1
             im1 = im + 1
-            g1 = (zr(jfex1+im) / masgen(im1)) - pulsa2(im1)*zr(jdep1+ im)
-            g2 = (zr(jfex2+im) / masgen(im1)) - pulsa2(im1)*zr(jdep2+ im)
+            g1 = (zr(jfex1+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep1+ im)
+            g2 = (zr(jfex2+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep2+ im)
 !
 !              --- DEPLACEMENTS GENERALISES AU DEMI PAS ---
-            x2 = quatre*g2 - g1 - amogen(im1) * ( quatre*zr(jvit2+im) - zr(jvit1+im) )
+            x2 = quatre*g2 - g1 - agen(im1,im1) * ( quatre*zr(jvit2+im) - zr(jvit1+im) )
             zr(jdep3+im) = zr(jdep2+im) + dt1*zr(jvit2+im) + dt4*x2
             zr(jvit3+im) = ( zr(jdep3+im) - zr(jdep2+im) ) / dt1
-32      continue
+        end do
 !
 !     --- FORCES EXTERIEURES ---
-        do 20 if = 0, nbmode-1
+        do if = 0, nbmode-1
             zr(jfex3+if) = zero
-20      continue
+        end do
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid2, nbmode, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, 1,&
@@ -294,26 +300,26 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                     0.d0, 0.d0, 0.d0, typal, finpal,&
                     cnpal, prdeff, r8b2, fsauv)
 !
-        do 34 im = 0, nbmod1
+        do im = 0, nbmod1
             im1 = im + 1
-            g2 = (zr(jfex2+im) / masgen(im1)) - pulsa2(im1)*zr(jdep2+ im)
-            g3 = (zr(jfex3+im) / masgen(im1)) - pulsa2(im1)*zr(jdep3+ im)
+            g2 = (zr(jfex2+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep2+ im)
+            g3 = (zr(jfex3+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep3+ im)
 !
 !              --- VITESSES GENERALISEES AU DEMI PAS ---
-            x1 = quatre / ( quatre + dt*amogen(im1) )
-            x2 = g2 + g3 - amogen(im1)*zr(jvit2+im)
+            x1 = quatre / ( quatre + dt*agen(im1,im1) )
+            x2 = g2 + g3 - agen(im1,im1)*zr(jvit2+im)
             zr(jvit3+im) = x1 * ( zr(jvit2+im) + dt2*x2 )
 !
 !           --- DEPLACEMENTS GENERALISES AU PAS ---
-            x2 = g2 + deux*g3 - amogen(im1) * ( zr(jvit2+im) + deux* zr(jvit3+im) )
+            x2 = g2 + deux*g3 - agen(im1,im1) * ( zr(jvit2+im) + deux* zr(jvit3+im) )
             zr(jdep4+im) = zr(jdep2+im) + dt*zr(jvit2+im) + dt5*x2
             zr(jvit4+im) = ( zr(jdep4+im) - zr(jdep3+im) ) / dt1
-34      continue
+        end do
 !
 !        --- FORCES EXTERIEURES ---
-        do 35 if = 0, nbmode-1
+        do if = 0, nbmode-1
             zr(jfex4+if) = zero
-35      continue
+        end do
         temps = temps + dt1
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid2, nbmode, nbexci, idescf,&
@@ -332,20 +338,21 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                     cnpal, prdeff, r8b2, fsauv)
 !
 !
-        do 36 im = 0, nbmod1
+        do im = 0, nbmod1
             im1 = im + 1
-            g2 = (zr(jfex2+im) / masgen(im1)) - pulsa2(im1)*zr(jdep2+ im)
-            g3 = (zr(jfex3+im) / masgen(im1)) - pulsa2(im1)*zr(jdep3+ im)
-            g4 = (zr(jfex4+im) / masgen(im1)) - pulsa2(im1)*zr(jdep4+ im)
+            g2 = (zr(jfex2+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep2+ im)
+            g3 = (zr(jfex3+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep3+ im)
+            g4 = (zr(jfex4+im) / mgen(im1,im1)) - pulsa2(im1)*zr(jdep4+ im)
 !
 !           --- VITESSES GENERALISEES AU PAS ---
-            x1 = six / ( six + dt*amogen(im1) )
-            x2 = g4 + quatre*g3 + g2 - ( amogen(im1) * ( quatre*zr( jvit3+im) + zr(jvit2+im) ))
+            x1 = six / ( six + dt*agen(im1,im1) )
+            x2 = g4 + quatre*g3 + g2 - ( agen(im1,im1) * &
+                    ( quatre*zr( jvit3+im) + zr(jvit2+im) ))
             zr(jvit4+im) = x1 * ( zr(jvit2+im) + dt3*x2 )
 !
 !           --- ACCELERATIONS GENERALISEES AU PAS ---
-            zr(jacce+im) = g4 - amogen(im1)*zr(jvit4+im)
-36      continue
+            zr(jacce+im) = g4 - agen(im1,im1)*zr(jvit4+im)
+        end do
 !
 !        --- ARCHIVAGE ---
         iarchi = i
@@ -363,14 +370,14 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
         endif
 !
-        do 40 im = 0, nbmod1
+        do im = 0, nbmod1
             zr(jdep1+im) = zr(jdep3+im)
             zr(jdep2+im) = zr(jdep4+im)
             zr(jvit1+im) = zr(jvit3+im)
             zr(jvit2+im) = zr(jvit4+im)
             zr(jfex1+im) = zr(jfex3+im)
             zr(jfex2+im) = zr(jfex4+im)
-40      continue
+        end do
 !
 !
 !        --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
@@ -405,7 +412,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             endif
         endif
         temps = temps+dt1
-30  end do
+    end do
 !
 9999  continue
     call jedetr('&&MDDEVO.DEPL')

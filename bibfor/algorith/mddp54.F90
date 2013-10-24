@@ -34,10 +34,12 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/amgene.h"
 #include "asterfort/fointe.h"
 #include "asterfort/mdacce.h"
 #include "asterfort/mdfext.h"
 #include "asterfort/mdfnli.h"
+#include "asterfort/rigene.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
@@ -63,7 +65,12 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     real(kind=8) :: saucho(*), saured(*), saurev(*), work1(*), amgy(*), rigy(*), depl(*)
     real(kind=8) :: vite(*), acce(*), fext(*), depli(*), vitei(*), erde(*)
     real(kind=8) :: ervi(*), kde(*), kvi(*), atol
-! ======================================================================
+!   ------------------------------------------------------------------------------------
+!   Definition of statement functions giving the appropriate (i,j) term in the mass, 
+!   rigidity and damping matrices
+#define rgen(row,col) rigene(row, col, riggen, neqgen, typbas, 'RUNGE_KUTTA_54')
+#define agen(row,col) amgene(row, col, amogen, neqgen, typbas, 'RUNGE_KUTTA_54', lamor)
+!   ------------------------------------------------------------------------------------
     zero = 0.d0
 !     ON UTILISE ATOL POUR EVENTUELLEMENT DONNER UNE TOLERANCE ABSOLUE
 !     DONNEE PAR L'UTILISATEUR. ICI ON LA FORCE A ZERO
@@ -114,19 +121,19 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     netag=6
 !
 ! BOUCLE SUR LES ESTIMATIONS DE Ki
-    do 10 ee = 1, netag
+    do ee = 1, netag
 !C        --- ESTIMATION DE LA DERIVEE (EULER EXPLICITE)---
         call dcopy(neqgen, vite, 1, kde((ee-1)*neqgen+1), 1)
         call dcopy(neqgen, acce, 1, kvi((ee-1)*neqgen+1), 1)
 !       --- CALCUL DE L ETAT A CHAQUE ETAGE POUR ESTIMER L ACCEL
-        do 21 im = 1, neqgen
+        do im = 1, neqgen
             depl(im) = depli(im)
             vite(im) = vitei(im)
-            do 30 ss = 1, ee
+            do ss = 1, ee
                 depl(im)=depl(im)+dt*adp(ee,ss)*kde((ss-1)*neqgen+im)
                 vite(im)=vite(im)+dt*adp(ee,ss)*kvi((ss-1)*neqgen+im)
-30          continue
-21      continue
+            end do
+        end do
 !
         teval=temps+dt*cdp(ee+1)
 !
@@ -139,28 +146,28 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
                         vrot, ier)
             call fointe('F ', fonca, 1, ['INST'], [teval],&
                         arot, ier)
-            do 115 im = 1, neqgen
-                do 116 jm = 1, neqgen
+            do im = 1, neqgen
+                do jm = 1, neqgen
                     ind = jm + neqgen*(im-1)
-                    amgy(ind) = amogen(ind) + vrot * gyogen(ind)
-                    rigy(ind) = riggen(ind) + arot * rgygen(ind)
-116              continue
-115          continue
+                    amgy(ind) = agen(im,jm) + vrot * gyogen(ind)
+                    rigy(ind) = rgen(im,jm) + arot * rgygen(ind)
+                end do
+            end do
         else
-            do 119 im = 1, neqgen
-                do 120 jm = 1, neqgen
+            do im = 1, neqgen
+                do jm = 1, neqgen
                     ind = jm + neqgen*(im-1)
-                    amgy(ind) = amogen(ind)
-                    rigy(ind) = riggen(ind)
-120              continue
-119          continue
+                    amgy(ind) = agen(im,jm)
+                    rigy(ind) = rgen(im,jm)
+                end do
+            end do
         endif
 !
 !        --- FORCES EXTERIEURES ---
 !
-        do 40 iff = 1, neqgen
+        do iff = 1, neqgen
             fext(iff) = zero
-40      continue
+        end do
 !
         if (nbexci .ne. 0) then
             call mdfext(teval, r8bid, neqgen, nbexci, idescf,&
@@ -193,7 +200,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
                     descma, work1, depl, vite, acce)
 !
 ! FIN DE LA BOUCLE SUR LES ETAGES DE RUNGE-KUTTA
-10  end do
+    end do
 !
 !      --- ESTIMATION ERREUR ---
 !
@@ -201,7 +208,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     errv=0.d0
     errt=0.d0
 !
-    do 50 im = 1, neqgen
+    do im = 1, neqgen
 !         POUR LES DEPLACEMENTS
 !         NOTER QUE k7 EST DONNEE PAR
 !         LA VALEUR DE LA VITESSE AU SIXIEME ETAGE DE LA METHODE
@@ -220,7 +227,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
 !
         skv=atol+tol*max(abs(vite(im)),abs(vitei(im)),1.d2*r8prem())
         errv = errv+(ervi(im)/skv)**2
-50  end do
+    end do
 !
 !     POUR EVITER DES PROBLEMES NUMERIQUES ON COMPARE A LA TOL MACHINE
     errt = max(sqrt((errd+errv)/(2*neqgen)),1.d2*r8prem())

@@ -8,6 +8,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"
+#include "asterfort/amgene.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -17,6 +18,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jedisp.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/magene.h"
 #include "asterfort/mdacce.h"
 #include "asterfort/mdarch.h"
 #include "asterfort/mdfext.h"
@@ -24,6 +26,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/mdsize.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/resu74.h"
+#include "asterfort/rigene.h"
 #include "asterfort/rrlds.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
@@ -104,6 +107,13 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     real(kind=8) :: a7, deux, dt, dt2, tarchi, temps, tinit
     real(kind=8) :: x1, x2, x3, zero
     complex(kind=8) :: cbid
+!   ------------------------------------------------------------------------------------
+!   Definition of statement functions giving the appropriate (i,j) term in the mass, 
+!   rigidity and damping matrices
+#define mgen(row,col) magene(row, col, masgen, nbmode, typbas, 'NEWMARK') 
+#define rgen(row,col) rigene(row, col, riggen, nbmode, typbas, 'NEWMARK')
+#define agen(row,col) amgene(row, col, amogen, nbmode, typbas, 'NEWMARK', lamor)
+!   ------------------------------------------------------------------------------------
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)
@@ -184,7 +194,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
             do im = 1, nbmode
                 do jm = 1, nbmode
                     ind = jm + nbmode*(im-1)
-                    zr(jtra3+ind-1) = a1 * amogen(ind)
+                    zr(jtra3+ind-1) = a1 * agen(im,jm)
                 end do
                 ind = im + nbmode*(im-1)
                 zr(jtra3+ind-1) = zr(jtra3+ind-1) + a0*masgen(im) + riggen(im)
@@ -201,16 +211,16 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                 amogen(im) = deux * amogen(im) * pulsat(im)
                 do jm = 1, nbmode
                     ind = jm + nbmode*(im-1)
-                    zr(jtra3+ind-1) = a0*masgen(ind) + riggen(ind)
-                    zr(jtra4+ind-1) = a2*masgen(ind)
-                    zr(jtra5+ind-1) = a0*masgen(ind)
-                    zr(jtra6+ind-1) = a3*masgen(ind)
+                    zr(jtra3+ind-1) = a0*mgen(im,jm) + rgen(im,jm)
+                    zr(jtra4+ind-1) = a2*mgen(im,jm)
+                    zr(jtra5+ind-1) = a0*mgen(im,jm)
+                    zr(jtra6+ind-1) = a3*mgen(im,jm)
                 end do
                 ind = im + nbmode*(im-1)
-                zr(jtra3+ind-1) = zr(jtra3+ind-1) + a1*amogen(im)* masgen(ind)
-                zr(jtra4+ind-1) = zr(jtra4+ind-1) + a4*amogen(im)* masgen(ind)
-                zr(jtra5+ind-1) = zr(jtra5+ind-1) + a1*amogen(im)* masgen(ind)
-                zr(jtra6+ind-1) = zr(jtra6+ind-1) + a5*amogen(im)* masgen(ind)
+                zr(jtra3+ind-1) = zr(jtra3+ind-1) + a1*agen(im,im)* mgen(im,im)
+                zr(jtra4+ind-1) = zr(jtra4+ind-1) + a4*agen(im,im)* mgen(im,im)
+                zr(jtra5+ind-1) = zr(jtra5+ind-1) + a1*agen(im,im)* mgen(im,im)
+                zr(jtra6+ind-1) = zr(jtra6+ind-1) + a5*agen(im,im)* mgen(im,im)
             end do
         else
             call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
@@ -227,26 +237,26 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                 do im = 1, nbmode
                     do jm = 1, nbmode
                         ind = jm + nbmode*(im-1)
-                        zr(jamgy+ind-1) = amogen(ind)+vrotin*gyogen( ind)
-                        zr(jrigy+ind-1) = riggen(ind)+arotin*rgygen( ind)
+                        zr(jamgy+ind-1) = agen(im,jm)+vrotin*gyogen(ind)
+                        zr(jrigy+ind-1) = rgen(im,jm)+arotin*rgygen(ind)
                     end do
                 end do
             else
                 do im = 1, nbmode
                     do jm = 1, nbmode
                         ind = jm + nbmode*(im-1)
-                        zr(jamgy+ind-1) = amogen(ind)
-                        zr(jrigy+ind-1) = riggen(ind)
+                        zr(jamgy+ind-1) = agen(im,jm)
+                        zr(jrigy+ind-1) = rgen(im,jm)
                     end do
                 end do
             endif
             do im = 1, nbmode
                 do jm = 1, nbmode
                     ind = jm + nbmode*(im-1)
-                    zr(jtra3+ind-1) = a0*masgen(ind) + zr(jrigy+ind-1) + a1*zr(jamgy+ind-1)
-                    zr(jtra4+ind-1) = a2*masgen(ind) + a4*zr(jamgy+ ind-1)
-                    zr(jtra5+ind-1) = a0*masgen(ind) + a1*zr(jamgy+ ind-1)
-                    zr(jtra6+ind-1) = a3*masgen(ind) + a5*zr(jamgy+ ind-1)
+                    zr(jtra3+ind-1) = a0*mgen(im,jm) + zr(jrigy+ind-1) + a1*zr(jamgy+ind-1)
+                    zr(jtra4+ind-1) = a2*mgen(im,jm) + a4*zr(jamgy+ ind-1)
+                    zr(jtra5+ind-1) = a0*mgen(im,jm) + a1*zr(jamgy+ ind-1)
+                    zr(jtra6+ind-1) = a3*mgen(im,jm) + a5*zr(jamgy+ ind-1)
                 end do
             end do
         endif

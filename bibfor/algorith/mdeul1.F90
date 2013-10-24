@@ -18,6 +18,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 #include "jeveux.h"
 #include "asterc/etausr.h"
+#include "asterfort/amgene.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -34,6 +35,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/preres.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/resu74.h"
+#include "asterfort/rigene.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
 #include "asterfort/utmess.h"
@@ -153,6 +155,12 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=24) :: cpal
     real(kind=8) :: fsauv(palmax, 3), vrot, arot, vrotin, arotin
 !
+!   ------------------------------------------------------------------------------------
+!   Definition of statement functions giving the appropriate (i,j) term in the mass, 
+!   rigidity and damping matrices
+#define rgen(row,col) rigene(row, col, riggen, neqgen, typbas, 'EULER')
+#define agen(row,col) amgene(row, col, amogen, neqgen, typbas, 'EULER', lamor)
+!   ------------------------------------------------------------------------------------
 !
     call jemarq()
     zero = 0.d0
@@ -177,18 +185,18 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !  PRECEDENTES EN CAS DE NON-CONVERGENCE EDYOS :
     nbmxcv = 10
 !
-    do 111 iapp = 1, palmax
+    do iapp = 1, palmax
         typal(iapp)='      '
         finpal(iapp)='   '
         cnpal(iapp)=' '
-111  continue
+    end do
 !
     call wkvect('&&MDEUL1.AMOGYR', 'V V R8', neqgen*neqgen, jamgy)
     call wkvect('&&MDEUL1.RIGGYR', 'V V R8', neqgen*neqgen, jrigy)
     if (lamor) then
-        do 100 im = 1, neqgen
+        do im = 1, neqgen
             amogen(im) = deux * amogen(im) * pulsat(im)
-100      continue
+        end do
     else
         call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -201,21 +209,21 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                         vrotin, ier)
             call fointe('F ', fonca, 1, ['INST'], [tinit],&
                         arotin, ier)
-            do 113 im = 1, neqgen
-                do 114 jm = 1, neqgen
+            do im = 1, neqgen
+                do jm = 1, neqgen
                     ind = jm + neqgen*(im-1)
-                    zr(jamgy+ind-1) = amogen(ind) + vrotin * gyogen( ind)
-                    zr(jrigy+ind-1) = riggen(ind) + arotin * rgygen( ind)
-114              continue
-113          continue
+                    zr(jamgy+ind-1) = agen(im,jm) + vrotin * gyogen( ind)
+                    zr(jrigy+ind-1) = rgen(im,jm) + arotin * rgygen( ind)
+                end do
+            end do
         else
-            do 117 im = 1, neqgen
-                do 118 jm = 1, neqgen
+            do im = 1, neqgen
+                do jm = 1, neqgen
                     ind = jm + neqgen*(im-1)
-                    zr(jamgy+ind-1) = amogen(ind)
-                    zr(jrigy+ind-1) = riggen(ind)
-118              continue
-117          continue
+                    zr(jamgy+ind-1) = agen(im,jm)
+                    zr(jrigy+ind-1) = rgen(im,jm)
+                end do
+            end do
         endif
     endif
 !
@@ -286,14 +294,14 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !     RECUPERATION DES DONNEES SUR LES PALIERS
 !     -------------------------------------------------
         call jeveuo(cpal, 'L', iadrk)
-        do 21 iapp = 1, nbpal
+        do iapp = 1, nbpal
             fsauv(iapp,1)= 0.d0
             fsauv(iapp,2)= 0.d0
             fsauv(iapp,3)= 0.d0
             typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
             finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
             cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
-21      continue
+        end do
     endif
 !  FIN COUPLAGE AVEC EDYOS
 !
@@ -342,19 +350,19 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !     --- BOUCLE TEMPORELLE ---
 !
-    do 30 i = 1, nbpas
+    do i = 1, nbpas
 !
         if (mod(i,n100) .eq. 0) call uttcpu('CPU.MDEUL1', 'DEBUT', ' ')
 !
         if (lamor) then
-            do 110 im = 1, neqgen
-                do 121 jm = 1, neqgen
+            do im = 1, neqgen
+                do jm = 1, neqgen
                     ind = jm + neqgen*(im-1)
 !              --- LAMOR = .TRUE. ALORS COPIER LA LISTE DES AMORTISS.
 !                  (TERMES DIAGONAUX) DANS LE VECTEUR DE TRAVAIL
                     zr(jamgy+ind-1) = amogen(jm)
-121              continue
-110          continue
+                end do
+            end do
         else
             vrot = 0.d0
             arot = 0.d0
@@ -363,36 +371,36 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                             vrot, ier)
                 call fointe('F ', fonca, 1, ['INST'], [temps],&
                             arot, ier)
-                do 115 im = 1, neqgen
-                    do 116 jm = 1, neqgen
+                do im = 1, neqgen
+                    do jm = 1, neqgen
                         ind = jm + neqgen*(im-1)
                         zr(jamgy+ind-1) = amogen(ind) + vrot * gyogen( ind)
                         zr(jrigy+ind-1) = riggen(ind) + arot * rgygen( ind)
-116                  continue
-115              continue
+                    end do
+                end do
             else
-                do 119 im = 1, neqgen
-                    do 120 jm = 1, neqgen
+                do im = 1, neqgen
+                    do jm = 1, neqgen
                         ind = jm + neqgen*(im-1)
                         zr(jamgy+ind-1) = amogen(ind)
                         zr(jrigy+ind-1) = riggen(ind)
-120                  continue
-119              continue
+                    end do
+                end do
             endif
         endif
 !
-        do 40 im = 0, nbmod1
+        do im = 0, nbmod1
 !           --- VITESSES GENERALISEES ---
             zr(jvite+im) = zr(jvite+im) + ( dt * zr(jacce+im) )
 !           --- DEPLACEMENTS GENERALISES ---
             zr(jdepl+im) = zr(jdepl+im) + ( dt * zr(jvite+im) )
-40      continue
+        end do
 !
 !        --- FORCES EXTERIEURES ---
 !
-        do 20 ifor = 0, neqgen-1
+        do ifor = 0, neqgen-1
             zr(jfext+ifor) = zero
-20      continue
+        end do
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid1, neqgen, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, 1,&
@@ -474,7 +482,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
             endif
         endif
         temps = temps + dt
-30  end do
+    end do
 !
 9999  continue
     call jedetr('&&MDEUL1.DEPL')
