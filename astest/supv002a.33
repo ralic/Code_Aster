@@ -142,12 +142,8 @@ class AspellCall(object):
         init = self.queue.get()
         assert 'aspell' in init.lower(), \
             'aspell probably failed to start: \n%s' % init
-        flags = re.M | re.I
-        sep = r' *&@+-~#!%^,.;?:/§*\"\'|`\()[]{}<>²_$£øµ=0123456789'
-        self._rxcl1 = re.compile('[%s]+' % re.escape(sep), flags)
-        self._rxcl2 = re.compile('\s[0-9\.]+\s', flags)
-        self._rxcl3 = re.compile("\s[a-z]\s", flags)
-        self._rxspl = re.compile('[%s]+' % re.escape(sep), flags)
+        # all characters except alphabetic ones are separators
+        self._rxspl = re.compile('[ _0123456789\W]+', re.M | re.I | re.UNICODE)
 
     def __del__(self):
         """Close the pipe"""
@@ -164,10 +160,6 @@ class AspellCall(object):
         """clean 'string' before passing it to aspell"""
         if type(string) is not unicode:
             string = unicode(string, ENCODING)
-        string = ' '.join(string.strip().split())
-        string = self._rxcl1.sub(' ', string)
-        string = self._rxcl2.sub(' ', string)
-        string = self._rxcl3.sub(' ', string)
         uwords = self._rxspl.split(string.strip())
         uwords = [i for i in uwords if i and not i[0].isdigit()]
         string = ' '.join([i.encode(ENCODING) for i in uwords if len(i) > 1])
@@ -177,12 +169,12 @@ class AspellCall(object):
         """Send 'string' and return the response of aspell"""
         string = self._clean(string)
         logdbg and logdbg('check: %r' % string)
-        self.inp.write(string + os.linesep)
         words = string.split()
         logdbg and logdbg('words: %r' % words)
         resp = []
         if not words:
             return words, resp
+        self.inp.write(string + os.linesep)
         while True:
             try:
                 resp.append(self.queue.get_nowait())
