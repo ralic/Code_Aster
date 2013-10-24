@@ -120,6 +120,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     iarchi = 0
     nbscho = nbsauv * 3 * nbchoc
     nbsaui = nbsauv
+    vitvar = 'NON'
 !     PUISSANCE POUR LE CALCUL DU DT ADAPTATIF
     if (method(13:14) .eq. '54') pow=1.d0/6.d0
     if (method(13:14) .eq. '32') pow=1.d0/4.d0
@@ -149,8 +150,6 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
         call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call getvtx(' ', 'VITESSE_VARIABLE', scal=vitvar, nbret=n1)
-        else
-            vitvar=' '
         endif
         vrotin = 0.d0
         arotin = 0.d0
