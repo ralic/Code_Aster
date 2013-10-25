@@ -1144,12 +1144,15 @@ class EUROPLEXUS:
         # GLRC impose de définir l'orientation : on stocke dans gmaGLRC les GMA dont il faudra retrouver l'orientation dans MODI_MAILLAGE/ORIE_NORM_COQUE
         self.gmaGLRC = []
         epx['FONC_MATER'] = []
-        ref_fonc=[]
-        for affe in affe_mater :
+        ref_fonc = []
+        dicmaterkeys = []
+        for ordr_affe, affe in enumerate(affe_mater) :
             # Recuperer le concept du materiau defini par DEFI_MATERIAU
             concept_mater = affe['MATER']
             # Recuperer le nom du materiau
             nom_mater = concept_mater.get_name()
+            dicmaterkeys.append(nom_mater)
+
             if debug: print 'nom_mater',nom_mater
             # Recuperer le group_ma concerne
             group_ma = self.get_group_ma(affe)
@@ -1307,10 +1310,11 @@ class EUROPLEXUS:
 
         # Impression au format Europlexus
 
-        for nom_mater in dic_mater.keys():
+        for nom_mater in dicmaterkeys :
+            print 'ajojo',nom_mater
             if debug: print 'nom_mater',nom_mater
             epx[MODULE].append('*--MATERIAU %s' %nom_mater)
-            # mot cle indicant qu'il s'agit des caracteristiques lineaires du materiau
+            # mot cle indiquant qu'il s'agit des caracteristiques lineaires du materiau
             if typMat[nom_mater] == 'ELAS' :
                 dic_corresp = {'E':'YOUNG','NU':'NU','RHO':'RO'}
                 dic_corresp2 ={'AMOR_ALPHA':'KRAY','AMOR_BETA':'MRAY'}
