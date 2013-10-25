@@ -42,13 +42,13 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
         return dx**2+dy**2+dz**2+drx**2+dry**2+drz**2
 
     def fNflex(dx, dy, dz, drx, dry, drz):
-        return dy**2+dz**2+dry**2+drz**2
+        return dy**2+dx**2+dry**2+drx**2
 
     def fNtors(dx, dy, dz, drx, dry, drz):
-        return drx**2
+        return drz**2
 
     def fNlong(dx, dy, dz, drx, dry, drz):
-        return dx**2
+        return dz**2
 
     NFREQ_f=0;
     NFREQ_t=0;
@@ -462,26 +462,26 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
     DETRUIRE          =self.get_cmd('DETRUIRE')
     IMPR_TABLE        =self.get_cmd('IMPR_TABLE')
 
-    lpara = ['DY', 'DZ']
+    lpara = ['DY', 'DX']
 
     if typ_prec == 1:
-        def fsens(dy_r, dz_r, dy_i, dz_i, dy_m, dz_m):
+        def fsens(dy_r, dx_r, dy_i, dx_i, dy_m, dx_m):
             # on prendra la somme
             #Sens parcours pour un noeud
-            preces  = -(dy_r * dz_i - dy_i * dz_r)
+            preces  = (dy_r * dx_i - dy_i * dx_r)
             #Sens de precession dominant dans une mode
             res = 0.
             if preces > 0:
-                res = dy_m + dz_m
+                res = dy_m + dx_m
             elif preces < 0:
-                res = - dy_m - dz_m
+                res = - dy_m - dx_m
             return res
     else:
-        def fsens(dy_r, dz_r, dy_i, dz_i, dy_m, dz_m):
+        def fsens(dy_r, dx_r, dy_i, dx_i, dy_m, dx_m):
             # on prendra le max
             #Sens de precession associe au plus grand orbite
-            modul1 = sqrt(dy_m * dy_m + dz_m * dz_m)
-            preces  = -(dy_r * dz_i - dy_i * dz_r)
+            modul1 = sqrt(dy_m * dy_m + dx_m * dx_m)
+            preces  = (dy_r * dx_i - dy_i * dx_r)
             res = 0.
             if preces > 0:
                 res = modul1
@@ -525,16 +525,16 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
         lpara_extr = lpara + ['NOEUD','NUME_ORDRE']
         twR = __tabmoR_f.EXTR_TABLE(lpara_extr)
         twR.Renomme('DY', 'DY_R')
-        twR.Renomme('DZ', 'DZ_R')
+        twR.Renomme('DX', 'DX_R')
         twI = __tabmoI_f.EXTR_TABLE(lpara_extr)
         twI.Renomme('DY', 'DY_I')
-        twI.Renomme('DZ', 'DZ_I')
+        twI.Renomme('DX', 'DX_I')
         twM = __tabmoN_f.EXTR_TABLE(lpara_extr)
         twM.Renomme('DY', 'DY_M')
-        twM.Renomme('DZ', 'DZ_M')
+        twM.Renomme('DX', 'DX_M')
         tw = merge(twR, twI, ('NOEUD','NUME_ORDRE'), restrict=True)
         tw = merge(tw, twM, ('NOEUD','NUME_ORDRE'), restrict=True)
-        lpara_form = ['DY_R', 'DZ_R', 'DY_I', 'DZ_I', 'DY_M', 'DZ_M']
+        lpara_form = ['DY_R', 'DX_R', 'DY_I', 'DX_I', 'DY_M', 'DX_M']
         tw.fromfunction('SENS', fsens, lpara_form)
         for num in range(NFREQ_f):
             twi = tw.NUME_ORDRE == num
@@ -668,7 +668,7 @@ def calc_pas(xmin, xmax) :
         PAS = PAS/C10;
 
     # diff > 50.
-    while diff<50.:
+    while diff>50.:
         diff=diff/C10;
         PAS = PAS*C10;
 
