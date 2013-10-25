@@ -43,7 +43,7 @@ subroutine ibimpr()
                         autpr(i))
  5      continue
     endif
-    call uldefi(15, ' ', 'CODE', 'A', 'N',&
+    call uldefi(15, ' ', 'CODE', 'A', 'A',&
                 'O')
 !
 end subroutine

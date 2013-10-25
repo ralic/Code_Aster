@@ -138,7 +138,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                 if (ddname(i) .eq. name16) ddname(i) = ' '
 11          continue
         endif
-        if (k1acce .ne. 'N') then
+        if (k1acce .eq. 'O') then
             inquire ( file=namell, exist=v11, iostat=ier1)
             if (.not.v11) then
                 valk(1)=namell(1:80)
