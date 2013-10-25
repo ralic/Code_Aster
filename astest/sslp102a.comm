@@ -157,20 +157,6 @@ G4=CALC_G(        RESULTAT=RESU,
                            RELATION = 'ELAS'),);
 
 #--------------------------------------------------------------------
-#  CALCUL DE G AVEC DEFORMATIONS INITIALES + ETAT INITIAL
-#--------------------------------------------------------------------
-
-
-# G13=CALC_G(        RESULTAT=RESU,
-#                    NUME_ORDRE=1,
-#                    ETAT_INIT=_F( DEPL = DEPLA),
-#                    THETA=_F(THETA=THETA3 ))
-
-# G14=CALC_G(        RESULTAT=RESU,
-#                    NUME_ORDRE=1,
-#                    ETAT_INIT=_F( DEPL = DEPLA),
-#                    THETA=_F(THETA=THETA4 ))
-#--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
 
