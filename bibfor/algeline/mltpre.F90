@@ -347,7 +347,7 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomt23, ' V V I ', neq, invpnd)
     call wkvect(nomt24, ' V V I ', neq, permnd)
     call wkvect(nomt25, ' V V I ', neq, spndnd)
-    call wkvect(nomt27, ' V V I ', neq, xadjd)
+    call wkvect(nomt27, ' V V I ', neq+1, xadjd)
 !
     call preml1(neq, n2, zi(diag), zi(idelg), zi(ismhc),&
                 zi(xadj2), zi(adjnc2), zi(seq), zi(adress), zi(supnd2),&
