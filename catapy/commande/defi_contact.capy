@@ -183,13 +183,13 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   b_algo_reso_frotNE = BLOC(condition = "ALGO_RESO_FROT=='NEWTON'",
 
                                     RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
-                                  ),
-#                                AUTOMATIC ADAPTATION OF AUGMENTED LAGRANGIAN
-                                 ADAPT_COEF        = SIMP(statut='f',
+                                    ADAPT_COEF     = SIMP(statut='f',
                                                           typ='TXM',
                                                           defaut="NON",
                                                           into=("OUI","NON")),
-                                 ),
+                                  ),
+                              ),
+
 
 # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT - Cas XFEM
 
