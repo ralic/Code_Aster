@@ -121,7 +121,7 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
 !
 ! - User coefficients: only for NEUT_R
 !
-    if ((nb_coef_user .ne. 0) .and. (name_gd(1:6).eq.'NEUT_R')) then
+    if ((nb_coef_user .ne. 0) .and. (name_gd(1:6).ne.'NEUT_R')) then
         call utmess('A', 'CHAMPS_16')
     endif
 !
