@@ -54,8 +54,8 @@ subroutine impfot(time, chaine)
         endif
     endif
 !
-    10 format (16x             ,f6.3,' s')
-    20 format (15x      ,i2,' m ',i2,' s')
-    30 format (i12,' h ',i2,' m ',i2,' s')
+    10 format (16x               ,f6.3,' s')
+    20 format (13x      ,i2,' min ',i2,' s')
+    30 format (i10,' h ',i2,' min ',i2,' s')
 !
 end subroutine
