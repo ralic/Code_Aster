@@ -206,13 +206,13 @@ EVOLNOL2=CALC_PRECONT( CHAM_MATER=CHMATER,
                        INFO=1,);
 
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL2,
-                  NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=2))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL2,
+                  #NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=2))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL2,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=2))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL2,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=2))
 
 # RECUL ANCRAGE
 # CABLE ACTIF ACTIF
@@ -249,15 +249,114 @@ EVOLNOL3=CALC_PRECONT( CHAM_MATER=CHMATER,
                        INFO=1,);
 
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL3,
-                  NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=2))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL3,
+                  #NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=2))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL3,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=2))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL3,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=2))
 
+# COMPARAISON AVEC LE TEST EN BARRE POUR LE BETON
+# NOEUD N16 (MODELISATION BARRE) <-> NOEUD N57 (MODELISATION CABLE_GAINE)
+# MAILLE M193                    <-> MAILLE M193
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N16',
+                  NOM_CMP='DX',
+                  VALE_CALC=1.75362396368528E-04,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N16',
+                  NOM_CMP='DY',
+                  VALE_CALC=1.73862669805773E-04,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N16',
+                  NOM_CMP='DX',
+                  VALE_CALC=-1.89794340477220E-02,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N16',
+                  NOM_CMP='DY',
+                  VALE_CALC=-9.42295819774196E-02,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M193',
+                  NOM_CMP='SIXX',
+                  POINT = 1,
+                  VALE_CALC=-1.42538151861318E+05,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M193',
+                  NOM_CMP='SIYY',
+                  POINT = 1,
+                  VALE_CALC=-8.30599055939740E+05,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=1.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M193',
+                  NOM_CMP='SIXY',
+                  POINT = 1,
+                  VALE_CALC=-3.44051556905819E+05,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M193',
+                  NOM_CMP='SIXX',
+                  POINT = 1,
+                  VALE_CALC=-1.09443855017920E+07,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M193',
+                  NOM_CMP='SIYY',
+                  POINT = 1,
+                  VALE_CALC=-1.63198433582131E+07,
+                  CRITERE='RELATIF',
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=2.0,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M193',
+                  NOM_CMP='SIXY',
+                  POINT = 1,
+                  VALE_CALC=-1.99382306897838E+07,
+                  CRITERE='RELATIF',
+                  ),
+          )
 
 
 FIN()

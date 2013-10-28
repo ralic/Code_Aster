@@ -236,7 +236,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     motscle3['RELA_CINE_BP']=[]
     set_GROUP_MA_A = set()
     for mcabl in CABLE_BP:
-      print "etienne ",mcabl
       # Creation de mots-cles pour les AFFE_CHAR_MECA
       motscles['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
                                         SIGM_BPEL = 'OUI',
@@ -521,10 +520,13 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
         __tension  = table_cable.TENSION.values()[icable]
         __recul    = table_cable.RECUL_ANCRAGE.values()[icable]
         __recul_exists = (__recul != 0)
+        __sens = table_cable.SENS.values()[icable]
 
         actif=0
+        ancr1_passif = 1
         for j in range(2) :
           if string.strip(__typ_ancr[j]) == 'PASSIF' :
+            if j==0 : ancr1_passif = -1
             if string.strip(__typ_noeu[j]) == 'NOEUD' :
               motscle2['DDL_IMPO'].append(_F(NOEUD=string.strip(__nom_noeu[j]),
                                         GLIS = 0.) )
@@ -535,36 +537,36 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
             actif += 1
             if string.strip(__typ_noeu[j]) == 'NOEUD' :
               motscle3['AFFE'].append(_F(NOEUD=string.strip(__nom_noeu[j]),NOM_CMP='GLIS',
-                                        VALE = __tension*(-1)**(j+1)) )
+                                        VALE = ancr1_passif*__sens*__tension*(-1)**(j+1)) )
               if j==0 :
                 motscle3b['AFFE'].append(_F(NOEUD=string.strip(__nom_noeu[j]),NOM_CMP='GLIS',
-                                        VALE = __tension*(-1)**(j+1)) )
+                                        VALE = __sens*__tension*(-1)**(j+1)) )
                 motscle2a['DDL_IMPO'].append(_F(NOEUD=string.strip(__nom_noeu[j]),
                                         GLIS = 0.) )
               else :
                 motscle3a['AFFE'].append(_F(NOEUD=string.strip(__nom_noeu[j]),NOM_CMP='GLIS',
-                                        VALE = __tension*(-1)**(j+1)) )
+                                        VALE = ancr1_passif*__sens*__tension*(-1)**(j+1)) )
                 motscle2b['DDL_IMPO'].append(_F(NOEUD=string.strip(__nom_noeu[j]),
                                         GLIS = 0.) )
               if __recul_exists :
                 motscle5['DDL_IMPO'].append(_F(NOEUD=string.strip(__nom_noeu[j]),
-                                            GLIS = __recul*(-1)**(j+1)) )
+                                            GLIS = ancr1_passif*__sens*__recul*(-1)**(j)) )
             else :
               motscle3['AFFE'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),NOM_CMP='GLIS',
-                                     VALE = __tension*(-1)**(j+1)) )
+                                     VALE = ancr1_passif*__sens*__tension*(-1)**(j+1)) )
               if j==0 :
                 motscle3b['AFFE'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),NOM_CMP='GLIS',
-                                        VALE = __tension*(-1)**(j+1)) )
+                                        VALE = __sens*__tension*(-1)**(j+1)) )
                 motscle2a['DDL_IMPO'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),
                                         GLIS = 0.) )
               else :
                 motscle3a['AFFE'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),NOM_CMP='GLIS',
-                                        VALE = __tension*(-1)**(j+1)) )
+                                        VALE = ancr1_passif*__sens*__tension*(-1)**(j+1)) )
                 motscle2b['DDL_IMPO'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),
                                         GLIS = 0.) )
               if __recul_exists :
                 motscle5['DDL_IMPO'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),
-                                          GLIS = -__recul*(-1)**(j+1)) )
+                                          GLIS = ancr1_passif*__sens*__recul*(-1)**(j)) )
         if (actif == 2) :
           __ActifActif = True
       DETRUIRE(CONCEPT=_F(NOM=__TCAB1))

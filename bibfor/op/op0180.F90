@@ -74,11 +74,11 @@ subroutine op0180()
     integer :: jvalv, n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
     integer :: ncaba, nsief, nbmabe, jlimab, nbnoca
     real(kind=8) :: delta, ea, f0, frco, frli, mu0, rh1000, sa, fprg, xflu, xret
-    real(kind=8) :: trelax, valr(2)
+    real(kind=8) :: trelax, valr(2),rbid
     logical :: mail2d, relax, quad
     character(len=3) :: k3b
     character(len=8) :: caelem, chmat, mailla, modele, noancr(2), nomu, adher
-    character(len=8) :: typanc(2)
+    character(len=8) :: typanc(2),kbid
     character(len=16) :: cmd, concep
     character(len=19) :: carsig, carte, ligrmo, lirela, numaca, nunobe, xnoca
     character(len=19) :: ynoca, znoca, nomt19, nunobi, nomg19
@@ -90,7 +90,7 @@ subroutine op0180()
     character(len=3) :: typpar(nbpar)
     character(len=24) :: nompar(nbpar), typrel
     character(len=4) :: regl
-    parameter    (nbpar2=9)
+    parameter    (nbpar2=10)
     character(len=3) :: typpa2(nbpar2)
     character(len=24) :: nompa2(nbpar2)
 !
@@ -113,7 +113,7 @@ subroutine op0180()
      &                      'NOM_ANCRAGE2            ',&
      &                      'NOEUD_MILIEU'/
 !
-    data          typpa2 /'K8','K8','K24','K8','K8','K24','R','R','K8'/
+    data          typpa2 /'K8','K8','K24','K8','K8','K24','R','R','K8','I'/
     data          nompa2 /'TYPE_ANCRAGE1           ',&
      &                      'TYPE_NOEUD1             ',&
      &                      'NOM_ANCRAGE1            ',&
@@ -122,11 +122,13 @@ subroutine op0180()
      &                      'NOM_ANCRAGE2            ',&
      &                      'TENSION                 ',&
      &                      'RECUL_ANCRAGE           ',&
-     &                      'ADHERENT'                 /
+     &                      'ADHERENT                ',&
+     &                      'SENS                    '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
+    rbid=0.d0
     cbid=(0.d0,0.d0)
     call infmaj()
 !
@@ -239,7 +241,7 @@ subroutine op0180()
             endif
         endif
 !
-!       REMPLISSAGE DE LA TABLE
+!       REMPLISSAGE DE LA TABLE SAUF COLONNE SENS
         call tbajli(nomg19, nbpar2, nompa2, [ibid], valr,&
                     [cbid], valk, 0)
 !
@@ -409,6 +411,9 @@ subroutine op0180()
 ! .....
         call topoca(nomt19, mailla, icabl, nbf0, zi(jnbno),&
                     numaca, quad, sens)
+!       REMPLISSAGE DE LA COLONNE SENS
+        call tbajli(nomg19, 1, nompa2(10), [sens], [rbid],&
+                    [cbid], [kbid], icabl)
 !
 ! 4.8.2  RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES DU CABLE
 ! .....
