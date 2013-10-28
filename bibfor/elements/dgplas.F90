@@ -135,6 +135,7 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
                     w, c)
         pendf=(mp-syf)/(drp-drd)
     else if (ipente .eq. 1) then
+        drp=0.d0
         call dgmmax(eb, nub, num, nuf, h,&
                     a, b1, b, mp, drp,&
                     w, c)

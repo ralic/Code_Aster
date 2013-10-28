@@ -142,9 +142,12 @@ subroutine dglrdm()
     nomres(5) = 'AMOR_BET'
     nomres(6) = 'AMOR_HYS'
     k8b = ' '
-    call getvr8('BETON', 'EPAIS', iocc=1, scal=h, nbret=ibid)
     r8b = 0.d0
-    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b], 6, nomres, valres, icodr2, 0)
+!
+    call getvr8('BETON', 'EPAIS', iocc=1, scal=h, nbret=ibid)
+!
+    call rcvale(mater, 'ELAS      ', 0, k8b, [r8b], 6, nomres, valres, icodr2, 0)
+!
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
         call utmess('A', 'ALGORITH6_8')
     endif
@@ -201,8 +204,7 @@ subroutine dglrdm()
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
-!          NOMRES(4) = 'AMOR_ALPHA'
-!          NOMRES(5) = 'AMOR_BETA'
+!
     call rcvale(mater, 'ELAS            ', 0, k8b, [r8b], 3, nomres, valres, icodr2, 0)
 !
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
@@ -212,19 +214,11 @@ subroutine dglrdm()
 !         NUA(ILIT)=VALRES(2) ON NE PREND PAS EN COMPTE L EFFET DE
 !         POISSON SUR LES ARMATURES
     rhoa = valres(3)
-!          IF(ICODR2(4) .NE. 0) THEN
-!            AMORA = 0.0D0
-!          ELSE
-!            AMORA = VALRES(4)
-!          ENDIF
-!          IF(ICODR2(5) .NE. 0) THEN
-!            AMORB = 0.0D0
-!          ELSE
-!            AMORB = VALRES(5)
-!          ENDIF
+!
     nomres(1) = 'SY'
     call rcvale(mater, 'ECRO_LINE       ', 0, k8b, [r8b],&
                 1, nomres, valres, icodr2, 0)
+!
     if (icodr2(1) .eq. 0) then
         sya(ilit) = valres(1)
     else
