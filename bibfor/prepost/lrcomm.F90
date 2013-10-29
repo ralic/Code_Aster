@@ -4,10 +4,13 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/nmdoco.h"
 #include "asterfort/nmdome.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/ntdoth.h"
@@ -16,6 +19,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vrcomp.h"
 #include "asterfort/wkvect.h"
     integer :: nbordr
     character(len=8) :: resu, chmat, carael, modele
@@ -68,8 +72,8 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     real(kind=8) :: epsi, rbid
 !
     character(len=8) :: crit, k8bid, blan8
-    character(len=19) :: infcha, lischa, lisch2
-    character(len=24) :: champ, noobj, fomult, k24b, compor, carcri, blan24
+    character(len=19) :: infcha, lischa, lisch2, vari, ligrmo
+    character(len=24) :: champ, noobj, fomult, k24b, compor, carcri, blan24, mod24, car24
 !
     complex(kind=8) :: cbid
 !
@@ -99,26 +103,26 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                 nbtrou)
 !
     if (chmat .ne. blan8) then
-        do 10 i = 1, nbordr
+        do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'CHAMPMAT', iordr,&
                         0, sjv=jpara, styp=k8bid)
             zk8(jpara)=chmat
-10      continue
+        end do
     endif
     if (carael .ne. blan8) then
-        do 20 i = 1, nbordr
+        do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'CARAELEM', iordr,&
                         0, sjv=jpara, styp=k8bid)
             zk8(jpara)=carael
-20      continue
+        end do
     endif
     if (modele .ne. blan8) then
         if (typres(1:9) .eq. 'EVOL_NOLI') then
             call nmdorc(modele, chmat, l_etat_init, compor, carcri)
             if (compor .ne. blan24) then
-                do 30 i = 1, nbordr
+                do i = 1, nbordr
                     iordr=zi(lordr+i-1)
                     call rsexch(' ', resu, 'COMPORTEMENT', iordr, champ,&
                                 iret)
@@ -126,15 +130,15 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                         call copisd('CHAMP_GD', 'G', compor(1:19), champ( 1:19))
                         call rsnoch(resu, 'COMPORTEMENT', iordr)
                     endif
-30              continue
+                end do
             endif
         endif
-        do 40 i = 1, nbordr
+        do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'MODELE', iordr,&
                         0, sjv=jpara, styp=k8bid)
             zk8(jpara)=modele
-40      continue
+        end do
     endif
     call getfac('EXCIT', nexci)
     if (nexci .gt. 0) then
@@ -154,15 +158,36 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
             call ntdoth(k24b, k24b, k24b, fomult, matcst,&
                         coecst, infcha, blan8, ibid)
         endif
-        do 50 i = 1, nbordr
+        do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'EXCIT', iordr,&
                         0, sjv=jpara, styp=k8bid)
             zk24(jpara)=lisch2
-50      continue
+        end do
         call copisd(' ', 'G', lischa, lisch2)
     endif
 60  continue
+!
+! - Check comportment 
+!
+    if (typres(1:9) .eq. 'EVOL_NOLI') then
+        do i = 1, nbordr
+            iordr=zi(lordr+i-1)
+            call rsexch(' ', resu, 'VARI_ELGA', iordr, vari,&
+                        iret)
+            if (iret.eq.0) then
+                call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+                mod24 = modele
+                car24 = carael
+                call nmdoco(mod24, car24, compor)
+                call vrcomp(' ', compor, vari, ligrmo, iret, &
+                            'A')
+                if (iret.eq.1) then
+                    call utmess('A','RESU1_1')
+                endif
+            endif
+        end do
+    endif
 !
     call jedetr('&&'//nompro//'.NUME_ORDR')
 !

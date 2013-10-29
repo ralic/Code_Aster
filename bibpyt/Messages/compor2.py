@@ -123,6 +123,75 @@ La rotation de réseau n'est pas compatible avec RUNGE_KUTTA. Utiliser l'intégr
    GRAD_IMPOSE n'est utilisable qu'avec DEFORMATION='SIMO_MIEHE'.
 """),
 
+23: _(u"""
+   Il y a incohérence entre le champ des variables internes et le comportement affecté sur les mailles (si vous ne l'avez pas précisé, on suppose par défaut
+que le comportement est élastique).
+   On ne peut pas modifier le champ des variables internes de manière automatique.
+   Mais comme vous semblez être dans un cas autorisé (voir message précédent), la reprise de ce champ dans un calcul non-linéaire devrait bien se passer (correction automatique dans l'opérateur).
+"""),
+
+24 : _(u"""
+Erreur lors de la vérification de la cohérence entre les champs de variables internes.
+Le maillage sur lequel s'appuie le modèle et le maillage du champ des variables internes ne sont pas les mêmes.
+"""),
+
+25 : _(u"""
+Possible erreur lors de la vérification de la cohérence entre les champs de variables internes.
+  Pour l'élément porté par la maille %(k1)s, un des champs de variables internes a été calculé avec
+  la relation de comportement %(k2)s, mais le comportement choisi pour l'autre champ de variables internes est différent (%(k3)s).
+
+Risques & conseils :
+  Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
+"""),
+
+26 : _(u"""
+Possible erreur lors de la vérification de la cohérence entre les champs de variables internes..
+  Pour l'élément porté par la maille %(k1)s, un des champs de variables internes n'a pas le même nombre de
+  variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour l'autre champ de variables internes (%(i2)d).
+
+  Il y a donc un changement de comportement pour la maille %(k1)s
+
+  Un changement de comportement lors d'un transitoire est a priori "douteux".
+  Il semble que vous soyez dans l'un des cas tolérés par le code :
+    / comportement "-" élastique
+    / comportement "+" élastique
+
+  Sur cet élément, les variables internes "-" sont mises à zéro.
+
+Risques & conseils :
+  Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
+"""),
+
+27: _(u"""
+Erreur lors de la vérification de la cohérence entre les champs de variables internes.
+ Pour l'élément porté par la maille %(k1)s, un des champs de variables internes a %(i1)d sous-points
+  mais l'autre champ de variables internes en a %(i2)d.
+"""),
+
+28 : _(u"""
+Erreur lors de la vérification de la cohérence entre les champs de variables internes.
+ Pour l'élément porté par la maille %(k1)s, un des champs de variables internes n'a pas de variables internes.
+"""),
+
+29 : _(u"""
+Erreur lors de la vérification de la cohérence entre les champs de variables internes.
+  Pour l'élément porté par la maille %(k1)s, un des champs de variables internes n'a pas le même nombre de
+  variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour l'autre champ de variables internes (%(i2)d).
+
+  Il y a donc un changement de comportement pour la maille %(k1)s
+  Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
+    - LEMAITRE <-> VMIS_ISOT_XXXX
+    - ELAS     <-> XXXX
+  Il ne semble pas que vous soyez dans ce cas de figure. L'exécution est arrêtée.
+
+Risques & conseils :
+  Vérifiez le comportement affecté sur cette maille.
+"""),
+
+30 : _(u"""
+Erreur lors de la vérification de la cohérence entre les champs de variables internes.
+ Pour l'élément porté par la maille %(k3)s, les comportements %(k1)s et %(k2)s sont incompatibles.
+"""),
 
 31: _(u"""
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef facteur <%(k1)s> (occurrence %(i1)d). 

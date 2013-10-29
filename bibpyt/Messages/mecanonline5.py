@@ -23,6 +23,15 @@ cata_msg = {
 Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
 """),
 
+2 : _(u"""
+A cause des erreurs précédentes, le code s'arrête.
+  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous précisez un état initial (mot clé ETAT_INIT).
+  Pour le calcul du premier pas de temps, le champ des variables internes du début du pas est pris
+  dans le concept EVOL_NOLI fourni ou par le champ VARI_ELGA.
+  On l'a comparé avec le champ des variables internes créé par le mot-clef COMPORTEMENT, il y a incohérence.
+  Vérifiez la cohérence entre le comportement et le champ des variables internes donné dans l'état initial.
+"""),
 
 
 3 : _(u"""
@@ -228,10 +237,6 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
   Le pilotage est incompatible avec la méthode NEWTON_KRYLOV.
 """),
 
-49 : _(u"""
-Le maillage sur lequel s'appuie le modèle et le maillage du champ des variables internes fourni dans ETAT_INIT ne sont pas les mêmes.
-Conseils: Vérifiez la cohérence des maillages.
-"""),
 
 50 : _(u"""
  Pilotage.

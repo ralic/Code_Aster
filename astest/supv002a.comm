@@ -91,7 +91,7 @@ previous_errors = [
     'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
     'USASTE', 'UTTCPU', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
     'XOUS', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc',
-    'autor', 'breakdown','cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq',
+    'autor', 'breakdown','cagnba', 'cata', 'chckma', 'chno',  'clcplq',
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn',
     'deltat', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa',
     'er', 'error', 'etanca', 'etenca', 'exchml', 'exe', 'export',

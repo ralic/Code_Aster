@@ -126,7 +126,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL5_42" :
+   if err.id_message == "MECANONLINE5_2" :
       is_ok = 1
 
 # TEST_RESU
@@ -169,7 +169,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL3_49":
+   if err.id_message == "MECANONLINE5_2":
       is_ok = 1
 
 # TEST_RESU

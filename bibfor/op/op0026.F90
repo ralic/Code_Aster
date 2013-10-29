@@ -55,6 +55,7 @@ subroutine op0026()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vebtla.h"
 #include "asterfort/vefnme.h"
 #include "asterfort/vrcomp.h"
@@ -202,7 +203,12 @@ subroutine op0026()
 ! - Checking number of internal variables
 !
     call jeexin(compor(1:19)//'.CESD', iret)
-    if (iret .gt. 0) call vrcomp(' ', compor, varmoi, ligrmo)
+    if (iret .gt. 0) then
+        call vrcomp(' ', compor, varmoi, ligrmo, iret)
+        if (iret.eq.1) then
+            call utmess('F','CALCUL1_5')
+        endif
+    endif
 !
 ! - Datastructures name (automatic génération)
 !

@@ -155,14 +155,6 @@ PROJ_CHAMP  :
   Vous utilisez la méthode SOUS_POINT.
   Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
 
-41 : _(u"""
- pas de variables internes initiales pour la maille  %(k1)s
-"""),
-
-42 : _(u"""
- comportements incompatibles :  %(k1)s  et  %(k2)s  pour la maille  %(k3)s
-"""),
-
 43 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
   Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à une distance %(r4)e"""),

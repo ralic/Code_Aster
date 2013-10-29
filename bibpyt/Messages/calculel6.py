@@ -145,22 +145,6 @@ Conseils :
 """),
 
 
-
-
-
-
-
-
-52: _(u"""
- Erreur Utilisateur :
-
- Variables internes initiales non cohérentes (nombre sous-points) avec le comportement choisi.
- Pour la maille : %(k1)s
- nombre sous-points "k-1" :  %(i1)d
- nombre sous-points "k"   :  %(i2)d
-"""),
-
-
 54: _(u"""
  Problème d'utilisation du parallélisme :
    Les fonctionnalités de parallélisme utilisées ici (calculs distribués) conduisent à créer

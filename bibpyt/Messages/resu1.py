@@ -19,28 +19,10 @@
 
 cata_msg = {
 
-1:_(u"""
-La table que l'on tente d'enrichir dans la commande CALCUL n'est pas du type attendu.
-Elle n'a pas le bon nombre de paramètres.
+1 : _(u"""
+  Lors de la construction ou de la lecture d'un résultat non-linéaire, le champ des variables internes lu ou créé n'est pas cohérent avec le comportement donné par le mot-clef COMPORTEMENT.  
+  A cause des erreurs précédentes, le code s'arrête.  
 """),
 
-2:_(u"""
-La table que l'on tente d'enrichir dans la commande CALCUL n'est pas du type attendu.
-Elle n'a pas les bons paramètres.
-"""),
-
-3:_(u"""
-On trouve plusieurs lignes dans la table pour l'instant %(r1)f .
-"""),
-
-4:_(u"""
-L'objet %(k1)s à l'instant %(r1)f existe déjà dans la table fournie.
-On l'écrase pour le remplacer par le nouveau.
-"""),
-
-5 : _(u"""
-A cause des erreurs précédentes, le code s'arrête.
-  Le champ des variables internes fourni à CALCUL n'est pas cohérent avec le comportement donné par le mot-clef COMPORTEMENT. 
-"""),
 
 }

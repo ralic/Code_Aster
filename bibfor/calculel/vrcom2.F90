@@ -30,6 +30,7 @@ subroutine vrcom2(compop, varmoi, ligrep)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
     character(len=*) :: compop, varmoi, ligrep
 ! ------------------------------------------------------------------
 ! BUT: MODIFIER VARMOI POUR LE RENDRE COHERENT AVEC COMPOP
@@ -61,7 +62,10 @@ subroutine vrcom2(compop, varmoi, ligrep)
 !
 !     -- ON VERIFIE QUE VARMOI EST UN OBJET TEMPORAIRE QUE L'ON A
 !        LE DROIT DE MODIFIER :
-    ASSERT(varmoi(1:2).eq.'&&')
+    if (varmoi(1:2).ne.'&&') then
+        call utmess('A', 'COMPOR2_23')
+        goto 99
+    endif
 !
 !
 !     1- ON TRANSFORME VARMOI EN CHAM_ELEM_S (CESV1)
@@ -105,57 +109,58 @@ subroutine vrcom2(compop, varmoi, ligrep)
     call jeveuo(copp//'.CESV', 'L', jcoppv)
     call jeveuo(copp//'.CESL', 'L', jcoppl)
 !
-    do 40,ima=1,nbma
-    nbpg2=zi(jcev2d-1+5+4*(ima-1)+1)
-    nbsp2=zi(jcev2d-1+5+4*(ima-1)+2)
-    nbcm2=zi(jcev2d-1+5+4*(ima-1)+3)
+    do ima=1,nbma
+        nbpg2=zi(jcev2d-1+5+4*(ima-1)+1)
+        nbsp2=zi(jcev2d-1+5+4*(ima-1)+2)
+        nbcm2=zi(jcev2d-1+5+4*(ima-1)+3)
 !
 !
 !       -- SI NBSP2=0, C'EST QUE LA MAILLE N'EXISTE PLUS
 !          DANS LE MODELE :
-    if (nbsp2 .eq. 0) goto 40
+        if (nbsp2 .eq. 0) goto 40
 !
-    call cesexi('C', jcoppd, jcoppl, ima, 1,&
-                1, 1, iadp)
-    if (iadp .le. 0) goto 40
+        call cesexi('C', jcoppd, jcoppl, ima, 1,&
+                    1, 1, iadp)
+        if (iadp .le. 0) goto 40
 !
-    nbsp1=zi(jcev1d-1+5+4*(ima-1)+2)
-    nbcm1=zi(jcev1d-1+5+4*(ima-1)+3)
+        nbsp1=zi(jcev1d-1+5+4*(ima-1)+2)
+        nbcm1=zi(jcev1d-1+5+4*(ima-1)+3)
 !
 !       -- PARFOIS LE COMPORTEMENT EST AFFECTE SUR LES MAILLES
 !          DE BORD ALORS QUE CES ELEMENTS N'ONT PAS DE VARIABLES
 !          INTERNES (I.E. ILS IGNORENT RAPH_MECA).
 !          ON NE VEUT PAS FAIRE D'ERREUR <F> :
-    if ((nbsp1.eq.0) .and. (nbcm1.eq.0)) goto 40
+        if ((nbsp1.eq.0) .and. (nbcm1.eq.0)) goto 40
 !
-    ASSERT(nbsp2.eq.nbsp1)
+        ASSERT(nbsp2.eq.nbsp1)
 !
-    if (nbcm1 .eq. nbcm2) then
-        action=1
-    else
-        action=2
-    endif
+        if (nbcm1 .eq. nbcm2) then
+            action=1
+        else
+            action=2
+        endif
 !
-    do 30,ipg=1,nbpg2
-    do 20,isp=1,nbsp2
-    do 10,icm=1,nbcm2
-    call cesexi('S', jcev2d, jcev2l, ima, ipg,&
-                isp, icm, iad2)
-    ASSERT(iad2.gt.0)
-    zl(jcev2l-1+iad2)=.true.
-    if (action .eq. 1) then
-        call cesexi('S', jcev1d, jcev1l, ima, ipg,&
-                    isp, icm, iad1)
-        ASSERT(iad1.gt.0)
-        zr(jcev2v-1+iad2)=zr(jcev1v-1+iad1)
+        do ipg=1,nbpg2
+            do isp=1,nbsp2
+                do icm=1,nbcm2
+                    call cesexi('S', jcev2d, jcev2l, ima, ipg,&
+                                isp, icm, iad2)
+                    ASSERT(iad2.gt.0)
+                    zl(jcev2l-1+iad2)=.true.
+                    if (action .eq. 1) then
+                            call cesexi('S', jcev1d, jcev1l, ima, ipg,&
+                                        isp, icm, iad1)
+                            ASSERT(iad1.gt.0)
+                            zr(jcev2v-1+iad2)=zr(jcev1v-1+iad1)
 !
-    else
-        zr(jcev2v-1+iad2)=0.d0
-    endif
-10  continue
-20  continue
-30  continue
-    40 end do
+                    else
+                        zr(jcev2v-1+iad2)=0.d0
+                    endif
+                end do
+            end do
+        end do
+ 40     continue
+    end do
 !
 !
 !     4- ON TRANSFORME CESV2 EN CHAM_ELEM (VARMOI)
@@ -169,5 +174,6 @@ subroutine vrcom2(compop, varmoi, ligrep)
     call detrsd('CHAM_ELEM_S', cesv1)
     call detrsd('CHAM_ELEM_S', cesv2)
     call detrsd('CHAM_ELEM_S', copp)
+99  continue
     call jedema()
 end subroutine

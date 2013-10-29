@@ -1,4 +1,5 @@
-subroutine vrcomp(compom, compop, varmoi, ligrep)
+subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
+                  type_stop)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +36,12 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 #include "asterfort/utmess.h"
 #include "asterfort/vrcom2.h"
 !
-    character(len=*) :: compop, varmoi, compom, ligrep
+    character(len=*), intent(in) :: compop
+    character(len=*), intent(in) :: varmoi
+    character(len=*), intent(in) :: compom
+    character(len=*), intent(in) :: ligrep
+    character(len=1), optional, intent(in) :: type_stop
+    integer, intent(out) :: iret
 ! ------------------------------------------------------------------
 ! BUT: VERIFIER LA COHERENCE DU CHAMP DE VARIABLES INTERNES "-" AVEC
 !      LE COMPORTEMENT CHOISI.
@@ -66,6 +72,11 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 ! COMPOP   EST AUSSI LE NOM DU CHAM_ELEM_S DE DCEL_I PERMETTANT DE
 !          DE CONNAITRE LE NOMBRE DE SOUS-POINTS ET LE NOMBRE DE VARI
 ! VARMOI   IN/JXVAR K19 : SD CHAM_ELEM   (VARI_R) "-"
+! TYPE_STOP IN   : COMPORTEMENT SI PROBLEME DETECTE
+!                  'A' ALARME
+!                  'E' ERREUR
+! IRET      OUT  : CODE RETOUR
+!                   0 SI PAS DE PROBLEME
 !
 ! REMARQUES :
 !  - VARMOI EST PARFOIS MODIFIE POUR ETRE COHERENT AVEC COMPOP
@@ -79,7 +90,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     integer :: jdceld, jdcelv, jdcell, jdcelk
     integer :: jce2d, jce2v, jce2l, jce2k
     integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
-    integer :: ima, iret, kma
+    integer :: ima, kma
     integer :: iadp, jcoppl, jcoppd, jcoppv, jcoppk, ip
     integer :: iadm, jcopml, jcopmd, jcopmv, jcopmk, im
     integer :: vali(5), tounul, k, nbpgm, n1, jrepp, jrepm
@@ -87,6 +98,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     character(len=16) :: relcop, relcom
     character(len=19) :: dcel, ces2, copm, copp, coto, lig19p, lig19m
     character(len=48) :: comp1, comp2
+    character(len=1) :: stop_erre
     logical :: modif, exip, exim
 !     ------------------------------------------------------------------
     call jemarq()
@@ -95,6 +107,11 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !        MAILLES ONT DISPARU OU SONT NOUVELLES OU ONT CHANGE DE
 !        COMPORTEMENT
     modif=.false.
+    if (present(type_stop)) then
+        stop_erre = type_stop
+    else
+        stop_erre = 'E'
+    endif
 !
 !     COMPORTEMENTS MISCIBLES ENTRE EUX :
 !                     1         2         3         4
@@ -119,7 +136,9 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     call dismoi('NOM_MAILLA', compop, 'CHAMP', repk=nomma1)
     call dismoi('NOM_MAILLA', varmoi, 'CHAMP', repk=nomma2)
     if (nomma1 .ne. nomma2) then
-        call utmess('F', 'MECANONLINE5_49')
+        call utmess('E', 'COMPOR2_24')
+        iret = 1
+        goto 90
     endif
 !
     call carces(compop, 'ELEM', ' ', 'V', coto,&
@@ -225,7 +244,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
                         valk(1)=nomail
                         valk(2)=relcom
                         valk(3)=relcop
-                        call utmess('A', 'CALCULEL3_47', nk=3, valk=valk)
+                        call utmess('A', 'COMPOR2_25', nk=3, valk=valk)
                     endif
                     goto 10
                 endif
@@ -265,6 +284,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         nbpgm=zi(jce2d-1+5+4*(ima-1)+1)
         nbspm=zi(jce2d-1+5+4*(ima-1)+2)
         ncmpm=zi(jce2d-1+5+4*(ima-1)+3)
+        
 !
 !       -- PARFOIS LE COMPORTEMENT EST AFFECTE SUR LES MAILLES
 !          DE BORD ALORS QUE CES ELEMENTS N'ONT PAS DE VARIABLES
@@ -325,7 +345,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
             call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
             vali(1)=ncmpm
             vali(2)=ncmpp
-            call utmess('A', 'CALCULEL3_48', sk=nomail, ni=2, vali=vali)
+            call utmess('A', 'COMPOR2_26', sk=nomail, ni=2, vali=vali)
         endif
  40     continue
     end do
@@ -338,24 +358,28 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     vali(1)=nbspm
     vali(2)=nbspp
-    call utmess('F', 'CALCULEL6_52', sk=nomail, ni=2, vali=vali)
+    call utmess(stop_erre, 'COMPOR2_27', sk=nomail, ni=2, vali=vali)
+    iret = 1
 !
  60 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-    call utmess('F', 'CALCULEL5_41', sk=nomail)
+    call utmess(stop_erre, 'COMPOR2_28', sk=nomail)
+    iret = 1
 !
  70 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     vali(1)=ncmpm
     vali(2)=ncmpp
-    call utmess('F', 'CALCULEL3_49', sk=nomail, ni=2, vali=vali)
+    call utmess(stop_erre, 'COMPOR2_29', sk=nomail, ni=2, vali=vali)
+    iret = 1
 !
  80 continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     valk(1)=relcom
     valk(2)=relcop
     valk(3)=nomail
-    call utmess('F', 'CALCULEL5_42', nk=3, valk=valk)
+    call utmess(stop_erre, 'COMPOR2_30', nk=3, valk=valk)
+    iret = 1
 !
 !
  90 continue
