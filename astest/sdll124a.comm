@@ -119,9 +119,10 @@ cara=AFFE_CARA_ELEM(MODELE=modele,
 # CONDITIONS AUX LIMITES
 # ------------------
 blocage=AFFE_CHAR_MECA(MODELE=modele,
-                        DDL_IMPO=(_F(GROUP_NO=('PALIER1'),
-                                     DZ=0,
-                                     ),))
+                        DDL_IMPO=(_F(GROUP_NO='PALIER1',
+                                     DZ=0.0,),
+                                  _F(NOEUD='N7',
+                                     DRZ=0.0,),),);
                                     
 # --------------------------------
 #MATRICES ASSEMBLEES K, M

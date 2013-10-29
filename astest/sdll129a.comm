@@ -518,7 +518,7 @@ for kk in range(0,nbV,1) :
                                MATR_MASS=MASS[kk],
                                MATR_AMOR=GYOM[kk],
                                METHODE='QZ',
-                               CALC_FREQ=_F(OPTION='CENTRE',FREQ=10.,NMAX_FREQ=nbF,),
+                               CALC_FREQ=_F(OPTION='CENTRE',FREQ=1300.,NMAX_FREQ=nbF+1,),
                                VERI_MODE=_F(PREC_SHIFT=5.000000000000000E-3,
                                             STOP_ERREUR='NON',
                                             STURM='NON',
