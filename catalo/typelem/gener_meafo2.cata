@@ -184,8 +184,8 @@ OPTION__
                           OUT__ MMATUUR  PMATUUR  
     RIGI_MECA_GE     112  IN__  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CHARMON  PHARMON  
                           OUT__ MMATUUR  PMATUUR  
-    RIGI_MECA_RO     111  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  ZVARCPG  PVARCPR  
-                          OUT__ MMATUUR  PMATUUR  
+    RIGI_MECA_RO      -1  IN__  
+                          OUT__ XXXXXX   XXXXXX
     SIEF_ELGA        115  IN__  CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON  
                                 CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                           OUT__ ECONTPC  PCONTRC  ECONTPG  PCONTRR  

@@ -1,4 +1,8 @@
-subroutine te0111(option, nomte)
+subroutine te0111(nomopt, nomte)
+! aslint: disable=W0104
+    implicit none
+#include "asterfort/utmess.h"
+!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,119 +19,7 @@ subroutine te0111(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/jevech.h"
-#include "asterfort/rcvalb.h"
-!
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - BUT :  CALCUL DES MATRICES DE RAIDEUR CENTRIFUGE ELEMENTAIRES
-!                          POUR LES ELEMENTS DE FOURIER
-!                          OPTION : 'RIGI_MECA_RO    '
-!
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
-!
-    integer :: icodre(1)
-    character(len=4) :: fami
-    real(kind=8) :: a(3, 3, 9, 9), poids, r
-    integer :: nno, kp, npg2, i, j, imatuu, nnos, ndim, jgano
-    integer :: ipoids, ivf, idfde, igeom, imate
-!
-!
-!-----------------------------------------------------------------------
-    integer :: ijkl, ik, irota, k, l
-    real(kind=8) :: omega1, omega2, omega3, rho(1), wij
-!-----------------------------------------------------------------------
-    fami = 'MASS'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfde, jgano)
-!
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PROTATR', 'L', irota)
-    call jevech('PMATUUR', 'E', imatuu)
-!
-    omega1 = zr(irota+1) * zr(irota)
-    omega2 = zr(irota+2) * zr(irota)
-    omega3 = zr(irota+3) * zr(irota)
-!
-    do k = 1, 3
-        do l = 1, 3
-            do i = 1, nno
-                do j = 1, i
-                    a(k,l,i,j) = 0.d0
-                end do
-            end do
-        end do
-    end do
-!
-!    BOUCLE SUR LES POINTS DE GAUSS
-!
-    do kp = 1, npg2
-!
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    poids)
-!
-        r = 0.d0
-        do i = 1, nno
-            r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-        end do
-        poids = poids*r
-        call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
-                    1, 'RHO', rho, icodre, 1)
-!
-        do i = 1, nno
-!
-            do j = 1, i
-!
-                wij = rho(1) * poids * zr(ivf+l+i-1) * zr(ivf+l+j-1)
-!
-                a(1,1,i,j) = a(1,1,i,j) - (omega2**2 + omega3**2) * wij
-!
-                a(2,2,i,j) = a(2,2,i,j) - (omega1**2 + omega3**2) * wij
-!
-                a(3,3,i,j) = a(3,3,i,j) - (omega1**2 + omega2**2) * wij
-!
-                a(2,1,i,j) = a(2,1,i,j) + omega1 * omega2 * wij
-!
-                a(3,1,i,j) = a(3,1,i,j) + omega1 * omega3 * wij
-!
-                a(3,2,i,j) = a(3,2,i,j) + omega2 * omega3 * wij
-!
-            end do
-!
-        end do
-!
-    end do
-!
-    do i = 1, nno
-        do j = 1, i
-            a(1,2,i,j) = a(2,1,i,j)
-            a(1,3,i,j) = a(3,1,i,j)
-            a(2,3,i,j) = a(3,2,i,j)
-        end do
-    end do
-!
-! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
-!
-    do k = 1, 3
-        do l = 1, 3
-            do i = 1, nno
-                ik = ((3*i+k-4) * (3*i+k-3)) / 2
-                do j = 1, i
-                    ijkl = ik + 3 * (j-1) + l
-                    zr(imatuu+ijkl-1) = a(k,l,i,j)
-                end do
-            end do
-        end do
-    end do
-!
+!     ------------------------------------------------------------------
+    character(len=16) :: nomte, nomopt
+    call utmess('F', 'FERMETUR_8')
 end subroutine
