@@ -69,7 +69,7 @@ FISS3=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2,FISS3),
-                         CONTACT='P1P1',
+                         CONTACT='OUI',
                          INFO=1);
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,

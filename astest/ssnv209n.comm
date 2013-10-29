@@ -107,7 +107,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P2P1',
+                         CONTACT='OUI',
                          INFO=1);
 
 #----------------------------------------------

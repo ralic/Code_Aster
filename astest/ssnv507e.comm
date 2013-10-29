@@ -51,7 +51,7 @@ FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1),
-                         CONTACT='SANS',
+                         CONTACT='NON',
                          INFO=1);
 
 E=100.0E6

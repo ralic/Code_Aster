@@ -79,7 +79,7 @@ MA=DEFI_GROUP(reuse=MA,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         CONTACT='P1P1',
+                         CONTACT='OUI',
                          );
 
 CTXFEM = DEFI_CONTACT(

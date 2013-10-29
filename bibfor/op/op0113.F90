@@ -40,6 +40,7 @@ subroutine op0113()
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
+#include "asterfort/ismali.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -49,6 +50,7 @@ subroutine op0113()
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
@@ -73,7 +75,10 @@ subroutine op0113()
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, noma, k8cont
-    logical :: linter
+    logical :: linter, maqua, malin, lret
+    character(len=8) :: typma
+    character(len=16) :: nomte
+    integer :: nbgrel, igrel, jliel, nel, itypel, ndime
 !
     data motfac /' '/
 !
@@ -126,12 +131,39 @@ subroutine op0113()
 !
     call getvtx(motfac, 'CONTACT', iocc=1, scal=k8cont, nbret=ibid)
     call wkvect(modelx//'.XFEM_CONT', 'G V I', 1, jxc)
-    if (k8cont .eq. 'P1P1') then
-        zi(jxc) = 1
-    else if (k8cont.eq.'P2P1') then
-        zi(jxc) = 3
-    else
+    if(k8cont.eq.'NON') then
         zi(jxc) = 0
+    else if(k8cont.eq.'OUI') then
+!
+!       TEST MAILLAGE LINEAIRE OU QUADRATIQUE
+!
+        call dismoi('NB_GREL', ligr1, 'LIGREL', repi=nbgrel)
+        maqua = .false.
+        malin = .false.
+        do 1 igrel = 1,nbgrel
+            call jeveuo(jexnum(liel1,igrel),'L',jliel)
+            call jelira(jexnum(liel1, igrel), 'LONMAX', nel)
+            itypel = zi(jliel-1+nel)
+            call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
+            call dismoi('NOM_TYPMAIL',nomte,'TYPE_ELEM', repk=typma)
+            call dismoi('DIM_TOPO',typma,'TYPE_MAILLE', repi=ndime)
+            if(ndime.eq.0) goto 1
+            lret = ismali(typma)
+            if(lret) malin = .true.
+            if(.not.lret) maqua = .true.
+1       continue
+!
+        if(malin.and.(.not.maqua)) then
+            zi(jxc) = 1
+        else if(maqua.and.(.not.malin)) then
+            zi(jxc) = 3
+        else
+!
+!           PRESENCE DE MAILLES LINEAIRES ET QUADRATIQUES : INTERDIT
+            call utmess('F','MODELISA10_18')
+        endif
+    else
+        ASSERT(.false.)
     endif
 !
 ! --- CREATION DU TABLEAU DE TRAVAIL

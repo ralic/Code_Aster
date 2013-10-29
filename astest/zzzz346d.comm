@@ -78,7 +78,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELE,
                     DEFI_FISS=_F(FONC_LN=LSN));
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,
-                         FISSURE=FISS, #CONTACT='P2P1',
+                         FISSURE=FISS, #CONTACT='OUI',
                          INFO=1);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210.E9,NU=0.,));

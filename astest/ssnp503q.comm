@@ -57,7 +57,7 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
-                         CONTACT='P1P1',
+                         CONTACT='OUI',
                          INFO=1);
 # ORDRES GRANDEURS COEF_PENA
 # 1.E8 COEF_PENA_MULT

@@ -59,7 +59,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MO,
 # enrichissement du modele avec contact P2P1
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         CONTACT='P2P1',
+                         CONTACT='OUI',
                          );
 
 # definition du contact avec loi cohesive
