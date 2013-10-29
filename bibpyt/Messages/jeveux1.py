@@ -153,6 +153,12 @@ cata_msg = {
 
 """),
 
+23 : _(u"""
+
+ Le nom de l'attribut %(k1)s est invalide pour la requête.
+
+"""),
+
 27 : _(u"""
 
  Le paramètre d'accès %(r1)f est invalide, la valeur doit être E ou L.

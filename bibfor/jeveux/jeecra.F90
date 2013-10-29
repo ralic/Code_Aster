@@ -123,15 +123,17 @@ subroutine jeecra(nomlu, catr, ival, cval)
             llong = .false.
             lluti = .false.
         endif
-    else
+    else if (catrlu .eq. 'LONMAX' .or. catrlu .eq. 'NOMMAX' .or. catrlu .eq. 'LONUTI' .or.&
+             catrlu .eq. 'DOCU'   .or. catrlu .eq. 'DATE')  then
         llong = ( catrlu(4:6) .eq. 'MAX' )
         lluti = ( catrlu(4:6) .eq. 'UTI' )
         if ((genri .ne. 'N' .and. catrlu(1:3).eq. 'NOM') .or.&
-            (genri .eq. 'N' .and. catrlu(1:4).eq. 'NOMU') .or.&
             (genri .ne. 'V' .and. catrlu(1:4).eq. 'LONM') .or.&
             (genri .ne. 'V' .and. catrlu(1:4).eq. 'LONU')) then
             call utmess('F', 'JEVEUX_99', sk=genri)
         endif
+    else 
+       call utmess('F', 'JEVEUX1_23', sk=catrlu)    
     endif
 !
     if (catrlu .eq. 'LONT    ' .and. lconti) then
