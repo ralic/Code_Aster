@@ -29,7 +29,7 @@ subroutine ef0517(nomte)
     integer :: nc
     real(kind=8) :: zero
 !
-    real(kind=8) :: fl(14), d1b3(2, 3), ksi1, tmax(2), tmin(2)
+    real(kind=8) :: fl(14), d1b3(2, 3), ksi1
     real(kind=8) :: sigfib
 !
     integer :: nbfib, kp, adr, ncomp, i, cara, ne, jacf, ncarfi
@@ -102,13 +102,6 @@ subroutine ef0517(nomte)
                     adr=icgp+nbfib*(kp-1)+i-1
                     sigfib=sigfib+zr(adr)*d1b3(ne,kp)
 30              continue
-                if (i .eq. 1) then
-                    tmax(ne)=sigfib
-                    tmin(ne)=sigfib
-                else
-                    if (sigfib .gt. tmax(ne)) tmax(ne)=sigfib
-                    if (sigfib .lt. tmin(ne)) tmin(ne)=sigfib
-                endif
                 adr=nc*(ne-1)
                 cara=jacf+(i-1)*ncarfi
                 fl(1+adr)=fl(1+adr)+sigfib*zr(cara+2)
@@ -117,16 +110,9 @@ subroutine ef0517(nomte)
 40          continue
 50      continue
 !
-        do 60 i = 1, nc
+        do 60 i = 1, 2*nc
             zr(icontn+i-1)=fl(i)
 60      continue
-        zr(icontn+(nc+1)-1)=tmax(1)
-        zr(icontn+(nc+2)-1)=tmin(1)
-        do 70 i = (nc+1), 2*nc
-            zr(icontn+2+i-1)=fl(i)
-70      continue
-        zr(icontn+2*(nc+1)+1-1)=tmax(2)
-        zr(icontn+2*(nc+1)+2-1)=tmin(2)
 !
 !
     else if (nomte.eq.'MECA_POU_D_EM') then

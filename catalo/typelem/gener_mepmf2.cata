@@ -91,9 +91,9 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
-                                        BX       SIMAX    SIMIN    )
+                                        BX       )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
-                                        BX       SIMAX    SIMIN    )
+                                        BX       )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     )
