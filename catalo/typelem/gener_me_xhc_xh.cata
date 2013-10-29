@@ -159,7 +159,7 @@ MODE_LOCAL__
 
     I3NEUT_I = NEUT_I   ELEM__         (X[3] )
 
-    STANO_I  = N120_I   ELEM__         (X[16])
+    STANO_I  = N120_I   ELEM__         (X[40])
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
