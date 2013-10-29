@@ -128,6 +128,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
             ival(2)=nint(vmxdyn*lois)/unmega
             ival(3)=nint(mcdyn*lois)/unmega
             ival(4)=(ltot*lois)/unmega
+            call utmess('E', 'JEVEUX_62', ni=4, vali=ival)
             call jeimpm(6)
             call utmess('F', 'JEVEUX_62', ni=4, vali=ival)
         else
@@ -155,6 +156,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
         nbdyn = nbdyn + 1
     else
         if (iessai .gt. 1) then
+            call utmess('E', 'JEVEUX_60', ni=2, vali=ival)
             call jeimpm(6)
             ival(1)=lsic*lois
             ival(2)=ltot*lois

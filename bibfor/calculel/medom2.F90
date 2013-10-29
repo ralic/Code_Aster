@@ -93,7 +93,7 @@ subroutine medom2(modele, mate, cara, kcha, ncha,&
         call jedetr('&&MEDOM2.MODELS   ')
         call jedetr('&&MEDOM2.BASES    ')
         call wkvect('&&MEDOM2.LIGRS    ', 'V V K24', nbordr*nbmxba, iligrs)
-        call wkvect('&&MEDOM2.MODELS   ', 'V V K8', nbordr, imodls)
+        call wkvect('&&MEDOM2.MODELS   ', 'V V K8', nbordr*nbmxba, imodls)
         call wkvect('&&MEDOM2.BASES    ', 'V V K8', nbordr*nbmxba, ibases)
         call jeveut('&&MEDOM2.LIGRS    ', 'L', iligrs)
         call jeveut('&&MEDOM2.MODELS   ', 'L', imodls)
