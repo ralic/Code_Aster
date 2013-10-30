@@ -59,6 +59,18 @@ RE_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
                      CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
    );
 
+R2_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CL_DISTL),
+                                   _F(CHARGE = CH_DISTL),),
+                     COMPORTEMENT=_F(RELATION='ELAS',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     NEWTON=_F(PAS_MINI_ELAS = 2.0),
+   );
+
+
 TB_DISTL = RECU_TABLE(CO=RE_DISTL,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_DISTL)
@@ -73,6 +85,15 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=1.0,
                   RESULTAT=RE_DISTL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=-3.789457728599E-06,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=R2_DISTL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=-3.789457728599E-06,
@@ -431,6 +452,17 @@ RE_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
                      CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
    );
 
+R2_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_DITRL,
+                     EXCIT      = (_F(CHARGE = CL_DITRL),
+                                   _F(CHARGE = CH_DITRL),),
+                     COMPORTEMENT=_F(RELATION='ELAS',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+                     NEWTON=_F(PAS_MINI_ELAS = 2.0),
+   );
+
 TB_DITRL = RECU_TABLE(CO=RE_DITRL,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_DITRL)
@@ -445,6 +477,14 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_RESU(RESU=_F(GROUP_NO='B',
                   INST=1.0,
                   RESULTAT=RE_DITRL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  VALE_CALC=4.1684035014589001E-06,
+                  ),
+          )
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=R2_DITRL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=4.1684035014589001E-06,
