@@ -257,19 +257,6 @@ TEST_RESU(RESU=(_F(INST=2.,
                    VALE_CALC=-4.00000000000267E-02,
                    VALE_REFE=-4.01394722938527E-02,
                    PRECISION=4.E-2,),
-                _F(INST=2.,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U_POU,
-                   NOM_CHAM='SIEF_ELGA',
-                   MAILLE='M10',
-                   POINT=1,
-                   SOUS_POINT=1,
-                   NOM_CMP='SIXX',
-                   VALE_CALC=5.036335932E-05,
-                   VALE_REFE=0.0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION=1.E-4,
-                   ),
                ))
 
 
@@ -435,6 +422,10 @@ U_POU2=STAT_NON_LINE(MODELE=MOPOU,
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
+CALC_CHAMP(reuse=U_POU2,RESULTAT=U_POU2, DEFORMATION = 'EPSI_ELGA')
+
+IMPR_RESU(RESU=_F(RESULTAT=U_POU2, NOM_CHAM='EPSI_ELGA', INST = 2.0))
+
 TEST_RESU(RESU=(_F(INST=2.,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU2,
@@ -453,5 +444,57 @@ TEST_RESU(RESU=(_F(INST=2.,
                    VALE_CALC=8.0E-04,
                    ),
                ))
+
+
+
+# BLOCAGE DES DEUX EXTREMITES
+
+CL_POU3=AFFE_CHAR_MECA(MODELE=MOPOU,
+                   DDL_IMPO=(_F(GROUP_NO=('P1','P2'),DX=0.,DZ=0.,DY=0.,DRX = 0.,DRY=0., DRZ=0.),
+                             )
+                                 )
+
+
+U_POU3=STAT_NON_LINE(MODELE=MOPOU,
+                 CARA_ELEM = POUCA,
+                 CHAM_MATER=CHMA_PO2,
+                 EXCIT=(_F(CHARGE=CL_POU3,),
+                                             ),
+                 COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
+                 INCREMENT=_F(LIST_INST=LINST),
+                 );
+
+IMPR_RESU(RESU=_F(RESULTAT=U_POU3, NOM_CHAM='SIEF_ELGA', INST = 2.0, MAILLE = 'M1'))
+
+TEST_RESU(RESU=(
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU3,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M10',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2.400000000E+07,
+                   VALE_REFE=-2.400000000E+07,
+                   CRITERE = 'ABSOLU',
+                   PRECISION=1.E-4,
+                   ),
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU3,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M10',
+                   POINT=1,
+                   SOUS_POINT=9,
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.600000000E+08,
+                   VALE_REFE=-1.600000000E+08,
+                   CRITERE = 'ABSOLU',
+                   PRECISION=1.E-4,
+                   ),
+               ))
+
+
 
 FIN()
