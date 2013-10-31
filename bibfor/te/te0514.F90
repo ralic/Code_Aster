@@ -67,7 +67,7 @@ subroutine te0514(option, nomte)
     integer :: nnc, npm, nmilie, pmmax, nmfis
     integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax
     parameter(ptmaxi=6,zintmx=5,pmmaxi=17,nsemax=6,nfimax=10)
-    parameter(ninmax=30,nmmax=65)
+    parameter(ninmax=44,nmmax=65)
     real(kind=8) :: nmil(3, 7), rbid7(7), ainter(ptmaxi*zintmx)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)

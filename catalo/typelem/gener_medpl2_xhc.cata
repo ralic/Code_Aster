@@ -79,14 +79,15 @@ MODE_LOCAL__
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
-    E6NEUTI  = N120_I   ELEM__         (X[6]     )
+    E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
-    E36NEUI  = N480_I   ELEM__         (X[36]    )
+    E36NEUI  = N512_I   ELEM__         (X[36]    )
     E2NEUTR  = NEUT_R   ELEM__         (X[2]     )
     E3NEUTR  = NEUT_R   ELEM__         (X[3]     )
     E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
-    E8NEUTR  = N120_R   ELEM__         (X[8]     )
+    E8NEUTR  = N132_R   ELEM__         (X[8]     )
+    E08NEUR  = N120_R   ELEM__         (X[8]     )
     E10NEUTR = NEUT_R   ELEM__         (X[10]    )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
@@ -242,7 +243,7 @@ OPTION__
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GEOM_FAC         519  IN__  E1NEUTK  NOMFIS   DDL_MECA PDEPLA   E6NEUTR  PGESCLO  E3NEUTI  PLONCHA  
                                 N1NEUT_R PLST     E6NEUTR  PPINTER  
-                          OUT__ E8NEUTR  PBASESC  E8NEUTR  PBASMAI  E6NEUTR  PNEWGEM  E6NEUTR  PNEWGES  
+                          OUT__ E08NEUR  PBASESC  E08NEUR  PBASMAI  E6NEUTR  PNEWGEM  E6NEUTR  PNEWGES  
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
                               OUT__  N2NEUT_R PGNEUTR
     INDIC_ENER        -1  IN__  

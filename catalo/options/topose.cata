@@ -27,8 +27,8 @@ OPTION__
         PGRADLN  NEUT_R
         PFISCO   NEUT_I
    OUT__
-        PPINTTO  N120_R ELEM__
-        PCNSETO  N480_I ELEM__
-        PHEAVTO  N120_I ELEM__
+        PPINTTO  N132_R ELEM__
+        PCNSETO  N512_I ELEM__
+        PHEAVTO  N128_I ELEM__
         PLONCHA  N120_I ELEM__
         PPMILTO  N480_R ELEM__ 

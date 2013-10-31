@@ -23,9 +23,9 @@ OPTION__
         PGEOMER  GEOM_R
         PTEMPER  TEMP_R
 %parametres specifiques X-FEM
-        PPINTTO  N120_R
-        PCNSETO  N480_I
-        PHEAVTO  N120_I
+        PPINTTO  N132_R
+        PCNSETO  N512_I
+        PHEAVTO  N128_I
         PLONCHA  N120_I
         PBASLOR  NEUT_R
         PLSN     NEUT_R

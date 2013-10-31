@@ -71,14 +71,14 @@ MODE_LOCAL__
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
-    E6NEUTI  = N120_I   ELEM__         (X[6]     )
+    E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
-    E36NEUI  = N480_I   ELEM__         (X[36]    )
+    E36NEUI  = N512_I   ELEM__         (X[36]    )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E2NEUTR  = NEUT_R   ELEM__         (X[2]     )
     E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
-    E8NEUTR  = N120_R   ELEM__         (X[8]     )
+    E8NEUTR  = N132_R   ELEM__         (X[8]     )
     E10NEUTR = NEUT_R   ELEM__         (X[10]    )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
@@ -270,7 +270,7 @@ OPTION__
                                 ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA   542  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR
-                                NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N1NEUT_R PLSN
+                                NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN
                                 N1NEUT_R PLST     E8NEUTR  PPINTTO  E22NEUTR PPMILTO  EREFCO   PREFCO
                           OUT__ MVECTUR  PVECTUR
     REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER

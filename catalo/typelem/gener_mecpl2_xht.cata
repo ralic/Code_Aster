@@ -79,12 +79,12 @@ MODE_LOCAL__
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
-    E6NEUTI  = N120_I   ELEM__         (X[6]     )
-    E8NEUTR  = N120_R   ELEM__         (X[8]     )
+    E6NEUTI  = N128_I   ELEM__         (X[6]     )
+    E8NEUTR  = N132_R   ELEM__         (X[8]     )
     E10NEUTR = NEUT_R   ELEM__         (X[10]    )
     E20NEUTR = NEUT_R   ELEM__         (X[20]    )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
-    E36NEUI  = N480_I   ELEM__         (X[36]    )
+    E36NEUI  = N512_I   ELEM__         (X[36]    )
     E22NEUTR = N480_R   ELEM__         (X[22]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4

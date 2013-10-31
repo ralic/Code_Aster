@@ -1351,6 +1351,16 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     N120_I   = I    X[120]
 
+<<  N128_I Type:I Grandeur ''neutre'' de type I
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)   : composante 1
+       ...
+       X(128) : composante 128
+>>
+    N128_I   = I    X[128]
+
 <<  N480_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -1360,6 +1370,16 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X(480) : composante 480
 >>
     N480_I   = I    X[480]
+
+<<  N512_I Type:I Grandeur ''neutre'' de type I
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)   : composante 1
+       ...
+       X(512) : composante 512
+>>
+    N512_I   = I    X[512]
 
 <<  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
@@ -1410,6 +1430,16 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X(120) : composante 120
 >>
     N120_R   = R    X[120]
+
+<<  N132_R Type:R Grandeur ''neutre'' de type reel
+       La signification des composantes varie d'une option a l'autre. Cette
+       grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
+       nombreuses grandeurs sans grand interet.
+       X(1)  : composante 1
+       ...
+       X(132) : composante 132
+>>
+    N132_R   = R    X[132]
 
 <<  N480_R Type:R Grandeur ''neutre'' de type reel
        La signification des composantes varie d'une option a l'autre. Cette

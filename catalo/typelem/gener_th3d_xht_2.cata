@@ -30,11 +30,11 @@ ENTETE__ ELEMENT__ THER_XHT_FACE4     MAILLE__ QUAD4
 
 MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       E1       )
-    E6NEUTI  = N120_I   ELEM__         (X[6])
+    E6NEUTI  = N128_I   ELEM__         (X[6])
     E10NEUTI = N120_I   ELEM__         (X[10])
-    E9NEUTR  = N120_R   ELEM__         (X[9])
+    E9NEUTR  = N132_R   ELEM__         (X[9])
     E10NEUTR = N120_R   ELEM__         (X[10])
-    E36NEUI  = N480_I   ELEM__         (X[36])
+    E36NEUI  = N512_I   ELEM__         (X[36])
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
