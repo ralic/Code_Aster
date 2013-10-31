@@ -298,7 +298,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', [0.d0],&
                     2, nomres, valres, icodre, 1)
-        call utmess('I', 'COMPOR1_60')
 !
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', [0.d0],&
@@ -325,7 +324,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', [tmaxp],&
                     1, nomres(4), valres(4), icodre(4), 0)
-        call utmess('I', 'COMPOR1_61')
 !
     else
         call rcvalb(fami, kpg, ksp, '-', imate,&

@@ -231,6 +231,8 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: tmaxp, tmaxm, younm, xnum, epsm(6), deps(6)
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
     data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+
+    rbid = 0.d0
 !
 !
 !   CALCUL DE L'INTERVALLE DE TEMPS
@@ -306,7 +308,6 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 1, 'TEMP', [tmaxp],&
                 1, nomres(4), valres(4), icodre(4), 0)
-    call utmess('I', 'COMPOR1_61')
 !
 !      ELSE
 !     IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN

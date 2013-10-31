@@ -88,7 +88,7 @@ previous_errors = [
     'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
     'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
-    'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
+    'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'UMC', 'UMOY',
     'USASTE', 'UTTCPU', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
     'XOUS', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc',
     'autor', 'breakdown','cagnba', 'cata', 'chckma', 'chno',  'clcplq',

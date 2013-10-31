@@ -225,9 +225,6 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                     ' ', 'MAZARS', 0, ' ', [0.d0],&
                     1, nomres(7), valres(7), icodre(7), 1)
         chi = valres(7)
-        if (chi .eq. 0.d0) then
-            call utmess('I', 'COMPOR1_59')
-        endif
     endif
 ! ======================================================================
 !       CALCUL DES GRANDEURS UTILES QUELQUE SOIT OPTION

@@ -316,17 +316,6 @@ La subdivision du pas de temps est déclenchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
 """),
 
-59: _(u"""
- Attention: pas de couplage avec le coefficient de couplage CHI = 0, on retrouve la loi UMLV
-"""),
-
-60: _(u"""
-Couplage: on ne fait pas dépendre E, MU et ALPHA de la température T, on prend T=0 comme pour ENDO_ISOT_BETON
-"""),
-
-61: _(u"""
-Couplage: on fait dépendre E, MU et ALPHA de la température maximale Tmax, comme pour MAZARS
-"""),
 
 63 : _(u"""
    ATTENTION SR > 1    SR = %(r1)f
@@ -367,7 +356,7 @@ Erreur dans le calcul du tenseur équivalent au sens de HILL.
 """),
 
 73: _(u"""
-Lors d'un calcul avec des poutres multifibres, il est nécessaire de renseigner le mot-clé 
+Lors d'un calcul avec des poutres multifibres, il est nécessaire de renseigner le mot-clé
 AFFE_COMPOR dans AFFE_MATERIAU.
 """),
 
@@ -397,7 +386,7 @@ Le calcul de ETOT_ELGA  n'est pas possible avec DEFORMATION= %(k1)s.
 """),
 
 80 : _(u"""
-DELTA1 = %(r1)f doit toujours rester entre 0 et 1. 
+DELTA1 = %(r1)f doit toujours rester entre 0 et 1.
 """),
 
 81 : _(u"""
