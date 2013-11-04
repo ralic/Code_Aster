@@ -14,6 +14,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 #include "asterfort/elref5.h"
 #include "asterfort/indent.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/matini.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
@@ -182,9 +183,18 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                    r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, rbid6, rbid33)
+        if (grdepl) then
+            call xcinem(axi, nnop, nnops, idepl, .true., ndim, he,&
+                        r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
+                        fe, dgdgl, ff, dfdi, f, rbid6, rbid33)
+        else
+!           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R, 
+!                      l'adresse idepl est un argument bidon...)
+            call matini(3, 3, 0.d0, f)
+            do i = 1, 3
+                f(i,i) = 1.d0
+            end do
+        endif
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !

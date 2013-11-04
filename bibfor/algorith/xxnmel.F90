@@ -14,6 +14,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref5.h"
 #include "asterfort/indent.h"
+#include "asterfort/matini.h"
 #include "asterfort/nmcpel.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
@@ -222,9 +223,10 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
             call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-            call xcinem(axi, nnop, nnops, idepl, .false., ndim, he,&
-                        r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                        fe, dgdgl, ff, dfdi, f, eps, rbid33) 
+            call matini(3, 3, 0.d0, f)
+            do i = 1, 3
+                f(i,i) = 1.d0
+            end do
             call vecini(6, 0.d0, eps)
         endif
 !
