@@ -23,6 +23,7 @@ subroutine asmpi_check(nbpro4, iret)
 #include "aster_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_wtime.h"
 #include "asterc/uttrst.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/asmpi_status.h"
@@ -50,12 +51,15 @@ subroutine asmpi_check(nbpro4, iret)
 !
 #include "mpif.h"
 #include "aster_constant.h"
+#include "asterc/asmpi_irecv_i4.h"
+#include "asterc/asmpi_send_i4.h"
+#include "asterc/asmpi_test.h"
 !
     logical :: isterm(nbpro4), lcont
     mpi_bool :: term
     integer :: i, nbterm, np1, resp0
-    mpi_int :: rank, iermpi, istat, mpicou
-    mpi_int :: diag(nbpro4), request(nbpro4), mpst(MPI_STATUS_SIZE)
+    mpi_int :: rank, istat, mpicou, wki(1), nbv, ip4
+    mpi_int :: diag(nbpro4), request(nbpro4)
     real(kind=8) :: valr(1), tres, timout, t0, tf
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
@@ -63,6 +67,7 @@ subroutine asmpi_check(nbpro4, iret)
     iret = 0
     call asmpi_info(mpicou, rank=rank)
     np1 = nbpro4 - 1
+    nbv = 1
 !
 !     SUR LES PROCESSEURS AUTRES QUE #0
 !
@@ -89,18 +94,19 @@ subroutine asmpi_check(nbpro4, iret)
 !       DEMANDE LE STATUT A CHAQUE PROCESSEUR
         do 10 i = 1, np1
             isterm(i) = .false.
-            call MPI_IRECV(diag(i), 1, MPI_INTEGER4, i, ST_TAG_CHK,&
-                           mpicou, request(i), iermpi)
+            ip4 = i
+            call asmpi_irecv_i4(diag(i), nbv, ip4, ST_TAG_CHK, mpicou,&
+                                request(i))
 10      continue
 !
         nbterm = 0
-        t0 = MPI_WTIME()
+        t0 = asmpi_wtime()
         lcont = .true.
 100      continue
 !       WHILE LCONT
         do 101 i = 1, np1
             if (.not. isterm(i)) then
-                call MPI_TEST(request(i), term, mpst, iermpi)
+                call asmpi_test(request(i), term)
                 if (term) then
                     nbterm = nbterm + 1
                     isterm(i) = .true.
@@ -113,7 +119,7 @@ subroutine asmpi_check(nbpro4, iret)
 101      continue
         lcont = nbterm .lt. np1
 !         TIMOUT
-        tf = MPI_WTIME()
+        tf = asmpi_wtime()
         if (lcont .and. (tf - t0) .gt. timout) then
             lcont = .false.
             valr(1) = timout
@@ -143,8 +149,9 @@ subroutine asmpi_check(nbpro4, iret)
                 if (istat .ne. ST_OK) then
                     call utmess('I', 'APPELMPI_81', si=i)
                 endif
-                call MPI_SEND(istat, 1, MPI_INTEGER4, i, ST_TAG_CNT,&
-                              mpicou, iermpi)
+                wki(1) = istat
+                ip4 = i
+                call asmpi_send_i4(wki, nbv, ip4, ST_TAG_CNT, mpicou)
             endif
 103      continue
 !

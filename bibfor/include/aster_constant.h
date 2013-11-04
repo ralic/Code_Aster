@@ -37,6 +37,8 @@
 !   ST_TAG_CNT : mpi communication tag for the continue or stop
 !   ST_TAG_ALR : mpi communication tag for the alarm check
 !
+#include "aster_types.h"
+!
 #define ST_ER       1
 #define ST_OK       0
 #define ST_ER_PR0   4
@@ -44,8 +46,8 @@
 #define ST_UN_OTH  16
 #define ST_EXCEPT  32
 !
-#define ST_TAG_CHK  123111
-#define ST_TAG_CNT  123222
-#define ST_TAG_ALR  123333
+#define ST_TAG_CHK  to_mpi_int(123111)
+#define ST_TAG_CNT  to_mpi_int(123222)
+#define ST_TAG_ALR  to_mpi_int(123333)
 !
 #endif

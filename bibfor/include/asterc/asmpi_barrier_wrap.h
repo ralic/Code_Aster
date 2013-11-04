@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbgmpi(ico)
-        integer :: ico
-    end subroutine dbgmpi
+    subroutine asmpi_barrier_wrap(comm, ierror)
+        mpi_int, intent(in) :: comm
+        mpi_int, intent(out) :: ierror
+    end subroutine asmpi_barrier_wrap
 end interface

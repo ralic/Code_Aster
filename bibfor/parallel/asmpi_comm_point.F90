@@ -69,12 +69,21 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 !
 #ifdef _USE_MPI
 #include "mpif.h"
+#include "asterc/asmpi_recv_r.h"
+#include "asterc/asmpi_recv_i.h"
+#include "asterc/asmpi_recv_i4.h"
+#include "asterc/asmpi_send_r.h"
+#include "asterc/asmpi_send_i.h"
+#include "asterc/asmpi_send_i4.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
     integer :: iret, nbv
     mpi_int :: iermpi, lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
     logical :: scal
+    real(kind=8) :: wkr(1)
+    integer :: wki(1)
+    integer(kind=4) :: wki4(1)
 ! ---------------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
@@ -118,27 +127,24 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 !     ---------------------------------
         if (scal) then
             if (typsc1 .eq. 'R') then
-                call MPI_SEND(scr, nbv4, lr8, nudes4, numes4,&
-                              mpicou, iermpi)
+                wkr(1) = scr
+                call asmpi_send_r(wkr, nbv4, nudes4, numes4, mpicou)
             else if (typsc1.eq.'I') then
-                call MPI_SEND(sci, nbv4, lint, nudes4, numes4,&
-                              mpicou, iermpi)
+                wki(1) = sci
+                call asmpi_send_i(wki, nbv4, nudes4, numes4, mpicou)
             else if (typsc1.eq.'I4') then
-                call MPI_SEND(sci4, nbv4, lint4, nudes4, numes4,&
-                              mpicou, iermpi)
+                wki4(1) = sci4
+                call asmpi_send_i4(wki4, nbv4, nudes4, numes4, mpicou)
             else
                 ASSERT(.false.)
             endif
         else
             if (typsc1 .eq. 'R') then
-                call MPI_SEND(vr, nbv4, lr8, nudes4, numes4,&
-                              mpicou, iermpi)
+                call asmpi_send_r(vr, nbv4, nudes4, numes4, mpicou)
             else if (typsc1.eq.'I') then
-                call MPI_SEND(vi, nbv4, lint, nudes4, numes4,&
-                              mpicou, iermpi)
+                call asmpi_send_i(vi, nbv4, nudes4, numes4, mpicou)
             else if (typsc1.eq.'I4') then
-                call MPI_SEND(vi4, nbv4, lint4, nudes4, numes4,&
-                              mpicou, iermpi)
+                call asmpi_send_i4(vi4, nbv4, nudes4, numes4, mpicou)
             else
                 ASSERT(.false.)
             endif
@@ -147,27 +153,24 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 !     ---------------------------------
         if (scal) then
             if (typsc1 .eq. 'R ') then
-                call MPI_RECV(scr, nbv4, lr8, nudes4, numes4,&
-                              mpicou, MPI_STATUS_IGNORE, iermpi)
+                call asmpi_recv_r(wkr, nbv4, nudes4, numes4, mpicou)
+                scr = wkr(1)
             else if (typsc1.eq.'I ') then
-                call MPI_RECV(sci, nbv4, lint, nudes4, numes4,&
-                              mpicou, MPI_STATUS_IGNORE, iermpi)
+                call asmpi_recv_i(wki, nbv4, nudes4, numes4, mpicou)
+                sci = wki(1)
             else if (typsc1.eq.'I4') then
-                call MPI_RECV(sci4, nbv4, lint4, nudes4, numes4,&
-                              mpicou, MPI_STATUS_IGNORE, iermpi)
+                call asmpi_recv_i4(wki4, nbv4, nudes4, numes4, mpicou)
+                sci4 = wki4(1)
             else
                 ASSERT(.false.)
             endif
         else
             if (typsc1 .eq. 'R ') then
-                call MPI_RECV(vr, nbv4, lr8, nudes4, numes4,&
-                              mpicou, MPI_STATUS_IGNORE, iermpi)
+                call asmpi_recv_r(vr, nbv4, nudes4, numes4, mpicou)
             else if (typsc1.eq.'I ') then
-                call MPI_RECV(vi, nbv4, lint, nudes4, numes4,&
-                              mpicou, MPI_STATUS_IGNORE, iermpi)
+                call asmpi_recv_i(vi, nbv4, nudes4, numes4, mpicou)
             else if (typsc1.eq.'I4') then
-                call MPI_RECV(vi4, nbv4, lint4, nudes4, numes4,&
-                              mpicou, MPI_STATUS_IGNORE, iermpi)
+                call asmpi_recv_i4(vi4, nbv4, nudes4, numes4, mpicou)
             else
                 ASSERT(.false.)
             endif

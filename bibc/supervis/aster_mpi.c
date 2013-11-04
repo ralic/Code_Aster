@@ -20,10 +20,8 @@
  * - to manage the MPI communicators
  * - to properly interrupt a MPI execution.
  * 
- * The communicators are managed in C, Fortran calls these functions.
+ * The communicators are managed in C. Fortran subroutines call these functions.
  * But all the communications are initiated from the Fortran subroutines.
- * Example: Fortran calls asmpi_comm() here,
- * but aster_set_mpi_barrier() calls asmpi_barrier() from asmpi_barrier.F90
  * 
  * Communicators are store in fortran as Code_Aster mpi_int (== MPI_Fint).
  * They are converted to MPI_Comm with MPI_Comm_f2c((MPI_Fint)fortran_comm)
@@ -32,6 +30,7 @@
  *      aster_mpi_xxx : C functions and global variable
  *      asmpi_xxx : Fortran functions
  */
+/* USE_ASSERT is required in this module ! */
 #define USE_ASSERT
 
 #include "aster.h"
@@ -165,12 +164,23 @@ void aster_free_comm(aster_comm_t *node) {
     return;
 }
 
+/*
+ * Wrapper around MPI_Barrier (because the communicator is optional in asmpi_barrier)
+ * Do not check returncode because all errors raise
+ */
+void DEFP(ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Barrier(mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
 void aster_set_mpi_barrier(aster_comm_t *node) {
     /* Set a MPI barrier */
 #ifdef _USE_MPI
-    MPI_Fint comm;
-    comm = MPI_Comm_c2f(node->id);
-    CALL_ASMPI_BARRIER(&comm);
+    AS_ASSERT(MPI_Barrier(node->id) == MPI_SUCCESS);
 #endif
     return;
 }
@@ -279,6 +289,134 @@ void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MP
 }
 
 /*
+ *  Wrappers around MPI_Send
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, DOUBLE *buf, INTEGER4 *count, INTEGER4 *dest,
+                                          INTEGER4 *tag, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Send((void *)buf, *count, MPI_DOUBLE_PRECISION,
+                       *dest, *tag, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_SEND_I, asmpi_send_i, INTEGER *buf, INTEGER4 *count, INTEGER4 *dest,
+                                          INTEGER4 *tag, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Send((void *)buf, *count, MPI_INTEGER,
+                       *dest, *tag, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, INTEGER4 *buf, INTEGER4 *count, INTEGER4 *dest,
+                                            INTEGER4 *tag, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Send((void *)buf, *count, MPI_INTEGER4,
+                       *dest, *tag, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ *  Wrappers around MPI_Recv
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, DOUBLE *buf, INTEGER4 *count, INTEGER4 *source,
+                                          INTEGER4 *tag, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_DOUBLE_PRECISION,
+                       *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_RECV_I, asmpi_recv_i, INTEGER *buf, INTEGER4 *count, INTEGER4 *source,
+                                          INTEGER4 *tag, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_INTEGER,
+                       *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, INTEGER4 *buf, INTEGER4 *count, INTEGER4 *source,
+                                            INTEGER4 *tag, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_INTEGER4,
+                       *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ * Wrapper around MPI_ISend
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, DOUBLE *buf, INTEGER4 *count, INTEGER4 *dest,
+                                               INTEGER4 *tag, MPI_Fint *comm, INTEGER4 *request) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Isend((void *)buf, *count, MPI_INTEGER4,
+                        *dest, *tag, mpicom, (MPI_Request *)request) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ * Wrapper around MPI_IRecv
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, DOUBLE *buf, INTEGER4 *count, INTEGER4 *source,
+                                               INTEGER4 *tag, MPI_Fint *comm, INTEGER4 *request) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Irecv((void *)buf, *count, MPI_INTEGER4,
+                        *source, *tag, mpicom, (MPI_Request *)request) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ * Wrapper around MPI_Test
+ * Do not check returncode because all errors raise
+ */
+void DEFPP(ASMPI_TEST, asmpi_test, INTEGER4 *request, INTEGER4 *flag) {
+#ifdef _USE_MPI
+    AS_ASSERT(MPI_Test((MPI_Request *)request, flag, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ * Wrapper around MPI_Wtime
+ * Do not check returncode because all errors raise
+ */
+DOUBLE DEF0(ASMPI_WTIME, asmpi_wtime) {
+#ifdef _USE_MPI
+    return (DOUBLE)MPI_Wtime();
+#else
+    return (DOUBLE)0.0;
+#endif
+}
+
+
+/*
  * Define a dedicated function to abort a Code_Aster execution.
  */
 int gErrFlg = 0;
@@ -336,7 +474,7 @@ void errhdlr_func(MPI_Comm *comm, int *err, ... ) {
     char errstr[MPI_MAX_ERROR_STRING];
     int len;
 
-    AS_ASSERT(*err != MPI_SUCCESS)
+    AS_ASSERT(*err != MPI_SUCCESS);
     MPI_Error_string(*err, errstr, &len);
     printf("\n<F> MPI Error code %d:\n    %s\n\n", *err, errstr);
     fflush(stdout);

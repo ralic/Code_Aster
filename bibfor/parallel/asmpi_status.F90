@@ -37,10 +37,14 @@ subroutine asmpi_status(istat, resp0)
 #ifdef _USE_MPI
 !
 #include "mpif.h"
+#include "asterc/asmpi_irecv_i4.h"
+#include "asterc/asmpi_isend_i4.h"
+#include "asterc/asmpi_test.h"
+#include "asterc/asmpi_wtime.h"
 !
     mpi_bool :: term
-    mpi_int :: rank, iermpi
-    mpi_int :: ist4, irp0, mpst(MPI_STATUS_SIZE), req, mpicou
+    mpi_int :: rank, ist4(1), irp0(1), req, mpicou, nbv
+    mpi_int, parameter :: pr0=0
     real(kind=8) :: tres, timout, t0, tf
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
@@ -53,15 +57,16 @@ subroutine asmpi_status(istat, resp0)
     timout = tres * 0.2d0
 !
 !     ENVOI ST_OK OU ST_ERR AU PROC #0
-    ist4 = istat
-    call MPI_ISEND(ist4, 1, MPI_INTEGER4, 0, ST_TAG_CHK,&
-                   mpicou, req, iermpi)
-    t0 = MPI_WTIME()
+    ist4(1) = istat
+    nbv = 1
+    call asmpi_isend_i4(ist4, nbv, pr0, ST_TAG_CHK, mpicou,&
+                        req)
+    t0 = asmpi_wtime()
 300  continue
 !     WHILE NOT TERM
-    call MPI_TEST(req, term, mpst, iermpi)
+    call asmpi_test(req, term)
 !       TIMOUT
-    tf = MPI_WTIME()
+    tf = asmpi_wtime()
     if ((tf - t0) .gt. timout) then
         call utmess('E+', 'APPELMPI_96', si=0)
         call utmess('E', 'APPELMPI_83', sk='MPI_ISEND')
@@ -72,15 +77,15 @@ subroutine asmpi_status(istat, resp0)
 !     END WHILE
 !
 !     REPONSE DE PROC #0
-    irp0 = ST_ER
-    call MPI_IRECV(irp0, 1, MPI_INTEGER4, 0, ST_TAG_CNT,&
-                   mpicou, req, iermpi)
-    t0 = MPI_WTIME()
+    irp0(1) = ST_ER
+    call asmpi_irecv_i4(irp0, nbv, pr0, ST_TAG_CNT, mpicou,&
+                        req)
+    t0 = asmpi_wtime()
 200  continue
 !     WHILE NOT TERM
-    call MPI_TEST(req, term, mpst, iermpi)
+    call asmpi_test(req, term)
 !       TIMOUT
-    tf = MPI_WTIME()
+    tf = asmpi_wtime()
     if ((tf - t0) .gt. timout * 1.2) then
         call utmess('E+', 'APPELMPI_96', si=0)
         call utmess('E', 'APPELMPI_83', sk='MPI_IRECV')
@@ -90,7 +95,7 @@ subroutine asmpi_status(istat, resp0)
     if (.not.term) goto 200
 !     END WHILE
 !
-    resp0 = irp0
+    resp0 = irp0(1)
 !
 999  continue
 #else
