@@ -13,6 +13,7 @@ subroutine te0037(option, nomte)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -69,8 +70,8 @@ subroutine te0037(option, nomte)
     integer :: ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf
     real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2)
-    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3)
-    logical :: lbid
+    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
+    logical :: lbid, axi
     integer :: compt
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
@@ -90,6 +91,7 @@ subroutine te0037(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
+    axi = lteatt(' ','AXIS','OUI')
 !
 !
 !-----------------------------------------------------------------------
@@ -248,6 +250,16 @@ subroutine te0037(option, nomte)
                 rr(2)= sqrt(-lst)
             endif
 !
+!         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
+            if (axi) then
+                r = 0.d0
+                do 1000 ino = 1, nno
+                    r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+1000            continue
+                ASSERT(r.ge.0d0)
+!              ATTENTION : LE POIDS N'EST PAS X R
+!              CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
+            endif
 !
 !         CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 !         -----------------------------------------------
@@ -259,6 +271,10 @@ subroutine te0037(option, nomte)
             if (ndim .eq. 3) nompar(4)='INST'
             if (ndim .eq. 2) nompar(3)='INST'
 !
+! MODIFIER LE JAC
+            if (axi) then
+                jac = jac * r
+            endif
 !
             if (option .eq. 'CHAR_MECA_PRES_R') then
 !
