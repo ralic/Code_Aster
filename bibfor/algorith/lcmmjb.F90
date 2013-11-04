@@ -76,8 +76,9 @@ subroutine lcmmjb(taur, materf, cpmono, ifa, nmat,&
                     is, nbsys, nfs, nsg, hsr,&
                     vind, dy, dgsdts, dksdts, dgrdbs,&
                     dkrdbs, iret)
-    else if (nuecou.eq.5) then
-!        DD-CFC
+                    
+    else if ((nuecou.eq.5).or.(nuecou.eq.8)) then
+!        DD-CFC et DD_CFC_IRRA
         decal=nsfv
         call lcmmjd(taur, materf, ifa, nmat, nbcomm,&
                     dt, ir, is, nbsys, nfs,&
@@ -89,9 +90,11 @@ subroutine lcmmjb(taur, materf, cpmono, ifa, nmat,&
         dksdts=dpdtau*hr
         dgrdbs=dprdas*sgnr
         dkrdbs=dprdas*hr+dpr*dhrdas
+
     else if (nuecou.eq.6) then
 !        DD-FAT
         call utmess('F', 'COMPOR2_21')
+        
     else if (nuecou.ge.7) then
 !        DD-CC
 !        matrice tangente pas encore programmee

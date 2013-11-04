@@ -1,6 +1,6 @@
 subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                   comp, nbcomm, cpmono, pgl, nfs,&
-                  nsg, toutms, hsr, nr, nvi,&
+                  nsg, toutms, hsr, nr, nvi, sigd,&
                   itmax, toler, vinf, vind, dsde,&
                   drdy, option, iret)
 ! aslint: disable=W1306,W1504
@@ -56,6 +56,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 #include "asterfort/mgauss.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/lcafyd.h"
 #include "blas/dcopy.h"
     integer :: ndt, ndi, nmat, nvi, itmax, nfs, nsg
     integer :: k, j, nr, iret, ns, nbcomm(nmat, 3)
@@ -63,7 +64,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     real(kind=8) :: drdy(nr, nr), dsde(6, *), kyl(6, 6), det, i6(6, 6)
     real(kind=8) :: zinv(6, 6)
     real(kind=8) :: toler, mater(*), yf(nr), dy(nr), un, zero, timed, timef
-    real(kind=8) :: pgl(3, 3)
+    real(kind=8) :: pgl(3, 3), sigd(6)
     real(kind=8) :: z0(6, 6), z1(6, (nr-ndt))
     real(kind=8) :: z2((nr-ndt), 6), z3((nr-ndt), (nr-ndt))
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
@@ -71,6 +72,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     character(len=8) :: mod
     character(len=16) :: comp(*), option
     character(len=24) :: cpmono(5*nmat+1)
+        logical :: bnews(3), mtrac
     parameter       ( un   =  1.d0   )
     parameter       ( zero =  0.d0   )
     common /tdim/ ndt,ndi
@@ -90,11 +92,14 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 !
 !     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
     if (option .eq. 'RIGI_MECA_TANG') then
+
         call r8inir(nr, 0.d0, dy, 1)
         call r8inir(9, 0.d0, df, 1)
-        call r8inir(nr, 0.d0, yf, 1)
-        call r8inir(nr, 0.d0, yd, 1)
-        call r8inir(nvi, 0.d0, vind, 1)
+ !       call r8inir(ndt, 0.d0, sigd, 1)
+        call lcafyd(comp, mater, mater, nbcomm, cpmono,&
+                nmat, mod, nvi, vind, vinf,&
+                sigd, nr, yd, bnews, mtrac)
+        call dcopy(nr, yd, 1, yf, 1)
         call lcmmja(comp, mod, nmat, mater, timed,&
                     timef, itmax, toler, nbcomm, cpmono,&
                     pgl, nfs, nsg, toutms, hsr,&

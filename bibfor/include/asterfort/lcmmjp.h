@@ -18,7 +18,7 @@
 interface
     subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                       comp, nbcomm, cpmono, pgl, nfs,&
-                      nsg, toutms, hsr, nr, nvi,&
+                      nsg, toutms, hsr, nr, nvi, sigd,&
                       itmax, toler, vinf, vind, dsde,&
                       drdy, option, iret)
         common/tdim/ ndt,ndi
@@ -41,6 +41,7 @@ interface
         integer :: nvi
         integer :: itmax
         real(kind=8) :: toler
+        real(kind=8) :: sigd(6)        
         real(kind=8) :: vinf(*)
         real(kind=8) :: vind(*)
         real(kind=8) :: dsde(6, *)

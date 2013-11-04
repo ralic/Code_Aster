@@ -64,7 +64,7 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
     else if (loi(1:8) .eq. 'MONOCRIS') then
         call lcmmjp(mod, nmat, mater, timed, timef,&
                     comp, nbcomm, cpmono, pgl, nfs,&
-                    nsg, toutms, hsr, nr, nvi,&
+                    nsg, toutms, hsr, nr, nvi, sigd,&
                     itmax, toler, vinf, vind, dsde,&
                     drdy, option, iret)
     else if (loi(1:15) .eq. 'BETON_BURGER_FP') then

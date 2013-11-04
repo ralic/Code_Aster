@@ -62,7 +62,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     iei=nbcomm(ifa,3)+nmat
     iret=0
 !
-    if (nuecou .ne. 5) then
+    if ((nuecou .ne. 5).and.(nuecou.ne.8)) then
         ASSERT(.false.)
     endif
 !             MATRICE JACOBIENNE DU SYSTEME :
@@ -87,7 +87,11 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     n     =materf(ifl+5)
     y     =materf(ifl+6)
     beta  =materf(iei+2)
-    mu    =materf(iei+4)
+    if (nuecou.eq.5) then
+       mu    =materf(iei+4)
+    else if (nuecou.eq.8) then
+       mu    =materf(iei+12)
+    endif
     k16b=' '
 !     CALCUL de l'écrouissage RR=TAUr_Forest
     call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, k16b,&
@@ -105,7 +109,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     if (iret .gt. 0) goto 9999
 !
 !
-!     1. d(Dp_s)/d(Tau_s)
+!     1. d(Dp_r)/d(Tau_s)
     if (dpr .gt. 0.d0) then
         if (abs(taur) .gt. 0.d0) then
             dpdtau=n*(dpr+gamma0*dt)/taur
@@ -130,16 +134,9 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
             somaal=somaal+hsr(ir,i)*alphap(i)
         endif
 56  end do
-    somaal=sqrt(somaal)
-    dtrdas=0.d0
-!
-    if (alphap(is) .gt. 0.d0) then
-        if (somaal .gt. 0.d0) then
-            dtrdas=ceff/2.d0/somaal*hsr(ir,is)
-        endif
-    endif
-    dtrdas=dtrdas + dcdals*somaal
-    dtrdas=mu*dtrdas
+!   rr ne doit pas etre nul car ce sont des densites de dislocations
+        dtrdas=mu*mu*ceff/2.0d0/rr*(2.0*dcdals*somaal+ceff*hsr(ir,is))
+
 !
 !     2. d(Dp_r)/d(Omega_s)
 !

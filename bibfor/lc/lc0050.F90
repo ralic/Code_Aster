@@ -399,7 +399,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     ddsdde=1.d0
     if (option .eq. 'RIGI_MECA_TANG') then
-        ddsdde(1)=-3.d0
+!        ddsdde(1)=-3.d0 disponible a partir de la version 2.584 de mfront        
+        ddsdde(1)=4.d0
     else if (option .eq. 'RIGI_MECA_ELAS') then
         ddsdde(1)=-2.d0
     else if (option .eq. 'FULL_MECA_ELAS') then
