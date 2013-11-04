@@ -188,18 +188,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !       ET DU DEPL. RADIAL
         if (axi) then
             r = 0.d0
-            ur = 0.d0
             do n = 1, nnop
                 r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
-                ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
-                do ig = 1, nfh
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1)
-                end do
-                do ig = 1, nfe
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
-!
-                end do
-!
             end do
 !
             ASSERT(r.gt.0d0)
@@ -208,12 +198,43 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         endif
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
-!       ET CALCUL DE FF, DFDI, DEPS ET EPS
+!       ET CALCUL DE FF ET DFDI
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+!
+! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T+
+        if (axi) then
+            ur = 0.d0
+            do n = 1, nnop
+                ur = ur + ff(n)*zr(ideplp-1+ddls*(n-1)+1)
+                do ig = 1, nfh
+                    ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
+                end do
+                do ig = 1, nfe
+                    ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
+                end do
+            end do
+        endif
+!
+! -     CALCUL DE DEPS
         call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
                     r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f, deps, rbid33) 
 !
+! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T-
+        if (axi) then
+            ur = 0.d0
+            do n = 1, nnop
+                ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
+                do ig = 1, nfh
+                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
+                end do
+                do ig = 1, nfe
+                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
+                end do
+            end do
+        endif
+!
+! -     CALCUL DE EPS
         call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
                     r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f, eps, rbid33)
