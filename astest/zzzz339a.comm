@@ -105,8 +105,8 @@ G_INIT=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_SUP=0.5,),
               RESULTAT=RESU,
               INST=1,
-              COMPORTEMENT=_F(RELATION='ELAS',
-                           SIGM_INIT=S_INIT,),
+              COMPORTEMENT=_F(RELATION='ELAS'),
+              ETAT_INIT=_F(SIGM=S_INIT,),
               OPTION='CALC_G',);
 
 

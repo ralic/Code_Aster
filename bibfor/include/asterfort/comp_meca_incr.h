@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init, l_sigm_init)
+    subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(out) :: type_comp
         logical, optional, intent(in) :: l_etat_init
-        logical, optional, intent(in) :: l_sigm_init
     end subroutine comp_meca_incr
 end interface

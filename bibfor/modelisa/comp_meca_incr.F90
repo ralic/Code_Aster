@@ -1,4 +1,4 @@
-subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init, l_sigm_init)
+subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
     implicit none
 !
@@ -27,7 +27,6 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init, l_sigm_i
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(out) :: type_comp
     logical, optional, intent(in) :: l_etat_init
-    logical, optional, intent(in) :: l_sigm_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,7 +37,6 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init, l_sigm_i
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  l_etat_init : .true. if initial state is defined
-! In  l_sigm_init : .true. if initial state is defined for CALC_G
 ! In  rela_comp   : comportement RELATION
 ! In  defo_comp   : type of deformation
 ! Out type_comp   : type of comportment (incremental or total)
@@ -58,11 +56,6 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init, l_sigm_i
         type_comp = 'COMP_ELAS'
         if (present(l_etat_init)) then
             if (l_etat_init) then
-                type_comp = 'COMP_INCR'
-            endif
-        endif
-        if (present(l_sigm_init)) then
-            if (l_sigm_init) then
                 type_comp = 'COMP_INCR'
             endif
         endif

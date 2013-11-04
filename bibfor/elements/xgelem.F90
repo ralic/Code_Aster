@@ -450,7 +450,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     eps, sigl, rbid, dsidep, energi)
 !
 !       --------------------------------------------------
-!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM_INIT DE CA
+!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM DE CALC_G)
 !       --------------------------------------------------
 !
         if (incr) then

@@ -172,7 +172,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !- RECUPERATION DE L'ETAT INITIAL
     if (incr .ne. 0) then
-        call getvid('COMPORTEMENT', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
+        call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=nsig)
 !- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
         if (nsig .ne. 0) then
             call chpver('C', chsigi, 'ELNO', 'SIEF_R', ino1)

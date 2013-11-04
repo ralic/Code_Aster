@@ -524,7 +524,7 @@ subroutine te0096(option, nomte)
 !
 !
 ! =======================================================
-! CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM_INIT DE CALC_G)
+! CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM DE CALC_G)
 ! CONTRAINTE, DEFORMATION DE REFERENCE, ENERGIE ELASTIQUE
 ! =======================================================
 !

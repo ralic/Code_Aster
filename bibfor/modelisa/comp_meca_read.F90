@@ -52,7 +52,7 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc, n1
+    integer :: iocc
     integer :: ikit
     integer :: j_lvalk, j_lvali
     integer :: nb_vari_all
@@ -62,7 +62,7 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
     character(len=128) :: libr_name
     integer :: unit_comp, nb_vari_exte
     logical :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
-    logical :: l_kit, l_sigm_init
+    logical :: l_kit
     logical :: l_matr_tgsc, l_crit_rupt
 !
 ! --------------------------------------------------------------------------------------------------
@@ -167,12 +167,7 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
 !
 ! ----- Select type of comportment (incremental or total)
 !
-        l_sigm_init = .false.
-        if (getexm(keywordfact,'SIGM_INIT') .eq. 1) then
-            call getvid(keywordfact, 'SIGM_INIT', iocc=iocc, nbret=n1)
-            l_sigm_init = n1 .ne. 0
-        endif
-        call comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init, l_sigm_init)
+        call comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
 ! ----- Save options in list
 !

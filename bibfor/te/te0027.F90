@@ -438,7 +438,7 @@ subroutine te0027(option, nomte)
         divt = dtdm(1,1) + dtdm(2,2) + dtdm(3,3)
 !
 ! =======================================================
-! CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM_INIT DE CALC_G)
+! CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM DE CALC_G)
 ! CONTRAINTE, DEFORMATION DE REFERENCE, ENERGIE ELASTIQUE
 ! =======================================================
 !

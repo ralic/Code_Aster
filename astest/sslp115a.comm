@@ -221,8 +221,8 @@ GINGA=CALC_G(THETA=_F(THETA=THETA1,
                       ),
              RESULTAT=RESUINI,
              INST=3,
-             COMPORTEMENT=_F(RELATION='ELAS',
-                          SIGM_INIT=SIEFELGA),
+             COMPORTEMENT=_F(RELATION='ELAS'),
+             ETAT_INIT =_F(SIGM=SIEFELGA),
              OPTION='CALC_G')
 
 GINNO=CALC_G(THETA=_F(THETA=THETA20,
@@ -230,8 +230,8 @@ GINNO=CALC_G(THETA=_F(THETA=THETA20,
                       ),
              RESULTAT=RESUINI,
              INST=3,
-             COMPORTEMENT=_F(RELATION='ELAS',
-                          SIGM_INIT=SIEFNOEU),
+             COMPORTEMENT=_F(RELATION='ELAS'),
+             ETAT_INIT =_F(SIGM=SIEFNOEU),
              OPTION='CALC_G')
 
 GINELNO=CALC_G(THETA=_F(THETA=THETAc2,
@@ -239,8 +239,8 @@ GINELNO=CALC_G(THETA=_F(THETA=THETAc2,
                         ),
                RESULTAT=RESUINI,
                INST=3,
-               COMPORTEMENT=_F(RELATION='ELAS',
-                            SIGM_INIT=SIEFELNO),
+               COMPORTEMENT=_F(RELATION='ELAS'),
+               ETAT_INIT=_F(SIGM=SIEFELNO),
                OPTION='CALC_G')
 
 GTHER=CALC_G(THETA=_F(THETA=THETAc2,

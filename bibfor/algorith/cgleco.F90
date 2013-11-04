@@ -60,7 +60,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbcomp, iret, nb_cmp
+    integer :: nbcomp, iret, nb_cmp, nbetin
     character(len=16) :: keywordfact
     character(len=24) :: repk
     character(len=8) :: mesh
@@ -78,6 +78,8 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
     keywordfact = 'COMPORTEMENT'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     l_etat_init = .false.
+    call getfac('ETAT_INIT', nbetin)
+    if (nbetin .ne. 0) l_etat_init=.true.
 !
 ! - How many COMPORTEMENT in CALC_G ?
 !
