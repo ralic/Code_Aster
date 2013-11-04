@@ -477,15 +477,15 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 9.2.2. Type de la frontière
 #
-    TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE", "CONE_A", "CONE_R"),
+    TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE",),
                 fr="Type de la frontière analytique",
                 ang="Type of the analytic boundary" ),
 #
-# 9.2.3. Pour une sphere, un cylindre ou un cone defini par ses rayons : rayon et centre
+# 9.2.3. Pour une sphere, un cylindre par ses rayons : rayon et centre
 #
-    b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') or (TYPE == 'CONE_R') " ,
-                       fr="Le rayon et le centre d'une sphère, d'un cylindre ou d'un cone.",
-                       ang="The radius and the centre of a sphere, of a cylinder or of a cone.",
+    b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') " ,
+                       fr="Le rayon et le centre d'une sphère ou d'un cylindre.",
+                       ang="The radius and the centre of a sphere or of a cylinder.",
       RAYON = SIMP(statut='o',typ='R',
                    fr="Rayon",
                    ang="Radius"),
@@ -500,9 +500,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                       ang="Z for the center"),
     ) ,
 #
-# 9.2.4. Pour un cylindre ou un cone defini par axe et angle : axe
+# 9.2.4. Pour un cylindre defini par axe et angle : axe
 #
-    b_fr_cylindre = BLOC( condition = " (TYPE == 'CYLINDRE') or (TYPE == 'CONE_A') " ,
+    b_fr_cylindre = BLOC( condition = " (TYPE == 'CYLINDRE') " ,
                           fr="Pour un cylindre.",
                           ang="For a cylinder.",
       X_AXE = SIMP(statut='o',typ='R',
@@ -514,44 +514,6 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
       Z_AXE = SIMP(statut='o',typ='R',
                    fr="Cote du vecteur directeur de l'axe",
                    ang="Z for the axial vector"),
-    ) ,
-#
-# 9.2.5. Pour un cone defini par ses rayons : second couple (rayon et centre)
-#
-    b_fr_rayon2 = BLOC( condition = " (TYPE == 'CONE_R') " ,
-                       fr="Le second rayon et centre d'un cone.",
-                       ang="The second radius and the centre of a cone.",
-      RAYON2 = SIMP(statut='o',typ='R',
-                   fr="Rayon",
-                   ang="Radius"),
-      X_CENTRE2 = SIMP(statut='o',typ='R',
-                      fr="Abscisse du centre",
-                      ang="X for the center"),
-      Y_CENTRE2 = SIMP(statut='o',typ='R',
-                      fr="Ordonnée du centre",
-                      ang="Y for the center"),
-      Z_CENTRE2 = SIMP(statut='o',typ='R',
-                      fr="Cote du centre",
-                      ang="Z for the center"),
-    ) ,
-#
-# 9.2.6. Pour un cone defini par axe et angle : centre et angle
-#
-    b_fr_angle = BLOC( condition = " (TYPE == 'CONE_A') " ,
-                       fr="L'angle et le centre d'un cone.",
-                       ang="The angle and the centre of a cone.",
-      ANGLE = SIMP(statut='o',typ='R',
-                   fr="Angle en degré",
-                   ang="Angle (degree)"),
-      X_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Abscisse du centre",
-                      ang="X for the center"),
-      Y_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Ordonnée du centre",
-                      ang="Y for the center"),
-      Z_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Cote du centre",
-                      ang="Z for the center"),
     ) ,
 #
 # 9.2.7. Groupe(s) lie(s) a la frontière
