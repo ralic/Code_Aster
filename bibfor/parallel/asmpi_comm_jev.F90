@@ -38,6 +38,17 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
+#include "asterc/asmpi_allreduce_r.h"
+#include "asterc/asmpi_allreduce_c.h"
+#include "asterc/asmpi_allreduce_i.h"
+#include "asterc/asmpi_allreduce_i4.h"
+#include "asterc/asmpi_bcast_r.h"
+#include "asterc/asmpi_bcast_i.h"
+#include "asterc/asmpi_bcast_i4.h"
+#include "asterc/asmpi_reduce_r.h"
+#include "asterc/asmpi_reduce_c.h"
+#include "asterc/asmpi_reduce_i.h"
+#include "asterc/asmpi_reduce_i4.h"
 #include "asterfort/asmpi_check.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -60,12 +71,14 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 #ifdef _USE_MPI
 #include "mpif.h"
+#include "aster_mpif.h"
 ! DECLARATION VARIABLES LOCALES
     integer :: jnomjv, iexi
     integer :: ibid
     integer :: jtrav, k
     integer :: iobj, nbobj, nlong, iret
-    mpi_int :: iermpi, lint, lint4, lr8, lc8, nbpro4, mpicou
+    mpi_int :: iermpi, lint, lint4, lr8, lc8, nbpro4, mpicou, nbv
+    mpi_int, parameter :: pr0=0
     character(len=1) :: typsca, xous
     character(len=8) :: kbid
     character(len=24) :: notrav
@@ -108,18 +121,16 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         ASSERT(xous.eq.'S')
         call jelira(nomjev, 'TYPE', ibid, typsca)
         call jelira(nomjev, 'LONMAX', nlong, kbid)
+        nbv = to_mpi_int(nlong)
 !
         call jeveuo(nomjev, 'E', jnomjv)
 !
         if (typsca .eq. 'R') then
-            call MPI_BCAST(zr(jnomjv), nlong, lr8, 0, mpicou,&
-                           iermpi)
+            call asmpi_bcast_r(zr(jnomjv), nbv, pr0, mpicou)
         else if (typsca.eq.'I') then
-            call MPI_BCAST(zi(jnomjv), nlong, lint, 0, mpicou,&
-                           iermpi)
+            call asmpi_bcast_i(zi(jnomjv), nbv, pr0, mpicou)
         else if (typsca.eq.'S') then
-            call MPI_BCAST(zi4(jnomjv), nlong, lint4, 0, mpicou,&
-                           iermpi)
+            call asmpi_bcast_i4(zi4(jnomjv), nbv, pr0, mpicou)
         else
             ASSERT(.false.)
         endif
@@ -130,33 +141,34 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         ASSERT(xous.eq.'S')
         call jelira(nomjev, 'TYPE', ibid, typsca)
         call jelira(nomjev, 'LONMAX', nlong, kbid)
+        nbv = to_mpi_int(nlong)
 !
         call jeveuo(nomjev, 'E', jnomjv)
 !
         if (typsca .eq. 'R') then
             call wkvect(notrav, 'V V R', nlong, jtrav)
             call dcopy(nlong, zr(jnomjv), 1, zr(jtrav), 1)
-            call MPI_REDUCE(zr(jtrav), zr(jnomjv), nlong, lr8, MPI_SUM,&
-                            0, mpicou, iermpi)
+            call asmpi_reduce_r(zr(jtrav), zr(jnomjv), nbv, MPI_SUM4, pr0,&
+                                mpicou)
         else if (typsca.eq.'C') then
             call wkvect(notrav, 'V V C', nlong, jtrav)
             call zcopy(nlong, zc(jnomjv), 1, zc(jtrav), 1)
-            call MPI_REDUCE(zc(jtrav), zc(jnomjv), nlong, lc8, MPI_SUM,&
-                            0, mpicou, iermpi)
+            call asmpi_reduce_c(zc(jtrav), zc(jnomjv), nbv, MPI_SUM4, pr0,&
+                                mpicou)
         else if (typsca.eq.'I') then
             call wkvect(notrav, 'V V I', nlong, jtrav)
-            do 1, k=1,nlong
-            zi(jtrav-1+k)=zi(jnomjv-1+k)
- 1          continue
-            call MPI_REDUCE(zi(jtrav), zi(jnomjv), nlong, lint, MPI_SUM,&
-                            0, mpicou, iermpi)
+            do k=1,nlong
+                zi(jtrav-1+k)=zi(jnomjv-1+k)
+            enddo
+            call asmpi_reduce_i(zi(jtrav), zi(jnomjv), nbv, MPI_SUM4, pr0,&
+                                mpicou)
         else if (typsca.eq.'S') then
             call wkvect(notrav, 'V V S', nlong, jtrav)
-            do 2, k=1,nlong
-            zi4(jtrav-1+k)=zi4(jnomjv-1+k)
- 2          continue
-            call MPI_REDUCE(zi4(jtrav), zi4(jnomjv), nlong, lint4, MPI_SUM,&
-                            0, mpicou, iermpi)
+            do k=1,nlong
+                zi4(jtrav-1+k)=zi4(jnomjv-1+k)
+            enddo
+            call asmpi_reduce_i4(zi4(jtrav), zi4(jnomjv), nbv, MPI_SUM4, pr0,&
+                                mpicou)
         else
             ASSERT(.false.)
         endif
@@ -185,31 +197,28 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
             call jelira(jexnum(nomjev, iobj), 'LONMAX', nlong, kbid)
         endif
 !
+        nbv = to_mpi_int(nlong)
 !
         if (typsca .eq. 'R') then
             call wkvect(notrav, 'V V R', nlong, jtrav)
             call dcopy(nlong, zr(jnomjv), 1, zr(jtrav), 1)
-            call MPI_ALLREDUCE(zr(jtrav), zr(jnomjv), nlong, lr8, MPI_SUM,&
-                               mpicou, iermpi)
+            call asmpi_allreduce_r(zr(jtrav), zr(jnomjv), nbv, MPI_SUM4, mpicou)
         else if (typsca.eq.'C') then
             call wkvect(notrav, 'V V C', nlong, jtrav)
             call zcopy(nlong, zc(jnomjv), 1, zc(jtrav), 1)
-            call MPI_ALLREDUCE(zc(jtrav), zc(jnomjv), nlong, lc8, MPI_SUM,&
-                               mpicou, iermpi)
+            call asmpi_allreduce_c(zc(jtrav), zc(jnomjv), nbv, MPI_SUM4, mpicou)
         else if (typsca.eq.'I') then
             call wkvect(notrav, 'V V I', nlong, jtrav)
-            do 3, k=1,nlong
-            zi(jtrav-1+k)=zi(jnomjv-1+k)
- 3          continue
-            call MPI_ALLREDUCE(zi(jtrav), zi(jnomjv), nlong, lint, MPI_SUM,&
-                               mpicou, iermpi)
+            do k=1,nlong
+                zi(jtrav-1+k)=zi(jnomjv-1+k)
+            enddo
+            call asmpi_allreduce_i(zi(jtrav), zi(jnomjv), nbv, MPI_SUM4, mpicou)
         else if (typsca.eq.'S') then
             call wkvect(notrav, 'V V S', nlong, jtrav)
-            do 4, k=1,nlong
-            zi4(jtrav-1+k)=zi4(jnomjv-1+k)
- 4          continue
-            call MPI_ALLREDUCE(zi4(jtrav), zi4(jnomjv), nlong, lint4, MPI_SUM,&
-                               mpicou, iermpi)
+            do k=1,nlong
+                zi4(jtrav-1+k)=zi4(jnomjv-1+k)
+            enddo
+            call asmpi_allreduce_i4(zi4(jtrav), zi4(jnomjv), nbv, MPI_SUM4, mpicou)
         else
             ASSERT(.false.)
         endif

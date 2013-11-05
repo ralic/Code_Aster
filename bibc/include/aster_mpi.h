@@ -28,6 +28,9 @@
 #   define MPI_Comm         int
 #   define MPI_Comm_c2f(a)  a
 #   define MPI_Comm_f2c(a)  a
+#   define MPI_Op           int
+#   define MPI_Op_c2f(a)    a
+#   define MPI_Op_f2c(a)    a
 #endif
 
 /*

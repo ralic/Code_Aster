@@ -52,6 +52,17 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
+#include "asterc/asmpi_allreduce_r.h"
+#include "asterc/asmpi_allreduce_c.h"
+#include "asterc/asmpi_allreduce_i.h"
+#include "asterc/asmpi_allreduce_i4.h"
+#include "asterc/asmpi_bcast_r.h"
+#include "asterc/asmpi_bcast_c.h"
+#include "asterc/asmpi_bcast_i.h"
+#include "asterc/asmpi_reduce_r.h"
+#include "asterc/asmpi_reduce_c.h"
+#include "asterc/asmpi_reduce_i.h"
+#include "asterc/asmpi_reduce_i4.h"
 #include "asterfort/asmpi_check.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -74,13 +85,15 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
 #ifdef _USE_MPI
 #include "mpif.h"
+#include "aster_mpif.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=1) :: typsc1
-    integer :: vi2(1000)
-    real(kind=8) :: vr2(1000)
-    complex(kind=8) :: vc2(1000)
+    integer :: vi2(1000), wki(1)
+    real(kind=8) :: vr2(1000), wkr(1)
+    complex(kind=8) :: vc2(1000), wkc(1)
     integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest, nbv
-    mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8
+    mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4
+    mpi_int, parameter :: pr0=0
     logical :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
@@ -133,13 +146,13 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !     -- CHOIX OPERATION MPI  :
 !     ---------------------------
     if (optmpi .eq. 'MPI_MAX') then
-        lopmpi=MPI_MAX
+        lopmpi=MPI_MAX4
         ASSERT(typsc1 .ne. 'C')
     else if (optmpi.eq.'MPI_MIN') then
-        lopmpi=MPI_MIN
+        lopmpi=MPI_MIN4
         ASSERT(typsc1 .ne. 'C')
     else
-        lopmpi=MPI_SUM
+        lopmpi=MPI_SUM4
     endif
 !
 !     -- SI REDUCE OU ALLREDUCE, IL FAUT UN 2EME BUFFER
@@ -203,14 +216,11 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
         ASSERT(present(bcrank))
         ASSERT(nbv > 1)
         if (typsc1 .eq. 'R') then
-            call MPI_BCAST(vr, nbv4, lr8, bcrank, mpicou,&
-                           iermpi)
+            call asmpi_bcast_r(vr, nbv4, bcrank4, mpicou)
         else if (typsc1.eq.'I') then
-            call MPI_BCAST(vi, nbv4, lint, bcrank, mpicou,&
-                           iermpi)
+            call asmpi_bcast_i(vi, nbv4, bcrank4, mpicou)
         else if (typsc1.eq.'C') then
-            call MPI_BCAST(vc, nbv4, lc8, bcrank, mpicou,&
-                           iermpi)
+            call asmpi_bcast_c(vc, nbv4, bcrank4, mpicou)
         else
             ASSERT(.false.)
         endif
@@ -231,32 +241,32 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
         if (typsc1 .eq. 'R') then
             nbv4=sizbmpi
             do 11 k = 1, nbcast
-                call MPI_BCAST(vr(1+(k-1)*sizbmpi), nbv4, lr8, bcrank, mpicou,&
-                               iermpi)
+                call asmpi_bcast_r(vr(1+(k-1)*sizbmpi), nbv4, bcrank4, mpicou)
 11          continue
             nbv4=irest
-            if (irest .ne. 0) call MPI_BCAST(vr(1+imain), nbv4, lr8, bcrank, mpicou,&
-                                             iermpi)
+            if (irest .ne. 0) then
+                call asmpi_bcast_r(vr(1+imain), nbv4, bcrank4, mpicou)
+            endif
 !
         else if (typsc1.eq.'I') then
             nbv4=sizbmpi
             do 12 k = 1, nbcast
-                call MPI_BCAST(vi(1+(k-1)*sizbmpi), nbv4, lint, bcrank, mpicou,&
-                               iermpi)
+                call asmpi_bcast_i(vi(1+(k-1)*sizbmpi), nbv4, bcrank4, mpicou)
 12          continue
             nbv4=irest
-            if (irest .ne. 0) call MPI_BCAST(vi(1+imain), nbv4, lint, bcrank, mpicou,&
-                                             iermpi)
+            if (irest .ne. 0) then
+                call asmpi_bcast_i(vi(1+imain), nbv4, bcrank4, mpicou)
+            endif
 !
         else if (typsc1.eq.'C') then
             nbv4=sizbmpi
             do 13 k = 1, nbcast
-                call MPI_BCAST(vc(1+(k-1)*sizbmpi), nbv4, lc8, bcrank, mpicou,&
-                               iermpi)
+                call asmpi_bcast_c(vc(1+(k-1)*sizbmpi), nbv4, bcrank4, mpicou)
 13          continue
             nbv4=irest
-            if (irest .ne. 0) call MPI_BCAST(vc(1+imain), nbv4, lc8, bcrank, mpicou,&
-                                             iermpi)
+            if (irest .ne. 0) then
+                call asmpi_bcast_c(vc(1+imain), nbv4, bcrank4, mpicou)
+            endif
 !
         else
             ASSERT(.false.)
@@ -266,37 +276,40 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !     ---------------------------------
         if (typsc1 .eq. 'R') then
             if (scal) then
-                call MPI_REDUCE(vr2, scr, nbv4, lr8, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_r(vr2, wkr, nbv4, lopmpi, pr0,&
+                                    mpicou)
+                scr = wkr(1)
             else if (nbv .le. 1000) then
-                call MPI_REDUCE(vr2, vr, nbv4, lr8, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_r(vr2, vr, nbv4, lopmpi, pr0,&
+                                    mpicou)
             else
-                call MPI_REDUCE(zr(jtrav), vr, nbv4, lr8, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_r(zr(jtrav), vr, nbv4, lopmpi, pr0,&
+                                    mpicou)
             endif
 !
         else if (typsc1.eq.'I') then
             if (scal) then
-                call MPI_REDUCE(vi2, sci, nbv4, lint, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_i(vi2, wki, nbv4, lopmpi, pr0,&
+                                    mpicou)
+                sci = wki(1)
             else if (nbv .le. 1000) then
-                call MPI_REDUCE(vi2, vi, nbv4, lint, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_i(vi2, vi, nbv4, lopmpi, pr0,&
+                                    mpicou)
             else
-                call MPI_REDUCE(zi(jtrav), vi, nbv4, lint, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_i(zi(jtrav), vi, nbv4, lopmpi, pr0,&
+                                    mpicou)
             endif
         else if (typsc1.eq.'C') then
             if (scal) then
-                call MPI_REDUCE(vc2, scc, nbv4, lc8, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_c(vc2, wkc, nbv4, lopmpi, pr0,&
+                                    mpicou)
+                scc = wkc(1)
             else if (nbv .le. 1000) then
-                call MPI_REDUCE(vc2, vc, nbv4, lc8, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_c(vc2, vc, nbv4, lopmpi, pr0,&
+                                    mpicou)
             else
-                call MPI_REDUCE(zc(jtrav), vc, nbv4, lc8, lopmpi,&
-                                0, mpicou, iermpi)
+                call asmpi_reduce_c(zc(jtrav), vc, nbv4, lopmpi, pr0,&
+                                    mpicou)
             endif
         else
             ASSERT(.false.)
@@ -307,36 +320,30 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !     ---------------------------------
         if (typsc1 .eq. 'R') then
             if (scal) then
-                call MPI_ALLREDUCE(vr2, scr, nbv4, lr8, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_r(vr2, wkr, nbv4, lopmpi, mpicou)
+                scr = wkr(1)
             else if (nbv .le. 1000) then
-                call MPI_ALLREDUCE(vr2, vr, nbv4, lr8, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_r(vr2, vr, nbv4, lopmpi, mpicou)
             else
-                call MPI_ALLREDUCE(zr(jtrav), vr, nbv4, lr8, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_r(zr(jtrav), vr, nbv4, lopmpi, mpicou)
             endif
         else if (typsc1.eq.'I') then
             if (scal) then
-                call MPI_ALLREDUCE(vi2, sci, nbv4, lint, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_i(vi2, wki, nbv4, lopmpi, mpicou)
+                sci = wki(1)
             else if (nbv .le. 1000) then
-                call MPI_ALLREDUCE(vi2, vi, nbv4, lint, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_i(vi2, vi, nbv4, lopmpi, mpicou)
             else
-                call MPI_ALLREDUCE(zi(jtrav), vi, nbv4, lint, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_i(zi(jtrav), vi, nbv4, lopmpi, mpicou)
             endif
         else if (typsc1.eq.'C') then
             if (scal) then
-                call MPI_ALLREDUCE(vc2, scc, nbv4, lc8, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_c(vc2, wkc, nbv4, lopmpi, mpicou)
+                scc = wkc(1)
             else if (nbv .le. 1000) then
-                call MPI_ALLREDUCE(vc2, vc, nbv4, lc8, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_c(vc2, vc, nbv4, lopmpi, mpicou)
             else
-                call MPI_ALLREDUCE(zc(jtrav), vc, nbv4, lc8, lopmpi,&
-                                   mpicou, iermpi)
+                call asmpi_allreduce_c(zc(jtrav), vc, nbv4, lopmpi, mpicou)
             endif
         else
             ASSERT(.false.)

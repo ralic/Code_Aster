@@ -289,7 +289,7 @@ void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MP
 }
 
 /*
- *  Wrappers around MPI_Send
+ * Wrappers around MPI_Send
  * Do not check returncode because all errors raise
  */
 void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, DOUBLE *buf, INTEGER4 *count, INTEGER4 *dest,
@@ -326,7 +326,7 @@ void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, INTEGER4 *buf, INTEGER4 *count, INTE
 }
 
 /*
- *  Wrappers around MPI_Recv
+ * Wrappers around MPI_Recv
  * Do not check returncode because all errors raise
  */
 void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, DOUBLE *buf, INTEGER4 *count, INTEGER4 *source,
@@ -415,6 +415,167 @@ DOUBLE DEF0(ASMPI_WTIME, asmpi_wtime) {
 #endif
 }
 
+/*
+ * Wrappers around MPI_Reduce
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPPP(ASMPI_REDUCE_R, asmpi_reduce_r, DOUBLE *sendbuf, DOUBLE *recvbuf, INTEGER4 *count,
+                                               MPI_Fint *op, INTEGER4 *root, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
+                         mpiop, *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPPP(ASMPI_REDUCE_C, asmpi_reduce_c, DOUBLE *sendbuf, DOUBLE *recvbuf, INTEGER4 *count,
+                                               MPI_Fint *op, INTEGER4 *root, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
+                         mpiop, *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPPP(ASMPI_REDUCE_I, asmpi_reduce_i, INTEGER *sendbuf, INTEGER *recvbuf, INTEGER4 *count,
+                                               MPI_Fint *op, INTEGER4 *root, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER,
+                         mpiop, *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPPP(ASMPI_REDUCE_I4, asmpi_reduce_i4, INTEGER4 *sendbuf, INTEGER4 *recvbuf,
+                                                 INTEGER4 *count, MPI_Fint *op, INTEGER4 *root,
+                                                 MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
+                         mpiop, *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ * Wrappers around MPI_Allreduce
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPP(ASMPI_ALLREDUCE_R, asmpi_allreduce_r, DOUBLE *sendbuf, DOUBLE *recvbuf,
+                                                    INTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
+                            mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_ALLREDUCE_C, asmpi_allreduce_c, DOUBLE *sendbuf, DOUBLE *recvbuf,
+                                                    INTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
+                            mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, INTEGER *sendbuf, INTEGER *recvbuf,
+                                                    INTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER,
+                            mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, DOUBLE *sendbuf, DOUBLE *recvbuf,
+                                                      INTEGER4 *count, MPI_Fint *op,
+                                                      MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
+                            mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
+ * Wrappers around MPI_Bcast
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPP(ASMPI_BCAST_R, asmpi_bcast_r, DOUBLE *buffer, INTEGER4 *count, INTEGER4 *root,
+                                           MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_PRECISION,
+                        *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPP(ASMPI_BCAST_C, asmpi_bcast_c, DOUBLE *buffer, INTEGER4 *count, INTEGER4 *root,
+                                           MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_COMPLEX,
+                        *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPP(ASMPI_BCAST_I, asmpi_bcast_i, INTEGER *buffer, INTEGER4 *count, INTEGER4 *root,
+                                           MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_INTEGER,
+                        *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, INTEGER4 *buffer, INTEGER4 *count, INTEGER4 *root,
+                                             MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_INTEGER4,
+                        *root, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
 
 /*
  * Define a dedicated function to abort a Code_Aster execution.
