@@ -341,8 +341,9 @@ def supv002_ops(self, ERREUR, **kwargs):
     #LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, 'mecanonline9.py'))]
 
     # start the timekeeper
-    ptk = MPR.Process(target=timekeeper, args=(os.getpid(), 60))
-    ptk.start()
+    #XXX commented because it does not work properly under LSF...
+    #ptk = MPR.Process(target=timekeeper, args=(os.getpid(), 60))
+    #ptk.start()
     aspell = AspellCall(get_personal_dict(), 'fr', ENCODING)
     checker = Checker(aspell)
     checker.set_ignored(ERREUR)
@@ -353,7 +354,7 @@ def supv002_ops(self, ERREUR, **kwargs):
     # close aspell
     aspell.close()
     # stop the timekeeper
-    ptk.terminate()
+    #ptk.terminate()
 
     nberr = checker.count_errors()
     errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
