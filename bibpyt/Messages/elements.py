@@ -26,14 +26,6 @@ cata_msg = {
  OMEGA2 = %(r2)f
 """),
 
-2 : _(u"""
-Erreur :
-   Le calcul du chargement dû au séchage n'est pas programmé par le type d'élément %(k1)s.
-
-Conseil :
-  Émettre une demande d'évolution.
-"""),
-
 3 : _(u"""
 Vous utilisez des éléments de type GRILLE_MEMBRANE. Le mot-clé ANGL_REP de la commande AFFE_CARA_ELEM
 permet d'indiquer la direction des armatures.
@@ -127,6 +119,24 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette 
 
 21 : _(u"""
  prédicteur ELAS hors champs
+"""),
+
+22 : _(u"""
+Erreur :
+   Le calcul du chargement dû l'hydratation n'est pas programmé pour le type d'élément %(k1)s.
+
+Conseil :
+  Pour pouvoir continuer le calcul, B_ENDOGE doit être nul. Le chargement sera nul.
+  Il faut émettre une demande d'évolution pour que ce chargement soit pris en compte.
+"""),
+
+23 : _(u"""
+Erreur :
+   Le calcul du chargement dû au séchage n'est pas programmé pour le type d'élément %(k1)s.
+
+Conseil :
+  Pour pouvoir continuer le calcul, K_DESSIC doit être nul. Le chargement sera nul.
+  Il faut émettre une demande d'évolution pour que ce chargement soit pris en compte.
 """),
 
 24 : _(u"""

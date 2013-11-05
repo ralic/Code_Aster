@@ -155,9 +155,9 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR  
     CHAR_MECA_ROTA_R  -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_SECH_R 312  IN__  CMATERC  PMATERC  ZVARCPG  PVARCPR  
-                          OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_TEMP_R  -1  IN__  ZVARCPG  PVARCPR  
+    CHAR_MECA_SECH_R  -1  IN__
+                          OUT__ XXXXXX   XXXXXX   
+    CHAR_MECA_TEMP_R  -1  IN__
                           OUT__ XXXXXX   XXXXXX   
     COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
                           OUT__ EGGEOM_R PCOORPG  
