@@ -41,7 +41,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: epsm(*), deps(*), dsidep(*)
     real(kind=8) :: sigm(*), vim(*), sigp(*), vip(*)
-    real(kind=8) :: wkin(*), wkout(*)
+    real(kind=8) :: wkin(nwkin), wkout(nwkout)
     real(kind=8) :: angmas(*)
 ! ----------------------------------------------------------------------
 !     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES

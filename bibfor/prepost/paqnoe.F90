@@ -76,7 +76,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     integer :: jsigv, jsigd, jsigl, jepsd, jepsl, jepsv, kwork
     integer :: jepspd, jepspl, jepspv, iret4, jepped, jeppel
     integer :: inop, somnow, icmp, jnoeu, nunoe, jeppev
-    integer :: vali(2), paract(30), valep, ic, tord(1)
+    integer :: vali(2), paract(35), valep, ic, tord(1)
     logical :: post, crsigm, crepst, crepse, crepsp, lbid, creppe
 !
     real(kind=8) :: r8b, val1, val2, resu(7), vresu(24), valpar(35)

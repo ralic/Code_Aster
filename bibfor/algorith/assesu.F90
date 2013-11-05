@@ -22,8 +22,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vfcfks.h"
-    integer :: maxfa
-    parameter (maxfa=6)
+    integer, parameter :: maxfa=6
 !
     integer :: nno, nnos, nface
     integer :: imate, dimdef, dimcon, dimuel

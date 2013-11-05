@@ -28,6 +28,7 @@ interface
                       alpliq, viscl, dviscl, mamolg, viscg,&
                       dviscg, mamolv, dficks, vf, ifa,&
                       valfac, valcen)
+        integer, parameter :: maxfa=6
         integer :: dimcon
         integer :: dimdef
         integer :: ndim
@@ -83,7 +84,7 @@ interface
         real(kind=8) :: dficks
         logical :: vf
         integer :: ifa
-        real(kind=8) :: valfac(6, 14, 6)
+        real(kind=8) :: valfac(maxfa, 14, 6)
         real(kind=8) :: valcen(14, 6)
     end subroutine calcfh
 end interface 

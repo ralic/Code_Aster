@@ -28,8 +28,8 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
     integer :: imate, ndim, codret, kpg, ksp
     integer :: icomp, nvi
     real(kind=8) :: tampon(*), crit(*)
-    real(kind=8) :: epsm(*), deps(*), sigp(*), vim(*), vip(*), dsidep(*)
-    real(kind=8) :: instam, instap, sigm(*), angmas(*)
+    real(kind=8) :: epsm(6), deps(6), sigp(6), vim(*), vip(*), dsidep(*)
+    real(kind=8) :: instam, instap, sigm(6), angmas(3)
     character(len=*) :: fami
     character(len=8) :: typmod(*),mod
     character(len=16) :: option, compor(*)

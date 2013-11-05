@@ -39,7 +39,7 @@ interface
         real(kind=8) :: timed
         real(kind=8) :: timef
         real(kind=8) :: yf(nr)
-        real(kind=8) :: deps(6)
+        real(kind=8) :: deps(*)
         integer :: itmax
         real(kind=8) :: toler
         integer :: nbcomm(nmat, 3)
@@ -50,7 +50,7 @@ interface
         character(len=16) :: comp(*)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        real(kind=8) :: epsd(6)
+        real(kind=8) :: epsd(*)
         real(kind=8) :: yd(nr)
         real(kind=8) :: dy(nr)
         real(kind=8) :: ye(nr)

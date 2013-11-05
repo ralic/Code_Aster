@@ -96,7 +96,7 @@ subroutine op0151()
     integer :: nval, impr, ifm, jordr, jcoef, jcelk, jcelv
     integer :: nbpt, nbord, nbcmp, numcmp(6), ntcmp, ibid
     integer :: ivdmg, numsym, nbpt2, nbord2, iret, ivch
-    integer :: vali(2), paract(30)
+    integer :: vali(2), paract(35)
 !
 ! ------------
 !-----------------------------------------------------------------------

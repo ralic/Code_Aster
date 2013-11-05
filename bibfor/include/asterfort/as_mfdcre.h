@@ -23,8 +23,8 @@ interface
         character(len=*) :: cha
         character(len=*) :: nomamd
         aster_int :: type
-        character(len=*) :: comp(*)
-        character(len=*) :: unit(*)
+        character(len=*) :: comp
+        character(len=*) :: unit
         aster_int :: ncomp
         aster_int :: cret
     end subroutine as_mfdcre

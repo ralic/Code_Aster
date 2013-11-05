@@ -29,10 +29,10 @@ interface
         real(kind=8) :: instam
         real(kind=8) :: instap
         integer :: neps
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
+        real(kind=8) :: epsm(neps)
+        real(kind=8) :: deps(neps)
         integer :: nsig
-        real(kind=8) :: sigm(*)
+        real(kind=8) :: sigm(nsig)
         real(kind=8) :: vim(*)
         character(len=16) :: option
     end subroutine lcidbg

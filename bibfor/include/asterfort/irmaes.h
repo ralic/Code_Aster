@@ -18,13 +18,14 @@
 interface
     subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
                       modnum, nuanom, nomtyp, nnotyp, sdcarm)
+        integer, parameter :: ntymax=69
         integer :: nbimpr
         integer :: idfimd
         character(len=8) :: nomaas
         character(len=64) :: nomamd
         integer :: caimpi(10, nbimpr)
-        integer :: modnum(69)
-        integer :: nuanom(69, *)
+        integer :: modnum(ntymax)
+        integer :: nuanom(ntymax, *)
         character(len=8) :: nomtyp(*)
         integer :: nnotyp(*)
         character(len=8) :: sdcarm

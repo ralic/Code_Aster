@@ -27,8 +27,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vfcfks.h"
-    integer :: maxfa
-    parameter (maxfa=6)
+    integer, parameter :: maxfa=6
 !
     integer :: nno, nnos, nface, kpg, spt
     integer :: imate, dimdef, dimcon, dimuel

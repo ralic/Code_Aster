@@ -59,8 +59,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 #include "asterfort/hmderp.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: valcen(14, 6)
-    integer :: maxfa
-    parameter    (maxfa=6)
+    integer, parameter :: maxfa=6
     real(kind=8) :: valfac(maxfa, 14, 6)
 !
     integer :: con, dconp1, dconp2

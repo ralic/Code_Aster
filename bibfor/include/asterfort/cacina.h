@@ -35,7 +35,7 @@ interface
         integer :: idff
         real(kind=8) :: fm(3, 3)
         real(kind=8) :: fma(3, 3)
-        real(kind=8) :: depld(81)
+        real(kind=8) :: depld(3*27)
         real(kind=8) :: instm
         real(kind=8) :: instp
         real(kind=8) :: vim(lgpg)

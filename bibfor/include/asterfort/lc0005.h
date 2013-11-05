@@ -30,19 +30,19 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
+        real(kind=8) :: epsm(*)
+        real(kind=8) :: deps(*)
         real(kind=8) :: sigm(*)
         real(kind=8) :: vim(*)
         character(len=16) :: option
         real(kind=8) :: angmas(*)
-        real(kind=8) :: sigp(6)
+        real(kind=8) :: sigp(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: tampon(*)
         character(len=8) :: typmod(*)
         integer :: icomp
         integer :: nvi
-        real(kind=8) :: dsidep(6, 6)
+        real(kind=8) :: dsidep(*)
         integer :: codret
     end subroutine lc0005
 end interface

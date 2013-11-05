@@ -24,7 +24,7 @@ interface
         character(len=24) :: carele
         character(len=24) :: fomult
         character(len=19) :: lischa
-        real(kind=8) :: partps(*)
+        real(kind=8) :: partps(3)
         character(len=24) :: numedd
         logical :: assmat
         character(len=19) :: solveu

@@ -18,13 +18,14 @@
 interface
     subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
                       nobj, nbel, versio)
+        integer, parameter :: ntyele=28
         character(len=8) :: nomain
         character(len=8) :: nomaou
         integer :: nbmat
         integer :: nummai(*)
         character(len=*) :: basz
-        character(len=24) :: nobj(28)
-        integer :: nbel(28)
+        character(len=24) :: nobj(ntyele)
+        integer :: nbel(ntyele)
         integer :: versio
     end subroutine irgmma
 end interface

@@ -19,7 +19,7 @@ interface
     subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
                       xivect)
         real(kind=8) :: xetemp(*)
-        real(kind=8) :: para(*)
+        real(kind=8) :: para(2)
         real(kind=8) :: xidepm(*)
         real(kind=8) :: sigma(*)
         real(kind=8) :: fstab(12)

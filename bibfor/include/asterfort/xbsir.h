@@ -34,7 +34,7 @@ interface
         integer :: heavt(*)
         integer :: lonch(10)
         real(kind=8) :: basloc(*)
-        real(kind=8) :: sigref
+        real(kind=8) :: sigref(*)
         integer :: nbsig
         integer :: idepl
         real(kind=8) :: lsn(nnop)

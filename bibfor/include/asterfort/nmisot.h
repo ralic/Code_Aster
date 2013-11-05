@@ -27,7 +27,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: compor
-        real(kind=8) :: crit(*)
+        real(kind=8) :: crit(11)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(*)

@@ -29,13 +29,13 @@ interface
         integer :: iw
         real(kind=8) :: vff(nno, npg)
         integer :: idff
-        real(kind=8) :: depld(81)
+        real(kind=8) :: depld(3*27)
         logical :: grand
         real(kind=8) :: alpha
         real(kind=8) :: r
         real(kind=8) :: dff(nno, ndim)
         real(kind=8) :: fd(3, 3)
-        real(kind=8) :: deplda(81)
+        real(kind=8) :: deplda(3*27)
         real(kind=8) :: fda(3, 3)
     end subroutine calpf
 end interface

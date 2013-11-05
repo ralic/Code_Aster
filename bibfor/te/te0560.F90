@@ -56,7 +56,7 @@ subroutine te0560(option, nomte)
     real(kind=8) :: xyz(3)
     real(kind=8) :: angmas(7)
 !
-    integer :: icodr1
+    integer :: icodr1(1)
     character(len=8) :: typmod(2)
     character(len=16) :: phenom
 !

@@ -22,7 +22,7 @@ interface
         integer :: nb2
         integer :: npgsn
         real(kind=8) :: xr(*)
-        real(kind=8) :: deggtg(8, *)
+        real(kind=8) :: deggtg(72)
         real(kind=8) :: deggt(8, 9)
     end subroutine vddege
 end interface

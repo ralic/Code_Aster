@@ -19,6 +19,7 @@ interface
     subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
                       caimpi, caimpk, modnum, nuanom, sdcarm,&
                       codret)
+        integer, parameter :: ntymax=69
         integer :: nbimpr
         character(len=*) :: nofimd
         character(len=19) :: chanom
@@ -26,8 +27,8 @@ interface
         character(len=8) :: nomtyp(*)
         integer :: caimpi(10, nbimpr)
         character(len=80) :: caimpk(3, nbimpr)
-        integer :: modnum(69)
-        integer :: nuanom(69, *)
+        integer :: modnum(ntymax)
+        integer :: nuanom(ntymax, *)
         character(len=8) :: sdcarm
         integer :: codret
     end subroutine irmpga

@@ -41,7 +41,7 @@ interface
         integer :: npts
         real(kind=8) :: ainter(*)
         integer :: nse
-        integer :: cnse(6, 6)
+        integer :: cnse(6, 10)
         real(kind=8) :: heav(*)
         integer :: nsemax
     end subroutine xdecov

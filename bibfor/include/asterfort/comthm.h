@@ -25,6 +25,7 @@ interface
                       defgem, defgep, congem, congep, vintm,&
                       vintp, dsde, pesa, retcom, kpi,&
                       npg, p10, p20, angmas)
+        integer, parameter :: maxfa=6
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
@@ -33,7 +34,7 @@ interface
         logical :: perman
         logical :: vf
         integer :: ifa
-        real(kind=8) :: valfac(6, 14, 6)
+        real(kind=8) :: valfac(maxfa, 14, 6)
         real(kind=8) :: valcen(14, 6)
         integer :: imate
         character(len=8) :: typmod(2)

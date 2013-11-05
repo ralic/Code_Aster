@@ -25,7 +25,7 @@ subroutine as_msmcre(fid, nom, dim, desc, typrep,&
 #include "med/msmcre.h"
     character(len=*) :: nom
     character(len=*) :: desc
-    character(len=16) :: nocomp, unit
+    character(len=16) :: nocomp(3), unit(3)
     aster_int :: fid, dim, cret, typrep
 #ifdef _DISABLE_MED
     call utmess('F', 'FERMETUR_2')

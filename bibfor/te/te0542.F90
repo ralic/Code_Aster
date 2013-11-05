@@ -47,7 +47,7 @@ subroutine te0542(option, nomte)
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu
     logical :: lbid
-    real(kind=8) :: sigref, depref
+    real(kind=8) :: sigref(1), depref
     character(len=8) :: enr, elref
 ! DEB ------------------------------------------------------------------
 !
@@ -109,7 +109,7 @@ subroutine te0542(option, nomte)
 !
 ! --- ON RECUPERE CONTRAINTE ET SAUT DE DEPLACEMENT DE REFERENCE
 !
-        call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref)
+        call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref(1))
         call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)
 !
 ! --- ON COMMENCE PAR CALCULER LES CONTRIBUTIONS VOLUMIQUES
@@ -127,7 +127,7 @@ subroutine te0542(option, nomte)
             call xbsir2(elref, contac, ddlc, ddlm, ddls,&
                         igeom, jfisno, jlst, ivectu, singu,&
                         nddl, ndim, nfe, nfh, nfiss,&
-                        nno, nnom, nnos, depref, sigref,&
+                        nno, nnom, nnos, depref, sigref(1),&
                         nomte)
         endif
     else

@@ -25,6 +25,7 @@ interface
                       typmod, typvf, axi, perman, nvoima,&
                       nscoma, nbvois, livois, nbnovo, nbsoco,&
                       lisoco)
+        integer, parameter :: maxfa=6
         integer :: nbvois
         integer :: nscoma
         integer :: nvoima
@@ -40,10 +41,10 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: deplm(dimuel)
         real(kind=8) :: ddepl(dimuel)
-        real(kind=8) :: congem(dimcon, 7)
-        real(kind=8) :: congep(dimcon, 7)
-        real(kind=8) :: vintm(nbvari, 7)
-        real(kind=8) :: vintp(nbvari, 7)
+        real(kind=8) :: congem(dimcon, maxfa+1)
+        real(kind=8) :: congep(dimcon, maxfa+1)
+        real(kind=8) :: vintm(nbvari, maxfa+1)
+        real(kind=8) :: vintp(nbvari, maxfa+1)
         real(kind=8) :: defgem(dimdef)
         real(kind=8) :: defgep(dimdef)
         real(kind=8) :: dsde(dimcon, dimdef)

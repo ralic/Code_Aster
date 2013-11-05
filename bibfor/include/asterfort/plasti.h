@@ -33,8 +33,8 @@ interface
         real(kind=8) :: tempd
         real(kind=8) :: tempf
         real(kind=8) :: tref
-        real(kind=8) :: epsdt(*)
-        real(kind=8) :: depst(*)
+        real(kind=8) :: epsdt(9)
+        real(kind=8) :: depst(9)
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
         character(len=16) :: opt

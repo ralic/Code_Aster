@@ -27,7 +27,7 @@ interface
         character(len=24) :: fomult
         character(len=19) :: lischa
         integer :: itps
-        real(kind=8) :: partps(*)
+        real(kind=8) :: partps(3)
         character(len=24) :: numedd
         character(len=19) :: vecass
         logical :: assmat

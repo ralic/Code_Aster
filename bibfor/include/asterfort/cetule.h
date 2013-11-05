@@ -17,8 +17,9 @@
 !
 interface
     subroutine cetule(model0, tbgrca, codret)
+    integer, parameter :: nbmcle=3
         character(len=*) :: model0
-        real(kind=8) :: tbgrca(3)
+        real(kind=8) :: tbgrca(nbmcle)
         integer :: codret
     end subroutine cetule
 end interface

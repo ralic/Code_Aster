@@ -26,7 +26,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 #include "asterfort/utmess.h"
     character(len=3) :: impgrd
     character(len=16) :: nomcri, nomfor, typcha
-    integer :: paract (35)
+    integer :: paract(35)
     logical :: fordef, crsigm, crepst, crepse, crepsp
 !
 ! ---------------------------------------------------------------------

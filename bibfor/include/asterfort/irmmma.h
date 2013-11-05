@@ -20,6 +20,7 @@ interface
                       typma, nommai, prefix, nbtyp, typgeo,&
                       nomtyp, nnotyp, renumd, nmatyp, infmed,&
                       modnum, nuanom)
+        integer, parameter :: ntymax=69
         integer :: fid
         character(len=*) :: nomamd
         integer :: nbmail
@@ -35,7 +36,7 @@ interface
         integer :: renumd(*)
         integer :: nmatyp(*)
         integer :: infmed
-        integer :: modnum(69)
-        integer :: nuanom(69, *)
+        integer :: modnum(ntymax)
+        integer :: nuanom(ntymax, *)
     end subroutine irmmma
 end interface

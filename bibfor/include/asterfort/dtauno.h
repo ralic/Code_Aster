@@ -38,7 +38,7 @@ interface
         character(len=19) :: cnsr
         character(len=8) :: nommap
         logical :: post
-        real(kind=8) :: valpar(22)
+        real(kind=8) :: valpar(35)
         real(kind=8) :: vresu(24)
     end subroutine dtauno
 end interface

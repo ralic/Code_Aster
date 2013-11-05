@@ -25,7 +25,7 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
 #include "med/msmsmi.h"
     character(len=*) :: nom
     character(len=*) :: desc
-    character(len=16) :: nocomp, unit
+    character(len=16) :: nocomp(3), unit(3)
     aster_int :: fid, dim, cret, typrep, iterat
 #ifdef _DISABLE_MED
     call utmess('F', 'FERMETUR_2')

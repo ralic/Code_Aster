@@ -25,7 +25,7 @@ subroutine as_mmhcre(fid, nom, dim, type, desc,&
 #include "med/mmhcre.h"
     character(len=*) :: nom
     character(len=*) :: desc, descdt
-    character(len=16) :: nocomp, unit
+    character(len=16) :: nocomp(3), unit(3)
     aster_int :: fid, dim, type, cret, stunde, typrep
 #ifdef _DISABLE_MED
     call utmess('F', 'FERMETUR_2')

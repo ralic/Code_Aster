@@ -23,7 +23,7 @@ subroutine cdnfo2(mater, kfonc, xx, dn, fxx,&
 #include "asterfort/rcvale.h"
     integer :: dn, ier
     character(len=8) :: kfonc, kaux, mater, k8b
-    real(kind=8) :: xx, fxx(1)
+    real(kind=8) :: xx, fxx, wfxx(1)
     integer :: icodr2(1)
     character(len=16) :: phenom
 !
@@ -33,19 +33,22 @@ subroutine cdnfo2(mater, kfonc, xx, dn, fxx,&
     if (dn .eq. 0) then
 !
         call rcvale(mater, phenom, 1, k8b, [xx],&
-                    1, kfonc, fxx(1), icodr2(1), 1)
+                    1, kfonc, wfxx, icodr2(1), 1)
     else if (dn .eq. 1) then
 !
         write (kaux,'(A1,A7)') 'D',kfonc(1:7)
         call rcvale(mater, phenom, 1, k8b, [xx],&
-                    1, kaux, fxx(1), icodr2(1), 1)
+                    1, kaux, wfxx, icodr2(1), 1)
     else if (dn .eq. 2) then
 !
         write (kaux,'(A2,A6)') 'DD',kfonc(1:6)
         call rcvale(mater, phenom, 1, k8b, [xx],&
-                    1, kaux, fxx(1), icodr2(1), 1)
+                    1, kaux, wfxx, icodr2(1), 1)
     else
         ier = 3
+    endif
+    if (ier .eq. 0) then
+        fxx = wfxx(1)
     endif
 !
 end subroutine

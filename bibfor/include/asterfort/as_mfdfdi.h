@@ -23,8 +23,8 @@ interface
         aster_int :: ind
         character(len=*) :: cha
         aster_int :: type
-        character(len=*) :: comp(*)
-        character(len=*) :: unit(*)
+        character(len=*) :: comp
+        character(len=*) :: unit
         aster_int :: nseqca
         aster_int :: cret
     end subroutine as_mfdfdi

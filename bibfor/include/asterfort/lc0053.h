@@ -42,7 +42,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: icomp
         integer :: nvi
-        real(kind=8) :: dsidep(6, 6)
+        real(kind=8) :: dsidep(*)
         integer :: codret
     end subroutine lc0053
 end interface

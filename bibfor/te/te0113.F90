@@ -53,7 +53,7 @@ subroutine te0113(option, nomte)
 !
     real(kind=8) :: trav1(3*8), angmas(7), bary(3)
 !
-    integer :: icodr1
+    integer :: icodr1(1)
     character(len=8) :: typmod(2), lielrf(10), nomail
     character(len=16) :: phenom
 !

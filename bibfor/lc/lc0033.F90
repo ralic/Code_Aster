@@ -28,7 +28,7 @@ subroutine lc0033(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/rcvarc.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
-    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
+    real(kind=8) :: epsm(*), deps(*), sigm(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6), tm, tp, tref
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)

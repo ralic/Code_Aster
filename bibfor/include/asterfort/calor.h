@@ -20,7 +20,7 @@ interface
                    dp2, signe, alp11, alp12, coeps,&
                    ndim)
         integer :: ndim
-        real(kind=8) :: mdal(2*ndim)
+        real(kind=8) :: mdal(6)
         real(kind=8) :: t
         real(kind=8) :: dt
         real(kind=8) :: deps(6)
@@ -30,6 +30,6 @@ interface
         real(kind=8) :: alp11
         real(kind=8) :: alp12
         real(kind=8) :: coeps
-        real(kind=8) :: calor_0
+        real(kind=8) :: calor
     end function calor
 end interface 

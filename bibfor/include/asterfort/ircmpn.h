@@ -28,8 +28,8 @@ interface
         integer :: nbnoec
         integer :: linoec(*)
         integer :: adsl
-        integer :: caimpi(10, 1)
-        character(len=80) :: caimpk(3, 1)
+        integer :: caimpi(10)
+        character(len=80) :: caimpk(3)
         integer :: profas(nbvato)
         integer :: innoce(nbvato)
     end subroutine ircmpn

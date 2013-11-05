@@ -23,8 +23,8 @@ interface
         character(len=*) :: cha
         character(len=*) :: ma
         aster_int :: n
-        character(len=16) :: cunit(*)
-        character(len=16) :: cname(*)
+        character(len=16) :: cunit
+        character(len=16) :: cname
         aster_int :: cret
     end subroutine as_mfdfin
 end interface

@@ -62,7 +62,7 @@ subroutine te0123(option, nomte)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     integer :: numa
 !
-    integer :: icodr1
+    integer :: icodr1(1)
     character(len=8) :: typmod(2), lielrf(10), nomail
     character(len=16) :: phenom
 !

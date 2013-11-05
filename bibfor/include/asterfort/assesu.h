@@ -23,6 +23,7 @@ interface
                       mecani, press1, press2, tempe, dimdef,&
                       dimcon, dimuel, nbvari, ndim, compor,&
                       typmod, typvf, axi, perman)
+        integer, parameter :: maxfa=6
         integer :: ndim
         integer :: nbvari
         integer :: dimuel
@@ -35,10 +36,10 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: deplm(dimuel)
         real(kind=8) :: deplp(dimuel)
-        real(kind=8) :: congem(dimcon, 7)
-        real(kind=8) :: congep(dimcon, 7)
-        real(kind=8) :: vintm(nbvari, 7)
-        real(kind=8) :: vintp(nbvari, 7)
+        real(kind=8) :: congem(dimcon, maxfa+1)
+        real(kind=8) :: congep(dimcon, maxfa+1)
+        real(kind=8) :: vintm(nbvari, maxfa+1)
+        real(kind=8) :: vintp(nbvari, maxfa+1)
         real(kind=8) :: defgem(dimdef)
         real(kind=8) :: defgep(dimdef)
         real(kind=8) :: dsde(dimcon, dimdef)

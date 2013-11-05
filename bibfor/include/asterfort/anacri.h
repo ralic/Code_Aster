@@ -22,7 +22,7 @@ interface
         character(len=16) :: nomfor
         character(len=16) :: typcha
         character(len=3) :: impgrd
-        integer :: paract(30)
+        integer :: paract(35)
         logical :: fordef
         logical :: crsigm
         logical :: crepst

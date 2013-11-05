@@ -51,7 +51,7 @@ subroutine te0154(option, nomte)
 !
 !
     real(kind=8) :: pgl(3, 3), klc(6, 6), enerth
-    real(kind=8) :: ugr(6), ulr(6), flr(6)
+    real(kind=8) :: ugr(6), ulr(12), flr(6)
     integer :: codres(1)
     character(len=3) :: stopz
     character(len=4) :: fami

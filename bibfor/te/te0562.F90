@@ -34,7 +34,7 @@ subroutine te0562(option, nomte)
 ! ......................................................................
 !
     integer :: dlns
-    integer :: nno, npg1, imatuu, ndim, nnos, jgano, iret, icodr1
+    integer :: nno, npg1, imatuu, ndim, nnos, jgano, iret, icodr1(1)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: nnob, ivfb, idfdeb, jganob
 !

@@ -21,7 +21,7 @@ interface
                       cret)
         aster_int :: fid
         character(len=*) :: maa
-        character(len=*) :: nom(*)
+        character(len=*) :: nom
         aster_int :: typent
         aster_int :: typgeo
         aster_int :: cret

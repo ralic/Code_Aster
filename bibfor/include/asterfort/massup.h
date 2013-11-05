@@ -33,7 +33,7 @@ interface
         real(kind=8) :: geom(ndim, nno)
         real(kind=8) :: vff1(nno, npg)
         integer :: imatuu
-        integer :: icodre
+        integer :: icodre(1)
         integer :: igeom
         integer :: ivf
     end subroutine massup

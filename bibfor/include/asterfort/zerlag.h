@@ -20,6 +20,6 @@ interface
         integer :: nbddl
         real(kind=8), intent(out), optional :: vectr(nbddl)
         complex(kind=8), intent(out), optional :: vectz(nbddl)
-        integer :: ideeq(2, nbddl)
+        integer :: ideeq(2*nbddl)
     end subroutine zerlag
 end interface
