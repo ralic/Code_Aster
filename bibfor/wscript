@@ -15,6 +15,7 @@ def configure(self):
     self.add_os_flags('FORLINKFLAGS', 'FCLINKFLAGS')
     self.add_os_flags('FORINCLUDES', 'INCLUDES')
     self.add_os_flags('FORDEFINES', 'DEFINES')
+    self.add_os_flags('OPTLIB_FLAGS', 'OPTLIB_FLAGS')
 
     for incpath in ('bibfor/include', ):
         paths = self.srcnode.ant_glob(incpath, src=True, dir=True)
