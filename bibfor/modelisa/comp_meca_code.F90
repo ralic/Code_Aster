@@ -55,9 +55,9 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_comp_elem, ikit, icomp
-    character(len=16) :: comp_elem(20), rela_meta
-    logical :: l_umat, l_mfront, l_kit_meta
+    integer :: nb_comp_elem, ikit, icomp, imeca
+    character(len=16) :: comp_elem(20), rela_meta, rela_meca
+    logical :: l_umat, l_mfront, l_kit_meta, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,6 +68,7 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
     call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
     call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
     call comp_meca_l(rela_comp, 'KIT_META' , l_kit_meta)
+    call comp_meca_l(rela_comp, 'KIT_THM' , l_kit_thm)
 !
 ! - Create composite comportment
 !
@@ -85,6 +86,16 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
             nb_comp_elem = nb_comp_elem + 1
             comp_elem(nb_comp_elem) = kit_comp(ikit)
         enddo
+    endif
+!
+! - Reorder THM behaviours
+    if (l_kit_thm) then
+        imeca = nb_comp_elem - 9 + 1
+        rela_meca = comp_elem(imeca + 3)
+        do ikit = 3, 1, -1
+            comp_elem(imeca + ikit) = comp_elem(imeca - 1 + ikit)
+        enddo
+        comp_elem(imeca) = rela_meca
     endif
 !
 ! - Coding metallurgy comportment

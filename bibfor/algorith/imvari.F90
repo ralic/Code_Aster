@@ -186,43 +186,44 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
             nb_vari_ther = nb_vari_comp(2)
             nb_vari_hydr = nb_vari_comp(3)
             nb_vari_meca = nb_vari_comp(4)
+            jdecal = 0
+!
+!           THM behaviours: must be reordered and start by 'rela_meca'
+            if (rela_meca .ne. 'VIDE') then
+                call utmess('I', 'COMPOR4_34', sk = rela_meca, si = nb_vari_meca)
+            endif
+            do ivari = 1, nb_vari_meca
+                vari_name = zk16(j_vari_name-1+ivari+jdecal)
+                call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
+            enddo
+            jdecal = jdecal + nb_vari_meca
 !
             if (rela_thmc .ne. 'VIDE') then
                 call utmess('I', 'COMPOR4_31', sk = rela_thmc, si = nb_vari_thmc)
             endif
-            jdecal = 0
             do ivari = 1, nb_vari_thmc
                 vari_name = zk16(j_vari_name-1+ivari+jdecal)
                 call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
             enddo
+            jdecal = jdecal + nb_vari_thmc
 !
             if (rela_ther .ne. 'VIDE') then
                 call utmess('I', 'COMPOR4_32', sk = rela_ther, si = nb_vari_ther)
             endif
-                jdecal = jdecal + nb_vari_thmc
-                do ivari = 1, nb_vari_ther
-                    vari_name = zk16(j_vari_name-1+ivari+jdecal)
-                    call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
-                enddo
+            do ivari = 1, nb_vari_ther
+                vari_name = zk16(j_vari_name-1+ivari+jdecal)
+                call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
+            enddo
+            jdecal = jdecal + nb_vari_ther
 !
             if (rela_hydr .ne. 'VIDE') then
                 call utmess('I', 'COMPOR4_33', sk = rela_hydr, si = nb_vari_hydr)
             endif
-                jdecal = jdecal + nb_vari_ther
-                do ivari = 1, nb_vari_hydr
-                    vari_name = zk16(j_vari_name-1+ivari+jdecal)
-                    call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
-                enddo
-
-!
-            if (rela_meca .ne. 'VIDE') then
-                call utmess('I', 'COMPOR4_34', sk = rela_meca, si = nb_vari_meca)
-            endif
-                jdecal = jdecal + nb_vari_hydr
-                do ivari = 1, nb_vari_meca
-                    vari_name = zk16(j_vari_name-1+ivari+jdecal)
-                    call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
-                enddo
+            do ivari = 1, nb_vari_hydr
+                vari_name = zk16(j_vari_name-1+ivari+jdecal)
+                call utmess('I', 'COMPOR4_20', sk = vari_name, si = ivari+jdecal)
+            enddo
+            jdecal = jdecal + nb_vari_hydr
 !
         elseif (l_kit_ddi) then
 !
