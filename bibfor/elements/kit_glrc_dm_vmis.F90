@@ -55,7 +55,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu
-    real(kind=8) :: crbid(1), inbid, sigpp(6), rac2, emda(6)
+    real(kind=8) :: crbid(11), inbid, sigpp(6), rac2, emda(6)
     real(kind=8) :: empl(6), depzz, eps2d(6), deps2d(6), d22, d21eps
     real(kind=8) :: tan3d(6, 6)
     real(kind=8) :: sig2dm(6), sig2dp(6), scm(4), sigpeq, critcp, signul, prec
@@ -209,7 +209,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
             call r8inir(6, 0.d0, sig2dp, 1)
             if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
                 call nmcine('RIGI', 1, 1, 3, imate,&
-                            compor, crbid, inbid, inbid, eps2d,&
+                            compor, crbid(1:10), inbid, inbid, eps2d,&
                             deps2d, sig2dm, vim(8), 'FULL_MECA       ', sig2dp,&
                             vip(8), tan3d, iret)
 !

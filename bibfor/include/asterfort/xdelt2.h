@@ -30,6 +30,6 @@ interface
         real(kind=8) :: tabls(*)
         integer :: ipp
         integer :: ip
-        real(kind=8) :: delta(ndim)
+        real(kind=8) :: delta(ndime)
     end subroutine xdelt2
 end interface 

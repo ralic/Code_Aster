@@ -22,7 +22,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 !
 #include "asterfort/rcvala.h"
     integer :: imate
-    real(kind=8) :: xhi, kxhi(1), dkxidx
+    real(kind=8) :: xhi, kxhi, dkxidx
 !
 ! ----------------------------------------------------------------------
 !     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
@@ -42,7 +42,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 ! INFO      KXHI = MATE(9,2) = K_D          (ENDOMMAGEMENT)
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: vpar(2), tp
+    real(kind=8) :: vpar(2), tp, wrk(1)
     real(kind=8) :: zero
     parameter    (zero = 0.d0)
     integer :: ok(1)
@@ -53,7 +53,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 ! ----------------------------------------------------------------------
 !-- 1. INITIALISATION
 !--------------------
-    kxhi(1) = zero
+    wrk(1) = zero
     dkxidx = zero
 !
 !-- 2. CALCUL DE K_D(XHI,TEMP) A PARTIR DU MATERIAU CODE
@@ -65,5 +65,6 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
     vpar(2) = xhi
 !
     call rcvala(imate, ' ', 'VENDOCHAB', 2, nompar,&
-                vpar, 1, nom, kxhi, ok,2)
+                vpar, 1, nom, wrk, ok,2)
+    kxhi = wrk(1)
 end subroutine

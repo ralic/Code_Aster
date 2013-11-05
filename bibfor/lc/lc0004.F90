@@ -79,7 +79,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate,&
 !
 !
     call nmchab(fami, kpg, ksp, ndim, typmod,&
-                imate, compor, crit, instam, instap,&
+                imate, compor(1:3), crit, instam, instap,&
                 deps, sigm, vim, option, sigp,&
                 vip, dsidep, codret)
 end subroutine

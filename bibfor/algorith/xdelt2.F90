@@ -14,7 +14,7 @@ subroutine xdelt2(elp, nno, n, ndime, ksi,&
 #   include "asterfort/provec.h"
 #   include "asterfort/vecini.h"
     integer :: ndime, ndim, nno, ipp, ip, n(3)
-    real(kind=8) :: ksi(ndime), delta(ndime), ptint(*), tabco(*), tabls(*)
+    real(kind=8) :: ksi(ndim), delta(ndime), ptint(*), tabco(*), tabls(*)
     character(len=8) :: elp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

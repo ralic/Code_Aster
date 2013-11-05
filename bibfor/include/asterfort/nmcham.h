@@ -23,7 +23,7 @@ interface
         integer :: kpg
         integer :: ksp
         integer :: imate
-        character(len=16) :: compor(*)
+        character(len=16) :: compor(3)
         real(kind=8) :: matel(4)
         real(kind=8) :: mat(18)
         integer :: nbvar
