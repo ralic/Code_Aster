@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calc_norm_elga(ligrel, chgeom, chgaus)
+    subroutine calc_coor_elga(ligrel, chgeom, chgaus)
         character(len=19), intent(in) :: ligrel
         character(len=19), intent(in) :: chgeom
         character(len=19), intent(in) :: chgaus
-    end subroutine calc_norm_elga
+    end subroutine calc_coor_elga
 end interface

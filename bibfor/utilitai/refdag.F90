@@ -11,6 +11,7 @@ subroutine refdag(resin)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: resin
@@ -40,7 +41,6 @@ subroutine refdag(resin)
     character(len=1) :: jvb
     character(len=8) :: restmp, k8bid
     character(len=16) :: refd, indi
-    character(len=32) :: jexnum
 !
     call jemarq()
 !

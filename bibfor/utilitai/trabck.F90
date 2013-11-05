@@ -25,24 +25,35 @@ subroutine trabck(cmess, iexit)
 !
 ! aslint: disable=W1304
 #include "asterf.h"
-#if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
+!
+#if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1 && !defined(IGNORE_DURING_ASLINT)
     use ifcore
-#endif
     implicit none
     character(len=*) :: cmess
     integer(kind=4) :: iexit
-#if HAVE_BACKTRACE != 1
+!
+    call tracebackqq(string=cmess, user_exit_code=iexit)
+!
+#elif HAVE_BACKTRACE == 1 && !defined(IGNORE_DURING_ASLINT)
+    implicit none
+    character(len=*) :: cmess
+    integer(kind=4) :: iexit
+!   Dummy argument if HAVE_TRACEBACKQQ is not defined
     integer :: dummy
-#endif
-!   Dummy argument si HAVE_TRACEBACKQQ n'est pas defini
-#if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
-    call TRACEBACKQQ(string=cmess, USER_EXIT_CODE=iexit)
-#elif HAVE_BACKTRACE == 1
-    call backtrace()
-#else
-!   ON NE PEUT PAS APPELER UTMESS (RECURSIVITE)
-    write(6,*) 'Traceback is not provided by the compiler'
     dummy = len(cmess) + iexit
+!
+    call backtrace()
+!
+#else
+    implicit none
+    character(len=*) :: cmess
+    integer(kind=4) :: iexit
+!   Dummy argument if HAVE_TRACEBACKQQ is not defined
+    integer :: dummy
+    dummy = len(cmess) + iexit
+!   do not call utmess (recursivity)
+    write(6,*) 'Traceback is not provided by the compiler'
+!
 #endif
 !
 end subroutine

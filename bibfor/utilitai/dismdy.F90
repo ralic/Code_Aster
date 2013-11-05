@@ -9,6 +9,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsvpar.h"
 ! ----------------------------------------------------------------------
@@ -49,7 +50,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
     character(len=4) :: accref(6), typref, indref
     character(len=8) :: resdyn, numcha, intf, k8bid
     character(len=24) :: numddl, cortre(6), questl, typcon, nomcha, nomgd
-    character(len=32) :: jexnum, repk
+    character(len=32) :: repk
 !
 !     --- TYPE DE REFERENCES QUE NOUS POUVONS RECUPERER [REF_XXXX_****]
     data  accref /  'RIGI'    ,   'MASS'    ,   'AMOR'    ,    'INTD'    ,    'INTS'    ,  'MESU' /

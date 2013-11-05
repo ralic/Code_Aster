@@ -5,6 +5,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
+#include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/codree.h"
@@ -85,7 +86,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     character(len=8) :: nomtyp, nomnoe
     character(len=24) :: nomobj, nomob2, coninv
     character(len=24) :: valk(2)
-    real(kind=8) :: dfse2(4), dfse3(9), armin, prec
+    real(kind=8) :: dfse2(4), dfse3(9), prec
     real(kind=8) :: dftr3(18), dftr6(72), dftr7(98)
     real(kind=8) :: dfqu4(32), dfqu8(128), dfqu9(162)
     real(kind=8) :: eksix, eksiy, eksiz, eetax, eetay, eetaz

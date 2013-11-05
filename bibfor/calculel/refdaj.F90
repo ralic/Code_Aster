@@ -14,6 +14,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/refdag.h"
 #include "asterfort/wkvect.h"
 !     ------------------------------------------------------------------
@@ -100,7 +101,6 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     character(len=8) :: k8bid, resu2
     character(len=24) :: typres, accres(10), accref(5), obindi, corefd, typref, kbid
     character(len=24) :: numer1, bl24, conref(3)
-    character(len=32) :: jexnum
 !
     data  accres /'ACOU_HARMO','DYNA_HARMO','DYNA_TRANS' ,'HARM_GENE','MODE_ACOU',&
                   'MODE_FLAMB','MODE_MECA' ,'MODE_MECA_C','TRAN_GENE','EVOL_NOLI'/
