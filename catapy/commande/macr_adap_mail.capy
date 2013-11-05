@@ -194,9 +194,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 4.1.8. Initialisation de l'adaptation : raffinement ou déraffinement
 #
-    ADAP_INIT = SIMP(statut='f',typ='TXM',defaut="GARDER",into=("GARDER", "RAFFINER", "DERAFFINER"),
-                        fr="Initialisation de l'adaptation dans les régions sans indicateur : garder, raffiner ou déraffiner",
-                        ang="Initialization of the adaptation in the areas without indicator: keep, refine or unrefine" ),
+    ADAP_INIT = SIMP(statut='f',typ='TXM',defaut="GARDER",into=("GARDER", "DERAFFINER"),
+                        fr="Initialisation de l'adaptation dans les régions sans indicateur : garder ou déraffiner",
+                        ang="Initialization of the adaptation in the areas without indicator: keep or unrefine" ),
 #
   ) ,
 #
@@ -266,9 +266,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 6.2. Usage de la zone
 #
-      USAGE = SIMP(statut='f',typ='TXM',into=("RAFFINEMENT", "DERAFFINEMENT"),defaut="RAFFINEMENT",
-                   fr="Zone pour raffiner ou déraffiner",
-                   ang="Zone: refinement or unrefinement" ),
+      USAGE = SIMP(statut='f',typ='TXM',into=("RAFFINEMENT","DERAFFINEMENT"),defaut="RAFFINEMENT",
+                   fr="Zone pour raffiner",
+                   ang="Zone: refinement" ),
 #
 # Ne sachant pas exploiter les blocs, je mets des regles
 #
@@ -477,7 +477,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 9.2.2. Type de la frontière
 #
-    TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE",),
+    TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE"),
                 fr="Type de la frontière analytique",
                 ang="Type of the analytic boundary" ),
 #
@@ -635,15 +635,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 11.1. Changement de degre
 #
-      DEGRE         = SIMP(statut='o',typ='TXM',defaut="NON",into=("OUI", "NON"),
+      DEGRE         = SIMP(statut='o',typ='TXM',into=("OUI",),
                           fr="Changement de degré du maillage",
                           ang="Modification of the degree of the mesh" ),
-#
-# 11.2. Création des joints
-#
-      #JOINT         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
-                          #fr="Creations des joints",
-                          #ang="Creation of the junctions" ),
 #
   ) ,
 #
@@ -667,43 +661,43 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 13.1. Nombre de noeuds et mailles
 #
-    NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON"),
+    NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                           fr="Nombre de noeuds et de mailles du maillage",
                           ang="Number of nodes and meshes in the mesh" ),
 #
 # 13.2. Determination de la qualité des mailles du maillage
 #
-    QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
+    QUALITE        = SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="Qualité du maillage",
                           ang="Quality of the mesh" ),
 #
 # 13.3. Connexite du maillage
 #
-    CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
+    CONNEXITE      = SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="Connexité du maillage.",
                           ang="Connexity of the mesh." ),
 #
 # 13.4. Taille des sous-domaines du maillage
 #
-    TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
+    TAILLE         = SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="Tailles des sous-domaines du maillage.",
                           ang="Sizes of mesh sub-domains." ),
 #
 # 13.5. Controle de la non-interpenetration des mailles
 #
-    INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
+    INTERPENETRATION=SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="Controle de la non interpénétration des mailles.",
                           ang="Overlapping checking." ),
 #
 # 13.6. Propriétés du maillage de calcul
 #
-    PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
+    PROP_CALCUL    = SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="Propriétés du maillage de calcul.",
                           ang="Properties of the calculation mesh." ),
 #
 # 13.7. Determination des diametres des mailles du maillage
 #
-    DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON"),
+    DIAMETRE       = SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="Diamètre du maillage",
                           ang="Diameters of the mesh" ),
 #
@@ -723,9 +717,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 14.2. La categorie du champ supplementaire
 #
-    CHAM_CAT = SIMP(statut='o',typ='TXM',into=("NIVEAU", "QUALITE", "DIAMETRE"),
-                    fr="Categorie du champ supplementaire : niveau, qualite ou diametre",
-                    ang="Category of the additional field: level, quality or diameter" ),
+    CHAM_CAT = SIMP(statut='o',typ='TXM',into=("NIVEAU", "DIAMETRE"),
+                    fr="Categorie du champ supplementaire : niveau ou diametre",
+                    ang="Category of the additional field: level or diameter" ),
 #
   ) ,
 #

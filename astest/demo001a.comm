@@ -105,7 +105,6 @@ for k in range(3):
                 MAILLAGE_FRONTIERE = MAILFRON,
                 QUALITE='OUI',
                 TAILLE='OUI',
-                INTERPENETRATION='NON',
               )
 
    DEFI_FICHIER(UNITE=51)

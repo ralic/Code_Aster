@@ -51,43 +51,43 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 # 4. Les options ; par defaut, on controle tout, sauf l'interpénétration
 # 4.1. Nombre de noeuds et mailles
 #
-  NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+  NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                         fr="Nombre de noeuds et de mailles du maillage",
                         ang="Number of nodes and meshes in the mesh" ),
 #
 # 4.2. Determination de la qualite des mailles du maillage
 #
-  QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+  QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                         fr="Qualité du maillage",
                         ang="Quality of the mesh" ),
 #
 # 4.3. Connexite du maillage
 #
-  CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+  CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                         fr="Connexité du maillage.",
                         ang="Connexity of the mesh." ),
 #
 # 4.4. Taille des sous-domaines du maillage
 #
-  TAILLE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+  TAILLE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                         fr="Tailles des sous-domaines du maillage.",
                         ang="Sizes of mesh sub-domains." ),
 #
 # 4.5. Controle de la non-interpénétration des mailles
 #
-  INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+  INTERPENETRATION=SIMP(statut='f',typ='TXM',into=("OUI",),
                         fr="Controle de la non interpénétration des mailles.",
                         ang="Overlapping checking." ),
 #
 # 4.6. Propriétés du maillage de calcul
 #
-  PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+  PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                         fr="Propriétés du maillage de calcul.",
                         ang="Properties of the calculation mesh." ),
 #
 # 4.7. Determination des diametres des mailles du maillage
 #
-  DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+  DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
                         fr="Diamètre du maillage",
                         ang="Diameters of the mesh" ),
 #
