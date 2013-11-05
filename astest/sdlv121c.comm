@@ -1,0 +1,442 @@
+# TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# CAS_TEST__: SDLV121C
+#
+# PROPAGATION, REFLEXION ET ABSORPTION D'UNE ONDE PLANE DANS UN MASSIF
+# ELASTIQUE MODELISE SOUS LA FORME D'UNE COLONNE 1D.
+# CAS 3D
+#=======================================================================
+import numpy as N
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
+                       _F( GROUP_MA = 'FACE1'),
+                       _F( GROUP_MA = 'FACE2'),
+                       _F( GROUP_MA = 'FACE3'),
+                       _F( GROUP_MA = 'FACE4'),
+                       _F( GROUP_MA = 'FACE5'),
+                       _F( GROUP_MA = 'FACE6'),
+                       _F( GROUP_MA = 'FACE7'),
+                       _F( GROUP_MA = 'FACE8'),
+                       _F( GROUP_MA = 'FACE9'),
+                       _F( GROUP_MA = 'ABSO'),
+                       _F( GROUP_MA = 'LIBR'))
+                     )
+
+MAT1=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48)
+                    )
+
+INCLUDE(   UNITE=11,   INFO=1 )
+
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
+                         _F(  GROUP_MA = 'VOLU',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D'),
+                         _F(  GROUP_MA = 'ABSO',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_ABSO'))
+                        )
+
+CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,AFFE=(
+                   _F(  GROUP_MA = 'VOLU',
+                          MATER = MAT1),
+                   _F(  GROUP_MA = 'ABSO',
+                          MATER = MAT1))
+                           )
+
+LIAISON=AFFE_CHAR_MECA(
+               MODELE=MODELE,LIAISON_UNIF=(
+              _F( GROUP_NO = 'FACE1', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE1', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE1', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE2', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE2', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE2', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE3', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE3', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE3', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE4', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE4', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE4', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE5', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE5', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE5', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE6', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE6', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE6', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE7', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE7', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE7', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE8', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE8', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE8', DDL = 'DZ'),
+              _F( GROUP_NO = 'FACE9', DDL = 'DX'),
+              _F( GROUP_NO = 'FACE9', DDL = 'DY'),
+              _F( GROUP_NO = 'FACE9', DDL = 'DZ'),
+              _F( GROUP_NO = 'ABSO', DDL = 'DX'),
+              _F( GROUP_NO = 'ABSO', DDL = 'DY'),
+              _F( GROUP_NO = 'ABSO', DDL = 'DZ'),
+              _F( GROUP_NO = 'LIBR', DDL = 'DX'),
+              _F( GROUP_NO = 'LIBR', DDL = 'DY'),
+              _F( GROUP_NO = 'LIBR', DDL = 'DZ'))
+                           )
+
+ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
+
+                ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,), TYPE_ONDE = 'SV',
+                 FONC_SIGNAL = FONCT,GROUP_MA='ABSO'))
+
+RIGI_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=LIAISON
+                            )
+
+MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=LIAISON
+                            )
+
+AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='AMOR_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=LIAISON,
+                              RIGI_MECA=RIGI_ELE,
+                              MASS_MECA=MASS_ELE,
+                            )
+
+VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
+                             CHAM_MATER=CHAMPMAT,
+                             CHARGE=LIAISON
+                           )
+
+
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
+
+
+#------------------------------------------------------------------------------------
+# Pour tester la prise en compte de ONDE_PLANE dans CALC_VECT_ELEM (fiche 19469):
+#--------------------------------------------------------------------------------
+VECT_EL1=CALC_VECT_ELEM(INST=5.E-3, OPTION='CHAR_MECA', CHAM_MATER=CHAMPMAT, CHARGE=ONDE)
+VECA1=ASSE_VECTEUR(VECT_ELEM=VECT_EL1, NUME_DDL=NUMEDDL)
+TEST_RESU(CHAM_NO=_F(NOEUD='N41',
+                     NOM_CMP='DX',
+                     CHAM_GD=VECA1,
+                     VALE_CALC=-7.6231708412726098,),
+          )
+
+#------------------------------------------------------------------------------------
+
+RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
+                            NUME_DDL=NUMEDDL
+                          )
+
+AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
+                            NUME_DDL=NUMEDDL
+                          )
+
+MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
+                         NUME_DDL=NUMEDDL
+                       )
+
+VECAS=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
+                         NUME_DDL=NUMEDDL
+                       )
+
+TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.8, NOMBRE = 1000))
+
+INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 1001, PAS = 1))
+
+DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                        MODELE=MODELE,
+                        MATR_MASS=MASSE,
+                        MATR_RIGI=RIGIDITE,
+                        MATR_AMOR=AMORT,
+                        EXCIT=(
+                          _F(  VECT_ASSE = VECAS,
+                               COEF_MULT = 1.),
+                          _F(  CHARGE = ONDE)),
+###CDURAND###           ETAT_INIT=_F( INST_INIT = 0.),
+                        INCREMENT=_F( LIST_INST = TEMPLI),
+#                        ARCHIVAGE=_F( LIST_ARCH = INTLI),
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                        )
+
+DXN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
+                         NOM_CHAM='DEPL',
+                         NOM_CMP='DX'
+                       )
+
+DYN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
+                         NOM_CHAM='DEPL',
+                         NOM_CMP='DY'
+                       )
+
+DZN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
+                         NOM_CHAM='DEPL',
+                         NOM_CMP='DZ'
+                       )
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         VALE_REFE=0.0,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.2656,
+                         FONCTION=DYN22,),
+                      _F(VALE_CALC=1.003477E-3,
+                         VALE_REFE=1.E-3,
+                         PRECISION=4.0E-3,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.2656,
+                         FONCTION=DXN22,),
+                      _F(VALE_CALC=9.946329E-4,
+                         VALE_REFE=1.E-3,
+                         PRECISION=6.0E-3,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.4384,
+                         FONCTION=DXN22,),
+                      _F(VALE_CALC=-2.87E-06,
+                         VALE_REFE=0.0,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.8,
+                         FONCTION=DXN22,),
+                      _F(VALE_CALC=7.10E-18,
+                         VALE_REFE=0.0,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.2656,
+                         FONCTION=DZN22,),
+                      ),
+              )
+
+TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.72, NOMBRE = 450))
+
+TEMLI2=DEFI_LIST_REEL(DEBUT=0.0016,
+        INTERVALLE=_F( JUSQU_A = 0.72, NOMBRE = 449))
+
+INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 451, PAS = 1))
+
+DYNB=DYNA_NON_LINE(     MODELE=MODELE,
+                        CHAM_MATER=CHAMPMAT,
+                        EXCIT=(
+                          _F(  CHARGE = LIAISON),
+                          _F(  CHARGE = ONDE)),
+#                       ETAT_INIT=_F( INST_INIT = 0.),
+                        COMPORTEMENT=_F( RELATION = 'ELAS',
+                                      TOUT = 'OUI'),
+                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8),
+                        SOLVEUR=_F(  METHODE = 'LDLT',
+                                     STOP_SINGULIER = 'NON'),
+                        NEWTON=_F(  MATRICE = 'ELASTIQUE',
+                                    REAC_INCR = 0,
+                                    REAC_ITER = 0),
+                        INCREMENT=_F( LIST_INST = TEMLI),
+###CDURAND              ARCHIVAGE=_F( LIST_ARCH = INLI),
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
+                        )
+
+DXNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
+                         RESULTAT=DYNB,   NOEUD='N22',
+                         NOM_CHAM='DEPL',
+                         NOM_CMP='DX'
+                       )
+
+DYNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
+                         RESULTAT=DYNB,   NOEUD='N22',
+                         NOM_CHAM='DEPL',
+                         NOM_CMP='DY'
+                       )
+
+DZNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
+                         RESULTAT=DYNB,   NOEUD='N22',
+                         NOM_CHAM='DEPL',
+                         NOM_CMP='DZ'
+                       )
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.2672,
+                         FONCTION=DYNB22,),
+                      _F(VALE_CALC=9.989051E-04,
+                         VALE_REFE=1.003477E-3,
+                         REFERENCE='AUTRE_ASTER',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.2672,
+                         PRECISION=7.0E-3,
+                         FONCTION=DXNB22,),
+                      _F(VALE_CALC=9.914943E-04,
+                         VALE_REFE=9.946329E-4,
+                         REFERENCE='AUTRE_ASTER',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.44,
+                         PRECISION=5.0E-3,
+                         FONCTION=DXNB22,),
+                      _F(VALE_CALC=4.61E-06,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.72,
+                         FONCTION=DXNB22,),
+                      _F(VALE_CALC=1.63E-19,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=0.2672,
+                         FONCTION=DZNB22,),
+                      ),
+              )
+
+FIN();
+#
+#     POST-TRAITEMENT
+#
+
+
+# def Defi_Xmcourbe(X,Y,courbe=None,legend='X',color=0,mark=0,):
+#
+#   def_co={'ABSCISSE': X}
+#   def_co['ORDONNEE'] = Y
+#   def_co['LEGENDE' ] = legend
+#   def_co['COULEUR' ] = color
+#   def_co['MARQUEUR'] = mark
+#
+#   try:
+#     courbe.append(def_co);
+#   except:
+#     courbe=[def_co,];
+#
+#   return courbe;
+# # ---
+#
+#
+#
+# Noeud = ['N%d' %(n) for n in range(44,3,-4)];
+#
+# NB_Noe = len(Noeud);
+#
+# co_acce,co_vite,co_depl,=None,None,None,;
+#
+# Comp = 'DY';
+#
+# RESU =(DYNA,DYNB);
+#
+# for r in RESU:
+#
+#  for i in range(NB_Noe):
+#
+#    cte_acce = i*5.e-1;
+#    cte_vite = i*1.5e-2;
+#    cte_depl = i*5.e-4;
+#
+#    DEPL=RECU_FONCTION(RESULTAT=r,
+#                       TITRE='ACCE',
+#                       NOM_CHAM='DEPL',
+#                       NOM_CMP=Comp,
+#                       NOEUD=Noeud[i],
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#
+#    VITE=RECU_FONCTION(RESULTAT=r,
+#                       TITRE='VITE',
+#                       NOM_CHAM='VITE',
+#                       NOM_CMP=Comp,
+#                       NOEUD=Noeud[i],
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#
+#    ACCE=RECU_FONCTION(RESULTAT=r,
+#                       TITRE='ACCE',
+#                       NOM_CHAM='ACCE',
+#                       NOM_CMP=Comp,
+#                       NOEUD=Noeud[i],
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#
+#
+#    # ---- Acceleration
+#    #      ------------------------
+#    time, acce = ACCE.Valeurs();
+#
+#    acce =N.array(acce);
+#
+#    acce +=cte_acce;
+#
+#    co_acce =Defi_Xmcourbe(courbe=co_acce,
+#         X=tuple(time),
+#         Y=tuple(acce),
+#         legend=Noeud[i],
+#         color=0,);
+#
+#    # ---- Vitesse
+#    #      ------------------------
+#
+#    time, vite = VITE.Valeurs();
+#
+#    vite =N.array(vite);
+#
+#    vite +=cte_vite;
+#
+#    co_vite =Defi_Xmcourbe(courbe=co_vite,
+#         X=tuple(time),
+#         Y=tuple(vite),
+#         legend=Noeud[i],
+#         color=0,);
+#
+#    # ---- Deplacement
+#    #      ------------------------
+#
+#    time, depl = DEPL.Valeurs();
+#
+#    depl =N.array(depl);
+#
+#    depl +=cte_depl;
+#
+#    co_depl =Defi_Xmcourbe(courbe=co_depl,
+#         X=tuple(time),
+#         Y=tuple(depl),
+#         legend=Noeud[i],
+#         color=0,);
+#
+#    DETRUIRE(CONCEPT=_F(NOM=(ACCE,DEPL,VITE,),),);
+#
+# Courbes = [co_acce,co_depl,co_vite,];
+# Nom_Fichier= ['co_acce.agr','co_depl.agr','co_vite.agr',];
+#
+# unit=38
+# for c in range(len(Nom_Fichier)):
+#
+#   DEFI_FICHIER(ACTION='ASSOCIER',
+#                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
+#                UNITE=unit,);
+#
+#   IMPR_FONCTION(FORMAT='XMGRACE',
+#               UNITE=unit,
+#               COURBE=Courbes[c]);
+#
+#   DEFI_FICHIER(ACTION='LIBERER',
+#                UNITE=unit,);
+#FIN();
+#
+#
