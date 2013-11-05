@@ -1,4 +1,4 @@
-subroutine nmchai(tychap, tyvarz, vali)
+subroutine nmchai(tychap, tyvarz, vali, tychap_out)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,9 +21,10 @@ subroutine nmchai(tychap, tyvarz, vali)
     implicit none
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
-    character(len=6) :: tychap
-    character(len=*) :: tyvarz
+    character(len=6), intent(in) :: tychap
+    character(len=*), intent(in) :: tyvarz
     integer :: vali
+    character(len=6), optional, intent(out) :: tychap_out
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,8 +93,18 @@ subroutine nmchai(tychap, tyvarz, vali)
 !
 ! ----------------------------------------------------------------------
 !
-    vali = -1
     tyvari = tyvarz
+    if (present(tychap_out)) then
+        ASSERT(tychap.eq.'VEASSE')
+        ASSERT(vali.ge.1)
+        ASSERT(vali.le.zveass)
+        tychap_out = lveass(vali)(1:6)
+        ASSERT(tychap_out.eq.tyvari(1:6))
+        goto 99
+    endif
+
+    vali = -1
+
 !
 ! ---
 !
@@ -136,6 +147,8 @@ subroutine nmchai(tychap, tyvarz, vali)
     else
         ASSERT(.false.)
     endif
+!
+ 99 continue
 !
     ASSERT(vali.gt.0)
 !

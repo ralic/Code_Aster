@@ -86,23 +86,61 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nveass, long
-    parameter    (nveass=32)
+    integer :: zveass
+    parameter    (zveass=32)
+    integer :: iret(zveass)
+!
     character(len=19) :: depmoi, depplu, vitmoi, vitplu, masse, amort, rigid
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
     character(len=19) :: famplu, flimoi, fliplu, fnoplu
     character(len=19) :: lisbid
     character(len=8) :: k8bid
+    character(len=6) :: tychap_out
     integer :: idepmo, ideppl, ivitmo, ivitpl
-    integer :: neq, i, j, iveass
+    integer :: neq, i, j, iveass, long
     integer :: ifexmo, ifammo, iflimo, ifnomo
     integer :: ifexpl, ifampl, iflipl, ifnopl
-    integer :: ifexte, ifamor, ifliai, ifcine, iret(nveass), ifnoda
+    integer :: ifexte, ifamor, ifliai, ifcine, ifnoda
     logical :: ldyna, lamor, lexpl, reassm
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!
+    call nmchai('VEASSE', 'CNFINT', 1, tychap_out)
+    call nmchai('VEASSE', 'CNDIRI', 2, tychap_out)
+    call nmchai('VEASSE', 'CNBUDI', 3, tychap_out)
+    call nmchai('VEASSE', 'CNFNOD', 4, tychap_out)
+    call nmchai('VEASSE', 'CNDIDO', 5, tychap_out)
+    call nmchai('VEASSE', 'CNDIPI', 6, tychap_out)
+    call nmchai('VEASSE', 'CNFEDO', 7, tychap_out)
+    call nmchai('VEASSE', 'CNFEPI', 8, tychap_out)
+    call nmchai('VEASSE', 'CNLAPL', 9, tychap_out)
+    call nmchai('VEASSE', 'CNONDP', 10, tychap_out)
+    call nmchai('VEASSE', 'CNFSDO', 11, tychap_out)
+    call nmchai('VEASSE', 'CNIMPP', 12, tychap_out)
+    call nmchai('VEASSE', '      ', 13, tychap_out)
+    call nmchai('VEASSE', 'CNDIDI', 14, tychap_out)
+    call nmchai('VEASSE', 'CNSSTF', 15, tychap_out)
+    call nmchai('VEASSE', 'CNELTC', 16, tychap_out)
+    call nmchai('VEASSE', 'CNELTF', 17, tychap_out)
+    call nmchai('VEASSE', 'CNREFE', 18, tychap_out)
+    call nmchai('VEASSE', 'CNVCF1', 19, tychap_out)
+    call nmchai('VEASSE', 'CNVCF0', 20, tychap_out)
+    call nmchai('VEASSE', 'CNCINE', 21, tychap_out)
+    call nmchai('VEASSE', 'CNSSTR', 22, tychap_out)
+    call nmchai('VEASSE', 'CNCTDF', 23, tychap_out)
+    call nmchai('VEASSE', 'CNVCPR', 24, tychap_out)
+    call nmchai('VEASSE', 'CNDYNA', 25, tychap_out)
+    call nmchai('VEASSE', 'CNMODP', 26, tychap_out)
+    call nmchai('VEASSE', 'CNMODC', 27, tychap_out)
+    call nmchai('VEASSE', 'CNCTDC', 28, tychap_out)
+    call nmchai('VEASSE', 'CNUNIL', 29, tychap_out)
+    call nmchai('VEASSE', 'CNFEXT', 30, tychap_out)
+    call nmchai('VEASSE', 'CNIMPC', 31, tychap_out)
+    call nmchai('VEASSE', 'CNVISS', 32, tychap_out)
+    call nmchai('VEASSE', 'LONMAX', long)
+    ASSERT(long.eq.zveass)
 !
     k8bid=' '
     reassm=.false.
@@ -135,12 +173,11 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     call nmchex(measse, 'MEASSE', 'MEMASS', masse)
     call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
 !
-    call nmchai('VEASSE', 'LONMAX', long)
-    ASSERT(long.eq.nveass)
-    do 10 i = 1, nveass
+
+    do i = 1, zveass
         iret(i)=0
         call jeexin(veasse(i)//'.VALE', iret(i))
-10  end do
+    end do
 !
     call jeveuo(fexmoi//'.VALE', 'L', ifexmo)
     call jeveuo(fammoi//'.VALE', 'L', ifammo)
@@ -151,12 +188,12 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     call jeveuo(fliplu//'.VALE', 'E', iflipl)
     call jeveuo(fnoplu//'.VALE', 'E', ifnopl)
 !
-    do 20 i = 1, neq
+    do i = 1, neq
         zr(ifexpl-1+i)=0.d0
         zr(ifampl-1+i)=0.d0
         zr(iflipl-1+i)=0.d0
         zr(ifnopl-1+i)=0.d0
-20  end do
+    end do
 !
     call wkvect('FEXTE', 'V V R', 2*neq, ifexte)
     call wkvect('FAMOR', 'V V R', 2*neq, ifamor)
@@ -166,7 +203,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 !
 ! RECUPERATION DES DIFFERENTES CONTRIBUTIONS AUX VECTEURS DE FORCE
 !
-    do 30 i = 1, nveass
+    do i = 1, zveass
         if (iret(i) .ne. 0) then
             call jeveuo(veasse(i)//'.VALE', 'L', iveass)
 ! --------------------------------------------------------------------
@@ -176,43 +213,43 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! 15 - CNSSTF : FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 ! --------------------------------------------------------------------
             if ((i.eq.7 ) .or. (i.eq.9 ) .or. (i.eq.11) .or. (i.eq.15)) then
-                do 40 j = 1, neq
+                do j = 1, neq
                     zr(ifexpl-1+j)=zr(ifexpl-1+j)+zr(iveass-1+j)
-40              continue
+                end do
 ! --------------------------------------------------------------------
 ! 20 - CNVCF0 : FORCE DE REFERENCE LIEE AUX VAR. COMMANDES EN T+
 ! --------------------------------------------------------------------
             else if (i.eq.20) then
-                do 50 j = 1, neq
+                do j = 1, neq
                     zr(ifexpl-1+j)=zr(ifexpl-1+j)+zr(iveass-1+j)
-50              continue
+                end do
 ! ON AJOUTE LES CONTRAINTES ISSUES DES VARIABLES DE COMMANDE AUX
 ! FORCES INTERNES EGALEMENT
-                do 51 j = 1, neq
+                do j = 1, neq
                     zr(ifnopl-1+j)=zr(ifnopl-1+j)+zr(iveass-1+j)
-51              continue
+                end do
 ! --------------------------------------------------------------------
 ! 8  - CNFEPI : FORCES PILOTEES PARAMETRE ETA A PRENDRE EN COMPTE
 ! --------------------------------------------------------------------
             else if (i.eq.8) then
-                do 60 j = 1, neq
+                do j = 1, neq
                     zr(ifexpl-1+j)=zr(ifexpl-1+j)+eta*zr(iveass-1+j)
-60              continue
+                end do
 ! --------------------------------------------------------------------
 ! 2  - CNDIRI : BtLAMBDA                : IL FAUT PRENDRE L OPPOSE
 ! 10 - CNONDP : CHARGEMENT ONDES PLANES : IL FAUT PRENDRE L OPPOSE
 ! --------------------------------------------------------------------
             else if ((i.eq.2).or.(i.eq.10)) then
-                do 70 j = 1, neq
+                do j = 1, neq
                     zr(ifexpl-1+j)=zr(ifexpl-1+j)-zr(iveass-1+j)
-70              continue
+                end do
 ! --------------------------------------------------------------------
 ! 27 - CNMODC : FORCE D AMORTISSEMENT MODAL
 ! --------------------------------------------------------------------
             else if (i.eq.27) then
-                do 80 j = 1, neq
+                do j = 1, neq
                     zr(ifampl-1+j)=zr(ifampl-1+j)+zr(iveass-1+j)
-80              continue
+                end do
 ! --------------------------------------------------------------------
 ! 16 - CNELTC : FORCES ELEMENTS DE CONTACT (CONTINU + XFEM)
 ! 17 - CNELTF : FORCES ELEMENTS DE FROTTEMENT (CONTINU + XFEM)
@@ -223,42 +260,42 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! --------------------------------------------------------------------
                 else if ((i.eq.16).or.(i.eq.17).or.(i.eq.31).or. (i.eq.23)&
             .or.(i.eq.28).or.(i.eq.29)) then
-                do 90 j = 1, neq
+                do j = 1, neq
                     zr(iflipl-1+j)=zr(iflipl-1+j)+zr(iveass-1+j)
-90              continue
+                end do
                 if ((i.eq.16) .or. (i.eq.17)) then
 ! ON ENLEVE LA CONTRIBUTION DU CONTACT (CONTINU + XFEM) DANS
 ! LES FORCES INTERNES (VOIR ROUTINE NMAINT)
-                    do 91 j = 1, neq
+                    do j = 1, neq
                         zr(ifnopl-1+j)=zr(ifnopl-1+j)-zr(iveass-1+j)
-91                  continue
+                    end do
                 endif
 ! CNDIRI CONTIENT BTLAMBDA PLUS CONTRIBUTION CNCTDF DU CONTACT.
 ! ON SOUHAITE AJOUTER -BT.LAMBDA A FEXTE. ON AJOUTE DONC -CNDIRI,
 ! MAIS IL FAUT ALORS LUI RETRANCHER -CNCTDF.
                 if (i .eq. 23) then
-                    do 92 j = 1, neq
+                    do j = 1, neq
                         zr(ifexpl-1+j)=zr(ifexpl-1+j)+zr(iveass-1+j)
-92                  continue
+                    end do
                 endif
 ! --------------------------------------------------------------------
 ! 33 - CNVISS : CHARGEMENT VEC_ISS (FORCE_SOL)
 ! --------------------------------------------------------------------
-            else if (i.eq.33) then
+            else if (i.eq.32) then
 ! CHARGEMENT FORCE_SOL CNVISS. SI ON COMPTE SA CONTRIBUTION EN TANT
 ! QUE FORCE DISSIPATIVE DE LIAISON, ON DOIT PRENDRE L OPPOSE.
-                do 100 j = 1, neq
+                do j = 1, neq
                     zr(iflipl-1+j)=zr(iflipl-1+j)-zr(iveass-1+j)
-100              continue
+                end do
 ! --------------------------------------------------------------------
 !  1  - CNFINT : FORCES INTERNES
 ! --------------------------------------------------------------------
             else if (i.eq.1) then
 ! CONTIENT UNE CONTRIBUTION DU CONTACT QU ON ENLEVE PAR AILLEURS.
 ! CONTIENT LA CONTRIBUTION DES MACRO ELEMENTS.
-                do 110 j = 1, neq
+                do j = 1, neq
                     zr(ifnopl-1+j)=zr(ifnopl-1+j)+zr(iveass-1+j)
-110              continue
+                end do
 ! --------------------------------------------------------------------
 ! 21 - CNCINE : INCREMENTS DE DEPLACEMENT IMPOSES (AFFE_CHAR_CINE)
 ! --------------------------------------------------------------------
@@ -266,12 +303,12 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! ON DOIT RECONSTRUIRE LA MATRICE DE MASSE CAR ELLE A ETE MODIFIEE
 ! POUR SUPPRIMER DES DEGRES DE LIBERTE EN RAISON DE AFFE_CHAR_CINE.
                 reassm=.true.
-                do 120 j = 1, neq
+                do j = 1, neq
                     zr(ifcine-1+j)=zr(ifcine-1+j)+zr(iveass-1+j)
-120              continue
+                end do
             endif
         endif
-30  end do
+    end do
 !
     if (reassm) then
 ! --- REASSEMBLAGE DE LA MATRICE DE MASSE.
@@ -293,7 +330,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 !
 ! --- PREPARATION DES CHAMPS DE FORCE
 !
-    do 130 i = 1, neq
+    do i = 1, neq
         zr(ifexte-1+i+neq)=zr(ifexpl-1+i)
         zr(ifexte-1+i)=zr(ifexmo-1+i)
         zr(ifliai-1+i+neq)=zr(iflipl-1+i)
@@ -302,7 +339,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
         zr(ifamor-1+i)=zr(ifammo-1+i)
         zr(ifnoda-1+i+neq)=zr(ifnopl-1+i)
         zr(ifnoda-1+i)=zr(ifnomo-1+i)
-130  end do
+    end do
 !
     call enerca(valinc, zr(idepmo), zr(ivitmo), zr(ideppl), zr(ivitpl),&
                 masse, amort, rigid, zr(ifexte), zr(ifamor),&

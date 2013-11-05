@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmchai(tychap, tyvarz, vali)
-        character(len=6) :: tychap
-        character(len=*) :: tyvarz
+    subroutine nmchai(tychap, tyvarz, vali, tychap_out)
+        character(len=6), intent(in) :: tychap
+        character(len=*), intent(in) :: tyvarz
         integer :: vali
+        character(len=6), optional, intent(out) :: tychap_out
     end subroutine nmchai
 end interface
