@@ -67,9 +67,9 @@ subroutine te0150(option, nomte)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !                         MULTI-FIBRES SECTION CONSTANTE
 !     ------------------------------------------------------------------
-    integer :: nbres, nbpar, lmater, itemps, iret, lsect, lsect2
+    integer :: nbres, nbpar, lmater, iret, lsect, lsect2
     integer :: istruc, lorien, lrcou, lvect, lx
-    integer :: itype, nc, ind, i, j, igau
+    integer :: itype, nc, ind, i, j
     parameter                 (nbres=2)
     real(kind=8) :: valpar(3), valres(nbres)
     integer :: codres(nbres)
@@ -82,11 +82,10 @@ subroutine te0150(option, nomte)
     real(kind=8) :: ang, rad, angarc, angs2, along, xfly, xflz
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), de(14), ffe(14)
     real(kind=8) :: bsm(14, 14), matk(105), carsec(6), cars1(6)
-    real(kind=8) :: xfl, temp, f(1), zero, xjg
+    real(kind=8) :: xfl, f(1), zero, xjg
     real(kind=8) :: fr(14), fi(14), fgr(14), fgi(14)
     real(kind=8) :: fer(12), fei(12)
     real(kind=8) :: ea
-    real(kind=8) :: kendog(1), kdessi(1), sech, hydr, instan, sechg(3), hydrg(3), sref
     integer :: ndim, nno, nnos, npg, ipoids
     integer :: ivf, idfdx, jgano
     integer :: icompo, isdcom, nbgfmx, iadzi, iazk24, isicom
@@ -114,9 +113,9 @@ subroutine te0150(option, nomte)
         call moytem(fami, npg, 1, '+', valpar(1),&
                     iret)
     endif
-    do 10 i = 1, nbres
+    do i = 1, nbres
         valres(i) = 0.d0
-10  end do
+    end do
 !
     nbpar = 1
     nompar(1) = 'TEMP'
@@ -397,80 +396,6 @@ subroutine te0150(option, nomte)
             call verifm(fami, npg, 1, '+', zi(lmater),&
                         'ELAS', 1, f, iret)
 !
-        else if (option.eq.'CHAR_MECA_SECH_R') then
-!
-!        --- CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
-!        TEMPERATURE EFFECTIVE
-            call moytem(fami, npg, 1, '+', temp,&
-                        iret)
-! ----   RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
-            sech=0.d0
-            do 50 igau = 1, npg
-                call rcvarc(' ', 'SECH', '+', 'RIGI', igau,&
-                            1, sechg(igau), iret)
-                if (iret .eq. 1) sechg(igau)=0.d0
-                sech=sech+sechg(igau)/npg
-50          continue
-! ----   RECUPERATION DU SECHAGE DE REFERENCE
-            call rcvarc(' ', 'SECH', 'REF', 'RIGI', 1,&
-                        1, sref, iret)
-            if (iret .eq. 1) sref=0.d0
-! ----   RECUPERATION DE L'INSTANT
-            call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
-            if (itemps .ne. 0) then
-                instan = zr(itemps)
-            else
-                instan = 0.d0
-            endif
-            nompar(1) = 'TEMP'
-            valpar(1) = temp
-            nompar(2) = 'INST'
-            valpar(2) = instan
-            nompar(3) = 'SECH'
-            valpar(3) = sech
-! ----   INTERPOLATION DE K_DESSIC EN FONCTION DE LA TEMPERATURE
-!        DE L HYDRATATION OU DU SECHAGE
-!        ----------------------------------------------------------
-            call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                        materi, 'ELAS', 3, nompar, valpar,&
-                        1, 'K_DESSIC', kdessi, codres, 0)
-            if (codres(1) .ne. 0) kdessi(1)=0.d0
-            f(1) = -kdessi(1)*(sref-sech)
-!
-        else if (option.eq.'CHAR_MECA_HYDR_R') then
-!
-!        TEMPERATURE EFFECTIVE
-            call moytem(fami, npg, 1, '+', temp,&
-                        iret)
-! ----    RECUPERATION DU CHAMP D HYDRATATION SUR L'ELEMENT
-            hydr=0.d0
-            do 60 igau = 1, npg
-                call rcvarc(' ', 'HYDR', '+', 'RIGI', igau,&
-                            1, hydrg(igau), iret)
-                if (iret .eq. 1) hydrg(igau)=0.d0
-                hydr=hydr+hydrg(igau)/npg
-60          continue
-! ----   RECUPERATION DE L'INSTANT
-            call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
-            if (itemps .ne. 0) then
-                instan = zr(itemps)
-            else
-                instan = 0.d0
-            endif
-            nompar(1) = 'TEMP'
-            valpar(1) = temp
-            nompar(2) = 'INST'
-            valpar(2) = instan
-            nompar(3) = 'HYDR'
-            valpar(3) = hydr
-! ----   INTERPOLATION DE B_ENDOGE EN FONCTION DE LA TEMPERATURE
-!        ET DE L HYDRATATION
-            call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                        materi, 'ELAS', 3, nompar, valpar,&
-                        1, 'B_ENDOGE', kendog, codres, 0)
-            if (codres(1) .ne. 0) kendog(1)=0.d0
-!        DEPLACEMENT INDUIT PAR L'HYDRATATION
-            f(1) = -kendog(1)*hydr
         else
             ch16 = option
             call utmess('F', 'ELEMENTS2_47', sk=ch16)
