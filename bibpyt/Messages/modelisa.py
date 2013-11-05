@@ -63,7 +63,7 @@ cata_msg = {
 """),
 
 12 : _(u"""
- orientation : une erreur a été détectée lors de l'affectation des orientations
+ Erreur de programmation : le champ %(k1)s est vide.
 """),
 
 13 : _(u"""
@@ -481,9 +481,9 @@ cata_msg = {
 """),
 
 90 : _(u"""
- orientation :
- pas d'affectation d'orientation du type  %(k1)s  sur la maille  %(k2)s
- de longueur non nulle
+Erreur d'utilisation pour le mot clé AFFE_CARA_ELEM / ORIENTATION
+  Il ne faut pas utiliser le type %(k1)s  sur la maille  %(k2)s
+  qui est de longueur non nulle.
 """),
 
 91 : _(u"""

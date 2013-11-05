@@ -53,8 +53,8 @@ class sd_carte(sd_titre):
         n_gd_edit=desc[2]
         assert numgd      > 0 , desc
         assert n_gd_max   > 0 , desc
-        assert n_gd_edit  >=0 , desc  # AJACOT_PB : j'aurais préféré  n_gd_edit > 0
-                                      # mais acearp.f crée parfois des cartes "vides" (zzzz200a)
+        assert n_gd_edit  > 0 , desc
+
         assert n_gd_edit  <= n_gd_max , desc
         for kedit in range(n_gd_edit) :
             code=desc[3+2*kedit]

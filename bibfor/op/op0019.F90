@@ -87,6 +87,7 @@ subroutine op0019()
 #include "asterfort/utmess.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/detrsd_vide.h"
 !
     integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb
     integer :: nbtel, nbmcf, nbel1, nbel2, nbel3, nbel4, nbel5
@@ -620,7 +621,8 @@ subroutine op0019()
     if ((nbocc(2).ne.0) .or. (nbocc(11).ne.0)) then
         call coqucf(nomu)
     endif
-! --- ------------------------------------------------------------------
+
+
 ! --- TRAITEMENT DES MOTS CLES
 !           MULTIFIBRE  /  GEOM_FIBRE
 !           COQUE       /  COQUE_NCOU
@@ -630,9 +632,10 @@ subroutine op0019()
 !           POUTRE      /  TUYAU_NSEC
 !     ----------------------------------------------------------
     call pmfd00()
-!
-!     -- APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
-!     -------------------------------------------------------
+
+
+!   -- APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
+!   -------------------------------------------------------
     lpain(1)='PCACOQU'
     lchin(1)=nomu//'.CARCOQUE'
     lpaout(1)='PBIDON'
@@ -641,6 +644,10 @@ subroutine op0019()
     call calcul('C', 'VERI_CARA_ELEM', ligrmo, 1, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
-!
+
+!   -- Certaines cartes peuvent etre vides : il faut les detruire :
+!   ---------------------------------------------------------------
+    call detrsd_vide('CARTE',nomu//'.CARDISCA')
+
     call jedema()
 end subroutine

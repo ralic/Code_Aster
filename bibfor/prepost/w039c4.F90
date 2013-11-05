@@ -54,28 +54,29 @@ subroutine w039c4(carte, ifi, form)
     character(len=19) :: cart1, chels1, chels2
     character(len=64) :: nommed
 ! ----------------------------------------------------------------------
-!
+
     call jemarq()
-!
-! --- SI CE N'EST PAS AU FORMAT MED
+
+!   --- si ce n'est pas au format med
     if (form .ne. 'MED') goto 999
-! --- SI LA CARTE N'EXISTE PAS
+
+!   --- si la carte n'existe pas
     call exisd('CARTE', carte, iret)
     if (iret .eq. 0) goto 999
-!
+
     cart1=carte
-! --- QUE DES REELS
+!   --- que des reels
     call jeveuo(cart1//'.DESC', 'L', jdesc)
     nugd = zi(jdesc)
     call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R')
-!
+
 ! --- ON TRANSFORME LA CARTE EN UN CHAM_ELEM_S
     chels1='&&W039C4.CHELS1'
     call carces(cart1, 'ELEM', ' ', 'V', chels1,&
                 'A', iret)
-!
+
 !     -- LE FORMAT MED REFUSE DE TRAITER PLUS DE 80 CMPS :
     call jelira(jexnum('&CATA.GD.NOMCMP', nugd), 'LONMAX', n1)
     if (n1 .gt. 80) then

@@ -12,6 +12,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: nomcha, nomcmp, corr1, corr2
     integer :: ncmp, ncmpmx
@@ -197,6 +198,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             zi(jcorr1-1+icmp)=ncmp
         endif
     end do
+    if (ncmp.eq.0) call utmess('F','MODELISA_12',sk=nomcha)
 !
 !
 !

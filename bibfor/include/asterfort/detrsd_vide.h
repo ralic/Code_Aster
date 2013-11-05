@@ -15,20 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine affori(typ, nomt, cara, val, jad,&
-                      jdno, jdco, nutyma, ntseg,&
-                      carori, nco)
-        integer :: nco
-        character(len=*) :: typ
-        character(len=*) :: nomt
-        character(len=*) :: cara
-        real(kind=8) :: val(6)
-        integer :: jad
-        integer :: jdno
-        integer :: jdco
-        integer :: nutyma
-        integer :: ntseg
-        character(len=*) :: carori(nco)
-    end subroutine affori
-end interface
+          interface 
+            subroutine detrsd_vide(typesd,nomsd)
+              character(len=*), intent(in) :: typesd
+              character(len=*), intent(in) :: nomsd
+            end subroutine detrsd_vide
+          end interface 

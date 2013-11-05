@@ -57,7 +57,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 ! IN  : NOMO   : NOM DU MODELE
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ier, ifm, ioc, ixma, ixno
+    integer :: i, ifm, ioc, ixma, ixno
     integer :: ixnw, j, jad, jdcmpo, jdco, jdgm, jdgn
     integer :: jdls, jdme, jdne, jdno, jdnw, jdor, jdtm
     integer :: jdvlvo, k, nbcar, nbmagr, nbmail, nbmtot, nbmtrd
@@ -85,7 +85,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
     call jemarq()
     tsm = r8miem()
     rddg = r8rddg()
-    ier = 0
     call getres(nomu, concep, cmd)
     tmpori = nomu//'.ORIENTATION'
 !
@@ -198,8 +197,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         jad = jdor + (nummai*3) - 3
                         if ((nutyma.ne.ntseg3) .and. ( nutyma.ne.ntseg4)) then
                             call affori('MAILLE', nommai, car(1), val, jad,&
-                                        jdno, jdco, ivr, nutyma, ntseg,&
-                                        carori, nco, ier)
+                                        jdno, jdco, nutyma, ntseg,&
+                                        carori, nco)
                         endif
                     end do
                 end do
@@ -215,8 +214,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                     jad = jdor + (nummai*3) - 3
                     if ((nutyma.ne.ntseg3) .and. (nutyma.ne.ntseg4)) then
                         call affori('MAILLE', nommai, car(1), val, jad,&
-                                    jdno, jdco, ivr, nutyma, ntseg,&
-                                    carori, nco, ier)
+                                    jdno, jdco, nutyma, ntseg,&
+                                    carori, nco)
                     endif
                 end do
             endif
@@ -237,8 +236,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
                             jad = jdor + (numtrd*3) - 3
                             call affori('NOEUD', nomnoe, car(1), val, jad,&
-                                        jdno, jdco, ivr, ntpoi, ntseg,&
-                                        carori, nco, ier)
+                                        jdno, jdco, ntpoi, ntseg,&
+                                        carori, nco)
                         end do
                     end do
                 endif
@@ -253,17 +252,14 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         end do
                         jad = jdor + (numtrd*3) - 3
                         call affori('NOEUD', nomnoe, car(1), val, jad,&
-                                    jdno, jdco, ivr, ntpoi, ntseg,&
-                                    carori, nco, ier)
+                                    jdno, jdco, ntpoi, ntseg,&
+                                    carori, nco)
                     end do
                 endif
             endif
         end do
     endif
 !
-    if (ier .ne. 0) then
-        call utmess('F', 'MODELISA_12')
-    endif
 !
 ! --- IMPRESSION DES VALEURS DES ORIENTATIONS SI DEMANDE
     nocaor = 0

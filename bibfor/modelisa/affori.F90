@@ -1,6 +1,6 @@
 subroutine affori(typ, nomt, cara, val, jad,&
-                  jdno, jdco, ivr, nutyma, ntseg,&
-                  carori, nco, ier)
+                  jdno, jdco, nutyma, ntseg,&
+                  carori, nco)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -9,7 +9,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
 #include "asterfort/angvxy.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
-    integer :: nco, ivr(*), nutyma, ntseg, jad, jdno, jdco, ier
+    integer :: nco, nutyma, ntseg, jad, jdno, jdco
     character(len=*) :: typ, nomt, cara, carori(nco)
     real(kind=8) :: val(6)
 !
@@ -53,13 +53,8 @@ subroutine affori(typ, nomt, cara, val, jad,&
 !
 ! --------------------------------------------------------------------------------------------------
 ! Vérifications preliminaires
-!   ivr(1) = maille     0 = pas verif, 1 = verif
-!   ivr(2) = noeud      0 = pas verif, 1 = verif
-! En cas d'erreur ier+=1 ==> <F> en sortie dans la subroutine appelante
 !
-! Si pas de  vérification systématique :
-    locvr(1:2) = ivr(1:2)
-! Si vérification systématique :
+! Vérification systématique :
     locvr(1) = 1
     locvr(2) = 1
 ! --------------------------------------------------------------------------------------------------
@@ -93,8 +88,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call utmess('A', 'MODELISA_87', nk=2, valk=valk)
-                    ier = ier + 1
+                    call utmess('F', 'MODELISA_87', nk=2, valk=valk)
                 endif
                 goto 999
             endif
@@ -103,8 +97,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call utmess('A', 'MODELISA_88', nk=2, valk=valk)
-                    ier = ier + 1
+                    call utmess('F', 'MODELISA_88', nk=2, valk=valk)
                 endif
                 goto 999
             endif
@@ -125,8 +118,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
             if (locvr(2) .eq. 1) then
                 valk(1) = car
                 valk(2) = nom
-                call utmess('A', 'MODELISA_89', nk=2, valk=valk)
-                ier = ier + 1
+                call utmess('F', 'MODELISA_89', nk=2, valk=valk)
             endif
             goto 999
         endif
@@ -142,10 +134,8 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call utmess('A', 'MODELISA_90', nk=2, valk=valk)
-                    ier = ier + 1
+                    call utmess('F', 'MODELISA_90', nk=2, valk=valk)
                 endif
-                goto 999
             else
 !           règles de surcharge
                 if (abs(zr(jad)) .gt. r8prem()) then
@@ -219,8 +209,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call utmess('A', 'MODELISA_90', nk=2, valk=valk)
-                    ier = ier + 1
+                    call utmess('F', 'MODELISA_90', nk=2, valk=valk)
                 endif
                 goto 999
             else
@@ -304,8 +293,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call utmess('A', 'MODELISA_91', nk=2, valk=valk)
-                    ier = ier + 1
+                    call utmess('F', 'MODELISA_91', nk=2, valk=valk)
                 endif
                 goto 999
             endif
@@ -314,8 +302,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call utmess('A', 'MODELISA_88', nk=2, valk=valk)
-                    ier = ier + 1
+                    call utmess('F', 'MODELISA_88', nk=2, valk=valk)
                 endif
                 goto 999
             endif
@@ -340,8 +327,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
             if (locvr(2) .eq. 1) then
                 valk(1) = car
                 valk(2) = nom
-                call utmess('A', 'MODELISA_89', nk=2, valk=valk)
-                ier = ier + 1
+                call utmess('F', 'MODELISA_89', nk=2, valk=valk)
             endif
             goto 999
         endif
