@@ -1,0 +1,116 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/I31771/21629')
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Face_1 = geompy.MakeFaceHW(0.495, 1, 1)
+geompy.TranslateDXDYDZ(Face_1, 0.2475, 0.5, 0)
+Translation_1 = geompy.MakeTranslation(Face_1, 0.505, 0, 0)
+ttlp100c = geompy.MakeCompound([Face_1, Translation_1])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Translation_1, 'Translation_1' )
+geompy.addToStudy( ttlp100c, 'ttlp100c' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+ttlp100c_1 = smesh.Mesh(ttlp100c)
+Regular_1D = ttlp100c_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(12)
+Nb_Segments_1.SetDistrType( 0 )
+Quadrangle_2D = ttlp100c_1.Quadrangle(algo=smesh.QUADRANGLE)
+isDone = ttlp100c_1.Compute()
+GM38_0 = ttlp100c_1.CreateEmptyGroup( SMESH.EDGE, 'GM38' )
+nbAdd = GM38_0.Add( [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ] )
+GM38_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+GM37_0 = ttlp100c_1.CreateEmptyGroup( SMESH.EDGE, 'GM37' )
+nbAdd = GM37_0.Add( [ 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84 ] )
+GM37_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+GM34_0 = ttlp100c_1.CreateEmptyGroup( SMESH.EDGE, 'GM34' )
+nbAdd = GM34_0.Add( [ 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ] )
+GM34_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+GM33_0 = ttlp100c_1.CreateEmptyGroup( SMESH.EDGE, 'GM33' )
+nbAdd = GM33_0.Add( [ 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 ] )
+GM33_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+GM36_0 = ttlp100c_1.CreateEmptyGroup( SMESH.FACE, 'GM36' )
+nbAdd = GM36_0.Add( [ 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240 ] )
+GM36_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+GM35_0 = ttlp100c_1.CreateEmptyGroup( SMESH.FACE, 'GM35' )
+nbAdd = GM35_0.Add( [ 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384 ] )
+GM35_0.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+[ GM38_0, GM37_0, GM34_0, GM33_0, GM36_0, GM35_0 ] = ttlp100c_1.GetGroups()
+isDone = ttlp100c_1.SplitQuad( [ 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384 ], 0 )
+[ GM38, GM37, GM34, GM33, GM36, GM35 ] = ttlp100c_1.ExtrusionSweepObject2D( ttlp100c_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, 0.04 )), 5 ,True)
+GM38_0.SetName( 'GM38_0' )
+GM37_0.SetName( 'GM37_0' )
+GM34_0.SetName( 'GM34_0' )
+GM33_0.SetName( 'GM33_0' )
+GM36_0.SetName( 'GM36_0' )
+GM35_0.SetName( 'GM35_0' )
+GM38.SetName( 'GM38' )
+GM37.SetName( 'GM37' )
+GM34.SetName( 'GM34' )
+GM33.SetName( 'GM33' )
+GM36.SetName( 'GM36' )
+GM35.SetName( 'GM35' )
+GM35.SetColor( SALOMEDS.Color( 1, 0, 0.666667 ))
+GM33.SetColor( SALOMEDS.Color( 1, 0, 0.666667 ))
+smesh.SetName(ttlp100c_1, 'ttlp100c')
+ttlp100c_1.ExportMED( r'/home/I31771/21629/ttlp100c.med', 0, SMESH.MED_V2_2, 1 )
+
+## set object names
+smesh.SetName(ttlp100c_1.GetMesh(), 'ttlp100c')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(GM38_0, 'GM38_0')
+smesh.SetName(GM37_0, 'GM37_0')
+smesh.SetName(GM34_0, 'GM34_0')
+smesh.SetName(GM33_0, 'GM33_0')
+smesh.SetName(GM36_0, 'GM36_0')
+smesh.SetName(GM35_0, 'GM35_0')
+smesh.SetName(GM38, 'GM38')
+smesh.SetName(GM37, 'GM37')
+smesh.SetName(GM34, 'GM34')
+smesh.SetName(GM33, 'GM33')
+smesh.SetName(GM36, 'GM36')
+smesh.SetName(GM35, 'GM35')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

@@ -1,0 +1,209 @@
+# TITRE ECHANGE_PAROI EN THERMIQUE NON LINEAIRE TRANSITOIRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+#
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
+
+
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='GM35',),
+                               _F(GROUP_MA='GM36',),
+                               _F(GROUP_MA='GM37',),
+                               _F(GROUP_MA='GM38',),),);
+#
+LONTOT = 0.99;
+
+# SOMME DES LONG. DES 2 PLAQUES
+LONMAX = 1.0;
+
+# ABSCISSE MAXIMALE
+#
+# =====================================================================
+#      DEFINITION DU MODELE, DU CHAMP DE MATERIAU ET DU CHARGEMENT
+# =====================================================================
+#
+# MODELE
+# ------
+
+MODTHER=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='3D_DIAG',),);
+#
+# CHAMP DE MATERIAU
+# -----------------
+CONDUC = 40.0;
+
+ENTHALP = 0.22;
+
+#
+
+COND=DEFI_FONCTION(NOM_PARA='TEMP',
+                   VALE=(0.,CONDUC,300.,CONDUC,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,0.,
+                         300.,220.0E-3,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+MATNL=DEFI_MATERIAU(THER_NL=_F(LAMBDA=COND,
+                               BETA=ENTH,),);
+
+CHMATNL=AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATNL,
+                              ),);
+#
+# CHARGEMENT
+# ----------
+TEMPG = 100.0
+TEMPD = 300.0
+COEFH = 80.0
+COEFH2= DEFI_CONSTANTE(VALE=80.0)
+#
+
+CHATIMP=AFFE_CHAR_THER(MODELE=MODTHER,
+                       TEMP_IMPO=(_F(GROUP_NO='GM38',
+                                     TEMP=TEMPG,),
+                                  _F(GROUP_NO='GM37',
+                                     TEMP=TEMPD,),),)
+
+CHATHER=AFFE_CHAR_THER(MODELE=MODTHER,
+                       ECHANGE_PAROI=_F(GROUP_MA_1='GM34',
+                                        GROUP_MA_2='GM33',
+                                        COEF_H=COEFH,),);
+CHATHE2=AFFE_CHAR_THER_F(MODELE=MODTHER,
+                         ECHANGE_PAROI=_F(GROUP_MA_1='GM34',
+                                          GROUP_MA_2='GM33',
+                                          COEF_H=COEFH2,),);
+#
+# =====================================================================
+#                            LISTE D'INSTANTS
+# =====================================================================
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.E-9,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.5E-5,
+                                    NOMBRE=30,),),);
+#
+# =====================================================================
+#   CALCUL TRANSITOIRE NON LINEAIRE TENDANT VERS UN ETAT STATIONNAIRE
+# =====================================================================
+
+TEMPINIT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                    OPERATION='AFFE',
+                    MAILLAGE=MAIL,
+                    AFFE=(
+                    _F(GROUP_NO='GM35',
+                       NOM_CMP='TEMP',
+                       VALE=TEMPG,),
+                    _F(GROUP_NO='GM36',
+                       NOM_CMP='TEMP',
+                       VALE=TEMPD,),),);
+#
+
+RESUTHER=THER_NON_LINE(MODELE=MODTHER,
+                       CHAM_MATER=CHMATNL,
+                       EXCIT=(_F(CHARGE=CHATHER,),
+                              _F(CHARGE=CHATIMP,),),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    NUME_INST_FIN=15,),
+                       ETAT_INIT=_F(CHAM_NO=TEMPINIT,),
+                       ARCHIVAGE=_F(PAS_ARCH=10,),);
+
+RESUTHER=THER_NON_LINE(reuse=RESUTHER,
+                       MODELE=MODTHER,
+                       CHAM_MATER=CHMATNL,
+                       EXCIT=(_F(CHARGE=CHATHE2,),
+                              _F(CHARGE=CHATIMP,),),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    NUME_INST_INIT=15,),
+                       ETAT_INIT=_F(EVOL_THER=RESUTHER,
+                                    NUME_ORDRE=2,),
+                       );
+#
+# =====================================================================
+#                VERIFICATION QUE L'ON A BIEN ATTEINT
+#                LA SOLUTION ANALYTIQUE STATIONNAIRE
+# =====================================================================
+
+TSTAT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='EXTR',
+                 RESULTAT=RESUTHER,
+                 NOM_CHAM='TEMP',
+                 PRECISION=1.E-3,
+                 INST=1.45E-05,);
+#
+
+GRAD = FORMULE(VALE="""
+COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)""",
+               NOM_PARA='BIDON',);
+
+TINTG = FORMULE(VALE="""
+TEMPG + COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*X """,
+                NOM_PARA='X',);
+
+TINTD = FORMULE(VALE="""
+TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)""",
+                NOM_PARA='X',);
+#
+IMPR_RESU(RESU=_F(MAILLAGE=MAIL),FORMAT='RESULTAT')
+TEST_RESU(CHAM_NO=(_F(NOEUD='N25',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=133.22147651006711,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTG(0.2475,),
+                      ),
+                   _F(NOEUD='N3',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=166.44295302013421,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTG(0.495,),
+                      ),
+                   _F(NOEUD='N5',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=233.55704697986579,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTD(0.505,),
+                      ),
+                   _F(NOEUD='N69',
+                      CRITERE='RELATIF',
+                      NOM_CMP='TEMP',
+                      CHAM_GD=TSTAT,
+                      VALE_CALC=266.77852348993287,
+                      REFERENCE='ANALYTIQUE',
+                      VALE_REFE=TINTD(0.7525,),
+                      ),
+                   ),
+          )
+
+#
+
+FIN();
+#
