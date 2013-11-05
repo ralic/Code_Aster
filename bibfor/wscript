@@ -77,7 +77,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options(['-fpe0', '-traceback'])
         if self.env.DEST_CPU == 'x86_64':
             self.check_fortran_compiler_options(['-i8', '-r8'])
-        #self.check_fortran_compiler_options(['-warn', 'interfaces'])
+        self.check_fortran_compiler_options(['-warn', 'interfaces'])
         # all Intel specific features must use: _USE_INTEL_IFORT && HAVE_xxx
         # this marker must be specified on command line (using -D)
         # because it must not be enabled by aslint

@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "aster_types.h"
+! aslint: disable=W1304
 interface
     subroutine asmpi_bcast_i4(buffer, count, root, comm)
-        mpi_int, intent(inout) :: buffer(*)
+        integer(kind=4), intent(inout) :: buffer(*)
         mpi_int, intent(in) :: count
         mpi_int, intent(in) :: root
         mpi_int, intent(in) :: comm

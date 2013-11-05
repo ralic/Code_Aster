@@ -16,6 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "aster_types.h"
+! aslint: disable=W1304
 interface
     subroutine asmpi_isend_i4(buf, count, dest, tag, comm,&
                               request)
