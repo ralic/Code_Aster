@@ -29,6 +29,7 @@ B_ETAPE/E_ETAPE) et des concepts/ASSD.
 # This package modify the sys.path
 
 import sys
+import os
 import os.path as osp
 import time
 from datetime import datetime
@@ -48,6 +49,11 @@ def check_value(option, opt, value, parser):
     if opt == '--commandes':
         if not osp.isfile(value):
             parser.error("option '%s' expects an existing file" % opt)
+    if opt == '--installdir':
+        if not osp.isdir(value):
+            parser.error("option '%s' expects an existing directory" % opt)
+        if not osp.isdir(osp.join(value, 'share', 'aster')):
+            parser.error("option '%s' should define a directory containing 'share/aster'." % opt)
     setattr(parser.values, option.dest, value)
 
 class CoreOptions(object):
@@ -72,6 +78,9 @@ class CoreOptions(object):
         self.info = {}
         self.parser = parser = OptionParser(usage=self.doc,
             prog=osp.basename(sys.executable))
+        parser.add_option('--installdir', dest='installdir', type='string', metavar='DIR',
+            action='callback', callback=check_value,
+            help="path to the installation directory")
         parser.add_option('--commandes', dest='fort1', type='str', metavar='FILE',
             action='callback', callback=check_value,
             help="Code_Aster command file")
@@ -191,6 +200,17 @@ class CoreOptions(object):
 
     def default_values(self):
         """Définit les valeurs par défaut pour certaines options."""
+        locdir = None
+        if self.opts.installdir:
+            locdir = osp.join(self.opts.installdir, 'share', 'locale')
+        else:
+            if self.opts.repmat:
+                # <installdir>/share/aster/materiau
+                path = osp.join(self.opts.repmat, os.pardir, os.pardir, 'locale')
+                locdir = osp.abspath(osp.normpath(path))
+        if locdir:
+            from i18n import localization
+            localization.set_localedir(locdir)
         if self.opts.tpmax is None and platform.system() == 'Linux':
             # use rlimit to set to the cpu "ulimit"
             import resource

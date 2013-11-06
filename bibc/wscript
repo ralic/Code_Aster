@@ -6,7 +6,7 @@ from waflib import Configure, Logs
 
 def options(self):
     self.load('python_cfg', tooldir='waftools')
-    group = self.get_option_group("Aster options")
+    group = self.get_option_group("Code_Aster options")
     group.add_option('-e', '--build-executable', dest='embed_aster',
                     default=False, action='store_true',
                     help='build aster as an executable: it is an alias for --embed-aster')

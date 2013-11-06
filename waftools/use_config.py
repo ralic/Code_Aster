@@ -9,7 +9,7 @@ DEFAULT_DIR = 'wafcfg'
 sys.path.append(osp.abspath(DEFAULT_DIR))
 
 def options(self):
-    group = self.add_option_group('Aster options')
+    group = self.add_option_group('Code_Aster options')
     group.add_option('--use-config', action='store', default=None,
                      metavar='CFG', dest='use_config',
                      help='force the configuration parameters by importing '

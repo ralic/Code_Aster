@@ -49,18 +49,13 @@ class Language(Singleton):
         self.domain = None
         self.current_lang = self.default_lang = get_language()
 
+    def set_localedir(self, path):
+        """Change the locale directory"""
+        self.localedir = path
+
     def set_domain(self):
         """set the current domain"""
-        from E_Core import get_version_name
-        try:
-            shortname = get_version_name()
-            if shortname.startswith('stable'):
-                shortname = 'stable'
-            elif shortname in ('?', 'default'):
-                shortname = 'unstable'
-        except (ImportError, AttributeError):
-            shortname = 'stable'
-        self.domain = 'aster_%s' % shortname
+        self.domain = 'aster_messages'
 
     def get_current_settings(self):
         """Return the current language."""

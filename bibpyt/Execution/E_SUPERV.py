@@ -107,6 +107,7 @@ class SUPERV:
 
     def set_i18n(self):
         """Met en place les fonctions d'internationalisation."""
+        # should be already done by E_Core.getargs
         import i18n
 
     def init_timer(self):

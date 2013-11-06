@@ -9,7 +9,7 @@ from waflib import TaskGen, Logs, Errors
 
 def options(self):
     """To get the names of the testcases"""
-    group = self.get_option_group("Aster options")
+    group = self.get_option_group("Code_Aster options")
     group.add_option('-n', '--name', dest='testname',
                     action='append', default=None,
                     help='name of testcases to run (as_run must be in PATH)')
