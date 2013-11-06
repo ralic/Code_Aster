@@ -373,4 +373,36 @@ TEST_RESU(RESU=_F(INST=4.0,
           )
 
 
+CHAMEL=CALC_CHAM_ELEM(MODELE=MO,GROUP_MA = 'DCB_J',OPTION='COOR_ELGA')
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
+                       NOM_CMP='X',
+                       MAILLE='M4482',
+                       POINT=1,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=5.90435979311617E+00,
+                       VALE_CALC=5.90435979311617E+00,
+                      ),
+         )
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
+                       NOM_CMP='Y',
+                       MAILLE='M4482',
+                       POINT=1,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=0.,
+                       VALE_CALC=0.,
+                      ),
+         )
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
+                       NOM_CMP='Z',
+                       MAILLE='M4482',
+                       POINT=1,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=-5.48128436801013E-01,
+                       VALE_CALC=-5.48128436801013E-01,
+                      ),
+         )
+
 FIN(FORMAT_HDF='OUI')

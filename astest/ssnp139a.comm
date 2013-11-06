@@ -329,4 +329,26 @@ IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U,
                                      NOM_CMP=('V3','V7'))))
 
 
+CHAMEL=CALC_CHAM_ELEM(MODELE=MO,GROUP_MA = 'DCBJ',OPTION='COOR_ELGA')
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
+                       NOM_CMP='X',
+                       MAILLE='M9293',
+                       POINT=1,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=1.99822540333076E+02,
+                       VALE_CALC=1.99822540333076E+02,
+                      ),
+         )
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
+                       NOM_CMP='Y',
+                       MAILLE='M9293',
+                       POINT=1,
+                       REFERENCE='ANALYTIQUE',
+                       VALE_REFE=-0.025,
+                       VALE_CALC=-0.025,
+                      ),
+         )
+
 FIN(FORMAT_HDF='OUI')
