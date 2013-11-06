@@ -242,7 +242,7 @@ IMPR_RESU(FORMAT='MED',
 ########################################################################
 
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
+TEST_RESU(RESU=_F(INST=10.,
                   GROUP_NO='B',
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESUNL,
@@ -254,7 +254,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.E-08,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
+TEST_RESU(RESU=_F(INST=10.,
                   GROUP_NO='A',
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESUNL,
@@ -273,37 +273,37 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 ########################################################################
 
-TEST_RESU(RESU=_F(NUME_ORDRE=31,
+TEST_RESU(RESU=_F(INST=230.,
                   GROUP_NO='B',
                   RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  VALE_CALC=211.38016437511999,
+                  VALE_CALC=272.38393470555,
                   CRITERE='RELATIF',
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=31,
+TEST_RESU(RESU=_F(INST=230.,
                   GROUP_NO='A',
                   RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-147.30118914221001,
+                  VALE_CALC=-213.68185288997,
                   CRITERE='RELATIF',
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=31,
+TEST_RESU(RESU=_F(INST=230.,
                   GROUP_NO='B',
                   RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V1',
-                  VALE_CALC=3.1650583711677E-3,
+                  VALE_CALC=0.35979129617121,
                   CRITERE='RELATIF',
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=31,
+TEST_RESU(RESU=_F(INST=230.,
                   GROUP_NO='B',
                   RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
@@ -313,23 +313,23 @@ TEST_RESU(RESU=_F(NUME_ORDRE=31,
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=31,
+TEST_RESU(RESU=_F(INST=230.,
                   GROUP_NO='A',
                   RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V1',
-                  VALE_CALC=0.0,
-                  CRITERE='ABSOLU',
+                  VALE_CALC=3.5713883748082E-03,
+                  CRITERE='RELATIF',
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=31,
+TEST_RESU(RESU=_F(INST=230.,
                   GROUP_NO='A',
                   RESULTAT=RESUNL,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V2',
-                  VALE_CALC=0.0,
-                  CRITERE='ABSOLU',
+                  VALE_CALC=1.0,
+                  CRITERE='RELATIF',
                   ),
           )
 
@@ -340,7 +340,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=31,
 #
 ########################################################################
 
-TEST_RESU(RESU=_F(NUME_ORDRE=41,
+TEST_RESU(RESU=_F(INST=300.,
                   GROUP_NO='B',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUNL2,
@@ -352,7 +352,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=41,
                   PRECISION=1.E-08,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=41,
+TEST_RESU(RESU=_F(INST=300.,
                   GROUP_NO='A',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESUNL2,
@@ -364,7 +364,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=41,
                   PRECISION=1.E-08,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=41,
+TEST_RESU(RESU=_F(INST=300.,
                   GROUP_NO='B',
                   RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
@@ -374,7 +374,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=41,
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=41,
+TEST_RESU(RESU=_F(INST=300.,
                   GROUP_NO='B',
                   RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
@@ -384,7 +384,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=41,
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=41,
+TEST_RESU(RESU=_F(INST=300.,
                   GROUP_NO='A',
                   RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
@@ -394,7 +394,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=41,
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=41,
+TEST_RESU(RESU=_F(INST=300.,
                   GROUP_NO='A',
                   RESULTAT=RESUNL2,
                   NOM_CHAM='VARI_NOEU',
