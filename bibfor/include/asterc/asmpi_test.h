@@ -19,6 +19,6 @@
 interface
     subroutine asmpi_test(request, flag)
         mpi_int, intent(in) :: request
-        mpi_bool, intent(out) :: flag
+        mpi_int, intent(out) :: flag
     end subroutine asmpi_test
 end interface

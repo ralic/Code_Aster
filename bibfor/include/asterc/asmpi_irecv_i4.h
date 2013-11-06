@@ -25,6 +25,6 @@ interface
         mpi_int, intent(in) :: source
         mpi_int, intent(in) :: tag
         mpi_int, intent(in) :: comm
-        mpi_int, intent(inout) :: request
+        mpi_int, intent(out) :: request
     end subroutine asmpi_irecv_i4
 end interface

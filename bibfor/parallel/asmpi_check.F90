@@ -56,7 +56,7 @@ subroutine asmpi_check(nbpro4, iret)
 #include "asterc/asmpi_test.h"
 !
     logical :: isterm(nbpro4), lcont
-    mpi_bool :: term
+    mpi_int :: term
     integer :: i, nbterm, np1, resp0
     mpi_int :: rank, istat, mpicou, wki(1), nbv, ip4
     mpi_int :: diag(nbpro4), request(nbpro4)
@@ -107,7 +107,7 @@ subroutine asmpi_check(nbpro4, iret)
         do 101 i = 1, np1
             if (.not. isterm(i)) then
                 call asmpi_test(request(i), term)
-                if (term) then
+                if (term .eq. 1) then
                     nbterm = nbterm + 1
                     isterm(i) = .true.
                     if (diag(i) .eq. ST_ER) then

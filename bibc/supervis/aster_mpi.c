@@ -171,7 +171,7 @@ void aster_free_comm(aster_comm_t *node) {
 void DEFP(ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Barrier(mpicom) == MPI_SUCCESS);
 #endif
     return;
@@ -237,11 +237,11 @@ void DEFSP(ASMPI_COMM, asmpi_comm,_IN char *action, STRING_SIZE lact,
     } else if  (strcmp(act, "GET") == 0) {
         *comm = MPI_Comm_c2f(aster_get_current_comm()->id);
     } else if  (strcmp(act, "SET") == 0) {
-        mpicom = MPI_Comm_f2c( *comm );
+        mpicom = MPI_Comm_f2c(*comm);
         node = get_node_by_id(&mpicom);
         aster_set_current_comm(node);
     } else if  (strcmp(act, "FREE") == 0) {
-        mpicom = MPI_Comm_f2c( *comm );
+        mpicom = MPI_Comm_f2c(*comm);
         node = get_node_by_id(&mpicom);
         aster_free_comm(node);
     } else {
@@ -279,7 +279,7 @@ void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MP
     
     AS_ASSERT(sizeof(MPI_Fint) == 4);
     
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     node = get_node_by_id(&mpicom);
     COMM_DEBUG(*node);
     aster_get_mpi_info(node, &irank, &isize);
@@ -296,7 +296,7 @@ void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, DOUBLE *buf, INTEGER4 *count, INTEGER4
                                           INTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Send((void *)buf, *count, MPI_DOUBLE_PRECISION,
                        *dest, *tag, mpicom) == MPI_SUCCESS);
 #endif
@@ -307,7 +307,7 @@ void DEFPPPPP(ASMPI_SEND_I, asmpi_send_i, INTEGER *buf, INTEGER4 *count, INTEGER
                                           INTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Send((void *)buf, *count, MPI_INTEGER,
                        *dest, *tag, mpicom) == MPI_SUCCESS);
 #endif
@@ -318,7 +318,7 @@ void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, INTEGER4 *buf, INTEGER4 *count, INTE
                                             INTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Send((void *)buf, *count, MPI_INTEGER4,
                        *dest, *tag, mpicom) == MPI_SUCCESS);
 #endif
@@ -333,7 +333,7 @@ void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, DOUBLE *buf, INTEGER4 *count, INTEGER4
                                           INTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_DOUBLE_PRECISION,
                        *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
 #endif
@@ -344,7 +344,7 @@ void DEFPPPPP(ASMPI_RECV_I, asmpi_recv_i, INTEGER *buf, INTEGER4 *count, INTEGER
                                           INTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_INTEGER,
                        *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
 #endif
@@ -355,7 +355,7 @@ void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, INTEGER4 *buf, INTEGER4 *count, INTE
                                             INTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_INTEGER4,
                        *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
 #endif
@@ -367,12 +367,14 @@ void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, INTEGER4 *buf, INTEGER4 *count, INTE
  * Do not check returncode because all errors raise
  */
 void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, DOUBLE *buf, INTEGER4 *count, INTEGER4 *dest,
-                                               INTEGER4 *tag, MPI_Fint *comm, INTEGER4 *request) {
+                                               INTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request) {
     MPI_Comm mpicom;
+    MPI_Request mpireq;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Isend((void *)buf, *count, MPI_INTEGER4,
-                        *dest, *tag, mpicom, (MPI_Request *)request) == MPI_SUCCESS);
+                        *dest, *tag, mpicom, &mpireq) == MPI_SUCCESS);
+    *request = MPI_Request_c2f(mpireq);
 #endif
     return;
 }
@@ -382,12 +384,14 @@ void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, DOUBLE *buf, INTEGER4 *count, INT
  * Do not check returncode because all errors raise
  */
 void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, DOUBLE *buf, INTEGER4 *count, INTEGER4 *source,
-                                               INTEGER4 *tag, MPI_Fint *comm, INTEGER4 *request) {
+                                               INTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request) {
     MPI_Comm mpicom;
+    MPI_Request mpireq;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Irecv((void *)buf, *count, MPI_INTEGER4,
-                        *source, *tag, mpicom, (MPI_Request *)request) == MPI_SUCCESS);
+                        *source, *tag, mpicom, &mpireq) == MPI_SUCCESS);
+    *request = MPI_Request_c2f(mpireq);
 #endif
     return;
 }
@@ -396,9 +400,14 @@ void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, DOUBLE *buf, INTEGER4 *count, INT
  * Wrapper around MPI_Test
  * Do not check returncode because all errors raise
  */
-void DEFPP(ASMPI_TEST, asmpi_test, INTEGER4 *request, INTEGER4 *flag) {
+void DEFPP(ASMPI_TEST, asmpi_test, MPI_Fint *request, INTEGER4 *flag) {
+    MPI_Request mpireq;
+    int iflag;
 #ifdef _USE_MPI
-    AS_ASSERT(MPI_Test((MPI_Request *)request, flag, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+    mpireq = MPI_Request_f2c(*request);
+    AS_ASSERT(MPI_Test(&mpireq, &iflag, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+    /* true=1, false=0 */
+    *flag = (INTEGER4)iflag;
 #endif
     return;
 }
@@ -424,7 +433,7 @@ void DEFPPPPPP(ASMPI_REDUCE_R, asmpi_reduce_r, DOUBLE *sendbuf, DOUBLE *recvbuf,
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
                          mpiop, *root, mpicom) == MPI_SUCCESS);
@@ -437,7 +446,7 @@ void DEFPPPPPP(ASMPI_REDUCE_C, asmpi_reduce_c, DOUBLE *sendbuf, DOUBLE *recvbuf,
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
                          mpiop, *root, mpicom) == MPI_SUCCESS);
@@ -450,7 +459,7 @@ void DEFPPPPPP(ASMPI_REDUCE_I, asmpi_reduce_i, INTEGER *sendbuf, INTEGER *recvbu
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER,
                          mpiop, *root, mpicom) == MPI_SUCCESS);
@@ -464,7 +473,7 @@ void DEFPPPPPP(ASMPI_REDUCE_I4, asmpi_reduce_i4, INTEGER4 *sendbuf, INTEGER4 *re
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
                          mpiop, *root, mpicom) == MPI_SUCCESS);
@@ -481,7 +490,7 @@ void DEFPPPPP(ASMPI_ALLREDUCE_R, asmpi_allreduce_r, DOUBLE *sendbuf, DOUBLE *rec
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
                             mpiop, mpicom) == MPI_SUCCESS);
@@ -494,7 +503,7 @@ void DEFPPPPP(ASMPI_ALLREDUCE_C, asmpi_allreduce_c, DOUBLE *sendbuf, DOUBLE *rec
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
                             mpiop, mpicom) == MPI_SUCCESS);
@@ -507,7 +516,7 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, INTEGER *sendbuf, INTEGER *r
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER,
                             mpiop, mpicom) == MPI_SUCCESS);
@@ -521,7 +530,7 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, DOUBLE *sendbuf, DOUBLE *r
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
                             mpiop, mpicom) == MPI_SUCCESS);
@@ -537,7 +546,7 @@ void DEFPPPP(ASMPI_BCAST_R, asmpi_bcast_r, DOUBLE *buffer, INTEGER4 *count, INTE
                                            MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_PRECISION,
                         *root, mpicom) == MPI_SUCCESS);
 #endif
@@ -548,7 +557,7 @@ void DEFPPPP(ASMPI_BCAST_C, asmpi_bcast_c, DOUBLE *buffer, INTEGER4 *count, INTE
                                            MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_COMPLEX,
                         *root, mpicom) == MPI_SUCCESS);
 #endif
@@ -559,7 +568,7 @@ void DEFPPPP(ASMPI_BCAST_I, asmpi_bcast_i, INTEGER *buffer, INTEGER4 *count, INT
                                            MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_INTEGER,
                         *root, mpicom) == MPI_SUCCESS);
 #endif
@@ -570,7 +579,7 @@ void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, INTEGER4 *buffer, INTEGER4 *count, 
                                              MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
-    mpicom = MPI_Comm_f2c( *comm );
+    mpicom = MPI_Comm_f2c(*comm);
     AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_INTEGER4,
                         *root, mpicom) == MPI_SUCCESS);
 #endif

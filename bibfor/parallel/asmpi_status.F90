@@ -42,7 +42,7 @@ subroutine asmpi_status(istat, resp0)
 #include "asterc/asmpi_test.h"
 #include "asterc/asmpi_wtime.h"
 !
-    mpi_bool :: term
+    mpi_int :: term
     mpi_int :: rank, ist4(1), irp0(1), req, mpicou, nbv
     mpi_int, parameter :: pr0=0
     real(kind=8) :: tres, timout, t0, tf
@@ -73,7 +73,7 @@ subroutine asmpi_status(istat, resp0)
         call mpistp(1)
         goto 999
     endif
-    if (.not.term) goto 300
+    if (term .ne. 1) goto 300
 !     END WHILE
 !
 !     REPONSE DE PROC #0
@@ -92,7 +92,7 @@ subroutine asmpi_status(istat, resp0)
         call mpistp(1)
         goto 999
     endif
-    if (.not.term) goto 200
+    if (term .ne. 1) goto 200
 !     END WHILE
 !
     resp0 = irp0(1)
