@@ -482,7 +482,7 @@ IMPR_TABLE(TABLE=RMS)
 # UTILISEE (I.E. CELLE DE PYTHON v2.3).
 
 TEST_TABLE(
-           VALE_CALC=4.1245899239361,
+           VALE_CALC= 3.9581521413982,
            NOM_PARA='SUP',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -490,7 +490,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.4851680521635,
+           VALE_CALC= 3.349753788329,
            NOM_PARA='INF',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -498,7 +498,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.7317884182478,
+           VALE_CALC= 3.6463671167009,
            NOM_PARA='MOY',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -506,7 +506,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.043752901655381,
+           VALE_CALC= 0.035769581833260,
            NOM_PARA='VAR',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -514,7 +514,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.011881671104798,
+           VALE_CALC= 0.011980755074194,
            NOM_PARA='SUP',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -522,7 +522,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.011469764042101,
+           VALE_CALC= 0.011598449828991,
            NOM_PARA='MOY',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -530,7 +530,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.088058725522363,
+           VALE_CALC= 0.086764786890073,
            NOM_PARA='INF',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -538,7 +538,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.092781999085259,
+           VALE_CALC= 0.093208616844323,
            NOM_PARA='MOY',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',

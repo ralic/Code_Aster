@@ -329,22 +329,22 @@ N3201=  INFO_FONCTION(NORME=_F(FONCTION=M13201),)
 # PAS DE REFERENCE ANALYTIQUE => TESTS DE NON REGRESSION
 # LA VALIDATION A ETE EFFECTUEE PAR REFERENCE BIBLIO (CF. DOC.)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68135,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 218.2398,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=M13201,
                          ),
-                      _F(VALE_CALC=20500.827,
+                      _F(VALE_CALC= 51331.90,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=M23201,
                          ),
-                      _F(VALE_CALC=75.058764,
+                      _F(VALE_CALC= 149.9437,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=INF3201,
                          ),
-                      _F(VALE_CALC=215.81480 ,
+                      _F(VALE_CALC= 316.3367,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=UP3201,
@@ -353,7 +353,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68135,
               )
 
 TEST_TABLE(
-           VALE_CALC=1043.3847164151,
+           VALE_CALC=1209.8199034857,
            NOM_PARA='NORME',
            TABLE=N3201,
            )

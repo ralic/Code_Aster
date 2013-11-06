@@ -524,7 +524,7 @@ IMPR_TABLE(  TABLE=TABLE,
  )
 #
 
-TEST_TABLE(VALE_CALC= 5.026183860525E-03,
+TEST_TABLE(VALE_CALC= 1.0762827856806E-03,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -535,7 +535,7 @@ TEST_TABLE(VALE_CALC= 5.026183860525E-03,
                    ),
            )
 
-TEST_TABLE(VALE_CALC= 5.026183860525E-03,
+TEST_TABLE(VALE_CALC= 1.0762827856806E-03,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -546,7 +546,7 @@ TEST_TABLE(VALE_CALC= 5.026183860525E-03,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=128.93554086223,
+TEST_TABLE(VALE_CALC= 126.52033744841,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -557,7 +557,7 @@ TEST_TABLE(VALE_CALC=128.93554086223,
                    ),
            )
 
-TEST_TABLE(VALE_CALC= 5.026183860525E-03,
+TEST_TABLE(VALE_CALC= 1.0762827856806E-03,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -568,7 +568,7 @@ TEST_TABLE(VALE_CALC= 5.026183860525E-03,
                    ),
            )
 
-TEST_TABLE(VALE_CALC= 5.026183860525E-03,
+TEST_TABLE(VALE_CALC= 1.0762827856806E-03,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,
@@ -579,7 +579,7 @@ TEST_TABLE(VALE_CALC= 5.026183860525E-03,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=128.93554086223,
+TEST_TABLE(VALE_CALC=126.52033744841,
            TOLE_MACHINE=5.E-3,                          # TODO TOLE_MACHINE
            NOM_PARA='RMS',
            TABLE=TABLE,

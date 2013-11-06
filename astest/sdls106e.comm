@@ -297,7 +297,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=7.0E-3,
+           PRECISION=0.01,         #7.0E-3,
            TOLE_MACHINE=0.01,      #TODO variabilite
            VALE_CALC=0.0,
            VALE_REFE=0.0,

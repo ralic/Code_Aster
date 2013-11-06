@@ -1699,13 +1699,13 @@ REP2=RECU_FONCTION(    INTE_SPEC=INTERS,
                     NUME_ORDRE_I = 2,
                       )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.102003700434,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.10075246,
                          VALE_REFE=0.10000000000000001,
                          REFERENCE='NON_DEFINI',
                          VALE_PARA=2.0,
                          PRECISION=0.10000000000000001,
                          FONCTION=REP1,),
-                      _F(VALE_CALC=0.0234342701622,
+                      _F(VALE_CALC=0.02317516,
                          VALE_REFE=0.025000000000000001,
                          REFERENCE='NON_DEFINI',
                          VALE_PARA=2.0,
@@ -1883,7 +1883,7 @@ TEST_TABLE(VALE_CALC=0.5,
 # attention : le comportement du generateur de nombres aleatoires
 # (module random) a change entre la version 2.2 de python et la
 # version 2.3. Les resultats s en trouvent un peu affectes.
-TEST_TABLE(VALE_CALC=2.4560788330548E-05,
+TEST_TABLE(VALE_CALC=2.3952571718236E-05,
          NOM_PARA='ECART_TYPE',
          TABLE=TT,
          FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1893,7 +1893,7 @@ TEST_TABLE(VALE_CALC=2.4560788330548E-05,
                  ),
          )
 
-TEST_TABLE(VALE_CALC=2.4565001926244E-05,
+TEST_TABLE(VALE_CALC=2.3953796924052E-05,
          NOM_PARA='RMS',
          TABLE=TT,
          FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1903,7 +1903,7 @@ TEST_TABLE(VALE_CALC=2.4565001926244E-05,
                  ),
          )
 
-TEST_TABLE(VALE_CALC=24.565001926244,
+TEST_TABLE(VALE_CALC=23.953796924052,
          NOM_PARA='RMS_T_TOTAL',
          TABLE=TT,
          FILTRE=(_F(NOM_PARA='CALCUL',
@@ -1987,8 +1987,8 @@ REP3=RECU_FONCTION(    INTE_SPEC=INT2,
                     NUME_ORDRE_I = 1,
                       )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.3907284361e-08,
-                        VALE_REFE=7.4000000000000001E-08,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.489358E-08,                         #7.390728E-08
+                        VALE_REFE=4.49E-08,                             #7.40E-08
                         REFERENCE='NON_DEFINI',
                         VALE_PARA=4.2000000000000002,
                         PRECISION=1.E-2,
