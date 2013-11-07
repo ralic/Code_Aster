@@ -22,10 +22,10 @@ Build steps
   
   - for each language (in ``build/release/i18n/$LANG/``):
 
-    - ``aster_messages.po``: merge of ``src/i18n/$LANG/aster_messages.po``
+    - ``aster_messages_updated.po``: merge of ``src/i18n/$LANG/aster_messages.po``
       and ``aster_messages.pot``
 
-    - ``aster_messages.mo``: compilation of ``aster_messages.po``
+    - ``aster_messages.mo``: compilation of ``aster_messages_updated.po``
 
 Workflow with the project http://crowdin.net/project/codeaster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,7 +137,7 @@ def apply_i18n(self):
     inpo = self.path.get_src().find_resource(osp.join(self.lang, msg + '.po'))
     pot = self.path.get_bld().find_resource(msg + '.pot')
     make_node = self.bld.bldnode.make_node
-    outpo = make_node(submsg + '.po')
+    outpo = make_node(submsg + '_updated' + '.po')
     mof = make_node(submsg + '.mo')
     mof.parent.mkdir()
 
