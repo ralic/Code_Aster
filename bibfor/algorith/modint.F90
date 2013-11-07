@@ -307,6 +307,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                 end do
             end do
             nbmod=coeff
+            call matfpe(1)
             goto 999
 !
         endif
