@@ -57,7 +57,7 @@ VECAS=MECA_STATIQUE(MODELE=MO,
                                PRE_COND='LDLT_INC',
                                NIVE_REMPLISSAGE=1,
                                RENUM='SANS',
-                               RESI_RELA=1.E-10,
+                               RESI_RELA=1.E-11,
                                NMAX_ITER=0,),);
 
 VECAS=CALC_CHAMP(reuse=VECAS,RESULTAT=VECAS,CONTRAINTE=('SIGM_ELNO'))
@@ -69,7 +69,7 @@ VECAS2=MECA_STATIQUE(MODELE=MO,
                            _F(CHARGE=CHA2,),),
                     SOLVEUR=_F(METHODE='GCPC',
                                PRE_COND='LDLT_SP',
-                               RESI_RELA=1.E-10,
+                               RESI_RELA=1.E-11,
                                NMAX_ITER=0,),);
 
 # ----------------------------------------------------------------------
@@ -380,7 +380,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='RESI_GCPC',
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VECAS,
-                   VALE_CALC=3.7380038822546E-03,
+                   VALE_CALC=5.018131350085E-04,
                    TOLE_MACHINE=1.e-4,           # TODO TOLE_MACHINE
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',

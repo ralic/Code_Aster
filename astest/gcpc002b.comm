@@ -67,7 +67,7 @@ KMATAS=FACTORISER(MATR_ASSE=MATAS,);
 
 DEP=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
-             RESI_RELA=1.0E-7,
+             RESI_RELA=1.0E-10,
              MATR_PREC=KMATAS,);
 
 RESU=CREA_RESU(OPERATION='AFFE',
@@ -292,7 +292,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO15854',
                    NOM_CMP='SIXX',
-                   VALE_CALC=-3.5584554858488,
+                   VALE_CALC=-3.5546062086818,
                    VALE_REFE=-3.5204,
                    TOLE_MACHINE=1.E-3,                # TODO TOLE_MACHINE
                    PRECISION=0.015,
@@ -325,7 +325,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO15854',
                    NOM_CMP='SIXZ',
-                   VALE_CALC=-0.68973250258877,
+                   VALE_CALC=-0.69590871697241,
                    VALE_REFE=-0.71499999999999997,
                    TOLE_MACHINE=1.E-3,                # TODO TOLE_MACHINE
                    PRECISION=0.04,
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO15854',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=-1.1343463070495,
+                   VALE_CALC=-1.1319383784209,
                    VALE_REFE=-1.0671999999999999,
                    PRECISION=0.065199999999999994,
                    TOLE_MACHINE=1.E-3,                # TODO TOLE_MACHINE
@@ -360,7 +360,7 @@ KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
 
 DEP2=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
-             RESI_RELA=1.0E-7,
+             RESI_RELA=1.0E-10,
              MATR_PREC=KMATAS2,);
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO13943',

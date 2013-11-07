@@ -72,7 +72,8 @@ KMATAS=FACTORISER(MATR_ASSE=MATAS);
 
 KVECAS=RESOUDRE(MATR=MATAS,
                 CHAM_NO=VECAS,
-                MATR_PREC=KMATAS);
+                MATR_PREC=KMATAS,
+                RESI_RELA=1E-8);
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
                       NOM_CMP='DY',
@@ -84,14 +85,14 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
                    _F(NOEUD='NO2958',
                       NOM_CMP='DZ',
                       CHAM_GD=KVECAS,
-                      VALE_CALC=1.0296112102561E-04,
+                      VALE_CALC=1.0295819303846E-04,
                       VALE_REFE=1.0296E-4,
                       REFERENCE = 'SOURCE_EXTERNE',
                       PRECISION=1.5E-4,),
                    _F(NOEUD='NO2974',
                       NOM_CMP='DX',
                       CHAM_GD=KVECAS,
-                      VALE_CALC=4.3006082144944E-03,
+                      VALE_CALC=4.3005805918026E-03,
                       VALE_REFE=4.3006E-3,
                       REFERENCE = 'SOURCE_EXTERNE',
                       PRECISION=1.5E-4,),
@@ -105,7 +106,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
                    _F(NOEUD='NO2974',
                       NOM_CMP='DZ',
                       CHAM_GD=KVECAS,
-                      VALE_CALC=-2.9167203360803E-05,
+                      VALE_CALC=-2.9172947805192E-05,
                       VALE_REFE=-2.9173E-05,
                       REFERENCE = 'SOURCE_EXTERNE',
                       PRECISION=2.0E-4,),
@@ -118,8 +119,9 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
 KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
 
 KVECAS2=RESOUDRE(MATR=MATAS,
-                CHAM_NO=VECAS,
-                MATR_PREC=KMATAS2);
+                 CHAM_NO=VECAS,
+                 MATR_PREC=KMATAS2,
+                 RESI_RELA=1E-8);
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO2958',
                       NOM_CMP='DY',
