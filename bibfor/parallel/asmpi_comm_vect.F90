@@ -92,7 +92,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     real(kind=8) :: vr2(1000), wkr(1)
     complex(kind=8) :: vc2(1000), wkc(1)
     integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest, nbv
-    mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4
+    mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4, proc
     mpi_int, parameter :: pr0=0
     logical :: scal
 ! ---------------------------------------------------------------------
@@ -116,7 +116,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     lc8 = MPI_DOUBLE_COMPLEX
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-    call asmpi_info(mpicou, size=nbpro4)
+    call asmpi_info(mpicou, rank=proc, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
 !
 !     -- VERIFICATION RENDEZ-VOUS
@@ -215,6 +215,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !     ---------------------------------
         ASSERT(present(bcrank))
         ASSERT(nbv > 1)
+        bcrank4 = to_mpi_int(bcrank)
         if (typsc1 .eq. 'R') then
             call asmpi_bcast_r(vr, nbv4, bcrank4, mpicou)
         else if (typsc1.eq.'I') then
@@ -235,6 +236,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
         nbcast=nbv/sizbmpi
         imain=nbcast*sizbmpi
         irest=nbv-imain
+        bcrank4 = to_mpi_int(bcrank)
 !       IF (NBCAST.GT.0)
 !     &    WRITE(6,*)'<MPICM1 + BCASTP> TYPSC1/NBV/NBCAST/sizbmpi: ',
 !     &    TYPSC1,NBV,NBCAST,sizbmpi
@@ -278,7 +280,9 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
             if (scal) then
                 call asmpi_reduce_r(vr2, wkr, nbv4, lopmpi, pr0,&
                                     mpicou)
-                scr = wkr(1)
+                if (proc .eq. pr0) then
+                    scr = wkr(1)
+                endif
             else if (nbv .le. 1000) then
                 call asmpi_reduce_r(vr2, vr, nbv4, lopmpi, pr0,&
                                     mpicou)
@@ -291,7 +295,9 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
             if (scal) then
                 call asmpi_reduce_i(vi2, wki, nbv4, lopmpi, pr0,&
                                     mpicou)
-                sci = wki(1)
+                if (proc .eq. pr0) then
+                    sci = wki(1)
+                endif
             else if (nbv .le. 1000) then
                 call asmpi_reduce_i(vi2, vi, nbv4, lopmpi, pr0,&
                                     mpicou)
@@ -303,7 +309,9 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
             if (scal) then
                 call asmpi_reduce_c(vc2, wkc, nbv4, lopmpi, pr0,&
                                     mpicou)
-                scc = wkc(1)
+                if (proc .eq. pr0) then
+                    scc = wkc(1)
+                endif
             else if (nbv .le. 1000) then
                 call asmpi_reduce_c(vc2, vc, nbv4, lopmpi, pr0,&
                                     mpicou)
