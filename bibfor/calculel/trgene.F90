@@ -197,8 +197,7 @@ subroutine trgene(ific, nocc)
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
             lign1(1:nl1+16)=lign1(1:nl1-1)//' NUME_ORDRE'
-            ch4=' '
-            call codent(numord, 'G', ch4)
+            ch4='****'
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '//ch4
             lign1(nl1+17:nl1+17)='.'
             lign2(nl2+17:nl2+17)='.'

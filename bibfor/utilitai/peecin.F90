@@ -112,6 +112,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     call getvr8(' ', 'FREQ', scal=xfreq, nbret=nf)
     call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
     call getvr8(' ', 'INST', scal=inst, nbret=ni)
+    typres=' '
     if (ni .ne. 0) exitim = .true.
     if (nr .ne. 0) then
         call gettco(resul, typres)

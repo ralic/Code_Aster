@@ -114,6 +114,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     ----------------------
     ndimsi = 2*ndim
     epxmax=log(r8maem())
+    matr=0
 !
 !
     retcom = 0

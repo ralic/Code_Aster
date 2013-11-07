@@ -108,6 +108,7 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
     coefcp = zr(jdonco-1+(ifiss-1)*ncompd+8)
     coeffp = zr(jdonco-1+(ifiss-1)*ncompd+9)
 !     VERIFICATIONS
+    rela=0.d0
     if (algocr .eq. 1) then
         ASSERT(coefcr.ne.0.d0.and.coefcp.eq.0.d0)
     else if (algocr.eq.2) then

@@ -23,8 +23,8 @@ interface
         integer :: nperm
         real(kind=8) :: tol
         real(kind=8) :: toldyn
-        real(kind=8) :: ar(*)
-        real(kind=8) :: br(*)
+        real(kind=8) :: ar(nbvec)
+        real(kind=8) :: br(nbvec)
         real(kind=8) :: vecpro(nbvec, nbvec)
         real(kind=8) :: valpro(nbvec)
         real(kind=8) :: valaux(nbvec)

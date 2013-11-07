@@ -529,7 +529,8 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
     nbsauv = nbr0
     nbrede = 0
     nbrevi = 0
-    method = 'ITMI'
+    method = 'ITMI' 
+    k8b=' '
 !
     call mdallo(resu, k8b, k8b, k8b, k8b,&
                 nbm, dt0, nbsauv, nbnl, k8b,&

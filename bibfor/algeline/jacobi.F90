@@ -6,7 +6,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 #include "asterfort/utmess.h"
 #include "asterfort/vpordo.h"
     integer :: nbvec, nperm, nitjac, type, iordre
-    real(kind=8) :: ar(*), br(*), vecpro(nbvec, nbvec), valpro(nbvec)
+    real(kind=8) :: ar(nbvec), br(nbvec), vecpro(nbvec, nbvec), valpro(nbvec)
     real(kind=8) :: valaux(nbvec), tol, toldyn
 !
 ! ======================================================================

@@ -151,6 +151,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     call wkvect('&&RUKUT.AMOGYR', 'V V R8', neqgen*neqgen, jamgy)
     call wkvect('&&RUKUT.RIGGYR', 'V V R8', neqgen*neqgen, jrigy)
     if (lamor) then
+        vitvar=' '
         do im = 1, neqgen
             amogen(im) = deux * amogen(im) * pulsat(im)
         end do
@@ -158,6 +159,8 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
         call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call getvtx(' ', 'VITESSE_VARIABLE', scal=vitvar, nbret=n1)
+        else
+            vitvar=' '
         endif
         vrotin = 0.d0
         arotin = 0.d0

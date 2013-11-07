@@ -83,15 +83,19 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
-    if ((&
-        (&
-        (compor(1)(1:6) .eq. 'KIT_HM') .or. (compor(1)(1:7) .eq. 'KIT_HHM') .or.&
-        (compor(1)(1:7) .eq. 'KIT_THM') .or. (compor(1)(1:7) .eq. 'KIT_DDI') .or.&
-        (compor(1)(1:8) .eq. 'KIT_THHM')&
-        )&
-        .and. (compor(11)(1:15) .eq. 'ENDO_ISOT_BETON')&
-        )&
-        .or. (compor(1)(1:15) .eq. 'ENDO_ISOT_BETON')) then
+!
+    if (&
+         (compor(1)(1:15) .eq. 'ENDO_ISOT_BETON')&
+          .or.&
+         (&
+           (&
+             (compor(1)(1:6) .eq. 'KIT_HM') .or. (compor(1)(1:7) .eq. 'KIT_HHM') .or.&
+             (compor(1)(1:7) .eq. 'KIT_THM').or. (compor(1)(1:8) .eq. 'KIT_THHM')&
+           )&
+          .and. &
+          (compor(11)(1:15) .eq. 'ENDO_ISOT_BETON')&
+         )&
+       ) then
 !
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&

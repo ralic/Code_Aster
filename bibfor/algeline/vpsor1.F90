@@ -179,6 +179,13 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
     iparam(3) = maxitr
     iparam(4) = 1
     iparam(7) = mode
+    iparam(2) =0
+    iparam(5) =0
+    iparam(6) =0
+    iparam(8) =0
+    iparam(9) =0
+    iparam(10) =0
+    iparam(11) =0
 !
 ! INIT. OBJETS ASTER
     matass=zk24(zi(ldynfa+1))

@@ -55,7 +55,8 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     call jemarq()
     nomnoe = noma//'.NOMNOE         '
 !
-    ier = 0
+    ier  = 0
+    iera = 0
 !
     xa = coor(3*(nori-1)+1)
     ya = coor(3*(nori-1)+2)
