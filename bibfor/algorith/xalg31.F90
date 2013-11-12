@@ -143,8 +143,8 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 !      on ne calcule pas le premier type de point milieu si la
 !      fissure coincide avec une arete
-        ispm2=(ainter(zxain*(ip1(k)-1)+1).ne.0).or. &
-           (ainter(zxain*(ip2(k)-1)+1).ne.0)
+        ispm2=(nint(ainter(zxain*(ip1(k)-1)+1)).ne.0).or. &
+           (nint(ainter(zxain*(ip2(k)-1)+1)).ne.0)
 !
         if (ispm2) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS
@@ -172,8 +172,9 @@ subroutine xalg31(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !      on calcule le troisiemFe type de point milieu seulement si
 !      aucun des deux points d'intersection n'est confondu avec
 !      un noeud sommet
-        ispm3=(ainter(zxain*(ip1(k)-1)+1).ne.0).and. &
-           (ainter(zxain*(ip2(k)-1)+1).ne.0)
+       ispm3=((nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0) .and. &
+           (nint(ainter(zxain*(ip2(k)-1)+1)) .ne. 0))
+
 !
         if (ispm3) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS

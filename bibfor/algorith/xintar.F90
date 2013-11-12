@@ -68,7 +68,7 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
         col(ndim*2+i)=m(i)
 100  end do
 !
-    call xnewto(elp, name, ibid, nno, n,&
+    call xnewto(elp, name, nno, n,&
                 ndim, [rbid], ndim, [rbid], col, lsnl,&
                 tab, ibid, ibid, rbid, itemax,&
                 epsmax, xe)

@@ -1,4 +1,4 @@
-subroutine xnewto(elp, name, num, nno, n,&
+subroutine xnewto(elp, name, nno, n,&
                   ndime, ptint, ndim, tabco, pmilie, tabls,&
                   tab, ipp, ip, s, itemax,&
                   epsmax, ksi)
@@ -11,7 +11,6 @@ subroutine xnewto(elp, name, num, nno, n,&
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xdelt1.h"
 #include "asterfort/xdelt2.h"
 #include "asterfort/xdelt3.h"
 #include "asterfort/xdelt4.h"
@@ -93,9 +92,9 @@ subroutine xnewto(elp, name, num, nno, n,&
         call xdelt2(elp, nno, n, ndime, ksi2,&
                     ptint, ndim, tabco, tabls, ipp, ip,&
                     delta)
-    else if (name.eq. 'XINVAC') then
-        call xdelt1(num, ndim, ksi2(1), tabco, s,&
-                    delta(1))
+!    else if (name.eq. 'XINVAC') then
+!        call xdelt1(num, ndim, ksi2(1), tabco, s,&
+!                    delta(1))
     else if (name.eq. 'XINTAR') then
         call xdelt3(ndim, ksi2, tabls, delta(1))
     else if (name.eq. 'XCENFI') then

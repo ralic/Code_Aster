@@ -69,8 +69,8 @@ subroutine xmilfa(elp, nno, ndime, n,&
     epsmax=1.d-9
     name='XMILFA'
     call conare(typma, ar, nbar)
-    a1=ainter(zxain*(ip1-1)+1)
-    a2=ainter(zxain*(ip2-1)+1)
+    a1=nint(ainter(zxain*(ip1-1)+1))
+    a2=nint(ainter(zxain*(ip2-1)+1))
 !
     a=0
     b=0
@@ -106,7 +106,7 @@ subroutine xmilfa(elp, nno, ndime, n,&
 !
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
-    call xnewto(elp, name, ibid, nno, n,&
+    call xnewto(elp, name, nno, n,&
                 ndime, rbid3, ndim,tabco1, rbid3, rbid3,&
                 tab, ibid, ibid, rbid, itemax,&
                 epsmax, ksi)

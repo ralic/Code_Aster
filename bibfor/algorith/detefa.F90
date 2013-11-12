@@ -51,8 +51,8 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
     call jemarq()
     zxain=xxmmvd('ZXAIN')
     call conare(typma, ar, nbar)
-    a1=ainter(zxain*(pi1-1)+1)
-    a2=ainter(zxain*(pi2-1)+1)
+    a1=nint(ainter(zxain*(pi1-1)+1))
+    a2=nint(ainter(zxain*(pi2-1)+1))
 !
 !     CAS OU LA FISSURE COINCIDE AVEC UNE ARETE NON TRAITE ICI
     ASSERT((a1.ne.0).or.(a2.ne.0))
@@ -69,14 +69,14 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
         n(1)=cnset(nnose*(it-1)+n1)
         n2=ar(a2,2)
         n(2)=cnset(nnose*(it-1)+n2)
-        n(3)=ainter(zxain*(pi1-1)+2)
+        n(3)=nint(ainter(zxain*(pi1-1)+2))
 !
     else if ((a1.ne.0).and.(a2.eq.0)) then
         n1=ar(a1,1)
         n(1)=cnset(nnose*(it-1)+n1)
         n2=ar(a1,2)
         n(2)=cnset(nnose*(it-1)+n2)
-        n(3)=ainter(zxain*(pi2-1)+2)
+        n(3)=nint(ainter(zxain*(pi2-1)+2))
 !
 !     CAS LES DEUX POINTS D'INTERSECTIONS NE SONT PAS CONFONDU AVEC
 !     LES NOEUDS SOMMETS, CALCULE LES 3 INDICES DANS L'ELEMENT ENFANT

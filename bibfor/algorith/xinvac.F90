@@ -5,8 +5,8 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterc/r8prem.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xnewto.h"
     integer :: ndim
     real(kind=8) :: s, ksi(ndim), tabar(*)
     character(len=8) :: elp
@@ -39,7 +39,7 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: coef1, coef2, coef3, ptint(1)
-    real(kind=8) :: pt1(ndim), pt2(ndim), pt3(ndim)
+    real(kind=8) :: pt1(3), pt2(3), pt3(3)
     real(kind=8) :: d, epsmax, tab(8, ndim), rbid3(3)
     integer :: itemax, i, ibid, num, ibid3(3)
     character(len=6) :: name
@@ -86,18 +86,7 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
     if (abs(coef1) .le. r8prem()) then
         ksi(1) = (s/sqrt(coef3))-1
     else if (abs(coef1).gt.r8prem()) then
-        if (abs(d) .le. r8prem()) then
-            num=1
-        else if (d.gt.r8prem()) then
-            num=2
-        else if (d.lt.-r8prem()) then
-            num=3
-        endif
-!
-        call xnewto(elp, name, num, ibid, ibid3,&
-                    ndim, ptint, ndim, tabar, rbid3, rbid3,&
-                    tab, ibid, ibid, s, itemax,&
-                    epsmax, ksi)
+        call utmess('F', 'XFEM_65')
     endif
 !
     call jedema()

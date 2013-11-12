@@ -58,7 +58,7 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
 !
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
-    call xnewto(elp, name, ibid, nno, n,&
+    call xnewto(elp, name, nno, n,&
                 ndime, ptint, ndim, zr(jtabco), rbid3, zr(jtabls),&
                 tab, ipp, ip, rbid, itemax,&
                 epsmax, ksi)

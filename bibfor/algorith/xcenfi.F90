@@ -61,7 +61,7 @@ subroutine xcenfi(elp, ndim, nno, ptint, pmilie,&
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
 !POUR LE MOMENT BLINDAGE ET SOUS DECOUPAGE DROIT
-    call xnewto(elp, name, ibid, nno, n,&
+    call xnewto(elp, name, nno, n,&
                 ndim, ptint, ndim, zr(jtabco), pmilie, zr(jtabls),&
                 tab, ibid, ibid, rbid, itemax,&
                 epsmax, ksi)

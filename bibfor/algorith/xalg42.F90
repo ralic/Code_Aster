@@ -142,8 +142,9 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 !      on ne calcule pas le premier type de point milieu si la
 !      fissure coincide avec une arete
-        ispm2=(ainter(zxain*(ip1(k)-1)+1).ne.0).or. &
-           (ainter(zxain*(ip2(k)-1)+1).ne.0)
+        ispm2=(nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0).or. &
+           (nint(ainter(zxain*(ip2(k)-1)+1)) .ne. 0)
+
 !
         if (ispm2) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS
