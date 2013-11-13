@@ -46,7 +46,6 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/ircame.h"
-#include "asterfort/irmopr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -75,10 +74,9 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
     character(len=6) :: nompro
     parameter ( nompro = 'IRCNME' )
 !
-    character(len=19) :: chamns, nonvpr
-    parameter ( nonvpr = '&&IRCNME.NV_PRO' )
+    character(len=19) :: chamns
 !
-    integer :: jcnsk, jcnsd, jcnsc, jcnsv, jcnsl, jnvpro, nbnvpr
+    integer :: jcnsk, jcnsd, jcnsc, jcnsv, jcnsl
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -92,11 +90,6 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
     chamns = '&&      .CNS.MED   '
     chamns(3:8) = nompro
     call cnocns(chanom, 'V', chamns)
-!
-!     MODIFICATION DU PROFIL
-    call irmopr(chamns, nbnoec, linoec, nonvpr)
-    call jeveuo(nonvpr, 'L', jnvpro)
-    nbnvpr = zi(jnvpro)
 !
 !    --- ON RECUPERE LES OBJETS
 !
@@ -113,7 +106,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
     call ircame(ifi, nochmd, chanom, typech, modele,&
                 nbcmp, nomcmp, ' ', partie, numpt,&
                 instan, numord, jcnsk, jcnsd, jcnsc,&
-                jcnsv, jcnsl, nbnvpr, zi(jnvpro+1), sdcarm,&
+                jcnsv, jcnsl, nbnoec, linoec, sdcarm,&
                 codret)
 !
 !====
@@ -121,7 +114,6 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 !====
 !
     call detrsd('CHAM_NO_S', chamns)
-    call jedetr(nonvpr)
 !
 !====
 ! 4. BILAN
