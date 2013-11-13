@@ -6,6 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sdnl113a.comm D 1
-F datg elsa01c.datg D 16
 F mgib sdnl113a.mgib D 19
-F libr elsa01b.22 D 22
+F libr sdnl113a.22 D 22
