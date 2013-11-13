@@ -1,6 +1,6 @@
-# TITRE TP DYNAMIQUE TRANSITOIRE
+# TITRE TP DYNAMIQUE TRANSITOIRE - ANALYSE MODALE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,60 +21,79 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+E = 200.E9;
+
+rho = 8000.0;
+
+nu = 0.3;
+
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
                    FORMAT='MED',);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
+                   AFFE=_F(GROUP_MA='VOL',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
 
-BETON=DEFI_MATERIAU(ELAS=_F(E=2E10,
-                            NU=.2,
-                            RHO=2500.0,),);
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=nu,
+                          RHO=rho,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=BETON,),);
+                    AFFE=_F(GROUP_MA='VOL',
+                            MATER=MAT,),);
+
+TAMAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT,);
+
+IMPR_TABLE(TABLE=TAMAS,);
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_MA='Enca',
-                                   DX=0.0,
-                                   DY=0.0,
-                                   DZ=0.0,),);
+                       DDL_IMPO=_F(GROUP_MA='ENCAS',
+                                   LIAISON='ENCASTRE',),);
 
 ASSEMBLAGE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CHARGE=BLOCAGE,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+           CHAM_MATER=CHMAT,
+           CHARGE=BLOCAGE,
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE'),
+                         OPTION='MASS_MECA',),),);
 
 MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=20,),);
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0,50.0,),),);
+
+MODES=NORM_MODE(reuse =MODES,
+                MODE=MODES,
+                NORME='MASS_GENE',);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=MODES,),);
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODES,
-                   VALE_CALC=70.261475331653,),
+                   VALE_CALC=6.28873 ),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=MODES,
-                   VALE_CALC=128.2562847597,),
+                   VALE_CALC=15.352871942104),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   VALE_CALC=3.85486E+01 ),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    RESULTAT=MODES,
-                   VALE_CALC=189.13961270711,),
-                _F(NUME_ORDRE=6,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=236.59506141684,),
+                   VALE_CALC=4.90722E+01 ),
                 ),
           )
 
 FIN();
+

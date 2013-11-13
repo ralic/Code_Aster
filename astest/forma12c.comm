@@ -1,4 +1,5 @@
-# TITRE TP DYNAMIQUE LINEAIRE
+
+# TITRE TP DYNAMIQUE LINEAIRE -TRANSITOIRE MODAL
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,104 +22,142 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+tfin = 0.1;
+
+pa = 0.002;
+
+fc = 15.0;
+
+om = ((2.0 * pi) * fc);
+
+E = 200.E9;
+
+rho = 8000.0;
+
+nu = 0.3;
+
+
+LISTR=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A=tfin,
+                                   PAS=(1.0 * pa),),);
+
 MAIL=LIRE_MAILLAGE(UNITE=20,
                    FORMAT='MED',);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
+                   AFFE=_F(GROUP_MA='VOL',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
 
-BA=DEFI_MATERIAU(ELAS=_F(E=2E10,
-                         NU=.2,
-                         RHO=2500.0,),);
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=nu,
+                          RHO=rho,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=BA,),);
+                    AFFE=_F(GROUP_MA='VOL',
+                            MATER=MAT,),);
+
+TAMAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT,);
+
+IMPR_TABLE(TABLE=TAMAS,);
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_MA='Enca',
-                                   DX=0.0,
-                                   DY=0.0,
-                                   DZ=0.0,),);
-
-omega = 25.0;
-
-ex = 0.3;
-
-mb = 500.0;
-
-Balourd = ((mb * (((2 * pi) * omega) ** 2)) * ex);
-
-r = 0.5;
-
-surf = (pi * (r ** 2));
-
-
-FOSA=AFFE_CHAR_MECA(MODELE=MODELE,
-                    PRES_REP=_F(GROUP_MA='Moteur',
-                                PRES=(Balourd / surf),),);
+                       DDL_IMPO=_F(GROUP_MA='ENCAS',
+                                   LIAISON='ENCASTRE',),);
 
 ASSEMBLAGE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CHARGE=BLOCAGE,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),
-                VECT_ASSE=(_F(VECTEUR=CO("FOAS"),
-                              OPTION='CHAR_MECA',
-                              CHARGE=FOSA),),);
+           CHAM_MATER=CHMAT,
+           CHARGE=BLOCAGE,
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE'),
+                         OPTION='MASS_MECA',),),);
 
 MODES=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=20,),);
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0,50.0,),),);
+
+MODES=NORM_MODE(reuse =MODES,
+                MODE=MODES,
+                NORME='MASS_GENE',);
+
+MODEE=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
+                               FREQ_MIN=0.0,
+                               FREQ_MAX=100.0,),
+                IMPRESSION=_F(CUMUL='OUI',),);
+
+MODEF=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
+                               FREQ_MIN=0.0,
+                               FREQ_MAX=(4.0 * fc),),
+                IMPRESSION=_F(CUMUL='OUI',),);
+
+GRAV=AFFE_CHAR_MECA(MODELE=MODELE,
+                    PESANTEUR=_F(GRAVITE=300.,
+                                 DIRECTION=(-1.,0,1,),),);
+
+PESELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                       CHARGE=GRAV,
+                       CHAM_MATER=CHMAT,);
+
+PESA=ASSE_VECTEUR(VECT_ELEM=PESELEM,
+                  NUME_DDL=NUMEDDL,);
+
+PROJ_BASE(BASE=MODEF,
+          STOCKAGE='DIAG',
+          MATR_ASSE_GENE=(_F(MATRICE=CO('MASPRO'),
+                             MATR_ASSE=MASSE,),
+                          _F(MATRICE=CO('RIGPRO'),
+                             MATR_ASSE=RIGIDITE,),),
+          VECT_ASSE_GENE=_F(VECTEUR=CO('PESPRO'),
+                            VECT_ASSE=PESA,),);
+
+sinom = FORMULE(VALE='sin(om*INST)', NOM_PARA='INST',);
 
 
-PROJ_BASE(BASE=MODES,
-                STOCKAGE='DIAG',
-                MATR_ASSE_GENE=(_F(MATRICE=CO('MAGENE'),
-                                   MATR_ASSE=MASSE,),
-                                _F(MATRICE=CO('GEGENE'),
-                                   MATR_ASSE=RIGIDITE,),),
-                VECT_ASSE_GENE=_F(VECTEUR=CO('FOGENE'),
-                                  VECT_ASSE=FOAS,),);
-
-sin25 = FORMULE(VALE='sin(2*pi*omega *INST)',
-                NOM_PARA='INST',);
+TRANGENE=DYNA_TRAN_MODAL(SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                         MATR_MASS=MASPRO,
+                         MATR_RIGI=RIGPRO,
+                         VITE_ROTA=0.0,
+                         INCREMENT=_F(PAS=pa,
+                                      INST_FIN=tfin,),
+                         EXCIT=_F(VECT_ASSE_GENE=PESPRO,
+                                  FONC_MULT=sinom,))
 
 
-
-DYNASAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                        MATR_MASS=MAGENE,
-                        MATR_RIGI=GEGENE,
-                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                        INCREMENT=_F(INST_FIN=1.0,
-                                     PAS=1.E-4,),
-                        EXCIT=_F(VECT_ASSE_GENE=FOGENE,
-                                 FONC_MULT=sin25,),);
-
-
-
-DEPMOSA=RECU_FONCTION(RESU_GENE=DYNASAN,
+DEPLPDZ=RECU_FONCTION(RESU_GENE=TRANGENE,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DZ',
-                      GROUP_NO='Mom',);
+                      GROUP_NO='P',);
 
+DEPLPDX=RECU_FONCTION(RESU_GENE=TRANGENE,
+                      NOM_CHAM='DEPL',
+                      NOM_CMP='DX',
+                      GROUP_NO='P',);
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=29,
-              COURBE=(
-                      _F(FONCTION=DEPMOSA,
-                         MARQUEUR=0,),))
+              COURBE=(_F(FONCTION=DEPLPDZ, MARQUEUR=0,),))
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.8118029999999999E-4,
-                        VALE_PARA=0.91000000000000003,
-                        FONCTION=DEPMOSA,
-                        ),
-              )
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=(_F(FONCTION=DEPLPDX, MARQUEUR=0,),))
+                   
+
+TEST_FONCTION(VALEUR=(_F(
+                         FONCTION=DEPLPDZ,
+                         VALE_PARA=0.05,
+                         VALE_CALC=0.14554872
+                      )))
+
+TEST_FONCTION(VALEUR=(_F(
+                         FONCTION=DEPLPDX,
+                         VALE_PARA=0.05,
+                         VALE_CALC=6.4879137e-05
+                       )))
 
 FIN();
+
