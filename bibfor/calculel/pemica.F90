@@ -70,7 +70,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     champ2 = champ
     rddg = r8rddg()
     epsi = 1.d-12
-!     --- ON RETROUVE LE NOM DU LIGREL ---
+
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
@@ -89,6 +89,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     scal = scalai(zi(jceld))
 !
 !     -- ON VERIFIE LES LONGUEURS:
+    ASSERT(long.ge.16)
     first = .true.
     nbgr = nbgrel(ligrel)
     do 10, j = 1,nbgr
@@ -110,9 +111,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
     if (scal(1:1) .eq. 'R') then
-        do 20, i = 1,longt
-        vr(i) = 0.d0
-20      continue
+        vr(1:long) = 0.d0
     else
         call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
@@ -218,6 +217,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         if (icage .ne. 0) then
             ixpr2 = zr(lvale-1+idecgr+(k-1)*longt+10)
             iypr2 = zr(lvale-1+idecgr+(k-1)*longt+11)
+            ASSERT(long.ge.27)
             vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) + 2.0d0*dx*ixy
             vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) + 2.0d0*dy*ixy
         endif
@@ -259,6 +259,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         if (icage .ne. 0) then
             ixpr2 = zr(lvale-1+idecgr+(k-1)*longt+10)
             iypr2 = zr(lvale-1+idecgr+(k-1)*longt+11)
+            ASSERT(long.ge.27)
             vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) + 2.0d0*dx*ixy
             vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) + 2.0d0*dy*ixy
         endif
@@ -271,6 +272,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     if (iorig .eq. 1) then
 !
 !     --- INERTIES DE LA STRUCTURE AU NOEUD UTILISATEUR P  ---
+        ASSERT(long.ge.25)
         vr(20) = vr(5) + vr(1)*(pgy*pgy + pgz*pgz)
         vr(21) = vr(6) + vr(1)*(pgx*pgx + pgz*pgz)
         vr(22) = vr(7) + vr(1)*(pgx*pgx + pgy*pgy)
@@ -289,6 +291,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         vr(15) = 0.d0
         vr(16) = 0.d0
         if (icage .ne. 0) then
+            ASSERT(long.ge.29)
             vr(26) = 0.d0
             vr(27) = 0.d0
             vr(28) = 0.d0
@@ -334,6 +337,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         vr(15) = angl(2) * rddg
         vr(16) = angl(3) * rddg
         if (icage .ne. 0) then
+            ASSERT(long.ge.29)
             vr(28) = -sin(angl(1))*vr(27) + cos(angl(1))*vr(26)
             vr(29) = cos(angl(1))*vr(27) + sin(angl(1))*vr(26)
         endif
