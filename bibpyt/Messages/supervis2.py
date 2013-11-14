@@ -33,7 +33,7 @@ cata_msg={
 
 3 : _(u"""%(k1)-8s %(k2)-16s ignoré"""),
 
-#4 plus bas avec 10
+#4 plus bas avec 9, 10
 
 5 : _(u"""
 Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
@@ -85,6 +85,12 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
                 Langue des messages : %(k8)s
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
+
+9 : {  'message' : _(u"""Version de Python : %(k1)s
+                          Version de NumPy : %(k2)s"""),
+        'flags' : 'CENTER | ALL_UNIT',
+},
+
 # fin Lignes d'entete
 
 11 : {  'message' : _(u"""Parallélisme MPI : actif
