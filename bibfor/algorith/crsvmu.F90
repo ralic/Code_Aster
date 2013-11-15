@@ -99,19 +99,19 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
             if (ibid .ne. 1) goto 70
         else
-            call getvid(' ', 'MATR_RIGI', scal=matra, nbret=ibid)
-            call getvid(' ', 'MATR_A', scal=matra, nbret=ibid)
-            if (ibid .ne. 1) goto 70
-            k19b=' '
+            matra=' '
+            if (eximo2.eq.1) call getvid(' ', 'MATR_RIGI', scal=matra, nbret=ibid)
+            if (eximo3.eq.1) call getvid(' ', 'MATR_A', scal=matra, nbret=ibid)
+            if (matra .eq. ' ') goto 70
             k19b=matra
             call jeveuo(k19b//'.REFA', 'L', jrefa)
             if (zk24(jrefa+9)(1:4) .eq. 'GENE') then
-!         CAS PARTICULIER DU NUME_DDL_GENE
+!               --  CAS PARTICULIER DU NUME_DDL_GENE
                 goto 70
             else if (zk24(jrefa+9)(1:4).eq.'NOEU') then
                 call dismoi('NOM_MODELE', matra, 'MATR_ASSE', repk=modele)
             else
-! --- CAS NON PREVU
+!               --- CAS NON PREVU
                 ASSERT(.false.)
             endif
         endif
