@@ -1008,8 +1008,8 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
 # en supposant que ce calcul est suffisamment precis.
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-2,
-# Variabilité non-expliquee (fiche 21298)
-           TOLE_MACHINE=5.E-6,
+#          Variabilité non-expliquee :
+           TOLE_MACHINE=5.E-5,
            VALE_CALC=1.8602884763866,
            VALE_REFE=1.8628625511053,
            NOM_PARA='RMS',
@@ -1017,8 +1017,8 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-1,
-# Variabilité non-expliquee (fiche 21298)
-           TOLE_MACHINE=5.E-6,
+#          Variabilité non-expliquee :
+           TOLE_MACHINE=4.E-5,
            VALE_CALC=1.2435209353361,
            VALE_REFE=1.107501776192,
            NOM_PARA='RMS',
@@ -1026,8 +1026,8 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-1,
-# Variabilité non-expliquee (fiche 21298)
-           TOLE_MACHINE=5.E-6,
+#          Variabilité non-expliquee :
+           TOLE_MACHINE=2.E-4,
            VALE_CALC=2.2009207174445,
            VALE_REFE=2.4097094098975,
            NOM_PARA='RMS',
@@ -1038,15 +1038,16 @@ SPOSCI = CALC_FONCTION(INFO=2,
 
 MAXSP = INFO_FONCTION(MAX=_F(FONCTION = SPOSCI,),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.88086031,
-                        VALE_REFE=8.798585602334655e-01,
-# Variabilité non-expliquee (fiche 21298)
-                        TOLE_MACHINE=5.E-6,
-                        VALE_PARA=(0.02, 2.5),
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01,
-                        NOM_PARA=('AMOR', 'FREQ'),
-                        FONCTION=SPOSCI,),
+TEST_FONCTION(VALEUR=_F(
+#                          Variabilité non-expliquee :
+                           TOLE_MACHINE=3.E-5,
+                           VALE_CALC=0.88086031,
+                           VALE_REFE=8.798585602334655e-01,
+                           VALE_PARA=(0.02, 2.5),
+                           REFERENCE='AUTRE_ASTER',
+                           PRECISION=0.01,
+                           NOM_PARA=('AMOR', 'FREQ'),
+                           FONCTION=SPOSCI,),
               ATTRIBUT=(_F(REFERENCE='ANALYTIQUE',
                            PARA=0.02,
                            ATTR_REFE='FREQ',
@@ -1154,6 +1155,8 @@ TAB_SIXY=CREA_TABLE(FONCTION=_F(FONCTION=ABSDSIXY),);
 
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
+#          Variabilité non-expliquee :
+           TOLE_MACHINE=6.E-5,
            VALE_CALC=0.17334921052170,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
@@ -1163,8 +1166,8 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
 
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
-# Variabilité non-expliquee (fiche 21298)
-           TOLE_MACHINE=5.E-6,
+#          Variabilité non-expliquee :
+           TOLE_MACHINE=5.E-5,
            VALE_CALC=0.033066587487551,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
@@ -1182,9 +1185,9 @@ TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_REFE=0.,);
 
 TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
-# Variabilité non-expliquee (fiche 21298)
-           TOLE_MACHINE=5.E-6,
            VALE_ABS='OUI',
+#          Variabilité non-expliquee :
+           TOLE_MACHINE=6.E-6,
            VALE_CALC=0.21472309344989,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
