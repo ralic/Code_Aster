@@ -291,7 +291,7 @@ for i in range(1,nbcalc) :
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
                VALE_CALC=VALE_CALC[(i-1)*4+2],
-               TOLE_MACHINE=5.E-04,
+               TOLE_MACHINE=1.E-03,
                VALE_REFE=0.0  )
 
     TEST_TABLE(TABLE=TABLST[i],
