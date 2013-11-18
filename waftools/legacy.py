@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import sys
 import os
 import os.path as osp
 from itertools import chain
@@ -40,7 +41,7 @@ def apply_legacy(self):
 class create_config_txt(Task.Task):
     vars = ['PREFIX', 'DEFINES', 'PYTHON',
             'FC', 'FCFLAGS',
-            'PYTHONDIR', 'LIBPATH', 'LIBDIR',
+            'PYTHONDIR', 'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH',
             'ASTERDATADIR', 'OPT_ENV', 'install_tests']
 
     def run(self):
@@ -55,7 +56,7 @@ class create_config_txt(Task.Task):
 class create_profile(Task.Task):
     vars = ['PREFIX', 'DEFINES', 'PYTHON',
             'FC', 'FCFLAGS',
-            'PYTHONDIR', 'LIBPATH', 'LIBDIR',
+            'PYTHONDIR', 'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH',
             'ASTERDATADIR', 'OPT_ENV', 'install_tests']
 
     def run(self):
@@ -78,6 +79,9 @@ def _env2dict(src, env, install_tests):
     dico = dict([(k, as_str(env[k])) \
                     for k in ('PREFIX', 'PYTHON', 'PYTHONDIR', 'ASTERDATADIR')])
     dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
+    dico['CFG_PYTHONPATH'] = os.pathsep.join(Utils.to_list(env['CFG_PYTHONPATH']))
+    dico['PYTHONHOME'] = sys.prefix + '' if sys.prefix == sys.exec_prefix \
+                                         else ':' + sys.exec_prefix
     # as_run compatibility
     if env.ASRUN_MPI_VERSION:
         dico['DEFINES'] += ' _USE_MPI'
@@ -146,8 +150,14 @@ TMPL_PROFILE = r"""# created by waftools/legacy
 LD_LIBRARY_PATH=$ASTER_VERSION_DIR/lib:\
 %(LD_LIBRARY_PATH)s:\
 $LD_LIBRARY_PATH
-
 export LD_LIBRARY_PATH
+
+PYTHONPATH=%(CFG_PYTHONPATH)s:\
+$PYTHONPATH
+export PYTHONPATH
+
+PYTHONHOME=%(PYTHONHOME)s
+export PYTHONHOME
 
 %(OPT_ENV)s
 """

@@ -62,7 +62,7 @@ def check_libm_after_files(self):
                 flags.remove('-lm')
             except ValueError:
                 break
-        self.end_msg('ok ("-lm" moved from LINKFLAGS_CLIB)')
+        self.end_msg('ok ("-lm" moved to LINKFLAGS_CLIB)')
         self.env.LINKFLAGS_CLIB = flags
     else:
         self.end_msg('nothing done')

@@ -3,7 +3,7 @@
 import os
 import os.path as osp
 from functools import partial
-from waflib import Options, Configure, Errors, Logs
+from waflib import Options, Configure, Errors, Logs, Utils
 
 
 def options(self):
@@ -21,9 +21,12 @@ def configure(self):
         default = ['mpicc', 'mpicxx', 'mpif90']
     else:
         default = [''] * 3
-    os.environ['CC'] = self.env.CC or default.pop(0)
-    os.environ['CXX'] = self.env.CXX or default.pop(0)
-    os.environ['FC'] = self.env.FC or default.pop(0)
+    self.add_os_flags('CC')
+    self.add_os_flags('CXX')
+    self.add_os_flags('FC')
+    for var in ('CC', 'CXX', 'FC'):
+        val = Utils.to_list(self.env[var])
+        os.environ[var] = (val and val[0]) or default.pop(0)
     self.load_compilers()
     self.check_openmp()
     self.check_fortran_clib()
@@ -42,6 +45,7 @@ def load_compilers(self):
 
 @Configure.conf
 def load_compilers_mpi(self):
+    from Options import options as opts
     check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
                     package='', uselib_store='MPI', mandatory=False)
     cc = os.environ.get('CC')
@@ -52,6 +56,8 @@ def load_compilers_mpi(self):
         self.env.append_unique('CXXNAME', osp.basename(cxx))
         self.env.append_unique('FCNAME', osp.basename(fc))
         self.check_mpi()
+    elif opts.parallel:
+        self.fatal("Unable to configure the parallel environment")
 
 @Configure.conf
 def check_mpi(self):
