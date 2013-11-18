@@ -42,9 +42,9 @@ subroutine ccvrch(resuin, numor0)
 !
     if (excisd .eq. ' ') then
         if (nchalu .eq. 0) then
-            call utmess('I', 'UTILITAI4_2', sk=resuin)
+            call utmess('A', 'UTILITAI4_2', sk=resuin)
         else
-            call utmess('I', 'UTILITAI4_1', sk=resuin)
+            call utmess('A', 'UTILITAI4_1', sk=resuin)
         endif
     endif
 !
