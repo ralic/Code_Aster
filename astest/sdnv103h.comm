@@ -455,7 +455,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=277.99592990339,
-           TOLE_MACHINE=1.E-04,                  # TODO TOLE_MACHINE
+           TOLE_MACHINE=2.E-04,                  # TODO TOLE_MACHINE
            NOM_PARA='R',
            TABLE=CONTB1_2,
            FILTRE=_F(PRECISION=1.E-10,
