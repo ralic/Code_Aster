@@ -73,9 +73,6 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !-----------------------------------------------------------------------
     data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
-!   RQ : ATTENTION, 'ELAS' ET 'COMP_INCR' COEXISTENT DANS LE CAS SUIVANT
-!   -> STAT_NON_LINE/COMPORTEMENT/RELATION='ELAS' + ETAT_INIT
-!
     cp = typmod(1) .eq. 'C_PLAN'
     trac = compor(1)(1:14).eq.'VMIS_ISOT_TRAC'
     line = compor(1)(1:14).eq.'VMIS_ISOT_LINE'
@@ -174,10 +171,8 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
     else if (elas) then
         rp = 0.d0
 
-!    EN COMMENTAIRE POUR L'INSTANT, VOIR CE QU'IL FAUDRA FAIRE 
-!    SUITE A ISSUE21711
-!    else
-!        ASSERT(.false.)
+    else
+        ASSERT(.false.)
 
     endif
 !

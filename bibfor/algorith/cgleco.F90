@@ -4,6 +4,7 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
+#include "asterfort/cgvein.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/dismoi.h"
@@ -131,6 +132,10 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
     if (incr .and. typfis .eq. 'FISSURE') then
         call utmess('F', 'RUPTURE1_43')
     endif
+!
+! - Check COMPORTEMENT / RELATION in result for incremental comportement 
+!
+    if (incr) call cgvein(resu, compor, iord0)
 !
     call jedema()
 !

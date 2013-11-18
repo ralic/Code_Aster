@@ -408,4 +408,15 @@ Veuillez revoir les données du matériau.
 La macro-commande POST_RUPTURE ne fonctionne pas quand les paramètres matériau ne sont pas constants.
 """),
 
+69:_(u"""
+GTP : 
+La relation de comportement %(k1)s n'est pas prévue dans CALC_G
+"""),
+
+70:_(u"""
+GTP : 
+La relation de comportement VMIS_ISOT_TRAC est interdite dans CALC_G en présence de thermique.
+Dans la commande AFFE_MATERIAU, le mot clé facteur AFFE_VARC ne doit pas être présent.
+"""),
+
 }

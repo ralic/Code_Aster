@@ -18,16 +18,18 @@
 #
 def C_RELATION( COMMAND ):
 
-    if COMMAND in ('CALC_G','POST_GP',):
+    if COMMAND in ('CALC_G',):
                    return (             "ELAS",            #COMMUN#
                                         "ELAS_VMIS_LINE",
                                         "ELAS_VMIS_TRAC",
                                         "ELAS_VMIS_PUIS",
                                         "ELAS_HYPER",
-                                        "VMIS_CINE_LINE",
                                         "VMIS_ISOT_LINE",
-                                        "VMIS_ISOT_PUIS",
                                         "VMIS_ISOT_TRAC",
+                                        # relations interdites depuis issue21711, elles
+                                        # devront etre introduites dans le F90 si besoin
+                                        #"VMIS_CINE_LINE",
+                                        #"VMIS_ISOT_PUIS",
                                      )
     elif COMMAND in ('MACR_ASCOUF_CALC','MACR_ASPIC_CALC',):
                    return (             "ELAS",           

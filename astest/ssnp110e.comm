@@ -796,13 +796,6 @@ RESUINCR=STAT_NON_LINE(MODELE=MO,
                                  REAC_ITER = 1),
                        )
 
-# calcul INCR, post-traitement INCR -> GTP
-G_I_I=CALC_G(RESULTAT=RESUINCR,
-             THETA=_F(THETA = THETA0,
-                      SYME='OUI'))
-
-IMPR_TABLE(TABLE=G_I_I)
-
 # calcul Incr, post-traitement ELAS -> Genl
 G_I_E=CALC_G(RESULTAT=RESUINCR,
              THETA=_F(THETA = THETA0,
