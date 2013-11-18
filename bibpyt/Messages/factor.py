@@ -34,14 +34,15 @@ Soit un taux de remplissage de  %(r1)6.3f %%.
 
 
 10: _(u"""
-Problème : la matrice n'est pas factorisable :
+Problème : la matrice est singulière ou presque singulière :
   Lors de la factorisation de la matrice, on a rencontré un problème
   (pivot nul ou presque nul) à la ligne %(i1)d
   Le degré de liberté associé à cette ligne est de type : (%(k4)s)
   Le nombre de décimales "perdues" pour cette ligne est : %(i2)d.
-  Ce nombre de décimales perdues est lié au degré de singularité de la matrice. Plus il est grand,
-  plus le système est singulier. Quand il dépasse 8, on considère que l'on a perdu 50%% de la précision
-  sur les nombres réels (qui ont 15 décimales environ).
+  Ce nombre de décimales perdues est lié au degré de singularité de la matrice. 
+  Plus il est grand, plus le système est singulier. 
+  Quand on a perdu plus de 8 décimales, on estime que l'on a perdu 50%% de la précision
+  des nombres réels (qui ont 15 décimales environ).
 
   Les différents types du degré de liberté sont :
     * (A) : Degré liberté physique associé au noeud : %(k1)s et à la composante : %(k2)s.

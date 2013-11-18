@@ -215,6 +215,10 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     ' ', 0, iretz, .true.)
         call amumph('PRERES', solvop, noma19, [0.d0], [cbid],&
                     ' ', 0, iretz, .true.)
+
+!       -- mumps ne nous dit pas le nombre de décimales réellement perdues :
+        ndeci=-999
+
         nzero=-999
         iretp=0
         kpiv='&&AMUMP.PIVNUL'
@@ -224,7 +228,6 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !        MATRICE SINGULIERE NUMERIQUEMENT OU EN STRUCTURE (DETECTE EN
 !        AMONT DS AMUMPH. ON NE SAIT PAS PRECISER ISINGUCONTRAIREMENT A
 !        MF/LDLT. ON MET ISINGU=-999 ARBITRAIREMENT)
-            ndeci=-999
             isingu=-999
             npivot=-999
         else
@@ -256,13 +259,11 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                 if (zi(ipiv) .eq. 0) then
 !             -- PAS DE SINGULARITE
                     iretz=0
-                    ndeci=-999
                     isingu=-999
                     npivot=-zi(ipiv+1)
                 else if (zi(ipiv).gt.0) then
 !             -- AU MOINS UNE SINGULARITE
                     iretz=1
-                    ndeci=ndigi2
                     isingu=zi(ipiv+2)
                     ASSERT(isingu.gt.0 .and. isingu.le.neq)
                     npivot=-zi(ipiv+1)
@@ -272,7 +273,6 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             else
 !     -- LA FACTO S'EST BIEN PASSEE ET ON NE CHERCHE PAS A TESTER LES
 !        EVENTUELLES SINGULARITES
-                ndeci=-999
                 isingu=-999
                 npivot=-999
             endif
