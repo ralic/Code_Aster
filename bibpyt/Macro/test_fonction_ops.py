@@ -128,7 +128,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    return {'testOk' : testOk, 'erreur' : err, 'epsilon' : curEps, 'valeurRef' :vtc}
 
 #------------------------------------------
-def RoundValues(crit,res,vtc,err,curEps):
+def RoundValues(crit,res,vtc,err,curEps,nreg=False):
    """
       Effectue des troncatures en fonction des valeurs réelles fournies
       et retourne eventuellement des valeurs sans exposant.
@@ -164,6 +164,9 @@ def RoundValues(crit,res,vtc,err,curEps):
          ndigit=10
       if res != 0. : ndigit=ndigit+int(math.log10(abs(res)))
       ndigit=max(ndigit,2) # il en faut un minimum quand meme
+
+   # Pour NON_REGRESSION, on veut toujours au moins 12 :
+   if nreg : ndigit=max(12,ndigit)
    ndigit=min(ndigit,15) # limite de la double présision
 
    # arrondi des 2 valeurs rest et vtc :
@@ -243,7 +246,8 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, l
      resc,vtcc,errr,curEpsr=RoundValues(crit,res.imag,vtc0.imag,err,curEps)
    else:
      vtc0=vtc
-     res2,vtc2,errr,curEpsr=RoundValues(crit,res,vtc0,err,curEps)
+     nreg=ref=='NON_REGRESSION'
+     res2,vtc2,errr,curEpsr=RoundValues(crit,res,vtc0,err,curEps,nreg=nreg)
 
    if is_complex(res):
       if(res.imag<0):
