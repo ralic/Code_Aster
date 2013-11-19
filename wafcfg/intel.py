@@ -1,7 +1,9 @@
 # coding=utf-8
 
 """
-Example of configuration using Intel compilers
+Configuration using Intel compilers
+
+Use automatically MPI wrappers if opt.parallel was previously set.
 """
 
 def configure(self):

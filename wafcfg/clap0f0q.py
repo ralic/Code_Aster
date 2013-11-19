@@ -35,19 +35,4 @@ def configure(self):
         YAMMROOT + 'prerequisites/Metis_40/Lib',
         YAMMROOT + 'prerequisites/Scotch_5111/include'])
 
-    opts.maths_libs = 'openblas'
-
-    opts.enable_med = True
-
-    opts.enable_mumps = True
-    opts.mumps_version = '4.10.0'
-    opts.mumps_libs = 'dmumps zmumps smumps cmumps mumps_common pord metis'
-    opts.embed_mumps = True
-
     opts.enable_petsc = False
-
-    opts.enable_scotch = True
-    opts.embed_scotch = True
-
-    opts.embed_aster = True
-    opts.embed_fermetur = True

@@ -12,13 +12,11 @@ waf install -p
 YAMMROOT = '/aster/yamm/V7_main/'
 
 import intel
-import mkl64
 
 def configure(self):
     from Options import options as opts
 
     intel.configure(self)
-    mkl64.configure(self)
 
     self.env['ADDMEM'] = 250
     self.env.append_value('OPT_ENV', [
@@ -46,17 +44,4 @@ def configure(self):
 
     self.env.append_value('LIB', ('pthread', 'util'))
 
-    opts.enable_med = True
-
-    opts.enable_mumps = True
-    opts.mumps_version = '4.10.0'
-    opts.mumps_libs = 'dmumps zmumps smumps cmumps mumps_common pord metis'
-    opts.embed_mumps = True
-
     opts.enable_petsc = False
-
-    opts.enable_scotch = True
-    opts.embed_scotch = True
-    
-    opts.embed_aster = True
-    opts.embed_fermetur = True
