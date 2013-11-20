@@ -32,51 +32,65 @@ MO=AFFE_MODELE(MAILLAGE=M,
 MA=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                          NU = 0.3,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT = 'OUI',
-                         MATER = MA,),);
-
+    
 M=DEFI_GROUP(reuse=M,   
              MAILLAGE=M,
              CREA_GROUP_NO=(_F(  GROUP_MA = 'SINF_F',),
-                            _F(  GROUP_MA = 'IINF_F',  ),) )
-                
+                            _F(  GROUP_MA = 'IINF_F',),
+                         _F( NOM='CLX1',
+                             OPTION='ENV_SPHERE',
+                                POINT=[0., 10. , 10.],
+                                PRECISION=1e-8,
+                                RAYON=1e-8),
+                         _F( NOM='CLX2',
+                             OPTION='ENV_SPHERE',
+                                POINT=[0., -10. , 10.],
+                                PRECISION=1e-8,
+                                RAYON=1e-8),                            
+                         _F( NOM='CLY1',
+                             OPTION='ENV_SPHERE',
+                                POINT=[10., 0. , 10.],
+                                PRECISION=1e-8,
+                                RAYON=1e-8),                            
+                         _F( NOM='CLY2',
+                             OPTION='ENV_SPHERE',
+                                POINT=[-10., 0. , 10.],
+                                PRECISION=1e-8,
+                                RAYON=1e-8),
+                         ) ,
+                   INFO =2 );
                                         
-
-                                        
-LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
-                           INTERVALLE =_F (JUSQU_A= 1.0, NOMBRE = 1   )
-                                         );
-
 
 FF=DEFI_FISS_XFEM(MODELE=MO,
                   DEFI_FISS=_F(FORM_FISS='ELLIPSE',
-                               DEMI_GRAND_AXE=2.001,
-                               DEMI_PETIT_AXE=2.001,
+                               DEMI_GRAND_AXE=2.0,
+                               DEMI_PETIT_AXE=2.0,
                                CENTRE=(0,0,0),
                                VECT_X=(1,0,0),
                                VECT_Y=(0,1,0),
-       ),
-                 )
+                              ),
+                 );
+               
+               
 MOX=MODI_MODELE_XFEM(MODELE_IN=MO,FISSURE=FF)
 
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT = 'OUI',
+                         MATER = MA,),);              
 
 CH=AFFE_CHAR_MECA(MODELE=MOX,
                   DDL_IMPO=(
-                         _F(  NOEUD = 'N8290',        DX = 0.,    ),
-                         _F(  NOEUD = 'N8354',        DX = 0.,   ),
-                         _F(  NOEUD = 'N8299',        DY = 0.,    ),
-                         _F(  NOEUD = 'N8421',        DY = 0.,    ),
-                         _F(  NOEUD = 'N17844',        DX = 0.,    ),
-                         _F(  NOEUD = 'N13157',        DX = 0.,   ),
-                         _F(  NOEUD = 'N17849',        DY = 0.,    ),
-                         _F(  NOEUD = 'N17839',        DY = 0.,    ),
-       _F(  NOEUD=('N18259','N15135','N16739','N13457'),        DZ = 0.,),),
+                         _F(  GROUP_NO = 'CLX1',        DX = 0.,    ),
+                         _F(  GROUP_NO = 'CLX2',        DX = 0.,   ),
+                         _F(  GROUP_NO = 'CLY1',        DY = 0.,    ),
+                         _F(  GROUP_NO = 'CLY2',        DY = 0.,    ),
+                      _F(  GROUP_NO = 'SINF_F',      DZ = 0.,),
+                          ),
                       PRES_REP=(
-                         _F(  GROUP_MA = 'SINF_F',   PRES = -1.E6, ),
                          _F(  GROUP_MA = 'IINF_F',   PRES = -1.E6, ),)
-                   )
-
+                   );
+                 
+                 
 RESU=MECA_STATIQUE(MODELE=MOX,
                    CHAM_MATER=CM,
                    EXCIT=_F(  CHARGE = CH,   ) )
@@ -84,69 +98,91 @@ RESU=MECA_STATIQUE(MODELE=MOX,
 GLOC=CALC_G(RESULTAT=RESU,
             INST = 0,
             OPTION='CALC_K_G',
-            THETA=_F(FISSURE=FF,R_INF=0.24,
-                              R_SUP=0.48),
+            THETA=_F(FISSURE=FF,R_INF=0.3,
+                                R_SUP=0.8),
                      LISSAGE=_F(LISSAGE_G='LAGRANGE_REGU',
                                 LISSAGE_THETA='LAGRANGE_REGU'),
-                     )
+                     INFO = 2);
+
+
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           VALE_CALC=11.732849927923,
+           PRECISION=0.09,
+           VALE_CALC=11.511608631148 ,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC,
            FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=11,),
+                     VALE_I=1,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           VALE_CALC=11.756179173983,
+           PRECISION=0.09,
+           VALE_CALC=10.96536649305 ,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC,
            FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=31,),
+                     VALE_I=4,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           VALE_CALC=11.751007960166,
+           PRECISION=0.09,
+           VALE_CALC=10.658761382867 ,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC,
            FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=15,),
+                     VALE_I=8,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           VALE_CALC=11.73829408331,
+           PRECISION=0.09,
+           VALE_CALC= 11.257273755524 ,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC,
            FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=22,),
+                     VALE_I=12,),
            )
 
-TEST_TABLE(VALE_CALC=11.759126552118,
-           
+TEST_TABLE(VALE_CALC=11.659304773296 ,
            NOM_PARA='G',
            TYPE_TEST='MAX',
            TABLE=GLOC,
            )
 
-TEST_TABLE(
-           VALE_CALC=11.683832490419,
-           
+TEST_TABLE(VALE_CALC=8.9308373989649 ,           
            NOM_PARA='G',
            TYPE_TEST='MIN',
            TABLE=GLOC,
            )
 
+#------------------------------------------------------------------------
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : MAILLAGE FISSURE et DEPLACEMENTS POUR LE MAILLAGE FISSURE
+#------------------------------------------------------------------------
+#------------------------------------------------------------------------
 
+MA_XFEM=POST_MAIL_XFEM(MODELE=MOX,INFO=2);
+
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                   AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),
+                          );
+
+
+RES_XFEM=POST_CHAM_XFEM(RESULTAT=RESU,
+                     MODELE_VISU=MOD_VISU,
+                     INFO=2,
+                     );
+                               
+IMPR_RESU(FORMAT='MED',
+             UNITE=80,
+         RESU=_F(RESULTAT=RES_XFEM,),); 
+                  
 FIN( )
 #
 #
-
