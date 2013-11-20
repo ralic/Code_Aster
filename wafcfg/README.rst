@@ -23,6 +23,14 @@ This will define the compilers to be ``icc`` and ``ifort`` (including ``intel``)
 load the ``aster4`` configuration and just add few values for a MPI parallel build
 (through ``aster4_mpi``).
 
+This combinaison can be replaced by importing the mpdules.
+For example: ``aster4.py`` contains::
+
+    import intel
+    
+    def configure(self):
+        intel.configure(self)
+        ...
 
 
 PLEASE DO NOT CHANGE the files related to the verification servers:

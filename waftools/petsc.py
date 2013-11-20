@@ -41,23 +41,24 @@ def check_petsc(self):
     if opts.enable_petsc == False:
         raise Errors.ConfigurationError('PETSC disabled')
 
+    optlibs = None
     if opts.petsc_libs is None:
         opts.petsc_libs = 'petsc'
+        # add optional libs
+        optlibs ='ml HYPRE stdc++'
     if opts.petsc_libs:
-        self.check_petsc_libs()
+        self.check_petsc_libs(optlibs)
 
     self.check_petsc_headers()
 
 @Configure.conf
-def check_petsc_libs(self):
+def check_petsc_libs(self, optlibs):
     from Options import options as opts
-    check_petsc = partial(self.check_cc, uselib_store='PETSC', use='MPI',
-                          mandatory=True)
-    if opts.embed_all or opts.embed_scotch:
-        check = lambda lib: check_petsc(stlib=lib)
-    else:
-        check = lambda lib: check_petsc(lib=lib)
-    map(check, Utils.to_list(opts.petsc_libs))
+    keylib = ('st' if opts.embed_all or opts.embed_scotch else '') + 'lib'
+    for lib in Utils.to_list(opts.petsc_libs):
+        self.check_cc(uselib_store='PETSC', use='MPI', mandatory=True, **{ keylib: lib})
+    for lib in Utils.to_list(optlibs or ''):
+        self.check_cc(uselib_store='PETSC', use='MPI', mandatory=False, **{ keylib: lib})
 
 @Configure.conf
 def check_petsc_headers(self):

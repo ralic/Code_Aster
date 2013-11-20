@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import os.path as osp
+import re
 from functools import partial
 from waflib import Options, Configure, Logs, Utils, Errors
 
@@ -40,6 +41,10 @@ def check_mumps(self):
     self.get_mumps_version()
     if opts.mumps_libs is None:
         opts.mumps_libs = 'dmumps zmumps smumps cmumps mumps_common pord'
+        # metis has been checked before (and is mandatory)
+        metis = self.env.get_flat('LIB_METIS') or self.env.get_flat('STLIB_METIS')
+        if metis:
+            opts.mumps_libs += " " + metis
     if not opts.parallel:
         opts.mumps_libs += ' mpiseq'
     if opts.mumps_libs:
@@ -60,6 +65,21 @@ def check_mumps_libs(self):
         check = lambda lib: check_mumps(lib=lib)
     map(check, Utils.to_list(opts.mumps_libs))
 
+@Configure.conf
+def detect_last_includes(self):
+    """Detect the more recent version of Mumps includes in src"""
+    pattern = 'bibfor/include_mumps-'
+    incs = self.srcnode.ant_glob(pattern + '*/*.h')
+    exist = set([osp.dirname(i.srcpath()) for i in incs])
+    mpi = [i for i in exist if i.endswith('_mpi')]
+    incdirs = list(exist.difference(mpi))
+    if self.env.HAVE_MPI:
+        incdirs = mpi
+    regexp = re.escape(pattern) + '(?P<vers>[0-9]+\.[0-9]+\.[0-9]+)(?:|_mpi)'
+    allvers = re.compile(regexp).findall(' '.join(incdirs))
+    vers = [tuple(map(int, i.split('.'))) for i in allvers]
+    vers.sort()
+    return '.'.join(map(str, vers[-1]))
 
 @Configure.conf
 def get_mumps_version(self):
@@ -69,11 +89,13 @@ def get_mumps_version(self):
         if opts.mumps_version:
             ret = opts.mumps_version
         else:
-            frag = '\n'.join(('#include <stdio.h>', '#include <zmumps_c.h>',
-                              'int main(){printf(MUMPS_VERSION);return 0;}'))
-            ret = self.check_cc(fragment=frag, execute=True, define_ret=True,
-                                mandatory=True)
-
+            ret = self.detect_last_includes()
+        # if C include is available
+        #incdir = osp.abspath('bibfor/include_mumps-%s/' % ret)
+        #frag = '\n'.join(('#include <stdio.h>', '#include <zmumps_c.h>',
+                          #'int main(){printf(MUMPS_VERSION);return 0;}'))
+        #ret = self.check_cc(fragment=frag, execute=True, define_ret=True,
+                            #mandatory=True, cflags='-I%s' % incdir)
         to_search = 'bibfor/include_mumps-%s*/' % ret
         if not self.srcnode.ant_glob(to_search, src=True, dir=True):
             raise Errors.ConfigurationError('"%s" not compatible (see bibfor/include_mumps*)' % ret)

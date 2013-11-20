@@ -39,13 +39,6 @@ def configure(self):
     self.check_fortran_types()
     self.check_fortran_preprocessor()
     self.check_optional_features()
-    # insert flags before FCSHLIB_MARKER (and after FCSTLIB_MARKER)
-    if self.env.OPTLIB_FLAGS:
-        self.start_msg('Checking for OPTLIB_FLAGS')
-        self.env.prepend_value('FCSHLIB_MARKER', self.env.OPTLIB_FLAGS)
-        # because it is just after FCSTLIB_MARKER (-Wl,-Bstatic)
-        self.env.prepend_value('FCSHLIB_MARKER', '-Wl,-Bdynamic')
-        self.end_msg(self.env.OPTLIB_FLAGS)
 
 def build(self):
     buildenv = self.all_envs[self.variant]

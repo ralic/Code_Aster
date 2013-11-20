@@ -11,8 +11,11 @@ def options(self):
                     default=False, action='store_true',
                     help='build aster as an executable: it is an alias for --embed-aster')
     group.add_option('--embed-aster', dest='embed_aster',
-                    default=False, action='store_true',
+                    default=True, action='store_true',
                     help='embed all aster components within a python interpreter')
+    group.add_option('--shared-aster', dest='embed_aster',
+                    default=True, action='store_false',
+                    help='build each aster component as a shared python module')
 
 def configure(self):
     from Options import options as opts
@@ -29,8 +32,12 @@ def configure(self):
     self.env.append_unique('INCLUDES', ['include/'])
     if opts.embed_all or opts.embed_aster:
         self.env.append_value('ASTER_EMBEDS', ['bibc'])
-    if 'ifort' in self.env.LINK_FC:
+    if 'ifort' in self.env.get_flat('LINK_FC'):
         self.env.append_value('LINKFLAGS', ['-nofor_main'])
+        if opts.embed_all or opts.embed_aster:
+            self.env.append_value('LINKFLAGS', ['-static-intel'])
+            if self.env.HAVE_MPI:
+                self.env.append_value('LINKFLAGS', ['-static_mpi'])
     self.check_cflags()
     self.check_bibc_depends()
 
