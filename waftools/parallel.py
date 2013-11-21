@@ -21,10 +21,9 @@ def configure(self):
         default = ['mpicc', 'mpicxx', 'mpif90']
     else:
         default = [''] * 3
-    self.add_os_flags('CC')
-    self.add_os_flags('CXX')
-    self.add_os_flags('FC')
     for var in ('CC', 'CXX', 'FC'):
+        if not self.env[var]:
+            self.add_os_flags(var)
         val = Utils.to_list(self.env[var])
         os.environ[var] = (val and val[0]) or default.pop(0)
     self.load_compilers()

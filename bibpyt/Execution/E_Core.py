@@ -308,8 +308,7 @@ def _print_header():
               aster_core.get_option('processor'),
               aster_core.get_option('system') + ' ' + aster_core.get_option('osrelease'),
               lang_settings,),)
-    svi = sys.version_info
-    pyvers = '%s.%s.%s' % (svi.major, svi.minor, svi.micro)
+    pyvers = '%s.%s.%s' % tuple(sys.version_info[:3])
     UTMESS('I', 'SUPERVIS2_9', valk=(pyvers, numpy.__version__))
     # avertissement si la version a plus de 15 mois
     if aster_core._NO_EXPIR == 0:
