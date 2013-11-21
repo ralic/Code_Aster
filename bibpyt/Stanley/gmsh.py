@@ -16,14 +16,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import os, signal
+from subprocess import Popen
+
 import aster
 from Utilitai.Utmess import UTMESS
-
-try:
-  from popen2 import Popen3
-except:
-  pass
-
 
 # =========================================================================
 #                       TERMINAL GRAPHIQUE GMSH
@@ -229,7 +225,7 @@ View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2
         res = os.system(shell)
         if res!=0: UTMESS('A','STANLEY_10')
       else:
-        self.controle = Popen3(shell)
+        self.controle = Popen([shell], shell=True)
 
       UTMESS('I','STANLEY_8')
 
@@ -241,10 +237,10 @@ View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2
     # Retourne 1 si le terminal est ouvert, 0 sinon
 
     etat = self.controle.poll()
-    if etat == -1 :
-      return(1)
+    if etat is None:
+        return 1
     else :
-      return(0)
+        return 0
 
 
   def Fermer(self) :

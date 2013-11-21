@@ -19,30 +19,28 @@
 
 # La classe InterfaceParametres gere les options et les logiciels de Visualisation
 
-from Utilitai.Utmess import UTMESS
-
 import sys
-import aster
-
-
-from Calc_essai.cata_ce import  CaraElem, InterSpectre, CalcEssaiObjects, Resultat, ModeMeca, DynaHarmo
-
-
-from Accas import _F
+from subprocess import Popen
 import weakref
 import os
 import time
 import tkFont
 
-
 from Tkinter import Tk, Frame, Menubutton, Menu, StringVar, IntVar, BooleanVar, Listbox
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Toplevel
 from Tkinter import NORMAL, DISABLED
-from Calc_essai.outils_ihm import XmgrManager, MyMenu, MacWindowFrame, StudyList,DispFRFDialogue, DispObs
-from Utilitai.Table import Table
+
+from Accas import _F
 from Cata.cata import EXEC_LOGICIEL
+from Utilitai.Utmess import UTMESS
+from Utilitai.Table import Table
+
+from Calc_essai.outils_ihm import XmgrManager, MyMenu, MacWindowFrame, StudyList,DispFRFDialogue, DispObs
 from Calc_essai.ce_calcul_expansion import make_mac_salome, make_mesh_mac,CalcEssaiExpansion
+from Calc_essai.cata_ce import  CaraElem, InterSpectre, CalcEssaiObjects, Resultat, ModeMeca, DynaHarmo
+
+import aster
 
 try:
     from Stanley.gmsh import GMSH
@@ -439,8 +437,8 @@ class InterfaceParametres(Frame):
         if self.is_salome_launched():
             try:
                 cmd = "ps auxw | grep -v grep | grep omniNames"
-                p = os.popen(cmd)
-                data = p.read()
+                p = Popen([cmd], shell=True, stdout=PIPE)
+                data = p.communicate()[0]
                 # On recupere la derniere ligne de ps pour avoir le dernier numero de port
                 l_data = data.split("\n")
                 last_line = l_data[-2]

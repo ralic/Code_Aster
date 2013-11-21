@@ -95,14 +95,14 @@ class Xmgr :
     """
 
     try:
-      etat = self.controle.poll()
-      if etat == -1 :
-        return(1)
-      else :
-        return(0)
+        etat = self.controle.poll()
+        if etat is None:
+            return 1
+        else :
+            return 0
     except:
-      return(0)   # generalement c'est que le popen ne s'est pas ouvert
-                  # car pas de DISPLAY
+        return 0   # generalement c'est que le popen ne s'est pas ouvert
+                   # car pas de DISPLAY
 
 # --------------------------------------------------------------------
 

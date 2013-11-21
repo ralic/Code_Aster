@@ -23,13 +23,13 @@ import aster_core
 import aster
 import string
 import os
+from subprocess import Popen
 
 import tkFont
 
 from Stanley.xmgrace import Xmgr
 from Stanley.as_courbes import Courbe
 from Accas import _F, ASSD
-from popen2 import Popen3
 
 from numpy import minimum, maximum, array, arange, log
 from Utilitai.Utmess import UTMESS, MESSAGE_LOGGER
@@ -2034,7 +2034,7 @@ class CalcEssaiXmgr(Xmgr):
         # Teste le DISPLAY avant de lancer xmgrace...
         if os.environ.has_key('DISPLAY'):
           UTMESS('I','STANLEY_9',valk=[shell])
-          self.controle = Popen3(shell)
+          Popen([shell], shell=True)
 
           # Mise a l'echelle des graphes
           for i in xrange(gr_max) :
