@@ -49,7 +49,7 @@ interface
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: tm
         real(kind=8) :: tp
-        real(kind=8) :: crit
+        real(kind=8) :: crit(*)
         character(len=16) :: compor(*)
         character(len=8) :: typmod(*)
     end subroutine nmfihm

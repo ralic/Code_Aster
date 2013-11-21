@@ -84,7 +84,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
     real(kind=8) :: sigmo(6), sigma(6), epsm(6), deps(6), wg
     real(kind=8) :: coopg(ndim+1, npg), rot(ndim*ndim)
     real(kind=8) :: coorot(ndim+ndim*ndim, npg)
-    real(kind=8) :: crit, rbid(1), presgm, presgd, temp
+    real(kind=8) :: crit(*), rbid(1), presgm, presgd, temp
 !
     axi = .false.
     resi = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
@@ -167,7 +167,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
         call nmcomp('RIGI', kpg, 1, ndim, typmod,&
-                    mate, compor, [crit], tm, tp,&
+                    mate, compor, crit, tm, tp,&
                     6, epsm, deps, 6, sigmo,&
                     vim(1, kpg), option, rbid, ncooro, coorot(1, kpg),&
                     sigma, vip(1, kpg), 36, dsidep, 1,&
