@@ -184,7 +184,6 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call jeveuo(nu2//'.NUME.REFN', 'E', j1)
     ma=zk24(j1-1+1)(1:8)
     nomgds=zk24(j1-1+2)(1:8)
-    ASSERT(nomgds.eq.'DEPL_R')
     call dismoi('NB_EC', nomgds, 'GRANDEUR', repi=nec)
 !
 !     nu2.NSLV :
