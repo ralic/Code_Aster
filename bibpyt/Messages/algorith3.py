@@ -134,6 +134,11 @@ Nombre d'itérations     : %(i2)d
  incohérence sur H, ALPHA, ELAS
 """),
 
+38 : _(u"""
+ L'état de contrainte fourni n'est pas cohérent avec le modèle de comportement de DRUCK_PRAGER. 
+ Vérifier les champs SIEF_ELGA et VARI_ELGA dans ETAT_INIT.
+"""),
+
 40 : _(u"""
  le NOM_CHAM  %(k1)s n'appartient pas à la structure de données
 """),

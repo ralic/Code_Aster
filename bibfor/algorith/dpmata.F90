@@ -19,6 +19,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
+#include "asterc/r8prem.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
@@ -27,6 +28,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, dpdeno, se(6), seq, dsde(6, 6)
     real(kind=8) :: plas, alpha, pplus
     character(len=8) :: mod
@@ -98,8 +100,12 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
 ! --- CALCUL DE PMAT1 -------------------------------------------------
 ! =====================================================================
-                param1 = un - trois * deuxmu * dp / deux / seq
-                call lcprsm(param1, dsede, pmat1)
+                if(seq.gt.r8prem())then
+                    param1 = un - trois * deuxmu * dp / deux / seq
+                    call lcprsm(param1, dsede, pmat1)
+                else
+                    call utmess('F', 'ALGORITH3_38')
+                endif
 ! =====================================================================
 ! --- CALCUL DE PMAT2 -------------------------------------------------
 ! =====================================================================
