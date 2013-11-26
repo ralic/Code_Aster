@@ -226,7 +226,7 @@ def check_math_libs_call(self):
     """Compile and run a small blas/lapack program"""
     self.start_msg('Checking for a program using blas/lapack')
     try:
-        ret = self.check_fc(fragment=blas_lapack_fragment, use='MATH MPI',
+        ret = self.check_fc(fragment=blas_lapack_fragment, use='OPENMP MATH MPI',
                             mandatory=False, execute=True, define_ret=True)
         values = map(float, ret and ret.split() or [])
         ref = [10.0, 5.0]

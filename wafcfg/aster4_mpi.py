@@ -19,6 +19,11 @@ def configure(self):
     opts.parallel = True
     aster4.configure(self)
     self.env['ADDMEM'] = 400
+    self.env['OPTLIB_FLAGS'] = [
+        '-Wl,--start-group', '-Wl,-Bstatic',
+        '-lmkl_intel_lp64', '-lmkl_intel_thread', '-lmkl_core',
+        '-lmkl_scalapack_lp64', '-lmkl_blacs_intelmpi_lp64',
+        '-Wl,--end-group']
     
     self.env.append_value('OPT_ENV', [
         '. /aster/etc/codeaster/profile_intel_mpi.sh'])
