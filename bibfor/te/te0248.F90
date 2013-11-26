@@ -59,7 +59,7 @@ subroutine te0248(optioz, nomtez)
     integer :: jtab(7), iret
     parameter (neq=6,nbt=21,nvamax=8)
     character(len=4) :: fami
-    character(len=16) :: valkm(2)
+    character(len=16) :: valkm(3)
 !
 !   CONSTANTES POUR INTO MENEGOTTO
 !
@@ -111,6 +111,14 @@ subroutine te0248(optioz, nomtez)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
+!
+    if ((option.eq. 'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS')&
+        .and. zk16(icompo).ne. 'ELAS')then
+        valkm(1) = option
+        valkm(2) = zk16(icompo)
+        valkm(3) = nomte
+        call utmess('F', 'ELEMENTS3_2',nk=3,valk=valkm)
+    endif
 !
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 ! --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)

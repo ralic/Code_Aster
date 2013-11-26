@@ -22,6 +22,12 @@ cata_msg = {
  On ne peut pas affecter des moments répartis sur des éléments de type %(k1)s.
 """),
 
+2 : _(u"""
+
+ L'option %(k1)s n'est pas développée avec le comportement %(k2)s pour les éléments %(k3)s.
+
+"""),
+
 10 : _(u"""
  on ne peut pas affecter la modélisation "AXIS_DIAG" aux éléments de l'axe
 """),

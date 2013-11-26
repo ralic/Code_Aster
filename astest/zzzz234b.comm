@@ -85,6 +85,39 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   ),
           )
 
+# SECANTE
+RE_BAR2=STAT_NON_LINE(MODELE     = MO_BAR,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_BAR,
+                     EXCIT      = (_F(CHARGE = CL_BAR),
+                                   _F(CHARGE = CH_BAR),),
+     COMPORTEMENT  =  _F(RELATION   = 'ELAS',
+                                     GROUP_MA    = 'TOUT',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     NEWTON=_F(PAS_MINI_ELAS = 100, REAC_ITER_ELAS = 1),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+);
+
+TB_BAR2 = RECU_TABLE(CO=RE_BAR2,NOM_PARA=('ITER_GLOB'),)
+
+IMPR_TABLE(TABLE=TB_BAR2)
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           NOM_PARA='ITER_GLOB',
+           TABLE=TB_BAR2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_RESU(RESU=_F(GROUP_NO='B',
+                  INST=1.0,
+                  RESULTAT=RE_BAR2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=-3.7894034069499E-06,
+                  ),
+          )
+
 # --- validation CREA_CHAMP/'NEUT' aux points de GAUSS  ---
 
 FFDEUX = FORMULE(NOM_PARA=('X1'),VALE='2*X1')
