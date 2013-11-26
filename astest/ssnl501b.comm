@@ -91,7 +91,8 @@ PRES_LIM=AFFE_CHAR_MECA(         MODELE=MOD_B,
 #---------------------------------------------------------------------
 #
 LIS_INST=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
-                             _F( JUSQU_A = 10., NOMBRE = 20),
+                             _F( JUSQU_A = 2., NOMBRE = 9),
+                             _F( JUSQU_A = 10., NOMBRE = 16),
                              _F( JUSQU_A = 15., NOMBRE = 20),
                              _F( JUSQU_A = 25., NOMBRE = 30))
                            )
@@ -104,15 +105,19 @@ RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
                                         TYPE_CHARGE = 'FIXE_PILO')),
                              COMPORTEMENT=_F( RELATION = 'VMIS_ISOT_LINE',
                                            ITER_INTE_MAXI = 30,
+
                ),
                              INCREMENT=_F( LIST_INST = LIS_INST),
 
                                        NEWTON=_F(
+                                        PAS_MINI_ELAS = 0.24,
                                         MATRICE = 'TANGENTE',
-                                        REAC_ITER = 1),
+                                        REAC_INCR = 1,
+                                        REAC_ITER = 1,
+                                        REAC_ITER_ELAS = 1),
 
                                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                        ITER_GLOB_MAXI = 30),
+                                        ITER_GLOB_MAXI = 30,ITER_GLOB_ELAS = 50,),
                               PILOTAGE=_F( TYPE = 'DDL_IMPO',
                                         GROUP_NO = 'E',
                                         NOM_CMP = 'DX',
@@ -191,14 +196,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=30,
                    PARA='ETA_PILOTAGE',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESULTAT,
-                   VALE_CALC=1.138588835,
+                   VALE_CALC=1.1374939608748,
                    VALE_REFE=1.0,
                    PRECISION=0.14999999999999999,),
                 _F(NUME_ORDRE=40,
                    PARA='ETA_PILOTAGE',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESULTAT,
-                   VALE_CALC=1.139900652,
+                   VALE_CALC=1.1392945681832,
                    VALE_REFE=1.0,
                    PRECISION=0.14999999999999999,),
                 ),
