@@ -41,15 +41,20 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
 ! ---------
 #include "jeveux.h"
 !
+#include "asterc/indik8.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rgcmpg.h"
+#include "asterfort/utmess.h"
     character(len=8) :: mailla, caelem
     character(len=24) :: nmabet, gromai
     integer :: nbmabe
@@ -57,15 +62,19 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ino, iret, jcoor, nbno, ima, iad
+    integer :: ino, jcoor, nbno, ima, iad
     real(kind=8) :: xmax, xk, ymax, yk, zmax, zk, x, y, z, epmax
     real(kind=8) :: ep, sqrt
+    character(len= 8) :: ngrand, nomai
     character(len=19) :: carte
-    character(len=24) :: coorno, connex, cavale
+    character(len=24) :: coorno, connex, k24bid, mommai
 !
     integer :: i, j, k, iad2, inok
-    integer :: jmabet, jconn, jtabco, jnunoe, jgmai, ival, ncaco
-    integer :: ncava, nep
+    integer :: jmabet, jconn, jtabco, jgmai
+    integer :: nunoe(27)
+    integer :: idesc, ivale, igrand, iasmax, iasedi, inomcp
+    integer :: nbcmp, nbec, irep, iasbon, ii, icode, izone
+    integer :: ilima, nbmaza, irvep, jj
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -75,32 +84,32 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
 !
     connex = mailla//'.CONNEX'
     coorno = mailla//'.COORDO    .VALE'
+    mommai = mailla//'.NOMMAI'
     call jeveuo(coorno, 'L', jcoor)
 !
     call jeveuo(connex, 'L', jconn)
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jtabco)
     call jeveuo(nmabet, 'L', jmabet)
-    call wkvect('&&GROMAB.NUNOE', 'V V I', 27, jnunoe)
     xmax=0.d0
     ymax=0.d0
     zmax=0.d0
-    do 10 i = 1, nbmabe
+    do i = 1, nbmabe
         ima = zi(jmabet-1+i)
         iad = zi(jtabco-1+ima)
         iad2 = zi(jtabco-1+ima+1)
         nbno = iad2-iad
-        do 20 j = 1, nbno
+        do j = 1, nbno
             ino = zi(jconn-1+iad-1+j)
-            zi(jnunoe-1+j)=ino
-20      continue
+            nunoe(j)=ino
+        enddo
 !
-        do 30 j = 1, nbno-1
-            ino = zi(jnunoe-1+j)
+        do j = 1, nbno-1
+            ino = nunoe(j)
             x = zr(jcoor+3*(ino-1) )
             y = zr(jcoor+3*(ino-1)+1)
             z = zr(jcoor+3*(ino-1)+2)
-            do 40 k = j+1, nbno
-                inok = zi(jnunoe-1+k)
+            do k = j+1, nbno
+                inok = nunoe(k)
                 xk = zr(jcoor+3*(inok-1) )
                 yk = zr(jcoor+3*(inok-1)+1)
                 zk = zr(jcoor+3*(inok-1)+2)
@@ -109,9 +118,9 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
                 if (abs(y-yk) .gt. ymax) ymax = abs(y-yk)
                 if (abs(z-zk) .gt. zmax) zmax = abs(z-zk)
 !
-40          continue
-30      continue
-10  end do
+            enddo
+        enddo
+    end do
     call jeveuo(gromai, 'E', jgmai)
     zr(jgmai)=xmax
     zr(jgmai+1)=ymax
@@ -121,25 +130,66 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     if (mail2d) then
 !       DETERMINATION DE LA PLUS GRANDE EPAISSEUR
         carte=caelem//'.CARCOQUE  '
-        cavale = carte//'.VALE'
-        call jeexin(cavale, iret)
-        ASSERT(iret.ne.0)
-!
-        call jelira(jexnom('&CATA.GD.NOMCMP', 'CACOQU'), 'LONMAX', ncaco)
-!
-        call jelira(cavale, 'LONMAX', ncava)
-        call jeveuo(cavale, 'L', ival)
-!
-        nep = ncava/ncaco
+        call jeveuo(carte//'.DESC', 'L', idesc)
+        call jeveuo(carte//'.VALE', 'L', ivale)
+        igrand = zi(idesc)
+        iasmax = zi(idesc+1)
+        iasedi = zi(idesc+2)
+        call jenuno(jexnum('&CATA.GD.NOMGD', igrand), ngrand)
+        call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
+        call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
+        call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
+        irep = indik8( zk8(inomcp), 'EP' , 1, nbcmp )
+        ASSERT(irep .ne. 0 )
+!       BOUCLE SUR LES MAILLES
         epmax = 0.d0
-        do 50 i = 1, nep
-            ep = zr(ival+(i-1)*ncaco)
-            if (ep .gt. epmax) epmax = ep
-50      continue
+        do i = 1, nbmabe
+            ima = zi(jmabet-1+i)
+!           RECHERCHE DE LA ZONE COMTENANT IMA
+            iasbon = 0
+            do ii = 1, iasedi
+                icode = zi(idesc+3+2*(ii-1))
+                izone = zi(idesc+3+2*(ii-1)+1)
+!              SI C'EST UNE LISTE DE MAILLE
+                if (icode .eq. 3) then
+                    k24bid = carte//'.LIMA'
+                    call jeveuo(jexnum(k24bid, izone), 'L', ilima)
+                    call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
+!              SI C'EST UN GROUPE DE MAILLE
+                else if (icode.eq.2) then
+                    k24bid = mailla//'.GROUPEMA'
+                    call jeveuo(jexnum(k24bid, izone), 'L', ilima)
+                    call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
+!              SI C'EST TOUT LE MAILLAGE
+                else if (icode.eq.1) then
+                    iasbon = ii
+                    goto 160
+                else
+                    ASSERT(.false.)
+                endif
+!              MAILLE DANS LISTE OU GROUPE DE MAILLE DE CETTE ZONE
+                do jj = 1, nbmaza
+                    if (ima .eq. zi(ilima+jj-1)) then
+                        iasbon = ii
+                        goto 160
+                    endif
+                end do
+            end do
+160         continue
+            icode = zi(idesc+3+2*iasmax+nbec*(iasbon-1))
+            irvep = rgcmpg(icode,irep)
+            if (irvep .eq. 0) then
+                call jenuno(jexnum(mommai, ima), nomai)
+                call utmess('F', 'MODELISA8_3', sk=nomai)
+            endif
+            ep=zr(ivale+(iasbon-1)*nbcmp + irvep - 1)
+            if (ep.gt.epmax) epmax = ep
+        enddo
+!
         epmax = epmax*sqrt(2.d0)
-        do 60 i = 1, 3
+        do i = 1, 3
             if (zr(jgmai-1+i) .lt. epmax) zr(jgmai-1+i) = epmax
-60      continue
+        enddo
 !
     endif
 !

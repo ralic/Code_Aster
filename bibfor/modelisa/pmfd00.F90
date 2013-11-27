@@ -170,8 +170,15 @@ subroutine pmfd00()
 !     NOMBRE ET NOM DES COMPOSANTES DANS LA GRANDEUR
     call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
+!   RANG DES COMPOSANTES A1, IY1, IZ1 DANS LA CARTE
+    ira1 = indik8( zk8(inomcp), 'A1' , 1, nbcmp )
+    iriy1 = indik8( zk8(inomcp), 'IY1', 1, nbcmp )
+    iriz1 = indik8( zk8(inomcp), 'IZ1', 1, nbcmp )
+    ASSERT(ira1 .ne. 0 .and. iriy1 .ne. 0 .and. iriz1 .ne. 0)
 !     NOMBRE D'ENTIER CODE DANS LA CARTE
     call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
+!     VALEURS
+    call jeveuo(carele//'.CARGENPO  .VALE', 'L', ivale)
 !
     valmi = 0
     do ioc = 1, nbocc0
@@ -264,14 +271,6 @@ subroutine pmfd00()
                 call utmess('F', 'ALGELINE_34', sk=valmk(1))
             endif
 160         continue
-!           RANG DES COMPOSANTES A1, IY1, IZ1 DANS LA CARTE
-            ira1 = indik8( zk8(inomcp), 'A1' , 1, nbcmp )
-            iriy1 = indik8( zk8(inomcp), 'IY1', 1, nbcmp )
-            iriz1 = indik8( zk8(inomcp), 'IZ1', 1, nbcmp )
-            if (ira1 .eq. 0 .or. iriy1 .eq. 0 .or. iriy1 .eq. 0) then
-                call jenuno(jexnum(mommai, nummai), valmk(1))
-                call utmess('F', 'MODELISA8_3', sk=valmk(1))
-            endif
 !           ENTIER CODE DE LA ZONE
             icode = zi(idesc+3+2*iasmax+nbec*(iasbon-1))
 !           RANG DE LA VALEUR DANS L'ENTIER CODE (0 SI N'EXISTE PAS)
@@ -283,7 +282,6 @@ subroutine pmfd00()
                 call utmess('F', 'MODELISA8_3', sk=valmk(1))
             endif
 !           ON RECUPERE LES COMPOSANTES : A1, IY1, IZ1 DE CETTE ZONE
-            call jeveuo(carele//'.CARGENPO  .VALE', 'L', ivale)
             airpou=zr(ivale+(iasbon-1)*nbcmp + irva1 - 1)
             moinoy=zr(ivale+(iasbon-1)*nbcmp + irviy1 - 1)
             moinoz=zr(ivale+(iasbon-1)*nbcmp + irviz1 - 1)
