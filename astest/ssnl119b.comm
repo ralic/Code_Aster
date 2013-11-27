@@ -169,19 +169,19 @@ for ii in range(len(instant)):
    mclf['RESU'].append( _F(INST=instant[ii], GROUP_NO='A',                        RESULTAT=U1MAZAR, NOM_CHAM='REAC_NODA',
                            NOM_CMP='DY',   VALE_CALC=React[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
 
-   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=41, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=2, SOUS_POINT=41, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
                            NOM_CMP='SIXX', VALE_CALC=Aciet[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
 
-   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=44, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=2, SOUS_POINT=44, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
                            NOM_CMP='SIXX', VALE_CALC=Aciec[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
 
-   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=41, RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA',
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=2, SOUS_POINT=41, RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA',
                            NOM_CMP='EPXX', VALE_CALC=Eacit[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
 
-   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=1,  RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=2, SOUS_POINT=1,  RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
                            NOM_CMP='SIXX', VALE_CALC=Betoc[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
 
-   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=1, SOUS_POINT=40, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
+   mclf['RESU'].append( _F(INST=instant[ii], MAILLE='M9', POINT=2, SOUS_POINT=40, RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA',
                            NOM_CMP='SIXX', VALE_CALC=Betot[ii], TOLE_MACHINE=3.0E-4, CRITERE=('RELATIF', 'ABSOLU'), ), )
 
 TEST_RESU(**mclf)

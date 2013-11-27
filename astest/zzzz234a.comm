@@ -700,7 +700,7 @@ NELG04=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = NELG40, NOM_CMP = ('SIXX' ), NOM_CMP_RESU = ('X1'),), )
 
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
-                       POINT=1,
+                       POINT=2,
                        NOM_CMP='X1',
                        SOUS_POINT=1,
                        MAILLE='M1',

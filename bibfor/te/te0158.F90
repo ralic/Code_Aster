@@ -1,6 +1,7 @@
 subroutine te0158(option, nomte)
     implicit none
 #include "jeveux.h"
+#include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jpd1ff.h"
 #include "asterfort/jsd1ff.h"
@@ -47,13 +48,14 @@ subroutine te0158(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !     ------------------------------------------------------------------
 !
-    integer :: jeffg, lmater, lsect, lx, iret, lorien, jdepl, i, j, kp, nno, nc
-    integer :: npg, itemp
+    integer :: jeffg, lmater, lsect, lx, iret, lorien, jdepl, i, j, kp, nc
+    integer :: itemp
 !
     character(len=4) :: fami
     character(len=8) :: nomail
     character(len=16) :: ch16
     integer :: lsect2, ipos, in, iadzi, iazk24
+    integer :: npg, ndim, nno, nnos, ipoids, ivf, iplouf
     real(kind=8) :: b(4), gg, xi, wi
     real(kind=8) :: ul(14), pgl(3, 3), d1b(6, 12), dege(3, 7), d1btg(7, 14)
     real(kind=8) :: degem(6)
@@ -66,9 +68,9 @@ subroutine te0158(option, nomte)
     deux = 2.d0
 !     ------------------------------------------------------------------
 !
-! NOMBRE DE POINTS DE GAUSS
-    npg = 3
     fami = 'RIGI'
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, ivf, iplouf, iplouf)  
 !
     if (option .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)
@@ -130,18 +132,15 @@ subroutine te0158(option, nomte)
         endif
 !
         if (nomte .eq. 'MECA_POU_D_E') then
-            nno = 2
             nc = 6
             phiy = zero
             phiz = zero
         else if (nomte .eq. 'MECA_POU_D_T') then
-            nno = 2
             nc = 6
             phiy = e*xiz*12.d0*alfay/ (xl*xl*g*a)
             phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*a)
             elseif (nomte.eq.'MECA_POU_D_TG' .or.&
      &           nomte.eq.'MECA_POU_D_TGM' ) then
-            nno = 2
             nc = 7
             phiy = e*xiz*12.d0*alfay/ (xl*xl*g*a)
             phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*a)
@@ -217,15 +216,14 @@ subroutine te0158(option, nomte)
     else
 !
 !     POUTRE MULTIFIBRES MECA_POU_D_EM
-        nno = 2
         nc = 6
 !        --- PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL ---
         call utpvgl(nno, nc, pgl, zr(jdepl), ul)
 !
         if (option .eq. 'DEGE_ELNO') then
             do 50 in = 1, 2
-                call pmfpti(-in, xl, xi, wi, b,&
-                            gg)
+                call pmfpti(-in, zr(ipoids), zr(ivf), xl, xi,&
+                            wi, b, gg)
 !   ZERO POUR LA VARIABLE ALPHA DES MODES INCOMPATIBLES CAR NON ACTIF
 !   SI CALCUL ELASTIQUE (RIGI_MECA et X_X_DEPL)
                 call pmfdge(b, gg, ul, zero, degem)
@@ -237,8 +235,8 @@ subroutine te0158(option, nomte)
 !
         else if (option.eq.'DEGE_ELGA') then
             do 55 in = 1, 2
-                call pmfpti(in, xl, xi, wi, b,&
-                            gg)
+                call pmfpti(in, zr(ipoids), zr(ivf), xl, xi,&
+                            wi, b, gg)
                 call pmfdge(b, gg, ul, zero, degem)
                 ipos=jeffg+nc*(in-1)
                 do 65 i = 1, nc

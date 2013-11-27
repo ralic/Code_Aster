@@ -18,6 +18,8 @@ subroutine te0537(option, nomte)
 ! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/matela.h"
@@ -59,10 +61,14 @@ subroutine te0537(option, nomte)
     integer :: ip, ipos, nbgfmx, iadzi, iazk24, isicom, istrxr
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
     character(len=8) :: materi, nomres(2), nomail
-    integer :: codres(2), npg, ncomp
+    integer :: codres(2), ncomp
+    integer :: npg, ndim, nnoel, nnos, ipoids, ivf, iplouf
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+    call elref4(' ', 'RIGI', ndim, nnoel, nnos,&
+                npg, ipoids, ivf, iplouf, iplouf)
+    ASSERT(nno.eq.nnoel)
 !     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
     call jevech('PNBSP_I', 'L', ifb)
     nbfib = zi(ifb)
@@ -72,8 +78,6 @@ subroutine te0537(option, nomte)
 !
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
     ncomp = 18
-!
-    npg = 2
 !
     if (option .eq. 'EPSI_ELGA') then
         call tecach('OON', 'PDEFOPG', 'E', iret, nval=7,&
@@ -117,8 +121,8 @@ subroutine te0537(option, nomte)
     if (option .ne. 'STRX_ELGA') then
         do 20 ip = 1, npg
 !        ---  MATRICE B PUIS DEGE PUIS DEFORMATIONS SUR LES FIBRES
-            call pmfpti(ip, xl, xi, wi, b,&
-                        gg)
+            call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi,&
+                        wi, b, gg)
 !          ZERO POUR LA VARIABLE ALPHA DES MODES INCOMPATIBLES CAR
 !          NON ACTIF SI CALCUL ELASTIQUE (RIGI_MECA et X_X_DEPL)
             call pmfdge(b, gg, ul, zero, dege)

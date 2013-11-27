@@ -1,5 +1,5 @@
-subroutine pmfpti(num, xl, xi, wi, b,&
-                  g)
+subroutine pmfpti(num,poids,vff, xl, xi,&
+                  wi, b, g)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,29 +17,34 @@ subroutine pmfpti(num, xl, xi, wi, b,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+    integer :: num
+    real(kind=8) :: poids(*), vff(2,*), xl, xi, wi, b(4), g
 ! -----------------------------------------------------------
 ! ---  POSITION ET POIDS DES POINTS DE GAUSS + MATRICE B
 !         DE L'ELEMENT POUTRE EULER (HERMITE)
 ! --- IN : LONGUEUR DE L'ELEMENT XL
 ! --- IN : NUMERO DU POINT DE GAUSS
+! --- IN : POIDS DU POINT DE GAUSS SUR L'ELEMENT DE REFERENCE
+! --- IN : NUMERO DU POINT DE GAUSS
 ! --- OUT : XI POSITION DU POINT
 !           WI POIDS DE CE POINT
 !           B MATRICE B (4 VALEURS DIFFERENTES NON NULLES)
 ! -----------------------------------------------------------
-    integer :: num
-    real(kind=8) :: xl, xi, wi, b(4), g
+    
+    integer :: ino
     real(kind=8) :: un, deux, quatre, six, douze
     parameter (un=1.d0,deux=2.d0,quatre=4.d0,six=6.d0,douze=12.d0)
-    real(kind=8) :: xg(2), wg(2), xp(2)
-    data xg /-.57735026918963d0,.57735026918963d0/
-    data wg /1.d0 , 1.d0/
+    real(kind=8) :: xp(2)
     data xp /0.d0 , 1.d0/
 !
+    xi = 0.d0
     if (num .gt. 0) then
 !       NUM=1 OU 2 : POINTS DE GAUSS
-        xi=(un + xg(num))/ deux
+        do ino = 1,2
+            xi = xi + xp(ino)*vff(ino,num)
+        enddo
 !       LE JACOBIEN L/2 EST MIS DIRECTEMENT DANS LE POIDS
-        wi=wg(num)*xl/deux
+        wi=poids(num)*xl/deux
     else
 !       NUM=-1 OU -2 : NOEUDS
         xi=xp(-num)
