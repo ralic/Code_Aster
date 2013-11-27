@@ -14,8 +14,11 @@ SCALAPACK = ('scalapack', )
 OPTIONAL_DEPS = ('cblas', )
 
 ###############################################################################
-from waflib.Tools import fc, c
+from waflib.Tools import fc, c, ccroot
 # original run_str command line is store as hcode
+for feature in ('c', 'cxx', 'cprogram', 'cshlib', 'fc', 'fcprogram', 'fcshlib'):
+    ccroot.USELIB_VARS[feature].add('OPTLIB_FLAGS')
+
 class fcprogram(fc.fcprogram):
     """Link object files into a fortran program, add optional OPTLIB_FLAGS at the end"""
     run_str = fc.fcprogram.hcode + ' ${OPTLIB_FLAGS}'
@@ -90,6 +93,7 @@ def check_libm_after_files(self):
 @Configure.conf
 def detect_mkl(self):
     """Try to use MKL if ifort was detected"""
+    var = 'OPTLIB_FLAGS_MATH'
     from Options import options as opts
     embed = opts.embed_math or opts.embed_all
     if self.env.FC_NAME != 'IFORT':
@@ -120,14 +124,14 @@ def detect_mkl(self):
         self.env.stash()
         opts = totest.pop(0)
         if opts:
-            self.env.append_value('OPTLIB_FLAGS', opts)
+            self.env.append_value(var, opts)
         try:
             self.check_math_libs_call()
         except:
             self.env.revert()
             continue
         else:
-            self.end_msg(self.env['OPTLIB_FLAGS'])
+            self.end_msg(self.env[var])
             return True
     self.end_msg('no', color='YELLOW')
     return False
