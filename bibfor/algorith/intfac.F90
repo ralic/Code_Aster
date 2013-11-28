@@ -82,7 +82,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     endif
     do 100 i = 1, 3
         indptf(i)=0
-100  end do
+100 continue
 !
     prec=r8prem()
     prec2= 1.d-4
@@ -118,7 +118,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     solsn = 0.d0
     do 200 i = 1, nnof
         solsn = solsn + abs( lsn(fa(ifq,i)) )
-200  end do
+200 continue
     if (solsn .eq. 0.d0) goto 999
 !
     do 220 i = 1, nnof
@@ -181,7 +181,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
         endif
 !
-220  end do
+220 continue
 !
     if (.not. chgsgn) goto 999
 !
@@ -197,12 +197,12 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !     ON AJOUTE UN PETIT PREC ICI POUR RAISON DE PRECISION DANS
 !     LA COMPARAISON, CF. LA FICHE 20170
     if (alias .eq. 'QU4') then
-        if (abs(epsi(1)) .gt. (1.d0+prec)) goto 999
-        if (abs(epsi(2)) .gt. (1.d0+prec)) goto 999
+        if (abs(epsi(1)) .gt. (1.d0+prec*1.d3)) goto 999
+        if (abs(epsi(2)) .gt. (1.d0+prec*1.d3)) goto 999
     else if (alias.eq.'TR3') then
-        if (epsi(1) .lt. (0.d0-prec)) goto 999
-        if (epsi(2) .lt. (0.d0-prec)) goto 999
-        if (epsi(1)+epsi(2) .gt. (1.d0+prec)) goto 999
+        if (epsi(1) .lt. (0.d0-prec*1.d3)) goto 999
+        if (epsi(2) .lt. (0.d0-prec*1.d3)) goto 999
+        if (epsi(1)+epsi(2) .gt. (1.d0+prec*1.d3)) goto 999
     endif
 !
     mp(1)=epsi(1)
@@ -219,7 +219,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
                 gln(i) = gln(i) + zr(jglsn-1+ndim*(ino-1)+i) * ff(j)
             endif
 240      continue
-230  end do
+230 continue
 !
 !     TRAITEMENT DES POINTS M PROCHES DES SOMMETS (FIT TO VERTEX)
     if ((indptf(1).eq.2) .or. (indptf(1).eq.3)) then
