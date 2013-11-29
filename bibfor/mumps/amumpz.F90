@@ -40,7 +40,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !            2 : MATRICE NUMERIQUEMENT SINGULIERE
 ! IN  : NBSOL  : NBRE DE SYSTEMES A RESOUDRE
 ! IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPH
-! IN : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
+! IN  : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
 !           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
 !           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 !           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
@@ -50,6 +50,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "aster_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"
@@ -76,7 +77,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (zmumps_struc) , pointer :: zmpsk
+    type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
@@ -348,7 +349,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                         endif
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                        zmpsk%icntl(14)=zmpsk%icntl(14)*pcentp(2)
+                        zmpsk%icntl(14)=zmpsk%icntl(14) * to_mumps_int(pcentp(2))
                         zi(jslvi-1+2)=zmpsk%icntl(14)
                         if ((niv.ge.2) .and. (.not.lpreco)) then
                             vali(1)=zmpsk%icntl(14)/pcentp(2)

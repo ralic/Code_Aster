@@ -85,10 +85,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (smumps_struc) , pointer :: smpsk
-    type (cmumps_struc) , pointer :: cmpsk
-    type (dmumps_struc) , pointer :: dmpsk
-    type (zmumps_struc) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk => null()
+    type (cmumps_struc) , pointer :: cmpsk => null()
+    type (dmumps_struc) , pointer :: dmpsk => null()
+    type (zmumps_struc) , pointer :: zmpsk => null()
     real(kind=8) :: rval(2), rval1, rval2, rval1b, rval2b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1

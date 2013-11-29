@@ -50,6 +50,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "aster_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"
@@ -76,7 +77,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (smumps_struc) , pointer :: smpsk
+    type (smumps_struc) , pointer :: smpsk => null()
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
@@ -346,7 +347,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                         endif
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                        smpsk%icntl(14)=smpsk%icntl(14)*pcentp(2)
+                        smpsk%icntl(14)=smpsk%icntl(14) * to_mumps_int(pcentp(2))
                         zi(jslvi-1+2)=smpsk%icntl(14)
                         if ((niv.ge.2) .and. (.not.lpreco)) then
                             vali(1)=smpsk%icntl(14)/pcentp(2)

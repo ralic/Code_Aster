@@ -63,9 +63,9 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 !    character(len=:), pointer :: ptrk(:)
     logical :: use_valk
     integer, target :: uvi(1)
-    integer, pointer :: ptri(:)
+    integer, pointer :: ptri(:) => null()
     real(kind=8), target :: uvr(1)
-    real(kind=8), pointer :: ptrr(:)
+    real(kind=8), pointer :: ptrr(:) => null()
     character(len=256) :: ufname
 !
     ASSERT(ENSEMBLE2(nk,valk))

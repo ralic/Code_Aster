@@ -75,10 +75,10 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "jeveux.h"
 !
 !
-    type (smumps_struc) , pointer :: smpsk
-    type (cmumps_struc) , pointer :: cmpsk
-    type (dmumps_struc) , pointer :: dmpsk
-    type (zmumps_struc) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk => null()
+    type (cmumps_struc) , pointer :: cmpsk => null()
+    type (dmumps_struc) , pointer :: dmpsk => null()
+    type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: jsmdi, nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
     integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k
     integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp

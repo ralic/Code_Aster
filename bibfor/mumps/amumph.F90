@@ -97,10 +97,10 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 #include "jeveux.h"
 !
     integer :: iprem
-    type (smumps_struc) , pointer :: smpsk
-    type (cmumps_struc) , pointer :: cmpsk
-    type (dmumps_struc) , pointer :: dmpsk
-    type (zmumps_struc) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk => null()
+    type (cmumps_struc) , pointer :: cmpsk => null()
+    type (dmumps_struc) , pointer :: dmpsk => null()
+    type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer :: jslvk, jslvi, nprec, iretz, pcentp(2)
     logical :: lbid, lpreco

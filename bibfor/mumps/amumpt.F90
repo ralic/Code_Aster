@@ -55,10 +55,10 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (smumps_struc) , pointer :: smpsk
-    type (cmumps_struc) , pointer :: cmpsk
-    type (dmumps_struc) , pointer :: dmpsk
-    type (zmumps_struc) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk => null()
+    type (cmumps_struc) , pointer :: cmpsk => null()
+    type (dmumps_struc) , pointer :: dmpsk => null()
+    type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: ifm, niv, ibid, iaux1, iaux2, iaux3, k, i, n, info(100), iret
     integer :: monit(12), ietfin, ietmax, isizemu, execmu
     character(len=8) :: k8bid

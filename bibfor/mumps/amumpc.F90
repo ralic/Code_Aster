@@ -50,6 +50,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "aster_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"
@@ -76,7 +77,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    type (cmumps_struc) , pointer :: cmpsk
+    type (cmumps_struc) , pointer :: cmpsk => null()
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
@@ -208,7 +209,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
         if (zi(jslvi-1+5) .eq. 1) then
             select case (kvers)
                 case('4.10.0')
-! --- ON FORCE ELIM_LAGR='NON' CAR CELA FAUSSE LA VALEUR DU DETER
+! --- ON DEBRANCHE ELIM_LAGR='LAGR2' CAR CELA FAUSSE LA VALEUR DU DETER
 ! --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
                 if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
                     call utmess('I', 'FACTOR_88')
@@ -350,7 +351,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
                         endif
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                        cmpsk%icntl(14)=cmpsk%icntl(14)*pcentp(2)
+                        cmpsk%icntl(14)=cmpsk%icntl(14) * to_mumps_int(pcentp(2))
                         zi(jslvi-1+2)=cmpsk%icntl(14)
                         if (niv .ge. 2) then
                             vali(1)=cmpsk%icntl(14)/pcentp(2)

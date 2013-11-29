@@ -50,10 +50,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     mpi_int :: mpicou, mpimum
     integer :: nicntl, ncntl
     parameter (nicntl=40,ncntl=15)
-    type (smumps_struc) , pointer :: smpsk
-    type (cmumps_struc) , pointer :: cmpsk
-    type (dmumps_struc) , pointer :: dmpsk
-    type (zmumps_struc) , pointer :: zmpsk
+    type (smumps_struc) , pointer :: smpsk => null()
+    type (cmumps_struc) , pointer :: cmpsk => null()
+    type (dmumps_struc) , pointer :: dmpsk => null()
+    type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: ifm, niv, i, jrefa, isymm, jslvk, isymv, isym
     integer :: jslvi, nprec, ibid
     mumps_int :: i4, icntl(nicntl)

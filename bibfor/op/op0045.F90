@@ -39,7 +39,7 @@ subroutine op0045()
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-! aslint: disable=W1501
+! aslint: disable=W1304,W1501
 !
 ! VARIABLES LOCALES
 #include "aster_types.h"
@@ -148,7 +148,7 @@ subroutine op0045()
     character(len=19) :: solveu, tabmod
     character(len=24) :: cborvp, valk(5), nopara(nbpara), metres, kzero
     logical :: flage, lqz, lkr, lc, lns, lnsc, lnsk, lnsm, ltabmo, lpg, lcomod
-    logical(kind=4), pointer, dimension(:) :: bwork
+    logical(kind=4), pointer :: bwork(:) => null()
 !
 !     ------------------------------------------------------------------
     data cborvp / '&&OP0045.BORNE.VALP.USR ' /
@@ -178,7 +178,7 @@ subroutine op0045()
 !      IF (LCPU) CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
     cbid=(0.d0,0.d0)
     rbid=0.d0
-    nullify (bwork)
+    nullify(bwork)
     undf=r8vide()
     indf=isnnem()
     rzero=0.d0
