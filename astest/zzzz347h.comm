@@ -1,0 +1,362 @@
+# -*- coding: utf-8 -*-
+# TITRE VALIDATION DE L'ÉLÉMENT CABLE_GAINE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#-----------------------------------------------------------------------
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',    UNITE=20,)
+#
+
+
+MODELE=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('BETON','FACE_BAS'),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = '3D'),
+                     _F(  GROUP_MA = 'CABLE',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'CABLE_GAINE')) )
+
+#
+
+CARAELEM=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       BARRE=_F(  GROUP_MA = 'CABLE',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 2.5E-3, )) )
+
+#
+
+BETON=DEFI_MATERIAU(
+                       ELAS=_F(  E = 4.5E+10,
+                              NU = 0.),
+                 BPEL_BETON=_F() )
+
+#
+
+ACIER=DEFI_MATERIAU(
+                       ELAS=_F(  E = 1.85E+11,
+                              NU = 0.),
+                       CABLE_GAINE_FROT=_F(TYPE='ADHERENT',PENA_LAGR=1.,),
+                        BPEL_ACIER=_F(  F_PRG = 1.77E+9,
+                              FROT_COURB = 0.,
+                              FROT_LINE = 0.) )
+
+#
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = 'BETON',
+                              MATER = BETON),
+                       _F(  GROUP_MA = 'CABLE',
+                              MATER = ACIER)) )
+
+#
+
+CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
+                                  CHAM_MATER=CHMATER,
+                                   CARA_ELEM=CARAELEM,
+                              GROUP_MA_BETON='BETON',
+                              ADHERENT='OUI',
+                              DEFI_CABLE=_F(
+                               GROUP_MA = 'CABLE',
+                               GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
+                               TYPE_ANCRAGE = ( 'ACTIF',  'ACTIF',  ),
+                               TENSION_INIT=0,
+                               RECUL_ANCRAGE=0. )
+
+CHARMECA=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      DDL_IMPO=(_F(  GROUP_MA = ('FACE1',),
+                                    DX = 0.,
+                                    DY = 0.,
+                                    DZ = 0.,
+                               ),
+                               _F(  GROUP_NO = ('ANCR1','ANCR2'),
+                                    GLIS = 0.
+                               ),
+                             ),
+                      RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
+                               SIGM_BPEL = 'NON',
+                               RELA_CINE = 'OUI'),
+                        INFO=1 )
+
+CHARPRES=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      PRES_REP=(_F(  GROUP_MA = ('FACE_BAS',),
+                                     PRES = 1.E5,
+                               ),
+                             ),
+                        INFO=1 )
+
+RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',VALE = (0,0,2,1))
+
+LINST=DEFI_LIST_REEL(    VALE=( 0.0,  1.0, 2.0) )
+
+
+
+EVOLNOLI=STAT_NON_LINE(
+                        MODELE=MODELE,
+                        CHAM_MATER=CHMATER,
+                        CARA_ELEM=CARAELEM,
+                        EXCIT=(
+                                _F(CHARGE = CHARPRES , FONC_MULT = RAMPE),
+                                _F(CHARGE = CHARMECA , ),
+                               ),
+                         COMPORTEMENT=(_F( RELATION = 'KIT_CG',
+                                        RELATION_KIT=('ELAS','CABLE_GAINE_FROT',),
+                                        DEFORMATION = 'PETIT_REAC',
+                                        GROUP_MA='CABLE'),
+                                    _F( RELATION = 'ELAS',
+                                        DEFORMATION = 'PETIT',
+                                        GROUP_MA='BETON'),
+                                   ),
+                         INCREMENT=_F(
+                LIST_INST = LINST),
+                          NEWTON=_F(REAC_ITER=1),
+                           SOLVEUR=_F(
+                METHODE = 'MUMPS',
+                                      ),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 50,
+                RESI_GLOB_RELA = 1.E-6),
+                              INFO=1
+              )
+
+EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
+                    FORCE=('FORC_NODA','REAC_NODA'),
+                    CONTRAINTE = 'SIEF_NOEU',
+                    GROUP_MA=('CABLE'),
+                    RESULTAT=EVOLNOLI,);
+
+TAB = CREA_TABLE(RESU=_F(RESULTAT=EVOLNOLI, NOM_CHAM='SIEF_NOEU', GROUP_MA='CABLE', NOM_CMP='N',INST=2.))
+
+IMPR_TABLE(TABLE=TAB,NOM_PARA=('NOEUD','COOR_X','N'), TRI=_F(NOM_PARA='COOR_X',))
+
+
+IMPR_RESU(RESU=_F(RESULTAT=EVOLNOLI, NOM_CHAM='DEPL', INST=2, NOM_CMP = 'GLIS',))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N20',
+                  NOM_CMP='N',
+                  VALE_CALC=5373.6346812073,
+                  VALE_REFE=5373.5429318889,
+                  REFERENCE='AUTRE_ASTER',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N10',
+                  NOM_CMP='N',
+                  VALE_CALC=4173.5315342889,
+                  VALE_REFE=4145.3863764751,
+                  REFERENCE='AUTRE_ASTER',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N20',
+                  NOM_CMP='DX',
+                  VALE_CALC=5373.5309678365,
+                  VALE_REFE=5373.5008825388,
+                  REFERENCE='AUTRE_ASTER',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+                _F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N20',
+                  NOM_CMP='DZ',
+                  VALE_CALC=21.258202734348,
+                  VALE_REFE=21.258085693706,
+                  REFERENCE='AUTRE_ASTER',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+                ),
+          )
+
+# COMPARAISON BARRE
+
+MA2 = LIRE_MAILLAGE(FORMAT='MED', UNITE=19)
+MO2=AFFE_MODELE(
+                 MAILLAGE=MA2,AFFE=(
+                     _F(  GROUP_MA = ('BETON','FACE_BAS'),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = '3D'),
+                     _F(  GROUP_MA = 'CABLE',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE')) )
+
+#
+
+CARA2=AFFE_CARA_ELEM(
+                      MODELE=MO2,
+                       BARRE=_F(  GROUP_MA = 'CABLE',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 2.5E-3, )) )
+
+#
+
+ACIER2=DEFI_MATERIAU(
+                       ELAS=_F(  E = 1.85E+11,
+                              NU = 0.),
+                        BPEL_ACIER=_F(  F_PRG = 1.77E+9,
+                              FROT_COURB = 0.,
+                              FROT_LINE = 0.) )
+
+#
+
+CHMA2=AFFE_MATERIAU(
+                   MAILLAGE=MA2,AFFE=(
+                       _F(  GROUP_MA = 'BETON',
+                              MATER = BETON),
+                       _F(  GROUP_MA = 'CABLE',
+                              MATER = ACIER2)) )
+
+#
+
+CABLEP2=DEFI_CABLE_BP(            MODELE=MO2,
+                                  CHAM_MATER=CHMA2,
+                                   CARA_ELEM=CARA2,
+                              GROUP_MA_BETON='BETON',
+                              ADHERENT='OUI',
+                              DEFI_CABLE=_F(
+                               GROUP_MA = 'CABLE',
+                               GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
+                               TYPE_ANCRAGE = ( 'ACTIF',  'ACTIF',  ),
+                               TENSION_INIT=0,
+                               RECUL_ANCRAGE=0. )
+
+CHARMEC2=AFFE_CHAR_MECA(
+                      MODELE=MO2,
+                      DDL_IMPO=(_F(  GROUP_MA = ('FACE1',),
+                                    DX = 0.,
+                                    DY = 0.,
+                                    DZ = 0.,
+                               ),
+                             ),
+                      RELA_CINE_BP=_F(  CABLE_BP = CABLEP2,
+                               SIGM_BPEL = 'NON',
+                               RELA_CINE = 'OUI'),
+                        INFO=1 )
+
+CHARPRE2=AFFE_CHAR_MECA(
+                      MODELE=MO2,
+                      PRES_REP=(_F(  GROUP_MA = ('FACE_BAS',),
+                                     PRES = 1.E5,
+                               ),
+                             ),
+                        INFO=1 )
+
+
+
+
+EVOLNOL2=STAT_NON_LINE(
+                        MODELE=MO2,
+                        CHAM_MATER=CHMA2,
+                        CARA_ELEM=CARA2,
+                        EXCIT=(
+                                _F(CHARGE = CHARPRE2 , FONC_MULT = RAMPE),
+                                _F(CHARGE = CHARMEC2 , ),
+                               ),
+                         COMPORTEMENT=(_F( RELATION = 'ELAS',
+                                        DEFORMATION = 'PETIT_REAC',
+                                        GROUP_MA='CABLE'),
+                                    _F( RELATION = 'ELAS',
+                                        DEFORMATION = 'PETIT',
+                                        GROUP_MA='BETON'),
+                                   ),
+                         INCREMENT=_F(
+                LIST_INST = LINST),
+                          NEWTON=_F(REAC_ITER=1),
+                           SOLVEUR=_F(
+                METHODE = 'MUMPS',
+                                      ),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 50,
+                RESI_GLOB_RELA = 1.E-5),
+                              INFO=1
+              )
+
+EVOLNOL2=CALC_CHAMP(reuse =EVOLNOL2,
+                    FORCE=('FORC_NODA','REAC_NODA'),
+                    CONTRAINTE = ('SIEF_ELNO','SIEF_NOEU'),
+                    GROUP_MA=('CABLE'),
+                    RESULTAT=EVOLNOL2,);
+
+
+
+TAB2 = CREA_TABLE(RESU=_F(RESULTAT=EVOLNOL2, NOM_CHAM='SIEF_NOEU', GROUP_MA='CABLE', NOM_CMP='N', INST=2.))
+
+IMPR_TABLE(TABLE=TAB2,NOM_PARA=('NOEUD','COOR_X','N'))
+
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOL2,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N21',
+                  NOM_CMP='N',
+                  VALE_CALC=5373.5429318889,
+                  CRITERE='RELATIF',
+                  ),
+                _F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOL2,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N11',
+                  NOM_CMP='N',
+                  VALE_CALC=4145.3863764751,
+                  CRITERE='RELATIF',),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOL2,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N21',
+                  NOM_CMP='DX',
+                  VALE_CALC=5373.5008825388,
+                  CRITERE='RELATIF',
+                  ),
+                _F(NUME_ORDRE=2,
+                  RESULTAT=EVOLNOL2,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N21',
+                  NOM_CMP='DZ',
+                  VALE_CALC=21.258085693706,
+                  CRITERE='RELATIF',
+                  ),
+                ),
+          )
+
+
+FIN()
+#

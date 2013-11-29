@@ -530,8 +530,14 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
             if string.strip(__typ_noeu[j]) == 'NOEUD' :
               motscle2['DDL_IMPO'].append(_F(NOEUD=string.strip(__nom_noeu[j]),
                                         GLIS = 0.) )
+              if __recul_exists :
+                  motscle5['DDL_IMPO'].append(_F(NOEUD=string.strip(__nom_noeu[j]),
+                                        GLIS = 0.) )
             else :
               motscle2['DDL_IMPO'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),
+                                     GLIS = 0.) )
+              if __recul_exists :
+                  motscle5['DDL_IMPO'].append(_F(GROUP_NO=string.strip(__nom_noeu[j]),
                                      GLIS = 0.) )
           else :
             actif += 1

@@ -43,7 +43,7 @@ subroutine te0340(option, nomte)
     integer :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
     integer :: iw, ivf1, idf1, igeom, imate
     integer :: npgn, iwn, ivf1n, idf1n, jgnn
-    integer :: ivf2, idf2, nnos, jgn
+    integer :: ivf2, idf2, nnos, jgn, ino, i, nddl1
     integer :: ivarim, ivarip, iinstm, iinstp
     integer :: iddlm, iddld, icompo, icarcr
     integer :: ivectu, icontp
@@ -51,7 +51,7 @@ subroutine te0340(option, nomte)
     integer :: jtab(7), iadzi, iazk24, jcret, codret
     integer :: ndim, iret, ntrou, vali(2)
     integer :: iu(3, 3), iuc(3), im(3), isect, icontm
-    real(kind=8) :: tang(3, 3), a
+    real(kind=8) :: tang(3, 3), a, geom(3, 3)
 !
 !
 ! - FONCTIONS DE FORME
@@ -64,6 +64,7 @@ subroutine te0340(option, nomte)
     call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
                 npg, iw, ivf2, idf2, jgn)
     ndim=3
+    nddl1 = 5
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call cginit(nomte, iu, iuc, im)
@@ -86,9 +87,29 @@ subroutine te0340(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PCAGNBA', 'L', isect)
 !
+!     MISE A JOUR EVENTUELLE DE LA GEOMETRIE
+!
+    if (zk16(icompo+2).eq. 'PETIT') then
+        do ino = 1, nno1
+            do i = 1, ndim
+                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)
+            enddo
+        enddo
+    elseif (zk16(icompo+2) .eq. 'PETIT_REAC') then
+        do ino = 1, nno1
+            do i = 1, ndim
+                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)&
+                            + zr(iddlm-1+(ino-1)*nddl1+i)&
+                            + zr(iddld-1+(ino-1)*nddl1+i)
+            enddo
+        enddo
+    else
+        call utmess('F', 'ALGORITH17_2', sk=zk16(icompo+2))
+    endif
+!
 !     DEFINITION DES TANGENTES
 !
-    call cgtang(3, nno1, npgn, zr(igeom), zr(idf1n),&
+    call cgtang(3, nno1, npgn, geom, zr(idf1n),&
                 tang)
 !
 !     SECTION DE LA BARRE
@@ -147,19 +168,14 @@ subroutine te0340(option, nomte)
 !
 ! - FORCES INTERIEURES ET MATRICE TANGENTE
 !
-    if (zk16(icompo+2)(1:5) .eq. 'PETIT') then
 !
-        call cgfint(ndim, nno1, nno2, npg, zr(iw),&
-                    zr(ivf1), zr(ivf2), zr(idf1), zr(igeom), tang,&
-                    typmod, option, zi(imate), zk16(icompo), lgpg,&
-                    zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
-                    iu, iuc, im, a, zr(icontm),&
-                    zr(ivarim), zr(icontp), zr(ivarip), zr( imatuu), zr(ivectu),&
-                    codret)
-!
-    else
-        call utmess('F', 'ALGORITH17_2', sk=zk16(icompo+2))
-    endif
+    call cgfint(ndim, nno1, nno2, npg, zr(iw),&
+                zr(ivf1), zr(ivf2), zr(idf1), geom, tang,&
+                typmod, option, zi(imate), zk16(icompo), lgpg,&
+                zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
+                iu, iuc, im, a, zr(icontm),&
+                zr(ivarim), zr(icontp), zr(ivarip), zr( imatuu), zr(ivectu),&
+                codret)
 !
     if (option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH') then
         call jevech('PCODRET', 'E', jcret)

@@ -1,6 +1,5 @@
 subroutine te0423(option, nomte)
     implicit  none
-! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefg2.h"

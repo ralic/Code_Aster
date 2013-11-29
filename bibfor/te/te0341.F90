@@ -40,9 +40,11 @@ subroutine te0341(option, nomte)
     character(len=8) :: lielrf(10)
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
     integer :: iw, ivf1, idf1, igeom, icontm, ivectu, ndim, ntrou
-    integer :: npgn, iwn, ivf1n, idf1n, jgnn
-    integer :: iu(3, 3), iuc(3), im(3), isect
+    integer :: npgn, iwn, ivf1n, idf1n, jgnn, ino, i, nddl1
+    integer :: iu(3, 3), iuc(3), im(3), isect, iddlm, icompo
     real(kind=8) :: tang(3, 3), forref, sigref, depref, a
+    real(kind=8) :: geom(3, 3)
+    logical :: reactu
 !
 !
     call elref2(nomte, 2, lielrf, ntrou)
@@ -53,16 +55,39 @@ subroutine te0341(option, nomte)
     call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
                 npg, iw, ivf2, idf2, jgn)
     ndim=3
+    nddl1 = 5
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call cginit(nomte, iu, iuc, im)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
-
+!
+!     MISE A JOUR EVENTUELLE DE LA GEOMETRIE
+!
+    reactu = .false.
+    if (option .eq. 'FORC_NODA')then
+        call jevech('PCOMPOR', 'L', icompo)
+        if (zk16(icompo+2) .eq. 'PETIT_REAC') reactu = .true.
+    endif
+    if (.not. reactu)then
+        do ino = 1, nno1
+            do i = 1, ndim
+                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)
+            enddo
+        enddo
+    else
+        call jevech('PDEPLMR', 'L', iddlm)
+        do ino = 1, nno1
+            do i = 1, ndim
+                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)&
+                            + zr(iddlm-1+(ino-1)*nddl1+i)
+            enddo
+        enddo
+    endif
 !     DEFINITION DES TANGENTES
 !
-    call cgtang(3, nno1, npgn, zr(igeom), zr(idf1n),&
+    call cgtang(3, nno1, npgn, geom, zr(idf1n),&
                 tang)
 !
 !      OPTIONS FORC_NODA ET REFE_FORC_NODA
@@ -71,7 +96,7 @@ subroutine te0341(option, nomte)
 !
         call jevech('PCONTMR', 'L', icontm)
         call cgfono(ndim, nno1, nno2, npg, zr(iw),&
-                    zr(ivf1), zr(ivf2), zr(idf1), zr(igeom), tang,&
+                    zr(ivf1), zr(ivf2), zr(idf1), geom, tang,&
                     iu, iuc, im, zr(icontm), zr(ivectu))
 !
     else
@@ -84,7 +109,7 @@ subroutine te0341(option, nomte)
         call terefe('EFFORT_REFE', 'MECA_CG', forref)
 !
         call cgfore(ndim, nno1, nno2, npg, zr(iw),&
-                    zr(ivf1), zr(ivf2), zr(idf1), a, zr(igeom),&
+                    zr(ivf1), zr(ivf2), zr(idf1), a, geom,&
                     tang, iu, iuc, im, forref,&
                     sigref, depref, zr(ivectu))
 !
