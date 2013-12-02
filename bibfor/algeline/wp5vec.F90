@@ -43,14 +43,9 @@ subroutine wp5vec(opt, nbfreq, nbvect, neq, vp,&
 ! OUT RESUFR : C : TABLEAU DE POST-TRAITEMENT
 !     -----------------------------------------------------------------
 !
-!
-!     ------------------------------------------------------------------
     real(kind=8) :: am, om
     integer :: i, j, k, iadind
-!     -----------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: nbcmpp
-!-----------------------------------------------------------------------
+!
     call jemarq()
 !
     call wkvect('&&WP5VEC.INDIC.PART.VP', 'V V I', nbvect, iadind)
@@ -72,7 +67,6 @@ subroutine wp5vec(opt, nbfreq, nbvect, neq, vp,&
 !
     if (zi(iadind + nbvect-1) .eq. -2) then
         zi(iadind + nbvect-1) = 0
-        nbcmpp = nbcmpp +1
     endif
 !
 !

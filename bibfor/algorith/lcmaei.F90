@@ -188,8 +188,8 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
             call rcvalb(fami, kpg, ksp, poum, imat,&
                         ' ', 'ELAS', 0, ' ', [0.d0],&
                         1, 'NU', val, icodre, 1)
-            mu=e/(2.0d0+2.0d0*nu)
             nu=val(1)
+            mu=e/(2.0d0+2.0d0*nu)
         else
             call rcvalb(fami, kpg, ksp, poum, imat,&
                         ' ', phenom, 0, ' ', [0.d0],&

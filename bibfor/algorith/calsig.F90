@@ -61,6 +61,7 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
                 ksp, tperef, iret3)
 !
+    dtper = 0.d0
     iret=iret1+iret2+iret3
 !
     loi=comp(1)
