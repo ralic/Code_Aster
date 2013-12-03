@@ -614,7 +614,8 @@ IMPR_TABLE(  TABLE=T_04_001 )
 TEST_TABLE(VALE_CALC=4.9220287464795E-08,
            NOM_PARA='DOMM_CUMU',
            TABLE=T_04_001,
-           )
+           TOLE_MACHINE=0.02, # Variabilité de 2% justifiée en raison de l'utilisation d'un chargement        
+           )                  # aléatoire généré à partir d'un spectre de pression turbulente, (issue21791)
 
 FIN( )
 #
