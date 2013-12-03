@@ -30,6 +30,10 @@ cata_msg = {
   -> Conseils : Utilisez un comportement élastique linéaire.
 """),
 
+3 : _(u"""
+On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques.
+"""),
+
 5 : _(u"""
   -> Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible.
 """),

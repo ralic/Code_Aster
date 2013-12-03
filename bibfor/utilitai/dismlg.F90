@@ -6,6 +6,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/dismma.h"
 #include "asterfort/dismml.h"
 #include "asterfort/dismte.h"
+#include "asterfort/dismtm.h"
+#include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -49,14 +51,17 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer :: dimge(3)
     logical :: melang
-    character(len=8) :: calcri, mailla, nomacr, modele
+    character(len=8) :: calcri, mailla, nomacr, modele, typemail, k8bid
     character(len=16) :: nomte, phenom, nomodl, tyvois
     character(len=19) :: nomob
     character(len=32) :: repk
     integer :: jlgrf, iret, nbgrel, igrel, nel, itypel, jsssa, n1
     integer :: ige2, igr, jliel, ite, ige1, ige3, nbgr
     integer :: iexi, iexi2, jpart, ico
-    integer :: jnomac, nbsm, ism, jnbno, ibid
+    integer :: jnomac, nbsm, ism, jnbno, ibid, jtypma
+    logical :: mail_quad, mail_line, lret
+    integer :: ndime, nb_elem, i_typelem
+    character(len=24) :: list_elem
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
@@ -455,6 +460,35 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             endif
         endif
 100      continue
+!     -------------------------------------
+    else if (questi.eq.'LINE_QUAD') then
+!     -------------------------------------
+        list_elem = nomob//'.LIEL'
+        call jelira(list_elem, 'NUTIOC', nbgrel)
+        call jeveuo('&CATA.TE.TYPEMA', 'L', jtypma)
+        mail_quad = .false.
+        mail_line = .false.
+        do igrel = 1,nbgrel
+            call jeveuo(jexnum(list_elem, igrel), 'L', jliel)
+            call jelira(jexnum(list_elem, igrel), 'LONMAX', nb_elem)
+            i_typelem = zi(jliel-1+nb_elem)  
+            typemail  = zk8(jtypma-1+i_typelem)
+            call dismtm('DIM_TOPO', typemail, ndime, k8bid, ibid)
+            if (ndime.ne.0) then
+                lret = ismali(typemail)
+                if (lret)      mail_line = .true.
+                if (.not.lret) mail_quad = .true.
+            endif
+        end do
+        if (mail_line.and.mail_quad) then
+            repk = 'LINE_QUAD'
+        elseif (mail_line) then
+            repk = 'LINE'
+        elseif (mail_quad) then
+            repk = 'QUAD'
+        else
+            ierd = 1
+        endif
 !
 !     ----
     else

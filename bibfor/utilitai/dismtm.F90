@@ -34,6 +34,7 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
     character(len=8) :: nomob
+
 ! ----------------------------------------------------------------------
 !    IN:
 !       QUESTI : TEXTE PRECISANT LA QUESTION POSEE

@@ -81,8 +81,5 @@ Il est obligatoire de fournir au moins un comportement pour définir le matéria
 La valeur du mot clé DEFORMATION='%(k1)s' et incompatible avec la modélisation.
 """),
 
-18 : _(u"""
-On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques.
-"""),
 
 }

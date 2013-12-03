@@ -68,17 +68,14 @@ subroutine op0113()
     integer :: nb1
     integer :: nfiss, jnfis
     integer :: ndim
-    character(len=16) :: motfac, k16bid
+    character(len=16) :: motfac, k16bid, line_quad
     character(len=19) :: ligr1, ligr2
     character(len=24) :: liel1, liel2
     character(len=24) :: mail2
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, noma, k8cont
-    logical :: linter, maqua, malin, lret
-    character(len=8) :: typma
-    character(len=16) :: nomte
-    integer :: nbgrel, igrel, jliel, nel, itypel, ndime
+    logical :: linter
 !
     data motfac /' '/
 !
@@ -134,33 +131,13 @@ subroutine op0113()
     if(k8cont.eq.'NON') then
         zi(jxc) = 0
     else if(k8cont.eq.'OUI') then
-!
-!       TEST MAILLAGE LINEAIRE OU QUADRATIQUE
-!
-        call dismoi('NB_GREL', ligr1, 'LIGREL', repi=nbgrel)
-        maqua = .false.
-        malin = .false.
-        do 1 igrel = 1,nbgrel
-            call jeveuo(jexnum(liel1,igrel),'L',jliel)
-            call jelira(jexnum(liel1, igrel), 'LONMAX', nel)
-            itypel = zi(jliel-1+nel)
-            call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            call dismoi('NOM_TYPMAIL',nomte,'TYPE_ELEM', repk=typma)
-            call dismoi('DIM_TOPO',typma,'TYPE_MAILLE', repi=ndime)
-            if(ndime.eq.0) goto 1
-            lret = ismali(typma)
-            if(lret) malin = .true.
-            if(.not.lret) maqua = .true.
-1       continue
-!
-        if(malin.and.(.not.maqua)) then
+        call dismoi('LINE_QUAD', ligr1, 'LIGREL', repk = line_quad)
+        if (line_quad.eq.'LINE') then
             zi(jxc) = 1
-        else if(maqua.and.(.not.malin)) then
+        else if (line_quad.eq.'QUAD') then
             zi(jxc) = 3
         else
-!
-!           PRESENCE DE MAILLES LINEAIRES ET QUADRATIQUES : INTERDIT
-            call utmess('F','MODELISA10_18')
+            call utmess('F','XFEM2_3')
         endif
     else
         ASSERT(.false.)
