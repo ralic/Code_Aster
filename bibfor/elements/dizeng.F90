@@ -1,27 +1,5 @@
 subroutine dizeng(option, nomte, ndim, nbt, nno,&
                   nc, ulm, dul, pgl, iret)
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8miem.h"
-#include "asterfort/assert.h"
-#include "asterfort/infdis.h"
-#include "asterfort/jevech.h"
-#include "asterfort/pmavec.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rk5adp.h"
-#include "asterfort/tecael.h"
-#include "asterfort/ut2mlg.h"
-#include "asterfort/ut2vlg.h"
-#include "asterfort/utmess.h"
-#include "asterfort/utpslg.h"
-#include "asterfort/utpvlg.h"
-#include "asterfort/vecma.h"
-#include "asterfort/zengen.h"
-#include "blas/dcopy.h"
-!
-    character(len=*) :: option, nomte
-    integer :: ndim, nbt, nno, nc, iret
-    real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,10 +41,35 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    implicit none
+    character(len=*) :: option, nomte
+    integer :: ndim, nbt, nno, nc, iret
+    real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
+!
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdis.h"
+#include "asterfort/jevech.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rk5adp.h"
+#include "asterfort/tecael.h"
+#include "asterfort/ut2mlg.h"
+#include "asterfort/ut2vlg.h"
+#include "asterfort/utmess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecma.h"
+#include "asterfort/zengen.h"
+#include "blas/dcopy.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24, icompo
     integer :: icarcr
     integer :: icontm, ii, neq
-    real(kind=8) :: r8bid, raidex, fl(12), klv(78), klc(144)
+    real(kind=8) :: r8bid, raidex, fl(12), klv(78), klc(144),raideurDeno
     character(len=8) :: k8bid
     character(len=24) :: messak(5)
 !   pour la loi de comportement
@@ -163,6 +166,17 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
         ldcpar(3) = valcar(is3)
     endif
 !
+    raideurDeno = (ldcpar(1)+ldcpar(3)+ldcpar(2)*ldcpar(1)*ldcpar(3))
+    if ( raideurDeno .le. r8miem() ) then
+        messak(1) = nomte
+        messak(2) = option
+        messak(3) = zk16(icompo+3)
+        messak(4) = zk16(icompo)
+        call tecael(iadzi, iazk24)
+        messak(5) = zk24(iazk24-1+3)
+        call utmess('F', 'DISCRETS_4', nk=5, valk=messak)
+    endif
+!
     ldcpar(4) = valcar(in3)
     ldcpar(5) = valcar(ia3)
 !
@@ -170,8 +184,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !       ==> la récupération de la matrice tangente précédente a échouée
 !       ==> calcul d'une tangente pas trop mauvaise
     if (option .eq. 'RIGI_MECA_TANG') then
-        raidex = (1.0d0 + ldcpar(2)*ldcpar(3))/(ldcpar(1)+ldcpar(3)+ldcpar(2)*ldcpar(1)*ldcpar(3)&
-                 )
+        raidex=(1.0d0 + ldcpar(2)*ldcpar(3))/raideurDeno
         goto 800
     endif
 !
@@ -215,6 +228,9 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
         raidex = resu(nbequa + 1)/resu(nbequa + 3)
     else
         raidex = resu(nbequa + 1)
+    endif
+    if ( abs(raidex) .lt. precis ) then
+        raidex=(1.0d0 + ldcpar(2)*ldcpar(3))/raideurDeno
     endif
 !   actualisation de la matrice quasi-tangente
 800  continue

@@ -37,8 +37,18 @@ Il n'y a pas de comportement non-linéaire possible en rotation
 ou suivant Z en 2D.
 """),
 
+4: _(u"""
+Pour l'élément discret %(k5)s .
+La raideur tangente est nulle ou trop petite.
+Vérifier les caractéristiques : K1 K2 K3 UNSUR_K1 UNSUR_K2 UNSUR_K3
 
+La raideur tangente : 1/K1 + 1/K3 + K2/(K1*K3) ne doit pas être nulle ou trop petite.
 
+Pour information :
+   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   Comportement : <%(k3)s>, Relation : <%(k4)s>
+   Maille   : <%(k5)s>
+"""),
 
 5: _(u"""
 Pour l'élément discret %(k5)s .
