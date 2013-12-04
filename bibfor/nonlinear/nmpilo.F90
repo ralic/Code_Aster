@@ -35,6 +35,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 #include "asterfort/nmpidd.h"
 #include "asterfort/nmpila.h"
 #include "asterfort/nmpipe.h"
+#include "asterfort/utmess.h"
     integer :: nbatte, nbeffe
     integer :: pilcvg
     real(kind=8) :: deltat, rho, eta(nbatte)
@@ -92,6 +93,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     character(len=19) :: ligrpi, cartyp, careta
     character(len=19) :: depmoi, depdel, deppr1, deppr2
     character(len=19) :: cnfepi
+    character(len=3) :: mfdet
     integer :: ifm, niv
     logical :: isxfe
 !
@@ -135,6 +137,13 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     ligrpi = zk24(jpltk+1)(1:19)
     cartyp = zk24(jpltk+2)(1:19)
     careta = zk24(jpltk+3)(1:19)
+!
+! --- VERIFICATION QUE LES VARIABLES DE COMMANDE NE DEPENDENT PAS DU TEMPS
+!
+    call dismoi('VARC_F_INST', mate, 'CHAM_MATER', repk=mfdet)
+    if (mfdet.eq.'OUI') then
+       call utmess('F', 'CALCULEL2_58', nk=1, valk=mate)
+    endif
 !
 ! --- INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1
 !

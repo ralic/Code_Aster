@@ -1,5 +1,5 @@
 subroutine exfonc(fonact, parmet, method, solveu, defico,&
-                  sddyna)
+                  sddyna, mate)
 !
     implicit none
 !
@@ -13,6 +13,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/dismoi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,6 +39,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     character(len=24), intent(in) :: defico
     real(kind=8), intent(in) :: parmet(*)
     character(len=16), intent(in) :: method(*)
+    character(len=24), intent(in) :: mate
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,6 +69,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
     integer :: ifm, niv
     character(len=24) :: typilo, typrel, metres
+    character(len=3)  :: mfdet
 !
 ! ---------------------------------------------------------------------
 !
@@ -249,6 +252,13 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         if ((method(5).eq.'DEPL_CALCULE') .or. (method(5) .eq.'EXTRAPOLE')) then
             call utmess('F', 'MECANONLINE5_36')
         endif
+!
+!       --- VERIFICATION QUE LES VARIABLES DE COMMANDE NE DEPENDENT PAS DU TEMPS
+        call dismoi('VARC_F_INST', mate, 'CHAM_MATER', repk=mfdet)
+        if (mfdet.eq.'OUI') then
+           call utmess('F', 'CALCULEL2_58', nk=1, valk=mate(1:8))
+        endif
+
     endif
     if (lreli) then
         call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=typrel, nbret=n1)

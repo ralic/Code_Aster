@@ -20,6 +20,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismca.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -45,15 +46,17 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: mater, nomf
+    character(len=8) :: mater, nomf, novarc, ktyp
     character(len=10) :: nomrc
     character(len=24) :: quest2, nomobj(100)
+    character(len=19) :: nomcar2
     logical :: trouve
     integer :: nbmax, izone, i
 !-----------------------------------------------------------------------
     integer :: ianorc, iaobj, iaprol, iavale, iavalk, if, ii
     integer :: iii, imax, irc, iret, jdesc, lonobj, n
     integer :: n1, nbrc, nbzone, nc, nf, nmat, nr
+    integer :: n2, jvale, jcvar1, nbvarc, nedit, kvarc, kedit
 !
 !-----------------------------------------------------------------------
     parameter(nbmax=30)
@@ -272,6 +275,36 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         if (iret .ne. 0) then
             repk='OUI'
         endif
+!
+!
+    else if (questi.eq.'VARC_F_INST') then
+!     --------------------------------------
+        repk='NON'
+        call jeexin(nomob//'.CVRCVARC', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomob//'.CVRCVARC', 'L', jcvar1)
+            call jelira(nomob//'.CVRCVARC', 'LONMAX', nbvarc)
+            do kvarc=1,nbvarc
+                novarc=zk8(jcvar1-1+kvarc)
+                nomcar2=nomob//'.'//novarc
+                nomcar2=nomcar2(1:17)//'.2'
+                call jeveuo(nomcar2//'.DESC', 'L', jdesc)
+                nedit=zi(jdesc-1+3)
+                call jeveuo(nomcar2//'.VALE', 'L', jvale)
+                call jelira(nomcar2//'.VALE', 'LONMAX', n1)
+                n2=n1/nedit
+                ASSERT(n1.eq.nedit*n2)
+                do kedit=1,nedit
+                    ktyp=zk16(jvale-1+(kedit-1)*n2+2)
+                    ASSERT(ktyp.eq.'EVOL' .or.ktyp.eq.'CHAMP')
+                    if (ktyp.eq.'EVOL') then
+                        repk='OUI'
+                        goto 200
+                    endif
+                enddo
+            enddo
+        endif
+200     continue
 !
 !
     else
