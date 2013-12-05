@@ -16,6 +16,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include <stdlib.h>
 
 INTEGER DEFSS(GTENV, gtenv, char *name, STRING_SIZE lname, char *value, STRING_SIZE lvalue)
 {
@@ -23,7 +24,6 @@ INTEGER DEFSS(GTENV, gtenv, char *name, STRING_SIZE lname, char *value, STRING_S
    long code,lval,i,lmin;
 #define lg 64
    char nom[lg],*val;
-   extern char *getenv (const char *name);
 
    long ln,lv;
    lv = (long) lvalue;

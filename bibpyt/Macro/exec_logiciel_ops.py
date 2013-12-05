@@ -29,9 +29,6 @@ EnumTypes = (ListType, TupleType)
 cmd_ssh = "%(ssh)s -p %(port)s -o BatchMode=yes -o ConnectTimeout=2 -o ChallengeResponseAuthentication=yes -o PasswordAuthentication=no -o StrictHostKeyChecking=no %(user_machine)s '%(cmd)s'"
 cmd_scp = "%(scp)s -P %(port)s -o BatchMode=yes -o ConnectTimeout=2 -o ChallengeResponseAuthentication=yes -o PasswordAuthentication=no -o StrictHostKeyChecking=no %(src)s %(dst)s"
 
-#cmd_ssh = "%(ssh)s -p %(port)s %(user_machine)s '%(cmd)s'"
-#cmd_scp = "%(scp)s -P %(port)s %(src)s %(dst)s"
-
 exe_ssh = 'ssh'
 exe_scp = 'scp'
 
@@ -206,18 +203,24 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       #print dMCF
 
       # Mot-cles
-      if dMCF.has_key('FICHIERS_ENTREE') and dMCF['FICHIERS_ENTREE'] != None: FICHIERS_ENTREE = dMCF['FICHIERS_ENTREE']
-      else:                                                                   FICHIERS_ENTREE = []
+      if dMCF.has_key('FICHIERS_ENTREE') and dMCF['FICHIERS_ENTREE'] != None:
+          FICHIERS_ENTREE = dMCF['FICHIERS_ENTREE']
+      else:
+          FICHIERS_ENTREE = []
 
-      if dMCF.has_key('FICHIERS_SORTIE') and dMCF['FICHIERS_SORTIE'] != None: FICHIERS_SORTIE = dMCF['FICHIERS_SORTIE']
-      else:                                                                   FICHIERS_SORTIE = []
+      if dMCF.has_key('FICHIERS_SORTIE') and dMCF['FICHIERS_SORTIE'] != None:
+          FICHIERS_SORTIE = dMCF['FICHIERS_SORTIE']
+      else:
+          FICHIERS_SORTIE = []
 
       if dMCF.has_key('SALOME_RUNAPPLI') and dMCF['SALOME_RUNAPPLI'] != None:
           RUNAPPLI = dMCF['SALOME_RUNAPPLI']
       else:
-          if os.environ['APPLI']:
+          if os.environ.get('APPLI'):
               RUNAPPLI = os.path.join(os.environ['HOME'], os.environ['APPLI'], 'runSalomeScript')
-          else:   # Si on est dans Aster-full, on compte sur un fichier outis/runSalomeScript bien configure pour pointer vers Salome
+          else:
+              # Si on est dans Aster-full, on compte sur un fichier outis/runSalomeScript
+              # bien configure pour pointer vers Salome
               RUNAPPLI = os.path.join( aster_core.get_option('repout'), 'runSalomeScript' )
 
       if MACHINE_DISTANTE is None:
@@ -226,9 +229,12 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       if dMCF['SALOME_PORT']: RUNAPPLI += ' -p %s ' % dMCF['SALOME_PORT']
 
       # Chemin du script
-      if   dMCF.has_key('CHEMIN_SCRIPT') and dMCF['CHEMIN_SCRIPT'] != None: CHEMIN_SCRIPT = dMCF['CHEMIN_SCRIPT']
-      elif dMCF.has_key('UNITE_SCRIPT')  and dMCF['UNITE_SCRIPT']  != None: CHEMIN_SCRIPT = 'fort.%s' % dMCF['UNITE_SCRIPT']
-      else:                                                                 CHEMIN_SCRIPT = ''
+      if   dMCF.has_key('CHEMIN_SCRIPT') and dMCF['CHEMIN_SCRIPT'] != None:
+          CHEMIN_SCRIPT = dMCF['CHEMIN_SCRIPT']
+      elif dMCF.has_key('UNITE_SCRIPT')  and dMCF['UNITE_SCRIPT']  != None:
+          CHEMIN_SCRIPT = 'fort.%s' % dMCF['UNITE_SCRIPT']
+      else:
+          CHEMIN_SCRIPT = ''
 
 
       # dic = Dictionnaire a passer pour la creation du script temporaire
@@ -236,10 +242,14 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
 
       # Parametres a remplacer dans le script
-      if dMCF.has_key('NOM_PARA') and dMCF['NOM_PARA'] != None: NOM_PARA = dMCF['NOM_PARA']
-      else:                                                     NOM_PARA = []
-      if dMCF.has_key('VALE')     and dMCF['VALE']     != None: VALE     = dMCF['VALE']
-      else:                                                     VALE     = []
+      if dMCF.has_key('NOM_PARA') and dMCF['NOM_PARA'] != None:
+          NOM_PARA = dMCF['NOM_PARA']
+      else:
+          NOM_PARA = []
+      if dMCF.has_key('VALE')     and dMCF['VALE']     != None:
+          VALE     = dMCF['VALE']
+      else:
+          VALE     = []
       if len(NOM_PARA) != len(VALE): UTMESS('F', 'EXECLOGICIEL0_23')
 
       for i in range(len(NOM_PARA)):
@@ -266,7 +276,6 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
               FICHIERS_ENTREE_DIST.append( fname )
           else:
               fname = FICHIERS_ENTREE[i]
-          #dic['INPUTFILE%s' % str(i+1)] = os.path.normpath(os.path.abspath(os.path.realpath(fname)))
           dic['INPUTFILE%s' % str(i+1)] = fname
 
       for i in range(len(FICHIERS_SORTIE)):
@@ -277,7 +286,6 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
               FICHIERS_SORTIE_DIST.append( fname )
           else:
               fname = FICHIERS_SORTIE[i]
-          #dic['OUTPUTFILE%s' % str(i+1)] = os.path.normpath(os.path.abspath(os.path.realpath(fname)))
           dic['OUTPUTFILE%s' % str(i+1)] = fname
 
 
@@ -288,7 +296,6 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       cmd_salome = []
 
       if MACHINE_DISTANTE != None:
-
          # on recopie le script sur le serveur distant
          d_scp = { 'scp':    exe_scp,
                    'port':   port,
@@ -313,7 +320,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
          d_ssh = { 'ssh':          exe_ssh,
                    'user_machine': user_machine,
                    'port':         port,
-                   'cmd':          '%s %s' % (RUNAPPLI, os.path.join(tmpdir, os.path.basename(CHEMIN_SCRIPT)) ),
+                   'cmd': '%s %s' % (RUNAPPLI, os.path.join(tmpdir, os.path.basename(CHEMIN_SCRIPT))),
                  }
          cmd_salome.append( cmd_ssh % d_ssh )
 
@@ -336,13 +343,17 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
          if FICHIERS_SORTIE_DIST: lst_src.extend( FICHIERS_SORTIE_DIST )
 
          #print lst_src
-         d_ssh['cmd'] = ' '.join([ 'if [ -f "%s" ]; then \\rm %s; fi ; ' % (f,f) for f in lst_src ])
+         d_ssh['cmd'] = ' '.join(['if [ -f "%s" ]; then \\rm %s; fi ; ' % (f,f) \
+                                  for f in lst_src ])
          cmd_salome.append( cmd_ssh % d_ssh )
 
 
       else:
-         if not debug: cmd_salome.append( '%s %s ; if [ -f "%s" ]; then \\rm %s; fi ; ' % (RUNAPPLI, CHEMIN_SCRIPT, CHEMIN_SCRIPT, CHEMIN_SCRIPT) )
-         else:         cmd_salome.append( '%s %s ' % (RUNAPPLI, CHEMIN_SCRIPT) )
+         if not debug:
+             cmd_salome.append('%s %s ; if [ -f "%s" ]; then \\rm %s; fi ; ' \
+                % (RUNAPPLI, CHEMIN_SCRIPT, CHEMIN_SCRIPT, CHEMIN_SCRIPT))
+         else:
+             cmd_salome.append('%s %s ' % (RUNAPPLI, CHEMIN_SCRIPT))
 
 
       if INFO>=2:
@@ -408,14 +419,11 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       comment = "Lancement de la commande :\n%s" % scmd
       if debug: print comment
 
-      if MACHINE_DISTANTE != None:
-#         iret, output, error = ExecCommand_SSH(scmd, alt_comment=comment, verbose=False, separated_stderr=True)  # bizarrement les output/error ne suivent pas!
-         iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, separated_stderr=True)
-      else:
-         iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, separated_stderr=True)
+      iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, separated_stderr=True)
 
       erreur = iret > CODE_RETOUR_MAXI
-      if CODE_RETOUR_MAXI == -1: erreur = False
+      if CODE_RETOUR_MAXI == -1:
+          erreur = False
 
       # output
       if INFO > 0 or erreur:

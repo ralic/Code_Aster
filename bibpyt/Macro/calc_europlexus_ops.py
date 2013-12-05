@@ -1311,7 +1311,6 @@ class EUROPLEXUS:
         # Impression au format Europlexus
 
         for nom_mater in dicmaterkeys :
-            print 'ajojo',nom_mater
             if debug: print 'nom_mater',nom_mater
             epx[MODULE].append('*--MATERIAU %s' %nom_mater)
             # mot cle indiquant qu'il s'agit des caracteristiques lineaires du materiau
