@@ -129,7 +129,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     real(kind=8) :: omecor, omemin, omemax, omeshi
     complex(kind=8) :: sigma
     logical :: flage
-    logical(kind=4) :: bwork(:)
+    logical(kind=4) :: bwork(*)
 !
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES

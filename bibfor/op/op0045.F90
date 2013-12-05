@@ -178,7 +178,6 @@ subroutine op0045()
 !      IF (LCPU) CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
     cbid=(0.d0,0.d0)
     rbid=0.d0
-    nullify(bwork)
     undf=r8vide()
     indf=isnnem()
     rzero=0.d0

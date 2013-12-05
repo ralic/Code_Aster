@@ -52,7 +52,7 @@
               integer :: icscal
               integer :: ivscal
               integer :: iiscal
-              logical(kind=4) :: bwork(:)
+              logical(kind=4) :: bwork(*)
               logical :: flage
             end subroutine vpqzla
           end interface

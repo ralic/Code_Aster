@@ -40,9 +40,9 @@ class sd_carte(sd_titre):
 
         from SD.sd_maillage import sd_maillage
         sd2=sd_maillage(noma[0])
-        # Rem : si on vÈrifie le sd_maillage, sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
+        # Rem : si on v√©rifie le sd_maillage, sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
         # sd2.check(checker)
-        # => On se contente de vÈrifier existence d'un objet particulier de la sd_maillage :
+        # => On se contente de v√©rifier existence d'un objet particulier de la sd_maillage :
         assert sd2.DIME.exists
 
 
