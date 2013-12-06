@@ -1,5 +1,5 @@
-P time_limit 300
-P memory_limit 500
+P time_limit 90
+P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
