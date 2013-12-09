@@ -40,7 +40,7 @@ def check_use_config(self):
     # http:// or ftp://
     #XXX is there any methods to backup this properly ?
     _saved = Context.remote_repo, Context.remote_locs, opts.download
-    if 'tp://' in use_dir:
+    if '://' in use_dir:
         Context.remote_repo, Context.remote_locs, opts.download = (
             use_dir, ['', DEFAULT_DIR], True
         )
