@@ -60,8 +60,8 @@ ACIER=DEFI_MATERIAU(
                               NU = 0.),
                        CABLE_GAINE_FROT=_F(TYPE='FROTTANT',PENA_LAGR=1.e8,FROT_COURB=3.e-2,FROT_LINE=1.e-2),
                  BPEL_ACIER=_F(  F_PRG = 1.77E+9,
-                              FROT_COURB = 0.,
-                              FROT_LINE = 0.) )
+                              FROT_COURB = 3.e-2,
+                              FROT_LINE = 1.e-2) )
 
 #
 
@@ -171,18 +171,18 @@ EVOLNOLI=STAT_NON_LINE(reuse=EVOLNOLI,
                               INFO=1
               )
 
-#EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
-                    #FORCE=('FORC_NODA','REAC_NODA'),
-                    #GROUP_MA=('CABLE'),
-                    #RESULTAT=EVOLNOLI,);
+EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
+                    DEFORMATION = ('EPSI_ELGA','EPSI_ELNO'),
+                    GROUP_MA=('CABLE'),
+                    RESULTAT=EVOLNOLI,);
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),NUME_ORDRE=(1,2)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOLI,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('BETON'),NUME_ORDRE=(1,2)))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOLI,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOLI,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2)))
 
 
 # CABLE ACTIF ACTIF
@@ -241,13 +241,13 @@ EVOLNOL2=CALC_PRECONT( CHAM_MATER=CHMATER,
                     #GROUP_MA=('CABLE'),
                     #RESULTAT=EVOLNOLI,);
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL2,
-                  NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=(1,2)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL2,
+                  #NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=(1,2)))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL2,
-                  NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL2,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2)))
 
 # AVEC RECUL ANCRAGE
 # CABLE ACTIF ACTIF
@@ -302,18 +302,13 @@ EVOLNOL3=CALC_PRECONT( CHAM_MATER=CHMATER,
                        INFO=1,);
 
 
-#EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
-                    #FORCE=('FORC_NODA','REAC_NODA'),
-                    #GROUP_MA=('CABLE'),
-                    #RESULTAT=EVOLNOLI,);
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL3,
+                  #NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=(1,2,3)))
 
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL3,
-                  NOM_CHAM=('DEPL',),GROUP_MA = ('BETON'),NUME_ORDRE=(1,2,3)))
-
-IMPR_RESU(
-          RESU=_F(RESULTAT=EVOLNOL3,
-                  NOM_CHAM=('DEPL','SIEF_ELGA','VARI_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2,3)))
+#IMPR_RESU(
+          #RESU=_F(RESULTAT=EVOLNOL3,
+                  #NOM_CHAM=('DEPL','SIEF_ELGA','VARI_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2,3)))
 
 
 # test des calculs de tension BPEL
@@ -353,6 +348,31 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='N',
                   VALE_CALC=857817.833201351,
                   VALE_REFE=857741.905702382,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='EPSI_ELGA',
+                  MAILLE='M105',
+                  POINT = 1,
+                  NOM_CMP='EPXX',
+                  VALE_CALC=2.0766942222829E-03,
+                  VALE_REFE=2.0766458574840215E-3,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=EVOLNOLI,
+                  NOM_CHAM='EPSI_ELGA',
+                  MAILLE='M96',
+                  POINT = 1,
+                  NOM_CMP='EPXX',
+                  VALE_CALC=1.8547412609759E-03,
+                  VALE_REFE=1.8545770934105554E-3,
                   REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
