@@ -131,15 +131,14 @@ Solveur PETSc :
   Conseil : utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
 """),
 
+17 : _(u"""
+Solveur PETSc :
+  Un ou plusieurs processeurs ne se sont vu attribuer aucun degré de liberté pour la résolution
+  du système linéaire. La résolution n'est pas possible.
 
-
-
-
-
-
-
-
-
+  Conseil : changez le mode de partitionnement avec MODI_MODELE et préférez l'utilisation de
+            "SOUS_DOMAINE".
+"""),
 
 18 : _(u"""
 Solveur PETSc :

@@ -12,6 +12,7 @@ subroutine nurenu(nu, base)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
@@ -72,6 +73,7 @@ subroutine nurenu(nu, base)
     do 10 iddl = 0, neql-1
         if (zi(jpddl+iddl) .eq. rang) nbrddl=nbrddl+1
 10  end do
+    if ( nbrddl .eq. 0 ) call utmess('F', 'PETSC_17')
 !
     call wkvect(nonbdd, 'V V I', nbproc, jnbddl)
     zi(jnbddl+rang)=nbrddl
